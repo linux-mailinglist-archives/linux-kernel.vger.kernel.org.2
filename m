@@ -2,97 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E553F1A34
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FDF3F1A37
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239615AbhHSNUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:20:53 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:49306 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238292AbhHSNUu (ORCPT
+        id S239922AbhHSNVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:21:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4360 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239300AbhHSNVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:20:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629379214; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=l4dT+tFYjcxU/834O3TlS8Kbm5D9Je72nne0F+3BpO8=; b=B0ZmkAsDAaaICZEqquNgU7THQGljgtZG78UH30cXFXRymk46e9vZoHf7RxkeIHNr0pCOz/jv
- lHRmECibGDT7BJSL22cXbkv8uBcDm5r9tWZVXlrUfEcpHrkYmgCHB+KZdowpeTPePqhmjtzc
- 479fP73tAKE8g4NvBKlznTOBSB0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 611e5a76f746c298d95da995 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 13:19:50
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E904C4360D; Thu, 19 Aug 2021 13:19:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2682CC4338F;
-        Thu, 19 Aug 2021 13:19:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2682CC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 45/63] ath11k: Use memset_startat() for clearing queue descriptors
-References: <20210818060533.3569517-1-keescook@chromium.org>
-        <20210818060533.3569517-46-keescook@chromium.org>
-Date:   Thu, 19 Aug 2021 16:19:37 +0300
-In-Reply-To: <20210818060533.3569517-46-keescook@chromium.org> (Kees Cook's
-        message of "Tue, 17 Aug 2021 23:05:15 -0700")
-Message-ID: <87eeapbmhi.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 19 Aug 2021 09:21:11 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JD4BSr162653;
+        Thu, 19 Aug 2021 09:20:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VlwW+a51ub2iWUfyBK8/YBny3TS9/ko8KkFDRDd38QE=;
+ b=QSwzW36/xXHhdhCNIWGFQQffRhkmpBLX+BxGuKiyJtXRgJADv/LcjB1svoTaItaxIfcJ
+ 45aCBg/y8epxyqv8B827UqEvrNuCb4eHhVBUAVWeGFwE9gTwn4MJvg6S7avXoQsefgDo
+ /95Ei3eZIfc0DQqtxzeFTKoobtio8x168p/VkxtLen+nar71Eb6CMGtSuoGUQKheY8mt
+ R4vZzQYToTT+wlmJMnCIVD7h0GXoDr/huoTnInNKxZ5ZAtYbb1LPfUIFRBKfDfjsOQIj
+ 6J51WwDxnnsI05ieasjDNo9ODIrSf8bqjkK3Mg0UlwSXgQSJKEQPaYzxDTupoZI6fRjQ uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp20nuu8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 09:20:32 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JD4hog165385;
+        Thu, 19 Aug 2021 09:20:32 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp20nutv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 09:20:32 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JDD35g014471;
+        Thu, 19 Aug 2021 13:20:31 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma03wdc.us.ibm.com with ESMTP id 3ae5few5fj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Aug 2021 13:20:31 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JDKTis36831678
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Aug 2021 13:20:30 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D321C136051;
+        Thu, 19 Aug 2021 13:20:29 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6C5F13605D;
+        Thu, 19 Aug 2021 13:20:28 +0000 (GMT)
+Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.182.229])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Aug 2021 13:20:28 +0000 (GMT)
+Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception handler
+ function pointer
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
+        david@redhat.com
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+ <20210719193503.793910-2-akrowiak@linux.ibm.com>
+ <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <358b1052-c751-7417-1263-308b133325b6@linux.ibm.com>
+Date:   Thu, 19 Aug 2021 09:20:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xTmhhGfkG7U8zthCjgEiQ-CNfrXXCDRO
+X-Proofpoint-GUID: 7A2t7QY2dNm3kSq70Z-s2T4UM_DMVPtr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-19_04:2021-08-17,2021-08-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 impostorscore=0 suspectscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108190076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memset(), avoid intentionally writing across
-> neighboring fields.
+
+On 8/18/21 1:03 PM, Christian Borntraeger wrote:
+> On 19.07.21 21:35, Tony Krowiak wrote:
+>> The function pointer to the interception handler for the PQAP 
+>> instruction
+>> can get changed during the interception process. Let's add a
+>> semaphore to struct kvm_s390_crypto to control read/write access to the
+>> function pointer contained therein.
+>>
+>> The semaphore must be locked for write access by the vfio_ap device 
+>> driver
+>> when notified that the KVM pointer has been set or cleared. It must be
+>> locked for read access by the interception framework when the PQAP
+>> instruction is intercepted.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>> ---
+>>   arch/s390/include/asm/kvm_host.h      |  8 +++-----
+>>   arch/s390/kvm/kvm-s390.c              |  1 +
+>>   arch/s390/kvm/priv.c                  | 10 ++++++----
+>>   drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
+>>   drivers/s390/crypto/vfio_ap_private.h |  2 +-
+>>   5 files changed, 28 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/arch/s390/include/asm/kvm_host.h 
+>> b/arch/s390/include/asm/kvm_host.h
+>> index 9b4473f76e56..f18849d259e6 100644
+>> --- a/arch/s390/include/asm/kvm_host.h
+>> +++ b/arch/s390/include/asm/kvm_host.h
+>> @@ -798,14 +798,12 @@ struct kvm_s390_cpu_model {
+>>       unsigned short ibc;
+>>   };
+>>   -struct kvm_s390_module_hook {
+>> -    int (*hook)(struct kvm_vcpu *vcpu);
+>> -    struct module *owner;
+>> -};
+>> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
+>>     struct kvm_s390_crypto {
+>>       struct kvm_s390_crypto_cb *crycb;
+>> -    struct kvm_s390_module_hook *pqap_hook;
+>> +    struct rw_semaphore pqap_hook_rwsem;
+>> +    crypto_hook *pqap_hook;
+>>       __u32 crycbd;
+>>       __u8 aes_kw;
+>>       __u8 dea_kw;
+>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>> index b655a7d82bf0..a08f242a9f27 100644
+>> --- a/arch/s390/kvm/kvm-s390.c
+>> +++ b/arch/s390/kvm/kvm-s390.c
+>> @@ -2630,6 +2630,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
+>>   {
+>>       kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
+>>       kvm_s390_set_crycb_format(kvm);
+>> +    init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
+>>         if (!test_kvm_facility(kvm, 76))
+>>           return;
+>> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
+>> index 9928f785c677..6bed9406c1f3 100644
+>> --- a/arch/s390/kvm/priv.c
+>> +++ b/arch/s390/kvm/priv.c
+>> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
+>>   static int handle_pqap(struct kvm_vcpu *vcpu)
+>>   {
+>>       struct ap_queue_status status = {};
+>> +    crypto_hook pqap_hook;
+>>       unsigned long reg0;
+>>       int ret;
+>>       uint8_t fc;
+>> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+>>        * Verify that the hook callback is registered, lock the owner
+>>        * and call the hook.
+>>        */
+>> + down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
+>>       if (vcpu->kvm->arch.crypto.pqap_hook) {
+>> -        if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+>> -            return -EOPNOTSUPP;
+>> -        ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+>> - module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
+>> +        pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
 >
-> Use memset_startat() so memset() doesn't get confused about writing
-> beyond the destination member that is intended to be the starting point
-> of zeroing through the end of the struct. Additionally split up a later
-> field-spanning memset() so that memset() can reason about the size.
+> Dont we have to check for NULL here? If not can you add a comment why?
+
+Take a look above the removed lines: if (vcpu->kvm->arch.crypto.pqap_hook)
+
 >
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: ath11k@lists.infradead.org
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Otherwise this looks good.
 
-To avoid conflicts I prefer taking this via my ath tree.
+Also, in the cover letter I said this patch was already queued and was
+included here because it pre-reqs the second patch. Is this patch not
+already in Alex's tree?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+>
+>
+>> +        ret = pqap_hook(vcpu);
+> [...]
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
