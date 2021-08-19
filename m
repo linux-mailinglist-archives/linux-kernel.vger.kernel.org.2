@@ -2,99 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9655E3F18DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226863F18E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239115AbhHSMOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
+        id S239217AbhHSMOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 08:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238286AbhHSMOe (ORCPT
+        with ESMTP id S239119AbhHSMOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:14:34 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4DEC061575;
-        Thu, 19 Aug 2021 05:13:58 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id e15so3786385plh.8;
-        Thu, 19 Aug 2021 05:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IM2mYCmkC0prP0hBmF9stY4gtLvEtM2Yq4TDeR9YyUE=;
-        b=Cg5DBxLQT2Q7B/7VzYAHrkNDepnxurGaSq0PNIPtLK7A8AkKPV5H2n0tSFFtAbqk1m
-         U+aI5r7f0FAzWhW0FQ/2RzyU3mVJyfLJGzVvbW3hfc19EQpQcp9tbr9CZ2Qlx1+Th0sk
-         NZ0blc6tcoxWJXQoMzZe3n6h1PgJ2tTITdlk6se8nKwfPFQKLliq93MJ5qcVbjEvbqu2
-         gPl306pwN6JoXDud+vMeOpO+xz0Yy2SI0tmFEUppqQ1AhmDnBJ3MVRaJmzwsU00VdDa6
-         wu7DCT41mN36Yxl+eouRVNyI9XLWy+NZi3XviBTrcL8V9DHhz+4ngXtDN0hqqFjwS4hY
-         V7ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IM2mYCmkC0prP0hBmF9stY4gtLvEtM2Yq4TDeR9YyUE=;
-        b=NYg4aguMrcUroYN7nd242qQAAqf1Sg4gizRWMN0Do88YNr+qZcdhS1gB9ybS47ycZO
-         H1LVMuldgfqs706XckELf+xbSDkQsmrpPdTwm4pgnbjNrxyTYL1G5My8jV8KDo/oZPJh
-         XpfPJs8VHSRaeq4Q1Flf1VFx+r+GSZhl6nthuF32Vf1J/b+0MWJWuoqlLQE5u9oc2MlS
-         lxHFvxpsdnGXsVf5wOiOiqtiwyZDlli8fUaTd54PEVdjFuxxseNtiSe0PaapK3OYTSDw
-         t9UnMjHVoqQiPDRrlN7pAFhbQ7380yqpJmZPI2Why5W3LcfFU6fcDJRQWsS3PGh6TFdO
-         YkWg==
-X-Gm-Message-State: AOAM531FCvIJ+zbfOcq9vVx2Z71TVmxPD/xMd5awPl/wcw/ji8Hw81nC
-        tOSc5xfVnLrSqrZoXI5sntbDgHs6Adksia/zcLc=
-X-Google-Smtp-Source: ABdhPJwrAMhj1+VsMUo9xcKg8irtQT0sHo3dYgi7cP2NtzM7H7G5eEyRJfFdUzNd/JEmfl3MMO2ypChQ6+9Oz396+sY=
-X-Received: by 2002:a17:902:bb81:b0:12d:a7ec:3d85 with SMTP id
- m1-20020a170902bb8100b0012da7ec3d85mr11653878pls.17.1629375238446; Thu, 19
- Aug 2021 05:13:58 -0700 (PDT)
+        Thu, 19 Aug 2021 08:14:51 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48379C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:14:15 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mGgvx-0002bt-Cn; Thu, 19 Aug 2021 14:14:09 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mGgvv-0001HQ-GJ; Thu, 19 Aug 2021 14:14:07 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mGgvv-0006Rh-Ew; Thu, 19 Aug 2021 14:14:07 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH v2] clk: expand clk_ignore_unused mechanism to keep only a few clks on
+Date:   Thu, 19 Aug 2021 14:14:03 +0200
+Message-Id: <20210819121403.337833-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210819033001.20136-1-hpa@redhat.com> <20210819033001.20136-10-hpa@redhat.com>
-In-Reply-To: <20210819033001.20136-10-hpa@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 19 Aug 2021 15:13:18 +0300
-Message-ID: <CAHp75VetJekXwZmyMu+YTp3o_L3TS9P7hru=WKBM6TKsbGJiRQ@mail.gmail.com>
-Subject: Re: [PATCH v3 09/20] platform/x86: intel-rst: Move to intel sub-directory
-To:     Kate Hsuan <hpa@redhat.com>
-Cc:     Alex Hung <alex.hung@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>,
-        Sujith Thomas <sujith.thomas@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dell.Client.Kernel@dell.com,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; i=6fYG3N27aP3RxGkdjJx+eQpQfw+B/9UsoCC6yr5DVh4=; m=Wdwflwi90I4cCBeib1j1UNX47P0rpqfdzRni5sSiBLg=; p=vPir/Sawi8uuYo9VY+GWzmSA1HL1je6WO+6o4I8d4PA=; g=f08ab05b2ac3fc5ced351f18cfbc3c1183a0aef1
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmEeSwgACgkQwfwUeK3K7AmEzQf/Y8m yD2zegVDN26T1Vn50HPfUIS795Q9rD0B/9DmZqwQF2SIc6N/ksU5wLKtDMWX9HdaIFT4qZndlJL31 RUqkP8VXsQBYCjPOLcAn3COqucB5nFL7kb7rWNp8nbh/zp7E+Nklq7rzxtprpXSMcas3IotvTHiNt pQc/8E9PcLMuS2EAP6WRSS95bHfVzNWYaj5DPHnvzVsVSzzvequXRcmGiy7RdNb0dNWZrMLUVr3ew 0Gn2HQ+DOc+DTAljFNlJiWCBNWPashw+svvCu782rqWnFzwSOkPd1AH7/Cpi8vmvZPNju0pk22Vtq Bupbbv7sKWpm2oat5z9drmoxReQjL9g==
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 6:34 AM Kate Hsuan <hpa@redhat.com> wrote:
->
-> Move intel-rst to intel sub-directory to improve readability
-> and rename it from intel-rst.c to ips.c
+Allow to pass an integer n that results in only keeping n unused clocks
+enabled.
 
+This helps to debug the problem if you only know that clk_ignore_unused
+helps but you have no clue yet which clock is the culprit.
 
->  # Intel uncore drivers
->
-> -obj-$(CONFIG_INTEL_RST)                                += intel-rst.o
-> +
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
-Stray change.
+Interdiff against (implicit) v1:
 
-...
+  diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+  index 7189a56bb29f..afa9f9397ddb 100644
+  --- a/drivers/clk/clk.c
+  +++ b/drivers/clk/clk.c
+  @@ -1312,8 +1312,8 @@ static int __init clk_disable_unused(void)
+   	if (clk_ignore_unused) {
+   		pr_warn("clk: Not disabling unused clocks\n");
+   		return 0;
+  -	} else if (clk_ignore_unused) {
+  -		pr_warn("clk: Not disabling %u unused clocks\n", clk_ignore_unused);
+  +	} else if (clk_unused_keep_on) {
+  +		pr_warn("clk: Not disabling %u unused clocks\n", clk_unused_keep_on);
+   	}
+   
+   	clk_prepare_lock();
 
-> -
+which fixes the debug output. Found by the kernel test robot; Thanks!
 
-Ditto.
+Best regards
+Uwe
 
-> +intel-rst-y                                                    := rst.o
-> +obj-$(CONFIG_INTEL_RST)                                += intel-rst.o
+ Documentation/driver-api/clk.rst |  4 +++-
+ drivers/clk/clk.c                | 33 ++++++++++++++++++++++++--------
+ 2 files changed, 28 insertions(+), 9 deletions(-)
 
+diff --git a/Documentation/driver-api/clk.rst b/Documentation/driver-api/clk.rst
+index 3cad45d14187..65ae7c3e2b33 100644
+--- a/Documentation/driver-api/clk.rst
++++ b/Documentation/driver-api/clk.rst
+@@ -259,7 +259,9 @@ the disabling means that the driver will remain functional while the issues
+ are sorted out.
+ 
+ To bypass this disabling, include "clk_ignore_unused" in the bootargs to the
+-kernel.
++kernel. If you pass "clk_ignore_unused=n" (where n is an integer) the first n
++found clocks are not disabled which can be useful for bisecting over the unused
++clks if you don't know yet which of them is reponsible for your problem.
+ 
+ Locking
+ =======
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 65508eb89ec9..afa9f9397ddb 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -1236,6 +1236,8 @@ static void __init clk_unprepare_unused_subtree(struct clk_core *core)
+ 	clk_pm_runtime_put(core);
+ }
+ 
++static unsigned clk_unused_keep_on __initdata;
++
+ static void __init clk_disable_unused_subtree(struct clk_core *core)
+ {
+ 	struct clk_core *child;
+@@ -1266,12 +1268,17 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
+ 	 * back to .disable
+ 	 */
+ 	if (clk_core_is_enabled(core)) {
+-		trace_clk_disable(core);
+-		if (core->ops->disable_unused)
+-			core->ops->disable_unused(core->hw);
+-		else if (core->ops->disable)
+-			core->ops->disable(core->hw);
+-		trace_clk_disable_complete(core);
++		if (clk_unused_keep_on) {
++			pr_warn("Keep unused clk \"%s\" on\n", core->name);
++			clk_unused_keep_on -= 1;
++		} else {
++			trace_clk_disable(core);
++			if (core->ops->disable_unused)
++				core->ops->disable_unused(core->hw);
++			else if (core->ops->disable)
++				core->ops->disable(core->hw);
++			trace_clk_disable_complete(core);
++		}
+ 	}
+ 
+ unlock_out:
+@@ -1283,9 +1290,17 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
+ }
+ 
+ static bool clk_ignore_unused __initdata;
+-static int __init clk_ignore_unused_setup(char *__unused)
++static int __init clk_ignore_unused_setup(char *keep)
+ {
+-	clk_ignore_unused = true;
++	if (*keep == '=') {
++		int ret;
++
++		ret = kstrtouint(keep + 1, 0, &clk_unused_keep_on);
++		if (ret < 0)
++			pr_err("Warning: failed to parse clk_ignore_unused parameter, ignoring");
++	} else {
++		clk_ignore_unused = true;
++	}
+ 	return 1;
+ }
+ __setup("clk_ignore_unused", clk_ignore_unused_setup);
+@@ -1297,6 +1312,8 @@ static int __init clk_disable_unused(void)
+ 	if (clk_ignore_unused) {
+ 		pr_warn("clk: Not disabling unused clocks\n");
+ 		return 0;
++	} else if (clk_unused_keep_on) {
++		pr_warn("clk: Not disabling %u unused clocks\n", clk_unused_keep_on);
+ 	}
+ 
+ 	clk_prepare_lock();
 -- 
-With Best Regards,
-Andy Shevchenko
+2.30.2
+
