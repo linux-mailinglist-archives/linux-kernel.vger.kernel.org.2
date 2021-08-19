@@ -2,69 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946603F1693
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38713F168C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237850AbhHSJs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbhHSJsV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S229745AbhHSJsW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 05:48:22 -0400
+Received: from aposti.net ([89.234.176.197]:43038 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236292AbhHSJsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Aug 2021 05:48:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3763EC061575;
-        Thu, 19 Aug 2021 02:47:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=NIZCsGrRQbuo1Iii34pN1v0m0SpMM+x4PkA8jTWERkg=; b=q25frNr0RfbqC0fjoCxNp5/U9p
-        XnS1Itp1kpFsNA/GpDu0yM5K5YaejGcpknYJqfk8EgGP6+4iHFTTLMsGRjmoCzrQgPNE5f0aWiJMP
-        QQ9tLG/1QdIBzMpXUBSA5pPGezmjPq0CJwrYYk/ziy5TebK/nnSrHMZcfb2uIjCNLa4oakg80HoTF
-        YSz/UGMzIuFO8B1+V7x8S7PTgRuTau4iALVZWpphyWlovh+/DBjKAy4vaUD6UbIXav3hhIt7y7OBs
-        dRqDYFfcQQ/aBbwuYMYcW8088vlsXsee7dROmQFMco7Esnk7wRaXkBLBwlTa2FrZ/OuYJHiz30tR2
-        lqk0CO2A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGedJ-004t0t-0g; Thu, 19 Aug 2021 09:46:56 +0000
-Date:   Thu, 19 Aug 2021 10:46:45 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 02/12] mm: Introduce a function to check for
- virtualization protection features
-Message-ID: <YR4ohWC4/cLsuCvv@infradead.org>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
+Date:   Thu, 19 Aug 2021 11:47:36 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v7 08/11] dt-bindings: clock: Add JZ4775 clock bindings.
+To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+Cc:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+Message-Id: <C7Z2YQ.GPU7ZNCXXLGH1@crapouillou.net>
+In-Reply-To: <1627119286-125821-9-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1627119286-125821-9-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <482fe51f1671c1cd081039801b03db7ec0036332.1628873970.git.thomas.lendacky@amd.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 11:59:21AM -0500, Tom Lendacky wrote:
-> +#define PATTR_MEM_ENCRYPT		0	/* Encrypted memory */
-> +#define PATTR_HOST_MEM_ENCRYPT		1	/* Host encrypted memory */
-> +#define PATTR_GUEST_MEM_ENCRYPT		2	/* Guest encrypted memory */
-> +#define PATTR_GUEST_PROT_STATE		3	/* Guest encrypted state */
+Hi Zhou,
 
-Please write an actual detailed explanaton of what these mean, that
-is what implications it has on the kernel.
+Le sam., juil. 24 2021 at 17:34:43 +0800, 周琰杰 (Zhou Yanjie) 
+<zhouyanjie@wanyeetech.com> a écrit :
+> Add the clock bindings for the JZ4775 SoC from Ingenic.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+> ---
+> 
+> Notes:
+>     v5:
+>     New patch.
+> 
+>     v5->v6:
+>     No change.
+> 
+>     v6->v7:
+>     Change to dual license.
+> 
+>  include/dt-bindings/clock/jz4775-cgu.h | 59 
+> ++++++++++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/jz4775-cgu.h
+> 
+> diff --git a/include/dt-bindings/clock/jz4775-cgu.h 
+> b/include/dt-bindings/clock/jz4775-cgu.h
+> new file mode 100644
+> index 00000000..4625418
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/jz4775-cgu.h
+> @@ -0,0 +1,59 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+> +/*
+> + * This header provides clock numbers for the ingenic,jz4775-cgu DT 
+> binding.
+> + *
+> + * They are roughly ordered as:
+> + *   - external clocks
+> + *   - PLLs
+> + *   - muxes/dividers in the order they appear in the jz4775 
+> programmers manual
+> + *   - gates in order of their bit in the CLKGR* registers
+> + */
+> +
+> +#ifndef __DT_BINDINGS_CLOCK_JZ4775_CGU_H__
+> +#define __DT_BINDINGS_CLOCK_JZ4775_CGU_H__
+> +
+> +#define JZ4775_CLK_EXCLK		0
+> +#define JZ4775_CLK_RTCLK		1
+> +#define JZ4775_CLK_APLL			2
+> +#define JZ4775_CLK_MPLL			3
+> +#define JZ4775_CLK_OTGPHY		4
+> +#define JZ4775_CLK_SCLKA		5
+> +#define JZ4775_CLK_UHC			6
+> +#define JZ4775_CLK_UHCPHY		7
+> +#define JZ4775_CLK_CPUMUX		8
+> +#define JZ4775_CLK_CPU			9
+> +#define JZ4775_CLK_L2CACHE		10
+> +#define JZ4775_CLK_AHB0			11
+> +#define JZ4775_CLK_AHB2PMUX		12
+> +#define JZ4775_CLK_AHB2			13
+> +#define JZ4775_CLK_PCLK			14
+> +#define JZ4775_CLK_DDR			15
+> +#define JZ4775_CLK_VPU			16
+> +#define JZ4775_CLK_OTG			17
+> +#define JZ4775_CLK_EXCLK_DIV2	18
+> +#define JZ4775_CLK_I2S			19
+> +#define JZ4775_CLK_LCD			20
+> +#define JZ4775_CLK_MSCMUX		21
+> +#define JZ4775_CLK_MSC0			22
+> +#define JZ4775_CLK_MSC1			23
+> +#define JZ4775_CLK_MSC2			24
+> +#define JZ4775_CLK_SSI			25
+> +#define JZ4775_CLK_CIM0			26
+> +#define JZ4775_CLK_CIM1			27
+> +#define JZ4775_CLK_PCM			28
+> +#define JZ4775_CLK_BCH			29
+> +#define JZ4775_CLK_EXCLK_DIV512	30
+> +#define JZ4775_CLK_RTC			31
+> +#define JZ4775_CLK_NEMC			32
+> +#define JZ4775_CLK_I2C0			33
+> +#define JZ4775_CLK_I2C1			34
+> +#define JZ4775_CLK_I2C2			35
+> +#define JZ4775_CLK_SADC			36
+> +#define JZ4775_CLK_UART0		37
+> +#define JZ4775_CLK_UART1		38
+> +#define JZ4775_CLK_UART2		39
+> +#define JZ4775_CLK_UART3		40
+> +#define JZ4775_CLK_PDMA			41
+> +#define JZ4775_CLK_MAC			42
+> +
+> +#endif /* __DT_BINDINGS_CLOCK_JZ4775_CGU_H__ */
+> --
+> 2.7.4
+> 
+
 
