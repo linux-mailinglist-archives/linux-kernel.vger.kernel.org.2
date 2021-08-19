@@ -2,109 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964233F1737
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201E33F173D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhHSKYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbhHSKYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:24:23 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06532C061575;
-        Thu, 19 Aug 2021 03:23:47 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id f2so10706451ljn.1;
-        Thu, 19 Aug 2021 03:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=s7gzHcAvUGRal7zGjfCj1tvyGgqr2i8nXDn4Q3sKzQk=;
-        b=Mfyx9RZf49s53j40JmyfZM1lJWT/tSB5dUUVPbPQyL1z9vJPwL8wxRbIWIw1ek9N3P
-         FCdsucQWgjUO4i8U/uWO19zPjJzxYSv3B0ps89+KpLOFQzlQyZ6Q7gYJ2o5hH9x7boZK
-         0hHxub5elRpkprNhLwVf8Z35OTkvNjcpWTknPnUzIBddpJWPGpp3zCNq/CF6jdEH4/1D
-         csNUXhEd/S70aZEY370wZybpR4RAhznZFB5p5DHOjaZ2WPdH7bCuyDoZ+Tfjryp/J9k9
-         jYZ0Z5Ysn3Bx4t7gZi58GygFNtApzoSEW/Ha01maSBtlbczhdiMyi5YMIFmIRLeiyk2A
-         QqNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=s7gzHcAvUGRal7zGjfCj1tvyGgqr2i8nXDn4Q3sKzQk=;
-        b=rq44BOmXdILfAJyNIXRVziPFsFyEf6MyOAiWUrtctZxBarDUYDiFMlCs6AFtWoaFZM
-         XurCopVlNQ9Ctra5OD60OugOSRmiw9M0y7M9Wxx1iF24FZaAM7CrOxh/pg46huBncVe/
-         NK4I45+x4FBYy0cirFUSPh5GgtMYkLJGUb2Hs+ByIi/eSqcf6iJJTE3qutZxkxAhCIFY
-         eeia/Xz4EaGL7x0xtg8b2JicI/5S/AjoX3v/ubtqv2iQKYSWIr4rgYnfiluXF48EK1r/
-         wM+E5HDQ/JhwlcjKmudv7QS550nLl9KPLQo5RJG16bGbzOwg1E1cgs+IxXnglYzIIuvY
-         oyGQ==
-X-Gm-Message-State: AOAM532/UDrVrTakUDyD4YuUYLUq18nC4VSfHSLHxicVTZ6rZD01okNE
-        F7uKYCMiOQSaeYLgsSRUIMQ=
-X-Google-Smtp-Source: ABdhPJwBC3AtCQaaRJLeMqncG4o7h0yRkRo3Vd0w10HmGYffhLah81Cfn2ICXXTq/oY9pVnTwY2K2Q==
-X-Received: by 2002:a2e:2f1c:: with SMTP id v28mr11179313ljv.476.1629368625379;
-        Thu, 19 Aug 2021 03:23:45 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id i21sm262452lfc.92.2021.08.19.03.23.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 03:23:44 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 13:23:42 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
+        id S238252AbhHSK0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:26:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236149AbhHSK0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 06:26:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7ADD60ED3;
+        Thu, 19 Aug 2021 10:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629368765;
+        bh=SSMtInlpuewpUuRecz0kePiL21Ixjy/lZSC95ZWxifs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pvnH4zhFNC6TxmNZKTfg651xRAnOCZjBnMdFsOTVowDNDlbfPzlrMx3cW/cMzJ7TR
+         FIL45x85IKoR7EO/DmVi73guVsIySWJ7pfOMqNoL9FQHHvDXzGoh7SvX7d4I5wsKtM
+         wR06MMWJler4dDm0v8y4cgtAbIbfTNLXP1g29Zl5sWAHGTFNUtgM3jekESgiEZpixp
+         U1xk7eCWfffJj8PH5ooDKygQVPH2rEaz43KA/kamcQ11SdRFe+J79QkUFMkAQzxUeJ
+         pr+4tenGg9wHPKvtl110xT3mA8/EWwtCJsuKv+KeodfqQwLxY8RsByLs7D4lho8CRg
+         2P108reX9nPnw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [RFC PATCH 05/20] ntfs: Undeprecate iocharset= mount option
-Message-ID: <20210819102342.6ps7lowpuomyqcdk@kari-VirtualBox>
-References: <20210808162453.1653-1-pali@kernel.org>
- <20210808162453.1653-6-pali@kernel.org>
- <20210819012108.3isqi4t6rmd5fd5x@kari-VirtualBox>
- <20210819081222.vnvxfrtqctfev6xu@pali>
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: [PATCH] tracing/probes: Reject events which have the same name of existing one
+Date:   Thu, 19 Aug 2021 19:26:02 +0900
+Message-Id: <162936876189.187130.17558311387542061930.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210819192258.7e39bafa8084417d96a8244e@kernel.org>
+References: <20210819192258.7e39bafa8084417d96a8244e@kernel.org>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210819081222.vnvxfrtqctfev6xu@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:12:22AM +0200, Pali Rohár wrote:
-> On Thursday 19 August 2021 04:21:08 Kari Argillander wrote:
-> > On Sun, Aug 08, 2021 at 06:24:38PM +0200, Pali Rohár wrote:
-> > > Other fs drivers are using iocharset= mount option for specifying charset.
-> > > So mark iocharset= mount option as preferred and deprecate nls= mount
-> > > option.
-> >  
-> > One idea is also make this change to fs/fc_parser.c and then when we
-> > want we can drop support from all filesystem same time. This way we
-> > can get more deprecated code off the fs drivers. Draw back is that
-> > then every filesstem has this deprecated nls= option if it support
-> > iocharsets option. But that should imo be ok.
-> 
-> Beware that iocharset= is required only for fs which store filenames in
-> some specific encoding (in this case extension to UTF-16). For fs which
-> store filenames in raw bytes this option should not be parsed at all.
+Since kprobe_events and uprobe_events only check whether the
+other same-type probe event has the same name or not, if the
+user gives the same name of the existing tracepoint event (or
+the other type of probe events), it silently fails to create
+the tracefs entry (but registered.) as below.
 
-Yeah of course. I was thinking that what we do is that if key is nls=
-we change key to iocharset, print deprecated and then send it to driver
-parser as usual. This way driver parser will never know that user
-specifie nls= because it just get iocharset. But this is probebly too
-fancy way to think simple problem. Just idea. 
 
-> Therefore I'm not sure if this parsing should be in global
-> fs/fc_parser.c file...
+/sys/kernel/tracing # ls events/task/task_rename
+enable   filter   format   hist     id       trigger
+/sys/kernel/tracing # echo p:task/task_rename vfs_read >> kprobe_events
+[  113.048508] Could not create tracefs 'task_rename' directory
+/sys/kernel/tracing # cat kprobe_events
+p:task/task_rename vfs_read
+
+
+To fix this issue, check whether the existing events have the
+same name or not in trace_probe_register_event_call(). If exists,
+it rejects to register the new event.
+
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ Steve, I think this is also good to your eprobe series.
+---
+ kernel/trace/trace_kprobe.c |    6 +++++-
+ kernel/trace/trace_probe.c  |   25 +++++++++++++++++++++++++
+ kernel/trace/trace_probe.h  |    1 +
+ kernel/trace/trace_uprobe.c |    6 +++++-
+ 4 files changed, 36 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index ea6178cb5e33..032191977e34 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -647,7 +647,11 @@ static int register_trace_kprobe(struct trace_kprobe *tk)
+ 	/* Register new event */
+ 	ret = register_kprobe_event(tk);
+ 	if (ret) {
+-		pr_warn("Failed to register probe event(%d)\n", ret);
++		if (ret == -EEXIST) {
++			trace_probe_log_set_index(0);
++			trace_probe_log_err(0, EVENT_EXIST);
++		} else
++			pr_warn("Failed to register probe event(%d)\n", ret);
+ 		goto end;
+ 	}
+ 
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 15413ad7cef2..0e29bb14fc8b 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1029,11 +1029,36 @@ int trace_probe_init(struct trace_probe *tp, const char *event,
+ 	return ret;
+ }
+ 
++static struct trace_event_call *
++find_trace_event_call(const char *system, const char *event_name)
++{
++	struct trace_event_call *tp_event;
++	const char *name;
++
++	list_for_each_entry(tp_event, &ftrace_events, list) {
++		if (!tp_event->class->system ||
++		    strcmp(system, tp_event->class->system))
++			continue;
++		name = trace_event_name(tp_event);
++		if (!name || strcmp(event_name, name))
++			continue;
++		return tp_event;
++	}
++
++	return NULL;
++}
++
+ int trace_probe_register_event_call(struct trace_probe *tp)
+ {
+ 	struct trace_event_call *call = trace_probe_event_call(tp);
+ 	int ret;
+ 
++	lockdep_assert_held(&event_mutex);
++
++	if (find_trace_event_call(trace_probe_group_name(tp),
++				  trace_probe_name(tp)))
++		return -EEXIST;
++
+ 	ret = register_trace_event(&call->event);
+ 	if (!ret)
+ 		return -ENODEV;
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 227d518e5ba5..9f14186d132e 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -399,6 +399,7 @@ extern int traceprobe_define_arg_fields(struct trace_event_call *event_call,
+ 	C(NO_EVENT_NAME,	"Event name is not specified"),		\
+ 	C(EVENT_TOO_LONG,	"Event name is too long"),		\
+ 	C(BAD_EVENT_NAME,	"Event name must follow the same rules as C identifiers"), \
++	C(EVENT_EXIST,		"Given group/event name is already used by another event"), \
+ 	C(RETVAL_ON_PROBE,	"$retval is not available on probe"),	\
+ 	C(BAD_STACK_NUM,	"Invalid stack number"),		\
+ 	C(BAD_ARG_NUM,		"Invalid argument number"),		\
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 9b50869a5ddb..957244ee07c8 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -514,7 +514,11 @@ static int register_trace_uprobe(struct trace_uprobe *tu)
+ 
+ 	ret = register_uprobe_event(tu);
+ 	if (ret) {
+-		pr_warn("Failed to register probe event(%d)\n", ret);
++		if (ret == -EEXIST) {
++			trace_probe_log_set_index(0);
++			trace_probe_log_err(0, EVENT_EXIST);
++		} else
++			pr_warn("Failed to register probe event(%d)\n", ret);
+ 		goto end;
+ 	}
+ 
 
