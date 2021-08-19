@@ -2,98 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DFF3F1042
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44643F1059
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235659AbhHSCS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235558AbhHSCSV (ORCPT
+        id S235644AbhHSC1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:27:23 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:33261 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235384AbhHSC1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:18:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4FCC061764;
-        Wed, 18 Aug 2021 19:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=6qFa63LSLe36g4wM0Z8z+Amgw0mnG5ofseKFv1HZmaM=; b=jkSVueB+uX0AcffMksm+YIvw3n
-        SSLMObXwjcA4anhkE1Onilfxzd/yrStGGSPvaiC/48QLpoQpG97cRAWdv6EsdYDV3gi53abGV6c+M
-        JUZRJ6sR3kKmGE0vAa+ELmF80mwEEDSKRY1OAjU4jB/UUPgv+lO+2YaZr0inx8tdX/z66LA2gxfgz
-        Pz8g3y4GD2b+ASrT6P9ZcRgupZo6iBZQjzX/ylsSvr37QmVsG+yFmIx8MtSoKeJvZGT+HHUD374LP
-        seEvSKvu3AKdsuTWkl0TcDFonl+lThil2DF69HAMJGStztY+VTQrzySLspfZz+3A05G8PgJK/loFS
-        Uy0MkOnQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGXbZ-004VHM-Ln; Thu, 19 Aug 2021 02:16:54 +0000
-Date:   Thu, 19 Aug 2021 03:16:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Daniel Micay <danielmicay@gmail.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/5] slab: Add __alloc_size attributes for better bounds
- checking
-Message-ID: <YR2+/WBa9eVGn0bp@casper.infradead.org>
-References: <20210818050841.2226600-1-keescook@chromium.org>
- <20210818050841.2226600-3-keescook@chromium.org>
- <f3e56f56c36b32dc76e174886008a2a1ecf3fefa.camel@perches.com>
- <YR2lexDd9N0sWxIW@casper.infradead.org>
- <3a0c55a3fabc57ce9771c93499ef19327f3b8621.camel@perches.com>
+        Wed, 18 Aug 2021 22:27:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=eguan@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Ujw66VG_1629340004;
+Received: from localhost(mailfrom:eguan@linux.alibaba.com fp:SMTPD_---0Ujw66VG_1629340004)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 19 Aug 2021 10:26:44 +0800
+Date:   Thu, 19 Aug 2021 10:26:44 +0800
+From:   Eryu Guan <eguan@linux.alibaba.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Eryu Guan <guan@eryu.me>, fstests@vger.kernel.org, hare@suse.de,
+        dgilbert@interlog.com, jeyu@kernel.org, lucas.demarchi@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] common/module: add patient module rmmod support
+Message-ID: <20210819022644.GP60846@e18g06458.et15sqa>
+References: <20210811154512.1813622-1-mcgrof@kernel.org>
+ <20210811154512.1813622-3-mcgrof@kernel.org>
+ <YRkIttM75q3gLxpN@desktop>
+ <YR0TEE8lUwo6QlHw@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3a0c55a3fabc57ce9771c93499ef19327f3b8621.camel@perches.com>
+In-Reply-To: <YR0TEE8lUwo6QlHw@bombadil.infradead.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 06:10:57PM -0700, Joe Perches wrote:
-> On Thu, 2021-08-19 at 01:27 +0100, Matthew Wilcox wrote:
-> > On Tue, Aug 17, 2021 at 10:31:32PM -0700, Joe Perches wrote:
-> > > Lastly __alloc_size should probably be added to checkpatch
-> > > 
-> > > Maybe:
-> > > ---
-> > >  scripts/checkpatch.pl | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
-> > > @@ -489,7 +489,8 @@ our $Attribute	= qr{
-> > >  			____cacheline_aligned|
-> > >  			____cacheline_aligned_in_smp|
-> > >  			____cacheline_internodealigned_in_smp|
-> > > -			__weak
-> > > +			__weak|
-> > > +			__alloc_size\s*\(\s*\d+\s*(?:,\s*d+\s*){0,5}\)
+On Wed, Aug 18, 2021 at 07:02:56AM -0700, Luis Chamberlain wrote:
+> On Sun, Aug 15, 2021 at 08:29:42PM +0800, Eryu Guan wrote:
+> > On Wed, Aug 11, 2021 at 08:45:11AM -0700, Luis Chamberlain wrote:
+> > >  common/config |  31 +++++++++++++++
+> > >  common/module | 107 ++++++++++++++++++++++++++++++++++++++++++++++++++
 > > 
-> > Should probably be added to kernel-doc as well.  Any other awful regexes
-> > that need to be changed to understand it?  And can we commonise the
-> > regexes that do exist into a perl helper library?
+> > Please also update README to document the new configurable variables.
 > 
-> probably, but there would need to be some library work done and
-> changes made to both utilities so they could use the same $helpers.
+> Got it.
 > 
-> And there are several nominally incomplete regexes already in
-> kernel-doc and I'm not at all familiar with kernel-doc.
+> > >  2 files changed, 138 insertions(+)
+> > > 
+> > > diff --git a/common/config b/common/config
+> > > index 005fd50a..9b8a2bc4 100644
+> > > --- a/common/config
+> > > +++ b/common/config
+> > 
+> > 100s as default seems a bit long to me, use 10s as in v1 patch?
+> 
+> In practice I tried using 10s and from my observations we *still* ran
+> into false positives. So from my own testing peace of mind I'd prefer at
+> least something higher, and if its going to be higher might as well go
+> with something which at least makes painfully safe. I'll go with 50s
+> for my next submission.
+> 
+> > > +	fi
+> > > +else
+> > > +	MODPROBE_RM_PATIENT_TIMEOUT_ARGS=""
+> > > +	if [[ ! -z "$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS" ]]; then
+> > > +		if [[ "$MODPROBE_PATIENT_RM_TIMEOUT_MS" != "forever" ]]; then
+> > 
+> > Should check MODPROBE_PATIENT_RM_TIMEOUT_SECONDS instead?
+> 
+> Indeed will fix.
+> 
+> > > diff --git a/common/module b/common/module
+> > > index 39e4e793..03953fa1 100644
+> > > --- a/common/module
+> > > +++ b/common/module
+> > > @@ -4,6 +4,8 @@
+> > >  #
+> > >  # Routines for messing around with loadable kernel modules
+> > >  
+> > > +source common/config
+> > > +
+> > 
+> > Seems there's no need to source common/config here, as it's sourced in
+> > common/rc, which is sourced by every test.
+> 
+> OK.
+> 
+> > > +	local max_tries_max=$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS
+> <-- snip -->
+> 
+> > > +	local max_tries=0
+> <-- snip -->
+> 
+> > > +	max_tries=$max_tries_max
+> > > +
+> > > +	while [[ "$max_tries" != "0" ]]; do
+> > 
+> > Use "$max_tries -ne 0" to check inters seems better.
+> 
+> max_tries can be "forever", in which case this is -eq 0:
+> 
+> $ foo="forever"; if [[ $foo -eq 0 ]]; then echo buggy; else echo ok; fi
+> buggy
 
-Yes, kernel-doc is an awful example of perl gone wild.
+I see, that makes sense. Then perhaps some comments would help.
 
+Thanks,
+Eryu
+
+> 
+> > > +			refcnt_is_zero=1
+> > > +			break
+> > > +		fi
+> > > +		sleep 1
+> > > +		if [[ "$max_tries" == "forever" ]]; then
+> > > +			continue
+> > > +		fi
+> > > +		let max_tries=$max_tries-1
+> > > +	done
+> > > +
+> > > +	if [[ $refcnt_is_zero -ne 1 ]]; then
+> > > +		echo "custom patient module removal for $module timed out waiting for refcnt to become 0 using timeout of $max_tries_max"
+> > > +		return -1
+> > > +	fi
+> > > +
+> > > +	# If we ran out of time but our refcnt check confirms we had
+> > > +	# a refcnt of 0, just try to remove the module once.
+> > > +	if [[ "$max_tries" == "0" ]]; then
+> > 
+> > $max_tries -eq 0
+> 
+> Same issue.
+> 
+>   Luis
