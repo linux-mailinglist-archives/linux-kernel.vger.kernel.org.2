@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5879C3F23CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2933F23CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236976AbhHSXo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:44:26 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7152 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233711AbhHSXoZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:44:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="216710972"
-X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
-   d="scan'208";a="216710972"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 16:43:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
-   d="scan'208";a="522651893"
-Received: from srnarvek-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.254.23.30])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 16:43:43 -0700
-Date:   Fri, 20 Aug 2021 11:43:41 +1200
-From:   Kai Huang <kai.huang@intel.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-sgx@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Saravanan D <saravanand@fb.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-Message-Id: <20210820114341.4b9d1aea68bffd7dedd13ef8@intel.com>
-In-Reply-To: <9ec30322d0d133bfa695da475d4de736994a6c68.camel@kernel.org>
-References: <20210819124824.52169-1-jarkko@kernel.org>
-        <20210819124824.52169-2-jarkko@kernel.org>
-        <9ec30322d0d133bfa695da475d4de736994a6c68.camel@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236282AbhHSXnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233964AbhHSXnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 19:43:40 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7F8C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:43:04 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id u10so10782033oiw.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:43:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8LHZxCEWR5/C4vnwOrp7U43kFfte1OHNOyXMODVHA5A=;
+        b=eElLfnhKFd3yW9Uwfwg4ay/PWquxMgQp7A3/vCvgyeg+XrrSjsvEM1fvDeQ6ftAim6
+         8+ntIVwMzPYywiaGr/seW2o4K+wIinmrS0eHMHyszkSDtqcpnlzpTPiapaoE/U17o7rU
+         yO4YU7xRue4Vtzvvg4bq3iNNHFPdCE762BxVmGuSoJno/QV3EEhly0VHleUjEojGJaDN
+         dTun/wU4p3/n5/+OkIYIFQNTsuyTK9OZ+uJ14qe0k2CwQRc1Bj4XJEXlNdn5yeAXxgCs
+         Q+/WXhEBjdWiXi/qQHavSWMrMZ9OUUiUqa4BO7xZJzc9KQpFYVDqTX7emoc0ycEU6b7c
+         wa/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8LHZxCEWR5/C4vnwOrp7U43kFfte1OHNOyXMODVHA5A=;
+        b=iLBP4mjItgTGO+6OYGYLCNDmXRBQRq9KBuB5khB0pZrnuFU2UB26bL7tNFeddHjYHB
+         tOLWbORzo7xeUi6+Mp5vU2iO5HZHx08SEPENj/ork2lD7QTV23dxaRE5KgXHJ2er5QII
+         OlLd08HqhAGIQPiYqwt5DEMLfYS5gm6IYpoTuSeMagGDq5rX2EylGhgLuek0I7t6NpfG
+         C3Ib3OZajJJsz1JNMhZKE56J4UGHcfrx51JYB0GLJdlzqApbdtmndpaa3PlK+dHC58AL
+         FFUk4q9eTM/U3XLNVPl/cbiEvfExvioOfFP9rtR9ZKvi1r7h8HtGkopTvm+c7H12shEA
+         nD/g==
+X-Gm-Message-State: AOAM533sOxCK7DggeGnSL1hPYldGqQOlY6GKq8sWJdh95YXtdyQ/iSH/
+        U63+7bHP0jKEoqCGheLAKY1npA==
+X-Google-Smtp-Source: ABdhPJw1Q4apWWBHVYYvewNXXvqK3Xr2GzQSAu+2VXBrcwCXMXMTH9UZhRAI49Wn+01q1dGlrCzfkA==
+X-Received: by 2002:aca:1308:: with SMTP id e8mr926649oii.15.1629416583563;
+        Thu, 19 Aug 2021 16:43:03 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w14sm1040972otl.58.2021.08.19.16.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 16:43:03 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 16:44:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [RFC PATCH 14/15] WIP: PCI: qcom: use pwrseq to power up bus
+ devices
+Message-ID: <YR7s2vK7jdUssx+A@ripper>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <20210817005507.1507580-15-dmitry.baryshkov@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210817005507.1507580-15-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Aug 2021 15:52:48 +0300 Jarkko Sakkinen wrote:
-> On Thu, 2021-08-19 at 15:48 +0300, Jarkko Sakkinen wrote:
-> > The amount of SGX memory on the system is determined by the BIOS and it
-> > varies wildly between systems.  It can be from dozens of MB's on desktops
-> > or VM's, up to many GB's on servers.  Just like for regular memory, it is
-> > sometimes useful to know the amount of usable SGX memory in the system.
-> > 
-> > Add SGX_MemTotal field to /proc/meminfo, which shows the total amount of
-> > usable SGX memory in the system.  E.g. with 32 MB reserved for SGX from
-> > BIOS, the printout would be:
-> > 
-> > SGX_MemTotal:      22528 kB
-> > 
-> > It is less than 32 MB because some of the space is reserved for Enclave
-> > Page Cache Metadata (EPCM), which contains state variables for all the
-> > pages in the Enclave Page Cache (EPC).  The latter contains the pages,
-> > which applications can use to create enclaves.
-> > 
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> While working on this, I noticed that suddenly my i5-9660k desktop fully
-> supports SGX on Linux. I don't recall that it has worked in the patch.
-> Maybe this is because of some firmware/ucode update, do not really know,
-> but definitely not a bad thing.
-> 
-> Perhaps this casts through other 9th gen Core CPU's.
-> 
-> The motherboard I have in this machine is AORUS Elite z390.
-> 
-> /Jarkko
+On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
+
+> Use bus-pwrseq device tree node to power up the devices on the bus. This
+> is to be rewritten with the proper code parsing the device tree and
+> powering up individual devices.
 > 
 
-Enabling SGX also requires BIOS support, so perhaps it's BIOS update that makes
-SGX available.
+How about describing the PCI device in DT and having the PCIe controller
+dig it up up from there? Although we won't have a struct device until
+later, so perhaps we need the of-based pwrseq_get() for that.
 
-Btw, with SGX KVM, EPC will be discovered regardless FLC is available
-or not. You need to check whether /dev/sgx_enclave is present or not to truly
-know whether SGX driver is usable.
+Regards,
+Bjorn
+
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+>  drivers/power/pwrseq/pwrseq_qca.c      |  1 +
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8a7a300163e5..a60d41fbcd6f 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/phy.h>
+> +#include <linux/pwrseq/consumer.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>  #include <linux/slab.h>
+> @@ -1467,6 +1468,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  	struct pcie_port *pp;
+>  	struct dw_pcie *pci;
+>  	struct qcom_pcie *pcie;
+> +	struct pwrseq *pwrseq;
+>  	int ret;
+>  
+>  	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+> @@ -1520,6 +1522,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  
+>  	pp->ops = &qcom_pcie_dw_ops;
+>  
+> +	pwrseq = devm_pwrseq_get_optional(dev, "bus");
+> +	if (IS_ERR(pwrseq)) {
+> +		ret = PTR_ERR(pwrseq);
+> +		goto err_pm_runtime_put;
+> +	}
+> +	if (pwrseq) {
+> +		ret = pwrseq_full_power_on(pwrseq);
+> +		if (ret)
+> +			goto err_pm_runtime_put;
+> +	}
+> +
+>  	ret = phy_init(pcie->phy);
+>  	if (ret) {
+>  		pm_runtime_disable(&pdev->dev);
+> diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
+> index 3421a4821126..4107f0a9c05d 100644
+> --- a/drivers/power/pwrseq/pwrseq_qca.c
+> +++ b/drivers/power/pwrseq/pwrseq_qca.c
+> @@ -1,3 +1,4 @@
+> +#define DEBUG
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * Copyright (c) 2021, Linaro Ltd.
+> -- 
+> 2.30.2
+> 
