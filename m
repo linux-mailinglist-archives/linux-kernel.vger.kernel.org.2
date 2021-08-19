@@ -2,98 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483423F1AD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975F03F1AD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240215AbhHSNpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240141AbhHSNpR (ORCPT
+        id S240240AbhHSNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:45:38 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:37315 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240152AbhHSNph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:45:17 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEFAC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:44:41 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id h29so6016978ila.2
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ug1OSGTt9qLTp56AgUL2RfL1TSKASvvRSNzqRc2tcqw=;
-        b=XfvaZ7ZW98kSfzUdcrLY4dFpOgBvtifT09w0hvXSRHNg0WtGEFaTODfTsIuOxZs7zi
-         vBeZ1DlAaHqzXB/EpOMgzPWPDgODvbSMzvLb0HVSicDgzWNojNr3tDeMY2HFyZQoBt9O
-         XlrMazdrCg8Kz5EAqXZnxUn0g5BwvYEoLQZNDIR1/Xk/QlFSSfW8DBmCoxaigl6MIkdQ
-         ICPu0Z4JFoIuVPMd/RrJomE9SqGH/B5eWSHbxytuM2S/n0XS9TvtgmJ0hT4KPqnD5ACp
-         HHjXeUW7AByGw8JQZYmzTv10iV96woEDRmibQiowyvtN15cK34kkiVx4u6b7ZiNtrm/C
-         Y1NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ug1OSGTt9qLTp56AgUL2RfL1TSKASvvRSNzqRc2tcqw=;
-        b=ntiyoz1AB9bNR0iiYCmolfTcULT3N0DmKCAH8BqQyF3x+odW0B+CA6qvJYh2qrlFHI
-         cuKfl9ikQDPE+dL9WGe89TiERDik14IeEnmkSt+04NZcmkS5ZXdAVtzcnS9Qw4ADHAWY
-         rKl4X3tw4faSzTBjBpKmcHZKVkwC8RQiQMKBSTf8zjU6ZSQTfD6nSoMLVviNtO3Kvm82
-         4nFBn4J+B5pLohlsasqVwLKaqRsAeAm4rMXc/1MAeeLyPvLXASKKrNDg5yzU0pMDU2cd
-         XvAZ75EawfDK77H6fjbCcV7T7swbDkt2EIig81F69ovjY9XIPWj/vRTZqdoQMIK7PORG
-         I3pw==
-X-Gm-Message-State: AOAM532s0NB6dTpWKH+Cu55AiZ0h3Ke4KI8Se9LBtTNpiij+9U9GJ251
-        3R7QZbyPJDOkTyYT+GjvTW0ljnIA9/BiifKdzURTXQ==
-X-Google-Smtp-Source: ABdhPJwmtqmWXSprK1vhwc2gg4x6OTwPqzsJkVqyF5yv9RgHlIUTV7TV6oYqT3ZY2f6S/bmRmGGnAfG82XXx36knYQw=
-X-Received: by 2002:a92:d304:: with SMTP id x4mr9982073ila.82.1629380680491;
- Thu, 19 Aug 2021 06:44:40 -0700 (PDT)
+        Thu, 19 Aug 2021 09:45:37 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E99202B005D0;
+        Thu, 19 Aug 2021 09:44:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 19 Aug 2021 09:45:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=3StIrRnb5NNmIWozrc+5wA2Uql
+        F1wVymMmWtJfFjZOI=; b=RQDlU8bPpcsd2pLAexFk3l8OYwbrOcian+MnXv7yqD
+        sa/M8KqeGrLWdDdwJl3KXtfCUwZx24jeTPIKW3POkyMzc21JlsZyxD2YDDLtgStR
+        uV8a69DTbAMFRs/OYCLrx4K/g5JeWMOs8jegdeKEHskVfDLpJ+bt1w9INn2EKYC5
+        zkGzIa6vH3ppKkWdQz5KUV7KXGPRLkWdrEn78Lb0fsmG9gtJq2igXwzEjEXHNZcY
+        HCMGPo4EiO0wVkEZtVK7L1u4YEwN1c0cjsREksougGDumENZh6qZsgAGrNmr95/+
+        NspctjHd1FKe8XaDplipKlOms1WiljWVA2C9aMzRXc9w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3StIrRnb5NNmIWozr
+        c+5wA2UqlF1wVymMmWtJfFjZOI=; b=mLVF6KWwd5+9H3b9+48E8qpJdlLS8hIvh
+        zg8ydTGd764VwaCdn1Le1n/c1rwRcoPrca8koDV2A2fKqfDuAcofXzh6J94arTnh
+        aVvUIHIz1HyQkziXOYu083+92eZ8S9G0mtRp6wN0B/Epu7Rs5J06UzSUqInEf01J
+        rGYAZ/vEdlooEuNlUv6Cr38O4C8vCP9NW5lYHvQm+LqoB4AMKG7+cz7g7RkNp8+S
+        yn03oW6is8TSftPkCpW3l4bBYD0M2NBu8TuyIReLPPfjd1B4TcD9Kxng6VmwN4IW
+        D2HH928M+R8Ca9AIffZalNjNBuvTLHy2ovEIWisWnR1pjrU38wVxA==
+X-ME-Sender: <xms:WWAeYf0R-xU90uyPgvckmc5ntJK2j21sRt4kFq9EekkOQ5ecDiJsfg>
+    <xme:WWAeYeESQjEMkHBEqVmHvgEzqv6_VpRIPeKjc_cVpRzrTOs4II7kkZ2lSR7Jeq4FE
+    u-rJGCIME08FDvPKw8>
+X-ME-Received: <xmr:WWAeYf6H5NKJdyTF46FxxTi3vbB8NadkNTxbHtlPxjBDBQioHczZBhRFM4UzZZCHxJQhXI6CLyagxx0AavxChtKb8_A0xOz93cLk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleejgdeiiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepofgrgihimhgvucft
+    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
+    hnpeejffehuddvvddvlefhgeelleffgfeijedvhefgieejtdeiueetjeetfeeukeejgeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:WWAeYU2HhwS9loDvQ2-9I_vFD7c9Bk-XwPjuXGREJZAsRfgJz9y-oA>
+    <xmx:WWAeYSGOg25QV10cMXarOC64riuy1cxwvXLtg_fbm_0sCLp3TEK-4w>
+    <xmx:WWAeYV_GB2V7JRK2kdDhfqzZ0xpdEwdNVmXwlx2Zd9KwtlJc4o7rYQ>
+    <xmx:W2AeYeHPAEjoFRRztgNSD_CyiWRW69u16R-5UDeZj8Bwp-E1pxlHXlsugoc>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Aug 2021 09:44:56 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-rpi-kernel@lists.infradead.org,
+        Emma Anholt <emma@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] drm/probe-helper: Create a HPD IRQ event helper for a single connector
+Date:   Thu, 19 Aug 2021 15:44:53 +0200
+Message-Id: <20210819134454.850031-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1629132650-26277-1-git-send-email-sbhanu@codeaurora.org> <CAD=FV=UqFczZ6tLzVuXhgKG9teSNTGt_RdqAxP4eXBN_eDDAtQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=UqFczZ6tLzVuXhgKG9teSNTGt_RdqAxP4eXBN_eDDAtQ@mail.gmail.com>
-From:   Doug Anderson <dianders@google.com>
-Date:   Thu, 19 Aug 2021 06:44:27 -0700
-Message-ID: <CAD=FV=Wq-+Xzjc-o9p49pvf4A_q7L-THHp_wUQce47E+yMEgvA@mail.gmail.com>
-Subject: Re: [PATCH V1] arm64: dts: qcom: sc7180: Use maximum drive strength
- values for eMMC
-To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, cang@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The drm_helper_hpd_irq_event() function is iterating over all the
+connectors when an hotplug event is detected.
 
-On Tue, Aug 17, 2021 at 6:58 AM Doug Anderson <dianders@google.com> wrote:
->
-> >                 pinconf-data {
-> >                         pins = "sdc1_data";
-> >                         bias-pull-up;
-> > -                       drive-strength = <10>;
-> > +                       drive-strength = <16>;
->
-> I could be convinced that this is the right thing to do, but I want to
-> really make sure that it has had sufficient testing. Specifically as
-> this patch is written we'll be updating the drive strength for all
-> boards. Increasing the drive strength can sometimes introduce new
-> problems (reflections, noise, ...) so we have to be confident that
-> we're not breaking someone that used to work by increasing the drive
-> strength here. How much has this been tested?
+During that iteration, it will call each connector detect function and
+figure out if its status changed.
 
-From further discussion internally, it sounds as if this should be
-fine and fixes more than just this one eMMC part. Thus:
+Finally, if any connector changed, it will notify the user-space and the
+clients that something changed on the DRM device.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+This is supposed to be used for drivers that don't have a hotplug
+interrupt for individual connectors. However, drivers that can use an
+interrupt for a single connector are left in the dust and can either
+reimplement the logic used during the iteration for each connector or
+use that helper and iterate over all connectors all the time.
+
+Since both are suboptimal, let's create a helper that will only perform
+the status detection on a single connector.
+
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/drm_probe_helper.c | 105 ++++++++++++++++++++---------
+ include/drm/drm_probe_helper.h     |   1 +
+ 2 files changed, 74 insertions(+), 32 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_probe_helper.c b/drivers/gpu/drm/drm_probe_helper.c
+index 5606bca3caa8..7e3cbb4333ce 100644
+--- a/drivers/gpu/drm/drm_probe_helper.c
++++ b/drivers/gpu/drm/drm_probe_helper.c
+@@ -795,6 +795,77 @@ void drm_kms_helper_poll_fini(struct drm_device *dev)
+ }
+ EXPORT_SYMBOL(drm_kms_helper_poll_fini);
+ 
++static bool
++_drm_connector_helper_hpd_irq_event(struct drm_connector *connector,
++				    bool notify)
++{
++	struct drm_device *dev = connector->dev;
++	enum drm_connector_status old_status;
++	u64 old_epoch_counter;
++	bool changed = false;
++
++	/* Only handle HPD capable connectors. */
++	drm_WARN_ON(dev, !(connector->polled & DRM_CONNECTOR_POLL_HPD));
++
++	drm_WARN_ON(dev, !mutex_is_locked(&dev->mode_config.mutex));
++
++	old_status = connector->status;
++	old_epoch_counter = connector->epoch_counter;
++
++	DRM_DEBUG_KMS("[CONNECTOR:%d:%s] Old epoch counter %llu\n",
++		      connector->base.id,
++		      connector->name,
++		      old_epoch_counter);
++
++	connector->status = drm_helper_probe_detect(connector, NULL,
++						    false);
++	DRM_DEBUG_KMS("[CONNECTOR:%d:%s] status updated from %s to %s\n",
++		      connector->base.id,
++		      connector->name,
++		      drm_get_connector_status_name(old_status),
++		      drm_get_connector_status_name(connector->status));
++
++	DRM_DEBUG_KMS("[CONNECTOR:%d:%s] New epoch counter %llu\n",
++		      connector->base.id,
++		      connector->name,
++		      connector->epoch_counter);
++
++	/*
++	 * Check if epoch counter had changed, meaning that we need
++	 * to send a uevent.
++	 */
++	if (old_epoch_counter != connector->epoch_counter)
++		changed = true;
++
++	if (changed && notify) {
++		drm_kms_helper_hotplug_event(dev);
++		DRM_DEBUG_KMS("Sent hotplug event\n");
++	}
++
++	return changed;
++}
++
++/**
++ * drm_connector_helper_hpd_irq_event - hotplug processing
++ * @connector: drm_connector
++ *
++ * Drivers can use this helper function to run a detect cycle on a connector
++ * which has the DRM_CONNECTOR_POLL_HPD flag set in its &polled member.
++ *
++ * This helper function is useful for drivers which can track hotplug
++ * interrupts for a single connector.
++ *
++ * This function must be called with the mode setting locks held.
++ *
++ * Note that a connector can be both polled and probed from the hotplug
++ * handler, in case the hotplug interrupt is known to be unreliable.
++ */
++bool drm_connector_helper_hpd_irq_event(struct drm_connector *connector)
++{
++	return _drm_connector_helper_hpd_irq_event(connector, true);
++}
++EXPORT_SYMBOL(drm_connector_helper_hpd_irq_event);
++
+ /**
+  * drm_helper_hpd_irq_event - hotplug processing
+  * @dev: drm_device
+@@ -822,9 +893,7 @@ bool drm_helper_hpd_irq_event(struct drm_device *dev)
+ {
+ 	struct drm_connector *connector;
+ 	struct drm_connector_list_iter conn_iter;
+-	enum drm_connector_status old_status;
+ 	bool changed = false;
+-	u64 old_epoch_counter;
+ 
+ 	if (!dev->mode_config.poll_enabled)
+ 		return false;
+@@ -832,37 +901,9 @@ bool drm_helper_hpd_irq_event(struct drm_device *dev)
+ 	mutex_lock(&dev->mode_config.mutex);
+ 	drm_connector_list_iter_begin(dev, &conn_iter);
+ 	drm_for_each_connector_iter(connector, &conn_iter) {
+-		/* Only handle HPD capable connectors. */
+-		if (!(connector->polled & DRM_CONNECTOR_POLL_HPD))
+-			continue;
+-
+-		old_status = connector->status;
+-
+-		old_epoch_counter = connector->epoch_counter;
+-
+-		DRM_DEBUG_KMS("[CONNECTOR:%d:%s] Old epoch counter %llu\n", connector->base.id,
+-			      connector->name,
+-			      old_epoch_counter);
+-
+-		connector->status = drm_helper_probe_detect(connector, NULL, false);
+-		DRM_DEBUG_KMS("[CONNECTOR:%d:%s] status updated from %s to %s\n",
+-			      connector->base.id,
+-			      connector->name,
+-			      drm_get_connector_status_name(old_status),
+-			      drm_get_connector_status_name(connector->status));
+-
+-		DRM_DEBUG_KMS("[CONNECTOR:%d:%s] New epoch counter %llu\n",
+-			      connector->base.id,
+-			      connector->name,
+-			      connector->epoch_counter);
+-
+-		/*
+-		 * Check if epoch counter had changed, meaning that we need
+-		 * to send a uevent.
+-		 */
+-		if (old_epoch_counter != connector->epoch_counter)
++		if (_drm_connector_helper_hpd_irq_event(connector,
++							false))
+ 			changed = true;
+-
+ 	}
+ 	drm_connector_list_iter_end(&conn_iter);
+ 	mutex_unlock(&dev->mode_config.mutex);
+diff --git a/include/drm/drm_probe_helper.h b/include/drm/drm_probe_helper.h
+index 8d3ed2834d34..04c57564c397 100644
+--- a/include/drm/drm_probe_helper.h
++++ b/include/drm/drm_probe_helper.h
+@@ -18,6 +18,7 @@ int drm_helper_probe_detect(struct drm_connector *connector,
+ void drm_kms_helper_poll_init(struct drm_device *dev);
+ void drm_kms_helper_poll_fini(struct drm_device *dev);
+ bool drm_helper_hpd_irq_event(struct drm_device *dev);
++bool drm_connector_helper_hpd_irq_event(struct drm_connector *connector);
+ void drm_kms_helper_hotplug_event(struct drm_device *dev);
+ 
+ void drm_kms_helper_poll_disable(struct drm_device *dev);
+-- 
+2.31.1
+
