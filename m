@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067E83F1EFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3245F3F1ED5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhHSRYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:24:42 -0400
-Received: from sauhun.de ([88.99.104.3]:54798 "EHLO pokefinder.org"
+        id S230506AbhHSRR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:17:27 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:33554 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229548AbhHSRYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:24:41 -0400
-X-Greylist: delayed 519 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Aug 2021 13:24:40 EDT
-Received: from localhost (p54b334e3.dip0.t-ipconnect.de [84.179.52.227])
-        by pokefinder.org (Postfix) with ESMTPSA id F10ED2C00BE;
-        Thu, 19 Aug 2021 19:15:23 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 19:15:19 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the i2c tree
-Message-ID: <YR6RpxBPrOA/zGqg@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210818074903.2da12b1f@canb.auug.org.au>
- <42b3cebf-de30-5677-f98b-7a59543a3004@omp.ru>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nso4THnM+U0e83c1"
-Content-Disposition: inline
-In-Reply-To: <42b3cebf-de30-5677-f98b-7a59543a3004@omp.ru>
+        id S229981AbhHSRRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:17:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629393403; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9OrzBDI9aonJAy5nn5cFhKWv9b0xLY+sStEgxrDvSeg=; b=NTlkBnitX2bFPsV89HNyJstCvc09Yy0k17P718fPzRhECKCJ7PWxTwDMUmMcElBKNalCqvlI
+ /XayBr3UFR7+h3qQepHDE5ugxfeIyp09aP1S6vLNerP0RXipaaA9DOVkpV1k7YtcwPSFbGrN
+ d+BUFqwzsmBeoTBFOFPQnqAGN94=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 611e91d466ff1079045f1840 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 17:16:04
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7BADC4338F; Thu, 19 Aug 2021 17:16:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C431CC4338F;
+        Thu, 19 Aug 2021 17:16:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C431CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        quic_jhugo@quicinc.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2 0/2] MHI MMIO register write updates
+Date:   Thu, 19 Aug 2021 10:15:52 -0700
+Message-Id: <1629393354-20769-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In case of MHI MMIO writes, the register field write function needs to do reads
+before writes are performed. Propagate read failures such that callers are made
+aware of those and can take appropriate action instead of running blind.
 
---nso4THnM+U0e83c1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Optimizing the MMIO initialization function to use mhi_write_reg() in most cases
+should also be done to improve design.
 
+These patches were tested on X86_64 architecture with Ubuntu 18.04 and SDX65
+attach.
 
-> > Fixes: e0d1ec97853f ("i2c-s3c2410: Change IRQ to be plain integer.")
->=20
->    Yes, this one looks more correct.
->=20
->    Wolfram, what should we do now?
+v2:
+-Fix testbot reported missing set of changes from pm.c
 
-I'll fix it locally. Thanks, Stephen for the report and fix!
+Bhaumik Bhatt (2):
+  bus: mhi: core: Bail on writing register fields if read fails
+  bus: mhi: core: Optimize and update MMIO register write method
 
+ drivers/bus/mhi/core/boot.c     | 25 ++++++++++-----
+ drivers/bus/mhi/core/init.c     | 70 +++++++++++++++++++++++------------------
+ drivers/bus/mhi/core/internal.h |  7 +++--
+ drivers/bus/mhi/core/main.c     |  9 ++++--
+ drivers/bus/mhi/core/pm.c       | 18 ++++++++---
+ 5 files changed, 80 insertions(+), 49 deletions(-)
 
---nso4THnM+U0e83c1
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmEekaMACgkQFA3kzBSg
-Kbbo7RAAltn39bP6QrhK7nHZbnOLsJR81M6S78lx+GSrdQoWVrQqB1Zr9LcQilEi
-GqLuL9Jr4e3au4swRft30Am8G0nCQzp6b63TZrbqp4ffaKyH3u6Nvqv9Alnk8qRD
-GF41XizYT7AbW4+GhtE0rIaltS/j0iLeVH2ZfgB8DyC8jDVgPpfDbG4GQLcY0iot
-9Y+iTSxX1qyABstdUhP4UJneYJ617604oOxfqsNV3fRNBXfB8FM5QTAqMaUXamyk
-YjG3VEVib61souVKVN2V4S938lnMCR1v9VlGwdgb24jiqlzbATIbNbYWsxHcuvi+
-CjeMzxQ8j2MPRudWwazOT5njxpzRBfq/SZ9xbXOT+CL+D57hz2fwajjIwBtB2yXb
-BqF1fYaIHUtJ7UZl7nhzEWKzPFSQBq9ep8euMZmy2+38OeEqMsPsHrxV7JIhR7t0
-RyryUZbrnEcvOC1fOcudMKkjZazu0XJa3Ed89RQa9l04QKugbAxBBIZdZhm39rZk
-CG7FUj69XHR23sXGRl3ZhXQOA4DPspPL58b2VyQK/YdIKfxOhmVLUO2b8cFokr7D
-+++7wwNZW0SOdaGR2bl9RQDenU/50gyJQ25Mj1I5g361WngPGh/xmASjzFeKXO1f
-c4ejba6YyX4UKCzhR3GSx/R/tPam9Jl7K8BFnMiJM98f2QhsN5o=
-=dF8P
------END PGP SIGNATURE-----
-
---nso4THnM+U0e83c1--
