@@ -2,75 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227D33F138B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380403F138C
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhHSGbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:31:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44462 "EHLO mail.kernel.org"
+        id S231300AbhHSGb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:31:27 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:47659 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230404AbhHSGbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:31:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8758610CF;
-        Thu, 19 Aug 2021 06:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629354624;
-        bh=wMcwRJ+VeaAoovRMBNZdxYLqsLLAmilV2Xm+nRdadcs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VQOxuJ77ddvGoPvGYkzmD8nUgRlJRs4u8vEgq+qI8/9NY+ni/U2WeM21fjz1bzP1G
-         QwwudoaOhEPh/2CG3Kbg2MHWHJ//ecHzdeW0zuJqpVyUdW1ICskfs8WSFFbuLp8yXd
-         +CcZZeyjZsg87LwCUi2vV4W5bLZfxxw0vZeExGa4=
-Date:   Thu, 19 Aug 2021 08:30:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove _enter/_exit_critical_mutex()
-Message-ID: <YR36fT6bpiVoo2lM@kroah.com>
-References: <20210819060837.23983-1-fmdefrancesco@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819060837.23983-1-fmdefrancesco@gmail.com>
+        id S230404AbhHSGbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 02:31:25 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GqvzC5tqdz9sWQ;
+        Thu, 19 Aug 2021 08:30:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RDJ4GyudLJ2E; Thu, 19 Aug 2021 08:30:47 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GqvzC4yNGz9sWP;
+        Thu, 19 Aug 2021 08:30:47 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8EFF28B822;
+        Thu, 19 Aug 2021 08:30:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Y4cGa_HGvYv2; Thu, 19 Aug 2021 08:30:47 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 71AFC8B764;
+        Thu, 19 Aug 2021 08:30:47 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 59E7D66973; Thu, 19 Aug 2021 06:30:47 +0000 (UTC)
+Message-Id: <385ead49ccb66a259b25fee3eebf0bd4094068f3.1629354625.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/3] powerpc: Remove MSR_PR check in
+ interrupt_exit_{user/kernel}_prepare()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 19 Aug 2021 06:30:47 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 08:08:37AM +0200, Fabio M. De Francesco wrote:
-> Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
-> unnecessary wrappers, respectively to mutex_lock_interruptible and to
-> mutex_unlock(). They also have an odd interface that takes an unused
-> second parameter "unsigned long *pirqL".
-> 
-> Use directly the in-kernel API; check and manage the return value of
-> mutex_lock_interruptible().
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_mlme_ext.c     |  5 +++--
->  drivers/staging/r8188eu/hal/usb_ops_linux.c     |  7 +++++--
->  drivers/staging/r8188eu/include/osdep_service.h | 13 -------------
->  drivers/staging/r8188eu/os_dep/os_intfs.c       |  5 +++--
->  4 files changed, 11 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> index f6ee72d5af09..484083468ebb 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> @@ -4358,7 +4358,8 @@ s32 dump_mgntframe_and_wait_ack(struct adapter *padapter, struct xmit_frame *pmg
->  	if (padapter->bSurpriseRemoved || padapter->bDriverStopped)
->  		return -1;
->  
-> -	_enter_critical_mutex(&pxmitpriv->ack_tx_mutex, NULL);
-> +	if (mutex_lock_interruptible(&pxmitpriv->ack_tx_mutex))
-> +		return -EINTR;
+In those hot functions that are called at every interrupt, any saved
+cycle is worth it.
 
-But the code never would return this value if the lock function returned
-an error.  Why do that here now?
+interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
+called from three places:
+- From entry_32.S
+- From interrupt_64.S
+- From interrupt_exit_user_restart() and interrupt_exit_kernel_restart()
 
-thanks,
+In entry_32.S, there are inambiguously called based on MSR_PR:
 
-greg k-h
+	interrupt_return:
+		lwz	r4,_MSR(r1)
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		andi.	r0,r4,MSR_PR
+		beq	.Lkernel_interrupt_return
+		bl	interrupt_exit_user_prepare
+	...
+	.Lkernel_interrupt_return:
+		bl	interrupt_exit_kernel_prepare
+
+In interrupt_64.S, that's similar:
+
+	interrupt_return_\srr\():
+		ld	r4,_MSR(r1)
+		andi.	r0,r4,MSR_PR
+		beq	interrupt_return_\srr\()_kernel
+	interrupt_return_\srr\()_user: /* make backtraces match the _kernel variant */
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		bl	interrupt_exit_user_prepare
+	...
+	interrupt_return_\srr\()_kernel:
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		bl	interrupt_exit_kernel_prepare
+
+In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
+MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
+BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
+and interrupt_exit_kernel_prepare().
+
+The verification in interrupt_exit_user_prepare() and
+interrupt_exit_kernel_prepare() are therefore useless and can be removed.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ arch/powerpc/kernel/interrupt.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 21bbd615ca41..f26caf911ab5 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -465,7 +465,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs)
+ 
+ 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+ 		BUG_ON(!(regs->msr & MSR_RI));
+-	BUG_ON(!(regs->msr & MSR_PR));
+ 	BUG_ON(arch_irq_disabled_regs(regs));
+ 	CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+@@ -499,7 +498,6 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+ 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
+ 	    unlikely(!(regs->msr & MSR_RI)))
+ 		unrecoverable_exception(regs);
+-	BUG_ON(regs->msr & MSR_PR);
+ 	/*
+ 	 * CT_WARN_ON comes here via program_check_exception,
+ 	 * so avoid recursion.
+-- 
+2.25.0
+
