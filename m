@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDD33F1F65
+	by mail.lfdr.de (Postfix) with ESMTP id 134533F1F64
 	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbhHSRvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:51:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57808 "EHLO
+        id S233971AbhHSRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:51:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57838 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbhHSRvT (ORCPT
+        with ESMTP id S231741AbhHSRvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Aug 2021 13:51:19 -0400
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8A26E22146;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AC22A22147;
         Thu, 19 Aug 2021 17:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1629395441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RsMCAyQqRjc82/UGdHyad3tJqOBFuNVmX0pxr/x7C7c=;
-        b=AUZieZPD38lACbv9wyn23cw7k+dPufOi+rXWiww0IfjxFC4PIsqONXLRJ8IP3rgAmxqOF/
-        ERuS7yONh/HXp48kGcJxRGLsvfUd38uPlgiwRPYsSD05zFd9K53zYs5jFzcFIu+d7BBQL+
-        pnIE+4+2uEbxKWTF0A2efQVh6uYN5Tk=
+        bh=B+ls4DGYx5pr42EX0nG9QyXccWrQfFEz6zfKheo/3Yo=;
+        b=RZJOeeKYjEHei9J9/eXviKkmLuTYxr6HqJgF7nY182GVtP32meZyA8LRj53xk/EcVN18TS
+        VJswgnLQPF0qyy8D+Vh91IwBdKKQYsBEPQuZtudZ3dz43H0tEfHt8gq9EjbdJn6OsKZckI
+        y9Av6BGYA9tZO9iO3Mx+stinIO4e8UM=
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6474413AB1;
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 8A0E313AAE;
         Thu, 19 Aug 2021 17:50:41 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap1.suse-dmz.suse.de with ESMTPSA
-        id SP//F/GZHmHnOQAAGKfGzw
+        id 2HcvIfGZHmHnOQAAGKfGzw
         (envelope-from <mkoutny@suse.com>); Thu, 19 Aug 2021 17:50:41 +0000
 From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To:     linux-kernel@vger.kernel.org
@@ -49,9 +49,9 @@ Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         Daniel Bristot de Oliveira <bristot@redhat.com>,
         Odin Ugedal <odin@uged.al>, Rik van Riel <riel@surriel.com>,
         Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [RFC PATCH v2 3/5] sched/fair: Rename leaf_list to more fitting load_list
-Date:   Thu, 19 Aug 2021 19:50:32 +0200
-Message-Id: <20210819175034.4577-4-mkoutny@suse.com>
+Subject: [RFC PATCH v2 4/5] sched/fair: Simplify load_cfs_rq_list maintenance
+Date:   Thu, 19 Aug 2021 19:50:33 +0200
+Message-Id: <20210819175034.4577-5-mkoutny@suse.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210819175034.4577-1-mkoutny@suse.com>
 References: <20210819175034.4577-1-mkoutny@suse.com>
@@ -62,417 +62,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The leaf_list name is obsolete and misleading. The list is nowadays used
-to hold cfs_rqs with non-zero PELT that has to be decayed to properly
-account for blocked tasks. Those can be inner nodes of the task_group
-tree as well.
+load_cfs_rq_list should contain cfs_rqs that have runnable entities in
+them.  When we're operating under a throttled hierarchy we always
+update the load_cfs_rq_list in order not to break list_add_load_cfs_rq
+invariant of adding complete branches.
+
+This caused troubles when an entity became runnable (enqueue_entity)
+under a throttled hierarchy (see commit b34cb07dde7c ("sched/fair: Fix
+enqueue_task_fair() warning some more")). (Basically when we add to the
+load list, we have to ensure all the ancestors are added and when
+deleting we have to delete whole subtree.)
+
+This patch simplifies the code by no updates of load_cfs_rq_list when
+we're operating under the throttled hierarchy and defers the
+load_cfs_rq_list update to the point when whole hierarchy is unthrottled
+(tg_unthrottle_up). Specifically, subtrees of a throttled cfs_rq are not
+decaying their PELT when they're being throttled (but the parent of the
+throttled cfs_rq is decayed).
+
+The code is now simpler and load_cfs_rq_list contains only cfs_rqs that
+have load to decay.
 
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- kernel/sched/core.c  |   4 +-
- kernel/sched/fair.c  | 114 +++++++++++++++++++++----------------------
- kernel/sched/sched.h |  17 +++----
- 3 files changed, 65 insertions(+), 70 deletions(-)
+ kernel/sched/fair.c | 58 ++++++++++-----------------------------------
+ 1 file changed, 12 insertions(+), 46 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 20ffcc044134..e55a7c898cd9 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8961,8 +8961,8 @@ void __init sched_init(void)
- 		init_rt_rq(&rq->rt);
- 		init_dl_rq(&rq->dl);
- #ifdef CONFIG_FAIR_GROUP_SCHED
--		INIT_LIST_HEAD(&rq->leaf_cfs_rq_list);
--		rq->tmp_alone_branch = &rq->leaf_cfs_rq_list;
-+		INIT_LIST_HEAD(&rq->load_cfs_rq_list);
-+		rq->tmp_alone_branch = &rq->load_cfs_rq_list;
- 		/*
- 		 * How much CPU bandwidth does root_task_group get?
- 		 *
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 905f95b91a7a..6f4d5d4dcdd9 100644
+index 6f4d5d4dcdd9..9978485334ec 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -286,13 +286,13 @@ static inline void cfs_rq_tg_path(struct cfs_rq *cfs_rq, char *path, int len)
- 		strlcpy(path, "(null)", len);
+@@ -3086,6 +3086,8 @@ void reweight_task(struct task_struct *p, int prio)
+ 	load->inv_weight = sched_prio_to_wmult[prio];
  }
  
--static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-+static inline bool list_add_load_cfs_rq(struct cfs_rq *cfs_rq)
- {
- 	struct rq *rq = rq_of(cfs_rq);
- 	int cpu = cpu_of(rq);
- 
- 	if (cfs_rq->on_list)
--		return rq->tmp_alone_branch == &rq->leaf_cfs_rq_list;
-+		return rq->tmp_alone_branch == &rq->load_cfs_rq_list;
- 
- 	cfs_rq->on_list = 1;
- 
-@@ -313,14 +313,14 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
- 		 * the list, this means to put the child at the tail
- 		 * of the list that starts by parent.
- 		 */
--		list_add_tail_rcu(&cfs_rq->leaf_cfs_rq_list,
--			&(cfs_rq->tg->parent->cfs_rq[cpu]->leaf_cfs_rq_list));
-+		list_add_tail_rcu(&cfs_rq->load_cfs_rq_list,
-+			&(cfs_rq->tg->parent->cfs_rq[cpu]->load_cfs_rq_list));
- 		/*
- 		 * The branch is now connected to its tree so we can
- 		 * reset tmp_alone_branch to the beginning of the
- 		 * list.
- 		 */
--		rq->tmp_alone_branch = &rq->leaf_cfs_rq_list;
-+		rq->tmp_alone_branch = &rq->load_cfs_rq_list;
- 		return true;
- 	}
- 
-@@ -329,13 +329,13 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
- 		 * cfs rq without parent should be put
- 		 * at the tail of the list.
- 		 */
--		list_add_tail_rcu(&cfs_rq->leaf_cfs_rq_list,
--			&rq->leaf_cfs_rq_list);
-+		list_add_tail_rcu(&cfs_rq->load_cfs_rq_list,
-+			&rq->load_cfs_rq_list);
- 		/*
- 		 * We have reach the top of a tree so we can reset
- 		 * tmp_alone_branch to the beginning of the list.
- 		 */
--		rq->tmp_alone_branch = &rq->leaf_cfs_rq_list;
-+		rq->tmp_alone_branch = &rq->load_cfs_rq_list;
- 		return true;
- 	}
- 
-@@ -345,44 +345,44 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
- 	 * tmp_alone_branch points to the begin of the branch
- 	 * where we will add parent.
- 	 */
--	list_add_rcu(&cfs_rq->leaf_cfs_rq_list, rq->tmp_alone_branch);
-+	list_add_rcu(&cfs_rq->load_cfs_rq_list, rq->tmp_alone_branch);
- 	/*
- 	 * update tmp_alone_branch to points to the new begin
- 	 * of the branch
- 	 */
--	rq->tmp_alone_branch = &cfs_rq->leaf_cfs_rq_list;
-+	rq->tmp_alone_branch = &cfs_rq->load_cfs_rq_list;
- 	return false;
- }
- 
--static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-+static inline void list_del_load_cfs_rq(struct cfs_rq *cfs_rq)
- {
- 	if (cfs_rq->on_list) {
- 		struct rq *rq = rq_of(cfs_rq);
- 
- 		/*
- 		 * With cfs_rq being unthrottled/throttled during an enqueue,
--		 * it can happen the tmp_alone_branch points the a leaf that
-+		 * it can happen the tmp_alone_branch points the cfs_rq that
- 		 * we finally want to del. In this case, tmp_alone_branch moves
--		 * to the prev element but it will point to rq->leaf_cfs_rq_list
-+		 * to the prev element but it will point to rq->load_cfs_rq_list
- 		 * at the end of the enqueue.
- 		 */
--		if (rq->tmp_alone_branch == &cfs_rq->leaf_cfs_rq_list)
--			rq->tmp_alone_branch = cfs_rq->leaf_cfs_rq_list.prev;
-+		if (rq->tmp_alone_branch == &cfs_rq->load_cfs_rq_list)
-+			rq->tmp_alone_branch = cfs_rq->load_cfs_rq_list.prev;
- 
--		list_del_rcu(&cfs_rq->leaf_cfs_rq_list);
-+		list_del_rcu(&cfs_rq->load_cfs_rq_list);
- 		cfs_rq->on_list = 0;
- 	}
- }
- 
--static inline void assert_list_leaf_cfs_rq(struct rq *rq)
-+static inline void assert_list_load_cfs_rq(struct rq *rq)
- {
--	SCHED_WARN_ON(rq->tmp_alone_branch != &rq->leaf_cfs_rq_list);
-+	SCHED_WARN_ON(rq->tmp_alone_branch != &rq->load_cfs_rq_list);
- }
- 
--/* Iterate thr' all leaf cfs_rq's on a runqueue */
--#define for_each_leaf_cfs_rq_safe(rq, cfs_rq, pos)			\
--	list_for_each_entry_safe(cfs_rq, pos, &rq->leaf_cfs_rq_list,	\
--				 leaf_cfs_rq_list)
-+/* Iterate thr' all loaded cfs_rq's on a runqueue */
-+#define for_each_load_cfs_rq_safe(rq, cfs_rq, pos)			\
-+	list_for_each_entry_safe(cfs_rq, pos, &rq->load_cfs_rq_list,	\
-+				 load_cfs_rq_list)
- 
- /* Do the two (enqueued) entities belong to the same group ? */
- static inline struct cfs_rq *
-@@ -442,20 +442,20 @@ static inline void cfs_rq_tg_path(struct cfs_rq *cfs_rq, char *path, int len)
- 		strlcpy(path, "(null)", len);
- }
- 
--static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-+static inline bool list_add_load_cfs_rq(struct cfs_rq *cfs_rq)
- {
- 	return true;
- }
- 
--static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-+static inline void list_del_load_cfs_rq(struct cfs_rq *cfs_rq)
- {
- }
- 
--static inline void assert_list_leaf_cfs_rq(struct rq *rq)
-+static inline void assert_list_load_cfs_rq(struct rq *rq)
- {
- }
- 
--#define for_each_leaf_cfs_rq_safe(rq, cfs_rq, pos)	\
-+#define for_each_load_cfs_rq_safe(rq, cfs_rq, pos)	\
- 		for (cfs_rq = &rq->cfs, pos = NULL; cfs_rq; cfs_rq = pos)
- 
- static inline struct sched_entity *parent_entity(struct sched_entity *se)
-@@ -3257,12 +3257,12 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
- #ifdef CONFIG_SMP
++static inline int throttled_hierarchy(struct cfs_rq *cfs_rq);
++
  #ifdef CONFIG_FAIR_GROUP_SCHED
+ #ifdef CONFIG_SMP
  /*
-- * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
-+ * Because list_add_load_cfs_rq always places a child cfs_rq on the list
-  * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
-  * bottom-up, we only have to test whether the cfs_rq before us on the list
-  * is our child.
-  * If cfs_rq is not on the list, test whether a child needs its to be added to
-- * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
-+ * connect a branch to the tree (see list_add_load_cfs_rq() for details).
-  */
- static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
- {
-@@ -3270,14 +3270,14 @@ static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
- 	struct list_head *prev;
- 
- 	if (cfs_rq->on_list) {
--		prev = cfs_rq->leaf_cfs_rq_list.prev;
-+		prev = cfs_rq->load_cfs_rq_list.prev;
- 	} else {
- 		struct rq *rq = rq_of(cfs_rq);
- 
- 		prev = rq->tmp_alone_branch;
- 	}
- 
--	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
-+	prev_cfs_rq = container_of(prev, struct cfs_rq, load_cfs_rq_list);
- 
- 	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
+@@ -3196,8 +3198,6 @@ static long calc_group_shares(struct cfs_rq *cfs_rq)
  }
-@@ -4298,7 +4298,7 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	 * add it unconditionally.
+ #endif /* CONFIG_SMP */
+ 
+-static inline int throttled_hierarchy(struct cfs_rq *cfs_rq);
+-
+ /*
+  * Recomputes the group entity based on the current state of its group
+  * runqueue.
+@@ -4294,10 +4294,11 @@ enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 
+ 	/*
+ 	 * When bandwidth control is enabled, cfs might have been removed
+-	 * because of a parent been throttled but cfs->nr_running > 1. Try to
+-	 * add it unconditionally.
++	 * because of a parent been throttled. We'll add it later (with
++	 * complete branch up to se->on_rq/cfs_eq->on_list) in
++	 * tg_unthrottle_up() and unthrottle_cfs_rq().
  	 */
- 	if (cfs_rq->nr_running == 1 || cfs_bandwidth_used())
--		list_add_leaf_cfs_rq(cfs_rq);
-+		list_add_load_cfs_rq(cfs_rq);
+-	if (cfs_rq->nr_running == 1 || cfs_bandwidth_used())
++	if (cfs_rq->nr_running == 1 && !throttled_hierarchy(cfs_rq))
+ 		list_add_load_cfs_rq(cfs_rq);
  
  	if (cfs_rq->nr_running == 1)
- 		check_enqueue_throttle(cfs_rq);
-@@ -4775,7 +4775,7 @@ static int tg_unthrottle_up(struct task_group *tg, void *data)
- 
- 		/* Add cfs_rq with load or one or more already running entities to the list */
- 		if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
--			list_add_leaf_cfs_rq(cfs_rq);
-+			list_add_load_cfs_rq(cfs_rq);
- 	}
- 
- 	return 0;
-@@ -4789,7 +4789,7 @@ static int tg_throttle_down(struct task_group *tg, void *data)
- 	/* group is entering throttled state, stop time */
- 	if (!cfs_rq->throttle_count) {
- 		cfs_rq->throttled_clock_task = rq_clock_task(rq);
--		list_del_leaf_cfs_rq(cfs_rq);
-+		list_del_load_cfs_rq(cfs_rq);
- 	}
- 	cfs_rq->throttle_count++;
- 
-@@ -4900,10 +4900,10 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 		/* Nothing to run but something to decay? Complete the branch */
- 		if (cfs_rq->on_list)
- 			for_each_sched_entity(se) {
--				if (list_add_leaf_cfs_rq(group_cfs_rq(se)))
-+				if (list_add_load_cfs_rq(group_cfs_rq(se)))
- 					break;
- 			}
--		assert_list_leaf_cfs_rq(rq);
-+		assert_list_load_cfs_rq(rq);
- 		return;
- 	}
- 
-@@ -4939,10 +4939,10 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 
- 		/*
- 		 * One parent has been throttled and cfs_rq removed from the
--		 * list. Add it back to not break the leaf list.
-+		 * list. Add it back to not break the load list.
- 		 */
- 		if (throttled_hierarchy(cfs_rq))
--			list_add_leaf_cfs_rq(cfs_rq);
-+			list_add_load_cfs_rq(cfs_rq);
+@@ -4936,31 +4937,13 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 		/* end evaluation on encountering a throttled cfs_rq */
+ 		if (cfs_rq_throttled(cfs_rq))
+ 			goto unthrottle_throttle;
+-
+-		/*
+-		 * One parent has been throttled and cfs_rq removed from the
+-		 * list. Add it back to not break the load list.
+-		 */
+-		if (throttled_hierarchy(cfs_rq))
+-			list_add_load_cfs_rq(cfs_rq);
  	}
  
  	/* At this point se is NULL and we are at root level*/
-@@ -4951,17 +4951,17 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	add_nr_running(rq, task_delta);
+ 
  unthrottle_throttle:
- 	/*
- 	 * The cfs_rq_throttled() breaks in the above iteration can result in
--	 * incomplete leaf list maintenance, resulting in triggering the
-+	 * incomplete load list maintenance, resulting in triggering the
- 	 * assertion below.
- 	 */
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
- 
--		if (list_add_leaf_cfs_rq(cfs_rq))
-+		if (list_add_load_cfs_rq(cfs_rq))
- 			break;
- 	}
- 
--	assert_list_leaf_cfs_rq(rq);
-+	assert_list_load_cfs_rq(rq);
+-	/*
+-	 * The cfs_rq_throttled() breaks in the above iteration can result in
+-	 * incomplete load list maintenance, resulting in triggering the
+-	 * assertion below.
+-	 */
+-	for_each_sched_entity(se) {
+-		cfs_rq = cfs_rq_of(se);
+-
+-		if (list_add_load_cfs_rq(cfs_rq))
+-			break;
+-	}
+-
++	/* See enqueue_task_fair:enqueue_throttle */
+ 	assert_list_load_cfs_rq(rq);
  
  	/* Determine whether we need to wake up potentially idle CPU: */
- 	if (rq->curr == rq->idle && rq->cfs.nr_running)
-@@ -5601,12 +5601,12 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+@@ -5600,13 +5583,6 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 		/* end evaluation on encountering a throttled cfs_rq */
  		if (cfs_rq_throttled(cfs_rq))
  			goto enqueue_throttle;
- 
--               /*
--                * One parent has been throttled and cfs_rq removed from the
--                * list. Add it back to not break the leaf list.
--                */
--               if (throttled_hierarchy(cfs_rq))
--                       list_add_leaf_cfs_rq(cfs_rq);
-+		/*
-+		 * One parent has been throttled and cfs_rq removed from the
-+		 * list. Add it back to not break the load list.
-+		 */
-+		if (throttled_hierarchy(cfs_rq))
-+			list_add_load_cfs_rq(cfs_rq);
+-
+-		/*
+-		 * One parent has been throttled and cfs_rq removed from the
+-		 * list. Add it back to not break the load list.
+-		 */
+-		if (throttled_hierarchy(cfs_rq))
+-			list_add_load_cfs_rq(cfs_rq);
  	}
  
  	/* At this point se is NULL and we are at root level*/
-@@ -5634,18 +5634,18 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		/*
- 		 * When bandwidth control is enabled; the cfs_rq_throttled()
- 		 * breaks in the above iteration can result in incomplete
--		 * leaf list maintenance, resulting in triggering the assertion
-+		 * load list maintenance, resulting in triggering the assertion
- 		 * below.
- 		 */
- 		for_each_sched_entity(se) {
- 			cfs_rq = cfs_rq_of(se);
+@@ -5630,21 +5606,11 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 		update_overutilized_status(rq);
  
--			if (list_add_leaf_cfs_rq(cfs_rq))
-+			if (list_add_load_cfs_rq(cfs_rq))
- 				break;
- 		}
- 	}
- 
--	assert_list_leaf_cfs_rq(rq);
-+	assert_list_load_cfs_rq(rq);
+ enqueue_throttle:
+-	if (cfs_bandwidth_used()) {
+-		/*
+-		 * When bandwidth control is enabled; the cfs_rq_throttled()
+-		 * breaks in the above iteration can result in incomplete
+-		 * load list maintenance, resulting in triggering the assertion
+-		 * below.
+-		 */
+-		for_each_sched_entity(se) {
+-			cfs_rq = cfs_rq_of(se);
+-
+-			if (list_add_load_cfs_rq(cfs_rq))
+-				break;
+-		}
+-	}
+-
++	/*
++	 * If we got here, subtree of a cfs_rq must have been throttled and
++	 * therefore we did not modify load list or we climbed up to root (or
++	 * joined to an ancestor cfs_rq with on_rq == 1 => on_list).
++	 */
+ 	assert_list_load_cfs_rq(rq);
  
  	hrtick_update(rq);
- }
-@@ -8122,9 +8122,9 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
- 
- 	/*
- 	 * Iterates the task_group tree in a bottom up fashion, see
--	 * list_add_leaf_cfs_rq() for details.
-+	 * list_add_load_cfs_rq() for details.
- 	 */
--	for_each_leaf_cfs_rq_safe(rq, cfs_rq, pos) {
-+	for_each_load_cfs_rq_safe(rq, cfs_rq, pos) {
- 		struct sched_entity *se;
- 
- 		if (update_cfs_rq_load_avg(cfs_rq_clock_pelt(cfs_rq), cfs_rq)) {
-@@ -8144,7 +8144,7 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
- 		 * decayed cfs_rqs linger on the list.
- 		 */
- 		if (cfs_rq_is_decayed(cfs_rq))
--			list_del_leaf_cfs_rq(cfs_rq);
-+			list_del_load_cfs_rq(cfs_rq);
- 
- 		/* Don't need periodic decay once load/util_avg are null */
- 		if (cfs_rq_has_blocked(cfs_rq))
-@@ -11111,7 +11111,7 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
- {
- 	struct cfs_rq *cfs_rq;
- 
--	list_add_leaf_cfs_rq(cfs_rq_of(se));
-+	list_add_load_cfs_rq(cfs_rq_of(se));
- 
- 	/* Start to propagate at parent */
- 	se = se->parent;
-@@ -11121,11 +11121,11 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
- 
- 		if (!cfs_rq_throttled(cfs_rq)){
- 			update_load_avg(cfs_rq, se, UPDATE_TG);
--			list_add_leaf_cfs_rq(cfs_rq);
-+			list_add_load_cfs_rq(cfs_rq);
- 			continue;
- 		}
- 
--		if (list_add_leaf_cfs_rq(cfs_rq))
-+		if (list_add_load_cfs_rq(cfs_rq))
- 			break;
- 	}
- }
-@@ -11383,7 +11383,7 @@ void unregister_fair_sched_group(struct task_group *tg)
- 		rq = cpu_rq(cpu);
- 
- 		raw_spin_rq_lock_irqsave(rq, flags);
--		list_del_leaf_cfs_rq(tg->cfs_rq[cpu]);
-+		list_del_load_cfs_rq(tg->cfs_rq[cpu]);
- 		raw_spin_rq_unlock_irqrestore(rq, flags);
- 	}
- }
-@@ -11543,7 +11543,7 @@ void print_cfs_stats(struct seq_file *m, int cpu)
- 	struct cfs_rq *cfs_rq, *pos;
- 
- 	rcu_read_lock();
--	for_each_leaf_cfs_rq_safe(cpu_rq(cpu), cfs_rq, pos)
-+	for_each_load_cfs_rq_safe(cpu_rq(cpu), cfs_rq, pos)
- 		print_cfs_rq(m, cpu, cfs_rq);
- 	rcu_read_unlock();
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 219ee463fe64..dc9382295ec9 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -587,16 +587,8 @@ struct cfs_rq {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	struct rq		*rq;	/* CPU runqueue to which this cfs_rq is attached */
- 
--	/*
--	 * leaf cfs_rqs are those that hold tasks (lowest schedulable entity in
--	 * a hierarchy). Non-leaf lrqs hold other higher schedulable entities
--	 * (like users, containers etc.)
--	 *
--	 * leaf_cfs_rq_list ties together list of leaf cfs_rq's in a CPU.
--	 * This list is used during load balance.
--	 */
- 	int			on_list;
--	struct list_head	leaf_cfs_rq_list;
-+	struct list_head	load_cfs_rq_list;
- 	struct task_group	*tg;	/* group that "owns" this runqueue */
- 
- #ifdef CONFIG_CFS_BANDWIDTH
-@@ -950,8 +942,11 @@ struct rq {
- 	struct dl_rq		dl;
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
--	/* list of leaf cfs_rq on this CPU: */
--	struct list_head	leaf_cfs_rq_list;
-+	/* Bottom up ordered list of cfs_rqs with load (see
-+	 * cfs_rq_is_decayed()) on this CPU.
-+	 * This list is used during load balance.
-+	 */
-+	struct list_head	load_cfs_rq_list;
- 	struct list_head	*tmp_alone_branch;
- #endif /* CONFIG_FAIR_GROUP_SCHED */
- 
 -- 
 2.32.0
 
