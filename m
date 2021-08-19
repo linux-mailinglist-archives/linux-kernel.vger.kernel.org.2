@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58C63F1637
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048CA3F163A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237005AbhHSJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
+        id S237578AbhHSJcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237617AbhHSJbq (ORCPT
+        with ESMTP id S229745AbhHSJcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:31:46 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F81AC061575;
-        Thu, 19 Aug 2021 02:31:10 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t1so5345976pgv.3;
-        Thu, 19 Aug 2021 02:31:10 -0700 (PDT)
+        Thu, 19 Aug 2021 05:32:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7A7C061575;
+        Thu, 19 Aug 2021 02:31:39 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id k5so11498354lfu.4;
+        Thu, 19 Aug 2021 02:31:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=TD555ToQ7cZoDLrsFaWX+rKTsvPUaPbTlrb7wj9mN80=;
-        b=uae6j5z2fYdUHB09jUyx6mGb6+vwA8vC3enxMHz5jS5429LZodtoKDe26vRjxKOMS1
-         uc09m8WGq0hkh1F6/j/oeG8Zdj8JYYTcx1bhwuEbxa+j2mjxnfYSMy1AYRFmxPGlIXOT
-         dyw9N9r+2X0AJLenQyE+peiEiyndWDhcY9aiJrt7pmShCjfdqA785rMa0UUeTUUmxzcP
-         PPAGFxFyTkWbJj2LdySrhMiCj97905tO0YtsW9iJV+nfJYohhY5nFgvmALfZZOZf6IeZ
-         CIndsfuKiE4OEu36bWS893BIIRnvJ74gaVA2fIksBxMpx0E9YnoWGb+RjQ9y2MnDgXG2
-         th9w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7E4XK/pyvKGm5VQwd7JG0gyZWpWLDZvtzVPwABZJCIs=;
+        b=t4rs7bq+PLF3d/NjGO/H8jkBiLnvRhusMVSaM3TjBSwtkI+RieuQCm9XKFWGBh88yS
+         x5/L7fNVmFd89zlqmI0UosrT/PkKdPNybkPqIILKeqOvpEphI7QFzMt5YvV5L1T6B33C
+         +ezc2MMyeuEuNszdXYap1LbS1UXTqer8J0Efx6tUkQipNED4GiCyXTON85L2liKJghQE
+         5W7i2CZPXPw3P4Bm4EUBT7zoQ7CzWIFV02ZhL3SCqsw7zAqx6+/F+CybK/mPMiVBZCu4
+         mzdWqSW46t76u3hP0loYgYOn8h+q++itgJItDLOt2gifmW8D9pXeVHDn0z4SnIwau0pH
+         Bg2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=TD555ToQ7cZoDLrsFaWX+rKTsvPUaPbTlrb7wj9mN80=;
-        b=DvPlS5fQOuHRK8ZxLSBWj0q/72zkuuq5/bdQeconG0Y2QoOELuWvzcGdCFo1kWonZ0
-         uyjTl68VcqihY6IkEagYbf8stsnrGFTtMWdVd7BpPmc5aKyBo2yRbpxEqM6NCTOHwoYw
-         C9N0ZbmoLgAQTVBVNwJcqQWbMFXwFW1uA+yIF1LRzCQxTzpfgEpWvJgg+2CgyWPsKVZi
-         mSOlIHGS+m6w1r79AThwfiUx+Tis3qATc8Glei0c1z8IMq4nHiSRJ/qOzTdtHpKRhqB5
-         D7j9ZLCSNFCi44yK3/yXVIUDxfuicwbBFTaWQl7BGeHwZa9uq3ZCx33JV0h1cDe8frcN
-         rzBw==
-X-Gm-Message-State: AOAM532JQUaTLxqkTCpC0ILadxTCLJWOUkGlOLMGEyaGkHS8t1M4hMYe
-        zN5kJ54NrtkacX5HXvbUvJKFy9+CiE4=
-X-Google-Smtp-Source: ABdhPJwLhUpHhOzjgyGvwPAuNAhAfzZkmXEns11qhy89P72cp+Q5tTX74RDjS/M/frd/KzWLI+pLfg==
-X-Received: by 2002:a62:76d0:0:b0:3e3:42d6:c735 with SMTP id r199-20020a6276d0000000b003e342d6c735mr958707pfc.32.1629365469368;
-        Thu, 19 Aug 2021 02:31:09 -0700 (PDT)
-Received: from [10.133.0.42] ([85.203.23.237])
-        by smtp.gmail.com with ESMTPSA id n18sm2737978pfu.3.2021.08.19.02.31.06
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7E4XK/pyvKGm5VQwd7JG0gyZWpWLDZvtzVPwABZJCIs=;
+        b=ivDu2p9yRm+YnimqBaYfXoucJY8qxlNVsMidl4CWzRyeD4lo2oYRyl1R+88rhzsSs2
+         E3+gVq5L4+Oo5FCG93iEORYsjCoPWNwt9uCD34G9eGtjDFU62wLxH/40U4Y9FP+IqhZH
+         7DjDq2UERfB23oQgj3hrQEwnJARNSUOejJbMPd/fCZubcHe5r/AVPZHUddct3tmU6OA+
+         iiM7lJRyd8auaF+uiM+Bl7E/C2PEQDjHOex0yZXwEg5KnYBT+wRaRi1lBtRkTQBT9Tre
+         ztbOEXySibOW9JOJsSEGIn26xYhc3xD1HQ6epyxQIugRABqCbm/3RXHYfpc8/DtJZAh6
+         LwPw==
+X-Gm-Message-State: AOAM531bvXqnj42K+XyACVmwU4r9Afm81a+Mbf4e+QqrF8enzTDlrItj
+        JsgtxjK4GS28TihjLgMipU4=
+X-Google-Smtp-Source: ABdhPJxosNNjl/Pu0Vo0C5nf8MGIE28HhfDMseNjios0/ACDhUPF79vjI+q7dHoGXvsBwCeYErYkXQ==
+X-Received: by 2002:a05:6512:3487:: with SMTP id v7mr9763988lfr.302.1629365497464;
+        Thu, 19 Aug 2021 02:31:37 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id u12sm249811lfo.86.2021.08.19.02.31.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 02:31:08 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] block: drbd: four possible ABBA deadlocks
-To:     philipp.reisner@linbit.com, lars.ellenberg@linbit.com,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <f425ae14-8857-28d7-a27a-d25da83e1bd6@gmail.com>
-Date:   Thu, 19 Aug 2021 17:31:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 19 Aug 2021 02:31:37 -0700 (PDT)
+Subject: Re: [PATCH] media: mxl111sf: change mutex_init() location
+To:     Sean Young <sean@mess.org>
+Cc:     mkrufky@linuxtv.org, mchehab@kernel.org, crope@iki.fi,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+5ca0bf339f13c4243001@syzkaller.appspotmail.com
+References: <20210730213829.2909-1-paskripkin@gmail.com>
+ <20210815083755.GA1827@gofer.mess.org>
+ <7ee99788-d9a5-0a38-ed02-51d9b42ebc11@gmail.com>
+ <80648833-5f5a-0811-a281-0dba87938d3c@gmail.com>
+ <20210819092908.GA27679@gofer.mess.org>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <c084ddbd-04ee-9033-5ec9-9d13cab05311@gmail.com>
+Date:   Thu, 19 Aug 2021 12:31:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210819092908.GA27679@gofer.mess.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 8/19/21 12:29 PM, Sean Young wrote:
+> On Sun, Aug 15, 2021 at 12:06:16PM +0300, Pavel Skripkin wrote:
+>> On 8/15/21 11:49 AM, Pavel Skripkin wrote:
+>> > On 8/15/21 11:37 AM, Sean Young wrote:
+>> > > On Sat, Jul 31, 2021 at 12:38:29AM +0300, Pavel Skripkin wrote:
+>> > > > Syzbot reported, that mxl111sf_ctrl_msg() uses uninitialized
+>> > > > mutex. The problem was in wrong mutex_init() location.
+>> > > > 
+>> > > > Previous mutex_init(&state->msg_lock) call was in ->init() function, but
+>> > > > dvb_usbv2_init() has this order of calls:
+>> > > > 
+>> > > > 	dvb_usbv2_init()
+>> > > > 	  dvb_usbv2_adapter_init()
+>> > > > 	    dvb_usbv2_adapter_frontend_init()
+>> > > > 	      props->frontend_attach()
+>> > > > 
+>> > > > 	  props->init()
+>> > > > 
+>> > > > Since mxl111sf_frontend_attach_atsc_mh() calls mxl111sf_ctrl_msg()
+>> > > > internally we need to initialize state->msg_lock in it to make lockdep
+>> > > > happy.
+>> > > 
+>> > > What about the other frontends like mxl111sf_frontend_attach_dvbt? They
+>> > > no longer initialize the mutex.
+>> > > 
+>> > Good point. I see, that all other frontends also call
+>> > mxl111sf_ctrl_msg() inside ->frontend_attach() call.
+>> > 
+>> > I think, that fixing dvb-usb core is not good idea, so, I will add
+>> > mutex_init() call inside all frontends, which use mxl111sf_init().
+>> > 
+>> > What do you think about it?
+>> > 
+>> > 
+>> 
+>> 
+>> Something like this should work. Helper is just to not copy-paste code
+>> parts. Build tested against v5.14-rc5
+> 
+> How about creating a dvb_usb_device_properties probe function and
+> initializing the mutex init there?
+> 
+> 
 
-My static analysis tool reports four possible ABBA deadlocks in the drbd 
-drivers in Linux 5.10:
-
-### Deadlock A ###
-w_after_conn_state_ch()
-   mutex_lock(&connection->resource->conf_update); --> line 2065
-   conn_free_crypto()
-     drbd_free_sock()
-       drbd_free_one_sock(&connection->data)
-         mutex_lock(&ds->mutex); --> line 2967
-
-drbd_adm_net_opts()
-   mutex_lock(&connection->data.mutex); --> line 2445
-   mutex_lock(&connection->resource->conf_update); --> line 2446
-
-When w_after_conn_state_ch() and drbd_adm_net_opts() are concurrently 
-executed, the deadlock can occur.
-
-### Deadlock B ###
-drbd_adm_connect()
-   mutex_lock(&adm_ctx.resource->conf_update); --> line 2644
-   conn_free_crypto()
-     drbd_free_one_sock(&connection->data)
-       mutex_lock(&ds->mutex); --> line 2967
-
-drbd_adm_net_opts()
-   mutex_lock(&connection->data.mutex); --> line 2445
-   mutex_lock(&connection->resource->conf_update); --> line 2446
-
-When drbd_adm_connect() and drbd_adm_net_opts() are concurrently 
-executed, the deadlock can occur.
-
-### Deadlock C ###
-w_after_conn_state_ch()
-   mutex_lock(&connection->resource->conf_update); --> line 2065
-   conn_free_crypto()
-     drbd_free_sock()
-       drbd_free_one_sock(&connection->data)
-         mutex_lock(&ds->mutex); --> line 2967
-
-receive_protocol()
-   mutex_lock(&connection->data.mutex); --> line 3778
-   mutex_lock(&connection->resource->conf_update); --> line 3779
-
-When w_after_conn_state_ch() and receive_protocol() are concurrently 
-executed, the deadlock can occur.
-
-### Deadlock D ###
-drbd_adm_connect()
-   mutex_lock(&adm_ctx.resource->conf_update); --> line 2644
-   conn_free_crypto()
-     drbd_free_one_sock(&connection->data)
-       mutex_lock(&ds->mutex); --> line 2967
-
-receive_protocol()
-   mutex_lock(&connection->data.mutex); --> line 3778
-   mutex_lock(&connection->resource->conf_update); --> line 3779
-
-When drbd_adm_connect() and receive_protocol() are concurrently 
-executed, the deadlock can occur.
-
-I am not quite sure whether these possible deadlocks are real and how to 
-fix them if they are real.
-Any feedback would be appreciated, thanks
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Sounds reasonable. Will do it in v2, thank you!
 
 
-Best wishes,
-Jia-Ju Bai
+
+With regards,
+Pavel Skripkin
