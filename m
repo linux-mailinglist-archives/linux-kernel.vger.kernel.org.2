@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBCE3F230A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9156A3F230F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbhHSWW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:22:27 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42295 "EHLO ozlabs.org"
+        id S236282AbhHSWXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:23:12 -0400
+Received: from phobos.denx.de ([85.214.62.61]:47116 "EHLO phobos.denx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233263AbhHSWW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:22:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S235854AbhHSWXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 18:23:09 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrK4W6hHqz9sWq;
-        Fri, 20 Aug 2021 08:21:47 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629411708;
-        bh=ih9GzC7aT5ldVZBLq+qhG2HopKLJfSbTSOMck1JCNc4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BLCAxz1x/NgM6xI2zuNlc0lG0Emf9y5k0sse979sfisGLRqlC02C30zB37glEfUf/
-         2uKE2i06LbsI+CO6vXzCMs0iROspotY7st2+C70BQaq3UUfdkvwE7LISDPpZFt58CK
-         EpRLRl3QpNeqTCEfylsQTTkbE5F8hDQJQJkjp2UiGz0wtYCfJvzVMP/r80W3cip5M+
-         M9VJsWxFd0Qt3yOo5hroIgvrmx+QhPzdp0ODhIP4m4OXCO/zEIKBXd+fuL2a0VsrHa
-         qTTtewObTHEnlAMtiRKA/hKtHN0ScRZ0nPeqjhEuXEAhGTWaSDfbVHc0wucL94mP3M
-         uPOgxD1rlgzeQ==
-Date:   Fri, 20 Aug 2021 08:21:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the kvm tree
-Message-ID: <20210820082147.5fcc36b8@canb.auug.org.au>
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 3D71D82999;
+        Fri, 20 Aug 2021 00:22:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1629411750;
+        bh=33UHPL0RZcL6+9jW56lcEU9a2CDzC1s+ybQGXQwzmfQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Dt65FNaCxgBS+xEd01WWk4ajHnXrhGr0PbF+ALRxohsJqNUqyhXhbH0z/WMP51PzV
+         J5K2nkxWLrY7YmMdxUOwaY9TfEq235oiKG3okvKE9/JbggRICauVU6ff35IRYP4Tap
+         4q316SIay5cHI4HYKr9md1UqKwsBRywA7AoRfZLtu2u9qyN/K6z76GdPBVZh61lfEk
+         XuQLKJPm0Sj1N5cxXOtlPYdi7ZpxYWtk/C6umu29mZd2Q6uXWqgnjdMuX9dNtl6MVy
+         J6UcVAoKrAA6sb/oZL9Qu0skmGXaO+cKXK+gkgW2/ZrjoCPOG+0FsRzkOSN0ZUtX62
+         r11+g2AKsPs/A==
+Subject: Re: [PATCH] drm/stm: ltdc: improve pm_runtime to stop clocks
+To:     Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Cc:     Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+References: <20210629115709.16145-1-raphael.gallais-pou@foss.st.com>
+ <420e243d-7541-a07e-177b-d2db11c26aef@denx.de>
+ <3bb823e4-4724-7072-fe9f-7b8a355c8e50@foss.st.com>
+ <5d65ca80-4f94-49e1-5de1-cf29e8231a6a@denx.de>
+ <629b6666-74b3-91f0-5c6c-e26d55ea62d8@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <a051825c-1795-b7c4-6fdd-64595e52a6ca@denx.de>
+Date:   Fri, 20 Aug 2021 00:22:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HvBC8pNB2hPZNoVrbDcW7qu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <629b6666-74b3-91f0-5c6c-e26d55ea62d8@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HvBC8pNB2hPZNoVrbDcW7qu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 8/17/21 11:43 AM, Raphael Gallais-Pou wrote:
+> 
+> On 7/2/21 8:07 PM, Marek Vasut wrote:
+>> On 7/2/21 11:23 AM, Raphael Gallais-Pou wrote:
+>>> Hello Marek,
+>>
+>> Hi,
+>>
+>>> Sorry for the late answer.
+>>
+>> No worries, take your time
+>>
+>>> On 6/30/21 2:35 AM, Marek Vasut wrote:
+>>>> On 6/29/21 1:58 PM, Raphael GALLAIS-POU - foss wrote:
+>>>>
+>>>> [...]
+>>>>
+>>>>> +++ b/drivers/gpu/drm/stm/ltdc.c
+>>>>> @@ -425,10 +425,17 @@ static void ltdc_crtc_atomic_enable(struct drm_crtc *crtc,
+>>>>>    {
+>>>>>        struct ltdc_device *ldev = crtc_to_ltdc(crtc);
+>>>>>        struct drm_device *ddev = crtc->dev;
+>>>>> +    int ret;
+>>>>>          DRM_DEBUG_DRIVER("\n");
+>>>>>    -    pm_runtime_get_sync(ddev->dev);
+>>>>> +    if (!pm_runtime_active(ddev->dev)) {
+>>>>> +        ret = pm_runtime_get_sync(ddev->dev);
+>>>>
+>>>> All these if (!pm_runtime_active()) then pm_runtime_get_sync() calls look like workaround for some larger issue. Shouldn't the pm_runtime do some refcounting on its own , so this shouldn't be needed ?
+>>>
+>>>
+>>> This problem purely comes from the driver internals, so I don't think it is a workaround.
+>>>
+>>> Because of the "ltdc_crtc_mode_set_nofb" function which does not have any "symmetrical" call, such as enable/disable functions, there was two calls to pm_runtime_get_sync against one call to pm_runtime_put_sync.
+>>>
+>>> This instability resulted in the LTDC clocks being always enabled, even when the peripheral was disabled. This could be seen in the clk_summary as explained in the patch summary among other things.
+>>>
+>>> By doing so, we first check if the clocks are not already activated, and in that case we call pm_runtime_get_sync.
+>>
+>> I just have to wonder, how come other drivers don't need these if (!pm_runtime_active()) pm_runtime_get_sync() conditions. I think they just get/put the runtime PM within a call itself, not across function calls. Maybe that could be the right fix here too ?
+> 
+> 
+> Hello Marek,
 
-Hi all,
+Hi,
 
-Commits
+> I've run a deeper analysis over this implementation.
 
-  5ac66856417a ("KVM: SVM: AVIC: drop unsupported AVIC base relocation code=
-")
-  6b0f5cfa6207 ("KVM: SVM: call avic_vcpu_load/avic_vcpu_put when enabling/=
-disabling AVIC")
-  28471728a851 ("KVM: SVM: move check for kvm_vcpu_apicv_active outside of =
-avic_vcpu_{put|load}")
-  5f3c6f56ad99 ("KVM: SVM: avoid refreshing avic if its state didn't change=
-")
-  2c8c05f69ac3 ("KVM: SVM: remove svm_toggle_avic_for_irq_window")
-  11d9e063e484 ("KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feat=
-ure is in use")
-  46cd27246e22 ("KVM: SVM: add warning for mistmatch between AVIC vcpu stat=
-e and AVIC inhibition")
-  626fcb4e640e ("KVM: x86: APICv: fix race in kvm_request_apicv_update on S=
-VM")
-  049e1cd8365e ("KVM: x86: don't disable APICv memslot when inhibited")
-  6ca19df1ae70 ("KVM: x86/mmu: allow APICv memslot to be enabled but invisi=
-ble")
-  359a029cf50e ("KVM: x86/mmu: allow kvm_faultin_pfn to return page fault h=
-andling code")
-  d67c15c4ac94 ("KVM: x86/mmu: rename try_async_pf to kvm_faultin_pfn")
-  b04260e0857d ("KVM: x86/mmu: bump mmu notifier count in kvm_zap_gfn_range=
-")
-  7b03fdb9eba6 ("KVM: x86/mmu: add comment explaining arguments to kvm_zap_=
-gfn_range")
-  cb3b2438457d ("KVM: x86/mmu: fix parameters to kvm_flush_remote_tlbs_with=
-_address")
-  175c4f82f59f ("Revert "KVM: x86/mmu: Allow zap gfn range to operate under=
- the mmu read lock"")
+Thank you
 
-are missing a Signed-off-by from their committer.
+> If I may take rockchip's "rockchip_drm_vop.c" driver, there is an boolean "is_enabled" set to true when crtc_atomic_enable is called.
+> 
+> The above implementation could save us from adding such field in the ltdc_dev structure.
+> 
+> Another solution could be in order to simply call pm_runtime_get_sync() in ltdc_crtc_mode_set_nofb() and by removing this condition in ltdc_atomic_crtc_disable() the driver behaves just like the first version of this patch.
+> 
+> In this way, it avoids such conditions and seems more to get along with the current implementation.
 
---=20
-Cheers,
-Stephen Rothwell
+Let me maybe ask a different question -- can ltdc_crtc_mode_set_nofb() 
+ever be called with the LTDC suspended (so you would have to call 
+pm_runtime_get_sync() in that function to power the block up and to get 
+access to its registers) ?
 
---Sig_/HvBC8pNB2hPZNoVrbDcW7qu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEe2XsACgkQAVBC80lX
-0GyDPAf8DPFWV90VNumtC3XrWznuY9fRl/QsUBoGO1zv8AUehEM5siSd988TcSZl
-Zs9P+dq7MR4L1xDeqrt5jUDxnc6Poj62jLgnA4KbLVnW3XDy6F/Qto7Hx69EV7Lo
-Vw5Ea1ZeCXOBroi1ZYQyKO2rtUivoPO5hUuqwjfXezI+s8sypg5EZIto3DVB9+cJ
-c2YHf+wPiXsk5TdoTrAciijxFx02vT8quP/potnULip+oddJnvxDphYy1O0BeqSE
-QrpT2k13OBNyr1z7VRrwKecZ9mtJhZHadokoZueFns6rsgQYx38Gtcc4QgNTZENZ
-7DaHQ/+PnSj+RpAFSZyT6T7akpy2iw==
-=/O09
------END PGP SIGNATURE-----
-
---Sig_/HvBC8pNB2hPZNoVrbDcW7qu--
+[...]
