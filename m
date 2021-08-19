@@ -2,130 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CC53F1B08
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473993F1B10
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240329AbhHSOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:00:10 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44076
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240163AbhHSOAI (ORCPT
+        id S240442AbhHSOAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:00:31 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:57057 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240428AbhHSOA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:00:08 -0400
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id CBBF6411C7
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:59:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629381570;
-        bh=a9ny+xZUCPsZrVKI8nflfzc/2KeNQowb9QjnWfTlKg4=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=Jzh1Cv16e4jQZTSrLtVvvBC4sDzrz42xppmUEDufKfXIh6SVSlt734ZO/nzuF5SYL
-         bDgt2+3w7Fszp6vZfqUpBIw+4+xYIdxN+H0n60DrXKWUZUjt8M0CPcUAW9kKcsckVQ
-         o4EJma+TloqJ2wsuX+Jli0iTgdjUqTw1CHMeZouufd7mElnvk+La8ZOyl1vkucI3w2
-         QYLs3zFJcgAeSD9O93EewYB/Zq4yF3lIKkez6keaa4dkYX5tdS7LaGq4OUUJT4kzts
-         rB2ahljKlWtiUnSvN2cLeerih6lxasVu60Ow5W+gxDO/h8UmxPHJQ7piNe+yygEn+F
-         1KMCBqF034jTQ==
-Received: by mail-pj1-f72.google.com with SMTP id gn12-20020a17090ac78c00b0017b13c022d8so74790pjb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:59:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9ny+xZUCPsZrVKI8nflfzc/2KeNQowb9QjnWfTlKg4=;
-        b=VJiY/mPrROug4AIVrQviQVUjvLJb+xhxfqe3lQAVHSI7+7WvCpYZ3W1YmVdqkjanQW
-         yBKASLbbrpTmwLwuo3AcQ2aSyqk7zL/aqkn6Nrnz5P58vnczXX78mmQl5g2Go6tZBDL0
-         KxuxVQ5QhFgC37fw+zhIrfS7OXTGsV2JUBNb3Fj2dTAuJ9MhZh3XeVnamODBNerM6GGR
-         2CRobkz0Duoam+MexGUbb9buRDTm7wjtyYgfK7fTBFv+F5nUYgANisH+bnn6S7Jpyzc8
-         /aSVOpp4XKNnE3Oe03ViZS6BvM0mbcjFZj12CcI518Rr/iFppTKD/4dJuklGPFoH7mym
-         KQzA==
-X-Gm-Message-State: AOAM5335o+hQyz/l3thPAo1nfb7Dwd84o4gc+iEwNBT2GVsiFqo28h61
-        iMiKRs5sceEVV6bjHMKUmZkO91IgwfS3CcuLKqSLFqIJKH9+s8NvIx0tD4/Jp7PBStfhbnBtdcM
-        MDR34gq0RrAh20qr6giMDVumM/QwOF/6to0y8BdS2UQ==
-X-Received: by 2002:a17:90b:240e:: with SMTP id nr14mr2711014pjb.170.1629381569260;
-        Thu, 19 Aug 2021 06:59:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1I0V0a2X/mGlmKX1WllergnUm3sI0/t/EbLVGJ+aZPfoLFatszSaySp4oJ7weoz8f4yMU4w==
-X-Received: by 2002:a17:90b:240e:: with SMTP id nr14mr2710980pjb.170.1629381568916;
-        Thu, 19 Aug 2021 06:59:28 -0700 (PDT)
-Received: from canonical.com (61-220-137-34.HINET-IP.hinet.net. [61.220.137.34])
-        by smtp.gmail.com with ESMTPSA id g26sm4277522pgb.45.2021.08.19.06.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 06:59:28 -0700 (PDT)
-From:   Koba Ko <koba.ko@canonical.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: btusb: add a reject table to disable msft
-Date:   Thu, 19 Aug 2021 21:59:27 +0800
-Message-Id: <20210819135927.49715-1-koba.ko@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 19 Aug 2021 10:00:27 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id DB3CA2B005D0;
+        Thu, 19 Aug 2021 09:59:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 19 Aug 2021 09:59:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=B7PVCG/bjNEUB
+        GbiDile2HwXPPbm4HndIsVkTjHJmZY=; b=tEyJoadMYYS67bulDamhewQ4S+MCa
+        wHnSaLpdPydvx+j8hPDBSR6xZLwGsKSPl2cM5KUgdxp8XmtowlUIv91XMkdpjhny
+        nmk20Tll51EbqJBn0kB6sdMkjdn4U6rGD4MppSsZltDimRdoQ13ETHCxszFU906P
+        yuJ5vNwHJiHiZsAZsf/wevgKhjeKEyw3dIlLYZpGRZEQUDg1WC+8IEZ+7RhQtosl
+        qDRUeJdFdjj2K7GqsGoCtOncUG1UtUIzuQ32IsKRKMwnU8p/391L9kGOxRIujqPH
+        H1z7lq3XgJlGZPB37Up/d+GtBYpRvZG6kOZg/K6my6fIz9MBse2mPqY3g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=B7PVCG/bjNEUBGbiDile2HwXPPbm4HndIsVkTjHJmZY=; b=iAz4GljU
+        YPKcBJcAz6Q91TDmlIUDHnKboiDxoUBQ4UYJMgjc9Yn/Jfkbx36IV66yI4JnU3Nc
+        ScBbZRnH7p9t0Hb6Wec9L60anNNEO2UzByAUy6gzpqKVhRFXpk8iVRIR8KVg+n3T
+        R0N7pv10lvOfe8VOt8DZUduvAPNE6Am3zhRcOzfU/8SRcHtLUSnD/gnEVG7Nztm6
+        hOVb10CEPcq+KB521hTUYeccXRIM/JwD9rOU613Shir8IhnR/K7m6zxuyZ3/ZINj
+        7YamLfj9fzUkUWC+gxhl19fUU4wldiAy5osKiE1+9jnN0PRjgzKKD6xHZH4736Cp
+        fk/GEAXvCJmfSQ==
+X-ME-Sender: <xms:1GMeYV6XNEMt4R8iYY8ZGO0jNrLZWXCHEH-MQxCLHxelzxOLz2eJPg>
+    <xme:1GMeYS4DATQDpVvjPVjahkySW1bUWgeX0ZmbRNH-yX58XTGMaMfmKMKtro0GvBkUX
+    yWUP8jVpGS82pcsjkE>
+X-ME-Received: <xmr:1GMeYccGEtdNyV8wl8OAXT5AG1v0JyjxfQi5ycW9wG1NxvuLK95pWhbqkkTufgRFLmxtCeiZ1Y-imcjPUUYO_te4LuchiDkntpFH>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleejgdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:1GMeYeIYG9u9e5MFNTMKLZgEzez3JOCh5bZbC54GgZy1DbGooQqKww>
+    <xmx:1GMeYZJogMsMmu5LqynxsSCxeYmt6b7kaPG9nnuPyAs1m7qiU8GHgA>
+    <xmx:1GMeYXxOHocQr1EfDmipAhDBqed4wF_tr5zP9PDAA5Likc8F9k_X_Q>
+    <xmx:1WMeYS7MDXr2z_heKe5PpxTI3mYnucFgxiLBd1Dgj3UnpGF9JTDQMgoOYDM>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Aug 2021 09:59:48 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Emma Anholt <emma@anholt.net>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH v3 3/6] drm/vc4: hdmi: Rework the pre_crtc_configure error handling
+Date:   Thu, 19 Aug 2021 15:59:28 +0200
+Message-Id: <20210819135931.895976-4-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210819135931.895976-1-maxime@cerno.tech>
+References: <20210819135931.895976-1-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With Intel AC9560, follow this scenario and can't turn on bt since.
-1. turn off BT
-2. then suspend&resume multiple times
-3. turn on BT
+Since our pre_crtc_configure hook returned void, we didn't implement a
+goto-based error path handling, leading to errors like failing to put
+back the device in pm_runtime in all the error paths, but also failing
+to disable the pixel clock if clk_set_min_rate on the HSM clock fails.
 
-Get this error message after turn on bt.
-[ 877.194032] Bluetooth: hci0: urb 0000000061b9a002 failed to resubmit (113)
-[ 886.941327] Bluetooth: hci0: Failed to read MSFT supported features (-110)
+Move to a goto-based implementation to have an easier consitency.
 
-Remove msft from compilation would be helpful.
-Turn off msft would be also helpful.
-
-As per Intel's comment, For AC9560, in JSL the hw_variant is 0x13.
-In GLK, the hw_variant is 0x11. can't use hw_variant to filter for
-AC9560.
-Only AC9560 encounter this issue, so add a reject table to
-disable msft for AC9560.
-
-Signed-off-by: Koba Ko <koba.ko@canonical.com>
+Fixes: 4f6e3d66ac52 ("drm/vc4: Add runtime PM support to the HDMI encoder driver")
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/bluetooth/btusb.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index a9855a2dd561..3c131fd40869 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -479,6 +479,11 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ }	/* Terminating entry */
- };
- 
-+static const struct usb_device_id msft_rej_table[] = {
-+	{ USB_DEVICE(0x8087, 0x0aaa) },
-+	{ }	/* Terminating entry */
-+};
-+
- /* The Bluetooth USB module build into some devices needs to be reset on resume,
-  * this is a problem with the platform (likely shutting off all power) not with
-  * the module itself. So we use a DMI list to match known broken platforms.
-@@ -2851,6 +2856,7 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
- 	char ddcname[64];
- 	int err;
- 	struct intel_debug_features features;
-+	struct usb_device_id *match;
- 
- 	BT_DBG("%s", hdev->name);
- 
-@@ -2928,7 +2934,9 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
- 	case 0x12:	/* ThP */
- 	case 0x13:	/* HrP */
- 	case 0x14:	/* CcP */
--		hci_set_msft_opcode(hdev, 0xFC1E);
-+		match = usb_match_id(data->intf, msft_rej_table);
-+		if (!match)
-+			hci_set_msft_opcode(hdev, 0xFC1E);
- 		break;
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 5dde3e5c1d7f..8458f38e2883 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -913,13 +913,13 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+ 	ret = clk_set_rate(vc4_hdmi->pixel_clock, pixel_rate);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to set pixel clock rate: %d\n", ret);
+-		return;
++		goto err_put_runtime_pm;
  	}
  
+ 	ret = clk_prepare_enable(vc4_hdmi->pixel_clock);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to turn on pixel clock: %d\n", ret);
+-		return;
++		goto err_put_runtime_pm;
+ 	}
+ 
+ 	/*
+@@ -942,7 +942,7 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+ 	ret = clk_set_min_rate(vc4_hdmi->hsm_clock, hsm_rate);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to set HSM clock rate: %d\n", ret);
+-		return;
++		goto err_disable_pixel_clock;
+ 	}
+ 
+ 	vc4_hdmi_cec_update_clk_div(vc4_hdmi);
+@@ -957,15 +957,13 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+ 	ret = clk_set_min_rate(vc4_hdmi->pixel_bvb_clock, bvb_rate);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
+-		clk_disable_unprepare(vc4_hdmi->pixel_clock);
+-		return;
++		goto err_disable_pixel_clock;
+ 	}
+ 
+ 	ret = clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to turn on pixel bvb clock: %d\n", ret);
+-		clk_disable_unprepare(vc4_hdmi->pixel_clock);
+-		return;
++		goto err_disable_pixel_clock;
+ 	}
+ 
+ 	if (vc4_hdmi->variant->phy_init)
+@@ -978,6 +976,15 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+ 
+ 	if (vc4_hdmi->variant->set_timings)
+ 		vc4_hdmi->variant->set_timings(vc4_hdmi, conn_state, mode);
++
++	return;
++
++err_disable_pixel_clock:
++	clk_disable_unprepare(vc4_hdmi->pixel_clock);
++err_put_runtime_pm:
++	pm_runtime_put(&vc4_hdmi->pdev->dev);
++
++	return;
+ }
+ 
+ static void vc4_hdmi_encoder_pre_crtc_enable(struct drm_encoder *encoder,
 -- 
-2.25.1
+2.31.1
 
