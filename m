@@ -2,131 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52A73F0FDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA793F0FE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 03:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhHSBNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 21:13:52 -0400
-Received: from ozlabs.org ([203.11.71.1]:35979 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234194AbhHSBNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 21:13:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gqmwp5lvzz9sW8;
-        Thu, 19 Aug 2021 11:13:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629335595;
-        bh=7u0wdeh6ACq9jBfGv825le5pDJKccJA0CgcBvvgek88=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sRP8PVYDGoxrDH2BQ48Lk0XAa0un4jljv1UPj40lcg44TZg6ahY/0F2qmLK0u8+nU
-         eI9sYc49udwlrUpw+y0J9kDf3S1gsAm1moTfZwKnAWTxlU1N5YSigJ/WXtyTCM/ieZ
-         S+S0PVHTEe0JXIG0CtQ6Qy9jW/aQy3Rf6Ya/i2ki1JNqk4SVA0xLUoXhaNNuVAUqBP
-         F2EcjDbX+KWij28w1JI76m4kwcZleUOSWYQ174Hxgv8RuvBnkPegKw9eP5bo6MuEUc
-         OFgo5TwXBj67ESR/tSIpuyhPTe7+Gf7q+JH9GjFVbAA1NbADoJsv8qICY5eqRlQqHC
-         FxopVVQBSp6MQ==
-Date:   Thu, 19 Aug 2021 11:13:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the swiotlb tree with the dma-mapping
- tree
-Message-ID: <20210819111312.697fc48f@canb.auug.org.au>
+        id S235102AbhHSBRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 21:17:55 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:38387 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232954AbhHSBRy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 21:17:54 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Aoy8nKq8o5aNhzGtzKHluk+DkI+orL9Y04lQ7?=
+ =?us-ascii?q?vn2ZKCYlFvBw8vrCoB1173HJYUkqMk3I9ergBEDiewK4yXcW2/hzAV7KZmCP11?=
+ =?us-ascii?q?dAR7sSj7cKrQeBJwTOssZZ1YpFN5N1EcDMCzFB5vrS0U2VFMkBzbC8nJyVuQ?=
+ =?us-ascii?q?=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,333,1620662400"; 
+   d="scan'208";a="113098373"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 19 Aug 2021 09:17:17 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 754484D0D4BB;
+        Thu, 19 Aug 2021 09:17:16 +0800 (CST)
+Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 09:17:16 +0800
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 19 Aug 2021 09:17:15 +0800
+Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Thu, 19 Aug 2021 09:17:15 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <philip.li@intel.com>, <yifeix.zhu@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
+        "kernel test robot" <lkp@intel.com>
+Subject: [PATCH v2] selftests/bpf: enlarge select() timeout for test_maps
+Date:   Thu, 19 Aug 2021 09:15:06 +0800
+Message-ID: <20210819011506.27563-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0mLg.F44icl/ZW12lEmMpko";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 754484D0D4BB.A0EA7
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0mLg.F44icl/ZW12lEmMpko
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+0Day robot observed that it's easily timeout on a heavy load host.
+-------------------
+ # selftests: bpf: test_maps
+ # Fork 1024 tasks to 'test_update_delete'
+ # Fork 1024 tasks to 'test_update_delete'
+ # Fork 100 tasks to 'test_hashmap'
+ # Fork 100 tasks to 'test_hashmap_percpu'
+ # Fork 100 tasks to 'test_hashmap_sizes'
+ # Fork 100 tasks to 'test_hashmap_walk'
+ # Fork 100 tasks to 'test_arraymap'
+ # Fork 100 tasks to 'test_arraymap_percpu'
+ # Failed sockmap unexpected timeout
+ not ok 3 selftests: bpf: test_maps # exit=1
+ # selftests: bpf: test_lru_map
+ # nr_cpus:8
+-------------------
+Since this test will be scheduled by 0Day to a random host that could have
+only a few cpus(2-8), enlarge the timeout to avoid a false NG report.
 
-Hi all,
+In practice, i tried to pin it to only one cpu by 'taskset 0x01 ./test_maps',
+and knew 10S is likely enough, but i still perfer to a larger value 30.
 
-Today's linux-next merge of the swiotlb tree got a conflict in:
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-  kernel/dma/direct.c
+---
+V2: update to 30 seconds
+3S is not enough sometimes on a very busy host
+taskset 1,1 ./test_maps 9
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+Failed sockmap unexpected timeout
 
-between commit:
+taskset 1,1 ./test_maps 10
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+test_array_map_batch_ops:PASS
+test_array_percpu_map_batch_ops:PASS
+test_htab_map_batch_ops:PASS
+test_htab_percpu_map_batch_ops:PASS
+test_lpm_trie_map_batch_ops:PASS
+test_sk_storage_map:PASS
+test_maps: OK, 0 SKIPPED
 
-  faf4ef823ac5 ("dma-direct: add support for dma_coherent_default_memory")
+taskset 0x01 ./test_maps 9
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+test_array_map_batch_ops:PASS
+test_array_percpu_map_batch_ops:PASS
+test_htab_map_batch_ops:PASS
+test_htab_percpu_map_batch_ops:PASS
+test_lpm_trie_map_batch_ops:PASS
+test_sk_storage_map:PASS
+test_maps: OK, 0 SKIPPED
 
-from the dma-mapping tree and commit:
+taskset 0x01 ./test_maps 10
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+Fork 1024 tasks to 'test_update_delete'
+Fork 1024 tasks to 'test_update_delete'
+Fork 100 tasks to 'test_hashmap'
+Fork 100 tasks to 'test_hashmap_percpu'
+Fork 100 tasks to 'test_hashmap_sizes'
+Fork 100 tasks to 'test_hashmap_walk'
+Fork 100 tasks to 'test_arraymap'
+Fork 100 tasks to 'test_arraymap_percpu'
+test_array_map_batch_ops:PASS
+test_array_percpu_map_batch_ops:PASS
+test_htab_map_batch_ops:PASS
+test_htab_percpu_map_batch_ops:PASS
+test_lpm_trie_map_batch_ops:PASS
+test_sk_storage_map:PASS
+test_maps: OK, 0 SKIPPED
 
-  f4111e39a52a ("swiotlb: Add restricted DMA alloc/free support")
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+---
+ tools/testing/selftests/bpf/test_maps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-from the swiotlb tree.
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 30cbf5d98f7d..de58a3070eea 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -985,7 +985,7 @@ static void test_sockmap(unsigned int tasks, void *data)
+ 
+ 		FD_ZERO(&w);
+ 		FD_SET(sfd[3], &w);
+-		to.tv_sec = 1;
++		to.tv_sec = 30;
+ 		to.tv_usec = 0;
+ 		s = select(sfd[3] + 1, &w, NULL, NULL, &to);
+ 		if (s == -1) {
+-- 
+2.32.0
 
-I fixed it up (see below, though more may be needed) and can carry the
-fix as necessary. This is now fixed as far as linux-next is concerned,
-but any non trivial conflicts should be mentioned to your upstream
-maintainer when your tree is submitted for merging.  You may also want
-to consider cooperating with the maintainer of the conflicting tree to
-minimise any particularly complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
 
-diff --cc kernel/dma/direct.c
-index 8dca4f97d12d,2de33e5d302b..000000000000
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@@ -155,15 -174,10 +174,16 @@@ void *dma_direct_alloc(struct device *d
-  	}
- =20
-  	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
- -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
- +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
- +	    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-- 	    !dev_is_dma_coherent(dev))
-++	    !dev_is_dma_coherent(dev) &&
-+ 	    !is_swiotlb_for_alloc(dev))
-  		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
- =20
- +	if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
- +	    !dev_is_dma_coherent(dev))
- +		return dma_alloc_from_global_coherent(dev, size, dma_handle);
- +
-  	/*
-  	 * Remapping or decrypting memory may block. If either is required and
-  	 * we can't block, allocate the memory from the atomic pools.
-@@@ -259,9 -278,8 +284,10 @@@ void dma_direct_free(struct device *dev
-  	}
- =20
-  	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
- -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) && !dev_is_dma_coherent(dev) &&
- +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
- +	    !IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
-- 	    !dev_is_dma_coherent(dev)) {
-++	    !dev_is_dma_coherent(dev) &&
-+ 	    !is_swiotlb_for_alloc(dev)) {
-  		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
-  		return;
-  	}
-
---Sig_/0mLg.F44icl/ZW12lEmMpko
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEdsCkACgkQAVBC80lX
-0GyPwAgAjVBKqHuPcc3QJt51ZEqbtRfX9HRJDpTEv3OPCL9h+8Jw72ApDgQuFK7o
-Yh1GsqeKG0Q9WL1Y+xDbrLDZD12aTIHosJhs8XjOApQqtt7OKelgrLSA8qeeThR7
-9z9upYoBL1wfrYivvgoqex0f0zxskLXjhbmbQnXIaspyp+v59wjkFlSFFPYZU2l3
-Y3/Rk0JKxkEVEWLJf79g6MO7id9mhfnN7NhER9/9UgvBRmRMCFo9jpnE460W2vPP
-MaBZdUZWmuO1nmhEVs0LUr9MHIZAutd+kRuEfDZ0UddlRVb3A/2KJcekEyTP4avC
-D547ETBDmShm3+OzbUHHBFJp7uUhHQ==
-=yHFk
------END PGP SIGNATURE-----
-
---Sig_/0mLg.F44icl/ZW12lEmMpko--
