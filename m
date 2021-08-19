@@ -2,166 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5DB3F21ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0118F3F21EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235375AbhHSUws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        id S235727AbhHSUwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235810AbhHSUwq (ORCPT
+        with ESMTP id S235375AbhHSUwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:52:46 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8688C061764
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:52:09 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id f2so13669975ljn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:52:09 -0700 (PDT)
+        Thu, 19 Aug 2021 16:52:40 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E227AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:52:03 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id f11so9442722ioj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RJyUMpRvCKY0Vh89D3w3gONjiQnSaoV/zmqyDYmDpUA=;
-        b=Y+pU8j9vQaWTxEhQ0j0tkQUmizFhaaD+mBD4UKDchtCcNJDPjhu50XdOkmR7wRhVkU
-         sO/ZAyNE37DjaIrX3Jupm5Lmzorw4l3UwqrPdvdUzj38oBpjeDPsJPwAdFT5IzBfsdoc
-         aflzICp2BeWzdnFJvaqwcQw0cXI2edPGK5Q7U=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ziHY4EvXx+0bJZ0Qy1XP9FfuZgCSYZ/yaAXfLPrPV0=;
+        b=Wbx6sSO9YjAWq/7mcoDMYfdP12/GYCo3RehiEDHvgnRf4uHaCj8oCnqBf2tDVjorSB
+         Ll+KSuiPS8eb0WgLRB1dgSI2AMvOQKgH+BjdGatNPboVK0/IMP/2HPf5wRlBvQ6mpUOt
+         9fFxdkz6kMf5R8BiWngk+xHtoofl/KQ+Cq/Ak9XExupABfzb4iBonl7N3bnaL3DTyv2w
+         kDq40Z18SqytbDsZz+zzI8QH+kVt5YAFtsLpvkvJLHz2T3DCxZr/H+iNWNGOpPuruXH5
+         Z0DTNAURpFX5fDR1zcJ/iGKaPreVFliG2Ks5nWjvOUsqcrn+wA2qDa6wqrZcSa2/IF62
+         L0lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RJyUMpRvCKY0Vh89D3w3gONjiQnSaoV/zmqyDYmDpUA=;
-        b=nllSbZPwXTcDYTnMvGP/Arn9MkJFkN/24Yy/x09j1yd+7a6A0fKFeG+LQc4hX4LJLp
-         pZ4iIQ+1+pkRmi5BVurcKKAaLJJwSraw1/fo3FRf1CTq+f/7JknT6xQydMU7pWZdC9H2
-         VfXTmrxXHEJodLlpd6R95WsKZWgUzFIpTgmfLlGqYIGhgbhyg/C5kF0qXkK5PffUUgtb
-         iPeHpv5e5tiBZqGkPhg3JAEhAJe68O+pfdrQy3LqUCkultHOFFlnG40Nz+7nBpFddcyp
-         D1NxOHpLz+PhI9b0MXGgBP4JOjwxiNejURv8i4ha8BTn8MuRiqvF6mC67r+F88vqPqWn
-         zv6A==
-X-Gm-Message-State: AOAM533L/d2MTc1For0Iqgl8J5iJpjrV3niNaTqEs/lct+vBkIpCuXRO
-        hRMin6aR8Z3C2zo21TBmHV+pMDLMwId9sYVz9Jo=
-X-Google-Smtp-Source: ABdhPJxj1ROBnK/UeOUkdq57zMMCl+qD4k4UYyZhAseAi7Y9nMJam1E6xVbzIkgsEXbRsLsjeqgd/Q==
-X-Received: by 2002:a2e:a54a:: with SMTP id e10mr12991452ljn.503.1629406327882;
-        Thu, 19 Aug 2021 13:52:07 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id o20sm413680lfu.148.2021.08.19.13.52.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 13:52:07 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id o10so15636480lfr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 13:52:07 -0700 (PDT)
-X-Received: by 2002:a19:4f1a:: with SMTP id d26mr11559422lfb.377.1629406326706;
- Thu, 19 Aug 2021 13:52:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ziHY4EvXx+0bJZ0Qy1XP9FfuZgCSYZ/yaAXfLPrPV0=;
+        b=rwAIAi+veyqM89CRi63UcUUsylYBkmAldKaylib2HhBjqQbUTtT3XDjnKtogT0KeFW
+         Pqq0/Yn+0mTuTA6WsyWPlEtvIGJbWkpFm/AVOA0AA9IGU2wW0Qd3h2N4klHCvd7fgZaW
+         8E9/Qw8/CXrzC7BFyD0V6gvylzcfZ4lUEFu5BmrXiIJfuRRwDUMk7UNs+pmmx5y5H3Nj
+         GkFVFC5Gj9qOUm/0GsYLrzAI+xzDqdvA9EdzBaw0z7NehU6UA2/p6nXU3jR5dNFYZElt
+         BteMsq+cT4pUl7SNVV+fi2Jbvq9hGS8cXmHjHSCzdU+b54gmZeOlbUlR8rQtXSkRNejN
+         PF3w==
+X-Gm-Message-State: AOAM533dsX/QtRWRwDuJ5miKCG/Kz3qULRnL89mZ2ucCBiz6TmzABLrC
+        6W6ySYl+Co0jecaa5tJpcCbjUQ==
+X-Google-Smtp-Source: ABdhPJy1vmQ0ztCHIH+v7BsWnn2o/qZIW/3rV5kNnRpAJFxXM6BbqFROes4qbCa+/5eQ6Xn/2aR4jQ==
+X-Received: by 2002:a05:6638:3b0:: with SMTP id z16mr14313306jap.139.1629406323214;
+        Thu, 19 Aug 2021 13:52:03 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id n7sm2164152ioz.18.2021.08.19.13.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 13:52:02 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: ipa: fix TX queue race
+Date:   Thu, 19 Aug 2021 15:51:59 -0500
+Message-Id: <20210819205159.3148951-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210816194840.42769-1-david@redhat.com> <20210816194840.42769-3-david@redhat.com>
-In-Reply-To: <20210816194840.42769-3-david@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 19 Aug 2021 13:51:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgsLtJ7=+NGGSEbTw9XBh7qyf4Py9-jBdajGnPTxU1hZg@mail.gmail.com>
-Message-ID: <CAHk-=wgsLtJ7=+NGGSEbTw9XBh7qyf4Py9-jBdajGnPTxU1hZg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] kernel/fork: factor out replacing the current MM exe_file
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-unionfs@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So I like this series.
+Jakub Kicinski pointed out a race condition in ipa_start_xmit() in a
+recently-accepted series of patches:
+  https://lore.kernel.org/netdev/20210812195035.2816276-1-elder@linaro.org/
+We are stopping the modem TX queue in that function if the power
+state is not active.  We restart the TX queue again once hardware
+resume is complete.
 
-However, logically, I think this part in replace_mm_exe_file() no
-longer makes sense:
+  TX path                       Power Management
+  -------                       ----------------
+  pm_runtime_get(); no power    Start resume
+  Stop TX queue                      ...
+  pm_runtime_put()              Resume complete
+  return NETDEV_TX_BUSY         Start TX queue
 
-On Mon, Aug 16, 2021 at 12:50 PM David Hildenbrand <david@redhat.com> wrote:
->
-> +       /* Forbid mm->exe_file change if old file still mapped. */
-> +       old_exe_file = get_mm_exe_file(mm);
-> +       if (old_exe_file) {
-> +               mmap_read_lock(mm);
-> +               for (vma = mm->mmap; vma && !ret; vma = vma->vm_next) {
-> +                       if (!vma->vm_file)
-> +                               continue;
-> +                       if (path_equal(&vma->vm_file->f_path,
-> +                                      &old_exe_file->f_path))
-> +                               ret = -EBUSY;
-> +               }
-> +               mmap_read_unlock(mm);
-> +               fput(old_exe_file);
-> +               if (ret)
-> +                       return ret;
-> +       }
+  pm_runtime_get()
+  Power present, transmit
+  pm_runtime_put()              (auto-suspend)
 
-and should just be removed.
+The issue is that the power management (resume) activity and the
+network transmit activity can occur concurrently, and there's a
+chance the queue will be stopped *after* it has been started again.
 
-NOTE! I think it makes sense within the context of this patch (where
-you just move code around), but that it should then be removed in the
-next patch that does that "always deny write access to current MM
-exe_file" thing.
+  TX path                       Power Management
+  -------                       ----------------
+                                Resume underway
+  pm_runtime_get(); no power         ...
+                                Resume complete
+                                Start TX queue
+  Stop TX queue       <-- No more transmits after this
+  pm_runtime_put()
+  return NETDEV_TX_BUSY
 
-I just quoted it in the context of this patch, since the next patch
-doesn't actually show this code any more.
+We address this using a STARTED flag to indicate when the TX queue
+has been started from the resume path, and a spinlock to make the
+flag and queue updates happen atomically.
 
-In the *old* model - where the ETXTBUSY was about the mmap() of the
-file - the above tests make sense.
+  TX path                       Power Management
+  -------                       ----------------
+                                Resume underway
+  pm_runtime_get(); no power    Resume complete
+                                start TX queue     \
+  If STARTED flag is *not* set:                     > atomic
+      Stop TX queue             set STARTED flag   /
+  pm_runtime_put()
+  return NETDEV_TX_BUSY
 
-But in the new model, walking the mappings just doesn't seem to be a
-sensible operation any more. The mappings simply aren't what ETXTBUSY
-is about in the new world order, and so doing that mapping walk seems
-nonsensical.
+A second flag is used to address a different race that involves
+another path requesting power.
 
-Hmm?
+  TX path            Other path              Power Management
+  -------            ----------              ----------------
+                     pm_runtime_get_sync()   Resume
+                                             Start TX queue   \ atomic
+                                             Set STARTED flag /
+                     (do its thing)
+                     pm_runtime_put()
+                                             (auto-suspend)
+  pm_runtime_get()                           Mark delayed resume
+  STARTED *is* set, so
+    do *not* stop TX queue  <-- Queue should be stopped here
+  pm_runtime_put()
+  return NETDEV_TX_BUSY                      Suspend done, resume
+                                             Resume complete
+  pm_runtime_get()
+  Stop TX queue
+    (STARTED is *not* set)                   Start TX queue   \ atomic
+  pm_runtime_put()                           Set STARTED flag /
+  return NETDEV_TX_BUSY
 
-                 Linus
+So a STOPPED flag is set in the transmit path when it has stopped
+the TX queue, and this pair of operations is also protected by the
+spinlock.  The resume path only restarts the TX queue if the STOPPED
+flag is set.  This case isn't a major problem, but it avoids the
+"non-trivial amount of useless work" done by the networking stack
+when NETDEV_TX_BUSY is returned.
+
+Fixes: 6b51f802d652b ("net: ipa: ensure hardware has power in ipa_start_xmit()")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_clock.c | 70 +++++++++++++++++++++++++++++++++++++
+ drivers/net/ipa/ipa_clock.h | 18 ++++++++++
+ drivers/net/ipa/ipa_modem.c |  7 ++--
+ 3 files changed, 93 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
+index 8f25107c1f1e7..ed7ef72fbb78a 100644
+--- a/drivers/net/ipa/ipa_clock.c
++++ b/drivers/net/ipa/ipa_clock.c
+@@ -48,11 +48,15 @@ struct ipa_interconnect {
+  * enum ipa_power_flag - IPA power flags
+  * @IPA_POWER_FLAG_RESUMED:	Whether resume from suspend has been signaled
+  * @IPA_POWER_FLAG_SYSTEM:	Hardware is system (not runtime) suspended
++ * @IPA_POWER_FLAG_STOPPED:	Modem TX is disabled by ipa_start_xmit()
++ * @IPA_POWER_FLAG_STARTED:	Modem TX was enabled by ipa_runtime_resume()
+  * @IPA_POWER_FLAG_COUNT:	Number of defined power flags
+  */
+ enum ipa_power_flag {
+ 	IPA_POWER_FLAG_RESUMED,
+ 	IPA_POWER_FLAG_SYSTEM,
++	IPA_POWER_FLAG_STOPPED,
++	IPA_POWER_FLAG_STARTED,
+ 	IPA_POWER_FLAG_COUNT,		/* Last; not a flag */
+ };
+ 
+@@ -60,6 +64,7 @@ enum ipa_power_flag {
+  * struct ipa_clock - IPA clocking information
+  * @dev:		IPA device pointer
+  * @core:		IPA core clock
++ * @spinlock:		Protects modem TX queue enable/disable
+  * @flags:		Boolean state flags
+  * @interconnect_count:	Number of elements in interconnect[]
+  * @interconnect:	Interconnect array
+@@ -67,6 +72,7 @@ enum ipa_power_flag {
+ struct ipa_clock {
+ 	struct device *dev;
+ 	struct clk *core;
++	spinlock_t spinlock;	/* used with STOPPED/STARTED power flags */
+ 	DECLARE_BITMAP(flags, IPA_POWER_FLAG_COUNT);
+ 	u32 interconnect_count;
+ 	struct ipa_interconnect *interconnect;
+@@ -334,6 +340,69 @@ static void ipa_suspend_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
+ 	ipa_interrupt_suspend_clear_all(ipa->interrupt);
+ }
+ 
++/* The next few functions coordinate stopping and starting the modem
++ * network device transmit queue.
++ *
++ * Transmit can be running concurrent with power resume, and there's a
++ * chance the resume completes before the transmit path stops the queue,
++ * leaving the queue in a stopped state.  The next two functions are used
++ * to avoid this: ipa_power_modem_queue_stop() is used by ipa_start_xmit()
++ * to conditionally stop the TX queue; and ipa_power_modem_queue_start()
++ * is used by ipa_runtime_resume() to conditionally restart it.
++ *
++ * Two flags and a spinlock are used.  If the queue is stopped, the STOPPED
++ * power flag is set.  And if the queue is started, the STARTED flag is set.
++ * The queue is only started on resume if the STOPPED flag is set.  And the
++ * queue is only started in ipa_start_xmit() if the STARTED flag is *not*
++ * set.  As a result, the queue remains operational if the two activites
++ * happen concurrently regardless of the order they complete.  The spinlock
++ * ensures the flag and TX queue operations are done atomically.
++ *
++ * The first function stops the modem netdev transmit queue, but only if
++ * the STARTED flag is *not* set.  That flag is cleared if it was set.
++ * If the queue is stopped, the STOPPED flag is set.  This is called only
++ * from the power ->runtime_resume operation.
++ */
++void ipa_power_modem_queue_stop(struct ipa *ipa)
++{
++	struct ipa_clock *clock = ipa->clock;
++	unsigned long flags;
++
++	spin_lock_irqsave(&clock->spinlock, flags);
++
++	if (!__test_and_clear_bit(IPA_POWER_FLAG_STARTED, clock->flags)) {
++		netif_stop_queue(ipa->modem_netdev);
++		__set_bit(IPA_POWER_FLAG_STOPPED, clock->flags);
++	}
++
++	spin_unlock_irqrestore(&clock->spinlock, flags);
++}
++
++/* This function starts the modem netdev transmit queue, but only if the
++ * STOPPED flag is set.  That flag is cleared if it was set.  If the queue
++ * was restarted, the STARTED flag is set; this allows ipa_start_xmit()
++ * to skip stopping the queue in the event of a race.
++ */
++void ipa_power_modem_queue_wake(struct ipa *ipa)
++{
++	struct ipa_clock *clock = ipa->clock;
++	unsigned long flags;
++
++	spin_lock_irqsave(&clock->spinlock, flags);
++
++	if (__test_and_clear_bit(IPA_POWER_FLAG_STOPPED, clock->flags)) {
++		__set_bit(IPA_POWER_FLAG_STARTED, clock->flags);
++		netif_wake_queue(ipa->modem_netdev);
++	}
++
++	spin_unlock_irqrestore(&clock->spinlock, flags);
++}
++
++/* This function clears the STARTED flag once the TX queue is operating */
++{
++	clear_bit(IPA_POWER_FLAG_STARTED, ipa->clock->flags);
++}
++
+ int ipa_power_setup(struct ipa *ipa)
+ {
+ 	int ret;
+@@ -383,6 +452,7 @@ ipa_clock_init(struct device *dev, const struct ipa_clock_data *data)
+ 	}
+ 	clock->dev = dev;
+ 	clock->core = clk;
++	spin_lock_init(&clock->spinlock);
+ 	clock->interconnect_count = data->interconnect_count;
+ 
+ 	ret = ipa_interconnect_init(clock, dev, data->interconnect_data);
+diff --git a/drivers/net/ipa/ipa_clock.h b/drivers/net/ipa/ipa_clock.h
+index 5c53241336a1a..64cd15981b1da 100644
+--- a/drivers/net/ipa/ipa_clock.h
++++ b/drivers/net/ipa/ipa_clock.h
+@@ -22,6 +22,24 @@ extern const struct dev_pm_ops ipa_pm_ops;
+  */
+ u32 ipa_clock_rate(struct ipa *ipa);
+ 
++/**
++ * ipa_power_modem_queue_stop() - Possibly stop the modem netdev TX queue
++ * @ipa:	IPA pointer
++ */
++void ipa_power_modem_queue_stop(struct ipa *ipa);
++
++/**
++ * ipa_power_modem_queue_wake() - Possibly wake the modem netdev TX queue
++ * @ipa:	IPA pointer
++ */
++void ipa_power_modem_queue_wake(struct ipa *ipa);
++
++/**
++ * ipa_power_modem_queue_active() - Report modem netdev TX queue active
++ * @ipa:	IPA pointer
++ */
++void ipa_power_modem_queue_active(struct ipa *ipa);
++
+ /**
+  * ipa_power_setup() - Set up IPA power management
+  * @ipa:	IPA pointer
+diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
+index c8724af935b85..16d87910305e1 100644
+--- a/drivers/net/ipa/ipa_modem.c
++++ b/drivers/net/ipa/ipa_modem.c
+@@ -130,6 +130,7 @@ ipa_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 	if (ret < 1) {
+ 		/* If a resume won't happen, just drop the packet */
+ 		if (ret < 0 && ret != -EINPROGRESS) {
++			ipa_power_modem_queue_active(ipa);
+ 			pm_runtime_put_noidle(dev);
+ 			goto err_drop_skb;
+ 		}
+@@ -138,13 +139,15 @@ ipa_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 		 * until we're resumed; ipa_modem_resume() arranges for the
+ 		 * TX queue to be started again.
+ 		 */
+-		netif_stop_queue(netdev);
++		ipa_power_modem_queue_stop(ipa);
+ 
+ 		(void)pm_runtime_put(dev);
+ 
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 
++	ipa_power_modem_queue_active(ipa);
++
+ 	ret = ipa_endpoint_skb_tx(endpoint, skb);
+ 
+ 	(void)pm_runtime_put(dev);
+@@ -241,7 +244,7 @@ static void ipa_modem_wake_queue_work(struct work_struct *work)
+ {
+ 	struct ipa_priv *priv = container_of(work, struct ipa_priv, work);
+ 
+-	netif_wake_queue(priv->ipa->modem_netdev);
++	ipa_power_modem_queue_wake(priv->ipa);
+ }
+ 
+ /** ipa_modem_resume() - resume callback for runtime_pm
+-- 
+2.27.0
+
