@@ -2,248 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B7F3F236D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B003F2372
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhHSW5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:57:39 -0400
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:37377 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhHSW5i (ORCPT
+        id S236420AbhHSW6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229808AbhHSW6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:57:38 -0400
-Received: by mail-lf1-f46.google.com with SMTP id k5so16305671lfu.4;
-        Thu, 19 Aug 2021 15:57:00 -0700 (PDT)
+        Thu, 19 Aug 2021 18:58:21 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E018C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:57:44 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id z2so7646143iln.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dqyq+xLCC62WmtlbZNmPjxhJEJorkWCEaN0Bhw2AePY=;
+        b=cooKeToWpfZekERzCgF0kWR6bvPZBKI+V6Im5GxgZiTYFO0YF/kOpLxrerXm7nf7L0
+         qAyTMoV5DhF8fVFq+DvreRkoGtQg1mA1918Y8s+P5Fx9kpyYfQovpbKQTovjTxuTBgQA
+         pBht8ci2g8MBR2gtAS/xVkND32I1qDDjH4LwU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DtmDHm6iEeZhrRsIVkxQzbw6v5F41EdvHmd3bbIlldY=;
-        b=i4LJmNBv9NjJtKxY4viacRJW8RjWKFQsP36oZblWq4q45o5wjO2IB07u0EN6bv2pT9
-         0ges27/VZyiomBVV2cx6rcw3i8OfMr4p/axIcsXmFdye8lrISSF6WdFjo0s+DP+JZRy6
-         zJCyNVFVKL5CP0zENGPJvqC5QgaeEbmcXKSppz7ogB7bHeDa1Guk4XL5nuJjvJ+enUGl
-         NQtKk8xMu86WllNPVzbHY3CJwXxRN69Z7oJdLYQBl7RyqSLBXjTGwwbMHjwdCAAK6uzE
-         PoKCSDcSQFwVSSEASOG8Tg5nphVB17ax6OOURxfcqUp6KrWIYzE5cFSA4owhrm5DJtjs
-         QyFg==
-X-Gm-Message-State: AOAM533wzw5xzySY/oYCXl+hzzlSfDCOhpU/ZxWYoZHnFc6nOmIsUIpl
-        A90uHNJ6xdgoT4+OE2PPJ1P3Oe15Gz888sB1V/E=
-X-Google-Smtp-Source: ABdhPJydnbDseVdl7+JqM9Y0azBwne+O4ApItblShrV0JaktaOxkjwbWN2yzWTR0AhFTpwkY2u7vN/66whOGIAo+j2Q=
-X-Received: by 2002:a05:6512:ac9:: with SMTP id n9mr12113603lfu.635.1629413820114;
- Thu, 19 Aug 2021 15:57:00 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dqyq+xLCC62WmtlbZNmPjxhJEJorkWCEaN0Bhw2AePY=;
+        b=Mz5ri2EZk4y4OvpRew5z0wpO9c3H7roBgDnxYwuJgdjV0I+a3vEU3w2ONv+/L3n+UP
+         gGDdvqQah6IaSDT/wz8irQfqfusToxzqTxLD0iPxQh25vEitV6YXuzEQopLV4cb6UVPJ
+         zAMgce5HUu+2G7NrfEfYWn6j8Q0Ex5y6uH71XoP3QtThfsVeDQGvMm1pVKU6SwI0SbME
+         8mWIFILh76Yhtkl+kozPl1tV/r8ZXncS0vIm8kEcmyQRorsv2jdyGVqv1Uv6N/px2gRU
+         IbhU3vojwau94VZ3MaszSPQHxodDa8XWaCF+8aLFHzLjQIeDTY6eGiJiQvUUyqQSolnH
+         O0AQ==
+X-Gm-Message-State: AOAM533AwH44Uf+NGdOQvCivfynGENtATi4m2mu1YUslbfRnAbqMT0Yx
+        QhpmwjPjSXfmFNjd0QxdF8XNxw==
+X-Google-Smtp-Source: ABdhPJwQZ73vfotSnWwgMIvfGhwDa5AtWHmSypp0n37PAVBu8xmpd6r/tOmHTAfQmO3MuQpW2Ox8Gw==
+X-Received: by 2002:a92:360e:: with SMTP id d14mr11069647ila.171.1629413863755;
+        Thu, 19 Aug 2021 15:57:43 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g23sm2277471ioc.8.2021.08.19.15.57.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 15:57:42 -0700 (PDT)
+Subject: Re: [PATCH v2] vhci_hcd: USB port can get stuck in the disabled state
+To:     Michael <msbroadf@gmail.com>
+Cc:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210721235526.10588-1-msbroadf@gmail.com>
+ <7b02cb66-d672-ae95-01ea-c6015725e1ac@linuxfoundation.org>
+ <CALdjXpA4_eXen6RjhsEBYt8CQs-2gzwYs9h9q0Z2LKZ=rXVp+Q@mail.gmail.com>
+ <ad07410b-05d6-6a12-13df-14e31cbf50ff@linuxfoundation.org>
+ <CALdjXpBPRraC8xxORgE3SXw4xFnTW-Y6rLbcS+Cx0xYq3+aBeQ@mail.gmail.com>
+ <976d34c0-d603-1f16-edbd-ad6c8881ad4e@linuxfoundation.org>
+ <CALdjXpAzE3o7Bwdvj1TvsBRpDWDe1FZ8LsmL5q0suxYnRJCOaA@mail.gmail.com>
+ <5165bd84-11af-35dd-8a9b-11c7f219fb88@linuxfoundation.org>
+ <CALdjXpCmx_nfYEguv9UvOrBMYFxB4sqwmNiV99ggHRZnZjiM-A@mail.gmail.com>
+ <4f345afe-61d5-66b3-3252-562988c8926f@linuxfoundation.org>
+ <CALdjXpB+-RHMrjt10f1ZksR9VZMuT3gj7HyvrXYtdJ_jq0J93g@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3349aa56-afa0-a919-5810-3dbbdbe8717b@linuxfoundation.org>
+Date:   Thu, 19 Aug 2021 16:57:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210817221048.88063-1-kim.phillips@amd.com> <20210817221048.88063-9-kim.phillips@amd.com>
-In-Reply-To: <20210817221048.88063-9-kim.phillips@amd.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 19 Aug 2021 15:56:48 -0700
-Message-ID: <CAM9d7cgVu6YEJwF5kezonxY0vdUCizu0T2zZoBf-nGGrAt_LJw@mail.gmail.com>
-Subject: Re: [PATCH 8/8] perf/x86/amd/ibs: Add bitfield definitions in new header
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ian Rogers <irogers@google.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Robert Richter <robert.richter@amd.com>,
-        Stephane Eranian <eranian@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CALdjXpB+-RHMrjt10f1ZksR9VZMuT3gj7HyvrXYtdJ_jq0J93g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 3:12 PM Kim Phillips <kim.phillips@amd.com> wrote:
->
-> Add arch/x86/include/asm/amd-ibs.h with bitfield definitions for
-> IBS MSRs, and demonstrate usage within the driver.
->
-> Also move struct perf_ibs_data where it can be shared with
-> the perf tool that will soon be using it.
->
-> No functional changes.
->
-> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andrew Murray <amurray@thegoodpenguin.co.uk>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Michael Petlan <mpetlan@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Robert Richter <robert.richter@amd.com>
-> Cc: Stephane Eranian <eranian@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-perf-users@vger.kernel.org
-> Cc: x86@kernel.org
+On 8/10/21 8:30 PM, Michael wrote:
+> On Wed, 11 Aug 2021 at 03:46, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 8/2/21 7:00 PM, Michael wrote:
+>>> On Tue, 3 Aug 2021 at 09:14, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> On 7/30/21 5:52 PM, Michael wrote:
+>>>>> Yes i think just adding the VDEV_ST_USED check in addition to the
+>>>>> VDEV_ST_NOT_ASSIGNED state is fine and would fix the issue.
+>>>>>
+>>>>
+>>>> Can you please confirm if this works?
+>>>>
+>>>>> After many years of writing virtualhere (a similar system to usb/ip
+>>>>> but cross-platform and different non-kernel way of doing it server
+>>>>> side) I've seen many drivers that issue reset at any time. Loading
+>>>>> firmware is usually the reason.  Also sometimes switching
+>>>>> configurations requires a reset also, for example some gaming wheels
+>>>>> do this. I don't think you should make this VDEV_ST_USED check
+>>>>> specific to Wifi devices, as a lot of devices don't follow too closely
+>>>>> to the USB protocol to begin with from my experience. They primarily
+>>>>> base their USB interactions assuming the windows platform and its
+>>>>> quirks.
+>>>>>
+>>>>
+>>>> When sending responses to Linux kernel mailing lists, please use bottom post.
+>>>> This check will be used for all drivers. We don't add checks for specific cases
+>>>> in the code.
+>>>>
+>>>> thanks,
+>>>> -- Shuah
+>>>>
+>>>
+>>> Yes it works with that change.
+>>>
+>>
+>> Would you like to send me a patch for this?
+>>
+>> thanks,
+>> -- Shuah
+> 
+> usbip: Allow port reset to occur when the port is also in the ST_USED state
+> 
+>   Signed-off-by: Michael <mail@virtualhere.com>
 > ---
-[SNIP]
-> diff --git a/arch/x86/include/asm/amd-ibs.h b/arch/x86/include/asm/amd-ibs.h
-> new file mode 100644
-> index 000000000000..46e1df45efc0
-> --- /dev/null
-> +++ b/arch/x86/include/asm/amd-ibs.h
-> @@ -0,0 +1,132 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * From PPR Vol 1 for AMD Family 19h Model 01h B1
-> + * 55898 Rev 0.35 - Feb 5, 2021
-> + */
-> +
-> +#include <asm/msr-index.h>
-> +
-> +/*
-> + * IBS Hardware MSRs
-> + */
-> +
-> +/* MSR 0xc0011030: IBS Fetch Control */
-> +union ibs_fetch_ctl {
-> +       __u64 val;
-> +       struct {
-> +               __u64   fetch_maxcnt:16,/* 0-15: instruction fetch max. count */
-> +                       fetch_cnt:16,   /* 16-31: instruction fetch count */
-> +                       fetch_lat:16,   /* 32-47: instruction fetch latency */
-> +                       fetch_en:1,     /* 48: instruction fetch enable */
-> +                       fetch_val:1,    /* 49: instruction fetch valid */
-> +                       fetch_comp:1,   /* 50: instruction fetch complete */
-> +                       ic_miss:1,      /* 51: i-cache miss */
-> +                       phy_addr_valid:1,/* 52: physical address valid */
-> +                       l1tlb_pgsz:2,   /* 53-54: i-cache L1TLB page size
-> +                                        *        (needs IbsPhyAddrValid) */
-
-What about adding an enum for the page size?
-
-> +                       l1tlb_miss:1,   /* 55: i-cache fetch missed in L1TLB */
-> +                       l2tlb_miss:1,   /* 56: i-cache fetch missed in L2TLB */
-> +                       rand_en:1,      /* 57: random tagging enable */
-> +                       fetch_l2_miss:1,/* 58: L2 miss for sampled fetch
-> +                                        *      (needs IbsFetchComp) */
-> +                       reserved:5;     /* 59-63: reserved */
-> +       };
-> +};
-> +
-> +/* MSR 0xc0011033: IBS Execution Control */
-> +union ibs_op_ctl {
-> +       __u64 val;
-> +       struct {
-> +               __u64   opmaxcnt:16,    /* 0-15: periodic op max. count */
-> +                       reserved0:1,    /* 16: reserved */
-> +                       op_en:1,        /* 17: op sampling enable */
-> +                       op_val:1,       /* 18: op sample valid */
-> +                       cnt_ctl:1,      /* 19: periodic op counter control */
-> +                       opmaxcnt_ext:7, /* 20-26: upper 7 bits of periodic op maximum count */
-> +                       reserved1:5,    /* 27-31: reserved */
-> +                       opcurcnt:27,    /* 32-58: periodic op counter current count */
-> +                       reserved2:5;    /* 59-63: reserved */
-> +       };
-> +};
-> +
-> +/* MSR 0xc0011035: IBS Op Data 2 */
-> +union ibs_op_data {
-> +       __u64 val;
-> +       struct {
-> +               __u64   comp_to_ret_ctr:16,     /* 0-15: op completion to retire count */
-> +                       tag_to_ret_ctr:16,      /* 15-31: op tag to retire count */
-> +                       reserved1:2,            /* 32-33: reserved */
-> +                       op_return:1,            /* 34: return op */
-> +                       op_brn_taken:1,         /* 35: taken branch op */
-> +                       op_brn_misp:1,          /* 36: mispredicted branch op */
-> +                       op_brn_ret:1,           /* 37: branch op retired */
-> +                       op_rip_invalid:1,       /* 38: RIP is invalid */
-> +                       op_brn_fuse:1,          /* 39: fused branch op */
-> +                       op_microcode:1,         /* 40: microcode op */
-> +                       reserved2:23;           /* 41-63: reserved */
-> +       };
-> +};
-> +
-> +/* MSR 0xc0011036: IBS Op Data 2 */
-> +union ibs_op_data2 {
-> +       __u64 val;
-> +       struct {
-> +               __u64   data_src:3,     /* 0-2: data source */
-
-and for data source too.
-
-Thanks,
-Namhyung
-
-
-> +                       reserved0:1,    /* 3: reserved */
-> +                       rmt_node:1,     /* 4: destination node */
-> +                       cache_hit_st:1, /* 5: cache hit state */
-> +                       reserved1:57;   /* 5-63: reserved */
-> +       };
-> +};
-> +
-> +/* MSR 0xc0011037: IBS Op Data 3 */
-> +union ibs_op_data3 {
-> +       __u64 val;
-> +       struct {
-> +               __u64   ld_op:1,                        /* 0: load op */
-> +                       st_op:1,                        /* 1: store op */
-> +                       dc_l1tlb_miss:1,                /* 2: data cache L1TLB miss */
-> +                       dc_l2tlb_miss:1,                /* 3: data cache L2TLB hit in 2M page */
-> +                       dc_l1tlb_hit_2m:1,              /* 4: data cache L1TLB hit in 2M page */
-> +                       dc_l1tlb_hit_1g:1,              /* 5: data cache L1TLB hit in 1G page */
-> +                       dc_l2tlb_hit_2m:1,              /* 6: data cache L2TLB hit in 2M page */
-> +                       dc_miss:1,                      /* 7: data cache miss */
-> +                       dc_mis_acc:1,                   /* 8: misaligned access */
-> +                       reserved:4,                     /* 9-12: reserved */
-> +                       dc_wc_mem_acc:1,                /* 13: write combining memory access */
-> +                       dc_uc_mem_acc:1,                /* 14: uncacheable memory access */
-> +                       dc_locked_op:1,                 /* 15: locked operation */
-> +                       dc_miss_no_mab_alloc:1,         /* 16: DC miss with no MAB allocated */
-> +                       dc_lin_addr_valid:1,            /* 17: data cache linear address valid */
-> +                       dc_phy_addr_valid:1,            /* 18: data cache physical address valid */
-> +                       dc_l2_tlb_hit_1g:1,             /* 19: data cache L2 hit in 1GB page */
-> +                       l2_miss:1,                      /* 20: L2 cache miss */
-> +                       sw_pf:1,                        /* 21: software prefetch */
-> +                       op_mem_width:4,                 /* 22-25: load/store size in bytes */
-> +                       op_dc_miss_open_mem_reqs:6,     /* 26-31: outstanding mem reqs on DC fill */
-> +                       dc_miss_lat:16,                 /* 32-47: data cache miss latency */
-> +                       tlb_refill_lat:16;              /* 48-63: L1 TLB refill latency */
-> +       };
-> +};
-> +
-> +/* MSR 0xc001103c: IBS Fetch Control Extended */
-> +union ic_ibs_extd_ctl {
-> +       __u64 val;
-> +       struct {
-> +               __u64   itlb_refill_lat:16,     /* 0-15: ITLB Refill latency for sampled fetch */
-> +                       reserved:48;            /* 16-63: reserved */
-> +       };
-> +};
-> +
-> +/*
-> + * IBS driver related
-> + */
-> +
-> +struct perf_ibs_data {
-> +       u32             size;
-> +       union {
-> +               u32     data[0];        /* data buffer starts here */
-> +               u32     caps;
-> +       };
-> +       u64             regs[MSR_AMD64_IBS_REG_COUNT_MAX];
-> +};
+>   drivers/usb/usbip/vhci_hcd.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
+> index 4ba6bcdaa8e9..300131ae5897 100644
+> --- a/drivers/usb/usbip/vhci_hcd.c
+> +++ b/drivers/usb/usbip/vhci_hcd.c
+> @@ -456,7 +456,9 @@ static int vhci_hub_control(struct usb_hcd *hcd,
+> u16 typeReq, u16 wValue,
+>                          vhci_hcd->re_timeout = 0;
+> 
+>                          if (vhci_hcd->vdev[rhport].ud.status ==
+> -                           VDEV_ST_NOTASSIGNED) {
+> +                           VDEV_ST_NOTASSIGNED ||
+> +                               vhci_hcd->vdev[rhport].ud.status ==
+> +                               VDEV_ST_USED) {
+>                                  usbip_dbg_vhci_rh(
+>                                          " enable rhport %d (status %u)\n",
+>                                          rhport,
 > --
-> 2.31.1
->
+> 2.30.2
+> 
+
+Unfortunately we can't apply this diff. I turned this into a proper
+patch giving you credit for reporting the problem, suggesting the
+fix and testing it. Patch will be sent shortly.
+
+thanks,
+-- Shuah
