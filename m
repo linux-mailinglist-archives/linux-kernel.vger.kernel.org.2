@@ -2,130 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DC53F1611
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8CB3F1619
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhHSJV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
+        id S230146AbhHSJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHSJVz (ORCPT
+        with ESMTP id S229448AbhHSJZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:21:55 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A6EC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:21:19 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Gqzlw6kCXzQk3T;
-        Thu, 19 Aug 2021 11:21:16 +0200 (CEST)
-Authentication-Results: spamfilter06.heinlein-hosting.de (amavisd-new);
-        dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
-        header.d=mailbox.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1629364875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HFOcrXl78c6yHPjNwqyC9icUkgDQSOnkggANphEmzkg=;
-        b=I5cy7rqEZcuViFFxFTRzZIkqocNTL/JMPMq82x188aLq5ebURjQP9L2teZswgoBw7MJhLB
-        ZNPByEXU013GjZLk83qN4n4PybBtFrvOyZGvr/q5oCjIRzG5nS7NtBRsEp0/zWcwMm3z3w
-        0wxKyGw9sbRtfwzpMxB0Eq5BwapqvL8Ki10sEhMA00Kv6eth3lqTX1G/9ZnywCBbqMHBwf
-        l3SSJpiWelmaIszUssyezrienhRpCDK8zsDA+HhZynDwalrfACYjE/eylRAEFMK8tpPriU
-        1pHR9kYXx/5IADJBHI8ug5sxa+2hFQqWG+HY8WQRQoamSxNmFJGHn5wLlFBLSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:message-id:from:from:date:date:received; s=
-        mail20150812; t=1629364874; bh=0Q9HkaFTyKPqUCkKJjnjcyGSZ9WJz5mQv
-        PT3L8XE1SU=; b=cc9timhpQp+tXtt2vdIJ0z9cnFJT+7KsmjlnsJYtRIq7FjwOa
-        E6OxzoPN1yQwTtkxwW1Gv3IrUBKK+f6zkmUIYxvbaMu0pgo+3QygiXqGYRBDcVah
-        Asf9CZ1NU8n+4S/0LaAlfnSu9ZI++Xju1RyLcEG4GWWqK5YsigG8o5BGjvZd2elY
-        R+5vkMICwWtDKyaO7uFihnMVyESRXv+pxGWJElHNxewY29NtFaLfpxKKGoluxAKe
-        xbt0jTdK0YLI+W0le/b6O8zPKVpcBRCWGYI77kTrbpW1gM0jL+cJtR4CQkUw/PnG
-        s19abs+VXkDVDs6H3BsueAW923oOA/lZ/Gfvw==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
-        with ESMTP id SKA1mXJZCwaq; Thu, 19 Aug 2021 11:21:14 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 11:21:13 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Cc:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "torvic9@mailbox.org" <torvic9@mailbox.org>
-Message-ID: <1456566961.33591.1629364873255@office.mailbox.org>
-Subject: [PATCH v2] x86/Makefile: Move the CPU-specific 64-bit tuning
- settings
+        Thu, 19 Aug 2021 05:25:58 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF27C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:25:22 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id f5so7954096wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:25:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IVbcKYMfOmhTBBsQIKq+07W8pgc80trDsJf7FkANsyo=;
+        b=mMdgY/sfu+S8ZUjtkWVbrgcjUjGDUPBg+A3xzqZnft33Rq9/q5NkcMxLIW0KAuIpzT
+         F+INo97PcvPMd5paheBcYbx1/z35ll+yTAzaIRM1xHdeDm6HPqhzc7PC4iBABi9kHBck
+         mhwhVCw8xEnJWVbt/8lNwe6WGXdhknYFbYrtFE+i92DRCUbKMSs1aHeEsDf5yVgu6y8U
+         KIGMo+RG76c+0gEVFfcdvhLrqW8tOjlHEHMdN4JpiFbX4AspA7/ijzi80s3p+TGkmRYa
+         KWp+bz3CsUjNV+YzPN5pWkiqvKxQrGKkxNUwX0nf8KKjaLBlB4gxCLEC8NQEVF3wJmcq
+         yWrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IVbcKYMfOmhTBBsQIKq+07W8pgc80trDsJf7FkANsyo=;
+        b=LOlQ+6PkVvijfOU+RRvNPkN772jpbHAwX915xYgHgPXAw8VvyYMme3DGQah+OtZbjN
+         cTBOLbVHcA2OuPKHlFmnXsQ9CaK32UqJjoezRKO7bQ25971/vU0d5rvF9wsfWnGnG720
+         IyTYeN5vuval8vyeFxADUr6mLQm20dTl3KouSGEuJf/BpJHhA45yWcE6m8k/c98AJIU0
+         4GFb+LRrVYPXNcSkuFXOGnEK7wd6YJ47k1JwWJt7L7AFAVn1E0qAr3voIhSP37X/vjvJ
+         BUtmHlusNNpgWULNWVDzltATOnsuLau4WFwfDpqKB5zcXz9S/L+016qAKTGJcq3mNOXC
+         JVKQ==
+X-Gm-Message-State: AOAM530aeNXtCEaed+zwCm11qDk5FAIM1kGmv1OgpXjslFHc67Yv4Ng/
+        aF/azk9RZUMo+h2SN7Z/GpreQ6gnOWk=
+X-Google-Smtp-Source: ABdhPJyHozq0YMg8bxQjLoGBNKnUWXYB5289Ru0LhbFMjm55G4bUm6gaSbltCnOb4n1Vb3ga/kDjJQ==
+X-Received: by 2002:adf:df08:: with SMTP id y8mr2622512wrl.124.1629365121386;
+        Thu, 19 Aug 2021 02:25:21 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::687e])
+        by smtp.gmail.com with ESMTPSA id d4sm2354928wrz.35.2021.08.19.02.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 02:25:21 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH v3] staging: r8188eu: fix scheduling while atomic bugs
+Date:   Thu, 19 Aug 2021 11:24:23 +0200
+Message-Id: <20210819092423.4349-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Rspamd-Queue-Id: F03CD18CF
-X-Rspamd-UID: b96211
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In accordance with the FIXME comment in arch/x86/Makefile, move the
-CPU-specific 64-bit tuning settings to arch/x86/Makefile.cpu.
+These allocations are sometimes done under a spin lock so they
+have to be atomic. The function call tree is:
 
-Signed-off-by: Tor Vic <torvic9@mailbox.org>
+-> update_beacon() <- takes a spin lock
+   -> update_BCNTIM()
+      -> set_tx_beacon_cmd()
+
+Fixes: 79f712ea994de ("staging: r8188eu: Remove wrappers for kalloc() and kzalloc()")
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
-v1->v2:
-* drop the second patch in the series
-* use srctree with include (Masahiro)
+v1 -> v2
+Added Fixes: tag to commit message.
 
- arch/x86/Makefile     | 11 ++---------
- arch/x86/Makefile.cpu | 12 ++++++++++++
- 2 files changed, 14 insertions(+), 9 deletions(-)
- create mode 100644 arch/x86/Makefile.cpu
+v2 -> v3
+Correted the commit in the Fixes: tag.
 
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 307fd0000a83..0cc5363831b6 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -119,15 +119,8 @@ else
- 	# Use -mskip-rax-setup if supported.
- 	KBUILD_CFLAGS += $(call cc-option,-mskip-rax-setup)
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+index 5325fe41fbee..508ef1d330a1 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
+@@ -8130,13 +8130,13 @@ u8 set_tx_beacon_cmd(struct adapter *padapter)
+ 	u8 res = _SUCCESS;
+ 	int len_diff = 0;
  
--        # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
--        cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
--        cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
--
--        cflags-$(CONFIG_MCORE2) += \
--                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
--	cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
--		$(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
--        cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
-+        # CPU-specific tuning (64-bit).
-+        include $(srctree)/arch/x86/Makefile.cpu
-         KBUILD_CFLAGS += $(cflags-y)
+-	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
++	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_ATOMIC);
+ 	if (!ph2c) {
+ 		res = _FAIL;
+ 		goto exit;
+ 	}
  
-         KBUILD_CFLAGS += -mno-red-zone
-diff --git a/arch/x86/Makefile.cpu b/arch/x86/Makefile.cpu
-new file mode 100644
-index 000000000000..9c3be14b6c88
---- /dev/null
-+++ b/arch/x86/Makefile.cpu
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# CPU tuning section (64-bit).
-+
-+cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
-+cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
-+
-+cflags-$(CONFIG_MCORE2) += \
-+	$(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
-+cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
-+	$(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
-+cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
+-	ptxBeacon_parm = kzalloc(sizeof(struct Tx_Beacon_param), GFP_KERNEL);
++	ptxBeacon_parm = kzalloc(sizeof(struct Tx_Beacon_param), GFP_ATOMIC);
+ 	if (!ptxBeacon_parm) {
+ 		kfree(ph2c);
+ 		res = _FAIL;
 -- 
-2.33.0
+2.32.0
+
