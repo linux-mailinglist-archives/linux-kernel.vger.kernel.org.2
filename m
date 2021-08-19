@@ -2,132 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B453F16E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9379F3F16E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238005AbhHSJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
+        id S238051AbhHSKAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 06:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237746AbhHSJ7x (ORCPT
+        with ESMTP id S238011AbhHSKAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:59:53 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44C8C061575;
-        Thu, 19 Aug 2021 02:59:17 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n12so3620106plf.4;
-        Thu, 19 Aug 2021 02:59:17 -0700 (PDT)
+        Thu, 19 Aug 2021 06:00:09 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602C8C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:59:33 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id l11so8197027wrx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:59:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DtRnMoZnz8ASe+6YEYHxKI9ebqeYiuiGyG8rZ+bU7W8=;
-        b=e343ePw9FQBl3OmT4CjV4LRITbC1d6hYo+qRgo8O4g8DDiM0SXgUjKDzINrKBOdPuD
-         16no3rFQBxZjEOjFpmVKbvGS3ZfHA34iGMzVP0GUuGwXxQcavGar4tq9NUO4BYQKL/fr
-         +IcuileX2Ofw9lJAzZQDVNiSgg1ae4c7il80Ygl7Z/hArsq9NmfC57xbUCxKi+8x3zUf
-         +2HPq01a+R9VEwnfGBnJGrLBlpiAjunOOPLv4ZoA/DAFfCnCqMOcoGxM88wGuVAJptCS
-         RhIs91rvHPz+nEa9mRAXOsXqj+K3ODhUvtqP1kKQfDBVLC2qUMGw6g7AIb4+VxGalL4b
-         xg/g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=xtunD2GxO/8/vmP/JIhc/Q4AXeVK5pzMLPGPI0WktNo=;
+        b=ULGrdUlLjfonZ9gXeFBZL1uRfDlE0SqvpHLPwuyDblWuDL6n7yMagTIZsgstsvo+qS
+         r2ts6k9+C4pXp8Sju0Va2gPM+ieguklAU4b9hD9AslIY+NgmsgLibrWbQ1LiZ0Qsk3rH
+         F4JEmqWQWSRFqw+Y6qDkS74exs7H14uKfiSDwl74vGXJMZfBp4C9GqgKKDJXSQ/hupfn
+         oURWGu3f4FfnLlPSov6wUBSXVnpJHIfk9oWzJA427L1hiGyatYZ/YU553dT38q8yqgAn
+         d+ajJsiH6+zxUGDU4WyG1Nhdmg9w9s1BBQAhxibNshdCVsKc6AhrRapWUea8HkBS/5Ng
+         uvpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DtRnMoZnz8ASe+6YEYHxKI9ebqeYiuiGyG8rZ+bU7W8=;
-        b=SatljJgsdmCMGHqnD0kbdJ40xMIiEmXfAe61u2lLGgcSz/WTCTpgO5yBzrwylf+5wa
-         1zh3FtC1OdayG4c5lDlh8ZifoAp/ponhzGoT7VDrZJQhmy5INgKd/EBSBDtS3TKHw2WR
-         1CulKe8OMYW1peC8Ou1f0vRaBD8f8cV/o+RVFYV4GIWMrPavGeY0tveQiz9KzB+Qhg9H
-         LKtQ0VvsbHQeYTfPaEhoxvirtAg2WGFmHV34AfJ3uTfkL59m1PiOZDfahTNJl7BMq0ov
-         B2DmO5bLcf/N9HM37lnx/XNMvy3YWtcTXlRNiA5u3UPCmFiJlT9Nf3M742GgIpjInUwg
-         amsg==
-X-Gm-Message-State: AOAM532opGNusdX4SzcgoPD8SRftWlMyRHWmW/gPoNl8LMWCkusoYImd
-        LfKzanPUj8M/M8VIHtsuuUc=
-X-Google-Smtp-Source: ABdhPJxqSXdosZ9pc3k976d6RTkMk29F0RsgVn3Hn0/Mju7aILj/ApNHDMVBQRT0TOZLXDLJbYbMUw==
-X-Received: by 2002:a17:90a:8905:: with SMTP id u5mr13892030pjn.95.1629367157291;
-        Thu, 19 Aug 2021 02:59:17 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
-        by smtp.gmail.com with ESMTPSA id p24sm2697989pff.161.2021.08.19.02.59.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 02:59:16 -0700 (PDT)
-Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
- function for HV IVM
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
-        Tianyu.Lan@microsoft.com, pgonda@google.com,
-        martin.b.radev@gmail.com, akpm@linux-foundation.org,
-        kirill.shutemov@linux.intel.com, rppt@kernel.org,
-        sfr@canb.auug.org.au, saravanand@fb.com,
-        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
-        xen-devel@lists.xenproject.org, rientjes@google.com,
-        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-11-ltykernel@gmail.com>
- <20210812122741.GC19050@lst.de>
- <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
- <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
- <20210819084951.GA10461@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <1c5ae861-2c35-2ef5-e764-db45bbcb88a9@gmail.com>
-Date:   Thu, 19 Aug 2021 17:59:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=xtunD2GxO/8/vmP/JIhc/Q4AXeVK5pzMLPGPI0WktNo=;
+        b=EDmttt+PkPJ07+Jafbi+gkTgLejlBo9yDrtndqvG0MGTtarDdF4BV5wiQBrMbLo8rH
+         yKmgx9jhVZNM++eUgvGiZXqWeygyxMjvzViGJxPTbpwtMuqYVhvdQBQQ9MSQS+McGnDD
+         h2wlwCMdBbTmuhcZ56aviLwKdwifs3xDwzhSc5RHvjHdvoZnE8uNuNWcYcowMSdIcszL
+         OHf3Oq38Gs8S9D6aWs/+05+BYW/6kAAKBXJ6h36xa+3/squFlVMLATMlMiKaJcHgm1a9
+         raQwV6ANnCU72DTMCH9T2i3QjOg6WijZQTfeQai2vV1KRKIIsbowLvFmtXmW70JBcg9e
+         1gyA==
+X-Gm-Message-State: AOAM5321dfiazDkK0H97X3mZaGvhmJdTx3zUcllLioHYXnpvouvcQUS4
+        ofbIIRrCxcCMI/KNhiQHd1Y8/w==
+X-Google-Smtp-Source: ABdhPJyutlGQ6Z6gY20AlGAJAhV+LbVsUxEHKzeIqK38emB1LhIfllep0G5vUV02GJWRWcT0Ec9kgQ==
+X-Received: by 2002:a5d:4290:: with SMTP id k16mr2749296wrq.224.1629367172037;
+        Thu, 19 Aug 2021 02:59:32 -0700 (PDT)
+Received: from google.com ([2.31.167.59])
+        by smtp.gmail.com with ESMTPSA id z5sm7338694wmp.26.2021.08.19.02.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 02:59:31 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 10:59:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] backlight: pwm_bl: Improve bootloader/kernel device
+ handover
+Message-ID: <YR4rgXdHqLzpYfEY@google.com>
+References: <20210722144623.1572816-1-daniel.thompson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210819084951.GA10461@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210722144623.1572816-1-daniel.thompson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 22 Jul 2021, Daniel Thompson wrote:
 
-
-On 8/19/2021 4:49 PM, Christoph Hellwig wrote:
-> On Mon, Aug 16, 2021 at 10:50:26PM +0800, Tianyu Lan wrote:
->> Hi Christoph:
->>        Sorry to bother you.Please double check with these two patches
->> " [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function
->> for HV IVM" and "[PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_
->> unmap_encrypted() function".
+> Currently there are (at least) two problems in the way pwm_bl starts
+> managing the enable_gpio pin. Both occur when the backlight is initially
+> off and the driver finds the pin not already in output mode and, as a
+> result, unconditionally switches it to output-mode and asserts the signal.
 > 
-> Do you have a git tree somewhere to look at the whole tree?
-
-Yes, here is my github link for these two patches.
-
-https://github.com/lantianyu/linux/commit/462f7e4e44644fe7e182f7a5fb043a75acb90ee5
-
-https://github.com/lantianyu/linux/commit/c8de236bf4366d39e8b98e5a091c39df29b03e0b
-
+> Problem 1: This could cause the backlight to flicker since, at this stage
+> in driver initialisation, we have no idea what the PWM and regulator are
+> doing (an unconfigured PWM could easily "rest" at 100% duty cycle).
 > 
->>        The swiotlb bounce buffer in the isolation VM are allocated in the
->> low end memory and these memory has struct page backing. All dma address
->> returned by swiotlb/DMA API are low end memory and this is as same as what
->> happen in the traditional VM.
+> Problem 2: This will cause us not to correctly honour the
+> post_pwm_on_delay (which also risks flickers).
 > 
-> Indeed.
+> Fix this by moving the code to configure the GPIO output mode until after
+> we have examines the handover state. That allows us to initialize
+> enable_gpio to off if the backlight is currently off and on if the
+> backlight is on.
 > 
->>        The API dma_map_decrypted() introduced in the patch 9 is to map the
->> bounce buffer in the extra space and these memory in the low end space are
->> used as DMA memory in the driver. Do you prefer these APIs
->> still in the set_memory.c? I move the API to dma/mapping.c due to the
->> suggested name arch_dma_map_decrypted() in the previous mail
->> (https://lore.kernel.org/netdev/20210720135437.GA13554@lst.de/).
-> 
-> Well, what would help is a clear description of the semantics.
-> 
+> Reported-by: Marek Vasut <marex@denx.de>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Cc: stable@vger.kernel.org
+> Acked-by: Marek Vasut <marex@denx.de>
+> Tested-by: Marek Vasut <marex@denx.de>
+> ---
+>  drivers/video/backlight/pwm_bl.c | 54 +++++++++++++++++---------------
+>  1 file changed, 28 insertions(+), 26 deletions(-)
 
-Yes, I will improve description.
+Applied, thanks.
 
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
