@@ -2,82 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C4F3F1C80
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C543F1C83
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238643AbhHSPTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:19:30 -0400
-Received: from mga02.intel.com ([134.134.136.20]:14350 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232821AbhHSPT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:19:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="203777064"
-X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
-   d="scan'208";a="203777064"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 08:18:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
-   d="scan'208";a="489703501"
-Received: from mmdandap-mobl.amr.corp.intel.com (HELO [10.213.172.210]) ([10.213.172.210])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 08:18:46 -0700
-Subject: Re: [PATCH v2] ASoC: Intel: Fix platform ID matching for
- kbl_da7219_max98373
-To:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Lukasz Majczak <lma@semihalf.com>
-Cc:     upstream@semihalf.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Curtis Malainey <cujomalainey@chromium.org>,
-        stable@vger.kernel.org
-References: <20210819082414.39497-1-lma@semihalf.com>
- <87736cce-a96f-064e-6d60-71645ba46f13@linux.intel.com>
- <aeb40985-140f-b013-f368-778ad33fc7d0@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <50eb6c88-5f1a-7a42-adaf-da16f711e5c5@linux.intel.com>
-Date:   Thu, 19 Aug 2021 10:18:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S238710AbhHSPVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232821AbhHSPVo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:21:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5787EC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vKpJrX+WIWY9oRj8Y9x18hpmhdn4wB2b3WzzcTX0gC0=; b=iRnWocda0X8g3D+NKPaswqcI3j
+        WHn9NnZZ4CgorMeNqTGgkR39y1RLlpH6elLst6kb1Hb63uTM4WJCgMHpSiKssszjISMZLwPSl8FZp
+        7X/7yTHNZIz8F5UJtxtiqV3eAIwt8BBQCuFshxRXSxWoKXCikVe6+sLM9US/Y0/T2aR0keQtK3cav
+        K7XtIguJo/UwAQPO3dvSm4hCo/l+CARRf8Pgwm+s+KJqCY5AxMbCcKL1e/v6+Dg3Xe+z4ZiR+Q3Jq
+        A4bO+zVI3W0fHz1z/UmbS+9eJggicY+FoVtmteGUtZbIfQRDZ8iG+iGANLfKuVTw1F30JazeNM0bj
+        WPnqIjqQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGjpV-005F79-5t; Thu, 19 Aug 2021 15:19:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 942043004B2;
+        Thu, 19 Aug 2021 17:19:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7B42820242605; Thu, 19 Aug 2021 17:19:38 +0200 (CEST)
+Date:   Thu, 19 Aug 2021 17:19:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, bp@alien8.de,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Alistair Popple <apopple@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dhowells@redhat.com
+Subject: Re: [PATCH] mm/rmap: Convert from atomic_t to refcount_t on
+ anon_vma->refcount
+Message-ID: <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
+References: <1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn>
+ <20210720160127.ac5e76d1e03a374b46f25077@linux-foundation.org>
+ <20210819132131.GA15779@willie-the-truck>
+ <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <aeb40985-140f-b013-f368-778ad33fc7d0@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/19/21 10:06 AM, Cezary Rojewski wrote:
-> On 2021-08-19 4:30 PM, Pierre-Louis Bossart wrote:
->> On 8/19/21 3:24 AM, Lukasz Majczak wrote:
->>> Sparse warnings triggered truncating the IDs of some platform device
->>> tables. Unfortunately kbl_da7219_max98373 was also truncated.
->>> This patch is reverting the original ID.
->>> Tested on Atlas chromebook.
->>
->> Instead of reverting, how about changing the remaining occurrences of
->> the old name in the machine driver?
->>
->> sound/soc/intel/boards/kbl_da7219_max98927.c:   if (!strcmp(pdev->name,
->> "kbl_da7219_max98373") ||
->> sound/soc/intel/boards/kbl_da7219_max98927.c:           .name =
->> "kbl_da7219_max98373",
+On Thu, Aug 19, 2021 at 04:06:45PM +0200, Peter Zijlstra wrote:
+> > 
+> >   * We can implement (1) by checking if we hit zero (ZF=1)
+> >   * We can implement (2) by checking if the new value is < 0 (SF=1).
+> >     We then need to catch the case where the old value was < 0 but the
+> >     new value is 0. I think this is (SF=0 && OF=1).
+> > 
+> > So maybe the second check is actually SF != OF? I could benefit from some
+> > x86 expertise here, but hopefully you get the idea.
 > 
-> Mentioned by 'Fixes' tag patch clearly introduced regression. If we are
-> to update any name-fields, it's better to have a fresh start and update
-> all the boards in one-go than doing so separately.
+> Right, so the first condition is ZF=1, we hit zero.
+> The second condition is SF=1, the result is negative.
 > 
-> Apart from that, Maxim codecs go by the name of 'max' in
-> sound/soc/codecs/. It's more intuitive to have equivalent shortcut used
-> in board's name.
+> I'm not sure we need OF, if we hit that condition we've already lost.
+> But it's easy enough to add I suppose.
 
-the ACPI HID start with MX and there's not much consistency in naming,
-is there?
+If we can skip the OF... we can do something like this:
 
-		.drv_name = "kbl_r5514_5663_max",
-		.drv_name = "kbl_rt5663_m98927",
-		.drv_name = "kbl_da7219_mx98357a",
-		.drv_name = "kbl_da7219_max98927",
-		.drv_name = "kbl_max98373",
+static inline bool refcount_dec_and_test(refcount_t *r)
+{
+	asm_volatile_goto (LOCK_PREFIX "decl %[var]\n\t"
+			   "jz %l[cc_zero]\n\t"
+			   "jns 1f\n\t"
+			   "ud1 %[var], %%ebx\n\t"
+			   "1:"
+			   : : [var] "m" (r->refs.counter)
+			   : "memory" : cc_zero);
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+	return false;
+
+cc_zero:
+	smp_acquire__after_ctrl_dep();
+	return true;
+}
+
+where we encode the whole refcount_warn_saturate() thing into UD1. The
+first argument is @r and the second argument the REFCOUNT_* thing
+encoded in register space.
+
+It would mean adding something 'clever' to the #UD handler that decodes
+the trapping instruction and extracts these arguments, but this is the
+smallest I could get it.
