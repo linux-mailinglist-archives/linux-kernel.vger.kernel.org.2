@@ -2,232 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590203F2397
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0AE3F23A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236933AbhHSXSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236809AbhHSXSN (ORCPT
+        id S236688AbhHSXVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:21:01 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:29802 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233512AbhHSXVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:18:13 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FFFC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:17:37 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so10760061otk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:17:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dqgoJAQz3Mv7B0ZEGRvtaCqkcK4kqu5N3VSB9Do7xY4=;
-        b=BMf23iSlOWarU9fDcULweKVfxlosd41Wfztfxi8DOr0ErrJ2WhFuCCJdroa4O3U6Y4
-         Ornh+yHcbZUTjYugKoCBoMvCuzIam6M+JCV2WGHWTCt5Q87DYpGvI7XiogoqjDWvdBJq
-         ndpRW8alwfoz9eRtKWAiyOOYuHxpm070gdIkFjgkcZQRsAYJhwuC10wddFnkpuuDXvId
-         SdgUNgerTBW5jnZEmujJEh18/L85559JS7Mgk3us3PqXvJEoQFq08GdIqS/f1/cl8knE
-         ZpLOcgtVLfQjQa1B0gpCqgHYebtUQqbo4TIy1POmSREhzGqokLYnjGXFMZKWIgQ4FXh5
-         C37Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dqgoJAQz3Mv7B0ZEGRvtaCqkcK4kqu5N3VSB9Do7xY4=;
-        b=MNZx6LcQyG6aA8v0M57p0XdG3yfBfOoimysXn9YWvYVywOQdjPpTP607sWZhSaZ12E
-         hVLH+/0YTMBDwrnQ2dOzRq/T7M4BpzpbSK1BTzM82EnnKrzi/CdawTGg0CbINKtUC8gJ
-         NscbDa1Lv7JcQ2pjkahDD86V8WYpaszgaUgDJhnkxZwqbIE+9uzDlJdXyx9tgHIRtdtT
-         avKbDbCXRC46n6bIltjKMEmxFur1H1CaIvbSYzpzopgjZeFOf37zoR+KyNypdi+b7BHY
-         HNUPo02TxSQdY4KCR7cRZRwcqchFISxADxjXjKDyYp2CgBQWt+3sYg2q/pqFwnVWlPpR
-         5ysQ==
-X-Gm-Message-State: AOAM532TcdkhGhEUwZZWgd07OUJuWlbMuzawqijaLNUnrTEtaW8vQ7J3
-        uqHBlk+tVjSLDYUngTU9B4Mhjg==
-X-Google-Smtp-Source: ABdhPJyW/PO0aRB2JhV3QSCv+CbV97dGiXbm6pwAyuaGcZ90eIfRAKlNSig9OcjkDtMHhlGDTPhK9g==
-X-Received: by 2002:a9d:bec:: with SMTP id 99mr13825165oth.187.1629415056421;
-        Thu, 19 Aug 2021 16:17:36 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z26sm971827oih.3.2021.08.19.16.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:17:36 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 16:18:59 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [RFC PATCH 10/15] pwrseq: add support for QCA BT+WiFi power
- sequencer
-Message-ID: <YR7m43mURVJ8YufC@ripper>
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
- <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
+        Thu, 19 Aug 2021 19:21:00 -0400
+X-UUID: 4fe051843262477f8a5670667e4230c6-20210820
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=QfeDJW3m4L57kRx1ekiwSC66ZVnjMitRsEcL77yqUug=;
+        b=h7lLzP6r8j9QVwh0abLzRZYUGWTNl1b5cM4qRCRgD364hb8GohNxIXYOYsk5tdb0Qeja+dyvrJ474JYdVZ0gMMOYTL1/Ownbt6GFuWGBVdl8pDp8874ArEWWFgoTeo7OazhTiqTQV/LTNgqEatWFGiDAQiZi91Wgi65EN64E7qM=;
+X-UUID: 4fe051843262477f8a5670667e4230c6-20210820
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <houlong.wei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 483222040; Fri, 20 Aug 2021 07:20:21 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Aug
+ 2021 07:20:13 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 20 Aug 2021 07:20:12 +0800
+Message-ID: <6cb09965bce5bffe97fc00faecfffae9d3b38b3d.camel@mediatek.com>
+Subject: Re: [PATCH] media: mtk-vpu: Fix a resource leak in the error
+ handling path of 'mtk_vpu_probe()'
+From:   houlong wei <houlong.wei@mediatek.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?= 
+        <Minghsiu.Tsai@mediatek.com>,
+        Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?= 
+        <Andrew-CT.Chen@mediatek.com>,
+        Tiffany Lin =?UTF-8?Q?=28=E6=9E=97=E6=85=A7=E7=8F=8A=29?= 
+        <tiffany.lin@mediatek.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "hans.verkuil@cisco.com" <hans.verkuil@cisco.com>
+CC:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        <houlong.wei@mediatek.com>
+Date:   Fri, 20 Aug 2021 07:20:13 +0800
+In-Reply-To: <3d4ba5d254044567653a006b18971658ec69560f.1629404378.git.christophe.jaillet@wanadoo.fr>
+References: <3d4ba5d254044567653a006b18971658ec69560f.1629404378.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817005507.1507580-11-dmitry.baryshkov@linaro.org>
+X-TM-SNTS-SMTP: 814C1EEA859FBE07EB023142BB288BF8A660564BFC7F2A04322B36A3694EEE642000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
-[..]
-> diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
-> new file mode 100644
-> index 000000000000..3421a4821126
-> --- /dev/null
-> +++ b/drivers/power/pwrseq/pwrseq_qca.c
-> @@ -0,0 +1,290 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2021, Linaro Ltd.
-> + *
-> + * Author: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> + *
-> + * Power Sequencer for Qualcomm WiFi + BT SoCs
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pwrseq/driver.h>
-> +#include <linux/regulator/consumer.h>
-> +
-> +/*
-> + * Voltage regulator information required for configuring the
-> + * QCA WiFi+Bluetooth chipset
-> + */
-> +struct qca_vreg {
-> +	const char *name;
-> +	unsigned int load_uA;
-> +};
-> +
-> +struct qca_device_data {
-> +	struct qca_vreg vddio;
+T24gRnJpLCAyMDIxLTA4LTIwIGF0IDA0OjIxICswODAwLCBDaHJpc3RvcGhlIEpBSUxMRVQgd3Jv
+dGU6DQo+IEEgc3VjY2Vzc2Z1bCAnY2xrX3ByZXBhcmUoKScgY2FsbCBzaG91bGQgYmUgYmFsYW5j
+ZWQgYnkgYQ0KPiBjb3JyZXNwb25kaW5nDQo+ICdjbGtfdW5wcmVwYXJlKCknIGNhbGwgaW4gdGhl
+IGVycm9yIGhhbmRsaW5nIHBhdGggb2YgdGhlIHByb2JlLCBhcw0KPiBhbHJlYWR5DQo+IGRvbmUg
+aW4gdGhlIHJlbW92ZSBmdW5jdGlvbi4NCj4gDQo+IFVwZGF0ZSB0aGUgZXJyb3IgaGFuZGxpbmcg
+cGF0aCBhY2NvcmRpbmdseS4NCj4gDQo+IEZpeGVzOiAzMDAzYTE4MGVmNmIgKCJbbWVkaWFdIFZQ
+VTogbWVkaWF0ZWs6IHN1cHBvcnQgTWVkaWF0ZWsgVlBVIikNCj4gU2lnbmVkLW9mZi1ieTogQ2hy
+aXN0b3BoZSBKQUlMTEVUIDxjaHJpc3RvcGhlLmphaWxsZXRAd2FuYWRvby5mcj4NCj4gLS0tDQo+
+IA0KUmV2aWV3ZWQtYnk6IEhvdWxvbmcgV2VpIDxob3Vsb25nLndlaUBtZWRpYXRlay5jb20+DQoN
+Cj4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZwdS9tdGtfdnB1LmMgfCA1ICsrKystDQo+
+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdnB1L210a192cHUuYw0KPiBi
+L2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZwdS9tdGtfdnB1LmMNCj4gaW5kZXggZWMyOTBk
+ZGU1OWNmLi43ZjE2NDdkYTBhZGUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWVkaWEvcGxhdGZv
+cm0vbXRrLXZwdS9tdGtfdnB1LmMNCj4gKysrIGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGst
+dnB1L210a192cHUuYw0KPiBAQCAtODQ4LDcgKzg0OCw4IEBAIHN0YXRpYyBpbnQgbXRrX3ZwdV9w
+cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCXZwdS0+d2R0LndxID0g
+Y3JlYXRlX3NpbmdsZXRocmVhZF93b3JrcXVldWUoInZwdV93ZHQiKTsNCj4gIAlpZiAoIXZwdS0+
+d2R0LndxKSB7DQo+ICAJCWRldl9lcnIoZGV2LCAiaW5pdGlhbGl6ZSB3ZHQgd29ya3F1ZXVlIGZh
+aWxlZFxuIik7DQo+IC0JCXJldHVybiAtRU5PTUVNOw0KPiArCQlyZXQgPSAtRU5PTUVNOw0KPiAr
+CQlnb3RvIGNsa191bnByZXBhcmU7DQo+ICAJfQ0KPiAgCUlOSVRfV09SSygmdnB1LT53ZHQud3Ms
+IHZwdV93ZHRfcmVzZXRfZnVuYyk7DQo+ICAJbXV0ZXhfaW5pdCgmdnB1LT52cHVfbXV0ZXgpOw0K
+PiBAQCAtOTQyLDYgKzk0Myw4IEBAIHN0YXRpYyBpbnQgbXRrX3ZwdV9wcm9iZShzdHJ1Y3QgcGxh
+dGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCXZwdV9jbG9ja19kaXNhYmxlKHZwdSk7DQo+ICB3
+b3JrcXVldWVfZGVzdHJveToNCj4gIAlkZXN0cm95X3dvcmtxdWV1ZSh2cHUtPndkdC53cSk7DQo+
+ICtjbGtfdW5wcmVwYXJlOg0KPiArCWNsa191bnByZXBhcmUodnB1LT5jbGspOw0KPiAgDQo+ICAJ
+cmV0dXJuIHJldDsNCj4gIH0NCj4gLS0gDQo+IDIuMzAuMg0KPiANCg==
 
-Any particular reason why this isn't just the first entry in vregs and
-operated as part of the bulk API?
-
-> +	struct qca_vreg *vregs;
-> +	size_t num_vregs;
-> +	bool has_bt_en;
-> +	bool has_wifi_en;
-> +};
-> +
-> +struct pwrseq_qca;
-> +struct pwrseq_qca_one {
-> +	struct pwrseq_qca *common;
-> +	struct gpio_desc *enable;
-> +};
-> +
-> +#define PWRSEQ_QCA_WIFI 0
-> +#define PWRSEQ_QCA_BT 1
-> +
-> +#define PWRSEQ_QCA_MAX 2
-> +
-> +struct pwrseq_qca {
-> +	struct regulator *vddio;
-> +	struct gpio_desc *sw_ctrl;
-> +	struct pwrseq_qca_one pwrseq_qcas[PWRSEQ_QCA_MAX];
-> +	int num_vregs;
-> +	struct regulator_bulk_data vregs[];
-> +};
-> +
-> +static int pwrseq_qca_power_on(struct pwrseq *pwrseq)
-> +{
-> +	struct pwrseq_qca_one *qca_one = pwrseq_get_data(pwrseq);
-> +	int ret;
-> +
-> +	if (qca_one->common->vddio) {
-
-devm_regulator_get() doesn't return NULL, so this is always true.
-
-> +		ret = regulator_enable(qca_one->common->vddio);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	ret = regulator_bulk_enable(qca_one->common->num_vregs, qca_one->common->vregs);
-> +	if (ret)
-> +		goto vddio_off;
-> +
-> +	if (qca_one->enable) {
-> +		gpiod_set_value_cansleep(qca_one->enable, 0);
-> +		msleep(50);
-> +		gpiod_set_value_cansleep(qca_one->enable, 1);
-> +		msleep(150);
-> +	}
-> +
-> +	if (qca_one->common->sw_ctrl) {
-> +		bool sw_ctrl_state = gpiod_get_value_cansleep(qca_one->common->sw_ctrl);
-> +		dev_dbg(&pwrseq->dev, "SW_CTRL is %d", sw_ctrl_state);
-> +	}
-> +
-> +	return 0;
-> +
-> +vddio_off:
-> +	regulator_disable(qca_one->common->vddio);
-> +
-> +	return ret;
-> +}
-[..]
-> +static int pwrseq_qca_probe(struct platform_device *pdev)
-> +{
-> +	struct pwrseq_qca *pwrseq_qca;
-> +	struct pwrseq *pwrseq;
-> +	struct pwrseq_provider *provider;
-> +	struct device *dev = &pdev->dev;
-> +	struct pwrseq_onecell_data *onecell;
-> +	const struct qca_device_data *data;
-> +	int ret, i;
-> +
-> +	data = device_get_match_data(dev);
-> +	if (!data)
-> +		return -EINVAL;
-> +
-> +	pwrseq_qca = devm_kzalloc(dev, struct_size(pwrseq_qca, vregs, data->num_vregs), GFP_KERNEL);
-> +	if (!pwrseq_qca)
-> +		return -ENOMEM;
-> +
-> +	onecell = devm_kzalloc(dev, struct_size(onecell, pwrseqs, PWRSEQ_QCA_MAX), GFP_KERNEL);
-> +	if (!onecell)
-> +		return -ENOMEM;
-> +
-> +	ret = pwrseq_qca_regulators_init(dev, pwrseq_qca, data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (data->has_wifi_en) {
-> +		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable = devm_gpiod_get(dev, "wifi-enable", GPIOD_OUT_LOW);
-> +		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable)) {
-> +			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_WIFI].enable),
-> +					"failed to acquire WIFI enable GPIO\n");
-> +		}
-> +	}
-> +
-> +	if (data->has_bt_en) {
-> +		pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable = devm_gpiod_get(dev, "bt-enable", GPIOD_OUT_LOW);
-> +		if (IS_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable)) {
-> +			return dev_err_probe(dev, PTR_ERR(pwrseq_qca->pwrseq_qcas[PWRSEQ_QCA_BT].enable),
-> +					"failed to acquire BT enable GPIO\n");
-> +		}
-> +	}
-> +
-> +	pwrseq_qca->sw_ctrl = devm_gpiod_get_optional(dev, "swctrl", GPIOD_IN);
-> +	if (IS_ERR(pwrseq_qca->sw_ctrl)) {
-> +		return dev_err_probe(dev, PTR_ERR(pwrseq_qca->sw_ctrl),
-> +				"failed to acquire SW_CTRL gpio\n");
-> +	} else if (!pwrseq_qca->sw_ctrl)
-> +		dev_info(dev, "No SW_CTRL gpio\n");
-
-Some {} around the else as well please.
-
-Regards,
-Bjorn
