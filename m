@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C204F3F1137
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6233B3F1141
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236156AbhHSDHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:07:32 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39431 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235792AbhHSDHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:07:30 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GqqRw47HGz9sVw;
-        Thu, 19 Aug 2021 13:06:52 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629342413;
-        bh=3CY+GC+/4FbWVWTR9SwmZRjFqyi6hW0w0sxX9wtxZ2g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EcY9FQD9xHkLJzKWddIICTtnVSADJTSBGCHqSZG1/ciVaw3IESCfGLzJ3hWvsbn5t
-         usgGuEZMt8bafYKikvU4NaBej4avIVUMza0iA1lwm5EunCUasopHdW4DK6iztlEhKF
-         VhsRR3NIC5Gsfh0LhSoPyKBHAaLu35BUjFF7SkDYHa3PmHOrIAx8my7cBz3Z/REO7B
-         xrSmWfsM9M/o2dI1mgcTJzMAPZtThEOYjZJCIrgg7UkvZW6KztZxLtBlK7etSgHb9+
-         OghhDLR4sHpUSEzkilJUuYJyrsCbQsJqLvKr46vygycM5JgPcuvl3fiDOmbYsnH9Tt
-         e782oNJ34kwEg==
-Date:   Thu, 19 Aug 2021 13:06:51 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        viresh.kumar@linaro.org, conghui.chen@intel.com
-Subject: Re: [PATCH] i2c: virtio: Fix the compiler warning when CONFIG_ACPI
- is not set
-Message-ID: <20210819130651.73945bcc@canb.auug.org.au>
-In-Reply-To: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
-References: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
+        id S235964AbhHSDKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235792AbhHSDKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 23:10:11 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E97C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:09:33 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so6908645otf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SsXVSz/26EZKyGqHQ3H98C+Z+vwznDQGFVyM/rcTClE=;
+        b=oRLpRJvMBywHPqy3mP5+xHspefHDLfoPPXCmKMZGgiwYSxb4ZL7W+wPmesXjmhuXq4
+         AHMRMRyApr/SLz/94iRdy7wm4mdQua7EX6AQuK2uiYcxmPERmaJBVr96U3E08hWWntYk
+         lB8SKlcIKP9h+mB+Ozn/ywfXd7y+m7AIinh9qsXnJIFv2xRCxPs/vuME9ou1AdJrBJ9d
+         NV2vuEaZQ+pgj3rt4MLAXaOLW0U/5ZXBMhUIbm5ZVF/PHNyuB3SToMWj1Ay5Q966V+mM
+         QbIYlzPBNenCzZ550cq26p/jAQolvTHPkat/VGOigKlnGfhOVK9cjYdtBQjKg7mGJi+l
+         0qhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SsXVSz/26EZKyGqHQ3H98C+Z+vwznDQGFVyM/rcTClE=;
+        b=qlVSYCtkH3EHHbyAxg4xjB4Z1o6XYFXQzHmax4NGNDRdpWqidObR0jsRf1uACTHmYq
+         /Q49FS1y8kp1lR6XDuvzd31FXGa5+aBaGVyf/F3kZnpi4M+bxHag1oDgEEYwDa/Es00A
+         AHLcUdSbEAKxE0Z/AoLGfXArZjSr51+j3fqbT7sMESYe9kMiwyZehfPhP7wcdUjbXIBC
+         PUEy7F5Mx5mBbeLiGQPz65cYIQWzKuaCfjZWNLGNJVDLGHAy2mzLVt8ou+sxCpR6OO8M
+         IUPq9WQhqfLNTc4JndZ6gi7Sk89inPVeyLozJkrebKvriSS/cb3wLzGEv2M2wQj/YrBV
+         VWBg==
+X-Gm-Message-State: AOAM533amKmxlUglFsv3lyUoknUUzPNubh5Iq4lf0dPTM92zqdZEGmoL
+        cjNvDow/nj/NB+LMM3Aaxu0FlWgxDn7yxA==
+X-Google-Smtp-Source: ABdhPJzUr7YNQNUEn92uuV9i+Siah4bxj2eJM18N02R01SKX3saiB6iP+BzbrB8LhTchbMu/QBzTPg==
+X-Received: by 2002:a9d:4d90:: with SMTP id u16mr10046192otk.226.1629342572357;
+        Wed, 18 Aug 2021 20:09:32 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j70sm449089otj.38.2021.08.18.20.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Aug 2021 20:09:31 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 22:09:30 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     quic_vamslank@quicinc.com
+Cc:     agross@kernel.org, linus.walleij@linaro.org,
+        manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pinctrl: qcom: Add SDX65 pincontrol driver
+Message-ID: <YR3Lah3xSMnrfXSd@builder.lan>
+References: <cover.1626987605.git.quic_vamslank@quicinc.com>
+ <ae414345bf85359f38895b44cb53eeb82c4f8758.1626987605.git.quic_vamslank@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QJA95UnxUR0M=zAmKUp0atE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae414345bf85359f38895b44cb53eeb82c4f8758.1626987605.git.quic_vamslank@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QJA95UnxUR0M=zAmKUp0atE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu 22 Jul 16:18 CDT 2021, quic_vamslank@quicinc.com wrote:
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sdx65.c b/drivers/pinctrl/qcom/pinctrl-sdx65.c
+[..]
+> +enum sdx65_functions {
+> +	msm_mux_QLINK0_WMSS,
 
-Hi Jie,
+I think this would be more aesthetically pleasing if it was lower case,
+like all the other entries. Can you please fix that?
 
-On Thu, 19 Aug 2021 08:48:41 +0800 Jie Deng <jie.deng@intel.com> wrote:
->
-> Fix the compiler warning "drivers/i2c/busses/i2c-virtio.c:208:17:
-> warning: unused variable 'pdev' [-Wunused-variable]" when CONFIG_ACPI
-> is not set.
->=20
-> Fixes: 8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+With that:
 
-> Signed-off-by: Jie Deng <jie.deng@intel.com>
-> ---
->  drivers/i2c/busses/i2c-virtio.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-vir=
-tio.c
-> index d3e60d9..964c601 100644
-> --- a/drivers/i2c/busses/i2c-virtio.c
-> +++ b/drivers/i2c/busses/i2c-virtio.c
-> @@ -205,7 +205,6 @@ static const struct i2c_adapter_quirks virtio_i2c_qui=
-rks =3D {
-> =20
->  static int virtio_i2c_probe(struct virtio_device *vdev)
->  {
-> -	struct device *pdev =3D vdev->dev.parent;
->  	struct virtio_i2c *vi;
->  	int ret;
-> =20
-> @@ -234,7 +233,7 @@ static int virtio_i2c_probe(struct virtio_device *vde=
-v)
->  	 * Setup ACPI node for controlled devices which will be probed through
->  	 * ACPI.
->  	 */
-> -	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
-> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(vdev->dev.parent));
-> =20
->  	ret =3D i2c_add_adapter(&vi->adap);
->  	if (ret)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Looks good to me.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/QJA95UnxUR0M=zAmKUp0atE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEdyssACgkQAVBC80lX
-0Gxw7Qf/fdlmIsM8h5nIZGD7ptVdJSD3poHXXbuM7T9D+8HSLed0ci4jpDOaO7rW
-cC4bcMYOQQHYT3ZgalMDSQmf+nlwWbgFyQ8RPZ6RnssrwOG0CH8LKtU+HBYSBgZu
-ETkW58Ny+0dUUXD88MPatdr/1+VnSVEGNnUrQSoegkOBrbU3GNhQ0AnCG8CLh/5D
-5chhc6aU2GumqlcsWcl6jhyEVtlzZyqTBe9GaC1sbCamsqHluIc7XV38vz+q1Q4R
-nIWedufbBlcPNJWsyDQlzay2A1YaT/7QX+aEOqo/mClRADMJw9kxE7xF1hMecH+f
-FcWBGpkAwyhDkZu/xpleFsc1+Pwg+w==
-=Sc41
------END PGP SIGNATURE-----
-
---Sig_/QJA95UnxUR0M=zAmKUp0atE--
+Regards,
+Bjorn
