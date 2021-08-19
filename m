@@ -2,172 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B491F3F23D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7EC3F23DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbhHSXtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
+        id S236607AbhHSXw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 19:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236585AbhHSXtN (ORCPT
+        with ESMTP id S232701AbhHSXwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:49:13 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02A1C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:48:36 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id j2so492532pll.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 16:48:36 -0700 (PDT)
+        Thu, 19 Aug 2021 19:52:24 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F35C061575;
+        Thu, 19 Aug 2021 16:51:47 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id f10so1730393lfv.6;
+        Thu, 19 Aug 2021 16:51:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=peyh3WLA8DgwuaakoXbly04TuP2J4HXY0owEUug9y1c=;
-        b=BbFJLtvxbxBG+7picsXObo5Qj8iquJ+C6Q7w5pe27YupZ7+zDXLN540+QU8HPzkPh2
-         WwzvQTknLR7mJUL2ZtsslkF86UhNT3PUimzJd1W/xc0YsfWgxj0uNN/X65pRaldPuQy1
-         Svz/l9I2+rXfrKEmbGry3ew82Uw0db0pKDxq9ukmqwtSMFXcHcAuMrcqlCqOeGH1V/uC
-         AqRS5aTXg3eyxy84gMMrOJhW6Ac+BzpVGDyg6q+eRN+OlPt5iJkRzEHzotLklvgBWCCO
-         ThS3AjXFs8AEz4pcXFmbRPSyBU/T0LhtGGlVC0DabZEeUTxAm2SIBNQHSE15qMVZvLr/
-         ceIA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9UpzojMJeDxBeMajFIkGlxhgCIvbN9PYZ8Vm9UYX53A=;
+        b=EULMLoxf8Uh+n/5NA2bT+gbfjybLnoBjUlu0+fhcVXi2pwww2qQQ9X3ie80Gd76+ez
+         iluQ4IXi3X2qBkZBNnV3DEC5k6AhoMCsYO3bblSGoH15YRQhn110a/fJ8+zdCjaViIdb
+         Rswh0V9hyrF1T5BhOCVtV8eHfSuqk6Inn6AKI3MRebmEl0cjTs4ohJbTjNSyiud8sh/v
+         /+uzNKeBkBMUErqhkWLaFhTfUyV8Jz9emT975gOacyj58ugDmFU5JMBAoMVilHYD1PMr
+         AwFJjfgo/zco4KCFhEbeUWovSZbBS2qbGH8GXM3BFvo0jMu10TxXJT7KOa9ITMZ+QUn9
+         S1SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=peyh3WLA8DgwuaakoXbly04TuP2J4HXY0owEUug9y1c=;
-        b=q6CafRAG8D8QGwDP3ZWZmkSXIFRLnkMvRX4SYtwRyQLpUkdUjcYU+pWVea77COi4Yp
-         xKR5Pd4GfHVC02YeZ+2XERPIbBGvy2HZYC8sVlIZP/YFTfbp369Spn/W28rNW1gjiyzP
-         x6qnz6zatsd7oI7uO/3RcpdxNPFfOrCjCBi2518svUzL5KFPHS1jVFb2JN87S2UCu3nP
-         IHSkq1nTvdgKLcqiZSUgFs6YpxrzowsRhaYoWJm+k+SkwZBVu6W+oToQuOg0Cj8KXbAb
-         7lXOUJ8os9ndJ6ZZ4TKAwJZFjmYynzye/qiPxAbIiqZCbp23Nrl30NnA5kVHnpvnZGqL
-         WQwA==
-X-Gm-Message-State: AOAM531gBoTRh8cplBdS1g0zoB7soeA2LxyeY4gRKg0rQTnw42gpT9eA
-        l4FAGFvzYhKJaXa1s+v0yiY53w==
-X-Google-Smtp-Source: ABdhPJwX9PVK0tEzKb91C/ktX1nj3RcgHWNnmrdk1FjTlt3T+0IB78U5SgxuhlVnRMNmyLPH0lN5vw==
-X-Received: by 2002:a17:90b:80c:: with SMTP id bk12mr1415764pjb.134.1629416916083;
-        Thu, 19 Aug 2021 16:48:36 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id a4sm4880315pfk.0.2021.08.19.16.48.35
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9UpzojMJeDxBeMajFIkGlxhgCIvbN9PYZ8Vm9UYX53A=;
+        b=cq0eTEmAS2ZdTrPTHGm0euebilmSwXfm6f3UJy6Fn9OE7L705DKJ1cUfdXOOyu31SS
+         y/L8jnPjhkpE916gdmzga57myzZXNMoemb2zxkwnpWL2wHBJeKF3QS3L8gXfWmFgE9CV
+         Re8W0r+9Lx6m97qXhIk1IbdoX7RYGucKMdZhEADmTM/mMyDe8LjuIcDziwNB6bJdWAYC
+         ZQKS55lT5WpzIAiHzSHPN4V9fmxM8BNuXMZktDnPhSV6TyZJ4DxRSouk6yO4ZhaquVpx
+         oitC+YrLlOVGwHH6v/3NE53kXysk34SKgnOG6c+bRg4l0Qm4Q4nOn+f1ObwYVMt8znRy
+         hFmw==
+X-Gm-Message-State: AOAM533rUXq0xbUjErXRzkBYbbWMEu+pwTiHs3b7ZHoku0gPXOTcLgHJ
+        Ppu6T/yzMxXsi2A0TBQlAqo=
+X-Google-Smtp-Source: ABdhPJwTFFTUmy3uHikXbz+xK1H/x8MEoSVjFIaeAS8QxgwPYeLx8jkXwF2EeW6vxNceWvb1//NDKw==
+X-Received: by 2002:ac2:5f0f:: with SMTP id 15mr12592366lfq.25.1629417105649;
+        Thu, 19 Aug 2021 16:51:45 -0700 (PDT)
+Received: from localhost.localdomain (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
+        by smtp.gmail.com with ESMTPSA id a4sm450951lfs.273.2021.08.19.16.51.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 16:48:35 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 23:48:29 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390@vger.kernel.org, KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing NOTIFY_RESUME
- on xfer to KVM guest
-Message-ID: <YR7tzZ98XC6OV2vu@google.com>
-References: <20210818001210.4073390-1-seanjc@google.com>
- <20210818001210.4073390-2-seanjc@google.com>
- <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
+        Thu, 19 Aug 2021 16:51:45 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] power: supply: core: Fix parsing of battery chemistry/technology
+Date:   Fri, 20 Aug 2021 02:51:11 +0300
+Message-Id: <20210819235111.25357-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021, Mathieu Desnoyers wrote:
-> ----- On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
-> > @@ -250,7 +250,7 @@ static int rseq_ip_fixup(struct pt_regs *regs)
-> > 	 * If not nested over a rseq critical section, restart is useless.
-> > 	 * Clear the rseq_cs pointer and return.
-> > 	 */
-> > -	if (!in_rseq_cs(ip, &rseq_cs))
-> > +	if (!regs || !in_rseq_cs(ip, &rseq_cs))
-> 
-> I think clearing the thread's rseq_cs unconditionally here when regs is NULL
-> is not the behavior we want when this is called from xfer_to_guest_mode_work.
-> 
-> If we have a scenario where userspace ends up calling this ioctl(KVM_RUN)
-> from within a rseq c.s., we really want a CONFIG_DEBUG_RSEQ=y kernel to
-> kill this application in the rseq_syscall handler when exiting back to usermode
-> when the ioctl eventually returns.
-> 
-> However, clearing the thread's rseq_cs will prevent this from happening.
-> 
-> So I would favor an approach where we simply do:
-> 
-> if (!regs)
->      return 0;
-> 
-> Immediately at the beginning of rseq_ip_fixup, before getting the instruction
-> pointer, so effectively skip all side-effects of the ip fixup code. Indeed, it
-> is not relevant to do any fixup here, because it is nested in a ioctl system
-> call.
-> 
-> Effectively, this would preserve the SIGSEGV behavior when this ioctl is
-> erroneously called by user-space from a rseq critical section.
+The power_supply_get_battery_info() fails if device-chemistry property
+is missing in a device-tree because error variable is propagated to the
+final return of the function, fix it.
 
-Ha, that's effectively what I implemented first, but I changed it because of the
-comment in clear_rseq_cs() that says:
+Fixes: 4eef766b7d4d ("power: supply: core: Parse battery chemistry/technology")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/power/supply/power_supply_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-  The rseq_cs field is set to NULL on preemption or signal delivery ... as well
-  as well as on top of code outside of the rseq assembly block.
+diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
+index dd62c871b2b5..0c2132c7f5d4 100644
+--- a/drivers/power/supply/power_supply_core.c
++++ b/drivers/power/supply/power_supply_core.c
+@@ -619,8 +619,7 @@ int power_supply_get_battery_info(struct power_supply *psy,
+ 	 * Documentation/power/power_supply_class.rst.
+ 	 */
+ 
+-	err = of_property_read_string(battery_np, "device-chemistry", &value);
+-	if (!err) {
++	if (!of_property_read_string(battery_np, "device-chemistry", &value)) {
+ 		if (!strcmp("nickel-cadmium", value))
+ 			info->technology = POWER_SUPPLY_TECHNOLOGY_NiCd;
+ 		else if (!strcmp("nickel-metal-hydride", value))
+-- 
+2.32.0
 
-Which makes it sound like something might rely on clearing rseq_cs?
-
-Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
-rseq critical section, and because syscalls in critical sections are illegal, by
-definition clearing rseq_cs is a nop unless userspace is misbehaving.
-
-If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
-not worth the extra code to detect an error that will likely be caught anyways?
-
-diff --git a/kernel/rseq.c b/kernel/rseq.c
-index 35f7bd0fced0..28b8342290b0 100644
---- a/kernel/rseq.c
-+++ b/kernel/rseq.c
-@@ -282,6 +282,13 @@ void __rseq_handle_notify_resume(struct ksignal *ksig, struct pt_regs *regs)
-
-        if (unlikely(t->flags & PF_EXITING))
-                return;
-+       if (!regs) {
-+#ifdef CONFIG_DEBUG_RSEQ
-+               if (t->rseq && rseq_get_rseq_cs(t, &rseq_cs))
-+                       goto error;
-+#endif
-+               return;
-+       }
-        ret = rseq_ip_fixup(regs);
-        if (unlikely(ret < 0))
-                goto error;
-
-> Thanks for looking into this !
-> 
-> Mathieu
-> 
-> > 		return clear_rseq_cs(t);
-> > 	ret = rseq_need_restart(t, rseq_cs.flags);
-> > 	if (ret <= 0)
-> > --
-> > 2.33.0.rc1.237.g0d66db33f3-goog
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
