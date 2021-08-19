@@ -2,183 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754253F16D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEFF3F16CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238150AbhHSJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238109AbhHSJ5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:57:00 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3C1C0613CF;
-        Thu, 19 Aug 2021 02:56:23 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id l11so8182491wrx.4;
-        Thu, 19 Aug 2021 02:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZGvg8dfc9wmKRNl+QTgPyRSm2QhtLNfk+83gimM4XNI=;
-        b=hag8HjWkoLnlWff2dlAOAjapUPbMFhns4/RrxwIf+cDegN7pvOFV7IfidwjeW08FXQ
-         Je5DUPNJLtqG/sUQaoBAmHu5UXUQxve7qCtaIKPUOmDLAf6T9UhuCy7bmTfQed2OxHrM
-         aHChMrPIA7tydWGo4dnGXOD0+ZzCHzGFZM8F4oOAJoi5JO2vs2iWYwaWZ+wKS5Lkgsb/
-         WZdhWbue0BccvU9iVXZItQuIhcCvx1tvofwNURqgK5385KBnererOE2iJWfQrNS+eBPk
-         j5ZJRQo5rlxDP6qRR5bQysbTRpyJnnuii4QnhDZ0aXklIyB6vr2vkP7byz9KkKYcz5v8
-         RcjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZGvg8dfc9wmKRNl+QTgPyRSm2QhtLNfk+83gimM4XNI=;
-        b=nzZAs+Xe2ink19GpjDYLZ1Ko4/sEEbMjSNNJ3PYlPNLmo7ohKwVIDgNEg5kFHpD+uI
-         l3AdU0pfV/VoljaF/mamP4l8/YqKbVBZc3F31bta9lY3A4ewZoOk5Ii5WMNT/fGyMT2Y
-         69Kl3va95o2rSdMLx4TublyaFD1eFu3V8MoJL5JKtrAFwQGhlWjCFbmlc9Cq3KX6MSSE
-         XSlKmGyomYS7eJfMsE8Hl1GRlJhRLZS5bZrgPPTCBgEkK2O07/Il7bI6Bvahcs3cyuqI
-         dlT06oS5Rs8nqPlFSGMnKojm+GFzyCE1TrfzSel/N2nIGGtBD9lNLtaD8jRmPzNiY+6A
-         0eig==
-X-Gm-Message-State: AOAM533MX1Orz/MNaCjkm02Uc1izYrcpJmLIosCAxxL4YqdeS41zugti
-        TApjSQNLHy8kDxwCVkNFgsUIiahcZGSieg==
-X-Google-Smtp-Source: ABdhPJxlGYn7yHv27sS4+nkt/PPDWOb1MWMaWjfTDsGFR/1mUORspVeaACo9BHfSH46NWm2h9tIvHA==
-X-Received: by 2002:a5d:4d8e:: with SMTP id b14mr2683537wru.422.1629366982248;
-        Thu, 19 Aug 2021 02:56:22 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f08:4500:c830:756b:68fa:7529? (p200300ea8f084500c830756b68fa7529.dip0.t-ipconnect.de. [2003:ea:8f08:4500:c830:756b:68fa:7529])
-        by smtp.googlemail.com with ESMTPSA id o14sm2005680wms.2.2021.08.19.02.56.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Aug 2021 02:56:21 -0700 (PDT)
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210819054542.608745-1-kai.heng.feng@canonical.com>
- <20210819054542.608745-4-kai.heng.feng@canonical.com>
- <084b8ea3-99d8-3393-4b74-0779c92fde64@gmail.com>
- <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next v3 3/3] r8169: Enable ASPM for selected NICs
-Message-ID: <d3e4ec0b-2681-1b3c-f0ca-828b24b253e7@gmail.com>
-Date:   Thu, 19 Aug 2021 11:56:11 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S237969AbhHSJ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:56:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:34300 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232750AbhHSJ4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 05:56:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2EDE1FB;
+        Thu, 19 Aug 2021 02:56:05 -0700 (PDT)
+Received: from [10.163.69.73] (unknown [10.163.69.73])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 947EA3F70D;
+        Thu, 19 Aug 2021 02:55:59 -0700 (PDT)
+Subject: Re: [PATCH 2/2] powerpc: rectify selection to
+ ARCH_ENABLE_SPLIT_PMD_PTLOCK
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Neuling <mikey@neuling.org>, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     stable@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210819093226.13955-1-lukas.bulwahn@gmail.com>
+ <20210819093226.13955-3-lukas.bulwahn@gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <12a996cb-5c54-afab-f095-708a08931cad@arm.com>
+Date:   Thu, 19 Aug 2021 15:26:44 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAAd53p4CYOOXjyNdTnBtsQ+2MW-Jar8fgEfPFZHSPrJde=HqVA@mail.gmail.com>
+In-Reply-To: <20210819093226.13955-3-lukas.bulwahn@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.08.2021 08:50, Kai-Heng Feng wrote:
-> On Thu, Aug 19, 2021 at 2:08 PM Heiner Kallweit <hkallweit1@gmail.com> wrote:
->>
->> On 19.08.2021 07:45, Kai-Heng Feng wrote:
->>> The latest vendor driver enables ASPM for more recent r8168 NICs, so
->>> disable ASPM on older chips and enable ASPM for the rest.
->>>
->>> Rename aspm_manageable to pcie_aspm_manageable to indicate it's ASPM
->>> from PCIe, and use rtl_aspm_supported for Realtek NIC's internal ASPM
->>> function.
->>>
->>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>> ---
->>> v3:
->>>  - Use pcie_aspm_supported() to retrieve ASPM support status
->>>  - Use whitelist for r8169 internal ASPM status
->>>
->>> v2:
->>>  - No change
->>>
->>>  drivers/net/ethernet/realtek/r8169_main.c | 27 ++++++++++++++++-------
->>>  1 file changed, 19 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
->>> index 3359509c1c351..88e015d93e490 100644
->>> --- a/drivers/net/ethernet/realtek/r8169_main.c
->>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
->>> @@ -623,7 +623,8 @@ struct rtl8169_private {
->>>       } wk;
->>>
->>>       unsigned supports_gmii:1;
->>> -     unsigned aspm_manageable:1;
->>> +     unsigned pcie_aspm_manageable:1;
->>> +     unsigned rtl_aspm_supported:1;
->>>       unsigned rtl_aspm_enabled:1;
->>>       struct delayed_work aspm_toggle;
->>>       atomic_t aspm_packet_count;
->>> @@ -702,6 +703,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
->>>              tp->mac_version <= RTL_GIGA_MAC_VER_53;
->>>  }
->>>
->>> +static int rtl_supports_aspm(struct rtl8169_private *tp)
->>> +{
->>> +     switch (tp->mac_version) {
->>> +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
->>> +     case RTL_GIGA_MAC_VER_37:
->>> +     case RTL_GIGA_MAC_VER_39:
->>> +     case RTL_GIGA_MAC_VER_43:
->>> +     case RTL_GIGA_MAC_VER_47:
->>> +             return 0;
->>> +     default:
->>> +             return 1;
->>> +     }
->>> +}
->>> +
->>>  static bool rtl_supports_eee(struct rtl8169_private *tp)
->>>  {
->>>       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
->>> @@ -2669,7 +2684,7 @@ static void rtl_pcie_state_l2l3_disable(struct rtl8169_private *tp)
->>>
->>>  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
->>>  {
->>> -     if (!tp->aspm_manageable && enable)
->>> +     if (!(tp->pcie_aspm_manageable && tp->rtl_aspm_supported) && enable)
->>>               return;
->>>
->>>       tp->rtl_aspm_enabled = enable;
->>> @@ -5319,12 +5334,8 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
->>>       if (rc)
->>>               return rc;
->>>
->>> -     /* Disable ASPM completely as that cause random device stop working
->>> -      * problems as well as full system hangs for some PCIe devices users.
->>> -      */
->>> -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S |
->>> -                                       PCIE_LINK_STATE_L1);
->>> -     tp->aspm_manageable = !rc;
->>> +     tp->pcie_aspm_manageable = pcie_aspm_supported(pdev);
->>
->> That's not what I meant, and it's also not correct.
-> 
-> In case I make another mistake in next series, let me ask it more clearly...
-> What you meant was to check both link->aspm_enabled and link->aspm_support?
-> 
-aspm_enabled can be changed by the user at any time.
-pci_disable_link_state() also considers whether BIOS forbids that OS
-mess with ASPM. See aspm_disabled.
 
->>
->>> +     tp->rtl_aspm_supported = rtl_supports_aspm(tp);
-> 
-> Is rtl_supports_aspm() what you expect for the whitelist?
-> And what else am I missing?
-> 
-I meant use rtl_supports_aspm() to check when ASPM is relevant at all,
-and in addition use a blacklist for chip versions where ASPM is
-completely unusable.
 
-> Kai-Heng
-> 
->>>
->>>       /* enable device (incl. PCI PM wakeup and hotplug setup) */
->>>       rc = pcim_enable_device(pdev);
->>>
->>
+On 8/19/21 3:02 PM, Lukas Bulwahn wrote:
+> Commit 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
+> selects the non-existing config ARCH_ENABLE_PMD_SPLIT_PTLOCK in
+> ./arch/powerpc/platforms/Kconfig.cputype, but clearly it intends to select
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK here (notice the word swapping!), as this
+> commit does select that for all other architectures.
 
+Right, indeed the words here got swapped. They look very similar and also
+a cross compile would not even detect the problem because the non-existent
+config option would simply evaluate to 0. Thanks for catching this.
+
+> 
+> Rectify selection to ARCH_ENABLE_SPLIT_PMD_PTLOCK instead.
+> 
+> Fixes: 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  arch/powerpc/platforms/Kconfig.cputype | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+> index 6794145603de..a208997ade88 100644
+> --- a/arch/powerpc/platforms/Kconfig.cputype
+> +++ b/arch/powerpc/platforms/Kconfig.cputype
+> @@ -98,7 +98,7 @@ config PPC_BOOK3S_64
+>  	select PPC_HAVE_PMU_SUPPORT
+>  	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+>  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
+> -	select ARCH_ENABLE_PMD_SPLIT_PTLOCK
+> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
+>  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+>  	select ARCH_SUPPORTS_HUGETLBFS
+>  	select ARCH_SUPPORTS_NUMA_BALANCING
+> 
