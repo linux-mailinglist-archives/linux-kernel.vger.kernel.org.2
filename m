@@ -2,71 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D473F1798
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 12:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93EEF3F179D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhHSK7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 06:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbhHSK7d (ORCPT
+        id S238392AbhHSLBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:01:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43694 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236149AbhHSLBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 06:59:33 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D943C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 03:58:57 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0f6a00d82486aa7bad8753.dip0.t-ipconnect.de [IPv6:2003:ec:2f0f:6a00:d824:86aa:7bad:8753])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0FFDD1EC046C;
-        Thu, 19 Aug 2021 12:58:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629370732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uJc8iQOMh19YUZqvbvnpPt1cT6a67MCNsTrmP9yUlCQ=;
-        b=aMEues0qL4uAPysYn7M4pLmNxYe79yEci73YSkAkq4yUtJkdQWjpYpPIFKzjVF17Nizs6T
-        Tsq2YwJj9Lll2RJQkaOTyvG6Xj8uIKkOp8sRmF1SBnBA3+lzvuW3C64SIt4gX4hk+axTw1
-        o5+R46hpjHtn8hUIoLqbtRtT3PLfkcY=
-Date:   Thu, 19 Aug 2021 12:59:30 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: x86/boot/compressed/64: Lenovo Ideapad Miix300 bug report
-Message-ID: <YR45kjdCNXCp15eZ@zn.tnic>
-References: <20210819100230.GA28768@agape.jhs>
- <YR4uffjFuqvrz1Tp@zn.tnic>
- <6d7f217e-f8bb-54c5-844d-4b1dff14c785@redhat.com>
+        Thu, 19 Aug 2021 07:01:48 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17JB19lK127769;
+        Thu, 19 Aug 2021 06:01:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629370869;
+        bh=GYwL4KMn9MwNzBaNPtVm7kwbuDADlm8h+rKdpDKQ7Y4=;
+        h=From:To:CC:Subject:Date;
+        b=BYyKLDFs1PU+DDBDLEiZ7CvgjJMGQjbejL5jkLng0ET0kY4cN+3iW0brys0GXgs8k
+         8HhblVSmeWK9a7tBtr1EwDVbnpWbwdhWCzyqzW84pDzxjJLLD2+TfDyNLzz8uVT+aH
+         lUBTNnvG6U4VG0MhMLdNb9Dvs3rjzgzi7CD4CSI0=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17JB19Np071686
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 19 Aug 2021 06:01:09 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 19
+ Aug 2021 06:01:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 19 Aug 2021 06:01:09 -0500
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17JB169u012836;
+        Thu, 19 Aug 2021 06:01:07 -0500
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Pratyush Yadav <p.yadav@ti.com>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] dmaengine: ti: k3-psil-j721e: Add entry for CSI2RX
+Date:   Thu, 19 Aug 2021 16:31:05 +0530
+Message-ID: <20210819110106.31409-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <6d7f217e-f8bb-54c5-844d-4b1dff14c785@redhat.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 12:47:05PM +0200, Hans de Goede wrote:
-> Fabio is using the standard Fedora kernels which as generic distro
-> kernels have this enabled.
+The CSI2RX subsystem on J721E is serviced by UDMA via PSI-L to transfer
+frames to memory. It can have up to 32 threads per instance. J721E has
+two instances of the subsystem, so there are 64 threads total. Add them
+to the endpoint map.
 
-Right, I suspected but wanted to make sure. Then my second question
-would need answering:
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Acked-by: Peter Ujfalusi <peter.ujflausi@gmail.com>
 
-Does it boot plain 5.13.x (without any reverts) fine with that config
-item disabled?
+---
+This patch has been split off from [0] to facilitate easier merging. I
+have still kept the version number to maintain continuity with the
+previous patches.
 
-> (even if using a distro-kernel-config leads to long build times for
-> the bisect).
+[0] https://patchwork.linuxtv.org/project/linux-media/list/?series=5526&state=%2A&archive=both
 
-Yah, tell me about it. :-\
+Changes in v4:
+- Update commit message with Peter's suggested changes.
+- Add Peter's Ack.
 
+Changes in v3:
+- Update commit message to mention that all 64 threads are being added.
+
+Changes in v2:
+- Add all 64 threads, instead of having only the one thread being
+  currently used by the driver.
+
+ drivers/dma/ti/k3-psil-j721e.c | 73 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+
+diff --git a/drivers/dma/ti/k3-psil-j721e.c b/drivers/dma/ti/k3-psil-j721e.c
+index 7580870ed746..34e3fc565a37 100644
+--- a/drivers/dma/ti/k3-psil-j721e.c
++++ b/drivers/dma/ti/k3-psil-j721e.c
+@@ -58,6 +58,14 @@
+ 		},					\
+ 	}
+ 
++#define PSIL_CSI2RX(x)					\
++	{						\
++		.thread_id = x,				\
++		.ep_config = {				\
++			.ep_type = PSIL_EP_NATIVE,	\
++		},					\
++	}
++
+ /* PSI-L source thread IDs, used for RX (DMA_DEV_TO_MEM) */
+ static struct psil_ep j721e_src_ep_map[] = {
+ 	/* SA2UL */
+@@ -138,6 +146,71 @@ static struct psil_ep j721e_src_ep_map[] = {
+ 	PSIL_PDMA_XY_PKT(0x4707),
+ 	PSIL_PDMA_XY_PKT(0x4708),
+ 	PSIL_PDMA_XY_PKT(0x4709),
++	/* CSI2RX */
++	PSIL_CSI2RX(0x4940),
++	PSIL_CSI2RX(0x4941),
++	PSIL_CSI2RX(0x4942),
++	PSIL_CSI2RX(0x4943),
++	PSIL_CSI2RX(0x4944),
++	PSIL_CSI2RX(0x4945),
++	PSIL_CSI2RX(0x4946),
++	PSIL_CSI2RX(0x4947),
++	PSIL_CSI2RX(0x4948),
++	PSIL_CSI2RX(0x4949),
++	PSIL_CSI2RX(0x494a),
++	PSIL_CSI2RX(0x494b),
++	PSIL_CSI2RX(0x494c),
++	PSIL_CSI2RX(0x494d),
++	PSIL_CSI2RX(0x494e),
++	PSIL_CSI2RX(0x494f),
++	PSIL_CSI2RX(0x4950),
++	PSIL_CSI2RX(0x4951),
++	PSIL_CSI2RX(0x4952),
++	PSIL_CSI2RX(0x4953),
++	PSIL_CSI2RX(0x4954),
++	PSIL_CSI2RX(0x4955),
++	PSIL_CSI2RX(0x4956),
++	PSIL_CSI2RX(0x4957),
++	PSIL_CSI2RX(0x4958),
++	PSIL_CSI2RX(0x4959),
++	PSIL_CSI2RX(0x495a),
++	PSIL_CSI2RX(0x495b),
++	PSIL_CSI2RX(0x495c),
++	PSIL_CSI2RX(0x495d),
++	PSIL_CSI2RX(0x495e),
++	PSIL_CSI2RX(0x495f),
++	PSIL_CSI2RX(0x4960),
++	PSIL_CSI2RX(0x4961),
++	PSIL_CSI2RX(0x4962),
++	PSIL_CSI2RX(0x4963),
++	PSIL_CSI2RX(0x4964),
++	PSIL_CSI2RX(0x4965),
++	PSIL_CSI2RX(0x4966),
++	PSIL_CSI2RX(0x4967),
++	PSIL_CSI2RX(0x4968),
++	PSIL_CSI2RX(0x4969),
++	PSIL_CSI2RX(0x496a),
++	PSIL_CSI2RX(0x496b),
++	PSIL_CSI2RX(0x496c),
++	PSIL_CSI2RX(0x496d),
++	PSIL_CSI2RX(0x496e),
++	PSIL_CSI2RX(0x496f),
++	PSIL_CSI2RX(0x4970),
++	PSIL_CSI2RX(0x4971),
++	PSIL_CSI2RX(0x4972),
++	PSIL_CSI2RX(0x4973),
++	PSIL_CSI2RX(0x4974),
++	PSIL_CSI2RX(0x4975),
++	PSIL_CSI2RX(0x4976),
++	PSIL_CSI2RX(0x4977),
++	PSIL_CSI2RX(0x4978),
++	PSIL_CSI2RX(0x4979),
++	PSIL_CSI2RX(0x497a),
++	PSIL_CSI2RX(0x497b),
++	PSIL_CSI2RX(0x497c),
++	PSIL_CSI2RX(0x497d),
++	PSIL_CSI2RX(0x497e),
++	PSIL_CSI2RX(0x497f),
+ 	/* CPSW9 */
+ 	PSIL_ETHERNET(0x4a00),
+ 	/* CPSW0 */
 -- 
-Regards/Gruss,
-    Boris.
+2.30.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
