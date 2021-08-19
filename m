@@ -2,258 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2263F139B
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670FE3F139D
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 08:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhHSGec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 02:34:32 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:60984 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231220AbhHSGea (ORCPT
+        id S231733AbhHSGew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 02:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231435AbhHSGet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 02:34:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Ujxjox0_1629354816;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ujxjox0_1629354816)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 19 Aug 2021 14:33:53 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
-        Liu Bo <bo.liu@linux.alibaba.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        Eryu Guan <eguan@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Tao Ma <boyu.mt@taobao.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH v2 2/2] erofs: support reading chunk-based uncompressed files
-Date:   Thu, 19 Aug 2021 14:33:10 +0800
-Message-Id: <20210819063310.177035-2-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
-References: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
- <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
+        Thu, 19 Aug 2021 02:34:49 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31EFC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:34:13 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id j187so4544513pfg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 23:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=15LFBoFuuP4d/TgXjeFGT8qoEp2fIp3JE5Jx5/6HQd4=;
+        b=WlIT6qcLWZ7ujuhqd20mOKSFffOebZXPKce/CFAt2PYnng7DPDqrnqq1YPra9isQfk
+         rrh5x4FDEz2sJPik7NPWgXLjs/8NxvcwqyFPJnmCUkfKdYpTvOEl66A9nmyikzHzjtEK
+         kkGXFwgDXoumzIWICuVPacNMFK8FBP1zfqcDp18I1HAioGqO2AqrJu+5F5DVvsvo9quB
+         nl8L/ALRyDwOI/jYNFg5ueDG2tsX+aTJZbKKeRZ1e9SiE/h9ZPB/oQlG4cDbz7qHfth0
+         KbxreNoCHX78of8H6OmISCBwVZvA5rDl7FjEobrsGR8hw0VoIsU5HBN6WhYBszj9ggdW
+         mGAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=15LFBoFuuP4d/TgXjeFGT8qoEp2fIp3JE5Jx5/6HQd4=;
+        b=IEvp8NVf/AVAGS0SeNBMcaP+gyl7pMzl3+nHienyJbu+8SiZ9a6ZlxANaElMr21joD
+         y5Ad3q8Zk6NBRIfHQR21LVhTYB8K+PRZHGs1yNUHqtRTRl/FfPF1YC6F2rpQu/odtkGR
+         xAYHlZv8kV2+kwNuBFhoswXpyhtmUMNchn9eY3DBMw3ajopuBpXtwUGHubkZs962ZYW5
+         ryoi3I1gqJZWye3ijztij+sMVZZ2j2tRCGwkyiecY5VeVEePPuHgUV8c0mzqd8m3j1TU
+         k8zIN6pz1iv90gwQM6KxzqJo+IWMSJpy5V6wCvR6Xm5JoRylWaVk3514o9QPi+lG9xg8
+         k15g==
+X-Gm-Message-State: AOAM5307anmx65/3XQX45AFWLEYS6rEGwZmngdInIvJNGYuQ6zlDNJZx
+        j/sQrDejbK0Ih/ldVgTMR8uNQTax3EL3lmI8ejXLlw==
+X-Google-Smtp-Source: ABdhPJwotcdA2v3SP+h2EqsRy+pChj8lgDWAucmLra2wROM2MbS7834COYbjyI3lgZUHRLNaLOHdO72naBik8NOXQlc=
+X-Received: by 2002:a63:f145:: with SMTP id o5mr12653784pgk.273.1629354853416;
+ Wed, 18 Aug 2021 23:34:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210817033032.76089-1-songmuchun@bytedance.com>
+ <YRxtZ3X8QGv/bui5@carbon.dhcp.thefacebook.com> <CAMZfGtV4LXDmv=Gyd5bKPy-V-3a4y3R62XGXnvZyeQ_xqCabJg@mail.gmail.com>
+ <YRyQNEc79Km6M9xc@carbon.dhcp.thefacebook.com> <20210818003919.5bd008fec6cb0436af2443c4@linux-foundation.org>
+In-Reply-To: <20210818003919.5bd008fec6cb0436af2443c4@linux-foundation.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 19 Aug 2021 14:33:37 +0800
+Message-ID: <CAMZfGtW-5eVqvqWpaeYT6HcpMdJ3zDimSFT-=JwxVJuuFH0FnQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: introduce PAGEFLAGS_MASK to replace ((1UL <<
+ NR_PAGEFLAGS) - 1)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add runtime support for chunk-based uncompressed files
-described in the previous patch.
+On Wed, Aug 18, 2021 at 3:39 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Tue, 17 Aug 2021 21:44:36 -0700 Roman Gushchin <guro@fb.com> wrote:
+>
+> > On Wed, Aug 18, 2021 at 12:35:08PM +0800, Muchun Song wrote:
+> > > On Wed, Aug 18, 2021 at 10:16 AM Roman Gushchin <guro@fb.com> wrote:
+> > > >
+> > > > On Tue, Aug 17, 2021 at 11:30:32AM +0800, Muchun Song wrote:
+> > > > > Instead of hard-coding ((1UL << NR_PAGEFLAGS) - 1) everywhere, introducing
+> > > > > PAGEFLAGS_MASK to make the code clear to get the page flags.
+> > > > >
+> > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > > ---
+> > > > >  include/linux/page-flags.h      | 4 +++-
+> > > > >  include/trace/events/page_ref.h | 4 ++--
+> > > > >  lib/test_printf.c               | 2 +-
+> > > > >  lib/vsprintf.c                  | 2 +-
+> > > > >  4 files changed, 7 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > > > > index 54c4af35c628..1f951ac24a5e 100644
+> > > > > --- a/include/linux/page-flags.h
+> > > > > +++ b/include/linux/page-flags.h
+> > > > > @@ -180,6 +180,8 @@ enum pageflags {
+> > > > >       PG_reported = PG_uptodate,
+> > > > >  };
+> > > > >
+> > > > > +#define PAGEFLAGS_MASK               (~((1UL << NR_PAGEFLAGS) - 1))
+> > > >
+> > > > Hm, isn't it better to invert it? Like
+> > > > #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
+> > > >
+> > > > It feels more usual and will simplify the rest of the patch.
+> > >
+> > > Actually, I learned from PAGE_MASK. So I thought the macro
+> > > like xxx_MASK should be the format of 0xff...ff00...00. I don't
+> > > know if it is an unwritten rule. I can invert PAGEFLAGS_MASK
+> > > if it's not a rule.
+> >
+> > There are many examples of both approached in the kernel tree,
+> > however I'd say the more common is without "~" (out of my head).
+> >
+> > It's definitely OK to define it like
+> > #define PAGEFLAGS_MASK          ((1UL << NR_PAGEFLAGS) - 1)
+> >
+>
+> PAGE_MASK has always seemed weird to me but I figured that emulating it
+> would be the approach of least surprise.  Might be wrong about that...
 
-Reviewed-by: Liu Bo <bo.liu@linux.alibaba.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-changes since v1:
- - use le16_to_cpu instead of __le16_to_cpu pointed out by Chao.
-
- fs/erofs/data.c     | 90 ++++++++++++++++++++++++++++++++++++++++-----
- fs/erofs/inode.c    | 18 ++++++++-
- fs/erofs/internal.h |  5 +++
- 3 files changed, 102 insertions(+), 11 deletions(-)
-
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 09c46fbdb9b2..ee9a33485313 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (C) 2017-2018 HUAWEI, Inc.
-  *             https://www.huawei.com/
-+ * Copyright (C) 2021, Alibaba Cloud
-  */
- #include "internal.h"
- #include <linux/prefetch.h>
-@@ -36,13 +37,6 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
- 	nblocks = DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
- 	lastblk = nblocks - tailendpacking;
- 
--	if (offset >= inode->i_size) {
--		/* leave out-of-bound access unmapped */
--		map->m_flags = 0;
--		map->m_plen = 0;
--		goto out;
--	}
--
- 	/* there is no hole in flatmode */
- 	map->m_flags = EROFS_MAP_MAPPED;
- 
-@@ -77,14 +71,90 @@ static int erofs_map_blocks_flatmode(struct inode *inode,
- 		goto err_out;
- 	}
- 
--out:
- 	map->m_llen = map->m_plen;
--
- err_out:
- 	trace_erofs_map_blocks_flatmode_exit(inode, map, flags, 0);
- 	return err;
- }
- 
-+static int erofs_map_blocks(struct inode *inode,
-+			    struct erofs_map_blocks *map, int flags)
-+{
-+	struct super_block *sb = inode->i_sb;
-+	struct erofs_inode *vi = EROFS_I(inode);
-+	struct erofs_inode_chunk_index *idx;
-+	struct page *page;
-+	u64 chunknr;
-+	unsigned int unit;
-+	erofs_off_t pos;
-+	int err = 0;
-+
-+	if (map->m_la >= inode->i_size) {
-+		/* leave out-of-bound access unmapped */
-+		map->m_flags = 0;
-+		map->m_plen = 0;
-+		goto out;
-+	}
-+
-+	if (vi->datalayout != EROFS_INODE_CHUNK_BASED)
-+		return erofs_map_blocks_flatmode(inode, map, flags);
-+
-+	if (vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)
-+		unit = sizeof(*idx);	/* chunk index */
-+	else
-+		unit = 4;		/* block map */
-+
-+	chunknr = map->m_la >> vi->chunkbits;
-+	pos = ALIGN(iloc(EROFS_SB(sb), vi->nid) + vi->inode_isize +
-+		    vi->xattr_isize, unit) + unit * chunknr;
-+
-+	page = erofs_get_meta_page(inode->i_sb, erofs_blknr(pos));
-+	if (IS_ERR(page))
-+		return PTR_ERR(page);
-+
-+	map->m_la = chunknr << vi->chunkbits;
-+	map->m_plen = min_t(erofs_off_t, 1UL << vi->chunkbits,
-+			    roundup(inode->i_size - map->m_la, EROFS_BLKSIZ));
-+
-+	/* handle block map */
-+	if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)) {
-+		__le32 *blkaddr = page_address(page) + erofs_blkoff(pos);
-+
-+		if (le32_to_cpu(*blkaddr) == EROFS_NULL_ADDR) {
-+			map->m_flags = 0;
-+		} else {
-+			map->m_pa = blknr_to_addr(le32_to_cpu(*blkaddr));
-+			map->m_flags = EROFS_MAP_MAPPED;
-+		}
-+		goto out_unlock;
-+	}
-+	/* parse chunk indexes */
-+	idx = page_address(page) + erofs_blkoff(pos);
-+	switch (le32_to_cpu(idx->blkaddr)) {
-+	case EROFS_NULL_ADDR:
-+		map->m_flags = 0;
-+		break;
-+	default:
-+		/* only one device is supported for now */
-+		if (idx->device_id) {
-+			erofs_err(sb, "invalid device id %u @ %llu for nid %llu",
-+				  le32_to_cpu(idx->device_id),
-+				  chunknr, vi->nid);
-+			err = -EFSCORRUPTED;
-+			goto out_unlock;
-+		}
-+		map->m_pa = blknr_to_addr(le32_to_cpu(idx->blkaddr));
-+		map->m_flags = EROFS_MAP_MAPPED;
-+		break;
-+	}
-+out_unlock:
-+	unlock_page(page);
-+	put_page(page);
-+out:
-+	map->m_llen = map->m_plen;
-+	return err;
-+}
-+
- static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
- {
-@@ -94,7 +164,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	map.m_la = offset;
- 	map.m_llen = length;
- 
--	ret = erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW);
-+	ret = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-index d13e0709599c..4408929bd6f5 100644
---- a/fs/erofs/inode.c
-+++ b/fs/erofs/inode.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (C) 2017-2018 HUAWEI, Inc.
-  *             https://www.huawei.com/
-+ * Copyright (C) 2021, Alibaba Cloud
-  */
- #include "xattr.h"
- 
-@@ -122,7 +123,9 @@ static struct page *erofs_read_inode(struct inode *inode,
- 		/* total blocks for compressed files */
- 		if (erofs_inode_is_data_compressed(vi->datalayout))
- 			nblks = le32_to_cpu(die->i_u.compressed_blocks);
--
-+		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-+			/* fill chunked inode summary info */
-+			vi->chunkformat = le16_to_cpu(die->i_u.c.format);
- 		kfree(copied);
- 		break;
- 	case EROFS_INODE_LAYOUT_COMPACT:
-@@ -160,6 +163,8 @@ static struct page *erofs_read_inode(struct inode *inode,
- 		inode->i_size = le32_to_cpu(dic->i_size);
- 		if (erofs_inode_is_data_compressed(vi->datalayout))
- 			nblks = le32_to_cpu(dic->i_u.compressed_blocks);
-+		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-+			vi->chunkformat = le16_to_cpu(dic->i_u.c.format);
- 		break;
- 	default:
- 		erofs_err(inode->i_sb,
-@@ -169,6 +174,17 @@ static struct page *erofs_read_inode(struct inode *inode,
- 		goto err_out;
- 	}
- 
-+	if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
-+		if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_ALL)) {
-+			erofs_err(inode->i_sb,
-+				  "unsupported chunk format %x of nid %llu",
-+				  vi->chunkformat, vi->nid);
-+			err = -EOPNOTSUPP;
-+			goto err_out;
-+		}
-+		vi->chunkbits = LOG_BLOCK_SIZE +
-+			(vi->chunkformat & EROFS_CHUNK_FORMAT_BLKBITS_MASK);
-+	}
- 	inode->i_mtime.tv_sec = inode->i_ctime.tv_sec;
- 	inode->i_atime.tv_sec = inode->i_ctime.tv_sec;
- 	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 91089ab8a816..9524e155b38f 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (C) 2017-2018 HUAWEI, Inc.
-  *             https://www.huawei.com/
-+ * Copyright (C) 2021, Alibaba Cloud
-  */
- #ifndef __EROFS_INTERNAL_H
- #define __EROFS_INTERNAL_H
-@@ -261,6 +262,10 @@ struct erofs_inode {
- 
- 	union {
- 		erofs_blk_t raw_blkaddr;
-+		struct {
-+			unsigned short	chunkformat;
-+			unsigned char	chunkbits;
-+		};
- #ifdef CONFIG_EROFS_FS_ZIP
- 		struct {
- 			unsigned short z_advise;
--- 
-2.24.4
-
+IIUC, you seem to agree with the current approach. Right?
