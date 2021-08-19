@@ -2,100 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F513F19F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4306B3F1A06
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhHSNHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S238292AbhHSNIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbhHSNHG (ORCPT
+        with ESMTP id S235683AbhHSNIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:07:06 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557C5C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:06:30 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id j187so5439380pfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:06:30 -0700 (PDT)
+        Thu, 19 Aug 2021 09:08:23 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3376C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:07:46 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id i1so3969214vsk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:07:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZUuW6CkvogNC0GIMX+IQPONt7G2cLV90jQ7k/cU6WLo=;
-        b=tf/HLOQY/32g5RxLsMgCbrCbZDkzKVH4iF2ZSAmdbBGISvFXk9vHoSL1dg+SMbm6DU
-         K9N466tC0ovKSLD5KJUcWVpfkJLxtbwo+YRofnPuoJmXRYYMMsq4SBMaUltyo1CuQQpl
-         mcrDXXXbp4YABMQIGyEoWivERBzrMDTZ5BguFUgUz4HS/cbshGswy45BDPPCs22wDTLp
-         NsCMUe1NXh/npYtCMmJdNRs3xjVMx0yODbOwA7p7VMiIGhmJ+4ICdfqf8J4ZCsNTA7mB
-         Hdw7Cf8Gapq8zasc/36S79LXnK/9TgBtVg8TWswH4MbTMiobLZ3ed84BRCkOC3IaCbDu
-         nwHQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1GCKu9c84zINYtTdflsWXKCWXkOZdKhJUWmHuvrkY+4=;
+        b=f+4CRpBzlKKi/DOaSNA/G+hiFrodgB7WwtvP6lDjHBbwMct5xJEnNRIBbwWd50HxVl
+         4zhiGfKdAN1zaQTNFhB6Vi8xqc4j40IY1vsyJhWmkAu9OGW99mwK9tXMUYa730kFsYI4
+         idKdGIien3FkWDSAe9a9bUwucupyJle2LRixnAHVpFbbr4u728pooiABojadky5czPhQ
+         T05rm31+E59u8E8W6WOHoHOIbfDCZtTsEcAVQYXP/NQkrFth/PCbSSe6c7z8JAzoaO1+
+         46BAA+NxWAouT+Gc5X4wCTy1dHtG/pP9SH4vbLZ8x03CSox6/vBN4JfPUqmpPE9U44nl
+         Iiow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZUuW6CkvogNC0GIMX+IQPONt7G2cLV90jQ7k/cU6WLo=;
-        b=s7jW80ThjZQFraooGiC6GW1p+VUgcTUWNA2D1Kc8YIoYcFbIJE27Bn75WT30juR2lE
-         JXI/sdEle4c8XRgfHfn2J1rizPy5yKcZihO4AZU8AYstYzWBno2bJgoUhyhw4j4CaHLt
-         znh4cp5lv9F/CzC1Q+x2aJOB8i5nWHYPQfzz8MoTFJq8jR9raDEtMytOK7q37oVW4ELN
-         OarTWjhrJdr0m989T7uXtcxJYXiflvZkMIdnXNM9gk4OWw+bKWTO+adYldhfBqtyUPAV
-         HOaB4Zf7t8dztqQO3Fr4pWvAEWoWTDcp92e9V3WzwXjqJKlwz5iTy4TS74mNzG4Lx6b7
-         b8Ww==
-X-Gm-Message-State: AOAM532XZXN2X/Bhb7M85z1MpEK6Fvw2eRP6J35oyn6r0CQjVfZnefw7
-        /TZOzZzvBNjz/OeJl0tlSu4F
-X-Google-Smtp-Source: ABdhPJx0Esfl/ZnW3okg0FVANmoc2rkKbzXPAvQstEHgv6gVgEP8FpM2X783udwvgLVHUTym9ud0Uw==
-X-Received: by 2002:a63:510a:: with SMTP id f10mr14064796pgb.249.1629378389545;
-        Thu, 19 Aug 2021 06:06:29 -0700 (PDT)
-Received: from thinkpad ([2409:4072:6298:4497:5a1e:ff34:9091:5bac])
-        by smtp.gmail.com with ESMTPSA id oj2sm2944717pjb.33.2021.08.19.06.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 06:06:29 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 18:36:23 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        smohanad@codeaurora.org
-Subject: Re: [PATCH 0/5] PCI: endpoint: Add support for additional notifiers
-Message-ID: <20210819130623.GB200135@thinkpad>
-References: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1GCKu9c84zINYtTdflsWXKCWXkOZdKhJUWmHuvrkY+4=;
+        b=V2BRu8dRHkm8kFGUtd7wi7mgwqp6xs1gyElHtKdiKI+hRrXkdCuCIv+feRflB9Fe0v
+         dlbtwB284fdJelze76xYaUdJ1B1T/zisB7imtBGcj3lMu9+qwUWWlCNlghoPCw+dQHvw
+         dSa7KtfDM1njR4P/iu+8TzOFiAOOmRNlX1AzACFZbnZBU6uKyZQYMDmSOlIt6unmeDqm
+         T2DMOWMhes/IhPIvXwOmCbh1ef4Y4bUhP5CRJCqk/JyreJjFmGLyKnzutiShflZRjLt0
+         SdNgQMYqkGWXnncYpD/ly7Fo2Y+2g+3E72bzjKTW/a5oiOwa930+uH3yZay+4T4zYZmJ
+         IjPg==
+X-Gm-Message-State: AOAM5316BrI/33asJs2UT1qUbkOjzqDATEi0lKUvEMjp+5BVfTYwBIm+
+        diLjP23kOFfy0EFjjPn5p5NOy1ZHJ4+VQEOAeo7i7w==
+X-Google-Smtp-Source: ABdhPJyJROokpzMBNet191tDOwD7eE8PakuStZsC4TgI99eWakoC4SNznlH+uH6MVn3jKPVb3Va23L7NrWpzQmbz4ck=
+X-Received: by 2002:a67:3212:: with SMTP id y18mr12074668vsy.19.1629378466059;
+ Thu, 19 Aug 2021 06:07:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616115913.138778-1-manivannan.sadhasivam@linaro.org>
+References: <20210818043131.7klajx6drvvkftoc@vireshk-i7> <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7> <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7> <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7> <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7> <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <20210818095044.e2ntsm45h5cddk7s@vireshk-i7> <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
+ <0354acbe-d856-4040-f453-8e8164102045@gmail.com>
+In-Reply-To: <0354acbe-d856-4040-f453-8e8164102045@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 19 Aug 2021 15:07:09 +0200
+Message-ID: <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 05:29:08PM +0530, Manivannan Sadhasivam wrote:
-> Hello,
-> 
-> This series adds support for additional notifiers in the PCI endpoint
-> framework. The notifiers LINK_DOWN, BME, PME, and D_STATE are generic
-> for all PCI endpoints but there is also a custom notifier (CUSTOM) added
-> to pass the device/vendor specific events to EPF from EPC.
-> 
-> The example usage of all notifiers is provided in the commit description.
-> 
+On Wed, 18 Aug 2021 at 17:43, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 18.08.2021 13:08, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Wed, 18 Aug 2021 at 11:50, Viresh Kumar <viresh.kumar@linaro.org> wr=
+ote:
+> >>
+> >> On 18-08-21, 11:41, Ulf Hansson wrote:
+> >>> On Wed, 18 Aug 2021 at 11:14, Viresh Kumar <viresh.kumar@linaro.org> =
+wrote:
+> >>>> What we need here is just configure. So something like this then:
+> >>>>
+> >>>> - genpd->get_performance_state()
+> >>>>   -> dev_pm_opp_get_current_opp() //New API
+> >>>>   -> dev_pm_genpd_set_performance_state(dev, current_opp->pstate);
+> >>>>
+> >>>> This can be done just once from probe() then.
+> >>>
+> >>> How would dev_pm_opp_get_current_opp() work? Do you have a suggestion=
+?
+> >>
+> >> The opp core already has a way of finding current OPP, that's what
+> >> Dmitry is trying to use here. It finds it using clk_get_rate(), if
+> >> that is zero, it picks the lowest freq possible.
+> >>
+> >>> I am sure I understand the problem. When a device is getting probed,
+> >>> it needs to consume power, how else can the corresponding driver
+> >>> successfully probe it?
+> >>
+> >> Dmitry can answer that better, but a device doesn't necessarily need
+> >> to consume energy in probe. It can consume bus clock, like APB we
+> >> have, but the more energy consuming stuff can be left disabled until
+> >> the time a user comes up. Probe will just end up registering the
+> >> driver and initializing it.
+> >
+> > That's perfectly fine, as then it's likely that it won't vote for an
+> > OPP, but can postpone that as well.
+> >
+> > Perhaps the problem is rather that the HW may already carry a non-zero
+> > vote made from a bootloader. If the consumer driver tries to clear
+> > that vote (calling dev_pm_opp_set_rate(dev, 0), for example), it would
+> > still not lead to any updates of the performance state in genpd,
+> > because genpd internally has initialized the performance-state to
+> > zero.
+>
+> We don't need to discover internal SoC devices because we use
+> device-tree on ARM. For most devices power isn't required at a probe
+> time because probe function doesn't touch h/w at all, thus devices are
+> left in suspended state after probe.
+>
+> We have three components comprising PM on Tegra:
+>
+> 1. Power gate
+> 2. Clock state
+> 3. Voltage state
+>
+> GENPD on/off represents the 'power gate'.
+>
+> Clock and reset are controlled by device drivers using clk and rst APIs.
+>
+> Voltage state is represented by GENPD's performance level.
+>
+> GENPD core assumes that at a first rpm-resume of a consumer device, its
+> genpd_performance=3D0. Not true for Tegra because h/w of the device is
+> preconfigured to a non-zero perf level initially, h/w may not support
+> zero level at all.
 
-Ping on this series!
+I think you may be misunderstanding genpd's behaviour around this, but
+let me elaborate.
 
-Thanks,
-Mani
+In genpd_runtime_resume(), we try to restore the performance state for
+the device that genpd_runtime_suspend() *may* have dropped earlier.
+That means, if genpd_runtime_resume() is called prior
+genpd_runtime_suspend() for the first time, it means that
+genpd_runtime_resume() will *not* restore a performance state, but
+instead just leave the performance state as is for the device (see
+genpd_restore_performance_state()).
 
-> Thanks,
-> Mani
-> 
-> Manivannan Sadhasivam (5):
->   PCI: endpoint: Add linkdown notifier support
->   PCI: endpoint: Add BME notifier support
->   PCI: endpoint: Add PME notifier support
->   PCI: endpoint: Add D_STATE notifier support
->   PCI: endpoint: Add custom notifier support
-> 
->  drivers/pci/endpoint/pci-epc-core.c | 89 +++++++++++++++++++++++++++++
->  include/linux/pci-epc.h             |  5 ++
->  include/linux/pci-epf.h             |  5 ++
->  3 files changed, 99 insertions(+)
-> 
-> -- 
-> 2.25.1
-> 
+In other words, a consumer driver may use the following sequence to
+set an initial performance state for the device during ->probe():
+
+...
+rate =3D clk_get_rate()
+dev_pm_opp_set_rate(rate)
+
+pm_runtime_enable()
+pm_runtime_resume_and_get()
+...
+
+Note that, it's the consumer driver's responsibility to manage device
+specific resources, in its ->runtime_suspend|resume() callbacks.
+Typically that means dealing with clock gating/ungating, for example.
+
+In the other scenario where a consumer driver prefers to *not* call
+pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
+to power on the device to complete probing, then we don't want to vote
+for an OPP at all - and we also want the performance state for the
+device in genpd to be set to zero. Correct?
+
+Is this the main problem you are trying to solve, because I think this
+doesn't work out of the box as of today?
+
+There is another concern though, but perhaps it's not a problem after
+all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
+like clock/regulators. That could certainly be problematic, in
+particular if the device and its genpd have OPP tables associated with
+it and the consumer driver wants to follow the above sequence in
+probe.
+
+Viresh, can you please chime in here and elaborate on some of the
+magic happening behind dev_pm_opp_set_rate() API - is there a problem
+here or not?
+
+>
+> GENPD core assumes that consumer devices can work at any performance
+> level. Not true for Tegra because voltage needs to be set in accordance
+> to the clock rate before clock is enabled, otherwise h/w won't work
+> properly, perhaps clock may be unstable or h/w won't be latching.
+
+Correct. Genpd relies on the callers to use the OPP framework if there
+are constraints like you describe above.
+
+That said, it's not forbidden for a consumer driver to call
+dev_pm_genpd_set_performance_state() directly, but then it better
+knows exactly what it's doing.
+
+>
+> Performance level should be set to 0 while device is suspended.
+
+Do you mean system suspend or runtime suspend? Or both?
+
+> Performance level needs to be bumped on rpm-resume of a device in
+> accordance to h/w state before hardware is enabled.
+
+Assuming there was a performance state set for the device when
+genpd_runtime_suspend() was called, genpd_runtime_resume() will
+restore that state according to the sequence you described.
+
+Kind regards
+Uffe
