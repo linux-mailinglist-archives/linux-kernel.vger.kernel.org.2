@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B823F1C24
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9463F1C27
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240695AbhHSPDw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 11:03:52 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:44650 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240652AbhHSPDs (ORCPT
+        id S240700AbhHSPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhHSPFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:03:48 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 5B6BCCED16;
-        Thu, 19 Aug 2021 17:03:10 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: hci_qca: Set SSR triggered flags when SSR
- command is sent out
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <086f2add931ff541c8a6349767ae2adc@codeaurora.org>
-Date:   Thu, 19 Aug 2021 17:03:09 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        Hemantg <hemantg@codeaurora.org>,
-        MSM <linux-arm-msm@vger.kernel.org>, pharish@codeaurora.org,
-        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        mcchou@chromium.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <6238C7AB-32D7-4D12-A14E-24D12A862405@holtmann.org>
-References: <1629091302-7893-1-git-send-email-bgodavar@codeaurora.org>
- <1CE27E9C-EABD-4B25-B255-8925297D11BD@holtmann.org>
- <086f2add931ff541c8a6349767ae2adc@codeaurora.org>
-To:     Balakrishna Godavarthi <bgodavar@codeaurora.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Thu, 19 Aug 2021 11:05:09 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4428EC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:04:33 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id d4so13597814lfk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T0b4zMAvEzKfXKZwvIB0eeAlmLIDqdVoJMxNV/NqtBs=;
+        b=qoP53fKMhYzr8DPWTxyX4O4kAbrnZ9Wf7TL9vkMQqok0gG+iZiQ87Rleze/VVQLQ8m
+         GWJlt6/3FpblM6R0i913uDUiEsIhF6FkeNJd/wxB4mAm/udUFiU8eTi/BztM6nWJ/Aw1
+         opjqjd7Rb0avhrUjmwnYT/XIlQtZYCB23D+HlZeKnktJZiMPIG7XCBpGdxiv/Lu/rB40
+         zpf/AVrsB2PgcOo85i3hJ/zeDdZSLETW6DREXRYOH4VdiDOe+PxgdffK/ksc7VYZITz6
+         2cMBGwdFF8uxDl/28zyuSP4KLKZLcnSwYSni4JQvp5CaqzollHNPVSWX3uBNW3DiMnk9
+         lOHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T0b4zMAvEzKfXKZwvIB0eeAlmLIDqdVoJMxNV/NqtBs=;
+        b=slo5nJC6IEbO3pkfe7/0iAHrzg60kt30sQbJw4PKej3A48gDQi3S3LeSV+cEKsU2GX
+         Flf11FM+uwqVwZFFnHIFt5pUJnnc0E+9GIafSQ/cowi56zw6WhRtcdJvMxp72gXL6F8D
+         dDa/bAJAxAdb6UAkcA+xzG89LqQzOwzLqssDbzaPL2092V+Z4m7G37IfZXnAQxlyDj7e
+         9aSlheuU9y22ORqq0lyDktuMaLrfDCABL2gKFZOIHj6oUwHbrQsQj3INevb9ibEp82sU
+         ewvs4SyhTPIIYCfzvw2DpAVk9EKmuvAPiHQpaQWB0m+igTUMlxJ4CRSbkP2M1SowMqcQ
+         s5RA==
+X-Gm-Message-State: AOAM531t1NFU6Hvi52R8xIr2mV4v8UR9/Z6bW969HHCONQJr5u3dJm3y
+        xX91u4i/wB1uUJfD/E6jwws8d1RGZ7gaFCzmkS9vRQ==
+X-Google-Smtp-Source: ABdhPJzTsjsthfdy+dJ+4wlWH97Y445qIp6Ehyno5agh0QLE3abUhbE9HSyRy+S4tlPERhOOTRJNIm8Qf5RJaWGV4gk=
+X-Received: by 2002:a05:6512:3481:: with SMTP id v1mr7630730lfr.299.1629385470682;
+ Thu, 19 Aug 2021 08:04:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210818152457.35846-1-hannes@cmpxchg.org>
+In-Reply-To: <20210818152457.35846-1-hannes@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 19 Aug 2021 08:04:19 -0700
+Message-ID: <CALvZod5y4WquXhH6BdVAyqMNqxCm=RGkOk-iBkRuW0uQPCz_1g@mail.gmail.com>
+Subject: Re: [PATCH] mm: vmscan: fix missing psi annotation for node_reclaim()
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Rik van Riel <riel@surriel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Balakrishna,
+On Wed, Aug 18, 2021 at 8:26 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> In a debugging session the other day, Rik noticed that node_reclaim()
+> was missing memstall annotations. This means we'll miss pressure and
+> lost productivity resulting from reclaim on an overloaded local NUMA
+> node when vm.zone_reclaim_mode is enabled.
+>
+> There haven't been any reports, but that's likely because
+> vm.zone_reclaim_mode hasn't been a commonly used feature recently, and
+> the intersection between such setups and psi users is probably
+> nil. Although, secondary memory such as CXL-connected DIMMS,
+> persistent memory etc. and the page demotion patches that handle them
+> (https://lore.kernel.org/lkml/20210401183216.443C4443@viggo.jf.intel.com/)
+> could soon make this a more common codepath again.
+>
+> Reported-by: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
->>> This change sets SSR triggered flags when QCA SSR command is sent to
->>> SoC. After the SSR command sent, driver discards the incoming data from
->>> the upper layers. This way will ensure to read full dumps from the
->>> BT SoC without any flow control issues due to excess of data receiving
->>> from the HOST in audio usecases.
->>> Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
->>> ---
->>> drivers/bluetooth/hci_qca.c | 10 ++++++++++
->>> 1 file changed, 10 insertions(+)
->>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
->>> index 53deea2..5cbed6a 100644
->>> --- a/drivers/bluetooth/hci_qca.c
->>> +++ b/drivers/bluetooth/hci_qca.c
->>> @@ -69,6 +69,8 @@
->>> #define QCA_LAST_SEQUENCE_NUM		0xFFFF
->>> #define QCA_CRASHBYTE_PACKET_LEN	1096
->>> #define QCA_MEMDUMP_BYTE		0xFB
->>> +#define QCA_SSR_OPCODE			0xFC0C
->>> +#define QCA_SSR_PKT_LEN		5
->>> enum qca_flags {
->>> 	QCA_IBS_DISABLED,
->>> @@ -871,6 +873,14 @@ static int qca_enqueue(struct hci_uart *hu, struct sk_buff *skb)
->>> 	/* Prepend skb with frame type */
->>> 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
->>> +	if (hci_skb_pkt_type(skb) == HCI_COMMAND_PKT &&
->>> +	    skb->len == QCA_SSR_PKT_LEN &&
->>> +	    hci_skb_opcode(skb) == QCA_SSR_OPCODE) {
->>> +		bt_dev_info(hu->hdev, "Triggering ssr");
->>> +		set_bit(QCA_SSR_TRIGGERED, &qca->flags);
->>> +		set_bit(QCA_MEMDUMP_COLLECTION, &qca->flags);
->>> +	}
->>> +
->> can we please stop hacking around by parsing opcodes in an enqueue
->> function. Sounds like someone is injecting raw HCI vendor commands and
->> then having a driver react to it.
-> [Bala]: yes this opcode is injected via hcitool to test BT SoC dump procedure or
-> to collect the dumps to debug the issue during issue cases. When audio usecases are running,
-> HOST sends ACL packets to SoC, in meantime if this command is sent to SoC using hcitool
-> to collect dumps at particular point,  With out this check HOST is pumping continues data to
-> SoC and SoC RFR line goes high, sometimes SoC become unresponsive and driver starts logging
-> command timeout error. Instead here, once a cmd with this opcode is sent, timer is started
-> to ensure that SSR is in progress. If no response from SoC for 8 seconds. Driver will be restarted.
-
-so why would I add a kernel work-around for this?
-
-Design a proper interface for this and don’t rely on injecting HCI commands via HCI raw channel.
-
-Regards
-
-Marcel
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
