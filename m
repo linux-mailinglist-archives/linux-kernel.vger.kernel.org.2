@@ -2,134 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475CE3F1B18
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C426E3F1B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240487AbhHSOAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:00:49 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:42685 "EHLO
-        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240466AbhHSOAl (ORCPT
+        id S240479AbhHSOA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240439AbhHSOA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:00:41 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.west.internal (Postfix) with ESMTP id 40B5C2B00973;
-        Thu, 19 Aug 2021 10:00:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 19 Aug 2021 10:00:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=N3jSN24OkJ7Dh
-        /8CWHl9T0L42ugnuJaEB9P5An/GD+g=; b=ePvi3Mnh3YLXbZZIsBDANoJ4LPuL5
-        BrU2VEQO5uFxEvPuwgp7+nB843ZngA/6PmVWUJuGsI8bVLnBlwTGUglWifYytP8r
-        jmh2e6xFbOp4Qpe7nt+MUmQLQo8YGox1A9oDZY+j6eO6byttcSRBDfy0TJ4a3eKY
-        Uyt1DvW4Ye5ku9f+9VPosiSoAeF579A++LVPpqjNtYDwgmgkqZe6U9RwZAo+5frU
-        SN842X6zO98gFQKDIqopA6kcWHv/qeB3zvpx9BV5nc+vccHG4cZ39aNrBYkDZY1c
-        jpmAcx3RHykJ+w9iRggJLTwwpJKKMuO6OYlroNTdBnAbRsQ72/KtGtF3w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=N3jSN24OkJ7Dh/8CWHl9T0L42ugnuJaEB9P5An/GD+g=; b=QfByrOPv
-        wIO7bt41iSdpU4PMJ/8JfsjLGcTz2484pwMs76C4JCPCrgldag5S3EAIlYV5ka+/
-        BrzHPMS8Dpa9AsJCdBKSmucUV2R7Cwr440BzwRxxaecwpGmr+J76TuZC4xWVrrt5
-        ljKsWD2Xo5yDGV+AkNT+FOiaiSKABtgRexNP1dmzwqtbOjFs/gfhnRupAN/o8vyB
-        7Q5Teaq5ELHQeInVpqPYVl61ZGWYLcUV9SNsbIdcXRUubdHOrk0QoEkEe5fhsSZV
-        q4AQxwS0/THR+3h37EhPo03GiGPUYyRaEwtd1c4kySyJFPpykogs3ZAUGC+Bxmya
-        y46ao/bQP5ifEg==
-X-ME-Sender: <xms:4mMeYTiCsQLcdqefM9b9LfPbT987pw19NIjWS7q2nSbU25xR0bFvZA>
-    <xme:4mMeYQDeKIRvUKIno7TNo_ebntGhYEeY8j9RkNbhjr-mmX_9C7Jzg7k_bw1mXzrFH
-    LqcMJ6R0hXrIuzrHM4>
-X-ME-Received: <xmr:4mMeYTHeOpya2hScQDWHenCswdbf9ZDRXvGXHZ4MvfKISMgjPmOdoW30UOkneTI8a1SU1mEu8kgX0vSx9b1yy6cpjyjRMvNNlwVE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleejgdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveevheeh
-    vdenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:4mMeYQQNwAAVOioWkfdbZQgIWfqDYM3AYQTpZ3tTQ5x-nSihkfshLg>
-    <xmx:4mMeYQznapFvQNRZjdTWHagJKEXBioRlsjO90hk4cVwtuTYEkSxepw>
-    <xmx:4mMeYW7ED95sWShh6nuJ6iA9zVobIMSB8_bDcb5yoBotOKZEvRLw2A>
-    <xmx:4mMeYVhl0ugsFAIdMBX5bgKQpLIIUzLj2Gh29dt1HqqisPk8LvFFz6sDN9I>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 19 Aug 2021 10:00:02 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Emma Anholt <emma@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: [PATCH v3 6/6] drm/vc4: hdmi: Warn if we access the controller while disabled
-Date:   Thu, 19 Aug 2021 15:59:31 +0200
-Message-Id: <20210819135931.895976-7-maxime@cerno.tech>
+        Thu, 19 Aug 2021 10:00:56 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829C1C061575;
+        Thu, 19 Aug 2021 07:00:20 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: nicolas)
+        with ESMTPSA id C0BC61F4429D
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: cedrus: Fix SUNXI tile size calculation
+Date:   Thu, 19 Aug 2021 10:00:09 -0400
+Message-Id: <20210819140009.158156-1-nicolas.dufresne@collabora.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210819135931.895976-1-maxime@cerno.tech>
-References: <20210819135931.895976-1-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We've had many silent hangs where the kernel would look like it just
-stalled due to the access to one of the HDMI registers while the
-controller was disabled.
+Tiled formats requires full rows being allocated (even for Chroma
+planes). When the number of Luma tiles is odd, we need to round up
+to twice the tile width in order to roundup the number of Chroma
+tiles.
 
-Add a warning if we're about to do that so that it's at least not silent
-anymore.
+This was notice with a crash running BA1_FT_C compliance test using
+sunxi tiles using GStreamer. Cedrus driver would allocate 9 rows for
+Luma, but only 4.5 rows for Chroma, causing userspace to crash.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/staging/media/sunxi/cedrus/cedrus_video.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-index 19d2fdc446bc..99dde6e06a37 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-@@ -1,6 +1,8 @@
- #ifndef _VC4_HDMI_REGS_H_
- #define _VC4_HDMI_REGS_H_
+diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+index 32c13ecb22d8..a8168ac2fbd0 100644
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+@@ -135,7 +135,7 @@ void cedrus_prepare_format(struct v4l2_pix_format *pix_fmt)
+ 		sizeimage = bytesperline * height;
  
-+#include <linux/pm_runtime.h>
-+
- #include "vc4_hdmi.h"
+ 		/* Chroma plane size. */
+-		sizeimage += bytesperline * height / 2;
++		sizeimage += bytesperline * ALIGN(height, 64) / 2;
  
- #define VC4_HDMI_PACKET_STRIDE			0x24
-@@ -412,6 +414,8 @@ static inline u32 vc4_hdmi_read(struct vc4_hdmi *hdmi,
- 	const struct vc4_hdmi_variant *variant = hdmi->variant;
- 	void __iomem *base;
+ 		break;
  
-+	WARN_ON(!pm_runtime_active(&hdmi->pdev->dev));
-+
- 	if (reg >= variant->num_registers) {
- 		dev_warn(&hdmi->pdev->dev,
- 			 "Invalid register ID %u\n", reg);
-@@ -438,6 +442,8 @@ static inline void vc4_hdmi_write(struct vc4_hdmi *hdmi,
- 	const struct vc4_hdmi_variant *variant = hdmi->variant;
- 	void __iomem *base;
- 
-+	WARN_ON(!pm_runtime_active(&hdmi->pdev->dev));
-+
- 	if (reg >= variant->num_registers) {
- 		dev_warn(&hdmi->pdev->dev,
- 			 "Invalid register ID %u\n", reg);
 -- 
 2.31.1
 
