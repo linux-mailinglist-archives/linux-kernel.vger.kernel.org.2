@@ -2,295 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CF43F2329
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C6A3F2340
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236379AbhHSWgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S236544AbhHSWh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbhHSWg2 (ORCPT
+        with ESMTP id S233720AbhHSWhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:36:28 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D4CC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:35:51 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id x4so7279016pgh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:35:51 -0700 (PDT)
+        Thu, 19 Aug 2021 18:37:52 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375D5C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:37:16 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id f6so2195537iox.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vudk/EOySfEiiY9A24sWft0bhUL180j9m8QPEF4uz6c=;
-        b=0Xxr8jIM2HMzf0WPifeV6tQR8uOpDfc/VM285bvMQ+l4YWpX46Oe5VWSRciM6KIkUt
-         MhPP7SqNXVxnWZHOIYGs/ljAuxpd+TgHW6sVMTSwdLy+BZ3yLy1VqN9fany6FId5XiFq
-         ICdJ1p+tbdcqhy8TkeQTk6IBnM2aUjMLtuiwVq22IEPrxt1zC/iodS2ktV9y3jN2ajE+
-         qqAf3FcTFi7eTrwhvXFUHJMrBNS7A0Ycu6HeWPO+JsW8QLuLRn502iEbLKN91zElVFkD
-         1Fww0C8S3k4nks/dycAufg+tMflw7FoUE/x4FO4gC0gy5OMflbsPtLaD7yc+sihCRY7I
-         5zfA==
+        bh=x86VEtZPwcNzHTJFuuZe3E742jzfGtY+fmIoJA+GPhU=;
+        b=Kk0n9V9sOWJDIqbsh70A/BdzKh/8qPeQZDe0zE/SzbUUETbQoGRU+jK71pTekZV9zI
+         bky7Ld2xeDRW+DQ4omevsugaoC9ZnHAKKn6kN2GQcZZbyJBL8MJgssFWlxmnEej8+ztP
+         SlN/fF0BqrZ3zWZU/9vr7nv5Q65uS41N44pR7FhjoeEJWsYKfhFrp+Aq1wT+okvmYUSI
+         q1F84pr36rSZCQ3+sU24frVZ8jJxMAtx+iQtFTVDGJyPPctdqVGrjadJeBfi+6muENH5
+         NLMoSqHh1rEst3lkueysLr006KrFN2PWDjqP+0OvqPhCPbV1lbDgefpkIbp7cNPmnGQI
+         J2Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vudk/EOySfEiiY9A24sWft0bhUL180j9m8QPEF4uz6c=;
-        b=HqtBu3Ab8TzxumNotEElfX/RPB81ItQoUqWuhO0oW/Jy0p1J6kjQkLXzI3gyC6Z+to
-         maN2rmqzcbyHyN6S7F7jlzKa6xL/vYKlI1yN7+xTsz/BcCnsb3H2r4wMKM34IOh+9te1
-         7qywzDemhId+kQxDDXRCoKMga/X3kpC0BH7oKpCCa6JEEaLunqSVNWHIz338RhGNfKKy
-         3Xi2ooecKmCvPzuycHwYOw079vLx4xdz4Wo8OPL4N1v5n86BZbdToZl1cbwh7Kki0FNz
-         wF5HJcqm26zg/EvZbN19sZvZ1OnDebx9O2tiylaie9JU2/Iw72FPArrbdRfW8EtnprMo
-         Ajew==
-X-Gm-Message-State: AOAM53392nD36gMw4yKyoqhUiNKYjoDaZGtWGOSe8wkX/c6nIRZTusT2
-        fGUDMy2///vc6NzhPfxgw78/oIcfiuuUN5Lnu1YhXA==
-X-Google-Smtp-Source: ABdhPJyc0dTMzzmlKtwiaxfOJsarrU57Dp6/OtwlCDCZ7UQ+mcF/IKGoEsR68g+yAdujwwFjDuViQ1HBEFqXHO/ngfU=
-X-Received: by 2002:a65:6642:: with SMTP id z2mr3987693pgv.240.1629412551161;
- Thu, 19 Aug 2021 15:35:51 -0700 (PDT)
+        bh=x86VEtZPwcNzHTJFuuZe3E742jzfGtY+fmIoJA+GPhU=;
+        b=uGF6fAvF4P0QTpo3vf+LuBKhFwb2gqhKCLVGaIl2Eyd5EyrUmI7JK9qRgT8nG4pyt0
+         gD0Dkc9RqSTFyjpWw8JMCjnWwV59isDjjWi0bxrEv/CEja8MLLR1D9UCqhPZIDLzXWaS
+         7x56JhkQbICXzEnS5Aidq7QY6RLO5gyY7IdO3NLjUTyMzf/uk4UtZ2f2xWwKI1tWHDgk
+         YrKxeAHVSoeh720DHGmuwyKZW0DAkOJ6Bq0wr1VLj7TYcOo8dzQpd1Wld4sgg/+KRjXO
+         I8T4oCmXI2BawyvDovIiPWitfy+xBhgWM+wUkTcDYvJzGPWd1e8Joel3Hn01XaGNkvbP
+         anSA==
+X-Gm-Message-State: AOAM5325VGXzXI/8iqQxJqBGtAjcgyZmAEFCQb2HuQRKoHz7zdq71X5q
+        CxRBioWYWK3lhXt3D0cOsbD/zll3ega2f8LY48c=
+X-Google-Smtp-Source: ABdhPJzMgcv0VcR3jZXanRtFTbEwbPNgSIGb8ULBYEjIPWtTlderG0I5Fmulw+sOSYaM80GJWONy5VkBB5T640PyVGM=
+X-Received: by 2002:a6b:490d:: with SMTP id u13mr13593076iob.176.1629412635600;
+ Thu, 19 Aug 2021 15:37:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com> <20210816060359.1442450-3-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210816060359.1442450-3-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 19 Aug 2021 15:35:40 -0700
-Message-ID: <CAPcyv4h0dukvcxN4Bc5a-jHk2FQ-j7ay9P1AB0wq9pNNSBU8-A@mail.gmail.com>
-Subject: Re: [PATCH v7 2/8] fsdax: Introduce dax_iomap_cow_copy()
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+References: <CAKmqyKMLyx+CvBQbLz-xQvwLS692tx-4xOgU7b-V2J676D29yg@mail.gmail.com>
+ <d983217b-e117-361c-0306-b131695bb93f@denx.de> <CAKmqyKOsUcta1cXxamJZnf01G9beCZrDKia068HR+J0AadgNiA@mail.gmail.com>
+ <bff9ba97-bc26-f091-ba71-5e639af524d4@denx.de> <CAKmqyKPF3T_Sx+hL=4OSamLdjy=0fwmrTrVeb-GY0Ja9M=mi+Q@mail.gmail.com>
+ <ab2b7f4f-3e36-461c-6a6c-02ee7ed6cb99@denx.de> <CAKmqyKN8devNyDvVL5B_dDASU3se1dSui0bsnf6gQ+CkZ_TaKg@mail.gmail.com>
+ <YR1Th65KKRS4D/6+@ravnborg.org> <CAKmqyKOBYXiWwO4QJBJ9sEO5ay5QyYmO=yzvT31evB7BKeniYw@mail.gmail.com>
+ <YR58MvAYYEjBQ7l5@ravnborg.org>
+In-Reply-To: <YR58MvAYYEjBQ7l5@ravnborg.org>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Fri, 20 Aug 2021 08:36:49 +1000
+Message-ID: <CAKmqyKOYk=O4ewBcL7hOz+8=gTsNzFb07m_qrNhKq9Bk2ByYrQ@mail.gmail.com>
+Subject: Re: Revert "video: fbdev: mxsfb: Remove driver"
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Marek Vasut <marex@denx.de>, Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        dl-linux-imx <linux-imx@nxp.com>, b.zolnierkie@samsung.com,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
+        Alistair Francis <alistair@alistair23.me>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 11:04 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+On Fri, Aug 20, 2021 at 1:43 AM Sam Ravnborg <sam@ravnborg.org> wrote:
 >
-> In the case where the iomap is a write operation and iomap is not equal
-> to srcmap after iomap_begin, we consider it is a CoW operation.
+> Hi Alistair,
 >
-> The destance extent which iomap indicated is new allocated extent.
+> On Thu, Aug 19, 2021 at 07:10:00PM +1000, Alistair Francis wrote:
+> > On Thu, Aug 19, 2021 at 4:38 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+> > >
+> > > Hi Alistair,
+> > >
+> > > >
+> > > > These are the EINVAL strace tells me in the not working case:
+> > > >
+> > > > prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+> > > > ioctl(5, FBIOPUT_VSCREENINFO, 0x4ce8e0) = -1 EINVAL (Invalid argument)
+> > > >
+> > > > I'm guessing it's related to FBIOPUT_VSCREENINFO then, is that
+> > > > something that could be added to the DRM emulation?
+> > >
+> > > If it turns out FBIOPUT_VSCREENINFO is the culprint it would also be
+> > > good to know why we see EINVAL.
+> > > One way is to sprinkle a number of printk's in fb_set_var(),
+> > > then you can see how far you get before it fails.
+> >
+> > Thanks for the help.
+> >
+> > I see this line:
+> >
+> > ret = info->fbops->fb_check_var(var, info);
+> >
+> > in fb_set_var()
+> >
+> > returning early.
+>
+> Super, then next step is to annotate drm_fb_helper_check_var()
+> to see where it fails.
+> Try this and let us know the result.
 
-s/destance/destination/
+Thanks!
 
-That sentence is still hard to grok though, did it mean to say:
+After adding some prints, I realised there are already some in there
+that are disabled by default. After enabling them I see this:
 
-"In this case, the destination (iomap->addr) points to a newly
-allocated extent."
+"fbdev emulation doesn't support changing the pixel clock, value of
+pixclock is ignored"
 
-> So, it is needed to copy the data from srcmap to new allocated extent.
-> In theory, it is better to copy the head and tail ranges which is
-> outside of the non-aligned area instead of copying the whole aligned
-> range. But in dax page fault, it will always be an aligned range.  So,
-> we have to copy the whole range in this case.
+and
 
-s/we have to copy/copy/
+"fb requested width/height/bpp can't fit in current fb request
+260x1408-32 (virtual 260x23936) > 334x1405-32"
+
+which returns EINVAL.
+
+This is where I'm confused though. The values 334 and 1405 are taken
+from the vendor and in the working fbdev driver they are using the
+same values.
+
+I tried to add a similar print to mxsfb_check_var() for the working
+version, to check what the values are, but there doesn't seem to be
+any equivalent of fb->width and friends.
+
+Any ideas?
+
+Alistair
 
 >
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> ---
->  fs/dax.c | 89 ++++++++++++++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 84 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 9fb6218f42be..697a7b7bb96f 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1050,6 +1050,61 @@ static int dax_iomap_direct_access(const struct iomap *iomap, loff_t pos,
->         return rc;
->  }
->
-> +/**
-> + * dax_iomap_cow_copy(): Copy the data from source to destination before write.
-
-s/():/() -/
-
-...to be kernel-doc compliant
-
-> + * @pos:       address to do copy from.
-> + * @length:    size of copy operation.
-> + * @align_size:        aligned w.r.t align_size (either PMD_SIZE or PAGE_SIZE)
-> + * @srcmap:    iomap srcmap
-> + * @daddr:     destination address to copy to.
-> + *
-> + * This can be called from two places. Either during DAX write fault, to copy
-> + * the length size data to daddr. Or, while doing normal DAX write operation,
-> + * dax_iomap_actor() might call this to do the copy of either start or end
-> + * unaligned address. In this case the rest of the copy of aligned ranges is
-
-Which "this", the latter, or the former? Looks like the latter.
-
-"In the latter case the rest of the copy..."
-
-> + * taken care by dax_iomap_actor() itself.
-> + * Also, note DAX fault will always result in aligned pos and pos + length.
-
-Perhaps drop this sentence and just say:
-
-"Either during DAX write fault (page aligned), to copy..."
-
-...in that earlier sentence so this comment flows better.
-
-> + */
-> +static int dax_iomap_cow_copy(loff_t pos, uint64_t length, size_t align_size,
-> +               const struct iomap *srcmap, void *daddr)
-> +{
-> +       loff_t head_off = pos & (align_size - 1);
-> +       size_t size = ALIGN(head_off + length, align_size);
-> +       loff_t end = pos + length;
-> +       loff_t pg_end = round_up(end, align_size);
-> +       bool copy_all = head_off == 0 && end == pg_end;
-> +       void *saddr = 0;
-> +       int ret = 0;
-> +
-> +       ret = dax_iomap_direct_access(srcmap, pos, size, &saddr, NULL);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (copy_all) {
-> +               ret = copy_mc_to_kernel(daddr, saddr, length);
-> +               return ret ? -EIO : 0;
-> +       }
-> +
-> +       /* Copy the head part of the range.  Note: we pass offset as length. */
-
-I've re-read this a few times and this comment is not helping, why is
-the offset used as the copy length?
-
-> +       if (head_off) {
-> +               ret = copy_mc_to_kernel(daddr, saddr, head_off);
-> +               if (ret)
-> +                       return -EIO;
-> +       }
-> +
-> +       /* Copy the tail part of the range */
-> +       if (end < pg_end) {
-> +               loff_t tail_off = head_off + length;
-> +               loff_t tail_len = pg_end - end;
-> +
-> +               ret = copy_mc_to_kernel(daddr + tail_off, saddr + tail_off,
-> +                                       tail_len);
-> +               if (ret)
-> +                       return -EIO;
-> +       }
-> +       return 0;
-> +}
-> +
->  /*
->   * The user has performed a load from a hole in the file.  Allocating a new
->   * page in the file would cause excessive storage usage for workloads with
-> @@ -1175,16 +1230,18 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
->                 struct iov_iter *iter)
->  {
->         const struct iomap *iomap = &iomi->iomap;
-> +       const struct iomap *srcmap = &iomi->srcmap;
->         loff_t length = iomap_length(iomi);
->         loff_t pos = iomi->pos;
->         struct block_device *bdev = iomap->bdev;
->         struct dax_device *dax_dev = iomap->dax_dev;
->         loff_t end = pos + length, done = 0;
-> +       bool write = iov_iter_rw(iter) == WRITE;
->         ssize_t ret = 0;
->         size_t xfer;
->         int id;
->
-> -       if (iov_iter_rw(iter) == READ) {
-> +       if (!write) {
->                 end = min(end, i_size_read(iomi->inode));
->                 if (pos >= end)
->                         return 0;
-> @@ -1193,7 +1250,12 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
->                         return iov_iter_zero(min(length, end - pos), iter);
->         }
->
-> -       if (WARN_ON_ONCE(iomap->type != IOMAP_MAPPED))
-> +       /*
-> +        * In DAX mode, we allow either pure overwrites of written extents, or
-
-s/we allow/enforce/
-
-> +        * writes to unwritten extents as part of a copy-on-write operation.
-> +        */
-> +       if (WARN_ON_ONCE(iomap->type != IOMAP_MAPPED &&
-> +                       !(iomap->flags & IOMAP_F_SHARED)))
->                 return -EIO;
->
->         /*
-> @@ -1232,6 +1294,14 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
->                         break;
->                 }
->
-> +               if (write &&
-> +                   srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
-> +                       ret = dax_iomap_cow_copy(pos, length, PAGE_SIZE, srcmap,
-> +                                                kaddr);
-> +                       if (ret)
-> +                               break;
-> +               }
-> +
->                 map_len = PFN_PHYS(map_len);
->                 kaddr += offset;
->                 map_len -= offset;
-> @@ -1243,7 +1313,7 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
->                  * validated via access_ok() in either vfs_read() or
->                  * vfs_write(), depending on which operation we are doing.
->                  */
-> -               if (iov_iter_rw(iter) == WRITE)
-> +               if (write)
->                         xfer = dax_copy_from_iter(dax_dev, pgoff, kaddr,
->                                         map_len, iter);
->                 else
-> @@ -1385,6 +1455,7 @@ static vm_fault_t dax_fault_iter(struct vm_fault *vmf,
->  {
->         struct address_space *mapping = vmf->vma->vm_file->f_mapping;
->         const struct iomap *iomap = &iter->iomap;
-> +       const struct iomap *srcmap = &iter->srcmap;
->         size_t size = pmd ? PMD_SIZE : PAGE_SIZE;
->         loff_t pos = (loff_t)xas->xa_index << PAGE_SHIFT;
->         bool write = vmf->flags & FAULT_FLAG_WRITE;
-> @@ -1392,6 +1463,7 @@ static vm_fault_t dax_fault_iter(struct vm_fault *vmf,
->         unsigned long entry_flags = pmd ? DAX_PMD : 0;
->         int err = 0;
->         pfn_t pfn;
-> +       void *kaddr;
->
->         if (!pmd && vmf->cow_page)
->                 return dax_fault_cow_page(vmf, iter);
-> @@ -1404,18 +1476,25 @@ static vm_fault_t dax_fault_iter(struct vm_fault *vmf,
->                 return dax_pmd_load_hole(xas, vmf, iomap, entry);
->         }
->
-> -       if (iomap->type != IOMAP_MAPPED) {
-> +       if (iomap->type != IOMAP_MAPPED && !(iomap->flags & IOMAP_F_SHARED)) {
->                 WARN_ON_ONCE(1);
->                 return pmd ? VM_FAULT_FALLBACK : VM_FAULT_SIGBUS;
->         }
->
-> -       err = dax_iomap_direct_access(&iter->iomap, pos, size, NULL, &pfn);
-> +       err = dax_iomap_direct_access(iomap, pos, size, &kaddr, &pfn);
->         if (err)
->                 return pmd ? VM_FAULT_FALLBACK : dax_fault_return(err);
->
->         *entry = dax_insert_entry(xas, mapping, vmf, *entry, pfn, entry_flags,
->                                   write && !sync);
->
-> +       if (write &&
-> +           srcmap->addr != IOMAP_HOLE && srcmap->addr != iomap->addr) {
-> +               err = dax_iomap_cow_copy(pos, size, size, srcmap, kaddr);
-> +               if (err)
-> +                       return dax_fault_return(err);
-> +       }
-> +
->         if (sync)
->                 return dax_fault_synchronous_pfnp(pfnp, pfn);
->
-> --
-> 2.32.0
->
->
->
+>         Sam
