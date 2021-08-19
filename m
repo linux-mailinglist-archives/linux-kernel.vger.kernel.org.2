@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03D43F1B56
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7AC3F1B4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 16:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240568AbhHSOLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 10:11:30 -0400
-Received: from mout.perfora.net ([74.208.4.197]:44675 "EHLO mout.perfora.net"
+        id S240392AbhHSOLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 10:11:01 -0400
+Received: from mout.perfora.net ([74.208.4.196]:55197 "EHLO mout.perfora.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240521AbhHSOL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 10:11:28 -0400
+        id S240434AbhHSOK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 10:10:58 -0400
 Received: from toolbox.cardiotech.int ([81.221.236.183]) by mrelay.perfora.net
- (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0M7ZR3-1n1pE204ut-00xMEi;
- Thu, 19 Aug 2021 16:03:57 +0200
+ (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0M7IS8-1n1Y6Y0Kxy-00x57Z;
+ Thu, 19 Aug 2021 16:04:00 +0200
 From:   Marcel Ziswiler <marcel@ziswiler.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Alexei Starovoitov <ast@kernel.org>,
         Andreas Kemnade <andreas@kemnade.info>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Anson Huang <Anson.Huang@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Fabio Estevam <festevam@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Marek Vasut <marex@denx.de>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Marek Vasut <marex@denx.de>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Olof Johansson <olof@lixom.net>,
         Otavio Salvador <otavio@ossystems.com.br>,
         Pascal Zimmermann <pzimmermann@dh-electronics.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        soc@kernel.org
-Subject: [PATCH v1 0/7] ARM: prepare and add colibri imx6ull 1gb (emmc) support
-Date:   Thu, 19 Aug 2021 16:03:38 +0200
-Message-Id: <20210819140345.357167-1-marcel@ziswiler.com>
+        Shawn Guo <shawnguo@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/7] ARM: imx_v6_v7_defconfig: enable mtd physmap
+Date:   Thu, 19 Aug 2021 16:03:39 +0200
+Message-Id: <20210819140345.357167-2-marcel@ziswiler.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210819140345.357167-1-marcel@ziswiler.com>
+References: <20210819140345.357167-1-marcel@ziswiler.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:lx5GBGXPRAQ1C2RGAY9/BxYJ6AKfNJ32vg25PpQG17n/6Pk2u7J
- j0IrCvlaDcncp28bcdtMZIR/DwKQVvCWFr7vbql1AglQzGyZwh9oLK0G32II0gQxXr+KoEO
- YlarmDCsgoaZn3VKxmD9TDVL/XOw4pV+gxmsZRPGcCYDGOQ0+6A7pOHxAyDkALGxGqTawBq
- oh5ehsLsIEqorCggir/4w==
+X-Provags-ID: V03:K1:CC9ywXW29C6OdHxwLPF892isLfNEJAO1sXkDalM4HPxySBCDob8
+ 9WGuVzdpK20Na1+IrRXQQLN1G+k+P+CrrwFYAPcH6h3vUTSlLnuEk7Hc5qRN3LLtrWu4TZo
+ iYedAJq+bnYzN/fBS8LdUDvdzGYzbCxLXwFvbfEMEKMdEw5s4WvAqwKklX5SxT/7oA70XGv
+ HE/jDT9YnQkMzoF97J5lQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mXrkhIbGR/4=:gpDAe+MQG0MDnf7deXR+2t
- 50k/pRMfwSbbCVF3rQ8KSgb2oiLAWFxxF0yRiDYgeSp+ihHCHZhhWr8NjKdwvxrCh6k0f9VLd
- 4d2aZhyOMaylPR54zmWrUt23uyoXmiI1I76kJNPnWZ/NwyqngR4f8Urs+E3cCcxEZuu8RWHxq
- nypxv1ZoN2O0ZlCHDDIXC0Obf4+f3f9BoE+eyxPAIlnjvIgEUFV/gP2cCMA3m2amoz2FuhB8O
- qhmx5sguQQKM6Kw5ylbfCwywvdob1KFO5HjQDnipXTkPzopfjO2bnXe3pEs7slv92ujdzcQPT
- maelNVPHwZfKJ0YBWd/c2nu9+MkTyqPFOXJim1tsbfaNbNqJLUyDog8Koxf26b5xfngwYsBTg
- Tx6mWtXmIfMWqVD5DBWdgH3HYIZpCrCgwqK7E9A+I0YkIRaqqz3kRzokp1DkMp9BlE9atzmgc
- i3JIfTx0V2x/FzsHaE8+FSKN/JW6iAouhD08/mfY5ZqB8ZaW3uBFvl568dfdwC/ir0cLd+/gV
- Ie5L51CmbQN7zIExKIyZI1PO5s9RLJaY8nMIS5+H3dAUU278IrRVdTBGO7G6h9OKph9G/ZO09
- 2pjibwWSkHVbFwk7X3qfoE4AaKGNycwJlNR5vcoS4ZwnsqH9U8tPEFIUsnqIjitI8HbLUsiwQ
- ia10gA8i694SeE57Fjl2mxoKoQB2O13X1prDynb5X1xOcDW1pd18rSBXexy88JutsAV/m2D5S
- vJf4CJ3E9g85Bk+mafOXD/KXsBKlO8Bobv4zgAUdc7AbzlblszZSXERlSS9fkNEqIUSN8okRb
- F2N3lum8AWVz3fNSd1g4mHWrJVZeLPd+CsTXQJ57/+/J4npsRKHZJrsSsGUUDIbGTd+sscT
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jG2VYNc/DW8=:P6D9lfo9O9vny04GaloBoZ
+ e2EOr640nW2/NuMMnN4aWRbp2gnZi6nVEeJblkWWOqx52KPVfZPn3t/n/NG2viLGOtTdGCHqX
+ o84TrOFR9u1N4oVuo57IwxZqGOGaMwkEKzTT1fg8pVoEyBXOpUGN7Q/LBzJnbrMqnhKEnLEql
+ nTDV0raN+5Gu5VinHIWgN4JWVXMIiykP1LfwzijAYLwfbjlRzIihlauwpUNu4y0zCdTWqw6mZ
+ 3nApsPIB+LjU/oJVBM1PoQ322XeEaV9lxoirYoz3fCQi5fhCHSrOQdN4zmdJ2UTYzpKpglsYF
+ 41YxNODUacpfbtsultQAq/wq/YSIBzUe3OxuWiqqyds/cBDq9qPsBh726gjNkdGuAMN6+R9Yt
+ eXlZvjGHe3qHoKB1UyHRQOrN1NnzNM+hWCQU09UpvB4r8HYjzw2BgdxGGQTDh6EwVIplwfSHB
+ PahLe0SaOa7cyhkGM+xTlmVve9vvUa7gSLZP217fSsId8LTZZ6AfPyTJEi8EUihTnANAXwWVS
+ DPG17UXmQBlvZ+M2CmmFUtXMH57HIdZ1Op0JF9S6jnztZx9dNAnhrXC082YW+CRxSQQOWujXM
+ IahpopjNYDauW6iit9nqtLj09WC4d8MPqJMq+YYwnb8nUSInW9j2Y8gUuB6Y12zFbsk66gBfo
+ r75JsvAwWbGUwnyYxtCy3+WuOIJ6RWNbGXfS3jLoD8k3BOASsdQ00YsvYRO8owOzC37kZEPKu
+ 1bgMQfZegVkVGkxus5pLZwEU/TKqm0kSh9OY32YlXnu3fRW5y8sLCeAVQYQ+Czcf8OchTsjDY
+ n/DhRWP/J4PEPmxzWJDXZp5m2eGvtuT3W+jVuj5kYSYtHUVf59NJOzk70AykvceQLT7+Mem
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
+Enable CONFIG_MTD_PHYSMAP which is nowadays required for CONFIG_MTD_PHYSMAP_OF.
 
-Clean-up imx_v6_v7_defconfig and then add support for the new Colibri
-iMX6ULL 1GB (eMMC) which builds on the success of the existing Colibri
-iMX6ULL SKUs using raw NAND but replaces this by more RAM (1 GB) and an
-eMMC (4 GB).
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+---
 
+ arch/arm/configs/imx_v6_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Marcel Ziswiler (6):
-  ARM: imx_v6_v7_defconfig: enable mtd physmap
-  ARM: imx_v6_v7_defconfig: enable fb
-  ARM: imx_v6_v7_defconfig: change snd soc tlv320aic3x to i2c variant
-  ARM: imx_v6_v7_defconfig: rebuild default configuration
-  ARM: imx_v6_v7_defconfig: build imx sdma driver as module
-  ARM: imx_v6_v7_defconfig: enable bpf syscall and cgroup bpf
-
-Max Krummenacher (1):
-  ARM: dts: colibri-imx6ull-emmc: add device trees
-
- arch/arm/boot/dts/Makefile                    |   1 +
- .../boot/dts/imx6ull-colibri-emmc-eval-v3.dts |  17 ++
- .../dts/imx6ull-colibri-emmc-nonwifi.dtsi     | 185 ++++++++++++++++++
- arch/arm/boot/dts/imx6ull-colibri.dtsi        |  30 ++-
- arch/arm/configs/imx_v6_v7_defconfig          |  46 ++---
- 5 files changed, 249 insertions(+), 30 deletions(-)
- create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-eval-v3.dts
- create mode 100644 arch/arm/boot/dts/imx6ull-colibri-emmc-nonwifi.dtsi
-
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index ccee86d0045dd..70b3c377c4302 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -97,6 +97,7 @@ CONFIG_MTD_JEDECPROBE=y
+ CONFIG_MTD_CFI_INTELEXT=y
+ CONFIG_MTD_CFI_AMDSTD=y
+ CONFIG_MTD_CFI_STAA=y
++CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PHYSMAP_OF=y
+ CONFIG_MTD_DATAFLASH=y
+ CONFIG_MTD_M25P80=y
 -- 
 2.26.2
 
