@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9E33F19DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E0A3F19E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 14:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238357AbhHSM7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 08:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhHSM7W (ORCPT
+        id S239187AbhHSNA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:00:28 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48124 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229601AbhHSNA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 08:59:22 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A989C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:58:46 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id z20so12736948ejf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 05:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dei5ldbSnuAmJj+eoYruR4aeAYZ4EbbJLELMi4p7lTI=;
-        b=XkkT/XqAUqWQaj5lpIpXSlVZUEzqkkFIgeL5OhjylY6iDEULaq3AKrsvwhBPsRZJsO
-         eLtLSZs2mndaBcNR8NDtoGYBW9VhtI8NJvg/hR8Q28pP+346Zt3JK/9W1KXtVb4GiY1T
-         ScBiNuKChINddmnm2dUiSNGv5A2AL+4j7Ky8EMHj8y5gi3IMpIqKPSwSSOefPdptUiJs
-         0Rs8tWwJFmsEj3sFuH1OyPJ4hHZWlm6aRToUWJWkGQFgYYbX5iR1NwwLURLenaflzhnd
-         FhENqRMYK2aJw4Z4NWNL5sN9PGcwTeDzxgKoJUPBlnr14SGSQS8i49UlP5p9bEz0MYt6
-         0zYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dei5ldbSnuAmJj+eoYruR4aeAYZ4EbbJLELMi4p7lTI=;
-        b=hH23j9rFide5J7X9l1IlyTb4Hs/OVCLgZc9uj8Fm+JdkEvh1H3Mv3v0yXSAx6tIVfU
-         1Mz4TaaWI2g0e2iqR0DalQgMmbN7FSNWT3e0i8CuesWJneMYRLSDBy9pGTwGPjOwaBS+
-         DQ4ZKUUy8oBnvmPdiQI9JwQv2O2RXJBUV4dPwIVGTSPpm0VcNDe7SSQL6NiSRRt63tza
-         MxHk34woy9dH9tVMiZTSY75to2ufG6q7XhGrKLyd8F22INe8Lt6v0BQhKElTOSPlhiYe
-         uJO3Kd3W1xPRY/afqtWW98R1Os3lsKy3tGLtd+FC5mi+Xp4wEZ7V2ytrE9LSMWSAidvy
-         nvvQ==
-X-Gm-Message-State: AOAM531zOJCgPHjx7I0keJ5fVSlj1RftaZo4KKQA8LLJTv657vJt9rjW
-        TsRnjua6SkiO3p/2gtxm1Oo=
-X-Google-Smtp-Source: ABdhPJyQ8Z0kwxKKTLUi+tZ5wfjG/lnPAZNOc3VWUaPbRlubKaezYE3/1wMSfOflW8qQSUZSqktnrQ==
-X-Received: by 2002:a17:906:d045:: with SMTP id bo5mr15820830ejb.461.1629377925177;
-        Thu, 19 Aug 2021 05:58:45 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id s7sm1722713edu.23.2021.08.19.05.58.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 05:58:44 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] staging: r8188eu: cast to restricted __be32
-Date:   Thu, 19 Aug 2021 14:58:43 +0200
-Message-ID: <1640197.nFQ5q36Eve@localhost.localdomain>
-In-Reply-To: <602aefc30b0d979dc6e402d52da2f096ea5c67cf.1629360917.git.aakashhemadri123@gmail.com>
-References: <cover.1629360917.git.aakashhemadri123@gmail.com> <602aefc30b0d979dc6e402d52da2f096ea5c67cf.1629360917.git.aakashhemadri123@gmail.com>
+        Thu, 19 Aug 2021 09:00:27 -0400
+X-UUID: 0b554a1debce474fba82959df6c6b6ab-20210819
+X-UUID: 0b554a1debce474fba82959df6c6b6ab-20210819
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1864872042; Thu, 19 Aug 2021 20:59:46 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 19 Aug 2021 20:59:45 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 19 Aug 2021 20:59:44 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Wilczyski <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <Ryan-JH.Yu@mediatek.com>
+Subject: [PATCH] PCI: mediatek-gen3: Disable DVFSRC voltage request
+Date:   Thu, 19 Aug 2021 20:59:39 +0800
+Message-ID: <20210819125939.21253-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 19, 2021 10:17:54 AM CEST Aakash Hemadri wrote:
-> Fix sparse warning:
-> > rtw_br_ext.c:836:54: warning: cast to restricted __be32
-> 
-> Unnecessary double cast, remove them.
+When the DVFSRC feature is not implemented, the MAC layer will
+assert a voltage request signal when exit from the L1ss state,
+but cannot receive the voltage ready signal, which will cause
+the link to fail to exit the L1ss state correctly.
 
-Are you sure that you had a *double* cast?
-In the line that you changed I see only a cast and a swap 
-(or, better, a potential swap).
+Disable DVFSRC voltage request by default, we need to find
+a common way to enable it in the future.
 
-Regards,
+Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+---
+ drivers/pci/controller/pcie-mediatek-gen3.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Fabio
-
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_br_ext.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> index 404fa8904e47..6a0462ce6230 100644
-> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> @@ -671,7 +671,7 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
->  				    (udph->dest == __constant_htons(SERVER_PORT))) { /*  DHCP request */
->  					struct dhcpMessage *dhcph =
->  						(struct dhcpMessage *)((size_t)udph + sizeof(struct udphdr));
-> -					u32 cookie = be32_to_cpu((__be32)dhcph->cookie);
-> +					u32 cookie = dhcph->cookie;
->  
->  					if (cookie == DHCP_MAGIC) { /*  match magic word */
->  						if (!(dhcph->flags & htons(BROADCAST_FLAG))) {
-> -- 
-> 2.32.0
-> 
-> 
-> 
-
-
-
+diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
+index f3aeb8d4eaca..79fb12fca6a9 100644
+--- a/drivers/pci/controller/pcie-mediatek-gen3.c
++++ b/drivers/pci/controller/pcie-mediatek-gen3.c
+@@ -79,6 +79,9 @@
+ #define PCIE_ICMD_PM_REG		0x198
+ #define PCIE_TURN_OFF_LINK		BIT(4)
+ 
++#define PCIE_MISC_CTRL_REG		0x348
++#define PCIE_DISABLE_DVFSRC_VLT_REQ	BIT(1)
++
+ #define PCIE_TRANS_TABLE_BASE_REG	0x800
+ #define PCIE_ATR_SRC_ADDR_MSB_OFFSET	0x4
+ #define PCIE_ATR_TRSL_ADDR_LSB_OFFSET	0x8
+@@ -297,6 +300,11 @@ static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
+ 	val &= ~PCIE_INTX_ENABLE;
+ 	writel_relaxed(val, port->base + PCIE_INT_ENABLE_REG);
+ 
++	/* Disable DVFSRC voltage request */
++	val = readl_relaxed(port->base + PCIE_MISC_CTRL_REG);
++	val |= PCIE_DISABLE_DVFSRC_VLT_REQ;
++	writel_relaxed(val, port->base + PCIE_MISC_CTRL_REG);
++
+ 	/* Assert all reset signals */
+ 	val = readl_relaxed(port->base + PCIE_RST_CTRL_REG);
+ 	val |= PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB;
+-- 
+2.18.0
 
