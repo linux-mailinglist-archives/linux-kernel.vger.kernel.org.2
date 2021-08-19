@@ -2,165 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D9F3F183D
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6183C3F1840
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 13:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238689AbhHSLdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 07:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231210AbhHSLdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 07:33:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1EF60F11;
-        Thu, 19 Aug 2021 11:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629372767;
-        bh=qqUv0afXLlZmgpuXp+0i7xIq823VG8q0+CKIHc5YFx0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=X8pTqxxyptHJwxAfARUDxpKpRvfj7JlO9CM3caAQ4738Nk5gdAs6MNutinaEnf1us
-         JEj1Ulcgq/lXtuGAl6KZg30vRfot3DVKfhNjizlXFXF62diZKes2ZFzmrjUqqkDZiB
-         gvbsF3XtiW7bYNkQbAGN+NKCtkAmI6jl5Wtuz0GHqFuytdmtQfc346a6ror8bUqvhp
-         pywcAtRV8h3xw0OJ1GM757bWFfMg4vtYF/ZKXh5RBOKQft/UufbaNPMk0dtqnFm3ig
-         Is7J/fhdGuUuDtmj8OjNdlELOudPx+Onyqu8bMPIxSGEjThdS35svcIa+8I8WscRGy
-         cXBOdd1bUkhgw==
-Message-ID: <565b8fdebe3ff6017bbf46e8928866ee49b44e97.camel@kernel.org>
-Subject: Re: [PATCH] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Jethro Beekman <jethro@fortanix.com>
-Cc:     linux-sgx@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Saravanan D <saravanand@fb.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Date:   Thu, 19 Aug 2021 14:32:45 +0300
-In-Reply-To: <ffcef189-78fd-1b57-88bb-577708fb7abc@linuxfoundation.org>
-References: <20210818132509.545997-1-jarkko@kernel.org>
-         <acd5a925-ce86-9934-5e1c-d0bcee3f606b@fortanix.com>
-         <20210818134026.GA7967@iki.fi>
-         <ffcef189-78fd-1b57-88bb-577708fb7abc@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S238542AbhHSLfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 07:35:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46630 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231210AbhHSLfK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 07:35:10 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 00F73220C3;
+        Thu, 19 Aug 2021 11:34:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629372873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=C5L3+E3FrtzJQeCJa4s00UVMVLpvEbwXxqPMWVgvpgE=;
+        b=snbkeYDpPT5cojvS678qZDl855L6XpWhdtHqYCcv0Wph5Yev2EBpVcaOWZacanGDm45O1d
+        MqGn1XQP86TYHD3QDMta+Ev35+H4P+e7nRJ7uLY2HAKxlXmNm1/LWfBEzqjC0Kic/HPcDp
+        tqYK6cawMSkGXhtwnOshjo/TneEx0Sc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629372873;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=C5L3+E3FrtzJQeCJa4s00UVMVLpvEbwXxqPMWVgvpgE=;
+        b=L4iA4mmlhka6C37QaFU+on0rb2jZM5FXMsqy4QcfhkMdClKOlYITOLHigRPeIvef1zmLA1
+        5b/aQmQ3Vy00srAQ==
+Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 58580A3BFF;
+        Thu, 19 Aug 2021 11:34:15 +0000 (UTC)
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Mathias Nyman <mathias.nyman@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Moritz Fischer <mdf@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: renesas-xhci: Prefer firmware loading on unknown ROM state
+Date:   Thu, 19 Aug 2021 13:34:27 +0200
+Message-Id: <20210819113427.1166-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-08-18 at 12:34 -0600, Shuah Khan wrote:
-> On 8/18/21 7:40 AM, Jarkko Sakkinen wrote:
-> > On Wed, Aug 18, 2021 at 03:29:59PM +0200, Jethro Beekman wrote:
-> > > On 2021-08-18 15:25, Jarkko Sakkinen wrote:
-> > > > The amount of SGX memory on the system is determined by the
-> > > > BIOS and it
-> > > > varies wildly between systems.  It can be from dozens of MB's
-> > > > on desktops
-> > > > or VM's, up to many GB's on servers.  Just like for regular
-> > > > memory, it is
-> > > > sometimes useful to know the amount of usable SGX memory in the
-> > > > system.
-> > > >=20
-> > > > Add SGX_MemTotal field to /proc/meminfo, which shows the total
-> > > > amount of
-> > > > usable SGX memory in the system.  E.g. with 32 MB reserved for
-> > > > SGX from
-> > > > BIOS, the printout would be:
-> > > >=20
-> > > > SGX_MemTotal:      22528 kB
-> > > >=20
-> > > > It is less than 32 MB because some of the space is reserved for
-> > > > Enclave
-> > > > Page Cache Metadata (EPCM), which contains state variables for
-> > > > all the
-> > > > pages in the Enclave Page Cache (EPC).  The latter contains the
-> > > > pages,
-> > > > which applications can use to create enclaves.
-> > > >=20
-> > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > ---
-> > > >   Documentation/x86/sgx.rst      |  6 ++++++
-> > > >   arch/x86/include/asm/sgx.h     | 10 +++++++---
-> > > >   arch/x86/kernel/cpu/sgx/main.c |  7 ++++++-
-> > > >   arch/x86/mm/pat/set_memory.c   |  5 +++++
-> > > >   4 files changed, 24 insertions(+), 4 deletions(-)
-> > > >=20
-> > > > diff --git a/Documentation/x86/sgx.rst
-> > > > b/Documentation/x86/sgx.rst
-> > > > index dd0ac96ff9ef..68ee171e1d8f 100644
-> > > > --- a/Documentation/x86/sgx.rst
-> > > > +++ b/Documentation/x86/sgx.rst
-> > > > @@ -250,3 +250,9 @@ user wants to deploy SGX applications both
-> > > > on the host and in guests
-> > > >   on the same machine, the user should reserve enough EPC (by
-> > > > taking out
-> > > >   total virtual EPC size of all SGX VMs from the physical EPC
-> > > > size) for
-> > > >   host SGX applications so they can run with acceptable
-> > > > performance.
-> > > > +
-> > > > +Supplemental fields for /proc/meminfo
-> > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > > +
-> > > > +SGX_MemTotal
-> > > > +	The total usable SGX protected memory in kilobytes.
-> > > > diff --git a/arch/x86/include/asm/sgx.h
-> > > > b/arch/x86/include/asm/sgx.h
-> > > > index 05f3e21f01a7..2ae9dc8c9411 100644
-> > > > --- a/arch/x86/include/asm/sgx.h
-> > > > +++ b/arch/x86/include/asm/sgx.h
-> > > > @@ -365,6 +365,13 @@ struct sgx_sigstruct {
-> > > >    * comment!
-> > > >    */
-> > > >  =20
-> > > > +#if defined(CONFIG_X86_SGX) || defined(CONFIG_X86_SGX_KVM)
-> > > > +extern unsigned long sgx_nr_all_pages;
-> > > > +
-> > > > +int sgx_set_attribute(unsigned long *allowed_attributes,
-> > > > +		      unsigned int attribute_fd);
-> > > > +#endif
-> > > > +
-> > > >   #ifdef CONFIG_X86_SGX_KVM
-> > > >   int sgx_virt_ecreate(struct sgx_pageinfo *pageinfo, void
-> > > > __user *secs,
-> > > >   		     int *trapnr);
-> > > > @@ -372,7 +379,4 @@ int sgx_virt_einit(void __user *sigstruct,
-> > > > void __user *token,
-> > > >   		   void __user *secs, u64 *lepubkeyhash, int
-> > > > *trapnr);
-> > > >   #endif
-> > > >  =20
-> > > > -int sgx_set_attribute(unsigned long *allowed_attributes,
-> > > > -		      unsigned int attribute_fd);
-> > > > -
-> > >=20
-> > > This change seems unrelated?
-> >=20
-> > It's just a good practice not to define symbols that do not exist,
-> > so that
-> > if the symbol is ever used, we get a compilation error, not linking
-> > error.
-> >=20
-> > Since this is included to set_memory.c, based on this conclusion, I
-> > added
-> > the check.
-> >=20
->=20
-> It would make sense to make this change in a separate patch since.
->=20
-> thanks,
-> -- Shuah
+The recent attempt to handle an unknown ROM state in the commit
+d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
+resulted in a regression and reverted later by the commit 44cf53602f5a
+("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"").
+The problem of the former fix was that it treated the failure of
+firmware loading as a fatal error.  Since the firmware files aren't
+included in the standard linux-firmware tree, most users don't have
+them, hence they got the non-working system after that.  The revert
+fixed the regression, but also it didn't make the firmware loading
+triggered even on the devices that do need it.  So we need still a fix
+for them.
 
-NP, I can split it.
+This is another attempt to handle the unknown ROM state.  Like the
+previous fix, this also tries to load the firmware when ROM shows
+unknown state.  In this patch, however, the failure of a firmware
+loading (such as a missing firmware file) isn't handled as a fatal
+error any longer when ROM has been already detected, but it falls back
+to the ROM mode like before.  The error is returned only when no ROM
+is detected and the firmware loading failed.
 
-/Jarkko
+Along with it, for simplifying the code flow, the detection and the
+check of ROM is factored out from renesas_fw_check_running() and done
+in the caller side, renesas_xhci_check_request_fw().  It avoids the
+redundant ROM checks.
+
+The patch was tested on Lenovo Thinkpad T14 gen (BIOS 1.34).  Also it
+was confirmed that no regression is seen on another Thinkpad T14
+machine that has worked without the patch, too.
+
+Fixes: 44cf53602f5a ("Revert "usb: renesas-xhci: Fix handling of unknown ROM state"")
+BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1189207
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/usb/host/xhci-pci-renesas.c | 35 +++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/usb/host/xhci-pci-renesas.c b/drivers/usb/host/xhci-pci-renesas.c
+index aa88e57649a9..52599d96634f 100644
+--- a/drivers/usb/host/xhci-pci-renesas.c
++++ b/drivers/usb/host/xhci-pci-renesas.c
+@@ -207,7 +207,8 @@ static int renesas_check_rom_state(struct pci_dev *pdev)
+ 			return 0;
+ 
+ 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
+-			return 0;
++			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
++			return -ENOENT;
+ 
+ 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
+ 		default: /* All other states are marked as "Reserved states" */
+@@ -224,14 +225,6 @@ static int renesas_fw_check_running(struct pci_dev *pdev)
+ 	u8 fw_state;
+ 	int err;
+ 
+-	/* Check if device has ROM and loaded, if so skip everything */
+-	err = renesas_check_rom(pdev);
+-	if (err) { /* we have rom */
+-		err = renesas_check_rom_state(pdev);
+-		if (!err)
+-			return err;
+-	}
+-
+ 	/*
+ 	 * Test if the device is actually needing the firmware. As most
+ 	 * BIOSes will initialize the device for us. If the device is
+@@ -591,21 +584,39 @@ int renesas_xhci_check_request_fw(struct pci_dev *pdev,
+ 			(struct xhci_driver_data *)id->driver_data;
+ 	const char *fw_name = driver_data->firmware;
+ 	const struct firmware *fw;
++	bool has_rom;
+ 	int err;
+ 
++	/* Check if device has ROM and loaded, if so skip everything */
++	has_rom = renesas_check_rom(pdev);
++	if (has_rom) {
++		err = renesas_check_rom_state(pdev);
++		if (!err)
++			return 0;
++		else if (err != -ENOENT)
++			has_rom = false;
++	}
++
+ 	err = renesas_fw_check_running(pdev);
+ 	/* Continue ahead, if the firmware is already running. */
+ 	if (!err)
+ 		return 0;
+ 
++	/* no firmware interface available */
+ 	if (err != 1)
+-		return err;
++		return has_rom ? 0 : err;
+ 
+ 	pci_dev_get(pdev);
+-	err = request_firmware(&fw, fw_name, &pdev->dev);
++	err = firmware_request_nowarn(&fw, fw_name, &pdev->dev);
+ 	pci_dev_put(pdev);
+ 	if (err) {
+-		dev_err(&pdev->dev, "request_firmware failed: %d\n", err);
++		if (has_rom) {
++			dev_info(&pdev->dev, "failed to load firmware %s, fallback to ROM\n",
++				 fw_name);
++			return 0;
++		}
++		dev_err(&pdev->dev, "failed to load firmware %s: %d\n",
++			fw_name, err);
+ 		return err;
+ 	}
+ 
+-- 
+2.26.2
+
