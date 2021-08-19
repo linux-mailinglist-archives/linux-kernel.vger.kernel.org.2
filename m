@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032CB3F2170
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDBC3F2175
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 22:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235039AbhHSUQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 16:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbhHSUQ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 16:16:27 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91EFC061756;
-        Thu, 19 Aug 2021 13:15:50 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id d4so15428298lfk.9;
-        Thu, 19 Aug 2021 13:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hrWz4NAakvkbXED+TiflwM6YH+DFROJfdHAiNsIJBK0=;
-        b=nBFk1XsgHsVry9Qc6yaHDy+PvJLnZ6Zu5cdlqGO+4+12ZvLSfr5ETy6twZb2l0SSs/
-         nSUlQAlL4AkAgQVU6+mS+9OBCWI+SGCtn2c8UEmABWG+9gGP2IO4spo7JHqaC5qIUO3v
-         Pjn0PDCnFZmTsHnYMR0XxTrxhLBClpjoXOZU05PhKd9KR53SnVhe5OVUIXJaTg4lheDv
-         ORogd8/sAqoeago8IklvD8qO9yXq54U1af5ujQWAcL1AMz/vIl7xwQ8pjsQwSg4XQ1ok
-         umOgxsjmhaNMPdmMMbVpHpGAv5WGLLMdihIXfWl5YlnFjZqeBZk2ZMQ4CUms0WE8TS5t
-         EvKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hrWz4NAakvkbXED+TiflwM6YH+DFROJfdHAiNsIJBK0=;
-        b=NdilHCr0WnEoePAuOn9TAiHLrrhiIn5+i6iMjtAGkZMC7MOP1ijRIApEsu5gs0kU0d
-         l91IhpxpvEKuDRhvZoWspBtrMH4wDb0L/peie07QJA4D3ZbdZDkU3/kWY1E1m7cyOaZs
-         0EF5aLl6uf7Nn4NkGZyk2DMY4CDz3KVbUFtDfrkzE9Z73dqSiH0yWNrj6V5AKdjnGLsP
-         4Hrp+6KeIW8IjOWT3PIMHhIiHPMfVX2b7s51Cik1yN425XzPNOtdAfGynSzHDsROZjVs
-         0vSnv8qVGZIALdFu9yYD4QMLWl4wsF8Bu2KGJytoRg0qdZyA3rdNN+cPycB6ZCNPdSRS
-         zj1A==
-X-Gm-Message-State: AOAM532YExvfJuZHx/LvusYL5EHH1OU/4dWV1cMjNccLQcU3/J/5MfZ1
-        qFHhWKHcInHUdLXV4RxPYiGenYrnUx78E1d+jrw=
-X-Google-Smtp-Source: ABdhPJwEED8rs03dN1hA20txFirdZi1ehzNxv5jEG4C5upbTpW5JD3zizQuaG+1RowsjPUj0ecXOUW+DtWK9JxSCHLc=
-X-Received: by 2002:ac2:4143:: with SMTP id c3mr9598186lfi.295.1629404149335;
- Thu, 19 Aug 2021 13:15:49 -0700 (PDT)
+        id S234986AbhHSUSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 16:18:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231683AbhHSUSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 16:18:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B3A6610D2;
+        Thu, 19 Aug 2021 20:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629404276;
+        bh=JLc6MbNYqramEDF6nTAvsq6MESZmf7zguMGFkkGgcHg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qWo5JIbfjmGVZi+yzG/U7j5d0gwQLO1/cLteNgLHXzqOIBbmRSfbA782mYM1PHhzJ
+         S7y6lYlNxwEXl+jo9T/l083VI3JWDT57uiAUueRlLWKqga8Imyeu5vCXMSiSaR8NoW
+         PSKOgv0jBWYciM8KYTl8Gz8nFSEJF2dzl8meistXieu2YGYLswS5x7K/zhmoEdP7jT
+         XXax6mzWi3JDfJI8N5pc9frY0vkhkqKmy/oEtRBEvx6fTwRZZK0uVQOVyA1GvrWFC8
+         n1cO1FP3196VCJ+vkI4EeRz4aNvgoAwl49mEPyEf5Z3yKBPU5jtEalDylVs8svVOIA
+         mttbmKf3RCIYg==
+Subject: Re: [GIT PULL] Enable -Wimplicit-fallthrough for Clang for 5.14-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+References: <20210819040517.GA329693@embeddedor>
+ <CAHk-=whXUJbqhjkRSjOQ2Tm5OmyKv3_JUTh8pxxvykGaC+fM0Q@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <9ef3265b-a5e7-d21b-68a8-ad137ac6ebfd@kernel.org>
+Date:   Thu, 19 Aug 2021 13:17:54 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210819154818.18334-1-lutovinova@ispras.ru>
-In-Reply-To: <20210819154818.18334-1-lutovinova@ispras.ru>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 19 Aug 2021 17:15:38 -0300
-Message-ID: <CAOMZO5DiaNnxc6X77jyPp9PxAUmc2-HdgE0nh4uBda_eLaBimQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: imx8mp: request irq after initializing dwc3
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ldv-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=whXUJbqhjkRSjOQ2Tm5OmyKv3_JUTh8pxxvykGaC+fM0Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadezda,
+On 8/19/2021 12:19 PM, Linus Torvalds wrote:
+> On Wed, Aug 18, 2021 at 9:02 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+>>
+>> Enable -Wimplicit-fallthrough for Clang for 5.14-rc7
+> 
+> No. Much too late in the release, particularly knowing that we have
+> Clang pre-releases that claim to be 14.0.0 and get this wrong.
+> 
+> So no way does this happen like this.
+> 
+> That's doubly true since the clang support for this all adds exactly
+> _zero_ upside, only downside: we made the gcc checks be stricter, and
+> gcc ends up having (a) more wide coverage and (b) doesn't have the
+> bugs clang has.
 
-On Thu, Aug 19, 2021 at 12:48 PM Nadezda Lutovinova
-<lutovinova@ispras.ru> wrote:
->
-> If IRQ occurs between calling  devm_request_threaded_irq() and
-> initializing dwc3_imx->dwc3, then null pointer dereference occurs
-> since dwc3_imx->dwc3 is used in dwc3_imx8mp_interrupt().
->
-> The patch puts registration of the interrupt handler after
-> initializing of neccesery data.
+For what it's worth, clang's version of -Wimplicit-fallthrough would 
+have caught the bug in commit 652b44453ea9 ("habanalabs/gaudi: fix 
+missing code in ECC handling"). Yes, small fix in the sea of patches 
+that were needed to address clang's more pedantic version of the warning 
+but this version of the warning is completely in line with the kernel's 
+stance of switch statements in Documentation/process/deprecated.rst:
 
-"necessary"
+"All switch/case blocks must end in one of:
 
-> Found by Linux Driver Verification project (linuxtesting.org).
->
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+* break;
+* fallthrough;
+* continue;
+* goto <label>;
+* return [expression];"
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+> Honestly, I think the clang "version 14 or more" check is simply
+> buggy. We *know* that check fails. Don't do it.
+> 
+> Make it "strictly more than 14.0.0" which hopefully doesn't fail, is
+> cheap and easy, and which will make clang work correctly in the not
+> too distant future.
+
+Just to give some more context, Clang is not like GCC where x.0.0 is the 
+development version and x.1.0 is the stable release. The first stable 
+version of clang-14 will be clang 14.0.0 when it is released, just as it 
+is now, so making it "strictly more than 14.0.0" will just delay 
+enabling this even more despite the issue being fixed now. Intel already 
+upgraded the clang they use for testing to one that is fixed and Mark 
+Brown said Arm does testing with clang-14 but they regularly upgrade as 
+well. Nobody should get bitten by this check in its current form unless 
+they are not upgrading their development version of clang but in that 
+case, they are doing it wrong to begin with in my opinion (would it not 
+be the same as someone using v5.13-rc1 when v5.13-rc6 is out?)
+
+If we waited until the next merge window, that would certainly give 
+various entities enough time to upgrade their pre-release versions.
+
+However, if you are truly opposed to a version check, can we at least 
+just check for the presence of -Wunreachable-code-fallthrough as I 
+suggested before? Yes, it is slightly more expensive as we have to call 
+the compiler rather than using make builtins but then your concern of 
+-Wimplicit-fallthrough getting enabled when it is buggy is completely 
+addressed and people who have a fixed toolchain get access to the 
+warning now.
+
+Cheers,
+Nathan
