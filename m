@@ -2,138 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BD03F1E91
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78173F1E93
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhHSRCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 13:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhHSRCG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:02:06 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4F5C061575;
-        Thu, 19 Aug 2021 10:01:29 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id gr13so14291957ejb.6;
-        Thu, 19 Aug 2021 10:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HOnBGLFQ/RPkWyVebKZOihfXyP1VfPHshsIs+J3gUi4=;
-        b=gtjctdvwMmR+KSoAu9WPHrM3VQ1bojXNADyhNT5C/CWdI8eqrxzXML8ywRkuk+hlfz
-         PprjBPzk510Gbr3qulBKAN51iG1gZxzii91z5gVuaUKxQqWsuboVjsJOupWDhCebGfxo
-         wlPv3URrKTYZyCy0MMU9x7fOoPcxQWawlhwrh7LtfJhK4mHo3tlmpGyFr0kyxb0g6VHX
-         OVoFeCsjuRwezH3VmWztgW2hSuMj/1Fjw8N0DLu3HAa2he1INBu9ybJw1o/Spe6kHhGS
-         3O4RBHvAT7BTA/GkzpOi20MjfjCQf9YjRh0ehoCd1Q2TGuwUJla1eCGY7Ldp1eb8vhhK
-         AQ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HOnBGLFQ/RPkWyVebKZOihfXyP1VfPHshsIs+J3gUi4=;
-        b=VA1XXlqSxxxfkQqSjDyI7+OdGeQ0TMALhAca3ZzoaeC0uZayegokmwUIUJRmNI43HF
-         s426ZYbX/MRfCjO+1s+FYsYn9DciTGtnUlPZ6RxuG6qdOhTNvp3ntba8WsgAukPJJuUW
-         IwTmLZRpaZVdeueJL0UNJ71NOtyfZ2QaVFWeQgre/DO82lgR+wG06A3panJwxZ21uHoU
-         fUtPIQv64sayy8aJZ4V86D7tp9QgH98Z4jaAJQrqn13vKT+I7pixds+RESM+kFmr9tu2
-         ++xGC28TOvVl+bSIhfDneZyIEfl9DJjv9AnPWN/Rj8DV9UNIE5f4tXKWTZYv7EuMpFo2
-         5+rA==
-X-Gm-Message-State: AOAM532zZif3VeF58lnnhcQasWdCN7RRinpSfYZGXxg1Xv03/DvewkFi
-        HyhgK5Y3212AWN1pA3fQB3/gytcQONcekg==
-X-Google-Smtp-Source: ABdhPJyWDs5yB6T1OuTS+UOyjwaJiM6R+2uqmgtC45avvP1J/qktmzyKNhL1VibEzRQtpC1IDes4vg==
-X-Received: by 2002:a17:906:b787:: with SMTP id dt7mr17258690ejb.111.1629392488064;
-        Thu, 19 Aug 2021 10:01:28 -0700 (PDT)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id n23sm2090257eds.41.2021.08.19.10.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 10:01:27 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        id S230393AbhHSRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:02:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:42696 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229491AbhHSRCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 13:02:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 684C51042;
+        Thu, 19 Aug 2021 10:02:08 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7017E3F70D;
+        Thu, 19 Aug 2021 10:02:06 -0700 (PDT)
+Subject: Re: [PATCH 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] dt-bindings: sound: add rockchip i2s-tdm binding
-Date:   Thu, 19 Aug 2021 19:01:25 +0200
-Message-ID: <1870492.5CqhBlFY90@archbook>
-In-Reply-To: <20210819141617.GM4177@sirena.org.uk>
-References: <20210817101119.423853-1-frattaroli.nicolas@gmail.com> <2412250.zZEsDtmPgG@archbook> <20210819141617.GM4177@sirena.org.uk>
+References: <20210817101119.423853-1-frattaroli.nicolas@gmail.com>
+ <20210817101119.423853-3-frattaroli.nicolas@gmail.com>
+ <deb50900-fcfd-23d0-ab8a-0e64b2abb063@arm.com> <2412250.zZEsDtmPgG@archbook>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <70cb1e4b-ecb7-2a4b-ee35-02f5a6b8a986@arm.com>
+Date:   Thu, 19 Aug 2021 18:02:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <2412250.zZEsDtmPgG@archbook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Donnerstag, 19. August 2021 16:16:17 CEST Mark Brown wrote:
-> On Thu, Aug 19, 2021 at 03:52:55PM +0200, Nicolas Frattaroli wrote:
-> > On Donnerstag, 19. August 2021 14:08:36 CEST Robin Murphy wrote:
-> > > > +  rockchip,no-dmaengine:
-> > > > +    description:
-> > > > +      If present, driver will not register a pcm dmaengine, only the
-> > > > dai.
-> > > > +      If the dai is part of multi-dais, the property should be
-> > > > present.
-> > > > +    type: boolean
-> > > 
-> > > That sounds a lot more like a policy decision specific to the Linux
-> > > driver implementation, than something which really belongs in DT as a
-> > > description of the platform.
-> > 
-> > I agree. Should I be refactoring this into a module parameter or
-> > something along those lines? I'm unsure of where this goes.
+On 2021-08-19 14:52, Nicolas Frattaroli wrote:
+> On Donnerstag, 19. August 2021 14:08:36 CEST Robin Murphy wrote:
+>> On 2021-08-17 11:11, Nicolas Frattaroli wrote:
+>>> +  rockchip,trcm-sync:
+>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>> +    description:
+>>> +      Which lrck/bclk clocks each direction will sync to. You should use
+>>> the +      constants in <dt-bindings/sound/rockchip,i2s-tdm.h>
+>>> +    oneOf:
+>>> +      - const: 0
+>>> +        description:
+>>> +          RK_TRCM_TXRX. Use both the TX and the RX clock for TX and RX.
+>>> +      - const: 1
+>>> +        description:
+>>> +          RK_TRCM_TX. Use only the TX clock for TX and RX.
+>>> +      - const: 2
+>>> +        description:
+>>> +          RK_TRCM_RX. Use only the RX clock for TX and RX.
+>>
+>> I wonder if that might make sense to have boolean properties to describe
+>> the latter two cases (which would effectively be mutually-exclusive),
+>> rather than a magic number? Or possibly even just make the respective
+>> clocks optional, if this is something which would be done per-SoC rather
+>> than per-board?
+>>
 > 
-> Why is this even required?  What is "multi-dais" and why would
-> registering the DMA stuff cause a problem?
+>  From what I know from downstream vendor device trees, these are per
+> board, not for the SoC as a whole. There are I2S/TDM controllers on the
+> SoC which I think are hardwired to certain other IP blocks, such as I2S0
+> being connected to HDMI, but I2S1 can be routed outside of the SoC where
+> these come into play I believe.
 
-After some research, it appears that multi-dais is a special driver that
-downstream uses to allow multiple sub-DAIs to be combined into one DAI
-that has all the channels of the sub-DAIs. This does not seem like
-something that should be done at that level to me, because it seems
-like it's pushing a sound driver configuration into the realm of
-hardware description.
+That's fair enough. I know a lot more about DT bindings than I do about 
+I2S, but I did guess it might be related to clocking requirements of the 
+connected codec rather than a constraint of the I2S block itself.
 
-In retrospect, I should have stripped this out before submitting it,
-because I should not be submitting things I don't understand completely.
-I apologise.
+> As for making them boolean properties, I'd rather not. If I were to make it
+> two mutually exclusive booleans, this would result in 4 possible states
+> rather than 3, and require complexity to check it both in the schema and
+> in the probe function. Like this, I can get away with a switch case that
+> has a fallthrough, and a list of consts in the schema.
 
-> > The particular configuration may even vary per-board; an I2S/TDM
-> > controller may be connected to an external codec which does not
-> > support capture, whereas on another board it may be connected to
-> > one that does.
+Complexity?
+
+
+	if (of_property_read_bool(node, "rockchip,trcm-sync-tx-only"))
+		i2s_tdm->clk_trcm = RK_TRCM_TX;
+	if (of_property_read_bool(node, "rockchip,trcm-sync-rx-only")) {
+		if (i2s_td->clk_trcm) {
+			dev_err(i2s_tdm->dev, "invalid trcm-sync configuration\n");
+			return -EINVAL;
+		}
+		i2s_tdm->clk_trcm = RK_TRCM_RX;
+	}
+	if (i2s_td->clk_trcm)
+		i2s_tdm_dai.symmetric_rate = 1;
+
+
+If I'm counting correctly, that off-the-top-of-my-head example is a mere 
+58% of the size of your switch statement ;)
+
+The usual aim in designing bindings to robustly abstract the underlying 
+features, not to be easy to implement. That's why the "put this magic 
+value in this register" style of property is generally frowned upon.
+
+As for the schema, it doesn't necessarily have to try to exhaustively 
+catch every possible usage error - if a combination of properties is so 
+obviously nonsensical that a driver shouldn't accept it anyway, I'd 
+imagine it's unlikely to slip through testing.
+
+>>> +
+>>> +  "#sound-dai-cells":
+>>> +    const: 0
+>>> +
+>>> +  rockchip,no-dmaengine:
+>>> +    description:
+>>> +      If present, driver will not register a pcm dmaengine, only the dai.
+>>> +      If the dai is part of multi-dais, the property should be present.
+>>> +    type: boolean
+>>
+>> That sounds a lot more like a policy decision specific to the Linux
+>> driver implementation, than something which really belongs in DT as a
+>> description of the platform.
 > 
-> If the external device doesn't support both directions then why does the
-> driver for the I2S controller in the CPU care?  The constraint handling
-> code in the core will ensure that nothing tries to start something that
-> isn't supported
+> I agree. Should I be refactoring this into a module parameter or
+> something along those lines? I'm unsure of where this goes.
 
-I went over the downstream text binding description again and from that
-it appears that the playback/capture-only capability is something
-specific to the controller, not to any device connected to it.
+Depends on what it actually means, and whether that's something the 
+driver can figure out for itself. I just see a DT property based around 
+a particular Linux API call as a big red flag :)
 
-The downstream device tree for the rk3568 specifies playback-only for
-I2S0, a.k.a. the one connected to the HDMI that I can't test because
-we currently don't have a video clock. Another downstream device tree,
-specific to what appears to be a robot demo for the px30 SoC, uses this
-property on i2s1, which tells me that this is not an actual description
-of the controller hardware but just a description of the application.
+>>> +
+>>> +  rockchip,playback-only:
+>>> +    description: Specify that the controller only has playback
+>>> capability.
+>>> +    type: boolean
+>>> +
+>>> +  rockchip,capture-only:
+>>> +    description: Specify that the controller only has capture capability.
+>>> +    type: boolean
+>>
+>> Could those be inferred from the compatible string, or are there cases
+>> where you have multiple instances of the IP block in different
+>> configurations within the same SoC? (Or if it's merely reflecting
+>> whether the respective interface is actually wired up externally, could
+>> that be inferred from the attached codec?)
+>>
+>> Robin.
+>>
+> 
+> They can't be inferred from the SoC because there are indeed multiple
+> instances of this IP block in different configurations on the same SoC.
+> The RK3566 and RK3568 have four in total, of two different categories,
+> each being able to be configured for a different format (though the
+> number of channels and available formats vary for the two categories,
+> one group only supports I2S and PCM with two channels)
+> 
+> The particular configuration may even vary per-board; an I2S/TDM
+> controller may be connected to an external codec which does not
+> support capture, whereas on another board it may be connected to
+> one that does.
 
-While not relevant to the device tree schema, the driver reacts to these
-properties by setting the opposite directions _minimum_ channel number
-to 0 (from the default of 2.)
+Fair enough again, but surely if the codec doesn't support capture then 
+in the end no capture interface is going to be exposed anyway - does the 
+low-level transport need to care?
 
-My conclusion from this is that this reeks of nonsense and I will look
-into what happens when I simply remove these properties and lower the
-channels_min to 0 in the driver. If it turns out that on some SoC for
-some I2S/TDM controller instance there is a limitation where specifying
-that the controller only handles either capture or playback does make
-sense, we can always add it later.
+> As an example, if I understand it correctly, I2S3 on the RK3566 and
+> RK3568 can do 2 channels RX and TX in I2S mode, but only 2 channels
+> either RX or TX in PCM mode, but I'm unsure of the language in the
+> (still not public) documentation I have.
 
-Thank you for your comments,
-Nicolas Frattaroli
+And that starts to sound like something the driver should probably be 
+aware of anyway, but at very least only casts more doubt on these 
+particular properties - even if an interface to a stereo PCM codec 
+couldn't support simultaneous playback and recording, couldn't it still 
+support doing either, separately?
 
-
+Robin.
