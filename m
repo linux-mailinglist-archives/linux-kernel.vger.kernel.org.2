@@ -2,109 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C543F1C83
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDEB3F1C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238710AbhHSPVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhHSPVo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:21:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5787EC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 08:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vKpJrX+WIWY9oRj8Y9x18hpmhdn4wB2b3WzzcTX0gC0=; b=iRnWocda0X8g3D+NKPaswqcI3j
-        WHn9NnZZ4CgorMeNqTGgkR39y1RLlpH6elLst6kb1Hb63uTM4WJCgMHpSiKssszjISMZLwPSl8FZp
-        7X/7yTHNZIz8F5UJtxtiqV3eAIwt8BBQCuFshxRXSxWoKXCikVe6+sLM9US/Y0/T2aR0keQtK3cav
-        K7XtIguJo/UwAQPO3dvSm4hCo/l+CARRf8Pgwm+s+KJqCY5AxMbCcKL1e/v6+Dg3Xe+z4ZiR+Q3Jq
-        A4bO+zVI3W0fHz1z/UmbS+9eJggicY+FoVtmteGUtZbIfQRDZ8iG+iGANLfKuVTw1F30JazeNM0bj
-        WPnqIjqQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGjpV-005F79-5t; Thu, 19 Aug 2021 15:19:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 942043004B2;
-        Thu, 19 Aug 2021 17:19:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7B42820242605; Thu, 19 Aug 2021 17:19:38 +0200 (CEST)
-Date:   Thu, 19 Aug 2021 17:19:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, bp@alien8.de,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dhowells@redhat.com
-Subject: Re: [PATCH] mm/rmap: Convert from atomic_t to refcount_t on
- anon_vma->refcount
-Message-ID: <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
-References: <1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20210720160127.ac5e76d1e03a374b46f25077@linux-foundation.org>
- <20210819132131.GA15779@willie-the-truck>
- <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
+        id S239839AbhHSPVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:21:49 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37403 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239492AbhHSPVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:21:48 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gr7lB5Jntz9sTf;
+        Thu, 19 Aug 2021 17:21:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 8-HapuuuVvve; Thu, 19 Aug 2021 17:21:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gr7lB4PCtz9sTb;
+        Thu, 19 Aug 2021 17:21:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6330B8B842;
+        Thu, 19 Aug 2021 17:21:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id i2TXcgzTbkic; Thu, 19 Aug 2021 17:21:10 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 460738B837;
+        Thu, 19 Aug 2021 17:21:10 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 03B7166958; Thu, 19 Aug 2021 15:21:09 +0000 (UTC)
+Message-Id: <385ead49ccb66a259b25fee3eebf0bd4094068f3.1629386461.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/3] powerpc: Remove MSR_PR check in
+ interrupt_exit_{user/kernel}_prepare()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 19 Aug 2021 15:21:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 04:06:45PM +0200, Peter Zijlstra wrote:
-> > 
-> >   * We can implement (1) by checking if we hit zero (ZF=1)
-> >   * We can implement (2) by checking if the new value is < 0 (SF=1).
-> >     We then need to catch the case where the old value was < 0 but the
-> >     new value is 0. I think this is (SF=0 && OF=1).
-> > 
-> > So maybe the second check is actually SF != OF? I could benefit from some
-> > x86 expertise here, but hopefully you get the idea.
-> 
-> Right, so the first condition is ZF=1, we hit zero.
-> The second condition is SF=1, the result is negative.
-> 
-> I'm not sure we need OF, if we hit that condition we've already lost.
-> But it's easy enough to add I suppose.
+In those hot functions that are called at every interrupt, any saved
+cycle is worth it.
 
-If we can skip the OF... we can do something like this:
+interrupt_exit_user_prepare() and interrupt_exit_kernel_prepare() are
+called from three places:
+- From entry_32.S
+- From interrupt_64.S
+- From interrupt_exit_user_restart() and interrupt_exit_kernel_restart()
 
-static inline bool refcount_dec_and_test(refcount_t *r)
-{
-	asm_volatile_goto (LOCK_PREFIX "decl %[var]\n\t"
-			   "jz %l[cc_zero]\n\t"
-			   "jns 1f\n\t"
-			   "ud1 %[var], %%ebx\n\t"
-			   "1:"
-			   : : [var] "m" (r->refs.counter)
-			   : "memory" : cc_zero);
+In entry_32.S, there are inambiguously called based on MSR_PR:
 
-	return false;
+	interrupt_return:
+		lwz	r4,_MSR(r1)
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		andi.	r0,r4,MSR_PR
+		beq	.Lkernel_interrupt_return
+		bl	interrupt_exit_user_prepare
+	...
+	.Lkernel_interrupt_return:
+		bl	interrupt_exit_kernel_prepare
 
-cc_zero:
-	smp_acquire__after_ctrl_dep();
-	return true;
-}
+In interrupt_64.S, that's similar:
 
-where we encode the whole refcount_warn_saturate() thing into UD1. The
-first argument is @r and the second argument the REFCOUNT_* thing
-encoded in register space.
+	interrupt_return_\srr\():
+		ld	r4,_MSR(r1)
+		andi.	r0,r4,MSR_PR
+		beq	interrupt_return_\srr\()_kernel
+	interrupt_return_\srr\()_user: /* make backtraces match the _kernel variant */
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		bl	interrupt_exit_user_prepare
+	...
+	interrupt_return_\srr\()_kernel:
+		addi	r3,r1,STACK_FRAME_OVERHEAD
+		bl	interrupt_exit_kernel_prepare
 
-It would mean adding something 'clever' to the #UD handler that decodes
-the trapping instruction and extracts these arguments, but this is the
-smallest I could get it.
+In interrupt_exit_user_restart() and interrupt_exit_kernel_restart(),
+MSR_PR is verified respectively by BUG_ON(!user_mode(regs)) and
+BUG_ON(user_mode(regs)) prior to calling interrupt_exit_user_prepare()
+and interrupt_exit_kernel_prepare().
+
+The verification in interrupt_exit_user_prepare() and
+interrupt_exit_kernel_prepare() are therefore useless and can be removed.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Nicholas Piggin <npiggin@gmail.com>
+---
+ arch/powerpc/kernel/interrupt.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 21bbd615ca41..f26caf911ab5 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -465,7 +465,6 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs)
+ 
+ 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x))
+ 		BUG_ON(!(regs->msr & MSR_RI));
+-	BUG_ON(!(regs->msr & MSR_PR));
+ 	BUG_ON(arch_irq_disabled_regs(regs));
+ 	CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+@@ -499,7 +498,6 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs)
+ 	if (!IS_ENABLED(CONFIG_BOOKE) && !IS_ENABLED(CONFIG_40x) &&
+ 	    unlikely(!(regs->msr & MSR_RI)))
+ 		unrecoverable_exception(regs);
+-	BUG_ON(regs->msr & MSR_PR);
+ 	/*
+ 	 * CT_WARN_ON comes here via program_check_exception,
+ 	 * so avoid recursion.
+-- 
+2.25.0
+
