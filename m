@@ -2,82 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEB93F1074
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE04E3F1077
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235700AbhHSClN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:41:13 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54767 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235558AbhHSClM (ORCPT
+        id S235746AbhHSCl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:41:57 -0400
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:33752 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235558AbhHSCl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:41:12 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 33E8F580E65;
-        Wed, 18 Aug 2021 22:40:36 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 18 Aug 2021 22:40:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=T
-        1wM2FBYPIX/Et25eZf0s7pE8bzpMRH0d3UvOJ4t5KM=; b=pEOcbPJM9KwUyLnvv
-        iL+4RBaE8zSuHccJ/Fqelt3rE99524vwoASXyfzaqOJADkYYVccgug+OFe8rJEKn
-        NlJtMUpv4mkqzhQqircbkCzdUW4BqBnyzrKX+BgrREXkTe3u0CLmrGJ8jgVB96CR
-        xqIOVzxfFXiWfs4oyg4lD6G5XTp9bTMl2+b6Hjjuv/mEMmHJZXwOZ9Pe7Ddd0g6r
-        h8Vv0w9leg5T56civHrIJuP29mjPMnRUKLSp0uj7tyJ3iElKJeSa8iQDCZoNUhIy
-        0acSrePP1eRqszr8d0Lfyw0MrLvypjKF1OlOX1M6YQ05cMa7d9apq3c86v3ABlbv
-        tmQ4Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=T1wM2FBYPIX/Et25eZf0s7pE8bzpMRH0d3UvOJ4t5
-        KM=; b=B1mxqfRbZmhqYJ7jS9ziNi+30T51wKrNZXyFT4YHokBudQxpLkn3f/d4h
-        BhtJOLu9Vz/bzZhdof9VvgtbKGOggXsvltcGCefnsUZQ5qBKYz3HRxmizv8oTXXw
-        zwwyQ6k01tRZCD6w+2LbjaYYPmMQmosLnYg4G+iPhIwfmPd1mZ1UosABZaDfLts5
-        mOPGBggKo8ko8ajexrh32uT1Gpd7/fjX3ibNL5W4aZE4N+HUGE+LYObv9KCnmiTo
-        PeMIxdwhXVcTQwIp+PKchwfM4s54UTIUHp39od3B8Z/ERcAJrdbGiF4t9MkKwCtR
-        NFqwhCwXORMICdbjaPOwAl8dRMzVw==
-X-ME-Sender: <xms:ocQdYW-W_YXq1eyoXM06uICFHqOh46WJS0r2e21F6tCUXlQUjDlPTA>
-    <xme:ocQdYWvjahrc32U0i_8iMhu93iPOM1tnECh59ZUwSIbO7r1ogc8uJjiRhto0BTFoT
-    Vy7O42X-SECUmVKmQ>
-X-ME-Received: <xmr:ocQdYcBO2a_18RSlKAKhqZ79NAzsXBnFI3uKrRNXOC3NtXGnDUyi1qIx0sBktEIJe6HFuGbK04voS4wNuv7_XXG9O18TwvA9Wj7otq1IXonVaqjI1eVGU6FSOg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleeigdeiudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpefgveffteelheffjeeukedvkedviedtheevgeefkeehueeiieeuteeu
-    gfettdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:ocQdYedzKnqkmnt9Cac2xtsRC9WvJhIUclOl4O3B14SsFiNfbucTGw>
-    <xmx:ocQdYbOnbI-jVCOLDFKpepceGcAZiv92WJ3lN3vT68FR8LLYhyeH5g>
-    <xmx:ocQdYYnV2ANAWBz1VvIgIobOoDzFOYzXdnoJm4zNRVJkDfPSdOngAQ>
-    <xmx:pMQdYYlcYwzHGS5gwkGb6AxRdj4nuzD390vErsQu_oRAzuQCItQy6A>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Aug 2021 22:40:33 -0400 (EDT)
-Subject: Re: [PATCH 06/17] dt-bindings: pinctrl: document Allwinner R329 PIO
- and R-PIO
-To:     Icenowy Zheng <icenowy@sipeed.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andre Przywara <andre.przywara@arm.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210802062212.73220-1-icenowy@sipeed.com>
- <20210802062212.73220-7-icenowy@sipeed.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <b2e40538-77ba-6a14-508a-d99d0481278e@sholland.org>
-Date:   Wed, 18 Aug 2021 21:40:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 18 Aug 2021 22:41:56 -0400
+Received: by mail-pf1-f174.google.com with SMTP id w68so4103271pfd.0;
+        Wed, 18 Aug 2021 19:41:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4A28nU0mCnhnW+EpVTBHYomUkLqAR7mfhHZAM9QYihE=;
+        b=EnmnMmmygJWqpu8FXAc4BxvDF4q6ARVI33hnlL6L6tleH4X4Ear8om9yxyD6t4A3jC
+         ZFEObvgnzNpN1SYw6AwQV3rzY1hkncTEnMAp/ggyNXe0Xlbakhx6T769EdCgdvPeac4U
+         auvH/pLXsV79nN6LlSlVocGsIcpTIXr/Tkob3jAYCmrTY7H6QoxVtHWk6x2FCNh7yT7m
+         HADBMFHLzc9v+/vQ/+CDgZpt2Q2C0gzwzqc/wjug1wR3CzX50UKdEQrcv6r8iFuHcAEH
+         rv/lQ10PQkQs3M7/CXsSAqJFHXkm7Hm4Dk0tBT5DeRzG3Wek6piWAkQbmfWckb309vWg
+         D+GQ==
+X-Gm-Message-State: AOAM533ZnEY5ChY/5T7lCRU8Li6mQhxsy2GWHOYkLMc3YqIUlYQ1JpGw
+        Jciy+x/a4Dp0N2ZphG5ltXY=
+X-Google-Smtp-Source: ABdhPJyERX2dVeTOlTHzORPaDJqMM/u/QQNRm7OvorlKtXDZRiFztmDuhhKs1rQO8qa5fwAWazM5zg==
+X-Received: by 2002:a65:6818:: with SMTP id l24mr12116342pgt.150.1629340880267;
+        Wed, 18 Aug 2021 19:41:20 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:340d:6f8c:ca7d:a32? ([2601:647:4000:d7:340d:6f8c:ca7d:a32])
+        by smtp.gmail.com with ESMTPSA id f23sm1155611pfd.61.2021.08.18.19.41.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 18 Aug 2021 19:41:19 -0700 (PDT)
+Subject: Re: [PATCH 0/3] Remove scsi_cmnd.tag
+To:     John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com,
+        jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hare@suse.de, hch@lst.de
+References: <1628862553-179450-1-git-send-email-john.garry@huawei.com>
+ <yq14kbppa42.fsf@ca-mkp.ca.oracle.com>
+ <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e0d7ba32-2999-794e-2ccb-fdba2c847eb1@acm.org>
+Date:   Wed, 18 Aug 2021 19:41:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210802062212.73220-7-icenowy@sipeed.com>
+In-Reply-To: <176ce4f2-42c9-bba6-c8f9-70a08faa21b8@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,15 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/21 1:22 AM, Icenowy Zheng wrote:
-> Allwinner R329 have two pin controllers similar to previous Allwinner
-> SoCs, PIO and R-PIO.
-> 
-> Add compatible strings for them.
-> 
-> Signed-off-by: Icenowy Zheng <icenowy@sipeed.com>
-> ---
->  .../bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml         | 4 ++++
->  1 file changed, 4 insertions(+)
+On 8/18/21 11:08 AM, John Garry wrote:
+> Or maybe you or Bart have a better idea?
 
-Reviewed-by: Samuel Holland <samuel@sholland.org>
+This is how I test compilation of SCSI drivers on a SUSE system (only
+the cross-compilation prefix is distro specific):
+
+    # Acorn RiscPC
+    make ARCH=arm xconfig
+    # Select the RiscPC architecture (ARCH_RPC)
+    make -j9 ARCH=arm CROSS_COMPILE=arm-suse-linux-gnueabi- </dev/null
+
+    # Atari, Amiga
+    make ARCH=m68k xconfig<br>
+    # Select Amiga + Atari + 68060 + Q40 + SCSI + Zorro +
+    # SCSI_FDOMAIN_ISA
+    make -j9 ARCH=m68k CROSS_COMPILE=m68k-suse-linux- </dev/null
+
+    # MIPS
+    make ARCH=powerpc xconfig<br>
+    # Select the SGI IP28 machine type and also the WD93C93 SCSI
+    # driver
+    make -j9 ARCH=mips CROSS_COMPILE=mips-suse-linux- </dev/null
+
+    # PowerPC
+    make ARCH=powerpc xconfig<br>
+    # Select the ibmvfc and ibmvscsi drivers<br>
+    make -j9 ARCH=powerpc CROSS_COMPILE=powerpc64-suse-linux- \
+      </dev/null
+
+    # S/390
+    make ARCH=s390 xconfig
+    # Select the zfcp driver
+    make -j9 ARCH=s390 CROSS_COMPILE=s390x-suse-linux- </dev/null
+
+Bart.
