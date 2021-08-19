@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B195B3F1F12
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE91A3F1F14
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 19:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhHSR1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233909AbhHSR1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 13:27:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50884 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233940AbhHSR1J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 19 Aug 2021 13:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233320AbhHSR1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 13:27:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56BC46023D;
-        Thu, 19 Aug 2021 17:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629393984;
-        bh=8bMRr+3lfqS+WTA5uS17IcE0HsMA5fSxcfqzv64+Qb0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=japYTi3pXOAm+MYDjP5qNag4LYEX/axH5/9smIvPYi/7E+EzQcScMaEvCb3lU3U3Z
-         DU+ow6LmGZUkbxUqkCP7oUnU8CD4mvyTQ0bmcaYw8BT+bp5iPx+UWFOdOSRTQYr9JC
-         Qo0keJI3rjxyS1AMhTATZySI9J67wgScP5TsrIPS9QmawEYmO4RkIW0BME0Z9naapS
-         MjACPVxws/0BnKn2OQu8dksmwpLa2MxiCkaX8SxxdFSUFWk2pJSpyAUK/oK26L1rX2
-         cg+Ry7A76PhyuyBpV9/z0o9m/imLG23PocyH7FHPJ6k4fRYoN++eFTZjCIwySpvTZk
-         LtiptUaxG7pzA==
-Date:   Thu, 19 Aug 2021 19:26:18 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     "Ma, XinjianX" <xinjianx.ma@intel.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        lkp <lkp@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629393992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E7x054qq8V6avmtMKVIeUs652PUiEW3OxCnV/9CBplM=;
+        b=NrBewN4eevmbTYX7Zo0eW0FVGIXc7511FDptMlwibtvBhixtknywiMx6zCy6HAhVHBAtRT
+        an0s/zPpGxLkwBRFalbyZqieVI3JZq0AYvic7ZwEVTSFNOyl0x8nGJHR2Bos3m/eFGZ1Ol
+        u7RTv+fVdoMEo0E8iIfzjJBVv22y5/A=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-mBwcKfD-POWmZDMxlBgOnA-1; Thu, 19 Aug 2021 13:26:31 -0400
+X-MC-Unique: mBwcKfD-POWmZDMxlBgOnA-1
+Received: by mail-wm1-f71.google.com with SMTP id 204-20020a1c04d5000000b002e70859ef00so1586868wme.4
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 10:26:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=E7x054qq8V6avmtMKVIeUs652PUiEW3OxCnV/9CBplM=;
+        b=IrcBxiM2MWMme9zVqH2b19EtLrsUOkbuFgi9z0KCa4eiEQDEuKUYgesxA3/8/al0u/
+         T2pT9ouBw1b7QZarmyn+INuCRYKqMH7Y3RbOxtY+c9sT8upfxRohV+058WPv0Zs0bmRB
+         II5/xM3jN6pq29dBw11EneEpLzXasQBMw62262X8VT3U31+kSgB6MBH51GoG3MlNkvgR
+         NAh0GQT3Ey2Bi45ykz7i7TWiBqY1UYJSLRUaMbKym9lzZ9FcWrwhomdPWeemlWUHGWXw
+         CQoMSJMif4dhNbyHuszW57doMH8Rd+c0g4Nrke/Prz42+uzBNSxDKuzqo2kfF4jbFBbT
+         YylQ==
+X-Gm-Message-State: AOAM533cOszwcoVgvbnuaBya26pgBQsiSf2Gy9nKap7xckPl1db3Pl3u
+        gUGwlci+CNYegzPY1l3+bzDruTXeCzKwxOlba5i/w2MIEsnFgX8T1NF+Ftkd+3p5b24VlwAmOva
+        XgPcJdhypdOK+h7xp6Wcvum8V
+X-Received: by 2002:a7b:c396:: with SMTP id s22mr14417184wmj.131.1629393989714;
+        Thu, 19 Aug 2021 10:26:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1WUgjTvxTf7y4kGr5oXSPThPdnTL77kevl6jQA7VDg8kx0wbAuM0V3R/BTrKjYAsxbeBKPw==
+X-Received: by 2002:a7b:c396:: with SMTP id s22mr14417174wmj.131.1629393989498;
+        Thu, 19 Aug 2021 10:26:29 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
+        by smtp.gmail.com with ESMTPSA id z17sm3477703wrr.66.2021.08.19.10.26.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 10:26:29 -0700 (PDT)
+Subject: Re: [PATCH RFC 0/4] mm: Enable PM_SWAP for shmem with PTE_MARKER
+To:     Tiberiu Georgescu <tiberiu.georgescu@nutanix.com>
+Cc:     Peter Xu <peterx@redhat.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v11 5/9] Reimplement RLIMIT_MSGQUEUE on top of ucounts
-Message-ID: <20210819172618.qwrrw4m7wt33wfmz@example.org>
-References: <d650b7794e264d5f8aa107644cc9784f@intel.com>
- <87a6lgysxp.fsf@disp2133>
- <20210818131117.x7omzb2wkjq7le3s@example.org>
- <87o89ttqql.fsf@disp2133>
+        Alistair Popple <apopple@nvidia.com>,
+        Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Carl Waldspurger [C]" <carl.waldspurger@nutanix.com>,
+        Florian Schmidt <flosch@nutanix.com>,
+        Jonathan Davies <jond@nutanix.com>
+References: <20210807032521.7591-1-peterx@redhat.com>
+ <16a765e7-c2a3-982a-e585-c04067766e3f@redhat.com> <YRvtPrPmAorX+KY5@t490s>
+ <c4adbba1-2299-f87c-1893-e83af9beadbc@redhat.com> <YRwa6+jx5PukCn53@t490s>
+ <c29a9994-8fa3-d36d-d973-f99314c243cf@redhat.com>
+ <7F645772-1212-4F0D-88AF-2569D5BBC2CD@nutanix.com>
+ <6ab58270-c487-2a56-b522-ea5100edb13c@redhat.com>
+ <0A4C4E37-88C9-4490-9D8B-6990D805F447@nutanix.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <5766d353-6ff8-fdfa-f8f9-764e8de9b5aa@redhat.com>
+Date:   Thu, 19 Aug 2021 19:26:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o89ttqql.fsf@disp2133>
+In-Reply-To: <0A4C4E37-88C9-4490-9D8B-6990D805F447@nutanix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:10:26AM -0500, Eric W. Biederman wrote:
-> Alexey Gladkov <legion@kernel.org> writes:
+On 19.08.21 16:54, Tiberiu Georgescu wrote:
 > 
-> > On Tue, Aug 17, 2021 at 10:47:14AM -0500, Eric W. Biederman wrote:
-> >> "Ma, XinjianX" <xinjianx.ma@intel.com> writes:
-> >> 
-> >> > Hi Alexey,
-> >> >
-> >> > When lkp team run kernel selftests, we found after these series of patches, testcase mqueue: mq_perf_tests
-> >> > in kselftest failed with following message.
-> >> 
-> >> Which kernel was this run against?
-> >> 
-> >> Where can the mq_perf_tests that you ran and had problems with be found?
-> >> 
-> >> During your run were you using user namespaces as part of your test
-> >> environment?
-> >> 
-> >> The error message too many files corresponds to the error code EMFILES
-> >> which is the error code that is returned when the rlimit is reached.
-> >> 
-> >> One possibility is that your test environment was run in a user
-> >> namespace and so you wound up limited by rlimit of the user who created
-> >> the user namespace at the point of user namespace creation. 
-> >> 
-> >> At this point if you can give us enough information to look into this
-> >> and attempt to reproduce it that would be appreciated.
-> >
-> > I was able to reproduce it on master without using user namespace.
-> > I suspect that the maximum value is not assigned here [1]:
-> >
-> > set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE, task_rlimit(&init_task, RLIMIT_MSGQUEUE));
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/fork.c#n832
+>> On 18 Aug 2021, at 19:13, David Hildenbrand <david@redhat.com> wrote:
+>>
+>>>>
+>>>>> I'm now wondering whether for Tiberiu's case mincore() can also be used.  It
+>>>>> should just still be a bit slow because it'll look up the cache too, but it
+>>>>> should work similarly like the original proposal.
+>>> I am afraid that the information returned by mincore is a little too vague to be of better help, compared to what the pagemap should provide in theory. I will have a look to see whether lseek on
+>>> proc/map_files works as a "PM_SWAP" equivalent. However, the swap offset would still be missing.
+>>
+>> Well, with mincore() you could at least decide "page is present" vs. "page is swapped or not existent". At least for making pageout decisions it shouldn't really matter, no? madvise(MADV_PAGEOUT) on a hole is a nop.
 > 
-> The rlimits for init_task are set to INIT_RLIMITS.
-> In INIT_RLIMITS RLIMIT_MSGQUEUE is set to MQ_MAX_BYTES
+> I think you are right. In the optimisation we first presented, we should be able to
+> send the madvise(MADV_PAGEOUT) call even if the page is none quite safely
+> and get the wanted behaviour. Also, the "is_present" or "is_swap_or_none"
+> question can be answered by the current pagemap too. Nice catch.
 > 
-> So that definitely means that as the code is current constructed the
-> rlimit can not be effectively raised.
+> However, not all use cases are the same. AFAIK, there is still no way to figure
+> out whether a shared page is swapped out or none unless it is directly
+> read/accessed after a pagemap check. Bringing a page into memory to check
+> if it previously was in swap does not seem ideal.
+
+Well, you can lseek() to remove all the holes and use mincore() to 
+remove all in-memory pages. You're left with the swapped ones. Not the 
+most efficient interface maybe, but there is a way :)
+
 > 
-> So it looks like we are just silly and preventing the initial rlimits
-> from being raised.
+> Also, we still have no mechanism to retrieve the swap offsets of shmem pages
+> AFAIK. There is one more QEMU optimisation we are working on that requires
+> these mappings available outside of kernel space.
+
+How exactly would the swap offset really help? IMHO that's a kernel 
+internal that shouldn't be of any value to user space -- it's merely for 
+debugging purposes. But I'd love to learn details.
+
+[...]
+
+>> If it has an fd and we can punch that into syscalls, we should much rather use that fd to lookup stuff then going via process page tables -- if possible of course (to be evaluated, because I haven't looked into the CRIU details and how they use lseek with anonymous shared memory).
 > 
-> So we probably want to do something like:
+> I found out that it is possible to retrieve the fds of shmem/tmpfs file allocations
+> using proc/pid/map_files, which is neat. Still, CRIU does not seem to care
+> whether a page is swapped out or just empty, only if it is present on page cache.
+> The holes that lseek finds would not be able to infer this difference, AFAIK. Will
+> test the behaviour to make sure.
 
-Damn, you are faster than me! :)
-
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index bc94b2cc5995..557ce0083ba3 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -825,13 +825,13 @@ void __init fork_init(void)
->  	init_task.signal->rlim[RLIMIT_SIGPENDING] =
->  		init_task.signal->rlim[RLIMIT_NPROC];
->  
-> +	/* For non-rlimit ucounts make their default limit max_threads/2 */
->  	for (i = 0; i < MAX_PER_NAMESPACE_UCOUNTS; i++)
->  		init_user_ns.ucount_max[i] = max_threads/2;
->  
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_NPROC, task_rlimit(&init_task, RLIMIT_NPROC));
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE, task_rlimit(&init_task, RLIMIT_MSGQUEUE));
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_SIGPENDING, task_rlimit(&init_task, RLIMIT_SIGPENDING));
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MEMLOCK, task_rlimit(&init_task, RLIMIT_MEMLOCK));
-> +	/* In init_user_ns default rlimit to be the only limit */
-> +	for (; i < UCOUNT_COUNTS; i++)
-> +		set_rlimit_ucount_max(&init_user_ns, i, RLIMIT_INFINITY);
-
-s/RLIMIT_INFINITY/RLIM_INFINITY/
-
->  
->  #ifdef CONFIG_VMAP_STACK
->  	cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "fork:vm_stack_cache",
-> 
-
-Acked-by: Alexey Gladkov <legion@kernel.org>
-
-I cannot complete this test on my laptop. On 4Gb, the test ends with
-oom-killer. But with this patch, the test definitely passes the moment of
-the previous fall.
+CRIU wants to migrate everything. lseek() gives you the definitive 
+answer what needs migration -- if it's swapped out or resident. Just 
+skip the holes.
 
 -- 
-Rgrds, legion
+Thanks,
+
+David / dhildenb
 
