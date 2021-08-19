@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC473F12A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 07:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32D63F12AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 07:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhHSFHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 01:07:51 -0400
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:33457 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHSFHu (ORCPT
+        id S229925AbhHSFIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 01:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhHSFIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 01:07:50 -0400
-Received: by mail-lj1-f170.google.com with SMTP id n7so9390154ljq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 22:07:15 -0700 (PDT)
+        Thu, 19 Aug 2021 01:08:49 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6892C061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 22:08:13 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id q3so6841806edt.5
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 22:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=77nT17Qwz5Ti/66HuChnzgubrYZ1JTKCItJbjSMqiXU=;
+        b=CYud7j9sUPtxv14PLjjICnvzOgSw0EQxoddBj3s9QALzQz9l3aNqVMGwEI22zhkHzz
+         osv0CqVQ1+KsrD8cwigvNwbxjzPLY0uXuYRZSj/G4hgo41nfmewL3lAIK7s2XRe4CnCI
+         zAIaDaCBU2DrKQUrgpkco5r6E1RirTA0sWfFc+63JuMIff+Dr8rD1zzNuyyk/V5E0uRb
+         kjibVGw9p/yWUKjIKeJTNs9rU8qsWN0MP7ITSZbezwyx5X84EmAt7hWyLICjgq7mgAwU
+         8TuXDiUe4s+FsLua5o/8XaZ2zwlQzABCj0VG7FYd/qAxy8R9R6iF6KP1baE5x0qMAt2b
+         EzOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=j+N1OWJ0Z25ZQ5VpkwxpHUv+Rux+GpKBQNztIo3aVhw=;
-        b=V2x6VGwK75rDzy5zBkqf2tid1OsHBkSJAMORn4AmmsR+Klc/mbocl/za5hiztGIADd
-         GkeLzM36PF5LHDrzc8HpJDRAOKWYj7OrdbXnonu8/dA/I/q+pR3qzDUSp3mK2UCTFrgf
-         KJamOuzruK2ILr0X0GHEEyEkWhhPDmFwOHPkWiJov6bABcX5N9mI7xOGkabvTS5jBOvl
-         s6h8Fe+wDhpQ+r/WDUQzbuO0z/0r5zNWMQz1gYr5HFR3qCmPqLLB55jN4kF3vERFeDEP
-         UIbDcE2069QTGh49L+DOqK6GB3rBy95tPjeNU2/MUMv7McOo+J0rTEeXnqqRFJ8/b28s
-         VGdA==
-X-Gm-Message-State: AOAM5310TJBo0S17CIrbwC0Uhu31K70FJSARj8w6nmCohQCqy3Ojkb1P
-        L6RIOavi4jtLuQU/UHlgxx0zwAMrNhIcNodL
-X-Google-Smtp-Source: ABdhPJxDdWjp2VqYfgQjeKjBMf5m9d48ZLSQWgKYCa4/i1dXb54CRG8zyhmU0af/s8REmqmKlacUog==
-X-Received: by 2002:a05:651c:382:: with SMTP id e2mr7488275ljp.401.1629349634326;
-        Wed, 18 Aug 2021 22:07:14 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
-        by smtp.gmail.com with ESMTPSA id e1sm180296lfs.307.2021.08.18.22.07.13
+        bh=77nT17Qwz5Ti/66HuChnzgubrYZ1JTKCItJbjSMqiXU=;
+        b=jEkVRe8gjQlaQvxo6uhz8sajkxlQO7SibpRdbb2APddTNXgcCDQVnb0vyCY0JLwVCr
+         22Me+UVe/2rchx7LhJ3HteiFO3Egbsqo5zWrdeUUISqeHQCNG2nNVkowqizvY7Jz7eez
+         FNZQbaLOsrsETHRzk9FeyQ8XeYZlByEM7HDY1ImMC/Ap0OctWvy4z3CEndUKaDywmfTJ
+         tYYfkHzc46heD11Z6ZCU7znNcbl4FDobS1uU4T/XQB57HVZNxobTg1lhzr+MA29SwQla
+         FnIMyQvbVnVirFWhnAZeJoRsgD2sl80C6huuU8IVgpuFq2t6GxgFKNUoKr5biLeyXBw7
+         tkxg==
+X-Gm-Message-State: AOAM533X4BEGcZAdyxnOp6zAlI2yCuzx5/y28FHAxHKBV6sdZt4Id2vI
+        SzraQfthjoZUCCJnalXWfFU=
+X-Google-Smtp-Source: ABdhPJwUZFGY90ko4Yo4ULND1iGaJGXALOX8w/5QRAdc8GOpi9Br4wB+Ay9HQKnhkdbnXf9B49CNIw==
+X-Received: by 2002:aa7:ccc1:: with SMTP id y1mr14212122edt.321.1629349692558;
+        Wed, 18 Aug 2021 22:08:12 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-109-211.retail.telecomitalia.it. [79.22.109.211])
+        by smtp.gmail.com with ESMTPSA id j22sm728484ejt.11.2021.08.18.22.08.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 22:07:13 -0700 (PDT)
-Message-ID: <67f6596f54fd2ea168d71d0747ea4a521dda5384.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH] regulator: Minor regulator documentation fixes.
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20210818121709.GD4177@sirena.org.uk>
-References: <20210818041513.GA2408290@dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi>
-         <20210818121709.GD4177@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 18 Aug 2021 22:08:12 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: r8188eu: Remove empty rtw_mfree_xmit_priv_lock()
+Date:   Thu, 19 Aug 2021 07:08:08 +0200
+Message-Id: <20210819050808.28825-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Date:   Thu, 19 Aug 2021 08:06:48 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove rtw_mfree_xmit_priv_lock() because it is empty. Remove its only
+call from within _rtw_free_xmit_priv().
 
-On Wed, 2021-08-18 at 13:17 +0100, Mark Brown wrote:
-> On Wed, Aug 18, 2021 at 07:18:19AM +0300, Matti Vaittinen wrote:
-> > The newly added regulator ramp-delay specifiers in regulator desc
-> > lacked the documentation. Add some. Also fix a typo.
-> 
-> This should've been two patches.
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_xmit.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-I was thinking of that. I thought that it made less of a hassle with
-single patch. After all, both changes were doc updates - and I didn't
-think the typofix warranted backport or a Fixed tag.
-
-Could you please educate me & explain why would you have preferred two
-patches? (I see you any ways applied this so I guess there's no need to
-split & resend - thanks).
-
-Best Regards
-	Matti
+diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
+index e1de7448771c..f242f3ffca70 100644
+--- a/drivers/staging/r8188eu/core/rtw_xmit.c
++++ b/drivers/staging/r8188eu/core/rtw_xmit.c
+@@ -207,10 +207,6 @@ s32	_rtw_init_xmit_priv(struct xmit_priv *pxmitpriv, struct adapter *padapter)
+ 	return res;
+ }
+ 
+-static void  rtw_mfree_xmit_priv_lock(struct xmit_priv *pxmitpriv)
+-{
+-}
+-
+ void _rtw_free_xmit_priv(struct xmit_priv *pxmitpriv)
+ {
+ 	int i;
+@@ -220,8 +216,6 @@ void _rtw_free_xmit_priv(struct xmit_priv *pxmitpriv)
+ 	u32 max_xmit_extbuf_size = MAX_XMIT_EXTBUF_SZ;
+ 	u32 num_xmit_extbuf = NR_XMIT_EXTBUFF;
+ 
+-	rtw_mfree_xmit_priv_lock(pxmitpriv);
+-
+ 	if (!pxmitpriv->pxmit_frame_buf)
+ 		return;
+ 
+-- 
+2.32.0
 
