@@ -2,95 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFFC3F1DCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697D93F1DD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 18:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhHSQ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 12:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHSQ3C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 12:29:02 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4098BC061575;
-        Thu, 19 Aug 2021 09:28:26 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id x27so14188036lfu.5;
-        Thu, 19 Aug 2021 09:28:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6L92tsHz4xRaI2n9RSKW5nUbF1dUMupAAvGnM5bJez0=;
-        b=G9NZWF2O5KMOjAPkundHYoTTUpxmwcbVdtpmGlcVvobfRHAPc4M3R2HYmSkLZzUSbw
-         mK7VU2XXwNDLOXnWqvghjtpBYjCEiMtI2rREeK1GS9xGcmB6xkCBfz6Wz8j9Kusp5pFE
-         MgvsiAsAJm9TbBEXnSh+lL+oZTPvs56IcFLkNZS4H4BK9Qj3RtG2MaYkGCURFXxuAUNR
-         sUjv2JCHNxVCuum2SYJOwqIcr1tN6duX3xVuKen8dN9aSkHm4RVEGDfxxhCBJFImdDqA
-         Pl1rUvk51RCYHyI/KwsQL0MducqVyiaVCzrLEwPQAHnvnGACYnk+l91+fsCOzxwiGqER
-         LaGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6L92tsHz4xRaI2n9RSKW5nUbF1dUMupAAvGnM5bJez0=;
-        b=UJDrzV5gHe8e4lGFwrXje3cWXBQbV6ovmPg5cEl9Z1fYYqE78To+3pjz5RZAiJJbzo
-         p/6cbfP4PHVg6MenAQqW9yyN5Mvf9ZSG3mzZ/mQ3mZhiN4OK+4hNLepShS0VhB+a49Jj
-         02/pbYehfooN2uYZaAkXhjlRla8N8rpZO/fZLgnd5AVZZppQnXtCZH0cmid6UEEgv4ei
-         QHxw/r9PAp2biq4GlXdf0/RCjTzFAg2RsaTCJFaKVn5coOBYQbac9+0gt48u5Py+P0Ew
-         Ddvn3GQxT72TJMXVDd15PtcIA8pEbNfpfvAumXPEQLEW3yP/B9jp9KMawkqTQX535ga3
-         Q/yA==
-X-Gm-Message-State: AOAM530RTgc2ky5gR5swdeW/6Snzbc+fYLHsqauDZgLEgndR+0i6yEVw
-        mtsTwPMLIiAoOlYa/3sFBV/MGYJCUdKWXKzl0Og=
-X-Google-Smtp-Source: ABdhPJzTVwT3bdMn9DU/VQmwKY9YTGZXOl9jH7MDoJMTCzOkGZqSFL5UwH5Y/D2qcVGLySyhp9kr9pxow6DcLbOG7J0=
-X-Received: by 2002:a05:6512:158b:: with SMTP id bp11mr3210927lfb.300.1629390504645;
- Thu, 19 Aug 2021 09:28:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <YRukaQbrgDWhiwGr@localhost.localdomain>
-In-Reply-To: <YRukaQbrgDWhiwGr@localhost.localdomain>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Thu, 19 Aug 2021 09:28:13 -0700
-Message-ID: <CAM9d7chOtKDTmiZz7EUDX76BMWRzWJATmJZLcTiLeu5k_qRg0g@mail.gmail.com>
-Subject: Re: [PATCH] perf, android: fixup get_current_dir_name() compilation
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230080AbhHSQaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 12:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229451AbhHSQaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 12:30:05 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04C6661106;
+        Thu, 19 Aug 2021 16:29:29 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mGkv1-00619Z-1o; Thu, 19 Aug 2021 17:29:27 +0100
+Date:   Thu, 19 Aug 2021 17:29:26 +0100
+Message-ID: <87wnohqty1.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+In-Reply-To: <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROmOQ+4Kqukgd6z@orome.fritz.box>
+        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
+        <87o8a49idp.wl-maz@kernel.org>
+        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
+        <20210812121835.405d2e37@linux.microsoft.com>
+        <874kbuapod.wl-maz@kernel.org>
+        <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mcroce@linux.microsoft.com, eric.dumazet@gmail.com, thierry.reding@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, 12 Aug 2021 12:18:48 +0100,
+Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> 
+> [1  <text/plain; UTF-8 (7bit)>]
+> On Thu, Aug 12, 2021 at 1:05 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 12 Aug 2021 11:18:35 +0100,
+> > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > >
+> > > On Thu, 12 Aug 2021 10:48:03 +0200
+> > > Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > >
+> > > >
+> > > >
+> > > > On 8/11/21 4:16 PM, Marc Zyngier wrote:
+> > > > > On Wed, 11 Aug 2021 13:53:59 +0100,
+> > > > > Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > > > >
+> > > > >> Are you sure you do not need to adjust stmmac_set_bfsize(),
+> > > > >> stmmac_rx_buf1_len() and stmmac_rx_buf2_len() ?
+> > > > >>
+> > > > >> Presumably DEFAULT_BUFSIZE also want to be increased by NET_SKB_PAD
+> > > > >>
+> > > > >> Patch for stmmac_rx_buf1_len() :
+> > > > >>
+> > > > >> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > > > >> b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c index
+> > > > >> 7b8404a21544cf29668e8a14240c3971e6bce0c3..041a74e7efca3436bfe3e17f972dd156173957a9
+> > > > >> 100644 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c +++
+> > > > >> b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c @@ -4508,12
+> > > > >> +4508,12 @@ static unsigned int stmmac_rx_buf1_len(struct
+> > > > >> stmmac_priv *priv, /* First descriptor, not last descriptor and
+> > > > >> not split header */ if (status & rx_not_ls)
+> > > > >> -               return priv->dma_buf_sz;
+> > > > >> +               return priv->dma_buf_sz - NET_SKB_PAD -
+> > > > >> NET_IP_ALIGN;
+> > > > >>         plen = stmmac_get_rx_frame_len(priv, p, coe);
+> > > > >>
+> > > > >>         /* First descriptor and last descriptor and not split
+> > > > >> header */
+> > > > >> -       return min_t(unsigned int, priv->dma_buf_sz, plen);
+> > > > >> +       return min_t(unsigned int, priv->dma_buf_sz - NET_SKB_PAD
+> > > > >> - NET_IP_ALIGN, plen); }
+> > > > >>
+> > > > >>  static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+> > > > >
+> > > > > Feels like a major deficiency of the original patch. Happy to test a
+> > > > > more complete patch if/when you have one.
+> > > >
+> > > > I wont have time in the immediate future.
+> > > >
+> > > > Matteo, if you do not work on a fix, I suggest we revert
+> > > >  a955318fe67ec0d962760b5ee58e74bffaf649b8 stmmac: align RX buffers
+> > > >
+> > > > before a more polished version can be submitted.
+> > > >
+> > >
+> > > Better to use stmmac_rx_offset() so to have the correct length when
+> > > using XDP. Also, when XDP is enabled, the offset was
+> > > XDP_PACKET_HEADROOM (i.e. 256 bytes) even before the change, so it
+> > > could be already broken. Mark, can you try on the Jetson TX2 by
+> > > attaching an XDP program and see if it works without my change?
+> >
+> > Sorry, you'll have to hold my hand here, as I know exactly nothing
+> > about XDP....
+> >
+> 
+> Attach the attached object with:
+> 
+> ip link set eth0 xdp object passall.o
+> 
+> This is an empty XDP program, its source:
+> 
+> __attribute__((section("prog"), used))
+> int xdp_main(struct xdp_md *ctx)
+> {
+>        return XDP_PASS;
+> }
+> 
+> Every packet will pass untouched, but the offset will be shifted from
+> 0 to 256 bytes, which could trigger the problem anyway:
 
-On Tue, Aug 17, 2021 at 4:59 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> strdup() prototype doesn't live in stdlib.h .
->
-> Add limits.h for PATH_MAX definition as well.
->
-> Signed-off-by: Alexey Dobriyan (SK hynix) <adobriyan@gmail.com>
+Nope. On 5.13, which doesn't have the issue, adding this payload
+doesn't result in any problem and the whole thing is rock solid.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> > > A possible fix, which takes in account also the XDP headroom for
+> > > stmmac_rx_buf1_len() only could be (only compile tested, I don't have
+> > > the hardware now):
+> >
+> > However, this doesn't fix my issue. I still get all sort of
+> > corruption. Probably stmmac_rx_buf2_len() also need adjusting (it has
+> > a similar logic as its buf1 counterpart...)
+> >
+> > Unless you can fix it very quickly, and given that we're towards the
+> > end of the cycle, I'd be more comfortable if we reverted this patch.
+> >
+> 
+> Can it be that the HW can't do DMA on an address which is not word aligned?
+> What if you replace NET_SKB_PAD with, let's say, 8?
+
+With this:
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+index fcdb1d20389b..244aa6579ef4 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+@@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
+ 	if (stmmac_xdp_is_enabled(priv))
+ 		return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
+ 
+-	return NET_SKB_PAD + NET_IP_ALIGN;
++	return 8 + NET_IP_ALIGN;
+ }
+ 
+ void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
+
+I don't see the system corrupting packets anymore. Is that exactly
+what you had in mind? This really seems to point to a basic buffer
+overflow.
 
 Thanks,
-Namhyung
 
+	M.
 
-> ---
->
->  tools/perf/util/get_current_dir_name.c |    3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> --- a/tools/perf/util/get_current_dir_name.c
-> +++ b/tools/perf/util/get_current_dir_name.c
-> @@ -3,8 +3,9 @@
->  //
->  #ifndef HAVE_GET_CURRENT_DIR_NAME
->  #include "get_current_dir_name.h"
-> +#include <limits.h>
-> +#include <string.h>
->  #include <unistd.h>
-> -#include <stdlib.h>
->
->  /* Android's 'bionic' library, for one, doesn't have this */
->
+-- 
+Without deviation from the norm, progress is not possible.
