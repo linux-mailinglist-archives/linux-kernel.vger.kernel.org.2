@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668493F1C92
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A623F1C9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239956AbhHSPYU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 19 Aug 2021 11:24:20 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59363 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240159AbhHSPYR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:24:17 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 04B76CED17;
-        Thu, 19 Aug 2021 17:23:37 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 00/15] create power sequencing subsystem
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
-Date:   Thu, 19 Aug 2021 17:23:36 +0200
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        MSM <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        id S240254AbhHSPY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:24:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240213AbhHSPYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:24:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79A9961075;
+        Thu, 19 Aug 2021 15:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629386658;
+        bh=TbppuiKfS5RzFZDe5IM1WjypWyaTiBt6AKpbU01/Vjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Li1FSwq9F5gEd2Ze4i6TyeATB5E6EALmBYJkB3hp6/FbRFZnlIDu4QQxy7DSOa7zp
+         mGzAicpMuTnHyzL0tACFTBFfaRx71Mn1icTmxAkyHQVMDpUg7PcTVZYp8ic78/6TEn
+         m9TfXqrLWDIBpGJ1+zG2cdenoIpnp8wYsYapEku7NnlJXCflgY2Vu8VypSPYZKILjF
+         IVk1jBnwHu62qovVBjmH6g8ALcv7XkcLLrA7hHFuR5IXPchyC6KkqVzzRxwaAAY6Xj
+         PpWumi0ETi95Qq1vYSTbkcofl9zbaIFhrYH7LE25WHuuJwb4axLFOkR8Yg02tAIhdL
+         liOwL49KhITrQ==
+Date:   Thu, 19 Aug 2021 16:23:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     kernel test robot <yujie.liu@intel.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [kbuild] drivers/regulator/bd718x7-regulator.c:531:8: warning:
+ Excessive padding in 'struct bd718xx_regulator_data' (8 padding bytes, where
+ 0 is optimal).
+Message-ID: <20210819152353.GN4177@sirena.org.uk>
+References: <202108172206.9cbgvI53-lkp@intel.com>
+ <4dabc78a-f9ee-4e7d-8bf3-ea1c6cef8530@intel.com>
+ <CANhJrGOh+9PoMmsv-Q9petTV-hv9rv9nOitg0NCQHqXVXzJvvw@mail.gmail.com>
+ <422ade1b-8e88-d6dc-ae4e-799e729932b7@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qi3SIpffvxS/TM8d"
+Content-Disposition: inline
+In-Reply-To: <422ade1b-8e88-d6dc-ae4e-799e729932b7@intel.com>
+X-Cookie: She sells cshs by the cshore.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
 
-> This is an RFC of the proposed power sequencer subsystem. This is a
-> generification of the MMC pwrseq code. The subsystem tries to abstract
-> the idea of complex power-up/power-down/reset of the devices.
-> 
-> The primary set of devices that promted me to create this patchset is
-> the Qualcomm BT+WiFi family of chips. They reside on serial+platform
-> interfaces (older generations) or on serial+PCIe (newer generations).
-> They require a set of external voltage regulators to be powered on and
-> (some of them) have separate WiFi and Bluetooth enable GPIOs.
-> 
-> This patchset being an RFC tries to demonstrate the approach, design and
-> usage of the pwrseq subsystem. Following issues are present in the RFC
-> at this moment but will be fixed later if the overall approach would be
-> viewed as acceptable:
-> 
-> - No documentation
->   While the code tries to be self-documenting proper documentation
->   would be required.
-> 
-> - Minimal device tree bindings changes
->   There are no proper updates for the DT bindings (thus neither Rob
->   Herring nor devicetree are included in the To/Cc lists). The dt
->   schema changes would be a part of v1.
-> 
-> - Lack of proper PCIe integration
->   At this moment support for PCIe is hacked up to be able to test the
->   PCIe part of qca6390. Proper PCIe support would require automatically
->   powering up the devices before the scan basing on the proper device
->   structure in the device tree.
-> 
-> ----------------------------------------------------------------
-> Dmitry Baryshkov (15):
->      power: add power sequencer subsystem
->      pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
->      mmc: core: switch to new pwrseq subsystem
->      ath10k: add support for pwrseq sequencing
->      Bluetooth: hci_qca: merge qca_power into qca_serdev
->      Bluetooth: hci_qca: merge init paths
->      Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
->      Bluetooth: hci_qca: futher rework of power on/off handling
->      Bluetooth: hci_qca: add support for pwrseq
+--qi3SIpffvxS/TM8d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-any chance you can try to abandon patching hci_qca. The serdev support in hci_uart is rather hacking into old line discipline code and it is not aging well. It is really becoming a mess.
+On Thu, Aug 19, 2021 at 10:49:13PM +0800, kernel test robot wrote:
 
-I would say that the Qualcomm serial devices could use a separate standalone serdev driver. A while I send an RFC for a new serdev driver.
+> Sorry for bothering, we'll ignore struct padding warnings next time.
 
-https://www.spinics.net/lists/linux-bluetooth/msg74918.html
+I think the warnings are useful, it's just that they're not important
+for all structs.  If the struct was getting allocated a lot it could be
+pointing out an issue that makes a real difference.  I'm not sure it s
+realistic for automation to figure it out for itself so it's better to
+send them even if they get ignored a lot.
 
-There I had the idea that simple vendor specifics can be in that driver (like the Broadcom part I added there), but frankly the QCA specifics are a bit too specific and it should be a separate driver. However I think this would be a good starting point.
+--qi3SIpffvxS/TM8d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In general a H:4 based Bluetooth driver is dead simple with the help of h4_recv.h helper we have in the kernel. The complicated part is the power management pieces or any vendor specific low-power protocol they are running on that serial line. And since you are touching this anyway, doing a driver from scratch might be lot simpler and cleaner. It would surely help all the new QCA device showing up in the future.
+-----BEGIN PGP SIGNATURE-----
 
-Regards
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEed4kACgkQJNaLcl1U
+h9AhvAf/X8iA7lw+gQGPtcpDfsRnpdm/eSdg5czGHcPoYCB0EXpC78C9Ryea+yEm
+ZZpBB4cm+ZjOGpj/bV0vMFD7JKDofjXSN8E1GWyICUrOBj8wi6KVdYOOSdXzkwSj
+btley9wci3zSIAmsdTHj4sEY8YOc/iwg+ZXtAYCNh/ypLgiI5LVh65hjxLAqd+p3
+3JmAvYEnMA9jU6ji2USYOhA/McjfQN0DM+exKww/KTlSToG6F766zFHz12ygmytV
+P7P+soQf1dpIQhmWH+goz1KxxzCsdWkTC0Rjyuo0EsO6MCJOg3feTgiQEOih2w96
+nyHjnhDOBCW575mQv5lDw3zeyYV0Kw==
+=UtaG
+-----END PGP SIGNATURE-----
 
-Marcel
-
+--qi3SIpffvxS/TM8d--
