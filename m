@@ -2,180 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBE63F19ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138B43F19F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239629AbhHSNDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        id S238357AbhHSNGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239585AbhHSNDd (ORCPT
+        with ESMTP id S229670AbhHSNGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:03:33 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E0BC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:02:57 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id bk29so1275669qkb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:02:57 -0700 (PDT)
+        Thu, 19 Aug 2021 09:06:21 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFDDC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:05:45 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id x4so5837674pgh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:05:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/uITF9PsXzVGX7hd3I0YUfetvnjHbmqb4UwwTMwonFI=;
-        b=MPi0hnE/ra70VrPe/cNO1Ormx0fhJ3InR0Y4lORCcGbpHnwdkrxn1VeXvH+TSBCUTU
-         v0oNczhQ45wov/kN+l3jtld33Kte9pDI7LQjdbpJ6VesA3zUtrn7vRlwd08l5CwfMpDU
-         GlQPWNOam5K6Fiq2V6Tbbttqwgpactcl62UgdWtN/WPmIXzluJIqO6nt1o0a/sj/A3Kb
-         Gxj3Qr4qTluQCE1kJnhok4GHfTTD2AXsJ1YntzkD+POopVeAhimTW2k9AryGeRJHHuhp
-         kdJHiN3MnWJN2tX98TIbuatikanJs4miyWRTUopfWqD7Nq7cZCv8w0OJZFNZnDNw+tSN
-         yv7g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j8qRe1VcgbKWgoFHwQvjx82rgCmqdfKPSvrqgoYqCbA=;
+        b=jdk7f1rzl3NRxVo1+xPnWg+iCvrUhWP14lkj84hbls/oNbMOmphY8w52NYVAxKp3h/
+         jUXYBmZ4cPn6QbmLihNW6zppH+1H6Evm6Wl6t99703iPjbUcosFND1eH1oAtZvVc6t+a
+         /mURa0GkFJ8Ux9Niv3UZlUx8NIa7m5w8yBQNU5DVHCIsON+KNdfDg8Sw3YRz81hBL3W7
+         1ws1vPcsoH6pAk1O+seh5qKXpuMAW8oVJMpFuA8+0D/s3coWn4BDcoEJz8anuqssKGya
+         ujsxN+9TSlSINtJrrHbYaJ+SrVLFUgENjLkDEQ+6KE1CflQTJ1NqE/3uqzyLFH/hHCFw
+         G2PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/uITF9PsXzVGX7hd3I0YUfetvnjHbmqb4UwwTMwonFI=;
-        b=tvBmY+Rp8q7Sfvtyjx8zCVFlTFqAHwP0bQdFoc6aX+fhfgapKZc92Wo9gbGoou1y6a
-         QlUXpEf9Wiatpre0DUGr94iuDep14L9H8XIRmTwdj4obe6K51SqnxqZ7f/EFG2klRkxT
-         U13+XMO7XNGyfuD6woKCZlyiji6RlwypS7dn94pJeeqLfl7bnmoBi6wNHw0y5QWpHone
-         l97WlbOqGwQr5jaB669mpnD5V5xr86JihJYxa6hIZsqrB2Zht7c9kSBVEPxmRbJ8As0Z
-         9jKD8n100H6lEUXZQEjgFzooh6d2vBGHG/JiMFeKhvAfQaaiE/ZY9prTOWmLjSmBEldo
-         U0Ug==
-X-Gm-Message-State: AOAM532vzZjkUW23knz7iT2VBIbbOnmzIilz+eu6cokmxuUgFfdrnSAO
-        z0JMVEXC75Kzkcmt6l7a7u/aTfbf4ay0XJiD3vmY9Q==
-X-Google-Smtp-Source: ABdhPJy5I18zBxQ1LGmdihiCjtGWvx+HuJJjQQGxxo70NaOSKWyTzogqPmmLqLM1CdEM2C4vIeoyMMoZ809yk2xCmpI=
-X-Received: by 2002:a37:dcc7:: with SMTP id v190mr3652195qki.445.1629378176061;
- Thu, 19 Aug 2021 06:02:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j8qRe1VcgbKWgoFHwQvjx82rgCmqdfKPSvrqgoYqCbA=;
+        b=coqbHeikuUvKkB8O60huWWesiSsBEWJhnZGl87oYxTPNMXoi5B0erxvHUYn7oJTHM/
+         9T+lz2ZXzx2qIRx8x/VA+P+1uqlJsDActEtg9ER7f8AV/4UOjEIfl48SPIiKKo+5nS6V
+         KO2qdJ8mgADNCpmw6ZKRRYDnrUC9yMjXc0FuPibbTJml4KwB11DPHiKav2i9/RZzHryv
+         Uk6gGrDQEh7hflghKYoEdEcrtREfKeQmn2zFamJbQu3C6X7oevk+0MQ4qgXPcT4r5e/E
+         yRJChtcWcUuMY10JDccadI2hVMTs0co0BnAPpGgVwXIUshUPNYXKVr3CCDAwdYw8t33u
+         8Q4Q==
+X-Gm-Message-State: AOAM531GgYmT1g64tQVFoppI6lAZXDtZJFMH/WT+TGDmAv5GIdO0jzhf
+        UH+SNt5EVcf6BvX9UzKHEcDD
+X-Google-Smtp-Source: ABdhPJwlVNkMT+7xFKhx8E+8JStufdEOlSgD/pRBJfUXBKrF7CvNcdgxlg7uDkzV3BlxwcQZUAHUig==
+X-Received: by 2002:a63:2541:: with SMTP id l62mr14330979pgl.183.1629378344655;
+        Thu, 19 Aug 2021 06:05:44 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6298:4497:5a1e:ff34:9091:5bac])
+        by smtp.gmail.com with ESMTPSA id fh2sm3135830pjb.12.2021.08.19.06.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 06:05:44 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 18:35:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        robh@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, smohanad@codeaurora.org,
+        bjorn.andersson@linaro.org, sallenki@codeaurora.org,
+        skananth@codeaurora.org, vpernami@codeaurora.org,
+        vbadigan@codeaurora.org
+Subject: Re: [PATCH v7 0/3] Add Qualcomm PCIe Endpoint driver support
+Message-ID: <20210819130537.GA200135@thinkpad>
+References: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
- <20210809190157.279332-4-dovmurik@linux.ibm.com> <YRZuIIVIzMfgjtEl@google.com>
- <CAMj1kXFC-cizTw2Tv40uZHdLArKtdMNxdQXWoPWSL-8qexdkLQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXFC-cizTw2Tv40uZHdLArKtdMNxdQXWoPWSL-8qexdkLQ@mail.gmail.com>
-From:   Andrew Scull <ascull@google.com>
-Date:   Thu, 19 Aug 2021 14:02:44 +0100
-Message-ID: <CADcWuH0mP+e6GxkUGN3ni_Yu0z8YTn-mo677obH+p-OFCL+wOQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Dov Murik <dovmurik@linux.ibm.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722121242.47838-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 at 10:57, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Fri, 13 Aug 2021 at 15:05, Andrew Scull <ascull@google.com> wrote:
-> >
-> > On Mon, Aug 09, 2021 at 07:01:57PM +0000, Dov Murik wrote:
-> > > The new sev_secret module exposes the confidential computing (coco)
-> > > secret area via securityfs interface.
-> > >
-> > > When the module is loaded (and securityfs is mounted, typically under
-> > > /sys/kernel/security), a "coco/sev_secret" directory is created in
-> > > securityfs.  In it, a file is created for each secret entry.  The name
-> > > of each such file is the GUID of the secret entry, and its content is
-> > > the secret data.
-> > >
-> > > This allows applications running in a confidential computing setting to
-> > > read secrets provided by the guest owner via a secure secret injection
-> > > mechanism (such as AMD SEV's LAUNCH_SECRET command).
-> > >
-> > > Removing (unlinking) files in the "coco/sev_secret" directory will zero
-> > > out the secret in memory, and remove the filesystem entry.  If the
-> > > module is removed and loaded again, that secret will not appear in the
-> > > filesystem.
-> >
-> > We've also been looking into a similar secret mechanism recently in the
-> > context of Android and protected KVM [1]. Our secrets would come from a
-> > different source, likely described as a reserved-memory node in the DT,
-> > but would need to be exposed to userspace in the same way as the SEV
-> > secrets. Originally I tried using a character device, but this approach
-> > with securityfs feels neater to me.
-> >
->
-> Agreed. I particularly like how deleting the file wipes the secret from memory.
->
-> > We're also looking to pass secrets from the bootloader to Linux, outside
-> > of any virtualization or confidential compute context (at least a far as
-> > I have understood the meaning of the term). Again, this feels like it
-> > would be exposed to userspace in the same way.
-> >
->
-> Indeed.
->
-> > It would be good to be able to share the parts that would be common. I
-> > expect that would mean the operations for a secret file and for a
-> > directory of secrets at a minimum. But it might also influence the paths
-> > in securityfs; I see, looking back, that the "coco" directory was added
-> > since the RFC but would a generalized "secret" subsystem make sense? Or
-> > would it be preferable for each case to define their own path?
-> >
->
-> I think we should avoid 'secret', to be honest. Even if protected KVM
-> is not riding the SEV/TDX wave, I think confidential computing is
-> still an accurate description of its semantics.
+On Thu, Jul 22, 2021 at 05:42:39PM +0530, Manivannan Sadhasivam wrote:
+> Hello,
+> 
+> This series adds support for Qualcomm PCIe Endpoint controller found
+> in platforms like SDX55. The Endpoint controller is based on the designware
+> core with additional Qualcomm wrappers around the core.
+> 
+> The driver is added separately unlike other Designware based drivers that
+> combine RC and EP in a single driver. This is done to avoid complexity and
+> to maintain this driver autonomously.
+> 
+> The driver has been validated with an out of tree MHI function driver on
+> SDX55 based Telit FN980 EVB connected to x86 host machine over PCIe.
+> 
 
-I agree that protected KVM fits with the ideas of confidential
-computing. It was the non-virtualization context that I was less
-certain about. For example, the Open Profile for DICE [2] starts with
-a hardware secret and derives, at each boot stage, a secret that is
-passed to the next stage. It's a process that applies both to a VM,
-matching confidential compute as I understand it, but also the host
-Linux, which is the part that I wasn't so clear on.
+Ping on this series!
 
-[2] -- https://pigweed.googlesource.com/open-dice/+/refs/heads/main/docs/specification.md
+Thanks,
+Mani
 
-> > [1] -- https://lwn.net/Articles/836693/
-> >
-> > > +static int sev_secret_unlink(struct inode *dir, struct dentry *dentry)
-> > > +{
-> > > +     struct sev_secret *s = sev_secret_get();
-> > > +     struct inode *inode = d_inode(dentry);
-> > > +     struct secret_entry *e = (struct secret_entry *)inode->i_private;
-> > > +     int i;
-> > > +
-> > > +     if (e) {
-> > > +             /* Zero out the secret data */
-> > > +             memzero_explicit(e->data, secret_entry_data_len(e));
-> >
-> > Would there be a benefit in flushing these zeros?
-> >
->
-> Do you mean cache clean+invalidate? Better to be precise here.
-
-At least a clean, to have the zeros written back to memory from the
-cache, in order to overwrite the secret.
-
->
-> > > +             e->guid = NULL_GUID;
-> > > +     }
-> > > +
-> > > +     inode->i_private = NULL;
-> > > +
-> > > +     for (i = 0; i < SEV_SECRET_NUM_FILES; i++)
-> > > +             if (s->fs_files[i] == dentry)
-> > > +                     s->fs_files[i] = NULL;
-> > > +
-> > > +     /*
-> > > +      * securityfs_remove tries to lock the directory's inode, but we reach
-> > > +      * the unlink callback when it's already locked
-> > > +      */
-> > > +     inode_unlock(dir);
-> > > +     securityfs_remove(dentry);
-> > > +     inode_lock(dir);
-> > > +
-> > > +     return 0;
-> > > +}
+> Thanks,
+> Mani
+> 
+> Changes in v7:
+> 
+> * Used existing naming convention for callback functions
+> * Used active low state for PERST# gpio
+> 
+> Changes in v6:
+> 
+> * Removed status property in DT and added reviewed tag from Rob
+> * Switched to _relaxed variants as suggested by Rob
+> 
+> Changes in v5:
+> 
+> * Removed the DBI register settings that are not needed
+> * Used the standard definitions available in pci_regs.h
+> * Added defines for all the register fields
+> * Removed the left over code from previous iteration
+> 
+> Changes in v4:
+> 
+> * Removed the active_config settings needed for IPA integration
+> * Switched to writel for couple of relaxed versions that sneaked in
+> 
+> Changes in v3:
+> 
+> * Lot of minor cleanups to the driver patch based on review from Bjorn and Stan.
+> * Noticeable changes are:
+>   - Got rid of _relaxed calls and used readl/writel
+>   - Got rid of separate TCSR memory region and used syscon for getting the
+>     register offsets for Perst registers
+>   - Changed the wake gpio handling logic
+>   - Added remove() callback and removed "suppress_bind_attrs"
+>   - stop_link() callback now just disables PERST IRQ
+> * Added MMIO region and doorbell interrupt to the binding
+> * Added logic to write MMIO physicall address to MHI base address as it is
+>   for the function driver to work
+> 
+> Changes in v2:
+> 
+> * Addressed the comments from Rob on bindings patch
+> * Modified the driver as per binding change
+> * Fixed the warnings reported by Kbuild bot
+> * Removed the PERST# "enable_irq" call from probe()
+> 
+> Manivannan Sadhasivam (3):
+>   dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP
+>     controller
+>   PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
+>   MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
+> 
+>  .../devicetree/bindings/pci/qcom,pcie-ep.yaml | 158 ++++
+>  MAINTAINERS                                   |  10 +-
+>  drivers/pci/controller/dwc/Kconfig            |  10 +
+>  drivers/pci/controller/dwc/Makefile           |   1 +
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c     | 710 ++++++++++++++++++
+>  5 files changed, 888 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie-ep.yaml
+>  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-ep.c
+> 
+> -- 
+> 2.25.1
+> 
