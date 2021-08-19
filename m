@@ -2,76 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A60F3F10D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C204F3F1137
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235830AbhHSC6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:58:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13444 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbhHSC61 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:58:27 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gqq993m5vzdc7k;
-        Thu, 19 Aug 2021 10:54:05 +0800 (CST)
-Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 19 Aug 2021 10:57:50 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 19 Aug 2021 10:57:49 +0800
-From:   Tong Tiangen <tongtiangen@huawei.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Tong Tiangen" <tongtiangen@huawei.com>
-Subject: [PATCH -next 2/2] riscv/vdso: make arch_setup_additional_pages wait for mmap_sem for write killable
-Date:   Thu, 19 Aug 2021 03:06:50 +0000
-Message-ID: <20210819030650.716478-3-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.18.0.huawei.25
-In-Reply-To: <20210819030650.716478-1-tongtiangen@huawei.com>
-References: <20210819030650.716478-1-tongtiangen@huawei.com>
+        id S236156AbhHSDHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:07:32 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39431 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235792AbhHSDHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 23:07:30 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GqqRw47HGz9sVw;
+        Thu, 19 Aug 2021 13:06:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629342413;
+        bh=3CY+GC+/4FbWVWTR9SwmZRjFqyi6hW0w0sxX9wtxZ2g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EcY9FQD9xHkLJzKWddIICTtnVSADJTSBGCHqSZG1/ciVaw3IESCfGLzJ3hWvsbn5t
+         usgGuEZMt8bafYKikvU4NaBej4avIVUMza0iA1lwm5EunCUasopHdW4DK6iztlEhKF
+         VhsRR3NIC5Gsfh0LhSoPyKBHAaLu35BUjFF7SkDYHa3PmHOrIAx8my7cBz3Z/REO7B
+         xrSmWfsM9M/o2dI1mgcTJzMAPZtThEOYjZJCIrgg7UkvZW6KztZxLtBlK7etSgHb9+
+         OghhDLR4sHpUSEzkilJUuYJyrsCbQsJqLvKr46vygycM5JgPcuvl3fiDOmbYsnH9Tt
+         e782oNJ34kwEg==
+Date:   Thu, 19 Aug 2021 13:06:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, wsa@kernel.org,
+        viresh.kumar@linaro.org, conghui.chen@intel.com
+Subject: Re: [PATCH] i2c: virtio: Fix the compiler warning when CONFIG_ACPI
+ is not set
+Message-ID: <20210819130651.73945bcc@canb.auug.org.au>
+In-Reply-To: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
+References: <4309f869890e70810f2c40a8d60495240e318303.1629333590.git.jie.deng@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm000001.china.huawei.com (7.185.36.245)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/QJA95UnxUR0M=zAmKUp0atE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-riscv architectures relying on mmap_sem for write in their
-arch_setup_additional_pages. If the waiting task gets killed by the oom killer
-it would block oom_reaper from asynchronous address space reclaim and reduce
-the chances of timely OOM resolving.  Wait for the lock in the killable mode
-and return with EINTR if the task got killed while waiting.
+--Sig_/QJA95UnxUR0M=zAmKUp0atE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
----
- arch/riscv/kernel/vdso.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Hi Jie,
 
-diff --git a/arch/riscv/kernel/vdso.c b/arch/riscv/kernel/vdso.c
-index 5fecd5529eff..54629c11c639 100644
---- a/arch/riscv/kernel/vdso.c
-+++ b/arch/riscv/kernel/vdso.c
-@@ -73,7 +73,9 @@ int arch_setup_additional_pages(struct linux_binprm *bprm,
- 
- 	vdso_len = (vdso_pages + VVAR_NR_PAGES) << PAGE_SHIFT;
- 
--	mmap_write_lock(mm);
-+	if (mmap_write_lock_killable(mm))
-+		return -EINTR;
-+
- 	vdso_base = get_unmapped_area(NULL, 0, vdso_len, 0, 0);
- 	if (IS_ERR_VALUE(vdso_base)) {
- 		ret = vdso_base;
--- 
-2.18.0.huawei.25
+On Thu, 19 Aug 2021 08:48:41 +0800 Jie Deng <jie.deng@intel.com> wrote:
+>
+> Fix the compiler warning "drivers/i2c/busses/i2c-virtio.c:208:17:
+> warning: unused variable 'pdev' [-Wunused-variable]" when CONFIG_ACPI
+> is not set.
+>=20
+> Fixes: 8fb12751ac78 ("i2c: virtio: add a virtio i2c frontend driver")
 
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+
+> Signed-off-by: Jie Deng <jie.deng@intel.com>
+> ---
+>  drivers/i2c/busses/i2c-virtio.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-virtio.c b/drivers/i2c/busses/i2c-vir=
+tio.c
+> index d3e60d9..964c601 100644
+> --- a/drivers/i2c/busses/i2c-virtio.c
+> +++ b/drivers/i2c/busses/i2c-virtio.c
+> @@ -205,7 +205,6 @@ static const struct i2c_adapter_quirks virtio_i2c_qui=
+rks =3D {
+> =20
+>  static int virtio_i2c_probe(struct virtio_device *vdev)
+>  {
+> -	struct device *pdev =3D vdev->dev.parent;
+>  	struct virtio_i2c *vi;
+>  	int ret;
+> =20
+> @@ -234,7 +233,7 @@ static int virtio_i2c_probe(struct virtio_device *vde=
+v)
+>  	 * Setup ACPI node for controlled devices which will be probed through
+>  	 * ACPI.
+>  	 */
+> -	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
+> +	ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(vdev->dev.parent));
+> =20
+>  	ret =3D i2c_add_adapter(&vi->adap);
+>  	if (ret)
+
+Looks good to me.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/QJA95UnxUR0M=zAmKUp0atE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEdyssACgkQAVBC80lX
+0Gxw7Qf/fdlmIsM8h5nIZGD7ptVdJSD3poHXXbuM7T9D+8HSLed0ci4jpDOaO7rW
+cC4bcMYOQQHYT3ZgalMDSQmf+nlwWbgFyQ8RPZ6RnssrwOG0CH8LKtU+HBYSBgZu
+ETkW58Ny+0dUUXD88MPatdr/1+VnSVEGNnUrQSoegkOBrbU3GNhQ0AnCG8CLh/5D
+5chhc6aU2GumqlcsWcl6jhyEVtlzZyqTBe9GaC1sbCamsqHluIc7XV38vz+q1Q4R
+nIWedufbBlcPNJWsyDQlzay2A1YaT/7QX+aEOqo/mClRADMJw9kxE7xF1hMecH+f
+FcWBGpkAwyhDkZu/xpleFsc1+Pwg+w==
+=Sc41
+-----END PGP SIGNATURE-----
+
+--Sig_/QJA95UnxUR0M=zAmKUp0atE--
