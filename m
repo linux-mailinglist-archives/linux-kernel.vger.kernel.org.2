@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE5D3F1A25
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E553F1A34
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239792AbhHSNQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:16:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:37034 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234695AbhHSNQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:16:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10080"; a="216545076"
-X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
-   d="scan'208";a="216545076"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 06:15:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,334,1620716400"; 
-   d="scan'208";a="471884141"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga008.jf.intel.com with ESMTP; 19 Aug 2021 06:15:41 -0700
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-usb@vger.kernel.org,
+        id S239615AbhHSNUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:20:53 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49306 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238292AbhHSNUu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 09:20:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629379214; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=l4dT+tFYjcxU/834O3TlS8Kbm5D9Je72nne0F+3BpO8=; b=B0ZmkAsDAaaICZEqquNgU7THQGljgtZG78UH30cXFXRymk46e9vZoHf7RxkeIHNr0pCOz/jv
+ lHRmECibGDT7BJSL22cXbkv8uBcDm5r9tWZVXlrUfEcpHrkYmgCHB+KZdowpeTPePqhmjtzc
+ 479fP73tAKE8g4NvBKlznTOBSB0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 611e5a76f746c298d95da995 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 19 Aug 2021 13:19:50
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6E904C4360D; Thu, 19 Aug 2021 13:19:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2682CC4338F;
+        Thu, 19 Aug 2021 13:19:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2682CC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <772e4001-178e-4918-032c-6e625bdded24@ti.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [QUERY] Cold plugged USB device to Inateck PCIE USB card is not
- detected
-Message-ID: <970f741a-54ee-0fa7-46d9-51f77764c6bb@linux.intel.com>
-Date:   Thu, 19 Aug 2021 16:18:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        Andrew Morton <akpm@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 45/63] ath11k: Use memset_startat() for clearing queue descriptors
+References: <20210818060533.3569517-1-keescook@chromium.org>
+        <20210818060533.3569517-46-keescook@chromium.org>
+Date:   Thu, 19 Aug 2021 16:19:37 +0300
+In-Reply-To: <20210818060533.3569517-46-keescook@chromium.org> (Kees Cook's
+        message of "Tue, 17 Aug 2021 23:05:15 -0700")
+Message-ID: <87eeapbmhi.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <772e4001-178e-4918-032c-6e625bdded24@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.8.2021 10.54, Kishon Vijay Abraham I wrote:
-> Hi All,
-> 
-> I was trying to test PCIe USB card (Inateck) connected to AM64 EVM and
-> J7200 EVM. Inateck uses Renesas uPD720201 USB3 host controller.
-> 
-> So if I connect USB pendrive and then boot the board (cold plug), I
-> don't see the pendrive getting detected. But if I remove and plug it
-> again, it gets detected.
-> 
-> For the cold plug case, I see this message
-> 	"usb usb1-port3: couldn't allocate usb_device"
-> 
-> It actually fails in
-> xhci_alloc_dev()->xhci_queue_slot_control()->queue_command()->XHCI_STATE_HALTED
-> 
-> I'm not familiar with xhci but it looks like port event is invoked
-> before the controller is fully initialized (?).
+Kees Cook <keescook@chromium.org> writes:
 
-Maybe this controller is capable of generating interrupts before it's running?
- 
-> 
-> I tried the following hack which kind of changes the sequence where
-> xhci_start() and xhci_run_finished() is invoked before port_event() and
-> with that I could see the pendrive enumerate successfully in cold plug case.
-> 
-> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-> index 228e3d4e1a9f..d19f27c46c6f 100644
-> --- a/drivers/usb/core/hub.c
-> +++ b/drivers/usb/core/hub.c
-> @@ -1077,7 +1077,7 @@ static void hub_activate(struct usb_hub *hub, enum
-> hub_activation_type type)
->                         INIT_DELAYED_WORK(&hub->init_work, hub_init_func2);
->                         queue_delayed_work(system_power_efficient_wq,
->                                         &hub->init_work,
-> -                                       msecs_to_jiffies(delay));
-> +                                       msecs_to_jiffies(150));
-> 
->                         /* Suppress autosuspend until init is done */
->                         usb_autopm_get_interface_no_resume(
-> 
-> Irrespective of the delay the port status looks correct and the modified
-> delay only helps to change the flow.
-> 
-> Adding other prints and delays also change the sequence and seems to
-> detect the connected pendrive.
-> 
-> Can someone provide hints on how to fix this properly?
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
+>
+> Use memset_startat() so memset() doesn't get confused about writing
+> beyond the destination member that is intended to be the starting point
+> of zeroing through the end of the struct. Additionally split up a later
+> field-spanning memset() so that memset() can reason about the size.
+>
+> Cc: Kalle Valo <kvalo@codeaurora.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: ath11k@lists.infradead.org
+> Cc: linux-wireless@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Either keep xHC interrupts disabled until second (usb3) hcd is added, and
-host is running. (haven't thought about side effects yet)
-Or make sure we don't start polling the usb2 roothub until host is running.
+To avoid conflicts I prefer taking this via my ath tree.
 
-Below code should return before port event handler starts roothub polling if 
-any xhci->xhc_state flag is set. 
-Untested, does it work for you?
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index e676749f543b..9f4cc5c87b27 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2024,6 +2024,8 @@ static void handle_port_status(struct xhci_hcd *xhci,
-        if (bogus_port_status)
-                return;
- 
-+       if (xhci->xhc_state != 0)
-+               return;
-        /*
-         * xHCI port-status-change events occur when the "or" of all the
-         * status-change bits in the portsc register changes from 0 to 1.
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index f3dabd02382c..b171558956dd 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -646,9 +646,15 @@ int xhci_run(struct usb_hcd *hcd)
-         */
- 
-        hcd->uses_new_polling = 1;
--       if (!usb_hcd_is_primary_hcd(hcd))
--               return xhci_run_finished(xhci);
--
-+       if (!usb_hcd_is_primary_hcd(hcd)) {
-+               ret = xhci_run_finished(xhci);
-+               if (ret)
-+                       return ret;
-+               /* start polling usb2 roothub */
-+               set_bit(HCD_FLAG_POLL_RH, &xhci->main_hcd->flags);
-+               usb_hcd_poll_rh_status(xhci->main_hcd);
-+               return ret;
-+       }
-        xhci_dbg_trace(xhci, trace_xhci_dbg_init, "xhci_run");
- 
-        ret = xhci_try_enable_msi(hcd);
-
-Thanks
--Mathias
-
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
