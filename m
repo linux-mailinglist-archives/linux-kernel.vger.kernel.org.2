@@ -2,160 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BAD3F1C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC883F1CA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 17:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240295AbhHSPY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 11:24:59 -0400
-Received: from mga18.intel.com ([134.134.136.126]:58072 "EHLO mga18.intel.com"
+        id S240213AbhHSP0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 11:26:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240213AbhHSPY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 11:24:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="203726065"
-X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
-   d="scan'208";a="203726065"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 08:24:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,335,1620716400"; 
-   d="scan'208";a="594753187"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Aug 2021 08:24:20 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 19 Aug 2021 08:24:20 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Thu, 19 Aug 2021 08:24:19 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10 via Frontend Transport; Thu, 19 Aug 2021 08:24:19 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.172)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.10; Thu, 19 Aug 2021 08:24:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kvGMF2KmdB1Cmm4/cCkfug5Me/xsGwgGkwiXLCOl9/9hIFho3sVT9PSoBsh0J5VeKu7flKIe6iWbXLt1OJz8XG6KXgxwGBoMxfBP04tyZn/J1yscb13dG1yEx8dstRMFR8rmSRaA68o/0pB6cN/2SBbFXZlTxyCCjZ9YJ03FohIKee6ruxSrxxN/UuHzu/1a46E3l368V5Zg2+myvoa6+nBD34TDGURTBbNhKnhLwOQ8SxXPIB+T0c+jMpptKOc809jHoeomW85LdP8mvlCNar2QrLPOTI0579NSyLY+qwFW9+qYdXiD/iqoxdiDBrdgk1Xgh2FT6goBqPrbtUtf1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eq1+cHMQWoOTr3Sg/ZX3qeMncQjATGBPEUx4H9J/diA=;
- b=dDm1G3USxqSea8/m5M/nWRX0J2LZF70aYsSxYAUe4z+L4e71EnO870MTQ5bONuRAC/If2eIyYLu0852AECd/5GLO98GyCv0vVD8U7NfWHW/DmSxIuNZ5mApBOqZnOjLgQsAVcIbC/BwL+PTf1lj9MSPpH45hpHiQdNwiIhHqzouGI/qlt6s+cezCBis0Bl2FKW/NUAILXhYILoaH+4PRRr3x1GyDdsV0CALZV6X1VlF+gckq69PCldjBDs9Enj7BV3ZUh/3oQPC24wJTKfN0lz7xKHz5zykJ37sE2mmTXWv6QSqCu0ZSwzIALZGnkVKZRW18l8TJ2McJRJF4+65hRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eq1+cHMQWoOTr3Sg/ZX3qeMncQjATGBPEUx4H9J/diA=;
- b=xfHtGR5RMosBEOMi6vAE7XPGGIY5bBhtbCSdlkgZgPcJlLK90zgo4odtYQkAWYVYoFsXIbkcfrP9E4ddipMxCMzqi6mjREEd1WidaubRGSaLZDvoIpG3JxpZ8IhfhZJhZK/Z5NYB45x9uhI62R6Sj8vD6mUrv1GhdagShwjvL9c=
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
- by PH0PR11MB4775.namprd11.prod.outlook.com (2603:10b6:510:34::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Thu, 19 Aug
- 2021 15:24:16 +0000
-Received: from PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::6c9b:b5e4:1fda:78b8]) by PH0PR11MB4855.namprd11.prod.outlook.com
- ([fe80::6c9b:b5e4:1fda:78b8%5]) with mapi id 15.20.4415.024; Thu, 19 Aug 2021
- 15:24:16 +0000
-From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-CC:     "Macieira, Thiago" <thiago.macieira@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-Thread-Topic: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-Thread-Index: AQHXhVRyjpE4OXS+e0aKA8ZshCCgeqt5kHqAgAAPrgCAAAcJgIAAMaSAgAAJSACAAAXXAIAArf6AgAB77QA=
-Date:   Thu, 19 Aug 2021 15:24:16 +0000
-Message-ID: <56F4B6AF-C659-4468-AF91-AE3A685ACD81@intel.com>
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
- <3181031.RqgVF4sTRC@tjmaciei-mobl5> <YR1HYRRN0HMTxXrw@zn.tnic>
- <BCC327C2-CF9F-4910-B626-315E515E9A3A@intel.com> <YR14zq2LaExjhFR+@zn.tnic>
- <FC0176FB-32CD-4E7D-8AC7-17452E40FDFE@intel.com> <YR4PqVytqEwFV7X9@zn.tnic>
-In-Reply-To: <YR4PqVytqEwFV7X9@zn.tnic>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.7)
-authentication-results: alien8.de; dkim=none (message not signed)
- header.d=none;alien8.de; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 38d49c00-4734-4f09-014d-08d96325688d
-x-ms-traffictypediagnostic: PH0PR11MB4775:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PH0PR11MB4775B7C58D30DFA715738507D8C09@PH0PR11MB4775.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2803;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FIyK8t7vGEOKOHpVNx7NppzJZkdVL5MqxdGskropwD3j8IzPrbv1ZQ66P9FuoEu4ls8P8zq0sSUI8j0KJ+R2KHtGqHAEQUj9qOCj9z4lZlqDJ3ySOfmA4OvssI3zIrSh5b0Ukr7b8QdpCK2m2oiBf8YjOYQ6GwlLZNGb/2fciofre8jv0SrtOJzq5FHw14pnkxn2SagmZK8hXBghk8CWBZARHIqTrB/5R4lRgq7fJTIdmk9HkLNyAF+T5QvWw9lu50Phf6e/pgRyaV6MBJVWgI3qYcpNClBFwLCSPeuXx2Py+rYobSRioVU1Qrh9nM8S2cVTnqV3PE1q2EGVnYDhx7sUg9rHcM10duF6lcJ2sbUFSxDyfeZzsewYmqtOiVBoh3uJ3Uq3MT4R4R58Heh/1/nso/n8+rlxMSGVOlbNZpvyPCDMxdQooVsZbtjPaB7eDKeNaR/8IPtzXYbGWm00tZlxv2wjzLxJTqyKuJQ7z8L7HIo8cHBNAsa1ZOzY2jmuJ9QBqEv8kCShCYzedkIRb28dht2uvZfWk61WjDaFrhXp3o4AuX28dKTIsxkwR78b5P2Ookdutf56zyyeifRdqLi07oyCKrI/RdVUqPZk+7T5mzW0bewEZ+/IwCgmRrQy9SdxkmKPHDYAL8y8eEe2GS8qjpoZLL86CQT2BCgDc035oiPjb1WDKO7CHETct7owf4d8Wx+UbNGsN1KEGPoyyi1aTBVZ0xXp5pTPunJGekqGdtyCx2Zfz3/oVgScBISg
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(39860400002)(366004)(346002)(36756003)(5660300002)(558084003)(2906002)(64756008)(66556008)(66476007)(8936002)(66946007)(76116006)(66446008)(6486002)(71200400001)(6512007)(26005)(186003)(86362001)(8676002)(53546011)(6506007)(4326008)(478600001)(54906003)(33656002)(2616005)(122000001)(38100700002)(38070700005)(6916009)(316002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OEVoN29pQ3VRdTNLQkF0UzBuKzU1VWo2NlFBa3BHQ0xGM2VQeDRkeHEzaVpL?=
- =?utf-8?B?UzI3VXpETC81dkQvNjZLeUNlald4Uk9TWGg0eWxMMGFnNjB5eGZWbVFBNkc5?=
- =?utf-8?B?Z3Y3Y1BlNHZVZzMra3VQWFdKMGo3V0lXc3lqc0M5MTdSaE5lMmpXY09obWxT?=
- =?utf-8?B?K2tIWXh3NUpCZ0JCUzZOejRlVkhNOU54ZGxVVFFQWS9pV2ErUzl0U1FQNFdz?=
- =?utf-8?B?WWQ1SFk3MTBiSmxUU25XcE02V2hXQ095T3RVaG15cG1HemFiMUZaSXdyYThx?=
- =?utf-8?B?NWQzbzJBM01iU0JqU0gvOGFmb3JrUHNqZ2ZTZFQvRjEyMHVUc24yYjV5OTdy?=
- =?utf-8?B?VDFHQjhOU0krbVh3S3FYRGlNekdBekwrRk9HYVJiVFBFU2J0ZWRyWTdNTUFI?=
- =?utf-8?B?WXc3bUJJRkZUbVUwVHlaOFY0YUtsSzl3MkJwRUNvbDRiQ1Y2NzFDVGw5UE11?=
- =?utf-8?B?NllKelYvUGQwOWt3UXZWekZMRmFTaDBWOTFRdVpuY29QSGVvVm8zbFZSNGxU?=
- =?utf-8?B?WkdFTFQzWmU2Tjl2Q0ZpaUozakZLVTRFVVZVNWx6eTNGQWx5bVN3VTI5blVO?=
- =?utf-8?B?TFhLMENTdnFuQmdQTEplQSs2eDBPa2E3NkIzNyswKzJVekt2bFgybWpvYU94?=
- =?utf-8?B?N2szWDVuSk83VjJJYVdSUWo2bVlHNkE2UTFzdHpwM2xHOGVEeFFUMUc1eTdr?=
- =?utf-8?B?SDg2REhoMXpQYklsNXAzd1NqR3FlSjQxV2FFZUlEa0FzcXpuTWo0MGt1WG54?=
- =?utf-8?B?U2JBTUhGZTcwanhHZUdrTW0vc2xwd1B2NkxQanVtN29UenRkcEh5dm9UUGFD?=
- =?utf-8?B?dzFMREZyMnByMDN5TURiZkhwWEZuSnBlZXo1TzJ5VW03a0xzQUVLTzc4bkRO?=
- =?utf-8?B?b0NDbjAzMUV2UzY2aW9CRUpGWWlZbC9yUWRvRGpJOGttVVR2NW1taTNvczBV?=
- =?utf-8?B?UklFRE1SRSsveDNUYUFmWE5iSUJFSTJIQkwyK0NqcjZWanh6RDJrSkRob0RV?=
- =?utf-8?B?MFV4bXdJNE1lenl6Zk8zTHJDVUEzUG1yOTg3d2RkMUtvZ2ZvckNKSkpjR1hQ?=
- =?utf-8?B?OXJ2NStzUENuTTJyVDlPeFJNT0s1MmFEYUVIazV4RWRnNkgvaXlTZy9EdmV1?=
- =?utf-8?B?RDVSdk1WRVM0OTl3ZTVQRm11cWZQUlRQTmZsbWVrY1B4V0tqMTBra2czWmNI?=
- =?utf-8?B?RkFBalhDeVlRdmUrUGFTaXl6cHFGNXBST0V0VDFhQU5YVXM1RTR1bEppZURl?=
- =?utf-8?B?ckpzR2tXV1FjWHd2MzhNS2pVaUlRNEZabTVYdU1uaDB6YzQrVFM3MkhaVDBl?=
- =?utf-8?B?ZUsrMmRCR25POTd5azlmN2tObmRsdkxpZ2NxMHFjeFpkRlhxaU5saG1LaGlZ?=
- =?utf-8?B?NThVMzdTRE9IMjhuWU44c0Q5TmpTWHRxR2RaOHAzV1NkQ29xM2ppRm5URTI1?=
- =?utf-8?B?akFyZHU5QXV4azJCdE1tZGNXckMvcGpJQ05Pby9YNWttTDVlNXpMdmRYT1U3?=
- =?utf-8?B?SDg0ZERDQk5YTnM2Y2ZZSnlnYldKdm9SUy9JK0VQY2RpQjlNU1dha2RsSHBk?=
- =?utf-8?B?Wlc3VWFwOGhvRU90QlpYRFpRQ1VBVTd5YnNsdy8reGxPRjR0ZnZPVEtUOHE2?=
- =?utf-8?B?Um02aDN2dzJPVkQ5UGFsVTZMdmlDZ1ZJN0J6ZDdyK256OTQ5bzNaMk9rVG5Z?=
- =?utf-8?B?S2g2TUNCTkRrcytWcnhaMDhIMGRxQ3RjUytoYlF2eDh6VWtwZ0lXREtvckdx?=
- =?utf-8?Q?jv9LwK1MsmoFheDaHhnfADsJvSqjmTvJwvdEGYn?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <631813D2A78BBE44A0C121A74A52F34B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38d49c00-4734-4f09-014d-08d96325688d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 15:24:16.7148
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RxVmhIurYcShqp+9omWQ//+vVhMMqDjHzAcxeW6TC4qTuiXP43moe56kBRufateCl0mlCS+qNpyZdSu6xBRdbke4IrIqAhzu2cjowGTkvco=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4775
-X-OriginatorOrg: intel.com
+        id S238460AbhHSP0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 11:26:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99FD060F14;
+        Thu, 19 Aug 2021 15:26:04 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mGjve-0060I3-Ha; Thu, 19 Aug 2021 16:26:02 +0100
+Date:   Thu, 19 Aug 2021 16:26:02 +0100
+Message-ID: <87y28xqwvp.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+In-Reply-To: <20210817020157.3b9d015e@linux.microsoft.com>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROmOQ+4Kqukgd6z@orome.fritz.box>
+        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
+        <87o8a49idp.wl-maz@kernel.org>
+        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
+        <20210812121835.405d2e37@linux.microsoft.com>
+        <874kbuapod.wl-maz@kernel.org>
+        <20210816081208.522ac47c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210817020157.3b9d015e@linux.microsoft.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mcroce@linux.microsoft.com, kuba@kernel.org, eric.dumazet@gmail.com, thierry.reding@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gQXVnIDE5LCAyMDIxLCBhdCAwMTowMCwgQm9yaXNsYXYgUGV0a292IDxicEBhbGllbjguZGU+
-IHdyb3RlOg0KPiBJZiB5b3UgZG9uJ3Qgd2FubmEgZG8gaXQganVzdCBzYXkgc28gLSBzb21lb25l
-IGVsc2Ugd2lsbC4NCg0KT2theSwgbG9va3MgbGlrZSB5b3XigJlyZSBzbyBzdXJlIGFib3V0IGl0
-Lg0KDQpUaGFua3MsDQpDaGFuZw==
+On Tue, 17 Aug 2021 01:01:57 +0100,
+Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> 
+> On Mon, 16 Aug 2021 08:12:08 -0700
+> Jakub Kicinski <kuba@kernel.org> wrote:
+> 
+> > On Thu, 12 Aug 2021 12:05:38 +0100 Marc Zyngier wrote:
+> > > > A possible fix, which takes in account also the XDP headroom for
+> > > > stmmac_rx_buf1_len() only could be (only compile tested, I don't
+> > > > have the hardware now):  
+> > > 
+> > > However, this doesn't fix my issue. I still get all sort of
+> > > corruption. Probably stmmac_rx_buf2_len() also need adjusting (it
+> > > has a similar logic as its buf1 counterpart...)
+> > > 
+> > > Unless you can fix it very quickly, and given that we're towards the
+> > > end of the cycle, I'd be more comfortable if we reverted this patch.
+> > 
+> > Any luck investigating this one? The rc6 announcement sounds like
+> > there may not be that many more rc releases for 5.14.
+> 
+> Hi Jackub.
+> 
+> Unfortunately I have only a device with stmmac, and it works fine with
+> the patch. It seems that not all hardware suffers from this issue.
+> 
+> Also, using NET_IP_ALIGN on RX is a common pattern, I think that any
+> ethernet device is doing the same to align the IPv4 header.
+> 
+> Anyway, I asked for two tests on the affected device:
+> 1. Change NET_IP_ALIGN with 8, to see if the DMA has problems in
+>    receiving to a non word aligned address
+> 2. load a nop XDP program (I provided one), to see if the problem is
+>    already there when XDP is used
+
+Catching up on email, as I was away earlier this week. I'm yet to test
+these two things (hopefully by the end of the day), but I just gave
+the patch below a go, just in case...
+
+> 
+> I doubt that changing also stmmac_rx_buf2_len would help,
+> but it's worth a try, here is a patch:
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 7b8404a21544..73d1f0ec66ff 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -93,7 +93,7 @@ static int tc = TC_DEFAULT;
+>  module_param(tc, int, 0644);
+>  MODULE_PARM_DESC(tc, "DMA threshold control value");
+>  
+> -#define	DEFAULT_BUFSIZE	1536
+> +#define	DEFAULT_BUFSIZE	1536 + XDP_PACKET_HEADROOM + NET_IP_ALIGN
+>  static int buf_sz = DEFAULT_BUFSIZE;
+>  module_param(buf_sz, int, 0644);
+>  MODULE_PARM_DESC(buf_sz, "DMA buffer size");
+> @@ -4508,12 +4508,12 @@ static unsigned int stmmac_rx_buf1_len(struct stmmac_priv *priv,
+>  
+>  	/* First descriptor, not last descriptor and not split header */
+>  	if (status & rx_not_ls)
+> -		return priv->dma_buf_sz;
+> +		return priv->dma_buf_sz - stmmac_rx_offset(priv);
+>  
+>  	plen = stmmac_get_rx_frame_len(priv, p, coe);
+>  
+>  	/* First descriptor and last descriptor and not split header */
+> -	return min_t(unsigned int, priv->dma_buf_sz, plen);
+> +	return min_t(unsigned int, priv->dma_buf_sz - stmmac_rx_offset(priv), plen);
+>  }
+>  
+>  static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+> @@ -4529,12 +4529,12 @@ static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
+>  
+>  	/* Not last descriptor */
+>  	if (status & rx_not_ls)
+> -		return priv->dma_buf_sz;
+> +		return priv->dma_buf_sz - stmmac_rx_offset(priv);
+>  
+>  	plen = stmmac_get_rx_frame_len(priv, p, coe);
+>  
+>  	/* Last descriptor */
+> -	return plen - len;
+> +	return plen - len - stmmac_rx_offset(priv);
+>  }
+>  
+>  static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
+
+This patch results in a cosmic explosion, as it tries to invalidate a
+range of VAs that cannot possibly be allocated to the DMA. Not really
+what was expected.
+
+Thanks,
+
+	M.
+
+[   19.587499] Unable to handle kernel write to read-only memory at virtual address ffff000088f89000
+[   19.596375] Mem abort info:
+[   19.599165]   ESR = 0x9600014f
+[   19.602215]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   19.607519]   SET = 0, FnV = 0
+[   19.610568]   EA = 0, S1PTW = 0
+[   19.613703]   FSC = 0x0f: level 3 permission fault
+[   19.618487] Data abort info:
+[   19.621362]   ISV = 0, ISS = 0x0000014f
+[   19.625192]   CM = 1, WnR = 1
+[   19.628154] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000fa7b2000
+[   19.634844] [ffff000088f89000] pgd=18000002771f7003, p4d=18000002771f7003, pud=1800000275ffd003, pmd=1800000275fb5003, pte=0060000108f89f87
+[   19.647358] Internal error: Oops: 9600014f [#1] PREEMPT SMP
+[   19.652920] Modules linked in: nls_ascii(E) nls_cp437(E) vfat(E) fat(E) tegra_drm(E) cec(E) drm_kms_helper(E) evdev(E) snd_hda_codec_hdmi(E) snd_hda_tegra(E) snd_hda_codec(E) aes_ce_blk(E) crypto_simd(E) snd_hda_core(E) cryptd(E) snd_hwdep(E) at24(E) aes_ce_cipher(E) snd_pcm(E) ghash_ce(E) gf128mul(E) snd_timer(E) sha2_ce(E) sha256_arm64(E) sha1_ce(E) snd(E) soundcore(E) tegra_bpmp_thermal(E) efi_pstore(E) tegra_xudc(E) udc_core(E) host1x(E) ina3221(E) fuse(E) drm(E) configfs(E) efivarfs(E) ip_tables(E) x_tables(E) autofs4(E) nvme(E) nvme_core(E) t10_pi(E) broadcom(E) bcm_phy_lib(E) ahci_tegra(E) libahci_platform(E) gpio_keys(E) libahci(E) sdhci_tegra(E) dwmac_dwc_qos_eth(E) stmmac_platform(E) libata(E) stmmac(E) sdhci_pltfm(E) pcs_xpcs(E) max77620_regulator(E) xhci_tegra(E) phylink(E) of_mdio(E) cqhci(E) scsi_mod(E) fixed_phy(E) sdhci(E) fwnode_mdio(E) libphy(E)
+[   19.729311] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G S          E     5.14.0-rc6-dirty #4155
+[   19.737734] Hardware name:  , BIOS 2021.04-rc2-00042-g2dddc1bb29 02/18/2021
+[   19.744679] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+[   19.750673] pc : dcache_inval_poc+0x40/0x58
+[   19.754852] lr : arch_sync_dma_for_cpu+0x2c/0x40
+[   19.759460] sp : ffff800010003be0
+[   19.762765] x29: ffff800010003be0 x28: ffff000085338000 x27: 0000000000000028
+[   19.769889] x26: ffff000080a8fc00 x25: ffff000085338028 x24: 0000000000000000
+[   19.777012] x23: 0000000000000002 x22: 0000000000000002 x21: 00000000ffffffbc
+[   19.784135] x20: 0000000108f43000 x19: ffff000080223010 x18: 0000000000000000
+[   19.791258] x17: ffff8001e3815000 x16: ffff800010004000 x15: 0000000000004000
+[   19.798380] x14: 0000000000000000 x13: 0000000080000000 x12: 0000000000000001
+[   19.805504] x11: 0000000000000004 x10: 0000000000000008 x9 : ffff8000109b9a2c
+[   19.812626] x8 : 0000000000000000 x7 : 0000000000000001 x6 : ffff000088246500
+[   19.819748] x5 : fffffffffffff000 x4 : 0003000108f40000 x3 : 000000000000003f
+[   19.826869] x2 : 0000000000000040 x1 : ffff000188f42f80 x0 : ffff000088f89000
+[   19.833994] Call trace:
+[   19.836434]  dcache_inval_poc+0x40/0x58
+[   19.840262]  iommu_dma_sync_single_for_cpu+0xdc/0xe0
+[   19.845219]  dma_sync_single_for_cpu+0x3c/0x124
+[   19.849742]  stmmac_rx+0x448/0x930 [stmmac]
+[   19.853937]  stmmac_napi_poll_rx+0x4c/0xec [stmmac]
+[   19.858818]  __napi_poll+0x40/0x210
+[   19.862300]  net_rx_action+0x304/0x370
+[   19.866041]  __do_softirq+0x130/0x3d8
+[   19.869695]  __irq_exit_rcu+0x100/0x110
+[   19.873525]  irq_exit+0x1c/0x30
+[   19.876658]  handle_domain_irq+0x70/0x9c
+[   19.880573]  gic_handle_irq+0x58/0xe0
+[   19.884225]  call_on_irq_stack+0x2c/0x54
+[   19.888138]  do_interrupt_handler+0x5c/0x70
+[   19.892313]  el1_interrupt+0x30/0x70
+[   19.895881]  el1h_64_irq_handler+0x18/0x24
+[   19.899970]  el1h_64_irq+0x78/0x7c
+[   19.903361]  arch_cpu_idle+0x18/0x3c
+[   19.906930]  default_idle_call+0x4c/0x1d4
+[   19.910931]  cpuidle_idle_call+0x168/0x1e0
+[   19.915019]  do_idle+0xb8/0x110
+[   19.918152]  cpu_startup_entry+0x30/0x8c
+[   19.922065]  rest_init+0xf0/0x100
+[   19.925372]  arch_call_rest_init+0x1c/0x28
+[   19.929463]  start_kernel+0x4a0/0x4d8
+[   19.933114]  __primary_switched+0xc0/0xc8
+[   19.937118] Code: 8a230000 54000060 d50b7e20 14000002 (d5087620) 
+[   19.943204] ---[ end trace f26fd0d14eea9a7d ]---
+[   19.947811] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+[   19.954670] SMP: stopping secondary CPUs
+[   19.958592] Kernel Offset: 0x1a0000 from 0xffff800010000000
+[   19.964151] PHYS_OFFSET: 0x80000000
+[   19.967630] CPU features: 0x10000231,00000846
+[   19.971976] Memory Limit: none
+[   19.975026] ---[ end Kernel panic - not syncing: Oops: Fatal exception in interrupt ]---
+
+
+-- 
+Without deviation from the norm, progress is not possible.
