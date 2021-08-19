@@ -2,210 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6093F1A77
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B3C3F1A79
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 15:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240132AbhHSNhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 09:37:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45360 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238488AbhHSNhR (ORCPT
+        id S240170AbhHSNhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 09:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238488AbhHSNhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 09:37:17 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JDY4KA094420;
-        Thu, 19 Aug 2021 09:36:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=FX9cqd2zeAbF63/P2BBKPXN9TyM96zKyu+g9iYDCKwY=;
- b=TtvaTaC8kzLd4WIAARyS8MGcaQQUWB2KzmED0r1GX0J0nAjhxBI3T+ryGIcRsUyMdL04
- cRnqagcuSkjOt8xzWvGDqYSsy0D07gVq5vQdGxbKx4yxBVS/Ic/0zgybpFyEJvGoCluQ
- hIjcxEA2R//JfnnM+XFIBl3hLKTk3qc5TqbCnuwq2nrY7g6lfHZQs3ULRsDm1sxg/DKE
- i1PDQzFscZ0tadTAN/cpzBpkONeU70EVkn++Uo5rUYH85Ds3NhuhWQy533qhvc8Bilut
- 4L5JGr5YCXrUNFVvTMmeL6iQavdeZYkjVdNMWoaNZz2G+gVaksVN6kPS92GTwFr/tZ1e DQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp2cx235-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 09:36:39 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JDacaU110490;
-        Thu, 19 Aug 2021 09:36:38 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp2cx22w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 09:36:38 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JDQUGa017137;
-        Thu, 19 Aug 2021 13:36:37 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02dal.us.ibm.com with ESMTP id 3aeexy5jcp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 13:36:37 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JDaZ8G53281186
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Aug 2021 13:36:36 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C59AB136055;
-        Thu, 19 Aug 2021 13:36:35 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BCD2613604F;
-        Thu, 19 Aug 2021 13:36:34 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.182.229])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Aug 2021 13:36:34 +0000 (GMT)
-Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception handler
- function pointer
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        jgg@nvidia.com, alex.williamson@redhat.com, kwankhede@nvidia.com,
-        david@redhat.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-2-akrowiak@linux.ibm.com>
- <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
- <20210819012532.0e9c443c.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <8df389f7-44aa-978e-84d8-96c625b0470b@linux.ibm.com>
-Date:   Thu, 19 Aug 2021 09:36:34 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 19 Aug 2021 09:37:21 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C26C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:36:44 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id z20so12992792ejf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 06:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/BAopytyK/R8bUpbK+b7Q0+6GCUrOVsER44boOsZ9dQ=;
+        b=UeVsli6ZqeVfyxuDP82l6Qchdxd0SS9uCWKergbqRpdGjWukw6CdmP19lDB0j6CeHc
+         kZoC1YnwRSRcSKTrfDIP46iuVub+8E5lBPazngHEZVtCxE8Dt99wvylfuFdsJxJTKcei
+         tgQwEKfYgXVjIv1RvlErvCsIk0WxVwr8WrCI74L3F26QlW7QyC7Y5NRDLhGrdVguY501
+         hB6uoV6dn4V6XN/KCizDVURHciZZrB8Qcjs7iROlCpv14cTfzS2vaZ8BbBqS+9lSDE8U
+         6DP4dPYFalWvW/zQpp560Ne0VjzaY5T/Db8Zn2uCZAWs0Ei5wlpAYXCdvXYO30jaIqBe
+         /I0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/BAopytyK/R8bUpbK+b7Q0+6GCUrOVsER44boOsZ9dQ=;
+        b=ObuiF6vjidUJSZR6xwFobM3dK2h/qia40J8IDdzPwxcDbBCTlJO/jBRTMAbuy5ESLG
+         UUFALUYf4jWS+7cUAp/sZ8iybQ4zXNT238g6mh+O2uV6iWMYVvp1fvuXtlchKXwXt6g4
+         wqgatWa7IRqj+3Zy4Ehhs0wy4crqLWdSA+JsBTVijUDA/p4pmwk3dy/4JPgL+t/WKjMY
+         VwPTsZmukzroOEcNVrMN029SsmdD29pAwtrp8a3sxDwbj/tXUD6VM/FYaKpzRRCr7THm
+         kp1b3TNHPz+6mdXWzpcv4ZxPME6HrUfU6nqVOzCxoryagiRE3bXzrwYSeP1Grqo0dND8
+         nzNw==
+X-Gm-Message-State: AOAM533UGetHz+qwW6ZlycRERZGHo0kWb9gKXOVQE7b6+FRy8GNaM62y
+        vD06fOcufoMCw6eAcuQWMVx8lw==
+X-Google-Smtp-Source: ABdhPJzWpeXlmAlC6oKFJXd83aDooz5YGi7xRGcALh6ivDz0hfP0Xwl6LH+PhBTG6C5khTlVBapj4Q==
+X-Received: by 2002:a17:906:ad7:: with SMTP id z23mr16114025ejf.419.1629380203406;
+        Thu, 19 Aug 2021 06:36:43 -0700 (PDT)
+Received: from xps7590.fritz.box ([2a02:2454:3e5:b700:eb3d:3695:30c3:3572])
+        by smtp.gmail.com with ESMTPSA id ay20sm1770138edb.91.2021.08.19.06.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 06:36:43 -0700 (PDT)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
+        daniel@ffwll.ch, dmitry.baryshkov@linaro.org,
+        abhinavk@codeaurora.org, angelogioacchino.delregno@somainline.org,
+        mkrishn@codeaurora.org, kalyan_t@codeaurora.org,
+        lee.jones@linaro.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v1] drm/msm/dpu: Fix address of SM8150 PINGPONG5 IRQ register
+Date:   Thu, 19 Aug 2021 15:36:36 +0200
+Message-Id: <20210819133636.2045766-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210819012532.0e9c443c.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dC_GBF5zJjjm9JojMCJ3wYXRm4HpLBBI
-X-Proofpoint-GUID: z9oeVDuXijct1ftp08dJErYeU0wxAZV_
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-19_04:2021-08-17,2021-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 spamscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108190079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Both PINGPONG4 and PINGPONG5 IRQ registers are using the
+same address, which is incorrect. PINGPONG4 should use the
+register offset 30, and PINGPONG5 should use the register
+offset 31 according to the downstream driver.
 
+Fixes: 667e9985ee24 ("drm/msm/dpu: replace IRQ lookup with the data in hw catalog")
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 8/18/21 7:25 PM, Halil Pasic wrote:
-> On Wed, 18 Aug 2021 19:03:33 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->
->> On 19.07.21 21:35, Tony Krowiak wrote:
->>> The function pointer to the interception handler for the PQAP instruction
->>> can get changed during the interception process. Let's add a
->>> semaphore to struct kvm_s390_crypto to control read/write access to the
->>> function pointer contained therein.
->>>
->>> The semaphore must be locked for write access by the vfio_ap device driver
->>> when notified that the KVM pointer has been set or cleared. It must be
->>> locked for read access by the interception framework when the PQAP
->>> instruction is intercepted.
->>>
->>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->>> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
->>> ---
->>>    arch/s390/include/asm/kvm_host.h      |  8 +++-----
->>>    arch/s390/kvm/kvm-s390.c              |  1 +
->>>    arch/s390/kvm/priv.c                  | 10 ++++++----
->>>    drivers/s390/crypto/vfio_ap_ops.c     | 23 +++++++++++++++++------
->>>    drivers/s390/crypto/vfio_ap_private.h |  2 +-
->>>    5 files changed, 28 insertions(+), 16 deletions(-)
->>>
->>> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
->>> index 9b4473f76e56..f18849d259e6 100644
->>> --- a/arch/s390/include/asm/kvm_host.h
->>> +++ b/arch/s390/include/asm/kvm_host.h
->>> @@ -798,14 +798,12 @@ struct kvm_s390_cpu_model {
->>>    	unsigned short ibc;
->>>    };
->>>    
->>> -struct kvm_s390_module_hook {
->>> -	int (*hook)(struct kvm_vcpu *vcpu);
->>> -	struct module *owner;
->>> -};
->>> +typedef int (*crypto_hook)(struct kvm_vcpu *vcpu);
->>>    
->>>    struct kvm_s390_crypto {
->>>    	struct kvm_s390_crypto_cb *crycb;
->>> -	struct kvm_s390_module_hook *pqap_hook;
->>> +	struct rw_semaphore pqap_hook_rwsem;
->>> +	crypto_hook *pqap_hook;
->>>    	__u32 crycbd;
->>>    	__u8 aes_kw;
->>>    	__u8 dea_kw;
->>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
->>> index b655a7d82bf0..a08f242a9f27 100644
->>> --- a/arch/s390/kvm/kvm-s390.c
->>> +++ b/arch/s390/kvm/kvm-s390.c
->>> @@ -2630,6 +2630,7 @@ static void kvm_s390_crypto_init(struct kvm *kvm)
->>>    {
->>>    	kvm->arch.crypto.crycb = &kvm->arch.sie_page2->crycb;
->>>    	kvm_s390_set_crycb_format(kvm);
->>> +	init_rwsem(&kvm->arch.crypto.pqap_hook_rwsem);
->>>    
->>>    	if (!test_kvm_facility(kvm, 76))
->>>    		return;
->>> diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
->>> index 9928f785c677..6bed9406c1f3 100644
->>> --- a/arch/s390/kvm/priv.c
->>> +++ b/arch/s390/kvm/priv.c
->>> @@ -610,6 +610,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
->>>    static int handle_pqap(struct kvm_vcpu *vcpu)
->>>    {
->>>    	struct ap_queue_status status = {};
->>> +	crypto_hook pqap_hook;
->>>    	unsigned long reg0;
->>>    	int ret;
->>>    	uint8_t fc;
->>> @@ -657,15 +658,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->>>    	 * Verify that the hook callback is registered, lock the owner
->>>    	 * and call the hook.
->>>    	 */
->>> +	down_read(&vcpu->kvm->arch.crypto.pqap_hook_rwsem);
->>>    	if (vcpu->kvm->arch.crypto.pqap_hook) {                     <--- HERE
->>> -		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
->>> -			return -EOPNOTSUPP;
->>> -		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
->>> -		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
->>> +		pqap_hook = *vcpu->kvm->arch.crypto.pqap_hook;
->> Dont we have to check for NULL here? If not can you add a comment why?
-> I believe we did the necessary check on the line I just marked with
-> "<--- HERE".
->
-> I find that "*" operator confusing in this context as it doesn't do
-> any good for us. I believe this situation is described in 6.5.3.2.4 of
-> the c11 standard. For convenience I will cite from the corresponding
-> draft:
-> "The unary * operator denotes indirection. If the operand points to a
-> function, the result is a function designator; if it points to an
-> object, the result is an lvalue designating the object. If the operand
-> has type ‘‘pointer to type’’, the result has type ‘‘type’’. If an
-> invalid value has been assigned to the pointer, the behavior of the
-> unary * operator is undefined."
->
-> Frankly I also fail to see the benefit of introducing the local variable
-> named "pqap_hook", but back then I decided to not complain about style.
-
-The vcpu->kvm->arch.crypto.pqap_hook is a pointer to a function
-pointer. The actual function pointer is stored in matrix_mdev->pqap_hook,
-the reason being that the handle_pqap function in vfio_ap_ops.c
-retrieves the matrix_mdev via a container_of macro. The dereferencing
-of the vcpu->kvm->arch.crypto.pqap_hook into a local variable was
-to get the function pointer. There may have been a more stylish
-way of doing this, but the functionality is there.
-
->
-> Regards,
-> Halil
->
->>
->>> +		ret = pqap_hook(vcpu);
->> [...]
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+index 2e482cdd7b3c5..420d78cfce8af 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
+@@ -794,7 +794,7 @@ static const struct dpu_pingpong_cfg sm8150_pp[] = {
+ 			DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 30),
+ 			-1),
+ 	PP_BLK("pingpong_5", PINGPONG_5, 0x72800, MERGE_3D_2, sdm845_pp_sblk,
+-			DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 30),
++			DPU_IRQ_IDX(MDP_SSPP_TOP0_INTR2, 31),
+ 			-1),
+ };
+ 
+-- 
+2.30.2
 
