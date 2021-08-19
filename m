@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8CB3F1619
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246B93F1618
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhHSJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhHSJZ6 (ORCPT
+        id S236149AbhHSJZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:25:17 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:36603 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229448AbhHSJZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:25:58 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF27C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:25:22 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id f5so7954096wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 02:25:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IVbcKYMfOmhTBBsQIKq+07W8pgc80trDsJf7FkANsyo=;
-        b=mMdgY/sfu+S8ZUjtkWVbrgcjUjGDUPBg+A3xzqZnft33Rq9/q5NkcMxLIW0KAuIpzT
-         F+INo97PcvPMd5paheBcYbx1/z35ll+yTAzaIRM1xHdeDm6HPqhzc7PC4iBABi9kHBck
-         mhwhVCw8xEnJWVbt/8lNwe6WGXdhknYFbYrtFE+i92DRCUbKMSs1aHeEsDf5yVgu6y8U
-         KIGMo+RG76c+0gEVFfcdvhLrqW8tOjlHEHMdN4JpiFbX4AspA7/ijzi80s3p+TGkmRYa
-         KWp+bz3CsUjNV+YzPN5pWkiqvKxQrGKkxNUwX0nf8KKjaLBlB4gxCLEC8NQEVF3wJmcq
-         yWrg==
+        Thu, 19 Aug 2021 05:25:16 -0400
+Received: by mail-lf1-f46.google.com with SMTP id r9so11475552lfn.3;
+        Thu, 19 Aug 2021 02:24:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IVbcKYMfOmhTBBsQIKq+07W8pgc80trDsJf7FkANsyo=;
-        b=LOlQ+6PkVvijfOU+RRvNPkN772jpbHAwX915xYgHgPXAw8VvyYMme3DGQah+OtZbjN
-         cTBOLbVHcA2OuPKHlFmnXsQ9CaK32UqJjoezRKO7bQ25971/vU0d5rvF9wsfWnGnG720
-         IyTYeN5vuval8vyeFxADUr6mLQm20dTl3KouSGEuJf/BpJHhA45yWcE6m8k/c98AJIU0
-         4GFb+LRrVYPXNcSkuFXOGnEK7wd6YJ47k1JwWJt7L7AFAVn1E0qAr3voIhSP37X/vjvJ
-         BUtmHlusNNpgWULNWVDzltATOnsuLau4WFwfDpqKB5zcXz9S/L+016qAKTGJcq3mNOXC
-         JVKQ==
-X-Gm-Message-State: AOAM530aeNXtCEaed+zwCm11qDk5FAIM1kGmv1OgpXjslFHc67Yv4Ng/
-        aF/azk9RZUMo+h2SN7Z/GpreQ6gnOWk=
-X-Google-Smtp-Source: ABdhPJyHozq0YMg8bxQjLoGBNKnUWXYB5289Ru0LhbFMjm55G4bUm6gaSbltCnOb4n1Vb3ga/kDjJQ==
-X-Received: by 2002:adf:df08:: with SMTP id y8mr2622512wrl.124.1629365121386;
-        Thu, 19 Aug 2021 02:25:21 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id d4sm2354928wrz.35.2021.08.19.02.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 02:25:21 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v3] staging: r8188eu: fix scheduling while atomic bugs
-Date:   Thu, 19 Aug 2021 11:24:23 +0200
-Message-Id: <20210819092423.4349-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ILYDCppuvFZoKFobc82YakJdHXPK2hb0yUNeKSxvHzo=;
+        b=N76JFLUtC2/HHO9Rxxkoxri46r0j4GUjLSa1Xlq4cLqOqnNl864gBi9Ra6A3RyWdHO
+         WToSI8wyCEaJaNLkXetVwsxZPZQf3kP8xnGVmucRbFG3G86rOibHzGmzUUlGgHnPh4Ax
+         itaq5bFLdDMZQDvw86138YsNDarnsrh1L43wa32cmSOb15WseA8aHN7jVP7lZn/UU+5r
+         nz7XUnPZxkKk83ypeL9XxKZzcq06DIy0Ix92KTdINIyHP7PWQCy+7poIti3+O82PrpC7
+         ATR2sG71d8QPs+QNLvSpRNTQh53H9POOh+No8iOTKyHIHabxTpjejV1QXOOxl1n1AiWG
+         oaNw==
+X-Gm-Message-State: AOAM5304xotFbE9afFbkX2uqa4iVA9XrYLG1/7+/W4uOrPo+twDIH9Aq
+        ddUfNV+PaIly7PP6IJol8t0+CjJNQKER4BUl7LRzJpuuumo3Vw==
+X-Google-Smtp-Source: ABdhPJx0oHSXYAd8W7hO0TM69SuIG7H5yBKVoSOniXVHQ2SQp7tDENYABHsqD3ZibNHGPVLycv5ngyB9FkaA0XM2wuQ=
+X-Received: by 2002:a05:6512:3aa:: with SMTP id v10mr9936420lfp.393.1629365078821;
+ Thu, 19 Aug 2021 02:24:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210815033248.98111-1-mailhol.vincent@wanadoo.fr>
+ <20210815033248.98111-2-mailhol.vincent@wanadoo.fr> <20210819074514.jkg7fwztzpxecrwb@pengutronix.de>
+In-Reply-To: <20210819074514.jkg7fwztzpxecrwb@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Thu, 19 Aug 2021 18:24:27 +0900
+Message-ID: <CAMZ6RqL0uT7tNNxRjAYaUNrnsSV6smMQvowttLaqjUrOZ5V1Fg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/7] can: netlink: allow user to turn off unsupported features
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These allocations are sometimes done under a spin lock so they
-have to be atomic. The function call tree is:
+On Thu. 19 Aug 2021 at 16:45, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 15.08.2021 12:32:42, Vincent Mailhol wrote:
+> > The sanity checks on the control modes will reject any request related
+> > to an unsupported features, even turning it off.
+> >
+> > Example on an interface which does not support CAN-FD:
+> >
+> > $ ip link set can0 type can bitrate 500000 fd off
+> > RTNETLINK answers: Operation not supported
+> >
+> > This patch lets such command go through (but requests to turn on an
+> > unsupported feature are, of course, still denied).
+> >
+> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>
+> I'm planing to send a pull request to net-next today. I want to do some
+> more tests with this series
 
--> update_beacon() <- takes a spin lock
-   -> update_BCNTIM()
-      -> set_tx_beacon_cmd()
+Ack, I am also preparing a new version. But first, I am just
+waiting for your reply on the tdc-mode {auto, manual, off}. :)
 
-Fixes: 79f712ea994de ("staging: r8188eu: Remove wrappers for kalloc() and kzalloc()")
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
-v1 -> v2
-Added Fixes: tag to commit message.
+> but this patch is more or less unrelated,
+> so I can take it in this PR, should I?
 
-v2 -> v3
-Correted the commit in the Fixes: tag.
+FYI, the reason to add it to the series is that when setting TDC to
+off, the ip tool sets both CAN_CTRLMODE_TDC_AUTO and
+CAN_CTRLMODE_TDC_MANUAL to zero (which the corresponding bits in
+can_ctrlmode::mask set to 1).  Without this patch, netlink would
+return -ENOTSUPP if the driver only supported one of
+CAN_CTRLMODE_TDC_{AUTO,MANUAL}.
 
- drivers/staging/r8188eu/core/rtw_mlme_ext.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Regardless, this patch makes sense as a standalone, I am fine if
+you include it in your PR.
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 5325fe41fbee..508ef1d330a1 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -8130,13 +8130,13 @@ u8 set_tx_beacon_cmd(struct adapter *padapter)
- 	u8 res = _SUCCESS;
- 	int len_diff = 0;
- 
--	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_KERNEL);
-+	ph2c = kzalloc(sizeof(struct cmd_obj), GFP_ATOMIC);
- 	if (!ph2c) {
- 		res = _FAIL;
- 		goto exit;
- 	}
- 
--	ptxBeacon_parm = kzalloc(sizeof(struct Tx_Beacon_param), GFP_KERNEL);
-+	ptxBeacon_parm = kzalloc(sizeof(struct Tx_Beacon_param), GFP_ATOMIC);
- 	if (!ptxBeacon_parm) {
- 		kfree(ph2c);
- 		res = _FAIL;
--- 
-2.32.0
 
+Also, if you want, you can include the latest patch of the series as well:
+https://lore.kernel.org/linux-can/20210815033248.98111-8-mailhol.vincent@wanadoo.fr/
+
+It's a comment fix, it should be pretty harmless.
+
+
+Yours sincerely,
+Vincent
