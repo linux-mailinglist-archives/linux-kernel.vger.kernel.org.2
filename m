@@ -2,101 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C93D3F10C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1653F10D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 04:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236062AbhHSCwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 22:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
+        id S235801AbhHSC4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 22:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236304AbhHSCwC (ORCPT
+        with ESMTP id S235700AbhHSC4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 22:52:02 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC177C0612A9;
-        Wed, 18 Aug 2021 19:51:18 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id e3-20020a4ab9830000b029026ada3b6b90so1390733oop.0;
-        Wed, 18 Aug 2021 19:51:18 -0700 (PDT)
+        Wed, 18 Aug 2021 22:56:15 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED4BC061764
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:55:39 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id k24so4474167pgh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 19:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+ctrum5PuRodGtsvX5XCOy4ikb9APYy6K15rvAPhxuw=;
-        b=ILzIQBfS2ieAWmqJdJ9cbsAvbtpfNrmW6+mzp+yOQe8ZXBA5RJgvyDuK32xdtAMmcD
-         +cXbntu9cxNLEYwpTguKKlrTm+nONpoSFsNszNJJ6roNR40dSLUsmV3NkHjb2GTM/UxH
-         CDxBg5zX3JV/2nwuTH9YTOWYRUnKLPqeHB8tjtIwxMIZO4ud7QNxR8uyXQM4Hf0WwLlt
-         TQjxq24MvGA7J6SfkA5aWi0OUbHodsgCBDjOBcDbD4OvFJBiJhmowgOWOLDgL5aSyOaT
-         r7WyTe0jvkwny1Vk/tp+vDhCI0qLsYSScTx8DvANWVALO5TOPvUCVw1ffBA9yIFnADL6
-         az7A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SpO4zVjYq8QRtiKEjtYxq4fX0EEjRRcWTkj2XegThk8=;
+        b=ZqC32LZY+kzLJnTJLhmz9pjR2eGYLS5XBhY9GhqjVu4ggYlx7FUQC0fu4JmdxwOrYv
+         BY4XVcVDz/kzVrtVj/MBfssJuOt/6Ze3fVoKUzSFx9dijmSmD9WWnTTX345X3zhYC2pb
+         8dhcIRZB9u/HM2MFBBhcMqW6r31VvhK3gI4K8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+ctrum5PuRodGtsvX5XCOy4ikb9APYy6K15rvAPhxuw=;
-        b=JN/TC0fGPc4HR9crQ/l3HGQDNBp7IskquIF6W2n8aOzUxoJoLyJXLmh2cLFFSNtIzC
-         URkkEipMCq7VuGPF5XMYSWOm4PAjJwgNVkpZnJK6HP9lrH+uDUWotf4HxhgM87mbo/K2
-         BrkedLhTs3XkiHiFnWI1SmDPRlvxytlup1W4LEWQlKHFLyYIx7jrTstNbPMVf+32u5/h
-         0w7xfFsTUitpzD3IdvwS9iBw52ED8ZtZhF3G9if0Xoh20G95baMcPVdFvMCQjRGxrvS9
-         7YKeiXsmXo9/BCLGyGb8J/TEwhKgpcqpYYk0U9/uhoiYkuZOARI4wjIxgxDXlNsqsv/q
-         xI8g==
-X-Gm-Message-State: AOAM532Nt6DPEo4OkEOlIngkidene3jzT2iOe67FCRCi61+09z9ExJ91
-        YU08/of8JV8ILBxu8JsWy7thU/4YJuqcTLgK
-X-Google-Smtp-Source: ABdhPJx8S06js5H4EW3aYT8LArDwry3Rs/BieIVbBdinWG2VSo7OvaTf1BEnioLv+62oWxdySEW9gw==
-X-Received: by 2002:a4a:9464:: with SMTP id j33mr9415660ooi.5.1629341477751;
-        Wed, 18 Aug 2021 19:51:17 -0700 (PDT)
-Received: from ian.penurio.us ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id w15sm156792oiw.19.2021.08.18.19.51.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SpO4zVjYq8QRtiKEjtYxq4fX0EEjRRcWTkj2XegThk8=;
+        b=EgdloFd+rNwg0VezzNpIVngUNXpB0zSZ/5JgpHMQPGCka3ZRX4uZu6ccIUqFJ8lctJ
+         qY9Q3yI2I9+f0SynPZYqeKGx48nLRZm+AKojVSqhtZuGyaMfSYM7seMub838zolJBMuX
+         WYcr2nMamCj9jYGtWrImtWh7rMK4zb/wK52Xc96UHGbyDSwM0y4qBNcUlIzSIo42RjtM
+         yOB/51kokYMdM+yzz2Df8SeAyJlj0TPuqMtH9U1iwF31apEuyUe150YdYkAJ556yWuQO
+         LPo6WV6szTG6QWIG+tqQBCDgaP4Yky5uLaYroTXET6uScacLsgH7Y7QJ1RbGq8RkYsaU
+         w+CQ==
+X-Gm-Message-State: AOAM531EHNrymWyk3ugxAMlFW/G1ew8JTzF59kx7bx9r6c/pdTpeGdrF
+        2l+ER1j2JIiKCFpSmxm43IuK5A==
+X-Google-Smtp-Source: ABdhPJyU9aMAeT2FUHWBGCmKtgiDn2VEGfBASi0J1fJUW4IZxIISqvlqwne0EJK5dYtLN2BzvFp9OA==
+X-Received: by 2002:a05:6a00:a8a:b029:356:be61:7f18 with SMTP id b10-20020a056a000a8ab0290356be617f18mr12455153pfl.29.1629341739268;
+        Wed, 18 Aug 2021 19:55:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i11sm1423517pgo.25.2021.08.18.19.55.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 19:51:17 -0700 (PDT)
-From:   Ian Pilcher <arequipeno@gmail.com>
-To:     linux-block@vger.kernel.org, linux-leds@vger.kernel.org
-Cc:     axboe@kernel.dk, pavel@ucw.cz, kabel@kernel.org,
-        linux-kernel@vger.kernel.org, kernelnewbies@kernelnewbies.org
-Subject: [RFC PATCH v3 18/18] ledtrig-blkdev: Add config option to enable the trigger
-Date:   Wed, 18 Aug 2021 21:50:53 -0500
-Message-Id: <20210819025053.222710-19-arequipeno@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210819025053.222710-1-arequipeno@gmail.com>
-References: <20210819025053.222710-1-arequipeno@gmail.com>
+        Wed, 18 Aug 2021 19:55:38 -0700 (PDT)
+Date:   Wed, 18 Aug 2021 19:55:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-kernel@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH 03/13] kbuild: detect objtool changes correctly and
+ remove .SECONDEXPANSION
+Message-ID: <202108181952.14AEEED@keescook>
+References: <20210819005744.644908-1-masahiroy@kernel.org>
+ <20210819005744.644908-4-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819005744.644908-4-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Ian Pilcher <arequipeno@gmail.com>
----
- drivers/leds/trigger/Kconfig  | 9 +++++++++
- drivers/leds/trigger/Makefile | 1 +
- 2 files changed, 10 insertions(+)
+On Thu, Aug 19, 2021 at 09:57:34AM +0900, Masahiro Yamada wrote:
+> This reverts commit 8852c5524029 ("kbuild: Fix objtool dependency for
+> 'OBJECT_FILES_NON_STANDARD_<obj> := n'"), and fix the dependency in a
+> cleaner way.
+> 
+> Using .SECONDEXPANSION is expensive since Makefile.build is parsed
+> twice every time, and the escaping dollars makes the code unreadable.
+> 
+> Adding include/config/* as dependency is not maintainable either because
+> objtool_args is dependent on more CONFIG options.
+> 
+> A better fix is to include the objtool command in *.cmd files so any
+> command change is naturally detected by if_change.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/Makefile.build | 28 ++++++++++------------------
+>  1 file changed, 10 insertions(+), 18 deletions(-)
+> 
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 31154e44c251..3e4cd1439cd4 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -155,7 +155,7 @@ $(obj)/%.ll: $(src)/%.c FORCE
+>  # (See cmd_cc_o_c + relevant part of rule_cc_o_c)
+>  
+>  quiet_cmd_cc_o_c = CC $(quiet_modtag)  $@
+> -      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $<
+> +      cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $< $(cmd_objtool)
+>  
+>  ifdef CONFIG_MODVERSIONS
+>  # When module versioning is enabled the following steps are executed:
+> @@ -223,6 +223,8 @@ endif # CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
+>  
+>  ifdef CONFIG_STACK_VALIDATION
+>  
+> +objtool := $(objtree)/tools/objtool/objtool
+> +
+>  # Objtool arguments are also needed for modfinal with LTO, so we define
+>  # then here to avoid duplication.
+>  objtool_args =								\
+> @@ -237,26 +239,19 @@ objtool_args =								\
+>  
+>  ifndef CONFIG_LTO_CLANG
+>  
+> -__objtool_obj := $(objtree)/tools/objtool/objtool
+> -
+>  # 'OBJECT_FILES_NON_STANDARD := y': skip objtool checking for a directory
+>  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'y': skip objtool checking for a file
+>  # 'OBJECT_FILES_NON_STANDARD_foo.o := 'n': override directory skip for a file
+>  cmd_objtool = $(if $(patsubst y%,, \
+>  	$(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
+> -	$(__objtool_obj) $(objtool_args) $@)
+> -objtool_obj = $(if $(patsubst y%,, \
+> -	$(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
+> -	$(__objtool_obj))
+> +	; $(objtool) $(objtool_args) $@)
 
-diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
-index b77a01bd27f4..f15d38b3a632 100644
---- a/drivers/leds/trigger/Kconfig
-+++ b/drivers/leds/trigger/Kconfig
-@@ -153,4 +153,13 @@ config LEDS_TRIGGER_TTY
- 
- 	  When build as a module this driver will be called ledtrig-tty.
- 
-+config LEDS_TRIGGER_BLKDEV
-+	bool "LED Trigger for block devices"
-+	depends on BLOCK
-+	help
-+	  The blkdev LED trigger allows LEDs to be controlled by block device
-+	  activity (reads and writes).
-+
-+	  See Documentation/leds/ledtrig-blkdev.rst.
-+
- endif # LEDS_TRIGGERS
-diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
-index 25c4db97cdd4..d53bab5d93f1 100644
---- a/drivers/leds/trigger/Makefile
-+++ b/drivers/leds/trigger/Makefile
-@@ -16,3 +16,4 @@ obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
- obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
- obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
- obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
-+obj-$(CONFIG_LEDS_TRIGGER_BLKDEV)	+= ledtrig-blkdev.o
+This is extremely clever -- pasting commands together. :)
+
+Does this correctly propagate failures in the first half of the command?
+
+For example, now we'd have:
+	gcc flags..... -c -o out in ; objtool...
+
+But I think objtool will run even on gcc failure, and "make" won't see
+the failure from gcc? I need to go test this.
+
+-Kees
+
+> +
+> +# Rebuild all objects when objtool is updated
+> +objtool_dep = $(objtool)
+>  
+>  endif # CONFIG_LTO_CLANG
+>  endif # CONFIG_STACK_VALIDATION
+>  
+> -# Rebuild all objects when objtool changes, or is enabled/disabled.
+> -objtool_dep = $(objtool_obj)					\
+> -	      $(wildcard include/config/ORC_UNWINDER		\
+> -			 include/config/STACK_VALIDATION)
+> -
+>  ifdef CONFIG_TRIM_UNUSED_KSYMS
+>  cmd_gen_ksymdeps = \
+>  	$(CONFIG_SHELL) $(srctree)/scripts/gen_ksymdeps.sh $@ >> $(dot-target).cmd
+> @@ -270,7 +265,6 @@ define rule_cc_o_c
+>  	$(call cmd,gen_ksymdeps)
+>  	$(call cmd,checksrc)
+>  	$(call cmd,checkdoc)
+> -	$(call cmd,objtool)
+>  	$(call cmd,modversions_c)
+>  	$(call cmd,record_mcount)
+>  endef
+> @@ -278,13 +272,11 @@ endef
+>  define rule_as_o_S
+>  	$(call cmd_and_fixdep,as_o_S)
+>  	$(call cmd,gen_ksymdeps)
+> -	$(call cmd,objtool)
+>  	$(call cmd,modversions_S)
+>  endef
+>  
+>  # Built-in and composite module parts
+> -.SECONDEXPANSION:
+> -$(obj)/%.o: $(src)/%.c $(recordmcount_source) $$(objtool_dep) FORCE
+> +$(obj)/%.o: $(src)/%.c $(recordmcount_source) $(objtool_dep) FORCE
+>  	$(call if_changed_rule,cc_o_c)
+>  	$(call cmd,force_checksrc)
+>  
+> @@ -367,7 +359,7 @@ $(obj)/%.s: $(src)/%.S FORCE
+>  	$(call if_changed_dep,cpp_s_S)
+>  
+>  quiet_cmd_as_o_S = AS $(quiet_modtag)  $@
+> -      cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $<
+> +      cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $< $(cmd_objtool)
+>  
+>  ifdef CONFIG_ASM_MODVERSIONS
+>  
+> @@ -386,7 +378,7 @@ cmd_modversions_S =								\
+>  	fi
+>  endif
+>  
+> -$(obj)/%.o: $(src)/%.S $$(objtool_dep) FORCE
+> +$(obj)/%.o: $(src)/%.S $(objtool_dep) FORCE
+>  	$(call if_changed_rule,as_o_S)
+>  
+>  targets += $(filter-out $(subdir-builtin), $(real-obj-y))
+> -- 
+> 2.30.2
+> 
+
 -- 
-2.31.1
-
+Kees Cook
