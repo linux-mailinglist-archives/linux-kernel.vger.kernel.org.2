@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C36A3F20A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E978C3F20A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 21:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbhHSTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 15:32:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40646 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230504AbhHSTcX (ORCPT
+        id S234795AbhHSTd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 15:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230504AbhHSTd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 15:32:23 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17JJGiEq125158;
-        Thu, 19 Aug 2021 15:31:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=IhMTpgaF+/XifSRpiET4PLlR+xw/gRZjXUzbqdSF69g=;
- b=hoAIyKJ1b4R8ErJcMVP5mfQgTpdeW8sgyA7/XjzwxcHfUbbNybHpGB6n0bzbPeuboL/I
- +bH5RDqL0KiLsK3LwFKchdcieQhr05Fw2OHH0iJRqO9W0aNQq0GeYWFZC30GHC0b5ygq
- ytpkSPq1lQI9LwHcnTrFkmtnvAc+FgapgofXxb1WJwTcTAKz1E9tfubDaepjVqrmTUQi
- pSe/tjmCRTH12sKK7mQpbJFD5BCdMwecd5sDARTa9/efp2TR5LW4VZUtEeeCUh3WBH7U
- /SkOqUz0qhr3bs939YvzXylGli/CuAw/oKeks00IyHCe86nEZVUU4onNHFpWJ0WGhWk/ RQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp2d9hhm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 15:31:33 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17JJH4Fx126559;
-        Thu, 19 Aug 2021 15:31:33 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3agp2d9hgd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 15:31:33 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17JJH1w3000800;
-        Thu, 19 Aug 2021 19:31:31 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ae5f8gp06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Aug 2021 19:31:31 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17JJRtnZ58786272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Aug 2021 19:27:55 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFF5C52052;
-        Thu, 19 Aug 2021 19:31:28 +0000 (GMT)
-Received: from sig-9-65-206-165.ibm.com (unknown [9.65.206.165])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BCBB752069;
-        Thu, 19 Aug 2021 19:31:26 +0000 (GMT)
-Message-ID: <78dfd42fb6de3b3c373be66e38d021f145740c86.camel@linux.ibm.com>
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     THOBY Simon <Simon.THOBY@viveris.fr>,
-        liqiong <liqiong@nfschina.com>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 19 Aug 2021 15:31:25 -0400
-In-Reply-To: <ed27351e0574f58ee59a3024554b8b0c7293515f.camel@linux.ibm.com>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
-         <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
-         <ed27351e0574f58ee59a3024554b8b0c7293515f.camel@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: UIf0kseCI95q6VXNtSNaRFSTP6Cwb_pA
-X-Proofpoint-GUID: cblgJ_wtl42znVymjdXO0ZckUKX-P02K
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-19_07:2021-08-17,2021-08-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 spamscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108190112
+        Thu, 19 Aug 2021 15:33:27 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37705C061575;
+        Thu, 19 Aug 2021 12:32:51 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id l3so5511078qtk.10;
+        Thu, 19 Aug 2021 12:32:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JY+D/Sy1TqJnSBxAjQVuX4InrTchjpCmDJzfReV7g6Y=;
+        b=Rp1CK4zxfNBRaarTDu97u4mWJ+rExbEsmfnFBD4gjsTdxMzzHJr3B7ZiCP5sfyyIvn
+         fWfkkaxDhCnXCJtsnlXQnPffWq3cYD/qglHTWUAmsUPlx4I9Zy+pI357V+d6GEw2r6EE
+         la/v2/XS0o+h5roYhpw48INJ1FLfk3s195QYdIawHqNzQfOn3+H+3RbrThSuN5zMEJet
+         q0eXiYPhX9g4SnFtwjTsB0TvHDK3Sp1Kdune8Mw7YNs1niVKMa7LI3ExPBOhPsyLQE1e
+         R0BjQ8N2bHxuXvqakT5SgMewO4/VvoEWaVoIszCn4sRbdsEcCQ8DIL3qb3b7YQpvqlWO
+         jgbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JY+D/Sy1TqJnSBxAjQVuX4InrTchjpCmDJzfReV7g6Y=;
+        b=mZqc+s4XFtmO7ZoGvZ1dZK5QLDAPiWZIPShEkXuFZClCDCpYgejwHnfwTyxbihQVDO
+         +If0f0iR3WcaO8DXPAVn/tgfLOjf/QSY/DgPf7wFo+E/UaB3ZcBCfnVCSvH8VL1vjVjJ
+         HPFDI8DDMRykBg1jsE5+a3s1rYHgMHyr5JgvP5HkJxxmv1aarua2zGVG7DuiXhw7PDpF
+         hpfrGifwYvrOkl6dAK4x++7cXsCpjj9lv1x5JB9c9kzSpkYCTXfCSGh/LifqAbyUtYYx
+         YaW7dCSOpREiWA0D8SzCdTZPsPL5TemrBWDMqvBGWXRNvqEOBfhVjEbQdWpPRk8bLHpF
+         pP1A==
+X-Gm-Message-State: AOAM533VyKCM6oQDC1FmkmziwB/LpwbmfA5WVMcoE+Sg5CTTN7m26L5m
+        +WCw4ynwhQ+nsr+BZP0g6A8=
+X-Google-Smtp-Source: ABdhPJzLkEUY6t24MeJ98/6lkXRCvKOBiOxcc62nLvoVuCD2EuYYCxgu4Z5y9H18tI161ddTNGUbhQ==
+X-Received: by 2002:ac8:5b04:: with SMTP id m4mr14208845qtw.344.1629401570398;
+        Thu, 19 Aug 2021 12:32:50 -0700 (PDT)
+Received: from localhost.localdomain ([138.229.29.116])
+        by smtp.googlemail.com with ESMTPSA id g20sm2004493qki.73.2021.08.19.12.32.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 12:32:50 -0700 (PDT)
+From:   Stephan Losa <stephan.losa@gmail.com>
+Cc:     stephan.losa@gmail.com, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: apple: Add support for Keychron K8, K2 in bluetooth mode
+Date:   Thu, 19 Aug 2021 15:32:21 -0400
+Message-Id: <20210819193221.558454-1-stephan.losa@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 09:47 -0400, Mimi Zohar wrote:
-> On Thu, 2021-08-19 at 12:58 +0000, THOBY Simon wrote:
-> > Hi Liqiong,
-> > 
-> > On 8/19/21 12:15 PM, liqiong wrote:
-> > > When "ima_match_policy" is looping while "ima_update_policy" changs
-> > > the variable "ima_rules", then "ima_match_policy" may can't exit loop,
-> > > and kernel keeps printf "rcu_sched detected stall on CPU ...".
-> > > 
-> > > It occurs at boot phase, systemd-services are being checked within
-> > > "ima_match_policy,at the same time, the variable "ima_rules"
-> > > is changed by a service.
-> > 
-> > First off, thanks for finding and identifying this nasty bug.
-> 
-> Once the initial builtin policy rules have been replaced by a custom
-> policy, rules may only be appended by splicing the new rules with the
-> existing rules.  There should never be a problem reading the rules at
-> that point.   Does this problem occur before the builtin policy rules
-> have been replaced with a custom policy?
+Use hid-apple in bluetooth mode like in wired mode for Keychron K8, K2
+(and others). Those keyboards use vendor/product ids 05AC:024F (APPLE_ALU_REVB_ANSI).
 
-Yes, the problem is limited to transitioning from the builtin policy to
-the custom policy.   Adding a new lock around rcu code seems counter
-productive, especially since switching the policy rules happens once,
-normally during early boot before access to real root.  Please consider
-Simon's suggestion or finding some other solution.
+Signed-off-by: Stephan Losa <stephan.losa@gmail.com>
+---
+ drivers/hid/hid-apple.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-thanks,
-
-Mimi
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index 6b8f0d004d34..dc6bd4299c54 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -501,6 +501,8 @@ static const struct hid_device_id apple_devices[] = {
+ 			APPLE_RDESC_JIS },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_REVB_ANSI),
+ 		.driver_data = APPLE_HAS_FN },
++	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_REVB_ANSI),
++		.driver_data = APPLE_HAS_FN },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_REVB_ISO),
+ 		.driver_data = APPLE_HAS_FN },
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_REVB_ISO),
+-- 
+2.25.1
 
