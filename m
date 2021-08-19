@@ -2,152 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD413F11D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5BF3F11F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 05:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236641AbhHSDhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 18 Aug 2021 23:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236473AbhHSDh2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 18 Aug 2021 23:37:28 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0F2C0613D9
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:36:52 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d17so3085540plr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 18 Aug 2021 20:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OWG8gSW9FTH/AgnNjiR6jP10S4rh/ZtmSM7TNejSBro=;
-        b=bf7AXXLxLTv0CmXBn58RWmQBZ9LcpPYWlDQy1fNAeZxT8k+tgPLMbTJRZoV7+TJLqA
-         D0YMfmBS5GGXVxU0KTGqEuvI+CEu5kNnqcVLDWTAvxbYGPt9ZraQM+QErigXfLpgJBNu
-         W9zs3o59Wfdjd+g/h9ljZvX4U1YJVbddLGkoI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OWG8gSW9FTH/AgnNjiR6jP10S4rh/ZtmSM7TNejSBro=;
-        b=d3HHagckAJkfFXQNlq7tE8hx/xGpX1xFRVuSrOaCG6/rfFZDBA4jUQAlaNFdZ/Wu6z
-         SXwu+r/QmmdOktcdIWYYJe9/i4R4OQjRnMGwcJnWp+nRrC/oap9XOTKffQEnrSe+tkPX
-         hLxyRGh2Q3kljR1gcLImdX0CRSQ/ot1X11vdtIpa95JJGKrBxECdGyEs2hRUeqCxZbwR
-         3TFnb6AigPn7bsAZ1CrOumez2Wo5eVb61VnnKXwOKWQ8h0P0/nCbEKsPC4rg8M7GoQ38
-         zdS8rzgz+a7FIlbeo+tf38+45k6F6xSiiL0PYZ6gNCQu/6cehJLlAszB0zXvvTqjevlJ
-         ZTfw==
-X-Gm-Message-State: AOAM5324O38Kst4ah/gCizxCHU7Z5Ghs8fA+oQRKYTq/IO/1FOtVtA+K
-        dnwwPB0m47+5DQWS802p9EAGRw==
-X-Google-Smtp-Source: ABdhPJyhy0+a4fDGJXB6BO9R+BMhAU0XGAPV4/WUygffKCQlZpUdChD3xai7iJvGVEwQjN9BPChIEg==
-X-Received: by 2002:a17:902:b593:b0:12d:7aa5:de2d with SMTP id a19-20020a170902b59300b0012d7aa5de2dmr10093375pls.31.1629344212131;
-        Wed, 18 Aug 2021 20:36:52 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y12sm1476515pgl.65.2021.08.18.20.36.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Aug 2021 20:36:51 -0700 (PDT)
-Date:   Wed, 18 Aug 2021 20:36:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Daniel Micay <danielmicay@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, Joe Perches <joe@perches.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        id S237181AbhHSDiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 18 Aug 2021 23:38:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237366AbhHSDih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 18 Aug 2021 23:38:37 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4AB461100;
+        Thu, 19 Aug 2021 03:38:01 +0000 (UTC)
+Date:   Wed, 18 Aug 2021 23:37:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] percpu: Add __alloc_size attributes for better
- bounds checking
-Message-ID: <202108182018.6DA03EA818@keescook>
-References: <20210818214021.2476230-1-keescook@chromium.org>
- <20210818214021.2476230-7-keescook@chromium.org>
- <YR2pE9V1P0xmBWUo@fedora>
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH v6 7/7] tracing: Add a probe that attaches to trace
+ events
+Message-ID: <20210818233757.686cd7c8@oasis.local.home>
+In-Reply-To: <20210819112920.a2fbfdc812967c2743953fd0@kernel.org>
+References: <20210817034255.421910614@goodmis.org>
+        <20210817035028.190000494@goodmis.org>
+        <20210819112920.a2fbfdc812967c2743953fd0@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR2pE9V1P0xmBWUo@fedora>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 08:42:59PM -0400, Dennis Zhou wrote:
-> On Wed, Aug 18, 2021 at 02:40:20PM -0700, Kees Cook wrote:
-> > As already done in GrapheneOS, add the __alloc_size attribute for
-> > appropriate percpu allocator interfaces, to provide additional hinting
-> > for better bounds checking, assisting CONFIG_FORTIFY_SOURCE and other
-> > compiler optimizations.
+On Thu, 19 Aug 2021 11:29:20 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Mon, 16 Aug 2021 23:43:02 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> Can you elaborate a little bit for me how this works for percpu? In any
-> case that's not uniprocessor, any modification is done through address
-> accessors and not on the returned percpu pointer. Is the metadata kept
-> by gcc/clang able to transpire the percpu pointer accessors?
+> > From: "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+> > 
+> > A new dynamic event is introduced: event probe. The event is attached
+> > to an existing tracepoint and uses its fields as arguments. The user
+> > can specify custom format string of the new event, select what tracepoint
+> > arguments will be printed and how to print them.
+> > An event probe is created by writing configuration string in
+> > 'dynamic_events' ftrace file:
+> >  e:[SNAME/]ENAME SYSTEM/EVENT [FETCHARGS]	- Set an event probe  
+> 
+> Just a small comment. This ENAME is actually optional.
+> 
+> >  -:SNAME/ENAME					- Delete an event probe
+> > 
+> > Where:
+> >  SNAME	- System name, if omitted 'eprobes' is used.
+> >  ENAME	- Name of the new event in SNAME, mandatory.  
+> 
+> Ditto.
 
-That's an excellent point. :P I haven't tested it through the accessors,
-but I guess it's possible that this is only useful for UP, and even
-then, only where the access is very close to the "allocation", maybe
-like:
+Will updated.
 
-char __percpu *test_buf;
+> See __trace_eprobe_create(), it generates the event name from
+> the "SYSTEM_EVENT". (BTW, what happen if we have 2 different event
+> probe on the same event with same name?)
 
-	char *buf;
-	test_var = __alloc_percpu(16, __alignof__(char));
-	buf = per_cpu_ptr(test_buf, get_cpu());
-	...
-	buf[20] = '!';
-
--Kees
+I'll have to check. We should try to avoid that.
 
 > 
-> Thanks,
-> Dennis
+> >  SYSTEM	- Name of the system, where the tracepoint is defined, mandatory.
+> >  EVENT	- Name of the tracepoint event in SYSTEM, mandatory.
+> >  FETCHARGS - Arguments:
+> >   <name>=$<field>[:TYPE] - Fetch given filed of the tracepoint and print
+> > 			   it as given TYPE with given name. Supported
+> > 			   types are:
+> > 	                    (u8/u16/u32/u64/s8/s16/s32/s64), basic type
+> >         	            (x8/x16/x32/x64), hexadecimal types
+> > 			    "string", "ustring" and bitfield.
+> > 
+> > Example, attach an event probe on openat system call and print name of the
+> > file that will be opened:
+> >  echo "e:esys/eopen syscalls/sys_enter_openat file=\$filename:string" >> dynamic_events
+> > A new dynamic event is created in events/esys/eopen/ directory. It
+> > can be deleted with:
+> >  echo "-:esys/eopen" >> dynamic_events
+> > 
+> > Filters, triggers and histograms can be attached to the new event, it can
+> > be matched in synthetic events. There is one limitation - an event probe
+> > can not be attached to kprobe, uprobe or another event probe.
+> > 
+> > Link: https://lkml.kernel.org/r/20210812145805.2292326-1-tz.stoyanov@gmail.com
+> > 
+> > Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---  
+> [...]
+> > +static struct trace_event_call *
+> > +find_and_get_event(const char *system, const char *event_name)
+> > +{
+> > +	struct trace_event_call *tp_event;
+> > +	const char *name;
+> > +
+> > +	list_for_each_entry(tp_event, &ftrace_events, list) {
+> > +		/* Skip other probes and ftrace events */
+> > +		if ((tp_event->flags & TRACE_EVENT_FL_IGNORE_ENABLE) ||
+> > +		    (tp_event->flags & TRACE_EVENT_FL_KPROBE) ||
+> > +		    (tp_event->flags & TRACE_EVENT_FL_UPROBE) ||
+> > +		    (tp_event->flags & TRACE_EVENT_FL_EPROBE))  
 > 
-> > 
-> > Co-developed-by: Daniel Micay <danielmicay@gmail.com>
-> > Signed-off-by: Daniel Micay <danielmicay@gmail.com>
-> > Cc: Dennis Zhou <dennis@kernel.org>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Christoph Lameter <cl@linux.com>
-> > Cc: linux-mm@kvack.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/percpu.h | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-> > index 5e76af742c80..119f41815b32 100644
-> > --- a/include/linux/percpu.h
-> > +++ b/include/linux/percpu.h
-> > @@ -123,6 +123,7 @@ extern int __init pcpu_page_first_chunk(size_t reserved_size,
-> >  				pcpu_fc_populate_pte_fn_t populate_pte_fn);
-> >  #endif
-> >  
-> > +__alloc_size(1)
-> >  extern void __percpu *__alloc_reserved_percpu(size_t size, size_t align);
-> >  extern bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr);
-> >  extern bool is_kernel_percpu_address(unsigned long addr);
-> > @@ -131,7 +132,9 @@ extern bool is_kernel_percpu_address(unsigned long addr);
-> >  extern void __init setup_per_cpu_areas(void);
-> >  #endif
-> >  
-> > +__alloc_size(1)
-> >  extern void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp);
-> > +__alloc_size(1)
-> >  extern void __percpu *__alloc_percpu(size_t size, size_t align);
-> >  extern void free_percpu(void __percpu *__pdata);
-> >  extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
-> > -- 
-> > 2.30.2
-> > 
+> Maybe it is better to define a bitmask for it instead of testing
+> different bit many times.
 
--- 
-Kees Cook
+Doh! Of course!
+
+> 
+> [...]
+> > +static int __trace_eprobe_create(int argc, const char *argv[])
+> > +{
+> > +	/*
+> > +	 * Argument syntax:
+> > +	 *      e[:[GRP/]ENAME] SYSTEM.EVENT [FETCHARGS]
+> > +	 * Fetch args:
+> > +	 *  <name>=$<field>[:TYPE]
+> > +	 */
+> > +	const char *event = NULL, *group = EPROBE_EVENT_SYSTEM;
+> > +	const char *sys_event = NULL, *sys_name = NULL;
+> > +	struct trace_event_call *event_call;
+> > +	struct trace_eprobe *ep = NULL;
+> > +	char buf1[MAX_EVENT_NAME_LEN];
+> > +	char buf2[MAX_EVENT_NAME_LEN];
+> > +	int ret = 0;
+> > +	int i;
+> > +
+> > +	if (argc < 2)
+> > +		return -ECANCELED;
+> > +
+> > +	trace_probe_log_init("event_probe", argc, argv);
+> > +
+> > +	event = strchr(&argv[0][1], ':');
+> > +	if (event) {
+> > +		event++;
+> > +		ret = traceprobe_parse_event_name(&event, &group, buf1,
+> > +						  event - argv[0]);
+> > +		if (ret)
+> > +			goto parse_error;
+> > +	} else {
+> > +		strscpy(buf1, argv[1], MAX_EVENT_NAME_LEN);
+> > +		sanitize_event_name(buf1);
+> > +		event = buf1;
+> > +	}
+> > +	if (!is_good_name(event) || !is_good_name(group))
+> > +		goto parse_error;
+> > +
+> > +	sys_event = argv[1];
+> > +	ret = traceprobe_parse_event_name(&sys_event, &sys_name, buf2,
+> > +					  sys_event - argv[1]);
+> > +	if (ret || !sys_name)
+> > +		goto parse_error;
+> > +	if (!is_good_name(sys_event) || !is_good_name(sys_name))
+> > +		goto parse_error;
+> > +
+> > +	mutex_lock(&event_mutex);
+> > +	event_call = find_and_get_event(sys_name, sys_event);
+> > +	ep = alloc_event_probe(group, event, event_call, argc - 2);
+> > +	mutex_unlock(&event_mutex);
+> > +
+> > +	if (IS_ERR(ep)) {
+> > +		ret = PTR_ERR(ep);
+> > +		/* This must return -ENOMEM, else there is a bug */
+> > +		WARN_ON_ONCE(ret != -ENOMEM);
+> > +		goto error;	/* We know ep is not allocated */
+> > +	}
+> > +
+> > +	argc -= 2; argv += 2;
+> > +	/* parse arguments */
+> > +	for (i = 0; i < argc && i < MAX_TRACE_ARGS; i++) {
+> > +		ret = trace_eprobe_tp_update_arg(ep, argv, i);
+> > +		if (ret)
+> > +			goto error;
+> > +	}
+> > +	ret = traceprobe_set_print_fmt(&ep->tp, PROBE_PRINT_EVENT);
+> > +	if (ret < 0)
+> > +		goto error;
+> > +	init_trace_eprobe_call(ep);
+> > +	mutex_lock(&event_mutex);  
+> 
+> Here, you don't check the event name collision. Since the kprobe event
+> supports multiprobe event, it checks the collision by itself.
+> See register_trace_kprobe().
+> BTW, I found another issue on the name collision. Let me fix it.
+
+I'm thinking of adding this above before taking the event_mutex:
+
+	/* Check if the name already exists */
+	if (find_event_probe(group, event))
+		return -EEXIST;
+
+Where I have:
+
+static bool find_event_probe(const char *group, const char *event)
+{
+	struct dyn_event *ev;
+	struct trace_eprobe *ep;
+
+	for_each_dyn_event(ev) {
+		if (ev->ops != &eprobe_dyn_event_ops)
+			continue;
+		
+		ep = to_trace_eprobe(ev);
+		if (strcmp(ep->tp.event->class.system, group) == 0 &&
+		    strcmp(ep->tp.event->call.name, event) == 0)
+			return true;
+	}
+	return false;
+}
+
+Cheers,
+
+-- Steve
+
+
+> 
+> > +	ret = trace_probe_register_event_call(&ep->tp);
+> > +	if (ret) {
+> > +		mutex_unlock(&event_mutex);
+> > +		goto error;
+> > +	}
+> > +	ret = dyn_event_add(&ep->devent, &ep->tp.event->call);
+> > +	mutex_unlock(&event_mutex);
+> > +	return ret;
+> > +parse_error:
+> > +	ret = -EINVAL;
+> > +error:
+> > +	trace_event_probe_cleanup(ep);
+> > +	return ret;
+> > +}  
+> 
+> Thank you,
+
