@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F183F234B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80053F2356
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 00:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbhHSWjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 18:39:09 -0400
-Received: from omta016.useast.a.cloudfilter.net ([34.195.253.207]:46559 "EHLO
-        omta016.useast.a.cloudfilter.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229532AbhHSWjI (ORCPT
+        id S236794AbhHSWk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 18:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236583AbhHSWk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 18:39:08 -0400
-Received: from cxr.smtp.a.cloudfilter.net ([10.0.16.208])
-        by cmsmtp with ESMTP
-        id GefKmBbEQMRfUGqgBm8hw3; Thu, 19 Aug 2021 22:38:31 +0000
-Received: from ws ([24.255.45.226])
-        by cmsmtp with ESMTPSA
-        id Gqg7mujOYGuc7Gqg9mu6bO; Thu, 19 Aug 2021 22:38:31 +0000
-Authentication-Results: cox.net; auth=pass (LOGIN) smtp.auth=j.duncan@cox.net
-X-Authority-Analysis: v=2.4 cv=fKP8YbWe c=1 sm=1 tr=0 ts=611edd67
- a=rsvNbDP3XdDalhZof1p64w==:117 a=rsvNbDP3XdDalhZof1p64w==:17
- a=kj9zAlcOel0A:10 a=1fMUTEkdAAAA:8 a=pGLkceISAAAA:8 a=kviXuzpPAAAA:8
- a=GrN4TtxLF5UlEiDcx2YA:9 a=CjuIK1q_8ugA:10 a=kXTuJJ3fruM0IRz_0_AM:22
- a=qrIFiuKZe2vaD64auk6j:22
-Date:   Thu, 19 Aug 2021 15:38:26 -0700
-From:   Duncan <j.duncan@cox.net>
-To:     lnx7586@gregdf.com
-Cc:     mikpelinux@gmail.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, jason@jlekstrand.net,
+        Thu, 19 Aug 2021 18:40:26 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AF4C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:39:49 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id e7so7280017pgk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 15:39:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=WX/qJVOnuFAI2moIv6OF4lqewvc4NdGxWkCdYilIaS4=;
+        b=dIr051qis+9TSdlqlxkVlLOVanqfmbLXpUhEciivJ12h+asK6W8Lb8B1xQ5SOFx0ed
+         hBWa5vXbV5b1XLr52yfjhKR12+utTBNZO8Ms6rSiPQtoDnQJGUQfsRj1N9qnjRpMnSko
+         tbJ3maAALuUqpegMFAmcYb5xUkx8ZNp9IKaEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=WX/qJVOnuFAI2moIv6OF4lqewvc4NdGxWkCdYilIaS4=;
+        b=Jmga5+Wi08kGU7dmmAtZNEA0TTtTdSDiXRxhzOL2YjO4nwh+MkTgtp45N78LCN0Pi5
+         KjW+h7vqpeY5o+XQwjxf/qzkq0gp/iAeHp5FjEuhmoX2RoOZH/UHWUF370niF/1bJrUl
+         ihhr7VTREBUPLCG8/RoXD4vNA4C46X6NyC8faHr+ZBwM/6q/gOzB8KDzIV8mHED3ViuH
+         QKrj8jemPe7SaHP6ul/0ZVm1l8d7E3qMxkT4Y3zeXwFiI431u+PeKCQlXAq16rEw4JXF
+         eaftxxmeM5JGyxJ9Nq1s6/Hml6HXPMGBxzzsQAbSAKMDaj1WsgnXdepyfIxqfo5LyYF/
+         5pQA==
+X-Gm-Message-State: AOAM531Zt9WvpippCsimidztrxgoWL19O3NCahWSPf/0HM8EEzRvrPwQ
+        wEOlwHcx7kd1SQJdEzRla3jBcg==
+X-Google-Smtp-Source: ABdhPJydtoDgmtfFU7iCvzmfD+6LAiNa/sBr8PkQ4fFuCRed3yo4/Qn+wZAYqYuVMFMYpSUN+dNGhA==
+X-Received: by 2002:aa7:8e56:0:b029:3cd:c2ec:6c1c with SMTP id d22-20020aa78e560000b02903cdc2ec6c1cmr16390211pfr.80.1629412788706;
+        Thu, 19 Aug 2021 15:39:48 -0700 (PDT)
+Received: from localhost ([2001:4479:e000:e400:3a83:f47e:d5a3:378a])
+        by smtp.gmail.com with ESMTPSA id x69sm4639869pfc.59.2021.08.19.15.39.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 15:39:48 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        kernel-janitors@vger.kernel.org, stable@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/ttm: allow debugfs_create_file() to fail in
- ttm_global_init()
-Message-ID: <20210819153826.460b9c11@ws>
-In-Reply-To: <20210816143046.3320-1-lnx7586@gregdf.com>
-References: <CAM43=SNDAcS952MZpsiD2Z-WU9Bd0EPv=7Z86i7FGdvDtsSXdQ@mail.gmail.com>
-        <20210816143046.3320-1-lnx7586@gregdf.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-pc-linux-gnu)
+Subject: Re: [PATCH v2 1/2] powerpc: kvm: remove obsolete and unneeded select
+In-Reply-To: <20210819113954.17515-2-lukas.bulwahn@gmail.com>
+References: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
+ <20210819113954.17515-2-lukas.bulwahn@gmail.com>
+Date:   Fri, 20 Aug 2021 08:39:45 +1000
+Message-ID: <87sfz59hzi.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfCtUxm8u7SxW4XPKllZefbNT+mD/lU+MRYFCROUjQvA3TCyuPsw6R/VZUY5w//Uw6HGgSaUHc9IDPNtXKgkkXGGwWIb7vdw5oH43KLhM4WbXX2codFuj
- c/M5tnvlEMFRxVD+/sds4NrKxQQkvTHPQF0Yy4upOzT1DJSS2zhecwr7NldSBjOpbT2pfgVZP79E4FGebFB0/djb5bd+tTWHXlJtkw8hbJv3k8YKjyMfvFBF
- pehxLvpQ9BXppshs+0Ca3u4s/8gmuvmiYFyz4wl4BsqgHiV/MH+87UBmp+hvjHCtPHiaL8iy2PiU3IArQOBhAw4Lb5qwlwRmFIf9uLxCkB5R/p0+in67zz1p
- AnvdkiaH
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 16:30:46 +0200
-lnx7586@gregdf.com wrote:
+Hi Lukas,
 
-> From: Greg Depoire--Ferrer <lnx7586@gregdf.com>
-> 
-> Commit 69de4421bb4c ("drm/ttm: Initialize debugfs from
-> ttm_global_init()") unintentionally made ttm_global_init() return
-> early with an error when debugfs_create_file() fails. When
-> CONFIG_DEBUG_FS is disabled, debugfs_create_file() returns a ENODEV
-> error so the TTM device would fail to initialize.
-> 
-> Instead of returning early with the error, print it and continue.
-> ENODEV can be ignored because it just means that CONFIG_DEBUG_FS is
-> disabled.
-> 
-> Fixes: 69de4421bb4c ("drm/ttm: Initialize debugfs from ttm_global_init()")
-> Reported-by: Mikael Pettersson <mikpelinux@gmail.com>
-> Reported-by: Duncan <j.duncan@cox.net>
-> Signed-off-by: Greg Depoire--Ferrer <lnx7586@gregdf.com>
-> ---
-> Hi, I had this bug as well with the nouveau driver after updating.
-> This patch fixes it for me.
-> 
->  drivers/gpu/drm/ttm/ttm_device.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+> diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
+> index e45644657d49..ff581d70f20c 100644
+> --- a/arch/powerpc/kvm/Kconfig
+> +++ b/arch/powerpc/kvm/Kconfig
+> @@ -38,7 +38,6 @@ config KVM_BOOK3S_32_HANDLER
+>  config KVM_BOOK3S_64_HANDLER
+>  	bool
+>  	select KVM_BOOK3S_HANDLER
+> -	select PPC_DAWR_FORCE_ENABLE
 
-This fixes the problem here, too.  Running it now.
+I looked at some of the history here. It looks like this select was left
+over from an earlier version of the patch series that added PPC_DAWR: v2
+of the series has a new symbol PPC_DAWR_FORCE_ENABLE but by version 4
+that new symbol had disappeared but the select had not.
 
-Tested-by: Duncan <j.duncan@cox.net>
+v2: https://lore.kernel.org/linuxppc-dev/20190513071703.25243-1-mikey@neuling.org/
+v5: https://lore.kernel.org/linuxppc-dev/20190604030037.9424-2-mikey@neuling.org/
 
--- 
-Duncan - HTML messages treated as spam
-"They that can give up essential liberty to obtain a little
-temporary safety, deserve neither liberty nor safety."
-Benjamin Franklin
+The rest of the patch reasoning makes sense to me: DAWR support will be
+selected anyway by virtue of PPC64->PPC_DAWR so there's no need to try
+to select it again anyway.
+
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+
+Kind regards,
+Daniel
+
+>  
+>  config KVM_BOOK3S_PR_POSSIBLE
+>  	bool
+> -- 
+> 2.26.2
