@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90843F16DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B453F16E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 19 Aug 2021 11:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237848AbhHSJ70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 05:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
+        id S238005AbhHSJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 05:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232750AbhHSJ7Z (ORCPT
+        with ESMTP id S237746AbhHSJ7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 05:59:25 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EED4C061575;
-        Thu, 19 Aug 2021 02:58:49 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id bj38so6482403qkb.9;
-        Thu, 19 Aug 2021 02:58:49 -0700 (PDT)
+        Thu, 19 Aug 2021 05:59:53 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44C8C061575;
+        Thu, 19 Aug 2021 02:59:17 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n12so3620106plf.4;
+        Thu, 19 Aug 2021 02:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=+KYO/tl/8pjTbXDZMi8bl0uqpdKd7fCd6x/jY/iHmW8=;
-        b=i6+T8F0dZrxNpSDAXoV2tspVASREEk5+WFMRG9f+e5TxFJLf3D7WBTtz/VjVqMfj5Y
-         zivPuRJ027hPPyEW3H2KTSa1eSxq4+CtI0O9pQmul85025txB/wJC7hd92erzYjot15u
-         cwDETCNMGJhX3hGfuV/ZTn+27XlrLwxRnUsvK1Vgp55lvfHlB12Ll01k4lR4vnCpDCY6
-         3yLz8L20VSvpG+PteKS4ZvrUHsjhYqc4S89jQuohV4eDXxeNlmnyxW26qdIEwvLt3FIh
-         hji6vmmL0FHD+huvMseG+aHwEWr3XZfrRr/AQCnJiSTcx4S4QIzAMCVjqN5STHFzUNVQ
-         IY/Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DtRnMoZnz8ASe+6YEYHxKI9ebqeYiuiGyG8rZ+bU7W8=;
+        b=e343ePw9FQBl3OmT4CjV4LRITbC1d6hYo+qRgo8O4g8DDiM0SXgUjKDzINrKBOdPuD
+         16no3rFQBxZjEOjFpmVKbvGS3ZfHA34iGMzVP0GUuGwXxQcavGar4tq9NUO4BYQKL/fr
+         +IcuileX2Ofw9lJAzZQDVNiSgg1ae4c7il80Ygl7Z/hArsq9NmfC57xbUCxKi+8x3zUf
+         +2HPq01a+R9VEwnfGBnJGrLBlpiAjunOOPLv4ZoA/DAFfCnCqMOcoGxM88wGuVAJptCS
+         RhIs91rvHPz+nEa9mRAXOsXqj+K3ODhUvtqP1kKQfDBVLC2qUMGw6g7AIb4+VxGalL4b
+         xg/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=+KYO/tl/8pjTbXDZMi8bl0uqpdKd7fCd6x/jY/iHmW8=;
-        b=m0QSD0S3iOioCbEbYYP5kyRVhNpMpKHFHE2KJWSMutLJ6icnKVRl/DWKcJUOAi+w1U
-         DcLoPeGD6xi3bsGLihnb8JVvrpRdfatnavl00ttcHBNij96FErdbdlFvl9CMkgoaXzOF
-         2Ym7BSPkqcBTvo9ZuhBdOVDb66y7jwr4DaoWkSisqEV8QH5hbtj9Mtz3pnXW26Xa7iPA
-         ZoLbPyh1TGHe7oLZMyqCPNSNivxB8Oztt5A6s/RPOaOHIn6wQ00zcGTQtzgEzJssGZoG
-         7zJ9npmDAAz4sjjBSU64Nq5bFhaRpApOHOQZVpxcvNNOM5g7FY+vkiMLAwZ2VysHSIrY
-         93nQ==
-X-Gm-Message-State: AOAM532a89EyQacbbAam8jXQceUcuyVPSCiN3D+Iu+j1vA6vUwbRP+NO
-        mudNRC4ts202iq7gjyimZE8=
-X-Google-Smtp-Source: ABdhPJydwp9lo5mTwqG2knDAlsfvVDkMTT63oYQU4znuc0nkVfHFgMvopR4kd/EpO7Ur4bzJSfhccg==
-X-Received: by 2002:a37:a302:: with SMTP id m2mr2758270qke.155.1629367128661;
-        Thu, 19 Aug 2021 02:58:48 -0700 (PDT)
-Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
-        by smtp.gmail.com with ESMTPSA id i18sm1353864qkk.115.2021.08.19.02.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 02:58:48 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH 1/2] Documentation/process/applying-patches: Activate linux-next man hyperlink
-Date:   Thu, 19 Aug 2021 09:58:36 +0000
-Message-Id: <20210819095836.1475-1-sjpark@amazon.de>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210812095030.4704-1-sj38.park@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DtRnMoZnz8ASe+6YEYHxKI9ebqeYiuiGyG8rZ+bU7W8=;
+        b=SatljJgsdmCMGHqnD0kbdJ40xMIiEmXfAe61u2lLGgcSz/WTCTpgO5yBzrwylf+5wa
+         1zh3FtC1OdayG4c5lDlh8ZifoAp/ponhzGoT7VDrZJQhmy5INgKd/EBSBDtS3TKHw2WR
+         1CulKe8OMYW1peC8Ou1f0vRaBD8f8cV/o+RVFYV4GIWMrPavGeY0tveQiz9KzB+Qhg9H
+         LKtQ0VvsbHQeYTfPaEhoxvirtAg2WGFmHV34AfJ3uTfkL59m1PiOZDfahTNJl7BMq0ov
+         B2DmO5bLcf/N9HM37lnx/XNMvy3YWtcTXlRNiA5u3UPCmFiJlT9Nf3M742GgIpjInUwg
+         amsg==
+X-Gm-Message-State: AOAM532opGNusdX4SzcgoPD8SRftWlMyRHWmW/gPoNl8LMWCkusoYImd
+        LfKzanPUj8M/M8VIHtsuuUc=
+X-Google-Smtp-Source: ABdhPJxqSXdosZ9pc3k976d6RTkMk29F0RsgVn3Hn0/Mju7aILj/ApNHDMVBQRT0TOZLXDLJbYbMUw==
+X-Received: by 2002:a17:90a:8905:: with SMTP id u5mr13892030pjn.95.1629367157291;
+        Thu, 19 Aug 2021 02:59:17 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id p24sm2697989pff.161.2021.08.19.02.59.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Aug 2021 02:59:16 -0700 (PDT)
+Subject: Re: [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap
+ function for HV IVM
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, joro@8bytes.org,
+        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, arnd@arndb.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, ardb@kernel.org,
+        Tianyu.Lan@microsoft.com, pgonda@google.com,
+        martin.b.radev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, rppt@kernel.org,
+        sfr@canb.auug.org.au, saravanand@fb.com,
+        krish.sadhukhan@oracle.com, aneesh.kumar@linux.ibm.com,
+        xen-devel@lists.xenproject.org, rientjes@google.com,
+        hannes@cmpxchg.org, tj@kernel.org, michael.h.kelley@microsoft.com,
+        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        vkuznets@redhat.com, parri.andrea@gmail.com, dave.hansen@intel.com
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-11-ltykernel@gmail.com>
+ <20210812122741.GC19050@lst.de>
+ <d18ae061-6fc2-e69e-fc2c-2e1a1114c4b4@gmail.com>
+ <890e5e21-714a-2db6-f68a-6211a69bebb9@gmail.com>
+ <20210819084951.GA10461@lst.de>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <1c5ae861-2c35-2ef5-e764-db45bbcb88a9@gmail.com>
+Date:   Thu, 19 Aug 2021 17:59:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210819084951.GA10461@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
-
-Hello Jon,
 
 
-I'm wondering if you had a chance to review this patchset.  Could you please
-give me some comments?
-
-
-Thanks,
-SJ
-
-On Thu, 12 Aug 2021 09:50:29 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-
-> From: SeongJae Park <sjpark@amazon.de>
+On 8/19/2021 4:49 PM, Christoph Hellwig wrote:
+> On Mon, Aug 16, 2021 at 10:50:26PM +0800, Tianyu Lan wrote:
+>> Hi Christoph:
+>>        Sorry to bother you.Please double check with these two patches
+>> " [PATCH V3 10/13] x86/Swiotlb: Add Swiotlb bounce buffer remap function
+>> for HV IVM" and "[PATCH V3 09/13] DMA: Add dma_map_decrypted/dma_
+>> unmap_encrypted() function".
 > 
-> There is a url for linux-next in the 'applying-patches.rst', but it's
-> surrounded by backquotes.  So the url doesn't have a hyperlink in the
-> built document.  To let readers easily move to the page, this commit
-> puts the url outside of the backquotes so that a hyperlink to the url
-> can be automatically made.
+> Do you have a git tree somewhere to look at the whole tree?
+
+Yes, here is my github link for these two patches.
+
+https://github.com/lantianyu/linux/commit/462f7e4e44644fe7e182f7a5fb043a75acb90ee5
+
+https://github.com/lantianyu/linux/commit/c8de236bf4366d39e8b98e5a091c39df29b03e0b
+
 > 
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->  Documentation/process/applying-patches.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>>        The swiotlb bounce buffer in the isolation VM are allocated in the
+>> low end memory and these memory has struct page backing. All dma address
+>> returned by swiotlb/DMA API are low end memory and this is as same as what
+>> happen in the traditional VM.
 > 
-> diff --git a/Documentation/process/applying-patches.rst b/Documentation/process/applying-patches.rst
-> index 2e7017bef4b8..c2121c1e55d7 100644
-> --- a/Documentation/process/applying-patches.rst
-> +++ b/Documentation/process/applying-patches.rst
-> @@ -389,7 +389,7 @@ The -mm patches are experimental patches released by Andrew Morton.
->  
->  In the past, -mm tree were used to also test subsystem patches, but this
->  function is now done via the
-> -`linux-next <https://www.kernel.org/doc/man-pages/linux-next.html>`
-> +`linux-next` (https://www.kernel.org/doc/man-pages/linux-next.html)
->  tree. The Subsystem maintainers push their patches first to linux-next,
->  and, during the merge window, sends them directly to Linus.
->  
-> -- 
-> 2.17.1
+> Indeed.
+> 
+>>        The API dma_map_decrypted() introduced in the patch 9 is to map the
+>> bounce buffer in the extra space and these memory in the low end space are
+>> used as DMA memory in the driver. Do you prefer these APIs
+>> still in the set_memory.c? I move the API to dma/mapping.c due to the
+>> suggested name arch_dma_map_decrypted() in the previous mail
+>> (https://lore.kernel.org/netdev/20210720135437.GA13554@lst.de/).
+> 
+> Well, what would help is a clear description of the semantics.
+> 
+
+Yes, I will improve description.
+
