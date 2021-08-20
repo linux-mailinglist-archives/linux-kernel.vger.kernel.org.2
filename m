@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D893F373F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B536B3F3741
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240652AbhHTXSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 19:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S239686AbhHTXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 19:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhHTXSm (ORCPT
+        with ESMTP id S230211AbhHTXTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:18:42 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D0EC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:18:03 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id u16so16334055wrn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:18:03 -0700 (PDT)
+        Fri, 20 Aug 2021 19:19:42 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A12C061575;
+        Fri, 20 Aug 2021 16:19:03 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id n7so19786231ljq.0;
+        Fri, 20 Aug 2021 16:19:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ndVrv9LlDSJtPxdQ7srGUgMyCM4NsNR8S4LYvnghJTg=;
-        b=XF5zPQpKbCu9pv7P7tqvIpvMlZoq3FvUjlwVcpmfs9wHHTkyNu6D5G8TNGFcuu/t42
-         vYt6Uc/eP2y+7YKJ6G5oo1X1FZ/ElQ6c6l+jLwV4z6NXXGiw3yNd9FLXAB36zr8uHe5m
-         Q6l4+bvMtlqQVlBVHcQu6sG3Hd98k8uxvFqIwaEAfnIAPF64Yc4UqJ9f9gBtAHFCskjL
-         isMCRoA5eaLT4S64vbfOpl8mRd6V6Z0oaG7aDxdUzEhByaDOYqK3Y8ARzflLek7u7P8Z
-         wC/4UuRWInhvZBsrEXt22QeZpH+Ni7vwizt3iMpw44EYVmzDEW/SHZyfUP5tcBh9tJz1
-         LjFg==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=injNyqk0O05AWAjdLiK5Yd2rg5V8yrPBZJK/UIJi/0o=;
+        b=OhxktmJd+PAjFzfrGtZaXuFU/maWnJT19lhfCcPO/L8J8X+Oo/ESSzcDGrn4sYcoMk
+         kPS4N3xChJi2pDtasRzktUbuMMqZXEAJPH8gLv6BXeGnRaW7cJjI0LMtaezF1G9bH6lU
+         WzkRpPRR6a7udCiBtXnRy/ybXzqlb65uC3/GWpQA/G+d4DsX4AFUmkxAtyWV9iaVkSzj
+         CcGrhkBuVfsY4013/Bft+F+a4d3+G6z0bkGvNKhmeFdCMacMv7WTHpC/zfDTgyF/6PXk
+         DwUdQcy3j3prh7pR1+s7zLIyIPMDjfC8htOkA5m+1sHQV4Rvdea7qOOnjpTGzTXt8lzE
+         RaYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ndVrv9LlDSJtPxdQ7srGUgMyCM4NsNR8S4LYvnghJTg=;
-        b=PfzVLOqm9+iYQMp3/cVFxCEDJIPqPsxUQ6+pnjOkAOzR5noDT1tAZLfGPEtFF4Ahvj
-         L8rWOUhds9KISIkh2EJFRWlpDPUepYq4+PmWlVreu3eb3hjf0hqMKbaTbJ5RzzY+9OAj
-         0cKyT8h9zRDV/mP4Uz387/Zya72QzHzXPAAiYiKidHa8BztryHnefqTcgwmgRq0DCfYZ
-         CPjoG355dcxlp6Z9+93zXZj5Wmy2V1aAXFNg30KnQUs5wmeD54g7ifJp81Lh0BWJqUZm
-         /PUdMUMfpbvrMMkT6KPOFSoqFWk9Ui3zrWb13OSaDiGGah8wFv0DS4pr9uM9E2rfRfiF
-         1/xg==
-X-Gm-Message-State: AOAM532ZBEVqlg24u8glDOVL7UaENPHWZn6f52qz7iinJ6fOcVqM2/cb
-        pqQe9jxw7C0OHU4j97qAlYK8ew==
-X-Google-Smtp-Source: ABdhPJz2F89Mt5pKkgsy0sbPI9dqRbklsMqgiIt7JIP7QWqkNW3HhlgSKFjuBKw/yP8WdqmrMC6p0w==
-X-Received: by 2002:adf:db83:: with SMTP id u3mr1140912wri.363.1629501481925;
-        Fri, 20 Aug 2021 16:18:01 -0700 (PDT)
-Received: from ?IPv6:2001:8b0:dfde:e1a0::2? (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id j16sm7321552wrr.78.2021.08.20.16.18.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 16:18:01 -0700 (PDT)
-Message-ID: <1590e1abf3991c4b9023173bddee5b9e912d2c47.camel@philpotter.co.uk>
-Subject: Re: [PATCH RFC 3/3] staging: r8188eu: add error argument to
- read_macreg
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        straube.linux@gmail.com, fmdefrancesco@gmail.com
-Date:   Sat, 21 Aug 2021 00:18:00 +0100
-In-Reply-To: <44a5a4ab2eae8e0deb969028a5488ea892008c8d.1629479152.git.paskripkin@gmail.com>
-References: <cover.1629479152.git.paskripkin@gmail.com>
-         <44a5a4ab2eae8e0deb969028a5488ea892008c8d.1629479152.git.paskripkin@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=injNyqk0O05AWAjdLiK5Yd2rg5V8yrPBZJK/UIJi/0o=;
+        b=RpHWOi17CSHdGAH+pG0gAiEB8CJNRg1WMqdVEmrnYtpolNqElBfFVHcHvrKFrBaLJs
+         as4b210f1MOazaKUkw4OlsCPnlNpfAborqiHx6iTEz5DOI+r2k3x5MJtKZi7nITFsObK
+         GoxMI/pQ4v94nkYUnKsnLNhDmHF60Uxdw4wXXHYymr/RJZyOA/wiFO9wbKJdNq61VS1i
+         /kKecMJPXzx/lSBX2pV5MSPCZvB6lmdPd8l0hHze7IxrQXYFgM9XlfrJ8ojSX+xI2Ogy
+         mA6ZRYb4GkwepSLk78W8IpXd9HS6L+yVj9sUbiND/9iqsjGH24CcOm1mwMPIerGhf/sy
+         UTdQ==
+X-Gm-Message-State: AOAM533oP8AbwDxERndFxh3CSAqYv8j5nym6Vj0K+8O5S4yOMVB8g6pQ
+        WfeMF9AR05qIAN+R3WQJokxR191wBZarMlShTi9AJXCiNWp/fw==
+X-Google-Smtp-Source: ABdhPJzyeII4XBwTu1jh+7vIYJxM4YYTmKb9f2YNy+vDAz9XkX6KruBe+a/aKqw7IhEh0xoyZPVueZ3V2sNx4Y8AX0k=
+X-Received: by 2002:a2e:2417:: with SMTP id k23mr17886463ljk.256.1629501541700;
+ Fri, 20 Aug 2021 16:19:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 20 Aug 2021 18:18:50 -0500
+Message-ID: <CAH2r5mvxX6BqLvgWO18QE+rQsAZoAzopvu5S3fyy45a+Y-w_MQ@mail.gmail.com>
+Subject: [PATCH] oid_registry: Add OIDs for missing Spnego auth mechanisms to Macs
+To:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     samba-technical <samba-technical@lists.samba.org>
+Content-Type: multipart/mixed; boundary="0000000000008def7405ca05e408"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-20 at 20:07 +0300, Pavel Skripkin wrote:
-> Since read_macreg() calls rtw_read*() internally we should tell
-> callers about an error on the read side.
-> 
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_mp.c    | 9 ++++-----
->  drivers/staging/r8188eu/include/rtw_mp.h | 2 +-
->  2 files changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_mp.c
-> b/drivers/staging/r8188eu/core/rtw_mp.c
-> index 601a1fd5d4e7..6bbea1cc364a 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mp.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mp.c
-> @@ -7,20 +7,19 @@
->  #include "../include/odm_precomp.h"
->  #include "../include/rtl8188e_hal.h"
->  
-> -u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz)
-> +u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz, int
-> *error)
+--0000000000008def7405ca05e408
+Content-Type: text/plain; charset="UTF-8"
 
-Dear Pavel,
+ In testing mounts to Macs, noticed that the OIDS for some
+ GSSAPI/SPNEGO auth mechanisms sent by the server were not
+ recognized and were missing from the header.
 
-Correct me if I'm wrong, but this read_macreg function seems to be
-completely unused by the rest of the driver. Rather than changing the
-signature to do error handling, maybe it would be better to just remove
-it?
+ Signed-off-by: Steve French <stfrench@microsoft.com>
 
-That is just my view though, would be interested to see what others
-think - perhaps it could come in handy at some point.
+diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+index 3d8db1f6a5db..2728842721bc 100644
+--- a/include/linux/oid_registry.h
++++ b/include/linux/oid_registry.h
+@@ -70,6 +70,9 @@ enum OID {
 
-Regards,
-Phil
+        OID_spnego,                     /* 1.3.6.1.5.5.2 */
 
++       OID_IAKerb,                     /* 1.3.6.1.5.2.5 */
++       OID_PKU2U                       /* 1.3.5.1.5.2.7 */
++       OID_Scram,                      /* 1.3.6.1.5.5.14 */
+        OID_certAuthInfoAccess,         /* 1.3.6.1.5.5.7.1.1 */
+        OID_sha1,                       /* 1.3.14.3.2.26 */
+        OID_id_ansip384r1,              /* 1.3.132.0.34 */
+@@ -104,6 +107,10 @@ enum OID {
+        OID_authorityKeyIdentifier,     /* 2.5.29.35 */
+        OID_extKeyUsage,                /* 2.5.29.37 */
+
++       /* Heimdal mechanisms */
++       OID_NetlogonMechanism,          /* 1.2.752.43.14.2 */
++       OID_appleLocalKdcSupported,     /* 1.2.752.43.14.3 */
++
+        /* EC-RDSA */
+        OID_gostCPSignA,                /* 1.2.643.2.2.35.1 */
+        OID_gostCPSignB,                /* 1.2.643.2.2.35.2 */
+
+
+-- 
+Thanks,
+
+Steve
+
+--0000000000008def7405ca05e408
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-oid_registry-Add-OIDs-for-missing-Spnego-auth-mechan.patch"
+Content-Disposition: attachment; 
+	filename="0001-oid_registry-Add-OIDs-for-missing-Spnego-auth-mechan.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kskz4e7j0>
+X-Attachment-Id: f_kskz4e7j0
+
+RnJvbSBmNDRlODEzYmVlNDdhOTA3YTA2MmE4NjNiMWYwMWZmZTJhOGY5ODY1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBTdGV2ZSBGcmVuY2ggPHN0ZnJlbmNoQG1pY3Jvc29mdC5jb20+
+CkRhdGU6IEZyaSwgMjAgQXVnIDIwMjEgMTg6MTA6MzYgLTA1MDAKU3ViamVjdDogW1BBVENIXSBv
+aWRfcmVnaXN0cnk6IEFkZCBPSURzIGZvciBtaXNzaW5nIFNwbmVnbyBhdXRoIG1lY2hhbmlzbXMg
+dG8KIE1hY3MKCkluIHRlc3RpbmcgbW91bnRzIHRvIE1hY3MsIG5vdGljZWQgdGhhdCB0aGUgT0lE
+UyBmb3Igc29tZQpHU1NBUEkvU1BORUdPIGF1dGggbWVjaGFuaXNtcyBzZW50IGJ5IHRoZSBzZXJ2
+ZXIgd2VyZSBub3QKcmVjb2duaXplZCBhbmQgd2VyZSBtaXNzaW5nIGZyb20gdGhlIGhlYWRlci4K
+ClNpZ25lZC1vZmYtYnk6IFN0ZXZlIEZyZW5jaCA8c3RmcmVuY2hAbWljcm9zb2Z0LmNvbT4KLS0t
+CiBpbmNsdWRlL2xpbnV4L29pZF9yZWdpc3RyeS5oIHwgNyArKysrKysrCiAxIGZpbGUgY2hhbmdl
+ZCwgNyBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9vaWRfcmVnaXN0
+cnkuaCBiL2luY2x1ZGUvbGludXgvb2lkX3JlZ2lzdHJ5LmgKaW5kZXggM2Q4ZGIxZjZhNWRiLi4y
+NzI4ODQyNzIxYmMgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvb2lkX3JlZ2lzdHJ5LmgKKysr
+IGIvaW5jbHVkZS9saW51eC9vaWRfcmVnaXN0cnkuaApAQCAtNzAsNiArNzAsOSBAQCBlbnVtIE9J
+RCB7CiAKIAlPSURfc3BuZWdvLAkJCS8qIDEuMy42LjEuNS41LjIgKi8KIAorCU9JRF9JQUtlcmIs
+CQkJLyogMS4zLjYuMS41LjIuNSAqLworCU9JRF9QS1UyVQkJCS8qIDEuMy41LjEuNS4yLjcgKi8K
+KwlPSURfU2NyYW0sCQkJLyogMS4zLjYuMS41LjUuMTQgKi8KIAlPSURfY2VydEF1dGhJbmZvQWNj
+ZXNzLAkJLyogMS4zLjYuMS41LjUuNy4xLjEgKi8KIAlPSURfc2hhMSwJCQkvKiAxLjMuMTQuMy4y
+LjI2ICovCiAJT0lEX2lkX2Fuc2lwMzg0cjEsCQkvKiAxLjMuMTMyLjAuMzQgKi8KQEAgLTEwNCw2
+ICsxMDcsMTAgQEAgZW51bSBPSUQgewogCU9JRF9hdXRob3JpdHlLZXlJZGVudGlmaWVyLAkvKiAy
+LjUuMjkuMzUgKi8KIAlPSURfZXh0S2V5VXNhZ2UsCQkvKiAyLjUuMjkuMzcgKi8KIAorCS8qIEhl
+aW1kYWwgbWVjaGFuaXNtcyAqLworCU9JRF9OZXRsb2dvbk1lY2hhbmlzbSwJCS8qIDEuMi43NTIu
+NDMuMTQuMiAqLworCU9JRF9hcHBsZUxvY2FsS2RjU3VwcG9ydGVkLAkvKiAxLjIuNzUyLjQzLjE0
+LjMgKi8KKwogCS8qIEVDLVJEU0EgKi8KIAlPSURfZ29zdENQU2lnbkEsCQkvKiAxLjIuNjQzLjIu
+Mi4zNS4xICovCiAJT0lEX2dvc3RDUFNpZ25CLAkJLyogMS4yLjY0My4yLjIuMzUuMiAqLwotLSAK
+Mi4zMC4yCgo=
+--0000000000008def7405ca05e408--
