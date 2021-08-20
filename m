@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640B83F325C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68B63F3262
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhHTRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:37:57 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3677 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbhHTRhz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:37:55 -0400
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GrphV5lX2z67RS4;
-        Sat, 21 Aug 2021 01:36:10 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 20 Aug 2021 19:37:15 +0200
-Received: from [10.47.93.229] (10.47.93.229) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 20 Aug
- 2021 18:37:14 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: arm scsi drivers
-To:     <linux@armlinux.org.uk>
-CC:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Message-ID: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
-Date:   Fri, 20 Aug 2021 18:37:13 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S234656AbhHTRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:41:50 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:32920 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229940AbhHTRlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:41:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=jQD2OATswpHp4bNzlY3nCz9N+HNVVMddP1vTz/Eobi4=; b=oEIIcNTZ77tkcpIYxVQ7660CA0
+        DQ9L9PJCx48VE/0l6QeLOhpsNtXJZbTsh5mQ1rpx/JJRw8JYBt4YyR32H0ZiW6FyzpYfILqqfU1W6
+        XiG2m2odoOcWSMB7PEaGLd07gkcvLB1FHehzm9qObvzugwbw3CpTrRbUmWEFv3fdGa9w=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mH8Vr-001CJX-JT; Fri, 20 Aug 2021 19:41:03 +0200
+Date:   Fri, 20 Aug 2021 19:41:03 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: net: Add bindings for LiteETH
+Message-ID: <YR/pLw8EDKJWt8Uw@lunn.ch>
+References: <20210820074726.2860425-1-joel@jms.id.au>
+ <20210820074726.2860425-2-joel@jms.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.93.229]
-X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820074726.2860425-2-joel@jms.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+On Fri, Aug 20, 2021 at 05:17:25PM +0930, Joel Stanley wrote:
+> LiteETH is a small footprint and configurable Ethernet core for FPGA
+> based system on chips.
 
-Recently we tried to remove scsi_cmnd.tags struct member [0].
+Hi Joel
 
-However it now shows that some of the arm SCSI drivers continue to use 
-this [1]. I think any other driver usage of this member had been found 
-and removed.
+Just an FYI.
 
-The impression is that the usage of scsi_cmnd.tag in those drivers is 
-quite dubious.
+DT is considered ABI. Once released, you should not be making changes
+which are not backwards compatible.
 
-Now checking [2], it appears that you may have had some patches for 
-these drivers locally.
+All the PHY and MDIO properties you are adding here are unused in the
+driver. They all look sensible, and you should be able to make it
+work. But when you do come to make that implementation, this
+definition is the base of what you have to work with.
 
-So is that the case? Is this HW still used with bleeding edge kernels? 
-If so, can we fix up this tag management?
-
-[0] 
-https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#mb47909f38f35837686734369600051b278d124af
-
-[1] 
-https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#md5d786e5753083b2f3e8e761b1c69809f82c7485
-
-[2] 
-https://lore.kernel.org/lkml/20210109174357.GB1551@shell.armlinux.org.uk/
-
-Thanks,
-John
+	   Andrew
