@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEED33F2506
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32A23F250D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237883AbhHTCw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237810AbhHTCwv (ORCPT
+        id S237899AbhHTC7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:59:09 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:41931 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234797AbhHTC7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:52:51 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8964C061575;
-        Thu, 19 Aug 2021 19:52:14 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d9so6362603qty.12;
-        Thu, 19 Aug 2021 19:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u8qviJxekZI0W9oeMNNpxswXOhMmSMq6jYU5M5DVl1Y=;
-        b=ZptjVme0tmW1VCpvcrBC2/CDLssJbqaoRo4Q3zTv2FyLpB1EZMmFxcHZevplDZTC3k
-         ZZD4v6h9cJXEPhrfRVFXHzwSRzxdmJu2wmlK+IREiu4U7Indsy85FHIFCYBIt+asOOhr
-         SHEt6lmnRXZIZF+LR/h7xVC0zG9KL4mApDQsaSX1EX712MuPJ2rDNR0leTpGBYI/Y6kg
-         mA1Jqhha+IZdmuAvD/Z9bEBSL922Yg4LA610uR3FXVuSyrUiG/DctG3viXrnMZiVPzS3
-         Y39n5znGQqn523b3OML9qLFJTDpPdi1Hu5YzglGY+RSv07az1BiNjgtgVtqIEzlHFbPA
-         9epw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u8qviJxekZI0W9oeMNNpxswXOhMmSMq6jYU5M5DVl1Y=;
-        b=IGy94//JK2SANweg8s0iDH3hwzK8KjfL+8GF+xj3vwXw0kFW30tcYcEIAibj9z5FWK
-         YFd1NL261xWlXKukYbNtzusXKm+E3p2EOaImsPZd74RHl8SK468HESop4C6E9UcHt17R
-         np7RR2RF5zV72JrPN0x7hnrZ32NV4rWGVAFEC/RbruDC8dvOn960cCAPQRtXU4WBrJrw
-         /5D2UgRS6d0u6UNs9dTjomsBlM3Ozw0bMkSVsIUDgWQXdaBduXBqt54tNhaAOsv+Vm2+
-         9RUkQlIIPnwn+LuChB/h6wRPb9AXPfZaXCxgUYQWRgym3WHitLbO9mtc7H/yU7LcGFSq
-         AfFQ==
-X-Gm-Message-State: AOAM531Il8nnPcD+W9qMiG0qi55OWWVJov9OqLOPztyfL35065/RJTJI
-        3XwNZouPrGw51Ptgq6vouKw=
-X-Google-Smtp-Source: ABdhPJxmUkueYQ4YkroowaJHXiGU1LyZ97m6MhoVyq6AumGLSMkTyYII/KF2lyckupUGNQngSZjMcg==
-X-Received: by 2002:aed:2029:: with SMTP id 38mr15816652qta.71.1629427933928;
-        Thu, 19 Aug 2021 19:52:13 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id 21sm2564270qkk.51.2021.08.19.19.52.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 19:52:13 -0700 (PDT)
-From:   jing yangyang <cgel.zte@gmail.com>
-X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] s390:fix Coccinelle warnings
-Date:   Thu, 19 Aug 2021 19:51:59 -0700
-Message-Id: <20210820025159.11914-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 19 Aug 2021 22:59:08 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AykiYbqPLLL4ekMBcTiWjsMiBIKoaSvp037Eq?=
+ =?us-ascii?q?v3oedfUzSL3/qynOpoVj6faaslYssR0b9exofZPwJE80lqQFhrX5X43SPzUO0V?=
+ =?us-ascii?q?HAROoJgLcKgQeQfxEWndQ96U4PScdD4aXLfDpHZNjBkXSFOudl0N+a67qpmOub?=
+ =?us-ascii?q?639sSDthY6Zm4xwRMHfhLmRGABlBGYEiFIeRou5Opz+bc3wRacihQlYfWeyrna?=
+ =?us-ascii?q?ywqLvWJQ4BGwU86BSDyReh6LvBGRCe2RsEFxNjqI1SiVT4rw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,336,1620662400"; 
+   d="scan'208";a="113158693"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 20 Aug 2021 10:58:28 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 11F084D0D9BA;
+        Fri, 20 Aug 2021 10:58:23 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 10:58:17 +0800
+Received: from FNSTPC.g08.fujitsu.local (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 20 Aug 2021 10:58:17 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <philip.li@intel.com>, <yifeix.zhu@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>
+Subject: [PATCH v2 5/5] selftests/bpf: exit with KSFT_SKIP if no Makefile found
+Date:   Fri, 20 Aug 2021 10:55:49 +0800
+Message-ID: <20210820025549.28325-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210820015556.23276-1-lizhijian@cn.fujitsu.com>
+References: <20210820015556.23276-1-lizhijian@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 11F084D0D9BA.AFE72
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-WARNING !A || A && B is equivalent to !A || B
+This would happend when we run the tests after install kselftests
+ root@lkp-skl-d01 ~# /kselftests/run_kselftest.sh -t bpf:test_doc_build.sh
+ TAP version 13
+ 1..1
+ # selftests: bpf: test_doc_build.sh
+ perl: warning: Setting locale failed.
+ perl: warning: Please check that your locale settings:
+         LANGUAGE = (unset),
+         LC_ALL = (unset),
+         LC_ADDRESS = "en_US.UTF-8",
+         LC_NAME = "en_US.UTF-8",
+         LC_MONETARY = "en_US.UTF-8",
+         LC_PAPER = "en_US.UTF-8",
+         LC_IDENTIFICATION = "en_US.UTF-8",
+         LC_TELEPHONE = "en_US.UTF-8",
+         LC_MEASUREMENT = "en_US.UTF-8",
+         LC_TIME = "en_US.UTF-8",
+         LC_NUMERIC = "en_US.UTF-8",
+         LANG = "en_US.UTF-8"
+     are supported and installed on your system.
+ perl: warning: Falling back to the standard locale ("C").
+ # skip:    bpftool files not found!
+ #
+ ok 1 selftests: bpf: test_doc_build.sh # SKIP
 
-This issue was detected with the help of Coccinelle.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 ---
- arch/s390/include/asm/scsw.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/test_bpftool_build.sh | 2 +-
+ tools/testing/selftests/bpf/test_doc_build.sh     | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/include/asm/scsw.h b/arch/s390/include/asm/scsw.h
-index a7c3ccf..754122d 100644
---- a/arch/s390/include/asm/scsw.h
-+++ b/arch/s390/include/asm/scsw.h
-@@ -691,9 +691,8 @@ static inline int scsw_tm_is_valid_pno(union scsw *scsw)
- {
- 	return (scsw->tm.fctl != 0) &&
- 	       (scsw->tm.stctl & SCSW_STCTL_STATUS_PEND) &&
--	       (!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) ||
--		 ((scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) &&
--		  (scsw->tm.actl & SCSW_ACTL_SUSPENDED)));
-+		(!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) ||
-+		(scsw->tm.actl & SCSW_ACTL_SUSPENDED));
- }
+diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
+index ac349a5cea7e..b03a87571592 100755
+--- a/tools/testing/selftests/bpf/test_bpftool_build.sh
++++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
+@@ -22,7 +22,7 @@ KDIR_ROOT_DIR=$(realpath $PWD/$SCRIPT_REL_DIR/../../../../)
+ cd $KDIR_ROOT_DIR
+ if [ ! -e tools/bpf/bpftool/Makefile ]; then
+ 	echo -e "skip:    bpftool files not found!\n"
+-	exit 0
++	exit 4 # KSFT_SKIP=4
+ fi
  
- /**
+ ERROR=0
+diff --git a/tools/testing/selftests/bpf/test_doc_build.sh b/tools/testing/selftests/bpf/test_doc_build.sh
+index d67ced95a6cf..679cf968c7d1 100755
+--- a/tools/testing/selftests/bpf/test_doc_build.sh
++++ b/tools/testing/selftests/bpf/test_doc_build.sh
+@@ -10,6 +10,11 @@ KDIR_ROOT_DIR=$(realpath $SCRIPT_REL_DIR/../../../../)
+ SCRIPT_REL_DIR=$(dirname $(realpath --relative-to=$KDIR_ROOT_DIR $SCRIPT_REL_PATH))
+ cd $KDIR_ROOT_DIR
+ 
++if [ ! -e $PWD/$SCRIPT_REL_DIR/Makefile ]; then
++	echo -e "skip:    bpftool files not found!\n"
++	exit 4 # KSFT_SKIP=4
++fi
++
+ for tgt in docs docs-clean; do
+ 	make -s -C $PWD/$SCRIPT_REL_DIR $tgt;
+ done
 -- 
-1.8.3.1
+2.32.0
+
 
 
