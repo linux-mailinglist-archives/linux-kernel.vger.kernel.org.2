@@ -2,74 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0443F29AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC33F3F29B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238169AbhHTKAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237006AbhHTKAM (ORCPT
+        id S238101AbhHTKBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:01:11 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:43291 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236946AbhHTKBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:00:12 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F45FC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:59:34 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id f15so8954990ilk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=yA7qi/rPIuweS4goxIq/zK9E4QXP06igFOjoAQAU374=;
-        b=MpF7KayceTuBB9zIsDhGQvjSzJuiZ1MdFZG9zn0X5cEzFyoqTZOAa737i1wvDVm9aO
-         krI34xzxQ8SMaJFCjor6qni1VoVxu/O4LHKlqbpVRhekrN+nV68yX6SLswxSX8IVPHQy
-         7ACDD3Ndf/yu4DTX8gjAT+tlzzSamnBAMrCqyF5hd6oKJRftwvJziAAco0RUANg7u0ED
-         XsnluM2dfGTGjEhGszJQmR4rN3KwmnQapaCdOKh7MOyAmqDRta8VGWcUisPcT6eOGGWt
-         LsilDKSTIEAgiMzYMOrK0p2PiwwLpo6uqX3gq93HP3tf+ExotVkzAJGQbm2QnHFALcVH
-         1pbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=yA7qi/rPIuweS4goxIq/zK9E4QXP06igFOjoAQAU374=;
-        b=CQhccdH1nIC7MzcOGCEvryq00Feu+ZQvjrvA4ooPrRAlFjPvWaNhNJZNwXz2PvT2+g
-         47jmB3r87lCwDTwHKHZP53I+DfMajDQauFNBaVYpMb+xPSJL966ka1N7FgEcVi765aYr
-         dj1JyOoySgMBt8z1Sz92v0sz9Df/zztW/xn6HUlgMkXC/BmJ70n6lecRsFN0OUx02Fm9
-         ZXsAdkQNdixBJNKen/W2/MPho45ZVL/WTknlRjh+kXznd1iSllJ1BXqRcUirubK7tRXp
-         Y0xTnrbNAoThMoGSX0erk6cSxhIMduCkbP3cR/Sf/kcIxeGI75e3j2HGJW+4AibghQIT
-         e1ww==
-X-Gm-Message-State: AOAM5323NhEW0UDNszmay5Zcibj119x09D+9Zq1Wao4NNJqQzMN/lpFi
-        TliOWQGHBqE3tf8wGpvTJ4HDEdNlOnIWVW38Fc8=
-X-Google-Smtp-Source: ABdhPJzAjEAOYwhqij/IfwBkAdf+REDJ5+zroQC7x7K1zAol8YMQNf5e91zJ1okuwJk1HcBszwUFJ7BXuqc4FvVklnY=
-X-Received: by 2002:a92:d7c1:: with SMTP id g1mr13373846ilq.24.1629453574072;
- Fri, 20 Aug 2021 02:59:34 -0700 (PDT)
+        Fri, 20 Aug 2021 06:01:06 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UkJjDtn_1629453621;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UkJjDtn_1629453621)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 20 Aug 2021 18:00:27 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Eryu Guan <eguan@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v3 1/2] erofs: introduce chunk-based file on-disk format
+Date:   Fri, 20 Aug 2021 18:00:18 +0800
+Message-Id: <20210820100019.208490-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
+In-Reply-To: <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
+References: <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
-Reply-To: mrsvalerian1947@gmail.com
-Sender: mariluda1972@gmail.com
-Received: by 2002:a5d:9b89:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 02:59:33
- -0700 (PDT)
-From:   "Mrs. Jane Valerian" <mrs.janevalerian19772@gmail.com>
-Date:   Fri, 20 Aug 2021 02:59:33 -0700
-X-Google-Sender-Auth: ZxLIscYwWdR1pMVwe6mXD962JrQ
-Message-ID: <CANgCvtDpU2BXAtDsLm0JaBvV5EBMWUrFHv4HWVPuTNpWtXm-Yg@mail.gmail.com>
-Subject: Dear Beloved,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HELLO,
+Currently, uncompressed data except for tail-packing inline is
+consecutive on disk.
 
-Dear Beloved,
+In order to support chunk-based data deduplication, add a new
+corresponding inode data layout.
 
-I am Mrs. Jane Valerian from, United States. It is understandable that
-you may be a bit apprehensive because you do not know me, I found your
-email address from a Human resources database and decided to contact
-you. I would love to employ you into my charity work, I am ready to
-donate some money to you to carry on the Charity work in your country.
-Please reply so that i will give you further details and tell you
-about myself.
+In the future, the data source of chunks can be either (un)compressed.
 
-Yours Sincerely
-Mrs. Jane Valerian
+Reviewed-by: Liu Bo <bo.liu@linux.alibaba.com>
+Reviewed-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+changes since v2:
+ - introduce EROFS_BLOCK_MAP_ENTRY_SIZE suggested by Chao.
+
+ Documentation/filesystems/erofs.rst | 16 ++++++++--
+ fs/erofs/erofs_fs.h                 | 47 +++++++++++++++++++++++++++--
+ 2 files changed, 59 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/filesystems/erofs.rst b/Documentation/filesystems/erofs.rst
+index 868e3972227f..d484408a90c1 100644
+--- a/Documentation/filesystems/erofs.rst
++++ b/Documentation/filesystems/erofs.rst
+@@ -156,13 +156,14 @@ may not. All metadatas can be now observed in two different spaces (views):
+ 
+     Xattrs, extents, data inline are followed by the corresponding inode with
+     proper alignment, and they could be optional for different data mappings.
+-    _currently_ total 4 valid data mappings are supported:
++    _currently_ total 5 data layouts are supported:
+ 
+     ==  ====================================================================
+      0  flat file data without data inline (no extent);
+      1  fixed-sized output data compression (with non-compacted indexes);
+      2  flat file data with tail packing data inline (no extent);
+-     3  fixed-sized output data compression (with compacted indexes, v5.3+).
++     3  fixed-sized output data compression (with compacted indexes, v5.3+);
++     4  chunk-based file (v5.15+).
+     ==  ====================================================================
+ 
+     The size of the optional xattrs is indicated by i_xattr_count in inode
+@@ -213,6 +214,17 @@ Note that apart from the offset of the first filename, nameoff0 also indicates
+ the total number of directory entries in this block since it is no need to
+ introduce another on-disk field at all.
+ 
++Chunk-based file
++----------------
++In order to support chunk-based data deduplication, a new inode data layout has
++been supported since Linux v5.15: Files are split in equal-sized data chunks
++with ``extents`` area of the inode metadata indicating how to get the chunk
++data: these can be simply as a 4-byte block address array or in the 8-byte
++chunk index form (see struct erofs_inode_chunk_index in erofs_fs.h for more
++details.)
++
++By the way, chunk-based files are all uncompressed for now.
++
+ Data compression
+ ----------------
+ EROFS implements LZ4 fixed-sized output compression which generates fixed-sized
+diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+index 0f8da74570b4..b0b23f41abc3 100644
+--- a/fs/erofs/erofs_fs.h
++++ b/fs/erofs/erofs_fs.h
+@@ -4,6 +4,7 @@
+  *
+  * Copyright (C) 2017-2018 HUAWEI, Inc.
+  *             https://www.huawei.com/
++ * Copyright (C) 2021, Alibaba Cloud
+  */
+ #ifndef __EROFS_FS_H
+ #define __EROFS_FS_H
+@@ -19,10 +20,12 @@
+ #define EROFS_FEATURE_INCOMPAT_LZ4_0PADDING	0x00000001
+ #define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
+ #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
++#define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
+ #define EROFS_ALL_FEATURE_INCOMPAT		\
+ 	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
+ 	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
+-	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER)
++	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
++	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE)
+ 
+ #define EROFS_SB_EXTSLOT_SIZE	16
+ 
+@@ -64,13 +67,16 @@ struct erofs_super_block {
+  * inode, [xattrs], last_inline_data, ... | ... | no-holed data
+  * 3 - inode compression D:
+  * inode, [xattrs], map_header, extents ... | ...
+- * 4~7 - reserved
++ * 4 - inode chunk-based E:
++ * inode, [xattrs], chunk indexes ... | ...
++ * 5~7 - reserved
+  */
+ enum {
+ 	EROFS_INODE_FLAT_PLAIN			= 0,
+ 	EROFS_INODE_FLAT_COMPRESSION_LEGACY	= 1,
+ 	EROFS_INODE_FLAT_INLINE			= 2,
+ 	EROFS_INODE_FLAT_COMPRESSION		= 3,
++	EROFS_INODE_CHUNK_BASED			= 4,
+ 	EROFS_INODE_DATALAYOUT_MAX
+ };
+ 
+@@ -90,6 +96,19 @@ static inline bool erofs_inode_is_data_compressed(unsigned int datamode)
+ #define EROFS_I_ALL	\
+ 	((1 << (EROFS_I_DATALAYOUT_BIT + EROFS_I_DATALAYOUT_BITS)) - 1)
+ 
++/* indicate chunk blkbits, thus 'chunksize = blocksize << chunk blkbits' */
++#define EROFS_CHUNK_FORMAT_BLKBITS_MASK		0x001F
++/* with chunk indexes or just a 4-byte blkaddr array */
++#define EROFS_CHUNK_FORMAT_INDEXES		0x0020
++
++#define EROFS_CHUNK_FORMAT_ALL	\
++	(EROFS_CHUNK_FORMAT_BLKBITS_MASK | EROFS_CHUNK_FORMAT_INDEXES)
++
++struct erofs_inode_chunk_info {
++	__le16 format;		/* chunk blkbits, etc. */
++	__le16 reserved;
++};
++
+ /* 32-byte reduced form of an ondisk inode */
+ struct erofs_inode_compact {
+ 	__le16 i_format;	/* inode format hints */
+@@ -107,6 +126,9 @@ struct erofs_inode_compact {
+ 
+ 		/* for device files, used to indicate old/new device # */
+ 		__le32 rdev;
++
++		/* for chunk-based files, it contains the summary info */
++		struct erofs_inode_chunk_info c;
+ 	} i_u;
+ 	__le32 i_ino;           /* only used for 32-bit stat compatibility */
+ 	__le16 i_uid;
+@@ -135,6 +157,9 @@ struct erofs_inode_extended {
+ 
+ 		/* for device files, used to indicate old/new device # */
+ 		__le32 rdev;
++
++		/* for chunk-based files, it contains the summary info */
++		struct erofs_inode_chunk_info c;
+ 	} i_u;
+ 
+ 	/* only used for 32-bit stat compatibility */
+@@ -204,6 +229,19 @@ static inline unsigned int erofs_xattr_entry_size(struct erofs_xattr_entry *e)
+ 				 e->e_name_len + le16_to_cpu(e->e_value_size));
+ }
+ 
++/* represent a zeroed chunk (hole) */
++#define EROFS_NULL_ADDR			-1
++
++/* 4-byte block address array */
++#define EROFS_BLOCK_MAP_ENTRY_SIZE	sizeof(__le32)
++
++/* 8-byte inode chunk indexes */
++struct erofs_inode_chunk_index {
++	__le16 advise;		/* always 0, don't care for now */
++	__le16 device_id;	/* back-end storage id, always 0 for now */
++	__le32 blkaddr;		/* start block address of this inode chunk */
++};
++
+ /* maximum supported size of a physical compression cluster */
+ #define Z_EROFS_PCLUSTER_MAX_SIZE	(1024 * 1024)
+ 
+@@ -338,9 +376,14 @@ static inline void erofs_check_ondisk_layout_definitions(void)
+ 	BUILD_BUG_ON(sizeof(struct erofs_inode_extended) != 64);
+ 	BUILD_BUG_ON(sizeof(struct erofs_xattr_ibody_header) != 12);
+ 	BUILD_BUG_ON(sizeof(struct erofs_xattr_entry) != 4);
++	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_info) != 4);
++	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_index) != 8);
+ 	BUILD_BUG_ON(sizeof(struct z_erofs_map_header) != 8);
+ 	BUILD_BUG_ON(sizeof(struct z_erofs_vle_decompressed_index) != 8);
+ 	BUILD_BUG_ON(sizeof(struct erofs_dirent) != 12);
++	/* keep in sync between 2 index structures for better extendibility */
++	BUILD_BUG_ON(sizeof(struct erofs_inode_chunk_index) !=
++		     sizeof(struct z_erofs_vle_decompressed_index));
+ 
+ 	BUILD_BUG_ON(BIT(Z_EROFS_VLE_DI_CLUSTER_TYPE_BITS) <
+ 		     Z_EROFS_VLE_CLUSTER_TYPE_MAX - 1);
+-- 
+2.24.4
+
