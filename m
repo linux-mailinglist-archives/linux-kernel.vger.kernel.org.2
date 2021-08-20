@@ -2,213 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6254C3F3420
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860803F3424
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236949AbhHTSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:51:48 -0400
-Received: from mail.efficios.com ([167.114.26.124]:42628 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhHTSvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:51:46 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 073C437F513;
-        Fri, 20 Aug 2021 14:51:08 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zcj2uIDERibu; Fri, 20 Aug 2021 14:51:03 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 820FA37F511;
-        Fri, 20 Aug 2021 14:51:03 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 820FA37F511
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1629485463;
-        bh=sXTeQHkaWdD/4l7hoXti4Ubcl0tkf7Zd4TZfSvrKRes=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=oNZOQn0xjFt6WQUvGMQuzpN+Z9NyCI2uyOe78NZQQuRjFo81cXW9nk4wRKHl3p4Tb
-         EqvG2mLmSmD+nZsWu9QYNmZf5Y1DYqtvj8uk4FE2UEyOmlnRZzUFrXd8d5OK0H0ZxP
-         XJxjfI5LVysK8PvQjSCAb1kxlmlTvRWWPEliUyjGbYyFpEK+6yPplM933+g2sxtbqP
-         N1sqXpyAIqfrWktVpmEHUC62l/DvIwZMzji4gpk2dNo1RdQtni4JaXgwh4OJpOFA90
-         wA8AQu0rofowBXkgDS63LtzlkTRZuRQUR/m/oMITp7JQzdtCy0vFfbIsRmSgkZQM6D
-         sRorjMIQcml/w==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id lE-2fVChrxL9; Fri, 20 Aug 2021 14:51:03 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 5E36137F14A;
-        Fri, 20 Aug 2021 14:51:03 -0400 (EDT)
-Date:   Fri, 20 Aug 2021 14:51:03 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Message-ID: <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
-In-Reply-To: <YR7tzZ98XC6OV2vu@google.com>
-References: <20210818001210.4073390-1-seanjc@google.com> <20210818001210.4073390-2-seanjc@google.com> <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com> <YR7tzZ98XC6OV2vu@google.com>
-Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing
- NOTIFY_RESUME on xfer to KVM guest
-MIME-Version: 1.0
+        id S236378AbhHTS7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:59:00 -0400
+Received: from mail-sn1anam02on2077.outbound.protection.outlook.com ([40.107.96.77]:58462
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229512AbhHTS6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 14:58:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MHcqNsWxHB53SRDLY57et1Rirva+OuW3VlAsVuEet+4rQeNDbvg+aTG5tuCbGWgh84z6TNfhwFvngRhgYP2ZJUcHMqF5LyH6xDvnqDczSDLY8U77x+6CLU2xcxW9yhv2vToydb8HpLVhu7F34BHqJTEzULggM5F1Ijs5EkPauOs/HrtEQpgGmQg7gpe+iFbAKBraq8QfV6QMaAtHR6gZzTNueMV10HCDXO4MuEVXK2VN0Vyrh1cFW3jKsswT7yUY43rZ4VaJuwT/punt/CZ1KthVe5YYwtXxMTWcgfiG5aC53AzUEDJvzTWetwM1NQVoFpA5tMf+mVV802epwUy5ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mqTQRgpE6LwVmL98UUNywjoqeA7xiRRZ2PPVNcSzDwc=;
+ b=kC9/YELrTxOACi5SB1QZFPJ8/p6BZ/3Q6h0WTJ1rKrhi2xPC+ANDFr6D1u4BeVbbwswqT3PiksVV014sSxRijMzoRANTKMzVPp2W+amzzE9kfFz30e1w0Eg5Ka2xwGhm8cH4iBnfpdTsn3aoaK59IdWO4rT+eUj3s4Ju/Cfe2NdS0OdnKmfgUGi7jueCPKSa2LQECr/BxA8VOMvqxviZ6aCaoziFu24ue898CYJPo9c8bxkBS94bHn30aIa/5LNFbDr6UB4T9qRLxoXRitahtawZM8hDaq8j9v/0TCDyvTRAEuR0WkiT3nEn7BrXoPFuXuuT29AGRd9TA5IIpYHRxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mqTQRgpE6LwVmL98UUNywjoqeA7xiRRZ2PPVNcSzDwc=;
+ b=crxqcCqyPAQY41N25zFwcFlCDe+EaB0Wwzweje/sPMtTPUpqKy2/9+Q8QG5hAliRHeRyEviUDarSHhpzn5VPN+vF4yAVa6m24HfZfjqv8JykLpo98FqntUUZoRPN7S1NOdl2SmEYLh7mh0wwgzfx8fc65fgnDbvNAgwpnt6oXZY=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by MWHPR12MB1502.namprd12.prod.outlook.com (2603:10b6:301:10::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Fri, 20 Aug
+ 2021 18:58:05 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::3987:37e5:4db7:944e]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::3987:37e5:4db7:944e%8]) with mapi id 15.20.4436.021; Fri, 20 Aug 2021
+ 18:58:05 +0000
+Subject: Re: [PATCH] x86/resctrl: Fix 'uninitialized symbol' build warning
+To:     Wei Huang <wei.huang2@amd.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de
+Cc:     fenghua.yu@intel.com, Terry.Bowman@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, hpa@zytor.com,
+        reinette.chatre@intel.com
+References: <162947718839.12313.2592762168334394449.stgit@bmoger-ubuntu>
+ <d0450e83-8e31-611f-5224-12742764e4d0@amd.com>
+From:   Babu Moger <babu.moger@amd.com>
+Message-ID: <1c81318c-c5d5-241a-ed32-bf6ba3ec56d4@amd.com>
+Date:   Fri, 20 Aug 2021 13:58:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <d0450e83-8e31-611f-5224-12742764e4d0@amd.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: rseq: Update rseq when processing NOTIFY_RESUME on xfer to KVM guest
-Thread-Index: PbBGpAyhKqKIuQG2l1yIkedungrZig==
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN6PR2101CA0029.namprd21.prod.outlook.com
+ (2603:10b6:805:106::39) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.0] (165.204.77.1) by SN6PR2101CA0029.namprd21.prod.outlook.com (2603:10b6:805:106::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.1 via Frontend Transport; Fri, 20 Aug 2021 18:58:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c14ba037-3f08-418e-de65-08d9640c7176
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1502:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB150229DB1EEA2B769F0940F295C19@MWHPR12MB1502.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mC/0v+H8xu6M4PeRw/xaUyCAP9325/7j2kvOfuSHRXB6xzP+YQ02nsU8yaq2wSHW+AFh6DKgEEtpcsYIAZJSWUeZzQHY1HqZybZ3+yrKpo8VY89GIIkZbl+c3hnThsE5la/dO8aXr6ARJkSvmgWI7dko0IeLMsReY4g/35Q6Q/8DQSPE8Nxu1qsm35sqtwKWdGZsz9v/mEzBgt7sl5kU0xxguLTAyVZIv5C+yAgk58Rg/2As+np1fxx6HK7CzvETmPS28DO9kH4BaKi71Q+KMYwUND455UrncRpGDlOfj9DwBQoJ8OTM3Z2kK6ojW1rjbd+H69Awq/oD9qLgYUq6BtbLmlfUqZ2kioiarSY5pgCBc6YkDJVKTVcCTL+gt7t0UDdFd1v8mqKeP5cfxie1HG+bhfeFKxkD7/Bvobvuh6WG7OPL1RBosRD3RQn0ekSuq4m/Lt7UInht97tV5cF9nGFmoEyPEWEcArg2oA7+YQBF6yp89sy85OziJbxJf2wanadTgk6EPjQkk08ZJfcyQ4pfbcIJiPbjqBKuF52hEuD3Hb7RMLsrcmv5JiwdFv8nPo9bIt5bgLRlGfoZ4dSx3qe6VpicDs9mD7fyOhmY//+ARzOwUtAbgt/9KY4J3kHFyDaaLU2xcoyDOiMKE/awSy3cFbLkEqKkrgo5nVZj7xPhrxiuUOpowLaRxK6SsFhO9JGAuxsjEWWfsHufogCi327QBacnRz3nlH/TwYvtptjrcsIBB+73ZW7unL9PLlBOLJmYvjEQQhcRfhnU9HfYiUga/e983RC+zKDkY3dhlTyZHFvzYsj2cZ8TO0u5sgPq4a+ePpG06IN6CoMQnPX8W0vkU8VU+/3YMn1z5WTVupY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(186003)(5660300002)(53546011)(26005)(86362001)(31696002)(36756003)(44832011)(2906002)(478600001)(83380400001)(52116002)(316002)(31686004)(16576012)(6486002)(66556008)(66476007)(66946007)(4326008)(956004)(8936002)(2616005)(8676002)(38350700002)(38100700002)(966005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?alMzS3JUakI1Mnp1N3BSbDVkL3A5b3hQOERSeWgwZkw1OWlrRXhmQ0tKaVlQ?=
+ =?utf-8?B?aUhDaVhvbWhaaHZoOFFRWlJLK2lyZ25rVWEwcGp0RUJ1TE44blpQd1gxcWJL?=
+ =?utf-8?B?dHl6RVQyNXBkQlBUMHBVeEVBNG4vWFhJVUdjMUtoRTM2RTFTd3daR2NjU2Jo?=
+ =?utf-8?B?TG40a0hwVCtRR2p3SHBRUnFBT3NQVzFoenhtSml3UUxlbWxDQ1RiMnF4SmtM?=
+ =?utf-8?B?d3Iyb2M0R3dOY3YvNFE0dnNRTTVGQlZnWGJZcDFBK0ppT2xtZlcwQWtWbERE?=
+ =?utf-8?B?SWhjU1JCVmo1Y2grSlk4YnVFWjZCankvV0hzUVh1bkJHaVNlYld4NzN6c3pD?=
+ =?utf-8?B?a2RIcE9FdE9PNU1jamJySnU3c2NWelEyWkdLUDFuby8xayt6S2dVR09NNHhj?=
+ =?utf-8?B?SnlpdnJGdG9GbDJNajJSZit6L3BvTUd0R2tRYmJxZ2R0dDNVb1hlMGJrbG50?=
+ =?utf-8?B?OHhyZUgxNmk4VDRCU1E0S3o2UlJhOTBNdjk4aDRqSllzb0w0ZzIyTDBUZGw5?=
+ =?utf-8?B?aEwrMlhCOGVDRzh5U1VycXVXd3hoL0s0cjA4b25XQnFsMVAxM3RKTENRaVVl?=
+ =?utf-8?B?QmxFNVlkMENKNGNsYk1hNDhNQkpOM2RhenVFSmRRWVkrd29mdktuejFJVC8y?=
+ =?utf-8?B?aGNmVDgrWVJRNTdPZWhLL1F3NTdzT21XU1FLZmRPWGNEdmFBMnhuOE5Raktr?=
+ =?utf-8?B?UjZIZWFpTDZWNGU4YTZWQWZiMTd3ckQ0TExrckJ5d2pNN0htZ2hHVHFZbHJP?=
+ =?utf-8?B?OE1acjFsWTh0dDY3bG5DZlF2ODRIOVV4amZ4T24zZHNjUW53QnlsdHJ2VGpY?=
+ =?utf-8?B?T2xBa2Y2WnhhckJmS2Uwd1JCSVo2Mk10WXRac2RaWW43cW5ndUV4OVluSVdi?=
+ =?utf-8?B?cU9oMFVDSVM5VWMvK1lLZVJmYVhRejFjcTM4WVVGVExZemRtUGZLTDVKK2Nx?=
+ =?utf-8?B?eVcwbEQxUk1aaHI2eXlnbXFlVkJ1VndLZWlITWFFMWw2dnZrOWRmTFRpS3py?=
+ =?utf-8?B?eFBCTEcwT2xEVVd5YzlsdGlqbHR1cGFXd3JKU3ZWM0NDYVhaZHk2ZkVxaity?=
+ =?utf-8?B?U3hHaWduVS82UVhZa1E2TFMzRG9reHltdEZCRm5iNDVOMHBSVWxzOUNzdlhY?=
+ =?utf-8?B?aG4wUkkxTE55UWhrZk1wL1MxeENtL2o3Y3g5TFBLQys5OC95bHR0N1JRczN0?=
+ =?utf-8?B?YVBQdnN0YmFIandNUWVFTklDRHIzaWFkU2lyVFlPWTc3QmJkK3VFK0VBWmpN?=
+ =?utf-8?B?RHdhcTdNTTY0RlgwRlV2amtpWU5YcHhGS00yMFZrbmFJZ2RxenFWSzVidTZS?=
+ =?utf-8?B?NE1qeFV2bktRb2VKTVB6RjZhemRYdHQwVHJpOHdYWUlUL2pCaGxSUm5mTnlX?=
+ =?utf-8?B?bTBESHhhQ2xZM05rTmQ1Zld0ZkZzSFN1ZW9VUkk1QWRRSFJpMVgwSHlJUzli?=
+ =?utf-8?B?WFJsY2VYc09mbDBYeThUdi9DVnhWdFFoU0dhb3gvbmVQbWtpdWE3VytBcUsz?=
+ =?utf-8?B?Y2FObGR4T3ZVZHVHczlmZDJEUEVSbUh1U2l1cHEyOTJ0WlVjbmZyOW1hYjlB?=
+ =?utf-8?B?RldwdnI5R2ZWck1OcEpuQk92NTlCM3BiNE1YVjJGdW5vcXZUcnBuc1BhWGF3?=
+ =?utf-8?B?MUZkcjdpbVQ2enE0aytzTjA5QjAyWmRlS0lBNjVlWmZwOURYZk02NjUwdnNK?=
+ =?utf-8?B?U0VpTFErSVVNbE9BSVRjdmNKemc4RStER0RzUzc2d2JOdVZvaGRiNGpyUUdU?=
+ =?utf-8?Q?YCtkW/BgAloObl7STC1dHGcyFv/94KensOo49js?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c14ba037-3f08-418e-de65-08d9640c7176
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 18:58:05.7428
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eeKyqrSRFBR0F+yXc1mrzcifQ5CEHP6+E5tgGFnIEkt4/FxWCi5RnmxXO22JTAzo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1502
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 19, 2021, at 7:48 PM, Sean Christopherson seanjc@google.com wrote:
 
-> On Thu, Aug 19, 2021, Mathieu Desnoyers wrote:
->> ----- On Aug 17, 2021, at 8:12 PM, Sean Christopherson seanjc@google.com wrote:
->> > @@ -250,7 +250,7 @@ static int rseq_ip_fixup(struct pt_regs *regs)
->> > 	 * If not nested over a rseq critical section, restart is useless.
->> > 	 * Clear the rseq_cs pointer and return.
->> > 	 */
->> > -	if (!in_rseq_cs(ip, &rseq_cs))
->> > +	if (!regs || !in_rseq_cs(ip, &rseq_cs))
->> 
->> I think clearing the thread's rseq_cs unconditionally here when regs is NULL
->> is not the behavior we want when this is called from xfer_to_guest_mode_work.
->> 
->> If we have a scenario where userspace ends up calling this ioctl(KVM_RUN)
->> from within a rseq c.s., we really want a CONFIG_DEBUG_RSEQ=y kernel to
->> kill this application in the rseq_syscall handler when exiting back to usermode
->> when the ioctl eventually returns.
->> 
->> However, clearing the thread's rseq_cs will prevent this from happening.
->> 
->> So I would favor an approach where we simply do:
->> 
->> if (!regs)
->>      return 0;
->> 
->> Immediately at the beginning of rseq_ip_fixup, before getting the instruction
->> pointer, so effectively skip all side-effects of the ip fixup code. Indeed, it
->> is not relevant to do any fixup here, because it is nested in a ioctl system
->> call.
->> 
->> Effectively, this would preserve the SIGSEGV behavior when this ioctl is
->> erroneously called by user-space from a rseq critical section.
+
+On 8/20/21 11:40 AM, Wei Huang wrote:
 > 
-> Ha, that's effectively what I implemented first, but I changed it because of the
-> comment in clear_rseq_cs() that says:
 > 
->  The rseq_cs field is set to NULL on preemption or signal delivery ... as well
->  as well as on top of code outside of the rseq assembly block.
+> On 8/20/21 11:33 AM, Babu Moger wrote:
+>> The recent commit 064855a69003 ("x86/resctrl: Fix default monitoring
+>> groups reporting"), caused a RHEL8.5 build failure with an uninitialized
 > 
-> Which makes it sound like something might rely on clearing rseq_cs?
+> Don't mention RHEL in the commit message, just use "commercial Linux
+> distro".
 
-This comment is describing succinctly the lazy clear scheme for rseq_cs.
+Talked to Wei on this. I will replace RHEL8.5 with just RHEL.
+> 
+>> variable warning treated as an error. The commit removed the default case
+>> snippet. The RHEL8.5 Makefile uses '-Werror=maybe-uninitialized' to force
+> 
+> Ditto
 
-Without the lazy clear scheme, a rseq c.s. would look like:
-
- *                     init(rseq_cs)
- *                     cpu = TLS->rseq::cpu_id_start
- *   [1]               TLS->rseq::rseq_cs = rseq_cs
- *   [start_ip]        ----------------------------
- *   [2]               if (cpu != TLS->rseq::cpu_id)
- *                             goto abort_ip;
- *   [3]               <last_instruction_in_cs>
- *   [post_commit_ip]  ----------------------------
- *   [4]               TLS->rseq::rseq_cs = NULL
-
-But as a fast-path optimization, [4] is not entirely needed because the rseq_cs
-descriptor contains information about the instruction pointer range of the critical
-section. Therefore, userspace can omit [4], but if the kernel never clears it, it
-means that it will have to re-read the rseq_cs descriptor's content each time it
-needs to check it to confirm that it is not nested over a rseq c.s..
-
-So making the kernel lazily clear the rseq_cs pointer is just an optimization which
-ensures that the kernel won't do useless work the next time it needs to check
-rseq_cs, given that it has already validated that the userspace code is currently
-not within the rseq c.s. currently advertised by the rseq_cs field.
+Same as above.
 
 > 
-> Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
-> rseq critical section, and because syscalls in critical sections are illegal, by
-> definition clearing rseq_cs is a nop unless userspace is misbehaving.
-
-Not quite, as I described above. But we want it to stay set so the CONFIG_DEBUG_RSEQ
-code executed when returning from ioctl to userspace will be able to validate that
-it is not nested within a rseq critical section.
-
+>> uninitialized variable warnings to be treated as errors. This is also
+>> reported by kernel test robot. The error from the RHEL8.5 build is below:
+>>
+>> arch/x86/kernel/cpu/resctrl/monitor.c: In function ‘__mon_event_count’:
+>> arch/x86/kernel/cpu/resctrl/monitor.c:261:12: error: ‘m’ may be used
+>> uninitialized in this function [-Werror=maybe-uninitialized]
+>>   m->chunks += chunks;
+>>             ^~
+>>
+>> The upstream Makefile does not build using '-Werror=maybe-uninitialized'.
+>> So, the problem is not seen there. Fix the problem by putting back the
+>> default case snippet.
+>>
+>> Fixes: 064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+>> Cc: stable@vger.kernel.org
+>> Reported-by: Terry Bowman <Terry.Bowman@amd.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Link: https://lore.kernel.org/lkml/6118d218.4ZZRXYKZCzQSq1Km%25lkp@intel.com/
+>>
+>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>> ---
+>>  arch/x86/kernel/cpu/resctrl/monitor.c |    6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index 57e4bb695ff9..8caf871b796f 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -304,6 +304,12 @@ static u64 __mon_event_count(u32 rmid, struct rmid_read *rr)
+>>  	case QOS_L3_MBM_LOCAL_EVENT_ID:
+>>  		m = &rr->d->mbm_local[rmid];
+>>  		break;
+>> +	default:
+>> +		/*
+>> +		 * Code would never reach here because an invalid
+>> +		 * event id would fail the __rmid_read.
+>> +		 */
+>> +		return RMID_VAL_ERROR;
+>>  	}
 > 
-> If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
-> not worth the extra code to detect an error that will likely be caught anyways?
+> It used to return -EINVAL, you might want to do the same?
 
-The error will indeed already be caught on return from ioctl to userspace, so I
-don't see any added value in duplicating this check.
-
-Thanks,
-
-Mathieu
-
+No. The function prototype has changed a bit. We have to return
+RMID_VAL_ERROR(u64).
+Thanks
+Babu
 > 
-> diff --git a/kernel/rseq.c b/kernel/rseq.c
-> index 35f7bd0fced0..28b8342290b0 100644
-> --- a/kernel/rseq.c
-> +++ b/kernel/rseq.c
-> @@ -282,6 +282,13 @@ void __rseq_handle_notify_resume(struct ksignal *ksig,
-> struct pt_regs *regs)
-> 
->        if (unlikely(t->flags & PF_EXITING))
->                return;
-> +       if (!regs) {
-> +#ifdef CONFIG_DEBUG_RSEQ
-> +               if (t->rseq && rseq_get_rseq_cs(t, &rseq_cs))
-> +                       goto error;
-> +#endif
-> +               return;
-> +       }
->        ret = rseq_ip_fixup(regs);
->        if (unlikely(ret < 0))
->                goto error;
-> 
->> Thanks for looking into this !
->> 
->> Mathieu
->> 
->> > 		return clear_rseq_cs(t);
->> > 	ret = rseq_need_restart(t, rseq_cs.flags);
->> > 	if (ret <= 0)
->> > --
->> > 2.33.0.rc1.237.g0d66db33f3-goog
->> 
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
-> > http://www.efficios.com
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+>>  
+>>  	if (rr->first) {
+>>
