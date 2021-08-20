@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBB83F2F58
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5913F2F66
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241816AbhHTPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:25:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24814 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241435AbhHTPXq (ORCPT
+        id S241019AbhHTP12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241289AbhHTP1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:23:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629472988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AlytKq7WyOzUT/K3H+q4IM3u5JgzyFxG/3NBnWm69Pg=;
-        b=Ik49gwU2rD+dBs/S6VeqrXjfqbxJeAvkyBgUCfvmCVSWjHTkOe/PLJABs2366O6uRdQzxd
-        nyIkW0rFMu//VShpFF2iWUcAeqADuCezoOJMWcCU+0Jc8pNTO0X0xMgwxVV7VaQYgGlDTZ
-        COzTKTvx1xKMSog0hIf3lRTCRi2R6m0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-zEOo5R5kOzWlHT9bseF39g-1; Fri, 20 Aug 2021 11:23:07 -0400
-X-MC-Unique: zEOo5R5kOzWlHT9bseF39g-1
-Received: by mail-wm1-f69.google.com with SMTP id m13-20020a7bcf2d000000b002e6cd9941a9so4947803wmg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:23:06 -0700 (PDT)
+        Fri, 20 Aug 2021 11:27:19 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9E5C0613A4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:23:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id u22so21272635lfq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LmlIpUuRl+AQl6NHORx2uksaHk6e1Bkml3gkzzdbETU=;
+        b=lfsgunIBPvh1N2HMfHLuTu6bb4D3MC64EfdWNwsp5/I6e9+sfnYHnIciUn9iZmjfE0
+         RpMGbkMBlb41YT2k/VuMPHP5HH0vI1ft3AxZAqjXqSV2D48lo2PyvBqf1WE8groFrbSz
+         piCHKr+s5jQ3BOWinXhcxtVn97Y2iAAcvrQ+yyehKq2a2l3LGlvs/TU3UNUT3xIayr0A
+         upenWwnnUkAajCqzvvSGk9T7fSjgoGzVxrO0LYkz2bj/FByEg0EKheI4pi9b07cRPfpH
+         SnvrUc9FNOeQ6o8yxGKnMLHduaRcnUfRnEr9uicYa2qgy2arR6dkRInN0Y84ycx9HbD7
+         Hczg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AlytKq7WyOzUT/K3H+q4IM3u5JgzyFxG/3NBnWm69Pg=;
-        b=e04ecnlTx/VLrrDGf6dK0yIVowpxYCyQsjgd8i14bF40NdNxRnUiQXWaDbu0BWbrFX
-         q7vUuOrFW4+Gessky+l+/LZZCffeAhQW+yBBJkx0tupxuQmQjs1laRoKcKpo/onO6ZtE
-         rxP6rkGbcfYQWbe9AR+rkxV9myCgMt5/Z1fd3Kx5zzPjVjKAGIWT7JBMRqcr/TgXzMoc
-         PEre2lxqixODGITDS2XToO08uicFsAt3gkJdVwK0y5HPBz9Nf9cE4Z0nSddnEDXiH+SI
-         nXgGSb3HVI9yJl3XiDbLDYH8jiyVkMwmQwrEX9Xj8oDYEgMdQXl+cVnctzpwlo3MCAJX
-         Nzug==
-X-Gm-Message-State: AOAM531aS4bG1p4FQIhcShbl8exQzKA6I/mUUxqj0P2s5Pv0bFf8GLEd
-        sXpiGZtLUvtp7kq3p1Wan3pSrGguoehDNDFzwcKbJWFuTcksp63A6BpU0VWWUd5gWbTxWcCKJsP
-        StDFVYg/6bX1YUJVmJjUzZS1tnQ1R0qnDJGDpTdM7
-X-Received: by 2002:a7b:c106:: with SMTP id w6mr4615320wmi.152.1629472985921;
-        Fri, 20 Aug 2021 08:23:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUvS40eZJ1ySsWNGqcyFBL2tEQZaB8k3Slyb91HTve5oMdHFCyWX4WR3jQt8qnTrXHAXjGShbj4VZTgbuL91g=
-X-Received: by 2002:a7b:c106:: with SMTP id w6mr4615303wmi.152.1629472985719;
- Fri, 20 Aug 2021 08:23:05 -0700 (PDT)
+        bh=LmlIpUuRl+AQl6NHORx2uksaHk6e1Bkml3gkzzdbETU=;
+        b=ca3OFHTPU2PqSzEUUDt9RbxJEOvESfYVM+GnPeBHzEFHltvygv9QAGItrSGNO29UaH
+         Ytm5CnRqjRR7E8PxgQB2KDMc4IM8R+ttylRlnrM5AkMb7b+r8IEYdO3dHvnNfsqgvaZo
+         H7GxIFERG4xNTdTGlWwgmo/2rhFLsxv9FrzJ8AdWbJaeawIlqXRgDM1hqh9la164yG3v
+         k0divu40ZdTQXFM2ogt2j4xAKd/u9U7rTycENXt7yO4Slxe/wQZoBcDYlHonSBO2r+0g
+         BNqs+BqWqhmK5EFucF4eTHcgxhSWpqBZbZMoHWBPqcrpKcneoqNGI5QLTiUDzF6jHN9H
+         kVBg==
+X-Gm-Message-State: AOAM533MAMAzZ+UbwAJ2wExTBqyAOmmtKxzl+ieKvGy8/0e00PTqowBr
+        U+jUIRDPtKe629HcF7oIgqJW39whwZ7tG0ExrgE=
+X-Google-Smtp-Source: ABdhPJyw8/e5A74C67qJGcTsZiZKzpB1smdk0k5v/GkqQliEF2YXs0kwLwrudgjmcfMsEXbeJCSQEaghgLDo4wm0808=
+X-Received: by 2002:ac2:4573:: with SMTP id k19mr14978867lfm.622.1629472996150;
+ Fri, 20 Aug 2021 08:23:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819194102.1491495-1-agruenba@redhat.com> <20210819194102.1491495-11-agruenba@redhat.com>
- <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com> <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
-In-Reply-To: <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Fri, 20 Aug 2021 17:22:54 +0200
-Message-ID: <CAHc6FU7EMOEU7C5ryu5pMMx1v+8CTAOMyGdf=wfaw8=TTA_btQ@mail.gmail.com>
-Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
- holder auto-demotion
-To:     Bob Peterson <rpeterso@redhat.com>
-Cc:     Steven Whitehouse <swhiteho@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
+References: <20210820035229.216975-1-daeho43@gmail.com> <20210820035229.216975-2-daeho43@gmail.com>
+ <48725f58-1a48-73f3-80cf-a0c5efc3b470@kernel.org>
+In-Reply-To: <48725f58-1a48-73f3-80cf-a0c5efc3b470@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 20 Aug 2021 08:23:05 -0700
+Message-ID: <CACOAw_xcwZN_H7_zi7iMJh9HpzXnPd67fNAcxhu5UUSmJk7c1Q@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: introduce periodic iostat io
+ latency traces
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 3:11 PM Bob Peterson <rpeterso@redhat.com> wrote:
-> On 8/20/21 4:35 AM, Steven Whitehouse wrote:
-> > Hi,
-> >
-> > On Thu, 2021-08-19 at 21:40 +0200, Andreas Gruenbacher wrote:
-> >> From: Bob Peterson <rpeterso@redhat.com>
-> >>
-> >> This patch introduces a new HIF_MAY_DEMOTE flag and infrastructure
-> >> that
-> >> will allow glocks to be demoted automatically on locking conflicts.
-> >> When a locking request comes in that isn't compatible with the
-> >> locking
-> >> state of a holder and that holder has the HIF_MAY_DEMOTE flag set,
-> >> the
-> >> holder will be demoted automatically before the incoming locking
-> >> request
-> >> is granted.
-> >>
-> > I'm not sure I understand what is going on here. When there are locking
-> > conflicts we generate call backs and those result in glock demotion.
-> > There is no need for a flag to indicate that I think, since it is the
-> > default behaviour anyway. Or perhaps the explanation is just a bit
-> > confusing...
+On Fri, Aug 20, 2021 at 3:50 AM Chao Yu <chao@kernel.org> wrote:
 >
-> I agree that the whole concept and explanation are confusing. Andreas
-> and I went through several heated arguments about the semantics,
-> comments, patch descriptions, etc. We played around with many different
-> flag name ideas, etc. We did not agree on the best way to describe the
-> whole concept. He didn't like my explanation and I didn't like his. So
-> yes, it is confusing.
+> On 2021/8/20 11:52, Daeho Jeong wrote:
+> > +void iostat_update_and_unbind_ctx(struct bio *bio, int rw)
+> > +{
+> > +     struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
+> > +     int sync_type = bio->bi_opf & REQ_SYNC ? 0 : 1;
 >
-> My preferred terminology was "DOD" or "Dequeue On Demand"
-
-... which is useless because it adds no clarity as to whose demand
-we're talking about.
-
-> which makes
-> the concept more understandable to me. So basically a process can say
-> "I need to hold this glock, but for an unknown and possibly lengthy
-> period of time, but please feel free to dequeue it if it's in your way."
-> And bear in mind that several processes may do the same, simultaneously.
+> int sync_type = bio->bi_opf & REQ_SYNC ? 1 : 0;
 >
-> You can almost think of this as a performance enhancement. This concept
-> allows a process to hold a glock for much longer periods of time, at a
-> lower priority, for example, when gfs2_file_read_iter needs to hold the
-> glock for very long-running iterative reads.
+> Right?
 
-Consider a process that allocates a somewhat large buffer and reads
-into it in chunks that are not page aligned. The buffer initially
-won't be faulted in, so we fault in the first chunk and write into it.
-Then, when reading the second chunk, we find that the first page of
-the second chunk is already present. We fill it, set the
-HIF_MAY_DEMOTE flag, fault in more pages, and clear the HIF_MAY_DEMOTE
-flag. If we then still have the glock (which is very likely), we
-resume the read. Otherwise, we return a short result.
+This means just type, not boolean number. So, I set type 0 is sync and
+type 1 is async.
 
-Thanks,
-Andreas
+>
+> >   int f2fs_init_iostat(struct f2fs_sb_info *sbi)
+> >   {
+> >       /* init iostat info */
+> >       spin_lock_init(&sbi->iostat_lock);
+> > +     spin_lock_init(&sbi->iostat_lat_lock);
+> >       sbi->iostat_enable = false;
+> >       sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
+> > +     sbi->iostat_io_lat = f2fs_kzalloc(sbi, sizeof(struct iostat_lat_info),
+> > +                                     GFP_KERNEL);
+> > +     if (!sbi->iostat_io_lat)
+> > +             return -ENOMEM;
+>
+> What do you think of just embedding iostat_io_lat structure into f2fs_sb_info
+> structure? it's minor thing though.
+>
 
+I also wanted to do that, but if we embed this type, we need to define
+that structure in f2fs.h file.
+Is it okay with you?
+
+> Thanks,
