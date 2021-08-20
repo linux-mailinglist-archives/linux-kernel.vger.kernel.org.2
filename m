@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776733F34D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5923F34D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237697AbhHTT4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:56:50 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:38371 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhHTT4t (ORCPT
+        id S238332AbhHTT5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237764AbhHTT5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:56:49 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1Mi23L-1mvCKe1wi9-00e5XP; Fri, 20 Aug 2021 21:56:09 +0200
-Received: by mail-wr1-f46.google.com with SMTP id x12so15712968wrr.11;
-        Fri, 20 Aug 2021 12:56:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533XIR7RoESpMDFEl4xCveGTGfuz0wRwnWy8BDtQohlQP3Nc36yn
-        jmLlCwnIpSbVdoeyOHl+vocCRTK5MblTeWFE27g=
-X-Google-Smtp-Source: ABdhPJxlsOZO56JajrT3f4dcrPBCUnIdfw1q5w7mc1qjtBPwrpWswZjsj3ahvDK6RwyOb2e2+QJZRAZJL69/UIIllqY=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr485780wrz.165.1629489369140;
- Fri, 20 Aug 2021 12:56:09 -0700 (PDT)
+        Fri, 20 Aug 2021 15:57:20 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA958C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 12:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VbTON6RvZeZhGJt6ehyn/UMw7061NqQ9ISQ7HVHxgAQ=; b=Nz+M9aqAdzrwVlpMtHBAoKM3sQ
+        /MC1a1UMn1TH8I0i3RIECs05+soT9W1PjPzTbJ9rJrBlQZiWwYwPq5gPiNraa8QlgzaxsxKTtNK51
+        xfHrhec5YI34f1OJr5TdE25HisAWUsCmZJlfg36RHrmqUjwzulPaeZmFyCQjOLZek95gCw4CfmWlT
+        +NwsZjpJZ7dW4R+GpB9sCknUYdpVqI5Cy28SWGT6seS6n8qKOZLjSm9RoGhsy/82Rwg4KCVU8B1K7
+        vj3/f3pKGq5u6+BekrrvIUuufXlQ8QjCnK+AZbqc6s1HEqxrDWtOgT5+qZjbt4NuQI6nmdeG+FTns
+        mYHecTpA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mHAd0-00C0kX-OY; Fri, 20 Aug 2021 19:56:34 +0000
+Date:   Fri, 20 Aug 2021 12:56:34 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>
+Subject: Re: refactor the i915 GVT support
+Message-ID: <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
+References: <20210728175925.GU1721383@nvidia.com>
+ <20210729072022.GB31896@lst.de>
+ <20210803094315.GF13928@zhen-hp.sh.intel.com>
+ <20210803143058.GA1721383@nvidia.com>
+ <20210804052606.GG13928@zhen-hp.sh.intel.com>
+ <20210816173458.GA9183@lst.de>
+ <20210817010851.GW13928@zhen-hp.sh.intel.com>
+ <20210817052203.GX13928@zhen-hp.sh.intel.com>
+ <20210819082929.GB13928@zhen-hp.sh.intel.com>
+ <20210820141724.GA29034@lst.de>
 MIME-Version: 1.0
-References: <20210820173108.01d5c6de@xhacker.debian> <29e96ece-8541-a7a2-c6a9-453be6644eed@canonical.com>
- <20210820182708.51d13e29@xhacker.debian>
-In-Reply-To: <20210820182708.51d13e29@xhacker.debian>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 20 Aug 2021 21:55:53 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2vkZVt1bb7-iDGaSHp20U9d8QXu6AcrUMceJSS9Q_-4Q@mail.gmail.com>
-Message-ID: <CAK8P3a2vkZVt1bb7-iDGaSHp20U9d8QXu6AcrUMceJSS9Q_-4Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: synaptics: add DT for AS370-RDK
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Arnd Bergmann <arnd@arndb.de>, SoC Team <soc@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:QimpFDRslHCiuY63cyRM+AAa7RQ8Z9xxAuK1gjDezpm3GVvJuEh
- p5CLs+z3EixRSaw6tjsF/NTP5DIzEgx0kuT4tlfAYQD4DbJUZFz+NxVLCK3/8RR+wl7hroa
- hXAITDyQe5cdbG1e8gR8FOAQMcz0gtLhbOajS6GoGqnfmsyXXYWG3LIk//vl6BRq1Na36dO
- 6ezvm8CLyRXpl3PqQAqHQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mLwtpR0sOQ0=:T0fTHYR5S5lsmlPd0tTNEx
- n38jf770zHkF5KbhPwOWOXm5DHuzSeuFnZGWGkd9aoOSOSMBI2YGehNDUu9Nx3gPu31YmcHMl
- 0xDPdkJa0JqtXHCMkebr9V3ja+3kIAIFGh2XzIiJmni4wg6nedzFk8lMMs70NMTMQvDYQtYEn
- VvLnYwMMGncaPfgzEYiej0NrD369Dj/4iCswsv/89y6qwQyguRg2gtJSg3N5ZVTSQHbnDleMA
- DFoD4lc4FUgniWFBGZyERmXSGbF3eQu7hNqh9ihT87SMF2JGAWLLi7qxtQHOPtx2x5a6dnBih
- 1IC7kv++8AssIzXZB27rbyO1SessWkI2DKJsEKoinvzIOqcHXXU7CpcoC25g/l6wabQpDCac4
- muEkpVEMzDYWEKyCbkxHK5tOJv9socRfyCqM3qvl6PgmmfuxL3CcjA4sflitGdU1NQlAtQlaI
- tkdivyVJV1yLLLY3JFbGCJAVZosTz5hXZexKKqKgGeP+f53niXi7n1S8dGT5Hascu+/0DOSLD
- bR7Huz8l+0an6TrpSTcOG9wsGCP2rklencgyIimquAwH50aTI301uWtBouO2qVzv1Hcf45Hk8
- MmWzUQvkNlEmhVtXZeYCUjkFvhZUeaG7Q0+kTcuCoc3qbXnX4/c1qMjyzWb7+yRJqwevcsUct
- WlCTR0om0GDgk674hY3DsBAQjy/2z+FtuuYp819KT2bwe31SmGbr9jYgy5ggwBrkZDVFuwTqC
- M5a3flpfPY1BbUaI2+ELCWzPY4xSuI0Iw3JXXSj9Shw9BsvJjTa+4DBMmvoCGrBkIC4YvrFxx
- MBmwUxQkM/AhH3C18yFHcx1hO02zIfUorjsykpRWGIE8+CoaTUJOoHH8MG5PQVhN1VM3fTY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820141724.GA29034@lst.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 12:27 PM Jisheng Zhang
-<Jisheng.Zhang@synaptics.com> wrote:
-> On Fri, 20 Aug 2021 11:59:30 +0200 Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> wrote:
-> > On 20/08/2021 11:31, Jisheng Zhang wrote:
-> >
-> > There is no such binding. You need to update the bindings file (first
-> > patch in the series).
->
-> This is my plan ;) In fact, "berlin4ct" related binding is also missing.
-> I want to convert Documentation/devicetree/bindings/arm/syna.txt
-> to yaml, then add missing bindings. But it's too late for 5.15,
->
-> If it's fine to keep as370.dtsi without board user(s), we can drop
-> this patch. I will solve this issue in next development window.
+On Fri, Aug 20, 2021 at 04:17:24PM +0200, Christoph Hellwig wrote:
+> On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
+> > I'm working on below patch to resolve this. But I met a weird issue in
+> > case when building i915 as module and also kvmgt module, it caused
+> > busy wait on request_module("kvmgt") when boot, it doesn't happen if
+> > building i915 into kernel. I'm not sure what could be the reason?
+> 
+> Luis, do you know if there is a problem with a request_module from
+> a driver ->probe routine that is probably called by a module_init
+> function itself?
 
-Yes, doing it for the next cycle is ok.
+Generally no, but you can easily foot yourself in the feet by creating
+cross dependencies and not dealing with them properly. I'd make sure
+to keep module initialization as simple as possible, and run whatever
+takes more time asynchronously, then use a state machine to allow
+you to verify where you are in the initialization phase or query it
+or wait for a completion with a timeout.
 
-        Arnd
+It seems the code in question is getting some spring cleaning, and its
+unclear where the code is I can inspect. If there's a tree somewhere I
+can take a peak I'd be happy to review possible oddities that may stick
+out.
+
+My goto model for these sorts of problems is to abstract the issue
+*outside* of the driver in question and implement new selftests to
+try to reproduce. This serves two purposes, 1) helps with testing
+2) may allow you to see the problem more clearly.
+
+  Luis
