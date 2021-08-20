@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F88B3F2E93
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CDF3F2E9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241052AbhHTPIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:08:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240983AbhHTPIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:08:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A45696112E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629472051;
-        bh=l2ha2dS8HOsBrlpFhVouhA4Nk6F7rSUhkz8tBpRTRuI=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=V4ZPayfaIWGGbVAFzuzvIsfpyqVZmALyo8o7616X1YTFgkYK4K+h7dsrATR+JQVf5
-         rJIjF66yJXF8ZGoeivvTzWYh4zermhcDAofk+ICM+2rsxnSogPbXaj5iYiS5knphr1
-         xmFv1WsO9NZPeZzkPw62eWPWJesMaWVqcUCOmxHqcxrMtDJ5lj5k/BBV+JbRmBqDoB
-         JlYKCngl4FFcJ62HOsmmoQwO0HJSb+P3Ep6vHqtvwHyiYr4P/5pArM3/5hjmAMZiVu
-         FkN32eOcNzcEdyIhqyXnGio/0UQyLemIs3n+QezIh+VdifoKV6itjsqbA1reZ5MkBW
-         SNc6jkAkzxrfw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] habanalabs: never copy_from_user inside spinlock
-Date:   Fri, 20 Aug 2021 18:07:19 +0300
-Message-Id: <20210820150719.67934-4-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210820150719.67934-1-ogabbay@kernel.org>
-References: <20210820150719.67934-1-ogabbay@kernel.org>
+        id S240958AbhHTPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235928AbhHTPLM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:11:12 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78F3C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:10:33 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id h9so20911060ejs.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:10:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Xvm/oerTrpAMDku03UYvg3STSZAJwJc9XZtIR55cbJk=;
+        b=nirra9EgH/7fZqGFvWXkZ2gMuTvty6zBdowb2x8g9KCknPk/mHlmRqm0mDc6GGRzYm
+         1ZbtQN7tJG6CHUIGnwNw/6EVPNQqiFFcXsqeSjzcwQOmb2BzfZ7HIYPaHByRlseQTpqj
+         Av8VpOdM4eoUReqZNskQtDRx1hIY+OI5nt/BcjjK5eYol715eyFgvM/gcjR66frrSSyP
+         jrk3k29lUvK2oqjn/EBRtHGS5vNEMuSgsMkz3k43cfdDSMGWaxEKGbDIMtmIIjQuwskO
+         PCfAPrPvLHOs6nvdF7XOxIRdipBG3/8uJ5iiPZ1c8xagtaSbThmMQfoI/KGgtl5KUgki
+         rRbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Xvm/oerTrpAMDku03UYvg3STSZAJwJc9XZtIR55cbJk=;
+        b=iPWS/vqCDdclN1t0NU+/UoXKx2NE5TamX/LjPJvMKhR3PigMhortuCCZAvbFPmtxmG
+         aCeLE9VcmZQ3kvvjYap2MevuEEkAmUmIEONK2IsbYyvSPAqgCaheKTU0lkFK0CxDZdeC
+         Mc0I66NYNx/Ny/aPorow/jdqKuosuTEIljsfj5CjlE+G4QTHKjZ+eDRflF8AnQrjtLKW
+         ulJYhZyyGnDstrqPib9sLPCbTT4xof2q+JmwT9jktScRE3q7dkVwDtbXgeTmQ5+k0XN3
+         pqM/Yxr2vuWm0P4mBKgcw8ijUPqhdaB+sAj+aMQgxA3LtoOCeX7FBSV10ovk/Ovzwno3
+         9bqw==
+X-Gm-Message-State: AOAM53017nnKFh588V1f69lTct96zAODMCMZ14I3DzOqfmmGU9++bu6J
+        v0aeAWJuUJEZU5ha1R/+hRk=
+X-Google-Smtp-Source: ABdhPJxkt+bMvAfCpIoXP0K2D+mTpjHL9tkU0tYl/gzJcQVAfllHN58XQqUSPpWY8vp3YTwdD6Htfg==
+X-Received: by 2002:a17:906:6b8b:: with SMTP id l11mr110387ejr.508.1629472232121;
+        Fri, 20 Aug 2021 08:10:32 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id de12sm3769728edb.37.2021.08.20.08.10.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 08:10:31 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] staging: r8188eu: restricted __be16 degrades to int
+Date:   Fri, 20 Aug 2021 17:10:30 +0200
+Message-ID: <1777630.LqDDHREl4S@localhost.localdomain>
+In-Reply-To: <YR6S7MfxpXpQFl9d@kroah.com>
+References: <cover.1629360917.git.aakashhemadri123@gmail.com> <bd63137c645ecc20dc446a6cfa7f7d3461a642d7.1629360917.git.aakashhemadri123@gmail.com> <YR6S7MfxpXpQFl9d@kroah.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-copy_from_user might sleep so we can never call it when we have
-a spinlock.
+On Thursday, August 19, 2021 7:20:44 PM CEST Greg Kroah-Hartman wrote:
+> On Thu, Aug 19, 2021 at 01:47:56PM +0530, Aakash Hemadri wrote:
+> > Fix sparse warning:
+> > > rtw_br_ext.c:839:70: warning: restricted __be16 degrades to integer
+> > > rtw_br_ext.c:845:70: warning: invalid assignment: |=
+> > > rtw_br_ext.c:845:70:    left side has type unsigned short
+> > > rtw_br_ext.c:845:70:    right side has type restricted __be16
+> > 
+> > dhcp->flag is u16, remove htons() as __be16 degrades.
+> 
+> Um, are you sure?
+> 
+> > 
+> > Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> > ---
+> >  drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> > index d4acf02ca64f..14b2935cab98 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> > @@ -674,13 +674,13 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
+> >  					u32 cookie = dhcph->cookie;
+> >  
+> >  					if (cookie == DHCP_MAGIC) { /*  match magic word */
+> > -						if (!(dhcph->flags & htons(BROADCAST_FLAG))) {
+> > +						if (!(dhcph->flags & BROADCAST_FLAG)) {
+> 
+> So you now just ignore the fact that the code used to properly check
+> BROADCAST_FLAG being in big endian mode, and now you assume it is native
+> endian?
+> 
+> Why is this ok?  Did you test this?
+> 
+> thanks,
+> 
+> greg k-h
+> 
+Aakash,
 
-Moreover, it is not necessary in waiting for user interrupt, because
-if multiple threads will call this function on the same interrupt,
-each one will have it's own fence object inside the driver. The
-user address might be the same, but it doesn't really matter to us,
-as we only read from it.
+Building on the objections you had from Greg I suggest that, before attempting 
+anew to address problems like these, you get a better understanding of the topics of 
+native and network endianness and of the API that (conditionally) swap bytes 
+in a variable between little endian and big endian representation.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- .../habanalabs/common/command_submission.c    | 35 +++++++------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+To start with, please note that the following code leads to tests for "v.vub[0] == 0xDD" 
+which is true on little endian architectures while "v.vub[0] == 0xAA" is true on big 
+endian ones...
 
-diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
-index a97bb27ebb90..7b0516cf808b 100644
---- a/drivers/misc/habanalabs/common/command_submission.c
-+++ b/drivers/misc/habanalabs/common/command_submission.c
-@@ -2740,14 +2740,10 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- 	else
- 		interrupt = &hdev->user_interrupt[interrupt_offset];
- 
--	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
--
--	if (copy_from_user(&completion_value, u64_to_user_ptr(user_address),
--									4)) {
--		dev_err(hdev->dev,
--			"Failed to copy completion value from user\n");
-+	if (copy_from_user(&completion_value, u64_to_user_ptr(user_address), 4)) {
-+		dev_err(hdev->dev, "Failed to copy completion value from user\n");
- 		rc = -EFAULT;
--		goto unlock_and_free_fence;
-+		goto free_fence;
- 	}
- 
- 	if (completion_value >= target_value)
-@@ -2756,42 +2752,35 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- 		*status = CS_WAIT_STATUS_BUSY;
- 
- 	if (!timeout_us || (*status == CS_WAIT_STATUS_COMPLETED))
--		goto unlock_and_free_fence;
-+		goto free_fence;
- 
- 	/* Add pending user interrupt to relevant list for the interrupt
- 	 * handler to monitor
- 	 */
-+	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
- 	list_add_tail(&pend->wait_list_node, &interrupt->wait_list_head);
- 	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
- 
- wait_again:
- 	/* Wait for interrupt handler to signal completion */
--	completion_rc =
--		wait_for_completion_interruptible_timeout(
--				&pend->fence.completion, timeout);
-+	completion_rc = wait_for_completion_interruptible_timeout(&pend->fence.completion,
-+										timeout);
- 
- 	/* If timeout did not expire we need to perform the comparison.
- 	 * If comparison fails, keep waiting until timeout expires
- 	 */
- 	if (completion_rc > 0) {
--		spin_lock_irqsave(&interrupt->wait_list_lock, flags);
--
--		if (copy_from_user(&completion_value,
--				u64_to_user_ptr(user_address), 4)) {
--
--			spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
--
--			dev_err(hdev->dev,
--				"Failed to copy completion value from user\n");
-+		if (copy_from_user(&completion_value, u64_to_user_ptr(user_address), 4)) {
-+			dev_err(hdev->dev, "Failed to copy completion value from user\n");
- 			rc = -EFAULT;
- 
- 			goto remove_pending_user_interrupt;
- 		}
- 
- 		if (completion_value >= target_value) {
--			spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
- 			*status = CS_WAIT_STATUS_COMPLETED;
- 		} else {
-+			spin_lock_irqsave(&interrupt->wait_list_lock, flags);
- 			reinit_completion(&pend->fence.completion);
- 			timeout = completion_rc;
- 
-@@ -2811,9 +2800,9 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
- remove_pending_user_interrupt:
- 	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
- 	list_del(&pend->wait_list_node);
--
--unlock_and_free_fence:
- 	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
-+
-+free_fence:
- 	kfree(pend);
- 	hl_ctx_put(ctx);
- 
--- 
-2.17.1
+union {
+        u32 vud;
+        u8 vub[4];
+} v;
+
+v.vud = 0xAABBCCDD;
+
+Also note that API like cpu_to_be32(), htonl(), be32_to_cpu(), ntohl, and the likes are 
+used to (conditionally) swap bytes (i.e., change the arrangement of the bytes in a 
+multi-bytes variable).
+
+Casts have very different purposes and usage patterns and, above all, they cannot 
+magically change the endianness of a variable.
+
+Regards,
+
+Fabio
+
 
