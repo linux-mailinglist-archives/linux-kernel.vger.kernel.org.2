@@ -2,193 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EDF3F305B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569EB3F3057
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241401AbhHTP5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:57:13 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45614 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241379AbhHTP5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241388AbhHTP5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 20 Aug 2021 11:57:12 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KFuJPN094234;
-        Fri, 20 Aug 2021 10:56:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629474979;
-        bh=lAyyVBpfElD6cu6xrM/uJCISbQOywOKtDruM38jJLB8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=RUpQdG961E5zH+t7IjdUw5YnEQbuXn+z/MtkEjymx2F7PIZZPpktSTRQ4mzglUxWe
-         DjnvjxyYcQURkfcYAlGSyN+z1BlhoN8SDHVlLCYItZ8KWE7L0AlUdYrx4DClfwXs4d
-         CXb5KPCw4yHwFiAVpM/1hhKGqby0WMot+UM498Os=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KFuJwr080577
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Aug 2021 10:56:19 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
- Aug 2021 10:56:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 20 Aug 2021 10:56:18 -0500
-Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KFuElV051653;
-        Fri, 20 Aug 2021 10:56:15 -0500
-Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset (PoR)
- instruction
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-12-a-nandan@ti.com> <20210806210840.65c06b67@xps13>
- <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com> <20210820141822.03d658b8@xps13>
- <c4a1eae9-7c0b-62c8-f10a-000e65c94f1b@ti.com> <20210820161744.148b3003@xps13>
-From:   Apurva Nandan <a-nandan@ti.com>
-Message-ID: <a8fb82f1-e671-aed1-a2d1-39b974d53fee@ti.com>
-Date:   Fri, 20 Aug 2021 21:26:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241289AbhHTP5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:57:09 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E79C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:56:31 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so7625985pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C3a7vVBUf0KW7MXt4FnTeXqGlzkeA3TVHAyOaxNZlwQ=;
+        b=mWy+dsfzuC4WR7e/bELnLc1DBewBd+6uqLCiUlPpSL/hR3JFjiFZGkc64dOnkcT9C9
+         qDMRqhN9IlO5CQXHcgzIx3Y2JRqX6MsEMYyUkp08whfolpRdd2uxh73eqsjx32WZPMfY
+         SPWC7Ec8QNUjnKmK0pksWV2GR2YpxIveB+TMk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C3a7vVBUf0KW7MXt4FnTeXqGlzkeA3TVHAyOaxNZlwQ=;
+        b=A+b+LpEQCs9AUqK2am0NIoyi1OhvNFg5DhLb3xkCxDt8g0E2UByLwaYt6XltKxwQvd
+         9mekiT9SPOn9MMIZcUrICNiPHgFHfbwup1zrIqNuYCE/7yt0V47DFcO68drzFk8obCld
+         fvUojSgC5otTTdyzDYKO0unQJLDYS6QIaSOIQCNQGiweMQ0MXnlZIjTurjS6VmqWiisv
+         bwb6N3kX/dB4ii96ILeEEz+jrrgDdzSvqvu6QY8vnACqB7aB02ebT8juc9zbeUCJJKyH
+         oozp0mdg1UwLIrONA7kzKGnFlThboRn0pNlRGP1AqD/bCfvOs7ulBv2gpLoBU2AwoyJD
+         kjjg==
+X-Gm-Message-State: AOAM533EOQu29sT+Gemvk3CRwDI9cFwMAsS1uhP8m03EC8lVJAV9uQ1f
+        cDj8CAcVIgwP2JQJ2eFE2R48MQ==
+X-Google-Smtp-Source: ABdhPJyhg05jtv2sdt7XrLbWPk8JBbrR41kaovvHCcwZtOZ4P7Cf6Qg2VrCTEpx9+rp1igwyJ9xLVA==
+X-Received: by 2002:a17:902:f704:b029:11a:cdee:490 with SMTP id h4-20020a170902f704b029011acdee0490mr17049722plo.37.1629474990741;
+        Fri, 20 Aug 2021 08:56:30 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 21sm7304926pfh.103.2021.08.20.08.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 08:56:30 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 08:56:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 56/63] RDMA/mlx5: Use struct_group() to zero struct
+ mlx5_ib_mr
+Message-ID: <202108200856.E0E8711CB@keescook>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-57-keescook@chromium.org>
+ <20210819122716.GP543798@ziepe.ca>
+ <202108190916.7CC455DA@keescook>
+ <20210819164757.GS543798@ziepe.ca>
+ <202108191106.1956C05A@keescook>
+ <20210820123400.GW543798@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210820161744.148b3003@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820123400.GW543798@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
+On Fri, Aug 20, 2021 at 09:34:00AM -0300, Jason Gunthorpe wrote:
+> On Thu, Aug 19, 2021 at 11:14:37AM -0700, Kees Cook wrote:
+> 
+> > Which do you mean? When doing the conversions I tended to opt for
+> > struct_group() since it provides more robust "intentionality". Strictly
+> > speaking, the new memset helpers are doing field-spanning writes, but the
+> > "clear to the end" pattern was so common it made sense to add the helpers,
+> > as they're a bit less disruptive. It's totally up to you! :)
+> 
+> Well, of the patches you cc'd to me only this one used the struct
+> group..
 
-On 20/08/21 7:47 pm, Miquel Raynal wrote:
-> Hi Apurva,
-> 
-> Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 19:11:58
-> +0530:
-> 
->> Hi Miquèl,
->>
->> On 20/08/21 5:48 pm, Miquel Raynal wrote:
->>> Hi Apurva,
->>>
->>> Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 17:09:07
->>> +0530:
->>>    
->>>> Hi Miquèl,
->>>>
->>>> On 07/08/21 12:38 am, Miquel Raynal wrote:
->>>>> Hi Apurva,
->>>>>
->>>>> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
->>>>> +0000:
->>>>>     >>>> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset
->>>>>> functionality in their SPI NAND flash chips. PoR instruction consists
->>>>>> of a 66h command followed by 99h command, and is different from the FFh
->>>>>> reset. The reset command FFh just clears the status only registers,
->>>>>> while the PoR command erases all the configurations written to the
->>>>>> flash and is equivalent to a power-down -> power-up cycle.
->>>>>>
->>>>>> Add support for the Power-on-Reset command for any flash that provides
->>>>>> this feature.
->>>>>>
->>>>>> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
->>>>>>
->>>>>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
->>>>>> ---
->>>>>
->>>>> [...]
->>>>> 				\
->>>>>> @@ -218,6 +230,8 @@ struct spinand_device;
->>>>>>      * reading/programming/erasing when the RESET occurs. Since we always
->>>>>>      * issue a RESET when the device is IDLE, 5us is selected for both initial
->>>>>>      * and poll delay.
->>>>>> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us
->>>>>
->>>>> s/max upto/up to/
->>>>>     >>
->>>> Okay!
->>>>   
->>>>>> + * to 1200 us safely.
->>>>>
->>>>> I don't really get why, if the maximum is 500, then let's wait for
->>>>> 500us.
->>>>>     >>
->>>> Generally we keep some margin from the maximum time, no?
->>>
->>> Well, yes and no.
->>>
->>> If you know that an operation will last Xms and have nothing else to
->>> do, then you can take some margin if you are in a probe (called once)
->>> but definitely not if you are in a fast path.
->>>    
->>
->> I think as PoR reset would be called at every mtd_suspend() call, so we can reduce the delay. And we would be expecting some time gap before the next mtd_resume() call.
->>
->>> Otherwise the best is to have some kind of signaling but I'm not sure
->>> you'll have one for the reset op...
->>>    
->>
->> According to public datasheet, it doesn't set the busy bit during reset.
->>
->> So do you suggest in the favor of removing the delay margin?
-> 
-> Well, it's microseconds, maybe you can reduce it a little bit but that
-> will be ok.
-> 
+Understood. I've adjusted this for v3. Thanks!
 
-Yes, I got it. Will improve this in v2. Thanks!
-
->>
->>>>   
->>>>>>      */
->>>>>>     #define SPINAND_READ_INITIAL_DELAY_US	6
->>>>>>     #define SPINAND_READ_POLL_DELAY_US	5
->>>>>> @@ -227,6 +241,8 @@ struct spinand_device;
->>>>>>     #define SPINAND_WRITE_POLL_DELAY_US	15
->>>>>>     #define SPINAND_ERASE_INITIAL_DELAY_US	250
->>>>>>     #define SPINAND_ERASE_POLL_DELAY_US	50
->>>>>> +#define SPINAND_POR_MIN_DELAY_US	1000
->>>>>> +#define SPINAND_POR_MAX_DELAY_US	1200
->>>>>>     >>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
->>>>>>     >> @@ -351,6 +367,7 @@ struct spinand_ecc_info {
->>>>>>     #define SPINAND_HAS_QE_BIT		BIT(0)
->>>>>>     #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
->>>>>>     #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
->>>>>> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)
->>>>>>     >>   /**
->>>>>>      * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
->>>>>
->>>>>
->>>>>
->>>>>
->>>>> Thanks,
->>>>> Miquèl
->>>>>
->>>>> ______________________________________________________
->>>>> Linux MTD discussion mailing list
->>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>>>     >>
->>>> Thanks,
->>>> Apurva Nandan
->>>
->>> Thanks,
->>> Miquèl
->>>    
->>
->> Thanks,
->> Apurva Nandan
-> 
-> Thanks,
-> Miquèl
-> 
-
-Thanks,
-Apurva Nandan
+-- 
+Kees Cook
