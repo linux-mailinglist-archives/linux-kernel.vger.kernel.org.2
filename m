@@ -2,118 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5283F367A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8063C3F367C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbhHTWdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHTWdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:33:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE86C061575;
-        Fri, 20 Aug 2021 15:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Rqd7XZjlI+nNgy4uwpEVUNLUjFWyJ9EMV7pUgmSDTMM=; b=ScMaiyryPuwarKlOD4teq+Ru/Q
-        wv7TrfDsI7YN5IkHpuXdP0Wz99OxXtNoibwbOYSZbJ7N/oL+yem9/3XsoJyK2D+YWGJrCnnYQvm2h
-        qV30W6G8LNquDniLNXz/nRBs3Z1mAmvdDTgC3MNIppohKZUExmN+apIfxJLHksWCOa67p9+1GwAuh
-        f5FvMDA9G9rWZohHRQWV2w5pTT+FyUrnAdFCPsE/FSuCVG8+VoKxMjs+4JrS//xNOW5rk5cS4DPj4
-        aS2Ets2iO3kIAh6Tftnn5hacmQmzeoMaQKS211gaqDIdFYqQE6lpkb8D8CRtzCNTSla6apcYpJdV8
-        SrI9ABTQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mHD2X-0073QU-D1; Fri, 20 Aug 2021 22:31:21 +0000
-Date:   Fri, 20 Aug 2021 23:31:05 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Subject: Re: Removing Mandatory Locks
-Message-ID: <YSAtKesNFlSIhHar@casper.infradead.org>
-References: <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133>
- <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
- <YRcyqbpVqwwq3P6n@casper.infradead.org>
- <87k0kkxbjn.fsf_-_@disp2133>
- <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
- <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
- <202108200905.BE8AF7C@keescook>
- <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
+        id S234097AbhHTWhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:37:34 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3508 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhHTWhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 18:37:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="277870276"
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="277870276"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 15:36:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="682642855"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Aug 2021 15:36:48 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mHD83-000VG6-Kr; Fri, 20 Aug 2021 22:36:47 +0000
+Date:   Sat, 21 Aug 2021 06:36:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS
+ b857174e68e26f9c4f0796971e11eb63ad5a3eb6
+Message-ID: <61202e53.p7NDOnAbPWbrXtv/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 12:17:49PM -0700, H. Peter Anvin wrote:
-> I thought the main user was Samba and/or otherwise providing file service for M$ systems?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+branch HEAD: b857174e68e26f9c4f0796971e11eb63ad5a3eb6  locking/ww_mutex: Initialize waiter.ww_ctx properly
 
-When I asked around about this in ~2001, the only example anyoe was able
-to come up with was some database that I no longer remember the name of.
+elapsed time: 722m
+
+configs tested: 123
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210820
+arm                         hackkit_defconfig
+arm                             ezx_defconfig
+mips                  decstation_64_defconfig
+arm                        trizeps4_defconfig
+m68k                          multi_defconfig
+sh                          r7780mp_defconfig
+sh                           se7724_defconfig
+arc                    vdk_hs38_smp_defconfig
+sparc                            alldefconfig
+arm                          iop32x_defconfig
+sh                              ul2_defconfig
+sh                          landisk_defconfig
+mips                  maltasmvp_eva_defconfig
+xtensa                    smp_lx200_defconfig
+arm                          badge4_defconfig
+mips                        nlm_xlr_defconfig
+arm                           sama5_defconfig
+powerpc                     ep8248e_defconfig
+arm                       netwinder_defconfig
+xtensa                          iss_defconfig
+arm                          collie_defconfig
+m68k                                defconfig
+i386                             alldefconfig
+arm                       mainstone_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                           u8500_defconfig
+arm                            dove_defconfig
+arm                            qcom_defconfig
+arm                          pxa910_defconfig
+sh                                  defconfig
+openrisc                  or1klitex_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                       ppc64_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                        bcm63xx_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210820
+i386                 randconfig-a001-20210820
+i386                 randconfig-a002-20210820
+i386                 randconfig-a005-20210820
+i386                 randconfig-a003-20210820
+i386                 randconfig-a004-20210820
+i386                 randconfig-a015-20210819
+i386                 randconfig-a011-20210819
+i386                 randconfig-a014-20210819
+i386                 randconfig-a013-20210819
+i386                 randconfig-a016-20210819
+i386                 randconfig-a012-20210819
+i386                 randconfig-a011-20210821
+i386                 randconfig-a016-20210821
+i386                 randconfig-a012-20210821
+i386                 randconfig-a014-20210821
+i386                 randconfig-a013-20210821
+i386                 randconfig-a015-20210821
+x86_64               randconfig-a004-20210818
+x86_64               randconfig-a006-20210818
+x86_64               randconfig-a003-20210818
+x86_64               randconfig-a005-20210818
+x86_64               randconfig-a002-20210818
+x86_64               randconfig-a001-20210818
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-c001-20210820
+x86_64               randconfig-a014-20210820
+x86_64               randconfig-a016-20210820
+x86_64               randconfig-a015-20210820
+x86_64               randconfig-a013-20210820
+x86_64               randconfig-a012-20210820
+x86_64               randconfig-a011-20210820
+i386                 randconfig-a011-20210820
+i386                 randconfig-a016-20210820
+i386                 randconfig-a012-20210820
+i386                 randconfig-a014-20210820
+i386                 randconfig-a013-20210820
+i386                 randconfig-a015-20210820
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
