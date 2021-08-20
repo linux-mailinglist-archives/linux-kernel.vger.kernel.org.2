@@ -2,69 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203423F2D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA833F2D6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240807AbhHTNur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:50:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59576 "EHLO mail.kernel.org"
+        id S240679AbhHTNxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:53:02 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:58011 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240784AbhHTNuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:50:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C5F306113D;
-        Fri, 20 Aug 2021 13:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629467406;
-        bh=Px+OSxWE7cApiXcsZtP4js0rwg78v5cOHxYG3EWtYCA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BkU4tfNSFAFaSMgV36YE432KnBgmWDrg/X/G48uH42QUV+u/ugo/HCgiuOWANuVk8
-         vDqLMfuBl4140/5GZ93AE4Tef7PHnPLwAMeKY3eyyzNIkl4cO9qMY1XCtN1+itb8ZC
-         qgD02AlIKbzPCv5c0ONPy54D8Hp/mWf02khwi/zPeAAyyXM6krnpHzyQmnKzrEO43u
-         ixM5Y5awl3rVjCXJPxa05qPevWwKTw+VGQ1mf8yUCpXjMovm80G3iaZ5jgWWq2EhOD
-         vViQTJ2cUAjFS31owivKa0I4FZRuj052H6mYaQ0j11y2Od5gCsLLQdbcb/K3M0tzN4
-         loixvAVOBQYUw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF6FA60A89;
-        Fri, 20 Aug 2021 13:50:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231854AbhHTNxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 09:53:01 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 17KDqIjq007098
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Aug 2021 15:52:19 +0200
+Received: from [167.87.0.29] ([167.87.0.29])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 17KDqItv026769;
+        Fri, 20 Aug 2021 15:52:18 +0200
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Subject: [PATCH] PCI/portdrv: Do not setup up IRQs if there are no users
+To:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <43e1591d-51ed-39fa-3bc5-c11777f27b62@siemens.com>
+Date:   Fri, 20 Aug 2021 15:52:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: ipa: fix TX queue race
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162946740677.29437.1965272809545248532.git-patchwork-notify@kernel.org>
-Date:   Fri, 20 Aug 2021 13:50:06 +0000
-References: <20210819211228.3192173-1-elder@linaro.org>
-In-Reply-To: <20210819211228.3192173-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+From: Jan Kiszka <jan.kiszka@siemens.com>
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Avoid registering service IRQs if there is no service that offers them
+or no driver to register a handler against them. This saves IRQ vectors
+when they are limited (e.g. on x86) and also avoids that spurious events
+could hit a missing handler. Such spurious events need to be generated
+by the Jailhouse hypervisor for active MSI vectors when enabling or
+disabling itself.
 
-On Thu, 19 Aug 2021 16:12:28 -0500 you wrote:
-> Jakub Kicinski pointed out a race condition in ipa_start_xmit() in a
-> recently-accepted series of patches:
->   https://lore.kernel.org/netdev/20210812195035.2816276-1-elder@linaro.org/
-> We are stopping the modem TX queue in that function if the power
-> state is not active.  We restart the TX queue again once hardware
-> resume is complete.
-> 
-> [...]
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+---
+ drivers/pci/pcie/portdrv_core.c | 40 ++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
 
-Here is the summary with links:
-  - [net-next,v2] net: ipa: fix TX queue race
-    https://git.kernel.org/netdev/net-next/c/b8e36e13ea5e
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+index e1fed6649c41..2a702ccffaac 100644
+--- a/drivers/pci/pcie/portdrv_core.c
++++ b/drivers/pci/pcie/portdrv_core.c
+@@ -312,7 +312,7 @@ static int pcie_device_init(struct pci_dev *pdev, int service, int irq)
+  */
+ int pcie_port_device_register(struct pci_dev *dev)
+ {
+-	int status, capabilities, i, nr_service;
++	int status, capabilities, irq_services, i, nr_service;
+ 	int irqs[PCIE_PORT_DEVICE_MAXSERVICES];
+ 
+ 	/* Enable PCI Express port device */
+@@ -326,18 +326,32 @@ int pcie_port_device_register(struct pci_dev *dev)
+ 		return 0;
+ 
+ 	pci_set_master(dev);
+-	/*
+-	 * Initialize service irqs. Don't use service devices that
+-	 * require interrupts if there is no way to generate them.
+-	 * However, some drivers may have a polling mode (e.g. pciehp_poll_mode)
+-	 * that can be used in the absence of irqs.  Allow them to determine
+-	 * if that is to be used.
+-	 */
+-	status = pcie_init_service_irqs(dev, irqs, capabilities);
+-	if (status) {
+-		capabilities &= PCIE_PORT_SERVICE_HP;
+-		if (!capabilities)
+-			goto error_disable;
++
++	irq_services = 0;
++	if (IS_ENABLED(CONFIG_PCIE_PME))
++		irq_services |= PCIE_PORT_SERVICE_PME;
++	if (IS_ENABLED(CONFIG_PCIEAER))
++		irq_services |= PCIE_PORT_SERVICE_AER;
++	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
++		irq_services |= PCIE_PORT_SERVICE_HP;
++	if (IS_ENABLED(CONFIG_PCIE_DPC))
++		irq_services |= PCIE_PORT_SERVICE_DPC;
++	irq_services &= capabilities;
++
++	if (irq_services) {
++		/*
++		 * Initialize service irqs. Don't use service devices that
++		 * require interrupts if there is no way to generate them.
++		 * However, some drivers may have a polling mode (e.g.
++		 * pciehp_poll_mode) that can be used in the absence of irqs.
++		 * Allow them to determine if that is to be used.
++		 */
++		status = pcie_init_service_irqs(dev, irqs, irq_services);
++		if (status) {
++			irq_services &= PCIE_PORT_SERVICE_HP;
++			if (!irq_services)
++				goto error_disable;
++		}
+ 	}
+ 
+ 	/* Allocate child services if any */
+-- 
+2.31.1
