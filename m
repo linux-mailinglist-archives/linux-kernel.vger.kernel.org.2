@@ -2,138 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81053F2910
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD03F2911
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhHTJ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:26:07 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:32956 "EHLO mail.skyhub.de"
+        id S235865AbhHTJ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:26:46 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:53385 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232991AbhHTJ0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:26:06 -0400
-Received: from zn.tnic (p200300ec2f107b00c7422970522e0abe.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:c742:2970:522e:abe])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 755551EC047D;
-        Fri, 20 Aug 2021 11:25:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629451523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CLw1R2E8tRT9zZxScyNNPpxGm1yDL2InY9dHbzY51fU=;
-        b=DtkfIwZqVj7StAX8FsC0CFsqYI8v3d/RdofKs4XYIlVVAVWh4sXDgHicAIPykMWOhaZOw9
-        vbi2vVsTs/fbacZR6D0M+pPbKq8/Q+XjRnR/9cNKUCNrJZIa9C7Y7v8kMmsLt9ioYwOPwe
-        koK8dC8igpnT2BL6Pqf1nJqqCYXI10M=
-Date:   Fri, 20 Aug 2021 11:26:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
-        Joerg Roedel <jroedel@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/efi: Restore Firmware IDT in before
- ExitBootServices()
-Message-ID: <YR91KKJ1Bq/KNBnY@zn.tnic>
-References: <20210820073429.19457-1-joro@8bytes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820073429.19457-1-joro@8bytes.org>
+        id S232991AbhHTJ0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:26:44 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Grbq143h3z9sW6;
+        Fri, 20 Aug 2021 11:26:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id cOX1mvPEk9rR; Fri, 20 Aug 2021 11:26:05 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Grbq136J2z9sW5;
+        Fri, 20 Aug 2021 11:26:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 504A18B87A;
+        Fri, 20 Aug 2021 11:26:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id D13dkWQaE3Al; Fri, 20 Aug 2021 11:26:05 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0993A8B875;
+        Fri, 20 Aug 2021 11:26:05 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id BA99F6BB81; Fri, 20 Aug 2021 09:26:04 +0000 (UTC)
+Message-Id: <075703befe8f7e0f5cef3fe7455e648f12c210a5.1629451489.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [RFC PATCH] powerpc/audit: Convert powerpc to
+ AUDIT_ARCH_COMPAT_GENERIC
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 20 Aug 2021 09:26:04 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 09:34:29AM +0200, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> Commit 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32
-> boot path") introduced an IDT into the 32 bit boot path of the
-> decompressor stub.  But the IDT is set up before ExitBootServices() is
-> called and some UEFI firmwares rely on their own IDT.
-> 
-> Save the firmware IDT on boot and restore it before calling into EFI
-> functions to fix boot failures introduced by above commit.
-> 
-> Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> Fixes: 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32 boot path")
-> Cc: stable@vger.kernel.org # 5.13+
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/boot/compressed/efi_thunk_64.S | 23 ++++++++++++++++++-----
->  arch/x86/boot/compressed/head_64.S      |  3 +++
->  2 files changed, 21 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/boot/compressed/efi_thunk_64.S b/arch/x86/boot/compressed/efi_thunk_64.S
-> index 95a223b3e56a..99cfd5dea23c 100644
-> --- a/arch/x86/boot/compressed/efi_thunk_64.S
-> +++ b/arch/x86/boot/compressed/efi_thunk_64.S
-> @@ -39,7 +39,7 @@ SYM_FUNC_START(__efi64_thunk)
->  	/*
->  	 * Convert x86-64 ABI params to i386 ABI
->  	 */
-> -	subq	$32, %rsp
-> +	subq	$64, %rsp
->  	movl	%esi, 0x0(%rsp)
->  	movl	%edx, 0x4(%rsp)
->  	movl	%ecx, 0x8(%rsp)
-> @@ -49,14 +49,19 @@ SYM_FUNC_START(__efi64_thunk)
->  	leaq	0x14(%rsp), %rbx
->  	sgdt	(%rbx)
->  
-> +	addq	$16, %rbx
-> +	sidt	(%rbx)
-> +
->  	/*
-> -	 * Switch to gdt with 32-bit segments. This is the firmware GDT
-> -	 * that was installed when the kernel started executing. This
-> -	 * pointer was saved at the EFI stub entry point in head_64.S.
-> +	 * Switch to idt and gdt with 32-bit segments. This is the firmware GDT
+No time to finalise commit description and testing before the
+weekend, sending out as RFC to eventually get some feedback.
 
-IDT and GDT, both capitalized pls. Also, the comment at the top of the
-file needs adjusting.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/Kconfig               |  5 +-
+ arch/powerpc/kernel/Makefile       |  3 --
+ arch/powerpc/kernel/audit.c        | 84 ------------------------------
+ arch/powerpc/kernel/compat_audit.c | 44 ----------------
+ 4 files changed, 1 insertion(+), 135 deletions(-)
+ delete mode 100644 arch/powerpc/kernel/audit.c
+ delete mode 100644 arch/powerpc/kernel/compat_audit.c
 
-> +	 * and IDT that was installed when the kernel started executing. The
-> +	 * pointers were saved at the EFI stub entry point in head_64.S.
->  	 *
->  	 * Pass the saved DS selector to the 32-bit code, and use far return to
->  	 * restore the saved CS selector.
->  	 */
-> +	leaq	efi32_boot_idt(%rip), %rax
-> +	lidt	(%rax)
->  	leaq	efi32_boot_gdt(%rip), %rax
->  	lgdt	(%rax)
->  
-> @@ -67,7 +72,7 @@ SYM_FUNC_START(__efi64_thunk)
->  	pushq	%rax
->  	lretq
->  
-> -1:	addq	$32, %rsp
-> +1:	addq	$64, %rsp
->  	movq	%rdi, %rax
->  
->  	pop	%rbx
-> @@ -132,6 +137,9 @@ SYM_FUNC_START_LOCAL(efi_enter32)
->  	 */
-
-Can you pls also extend this comment here to say "IDT" for faster
-pinpointing when someone like me is looking for the place where the
-kernel IDT/GDT get restored again.
-
-In any case, those are all minor nitpicks, other than that LGTM.
-
-Lemme go test it on whatever I can - if others wanna run this, it would
-be very much appreciated!
-
-Thx.
-
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 663766fbf505..5472358609d2 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -163,6 +163,7 @@ config PPC
+ 	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+ 	select ARCH_WEAK_RELEASE_ACQUIRE
++	select AUDIT_ARCH_COMPAT_GENERIC
+ 	select BINFMT_ELF
+ 	select BUILDTIME_TABLE_SORT
+ 	select CLONE_BACKWARDS
+@@ -316,10 +317,6 @@ config GENERIC_TBSYNC
+ 	bool
+ 	default y if PPC32 && SMP
+ 
+-config AUDIT_ARCH
+-	bool
+-	default y
+-
+ config GENERIC_BUG
+ 	bool
+ 	default y
+diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+index 7be36c1e1db6..825121eba3c2 100644
+--- a/arch/powerpc/kernel/Makefile
++++ b/arch/powerpc/kernel/Makefile
+@@ -125,9 +125,6 @@ obj-$(CONFIG_PCI)		+= pci_$(BITS).o $(pci64-y) \
+ 				   pci-common.o pci_of_scan.o
+ obj-$(CONFIG_PCI_MSI)		+= msi.o
+ 
+-obj-$(CONFIG_AUDIT)		+= audit.o
+-obj64-$(CONFIG_AUDIT)		+= compat_audit.o
+-
+ obj-$(CONFIG_PPC_IO_WORKAROUNDS)	+= io-workarounds.o
+ 
+ obj-y				+= trace/
+diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
+deleted file mode 100644
+index a2dddd7f3d09..000000000000
+--- a/arch/powerpc/kernel/audit.c
++++ /dev/null
+@@ -1,84 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/init.h>
+-#include <linux/types.h>
+-#include <linux/audit.h>
+-#include <asm/unistd.h>
+-
+-static unsigned dir_class[] = {
+-#include <asm-generic/audit_dir_write.h>
+-~0U
+-};
+-
+-static unsigned read_class[] = {
+-#include <asm-generic/audit_read.h>
+-~0U
+-};
+-
+-static unsigned write_class[] = {
+-#include <asm-generic/audit_write.h>
+-~0U
+-};
+-
+-static unsigned chattr_class[] = {
+-#include <asm-generic/audit_change_attr.h>
+-~0U
+-};
+-
+-static unsigned signal_class[] = {
+-#include <asm-generic/audit_signal.h>
+-~0U
+-};
+-
+-int audit_classify_arch(int arch)
+-{
+-#ifdef CONFIG_PPC64
+-	if (arch == AUDIT_ARCH_PPC)
+-		return 1;
+-#endif
+-	return 0;
+-}
+-
+-int audit_classify_syscall(int abi, unsigned syscall)
+-{
+-#ifdef CONFIG_PPC64
+-	extern int ppc32_classify_syscall(unsigned);
+-	if (abi == AUDIT_ARCH_PPC)
+-		return ppc32_classify_syscall(syscall);
+-#endif
+-	switch(syscall) {
+-	case __NR_open:
+-		return 2;
+-	case __NR_openat:
+-		return 3;
+-	case __NR_socketcall:
+-		return 4;
+-	case __NR_execve:
+-		return 5;
+-	default:
+-		return 0;
+-	}
+-}
+-
+-static int __init audit_classes_init(void)
+-{
+-#ifdef CONFIG_PPC64
+-	extern __u32 ppc32_dir_class[];
+-	extern __u32 ppc32_write_class[];
+-	extern __u32 ppc32_read_class[];
+-	extern __u32 ppc32_chattr_class[];
+-	extern __u32 ppc32_signal_class[];
+-	audit_register_class(AUDIT_CLASS_WRITE_32, ppc32_write_class);
+-	audit_register_class(AUDIT_CLASS_READ_32, ppc32_read_class);
+-	audit_register_class(AUDIT_CLASS_DIR_WRITE_32, ppc32_dir_class);
+-	audit_register_class(AUDIT_CLASS_CHATTR_32, ppc32_chattr_class);
+-	audit_register_class(AUDIT_CLASS_SIGNAL_32, ppc32_signal_class);
+-#endif
+-	audit_register_class(AUDIT_CLASS_WRITE, write_class);
+-	audit_register_class(AUDIT_CLASS_READ, read_class);
+-	audit_register_class(AUDIT_CLASS_DIR_WRITE, dir_class);
+-	audit_register_class(AUDIT_CLASS_CHATTR, chattr_class);
+-	audit_register_class(AUDIT_CLASS_SIGNAL, signal_class);
+-	return 0;
+-}
+-
+-__initcall(audit_classes_init);
+diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
+deleted file mode 100644
+index 55c6ccda0a85..000000000000
+--- a/arch/powerpc/kernel/compat_audit.c
++++ /dev/null
+@@ -1,44 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#undef __powerpc64__
+-#include <asm/unistd.h>
+-
+-unsigned ppc32_dir_class[] = {
+-#include <asm-generic/audit_dir_write.h>
+-~0U
+-};
+-
+-unsigned ppc32_chattr_class[] = {
+-#include <asm-generic/audit_change_attr.h>
+-~0U
+-};
+-
+-unsigned ppc32_write_class[] = {
+-#include <asm-generic/audit_write.h>
+-~0U
+-};
+-
+-unsigned ppc32_read_class[] = {
+-#include <asm-generic/audit_read.h>
+-~0U
+-};
+-
+-unsigned ppc32_signal_class[] = {
+-#include <asm-generic/audit_signal.h>
+-~0U
+-};
+-
+-int ppc32_classify_syscall(unsigned syscall)
+-{
+-	switch(syscall) {
+-	case __NR_open:
+-		return 2;
+-	case __NR_openat:
+-		return 3;
+-	case __NR_socketcall:
+-		return 4;
+-	case __NR_execve:
+-		return 5;
+-	default:
+-		return 1;
+-	}
+-}
 -- 
-Regards/Gruss,
-    Boris.
+2.25.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
