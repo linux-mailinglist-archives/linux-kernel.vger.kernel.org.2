@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBDD3F2E7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAE73F2E8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240865AbhHTPFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:05:16 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60588
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238805AbhHTPFP (ORCPT
+        id S241016AbhHTPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:05:47 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:38510
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241017AbhHTPFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:05:15 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        Fri, 20 Aug 2021 11:05:44 -0400
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 649824075F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:04:36 +0000 (UTC)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4A4F840793
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629471876;
-        bh=+9RVHIO7GV1Om2KHgusO6/MXkZN0OfEQMTrFuagDZKI=;
+        s=20210705; t=1629471905;
+        bh=j0dYi0KupqdKnWz5W7Du03JuCWQtXHT/rpVxperl5M4=;
         h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
          In-Reply-To:Content-Type;
-        b=NiAqpx/BHsRMliyv/ACW72HdBctzKXhU8wc6GSz5C71fXX0iRVWFqa+koZKE3awAl
-         FTVtHkJ5jEdcNFtyFXhT8u7C8Vv2oOudbi1p9CcFIWqivU6yYYvTHIJm81hOhLr6S9
-         ql0tP5vs8g2vlz2XqYJQAUDRYi5Y6RcMix498XQTaXttCDPCvfrVJvmpN2N0eqtayD
-         ySfMzsWlsQU+fw+sOtVs1BNxhgGcQY1JayeYhqvJFoDK2jvvoF3dFwXi6aa+/AEhi0
-         F1O+JeE9APlUk7rUuRr2arbcGl9wFKEX7Tz1qY71G8TSPen4J3pEPRzDhyZ5RIaeQ3
-         xB9ImzyJEdxzA==
-Received: by mail-ed1-f71.google.com with SMTP id z4-20020a05640240c4b02903be90a10a52so4684211edb.19
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:04:36 -0700 (PDT)
+        b=OVQAXF5ToM/xkt0HfwjC5AonObTs5AdoSuRjLGZ1Dhork3A0fYwaQCJbbwxwl6lYe
+         u5Xgm5Jsj6/auyLT8JrO2O9dANuCQ0v2UqSgf2Y9+qdYIUG+Q01qdqyzwVpZYAdL0O
+         aNyneP3fVB61ZDrXcBA8RdHuBJmZAHBME0N3uTZrie+P8w7Bf5U37flteP1PH2VJ6y
+         Nv3jxzAAEC/TQ4tLCUDJlUh6XyT5LL+JxkuMo0zdc3H2gCQmbvFRlOsXsLSC1PsWu2
+         mQl06hN77TLNr5EdExnyMRRgF0/bj/MyT37+mDyRpMSJdnfa54gcBOVveTf5RKq4d7
+         25NqBye/5/tAw==
+Received: by mail-ed1-f69.google.com with SMTP id a23-20020a50ff170000b02903b85a16b672so4690762edu.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:05:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=+9RVHIO7GV1Om2KHgusO6/MXkZN0OfEQMTrFuagDZKI=;
-        b=KKvYqETTyhd4PA5XWg8DBOl7I7su4kJuJ1JS9lCO9UL8WX+4dR/Qiqgb1fKYxStRCx
-         CANpqr5ORf2g/3S43po7yceI/NwfN8ICWDYiLRj6+/D6AMu4t8wh5fu84VxegLgfgsKV
-         lZ8oCrENO3//hBQMqIALWgB6YmzWzpNi6Q+wnpczRZPDao4VG/m9L9504G9U5y5NB4TN
-         mgM9uwTz4fgYllpru7fUPYJA4FpIEoTfI+E+cLQ0ZcOGNYnpQpC3OwgF42WfVZZU7jPV
-         LEjSy5pUxPZK/t7GPoN/roiNUfCUp8M+6nxG9hcwn+gwgQ8wUp+BtZHJ7F3u245+S8QC
-         FlZg==
-X-Gm-Message-State: AOAM532BoQohxFJ3Uf9GjqPFgkt3czMajTnTjmukjmxZ7QE285jg8GwU
-        H0uVoeesc+6PygNtV4ewU0tfRzvxJdZCBTVVT2mEVlMLms6qaTht/W9Vgow634B9N3nekRkHrjs
-        uekXlpD9VwrPvoKpQsnsDRZmUm4pT8/cRDrLEg2Ua+Q==
-X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr23183733edw.90.1629471875697;
-        Fri, 20 Aug 2021 08:04:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgDiyfkZv84mpJkewwib7hgZF+c9z+OtbNAQMGJ7h7jHN43rWGybqDCjw2we1dlKuY6kNo0A==
-X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr23183722edw.90.1629471875595;
-        Fri, 20 Aug 2021 08:04:35 -0700 (PDT)
+        bh=j0dYi0KupqdKnWz5W7Du03JuCWQtXHT/rpVxperl5M4=;
+        b=HP6+IJiimD4n9w1Rx8M2xMu8QAbZRIzDGQBhu8DGLrOfxE3+KbhMvQ7NhhwLNYhLUe
+         vh2btIMyqXU2SNFpSkMYPhTXpP+M9qI0RmnbXNZyQA/pCreQJVyReMdU472+GfHuJ8z3
+         th7t0n9geIsDaoU8Bplel0GirxdtcaIQCOD1zaetnYcBmNqB0otIBca16s1cq+MIow3X
+         znbBBoMSbgv9uJiALyQFWMpTsRQ0TaqTYj1vMX9964GnncGohDGxQ0pzMbHrgHQQ6b62
+         HuHYUPBm53+n8MxShDvtqI7I2DLV+pSrQISEQNaRNMhE68A1VURaYEIzT/n5f1AbRKlR
+         NiIQ==
+X-Gm-Message-State: AOAM530yJr2acJaB/gXShwOiYc3z+pUZr3C8XNqY0OIK1hvrxYLoRt/X
+        nW29P9pp3IE0Wq5K/4jUd/UMjRkNydkN/18di0AaRuZTNc2IEVxrJwI+HF8csPGDIO4pn181tFo
+        857y1MVhlx+bkW/THgtCgvPob6z/6IqZLCij1ibdcFA==
+X-Received: by 2002:a05:6402:50c6:: with SMTP id h6mr14531789edb.3.1629471904769;
+        Fri, 20 Aug 2021 08:05:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKW9WSIpRJLoykrE+AkG4eBlKpM8Vni9qzYCXxPUlR6EMgj8hG6t6dywWH/oxBp6h55QhRdg==
+X-Received: by 2002:a05:6402:50c6:: with SMTP id h6mr14531779edb.3.1629471904650;
+        Fri, 20 Aug 2021 08:05:04 -0700 (PDT)
 Received: from [192.168.8.102] ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id q6sm2960038ejm.106.2021.08.20.08.04.34
+        by smtp.gmail.com with ESMTPSA id cx18sm2986223ejb.33.2021.08.20.08.05.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 08:04:35 -0700 (PDT)
-Subject: Re: [PATCH 1/2] arm64: dts: exynos: align operating-points table name
- with dtschema in Exynos5433
+        Fri, 20 Aug 2021 08:05:04 -0700 (PDT)
+Subject: Re: [PATCH 2/2] arm64: dts: exynos: add proper comaptible FSYS syscon
+ in Exynos5433
 To:     Alim Akhtar <alim.akhtar@gmail.com>
 Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org,
         open list <linux-kernel@vger.kernel.org>
 References: <20210820081458.83406-1-krzysztof.kozlowski@canonical.com>
- <CAGOxZ53oTWuSLupGKWd+XWPXJZQfZ28-Vo=wWT1exty0LpCfOA@mail.gmail.com>
+ <20210820082149.84613-1-krzysztof.kozlowski@canonical.com>
+ <CAGOxZ53CeRYafwjP45CsDRgBQtuvyVxJQR4CX4qChWyHzO4_fA@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ed2e81ce-97ac-be28-8db5-3f1242c64a91@canonical.com>
-Date:   Fri, 20 Aug 2021 17:04:33 +0200
+Message-ID: <b21ceda4-c960-791b-6d09-a7579a35c3a4@canonical.com>
+Date:   Fri, 20 Aug 2021 17:05:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAGOxZ53oTWuSLupGKWd+XWPXJZQfZ28-Vo=wWT1exty0LpCfOA@mail.gmail.com>
+In-Reply-To: <CAGOxZ53CeRYafwjP45CsDRgBQtuvyVxJQR4CX4qChWyHzO4_fA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,23 +79,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/2021 16:44, Alim Akhtar wrote:
-> On Fri, Aug 20, 2021 at 1:51 PM Krzysztof Kozlowski
+On 20/08/2021 16:47, Alim Akhtar wrote:
+> On Fri, Aug 20, 2021 at 1:52 PM Krzysztof Kozlowski
 > <krzysztof.kozlowski@canonical.com> wrote:
 >>
->> Align the name of operating-points node to dtschema to fix warnings like:
->>
-> Did you miss adding warnings here?
+>> The syscon nodes should come with specific compatible.  Correct theh
+> s/theh/the?
 
-Yeah, I missed. I will add it when applying.
+Indeed, thanks!
 
 > 
+>> FSYS syscon to fix dtbs_check warnings:
+>>
+>>   syscon@156f0000: compatible: 'anyOf' conditional failed, one must be fixed:
+>>   ['syscon'] is too short
+>>
 >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 >> ---
-> Rest looks good.
+> With typo fixed above,
 > Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Thanks!
 
 
 Best regards,
