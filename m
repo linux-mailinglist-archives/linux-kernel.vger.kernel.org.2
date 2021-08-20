@@ -2,79 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1F3F362A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C023F3623
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhHTVwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:52:54 -0400
-Received: from xppmailspam11.itap.purdue.edu ([128.210.1.215]:54618 "EHLO
-        xppmailspam11.itap.purdue.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229760AbhHTVws (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:52:48 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Aug 2021 17:52:48 EDT
-IronPort-SDR: KBJfo//jnLPko2SrkSQKskvNYd2Xr6KkJjhbFSoSG2K7gLn9cI8CZ6U4N0gCbH/tqhmUET6Ff4
- 9y8fzENPTlY/j8k/w2ObU919As8S9JRts=
-X-Ironport-AuthID: sishuai@purdue.edu
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A2wWELql3R4+4WcdsCKwDKNp9C6jpDfJC3D?=
- =?us-ascii?q?Abv31ZSRFFG/FwWfrCoB1173DJYVoqM03I5+rvBEDoexq1yXcf2+Us1NmZNj?=
- =?us-ascii?q?UOwFHIEL1f?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.84,338,1620705600"; 
-   d="scan'208";a="375256756"
-Received: from switch-lwsn2133-z1r11.cs.purdue.edu (HELO rssys-server.cs.purdue.edu) ([128.10.127.250])
-  by xppmailspam11.itap.purdue.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Aug 2021 17:45:01 -0400
-From:   sishuaigong <sishuai@purdue.edu>
-To:     jlbec@evilplan.org, hch@lst.de
-Cc:     linux-kernel@vger.kernel.org, sishuaigong <sishuai@purdue.edu>
-Subject: [PATCH] configfs: fix a race in configfs_lookup()
-Date:   Fri, 20 Aug 2021 17:44:58 -0400
-Message-Id: <20210820214458.14087-1-sishuai@purdue.edu>
-X-Mailer: git-send-email 2.17.1
+        id S232418AbhHTVqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:46:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229760AbhHTVqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 17:46:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 003E560C41;
+        Fri, 20 Aug 2021 21:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629495971;
+        bh=dvXYyE008dY2XVm/6wcJwDcH+fUjvkok72nH9XXHRyc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NQ+hPQHZcFnLpHQ6ENtzfrOntz0BsUdik0+iTLrLJWz8sm6eF9Y5ayKMrxqQxriz7
+         PRLGPeU1DH1sH4fOGFf0rkP5o3L9QnyU1G6Q83Nt+1JVi+wr46Poc+S/wN67sm4P5z
+         veqke3VjlHVcA7R/oKxAIlFLdqChXU43aGqtGoQu1mY5e6OAOk/U81hHF1kJGvKnht
+         wiEpq42SrKOJkjqaAe/ezRm3j/Od5mJo8yNt0Y12UIHIjp6MypbiBJUIYTrEEw0Flm
+         qf2ARu2fmvZsz0/TAOHAQMUEc57Ad0q6JlqHi2DnxVVYG2R5ZR+65I7ORAyfKmEXXD
+         Rqya1PUPMyGgg==
+Date:   Fri, 20 Aug 2021 14:46:10 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     netdev@vger.kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Subject: Re: [PATCH net] stmmac: Revert "stmmac: align RX buffers"
+Message-ID: <20210820144610.7576c36a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210820183002.457226-1-maz@kernel.org>
+References: <20210820183002.457226-1-maz@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When configfs_lookup() is executing list_for_each_entry(),
-it is possible that configfs_dir_lseek() is calling list_del().
-Some unfortunate interleavings of them can cause a kernel NULL
-pointer dereference error
+On Fri, 20 Aug 2021 19:30:02 +0100 Marc Zyngier wrote:
+> This reverts commit a955318fe67e ("stmmac: align RX buffers"),
+> which breaks at least one platform (Nvidia Jetson-X1), causing
+> packet corruption. This is 100% reproducible, and reverting
+> the patch results in a working system again.
+> 
+> Given that it is "only" a performance optimisation, let's
+> return to a known working configuration until we can have a
+> good understanding of what is happening here.
 
-Thread 1                  Thread 2
-//configfs_dir_lseek()    //configfs_lookup()
-list_del(&cursor->s_sibling);
-                          list_for_each_entry(sd, ...)
-
-Fix this bug by using list_for_each_entry_safe() instead.
-
-Reported-by: Sishuai Gong <sishuai@purdue.edu>
-Signed-off-by: sishuaigong <sishuai@purdue.edu>
----
- fs/configfs/dir.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-index ac5e0c0e9181..8f5d0309fb4a 100644
---- a/fs/configfs/dir.c
-+++ b/fs/configfs/dir.c
-@@ -452,7 +452,7 @@ static struct dentry * configfs_lookup(struct inode *dir,
- 				       unsigned int flags)
- {
- 	struct configfs_dirent * parent_sd = dentry->d_parent->d_fsdata;
--	struct configfs_dirent * sd;
-+	struct configfs_dirent *sd, *tmp;
- 	int found = 0;
- 	int err;
- 
-@@ -468,7 +468,7 @@ static struct dentry * configfs_lookup(struct inode *dir,
- 	if (!configfs_dirent_is_ready(parent_sd))
- 		goto out;
- 
--	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
-+	list_for_each_entry_safe(sd, tmp, &parent_sd->s_children, s_sibling) {
- 		if (sd->s_type & CONFIGFS_NOT_PINNED) {
- 			const unsigned char * name = configfs_get_name(sd);
- 
--- 
-2.17.1
-
+Seems reasonable. Hopefully it wont discourage Matteo from revisiting
+the optimization. Applied, thanks!
