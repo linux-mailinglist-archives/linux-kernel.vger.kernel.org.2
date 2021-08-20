@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB243F2EAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D833C3F2EB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241006AbhHTPRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241000AbhHTPQ7 (ORCPT
+        id S240988AbhHTPTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:19:16 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48014
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234323AbhHTPTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:16:59 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD8CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:16:21 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f107b003f09257bf467226c.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:3f09:257b:f467:226c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 20 Aug 2021 11:19:15 -0400
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BC5B01EC0531;
-        Fri, 20 Aug 2021 17:16:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629472575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=WnzRHPjY4NwfK9a1GkOYkVew9ln/KLd6Cj2tbizZfmU=;
-        b=bpzcMBLsy7+rJlnGI6Ux7AUKcgaieqtNgk85MAp16vpnWLxnD3cKkNNJxWNzIKW4X34aiv
-        8SH9KjJF8d43A1rPTbSMjmdsbNVWQXtlTnyft7SnawM/tkxTDZk5ZhKpkTgCCB7BYb5Asm
-        AY45HdlLU378wUrGQYNDESu4Y7uL494=
-Date:   Fri, 20 Aug 2021 17:16:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 05/12] x86/tdx: Add __tdx_module_call() and
- __tdx_hypercall() helper functions
-Message-ID: <YR/HZuvry/xfDKDl@zn.tnic>
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id F08E73F359;
+        Fri, 20 Aug 2021 15:18:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629472716;
+        bh=2y4JX8nWM9/z4xlhCMBctS5hhey+EW6iTHOPrc38Ugk=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=EidheyWAH6xXtFZTJRd3DF6qMtC84raAWLT30+fFGzxv/j4aLR7tIl2TtGW6gQYQ4
+         3ssQP5VTIhjfzewzsu2hErFFVOFQfCbHaHlWSQamBpQOPHlqTr814jogdgG958Yft1
+         AYUdlENuNgCczIuZE/2tCp4SfUP9tWGd7CgZOdfnZEpg4FdOA37bty4UreNKcpovBD
+         t5CGQjN1ur4oEKI0xhH7kZLJEdquSCtlKvw//yH36opl2ac91aPFeqMUXteKvxqWmj
+         jHMi1b/XGRSQdHtEHg3dvLA9CErslc6QxzqKtj5fk3qvapnrrh+nM/ty5a826l8dEl
+         ajfcU5Mf3rZNQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Karan Tilak Kumar <kartilak@cisco.com>,
+        Sesidhar Baddela <sebaddel@cisco.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: snic: Fix spelling mistake "progres" -> "progress"
+Date:   Fri, 20 Aug 2021 16:18:35 +0100
+Message-Id: <20210820151835.59804-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210804181329.2899708-6-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 11:13:22AM -0700, Kuppuswamy Sathyanarayanan wrote:
-> +SYM_FUNC_START(__tdx_hypercall)
-> +	FRAME_BEGIN
-> +
-> +	/* Move argument 7 from caller stack to RAX */
-> +	movq ARG7_SP_OFFSET(%rsp), %rax
-> +
-> +	/* Check if caller provided an output struct */
-> +	test %rax, %rax
-> +	/* If out pointer is NULL, return -EINVAL */
-> +	jz 1f
-> +
-> +	/* Save callee-s ved GPRs as mandated by the x86_64 ABI */
+From: Colin Ian King <colin.king@canonical.com>
 
-That should be "callee-saved" ofc. "s ved" is not a word. :-)
+There is a spelling mistake in a SNIC_HOST_INFO message. Fix it.
 
-...
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/scsi/snic/snic_scsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	/*
-> +	 * Zero out registers exposed to the VMM to avoid
-> +	 * speculative execution with VMM-controlled values.
-> +	 * This needs to include all registers present in
-> +	 * TDVMCALL_EXPOSE_REGS_MASK (except R12-R15).
-> +	 * R12-R15 context will be restored.
-> +	 */
-> +	xor %r10d, %r10d
-> +	xor %r11d, %r11d
-> +
-> +	/* Restore state of R9 register */
-> +	pop %r9
-> +
-> +	/* Restore callee-s ved GPRs as mandated by the x86_64 ABI */
-
-Here too.
-
-Otherwise, LGTM. Thanks for documenting the ABI - looks good.
-
+diff --git a/drivers/scsi/snic/snic_scsi.c b/drivers/scsi/snic/snic_scsi.c
+index 95740caa1eb0..43a950185e24 100644
+--- a/drivers/scsi/snic/snic_scsi.c
++++ b/drivers/scsi/snic/snic_scsi.c
+@@ -2335,7 +2335,7 @@ snic_reset(struct Scsi_Host *shost, struct scsi_cmnd *sc)
+ 	spin_lock_irqsave(&snic->snic_lock, flags);
+ 	if (snic_get_state(snic) == SNIC_FWRESET) {
+ 		spin_unlock_irqrestore(&snic->snic_lock, flags);
+-		SNIC_HOST_INFO(shost, "reset:prev reset is in progres\n");
++		SNIC_HOST_INFO(shost, "reset:prev reset is in progress\n");
+ 
+ 		msleep(SNIC_HOST_RESET_TIMEOUT);
+ 		ret = SUCCESS;
 -- 
-Regards/Gruss,
-    Boris.
+2.32.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
