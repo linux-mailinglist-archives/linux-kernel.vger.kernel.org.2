@@ -2,167 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526463F2ED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBB83F2F58
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241131AbhHTPVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241057AbhHTPVb (ORCPT
+        id S241816AbhHTPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:25:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24814 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241435AbhHTPXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:21:31 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F751C061756;
-        Fri, 20 Aug 2021 08:20:53 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id mf2so2421014ejb.9;
-        Fri, 20 Aug 2021 08:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8KKw/Y3X2cc5tVMPl/kxkct9qTUI3pzXDdZwfJk130I=;
-        b=srQGGc4i2tywZ5Qnahhh6GTqbqMNOHKen/sEg/S9W/n/RVwuBH24EsDhB9eOpj+RXX
-         rpFj4gL5cKEV/2e20kJduWblm0chvohY959cUsSFRn7xmfcPWHf88ju/w8mHqD4Ijl0a
-         o4LRGAP30Vxhxx7FZomjjxS8qoOPXplCmt9MT40wZWO2xdiOBMJPv7tmN3j8Hlc/Xyx2
-         vTgCTo5YUZgQFd4oGf0o1nDSUuQ8jaegH6GuMZ1AxkSsROawGppbKgBJJ7NYlDkVPA4f
-         BLNnVVZIWD6bd+i9ytSr/uvicx6QSwZsgN/UX9WrAkBcEv3vzJPhYAfiPcbsiStFi7oK
-         MN3A==
+        Fri, 20 Aug 2021 11:23:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629472988;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AlytKq7WyOzUT/K3H+q4IM3u5JgzyFxG/3NBnWm69Pg=;
+        b=Ik49gwU2rD+dBs/S6VeqrXjfqbxJeAvkyBgUCfvmCVSWjHTkOe/PLJABs2366O6uRdQzxd
+        nyIkW0rFMu//VShpFF2iWUcAeqADuCezoOJMWcCU+0Jc8pNTO0X0xMgwxVV7VaQYgGlDTZ
+        COzTKTvx1xKMSog0hIf3lRTCRi2R6m0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-zEOo5R5kOzWlHT9bseF39g-1; Fri, 20 Aug 2021 11:23:07 -0400
+X-MC-Unique: zEOo5R5kOzWlHT9bseF39g-1
+Received: by mail-wm1-f69.google.com with SMTP id m13-20020a7bcf2d000000b002e6cd9941a9so4947803wmg.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:23:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8KKw/Y3X2cc5tVMPl/kxkct9qTUI3pzXDdZwfJk130I=;
-        b=s1XZa6m5bo9FuCmELDkeQRGo5P1PGCcytZ7kYopCkge0cVClcMZHCUbccjr0m+f6XV
-         zc1pxx+HZ8W7UVRlKonnqKV7mMakms0EKRIpKlRXvcjRQM8dujjpM6xaWUKWWZNTs4Cb
-         Ov42EqOiwR4SYa1Hts0CWMmUwA/O+o3QrUf/yGWsiTs4dJ0hZ33gfi1OJJJkMhdpuX/R
-         PmskZi4xgr5fqJu1LocmkgNbRN2XuC1kov7uviexc4SjkFYUt7WNAgLLdib665n59/Tg
-         nMZIvOsFYFD7m5uDdjzntNe/oxvJb9TeY9/J74ideRLnZFSFUUcOaAdxc1R78J2E3WUZ
-         S6Kg==
-X-Gm-Message-State: AOAM530uI9Tuoq0SrJFOU1/SVOcKHbE3kiKrNwDO7ro7v8aepsRPsAcb
-        ZHYH1y87HYa5DJVtwZ/XcBXHuGya2wjBm+2l+gs=
-X-Google-Smtp-Source: ABdhPJw1x49PqwFmrpp5sYyS45+q8xBuz9j8fq1eNnSPU+nccRcOxAg6jxC9zxPHiYdVyZaH5lO1SpPAuV9TdsTyef0=
-X-Received: by 2002:a17:906:3148:: with SMTP id e8mr22082804eje.240.1629472851367;
- Fri, 20 Aug 2021 08:20:51 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=AlytKq7WyOzUT/K3H+q4IM3u5JgzyFxG/3NBnWm69Pg=;
+        b=e04ecnlTx/VLrrDGf6dK0yIVowpxYCyQsjgd8i14bF40NdNxRnUiQXWaDbu0BWbrFX
+         q7vUuOrFW4+Gessky+l+/LZZCffeAhQW+yBBJkx0tupxuQmQjs1laRoKcKpo/onO6ZtE
+         rxP6rkGbcfYQWbe9AR+rkxV9myCgMt5/Z1fd3Kx5zzPjVjKAGIWT7JBMRqcr/TgXzMoc
+         PEre2lxqixODGITDS2XToO08uicFsAt3gkJdVwK0y5HPBz9Nf9cE4Z0nSddnEDXiH+SI
+         nXgGSb3HVI9yJl3XiDbLDYH8jiyVkMwmQwrEX9Xj8oDYEgMdQXl+cVnctzpwlo3MCAJX
+         Nzug==
+X-Gm-Message-State: AOAM531aS4bG1p4FQIhcShbl8exQzKA6I/mUUxqj0P2s5Pv0bFf8GLEd
+        sXpiGZtLUvtp7kq3p1Wan3pSrGguoehDNDFzwcKbJWFuTcksp63A6BpU0VWWUd5gWbTxWcCKJsP
+        StDFVYg/6bX1YUJVmJjUzZS1tnQ1R0qnDJGDpTdM7
+X-Received: by 2002:a7b:c106:: with SMTP id w6mr4615320wmi.152.1629472985921;
+        Fri, 20 Aug 2021 08:23:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUvS40eZJ1ySsWNGqcyFBL2tEQZaB8k3Slyb91HTve5oMdHFCyWX4WR3jQt8qnTrXHAXjGShbj4VZTgbuL91g=
+X-Received: by 2002:a7b:c106:: with SMTP id w6mr4615303wmi.152.1629472985719;
+ Fri, 20 Aug 2021 08:23:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn> <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
-In-Reply-To: <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
-From:   yong w <yongw.pur@gmail.com>
-Date:   Fri, 20 Aug 2021 23:20:40 +0800
-Message-ID: <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
- notifier is enabled
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, alexs@kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>, Hui Su <sh_def@163.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        wang.yong12@zte.com.cn, Cgroups <cgroups@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, yang.yang29@zte.com.cn
+References: <20210819194102.1491495-1-agruenba@redhat.com> <20210819194102.1491495-11-agruenba@redhat.com>
+ <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com> <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
+In-Reply-To: <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Fri, 20 Aug 2021 17:22:54 +0200
+Message-ID: <CAHc6FU7EMOEU7C5ryu5pMMx1v+8CTAOMyGdf=wfaw8=TTA_btQ@mail.gmail.com>
+Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
+ holder auto-demotion
+To:     Bob Peterson <rpeterso@redhat.com>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> =E4=BA=8E2021=E5=B9=B48=E6=9C=8820=E6=97=A5=
-=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=887:26=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
-> > From: wangyong <wang.yong@zte.com.cn>
+On Fri, Aug 20, 2021 at 3:11 PM Bob Peterson <rpeterso@redhat.com> wrote:
+> On 8/20/21 4:35 AM, Steven Whitehouse wrote:
+> > Hi,
 > >
-> > Inspired by PSI features, vmpressure inotifier function should
-> > also be configured to decide whether it is used, because it is an
-> > independent feature which notifies the user of memory pressure.
+> > On Thu, 2021-08-19 at 21:40 +0200, Andreas Gruenbacher wrote:
+> >> From: Bob Peterson <rpeterso@redhat.com>
+> >>
+> >> This patch introduces a new HIF_MAY_DEMOTE flag and infrastructure
+> >> that
+> >> will allow glocks to be demoted automatically on locking conflicts.
+> >> When a locking request comes in that isn't compatible with the
+> >> locking
+> >> state of a holder and that holder has the HIF_MAY_DEMOTE flag set,
+> >> the
+> >> holder will be demoted automatically before the incoming locking
+> >> request
+> >> is granted.
+> >>
+> > I'm not sure I understand what is going on here. When there are locking
+> > conflicts we generate call backs and those result in glock demotion.
+> > There is no need for a flag to indicate that I think, since it is the
+> > default behaviour anyway. Or perhaps the explanation is just a bit
+> > confusing...
 >
-> Yes, it is an independent feature indeed but what is the actual reason
-> to put a more configuration space here. Config options are not free both
-> from the user experience POV as well as the code maintenance. Why do we
-> need to disable this feature. Who can benefit from such a setup?
+> I agree that the whole concept and explanation are confusing. Andreas
+> and I went through several heated arguments about the semantics,
+> comments, patch descriptions, etc. We played around with many different
+> flag name ideas, etc. We did not agree on the best way to describe the
+> whole concept. He didn't like my explanation and I didn't like his. So
+> yes, it is confusing.
 >
-> > So we add configuration to control whether vmpressure notifier is
-> > enabled, and provide a boot parameter to use vmpressure notifier
-> > flexibly.
+> My preferred terminology was "DOD" or "Dequeue On Demand"
+
+... which is useless because it adds no clarity as to whose demand
+we're talking about.
+
+> which makes
+> the concept more understandable to me. So basically a process can say
+> "I need to hold this glock, but for an unknown and possibly lengthy
+> period of time, but please feel free to dequeue it if it's in your way."
+> And bear in mind that several processes may do the same, simultaneously.
 >
-> Flexibility is nice but not free as mentioned above.
->
-> > Use Christoph Lamenter=E2=80=99s pagefault tool
-> > (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
-> > Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
-> > To ensure that the vmpressure function is executed, we enable zram
-> > and let the program occupy memory so that some memory is swapped out
-> >
-> > unpatched:
-> > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     f=
-ault/wsec
-> > 2     1       1       1       0.1     0.97    1.13    485490.062      4=
-63533.34
-> > 2     1       1       1       0.11    0.96    1.12    483086.072      4=
-65309.495
-> > 2     1       1       1       0.1     0.95    1.11    496687.098      4=
-69887.643
-> > 2     1       1       1       0.09    0.97    1.11    489711.434      4=
-68402.102
-> > 2     1       1       1       0.13    0.94    1.12    484159.415      4=
-66080.941
-> > average                               0.106   0.958   1.118   487826.81=
-62     466642.7042
-> >
-> > patched and CONFIG_MEMCG_VMPRESSURE is not set:
-> > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     f=
-ault/wsec
-> > 2     1       1       1       0.1     0.96    1.1     490942.682      4=
-73125.98
-> > 2     1       1       1       0.08    0.99    1.13    484987.521      4=
-63161.975
-> > 2     1       1       1       0.09    0.96    1.09    498824.98       4=
-76696.066
-> > 2     1       1       1       0.1     0.97    1.12    484127.673      4=
-65951.238
-> > 2     1       1       1       0.1     0.97    1.11    487032          4=
-68964.662
-> > average                               0.094   0.97    1.11    489182.97=
-12     469579.9842
-> >
-> > According to flt/cpu/s, performance improved by 0.2% which is not obvio=
-us.
->
-> I haven't checked how are those numbers calculated but from a very brief
-> look it seems like the variation between different runs is higher than
-> 0.2%. Have you checked the average against standard deviation to get a
-> better idea whether the difference is really outside of the noise?
-> --
-> Michal Hocko
-> SUSE Labs
+> You can almost think of this as a performance enhancement. This concept
+> allows a process to hold a glock for much longer periods of time, at a
+> lower priority, for example, when gfs2_file_read_iter needs to hold the
+> glock for very long-running iterative reads.
 
-Thanks for your reply.
-The reason for adding configuration is as follows=EF=BC=9A
-1. Referring to [PATCH] psi: make disabling/enabling easier for vendor
-kernels, the modification
-is also applicable to vmpressure.
+Consider a process that allocates a somewhat large buffer and reads
+into it in chunks that are not page aligned. The buffer initially
+won't be faulted in, so we fault in the first chunk and write into it.
+Then, when reading the second chunk, we find that the first page of
+the second chunk is already present. We fill it, set the
+HIF_MAY_DEMOTE flag, fault in more pages, and clear the HIF_MAY_DEMOTE
+flag. If we then still have the glock (which is very likely), we
+resume the read. Otherwise, we return a short result.
 
-2. With the introduction of psi into the kernel, there are two memory
-pressure monitoring methods=EF=BC=8C
-it is not necessary to use both and it makes sense to make vmpressure
-configurable.
+Thanks,
+Andreas
 
-3. In the case where the user does not need vmpressure,  vmpressure
-calculation is additional overhead.
-In some special scenes with tight memory, vmpressure will be executed
-frequently.we use "likely" and "inline"
-to improve the performance of the kernel, why not reduce some
-unnecessary calculations?
-
-4. This patch is forward compatible, because VMPRESSURE is set by
-default and user does not need to
-make any changes. For users who do not need to use vmpressure notifier
-or users who use psi, they
-can choose not to configure this function.
-
-Thanks.
