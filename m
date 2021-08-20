@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFB83F3659
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B610E3F365E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhHTWZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
+        id S233701AbhHTWZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbhHTWZf (ORCPT
+        with ESMTP id S231608AbhHTWZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:25:35 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED591C061575;
-        Fri, 20 Aug 2021 15:24:56 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id t7so2435400vsj.4;
-        Fri, 20 Aug 2021 15:24:56 -0700 (PDT)
+        Fri, 20 Aug 2021 18:25:57 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CE9C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:25:18 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id w68so9830075pfd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:25:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YSs6ZD2a5ToMDYkxHLIhlinwMEhaHfUBHTJ87rIU9yM=;
-        b=qARhwEMIX5ND5OOAQrLpczuNj42jfXV9wLxnNXk+kvJUpkPM0PssEZgR3xz0z3IMeb
-         WocyfzL9xTHR3sQo4HDPqXfsdkz6vy6FXAHoEjkxFS6733Lbo2nSFq7LgsvBOpDqf/ut
-         bJDIJF+3cmXfnhgvQCabEc5R8wwFqWHnqqpxxTwxs0mEIOh3N5YIBSjpX/q3IW7yO5pF
-         PcluNCjMUMtWc/MZmRIMVAwzruhX5tUbvOSDLLRjdOk8byGWazR/W43Hb+6gJbwWzgKu
-         sl4EiVywsoR8tzANTRXOyiKejSWpXNLNGeje07xbIISBn0Y+hr8TtFkzKCV99dsxvdxv
-         b2QA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YqTJx2d+rK7r/727Mx+pw0RMm85LxTM+dupa4DkkVUg=;
+        b=XMJxhivK8HayiVyEBDemyRelIu51Uql4arICrgl1Xtu+OpldaIQuiN92D0dB+2PvY2
+         AoWaNBB7KO7F5FKoudHlgDL/hNd8A+FowUsdw3wL6BDm/iTL4Cc6YiTOferscwepyuQG
+         9XzUtw99s5/KFwywXDFpqMheslrF3wDRzL/P2DgSQRR0RtQLiklqmvKdqBE5L3ZAbbaZ
+         dmEsmdra+vDsgdRhVivluTSEwsP4y90ta1vlg9CE5AvtSTW6wIrc35O7x62Y6nnvox8U
+         jQS6/7VhaJmZu5wZ3xMtHYlcMetnl4hW/FqOnidhXXsmNwQLT3BkojygGTev8rmNq1ca
+         Ezdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YSs6ZD2a5ToMDYkxHLIhlinwMEhaHfUBHTJ87rIU9yM=;
-        b=Uk1z7XLKQIf2VskVi1CHqsghw+XrOVO9GVAQPkuCIdagLW2ThXzZIUJws4w5ah6/GJ
-         zY87QZmGNKeGAIa/Sm15AOLAs/MRgPSk7GzS3E+zGOjSfZAO+Hd9plyGnIkY/RGTMPVW
-         zHOMLXbw2y2H/Fn7f6PbhgBwSpuAoozrI9j/xG3BE6QrEiDDvUdzeMPMUWtyP3FisphN
-         wIMihTUTmKxXg8ea11eoPjXwY+/J0Gmhacw+z5bOtLdwvSGyI/zfQOUEgzHJQL4jHhhn
-         v27+qxJ6uc7IUbqTa3ir+2eDA5aatACtC4JCLk6j8E6YpbOW/huZQ5L5IxmgGWY5GaGO
-         7YQg==
-X-Gm-Message-State: AOAM532Q7inAL1BOrnrWgl4/OQprU5eEZqranH/nyLj0oEwWY5iUN8fr
-        OOqnbYCmu09QLR1gCUA1URZhIArrlJKdm6cGozPCBA0DhCk=
-X-Google-Smtp-Source: ABdhPJzKlJAJFCrq/qRPR+Q3pQ0wJF0GljlO/Uy6m97tOQoGOU6BjceS3tmGw+tmeIZevXUycQgaEE/d0eOuXh6pIt0=
-X-Received: by 2002:a67:ec98:: with SMTP id h24mr19738408vsp.10.1629498295980;
- Fri, 20 Aug 2021 15:24:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YqTJx2d+rK7r/727Mx+pw0RMm85LxTM+dupa4DkkVUg=;
+        b=kuR+nuaNQ9z4G1Jl6wFm5diG/1xxgJRyLJSE55Ir3zq8ukceqNDA5kH9vnFt0tPX31
+         PLJ7MRBac8vcCqcz8eeOhgeUBqhUjaJGPAIC/xCKFVKIFrhsw+fF4qh2LZCocZ2xcFPl
+         K0N2H8u9mLI/UVsI/KiwJaikjIKOfgTxJGylhd1EK5iycJg0kxRb61S7z3pYQfv/JojX
+         4OiVkpzJzY7ZxWK1Lhbj0Ply8+MLWka1hcbw+HlqUeq+In7ROWZRPUCrj2bIDTjAXnLw
+         adnySF6O0DLFibkTHWnqSyXMOAYH1YwFS+fpfA7FfvhGnEz1eLs0nSINDo2SpqR1y9uo
+         88Aw==
+X-Gm-Message-State: AOAM531rbHWQ4b/3wgpCuR1Ms6UXrguv+wB9rRxxHgsfLSJSLVKWBFNR
+        XAYrApPxw1qWHIfE1SOtiX+Udw==
+X-Google-Smtp-Source: ABdhPJyV4IjFC28xX7oRVRErRr3HUFYCEi0w5LU0UmTHa8mL37R5Jfy+NpSbOUll/e+Fp+fYUTcY5g==
+X-Received: by 2002:aa7:864e:0:b0:3e3:439b:c3fc with SMTP id a14-20020aa7864e000000b003e3439bc3fcmr9023525pfo.64.1629498318096;
+        Fri, 20 Aug 2021 15:25:18 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id o14sm9367987pgl.85.2021.08.20.15.25.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 15:25:17 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 22:25:11 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
+ detect task migration bugs
+Message-ID: <YSArx+ppjIH+6/uK@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com>
+ <20210818001210.4073390-5-seanjc@google.com>
+ <1540548616.19739.1629409956315.JavaMail.zimbra@efficios.com>
+ <YR7qXvnI/AQM10gU@google.com>
+ <407716135.20250.1629484298288.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-References: <20210819031407.17044-1-henrybear327@gmail.com> <877dggrq6p.fsf@meer.lwn.net>
-In-Reply-To: <877dggrq6p.fsf@meer.lwn.net>
-From:   Henry Tseng <henrybear327@gmail.com>
-Date:   Sat, 21 Aug 2021 00:24:44 +0200
-Message-ID: <CAA5xa-kNcZ50cwP6aJ+GFQbbjMQoomtf=eEKXa_R43ML8fv6BA@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: Update details of The Linux Kernel
- Module Programming Guide
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     jmseyas@dit.upm.es, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <407716135.20250.1629484298288.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:17 PM Jonathan Corbet <corbet@lwn.net> wrote:
->
-> Chun-Hung Tseng <henrybear327@gmail.com> writes:
->
-> > Recently, the content and examples of the book "The Linux Kernel Module
-> > Programming Guide" are being actively maintained and added on Github[1].
-> > Currently, the book is being regularly built into webpage and pdf
-> > file using Github static page[2].
-> >
-> > [1]: https://github.com/sysprog21/lkmpg
-> > [2]: https://sysprog21.github.io/lkmpg/
-> >
-> > Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
-> > ---
-> >  Documentation/process/kernel-docs.rst | 14 ++++++++------
-> >  1 file changed, 8 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/Documentation/process/kernel-docs.rst b/Documentation/process/kernel-docs.rst
-> > index 22d9ace5df2a..631a3dc04e3e 100644
-> > --- a/Documentation/process/kernel-docs.rst
-> > +++ b/Documentation/process/kernel-docs.rst
-> > @@ -126,15 +126,17 @@ On-line docs
-> >          describes how to write user-mode utilities for communicating with
-> >          Card Services.
-> >
-> > -    * Title: **Linux Kernel Module Programming Guide**
-> > +    * Title: **The Linux Kernel Module Programming Guide**
-> >
-> > -      :Author: Ori Pomerantz.
-> > -      :URL: https://tldp.org/LDP/lkmpg/2.6/html/index.html
-> > -      :Date: 2001
-> > +      :Author: Peter Jay Salzman, Michael Burian, Ori Pomerantz, Bob Mottram,
-> > +      Jim Huang.
-> > +      :URL: https://sysprog21.github.io/lkmpg/
-> > +      :Date: 2021
-> >        :Keywords: modules, GPL book, /proc, ioctls, system calls,
-> >          interrupt handlers .
-> > -      :Description: Very nice 92 pages GPL book on the topic of modules
-> > -        programming. Lots of examples.
-> > +      :Description: A very nice 93 pages GPL book on the topic of modules
-> > +        programming. Lots of examples. Currently the new version is being
-> > +        actively maintained at https://github.com/sysprog21/lkmpg.
->
-> If this book is now being consistently maintained, then the number of
-> pages is sure to change in short order; it seems like kind of a strange
-> thing to track here...?
->
-> Thanks,
->
-> jon
+On Fri, Aug 20, 2021, Mathieu Desnoyers wrote:
+> I still really hate flakiness in tests, because then people stop caring when they
+> fail once in a while. And with the nature of rseq, a once-in-a-while failure is a
+> big deal. Let's see if we can use other tricks to ensure stability of the cpu id
+> without changing timings too much.
 
+Yeah, zero agrument regarding flaky tests.
 
-Sorry about it.
+> One idea would be to use a seqcount lock.
 
-v3 has been pushed, dropping the term "93 pages".
+A sequence counter did the trick!  Thanks much!
 
-Thank you for the feedback!
+> But even if we use that, I'm concerned that the very long writer critical
+> section calling sched_setaffinity would need to be alternated with a sleep to
+> ensure the read-side progresses. The sleep delay could be relatively small
+> compared to the duration of the sched_setaffinity call, e.g. ratio 1:10.
 
-Henry
+I already had an arbitrary usleep(10) to let the reader make progress between
+sched_setaffinity() calls.  Dropping it down to 1us didn't affect reproducibility,
+so I went with that to shave those precious cycles :-)  Eliminating the delay
+entirely did result in no repro, which was a nice confirmation that it's needed
+to let the reader get back into KVM_RUN.
+
+Thanks again!
