@@ -2,153 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAE03F35BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE293F35C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbhHTUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
+        id S240326AbhHTUwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241029AbhHTUuc (ORCPT
+        with ESMTP id S239615AbhHTUwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:50:32 -0400
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D34C0612A4;
-        Fri, 20 Aug 2021 13:49:53 -0700 (PDT)
-Received: from localhost.localdomain (83.6.167.97.neoplus.adsl.tpnet.pl [83.6.167.97])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 153211F54F;
-        Fri, 20 Aug 2021 22:49:51 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 17/17] arm64: dts: qcom: Add device tree for Sony Xperia 10 III
-Date:   Fri, 20 Aug 2021 22:49:26 +0200
-Message-Id: <20210820204926.235192-18-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210820204926.235192-1-konrad.dybcio@somainline.org>
-References: <20210820204926.235192-1-konrad.dybcio@somainline.org>
+        Fri, 20 Aug 2021 16:52:12 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15140C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:51:34 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id oa17so8164996pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ULkGRivL56ptdhLg0qblOi29E6UuI3GKppQ73W5RcQM=;
+        b=wljVRLX4qPe+NrAUHjhvsefxSXN6ijVZv63Pk+E8YjbzTLnFXsawQ4zasGGHJ9DI/j
+         LNnvEAJOChgaeq15qhAKQrNdM+zSHl83TKm21KHMzu/Kj34ogt2J8PlNoComIFiSxTux
+         ZKAeASlP7cb89cYcVuiKawdWSszkqhTR6dDUO6JiMBsI2TJxtUKHqwu8/Mu+C8IAY6TH
+         IBg2Cuwk7G5a8G6lOMJjraA6x87/5aIT/X9Nt616MtxhG+Oyu8CGTIEk74nvOt3pIg5R
+         jyMa0gao/WvU4WUXcSgzEhn+z0TTdpm2b2ioKkK5gyn1+vGrSRBrUOY03LKG9SxDZltK
+         zElQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ULkGRivL56ptdhLg0qblOi29E6UuI3GKppQ73W5RcQM=;
+        b=oxCCuEGRPMurE3a/E8gencIwMKWGzIdQclrtcAzMiNtsS2L0hjFvEJhQrvPfYUtp4U
+         11UdK0vfBvwTkMaW2qe7XhVdEPnTYr9pgxmUgae8uOsjZFUpM2MEn/Esct0G+96qUsHc
+         0sGharetfBH4Oa2EHYVxNeA1kN4h3hP1hVKCY0bfV69AYNHUjq/5VQpkC0aBowfgKuiH
+         2sbqNDwHaqtlN18RA5EIl7U07fKMQiQHh683uQtYztIOsSWWCy9xt2K5QjWYUD5yOMYm
+         UMLTPdD0cx6Xsk4nZZCMhNZaOQTNZ3HWMTCCdEfTatiGJFi6bnark+KvHnm4V/wmtR6n
+         lTDQ==
+X-Gm-Message-State: AOAM530e373GaPwfKiFtmOrgypetcSZ3pQvs7/FFDkcBIQtunHWbbhlN
+        ofEOZe3b0J2XNxXJCUqoo3dEyInJeHzDzRBeFOR8Lg==
+X-Google-Smtp-Source: ABdhPJzPJ2XQpEtJq+wbuCgzapFmXjO/y38fzH3RNB8Wj2SGZHiAnemQziTjbPerD3pCdyF6tyAETSGC8SlS9MQj/UI=
+X-Received: by 2002:a17:902:e54e:b0:12d:cca1:2c1f with SMTP id
+ n14-20020a170902e54e00b0012dcca12c1fmr17574055plf.79.1629492693543; Fri, 20
+ Aug 2021 13:51:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com> <20210730100158.3117319-5-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210730100158.3117319-5-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 20 Aug 2021 13:51:22 -0700
+Message-ID: <CAPcyv4hQgSV6n0nuiqm-cv7pvpwDgBgZMezW7TkdR9SaAiCNHg@mail.gmail.com>
+Subject: Re: [PATCH RESEND v6 4/9] pmem,mm: Implement ->memory_failure in pmem driver
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        "Darrick J. Wong" <djwong@kernel.org>, david <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial SM6350 SoC and Sony Xperia 10 III (PDX213, Lena platform) device
-trees. There is no sign of another Lena devices on the horizon, so a common
-DTSI is not created for now. 10 III features a Full HD OLED display and 5G
-support, among other nice things like USB3.
+On Fri, Jul 30, 2021 at 3:02 AM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> With dax_holder notify support, we are able to notify the memory failure
+> from pmem driver to upper layers.  If there is something not support in
+> the notify routine, memory_failure will fall back to the generic hanlder.
 
-The bootloader is VERY unpleasant, to get a bootable setup you have to run:
+How about:
 
-mkbootimg --kernel arch/arm64/boot/Image.gz --ramdisk [some initrd] \
---dtb arch/arm64/boot/dts/qcom/sm6350-sony-xperia-lena-pdx213.dtb \
---cmdline "[some cmdline]" --base 0 --kernel_offset 0x8000 \
---ramdisk_offset 0x1000000 --dtb_offset 0x1f00000 --os_version 11 \
---os_patch_level "2021-08" --tags_offset 0x100 --pagesize 4096 \
---header_version 2 -o mainline.img
+"Any layer can return -EOPNOTSUPP to force memory_failure() to fall
+back to its generic implementation."
 
-adb reboot bootloader
 
-// You have to either pull vbmeta{"","_system"} from
-// /dev/block/bootdevice/by-name/ or build one as a part of AOSP build process
-fastboot --disable-verity --disable-verification flash vbmeta vbmeta.img
-fastboot --disable-verity --disable-verification flash vbmeta_system \
-vbmeta_system.img
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  drivers/nvdimm/pmem.c | 13 +++++++++++++
+>  mm/memory-failure.c   | 14 ++++++++++++++
+>  2 files changed, 27 insertions(+)
+>
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 1e0615b8565e..fea4ffc333b8 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -362,9 +362,22 @@ static void pmem_release_disk(void *__pmem)
+>         del_gendisk(pmem->disk);
+>  }
+>
+> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
+> +               unsigned long pfn, unsigned long nr_pfns, int flags)
+> +{
+> +       struct pmem_device *pmem =
+> +                       container_of(pgmap, struct pmem_device, pgmap);
+> +       loff_t offset = PFN_PHYS(pfn) - pmem->phys_addr - pmem->data_offset;
+> +
+> +       return dax_holder_notify_failure(pmem->dax_dev, offset,
+> +                                        page_size(pfn_to_page(pfn)) * nr_pfns,
 
-fastboot flash boot mainline.img
-fastboot erase dtbo // This will take approx 70s...
-fastboot reboot
+I do not understand the usage of page_size() here? memory_failure()
+assumes PAGE_SIZE pages. DAX pages also do not populate the compound
+metadata yet, but even if they did I would expect memory_failure() to
+be responsible for doing something like:
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- arch/arm64/boot/dts/qcom/Makefile             |  1 +
- .../qcom/sm6350-sony-xperia-lena-pdx213.dts   | 57 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm6350-sony-xperia-lena-pdx213.dts
+    pgmap->ops->memory_failure(pgmap, pfn, size >> PAGE_SHIFT, flags);
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 5bbeb058e1f2..d1ace2541ce1 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -78,6 +78,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-sony-xperia-tama-akatsuki.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-sony-xperia-tama-apollo.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-xiaomi-beryllium.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm850-lenovo-yoga-c630.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm6350-sony-xperia-lena-pdx213.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-microsoft-surface-duo.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-mtp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm6350-sony-xperia-lena-pdx213.dts b/arch/arm64/boot/dts/qcom/sm6350-sony-xperia-lena-pdx213.dts
-new file mode 100644
-index 000000000000..a26c23754f5d
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm6350-sony-xperia-lena-pdx213.dts
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
-+ */
-+/dts-v1/;
-+
-+#include "sm6350.dtsi"
-+
-+/ {
-+	model = "Sony Xperia 10 III";
-+	compatible = "sony,pdx213", "qcom,sm6350";
-+	qcom,msm-id = <434 0x10000>, <459 0x10000>;
-+	qcom,board-id = <0x1000B 0>;
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		framebuffer: framebuffer@a0000000 {
-+			compatible = "simple-framebuffer";
-+			reg = <0 0xa0000000 0 0x2300000>;
-+			width = <1080>;
-+			height = <2520>;
-+			stride = <(1080 * 4)>;
-+			format = "a8r8g8b8";
-+			clocks = <&gcc GCC_DISP_AXI_CLK>;
-+		};
-+	};
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+
-+	cd-gpios = <&tlmm 94 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <13 4>, <45 2>, <56 2>;
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	maximum-speed = "super-speed";
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+};
--- 
-2.33.0
+...where @size is calculated from dev_pagemap_mapping_shift().
 
+> +                                        &flags);
+
+Why is the local flags variable passed by reference? At a minimum the
+memory_failure() flags should be translated to a new set dax-notify
+flags, because memory_failure() will not be the only user of this
+notification interface. See NVDIMM_REVALIDATE_POISON, and the
+discussion Dave and I had about using this notification to signal
+unsafe hot-removal of a memory device.
+
+
+> +}
+> +
+>  static const struct dev_pagemap_ops fsdax_pagemap_ops = {
+>         .kill                   = pmem_pagemap_kill,
+>         .cleanup                = pmem_pagemap_cleanup,
+> +       .memory_failure         = pmem_pagemap_memory_failure,
+>  };
+>
+>  static int pmem_attach_disk(struct device *dev,
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 3bdfcb45f66e..ab3eda335acd 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1600,6 +1600,20 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>          */
+>         SetPageHWPoison(page);
+>
+> +       /*
+> +        * Call driver's implementation to handle the memory failure, otherwise
+> +        * fall back to generic handler.
+> +        */
+> +       if (pgmap->ops->memory_failure) {
+> +               rc = pgmap->ops->memory_failure(pgmap, pfn, 1, flags);
+> +               /*
+> +                * Fall back to generic handler too if operation is not
+> +                * supported inside the driver/device/filesystem.
+> +                */
+> +               if (rc != EOPNOTSUPP)
+> +                       goto out;
+> +       }
+> +
+>         mf_generic_kill_procs(pfn, flags);
+>  out:
+>         /* drop pgmap ref acquired in caller */
+> --
+> 2.32.0
+>
+>
+>
