@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0E03F313C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB913F313F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236193AbhHTQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        id S236119AbhHTQLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233276AbhHTQLn (ORCPT
+        with ESMTP id S235634AbhHTQLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:11:43 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F22C08EB27;
-        Fri, 20 Aug 2021 09:04:51 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 8A63A95D; Fri, 20 Aug 2021 18:04:47 +0200 (CEST)
-Date:   Fri, 20 Aug 2021 18:04:18 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Ard Biesheuvel' <ardb@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "hpa@zytor.com" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] x86/efi: Restore Firmware IDT in before
- ExitBootServices()
-Message-ID: <YR/SgrOiBLs53SJ5@8bytes.org>
-References: <20210820073429.19457-1-joro@8bytes.org>
- <e43eb0d137164270bf16258e6d11879e@AcuMS.aculab.com>
- <YR9tSuLyX8QHV5Pv@8bytes.org>
- <f68a175362984e4abbb0a1da2004c936@AcuMS.aculab.com>
- <YR+Bxgq4aIo1DI8j@8bytes.org>
- <CAMj1kXHj12FQn_488V_9k9k_LE51K=7n3sS9QnN9gkhBgzw-Kw@mail.gmail.com>
- <cdd7869a14ad4021acfacffa3918981c@AcuMS.aculab.com>
+        Fri, 20 Aug 2021 12:11:47 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85DCC034019
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:05:07 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id fa24-20020a17090af0d8b0290178bfa69d97so7645677pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9RSxFZuikPY0+6WkzucAxhDl/Af7QYt1ZT+jZ731aVs=;
+        b=C51vSheFGqvRaMzd78bsgYL+KckqPd7LdgQ1wxeWTkI06dNiE8mq/SN0h9cLyjDSKp
+         XecYIk+Up2Oo2FQuvAXsBO9g4mcC8iEiR/5e9c6esL0PPyBiG6ucXN8K0+ek6epZ01uO
+         MjScRZDErFj/SkOc0WQTvNyH+tea3ac7xNVzc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9RSxFZuikPY0+6WkzucAxhDl/Af7QYt1ZT+jZ731aVs=;
+        b=oi909Q7kYx5DmrFKBsJ9PIngfufC3qASN5YIuvGYYE9Xlno14TxKiQjuetAYfqyckm
+         mUlqjj2ZG0OW610V0uhvroYHYxHa5iWJqEJG9cDuVrdb4XLdwovM2d3fBouax/xWGkIL
+         L/B6svpIvL70ITF2MUuUsKuSUfIl0BZ5taHG3DkFbtpahCL2NtbyijraRHm4U9FcZqbg
+         8zl6NfEbewT49V8E03YJOZZ8mu2JVi/QvSw3+jp1RzEsaJlQcfdLB0MnGrP0QeTSK8ls
+         LNQcEMGD0avlrXHEUW4EJ+TNupK8aP+QxGEVDXNhQ+Wu4v4KtcsGr5UT2JYKwwhGT4Wr
+         3nww==
+X-Gm-Message-State: AOAM530tNitRXU8LvhOorppcVtfxdMdUNwMJref8uX74q+/xlo6KOjBh
+        Lpd+DXJc5V+7C3UyGM6BCcsG9A==
+X-Google-Smtp-Source: ABdhPJx1Wpa6EBam0RYtT/6mZ8dD8eoIueMBE+WIU9ng87w+5uPAP4mmMdGc1ciQ717B/aGft7Osow==
+X-Received: by 2002:a17:902:7681:b0:12d:8f52:3d55 with SMTP id m1-20020a170902768100b0012d8f523d55mr16786637pll.70.1629475507362;
+        Fri, 20 Aug 2021 09:05:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i24sm7377171pfo.208.2021.08.20.09.05.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 09:05:06 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 09:05:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Jordy Zomer <jordy@pwning.systems>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
+Message-ID: <202108200904.81ED4AA52@keescook>
+References: <20210820043339.2151352-1-jordy@pwning.systems>
+ <0874a50b61cfaf7c817cab7344c49c1641c1fd10.camel@HansenPartnership.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cdd7869a14ad4021acfacffa3918981c@AcuMS.aculab.com>
+In-Reply-To: <0874a50b61cfaf7c817cab7344c49c1641c1fd10.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:46:11PM +0000, David Laight wrote:
-> So load a temporary IDT so that you can detect invalid instructions
-> and restore the UEFI IDT immediately afterwards?
+On Fri, Aug 20, 2021 at 07:57:25AM -0700, James Bottomley wrote:
+> On Fri, 2021-08-20 at 06:33 +0200, Jordy Zomer wrote:
+> > As you can see there's an `atomic_inc` for each `memfd` that is
+> > opened in the `memfd_secret` syscall. If a local attacker succeeds to
+> > open 2^32 memfd's, the counter will wrap around to 0. This implies
+> > that you may hibernate again, even though there are still regions of
+> > this secret memory, thereby bypassing the security check.
+> 
+> This isn't a possible attack, is it?  secret memory is per process and
+> each process usually has an open fd limit of 1024.  That's not to say
+> we shouldn't have overflow protection just in case, but I think today
+> we don't have a problem.
 
-Going forward with SEV-SNP, the IDT is not only needed for special
-instructions, but also to detect when the hypervisor is doing fishy
-things with the guests memory, which could happen at _any_ instruction
-boundary.
+But it's a _global_ setting, so it's still possible, though likely
+impractical today. But refcount_t mitigates it and is a trivial change.
+:)
 
-> I'm guessing the GDT is changed in order to access all of physical
-> memory (well enough to load the kernel).
-
-The kernels GDT is needed to switch from 32-bit protected mode to long
-mode, where it calls ExitBootServices().
-
-I think the reason is to avoid compiling a 64-bit and a 32-bit EFI
-library into the decompressor stub. With a 32-bit library the kernel
-could call ExitBootServices() right away before it jumps to startup_32.
-But it only has the 64-bit library, so it has to switch to long-mode
-first before it make subsequent EFI calls.
-
-> Could that be done using the LDT?
-> It is unlikely that the UEFI cares about that?
-
-Well, I guess it could work via the LDT too, but the current GDT
-switching code if proven to work on exiting BIOSes and I'd rather not
-change it to something less proven when there is no serious problem with
-it.
-
-> Is this 32bit non-paged code?
-> Running that with a physical memory offset made my head hurt.
-
-Yes, 32-bit EFI launches the kernel in 32-bit protected mode, paging
-disabled. I think that it also has to use a flat segmentation model
-without offsets. But someone who knows the EFI spec better than me can
-correct me here :)
-
-Regards,
-
-	Joerg
+-- 
+Kees Cook
