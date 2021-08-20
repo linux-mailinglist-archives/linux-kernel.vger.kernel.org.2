@@ -2,86 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455B93F3615
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E52E3F3619
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbhHTVc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
+        id S231521AbhHTVio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240955AbhHTVcZ (ORCPT
+        with ESMTP id S229760AbhHTVin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:32:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417ECC061757;
-        Fri, 20 Aug 2021 14:31:47 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2600:8800:8c06:1000::c8f3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 65D5D1F44A90;
-        Fri, 20 Aug 2021 22:31:43 +0100 (BST)
-From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
-Subject: [PATCH 3/3] drm/panfrost: Clamp lock region to Bifrost minimum
-Date:   Fri, 20 Aug 2021 17:31:17 -0400
-Message-Id: <20210820213117.13050-4-alyssa.rosenzweig@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com>
-References: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com>
+        Fri, 20 Aug 2021 17:38:43 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64200C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:38:05 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id y14-20020a0568302a0e00b0051acbdb2869so10365495otu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N7XPfZrpLOPQ3NWuP/cwpVYxz6UbQiCYNHlikEjuLok=;
+        b=aWIMoTVoWZNs3yRDn8pUNWaxKg7XQsvdmhbRj3EmZJPwSb6AlzJfB2UNPGfbahts95
+         wkTIbGsPD2D8SxBmn08rbtOTq+m4IM+U3cihi57neg+8i310yjAsdz9iwKE5NANCYtIW
+         H2B+3fnEeHnjyEZoQgnahSS7QsGSWWg8C7XkRVGUX8QbSUpDeC3d8iwfidVuem6bayU2
+         FWQiVc+Ak8vfgrdHIeuQG5Py8MtaCCiVXkzTJrsi5kkiShh7oNK3Qe7SuEQLTvvmZ19p
+         05CiZAcuscEZ1BDS89S7XC/XP96IhQyVw+0WClUpxl+FjfmK2B6PuQFtKyr4qRJLlAoM
+         WH5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N7XPfZrpLOPQ3NWuP/cwpVYxz6UbQiCYNHlikEjuLok=;
+        b=Rx6L92qW+BjxgKwA+QbkYndWBRIcXnpZHhfHgk8aeRlKPOx9CX8encLq5v+u8lVHX7
+         4NRkMD27byJYPAcjgOFDvzDnltDtV7xbdTbGE/Ydsw8wxD6LDtzFYUCiE74e0ZgOskOc
+         vPhVwsTzwNF19R/FCYMvzpck7kN8f58FE/RvqTPMt672eaDzVGSMsa9aBMKB+JRSkG5q
+         oph6WLymP99gdjvdrLC95GdQ7emvBQ6gs3ybjaHnpAZ5A5c91JEydu3hwiuKOCMIobD1
+         EZY8AMS2w/aFmlEeePCl6vYx3ouPlJ6FQYQ/4FP2xJ/NKHZVpUslazkSJ8nfso+himmJ
+         BVjg==
+X-Gm-Message-State: AOAM530dr0VUrOiWq+1lBNzoEu3WDpK0LrcniHfw+m45RgHiwAMN5Obo
+        ctV7HnDNYV1NofDEsUoGL49+3d8VK10=
+X-Google-Smtp-Source: ABdhPJzH5eoNOZtzG9sfDPwdjn719WDuQCmILJNb57uiTpUzsBCEH6pfQM2n10F4M0yoDNiJYJtcqA==
+X-Received: by 2002:a05:6808:690:: with SMTP id k16mr4514518oig.152.1629495484559;
+        Fri, 20 Aug 2021 14:38:04 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com. [2603:8090:2005:39b3::1023])
+        by smtp.gmail.com with ESMTPSA id f33sm1761642otf.0.2021.08.20.14.38.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 14:38:03 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH v2 3/5] staging: r8188eu: incorrect type in
+ csum_ipv6_magic
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1629360917.git.aakashhemadri123@gmail.com>
+ <8bc15e51751c26fd19428f3b4976b7495feecd34.1629360917.git.aakashhemadri123@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <58069e38-a457-9fcc-0a9a-6bfe8723a178@lwfinger.net>
+Date:   Fri, 20 Aug 2021 16:38:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8bc15e51751c26fd19428f3b4976b7495feecd34.1629360917.git.aakashhemadri123@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When locking a region, we currently clamp to a PAGE_SIZE as the minimum
-lock region. While this is valid for Midgard, it is invalid for Bifrost,
-where the minimum locking size is 8x larger than the 4k page size. Add a
-hardware definition for the minimum lock region size (corresponding to
-KBASE_LOCK_REGION_MIN_SIZE_LOG2 in kbase) and respect it.
+On 8/19/21 3:17 AM, Aakash Hemadri wrote:
+> Fix sparse warning:
+>> rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
+>> rtw_br_ext.c:773:110: warning: incorrect type in argument 2
+>      (different base types)
+>> rtw_br_ext.c:773:110:    expected int len
+>> rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
+> 
+> csum_ipv6_magic and csum_partial expect int len not __be16, use ntohs()
+> 
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>   drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> index 6a0462ce6230..d4acf02ca64f 100644
+> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> @@ -615,9 +615,9 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+>   						struct icmp6hdr  *hdr = (struct icmp6hdr *)(skb->data + ETH_HLEN + sizeof(*iph));
+>   						hdr->icmp6_cksum = 0;
+>   						hdr->icmp6_cksum = csum_ipv6_magic(&iph->saddr, &iph->daddr,
+> -										iph->payload_len,
+> +										ntohs(iph->payload_len),
+>   										IPPROTO_ICMPV6,
+> -										csum_partial((__u8 *)hdr, iph->payload_len, 0));
+> +										csum_partial((__u8 *)hdr, ntohs(iph->payload_len), 0));
+>   					}
+>   				}
+>   			}
+> 
 
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Tested-by: Chris Morgan <macromorgan@hotmail.com>
-Cc: <stable@vger.kernel.org>
----
- drivers/gpu/drm/panfrost/panfrost_mmu.c  | 2 +-
- drivers/gpu/drm/panfrost/panfrost_regs.h | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+This patch is correct, but I prefer that you use be16_to_cpu() rather than 
+ntohs(). I think it makes the code easier to read.
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index 3a795273e505..dfe5f1d29763 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -66,7 +66,7 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
- 	/* The size is encoded as ceil(log2) minus(1), which may be calculated
- 	 * with fls. The size must be clamped to hardware bounds.
- 	 */
--	size = max_t(u64, size, PAGE_SIZE);
-+	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
- 	region_width = fls64(size - 1) - 1;
- 	region |= region_width;
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
-index 1940ff86e49a..6c5a11ef1ee8 100644
---- a/drivers/gpu/drm/panfrost/panfrost_regs.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
-@@ -316,6 +316,8 @@
- #define AS_FAULTSTATUS_ACCESS_TYPE_READ		(0x2 << 8)
- #define AS_FAULTSTATUS_ACCESS_TYPE_WRITE	(0x3 << 8)
- 
-+#define AS_LOCK_REGION_MIN_SIZE                 (1ULL << 15)
-+
- #define gpu_write(dev, reg, data) writel(data, dev->iomem + reg)
- #define gpu_read(dev, reg) readl(dev->iomem + reg)
- 
--- 
-2.30.2
+Larry
 
