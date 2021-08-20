@@ -2,100 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1B23F35F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798963F35FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240615AbhHTVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S240655AbhHTVU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhHTVRO (ORCPT
+        with ESMTP id S231200AbhHTVU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:17:14 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE74C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:16:36 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id i3-20020a056830210300b0051af5666070so7283943otc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:16:36 -0700 (PDT)
+        Fri, 20 Aug 2021 17:20:27 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F76C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:19:49 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id j187so9700423pfg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:19:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JK5qp9aGPwlk30xRI3qcWwl4gv4KOP1fwY03JpC1sQc=;
-        b=JybGeEAWGaaSntO3R2lT7WUj35AygFj+itlN16mJYpO0OvjZL4KqEBkfiQp4PGz5Mh
-         IrMNHPoa3RsBgJOm5bzBRMyg06657LdqdM3qiOSs3QY6vOx/NvESZuyoce2FByz4HnNL
-         1gZiAXesklldc7Jy2N/XS7I1aWhbJKnHGm2DE=
+        bh=xBTMAWGQBBiObCm1jTl9uvsUH1RWm/SH7P0VcEqIt98=;
+        b=Oe4UKgd1fXOxRlRf3wPkglvi1/jg5q68upuxv0zakaw9OzDI+FudmRHI+xn7RoE4Xb
+         tqxIpnDZIgs5xNQE19SP58rJ4IozRaPALfH9vfjcVlrjaNQUIm6IGSZYrdzW8q26UfQH
+         8gLc04P5xB2dQHVWn0YKcfGYsU9j4i9bf/q+AvLE0Mi+rlIdsBI8ZZxfroJlFuHdQ7b5
+         q11PpX5cHPvU/dkEsD/w/GkK1Lf0evUIPRzJHt4BRCAuZ5beNEhf9Vcru5asv034o21C
+         ZNQb65yILae8Uha7B7BA/M6gHRDih42F78ydMsomD+jya70EErQ/jU/wnbaCJsoGTZEx
+         azQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JK5qp9aGPwlk30xRI3qcWwl4gv4KOP1fwY03JpC1sQc=;
-        b=DM2Qa84PnT2pXRNazZw+uwR/bnIJMCpnG4CCamA3hsuo0ul4uOqaLQfPMe8lvhysdd
-         OEvoZGRO8oEI6wimgwaN+CexLin46HUGxaz+iPTvJT3mmpjy/yjdRYlc7Een3RB4PVld
-         shf2fO8r2zqiL3KXDaxG0lK8UmdFyWSO6EqPSw/FxSI1mzSqUyWqqe0/W1wgQzf64GSw
-         pB/p43iXFRJ9dT/i+ExjBbxUR7Mhpr0TbjDM8/nvD6lQx1k84crON+DbV6v38UGLjPII
-         He9HRZQ8zc/85QiJw0xTRmmJCr9SaIN0ZzbkpGWtSIGWUP4idcKcqS0Fglnl+Tpy+kAZ
-         AYCQ==
-X-Gm-Message-State: AOAM531IcH6L7bH+9VfgrxM2VCwbZzEihW0ha28G3e9VP74RN1RPhL7U
-        j6CEnMIwLjVtIJXV/TVt12EFmZmz4tZLVA==
-X-Google-Smtp-Source: ABdhPJxcjIIfBt68RCdyoLtPe3vpSkbRQcqqGGabaxJAkye1SeD0qjjY+q7i9KoyufXMgo/+baRwSw==
-X-Received: by 2002:a9d:309:: with SMTP id 9mr18771017otv.365.1629494195304;
-        Fri, 20 Aug 2021 14:16:35 -0700 (PDT)
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
-        by smtp.gmail.com with ESMTPSA id z78sm1531324ooa.29.2021.08.20.14.16.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 14:16:34 -0700 (PDT)
-Received: by mail-ot1-f48.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so16974503oth.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:16:34 -0700 (PDT)
-X-Received: by 2002:a9d:309:: with SMTP id 9mr18770960otv.365.1629494194200;
- Fri, 20 Aug 2021 14:16:34 -0700 (PDT)
+        bh=xBTMAWGQBBiObCm1jTl9uvsUH1RWm/SH7P0VcEqIt98=;
+        b=OYG3ajwLHSFTPcw/IKRAPvWPVgp6g44yj0F8yCHzOysDfEQ03bqRHnUj4RffH8DVJL
+         /OhzYqbb6jC+8hz7mHzSR7dsqWpsF29KHYPdNd+4b6G+x0R9/VWSzYJKhq7tzF2AJk+5
+         yvrlVEC3zl2P+xzE/D2jCw4WUiHHThvc1ct8ArpDP6yfPQPk7/hV488EgTdIOfzsTNyE
+         zvZFEM28naW5jPXSg0iiGYWxFQtCKdLY2nnDufwA/7MU7lXl4As5CF+FyQTAXp6t4Uko
+         YQRNdQB3ZcXg/1eWMisHScpCf++XoHVPe+N0aOUmpxhdrG0K9a21MMD7RmfgQeEEXtyE
+         ByDg==
+X-Gm-Message-State: AOAM533PrOR3RnOEFr/3Sg3uZRtEP8kByT8rE6uDc+DAmmK2wiKor3rA
+        lArsSW9SBrApU0KMvkS/yiRtXYR4CM38YiBNJM/Xlw==
+X-Google-Smtp-Source: ABdhPJzD06fzioZkY4v4ZMjF8wZri1QRL6xum4iAtOOc6AOx8ZTf941G2JYybtFiZ6JLyej0b/tnWBpmrax13726ZzQ=
+X-Received: by 2002:a63:db4a:: with SMTP id x10mr6624779pgi.30.1629494389132;
+ Fri, 20 Aug 2021 14:19:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid>
- <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com>
-In-Reply-To: <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Fri, 20 Aug 2021 14:16:23 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXO=Bjr+f4mtXwt7vtiTz6tSw7SPuY1RvNWMp6-43Baqfg@mail.gmail.com>
-Message-ID: <CA+ASDXO=Bjr+f4mtXwt7vtiTz6tSw7SPuY1RvNWMp6-43Baqfg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: add RK3399 Gru gpio-line-names
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
+ <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de> <CAJ+vNU225mgHHg00r67f1L6bEub+_h55hCBAMhCq2rd8kWU-qg@mail.gmail.com>
+ <9200d46d-94a2-befd-e9b0-93036e56eb8a@pengutronix.de>
+In-Reply-To: <9200d46d-94a2-befd-e9b0-93036e56eb8a@pengutronix.de>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Fri, 20 Aug 2021 14:19:37 -0700
+Message-ID: <CAJ+vNU19z0syr0oHOrSGxL0cVW+Kjv76kmp6uvGc2akHbtX0Nw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
+ trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     David Gstir <david@sigma-star.at>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        linux-security-module@vger.kernel.org,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        James Morris <jmorris@namei.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        David Howells <dhowells@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
+        linux-integrity@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 2:05 PM Doug Anderson <dianders@chromium.org> wrote:
-> I guess one minor nit (now that I look back on the veyron patch where
-> I mentioned it explicitly in the commit message) is that on the veyron
-> ones we sorted this down at the bottom with the other pinctrl stuff
-> instead of sorting it alphabetically with everything else. I'll let
-> Heiko say which he likes better.
-
-Huh, didn't notice that semi-convention. I can sort it however Heiko prefers.
-
-> I also notice for veyron that we had a second "ABI" exception for the
-> recovery mode pin, but I believe that goes through a different
-> mechanism now so we're good there.
-
-I believe the recovery mode pin is dropped from recent designs (don't
-quote me in general on that), and there's a different mechanism used
-just to get the at-boot-time "recovery mode" state directly from the
-firmware.
-
-> Even though I didn't do a line-by-line review, I'll still give:
+On Fri, Aug 20, 2021 at 1:36 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 >
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> On 20.08.21 22:20, Tim Harvey wrote:
+> > On Fri, Aug 20, 2021 at 9:20 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >> On 20.08.21 17:39, Tim Harvey wrote:
+> >>> Thanks for your work!
+> >>>
+> >>> I've been asked to integrate the capability of using CAAM to
+> >>> blob/deblob data to an older 5.4 kernel such as NXP's downstream
+> >>> vendor kernel does [1] and I'm trying to understand how your series
+> >>> works. I'm not at all familiar with the Linux Key Management API's or
+> >>> trusted keys. Can you provide an example of how this can be used for
+> >>> such a thing?
+> >>
+> >> Here's an example with dm-crypt:
+> >>
+> >>   https://lore.kernel.org/linux-integrity/5d44e50e-4309-830b-79f6-f5d888b1ef69@pengutronix.de/
+> >>
+> >> dm-crypt is a bit special at the moment, because it has direct support for
+> >> trusted keys. For interfacing with other parts of the kernel like ecryptfs
+> >> or EVM, you have to create encrypted keys rooted to the trusted keys and use
+> >> those. The kernel documentation has an example:
+> >>
+> >>   https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
+> >>
+> >> If you backport this series, you can include the typo fix spotted by David.
+> >>
+> >> I'll send out a revised series, but given that a regression fix I want to
+> >> rebase on hasn't been picked up for 3 weeks now, I am not in a hurry.
+> >>
+> > Thanks for the reference.
+> >
+> > I'm still trying to understand the keyctl integration with caam. For
+> > the 'data' param to keyctl you are using tings like 'new <len>' and
+> > 'load <data>'. Where are these 'commands' identified?
 >
-> ...though it's possible an "Acked-by" would be more in the spirit of
-> that? Not sure...
+> Search for match_table_t in security/keys/trusted-keys/trusted_core.c
+>
+> > I may still be missing something. I'm using 4.14-rc6 with your series
+> > and seeing the following:
+>
+> That's an odd version to backport stuff to..
+>
+> > # cat /proc/cmdline
+> > trusted.source=caam
+> > # keyctl add trusted mykey 'new 32' @s)# create new trusted key named
+> > 'mykey' of 32 bytes in the session keyring
+> > 480104283
+> > # keyctl print 480104283 # dump the key
+> > keyctl_read_alloc: Unknown error 126
+> > ^^^ not clear what this is
+>
+> Not sure what returns -ENOKEY for you. I haven't been using trusted
+> keys on v4.14, but you can try tracing the keyctl syscall.
 
-Thanks!
+yikes... that would be painful. I typo'd and meant 5.14-rc6 :) I'm
+working with mainline first to make sure I understand everything. If I
+backport this it would be to 5.4 but that looks to be extremely
+painful. It looks like there was a lot of activity around trusted keys
+in 5.13.
 
-Brian
+It works for a user keyring but not a session keyring... does that
+explain anything?
+# keyctl add trusted mykey 'new 32' @u
+941210782
+# keyctl print 941210782
+83b7845cb45216496aead9ee2c6a406f587d64aad47bddc539d8947a247e618798d9306b36398b5dc2722a4c3f220a3a763ee175f6bd64758fdd49ca4db597e8ce328121b60edbba9b8d8d55056be896
+# keyctl add trusted mykey 'new 32' @s
+310571960
+# keyctl print 310571960
+keyctl_read_alloc: Unknown error 126
+
+Sorry, I'm still trying to wrap my head around the differences in
+keyrings and trusted vs user keys.
+
+Tim
