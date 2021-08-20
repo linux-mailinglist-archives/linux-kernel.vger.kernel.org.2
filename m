@@ -2,174 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6F93F2C27
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A09F3F2C2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240480AbhHTMeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
+        id S240553AbhHTMeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:34:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240472AbhHTMd4 (ORCPT
+        with ESMTP id S240329AbhHTMek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:33:56 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BA7C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:33:18 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id x5so7283678qtq.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:33:18 -0700 (PDT)
+        Fri, 20 Aug 2021 08:34:40 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92116C061764
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:34:02 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id jv8so5405820qvb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:34:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=WeQmd5+0vxDa5m6jnZ3knC4/DcXKbYH1w7mE5S3oKFc=;
-        b=EmixaAS+anbfR20Pxi+he04PHrXHQozzeVwOkECBp43bQMSJrCajuRzjIPkPrgPDjx
-         zl9jUbk0xDHwyqqTUkqMjtn3fYhvvWIlUVIyXZlT5bEj6DnpytFMZwI82abS2Gr3URni
-         ZbmTi3v+O/OZ4rafrzDZ+O2BrbV+uARvR2UJJ4TP5dqWJBCHOn8WvoGPiypRRpV3Q1O3
-         6BPFzPT0PXqyaAj7SnZ2ZgjaoI+tvWldLGjbXUn2FSEN4JrdFZXjkbkQ2FhJm9/ZVxMW
-         iu7vGS4SxP9v2VZPwGpWMwyCIuZDriXLGP7GfFcjuZQdrIyVN/IGB88ogyCHoimSNfQn
-         tJZg==
+        bh=FxHzHqYkZIYKuBII5yJmxkfX68sHHNA5VrSWbqQXyKE=;
+        b=LKWHjCeNEUlwo8stybqJCnXzWMQM7x0bGZxSQUSvDEzvNf1rR/5NIRBxcsq8j+/O1Q
+         n0nUB2SGq4I944/SzVA06PgpS5TZJLAeuT0eHnupeq9B+6Ke4eApnMJzh0PSSn3USY22
+         DCevWLZt6mnoLjPVwnT/B6qIy3u8gu6R9V0eYF2w1BUAXn85ddRUOkrnCFaTavga7CyB
+         OHwKCMDxBA7mQeV8i9u/U1itYCfjgHgpthcASaDTqWMWWREFiEjUsvbxUeQR41p24/42
+         cXB4sxzSr+JXUbmuhE4oft2wqIs67/Ai41z+4L6PkD8HA2B/GtZI5tt/EczYHI2wefxZ
+         10cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=WeQmd5+0vxDa5m6jnZ3knC4/DcXKbYH1w7mE5S3oKFc=;
-        b=iIEiTUYDYCBy+qzGafoboJ182kK3nMg4Rjj0qwL3IM2U3Fq57AMWlTBiuMnEU4fVUF
-         t6bSI8U5uu3lL/vUoGU6FMC4OTMnXCF3WLm76eudnxNvDB6zX4Y94n/k8xS5D1wH9H4h
-         vP+F+k1476bBkgvaHF9PDGY5optYfpYhm4LhCM8SUGWs7AGE4KpasE5gOJg5wKEP1uhK
-         itt7+GhAcF3abJyg3663XfSv5S8x/We/J0hnMspvEWfGuZQn3V1sLpSJX/nX63ala24s
-         bizqlauo9sY89DU62Voxu3pK5w5wwXcJ2vQiBOyhdLRJq+lAb7NAYLQYgo+Mu7OiWLYp
-         kFaQ==
-X-Gm-Message-State: AOAM531FtWSHIW5cV7NmSGSikFZlEijNxtrX07CEZcm0eTVirh6lG2c+
-        i+MzMzBuBAZNQL5lQyRJyhi+zQ==
-X-Google-Smtp-Source: ABdhPJwIAuUBrmaZFFxnu48qE+FFaT8r4GG8K+az1bBag/91CfhTyRBKB9CHeMJzovJUnVC3j452HA==
-X-Received: by 2002:a05:622a:1aaa:: with SMTP id s42mr17497328qtc.122.1629462797984;
-        Fri, 20 Aug 2021 05:33:17 -0700 (PDT)
+        bh=FxHzHqYkZIYKuBII5yJmxkfX68sHHNA5VrSWbqQXyKE=;
+        b=aoeELLSQD7tNLzRm5gN/XbxMA5xoX+KDg3fAZnyNpnEg7Qsp2V2EGJ5JUX7UZLpz7t
+         CgdTXuhz962vo/IHoqBnJ0ihEsEWhFIP3jHPs7IsvwwcUDkZ1QJDapaMawBzCXJYB7ly
+         gTOkLUH0KLjPOYAyM6TC7gWmaKKlaWUmSp6SKmu0Rai409wqC1S26Pr3EK03hw625Ov6
+         yTZRXPPKXqaN/5MpbG8GqH67WUyXomrGqljzyFBQ7c2n1zxyuxGZlRcG20snvtDR9Lve
+         dIR7AZVSLWmoDi7UpipaMToPCmQk7wLvf0iuvJo1o9wPRG6Q0W7MtXPveJwb7GEXTgFE
+         SgMA==
+X-Gm-Message-State: AOAM531HPRc7qEdJUXjxuYE/D2A58F2J6yPLrIwMHcKqmvS79AHwSVVy
+        LDF0pCVCWbqkFbfAbN8yUWbZxw==
+X-Google-Smtp-Source: ABdhPJwGEOvhoU1c/BkmKt9S+cy9PyrWCoEZ7eevTf7BK/BVeVCzTaDTUl3qnqghNI/H9rEss9GPTg==
+X-Received: by 2002:a0c:d6cd:: with SMTP id l13mr1047928qvi.24.1629462841673;
+        Fri, 20 Aug 2021 05:34:01 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id j26sm2632446qki.26.2021.08.20.05.33.17
+        by smtp.gmail.com with ESMTPSA id 69sm3472288qke.55.2021.08.20.05.34.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 05:33:17 -0700 (PDT)
+        Fri, 20 Aug 2021 05:34:01 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1mH3i0-001pzx-AP; Fri, 20 Aug 2021 09:33:16 -0300
-Date:   Fri, 20 Aug 2021 09:33:16 -0300
+        id 1mH3ii-001q0s-MH; Fri, 20 Aug 2021 09:34:00 -0300
+Date:   Fri, 20 Aug 2021 09:34:00 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Gal Pressman <galpress@amazon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-Message-ID: <20210820123316.GV543798@ziepe.ca>
-References: <20210818074352.29950-1-galpress@amazon.com>
- <CAKMK7uGZ_eX+XfYJU6EkKEOVrHz3q6QMxaEbyyD3_1iqj9YSjw@mail.gmail.com>
- <20210819230602.GU543798@ziepe.ca>
- <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 56/63] RDMA/mlx5: Use struct_group() to zero struct
+ mlx5_ib_mr
+Message-ID: <20210820123400.GW543798@ziepe.ca>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-57-keescook@chromium.org>
+ <20210819122716.GP543798@ziepe.ca>
+ <202108190916.7CC455DA@keescook>
+ <20210819164757.GS543798@ziepe.ca>
+ <202108191106.1956C05A@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+In-Reply-To: <202108191106.1956C05A@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 09:25:30AM +0200, Daniel Vetter wrote:
-> On Fri, Aug 20, 2021 at 1:06 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > On Wed, Aug 18, 2021 at 11:34:51AM +0200, Daniel Vetter wrote:
-> > > On Wed, Aug 18, 2021 at 9:45 AM Gal Pressman <galpress@amazon.com> wrote:
-> > > >
-> > > > Hey all,
-> > > >
-> > > > Currently, the RDMA subsystem can only work with dynamic dmabuf
-> > > > attachments, which requires the RDMA device to support on-demand-paging
-> > > > (ODP) which is not common on most devices (only supported by mlx5).
-> > > >
-> > > > While the dynamic requirement makes sense for certain GPUs, some devices
-> > > > (such as habanalabs) have device memory that is always "pinned" and do
-> > > > not need/use the move_notify operation.
-> > > >
-> > > > The motivation of this RFC is to use habanalabs as the dmabuf exporter,
-> > > > and EFA as the importer to allow for peer2peer access through libibverbs.
-> > > >
-> > > > This draft patch changes the dmabuf driver to differentiate between
-> > > > static/dynamic attachments by looking at the move_notify op instead of
-> > > > the importer_ops struct, and allowing the peer2peer flag to be enabled
-> > > > in case of a static exporter.
-> > > >
-> > > > Thanks
-> > > >
-> > > > Signed-off-by: Gal Pressman <galpress@amazon.com>
-> > >
-> > > Given that habanalabs dma-buf support is very firmly in limbo (at
-> > > least it's not yet in linux-next or anywhere else) I think you want to
-> > > solve that problem first before we tackle the additional issue of
-> > > making p2p work without dynamic dma-buf. Without that it just doesn't
-> > > make a lot of sense really to talk about solutions here.
-> >
-> > I have been thinking about adding a dmabuf exporter to VFIO, for
-> > basically the same reason habana labs wants to do it.
-> >
-> > In that situation we'd want to see an approach similar to this as well
-> > to have a broad usability.
-> >
-> > The GPU drivers also want this for certain sophisticated scenarios
-> > with RDMA, the intree drivers just haven't quite got there yet.
-> >
-> > So, I think it is worthwhile to start thinking about this regardless
-> > of habana labs.
-> 
-> Oh sure, I've been having these for a while. I think there's two options:
-> - some kind of soft-pin, where the contract is that we only revoke
-> when absolutely necessary, and it's expected to be catastrophic on the
-> importer's side. 
+On Thu, Aug 19, 2021 at 11:14:37AM -0700, Kees Cook wrote:
 
-Honestly, I'm not very keen on this. We don't really have HW support
-in several RDMA scenarios for even catastrophic unpin.
+> Which do you mean? When doing the conversions I tended to opt for
+> struct_group() since it provides more robust "intentionality". Strictly
+> speaking, the new memset helpers are doing field-spanning writes, but the
+> "clear to the end" pattern was so common it made sense to add the helpers,
+> as they're a bit less disruptive. It's totally up to you! :)
 
-Gal, can EFA even do this for a MR? You basically have to resize the
-rkey/lkey to zero length (or invalidate it like a FMR) under the
-catstrophic revoke. The rkey/lkey cannot just be destroyed as that
-opens a security problem with rkey/lkey re-use.
+Well, of the patches you cc'd to me only this one used the struct
+group..
 
-I think I saw EFA's current out of tree implementations had this bug.
-
-> to do is mmap revoke), and I think that model of exclusive device
-> ownership with the option to revoke fits pretty well for at least some
-> of the accelerators floating around. In that case importers would
-> never get a move_notify (maybe we should call this revoke_notify to
-> make it clear it's a bit different) callback, except when the entire
-> thing has been yanked. I think that would fit pretty well for VFIO,
-> and I think we should be able to make it work for rdma too as some
-> kind of auto-deregister. The locking might be fun with both of these
-> since I expect some inversions compared to the register path, we'll
-> have to figure these out.
-
-It fits semantically nicely, VFIO also has a revoke semantic for BAR
-mappings.
-
-The challenge is the RDMA side which doesn't have a 'dma disabled
-error state' for objects as part of the spec.
-
-Some HW, like mlx5, can implement this for MR objects (see revoke_mr),
-but I don't know if anything else can, and even mlx5 currently can't
-do a revoke for any other object type.
-
-I don't know how useful it would be, need to check on some of the use
-cases.
-
-The locking is tricky as we have to issue a device command, but that
-device command cannot run concurrently with destruction or the tail
-part of creation.
-
-Jason
+Jason 
