@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE9E3F2561
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654433F2564
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhHTDgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:36:11 -0400
-Received: from mga17.intel.com ([192.55.52.151]:33598 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234832AbhHTDgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:36:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="196960523"
-X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
-   d="scan'208";a="196960523"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 20:35:30 -0700
-X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
-   d="scan'208";a="532824765"
-Received: from cshi-mobl.ccr.corp.intel.com ([10.249.172.9])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 20:35:28 -0700
-Message-ID: <9df6459a7b00ae59b12070a4b1a311c4a29f2321.camel@intel.com>
-Subject: Re: [PATCH 1/2] thermal: intel: Allow processing of HWP interrupt
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, lenb@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 20 Aug 2021 11:35:25 +0800
-In-Reply-To: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
-References: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S238252AbhHTDgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238160AbhHTDgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 23:36:17 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829DDC061757;
+        Thu, 19 Aug 2021 20:35:40 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id 14so9567419qkc.4;
+        Thu, 19 Aug 2021 20:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vgh7JrRkcx9hCV2goz+b7Zq4sC7ybgcPmkhc9duiNfg=;
+        b=blrip4eMq/uC82E/D2FZMuXVujwFldAMJ4vZJCXjLt3jA8TTmmLQcqQG7JS3yYe6NR
+         MvpoCMqWKOL44d1YXG8EKt0gaEW5LzqFXoWQgw+yFErIYIVlNMbm2b3zeeOWeVuqmAJ5
+         VXBsvaclmwT15lZjpEHuXYZvdodUOx4SA27LNTExxsy38n3CCOn4adimt/QgrHzeQa04
+         80rNMW2avuz3QVW6cy/HOjzg4LMRkDtrJtieUTfLTWT0+zBC38qvf+8PKDWSWclhaYvQ
+         syITFlKePDdVpKCV3t3F3CKPwar5jWeGLS1aCA60QGFsQGNcmHibTphZrp6y3GeJRnQi
+         NJaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vgh7JrRkcx9hCV2goz+b7Zq4sC7ybgcPmkhc9duiNfg=;
+        b=J7uakKKABQCfyJl/a4owQ6/RurkKSoXsZS3kbG9y30B6f2yClKu3PzPvElXfGgZQAz
+         435l+/XQ7yiHILVeThcLTfnCKqYE1G4uYNYv/eB9t8y/OiRCneY5ROxJUspBRCpUcx2z
+         i04Uy+Fg8Ex9M+hDKKXT3vSVZBgj/Bs70u/9jgYSX2rSn4h0GoE2gkbiads28i63MQkC
+         uDIjuYlZGY9vaZEY7CzbTjgYMPe4mT6+SVAO7OTY9IonrvIF5DbS1vYlAQ5d5GDeZfBN
+         UqQoY9FlsaTzkBqGAIMH6biV+Lv2i2SmNyEnnuHxg2xFYPfLKiPD2xHuLWH1PpS85Qqh
+         PO4w==
+X-Gm-Message-State: AOAM530kXt0QtjYWxkhpoXVB99w6gF4/LUgmnK6HsoTdEHCqDJEmzPxK
+        rTcIkKU5W3BNRy4oAEn7jQU=
+X-Google-Smtp-Source: ABdhPJzn4IXVKzCEtkWiW91ZWXfFs4EAjGQ7vxQ7WwjsiCDTo6uKjQmN+WDcDHTq3XWiI4C3hF9cGw==
+X-Received: by 2002:a37:e20f:: with SMTP id g15mr7043720qki.450.1629430539792;
+        Thu, 19 Aug 2021 20:35:39 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id g7sm2147341qtj.28.2021.08.19.20.35.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 20:35:39 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] tools/net: Use bitwise instead of arithmetic operator for flags
+Date:   Thu, 19 Aug 2021 20:35:27 -0700
+Message-Id: <20210820033527.13210-1-jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 19:40 -0700, Srinivas Pandruvada wrote:
-> Add a weak function to process HWP (Hardware P-states) notifications
-> and
-> move updating HWP_STATUS MSR to this function.
-> 
-> This allows HWP interrupts to be processed by the intel_pstate driver
-> in
-> HWP mode by overriding the implementation.
-> 
-> Signed-off-by: Srinivas Pandruvada <
-> srinivas.pandruvada@linux.intel.com>
+From: jing yangyang <jing.yangyang@zte.com.cn>
 
-Acked-by: Zhang Rui <rui.zhang@intel.com>
+This silences the following coccinelle warning:
 
-thanks,
-rui
-> ---
->  drivers/thermal/intel/therm_throt.c       | 7 ++++++-
->  drivers/thermal/intel/thermal_interrupt.h | 3 +++
->  2 files changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/thermal/intel/therm_throt.c
-> b/drivers/thermal/intel/therm_throt.c
-> index 99abdc03c44c..dab7e8fb1059 100644
-> --- a/drivers/thermal/intel/therm_throt.c
-> +++ b/drivers/thermal/intel/therm_throt.c
-> @@ -569,13 +569,18 @@ static void notify_thresholds(__u64 msr_val)
->  		platform_thermal_notify(msr_val);
->  }
->  
-> +void __weak notify_hwp_interrupt(void)
-> +{
-> +	wrmsrl_safe(MSR_HWP_STATUS, 0);
-> +}
-> +
->  /* Thermal transition interrupt handler */
->  void intel_thermal_interrupt(void)
->  {
->  	__u64 msr_val;
->  
->  	if (static_cpu_has(X86_FEATURE_HWP))
-> -		wrmsrl_safe(MSR_HWP_STATUS, 0);
-> +		notify_hwp_interrupt();
->  
->  	rdmsrl(MSR_IA32_THERM_STATUS, msr_val);
->  
-> diff --git a/drivers/thermal/intel/thermal_interrupt.h
-> b/drivers/thermal/intel/thermal_interrupt.h
-> index 53f427bb58dc..01e7bed2ffc7 100644
-> --- a/drivers/thermal/intel/thermal_interrupt.h
-> +++ b/drivers/thermal/intel/thermal_interrupt.h
-> @@ -12,4 +12,7 @@ extern int (*platform_thermal_notify)(__u64
-> msr_val);
->   * callback has rate control */
->  extern bool (*platform_thermal_package_rate_control)(void);
->  
-> +/* Handle HWP interrupt */
-> +extern void notify_hwp_interrupt(void);
-> +
->  #endif /* _INTEL_THERMAL_INTERRUPT_H */
+"WARNING: sum of probable bitmasks, consider |"
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+---
+ tools/testing/selftests/net/psock_fanout.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/net/psock_fanout.c b/tools/testing/selftests/net/psock_fanout.c
+index db45213..3653d64 100644
+--- a/tools/testing/selftests/net/psock_fanout.c
++++ b/tools/testing/selftests/net/psock_fanout.c
+@@ -111,8 +111,8 @@ static int sock_fanout_open(uint16_t typeflags, uint16_t group_id)
+ static void sock_fanout_set_cbpf(int fd)
+ {
+ 	struct sock_filter bpf_filter[] = {
+-		BPF_STMT(BPF_LD+BPF_B+BPF_ABS, 80),	      /* ldb [80] */
+-		BPF_STMT(BPF_RET+BPF_A, 0),		      /* ret A */
++		BPF_STMT(BPF_LD | BPF_B | BPF_ABS, 80),	      /* ldb [80] */
++		BPF_STMT(BPF_RET | BPF_A, 0),		      /* ret A */
+ 	};
+ 	struct sock_fprog bpf_prog;
+ 
+-- 
+1.8.3.1
+
 
