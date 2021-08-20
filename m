@@ -2,75 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ABA3F342E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5849B3F3430
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhHTTBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:01:47 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4596 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhHTTBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:01:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="197082645"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="197082645"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 12:01:08 -0700
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="506580400"
-Received: from jmorauga-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.135.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 12:01:06 -0700
-Subject: Re: [PATCH v5 06/12] x86/tdx: Get TD execution environment
- information via TDINFO
-To:     Andi Kleen <ak@linux.intel.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YR/in4WqEQQ/LyPA@zn.tnic>
- <c5dc6c26-6157-c022-9d6b-f1ef10e6f736@linux.intel.com>
- <YR/n5FgCUSlZ5npc@zn.tnic>
- <174d5062-3618-4343-bdfb-22b5cd2662f8@linux.intel.com>
- <5c4b8cff-ebc0-515f-acb3-aee53f955e4c@linux.intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <428c09d3-f636-2a99-e394-e46b57c38b29@linux.intel.com>
-Date:   Fri, 20 Aug 2021 12:01:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S237076AbhHTTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:02:15 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21310 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhHTTCO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 15:02:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1629486091; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=JTUDp6Rbo0JtCPGZCz8dRy549EBqYLHq+o1SdTAv6vi5Oep7XDn5TbGIqaSE7mveNL1ioqGzJsRlnNeSU72ojPQ9IhtrBtM2XWhb0WElpRDwIZzV2VYpqlBl821J1Ga+HNjnFHOuFvwAW2yWJP2yS+0Fe4ngvkMb0/zaEA9s57Y=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1629486091; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=+8HoWNe3h5WTtvNvUVVUKYYO+3ldDsTW5LsjKb7EUVE=; 
+        b=XcAI4+ynpZA/qSu+x6sXA85WPn+2MjqC8OwnD1ag3JCozWzplmoNmDF0dwI7PQxWT6ZFjL3vEv9QeZ1/LBfQbR6RgUxW+9ZXV721KOklfzEu5wJa5/qudpr9OXh59YzlwKfHnzlJ+ZdTjMWlDa4glfV99oXH1QgHFUyB67n4M2g=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1629486091;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=+8HoWNe3h5WTtvNvUVVUKYYO+3ldDsTW5LsjKb7EUVE=;
+        b=QrMP5eDi97a9cQGeZSQV2Xzij92iwkWO3o1nK/zobB4BP9+dcrdskv5IXhHnvM+L
+        +RTlmzAdgofDkQ0Tmy08cWozsA6Kg+4Eo9m9Tcf6ZPcwgemfnZDgGHT7voN1w7/DdAQ
+        lrlZNDtWCEldD6DKeoV+llWV0Vo3caiQ2IDzq5sM=
+Received: from localhost.localdomain (106.51.111.164 [106.51.111.164]) by mx.zohomail.com
+        with SMTPS id 1629486088755312.1448548868018; Fri, 20 Aug 2021 12:01:28 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     valentina.manea.m@gmail.com, shuah@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v4 0/2] Fix syzkaller bug: hung task in hub_port_init
+Date:   Sat, 21 Aug 2021 00:31:20 +0530
+Message-Id: <20210820190122.16379-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <5c4b8cff-ebc0-515f-acb3-aee53f955e4c@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series fixes the hung task bug in hub_port_init reported by
+syzkaller at:
 
+https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
 
-On 8/20/21 11:58 AM, Andi Kleen wrote:
-> 
-> 
-> Without working TDCALLs the error message won't appear anywhere. The only practical way to debug 
-> such a problem is a kernel debugger.
-> 
-> Also printing an error message might end up recursing because the console write would trigger TDCALL 
-> again, or eventually stop because the console lock is already taken. In any case it won't work.
+Stack:
 
-Yes, good point. In this case, adding debug print will not work. But I
-can add more comments to the code.
+INFO: task kworker/0:0:5 blocked for more than 143 seconds.
+      Not tainted 5.13.0-rc7-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:0     state:D
+ stack:27392 pid:    5 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+
+Call Trace:
+ context_switch kernel/sched/core.c:4339 [inline]
+ __schedule+0x916/0x23e0 kernel/sched/core.c:5147
+ schedule+0xcf/0x270 kernel/sched/core.c:5226
+ usb_kill_urb.part.0+0x19c/0x220 drivers/usb/core/urb.c:711
+ usb_kill_urb+0x81/0xa0 drivers/usb/core/urb.c:706
+ usb_start_wait_urb+0x24a/0x4c0 drivers/usb/core/message.c:64
+ usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+ usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
+ hub_port_init+0x82e/0x2db0 drivers/usb/core/hub.c:4759
+ hub_port_connect drivers/usb/core/hub.c:5210 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5418 [inline]
+ port_event drivers/usb/core/hub.c:5564 [inline]
+ hub_event+0x2190/0x4330 drivers/usb/core/hub.c:5646
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2276
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+The first patch in the series fixes the issue and the second patch does
+some refactoring to avoid duplicate code.
+
+Changes in v4:
+- Got rid of the log messages as suggested by Shuah.
+
+Changes in v3:
+- Split the patch into two patches
+- Remove the convenience wrappers as suggested by Shuah
+- Remove the WARN as suggested by Greg
+Link: https://lore.kernel.org/lkml/20210813182508.28127-1-mail@anirudhrb.com/
+
+Changes in v2:
+Use WARN_ON() instead of BUG() when unlink_list is neither unlink_tx nor
+unlink_rx.
+Link: https://lore.kernel.org/lkml/20210806181335.2078-1-mail@anirudhrb.com/
+
+v1: https://lore.kernel.org/lkml/20210806164015.25263-1-mail@anirudhrb.com/
+
+Anirudh Rayabharam (2):
+  usbip: give back URBs for unsent unlink requests during cleanup
+  usbip: clean up code in vhci_device_unlink_cleanup
+
+ drivers/usb/usbip/vhci_hcd.c | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.26.2
+
