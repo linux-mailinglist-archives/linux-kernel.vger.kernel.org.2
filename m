@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF383F35DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F198C3F35DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240552AbhHTVDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231171AbhHTVDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:03:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABC6C6103B;
-        Fri, 20 Aug 2021 21:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629493391;
-        bh=VwThOwWPE5ah7M2RNMlkuI70PYe8BX7MFqiL2p7+V4c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=IL7alGUYy94QHWEfVdL9LwHa/8uQQOAUeDkP6l+STRyktqrTuM6aZwmW6ZT/vWyg2
-         71QbZqQwn/nCJhn8SV4O5+S51qNU3vaHIs+Nb0Wu3n5+T8ZZ0MHVVegsFdTvtPR4V9
-         r7UyhWKwJjVpv03y2qiGddGRDbA0BDinKfcCpFfBu8zbo5sMrAP+bgzcmQKH1FgbQK
-         fv+J8NV0xxIPgA4WMPEft8LPhib8t0obfWAdNT4m4/wHYlEUE+7hoA1s9FKbx6w18R
-         nyvYuRVjp198nEV/a1lwAZjAkLNuqk61A4I7vGbeaQSDt2JRqhPmk/mZdBhS8ooMdg
-         C/z/pFEAatw2A==
-Date:   Fri, 20 Aug 2021 16:03:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>, nic_swsd@realtek.com,
-        bhelgaas@google.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 1/3] r8169: Implement dynamic ASPM mechanism
-Message-ID: <20210820210309.GA3357515@bjorn-Precision-5520>
+        id S240485AbhHTVFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230200AbhHTVFn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 17:05:43 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EFBC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:05:05 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id f15so10801263ilk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AHuE68SZeZJgo+ZJ5047NRixzSrlnFN0gqAr82i7YR8=;
+        b=mn6E6ELoWiFgPJPOOfbw3ckSVf0xoK3tXZ1RucjWFtWtIdk6bbX+bhVl69KHevLS6o
+         5eT2qowd6SG4JEwqxjmWQcE+aL1SElXiJ+ofmGEyhpny9Fr8O6OEd3blMOBTfn4xPnFj
+         Y0EcBTzvH76uzG2rh5QuY6BYihUcoEm2QMrQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AHuE68SZeZJgo+ZJ5047NRixzSrlnFN0gqAr82i7YR8=;
+        b=t2dpHgdesu46x0peFNWM9KHHmOBedDRx1jLdAWmEEFug4xzJujTQ6zIKQwYnm99DWH
+         HpU6LJnSSp83a40Huqi6oPKXAoTsEafFqKC+HZ41vnWA8H0gy9rNeuB/iJbs/MBD+dI3
+         QmwlifOkDSLlzHPbZC+ahI8C2e92/39RsxqAXfssTVSPsR24TvlVxFfwwNvnKfJVqUlF
+         BJ/vGwJe5cMdzBw79HRlgxYLk3ojmOKWje1bi73T+1/pozo6oSeLHZKwaAWeCasTAtQy
+         Px12aZsJKDYj7jiDEy63V9RtMHrPrDU2rGntjJm9Mh2XKvQ8VMBXvT/sBSHpzCVdWrCq
+         UeJg==
+X-Gm-Message-State: AOAM532ZmI7eCoT6u58uagTbHkgrgCXVgKWJevJmY7Jko7vNEpZSDjVg
+        bZuJ5H8YQFxUfiySsPYXCa467qkeFFy97g==
+X-Google-Smtp-Source: ABdhPJzK0cQB+Niv7bw12fMvpdCw9Z5xlpR+GW1L9XaD4FRTGxESgPSaWmOYk28cjkt8AsE+08UTNQ==
+X-Received: by 2002:a92:1812:: with SMTP id 18mr14766151ily.83.1629493504616;
+        Fri, 20 Aug 2021 14:05:04 -0700 (PDT)
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com. [209.85.166.173])
+        by smtp.gmail.com with ESMTPSA id m184sm4002476ioa.17.2021.08.20.14.05.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 14:05:04 -0700 (PDT)
+Received: by mail-il1-f173.google.com with SMTP id b4so1247394ilr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:05:04 -0700 (PDT)
+X-Received: by 2002:a92:d304:: with SMTP id x4mr15198676ila.82.1629493503689;
+ Fri, 20 Aug 2021 14:05:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ebf8fa1-cbd4-75d6-1099-1a45ca8b8bb0@gmail.com>
+References: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid>
+In-Reply-To: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 20 Aug 2021 14:04:51 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com>
+Message-ID: <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: add RK3399 Gru gpio-line-names
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 05:45:22PM +0200, Heiner Kallweit wrote:
-> On 19.08.2021 13:42, Bjorn Helgaas wrote:
-> > On Thu, Aug 19, 2021 at 01:45:40PM +0800, Kai-Heng Feng wrote:
-> >> r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
-> >> Same issue can be observed with older vendor drivers.
-> > 
-> > On some platforms but not on others?  Maybe the PCIe topology is a
-> > factor?  Do you have bug reports with data, e.g., "lspci -vv" output?
-> > 
-> >> The issue is however solved by the latest vendor driver. There's a new
-> >> mechanism, which disables r8169's internal ASPM when the NIC traffic has
-> >> more than 10 packets, and vice versa. 
-> > 
-> > Presumably there's a time interval related to the 10 packets?  For
-> > example, do you want to disable ASPM if 10 packets are received (or
-> > sent?) in a certain amount of time?
-> > 
-> >> The possible reason for this is
-> >> likely because the buffer on the chip is too small for its ASPM exit
-> >> latency.
-> > 
-> > Maybe this means the chip advertises incorrect exit latencies?  If so,
-> > maybe a quirk could override that?
-> > 
-> >> Realtek confirmed that all their PCIe LAN NICs, r8106, r8168 and r8125
-> >> use dynamic ASPM under Windows. So implement the same mechanism here to
-> >> resolve the issue.
-> > 
-> > What exactly is "dynamic ASPM"?
-> > 
-> > I see Heiner's comment about this being intended only for a downstream
-> > kernel.  But why?
-> > 
-> We've seen various more or less obvious symptoms caused by the broken
-> ASPM support on Realtek network chips. Unfortunately Realtek releases
-> neither datasheets nor errata information.
-> Last time we attempted to re-enable ASPM numerous problem reports came
-> in. These Realtek chips are used on basically every consumer mainboard.
-> The proposed workaround has potential side effects: In case of a
-> congestion in the chip it may take up to a second until ASPM gets
-> disabled, what may affect performance, especially in case of alternating
-> traffic patterns. Also we can't expect support from Realtek.
-> Having said that my decision was that it's too risky to re-enable ASPM
-> in mainline even with this workaround in place. Kai-Heng weights the
-> power saving higher and wants to take the risk in his downstream kernel.
-> If there are no problems downstream after few months, then this
-> workaround may make it to mainline.
+Hi,
 
-Since ASPM apparently works well on some platforms but not others, I'd
-suspect some incorrect exit latencies.
+On Fri, Aug 20, 2021 at 1:38 PM Brian Norris <briannorris@chromium.org> wrote:
+>
+> It's convenient to get nice names for GPIOs. In particular, Chrome OS
+> tooling looks for "AP_FLASH_WP" and "AP_FLASH_WP_L". The rest are
+> provided for convenience.
+>
+> Gru-Bob and Gru-Kevin share the gru-chromebook.dtsi, and for the most
+> part they share pin meanings. I omitted a few areas where components
+> were available only on one or the other.
+>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> ---
+>
+>  .../dts/rockchip/rk3399-gru-chromebook.dtsi   | 176 +++++++++++++++++
+>  .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi | 180 ++++++++++++++++++
+>  2 files changed, 356 insertions(+)
 
-Ideally we'd have some launchpad/bugzilla links, and a better
-understanding of the problem, and maybe a quirk that makes this work
-on all platforms without mucking up the driver with ASPM tweaks.
+I didn't walk through the schematics and double-check the rails
+personally, but the idea here is right. This matches the type of thing
+we did for veyron, like in commit ca3516b32cd9 ("ARM: dts: rockchip:
+Add pin names for rk3288-veyron-minnie")
 
-But I'm a little out of turn here because the only direct impact to
-the PCI core is the pcie_aspm_supported() interface.  It *looks* like
-these patches don't actually touch the PCIe architected ASPM controls
-in Link Control; all I see is mucking with Realtek-specific registers.
+I guess one minor nit (now that I look back on the veyron patch where
+I mentioned it explicitly in the commit message) is that on the veyron
+ones we sorted this down at the bottom with the other pinctrl stuff
+instead of sorting it alphabetically with everything else. I'll let
+Heiko say which he likes better.
 
-I think this is more work than it should be and likely to be not as
-reliable as it should be.  But I guess that's up to you guys.
+I also notice for veyron that we had a second "ABI" exception for the
+recovery mode pin, but I believe that goes through a different
+mechanism now so we're good there.
 
-Bjorn
+Even though I didn't do a line-by-line review, I'll still give:
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+
+...though it's possible an "Acked-by" would be more in the spirit of
+that? Not sure...
+
+-Doug
