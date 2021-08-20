@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227E23F26D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7E53F26D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238400AbhHTGdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:33:08 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:49360 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232649AbhHTGdH (ORCPT
+        id S235251AbhHTGeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232649AbhHTGeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:33:07 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17K6QVIh021334;
-        Fri, 20 Aug 2021 08:32:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=selector1; bh=VlO4/Ljo2tdrHraB5iL9pG/9mCpzVfNYC9kEXsTA9pU=;
- b=M/eGuxXTBbwIB0IfxJiGgmpuJKljQ2ikzH93elP8+W0PRq+BDPar/tAGF4bGLQBY6o5R
- uXa1HllyhfLbrfGnZhsi6U1bTFIFSuRywqR+s9hqzAhYtKIAJ/uuY0yQaiyMmMiR3rUL
- NjOQC+hJGsnmtFRQj/ha2Z/ubWYek3ZBd854wOMhNdYNHjZsDzmEB4cxC5n1U3+A4Qr9
- qOX7s/3erlZnt8ydS1VUvWueARqtcNFp77YCt2WE6q9HRgLSwCtH2TpteoKc0DoGhKA8
- M/wkR2Y0XqIqCdkY81ji7yV4R/gBqeu0z+pjQHntB8+NLgFlERifHy7h6R0b9C5HGVSt Ag== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3aj2j1sbj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 08:32:10 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4E2AA10002A;
-        Fri, 20 Aug 2021 08:32:08 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3BBCF20F6E2;
-        Fri, 20 Aug 2021 08:32:08 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Aug
- 2021 08:32:07 +0200
-Date:   Fri, 20 Aug 2021 08:32:02 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     CGEL <cgel.zte@gmail.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] spi-stm32: fix Coccinelle warnings
-Message-ID: <20210820063202.GA21711@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: CGEL <cgel.zte@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210820031952.12746-1-jing.yangyang@zte.com.cn>
+        Fri, 20 Aug 2021 02:34:21 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD35C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:33:44 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id o2so8186501pgr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uizvbGrAGell6LdMB1pzSSzYApXRoXyVsqw6ZRcvWA4=;
+        b=1FzClz4/cP22vIiJuVHlGAzTd7Ib7PAHSg++BBzrNQtZk87GbqGXy33+JHRwf2bG9w
+         /V0nlxAvcTWDyoxqzpRitPEur2uuK0JjEeAQn5sVKYYw1vg5x2QJ3nMjtQW1JL0a2xg2
+         5nhStFIcR+G5IRnwzRVyz8irwDXqNtlKGnCjjECvPtu7SQneOWh2nyFqxpTN6TunXVuP
+         dZcbr0y8GdXgoT/sK3cl+fBc19NSRh+Yt5+JnikFM5omtG/nNKhBi1imRFMJQGPGRP0q
+         eBxA0spBPqp0bKuF8yK7T/zHFoDkzxdKTMF/S+cSm6auSGc/Eq1UTY3B1GZXHM+f15SY
+         5sTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uizvbGrAGell6LdMB1pzSSzYApXRoXyVsqw6ZRcvWA4=;
+        b=r3paEkSFzBnEZPtWLJEM4tYMWEql6YX30Y5XoPUx/YjeFJZfMIrZyBGCyDnoGfwnGt
+         PNj5VAvnpOnyqO7ywhclZgsTG0tksK/vhwMRTiP6xbKD+HKXqxLqDOQdHTOViC6XRlxS
+         wxRrOU6Ti9bdn0gay25AQOaRBkaQ07myAQ0FBvg6319Rt7Oev0L5TzbejE0Xhjj6L0iT
+         xOpOICBUhzjbnItHt64Zw+l1L6x8sSEfh6P6XC5jR15KZGByIRXjTQuZbAmYHWPa/kuL
+         PyOm+uH9wpMYfU5KARrYk6mNegdJwSZnGCpin1l7U2Rel80CZy2+twYb3XHuUjU2fGE/
+         yneQ==
+X-Gm-Message-State: AOAM533QMQ61h9W5Dc3WGtQcIlLr5IYT+Vf0aEAkHofJxSMq3xcbCGP/
+        TGCnP0CP1csFCqCyiV5X+SvIPw==
+X-Google-Smtp-Source: ABdhPJz4dCXSZ33XEWhwSZMTETDWB1y7AOtiIjlAEa80L0dWADYvBITxJsFjeraeegigfhEzzLTfUQ==
+X-Received: by 2002:a63:1460:: with SMTP id 32mr17343074pgu.323.1629441223783;
+        Thu, 19 Aug 2021 23:33:43 -0700 (PDT)
+Received: from yc.huaqin.com ([101.78.151.213])
+        by smtp.gmail.com with ESMTPSA id a10sm5612160pfn.48.2021.08.19.23.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 23:33:43 -0700 (PDT)
+From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, dianders@google.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        yangcong <yangcong5@huaqin.corp-partner.google.com>
+Subject: [v2 0/2] drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+Date:   Fri, 20 Aug 2021 14:33:35 +0800
+Message-Id: <20210820063337.44580-1-yangcong5@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210819124844.12424-1-yangcong5@huaqin.corp-partner.google.com>
+References: <20210819124844.12424-1-yangcong5@huaqin.corp-partner.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210820031952.12746-1-jing.yangyang@zte.com.cn>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-20_02:2021-08-20,2021-08-20 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Compared to v1, "pp3300-supply" is removed in the required list:
+dt-bindings: drm/panel:
+   - reg
+   - enable-gpios
+   - pp1800-supply
+-  - pp3300-supply
+   - avdd-supply
+   - avee-supply
 
-thanks for the patch. We've had this issue reported previously with a patch
-provided at
-(https://lore.kernel.org/linux-spi/20210713191004.GA14729@5eb5c2cbef84/).
-I've put my reviewed-by so it should make its way to the linux-next soon.
+yangcong (2):
+  drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+  dt-bindings: drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
 
-Regards,
-Alain
+ .../bindings/display/panel/boe,tv101wum-nl6.yaml      |  3 +++
+ drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c        | 11 +++++++++++
+ 2 files changed, 14 insertions(+)
 
-On Thu, Aug 19, 2021 at 08:19:52PM -0700, CGEL wrote:
-> From: jing yangyang <jing.yangyang@zte.com.cn>
-> 
-> WARNING !A || A && B is equivalent to !A || B
-> 
-> This issue was detected with the help of Coccinelle.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
-> ---
->  drivers/spi/spi-stm32.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-> index 14ca7ea..cc4a731 100644
-> --- a/drivers/spi/spi-stm32.c
-> +++ b/drivers/spi/spi-stm32.c
-> @@ -912,8 +912,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
->  		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
->  			stm32h7_spi_read_rxfifo(spi);
->  		if (!spi->cur_usedma ||
-> -		    (spi->cur_usedma && (spi->cur_comm == SPI_SIMPLEX_TX ||
-> -		     spi->cur_comm == SPI_3WIRE_TX)))
-> +			(spi->cur_comm == SPI_SIMPLEX_TX ||
-> +			spi->cur_comm == SPI_3WIRE_TX))
->  			end = true;
->  	}
->  
-> -- 
-> 1.8.3.1
-> 
-> 
+-- 
+2.25.1
+
