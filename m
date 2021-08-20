@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58293F2C84
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03713F2C87
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240600AbhHTMyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:54:17 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53704 "EHLO deadmen.hmeau.com"
+        id S240634AbhHTMzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:55:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237996AbhHTMyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:54:16 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mH41R-0007H8-An; Fri, 20 Aug 2021 20:53:21 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mH41L-0007bK-II; Fri, 20 Aug 2021 20:53:15 +0800
-Date:   Fri, 20 Aug 2021 20:53:15 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
-Subject: Re: [PATCH] crypto: xts_crypt() return if walk.nbytes is 0
-Message-ID: <20210820125315.GB28484@gondor.apana.org.au>
-References: <YQ0Qm+Xs1g/7Eant@fedora>
- <20210809141027.860850-1-chouhan.shreyansh630@gmail.com>
- <20210820083111.GA28484@gondor.apana.org.au>
- <CAMj1kXGMPimX0_dR_kLuzZjuJK9rM=uCpRDtoJq0UjWq12M10A@mail.gmail.com>
+        id S237828AbhHTMzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:55:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD5CE60F91;
+        Fri, 20 Aug 2021 12:54:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629464064;
+        bh=ycRBYGBaMrCVvvELyUF5fqHohvrHAleMx1NJmLwP5zk=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=eHxfpKiooDow4gSee4dRv+oKAMolL0+ff1TDnYFvFUzpZ582b2/MBciohGFPdnbxd
+         E3WnJggayHh0jfqm0xkBSik9ENJh8ZfcPh1sYLaySJ2LV+9c1oBw7FZtEVsBNESNuz
+         Iyhvtn5P8+gyM9HKGzLe300WmjfiCzTWO4ywdCnHUF22fQ+ygIAY2zsum6qxvYZ8If
+         CyFEDBM+b2QpwYFhxj+xkoo3jietNET9qlNByWAT172SsAlfbeUV34OP1JaXvLsks/
+         NVjA9tMsyTTX0L3KyuHMmVoKN8VXSzYslOW0P59srIT1l0QX6uL0Qoj/oxk8MznooL
+         pa391NzRbZ7hA==
+Date:   Fri, 20 Aug 2021 14:54:21 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+cc:     Dario Pagani <dario.pagani.146@gmail.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: thrustmaster: clean up Makefile and adapt quirks
+In-Reply-To: <20210810102148.9764-1-lukas.bulwahn@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2108201454100.15313@cbobk.fhfr.pm>
+References: <20210810102148.9764-1-lukas.bulwahn@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGMPimX0_dR_kLuzZjuJK9rM=uCpRDtoJq0UjWq12M10A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 01:14:52PM +0200, Ard Biesheuvel wrote:
->
-> In spite of that, I have a slight preference for this version, given
-> that it makes it obvious that we bail on two separate conditions:
-> - an error has occurred
-> - no error has occurred but the resulting walk is empty
+On Tue, 10 Aug 2021, Lukas Bulwahn wrote:
+
+> Commit c49c33637802 ("HID: support for initialization of some Thrustmaster
+> wheels") messed up the Makefile and quirks during the refactoring of this
+> commit.
 > 
-> Testing walk.nbytes only needlessly obfuscates the code, as we need to
-> return 'err' in the end anyway.
+> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+> 
+> HID_TMINIT
+> Referencing files: drivers/hid/Makefile, drivers/hid/hid-quirks.c
+> 
+> Following the discussion (see Link), CONFIG_HID_THRUSTMASTER is the
+> intended config for CONFIG_HID_TMINIT and the file hid-tminit.c was
+> actually added as hid-thrustmaster.c.
+> 
+> So, clean up Makefile and adapt quirks to that refactoring.
+> 
+> Fixes: c49c33637802 ("HID: support for initialization of some Thrustmaster wheels")
+> Link: https://lore.kernel.org/linux-input/CAKXUXMx6dByO03f3dX0X5zjvQp0j2AhJBg0vQFDmhZUhtKxRxw@mail.gmail.com/
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-I disagree, this is how most skcipher walkers are structured, they
-never explicitly test on err and only terminate the loop when
-walk->nbytes hits zero, in which case err is returned as is.
+Applied, thanks Lukas.
 
-I don't see why this particular skcipher walker should deviate
-from that paradigm.  In fact it is exactly that deviation that
-caused the bug in the first instance.
-
-Cheers,
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Jiri Kosina
+SUSE Labs
+
