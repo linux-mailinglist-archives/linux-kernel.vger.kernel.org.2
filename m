@@ -2,107 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143143F2CDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9304A3F2CCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240667AbhHTNKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        id S240716AbhHTNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238510AbhHTNKd (ORCPT
+        with ESMTP id S240675AbhHTNJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:10:33 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30389C061575;
-        Fri, 20 Aug 2021 06:09:55 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id h9so20184688ejs.4;
-        Fri, 20 Aug 2021 06:09:55 -0700 (PDT)
+        Fri, 20 Aug 2021 09:09:16 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E488C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:08:38 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id u21so4425935qtw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=amLfY2WyHMkOd7qaXpy+DB72ahvQ2PinE48ltai+NY8=;
-        b=rwSw1HOFFZvRjHgzdxD6wIWXmbfC1tIbpjup1mvWgKiVHgnG/r3AedF9t81fLmqkHf
-         7E+PAgpDncoeBFUw0R77F9l28gYw3HhpT+ljs2Bh8Z/YJRBKD98iDfhnNH8s8QSRXalX
-         sDTXk82uptoHbmO990kyKWxdC3pjMrpD8GLdVICdK3hdyuhBwFbpoMkqI93V/Ks50YF6
-         L7ea3Olo1ttG6U2z8BK7eIWxEE0fDmuMYF+b3rTDshcilGXzyMp99bern34TouDOIRXI
-         qdhZ8EjFLv31xAJJaz0rHXZyo2N7gtkS9QaUmtj4UPDle/VtHgpRP8SVJTlZa545zR1/
-         C2zw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TUaFXYR3HgX7rq/VVrgPte+1/jUiDRhyGavFeUWW8ns=;
+        b=qyykdYkmfS+sozWV6prsKemkogSdt6dw3JI6xplGBEyTZrCLVw/V2WrXps+vMYETkc
+         8Te8E/naVt9sCYftHN+RQWgeipXTUxRrtvWgldkYCu2Cbe9g6ADwtRoynUE5z+qBzTjG
+         54yO9pPGaOTEYQUVc1FEW/T8RQKm7EsP8D7GtvNgk4bFWoxEOLRtHkxavfl9A0+APfke
+         fUSP5CH+beQOqMRPOpWAxyXQpPSp8NBKx7ZcRxpsbapjzzBlp12z8K73a7u/zLR3Yi/5
+         /eO+ssNjqZxgkZLIbtO1QrlN47VLwXpLqfNwD+gSTbQel6v8qOEG9qHA3WYS7WzopQpP
+         XncQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=amLfY2WyHMkOd7qaXpy+DB72ahvQ2PinE48ltai+NY8=;
-        b=l0eFYTs7Ha6zwD/5NYAS3VqJTGEc/MW+lTwibWMyeNy7JUu8YTiSGDwjXgrpkg/3DS
-         gZ6gLWrBCXTw8hUujQsLXgJmhe8S4EdfoIOYVsJRPUNzl83EWSP+vNilayK2kunJWQi9
-         G41APKscb5Os7MyaSV9uUSBEmKQVkLWgjVWmCpEEIov4X0oxxlyhMSyNYVg7y8WQYO7T
-         xyVWJYoO9hGudsTn0UrvkvH/9G7UVmwPwkBGYp8d3oj/2StYDMq2xBpo55lNfdLDcC+K
-         C1bKlLuvBc6M+Zx1WYsYB/810/i2YCC9vJRz9SznVL6PIRFFjirUVS2MqXOj7WgQTMYf
-         nHUw==
-X-Gm-Message-State: AOAM533rEfg5ScZusVjT+7rmehl9f0nZwLTaWT5Gre3AASQuEwc7qOxY
-        MNS5ML/kjbeCjjlokImTTF4=
-X-Google-Smtp-Source: ABdhPJwigLSzgY4Ua5OOim8zTK83W7SDyxDLR5S3OjVyyHyfHwAly52j9pdy8ZsHMMURT+zQ1mZgxQ==
-X-Received: by 2002:a17:906:7154:: with SMTP id z20mr1255396ejj.547.1629464993668;
-        Fri, 20 Aug 2021 06:09:53 -0700 (PDT)
-Received: from honeypot.. (mob-176-243-242-182.net.vodafone.it. [176.243.242.182])
-        by smtp.googlemail.com with ESMTPSA id n2sm3594518edi.32.2021.08.20.06.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 06:09:53 -0700 (PDT)
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jin Yao <yao.jin@linux.intel.com>, Song Liu <song@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf config: fix caching and memory leak in perf_home_perfconfig
-Date:   Fri, 20 Aug 2021 15:08:17 +0200
-Message-Id: <20210820130817.740536-1-rickyman7@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TUaFXYR3HgX7rq/VVrgPte+1/jUiDRhyGavFeUWW8ns=;
+        b=DwubVoFs1irNxFHahHNxfo9hx0J5xeczsbMxQNhVWh4/NLY/a5yUCrm93M/DBNMqn9
+         1FC7uMsEt/LMQrasXr23OvKM7G92jpGUKqV+Dk9/XVREwhv4dH2WFLKU1KEhEroPyMv3
+         R4Zwx9Fbx4rZaAmagQxUploOzmu2FKFxPLD/Xzvrktun9thy07WVe6M7oTuCOs5W6Uaf
+         gy+w4v2UF2T4cvmQtl0Casfhh2gRelfzaA2y/avMDFxTreI/wu/oqAY9tqXDc5q3mv4S
+         GalsyGWnphTApqDvSb0apephw86VMJxVAt2R5yl6QhmNQjDcuGoHnBsjmm3KaGMtYKHf
+         dHSg==
+X-Gm-Message-State: AOAM533DGInk4N9+e2u1NigT9LcuhmCz6Ynt1L73TV+Vxq1S/3maUqIx
+        RHIf8thurFjbz7/D+9QO+TC2pdjXRoYWSZTY6sb9dA==
+X-Google-Smtp-Source: ABdhPJyHXvzqFdkh92xFSl2Tfgr6Wq+GnxyuqFmSQJ3g0FPjwxN9S26JOc0IArVq879EP1YIZ1goBTULRA693ce45J8=
+X-Received: by 2002:a05:622a:13c8:: with SMTP id p8mr17705841qtk.238.1629464912762;
+ Fri, 20 Aug 2021 06:08:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org> <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
+In-Reply-To: <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 20 Aug 2021 16:08:21 +0300
+Message-ID: <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/15] create power sequencing subsystem
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        MSM <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acaict, perf_home_perfconfig is supposed to cache the result of
-home_perfconfig, which returns the default location of perfconfig for
-the user, given the HOME environment variable.
-However, the current implementation calls home_perfconfig every time
-perf_home_perfconfig is called (so no caching is actually performed),
-replacing the previous pointer, thus also causing a memory leak.
+Hi,
 
-This patch adds a check of whether either config or failed is set and,
-in that case, directly returns config without calling home_perfconfig at
-each invocation.
+On Thu, 19 Aug 2021 at 18:23, Marcel Holtmann <marcel@holtmann.org> wrote:
+> > This is an RFC of the proposed power sequencer subsystem. This is a
+> > generification of the MMC pwrseq code. The subsystem tries to abstract
+> > the idea of complex power-up/power-down/reset of the devices.
+> >
+> > The primary set of devices that promted me to create this patchset is
+> > the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+> > interfaces (older generations) or on serial+PCIe (newer generations).
+> > They require a set of external voltage regulators to be powered on and
+> > (some of them) have separate WiFi and Bluetooth enable GPIOs.
+> >
+> > This patchset being an RFC tries to demonstrate the approach, design an=
+d
+> > usage of the pwrseq subsystem. Following issues are present in the RFC
+> > at this moment but will be fixed later if the overall approach would be
+> > viewed as acceptable:
+> >
+> > - No documentation
+> >   While the code tries to be self-documenting proper documentation
+> >   would be required.
+> >
+> > - Minimal device tree bindings changes
+> >   There are no proper updates for the DT bindings (thus neither Rob
+> >   Herring nor devicetree are included in the To/Cc lists). The dt
+> >   schema changes would be a part of v1.
+> >
+> > - Lack of proper PCIe integration
+> >   At this moment support for PCIe is hacked up to be able to test the
+> >   PCIe part of qca6390. Proper PCIe support would require automatically
+> >   powering up the devices before the scan basing on the proper device
+> >   structure in the device tree.
+> >
+> > ----------------------------------------------------------------
+> > Dmitry Baryshkov (15):
+> >      power: add power sequencer subsystem
+> >      pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
+> >      mmc: core: switch to new pwrseq subsystem
+> >      ath10k: add support for pwrseq sequencing
+> >      Bluetooth: hci_qca: merge qca_power into qca_serdev
+> >      Bluetooth: hci_qca: merge init paths
+> >      Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
+> >      Bluetooth: hci_qca: futher rework of power on/off handling
+> >      Bluetooth: hci_qca: add support for pwrseq
+>
+> any chance you can try to abandon patching hci_qca. The serdev support in=
+ hci_uart is rather hacking into old line discipline code and it is not agi=
+ng well. It is really becoming a mess.
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Fixes: f5f03e19ce14fc31 ("perf config: Add perf_home_perfconfig function")
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
----
- tools/perf/util/config.c | 3 +++
- 1 file changed, 3 insertions(+)
+I wanted to stay away from rewriting the BT code. But... New driver
+would have a bonus point that I don't have to be compatible with old
+bindings. In fact we can even make it the other way around: let the
+old driver always use regulators and make the new driver support only
+the pwrseq. Then it should be possible to drop the old hci_qca driver
+together with dropping the old bindings.
 
-diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-index 63d472b336de21d4..6ab670cdf512507e 100644
---- a/tools/perf/util/config.c
-+++ b/tools/perf/util/config.c
-@@ -581,6 +581,9 @@ const char *perf_home_perfconfig(void)
- 	static const char *config;
- 	static bool failed;
- 
-+	if (config || failed)
-+		return config;
-+
- 	config = failed ? NULL : home_perfconfig();
- 	if (!config)
- 		failed = true;
--- 
-2.31.1
+> I would say that the Qualcomm serial devices could use a separate standal=
+one serdev driver. A while I send an RFC for a new serdev driver.
+>
+> https://www.spinics.net/lists/linux-bluetooth/msg74918.html
 
+Any reason why your driver stayed as an RFC and never made it into the
+kernel? Do you plan to revive your old RFCs on H:4 and H:5?
+
+> There I had the idea that simple vendor specifics can be in that driver (=
+like the Broadcom part I added there), but frankly the QCA specifics are a =
+bit too specific and it should be a separate driver. However I think this w=
+ould be a good starting point.
+>
+> In general a H:4 based Bluetooth driver is dead simple with the help of h=
+4_recv.h helper we have in the kernel. The complicated part is the power ma=
+nagement pieces or any vendor specific low-power protocol they are running =
+on that serial line. And since you are touching this anyway, doing a driver=
+ from scratch might be lot simpler and cleaner. It would surely help all th=
+e new QCA device showing up in the future.
+
+--=20
+With best wishes
+Dmitry
