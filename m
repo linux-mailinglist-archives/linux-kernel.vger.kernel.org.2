@@ -2,134 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59433F32D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241883F32D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbhHTSJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:09:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59482 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235964AbhHTSJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:09:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629482910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4OPGCf/bXJhFEwNiiTiwLH7EUHiCc1gHGIcxlKk1+ks=;
-        b=VqBcHrx2v3NQMtWMxnXKpztcdFh/6eo1QTRST2PO8j7L00kQZz9Dqbxm0mvlgeIx16xbvZ
-        fMH3fSGhsgIrvZ7HTs/BoJHnJYf2sAM63nOXdL6p79rev2SAD92Ztc1uBXb+8hCIKtmxgq
-        5lsxpSd/Zf0JQRA1AckMQU2td3/TR6Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-op8t1VePPC6KaSsVdbvpqQ-1; Fri, 20 Aug 2021 14:08:29 -0400
-X-MC-Unique: op8t1VePPC6KaSsVdbvpqQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S236021AbhHTSJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229560AbhHTSJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 14:09:45 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1F643875048;
-        Fri, 20 Aug 2021 18:08:28 +0000 (UTC)
-Received: from cmirabil.remote.csb (unknown [10.22.9.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D0A65D9D5;
-        Fri, 20 Aug 2021 18:08:26 +0000 (UTC)
-From:   Charles Mirabile <cmirabil@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Charles Mirabile <cmirabil@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Serge Schneider <serge@raspberrypi.org>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        linux-rpi-kernel@lists.infradead.org, fedora-rpi@googlegroups.com,
-        Mwesigwa Guma <mguma@redhat.com>,
-        Joel Savitz <jsavitz@redhat.com>
-Subject: [RFC PATCH v2 4/4] sensehat: Add device tree overlay (do not merge)
-Date:   Fri, 20 Aug 2021 14:08:01 -0400
-Message-Id: <20210820180801.561119-5-cmirabil@redhat.com>
-In-Reply-To: <20210820180801.561119-1-cmirabil@redhat.com>
-References: <20210820180801.561119-1-cmirabil@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        by mail.kernel.org (Postfix) with ESMTPSA id 7787560F11;
+        Fri, 20 Aug 2021 18:09:07 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH8wz-006Ff6-Ej; Fri, 20 Aug 2021 19:09:05 +0100
+Date:   Fri, 20 Aug 2021 19:09:04 +0100
+Message-ID: <87eeaoyon3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+In-Reply-To: <CAFnufp2qFuhMDae20u_dV+aOPfB+zpcEK8D-=8ACE6r4kDn2rw@mail.gmail.com>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROmOQ+4Kqukgd6z@orome.fritz.box>
+        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
+        <87o8a49idp.wl-maz@kernel.org>
+        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
+        <20210812121835.405d2e37@linux.microsoft.com>
+        <874kbuapod.wl-maz@kernel.org>
+        <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+        <87wnohqty1.wl-maz@kernel.org>
+        <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
+        <87fsv4qdzm.wl-maz@kernel.org>
+        <CAFnufp2T75cvDLUx+ZyPQbkaNeY_S1OJ7KTJe=2EK-qXRNkwyw@mail.gmail.com>
+        <87mtpcyrdv.wl-maz@kernel.org>
+        <CAFnufp0N2MzaTjF95tx9Q1D33z9f9AAK6UHbhU9rhG1ue_r1ug@mail.gmail.com>
+        <87h7fkyqpv.wl-maz@kernel.org>
+        <CAFnufp3HbyeTGhxB33mej4Y4G2T2Yv5swKCx_C41zfc71Kj11A@mail.gmail.com>
+        <87fsv4ypfn.wl-maz@kernel.org>
+        <CAFnufp2qFuhMDae20u_dV+aOPfB+zpcEK8D-=8ACE6r4kDn2rw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mcroce@linux.microsoft.com, eric.dumazet@gmail.com, thierry.reding@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is an RFC. The overlay included here is suitable for the
-Sense HAT but we are not sure where overlays like this should go, or if we
-should even include it, because the Raspberry Pi kernel tree already
-includes that device tree blob that this was based on and most
-distributions for the Raspberry Pi include those blobs.
+On Fri, 20 Aug 2021 18:56:33 +0100,
+Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> 
+> On Fri, Aug 20, 2021 at 7:51 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Fri, 20 Aug 2021 18:35:45 +0100,
+> > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > >
+> > > > > I think it's wrong. The original offset was 0, and to align it to the
+> > > > > boundary we need to add just NET_IP_ALIGN, which is two.
+> > > > > NET_SKB_PAD is a much bigger value, (I think 64), which is used to
+> > > > > reserve space to prepend an header, e.g. with tunnels.
+> > > >
+> > > > How about the other adjustments that Eric mentioned regarding the size
+> > > > of the buffer? Aren't they required?
+> > > >
+> > >
+> > > I guess that if stmmac_rx_buf1_len() needed such adjustment, it would
+> > > be already broken when XDP is in use.
+> > > When you use XDP, stmmac_rx_offset() adds a pretty big headroom of 256
+> > > byte, which would easily trigger an overflow if not accounted.
+> > > Did you try attaching a simple XDP program on a stock 5.13 kernel?
+> >
+> > Yes, as mentioned in [1], to which you replied...
+> >
+> >         M.
+> >
+> > [1] https://lore.kernel.org/r/87wnohqty1.wl-maz@kernel.org
+> >
+> 
+> Great.
+> So I doubt that the adjustment is needed.
+> Does it work with all the frame size?
 
-The overlay is just in the root of the source tree since we did not know
-where to put it so this patch should not be merged in this state.
+I have no idea. Honestly, you are the one who should be able to answer
+these questions, given that you should have worked out how the buffer
+allocations work in this particular driver.
 
-Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
-Signed-off-by: Mwesigwa Guma <mguma@redhat.com>
-Signed-off-by: Joel Savitz <jsavitz@redhat.com>
----
- sensehat.dtbs | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 sensehat.dtbs
+This whole "let's try another random set of values until something
+sticks" is not how things ought to be done, and doesn't fill me with
+the utmost confidence that 5.14 (which apparently may well be cut in
+*two days*) is going to have a solid stmmac driver.
 
-diff --git a/sensehat.dtbs b/sensehat.dtbs
-new file mode 100644
-index 000000000000..3f1c12c8f75f
---- /dev/null
-+++ b/sensehat.dtbs
-@@ -0,0 +1,51 @@
-+/dts-v1/;
-+
-+/ {
-+	compatible = "brcm,bcm2835";
-+
-+	fragment@0 {
-+		target = <0xffffffff>;
-+
-+		__overlay__ {
-+			#address-cells = <0x01>;
-+			#size-cells = <0x00>;
-+			status = "okay";
-+
-+			sensehat@46 {
-+				compatible = "raspberrypi,sensehat";
-+				reg = <0x46>;
-+				keys-int-gpios = <0xffffffff 0x17 0x01>;
-+				status = "okay";
-+			};
-+
-+			lsm9ds1-magn@1c {
-+				compatible = "st,lsm9ds1-magn";
-+				reg = <0x1c>;
-+				status = "okay";
-+			};
-+
-+			lsm9ds1-accel6a {
-+				compatible = "st,lsm9ds1-accel";
-+				reg = <0x6a>;
-+				status = "okay";
-+			};
-+
-+			lps25h-press@5c {
-+				compatible = "st,lps25h-press";
-+				reg = <0x5c>;
-+				status = "okay";
-+			};
-+
-+			hts221-humid@5f {
-+				compatible = "st,hts221-humid\0st,hts221";
-+				reg = <0x5f>;
-+				status = "okay";
-+			};
-+		};
-+	};
-+
-+	__fixups__ {
-+		i2c1 = "/fragment@0:target:0";
-+		gpio = "/fragment@0/__overlay__/sensehat@46:keys-int-gpios:0";
-+	};
-+};
+I re-re-request that this patch gets reverted until you figure out
+what is wrong with the initial patch.
+
+Thanks,
+
+	M.
+
 -- 
-2.27.0
-
+Without deviation from the norm, progress is not possible.
