@@ -2,138 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7783F24DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0003F24E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237806AbhHTClH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:41:07 -0400
-Received: from mga11.intel.com ([192.55.52.93]:28085 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237372AbhHTClE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:41:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="213577047"
-X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
-   d="scan'208";a="213577047"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 19:40:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
-   d="scan'208";a="532781073"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Aug 2021 19:40:27 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, lenb@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH 2/2] cpufreq: intel_pstate: Process HWP Guaranteed change notification
-Date:   Thu, 19 Aug 2021 19:40:06 -0700
-Message-Id: <20210820024006.2347720-2-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
-References: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
+        id S237889AbhHTCmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237743AbhHTCmO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 22:42:14 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B033C061575;
+        Thu, 19 Aug 2021 19:41:37 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d9so6348492qty.12;
+        Thu, 19 Aug 2021 19:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=akxppNyvMUVOj38GQ4Wx+WMqn0jMaFXZloIDjRROmGQ=;
+        b=EUWolll8jwQmPwG9g8Rv7x8uSp+vnUXFDAOf6ozcbIKh2cFFzNtKCinnb3CyOQY85Y
+         Sj809DrgSN6OF7+XHPwTezdYOs6OwObsEI0Vps2kyjEIlm0lowLGqG8QYn3AwPjwYNSr
+         Dnmjz0x5Pi0fvGUyA+/OgLxvEfC1NMC7S3bPtAl4YlEAVsh+/Jaz71Cly/GHSA7MCMD2
+         6XB9ZAA8fDqw92qV0m3Pp9+8OrAY1FALXPm6YauSLVXY798JJXHD8pTX1byGrkcFrz0h
+         eGLQFVqknP1/yDd+Pj0ayWI28z1WqkhM8SZcTNyGrDRisHLWmCy2ZYsoTKVmCiSTs6js
+         pE0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=akxppNyvMUVOj38GQ4Wx+WMqn0jMaFXZloIDjRROmGQ=;
+        b=CEeoeIyaXKVaGHKKF8bZ2ubDgsreFDMIKEcdzymalY1LxmTu0u5eNExTR0gOdGJD1U
+         z3HoRvc6BdII//FiOEoV1316GbDKr/8O+94XJAAGB9uFHwfcArZ+O0nOh73DOhmjz/Be
+         DskzGyyQPjldLOGu3/Q93qUWO7xEEpJrx9mf7n2XcVyniTpBaeLVuMRKsDj0HSvLEcr8
+         SDat+Yz2wS8SYvfABr81Rp9hucbjOi5v6b2HWjUA+aEhyRlvPAdqxshvYTUeAsN2qWdG
+         kcO2yUSPTXoS+aqM0OR3TPCbf99gHy1B2QN0yZaq4m2sJy/4n/AwG+tx3wMqYNk/JjhS
+         I0Yg==
+X-Gm-Message-State: AOAM532t2eYnSXY4sS8QH180IIBwNm7f1O5oBwcDUWBrokSM6EFlBgNV
+        lt/YfRJpIl8wr079dpqVYcw=
+X-Google-Smtp-Source: ABdhPJw55p0SderdnAvRWE7UB9+ez6UViRUo1ZKxTA36IVrUYYRcwg3vnE6JRTkGM9yP8EmG3j0Rrg==
+X-Received: by 2002:ac8:7155:: with SMTP id h21mr15656644qtp.231.1629427296579;
+        Thu, 19 Aug 2021 19:41:36 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id j127sm2500131qkf.20.2021.08.19.19.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 19:41:36 -0700 (PDT)
+From:   jing yangyang <cgel.zte@gmail.com>
+X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
+To:     Felix Fietkau <nbd@nbd.name>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] net:wireless:mt76: fix boolreturn.cocci warnings
+Date:   Thu, 19 Aug 2021 19:41:17 -0700
+Message-Id: <20210820024117.11688-1-jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that HWP guaranteed ratio is changed in response to
-change in power and thermal limits. For example when Intel Speed Select
-performance profile is changed or there is change in TDP, hardware can
-send notifications. It is possible that the guaranteed ratio is
-increased. This creates an issue when turbo is disabled, as the old
-limits set in MSR_HWP_REQUEST are still lower and hardware will clip
-to older limits.
+./drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c:172:8-9:WARNING:
+return of 0/1 in function 'mt7663_usb_sdio_tx_status_data' with return
+type bool
 
-This change enables HWP interrupt and process HWP interrupts. When
-guaranteed is changed, calls cpufreq_update_policy() so that driver
-callbacks are called to update to new HWP limits. This callback
-is called from a delayed workqueue of 10ms to avoid frequent updates.
+Return statements in functions returning bool should use true/false
+instead of 1/0.
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/cpufreq/intel_pstate.c | 39 ++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index bb4549959b11..0fd2375c1f1e 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -32,6 +32,7 @@
- #include <asm/cpu_device_id.h>
- #include <asm/cpufeature.h>
- #include <asm/intel-family.h>
-+#include "../drivers/thermal/intel/thermal_interrupt.h"
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c b/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c
+index 996d48c..bd2939e 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c
+@@ -169,7 +169,7 @@ bool mt7663_usb_sdio_tx_status_data(struct mt76_dev *mdev, u8 *update)
+ 	mt7615_mac_sta_poll(dev);
+ 	mt7615_mutex_release(dev);
  
- #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
- 
-@@ -219,6 +220,7 @@ struct global_params {
-  * @sched_flags:	Store scheduler flags for possible cross CPU update
-  * @hwp_boost_min:	Last HWP boosted min performance
-  * @suspended:		Whether or not the driver has been suspended.
-+ * @hwp_notify_work:	workqueue for HWP notifications.
-  *
-  * This structure stores per CPU instance data for all CPUs.
-  */
-@@ -257,6 +259,7 @@ struct cpudata {
- 	unsigned int sched_flags;
- 	u32 hwp_boost_min;
- 	bool suspended;
-+	struct delayed_work hwp_notify_work;
- };
- 
- static struct cpudata **all_cpu_data;
-@@ -1625,6 +1628,40 @@ static void intel_pstate_sysfs_hide_hwp_dynamic_boost(void)
- 
- /************************** sysfs end ************************/
- 
-+static void intel_pstate_notify_work(struct work_struct *work)
-+{
-+	mutex_lock(&intel_pstate_driver_lock);
-+	cpufreq_update_policy(smp_processor_id());
-+	wrmsrl(MSR_HWP_STATUS, 0);
-+	mutex_unlock(&intel_pstate_driver_lock);
-+}
-+
-+void notify_hwp_interrupt(void)
-+{
-+	unsigned int this_cpu = smp_processor_id();
-+	struct cpudata *cpudata;
-+	u64 value;
-+
-+	if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
-+		return;
-+
-+	rdmsrl(MSR_HWP_STATUS, value);
-+	if (!(value & 0x01))
-+		return;
-+
-+	cpudata = all_cpu_data[this_cpu];
-+	schedule_delayed_work_on(this_cpu, &cpudata->hwp_notify_work, msecs_to_jiffies(10));
-+}
-+
-+static void intel_pstate_enable_hwp_interrupt(struct cpudata *cpudata)
-+{
-+	/* Enable HWP notification interrupt for guaranteed performance change */
-+	if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY)) {
-+		INIT_DELAYED_WORK(&cpudata->hwp_notify_work, intel_pstate_notify_work);
-+		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x01);
-+	}
-+}
-+
- static void intel_pstate_hwp_enable(struct cpudata *cpudata)
- {
- 	/* First disable HWP notification interrupt as we don't process them */
-@@ -1634,6 +1671,8 @@ static void intel_pstate_hwp_enable(struct cpudata *cpudata)
- 	wrmsrl_on_cpu(cpudata->cpu, MSR_PM_ENABLE, 0x1);
- 	if (cpudata->epp_default == -EINVAL)
- 		cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
-+
-+	intel_pstate_enable_hwp_interrupt(cpudata);
+-	return 0;
++	return false;
  }
+ EXPORT_SYMBOL_GPL(mt7663_usb_sdio_tx_status_data);
  
- static int atom_get_min_pstate(void)
 -- 
-2.31.1
+1.8.3.1
+
 
