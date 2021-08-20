@@ -2,185 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5463F32EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849893F3371
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbhHTSTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:19:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56557 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230089AbhHTSTA (ORCPT
+        id S238070AbhHTSXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238427AbhHTSWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:19:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629483501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M+jpjQUhasKw0PtDj/cc6cwfjkOlLOS+fOpZTWVMu/Y=;
-        b=cUIbXo7XQUlr7lwJdN/Ys/IXe+fdSkdgWEenWg7O3UT17/28cFnKG84ILixMCqtQbsEgEi
-        xDh1c3/BAOIaWFhSKX3TDPS8kn5il9cBs6n0Qp5uH8oeAgWng6qta0iLq1XoNrhzZ4fHmf
-        Jfn6OPS86uQnLlqXV0SosSPzZ3NnKpA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-TjXw3AM1OrenIymlLHCEvg-1; Fri, 20 Aug 2021 14:18:20 -0400
-X-MC-Unique: TjXw3AM1OrenIymlLHCEvg-1
-Received: by mail-ej1-f72.google.com with SMTP id e1-20020a170906c001b02905b53c2f6542so4050402ejz.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:18:20 -0700 (PDT)
+        Fri, 20 Aug 2021 14:22:12 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17964C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:20:04 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id k24so9996236pgh.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7SZugGzB7TR5VySNRS6URQGS59lwA9fcmlILv63kGBI=;
+        b=F2sCL7Rdz7cBJh1bIoZuISN531PwqNvV60A41LaDK6LuAjncmOsT+ZEcOF4vSAGdPF
+         w7YN9k5YmenYEIr4YmfmXKK8BzD0k3ep2OCocmgqxztIi6DsPafSy9TU+rmOPnuZIj/k
+         KKqVnayZ+fO+DdfZuhuPzHXoYPI62uLWyff03ffEtUssSGGsfHYcqZJj1XxU81dDCr9u
+         Z5KHmn8MB0mmQX9dK499+Aho41frvlT3ciUaP/pbDwRdbcUrtChBL196NCPKbHP7Qkkv
+         ez6e7Mezw6lc27isSzrqnNECAICsKO+kQFLNQFFKlc/rkKusO46M9g7eVToqSujOuawE
+         r4/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M+jpjQUhasKw0PtDj/cc6cwfjkOlLOS+fOpZTWVMu/Y=;
-        b=nYReou4U5ZRAGaUJnPzkqtDgvhiSYYYOQiNw9ow+lFLvQdGxesgZ+Ae+VuwEwTIloW
-         xCK9/J83SxelDJ7gQMTpDVHV8nZtDDrKf64N+1k26/AGVn5VObKoClagY20dLSwPvJ72
-         YfYg9odmazlve56edWANbX1HgwhKGEbxrxYgr00vDq6Jej22GsFF9MthGJKnXl5RxS3P
-         KL1VFjNNgZoqNO3iupC0dQHcm0p+isBoRjalad3y3709X8TRlAQaffwdJFUfG4rRWN9k
-         28pYYmrxcqD1nF07VuJeD/RfiZk2d2PI/THvK8rqqm2tkILCQTYPt6h2tcnN13WnT/6W
-         AsoQ==
-X-Gm-Message-State: AOAM533SpwhGijenKMNh3tpn8LFbICsrdWYU+fWBLsPaF4UhrsDEy/bm
-        KBmwQq6nMPPEVyMjIVwpbj1Y3WaU49GUMwkn2Wr0cB0kMq4QsIEA0JJ3ZRXRBqP5hQuvZGLTWSe
-        AMXRZDMhgtdXfTureZ7fJsQyS
-X-Received: by 2002:a17:906:3148:: with SMTP id e8mr22836800eje.240.1629483499604;
-        Fri, 20 Aug 2021 11:18:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2VuqrdaqdEg6hZrIrqA2Updrhnh6IapX2I1XQzoEsUKRXy/2IR0eTsODRhSAc19uzeCZj+Q==
-X-Received: by 2002:a17:906:3148:: with SMTP id e8mr22836787eje.240.1629483499437;
-        Fri, 20 Aug 2021 11:18:19 -0700 (PDT)
-Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
-        by smtp.gmail.com with ESMTPSA id g29sm4089077edf.31.2021.08.20.11.18.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 11:18:18 -0700 (PDT)
-Subject: Re: [PATCH v5 07/20] platform/x86: pmc_atom: Move to intel
- sub-directory
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Dell.Client.Kernel@dell.com
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>
-References: <20210820110458.73018-1-andriy.shevchenko@linux.intel.com>
- <20210820110458.73018-8-andriy.shevchenko@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ccae9fcb-fa2f-5c44-1241-9f107b358103@redhat.com>
-Date:   Fri, 20 Aug 2021 20:18:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7SZugGzB7TR5VySNRS6URQGS59lwA9fcmlILv63kGBI=;
+        b=lGY9A15cVJZlX78SBCHV7WgOueRrKW0+VqGOFWpR7R7zmb3L+g5iWHL5wwQ2p9t/2i
+         bOJKoi1HpZ/+lP7heM3kO2RKI20ye3DancXg8kw8CBTNd+BcAwGSoWOIbsT2mgWSpTS1
+         OhBTeqEmMJEVAjEGTe59EdHWtZIUAeAe5H71cvmLijoetVddPfJmliFJoucUg0xG5iaX
+         gXxJ8iEmYOLSTNcajkebmbY5Tp50U85y3gNtNZKPELlBV6XOugb5EUcEbavbBrV3siba
+         5Ht1sYxLMIGPiZMi4DDb6eZWmU8/ERAumzDoCAHQwGObZ8QoIiZ+wkZMemT/mzZn0fXr
+         1LOw==
+X-Gm-Message-State: AOAM533raWDGJqeZdF1s+T6lAkEbSKMw/kEeI5sqSDv333XkgTR/z19c
+        FWv58ZRVDG2sdMQIR8CCiYIBnA==
+X-Google-Smtp-Source: ABdhPJycG83cw8pIVOLQr7I38xcrmgGbkeCfFPDyWi+cjyIOcIXevzh4HKk/09eVVUnJ94/R1W8bBw==
+X-Received: by 2002:a62:584:0:b029:32e:3b57:a1c6 with SMTP id 126-20020a6205840000b029032e3b57a1c6mr20677481pff.13.1629483603324;
+        Fri, 20 Aug 2021 11:20:03 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id z1sm8387256pfg.18.2021.08.20.11.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 11:20:02 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 18:19:56 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: Optimize kvm_make_vcpus_request_mask() a bit
+Message-ID: <YR/yTDZR29AhKw6M@google.com>
+References: <20210820124354.582222-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210820110458.73018-8-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820124354.582222-1-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/20/21 1:04 PM, Andy Shevchenko wrote:
-> Move Intel Atom PMC driver to intel sub-directory to improve readability.
+On Fri, Aug 20, 2021, Vitaly Kuznetsov wrote:
+> Iterating over set bits in 'vcpu_bitmap' should be faster than going
+> through all vCPUs, especially when just a few bits are set.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-This means that pmc_atom will now not be build if X86_PLATFORM_DRIVERS_INTEL
-is not set (and PCI is enabled). Which will cause missing pmc_atom_read/_write
-symbols in drivers/acpi/acpi_lpss.c. So I have dropped this patch from the
-set, while applying the rest.
-
-Note I'm thinking that we should just remove the whole X86_PLATFORM_DRIVERS_INTEL
-Kconfig option and in the drivers/platform/x86/Makefile replace:
-
-obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)                += intel/
-
-with:
-
-obj-y                                                   += intel/
-
-This will also allows us to fix the scu issue without needing any
-changes to drivers/mfd/Kconfig .
-
-But this can all wait for the 2nd round of renames after 5.15-rc1.
-
-For now I'm moving forward with this v5 series, except with this
-patch dropped.
-
-Regards,
-
-Hans
-
-
-
-
-
-
-
-
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->  drivers/platform/x86/Kconfig                | 5 -----
->  drivers/platform/x86/Makefile               | 1 -
->  drivers/platform/x86/intel/Kconfig          | 5 +++++
->  drivers/platform/x86/intel/Makefile         | 1 +
->  drivers/platform/x86/{ => intel}/pmc_atom.c | 0
->  5 files changed, 6 insertions(+), 6 deletions(-)
->  rename drivers/platform/x86/{ => intel}/pmc_atom.c (100%)
+>  virt/kvm/kvm_main.c | 49 +++++++++++++++++++++++++++++----------------
+>  1 file changed, 32 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index aed7570388ef..e6fb3eb70ee7 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1219,8 +1219,3 @@ config INTEL_TELEMETRY
->  	  this interface for SoC state monitoring.
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 3e67c93ca403..0f873c5ed538 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -257,34 +257,49 @@ static inline bool kvm_kick_many_cpus(const struct cpumask *cpus, bool wait)
+>  	return true;
+>  }
 >  
->  endif # X86_PLATFORM_DEVICES
-> -
-> -config PMC_ATOM
-> -       def_bool y
-> -       depends on PCI
-> -       select COMMON_CLK
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 1668f7360833..de7f45b8e4f6 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -135,4 +135,3 @@ obj-$(CONFIG_INTEL_SCU_IPC_UTIL)	+= intel_scu_ipcutil.o
->  obj-$(CONFIG_INTEL_TELEMETRY)		+= intel_telemetry_core.o \
->  					   intel_telemetry_pltdrv.o \
->  					   intel_telemetry_debugfs.o
-> -obj-$(CONFIG_PMC_ATOM)			+= pmc_atom.o
-> diff --git a/drivers/platform/x86/intel/Kconfig b/drivers/platform/x86/intel/Kconfig
-> index 7de11636904d..c4d74dff3a14 100644
-> --- a/drivers/platform/x86/intel/Kconfig
-> +++ b/drivers/platform/x86/intel/Kconfig
-> @@ -60,4 +60,9 @@ config INTEL_PUNIT_IPC
->  	  This driver provides support for Intel P-Unit Mailbox IPC mechanism,
->  	  which is used to bridge the communications between kernel and P-Unit.
->  
-> +config PMC_ATOM
-> +       def_bool y
-> +       depends on PCI
-> +       select COMMON_CLK
-> +
->  endif # X86_PLATFORM_DRIVERS_INTEL
-> diff --git a/drivers/platform/x86/intel/Makefile b/drivers/platform/x86/intel/Makefile
-> index a1555a1e421d..8595f8b92f40 100644
-> --- a/drivers/platform/x86/intel/Makefile
-> +++ b/drivers/platform/x86/intel/Makefile
-> @@ -19,3 +19,4 @@ intel_mrfld_pwrbtn-y			:= mrfld_pwrbtn.o
->  obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
->  intel_punit_ipc-y			:= punit_ipc.o
->  obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
-> +obj-$(CONFIG_PMC_ATOM)			+= pmc_atom.o
-> diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/intel/pmc_atom.c
-> similarity index 100%
-> rename from drivers/platform/x86/pmc_atom.c
-> rename to drivers/platform/x86/intel/pmc_atom.c
-> 
+> +static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
+> +				  unsigned int req, cpumask_var_t tmp)
+> +{
+> +	int cpu = vcpu->cpu;
 
+This reminds me, syzbot found a data race a while back[*] in kvm_vcpu_kick()
+related to reading vcpu->cpu.  That race is benign, but legitimate.  I believe
+this code has a similar race, and I'm not as confident that it's benign.
+
+If the target vCPU changes vcpu->cpu after it's read by this code, then the IPI
+can sent to the wrong pCPU, e.g. this pCPU gets waylaid by an IRQ and the target
+vCPU is migrated to a new pCPU.
+
+The TL;DR is that the race is benign because the target vCPU is still guaranteed
+to see the request before entering the guest, even if the IPI goes to the wrong
+pCPU.  I believe the same holds true for KVM_REQUEST_WAIT, e.g. if the lockless
+shadow PTE walk gets migrated to a new pCPU just before setting vcpu->mode to
+READING_SHADOW_PAGE_TABLES, this code can use a stale "cpu" for __cpumask_set_cpu().
+The race is benign because the vCPU would have to enter READING_SHADOW_PAGE_TABLES
+_after_ the SPTE modifications were made, as vcpu->cpu can't change while the vCPU
+is reading SPTEs.  The same logic holds true for the case where the vCPU is migrated
+after the call to __cpumask_set_cpu(); the goal is to wait for the vCPU to return to
+OUTSIDE_GUEST_MODE, which is guaranteed if the vCPU is migrated even if this path
+doesn't wait for an ack from the _new_ pCPU.
+
+I'll send patches to fix the races later today, maybe they can be folded into
+v2?  Even though the races are benign, I think they're worth fixing, if only to
+provide an opportunity to document why it's ok to send IPIs to the wrong pCPU.
+
+[*] On an upstream kernel, but I don't think the bug report was posted to LKML.
+
+> +
+> +	kvm_make_request(req, vcpu);
+> +
+> +	if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+> +		return;
+> +
+> +	if (tmp != NULL && cpu != -1 && cpu != raw_smp_processor_id() &&
+
+For large VMs, might be worth keeping get_cpu() in the caller in passing in @me?
+
+> +	    kvm_request_needs_ipi(vcpu, req))
+> +		__cpumask_set_cpu(cpu, tmp);
+> +}
+> +
+>  bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+>  				 struct kvm_vcpu *except,
+>  				 unsigned long *vcpu_bitmap, cpumask_var_t tmp)
+>  {
+> -	int i, cpu, me;
+> +	int i;
+>  	struct kvm_vcpu *vcpu;
+>  	bool called;
+>  
+> -	me = get_cpu();
+> -
+> -	kvm_for_each_vcpu(i, vcpu, kvm) {
+> -		if ((vcpu_bitmap && !test_bit(i, vcpu_bitmap)) ||
+> -		    vcpu == except)
+> -			continue;
+> -
+> -		kvm_make_request(req, vcpu);
+> -		cpu = vcpu->cpu;
+> -
+> -		if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+> -			continue;
+> +	preempt_disable();
+>  
+> -		if (tmp != NULL && cpu != -1 && cpu != me &&
+> -		    kvm_request_needs_ipi(vcpu, req))
+> -			__cpumask_set_cpu(cpu, tmp);
+> +	if (likely(vcpu_bitmap)) {
+
+I don't think this is actually "likely".  kvm_make_all_cpus_request() is by far
+the most common caller and does not pass in a vcpu_bitmap.  Practically speaking
+I highly don't the code organization will matter, but from a documentation
+perspective it's wrong.
+
+> +		for_each_set_bit(i, vcpu_bitmap, KVM_MAX_VCPUS) {
+> +			vcpu = kvm_get_vcpu(kvm, i);
+> +			if (!vcpu || vcpu == except)
+> +				continue;
+> +			kvm_make_vcpu_request(kvm, vcpu, req, tmp);
+> +		}
+> +	} else {
+> +		kvm_for_each_vcpu(i, vcpu, kvm) {
+> +			if (vcpu == except)
+> +				continue;
+> +			kvm_make_vcpu_request(kvm, vcpu, req, tmp);
+> +		}
+>  	}
+>  
+>  	called = kvm_kick_many_cpus(tmp, !!(req & KVM_REQUEST_WAIT));
+> -	put_cpu();
+> +
+> +	preempt_enable();
+>  
+>  	return called;
+>  }
+> -- 
+> 2.31.1
+> 
