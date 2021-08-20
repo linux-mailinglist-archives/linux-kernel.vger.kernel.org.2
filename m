@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38C83F3429
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE02C3F342B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236881AbhHTTAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhHTTAA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:00:00 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC70C061575;
-        Fri, 20 Aug 2021 11:59:22 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so7905190pjl.4;
-        Fri, 20 Aug 2021 11:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=UMgLcGCOIGAExCm8sckl+Lt/uavQl14EGAuUCVTCWy8=;
-        b=gFDrqAlqryS77RGQGNGE7irxi/q3PsUV+9dkWQmYPCAO6HUxVObyLCbfyXaOVcpBjN
-         Q84hh5Q0fsLrreb0F5hmd/rXcaW4CkLBed7+aj2PyWWOAIHyqu6rN7xxf+/s6Kr9mnY/
-         vLG/YPDmt/f2Dwjd6S+r/RxbSDYIYruuiQbKIBEjOJAndLbpm0+OfwVgZ++v/6fyEOEN
-         qInggiO4IlT3NkE3mnlEQ/I5nh5nVoZ8XOc9KGK+ni2tHC3LlBDeXDVx5JTh2GUhklg9
-         2/qMfgGi87l1AqA7mDssiuznvoyADQGpa45YgvB6qrR4MVC8lVbJ46Hl/6gPoW7WHLy3
-         l4IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=UMgLcGCOIGAExCm8sckl+Lt/uavQl14EGAuUCVTCWy8=;
-        b=qx9g2ZhegwLdT1cmeNHvD8eiIoHM+2CrFEb5Ny8hYVpgEp7AyOLLu+JgA6Fa//kRmJ
-         hzJMVIKOBJ5ljWGDZjDmQ6ntr5czqWZiA37ajq1hRkL9cedaloSlDDP2UDZQoGeF47xR
-         mWLRxPa27wDT550dXXx1JK0uGLNo8PN02pYaJ5JLdMEfXTFz8iNDGEU/hSFSNr4C+nZ7
-         KdvaMw/J9C6VncVfAhnBl0kDZXo0VrzXQvh47LB2ps2Plh89YnE+/volTxQ561FBGqD1
-         4cSYwG6oTl4SxZ5q4RrFacqViv8lx9dvfFYA9TPatFFSEVQzaS7S4+mYZKJYGrTYS/nx
-         g7fQ==
-X-Gm-Message-State: AOAM531TGEZ9p4JdFoMWyTb1/1MKvSMBB67vBIw6mtTJGvOyLD6xbnyA
-        uU4uzP/s5WI1cHWTIJpqAFv7z7+uAb6lsWmo3dQ=
-X-Google-Smtp-Source: ABdhPJwTArERq85qlE2hbN0lMc2U+2dPkQuwCoivAw9VvQvAlZeJ2MT4yqJWMN78Zl68NR8WKALuJYcuHzPIEYK6lYo=
-X-Received: by 2002:a17:90a:4d8d:: with SMTP id m13mr5951574pjh.190.1629485961902;
- Fri, 20 Aug 2021 11:59:21 -0700 (PDT)
+        id S236949AbhHTTAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:00:25 -0400
+Received: from mga05.intel.com ([192.55.52.43]:25540 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhHTTAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 15:00:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="302414859"
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="302414859"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 11:59:46 -0700
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="533086069"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 11:59:46 -0700
+Date:   Fri, 20 Aug 2021 11:59:45 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
+        naoya.horiguchi@nec.com, osalvador@suse.de,
+        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
+        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
+References: <20210706190620.1290391-1-tony.luck@intel.com>
+ <20210818002942.1607544-1-tony.luck@intel.com>
+ <20210818002942.1607544-2-tony.luck@intel.com>
+ <YR/m/8PCmCTbogey@zn.tnic>
 MIME-Version: 1.0
-From:   Tech Zhou <zhouinamerica@gmail.com>
-Date:   Fri, 20 Aug 2021 14:59:11 -0400
-Message-ID: <CAJwUSPsYzRpGkCXXHgqPW25w-rSAoNwRPYmUmbGx=VffThWFyA@mail.gmail.com>
-Subject: [PATCH] Fix spelling error in arch/powerpc/kernel/traps.c
-To:     Karan Tilak Kumar <kartilak@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR/m/8PCmCTbogey@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found a spelling error in arch/powerpc/kernel/traps.c. Please let me
-know if you have any concerns / questions. This is my first patch!
+On Fri, Aug 20, 2021 at 07:31:43PM +0200, Borislav Petkov wrote:
+> On Tue, Aug 17, 2021 at 05:29:40PM -0700, Tony Luck wrote:
+> > +	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
+> 
+> "likely"
 
-Signed-off-by: Changjun Zhou <zhouinamerica@gmail.com>
----
- arch/powerpc/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops.
 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index d56254f05e17..7355db219269 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -1522,7 +1522,7 @@ static void do_program_check(struct pt_regs *regs)
-         * SIGILL. The subsequent cases all relate to emulating instructions
-         * which we should only do for userspace. We also do not want to enable
-         * interrupts for kernel faults because that might lead to further
--        * faults, and loose the context of the original exception.
-+        * faults, and lose the context of the original exception.
-         */
-        if (!user_mode(regs))
-                goto sigill;
---
+> 
+> > +	if (count > 10)
+> > +		mce_panic("Too many machine checks while accessing user data", m, msg);
+> 
+> Ok, aren't we too nasty here? Why should we panic the whole box even
+> with 10 MCEs? It is still user memory...
+> 
+> IOW, why not:
+> 
+> 	if (count > 10)
+> 		current->mce_kill_me.func = kill_me_now;
+> 
+> and when we return, that user process dies immediately.
+
+It's the "when we return" part that is the problem here. Logical
+trace looks like:
+
+user-syscall:
+
+	kernel does get_user() or copyin(), hits user poison address
+
+		machine check
+		sees that this was kernel get_user()/copyin() and
+		uses extable to "return" to exception path
+
+	still in kernel, see that get_user() or copyin() failed
+
+	Kernel does another get_user() or copyin() (maybe the first
+	was inside a pagefault_disable() region, and kernel is trying
+	again to see if the error was a fixable page fault. But that
+	wasn't the problem so ...
+
+		machine check
+		sees that this was kernel get_user()/copyin() and
+		uses extable to "return" to exception path
+
+	still in kernel ... but persistently thinks that just trying again
+	might fix it.
+
+		machine check
+		sees that this was kernel get_user()/copyin() and
+		uses extable to "return" to exception path
+
+	still in kernel ... this time for sure! get_user()
+
+		machine check
+		sees that this was kernel get_user()/copyin() and
+		uses extable to "return" to exception path
+
+	still in kernel ... but you may see the pattern get_user()
+
+		machine check
+		sees that this was kernel get_user()/copyin() and
+		uses extable to "return" to exception path
+
+	I'm bored typing this, but the kernel may not ever give up
+
+		machine check
+		sees that this was kernel get_user()/copyin() and
+		uses extable to "return" to exception path
+
+I.e. the kernel doesn't ever get to call current->mce_kill_me.func()
+
+I do have tests that show as many as 4 consecutive machine checks
+before the kernel gives up trying and returns to the user to complete
+recovery.
+
+Maybe the message could be clearer?
+
+	mce_panic("Too many consecutive machine checks in kernel while accessing user data", m, msg);
+
+> 
+> > +	/* Second or later call, make sure page address matches the one from first call */
+> > +	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
+> > +		mce_panic("Machine checks to different user pages", m, msg);
+> 
+> Same question here.
+
+Not quite the same answer ... but similar.  We could in theory handle
+multiple different machine check addresses by turning the "mce_addr"
+field in the task structure into an array and saving each address so
+that when the kernel eventually gives up poking at poison and tries
+to return to user kill_me_maybe() could loop through them and deal
+with each poison page.
+
+I don't think this can happen. Jue Wang suggested that multiple poisoned
+pages passed to a single write(2) syscall might trigger this panic (and
+because of a bug in my earlier version, he managed to trigger this
+"different user pages" panic). But this fixed up version survives the
+"Jue test".
+
+-Tony
