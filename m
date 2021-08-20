@@ -2,190 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4783F32BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB1E3F32C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbhHTSHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:07:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41774 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhHTSHM (ORCPT
+        id S235734AbhHTSHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231757AbhHTSHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:07:12 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DC71320C33D5;
-        Fri, 20 Aug 2021 11:06:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC71320C33D5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1629482793;
-        bh=TawcIDwLw6//Gm4u2yn5lu5a4ZS6+2gDCjGqcHeuimU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K1VJwv5ss64RbWMF/zk8eHP5BO1FsisgU3ah+UtmPELqhKukoR2Ii34ZVG6HnCupa
-         oqeYkEKbI8xJEVM5S3ZCcAS+GfqTVm1a6OOYlmEFbSIF/iBRkffhJ0A59+R5ZjzbvU
-         06Cip3qkCzKVyer71G4vXMb2M4HDoMGhMIMHYOig=
-Received: by mail-pg1-f182.google.com with SMTP id r2so9945051pgl.10;
-        Fri, 20 Aug 2021 11:06:33 -0700 (PDT)
-X-Gm-Message-State: AOAM533VKVF3Rvngcd/hQTsgx9DxfWhgALMm9JMeJEcJX/xt0KKvTQnH
-        gHFWsJNOjcolADHRVn/Q3fyxNWjA3VTMC3iTS8g=
-X-Google-Smtp-Source: ABdhPJzm0hvDUTbm4e2ogi3DtvuLSiqfNULNbRO30kAzAIw1JVV8nb4u6QXIcKWIW++PFI2l/VFJ2Rp1Wx0M9i8WDR8=
-X-Received: by 2002:aa7:9904:0:b0:3e1:a79a:222e with SMTP id
- z4-20020aa79904000000b003e1a79a222emr21030272pff.41.1629482793349; Fri, 20
- Aug 2021 11:06:33 -0700 (PDT)
+        Fri, 20 Aug 2021 14:07:44 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C235C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:07:05 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id bk29so5988475qkb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2P/6ZDosW5/PVcVOFh8CyCIBugd9jmsRIXNI9frVp7k=;
+        b=eKlYoSg3dyAbESo+fqg+WE15YLNT8pnJoLbLlt4p3gPHdJcPfp3zxOG3s4YPxNRYRA
+         wA/+17Kcf4OTu6WSv5rvKqFSNJjVgyZil/Aa+dRjpq1fyJs7xT7HCyWE5Lez19Fctvpn
+         fnt8zYEUB6XDJTwGrbo+cxtaQ8xBfy2lhSw/pUcTUjHq3SYmL42O7NATxxGUxx/p6PSR
+         X9CvVNLLR5FUVuHZUm2uMHxa9qn0/npIpTtFzrf84CoEsU3pVNpAkQHFSKrI4BjqhFYk
+         jKjg6TogdUzt0VlXmNMV8Hk+zLDxDpdka2jmr+B9Uk7If6pBiWAdgmz88s0DbRPoFKJU
+         sMnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2P/6ZDosW5/PVcVOFh8CyCIBugd9jmsRIXNI9frVp7k=;
+        b=S+uATMAdeghSc4ufpFA550JyKczaxBIjcKeSTJk8gk8v2EApff4U0YxrQpD3RsIxuu
+         jgl5O3aacaFYgksxPsxc7roSCd/wQZMwfLCHiC2ZSm31aH1IxNZdRrmCPmuwrrwxgKTS
+         XI6MLBJOvtO20YzShOAnM3qj+UWwJuIjvW0HuG0oFl93/Mod3CMvdDHbGUJPrp3X79aH
+         7wHQLt9cIPwgWBlCxUWWjLekqWyw64mgK3gFNEk2OlyGdLzrn0TXDJEyXSNUf1hg0dEo
+         NCsPa+nnnY9QApR7UTKoQ+U8qdB3a3MDITUjzoOJBd/qNgynooLPy0ROhWxMPaj9juWD
+         7vgg==
+X-Gm-Message-State: AOAM530ZwIuGzImWfQF+wI5KTtQJYLic6PsawNSiV6kgl/6gydwlzRYj
+        4O4XWclVNf5Eu/dM6ebkdwJaq/VJgzkl5seYoYtqxw==
+X-Google-Smtp-Source: ABdhPJy0huyrDFkZklcWqufreDpJu2i+J+NGLsKEiT3nXZbNTjdURslsF8xR7EyStcydsSHXMEetryziZu3Y6KGLCVk=
+X-Received: by 2002:a37:7801:: with SMTP id t1mr10378336qkc.162.1629482824676;
+ Fri, 20 Aug 2021 11:07:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
- <871r71azjw.wl-maz@kernel.org> <YROmOQ+4Kqukgd6z@orome.fritz.box>
- <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com> <87o8a49idp.wl-maz@kernel.org>
- <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com> <20210812121835.405d2e37@linux.microsoft.com>
- <874kbuapod.wl-maz@kernel.org> <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
- <87wnohqty1.wl-maz@kernel.org> <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
- <87fsv4qdzm.wl-maz@kernel.org> <CAFnufp2T75cvDLUx+ZyPQbkaNeY_S1OJ7KTJe=2EK-qXRNkwyw@mail.gmail.com>
- <87mtpcyrdv.wl-maz@kernel.org> <CAFnufp0N2MzaTjF95tx9Q1D33z9f9AAK6UHbhU9rhG1ue_r1ug@mail.gmail.com>
- <87h7fkyqpv.wl-maz@kernel.org> <CAFnufp3HbyeTGhxB33mej4Y4G2T2Yv5swKCx_C41zfc71Kj11A@mail.gmail.com>
- <87fsv4ypfn.wl-maz@kernel.org> <CAFnufp2qFuhMDae20u_dV+aOPfB+zpcEK8D-=8ACE6r4kDn2rw@mail.gmail.com>
-In-Reply-To: <CAFnufp2qFuhMDae20u_dV+aOPfB+zpcEK8D-=8ACE6r4kDn2rw@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 20 Aug 2021 20:05:57 +0200
-X-Gmail-Original-Message-ID: <CAFnufp3SCJLgDz5XS0K36QkPb3TFRP1io-9AdRsQp6vkvVWJSw@mail.gmail.com>
-Message-ID: <CAFnufp3SCJLgDz5XS0K36QkPb3TFRP1io-9AdRsQp6vkvVWJSw@mail.gmail.com>
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org> <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
+ <YR/gQ0K9MjddBVwY@ripper>
+In-Reply-To: <YR/gQ0K9MjddBVwY@ripper>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 20 Aug 2021 21:06:53 +0300
+Message-ID: <CAA8EJpo7R4azxybBmKC4uzAm_dvP4tpm4g9VoDMTdw6XZCxzTg@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/15] create power sequencing subsystem
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Will Deacon <will@kernel.org>
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        MSM <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:56 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+On Fri, 20 Aug 2021 at 20:01, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
 >
-> On Fri, Aug 20, 2021 at 7:51 PM Marc Zyngier <maz@kernel.org> wrote:
+> On Fri 20 Aug 06:08 PDT 2021, Dmitry Baryshkov wrote:
+>
+> > Hi,
 > >
-> > On Fri, 20 Aug 2021 18:35:45 +0100,
-> > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > On Thu, 19 Aug 2021 at 18:23, Marcel Holtmann <marcel@holtmann.org> wrote:
+> > > > This is an RFC of the proposed power sequencer subsystem. This is a
+> > > > generification of the MMC pwrseq code. The subsystem tries to abstract
+> > > > the idea of complex power-up/power-down/reset of the devices.
+> > > >
+> > > > The primary set of devices that promted me to create this patchset is
+> > > > the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+> > > > interfaces (older generations) or on serial+PCIe (newer generations).
+> > > > They require a set of external voltage regulators to be powered on and
+> > > > (some of them) have separate WiFi and Bluetooth enable GPIOs.
+> > > >
+> > > > This patchset being an RFC tries to demonstrate the approach, design and
+> > > > usage of the pwrseq subsystem. Following issues are present in the RFC
+> > > > at this moment but will be fixed later if the overall approach would be
+> > > > viewed as acceptable:
+> > > >
+> > > > - No documentation
+> > > >   While the code tries to be self-documenting proper documentation
+> > > >   would be required.
+> > > >
+> > > > - Minimal device tree bindings changes
+> > > >   There are no proper updates for the DT bindings (thus neither Rob
+> > > >   Herring nor devicetree are included in the To/Cc lists). The dt
+> > > >   schema changes would be a part of v1.
+> > > >
+> > > > - Lack of proper PCIe integration
+> > > >   At this moment support for PCIe is hacked up to be able to test the
+> > > >   PCIe part of qca6390. Proper PCIe support would require automatically
+> > > >   powering up the devices before the scan basing on the proper device
+> > > >   structure in the device tree.
+> > > >
+> > > > ----------------------------------------------------------------
+> > > > Dmitry Baryshkov (15):
+> > > >      power: add power sequencer subsystem
+> > > >      pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
+> > > >      mmc: core: switch to new pwrseq subsystem
+> > > >      ath10k: add support for pwrseq sequencing
+> > > >      Bluetooth: hci_qca: merge qca_power into qca_serdev
+> > > >      Bluetooth: hci_qca: merge init paths
+> > > >      Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
+> > > >      Bluetooth: hci_qca: futher rework of power on/off handling
+> > > >      Bluetooth: hci_qca: add support for pwrseq
 > > >
-> > > On Fri, Aug 20, 2021 at 7:24 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > On Fri, 20 Aug 2021 18:14:30 +0100,
-> > > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > > > >
-> > > > > On Fri, Aug 20, 2021 at 7:09 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > >
-> > > > > > On Fri, 20 Aug 2021 17:38:14 +0100,
-> > > > > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, Aug 20, 2021 at 6:26 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > On Fri, 20 Aug 2021 11:37:03 +0100,
-> > > > > > > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Thu, Aug 19, 2021 at 6:29 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > [...]
-> > > > > > > >
-> > > > > > > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > > > > > > > > index fcdb1d20389b..244aa6579ef4 100644
-> > > > > > > > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > > > > > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > > > > > > > > @@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
-> > > > > > > > > >         if (stmmac_xdp_is_enabled(priv))
-> > > > > > > > > >                 return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
-> > > > > > > > > >
-> > > > > > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > > > > > > > > > +       return 8 + NET_IP_ALIGN;
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
-> > > > > > > > > >
-> > > > > > > > > > I don't see the system corrupting packets anymore. Is that exactly
-> > > > > > > > > > what you had in mind? This really seems to point to a basic buffer
-> > > > > > > > > > overflow.
-> > > > > > > >
-> > > > > > > > [...]
-> > > > > > > >
-> > > > > > > > > Sorry, I meant something like:
-> > > > > > > > >
-> > > > > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > > > > > > > > +       return 8;
-> > > > > > > > >
-> > > > > > > > > I had some hardware which DMA fails if the receive buffer was not word
-> > > > > > > > > aligned, but this seems not the case, as 8 + NET_IP_ALIGN = 10, and
-> > > > > > > > > it's not aligned too.
-> > > > > > > >
-> > > > > > > > No error in that case either, as expected. Given that NET_SKB_PAD is
-> > > > > > > > likely to expand to 64, it is likely a DMA buffer overflow which
-> > > > > > > > probably only triggers for large-ish packets.
-> > > > > > > >
-> > > > > > > > Now, we're almost at -rc7, and we don't have a solution in sight.
-> > > > > > > >
-> > > > > > > > Can we please revert this until we have an understanding of what is
-> > > > > > > > happening? I'll hopefully have more cycles to work on the issue once
-> > > > > > > > 5.14 is out, and hopefully the maintainers of this driver can chime in
-> > > > > > > > (they have been pretty quiet so far).
-> > > > > > > >
-> > > > > > > > Thanks,
-> > > > > > > >
-> > > > > > > >         M.
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Without deviation from the norm, progress is not possible.
-> > > > > > >
-> > > > > > > Last try, what about adding only NET_IP_ALIGN and leaving NET_SKB_PAD?
-> > > > > > >
-> > > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > > > > > > +       return NET_IP_ALIGN;
-> > > > > > >
-> > > > > > > I think that alloc_skb adds another NET_SKB_PAD anyway.
-> > > > > >
-> > > > > > I don't see any packet corruption with this. However, this doesn't
-> > > > > > prove that this is correct either. What was the rational for adding
-> > > > > > NET_SKB_PAD the first place?
-> > > > > >
-> > > > >
-> > > > > I think it's wrong. The original offset was 0, and to align it to the
-> > > > > boundary we need to add just NET_IP_ALIGN, which is two.
-> > > > > NET_SKB_PAD is a much bigger value, (I think 64), which is used to
-> > > > > reserve space to prepend an header, e.g. with tunnels.
-> > > >
-> > > > How about the other adjustments that Eric mentioned regarding the size
-> > > > of the buffer? Aren't they required?
-> > > >
-> > >
-> > > I guess that if stmmac_rx_buf1_len() needed such adjustment, it would
-> > > be already broken when XDP is in use.
-> > > When you use XDP, stmmac_rx_offset() adds a pretty big headroom of 256
-> > > byte, which would easily trigger an overflow if not accounted.
-> > > Did you try attaching a simple XDP program on a stock 5.13 kernel?
+> > > any chance you can try to abandon patching hci_qca. The serdev support in hci_uart is rather hacking into old line discipline code and it is not aging well. It is really becoming a mess.
 > >
-> > Yes, as mentioned in [1], to which you replied...
-> >
-> >         M.
-> >
-> > [1] https://lore.kernel.org/r/87wnohqty1.wl-maz@kernel.org
-> >
+> > I wanted to stay away from rewriting the BT code. But... New driver
+> > would have a bonus point that I don't have to be compatible with old
+> > bindings.
 >
-> Great.
-> So I doubt that the adjustment is needed.
-> Does it work with all the frame size?
->
+> It would be preferable if this was a implementation-only change and that
+> we kept the existing binding and existing dtb continued to work.
 
-Last check, are you sure that the bpf program was loaded in the driver
-and not as generic XDP?
-You can force it as native with "xdpdrv":
-
-ip link set eth xdpdrv object kernel_passall.o
+This would require setting up the pwrseq from within the bt driver. I
+did not have that in mind. However that'd ease the bt code, since we
+won't have to handle the fallback/back-compatibility. Let me think
+about it.
 
 -- 
-per aspera ad upstream
+With best wishes
+Dmitry
