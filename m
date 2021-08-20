@@ -2,104 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099363F3586
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D053F358A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240760AbhHTUsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:48:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36230 "EHLO mail.kernel.org"
+        id S240150AbhHTUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:48:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238656AbhHTUsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:48:22 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3673611C4;
-        Fri, 20 Aug 2021 20:47:43 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1mHBQU-004qQr-QH; Fri, 20 Aug 2021 16:47:42 -0400
-Message-ID: <20210820204742.653288346@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Fri, 20 Aug 2021 16:46:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v9 6/6] selftests/ftrace: Add selftest for testing duplicate eprobes and
- kprobes
-References: <20210820204644.546662591@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S240455AbhHTUst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 16:48:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3DBFE61042;
+        Fri, 20 Aug 2021 20:48:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629492491;
+        bh=ake4mSneljk4QfLbd6tt28+4ImksICl9mydvqplJURQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=QLRR2qn3YUyzob1V02f9c83cSWxSz/FSrslb3p3hprkuFOGMLuUfuHiZ4jSu63PPc
+         iaOs2N6pGQvmr9Cmtxc1HRLzudSHItNGLPpVSm0HHYJvTuxEWlXYPIgLMjSMtHLwp1
+         CMXq+YlSfy+pWYL93E3XO/KXXoBzuBv4LgsZ5HEioR9u9roI6aDHnfGPWr3eYOzGD+
+         oBwm1LSTXl0pX8PwMX5V3n/Y05ibVxJ1RLgL+3fxbfAQOLBQsA6dkQ6F93a/BqvIaX
+         7/U6Ld9R6zoqGuA718fYpPmNGd63SzQlj8mdNQJwsveeVcksFjbF5jDPdYsWeTY/Of
+         3nZnSJwOYghfw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 249B460A6B;
+        Fri, 20 Aug 2021 20:48:11 +0000 (UTC)
+Subject: Re: [GIT PULL] Power management fixes for v5.14-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAJZ5v0j7hmSZObB5Aptr=9z4LbbazwzWy7UK6KCjSp_1C8QCOQ@mail.gmail.com>
+References: <CAJZ5v0j7hmSZObB5Aptr=9z4LbbazwzWy7UK6KCjSp_1C8QCOQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0j7hmSZObB5Aptr=9z4LbbazwzWy7UK6KCjSp_1C8QCOQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.14-rc7
+X-PR-Tracked-Commit-Id: f2963c7ec7cc337ca286271f3111b1ed3ad5f023
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cae68764583bab180c1ded681dea8c16dda87670
+Message-Id: <162949249108.8168.17417012848542602704.pr-tracker-bot@kernel.org>
+Date:   Fri, 20 Aug 2021 20:48:11 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+The pull request you sent on Fri, 20 Aug 2021 21:34:48 +0200:
 
-Add a selftest that makes sure that eprobes and kprobes can not be created
-with the same group and name as existing events.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.14-rc7
 
-Link: https://lore.kernel.org/linux-kselftest/20210819152825.715290342@goodmis.org/
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cae68764583bab180c1ded681dea8c16dda87670
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- .../ftrace/test.d/dynevent/test_duplicates.tc | 38 +++++++++++++++++++
- 1 file changed, 38 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc
+Thank you!
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc b/tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc
-new file mode 100644
-index 000000000000..db522577ff78
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/test_duplicates.tc
-@@ -0,0 +1,38 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: Generic dynamic event - check if duplicate events are caught
-+# requires: dynamic_events "e[:[<group>/]<event>] <attached-group>.<attached-event> [<args>]":README
-+
-+echo 0 > events/enable
-+
-+HAVE_KPROBES=0
-+
-+if [ -f kprobe_events ]; then
-+	HAVE_KPROBES=1
-+fi
-+
-+clear_dynamic_events
-+
-+# first create dynamic events for eprobes and kprobes.
-+
-+echo 'e:egroup/eevent syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+
-+# Test eprobe for same eprobe, existing kprobe and existing event
-+! echo 'e:egroup/eevent syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+! echo 'e:syscalls/sys_enter_open syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+
-+if [ $HAVE_KPROBES -eq 1 ]; then
-+    echo 'p:kgroup/kevent vfs_open file=+0($arg2)' >> dynamic_events
-+    ! echo 'e:kgroup/kevent syscalls/sys_enter_openat file=+0($filename):ustring' >> dynamic_events
-+
-+# Test kprobe for same kprobe, existing eprobe and existing event
-+    ! echo 'p:kgroup/kevent vfs_open file=+0($arg2)' >> dynamic_events
-+    ! echo 'p:egroup/eevent vfs_open file=+0($arg2)' >> dynamic_events
-+    ! echo 'p:syscalls/sys_enter_open vfs_open file=+0($arg2)' >> dynamic_events
-+
-+    echo '-:kgroup/kevent' >> dynamic_events
-+fi
-+
-+echo '-:egroup/eevent' >> dynamic_events
-+
-+clear_trace
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
