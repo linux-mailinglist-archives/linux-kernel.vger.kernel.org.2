@@ -2,74 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E4E3F2A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3531E3F2A40
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239086AbhHTKlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237925AbhHTKlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:41:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF466056C;
-        Fri, 20 Aug 2021 10:41:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629456076;
-        bh=j9scAOD9ml/UjU+E7F1nVCcyussEtA5A5JvgyeOg91I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b6qBWNapTru/r/hZvx1kh/qOf/LUCLhCu+jyhg6U+6/bwDsZbjR7nT9h6Tr8q/8DK
-         QbC4uy2mDwgJl9FJ1RI8PM7U1FwCCV1ee+XecftAd0Py2JnLGfmOUfe3sKDM0EQUMq
-         BXIYkgvwg1xwrgxyq6FIty9wQ07yVCVpsNeppcXLMFh+fv0loDJP3a0XpOxxd5myz7
-         lkH0LQ7DMRmXlG9sgXfzvC5Js4emGsgzmYnLleREtLbix9RHlkS6UR22T6LNDO9DVP
-         PPzp2WriBpjMxtMe+MyGGWgtLf9xxSwqfEWQBFQGHUo/vwxG03U5u+bdKuudswtz+j
-         Lw621ZrsPzhvw==
-Date:   Fri, 20 Aug 2021 11:41:11 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>, joro@8bytes.org
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, vdumpa@nvidia.com
-Subject: Re: [PATCH -next] iommu/arm-smmu: Fix missing unlock on error in
- arm_smmu_device_group()
-Message-ID: <20210820104111.GC17267@willie-the-truck>
-References: <20210820074949.1946576-1-yangyingliang@huawei.com>
+        id S236038AbhHTKn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:43:57 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34267 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhHTKn5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:43:57 -0400
+Received: (Authenticated sender: hadess@hadess.net)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 985231BF20A;
+        Fri, 20 Aug 2021 10:43:17 +0000 (UTC)
+Message-ID: <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
+Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Luke Jones <luke@ljones.dev>
+Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+        platform-driver-x86@vger.kernel.org
+Date:   Fri, 20 Aug 2021 12:43:17 +0200
+In-Reply-To: <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
+References: <20210820095726.14131-1-luke@ljones.dev>
+         <20210820095726.14131-2-luke@ljones.dev>
+         <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
+         <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820074949.1946576-1-yangyingliang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:49:49PM +0800, Yang Yingliang wrote:
-> Add the missing unlock before return from function arm_smmu_device_group()
-> in the error handling case.
+On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
+> > Am I going to get bug reports from Asus users that will complain
+> > that
+> > power-profiles-daemon doesn't work correctly, where I will have to
+> > wearily ask if they're using an Asus Rog laptop?
 > 
-> Fixes: b1a1347912a7 ("iommu/arm-smmu: Fix race condition during iommu_group creation")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index 73893180ec7e..4bc75c4ce402 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -1478,8 +1478,10 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
->  	mutex_lock(&smmu->stream_map_mutex);
->  	for_each_cfg_sme(cfg, fwspec, i, idx) {
->  		if (group && smmu->s2crs[idx].group &&
-> -		    group != smmu->s2crs[idx].group)
-> +		    group != smmu->s2crs[idx].group) {
-> +			mutex_unlock(&smmu->stream_map_mutex);
->  			return ERR_PTR(-EINVAL);
-> +		}
+> No. Definitely not. The changes to fan curves per-profile need to be 
+> explicitly enabled and set. So a new user will be unaware that this 
+> control exists (until they look for it) and their laptop will behave 
+> exactly as default.
 
-Urgh, I should really have spotted that in review. Thanks:
+"The user will need to change the fan curves manually so will
+definitely remember to mention it in bug reports" is a very different
+thing to "the user can't change the fan curves to be nonsensical and
+mean opposite things".
 
-Acked-by: Will Deacon <will@kernel.org>
+I can assure you that I will eventually get bug reports from "power
+users" who break their setup and wonder why things don't work properly,
+without ever mentioning the changes they made changes to the fan
+curves, or anything else they might have changed.
 
-Joerg -- please can you throw this on top?
-
-Will
