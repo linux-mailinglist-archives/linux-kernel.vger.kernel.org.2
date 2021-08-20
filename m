@@ -2,175 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B093F2BDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3074F3F2BDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240341AbhHTMTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
+        id S240423AbhHTMTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237921AbhHTMTn (ORCPT
+        with ESMTP id S240374AbhHTMTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:19:43 -0400
+        Fri, 20 Aug 2021 08:19:46 -0400
 Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE728C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:19:05 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t1so8978521pgv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:19:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72D6C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:19:08 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o2so8976457pgr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=4TF6dwsHEO54EutbZCRUeKRsrDNSjfQUcDbGAPwBh9c=;
-        b=O47wPizb0Ete1NPtPJ2xBUhw37KmMl7CLzYQh+mvZ8Vc8ambrU7yGio+vy9QVk44zw
-         YKwPVdn/BffgKehsIhA/Z37GHVVdeu7v8ioIaQnCOULLyqktM3s4iKayXOZQZUgWWVHj
-         KCJ/X4d7H1qwX8hkbEXTOC/9sZkjSCWmhbIh+K+Q1+lbLzesi7UJxB4QiS+dU4OrL+Ak
-         9fMhuel5Q/qw7VbMdY2mYVo7pTeJQKBUNQZsxNfJWMIPPL12GNPlIfbN6Pyacwtm5wtH
-         mhVwqwbUVVQSecWf/IgMF3L2Wi4AhMTgUoz89b61cgSqxSWmN5GPXV6NXd4mdaDSSvEV
-         MfCQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=4IoaSoz+yhJYow9blF8c4/D4fnFjBG0C58GGMCAZVyA=;
+        b=XEpva0fCfpZVjUpNEhel1OjQ4Q5HHmESW9uNKEQS39Dj97QzXNC4viA8YHXferFo2h
+         S4g4euG6upmzEjBE/zqCBg5oFy4v4wSe+z34u1LTzgFRqfuFHFHWTiYItHCiylj4Oei0
+         CSGwiswoJnQOM9G2qTIVbfbquFogPh3nQkleYqj7yJGFost3bBPshhwQ9WNF8YnB8YN9
+         zLswvwrqiGD/J77RdKsm3wBEBaxVxmzf3hw55tuh8X+3z1B+j2ilwFEjg0LCxjv2wiQ1
+         NUitY0RA2kEJurO18YKRk8XWrTQuGZ+mVFKk05GaV0lXv7d1289temgNTGHR+VtELbwB
+         x0hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=4TF6dwsHEO54EutbZCRUeKRsrDNSjfQUcDbGAPwBh9c=;
-        b=kI7hpn3giwY16hKwCE13SD2nR0E+coscK6HB7tYPVj7ZVOgTpjiNdjeynK2Y5QSVRQ
-         1udAOcqSuvOXwD2TTLKnLVpHX284bKLCcTWFNPMzw5////Q5axS7fyNrrdd34YP4dE4m
-         DCL/3GVV8ZQXQB2Qzu/vikmkOxQqtj+7HuZyMNAEisUImTk+AliQTOpLvH5WUcciH5sA
-         tqBU8f7hjmqTvMIhUkxgmsil3wlSBpAK65REa7ZBlagNJ/N9XxIENCRT5UpJtmmnmJWA
-         xV6jd9yJlGx6CkugrCxJvwkESfgVVzbBPr42YIReQfOVetRGPNooaRGcukXlZe7J02ji
-         QPdw==
-X-Gm-Message-State: AOAM531ukSsomGkGPV4OI1DBpxEHyzmVo8bwMDZyA+StF2EuYS6w48xY
-        Z3nyxY4tKBvim+GnlWy5fas=
-X-Google-Smtp-Source: ABdhPJxzNnjCQyH7VjOUYWs5C923HXnDVd8O98Jqb728NJ0R/xWlsHO7b0ZI/xPVCUTauguhSZgzVA==
-X-Received: by 2002:aa7:9115:0:b029:359:69db:bc89 with SMTP id 21-20020aa791150000b029035969dbbc89mr19465662pfh.32.1629461945319;
-        Fri, 20 Aug 2021 05:19:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=4IoaSoz+yhJYow9blF8c4/D4fnFjBG0C58GGMCAZVyA=;
+        b=FEWC3cqj1PrrC+WD433akh3p9Xa0bQHYpGRLv5l2Ex1sRRj4en4m2I/nrfpPECFyZp
+         SHbHccXi4ujw2bo2VN0FdGgktL4zEMcFuD+oCgd/rY2yjUoG2ZXc54Y8xB7vzdIW3Yii
+         JPa+ELjGmeEbD51ZP7n5p6mxqY7no5V4HooL8xjaACnE1ZciVUqZB471+uEwFWnHvaN1
+         axpk/S7Fj48KUYl1t8N504Snt+Wj1FQi3Iz7nC4LfQXJYnXQmeAXraM0KHoOifT8m9aJ
+         f9A59VGvqETs+FOh1EkbxFJQNmWU9ThvpRJYB64JzK6NPE83Sayn2jqcjC9rc3CAAzrf
+         f0Cw==
+X-Gm-Message-State: AOAM533h+yuDQ39GqQz0JWorSKcEckISpCCz5jDP9kMkd3OMaFIo+3fH
+        gWNkfiKeTKO4Hopbxc5g/ZI=
+X-Google-Smtp-Source: ABdhPJzecxiDTdjvs5d08yBsjSP3L8O0g2Gs81byx7rgg3KfPbvWF5HRX1lcYHL15GAbxvtDxZwyIw==
+X-Received: by 2002:a62:5f07:0:b0:3e2:7556:95a0 with SMTP id t7-20020a625f07000000b003e2755695a0mr19159896pfb.55.1629461948555;
+        Fri, 20 Aug 2021 05:19:08 -0700 (PDT)
 Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id t18sm6629554pfg.111.2021.08.20.05.19.03
+        by smtp.gmail.com with ESMTPSA id t18sm6629554pfg.111.2021.08.20.05.19.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 20 Aug 2021 05:19:05 -0700 (PDT)
+        Fri, 20 Aug 2021 05:19:08 -0700 (PDT)
 From:   Zhenguo Zhao <zhenguo6858@gmail.com>
 To:     nianfu.bai@unisoc.com, gregkh@linuxfoundation.org,
         jirislaby@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] tty: n_gsm: Add some instructions and code for requester
-Date:   Fri, 20 Aug 2021 20:17:45 +0800
-Message-Id: <1629461872-26965-1-git-send-email-zhenguo6858@gmail.com>
+Subject: [PATCH 2/8] tty: n_gsm: Modify cr bit value when config requester
+Date:   Fri, 20 Aug 2021 20:17:46 +0800
+Message-Id: <1629461872-26965-2-git-send-email-zhenguo6858@gmail.com>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1629461872-26965-1-git-send-email-zhenguo6858@gmail.com>
+References: <1629461872-26965-1-git-send-email-zhenguo6858@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 
-The gsm driver can configure initiator or requester by parameter
-initiator,but the config code and using are different ,the doc has
-initiator instructions only,it should be add instructions for requester.
+When n_gsm config "initiator=0",as requester,gsmld will receive dlci
+SABM and DISC control command frame,the CR bit value should be 1.
+
+If cr == 0,it will goto invalid,and it can't send UA response
+frame and open requster dlci.
+
+        case SABM|PF:
+-               if (cr == 0)
++               if (cr == 0) {
++                       printk("gsm_queue invalid\n");
+                        goto invalid;
++                       }
+
+Example,gsmld receive dlc0 SABM command frame:f9 03 3f 01 1c f9
+but gsmld goto invalid.
+
+Kernel test log:
+[  101.794705] c0 gsmld_receive: 00000000: f9 03 3f 01 1c f9
+[  101.803341] c0 <-- 0) C: SABM(P)
+[  101.811371] c0 gsm_queue invalid
 
 Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 ---
- Documentation/driver-api/serial/n_gsm.rst | 71 +++++++++++++++++++++++++++----
- 1 file changed, 62 insertions(+), 9 deletions(-)
+ drivers/tty/n_gsm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/driver-api/serial/n_gsm.rst b/Documentation/driver-api/serial/n_gsm.rst
-index 87dfcd5..8fe723a 100644
---- a/Documentation/driver-api/serial/n_gsm.rst
-+++ b/Documentation/driver-api/serial/n_gsm.rst
-@@ -12,13 +12,16 @@ modems connected to a physical serial port.
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 5fea02c..becca2c 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -1779,7 +1779,7 @@ static void gsm_queue(struct gsm_mux *gsm)
  
- How to use it
- -------------
--1. initialize the modem in 0710 mux mode (usually AT+CMUX= command) through
--   its serial port. Depending on the modem used, you can pass more or less
--   parameters to this command,
--2. switch the serial line to using the n_gsm line discipline by using
--   TIOCSETD ioctl,
--3. configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl,
--4. obtain base gsmtty number for the used serial port,
-+1. config initiator
-+^^^^^^^^^^^^^^^^^^^^^
-+
-+1.1 initialize the modem in 0710 mux mode (usually AT+CMUX= command) through
-+    its serial port. Depending on the modem used, you can pass more or less
-+    parameters to this command.
-+1.2 switch the serial line to using the n_gsm line discipline by using
-+    TIOCSETD ioctl.
-+1.3 configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl.
-+1.4 obtain base gsmtty number for the used serial port.
- 
- Major parts of the initialization program :
- (a good starting point is util-linux-ng/sys-utils/ldattach.c)::
-@@ -70,14 +73,14 @@ Major parts of the initialization program :
- 	daemon(0,0);
- 	pause();
- 
--5. use these devices as plain serial ports.
-+1.5 use these devices as plain serial ports.
- 
-    for example, it's possible:
- 
-    - and to use gnokii to send / receive SMS on ttygsm1
-    - to use ppp to establish a datalink on ttygsm2
- 
--6. first close all virtual ports before closing the physical port.
-+1.6 first close all virtual ports before closing the physical port.
- 
-    Note that after closing the physical port the modem is still in multiplexing
-    mode. This may prevent a successful re-opening of the port later. To avoid
-@@ -87,6 +90,56 @@ Major parts of the initialization program :
- 
-       0xf9, 0x03, 0xef, 0x03, 0xc3, 0x16, 0xf9.
- 
-+2. config requester
-+^^^^^^^^^^^^^^^^^^^^^
-+
-+2.1 receive string "AT+CMUX= command" through its serial port,initialize
-+    mux mode config
-+2.2 switch the serial line to using the n_gsm line discipline by using
-+    TIOCSETD ioctl.
-+2.3 configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl.
-+2.4 obtain base gsmtty number for the used serial port,
-+
-+  #include <stdio.h>
-+  #include <stdint.h>
-+  #include <linux/gsmmux.h>
-+  #include <linux/tty.h>
-+  #define DEFAULT_SPEED	B115200
-+  #define SERIAL_PORT	/dev/ttyS0
-+
-+	int ldisc = N_GSM0710;
-+	struct gsm_config c;
-+	struct termios configuration;
-+	uint32_t first;
-+
-+	/* open the serial port */
-+	fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
-+
-+	/* configure the serial port : speed, flow control ... */
-+
-+	/* get serial data and check "AT+CMUX=command" parameter ... */
-+
-+	/* use n_gsm line discipline */
-+	ioctl(fd, TIOCSETD, &ldisc);
-+
-+	/* get n_gsm configuration */
-+	ioctl(fd, GSMIOC_GETCONF, &c);
-+	/* we are requester and need encoding 0 (basic) */
-+	c.initiator = 0;
-+	c.encapsulation = 0;
-+	/* our modem defaults to a maximum size of 127 bytes */
-+	c.mru = 127;
-+	c.mtu = 127;
-+	/* set the new configuration */
-+	ioctl(fd, GSMIOC_SETCONF, &c);
-+	/* get first gsmtty device node */
-+	ioctl(fd, GSMIOC_GETFIRST, &first);
-+	printf("first muxed line: /dev/gsmtty%i\n", first);
-+
-+	/* and wait for ever to keep the line discipline enabled */
-+	daemon(0,0);
-+	pause();
-+
- Additional Documentation
- ------------------------
- More practical details on the protocol and how it's supported by industrial
+ 	switch (gsm->control) {
+ 	case SABM|PF:
+-		if (cr == 0)
++		if (cr == 1)
+ 			goto invalid;
+ 		if (dlci == NULL)
+ 			dlci = gsm_dlci_alloc(gsm, address);
+@@ -1793,7 +1793,7 @@ static void gsm_queue(struct gsm_mux *gsm)
+ 		}
+ 		break;
+ 	case DISC|PF:
+-		if (cr == 0)
++		if (cr == 1)
+ 			goto invalid;
+ 		if (dlci == NULL || dlci->state == DLCI_CLOSED) {
+ 			gsm_response(gsm, address, DM);
 -- 
 1.9.1
 
