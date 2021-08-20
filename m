@@ -2,89 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4273F2DD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BA73F2DDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240820AbhHTOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:18:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:41193 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235032AbhHTOSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:18:05 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 13C3E6736F; Fri, 20 Aug 2021 16:17:25 +0200 (CEST)
-Date:   Fri, 20 Aug 2021 16:17:24 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <20210820141724.GA29034@lst.de>
-References: <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com> <20210728175925.GU1721383@nvidia.com> <20210729072022.GB31896@lst.de> <20210803094315.GF13928@zhen-hp.sh.intel.com> <20210803143058.GA1721383@nvidia.com> <20210804052606.GG13928@zhen-hp.sh.intel.com> <20210816173458.GA9183@lst.de> <20210817010851.GW13928@zhen-hp.sh.intel.com> <20210817052203.GX13928@zhen-hp.sh.intel.com> <20210819082929.GB13928@zhen-hp.sh.intel.com>
+        id S240827AbhHTOS1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Aug 2021 10:18:27 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:56623 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235032AbhHTOS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:18:26 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id B38544000F;
+        Fri, 20 Aug 2021 14:17:45 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 16:17:44 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset
+ (PoR) instruction
+Message-ID: <20210820161744.148b3003@xps13>
+In-Reply-To: <c4a1eae9-7c0b-62c8-f10a-000e65c94f1b@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+        <20210713130538.646-12-a-nandan@ti.com>
+        <20210806210840.65c06b67@xps13>
+        <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com>
+        <20210820141822.03d658b8@xps13>
+        <c4a1eae9-7c0b-62c8-f10a-000e65c94f1b@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819082929.GB13928@zhen-hp.sh.intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
-> I'm working on below patch to resolve this. But I met a weird issue in
-> case when building i915 as module and also kvmgt module, it caused
-> busy wait on request_module("kvmgt") when boot, it doesn't happen if
-> building i915 into kernel. I'm not sure what could be the reason?
+Hi Apurva,
 
-Luis, do you know if there is a problem with a request_module from
-a driver ->probe routine that is probably called by a module_init
-function itself?
+Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 19:11:58
++0530:
 
-In the meantime I'll try to reproduce it locally, but I always had a
-hard time getting useful results out of a modular i915, especially
-when combined with module paramters. (no blame on i915, just the problem
-with modules needed early on).
+> Hi Miquèl,
+> 
+> On 20/08/21 5:48 pm, Miquel Raynal wrote:
+> > Hi Apurva,
+> > 
+> > Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 17:09:07
+> > +0530:
+> >   
+> >> Hi Miquèl,
+> >>
+> >> On 07/08/21 12:38 am, Miquel Raynal wrote:  
+> >>> Hi Apurva,
+> >>>
+> >>> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
+> >>> +0000:  
+> >>>    >>>> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset  
+> >>>> functionality in their SPI NAND flash chips. PoR instruction consists
+> >>>> of a 66h command followed by 99h command, and is different from the FFh
+> >>>> reset. The reset command FFh just clears the status only registers,
+> >>>> while the PoR command erases all the configurations written to the
+> >>>> flash and is equivalent to a power-down -> power-up cycle.
+> >>>>
+> >>>> Add support for the Power-on-Reset command for any flash that provides
+> >>>> this feature.
+> >>>>
+> >>>> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+> >>>>
+> >>>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> >>>> ---  
+> >>>
+> >>> [...]
+> >>> 				\  
+> >>>> @@ -218,6 +230,8 @@ struct spinand_device;
+> >>>>     * reading/programming/erasing when the RESET occurs. Since we always
+> >>>>     * issue a RESET when the device is IDLE, 5us is selected for both initial
+> >>>>     * and poll delay.
+> >>>> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us  
+> >>>
+> >>> s/max upto/up to/  
+> >>>    >>  
+> >> Okay!
+> >>  
+> >>>> + * to 1200 us safely.  
+> >>>
+> >>> I don't really get why, if the maximum is 500, then let's wait for
+> >>> 500us.  
+> >>>    >>  
+> >> Generally we keep some margin from the maximum time, no?  
+> > 
+> > Well, yes and no.
+> > 
+> > If you know that an operation will last Xms and have nothing else to
+> > do, then you can take some margin if you are in a probe (called once)
+> > but definitely not if you are in a fast path.
+> >   
+> 
+> I think as PoR reset would be called at every mtd_suspend() call, so we can reduce the delay. And we would be expecting some time gap before the next mtd_resume() call.
+> 
+> > Otherwise the best is to have some kind of signaling but I'm not sure
+> > you'll have one for the reset op...
+> >   
+> 
+> According to public datasheet, it doesn't set the busy bit during reset.
+> 
+> So do you suggest in the favor of removing the delay margin?
+
+Well, it's microseconds, maybe you can reduce it a little bit but that
+will be ok.
 
 > 
-> > But the problem I see is that after moving gvt device model (gvt/*.c
-> > except kvmgt.c) into kvmgt module, we'll have issue with initial mmio
-> > state which current gvt relies on, that is in design supposed to get
-> > initial HW state before i915 driver has taken any operation.  Before
-> > we can ensure that, I think we may only remove MPT part first but
-> > still keep gvt device model as part of i915 with config. I'll try to
-> > split that out.
+> >>  
+> >>>>     */
+> >>>>    #define SPINAND_READ_INITIAL_DELAY_US	6
+> >>>>    #define SPINAND_READ_POLL_DELAY_US	5
+> >>>> @@ -227,6 +241,8 @@ struct spinand_device;
+> >>>>    #define SPINAND_WRITE_POLL_DELAY_US	15
+> >>>>    #define SPINAND_ERASE_INITIAL_DELAY_US	250
+> >>>>    #define SPINAND_ERASE_POLL_DELAY_US	50
+> >>>> +#define SPINAND_POR_MIN_DELAY_US	1000
+> >>>> +#define SPINAND_POR_MAX_DELAY_US	1200  
+> >>>>    >>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
+> >>>>    >> @@ -351,6 +367,7 @@ struct spinand_ecc_info {  
+> >>>>    #define SPINAND_HAS_QE_BIT		BIT(0)
+> >>>>    #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+> >>>>    #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
+> >>>> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)  
+> >>>>    >>   /**  
+> >>>>     * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure  
+> >>>
+> >>>
+> >>>
+> >>>
+> >>> Thanks,
+> >>> Miquèl
+> >>>
+> >>> ______________________________________________________
+> >>> Linux MTD discussion mailing list
+> >>> http://lists.infradead.org/mailman/listinfo/linux-mtd/  
+> >>>    >>  
+> >> Thanks,
+> >> Apurva Nandan  
+> > 
+> > Thanks,
+> > Miquèl
+> >   
 > 
-> Sorry I misread the code that as we always request kvmgt module when
-> gvt init, so it should still apply original method that this isn't a
-> problem. Our current validation result has shown no regression as well.
+> Thanks,
+> Apurva Nandan
 
-What does initial mmio state mean?  This is something new to me.  But
-as you said in this mail unless I missed something very big it should
-work the same as before.
-
-> -static inline void intel_context_unpin(struct intel_context *ce)
-> +static inline void _intel_context_unpin(struct intel_context *ce)
->  {
->  	if (!ce->ops->sched_disable) {
->  		__intel_context_do_unpin(ce, 1);
-> @@ -150,6 +150,7 @@ static inline void intel_context_unpin(struct intel_context *ce)
->  		}
->  	}
->  }
-> +void intel_context_unpin(struct intel_context *ce);
-
-Looking at intel_context_unpin/_intel_context_unpin is there really
-a need to have this inline to start with?  It don't see much the compiler
-could optimize by inlining it.
+Thanks,
+Miquèl
