@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506483F34B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365243F34B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbhHTTg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:36:57 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:41839 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbhHTTgz (ORCPT
+        id S232816AbhHTTlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:41:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhHTTlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:36:55 -0400
-Received: by mail-ot1-f46.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso1498517ota.8;
-        Fri, 20 Aug 2021 12:36:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=tlG8gFHdwbNMnGBV3L4Ud/dyohUxKHygZ2pV3sjYueE=;
-        b=FTX0gFQd+RTqjJ7VR1RUabuGvXFn+rMoCtvL8as5UXpGUzoJHYfc0DdfO4e/iBEjdP
-         YgmaoMzTkke15xHAGyXFosWQHmqTI1fOA/KbL4JWaIaAm5AG/aHoIeX9qAh84nOg4YKX
-         faRoQdi0HzVMAHziTpBbpxYTJYpgd6T6Ld7KDdAiu9LGL5jrp5PJ4jlhDiTa/SJM6xk0
-         SEDcIcXsS6KidnSbUXWqltZEE3TAq1C27A1GYDKjXLhaNGCZby3/4BAntK8PdMQVGRoA
-         j4p/U3aRigp0+eMhogCoknvJsI+sVl3UIq3XQ+dhbmHthhZE3nzcY5lmlqfaKiUSYXph
-         xuCA==
-X-Gm-Message-State: AOAM532nGkqS2VuZNFP63XOX4Sr0TZIwNYIFFe0e5QbwIFlHUfWHepJK
-        P2jDfq9JBw6qj/5QbtvOcFMwQwNQuYIvKJGVtZc=
-X-Google-Smtp-Source: ABdhPJzO4vI7OgzMyMxKl9AmbSMGac8CHAtTH/FPfvvhz15gV2BzjRw3meT56Q1PVZzlFup7BncdO3WjE0JjBMsWj3M=
-X-Received: by 2002:a9d:a57:: with SMTP id 81mr5054906otg.260.1629488177258;
- Fri, 20 Aug 2021 12:36:17 -0700 (PDT)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 20 Aug 2021 21:36:06 +0200
-Message-ID: <CAJZ5v0g14eg5PT5+AnKh_Uf+a7Ap5t5+G_LcU8+A-tQS3UY15g@mail.gmail.com>
-Subject: [GIT PULL] ACPI fixes for v5.14-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Fri, 20 Aug 2021 15:41:06 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB0AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 12:40:28 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id A140A12801DB;
+        Fri, 20 Aug 2021 12:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1629488427;
+        bh=m7pwO1nE5aq19db0pqFBeoLj6CeJBhN9nsxzrjprEGM=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=MmqJ3XZXEfMCJlAKFh2eI/5ZYNGKBfgORnXhNp0Zz7I8QwbNLAPGdES1xy51LhjVO
+         rQScnkEoKTaMQc34aIco0fRK5nIv5TfrSq8gvxUWmL5KtI/8U5OI1KJ5HGcbYmbU5B
+         oab87nnJpijZ65kA7FHDIJKwwQieIIrNJmAuR/dI=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jN7dzCKAsSvP; Fri, 20 Aug 2021 12:40:27 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 3077212801B4;
+        Fri, 20 Aug 2021 12:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1629488427;
+        bh=m7pwO1nE5aq19db0pqFBeoLj6CeJBhN9nsxzrjprEGM=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=MmqJ3XZXEfMCJlAKFh2eI/5ZYNGKBfgORnXhNp0Zz7I8QwbNLAPGdES1xy51LhjVO
+         rQScnkEoKTaMQc34aIco0fRK5nIv5TfrSq8gvxUWmL5KtI/8U5OI1KJ5HGcbYmbU5B
+         oab87nnJpijZ65kA7FHDIJKwwQieIIrNJmAuR/dI=
+Message-ID: <68d2b3afd9a7ee27cdb7ec9ff7eb45342ce23c12.camel@HansenPartnership.com>
+Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Jordy Zomer <jordy@pwning.systems>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Mike Rapoport <rppt@linux.ibm.com>
+Date:   Fri, 20 Aug 2021 12:40:26 -0700
+In-Reply-To: <209705133.1285234.1629477520318@privateemail.com>
+References: <20210820043339.2151352-1-jordy@pwning.systems>
+         <0874a50b61cfaf7c817cab7344c49c1641c1fd10.camel@HansenPartnership.com>
+         <202108200904.81ED4AA52@keescook>
+         <209705133.1285234.1629477520318@privateemail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 2021-08-20 at 12:38 -0400, Jordy Zomer wrote:
+> Hi There!
+> 
+> Because this is a global variable, it appears to be exploitable.
+> Either we generate a sufficient number of processes to achieve this
+> counter, or you increase the open file limit with ulimit or sysctl.
+> Unless the kernel has a hard restriction on the number of potential
+> file descriptors that I'm not aware of.
 
-Please pull from the tag
+There's no direct global counter for file descriptors, no; however,
+there is an indirect limit: the number of processes per user which is
+now defaulting to around 65535, so even a fork bomb opening the max
+number of fds won't get you a wrap.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.14-rc7
+> In any case, it's probably a good idea to patch this to make it
+> explicitly secure. If you discover a hard-limit in the kernel for
+> open file descriptors, please let me know. I'm genuinely interested
+> :D!
 
-with top-most commit 0f09f4c48118ce3c562e1028df7fe0f8150493d6
+I didn't disagree it might be a useful think to update ... I just
+didn't think it was currently exploitable.
 
- Merge branch 'acpi-pm'
-
-on top of commit 7c60610d476766e128cc4284bb6349732cbd6606
-
- Linux 5.14-rc6
-
-to receive ACPI fixes for 5.14-rc7.
-
-These fix two mistakes in new code.
-
-Specifics:
-
- - Prevent confusing messages from being printed if the PRMT table
-   is not present or there are no PRM modules (Aubrey Li).
-
- - Fix the handling of suspend-to-idle entry and exit in the case
-   when the Microsoft UUID is used with the Low-Power S0 Idle _DSM
-   interface (Mario Limonciello).
-
-Thanks!
+James
 
 
----------------
-
-Aubrey Li (1):
-      ACPI: PRM: Deal with table not present or no module found
-
-Mario Limonciello (1):
-      ACPI: PM: s2idle: Invert Microsoft UUID entry and exit
-
----------------
-
- drivers/acpi/prmt.c       | 6 ++++++
- drivers/acpi/x86/s2idle.c | 4 ++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
