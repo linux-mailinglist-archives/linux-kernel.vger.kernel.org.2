@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530443F2BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931813F2BC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbhHTMJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239997AbhHTMJf (ORCPT
+        id S240012AbhHTMME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:12:04 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:38905 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238179AbhHTMMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:09:35 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBDEC061756;
-        Fri, 20 Aug 2021 05:08:56 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id q11so13949607wrr.9;
-        Fri, 20 Aug 2021 05:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xX8QN7d/XFWwmEHcKdCeyQmpM6FgPCJTtiiYzun1nck=;
-        b=kH4HIamt7oILiZuSApPBXZnoQFLtCuckve57zFz8cX9t/D0ZtrdMIBwOUUKRu8xDcu
-         njkuMtV4HDsQddnx0Md0jZFue2C4wRZc28Nn6lREOdQvA9NGrae7T1R0Vp4rNKVhdink
-         n+YiHQKhsE9YtliitiNoIxoNAeTOEcpqkWhHHfgm+zOul4yKn64rIpqDmHk3ugQvYx5I
-         9P0B1jJPnO48StytsxkNkuzAblt0NlXGxCp7FBMCBD+1e8s1Ju5e/V0v5o0zps693vRZ
-         ZLQT9kuu3qDnoxH3DCdmeD7QVsrql/+pqdnss3D3JbtTPjtkomC91S3sNX9yEbnGjoBB
-         mU8g==
+        Fri, 20 Aug 2021 08:12:02 -0400
+Received: by mail-lf1-f51.google.com with SMTP id x27so20163392lfu.5;
+        Fri, 20 Aug 2021 05:11:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xX8QN7d/XFWwmEHcKdCeyQmpM6FgPCJTtiiYzun1nck=;
-        b=mO2PdedQffEt+ZRz7CJ0evn2j9eyuPXljwjpSLmqeHxfXTjU56hW1U7XncIbux7UDq
-         iL2XR2D+bECjX+Aopnksjbn2xHjxNOAW+ZOsjRghFR1ZMzwuG8jG6G5GHP+t0w/G1X9F
-         W9kGOVPXRl5I70H5w+Zpjp5YgvHm8uqlX/GZvmpdRQalPrnv1pw/BE+lLy6JCidnlTZx
-         Cf9FAWjtYGHYi0cHjO6Bahxd+/uzSp9hAGchJkt/Cu7S9qwecJ1EyGAN453SmSRRdI6H
-         s4lkyC89K8ri0YO/S5Gs+V8oaVbP6LhzyW9HvHa0oJhcRghKwD8DTChBF2OI/6ea6nRN
-         sWgQ==
-X-Gm-Message-State: AOAM531bjjV21+nKRMXQWXooX2OA/czz54bik/dpj+zVTradFOWfgI3Y
-        PSJdZcuv0ZDPP7nzHLEKEEc=
-X-Google-Smtp-Source: ABdhPJz15XRXK+GbAJ5vixyecTYGr4CF9zYwwiwYVn4Z+PLL4hgegHZg4GyJe3sRZKAsk76v0pQZJg==
-X-Received: by 2002:adf:ed50:: with SMTP id u16mr9801083wro.174.1629461334826;
-        Fri, 20 Aug 2021 05:08:54 -0700 (PDT)
-Received: from localhost.localdomain (arl-84-90-178-246.netvisao.pt. [84.90.178.246])
-        by smtp.gmail.com with ESMTPSA id u5sm5683785wrr.94.2021.08.20.05.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 05:08:54 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] ext4: scope ret locally in ext4_try_to_trim_range()
-Date:   Fri, 20 Aug 2021 14:08:53 +0200
-Message-Id: <20210820120853.23134-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=qLfZ8/GKcURSHCm2cP8f/aOHmp3T/NRBIyV2qbqgsho=;
+        b=snZi6HL0s9MiD4/pJHU7Hv4zRDEDVuTkBpcn5rnNOwOalutVg01XS1x6i9naa7D0Ac
+         PVm72l5TrQyJS6vgP9twDYjFZZzSXeUKLWHQiV1zBgPakm6PpoxawptwQteTCSv+V6W4
+         hiSmdpvyQiBvXH4lUB3BMKnU9C2OmlaPovUl3Hq4SnyLKiHQ/kUiAUBgrjzW69gy919C
+         3skDdoWaLn1mHqg9QZ06d3D408OVoS5KRudB/FYIeLJuxVi0ESIoK46kolFYuGAS8QM9
+         1qMDhM2ST7FO0o7+xoCO36+6I7d0lprNMtS6eqiH8jdfTnoQ2p7CxT46tNjVicOvWEFI
+         YbxA==
+X-Gm-Message-State: AOAM532HqZzCdn2Ph+V3Wj/Mhs9zgyJNp3Z9SrDZVBCZPD9wWRNmtSUZ
+        EQ4upv3r38Phzy8EmMYd6sLd2dd7btUAqQ==
+X-Google-Smtp-Source: ABdhPJzdItmXLKU18VHjBvGfzWIA9PHiZErOMomaWZB6gTYNPI364He115wXF0a2ueYchqfl53DEBg==
+X-Received: by 2002:a05:6512:3767:: with SMTP id z7mr14788004lft.128.1629461483123;
+        Fri, 20 Aug 2021 05:11:23 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id bq33sm617016lfb.88.2021.08.20.05.11.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 05:11:22 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id g13so20123379lfj.12;
+        Fri, 20 Aug 2021 05:11:22 -0700 (PDT)
+X-Received: by 2002:a19:f819:: with SMTP id a25mr14506302lff.203.1629461482247;
+ Fri, 20 Aug 2021 05:11:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210820081645.83796-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210820081645.83796-1-krzysztof.kozlowski@canonical.com>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Fri, 20 Aug 2021 20:11:11 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66EnW+iO2CPueauRob+b53pNFEuL6LUoSYb09_TN+=_cw@mail.gmail.com>
+Message-ID: <CAGb2v66EnW+iO2CPueauRob+b53pNFEuL6LUoSYb09_TN+=_cw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: allwinner: h5: align operating-points
+ table name with dtschema
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-sunxi@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As commit 6920b3913235 ("ext4: add new helper interface
-ext4_try_to_trim_range()") moves some code into the separate function
-ext4_try_to_trim_range(), the use of the variable ret within that
-function is more limited and can be adjusted as well.
+On Fri, Aug 20, 2021 at 4:16 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> Align the name of operating-points node to dtschema to fix warnings like:
+>
+>   arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dt.yaml:
+>     cpu-opp-table: $nodename:0: 'cpu-opp-table' does not match '^opp-table(-[a-z0-9]+)?$'
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
+> index b2657201957e..0b6914a165b0 100644
+> --- a/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
+> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
+> @@ -2,7 +2,7 @@
+>  // Copyright (C) 2020 Chen-Yu Tsai <wens@csie.org>
+>
+>  / {
+> -       cpu_opp_table: cpu-opp-table {
+> +       cpu_opp_table: opp-table-0 {
 
-Scope the use of the variable ret locally and drop dead assignments.
+Maybe we should just reorder the name? Name it "opp-table-cpu" instead.
+That way if and when we add one for the GPU, we don't accidentally
+clash on the name.
 
-No functional change.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- fs/ext4/mballoc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index e89db3396203..f4c0a37431cd 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6301,7 +6301,6 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- {
- 	ext4_grpblk_t next, count, free_count;
- 	void *bitmap;
--	int ret = 0;
- 
- 	bitmap = e4b->bd_bitmap;
- 	start = (e4b->bd_info->bb_first_free > start) ?
-@@ -6316,10 +6315,9 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
- 		next = mb_find_next_bit(bitmap, max + 1, start);
- 
- 		if ((next - start) >= minblocks) {
--			ret = ext4_trim_extent(sb, start, next - start, e4b);
-+			int ret = ext4_trim_extent(sb, start, next - start, e4b);
- 			if (ret && ret != -EOPNOTSUPP)
- 				break;
--			ret = 0;
- 			count += next - start;
- 		}
- 		free_count += next - start;
--- 
-2.26.2
-
+ChenYu
