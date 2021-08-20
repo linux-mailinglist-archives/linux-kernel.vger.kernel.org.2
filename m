@@ -2,104 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4572C3F23F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 02:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4733F23F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 02:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237110AbhHTADQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 20:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S237079AbhHTADu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 20:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236920AbhHTADM (ORCPT
+        with ESMTP id S236976AbhHTADt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 20:03:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C96AC061757;
-        Thu, 19 Aug 2021 17:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=eiAdZBFJ/dkIb72t8AnNUyPp8Tvk3ThI3ydnoCcM7/U=; b=AIjuVC5UgWFWnFXqx7Bn2i+zUQ
-        5e/ydjNH0PEFuNjC93ph7fDH9LRhqQKEmRUFaxPli3UoY70ktRL9USHskNG3rT2eMR7IyyP/kefCZ
-        9wRttJBSPNun7sISavUkuJSwSjJr5NPEAJAySDpGJrnBzuMDAHdoS54SbpxOKTmyaJCi11zn89lrf
-        59mJmGKMFJD9kJ0wIKwZ+UxrQhs8/PBvM6okpSoc+G5WiEIyC/XcM1UXbTZKJpvASijmowswwWHif
-        F2RCIR+9gkx2G41bFabHIihCmVGA2conPJ1+PcwC6q/+5c++m9zm0zl8uA2RQKvt4o3liVP65d6Ht
-        AdOaEawA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGrzX-009mxy-0Y; Fri, 20 Aug 2021 00:02:35 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     hare@suse.de, dgilbert@interlog.com, jeyu@kernel.org,
-        lucas.demarchi@intel.com, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v4 2/2] common/scsi_debug: use the patient module remover
-Date:   Thu, 19 Aug 2021 17:02:34 -0700
-Message-Id: <20210820000234.2333125-3-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210820000234.2333125-1-mcgrof@kernel.org>
-References: <20210820000234.2333125-1-mcgrof@kernel.org>
+        Thu, 19 Aug 2021 20:03:49 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CA6C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 17:03:12 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id k14so7452384pga.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 17:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=vRFO+rG5NKULoNq4nrGremPyKJ3sp4O0aBsDwvD+Jws=;
+        b=bUVS0z1tbTEuTnJpUI0DCsREOWqYBS393adFo6vkPpAcDd3VFldkcu6Bu8+NPNkVIr
+         zVB/aqzwm03BccvSPAo1MxAZoGqM1V3G7Ml6IdOp9vADp+ZnRlfr9+qSxRd7e6+I4Agi
+         5JhMzvnd1IByLpNrXS8swwAmSNZRyvnAn463M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=vRFO+rG5NKULoNq4nrGremPyKJ3sp4O0aBsDwvD+Jws=;
+        b=sKw66jzlqLgeI/j5gsMBht49FTHh0y+7M0kL5NnCwxDAjrXxuSahYliAgineSDKlW2
+         WWy9LFdNqZa2K7Zv25/oJkrfLR723XPh62PLkCMyUkWvWk2DONy82hB06O++TG7Uak79
+         ZQSQWnZKtl/J0X257VNXovcrtieVzyMqDaGIgnCyHfEtN12YkR1O9Waxn/htb9gK318P
+         KGFdj7W1n6J7xSI9snvpb65rsD513Adco3RV6EonnwuUgY80lJldm2ZoOR7nOUe8hWPy
+         kOftDDcWDXpRz6Eu30/E+STUBIEktmHNX9Az6DHgQkxgpfmVK8gd3sLsDzN4xN8SQ8IY
+         6C7g==
+X-Gm-Message-State: AOAM531oEGnFDIKBF1s2qsAUz8XG5GwLKO+yG8cFQZRzAeEOMR1QxMdv
+        WZP0B6xI69RawyismFvvyjw66w==
+X-Google-Smtp-Source: ABdhPJxUAM4AJRANovdfNIBfj6aTNBPXbXy30qW0KYGlBj+lnS2H5nQpOUOt6OPGf27oUrWy+/Ipjg==
+X-Received: by 2002:a63:2242:: with SMTP id t2mr15735424pgm.111.1629417791779;
+        Thu, 19 Aug 2021 17:03:11 -0700 (PDT)
+Received: from localhost ([2001:4479:e000:e400:3a83:f47e:d5a3:378a])
+        by smtp.gmail.com with ESMTPSA id d15sm3189825pfh.34.2021.08.19.17.03.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 17:03:11 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Neuling <mikey@neuling.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        kernel-janitors@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] powerpc: rectify selection to
+ ARCH_ENABLE_SPLIT_PMD_PTLOCK
+In-Reply-To: <20210819113954.17515-3-lukas.bulwahn@gmail.com>
+References: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
+ <20210819113954.17515-3-lukas.bulwahn@gmail.com>
+Date:   Fri, 20 Aug 2021 10:03:08 +1000
+Message-ID: <87pmu99e4j.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you try to run tests such as generic/108 in a loop
-you'll eventually see a failure, but the failure can
-be a false positive and the test was just unable to remove
-the scsi_debug module.
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
-We need to give some time for the refcnt to become 0. For
-instance for the test generic/108 the refcnt lingers between
-2 and 1. It should be 0 when we're done but a bit of time
-seems to be required. The chance of us trying to run rmmod
-when the refcnt is 2 or 1 is low, about 1/30 times if you
-run the test in a loop on linux-next today.
+> Commit 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
+> selects the non-existing config ARCH_ENABLE_PMD_SPLIT_PTLOCK in
+> ./arch/powerpc/platforms/Kconfig.cputype, but clearly it intends to select
+> ARCH_ENABLE_SPLIT_PMD_PTLOCK here (notice the word swapping!), as this
+> commit does select that for all other architectures.
+>
+> Rectify selection to ARCH_ENABLE_SPLIT_PMD_PTLOCK instead.
+>
 
-Likewise, even when its 0 we just need a tiny breather before
-we can remove the module (sleep 10 suffices) but this is
-only required on older kernels. Otherwise removing the module
-will just fail.
+Yikes, yes, 66f24fa766e3 does seem to have got that wrong. It looks like
+that went into 5.13.
 
-Some of these races are documented on the korg#212337, and
-Doug Gilbert has posted at least one patch attempt to try
-to help with this [1]. The patch does not resolve all the
-issues though, it helps though.
+I think we want to specifically target this for stable so that we don't
+lose the perfomance and scalability benefits of split pmd ptlocks:
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=212337
-[1] https://lkml.kernel.org/r/20210508230745.27923-1-dgilbert@interlog.com
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- common/scsi_debug | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Cc: stable@vger.kernel.org # v5.13+
 
-diff --git a/common/scsi_debug b/common/scsi_debug
-index e7988469..3c9cd820 100644
---- a/common/scsi_debug
-+++ b/common/scsi_debug
-@@ -4,11 +4,13 @@
- #
- # Functions useful for tests on unique block devices
- 
-+. common/module
-+
- _require_scsi_debug()
- {
- 	# make sure we have the module and it's not already used
- 	modinfo scsi_debug 2>&1 > /dev/null || _notrun "scsi_debug module not found"
--	lsmod | grep -wq scsi_debug && (rmmod scsi_debug || _notrun "scsi_debug module in use")
-+	lsmod | grep -wq scsi_debug && (_patient_rmmod scsi_debug || _notrun "scsi_debug module in use")
- 	# make sure it has the features we need
- 	# logical/physical sectors plus unmap support all went in together
- 	modinfo scsi_debug | grep -wq sector_size || _notrun "scsi_debug too old"
-@@ -53,5 +55,5 @@ _put_scsi_debug_dev()
- 		$UDEV_SETTLE_PROG
- 		n=$((n-1))
- 	done
--	rmmod scsi_debug || _fail "Could not remove scsi_debug module"
-+	_patient_rmmod scsi_debug || _fail "Could not remove scsi_debug module"
- }
--- 
-2.30.2
+(I don't think you need to do another revision for this, I think mpe
+could add it when merging.)
 
+I tried to check whether we accidentally broke SPLIT_PMD_PTLOCKs while
+they were disabled:
+
+ - There hasn't been any change to the pgtable_pmd_page_ctor or _dtor
+   prototypes, and we haven't made any relevant changes to any of the
+   files in arch/powerpc that called it.
+
+ - I checked out v5.13 and powerpc/merge, applied this patch, built a
+   pseries_le_defconfig and boot tested it in qemu. It didn't crash on
+   boot or with /bin/sh and some shell commands, but I didn't exactly
+   stress test the VM subsystem either.
+
+This gives me some confidence it's both good for powerpc and stable-worthy.
+
+Overall:
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+
+Kind regards,
+Daniel
+
+> Fixes: 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  arch/powerpc/platforms/Kconfig.cputype | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/platforms/Kconfig.cputype b/arch/powerpc/platforms/Kconfig.cputype
+> index 6794145603de..a208997ade88 100644
+> --- a/arch/powerpc/platforms/Kconfig.cputype
+> +++ b/arch/powerpc/platforms/Kconfig.cputype
+> @@ -98,7 +98,7 @@ config PPC_BOOK3S_64
+>  	select PPC_HAVE_PMU_SUPPORT
+>  	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+>  	select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
+> -	select ARCH_ENABLE_PMD_SPLIT_PTLOCK
+> +	select ARCH_ENABLE_SPLIT_PMD_PTLOCK
+>  	select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
+>  	select ARCH_SUPPORTS_HUGETLBFS
+>  	select ARCH_SUPPORTS_NUMA_BALANCING
+> -- 
+> 2.26.2
