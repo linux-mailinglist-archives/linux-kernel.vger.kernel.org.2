@@ -2,93 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F2B3F2716
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D443F271C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238571AbhHTGy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:54:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51596 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhHTGy6 (ORCPT
+        id S238492AbhHTG6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:58:39 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:17994 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231998AbhHTG6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:54:58 -0400
-Date:   Fri, 20 Aug 2021 08:54:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629442459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9kl53d7aeCxXNv/rQJ1ub0yBMfk8kY80KmepxlFknQA=;
-        b=LwqCXZDyp+gCyYF1YhL6oxCSwnzgeJ5aZtDcgMqWN1ru8uHUMtvohA0tvGJidA4ohBVnqP
-        eilTEI6H4aiNp/tSG1IDvSGkDT5zBePPHi89vo9bNnxtHyyL54V3CPVXG8H3VaxGImj1gB
-        r2PQIAbbYCfxGR5N5tLpjGlD3dKX2DuqXt4qA+U+n0xj+BpoiH+ajTTtkedPv7p0r8kvbh
-        wxwwz/lYrZC41hDzLnqmkMJBcZqZmOiLb+G8QmOEiFevU79ZdvFH+Ja0ID5tEBhXXCYREm
-        WEMghpKX4O1U+6++ZEnV8xfVvaETSUbeB7vsZzthcrYHCYn8DLqxRtHW00IWWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629442459;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9kl53d7aeCxXNv/rQJ1ub0yBMfk8kY80KmepxlFknQA=;
-        b=eWXUgwtMEg6Gb95CGvM3ZDOWK+j2B1+o0ze18G5N6Pj6Yc9kt+bkQ+LkascSx+o8si8jx8
-        gDaZKmg2rzxOQnDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Scott Wood <swood@redhat.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH] rcutorture: Avoid problematic critical section nesting
- on RT
-Message-ID: <20210820065417.epdjfqsn27gmnx4x@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com>
- <20210811201354.1976839-2-valentin.schneider@arm.com>
- <20210817121345.5iyj5epemczn3a52@linutronix.de>
- <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
- <20210817144018.nqssoq475vitrqlv@linutronix.de>
- <20b9051fe47b7068ed3496bd7f5d417b1af69e3a.camel@redhat.com>
+        Fri, 20 Aug 2021 02:58:37 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GrXRm0lpNzbgGS;
+        Fri, 20 Aug 2021 14:54:12 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 20 Aug 2021 14:57:58 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 20 Aug 2021 14:57:57 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hkallweit1@gmail.com>
+Subject: [PATCH net-next v2 0/2] Some minor optimization for page pool
+Date:   Fri, 20 Aug 2021 14:56:49 +0800
+Message-ID: <1629442611-61547-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20b9051fe47b7068ed3496bd7f5d417b1af69e3a.camel@redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-19 22:23:37 [-0500], Scott Wood wrote:
-> On Tue, 2021-08-17 at 16:40 +0200, Sebastian Andrzej Siewior wrote:
-> > [bigeasy: remove 'preempt_disable(); local_bh_disable(); preempt_enable();
-> >  local_bh_enable();' from the examples because this works on RT now. ]
-> 
-> Does it actually work?  If preemption is disabled during local_bh_disable,
-> softirq_ctrl.lock won't be taken.  If you then get preempted between the
-> preempt_enable() and the local_bh_enable(), and another task tries to do
-> local_bh_disable(), won't it successfully get softirq_ctrl.lock, add to
-> softirq_ctrl.cnt, and proceed right into the critical section?
-> 
-> Or am I missing something?
+Patch 1: Use relaxed atomic for release side accounting
+Patch 2: Minor optimize for page_pool_dma_map() function
 
-No, I mixed it up with migrate_disable/enable. I corrected it while
-redoing it yesterday.
+V2: Remove unnecessary unliky() mark as pointed out by
+    Heiner.
 
-> -Scott
+Yunsheng Lin (2):
+  page_pool: use relaxed atomic for release side accounting
+  page_pool: optimize the cpu sync operation when DMA mapping
 
-Sebastian
+ net/core/page_pool.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+-- 
+2.7.4
+
