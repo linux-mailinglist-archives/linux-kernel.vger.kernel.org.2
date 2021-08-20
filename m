@@ -2,138 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D76E3F2FE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEF43F2FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241090AbhHTPpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:45:35 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45460 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241019AbhHTPpe (ORCPT
+        id S241187AbhHTPpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:45:47 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:38608 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241140AbhHTPpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:45:34 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 76D541FE2C;
-        Fri, 20 Aug 2021 15:44:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629474295; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogYunvpZVJ/3GqmU2H+7Y5oXqBsYG05vVrhz9e8RiVA=;
-        b=lp6617sFBwYD2Nii4xorvJxfjYSV8LrclKGB2WTnYrAWOtQilQXMmz/haWyv08xcbodjuG
-        XYmUagb/VEJLqdlM0wrNEZzi1NgMpx5AweF9G0PDh7fS1trGoqV3CCCSy8q6aEsZ2bLdYa
-        p7TbUYkg28fW0xG3j7ydNOkRrrnhMWM=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2D26AA3B87;
-        Fri, 20 Aug 2021 15:44:55 +0000 (UTC)
-Date:   Fri, 20 Aug 2021 17:44:54 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Leon Yang <lnyng@fb.com>, Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: fix occasional OOMs due to proportional
- memory.low reclaim
-Message-ID: <YR/N9lrUROSd6TCV@dhcp22.suse.cz>
-References: <20210817180506.220056-1-hannes@cmpxchg.org>
- <YR5yUolPN+hSsUgJ@dhcp22.suse.cz>
- <YR7BY2Z0cXvW/uTO@cmpxchg.org>
+        Fri, 20 Aug 2021 11:45:45 -0400
+Received: by mail-il1-f199.google.com with SMTP id j6-20020a056e02014600b00224bde51e20so4231146ilr.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:45:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=C/764d47f9BqIhAgXfMN7s6wRczQbgVQBUoxA/nuXAk=;
+        b=nM8LAFd+i1AaOcOH6aMpoGnjiNbV0nGwqzYUGzz0IwY7Bm79mbgRVqd3LGs3KwQgCN
+         h+PZ1FicM8XAaYPXfOCD0cR6lpVQD6/pt4r4s46N5q53mTdKvhxSQ8V91UEeCE4Lw22H
+         p2/rHYMctm1AAUBlaVggYCyob/C8IrtiLZ1HeSaAOL8qTKYJvxpsUn9qvgw0mG9TJK9K
+         iA6OCd8kg1VHTB/fMCfV/iarMZZvNTWKai8kRKR7CxvfB8tShRotbbNJ4qljrUuoAgT0
+         XAU4BLWQMsYY7yzZVRwrut6ZkfuiWpLR1230rUZBkqnAmSzATjFXEfJWE/949ZXm/uoO
+         3v0g==
+X-Gm-Message-State: AOAM530zxNAeGWf71yRUrN194ga+oNJvfhfX9kmh0BpwkDDEOv5O6Bi7
+        +3O9wmtqx7OIAXvVoR3JHMxrQgdXr/VntN11f1v8i0Lb0q+G
+X-Google-Smtp-Source: ABdhPJyIdR2IpSoaS+ZJXlVx5Fzsmf7Slk+cMg4U2DAEwIy+JEtW6jamlvFI5GIp6I8WEWSshVAwBFPRLSFLcMM3VHUgcDZ7hNq0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR7BY2Z0cXvW/uTO@cmpxchg.org>
+X-Received: by 2002:a92:dd82:: with SMTP id g2mr14479298iln.279.1629474307681;
+ Fri, 20 Aug 2021 08:45:07 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 08:45:07 -0700
+In-Reply-To: <0000000000008a7a1c05c9e53c87@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000047b52b05c9ff8d0b@google.com>
+Subject: Re: [syzbot] WARNING in drm_gem_shmem_vm_open
+From:   syzbot <syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com>
+To:     airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linaro-mm-sig-owner@lists.linaro.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        melissa.srw@gmail.com, mripard@kernel.org, sumit.semwal@linaro.org,
+        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 19-08-21 16:38:59, Johannes Weiner wrote:
-> On Thu, Aug 19, 2021 at 05:01:38PM +0200, Michal Hocko wrote:
-[...]
-> > The logic is spread over 3 different places.
-> > 
-> > Would something like the following be more understandable?
-> > 
-> > 			/*
-> > 			 * Low limit protected memcgs are already excluded at
-> > 			 * a higher level (shrink_node_memcgs) but scaling
-> > 			 * down the reclaim target can result in hard to
-> > 			 * reclaim and premature OOM. We do not have a full
-> > 			 * picture here so we cannot really judge this
-> > 			 * sutuation here but pro-actively flag this scenario
-> > 			 * and let do_try_to_free_pages to retry if
-> > 			 * there is no progress.
-> > 			 */
-> 
-> I've been drafting around with this, but it seems to say the same
-> thing as the comment I put into struct scan_control already:
-> 
-> 	/*
-> 	 * Cgroup memory below memory.low is protected as long as we
-> 	 * don't threaten to OOM. If any cgroup is reclaimed at
-> 	 * reduced force or passed over entirely due to its memory.low
-> 	 * setting (memcg_low_skipped), and nothing is reclaimed as a
-> 	 * result, then go back back for one more cycle that reclaims
-> 	 * the protected memory (memcg_low_reclaim) to avert OOM.
-> 	 */
-> 
-> How about a brief version of this with a pointer to the original?
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 701106e1829c..c32d686719d5 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2580,7 +2580,12 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->  			unsigned long cgroup_size = mem_cgroup_size(memcg);
->  			unsigned long protection;
->  
-> -			/* memory.low scaling, make sure we retry before OOM */
-> +			/*
-> +			 * Soft protection must not cause reclaim failure. Let
-> +			 * the upper level know if we skipped pages during the
-> +			 * first pass, so it can retry if necessary. See the
-> +			 * struct scan_control definition of those flags.
-> +			 */
->  			if (!sc->memcg_low_reclaim && low > min) {
->  				protection = low;
->  				sc->memcg_low_skipped = 1;
-> @@ -2853,16 +2858,16 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  
->  		if (mem_cgroup_below_min(memcg)) {
->  			/*
-> -			 * Hard protection.
-> -			 * If there is no reclaimable memory, OOM.
-> +			 * Hard protection. Always respected. If there is not
-> +			 * enough reclaimable memory elsewhere, it's an OOM.
->  			 */
->  			continue;
->  		} else if (mem_cgroup_below_low(memcg)) {
->  			/*
-> -			 * Soft protection.
-> -			 * Respect the protection only as long as
-> -			 * there is an unprotected supply
-> -			 * of reclaimable memory from other cgroups.
-> +			 * Soft protection must not cause reclaim failure. Let
-> +			 * the upper level know if we skipped pages during the
-> +			 * first pass, so it can retry if necessary. See the
-> +			 * struct scan_control definition of those flags.
->  			 */
->  			if (!sc->memcg_low_reclaim) {
->  				sc->memcg_low_skipped = 1;
+syzbot has bisected this issue to:
 
-Yes, this makes the situation more explicit. I still see some advantage
-to be explicit about those other layers as this will be easier to follow
-the code but I will certainly not insist.
+commit ea40d7857d5250e5400f38c69ef9e17321e9c4a2
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri Oct 9 23:21:56 2020 +0000
 
-Andrew has already sent your original patch to Linus so this will need
-to go as a separate patch. For that
-Acked-by: Michal Hocko <mhocko@suse.com>
+    drm/vkms: fbdev emulation support
 
-Thanks!
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11c31d55300000
+start commit:   614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.kern..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13c31d55300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c31d55300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=96f0602203250753
+dashboard link: https://syzkaller.appspot.com/bug?extid=91525b2bd4b5dff71619
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122bce0e300000
 
--- 
-Michal Hocko
-SUSE Labs
+Reported-by: syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com
+Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
