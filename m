@@ -2,168 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C615D3F28AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480C53F28AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhHTIuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230418AbhHTIux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:50:53 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DFCC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:50:16 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id g11so5149873qvd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:50:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SvhAeR492M8EeJTTsM7VxBsaJ8w8PTYW6CNfHJ9BY2c=;
-        b=dKLqKUJhPoyCJWDUu8gJmjjE0Wc3rdqQkmBcmfkwom8eSKEyeb8rOpa4aupFDqivwV
-         VRU0qIuQrbVN0Ha4h5IF4dJMIt7G6fy8Ip/cpeCDRQx2J/VqQW28GSLRSHv2Jt0Dbcg7
-         gkECVHdOZbmswNg9/PsZhRkVS0bXWp/UZ0nL5ET9j5+/DoAWCrAjkD/sP1HCYsxemvX7
-         x7whEy0Hs49bDP4HdIYRvYY8oDAAE5CuZhvjCCAtkyC6AyZG2H1J5CCgJN8WeJcoMDwo
-         2vAJYsgWHNjAi+R1OjOm7ppdpCeL4TmH1ILRGmwSQCSdM1NZvTkEBLdUO4YpS9c0clBQ
-         Noag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SvhAeR492M8EeJTTsM7VxBsaJ8w8PTYW6CNfHJ9BY2c=;
-        b=pYMHApdIoXB04yfUf4eg/PPwVcwk0KqXJ2SaMspchGOzhKSNyTzAnzrVrmZM0Z56eR
-         8nFBhO/fOrnsGZiPbT/mbOELTUf1GfsxQfTm6AB0tXjOx3H0pRAZxp60kZUblgV7r2L6
-         Cp9N+sABfmhtilTjV0iaq3i2bTJAi2mnzACx08ItI8JQK8O/jXnKpT37iCyPjK0gOkcR
-         qjsFCNncutHsMs5eeGKEMK5ZlWpE4VRC1OObGBroxiwoe1ACJ/TSREdhaxetGQmQZPE9
-         Z33XbzvIBLkzULdZSCGjfBGDxUUNFKc1/G1Z+kFkcJcZl6xCzHdrx/U4a4ERl/yruK9d
-         W4Ag==
-X-Gm-Message-State: AOAM533vHJwEJMMBa7yftyPZjwotomgNrCVsC1d6ZmBl3Jn5DWW/1sT8
-        +Lgd43oUNuFGm8jQoEtsidJjBruQDdC71SIer1kCtA==
-X-Google-Smtp-Source: ABdhPJy/QJn6fSqlmsALEyKeczIYJGYK90zosKS269iQJbHQVvas6xuChnmDApCtJxPNdNz0fntXs47ZI4/8W6cdsu4=
-X-Received: by 2002:a05:6214:126:: with SMTP id w6mr18974742qvs.61.1629449415210;
- Fri, 20 Aug 2021 01:50:15 -0700 (PDT)
+        id S232606AbhHTIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:52:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:56676 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230418AbhHTIv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 04:51:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B911E1042;
+        Fri, 20 Aug 2021 01:51:16 -0700 (PDT)
+Received: from [10.163.69.60] (unknown [10.163.69.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 479D03F40C;
+        Fri, 20 Aug 2021 01:51:15 -0700 (PDT)
+Subject: Re: [PATCH] arm64/mm: Drop page-def.h
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <1629441331-19530-1-git-send-email-anshuman.khandual@arm.com>
+ <20210820083131.GB16784@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <4043e66c-c70b-00f8-4c0f-78b62b21a023@arm.com>
+Date:   Fri, 20 Aug 2021 14:22:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
- <20210817005507.1507580-15-dmitry.baryshkov@linaro.org> <YR7s2vK7jdUssx+A@ripper>
-In-Reply-To: <YR7s2vK7jdUssx+A@ripper>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 20 Aug 2021 11:50:04 +0300
-Message-ID: <CAA8EJpptHqBR=deRaf72iGqXtWX5+3EgE4nKKGCPE7Cg9R0PBg@mail.gmail.com>
-Subject: Re: [RFC PATCH 14/15] WIP: PCI: qcom: use pwrseq to power up bus devices
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210820083131.GB16784@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, 20 Aug 2021 at 02:43, Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
->
-> > Use bus-pwrseq device tree node to power up the devices on the bus. This
-> > is to be rewritten with the proper code parsing the device tree and
-> > powering up individual devices.
-> >
->
-> How about describing the PCI device in DT and having the PCIe controller
-> dig it up up from there? Although we won't have a struct device until
-> later, so perhaps we need the of-based pwrseq_get() for that.
-
-Yes, this is the plan. Currently I just wanted to have a way to power
-up the PCIe part of the chip and be able to test that.
-In the previous attempts to provide qca6390 support, Rob has clearly
-stated that we'd have to have the following device tree snippet:
-
-pcie0 {
-    bridge@0,0 {
-        qca6390@1,0 {
-            supplies-or-whatever = ....;
-        };
-    };
-};
-
->
-> Regards,
-> Bjorn
->
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
-> >  drivers/power/pwrseq/pwrseq_qca.c      |  1 +
-> >  2 files changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > index 8a7a300163e5..a60d41fbcd6f 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > @@ -23,6 +23,7 @@
-> >  #include <linux/pm_runtime.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/phy/phy.h>
-> > +#include <linux/pwrseq/consumer.h>
-> >  #include <linux/regulator/consumer.h>
-> >  #include <linux/reset.h>
-> >  #include <linux/slab.h>
-> > @@ -1467,6 +1468,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
-> >       struct pcie_port *pp;
-> >       struct dw_pcie *pci;
-> >       struct qcom_pcie *pcie;
-> > +     struct pwrseq *pwrseq;
-> >       int ret;
-> >
-> >       pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
-> > @@ -1520,6 +1522,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
-> >
-> >       pp->ops = &qcom_pcie_dw_ops;
-> >
-> > +     pwrseq = devm_pwrseq_get_optional(dev, "bus");
-> > +     if (IS_ERR(pwrseq)) {
-> > +             ret = PTR_ERR(pwrseq);
-> > +             goto err_pm_runtime_put;
-> > +     }
-> > +     if (pwrseq) {
-> > +             ret = pwrseq_full_power_on(pwrseq);
-> > +             if (ret)
-> > +                     goto err_pm_runtime_put;
-> > +     }
-> > +
-> >       ret = phy_init(pcie->phy);
-> >       if (ret) {
-> >               pm_runtime_disable(&pdev->dev);
-> > diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
-> > index 3421a4821126..4107f0a9c05d 100644
-> > --- a/drivers/power/pwrseq/pwrseq_qca.c
-> > +++ b/drivers/power/pwrseq/pwrseq_qca.c
-> > @@ -1,3 +1,4 @@
-> > +#define DEBUG
-> >  // SPDX-License-Identifier: GPL-2.0-only
-> >  /*
-> >   * Copyright (c) 2021, Linaro Ltd.
-> > --
-> > 2.30.2
-> >
 
 
+On 8/20/21 2:01 PM, Will Deacon wrote:
+> On Fri, Aug 20, 2021 at 12:05:31PM +0530, Anshuman Khandual wrote:
+>> PAGE_SHIFT (PAGE_SIZE and PAGE_MASK) which is derived from ARM64_PAGE_SHIFT
+>> should be moved into pgtable-hwdef.h instead, and subsequently page-def.h
+>> can be just dropped off completely.
+> 
+> According to who?
+> 
+> Every other architecture defines PAGE_SHIFT in page.h, so if you're moving
+> things around then that sounds like a better choice.
 
--- 
-With best wishes
-Dmitry
+Sure, will change. That is why I had asked the question :)
+
+> 
+> Will
+> 
