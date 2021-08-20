@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A413F26CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227E23F26D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238480AbhHTGcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:32:20 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:28422 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235390AbhHTGcT (ORCPT
+        id S238400AbhHTGdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:33:08 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:49360 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232649AbhHTGdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:32:19 -0400
-X-Greylist: delayed 437 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Aug 2021 02:32:18 EDT
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 17K6VRXq012217;
-        Fri, 20 Aug 2021 15:31:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 17K6VRXq012217
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629441087;
-        bh=TojktwP6N8rx3aEpHXABD9Q2v3NaByV5fctRNxyQ1lM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oQwLhsWbCTPQ3ZOJH7U9xuACDZvRFg+jpKSNwuwgSesk3b6LUwbcuDMXGY0rjTePc
-         XFbYiinKguYIyw0USOXBcnfXJqi208c8NNJ+34mdExiv1ZP/2Dgo358SwX+vioyhqB
-         I5dF4F8zUcrWHz74sPdr91fmCwP+UqtePkCsHitdmbIRmw2eM7mepW2dv3opGqdSkl
-         ya4ELonjFPg1KB0Cc904zSC9GGm0Hq+4ePGWnA6w4SVLM4DiB593E5QAN0lteAwFPa
-         82P69aqWejzoTodA2kOAof0ZbY8fRPrUaSqARaqGmQ1vkgmVZvqm6U+HRUmi2SPbkp
-         rOkUOsZXrXLRA==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id j2so982856pll.1;
-        Thu, 19 Aug 2021 23:31:27 -0700 (PDT)
-X-Gm-Message-State: AOAM533cIN8+YQt1PfNmMGUZG0cmBYhO5POqSaE8sfOxkmv9J8LGWMnQ
-        Od5S83xBxz/PlXlSzXzICK3C708vjOyKK3Nc4oE=
-X-Google-Smtp-Source: ABdhPJxm1c+K8hJI3yOQe8W1swKjLIcrowW4t+e6n93MsGMM7cZCPfXqhfw9XxoWs2MrtgGFdjYlReXCVk4zYGZecvs=
-X-Received: by 2002:a17:90a:ea87:: with SMTP id h7mr3035645pjz.198.1629441086554;
- Thu, 19 Aug 2021 23:31:26 -0700 (PDT)
+        Fri, 20 Aug 2021 02:33:07 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17K6QVIh021334;
+        Fri, 20 Aug 2021 08:32:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=selector1; bh=VlO4/Ljo2tdrHraB5iL9pG/9mCpzVfNYC9kEXsTA9pU=;
+ b=M/eGuxXTBbwIB0IfxJiGgmpuJKljQ2ikzH93elP8+W0PRq+BDPar/tAGF4bGLQBY6o5R
+ uXa1HllyhfLbrfGnZhsi6U1bTFIFSuRywqR+s9hqzAhYtKIAJ/uuY0yQaiyMmMiR3rUL
+ NjOQC+hJGsnmtFRQj/ha2Z/ubWYek3ZBd854wOMhNdYNHjZsDzmEB4cxC5n1U3+A4Qr9
+ qOX7s/3erlZnt8ydS1VUvWueARqtcNFp77YCt2WE6q9HRgLSwCtH2TpteoKc0DoGhKA8
+ M/wkR2Y0XqIqCdkY81ji7yV4R/gBqeu0z+pjQHntB8+NLgFlERifHy7h6R0b9C5HGVSt Ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3aj2j1sbj2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Aug 2021 08:32:10 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4E2AA10002A;
+        Fri, 20 Aug 2021 08:32:08 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3BBCF20F6E2;
+        Fri, 20 Aug 2021 08:32:08 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 20 Aug
+ 2021 08:32:07 +0200
+Date:   Fri, 20 Aug 2021 08:32:02 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     CGEL <cgel.zte@gmail.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] spi-stm32: fix Coccinelle warnings
+Message-ID: <20210820063202.GA21711@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: CGEL <cgel.zte@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210820031952.12746-1-jing.yangyang@zte.com.cn>
 MIME-Version: 1.0
-References: <20210820161445.6eadab0c@canb.auug.org.au>
-In-Reply-To: <20210820161445.6eadab0c@canb.auug.org.au>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 20 Aug 2021 15:30:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASpcXLdQXdYErgYu1dCJWpw4qNGxqg8SxP1RzGi-Y5JBQ@mail.gmail.com>
-Message-ID: <CAK7LNASpcXLdQXdYErgYu1dCJWpw4qNGxqg8SxP1RzGi-Y5JBQ@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the scsi tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210820031952.12746-1-jing.yangyang@zte.com.cn>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-20_02:2021-08-20,2021-08-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 3:14 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the scsi tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced this warning:
->
-> drivers/scsi/Makefile:197: FORCE prerequisite is missing
->
-> Exposed by commit
->
->   0fc7db58e2a6 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
->
-> I don't know why this warning only appeared after the merge of the scsi
-> tree, since the offending line has been in this Makefile since 2017
+Hi,
 
-You are doing incremental builds.
+thanks for the patch. We've had this issue reported previously with a patch
+provided at
+(https://lore.kernel.org/linux-spi/20210713191004.GA14729@5eb5c2cbef84/).
+I've put my reviewed-by so it should make its way to the linux-next soon.
 
-Presumably, because include/scsi/scsi_devinfo.h
-is touched by the following commit in the scsi tree.
+Regards,
+Alain
 
-commit f591a2e0548da88130c7b1c79f1f735273adc683
-Author: Martin Kepplinger <martink@posteo.de>
-Date:   Sun Jul 4 09:54:01 2021 +0200
-
-
-Kbuild rebuilds scsi_devinfo_tbl.o due to the
-timestamp update, then displays the warning.
-
-
-
-If the scsi maintainers want to fix this issue,
-a patch is already there.
-
-https://lore.kernel.org/patchwork/patch/1478797/
-
-Since this is a bug, it can get in the scsi tree
-any time.
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+On Thu, Aug 19, 2021 at 08:19:52PM -0700, CGEL wrote:
+> From: jing yangyang <jing.yangyang@zte.com.cn>
+> 
+> WARNING !A || A && B is equivalent to !A || B
+> 
+> This issue was detected with the help of Coccinelle.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> ---
+>  drivers/spi/spi-stm32.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+> index 14ca7ea..cc4a731 100644
+> --- a/drivers/spi/spi-stm32.c
+> +++ b/drivers/spi/spi-stm32.c
+> @@ -912,8 +912,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
+>  		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
+>  			stm32h7_spi_read_rxfifo(spi);
+>  		if (!spi->cur_usedma ||
+> -		    (spi->cur_usedma && (spi->cur_comm == SPI_SIMPLEX_TX ||
+> -		     spi->cur_comm == SPI_3WIRE_TX)))
+> +			(spi->cur_comm == SPI_SIMPLEX_TX ||
+> +			spi->cur_comm == SPI_3WIRE_TX))
+>  			end = true;
+>  	}
+>  
+> -- 
+> 1.8.3.1
+> 
+> 
