@@ -2,214 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3273F28A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8147A3F28A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhHTIrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:47:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20423 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230450AbhHTIr2 (ORCPT
+        id S232519AbhHTItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:49:12 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41396 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhHTItL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:47:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629449210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Fri, 20 Aug 2021 04:49:11 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BDA2F22137;
+        Fri, 20 Aug 2021 08:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629449312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2HhD3HCRTFvEVqk5yap83SXC5Y82U0v5dcvw39zc4Z4=;
-        b=YLxiu0lCFQYyMP91p9KefzStodfvkg5GDrKgEpQMfpjqVf982M+l6Y7dVmmHQ3PfKe0vrU
-        hcYdpLr1tP3YKcelZZi/w4wizftrP3KiK8LRCCJhCY0jUgacFrqJIPChccDGGaPRWXmcJX
-        cRTtoocizyOEvC9lg8+JH8EdbD0IqjQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-7pUhKZP8M5KbpP4CSZXy7g-1; Fri, 20 Aug 2021 04:46:49 -0400
-X-MC-Unique: 7pUhKZP8M5KbpP4CSZXy7g-1
-Received: by mail-wr1-f70.google.com with SMTP id k15-20020a5d628f0000b029015501bab520so2627181wru.16
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:46:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2HhD3HCRTFvEVqk5yap83SXC5Y82U0v5dcvw39zc4Z4=;
-        b=aVzZ1NwaVg8jE+YlkCLYI/gcXddAoKSiiL4GGNG8GkU2VmfB8IlvLjHu3Bs/CUkpLY
-         3a6G4LH2bkeobI46umgJbEDSJ1upeRuVROhOef69c/lejWFRis4NCyJdkBm525Q8Evze
-         +H0G+tUoktayeppbTykwIF33IvcchH48gKhIbf5zfJNiUzCv5YKknLqUVW6aSDLqaAyJ
-         8qNq7F0UlJ4BR5R2WJXQyWq/SIp1CRg2exTgizittvBw2a44r1S9d3eo+5IusbxbQubX
-         u0SmIhsoL1m2oXZsXO5qqqoRi2OWPzSECIjx8ZArL74Y1Xc1JsAlXAGOK86DOI4CRpdc
-         ISFA==
-X-Gm-Message-State: AOAM533HPSf6yyisFrjFvEYO6z4EHsR5+6AY9TfwCaC5jPXQcQD5n8+Y
-        UPyTOELTXzkn+dUzJ28ymtOtsPLyASlBj/hbacoDIXg6e63UrQ7phVWZoe7+cLdoPjIcTaYFL+k
-        K5bzOVI/FHaU/UBvS2iKT3VDp
-X-Received: by 2002:a1c:3b09:: with SMTP id i9mr2685741wma.62.1629449208321;
-        Fri, 20 Aug 2021 01:46:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJytHgubr94As8EiptaA6/T3rm3zShRCHuT1SQpKBWMx/QJTseDVs/BhmrdZPds05dmrZoxc2A==
-X-Received: by 2002:a1c:3b09:: with SMTP id i9mr2685692wma.62.1629449208132;
-        Fri, 20 Aug 2021 01:46:48 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id l9sm5187699wrt.95.2021.08.20.01.46.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 01:46:47 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-unionfs@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210816194840.42769-1-david@redhat.com>
- <20210816194840.42769-3-david@redhat.com>
- <CAHk-=wgsLtJ7=+NGGSEbTw9XBh7qyf4Py9-jBdajGnPTxU1hZg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 2/7] kernel/fork: factor out replacing the current MM
- exe_file
-Message-ID: <d90a7dfd-11c8-c4e1-1c59-91aad5a7f08e@redhat.com>
-Date:   Fri, 20 Aug 2021 10:46:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=VCaN0M5amMyZRXL8tzm/AX/hJ8arauZM7tvxoIPOVXY=;
+        b=J6uwkYNyjhSkdRI9DQp/ktI23jMY43QGD4lspGzN7ETfV32kT89QCV/g6oDNNPY9BoI3ZI
+        ewlvw+eL6vtEEqLBBCTfiEZj8vEqyDWw8bRKnxjQ45Lk6Ynt+mvkL5NGMET9PigBi4QDQ3
+        w3cNKXgQ2FEkKo468F9hAyAXjQvqD7s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629449312;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VCaN0M5amMyZRXL8tzm/AX/hJ8arauZM7tvxoIPOVXY=;
+        b=3RlKmB/KCREuzvOCADE6fhAT5sFxtWEWxg4Mo7SDzTGdpLPioigWW9+mzLBwAvA4pQR/fa
+        063pT9bYeXA3A1BQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AD6881333E;
+        Fri, 20 Aug 2021 08:48:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id kc8wKmBsH2FwTwAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Fri, 20 Aug 2021 08:48:32 +0000
+Date:   Fri, 20 Aug 2021 10:48:32 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH v5 0/3] Handle update hardware queues and queue freeze
+ more carefully
+Message-ID: <20210820084832.nlsbiztn26fv3b73@carbon.lan>
+References: <20210818120530.130501-1-dwagner@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgsLtJ7=+NGGSEbTw9XBh7qyf4Py9-jBdajGnPTxU1hZg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818120530.130501-1-dwagner@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.08.21 22:51, Linus Torvalds wrote:
-> So I like this series.
-> 
-> However, logically, I think this part in replace_mm_exe_file() no
-> longer makes sense:
-> 
-> On Mon, Aug 16, 2021 at 12:50 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> +       /* Forbid mm->exe_file change if old file still mapped. */
->> +       old_exe_file = get_mm_exe_file(mm);
->> +       if (old_exe_file) {
->> +               mmap_read_lock(mm);
->> +               for (vma = mm->mmap; vma && !ret; vma = vma->vm_next) {
->> +                       if (!vma->vm_file)
->> +                               continue;
->> +                       if (path_equal(&vma->vm_file->f_path,
->> +                                      &old_exe_file->f_path))
->> +                               ret = -EBUSY;
->> +               }
->> +               mmap_read_unlock(mm);
->> +               fput(old_exe_file);
->> +               if (ret)
->> +                       return ret;
->> +       }
-> 
-> and should just be removed.
-> 
-> NOTE! I think it makes sense within the context of this patch (where
-> you just move code around), but that it should then be removed in the
-> next patch that does that "always deny write access to current MM
-> exe_file" thing.
-> 
-> I just quoted it in the context of this patch, since the next patch
-> doesn't actually show this code any more.
-> 
-> In the *old* model - where the ETXTBUSY was about the mmap() of the
-> file - the above tests make sense.
-> 
-> But in the new model, walking the mappings just doesn't seem to be a
-> sensible operation any more. The mappings simply aren't what ETXTBUSY
-> is about in the new world order, and so doing that mapping walk seems
-> nonsensical.
-> 
-> Hmm?
+On Wed, Aug 18, 2021 at 02:05:27PM +0200, Daniel Wagner wrote:
+> I've dropped all non FC patches as they were bogus. I've retested this
+> version with all combinations and all looks good now. Also I gave
+> nvme-tcp a spin and again all is good.
 
-I think this is somewhat another kind of "stop user space trying
-to do stupid things" thingy, not necessarily glued to ETXTBUSY:
-don't allow replacing exe_file if that very file is still mapped
-and consequently eventually still in use by the application.
+I forgot to mention I also dropped the first three patches from v4.
+Which seems to break her testing again.
 
-I don't think it necessarily has many things to do with ETXTBUSY:
-we only check if there is a VMA mapping that file, not that it's
-a VM_DENYWRITE mapping.
+Wendy reported all her tests pass with Ming's V7 of 'blk-mq: fix
+blk_mq_alloc_request_hctx' and this series *only* if 'nvme-fc: Update
+hardware queues before using them' from previous version is also used.
 
-That code originates from
+After starring at it once more, I think I finally understood the
+problem. So when we do
 
-commit 4229fb1dc6843c49a14bb098719f8a696cdc44f8
-Author: Konstantin Khlebnikov <khlebnikov@openvz.org>
-Date:   Wed Jul 11 14:02:11 2012 -0700
+        ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+        if (ret)
+                goto out_free_io_queues;
 
-     c/r: prctl: less paranoid prctl_set_mm_exe_file()
+        ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+        if (ret)
+                goto out_delete_hw_queues;
 
-     "no other files mapped" requirement from my previous patch (c/r: prctl:
-     update prctl_set_mm_exe_file() after mm->num_exe_file_vmas removal) is too
-     paranoid, it forbids operation even if there mapped one shared-anon vma.
-     
-     Let's check that current mm->exe_file already unmapped, in this case
-     exe_file symlink already outdated and its changing is reasonable.
+and the number of queues has changed, the connect call will fail:
 
+ nvme2: NVME-FC{2}: create association : host wwpn 0x100000109b5a4dfa rport wwpn 0x50050768101935e5: NQN "nqn.1986-03.com.ibm:nvme:2145.0000020420006CEA"
+ nvme2: Connect command failed, error wo/DNR bit: -16389
 
-The statement "exe_file symlink already outdated and its
-changing is reasonable" somewhat makes sense.
+and we stop the current reconnect attempt and reschedule a new
+reconnect attempt:
 
+ nvme2: NVME-FC{2}: reset: Reconnect attempt failed (-5)
+ nvme2: NVME-FC{2}: Reconnect attempt in 2 seconds
 
-Long story short, I think this check somehow makes a bit of sense, but
-we wouldn't lose too much if we drop it -- just another sanity check.
+Then we try to do the same thing again which fails, thus we never
+make progress.
 
-Your call :)
+So clearly we need to update number of queues at one point. What would
+be the right thing to do here? As I understood we need to be careful
+with frozen requests. Can we abort them (is this even possible in this
+state?) and requeue them before we update the queue numbers?
 
--- 
-Thanks,
-
-David / dhildenb
-
+Daniel
