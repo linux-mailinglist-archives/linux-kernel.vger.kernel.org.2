@@ -2,202 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6253F3494
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5188E3F3498
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240412AbhHTTTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238834AbhHTTSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:18:46 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42652C061764;
-        Fri, 20 Aug 2021 12:18:07 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id y144so11943241qkb.6;
-        Fri, 20 Aug 2021 12:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ULLabupwpKZ9q0uzoJvIF5vhkAHSbV+6NawrmKl86jU=;
-        b=vOxq6guuOESasXLTFsciWuL/8IsC33E6WqMuvMmKpi8j/CaQyQnWvBpiqi73GSmsv7
-         VLWh8TZ+ZsW79yNPESMEP7aPe6SeLHI5E1g8IDHflKuzxTySRWU80BK+FPWKHgoyaYj2
-         khtzh29vBCSxG6cWvXdVoGx1ms0Rp2z+WbkejEjXlh8zu1C839hQUy0OdBa8FZi4n/Mc
-         YVIERs0X5xARMytVbUb+qwK2VzRL12ao3MiU3uKitobZeTE/8dDRQL2Tr5A+K4zecNKb
-         3UEMjbe2JcfI0QBoGPnX+hGIJK9/Mot7kmwzmUd8VGtS60iSt/DyfS0sZxI9bwYtLQ61
-         ngmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ULLabupwpKZ9q0uzoJvIF5vhkAHSbV+6NawrmKl86jU=;
-        b=mpooq+lOQm6ypyRj41+JyfLHlwZq/ktdkXsgqurhdr/ZSqcWDcsKXb4g/mYzQTF8OV
-         bcUdGOxjulDIxYw7+YFua4iRWAlnW5SidgjE0sgBxE/OO6nbn/oV8Znfqx/mVlVPq6Qq
-         Bx06bhROMClWk6U4WdbozbBPsZaPbYNIvihM5W5FqG9n75t6FvE8I2tfzms4LqHQv43l
-         mWc6FQd46Q0EnnZHDxz3VLR3qQlXgbQWho5Pbn6LmdDDDl4iR4XfinXX5sudwfTtTKcZ
-         EpfkW6PrI9qQgXPnlsSQB7diZyE0DfzEP5GKAkcU+p3aRyL1TEdCnSl7ZiJUbeVVmVxc
-         LsEg==
-X-Gm-Message-State: AOAM533OkemHeagR6JyjUK4xzqtgvPObsx+WQZeU2rDtf0hflfacxOLg
-        rXOG6Xzy60+cKI40FYbxwlI=
-X-Google-Smtp-Source: ABdhPJznSPycGbedrlQKmPvJfkRYfeDeksvk/8oXo4aQfgJe/E0SVUmAp5ijmgjXWe9ArQuDXFQ0cg==
-X-Received: by 2002:a37:6c43:: with SMTP id h64mr10502944qkc.362.1629487086476;
-        Fri, 20 Aug 2021 12:18:06 -0700 (PDT)
-Received: from shaak.xiphos.ca (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id o6sm3603869qkp.111.2021.08.20.12.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 12:18:06 -0700 (PDT)
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     liambeguin@gmail.com, peda@axentia.se, jic23@kernel.org,
-        lars@metafoo.de
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v8 14/14] dt-bindings: iio: afe: add bindings for temperature transducers
-Date:   Fri, 20 Aug 2021 15:17:14 -0400
-Message-Id: <20210820191714.69898-15-liambeguin@gmail.com>
-X-Mailer: git-send-email 2.32.0.452.g940fe202adcb
-In-Reply-To: <20210820191714.69898-1-liambeguin@gmail.com>
-References: <20210820191714.69898-1-liambeguin@gmail.com>
+        id S236293AbhHTTVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:21:37 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:57539 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229927AbhHTTVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 15:21:35 -0400
+Received: from [IPv6:::1] ([IPv6:2601:646:8600:3c71:6111:82d6:dfad:778c])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 17KJHuYd937846
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 20 Aug 2021 12:17:56 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 17KJHuYd937846
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021073001; t=1629487085;
+        bh=Swjddd6h78nIFLV61ZIUR3LeMVGCy8t3nFizFuvLjOo=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=KscL6G2l89RQDkEtrhzSWjkvZrFHDi+mzgdzo/IbbPwLq6hNBd/OSU8dL1PWFV2XB
+         wW+VbG4+sezrIAFCFB8T+pmg6Yfqoj7N7eBkkAi2dUC3C8vdIwop4fIXcbDs3wMfpG
+         f0B3USGu38WtkjiXeVwFomXyjKRnp5IO2zD5dCWSTRgpWS1BQ7x4EK1amPlOfx2g2R
+         39Seo/9NcBLHhjPLJQzAbvNgCgsmAdvLK7fdWXaH+KOi+8B2NwpUmMMK6zBO0r0g1q
+         3H9W2Tx23mLp1AzBXvSadlivUk+lpgzSKZM/SmBCIRGLfdCFgs6awRKUKsF4ER/6mk
+         MZM0sEf8tTcrw==
+Date:   Fri, 20 Aug 2021 12:17:49 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Jeff Layton <jlayton@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?ISO-8859-1?Q?Christian_K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: Removing Mandatory Locks
+User-Agent: K-9 Mail for Android
+In-Reply-To: <202108200905.BE8AF7C@keescook>
+References: <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com> <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com> <87h7ft2j68.fsf@disp2133> <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com> <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com> <YRcyqbpVqwwq3P6n@casper.infradead.org> <87k0kkxbjn.fsf_-_@disp2133> <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org> <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com> <202108200905.BE8AF7C@keescook>
+Message-ID: <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Beguin <lvb@xiphos.com>
+I thought the main user was Samba and/or otherwise providing file service f=
+or M$ systems?
 
-An ADC is often used to measure other quantities indirectly.
-This binding describe one case, the measurement of a temperature
-through a temperature transducer (either voltage or current).
+On August 20, 2021 9:30:31 AM PDT, Kees Cook <keescook@chromium=2Eorg> wro=
+te:
+>On Thu, Aug 19, 2021 at 12:15:08PM -0700, Linus Torvalds wrote:
+>> On Thu, Aug 19, 2021 at 11:39 AM Jeff Layton <jlayton@kernel=2Eorg> wro=
+te:
+>> >
+>> > I'm all for ripping it out too=2E It's an insane interface anyway=2E
+>> >
+>> > I've not heard a single complaint about this being turned off in
+>> > fedora/rhel or any other distro that has this disabled=2E
+>>=20
+>> I'd love to remove it, we could absolutely test it=2E The fact that
+>> several major distros have it disabled makes me think it's fine=2E
+>
+>FWIW, it is now disabled in Ubuntu too:
+>
+>https://git=2Elaunchpad=2Enet/~ubuntu-kernel/ubuntu/+source/linux/+git/im=
+pish/commit/?h=3Dmaster-next&id=3Df3aac5e47789cbeb3177a14d3d2a06575249e14b
+>
+>> But as always, it would be good to check Android=2E
+>
+>It looks like it's enabled (checking the Pixel 4 kernel image), but it's
+>not specifically mentioned in any of the build configs that are used to
+>construct the image, so I think this is just catching the "default y"=2E =
+I
+>expect it'd be fine to turn this off=2E
+>
+>I will ask around to see if it's actually used=2E
+>
 
-Signed-off-by: Liam Beguin <lvb@xiphos.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../iio/afe/temperature-transducer.yaml       | 114 ++++++++++++++++++
- 1 file changed, 114 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-
-diff --git a/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-new file mode 100644
-index 000000000000..cfbf5350db27
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/afe/temperature-transducer.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/afe/temperature-transducer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Temperature Transducer
-+
-+maintainers:
-+  - Liam Beguin <liambeguin@gmail.com>
-+
-+description: |
-+  A temperature transducer is a device that converts a thermal quantity
-+  into any other physical quantity. This binding applies to temperature to
-+  voltage (like the LTC2997), and temperature to current (like the AD590)
-+  linear transducers.
-+  In both cases these are assumed to be connected to a voltage ADC.
-+
-+  When an io-channel measures the output voltage of a temperature analog front
-+  end such as a temperature transducer, the interesting measurement is almost
-+  always the corresponding temperature, not the voltage output. This binding
-+  describes such a circuit.
-+
-+  The general transfer function here is (using SI units)
-+    V(T) = Rsense * Isense(T)
-+    T = (Isense(T) / alpha) + offset
-+    T = 1 / (Rsense * alpha) * (V + offset * Rsense * alpha)
-+
-+  When using a temperature to voltage transducer, Rsense is set to 1.
-+
-+  The following circuits show a temperature to current and a temperature to
-+  voltage transducer that can be used with this binding.
-+
-+           VCC
-+          -----
-+            |
-+        +---+---+
-+        | AD590 |                               VCC
-+        +---+---+                              -----
-+            |                                    |
-+            V proportional to T             +----+----+
-+            |                          D+ --+         |
-+            +---- Vout                      | LTC2997 +--- Vout
-+            |                          D- --+         |
-+        +---+----+                          +---------+
-+        | Rsense |                               |
-+        +---+----+                             -----
-+            |                                   GND
-+          -----
-+           GND
-+
-+properties:
-+  compatible:
-+    const: temperature-transducer
-+
-+  io-channels:
-+    maxItems: 1
-+    description: |
-+      Channel node of a voltage io-channel.
-+
-+  '#io-channel-cells':
-+    const: 0
-+
-+  sense-offset-millicelsius:
-+    description: |
-+      Temperature offset.
-+      This offset is commonly used to convert from Kelvins to degrees Celsius.
-+      In that case, sense-offset-millicelsius would be set to <(-273150)>.
-+    default: 0
-+
-+  sense-resistor-ohms:
-+    description: |
-+      The sense resistor.
-+      By default sense-resistor-ohms cancels out the resistor making the
-+      circuit behave like a temperature transducer.
-+    default: 1
-+
-+  alpha-ppm-per-celsius:
-+    description: |
-+      Sometimes referred to as output gain, slope, or temperature coefficient.
-+
-+      alpha is expressed in parts per million which can be micro-amps per
-+      degrees Celsius or micro-volts per degrees Celsius. The is the main
-+      characteristic of a temperature transducer and should be stated in the
-+      datasheet.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - io-channels
-+  - alpha-ppm-per-celsius
-+
-+examples:
-+  - |
-+    ad950: temperature-sensor-0 {
-+        compatible = "temperature-transducer";
-+        #io-channel-cells = <0>;
-+        io-channels = <&temp_adc 3>;
-+
-+        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-+        sense-resistor-ohms = <8060>;
-+        alpha-ppm-per-celsius = <1>; /* 1 uA/K */
-+    };
-+  - |
-+    znq_tmp: temperature-sensor-1 {
-+        compatible = "temperature-transducer";
-+        #io-channel-cells = <0>;
-+        io-channels = <&temp_adc 2>;
-+
-+        sense-offset-millicelsius = <(-273150)>; /* Kelvin to degrees Celsius */
-+        alpha-ppm-per-celsius = <4000>; /* 4 mV/K */
-+    };
-+...
--- 
-2.32.0.452.g940fe202adcb
-
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
