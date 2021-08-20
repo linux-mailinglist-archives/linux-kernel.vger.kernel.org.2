@@ -2,144 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE02C3F342B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C851D3F342D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236949AbhHTTAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:00:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:25540 "EHLO mga05.intel.com"
+        id S237034AbhHTTBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229512AbhHTTAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:00:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="302414859"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="302414859"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 11:59:46 -0700
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="533086069"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 11:59:46 -0700
-Date:   Fri, 20 Aug 2021 11:59:45 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        naoya.horiguchi@nec.com, osalvador@suse.de,
-        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
-        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
-References: <20210706190620.1290391-1-tony.luck@intel.com>
- <20210818002942.1607544-1-tony.luck@intel.com>
- <20210818002942.1607544-2-tony.luck@intel.com>
- <YR/m/8PCmCTbogey@zn.tnic>
+        id S229512AbhHTTBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 15:01:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4171610FF;
+        Fri, 20 Aug 2021 19:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629486023;
+        bh=BvgPxhCAddH1VjNR02w4lxjUIplbwTPx+pzLmIpjQ3E=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=umWZBx+HzcJggGxTutOO5IYDNA3sWXfsF43rOZfJWQ8sLHuf3kWhdbagJMM+Q/ppH
+         7aEH2wBMygzIOVb91SPCoDKiJlRC5FGRxtkW9cUt6VbWV0Tljv4zfNPHwigwwJSujQ
+         cWXfQZ8/DrYS8DxgTzSsT3JMfadiYHuEkAo460I+xiBNB8GiAw0W22KgMVVQsYPPKP
+         aUCdDEZOnKozDLXUS+J2IbWEDs7/8gMzorsJOEnx+UMyHFVGw/+iPfDU75IQtBlY3Z
+         9CHfMjEenOKozTzBCv6eXc5fBmTlHCBsT3mIISeMiewmULzON9lPpF03LED7LQ95+7
+         cLfZLkxpaSPVw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7A3315C0399; Fri, 20 Aug 2021 12:00:23 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 12:00:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        kernel-team@fb.com, ak@linux.intel.com, rong.a.chen@intel.com,
+        sboyd@kernel.org
+Subject: [GIT PULL v2 clocksource] Clocksource watchdog commits for v5.15
+Message-ID: <20210820190023.GA1387549@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YR/m/8PCmCTbogey@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 07:31:43PM +0200, Borislav Petkov wrote:
-> On Tue, Aug 17, 2021 at 05:29:40PM -0700, Tony Luck wrote:
-> > +	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
-> 
-> "likely"
+Hello, Thomas,
 
-Oops.
+This pull request contains a single change that enables clocksource
+watchdog testing on systems with HZ < 100, as an alternative to the
+earlier pull request that prohibited such testing.  This change has been
+posted to LKML:
 
-> 
-> > +	if (count > 10)
-> > +		mce_panic("Too many machine checks while accessing user data", m, msg);
-> 
-> Ok, aren't we too nasty here? Why should we panic the whole box even
-> with 10 MCEs? It is still user memory...
-> 
-> IOW, why not:
-> 
-> 	if (count > 10)
-> 		current->mce_kill_me.func = kill_me_now;
-> 
-> and when we return, that user process dies immediately.
+https://lore.kernel.org/lkml/20210812200112.GY4126399@paulmck-ThinkPad-P17-Gen-1/
 
-It's the "when we return" part that is the problem here. Logical
-trace looks like:
+this has been subjected to the kbuild test robot and -next testing,
+and is available in the git repository based on v5.14-rc2 at:
 
-user-syscall:
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git clocksource
 
-	kernel does get_user() or copyin(), hits user poison address
+for you to fetch changes up to a5e8561a2bdf276fdd2a7f63a8154930863fcbda:
 
-		machine check
-		sees that this was kernel get_user()/copyin() and
-		uses extable to "return" to exception path
+  clocksource: Make clocksource-wdtest.c safe for slow-HZ systems (2021-08-16 12:00:02 -0700)
 
-	still in kernel, see that get_user() or copyin() failed
+----------------------------------------------------------------
+Paul E. McKenney (1):
+      clocksource: Make clocksource-wdtest.c safe for slow-HZ systems
 
-	Kernel does another get_user() or copyin() (maybe the first
-	was inside a pagefault_disable() region, and kernel is trying
-	again to see if the error was a fixable page fault. But that
-	wasn't the problem so ...
-
-		machine check
-		sees that this was kernel get_user()/copyin() and
-		uses extable to "return" to exception path
-
-	still in kernel ... but persistently thinks that just trying again
-	might fix it.
-
-		machine check
-		sees that this was kernel get_user()/copyin() and
-		uses extable to "return" to exception path
-
-	still in kernel ... this time for sure! get_user()
-
-		machine check
-		sees that this was kernel get_user()/copyin() and
-		uses extable to "return" to exception path
-
-	still in kernel ... but you may see the pattern get_user()
-
-		machine check
-		sees that this was kernel get_user()/copyin() and
-		uses extable to "return" to exception path
-
-	I'm bored typing this, but the kernel may not ever give up
-
-		machine check
-		sees that this was kernel get_user()/copyin() and
-		uses extable to "return" to exception path
-
-I.e. the kernel doesn't ever get to call current->mce_kill_me.func()
-
-I do have tests that show as many as 4 consecutive machine checks
-before the kernel gives up trying and returns to the user to complete
-recovery.
-
-Maybe the message could be clearer?
-
-	mce_panic("Too many consecutive machine checks in kernel while accessing user data", m, msg);
-
-> 
-> > +	/* Second or later call, make sure page address matches the one from first call */
-> > +	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-> > +		mce_panic("Machine checks to different user pages", m, msg);
-> 
-> Same question here.
-
-Not quite the same answer ... but similar.  We could in theory handle
-multiple different machine check addresses by turning the "mce_addr"
-field in the task structure into an array and saving each address so
-that when the kernel eventually gives up poking at poison and tries
-to return to user kill_me_maybe() could loop through them and deal
-with each poison page.
-
-I don't think this can happen. Jue Wang suggested that multiple poisoned
-pages passed to a single write(2) syscall might trigger this panic (and
-because of a bug in my earlier version, he managed to trigger this
-"different user pages" panic). But this fixed up version survives the
-"Jue test".
-
--Tony
+ kernel/time/clocksource-wdtest.c |  5 ++---
+ kernel/time/jiffies.c            | 21 +--------------------
+ kernel/time/tick-internal.h      | 20 ++++++++++++++++++++
+ 3 files changed, 23 insertions(+), 23 deletions(-)
