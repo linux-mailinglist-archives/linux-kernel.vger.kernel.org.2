@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668B53F2DC2
+	by mail.lfdr.de (Postfix) with ESMTP id AE9493F2DC3
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240919AbhHTOM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:12:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35164 "EHLO mail.kernel.org"
+        id S240927AbhHTONA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:13:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240788AbhHTOMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240801AbhHTOMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Aug 2021 10:12:41 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60BA861158;
+        by mail.kernel.org (Postfix) with ESMTPSA id 904A36113D;
         Fri, 20 Aug 2021 14:12:03 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94.2)
         (envelope-from <rostedt@goodmis.org>)
-        id 1mH5Fa-004oMt-ER; Fri, 20 Aug 2021 10:12:02 -0400
-Message-ID: <20210820141202.280958493@goodmis.org>
+        id 1mH5Fa-004oNS-Ki; Fri, 20 Aug 2021 10:12:02 -0400
+Message-ID: <20210820141202.481189564@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 20 Aug 2021 10:11:16 -0400
+Date:   Fri, 20 Aug 2021 10:11:17 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [for-next][PATCH 7/9] tracing/probe: Change traceprobe_set_print_fmt() to take a type
+Subject: [for-next][PATCH 8/9] tracing/probes: Have process_fetch_insn() take a void * instead of
+ pt_regs
 References: <20210820141109.993445617@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -37,177 +38,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Instead of a boolean "is_return" have traceprobe_set_print_fmt() take a
-type (currently just PROBE_PRINT_NORMAL and PROBE_PRINT_RETURN). This will
-simplify adding different types. For example, the development of the
-event_probe, will need its own type as it prints an event, and not an IP.
+In preparation to allow event probes to use the process_fetch_insn()
+callback in trace_probe_tmpl.h, change the data passed to it from a
+pointer to pt_regs, as the event probe will not be using regs, and make it
+a void pointer instead.
 
-Link: https://lkml.kernel.org/r/20210819041842.104626301@goodmis.org
+Update the process_fetch_insn() callers for kprobe and uprobe events to
+have the regs defined in the function and just typecast the void pointer
+parameter.
+
+Link: https://lkml.kernel.org/r/20210819041842.291622924@goodmis.org
 
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_kprobe.c |  9 +++++++--
- kernel/trace/trace_probe.c  | 18 ++++++++++++------
- kernel/trace/trace_probe.h  |  7 ++++++-
- kernel/trace/trace_uprobe.c |  8 ++++++--
- 4 files changed, 31 insertions(+), 11 deletions(-)
+ kernel/trace/trace_kprobe.c     | 3 ++-
+ kernel/trace/trace_probe_tmpl.h | 6 +++---
+ kernel/trace/trace_uprobe.c     | 3 ++-
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index ca726c9d0859..c6fe7a6e3f35 100644
+index c6fe7a6e3f35..4b013d24f5a9 100644
 --- a/kernel/trace/trace_kprobe.c
 +++ b/kernel/trace/trace_kprobe.c
-@@ -742,6 +742,7 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 	bool is_return = false;
- 	char *symbol = NULL, *tmp = NULL;
- 	const char *event = NULL, *group = KPROBE_EVENT_SYSTEM;
-+	enum probe_print_type ptype;
- 	int maxactive = 0;
- 	long offset = 0;
- 	void *addr = NULL;
-@@ -875,7 +876,8 @@ static int __trace_kprobe_create(int argc, const char *argv[])
- 			goto error;	/* This can be -ENOMEM */
- 	}
+@@ -1325,9 +1325,10 @@ probe_mem_read(void *dest, void *src, size_t size)
  
--	ret = traceprobe_set_print_fmt(&tk->tp, is_return);
-+	ptype = is_return ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-+	ret = traceprobe_set_print_fmt(&tk->tp, ptype);
- 	if (ret < 0)
- 		goto error;
- 
-@@ -1799,6 +1801,7 @@ struct trace_event_call *
- create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
- 			  bool is_return)
+ /* Note that we don't verify it, since the code does not come from user space */
+ static int
+-process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs, void *dest,
++process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
+ 		   void *base)
  {
-+	enum probe_print_type ptype;
- 	struct trace_kprobe *tk;
- 	int ret;
- 	char *event;
-@@ -1822,7 +1825,9 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
++	struct pt_regs *regs = rec;
+ 	unsigned long val;
  
- 	init_trace_event_call(tk);
+ retry:
+diff --git a/kernel/trace/trace_probe_tmpl.h b/kernel/trace/trace_probe_tmpl.h
+index f003c5d02a3a..b3bdb8ddb862 100644
+--- a/kernel/trace/trace_probe_tmpl.h
++++ b/kernel/trace/trace_probe_tmpl.h
+@@ -54,7 +54,7 @@ fetch_apply_bitfield(struct fetch_insn *code, void *buf)
+  * If dest is NULL, don't store result and return required dynamic data size.
+  */
+ static int
+-process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs,
++process_fetch_insn(struct fetch_insn *code, void *rec,
+ 		   void *dest, void *base);
+ static nokprobe_inline int fetch_store_strlen(unsigned long addr);
+ static nokprobe_inline int
+@@ -188,7 +188,7 @@ __get_data_size(struct trace_probe *tp, struct pt_regs *regs)
  
--	if (traceprobe_set_print_fmt(&tk->tp, trace_kprobe_is_return(tk)) < 0) {
-+	ptype = trace_kprobe_is_return(tk) ?
-+		PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-+	if (traceprobe_set_print_fmt(&tk->tp, ptype) < 0) {
- 		ret = -ENOMEM;
- 		goto error;
- 	}
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index 0916a9964719..9c9c83a063b2 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -851,19 +851,25 @@ int traceprobe_update_arg(struct probe_arg *arg)
- /* When len=0, we just calculate the needed length */
- #define LEN_OR_ZERO (len ? len - pos : 0)
- static int __set_print_fmt(struct trace_probe *tp, char *buf, int len,
--			   bool is_return)
-+			   enum probe_print_type ptype)
+ /* Store the value of each argument */
+ static nokprobe_inline void
+-store_trace_args(void *data, struct trace_probe *tp, struct pt_regs *regs,
++store_trace_args(void *data, struct trace_probe *tp, void *rec,
+ 		 int header_size, int maxlen)
  {
- 	struct probe_arg *parg;
- 	int i, j;
- 	int pos = 0;
- 	const char *fmt, *arg;
- 
--	if (!is_return) {
-+	switch (ptype) {
-+	case PROBE_PRINT_NORMAL:
- 		fmt = "(%lx)";
- 		arg = "REC->" FIELD_STRING_IP;
--	} else {
-+		break;
-+	case PROBE_PRINT_RETURN:
- 		fmt = "(%lx <- %lx)";
- 		arg = "REC->" FIELD_STRING_FUNC ", REC->" FIELD_STRING_RETIP;
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		return 0;
- 	}
- 
- 	pos += snprintf(buf + pos, LEN_OR_ZERO, "\"%s", fmt);
-@@ -912,20 +918,20 @@ static int __set_print_fmt(struct trace_probe *tp, char *buf, int len,
- }
- #undef LEN_OR_ZERO
- 
--int traceprobe_set_print_fmt(struct trace_probe *tp, bool is_return)
-+int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_type ptype)
- {
- 	struct trace_event_call *call = trace_probe_event_call(tp);
- 	int len;
- 	char *print_fmt;
- 
- 	/* First: called with 0 length to calculate the needed length */
--	len = __set_print_fmt(tp, NULL, 0, is_return);
-+	len = __set_print_fmt(tp, NULL, 0, ptype);
- 	print_fmt = kmalloc(len + 1, GFP_KERNEL);
- 	if (!print_fmt)
- 		return -ENOMEM;
- 
- 	/* Second: actually write the @print_fmt */
--	__set_print_fmt(tp, print_fmt, len + 1, is_return);
-+	__set_print_fmt(tp, print_fmt, len + 1, ptype);
- 	call->print_fmt = print_fmt;
- 
- 	return 0;
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 42aa084902fa..8adf5f3542a6 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -363,7 +363,12 @@ extern int traceprobe_split_symbol_offset(char *symbol, long *offset);
- int traceprobe_parse_event_name(const char **pevent, const char **pgroup,
- 				char *buf, int offset);
- 
--extern int traceprobe_set_print_fmt(struct trace_probe *tp, bool is_return);
-+enum probe_print_type {
-+	PROBE_PRINT_NORMAL,
-+	PROBE_PRINT_RETURN,
-+};
-+
-+extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_type ptype);
- 
- #ifdef CONFIG_PERF_EVENTS
- extern struct trace_event_call *
+ 	struct probe_arg *arg;
+@@ -203,7 +203,7 @@ store_trace_args(void *data, struct trace_probe *tp, struct pt_regs *regs,
+ 		/* Point the dynamic data area if needed */
+ 		if (unlikely(arg->dynamic))
+ 			*dl = make_data_loc(maxlen, dyndata - base);
+-		ret = process_fetch_insn(arg->code, regs, dl, base);
++		ret = process_fetch_insn(arg->code, rec, dl, base);
+ 		if (unlikely(ret < 0 && arg->dynamic)) {
+ 			*dl = make_data_loc(0, dyndata - base);
+ 		} else {
 diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 590bb9a02f8d..09f8ca7f7ba0 100644
+index 09f8ca7f7ba0..d219ba50efbd 100644
 --- a/kernel/trace/trace_uprobe.c
 +++ b/kernel/trace/trace_uprobe.c
-@@ -536,6 +536,7 @@ static int __trace_uprobe_create(int argc, const char **argv)
- 	const char *event = NULL, *group = UPROBE_EVENT_SYSTEM;
- 	char *arg, *filename, *rctr, *rctr_end, *tmp;
- 	char buf[MAX_EVENT_NAME_LEN];
-+	enum probe_print_type ptype;
- 	struct path path;
- 	unsigned long offset, ref_ctr_offset;
- 	bool is_return = false;
-@@ -687,7 +688,8 @@ static int __trace_uprobe_create(int argc, const char **argv)
- 			goto error;
- 	}
+@@ -213,9 +213,10 @@ static unsigned long translate_user_vaddr(unsigned long file_offset)
  
--	ret = traceprobe_set_print_fmt(&tu->tp, is_ret_probe(tu));
-+	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-+	ret = traceprobe_set_print_fmt(&tu->tp, ptype);
- 	if (ret < 0)
- 		goto error;
- 
-@@ -1578,6 +1580,7 @@ struct trace_event_call *
- create_local_trace_uprobe(char *name, unsigned long offs,
- 			  unsigned long ref_ctr_offset, bool is_return)
+ /* Note that we don't verify it, since the code does not come from user space */
+ static int
+-process_fetch_insn(struct fetch_insn *code, struct pt_regs *regs, void *dest,
++process_fetch_insn(struct fetch_insn *code, void *rec, void *dest,
+ 		   void *base)
  {
-+	enum probe_print_type ptype;
- 	struct trace_uprobe *tu;
- 	struct path path;
- 	int ret;
-@@ -1612,7 +1615,8 @@ create_local_trace_uprobe(char *name, unsigned long offs,
- 	tu->filename = kstrdup(name, GFP_KERNEL);
- 	init_trace_event_call(tu);
++	struct pt_regs *regs = rec;
+ 	unsigned long val;
  
--	if (traceprobe_set_print_fmt(&tu->tp, is_ret_probe(tu)) < 0) {
-+	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
-+	if (traceprobe_set_print_fmt(&tu->tp, ptype) < 0) {
- 		ret = -ENOMEM;
- 		goto error;
- 	}
+ 	/* 1st stage: get value from context */
 -- 
 2.30.2
