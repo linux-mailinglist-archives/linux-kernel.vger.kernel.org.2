@@ -2,153 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9304A3F2CCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E95123F2CDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240716AbhHTNJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44276 "EHLO
+        id S240685AbhHTNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240675AbhHTNJQ (ORCPT
+        with ESMTP id S240586AbhHTNLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:09:16 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E488C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:08:38 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id u21so4425935qtw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:08:38 -0700 (PDT)
+        Fri, 20 Aug 2021 09:11:07 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DEDC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:10:29 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id h13so14264658wrp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:10:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TUaFXYR3HgX7rq/VVrgPte+1/jUiDRhyGavFeUWW8ns=;
-        b=qyykdYkmfS+sozWV6prsKemkogSdt6dw3JI6xplGBEyTZrCLVw/V2WrXps+vMYETkc
-         8Te8E/naVt9sCYftHN+RQWgeipXTUxRrtvWgldkYCu2Cbe9g6ADwtRoynUE5z+qBzTjG
-         54yO9pPGaOTEYQUVc1FEW/T8RQKm7EsP8D7GtvNgk4bFWoxEOLRtHkxavfl9A0+APfke
-         fUSP5CH+beQOqMRPOpWAxyXQpPSp8NBKx7ZcRxpsbapjzzBlp12z8K73a7u/zLR3Yi/5
-         /eO+ssNjqZxgkZLIbtO1QrlN47VLwXpLqfNwD+gSTbQel6v8qOEG9qHA3WYS7WzopQpP
-         XncQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JGwwJdwtudLTEIgTRNxfN12vJMwR2ib2m9Rc8xqQO/A=;
+        b=be/++HF/SDiU7XR3QbVbS6Huz3knXu6tpXk5v6plce1xWf2mn3upyePrih4x1tbvWW
+         zhbJuifVz7kz0hphM9KoCVzsyb36tU1MvVs6Bfi31YkjJaLU3OAuktDaNUIPpvtoBpru
+         /U6ki79X0NCd2B1A1bpQfL6qNJ/57wVCM6t4uP2k2txAYNII2QRptgmMnAZwjaX7UUxV
+         qcXAsaz5medx2G1nnUuVN+Zcs71ii0ap0B64nzqkpCF7laTCJpHEMhIZshM0xuCnA+Jr
+         LuUgSHWBUU9MU5gQVHkCAyc+FPPcxqiLjeWipEhX4brJKh98lWI79lyXf0imSTcYX0dD
+         pU3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TUaFXYR3HgX7rq/VVrgPte+1/jUiDRhyGavFeUWW8ns=;
-        b=DwubVoFs1irNxFHahHNxfo9hx0J5xeczsbMxQNhVWh4/NLY/a5yUCrm93M/DBNMqn9
-         1FC7uMsEt/LMQrasXr23OvKM7G92jpGUKqV+Dk9/XVREwhv4dH2WFLKU1KEhEroPyMv3
-         R4Zwx9Fbx4rZaAmagQxUploOzmu2FKFxPLD/Xzvrktun9thy07WVe6M7oTuCOs5W6Uaf
-         gy+w4v2UF2T4cvmQtl0Casfhh2gRelfzaA2y/avMDFxTreI/wu/oqAY9tqXDc5q3mv4S
-         GalsyGWnphTApqDvSb0apephw86VMJxVAt2R5yl6QhmNQjDcuGoHnBsjmm3KaGMtYKHf
-         dHSg==
-X-Gm-Message-State: AOAM533DGInk4N9+e2u1NigT9LcuhmCz6Ynt1L73TV+Vxq1S/3maUqIx
-        RHIf8thurFjbz7/D+9QO+TC2pdjXRoYWSZTY6sb9dA==
-X-Google-Smtp-Source: ABdhPJyHXvzqFdkh92xFSl2Tfgr6Wq+GnxyuqFmSQJ3g0FPjwxN9S26JOc0IArVq879EP1YIZ1goBTULRA693ce45J8=
-X-Received: by 2002:a05:622a:13c8:: with SMTP id p8mr17705841qtk.238.1629464912762;
- Fri, 20 Aug 2021 06:08:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JGwwJdwtudLTEIgTRNxfN12vJMwR2ib2m9Rc8xqQO/A=;
+        b=JyqFgVPyi9EXB81tTL8cjWddVHo4ayde3N3xrSlx4GjNB6HKJsLBnNWBhK8ch4tbzK
+         p4lLErLvN5Hi07c9aNnSiotl1CxkixlWWcM+IchO3WnL8ilyfiex0L/a2vA/UIOX0VPU
+         YxWov4vpZdlQApsUlvXokx6QhFrGMWQNPzFShmOZcewzV2dZh7oyKc3O9gfvy7MLOT0q
+         v+54VsoOxuv+HxTa3WCWUTissi2SX1FJ8WfLPma23TxUHKyS1ilEjm6L0/ClJPuxxs35
+         1oPkY6qYazcyVdwDpH7kb3AWZ6uu0vBccFrH9tI3+cutRtjBNGo25fF/HOhqmJusEjK3
+         o7Pg==
+X-Gm-Message-State: AOAM533DnaguWwzdHjB0+ERq998H4rJeH4zIG0X5P0CdY2W1/fxa8I0s
+        6IEJJAG+16mh1fAXfxSIU0t6OrE+URo8ycto
+X-Google-Smtp-Source: ABdhPJw39LyMV35FzoMSAega8xxA34c4SQk4/eGco8RfbC4n5Ho8h2ylExfMZsUsWJQmKkDXzUCY2w==
+X-Received: by 2002:adf:f9d2:: with SMTP id w18mr10021565wrr.402.1629465027666;
+        Fri, 20 Aug 2021 06:10:27 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c378:b01b:5d2d:5223? ([2a01:e34:ed2f:f020:c378:b01b:5d2d:5223])
+        by smtp.googlemail.com with ESMTPSA id v1sm5755286wrt.93.2021.08.20.06.10.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 06:10:27 -0700 (PDT)
+Subject: Re: [PATCH 2/2] cpufreq: intel_pstate: Process HWP Guaranteed change
+ notification
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        rui.zhang@intel.com, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        lenb@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
+ <20210820024006.2347720-2-srinivas.pandruvada@linux.intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <567c9ec4-9b88-f2f5-6d75-075dd96a76ae@linaro.org>
+Date:   Fri, 20 Aug 2021 15:10:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org> <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
-In-Reply-To: <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 20 Aug 2021 16:08:21 +0300
-Message-ID: <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/15] create power sequencing subsystem
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        MSM <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210820024006.2347720-2-srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 20/08/2021 04:40, Srinivas Pandruvada wrote:
+> It is possible that HWP guaranteed ratio is changed in response to
+> change in power and thermal limits. For example when Intel Speed Select
+> performance profile is changed or there is change in TDP, hardware can
+> send notifications. It is possible that the guaranteed ratio is
+> increased. This creates an issue when turbo is disabled, as the old
+> limits set in MSR_HWP_REQUEST are still lower and hardware will clip
+> to older limits.
+> 
+> This change enables HWP interrupt and process HWP interrupts. When
+> guaranteed is changed, calls cpufreq_update_policy() so that driver
+> callbacks are called to update to new HWP limits. This callback
+> is called from a delayed workqueue of 10ms to avoid frequent updates.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
-On Thu, 19 Aug 2021 at 18:23, Marcel Holtmann <marcel@holtmann.org> wrote:
-> > This is an RFC of the proposed power sequencer subsystem. This is a
-> > generification of the MMC pwrseq code. The subsystem tries to abstract
-> > the idea of complex power-up/power-down/reset of the devices.
-> >
-> > The primary set of devices that promted me to create this patchset is
-> > the Qualcomm BT+WiFi family of chips. They reside on serial+platform
-> > interfaces (older generations) or on serial+PCIe (newer generations).
-> > They require a set of external voltage regulators to be powered on and
-> > (some of them) have separate WiFi and Bluetooth enable GPIOs.
-> >
-> > This patchset being an RFC tries to demonstrate the approach, design an=
-d
-> > usage of the pwrseq subsystem. Following issues are present in the RFC
-> > at this moment but will be fixed later if the overall approach would be
-> > viewed as acceptable:
-> >
-> > - No documentation
-> >   While the code tries to be self-documenting proper documentation
-> >   would be required.
-> >
-> > - Minimal device tree bindings changes
-> >   There are no proper updates for the DT bindings (thus neither Rob
-> >   Herring nor devicetree are included in the To/Cc lists). The dt
-> >   schema changes would be a part of v1.
-> >
-> > - Lack of proper PCIe integration
-> >   At this moment support for PCIe is hacked up to be able to test the
-> >   PCIe part of qca6390. Proper PCIe support would require automatically
-> >   powering up the devices before the scan basing on the proper device
-> >   structure in the device tree.
-> >
-> > ----------------------------------------------------------------
-> > Dmitry Baryshkov (15):
-> >      power: add power sequencer subsystem
-> >      pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
-> >      mmc: core: switch to new pwrseq subsystem
-> >      ath10k: add support for pwrseq sequencing
-> >      Bluetooth: hci_qca: merge qca_power into qca_serdev
-> >      Bluetooth: hci_qca: merge init paths
-> >      Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
-> >      Bluetooth: hci_qca: futher rework of power on/off handling
-> >      Bluetooth: hci_qca: add support for pwrseq
->
-> any chance you can try to abandon patching hci_qca. The serdev support in=
- hci_uart is rather hacking into old line discipline code and it is not agi=
-ng well. It is really becoming a mess.
+Does this patch depend on 1/2 ?
 
-I wanted to stay away from rewriting the BT code. But... New driver
-would have a bonus point that I don't have to be compatible with old
-bindings. In fact we can even make it the other way around: let the
-old driver always use regulators and make the new driver support only
-the pwrseq. Then it should be possible to drop the old hci_qca driver
-together with dropping the old bindings.
+> ---
+>  drivers/cpufreq/intel_pstate.c | 39 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index bb4549959b11..0fd2375c1f1e 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -32,6 +32,7 @@
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/intel-family.h>
+> +#include "../drivers/thermal/intel/thermal_interrupt.h"
+>  
+>  #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
+>  
+> @@ -219,6 +220,7 @@ struct global_params {
+>   * @sched_flags:	Store scheduler flags for possible cross CPU update
+>   * @hwp_boost_min:	Last HWP boosted min performance
+>   * @suspended:		Whether or not the driver has been suspended.
+> + * @hwp_notify_work:	workqueue for HWP notifications.
+>   *
+>   * This structure stores per CPU instance data for all CPUs.
+>   */
+> @@ -257,6 +259,7 @@ struct cpudata {
+>  	unsigned int sched_flags;
+>  	u32 hwp_boost_min;
+>  	bool suspended;
+> +	struct delayed_work hwp_notify_work;
+>  };
+>  
+>  static struct cpudata **all_cpu_data;
+> @@ -1625,6 +1628,40 @@ static void intel_pstate_sysfs_hide_hwp_dynamic_boost(void)
+>  
+>  /************************** sysfs end ************************/
+>  
+> +static void intel_pstate_notify_work(struct work_struct *work)
+> +{
+> +	mutex_lock(&intel_pstate_driver_lock);
+> +	cpufreq_update_policy(smp_processor_id());
+> +	wrmsrl(MSR_HWP_STATUS, 0);
+> +	mutex_unlock(&intel_pstate_driver_lock);
+> +}
+> +
+> +void notify_hwp_interrupt(void)
+> +{
+> +	unsigned int this_cpu = smp_processor_id();
+> +	struct cpudata *cpudata;
+> +	u64 value;
+> +
+> +	if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+> +		return;
+> +
+> +	rdmsrl(MSR_HWP_STATUS, value);
+> +	if (!(value & 0x01))
+> +		return;
+> +
+> +	cpudata = all_cpu_data[this_cpu];
+> +	schedule_delayed_work_on(this_cpu, &cpudata->hwp_notify_work, msecs_to_jiffies(10));
+> +}
+> +
+> +static void intel_pstate_enable_hwp_interrupt(struct cpudata *cpudata)
+> +{
+> +	/* Enable HWP notification interrupt for guaranteed performance change */
+> +	if (boot_cpu_has(X86_FEATURE_HWP_NOTIFY)) {
+> +		INIT_DELAYED_WORK(&cpudata->hwp_notify_work, intel_pstate_notify_work);
+> +		wrmsrl_on_cpu(cpudata->cpu, MSR_HWP_INTERRUPT, 0x01);
+> +	}
+> +}
+> +
+>  static void intel_pstate_hwp_enable(struct cpudata *cpudata)
+>  {
+>  	/* First disable HWP notification interrupt as we don't process them */
+> @@ -1634,6 +1671,8 @@ static void intel_pstate_hwp_enable(struct cpudata *cpudata)
+>  	wrmsrl_on_cpu(cpudata->cpu, MSR_PM_ENABLE, 0x1);
+>  	if (cpudata->epp_default == -EINVAL)
+>  		cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
+> +
+> +	intel_pstate_enable_hwp_interrupt(cpudata);
+>  }
+>  
+>  static int atom_get_min_pstate(void)
+> 
 
-> I would say that the Qualcomm serial devices could use a separate standal=
-one serdev driver. A while I send an RFC for a new serdev driver.
->
-> https://www.spinics.net/lists/linux-bluetooth/msg74918.html
 
-Any reason why your driver stayed as an RFC and never made it into the
-kernel? Do you plan to revive your old RFCs on H:4 and H:5?
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> There I had the idea that simple vendor specifics can be in that driver (=
-like the Broadcom part I added there), but frankly the QCA specifics are a =
-bit too specific and it should be a separate driver. However I think this w=
-ould be a good starting point.
->
-> In general a H:4 based Bluetooth driver is dead simple with the help of h=
-4_recv.h helper we have in the kernel. The complicated part is the power ma=
-nagement pieces or any vendor specific low-power protocol they are running =
-on that serial line. And since you are touching this anyway, doing a driver=
- from scratch might be lot simpler and cleaner. It would surely help all th=
-e new QCA device showing up in the future.
-
---=20
-With best wishes
-Dmitry
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
