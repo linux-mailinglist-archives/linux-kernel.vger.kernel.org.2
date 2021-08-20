@@ -2,101 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75F63F3212
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F5F3F3216
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbhHTRN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhHTRN4 (ORCPT
+        id S233582AbhHTRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:15:46 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36296 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232460AbhHTRPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:13:56 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D10FC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:13:18 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so15398271oti.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FXSqbQkGwpmuS098nxMAvtEnVwMvIhc8mYNL176c7Gc=;
-        b=LhTpqsGUoUHR22mwvjEuKWTyIgpnlo0fudH8JszfBfl8vw/u7iDHObOKAlj5JCWo+r
-         QfhXJVCPgtqftDEL4YbzXxc8zt+qPkORkpdzn7yXHvaBt0+yijNwLv1F/gHBx64AwmNA
-         u4Ho1lWEZOyDFTApDW/XxNkr74fCgwT3oCOmHagk+CkeFakWC3AOrlrY04kBgovbkomz
-         terQGzTTPjYGtRGesP//tqfvP6NfC4YZVKMrxkMHim2FeioiyXZQR8EuGTUc547J61Es
-         3IF2Ye8kLKDatrOpJnOCPyOgr3nDS5mQQ5lCIrdJ44Ge6o5ylltd+I+MyUk162HqNtkS
-         YuaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FXSqbQkGwpmuS098nxMAvtEnVwMvIhc8mYNL176c7Gc=;
-        b=BngomULyskqVKuyhmrcjq+6dAmxkbLXj7HAde2yFgbcsYnfwclhwsCX+htLjZGZoHS
-         Pr3XyafZCtwzdlE0lMQzbkAWpPoX+2g7RNKOqpWxY+Bi1j65hjR7bi+4z5QhHILv/oae
-         U08ETsfX58gAXKxhHZmQmoSVask8fT9VXuc+TKF3qHY/tnxF5GaLyk8k8fevVLmi0L+1
-         sYVXy+w7Q5uwdkm/ZiKSI9NOOnclvWfSmlqQUiDMCjHvL5ajXlmT0DewmnCFkIL3hNhB
-         LGHDUIbLBPN1nKq8h9AWDFakttJEDg4BGyJBumEo4qGmMr5uvVwlQ1+uaZvCmIFhmaid
-         24bQ==
-X-Gm-Message-State: AOAM530Nocu+xW1UdIGbqzE9h4ZDH90OlaeRN9QmifG15ya68KKYY1XS
-        hg+0mCTwZ/fd91loz+JOWG0=
-X-Google-Smtp-Source: ABdhPJwoXP+Q96yW0pS89vi2le0AyX3sajJwfU8BRmrxi9PhyXb7BshkwPYpy2+TrWz/FqIf826Zew==
-X-Received: by 2002:aca:2206:: with SMTP id b6mr3687793oic.88.1629479597791;
-        Fri, 20 Aug 2021 10:13:17 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com. [2603:8090:2005:39b3::1023])
-        by smtp.gmail.com with ESMTPSA id 32sm1590953otr.2.2021.08.20.10.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 10:13:17 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: clean up endianness issues
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Aakash Hemadri' <aakashhemadri123@gmail.com>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <8a3fca82d9ec5dde9e42d40f0268a324cc87ebc6.1629301854.git.aakashhemadri123@gmail.com>
- <3dfde3cd06094e52b71b48a3a2524226@AcuMS.aculab.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <8bd7047c-49d1-b93d-3ccb-96d9773f3f66@lwfinger.net>
-Date:   Fri, 20 Aug 2021 12:13:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 20 Aug 2021 13:15:45 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 391F220C33D2;
+        Fri, 20 Aug 2021 10:15:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 391F220C33D2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629479707;
+        bh=ItGD9aVsu1rDLYchQmQY7HIG/PkWjPml35jwFsC9TjI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gLAHZ12gG7OD4P02DER4dsuQ6ShHdj712p31JBnPXUDpJdmwyynsClaErW+hBX1ml
+         W8xB9R3dxodSWVI7BhIbnEu8/AaD9v4O2S/JM8jZs9oLBIgq55jNpxbBMre1Faj7nB
+         nR8qHRl8RwaMO6/hCcslllOeASDcfkjqqR/OAZag=
+Received: by mail-pf1-f178.google.com with SMTP id y190so9175009pfg.7;
+        Fri, 20 Aug 2021 10:15:07 -0700 (PDT)
+X-Gm-Message-State: AOAM533nswyjIAwVU+3sbD4su2fdqA3wE/wdjbn2Ko4LyXd80Tf/JPKU
+        tOw+ycVh32apg2OOwy1xhx9DctsfHXcfc+B4f/k=
+X-Google-Smtp-Source: ABdhPJy81Spd4IWqIdXplwtEO4cEl/1X6pGRiInPjnyh9JmPsUTcYQn46QcyBbJ/jukyvIyhIdxZFqpGz5VjHa5QZ9s=
+X-Received: by 2002:a63:d456:: with SMTP id i22mr19661572pgj.421.1629479706747;
+ Fri, 20 Aug 2021 10:15:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3dfde3cd06094e52b71b48a3a2524226@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+ <871r71azjw.wl-maz@kernel.org> <YROmOQ+4Kqukgd6z@orome.fritz.box>
+ <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com> <87o8a49idp.wl-maz@kernel.org>
+ <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com> <20210812121835.405d2e37@linux.microsoft.com>
+ <874kbuapod.wl-maz@kernel.org> <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+ <87wnohqty1.wl-maz@kernel.org> <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
+ <87fsv4qdzm.wl-maz@kernel.org> <CAFnufp2T75cvDLUx+ZyPQbkaNeY_S1OJ7KTJe=2EK-qXRNkwyw@mail.gmail.com>
+ <87mtpcyrdv.wl-maz@kernel.org>
+In-Reply-To: <87mtpcyrdv.wl-maz@kernel.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 20 Aug 2021 19:14:30 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0N2MzaTjF95tx9Q1D33z9f9AAK6UHbhU9rhG1ue_r1ug@mail.gmail.com>
+Message-ID: <CAFnufp0N2MzaTjF95tx9Q1D33z9f9AAK6UHbhU9rhG1ue_r1ug@mail.gmail.com>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/21 5:26 AM, David Laight wrote:
-> From: Aakash Hemadri
->> Sent: 18 August 2021 16:53
->>
->> Fix these sparse warnings:
-> 
-> Did you test this code before and after the changes?
-> 
-> I think you've changed the behaviour on LE systems which
-> are probably the ones it was actually tested on.
-> 
-> Don't blindly change code to fix sparse warnings.
+On Fri, Aug 20, 2021 at 7:09 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Fri, 20 Aug 2021 17:38:14 +0100,
+> Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >
+> > On Fri, Aug 20, 2021 at 6:26 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Fri, 20 Aug 2021 11:37:03 +0100,
+> > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > > >
+> > > > On Thu, Aug 19, 2021 at 6:29 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > [...]
+> > >
+> > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > > > > index fcdb1d20389b..244aa6579ef4 100644
+> > > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > > > > @@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
+> > > > >         if (stmmac_xdp_is_enabled(priv))
+> > > > >                 return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
+> > > > >
+> > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > > > > +       return 8 + NET_IP_ALIGN;
+> > > > >  }
+> > > > >
+> > > > >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
+> > > > >
+> > > > > I don't see the system corrupting packets anymore. Is that exactly
+> > > > > what you had in mind? This really seems to point to a basic buffer
+> > > > > overflow.
+> > >
+> > > [...]
+> > >
+> > > > Sorry, I meant something like:
+> > > >
+> > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > > > +       return 8;
+> > > >
+> > > > I had some hardware which DMA fails if the receive buffer was not word
+> > > > aligned, but this seems not the case, as 8 + NET_IP_ALIGN = 10, and
+> > > > it's not aligned too.
+> > >
+> > > No error in that case either, as expected. Given that NET_SKB_PAD is
+> > > likely to expand to 64, it is likely a DMA buffer overflow which
+> > > probably only triggers for large-ish packets.
+> > >
+> > > Now, we're almost at -rc7, and we don't have a solution in sight.
+> > >
+> > > Can we please revert this until we have an understanding of what is
+> > > happening? I'll hopefully have more cycles to work on the issue once
+> > > 5.14 is out, and hopefully the maintainers of this driver can chime in
+> > > (they have been pretty quiet so far).
+> > >
+> > > Thanks,
+> > >
+> > >         M.
+> > >
+> > > --
+> > > Without deviation from the norm, progress is not possible.
+> >
+> > Last try, what about adding only NET_IP_ALIGN and leaving NET_SKB_PAD?
+> >
+> > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > +       return NET_IP_ALIGN;
+> >
+> > I think that alloc_skb adds another NET_SKB_PAD anyway.
+>
+> I don't see any packet corruption with this. However, this doesn't
+> prove that this is correct either. What was the rational for adding
+> NET_SKB_PAD the first place?
+>
 
-I'm late getting into this conversation. Gmail thought the original patches were 
-spam.
+I think it's wrong. The original offset was 0, and to align it to the
+boundary we need to add just NET_IP_ALIGN, which is two.
+NET_SKB_PAD is a much bigger value, (I think 64), which is used to
+reserve space to prepend an header, e.g. with tunnels.
 
-First of all, we need to change the behavior as the original code is wrong; 
-however, the code involves PPPoE, which I have never used, and never tested. I 
-still need to check the correct endian values for one of the packet types. I 
-hate reading IEEE official documents!!!!
-
-I should have a review of the patches later today.
-
-Larry
-
+-- 
+per aspera ad upstream
