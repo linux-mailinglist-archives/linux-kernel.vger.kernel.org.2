@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B536B3F3741
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA183F3744
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239686AbhHTXTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 19:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        id S239265AbhHTXWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 19:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhHTXTm (ORCPT
+        with ESMTP id S238315AbhHTXWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:19:42 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A12C061575;
-        Fri, 20 Aug 2021 16:19:03 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id n7so19786231ljq.0;
-        Fri, 20 Aug 2021 16:19:03 -0700 (PDT)
+        Fri, 20 Aug 2021 19:22:49 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45CAC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:22:10 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id l11so6836525plk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=injNyqk0O05AWAjdLiK5Yd2rg5V8yrPBZJK/UIJi/0o=;
-        b=OhxktmJd+PAjFzfrGtZaXuFU/maWnJT19lhfCcPO/L8J8X+Oo/ESSzcDGrn4sYcoMk
-         kPS4N3xChJi2pDtasRzktUbuMMqZXEAJPH8gLv6BXeGnRaW7cJjI0LMtaezF1G9bH6lU
-         WzkRpPRR6a7udCiBtXnRy/ybXzqlb65uC3/GWpQA/G+d4DsX4AFUmkxAtyWV9iaVkSzj
-         CcGrhkBuVfsY4013/Bft+F+a4d3+G6z0bkGvNKhmeFdCMacMv7WTHpC/zfDTgyF/6PXk
-         DwUdQcy3j3prh7pR1+s7zLIyIPMDjfC8htOkA5m+1sHQV4Rvdea7qOOnjpTGzTXt8lzE
-         RaYA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c2pzolqc815RjMI9YhMzA6Tlcrcb+M0ye/v6UQI/kAg=;
+        b=D0Hus8QLYhoe/UI2jm1sRI0wXMZweQjO5TQA/lKbb2BjDI73hBG+vBYRkeVymw1PfN
+         OkRbLm3/u/spR/U8KnxqsKscPSA055gJ2XyldkDuRSj2vjkx3r9mdxS/kwxvlYuj0QO4
+         1LNfNF4FqNfff0idQi0mU9ER37CvLJ2oXAp/M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=injNyqk0O05AWAjdLiK5Yd2rg5V8yrPBZJK/UIJi/0o=;
-        b=RpHWOi17CSHdGAH+pG0gAiEB8CJNRg1WMqdVEmrnYtpolNqElBfFVHcHvrKFrBaLJs
-         as4b210f1MOazaKUkw4OlsCPnlNpfAborqiHx6iTEz5DOI+r2k3x5MJtKZi7nITFsObK
-         GoxMI/pQ4v94nkYUnKsnLNhDmHF60Uxdw4wXXHYymr/RJZyOA/wiFO9wbKJdNq61VS1i
-         /kKecMJPXzx/lSBX2pV5MSPCZvB6lmdPd8l0hHze7IxrQXYFgM9XlfrJ8ojSX+xI2Ogy
-         mA6ZRYb4GkwepSLk78W8IpXd9HS6L+yVj9sUbiND/9iqsjGH24CcOm1mwMPIerGhf/sy
-         UTdQ==
-X-Gm-Message-State: AOAM533oP8AbwDxERndFxh3CSAqYv8j5nym6Vj0K+8O5S4yOMVB8g6pQ
-        WfeMF9AR05qIAN+R3WQJokxR191wBZarMlShTi9AJXCiNWp/fw==
-X-Google-Smtp-Source: ABdhPJzyeII4XBwTu1jh+7vIYJxM4YYTmKb9f2YNy+vDAz9XkX6KruBe+a/aKqw7IhEh0xoyZPVueZ3V2sNx4Y8AX0k=
-X-Received: by 2002:a2e:2417:: with SMTP id k23mr17886463ljk.256.1629501541700;
- Fri, 20 Aug 2021 16:19:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c2pzolqc815RjMI9YhMzA6Tlcrcb+M0ye/v6UQI/kAg=;
+        b=Z6OQowjgWiiiVM4S2PRA5X0t+Grovy40bnN/meLi4PaPtY/uGpDcMPap2kfQkA1BKo
+         UfeRrEZoEdWwFTckoxI1/wBGzMfFaSuXyUps6Up3P6sV/tR4s35WtmQq0yZb1+d6SLjP
+         aV5/eQtveRM462ruw58AysJMsoyHxrWvIHVFW5WU3733WYuQ0P0f62MfuTv7PBSDv0u5
+         T385J26iKhSXX+ThDV70uc25XUOg15VAV5WXjVOXkxNvFidEnKoPB07QuEcYKJrYsh3q
+         ZiYAzghYC6/615HzQlnacGzoPXQrTn3weGw+1qeaAoz1MamHRyuCCbRKFVN2hgDkoDel
+         6PLA==
+X-Gm-Message-State: AOAM530LNE6GZuZgjyH2chD8iYAQuWdftx+/t/UUU/+FOxbO9HdaAfAM
+        7jHBGnpSy7JeInKaZz2uAU72/744waXC1A==
+X-Google-Smtp-Source: ABdhPJx7uVadvYtdEXuuDf6IIWadfqlD0ERILqDaKs4tcK+Pnpc5LDC/MAAhWIyc2Uv2zOFT+jzVGQ==
+X-Received: by 2002:a17:90a:f98d:: with SMTP id cq13mr7209752pjb.211.1629501728882;
+        Fri, 20 Aug 2021 16:22:08 -0700 (PDT)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:3c8e:4054:efb0:e39f])
+        by smtp.gmail.com with ESMTPSA id gl12sm12579496pjb.40.2021.08.20.16.22.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 16:22:08 -0700 (PDT)
+From:   Philip Chen <philipchen@chromium.org>
+X-Google-Original-From: Philip Chen <philipchen@google.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Philip Chen <philipchen@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/bridge: parade-ps8640: Reorg the macros
+Date:   Fri, 20 Aug 2021 16:22:03 -0700
+Message-Id: <20210820162201.1.I8ead7431357409f2526e5739ec5bc3ddfd242243@changeid>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 20 Aug 2021 18:18:50 -0500
-Message-ID: <CAH2r5mvxX6BqLvgWO18QE+rQsAZoAzopvu5S3fyy45a+Y-w_MQ@mail.gmail.com>
-Subject: [PATCH] oid_registry: Add OIDs for missing Spnego auth mechanisms to Macs
-To:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     samba-technical <samba-technical@lists.samba.org>
-Content-Type: multipart/mixed; boundary="0000000000008def7405ca05e408"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000008def7405ca05e408
-Content-Type: text/plain; charset="UTF-8"
+From: Philip Chen <philipchen@chromium.org>
 
- In testing mounts to Macs, noticed that the OIDS for some
- GSSAPI/SPNEGO auth mechanisms sent by the server were not
- recognized and were missing from the header.
+Reorg the macros as follows:
+(1) Group the registers on the same page together.
+(2) Group the register and its bit operation together while indenting
+the macros of the bit operation with one space.
 
- Signed-off-by: Steve French <stfrench@microsoft.com>
+Also fix a misnomer for the number of mipi data lanes.
 
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 3d8db1f6a5db..2728842721bc 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -70,6 +70,9 @@ enum OID {
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+Signed-off-by: Philip Chen <philipchen@google.com>
+---
 
-        OID_spnego,                     /* 1.3.6.1.5.5.2 */
+ drivers/gpu/drm/bridge/parade-ps8640.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-+       OID_IAKerb,                     /* 1.3.6.1.5.2.5 */
-+       OID_PKU2U                       /* 1.3.5.1.5.2.7 */
-+       OID_Scram,                      /* 1.3.6.1.5.5.14 */
-        OID_certAuthInfoAccess,         /* 1.3.6.1.5.5.7.1.1 */
-        OID_sha1,                       /* 1.3.14.3.2.26 */
-        OID_id_ansip384r1,              /* 1.3.132.0.34 */
-@@ -104,6 +107,10 @@ enum OID {
-        OID_authorityKeyIdentifier,     /* 2.5.29.35 */
-        OID_extKeyUsage,                /* 2.5.29.37 */
-
-+       /* Heimdal mechanisms */
-+       OID_NetlogonMechanism,          /* 1.2.752.43.14.2 */
-+       OID_appleLocalKdcSupported,     /* 1.2.752.43.14.3 */
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 7bd0affa057a..685e9c38b2db 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -18,16 +18,18 @@
+ #include <drm/drm_print.h>
+ 
+ #define PAGE2_GPIO_H		0xa7
+-#define PS_GPIO9		BIT(1)
++#define  PS_GPIO9		BIT(1)
+ #define PAGE2_I2C_BYPASS	0xea
+-#define I2C_BYPASS_EN		0xd0
++#define  I2C_BYPASS_EN		0xd0
+ #define PAGE2_MCS_EN		0xf3
+-#define MCS_EN			BIT(0)
++#define  MCS_EN			BIT(0)
 +
-        /* EC-RDSA */
-        OID_gostCPSignA,                /* 1.2.643.2.2.35.1 */
-        OID_gostCPSignB,                /* 1.2.643.2.2.35.2 */
-
-
+ #define PAGE3_SET_ADD		0xfe
+-#define VDO_CTL_ADD		0x13
+-#define VDO_DIS			0x18
+-#define VDO_EN			0x1c
+-#define DP_NUM_LANES		4
++#define  VDO_CTL_ADD		0x13
++#define  VDO_DIS		0x18
++#define  VDO_EN			0x1c
++
++#define NUM_MIPI_LANES		4
+ 
+ /*
+  * PS8640 uses multiple addresses:
+@@ -254,7 +256,7 @@ static int ps8640_bridge_attach(struct drm_bridge *bridge,
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+ 			  MIPI_DSI_MODE_VIDEO_SYNC_PULSE;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+-	dsi->lanes = DP_NUM_LANES;
++	dsi->lanes = NUM_MIPI_LANES;
+ 	ret = mipi_dsi_attach(dsi);
+ 	if (ret)
+ 		goto err_dsi_attach;
 -- 
-Thanks,
+2.33.0.rc2.250.ged5fa647cd-goog
 
-Steve
-
---0000000000008def7405ca05e408
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-oid_registry-Add-OIDs-for-missing-Spnego-auth-mechan.patch"
-Content-Disposition: attachment; 
-	filename="0001-oid_registry-Add-OIDs-for-missing-Spnego-auth-mechan.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kskz4e7j0>
-X-Attachment-Id: f_kskz4e7j0
-
-RnJvbSBmNDRlODEzYmVlNDdhOTA3YTA2MmE4NjNiMWYwMWZmZTJhOGY5ODY1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBTdGV2ZSBGcmVuY2ggPHN0ZnJlbmNoQG1pY3Jvc29mdC5jb20+
-CkRhdGU6IEZyaSwgMjAgQXVnIDIwMjEgMTg6MTA6MzYgLTA1MDAKU3ViamVjdDogW1BBVENIXSBv
-aWRfcmVnaXN0cnk6IEFkZCBPSURzIGZvciBtaXNzaW5nIFNwbmVnbyBhdXRoIG1lY2hhbmlzbXMg
-dG8KIE1hY3MKCkluIHRlc3RpbmcgbW91bnRzIHRvIE1hY3MsIG5vdGljZWQgdGhhdCB0aGUgT0lE
-UyBmb3Igc29tZQpHU1NBUEkvU1BORUdPIGF1dGggbWVjaGFuaXNtcyBzZW50IGJ5IHRoZSBzZXJ2
-ZXIgd2VyZSBub3QKcmVjb2duaXplZCBhbmQgd2VyZSBtaXNzaW5nIGZyb20gdGhlIGhlYWRlci4K
-ClNpZ25lZC1vZmYtYnk6IFN0ZXZlIEZyZW5jaCA8c3RmcmVuY2hAbWljcm9zb2Z0LmNvbT4KLS0t
-CiBpbmNsdWRlL2xpbnV4L29pZF9yZWdpc3RyeS5oIHwgNyArKysrKysrCiAxIGZpbGUgY2hhbmdl
-ZCwgNyBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9vaWRfcmVnaXN0
-cnkuaCBiL2luY2x1ZGUvbGludXgvb2lkX3JlZ2lzdHJ5LmgKaW5kZXggM2Q4ZGIxZjZhNWRiLi4y
-NzI4ODQyNzIxYmMgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvb2lkX3JlZ2lzdHJ5LmgKKysr
-IGIvaW5jbHVkZS9saW51eC9vaWRfcmVnaXN0cnkuaApAQCAtNzAsNiArNzAsOSBAQCBlbnVtIE9J
-RCB7CiAKIAlPSURfc3BuZWdvLAkJCS8qIDEuMy42LjEuNS41LjIgKi8KIAorCU9JRF9JQUtlcmIs
-CQkJLyogMS4zLjYuMS41LjIuNSAqLworCU9JRF9QS1UyVQkJCS8qIDEuMy41LjEuNS4yLjcgKi8K
-KwlPSURfU2NyYW0sCQkJLyogMS4zLjYuMS41LjUuMTQgKi8KIAlPSURfY2VydEF1dGhJbmZvQWNj
-ZXNzLAkJLyogMS4zLjYuMS41LjUuNy4xLjEgKi8KIAlPSURfc2hhMSwJCQkvKiAxLjMuMTQuMy4y
-LjI2ICovCiAJT0lEX2lkX2Fuc2lwMzg0cjEsCQkvKiAxLjMuMTMyLjAuMzQgKi8KQEAgLTEwNCw2
-ICsxMDcsMTAgQEAgZW51bSBPSUQgewogCU9JRF9hdXRob3JpdHlLZXlJZGVudGlmaWVyLAkvKiAy
-LjUuMjkuMzUgKi8KIAlPSURfZXh0S2V5VXNhZ2UsCQkvKiAyLjUuMjkuMzcgKi8KIAorCS8qIEhl
-aW1kYWwgbWVjaGFuaXNtcyAqLworCU9JRF9OZXRsb2dvbk1lY2hhbmlzbSwJCS8qIDEuMi43NTIu
-NDMuMTQuMiAqLworCU9JRF9hcHBsZUxvY2FsS2RjU3VwcG9ydGVkLAkvKiAxLjIuNzUyLjQzLjE0
-LjMgKi8KKwogCS8qIEVDLVJEU0EgKi8KIAlPSURfZ29zdENQU2lnbkEsCQkvKiAxLjIuNjQzLjIu
-Mi4zNS4xICovCiAJT0lEX2dvc3RDUFNpZ25CLAkJLyogMS4yLjY0My4yLjIuMzUuMiAqLwotLSAK
-Mi4zMC4yCgo=
---0000000000008def7405ca05e408--
