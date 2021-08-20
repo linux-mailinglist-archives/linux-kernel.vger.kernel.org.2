@@ -2,229 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADAF3F28F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F27D3F28F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbhHTJM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:12:56 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60221 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232991AbhHTJMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:12:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UkL-umh_1629450733;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UkL-umh_1629450733)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 20 Aug 2021 17:12:15 +0800
-Date:   Fri, 20 Aug 2021 17:12:13 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-erofs@lists.ozlabs.org, Liu Bo <bo.liu@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        Eryu Guan <eguan@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Tao Ma <boyu.mt@taobao.com>
-Subject: Re: [PATCH v2 2/2] erofs: support reading chunk-based uncompressed
- files
-Message-ID: <YR9x7W4wObWdZdrx@B-P7TQMD6M-0146.local>
-References: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
- <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
- <20210819063310.177035-2-hsiangkao@linux.alibaba.com>
- <aaf64137-02f9-db98-10d4-4757bc6f25ec@kernel.org>
+        id S235321AbhHTJNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:13:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232991AbhHTJNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 486926112E;
+        Fri, 20 Aug 2021 09:12:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629450777;
+        bh=LdWkD1bkdJW2CSqlqBzb8iAUiLrELdE2b9JyYHW4y08=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Zb/RJFK2xy1ffp1yTe7iLx+cBb0b9QA7z+pkj0wrBcmYlq2j2SIi4PB8XbDRDIIL/
+         LIzU9kqDZx+6WImvrsXpx288meu2aXhf7Irt4NgaM9N7+50ZmLhJn69JgEei2HgY2+
+         762mf4iGdTBM5g4iVl3CU78mFVsgk+zyVgm+/Ck7xYLgBW9NoF4NFUDMamT+xvgfkF
+         pWNnE3J1o4QNvXURaecyatQqiWtdbnu54h1rbuJ/iDIOBFEBlroYucElYeNObI79Ek
+         UhfL27S97Tk707u8MPfvR4nO42TUjPl+DN7n1JKlyIaP+5dr+RviNyGsaerAp7MjCX
+         D3Kvqmm6zTnBg==
+Subject: Re: [PATCH v6] f2fs: introduce /sys/fs/f2fs/<disk>/fsck_stack node
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     =?UTF-8?B?5p2O5oms6Z+s?= <frank.li@vivo.com>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <AJAAagAPD-VfBUmHLD9YN4pD.3.1629086526174.Hmail.frank.li@vivo.com>
+ <2692c9c0-bb9f-0dd2-f0ca-6abb89e34c47@kernel.org>
+ <YRsCd2ZfzB43oAE3@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <b6518e6b-dc18-48d2-10a0-1626c068859e@kernel.org>
+Date:   Fri, 20 Aug 2021 17:12:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aaf64137-02f9-db98-10d4-4757bc6f25ec@kernel.org>
+In-Reply-To: <YRsCd2ZfzB43oAE3@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
-
-On Fri, Aug 20, 2021 at 05:04:13PM +0800, Chao Yu wrote:
-> On 2021/8/19 14:33, Gao Xiang wrote:
-
-...
-
-> >   }
-> > +static int erofs_map_blocks(struct inode *inode,
-> > +			    struct erofs_map_blocks *map, int flags)
-> > +{
-> > +	struct super_block *sb = inode->i_sb;
-> > +	struct erofs_inode *vi = EROFS_I(inode);
-> > +	struct erofs_inode_chunk_index *idx;
-> > +	struct page *page;
-> > +	u64 chunknr;
-> > +	unsigned int unit;
-> > +	erofs_off_t pos;
-> > +	int err = 0;
-> > +
-> > +	if (map->m_la >= inode->i_size) {
-> > +		/* leave out-of-bound access unmapped */
-> > +		map->m_flags = 0;
-> > +		map->m_plen = 0;
-> > +		goto out;
-> > +	}
-> > +
-> > +	if (vi->datalayout != EROFS_INODE_CHUNK_BASED)
-> > +		return erofs_map_blocks_flatmode(inode, map, flags);
-> > +
-> > +	if (vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)
-> > +		unit = sizeof(*idx);	/* chunk index */
-> > +	else
-> > +		unit = 4;		/* block map */
+On 2021/8/17 8:27, Jaegeuk Kim wrote:
+> On 08/16, Chao Yu wrote:
+>> On 2021/8/16 12:02, 李扬韬 wrote:
+>>> HI Chao,
+>>>>> SBI_NEED_FSCK is an indicator that fsck.f2fs needs to be triggered,
+>>>>> this flag is set in too many places. For some scenes that are not very
+>>>>> reproducible, adding stack information will help locate the problem.
+>>>>>
+>>>>> Let's record all fsck stack history, I added F2FS_FSCK_STACK_TRACE
+>>>>> configuration options and sysfs nodes. After opening the configuration
+>>>>> options and enabling the node, it will start recording. The recorded
+>>>>> stack information will not be clear, and we can get information form
+>>>>> kernel log.
+>>>>>
+>>>>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+>>>>> ---
+>>>>>     Documentation/ABI/testing/sysfs-fs-f2fs |  7 ++++
+>>>>>     fs/f2fs/Kconfig                         | 10 ++++++
+>>>>>     fs/f2fs/f2fs.h                          | 45 +++++++++++++++++++++++++
+>>>>>     fs/f2fs/sysfs.c                         | 27 +++++++++++++++
+>>>>>     4 files changed, 89 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+>>>>> index ef4b9218ae1e..047c398093cf 100644
+>>>>> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+>>>>> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+>>>>> @@ -493,3 +493,10 @@ Contact:	"Chao Yu" <yuchao0@huawei.com>
+>>>>>     Description:	When ATGC is on, it controls age threshold to bypass GCing young
+>>>>>     		candidates whose age is not beyond the threshold, by default it was
+>>>>>     		initialized as 604800 seconds (equals to 7 days).
+>>>>> +
+>>>>> +What:		/sys/fs/f2fs/<disk>/fsck_stack
+>>>>> +Date:		August 2021
+>>>>> +Contact:	"Yangtao Li" <frank.li@vivo.com>
+>>>>> +Description:	Controls to enable/disable fsck stack trace, you can get stack
+>>>>> +		information from kernel log. Note that the recorded stack information
+>>>>> +		will not be cleared.
+>>>>
+>>>> Again, please don't add this into sysfs.
+>>
+>> Oh, I missed to check the details...
+>>
+>>>
+>>> I added this node, part of the idea is to trigger the export of stack information.
+>>> There is no information transmitted through sysfs here, but the record of the stack is switched on and off.
+>>> If don't export this information through procfs and sysfs, is there a more appropriate way?
+>>
+>> Well, I doubt why we should export stack info via proc/sysfs node or
+>> sysfs switch.
+>>
+>> Those info will always be needed to troubleshoot issues no matter in
+>> user or eng version of Android, can we just print them directly into
+>> kernel message... what I concern is we may lost the bug scene due to
+>> no one can help to trigger dmesg printing via sysfs.
+>>
+>> Jaegeuk, thoughts?
 > 
-> You mean sizeof(__le32)?
+> I thought that it'd be good to have an error history in debufs. For example,
+> we can have a set of reasons defined as enum and put the error counts per
+> SBI_NEED_FSCK along with error number like ENOMEM, EIO, and so on. The goal
+> would be to understand whether we're getting SBI_NEED_FSCK which triggers
+> fsck in practical.
 
-Yeah, sizeof(__le32) == 4, either way works for me.
-
-If some tendency about this, I will update when applying.
-
-> 
-> Otherwise it looks good to me.
-> 
-> Reviewed-by: Chao Yu <chao@kernel.org>
-> 
-
-Thanks for the review!
+In most of the cases we set SBI_NEED_FSCK, the reason is in-mem or on-disk
+data becomes inconsistent, so it looks it's not easy to distinguish the
+reason based on error number like ENOMEM, EIO... if I get your point correctly
+here.
 
 Thanks,
-Gao Xiang
 
-> Thanks,
 > 
-> > +
-> > +	chunknr = map->m_la >> vi->chunkbits;
-> > +	pos = ALIGN(iloc(EROFS_SB(sb), vi->nid) + vi->inode_isize +
-> > +		    vi->xattr_isize, unit) + unit * chunknr;
-> > +
-> > +	page = erofs_get_meta_page(inode->i_sb, erofs_blknr(pos));
-> > +	if (IS_ERR(page))
-> > +		return PTR_ERR(page);
-> > +
-> > +	map->m_la = chunknr << vi->chunkbits;
-> > +	map->m_plen = min_t(erofs_off_t, 1UL << vi->chunkbits,
-> > +			    roundup(inode->i_size - map->m_la, EROFS_BLKSIZ));
-> > +
-> > +	/* handle block map */
-> > +	if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)) {
-> > +		__le32 *blkaddr = page_address(page) + erofs_blkoff(pos);
-> > +
-> > +		if (le32_to_cpu(*blkaddr) == EROFS_NULL_ADDR) {
-> > +			map->m_flags = 0;
-> > +		} else {
-> > +			map->m_pa = blknr_to_addr(le32_to_cpu(*blkaddr));
-> > +			map->m_flags = EROFS_MAP_MAPPED;
-> > +		}
-> > +		goto out_unlock;
-> > +	}
-> > +	/* parse chunk indexes */
-> > +	idx = page_address(page) + erofs_blkoff(pos);
-> > +	switch (le32_to_cpu(idx->blkaddr)) {
-> > +	case EROFS_NULL_ADDR:
-> > +		map->m_flags = 0;
-> > +		break;
-> > +	default:
-> > +		/* only one device is supported for now */
-> > +		if (idx->device_id) {
-> > +			erofs_err(sb, "invalid device id %u @ %llu for nid %llu",
-> > +				  le32_to_cpu(idx->device_id),
-> > +				  chunknr, vi->nid);
-> > +			err = -EFSCORRUPTED;
-> > +			goto out_unlock;
-> > +		}
-> > +		map->m_pa = blknr_to_addr(le32_to_cpu(idx->blkaddr));
-> > +		map->m_flags = EROFS_MAP_MAPPED;
-> > +		break;
-> > +	}
-> > +out_unlock:
-> > +	unlock_page(page);
-> > +	put_page(page);
-> > +out:
-> > +	map->m_llen = map->m_plen;
-> > +	return err;
-> > +}
-> > +
-> >   static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
-> >   		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
-> >   {
-> > @@ -94,7 +164,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
-> >   	map.m_la = offset;
-> >   	map.m_llen = length;
-> > -	ret = erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW);
-> > +	ret = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
-> >   	if (ret < 0)
-> >   		return ret;
-> > diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
-> > index d13e0709599c..4408929bd6f5 100644
-> > --- a/fs/erofs/inode.c
-> > +++ b/fs/erofs/inode.c
-> > @@ -2,6 +2,7 @@
-> >   /*
-> >    * Copyright (C) 2017-2018 HUAWEI, Inc.
-> >    *             https://www.huawei.com/
-> > + * Copyright (C) 2021, Alibaba Cloud
-> >    */
-> >   #include "xattr.h"
-> > @@ -122,7 +123,9 @@ static struct page *erofs_read_inode(struct inode *inode,
-> >   		/* total blocks for compressed files */
-> >   		if (erofs_inode_is_data_compressed(vi->datalayout))
-> >   			nblks = le32_to_cpu(die->i_u.compressed_blocks);
-> > -
-> > +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-> > +			/* fill chunked inode summary info */
-> > +			vi->chunkformat = le16_to_cpu(die->i_u.c.format);
-> >   		kfree(copied);
-> >   		break;
-> >   	case EROFS_INODE_LAYOUT_COMPACT:
-> > @@ -160,6 +163,8 @@ static struct page *erofs_read_inode(struct inode *inode,
-> >   		inode->i_size = le32_to_cpu(dic->i_size);
-> >   		if (erofs_inode_is_data_compressed(vi->datalayout))
-> >   			nblks = le32_to_cpu(dic->i_u.compressed_blocks);
-> > +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-> > +			vi->chunkformat = le16_to_cpu(dic->i_u.c.format);
-> >   		break;
-> >   	default:
-> >   		erofs_err(inode->i_sb,
-> > @@ -169,6 +174,17 @@ static struct page *erofs_read_inode(struct inode *inode,
-> >   		goto err_out;
-> >   	}
-> > +	if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
-> > +		if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_ALL)) {
-> > +			erofs_err(inode->i_sb,
-> > +				  "unsupported chunk format %x of nid %llu",
-> > +				  vi->chunkformat, vi->nid);
-> > +			err = -EOPNOTSUPP;
-> > +			goto err_out;
-> > +		}
-> > +		vi->chunkbits = LOG_BLOCK_SIZE +
-> > +			(vi->chunkformat & EROFS_CHUNK_FORMAT_BLKBITS_MASK);
-> > +	}
-> >   	inode->i_mtime.tv_sec = inode->i_ctime.tv_sec;
-> >   	inode->i_atime.tv_sec = inode->i_ctime.tv_sec;
-> >   	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
-> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> > index 91089ab8a816..9524e155b38f 100644
-> > --- a/fs/erofs/internal.h
-> > +++ b/fs/erofs/internal.h
-> > @@ -2,6 +2,7 @@
-> >   /*
-> >    * Copyright (C) 2017-2018 HUAWEI, Inc.
-> >    *             https://www.huawei.com/
-> > + * Copyright (C) 2021, Alibaba Cloud
-> >    */
-> >   #ifndef __EROFS_INTERNAL_H
-> >   #define __EROFS_INTERNAL_H
-> > @@ -261,6 +262,10 @@ struct erofs_inode {
-> >   	union {
-> >   		erofs_blk_t raw_blkaddr;
-> > +		struct {
-> > +			unsigned short	chunkformat;
-> > +			unsigned char	chunkbits;
-> > +		};
-> >   #ifdef CONFIG_EROFS_FS_ZIP
-> >   		struct {
-> >   			unsigned short z_advise;
-> > 
+>>
+>>>
+>>>>
+>>>>> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+>>>>> index 7669de7b49ce..f451e567e4a8 100644
+>>>>> --- a/fs/f2fs/Kconfig
+>>>>> +++ b/fs/f2fs/Kconfig
+>>>>> @@ -135,3 +135,13 @@ config F2FS_FS_LZORLE
+>>>>>     	default y
+>>>>>     	help
+>>>>>     	  Support LZO-RLE compress algorithm, if unsure, say Y.
+>>>>> +
+>>>>> +config F2FS_FSCK_STACK_TRACE
+>>>>
+>>>> I don't think we need another config to wrap this functionality, may be we
+>>>> can use F2FS_CHECK_FS instead.
+>>>
+>>> OK.
+>>>
+>>>>
+>>>>> +	bool "F2FS fsck stack information record"
+>>>>> +	depends on F2FS_FS
+>>>>> +	depends on STACKDEPOT
+>>>>> +	default y
+>>>>> +	help
+>>>>> +	 Support printing out fsck stack history. With this, you have to
+>>>>> +	 turn on "fsck_stack" sysfs node. Then you can get information
+>>>>> +	 from kernel log.
+>>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>>> index ee8eb33e2c25..b2d1d1a5a3fc 100644
+>>>>> --- a/fs/f2fs/f2fs.h
+>>>>> +++ b/fs/f2fs/f2fs.h
+>>>>> @@ -24,6 +24,8 @@
+>>>>>     #include <linux/quotaops.h>
+>>>>>     #include <linux/part_stat.h>
+>>>>>     #include <crypto/hash.h>
+>>>>> +#include <linux/stackdepot.h>
+>>>>> +#include <linux/stacktrace.h>
+>>>>>     #include <linux/fscrypt.h>
+>>>>>     #include <linux/fsverity.h>
+>>>>> @@ -117,6 +119,8 @@ typedef u32 nid_t;
+>>>>>     #define COMPRESS_EXT_NUM		16
+>>>>> +#define FSCK_STACK_DEPTH		64
+>>>>
+>>>> 16?
+>>>
+>>> OK.
+>>>
+>>>>
+>>>>> +
+>>>>>     struct f2fs_mount_info {
+>>>>>     	unsigned int opt;
+>>>>>     	int write_io_size_bits;		/* Write IO size bits */
+>>>>> @@ -1748,6 +1752,11 @@ struct f2fs_sb_info {
+>>>>>     	unsigned int compress_watermark;	/* cache page watermark */
+>>>>>     	atomic_t compress_page_hit;		/* cache hit count */
+>>>>>     #endif
+>>>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>>>> +	depot_stack_handle_t *fsck_stack_history;
+>>>>> +	unsigned int fsck_count;
+>>>>> +	bool fsck_stack;
+>>>>
+>>>> IMO, all bug_on()s are corner cases, and catching those stacks won't cost
+>>>> much, so we can just use CONFIG_XXX to enable/disable this feature.
+>>>
+>>> F2FS_CHECK_FS ？
+>>>
+>>>>
+>>>>> +#endif
+>>>>>     };
+>>>>>     struct f2fs_private_dio {
+>>>>> @@ -1954,6 +1963,38 @@ static inline struct address_space *NODE_MAPPING(struct f2fs_sb_info *sbi)
+>>>>>     	return sbi->node_inode->i_mapping;
+>>>>>     }
+>>>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>>>> +static void fsck_stack_trace(struct f2fs_sb_info *sbi)
+>>>>> +{
+>>>>> +	unsigned long entries[FSCK_STACK_DEPTH];
+>>>>> +	depot_stack_handle_t stack, *new;
+>>>>> +	unsigned int nr_entries;
+>>>>> +	int i;
+>>>>> +
+>>>>> +	if (!sbi->fsck_stack)
+>>>>> +		return;
+>>>>> +
+>>>>> +	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
+>>>>> +	nr_entries = filter_irq_stacks(entries, nr_entries);
+>>>>> +	stack = stack_depot_save(entries, nr_entries, GFP_KERNEL);
+>>>>> +	if (!stack)
+>>>>> +		return;
+>>>>> +
+>>>>> +	/* Try to find an existing entry for this backtrace */
+>>>>> +	for (i = 0; i < sbi->fsck_count; i++)
+>>>>> +		if (sbi->fsck_stack_history[i] == stack)
+>>>>> +			return;
+>>>>> +
+>>>>> +	new = krealloc(sbi->fsck_stack_history, (sbi->fsck_count + 1) *
+>>>>> +		       sizeof(*sbi->fsck_stack_history), GFP_KERNEL);
+>>>>> +	if (!new)
+>>>>> +		return;
+>>>>> +
+>>>>> +	sbi->fsck_stack_history = new;
+>>>>> +	sbi->fsck_stack_history[sbi->fsck_count++] = stack;
+>>>>
+>>>> It will case memory leak after f2fs module exits.
+>>>
+>>> So let's enable this feature when f2fs is not a module and enable F2FS_CHECK_FS.
+>>
+>> I mean it needs to free .fsck_stack_history during umount().
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>>> +}
+>>>>> +#endif
+>>>>> +
+>>>>>     static inline bool is_sbi_flag_set(struct f2fs_sb_info *sbi, unsigned int type)
+>>>>>     {
+>>>>>     	return test_bit(type, &sbi->s_flag);
+>>>>> @@ -1962,6 +2003,10 @@ static inline bool is_sbi_flag_set(struct f2fs_sb_info *sbi, unsigned int type)
+>>>>>     static inline void set_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+>>>>>     {
+>>>>>     	set_bit(type, &sbi->s_flag);
+>>>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>>>> +	if (unlikely(type == SBI_NEED_FSCK))
+>>>>> +		fsck_stack_trace(sbi);
+>>>>> +#endif
+>>>>>     }
+>>>>>     static inline void clear_sbi_flag(struct f2fs_sb_info *sbi, unsigned int type)
+>>>>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+>>>>> index 204de4c2c818..4e786bb797e7 100644
+>>>>> --- a/fs/f2fs/sysfs.c
+>>>>> +++ b/fs/f2fs/sysfs.c
+>>>>> @@ -306,6 +306,26 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
+>>>>>     	if (!strcmp(a->attr.name, "compr_new_inode"))
+>>>>>     		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
+>>>>>     #endif
+>>>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>>>> +	if (!strcmp(a->attr.name, "fsck_stack")) {
+>>>>> +		unsigned long *entries;
+>>>>> +		unsigned int nr_entries;
+>>>>> +		unsigned int i;
+>>>>> +		int count;
+>>>>> +
+>>>>> +		count = sysfs_emit(buf, "%u\n", sbi->fsck_stack);
+>>>>> +		if (!sbi->fsck_stack)
+>>>>> +			return count;
+>>>>> +
+>>>>> +		for (i = 0; i < sbi->fsck_count; i++) {
+>>>>> +			nr_entries = stack_depot_fetch(sbi->fsck_stack_history[i], &entries);
+>>>>> +			if (!entries)
+>>>>> +				return count;
+>>>>> +			stack_trace_print(entries, nr_entries, 0);
+>>>>> +		}
+>>>>> +		return count;
+>>>>> +	}
+>>>>> +#endif
+>>>>>     	ui = (unsigned int *)(ptr + a->offset);
+>>>>> @@ -740,6 +760,10 @@ F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_candidate_count, max_candidate_cou
+>>>>>     F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_weight, age_weight);
+>>>>>     F2FS_RW_ATTR(ATGC_INFO, atgc_management, atgc_age_threshold, age_threshold);
+>>>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>>>> +F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, fsck_stack, fsck_stack);
+>>>>> +#endif
+>>>>> +
+>>>>>     #define ATTR_LIST(name) (&f2fs_attr_##name.attr)
+>>>>>     static struct attribute *f2fs_attrs[] = {
+>>>>>     	ATTR_LIST(gc_urgent_sleep_time),
+>>>>> @@ -812,6 +836,9 @@ static struct attribute *f2fs_attrs[] = {
+>>>>>     	ATTR_LIST(atgc_candidate_count),
+>>>>>     	ATTR_LIST(atgc_age_weight),
+>>>>>     	ATTR_LIST(atgc_age_threshold),
+>>>>> +#ifdef CONFIG_F2FS_FSCK_STACK_TRACE
+>>>>> +	ATTR_LIST(fsck_stack),
+>>>>> +#endif
+>>>>>     	NULL,
+>>>>>     };
+>>>>>     ATTRIBUTE_GROUPS(f2fs);
+>>>>>
+>>>
+>>> Thx,
+>>> Yangtao
+>>>
