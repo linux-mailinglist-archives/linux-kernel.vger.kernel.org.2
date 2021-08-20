@@ -2,161 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C0E3F2C8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974703F2C98
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240487AbhHTM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:57:46 -0400
-Received: from 8bytes.org ([81.169.241.247]:38184 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240375AbhHTM5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:57:45 -0400
-Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id 2A46125C;
-        Fri, 20 Aug 2021 14:57:06 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        hpa@zytor.com, Joerg Roedel <jroedel@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] x86/efi: Restore Firmware IDT before calling ExitBootServices()
-Date:   Fri, 20 Aug 2021 14:57:03 +0200
-Message-Id: <20210820125703.32410-1-joro@8bytes.org>
-X-Mailer: git-send-email 2.32.0
+        id S240520AbhHTM6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240509AbhHTM6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:58:46 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F933C0613CF
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:58:08 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id t4so3237101vsm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:58:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VSaFeBdX4kWGJjrK0LDIdAG7HMHyEVXfRCzRhlCm2Vc=;
+        b=DnhQLGM/mJBYM14dOuxq+G21zQDLVubpP7oZsUxJRpqY3uVOSAs9B5niS+x3uyTre7
+         OY65Ox4XCQkPwIIGObNgixcuUbaA0/pd1FB1Qo2ODsYfIBziSCun36IE9isJ3506pXpF
+         1ecf2r9wVgXbr/9QFjwW0VOiK0pGJUOmyNQXonlOuHCAOSpdd8cj85h6sjjS6N0HUfRU
+         JG2biriboTkHUtYnQwws5fcglapOqHqn2aq4ItDnRLAMkRsQbfB5v6w1xfxzn4Mat3vo
+         rreigmWF3PCK6SScj/XbW99E8SMa2IrssaqGiq9CflV2XUtvkisBvF3/Z2VuEfCmGOrP
+         jh6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VSaFeBdX4kWGJjrK0LDIdAG7HMHyEVXfRCzRhlCm2Vc=;
+        b=rhW7x2QIPkydnnzO6O4f4sV7tkwML65vaxJe7dflB3E8NDo2HDgj1vxrMBVGms2uzm
+         4u/KEMrbFO/+P31YdhIbukwZFb9n5GpIrAQtcBZhObc8LfoswDoOHOugvKtdTEiDWL53
+         8Y55v74FPd3RD24BjyotDXb2OlBkJU2e9ou6kmTqriK2u2l7ebyhuhHXmZPTnUZxygc+
+         rS1wUm51yG4fp8gEv+Kf4fXq1wOYvJkUGnXz7fQ8+5CXLe+UbA7bPr7RJfWSCkSRgryk
+         uBOc5AcpRZn9Q1aXz0YL6Vor4ni4lV39Z7OIh1W7dSceufB45XQUrBiQCWFc54XJFbaS
+         EVvQ==
+X-Gm-Message-State: AOAM531zRjsITn/g+98UZNkdTRRsqHmRUufLh6OmX1P3TeinBqWuEQGC
+        lqR0ANipOUMK6MFEpWXfRNZccaroWd769CqXLn26Kw==
+X-Google-Smtp-Source: ABdhPJyCu5OoKXB/ZnU0BhDnI9FQ/nriFA8C9gxuFpc66zGzEUSQ7NZWEdQGpN5i65y/ydiL4YG1C5HABdRFQK6zhTY=
+X-Received: by 2002:a67:3212:: with SMTP id y18mr16683598vsy.19.1629464287428;
+ Fri, 20 Aug 2021 05:58:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7> <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7> <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7> <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com> <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
+ <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com> <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+In-Reply-To: <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 20 Aug 2021 14:57:31 +0200
+Message-ID: <CAPDyKFo0rzHT4AhueWjyz9k2ZqUy8N6Od5pbr8sL_m0Jf2AwUg@mail.gmail.com>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Fri, 20 Aug 2021 at 07:18, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 19-08-21, 16:55, Ulf Hansson wrote:
+> > Right, that sounds reasonable.
+> >
+> > We already have pm_genpd_opp_to_performance_state() which translates
+> > an OPP to a performance state. This function invokes the
+> > ->opp_to_performance_state() for a genpd. Maybe we need to allow a
+> > genpd to not have ->opp_to_performance_state() callback assigned
+> > though, but continue up in the hierarchy to see if the parent has the
+> > callback assigned, to make this work for Tegra?
+> >
+> > Perhaps we should add an API dev_pm_genpd_opp_to_performance_state(),
+> > allowing us to pass the device instead of the genpd. But that's a
+> > minor thing.
+>
+> I am not concerned a lot about how it gets implemented, and am not
+> sure as well, as I haven't looked into these details since sometime.
+> Any reasonable thing will be accepted, as simple as that.
+>
+> > Finally, the precondition to use the above, is to first get a handle
+> > to an OPP table. This is where I am struggling to find a generic
+> > solution, because I guess that would be platform or even consumer
+> > driver specific for how to do this. And at what point should we do
+> > this?
+>
+> Hmm, I am not very clear with the whole picture at this point of time.
+>
+> Dmitry, can you try to frame a sequence of events/calls/etc that will
+> define what kind of devices we are looking at here, and how this can
+> be made to work ?
+>
+> > > > Viresh, please take a look at what I did in [1]. Maybe it could be done
+> > > > in another way.
+> > >
+> > > I looked into this and looked like too much trouble. The
+> > > implementation needs to be simple. I am not sure I understand all the
+> > > problems you faced while doing that, would be better to start with a
+> > > simpler implementation of get_performance_state() kind of API for
+> > > genpd, after the domain is attached and its OPP table is initialized.
+> > >
+> > > Note, that the OPP table isn't required to be fully initialized for
+> > > the device at this point, we can parse the DT as well if needed be.
+> >
+> > Sure, but as I indicated above, you need some kind of input data to
+> > figure out what OPP table to pick, before you can translate that into
+> > a performance state. Is that always the clock rate, for example?
+>
+> Eventually it can be clock, bandwidth, or pstate of anther genpd, not
+> sure what all we are looking for now. It should be just clock right
+> now as far as I can imagine :)
+>
+> > Perhaps, we should start with adding a dev_pm_opp_get_from_rate() or
+> > what do you think? Do you have other suggestions?
+>
+> We already have similar APIs, so that won't be a problem. We also have
+> a mechanism inside the OPP core, frequency based, which is used to
+> guess the current OPP. Maybe we can enhance and use that directly
+> here.
 
-Commit 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32
-boot path") introduced an IDT into the 32 bit boot path of the
-decompressor stub.  But the IDT is set up before ExitBootServices() is
-called and some UEFI firmwares rely on their own IDT.
+After reading the last reply from Dmitry, I am starting to think that
+the problem he is facing can be described and solved in a much easier
+way.
 
-Save the firmware IDT on boot and restore it before calling into EFI
-functions to fix boot failures introduced by above commit.
+If I am correct, it looks like we don't need to add APIs to get OPPs
+for a clock rate or set initial performance state values according to
+the HW in genpd.
 
-Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-Fixes: 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32 boot path")
-Cc: stable@vger.kernel.org # 5.13+
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/boot/compressed/efi_thunk_64.S | 30 +++++++++++++++++--------
- arch/x86/boot/compressed/head_64.S      |  3 +++
- 2 files changed, 24 insertions(+), 9 deletions(-)
+See my other response to Dmitry, let's see where that leads us.
 
-diff --git a/arch/x86/boot/compressed/efi_thunk_64.S b/arch/x86/boot/compressed/efi_thunk_64.S
-index 95a223b3e56a..8bb92e9f4e97 100644
---- a/arch/x86/boot/compressed/efi_thunk_64.S
-+++ b/arch/x86/boot/compressed/efi_thunk_64.S
-@@ -5,9 +5,8 @@
-  * Early support for invoking 32-bit EFI services from a 64-bit kernel.
-  *
-  * Because this thunking occurs before ExitBootServices() we have to
-- * restore the firmware's 32-bit GDT before we make EFI service calls,
-- * since the firmware's 32-bit IDT is still currently installed and it
-- * needs to be able to service interrupts.
-+ * restore the firmware's 32-bit GDT and IDT before we make EFI service
-+ * calls.
-  *
-  * On the plus side, we don't have to worry about mangling 64-bit
-  * addresses into 32-bits because we're executing with an identity
-@@ -39,7 +38,7 @@ SYM_FUNC_START(__efi64_thunk)
- 	/*
- 	 * Convert x86-64 ABI params to i386 ABI
- 	 */
--	subq	$32, %rsp
-+	subq	$64, %rsp
- 	movl	%esi, 0x0(%rsp)
- 	movl	%edx, 0x4(%rsp)
- 	movl	%ecx, 0x8(%rsp)
-@@ -49,14 +48,19 @@ SYM_FUNC_START(__efi64_thunk)
- 	leaq	0x14(%rsp), %rbx
- 	sgdt	(%rbx)
- 
-+	addq	$16, %rbx
-+	sidt	(%rbx)
-+
- 	/*
--	 * Switch to gdt with 32-bit segments. This is the firmware GDT
--	 * that was installed when the kernel started executing. This
--	 * pointer was saved at the EFI stub entry point in head_64.S.
-+	 * Switch to IDT and GDT with 32-bit segments. This is the firmware GDT
-+	 * and IDT that was installed when the kernel started executing. The
-+	 * pointers were saved at the EFI stub entry point in head_64.S.
- 	 *
- 	 * Pass the saved DS selector to the 32-bit code, and use far return to
- 	 * restore the saved CS selector.
- 	 */
-+	leaq	efi32_boot_idt(%rip), %rax
-+	lidt	(%rax)
- 	leaq	efi32_boot_gdt(%rip), %rax
- 	lgdt	(%rax)
- 
-@@ -67,7 +71,7 @@ SYM_FUNC_START(__efi64_thunk)
- 	pushq	%rax
- 	lretq
- 
--1:	addq	$32, %rsp
-+1:	addq	$64, %rsp
- 	movq	%rdi, %rax
- 
- 	pop	%rbx
-@@ -128,10 +132,13 @@ SYM_FUNC_START_LOCAL(efi_enter32)
- 
- 	/*
- 	 * Some firmware will return with interrupts enabled. Be sure to
--	 * disable them before we switch GDTs.
-+	 * disable them before we switch GDTs and IDTs.
- 	 */
- 	cli
- 
-+	lidtl	(%ebx)
-+	subl	$16, %ebx
-+
- 	lgdtl	(%ebx)
- 
- 	movl	%cr4, %eax
-@@ -166,6 +173,11 @@ SYM_DATA_START(efi32_boot_gdt)
- 	.quad	0
- SYM_DATA_END(efi32_boot_gdt)
- 
-+SYM_DATA_START(efi32_boot_idt)
-+	.word	0
-+	.quad	0
-+SYM_DATA_END(efi32_boot_idt)
-+
- SYM_DATA_START(efi32_boot_cs)
- 	.word	0
- SYM_DATA_END(efi32_boot_cs)
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index a2347ded77ea..572c535cf45b 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -319,6 +319,9 @@ SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
- 	movw	%cs, rva(efi32_boot_cs)(%ebp)
- 	movw	%ds, rva(efi32_boot_ds)(%ebp)
- 
-+	/* Store firmware IDT descriptor */
-+	sidtl	rva(efi32_boot_idt)(%ebp)
-+
- 	/* Disable paging */
- 	movl	%cr0, %eax
- 	btrl	$X86_CR0_PG_BIT, %eax
--- 
-2.32.0
-
+Kind regards
+Uffe
