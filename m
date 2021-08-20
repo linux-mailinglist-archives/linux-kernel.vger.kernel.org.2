@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5113E3F2E58
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071723F2E62
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240948AbhHTOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:46:17 -0400
-Received: from bmailout3.hostsharing.net ([176.9.242.62]:54529 "EHLO
-        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240908AbhHTOqP (ORCPT
+        id S240964AbhHTOsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240961AbhHTOsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:46:15 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id EA76410325458;
-        Fri, 20 Aug 2021 16:45:32 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id BC7314A5F7; Fri, 20 Aug 2021 16:45:32 +0200 (CEST)
-Date:   Fri, 20 Aug 2021 16:45:32 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCI/portdrv: Do not setup up IRQs if there are no users
-Message-ID: <20210820144532.GA25391@wunner.de>
-References: <43e1591d-51ed-39fa-3bc5-c11777f27b62@siemens.com>
+        Fri, 20 Aug 2021 10:48:21 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAB0C061575;
+        Fri, 20 Aug 2021 07:47:42 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id y3so9796834ilm.6;
+        Fri, 20 Aug 2021 07:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=62VnvjyphalzFzBYkwspNm895JgksTkZY9txiEFQ5qc=;
+        b=tQXQbz3LvY3VC1sa2AZE4VyazVGakX2o7W7yIncXEXleBcHS2rbyMTObp6TLA8NTXe
+         l9u/Xqjjvc/mbcCGOPWwZZa2y57+lJNanYTpDEB8tt3I8bzJ7YGxuFOgNlxWc4atETOl
+         Nx1XvUI/n6NXR430r1DjxSxcXwNpCyWKrt05lYrkUhFefPtT0IjonOtNshUHc9ABfSv8
+         uhhgdAc9uk/5eju8tXvVkFdVmCLDbeVMVR+3CGlt9rsAVGDlEpEnIe4yzGvyK6aUYQPF
+         jMfdjz49FZ2EoWjuKSrvuR2sxFXh6fJX/wtpKkyyi94nID585B6LuV3ykIprxkvbyC5K
+         Oalw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=62VnvjyphalzFzBYkwspNm895JgksTkZY9txiEFQ5qc=;
+        b=i65MoN8DwLbjexuFTvjXLcxAjLlWr8baLdho/Tg6jiNlSBfBjBmfsU5657vfQSz5Ov
+         cTr7ArTyOu4GRWryOgXYfNP6+V0dlgjV0D+iyK+updebnAl8RPKqG+G1t5jJoEd9O7xo
+         bqAlq7L/RVTt2+/gZxmmypAmkqs1+uHU1pemuLt+GMhSCHR/uRtbHMgK1vFXsA7maB2f
+         mvhYfrmbGWHDDmXTMMMhEoUC79s9D2wMOOVggClu0ghOOEtsZEiC5q1piPhRQeF0MidO
+         5i6Se+jbT1DdiDQ15ctVZ4FA2p1vb2VUOTtgkvRw8nBfsA5MpudnYeBXZuOkPT6bnTL5
+         BvbQ==
+X-Gm-Message-State: AOAM530yd4yltlqr80Vm8MYBh81x9Q6stQpua7LwClTyQ18U52sWhVdL
+        c0+A01M6vUogGS2gZxM3JMH6tpWXstmQk2xCjog=
+X-Google-Smtp-Source: ABdhPJwl/oonu9809IeYqTovES9HGl8KCdL6OOPvub5jGBu36Sbbf+L8ZKgcZ0HT7KMQAVDyzAPjmAquW0VhgX2EOzc=
+X-Received: by 2002:a05:6e02:138a:: with SMTP id d10mr13189484ilo.287.1629470862344;
+ Fri, 20 Aug 2021 07:47:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43e1591d-51ed-39fa-3bc5-c11777f27b62@siemens.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210820081458.83406-1-krzysztof.kozlowski@canonical.com> <20210820082149.84613-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210820082149.84613-1-krzysztof.kozlowski@canonical.com>
+From:   Alim Akhtar <alim.akhtar@gmail.com>
+Date:   Fri, 20 Aug 2021 20:17:07 +0530
+Message-ID: <CAGOxZ53CeRYafwjP45CsDRgBQtuvyVxJQR4CX4qChWyHzO4_fA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: exynos: add proper comaptible FSYS syscon
+ in Exynos5433
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:52:18PM +0200, Jan Kiszka wrote:
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -312,7 +312,7 @@ static int pcie_device_init(struct pci_dev *pdev, int service, int irq)
->   */
->  int pcie_port_device_register(struct pci_dev *dev)
->  {
-> -	int status, capabilities, i, nr_service;
-> +	int status, capabilities, irq_services, i, nr_service;
->  	int irqs[PCIE_PORT_DEVICE_MAXSERVICES];
->  
->  	/* Enable PCI Express port device */
-> @@ -326,18 +326,32 @@ int pcie_port_device_register(struct pci_dev *dev)
->  		return 0;
->  
->  	pci_set_master(dev);
-> -	/*
-> -	 * Initialize service irqs. Don't use service devices that
-> -	 * require interrupts if there is no way to generate them.
-> -	 * However, some drivers may have a polling mode (e.g. pciehp_poll_mode)
-> -	 * that can be used in the absence of irqs.  Allow them to determine
-> -	 * if that is to be used.
-> -	 */
-> -	status = pcie_init_service_irqs(dev, irqs, capabilities);
-> -	if (status) {
-> -		capabilities &= PCIE_PORT_SERVICE_HP;
-> -		if (!capabilities)
-> -			goto error_disable;
-> +
-> +	irq_services = 0;
-> +	if (IS_ENABLED(CONFIG_PCIE_PME))
-> +		irq_services |= PCIE_PORT_SERVICE_PME;
-> +	if (IS_ENABLED(CONFIG_PCIEAER))
-> +		irq_services |= PCIE_PORT_SERVICE_AER;
-> +	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
-> +		irq_services |= PCIE_PORT_SERVICE_HP;
-> +	if (IS_ENABLED(CONFIG_PCIE_DPC))
-> +		irq_services |= PCIE_PORT_SERVICE_DPC;
-> +	irq_services &= capabilities;
+On Fri, Aug 20, 2021 at 1:52 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> The syscon nodes should come with specific compatible.  Correct theh
+s/theh/the?
 
-get_port_device_capability() would seem like a more natural place
-to put these checks.
+> FSYS syscon to fix dtbs_check warnings:
+>
+>   syscon@156f0000: compatible: 'anyOf' conditional failed, one must be fixed:
+>   ['syscon'] is too short
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+With typo fixed above,
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Note that your check for CONFIG_PCIEAER is superfluous due to
-the "#ifdef CONFIG_PCIEAER" in get_port_device_capability().
+>  arch/arm64/boot/dts/exynos/exynos5433.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
+> index ebd5091d68b4..4422021cf4b2 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
+> @@ -1132,7 +1132,7 @@ syscon_cam1: syscon@145f0000 {
+>                 };
+>
+>                 syscon_fsys: syscon@156f0000 {
+> -                       compatible = "syscon";
+> +                       compatible = "samsung,exynos5433-sysreg", "syscon";
+>                         reg = <0x156f0000 0x1044>;
+>                 };
+>
+> --
+> 2.30.2
+>
 
-Thanks,
 
-Lukas
+-- 
+Regards,
+Alim
