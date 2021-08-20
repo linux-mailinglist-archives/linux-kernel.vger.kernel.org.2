@@ -2,255 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D434E3F29E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDAD3F29ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239095AbhHTKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237612AbhHTKJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:09:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E45606024A;
-        Fri, 20 Aug 2021 10:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629454160;
-        bh=F4BJjKuViErcs55tly6mOJQ8GhJw9eMYE3RG4bvDHvk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eTFUqtz5/84F3s0Un5c9pkN7cqKHpXHIBlvO4p0SAubvZKv6O7+4h6VEC+7iE7GZo
-         B+OFTZZ/jhRnCuD6wm2oqaX3fP1FhekoP5w+CC7lwkXu5tERGrZK/etDnkMZsRzCSM
-         TNzZuMhrGRZcSM0aniOk1YKLJ6S7Sw74mRKpqx+CfaqGHu3PQcsCXzqMLiBqGaHy6C
-         5n3itFvsmS36BJ20UyfCkFNZ3N7O/m1N6FmShXavJc4CRjre2rrsJmS6f3ni7Ptbxl
-         PgCX+PQq8Z7CGOnHPKA/bRZyY58RH9OMw4pYfREuGWrH/xSCLjiNxObHjOYvluIJWL
-         rYFl5Hv2+fyuw==
-Date:   Fri, 20 Aug 2021 12:09:16 +0200
-From:   Alexey Gladkov <legion@kernel.org>
-To:     syzbot <syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com>
-Cc:     ebiederm@xmission.com, hdanton@sina.com,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: use-after-free Write in dec_rlimit_ucounts
-Message-ID: <20210820100916.oyjwyteskvbxwyvg@example.org>
-References: <000000000000f2d84305c74bb986@google.com>
- <000000000000b1f4d305c9ef72ad@google.com>
+        id S238945AbhHTKM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:12:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232572AbhHTKMX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:12:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629454305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PjEaCYCRogYG/WsTjECE7ZORWN2nCY9AZG2C4Rf3ynA=;
+        b=K4ttp/+tRYlof0O7ph2zp9UsgjcaefgC6Kll9OSFw7ks8cTYj6EJ6zT0ypRls09+ViES74
+        eyG4GVw51EzC/4bzCD2S4pgkr78buam36Nrjyz49ieCtu1nQHh7vRD5AH7KGsgE+AW8+gP
+        GYQ0qm83UXsI2vzwKGAv1bYNbBFLJTQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-M1LH0cPuMT-h_yRNLZxKcg-1; Fri, 20 Aug 2021 06:11:43 -0400
+X-MC-Unique: M1LH0cPuMT-h_yRNLZxKcg-1
+Received: by mail-ej1-f72.google.com with SMTP id j10-20020a17090686cab02905b86933b59dso3522587ejy.18
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 03:11:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PjEaCYCRogYG/WsTjECE7ZORWN2nCY9AZG2C4Rf3ynA=;
+        b=bUmAZ6eCvJbDbbYNbOo5baIh0H/rJ//KMy/oCjXOGCc/TD1KtJ9EnVt/D6huHYfBkz
+         sszIpJB47w/1Scl4ZX7RAD9IOdlV+X9s7Xw5UuusKEUZutnn+N6kfJU2zxE7ygYXxjan
+         KNn0Dk3zauNArJQz902WHe5qAmA2lpzI3gXPU4/r3QUeRxm9mKzMbXcSyDSEhu7mK7S/
+         PZRUDhFDYWWY3fwCd/jOhGlLZ3T4lvfW6L6sYpPBD4hDIdxuux6eMirE/PiPJTB7yAnY
+         DZl00Nrc3GxwQtmKKMJ1mVx2chGOJ9nxCy2BQ2AMQICYBQO5QUY2MkmVYVRoWcw6KyVo
+         2NkA==
+X-Gm-Message-State: AOAM533h1CdYmLJUwT7HrqOARIpqVg20ti8dePxWy3WsgctoOPWRMwTW
+        Ow40lzrRYDyBJdy4nLJvt9nvzlsiJffrWSrwd4eJMiYtK9Q3fKuPQGS+KRFmHFVaa6yvMTKWS8O
+        IayLnul4PlmXh//29WwTWGpZY
+X-Received: by 2002:aa7:db95:: with SMTP id u21mr21114896edt.152.1629454302678;
+        Fri, 20 Aug 2021 03:11:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcCyAeKEwj9goJVz7uy5NTJA6ZvwLj4KDC64me3YtwjFIqVstziwCl9YjISimG4vhWk7iBlA==
+X-Received: by 2002:aa7:db95:: with SMTP id u21mr21114873edt.152.1629454302486;
+        Fri, 20 Aug 2021 03:11:42 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id f19sm3323541edt.44.2021.08.20.03.11.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 03:11:41 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the drivers-x86 tree
+To:     M D <whenov@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mark Gross <mark.gross@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210820150022.2160a348@canb.auug.org.au>
+ <CAA2grmaYg8Qc4LXhcFAvNRN-zJaPcq+y3=MFVSFETr2pNb-Vgw@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d6099b61-d825-5a3d-4088-da865db35451@redhat.com>
+Date:   Fri, 20 Aug 2021 12:11:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000b1f4d305c9ef72ad@google.com>
+In-Reply-To: <CAA2grmaYg8Qc4LXhcFAvNRN-zJaPcq+y3=MFVSFETr2pNb-Vgw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 01:32:22PM -0700, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    d6d09a694205 Merge tag 'for-5.14-rc6-tag' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16c8081e300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=01985d7909f9468f013c
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d0ec1e300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1516c341300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
-> 
-> RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca4cc
-> RBP: 00000000004ca4c0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004ca4cc
-> R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
-> ==================================================================
-> BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-> BUG: KASAN: use-after-free in atomic64_add_return include/asm-generic/atomic-instrumented.h:640 [inline]
-> BUG: KASAN: use-after-free in atomic_long_add_return include/asm-generic/atomic-long.h:59 [inline]
-> BUG: KASAN: use-after-free in dec_rlimit_ucounts+0x88/0x170 kernel/ucount.c:279
-> Write of size 8 at addr ffff888025b8ef80 by task syz-executor668/8707
-> 
-> CPU: 1 PID: 8707 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
->  print_address_description+0x66/0x3b0 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report+0x163/0x210 mm/kasan/report.c:436
->  check_region_inline mm/kasan/generic.c:135 [inline]
->  kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:189
->  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
->  atomic64_add_return include/asm-generic/atomic-instrumented.h:640 [inline]
->  atomic_long_add_return include/asm-generic/atomic-long.h:59 [inline]
->  dec_rlimit_ucounts+0x88/0x170 kernel/ucount.c:279
->  release_task+0x2d3/0x1590 kernel/exit.c:191
+Hi,
 
-void release_task(struct task_struct *p)
-{
-...
-	/* don't need to get the RCU readlock here - the process is dead and
-	 * can't be modifying its own credentials. But shut RCU-lockdep up */
-	rcu_read_lock();
-	dec_rlimit_ucounts(task_ucounts(p), UCOUNT_RLIMIT_NPROC, 1);
-	rcu_read_unlock();
-...
-}
+On 8/20/21 9:31 AM, M D wrote:
+> On Fri, Aug 20, 2021 at 1:00 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> After merging the drivers-x86 tree, today's linux-next build (x86_64
+>> allmodconfig) failed like this:
+>>
+>> drivers/platform/x86/ideapad-laptop.c: In function 'ideapad_wmi_notify':
+>> drivers/platform/x86/ideapad-laptop.c:1469:3: error: a label can only be part of a statement and a declaration is not a statement
+>>  1469 |   unsigned long result;
+>>       |   ^~~~~~~~
+>>
+>> Caused by commit
+>>
+>>   18cfd76e7b84 ("ideapad-laptop: Fix Legion 5 Fn lock LED")
+>>
+>> I have used the drivers-x86 tree from next-20210819 for today.
+>>
+>> --
+>> Cheers,
+>> Stephen Rothwell
+> 
+> Hi Stephen,
+> 
+> Thanks for your work!
+> 
+> This error occurs because only a statement is allowed after a label,
+> but a definition is not a statement in C99.
+> This can be fixed by wrapping the case block with curly braces like this:
+> case 208: {
+> ...
+> }
 
-It looks like the ucounts have been released before this in the put_cred_rcu().
+Yes, or just move the declaration of result to the beginning of
+the function, which is a bit cleaner IMHO.
 
->  exit_notify kernel/exit.c:699 [inline]
->  do_exit+0x1aa2/0x2510 kernel/exit.c:845
->  do_group_exit+0x168/0x2d0 kernel/exit.c:922
->  get_signal+0x16b0/0x2080 kernel/signal.c:2808
->  arch_do_signal_or_restart+0x8e/0x6d0 arch/x86/kernel/signal.c:865
->  handle_signal_work kernel/entry/common.c:148 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->  exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:302
->  do_syscall_64+0x4c/0xb0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x445a69
-> Code: Unable to access opcode bytes at RIP 0x445a3f.
-> RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> RAX: fffffffffffffff2 RBX: 00000000004ca4c8 RCX: 0000000000445a69
-> RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca4cc
-> RBP: 00000000004ca4c0 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004ca4cc
-> R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
-> 
-> Allocated by task 8441:
->  kasan_save_stack mm/kasan/common.c:38 [inline]
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:434 [inline]
->  ____kasan_kmalloc+0xc4/0xf0 mm/kasan/common.c:513
->  kasan_kmalloc include/linux/kasan.h:264 [inline]
->  kmem_cache_alloc_trace+0x96/0x340 mm/slub.c:2986
->  kmalloc include/linux/slab.h:591 [inline]
->  kzalloc include/linux/slab.h:721 [inline]
->  alloc_ucounts+0x1b1/0x5d0 kernel/ucount.c:173
->  set_cred_ucounts+0x220/0x2d0 kernel/cred.c:684
->  __sys_setresuid+0x6d5/0x920 kernel/sys.c:702
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Freed by task 13:
->  kasan_save_stack mm/kasan/common.c:38 [inline]
->  kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
->  kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
->  ____kasan_slab_free+0x109/0x150 mm/kasan/common.c:366
->  kasan_slab_free include/linux/kasan.h:230 [inline]
->  slab_free_hook mm/slub.c:1628 [inline]
->  slab_free_freelist_hook+0x1d8/0x290 mm/slub.c:1653
->  slab_free mm/slub.c:3213 [inline]
->  kfree+0xcf/0x2e0 mm/slub.c:4267
->  put_ucounts+0x15c/0x1a0 kernel/ucount.c:207
->  put_cred_rcu+0x221/0x400 kernel/cred.c:124
->  rcu_do_batch kernel/rcu/tree.c:2550 [inline]
->  rcu_core+0x906/0x14b0 kernel/rcu/tree.c:2785
->  __do_softirq+0x372/0x783 kernel/softirq.c:558
-> 
-> Last potentially related work creation:
->  kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
->  insert_work+0x54/0x400 kernel/workqueue.c:1332
->  __queue_work+0x928/0xc60 kernel/workqueue.c:1498
->  queue_work_on+0x111/0x200 kernel/workqueue.c:1525
->  queue_work include/linux/workqueue.h:507 [inline]
->  call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
->  kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
->  device_add+0x1073/0x1790 drivers/base/core.c:3336
->  device_create_groups_vargs drivers/base/core.c:4014 [inline]
->  device_create+0x241/0x2d0 drivers/base/core.c:4056
->  vc_allocate+0x66a/0x780 drivers/tty/vt/vt.c:1157
->  con_install+0x9f/0x880 drivers/tty/vt/vt.c:3342
->  tty_driver_install_tty drivers/tty/tty_io.c:1315 [inline]
->  tty_init_dev+0xc6/0x4c0 drivers/tty/tty_io.c:1429
->  tty_open_by_driver drivers/tty/tty_io.c:2098 [inline]
->  tty_open+0x89a/0xdd0 drivers/tty/tty_io.c:2146
->  chrdev_open+0x53b/0x5f0 fs/char_dev.c:414
->  do_dentry_open+0x7cb/0x1020 fs/open.c:826
->  do_open fs/namei.c:3374 [inline]
->  path_openat+0x27e7/0x36b0 fs/namei.c:3507
->  do_filp_open+0x253/0x4d0 fs/namei.c:3534
->  do_sys_openat2+0x124/0x460 fs/open.c:1204
->  do_sys_open fs/open.c:1220 [inline]
->  __do_sys_open fs/open.c:1228 [inline]
->  __se_sys_open fs/open.c:1224 [inline]
->  __x64_sys_open+0x221/0x270 fs/open.c:1224
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Second to last potentially related work creation:
->  kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
->  insert_work+0x54/0x400 kernel/workqueue.c:1332
->  __queue_work+0x928/0xc60 kernel/workqueue.c:1498
->  queue_work_on+0x111/0x200 kernel/workqueue.c:1525
->  queue_work include/linux/workqueue.h:507 [inline]
->  call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
->  kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
->  kobject_synth_uevent+0x3bf/0x900 lib/kobject_uevent.c:208
->  uevent_store+0x20/0x60 drivers/base/core.c:2372
->  kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
->  call_write_iter include/linux/fs.h:2114 [inline]
->  new_sync_write fs/read_write.c:518 [inline]
->  vfs_write+0xa39/0xc90 fs/read_write.c:605
->  ksys_write+0x171/0x2a0 fs/read_write.c:658
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> The buggy address belongs to the object at ffff888025b8ef00
->  which belongs to the cache kmalloc-192 of size 192
-> The buggy address is located 128 bytes inside of
->  192-byte region [ffff888025b8ef00, ffff888025b8efc0)
-> The buggy address belongs to the page:
-> page:ffffea000096e380 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25b8e
-> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000000200 ffffea00005dac80 0000000c0000000c ffff888011041a00
-> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 9979944008, free_ts 0
->  prep_new_page mm/page_alloc.c:2436 [inline]
->  get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4169
->  __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5391
->  alloc_page_interleave+0x22/0x1c0 mm/mempolicy.c:2119
->  alloc_slab_page mm/slub.c:1691 [inline]
->  allocate_slab+0xf1/0x540 mm/slub.c:1831
->  new_slab mm/slub.c:1894 [inline]
->  new_slab_objects mm/slub.c:2640 [inline]
->  ___slab_alloc+0x1cf/0x350 mm/slub.c:2803
->  __slab_alloc mm/slub.c:2843 [inline]
->  slab_alloc_node mm/slub.c:2925 [inline]
->  slab_alloc mm/slub.c:2967 [inline]
->  kmem_cache_alloc_trace+0x29d/0x340 mm/slub.c:2984
->  kmalloc include/linux/slab.h:591 [inline]
->  kzalloc include/linux/slab.h:721 [inline]
->  call_usermodehelper_setup+0x8a/0x260 kernel/umh.c:365
->  kobject_uevent_env+0x1311/0x1700 lib/kobject_uevent.c:614
->  device_add+0x1073/0x1790 drivers/base/core.c:3336
->  __video_register_device+0x37fc/0x4580 drivers/media/v4l2-core/v4l2-dev.c:1036
->  video_register_device include/media/v4l2-dev.h:384 [inline]
->  vivid_create_devnodes drivers/media/test-drivers/vivid/vivid-core.c:1585 [inline]
->  vivid_create_instance+0x85df/0xac90 drivers/media/test-drivers/vivid/vivid-core.c:1946
->  vivid_probe+0x9a/0x140 drivers/media/test-drivers/vivid/vivid-core.c:2001
->  platform_probe+0x130/0x1b0 drivers/base/platform.c:1427
->  call_driver_probe+0x96/0x250 drivers/base/dd.c:517
->  really_probe+0x223/0x9b0 drivers/base/dd.c:595
->  __driver_probe_device+0x1f8/0x3e0 drivers/base/dd.c:747
-> page_owner free stack trace missing
-> 
-> Memory state around the buggy address:
->  ffff888025b8ee80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->  ffff888025b8ef00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff888025b8ef80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->                    ^
->  ffff888025b8f000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff888025b8f080: 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00
-> ==================================================================
-> 
+I've moved the declaration to the beginning of the function and
+squashed this fix into the original commit. I'll do a forced
+push with the squashed in fix to for-next as soon as a test-compile
+completes.
 
--- 
-Rgrds, legion
+Stephen, as always thank you your work on linux-next and for reporting this.
+
+> However I don't know why my compiler did not report this error. I was
+> using gcc 11.1.0 under Arch Linux.
+
+Yes gcc 11.2.1 under Fedora also happily compiles this, and this
+sat in my review-hans branch for a while and got happily compiled
+by "kernel test robot <lkp@intel.com> " there too.
+
+So this compile error slipped through the crack of all our (compile)
+testing until Stephen caught it :)
+
+Regards,
+
+Hans
 
