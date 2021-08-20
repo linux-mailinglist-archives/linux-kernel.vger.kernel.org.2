@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B820E3F320A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFF83F320C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhHTRMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:12:06 -0400
-Received: from mga09.intel.com ([134.134.136.24]:8940 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhHTRME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:12:04 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="216813830"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="216813830"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 10:11:25 -0700
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="506529849"
-Received: from jmorauga-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.135.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 10:11:24 -0700
-Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
- guest
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQsNpG55v7dhFqIb@google.com>
- <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
- <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
- <YQsX54MPVYFuLmFr@google.com>
- <ca4aa25c-7d88-9812-4852-ced3274493a8@linux.intel.com>
- <YRTTZU3Pzm/1tH9M@zn.tnic>
- <486afc0e-0396-e57b-63fe-31a8433bd603@linux.intel.com>
- <YR+78mxnKW0T9Vdv@zn.tnic>
- <d419406e-749a-f851-f65e-a6582462c8a2@linux.intel.com>
- <YR/fYu6kn7DKpOCi@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <8129ef50-467f-fe2e-c770-a32c690c5177@linux.intel.com>
-Date:   Fri, 20 Aug 2021 10:11:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S232738AbhHTRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230052AbhHTRMs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:12:48 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A200CC061575;
+        Fri, 20 Aug 2021 10:12:10 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 57E685ED5;
+        Fri, 20 Aug 2021 17:12:10 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 57E685ED5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1629479530; bh=bVa4sxbmQIGDzEI3g5GEfgBmr8tripbw9feo3hwV6b8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Iq9HQ0dQYmIVJSPDd6Ku5jkqE39gCES82p+EAUN4N0IgC9eiqjgGdBLPjvY+qiqEM
+         l5toQPIjJPR4sVJwBVcUP1101L7SaeekBJ700CekOq46+fTaIMaEfOzFYrvzogE0fN
+         OWIUgo5II34yRavm96VvXs8ZfQrFk+xSzpmYaW8tM/kEsLA4FuIxN3LH1dSAAjoA7k
+         EuX+YyYYeHngNjxSBOhXGX6x929AeQzXvq2RON3awwM2WbA7zT4irbeTDQIA2oraMi
+         6E/uC1Q/1+lGrUYKLGDISjjR5tLnET+Btdsc6Vc7tPVleEQkqeBl2h2F+8Lf10DlYb
+         gJIhUA/acgQaQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        SeongJae Park <sjpark@amazon.de>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Subject: Re: [PATCH 2/2] Documentation/process/maintainer-pgp-guide: Replace
+ broken link to PGP path finder
+In-Reply-To: <20210812095030.4704-2-sj38.park@gmail.com>
+References: <20210812095030.4704-1-sj38.park@gmail.com>
+ <20210812095030.4704-2-sj38.park@gmail.com>
+Date:   Fri, 20 Aug 2021 11:12:09 -0600
+Message-ID: <87fsv4rqfq.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <YR/fYu6kn7DKpOCi@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SeongJae Park <sj38.park@gmail.com> writes:
 
+> From: SeongJae Park <sjpark@amazon.de>
+>
+> PGP pathfinder[1], which is suggested for finding a trust path to
+> unknown PGP keys by 'maintainer-pgp-guide.rst', is not working now.
+> This commit replaces it with other available tools.
+>
+> [1] https://pgp.cs.uu.nl/
 
-On 8/20/21 9:59 AM, Borislav Petkov wrote:
-> Err, why?
-> 
-> TDX is Intel technology. That's like asking to have
-> 
-> sev_prot_guest_has() and amd_prot_guest_has() on AMD.
-> 
-> Maybe I still don't get what you're trying to achieve but from where I'm
-> standing that sounds wrong.
+This looks fine to me, but I'd like Konstantin [CC'd] to have a look and
+let me know if he agrees...
 
-My intention was to keep intel_* function clean and hide all TDX specific
-customization in tdx_* function (within in tdx.c) and call it from
-intel_* function (within cpu/intel.c).
+Thanks,
 
-But I understand your point as well. I am fine with moving TDX specific checks to
-intel_* function.
+jon
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  Documentation/process/maintainer-pgp-guide.rst | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+>
+> diff --git a/Documentation/process/maintainer-pgp-guide.rst b/Documentation/process/maintainer-pgp-guide.rst
+> index 8f8f1fee92b8..29e7d7b1cd44 100644
+> --- a/Documentation/process/maintainer-pgp-guide.rst
+> +++ b/Documentation/process/maintainer-pgp-guide.rst
+> @@ -944,12 +944,11 @@ have on your keyring::
+>      uid           [ unknown] Linus Torvalds <torvalds@kernel.org>
+>      sub   rsa2048 2011-09-20 [E]
+>  
+> -Next, open the `PGP pathfinder`_. In the "From" field, paste the key
+> -fingerprint of Linus Torvalds from the output above. In the "To" field,
+> -paste the key-id you found via ``gpg --search`` of the unknown key, and
+> -check the results:
+> -
+> -- `Finding paths to Linus`_
+> +Next, find a trust path from Linus Torvalds to the key-id you found via ``gpg
+> +--search`` of the unknown key.  For this, you can use several tools including
+> +https://github.com/mricon/wotmate,
+> +https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/graphs, and
+> +https://the.earth.li/~noodles/pathfind.html.
+>  
+>  If you get a few decent trust paths, then it's a pretty good indication
+>  that it is a valid key. You can add it to your keyring from the
+> @@ -962,6 +961,3 @@ administrators of the PGP Pathfinder service to not be malicious (in
+>  fact, this goes against :ref:`devs_not_infra`). However, if you
+>  do not carefully maintain your own web of trust, then it is a marked
+>  improvement over blindly trusting keyservers.
+> -
+> -.. _`PGP pathfinder`: https://pgp.cs.uu.nl/
+> -.. _`Finding paths to Linus`: https://pgp.cs.uu.nl/paths/79BE3E4300411886/to/C94035C21B4F2AEB.html
+> -- 
+> 2.17.1
