@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A493F28DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88193F28E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhHTJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:09:22 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:49705 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230450AbhHTJJV (ORCPT
+        id S235321AbhHTJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232768AbhHTJKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:09:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UkJj5EK_1629450521;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UkJj5EK_1629450521)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 20 Aug 2021 17:08:42 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     Larry.Finger@lwfinger.net
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH linux-next] staging: r8188eu: remove unneeded semicolon
-Date:   Fri, 20 Aug 2021 17:08:25 +0800
-Message-Id: <1629450505-28247-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 20 Aug 2021 05:10:19 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19774C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:09:42 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id n11so10211766qkk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
+        b=hFJnYYN6W4CsDcIVyUx2ldgP3beMW4jLNH/SGyYzXZ7BCc0KGd1k2ND/ddXkVyFBzR
+         guIjkcbm1NmdCLbZe8HMFSijx65jRHp/SdEKwlTl1Wrrm5GfFB+4ZVS5sv8x1a29xP5U
+         THsPNWQYsSJ5yPuhXe5CCySbf3d8KHk4ieqNWU1QRBTQFpIYNevU0ISY6bHFs3nh/n2S
+         aeYB/F9nFQwaieLCZI54fOmj0REUKAHwNOHq6pxHqVkFNAYAR1ZrLiFgkhfJD1EtDH4X
+         GpetBqXCAI10TRHamsMBRTUQpFk6zzmcbkWEi4ufFi/59ztBcLqf45Sb9NTW5DLLfDf/
+         UjVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
+        b=gpGd+nQ64TkerqqzT0jicFc476vSDlWPP3XTW62PpEuG99+T0B5ZXDQYJB7n09nuZ6
+         dAuVotktxCr/1ARxNXn4ytm9PRUGTx8wLmjAvcvAuoFJ/1NA6WQ23T/ZQdaR6gjybw6f
+         4C8HDagC9FWIlMDS4smtbmaqKiLGI8uRT6wtGqUIKbzcUnGmCNQVOnQOVF8uYjlTWNWY
+         fes5vKaSxGuP7VM2AOrnYZl6KaR3KV//4YM9N/9F859pX9OMEhxqZJhHK03iXqrw6xEH
+         nCbKilLI0ygDuNfdfwJ/RMvL1rPBIFTEvnCGOelz8YrSbtaTnENAl4Mui7z+UnBWe6w5
+         TOsA==
+X-Gm-Message-State: AOAM533jbD782raHcJzrIuYSrI3dRUzL2/hcOn78RR80IMHJD5k2qmJr
+        ltvGyhFqG6fABkXlsIdgWkK9oku/jYHl11P4AEc=
+X-Google-Smtp-Source: ABdhPJyG2xEmxAYbVbw0iUlOEmdXfXcy24m7DXEexS/mITfNOxQp5Wtr3TQ/AKKjTgQq+sXNyeHYc24WCQSN0Ret/HU=
+X-Received: by 2002:a37:846:: with SMTP id 67mr7997191qki.167.1629450581284;
+ Fri, 20 Aug 2021 02:09:41 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ac8:5184:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 02:09:40
+ -0700 (PDT)
+Reply-To: geomic123@yahoo.com
+From:   George Micheal <philipowiredu77@gmail.com>
+Date:   Fri, 20 Aug 2021 10:09:40 +0100
+Message-ID: <CAGkcCGHZMGrNP48LcZn4sRuaLsMHSeJnxJjFCOZvC71-qdJ4xg@mail.gmail.com>
+Subject: Waiting for response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c:73:66-67: Unneeded
-semicolon
-./drivers/staging/r8188eu/hal/rtl8188e_hal_init.c:2225:68-69: Unneeded
-semicolon
-./drivers/staging/r8188eu/core/rtw_xmit.c:615:75-76: Unneeded semicolon
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/staging/r8188eu/core/rtw_xmit.c         | 2 +-
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 2 +-
- drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
-index 4172352..8693c7c 100644
---- a/drivers/staging/r8188eu/core/rtw_xmit.c
-+++ b/drivers/staging/r8188eu/core/rtw_xmit.c
-@@ -612,7 +612,7 @@ static s32 xmitframe_addmic(struct adapter *padapter, struct xmit_frame *pxmitfr
- 	else
- 		stainfo = rtw_get_stainfo(&padapter->stapriv, &pattrib->ra[0]);
- 
--	hw_hdr_offset = TXDESC_SIZE + (pxmitframe->pkt_offset * PACKET_OFFSET_SZ);;
-+	hw_hdr_offset = TXDESC_SIZE + (pxmitframe->pkt_offset * PACKET_OFFSET_SZ);
- 
- 	if (pattrib->encrypt == _TKIP_) {/* if (psecuritypriv->dot11PrivacyAlgrthm == _TKIP_PRIVACY_) */
- 		/* encode mic code */
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index e27d896..d225858 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -2222,7 +2222,7 @@ void Hal_ReadAntennaDiversity88E(struct adapter *pAdapter, u8 *PROMContent, bool
- 		if (registry_par->antdiv_cfg == 2) { /*  2:By EFUSE */
- 			pHalData->AntDivCfg = (PROMContent[EEPROM_RF_BOARD_OPTION_88E] & 0x18) >> 3;
- 			if (PROMContent[EEPROM_RF_BOARD_OPTION_88E] == 0xFF)
--				pHalData->AntDivCfg = (EEPROM_DEFAULT_BOARD_OPTION & 0x18) >> 3;;
-+				pHalData->AntDivCfg = (EEPROM_DEFAULT_BOARD_OPTION & 0x18) >> 3;
- 		} else {
- 			pHalData->AntDivCfg = registry_par->antdiv_cfg;  /*  0:OFF , 1:ON, 2:By EFUSE */
- 		}
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c b/drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c
-index b4b3c02..2442867 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_rxdesc.c
-@@ -70,7 +70,7 @@ void update_recvframe_attrib_88e(struct recv_frame *precvframe, struct recv_stat
- 	pattrib = &precvframe->attrib;
- 	memset(pattrib, 0, sizeof(struct rx_pkt_attrib));
- 
--	pattrib->crc_err = (u8)((le32_to_cpu(report.rxdw0) >> 14) & 0x1);;/* u8)prxreport->crc32; */
-+	pattrib->crc_err = (u8)((le32_to_cpu(report.rxdw0) >> 14) & 0x1);/* u8)prxreport->crc32; */
- 
- 	/*  update rx report to recv_frame attribute */
- 	pattrib->pkt_rpt_type = (u8)((le32_to_cpu(report.rxdw3) >> 14) & 0x3);/* prxreport->rpt_sel; */
 -- 
-1.8.3.1
+Dear Sir/Madam
 
+My name is Mr George Michael,i am the Personal Aid to former
+President Baba Yahya Abdul-Aziz Jemus Jammeh the Republic of Gambia in
+west Africa, who is currently in exile with his farmily. I have been
+trying on how to get in touch with you over an important issue
+concerning a project that will be profitable. I anticipate hearing
+from you for more details.
+
+Yours faithfully
+Mr George Michael
