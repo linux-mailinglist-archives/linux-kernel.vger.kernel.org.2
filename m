@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DE23F2DD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4273F2DD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240814AbhHTORx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:17:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:33220 "EHLO foss.arm.com"
+        id S240820AbhHTOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:18:07 -0400
+Received: from verein.lst.de ([213.95.11.211]:41193 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235032AbhHTORw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:17:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C0E311FB;
-        Fri, 20 Aug 2021 07:17:13 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2432C3F66F;
-        Fri, 20 Aug 2021 07:17:12 -0700 (PDT)
-Subject: Re: [PATCH] ARM: dts: rockchip: remove cap-mmc-highspeed property
- from mk808 &mmc0 node
-To:     Johan Jonker <jbx6244@gmail.com>, heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paweljarosz3691@gmail.com
-References: <20210820131920.1831-1-jbx6244@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <bf6cba99-da3b-a6fe-4e4b-f4ea6e3c6e63@arm.com>
-Date:   Fri, 20 Aug 2021 15:17:06 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235032AbhHTOSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:18:05 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 13C3E6736F; Fri, 20 Aug 2021 16:17:25 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 16:17:24 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: refactor the i915 GVT support
+Message-ID: <20210820141724.GA29034@lst.de>
+References: <DM4PR11MB5549EC882AA6076F3468274DCAEA9@DM4PR11MB5549.namprd11.prod.outlook.com> <20210728175925.GU1721383@nvidia.com> <20210729072022.GB31896@lst.de> <20210803094315.GF13928@zhen-hp.sh.intel.com> <20210803143058.GA1721383@nvidia.com> <20210804052606.GG13928@zhen-hp.sh.intel.com> <20210816173458.GA9183@lst.de> <20210817010851.GW13928@zhen-hp.sh.intel.com> <20210817052203.GX13928@zhen-hp.sh.intel.com> <20210819082929.GB13928@zhen-hp.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210820131920.1831-1-jbx6244@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819082929.GB13928@zhen-hp.sh.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-20 14:19, Johan Jonker wrote:
-> On the MK808 only a microSD slot is connected with the SDMMC Host Controller,
-> so remove the cap-mmc-highspeed property from the &mmc0 node.
+On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
+> I'm working on below patch to resolve this. But I met a weird issue in
+> case when building i915 as module and also kvmgt module, it caused
+> busy wait on request_module("kvmgt") when boot, it doesn't happen if
+> building i915 into kernel. I'm not sure what could be the reason?
 
-Why, does it do any harm? It's perfectly possible to connect a 
-full-sized card to a microSD slot with an adapter. I came across my old 
-SDIO WiFi card a while back and tried it that way for a giggle, but 
-unfortunately it turned out not to be a chipset supported by any 
-upstream driver.
+Luis, do you know if there is a problem with a request_module from
+a driver ->probe routine that is probably called by a module_init
+function itself?
 
-Robin.
+In the meantime I'll try to reproduce it locally, but I always had a
+hard time getting useful results out of a modular i915, especially
+when combined with module paramters. (no blame on i915, just the problem
+with modules needed early on).
 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->   arch/arm/boot/dts/rk3066a-mk808.dts | 1 -
->   1 file changed, 1 deletion(-)
 > 
-> diff --git a/arch/arm/boot/dts/rk3066a-mk808.dts b/arch/arm/boot/dts/rk3066a-mk808.dts
-> index 9790bc63b..b67f5cb51 100644
-> --- a/arch/arm/boot/dts/rk3066a-mk808.dts
-> +++ b/arch/arm/boot/dts/rk3066a-mk808.dts
-> @@ -123,7 +123,6 @@
->   
->   &mmc0 {
->   	bus-width = <4>;
-> -	cap-mmc-highspeed;
->   	cap-sd-highspeed;
->   	vmmc-supply = <&vcc_sd>;
->   	status = "okay";
+> > But the problem I see is that after moving gvt device model (gvt/*.c
+> > except kvmgt.c) into kvmgt module, we'll have issue with initial mmio
+> > state which current gvt relies on, that is in design supposed to get
+> > initial HW state before i915 driver has taken any operation.  Before
+> > we can ensure that, I think we may only remove MPT part first but
+> > still keep gvt device model as part of i915 with config. I'll try to
+> > split that out.
 > 
+> Sorry I misread the code that as we always request kvmgt module when
+> gvt init, so it should still apply original method that this isn't a
+> problem. Our current validation result has shown no regression as well.
+
+What does initial mmio state mean?  This is something new to me.  But
+as you said in this mail unless I missed something very big it should
+work the same as before.
+
+> -static inline void intel_context_unpin(struct intel_context *ce)
+> +static inline void _intel_context_unpin(struct intel_context *ce)
+>  {
+>  	if (!ce->ops->sched_disable) {
+>  		__intel_context_do_unpin(ce, 1);
+> @@ -150,6 +150,7 @@ static inline void intel_context_unpin(struct intel_context *ce)
+>  		}
+>  	}
+>  }
+> +void intel_context_unpin(struct intel_context *ce);
+
+Looking at intel_context_unpin/_intel_context_unpin is there really
+a need to have this inline to start with?  It don't see much the compiler
+could optimize by inlining it.
