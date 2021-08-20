@@ -2,227 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61AF3F2A39
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E4E3F2A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239185AbhHTKmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:42:04 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57898 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237925AbhHTKmD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:42:03 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KAfCEr105704;
-        Fri, 20 Aug 2021 05:41:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629456072;
-        bh=7MXaO4GKe/fPH6zc16itUHi0h/KHPxryWe1gFsakmI8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=XfnMLdRCROtMcwxUefpXWNewRQIbwey1QekMuLbZH9zOoa3fcl7OgpB6+lzUK+l96
-         OiEUx+jgi2nu5tbr/NXTnycRc5bYASkeJrCdr0xDMFAyKVt+aHKz3d3b9lN0Jdhu6y
-         E+JJ/9mtoWvsvZtr1g4IaTVqghhJoskSFKC6W1gQ=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KAfCt8055052
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Aug 2021 05:41:12 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
- Aug 2021 05:41:11 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 20 Aug 2021 05:41:11 -0500
-Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KAf6Th096048;
-        Fri, 20 Aug 2021 05:41:07 -0500
-Subject: Re: [PATCH 07/13] mtd: spinand: Allow enabling Octal DTR mode in the
- core
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-8-a-nandan@ti.com> <20210806205845.03dd97c9@xps13>
-From:   Apurva Nandan <a-nandan@ti.com>
-Message-ID: <c3e52b84-7ffc-8e48-d0c7-f17fa0b71f6b@ti.com>
-Date:   Fri, 20 Aug 2021 16:11:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239086AbhHTKlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:41:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237925AbhHTKlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:41:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF466056C;
+        Fri, 20 Aug 2021 10:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629456076;
+        bh=j9scAOD9ml/UjU+E7F1nVCcyussEtA5A5JvgyeOg91I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b6qBWNapTru/r/hZvx1kh/qOf/LUCLhCu+jyhg6U+6/bwDsZbjR7nT9h6Tr8q/8DK
+         QbC4uy2mDwgJl9FJ1RI8PM7U1FwCCV1ee+XecftAd0Py2JnLGfmOUfe3sKDM0EQUMq
+         BXIYkgvwg1xwrgxyq6FIty9wQ07yVCVpsNeppcXLMFh+fv0loDJP3a0XpOxxd5myz7
+         lkH0LQ7DMRmXlG9sgXfzvC5Js4emGsgzmYnLleREtLbix9RHlkS6UR22T6LNDO9DVP
+         PPzp2WriBpjMxtMe+MyGGWgtLf9xxSwqfEWQBFQGHUo/vwxG03U5u+bdKuudswtz+j
+         Lw621ZrsPzhvw==
+Date:   Fri, 20 Aug 2021 11:41:11 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>, joro@8bytes.org
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, vdumpa@nvidia.com
+Subject: Re: [PATCH -next] iommu/arm-smmu: Fix missing unlock on error in
+ arm_smmu_device_group()
+Message-ID: <20210820104111.GC17267@willie-the-truck>
+References: <20210820074949.1946576-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210806205845.03dd97c9@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820074949.1946576-1-yangyingliang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
+On Fri, Aug 20, 2021 at 03:49:49PM +0800, Yang Yingliang wrote:
+> Add the missing unlock before return from function arm_smmu_device_group()
+> in the error handling case.
+> 
+> Fixes: b1a1347912a7 ("iommu/arm-smmu: Fix race condition during iommu_group creation")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index 73893180ec7e..4bc75c4ce402 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -1478,8 +1478,10 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
+>  	mutex_lock(&smmu->stream_map_mutex);
+>  	for_each_cfg_sme(cfg, fwspec, i, idx) {
+>  		if (group && smmu->s2crs[idx].group &&
+> -		    group != smmu->s2crs[idx].group)
+> +		    group != smmu->s2crs[idx].group) {
+> +			mutex_unlock(&smmu->stream_map_mutex);
+>  			return ERR_PTR(-EINVAL);
+> +		}
 
-On 07/08/21 12:28 am, Miquel Raynal wrote:
-> Hi Apurva,
-> 
-> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:32
-> +0000:
-> 
->> Enable Octal DTR SPI mode, i.e. 8D-8D-8D mode, if the SPI NAND flash
->> device supports it. Mixed OSPI (1S-1S-8S & 1S-8S-8S), mixed DTR modes
->> (1S-1D-8D), etc. aren't supported yet.
->>
->> The method to switch to Octal DTR SPI mode may vary across
->> manufacturers. For example, for Winbond, it is enabled by writing
->> values to the volatile configuration register. So, let the
->> manufacturer's code have their own implementation for switching to
->> Octal DTR SPI mode. Mixed OSPI (1S-1S-8S & 1S-8S-8S), mixed DTR modes
->> (1S-1D-8D), etc. aren't supported yet.
-> 
-> You can drop the final sentence which is a repetition of the previous
-> paragraph.
-> 
+Urgh, I should really have spotted that in review. Thanks:
 
-Yes right!
+Acked-by: Will Deacon <will@kernel.org>
 
->> Check for the SPI NAND device's support for Octal DTR mode using
->> spinand flags, and if the op_templates allow 8D-8D-8D, call
->                                           allows
-> 
->> octal_dtr_enable() manufacturer op. If the SPI controller doesn't
->> supports these modes, the selected op_templates would prevent switching
-> 
->                                                    will
-> 
->> to the Octal DTR mode. And finally update the spinand reg_proto
->> if success.
-> 
->    on
-> 
+Joerg -- please can you throw this on top?
 
-Okay, will correct all!
-
->>
->> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
->> ---
->>   drivers/mtd/nand/spi/core.c | 46 +++++++++++++++++++++++++++++++++++++
->>   include/linux/mtd/spinand.h |  3 +++
->>   2 files changed, 49 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
->> index 1e619b6d777f..19d8affac058 100644
->> --- a/drivers/mtd/nand/spi/core.c
->> +++ b/drivers/mtd/nand/spi/core.c
->> @@ -256,6 +256,48 @@ static int spinand_init_quad_enable(struct spinand_device *spinand)
->>   			       enable ? CFG_QUAD_ENABLE : 0);
->>   }
->>   
->> +static bool spinand_op_is_octal_dtr(const struct spi_mem_op *op)
->> +{
->> +	return  op->cmd.buswidth == 8 && op->cmd.dtr &&
->> +		op->addr.buswidth == 8 && op->addr.dtr &&
->> +		op->data.buswidth == 8 && op->data.dtr;
->> +}
->> +
->> +static int spinand_init_octal_dtr_enable(struct spinand_device *spinand)
->> +{
->> +	struct device *dev = &spinand->spimem->spi->dev;
->> +	int ret;
->> +
->> +	if (!(spinand->flags & SPINAND_HAS_OCTAL_DTR_BIT))
->> +		return 0;
->> +
->> +	if (!(spinand_op_is_octal_dtr(spinand->op_templates.read_cache) &&
->> +	      spinand_op_is_octal_dtr(spinand->op_templates.write_cache) &&
->> +	      spinand_op_is_octal_dtr(spinand->op_templates.update_cache)))
->> +		return 0;
->> +
->> +	if (!spinand->manufacturer->ops->octal_dtr_enable) {
->> +		dev_err(dev,
->> +			"Missing ->octal_dtr_enable(), unable to switch mode\n");
-> 
-> I don't think we want an error here. Perhaps a debug or info call, but
-> no more.
-> 
-
-Agree!
-
->> +		return -EINVAL;
->> +	}
->> +
->> +	ret = spinand->manufacturer->ops->octal_dtr_enable(spinand);
->> +	if (ret) {
->> +		dev_err(dev,
->> +			"Failed to enable Octal DTR SPI mode (err = %d)\n",
->> +			ret);
->> +		return ret;
->> +	}
->> +
->> +	spinand->reg_proto = SPINAND_OCTAL_DTR;
->> +
->> +	dev_dbg(dev,
->> +		"%s SPI NAND switched to Octal DTR SPI (8D-8D-8D) mode\n",
->> +		spinand->manufacturer->name);
->> +	return 0;
->> +}
->> +
->>   static int spinand_ecc_enable(struct spinand_device *spinand,
->>   			      bool enable)
->>   {
->> @@ -1189,6 +1231,10 @@ static int spinand_init_flash(struct spinand_device *spinand)
->>   	if (ret)
->>   		return ret;
->>   
->> +	ret = spinand_init_octal_dtr_enable(spinand);
->> +	if (ret)
->> +		return ret;
->> +
->>   	ret = spinand_upd_cfg(spinand, CFG_OTP_ENABLE, 0);
->>   	if (ret)
->>   		return ret;
->> diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
->> index 35816b8cfe81..daa2ac5c3110 100644
->> --- a/include/linux/mtd/spinand.h
->> +++ b/include/linux/mtd/spinand.h
->> @@ -271,6 +271,7 @@ struct spinand_devid {
->>    * @init: initialize a SPI NAND device
->>    * @adjust_op: modify the ops for any variation in their cmd, address, dummy or
->>    *	       data phase by the manufacturer
->> + * @octal_dtr_enable: switch the SPI NAND flash into Octal DTR SPI mode
->>    * @cleanup: cleanup a SPI NAND device
->>    *
->>    * Each SPI NAND manufacturer driver should implement this interface so that
->> @@ -280,6 +281,7 @@ struct spinand_manufacturer_ops {
->>   	int (*init)(struct spinand_device *spinand);
->>   	void (*adjust_op)(struct spi_mem_op *op,
->>   			  const enum spinand_proto reg_proto);
->> +	int (*octal_dtr_enable)(struct spinand_device *spinand);
->>   	void (*cleanup)(struct spinand_device *spinand);
->>   };
->>   
->> @@ -348,6 +350,7 @@ struct spinand_ecc_info {
->>   
->>   #define SPINAND_HAS_QE_BIT		BIT(0)
->>   #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
->> +#define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
->>   
->>   /**
->>    * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
-> 
-> 
-> 
-> 
-> Thanks,
-> Miquèl
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
-Thanks,
-Apurva Nandan
+Will
