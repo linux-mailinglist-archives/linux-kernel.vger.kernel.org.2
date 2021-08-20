@@ -2,70 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88193F28E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CADAF3F28F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhHTJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232768AbhHTJKT (ORCPT
+        id S235088AbhHTJM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:12:56 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60221 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232991AbhHTJMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:10:19 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19774C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:09:42 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id n11so10211766qkk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
-        b=hFJnYYN6W4CsDcIVyUx2ldgP3beMW4jLNH/SGyYzXZ7BCc0KGd1k2ND/ddXkVyFBzR
-         guIjkcbm1NmdCLbZe8HMFSijx65jRHp/SdEKwlTl1Wrrm5GfFB+4ZVS5sv8x1a29xP5U
-         THsPNWQYsSJ5yPuhXe5CCySbf3d8KHk4ieqNWU1QRBTQFpIYNevU0ISY6bHFs3nh/n2S
-         aeYB/F9nFQwaieLCZI54fOmj0REUKAHwNOHq6pxHqVkFNAYAR1ZrLiFgkhfJD1EtDH4X
-         GpetBqXCAI10TRHamsMBRTUQpFk6zzmcbkWEi4ufFi/59ztBcLqf45Sb9NTW5DLLfDf/
-         UjVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=WuDQPRa1pRZEmgy3rMsrN6WxMhN/6RZwdTFnT+vP0Q4=;
-        b=gpGd+nQ64TkerqqzT0jicFc476vSDlWPP3XTW62PpEuG99+T0B5ZXDQYJB7n09nuZ6
-         dAuVotktxCr/1ARxNXn4ytm9PRUGTx8wLmjAvcvAuoFJ/1NA6WQ23T/ZQdaR6gjybw6f
-         4C8HDagC9FWIlMDS4smtbmaqKiLGI8uRT6wtGqUIKbzcUnGmCNQVOnQOVF8uYjlTWNWY
-         fes5vKaSxGuP7VM2AOrnYZl6KaR3KV//4YM9N/9F859pX9OMEhxqZJhHK03iXqrw6xEH
-         nCbKilLI0ygDuNfdfwJ/RMvL1rPBIFTEvnCGOelz8YrSbtaTnENAl4Mui7z+UnBWe6w5
-         TOsA==
-X-Gm-Message-State: AOAM533jbD782raHcJzrIuYSrI3dRUzL2/hcOn78RR80IMHJD5k2qmJr
-        ltvGyhFqG6fABkXlsIdgWkK9oku/jYHl11P4AEc=
-X-Google-Smtp-Source: ABdhPJyG2xEmxAYbVbw0iUlOEmdXfXcy24m7DXEexS/mITfNOxQp5Wtr3TQ/AKKjTgQq+sXNyeHYc24WCQSN0Ret/HU=
-X-Received: by 2002:a37:846:: with SMTP id 67mr7997191qki.167.1629450581284;
- Fri, 20 Aug 2021 02:09:41 -0700 (PDT)
+        Fri, 20 Aug 2021 05:12:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UkL-umh_1629450733;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UkL-umh_1629450733)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 20 Aug 2021 17:12:15 +0800
+Date:   Fri, 20 Aug 2021 17:12:13 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, Liu Bo <bo.liu@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Eryu Guan <eguan@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Tao Ma <boyu.mt@taobao.com>
+Subject: Re: [PATCH v2 2/2] erofs: support reading chunk-based uncompressed
+ files
+Message-ID: <YR9x7W4wObWdZdrx@B-P7TQMD6M-0146.local>
+References: <20210818070713.4437-1-hsiangkao@linux.alibaba.com>
+ <20210819063310.177035-1-hsiangkao@linux.alibaba.com>
+ <20210819063310.177035-2-hsiangkao@linux.alibaba.com>
+ <aaf64137-02f9-db98-10d4-4757bc6f25ec@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:ac8:5184:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 02:09:40
- -0700 (PDT)
-Reply-To: geomic123@yahoo.com
-From:   George Micheal <philipowiredu77@gmail.com>
-Date:   Fri, 20 Aug 2021 10:09:40 +0100
-Message-ID: <CAGkcCGHZMGrNP48LcZn4sRuaLsMHSeJnxJjFCOZvC71-qdJ4xg@mail.gmail.com>
-Subject: Waiting for response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aaf64137-02f9-db98-10d4-4757bc6f25ec@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Dear Sir/Madam
+Hi Chao,
 
-My name is Mr George Michael,i am the Personal Aid to former
-President Baba Yahya Abdul-Aziz Jemus Jammeh the Republic of Gambia in
-west Africa, who is currently in exile with his farmily. I have been
-trying on how to get in touch with you over an important issue
-concerning a project that will be profitable. I anticipate hearing
-from you for more details.
+On Fri, Aug 20, 2021 at 05:04:13PM +0800, Chao Yu wrote:
+> On 2021/8/19 14:33, Gao Xiang wrote:
 
-Yours faithfully
-Mr George Michael
+...
+
+> >   }
+> > +static int erofs_map_blocks(struct inode *inode,
+> > +			    struct erofs_map_blocks *map, int flags)
+> > +{
+> > +	struct super_block *sb = inode->i_sb;
+> > +	struct erofs_inode *vi = EROFS_I(inode);
+> > +	struct erofs_inode_chunk_index *idx;
+> > +	struct page *page;
+> > +	u64 chunknr;
+> > +	unsigned int unit;
+> > +	erofs_off_t pos;
+> > +	int err = 0;
+> > +
+> > +	if (map->m_la >= inode->i_size) {
+> > +		/* leave out-of-bound access unmapped */
+> > +		map->m_flags = 0;
+> > +		map->m_plen = 0;
+> > +		goto out;
+> > +	}
+> > +
+> > +	if (vi->datalayout != EROFS_INODE_CHUNK_BASED)
+> > +		return erofs_map_blocks_flatmode(inode, map, flags);
+> > +
+> > +	if (vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)
+> > +		unit = sizeof(*idx);	/* chunk index */
+> > +	else
+> > +		unit = 4;		/* block map */
+> 
+> You mean sizeof(__le32)?
+
+Yeah, sizeof(__le32) == 4, either way works for me.
+
+If some tendency about this, I will update when applying.
+
+> 
+> Otherwise it looks good to me.
+> 
+> Reviewed-by: Chao Yu <chao@kernel.org>
+> 
+
+Thanks for the review!
+
+Thanks,
+Gao Xiang
+
+> Thanks,
+> 
+> > +
+> > +	chunknr = map->m_la >> vi->chunkbits;
+> > +	pos = ALIGN(iloc(EROFS_SB(sb), vi->nid) + vi->inode_isize +
+> > +		    vi->xattr_isize, unit) + unit * chunknr;
+> > +
+> > +	page = erofs_get_meta_page(inode->i_sb, erofs_blknr(pos));
+> > +	if (IS_ERR(page))
+> > +		return PTR_ERR(page);
+> > +
+> > +	map->m_la = chunknr << vi->chunkbits;
+> > +	map->m_plen = min_t(erofs_off_t, 1UL << vi->chunkbits,
+> > +			    roundup(inode->i_size - map->m_la, EROFS_BLKSIZ));
+> > +
+> > +	/* handle block map */
+> > +	if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_INDEXES)) {
+> > +		__le32 *blkaddr = page_address(page) + erofs_blkoff(pos);
+> > +
+> > +		if (le32_to_cpu(*blkaddr) == EROFS_NULL_ADDR) {
+> > +			map->m_flags = 0;
+> > +		} else {
+> > +			map->m_pa = blknr_to_addr(le32_to_cpu(*blkaddr));
+> > +			map->m_flags = EROFS_MAP_MAPPED;
+> > +		}
+> > +		goto out_unlock;
+> > +	}
+> > +	/* parse chunk indexes */
+> > +	idx = page_address(page) + erofs_blkoff(pos);
+> > +	switch (le32_to_cpu(idx->blkaddr)) {
+> > +	case EROFS_NULL_ADDR:
+> > +		map->m_flags = 0;
+> > +		break;
+> > +	default:
+> > +		/* only one device is supported for now */
+> > +		if (idx->device_id) {
+> > +			erofs_err(sb, "invalid device id %u @ %llu for nid %llu",
+> > +				  le32_to_cpu(idx->device_id),
+> > +				  chunknr, vi->nid);
+> > +			err = -EFSCORRUPTED;
+> > +			goto out_unlock;
+> > +		}
+> > +		map->m_pa = blknr_to_addr(le32_to_cpu(idx->blkaddr));
+> > +		map->m_flags = EROFS_MAP_MAPPED;
+> > +		break;
+> > +	}
+> > +out_unlock:
+> > +	unlock_page(page);
+> > +	put_page(page);
+> > +out:
+> > +	map->m_llen = map->m_plen;
+> > +	return err;
+> > +}
+> > +
+> >   static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> >   		unsigned int flags, struct iomap *iomap, struct iomap *srcmap)
+> >   {
+> > @@ -94,7 +164,7 @@ static int erofs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> >   	map.m_la = offset;
+> >   	map.m_llen = length;
+> > -	ret = erofs_map_blocks_flatmode(inode, &map, EROFS_GET_BLOCKS_RAW);
+> > +	ret = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
+> >   	if (ret < 0)
+> >   		return ret;
+> > diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+> > index d13e0709599c..4408929bd6f5 100644
+> > --- a/fs/erofs/inode.c
+> > +++ b/fs/erofs/inode.c
+> > @@ -2,6 +2,7 @@
+> >   /*
+> >    * Copyright (C) 2017-2018 HUAWEI, Inc.
+> >    *             https://www.huawei.com/
+> > + * Copyright (C) 2021, Alibaba Cloud
+> >    */
+> >   #include "xattr.h"
+> > @@ -122,7 +123,9 @@ static struct page *erofs_read_inode(struct inode *inode,
+> >   		/* total blocks for compressed files */
+> >   		if (erofs_inode_is_data_compressed(vi->datalayout))
+> >   			nblks = le32_to_cpu(die->i_u.compressed_blocks);
+> > -
+> > +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
+> > +			/* fill chunked inode summary info */
+> > +			vi->chunkformat = le16_to_cpu(die->i_u.c.format);
+> >   		kfree(copied);
+> >   		break;
+> >   	case EROFS_INODE_LAYOUT_COMPACT:
+> > @@ -160,6 +163,8 @@ static struct page *erofs_read_inode(struct inode *inode,
+> >   		inode->i_size = le32_to_cpu(dic->i_size);
+> >   		if (erofs_inode_is_data_compressed(vi->datalayout))
+> >   			nblks = le32_to_cpu(dic->i_u.compressed_blocks);
+> > +		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
+> > +			vi->chunkformat = le16_to_cpu(dic->i_u.c.format);
+> >   		break;
+> >   	default:
+> >   		erofs_err(inode->i_sb,
+> > @@ -169,6 +174,17 @@ static struct page *erofs_read_inode(struct inode *inode,
+> >   		goto err_out;
+> >   	}
+> > +	if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
+> > +		if (!(vi->chunkformat & EROFS_CHUNK_FORMAT_ALL)) {
+> > +			erofs_err(inode->i_sb,
+> > +				  "unsupported chunk format %x of nid %llu",
+> > +				  vi->chunkformat, vi->nid);
+> > +			err = -EOPNOTSUPP;
+> > +			goto err_out;
+> > +		}
+> > +		vi->chunkbits = LOG_BLOCK_SIZE +
+> > +			(vi->chunkformat & EROFS_CHUNK_FORMAT_BLKBITS_MASK);
+> > +	}
+> >   	inode->i_mtime.tv_sec = inode->i_ctime.tv_sec;
+> >   	inode->i_atime.tv_sec = inode->i_ctime.tv_sec;
+> >   	inode->i_mtime.tv_nsec = inode->i_ctime.tv_nsec;
+> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> > index 91089ab8a816..9524e155b38f 100644
+> > --- a/fs/erofs/internal.h
+> > +++ b/fs/erofs/internal.h
+> > @@ -2,6 +2,7 @@
+> >   /*
+> >    * Copyright (C) 2017-2018 HUAWEI, Inc.
+> >    *             https://www.huawei.com/
+> > + * Copyright (C) 2021, Alibaba Cloud
+> >    */
+> >   #ifndef __EROFS_INTERNAL_H
+> >   #define __EROFS_INTERNAL_H
+> > @@ -261,6 +262,10 @@ struct erofs_inode {
+> >   	union {
+> >   		erofs_blk_t raw_blkaddr;
+> > +		struct {
+> > +			unsigned short	chunkformat;
+> > +			unsigned char	chunkbits;
+> > +		};
+> >   #ifdef CONFIG_EROFS_FS_ZIP
+> >   		struct {
+> >   			unsigned short z_advise;
+> > 
