@@ -2,90 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4A83F2640
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321253F264E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbhHTFBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S233073AbhHTFIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 01:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233148AbhHTFBE (ORCPT
+        with ESMTP id S232406AbhHTFIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 01:01:04 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8200C061575;
-        Thu, 19 Aug 2021 22:00:26 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrTwR5l2bz9sWl;
-        Fri, 20 Aug 2021 15:00:23 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629435624;
-        bh=zaRQOtdUudekI3U8BHK5Nmz50i9XCavgVORW58yptvQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ivT+npR5a35enc5YIX/ASSqN8lfQmbLtWtp6Hfrecfxa15e2azaWullG+/Ix8dwno
-         oi12OxSg82sHhwm0lqjHY7RUptLrqwD0g6uShsdXqiZhUfAzTrsx6brtlLAfbgyFC3
-         NJ7E3WNBRayTiwf12+n8GkoXtAKfrC3xI36GZJip1Yh+TYX88ntz9F9300dOAAQ2Jc
-         uq72/BZRcYQL/5+AHqJgEOlSTDjF8Db40bav+FTFvcwy7oVMwQb/cnRu02z13LH3eu
-         TnUFGTQgChLwM/q50XOvc3fe2HmfO+sE4AajvbyKJ+/PtxhyczYTk5cmsyOZGaLmkh
-         nCU/aOHd6TEUw==
-Date:   Fri, 20 Aug 2021 15:00:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Meng Dong <whenov@gmail.com>,
+        Fri, 20 Aug 2021 01:08:13 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348E1C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:07:36 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id k14so8021770pga.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=I11c1cKgPr/Sp26Jfws1CaBTqYhcyWk53u2DaXhbwr4=;
+        b=UpF+nH2OkwIlPICwJCGnmyjIr4B9zvEagcPYbt+FJYBnDajj0m1nO6tNVE8qbt0+Fb
+         dvuJgN/eTqaJJteqhCVn/rpcLUbjjgUdxm7UyfiENQfoJm1xoF4RsPXSRRmHR5JJ+BPY
+         PyeM7sN+r+QeMIx3F/9qJdfTHD7pTlzTgVcV3EQwfDc98f2L+ENvpCEJkt6OSiVH99HJ
+         DBrXa6YTNx2fJk97BqJPlKXpgux1dBNrNVjVGSJvKx8onkggk5QqicWc5AuujjenjwE8
+         18Ew9Inp2nlX4py5sLi42iaANQsw78fFTvRX/HOAZ1Q/cYx042ZZ2sxqM8pjRICPn4KS
+         FXng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=I11c1cKgPr/Sp26Jfws1CaBTqYhcyWk53u2DaXhbwr4=;
+        b=H5rgk5MvWMjmnjr2ECaN4uac99BlNaU6FMbf9d0GEs0NgZFchAUDk8IblVFd6FM1Em
+         cRGejx2iFKIHfBUErfI5XoYFebhRXwYz6Rzr8dlqYI9SIgdWS9OkUcyc66EX0nyAhjws
+         DDwhHYyX7EljkxsDQ0HDDuP2baA5MefrZMP1SucyXLFsVRDJ4kWoOlqBdWWn7Hptc5RM
+         5+eXRsAoBUk/diNE1wAh8NExfWCTvpMQbbt8O/fjDgXDGilGazAx0Hl6+g0mkVv+9DvB
+         L5q+iOHSlhLmHO7mmL3/5QOZeUTPa/6SKee4RJ/g/CNWXMtFbFVrRXJOebz9O8j3UbN5
+         6XWw==
+X-Gm-Message-State: AOAM533gxUWYDIQWu8JaJgy75HsekAyd952Y6cvw6RIsTde13jGs6Eoo
+        HKq2E44pFKxNa4IYgfkG0T25YQ==
+X-Google-Smtp-Source: ABdhPJy16/E+lvO8MOOTzYuxWhro60JOgxJRFDA2oDgCU53rDXdaeG2jdAFewa07ZsImLDOdZ74p+w==
+X-Received: by 2002:a05:6a00:791:b0:3e1:3316:2e8 with SMTP id g17-20020a056a00079100b003e1331602e8mr18151438pfu.10.1629436055638;
+        Thu, 19 Aug 2021 22:07:35 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id m5sm6747464pgn.70.2021.08.19.22.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 22:07:35 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 10:37:32 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drivers-x86 tree
-Message-ID: <20210820150022.2160a348@canb.auug.org.au>
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+Message-ID: <20210820050732.oy2qdtwha5zioasq@vireshk-i7>
+References: <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
+ <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
+ <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
+ <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
+ <0354acbe-d856-4040-f453-8e8164102045@gmail.com>
+ <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
+ <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//EhndGbVAvoXj+l_0i8q638";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//EhndGbVAvoXj+l_0i8q638
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 19-08-21, 22:35, Dmitry Osipenko wrote:
+> 19.08.2021 16:07, Ulf Hansson пишет:
+> > In the other scenario where a consumer driver prefers to *not* call
+> > pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
+> > to power on the device to complete probing, then we don't want to vote
+> > for an OPP at all - and we also want the performance state for the
+> > device in genpd to be set to zero. Correct?
+> 
+> Yes
+> 
+> > Is this the main problem you are trying to solve, because I think this
+> > doesn't work out of the box as of today?
+> 
+> The main problem is that the restored performance state is zero for the
+> first genpd_runtime_resume(), while it's not zero from the h/w perspective.
 
-Hi all,
+This is exactly why I have been advocating that the genpd needs to
+sync up with the hardware before any calls are made to it from the
+consumer driver. Just what clock framework does to get the clock rate.
 
-After merging the drivers-x86 tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> > There is another concern though, but perhaps it's not a problem after
+> > all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
+> > like clock/regulators. That could certainly be problematic, in
+> > particular if the device and its genpd have OPP tables associated with
+> > it and the consumer driver wants to follow the above sequence in
+> > probe.
+> 
+> dev_pm_opp_set_rate() won't enable clocks and regulators, but it may
 
-drivers/platform/x86/ideapad-laptop.c: In function 'ideapad_wmi_notify':
-drivers/platform/x86/ideapad-laptop.c:1469:3: error: a label can only be pa=
-rt of a statement and a declaration is not a statement
- 1469 |   unsigned long result;
-      |   ^~~~~~~~
+It does enable regulators right now, it may choose to enable clocks
+later on, no guarantees.
 
-Caused by commit
+> change the clock rate and voltage. This is also platform/driver specific
+> because it's up to OPP user how to configure OPP table. On Tegra we only
+> assign clock to OPP table, regulators are unused.
 
-  18cfd76e7b84 ("ideapad-laptop: Fix Legion 5 Fn lock LED")
+Right, over that platforms can set their own version of set-opp
+callback, where all this is done from a platform specific callback.
 
-I have used the drivers-x86 tree from next-20210819 for today.
+> > Viresh, can you please chime in here and elaborate on some of the
+> > magic happening behind dev_pm_opp_set_rate() API - is there a problem
+> > here or not?
 
---=20
-Cheers,
-Stephen Rothwell
+It configures clock, regulators, genpds, any required OPPs, + it
+enables regulators right now.
 
---Sig_//EhndGbVAvoXj+l_0i8q638
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEfNuYACgkQAVBC80lX
-0GzICwf+NH9l71Ae37AcDBaIgOkW1257gJaXIW7Up1CFCNK+yJfWf9u77qdTTjfs
-0ufn0gfCqQgLK4VmkozF3d56uqXQ8RZqBBFzgCeCtthxz91X68Hcq2sUjXAAsZP0
-81cdXjPFhDkf+pWk2guhzftLbdvHlQ2om4l4KBehDjhYmhnGz8o6gZe85uagVNAg
-uKuc3jmosDTy/2Q59yf3xccjuqzQRR8lPgsXOHOT+yHHLh5NnBNI2qlcnWsrFlss
-huBvPI7NzxLQCsbI/U/kgKqpejm3ffHrLJXaNYli1aETMAUtEZBQerBpPCGEqcAQ
-XB2SxZCaxEW/rkURAzStDkYbn20YLw==
-=aZ+f
------END PGP SIGNATURE-----
-
---Sig_//EhndGbVAvoXj+l_0i8q638--
+-- 
+viresh
