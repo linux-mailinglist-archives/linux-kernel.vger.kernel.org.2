@@ -2,169 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A72E3F2930
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9510C3F291A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237085AbhHTJb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:31:29 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:34105 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237091AbhHTJb1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:31:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1629451849; x=1660987849;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zEDBcUygp2aN/sqFtPomk6+2LN5nut6ZU9LjTMWFbOE=;
-  b=HwqX9Oy2zKEcmH57+34OLDLAy6Lurg9/pHAN6Mg7NWfMJWw247fhkgPJ
-   fyyme6wGi7QVc+g0DvIo3WHco0T1vRFUUcgPofZhrj9OL8ZriAhC8xQm6
-   jWvEAKCqdfxhYVP6PPmPjCJ8+rkTxaQXSUfo683ehg8185nE7U2I88h3G
-   lkGAslQsW7YfdMxekyhpZ+zfnBY/ddanW8ch5F8gefP3mx71zGWBZcYxo
-   C4lJUmG7S27WvxQKPt5eh6o2QZ5kWtc8sYWY9a5A1umxF/U7s/YUwCzpf
-   6209xnAVry1IiD6YqlRjBzQcSBwh1FD/lfrobLyHXdCAVLeeRav+uV6SN
-   g==;
-IronPort-SDR: X3p2akZV+Q3EsvY0CV7gI0moZCw2Xl1VkqzlucHpKyArs8HzOtG8SJnAXMunmVl1IQuIZZbwol
- v6YoK1hJQN7kjf24CPuxlXw4DJOZ3uCaZKcNY3erHA4fquVJpCInUz03HExZKmGl/Y2dQGhMvl
- 2L01b/KP/OpDmdpvIUKtIVV6AJ0EZYcZYfUIi4Lwcx6rF1kzJyIpGc/WsQQOU9dwVUxDLlCp7t
- UHw0036aVFd2CnvuHHjdXayQvOtlJ/4lfkmu7XtpSm6OgS3RcWZASY148UFaoyp3wSeYfJ+5TF
- K4yzE4oLp9PO1xkBMdzdCSyQ
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="66535171"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Aug 2021 02:30:49 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Fri, 20 Aug 2021 02:30:48 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Fri, 20 Aug 2021 02:30:43 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <ulf.hansson@linaro.org>, <robh+dt@kernel.org>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Eugen Hristev" <eugen.hristev@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v3 4/4] ARM: dts: at91: sama5d27_wlsom1: add wifi device
-Date:   Fri, 20 Aug 2021 12:28:03 +0300
-Message-ID: <20210820092803.78523-5-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210820092803.78523-1-claudiu.beznea@microchip.com>
-References: <20210820092803.78523-1-claudiu.beznea@microchip.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S236800AbhHTJ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:29:00 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:55959 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235063AbhHTJ27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:28:59 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Grbsc71yQz9sW5;
+        Fri, 20 Aug 2021 11:28:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id QXtys6wkMo-p; Fri, 20 Aug 2021 11:28:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Grbsc68nCz9sWB;
+        Fri, 20 Aug 2021 11:28:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5DBC68B87E;
+        Fri, 20 Aug 2021 11:28:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id n9R29RhIUlyy; Fri, 20 Aug 2021 11:28:20 +0200 (CEST)
+Received: from po9473vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2B5E38B875;
+        Fri, 20 Aug 2021 11:28:20 +0200 (CEST)
+Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id D86B866958; Fri, 20 Aug 2021 09:28:19 +0000 (UTC)
+Message-Id: <ba49cdd574558a0363300c3f6b5b062b397cb071.1629451483.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/audit: Avoid unneccessary #ifdef in
+ syscall_get_arguments()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 20 Aug 2021 09:28:19 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugen Hristev <eugen.hristev@microchip.com>
+Use is_32bit_task() which already handles CONFIG_COMPAT.
 
-SAMA5D27 WLSOM1 boards has a WILC3000 device soldered. Add proper
-device tree nodes for this.
-
-[eugen.hristev: original author of this code]
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-[nicolas.ferre: original author of this code]
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi | 71 +++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ arch/powerpc/include/asm/syscall.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
-index 025a78310e3a..c7bcfd3ce91d 100644
---- a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
-+++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
-@@ -30,6 +30,15 @@ main_xtal {
- 			clock-frequency = <24000000>;
- 		};
- 	};
-+
-+	wifi_pwrseq: wifi_pwrseq {
-+		compatible = "mmc-pwrseq-wilc1000";
-+		reset-gpios = <&pioA PIN_PA27 GPIO_ACTIVE_HIGH>;
-+		powerdown-gpios = <&pioA PIN_PA29 GPIO_ACTIVE_HIGH>;
-+		pinctrl-0 = <&pinctrl_wilc_pwrseq>;
-+		pinctrl-names = "default";
-+		status = "okay";
-+	};
- };
+diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/asm/syscall.h
+index ac766037e8a1..c60ebd04b2ed 100644
+--- a/arch/powerpc/include/asm/syscall.h
++++ b/arch/powerpc/include/asm/syscall.h
+@@ -90,10 +90,9 @@ static inline void syscall_get_arguments(struct task_struct *task,
+ 	unsigned long val, mask = -1UL;
+ 	unsigned int n = 6;
  
- &flx1 {
-@@ -310,5 +319,67 @@ pinctrl_qspi1_default: qspi1_default {
- 			 <PIN_PB10__QSPI1_IO3>;
- 		bias-pull-up;
- 	};
+-#ifdef CONFIG_COMPAT
+-	if (test_tsk_thread_flag(task, TIF_32BIT))
++	if (is_32bit_task())
+ 		mask = 0xffffffff;
+-#endif
 +
-+	pinctrl_sdmmc1_default: sdmmc1_default {
-+		cmd-data {
-+			pinmux = <PIN_PA28__SDMMC1_CMD>,
-+				 <PIN_PA18__SDMMC1_DAT0>,
-+				 <PIN_PA19__SDMMC1_DAT1>,
-+				 <PIN_PA20__SDMMC1_DAT2>,
-+				 <PIN_PA21__SDMMC1_DAT3>;
-+			bias-disable;
-+		};
-+
-+		conf-ck {
-+			pinmux = <PIN_PA22__SDMMC1_CK>;
-+			bias-disable;
-+		};
-+	};
-+
-+	pinctrl_wilc_default: wilc_default {
-+		conf-irq {
-+			pinmux = <PIN_PB25__GPIO>;
-+			bias-disable;
-+		};
-+	};
-+
-+	pinctrl_wilc_pwrseq: wilc_pwrseq {
-+		conf-ce-nrst {
-+			pinmux = <PIN_PA27__GPIO>,
-+				 <PIN_PA29__GPIO>;
-+			bias-disable;
-+		};
-+
-+		conf-rtcclk {
-+			pinmux = <PIN_PB13__PCK1>;
-+			bias-disable;
-+		};
-+	};
-+};
-+
-+&sdmmc1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	bus-width = <4>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_sdmmc1_default>;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	no-1-8-v;
-+	non-removable;
-+	status = "okay";
-+
-+	wilc: wilc@0 {
-+		reg = <0>;
-+		bus-width = <4>;
-+		compatible = "microchip,wilc3000", "microchip,wilc1000";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_wilc_default>;
-+		irq-gpios = <&pioA PIN_PB25 GPIO_ACTIVE_LOW>;
-+		clocks = <&pmc PMC_TYPE_SYSTEM 9>;
-+		clock-names = "rtc";
-+		assigned-clocks = <&pmc PMC_TYPE_SYSTEM 9>;
-+		assigned-clock-rates = <32768>;
-+		status = "okay";
-+	};
- };
- 
+ 	while (n--) {
+ 		if (n == 0)
+ 			val = regs->orig_gpr3;
 -- 
-2.25.1
+2.25.0
 
