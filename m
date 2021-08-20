@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834F63F23E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 01:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB703F23ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 02:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236845AbhHSX7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 19:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233370AbhHSX7d (ORCPT
+        id S236976AbhHTAB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 20:01:27 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:37569 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233972AbhHTAB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 19:59:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5024DC061575;
-        Thu, 19 Aug 2021 16:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ysAt0qOVkqX0b1YBP0DRQAcUuHGsRwUySI/CHhqjRbo=; b=vd9CEefNBQyCsStldq6Z6g2osU
-        dHrLcAK8of6dQ6aa8VWDCFMuIj0IFZ/czQab0WoVeE9dby0kEcvOsAAViwiLHTj/58fZWSrjsIq6p
-        4odimVrW71Y6eKzNfq+Md18lSM/DraMnP6frgztMO5XzfwmzHcswMyp+wh91AaHlLo7JVoXZAXCsf
-        hPSaLshCNjIxrgw/EPMnBhXS6TzNVwBorfAFloqWiFN99yo0Sl2asKnXniDmdw9xzba+HLhyCedTl
-        6oMp3SPxNCQ1Up+TB6fk53TnOx+eT+BNBw01Si47g9prY9yGynsNZNNkCkN2rUvzh+e39Z8WWg1Ue
-        YvjA2ipw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mGrvw-009mXO-C3; Thu, 19 Aug 2021 23:58:52 +0000
-Date:   Thu, 19 Aug 2021 16:58:52 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Eryu Guan <eguan@linux.alibaba.com>
-Cc:     Eryu Guan <guan@eryu.me>, fstests@vger.kernel.org, hare@suse.de,
-        dgilbert@interlog.com, jeyu@kernel.org, lucas.demarchi@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] common/module: add patient module rmmod support
-Message-ID: <YR7wPBGu1Ba/4kzR@bombadil.infradead.org>
-References: <20210811154512.1813622-1-mcgrof@kernel.org>
- <20210811154512.1813622-3-mcgrof@kernel.org>
- <YRkIttM75q3gLxpN@desktop>
- <YR0TEE8lUwo6QlHw@bombadil.infradead.org>
- <20210819022644.GP60846@e18g06458.et15sqa>
+        Thu, 19 Aug 2021 20:01:26 -0400
+Received: by mail-ot1-f54.google.com with SMTP id i3-20020a056830210300b0051af5666070so1173253otc.4;
+        Thu, 19 Aug 2021 17:00:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q7Md1SKC8t2SotEQAgga4ouGsRj8D4YBMiV2S+I75Ts=;
+        b=VElfeH63O0DeZoN6bK2vxNltionC3xP6QPrc0NLh1Bxykhi2SODY6nlWV1jzG1uXnD
+         RTRaPAyhdFCZZZ9M66uZL2hk/8OoysM2uN5VHb4Va46of0yrAEPCki6KzJla6kB/dqEI
+         0mWNP0yImVYxO80kUVdCCV1FRBYOdhP3i2cUW8+FZSoabdCZMhY9tetxQo2mfhqdp8Rr
+         1js3W66MVowDN2T55/cpnsF/8wtWaEIzQpfMC07WyriTMvMK/ArMffSXDEE2it26aFAu
+         hMqT71ribCTE/N/E7yy5mjkg0VdZcR3hfGEUUaJX24rcBxAvZbnr+IS2/CHMl4RpLU5I
+         s21g==
+X-Gm-Message-State: AOAM530JeDfTr1QBc2Q+w99f4097rWgVhigpsaMaIGow2nzxe2hYQuJD
+        QanqED21ANdPzmIW5PHpHHOKF3WZvg==
+X-Google-Smtp-Source: ABdhPJwOD+YyhSwjyb7KMxOXII3HkvwDgfykHcIDukG0CQUoUFL2xk/2tmmyHZzrTMdav6XubaGHRg==
+X-Received: by 2002:a9d:630e:: with SMTP id q14mr13952810otk.316.1629417649043;
+        Thu, 19 Aug 2021 17:00:49 -0700 (PDT)
+Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.googlemail.com with ESMTPSA id s10sm924691oog.14.2021.08.19.17.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 17:00:48 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: Output yamllint warnings to stderr
+Date:   Thu, 19 Aug 2021 19:00:47 -0500
+Message-Id: <20210820000047.1667819-1-robh@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819022644.GP60846@e18g06458.et15sqa>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:26:44AM +0800, Eryu Guan wrote:
-> On Wed, Aug 18, 2021 at 07:02:56AM -0700, Luis Chamberlain wrote:
-> > On Sun, Aug 15, 2021 at 08:29:42PM +0800, Eryu Guan wrote:
-> > > 
-> > > Use "$max_tries -ne 0" to check inters seems better.
-> > 
-> > max_tries can be "forever", in which case this is -eq 0:
-> > 
-> > $ foo="forever"; if [[ $foo -eq 0 ]]; then echo buggy; else echo ok; fi
-> > buggy
-> 
-> I see, that makes sense. Then perhaps some comments would help.
+yamllint warnings go to stdout which means on a quiet build no warnings
+are output. Fix this and redirect the yamllint output to stderr.
 
-I had sent out a v3 before seeing this request. I'll send a v4 with 
-a comment clarifying this.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Luis
+diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
+index 5ccfed90cc70..a072e95de626 100644
+--- a/Documentation/devicetree/bindings/Makefile
++++ b/Documentation/devicetree/bindings/Makefile
+@@ -28,7 +28,7 @@ find_cmd = find $(srctree)/$(src) \( -name '*.yaml' ! \
+ 
+ quiet_cmd_yamllint = LINT    $(src)
+       cmd_yamllint = ($(find_cmd) | \
+-                     xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint) || true
++                     xargs $(DT_SCHEMA_LINT) -f parsable -c $(srctree)/$(src)/.yamllint >&2) || true
+ 
+ quiet_cmd_chk_bindings = CHKDT   $@
+       cmd_chk_bindings = ($(find_cmd) | \
+-- 
+2.30.2
+
