@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18B43F366C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04A73F366F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhHTW3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
+        id S234694AbhHTW3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhHTW3S (ORCPT
+        with ESMTP id S231274AbhHTW3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:29:18 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D9AC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:28:40 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id 7so9843543pfl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:28:40 -0700 (PDT)
+        Fri, 20 Aug 2021 18:29:51 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F173FC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:29:12 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id oa17so8306312pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6dFlH7kbm1IF+kuIeh/4GV9ZtC/78mojb0p+BSUZe6Y=;
-        b=jPybJDziyZmpI8YE2wb3nWcM/nIF7ImLK/ORK1vUvEKuKOhdNPimVm8isNng6HjjOf
-         /PFv7xnnUDBVu3i6v4Hrwp4SBvVEbYsJbp4W7TwjBe6SomDXuTPq+denUdi3ZeGq57vd
-         NAdU/8+W56zcALCA6hR9x8ihx84TPxx7Q3xhKfWj4qWRsd9jbnJuh8V2jLeLcAb7qr8j
-         6U6zSODCS07Fi06S9yEGJrKMGoJryUhdCjjX3qiNptQtCPt3a5EJH6lK4Hg3IiupUmcW
-         WQXi8BL5L8LppWYVeq6bXFCf3gHbU9rsOL8aq80E93SGUA8rG7BhBGCbfK0bLqM18iTa
-         TAxA==
+        bh=OX9S5ZMaFBhmgWAZ1aqaP+6bSnEZ1p8sO1Z2SRmWv7Y=;
+        b=j1HaZFAUPYbEVdin55EaSB+aIi9ooq1+xxCdL6LjZ+ETOMprWOBoHYOoirc2b4y832
+         cNMTafVVZ2zl/TriNFtbxPMyED7Ty8gESR9/MswhH3sdBGwEe9jwi+EXWLPiV9CZHJKe
+         VlwdKvbippc905ireZkq3d3gF4bJTIdVccAlsq9XzL0zGkGSzV7xJvVeowYLYPUwASt8
+         +inEyvXk2AoR2le5af37IN8Ft9r16l3c13DSr9XBXNkR2pxVC528WTma/eRaq+8GDIJo
+         i6dOVQglZEeuEvM//jXYTySJs0ftxQtfIfF4G7hu07vVq6Ezet3TWOx65NBNlc8Cd1lT
+         XSGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6dFlH7kbm1IF+kuIeh/4GV9ZtC/78mojb0p+BSUZe6Y=;
-        b=QTlzjDxnL/1dBF1B/LuGRLW4/ABL1rmno0B97iMyV8ITj4+jU6vAkLJplJmBMutf0k
-         qKvEkUQd1QDZf/d3JllXsuluFZ1kHmpCyAWM9uzDVZXB4k40wFNIRqEQJ1lGLVBpbjt0
-         KpPH0KS8PJtPtsu0uxX5u4VxtrUJcAt5PynFs1VGI8TnyJ+RoQFrO+oC8YR+CpVu0tQY
-         iP6l6ZLBiNUS7P7S/fSPig64jFvjHnUmR22hJsDprXGwSSyxAfUvA+K2O92ngaJkxsqR
-         Rx0CPWoAVCfeT2AYHCPzJ7G53ZfM4iQb/G2JUXPX8IAJzxco0OBAq1DkosTpv0ABTjw/
-         RLuA==
-X-Gm-Message-State: AOAM530k3oldWVDak7phHOdiE9IkOqqz/hfa+++x6pkEANujV14kLiaY
-        zFZw+YhSQRHfs85Iy7T9Cxx8Ozw6Gm4=
-X-Google-Smtp-Source: ABdhPJy3S7aQHr8X+3lq4RevkeT69OlUrY8kAe7EP9nrdhhbA6E40KFe1y4WmqLHhGVqz9jGlUYDuw==
-X-Received: by 2002:a05:6a00:228a:b0:3e1:a0b2:535b with SMTP id f10-20020a056a00228a00b003e1a0b2535bmr21863720pfe.5.1629498519052;
-        Fri, 20 Aug 2021 15:28:39 -0700 (PDT)
+        bh=OX9S5ZMaFBhmgWAZ1aqaP+6bSnEZ1p8sO1Z2SRmWv7Y=;
+        b=WyctYmNmzQ16m6o8mywJaZFjYmOCmK24sOYVHIbvOf55bLELDVrBl6dcFf4awf91lC
+         9nK2Bns1EY+Uvvvixg9+hj8UiWynAAbGhxiOKP+kKTk+uzbdq2raVj97azswsQ+QU1Rc
+         ii9FWSQvAjNbol3galqyHLBHOd0DYidY0/T5ZxXB7sAaNP9aiRnamJ4+8+xg7A4ASjzy
+         dfmTE7Zx2vAjoSmgRuBR+mJtpcbdOdbEYIZWK+hICfNVDIsx+v1fdd0BMXWV5Gjr9Gu5
+         jFoGD3pf2/ZqvR/xZQi784iz8eh2e4G4dtfvKuFdI/R6Bhnr9qCWqlTKi8dI8j9lH6xT
+         VQwA==
+X-Gm-Message-State: AOAM5320eE0wHL70ofyYspVO3eMLHmeEVF7Hltv6XAfGZZYGakXSHEny
+        FjTBw5XL2QNllZzTv8Iu5Yic/qjTGD4=
+X-Google-Smtp-Source: ABdhPJz4vPvq24CAvNZ5aJ446XALL/uVpu4RDP2eqwipBkZeaHc5fa/6TgXZIgQDA47l8QZfqQMknQ==
+X-Received: by 2002:a17:90b:1981:: with SMTP id mv1mr5077617pjb.45.1629498552115;
+        Fri, 20 Aug 2021 15:29:12 -0700 (PDT)
 Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:2c15:e1a9:d4c3:ff83])
-        by smtp.gmail.com with ESMTPSA id b17sm8834758pgl.61.2021.08.20.15.28.37
+        by smtp.gmail.com with ESMTPSA id x7sm7954579pfj.200.2021.08.20.15.29.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 15:28:38 -0700 (PDT)
+        Fri, 20 Aug 2021 15:29:11 -0700 (PDT)
 From:   Daeho Jeong <daeho43@gmail.com>
 To:     linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
 Cc:     Daeho Jeong <daehojeong@google.com>
 Subject: [PATCH v5] f2fs: introduce periodic iostat io latency traces
-Date:   Fri, 20 Aug 2021 15:28:34 -0700
-Message-Id: <20210820222834.342035-1-daeho43@gmail.com>
+Date:   Fri, 20 Aug 2021 15:29:09 -0700
+Message-Id: <20210820222909.342198-1-daeho43@gmail.com>
 X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -93,6 +93,7 @@ wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
 wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
 wr_async_node [0/0/0], wr_async_meta [0/0/0]
 
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
 v5: cleaned up codes handling variables
 v4: separate the previous patch into two patches
@@ -100,8 +101,6 @@ v3: moved other I/O statistics related features into a separate file
     with the same kernel config option for better maintenance.
 v2: clean up with wrappers and fix a build breakage reported by
     kernel test robot <lkp@intel.com>
-
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
  fs/f2fs/data.c              |  19 ++++--
  fs/f2fs/f2fs.h              |   4 ++
