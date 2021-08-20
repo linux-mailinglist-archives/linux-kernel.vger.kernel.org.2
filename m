@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7C53F2692
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67443F2697
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhHTF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S238210AbhHTGBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232500AbhHTF7k (ORCPT
+        with ESMTP id S232500AbhHTGBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 01:59:40 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F795C061575;
-        Thu, 19 Aug 2021 22:59:03 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id y6so15474992lje.2;
-        Thu, 19 Aug 2021 22:59:03 -0700 (PDT)
+        Fri, 20 Aug 2021 02:01:42 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC6EC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:01:05 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id c10so7272784qko.11
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=48Hb/Qgy2m5wWev5VsfncYKR1cJzadSWEDW/hiW1JKE=;
-        b=uU6/WcBRyLDu0UTuJ8Px/JqtCnevMORcSNmDk1Xqt0LVStFW3tSw6p+WwlTt7j48Wk
-         hlJ6rviDndHRe9M8CyNHjlCDqvPtc3wsKEaDKi4lcmDG02yRpq6QgDrVo41ApjAYeNuw
-         CV5jcXpcEBBy9Zf7ilQd7SqCEHtOjD82AkPGc9fN8EdAnhf3z8rmoxfwo+h6Sf+r26kU
-         DUaCMI7TACT7qoWCB3+6xDBE/p3ty5dIkel8Vm+WWENUNrzFlxRGgILdfMx69jYjn3I7
-         FvcOmHHMFA6+uHEopjdtF86P0Um69G3GtgJCW9ZTRFwzFEr4Ga0UgwaUZy4TK4GdDi2+
-         PtTQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K5xyNIusVc4BrqPV2ok4Rq2VX+MqoQcEpsqZpDiose8=;
+        b=ayDUzvNkqOaAmm4t1htQnEE8nyiv2it2eDt23GDeoUKsZJmWldIF7vyhmcMe5eh7Da
+         Cm6e3bryMjxLwIFc9HV0JKRyp3LRfC7QnttkVz+/eX+9aVPf0rTxzQZj64JXF0r0x/6C
+         fIL7qkchLQHKmSwRAuYsp8F7imDLBKOeKCIfDcJEwhRJTcMB8OPm4Ch4pV/5w53XP3QV
+         1z6C7AWJCxsfJ+zTbSjlzSfY/U1DCsMADGFE/8yYxkaOU/AVH5Uh/RECKkBGxFRq2IoY
+         llBTD5nXA9U/VN1KZ8wJw2hsBCERg+nvW7LhMe6R4T7n5On/LcD9TkzRNZFFYlvLYfzu
+         RUeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=48Hb/Qgy2m5wWev5VsfncYKR1cJzadSWEDW/hiW1JKE=;
-        b=bY5inNMA6qG1ml7oE5iN0j7ujiwTop68u35OUVFipGQHPCSYitQ9ovx94kv/Ka3438
-         R+45f2bQ3vCqR8p+dkjy5e7db0cKQEnIf/ibUyIkIVjECDCfMFjvCTLxZTJEANsfS7LD
-         L/P4sk4nrRlQuLd+NdsqMZrO+SiOjKVhft1Hh66M2y9lN9vsHqvbOi8NmTP3bwph+j9j
-         bOUmB+K/j4JvHYEdthwdSkGtMzkukIXkT1KPKqotIqa5O9+HX7l/UVaZZjvUymdKdAO4
-         vwKxj99G4ApvpVtAdfZfGeOE+4UdJKb6+k2OhxFpKVmpwbeibrcWB69llEw8vUxchZEL
-         WZXg==
-X-Gm-Message-State: AOAM531bt1Df84bFif7/1dmHsxAOBe4pXBKxnAApJNNmFGWoFvkNfbTR
-        C3w20hLdrahsSUqX1fQdxzvvfFusc5RhApc2O1s=
-X-Google-Smtp-Source: ABdhPJxJFkEicXBCXcmKO2Qb4x3gTqTvh9KLsu8FLi/awHbRkJtOze0bMErSZYFBjVjGftgdeiVuv7cPIHgvjUQMktI=
-X-Received: by 2002:a2e:2417:: with SMTP id k23mr14866266ljk.256.1629439141581;
- Thu, 19 Aug 2021 22:59:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K5xyNIusVc4BrqPV2ok4Rq2VX+MqoQcEpsqZpDiose8=;
+        b=dSkRgfgVLJXmDz3fLnvgcUyVksoU5ZZ/eJtg/m2yb6u6ZW3yIwkjGR9P9+HcRjm+bf
+         RCli27GPnr2sNwCgxPm4JzNBWqgP5bZIg2FEtqB6NrTGHyxLfzR1pD2bt1f5gX+SWNH7
+         93eSrih3GlJU/2X0FJuXWVM+XhpgcUjcjWa9ZlsbvHVoNa2sBGFvV668ijy7h2IV1Rv2
+         +Nur8gl7B0YDcFcEAYLQssl/5SUumjuvaR66lHX42Wd4VTeDd9LsfUMPk6D7Oq6c2yBL
+         pC2+9Gmq8+erO+Qzq83DBhHCQn39cd460iycYGPoKgyaSax89jWLyoJyKgJD3KZZG480
+         HKoA==
+X-Gm-Message-State: AOAM531kNVZnzKShQnne+nHxJK1rzk8FLB6a5REVC5o8E0ajIxjBYDnR
+        xgolleNX0px0UKVeBFxVA10=
+X-Google-Smtp-Source: ABdhPJy/34L7ZzIh7I2JU7O70aJwZoCtQUbtXJNSrOKZYZReoQ8au71xNgGatP6HHXUMNX3JdHh2Sw==
+X-Received: by 2002:a37:a094:: with SMTP id j142mr7296283qke.465.1629439264618;
+        Thu, 19 Aug 2021 23:01:04 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id m19sm2160053qtx.84.2021.08.19.23.01.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 23:01:03 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Viktor Rosendahl <Viktor.Rosendahl@bmw.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Xu Wang <vulab@iscas.ac.cn>, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] tools/tracing: fix application of sizeof to pointer
+Date:   Thu, 19 Aug 2021 23:00:43 -0700
+Message-Id: <8fd4bb65ef3da67feac9ce3258cdbe9824752cf1.1629198502.git.jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210817102709.15046-1-len.baker@gmx.com> <2f3a644e279a8a0933343339fa0add8e76276bf8.camel@kernel.org>
-In-Reply-To: <2f3a644e279a8a0933343339fa0add8e76276bf8.camel@kernel.org>
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 20 Aug 2021 00:58:50 -0500
-Message-ID: <CAH2r5msKF-YZsmWEwqZZEn2ibooEOtFm7khvSnhD9uOidNycew@mail.gmail.com>
-Subject: Re: [PATCH] CIFS: Fix a potencially linear read overflow
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, Steve French <sfrench@samba.org>,
-        Suresh Jayaraman <sjayaraman@suse.de>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added RB and repushed to cifs-2.6.git for-next
+From: jing yangyang <jing.yangyang@zte.com.cn>
 
-On Wed, Aug 18, 2021 at 8:22 AM Jeff Layton <jlayton@kernel.org> wrote:
->
-> On Tue, 2021-08-17 at 12:27 +0200, Len Baker wrote:
-> > strlcpy() reads the entire source buffer first. This read may exceed the
-> > destination size limit. This is both inefficient and can lead to linear
-> > read overflows if a source string is not NUL-terminated.
-> >
-> > Also, the strnlen() call does not avoid the read overflow in the strlcpy
-> > function when a not NUL-terminated string is passed.
-> >
-> > So, replace this block by a call to kstrndup() that avoids this type of
-> > overflow and does the same.
-> >
-> > Fixes: 066ce6899484d ("cifs: rename cifs_strlcpy_to_host and make it use new functions")
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
-> > ---
-> >  fs/cifs/cifs_unicode.c | 9 ++-------
-> >  1 file changed, 2 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/fs/cifs/cifs_unicode.c b/fs/cifs/cifs_unicode.c
-> > index 9bd03a231032..171ad8b42107 100644
-> > --- a/fs/cifs/cifs_unicode.c
-> > +++ b/fs/cifs/cifs_unicode.c
-> > @@ -358,14 +358,9 @@ cifs_strndup_from_utf16(const char *src, const int maxlen,
-> >               if (!dst)
-> >                       return NULL;
-> >               cifs_from_utf16(dst, (__le16 *) src, len, maxlen, codepage,
-> > -                            NO_MAP_UNI_RSVD);
-> > +                             NO_MAP_UNI_RSVD);
-> >       } else {
-> > -             len = strnlen(src, maxlen);
-> > -             len++;
-> > -             dst = kmalloc(len, GFP_KERNEL);
-> > -             if (!dst)
-> > -                     return NULL;
-> > -             strlcpy(dst, src, len);
-> > +             dst = kstrndup(src, maxlen, GFP_KERNEL);
-> >       }
-> >
-> >       return dst;
-> > --
-> > 2.25.1
-> >
->
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
->
+sizeof when applied to a pointer typed expression gives the size of
+the pointer.
 
+./tools/tracing/latency/latency-collector.c:1541:10-16:ERROR application of sizeof to pointer
 
+This issue was detected with the help of Coccinelle.
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+---
+ tools/tracing/latency/latency-collector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
+index 3a2e6bb..64d531d 100644
+--- a/tools/tracing/latency/latency-collector.c
++++ b/tools/tracing/latency/latency-collector.c
+@@ -1538,7 +1538,7 @@ static void tracing_loop(void)
+ 				mutex_lock(&print_mtx);
+ 				check_signals();
+ 				write_or_die(fd_stdout, queue_full_warning,
+-					     sizeof(queue_full_warning));
++					     sizeof(*queue_full_warning));
+ 				mutex_unlock(&print_mtx);
+ 			}
+ 			modified--;
 -- 
-Thanks,
+1.8.3.1
 
-Steve
+
