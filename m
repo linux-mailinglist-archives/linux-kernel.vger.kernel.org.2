@@ -2,176 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ADE3F2D4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B433F2D56
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240769AbhHTNm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:42:59 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38070 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240760AbhHTNm6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:42:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KDg3iJ037556;
-        Fri, 20 Aug 2021 08:42:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629466923;
-        bh=l6lfOIIzUGkJ1AiwUMjQziIUZErEf/aO/EeX73Fg1/U=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=a517rtmjB9n/uhgSEd89trKRErN9NV/CIVoV4CiZRqgi57Rmj5t94VX5CWjvdCLgf
-         YtUoz99UlTgyF76h+dl4bZnaN67hqf8yymqmPCQmW8Lq7KH97ssSoVETiynqdwm3sO
-         0Aae5A4FAd2McMtWPCchuNMVSA+phL1+UDZWHL6E=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KDg2KI047132
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Aug 2021 08:42:03 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
- Aug 2021 08:42:03 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 20 Aug 2021 08:42:03 -0500
-Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KDfwM4100508;
-        Fri, 20 Aug 2021 08:41:59 -0500
-Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset (PoR)
- instruction
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-12-a-nandan@ti.com> <20210806210840.65c06b67@xps13>
- <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com> <20210820141822.03d658b8@xps13>
-From:   Apurva Nandan <a-nandan@ti.com>
-Message-ID: <c4a1eae9-7c0b-62c8-f10a-000e65c94f1b@ti.com>
-Date:   Fri, 20 Aug 2021 19:11:58 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S240790AbhHTNn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229829AbhHTNnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 09:43:51 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D120610FF;
+        Fri, 20 Aug 2021 13:43:08 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 09:43:01 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?UTF-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: Removing Mandatory Locks
+Message-ID: <20210820094301.62421e21@oasis.local.home>
+In-Reply-To: <CAHk-=wgHbYmUZvFkthGJ6zZx+ofTiiTRxPai5mPkmbtE=6JbaQ@mail.gmail.com>
+References: <20210812084348.6521-1-david@redhat.com>
+        <87o8a2d0wf.fsf@disp2133>
+        <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+        <87lf56bllc.fsf@disp2133>
+        <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+        <87eeay8pqx.fsf@disp2133>
+        <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+        <87h7ft2j68.fsf@disp2133>
+        <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+        <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+        <YRcyqbpVqwwq3P6n@casper.infradead.org>
+        <87k0kkxbjn.fsf_-_@disp2133>
+        <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
+        <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
+        <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
+        <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
+        <639d90212662cf5cdf80c71bbfec95907c70114a.camel@kernel.org>
+        <CAHk-=wgHbYmUZvFkthGJ6zZx+ofTiiTRxPai5mPkmbtE=6JbaQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210820141822.03d658b8@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
+On Thu, 19 Aug 2021 15:32:31 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-On 20/08/21 5:48 pm, Miquel Raynal wrote:
-> Hi Apurva,
+> I originally thought WARN_ON_ONCE() just to get the distro automatic
+> error handling involved, but it would probably be a big problem for
+> the people who end up having panic-on-warn or something.
 > 
-> Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 17:09:07
-> +0530:
+> So probably just a "make it a big box" thing that stands out, kind of
+> what lockdep etc does with
 > 
->> Hi Miquèl,
->>
->> On 07/08/21 12:38 am, Miquel Raynal wrote:
->>> Hi Apurva,
->>>
->>> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
->>> +0000:
->>>    
->>>> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset
->>>> functionality in their SPI NAND flash chips. PoR instruction consists
->>>> of a 66h command followed by 99h command, and is different from the FFh
->>>> reset. The reset command FFh just clears the status only registers,
->>>> while the PoR command erases all the configurations written to the
->>>> flash and is equivalent to a power-down -> power-up cycle.
->>>>
->>>> Add support for the Power-on-Reset command for any flash that provides
->>>> this feature.
->>>>
->>>> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
->>>>
->>>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
->>>> ---
->>>
->>> [...]
->>> 				\
->>>> @@ -218,6 +230,8 @@ struct spinand_device;
->>>>     * reading/programming/erasing when the RESET occurs. Since we always
->>>>     * issue a RESET when the device is IDLE, 5us is selected for both initial
->>>>     * and poll delay.
->>>> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us
->>>
->>> s/max upto/up to/
->>>    
->>
->> Okay!
->>
->>>> + * to 1200 us safely.
->>>
->>> I don't really get why, if the maximum is 500, then let's wait for
->>> 500us.
->>>    
->>
->> Generally we keep some margin from the maximum time, no?
+>         pr_warn("======...====\n");
 > 
-> Well, yes and no.
+> around the messages..
 > 
-> If you know that an operation will last Xms and have nothing else to
-> do, then you can take some margin if you are in a probe (called once)
-> but definitely not if you are in a fast path.
-> 
+> I don't know if distros have some pattern we could use that would end
+> up being something that gets reported to the user?
 
-I think as PoR reset would be called at every mtd_suspend() call, so we 
-can reduce the delay. And we would be expecting some time gap before the 
-next mtd_resume() call.
+People have started using my trace-printk notice message, that seems to
+be big enough to get noticed.
 
-> Otherwise the best is to have some kind of signaling but I'm not sure
-> you'll have one for the reset op...
-> 
 
-According to public datasheet, it doesn't set the busy bit during reset.
+ **********************************************************
+ **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+ **                                                      **
+ ** trace_printk() being used. Allocating extra memory.  **
+ **                                                      **
+ ** This means that this is a DEBUG kernel and it is     **
+ ** unsafe for production use.                           **
+ **                                                      **
+ ** If you see this message and you are not debugging    **
+ ** the kernel, report this immediately to your vendor!  **
+ **                                                      **
+ **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **
+ **********************************************************
 
-So do you suggest in the favor of removing the delay margin?
+There's been some talk about making that a more "generic" warning
+message too.
 
->>
->>>>     */
->>>>    #define SPINAND_READ_INITIAL_DELAY_US	6
->>>>    #define SPINAND_READ_POLL_DELAY_US	5
->>>> @@ -227,6 +241,8 @@ struct spinand_device;
->>>>    #define SPINAND_WRITE_POLL_DELAY_US	15
->>>>    #define SPINAND_ERASE_INITIAL_DELAY_US	250
->>>>    #define SPINAND_ERASE_POLL_DELAY_US	50
->>>> +#define SPINAND_POR_MIN_DELAY_US	1000
->>>> +#define SPINAND_POR_MAX_DELAY_US	1200
->>>>    >>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
->>>>    >> @@ -351,6 +367,7 @@ struct spinand_ecc_info {
->>>>    #define SPINAND_HAS_QE_BIT		BIT(0)
->>>>    #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
->>>>    #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
->>>> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)
->>>>    >>   /**
->>>>     * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
->>>
->>>
->>>
->>>
->>> Thanks,
->>> Miquèl
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>    
->>
->> Thanks,
->> Apurva Nandan
-> 
-> Thanks,
-> Miquèl
-> 
-
-Thanks,
-Apurva Nandan
+-- Steve
