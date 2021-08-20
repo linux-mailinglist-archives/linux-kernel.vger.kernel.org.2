@@ -2,249 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8308A3F2D07
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA873F2D09
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240726AbhHTNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:20:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:40791 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238228AbhHTNU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:20:28 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="196352086"
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="196352086"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 06:19:36 -0700
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="532989108"
-Received: from junli5-mobl.ccr.corp.intel.com (HELO [10.254.209.215]) ([10.254.209.215])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 06:19:31 -0700
-Subject: Re: [PATCH v4 0/6] IPI virtualization support for VM
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>
-References: <20210809032925.3548-1-guang.zeng@intel.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <c03e8248-a3f4-685c-f5cb-abd899b9643a@intel.com>
-Date:   Fri, 20 Aug 2021 21:19:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S240739AbhHTNVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238228AbhHTNVO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 09:21:14 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F58C061575;
+        Fri, 20 Aug 2021 06:20:36 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id k65so18737309yba.13;
+        Fri, 20 Aug 2021 06:20:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R4mPqaVlukDDFG+TscWvZ4jnQjqXu0/EIxO1u7KNhy0=;
+        b=PJnfuZLqvqSpkXanRFW2UmTJJht/11VW6Oka5UdEdlA3NYzaKL0rABICyHhxLLiXy5
+         9djhU/pW+liBA7D76sI98/fqLIN6mpphtaxa6op3ZxBTnzGgoAUgOx6HGsqs3Tl7csQQ
+         xKWgIoPemM8icLv71gHIkO6t4e2//w6oKfKOiVqgqPLQAEsDCSL3ltkj+2AjbAo1PEvQ
+         4SfXRiKjlG7BohxhfkRFyR89zFWPSBeZHMT/Ncp5j0F//fr7TAm+rAj4HLblLHk2b1Vz
+         Dlvnf4yxjcN6A4w1GITV6XyUWkGZI2ZAW1hpXgBPmVeJTh3lJisF5gml9ZkRbmXSMUpP
+         VRaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R4mPqaVlukDDFG+TscWvZ4jnQjqXu0/EIxO1u7KNhy0=;
+        b=fGE9llWp/wvC+PnhL/GLbccEjsgcx5SNX58G4npyqk8rRSVtanh75ts2PEUThNf3Jk
+         YksS18qGm4QbH6EUo08CzyDRto+maL2//IRncARIGQMLajNILf3LDVPeRBwKrX9hdEzr
+         2nX6tSrMfZ5LaeL9aV//EEMrzICduYWeGCv5LXrAR62TDeoan29OTspGD66CfXNVZyOQ
+         ZSyxqHGOOzFVsdcVTmauEyw48IWenAxDUiuCRepqN7+gmPN3eFQAWQvU+1s02UTiInPY
+         soyoU4ciAEfR8PrTLtdWxWrj3UdK8piwIYg9Ge7lBm/XdOxTtTLYIEc3N3OfPwpbHkrN
+         hluw==
+X-Gm-Message-State: AOAM532ut7tSjwabtimxfSlrkzbHPhOX43MLEbihb9Tmh6jQOiGRHVCm
+        hPLMWR76KDRFTjn3ZVKRRUpdLnVaw9I6pzZ9CLg=
+X-Google-Smtp-Source: ABdhPJys2DSaGtqoT8h5EA1qRXRHCanUJcUbZJPKuRoDWhujTTxSyElBX/p4G++f9TqaK96euKD5PLV2w7l4/jsfI1I=
+X-Received: by 2002:a25:f310:: with SMTP id c16mr23596476ybs.464.1629465635574;
+ Fri, 20 Aug 2021 06:20:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210809032925.3548-1-guang.zeng@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210819145114.21074-1-lukas.bulwahn@gmail.com> <20210819150703.GA3204796@bjorn-Precision-5520>
+In-Reply-To: <20210819150703.GA3204796@bjorn-Precision-5520>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 20 Aug 2021 15:20:32 +0200
+Message-ID: <CAKXUXMw4TRocPRb2ROOBbGSGBVv5_y+bE-2koiEr-=b+skfzSg@mail.gmail.com>
+Subject: Re: [PATCH] mei: improve Denverton HSM & IFSI support
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/2021 11:29 AM, Zeng, Guang wrote:
+On Thu, Aug 19, 2021 at 5:07 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Alex]
+>
+> On Thu, Aug 19, 2021 at 04:51:14PM +0200, Lukas Bulwahn wrote:
+> > The Intel Denverton chip provides HSM & IFSI. In order to access
+> > HSM & IFSI at the same time, provide two HECI hardware IDs for accessing.
+> >
+> > Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > Tomas, please pick this quick helpful extension for the hardware.
+> >
+> >  drivers/misc/mei/hw-me-regs.h | 3 ++-
+> >  drivers/misc/mei/pci-me.c     | 1 +
+> >  drivers/pci/quirks.c          | 3 +++
+> >  3 files changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
+> > index cb34925e10f1..c1c41912bb72 100644
+> > --- a/drivers/misc/mei/hw-me-regs.h
+> > +++ b/drivers/misc/mei/hw-me-regs.h
+> > @@ -68,7 +68,8 @@
+> >  #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
+> >  #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
+> >
+> > -#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
+> > +#define MEI_DEV_ID_DNV_IE    0x19E5  /* Denverton for HECI1 - IFSI */
+> > +#define MEI_DEV_ID_DNV_IE_2  0x19E6  /* Denverton 2 for HECI2 - HSM */
+> >
+> >  #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
+> >
+> > diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+> > index c3393b383e59..30827cd2a1c2 100644
+> > --- a/drivers/misc/mei/pci-me.c
+> > +++ b/drivers/misc/mei/pci-me.c
+> > @@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
+> >       {MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
+> >
+> >       {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
+> > +     {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
+> >
+> >       {MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
+> >
+> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > index 6899d6b198af..2ab767ef8469 100644
+> > --- a/drivers/pci/quirks.c
+> > +++ b/drivers/pci/quirks.c
+> > @@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
+> >       { PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
+> >       { PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
+> >       { PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
+> > +     /* Denverton */
+> > +     { PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
+> > +     { PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
+>
+> This looks like it should be a separate patch with a commit log that
+> explains it.  For example, see these:
+>
+>   db2f77e2bd99 ("PCI: Add ACS quirk for Broadcom BCM57414 NIC")
+>   3247bd10a450 ("PCI: Add ACS quirk for Intel Root Complex Integrated Endpoints")
+>   299bd044a6f3 ("PCI: Add ACS quirk for Zhaoxin Root/Downstream Ports")
+>   0325837c51cb ("PCI: Add ACS quirk for Zhaoxin multi-function devices")
+>   76e67e9e0f0f ("PCI: Add ACS quirk for Amazon Annapurna Labs root ports")
+>   46b2c32df7a4 ("PCI: Add ACS quirk for iProc PAXB")
+>   01926f6b321b ("PCI: Add ACS quirk for HXT SD4800")
+>
+> It should be acked by somebody at Intel since this quirk relies on
+> behavior of the device for VM security.
+>
 
-Gentle ping.
-@Paolo, @Sean, @All maintainers
-Appreciated if any comment to improve this patch set.  Hope it could be 
-accepted soon. :)
+Bjorn, I will happily split this into two patches and follow the
+general conventions as soon as we have somebody at Intel to confirm on
+this email thread that the proposal basically makes sense or if this
+is actually flawed and why (although it was initially proposed by
+somebody at Intel in another off-list discussion).
 
-Thanks.
+Lukas
 
-> Current IPI process in guest VM will virtualize the writing to interrupt
-> command register(ICR) of the local APIC which will cause VM-exit anyway
-> on source vCPU. Frequent VM-exit could induce much overhead accumulated
-> if running IPI intensive task.
->
-> IPI virtualization as a new VT-x feature targets to eliminate VM-exits
-> when issuing IPI on source vCPU. It introduces a new VM-execution
-> control - "IPI virtualization"(bit4) in the tertiary processor-based
-> VM-execution controls and a new data structure - "PID-pointer table
-> address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
-> virtualization" is enabled, processor emulates following kind of writes
-> to APIC registers that would send IPIs, moreover without causing VM-exits.
-> - Memory-mapped ICR writes
-> - MSR-mapped ICR writes
-> - SENDUIPI execution
->
-> This patch series implements IPI virtualization support in KVM.
->
-> Patches 1-4 add tertiary processor-based VM-execution support
-> framework.
->
-> Patch 5 implements interrupt dispatch support in x2APIC mode with
-> APIC-write VM exit. In previous platform, no CPU would produce
-> APIC-write VM exit with exit qualification 300H when the "virtual x2APIC
-> mode" VM-execution control was 1.
->
-> Patch 6 implement IPI virtualization related function including
-> feature enabling through tertiary processor-based VM-execution in
-> various scenarios of VMCS configuration, PID table setup in vCPU creation
-> and vCPU block consideration.
->
-> Document for IPI virtualization is now available at the latest "Intel
-> Architecture Instruction Set Extensions Programming Reference".
->
-> Document Link:
-> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
->
-> We did experiment to measure average time sending IPI from source vCPU
-> to the target vCPU completing the IPI handling by kvm unittest w/ and
-> w/o IPI virtualization. When IPI virtualization enabled, it will reduce
-> 22.21% and 15.98% cycles consuming in xAPIC mode and x2APIC mode
-> respectively.
->
-> KVM unittest:vmexit/ipi, 2 vCPU, AP was modified to run in idle loop
-> instead of halt to ensure no VM exit impact on target vCPU.
->
->                  Cycles of IPI
->                  xAPIC mode              x2APIC mode
->          test    w/o IPIv  w/ IPIv       w/o IPIv  w/ IPIv
->          1       6106      4816          4265      3768
->          2       6244      4656          4404      3546
->          3       6165      4658          4233      3474
->          4       5992      4710          4363      3430
->          5       6083      4741          4215      3551
->          6       6238      4904          4304      3547
->          7       6164      4617          4263      3709
->          8       5984      4763          4518      3779
->          9       5931      4712          4645      3667
->          10      5955      4530          4332      3724
->          11      5897      4673          4283      3569
->          12      6140      4794          4178      3598
->          13      6183      4728          4363      3628
->          14      5991      4994          4509      3842
->          15      5866      4665          4520      3739
->          16      6032      4654          4229      3701
->          17      6050      4653          4185      3726
->          18      6004      4792          4319      3746
->          19      5961      4626          4196      3392
->          20      6194      4576          4433      3760
->
-> Average cycles  6059      4713.1        4337.85   3644.8
-> %Reduction                -22.21%                 -15.98%
->
-> --------------------------------------
-> IPI microbenchmark:
-> (https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com)
->
-> 2 vCPUs, 1:1 pin vCPU to pCPU, guest VM runs with idle=poll, x2APIC mode
->
-> Result with IPIv enabled:
->
-> Dry-run:                         0,             272798 ns
-> Self-IPI:                  5094123,           11114037 ns
-> Normal IPI:              131697087,          173321200 ns
-> Broadcast IPI:                   0,          155649075 ns
-> Broadcast lock:                  0,          161518031 ns
->
-> Result with IPIv disabled:
->
-> Dry-run:                         0,             272766 ns
-> Self-IPI:                  5091788,           11123699 ns
-> Normal IPI:              145215772,          174558920 ns
-> Broadcast IPI:                   0,          175785384 ns
-> Broadcast lock:                  0,          149076195 ns
->
->
-> As IPIv can benefit unicast IPI to other CPU, Normal IPI test case gain
-> about 9.73% time saving on average out of 15 test runs when IPIv is
-> enabled.
->
-> Normal IPI statistics (unit:ns):
-> 	test	w/o IPIv	w/ IPIv
-> 	1	153346049	140907046
-> 	2	147218648	141660618
-> 	3	145215772	117890672
-> 	4	146621682	136430470
-> 	5	144821472	136199421
-> 	6	144704378	131676928
-> 	7	141403224	131697087
-> 	8	144775766	125476250
-> 	9	140658192	137263330
-> 	10      144768626	138593127
-> 	11	145166679	131946752
-> 	12	145020451	116852889
-> 	13	148161353	131406280
-> 	14	148378655	130174353
-> 	15	148903652	127969674
->
-> Average time	145944306.6	131742993.1 ns
-> %Reduction			-9.73%
->
-> --------------------------------------
-> hackbench:
->
-> 8 vCPUs, guest VM free run, x2APIC mode
-> ./hackbench -p -l 100000
->
->                  w/o IPIv        w/ IPIv
-> Time            91.887          74.605
-> %Reduction                      -18.808%
->
-> 96 vCPUs, guest VM free run, x2APIC mode
-> ./hackbench -p -l 1000000
->
->                  w/o IPIv        w/ IPIv
-> Time            287.504         235.185
-> %Reduction                      -18.198%
->
-> --------------------------------------
-> v3 -> v4:
-> 1. Refine code style of patch 2
-> 2. Move tertiary control shadow build into patch 3
-> 3. Make vmx_tertiary_exec_control to be static function
->
-> v2 -> v3:
-> 1. Misc change on tertiary execution control
->     definition and capability setup
-> 2. Alternative to get tertiary execution
->     control configuration
->
-> v1 -> v2:
-> 1. Refine the IPIv enabling logic for VM.
->     Remove ipiv_active definition per vCPU.
->
-> Gao Chao (1):
->    KVM: VMX: enable IPI virtualization
->
-> Robert Hoo (4):
->    x86/feat_ctl: Add new VMX feature, Tertiary VM-Execution control
->    KVM: VMX: Extend BUILD_CONTROLS_SHADOW macro to support 64-bit
->      variation
->    KVM: VMX: Detect Tertiary VM-Execution control when setup VMCS config
->    KVM: VMX: dump_vmcs() reports tertiary_exec_control field as well
->
-> Zeng Guang (1):
->    KVM: x86: Support interrupt dispatch in x2APIC mode with APIC-write VM
->      exit
->
->   arch/x86/include/asm/msr-index.h   |   1 +
->   arch/x86/include/asm/vmx.h         |  11 +++
->   arch/x86/include/asm/vmxfeatures.h |   5 +-
->   arch/x86/kernel/cpu/feat_ctl.c     |  11 ++-
->   arch/x86/kvm/lapic.c               |   9 ++-
->   arch/x86/kvm/vmx/capabilities.h    |  14 ++++
->   arch/x86/kvm/vmx/evmcs.c           |   2 +
->   arch/x86/kvm/vmx/evmcs.h           |   1 +
->   arch/x86/kvm/vmx/posted_intr.c     |  22 ++++--
->   arch/x86/kvm/vmx/vmcs.h            |   1 +
->   arch/x86/kvm/vmx/vmx.c             | 114 +++++++++++++++++++++++++++--
->   arch/x86/kvm/vmx/vmx.h             |  55 ++++++++------
->   12 files changed, 208 insertions(+), 38 deletions(-)
->
+> >       /* QCOM QDF2xxx root ports */
+> >       { PCI_VENDOR_ID_QCOM, 0x0400, pci_quirk_qcom_rp_acs },
+> >       { PCI_VENDOR_ID_QCOM, 0x0401, pci_quirk_qcom_rp_acs },
+> > --
+> > 2.26.2
+> >
