@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57893F24B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20843F24BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbhHTCVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:21:25 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:48592 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhHTCVY (ORCPT
+        id S237579AbhHTCVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230432AbhHTCVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:21:24 -0400
-X-Greylist: delayed 93332 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Aug 2021 22:21:23 EDT
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 17K2KYWV022187;
-        Fri, 20 Aug 2021 11:20:34 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 17K2KYWV022187
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629426034;
-        bh=xcvwwp1fH+FfoHwEOnlCxdAg+tWWyCWf39a9BIwFHi4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QJ5bjqn0Bnz6iLhRBuiYLxj6BhD1AWRem/1T/wIV42yCXyq2GIy2QxLh2qmVXbN2E
-         i3tdsSRRU3GmkDutM3B6vOTyl7yv2rshN1RGLc4cvr/HFZ32ER6nZW2A6LhXq5OsJ0
-         jKeTdCqHD8o7Go5/n14I79jx7YShiMW3hWGwPn9YOcA54pGvTG0JG4GF3W2g9lusGD
-         hLYT6ZEknEFoL8vK/YSuexFNgyA7ok00zg2iicTT8GT6D5fvCXCGayUNq0rBo1ViSt
-         wb5gf1drCY29jpzO/Rpnukvxa56tYVrkaKvCsqmHN/Y+Ou+SuqR/C6fwaLlGVXUfV/
-         wZlnvc9Qi3xHw==
-X-Nifty-SrcIP: [209.85.210.172]
-Received: by mail-pf1-f172.google.com with SMTP id k19so7298275pfc.11;
-        Thu, 19 Aug 2021 19:20:34 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ql0vM8zBSbkVJ76vYybWLq1l99nWdAlFKsEtWd3excLxCWysH
-        qvtDf8DhX0pe8kfWy/xqjdp4eqYnyRa+UZ8DelU=
-X-Google-Smtp-Source: ABdhPJwwpfo9cG34bwOUVjm/o5GBNwjRvwVSL9CK3l6EKiz2bX+uRE8RDk7wl/oj+cBWxC/WECsrKWsncCDRLxZf9/Q=
-X-Received: by 2002:aa7:94ac:0:b0:3e0:f21a:e6ff with SMTP id
- a12-20020aa794ac000000b003e0f21ae6ffmr16926073pfl.76.1629426033785; Thu, 19
- Aug 2021 19:20:33 -0700 (PDT)
+        Thu, 19 Aug 2021 22:21:47 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CB6C061575;
+        Thu, 19 Aug 2021 19:21:10 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id p22so9388100qki.10;
+        Thu, 19 Aug 2021 19:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1CiQkEiqhrAGOxxC4zUbfLasMJ5pR76RadgCPPnlco4=;
+        b=Q3Hg0+Js+xVezU0UQeaoEV37fFUpiU+3dPKlwTn+UQyWkmeklObm9uFQXZa3iUsaD0
+         eiBDHLKTSEgtKiSA14VMOi8javbKyhRDxNYi/mnyG89nAaFYBHj7QYka1RS+4JLWcicr
+         3oawdUNBMA4WD3ptbPL6BUW3Kq/UWBEiwY9aOcIQsTANwcTS3ieX3N5x0XCd7eoWDBbS
+         6qgtG+UMhR1/jZOE0SRtosJxScYKsYyA8Bkdj4EB3fzVV6MfES3VkTNjdI/aFoSlfVi5
+         23fmQzD8Vx9ADmc3g66GZl3lDWy2lZtOVW0pBxgXpRCrppOlyMSj7t4lpuixMqbwkSLt
+         oNxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1CiQkEiqhrAGOxxC4zUbfLasMJ5pR76RadgCPPnlco4=;
+        b=H1VjQW/J+D2DRwCyE8A8+5Iq1mJrYoY0LFaEp9w5o77fFf+UtQ/GOJpbyJdGqy/1yy
+         OqGWfw7k42SBuBhU+pyWA7Uf0c14cwTcX7U60o20AvNMEFbf2l47QlouvgGEtJ2F5YrZ
+         +JwB5GFy5ngrwX5Ckcc1r7tQzzqJ0koIzJc4tzoR5TukXRZfGbH3sd3niLj3FPJNCE1q
+         5MXuQe8oOnEVyqUQPFpPO1zuiLZSpBrXZJS+HFOXVatUXmmSEjCbLtXp223fTPpZFrAs
+         EKYHgvhiBJKE63Gqd3LQzsEkr8VZ5aQigzr3exUqvTq9adzLa0Uub2dj2ulm/LmRWD8f
+         gRyQ==
+X-Gm-Message-State: AOAM533iVrzFyeqnPvstd2BaPEAJhLmomG4ndS2FQpQ1IAQU4t+QSymQ
+        bqkYIEEXykz7XmjCsxaWZIo=
+X-Google-Smtp-Source: ABdhPJzkQPEBH7SrqGJSpTLlqOXclQXK4GlV7E2ZJzFipdQgsFY1+xk+Uemnad+x/BAw+VwqX6xRmw==
+X-Received: by 2002:a05:620a:81c:: with SMTP id s28mr6555355qks.45.1629426069357;
+        Thu, 19 Aug 2021 19:21:09 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id n124sm2601834qkf.119.2021.08.19.19.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 19:21:08 -0700 (PDT)
+From:   jing yangyang <cgel.zte@gmail.com>
+X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] clk/keystone: fix application of sizeof to pointer
+Date:   Thu, 19 Aug 2021 19:20:54 -0700
+Message-Id: <84a6ba16686347099a3dab2e5161a930e792eb6e.1629198281.git.jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210818154646.925351-1-efremov@linux.com> <20210818154646.925351-3-efremov@linux.com>
- <CAK7LNASTa+_d17wF6NW6GHC7Y+_RrXYZuo0MzzbsNnaRn8KJuQ@mail.gmail.com> <e90603ee-61e0-4530-34dc-087e40c94aa1@linux.com>
-In-Reply-To: <e90603ee-61e0-4530-34dc-087e40c94aa1@linux.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 20 Aug 2021 11:19:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARKDO1-g7At8q+ivCHm2aDNGupHWoqAt3NRwNTShggeFQ@mail.gmail.com>
-Message-ID: <CAK7LNARKDO1-g7At8q+ivCHm2aDNGupHWoqAt3NRwNTShggeFQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/5] gen_initramfs.sh: use absolute path for gen_init_cpio
-To:     Denis Efremov <efremov@linux.com>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Jiri Kosina <jkosina@suse.cz>, Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 5:51 AM Denis Efremov <efremov@linux.com> wrote:
->
->
->
-> On 8/19/21 3:24 AM, Masahiro Yamada wrote:
-> > On Thu, Aug 19, 2021 at 12:47 AM Denis Efremov <efremov@linux.com> wrote:
-> >>
-> >> Use absolute path to call gen_init_cpio. This allows one
-> >> to use gen_initramfs.sh from any directory.
-> >
-> > I do not mind this, but $(dirname "$0")
-> > is not necessarily an absolute path, is it?
-> >
-> >
-> > I added test code:
-> >
-> >    echo dirname is $(dirname $0)
-> >
-> > in this script, and I saw
-> >
-> >    dirname is usr
->
-> Oh, sorry, commit message is wrong. Would that be ok for you if I will change
-> it in v2 to something like:
->
-> Prepend gen_init_cpio call with the same path as gen_initramfs.sh called. This
-> allows one to use gen_initramfs.sh from any directory, not only from the
-> kernel's topdir.
+sizeof when applied to a pointer typed expression gives the size of
+the pointer.
 
+./drivers/clk/keystone/sci-clk.c:398:8-14: ERROR application of sizeof to pointer
 
-I am fine with it.
+This issue was detected with the help of Coccinelle.
 
-This patch is prefixed with 2/5, so I assume
-you expect another person to pick up
-the entire series.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+---
+ drivers/clk/keystone/sci-clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-With the commit message updated,
-
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-
-
-
-
-
-> >
-> >
-> >
-> >
-> >>
-> >> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> >> Signed-off-by: Denis Efremov <efremov@linux.com>
-> >> ---
-> >>  usr/gen_initramfs.sh | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/usr/gen_initramfs.sh b/usr/gen_initramfs.sh
-> >> index 63476bb70b41..2e4a86181c79 100755
-> >> --- a/usr/gen_initramfs.sh
-> >> +++ b/usr/gen_initramfs.sh
-> >> @@ -244,4 +244,4 @@ if test -n "$KBUILD_BUILD_TIMESTAMP"; then
-> >>                 timestamp="-t $timestamp"
-> >>         fi
-> >>  fi
-> >> -usr/gen_init_cpio $timestamp $cpio_list > $output
-> >> +"$(dirname "$0")"/gen_init_cpio $timestamp $cpio_list > $output
-> >> --
-> >> 2.31.1
-> >>
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
-> >
-
-
-
+diff --git a/drivers/clk/keystone/sci-clk.c b/drivers/clk/keystone/sci-clk.c
+index 7e1b136..010a61a 100644
+--- a/drivers/clk/keystone/sci-clk.c
++++ b/drivers/clk/keystone/sci-clk.c
+@@ -395,7 +395,7 @@ static struct clk_hw *sci_clk_get(struct of_phandle_args *clkspec, void *data)
+ 	key.clk_id = clkspec->args[1];
+ 
+ 	clk = bsearch(&key, provider->clocks, provider->num_clocks,
+-		      sizeof(clk), _cmp_sci_clk);
++		      sizeof(*clk), _cmp_sci_clk);
+ 
+ 	if (!clk)
+ 		return ERR_PTR(-ENODEV);
 -- 
-Best Regards
-Masahiro Yamada
+1.8.3.1
+
+
