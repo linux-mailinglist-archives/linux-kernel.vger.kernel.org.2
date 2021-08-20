@@ -2,173 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381883F2B43
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A4C3F2B49
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239799AbhHTLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:32:41 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39202 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237382AbhHTLck (ORCPT
+        id S240139AbhHTLfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239870AbhHTLfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:32:40 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KBVjgw121818;
-        Fri, 20 Aug 2021 06:31:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629459105;
-        bh=a7YO7oyWJKBUCpjHnpZI87hRZO+GNlybTn6+5XPpY5E=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=XG7FurTILwIMFJ5BcQ29RiBlhpZJ6C0rWtZDz5EHgDK1cHliCt8O3nCqccYGScJ9p
-         8t5sTiamcuGSbSvDLD3WaMS16rWgKzYm0uiuv0GiQP1kwxGamUMUprsER1C6mp7diU
-         1vSL0QtJW//rCn/1sCeDkV+z5KcmyZ92dnYiR64s=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KBVjxo105323
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 20 Aug 2021 06:31:45 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
- Aug 2021 06:31:45 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 20 Aug 2021 06:31:45 -0500
-Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KBVeI7049293;
-        Fri, 20 Aug 2021 06:31:41 -0500
-Subject: Re: [PATCH 10/13] mtd: spinand: Add octal_dtr_enable() for Winbond
- manufacturer_ops
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
- <20210713130538.646-11-a-nandan@ti.com> <20210806210609.0fd94b9e@xps13>
-From:   Apurva Nandan <a-nandan@ti.com>
-Message-ID: <0ac67f14-b25c-2e3b-fdd9-f5f101d9caad@ti.com>
-Date:   Fri, 20 Aug 2021 17:01:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 20 Aug 2021 07:35:05 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE10C061575;
+        Fri, 20 Aug 2021 04:34:28 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id q11so13800364wrr.9;
+        Fri, 20 Aug 2021 04:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aYreJVAauYrX+ezNPrkL/5dX1XbepU/zPicOABM56GM=;
+        b=C1KPwtardY//ZR6TIIdKZW8haq6Np6BHtMhVyL3sPhcM/EQTZRjtVY/Ddr5cuzsE9u
+         55PCVLyrzcjoygzjk0mqM1lJm40NlmgiDHYoq6N/lnIBr5GNkKNEY/uB1aqsAIL732nU
+         /BUyIghhwAGh9KcByyHXw7XTFQEBmxrW3fulfF4bgOtnlLlxbBfcaelxzLre8DBXcLc8
+         F42DSV4gVTnNT6sC6cprrrvkfY82pH+qGVRmvoWWya7bTu3Xx3NFH3YF9FWWhlL1yQzU
+         oyPMR5sKjtwRKxAvH7JJSBIVJGFw2dE9jKSQpcRRSTJni4t1fpVXqE/CecxdXtDB3fTK
+         cpMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aYreJVAauYrX+ezNPrkL/5dX1XbepU/zPicOABM56GM=;
+        b=SbBBfVFWPaHmZDHH+OJ68qrHxYxUUweScsMoAr4pJ0i2ElZ+UgT1nAXO7pxGpUlgaK
+         fvukhrTn3/ZOJs/faqa1T7mcDSVR5SrpXjC0OQToFP2vQGzAsEWq9nXvVDOstnpoqt3Y
+         +ydXiTEaXo578/yvGqxgmfr7WM7UF82UdgAneP/SruCcc+FvY4yZpGTFyhyXrg5+avsW
+         ud7k0+d0a5+FwkJpmY5Wysqv/klFKmwiN5AmsMCEpF8bqeRu+RfJ5abTqypIWL7Uk2UR
+         +JnTyc+F53xt0PIGgRkI5xBoyjy1CSdqK2atDv8VWUYbjnZp5I50pes/z3GhjgJ+OfO8
+         VSEA==
+X-Gm-Message-State: AOAM531krR7Y7Ll2m9V7MDyayEtSB3LgpUoj11888LCS2vI5whp7eALT
+        e7j1sBFP29sqlYnHUZF3wK8=
+X-Google-Smtp-Source: ABdhPJztkPXb/OhVmR0IeJTnOnumTOXpjXtCJN4r5VeuY6u7I+sDcVShVRY2NdJpI3X7vre6USOQeA==
+X-Received: by 2002:adf:a556:: with SMTP id j22mr9782758wrb.268.1629459266680;
+        Fri, 20 Aug 2021 04:34:26 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id a3sm5618061wrx.38.2021.08.20.04.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 04:34:25 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 13:34:24 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     jing yangyang <cgel.zte@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc:     JC Kuo <jckuo@nvidia.com>, Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-phy@lists.infradead.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] phy/tegra: add put_device() after
+ of_find_device_by_node()
+Message-ID: <YR+TQP3wWV+91fn2@orome.fritz.box>
+References: <20210820024633.11757-1-jing.yangyang@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <20210806210609.0fd94b9e@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TTcOaYS9NXqfGScp"
+Content-Disposition: inline
+In-Reply-To: <20210820024633.11757-1-jing.yangyang@zte.com.cn>
+User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
 
-On 07/08/21 12:36 am, Miquel Raynal wrote:
-> Hi Apurva,
-> 
-> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:35
-> +0000:
-> 
->> Add implementation of octal_dtr_enable() manufacturer_ops for Winbond.
->> To switch to Ocatl DTR mode, setting programmable dummy cycles and
->> SPI IO mode using the volatile configuration register is required. To
->> function at max 120MHz SPI clock in Octal DTR mode, 12 programmable
->> dummy clock cycle setting is required. (Default number of dummy cycle
->> are 8 clocks)
->>
->> Set the programmable dummy cycle to 12 clocks, and SPI IO mode to
->> Octal DTR with Data Strobe in the VCR. Also, perform a READ ID
->> operation in Octal DTR SPI mode to ensure the switch was successful.
-> 
-> Commit title should contain "winbond:" (same for the previous patch and
-> possibly next ones as well).
-> 
+--TTcOaYS9NXqfGScp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Okay, got it!
+On Thu, Aug 19, 2021 at 07:46:33PM -0700, jing yangyang wrote:
+> This was found by coccicheck:
+> ./drivers/phy/tegra/xusb-tegra210.c:3174: 2-8:ERROR:
+> missing put_device;call of_find_device_by_node on line 3167,
+> but without a corresponding object release within this function.
+>=20
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> ---
+>  drivers/phy/tegra/xusb-tegra210.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-t=
+egra210.c
+> index eedfc7c..f26eb5a 100644
+> --- a/drivers/phy/tegra/xusb-tegra210.c
+> +++ b/drivers/phy/tegra/xusb-tegra210.c
+> @@ -3170,8 +3170,10 @@ static int tegra210_utmi_port_reset(struct phy *ph=
+y)
+>  		goto out;
+>  	}
+> =20
+> -	if (!platform_get_drvdata(pdev))
+> +	if (!platform_get_drvdata(pdev)) {
+> +		put_device(&pdev->dev);
+>  		return ERR_PTR(-EPROBE_DEFER);
+> +	}
+> =20
+>  	padctl->regmap =3D dev_get_regmap(&pdev->dev, "usb_sleepwalk");
+>  	if (!padctl->regmap)
 
->> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
->>
->> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
->> ---
->>   drivers/mtd/nand/spi/winbond.c | 42 ++++++++++++++++++++++++++++++++++
->>   1 file changed, 42 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/spi/winbond.c b/drivers/mtd/nand/spi/winbond.c
->> index a7052a9ca171..58cda07c15a0 100644
->> --- a/drivers/mtd/nand/spi/winbond.c
->> +++ b/drivers/mtd/nand/spi/winbond.c
->> @@ -16,6 +16,14 @@
->>   
->>   #define WINBOND_CFG_BUF_READ		BIT(3)
->>   
->> +/* Octal DTR SPI mode (8D-8D-8D) with Data Strobe output*/
->> +#define WINBOND_IO_MODE_VCR_OCTAL_DTR	0xE7
->> +#define WINBOND_IO_MODE_VCR_ADDR	0x00
->> +
->> +/* Use 12 dummy clk cycles for using Octal DTR SPI at max 120MHZ */
->> +#define WINBOND_DUMMY_CLK_COUNT		12
->> +#define WINBOND_DUMMY_CLK_VCR_ADDR	0x01
->> +
->>   static SPINAND_OP_VARIANTS(read_cache_variants,
->>   		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
->>   		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
->> @@ -142,8 +150,42 @@ static int winbond_write_vcr_op(struct spinand_device *spinand, u8 reg, u8 val)
->>   	return 0;
->>   }
->>   
->> +static int winbond_spinand_octal_dtr_enable(struct spinand_device *spinand)
->> +{
->> +	int ret;
->> +	struct spi_mem_op op;
->> +
->> +	ret = winbond_write_vcr_op(spinand, WINBOND_DUMMY_CLK_VCR_ADDR,
->> +				   WINBOND_DUMMY_CLK_COUNT);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = winbond_write_vcr_op(spinand, WINBOND_IO_MODE_VCR_ADDR,
->> +				   WINBOND_IO_MODE_VCR_OCTAL_DTR);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* Read flash ID to make sure the switch was successful. */
->> +	op = (struct spi_mem_op)
->> +		SPI_MEM_OP(SPI_MEM_OP_CMD_DTR(2, 0x9f9f, 8),
->> +			   SPI_MEM_OP_NO_ADDR,
->> +			   SPI_MEM_OP_DUMMY_DTR(16, 8),
->> +			   SPI_MEM_OP_DATA_IN_DTR(SPINAND_MAX_ID_LEN,
->> +						  spinand->scratchbuf, 8));
->> +
->> +	ret = spi_mem_exec_op(spinand->spimem, &op);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (memcmp(spinand->scratchbuf, spinand->id.data, SPINAND_MAX_ID_LEN))
->> +		return -EINVAL;
->> +
->> +	return 0;
->> +}
->> +
->>   static const struct spinand_manufacturer_ops winbond_spinand_manuf_ops = {
->>   	.init = winbond_spinand_init,
->> +	.octal_dtr_enable = winbond_spinand_octal_dtr_enable,
->>   };
->>   
->>   const struct spinand_manufacturer winbond_spinand_manufacturer = {
-> 
-> 
-> 
-> 
-> Thanks,
-> Miquèl
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+I think we also need that put_device() after getting the regmap because
+we loose the reference to the platform device after that.
 
-Thanks,
-Apurva Nandan
+On the other hand, I suppose we might have to hang on to the reference
+until tegra210_xusb_padctl_remove() so that the platform device that the
+regmap is provided by doesn't suddenly go away.
+
+Mark, I couldn't find how the lifetime of regmaps is getting tracked.
+dev_get_regmap() seems to only return a pointer to the regmap if it
+exists, but doesn't actually increment a reference or anything. So do we
+need to hold on to the struct device that we get it from until we no
+longer need the reference? Or is there some other way to make sure the
+regmap doesn't disappear on us?
+
+Thierry
+
+--TTcOaYS9NXqfGScp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEfk0AACgkQ3SOs138+
+s6GzRBAAwq7pyeoXCM9Nd6z/M71iuupaNSZdW83r+xe0LPD7u9N35c+bQ+I9jcnb
+hsE6r/lfH3n4Ulm55kl28CDF05Jdd7m44FegC5c8/66GTWwND2gvcqMmZ0vrXs0i
+yU+opheZnOOi5PoOhPH3MwELm6pGR5Mi8xEAvChMHBx/qJHWRSdl5MfIRZ7xIWO3
+zsDN7ytxtmiFrk9bzphi7VY5WuZGEcgbkluE4bJkMDodRaPUklhGLnhxYvknMwMi
+78+p2sIyAiw6IJzOYpI4A5Nj8V7I3SzPu5LjgZS4QlavXb78pKn1IFzJfPlo45zd
+zaVHiYaDlTkk3MN7TOiljG4ojCbAhHJydZbaS+Oz/yEWjYWGy+ktLDwTydKFKlAb
+17vCdCUZYTi0ybJg2Rv0h6gp5YJi3wWNSd1Wh7QhmlT5D/cqn9PXcUKceN5n+YFv
+SClivpgTgbteBKb+ZYcFfqqfYqoyaN+AOirYUSwLEqwEAbzlUNs6AtMRU9Zg+3vS
+U1028VXMd7tpRokplUSR/78qTO4Q/HmAFGGIlRFAecXtt6mTua2Y/cK2Dadl8PzN
++jsptI83jS9z5zZMiNoX2d/BPeaSj4FfEPvKhYhPnJsNaVjNs0Dhv8wnejbMa+Rz
+Gu9YmGlh3eMmmFh2biaMEmhOjL9DjoYkI978L10odWCNI9ZKhb0=
+=UxBb
+-----END PGP SIGNATURE-----
+
+--TTcOaYS9NXqfGScp--
