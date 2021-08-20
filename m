@@ -2,164 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C045C3F3233
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980363F3235
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbhHTR0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhHTR0v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:26:51 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29695C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:26:13 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id y190so9202520pfg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:26:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D8sisJowkMm73SRcyloSHTS3YrdB++THv76Ik71IMKs=;
-        b=PsGLm1nHLmD0olMes1ii+F35WB1QR3GTdzThohn2vNRHikczDvTAL7ub6u59oWmXOh
-         yhGJ7GXmoYVqqa6Ujv/zD3nt0WUaghYfRdXL9FI9PNhxF3QA2yV5NJV0jGNRq4L6F3iz
-         M5DBU12zh7G4AIT9vbvOjCjTmI+CmHnd7ti6c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D8sisJowkMm73SRcyloSHTS3YrdB++THv76Ik71IMKs=;
-        b=Ph+BwkxpqfTJD6+5Z8+oGnrEuZGlg+sZ5+AUIazh8QsYSbAPbvqOL+/xebWtYGIJ8o
-         gOcks29nhCROTKYTJSgKFKawK7t9kF65TIKjNycBWcqDJAGLffJfGQf3DHWtaNevhTi5
-         HPq/fuL1BujODP6K2lF6qwIttmfhiZc0GGF8x0rgPJAa6WDpFNO3gJeonjGxUj+DRCBt
-         yRZBuKAGkUXIZ8RAzK/YoP5iz+hy8dsMoFbvH3O1X07M9ZIfxXly5hRpvNGf6FDm7FMT
-         krVV6mA7JvIYLhxhFvaQhcBdNUTyfi4E/xKAPY2S4lJG2ZLKHHZK/G4FPuoEoVP9p81P
-         Sqvg==
-X-Gm-Message-State: AOAM533m0p5zEQF3nXhFPu8eA8lFlTjU7eOx2DJe29lLvw9gq4pYQ6kf
-        2rPrpM5wby9lcAz8uoDOELaYjg==
-X-Google-Smtp-Source: ABdhPJxP3ToehmaVHNs/nW/7VuNtAx+pgvsn+WFlB9EEoe2zs22r1Qot84tN6E5aN5x6mPGGRXYiBw==
-X-Received: by 2002:a05:6a00:168a:b0:3e2:789e:5fd0 with SMTP id k10-20020a056a00168a00b003e2789e5fd0mr20666872pfc.68.1629480372638;
-        Fri, 20 Aug 2021 10:26:12 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g26sm8760565pgb.45.2021.08.20.10.26.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 10:26:11 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 10:26:10 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] mm/rmap: Convert from atomic_t to refcount_t on
- anon_vma->refcount
-Message-ID: <202108201013.36752C28@keescook>
-References: <1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20210720160127.ac5e76d1e03a374b46f25077@linux-foundation.org>
- <20210819132131.GA15779@willie-the-truck>
- <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
- <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
- <CAHk-=wh_vEzmYnMufOa=03WAU=DRM5+n6uZy=dVtJERFJm3Q-Q@mail.gmail.com>
- <YR9PHD+pWTelGKVd@hirez.programming.kicks-ass.net>
- <YR9k0hzMJpNF/0qL@hirez.programming.kicks-ass.net>
- <20210820082457.GA16784@willie-the-truck>
- <YR9vxHlSFalryHi0@hirez.programming.kicks-ass.net>
+        id S234328AbhHTR1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:27:01 -0400
+Received: from mga17.intel.com ([192.55.52.151]:61220 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230151AbhHTR1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:27:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="197066296"
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="197066296"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 10:26:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="463445143"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga007.jf.intel.com with SMTP; 20 Aug 2021 10:26:15 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 20 Aug 2021 20:26:14 +0300
+Date:   Fri, 20 Aug 2021 20:26:14 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Imre Deak <imre.deak@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Sean Paul <seanpaul@chromium.org>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/i915/dp: Use max params for panels < eDP 1.4
+Message-ID: <YR/ltlF5jRTYzQ3F@intel.com>
+References: <20210820075301.693099-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YR9vxHlSFalryHi0@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210820075301.693099-1-kai.heng.feng@canonical.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 11:03:00AM +0200, Peter Zijlstra wrote:
-> On Fri, Aug 20, 2021 at 09:24:58AM +0100, Will Deacon wrote:
+On Fri, Aug 20, 2021 at 03:52:59PM +0800, Kai-Heng Feng wrote:
+> Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
+> fast+narrow link on eDP again and fall back to the old max strategy on
+> failure"), the screen starts to have wobbly effect.
 > 
-> > > gcc-10.2.1, x86_64-defconfig
-> > > 
-> > > kernel/event/core.o-inline-ud1:     96454
-> > > kernel/event/core.o-outofline-ud1:  96604
-> > > kernel/event/core.o-outofline-call: 97072
+> Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
+> everything") doesn't help either, that means the affected eDP 1.2 panels
+> only work with max params.
 > 
->     kernel/event/core.o-outofline-saturate-ud2: 96954
->     kernel/event/core.o:                97248
+> So use max params for panels < eDP 1.4 as Windows does to solve the
+> issue.
 > 
-> > Is that with the saturation moved to the UD handler as well? 
+> v3:
+>  - Do the eDP rev check in intel_edp_init_dpcd()
 > 
-> Yep, that's the full function call replaced with an exception.
+> v2:
+>  - Check eDP 1.4 instead of DPCD 1.1 to apply max params
 > 
-> > I think it would be good to keep that as close to the point at which
-> > we detect the problem as we can, so perhaps we can inline that part
-> > and leave the diagnostics to the exception handler?
-> 
-> That's simpler execption code too, we can abuse the existing WARN/UD2
-> stuff.
-> 
+> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
+> Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
+> Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
+> Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+Slapped a cc:stable on it and pushed to drm-intel-next. Thanks.
+
 > ---
->  arch/x86/include/asm/refcount.h | 31 +++++++++++++++++++++++++++++++
->  include/asm-generic/bug.h       |  4 ++++
->  include/linux/refcount.h        | 15 +++++++++++----
->  lib/bug.c                       | 13 ++++++++++++-
->  lib/refcount.c                  |  7 ++-----
->  5 files changed, 60 insertions(+), 10 deletions(-)
+>  drivers/gpu/drm/i915/display/intel_dp.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/include/asm/refcount.h b/arch/x86/include/asm/refcount.h
-> new file mode 100644
-> index 000000000000..bed52b95d24c
-> --- /dev/null
-> +++ b/arch/x86/include/asm/refcount.h
-> @@ -0,0 +1,31 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_REFCOUNT_H
-> +#define _ASM_X86_REFCOUNT_H
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index 75d4ebc669411..e0dbd35ae7bc0 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -2445,11 +2445,14 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
+>  	 */
+>  	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_DPCD_REV,
+>  			     intel_dp->edp_dpcd, sizeof(intel_dp->edp_dpcd)) ==
+> -			     sizeof(intel_dp->edp_dpcd))
+> +			     sizeof(intel_dp->edp_dpcd)) {
+>  		drm_dbg_kms(&dev_priv->drm, "eDP DPCD: %*ph\n",
+>  			    (int)sizeof(intel_dp->edp_dpcd),
+>  			    intel_dp->edp_dpcd);
+>  
+> +		intel_dp->use_max_params = intel_dp->edp_dpcd[0] < DP_EDP_14;
+> +	}
 > +
-> +#define refcount_warn_saturate refcount_warn_saturate
-> +static __always_inline void refcount_warn_saturate(refcount_t *r, const enum refcount_saturation_type t)
-> +{
-> +	refcount_set(r, REFCOUNT_SATURATED);
-> +	__WARN_FLAGS(BUGFLAG_ONCE|BUGFLAG_REFCOUNT|BUGFLAG_REFCOUNT_TYPE(t));
-> +}
-
-Instead of using up warn flags, what was done in
-the past was to use an explicit EXTABLE in a cold text section:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/include/asm/asm.h?h=v4.15#n80
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/mm/extable.c?h=v4.15#n45
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/include/asm/refcount.h?h=v4.15
-
-> +
-> +#define refcount_dec_and_test refcount_dec_and_test
-> +static inline bool refcount_dec_and_test(refcount_t *r)
-> +{
-> +	asm_volatile_goto (LOCK_PREFIX "decl %[var]\n\t"
-> +			   "jz %l[cc_zero]\n\t"
-> +			   "jl %l[cc_error]"
-> +			   : : [var] "m" (r->refs.counter)
-> +			   : "memory" : cc_zero, cc_error);
-> +
-> +	return false;
-> +
-> +cc_zero:
-> +	return true;
-> +
-> +cc_error:
-> +	refcount_warn_saturate(r, REFCOUNT_SUB_UAF);
-> +	return false;
-> +}
-
-This looks basically the same as what we had before (i.e. the earlier
-REFCOUNT_CHECK_LE_ZERO within GEN_UNARY_SUFFIXED_RMWcc).
+>  	/*
+>  	 * This has to be called after intel_dp->edp_dpcd is filled, PSR checks
+>  	 * for SET_POWER_CAPABLE bit in intel_dp->edp_dpcd[1]
+> -- 
+> 2.32.0
 
 -- 
-Kees Cook
+Ville Syrjälä
+Intel
