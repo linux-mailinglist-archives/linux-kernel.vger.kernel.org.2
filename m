@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81CD3F3502
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201573F34FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240562AbhHTUK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38940 "EHLO mail.kernel.org"
+        id S239626AbhHTUKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238427AbhHTUJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:09:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3111B601FF;
-        Fri, 20 Aug 2021 20:09:11 +0000 (UTC)
+        id S238952AbhHTUJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 16:09:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7AD4461157;
+        Fri, 20 Aug 2021 20:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629490151;
-        bh=PbX2Hj4FpuYYCVDGQLoE35eKLD1v4JJovskOxor4DqY=;
+        s=k20201202; t=1629490152;
+        bh=1AblUz05JyakNbDBgEp+x32OedoLAPuchfTOawQaXk8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=RkYpUfWnkgo+dgeeCnXOeNJ5ACyhBOXzCEm+0Zzw3pt7vW+Lhvli9HRhbZqUa3UHJ
-         rTwtQVA94udQPlxqjwCKffUBCyyHaOsN8c5DpM121k0+h82TJ5qMtIpVAWBmEKBe0Z
-         84rn9gvJDBtB/cdheUmlQgsQesQ6ecFmpnYtdDo1vK4RaZBFj8GGaBfF9vV1ubCcLt
-         7WL8P+SDNlyRDnu/eW4gM8b08f2FdG5o/hw7TokDwNSfqDYXvs1duimI/rzMFPUzF9
-         RkSaJbs7/aoMba7aHvU6ECLHCaw8il2L6DBiPJ2vkHYGx0Nmw9fIvOdfmGVSbfxKM2
-         yT1gpqLHZOTog==
+        b=kstUbQsA3UMFeUm038rkr+HJv0SJvKtP/+oE1UYYZTeetAzGO3lrBiEqo1tCOmpmL
+         1wTUB008jFbJNo5DgJv38l0uDTHXkiIFVXIv32vwOXlTqt+IIr1Dlp2uBkxql2VvTt
+         ME6ivDlrj4o7eaZV0zOVLWWQEcfnSrYRlQtCEsCwG9W5t5565C/QZ6hEWg4YMtifaQ
+         O2Xu5iV+C+CHp1X4zIOtNkCqXcN4GwEmCEF4VnVM2FysrNbalF+m2DYtRe0vCOqo/S
+         hObQmvOv8ZsI0QGDvYXspifddJWkn34N2ENq0eP6e1e3pk7HHbDZbc405ggLgPv55a
+         os32Ab4pOIXPw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1ED5760A21;
-        Fri, 20 Aug 2021 20:09:11 +0000 (UTC)
-Subject: Re: [GIT PULL] arm64 fixes for -rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7472060A50;
+        Fri, 20 Aug 2021 20:09:12 +0000 (UTC)
+Subject: Re: [git pull] drm fixes for 5.14-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210820085302.GA17037@willie-the-truck>
-References: <20210820085302.GA17037@willie-the-truck>
-X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20210820085302.GA17037@willie-the-truck>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
-X-PR-Tracked-Commit-Id: bde8fff82e4a4b0f000dbf4d5eadab2079be0b56
+In-Reply-To: <CAPM=9tx-3de7XH+pbT8deG3E3BhfPde7rBCjRu0pSxtQ0tqGsQ@mail.gmail.com>
+References: <CAPM=9tx-3de7XH+pbT8deG3E3BhfPde7rBCjRu0pSxtQ0tqGsQ@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9tx-3de7XH+pbT8deG3E3BhfPde7rBCjRu0pSxtQ0tqGsQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-08-20-3
+X-PR-Tracked-Commit-Id: daa7772d477ec658dc1fd9127549a7996d8e0c2b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 54e9ea3cdb13884b8d3a0c13b9b92bab4a1c96f5
-Message-Id: <162949015106.21370.16530945310394925488.pr-tracker-bot@kernel.org>
-Date:   Fri, 20 Aug 2021 20:09:11 +0000
-To:     Will Deacon <will@kernel.org>
-Cc:     torvalds@linux-foundation.org, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, maz@kernel.org
+X-PR-Merge-Commit-Id: 8ba9fbe1e4b8a28050c283792344ee8b6bc3465c
+Message-Id: <162949015247.21370.12083039843230342662.pr-tracker-bot@kernel.org>
+Date:   Fri, 20 Aug 2021 20:09:12 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 20 Aug 2021 09:53:03 +0100:
+The pull request you sent on Fri, 20 Aug 2021 15:36:29 +1000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-08-20-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/54e9ea3cdb13884b8d3a0c13b9b92bab4a1c96f5
+https://git.kernel.org/torvalds/c/8ba9fbe1e4b8a28050c283792344ee8b6bc3465c
 
 Thank you!
 
