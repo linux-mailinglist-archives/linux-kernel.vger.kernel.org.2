@@ -2,90 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52173F2B5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C663F2B5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239665AbhHTLjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:39:43 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:40001 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239566AbhHTLjm (ORCPT
+        id S239788AbhHTLkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:40:04 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40812 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239336AbhHTLkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:39:42 -0400
-Received: (Authenticated sender: hadess@hadess.net)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 098BD1BF208;
-        Fri, 20 Aug 2021 11:39:02 +0000 (UTC)
-Message-ID: <b20a879dce98f27dfc68b86aaf486be9e623eacf.camel@hadess.net>
-Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Luke Jones <luke@ljones.dev>
-Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
-        platform-driver-x86@vger.kernel.org
-Date:   Fri, 20 Aug 2021 13:39:02 +0200
-In-Reply-To: <U8X4YQ.79I8GZJ1LDW02@ljones.dev>
-References: <20210820095726.14131-1-luke@ljones.dev>
-         <20210820095726.14131-2-luke@ljones.dev>
-         <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
-         <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
-         <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
-         <c19dfdde11754c234ca8a45c4af2187699498ee8.camel@hadess.net>
-         <U8X4YQ.79I8GZJ1LDW02@ljones.dev>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Fri, 20 Aug 2021 07:40:03 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KBdCPq124127;
+        Fri, 20 Aug 2021 06:39:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629459552;
+        bh=m/r679Qxo83wv7NROTahTRMLa/GxSpkBSVD1uby0TpU=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=t+l0HARobLqU2525dAIPdN+gzwqLXKhIHETSGIX6qMHiTzM3F5OtdFA7i5ryrwUii
+         MF6irva1ZMvwkEqJUs0ghu550R/T4M5ORRfz03KU7g+azOhMWQllrRxuK4CmGIc3yV
+         7ZZSzUa/zgZbxfvI7wG5CxGDT0EWPPNV+VUEM+rU=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KBdCHN082957
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Aug 2021 06:39:12 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
+ Aug 2021 06:39:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 20 Aug 2021 06:39:12 -0500
+Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KBd7Za061904;
+        Fri, 20 Aug 2021 06:39:08 -0500
+Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset (PoR)
+ instruction
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+ <20210713130538.646-12-a-nandan@ti.com> <20210806210840.65c06b67@xps13>
+From:   Apurva Nandan <a-nandan@ti.com>
+Message-ID: <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com>
+Date:   Fri, 20 Aug 2021 17:09:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210806210840.65c06b67@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-20 at 23:00 +1200, Luke Jones wrote:
+Hi Miquèl,
+
+On 07/08/21 12:38 am, Miquel Raynal wrote:
+> Hi Apurva,
+> 
+> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
+> +0000:
+> 
+>> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset
+>> functionality in their SPI NAND flash chips. PoR instruction consists
+>> of a 66h command followed by 99h command, and is different from the FFh
+>> reset. The reset command FFh just clears the status only registers,
+>> while the PoR command erases all the configurations written to the
+>> flash and is equivalent to a power-down -> power-up cycle.
+>>
+>> Add support for the Power-on-Reset command for any flash that provides
+>> this feature.
+>>
+>> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+>>
+>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>> ---
+> 
+> [...]
+> 				\
+>> @@ -218,6 +230,8 @@ struct spinand_device;
+>>    * reading/programming/erasing when the RESET occurs. Since we always
+>>    * issue a RESET when the device is IDLE, 5us is selected for both initial
+>>    * and poll delay.
+>> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us
+> 
+> s/max upto/up to/
+> 
+
+Okay!
+
+>> + * to 1200 us safely.
+> 
+> I don't really get why, if the maximum is 500, then let's wait for
+> 500us.
+> 
+
+Generally we keep some margin from the maximum time, no?
+
+>>    */
+>>   #define SPINAND_READ_INITIAL_DELAY_US	6
+>>   #define SPINAND_READ_POLL_DELAY_US	5
+>> @@ -227,6 +241,8 @@ struct spinand_device;
+>>   #define SPINAND_WRITE_POLL_DELAY_US	15
+>>   #define SPINAND_ERASE_INITIAL_DELAY_US	250
+>>   #define SPINAND_ERASE_POLL_DELAY_US	50
+>> +#define SPINAND_POR_MIN_DELAY_US	1000
+>> +#define SPINAND_POR_MAX_DELAY_US	1200
+>>   
+>>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
+>>   
+>> @@ -351,6 +367,7 @@ struct spinand_ecc_info {
+>>   #define SPINAND_HAS_QE_BIT		BIT(0)
+>>   #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+>>   #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
+>> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)
+>>   
+>>   /**
+>>    * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
 > 
 > 
-> On Fri, Aug 20 2021 at 12:51:08 +0200, Bastien Nocera 
-> <hadess@hadess.net> wrote:
-> > On Fri, 2021-08-20 at 12:43 +0200, Bastien Nocera wrote:
-> > >  On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
-> > >  > > Am I going to get bug reports from Asus users that will
-> > > complain
-> > >  > > that
-> > >  > > power-profiles-daemon doesn't work correctly, where I will
-> > > have
-> > >  > > to
-> > >  > > wearily ask if they're using an Asus Rog laptop?
-> > >  >
-> > >  > No. Definitely not. The changes to fan curves per-profile need
-> > > to
-> > >  > be
-> > >  > explicitly enabled and set. So a new user will be unaware that
-> > > this
-> > >  > control exists (until they look for it) and their laptop will
-> > >  > behave
-> > >  > exactly as default.
-> > > 
-> > >  "The user will need to change the fan curves manually so will
-> > >  definitely remember to mention it in bug reports" is a very 
-> > > different
-> > >  thing to "the user can't change the fan curves to be nonsensical
-> > > and
-> > >  mean opposite things".
-> > > 
-> > >  I can assure you that I will eventually get bug reports from
-> > > "power
-> > >  users" who break their setup and wonder why things don't work
-> > >  properly,
-> > >  without ever mentioning the changes they made changes to the fan
-> > >  curves, or anything else they might have changed.
-> > 
-> > A way to taint the settings that power-profiles-daemon could catch
-> > would be fine by me. I absolutely don't want to have to support
-> > somebody's tweaks until they undo them.
 > 
-> Definitely understood. Do you have something in mind?
+> 
+> Thanks,
+> Miquèl
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-A sysfs attribute with boolean data that shows whether custom fan
-curves are used would be enough.
-
-I could then check whether that file exists on startup, and throw a
-warning if custom curves are used, or become used, so that it shows up
-in power-profiles-daemon's logs.
-
+Thanks,
+Apurva Nandan
