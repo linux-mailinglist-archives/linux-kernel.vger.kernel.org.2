@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8223F3024
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B7A3F3028
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241247AbhHTPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:51:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        id S241322AbhHTPvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:51:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238296AbhHTPvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:51:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 356EB610FF;
-        Fri, 20 Aug 2021 15:50:39 +0000 (UTC)
+        id S241195AbhHTPvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:51:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22846610FF;
+        Fri, 20 Aug 2021 15:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629474639;
-        bh=8CvVTyQLgyT4k1b1Kry/k0Zwq3bTzm48hEVEPj2TyQA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RrWyjeSbC8KF61Yxd8M5euzkXKYvhVUG9Rh0Q0CaEbPG0wjEAJ8a2hq2p7nrbHFL+
-         O2bBCmrc394BgCoVDLKPTvasV/tKQikzIVV6OhJvn2545N2hWRpXS2b1j7u3KNHwqW
-         A/vDSNB9xSs7EW41z32uXmlAEioP278nPKVBFbLLffmrsTk5wNjr88Shxvijsp6g6m
-         tjyLBSf2W5TjsV5BtHZNB7Ngfg7/R/1i62TbhGtOQ8tnLHxPWKWxrbeYlZcyRXru8V
-         tK4l2f837YRsIUz5I7n6L2O1Xet7vt01WEGbowpuhif7fRgiFhvp872+oUKji5xG4f
-         MZ0E+W2OLL7QA==
-Received: by pali.im (Postfix)
-        id ADE627C5; Fri, 20 Aug 2021 17:50:36 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: aardvark: Fix masking and unmasking legacy INTx interrupts
-Date:   Fri, 20 Aug 2021 17:50:20 +0200
-Message-Id: <20210820155020.3000-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        s=k20201202; t=1629474653;
+        bh=sIZQJdeQo+NqJE2KGZmLQeNMkwh4uu//4yYwZFjD3y0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=s09SvCLj1uqQUR0Q5tbmN47Tw8m3PlRFK5qq3kSZrfBVGIMEr+BE0NMWEMv8T3zw3
+         QOCUJjIVPNRSYvWeS3+W5A9lnkBBBze0wcOYnRayZEfK5L+fAd5NPiE34iT76qjhWD
+         rVXPOHQdVKvj7Kfqw9qu4uSNMjkY+6TzWBXg2a5dgz+G6q3DDrbm6X0HWqL8pi6hT0
+         Vo5nAgWfNzZrRK9otPZV0FaLalhhxjWyHJ/M6jA0R9FbctN7cEX3XjfwpD7iq71ZJN
+         wg0nYiJw3K8hy/0P5lcC/ZMjeepEHoWOnV6RboA3vgkwhqo7e1uogwGwI8RDzLlshM
+         21E/WCrTBZhDA==
+Message-ID: <7efb04fe6e0c867e7c87d75cf3349221b08b4210.camel@kernel.org>
+Subject: Re: [PATCH v2 1/2] fs: warn about impending deprecation of
+ mandatory locks
+From:   Jeff Layton <jlayton@kernel.org>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "v9fs-developer@lists.sourceforge.net" 
+        <v9fs-developer@lists.sourceforge.net>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "bfields@fieldses.org" <bfields@fieldses.org>,
+        "w@1wt.eu" <w@1wt.eu>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Date:   Fri, 20 Aug 2021 11:50:51 -0400
+In-Reply-To: <c1318459eaab436aacb225982c49c4b4@AcuMS.aculab.com>
+References: <20210820135707.171001-1-jlayton@kernel.org>
+         <20210820135707.171001-2-jlayton@kernel.org>
+         <c1318459eaab436aacb225982c49c4b4@AcuMS.aculab.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_mask and irq_unmask callbacks need to be properly guarded by raw spin
-locks as masking/unmasking procedure needs atomic read-modify-write
-operation on hardware register.
+On Fri, 2021-08-20 at 15:49 +0000, David Laight wrote:
+> From: Jeff Layton
+> > Sent: 20 August 2021 14:57
+> > 
+> > We've had CONFIG_MANDATORY_FILE_LOCKING since 2015 and a lot of distros
+> > have disabled it. Warn the stragglers that still use "-o mand" that
+> > we'll be dropping support for that mount option.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/namespace.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/fs/namespace.c b/fs/namespace.c
+> > index ab4174a3c802..ffab0bb1e649 100644
+> > --- a/fs/namespace.c
+> > +++ b/fs/namespace.c
+> > @@ -1716,8 +1716,16 @@ static inline bool may_mount(void)
+> >  }
+> > 
+> >  #ifdef	CONFIG_MANDATORY_FILE_LOCKING
+> > +static bool warned_mand;
+> >  static inline bool may_mandlock(void)
+> >  {
+> > +	if (!warned_mand) {
+> > +		warned_mand = true;
+> > +		pr_warn("======================================================\n");
+> > +		pr_warn("WARNING: the mand mount option is being deprecated and\n");
+> > +		pr_warn("         will be removed in v5.15!\n");
+> > +		pr_warn("======================================================\n");
+> > +	}
+> >  	return capable(CAP_SYS_ADMIN);
+> >  }
+> 
+> If that is called more than once you don't want the 'inline'.
+> I doubt it matters is not inlined - hardly a hot path.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Reported-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
----
- drivers/pci/controller/pci-aardvark.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ACK. Of course. That really needs to not be inline. I'll fix that up in
+my tree.
 
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index fb8060160251..a49e8bad9f4f 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -234,6 +234,7 @@ struct advk_pcie {
- 	u8 wins_count;
- 	struct irq_domain *irq_domain;
- 	struct irq_chip irq_chip;
-+	raw_spinlock_t irq_lock;
- 	struct irq_domain *msi_domain;
- 	struct irq_domain *msi_inner_domain;
- 	struct irq_chip msi_bottom_irq_chip;
-@@ -1087,22 +1088,28 @@ static void advk_pcie_irq_mask(struct irq_data *d)
- {
- 	struct advk_pcie *pcie = d->domain->host_data;
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-+	unsigned long flags;
- 	u32 mask;
- 
-+	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
- 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
- 	mask |= PCIE_ISR1_INTX_ASSERT(hwirq);
- 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
-+	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
- }
- 
- static void advk_pcie_irq_unmask(struct irq_data *d)
- {
- 	struct advk_pcie *pcie = d->domain->host_data;
- 	irq_hw_number_t hwirq = irqd_to_hwirq(d);
-+	unsigned long flags;
- 	u32 mask;
- 
-+	raw_spin_lock_irqsave(&pcie->irq_lock, flags);
- 	mask = advk_readl(pcie, PCIE_ISR1_MASK_REG);
- 	mask &= ~PCIE_ISR1_INTX_ASSERT(hwirq);
- 	advk_writel(pcie, mask, PCIE_ISR1_MASK_REG);
-+	raw_spin_unlock_irqrestore(&pcie->irq_lock, flags);
- }
- 
- static int advk_pcie_irq_map(struct irq_domain *h,
-@@ -1186,6 +1193,8 @@ static int advk_pcie_init_irq_domain(struct advk_pcie *pcie)
- 	struct irq_chip *irq_chip;
- 	int ret = 0;
- 
-+	raw_spin_lock_init(&pcie->irq_lock);
-+
- 	pcie_intc_node =  of_get_next_child(node, NULL);
- 	if (!pcie_intc_node) {
- 		dev_err(dev, "No PCIe Intc node found\n");
+Thanks!
 -- 
-2.20.1
+Jeff Layton <jlayton@kernel.org>
 
