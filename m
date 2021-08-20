@@ -2,136 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B943F328D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329703F3295
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbhHTRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234977AbhHTRyb (ORCPT
+        id S235322AbhHTR5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:57:49 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40722 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhHTR5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:54:31 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D4CC061575;
-        Fri, 20 Aug 2021 10:53:53 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso7813217pjb.1;
-        Fri, 20 Aug 2021 10:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=wGEmsQipr5gzuljiPseq2A0Fn1otMeloCg6zZW6nEZM=;
-        b=Z7iolNUcZI7SC3hr+wJwvmRBysaz9H/26a5BtromWHnFojn2eMmJX7iO+ARXKVgNRo
-         P26oAv6NLCeH2FS7F5rk3ovdhh5nOJbsgoXdt8y0ZwoWM5Z7dS+ObBGpySxUuO9/mPM2
-         +kVF4Cd0On7pNvyIv58CBmKNMGvOl2/fypV67NpUYt9p2bvHbAdBb/ypvTs9n2QHozJY
-         zXGIZo7Wq082AqdIqvmKIaUEXad6z114VT+WUYOJ7z6SNuDMDz4BbF99h2eFE3IIefyg
-         8xfH34vDfYbbeBC3VzQu+pB1x1svtypQql7yl7dvjNC7GCFDTtpyLWo2UA7qHVqZZJSn
-         jDKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wGEmsQipr5gzuljiPseq2A0Fn1otMeloCg6zZW6nEZM=;
-        b=DN8IPe1jxibtSw5yzUrH9EkDCMNMVRfley7GSFqXBziyLsCOK6VLRLdTVDmFRSsMol
-         U3srrWyXJYMf1UT8Nlx3yLt4DsCgkloG8SMX0mFNJRmPoajGCW9vHUd+JsBPmhXsjKgY
-         TC+dri5koXaZmsk87wl+Y1gVWVfnBQ99/NRqaZLVK3iXoZataUflHl11qF7vf0aR8trF
-         tgmoRWIpQacLbfLVyFbkyn2z5cVUwdHVZbrXrBdFJDhrnqt7zNLkE5lGn2nCQpFuELVE
-         8N69ItkLNFZQ/TSAKxjMyvfpSe8nwV6kPZZq47u7jiSMQb9d5gVZBQCh+ANzbcRxuo43
-         af8w==
-X-Gm-Message-State: AOAM532ZD+KVbPkdZgPO1nzw6i+KGj90B77gYtwA7XfVZm8unLY+0Huu
-        fu/f3wy8Oa4IYx4GarqwpEQ=
-X-Google-Smtp-Source: ABdhPJycAHJDcAUXZIxndEcPoSl619LFgLTgEMLLDpnLHIsB4NecSA18q3/B2VgxNkvcnM5UX5E4uQ==
-X-Received: by 2002:a17:902:8506:b029:12c:76a8:d1b8 with SMTP id bj6-20020a1709028506b029012c76a8d1b8mr17413188plb.14.1629482032699;
-        Fri, 20 Aug 2021 10:53:52 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id m2sm8883434pgu.15.2021.08.20.10.53.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 10:53:52 -0700 (PDT)
-Subject: Re: [PATCH v2] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210812103851.GC5047@twin.jikos.cz>
- <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
- <20210812155032.GL5047@twin.jikos.cz>
- <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
- <20210813085137.GQ5047@twin.jikos.cz>
- <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
- <20210813103032.GR5047@twin.jikos.cz>
- <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
- <20210819173403.GI5047@twin.jikos.cz>
- <e9c5bb00-b609-aff9-fc95-ca1c5b9c2899@gmail.com>
- <20210820105828.GN5047@twin.jikos.cz>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <e1bce692-b233-2d74-f366-dc0ec43ead84@gmail.com>
-Date:   Sat, 21 Aug 2021 01:53:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 20 Aug 2021 13:57:48 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EB50820C33D3;
+        Fri, 20 Aug 2021 10:57:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EB50820C33D3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629482230;
+        bh=NyBdUbvIh6ra+fRiPtFryDwRJJTsn1FOlzJwY1TSk5g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fBI0+e4jkvdO+mv8dnEqvWMOOJ+r75DdAyR+ldrH8i2NNpycl2d65d7iRssAkSXP+
+         55aGxhy6eX57TAv8yT72hs/Er5wdcHxqhO7EhAkG/USZxH5rjTNF11kdaFWCQsqJRY
+         t8vC+IH//b76uKOd/UCLXqNEm+NqkddIA8YmkeHs=
+Received: by mail-pg1-f180.google.com with SMTP id c17so9928611pgc.0;
+        Fri, 20 Aug 2021 10:57:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533cJ2vNYCGMiS/+pcQRZySZWF3EHmwiJj2uidlTokH/bK5/0fof
+        MIYEVNTrvoAuMxxDX2MLsl1SL2lQMBfl7G8moHc=
+X-Google-Smtp-Source: ABdhPJx6h0J3RokIune+2CoDzy6K9/CerZki9qZMonv5zOulmw5fOvZR+ML9yLVa0zNd1atZ+q398ToBq5lblpxC8KI=
+X-Received: by 2002:a63:1422:: with SMTP id u34mr1488406pgl.326.1629482229456;
+ Fri, 20 Aug 2021 10:57:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210820105828.GN5047@twin.jikos.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+ <871r71azjw.wl-maz@kernel.org> <YROmOQ+4Kqukgd6z@orome.fritz.box>
+ <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com> <87o8a49idp.wl-maz@kernel.org>
+ <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com> <20210812121835.405d2e37@linux.microsoft.com>
+ <874kbuapod.wl-maz@kernel.org> <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+ <87wnohqty1.wl-maz@kernel.org> <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
+ <87fsv4qdzm.wl-maz@kernel.org> <CAFnufp2T75cvDLUx+ZyPQbkaNeY_S1OJ7KTJe=2EK-qXRNkwyw@mail.gmail.com>
+ <87mtpcyrdv.wl-maz@kernel.org> <CAFnufp0N2MzaTjF95tx9Q1D33z9f9AAK6UHbhU9rhG1ue_r1ug@mail.gmail.com>
+ <87h7fkyqpv.wl-maz@kernel.org> <CAFnufp3HbyeTGhxB33mej4Y4G2T2Yv5swKCx_C41zfc71Kj11A@mail.gmail.com>
+ <87fsv4ypfn.wl-maz@kernel.org>
+In-Reply-To: <87fsv4ypfn.wl-maz@kernel.org>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 20 Aug 2021 19:56:33 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2qFuhMDae20u_dV+aOPfB+zpcEK8D-=8ACE6r4kDn2rw@mail.gmail.com>
+Message-ID: <CAFnufp2qFuhMDae20u_dV+aOPfB+zpcEK8D-=8ACE6r4kDn2rw@mail.gmail.com>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/8/21 6:58 pm, David Sterba wrote:
-> On Fri, Aug 20, 2021 at 11:09:05AM +0800, Desmond Cheong Zhi Xi wrote:
->> On 20/8/21 1:34 am, David Sterba wrote:
->>> On Fri, Aug 20, 2021 at 01:11:58AM +0800, Desmond Cheong Zhi Xi wrote:
->>>>>>> The option #2 does not sound safe because the TGT bit is checked in
->>>>>>> several places where device list is queried for various reasons, even
->>>>>>> without a mounted filesystem.
->>>>>>>
->>>>>>> Removing the assertion makes more sense but I'm still not convinced that
->>>>>>> the this is expected/allowed state of a closed device.
->>>>>>>
->>>>>>
->>>>>> Would it be better if we cleared the REPLACE_TGT bit only when closing
->>>>>> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
->>>>>>
->>>>>> The first conditional in btrfs_close_one_device assumes that we can come
->>>>>> across such a device. If we come across it, we should properly reset it.
->>>>>>
->>>>>> If other devices has this bit set, the ASSERT will still catch it and
->>>>>> let us know something is wrong.
->>>>>
->>>>> That sounds great.
->>>>>
->>>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>>>> index 70f94b75f25a..a5afebb78ecf 100644
->>>>>> --- a/fs/btrfs/volumes.c
->>>>>> +++ b/fs/btrfs/volumes.c
->>>>>> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->>>>>>                     fs_devices->rw_devices--;
->>>>>>             }
->>>>>>      
->>>>>> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
->>>>>> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
->>>>>> +
->>>>>>             if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
->>>>>>                     fs_devices->missing_devices--;
->>>>>
->>>>> I'll do a few test rounds, thanks.
->>>>
->>>> Just following up. Did that resolve the issue or is further
->>>> investigation needed?
->>>
->>> The fix seems to work, I haven't seen the assertion fail anymore,
->>> incidentally the crash also stopped to show up on an unpatched branch.
->>>
->>
->> Sounds good, thanks for the update. If there's anything else I can help
->> with, please let me know.
-> 
-> So are you going to send the patch with the fix?
-> 
+On Fri, Aug 20, 2021 at 7:51 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Fri, 20 Aug 2021 18:35:45 +0100,
+> Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >
+> > On Fri, Aug 20, 2021 at 7:24 PM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Fri, 20 Aug 2021 18:14:30 +0100,
+> > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > > >
+> > > > On Fri, Aug 20, 2021 at 7:09 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, 20 Aug 2021 17:38:14 +0100,
+> > > > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > > > > >
+> > > > > > On Fri, Aug 20, 2021 at 6:26 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Fri, 20 Aug 2021 11:37:03 +0100,
+> > > > > > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > > > > > > >
+> > > > > > > > On Thu, Aug 19, 2021 at 6:29 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > >
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > > > > > > > > index fcdb1d20389b..244aa6579ef4 100644
+> > > > > > > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > > > > > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > > > > > > > > @@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
+> > > > > > > > >         if (stmmac_xdp_is_enabled(priv))
+> > > > > > > > >                 return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
+> > > > > > > > >
+> > > > > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > > > > > > > > +       return 8 + NET_IP_ALIGN;
+> > > > > > > > >  }
+> > > > > > > > >
+> > > > > > > > >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
+> > > > > > > > >
+> > > > > > > > > I don't see the system corrupting packets anymore. Is that exactly
+> > > > > > > > > what you had in mind? This really seems to point to a basic buffer
+> > > > > > > > > overflow.
+> > > > > > >
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > > Sorry, I meant something like:
+> > > > > > > >
+> > > > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > > > > > > > +       return 8;
+> > > > > > > >
+> > > > > > > > I had some hardware which DMA fails if the receive buffer was not word
+> > > > > > > > aligned, but this seems not the case, as 8 + NET_IP_ALIGN = 10, and
+> > > > > > > > it's not aligned too.
+> > > > > > >
+> > > > > > > No error in that case either, as expected. Given that NET_SKB_PAD is
+> > > > > > > likely to expand to 64, it is likely a DMA buffer overflow which
+> > > > > > > probably only triggers for large-ish packets.
+> > > > > > >
+> > > > > > > Now, we're almost at -rc7, and we don't have a solution in sight.
+> > > > > > >
+> > > > > > > Can we please revert this until we have an understanding of what is
+> > > > > > > happening? I'll hopefully have more cycles to work on the issue once
+> > > > > > > 5.14 is out, and hopefully the maintainers of this driver can chime in
+> > > > > > > (they have been pretty quiet so far).
+> > > > > > >
+> > > > > > > Thanks,
+> > > > > > >
+> > > > > > >         M.
+> > > > > > >
+> > > > > > > --
+> > > > > > > Without deviation from the norm, progress is not possible.
+> > > > > >
+> > > > > > Last try, what about adding only NET_IP_ALIGN and leaving NET_SKB_PAD?
+> > > > > >
+> > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > > > > > +       return NET_IP_ALIGN;
+> > > > > >
+> > > > > > I think that alloc_skb adds another NET_SKB_PAD anyway.
+> > > > >
+> > > > > I don't see any packet corruption with this. However, this doesn't
+> > > > > prove that this is correct either. What was the rational for adding
+> > > > > NET_SKB_PAD the first place?
+> > > > >
+> > > >
+> > > > I think it's wrong. The original offset was 0, and to align it to the
+> > > > boundary we need to add just NET_IP_ALIGN, which is two.
+> > > > NET_SKB_PAD is a much bigger value, (I think 64), which is used to
+> > > > reserve space to prepend an header, e.g. with tunnels.
+> > >
+> > > How about the other adjustments that Eric mentioned regarding the size
+> > > of the buffer? Aren't they required?
+> > >
+> >
+> > I guess that if stmmac_rx_buf1_len() needed such adjustment, it would
+> > be already broken when XDP is in use.
+> > When you use XDP, stmmac_rx_offset() adds a pretty big headroom of 256
+> > byte, which would easily trigger an overflow if not accounted.
+> > Did you try attaching a simple XDP program on a stock 5.13 kernel?
+>
+> Yes, as mentioned in [1], to which you replied...
+>
+>         M.
+>
+> [1] https://lore.kernel.org/r/87wnohqty1.wl-maz@kernel.org
+>
 
-Right, just sent. For some reason I thought it was already patched.
+Great.
+So I doubt that the adjustment is needed.
+Does it work with all the frame size?
+
+-- 
+per aspera ad upstream
