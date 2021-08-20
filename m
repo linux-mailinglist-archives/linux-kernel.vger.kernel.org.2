@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8C43F26CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A413F26CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238410AbhHTGa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:30:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8054 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbhHTGa1 (ORCPT
+        id S238480AbhHTGcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:32:20 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:28422 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235390AbhHTGcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:30:27 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GrWv454RszYrg7;
-        Fri, 20 Aug 2021 14:29:20 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 20 Aug 2021 14:29:47 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 20 Aug
- 2021 14:29:47 +0800
-Subject: Re: [PATCH net-next 2/2] page_pool: optimize the cpu sync operation
- when DMA mapping
-To:     Heiner Kallweit <hkallweit1@gmail.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1629425195-10130-1-git-send-email-linyunsheng@huawei.com>
- <1629425195-10130-3-git-send-email-linyunsheng@huawei.com>
- <badfd7fd-ff25-f399-8828-9f44180d6948@gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <7a58fbbd-f5d2-1826-1168-ec5da52b794e@huawei.com>
-Date:   Fri, 20 Aug 2021 14:29:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 20 Aug 2021 02:32:19 -0400
+X-Greylist: delayed 437 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Aug 2021 02:32:18 EDT
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 17K6VRXq012217;
+        Fri, 20 Aug 2021 15:31:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 17K6VRXq012217
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629441087;
+        bh=TojktwP6N8rx3aEpHXABD9Q2v3NaByV5fctRNxyQ1lM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oQwLhsWbCTPQ3ZOJH7U9xuACDZvRFg+jpKSNwuwgSesk3b6LUwbcuDMXGY0rjTePc
+         XFbYiinKguYIyw0USOXBcnfXJqi208c8NNJ+34mdExiv1ZP/2Dgo358SwX+vioyhqB
+         I5dF4F8zUcrWHz74sPdr91fmCwP+UqtePkCsHitdmbIRmw2eM7mepW2dv3opGqdSkl
+         ya4ELonjFPg1KB0Cc904zSC9GGm0Hq+4ePGWnA6w4SVLM4DiB593E5QAN0lteAwFPa
+         82P69aqWejzoTodA2kOAof0ZbY8fRPrUaSqARaqGmQ1vkgmVZvqm6U+HRUmi2SPbkp
+         rOkUOsZXrXLRA==
+X-Nifty-SrcIP: [209.85.214.182]
+Received: by mail-pl1-f182.google.com with SMTP id j2so982856pll.1;
+        Thu, 19 Aug 2021 23:31:27 -0700 (PDT)
+X-Gm-Message-State: AOAM533cIN8+YQt1PfNmMGUZG0cmBYhO5POqSaE8sfOxkmv9J8LGWMnQ
+        Od5S83xBxz/PlXlSzXzICK3C708vjOyKK3Nc4oE=
+X-Google-Smtp-Source: ABdhPJxm1c+K8hJI3yOQe8W1swKjLIcrowW4t+e6n93MsGMM7cZCPfXqhfw9XxoWs2MrtgGFdjYlReXCVk4zYGZecvs=
+X-Received: by 2002:a17:90a:ea87:: with SMTP id h7mr3035645pjz.198.1629441086554;
+ Thu, 19 Aug 2021 23:31:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <badfd7fd-ff25-f399-8828-9f44180d6948@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210820161445.6eadab0c@canb.auug.org.au>
+In-Reply-To: <20210820161445.6eadab0c@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 20 Aug 2021 15:30:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASpcXLdQXdYErgYu1dCJWpw4qNGxqg8SxP1RzGi-Y5JBQ@mail.gmail.com>
+Message-ID: <CAK7LNASpcXLdQXdYErgYu1dCJWpw4qNGxqg8SxP1RzGi-Y5JBQ@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the scsi tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/20 14:10, Heiner Kallweit wrote:
-> On 20.08.2021 04:06, Yunsheng Lin wrote:
->> If the DMA_ATTR_SKIP_CPU_SYNC is not set, cpu syncing is
->> also done in dma_map_page_attrs(), so set the attrs according
->> to pool->p.flags to avoid calling dma sync function again.
->>
->> Also mark the dma error as the unlikely case While we are at
->> it.
->>
-> This shouldn't be needed. dma_mapping_error() will be (most likely)
-> inlined by the compiler, and it includes the unlikely() hint.
+On Fri, Aug 20, 2021 at 3:14 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the scsi tree, today's linux-next build (powerpc
+> ppc64_defconfig) produced this warning:
+>
+> drivers/scsi/Makefile:197: FORCE prerequisite is missing
+>
+> Exposed by commit
+>
+>   0fc7db58e2a6 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule) and filechk")
+>
+> I don't know why this warning only appeared after the merge of the scsi
+> tree, since the offending line has been in this Makefile since 2017
 
-Good point, will remove the unlikely() mark.
-Thanks.
+You are doing incremental builds.
 
-> 
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->>  net/core/page_pool.c | 11 ++++++-----
->>  1 file changed, 6 insertions(+), 5 deletions(-)
->>
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 1a69784..8172045 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
->> @@ -191,8 +191,12 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
->>  
->>  static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>  {
->> +	unsigned long attrs = DMA_ATTR_SKIP_CPU_SYNC;
->>  	dma_addr_t dma;
->>  
->> +	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->> +		attrs = 0;
->> +
->>  	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
->>  	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
->>  	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
->> @@ -200,15 +204,12 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>  	 */
->>  	dma = dma_map_page_attrs(pool->p.dev, page, 0,
->>  				 (PAGE_SIZE << pool->p.order),
->> -				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
->> -	if (dma_mapping_error(pool->p.dev, dma))
->> +				 pool->p.dma_dir, attrs);
->> +	if (unlikely(dma_mapping_error(pool->p.dev, dma)))
->>  		return false;
->>  
->>  	page_pool_set_dma_addr(page, dma);
->>  
->> -	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->> -		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
->> -
->>  	return true;
->>  }
->>  
->>
-> 
-> .
-> 
+Presumably, because include/scsi/scsi_devinfo.h
+is touched by the following commit in the scsi tree.
+
+commit f591a2e0548da88130c7b1c79f1f735273adc683
+Author: Martin Kepplinger <martink@posteo.de>
+Date:   Sun Jul 4 09:54:01 2021 +0200
+
+
+Kbuild rebuilds scsi_devinfo_tbl.o due to the
+timestamp update, then displays the warning.
+
+
+
+If the scsi maintainers want to fix this issue,
+a patch is already there.
+
+https://lore.kernel.org/patchwork/patch/1478797/
+
+Since this is a bug, it can get in the scsi tree
+any time.
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
