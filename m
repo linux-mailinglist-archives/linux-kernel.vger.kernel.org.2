@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B13A3F3687
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E059E3F3690
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhHTWjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
+        id S238675AbhHTWly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbhHTWjB (ORCPT
+        with ESMTP id S233828AbhHTWlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:39:01 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B308FC061575;
-        Fri, 20 Aug 2021 15:38:22 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d17so6749520plr.12;
-        Fri, 20 Aug 2021 15:38:22 -0700 (PDT)
+        Fri, 20 Aug 2021 18:41:53 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54B7C061756;
+        Fri, 20 Aug 2021 15:41:14 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id f10so8757107lfv.6;
+        Fri, 20 Aug 2021 15:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NUnIWkyil9TlIibxeGOppyJEEJ5wkYDGUjyoyMGRPV8=;
-        b=C5JDN9b81MOBbZHDPpdM8rCcw2swD4uCwRFNdYVUniP6pZz5CbXgk5c/r1ttBRauCX
-         aRNvDec44Zhns3NOVEBSY4YKoGeTrCJmBnRvA6r3Oo1/qCkO/4CtqU4vHuS197FLjfoP
-         4xDwtC0/wogOpHX9zj7XlMMg9DzA/LBiqgLjXAjbDWF3rnDYV2pY850g1ppHJ0R2jU4X
-         PLiStRKK9N5KUjUajcuJbnEmkNBaywuY7G0T+W0+TWlEaeAFWI6jVF4084PPyt1jr6p5
-         elNhIaqh0avIWhBqZ8PnOwDng/FtVoZMywkbPHVGqyvgofCyW2uQdRR2nduM/jx9FAiZ
-         lMDw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SFicaIfoYz57CJTwaU362imjBTcDv84/jGlGPzq+gP0=;
+        b=O7gDmfWpTTkJeOJPaVYVyofz4iDJu+Mrj133OGy09FgtY/eXRABIw1rUkYb8sfclJT
+         Y20x5vVWOcvl1oUQn3eEqlRcawKrWTRhyQhF2Kx4BEp0U5fi4DulPvP+WJ9eI1an4x2T
+         ZxBsLequ4yRJeSJ+/F0rTdYngPcjg8qDevEEpzupdCP68RcUbA3tpo2j6sUEiz0w2KC1
+         vox0Zphyy3AOZBbntGlqWMgtjLqvbQj9s4+nI4LTRukaSsmUQN5lUCqqzLkLym4q28tx
+         N7/+9E114pZgtM69PGiq+AAMvWUrVfK7TtHxCV+hY1kVMawwZKkV+Qu1HMXLvHC3Yehi
+         wGqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NUnIWkyil9TlIibxeGOppyJEEJ5wkYDGUjyoyMGRPV8=;
-        b=poF73Yd5xDZtU9AuIc+aMqGkDoB+EyZcxhjA0udj0FONu+a4lY3cDqw5KJVfvYnNT8
-         Pjad5nLYwqIbyZN5xJD2PB+sAzAGqVO+p8FWnAv6uMLNJna7mBQGarINdqrRjIO4H5tB
-         jg0eYFXQlwGemwuk81OK3w3DDGcQaKXmtgebkF6rZjApm1JlaQQn4ALNS25tzNwI6wII
-         TRstesudZCdSZRNhZ8vkDvO511RRfjPhdQ+kQ4ZQeq3lGfNkyt9hR7T4XL7d1ZMjcQ4f
-         zYd9n2iDdChxqgFSP5DGIns1yKUgPp43jdckGpQDPOAYeHfeMwCdxJq9yp7oWWgGXeuS
-         fjFQ==
-X-Gm-Message-State: AOAM532/28QjU68dW7SHyL9MiCm31V/66v6Rqz+XMLaa3I2VcMfP3pJ5
-        L1sLwlIA5q+0VJ5EW3+9ZlQ=
-X-Google-Smtp-Source: ABdhPJyLzYuffz1IgHWesUtfZmF6TPBWkkgMGVQhOKtm5jV/CgwTSIniNr1CfrS6WJj+DxEdqqiuWw==
-X-Received: by 2002:a17:90a:2e0e:: with SMTP id q14mr1090277pjd.16.1629499102372;
-        Fri, 20 Aug 2021 15:38:22 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8916:5000:a761:e8b4:dc09:1a0e])
-        by smtp.gmail.com with ESMTPSA id y12sm8807619pgl.65.2021.08.20.15.38.16
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SFicaIfoYz57CJTwaU362imjBTcDv84/jGlGPzq+gP0=;
+        b=VioLbTsN2xT93C//0qyw+1OxoGOPZ35qBey8i4PD9rrYIVr05JDGeXWyxr7DCbr7YV
+         lSWr79g3nHq2U17g61ir4scq4D8TLmREv9AM9VJ2aw+5d1nWJ8C4q4Hv5sPdd03jUJgP
+         wn0lRjDTfRmtdhcXXRleEaLjgKHscAEOQ8rPt1BYZEXp7tDpyIud6dEnxybe9/F6+JGU
+         dSpNI7D5IvNqLCOgavBJkMt5N+sSKlJRoPf+L4eboE6TaT6v2uf0uiuvFmyLobhm/tNu
+         keJDTHvLW+Ck3cAJPTctSV+XqEK/Tw1Ls1UBO7+huF9rP/wz+hEvyqAxqupWz07GlpY8
+         hRKw==
+X-Gm-Message-State: AOAM530zC6hqHoxfhliscUz8+5a195/yNx1CE9/9X+ovy+lASQbGnAzk
+        hB2actolwKcQvsx0EDuobmk=
+X-Google-Smtp-Source: ABdhPJxBzL38mkx4u0Uk+QhJtzLCxmj6Qwp9/GdWcEydclqxJIn6QLZfzt2kVEuKYEDOyHR0wZkosA==
+X-Received: by 2002:a05:6512:3f15:: with SMTP id y21mr15771947lfa.370.1629499273263;
+        Fri, 20 Aug 2021 15:41:13 -0700 (PDT)
+Received: from localhost.localdomain (h-62-63-208-27.A230.priv.bahnhof.se. [62.63.208.27])
+        by smtp.googlemail.com with ESMTPSA id i5sm640022ljm.33.2021.08.20.15.41.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 15:38:21 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-To:     21cnbao@gmail.com, bhelgaas@google.com, corbet@lwn.net
-Cc:     Jonathan.Cameron@huawei.com, bilbao@vt.edu,
-        gregkh@linuxfoundation.org, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxarm@huawei.com, luzmaximilian@gmail.com,
-        mchehab+huawei@kernel.org, schnelle@linux.ibm.com,
-        song.bao.hua@hisilicon.com
-Subject: [PATCH v2 2/2] Documentation: ABI: sysfs-bus-pci: Add description for IRQ entry
-Date:   Sat, 21 Aug 2021 10:37:44 +1200
-Message-Id: <20210820223744.8439-3-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210820223744.8439-1-21cnbao@gmail.com>
-References: <20210820223744.8439-1-21cnbao@gmail.com>
+        Fri, 20 Aug 2021 15:41:12 -0700 (PDT)
+From:   Niklas Lantau <niklaslantau@gmail.com>
+To:     stern@rowland.harvard.edu
+Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        linux-kernel@vger.kernel.org,
+        Niklas Lantau <niklaslantau@gmail.com>
+Subject: [PATCH] Usb: storage: usb: fixed coding style issues
+Date:   Sat, 21 Aug 2021 00:39:54 +0200
+Message-Id: <20210820223954.2945-1-niklaslantau@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Barry Song <song.bao.hua@hisilicon.com>
+Fixed coding style issues that generated 1 error and 1 warning.
 
-/sys/bus/pci/devices/.../irq has been there for many years but it
-has never been documented. This patch is trying to document it.
-
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Niklas Lantau <niklaslantau@gmail.com>
 ---
- Documentation/ABI/testing/sysfs-bus-pci | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/storage/usb.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index 793cbb7..8d42385 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -96,6 +96,14 @@ Description:
- 		This attribute indicates the mode that the irq vector named by
- 		the file is in (msi vs. msix)
+diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+index 90aa9c12ffac..c3d710f323f6 100644
+--- a/drivers/usb/storage/usb.c
++++ b/drivers/usb/storage/usb.c
+@@ -295,7 +295,7 @@ void fill_inquiry_response(struct us_data *us, unsigned char *data,
+ }
+ EXPORT_SYMBOL_GPL(fill_inquiry_response);
  
-+What:		/sys/bus/pci/devices/.../irq
-+Date:		August 2021
-+Contact:	Barry Song <song.bao.hua@hisilicon.com>
-+Description:
-+		Historically this attribute represent the IRQ line which runs
-+		from the PCI device to the Interrupt controller. With MSI and
-+		MSI-X, this attribute is the first IRQ number of IRQ vectors.
-+
- What:		/sys/bus/pci/devices/.../remove
- Date:		January 2009
- Contact:	Linux PCI developers <linux-pci@vger.kernel.org>
+-static int usb_stor_control_thread(void * __us)
++static int usb_stor_control_thread(void *__us)
+ {
+ 	struct us_data *us = (struct us_data *)__us;
+ 	struct Scsi_Host *host = us_to_host(us);
+@@ -926,9 +926,8 @@ static unsigned int usb_stor_sg_tablesize(struct usb_interface *intf)
+ {
+ 	struct usb_device *usb_dev = interface_to_usbdev(intf);
+ 
+-	if (usb_dev->bus->sg_tablesize) {
++	if (usb_dev->bus->sg_tablesize)
+ 		return usb_dev->bus->sg_tablesize;
+-	}
+ 	return SG_ALL;
+ }
+ 
 -- 
-1.8.3.1
+2.33.0
 
