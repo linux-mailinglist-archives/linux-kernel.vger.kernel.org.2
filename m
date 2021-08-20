@@ -2,111 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E963E3F31B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15383F31BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbhHTQs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:48:59 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:42923 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhHTQsz (ORCPT
+        id S231799AbhHTQwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:52:37 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60969 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229977AbhHTQwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:48:55 -0400
-Received: by mail-il1-f199.google.com with SMTP id z14-20020a92d18e0000b029022418b34bc9so5736162ilz.9
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:48:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=53tNogvSRqGJfOiOdqD6lM2tBtj1RvkYDkpUz8ReIzw=;
-        b=PPoXEGq7VOyhSFRFOT+sul1RWHiBiiXilPlNK5knPbyMTB3FtD8VJxnMwt0aUaRC0S
-         g91jhBEPK1Qk1OfqhhaLPUJY+bSnUkHt0TlAwCfzzLEWDhpSo6+40lnXbqAGhEnAkxhU
-         0Hbo+hWX0oal9KUPvP6wJyfTGxuCTK4pL1SsyyvU7+bdes2r8COXChods7ruRMFB5Tbg
-         t380WQeMvE1l6ysRoSSkFb3jjH9y0y58qwqmTzvR7we4tSVivumpPcb/JdMXCwRg4Brs
-         CRDr70hIYXDN5qi20d6egbLUOjYAZbhy/6K+oJH1Ne5d/hTcd95l4/J95EwYmyH+Mnwt
-         A8SA==
-X-Gm-Message-State: AOAM532rsN/LC1NqkSle+YbbWjJijPTQywOHWsoHeZ+EdBwUatYU/mKd
-        Kn8pihUJR5XPfILu6h1bbEIlKFx6+LcP3ZTlh9VBm/s0WBWh
-X-Google-Smtp-Source: ABdhPJx9bjWJRdADnmgbnpo0NKVWqI0fN6krvG3kTXRH5vNZYMYWMFd3vxa+EcrAxRMYx4n5EyA8/YNqkwvgxSm75kpQOoO0zN8b
+        Fri, 20 Aug 2021 12:52:36 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1A33F5800F5;
+        Fri, 20 Aug 2021 12:49:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 20 Aug 2021 12:49:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=s6i/N6kug4HBurK8lYVaEHfU/qC
+        +w14m1meq5QcLypw=; b=jzUwFvNHSnky2fJVWMG8FeWAXiTc7zvMecWmzPZXMTW
+        5rPzhaeHCgpj07VPQZxMU6qIgSFHdVUK2UqnhpwADyoH0kXGpdgwePsiTIZMU+Iq
+        nlkCXjx8FVEO6E/IcFVCVnhl8zk8U0tUP5VTk7F8+CDwx8Ddn0Gp38Un86hvWuPz
+        lpZCMl3Fr1lfhPIAvDUfq7lcKqPOuldU6aVSt5brTlgWRJ+KgXNpd7FQ8qnoroCL
+        /LajLumexaZYZXywvsgctKAm2k1uJKYs2HZE8H44vxCWyKlccsY/27GTizTC4wQX
+        b5J13f7ZuQsLawfUP+/08F/eFrUB0p9Kl/CxdBtf9Lw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=s6i/N6
+        kug4HBurK8lYVaEHfU/qC+w14m1meq5QcLypw=; b=JrakuMBSCwUYelRIEix1z1
+        oah9w8txJUS/EFjRMIfbQMP0tNQAuKP0YkJ/ZBwaPCkwJW2l1gycnJf4kYQRGXDE
+        desxiEh0OnXOZ8JGgCog2h2Ndir0LyL0Pur9TfRUFml0MLiQtkSE8trgFg9mftyr
+        Cqc0mpiFIFqF/niyT0ikwZ8X75O7agZXv2eNkRthdtRs+u9QEXr0qimLMheC/IYo
+        dTVhGetGEbcSiJ+UZzYMY9VKkGuMEuuwlj+kZgAl1wZ30OLNNDyXtMiLxmyiwdxt
+        6WWxIcrTj7JzLrBbJYtdyPW7/vNwKaOBA+bIUUSBbnFy69L4P1Ag4KNkwGBz63xw
+        ==
+X-ME-Sender: <xms:BN0fYSHlTq92E9a3SU55bxqg0LnqAosgpy57EHSX_08fqLcM8eNM7w>
+    <xme:BN0fYTVR1aYUrTdzwiZWbsb_lEiE63Qu_TjtDYMduaYWy9vb-VZki45dmxfHhTy4k
+    oerx8Qs7oI1pqTDBoQ>
+X-ME-Received: <xmr:BN0fYcKJBXqgaf7ybw8Ju1yx43BC8uAFcfn4rfChuKW5lN_6g1KvLTcYD0-yR2vbUjAMgANy5BUnZURHrVGevmKl5-KJzJ_UH9an>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleelgddutdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:BN0fYcFf221iSe6dFZ5hRLv4vu1pLQEYxMZ6oV6CWwOJMgZ-P5q55A>
+    <xmx:BN0fYYXvnr7RGmVo3RArAzKDBAaoDNEoVzWWq0M8yj-81QzBUHXDIw>
+    <xmx:BN0fYfMVYJoxpkVqfK2KHcdxapaJ9L6VNkD6Qou-kKpv6mY0fMqVnQ>
+    <xmx:CN0fYZs12oPsGDWlxRpC2Gvf73TyhLDDblF2P4uKWd4ih74HtPuRZg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 20 Aug 2021 12:49:07 -0400 (EDT)
+Date:   Fri, 20 Aug 2021 18:49:06 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     "a.hajda" <a.hajda@samsung.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Robert Foss <robert.foss@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 0/8] drm/bridge: Make panel and bridge probe order
+ consistent
+Message-ID: <20210820164906.3xfxy43udc7hxflj@gilmour>
+References: <20210728133229.2247965-1-maxime@cerno.tech>
+ <CGME20210804140941eucas1p2d4d4ec491074530c714797523aec05ea@eucas1p2.samsung.com>
+ <cc638e20-aa7c-7014-f70b-1bb68e629d87@samsung.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8941:: with SMTP id b1mr16721739iot.45.1629478097800;
- Fri, 20 Aug 2021 09:48:17 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 09:48:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000030563005ca006ffd@google.com>
-Subject: [syzbot] WARNING in split_huge_page_to_list
-From:   syzbot <syzbot+0c65e03871b364e714a3@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sbpyoycfgn424k53"
+Content-Disposition: inline
+In-Reply-To: <cc638e20-aa7c-7014-f70b-1bb68e629d87@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--sbpyoycfgn424k53
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    f87d64319e6f Merge tag 'net-5.14-rc7' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1205bd55300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3205625db2f96ac9
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c65e03871b364e714a3
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+Hi Andrzej,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+On Wed, Aug 04, 2021 at 04:09:38PM +0200, a.hajda wrote:
+> Hi Maxime,
+>=20
+> I have been busy with other tasks, and I did not follow the list last=20
+> time, so sorry for my late response.
+>=20
+> On 28.07.2021 15:32, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > We've encountered an issue with the RaspberryPi DSI panel that prevente=
+d the
+> > whole display driver from probing.
+> >=20
+> > The issue is described in detail in the commit 7213246a803f ("drm/vc4: =
+dsi:
+> > Only register our component once a DSI device is attached"), but the ba=
+sic idea
+> > is that since the panel is probed through i2c, there's no synchronizati=
+on
+> > between its probe and the registration of the MIPI-DSI host it's attach=
+ed to.
+> >=20
+> > We initially moved the component framework registration to the MIPI-DSI=
+ Host
+> > attach hook to make sure we register our component only when we have a =
+DSI
+> > device attached to our MIPI-DSI host, and then use lookup our DSI devic=
+e in our
+> > bind hook.
+> >=20
+> > However, all the DSI bridges controlled through i2c are only registerin=
+g their
+> > associated DSI device in their bridge attach hook, meaning with our cha=
+nge
+>=20
+> I guess this is incorrect. I have promoted several times the pattern=20
+> that device driver shouldn't expose its interfaces (for example=20
+> component_add, drm_panel_add, drm_bridge_add) until it gathers all=20
+> required dependencies. In this particular case bridges should defer=20
+> probe until DSI bus becomes available. I guess this way the patch you=20
+> reverts would work.
+>=20
+> I advised few times this pattern in case of DSI hosts, apparently I=20
+> didn't notice the similar issue can appear in case of bridges. Or there=
+=20
+> is something I have missed???
+>=20
+> Anyway there are already eleven(?) bridge drivers using this pattern. I=
+=20
+> wonder if fixing it would be difficult, or if it expose other issues???
+> The patches should be quite straightforward - move=20
+> of_find_mipi_dsi_host_by_node and mipi_dsi_device_register_full to probe=
+=20
+> time.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0c65e03871b364e714a3@syzkaller.appspotmail.com
+I gave this a try today, went back to the current upstream code and
+found that indeed it works. I converted two bridges that works now. I'll
+send a new version some time next week and will convert all the others
+if we agree on the approach.
 
- __do_munmap+0x627/0x11c0 mm/mmap.c:2911
- do_munmap mm/mmap.c:2922 [inline]
- munmap_vma_range mm/mmap.c:604 [inline]
- mmap_region+0x85a/0x1760 mm/mmap.c:1753
- do_mmap+0x86e/0x1180 mm/mmap.c:1584
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1635
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 2144 at mm/huge_memory.c:2327 unmap_page mm/huge_memory.c:2327 [inline]
-WARNING: CPU: 0 PID: 2144 at mm/huge_memory.c:2327 split_huge_page_to_list+0x25eb/0x3e60 mm/huge_memory.c:2700
-Modules linked in:
-CPU: 0 PID: 2144 Comm: kswapd1 Not tainted 5.14.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:unmap_page mm/huge_memory.c:2327 [inline]
-RIP: 0010:split_huge_page_to_list+0x25eb/0x3e60 mm/huge_memory.c:2700
-Code: 89 de e8 28 e1 b6 ff 84 db 0f 85 54 e0 ff ff e8 6b d9 b6 ff 48 c7 c6 e0 d8 97 89 48 89 ef e8 9c 72 e9 ff c6 05 05 dd 99 0b 01 <0f> 0b e9 32 e0 ff ff bb 02 00 00 00 e9 64 ef ff ff e8 3f d9 b6 ff
-RSP: 0018:ffffc900084f76d8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801c44c000 RSI: ffffffff81be0514 RDI: 0000000000000003
-RBP: ffffea00021c0000 R08: 0000000000000029 R09: 00000000ffffffff
-R10: ffffffff88ea7679 R11: 00000000ffffffff R12: ffff88814018d2d8
-R13: ffffea00021c0008 R14: ffffea00021c0000 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f14895d5000 CR3: 0000000017350000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- split_huge_page include/linux/huge_mm.h:192 [inline]
- deferred_split_scan+0x5fa/0xbd0 mm/huge_memory.c:2860
- do_shrink_slab+0x42d/0xbd0 mm/vmscan.c:709
- shrink_slab+0x17c/0x6e0 mm/vmscan.c:869
- shrink_node_memcgs mm/vmscan.c:2868 [inline]
- shrink_node+0x8d1/0x1df0 mm/vmscan.c:2983
- kswapd_shrink_node mm/vmscan.c:3726 [inline]
- balance_pgdat+0x7ce/0x13b0 mm/vmscan.c:3917
- kswapd+0x5b6/0xdb0 mm/vmscan.c:4176
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Thanks for the suggestion!
 
+> Finally I think that if we will not fix these bridge drivers we will=20
+> encounter another set of issues with new platforms connecting "DSI host=
+=20
+> drivers assuming this pattern" and "i2c/dsi device drivers assuming=20
+> pattern already present in the bridges".
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Yeah, this is exactly the situation I'm in :)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Maxime
+
+--sbpyoycfgn424k53
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYR/dAgAKCRDj7w1vZxhR
+xYyIAP9QJYMcMeJKGOWtfkVHWa6UcWUgQjWFK6FrcjkrrWVtxwD/a8rMGvXmVVJq
+OoGA9td4D3UANC1W0k+LCikxHGQpvwQ=
+=E8Tv
+-----END PGP SIGNATURE-----
+
+--sbpyoycfgn424k53--
