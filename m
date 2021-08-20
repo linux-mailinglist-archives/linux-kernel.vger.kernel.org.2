@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00873F3177
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA4B3F3178
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhHTQ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhHTQ0l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:26:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A4FC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:26:03 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mH7LB-0004DB-Ev; Fri, 20 Aug 2021 18:25:57 +0200
-Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
- trusted keys
-To:     David Gstir <david@sigma-star.at>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S231883AbhHTQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:27:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhHTQ1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 12:27:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A6F861057;
+        Fri, 20 Aug 2021 16:26:24 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH7LZ-006EXS-SX; Fri, 20 Aug 2021 17:26:22 +0100
+Date:   Fri, 20 Aug 2021 17:26:21 +0100
+Message-ID: <87fsv4qdzm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
         "David S. Miller" <davem@davemloft.net>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        linux-integrity@vger.kernel.org,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <b9e44f8e-84a0-90be-6cfc-d3a0bde12178@pengutronix.de>
- <20210809093519.er32rmspuvkrww45@kernel.org>
- <8321cac9-350b-1325-4b7e-390f4f292070@pengutronix.de>
- <74737543-4A73-49F8-92F7-F7FFE64A00DB@sigma-star.at>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <7f14dbb8-57a9-cbf5-a1f4-2ef7472da18d@pengutronix.de>
-Date:   Fri, 20 Aug 2021 18:25:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <74737543-4A73-49F8-92F7-F7FFE64A00DB@sigma-star.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Jakub Kicinski <kuba@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH net-next] stmmac: align RX buffers
+In-Reply-To: <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
+References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
+        <871r71azjw.wl-maz@kernel.org>
+        <YROmOQ+4Kqukgd6z@orome.fritz.box>
+        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
+        <87o8a49idp.wl-maz@kernel.org>
+        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
+        <20210812121835.405d2e37@linux.microsoft.com>
+        <874kbuapod.wl-maz@kernel.org>
+        <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
+        <87wnohqty1.wl-maz@kernel.org>
+        <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mcroce@linux.microsoft.com, eric.dumazet@gmail.com, thierry.reding@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+On Fri, 20 Aug 2021 11:37:03 +0100,
+Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> 
+> On Thu, Aug 19, 2021 at 6:29 PM Marc Zyngier <maz@kernel.org> wrote:
 
-On 10.08.21 13:28, David Gstir wrote:
-> Hi Ahmad,
-> 
->> On 09.08.2021, at 12:16, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> 
-> [...]
-> 
->> If it interests you, I described[2] my CAAM+ubifs+fscrypt use case in the
->> discussion thread on my fscrypt-trusted-keys v1. Jan, a colleague of mine, held a
->> talk[3] on the different solutions for authenticated and encrypted storage, which
->> you may want to check out.
->>
->> I'd really appreciate feedback here on the the CAAM parts of this series, so this can
->> eventually go mainline.
-> 
-> Since you mention the fscrypt trusted-keys use case:
-> 
-> I noticed that the key length for trusted-keys is limited to
-> 256 - 1024bit keys. fscrypt does however also support keys
-> with e.g. 128bit keys (AES-128-CBC-ESSIV, AES-128-CTS-CBC).
-> AFAIK, CAAM and TEE key blobs would also support key lengths outside the 256 - 1024bit range.
-> 
-> Wouldn’t it make sense to align the supported key lengths?
-> I.e. extend the range of supported key lengths for trusted keys.
-> Or is there a specific reason why key lengths below 256bit are
-> not supported by trusted-keys?
+[...]
 
-No idea. I would suggest staying clear about arguing in its favor though
-until CAAM and DCP are merged. My parallel fscrypt endeavors seem to have
-only diverted maintainer attention. ;-)
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > index fcdb1d20389b..244aa6579ef4 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+> > @@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
+> >         if (stmmac_xdp_is_enabled(priv))
+> >                 return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
+> >
+> > -       return NET_SKB_PAD + NET_IP_ALIGN;
+> > +       return 8 + NET_IP_ALIGN;
+> >  }
+> >
+> >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
+> >
+> > I don't see the system corrupting packets anymore. Is that exactly
+> > what you had in mind? This really seems to point to a basic buffer
+> > overflow.
 
-Cheers,
-Ahmad
+[...]
 
+> Sorry, I meant something like:
 > 
-> Cheers,
-> David
+> -       return NET_SKB_PAD + NET_IP_ALIGN;
+> +       return 8;
 > 
-> 
-> 
+> I had some hardware which DMA fails if the receive buffer was not word
+> aligned, but this seems not the case, as 8 + NET_IP_ALIGN = 10, and
+> it's not aligned too.
 
+No error in that case either, as expected. Given that NET_SKB_PAD is
+likely to expand to 64, it is likely a DMA buffer overflow which
+probably only triggers for large-ish packets.
+
+Now, we're almost at -rc7, and we don't have a solution in sight.
+
+Can we please revert this until we have an understanding of what is
+happening? I'll hopefully have more cycles to work on the issue once
+5.14 is out, and hopefully the maintainers of this driver can chime in
+(they have been pretty quiet so far).
+
+Thanks,
+
+	M.
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Without deviation from the norm, progress is not possible.
