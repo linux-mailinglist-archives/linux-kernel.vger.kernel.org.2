@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8923F31CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA37A3F31D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhHTQ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhHTQ7U (ORCPT
+        id S232493AbhHTRBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:01:31 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60184 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230048AbhHTRBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:59:20 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764B6C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:58:42 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f107b0070f9113f083a3500.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:70f9:113f:83a:3500])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 67ECF1EC0589;
-        Fri, 20 Aug 2021 18:58:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629478716;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=5KF+B+VqtfGsGaq/lw/UPH0YzDuR0oJkfB4Tm2QXWvE=;
-        b=ASJFtWZaTbxmtJpbZRKpfEukM3vlQ2FESAAP7D1YKaNfDdq26E1vPiuBHATvzymyn5oc5r
-        XsVw+LQ5kkpZp0hyeWkxA8KxxM0nr3ILnh6SjO8eDgfoa610328fQmTX0bdhbGFz6MHXol
-        ZyjMF/gRSfED2OdXHniwYmbU2LGP2Ag=
-Date:   Fri, 20 Aug 2021 18:59:14 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 04/12] x86/tdx: Add protected guest support for TDX
- guest
-Message-ID: <YR/fYu6kn7DKpOCi@zn.tnic>
-References: <20210804181329.2899708-5-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YQsNpG55v7dhFqIb@google.com>
- <9c576f24-e6de-f816-623d-408a4a2ae747@intel.com>
- <4f28fe6e-a8ce-e444-51db-d0eb564eca8f@linux.intel.com>
- <YQsX54MPVYFuLmFr@google.com>
- <ca4aa25c-7d88-9812-4852-ced3274493a8@linux.intel.com>
- <YRTTZU3Pzm/1tH9M@zn.tnic>
- <486afc0e-0396-e57b-63fe-31a8433bd603@linux.intel.com>
- <YR+78mxnKW0T9Vdv@zn.tnic>
- <d419406e-749a-f851-f65e-a6582462c8a2@linux.intel.com>
+        Fri, 20 Aug 2021 13:01:30 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17KDkZMR004326;
+        Fri, 20 Aug 2021 13:00:40 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3ajdjwrpmn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Aug 2021 13:00:40 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 17KH0dba019164
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Aug 2021 13:00:39 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Fri, 20 Aug 2021 13:00:38 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Fri, 20 Aug 2021 13:00:38 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Fri, 20 Aug 2021 13:00:38 -0400
+Received: from ubuntuservermchindri.ad.analog.com ([10.32.225.46])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 17KH0YNN013729;
+        Fri, 20 Aug 2021 13:00:35 -0400
+From:   Mihail Chindris <mihail.chindris@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <alexandru.ardelean@analog.com>,
+        Mihail Chindris <mihail.chindris@analog.com>
+Subject: [PATCH v4 0/6] iio: Add output buffer support and DAC example
+Date:   Fri, 20 Aug 2021 16:59:21 +0000
+Message-ID: <20210820165927.4524-1-mihail.chindris@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d419406e-749a-f851-f65e-a6582462c8a2@linux.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: xVxhoPTZWahxU7TKuqmRQicDH9j6WcRA
+X-Proofpoint-GUID: xVxhoPTZWahxU7TKuqmRQicDH9j6WcRA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-08-20_06,2021-08-20_03,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ phishscore=0 adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999
+ impostorscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108200095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 09:42:55AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> Reason for suggesting seperate function for tdx_* specific protected guest
-> check is, we will be adding some exceptions for TDX features (like command
-> line option used to override the default flags or when device filter
-> support is disabled). Our current final version looks like below. Such
-> customization are not good in generic intel_* function right?
+Changelog v3 -> v4:
+  * https://lore.kernel.org/linux-iio/20210219124012.92897-1-alexandru.ardelean@analog.com
+  * Remove DMA related commits
+  * Test and add fixies to the previous version
+    - Add write function to iio_buffer_fileops in industrialiio-core
+    - In iio_kfifo_remove_from change number of samples to 1 instead of
+      r->bytes_per_datum otherwise n square samples are removed.
+    - In iio_buffer_remove_sample replace move buffer->access->write
+      check to first if an replace with remove_from. Checkpatch was
+      complaining about returning -ENOSYS
+  * Add ad3552r example
 
-Err, why?
+Alexandru Ardelean (1):
+  iio: triggered-buffer: extend support to configure output buffers
 
-TDX is Intel technology. That's like asking to have
+Lars-Peter Clausen (2):
+  iio: Add output buffer support
+  iio: kfifo-buffer: Add output buffer support
 
-sev_prot_guest_has() and amd_prot_guest_has() on AMD.
+Mihail Chindris (3):
+  Documentation:ABI:testing:add doc for AD3552R ABI
+  dt-bindings: iio: dac: Add adi,ad3552r.yaml
+  drivers:iio:dac: Add AD3552R driver support
 
-Maybe I still don't get what you're trying to achieve but from where I'm
-standing that sounds wrong.
+ .../ABI/testing/sysfs-bus-iio-dac-ad3552r     |   10 +
+ .../bindings/iio/dac/adi,ad3552r.yaml         |  185 +++
+ drivers/iio/accel/adxl372.c                   |    1 +
+ drivers/iio/accel/bmc150-accel-core.c         |    1 +
+ drivers/iio/adc/at91-sama5d2_adc.c            |    4 +-
+ .../buffer/industrialio-triggered-buffer.c    |    8 +-
+ drivers/iio/buffer/kfifo_buf.c                |   50 +
+ .../cros_ec_sensors/cros_ec_sensors_core.c    |    5 +-
+ .../common/hid-sensors/hid-sensor-trigger.c   |    5 +-
+ drivers/iio/dac/Kconfig                       |   10 +
+ drivers/iio/dac/Makefile                      |    1 +
+ drivers/iio/dac/ad3552r.c                     | 1419 +++++++++++++++++
+ drivers/iio/iio_core.h                        |    4 +
+ drivers/iio/industrialio-buffer.c             |  133 +-
+ drivers/iio/industrialio-core.c               |    1 +
+ include/linux/iio/buffer.h                    |    7 +
+ include/linux/iio/buffer_impl.h               |   11 +
+ include/linux/iio/triggered_buffer.h          |   11 +-
+ 18 files changed, 1854 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dac-ad3552r
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+ create mode 100644 drivers/iio/dac/ad3552r.c
 
+
+base-commit: 94a853eca720ac9e385e59f27e859b4a01123f58
 -- 
-Regards/Gruss,
-    Boris.
+2.27.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
