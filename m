@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8EE3F2B12
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0813F2B10
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239511AbhHTLTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:19:01 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44356 "EHLO
+        id S240367AbhHTLS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:18:59 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44456 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240246AbhHTLSf (ORCPT
+        with ESMTP id S239997AbhHTLSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:18:35 -0400
-X-UUID: 36443e4bf45b458ca3df961ce22d28f1-20210820
-X-UUID: 36443e4bf45b458ca3df961ce22d28f1-20210820
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        Fri, 20 Aug 2021 07:18:38 -0400
+X-UUID: fefa2e6fa1994ff9b2e495fdf158f071-20210820
+X-UUID: fefa2e6fa1994ff9b2e495fdf158f071-20210820
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
         (envelope-from <chun-jie.chen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1930405583; Fri, 20 Aug 2021 19:17:54 +0800
+        with ESMTP id 1357583572; Fri, 20 Aug 2021 19:17:57 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 20 Aug 2021 19:17:52 +0800
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 20 Aug 2021 19:17:55 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Aug 2021 19:17:52 +0800
+ Transport; Fri, 20 Aug 2021 19:17:55 +0800
 From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -35,9 +35,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [v2 22/24] clk: mediatek: Add MT8195 wpesys clock support
-Date:   Fri, 20 Aug 2021 19:15:02 +0800
-Message-ID: <20210820111504.350-23-chun-jie.chen@mediatek.com>
+Subject: [v2 23/24] clk: mediatek: Add MT8195 imp i2c wrapper clock support
+Date:   Fri, 20 Aug 2021 19:15:03 +0800
+Message-ID: <20210820111504.350-24-chun-jie.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210820111504.350-1-chun-jie.chen@mediatek.com>
 References: <20210820111504.350-1-chun-jie.chen@mediatek.com>
@@ -48,34 +48,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8195 wpesys clock controllers which provide clock gate
-control in Wrapping Engine.
+Add MT8195 imp i2c wrapper clock controllers which provide clock gate
+control in IIC IP blocks.
 
 Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 ---
- drivers/clk/mediatek/Makefile         |   2 +-
- drivers/clk/mediatek/clk-mt8195-wpe.c | 143 ++++++++++++++++++++++++++
- 2 files changed, 144 insertions(+), 1 deletion(-)
- create mode 100644 drivers/clk/mediatek/clk-mt8195-wpe.c
+ drivers/clk/mediatek/Makefile                 |  2 +-
+ .../clk/mediatek/clk-mt8195-imp_iic_wrap.c    | 68 +++++++++++++++++++
+ 2 files changed, 69 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
 
 diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 402a809ff6ac..dfe7047c6795 100644
+index dfe7047c6795..4288ad39ba41 100644
 --- a/drivers/clk/mediatek/Makefile
 +++ b/drivers/clk/mediatek/Makefile
 @@ -83,6 +83,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
  obj-$(CONFIG_COMMON_CLK_MT8195) += clk-mt8195-apmixedsys.o clk-mt8195-topckgen.o clk-mt8195-peri_ao.o clk-mt8195-infra_ao.o clk-mt8195-cam.o \
  					clk-mt8195-ccu.o clk-mt8195-img.o clk-mt8195-ipe.o clk-mt8195-mfg.o clk-mt8195-scp_adsp.o \
  					clk-mt8195-vdec.o clk-mt8195-vdo0.o clk-mt8195-vdo1.o clk-mt8195-venc.o clk-mt8195-vpp0.o \
--					clk-mt8195-vpp1.o
-+					clk-mt8195-vpp1.o clk-mt8195-wpe.o
+-					clk-mt8195-vpp1.o clk-mt8195-wpe.o
++					clk-mt8195-vpp1.o clk-mt8195-wpe.o clk-mt8195-imp_iic_wrap.o
  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8195-wpe.c b/drivers/clk/mediatek/clk-mt8195-wpe.c
+diff --git a/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
 new file mode 100644
-index 000000000000..7e92a3cab497
+index 000000000000..0720903cd1f7
 --- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8195-wpe.c
-@@ -0,0 +1,143 @@
++++ b/drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
+@@ -0,0 +1,68 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
 +//
 +// Copyright (c) 2021 MediaTek Inc.
@@ -88,137 +88,62 @@ index 000000000000..7e92a3cab497
 +#include <linux/clk-provider.h>
 +#include <linux/platform_device.h>
 +
-+static const struct mtk_gate_regs wpe_cg_regs = {
-+	.set_ofs = 0x0,
-+	.clr_ofs = 0x0,
-+	.sta_ofs = 0x0,
++#include <dt-bindings/clock/mt8195-clk.h>
++
++static const struct mtk_gate_regs imp_iic_wrap_cg_regs = {
++	.set_ofs = 0xe08,
++	.clr_ofs = 0xe04,
++	.sta_ofs = 0xe00,
 +};
 +
-+static const struct mtk_gate_regs wpe_vpp0_cg_regs = {
-+	.set_ofs = 0x58,
-+	.clr_ofs = 0x58,
-+	.sta_ofs = 0x58,
++#define GATE_IMP_IIC_WRAP(_id, _name, _parent, _shift)				\
++	GATE_MTK_FLAGS(_id, _name, _parent, &imp_iic_wrap_cg_regs, _shift,	\
++		&mtk_clk_gate_ops_setclr, CLK_OPS_PARENT_ENABLE)
++
++static const struct mtk_gate imp_iic_wrap_s_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C5, "imp_iic_wrap_s_i2c5", "top_i2c", 0),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C6, "imp_iic_wrap_s_i2c6", "top_i2c", 1),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_S_I2C7, "imp_iic_wrap_s_i2c7", "top_i2c", 2),
 +};
 +
-+static const struct mtk_gate_regs wpe_vpp1_cg_regs = {
-+	.set_ofs = 0x5c,
-+	.clr_ofs = 0x5c,
-+	.sta_ofs = 0x5c,
++static const struct mtk_gate imp_iic_wrap_w_clks[] = {
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C0, "imp_iic_wrap_w_i2c0", "top_i2c", 0),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C1, "imp_iic_wrap_w_i2c1", "top_i2c", 1),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C2, "imp_iic_wrap_w_i2c2", "top_i2c", 2),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C3, "imp_iic_wrap_w_i2c3", "top_i2c", 3),
++	GATE_IMP_IIC_WRAP(CLK_IMP_IIC_WRAP_W_I2C4, "imp_iic_wrap_w_i2c4", "top_i2c", 4),
 +};
 +
-+#define GATE_WPE(_id, _name, _parent, _shift)			\
-+	GATE_MTK(_id, _name, _parent, &wpe_cg_regs, _shift, &mtk_clk_gate_ops_no_setclr_inv)
-+
-+#define GATE_WPE_VPP0(_id, _name, _parent, _shift)			\
-+	GATE_MTK(_id, _name, _parent, &wpe_vpp0_cg_regs, _shift, &mtk_clk_gate_ops_no_setclr_inv)
-+
-+#define GATE_WPE_VPP1(_id, _name, _parent, _shift)			\
-+	GATE_MTK(_id, _name, _parent, &wpe_vpp1_cg_regs, _shift, &mtk_clk_gate_ops_no_setclr_inv)
-+
-+static const struct mtk_gate wpe_clks[] = {
-+	GATE_WPE(CLK_WPE_VPP0, "wpe_vpp0", "top_wpe_vpp", 16),
-+	GATE_WPE(CLK_WPE_VPP1, "wpe_vpp1", "top_wpe_vpp", 17),
-+	GATE_WPE(CLK_WPE_SMI_LARB7, "wpe_smi_larb7", "top_wpe_vpp", 18),
-+	GATE_WPE(CLK_WPE_SMI_LARB8, "wpe_smi_larb8", "top_wpe_vpp", 19),
-+	GATE_WPE(CLK_WPE_EVENT_TX, "wpe_event_tx", "top_wpe_vpp", 20),
-+	GATE_WPE(CLK_WPE_SMI_LARB7_P, "wpe_smi_larb7_p", "top_wpe_vpp", 24),
-+	GATE_WPE(CLK_WPE_SMI_LARB8_P, "wpe_smi_larb8_p", "top_wpe_vpp", 25),
++static const struct mtk_clk_desc imp_iic_wrap_s_desc = {
++	.clks = imp_iic_wrap_s_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_s_clks),
 +};
 +
-+static const struct mtk_gate wpe_vpp0_clks[] = {
-+	/* WPE_VPP0 */
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_VGEN, "wpe_vpp0_vgen", "top_img", 0),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_EXT, "wpe_vpp0_ext", "top_img", 1),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_VFC, "wpe_vpp0_vfc", "top_img", 2),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH0_TOP, "wpe_vpp0_cach0_top", "top_img", 3),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH0_DMA, "wpe_vpp0_cach0_dma", "top_img", 4),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH1_TOP, "wpe_vpp0_cach1_top", "top_img", 5),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH1_DMA, "wpe_vpp0_cach1_dma", "top_img", 6),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH2_TOP, "wpe_vpp0_cach2_top", "top_img", 7),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH2_DMA, "wpe_vpp0_cach2_dma", "top_img", 8),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH3_TOP, "wpe_vpp0_cach3_top", "top_img", 9),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_CACH3_DMA, "wpe_vpp0_cach3_dma", "top_img", 10),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_PSP, "wpe_vpp0_psp", "top_img", 11),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_PSP2, "wpe_vpp0_psp2", "top_img", 12),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_SYNC, "wpe_vpp0_sync", "top_img", 13),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_C24, "wpe_vpp0_c24", "top_img", 14),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_MDP_CROP, "wpe_vpp0_mdp_crop", "top_img", 15),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_ISP_CROP, "wpe_vpp0_isp_crop", "top_img", 16),
-+	GATE_WPE_VPP0(CLK_WPE_VPP0_TOP, "wpe_vpp0_top", "top_img", 17),
-+	/* WPE_VPP1 */
-+	GATE_WPE_VPP1(CLK_WPE_VPP0_VECI, "wpe_vpp0_veci", "top_img", 0),
-+	GATE_WPE_VPP1(CLK_WPE_VPP0_VEC2I, "wpe_vpp0_vec2i", "top_img", 1),
-+	GATE_WPE_VPP1(CLK_WPE_VPP0_VEC3I, "wpe_vpp0_vec3i", "top_img", 2),
-+	GATE_WPE_VPP1(CLK_WPE_VPP0_WPEO, "wpe_vpp0_wpeo", "top_img", 3),
-+	GATE_WPE_VPP1(CLK_WPE_VPP0_MSKO, "wpe_vpp0_msko", "top_img", 4),
++static const struct mtk_clk_desc imp_iic_wrap_w_desc = {
++	.clks = imp_iic_wrap_w_clks,
++	.num_clks = ARRAY_SIZE(imp_iic_wrap_w_clks),
 +};
 +
-+static const struct mtk_gate wpe_vpp1_clks[] = {
-+	/* WPE_VPP0 */
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_VGEN, "wpe_vpp1_vgen", "top_img", 0),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_EXT, "wpe_vpp1_ext", "top_img", 1),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_VFC, "wpe_vpp1_vfc", "top_img", 2),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH0_TOP, "wpe_vpp1_cach0_top", "top_img", 3),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH0_DMA, "wpe_vpp1_cach0_dma", "top_img", 4),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH1_TOP, "wpe_vpp1_cach1_top", "top_img", 5),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH1_DMA, "wpe_vpp1_cach1_dma", "top_img", 6),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH2_TOP, "wpe_vpp1_cach2_top", "top_img", 7),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH2_DMA, "wpe_vpp1_cach2_dma", "top_img", 8),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH3_TOP, "wpe_vpp1_cach3_top", "top_img", 9),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_CACH3_DMA, "wpe_vpp1_cach3_dma", "top_img", 10),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_PSP, "wpe_vpp1_psp", "top_img", 11),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_PSP2, "wpe_vpp1_psp2", "top_img", 12),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_SYNC, "wpe_vpp1_sync", "top_img", 13),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_C24, "wpe_vpp1_c24", "top_img", 14),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_MDP_CROP, "wpe_vpp1_mdp_crop", "top_img", 15),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_ISP_CROP, "wpe_vpp1_isp_crop", "top_img", 16),
-+	GATE_WPE_VPP0(CLK_WPE_VPP1_TOP, "wpe_vpp1_top", "top_img", 17),
-+	/* WPE_VPP1 */
-+	GATE_WPE_VPP1(CLK_WPE_VPP1_VECI, "wpe_vpp1_veci", "top_img", 0),
-+	GATE_WPE_VPP1(CLK_WPE_VPP1_VEC2I, "wpe_vpp1_vec2i", "top_img", 1),
-+	GATE_WPE_VPP1(CLK_WPE_VPP1_VEC3I, "wpe_vpp1_vec3i", "top_img", 2),
-+	GATE_WPE_VPP1(CLK_WPE_VPP1_WPEO, "wpe_vpp1_wpeo", "top_img", 3),
-+	GATE_WPE_VPP1(CLK_WPE_VPP1_MSKO, "wpe_vpp1_msko", "top_img", 4),
-+};
-+
-+static const struct mtk_clk_desc wpe_desc = {
-+	.clks = wpe_clks,
-+	.num_clks = ARRAY_SIZE(wpe_clks),
-+};
-+
-+static const struct mtk_clk_desc wpe_vpp0_desc = {
-+	.clks = wpe_vpp0_clks,
-+	.num_clks = ARRAY_SIZE(wpe_vpp0_clks),
-+};
-+
-+static const struct mtk_clk_desc wpe_vpp1_desc = {
-+	.clks = wpe_vpp1_clks,
-+	.num_clks = ARRAY_SIZE(wpe_vpp1_clks),
-+};
-+
-+static const struct of_device_id of_match_clk_mt8195_wpe[] = {
++static const struct of_device_id of_match_clk_mt8195_imp_iic_wrap[] = {
 +	{
-+		.compatible = "mediatek,mt8195-wpesys",
-+		.data = &wpe_desc,
++		.compatible = "mediatek,mt8195-imp_iic_wrap_s",
++		.data = &imp_iic_wrap_s_desc,
 +	}, {
-+		.compatible = "mediatek,mt8195-wpesys_vpp0",
-+		.data = &wpe_vpp0_desc,
-+	}, {
-+		.compatible = "mediatek,mt8195-wpesys_vpp1",
-+		.data = &wpe_vpp1_desc,
++		.compatible = "mediatek,mt8195-imp_iic_wrap_w",
++		.data = &imp_iic_wrap_w_desc,
 +	}, {
 +		/* sentinel */
 +	}
 +};
 +
-+static struct platform_driver clk_mt8195_wpe_drv = {
++static struct platform_driver clk_mt8195_imp_iic_wrap_drv = {
 +	.probe = mtk_clk_simple_probe,
 +	.driver = {
-+		.name = "clk-mt8195-wpe",
-+		.of_match_table = of_match_clk_mt8195_wpe,
++		.name = "clk-mt8195-imp_iic_wrap",
++		.of_match_table = of_match_clk_mt8195_imp_iic_wrap,
 +	},
 +};
-+builtin_platform_driver(clk_mt8195_wpe_drv);
++builtin_platform_driver(clk_mt8195_imp_iic_wrap_drv);
 -- 
 2.18.0
 
