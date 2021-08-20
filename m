@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87053F2B0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302313F2B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240640AbhHTLSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240335AbhHTLSi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:18:38 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C76FC061230
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 04:17:47 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id k65so18112588yba.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 04:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=/5YusWKi4mMtAdaU6d/BBWgplNbGITEAezWLtaFz7rU=;
-        b=WY8G1goCQxK+CDam4CXathjUIAYVS3CfJ95oXavKFhMVQSPIA4tCtcLelytlo+41fz
-         H8JyIzANIqEYimrF9QFfCQFWdFGLFvJRfn6d3ilOHICAgdpdRLERHduk8z6QGhQqA50C
-         UDuCiy24nKCuLi9MfT1agQoCXL0wlIIAbUTJAW8zXLM7J7Sl6ntbWshtwTvMMSdVeK6j
-         6f/jxtZUICWP9d83um/XKnYVZYlPT12eQEKMRd3XtUywx+XJE+yQvzrQlPAV5M7zBeQm
-         rGr5iZrYFHw53bTTFSWm5adIAA0HGO/igYCfxKs7msZxil2f8w6t8KSL0dhGQrqN1Z75
-         r++g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=/5YusWKi4mMtAdaU6d/BBWgplNbGITEAezWLtaFz7rU=;
-        b=sM8ukEhS8v7BeCEgd3Dh8arYFekIyqI5eZY/FGZA9wjngjNyBWlgozIEfm7cFQ7fdM
-         V36GRBB1AaCXdAh+ISe46NzQNO/PT9Dmv7EhoLPosmUo0K4myoOuLbadv+3wVPjiIHte
-         2Dzyw4850Qh+6MuejFItnzWlAIuZEPUagujGla1gQM1Wv5C3fmC8JH2EmuLfGgThPEUn
-         WWxM7XWMYD/GMRHUqIFLfpaTxioRmw9pFRCck1v/+B2tIP11xzaA8LieHdP56vh0gogx
-         PcRAe3m8TTgq9SOY2g3NL5XYpqMU8NtRO3os3c+aHqatEgw/DjhOWydOp/twqLWyxw6A
-         tPmQ==
-X-Gm-Message-State: AOAM533vbdH7sCueUeuSkY3dHL8o3drnblH5bBcfNyg5jZlOBGUM47j8
-        oB/kgXk0YDg3VBZYGLOZbNLVmo91Z1v1LQ5ST8I=
-X-Google-Smtp-Source: ABdhPJw0S96eBoW7rmRSkGQ3C0Rx9Rti/xgmk5Y1F2EQjhyKaeELqSCM7qbX+TRdQDmjkzuCBgZfjGSoC8LUu4UuRVA=
-X-Received: by 2002:a25:f310:: with SMTP id c16mr22964783ybs.464.1629458266629;
- Fri, 20 Aug 2021 04:17:46 -0700 (PDT)
-MIME-Version: 1.0
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 20 Aug 2021 13:17:42 +0200
-Message-ID: <CAKXUXMzqmN1dYpbYSCXWN9VwHn8+MXj3P=G09qD6=atwrcJ8WA@mail.gmail.com>
-Subject: Question on commit dc7109aaa233 ("futex: Validate waiter correctly in futex_proxy_trylock_atomic()")
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S240076AbhHTLYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:24:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27799 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237660AbhHTLYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 07:24:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629458638; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=96HNO+6+5D6uDknnQmnW7Y0ok1waE5yHtL/NjpojgCY=; b=s+rqgx1IROlzGwgwitdDwF/U1EKCxMmXBnAzReNmHOnjV8MQpuQTX44sXCFXnLs+GRxLuJ/G
+ 81TM9J+T3UIx9CtF35sZEyXngVD3Qw2jZeh+Fc4h9nZtOggGYSBWFdVpHtq5Wv4Sjwrg64h8
+ t+KPcVuxmrAM8Y3NyJURdI0i/UY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 611f90cdf749dbaacd0c90ea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Aug 2021 11:23:57
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3249CC4338F; Fri, 20 Aug 2021 11:23:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 18582C43460;
+        Fri, 20 Aug 2021 11:23:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 18582C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Odelu Kukatla <okukatla@codeaurora.org>
+To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com
+Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, okukatla@codeaurora.org,
+        seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: [v7 0/3]  Add L3 provider support for SC7280
+Date:   Fri, 20 Aug 2021 16:53:38 +0530
+Message-Id: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Thomas,
+Add Epoch Subsystem (EPSS) L3 provider support on SM7280 SoCs.
 
-in commit dc7109aaa233 ("futex: Validate waiter correctly in
-futex_proxy_trylock_atomic()") visible on next-20210819, you add:
+v7:
+ - Addressed review comments (Georgi Djakov/Alex Elder)
+ 
+Odelu Kukatla (3):
+  dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+  interconnect: qcom: Add EPSS L3 support on SC7280
+  arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
 
-+    /*
-+     * Ensure that this is a waiter sitting in futex_wait_requeue_pi()
-+     * and waiting on the 'waitqueue' futex which is always !PI.
-+     */
-+    if (!top_waiter->rt_waiter || top_waiter->pi_state)
-+        ret = -EINVAL;
+ .../bindings/interconnect/qcom,osm-l3.yaml         |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |  11 ++
+ drivers/interconnect/qcom/osm-l3.c                 | 138 +++++++++++++++++----
+ drivers/interconnect/qcom/sc7280.h                 |  10 ++
+ include/dt-bindings/interconnect/qcom,osm-l3.h     |  10 +-
+ 5 files changed, 153 insertions(+), 25 deletions(-)
 
-However, ret is unconditionally reassigned later and erases any
-intended effect of this assignment. This is making that assignment
-above a Dead Store, which clang-analyzer correctly warns about and
-which motivates me to write you an email.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Did you intend to return -EINVAL here? So:
-
-+       if (!top_waiter->rt_waiter || top_waiter->pi_state)
-+               return -EINVAL;
-
-
-
-Best regards,
-
-Lukas
-
-Static analysis tools are as foolish as they are... but every dog has its day...
