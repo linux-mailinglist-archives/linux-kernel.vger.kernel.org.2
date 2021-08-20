@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDA33F340B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1073F3418
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhHTSoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:44:22 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:23264 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbhHTSoU (ORCPT
+        id S235726AbhHTStw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230034AbhHTStt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:44:20 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d10 with ME
-        id jujb250043riaq203ujboP; Fri, 20 Aug 2021 20:43:41 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 20 Aug 2021 20:43:41 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
-        nsaenz@kernel.org, wsa@kernel.org, krzk@kernel.org,
-        stefan.wahren@i2se.com, nh6z@nh6z.net, eric@anholt.net
-Cc:     linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] i2c: bcm2835: Fix the error handling in 'bcm2835_i2c_probe()'
-Date:   Fri, 20 Aug 2021 20:43:33 +0200
-Message-Id: <338008c444af4785a07fb5a402b60225a4964ae9.1629484876.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Fri, 20 Aug 2021 14:49:49 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C368C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:49:11 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id 22so11871430qkg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:49:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UdUf1AFFmq8vkogFZzhYw8djub7X7CPEGtEw7SwIdK8=;
+        b=Cmdhmms2k9zLRdAZjTsQghObPy1K33cXuM3Gf4RkvBwRxflxuW0twNw2pOx33gU9PP
+         NCBswM1+O47VjvNHQOxvRoQrRIAcc7Zq3t4+oP+OQwuVxRUZoY8550foGDOxkeCffFXs
+         er2xDt7LPKqTfv82R8sW9dwFDXw2dpBMCXQW4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UdUf1AFFmq8vkogFZzhYw8djub7X7CPEGtEw7SwIdK8=;
+        b=am2bk810aYvrfAEmhEJ3NSlQUjMa+9cA9ZcQIJzQf7ssts+OlcCosDLFeefzd3ndIX
+         +ezE1kZtBmrvcZHSJS9d29r5Xu5zyoRniAc4exGbfgtjQ3iUsRDn5iOY1N6/NH11IyKy
+         4fmLNClF8jw9yOarHb9BugK9B6u9tEs3lA2OfXbFEtF6qMYUjXqfM4Cu5HGOq4eJf6Tp
+         XAb/TAAHwVybxtOWi19bkDvRqpvrKAQyAnwJvxig39Gh6XMxROnj9t0PjMkzKc/e1T2m
+         2VPM4GQavIc+b5YuFeiPKmrQVO2HLJisyM17nBQzOyFVkU98GPZzAoGXuWZ4qQBkNDMM
+         sJ5g==
+X-Gm-Message-State: AOAM5303659gv1d4j1MfTqFEnPI2ZDQMlhnhHg4iY0JOpfl12jfmkWuf
+        iY2BaiUwqBmtyHdGNqWT59I44g==
+X-Google-Smtp-Source: ABdhPJzn8Uz2tHnUy8gV9fGzqXPRy9jbL3k/vX/hp/wFWJsVHz2PO7hwReO6b5o9YUAygHPtd5srpA==
+X-Received: by 2002:a05:620a:4106:: with SMTP id j6mr10345615qko.392.1629485350480;
+        Fri, 20 Aug 2021 11:49:10 -0700 (PDT)
+Received: from nitro.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id s69sm3612715qka.102.2021.08.20.11.49.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 11:49:10 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 14:49:06 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     SeongJae Park <sj38.park@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+Subject: Re: [PATCH 2/2] Documentation/process/maintainer-pgp-guide: Replace
+ broken link to PGP path finder
+Message-ID: <20210820184906.bcypsextkp2rm4e4@nitro.local>
+References: <20210812095030.4704-1-sj38.park@gmail.com>
+ <20210812095030.4704-2-sj38.park@gmail.com>
+ <87fsv4rqfq.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87fsv4rqfq.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some resource should be released if an error occurs in
-'bcm2835_i2c_probe()'.
-Add an error handling path and the needed 'clk_disable_unprepare()' and
-'clk_rate_exclusive_put()' calls.
+On Fri, Aug 20, 2021 at 11:12:09AM -0600, Jonathan Corbet wrote:
+> This looks fine to me, but I'd like Konstantin [CC'd] to have a look and
+> let me know if he agrees...
 
-While at it, rework the bottom of the function to use this newly added
-error handling path and have an explicit and more standard "return 0;" at
-the end of the normal path.
+Yes, this looks good to me. The entire section needs a more in-depth rewrite,
+but I'm not ready for that work yet, and this patch at least removes a dead
+link and offers some alternatives.
 
-Fixes: bebff81fb8b9 ("i2c: bcm2835: Model Divider in CCF")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/i2c/busses/i2c-bcm2835.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+Reviewed-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
 
-diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-bcm2835.c
-index 37443edbf754..a2f19b4c2402 100644
---- a/drivers/i2c/busses/i2c-bcm2835.c
-+++ b/drivers/i2c/busses/i2c-bcm2835.c
-@@ -449,13 +449,14 @@ static int bcm2835_i2c_probe(struct platform_device *pdev)
- 	ret = clk_prepare_enable(i2c_dev->bus_clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Couldn't prepare clock");
--		return ret;
-+		goto err_put_exclusive_rate;
- 	}
- 
- 	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (!irq) {
- 		dev_err(&pdev->dev, "No IRQ resource\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_disable_unprepare_clk;
- 	}
- 	i2c_dev->irq = irq->start;
- 
-@@ -463,7 +464,7 @@ static int bcm2835_i2c_probe(struct platform_device *pdev)
- 			  dev_name(&pdev->dev), i2c_dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not request IRQ\n");
--		return -ENODEV;
-+		goto err_disable_unprepare_clk;
- 	}
- 
- 	adap = &i2c_dev->adapter;
-@@ -481,7 +482,16 @@ static int bcm2835_i2c_probe(struct platform_device *pdev)
- 
- 	ret = i2c_add_adapter(adap);
- 	if (ret)
--		free_irq(i2c_dev->irq, i2c_dev);
-+		goto err_free_irq;
-+
-+	return 0;
-+
-+err_free_irq:
-+	free_irq(i2c_dev->irq, i2c_dev);
-+err_disable_unprepare_clk:
-+	clk_disable_unprepare(i2c_dev->bus_clk);
-+err_put_exclusive_rate:
-+	clk_rate_exclusive_put(i2c_dev->bus_clk);
- 
- 	return ret;
- }
--- 
-2.30.2
+Thank you!
+-K
 
+
+> > -Next, open the `PGP pathfinder`_. In the "From" field, paste the key
+> > -fingerprint of Linus Torvalds from the output above. In the "To" field,
+> > -paste the key-id you found via ``gpg --search`` of the unknown key, and
+> > -check the results:
+> > -
+> > -- `Finding paths to Linus`_
+> > +Next, find a trust path from Linus Torvalds to the key-id you found via ``gpg
+> > +--search`` of the unknown key.  For this, you can use several tools including
+> > +https://github.com/mricon/wotmate,
+> > +https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/graphs, and
+> > +https://the.earth.li/~noodles/pathfind.html.
+> >  
+> >  If you get a few decent trust paths, then it's a pretty good indication
+> >  that it is a valid key. You can add it to your keyring from the
+> > @@ -962,6 +961,3 @@ administrators of the PGP Pathfinder service to not be malicious (in
+> >  fact, this goes against :ref:`devs_not_infra`). However, if you
+> >  do not carefully maintain your own web of trust, then it is a marked
+> >  improvement over blindly trusting keyservers.
+> > -
+> > -.. _`PGP pathfinder`: https://pgp.cs.uu.nl/
+> > -.. _`Finding paths to Linus`: https://pgp.cs.uu.nl/paths/79BE3E4300411886/to/C94035C21B4F2AEB.html
