@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F58F3F35EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1B23F35F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240613AbhHTVP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        id S240615AbhHTVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhHTVP2 (ORCPT
+        with ESMTP id S231200AbhHTVRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:15:28 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC746C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:14:49 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id oa17so8201747pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:14:49 -0700 (PDT)
+        Fri, 20 Aug 2021 17:17:14 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE74C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:16:36 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id i3-20020a056830210300b0051af5666070so7283943otc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:16:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sqivqGiZbtT3bHnPqaZ77QHGz4DhlbspECZeNfhdNXs=;
-        b=cpgnvjbRqzen+enbSUfeRNsKSrhYHo0lBkvpQ/e+Hfoueiy3Ux/3D3mGHmGf1vPSfN
-         W3xyZoaKRLJyp2W920JWOtspZC3D6czP6z6TEL+pVRmw/dQ8M+FYInE3FrrLS+T6tAWL
-         ibU8AeNp96jta/F/Dn8J+PCXlfwR3ks8iZo2kFsuhZYRKIplaEzBjr8tSHI5gAHXNaYF
-         Gh3yT3iqRCuRgJt/2ObYI0x1kT7dLbS3BRW49VriRljjkAyhgVz4jZpCxmCb4dNYKzHu
-         P8q90DxpDyX5fquCkL01EQ6kTfnZ8WSFIzxnCQiZBfCb7PM/g8yn78W+ujX7dbCHa+0V
-         JAjw==
+        bh=JK5qp9aGPwlk30xRI3qcWwl4gv4KOP1fwY03JpC1sQc=;
+        b=JybGeEAWGaaSntO3R2lT7WUj35AygFj+itlN16mJYpO0OvjZL4KqEBkfiQp4PGz5Mh
+         IrMNHPoa3RsBgJOm5bzBRMyg06657LdqdM3qiOSs3QY6vOx/NvESZuyoce2FByz4HnNL
+         1gZiAXesklldc7Jy2N/XS7I1aWhbJKnHGm2DE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sqivqGiZbtT3bHnPqaZ77QHGz4DhlbspECZeNfhdNXs=;
-        b=hZSzmp1sYNmrjJdOcggM52n73nBKfEGHwnYk9Euj8Ds09SvPgVdEYg/us3WFiITSDn
-         PAOMC3P/eErzvdW+whMTfRUsIb4/Movrx/0VSbPckDXdi5nxkk/RP2+i72Zz7kzo6BS5
-         jWCFhNO0PG8LuQakkHhdnhrfgqUi1XCZbcAsGRMtGYYlEhADkepWavVrzbQLSpEmIlrB
-         V9xYUsF5tIaEWhiatSKg+DqxJt7mPkXjOw3Wl6GQtCLVZLngCAZc+yaj5BAGQazNDWTz
-         a8wm7Bwm6BKZJ9jwpACrJk/3+G1/fOKTDxTYHmCFze4WOJvUAos07ZQIEEuCkWUU118Z
-         RPcQ==
-X-Gm-Message-State: AOAM5300Qy1dFaDAAyLNYdxwaZADgWntJXLdhBz7GOqkCImLCVgE7607
-        mJRcFdwzKkG40HTBnfqYK2BY6UFffX4sebz0OtQGQg==
-X-Google-Smtp-Source: ABdhPJyHzo9ZZTde9sOEGhzO/2ASdklPFXG/UIdMwqy//evdOkVK3TbCzcEp/WIYgNeG1wWkB+rbxWhgEbcq909f2Uw=
-X-Received: by 2002:a17:902:c406:b0:12d:d0ff:4a9 with SMTP id
- k6-20020a170902c40600b0012dd0ff04a9mr17895286plk.65.1629494089179; Fri, 20
- Aug 2021 14:14:49 -0700 (PDT)
+        bh=JK5qp9aGPwlk30xRI3qcWwl4gv4KOP1fwY03JpC1sQc=;
+        b=DM2Qa84PnT2pXRNazZw+uwR/bnIJMCpnG4CCamA3hsuo0ul4uOqaLQfPMe8lvhysdd
+         OEvoZGRO8oEI6wimgwaN+CexLin46HUGxaz+iPTvJT3mmpjy/yjdRYlc7Een3RB4PVld
+         shf2fO8r2zqiL3KXDaxG0lK8UmdFyWSO6EqPSw/FxSI1mzSqUyWqqe0/W1wgQzf64GSw
+         pB/p43iXFRJ9dT/i+ExjBbxUR7Mhpr0TbjDM8/nvD6lQx1k84crON+DbV6v38UGLjPII
+         He9HRZQ8zc/85QiJw0xTRmmJCr9SaIN0ZzbkpGWtSIGWUP4idcKcqS0Fglnl+Tpy+kAZ
+         AYCQ==
+X-Gm-Message-State: AOAM531IcH6L7bH+9VfgrxM2VCwbZzEihW0ha28G3e9VP74RN1RPhL7U
+        j6CEnMIwLjVtIJXV/TVt12EFmZmz4tZLVA==
+X-Google-Smtp-Source: ABdhPJxcjIIfBt68RCdyoLtPe3vpSkbRQcqqGGabaxJAkye1SeD0qjjY+q7i9KoyufXMgo/+baRwSw==
+X-Received: by 2002:a9d:309:: with SMTP id 9mr18771017otv.365.1629494195304;
+        Fri, 20 Aug 2021 14:16:35 -0700 (PDT)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
+        by smtp.gmail.com with ESMTPSA id z78sm1531324ooa.29.2021.08.20.14.16.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 14:16:34 -0700 (PDT)
+Received: by mail-ot1-f48.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so16974503oth.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:16:34 -0700 (PDT)
+X-Received: by 2002:a9d:309:: with SMTP id 9mr18770960otv.365.1629494194200;
+ Fri, 20 Aug 2021 14:16:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210820200032.2178134-1-rmoar@google.com>
-In-Reply-To: <20210820200032.2178134-1-rmoar@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 20 Aug 2021 14:14:38 -0700
-Message-ID: <CAFd5g45vKkpHhm0X3N+mRCAH8RNEXJTnFm2Dk9sPKzZY+qmMXQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: improve compatibility of kunit_parser with
- KTAP specification
-To:     Rae Moar <rmoar@google.com>
-Cc:     davidgow@google.com, dlatypov@google.com, shuah@kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid>
+ <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com>
+In-Reply-To: <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com>
+From:   Brian Norris <briannorris@chromium.org>
+Date:   Fri, 20 Aug 2021 14:16:23 -0700
+X-Gmail-Original-Message-ID: <CA+ASDXO=Bjr+f4mtXwt7vtiTz6tSw7SPuY1RvNWMp6-43Baqfg@mail.gmail.com>
+Message-ID: <CA+ASDXO=Bjr+f4mtXwt7vtiTz6tSw7SPuY1RvNWMp6-43Baqfg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: add RK3399 Gru gpio-line-names
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 1:01 PM Rae Moar <rmoar@google.com> wrote:
->
-> Update to kunit_parser to improve compatibility with KTAP
-> specification including arbitrarily nested tests. Patch accomplishes
-> three major changes:
->
-> - Use a general Test object to represent all tests rather than TestCase
-> and TestSuite objects. This allows for easier implementation of arbitrary
-> levels of nested test and promotes the idea that both test suites and test
-> cases are tests.
->
-> - Print errors incrementally rather than all at once after the
-> parsing finishes to maximize information given to the user in the
-> case of the parser given invalid input and to increase the helpfulness
-> of the timestamps given during printing.
->
-> - Increase compatibility for different formats of input. Arbitrary levels
-> of nested tests supported. Also, test cases and test suites are now
-> supported to be present on the same level of testing.
->
-> This patch now implements the KTAP specification as described here:
-> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/.
->
-> This patch adjusts the kunit_tool_test.py file to check for
-> the correct outputs from the new parser and adds a new test to check
-> the parsing for a KTAP result log with correct format for multiple nested
-> subtests (test_is_test_passed-all_passed_nested.log).
->
-> This patch also alters the kunit_json.py file to allow for arbitrarily
-> nested tests.
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
+On Fri, Aug 20, 2021 at 2:05 PM Doug Anderson <dianders@chromium.org> wrote:
+> I guess one minor nit (now that I look back on the veyron patch where
+> I mentioned it explicitly in the commit message) is that on the veyron
+> ones we sorted this down at the bottom with the other pinctrl stuff
+> instead of sorting it alphabetically with everything else. I'll let
+> Heiko say which he likes better.
 
-One minor question/potential issue below, otherwise:
+Huh, didn't notice that semi-convention. I can sort it however Heiko prefers.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> I also notice for veyron that we had a second "ABI" exception for the
+> recovery mode pin, but I believe that goes through a different
+> mechanism now so we're good there.
 
-[...]
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index 75045aa0f8a1..ca760ee32096 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -106,10 +106,10 @@ class KUnitParserTest(unittest.TestCase):
->                 with open(log_path) as file:
->                         result = kunit_parser.extract_tap_lines(file.readlines())
->                 self.assertContains('TAP version 14', result)
-> -               self.assertContains('   # Subtest: example', result)
-> -               self.assertContains('   1..2', result)
-> -               self.assertContains('   ok 1 - example_simple_test', result)
-> -               self.assertContains('   ok 2 - example_mock_test', result)
-> +               self.assertContains('# Subtest: example', result)
-> +               self.assertContains('1..2', result)
-> +               self.assertContains('ok 1 - example_simple_test', result)
-> +               self.assertContains('ok 2 - example_mock_test', result)
->                 self.assertContains('ok 1 - example', result)
+I believe the recovery mode pin is dropped from recent designs (don't
+quote me in general on that), and there's a different mechanism used
+just to get the at-boot-time "recovery mode" state directly from the
+firmware.
 
-Do you have any test cases which accept "ok/not ok" lines without a
-"-"? (Or tests for any other KTAP compliant Kselftest output?)
+> Even though I didn't do a line-by-line review, I'll still give:
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>
+> ...though it's possible an "Acked-by" would be more in the spirit of
+> that? Not sure...
 
->         def test_output_with_prefix_isolated_correctly(self):
+Thanks!
 
-Cheers!
+Brian
