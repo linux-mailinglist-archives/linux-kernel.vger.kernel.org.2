@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020F93F26B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AEF3F26BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238427AbhHTGP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:15:28 -0400
-Received: from ozlabs.org ([203.11.71.1]:54367 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232732AbhHTGP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:15:27 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrWZH5VLnz9sWd;
-        Fri, 20 Aug 2021 16:14:47 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629440088;
-        bh=kroY2SxltUzZNq48k2nx9z2Bimo2DPHva9IOqY7qNeo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nG546bZttayIFDopl8ITCSeFYrpJ4ZVjg0HLN9vbcZJFLoGfWXsoV/Ko3oF8RWDrb
-         Q8osmTbMzNqtjqrl/q+tVIesF9QfVmhiQ75WbJ57QQij7HUko57mYROFxajOdtE2eJ
-         Thb3PfKbrtu6zpZ6WTDpXgmNz+ZHWddp5nWyt/ebXVtty/pP9sgnQlAJKC0fpY+u6P
-         u+CO36XZ1tafmNeJwZ7cXLHXo8TYK8B/JAjK9N6scnLu2kjNHIsFXSvaZXJl+9FNBP
-         cft1kEKZdghi/dyURKKVMmwQaR3mn6pxAn8bctGtxlM9/yd33F2v7iHh7LU4kAYwGJ
-         JMHJelxnEsGjg==
-Date:   Fri, 20 Aug 2021 16:14:45 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the scsi tree
-Message-ID: <20210820161445.6eadab0c@canb.auug.org.au>
+        id S236436AbhHTGX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232727AbhHTGXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 02:23:25 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D774C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:22:48 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id r2so8155829pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=99KnB+URAYBtBEFeaEEoqvbN3Lia8bbvXa6b4D4VGvk=;
+        b=AelbYVYXhvB2C9bFtneY/yrgfG2toP1CjqK6lvDsXri4wpxXyhmsJgoDY6ahx/XN61
+         vKAczg+E4fXnnS8G0G93MoK9T+n8JSHY8ekq/8I4u69XNDvXXmaeliXWl3ny7DbR459m
+         W50jTwNToE1LmUUokyr6le1aob0gVY3GnP1Ka3mI4XHwRz2fWCsY/l4SMPzwsS0xTXB9
+         EixGvESxoBHqQEVnBddxUt4aKYU3B3NSH4JBU4qDMkK7Jhzi3FgC5Vb8HdCiGR2LwcMT
+         sxBxULIIw3r+NvwPaEY2Ixaz7kUmSTr4+dFabybVlm+sD0srX/k7GhsedXDOGcsj6xyH
+         5o7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=99KnB+URAYBtBEFeaEEoqvbN3Lia8bbvXa6b4D4VGvk=;
+        b=S1hDkIdm0hBUXd50/i7v/UBtulwaYmmlgvSPJ6dmAuHpadawsZ7dP4c0/jpJtUZkki
+         H/U1WML4GbUAUMmESMqYB1M+vx74QhjYasBU4g0TSsczQbJR/Vl7AhpbAgkFqlEaFCWk
+         TyvKFyS2BzBKcsVbqzU35vHeo5d/0hTg5Ndc2quFAZ7vCzB33woGlFow9HHZMefTp942
+         /E+DRSPOILHCBToXwG7MtmUoarY8CmoSE5RrL4ifLgShuHdKOseH8vkzjj1+a0xTjatf
+         IawXWwZWsAvKqShNX68Ehh1KUdRtAEYmUclwZWKyYDe7zhhOGXLTzi6BXncqNdehkNHi
+         wrNw==
+X-Gm-Message-State: AOAM531uNifX/Bsm/6UsIkz/nCy+ppxtvLDP8zOBAF7H12To+g99fFqy
+        BDMtW+vX6CWybqOtqQnAucs7/w==
+X-Google-Smtp-Source: ABdhPJypGMO2Ed7IdFKaQRO9FolvH4ihNSVV3QakhuP+Wz6bn/ypKEJCBJHQBshWUbxfQ2Oh/Vy6BA==
+X-Received: by 2002:a62:b414:0:b029:317:52d:7fd5 with SMTP id h20-20020a62b4140000b0290317052d7fd5mr18445201pfn.30.1629440567069;
+        Thu, 19 Aug 2021 23:22:47 -0700 (PDT)
+Received: from google.com ([2401:fa00:1:10:549a:ad5a:e5bd:8c8a])
+        by smtp.gmail.com with ESMTPSA id x7sm5507625pfj.200.2021.08.19.23.22.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 23:22:46 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 14:22:43 +0800
+From:   Tzung-Bi Shih <tzungbi@google.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dillon Min <dillon.minfei@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 2/2] dt-bindings: sound: rt1015p: correct indentation
+Message-ID: <YR9KM5ubMr9JLLb5@google.com>
+References: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com>
+ <20210819101020.26368-2-krzysztof.kozlowski@canonical.com>
+ <CAL_JsqK1dhwSKbmCbuaWtBWQH0e-+rdJaWkzfx5b_5vX0toAjg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5i0xmhu1y.qgWK4eyjH/CY0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqK1dhwSKbmCbuaWtBWQH0e-+rdJaWkzfx5b_5vX0toAjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5i0xmhu1y.qgWK4eyjH/CY0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the scsi tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
-
-drivers/scsi/Makefile:197: FORCE prerequisite is missing
-
-Exposed by commit
-
-  0fc7db58e2a6 ("kbuild: warn if FORCE is missing for if_changed(_dep,_rule=
-) and filechk")
-
-I don't know why this warning only appeared after the merge of the scsi
-tree, since the offending line has been in this Makefile since 2017
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5i0xmhu1y.qgWK4eyjH/CY0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEfSFUACgkQAVBC80lX
-0GwG0gf/ezRJc8wXjFxP2tDXtSw1UYYp6e7gTcQAh2oNUz7oE7F3qelfa2g4OAPD
-VfRfCgOrvrCj9ELM+VO/vOsk8uQsGRLaCQljoGLv3L57E8Zs8BtDOT5P142UVkWD
-ICG0JntG+wpvf06yaLEtprbWLtnFRiw6VUXP4krnfXQIb9iKSW2wgLzyNGiuzgGp
-7ctkjmnCRqDtqarCERNoNanSoTzaN3BQKG/U1skXPqe7zff5cfUTSSszOPhHcn/G
-wo+cVxYdSbHPybl4Twb6YIbfMIypvX6GHcKifLaEe0TXdnZhrDYU57sJIiXIoCb6
-e4feueByIJiiByM6bQc7vjIRTRmRHg==
-=BH5P
------END PGP SIGNATURE-----
-
---Sig_/5i0xmhu1y.qgWK4eyjH/CY0--
+On Thu, Aug 19, 2021 at 04:52:38PM -0500, Rob Herring wrote:
+> On Thu, Aug 19, 2021 at 5:12 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+> >
+> > Use common enum instead of oneOf and correct indentation warning:
+> >   realtek,rt1015p.yaml:18:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Tzung-Bi Shih <tzungbi@google.com>
