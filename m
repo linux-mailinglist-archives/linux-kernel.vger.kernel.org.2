@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636B23F2706
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81753F2705
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238581AbhHTGpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
+        id S238571AbhHTGpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238579AbhHTGpW (ORCPT
+        with ESMTP id S238535AbhHTGpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:45:22 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91785C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:44:45 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id n18so8202228pgm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:44:45 -0700 (PDT)
+        Fri, 20 Aug 2021 02:45:11 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B127C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:44:34 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id t35so11914816oiw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:44:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KE1zb6m8muvukw7sccIpaWu9LaRU18Aa0FS6/xMdGNo=;
-        b=bbyBO+VBSqjFPmChF/PUQMrXZ+tNKSnjEZo+/rf8AwVRMwGy+TnHXfIleNPM9rLe1L
-         qqL0MRTutOdwQKxRjGe0pA7A8m9Pe+1yq+jaJ12cF7IcBZUeKN32RNYQQigaerpdw2Nr
-         q3xsbrn5vY7IKwGvweMK13Z1KF+p+gNta/GxYEeptWPoATQQZXAwl6Ku+uxn18nD1jFR
-         IzzMwqifQS+riB7eTXIQQRCbSDGcI538TgQS5qyXM6HeGNKXSEwWcfqjacJIs+n155VV
-         rw5kONuOd52RX6RedS9Sb/ncVSYJY0/mmvLOfNDGp+VnrXypKn8xYF/MSauNNI5uqpgq
-         DcBQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=f61uoSIm/tKTfSvriwergj8TTbSumrt6o+1ACHw5Z8o=;
+        b=JAZbuypKzGBgAJ+s2a7SVVACgDfiYPGJPeWiGaW2Z9Y8UtzbDBXPA4CnlTRJaskouX
+         dBY0xaVGfxtWwSvWsKF7kRnan2oWGa3JHlO9DywARJqkEMnm9xVkrWxRHOb/toRlT8il
+         06JeUuzQPun/WhGSL0A18glSri1g8TVtUQusY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KE1zb6m8muvukw7sccIpaWu9LaRU18Aa0FS6/xMdGNo=;
-        b=Z017cWcpHDdUJ00pzsu3M2Zqcj0NAdv8DH1KGQRPg8edie7yOCgaxfjKedQnSNQZGU
-         GFCn0Y3yaIrSNnCPhDY8H05qsjAoKfMlSVxgvrtrz14KQddwJKpjxqLzh2vUWf/uBleP
-         Cpz8td2eM268FMtAmPoZHp/NAH8nsaknDd+ABK2GfwT65IIbBPCMlkNQ/pGhd80kYNIq
-         JBaN5evaFDDjiL4346WQ1A2KS1yIBhNPe5XZnRHGpIAuqYUfEkKehP4iCTd4D6FyTodt
-         pDpXg0ULcAZNmzH1Kkuwj/fiqdSVnCC1nJSGf2UZ41JLTeBdHQPm8+OIHiQdvNyi/TNX
-         AhMw==
-X-Gm-Message-State: AOAM532Yx6QHCfi0OSmmcI8C/QjCL6UFvMx3MThSpYTrIpYIsbg4ykPR
-        b+J8Rg9hkeEniMy/RMxahaAfe4ylrxDPVVl32SZXHw==
-X-Google-Smtp-Source: ABdhPJzjCKemjp4rN7FqnClXF7A2/Ui/MfIaVs0es2mwWAIM3ZFyKAYmEpJmgTHfdKFuNosU+oid82ft5IgdaYv0asE=
-X-Received: by 2002:a63:f804:: with SMTP id n4mr17132101pgh.341.1629441884963;
- Thu, 19 Aug 2021 23:44:44 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=f61uoSIm/tKTfSvriwergj8TTbSumrt6o+1ACHw5Z8o=;
+        b=tEcFkJnv5+utcCW8bnOMA3Az2Tq1KAJDNQmjrHu9UOdEoqEPbuhOEmILVMXQgkyLbO
+         N1mTPPlGxSym5Hk6MEzb5RFdEkrpD6jIIQ2xzkiIHddv7/XWablkgvY1Lq+pVOKMp7yM
+         v+SL/5RSc3M/YnffBUN2GMKtHe1uqqYKPVr5Mbih5SeX8Oa5WciTQmiFpdN/vuyWOS3m
+         C/of8RKAUoGKAg8HyG9crI/CJeCkxb/pm3BNu3ZGSc9ywlBzJ92CffGhW2sLzQx/mQQ1
+         w5pOJN6QiBO3fXQR3vqoH2+f2tEAe7ec87D4I9E4hE7ppWpdOcxMDufpgssNFyzGoHlX
+         /zAA==
+X-Gm-Message-State: AOAM531YaRY8Xhua3CgOwTrs03bh9oEBbQLedZn2mAuq5+YY/IYUPvcd
+        Xrzva1SJ4DCTzUQf5RJlkJ94sT+KF11dLjqCyvZdtA==
+X-Google-Smtp-Source: ABdhPJwl1Sl50w9I94R6TeJfhICfeuXMKa1clo3MNi5WUzWhOgL0bqnI7l6wd9okLAKUi5kPPqMJKK2+hP9OhD2+p7k=
+X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr1975912oib.166.1629441873561;
+ Thu, 19 Aug 2021 23:44:33 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 19 Aug 2021 23:44:32 -0700
 MIME-Version: 1.0
-References: <20210814052519.86679-1-songmuchun@bytedance.com>
- <20210814052519.86679-2-songmuchun@bytedance.com> <YRx4EM0MWSjtutPD@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YRx4EM0MWSjtutPD@carbon.dhcp.thefacebook.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 20 Aug 2021 14:44:08 +0800
-Message-ID: <CAMZfGtWfEMvDekoZEktgOfLvLG1i5m=J+XWj5=W3=W+D9-xPgg@mail.gmail.com>
-Subject: Re: [PATCH v1 01/12] mm: memcontrol: prepare objcg API for non-kmem usage
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, "Singh, Balbir" <bsingharora@gmail.com>,
-        Yang Shi <shy828301@gmail.com>, Alex Shi <alexs@kernel.org>,
-        Muchun Song <smuchun@gmail.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ea2380bd-734d-a835-05f0-db9d3dbcfe38@codeaurora.org>
+References: <1625576413-12324-1-git-send-email-sanm@codeaurora.org>
+ <1625576413-12324-3-git-send-email-sanm@codeaurora.org> <CAE-0n52d7UOWQ+hohoyV81+aB1RnNPUEnjPCtr5=nH+a=WK35Q@mail.gmail.com>
+ <ea2380bd-734d-a835-05f0-db9d3dbcfe38@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 19 Aug 2021 23:44:32 -0700
+Message-ID: <CAE-0n53gsF-U4YwZyVyjXm2_Fw6zc-FObzx1ATC4X_KXSRsJVA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add USB related nodes
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 11:01 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Sat, Aug 14, 2021 at 01:25:08PM +0800, Muchun Song wrote:
-> > Pagecache pages are charged at the allocation time and holding a
-> > reference to the original memory cgroup until being reclaimed.
-> > Depending on the memory pressure, specific patterns of the page
-> > sharing between different cgroups and the cgroup creation and
-> > destruction rates, a large number of dying memory cgroups can be
-> > pinned by pagecache pages. It makes the page reclaim less efficient
-> > and wastes memory.
+Quoting Sandeep Maheswaram (2021-08-19 22:34:14)
+> On 8/18/2021 1:28 AM, Stephen Boyd wrote:
+> > Quoting Sandeep Maheswaram (2021-07-06 06:00:12)
+> >> Add nodes for DWC3 USB controller, QMP and HS USB PHYs in sc7280 SOC.
+> >>
+> >> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> >> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> >> ---
+> >> Changed qmp usb phy to usb dp phy combo node as per Stephen's comments=
+.
+> >> Changed dwc to usb and added SC7280 compatible as per Bjorn's comments=
+.
+> >>
+> >>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 164 +++++++++++++++++++++++++=
+++++++++++
+> >>   1 file changed, 164 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dt=
+s/qcom/sc7280.dtsi
+> >> index a8c274a..cd6908f 100644
+> >> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> >> @@ -1035,6 +1035,125 @@
+> >>                          };
+> >>                  };
+> >>
+> > [...]
+> >> +
+> >> +               usb_2: usb@8cf8800 {
+> >> +                       compatible =3D "qcom,sc7280-dwc3", "qcom,dwc3"=
+;
+> >> +                       reg =3D <0 0x08cf8800 0 0x400>;
+> >> +                       status =3D "disabled";
+> >> +                       #address-cells =3D <2>;
+> >> +                       #size-cells =3D <2>;
+> >> +                       ranges;
+> >> +                       dma-ranges;
+> >> +
+> >> +                       clocks =3D <&gcc GCC_CFG_NOC_USB3_SEC_AXI_CLK>=
+,
+> >> +                                <&gcc GCC_USB30_SEC_MASTER_CLK>,
+> >> +                                <&gcc GCC_AGGRE_USB3_SEC_AXI_CLK>,
+> >> +                                <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+> >> +                                <&gcc GCC_USB30_SEC_SLEEP_CLK>;
+> >> +                       clock-names =3D "cfg_noc", "core", "iface","mo=
+ck_utmi",
+> >> +                                     "sleep";
+> >> +
+> >> +                       assigned-clocks =3D <&gcc GCC_USB30_SEC_MOCK_U=
+TMI_CLK>,
+> >> +                                         <&gcc GCC_USB30_SEC_MASTER_C=
+LK>;
+> >> +                       assigned-clock-rates =3D <19200000>, <20000000=
+0>;
+> >> +
+> >> +                       interrupts-extended =3D <&intc GIC_SPI 240 IRQ=
+_TYPE_LEVEL_HIGH>,
+> >> +                                    <&pdc 13 IRQ_TYPE_EDGE_RISING>,
+> >> +                                    <&pdc 12 IRQ_TYPE_EDGE_RISING>;
+> > I'm seeing this cause a warning at boot
 > >
-> > We can convert LRU pages and most other raw memcg pins to the objcg
-> > direction to fix this problem, and then the page->memcg will always
-> > point to an object cgroup pointer.
-> >
-> > Therefore, the infrastructure of objcg no longer only serves
-> > CONFIG_MEMCG_KMEM. In this patch, we move the infrastructure of the
-> > objcg out of the scope of the CONFIG_MEMCG_KMEM so that the LRU pages
-> > can reuse it to charge pages.
-> >
-> > We know that the LRU pages are not accounted at the root level. But
-> > the page->memcg_data points to the root_mem_cgroup. So the
-> > page->memcg_data of the LRU pages always points to a valid pointer.
-> > But the root_mem_cgroup dose not have an object cgroup. If we use
-> > obj_cgroup APIs to charge the LRU pages, we should set the
-> > page->memcg_data to a root object cgroup. So we also allocate an
-> > object cgroup for the root_mem_cgroup.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> I like the "move objcg stuff to memcg/css level" part.
->
-> I'm less convinced about making byte-sized charging kmem-specific
-> (both naming and #ifdef CONFIG_MEMCG_KMEM). Do we really win a lot?
->
-> I understand why we might wanna compile out some checks from the
-> hot allocation path, but few bytes in struct objcg will not make a big
-> difference, as well as few lines of code in cgroup creation/removal paths.
->
-> Also it might be useful for byte-sized accounting outside kmem, e.g. zswap.
-> So, I'd remove this dependency and rename to something like
-> obj_cgroup_release_bytes().
+> > [    4.724756] irq: type mismatch, failed to map hwirq-12 for
+> > interrupt-controller@b220000!
+> > [    4.733401] irq: type mismatch, failed to map hwirq-13 for
+> > interrupt-controller@b220000!
+> I should be using=C2=A0 IRQ_TYPE_LEVEL_HIGH. Will correct in next version=
+.
 
-Got it. I'll do that in the next version. Thanks for your suggestions.
-
->
-> In the long run we might wanna to eliminate CONFIG_MEMCG_KMEM completely,
-> so let's at least not add new dependencies.
-
-Got it.
-
->
-> Thanks!
+Ok. Please send a patch to fix it as this is already staged to be merged
+in the next merge window.
