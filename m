@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375EA3F2522
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C603F2526
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238044AbhHTDIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S238073AbhHTDI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237843AbhHTDIu (ORCPT
+        with ESMTP id S237933AbhHTDI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:08:50 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFBAC061575;
-        Thu, 19 Aug 2021 20:08:12 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id e3so217064qth.9;
-        Thu, 19 Aug 2021 20:08:12 -0700 (PDT)
+        Thu, 19 Aug 2021 23:08:57 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9787C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:08:20 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so50214pjx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:08:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+JsfzGWsf8V+ktqlcUdosLl0jyg72rZ/bLzBNSn/CbY=;
-        b=CSi3aZn+1xEQ187JGQXcvYJfOUOAZe8KY6AoUqHz0JK6jBOMDPe+I0xu4Gen0wIESD
-         QFWRaof6exnZDB4m616JzDftuRMnUWe2pYx4BdPg/zmJG1A/yMJXIBKBK4hB7kzvAQEf
-         bRXLYAzy1cr9xB8ZXqHumy4/h7U2dWelbZR21tjrKcwogKOAG3fNfznXkRqDNY6dCM5I
-         TRZNtQC6OJlSV7k8Bcsf0gNFaw33/Gu+QbCacQkhN0vdP5GdC0spwk2bnLy00zuMKIOp
-         kcDRBfRanAn5mNIYQWttpA+B2Y9G/PcTsKkk/wsYjqvAtGephUdo0HfZY6RlwFh+9J6a
-         em6w==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=th+3o8zziVHjvxzUP987Ww05j4TcgD1JnSG4koxybv0=;
+        b=q6wVy4gsAMeGwkQk1GUOlCv3RL83jjFdSVgzVK6FKAVlTxnluo0nxdXMv090oS+6v5
+         g/bsuD3TnVs6GjejENx6Ypc13QJi/TkgLHU9+HcG4DHRHbsowvEEqntPZXYalrUu+j31
+         syDAnCHyvx3HduCFB+iILfPCIv+IleAOlCNuCLhbaR1BW+2UQ0tOrUKFxEdC+UO92K1/
+         4QLTyL7EAEUhfv9vEPkShzVSM6rjyvX4GxezOP/i3Yoj+vduXuzI5RGoQbgTNemm6050
+         3oyP1/6v7jPKCnfIP9AKLiBGwOOTQxTStdJIfOldCpt5V13LoApTXFCa0YTEXgvKOvuY
+         g4MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+JsfzGWsf8V+ktqlcUdosLl0jyg72rZ/bLzBNSn/CbY=;
-        b=qpvG12oxQtECJJid7uq+0gVKWnCmFJJrsis6DkNUTzbp1ywCsJ384mosYoU6ZHBW4y
-         k0LY0Mz6KQ7UFAjIjT6O3d2getPqSANuLd30EPWQgum7RRbGp9tgD71JbdKTQvIMVUMV
-         9ZsgSaz1s5ZPuYpyRBb9UoUl4pghKp6r6LVvvmzJc2XCttKKWXcorB8rQKMbBoA0gACe
-         H39ZYepZb1WTZaLvvrbrAQWT7TV1VM/c1TWTpVJQ3m7uU9WxtParGCNVhXxjxzrLoY0h
-         NdtGkIfuWjMDqtxF0xlcAbtjUPIC0QccdmjtBJM9aDjJeeHG8hl4CAIdXP+6bErOOIkt
-         OsPg==
-X-Gm-Message-State: AOAM53267p2B+b+vHCQicejeMlds7CG/Qps8nOwSqhDolomE5fhJQ3bw
-        OE/9EVJjNlMOmvM40JxrTOw=
-X-Google-Smtp-Source: ABdhPJwRse5SxrdsSOPBCsvyCeEp9n7dbnY4O4JoOjyzFrOaIEUP1l+2lmMuUGH61ox/Y+OORfzQlw==
-X-Received: by 2002:ac8:1106:: with SMTP id c6mr15974365qtj.20.1629428892242;
-        Thu, 19 Aug 2021 20:08:12 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id u6sm2551729qkp.49.2021.08.19.20.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:08:11 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>
-Cc:     Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] scsi: megaraid: fix Coccinelle warnings
-Date:   Thu, 19 Aug 2021 20:08:05 -0700
-Message-Id: <20210820030805.12383-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=th+3o8zziVHjvxzUP987Ww05j4TcgD1JnSG4koxybv0=;
+        b=ot7AuhzDLQ2UASQR/Wk7kkOpOwy6m6YiztX83lE8gqq6wB48rng7BiKE6mtq/vOlf0
+         9/I4NLpV1l4xxRyw+UoDo+Ug29AV7hWSaDueks1uW4swgtuMDCkc56i9BmZhEjDhJJOq
+         BfVadyZsTG8M1xFbRALeb6tEICF8aB8h17gUC2T8nwdUuyx6o4HcQVuK2ixS9Mmsr+aI
+         htB2NhOoawhENF9pGtrRDK8TQiKV3gz4jc9GKWqX/sjWALdn0JfEW7Xe6dE7BRvRrigf
+         yRizbaYZX3nLcH+WlLRu/A2Hq1EglRmXtxg6tkLA40857YvdhlmchKQNtUhiUMAR9q0e
+         bdDA==
+X-Gm-Message-State: AOAM532X0vOv/e8gek5T/VLC1b40wZMsJeQlGRc083Kht2qaasrtfsyH
+        K+z2LKgHuoGhwKh4reIa917L+gPO9BV7NGFwEA2HDw==
+X-Google-Smtp-Source: ABdhPJzbHC0+k8uuKZo5a6LFCnA40ZeG97Zg4M+zrZCKnhkWtnjKBCnLq4cagjtK6xI7c9K//8I6Ath0AByLrXcFmCU=
+X-Received: by 2002:a17:902:e54e:b0:12d:cca1:2c1f with SMTP id
+ n14-20020a170902e54e00b0012dcca12c1fmr14381234plf.79.1629428900343; Thu, 19
+ Aug 2021 20:08:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com> <20210816060359.1442450-9-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210816060359.1442450-9-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 19 Aug 2021 20:08:09 -0700
+Message-ID: <CAPcyv4gsak1B3Y0xFvNn+oFBCM2DonsyHQj=ASE2_95n6yfpWQ@mail.gmail.com>
+Subject: Re: [PATCH v7 8/8] fs/xfs: Add dax dedupe support
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
+On Sun, Aug 15, 2021 at 11:05 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> Introduce xfs_mmaplock_two_inodes_and_break_dax_layout() for dax files
+> who are going to be deduped.  After that, call compare range function
+> only when files are both DAX or not.
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> ---
+>  fs/xfs/xfs_file.c    |  2 +-
+>  fs/xfs/xfs_inode.c   | 57 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/xfs/xfs_inode.h   |  1 +
+>  fs/xfs/xfs_reflink.c |  4 ++--
+>  4 files changed, 61 insertions(+), 3 deletions(-)
+[..]
+> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+> index 13e461cf2055..86c737c2baeb 100644
+> --- a/fs/xfs/xfs_reflink.c
+> +++ b/fs/xfs/xfs_reflink.c
+> @@ -1327,8 +1327,8 @@ xfs_reflink_remap_prep(
+>         if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
+>                 goto out_unlock;
+>
+> -       /* Don't share DAX file data for now. */
+> -       if (IS_DAX(inode_in) || IS_DAX(inode_out))
+> +       /* Don't share DAX file data with non-DAX file. */
+> +       if (IS_DAX(inode_in) != IS_DAX(inode_out))
+>                 goto out_unlock;
 
-WARNING !A || A && B is equivalent to !A || B
-
-This issue was detected with the help of Coccinelle.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/scsi/megaraid/megaraid_sas_base.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index e4298bf..17c87ac 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -8773,8 +8773,7 @@ int megasas_update_device_list(struct megasas_instance *instance,
- 
- 		if (event_type & SCAN_VD_CHANNEL) {
- 			if (!instance->requestorId ||
--			    (instance->requestorId &&
--			     megasas_get_ld_vf_affiliation(instance, 0))) {
-+			megasas_get_ld_vf_affiliation(instance, 0)) {
- 				dcmd_ret = megasas_ld_list_query(instance,
- 						MR_LD_QUERY_TYPE_EXPOSED_TO_HOST);
- 				if (dcmd_ret != DCMD_SUCCESS)
--- 
-1.8.3.1
-
-
+What if you have 2 DAX inodes sharing data and one is flipped to
+non-DAX? Does that operation need to first go undo all sharing?
