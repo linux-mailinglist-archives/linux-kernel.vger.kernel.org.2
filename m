@@ -2,199 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9933F29F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F4C3F29FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238799AbhHTKQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232572AbhHTKQY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:16:24 -0400
-Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 088E7C061575;
-        Fri, 20 Aug 2021 03:15:44 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by ha0.nfschina.com (Postfix) with ESMTP id A7D22AE0DB1;
-        Fri, 20 Aug 2021 18:15:55 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from ha0.nfschina.com ([127.0.0.1])
-        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id lDbXKbdjmBrI; Fri, 20 Aug 2021 18:15:34 +0800 (CST)
-Received: from [172.30.18.174] (unknown [180.167.10.98])
-        (Authenticated sender: liqiong@nfschina.com)
-        by ha0.nfschina.com (Postfix) with ESMTPA id 2638CAE0DD4;
-        Fri, 20 Aug 2021 18:15:34 +0800 (CST)
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-To:     THOBY Simon <Simon.THOBY@viveris.fr>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
-From:   =?UTF-8?B?5p2O5Yqb55C8?= <liqiong@nfschina.com>
-Message-ID: <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
-Date:   Fri, 20 Aug 2021 18:15:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        id S238956AbhHTKQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:16:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232572AbhHTKQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:16:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB9961106;
+        Fri, 20 Aug 2021 10:15:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629454548;
+        bh=CBrORSLHaWU8FbMU4GyCeZ7OKQ4Gi+xXP5M2F5cMJBA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=oGq6jA8ZvTR/6qHrzuvBW/jjqy/T85Jh0XyrcY8Z2DVRkuixp/c1UCv6DyejIOw9j
+         gdoxZAf4491gutFClmZhlStKun0T04dHyfSWEvWfNEbLje5T9PYyLa4yVSmzvvuv+/
+         OaLyz9z/QJeP39Q1J/2+Y4JLEQsZdakpx83pZxWfmu14HvwpSP7l4kc/pFJ9XMt/5w
+         avIp5Gf5eMJj7YIYP4oS/ikVoq4/8MvYpr3L2mqLDEORAlwXBc477yzAESnTN+ON6R
+         8SlwbevPGkNXC6tL8WqTJ331bznwgIVjKWFrqfkCvZWyO5zYKVOvMXyxYoILPU8Ufq
+         uSv5og8HQS6Fg==
+Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: change fiemap print out format
+To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+References: <20210808215234.1939266-1-daeho43@gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <5cce41d6-d59a-0596-6d14-e313aa91c78b@kernel.org>
+Date:   Fri, 20 Aug 2021 18:15:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210808215234.1939266-1-daeho43@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Simon:
+On 2021/8/9 5:52, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Given fiemap way to print out extents in the kernel, we can correctly
+> print the layout of each file in a unit of extent, not block. So, I
+> changed fiemap print out way like below.
+> 
+> Fiemap: offset = 0 len = 60
+> 	logical addr.    physical addr.   length           flags
+> 0	0000000000000000 00000020032df000 0000000000004000 00001008
+> 1	0000000000004000 00000020032e0000 0000000000004000 00001008
+> 2	0000000000008000 00000020032e1000 0000000000004000 00001008
+> 3	000000000000c000 00000020032e2000 0000000000004000 00001008
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+>   tools/f2fs_io/f2fs_io.c | 53 ++++++++++++++++++++++++++---------------
+>   1 file changed, 34 insertions(+), 19 deletions(-)
+> 
+> diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
+> index 42dbd60..0d2948e 100644
+> --- a/tools/f2fs_io/f2fs_io.c
+> +++ b/tools/f2fs_io/f2fs_io.c
+> @@ -731,11 +731,11 @@ static void do_randread(int argc, char **argv, const struct cmd_desc *cmd)
+>   #if defined(HAVE_LINUX_FIEMAP_H) && defined(HAVE_LINUX_FS_H)
+>   static void do_fiemap(int argc, char **argv, const struct cmd_desc *cmd)
+>   {
+> -	unsigned count, i;
+> -	int fd;
+> -	__u64 phy_addr;
+> -	struct fiemap *fm = xmalloc(sizeof(struct fiemap) +
+> -			sizeof(struct fiemap_extent));
+> +	unsigned int i;
+> +	int fd, extents_mem_size;
+> +	u64 start, length;
+> +	u32 mapped_extents;
+> +	struct fiemap *fm = xmalloc(sizeof(struct fiemap));
+>   
+>   	if (argc != 4) {
+>   		fputs("Excess arguments\n\n", stderr);
+> @@ -743,26 +743,41 @@ static void do_fiemap(int argc, char **argv, const struct cmd_desc *cmd)
+>   		exit(1);
+>   	}
+>   
+> -	fm->fm_start = atoi(argv[1]) * F2FS_BLKSIZE;
+> -	fm->fm_length = F2FS_BLKSIZE;
+> -	fm->fm_extent_count = 1;
+> -	count = atoi(argv[2]);
+> +	memset(fm, 0, sizeof(struct fiemap));
+> +	start = atoi(argv[1]) * F2FS_BLKSIZE;
+> +	length = atoi(argv[2]) * F2FS_BLKSIZE;
+> +	fm->fm_start = start;
+> +	fm->fm_length = length;
+>   
+>   	fd = xopen(argv[3], O_RDONLY | O_LARGEFILE, 0);
+>   
+> -	printf("Fiemap: offset = %08"PRIx64" len = %d\n",
+> -				(u64)fm->fm_start / F2FS_BLKSIZE, count);
+> -	for (i = 0; i < count; i++) {
+> -		if (ioctl(fd, FS_IOC_FIEMAP, fm) < 0)
+> -			die_errno("FIEMAP failed");
+> +	printf("Fiemap: offset = %"PRIu64" len = %"PRIu64"\n",
+> +				start / F2FS_BLKSIZE, length / F2FS_BLKSIZE);
+> +	if (ioctl(fd, FS_IOC_FIEMAP, fm) < 0)
+> +		die_errno("FIEMAP failed");
+> +
+> +	mapped_extents = fm->fm_mapped_extents;
+> +	extents_mem_size = sizeof(struct fiemap_extent) * mapped_extents;
+> +	free(fm);
+> +	fm = xmalloc(sizeof(struct fiemap) + extents_mem_size);
+>   
+> -		phy_addr = fm->fm_extents[0].fe_physical / F2FS_BLKSIZE;
+> -		printf("%llu: %llu\n", fm->fm_start / F2FS_BLKSIZE, phy_addr);
+> +	memset(fm, 0, sizeof(struct fiemap));
+> +	memset(fm->fm_extents, 0, extents_mem_size);
 
-This solution is better then rwsem, a temp "ima_rules" variable should 
-can fix. I also have a another idea, with a little trick, default list
-can traverse to the new list, so we don't need care about the read side. 
+Is that equals to memset(fm, 0, sizeof(struct fiemap) + extents_mem_size);?
 
-here is the patch:
-
-@@ -918,8 +918,21 @@ void ima_update_policy(void)
-        list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
-
-        if (ima_rules != policy) {
-+               struct list_head *prev_rules = ima_rules;
-+               struct list_head *first = ima_rules->next;
-                ima_policy_flag = 0;
-+
-+               /*
-+                * Make the previous list can traverse to new list,
-+                * that is tricky, or there is a deadly loop whithin
-+                * "list_for_each_entry_rcu(entry, ima_rules, list)"
-+                *
-+                * After update "ima_rules", restore the previous list.
-+                */
-+               prev_rules->next = policy->next;
-                ima_rules = policy;
-+               syncchronize_rcu();
-+               prev_rules->next = first;
-
-
-The side effect is the "ima_default_rules" will be changed a little while.
-But it make sense, the process should be checked again by the new policy.
-
-This patch has been tested, if will do, I can resubmit this patch.
-
-How about this ?
-
-----------
-Regards,
-liqiong
-
-在 2021年08月19日 20:58, THOBY Simon 写道:
-> Hi Liqiong,
->
-> On 8/19/21 12:15 PM, liqiong wrote:
->> When "ima_match_policy" is looping while "ima_update_policy" changs
->> the variable "ima_rules", then "ima_match_policy" may can't exit loop,
->> and kernel keeps printf "rcu_sched detected stall on CPU ...".
->>
->> It occurs at boot phase, systemd-services are being checked within
->> "ima_match_policy,at the same time, the variable "ima_rules"
->> is changed by a service.
-> First off, thanks for finding and identifying this nasty bug.
->
->> Signed-off-by: liqiong <liqiong@nfschina.com>
->> ---
->>  security/integrity/ima/ima_policy.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
->> index fd5d46e511f1..7e71e643457c 100644
->> --- a/security/integrity/ima/ima_policy.c
->> +++ b/security/integrity/ima/ima_policy.c
->> @@ -217,6 +217,7 @@ static LIST_HEAD(ima_default_rules);
->>  static LIST_HEAD(ima_policy_rules);
->>  static LIST_HEAD(ima_temp_rules);
->>  static struct list_head *ima_rules = &ima_default_rules;
->> +static DECLARE_RWSEM(ima_rules_sem);
->>  
->>  static int ima_policy __initdata;
->>  
->> @@ -666,6 +667,7 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
->>  	if (template_desc && !*template_desc)
->>  		*template_desc = ima_template_desc_current();
->>  
->> +	down_read(&ima_rules_sem);
->>  	rcu_read_lock();
->>  	list_for_each_entry_rcu(entry, ima_rules, list) {
->>  
->> @@ -702,6 +704,7 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
->>  			break;
->>  	}
->>  	rcu_read_unlock();
->> +	up_read(&ima_rules_sem);
->>  
->>  	return action;
->>  }
->> @@ -919,7 +922,9 @@ void ima_update_policy(void)
->>  
->>  	if (ima_rules != policy) {
->>  		ima_policy_flag = 0;
->> +		down_write(&ima_rules_sem);
->>  		ima_rules = policy;
->> +		up_write(&ima_rules_sem);
->>  
->>  		/*
->>  		 * IMA architecture specific policy rules are specified
->>
-> Rather than introducing a new semaphore, I wonder if you couldn't have done something
-> like the following?
->
-> @@ -674,13 +674,15 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
->                      const char *func_data, unsigned int *allowed_algos)
->  {
->         struct ima_rule_entry *entry;
-> +       struct list_head *ima_rules_tmp;
->         int action = 0, actmask = flags | (flags << 1);
->
->         if (template_desc && !*template_desc)
->                 *template_desc = ima_template_desc_current();
->
->         rcu_read_lock();
-> -       list_for_each_entry_rcu(entry, ima_rules, list) {
-> +       ima_rules_tmp = rcu_dereference(ima_rules);
-> +       list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
->
->                 if (!(entry->action & actmask))
->                         continue;
-> @@ -970,7 +972,7 @@ void ima_update_policy(void)
->
->         if (ima_rules != policy) {
->                 ima_policy_flag = 0;
-> -               ima_rules = policy;
-> +               rcu_assign_pointer(ima_rules, policy);
->
->                 /*
->                  * IMA architecture specific policy rules are specified
->
->
-> Also, ima_match_policy is not the only place where we iterate over ima_rules, maybe
-> this change should be applied to every function that perform a call the like of
-> "list_for_each_entry_rcu(entry, ima_rules_tmp, list)" ?
->
-> All that being said, your change is quite small and I have no objection to it,
-> I was just wondering whether we could achieve the same effect without locks
-> with RCU.
->
-> What do you think?
->
-> Thanks,
-> Simon
-
--- 
-李力琼<liqiong@nfschina.com>  13524287433
-上海市浦东新区海科路99号中科院上海高等研究院3号楼3楼
-
+> +	fm->fm_start = start;
+> +	fm->fm_length = length;
+> +	fm->fm_extent_count = mapped_extents;
+>   
+> -		if (fm->fm_extents[0].fe_flags & FIEMAP_EXTENT_LAST)
+> -			break;
+> +	if (ioctl(fd, FS_IOC_FIEMAP, fm) < 0)
+> +		die_errno("FIEMAP failed");
+>   
+> -		fm->fm_start += F2FS_BLKSIZE;
+> +	printf("\t%-17s%-17s%-17s%s\n", "logical addr.", "physical addr.", "length", "flags");
+> +	for (i = 0; i < fm->fm_mapped_extents; i++) {
+> +		printf("%d\t%.16llx %.16llx %.16llx %.8x\n", i,
+> +		    fm->fm_extents[i].fe_logical, fm->fm_extents[i].fe_physical,
+> +		    fm->fm_extents[i].fe_length, fm->fm_extents[i].fe_flags);
+> +
+> +		if (fm->fm_extents[i].fe_flags & FIEMAP_EXTENT_LAST)
+> +			break;
+>   	}
+>   	printf("\n");
+>   	free(fm);
+> 
