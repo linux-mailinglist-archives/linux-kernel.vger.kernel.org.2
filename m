@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558323F31C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4032B3F31D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhHTQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhHTQyz (ORCPT
+        id S232191AbhHTQ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:59:53 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43436 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230048AbhHTQ7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:54:55 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03900C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:54:18 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id y23so9746421pgi.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x/jv/65/o/pr3Arrh3DCsUW+kuq3VQXikqXf2iTWhR0=;
-        b=wmKOKlHKACOKqcXgGfzOyuS+T8nTPa0UTHRKzXqyEB7n1oMhL9ybIy4re4kL145HF1
-         bMtrau52pfw/I1Kc5cdxzuDtd0Et/jJkS5US+hv/mTQyQM7TcCklar0bSyyEBZaFQivs
-         wSYZ7huQEIGoNty7O9v1HlhEnIt+psE5sGUDc9it5+LPZ7q/ulbelZHxwf3w1Cir636k
-         IGP2ByU9d0ypCXvfCnbVJxTWgVNrKwxvWAw8s1imwihI5Uzzw1LN35likbg8w9wlGZNJ
-         vEpJZYYjxE1je5/O/8C/dWmlALP8frPW0a+yHWctwSdYLH99P7ISs6wJ2ZSV9hwtj/V7
-         R6+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x/jv/65/o/pr3Arrh3DCsUW+kuq3VQXikqXf2iTWhR0=;
-        b=LKqxHBZrGMprsR+v/8+zDW/OuHLSvprUZaPhB4QcsAs5MOT2cwx9ec1XtkM5GAE/ab
-         fnqRUUu4pFwIX5hkGiS6QLAG++uNX8r+VsT58l8UxNwMTL0rWbROzCp9aHJeGF4zFLBZ
-         VLTyrZMNRIi+u/1WDaTWwtF88j98rpf1iuegkN4fxQUCDc+kCCOWHF+BzPzn4Azue0ZH
-         pROUjLxMaVQaXbXmiCvl8T0D9S5Xua2AbFLmgjjwATaQu6Tfp6sUyhwWV/gdSvK7uuDk
-         eLnBikYZhjwXP2mAdqMoDuFuDTOa7E2l7FKlyi4+EOwX6tSqkG+RoepH8aM2K6RyYqhW
-         l+SQ==
-X-Gm-Message-State: AOAM53224dSq+C0RY1eSK1swmE61uU/KQ6TV7HvL8cFs9BL/ou1SKRmN
-        r7PCaZH5nRl/io2aIpdml/TVQ16ItREyU3uJjUVkpA==
-X-Google-Smtp-Source: ABdhPJxOaSnUuSDnQi5DeVTlIJ2tZRX4+NfWecFNtpOa2DU5Lh7Ot8DcjqxkMAwkp+e/mA/IvF4DoFjucZJd3KA/Wvo=
-X-Received: by 2002:a65:6642:: with SMTP id z2mr7510515pgv.240.1629478457626;
- Fri, 20 Aug 2021 09:54:17 -0700 (PDT)
+        Fri, 20 Aug 2021 12:59:52 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 869B91F4489C
+Received: by earth.universe (Postfix, from userid 1000)
+        id A945F3C0C98; Fri, 20 Aug 2021 18:59:11 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 18:59:11 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] power: supply: core: Fix parsing of battery
+ chemistry/technology
+Message-ID: <20210820165911.ecpgxfhxyyhemnwo@earth.universe>
+References: <20210819235111.25357-1-digetx@gmail.com>
+ <CACRpkda=hcw5dN8TfV01egb4_fzSi3kNOCz1UguYcKyQKDW9mA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com>
- <20210730100158.3117319-4-ruansy.fnst@fujitsu.com> <a5580cf5-9fcc-252d-5835-f199469516b0@oracle.com>
-In-Reply-To: <a5580cf5-9fcc-252d-5835-f199469516b0@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 20 Aug 2021 09:54:06 -0700
-Message-ID: <CAPcyv4hQvR+KND8F1zGoX=jBJQ6bXhLtmEAPVb=O7rDwzHniiQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND v6 3/9] mm: factor helpers for memory_failure_dev_pagemap
-To:     Jane Chu <jane.chu@oracle.com>
-Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, david <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3f4ojlolkkyg7fff"
+Content-Disposition: inline
+In-Reply-To: <CACRpkda=hcw5dN8TfV01egb4_fzSi3kNOCz1UguYcKyQKDW9mA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 6:01 PM Jane Chu <jane.chu@oracle.com> wrote:
->
->
-> On 7/30/2021 3:01 AM, Shiyang Ruan wrote:
-> > -     /*
-> > -      * Prevent the inode from being freed while we are interrogating
-> > -      * the address_space, typically this would be handled by
-> > -      * lock_page(), but dax pages do not use the page lock. This
-> > -      * also prevents changes to the mapping of this pfn until
-> > -      * poison signaling is complete.
-> > -      */
-> > -     cookie = dax_lock_page(page);
-> > -     if (!cookie)
-> > -             goto out;
-> > -
-> >       if (hwpoison_filter(page)) {
-> >               rc = 0;
-> > -             goto unlock;
-> > +             goto out;
-> >       }
->
-> why isn't dax_lock_page() needed for hwpoison_filter() check?
 
-Good catch. hwpoison_filter() is indeed consulting page->mapping->host
-which needs to be synchronized against inode lifetime.
+--3f4ojlolkkyg7fff
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Aug 20, 2021 at 03:41:56PM +0200, Linus Walleij wrote:
+> On Fri, Aug 20, 2021 at 1:51 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>=20
+> > The power_supply_get_battery_info() fails if device-chemistry property
+> > is missing in a device-tree because error variable is propagated to the
+> > final return of the function, fix it.
+> >
+> > Fixes: 4eef766b7d4d ("power: supply: core: Parse battery chemistry/tech=
+nology")
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>=20
+> Oops,
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Thanks, queued.
+
+-- Sebastian
+
+--3f4ojlolkkyg7fff
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmEf308ACgkQ2O7X88g7
++poS1Q//ZI+PmHqDuWeotKFoAKYjxxcTgqJeDe3MwFXGh15cdVXMjXxt4Hmh/UAS
+wRQVr8TkHSAeTpcpf0zuUxoXguqN8pdX0v5fiGe7ZY9Th1/EyY6V04R1uRYvRvIt
+jySe6Qvm+Lqd1NV2CyQ2pML4+uAClP42DLWlSYRwgVucSlHk+i2+uOCIb0sn5En9
+y4psP7+OpiNZIFbkeQZ0LF+mhRg9whkTP5NEmqCVnDeaeIEEpcsx24ymrmjOfxmX
+iIn+kbeYLhJU8RZKlph9tb2jGNKxhoaGybSLvitehs8d12WnyXPlrQ25Ue+FkRNV
+PFMP5s8q1dT90fAoEP8YDNf/tr4/Iy98PRYRuDtKSdbb0sm3oy3UiHc5fU8QBml4
+ky00Z3gtfGNQHoeNwepHNoqHaofRku2vnfuXJbArwX+j3glLqqFupaQ4NJ3YdQfO
+uz09yJfc2aFrC0VW/vmeJZa8JPkSeV7iype2Btl6NvhumXYd5Bn4ZkZWH2YDp363
+3eVRb8v/PMyI1alqQcPgdqk1Y1rzLaddBj1My1u+NIGOocnbEPEDdE1YQMiu7K0F
+a5IAFR32crLCqjAIsJLcsZ4ysUW++SYC168qsFl47RwPRJ/qM5Qu/+1rBJaEYv9A
+Siux44wn+5ZM6zJcPOY+v0dq7Vx11n7+R5GII51iM2zX7zHxzdg=
+=HlZL
+-----END PGP SIGNATURE-----
+
+--3f4ojlolkkyg7fff--
