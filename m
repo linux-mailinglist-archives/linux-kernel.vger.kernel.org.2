@@ -2,391 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A203F368D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8323F3697
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234220AbhHTWll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233828AbhHTWlj (ORCPT
+        id S240157AbhHTWmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:42:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40676 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231274AbhHTWmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:41:39 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803F8C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:41:01 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so2035186pjx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=exjpIw8b8TmC1QHS08cWeaRqCmSn9yw9o8wgeo2Z28U=;
-        b=oLEZLmz8ZkmdIS3lwK6naNue5rdP3pQmWR/54Ir5lao4OLDxAaR2jL4yPmjqyfp8DD
-         KKk6J4gHT7ohC+gH5bIUQNpWdE9NiB8zM0s8i4Tve83DKErBRxVqssORCzPW5TFZXxK/
-         JFo02c6Zyv9D+WoL1FjCLsRQZbnabqYI0m+oFcxlsWG5u/R23jcqvhRI2OKZbTkdUkFN
-         rwM2QK8VDEuCsUG2eUGXqqyyVGLkX5FyKZ3YwKL1DzOkCjugddmNyzPs29jg3WlQNjx6
-         fV847hOhhUVORGD5cs5ZdojMQMNt6DnkGAXfLJp1Sdobgd7pukVNMtqfj5LN7Ub6r/9B
-         OPTg==
+        Fri, 20 Aug 2021 18:42:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629499305;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PMddBmsWMWI5jF8CTPkKHEEdWMRR3jjcIFCbvP295Do=;
+        b=dKwnLylpUw6qBu2tEEtx2HzlD/+cneULZulYHwexedSpnxaA4hmlAd4YjjEmwaZ+ODeXup
+        2FXHMzpzlgZ8YgmggT7vqQezrTwmPy5lOahzQjqwH+3QmRvw6Dzwx9iuwLcFw4922h3yzc
+        JaMTUJ1hreM20++pkfhP4odnXTYYoGM=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-kZ7CDvcROE6_PWJIGSoTiA-1; Fri, 20 Aug 2021 18:41:44 -0400
+X-MC-Unique: kZ7CDvcROE6_PWJIGSoTiA-1
+Received: by mail-ot1-f69.google.com with SMTP id h38-20020a9d14290000b02904ceed859e6eso5501784oth.21
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:41:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=exjpIw8b8TmC1QHS08cWeaRqCmSn9yw9o8wgeo2Z28U=;
-        b=WrwYtgvZrnGX6b+9Re2I220fTCtC9pczgBwyrw7HDh6hvUzNGYV+KZgYkuQFbzi7wL
-         0N18UUje3svxJUO4FDnieUJMov6fN+1NkdZPaH7PlMI+wDDkshBfnT8oNcBT1AMYe71q
-         68yA5KfyISs7w6NHv4J/jdeWVlH/U58T33TA+t5kyfddXSblgoIZx/0NgNehsnsM3T8D
-         nHxOOuOgG6lQtSyiLr/g14y9KsdinGhbnK2aWlGnPFYqPMFdHALvjapF0WSC8sIiIMsV
-         buYGJ3rKf/wwrmX73y+1ZIYYfUtukPYmMkXHmzLlzJ+GEuc2BagkvT3JalFIBMYGrRjl
-         M9Fg==
-X-Gm-Message-State: AOAM532QFPy4whwqCCxGAgZmwYDGRqGzuXqj8UOpnYtNhh/oao6GiMpX
-        AA41g9tciH2xL7ZV+3bXT4jaWo0YqcSg7tSKVn8NKw==
-X-Google-Smtp-Source: ABdhPJy0KYjR6DE7II+FUyicePTUZSpuV3YfHWOjE+EN8DDg2Jk+5DiGMACdEjE/uT6NYC0y06IlGg7rTpYaFuj+AWA=
-X-Received: by 2002:a17:902:9b95:b0:130:6a7b:4570 with SMTP id
- y21-20020a1709029b9500b001306a7b4570mr6404008plp.27.1629499260750; Fri, 20
- Aug 2021 15:41:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=PMddBmsWMWI5jF8CTPkKHEEdWMRR3jjcIFCbvP295Do=;
+        b=M7S4bjBYJqyKsHV+/UAb44uupn662sf0tWhYkDipYLaPVrY5aO9jGqwaS0tIu6DtFb
+         0zrIc8xbr3AVxx9ItAMNh4okvYaqj+JPSYJbh5nft2X93rNYYodZ/3admXQn7JwVtcQN
+         Fjx62A78iRtQKAKBwkd9tkRPjI5g95gA7taJtnUJI9vGT/nl5fP0XqiSsw4UgJTVakBP
+         rAJAEnSL7nS3bvg6BYjRhbdJBBBzjiGzReDbBSbEolh2OcmQPCw+w8lSd0UaSJuv8HKE
+         8ir2Nd8wGnnDve5BvItZ3O2PbgxAOF7wnkW8lx5on55Gca+XmJOA9UpvIfBjsmCL8Wpd
+         YSbA==
+X-Gm-Message-State: AOAM532m42o1vZfptpYVUXt2fkE6BXrO7j9s5hQqc03znM5GHgYXDf79
+        nnrwxzTosKsZ1pLyCz48/uIUwRKnBaBbZNCuE+R/CkSOd5bUrXfaczOq6dNns7LYOp/7xI3m/pz
+        HuPdlczLx39sde4y/B8Iagqda
+X-Received: by 2002:a9d:7a8a:: with SMTP id l10mr19044161otn.256.1629499303769;
+        Fri, 20 Aug 2021 15:41:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcFQXjKweunIGJyfApLENZn5qAh9f4tNkrZ9b1APukTQz366kMOunJGqWYj0xce16/nBRqGw==
+X-Received: by 2002:a9d:7a8a:: with SMTP id l10mr19044147otn.256.1629499303534;
+        Fri, 20 Aug 2021 15:41:43 -0700 (PDT)
+Received: from redhat.com ([198.99.80.109])
+        by smtp.gmail.com with ESMTPSA id o4sm1762132oik.49.2021.08.20.15.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 15:41:43 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 16:41:42 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception
+ handler function pointer
+Message-ID: <20210820164142.1dcea352.alex.williamson@redhat.com>
+In-Reply-To: <d905d1fa-2852-4fb7-5b56-4b3b12d8994f@linux.ibm.com>
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+        <20210719193503.793910-2-akrowiak@linux.ibm.com>
+        <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
+        <358b1052-c751-7417-1263-308b133325b6@linux.ibm.com>
+        <20210819115433.76153ae4.alex.williamson@redhat.com>
+        <20210819175807.GC1721383@nvidia.com>
+        <d905d1fa-2852-4fb7-5b56-4b3b12d8994f@linux.ibm.com>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com> <20210730100158.3117319-6-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210730100158.3117319-6-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 20 Aug 2021 15:40:49 -0700
-Message-ID: <CAPcyv4gRGryFeY8N-gFHWyNi2Dhyb2QXizX3nUFXLsw6h1Z6PA@mail.gmail.com>
-Subject: Re: [PATCH RESEND v6 5/9] mm: Introduce mf_dax_kill_procs() for fsdax case
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, david <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 3:02 AM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
->
-> This function is called at the end of RMAP routine, i.e. filesystem
-> recovery function.  The difference between mf_generic_kill_procs() is,
-> mf_dax_kill_procs() accepts file mapping and offset instead of struct
-> page.  It is because that different file mappings and offsets may share
-> the same page in fsdax mode.  So, it is called when filesystem RMAP
-> results are found.
->
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  fs/dax.c            | 45 ++++++++++++++++++++++++-------
->  include/linux/dax.h | 16 ++++++++++++
->  include/linux/mm.h  | 10 +++++++
->  mm/memory-failure.c | 64 +++++++++++++++++++++++++++++++++------------
->  4 files changed, 109 insertions(+), 26 deletions(-)
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index da41f9363568..dce6307a12eb 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -389,6 +389,41 @@ static struct page *dax_busy_page(void *entry)
->         return NULL;
->  }
->
-> +/**
-> + * dax_load_pfn - Load pfn of the DAX entry corresponding to a page
-> + * @mapping:   The file whose entry we want to load
-> + * @index:     offset where the DAX entry located in
-> + *
-> + * Return:     pfn number of the DAX entry
-> + */
-> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
-> +{
-> +       XA_STATE(xas, &mapping->i_pages, index);
-> +       void *entry;
-> +       unsigned long pfn;
-> +
-> +       rcu_read_lock();
-> +       for (;;) {
-> +               xas_lock_irq(&xas);
-> +               entry = xas_load(&xas);
-> +               if (dax_is_locked(entry)) {
-> +                       rcu_read_unlock();
-> +                       wait_entry_unlocked(&xas, entry);
-> +                       rcu_read_lock();
-> +                       continue;
-> +               }
-> +
-> +               if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry))
-> +                       pfn = 0;
-> +               else
-> +                       pfn = dax_to_pfn(entry);
-> +               xas_unlock_irq(&xas);
-> +               break;
-> +       }
-> +       rcu_read_unlock();
-> +       return pfn;
+On Fri, 20 Aug 2021 18:05:08 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Instead of this I think you want a version of dax_lock_page() that
-takes a mapping and index. Otherwise I don't see how this function
-protects against races to teardown mapping->host, or to invalidate the
-association of the mapping to the pfn.
+> On 8/19/21 1:58 PM, Jason Gunthorpe wrote:
+> > On Thu, Aug 19, 2021 at 11:54:33AM -0600, Alex Williamson wrote:
+> >  
+> >> Nope.  The only requests for merges through my tree that I'm aware of
+> >> were [1] and what I understand was the evolution of that here now [2].
+> >> Maybe you're thinking of [3], which I do see in mainline where this was
+> >> 2/2 in that series but afaict only patch 1/2 was committed.  I guess
+> >> that explains why there was no respin based on comments for this patch.
+> >> Thanks,  
+> > Tony,
+> >
+> > If you take Alex's tree from here:
+> >
+> > https://github.com/awilliam/linux-vfio/commits/next  
+> 
+> I navigated to this URL and clicked the green 'Code'
+> button. I was given the option to download the zip file or
+> use git to checkout the code at the URL displayed
+> 'https://github.com/awilliam/linux-vfio.git'. I cloned the
+> repo at that URL and the code was definitely not in any
+> way similar to my code base. In particular, the
+> arch/s390/include/asm/kvm_host.h file did not have any
+> of the crypto structures.
+> 
+> I then downloaded the zip file and expanded it. The code
+> looked legitimate, but this was not a git repository, so I
+> had no way to cherry-pick my patches nor format patches
+> to post to this mailing list.
+> 
+> Next, I tried cloning from 
+> 'https://github.com/awilliam/linux-vfio-next.git',
+> but I was prompted for uid/pw.
+> 
+> So, the question is, how to I get the linux-vfio-next repo upon which I
+> can rebase my patches? I apologize for my ignorance.
 
-> +}
-> +
->  /*
->   * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
->   * @page: The page whose entry we want to lock
-> @@ -790,16 +825,6 @@ static void *dax_insert_entry(struct xa_state *xas,
->         return entry;
->  }
->
-> -static inline
-> -unsigned long pgoff_address(pgoff_t pgoff, struct vm_area_struct *vma)
-> -{
-> -       unsigned long address;
-> -
-> -       address = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> -       VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
-> -       return address;
-> -}
-> -
->  /* Walk all mappings of a given index of a file and writeprotect them */
->  static void dax_entry_mkclean(struct address_space *mapping, pgoff_t index,
->                 unsigned long pfn)
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index 6f4b5c97ceb0..359e809516b8 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -165,6 +165,7 @@ int dax_writeback_mapping_range(struct address_space *mapping,
->
->  struct page *dax_layout_busy_page(struct address_space *mapping);
->  struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
-> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index);
->  dax_entry_t dax_lock_page(struct page *page);
->  void dax_unlock_page(struct page *page, dax_entry_t cookie);
->  #else
-> @@ -206,6 +207,12 @@ static inline int dax_writeback_mapping_range(struct address_space *mapping,
->         return -EOPNOTSUPP;
->  }
->
-> +static inline unsigned long dax_load_pfn(struct address_space *mapping,
-> +               unsigned long index)
-> +{
-> +       return 0;
-> +}
-> +
->  static inline dax_entry_t dax_lock_page(struct page *page)
->  {
->         if (IS_DAX(page->mapping->host))
-> @@ -259,6 +266,15 @@ static inline bool dax_mapping(struct address_space *mapping)
->  {
->         return mapping->host && IS_DAX(mapping->host);
->  }
-> +static inline unsigned long pgoff_address(pgoff_t pgoff,
-> +               struct vm_area_struct *vma)
-> +{
-> +       unsigned long address;
-> +
-> +       address = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> +       VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
-> +       return address;
-> +}
->
->  #ifdef CONFIG_DEV_DAX_HMEM_DEVICES
->  void hmem_register_device(int target_nid, struct resource *r);
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 7ca22e6e694a..530aaf7a6eb2 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1190,6 +1190,14 @@ static inline bool is_device_private_page(const struct page *page)
->                 page->pgmap->type == MEMORY_DEVICE_PRIVATE;
->  }
->
-> +static inline bool is_device_fsdax_page(const struct page *page)
-> +{
-> +       return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
-> +               IS_ENABLED(CONFIG_FS_DAX) &&
-> +               is_zone_device_page(page) &&
-> +               page->pgmap->type == MEMORY_DEVICE_FS_DAX;
-> +}
+You can use git fetch to download the objects, ex:
 
-The value of this helper is unclear to me. The MEMORY_DEVICE_FS_DAX
-indication is for communicating page-idle notifications to filesystem
-code.
+$ git fetch git://github.com/awilliam/linux-vfio.git next
+$ git checkout FETCH_HEAD
 
-> +
->  static inline bool is_pci_p2pdma_page(const struct page *page)
->  {
->         return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
-> @@ -3113,6 +3121,8 @@ enum mf_flags {
->         MF_MUST_KILL = 1 << 2,
->         MF_SOFT_OFFLINE = 1 << 3,
->  };
-> +extern int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index,
-> +                            int flags);
->  extern int memory_failure(unsigned long pfn, int flags);
->  extern void memory_failure_queue(unsigned long pfn, int flags);
->  extern void memory_failure_queue_kick(int cpu);
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index ab3eda335acd..520664c405fc 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -134,6 +134,12 @@ static int hwpoison_filter_dev(struct page *p)
->         if (PageSlab(p))
->                 return -EINVAL;
->
-> +       if (pfn_valid(page_to_pfn(p))) {
-> +               if (is_device_fsdax_page(p))
+Or you could add a remote, ex:
 
-hwpoison_filter was built to test triggering failures in hard to reach
-places of the page cache. I think you can make an argument the
-hwpoison_filter does not apply to DAX since DAX by definition
-eliminates page cache. So, I'd consult pgmap->memory_failure()
-*instead* of the hwpoison_filter, don't teach the filter to ignore
-fsdax pages. By definition if the ->memory_failure() says -EOPNOTSUPP
-then hwpoison_filter can be consulted per usual.
+$ git remote add vfio git://github.com/awilliam/linux-vfio.git
+$ git remote update vfio
+$ git checkout vfio/next
 
-> +                       return 0;
-> +       } else
-> +               return -EINVAL;
-> +
->         mapping = page_mapping(p);
->         if (mapping == NULL || mapping->host == NULL)
->                 return -EINVAL;
-> @@ -304,10 +310,9 @@ void shake_page(struct page *p, int access)
->  }
->  EXPORT_SYMBOL_GPL(shake_page);
->
-> -static unsigned long dev_pagemap_mapping_shift(struct page *page,
-> +static unsigned long dev_pagemap_mapping_shift(unsigned long address,
->                 struct vm_area_struct *vma)
->  {
-> -       unsigned long address = vma_address(page, vma);
->         pgd_t *pgd;
->         p4d_t *p4d;
->         pud_t *pud;
-> @@ -347,7 +352,7 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
->   * Schedule a process for later kill.
->   * Uses GFP_ATOMIC allocations to avoid potential recursions in the VM.
->   */
-> -static void add_to_kill(struct task_struct *tsk, struct page *p,
-> +static void add_to_kill(struct task_struct *tsk, struct page *p, pgoff_t pgoff,
->                        struct vm_area_struct *vma,
->                        struct list_head *to_kill)
->  {
-> @@ -360,9 +365,14 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
->         }
->
->         tk->addr = page_address_in_vma(p, vma);
-> -       if (is_zone_device_page(p))
-> -               tk->size_shift = dev_pagemap_mapping_shift(p, vma);
-> -       else
-> +       if (is_zone_device_page(p)) {
-> +               /* Since page->mapping is no more used for fsdax, we should
-> +                * calculate the address in a fsdax way.
-> +                */
-> +               if (is_device_fsdax_page(p))
-> +                       tk->addr = pgoff_address(pgoff, vma);
-> +               tk->size_shift = dev_pagemap_mapping_shift(tk->addr, vma);
-> +       } else
->                 tk->size_shift = page_shift(compound_head(p));
->
->         /*
-> @@ -510,7 +520,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->                         if (!page_mapped_in_vma(page, vma))
->                                 continue;
->                         if (vma->vm_mm == t->mm)
-> -                               add_to_kill(t, page, vma, to_kill);
-> +                               add_to_kill(t, page, 0, vma, to_kill);
->                 }
->         }
->         read_unlock(&tasklist_lock);
-> @@ -520,24 +530,20 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->  /*
->   * Collect processes when the error hit a file mapped page.
->   */
-> -static void collect_procs_file(struct page *page, struct list_head *to_kill,
-> -                               int force_early)
-> +static void collect_procs_file(struct page *page, struct address_space *mapping,
-> +               pgoff_t pgoff, struct list_head *to_kill, int force_early)
->  {
->         struct vm_area_struct *vma;
->         struct task_struct *tsk;
-> -       struct address_space *mapping = page->mapping;
-> -       pgoff_t pgoff;
->
->         i_mmap_lock_read(mapping);
->         read_lock(&tasklist_lock);
-> -       pgoff = page_to_pgoff(page);
->         for_each_process(tsk) {
->                 struct task_struct *t = task_early_kill(tsk, force_early);
->
->                 if (!t)
->                         continue;
-> -               vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
-> -                                     pgoff) {
-> +               vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
->                         /*
->                          * Send early kill signal to tasks where a vma covers
->                          * the page but the corrupted page is not necessarily
-> @@ -546,7 +552,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
->                          * to be informed of all such data corruptions.
->                          */
->                         if (vma->vm_mm == t->mm)
-> -                               add_to_kill(t, page, vma, to_kill);
-> +                               add_to_kill(t, page, pgoff, vma, to_kill);
->                 }
->         }
->         read_unlock(&tasklist_lock);
-> @@ -565,7 +571,8 @@ static void collect_procs(struct page *page, struct list_head *tokill,
->         if (PageAnon(page))
->                 collect_procs_anon(page, tokill, force_early);
->         else
-> -               collect_procs_file(page, tokill, force_early);
-> +               collect_procs_file(page, page->mapping, page->index, tokill,
-> +                                  force_early);
->  }
->
->  struct hwp_walk {
-> @@ -1477,6 +1484,31 @@ static int mf_generic_kill_procs(unsigned long long pfn, int flags)
->         return 0;
->  }
->
-> +int mf_dax_kill_procs(struct address_space *mapping, pgoff_t index, int flags)
-> +{
-> +       LIST_HEAD(to_kill);
-> +       /* load the pfn of the dax mapping file */
-> +       unsigned long pfn = dax_load_pfn(mapping, index);
-> +
-> +       /* the failure pfn may not actually be mmapped, so no need to
-> +        * unmap and kill procs */
-> +       if (!pfn)
+The former might be easier and add a lot less crufty objects to your
+local tree if this is a one-off activity.  Thanks,
 
-pfn-0 is a valid pfn. I think you should use a cookie value like
-dax_load_page() to indicate failure.
+Alex
 
-> +               return 0;
-> +
-> +       /*
-> +        * Unlike System-RAM there is no possibility to swap in a
-> +        * different physical page at a given virtual address, so all
-> +        * userspace consumption of ZONE_DEVICE memory necessitates
-> +        * SIGBUS (i.e. MF_MUST_KILL)
-> +        */
-> +       flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
-> +       collect_procs_file(pfn_to_page(pfn), mapping, index, &to_kill, true);
-> +
-> +       unmap_and_kill(&to_kill, pfn, mapping, index, flags);
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(mf_dax_kill_procs);
-> +
->  static int memory_failure_hugetlb(unsigned long pfn, int flags)
->  {
->         struct page *p = pfn_to_page(pfn);
-> --
-> 2.32.0
->
->
->
