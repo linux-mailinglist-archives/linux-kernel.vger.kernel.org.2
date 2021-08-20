@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394323F24AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB8C3F24B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237528AbhHTCQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        id S237384AbhHTCSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhHTCQI (ORCPT
+        with ESMTP id S234768AbhHTCSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:16:08 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D5EC061575;
-        Thu, 19 Aug 2021 19:15:31 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id y9so6333579qtv.7;
-        Thu, 19 Aug 2021 19:15:31 -0700 (PDT)
+        Thu, 19 Aug 2021 22:18:37 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05708C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 19:18:00 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id bj38so9390387qkb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 19:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mgg6OSXjYOGCt953oRCYOuUm9dXQWYHQwFuVeNFVFo4=;
-        b=s2w/JUFsOgn9JFym1QKLSk51H9GIQhKoD6hJgH/5zCeC0VvYYpoDBk5uijYU5EUMG7
-         FjmzR0qQi+gKFkZy43UzC1Btzfq5ZexhRihAX1+kef9/lnEHRNQduYMHCwKNH5DdyNh6
-         IhNdwsXMrBM25fI+zSvQy+Uf4s6dOZvVDHdEdEHEaI3r/Or2kcaX+77CnG8fcXEeQ3X0
-         04xNTbTrkS9CDOFsJSfl/Hrm1eSNzE/+N2IvHUCu/L1CxySzqu79UiLwk0xGx7k9r6oI
-         yLwVrpzVJwvSIUjRS+3cHizfOSqjnEZOH/D4gYjxAltWKjfA2veDm6+89Ldl08adZAvX
-         mHNQ==
+        bh=V7B7qI1WYr0lV3D3cbeieOA4XYMT8sswOMoUalwn1I4=;
+        b=Pitv/pfuJb5VUMBWoqDBFehdI+Sv1Z6y6YUuBkiPkVGkI+S0twGsed6pRtwvOMSh+f
+         BNSIcKu6eDBzO0xC9QJeO1fxWyk6mxrEjT7F3x8a4gkXT0IyNop2+Y8l1r1Fo3S7XYIb
+         KhKIsRI62rSPLSEsc7oxV890V252rEL9qiZgNMgxyTzolSYFLwxbwU8fin3+Ze3Defri
+         tbqPe6/OpRSlg7mSMt/zuLvcTaF90IYIx7Ko1TwqpJ/Om9FKT8e+BYb4LRbkrRlH6u+m
+         V9+sJXgf0FWT2fNz5rliRe6sI9+cwyhEXOXOF8gBWaFFEibqBEv6aFtZqhBKUnf7KS0b
+         xQDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mgg6OSXjYOGCt953oRCYOuUm9dXQWYHQwFuVeNFVFo4=;
-        b=La+n/poZaZvaVDE39cPp2fG5dNtz/I84wNcNVLXcFCP6sbBbiPcn/pBtafOKJjlg5b
-         DY9oBH1Da8MN0rGthZwDKZ7jfc/HU+6FY9olM6WsDa08ciCWxv2ogIPetTwdXzUKIiUD
-         8FiIuqHjsSXxCeWPHokcBa2tzblCLkBRK664IVMbHusKxP8q3C5y663Xfz8cHrltCcUN
-         vwdWh4DH9X6YBpRKKTkwJXQDgMNBqoQH+w16d+Yr+26F9Fu+7PisEnRfRkq8uMYVXKQ3
-         by50HP6pt4SF502L475nuqe1rh3TyF9uZnOlcZ8qUwMsW5tGvcW90bVFLrXBUxyQctoY
-         e6YA==
-X-Gm-Message-State: AOAM530kPMBukOQDU6XOpCmcbgrReaTtaha8ZPPsYq6sUhlUEKcsazaO
-        HLWwolyLc8Kj0AGMnIoELJI=
-X-Google-Smtp-Source: ABdhPJyqwKeMCdI+1c0UUXtbwtY8zYIle1OYAae0EU3Kld2Yh2/EQfmbiYWh/P7oP0tCOS6FI6iFbA==
-X-Received: by 2002:ac8:5d0b:: with SMTP id f11mr15514469qtx.294.1629425730969;
-        Thu, 19 Aug 2021 19:15:30 -0700 (PDT)
+        bh=V7B7qI1WYr0lV3D3cbeieOA4XYMT8sswOMoUalwn1I4=;
+        b=K+zIpisF/KLtJxhhqh5qZG6Hb/CsimSEfRKDVkCGaNupZ3Jdsw+76vYYy1jA6rxQJe
+         xfrE+SRYSQi8t8bRmsi6jSjZ6XWYAK7RJvqWbu1n6YPb39c1JS0vEezMVEg8u7sCxMio
+         8DorrMD9MfXw2T4KQQHBGddYEGoMCZRQP4mLSaoDUGX1NoMoXcTgi6l1fXfqG48HRFRZ
+         XxEqUldIhzObjhtR9P+K4VUQUq8lt5Ok42TZfYZ09Va0D2XHq9pkHl3ct6CG2v7bjNyf
+         KvSJlXAvq6I7G8S84d+OCvlBtbfsR/LzntxAx/NjCJxBBf7/8fISIWBBatWaSypiFghI
+         ktLA==
+X-Gm-Message-State: AOAM530NrNtIwuf4bQeSvA8EfCIT01iKzJO1H5JOLdA2fPIuYQyifg7N
+        lC3/yIrb8rhf7z1EwKS9FDkvZbSdKzg=
+X-Google-Smtp-Source: ABdhPJx0gScjtG9MbD6U8L3/f7Po5XNCRGOUQmnhfXIPjM/f/bH0BJNVM0hRisM7yTWEJjQUdGiLlA==
+X-Received: by 2002:a05:620a:d87:: with SMTP id q7mr6551031qkl.173.1629425879191;
+        Thu, 19 Aug 2021 19:17:59 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id n124sm2595096qkf.119.2021.08.19.19.15.28
+        by smtp.gmail.com with ESMTPSA id w6sm2470049qkf.95.2021.08.19.19.17.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 19:15:30 -0700 (PDT)
+        Thu, 19 Aug 2021 19:17:58 -0700 (PDT)
 From:   jing yangyang <cgel.zte@gmail.com>
 X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Russell King <linux@armlinux.org.uk>, linux-omap@vger.kernel.org,
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yang Li <yang.lee@linux.alibaba.com>,
         linux-kernel@vger.kernel.org,
         jing yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] arm: dma fix returnvar.cocci warnings
-Date:   Thu, 19 Aug 2021 19:15:18 -0700
-Message-Id: <20210820021518.10844-1-jing.yangyang@zte.com.cn>
+Subject: [PATCH linux-next] char: mware: fix returnvar.cocci warnings
+Date:   Thu, 19 Aug 2021 19:17:52 -0700
+Message-Id: <20210820021752.10927-1-jing.yangyang@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -72,30 +73,31 @@ Generated by: scripts/coccinelle/misc/returnvar.cocci
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- arch/arm/mach-omap2/dma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/char/mwave/tp3780i.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/dma.c b/arch/arm/mach-omap2/dma.c
-index dfc9b21..ba4a48e 100644
---- a/arch/arm/mach-omap2/dma.c
-+++ b/arch/arm/mach-omap2/dma.c
-@@ -79,7 +79,6 @@
+diff --git a/drivers/char/mwave/tp3780i.c b/drivers/char/mwave/tp3780i.c
+index 8588b51..83eaffe 100644
+--- a/drivers/char/mwave/tp3780i.c
++++ b/drivers/char/mwave/tp3780i.c
+@@ -470,8 +470,6 @@ int tp3780I_StartDSP(THINKPAD_BD_DATA * pBDData)
  
- static unsigned configure_dma_errata(void)
+ int tp3780I_QueryAbilities(THINKPAD_BD_DATA * pBDData, MW_ABILITIES * pAbilities)
  {
--	unsigned errata = 0;
+-	int retval = 0;
+-
+ 	PRINTK_2(TRACE_TP3780I,
+ 		"tp3780i::tp3780I_QueryAbilities entry pBDData %p\n", pBDData);
  
- 	/*
- 	 * Errata applicable for OMAP2430ES1.0 and all omap2420
-@@ -158,7 +157,7 @@ static unsigned configure_dma_errata(void)
- 	if (cpu_is_omap34xx() && (omap_type() != OMAP2_DEVICE_TYPE_GP))
- 		SET_DMA_ERRATA(DMA_ROMCODE_BUG);
+@@ -502,7 +500,7 @@ int tp3780I_QueryAbilities(THINKPAD_BD_DATA * pBDData, MW_ABILITIES * pAbilities
+ 	PRINTK_1(TRACE_TP3780I,
+ 		"tp3780i::tp3780I_QueryAbilities exit retval=SUCCESSFUL\n");
  
--	return errata;
+-	return retval;
 +	return 0;
  }
  
- static const struct dma_slave_map omap24xx_sdma_dt_map[] = {
+ int tp3780I_ReadWriteDspDStore(THINKPAD_BD_DATA * pBDData, unsigned int uOpcode,
 -- 
 1.8.3.1
 
