@@ -2,182 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8063C3F367C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB683F3680
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhHTWhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:37:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3508 "EHLO mga06.intel.com"
+        id S233140AbhHTWiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:38:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229506AbhHTWhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:37:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="277870276"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="277870276"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 15:36:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="682642855"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Aug 2021 15:36:48 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mHD83-000VG6-Kr; Fri, 20 Aug 2021 22:36:47 +0000
-Date:   Sat, 21 Aug 2021 06:36:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD SUCCESS
- b857174e68e26f9c4f0796971e11eb63ad5a3eb6
-Message-ID: <61202e53.p7NDOnAbPWbrXtv/%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229451AbhHTWiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 18:38:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4337E6103D;
+        Fri, 20 Aug 2021 22:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629499055;
+        bh=C8jz8Bv63e052+kWi1tzbvXuwOtkfdMKISfabY64RtY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=b+V/huH+0jWmkArd1seL+iNhzD4ysWWQ9Wp/b/XT8hv9QdhQKCZ4bklEbuTsUFi6O
+         ks8z/ZU6B5ZbtwKg1Pk0SRK/snSRADjJtCUYz588rdL4wTl+tjugOyOP/WF8U9BpEi
+         Iag150ytRBI+hnBASCbQ9A05qAT/m1FRUuaT+ImfLuPbcCh29+KzAoVUHNo0IHJmmH
+         PTwq6dqIJ43jEshblvbRRHLWilgXizjdHRFe2Hz3zKj3EFuLKMvoEU0zTiWjPnuIyE
+         HIV72x5kKh8h5/2DnyC7Owuv67FvMArXkeqw9Z9CoZgCxmloyPrilEsyqZHWXvDh/x
+         Et+I9bFTtIohQ==
+Date:   Fri, 20 Aug 2021 17:37:34 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3] PCI: Move pci_dev_is/assign_added() to pci.h
+Message-ID: <20210820223734.GA3366782@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210720150145.640727-1-schnelle@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-branch HEAD: b857174e68e26f9c4f0796971e11eb63ad5a3eb6  locking/ww_mutex: Initialize waiter.ww_ctx properly
+On Tue, Jul 20, 2021 at 05:01:45PM +0200, Niklas Schnelle wrote:
+> The helper function pci_dev_is_added() from drivers/pci/pci.h is used in
+> PCI arch code of both s390 and powerpc leading to awkward relative
+> includes. Move it to the global include/linux/pci.h and get rid of these
+> includes just for that one function.
 
-elapsed time: 722m
+I agree the includes are awkward.
 
-configs tested: 123
-configs skipped: 3
+But the arch code *using* pci_dev_is_added() seems awkward, too.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+AFAICS, in powerpc, pci_dev_is_added() is only used by
+pnv_pci_ioda_fixup_iov() and pseries_pci_fixup_iov_resources().  Those
+are only called from pcibios_add_device(), which is only called from
+pci_device_add().
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210820
-arm                         hackkit_defconfig
-arm                             ezx_defconfig
-mips                  decstation_64_defconfig
-arm                        trizeps4_defconfig
-m68k                          multi_defconfig
-sh                          r7780mp_defconfig
-sh                           se7724_defconfig
-arc                    vdk_hs38_smp_defconfig
-sparc                            alldefconfig
-arm                          iop32x_defconfig
-sh                              ul2_defconfig
-sh                          landisk_defconfig
-mips                  maltasmvp_eva_defconfig
-xtensa                    smp_lx200_defconfig
-arm                          badge4_defconfig
-mips                        nlm_xlr_defconfig
-arm                           sama5_defconfig
-powerpc                     ep8248e_defconfig
-arm                       netwinder_defconfig
-xtensa                          iss_defconfig
-arm                          collie_defconfig
-m68k                                defconfig
-i386                             alldefconfig
-arm                       mainstone_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                           u8500_defconfig
-arm                            dove_defconfig
-arm                            qcom_defconfig
-arm                          pxa910_defconfig
-sh                                  defconfig
-openrisc                  or1klitex_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                       ppc64_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                        bcm63xx_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210820
-i386                 randconfig-a001-20210820
-i386                 randconfig-a002-20210820
-i386                 randconfig-a005-20210820
-i386                 randconfig-a003-20210820
-i386                 randconfig-a004-20210820
-i386                 randconfig-a015-20210819
-i386                 randconfig-a011-20210819
-i386                 randconfig-a014-20210819
-i386                 randconfig-a013-20210819
-i386                 randconfig-a016-20210819
-i386                 randconfig-a012-20210819
-i386                 randconfig-a011-20210821
-i386                 randconfig-a016-20210821
-i386                 randconfig-a012-20210821
-i386                 randconfig-a014-20210821
-i386                 randconfig-a013-20210821
-i386                 randconfig-a015-20210821
-x86_64               randconfig-a004-20210818
-x86_64               randconfig-a006-20210818
-x86_64               randconfig-a003-20210818
-x86_64               randconfig-a005-20210818
-x86_64               randconfig-a002-20210818
-x86_64               randconfig-a001-20210818
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Is it even possible for pci_dev_is_added() to be true in that path?
 
-clang tested configs:
-i386                 randconfig-c001-20210820
-x86_64               randconfig-a014-20210820
-x86_64               randconfig-a016-20210820
-x86_64               randconfig-a015-20210820
-x86_64               randconfig-a013-20210820
-x86_64               randconfig-a012-20210820
-x86_64               randconfig-a011-20210820
-i386                 randconfig-a011-20210820
-i386                 randconfig-a016-20210820
-i386                 randconfig-a012-20210820
-i386                 randconfig-a014-20210820
-i386                 randconfig-a013-20210820
-i386                 randconfig-a015-20210820
+s390 uses pci_dev_is_added() in recover_store(), but I don't know what
+that is (looks like a sysfs file, but it's not documented) or why s390
+is the only arch that does this.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Maybe we should make powerpc and s390 less special?
+
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+> Since v1 (and bad v2):
+> - Fixed accidental removal of PCI_DPC_RECOVERED, PCI_DPC_RECOVERING
+>   defines and also move these to include/linux/pci.h
+> 
+>  arch/powerpc/platforms/powernv/pci-sriov.c |  3 ---
+>  arch/powerpc/platforms/pseries/setup.c     |  1 -
+>  arch/s390/pci/pci_sysfs.c                  |  2 --
+>  drivers/pci/hotplug/acpiphp_glue.c         |  1 -
+>  drivers/pci/pci.h                          | 15 ---------------
+>  include/linux/pci.h                        | 15 +++++++++++++++
+>  6 files changed, 15 insertions(+), 22 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
+> index 28aac933a439..2e0ca5451e85 100644
+> --- a/arch/powerpc/platforms/powernv/pci-sriov.c
+> +++ b/arch/powerpc/platforms/powernv/pci-sriov.c
+> @@ -9,9 +9,6 @@
+>  
+>  #include "pci.h"
+>  
+> -/* for pci_dev_is_added() */
+> -#include "../../../../drivers/pci/pci.h"
+> -
+>  /*
+>   * The majority of the complexity in supporting SR-IOV on PowerNV comes from
+>   * the need to put the MMIO space for each VF into a separate PE. Internally
+> diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
+> index 631a0d57b6cd..17585ec9f955 100644
+> --- a/arch/powerpc/platforms/pseries/setup.c
+> +++ b/arch/powerpc/platforms/pseries/setup.c
+> @@ -74,7 +74,6 @@
+>  #include <asm/hvconsole.h>
+>  
+>  #include "pseries.h"
+> -#include "../../../../drivers/pci/pci.h"
+>  
+>  DEFINE_STATIC_KEY_FALSE(shared_processor);
+>  EXPORT_SYMBOL_GPL(shared_processor);
+> diff --git a/arch/s390/pci/pci_sysfs.c b/arch/s390/pci/pci_sysfs.c
+> index 6e2450c2b9c1..8dbe54ef8f8e 100644
+> --- a/arch/s390/pci/pci_sysfs.c
+> +++ b/arch/s390/pci/pci_sysfs.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/stat.h>
+>  #include <linux/pci.h>
+>  
+> -#include "../../../drivers/pci/pci.h"
+> -
+>  #include <asm/sclp.h>
+>  
+>  #define zpci_attr(name, fmt, member)					\
+> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+> index f031302ad401..4cb963f88183 100644
+> --- a/drivers/pci/hotplug/acpiphp_glue.c
+> +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> @@ -38,7 +38,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/acpi.h>
+>  
+> -#include "../pci.h"
+>  #include "acpiphp.h"
+>  
+>  static LIST_HEAD(bridge_list);
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 93dcdd431072..a159cd0f6f05 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -383,21 +383,6 @@ static inline bool pci_dev_is_disconnected(const struct pci_dev *dev)
+>  	return dev->error_state == pci_channel_io_perm_failure;
+>  }
+>  
+> -/* pci_dev priv_flags */
+> -#define PCI_DEV_ADDED 0
+> -#define PCI_DPC_RECOVERED 1
+> -#define PCI_DPC_RECOVERING 2
+> -
+> -static inline void pci_dev_assign_added(struct pci_dev *dev, bool added)
+> -{
+> -	assign_bit(PCI_DEV_ADDED, &dev->priv_flags, added);
+> -}
+> -
+> -static inline bool pci_dev_is_added(const struct pci_dev *dev)
+> -{
+> -	return test_bit(PCI_DEV_ADDED, &dev->priv_flags);
+> -}
+> -
+>  #ifdef CONFIG_PCIEAER
+>  #include <linux/aer.h>
+>  
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 540b377ca8f6..ea0e23dbc8ec 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -507,6 +507,21 @@ struct pci_dev {
+>  	unsigned long	priv_flags;	/* Private flags for the PCI driver */
+>  };
+>  
+> +/* pci_dev priv_flags */
+> +#define PCI_DEV_ADDED 0
+> +#define PCI_DPC_RECOVERED 1
+> +#define PCI_DPC_RECOVERING 2
+> +
+> +static inline void pci_dev_assign_added(struct pci_dev *dev, bool added)
+> +{
+> +	assign_bit(PCI_DEV_ADDED, &dev->priv_flags, added);
+> +}
+> +
+> +static inline bool pci_dev_is_added(const struct pci_dev *dev)
+> +{
+> +	return test_bit(PCI_DEV_ADDED, &dev->priv_flags);
+> +}
+> +
+>  static inline struct pci_dev *pci_physfn(struct pci_dev *dev)
+>  {
+>  #ifdef CONFIG_PCI_IOV
+> -- 
+> 2.25.1
+> 
