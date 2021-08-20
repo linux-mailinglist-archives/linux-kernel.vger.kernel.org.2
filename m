@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B873F30A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5356D3F3085
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhHTQCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:02:19 -0400
-Received: from mail-bn8nam08on2041.outbound.protection.outlook.com ([40.107.100.41]:41272
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        id S238305AbhHTQBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:01:17 -0400
+Received: from mail-co1nam11on2064.outbound.protection.outlook.com ([40.107.220.64]:53792
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234115AbhHTQBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:01:31 -0400
+        id S233792AbhHTQAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 12:00:51 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LZ/3ERwvsg0aSCmcI4O5AiyIYyulCq4niK59itZ1phre7EnpovRyBqk8Xb4yaFqbcg7+H3/XITXLyOEwFUfrt2ropL9I6fQWP9kEtQX+RFvtr+yt78nZl+aFa9yg2AFACPsJMcrrkQck3aajjwtYcEHEYNWxx8Si4nk8x2zb1JCuDLyKhajmxaWuiaUUglgBsJ4RHC7b/Aot1/5RSOg7WciN8XH5B2F52M2vebPFNuEO345vIcZzkL4BEfdmX3+DMcr6dymYtzVAEkfLZOInSNQ/XoNycAJIjeqe6y1bj4UkwvgaVutQaE70+N9BhQoNFRI3XvFczhSNHNrP5Z9+uQ==
+ b=gMubDJesj0tg7c0QigaYpNrT6Y13jyXcnz4TMcLqW5ROsJ+4JUo2KvTel3kH3VUH38/XTNAe5jsFh2DEsjzuxVanrp+RAXB54BnOCn+J3SkkuHF2raAMad2qBdve0Tb2q8jp3ItFfGUEpocN33gDHPYJwD9z/72LlIB1zi/5KGBt+UMQ4lN38AiwJkJrjt6+8eklr9Y8k1jgHFlLEkfpCvWKuFpCkxRH0fJ+i+C3u6wyg1057HMBL0rmlHVMX4KO/Odbto+Frkm2moV3UDDh0vLtFXhrnyjfSol92t7tgngvzxltyr8pC/WzAdqhNTflF5aCJsFRdHdLmsHXcaQdoQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=98DtS9JM1I+DiexvI/B1gLAoM8L/pKgfG2QGPzZbbGU=;
- b=gscNaqUFJLiosyg5sA4Q83OnBihENS0NSrL+nP2qEgHBji0oGzZ8MlTIf1Sff4aA/B6EXoopsk8WqZ78IXlDkGhfIz2rjmmTU6WDKSz5jOVbBPBmUE7L+Fpoe6vsrHC/8+JChHkuds6Sp7zcv7cUaagQOlRr6u3vWO04RL6hQ/sB+YKRqEy38C2gy+vYvlLboSmU/Ch9sdjgC4EibH4nJP9GdrNLLqzVYpyrhP+ft+q5S0StjSzvFyxcoMaaveoRav8kuoDbzy6KISYRaDoR51adUggdCVMKkGoyY9sw1LieOSy3kVzqIwEhBoqBvWd8MB2epvaanAU+Br6ZXrC29g==
+ bh=78KF/t3jq7p1Lwx88XKLitLKd3zgpV3gMZXCE/Db9D8=;
+ b=RocWkUDe5EPJ28H1Ic5MmpFMfL+PEa7PNkakyfKU2usc3TSPIx7Fj0QJv7djFLT0xnsu8N1qCAblsn8QNFPPuQRNrBsg4tDFeopDEUSn5Pee2uo7p4Alf1Jrrq4dp1DHaHjTxyDfzqZpEVfUvavjiSc1y9W/uP5Fo0dElKcEFlqH/Viq1+/jqBwXwjPZKJby4avfqgXVkNBRnPgcs1z/xriurLbJG/2FpbXdxEfDWRYiEfrsAYOIfG3QMDn7NTMrKnCPXugRily+G0ztII9hKoPwNUiSvyQiGwErp6630AtrEonwQhS28QLrXvMqUfFDrsZUeORhfTYjg+L1NusZgQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=98DtS9JM1I+DiexvI/B1gLAoM8L/pKgfG2QGPzZbbGU=;
- b=qnap4gN5fuJvko/t8b1FiFMrFhn6RY6xHLTVyIJFuYPHACw38QeUpWj0TggUWf526AiDAOZMZadstwidPLvdfh8k4evv28siLAucom8vh41E+TL8sf5VK5Zc/fXPYdaB+6xtMt820hsTC7lYo4v9uMH5R7jcNhwPl6CXlOo5ws8=
+ bh=78KF/t3jq7p1Lwx88XKLitLKd3zgpV3gMZXCE/Db9D8=;
+ b=1CLUx507q75/6TuOjWMuoYQXinPalAJ5RO/dj+HlC09nZcwNmGbTFf8rlC5mWyTHIrfSgthQd7U72LSTQMxEItME5k6hgKGt+1tSf4+S8j5dCpJ/NhaLAsICQM1PlLIddpRrf625h0qhfu6xqeslFYrofB0s7nh9V5OHF0ukdo8=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
 Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SA0PR12MB4384.namprd12.prod.outlook.com (2603:10b6:806:9f::22) with
+ by SN6PR12MB2685.namprd12.prod.outlook.com (2603:10b6:805:67::33) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Fri, 20 Aug
- 2021 16:00:04 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.21; Fri, 20 Aug
+ 2021 16:00:10 +0000
 Received: from SN6PR12MB2718.namprd12.prod.outlook.com
  ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
  ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4436.019; Fri, 20 Aug 2021
- 16:00:04 +0000
+ 16:00:10 +0000
 From:   Brijesh Singh <brijesh.singh@amd.com>
 To:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
         linux-coco@lists.linux.dev, linux-mm@kvack.org,
@@ -65,9 +65,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
         marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
         Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH Part2 v5 08/45] x86/fault: Add support to handle the RMP fault for user address
-Date:   Fri, 20 Aug 2021 10:58:41 -0500
-Message-Id: <20210820155918.7518-9-brijesh.singh@amd.com>
+Subject: [PATCH Part2 v5 13/45] crypto:ccp: Provide APIs to issue SEV-SNP commands
+Date:   Fri, 20 Aug 2021 10:58:46 -0500
+Message-Id: <20210820155918.7518-14-brijesh.singh@amd.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210820155918.7518-1-brijesh.singh@amd.com>
 References: <20210820155918.7518-1-brijesh.singh@amd.com>
@@ -77,234 +77,192 @@ X-ClientProxiedBy: SN7P222CA0013.NAMP222.PROD.OUTLOOK.COM
  (2603:10b6:805:6f::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from sbrijesh-desktop.amd.com (165.204.77.1) by SN7P222CA0013.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Fri, 20 Aug 2021 16:00:03 +0000
+Received: from sbrijesh-desktop.amd.com (165.204.77.1) by SN7P222CA0013.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Fri, 20 Aug 2021 16:00:09 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0a325673-4258-4d4c-63ca-08d963f392a6
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4384:
+X-MS-Office365-Filtering-Correlation-Id: 05338dcc-03f2-4d8b-ea33-08d963f39680
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2685:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4384ABB9CC10756414F58C9AE5C19@SA0PR12MB4384.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2685AF8269F7696B74AC2B20E5C19@SN6PR12MB2685.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5L0oN+z4mf2JRn7y/PVPMEKNmK0jHW8TqA0uX0x+/ZOMteWvwt2PSeFY8Ae88vB1Yt7KPShxzwGXN8/Jv92vHoeOYpkSiH9R5GKtxxPA3Tub8xUAjevur2ucomsxcVn5h4ouPDDliKPAwECEpLwfQgTgLXQ/WnoQSDVWdLD15bTOdjPGMnczwAc74E2KuqEi+ScqZv4vK0IT5O0r30WW7sET+Qqt/emSEL1DmzoJJbazHlTvl592a/0821Sj1n3TbO7R590KuaZ6j5x9Tl6LvyAbKvttNAT6ZOxcKr5xTYXm7u+fccqsvRgY41MvYXx3M3GWKRsayAu0MsL56NrA4+kiv3JIEnHUYNQveAMw4ofKy3cTkjF+7ZPtkJPrXTorardvNMQUAcuJR6EOdbV6fxvNQfZZyguZzef3tM5cbEzrut1oTfxcK5k3Ndc6rrfUlNPIj1ShkbCE3kJJuJSH3yoCsudR9vT/j8itNGpdOi+GxDdAmzvneh0ieU0OHfdYnnbuKc/6rruudRzaBIl2SLzUIYuOZX7bdtP3MW+s0tNneRaxozwzt1o0dzI7if6Yhpu0zT0zhSWEaEMEv7aAbEHLy/PLZxaKHURFKshMjsOyCCCbUB9+lHHnnsc7n/3aqgGnA4/7qETsScQnuSQa2tVMM6j/CHnlX5iWitIa8W7amEdcV2viJx7fZFeGNrJH14GYiWhxDXKt27OuYHerVw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(366004)(346002)(136003)(5660300002)(6666004)(52116002)(66946007)(44832011)(36756003)(7416002)(66476007)(7406005)(6486002)(956004)(8936002)(316002)(2906002)(186003)(4326008)(478600001)(86362001)(26005)(54906003)(38100700002)(38350700002)(7696005)(1076003)(8676002)(83380400001)(2616005)(66556008);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: dGvk5O5fGQQuvwa7BgqBe613cCbZzaVphVjtA+xAwMrzveQOpAfi34RtajRwTKv0eKYP6bgdPgbgQTmuCIiTzqhuLunDMPc9YiQ467GjPMqtz3vBISFJEHKH9SLZtodselcowZ0dZTPuT4f80pOre0W4nJVybcF0/odlxXaWCogQoWfBVkTAuXLEp9TMEWG2aOc2SVRV6XdG94HSYWSa3NVbvoJUyHCgVYsubZym5pzf6zHKAzsd99xQxjdtMvtXBD4Rf4plETpXqMXwpG+YJbnVrQKklIhpUYm4FV6LFK5/1RqlojdHNQlebjt/fmF+y7FXl7MhTdwJuEccXdpxOvFcJ+uar2ElT80wuD2m4hb0G7IhNrAzBO8yn8TOiKu5j4XiDMGJdr11pgujKSPHztpiczu3z/HrV5MfcmR4/ZtfpvaURtb/2Cp8f0yVJGcqnwMws1y34JRe2X/PSP4rGZ3NZFKp9+SPn3bvzmtPQBpci9XWZ+6gNfv5b6ngVEdD6dXE4TiWOSKjCKP5MTpmIyNlMJ+jA0cN/uz5U5deTyTPGYYyEP7pBkkAKHnBdzhi2EwKJsBsz49Y8oPPD6ze8z3LnuZpIoRRjhL8taQ20aa9hNx9qUp9QauSX82MZUS1G3gZKUanffOMMleGQyMRZ52b80+bAD0OmEu5667jXILicTPQsff1gI2E7UZm9+7+MyxiEhp5qzyYF6JqmVNccT3OGNVv3GP3vPfjG1kStGE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(376002)(346002)(366004)(956004)(186003)(44832011)(2616005)(26005)(66946007)(52116002)(66556008)(66476007)(7696005)(7406005)(6666004)(7416002)(1076003)(2906002)(478600001)(36756003)(316002)(54906003)(8676002)(8936002)(5660300002)(6486002)(38350700002)(4326008)(38100700002)(86362001)(134885004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4mVsba6kmmTIbCmbFKDwBpHzwv5kjapO5sc7C+KvZIL+sY8V66ErgXAmYM9v?=
- =?us-ascii?Q?YSscWW20w0QztqLCZnYh5UafcjAQCW0PNEAQwvmi2Q1sgLinu/5M8Dth4x5w?=
- =?us-ascii?Q?ZfwFr7EfN2UjvsRDJKaOzozcmXqh0ABoA4F7756Db1nJ07pV0esl6inI8KMU?=
- =?us-ascii?Q?UpCdxvRmGyLk2WiQarpibLseZMxt+WiHGZydl4ZsH5n2OC+LvkWdst4bsO71?=
- =?us-ascii?Q?DCHp64RcoFqwqR/f2PnkPYDs8k/FmNdaqzfrhBv6efnDE7HyUTH8mcAJuVWm?=
- =?us-ascii?Q?ph6gFxgrdqKxa78mspncMB/ZxdddczNn/wpv4aX0mudZZkyVm2JqoYu+cFtW?=
- =?us-ascii?Q?laj9tXAkFnbyjD0fdqABE2jycRfZZevwVmvYma2YiIgrXFlylHzSpW4V7bKN?=
- =?us-ascii?Q?cOqs3lYcR+qCl+qNEHim4+iazGqRaJebFdPYiR2MPA+0B7GidPhiHWAQhsQB?=
- =?us-ascii?Q?WYpqbnGmPw4hca7R0uQyQ1v4JNlJFbBRskD/qIFFGVctExQCn+FrSUUWgky9?=
- =?us-ascii?Q?pw+y9WB3iuXjcfPRzj2FntD2++M9DENW78RtdqGY4d061rVZKxlVgdGqhBkq?=
- =?us-ascii?Q?duFLKB2vEg5WONPRvHqntcVBRYdPZD/GlA33wK78ZJOBNqc+0yXuAxtC+4go?=
- =?us-ascii?Q?8g6ONXvA4A26Xli/xuK/T1sU4XXjMiQecq88iUh1EW1/34IesDKDoYAlS2KU?=
- =?us-ascii?Q?lDirHnLA1LFplTGChD1igCyUsuK4ulUQsaobdUic3lp3kjc8ZN73AmA2TL5v?=
- =?us-ascii?Q?L24QwD6VawsXvOCNanc6T8XQbapQBJnb2dpOFXHx1j2uRzXMLAFw85FDr/hb?=
- =?us-ascii?Q?f7QX7OvB6tQ2AOx5IWW3D2GZ5wXIpXpqtlbcIs2LnOAUjTt24FpyXK2LoVoV?=
- =?us-ascii?Q?OtqjAYad97I5uk4gd8AgVbzAZRJa9wLRG6eNR4Pe4nfz2XAespf+xtBqcrlL?=
- =?us-ascii?Q?axvpaRVl7p4uEgtP7KDPVW07xvyDSaFtJSr/elJT34owUH67A5Orw+cfSGYC?=
- =?us-ascii?Q?z9IbbHpiZbG1ZPERxjXTEyGmg4Qi4B2n7TG3FSSCCo2Bemv+7BPFZRBIODpX?=
- =?us-ascii?Q?KgUYOTL6IOy18Jz2cQ74qWs3Bw/++/MxJucdBmpFAyasvhe0S9ybDou/gP8W?=
- =?us-ascii?Q?3um5aibEbsSlfz1pf5qJ6uFGv0DTN4pGomsBlfFwsIUNVyZQQOfK98YeBqdo?=
- =?us-ascii?Q?galGpsM1pVxOI+NzCC18AqSMfwnooWpM2EU7honXl8f6oG3jQOXy0J989Nbn?=
- =?us-ascii?Q?Ck7hkaAIfE/DUPqJQth3rX6e58omVDpO9DyU7FbcRVqRNR+HSGPEHKTbnrfQ?=
- =?us-ascii?Q?7dtjYnT+67+YkURG7jJqouCp?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mIj0wdvCwGElx/gilnxjwCAdADU+z1L9Fbps+FP8DD18apVFcJLq/viPs7o9?=
+ =?us-ascii?Q?SSl7qTxPu5eMGDy8iqWcDt8fUWy3Ngozz3mfkAmLMEXbmkkOXzTp6bSjz2KG?=
+ =?us-ascii?Q?ZtKo5S3oljN//4Be00mhYZDtS0+rCAgjiVit7+/D0RRtdtNj3InrHwIubaSp?=
+ =?us-ascii?Q?9sFaeMjzca1GXxVRSnXcAzH6zD9cKuGHgJtJEHP+YrwmJbQf8pwem4WIFYRV?=
+ =?us-ascii?Q?tVsK4DVF3BWXDaujmHQsDIXIZNYKgoGKzLHIZ3xy2J4UWxezQ1+l+Uwon7Fo?=
+ =?us-ascii?Q?ZVdGoP0bWwAcl0OOGsPVEO3+kro1vxQAH5eVmz0q8gQjNA6D50IqBESYOBJJ?=
+ =?us-ascii?Q?WuHag0gIDbMpPtjmOVR8GSyKrzc947j91QgQSAz0S7TjWef0znNj8a+dQub4?=
+ =?us-ascii?Q?RGms55slk8R4GnGpeLP3mE3jBq1KeAYMN7xdUSnlN5RSxuxqlevfrQMkf4Iw?=
+ =?us-ascii?Q?PYppVbdzUXsE7P+eJcHSwbdWcpQQ7I09nhrR/jQqoZ3xbU7F0PW7kBy8nu/r?=
+ =?us-ascii?Q?OCJ/Lpj3eSdFR5MsVXkaxAUrB74C2R6oU1ZV5uLdW726Y4IcnHDHL6EeTyz4?=
+ =?us-ascii?Q?Q+1FDFXcc4ja4PWEBnMkRQfPcGoi+oF63kZHFPEU6nVvx2WkrC+jM2AiWKKb?=
+ =?us-ascii?Q?htB+HwWGeQy/A7Ei6tEH+p+43WeNgXXP1Dw2GKC2CM2kiryuXKJgM7RiRFw1?=
+ =?us-ascii?Q?PXo+TTQ28GfPfYzWa4WLCnbdzaG2XiUuboK1YL91gTgFhLeIKXIfA5cSPrXo?=
+ =?us-ascii?Q?fFcT9Vri1K+by8fi46AYEioHJxV8qZDNymNHNjIXKxRuFU4MyHLQ3wlXBZKG?=
+ =?us-ascii?Q?6JnUh1/JgQKUfy2v+JSe7ROgO8+BvYGG2ILjvQZ9j72QwtRL7OJLfyUDk5aF?=
+ =?us-ascii?Q?uKw+lsc5/dpEHfJH8v73lzH13GkCIByH5egFPmFaouAxtbHocZ1gBmlm3s3W?=
+ =?us-ascii?Q?/wAIAaVppJo2wi4uQRxDQert/+b2EwP0cg8jF+6U0Vn4C6j0Sfv7UUFBC8ce?=
+ =?us-ascii?Q?oFrNZJJCMqiTQRkImRFSCLp/AAhSXqMWDRrVNgekbJdlAZNIPSF04dXkS8xi?=
+ =?us-ascii?Q?igrBL7xD0rvfQQG4q1PGwXkKDxLk2gu8gjJLdn5rre2Q0XV/N0FsFHu7q6Qp?=
+ =?us-ascii?Q?MRCGUH0BqYI7Qn+uXbubXyjDguzmuUubkEumi2kju1EgwXTyCUlA8G4HGSFA?=
+ =?us-ascii?Q?pZf/kpDsRXm8T2Klw4B2iv+RZOD99j5UgxRZUiDr2OR2UvT67YJHbWBpYdgN?=
+ =?us-ascii?Q?zCI22pOC5Kq3+uNYq71ai90y0jXwFCOQ+FAeO3ylgQUDdb32PimyK0npm1bQ?=
+ =?us-ascii?Q?5X+mGWMgjTAb9tGt2m5ghVJD?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0a325673-4258-4d4c-63ca-08d963f392a6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05338dcc-03f2-4d8b-ea33-08d963f39680
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 16:00:04.0165
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 16:00:10.5128
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KY3jmId+8kpDY5Eb+Qq/sFL0hgQAlfWT1ArWI4KPKR2JWC4OGxU0FmEgf0y/9IGGaVRij+cakpzRi3XIeMz+UA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4384
+X-MS-Exchange-CrossTenant-UserPrincipalName: UaheF4JB4EeTuHSm24FLGfIgIIVhA0Rkj8bhZ2RgkYhB4rewC7D9jJvA21cLLOjE529EiYJ5V/y0c6gI4LoCiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2685
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SEV-SNP is enabled globally, a write from the host goes through the
-RMP check. When the host writes to pages, hardware checks the following
-conditions at the end of page walk:
-
-1. Assigned bit in the RMP table is zero (i.e page is shared).
-2. If the page table entry that gives the sPA indicates that the target
-   page size is a large page, then all RMP entries for the 4KB
-   constituting pages of the target must have the assigned bit 0.
-3. Immutable bit in the RMP table is not zero.
-
-The hardware will raise page fault if one of the above conditions is not
-met. Try resolving the fault instead of taking fault again and again. If
-the host attempts to write to the guest private memory then send the
-SIGBUS signal to kill the process. If the page level between the host and
-RMP entry does not match, then split the address to keep the RMP and host
-page levels in sync.
+Provide the APIs for the hypervisor to manage an SEV-SNP guest. The
+commands for SEV-SNP is defined in the SEV-SNP firmware specification.
 
 Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 ---
- arch/x86/mm/fault.c | 66 +++++++++++++++++++++++++++++++++++++++++++++
- include/linux/mm.h  |  6 ++++-
- mm/memory.c         | 13 +++++++++
- 3 files changed, 84 insertions(+), 1 deletion(-)
+ drivers/crypto/ccp/sev-dev.c | 24 ++++++++++++
+ include/linux/psp-sev.h      | 73 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 97 insertions(+)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 8b7a5757440e..f2d543b92f43 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -19,6 +19,7 @@
- #include <linux/uaccess.h>		/* faulthandler_disabled()	*/
- #include <linux/efi.h>			/* efi_crash_gracefully_on_page_fault()*/
- #include <linux/mm_types.h>
-+#include <linux/sev.h>			/* snp_lookup_rmpentry()	*/
- 
- #include <asm/cpufeature.h>		/* boot_cpu_has, ...		*/
- #include <asm/traps.h>			/* dotraplinkage, ...		*/
-@@ -1202,6 +1203,60 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index 1321f6fb07c5..01edad9116f2 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -1025,6 +1025,30 @@ int sev_guest_df_flush(int *error)
  }
- NOKPROBE_SYMBOL(do_kern_addr_fault);
+ EXPORT_SYMBOL_GPL(sev_guest_df_flush);
  
-+static inline size_t pages_per_hpage(int level)
++int snp_guest_decommission(struct sev_data_snp_decommission *data, int *error)
 +{
-+	return page_level_size(level) / PAGE_SIZE;
++	return sev_do_cmd(SEV_CMD_SNP_DECOMMISSION, data, error);
 +}
++EXPORT_SYMBOL_GPL(snp_guest_decommission);
 +
-+/*
-+ * Return 1 if the caller need to retry, 0 if it the address need to be split
-+ * in order to resolve the fault.
++int snp_guest_df_flush(int *error)
++{
++	return sev_do_cmd(SEV_CMD_SNP_DF_FLUSH, NULL, error);
++}
++EXPORT_SYMBOL_GPL(snp_guest_df_flush);
++
++int snp_guest_page_reclaim(struct sev_data_snp_page_reclaim *data, int *error)
++{
++	return sev_do_cmd(SEV_CMD_SNP_PAGE_RECLAIM, data, error);
++}
++EXPORT_SYMBOL_GPL(snp_guest_page_reclaim);
++
++int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *error)
++{
++	return sev_do_cmd(SEV_CMD_SNP_DBG_DECRYPT, data, error);
++}
++EXPORT_SYMBOL_GPL(snp_guest_dbg_decrypt);
++
+ static void sev_exit(struct kref *ref)
+ {
+ 	misc_deregister(&misc_dev->misc);
+diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+index 1b53e8782250..f2105a8755f9 100644
+--- a/include/linux/psp-sev.h
++++ b/include/linux/psp-sev.h
+@@ -860,6 +860,64 @@ int sev_guest_df_flush(int *error);
+  */
+ int sev_guest_decommission(struct sev_data_decommission *data, int *error);
+ 
++/**
++ * snp_guest_df_flush - perform SNP DF_FLUSH command
++ *
++ * @sev_ret: sev command return code
++ *
++ * Returns:
++ * 0 if the sev successfully processed the command
++ * -%ENODEV    if the sev device is not available
++ * -%ENOTSUPP  if the sev does not support SEV
++ * -%ETIMEDOUT if the sev command timed out
++ * -%EIO       if the sev returned a non-zero return code
 + */
-+static int handle_user_rmp_page_fault(struct pt_regs *regs, unsigned long error_code,
-+				      unsigned long address)
++int snp_guest_df_flush(int *error);
++
++/**
++ * snp_guest_decommission - perform SNP_DECOMMISSION command
++ *
++ * @decommission: sev_data_decommission structure to be processed
++ * @sev_ret: sev command return code
++ *
++ * Returns:
++ * 0 if the sev successfully processed the command
++ * -%ENODEV    if the sev device is not available
++ * -%ENOTSUPP  if the sev does not support SEV
++ * -%ETIMEDOUT if the sev command timed out
++ * -%EIO       if the sev returned a non-zero return code
++ */
++int snp_guest_decommission(struct sev_data_snp_decommission *data, int *error);
++
++/**
++ * snp_guest_page_reclaim - perform SNP_PAGE_RECLAIM command
++ *
++ * @decommission: sev_snp_page_reclaim structure to be processed
++ * @sev_ret: sev command return code
++ *
++ * Returns:
++ * 0 if the sev successfully processed the command
++ * -%ENODEV    if the sev device is not available
++ * -%ENOTSUPP  if the sev does not support SEV
++ * -%ETIMEDOUT if the sev command timed out
++ * -%EIO       if the sev returned a non-zero return code
++ */
++int snp_guest_page_reclaim(struct sev_data_snp_page_reclaim *data, int *error);
++
++/**
++ * snp_guest_dbg_decrypt - perform SEV SNP_DBG_DECRYPT command
++ *
++ * @sev_ret: sev command return code
++ *
++ * Returns:
++ * 0 if the sev successfully processed the command
++ * -%ENODEV    if the sev device is not available
++ * -%ENOTSUPP  if the sev does not support SEV
++ * -%ETIMEDOUT if the sev command timed out
++ * -%EIO       if the sev returned a non-zero return code
++ */
++int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *error);
++
+ void *psp_copy_user_blob(u64 uaddr, u32 len);
+ 
+ #else	/* !CONFIG_CRYPTO_DEV_SP_PSP */
+@@ -887,6 +945,21 @@ sev_issue_cmd_external_user(struct file *filep, unsigned int id, void *data, int
+ 
+ static inline void *psp_copy_user_blob(u64 __user uaddr, u32 len) { return ERR_PTR(-EINVAL); }
+ 
++static inline int
++snp_guest_decommission(struct sev_data_snp_decommission *data, int *error) { return -ENODEV; }
++
++static inline int snp_guest_df_flush(int *error) { return -ENODEV; }
++
++static inline int snp_guest_page_reclaim(struct sev_data_snp_page_reclaim *data, int *error)
 +{
-+	int rmp_level, level;
-+	pte_t *pte;
-+	u64 pfn;
-+
-+	pte = lookup_address_in_mm(current->mm, address, &level);
-+
-+	/*
-+	 * It can happen if there was a race between an unmap event and
-+	 * the RMP fault delivery.
-+	 */
-+	if (!pte || !pte_present(*pte))
-+		return 1;
-+
-+	pfn = pte_pfn(*pte);
-+
-+	/* If its large page then calculte the fault pfn */
-+	if (level > PG_LEVEL_4K) {
-+		unsigned long mask;
-+
-+		mask = pages_per_hpage(level) - pages_per_hpage(level - 1);
-+		pfn |= (address >> PAGE_SHIFT) & mask;
-+	}
-+
-+	/*
-+	 * If its a guest private page, then the fault cannot be resolved.
-+	 * Send a SIGBUS to terminate the process.
-+	 */
-+	if (snp_lookup_rmpentry(pfn, &rmp_level)) {
-+		do_sigbus(regs, error_code, address, VM_FAULT_SIGBUS);
-+		return 1;
-+	}
-+
-+	/*
-+	 * The backing page level is higher than the RMP page level, request
-+	 * to split the page.
-+	 */
-+	if (level > rmp_level)
-+		return 0;
-+
-+	return 1;
++	return -ENODEV;
 +}
 +
- /*
-  * Handle faults in the user portion of the address space.  Nothing in here
-  * should check X86_PF_USER without a specific justification: for almost
-@@ -1299,6 +1354,17 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	if (error_code & X86_PF_INSTR)
- 		flags |= FAULT_FLAG_INSTRUCTION;
- 
-+	/*
-+	 * If its an RMP violation, try resolving it.
-+	 */
-+	if (error_code & X86_PF_RMP) {
-+		if (handle_user_rmp_page_fault(regs, error_code, address))
-+			return;
-+
-+		/* Ask to split the page */
-+		flags |= FAULT_FLAG_PAGE_SPLIT;
-+	}
-+
- #ifdef CONFIG_X86_64
- 	/*
- 	 * Faults in the vsyscall page might need emulation.  The
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7ca22e6e694a..74a53c146365 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -447,6 +447,8 @@ extern pgprot_t protection_map[16];
-  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
-  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
-  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
-+ * @FAULT_FLAG_PAGE_SPLIT: The fault was due page size mismatch, split the
-+ *  region to smaller page size and retry.
-  *
-  * About @FAULT_FLAG_ALLOW_RETRY and @FAULT_FLAG_TRIED: we can specify
-  * whether we would allow page faults to retry by specifying these two
-@@ -478,6 +480,7 @@ enum fault_flag {
- 	FAULT_FLAG_REMOTE =		1 << 7,
- 	FAULT_FLAG_INSTRUCTION =	1 << 8,
- 	FAULT_FLAG_INTERRUPTIBLE =	1 << 9,
-+	FAULT_FLAG_PAGE_SPLIT =		1 << 10,
- };
- 
- /*
-@@ -517,7 +520,8 @@ static inline bool fault_flag_allow_retry_first(enum fault_flag flags)
- 	{ FAULT_FLAG_USER,		"USER" }, \
- 	{ FAULT_FLAG_REMOTE,		"REMOTE" }, \
- 	{ FAULT_FLAG_INSTRUCTION,	"INSTRUCTION" }, \
--	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }
-+	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }, \
-+	{ FAULT_FLAG_PAGE_SPLIT,	"PAGESPLIT" }
- 
- /*
-  * vm_fault is filled by the pagefault handler and passed to the vma's
-diff --git a/mm/memory.c b/mm/memory.c
-index 747a01d495f2..27e6ccec3fc1 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4589,6 +4589,15 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
- 	return 0;
- }
- 
-+static int handle_split_page_fault(struct vm_fault *vmf)
++static inline int snp_guest_dbg_decrypt(struct sev_data_snp_dbg *data, int *error)
 +{
-+	if (!IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
-+		return VM_FAULT_SIGBUS;
-+
-+	__split_huge_pmd(vmf->vma, vmf->pmd, vmf->address, false, NULL);
-+	return 0;
++	return -ENODEV;
 +}
 +
- /*
-  * By the time we get here, we already hold the mm semaphore
-  *
-@@ -4666,6 +4675,10 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
- 				pmd_migration_entry_wait(mm, vmf.pmd);
- 			return 0;
- 		}
-+
-+		if (flags & FAULT_FLAG_PAGE_SPLIT)
-+			return handle_split_page_fault(&vmf);
-+
- 		if (pmd_trans_huge(vmf.orig_pmd) || pmd_devmap(vmf.orig_pmd)) {
- 			if (pmd_protnone(vmf.orig_pmd) && vma_is_accessible(vma))
- 				return do_huge_pmd_numa_page(&vmf);
+ #endif	/* CONFIG_CRYPTO_DEV_SP_PSP */
+ 
+ #endif	/* __PSP_SEV_H__ */
 -- 
 2.17.1
 
