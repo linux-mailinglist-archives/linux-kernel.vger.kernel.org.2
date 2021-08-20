@@ -2,88 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCFB3F2E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9673F2E5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240957AbhHTOqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:46:18 -0400
-Received: from mout.gmx.net ([212.227.17.20]:47153 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240913AbhHTOqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629470733;
-        bh=n4X6DJOEqFwEFWpjfOg65FUzEilPXcYTNaRllmu5jVU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=idfM1A6NKdXmsvnI2W3oiGiEPVveAGs6nSxtGKjir7ums3mHn52crhIQ55AIwFnwi
-         4CFCsAngLMp1CLgAs//IVxPkMZTflSy4XHkv4wDywJxz/moPFlAV+VcbtLx05oAt/2
-         vOPUZQud/9StHeRbgXdjc/8lpAyqSBwlEMq/4GxE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MI5QF-1mJct82dF9-00F9vN; Fri, 20
- Aug 2021 16:45:33 +0200
-Date:   Fri, 20 Aug 2021 16:45:15 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     kernelnewbies@kernelnewbies.org, linux-kernel@vger.kernel.org
-Subject: Contributing to drivers/staging area
-Message-ID: <20210820144515.GA5479@titan>
+        id S240921AbhHTOry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240894AbhHTOrx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:47:53 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41630C061575;
+        Fri, 20 Aug 2021 07:47:15 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id q21so17707299ljj.6;
+        Fri, 20 Aug 2021 07:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CRUNiHmzilQZfb/V+s5DKq2XSbVm2taM5+A4BTzCW/0=;
+        b=mETpwM00S0K97/cFMdZmGjex1FryJgGdJT71eRtoHCkn6biNSrTuBKJ/stGFLHgHcX
+         09TE+jFSM7qaecGe9//ebbXG8YFiZNuYywkFjA3pgG5eJRr+Rw/Tn8W2OKDUYl7XpcKf
+         tCyFYfIL2lUn/IR6cf0HIHOfXgj9gOkyVdZnKyenn5NIBFwqr40CZA2DJm7Qc7+e6s9w
+         EiWrlja8SfcOpZ7S/WNG7sUPIHFWO9pEX2fTGW8ufa7WkQwKwSpTHYkeSeCDYxTrs3LA
+         caF2IcV093ic+GD06yqQy961m0RkBsYeu8DM2+K9jGNGaKYBTSAlCWZV5IWvS/ov6vWA
+         +RMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CRUNiHmzilQZfb/V+s5DKq2XSbVm2taM5+A4BTzCW/0=;
+        b=OexvD7SEmbRoouXhCl+3yjy1lZ+wQiSUYiCVtGQCWuQDXU9vUvtwVm7BvwWIqpPO+D
+         fwNJCEsF4mNkHMdL2rrv6MCMnfcyDzVm/oTz2h8RBNbMQTlLeVZrZVDgRkbAclkGpxeE
+         fB8nwj88EQxZdGaEpjx8T/Y2WcMVKbEPZ9lyQ/7pgmeWzD2MykTKxyjk1PGFB8OGr6AB
+         zcs5CiICQz2b/XjrY0HK14zRuVHBupm0NyJX4D6T7iIrfvaDx1SVnFqSm7B9dtAWBNdy
+         8mK+/Ll3AifUHT4hBP0eeOMH1ratEuYo1uDOlqdulHeRHtXAfBwBrQtUfGt7SwWSibU1
+         7V8w==
+X-Gm-Message-State: AOAM531F29lUO1kLyWubJVA2fmA6iObsYbrP7F4/rwBXtW4tbr11CHeb
+        6I+LOcGPeUbwRCJxKprTl3Q=
+X-Google-Smtp-Source: ABdhPJxq7MsiQCnVgrhyitPx2OiBfMiCStUaB6gU+RrxR+zuozes64arhndOnVXmKSmB7E2MO3+EUA==
+X-Received: by 2002:a2e:b4a1:: with SMTP id q1mr16376759ljm.221.1629470833618;
+        Fri, 20 Aug 2021 07:47:13 -0700 (PDT)
+Received: from localhost.localdomain (h-62-63-208-27.A230.priv.bahnhof.se. [62.63.208.27])
+        by smtp.googlemail.com with ESMTPSA id y14sm552766lji.89.2021.08.20.07.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 07:47:13 -0700 (PDT)
+From:   Niklas Lantau <niklaslantau@gmail.com>
+To:     jikos@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Lantau <niklaslantau@gmail.com>
+Subject: [PATCH] Hid: hid-logitech-hidpp: fixed coding style issues
+Date:   Fri, 20 Aug 2021 16:45:27 +0200
+Message-Id: <20210820144527.19137-1-niklaslantau@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:QhWN7jIhqC2aeTk5nWuLmHyS2pZv/McCiP4y0+OQaSj/UqM/k2h
- S/1WfoD24D/81q22LRC147nVYVpbTjT9A2uuLnfvRhYVV3eU8+u8kh/BwCRbK2hydLDxCyN
- tRt9hM5v3AVSvlMPSE9C9p6jlhT9lmcyKDQLRVDa6r27ZwSH+3av3ywnS4IlxiEw9KwfKWp
- ycLanZ6Q42wpSyS08oxsQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qcbXpxToF8k=:C9lhMGN9JtPeQtZat2FD98
- A7XWyh19a+tyD6ZNTcWXldIcE4wBkypLo0TvAvABkZEJqx5UDz3NdaDUqr7BDIo6nB0+LLVXt
- vVAiFrlF27Ct58fjNFE4L8rXv2Ysw3aCHbBNiKHPyQTKI+csxR7Oj0+BcPMsUicUmXn6iEznf
- wNv/PYF+9eD6XKA5yk3o7EYNcAgOqXR81T/Gjc4ET1V/2568ZGDftENKzJz4egAEmL+SZ7JYa
- GuLPGS0bZ6m3WDTUGpSvAqZW+R/jFh26qQAjYODrtnn1x0zqGB+9l/8uVArFvxwIERMBoKLMQ
- u2EEFolKre71dsWlcMnZqcCENcgaIiOoeRbozdNvrwudtPRuBhlIVdoeOYFN1H3Vnl9pBOLcC
- /ogoDa9uNINvSVG/f8EX3zsRTlha+B0SDhexgmvxlq3+/RUO1qZ7a4EsKVhArhOWFWNhaiqO7
- e5gGSvNJX0U4advtGJ16Q9q8gKy/KYuYNJdvnyttNZW3ciRCiVX+j+cxSA7dZo+2c7mPA77gv
- FCYXmyNRkwTxycsxFHWLVt3nMccJqI3wN8OJeQ9PaP1qXyfUKBMC7Q0ba+H4zyXSkL9ezNfpV
- EhkAZzbdTk/6WfibvUMLJDkDe7C3CdC/vxVqMqqH0SQcWNLAPpm7pck+X6lhu7GA2OjWrDoOU
- 1U+Oz+TO/fVWRvG8TbRY+R5/MWKvMAW0w0dBKL1qcagzhrPJx2tpwBLH+znNZY2+WeRy5eqoH
- EgA6Nb/0BAMu1x29qUk37SQJMUvO7cy/SD90IEsOKdL25b4CpoYJtYfff7ydBgltK4UdDKpmF
- j463bD7djUiHJjL8dAaqJ2x6yR5CPpBAxQhhoMwE9zYg7No/qHENju3VAcmQiUu+5EpYKciI7
- n0wjWLNexgNmy4JtVLj8DllJo8zX2wvPi2ZN/xNz1jpLrj/XjmXeOAcKHoC3fq7kIfpqEWbMN
- zqEy6b5q6zyARTRkHp4GlKSWol/g9K0JLD90PWylTBgQmGYDgwr0gnrK6ec7vuk9pYkmg4UkA
- J82JCHGVfCzGp8/N2jqr7lG2JVPezCWDqOtrI8RDhnJZpjNczBcJh+t8OIT8zIi3YwHp+aM2Z
- EsvOorG4Ya8n9D5T5o0wuQZN+o/E1wQDRjOSLQREVLeMZjEwK9NDpu/UQ==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Fixed coding style issues that generated 5 errors and 10 warnings.
 
-I am a kernel newbie in the path to find an area where to contribute
-on. I have sent some patches before (simple ones) but I would like
-to find some driver to contribute on and if possible mantain in the
-future. Due to the big amount of drivers in staging, and my lack
-of experience and specific hardware:
+Signed-off-by: Niklas Lantau <niklaslantau@gmail.com>
+---
+ drivers/hid/hid-logitech-hidpp.c | 195 ++++++++++++++++---------------
+ 1 file changed, 101 insertions(+), 94 deletions(-)
 
-Are there any driver in the staging area that not requires specific
-hardware? I have only access to an old laptop with 4 processors:
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 61635e629469..8fbf65d74c0f 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -1086,30 +1086,32 @@ static int hidpp20_batterylevel_map_status_capacity(u8 data[3], int *capacity,
+ 	 * For all other states the device reports 0 (unknown).
+ 	 */
+ 	switch (data[2]) {
+-		case 0: /* discharging (in use) */
+-			status = POWER_SUPPLY_STATUS_DISCHARGING;
+-			*level = hidpp_map_battery_level(*capacity);
+-			break;
+-		case 1: /* recharging */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		case 2: /* charge in final stage */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		case 3: /* charge complete */
+-			status = POWER_SUPPLY_STATUS_FULL;
+-			*level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
+-			*capacity = 100;
+-			break;
+-		case 4: /* recharging below optimal speed */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		/* 5 = invalid battery type
+-		   6 = thermal error
+-		   7 = other charging error */
+-		default:
+-			status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-			break;
++	case 0: /* discharging (in use) */
++		status = POWER_SUPPLY_STATUS_DISCHARGING;
++		*level = hidpp_map_battery_level(*capacity);
++		break;
++	case 1: /* recharging */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case 2: /* charge in final stage */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case 3: /* charge complete */
++		status = POWER_SUPPLY_STATUS_FULL;
++		*level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
++		*capacity = 100;
++		break;
++	case 4: /* recharging below optimal speed */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	/*
++	 * 5 = invalid battery type
++	 * 6 = thermal error
++	 * 7 = other charging error
++	 */
++	default:
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		break;
+ 	}
+ 
+ 	return status;
+@@ -1287,15 +1289,12 @@ static int hidpp20_battery_map_status_voltage(u8 data[3], int *voltage,
+ 		status = POWER_SUPPLY_STATUS_DISCHARGING;
+ 
+ 	*charge_type = POWER_SUPPLY_CHARGE_TYPE_STANDARD;
+-	if (test_bit(3, &flags)) {
++	if (test_bit(3, &flags))
+ 		*charge_type = POWER_SUPPLY_CHARGE_TYPE_FAST;
+-	}
+-	if (test_bit(4, &flags)) {
++	if (test_bit(4, &flags))
+ 		*charge_type = POWER_SUPPLY_CHARGE_TYPE_TRICKLE;
+-	}
+-	if (test_bit(5, &flags)) {
++	if (test_bit(5, &flags))
+ 		*level = POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
+-	}
+ 
+ 	*voltage = get_unaligned_be16(data);
+ 
+@@ -1458,24 +1457,24 @@ static int hidpp20_unifiedbattery_map_status(struct hidpp_device *hidpp,
+ 	int status;
+ 
+ 	switch (charging_status) {
+-		case 0: /* discharging */
+-			status = POWER_SUPPLY_STATUS_DISCHARGING;
+-			break;
+-		case 1: /* charging */
+-		case 2: /* charging slow */
+-			status = POWER_SUPPLY_STATUS_CHARGING;
+-			break;
+-		case 3: /* complete */
+-			status = POWER_SUPPLY_STATUS_FULL;
+-			break;
+-		case 4: /* error */
+-			status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-			hid_info(hidpp->hid_dev, "%s: charging error",
+-				 hidpp->name);
+-			break;
+-		default:
+-			status = POWER_SUPPLY_STATUS_NOT_CHARGING;
+-			break;
++	case 0: /* discharging */
++		status = POWER_SUPPLY_STATUS_DISCHARGING;
++		break;
++	case 1: /* charging */
++	case 2: /* charging slow */
++		status = POWER_SUPPLY_STATUS_CHARGING;
++		break;
++	case 3: /* complete */
++		status = POWER_SUPPLY_STATUS_FULL;
++		break;
++	case 4: /* error */
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		hid_info(hidpp->hid_dev, "%s: charging error",
++				hidpp->name);
++		break;
++	default:
++		status = POWER_SUPPLY_STATUS_NOT_CHARGING;
++		break;
+ 	}
+ 
+ 	return status;
+@@ -1624,44 +1623,44 @@ static int hidpp_battery_get_property(struct power_supply *psy,
+ 	struct hidpp_device *hidpp = power_supply_get_drvdata(psy);
+ 	int ret = 0;
+ 
+-	switch(psp) {
+-		case POWER_SUPPLY_PROP_STATUS:
+-			val->intval = hidpp->battery.status;
+-			break;
+-		case POWER_SUPPLY_PROP_CAPACITY:
+-			val->intval = hidpp->battery.capacity;
+-			break;
+-		case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
+-			val->intval = hidpp->battery.level;
+-			break;
+-		case POWER_SUPPLY_PROP_SCOPE:
+-			val->intval = POWER_SUPPLY_SCOPE_DEVICE;
+-			break;
+-		case POWER_SUPPLY_PROP_ONLINE:
+-			val->intval = hidpp->battery.online;
+-			break;
+-		case POWER_SUPPLY_PROP_MODEL_NAME:
+-			if (!strncmp(hidpp->name, "Logitech ", 9))
+-				val->strval = hidpp->name + 9;
+-			else
+-				val->strval = hidpp->name;
+-			break;
+-		case POWER_SUPPLY_PROP_MANUFACTURER:
+-			val->strval = "Logitech";
+-			break;
+-		case POWER_SUPPLY_PROP_SERIAL_NUMBER:
+-			val->strval = hidpp->hid_dev->uniq;
+-			break;
+-		case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+-			/* hardware reports voltage in in mV. sysfs expects uV */
+-			val->intval = hidpp->battery.voltage * 1000;
+-			break;
+-		case POWER_SUPPLY_PROP_CHARGE_TYPE:
+-			val->intval = hidpp->battery.charge_type;
+-			break;
+-		default:
+-			ret = -EINVAL;
+-			break;
++	switch (psp) {
++	case POWER_SUPPLY_PROP_STATUS:
++		val->intval = hidpp->battery.status;
++		break;
++	case POWER_SUPPLY_PROP_CAPACITY:
++		val->intval = hidpp->battery.capacity;
++		break;
++	case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
++		val->intval = hidpp->battery.level;
++		break;
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
++		break;
++	case POWER_SUPPLY_PROP_ONLINE:
++		val->intval = hidpp->battery.online;
++		break;
++	case POWER_SUPPLY_PROP_MODEL_NAME:
++		if (!strncmp(hidpp->name, "Logitech ", 9))
++			val->strval = hidpp->name + 9;
++		else
++			val->strval = hidpp->name;
++		break;
++	case POWER_SUPPLY_PROP_MANUFACTURER:
++		val->strval = "Logitech";
++		break;
++	case POWER_SUPPLY_PROP_SERIAL_NUMBER:
++		val->strval = hidpp->hid_dev->uniq;
++		break;
++	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
++		/* hardware reports voltage in mV. sysfs expects uV */
++		val->intval = hidpp->battery.voltage * 1000;
++		break;
++	case POWER_SUPPLY_PROP_CHARGE_TYPE:
++		val->intval = hidpp->battery.charge_type;
++		break;
++	default:
++		ret = -EINVAL;
++		break;
+ 	}
+ 
+ 	return ret;
+@@ -3190,7 +3189,9 @@ static int lg_dinovo_input_mapping(struct hid_device *hdev, struct hid_input *hi
+ 		return 0;
+ 
+ 	switch (usage->hid & HID_USAGE) {
+-	case 0x00d: lg_map_key_clear(KEY_MEDIA);	break;
++	case 0x00d:
++		lg_map_key_clear(KEY_MEDIA);
++		break;
+ 	default:
+ 		return 0;
+ 	}
+@@ -3620,8 +3621,10 @@ static int hidpp_raw_event(struct hid_device *hdev, struct hid_report *report,
+ 		break;
+ 	}
+ 
+-	/* If no report is available for further processing, skip calling
+-	 * raw_event of subclasses. */
++	/*
++	 * If no report is available for further processing, skip calling
++	 * raw_event of subclasses.
++	 */
+ 	if (ret != 0)
+ 		return ret;
+ 
+@@ -3681,9 +3684,11 @@ static int hidpp_initialize_battery(struct hidpp_device *hidpp)
+ 		if (hidpp->quirks & HIDPP_QUIRK_CLASS_K750)
+ 			ret = hidpp_solar_request_battery_event(hidpp);
+ 		else {
+-			/* we only support one battery feature right now, so let's
+-			   first check the ones that support battery level first
+-			   and leave voltage for last */
++			/*
++			 * we only support one battery feature right now, so let's
++			 * first check the ones that support battery level first
++			 * and leave voltage for last
++			 */
+ 			ret = hidpp20_query_battery_info_1000(hidpp);
+ 			if (ret)
+ 				ret = hidpp20_query_battery_info_1004(hidpp);
+@@ -3859,8 +3864,10 @@ static void hidpp_connect_event(struct hidpp_device *hidpp)
+ 			return;
+ 	}
+ 
+-	/* the device is already connected, we can ask for its name and
+-	 * protocol */
++	/*
++	 * the device is already connected, we can ask for its name and
++	 * protocol
++	 */
+ 	if (!hidpp->protocol_major) {
+ 		ret = hidpp_root_get_protocol_version(hidpp);
+ 		if (ret) {
+-- 
+2.33.0
 
-vendor_id	: GenuineIntel
-cpu family	: 6
-model		: 37
-model name	: Intel(R) Core(TM) i3 CPU       M 370  @ 2.40GHz
-
-Can I find a driver to contribute on with my machine requirements?
-If yes, any advise to select one would be greatly appreciated.
-
-I would like to improve the driver until get it out from staging ;)
-And then maintain it.
-
-Another option for me if there are no drivers would be create one
-from zero. But I don't have any idea of useful driver. Any advise
-and ideas here would be also great appreciated.
-
-Thanks in advance.
-
-Regards,
-Len
