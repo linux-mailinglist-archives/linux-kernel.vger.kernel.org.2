@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C113F318F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369F33F3196
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhHTQjW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Aug 2021 12:39:22 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:40555 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229772AbhHTQjV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:39:21 -0400
-Received: from MTA-07-4.privateemail.com (mta-07-1.privateemail.com [198.54.122.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id A470A80514
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 12:38:42 -0400 (EDT)
-Received: from mta-07.privateemail.com (localhost [127.0.0.1])
-        by mta-07.privateemail.com (Postfix) with ESMTP id 9C5391800236;
-        Fri, 20 Aug 2021 12:38:40 -0400 (EDT)
-Received: from APP-04 (unknown [10.50.14.154])
-        by mta-07.privateemail.com (Postfix) with ESMTPA id 5980D180022D;
-        Fri, 20 Aug 2021 12:38:40 -0400 (EDT)
-Date:   Fri, 20 Aug 2021 12:38:40 -0400 (EDT)
-From:   Jordy Zomer <jordy@pwning.systems>
-To:     Kees Cook <keescook@chromium.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Message-ID: <209705133.1285234.1629477520318@privateemail.com>
-In-Reply-To: <202108200904.81ED4AA52@keescook>
-References: <20210820043339.2151352-1-jordy@pwning.systems>
- <0874a50b61cfaf7c817cab7344c49c1641c1fd10.camel@HansenPartnership.com>
- <202108200904.81ED4AA52@keescook>
-Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
+        id S232135AbhHTQkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:40:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231318AbhHTQj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 12:39:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 294CF610A3;
+        Fri, 20 Aug 2021 16:39:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629477561;
+        bh=fQVEnoDE2Gjbt5CEfpajFLqE2D9pqoShMYb2SpVXfmc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eqD+1vSJQ9VAzRyAVh6ORjz/OOen6ChPbsPPA0Bd0oIhpqN3zbr4stgPyj8ufqUON
+         EwJAhVaaWdzGdoYVzIy+s0h3KD/7XRsRaBMidPklVN23TWEeNjvHs5eXor1QeL9BR/
+         VqBlWHodQxCuUDwuKOrh+3idz0+VQgbdm13oCnS0XZw335YK54B0nxT4luICeHe6bP
+         93+t84fNHACxCtgsuJISmHnMyaKrOjSZYi3oidm1CJTzOS8rm7+XthOEbGSZfjTPO4
+         wKdn9pCXwRZBoCFSwwmvRzFZoQQzKictNDnW9EmUe/Ufc9xH7wgMK9eYYKJSbmE4eW
+         wvO0/oXmlL4rA==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ebiederm@xmission.com, david@redhat.com, willy@infradead.org,
+        linux-nfs@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-doc@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
+        akpm@linux-foundation.org, luto@kernel.org, bfields@fieldses.org,
+        rostedt@goodmis.org
+Subject: [PATCH v3 0/2] fs: remove support for mandatory locking
+Date:   Fri, 20 Aug 2021 12:39:17 -0400
+Message-Id: <20210820163919.435135-1-jlayton@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.5-Rev17
-X-Originating-Client: open-xchange-appsuite
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi There!
+v3: slight revision to verbiage, and use pr_warn_once
 
-Because this is a global variable, it appears to be exploitable. Either we generate a sufficient number of processes to achieve this counter, or you increase the open file limit with ulimit or sysctl. Unless the kernel has a hard restriction on the number of potential file descriptors that I'm not aware of.
+The first patch in this series adds a new warning that should pop on
+kernels that have mandatory locking enabled when someone mounts a
+filesystem with -o mand. The second patch removes support for mandatory
+locking altogether.
 
-In any case, it's probably a good idea to patch this to make it explicitly secure. If you discover a hard-limit in the kernel for open file descriptors, please let me know. I'm genuinely ​interested :D!
+What I think we probably want to do is apply the first to v5.14 before
+it ships and allow the new warning to trickle out into stable kernels.
+Then we can merge the second patch in v5.15 to go ahead and remove it.
 
-Best Regards,
+Sound like a plan?
 
-Jordy
+Jeff Layton (2):
+  fs: warn about impending deprecation of mandatory locks
+  fs: remove mandatory file locking support
 
-> On 08/20/2021 12:05 PM Kees Cook <keescook@chromium.org> wrote:
-> 
->  
-> On Fri, Aug 20, 2021 at 07:57:25AM -0700, James Bottomley wrote:
-> > On Fri, 2021-08-20 at 06:33 +0200, Jordy Zomer wrote:
-> > > As you can see there's an `atomic_inc` for each `memfd` that is
-> > > opened in the `memfd_secret` syscall. If a local attacker succeeds to
-> > > open 2^32 memfd's, the counter will wrap around to 0. This implies
-> > > that you may hibernate again, even though there are still regions of
-> > > this secret memory, thereby bypassing the security check.
-> > 
-> > This isn't a possible attack, is it?  secret memory is per process and
-> > each process usually has an open fd limit of 1024.  That's not to say
-> > we shouldn't have overflow protection just in case, but I think today
-> > we don't have a problem.
-> 
-> But it's a _global_ setting, so it's still possible, though likely
-> impractical today. But refcount_t mitigates it and is a trivial change.
-> :)
-> 
-> -- 
-> Kees Cook
+ .../filesystems/mandatory-locking.rst         | 188 ------------------
+ fs/9p/vfs_file.c                              |  12 --
+ fs/Kconfig                                    |  10 -
+ fs/afs/flock.c                                |   4 -
+ fs/ceph/locks.c                               |   3 -
+ fs/gfs2/file.c                                |   3 -
+ fs/locks.c                                    | 116 +----------
+ fs/namei.c                                    |   4 +-
+ fs/namespace.c                                |  25 +--
+ fs/nfs/file.c                                 |   4 -
+ fs/nfsd/nfs4state.c                           |  13 --
+ fs/nfsd/vfs.c                                 |  15 --
+ fs/ocfs2/locks.c                              |   4 -
+ fs/open.c                                     |   8 +-
+ fs/read_write.c                               |   7 -
+ fs/remap_range.c                              |  10 -
+ include/linux/fs.h                            |  84 --------
+ mm/mmap.c                                     |   6 -
+ mm/nommu.c                                    |   3 -
+ 19 files changed, 14 insertions(+), 505 deletions(-)
+ delete mode 100644 Documentation/filesystems/mandatory-locking.rst
+
+-- 
+2.31.1
+
