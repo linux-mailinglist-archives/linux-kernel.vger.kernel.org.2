@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A933F2659
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A233F265D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhHTFL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:11:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
+        id S234711AbhHTFOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 01:14:39 -0400
+Received: from ozlabs.org ([203.11.71.1]:37079 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231524AbhHTFLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 01:11:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC1966054E;
-        Fri, 20 Aug 2021 05:11:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1629436278;
-        bh=cc0SAzsXcx00EyeJ0FnbHDyCca6n3ae4I61WSDxYEwA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bvG0F0sKpl38gpuSoBBM0DZ34c97J/dKjpUWMG8mSl3eY714SZ4ZWdp1CQY8YNrA2
-         SPU8krSWxILdcGpNCLNNpl3SdCjAgi0zjp2U1rC0n6EVvrIEJaZlb50Q7cdfCLrPAX
-         lEVaPGgaOoS19JK0+ItRQJeLSQeMZf5dbV0xOzew=
-Date:   Thu, 19 Aug 2021 22:11:15 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Daniel Micay <danielmicay@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] percpu: Add __alloc_size attributes for better
- bounds checking
-Message-Id: <20210819221115.b3a34e280cfe748ad6a76b04@linux-foundation.org>
-In-Reply-To: <20210818214021.2476230-7-keescook@chromium.org>
-References: <20210818214021.2476230-1-keescook@chromium.org>
-        <20210818214021.2476230-7-keescook@chromium.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231524AbhHTFOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 01:14:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrVD70z9pz9sWl;
+        Fri, 20 Aug 2021 15:13:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629436439;
+        bh=FFwMZyVDDJYkNVRW7LKZlhnTymbqMXwb4a751zBqNlI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=X4IBDoEgYF/v01/iaadUuXSwPqVqKsZkzeWtfRDQdlJe48yGRadn6Iqc+sGyogvHx
+         juPRtKMU8U7kuXm/KWG0lIf9+DzEP9DGR0L0Ht5Ay5q9Wc/bY5LXFSgrbhtNWL6l7u
+         n7cbGieqjnso5rhwUxkjh2EDQzNDbeDdov+nI9RxBQvUMJWNf5N/mnaF4tPyXBMOIi
+         s7tp+5YzNylydXjm/vysB5znp/9GqUTWuXXVawMDPvzj3F3+SoLLFXp//Grla5sGAH
+         qPoqRq645IPM0hMeM8AfSH4IsLi+SHYy3llA8Vb6MBUctD4yv857SfJWRBbSeH+MsG
+         cY1jZSJSlIPKA==
+Date:   Fri, 20 Aug 2021 15:13:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the driver-core tree with the
+ pci-current tree
+Message-ID: <20210820151357.793f0b31@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/VJ8bW44c/+v6Uw6lBiiCgHp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 14:40:20 -0700 Kees Cook <keescook@chromium.org> wrote:
+--Sig_/VJ8bW44c/+v6Uw6lBiiCgHp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> As already done in GrapheneOS, add the __alloc_size attribute for
-> appropriate percpu allocator interfaces, to provide additional hinting
-> for better bounds checking, assisting CONFIG_FORTIFY_SOURCE and other
-> compiler optimizations.
-> 
+Hi all,
 
-Caught one, I assume:
+Today's linux-next merge of the driver-core tree got a conflict in:
 
-In file included from ./include/linux/string.h:262,
-                 from ./include/linux/bitmap.h:11,
-                 from ./include/linux/cpumask.h:12,
-                 from ./arch/x86/include/asm/cpumask.h:5,
-                 from ./arch/x86/include/asm/msr.h:11,
-                 from ./arch/x86/include/asm/processor.h:22,
-                 from ./arch/x86/include/asm/cpufeature.h:5,
-                 from ./arch/x86/include/asm/thread_info.h:53,
-                 from ./include/linux/thread_info.h:60,
-                 from ./arch/x86/include/asm/preempt.h:7,
-                 from ./include/linux/preempt.h:78,
-                 from ./include/linux/spinlock.h:55,
-                 from ./include/linux/mmzone.h:8,
-                 from ./include/linux/gfp.h:6,
-                 from ./include/linux/slab.h:15,
-                 from drivers/misc/lkdtm/heap.c:7:
-In function 'memset',
-    inlined from 'lkdtm_VMALLOC_LINEAR_OVERFLOW' at drivers/misc/lkdtm/heap.c:27:2:
-./include/linux/fortify-string.h:172:3: error: call to '__write_overflow' declared with attribute error: detected write beyond size of object passed as 1st parameter
-  172 |   __write_overflow();
-      |   ^~~~~~~~~~~~~~~~~~
-make[3]: *** [drivers/misc/lkdtm/heap.o] Error 1
-make[2]: *** [drivers/misc/lkdtm] Error 2
-make[1]: *** [drivers/misc] Error 2
-make: *** [drivers] Error 2
+  drivers/pci/pci-sysfs.c
 
-I want to get a kernel release out, so I'll hide
-mm-vmalloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
-for now.
+between commit:
 
+  045a9277b561 ("PCI/sysfs: Use correct variable for the legacy_mem sysfs o=
+bject")
+
+from the pci-current tree and commits:
+
+  93bb8e352a91 ("sysfs: Invoke iomem_get_mapping() from the sysfs open call=
+back")
+  f06aff924f97 ("sysfs: Rename struct bin_attribute member to f_mapping")
+
+from the driver-core tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/pci/pci-sysfs.c
+index 7bbf2673c7f2,f65382915f01..000000000000
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@@ -978,7 -978,7 +978,7 @@@ void pci_create_legacy_files(struct pci
+  	b->legacy_mem->size =3D 1024*1024;
+  	b->legacy_mem->attr.mode =3D 0600;
+  	b->legacy_mem->mmap =3D pci_mmap_legacy_mem;
+- 	b->legacy_mem->mapping =3D iomem_get_mapping();
+ -	b->legacy_io->f_mapping =3D iomem_get_mapping;
+++	b->legacy_mem->f_mapping =3D iomem_get_mapping;
+  	pci_adjust_legacy_attr(b, pci_mmap_mem);
+  	error =3D device_create_bin_file(&b->dev, b->legacy_mem);
+  	if (error)
+
+--Sig_/VJ8bW44c/+v6Uw6lBiiCgHp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEfOhUACgkQAVBC80lX
+0GyO5Af/UHl0cfe5EahYTXVXZYteh8JEB59/RIpM/YApGllq9qEc3L7mDUkXthw6
+YXXdJIVAhjkZMDKGOtNA7wiaPZzyk3iDZg49R9PQVw32Ux6KViubQInMA1mejrVb
+8QlpbiST46IaYvx4l1muIPdLz+jzOadJzv8SR+HOPOPqj6c+B/Vk63JLygKNy/hy
+OI7KO6Oaz7nDJVnw5LHZSLxn99CUEynOIhKcnRDemCalEJkXQdB0vgQFZ+8/wFjq
+vlYz6vXUjtngD8bNQddR3VhTbY1LPTjw1tljuPX11yfqECoK0EiLBXh5QCEJxV45
+uwDNpa5rM2QbBL1WrE8uLoPnFw76YA==
+=NEys
+-----END PGP SIGNATURE-----
+
+--Sig_/VJ8bW44c/+v6Uw6lBiiCgHp--
