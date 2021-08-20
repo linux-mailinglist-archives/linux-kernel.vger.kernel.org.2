@@ -2,165 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8156D3F2710
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F593F2715
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238546AbhHTGu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        id S238523AbhHTGx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:53:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhHTGu2 (ORCPT
+        with ESMTP id S231998AbhHTGxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:50:28 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32E4C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:49:51 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id t1so8221536pgv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:49:51 -0700 (PDT)
+        Fri, 20 Aug 2021 02:53:55 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39FDC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:53:17 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id q3so12518451edt.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=gouExDkcyZl3ijmObUC+G2ORUVV3VspK7d7Fu2DyAHg=;
-        b=nTPXXxylyEXDYBekIaAIzp+BtlWfWK9uk9zQ2AZQeRrD58IjWAI3Xax0m2/WDtnBA4
-         HZXtXcI8R8qZ1MFS7Th4L0ULWT98saZd4j8GUX7yb4Jj7ven42yOiobysolY2N2Pdsqz
-         rTgPY50k0Ct1FbBLrkGUtgBJMg9FdJMBML7aQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZV0k7Tiq6KI/tbutIIDiQigPzOBPpHO6yPvk1gd0d5k=;
+        b=M0Da5hEGnwOCOs+9ib49H1x8sY+AAW+vbbh7qhBDFsF1ysrVEJJuUE9wSZ6bR+Yx28
+         rhJrV2zL4eANa8t6Vrobm/GZhA2n1SzbLMmjSC6j9OpHThk4bvEWukaqDlcxpffxelW8
+         Z8s0sv0zg6LWOHPHxvb0PQMnpcSckb6snYdLB60ld/v6h4YzabwrdCXnrK5ohJznKtzQ
+         O6r2Ob/s19ifKQTQOLgeob0y0sCAQvkisWdoPeLxHkRTFlzxTiwqviRYyvma5GcWxlga
+         dmm+YumExxXwnl+nc5OYZT1iGuiiE2FZTDwuJp5Hq5QmMgGxSlBA5XJHZCICh6HLqtAF
+         CiCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=gouExDkcyZl3ijmObUC+G2ORUVV3VspK7d7Fu2DyAHg=;
-        b=chgT5DRuY2yxMyvit9QNs1eIROC2Z4H2YSxm4dPIi6RV7Vsvjerw2V5F4a8+HXpJo1
-         PIEllSXz35CRSCLoMvyxhWYAMOoFHtS1pv7N8lzedl//xmQNhECqeElapUhc/khQupPn
-         5IdMgr0aPpOxraaUhA3nPGmgjTayPGWLw4uUWxEzuKu2Y9b2HBBC0yim4hJN+g+Vnreo
-         AufjMCxpeiQzdSTrwujnuLcFDxSy/MDGVInJqwLo0DVGoy/Pg+mAxJ2w54udZdyRabkV
-         0Aw55He3XVjBdsqYUkrkLUktVHvYDjwyc4/qxbXrP/bSxpeTLin25EUYWeBfaksxgUsI
-         Pp0A==
-X-Gm-Message-State: AOAM530lsXk8Xc1BpYB18Sc4W+ZYBsCuehtLk0vp0vRzl5aLOGlP3Mqb
-        0gK0VRsoQG14CbmeB2siM5rX9g==
-X-Google-Smtp-Source: ABdhPJxWz/9TmQnG6a6Du0TX4lp94P5/KwicmwvaBeBO644dQYvRpxIV+9458y43F5RM9soOs6IFHQ==
-X-Received: by 2002:a63:3245:: with SMTP id y66mr17150880pgy.443.1629442191180;
-        Thu, 19 Aug 2021 23:49:51 -0700 (PDT)
-Received: from localhost ([2001:4479:e000:e400:a926:b5e4:f61:cefa])
-        by smtp.gmail.com with ESMTPSA id 22sm6475251pgn.88.2021.08.19.23.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 23:49:50 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
-        arnd@arndb.de, osandov@fb.com
-Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
-        shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v8 2/3] tty: hvc: pass DMA capable memory to put_chars()
-In-Reply-To: <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
-References: <20210818082122.166881-1-xianting.tian@linux.alibaba.com> <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
-Date:   Fri, 20 Aug 2021 16:49:47 +1000
-Message-ID: <87pmu8ehkk.fsf@linkitivity.dja.id.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZV0k7Tiq6KI/tbutIIDiQigPzOBPpHO6yPvk1gd0d5k=;
+        b=frQg4cNFn4ae8Qy87eADkLIR/vm+3vtEcyrihk5eaQ0k0dPFTq5J345gfk419iCxJE
+         gnUZ2OmxNeIhnHCPlN5V7bSgw/8odeFtZCToZav8MWQjEDHZRrGeNyg0whS4m1i2tKIR
+         vvozuo0VveXXpzs28ggJjOrLNEL8voXfl31NgIXVPRgxcVarWOu8cNK4TSQixqW7FlaP
+         EBwFLFZpasI4uk5Zr2APm1de/3ZqhDH8vNW5x74LZsgS9JBdo8hHS9k2vgJDG+Iz6vJG
+         JrtuBcJIHgvkMBIh/Kzr7nDRMMlPifyMXDghm+CX841liPwjLERbr8ku0wTJ4SXF8ZAK
+         KdGw==
+X-Gm-Message-State: AOAM532pZv+Tg3zHcmOYdD50TeNBKy3LZN6etko/EohwOyIYVPccFNKS
+        WNHopYzXruR6OqWvGwIfhU4yRD3kYHssn5u/rG0=
+X-Google-Smtp-Source: ABdhPJyUhHkMl7/Q9bGcIKdKvKoDfzstUmLlaEJbEonjdh6ZM40Ovy5v9kwJV21LF2yyDkuKJXqgUrYVofqxKdGCUjA=
+X-Received: by 2002:a05:6402:1606:: with SMTP id f6mr20556903edv.111.1629442396266;
+ Thu, 19 Aug 2021 23:53:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210819163056.GA9764@haolee.github.io> <CALvZod5m3PE1vBEaW+FoiByYHGJZiDF5TR-33dGXpH7BNNcvWw@mail.gmail.com>
+In-Reply-To: <CALvZod5m3PE1vBEaW+FoiByYHGJZiDF5TR-33dGXpH7BNNcvWw@mail.gmail.com>
+From:   Hao Lee <haolee.swjtu@gmail.com>
+Date:   Fri, 20 Aug 2021 14:53:05 +0800
+Message-ID: <CA+PpKPk8ocZO1HudfJ2manCrgV+A5Q2paz0g-k6DaxYnKt0zRg@mail.gmail.com>
+Subject: Re: [PATCH] mm: vmscan: consistent update to pgdeactivate and pgactivate
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xianting Tian <xianting.tian@linux.alibaba.com> writes:
-
-> As well known, hvc backend driver(eg, virtio-console) can register its
-> operations to hvc framework. The operations can contain put_chars(),
-> get_chars() and so on.
+On Fri, Aug 20, 2021 at 4:27 AM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> Some hvc backend may do dma in its operations. eg, put_chars() of
-> virtio-console. But in the code of hvc framework, it may pass DMA
-> incapable memory to put_chars() under a specific configuration, which
-> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
-
-We could also run into issues on powerpc where Andrew is working on
-adding vmap-stack but the opal hvc driver assumes that it is passed a
-buffer which is not in vmalloc space but in the linear mapping. So it
-would be good to fix this (or more clearly document what drivers can
-expect).
-
-> 1, c[] is on stack,
->    hvc_console_print():
-> 	char c[N_OUTBUF] __ALIGNED__;
-> 	cons_ops[index]->put_chars(vtermnos[index], c, i);
-> 2, ch is on stack,
->    static void hvc_poll_put_char(,,char ch)
->    {
-> 	struct tty_struct *tty = driver->ttys[0];
-> 	struct hvc_struct *hp = tty->driver_data;
-> 	int n;
+> On Thu, Aug 19, 2021 at 9:31 AM Hao Lee <haolee.swjtu@gmail.com> wrote:
+> >
+> > After the commit 912c05720f00 ("mm: vmscan: consistent update to
+> > pgrefill"), pgrefill is consistent with pgscan and pgsteal. Only under
+> > global reclaim, are they updated at system level. Apart from that,
+> > pgdeactivate is often used together with pgrefill to measure the
+> > deactivation efficiency and pgactivate is used together with
+> > pgscan to measure the reclaim efficiency. It's also necessary to
+> > make pgdeactivate and pgactivate consistent with this rule.
+> >
+> > Signed-off-by: Hao Lee <haolee@didiglobal.com>
 >
-> 	do {
-> 		n = hp->ops->put_chars(hp->vtermno, &ch, 1);
-> 	} while (n <= 0);
->    }
->
-> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
-> is passed to virtio-console by hvc framework in above code. But I think
-> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
-> from kmalloc area and do memcpy no matter the memory is in kmalloc area
-> or not. But most importantly, it should better be fixed in the hvc
-> framework, by changing it to never pass stack memory to the put_chars()
-> function in the first place. Otherwise, we still face the same issue if
-> a new hvc backend using dma added in the future.
->
-> In this patch, we make 'char out_buf[N_OUTBUF]' and 'chat out_ch' part
-> of 'struct hvc_struct', so both two buf are no longer the stack memory.
-> we can use it in above two cases separately.
->
-> Introduce another array(cons_outbufs[]) for buffer pointers next to
-> the cons_ops[] and vtermnos[] arrays. With the array, we can easily find
-> the buffer, instead of traversing hp list.
->
-> With the patch, we can remove the fix c4baad5029.
->
-> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-> Reviewed-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+> pgactivate and pgdeactivate are also updated in code paths other than
+> memory reclaim like mark_page_accessed() or madvise(COLD). Wouldn't
+> that impact your analysis of these metrics as well?
 
->  struct hvc_struct {
->  	struct tty_port port;
->  	spinlock_t lock;
->  	int index;
->  	int do_wakeup;
-> -	char *outbuf;
-> -	int outbuf_size;
->  	int n_outbuf;
->  	uint32_t vtermno;
->  	const struct hv_ops *ops;
-> @@ -48,6 +56,10 @@ struct hvc_struct {
->  	struct work_struct tty_resize;
->  	struct list_head next;
->  	unsigned long flags;
-> +	char out_ch;
-> +	char out_buf[N_OUTBUF] __ALIGNED__;
-> +	int outbuf_size;
-> +	char outbuf[0] __ALIGNED__;
+Thanks for pointing out this.
+These paths indeed increase the pgdeactivate and pgactivate counter, but they
+all can be seen as system-level. On the other hand, the deactivation and
+activation in the cgroup try_charge() direct reclaim path is cgroup-level,
+which is caused by artificial limits. If the system memory pressure is low, but
+a cgroup is going through aggressive memory reclaim, then the two metrics will
+increase continuously in both vmstat and memory.stat. I think this is not
+reasonable. Suppose we exclude them from the cgroup direct reclaim path. In
+that case, we can determine if the system level memory reclaim is hard to make
+progress by using pgdeactivate/pgrefill and pgactivate/pgscan roughly
+("roughly" means we temporarily ignore deactivation and activation in other
+paths). One can still get these metrics in both system-level and cgroup-level
+through memory.stat.
 
-I'm trying to understand this patch but I am finding it very difficult
-to understand what the difference between `out_buf` and `outbuf`
-(without the underscore) is supposed to be. `out_buf` is statically
-sized and the size of `outbuf` is supposed to depend on the arguments to
-hvc_alloc(), but I can't quite figure out what the roles of each one are
-and their names are confusingly similiar!
-
-I looked briefly at the older revisions of the series but it didn't make
-things much clearer.
-
-Could you give them clearer names?
-
-Also, looking at Documentation/process/deprecated.rst, it looks like
-maybe we want to use a 'flexible array member' instead:
-
-.. note:: If you are using struct_size() on a structure containing a zero-length
-        or a one-element array as a trailing array member, please refactor such
-        array usage and switch to a `flexible array member
-        <#zero-length-and-one-element-arrays>`_ instead.
-
-I think we want:
-
-> +	char outbuf[] __ALIGNED__;
-
-Kind regards,
-Daniel
+Regards,
+Hao Lee
