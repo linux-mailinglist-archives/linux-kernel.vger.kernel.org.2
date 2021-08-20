@@ -2,153 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DA73F2CC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BC83F2CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240694AbhHTNHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:07:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238220AbhHTNHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:07:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0D3460E9B;
-        Fri, 20 Aug 2021 13:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629464805;
-        bh=MJCKak8iu2aRCur+cdjp5giWug9nUW1JObsOHl8vAEY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jmw/qIdKwngMp+B9XaaobJVAWRsCAdk3fvxp7b01ZtwaFX5YJDgwtO99vk++8Ucph
-         o3XYQN3dUXg4064KbVPgP064D7ROf2ipoB4t20fHf/66Nv88PtPep2FufmAEtYKP0z
-         DPOVbF+kCWLQMMl40ig/EB2ioPljRocDXWppzKTay9D4i2zx1euZE0MtI+PY4xrMjr
-         UV31w5hrvAOzf3BYk2mpKTHEjyVN5nwTQobBpz62uXQ4eydwgBRQLxE0+OCdryb2r6
-         QZLHNU4Vf4DRmXTF2L8z1uoUyxkqzwLOz8T80C3njYJpkojZAZ2TNFRw7D48ggzHhi
-         KJc/E0spPlx7Q==
-Date:   Fri, 20 Aug 2021 16:06:41 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>
-Subject: Re: [PATCH net-next 3/6] devlink: Count struct devlink consumers
-Message-ID: <YR+o4cNFfg1JqDvJ@unreal>
-References: <cover.1628933864.git.leonro@nvidia.com>
- <d4d59d801f4521e562c9ecf2d8767077aaefb456.1628933864.git.leonro@nvidia.com>
- <20210816084741.1dd1c415@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YRqKCVbjTZaSrSy+@unreal>
- <20210816090700.313a54ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CO1PR11MB50895F0BA3FE20CD92D79CB6D6FD9@CO1PR11MB5089.namprd11.prod.outlook.com>
- <YRzA3zCKCgAtprwc@unreal>
- <CO1PR11MB5089A7B1E36B763F075E09FFD6FF9@CO1PR11MB5089.namprd11.prod.outlook.com>
+        id S240723AbhHTNJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240719AbhHTNJZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 09:09:25 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F4FC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:08:47 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id 90so4101417uax.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1jeLsd0F5nu8VxBSxWPjs9ij/vCzMSfR5Tmv5iuwd6s=;
+        b=WC/dbJiZXZbYao7JhIntQY4TZ71VEiAo3x28NE7fEM5kyH3E5QMkrYaKxo+tOHuBq2
+         4fOoN/8kF20QYOvTlDeczofK7BcIqjasNY7CBq53XfqL9k8ztpMQHfVcSzVO71rO64Zq
+         McT44tin8yfog5Tj3F9uEcMm8s9RXuEY0am/zJIYxZIPBOSKQ0gPSUGTqV2fLnNdUMyA
+         Udra5icYrRXmu3Bub8tb1oL++vAVtV4op8H5c4RaKOsboeh/aX+gQt/xKF7m6+TffsNV
+         KpFsGCqib0Qpb9uD4iaINA3IeiJAs50v1pCyq6JF3tpma3/8Ou1apbdGh5FgySUdxEte
+         6zRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1jeLsd0F5nu8VxBSxWPjs9ij/vCzMSfR5Tmv5iuwd6s=;
+        b=SpFQZ2Oau5GttBk2kZdF2/1OnrYCGEk3jrVnZSARXxMRI9eX8f4c/JC61oFeReDKDe
+         gx2jrFVxK8ajBBRZJ7IQBB0YUOwf1aOu3S34MoDBtonOPYLKs2Hffss+SAfy615TVS1c
+         4/K32a11m/2krcnxlA8t+vp3T6MRxnisPiPFLfl2WWQKX6oDVIHXPOmcq9gLecKLdQe5
+         LwIyKmiDlx8TVvinejutn+CxTV0ChPuNVzSaNBotMlUV5Zz9wrnqHKNe8mBrQRnnMCOc
+         JdE3e7qbSnwx8QPimhpER0ywTqafVTOAFcrAOEa+O+J8cr+Ir9dy1wIrvADtFpenaX8P
+         2TOg==
+X-Gm-Message-State: AOAM533NbQDzuwNrJUiVAwuF3X2KWII0xBoL0DeF+pBCL9cQitJ5V9AN
+        CqKasRN84Zblt9Zw5Zyp+Iwht96cwq+czcbUbF6gdA==
+X-Google-Smtp-Source: ABdhPJyudXWst0uOFOvLTh4dvpAObwIHCZFQbOR7Ax2SinJKzLNlpYWdAnSEO7YQ/BLnbTZWMq48nnebeaOpVOjUigE=
+X-Received: by 2002:ab0:60a9:: with SMTP id f9mr15039087uam.19.1629464926939;
+ Fri, 20 Aug 2021 06:08:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO1PR11MB5089A7B1E36B763F075E09FFD6FF9@CO1PR11MB5089.namprd11.prod.outlook.com>
+References: <20210817012754.8710-1-digetx@gmail.com> <20210817012754.8710-8-digetx@gmail.com>
+ <YR0UBi/ejy+oF4Hm@orome.fritz.box> <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
+ <YR04YHGEluqLIZeo@orome.fritz.box> <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
+ <YR6Mvips3HAntDy0@orome.fritz.box> <e17bbe8d-7c0f-fc3d-03c7-d75c54c24a43@gmail.com>
+ <YR+VDZzTihmpENp6@orome.fritz.box>
+In-Reply-To: <YR+VDZzTihmpENp6@orome.fritz.box>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 20 Aug 2021 15:08:10 +0200
+Message-ID: <CAPDyKFpJ+TK0w1GZEA7G=rtAjq5ipmVR4P0wy7uHiEGVWRk5yA@mail.gmail.com>
+Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 05:50:11PM +0000, Keller, Jacob E wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Wednesday, August 18, 2021 1:12 AM
-> > To: Keller, Jacob E <jacob.e.keller@intel.com>
-> > Cc: Jakub Kicinski <kuba@kernel.org>; David S . Miller <davem@davemloft.net>;
-> > Guangbin Huang <huangguangbin2@huawei.com>; Jiri Pirko <jiri@nvidia.com>;
-> > linux-kernel@vger.kernel.org; netdev@vger.kernel.org; Salil Mehta
-> > <salil.mehta@huawei.com>; Shannon Nelson <snelson@pensando.io>; Yisen
-> > Zhuang <yisen.zhuang@huawei.com>; Yufeng Mo <moyufeng@huawei.com>
-> > Subject: Re: [PATCH net-next 3/6] devlink: Count struct devlink consumers
-> > 
-> > On Mon, Aug 16, 2021 at 09:32:17PM +0000, Keller, Jacob E wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Jakub Kicinski <kuba@kernel.org>
-> > > > Sent: Monday, August 16, 2021 9:07 AM
-> > > > To: Leon Romanovsky <leon@kernel.org>
-> > > > Cc: David S . Miller <davem@davemloft.net>; Guangbin Huang
-> > > > <huangguangbin2@huawei.com>; Keller, Jacob E <jacob.e.keller@intel.com>;
-> > Jiri
-> > > > Pirko <jiri@nvidia.com>; linux-kernel@vger.kernel.org;
-> > netdev@vger.kernel.org;
-> > > > Salil Mehta <salil.mehta@huawei.com>; Shannon Nelson
-> > > > <snelson@pensando.io>; Yisen Zhuang <yisen.zhuang@huawei.com>; Yufeng
-> > > > Mo <moyufeng@huawei.com>
-> > > > Subject: Re: [PATCH net-next 3/6] devlink: Count struct devlink consumers
-> > > >
-> > > > On Mon, 16 Aug 2021 18:53:45 +0300 Leon Romanovsky wrote:
-> > > > > On Mon, Aug 16, 2021 at 08:47:41AM -0700, Jakub Kicinski wrote:
-> > > > > > On Sat, 14 Aug 2021 12:57:28 +0300 Leon Romanovsky wrote:
-> > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > >
-> > > > > > > The struct devlink itself is protected by internal lock and doesn't
-> > > > > > > need global lock during operation. That global lock is used to protect
-> > > > > > > addition/removal new devlink instances from the global list in use by
-> > > > > > > all devlink consumers in the system.
-> > > > > > >
-> > > > > > > The future conversion of linked list to be xarray will allow us to
-> > > > > > > actually delete that lock, but first we need to count all struct devlink
-> > > > > > > users.
-> > > > > >
-> > > > > > Not a problem with this set but to state the obvious the global devlink
-> > > > > > lock also protects from concurrent execution of all the ops which don't
-> > > > > > take the instance lock (DEVLINK_NL_FLAG_NO_LOCK). You most likely
-> > know
-> > > > > > this but I thought I'd comment on an off chance it helps.
-> > > > >
-> > > > > The end goal will be something like that:
-> > > > > 1. Delete devlink lock
-> > > > > 2. Rely on xa_lock() while grabbing devlink instance (past devlink_try_get)
-> > > > > 3. Convert devlink->lock to be read/write lock to make sure that we can run
-> > > > > get query in parallel.
-> > > > > 4. Open devlink netlink to parallel ops, ".parallel_ops = true".
-> > > >
-> > > > IIUC that'd mean setting eswitch mode would hold write lock on
-> > > > the dl instance. What locks does e.g. registering a dl port take
-> > > > then?
-> > >
-> > > Also that I think we have some cases where we want to allow the driver to
-> > allocate new devlink objects in response to adding a port, but still want to block
-> > other global operations from running?
-> > 
-> > I don't see the flow where operations on devlink_A should block devlink_B.
-> > Only in such flows we will need global lock like we have now - devlink->lock.
-> > In all other flows, write lock of devlink instance will protect from
-> > parallel execution.
-> > 
-> > Thanks
-> 
-> 
-> But how do we handle what is essentially recursion?
+[...]
 
-Let's wait till implementation, I promise it will be covered :).
+> >
+> > I'm creating platform device for the clocks that require DVFS. These
+> > clocks don't use regulator, they are attached to the CORE domain.
+> > GENPD framework manages the performance state, aggregating perf votes
+> > from each device, i.e. from each clock individually.
+> >
+> > You want to reinvent another layer of aggregation on top of GENPD.
+> > This doesn't worth the effort, we won't get anything from it, it
+> > should be a lot of extra complexity for nothing. We will also lose
+> > from it because pm_genpd_summary won't show you a per-device info.
+> >
+> > domain                          status          children                           performance
+> >     /device                                             runtime status
+> > ----------------------------------------------------------------------------------------------
+> > heg                             on                                                 1000000
+> >     /devices/soc0/50000000.host1x                       active                     1000000
+> >     /devices/soc0/50000000.host1x/54140000.gr2d         suspended                  0
+> > mpe                             off-0                                              0
+> > vdec                            off-0                                              0
+> >     /devices/soc0/6001a000.vde                          suspended                  0
+> > venc                            off-0                                              0
+> > 3d1                             off-0                                              0
+> >     /devices/genpd:1:54180000.gr3d                      suspended                  0
+> > 3d0                             off-0                                              0
+> >     /devices/genpd:0:54180000.gr3d                      suspended                  0
+> > core-domain                     on                                                 1000000
+> >                                                 3d0, 3d1, venc, vdec, mpe, heg
+> >     /devices/soc0/7d000000.usb                          active                     1000000
+> >     /devices/soc0/78000400.mmc                          active                     950000
+> >     /devices/soc0/7000f400.memory-controller            unsupported                1000000
+> >     /devices/soc0/7000a000.pwm                          active                     1000000
+> >     /devices/soc0/60006000.clock/tegra_clk_pll_c        active                     1000000
+> >     /devices/soc0/60006000.clock/tegra_clk_pll_e        suspended                  0
+> >     /devices/soc0/60006000.clock/tegra_clk_pll_m        active                     1000000
+> >     /devices/soc0/60006000.clock/tegra_clk_sclk         active                     1000000
+> >
+>
+> I suppose if there's really no good way of doing this other than
+> providing a struct device, then so be it. I think the cleaned up sysfs
+> shown in the summary above looks much better than what the original
+> would've looked like.
+>
+> Perhaps an additional tweak to that would be to not create platform
+> devices. Instead, just create struct device. Those really have
+> everything you need (.of_node, and can be used with RPM and GENPD). As I
+> mentioned earlier, platform device implies a CPU-memory-mapped bus,
+> which this clearly isn't. It's kind of a separate "bus" if you want, so
+> just using struct device directly seems more appropriate.
 
-> 
-> If we add a port on the devlink A:
-> 
-> userspace sends PORT_ADD for devlink A
-> driver responds by creating a port
-> adding a port causes driver to add a region, or other devlink object
-> 
-> In the current design, if I understand correctly, we hold the global lock but *not* the instance lock. We can't hold the instance lock while adding port without breaking a bunch of drivers that add many devlink objects in response to port creation.. because they'll deadlock when going to add the sub objects.
-> 
-> But if we don't hold the global lock, then in theory another userspace program could attempt to do something inbetween PORT_ADD starting and finishing which might not be desirable.  (Remember, we had to drop the instance lock otherwise drivers get stuck when trying to add many subobjects)
+Just a heads up. If you don't use a platform device or have a driver
+associated with it for probing, you need to manage the attachment to
+genpd yourself. That means calling one of the dev_pm_domain_attach*()
+APIs, but that's perfectly fine, ofcourse.
 
-You just surfaced my main issue with the current devlink
-implementation - the purpose of devlink_lock. Over the years devlink
-code lost clear separation between user space flows and kernel flows.
+>
+> We did something similar for XUSB pads, see drivers/phy/tegra/xusb.[ch]
+> for an example of how that was done. I think you can do something
+> similar here.
+>
+> Thierry
 
-Thanks
-
-> 
-> Thanks,
-> Jake
+Kind regards
+Uffe
