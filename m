@@ -2,196 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22E63F3626
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154CA3F3627
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhHTVre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:47:34 -0400
-Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:35576 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229760AbhHTVrd (ORCPT
+        id S232179AbhHTVtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229760AbhHTVtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:47:33 -0400
-Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 0E5E318158412;
-        Fri, 20 Aug 2021 21:46:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id F28B4268E46;
-        Fri, 20 Aug 2021 21:46:52 +0000 (UTC)
-Message-ID: <976c6cdd680db4b55ae31b5fc2d1779da5c0dc66.camel@perches.com>
-Subject: [PATCH] checkpatch: Improve GIT_COMMIT_ID test
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org
-Date:   Fri, 20 Aug 2021 14:46:51 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 20 Aug 2021 17:49:15 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80319C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:48:37 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso17150179oth.12
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uQKi4/vuKFJC0aZ1s1RapsLjw0OVYHWADnRHmAJ7H0g=;
+        b=Ha+KwaWjGgExCoG2BcX7nWrrxMVE4KxgnPfZnqTPp2/3rFCXTSiYIUlTFamvw5j6IZ
+         NalIl7OLrbufah5ZsVMj+RN5MGli/Ftl50NArjJFblE2UgMvosT2BnAA2FYLCPs39DFR
+         cqgzoeFKbpKekBMCVP4dzb34Cd8Xi255uM629VoLEVXaI5RKMO+WV7Mt4CuZOsuMp5sU
+         nm+hONKOJqRq9oawZo2NJ6LqHFvlc992HlY6oz9sY6K9d+EO8N5jqHTd7t+gINoJxjU4
+         KJQKEkzA2hnLznJ99q/h/O4QInAqi5/xv7hiDpX89g+MSZNBQU3HWYNimPAcPweFqWeh
+         6C8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uQKi4/vuKFJC0aZ1s1RapsLjw0OVYHWADnRHmAJ7H0g=;
+        b=Bn2/cF1bwPgqaMBKHoVWsdY3Yx97n5BEf7kxfb0oQWkmem037QKqU0/U3pYvvIkHsq
+         V5piFaHkoJXmVe+Wyfe9n3EwCUaFcWu7iuILYnd7Ufcd5mI5V2fsfScXdjbWIkbJ9/nm
+         2aOLI5XrSVtvNDMxp4oaPbUNzkSjo0US8I/Z463/nso7US3rn45nt09S4aDw6nnwXu4m
+         wO6FcIpRklPnoTgLJMIzl6CV9oWKZChr+0g3xizmIXRu4ARaKt7K9+bWZbU8vhfdSYqE
+         jDEhYJ4znE4UqSRpkKXA1eLXqAm+iZ+iQHcCb0Pk7zPdklacxCJX0h/pjgJtoDSyeJj6
+         SoxA==
+X-Gm-Message-State: AOAM530ftd+9wkHA+KrtElSjaZhETf4KxVL996OFAjN3U0kJps2ZHvjU
+        yYLrc4SATAqZLM94AnsBKTN4lRPVCXA=
+X-Google-Smtp-Source: ABdhPJzvMBcvlbD9DXb9/TKtcncPe7cGL+TACYfSCut/A9knV4nredJ1IM+j2ZAxOOLqrngHSMm1aw==
+X-Received: by 2002:a05:6830:14d5:: with SMTP id t21mr18050927otq.271.1629496116713;
+        Fri, 20 Aug 2021 14:48:36 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com. [2603:8090:2005:39b3::1023])
+        by smtp.gmail.com with ESMTPSA id g8sm1150346otk.34.2021.08.20.14.48.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 14:48:36 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH v2 3/5] staging: r8188eu: incorrect type in
+ csum_ipv6_magic
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1629360917.git.aakashhemadri123@gmail.com>
+ <8bc15e51751c26fd19428f3b4976b7495feecd34.1629360917.git.aakashhemadri123@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <740b5e42-f2b1-313d-cd7b-9e17b1c40042@lwfinger.net>
+Date:   Fri, 20 Aug 2021 16:48:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <8bc15e51751c26fd19428f3b4976b7495feecd34.1629360917.git.aakashhemadri123@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: F28B4268E46
-X-Stat-Signature: moppyeq913mno7y98rmh4dtcudptd95w
-X-Spam-Status: No, score=6.70
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+hl3opKU5IWZzt1mi+lv/Hmh8ySKHdcRE=
-X-HE-Tag: 1629496012-702855
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The preferred git commit id reference has the form
+On 8/19/21 3:17 AM, Aakash Hemadri wrote:
+> Fix sparse warning:
+>> rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
+>> rtw_br_ext.c:773:110: warning: incorrect type in argument 2
+>      (different base types)
+>> rtw_br_ext.c:773:110:    expected int len
+>> rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
+> 
+> csum_ipv6_magic and csum_partial expect int len not __be16, use ntohs()
+> 
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>   drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> index 6a0462ce6230..d4acf02ca64f 100644
+> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> @@ -615,9 +615,9 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+>   						struct icmp6hdr  *hdr = (struct icmp6hdr *)(skb->data + ETH_HLEN + sizeof(*iph));
+>   						hdr->icmp6_cksum = 0;
+>   						hdr->icmp6_cksum = csum_ipv6_magic(&iph->saddr, &iph->daddr,
+> -										iph->payload_len,
+> +										ntohs(iph->payload_len),
+>   										IPPROTO_ICMPV6,
+> -										csum_partial((__u8 *)hdr, iph->payload_len, 0));
+> +										csum_partial((__u8 *)hdr, ntohs(iph->payload_len), 0));
+>   					}
+>   				}
+>   			}
+> 
 
-	commit <SHA-1> ("Title line")
+This patch is correct. Again, I like be16_to_cpu() better than ntohs(), but that 
+is not a deal breaker. The kernel is split on the usage.
 
-where SHA-1 is the commit hex hash with a minimum lenth of 12 and
-("Title line") is the complete title line of the commit with a (" prefix
-and ") suffix.
-
-The current tests fail when the "Title line" has one or more embedded
-double quotes.
-
-Improve the test that finds the commit SHA-1 hex hash then ("Title line")
-by using $balanced_parens for a maximum of 3 consecutive lines.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/checkpatch.pl | 82 +++++++++++++++++++++++++++----------------
- 1 file changed, 51 insertions(+), 31 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 161ce7fe5d1e5..7c33ffafa3f0c 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1181,7 +1181,8 @@ sub git_commit_info {
- #		    git log --format='%H %s' -1 $line |
- #		    echo "commit $(cut -c 1-12,41-)"
- #		done
--	} elsif ($lines[0] =~ /^fatal: ambiguous argument '$commit': unknown revision or path not in the working tree\./) {
-+	} elsif ($lines[0] =~ /^fatal: ambiguous argument '$commit': unknown revision or path not in the working tree\./ ||
-+		 $lines[0] =~ /^fatal: bad object $commit/) {
- 		$id = undef;
- 	} else {
- 		$id = substr($lines[0], 0, 12);
-@@ -2587,6 +2588,8 @@ sub process {
- 	my $reported_maintainer_file = 0;
- 	my $non_utf8_charset = 0;
- 
-+	my $last_git_commit_id_linenr = -1;
-+
- 	my $last_blank_line = 0;
- 	my $last_coalesced_string_linenr = -1;
- 
-@@ -3170,10 +3173,20 @@ sub process {
- 		}
- 
- # Check for git id commit length and improperly formed commit descriptions
--		if ($in_commit_log && !$commit_log_possible_stack_dump &&
-+# A correctly formed commit description is:
-+#    commit <SHA-1 hash length 12+ chars> ("Complete commit subject")
-+# with the commit subject '("' prefix and '")' suffix
-+# This is a fairly compilicated block as it tests for what appears to be
-+# bare SHA-1 hash with  minimum length of 5.  It also avoids several types of
-+# possible SHA-1 matches.
-+# A commit match can span multiple lines so this block attempts to find a
-+# complete typical commit on a maximum of 3 lines
-+		if ($perl_version_ok
-+		    $in_commit_log && !$commit_log_possible_stack_dump &&
- 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
- 		    $line !~ /^This reverts commit [0-9a-f]{7,40}/ &&
--		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
-+		    (($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
-+		      ($line =~ /\bcommit\s*$/i && defined($rawlines[$linenr]) && $rawlines[$linenr] =~ /^\s*[0-9a-f]{5,}\b/i)) ||
- 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
- 		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
- 		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
-@@ -3183,49 +3196,56 @@ sub process {
- 			my $long = 0;
- 			my $case = 1;
- 			my $space = 1;
--			my $hasdesc = 0;
--			my $hasparens = 0;
- 			my $id = '0123456789ab';
- 			my $orig_desc = "commit description";
- 			my $description = "";
-+			my $herectx = $herecurr;
-+			my $has_parens = 0;
-+			my $has_quotes = 0;
-+
-+			my $input = $line;
-+			if ($line =~ /(?:\bcommit\s+[0-9a-f]{5,}|\bcommit\s*$)/i) {
-+				for (my $n = 0; $n < 2; $n++) {
-+					if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s*($balanced_parens)/i) {
-+						$orig_desc = $1;
-+						$has_parens = 1;
-+						# Always strip leading/trailing parens then double quotes if existing
-+						$orig_desc = substr($orig_desc, 1, -1);
-+						if ($orig_desc =~ /^".*"$/) {
-+							$orig_desc = substr($orig_desc, 1, -1);
-+							$has_quotes = 1;
-+						}
-+						last;
-+					}
-+					last if ($#lines < $linenr + $n);
-+					$input .= " " . trim($rawlines[$linenr + $n]);
-+					$herectx .= "$rawlines[$linenr + $n]\n";
-+				}
-+				$herectx = $herecurr if (!$has_parens);
-+			}
- 
--			if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
-+			if ($input =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
- 				$init_char = $1;
- 				$orig_commit = lc($2);
--			} elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
-+				$short = 0 if ($input =~ /\bcommit\s+[0-9a-f]{12,40}/i);
-+				$long = 1 if ($input =~ /\bcommit\s+[0-9a-f]{41,}/i);
-+				$space = 0 if ($input =~ /\bcommit [0-9a-f]/i);
-+				$case = 0 if ($input =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
-+			} elsif ($input =~ /\b([0-9a-f]{12,40})\b/i) {
- 				$orig_commit = lc($1);
- 			}
- 
--			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
--			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
--			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
--			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
--			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
--				$orig_desc = $1;
--				$hasparens = 1;
--			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
--				 defined $rawlines[$linenr] &&
--				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
--				$orig_desc = $1;
--				$hasparens = 1;
--			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
--				 defined $rawlines[$linenr] &&
--				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
--				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
--				$orig_desc = $1;
--				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
--				$orig_desc .= " " . $1;
--				$hasparens = 1;
--			}
--
- 			($id, $description) = git_commit_info($orig_commit,
- 							      $id, $orig_desc);
- 
- 			if (defined($id) &&
--			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
-+			    ($short || $long || $space || $case || ($orig_desc ne $description) || !$has_quotes) &&
-+			    $last_git_commit_id_linenr != $linenr - 1) {
- 				ERROR("GIT_COMMIT_ID",
--				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
-+				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herectx);
- 			}
-+			#don't report the next line if this line ends in commit and the sha1 hash is the next line
-+			$last_git_commit_id_linenr = $linenr if ($line =~ /\bcommit\s*$/i);
- 		}
- 
- # Check for added, moved or deleted files
--- 
-2.30.0
-
+Larry
 
