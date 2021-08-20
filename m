@@ -2,98 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927893F2513
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8423F2516
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237967AbhHTDBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
+        id S237998AbhHTDB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbhHTDBL (ORCPT
+        with ESMTP id S237866AbhHTDB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:01:11 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA27C061575;
-        Thu, 19 Aug 2021 20:00:34 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id n11so9531150qkk.1;
-        Thu, 19 Aug 2021 20:00:34 -0700 (PDT)
+        Thu, 19 Aug 2021 23:01:56 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D0AC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:01:19 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id h1so555851pjs.2
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:01:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9y/cX/LKtjaQzp4b6Rm1D3+gyyCmB4EMWjE7tmHt7WE=;
-        b=ffl2qb1+EjqRD+LDhi2lNKJOJFcFDYPGWh411tibO/vrJDpVP/BbcXqr7PA0fMh9YG
-         sMl/pae5t/DsAcZgbTp66ojlXsaksIkffyQO13IQlqcBR9hTZVq61w0Wf/Z3NHh/8GRx
-         5jKdaQEiKQveHnNlUsFSh1CLi8iTrxK6xKZoiz5c5ridaR6UpBzadYVoMrbvcr01OqMs
-         +0xkbg24EjEPD1bAyDiyOaTBuN6VzwOIU0Ba7FGj9G98WLedggpfnh1HqzA8LTs+IJ8d
-         WX0b0Qzk8UweUK/tR58RMgazrHIOh34bSt6bZaAplVmdrrB/eju2CX/l/TO0tlHrj9UJ
-         vcLA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f+qoHaIYFFF4+QiXB7j7KUJJJiqOIA/zGN5Tjr436H8=;
+        b=kuG8T90/qXgx0IHMQpBfZ+mBvJWi6GWu2OW94VNop4bdF/v0Ajv0stPWwAdY39B7n5
+         0aB+dCe80t5j46UCI0ZvrGeJn0mFR9VX8hnhHUJdfbFaCMx8Ho5EDzzMsYlp/3xPaxLp
+         j/WFNlI2US+mpDGvS1ZH0lQnqTZSvh7wVwgww7oJS4uXDcSBDIsNWJnDKsF6br0hov4a
+         220s+hY2spVwQdy7e4PmmtHuKjhrUBgOXmxZteVxKw0AfKz7XUvv7eyiZialc1aa32ND
+         VO3oxca5GGNZpDrFx8Dt2JhAsxvFZSw6J2ewu9KXmYD+BVvuonFZp0Df7/aF1vGZI2u+
+         JfLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9y/cX/LKtjaQzp4b6Rm1D3+gyyCmB4EMWjE7tmHt7WE=;
-        b=DwkNTIP4AQ2b85CDfxumqLLo7SrLyVgvUpUJMF7cBLuFqAyGg4B/V9rH/3A/Yb9cyV
-         iI1GtJHM2L2mh5VQkwHtuth2MSpgOvCJQUsu9AJ1YDCXOw56S/YLelQQ0nzq+0Kbr+Jl
-         +Dpqhy48suhAwY1hxHDqeVtEVKzidxmGX4u5zzEJOsDGcW1Z4KPXCXB13VewrYYR9YAS
-         Tlluz8vwaO8VzbvWhijA5K+0anfb4e7hhptR4QzbG9JfBvfwGYPryqOhyL1kXHmaKiLB
-         nE3INXZ6Lrep5jZXgVBlEurmzoqq6NZKQjW7z6Zu2NLqBQtn/DBr9bGptjfXWNR71T1y
-         4gkw==
-X-Gm-Message-State: AOAM531sjRUfC+RZvyzY7Hztin8nmWE/I8DfhWw1ImiLHaRuQk24fovm
-        gyx/gcV+7cTa/meQWn79Ycs=
-X-Google-Smtp-Source: ABdhPJxom5Awt3VFu1T13vRzJNjljU2oF0RW/DFeinmCH0D1cK0lJdgAlHJ8aRIIndPTKROpABOK3g==
-X-Received: by 2002:a37:9581:: with SMTP id x123mr6733613qkd.477.1629428433930;
-        Thu, 19 Aug 2021 20:00:33 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id z12sm2043272qtw.90.2021.08.19.20.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:00:33 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] scsi/csiostor: fix application of sizeof to pointer
-Date:   Thu, 19 Aug 2021 20:00:14 -0700
-Message-Id: <4a643ef2fe8ed6fc8af9dcb878833cd5b0f254da.1629211553.git.jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f+qoHaIYFFF4+QiXB7j7KUJJJiqOIA/zGN5Tjr436H8=;
+        b=PfxqNAAvV72+PyM/vRYwbHSwW/1eJrxOEpcdXL2g/In7G3UIUHLIk+XWBZmOYvK+aL
+         0XtP6W6e3m+gArm+ZcaVtL86lJDP+rKzb1fFuTwN+7YP+1xE5G5T69LHHP6FbOb22Dq7
+         6xRNMcGPEkNDXTI6KfGXaKN5atPQHCkhlfx2vP2gbydwMAJ6Gwpwu7cOVoN3VbN/3A5V
+         nLVe4BjpYsoqKfrgDlsuHy6GOAVBU8OwY6I4hIEUVHL4MEaYt1ruTFUlyjt5WMngEWAp
+         hJKZBqfun8MXF+ZUnf/xGGtIg8rQt0X9eIkuvjzdkzr44XshoADivEVhgtQgvhXpxFyd
+         u8ow==
+X-Gm-Message-State: AOAM533rekv0tewaj8wZpmgv+n9Bav56++/eoraQ2kM1NBPqvDwEgD3k
+        /Tak/to0yFp0BeJo5UESuY3RxtbugProFttBWp05jA==
+X-Google-Smtp-Source: ABdhPJz+jFXZsqQZ/gZaDxbc92zc/Y1j4Ft80o1VnMYNl6dPXIcaIjMkAG6+B7QQk+6/6e1OSlMA19PSKXwEaEfrwuU=
+X-Received: by 2002:a17:902:9b95:b0:130:6a7b:4570 with SMTP id
+ y21-20020a1709029b9500b001306a7b4570mr2784453plp.27.1629428479249; Thu, 19
+ Aug 2021 20:01:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com> <20210816060359.1442450-8-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210816060359.1442450-8-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 19 Aug 2021 20:01:08 -0700
+Message-ID: <CAPcyv4jbi=p=SjFYZcHnEAu+KY821pW_k_yA5u6hya4jEfrTUg@mail.gmail.com>
+Subject: Re: [PATCH v7 7/8] fsdax: Introduce dax_iomap_ops for end of reflink
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
+On Sun, Aug 15, 2021 at 11:05 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> After writing data, reflink requires end operations to remap those new
+> allocated extents.  The current ->iomap_end() ignores the error code
+> returned from ->actor(), so we introduce this dax_iomap_ops and change
+> the dax_iomap_*() interfaces to do this job.
+>
+> - the dax_iomap_ops contains the original struct iomap_ops and fsdax
+>     specific ->actor_end(), which is for the end operations of reflink
+> - also introduce dax specific zero_range, truncate_page
+> - create new dax_iomap_ops for ext2 and ext4
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> ---
+>  fs/dax.c               | 68 +++++++++++++++++++++++++++++++++++++-----
+>  fs/ext2/ext2.h         |  3 ++
+>  fs/ext2/file.c         |  6 ++--
+>  fs/ext2/inode.c        | 11 +++++--
+>  fs/ext4/ext4.h         |  3 ++
+>  fs/ext4/file.c         |  6 ++--
+>  fs/ext4/inode.c        | 13 ++++++--
+>  fs/iomap/buffered-io.c |  3 +-
+>  fs/xfs/xfs_bmap_util.c |  3 +-
+>  fs/xfs/xfs_file.c      |  8 ++---
+>  fs/xfs/xfs_iomap.c     | 36 +++++++++++++++++++++-
+>  fs/xfs/xfs_iomap.h     | 33 ++++++++++++++++++++
+>  fs/xfs/xfs_iops.c      |  7 ++---
+>  fs/xfs/xfs_reflink.c   |  3 +-
+>  include/linux/dax.h    | 21 ++++++++++---
+>  include/linux/iomap.h  |  1 +
+>  16 files changed, 189 insertions(+), 36 deletions(-)
+>
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 74dd918cff1f..0e0536765a7e 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1348,11 +1348,30 @@ static loff_t dax_iomap_iter(const struct iomap_iter *iomi,
+>         return done ? done : ret;
+>  }
+>
+> +static inline int
+> +__dax_iomap_iter(struct iomap_iter *iter, const struct dax_iomap_ops *ops)
+> +{
+> +       int ret;
+> +
+> +       /*
+> +        * Call dax_iomap_ops->actor_end() before iomap_ops->iomap_end() in
+> +        * each iteration.
+> +        */
+> +       if (iter->iomap.length && ops->actor_end) {
+> +               ret = ops->actor_end(iter->inode, iter->pos, iter->len,
+> +                                    iter->processed);
+> +               if (ret < 0)
+> +                       return ret;
+> +       }
+> +
+> +       return iomap_iter(iter, &ops->iomap_ops);
 
-sizeof when applied to a pointer typed expression gives the size of
-the pointer.
-
-./drivers/scsi/csiostor/csio_mb.c:1554:46-52: ERROR application of sizeof to pointer
-
-This issue was detected with the help of Coccinelle.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/scsi/csiostor/csio_mb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/csiostor/csio_mb.c b/drivers/scsi/csiostor/csio_mb.c
-index 94810b1..4df8a4d 100644
---- a/drivers/scsi/csiostor/csio_mb.c
-+++ b/drivers/scsi/csiostor/csio_mb.c
-@@ -1551,7 +1551,7 @@ enum fw_retval
- 		 * Enqueue event to EventQ. Events processing happens
- 		 * in Event worker thread context
- 		 */
--		if (csio_enqueue_evt(hw, CSIO_EVT_MBX, mbp, sizeof(mbp)))
-+		if (csio_enqueue_evt(hw, CSIO_EVT_MBX, mbp, sizeof(*mbp)))
- 			CSIO_INC_STATS(hw, n_evt_drop);
- 
- 		return 0;
--- 
-1.8.3.1
-
-
+This reorganization looks needlessly noisy. Why not require the
+iomap_end operation to perform the actor_end work. I.e. why can't
+xfs_dax_write_iomap_actor_end() just be the passed in iomap_end? I am
+not seeing where the ->iomap_end() result is ignored?
