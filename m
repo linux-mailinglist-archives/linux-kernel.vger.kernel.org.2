@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6854C3F24D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A313F24D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237685AbhHTCiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        id S237746AbhHTCju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbhHTCiN (ORCPT
+        with ESMTP id S237643AbhHTCjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:38:13 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5047C061575;
-        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id bl13so4797595qvb.5;
-        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+        Thu, 19 Aug 2021 22:39:49 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93463C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 19:39:11 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id n18so7764976pgm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 19:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wWMQ9DoOno+c3OyqFMSEWNvDVLmVwUI+Xz33Hz9sthU=;
-        b=halUh/5EkZaX/YBXMqTWvGtnH7NSWBlqI1rpxq0sMoxRkLhGjK4xQxOzJjbK4I6uRa
-         AJuNfyHWivm2mbLD0aKTnrqHLyzUJUL0/S/Vm9bmdd6TzPubOFNfvLulxuywrwBoZS3G
-         kUdDG3b7e9buH/sxmzB9m+KzZVpA1ZiUYMKSfBOSbqR5bSFcBwulODmFOEibRPzeWCJn
-         9qRhSpbcAT3Uy6yecQEgNmH0+gc7nBCpi0629uKGVUrILvS1aOUPt4S5KeaB4b1NN3pm
-         xd55CJba6wx/ZMu8Q9olzto3Te27JaE6tHfihuD9gJbZdMNXWTNfqHUmnr6cvCrh9aoV
-         MTZQ==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B1IPaWShRHO+S25ine4LYsuzUXNhBul7A3bHVmcZDqE=;
+        b=0gwRYHEqYWePuJCzO2svmy0/lNuaBmSffRSw1ZofYgxmAU/rssfc+J1MepkcG6/okN
+         7V8fqOUyi+1+K8GqJ1GgeDmO8mORGRYMVNU9mnG2b171m9Hy/3u4njWDORMDsh5hJ06V
+         LNMSW1mDL9CaYbJXLwxx2k2tgtvsz/1cBki1zgdzoCq799wzfIPJLoJLsR2geNBdRzzf
+         iVkedpOQXO0SHka0x3RqsLVCzVRDc/tYrK3D43xKZQF5ffMDIRRJNy2q2wz9+86t64aD
+         IHOgNhxcPwN8gOBwQFkQTUCj/xQ3XX3FMqILbPVk5NnmdwWtZqv6AkcT3rUl3YWu9d47
+         NkTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wWMQ9DoOno+c3OyqFMSEWNvDVLmVwUI+Xz33Hz9sthU=;
-        b=D5h3/z1uoquL16MvABiF7vi3+Jo3ApUX6ShRfnamxp1smcH2KGP3o25e6GnlSNcpvz
-         gSTvhJiOYvkPBmWTpK/bAD5Hqn3bZmCaRhl3d9nyE0QOBQraP41gTiFnWV98wqPB2Kb0
-         MJj+qaQ9P5zIWHSrnV6z9uJMOGK4+tmhE7AB73atkVBcDODpHoioTyFG48tUVtx17hx0
-         fJB56NfOZn36JJ1TZf/Wduo72Mr4dyMBWmTq11BiO5eE6mYJ5F+mpWrVTSdqVb+hQSFZ
-         jW5mbPIwWdLbzjfeQwW2ICUQ+BU9YhksLzKVWcTY7Z4Y0NwJNSK135V5rTnaEl78sX+H
-         tBbw==
-X-Gm-Message-State: AOAM53017SmN8hQ8gcTbnKua6wsmkWCt993Eo+Gfdrt61u1vBv7kKVHK
-        q2T+T+uSbWKt9UnPIej1aoc=
-X-Google-Smtp-Source: ABdhPJxpWI66ECfv2tS7crK+5x37kpF5iynRBZkNqa/BPKoimx9JnWtPYDhB7OPwgoTw6vV6FNaiuA==
-X-Received: by 2002:a0c:ff48:: with SMTP id y8mr17901761qvt.29.1629427055094;
-        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id c1sm2114382qtj.36.2021.08.19.19.37.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 19:37:34 -0700 (PDT)
-From:   jing yangyang <cgel.zte@gmail.com>
-X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] net: ethernet: fix returnvar.cocci warnings
-Date:   Thu, 19 Aug 2021 19:37:13 -0700
-Message-Id: <e2578530d099fbc0553c97585440192e548bd3dd.1629217036.git.jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B1IPaWShRHO+S25ine4LYsuzUXNhBul7A3bHVmcZDqE=;
+        b=r4DNUJxBGuMNJaDMFCjdgrD6o2AM7qAMM2AOkp7jiTURRepwKfP1fRFhnPDzJiYUvo
+         NQjd3SD97vUwQJsjw6YwHPNPj++SZOHTeEpM6Vvd8siACip4KoSyCMKQGnw5IFfxvFV2
+         grQLVH+f3clYZ4Ecg37k9Q08LW9koSf1cWe1kJqt+/f/yL5GH8b+WobVCOBmipttmwC7
+         y7wuEr6EmvgIRcgs0X27DI+3r4uCM3nPo6CULJcBsn4wXKdbyjhWM+mnlru3Hs+iLqL9
+         xC1nb6wYm1cSLSO6ezRc/hEV/rR8gf6Q0YsizZ6++6Ce4301vVQjv2nyurcr4j0E3XCm
+         8Pog==
+X-Gm-Message-State: AOAM531I/f+9VAlATy1QpSSPZ0YHjdRkPVmNvaXnpQLI/Td6iqHz9RuC
+        5eZuRNZYewn23cRUJyxOLAYFJITCgRpq7wVi14S1ww==
+X-Google-Smtp-Source: ABdhPJwc+o+M3KzvmYCuetm2zFZXHE5MraYO1ybETeCPb1awpwHv4HohqKP5JpPREoXBHHDM7lWNAj4l1bsIBGP++Fw=
+X-Received: by 2002:a63:311:: with SMTP id 17mr16548751pgd.450.1629427151147;
+ Thu, 19 Aug 2021 19:39:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com> <20210816060359.1442450-5-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210816060359.1442450-5-ruansy.fnst@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 19 Aug 2021 19:39:00 -0700
+Message-ID: <CAPcyv4gFDyXqu5NyrWQ9Y_JqjLmCb8pWQgPZVBYE=dOir2KdzA@mail.gmail.com>
+Subject: Re: [PATCH v7 4/8] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded variables when "0" can be returned.
+On Sun, Aug 15, 2021 at 11:04 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+>
+> Punch hole on a reflinked file needs dax_iomap_cow_copy() too.
+> Otherwise, data in not aligned area will be not correct.  So, add the
+> srcmap to dax_iomap_zero() and replace memset() as dax_iomap_cow_copy().
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> ---
+>  fs/dax.c               | 25 +++++++++++++++----------
+>  fs/iomap/buffered-io.c |  4 ++--
+>  include/linux/dax.h    |  3 ++-
+>  3 files changed, 19 insertions(+), 13 deletions(-)
+>
+> diff --git a/fs/dax.c b/fs/dax.c
+> index e49ba68cc7e4..91ceb518f66a 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1198,7 +1198,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
+>  }
+>  #endif /* CONFIG_FS_DAX_PMD */
+>
+> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+> +s64 dax_iomap_zero(loff_t pos, u64 length, const struct iomap *iomap,
+> +               const struct iomap *srcmap)
+>  {
+>         sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
+>         pgoff_t pgoff;
+> @@ -1220,19 +1221,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
+>
+>         if (page_aligned)
+>                 rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
+> -       else
+> +       else {
+>                 rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
+> -       if (rc < 0) {
+> -               dax_read_unlock(id);
+> -               return rc;
+> -       }
+> -
+> -       if (!page_aligned) {
+> -               memset(kaddr + offset, 0, size);
+> +               if (rc < 0)
+> +                       goto out;
+> +               if (iomap->addr != srcmap->addr) {
+> +                       rc = dax_iomap_cow_copy(pos, size, PAGE_SIZE, srcmap,
+> +                                               kaddr);
 
-Generated by: scripts/coccinelle/misc/returnvar.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/net/ethernet/intel/iavf/iavf_adminq.c | 4 +---
- drivers/net/ethernet/mellanox/mlx4/port.c     | 8 ++------
- 2 files changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.c b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
-index 9fa3fa9..cd4e6a2 100644
---- a/drivers/net/ethernet/intel/iavf/iavf_adminq.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
-@@ -551,15 +551,13 @@ enum iavf_status iavf_init_adminq(struct iavf_hw *hw)
-  **/
- enum iavf_status iavf_shutdown_adminq(struct iavf_hw *hw)
- {
--	enum iavf_status ret_code = 0;
--
- 	if (iavf_check_asq_alive(hw))
- 		iavf_aq_queue_shutdown(hw, true);
- 
- 	iavf_shutdown_asq(hw);
- 	iavf_shutdown_arq(hw);
- 
--	return ret_code;
-+	return 0;
- }
- 
- /**
-diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
-index 256a06b..754c253 100644
---- a/drivers/net/ethernet/mellanox/mlx4/port.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/port.c
-@@ -1820,9 +1820,7 @@ int mlx4_SET_MCAST_FLTR_wrapper(struct mlx4_dev *dev, int slave,
- 				struct mlx4_cmd_mailbox *outbox,
- 				struct mlx4_cmd_info *cmd)
- {
--	int err = 0;
--
--	return err;
-+	return 0;
- }
- 
- int mlx4_SET_MCAST_FLTR(struct mlx4_dev *dev, u8 port,
-@@ -1840,9 +1838,7 @@ int mlx4_SET_VLAN_FLTR_wrapper(struct mlx4_dev *dev, int slave,
- 			       struct mlx4_cmd_mailbox *outbox,
- 			       struct mlx4_cmd_info *cmd)
- {
--	int err = 0;
--
--	return err;
-+	return 0;
- }
- 
- int mlx4_DUMP_ETH_STATS_wrapper(struct mlx4_dev *dev, int slave,
--- 
-1.8.3.1
-
-
+Apologies, I'm confused, why is it ok to skip zeroing here?
