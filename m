@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28B83F244C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 03:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 703513F244D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 03:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237540AbhHTBFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 21:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
+        id S237439AbhHTBFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 21:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237427AbhHTBFJ (ORCPT
+        with ESMTP id S237579AbhHTBFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 21:05:09 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21C6C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 18:04:32 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id v21-20020a05620a0a9500b003d5c1e2f277so4523117qkg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 18:04:32 -0700 (PDT)
+        Thu, 19 Aug 2021 21:05:14 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7357BC0613D9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 18:04:37 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id s4-20020a259004000000b005947575ac53so8408052ybl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 18:04:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=KCMDAepgZ2nfyYw0ve3M2mzdc0NmPLZMESPuP6MhAfc=;
-        b=pvEbEcnzEqtKv1Z7MU/deaJm9cgrp0E9Y9sR0kW4maWLZ/AGnOWzc2fQgILleWfk0w
-         MWbb9tHd+5nXetpYidnAk4SyMWs8wVpKq2d7jRENQcZBu/KgvDfZfhBng0ZyAiixIkyu
-         fwPoqC6sCzIH13fATqJ3VqJgkTls+QH8Z6MemfYHvfFcqH9uHxMJOXZaJsPMWsgKTSMe
-         9XcN1ToPmjz8l6slQj5mMb+68hNK90nApAfMrGIYcEP3HdwWsVX7tYcW2DC0Fx9OgyLD
-         8Nqbh8vs5v+ilfFpROa6ANW0xm2AlJpxP0WmxtgrhvSqLlydMRol5MaDt8DvRb0qdZxC
-         DzHA==
+        bh=5ZSzDmZf9Lp/Z5C3yKlFbAaN/ZWlBsBW09PXv4v1as4=;
+        b=IkqB1nRlRi+AqC600zP1g+vW12uwhGNK0Ps5se66FABH2EZ5am53LggtLR9EL2aQw0
+         YFHJOlxjWyKU8oV8ftsV9GjMydjOZ7uknf4mtSGyb4/WwgzUMa4tQRclEC2rPUpZZN52
+         kYNPZA3tV2KwkpEMtWEMZ8yX3l9xdaWEMh8KTsMEGtqJN//gxaJk6++KRTCL6248fKQF
+         V07RFG4Diy58PlOQbAxmc7TM7UEUmU0uhBNj3OuDUliOLurQGY6GbQ0mbx31sgJeQes4
+         9PqZ6RpaHB58eF/2qkUpbtGLNxCfqNyVT3yHRuK6b8FTOB7kZbEcuJ/oGgfx0iHpm26q
+         4i+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=KCMDAepgZ2nfyYw0ve3M2mzdc0NmPLZMESPuP6MhAfc=;
-        b=RcniMOtH1YRed5hpkqev0SdaW5nbyoi2QFeR55dZooTHPu4wtgE13S0y0sKXdJhlti
-         pzRrccT67IS/vbQIf60YII0Mw6l/B+fhrp/OsgeStDbUIIX2kQme9dFwN6uj3kliIpkQ
-         0pNbRqpLfuBluuv7He9WqUFcqYGvf2zUBrQDFNz+clYQafOxE6CqQj433aXhDumfWm9G
-         t+g5euQDcreQtLoULKqG+/sqNFW/ziNiCpRYSncFHq2EiIGccQCSvJHP5livfRNTLhW0
-         VWt/rAucY3ta3vSmLRkv/42W9Selw4peQUOySYiYrdrGWdpiO1xpkSSpSacw/Q9GEjQ9
-         7D/w==
-X-Gm-Message-State: AOAM530RLM5l8uBJUoMy/Szw+pyxtIcyDLZvE/+D6czijHDzHC81JL95
-        yXtrG39/BzHePmtAmo1kRlsMkdD97AYT
-X-Google-Smtp-Source: ABdhPJzM5lWFkcVBWjg9s18AfqqtuGWcfN8Sl7/fieOFJhO2uBLa1brUgWvl6JP+FKkNC5pUF+YahfaX9kmX
+        bh=5ZSzDmZf9Lp/Z5C3yKlFbAaN/ZWlBsBW09PXv4v1as4=;
+        b=H0VD3KSDFgQzT4Otm+o9+szqC+J8iyWmze0ZyrMlT3tfw7xjbXXyrPfT89XjT/eixE
+         MUjd7UVKBA39Nf2dGuo80pDEWtbcer3kDGXI7RDhRxwITfqz46fENyMHRyESaan6yqbV
+         BP2C6Q0Vz6Kh2cDptsjNH0ll4jvXOLMPTCTXF9sC7jLaIK7SlBS4PNxJnvmXzeOkB8A4
+         1jfO/13ct9UTnWn28m2S7Mp0/jOM/tvXT6XfTHVC9ThIaB6lFXKUMahY7J1iA5mHpMxt
+         Rd9zswvryogWRhLiFx8XlnkzfsH3hQvK5zaVWUrvR17sK7lxF4sQS2LtO9stSPej7CMD
+         UYqw==
+X-Gm-Message-State: AOAM531j6laR4vTfe2dPvudsyw5GROAcR5qToXrV558eu/eZieRfcbWV
+        6fui0529WeS5TNv5/nG5UgOG+LHJaHkL
+X-Google-Smtp-Source: ABdhPJySkHLpJCRw49AswoJ3teo3iM1bCyoxqekeVYTp/Qmod+vsebUdyULCZ2QOqMtDxIpxBj7u8GBFJBV+
 X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:23c6:59ba:fc84:7672])
- (user=joshdon job=sendgmr) by 2002:a05:6214:124:: with SMTP id
- w4mr17417931qvs.35.1629421472010; Thu, 19 Aug 2021 18:04:32 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 18:04:02 -0700
+ (user=joshdon job=sendgmr) by 2002:a25:f80a:: with SMTP id
+ u10mr22267696ybd.391.1629421476693; Thu, 19 Aug 2021 18:04:36 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 18:04:03 -0700
 In-Reply-To: <20210820010403.946838-1-joshdon@google.com>
-Message-Id: <20210820010403.946838-4-joshdon@google.com>
+Message-Id: <20210820010403.946838-5-joshdon@google.com>
 Mime-Version: 1.0
 References: <20210820010403.946838-1-joshdon@google.com>
 X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH v3 3/4] sched: reduce sched slice for SCHED_IDLE entities
+Subject: [PATCH v3 4/4] sched: adjust sleeper credit for SCHED_IDLE entities
 From:   Josh Don <joshdon@google.com>
 To:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -72,129 +72,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a small, non-scaled min granularity for SCHED_IDLE entities, when
-competing with normal entities. This reduces the latency of getting
-a normal entity back on cpu, at the expense of increased context
-switch frequency of SCHED_IDLE entities.
+Give reduced sleeper credit to SCHED_IDLE entities. As a result, woken
+SCHED_IDLE entities will take longer to preempt normal entities.
 
-The benefit of this change is to reduce the round-robin latency for
-normal entities when competing with a SCHED_IDLE entity.
+The benefit of this change is to make it less likely that a newly woken
+SCHED_IDLE entity will preempt a short-running normal entity before it
+blocks.
 
-Example: on a machine with HZ=1000, spawned two threads, one of which is
-SCHED_IDLE, and affined to one cpu. Without this patch, the SCHED_IDLE
-thread runs for 4ms then waits for 1.4s. With this patch, it runs for
-1ms and waits 340ms (as it round-robins with the other thread).
+We still give a small sleeper credit to SCHED_IDLE entities, so that
+idle<->idle competition retains some fairness.
+
+Example: With HZ=1000, spawned four threads affined to one cpu, one of
+which was set to SCHED_IDLE. Without this patch, wakeup latency for the
+SCHED_IDLE thread was ~1-2ms, with the patch the wakeup latency was
+~5ms.
 
 Signed-off-by: Josh Don <joshdon@google.com>
 ---
- kernel/sched/debug.c |  2 ++
- kernel/sched/fair.c  | 29 ++++++++++++++++++++++++-----
- kernel/sched/sched.h |  1 +
- 3 files changed, 27 insertions(+), 5 deletions(-)
+ kernel/sched/fair.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 33538579db9a..317ef560aa63 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -305,6 +305,7 @@ static __init int sched_init_debug(void)
- 
- 	debugfs_create_u32("latency_ns", 0644, debugfs_sched, &sysctl_sched_latency);
- 	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
-+	debugfs_create_u32("idle_min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_idle_min_granularity);
- 	debugfs_create_u32("wakeup_granularity_ns", 0644, debugfs_sched, &sysctl_sched_wakeup_granularity);
- 
- 	debugfs_create_u32("latency_warn_ms", 0644, debugfs_sched, &sysctl_resched_latency_warn_ms);
-@@ -806,6 +807,7 @@ static void sched_debug_header(struct seq_file *m)
- 	SEQ_printf(m, "  .%-40s: %Ld.%06ld\n", #x, SPLIT_NS(x))
- 	PN(sysctl_sched_latency);
- 	PN(sysctl_sched_min_granularity);
-+	PN(sysctl_sched_idle_min_granularity);
- 	PN(sysctl_sched_wakeup_granularity);
- 	P(sysctl_sched_child_runs_first);
- 	P(sysctl_sched_features);
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 19a9244c140f..31f40aa005b9 100644
+index 31f40aa005b9..aa9c046d2aab 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -59,6 +59,14 @@ unsigned int sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
- unsigned int sysctl_sched_min_granularity			= 750000ULL;
- static unsigned int normalized_sysctl_sched_min_granularity	= 750000ULL;
+@@ -4230,7 +4230,12 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
  
-+/*
-+ * Minimal preemption granularity for CPU-bound SCHED_IDLE tasks.
-+ * Applies only when SCHED_IDLE tasks compete with normal tasks.
-+ *
-+ * (default: 0.75 msec)
-+ */
-+unsigned int sysctl_sched_idle_min_granularity			= 750000ULL;
+ 	/* sleeps up to a single latency don't count. */
+ 	if (!initial) {
+-		unsigned long thresh = sysctl_sched_latency;
++		unsigned long thresh;
 +
- /*
-  * This value is kept at sysctl_sched_latency/sysctl_sched_min_granularity
-  */
-@@ -665,6 +673,8 @@ static u64 __sched_period(unsigned long nr_running)
- 		return sysctl_sched_latency;
- }
- 
-+static bool sched_idle_cfs_rq(struct cfs_rq *cfs_rq);
-+
- /*
-  * We calculate the wall-time slice from the period by taking a part
-  * proportional to the weight.
-@@ -674,6 +684,8 @@ static u64 __sched_period(unsigned long nr_running)
- static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
- 	unsigned int nr_running = cfs_rq->nr_running;
-+	struct sched_entity *init_se = se;
-+	unsigned int min_gran;
- 	u64 slice;
- 
- 	if (sched_feat(ALT_PERIOD))
-@@ -684,12 +696,13 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 	for_each_sched_entity(se) {
- 		struct load_weight *load;
- 		struct load_weight lw;
-+		struct cfs_rq *qcfs_rq;
- 
--		cfs_rq = cfs_rq_of(se);
--		load = &cfs_rq->load;
-+		qcfs_rq = cfs_rq_of(se);
-+		load = &qcfs_rq->load;
- 
- 		if (unlikely(!se->on_rq)) {
--			lw = cfs_rq->load;
-+			lw = qcfs_rq->load;
- 
- 			update_load_add(&lw, se->load.weight);
- 			load = &lw;
-@@ -697,8 +710,14 @@ static u64 sched_slice(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 		slice = __calc_delta(slice, se->load.weight, load);
- 	}
- 
--	if (sched_feat(BASE_SLICE))
--		slice = max(slice, (u64)sysctl_sched_min_granularity);
-+	if (sched_feat(BASE_SLICE)) {
-+		if (se_is_idle(init_se) && !sched_idle_cfs_rq(cfs_rq))
-+			min_gran = sysctl_sched_idle_min_granularity;
++		if (se_is_idle(se))
++			thresh = sysctl_sched_min_granularity;
 +		else
-+			min_gran = sysctl_sched_min_granularity;
-+
-+		slice = max_t(u64, slice, min_gran);
-+	}
++			thresh = sysctl_sched_latency;
  
- 	return slice;
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 6af039e433fb..29846da35861 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2399,6 +2399,7 @@ extern const_debug unsigned int sysctl_sched_migration_cost;
- #ifdef CONFIG_SCHED_DEBUG
- extern unsigned int sysctl_sched_latency;
- extern unsigned int sysctl_sched_min_granularity;
-+extern unsigned int sysctl_sched_idle_min_granularity;
- extern unsigned int sysctl_sched_wakeup_granularity;
- extern int sysctl_resched_latency_warn_ms;
- extern int sysctl_resched_latency_warn_once;
+ 		/*
+ 		 * Halve their sleep time's effect, to allow
 -- 
 2.33.0.rc2.250.ged5fa647cd-goog
 
