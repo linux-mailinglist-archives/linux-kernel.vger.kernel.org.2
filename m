@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6CE3F25DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 06:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C463F25E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 06:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhHTE0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 00:26:00 -0400
-Received: from ozlabs.org ([203.11.71.1]:46319 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhHTEZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 00:25:58 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrT7x1KM1z9sW5;
-        Fri, 20 Aug 2021 14:25:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1629433517;
-        bh=TY6nLrmjoHyAzLgmjUDiH3O3rM9kTfEtWkmi+ZvE6rY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=qudDX4J8UWi+6+7ay40xF74TpJv5cn1tKDShtykYbqO0aN8uz7Dk+LBw4Gl6G5AXk
-         /6jCrrW4nVyt2fmGYJy/vu8bu1j1y3yTDdDvMgHc0SDQRiTlnLzeJJ0UBwRIrqIvSU
-         d/EFP6j2FHPpLCx1w5KGwNtKJ7PhGlIJuBMr/u2TdiPESqu76d2WNgpczVCBFFiH/X
-         qidFxO9hZBiSMGIPElyGlVAsc1mtkzp2STrpSIXCawTHn6q4ne1W3x8xXP/sY8FYR1
-         QBM71FxIuPndLFePXsK3aY761+IdT+UOAW3HRLllVgfahmq5wBwPeAQkmPe7b66adV
-         mJy8XZkR/kZUQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Daniel Axtens <dja@axtens.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        kernel-janitors@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] powerpc: rectify selection to
- ARCH_ENABLE_SPLIT_PMD_PTLOCK
-In-Reply-To: <87pmu99e4j.fsf@dja-thinkpad.axtens.net>
-References: <20210819113954.17515-1-lukas.bulwahn@gmail.com>
- <20210819113954.17515-3-lukas.bulwahn@gmail.com>
- <87pmu99e4j.fsf@dja-thinkpad.axtens.net>
-Date:   Fri, 20 Aug 2021 14:25:12 +1000
-Message-ID: <87a6lceo9j.fsf@mpe.ellerman.id.au>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S232524AbhHTEcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 00:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhHTEcc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 00:32:32 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E96C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 21:31:54 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id y190so7535143pfg.7
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 21:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kGUsXVjhYVNqqDUplUqGfaMv9a3sMzZvTTWSgXAKeoA=;
+        b=vysr45wmx6bUrXF0N/a2X2lB6TLNMruSRTGPFJV/qeHb/7wLiD/NnDnckqkgw8ag9L
+         er9i67FuRz37SrgS4x3Lc6pdZrdH6z3JyJ2tUzuAKZWCUDu86DUbWD8T9InE30hGWdpv
+         LmSavBQepWO20MenUktfU5N5htBdN6E4djZP1D/qLSbhv3Tm9Mu1EvOWQIA9lQwpgO8v
+         GCDumNLUm3X+kL5kEMatRRPkcEze+KkBDVtXpuU4S/ZFkUwflpQZFA06ZeYYS3usefSh
+         SpAljBrSt7Qjo7XRH9XzSX/CcNzq4dsKDwR16DEY/EF/n3oypdljgFnoLtyQA6jp4OCH
+         6CYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=kGUsXVjhYVNqqDUplUqGfaMv9a3sMzZvTTWSgXAKeoA=;
+        b=AVcRtE1061EhA8qmTPLzfIzSUmGIdRIupIIJOt7OspO99GP1I8wUgoG4tFMmmJAHjp
+         jHnTHy5n3WkeI9yMlzuFqB9SorfUpnnGy64aKpm79seiaGwrGma55DetxHzvsugULHL9
+         eY2ppry8QShP6s5e2q8626jw/2G+hXNWrAmynj0PwKCiMr3OShdP6nZWE4gve08QpUBT
+         hPr4P7mrEy5qdeeJgXhY0Zwu2ewm3yFPuKIqTagUrGpjB769UE1VAW0ic7KHzwRKk95c
+         ux4iWo4TZCfbaM815wUNlzVhEmlkmV5T8dWAY0Dsy3DM/v6LD0mEtc0FISoQl3i4W5Vu
+         yx+Q==
+X-Gm-Message-State: AOAM530pE1xQkBPSBKt5gCitBPxU+B3ceAtA+PcgxcGzBCfnzMZoRNqk
+        AxbWZHpqrUked69Y12TyuEKFsQ==
+X-Google-Smtp-Source: ABdhPJyS1DqIzxR93iVwZIP2G0nZomzW8c6Lq4fpfYaMPWsqFpt79VvtUo0LKUPICC7P9n/ka3YrGw==
+X-Received: by 2002:a63:4005:: with SMTP id n5mr16785065pga.140.1629433914057;
+        Thu, 19 Aug 2021 21:31:54 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a8sm5131173pfo.79.2021.08.19.21.31.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 21:31:53 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 21:31:53 -0700 (PDT)
+X-Google-Original-Date: Thu, 19 Aug 2021 20:55:39 PDT (-0700)
+Subject:     Re: [PATCH] dt-bindings: sifive-l2-cache: Fix 'select' matching
+In-Reply-To: <20210817174755.541735-1-robh@kernel.org>
+CC:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, sagar.kadam@sifive.com,
+        yash.shah@sifive.com, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     robh@kernel.org
+Message-ID: <mhng-25484677-27e9-4456-b497-0c7bd00bab18@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Axtens <dja@axtens.net> writes:
-> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+On Tue, 17 Aug 2021 10:47:55 PDT (-0700), robh@kernel.org wrote:
+> When the schema fixups are applied to 'select' the result is a single
+> entry is required for a match, but that will never match as there should
+> be 2 entries. Also, a 'select' schema should have the widest possible
+> match, so use 'contains' which matches the compatible string(s) in any
+> position and not just the first position.
 >
->> Commit 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
->> selects the non-existing config ARCH_ENABLE_PMD_SPLIT_PTLOCK in
->> ./arch/powerpc/platforms/Kconfig.cputype, but clearly it intends to select
->> ARCH_ENABLE_SPLIT_PMD_PTLOCK here (notice the word swapping!), as this
->> commit does select that for all other architectures.
->>
->> Rectify selection to ARCH_ENABLE_SPLIT_PMD_PTLOCK instead.
->>
+> Fixes: 993dcfac64eb ("dt-bindings: riscv: sifive-l2-cache: convert bindings to json-schema")
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Sagar Kadam <sagar.kadam@sifive.com>
+> Cc: Yash Shah <yash.shah@sifive.com>
+> Cc: linux-riscv@lists.infradead.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/riscv/sifive-l2-cache.yaml        | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> Yikes, yes, 66f24fa766e3 does seem to have got that wrong. It looks like
-> that went into 5.13.
+> diff --git a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> index 1d38ff76d18f..2b1f91603897 100644
+> --- a/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml
+> @@ -24,10 +24,10 @@ allOf:
+>  select:
+>    properties:
+>      compatible:
+> -      items:
+> -        - enum:
+> -            - sifive,fu540-c000-ccache
+> -            - sifive,fu740-c000-ccache
+> +      contains:
+> +        enum:
+> +          - sifive,fu540-c000-ccache
+> +          - sifive,fu740-c000-ccache
 >
-> I think we want to specifically target this for stable so that we don't
-> lose the perfomance and scalability benefits of split pmd ptlocks:
->
-> Cc: stable@vger.kernel.org # v5.13+
->
-> (I don't think you need to do another revision for this, I think mpe
-> could add it when merging.)
+>    required:
+>      - compatible
 
-Yeah. I rewrote the change log a bit to make it clear this is a bug fix,
-not a harmless cleanup.
-
-cheers
-
-
-  powerpc: Re-enable ARCH_ENABLE_SPLIT_PMD_PTLOCK
-  
-  Commit 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
-  broke PMD split page table lock for powerpc.
-  
-  It selects the non-existent config ARCH_ENABLE_PMD_SPLIT_PTLOCK in
-  arch/powerpc/platforms/Kconfig.cputype, but clearly intended to
-  select ARCH_ENABLE_SPLIT_PMD_PTLOCK (notice the word swapping!), as
-  that commit did for all other architectures.
-  
-  Fix it by selecting the correct symbol ARCH_ENABLE_SPLIT_PMD_PTLOCK.
-  
-  Fixes: 66f24fa766e3 ("mm: drop redundant ARCH_ENABLE_SPLIT_PMD_PTLOCK")
-  Cc: stable@vger.kernel.org # v5.13+
-  Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-  Reviewed-by: Daniel Axtens <dja@axtens.net>
-  [mpe: Reword change log to make it clear this is a bug fix]
-  Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-  Link: https://lore.kernel.org/r/20210819113954.17515-3-lukas.bulwahn@gmail.com
+Thanks, this is on fixes.
