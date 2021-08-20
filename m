@@ -2,187 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE5D3F2C8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C0E3F2C8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240652AbhHTMzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:55:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
+        id S240487AbhHTM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:57:46 -0400
+Received: from 8bytes.org ([81.169.241.247]:38184 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240401AbhHTMzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:55:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB3A06101A;
-        Fri, 20 Aug 2021 12:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629464101;
-        bh=aq47G7FYdzVG9JI5vCW3JdtF0Ql8JGW7+wEYumNG7w0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=a/FYE+XmpmUrhaskDVfwprhmXpSwMty4yUBq+SXncTVPNUlIvLIBnmvTnWwggz9iG
-         s4ammRLDPZdPLd+dw89KRsm4iB6PdovqHvDvOdqKIjmTHY99DXaSADQHXb0vFVv0NH
-         qXD0p0atBEqht2kLinJGRlJKZ/MrgRaGAJgnTlAQ/jSgEcJ/PTrnQ6GV02RwKSuSK6
-         ILPjLo6meDN5gtLC9cJgPFJgUvkYx794rjcRseD+sl8cASPtV9InoEjVyYoecgTGo2
-         Wg3NKtlbNwAEJ6Rxi9E4kJkoHo1P0utsc5wzjT5paKCoOPAXUQci/3UKhb/Ql3/VoZ
-         wXJZ5nNwc5veg==
-Message-ID: <6b9e9485846c01d57f53adc35ddd0bfe42398eca.camel@kernel.org>
-Subject: Re: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S240375AbhHTM5p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:57:45 -0400
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 2A46125C;
+        Fri, 20 Aug 2021 14:57:06 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        hpa@zytor.com, Joerg Roedel <jroedel@suse.de>,
         Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Date:   Fri, 20 Aug 2021 08:54:55 -0400
-In-Reply-To: <20210819143348.GA21090@fieldses.org>
-References: <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
-         <87lf56bllc.fsf@disp2133>
-         <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
-         <87eeay8pqx.fsf@disp2133>
-         <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
-         <87h7ft2j68.fsf@disp2133>
-         <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
-         <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
-         <20210818154217.GB24115@fieldses.org> <87bl5tv8pn.fsf@disp2133>
-         <20210819143348.GA21090@fieldses.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Andy Lutomirski <luto@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH v2] x86/efi: Restore Firmware IDT before calling ExitBootServices()
+Date:   Fri, 20 Aug 2021 14:57:03 +0200
+Message-Id: <20210820125703.32410-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 10:33 -0400, J. Bruce Fields wrote:
-> On Thu, Aug 19, 2021 at 08:56:52AM -0500, Eric W. Biederman wrote:
-> > bfields@fieldses.org (J. Bruce Fields) writes:
-> > 
-> > > On Fri, Aug 13, 2021 at 05:49:19PM -0700, Andy Lutomirski wrote:
-> > > > I’ll bite.  How about we attack this in the opposite direction: remove
-> > > > the deny write mechanism entirely.
-> > > 
-> > > For what it's worth, Windows has open flags that allow denying read or
-> > > write opens.  They also made their way into the NFSv4 protocol, but
-> > > knfsd enforces them only against other NFSv4 clients.  Last I checked,
-> > > Samba attempted to emulate them using flock (and there's a comment to
-> > > that effect on the flock syscall in fs/locks.c).  I don't know what Wine
-> > > does.
-> > > 
-> > > Pavel Shilovsky posted flags adding O_DENY* flags years ago:
-> > > 
-> > > 	https://lwn.net/Articles/581005/
-> > > 
-> > > I keep thinking I should look back at those some day but will probably
-> > > never get to it.
-> > > 
-> > > I've no idea how Windows applications use them, though I'm told it's
-> > > common.
-> > 
-> > I don't know in any detail.  I just have this memory of not being able
-> > to open or do anything with a file on windows while any application has
-> > it open.
-> > 
-> > We limit mandatory locks to filesystems that have the proper mount flag
-> > and files that are sgid but are not executable.  Reusing that limit we
-> > could probably allow such a behavior in Linux without causing chaos.
-> 
-> I'm pretty confused about how we're using the term "mandatory locking".
-> 
-> The locks you're thinking of are basically ordinary posix byte-range
-> locks which we attempt to enforce as mandatory under certain conditions
-> (e.g. in fs/read_write.c:rw_verify_area).  That means we have to check
-> them on ordinary reads and writes, which is a pain in the butt.  (And we
-> don't manage to do it correctly--the code just checks for the existence
-> of a conflicting lock before performing IO, ignoring the obvious
-> time-of-check/time-of-use race.)
-> 
+From: Joerg Roedel <jroedel@suse.de>
 
-Yeah, the locks we're talking about are the locks described in:
+Commit 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32
+boot path") introduced an IDT into the 32 bit boot path of the
+decompressor stub.  But the IDT is set up before ExitBootServices() is
+called and some UEFI firmwares rely on their own IDT.
 
-    Documentation/filesystems/mandatory-locking.rst
+Save the firmware IDT on boot and restore it before calling into EFI
+functions to fix boot failures introduced by above commit.
 
-They've always been racy. You have to mount the fs with '-o mand' and
-set a special mode on the file (setgid bit set, with group execute bit
-cleared). It's a crazypants interface.
+Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Fixes: 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32 boot path")
+Cc: stable@vger.kernel.org # 5.13+
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ arch/x86/boot/compressed/efi_thunk_64.S | 30 +++++++++++++++++--------
+ arch/x86/boot/compressed/head_64.S      |  3 +++
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-> This has nothing to do with Windows share locks which from what I
-> understand are whole-file locks that are only enforced against opens.
-> 
-
-Yep. Those are different.
-
-Confusingly, there is also LOCK_MAND|LOCK_READ|LOCK_WRITE for flock(),
-which are purported to be for emulating Windows share modes. They aren't
-really mandatory though.
-
-> --b.
-> 
-> > Without being very strict about which files can participate I can just
-> > imagine someone hiding their presence by not allowing other applications
-> > the ability to write to utmp or a log file.
-> > 
-> > In the windows world where everything evolved with those kinds of
-> > restrictions it is probably fine (although super annoying).
-> > 
-> > Eric
-
+diff --git a/arch/x86/boot/compressed/efi_thunk_64.S b/arch/x86/boot/compressed/efi_thunk_64.S
+index 95a223b3e56a..8bb92e9f4e97 100644
+--- a/arch/x86/boot/compressed/efi_thunk_64.S
++++ b/arch/x86/boot/compressed/efi_thunk_64.S
+@@ -5,9 +5,8 @@
+  * Early support for invoking 32-bit EFI services from a 64-bit kernel.
+  *
+  * Because this thunking occurs before ExitBootServices() we have to
+- * restore the firmware's 32-bit GDT before we make EFI service calls,
+- * since the firmware's 32-bit IDT is still currently installed and it
+- * needs to be able to service interrupts.
++ * restore the firmware's 32-bit GDT and IDT before we make EFI service
++ * calls.
+  *
+  * On the plus side, we don't have to worry about mangling 64-bit
+  * addresses into 32-bits because we're executing with an identity
+@@ -39,7 +38,7 @@ SYM_FUNC_START(__efi64_thunk)
+ 	/*
+ 	 * Convert x86-64 ABI params to i386 ABI
+ 	 */
+-	subq	$32, %rsp
++	subq	$64, %rsp
+ 	movl	%esi, 0x0(%rsp)
+ 	movl	%edx, 0x4(%rsp)
+ 	movl	%ecx, 0x8(%rsp)
+@@ -49,14 +48,19 @@ SYM_FUNC_START(__efi64_thunk)
+ 	leaq	0x14(%rsp), %rbx
+ 	sgdt	(%rbx)
+ 
++	addq	$16, %rbx
++	sidt	(%rbx)
++
+ 	/*
+-	 * Switch to gdt with 32-bit segments. This is the firmware GDT
+-	 * that was installed when the kernel started executing. This
+-	 * pointer was saved at the EFI stub entry point in head_64.S.
++	 * Switch to IDT and GDT with 32-bit segments. This is the firmware GDT
++	 * and IDT that was installed when the kernel started executing. The
++	 * pointers were saved at the EFI stub entry point in head_64.S.
+ 	 *
+ 	 * Pass the saved DS selector to the 32-bit code, and use far return to
+ 	 * restore the saved CS selector.
+ 	 */
++	leaq	efi32_boot_idt(%rip), %rax
++	lidt	(%rax)
+ 	leaq	efi32_boot_gdt(%rip), %rax
+ 	lgdt	(%rax)
+ 
+@@ -67,7 +71,7 @@ SYM_FUNC_START(__efi64_thunk)
+ 	pushq	%rax
+ 	lretq
+ 
+-1:	addq	$32, %rsp
++1:	addq	$64, %rsp
+ 	movq	%rdi, %rax
+ 
+ 	pop	%rbx
+@@ -128,10 +132,13 @@ SYM_FUNC_START_LOCAL(efi_enter32)
+ 
+ 	/*
+ 	 * Some firmware will return with interrupts enabled. Be sure to
+-	 * disable them before we switch GDTs.
++	 * disable them before we switch GDTs and IDTs.
+ 	 */
+ 	cli
+ 
++	lidtl	(%ebx)
++	subl	$16, %ebx
++
+ 	lgdtl	(%ebx)
+ 
+ 	movl	%cr4, %eax
+@@ -166,6 +173,11 @@ SYM_DATA_START(efi32_boot_gdt)
+ 	.quad	0
+ SYM_DATA_END(efi32_boot_gdt)
+ 
++SYM_DATA_START(efi32_boot_idt)
++	.word	0
++	.quad	0
++SYM_DATA_END(efi32_boot_idt)
++
+ SYM_DATA_START(efi32_boot_cs)
+ 	.word	0
+ SYM_DATA_END(efi32_boot_cs)
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index a2347ded77ea..572c535cf45b 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -319,6 +319,9 @@ SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
+ 	movw	%cs, rva(efi32_boot_cs)(%ebp)
+ 	movw	%ds, rva(efi32_boot_ds)(%ebp)
+ 
++	/* Store firmware IDT descriptor */
++	sidtl	rva(efi32_boot_idt)(%ebp)
++
+ 	/* Disable paging */
+ 	movl	%cr0, %eax
+ 	btrl	$X86_CR0_PG_BIT, %eax
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.32.0
 
