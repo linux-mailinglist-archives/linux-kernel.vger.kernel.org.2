@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016453F253A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660263F253F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238105AbhHTDWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:22:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhHTDWL (ORCPT
+        id S238105AbhHTDYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:24:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30221 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234992AbhHTDYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:22:11 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AFDC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:21:33 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id e15so6452832qtx.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=f+sJ+u/djA+XBJ3U0yapIkY+ojXYJJl4V8fhz0MLb2A=;
-        b=a/UAlFYntqRemgO3V0zoIS10A+s9hehi7XjVf42TP0S1KAGUMmW4RizBib2hEWGPZ3
-         ypowOxBJZORRA3ujSGxPyvyw43e5FHkF9P9RojAQrHXBIqTcJAQYPA2j/7HyQZfE9LIb
-         3E2XQJKl5D6Eek94nTTRkAUJTw5VYANQ9FixS0yQSkya6ZHqcndy8s/UCB76D0UqNKNi
-         e9rzIQDEmZowBqhnFjYIKLgpc6W2MHMQ5suh33ZC4OwHKSah/Cg/IgQ+zGp9g9q5KFcg
-         nUbodUdTYJwOu+d69Aigl+TzpF2NyRJh3U+VtdLm26+RzIDXNXdi4sKYbYqzH2pLREol
-         I8+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=f+sJ+u/djA+XBJ3U0yapIkY+ojXYJJl4V8fhz0MLb2A=;
-        b=qNyPpZKl4T4+o1C2ai0rvQRV4qBKVjogIvfI5BhdnY2bfQ82+Kvj+Pgp0YwTKbXP6h
-         SmP61i6CaJ0ntr24ObS0OOnUdUyqCJE83ZQbP8BX9qpuWDKsvn3wYJn+N9Htm4V+2Ygt
-         aWwGCBmFn/MnU7woWf58xsci+2jgBXGoQo8Y7oMUIZQuCwORZ4hOZrSwE59z28mpuz8x
-         jZuoVW/wIsEegsDPhpTx5HQ7PVXs2aV2BWHuz5bmGrPLPo81WUxEAw3/AGtrhtaTyLld
-         QiyjyIJh3cV1xhaZ2zIr7SbVrOf1E2O41sXElksjbR7NOX/p9BnQJfnZqre6kE07ZDoQ
-         tRXA==
-X-Gm-Message-State: AOAM530xCagoTBNGChEHx7aMvzjxSdQGBaFKJg5qIolq4saGwZYep+e7
-        VM5BYnJzWFxtBluTtihNfzc=
-X-Google-Smtp-Source: ABdhPJxwQbuNGE6oftVEAH+hfgAXPWXkVhalrMOpHh1R7fIBmI5B8hTa1ENaRYrY0Oa94WqCPYQE7Q==
-X-Received: by 2002:ac8:a0a:: with SMTP id b10mr15691200qti.164.1629429693126;
-        Thu, 19 Aug 2021 20:21:33 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g2sm2437382qki.42.2021.08.19.20.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:21:32 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] tee/optee/shm_pool: fix application of sizeof to pointer
-Date:   Thu, 19 Aug 2021 20:21:27 -0700
-Message-Id: <c66fd6f831571b53b741350513e36405bba6c666.1629211976.git.jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 19 Aug 2021 23:24:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629429834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oWdTs6izqiA/pimZyzqfzwAT5R8dcZcICeLEyrt5S/U=;
+        b=HTiZtwsbNztzgk9NJeh0duHKxCJdQme6e9UtIz6/T0UC7WIcpQ5In1jBf3IqXN0H953CWJ
+        vffmcfPrK/Mf7VQbmubiTK5S81qQMd1x74HHebXW3nK683bEA2LkxxjIjA/2NrEGTU6T9j
+        AkjlDru1SJoOxzdZGhOqUH+XFHdynsY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-547-hqiP0e4XOxq-BwqdJck-_g-1; Thu, 19 Aug 2021 23:23:53 -0400
+X-MC-Unique: hqiP0e4XOxq-BwqdJck-_g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD375C73A4;
+        Fri, 20 Aug 2021 03:23:44 +0000 (UTC)
+Received: from ovpn-113-78.phx2.redhat.com (ovpn-113-78.phx2.redhat.com [10.3.113.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 19C13189BB;
+        Fri, 20 Aug 2021 03:23:37 +0000 (UTC)
+Message-ID: <20b9051fe47b7068ed3496bd7f5d417b1af69e3a.camel@redhat.com>
+Subject: Re: [PATCH] rcutorture: Avoid problematic critical section nesting
+ on RT
+From:   Scott Wood <swood@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Date:   Thu, 19 Aug 2021 22:23:37 -0500
+In-Reply-To: <20210817144018.nqssoq475vitrqlv@linutronix.de>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+         <20210811201354.1976839-2-valentin.schneider@arm.com>
+         <20210817121345.5iyj5epemczn3a52@linutronix.de>
+         <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
+         <20210817144018.nqssoq475vitrqlv@linutronix.de>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
+On Tue, 2021-08-17 at 16:40 +0200, Sebastian Andrzej Siewior wrote:
+> [bigeasy: remove 'preempt_disable(); local_bh_disable(); preempt_enable();
+>  local_bh_enable();' from the examples because this works on RT now. ]
 
-sizeof when applied to a pointer typed expression gives the size of
-the pointer.
+Does it actually work?  If preemption is disabled during local_bh_disable,
+softirq_ctrl.lock won't be taken.  If you then get preempted between the
+preempt_enable() and the local_bh_enable(), and another task tries to do
+local_bh_disable(), won't it successfully get softirq_ctrl.lock, add to
+softirq_ctrl.cnt, and proceed right into the critical section?
 
-./drivers/tee/optee/shm_pool.c:38:28-34: ERROR application of sizeof to pointer
+Or am I missing something?
 
-This issue was detected with the help of Coccinelle.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/tee/optee/shm_pool.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-index c41a9a5..d167039 100644
---- a/drivers/tee/optee/shm_pool.c
-+++ b/drivers/tee/optee/shm_pool.c
-@@ -35,7 +35,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
- 		unsigned int nr_pages = 1 << order, i;
- 		struct page **pages;
- 
--		pages = kcalloc(nr_pages, sizeof(pages), GFP_KERNEL);
-+		pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
- 		if (!pages) {
- 			rc = -ENOMEM;
- 			goto err;
--- 
-1.8.3.1
+-Scott
 
 
