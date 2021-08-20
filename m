@@ -2,110 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5AC3F3532
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064F43F3534
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239217AbhHTU3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:29:36 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:37430 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbhHTU3e (ORCPT
+        id S239336AbhHTU3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:29:54 -0400
+Received: from relay08.th.seeweb.it ([5.144.164.169]:46363 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238717AbhHTU3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:29:34 -0400
-Received: by mail-pf1-f175.google.com with SMTP id j187so9586993pfg.4;
-        Fri, 20 Aug 2021 13:28:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ogitIb/6mweMXCH2NlhTgwt8WsoH/tHiqFYkiIn9jj0=;
-        b=FWqhTubwrNHfp+Plo/AFyo7p7Nm0vMOwJbn9MckkOi0UHz8+a9b3Nf00z0GCSSUoFO
-         YTCBxHTwwmLETpT34idkNB+cthmh38prpe52kZ2OPEVYTiPw36n7OEKj803BGDRjXJKw
-         /el2aayV60MHN3k/R7Q9iF/WCDKVTHFu4PxjjbpVyfvD5Nrd97vem51CIYMuxKjkPiqK
-         qMKgYmFl360CNkTKAPIR9U+gsZIv9K+zirED4fEhLj7yFM/i2nCtbdC+Y3KzFQTzzA2u
-         /ViJgRfhr0EYIrYFjd2e7hqYp/Et30QzuQYz74PX93+Th0+1f2Kf8jBbjFcWIJHXibSK
-         7BqQ==
-X-Gm-Message-State: AOAM530viHt/taoZoH/AiCCayJEJTMhhNNVS+zXlMyQgD51wpvCzmlGf
-        ZNbX/ARqk7oLnt/RjSofxh7xmRFRFLg=
-X-Google-Smtp-Source: ABdhPJwS2FQDqWW4NPPxJrKP8DpI3pbaKAXquX1izGBmO3VN135FKNtVD8hOomVWII56mn+tarsWIg==
-X-Received: by 2002:a65:644e:: with SMTP id s14mr20364529pgv.410.1629491335750;
-        Fri, 20 Aug 2021 13:28:55 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:ddfe:8579:6783:9ed8])
-        by smtp.gmail.com with ESMTPSA id p18sm8964394pgk.28.2021.08.20.13.28.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 13:28:55 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: ufshpb: Fix possible memory leak
-To:     keosung.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CGME20210820014624epcms2p6724e146ca1f93ba6eac5e7cf95d4cfd2@epcms2p6>
- <1891546521.01629427801384.JavaMail.epsvc@epcpadp3>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <ca6e8507-743b-005a-faec-375d88d8aaf6@acm.org>
-Date:   Fri, 20 Aug 2021 13:28:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 20 Aug 2021 16:29:53 -0400
+Received: from localhost.localdomain (83.6.167.97.neoplus.adsl.tpnet.pl [83.6.167.97])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 24CB63EB9E;
+        Fri, 20 Aug 2021 22:29:12 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: arm-smmu: Add compatible for SM6350 SoC
+Date:   Fri, 20 Aug 2021 22:29:04 +0200
+Message-Id: <20210820202906.229292-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <1891546521.01629427801384.JavaMail.epsvc@epcpadp3>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 6:46 PM, Keoseong Park wrote:
-> When HPB pinned region exists and mctx allocation for this region fails,
-> memory leak is possible because memory is not released for the subregion
-> table of the current region.
-> 
-> So, change to free memory for the subregion table of the current region.
-> 
-> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
-> ---
->   drivers/scsi/ufs/ufshpb.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> index 9acce92a356b..052f584c789a 100644
-> --- a/drivers/scsi/ufs/ufshpb.c
-> +++ b/drivers/scsi/ufs/ufshpb.c
-> @@ -1933,7 +1933,7 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
->   		if (ufshpb_is_pinned_region(hpb, rgn_idx)) {
->   			ret = ufshpb_init_pinned_active_region(hba, hpb, rgn);
->   			if (ret)
-> -				goto release_srgn_table;
-> +				goto release_current_srgn_table;
->   		} else {
->   			rgn->rgn_state = HPB_RGN_INACTIVE;
->   		}
-> @@ -1944,6 +1944,9 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
->   
->   	return 0;
->   
-> +release_current_srgn_table:
-> +	kvfree(rgn_table[rgn_idx].srgn_tbl);
-> +
->   release_srgn_table:
->   	for (i = 0; i < rgn_idx; i++)
->   		kvfree(rgn_table[i].srgn_tbl);
+Add the SoC specific compatible for SM6350 implementing
+arm,mmu-500.
 
-'rgn_table' is allocated with kvcalloc() so please merge the new kvfree() statement
-with the for-loop below it.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-There is another improvement that can be made in this function: hpb->rgn_tbl
-is not cleared in the error path. I propose to move the "hpb->rgn_tbl = rgn_table"
-assignment from the start of the function to just above the "return 0" statement.
-
-Thanks,
-
-Bart.
-
+diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+index 03f2b2d4db30..87b93ab3f34e 100644
+--- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
++++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+@@ -37,6 +37,7 @@ properties:
+               - qcom,sc7280-smmu-500
+               - qcom,sc8180x-smmu-500
+               - qcom,sdm845-smmu-500
++              - qcom,sm6350-smmu-500
+               - qcom,sm8150-smmu-500
+               - qcom,sm8250-smmu-500
+               - qcom,sm8350-smmu-500
+-- 
+2.33.0
 
