@@ -2,171 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE603F2933
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BA33F293B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237044AbhHTJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:32:04 -0400
-Received: from mail-bn1nam07on2060.outbound.protection.outlook.com ([40.107.212.60]:43684
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235278AbhHTJcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:32:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EXC7O6IoUTmXYdoAIcA3H4cJsh7WsPG+AMJAbsCbV7ED9NEqQgh40QMywGn/y+D8xT51LayjbkFVHT2EoVAgI4K4J1hG5F3KPOCax3olqGcGu2Ls/X1Sz6MI+J0ut74GWY5A9ghR9t1gT2Aar9+Lve3Fg7iiIh7V/yO/ibfFROacckMhlVXBXH/GuZEhW55pFTnsd75PtbpXNpug93oWT2yLtKykw7juHAS8OWj33VZiENm9eK9vAd2kjfZ8NYhiyDKdZ2TZS+Xneix6rBLXPA71UhRJlr6G6pi+2jSUitXLhoe0qz37k0G1/FHdJ90d+s6lErKE1zcO2BOlT46RnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G0ymnsqEltTWxKbr7jG+Fgc1QTRR26Ir7xi+Ft9H61Q=;
- b=mXYYLm73ywl9agkecT1a5nundOqfpnRQb+TqP3i6CZFMNES7kgXuPTCG4pH+mHX0b6AFFcKRfqc+6bCcpGqX/LdhPIb/A5DtCuasTzX2MWqyC1Lw/OMdkgga6qMOBpSH9Qngwxo9SrJfow3gLfbbS6RaIZnOgU72PMGTMe1butOlYWwkBA7y9W1G9Q121DvnXSqctChA7LH8sN3CqbZwexxFHz9ffgXRB8JikxG0ZdqDM/n8NaONs/CdCnnvs7sZEm9bmTnuE+15/+RdFGBsE4YZ5xcYHj1ObJZxsrdnGVrTXhq2MTwmEJO22AXEYEX5YHQGgheudQ/LD78uidrarw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+        id S237100AbhHTJdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235321AbhHTJdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:33:12 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E138C061575;
+        Fri, 20 Aug 2021 02:32:35 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id o2so8571522pgr.9;
+        Fri, 20 Aug 2021 02:32:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G0ymnsqEltTWxKbr7jG+Fgc1QTRR26Ir7xi+Ft9H61Q=;
- b=NGRumwwXipM0LEyHLIN5Sv9Ht2tBdl8rV8oMZ1KcIJoYzH2Xxm/VL/DzgOQlgHNM5LR01qnFRL8O5mECtL6PPXXCpYLAJFfpJOK/MnvFBGUZety9JOlKkghwlUUR20g+RAVjWWiXbXFLNzaT2DaFdnGoZ89mZiuRhN6lxurEjRc=
-Authentication-Results: arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=none action=none header.from=synaptics.com;
-Received: from BN9PR03MB6058.namprd03.prod.outlook.com (2603:10b6:408:137::15)
- by BN6PR03MB2611.namprd03.prod.outlook.com (2603:10b6:404:55::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.18; Fri, 20 Aug
- 2021 09:31:24 +0000
-Received: from BN9PR03MB6058.namprd03.prod.outlook.com
- ([fe80::80c6:5858:36d0:33d4]) by BN9PR03MB6058.namprd03.prod.outlook.com
- ([fe80::80c6:5858:36d0:33d4%8]) with mapi id 15.20.4436.019; Fri, 20 Aug 2021
- 09:31:24 +0000
-Date:   Fri, 20 Aug 2021 17:31:08 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Arnd Bergmann <arnd@arndb.de>, soc@kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH] arm64: dts: synaptics: add DT for AS370-RDK
-Message-ID: <20210820173108.01d5c6de@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY3PR10CA0027.namprd10.prod.outlook.com
- (2603:10b6:a03:255::32) To BN9PR03MB6058.namprd03.prod.outlook.com
- (2603:10b6:408:137::15)
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=F/INelQk2As+/GtcCaMtJ+YzY5fXWvqQ9IG9ehmEJG8=;
+        b=NOsRg08JE9vqoPHWkIYlLgvhL+MicNH2byE8RBT270hR7Y34lewYGmzCG7ZiSOPfst
+         hHwY77aZbHyaZy74ak1zDkDcJThEyYHT+phdATRZfrBFvdCFxZDPgNsT5HA2ACIGOssj
+         5flQeCaYSnsS7x235BGVvDlZVJfoVF2viLSRLpv9bgZw/C28yjBIhSKVFmgAWxO0RwLs
+         SqRSs/9c3L856W6LO84v1LhAxpS7IpBUWCu4vR1ZWSmuRYMsAqASRYQzmnl0WEeB+EGQ
+         v8cJErq4KMIgeGnBvkCcPfJfi85pvA0P+J4N0lc0Qhk1awxXio8YvgLwIqm9BpqqWqJj
+         KSgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=F/INelQk2As+/GtcCaMtJ+YzY5fXWvqQ9IG9ehmEJG8=;
+        b=rMtsF+QGUp5drnz5DEzx92ESwG2lVeehtmHgXgebbn9DWpKd10X1hVLAetRbdR831K
+         7F/8E6cLz88oDH+DjKGSyuhDc+9MppljHQQhMgASwRdtSjxdaYJ3EiKoKPyZDXs58lGg
+         rhhSZJE1+Ve8TDPp3xPAfwG4g+Ho7Hp0vK8LRtXnMGeFpxoC40wQwVIo8bP86x9zMAou
+         4X5TPFPrmuyVSJnMjD8dUjLQb3kuhdaNqlGzlRH3hE6pUOao5lOAQv4IYfyLzOkc8Gsh
+         IV0dNxG9Hyh5WmB2EI8C+GvcOgpMkEw0+yd0wh9y0bUuKnBGDGEKw95GJsehI84urXs7
+         mtOg==
+X-Gm-Message-State: AOAM532IL8cvcpm73pASbWfQURLATeNMESX/FjpoJml+CHBp1N5Khav4
+        wBWq2g5P7X5zoNgJhMN4lXY=
+X-Google-Smtp-Source: ABdhPJyMzC9zZ4t/lY/N9LWV+o+9MRA4tnKQgAYkkUeEh5Y8L6QkAwqXlqjG86qeQ0htTXLK/F9JXQ==
+X-Received: by 2002:a63:1a46:: with SMTP id a6mr17708253pgm.226.1629451955046;
+        Fri, 20 Aug 2021 02:32:35 -0700 (PDT)
+Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
+        by smtp.gmail.com with ESMTPSA id x42sm6108890pfh.205.2021.08.20.02.32.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 02:32:34 -0700 (PDT)
+Subject: Re: [PATCH V3 11/13] HV/IOMMU: Enable swiotlb bounce buffer for
+ Isolation VM
+To:     Michael Kelley <mikelley@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "tj@kernel.org" <tj@kernel.org>
+Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+References: <20210809175620.720923-1-ltykernel@gmail.com>
+ <20210809175620.720923-12-ltykernel@gmail.com>
+ <MWHPR21MB159315B335EB0B064B0B0F23D7C09@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+Message-ID: <e933f7e3-5573-bb8a-c313-75884d59235c@gmail.com>
+Date:   Fri, 20 Aug 2021 17:32:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BY3PR10CA0027.namprd10.prod.outlook.com (2603:10b6:a03:255::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Fri, 20 Aug 2021 09:31:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3b4c8672-f10f-45d9-999c-08d963bd46fd
-X-MS-TrafficTypeDiagnostic: BN6PR03MB2611:
-X-Microsoft-Antispam-PRVS: <BN6PR03MB26113DDBFDBAC8656DE27931EDC19@BN6PR03MB2611.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CPErIwlyU1WV42v2pMy29cKbYoXzcaw60ZJkvFQJBSqWg9RSU/8zeDnU2Kd3RBTa+MYlx4FOFso5hu6tp2rOgNKD+WK+oopnrvNiKz98rZitOKZvYMmud1poNdstFKD7yW546O4A+ULRq09Rg6FwE05a1IKQ5FLPKZrF3YCCrtqa+BrL1ZIu2DbsRfdArsQKvXxb6YrkQau805xUkbxo/XGS2dME4VMSlf/V+L+or4mfeyLmJ+DiJIj5e8j+y9eZqFC9EjS73KEG8B8t1eyKsl3T09Vw5ms35B353BkZ88NQ2tajf+PUgab5QxzzA53z8eq1Vm2od/g3fKFywkwVFzNTxYxr88JAHGiU1Fgf/spUjAE2CEXhRTvSj8eE7Abhvf43YSxpEj0IKN1M8uvzjbhuyvzoaGkwr4gcxWxYG2qdAMjF5bFo48tnrqoQLf35xJ8XpSU8PqhVLqVZKsHYiL6IOOmOEE+APp9lPlwvQnqleA/Sqv6UlGDO+jYLy53ru3fs3wKG8qwS4AEn4H5yusTs7wEwjvaFnyLnR/+DfOdpzmMeiEqOx0dHa/Id05t+lm2tLLGnxCmiWWa+IGhVf0Xm0+vVPOXSqTvtsU5nh3omYlGw6pywjArYTOLp5HH+ImPqFu/v2CeVGgEUfUaAWKp9IxWCim3tQ3gOzDoHC4NSpQOaazg49rIwXEnVf93t5sm9R744sQfjpjTvEie9bg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR03MB6058.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(366004)(39850400004)(396003)(66556008)(66946007)(6506007)(66476007)(1076003)(38100700002)(38350700002)(8676002)(55016002)(9686003)(956004)(7696005)(4326008)(186003)(52116002)(5660300002)(2906002)(110136005)(86362001)(316002)(26005)(478600001)(8936002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u52s9kJ/f/KrKy5/kb1UvKB5NS/u/h1i3gPnhnXwX0rNd5rH+BaK9OZHjs8z?=
- =?us-ascii?Q?rr+Di8PozwxFuLqiKY7E2i/SB5rWzTCyqQBFyLZK+a+qBlEGrW/lzyCpxu9i?=
- =?us-ascii?Q?54RXZVO9eb7J+8iS0tnR3gmvf7n8e0Es4cTW0mfpgDjbjqiMD47P3SV0Y0cp?=
- =?us-ascii?Q?GexHHS07jhU6FwCc81qMCZZdwOVN2LSarLZskKpL3zRNcL8imYWnxMzg2A4P?=
- =?us-ascii?Q?ZQwRf0hV2Q5jDSzvGBhs3JpBDEMAfSxGQdoItJuotJSX7yfqL1HX5bPTt85P?=
- =?us-ascii?Q?psOPPfDXKV4bmZuU+sDAa3gORpBUdJkC/Hvk3xE5FZ55YuzakApz09NQf5LZ?=
- =?us-ascii?Q?GdZDkH2AppjqTTjAqY3+zgszfhHP+YA8Vnxz6IBtKzfcG6J4erRSBiiF0l9w?=
- =?us-ascii?Q?Y3TrONU2Y98U+gzdmm6d9C4zdxQYjsgpMm82vEfm0MleNW5wpBgXQ8zeP7qt?=
- =?us-ascii?Q?jgC/W+6SZVawD2W5dQp3YjrvqJbeeRaP+LoP9zGkVwZRU76xLPfDzOyPWCSL?=
- =?us-ascii?Q?8DBj9ok8bdsEHjOiw0PNyYEtFsTLpxjthjf7ebcSDY4t3DCbSS1v+H4GIG93?=
- =?us-ascii?Q?AIK+kSjE6kE7mjMlH3cg8sNs9HefFx4hTPHsngmjCupvXudJRlUpup+e7uza?=
- =?us-ascii?Q?cl7EAgLeya3oH6F4/kyBpMx+nQBljQSYKHfS1d3iXirHch1QRRto7TpKpBv7?=
- =?us-ascii?Q?i8e6lz/4b6aqElZUqca0CZP+847+jALsuGqVXzg/WCWxyVK07j45ukEl92hD?=
- =?us-ascii?Q?cTej0FUPDamckSV546oULYs7hL/h0ummXgTPR3/cNLzCdx5quKKtpJRSjDAX?=
- =?us-ascii?Q?1Y/F8IFbMCz/zVLBs0ZKuVYmkA+GmfwrPIi9+4pNPXGPvDTFjjKQP+eVeSuU?=
- =?us-ascii?Q?1jhLboirkqW6vRLZD/Hc71VaRPSOnQTxgFzCC22OmtGuhShOLq++IT9vLVaC?=
- =?us-ascii?Q?Cc4LebZk8IfYrqIkY6GELH09k5GbfGqWvzKDBMijdRh/TWcxjHNBoQLXkNQB?=
- =?us-ascii?Q?DJ+Th7TdYzO35CvV8PBBAsg7F2tIQ7OxzVTi0kUrzl7I4h68qDFx0sxEclGV?=
- =?us-ascii?Q?HaApOp2poyCeTFzIIGQi8ZGf/eDk0rE/zNlQzDP+3f61q5dY5WvBkWUYl1hF?=
- =?us-ascii?Q?HCIva/4GPafEqlTIvNnLeDFj1dzaT1YItmTP0x72p0NsoC6dT0BUPJkiEzPB?=
- =?us-ascii?Q?ZXwacU/QVGr1M+gvpE+MB14uZN4+N0pHX1sWe/lOahK/fiVSaMVYGq26GrBy?=
- =?us-ascii?Q?ZGYHdOMS3bQ9ga16keWse9/Bjk3brPtSafhXhTVS0iVe0qpFoNZIyY/NFOHu?=
- =?us-ascii?Q?RgHnOpF8xJIOBVxU8fD8Gcyx?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b4c8672-f10f-45d9-999c-08d963bd46fd
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR03MB6058.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 09:31:24.2352
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cewd6rK0niw1EkwjzPJripGM0c3fJFmES7pmTKF4P5WtCOTZh5qLvLxLKihGKrA5w8DQMVS7YamV0LFrEdckUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB2611
+In-Reply-To: <MWHPR21MB159315B335EB0B064B0B0F23D7C09@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic support for AS370-RDK board based on the AS370 SoC. We can
-get a basic shell on the uart console now.
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
-Hi Arnd,
 
-If it's too late, I will add it in a PR for 5.16 in next development window.
+On 8/20/2021 2:11 AM, Michael Kelley wrote:
+>>   }
+>> +
+>> +/*
+>> + * hv_map_memory - map memory to extra space in the AMD SEV-SNP Isolation VM.
+>> + */
+>> +void *hv_map_memory(void *addr, unsigned long size)
+>> +{
+>> +	unsigned long *pfns = kcalloc(size / HV_HYP_PAGE_SIZE,
+>> +				      sizeof(unsigned long), GFP_KERNEL);
+>> +	void *vaddr;
+>> +	int i;
+>> +
+>> +	if (!pfns)
+>> +		return NULL;
+>> +
+>> +	for (i = 0; i < size / HV_HYP_PAGE_SIZE; i++)
+>> +		pfns[i] = virt_to_hvpfn(addr + i * HV_HYP_PAGE_SIZE) +
+>> +			(ms_hyperv.shared_gpa_boundary >> HV_HYP_PAGE_SHIFT);
+>> +
+>> +	vaddr = vmap_pfn(pfns, size / HV_HYP_PAGE_SIZE,	PAGE_KERNEL_IO);
+>> +	kfree(pfns);
+>> +
+>> +	return vaddr;
+>> +}
+> This function is manipulating page tables in the guest VM.  It is not involved
+> in communicating with Hyper-V, or passing PFNs to Hyper-V.  The pfn array
+> contains guest PFNs, not Hyper-V PFNs.  So it should use PAGE_SIZE
+> instead of HV_HYP_PAGE_SIZE, and similarly PAGE_SHIFT and virt_to_pfn().
+> If this code were ever to run on ARM64 in the future with PAGE_SIZE other
+> than 4 Kbytes, the use of PAGE_SIZE is correct choice.
 
-Thanks
+OK. Will update with PAGE_SIZE.
 
- arch/arm64/boot/dts/synaptics/Makefile      |  1 +
- arch/arm64/boot/dts/synaptics/as370-rdk.dts | 29 +++++++++++++++++++++
- 2 files changed, 30 insertions(+)
- create mode 100644 arch/arm64/boot/dts/synaptics/as370-rdk.dts
 
-diff --git a/arch/arm64/boot/dts/synaptics/Makefile b/arch/arm64/boot/dts/synaptics/Makefile
-index de71ddda6835..c1c4f6c040b3 100644
---- a/arch/arm64/boot/dts/synaptics/Makefile
-+++ b/arch/arm64/boot/dts/synaptics/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- # Berlin SoC Family
-+dtb-$(CONFIG_ARCH_BERLIN) += as370-rdk.dtb
- dtb-$(CONFIG_ARCH_BERLIN) += berlin4ct-dmp.dtb
- dtb-$(CONFIG_ARCH_BERLIN) += berlin4ct-stb.dtb
-diff --git a/arch/arm64/boot/dts/synaptics/as370-rdk.dts b/arch/arm64/boot/dts/synaptics/as370-rdk.dts
-new file mode 100644
-index 000000000000..6f5c37c98be6
---- /dev/null
-+++ b/arch/arm64/boot/dts/synaptics/as370-rdk.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2018-2021 Synaptics Incorporated
-+ *
-+ * Author: Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "as370.dtsi"
-+
-+/ {
-+	model = "Synaptics AS370 RDK";
-+	compatible = "syna,as370-rdk", "syna,as370";
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@1000000 {
-+		device_type = "memory";
-+		/* the first 16MB is for firmwares' usage */
-+		reg = <0 0x01000000 0 0x1f000000>;
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
--- 
-2.33.0
+> 
+>> +void __init hyperv_iommu_swiotlb_init(void)
+>> +{
+>> +	unsigned long bytes;
+>> +
+>> +	/*
+>> +	 * Allocate Hyper-V swiotlb bounce buffer at early place
+>> +	 * to reserve large contiguous memory.
+>> +	 */
+>> +	hyperv_io_tlb_size = 256 * 1024 * 1024;
+> A hard coded size here seems problematic.   The memory size of
+> Isolated VMs can vary by orders of magnitude.  I see that
+> xen_swiotlb_init() uses swiotlb_size_or_default(), which at least
+> pays attention to the value specified on the kernel boot line.
+> 
+> Another example is sev_setup_arch(), which in the native case sets
+> the size to 6% of main memory, with a max of 1 Gbyte.  This is
+> the case that's closer to Isolated VMs, so doing something
+> similar could be a good approach.
+> 
 
+Yes, agree. It's better to keep bounce buffer size with AMD SEV.
