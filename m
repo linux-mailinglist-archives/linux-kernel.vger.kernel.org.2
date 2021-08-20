@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418783F3551
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D08B3F3555
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240296AbhHTUdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:33:36 -0400
-Received: from relay05.th.seeweb.it ([5.144.164.166]:35031 "EHLO
-        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239566AbhHTUdf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:33:35 -0400
-Received: from localhost.localdomain (83.6.167.97.neoplus.adsl.tpnet.pl [83.6.167.97])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id A7C053F34A;
-        Fri, 20 Aug 2021 22:32:54 +0200 (CEST)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     ~postmarketos/upstreaming@lists.sr.ht
-Cc:     martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 2/2] clk: qcom: rpmh: Add support for RPMH clocks on SM6350
-Date:   Fri, 20 Aug 2021 22:32:43 +0200
-Message-Id: <20210820203243.230157-3-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210820203243.230157-1-konrad.dybcio@somainline.org>
-References: <20210820203243.230157-1-konrad.dybcio@somainline.org>
+        id S230464AbhHTUeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:34:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:57756 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230282AbhHTUeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 16:34:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="203983993"
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="203983993"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 13:33:57 -0700
+X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
+   d="scan'208";a="463496452"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 13:33:57 -0700
+Date:   Fri, 20 Aug 2021 13:33:56 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
+        naoya.horiguchi@nec.com, osalvador@suse.de,
+        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
+        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210820203356.GA1623896@agluck-desk2.amr.corp.intel.com>
+References: <20210706190620.1290391-1-tony.luck@intel.com>
+ <20210818002942.1607544-1-tony.luck@intel.com>
+ <20210818002942.1607544-2-tony.luck@intel.com>
+ <YR/m/8PCmCTbogey@zn.tnic>
+ <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
+ <YSACMCEoU6FxjDNh@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSACMCEoU6FxjDNh@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for RPMH clocks on SM6350 SoCs.
+On Fri, Aug 20, 2021 at 09:27:44PM +0200, Borislav Petkov wrote:
+> On Fri, Aug 20, 2021 at 11:59:45AM -0700, Luck, Tony wrote:
+> As in: there was an MCE while trying to access this user memory, you
+> should not do get_user anymore. You did add that
+> 
+>          * Return zero to pretend that this copy succeeded. This
+>          * is counter-intuitive, but needed to prevent the code
+>          * in lib/iov_iter.c from retrying and running back into
+> 
+> which you're removing with the last patch so I'm confused.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- drivers/clk/qcom/clk-rpmh.c           | 21 +++++++++++++++++++++
- include/dt-bindings/clock/qcom,rpmh.h |  2 ++
- 2 files changed, 23 insertions(+)
+Forget to address this part in the earlier reply.
 
-diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-index 552d1cbfea4c..441d7a20e6f3 100644
---- a/drivers/clk/qcom/clk-rpmh.c
-+++ b/drivers/clk/qcom/clk-rpmh.c
-@@ -536,6 +536,26 @@ static const struct clk_rpmh_desc clk_rpmh_sc7280 = {
- 	.num_clks = ARRAY_SIZE(sc7280_rpmh_clocks),
- };
- 
-+DEFINE_CLK_RPMH_VRM(sm6350, ln_bb_clk2, ln_bb_clk2_ao, "lnbclkg2", 4);
-+DEFINE_CLK_RPMH_VRM(sm6350, ln_bb_clk3, ln_bb_clk3_ao, "lnbclkg3", 4);
-+DEFINE_CLK_RPMH_ARC(sm6350, qlink, qlink_ao, "qphy.lvl", 0x1, 4);
-+
-+static struct clk_hw *sm6350_rpmh_clocks[] = {
-+	[RPMH_CXO_CLK]		= &sc7280_bi_tcxo.hw,
-+	[RPMH_CXO_CLK_A]	= &sc7280_bi_tcxo_ao.hw,
-+	[RPMH_LN_BB_CLK2]	= &sm6350_ln_bb_clk2.hw,
-+	[RPMH_LN_BB_CLK2_A]	= &sm6350_ln_bb_clk2_ao.hw,
-+	[RPMH_LN_BB_CLK3]	= &sm6350_ln_bb_clk3.hw,
-+	[RPMH_LN_BB_CLK3_A]	= &sm6350_ln_bb_clk3_ao.hw,
-+	[RPMH_QLINK_CLK]	= &sm6350_qlink.hw,
-+	[RPMH_QLINK_CLK_A]	= &sm6350_qlink_ao.hw,
-+};
-+
-+static const struct clk_rpmh_desc clk_rpmh_sm6350 = {
-+	.clks = sm6350_rpmh_clocks,
-+	.num_clks = ARRAY_SIZE(sm6350_rpmh_clocks),
-+};
-+
- static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
- 					 void *data)
- {
-@@ -623,6 +643,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
- 	{ .compatible = "qcom,sc8180x-rpmh-clk", .data = &clk_rpmh_sc8180x},
- 	{ .compatible = "qcom,sdm845-rpmh-clk", .data = &clk_rpmh_sdm845},
- 	{ .compatible = "qcom,sdx55-rpmh-clk",  .data = &clk_rpmh_sdx55},
-+	{ .compatible = "qcom,sm6350-rpmh-clk", .data = &clk_rpmh_sm6350},
- 	{ .compatible = "qcom,sm8150-rpmh-clk", .data = &clk_rpmh_sm8150},
- 	{ .compatible = "qcom,sm8250-rpmh-clk", .data = &clk_rpmh_sm8250},
- 	{ .compatible = "qcom,sm8350-rpmh-clk", .data = &clk_rpmh_sm8350},
-diff --git a/include/dt-bindings/clock/qcom,rpmh.h b/include/dt-bindings/clock/qcom,rpmh.h
-index 583a99161aaa..0a7d1be0d124 100644
---- a/include/dt-bindings/clock/qcom,rpmh.h
-+++ b/include/dt-bindings/clock/qcom,rpmh.h
-@@ -31,5 +31,7 @@
- #define RPMH_RF_CLK5_A				22
- #define RPMH_PKA_CLK				23
- #define RPMH_HWKM_CLK				24
-+#define RPMH_QLINK_CLK				25
-+#define RPMH_QLINK_CLK_A			26
- 
- #endif
--- 
-2.33.0
+My original code that forced a zero return has a hack. It
+allowed recovery to complete, but only because there was
+going to be a SIGBUS.  There were some unplesant side effects.
+E.g. on a write syscall the file size was updated as if the
+write had succeeded. That would be very confusing for anyone
+trying to clean up afterwards as the file would have good
+data that was copied from the user up to the point where
+the machine check interrupted things. Then NUL bytes after
+(because the kernel clears pages that are allocated into
+the page cache).
 
+The new version (thanks to All fixing iov_iter.c) now does
+exactly what POSIX says should happen.  If I have a buffer
+with poison at offset 213, and I do this:
+
+	ret = write(fd, buf, 512);
+
+Then the return from write is 213, and the first 213 bytes
+from the buffer appear in the file, and the file size is
+incremented by 213 (assuming the write started with the lseek
+offset at the original size of the file).
+
+-Tony
