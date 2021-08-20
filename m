@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C912D3F2AB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243A53F2AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238127AbhHTLG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:06:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40290 "EHLO mail.kernel.org"
+        id S240568AbhHTLHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:07:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239103AbhHTLGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:06:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 149066112E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629457548;
-        bh=93eDDVmo7/1PdbxeFVFln8RV7Masm60GWsbwTyJrWE4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=l9mj867jcXGyl8YmI/JQalL2nqsKtf0VI1MCwO0kMoHFFdHTiEU0ZvUTNME0uZq4J
-         UHORpiTc6WLTBXsX+Skfp/KAERiqhT8BPDBklUSpTBVr4uATlZK9XhdbnycsyEG9od
-         jLJE2nY8XnjZxI50hk7djqhuTFN5SHihHrmRoyNOtCzCXl5EE38ytVPg+jcPeD1FuK
-         2GW0XY/S3EIlH1OhvTLAdjU/qsSjjomHJSThemI9pu/2SEr1D3DV6gI73LuKJbHKYV
-         8LwIqJsnJqXssqjrYN9/W1XJLEBd7KtYxIKVbdsKV8oNPr/OziX/npYzJJVtXynmoy
-         4gCaoJVr/Ur1g==
-Received: by mail-wm1-f54.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so8847559wme.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 04:05:48 -0700 (PDT)
-X-Gm-Message-State: AOAM531tiGBoe3+9CO6T2doTQvCXle7mosrmjK0Lz5EEKsA9zu79ukQ1
-        8slbQQbf6NWTw8iYzHRgwh59I0hABY3xNov8aww=
-X-Google-Smtp-Source: ABdhPJw/Fmdx4V5oM8TPAaI8lv4bPHVFz9Z8FqA6zeqy/S1H3h/SHE/F5YKwQN0xO3r6abulLxCEpmtDLhKzo7u+UC8=
-X-Received: by 2002:a1c:6a18:: with SMTP id f24mr3321070wmc.142.1629457546734;
- Fri, 20 Aug 2021 04:05:46 -0700 (PDT)
+        id S240262AbhHTLGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 07:06:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4016C60FDC;
+        Fri, 20 Aug 2021 11:05:53 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH2LO-006AgP-Dv; Fri, 20 Aug 2021 12:05:51 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvmarm@lists.cs.columbia.edu, David Brazdil <dbrazdil@google.com>
+Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: (subset) [PATCH 0/2] Fix off-by-one in range_is_memory
+Date:   Fri, 20 Aug 2021 12:05:44 +0100
+Message-Id: <162945752305.2126143.7959914980998500483.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210728153232.1018911-1-dbrazdil@google.com>
+References: <20210728153232.1018911-1-dbrazdil@google.com>
 MIME-Version: 1.0
-References: <20210709115311.3424912-1-hch@lst.de> <20210817052003.GA4595@lst.de>
-In-Reply-To: <20210817052003.GA4595@lst.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 20 Aug 2021 13:05:30 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3rtL5t65GQOEP5XdfsaEOZP=PpiZM9hjYkO=jC6oOptA@mail.gmail.com>
-Message-ID: <CAK8P3a3rtL5t65GQOEP5XdfsaEOZP=PpiZM9hjYkO=jC6oOptA@mail.gmail.com>
-Subject: Re: remove set_fs() for h8300
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, dbrazdil@google.com, linux-kernel@vger.kernel.org, will@kernel.org, qperret@google.com, alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 7:21 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Jul 09, 2021 at 01:53:09PM +0200, Christoph Hellwig wrote:
-> > Hi all,
-> >
-> > this series removes support for the deprecated set_fs address space
-> > override on h8300.  Because h8300 doesn't actually have different
-> > address spaces to start with as a pure nommu port the changes are
-> > pretty simple.
-> >
-> > Compile tested only.
->
-> Any comments?
+On Wed, 28 Jul 2021 15:32:30 +0000, David Brazdil wrote:
+> the range_is_memory function in hyp.
+> 
+> David Brazdil (2):
+>   KVM: arm64: Fix off-by-one in range_is_memory
+>   KVM: arm64: Minor optimization of range_is_memory
+> 
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 
-It took me a while to figure out that this works on architectures that
-define CONFIG_UACCESS_MEMCPY, as they get the asm-generic
-version of get_kernel_nofault(). Maybe add that to the changelog,
-plus my
+Applied to kvm-arm64/mmu/el2-tracking, thanks!
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+[2/2] KVM: arm64: Minor optimization of range_is_memory
+      commit: 14ecf075fe5be01860927fdf3aa11d7b18023ab2
 
-Do you have more of these? I'm happy to take them through the
-asm-generic tree, at least for architectures with no response from
-the maintainers (not m68k, which looks too complex). I did partial
-patches for sh and sparc at some point to remove the set_fs() callers,
-but got stuck when I tried doing ia64 and didn't submit any of these.
+Cheers,
 
-      Arnd
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
