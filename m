@@ -2,102 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABE03F24C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F74C3F24C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237643AbhHTCdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237269AbhHTCdO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:33:14 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4813C061575;
-        Thu, 19 Aug 2021 19:32:37 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id jv8so4789866qvb.3;
-        Thu, 19 Aug 2021 19:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=45Ie1z4VxtL1rF2JDkZOWOkx7F6LyrXzIAa5uB+jCfc=;
-        b=Glmp0TXEWhNQ1phOM+WfBxzO9W4/akCWOXzUD0S5Kyh0YY4HdTMmXtfSFDZ2g9wNeF
-         Q3lgWPsxH1XIct9TQO6jw7NIl3Y+G1cEuG3dMQ0rDWA1R1ETnk7D/sxvkA/7NletOKNy
-         FbLA4q8fgKKJg8LMw8CHmb6AIHxX52Ova9OcoOYjX5hO/+53UtrMIiPieq2EcUGt5DWD
-         oa5yUTYsNfWlrQ/GAFHtiouvhpYQN1qkboCAiRhL5elAEQKXEaU814XQZ2hVqGlR28d5
-         1ehkqPkiqjDtn18vBBlFMkY7jbGlL3jqLpLwL7UfIXHaxigkH3d41oefXOno0OOjCkLF
-         XNqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=45Ie1z4VxtL1rF2JDkZOWOkx7F6LyrXzIAa5uB+jCfc=;
-        b=Wxgq2s6ipgtZB6W+viX1xBlZzcj+OSYEJUlEMQGN6uh0EWjsOn4efrY6USbuWLUUC/
-         ItSOzWe4p6mNDLjpMMay8gwXXbGlSwxk5bCiGrm7OgwN+/CyA9lz0KFNMExbHOgIJmtE
-         72jROQpfRjoLVL5cVVrp78H4/pGgeNTLX++lKSGXRz7Xv4OIlGOi2DD9gc2Dn2SXPgrC
-         IMi5+2jwipO2k6N9GPv+ubFFOWXRcrdWXa3yqMrpa1q7WeKPE0NBe5UWU8GT44HCkLWJ
-         tJK0bjBo2/TI40w1zI3w+4yTIrYAcq25EhjO9Kmg45t9kIgW+cxxDRlPjkun0/Ya/ILc
-         ngUA==
-X-Gm-Message-State: AOAM533Det2T8ZNT1ODWsihkzkgatVYsOEwQdqdThL9Pymu0zAMgnIj+
-        U06payaN+WCE784174rfbdw=
-X-Google-Smtp-Source: ABdhPJw1h1V3KuvLC9h+hn3rnYHag6Ai3spYchHZBRWK6YQUbDAQSoPXZxzkUv9jOV85/0TA9nS4ow==
-X-Received: by 2002:a0c:d801:: with SMTP id h1mr17750376qvj.60.1629426757218;
-        Thu, 19 Aug 2021 19:32:37 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id bk3sm2256977qkb.103.2021.08.19.19.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 19:32:36 -0700 (PDT)
-From:   jing yangyang <cgel.zte@gmail.com>
-X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
-To:     Chris Mason <clm@fb.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] fs: btrfs: fix returnvar.cocci warnings
-Date:   Thu, 19 Aug 2021 19:32:29 -0700
-Message-Id: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S237671AbhHTCeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:34:36 -0400
+Received: from ozlabs.org ([203.11.71.1]:53369 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237269AbhHTCef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 22:34:35 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrQgN04l2z9sWq;
+        Fri, 20 Aug 2021 12:33:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629426832;
+        bh=YWlPocs0BfpTGfRfxgXiDWaeT/Tw04gUe3Td/HKHySo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JoSLnwP3Zw9Vd08ffcY17k+zwn3tnAlsOKkw9yu45QBPgjhlStjfnsuLO2bRhe5kV
+         E03coMNuA991b74Bo8TkjOvWzDf4hGqrPkoQV9lFXo/9Yie2WMF+6YuD9TrtDglPAz
+         /Y0B1l82Jissx/7uKWLM1xHQ9JJBhbutJ5dfguCzKkCU293w08YJQoOoloWqP92/Si
+         4Q2QYTnIcmEYrtMHCU03sD1NkfrXQJFOXBbJ8NevOq5Mv2fjIaHI4n3EMtYtQkRjtg
+         hfzhemEx4nWsRlLZrB+Oy21WFYHsmDWlYpqBAS14qXSf2yyZxXuo7o2tjhzRXjKCqU
+         GsQTrWyxVcGPA==
+Date:   Fri, 20 Aug 2021 12:33:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     John Harrison <John.C.Harrison@Intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm tree
+Message-ID: <20210820123348.6535a87e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/oOsbFiDQh9BrurlcM8zPi+c";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded variables when "0" can be returned.
+--Sig_/oOsbFiDQh9BrurlcM8zPi+c
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Generated by: scripts/coccinelle/misc/returnvar.cocci
+Hi all,
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
+
+In file included from drivers/gpu/drm/i915/i915_debugfs.c:39:
+drivers/gpu/drm/i915/gt/intel_gt_requests.h:9:10: fatal error: stddef.h: No=
+ such file or directory
+    9 | #include <stddef.h>
+      |          ^~~~~~~~~~
+
+Caused by commit
+
+  564f963eabd1 ("isystem: delete global -isystem compile option")
+
+from the kbuild tree interacting with commit
+
+  b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to work with G=
+uC")
+
+I have applied the following patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 20 Aug 2021 12:24:19 +1000
+Subject: [PATCH] drm/i915: use linux/stddef.h due to "isystem: trim/fixup s=
+tdarg.h and other headers"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- fs/btrfs/extent_map.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_gt_requests.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 4a8e02f..58860d7 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
- int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 		       u64 gen)
- {
--	int ret = 0;
- 	struct extent_map *em;
- 	bool prealloc = false;
- 
-@@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 	free_extent_map(em);
- out:
- 	write_unlock(&tree->lock);
--	return ret;
-+	return 0;
- 
- }
- 
--- 
-1.8.3.1
+diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.h b/drivers/gpu/drm/=
+i915/gt/intel_gt_requests.h
+index 51dbe0e3294e..d2969f68dd64 100644
+--- a/drivers/gpu/drm/i915/gt/intel_gt_requests.h
++++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+@@ -6,7 +6,7 @@
+ #ifndef INTEL_GT_REQUESTS_H
+ #define INTEL_GT_REQUESTS_H
+=20
+-#include <stddef.h>
++#include <linux/stddef.h>
+=20
+ struct intel_engine_cs;
+ struct intel_gt;
+--=20
+2.32.0
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/oOsbFiDQh9BrurlcM8zPi+c
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEfFIwACgkQAVBC80lX
+0GybnAf7BxjoAjS9d5Q/IOZq3rvbZomBZ0mdDpqG1OTXPP9NhnwREyI8L3T8oW9i
+/DKKXwp3JWkaGAxPcl7MBuTObVyc2arq3MEn8iGlKIZhqLub3cv7lt18wXHZuheK
+SRKpxY1SC6UktN5yBmlCpn9fEOr00B0ibKJcDPad2bPD2JScnZamU+Y1fJKaoZ2I
+g1l2Tb7/OhzSWlSMAUzANx9Q6TuuJ0rafgBEqEXsGBi1J+3PD64pU4iWH4eytZvw
+WwzU4FO7HZwxfl07CF70SP87G/88SXa89wPZpEmrBKEzwiDDL5NdoYOjYfL7oXS2
+W6Kw/jn+1NKcu6uUlhLYGbsiGTv92w==
+=vM/T
+-----END PGP SIGNATURE-----
+
+--Sig_/oOsbFiDQh9BrurlcM8zPi+c--
