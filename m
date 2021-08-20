@@ -2,111 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9597C3F3245
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67C83F324E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhHTRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234428AbhHTRbt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:31:49 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DD0C061575;
-        Fri, 20 Aug 2021 10:31:11 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f107b00196adb237f9ce365.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:196a:db23:7f9c:e365])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4F8881EC0589;
-        Fri, 20 Aug 2021 19:31:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629480666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=lRij2bTpSGXVMDbhycmb3su8DPnygSPG8qvXt1BdmMQ=;
-        b=GaEhMARj8xGVHTj7bt43VnhjzJAALO983uuEfnVXcY7iemcXn6D2JzdeM5GpM5554eoedj
-        83L3SI19//s9Uf/driz3PyNsPgczirOiDKay/8/uEylpeovTWgsGglPxWYZn6L4uDnHyKB
-        4vZ6J6dPquVkf5++AYKhlLsuBQkTbeg=
-Date:   Fri, 20 Aug 2021 19:31:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        naoya.horiguchi@nec.com, osalvador@suse.de,
-        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
-        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <YR/m/8PCmCTbogey@zn.tnic>
-References: <20210706190620.1290391-1-tony.luck@intel.com>
- <20210818002942.1607544-1-tony.luck@intel.com>
- <20210818002942.1607544-2-tony.luck@intel.com>
+        id S234308AbhHTRei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:34:38 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:37202 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229516AbhHTReg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:34:36 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 17KHXall026146;
+        Fri, 20 Aug 2021 19:33:36 +0200
+Date:   Fri, 20 Aug 2021 19:33:36 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Joe Perches <joe@perches.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        LukasBulwahn <lukas.bulwahn@gmail.com>,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
+        linux-csky@vger.kernel.org
+Subject: Re: What is the oldest perl version being used with the kernel ?
+ update oldest supported to 5.14 ?
+Message-ID: <20210820173336.GA26130@1wt.eu>
+References: <37ec9a36a5f7c71a8e23ab45fd3b7f20efd5da24.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210818002942.1607544-2-tony.luck@intel.com>
+In-Reply-To: <37ec9a36a5f7c71a8e23ab45fd3b7f20efd5da24.camel@perches.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 05:29:40PM -0700, Tony Luck wrote:
-> @@ -1287,17 +1291,34 @@ static void kill_me_maybe(struct callback_head *cb)
->  	}
->  }
->  
-> -static void queue_task_work(struct mce *m, int kill_current_task)
-> +static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
->  {
-> -	current->mce_addr = m->addr;
-> -	current->mce_kflags = m->kflags;
-> -	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-> -	current->mce_whole_page = whole_page(m);
-> +	int count = ++current->mce_count;
->  
-> -	if (kill_current_task)
-> -		current->mce_kill_me.func = kill_me_now;
-> -	else
-> -		current->mce_kill_me.func = kill_me_maybe;
-> +	/* First call, save all the details */
-> +	if (count == 1) {
-> +		current->mce_addr = m->addr;
-> +		current->mce_kflags = m->kflags;
-> +		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-> +		current->mce_whole_page = whole_page(m);
-> +
-> +		if (kill_current_task)
-> +			current->mce_kill_me.func = kill_me_now;
-> +		else
-> +			current->mce_kill_me.func = kill_me_maybe;
-> +	}
-> +
-> +	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
+On Fri, Aug 20, 2021 at 10:27:59AM -0700, Joe Perches wrote:
+> Perl 5.8 is nearly 20 years old now.
+> 
+> https://en.wikipedia.org/wiki/Perl_5_version_history
+> 
+> checkpatch uses regexes that are incompatible with perl versions
+> earlier than 5.10, but these uses are currently runtime checked
+> and skipped if the perl version is too old.  This runtime checking
+> skips several useful tests.
+> 
+> There is also some desire for tools like kernel-doc, checkpatch and
+> get_maintainer to use a common library of regexes and functions:
+> https://lore.kernel.org/lkml/YR2lexDd9N0sWxIW@casper.infradead.org/
+> 
+> It'd be useful to set the minimum perl version to something more modern.
+> 
+> I believe perl 5.14, now only a decade old, is a reasonable target.
+> 
+> Any objections or suggestions for a newer minimum version?
 
-"likely"
+It's probably reasonable, even the Slackware 14.2 on my home PC, which
+is starting to date, ships a 5.22.
 
-> +	if (count > 10)
-> +		mce_panic("Too many machine checks while accessing user data", m, msg);
-
-Ok, aren't we too nasty here? Why should we panic the whole box even
-with 10 MCEs? It is still user memory...
-
-IOW, why not:
-
-	if (count > 10)
-		current->mce_kill_me.func = kill_me_now;
-
-and when we return, that user process dies immediately.
-
-> +	/* Second or later call, make sure page address matches the one from first call */
-> +	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-> +		mce_panic("Machine checks to different user pages", m, msg);
-
-Same question here.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Willy
