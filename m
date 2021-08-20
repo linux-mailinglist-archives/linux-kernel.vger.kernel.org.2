@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB813F373C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D893F373F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238262AbhHTXSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 19:18:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230303AbhHTXS3 (ORCPT
+        id S240652AbhHTXSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 19:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhHTXSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:18:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629501470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QOfsUdy3CSf2X7hLcqCS+xW43jyqXbihc3ZxGwrZDQs=;
-        b=EeHyAFJzXF3kVDXXYYYApZTTSZTC6g9Ie9CBeU0pkrcrCvAleLqk6SXyI0vPdVLRNVyKH7
-        gAI1me10UkMdYyINRWt+JAp56t7t0azPf+egw+DGLJjDKq/cIwbntGAGFfLGLxzXTFByoa
-        IpXEF774DEbvjV5BnCVYmMCtLkrHjOQ=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-efzAwAVJMz6__BIe3hTILQ-1; Fri, 20 Aug 2021 19:17:48 -0400
-X-MC-Unique: efzAwAVJMz6__BIe3hTILQ-1
-Received: by mail-oo1-f70.google.com with SMTP id k18-20020a4a94920000b029026767722880so5265948ooi.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:17:48 -0700 (PDT)
+        Fri, 20 Aug 2021 19:18:42 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D0EC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:18:03 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id u16so16334055wrn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=ndVrv9LlDSJtPxdQ7srGUgMyCM4NsNR8S4LYvnghJTg=;
+        b=XF5zPQpKbCu9pv7P7tqvIpvMlZoq3FvUjlwVcpmfs9wHHTkyNu6D5G8TNGFcuu/t42
+         vYt6Uc/eP2y+7YKJ6G5oo1X1FZ/ElQ6c6l+jLwV4z6NXXGiw3yNd9FLXAB36zr8uHe5m
+         Q6l4+bvMtlqQVlBVHcQu6sG3Hd98k8uxvFqIwaEAfnIAPF64Yc4UqJ9f9gBtAHFCskjL
+         isMCRoA5eaLT4S64vbfOpl8mRd6V6Z0oaG7aDxdUzEhByaDOYqK3Y8ARzflLek7u7P8Z
+         wC/4UuRWInhvZBsrEXt22QeZpH+Ni7vwizt3iMpw44EYVmzDEW/SHZyfUP5tcBh9tJz1
+         LjFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QOfsUdy3CSf2X7hLcqCS+xW43jyqXbihc3ZxGwrZDQs=;
-        b=mvwjB7Y0XvfBm60ehPC7vtC1MyfBZVSl+4/V2XyX6T0byB5hbBgKOSlc4geLn7TRrn
-         ks+qFQlqrfsSrTqQpUnd9jcgSCtc1ITFPGJDfA/UKD/+WWKa2WA/0+79v/N66x+zsB9y
-         M8fRgrPWDOViC3rgmUnoALempaiBOUUziOxLyeI9tMMIpKVwGk5Y5iuwgkfkfampVAy+
-         nmAw4/9QK5tU73kIJUx/amzjgnFG1vA1mkF/DLXS94HW2DmK1G9uQj39at5KC/GSmNhO
-         ztWVeECNi62S7/3iQDL9luO0J4NPO8Wk2K3sPVe2GHGe8p2wX7QWPCz8joJQWOZd+Fvp
-         8SoQ==
-X-Gm-Message-State: AOAM531yt6VOlaTMOorHMWL3dh4ct6n+TDOB1Bm4og0nYt670pXX3FTc
-        i6jKWaeRjMo9M++nAXOOIZbpkaeSl5MLUkxvzzJO/bncBxaj8BrO6c5E7Zuf28/ecaZYZAkaF7b
-        7Rk4t+reUo3VRxUMrztdaQS/M
-X-Received: by 2002:a9d:7e83:: with SMTP id m3mr13725118otp.44.1629501468150;
-        Fri, 20 Aug 2021 16:17:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyR5VQyh8ph5spdGdv9zKid4mCInfcyTDN5VexbwUQS2B+G0KglhUt5008ajh4sCzUfHbgbZA==
-X-Received: by 2002:a9d:7e83:: with SMTP id m3mr13725106otp.44.1629501467911;
-        Fri, 20 Aug 2021 16:17:47 -0700 (PDT)
-Received: from treble ([68.74.140.199])
-        by smtp.gmail.com with ESMTPSA id t30sm1582846oiw.42.2021.08.20.16.17.46
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=ndVrv9LlDSJtPxdQ7srGUgMyCM4NsNR8S4LYvnghJTg=;
+        b=PfzVLOqm9+iYQMp3/cVFxCEDJIPqPsxUQ6+pnjOkAOzR5noDT1tAZLfGPEtFF4Ahvj
+         L8rWOUhds9KISIkh2EJFRWlpDPUepYq4+PmWlVreu3eb3hjf0hqMKbaTbJ5RzzY+9OAj
+         0cKyT8h9zRDV/mP4Uz387/Zya72QzHzXPAAiYiKidHa8BztryHnefqTcgwmgRq0DCfYZ
+         CPjoG355dcxlp6Z9+93zXZj5Wmy2V1aAXFNg30KnQUs5wmeD54g7ifJp81Lh0BWJqUZm
+         /PUdMUMfpbvrMMkT6KPOFSoqFWk9Ui3zrWb13OSaDiGGah8wFv0DS4pr9uM9E2rfRfiF
+         1/xg==
+X-Gm-Message-State: AOAM532ZBEVqlg24u8glDOVL7UaENPHWZn6f52qz7iinJ6fOcVqM2/cb
+        pqQe9jxw7C0OHU4j97qAlYK8ew==
+X-Google-Smtp-Source: ABdhPJz2F89Mt5pKkgsy0sbPI9dqRbklsMqgiIt7JIP7QWqkNW3HhlgSKFjuBKw/yP8WdqmrMC6p0w==
+X-Received: by 2002:adf:db83:: with SMTP id u3mr1140912wri.363.1629501481925;
+        Fri, 20 Aug 2021 16:18:01 -0700 (PDT)
+Received: from ?IPv6:2001:8b0:dfde:e1a0::2? (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id j16sm7321552wrr.78.2021.08.20.16.18.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 16:17:47 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 16:17:44 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
-        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
-        elver@google.com
-Subject: Re: [PATCH v2 03/24] objtool: Handle __sanitize_cov*() tail calls
-Message-ID: <20210820231744.76clopxwcqeum4k7@treble>
-References: <20210624094059.886075998@infradead.org>
- <20210624095147.818783799@infradead.org>
+        Fri, 20 Aug 2021 16:18:01 -0700 (PDT)
+Message-ID: <1590e1abf3991c4b9023173bddee5b9e912d2c47.camel@philpotter.co.uk>
+Subject: Re: [PATCH RFC 3/3] staging: r8188eu: add error argument to
+ read_macreg
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
+        straube.linux@gmail.com, fmdefrancesco@gmail.com
+Date:   Sat, 21 Aug 2021 00:18:00 +0100
+In-Reply-To: <44a5a4ab2eae8e0deb969028a5488ea892008c8d.1629479152.git.paskripkin@gmail.com>
+References: <cover.1629479152.git.paskripkin@gmail.com>
+         <44a5a4ab2eae8e0deb969028a5488ea892008c8d.1629479152.git.paskripkin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624095147.818783799@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:41:02AM +0200, Peter Zijlstra wrote:
-> +	if (insn->sec->noinstr &&
-> +	    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
-> +		if (reloc) {
-> +			reloc->type = R_NONE;
-> +			elf_write_reloc(file->elf, reloc);
-> +		}
-> +
-> +		elf_write_insn(file->elf, insn->sec,
-> +			       insn->offset, insn->len,
-> +			       sibling ? arch_ret_insn(insn->len)
-> +			               : arch_nop_insn(insn->len));
-> +
-> +		insn->type = sibling ? INSN_RETURN : INSN_NOP;
-> +	}
+On Fri, 2021-08-20 at 20:07 +0300, Pavel Skripkin wrote:
+> Since read_macreg() calls rtw_read*() internally we should tell
+> callers about an error on the read side.
+> 
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_mp.c    | 9 ++++-----
+>  drivers/staging/r8188eu/include/rtw_mp.h | 2 +-
+>  2 files changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_mp.c
+> b/drivers/staging/r8188eu/core/rtw_mp.c
+> index 601a1fd5d4e7..6bbea1cc364a 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mp.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mp.c
+> @@ -7,20 +7,19 @@
+>  #include "../include/odm_precomp.h"
+>  #include "../include/rtl8188e_hal.h"
+>  
+> -u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz)
+> +u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz, int
+> *error)
 
-It'd be nice to keep the comment for this case that was in
-add_call_destinations().
+Dear Pavel,
 
--- 
-Josh
+Correct me if I'm wrong, but this read_macreg function seems to be
+completely unused by the rest of the driver. Rather than changing the
+signature to do error handling, maybe it would be better to just remove
+it?
+
+That is just my view though, would be interested to see what others
+think - perhaps it could come in handy at some point.
+
+Regards,
+Phil
 
