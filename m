@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834C73F36A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57F63F3719
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234317AbhHTWsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbhHTWst (ORCPT
+        id S238009AbhHTW6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:58:37 -0400
+Received: from h04.kommunity.net ([138.201.86.160]:33675 "EHLO
+        h04.kommunity.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232349AbhHTW6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:48:49 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6566C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:48:10 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id f10so6760918wml.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:48:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=g7ZjB0kpmQk/BmDkEZAy3iHp85Ka80jxWVGQUzXwpdQ=;
-        b=xq+Cmew/0c+qC6oazsVxH2SIoq8IQvqlQ/WQwyY2SQyByvDbQzMWNVkgakr2iSNv3O
-         I4M3f84zp9+fNyptuUurGasJ/oIVeqACRZiWY+kGc4YUmtd5LrP4rL5ztq2rmnbl9qbK
-         LCzUFVMx5YjyOYH4JXVA8tcaCKW+lYlbxefOa1D2ORqpSQCq4fxHwsTXaKOr4D5yb09s
-         yTbxTzK7cIVfirgr2qNl8UxcdqgsnnFlqM27wSmGrSZHvqWwsl6NrONy6dxILyrmWORF
-         QrbbiEnNjWINqSMvSvSjpl1O3z6/Lr8BNhzP88UrrXDbaOlMWFVXa5Nyo4RZZ0hStjXz
-         Yktw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=g7ZjB0kpmQk/BmDkEZAy3iHp85Ka80jxWVGQUzXwpdQ=;
-        b=BbGjoAVa15ZposLrIy5cacOrRnU5YrIlGQLyBSVsEI5m3a5KqNU5OH0jZo/koKz+8Y
-         Zava0djjptuiIaYX0S0HtnvmypBJDC5tlQcDbFNdBNyNyTloiUQKXEPBuPro9h/VfnqR
-         B1E5L0JUWd4LGbiDv99fHTqFna5jrUaGezf+aSLbigfInAdYMqpj0RrUpKu5ju38VXWD
-         h+hwSTvHlUQOKrqg0SkcqYv63j3aIxfA3DqD8cXeqrZVH8foebvLX2jW3It22JbDKoIX
-         afVxXKvuN/yy5U3k0+9uQ5w7CvmIGNvuP2/KdKT+RUsR0o7PA2DK1AHH2lOnjO9gXt0v
-         Izfw==
-X-Gm-Message-State: AOAM533tkmgo+r5vwcZ5MSdxuv6bz+ppuCEoVbfqMGa99FGF7PeOWloj
-        8OZeoNFq78P3wIXQsDn25ougpw==
-X-Google-Smtp-Source: ABdhPJyhrUsxC9Gz+ERvH9s7biHU1OcSsOShSbLFERwJbTpV/8hyLzlV10zkXkBYKuHJdIcP34+4Xw==
-X-Received: by 2002:a05:600c:2281:: with SMTP id 1mr5960766wmf.9.1629499689361;
-        Fri, 20 Aug 2021 15:48:09 -0700 (PDT)
-Received: from ?IPv6:2001:8b0:dfde:e1a0::2? (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id a11sm7341504wrw.67.2021.08.20.15.48.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 15:48:08 -0700 (PDT)
-Message-ID: <693326266015233ecdebb0df9ae06a76748f6137.camel@philpotter.co.uk>
-Subject: Re: [PATCH 2/2] staging: r8188eu: remove unused function
- rtw_remove_bcn_ie()
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Date:   Fri, 20 Aug 2021 23:48:08 +0100
-In-Reply-To: <20210819112200.32030-2-straube.linux@gmail.com>
-References: <20210819112200.32030-1-straube.linux@gmail.com>
-         <20210819112200.32030-2-straube.linux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 20 Aug 2021 18:58:37 -0400
+X-Greylist: delayed 504 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Aug 2021 18:58:36 EDT
+Received: from notebook.fritz.box (p4fc646df.dip0.t-ipconnect.de [79.198.70.223])
+        by h04.kommunity.net (Postfix) with ESMTPSA id 51D1BF86E5D;
+        Sat, 21 Aug 2021 00:49:31 +0200 (CEST)
+Authentication-Results: h04.kommunity.net;
+        spf=pass (sender IP is 79.198.70.223) smtp.mailfrom=alec@vc-celle.de smtp.helo=notebook.fritz.box
+Received-SPF: pass (h04.kommunity.net: connection is authenticated)
+From:   Alexander Vorwerk <alec@vc-celle.de>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Alexander Vorwerk <alec@vc-celle.de>
+Subject: [PATCH] staging: iio: cdc: remove braces from single line if blocks
+Date:   Sat, 21 Aug 2021 00:49:14 +0200
+Message-Id: <20210820224914.1260-1-alec@vc-celle.de>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 13:22 +0200, Michael Straube wrote:
-> Function rtw_remove_bcn_ie() is not used anywhere, remove it.
-> 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_ap.c    | 38 ------------------------
->  drivers/staging/r8188eu/include/rtw_ap.h |  2 --
->  2 files changed, 40 deletions(-)
-> 
+Remove braces from single line if blocks to clear checkpatch warnings.
+WARNING: braces {} are not necessary for single statement blocks
 
-Dear Michael,
+Signed-off-by: Alexander Vorwerk <alec@vc-celle.de>
+---
+ drivers/staging/iio/cdc/ad7746.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Looks good, thanks.
-
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
-
-Regards,
-Phil
+diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+index 78ac720266e6..71c709771676 100644
+--- a/drivers/staging/iio/cdc/ad7746.c
++++ b/drivers/staging/iio/cdc/ad7746.c
+@@ -241,10 +241,8 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		if (chip->capdac_set != chan->channel) {
+-
++		if (chip->capdac_set != chan->channel)
+ 			chip->capdac_set = chan->channel;
+-		}
+ 		break;
+ 	case IIO_VOLTAGE:
+ 	case IIO_TEMP:
+-- 
+2.17.1
 
