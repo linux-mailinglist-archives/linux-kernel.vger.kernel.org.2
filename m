@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C81B3F3738
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB813F373C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbhHTXQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 19:16:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhHTXQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:16:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D71561165;
-        Fri, 20 Aug 2021 23:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629501378;
-        bh=gND2D7ZmLJGqxBQEiaqUQVfu0fJGInr/zCwmlW7GWkQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=YKezb+LrZllD3p0QDSwLHv8XtHhksmhz1hYnqCZcuCRRI7vHZE1K+v0KpI2NDoifu
-         MrMYvI6k1dUeSF6ZlArPzmZdHGyMGiQteiTUVhZjwc1L7ZH54WVfW7xM2csKj7xev4
-         /h7Oath5HxOCb7l5o3Nu9hrDDgjURiNdHT1hmm2TV5cGLvoCbyZ8COYECIJZPWTOkW
-         bp/Trc9zHZvHen1JzVdSN2/a4v7lxVs5qI7FF2kkwNT+PX4z0XcCtZwDMEx12lwvd1
-         SiCsytxOMO0CuZgPye2en5D0lJC0KOlHkUV09JUxf4jWFo4D1A/l+E4ic8yHM56URC
-         5BnghgNnraWOQ==
-Subject: Re: [f2fs-dev] [PATCH v5] f2fs: introduce periodic iostat io latency
- traces
-To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-References: <20210820222909.342198-1-daeho43@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <501b84ea-b06e-7bcd-9aac-1422cfb6bae6@kernel.org>
-Date:   Sat, 21 Aug 2021 07:16:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238262AbhHTXSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 19:18:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230303AbhHTXS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 19:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629501470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QOfsUdy3CSf2X7hLcqCS+xW43jyqXbihc3ZxGwrZDQs=;
+        b=EeHyAFJzXF3kVDXXYYYApZTTSZTC6g9Ie9CBeU0pkrcrCvAleLqk6SXyI0vPdVLRNVyKH7
+        gAI1me10UkMdYyINRWt+JAp56t7t0azPf+egw+DGLJjDKq/cIwbntGAGFfLGLxzXTFByoa
+        IpXEF774DEbvjV5BnCVYmMCtLkrHjOQ=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-efzAwAVJMz6__BIe3hTILQ-1; Fri, 20 Aug 2021 19:17:48 -0400
+X-MC-Unique: efzAwAVJMz6__BIe3hTILQ-1
+Received: by mail-oo1-f70.google.com with SMTP id k18-20020a4a94920000b029026767722880so5265948ooi.7
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:17:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QOfsUdy3CSf2X7hLcqCS+xW43jyqXbihc3ZxGwrZDQs=;
+        b=mvwjB7Y0XvfBm60ehPC7vtC1MyfBZVSl+4/V2XyX6T0byB5hbBgKOSlc4geLn7TRrn
+         ks+qFQlqrfsSrTqQpUnd9jcgSCtc1ITFPGJDfA/UKD/+WWKa2WA/0+79v/N66x+zsB9y
+         M8fRgrPWDOViC3rgmUnoALempaiBOUUziOxLyeI9tMMIpKVwGk5Y5iuwgkfkfampVAy+
+         nmAw4/9QK5tU73kIJUx/amzjgnFG1vA1mkF/DLXS94HW2DmK1G9uQj39at5KC/GSmNhO
+         ztWVeECNi62S7/3iQDL9luO0J4NPO8Wk2K3sPVe2GHGe8p2wX7QWPCz8joJQWOZd+Fvp
+         8SoQ==
+X-Gm-Message-State: AOAM531yt6VOlaTMOorHMWL3dh4ct6n+TDOB1Bm4og0nYt670pXX3FTc
+        i6jKWaeRjMo9M++nAXOOIZbpkaeSl5MLUkxvzzJO/bncBxaj8BrO6c5E7Zuf28/ecaZYZAkaF7b
+        7Rk4t+reUo3VRxUMrztdaQS/M
+X-Received: by 2002:a9d:7e83:: with SMTP id m3mr13725118otp.44.1629501468150;
+        Fri, 20 Aug 2021 16:17:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyR5VQyh8ph5spdGdv9zKid4mCInfcyTDN5VexbwUQS2B+G0KglhUt5008ajh4sCzUfHbgbZA==
+X-Received: by 2002:a9d:7e83:: with SMTP id m3mr13725106otp.44.1629501467911;
+        Fri, 20 Aug 2021 16:17:47 -0700 (PDT)
+Received: from treble ([68.74.140.199])
+        by smtp.gmail.com with ESMTPSA id t30sm1582846oiw.42.2021.08.20.16.17.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 16:17:47 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 16:17:44 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
+        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
+        elver@google.com
+Subject: Re: [PATCH v2 03/24] objtool: Handle __sanitize_cov*() tail calls
+Message-ID: <20210820231744.76clopxwcqeum4k7@treble>
+References: <20210624094059.886075998@infradead.org>
+ <20210624095147.818783799@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210820222909.342198-1-daeho43@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210624095147.818783799@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/21 6:29, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Whenever we notice some sluggish issues on our machines, we are always
-> curious about how well all types of I/O in the f2fs filesystem are
-> handled. But, it's hard to get this kind of real data. First of all,
-> we need to reproduce the issue while turning on the profiling tool like
-> blktrace, but the issue doesn't happen again easily. Second, with the
-> intervention of any tools, the overall timing of the issue will be
-> slightly changed and it sometimes makes us hard to figure it out.
-> 
-> So, I added the feature printing out IO latency statistics tracepoint
-> events, which are minimal things to understand filesystem's I/O related
-> behaviors, into F2FS_IOSTAT kernel config. With "iostat_enable" sysfs
-> node on, we can get this statistics info in a periodic way and it
-> would cause the least overhead.
-> 
-> [samples]
->   f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
-> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-> rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
-> wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
-> wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
-> wr_async_node [0/0/0], wr_async_meta [0/0/0]
-> 
->   f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
-> dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-> rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
-> wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
-> wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
-> wr_async_node [0/0/0], wr_async_meta [0/0/0]
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+On Thu, Jun 24, 2021 at 11:41:02AM +0200, Peter Zijlstra wrote:
+> +	if (insn->sec->noinstr &&
+> +	    !strncmp(insn->call_dest->name, "__sanitizer_cov_", 16)) {
+> +		if (reloc) {
+> +			reloc->type = R_NONE;
+> +			elf_write_reloc(file->elf, reloc);
+> +		}
+> +
+> +		elf_write_insn(file->elf, insn->sec,
+> +			       insn->offset, insn->len,
+> +			       sibling ? arch_ret_insn(insn->len)
+> +			               : arch_nop_insn(insn->len));
+> +
+> +		insn->type = sibling ? INSN_RETURN : INSN_NOP;
+> +	}
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+It'd be nice to keep the comment for this case that was in
+add_call_destinations().
 
-Thanks,
+-- 
+Josh
+
