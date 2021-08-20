@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6183F2FBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53EF3F2FD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241226AbhHTPmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:42:49 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45030 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241045AbhHTPms (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:42:48 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CAAE21FE2C;
-        Fri, 20 Aug 2021 15:42:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629474129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IvfDF5eMx9B1DGeIPF2eXAnu9j+546SJreXX4X/2/LM=;
-        b=C5IT/PW1hmbH61XIjN7Wc8SbyMIvagbJL2zGwVShR9zzsjkQRtKGAC85D9AhbS5PM/r/SX
-        Q1MANu0muX1nsJwo5+SvI+3h3LVOew+eE86kVRkT93DMgacaQWSR0GVtEuA7n44G23prmR
-        JcaLFXEvnXE+yBZGph5yVDTbFq1/Z5U=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 163BFA3B9B;
-        Fri, 20 Aug 2021 15:42:08 +0000 (UTC)
-Date:   Fri, 20 Aug 2021 17:41:56 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     yong w <yongw.pur@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, alexs@kernel.org,
-        Wei Yang <richard.weiyang@gmail.com>, Hui Su <sh_def@163.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        wang.yong12@zte.com.cn, Cgroups <cgroups@vger.kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, yang.yang29@zte.com.cn
-Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
- notifier is enabled
-Message-ID: <YR/NRJEhPKRQ1r22@dhcp22.suse.cz>
-References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
- <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
- <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S241316AbhHTPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:44:13 -0400
+Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:12577
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241328AbhHTPoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:44:05 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BOXTvAwGL5E0aAbhW62McJp+BDhjFW8RZImDMfeSN3iq/84pV+b3wswVRN8NCwqOPiCSX6vaO3x2lXq33I4EAXw1U2q7BnTX/bZG1mIWQ66y81SYvgwvW5eEqqeoP4CK6PyGjRnJfzQwgKS92Lz4EnHY/hm5gFBl8+DPgrjWA991OVfcN4JFIHdWlme8m+JFPfFa6erajI9rqWHs+XyLauOXHZuTDaMdQ2WYGCbYPt0COf9RbqElpcgDjX+WMD+3foE8CUCcld0UoNL/FitKAAKluuQmYFqokV+VTwAJaynIM8jLFKMZbiV4ylYXpdNCA7EeDrc1NRP6x7KTZPnQxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/oJO0ePWHXyIGAaHTL9z18asVbqq3WV6f7TImni//As=;
+ b=f/ueqzFNtuN0CB32S2iNPnewg/eCrpemKbS/fXFtemum5x8NJPJoTEsfEgLX4udNx9HzT1Jga50Q3bowqvmFoC0Fejxuk3LhYdty7BEgBEoEplsvy4Z9Bfde/qbtbPjwq7xmt4MGPMUyq/AiEv4/DLSCzh9bDTdue3m0ILoHMZQKNHNtF3nYzglMM+7UQD1hIl/juWkwDSqOcnTzf3qVv6Glv2Y9tWEgZqhdDW/5xzYDC0qXam7HfWw+x2HT2WjkLhQt7ieD6E7nMzdp6x59CXUW/fw0KuiKb+K7I8M4PzNfJjqt+l9Ou6ku+TvzWL8ISjZEbDlKIauH+Q4t4fqTfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/oJO0ePWHXyIGAaHTL9z18asVbqq3WV6f7TImni//As=;
+ b=MkEsk4RylK0a/+YydMICjqiLhnd7pYJFtz8FjHb11bzWf026jfieZJ25Cur+zIrSsOxKrrXztztM0ZUUK7oF5dLzj183aVcXypa9SOR/MkcydsKFGV96ocnvT+83fCDJ+QGcqhp0jHJQkUTIm59dBklhNn8INjbl90wCCxzCImU=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BN6PR1201MB0209.namprd12.prod.outlook.com (2603:10b6:405:4d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Fri, 20 Aug
+ 2021 15:43:24 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::50b9:34d5:d81:f59]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::50b9:34d5:d81:f59%3]) with mapi id 15.20.4415.025; Fri, 20 Aug 2021
+ 15:43:24 +0000
+Date:   Fri, 20 Aug 2021 15:43:21 +0000
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+To:     Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc:     linux-edac@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        Muralidhara M K <muralimk@amd.com>
+Subject: Re: [PATCH v2 2/3] EDAC/mce_amd: Extract node id from InstanceHi in
+ IPID
+Message-ID: <YR/NmdVcM7tYahOw@yaz-ubuntu>
+References: <20210630152828.162659-1-nchatrad@amd.com>
+ <20210806074350.114614-1-nchatrad@amd.com>
+ <20210806074350.114614-3-nchatrad@amd.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
+In-Reply-To: <20210806074350.114614-3-nchatrad@amd.com>
+X-ClientProxiedBy: BN9PR03CA0376.namprd03.prod.outlook.com
+ (2603:10b6:408:f7::21) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from yaz-ubuntu (165.204.25.250) by BN9PR03CA0376.namprd03.prod.outlook.com (2603:10b6:408:f7::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Fri, 20 Aug 2021 15:43:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 27c2acb9-c183-4526-6913-08d963f13ead
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0209:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB0209156E60F2E3A39D80455CF8C19@BN6PR1201MB0209.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MxTU4NMhaufpt9/jJvUXEVVFdFRA0OVRBlZ1bHHa5JgAfFFTG3R7zkCmJzH2bU5C+PRRVkA9eOel8MCsung8JKwCBSL4rNbzw3v8cg3nFYwWmNf+bD6DZCeBdKd/Rvb9keYp5Kj4LlHdKdYLjMWhfC77rcBXOMIDzgFvotiJlLWETE0fmrHmEb6fC7ilXnMluM3TCJRrrhixb1WqcN0uC1/VlQSxOt8nFg/2QBoLI5Z45goNJW2BxaYmrhUe8lB6qF7GqbcmZFqU4SS1FRfLNq3wFPRLc4LN2nxFiU6Bbwj17Af5MOHER9VNdyIo4elotyyKw/anTks7nbHI4Tl55t7rtI/pRf7BZ8nZHJMToVkE/nhyZgLDP+mJJwkPBw1q8LAns8gzwzPIoVFdxlHrS1vS/T6aUmCpqSTnPdSyAwl4kPXiOmnzp5L7lWvHrocSjVOSiyMs1rabdBi6Z6HbQ4Y7shvQk0GqNT4hu/a1YA3MKYqKISEXRtCrSx/rCzGMchU9dv3V0GZlCBlBepFPLpdUetYpvknbpt4k7etCuk1fadeYsfMVZ/pFsA+KGzEmodnvtK/Dfx1mvPR/xt/vJivVkkATpge4jPf3kOyoqGL0S9aQfIy4sl+Pk8ulP/L1F5xdJJYkPuSSshRjeJLHLA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(9686003)(44832011)(4744005)(316002)(55016002)(6636002)(66946007)(478600001)(956004)(38100700002)(8676002)(33716001)(8936002)(2906002)(86362001)(26005)(6862004)(5660300002)(186003)(4326008)(66476007)(66556008)(6496006)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xfyRzNV9nQMvmBLOsvZ1ofVUxw6EZZ4Cmz5z0pBxr9TmwxMjoMSVROY7t2hK?=
+ =?us-ascii?Q?n8OE+RKYXFwOc3xOd3dEdctd0V8vLDRlGAozdjG0SMqOQa7C+eE+r70/EcsI?=
+ =?us-ascii?Q?XaRVe8z6eOuCzm4Da+uhjUcoT8YBgbfjnXI9NBI7Ub6Wa3ogyJvJYJJk9jaw?=
+ =?us-ascii?Q?bwF9IYzyecvLpRA1F9dT9oXwKemNBwLpwMFoJ7THrsv9UqTQf1pLM5moZsrG?=
+ =?us-ascii?Q?c1RdNZiP9/ywGwPnWuT1ycda1DwPYZ9JLQ9KA0cb7zdEGS7at6yTHKdanwHU?=
+ =?us-ascii?Q?WnA5hHTt6zjwnhprkh0tl0UvmIzQGMYn4yFA/Zq+r8BH0Zfo4W3/OL2ocnba?=
+ =?us-ascii?Q?rv5IXDwaOSlOmWj0Ih44O3FRps4SWbx7o2EOZWC7YlT4fx36G206IPW9hTVf?=
+ =?us-ascii?Q?1iYH5PG1XIPau6bOex5/34Jl0t/f13sDs+anA5/bpZnnYOIgGi+EoCnBXiyR?=
+ =?us-ascii?Q?iPaRdcGfpyydTFPeGwbNqZl/+f8UCAO5E9XoI+ULOw2MeIBaPoMWFRtWG88e?=
+ =?us-ascii?Q?oMEaf2gj9V/JWZxeBknTOe7Wb27pBxuT9OMHsZk+Xm6plxae9QgkUThvrVYs?=
+ =?us-ascii?Q?Ku7by/9i2yF9t5sm+z27zRRh1uy4mLQfRxqaa5AEjhaRd6jAlajli4Dwx7Cg?=
+ =?us-ascii?Q?/Cb7CFh14x2hA01PuA7aALGzGwIBk2n+oxdk1IPz9DwJW8+otO4EcqOyO9b5?=
+ =?us-ascii?Q?Uvy5z9HYO4HR8EO4XUPitWoYG1CvkUJ53iooVNofxe/MZ6ibqV8NAiT4WLCB?=
+ =?us-ascii?Q?bJGMMCxmdUfq1M4YgKYp6ii6nGw9stAUiO8KkWklOVZqpZLLQ9O0p3mHRaKj?=
+ =?us-ascii?Q?I0KWQXYPLfciJxd6la+Gto5Qu4c/vKwWVDYWXHhBhrydOa6dwbpsiuv3bm9R?=
+ =?us-ascii?Q?U2PgIJGu1TVxnrrQUg1dP8vSF+Xzfbfapb4iUmJZ/pBKxiJf23DxjhhNym8j?=
+ =?us-ascii?Q?8VkdUSLKFvmeDuS3Q6MaEZELhvkDT03lS/GOfNddQELuOCZvjalNKuolkgbG?=
+ =?us-ascii?Q?f7PY3dmWfpZCVNTj9fVjua2jA3VgB2XqZqVnxz3tIzz09MxMCn/OoyhFWxkN?=
+ =?us-ascii?Q?m7sgbBd6SL/VLMV77Exxz3LgSIEkkNDBzVA5Jjr1l6ebwS+scjsTUu3X+Gub?=
+ =?us-ascii?Q?bFmq4ljSDqEJ7CQNTkTbM26WqTq/He7t+lR8fs4QQKDqM0ri0T8goBGHsa+Y?=
+ =?us-ascii?Q?YHE9cXt9BeRWOvuhQxqL3kOuiu4nEYjGaS2ANIUtQ54hZ5UIG4QPWKzZPllp?=
+ =?us-ascii?Q?lOHqj765blgrpHWttUnbtifdjhwDS4r4CxJOR6zp/cR3GaXFHY9B6b/xsx50?=
+ =?us-ascii?Q?QwzwMA+mFO5f4H/GsoFIu4Pr?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27c2acb9-c183-4526-6913-08d963f13ead
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 15:43:24.6372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7m69ZiPXyiHOEA3QJmgwF2DeHcG6HNPvUxmDyS6b6ki6NSPaLdXYEJhr30g2K7OmCm/na4OoT2CAuZb29DjIMA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0209
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20-08-21 23:20:40, yong w wrote:
-> Michal Hocko <mhocko@suse.com> 于2021年8月20日周五 下午7:26写道：
-> >
-> > On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
-> > > From: wangyong <wang.yong@zte.com.cn>
-> > >
-> > > Inspired by PSI features, vmpressure inotifier function should
-> > > also be configured to decide whether it is used, because it is an
-> > > independent feature which notifies the user of memory pressure.
-> >
-> > Yes, it is an independent feature indeed but what is the actual reason
-> > to put a more configuration space here. Config options are not free both
-> > from the user experience POV as well as the code maintenance. Why do we
-> > need to disable this feature. Who can benefit from such a setup?
-> >
-> > > So we add configuration to control whether vmpressure notifier is
-> > > enabled, and provide a boot parameter to use vmpressure notifier
-> > > flexibly.
-> >
-> > Flexibility is nice but not free as mentioned above.
-> >
-> > > Use Christoph Lamenter’s pagefault tool
-> > > (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
-> > > Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
-> > > To ensure that the vmpressure function is executed, we enable zram
-> > > and let the program occupy memory so that some memory is swapped out
-> > >
-> > > unpatched:
-> > > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     fault/wsec
-> > > 2     1       1       1       0.1     0.97    1.13    485490.062      463533.34
-> > > 2     1       1       1       0.11    0.96    1.12    483086.072      465309.495
-> > > 2     1       1       1       0.1     0.95    1.11    496687.098      469887.643
-> > > 2     1       1       1       0.09    0.97    1.11    489711.434      468402.102
-> > > 2     1       1       1       0.13    0.94    1.12    484159.415      466080.941
-> > > average                               0.106   0.958   1.118   487826.8162     466642.7042
-> > >
-> > > patched and CONFIG_MEMCG_VMPRESSURE is not set:
-> > > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     fault/wsec
-> > > 2     1       1       1       0.1     0.96    1.1     490942.682      473125.98
-> > > 2     1       1       1       0.08    0.99    1.13    484987.521      463161.975
-> > > 2     1       1       1       0.09    0.96    1.09    498824.98       476696.066
-> > > 2     1       1       1       0.1     0.97    1.12    484127.673      465951.238
-> > > 2     1       1       1       0.1     0.97    1.11    487032          468964.662
-> > > average                               0.094   0.97    1.11    489182.9712     469579.9842
-> > >
-> > > According to flt/cpu/s, performance improved by 0.2% which is not obvious.
-> >
-> > I haven't checked how are those numbers calculated but from a very brief
-> > look it seems like the variation between different runs is higher than
-> > 0.2%. Have you checked the average against standard deviation to get a
-> > better idea whether the difference is really outside of the noise?
-> > --
-> > Michal Hocko
-> > SUSE Labs
-> 
-> Thanks for your reply.
-> The reason for adding configuration is as follows：
+On Fri, Aug 06, 2021 at 01:13:49PM +0530, Naveen Krishna Chatradhi wrote:
+> On AMD systems with SMCA banks on NONCPU nodes, the node id
+> information is available in MCA_IPID[47:44](InstanceIdHi).
+>
 
-All those reasons should be a part of the changelog.
+The bitfield name in the $SUBJECT is wrong.
 
-> 1. Referring to [PATCH] psi: make disabling/enabling easier for vendor
-> kernels, the modification
-> is also applicable to vmpressure.
-> 
-> 2. With the introduction of psi into the kernel, there are two memory
-> pressure monitoring methods，
-> it is not necessary to use both and it makes sense to make vmpressure
-> configurable.
+Also, the commit message implies that this behavior applies to all MCA
+banks on systems with NONCPU nodes. But rather it only applies to the
+banks on the NONCPU nodes.
 
-I am not sure these are sufficient justifications but that is something
-to discuss. And hence it should be a part of the changelog.
-
-> 3. In the case where the user does not need vmpressure,  vmpressure
-> calculation is additional overhead.
-
-You should quantify that and argue why that overhead cannot be further
-reduced without config/boot time knobs.
-
-> In some special scenes with tight memory, vmpressure will be executed
-> frequently.we use "likely" and "inline"
-> to improve the performance of the kernel, why not reduce some
-> unnecessary calculations?
-
-I am all for improving the code. Is it possible to do it by other means?
-E.g. reduce a potential overhead when there no events registered?
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+Yazen 
