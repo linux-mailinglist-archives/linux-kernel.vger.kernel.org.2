@@ -2,163 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685303F3165
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEEA3F316A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhHTQTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:19:08 -0400
-Received: from mail-dm6nam10on2065.outbound.protection.outlook.com ([40.107.93.65]:41568
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229472AbhHTQTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:19:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aJBmUWWZNtJ50x7gwivykWZRh3NsYZZQvk5iWdLcXJCXtV6BFtvMKAlJ9taGXkj3PjhOUDEX0epdNiZ9qKHnBT6bRGutgPYHKUwN9mMrfHobkAiQCJ5EY4Ss2VO/lFPhV/+mphKzz+1jHf/5NMphWKSET8eWIP7wMOcJyRh2UFmYEmKSJu9eYpTH7WtlkuuBCJfZ3Q/zHYhFFVAPKoHxvBBpPsXm55PDlZpJdXXKhTA/x0vr9xJDZsmxtib9m2sTCBG7nl7bQscma5CIqGBkqdlRn5wS9IRbTG+v8kZYwBrTgaxeQH318GJ47NHkDink7xWwLekP2EOhhjS/oUhWyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O+WaNLdz7enwSthT4xXgeGdAE/539Ks9FMXd5VQbbew=;
- b=RoiVb//VNBCkdUZdyERChxB8/6HKwvkPOAdm2c+BTHmbA8ZOiQiUr1mojcqDNX6vXV8rUKSIEU28VtJdRZVI6RFCyvjZEf0sH86zyqjsa7fIMSsP2y5OdptbRsnNepVHUjKz0hh9py46Eg/FCZSa24OhOg3gsf1+Um+uxYRPFL5Fo6tINej7JKoUxLNiscxcgF+V0M/bhV9OqLd69TWhmysOrRTNXdf56U7Jvb8WDxMTxpnDflcSmJXngeGx6o7Fh8fC/C9lf8Cswk2wxJTz0dH8PnAbM1ldDM461z9K8MncyKmNisw0a3bmcoYE7AncRrYfYKfMdtb+gXEItzaKZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O+WaNLdz7enwSthT4xXgeGdAE/539Ks9FMXd5VQbbew=;
- b=rYjSLNeLnGVIVExf+LTmz/tPoTIFm843QB/t9WHOzpQTsuFURLGF5SC0PwybHZiDJZTnZ1Vby1BWP0l1j4pyMyMRRuiG7MDKY4pqD7lZ4Nuyg8f1UNJONs5kUNIPGDA0uQE2SYENsBz8DNMlu/bTMT9T+6BeicQ5uF1fwM7DqJQ3jhdMw17+nuI6zsEkn7ukiSnDSphxbUyMaEJ8xWTZXyaMrn+6cfCvoEGeEbZWtiUrVf2MSf2sMMxuXh2VMHcMPjiqBHlTtm/sY3A0sG6nS/VwfPJW+glDtH79Iwyc3h6ASHzKngl++Or9AYEn9WnbYsqRuIfqTgOxcOl/MPRBnw==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5333.namprd12.prod.outlook.com (2603:10b6:208:31f::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Fri, 20 Aug
- 2021 16:18:28 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.021; Fri, 20 Aug 2021
- 16:18:27 +0000
-Date:   Fri, 20 Aug 2021 13:18:26 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v3 0/3] SG fix together with update to RDMA umem
-Message-ID: <20210820161826.GA532091@nvidia.com>
-References: <cover.1627551226.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1627551226.git.leonro@nvidia.com>
-X-ClientProxiedBy: BL1P222CA0009.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231202AbhHTQUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229619AbhHTQUo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 12:20:44 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B43AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:20:06 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mH7FQ-0003Zo-4a; Fri, 20 Aug 2021 18:20:00 +0200
+Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
+ trusted keys
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     David Gstir <david@sigma-star.at>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        linux-security-module@vger.kernel.org,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        James Morris <jmorris@namei.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        David Howells <dhowells@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
+        linux-integrity@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de>
+Date:   Fri, 20 Aug 2021 18:19:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P222CA0009.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Fri, 20 Aug 2021 16:18:27 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mH7Du-002Ecy-GV; Fri, 20 Aug 2021 13:18:26 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd09b723-71e5-4f32-cb06-08d963f6247a
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5333:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53339187676BC2C13D537A04C2C19@BL1PR12MB5333.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V60BcVt50viD2uc19gWX2C2sMhYJLEBIzKvhxYSk6Lja+Ye6vBOdlQIcZaZ+dv/eWCn8QXoNDa2gR1LuxWIP4JIq/UTG+73+hL8KBA70hq+3ZUrsxIzMXtVrbUFiy4sU9VRbhCMTK7nTqAQEFiLpC/Z3ZKgb+m80run54KicYSkbPusjqDZRVoGEbXBQm/2WZgYUZVA5uhfV2Wtzge0v1oE0zczDn5eX3wUB/cTBJJOgFTMvaHQFba264T40TWKZCbp+qKFjzVlPpRH+2JZ/AvERa/s9Yn6QLjKh8emq40hrADHCPvkXqdNmhJd0SxT1ieO3DvXsw22PF0QK3AiCakld+F9mfBeP87weJL48sgI/w5bhkLbOZtKVBRA8QEJdXxBTr9WSef/3wuOCF5db2bRtRFFG/5bb1thP3s8loe1BIbT3wV4MSWxC90ZzJq67Y+Ux5kKbhoxfssEfsCHQsdhFJYrYWIkVpxPrX9FpvnBVeGDVIP+TyG5hPGQUmBohK/SEqVE8byL2e1cIzE52rk05aEqTkT8MCaWjp7t4x+4OAuwVM+bTxzBuJ6VotTVBq4Yz1rxpnDJgUk0T+zVbuWs/kdYn9UA4Dy/3SYIf3XfqFyM0uytARn0a0dLXmr06DKGLcsY4goPzSuai243EzcVd/Qncc2PlQJOWTZWJ1m2bcK0djSrh/O7qyUSma8p7E9sGP0SpFJgMmoZF3Py/j1qbJwlPU4dtbfqVsMNXCNH8u/3BaVJqI2uikiBlBJ6p1YWCHpeYNGzcrvevq8gFW7Nk2N2/pvwHGvcQEzDjYuoXThQFoHCCHz10qhyQBDzq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(136003)(366004)(376002)(9786002)(9746002)(66946007)(66556008)(66476007)(478600001)(316002)(110136005)(54906003)(36756003)(38100700002)(4326008)(5660300002)(15650500001)(1076003)(8936002)(8676002)(966005)(83380400001)(26005)(33656002)(2616005)(186003)(86362001)(426003)(2906002)(7416002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?f+45o8xnYvghp+vcQoJ+ZnA8lYwWey/SSNPzqdP0MiGZt80Fg52ddOnYB7ko?=
- =?us-ascii?Q?VbzicuUjlr+FpLIQlTJXr1CXAoCAEGmY2Y2tymjULsF/Nw9k6v8Y2MZJUP9+?=
- =?us-ascii?Q?6thIU52s2tjgKLWmxe3STWgLi21wT0r35dS2ohIDaglyp4gBhJwd0gEMFIZJ?=
- =?us-ascii?Q?4lWUrnuG8rhHhV4d401SilLd4p0upoYxNyqc24+G55arkbWf68IqdzAlkynu?=
- =?us-ascii?Q?J3gNmx0zWGUiYMWlJcA22gNtsY9DOyhIt7sDuJuklsjfLsRKRVFJW7BCCUyT?=
- =?us-ascii?Q?uJEQ6Ui9TWZ1ft46t4mpLtj4JzcS1Ql6Xfdl0sx/k+u7XnuJV7fGCNIDU1Og?=
- =?us-ascii?Q?UIpZ0b+5rAGtLUfle/htAb7s85y9gMtcyO71GTISb5IEEDwZoYHW8le3Cfbe?=
- =?us-ascii?Q?gbdEoz1GjW7/ZTf107lm3XfbM9u1H1LU74l89BQNBM0E8gvKTyInv4GNPYsY?=
- =?us-ascii?Q?mzmI6QX2GTe55JKKx3g1I7gOaqAbcFtM+DiZDn+hl4Aru6ZK/MMqi1PhUTZa?=
- =?us-ascii?Q?afafKO4W6xC4lOhpZrdypiCdlcs376KvHi+ZQKGgSmDeLKpsUVeuuOY00Bci?=
- =?us-ascii?Q?L6DMHrS8OEQaA/uCBL+O2U1CG5kBfB5iQt5Beco3Fj6qgftO/PjX1EVRCbSY?=
- =?us-ascii?Q?GkBIhUBV1j2sQw7Bra8niZg7KWWj9R1eN0IEUzOPn/cIP40COfL5QoIWIQ43?=
- =?us-ascii?Q?ef/CWyGYqmCg8oItisLokhRFiDdsyo9cOMQq7yK6F1u5LDtxfmNRMgTR5WwR?=
- =?us-ascii?Q?Us5knab6PqYTF4QN4S7VnCdip1EhYdtwhPcdHFomZdOQjey+quG3pP2YslSB?=
- =?us-ascii?Q?VXVDPBxfHxA8cyMikbHrouNw5mUlLV3Rsu1RZocwmLxsrozXmULk7hYLshLp?=
- =?us-ascii?Q?fDjFMmcRqbXc39Jed5gGF6VaJS8D131FHHNsZgH3bAN7ymXy/1FeuipuTRn8?=
- =?us-ascii?Q?voDNRxYL5qPghzY5xRtNByXfROVhcKFPiAPr60Ns3yDcWpwu/8w6mkIIZc5f?=
- =?us-ascii?Q?tCZlPIb6LNzKg8C41FkMiawU42UUVOoBbv0HdZOGACRpaiKcYpFNNozsivoE?=
- =?us-ascii?Q?oECBlepgwEiquOgPthVAuYcAw+xrJK41pSnrixxnYCloqUv5xwJMxYkeFkyZ?=
- =?us-ascii?Q?AxjUYTE5DD+/6tZmCRQibwsV9vEDfDFEa4pbTpm3OxgXXiwdqnu+S7enUlqy?=
- =?us-ascii?Q?OzdDLPpzJZBJixbR8x1s1tYPj5Ra6GZv6XNOIa3o4GV8WwG4OuRgkPXZaive?=
- =?us-ascii?Q?IwAitXxcjB7omN9XigzEKHDSdH5nuaI9K7JgqkvLh8jT4QhYRj6xvZxVstDy?=
- =?us-ascii?Q?HCUP9Td9vSNYQ2G8qAGa7W3d?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd09b723-71e5-4f32-cb06-08d963f6247a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 16:18:27.7654
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U5kkE+uWQbuYEzLsxPVfkpsBSkD3s38pKMpFX2BvYSq7PzIbu8zynQnQAe2Tkv1V
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5333
+In-Reply-To: <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:39:10PM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+Hello Tim,
+
+On 20.08.21 17:39, Tim Harvey wrote:
+> On Wed, Jul 21, 2021 at 9:49 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>
+>> Series applies on top of
+>> https://lore.kernel.org/linux-integrity/20210721160258.7024-1-a.fatoum@pengutronix.de/T/#u
+>>
+>> v2 -> v3:
+>>  - Split off first Kconfig preparation patch. It fixes a regression,
+>>    so sent that out, so it can be applied separately (Sumit)
+>>  - Split off second key import patch. I'll send that out separately
+>>    as it's a development aid and not required within the CAAM series
+>>  - add MAINTAINERS entry
+>>
+>> v1 -> v2:
+>>  - Added new commit to make trusted key Kconfig option independent
+>>    of TPM and added new Kconfig file for trusted keys
+>>  - Add new commit for importing existing key material
+>>  - Allow users to force use of kernel RNG (Jarkko)
+>>  - Enforce maximum keymod size (Horia)
+>>  - Use append_seq_(in|out)_ptr_intlen instead of append_seq_(in|out)_ptr
+>>    (Horia)
+>>  - Make blobifier handle private to CAAM glue code file (Horia)
+>>  - Extend trusted keys documentation for CAAM
+>>  - Rebased and updated original cover letter:
+>>
+>> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
+>> built into many newer i.MX and QorIQ SoCs by NXP.
+>>
+>> Its blob mechanism can AES encrypt/decrypt user data using a unique
+>> never-disclosed device-specific key.
+>>
+>> There has been multiple discussions on how to represent this within the kernel:
+>>
+>> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
+>> built into many newer i.MX and QorIQ SoCs by NXP.
+>>
+>> Its blob mechanism can AES encrypt/decrypt user data using a unique
+>> never-disclosed device-specific key. There has been multiple
+>> discussions on how to represent this within the kernel:
+>>
+>>  - [RFC] crypto: caam - add red blobifier
+>>    Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
+>>    best integrate the blob mechanism.
+>>    Mimi suggested that it could be used to implement trusted keys.
+>>    Trusted keys back then were a TPM-only feature.
+>>
+>>  - security/keys/secure_key: Adds the secure key support based on CAAM.
+>>    Udit added[2] a new "secure" key type with the CAAM as backend. The key
+>>    material stays within the kernel only.
+>>    Mimi and James agreed that this needs a generic interface, not specific
+>>    to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
+>>    basis for TEE-backed keys.
+>>
+>>  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
+>>    Franck added[3] a new "caam_tk" key type based on Udit's work. This time
+>>    it uses CAAM "black blobs" instead of "red blobs", so key material stays
+>>    within the CAAM and isn't exposed to kernel in plaintext.
+>>    James voiced the opinion that there should be just one user-facing generic
+>>    wrap/unwrap key type with multiple possible handlers.
+>>    David suggested trusted keys.
+>>
+>>  - Introduce TEE based Trusted Keys support
+>>    Sumit reworked[4] trusted keys to support multiple possible backends with
+>>    one chosen at boot time and added a new TEE backend along with TPM.
+>>    This now sits in Jarkko's master branch to be sent out for v5.13
+>>
+>> This patch series builds on top of Sumit's rework to have the CAAM as yet another
+>> trusted key backend.
+>>
+>> The CAAM bits are based on Steffen's initial patch from 2015. His work had been
+>> used in the field for some years now, so I preferred not to deviate too much from it.
+>>
+>> This series has been tested with dmcrypt[5] on an i.MX6DL.
+>>
+>> Looking forward to your feedback.
+>>
+>> Cheers,
+>> Ahmad
+>>
+>>  [1]: https://lore.kernel.org/linux-crypto/1447082306-19946-2-git-send-email-s.trumtrar@pengutronix.de/
+>>  [2]: https://lore.kernel.org/linux-integrity/20180723111432.26830-1-udit.agarwal@nxp.com/
+>>  [3]: https://lore.kernel.org/lkml/1551456599-10603-2-git-send-email-franck.lenormand@nxp.com/
+>>  [4]: https://lore.kernel.org/lkml/1604419306-26105-1-git-send-email-sumit.garg@linaro.org/
+>>  [5]: https://lore.kernel.org/linux-integrity/20210122084321.24012-2-a.fatoum@pengutronix.de/
+>>
+>> ---
+>> To: Jarkko Sakkinen <jarkko@kernel.org>
+>> To: "Horia Geantă" <horia.geanta@nxp.com>
+>> To: Mimi Zohar <zohar@linux.ibm.com>
+>> To: Aymen Sghaier <aymen.sghaier@nxp.com>
+>> To: Herbert Xu <herbert@gondor.apana.org.au>
+>> To: "David S. Miller" <davem@davemloft.net>
+>> To: James Bottomley <jejb@linux.ibm.com>
+>> Cc: David Howells <dhowells@redhat.com>
+>> Cc: James Morris <jmorris@namei.org>
+>> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+>> Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+>> Cc: Udit Agarwal <udit.agarwal@nxp.com>
+>> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
+>> Cc: David Gstir <david@sigma-star.at>
+>> Cc: Eric Biggers <ebiggers@kernel.org>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
+>> Cc: Sumit Garg <sumit.garg@linaro.org>
+>> Cc: linux-integrity@vger.kernel.org
+>> Cc: keyrings@vger.kernel.org
+>> Cc: linux-crypto@vger.kernel.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-security-module@vger.kernel.org
+>>
+>> Ahmad Fatoum (4):
+>>   KEYS: trusted: allow users to use kernel RNG for key material
+>>   KEYS: trusted: allow trust sources to use kernel RNG for key material
+>>   crypto: caam - add in-kernel interface for blob generator
+>>   KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
+>>
+>>  Documentation/admin-guide/kernel-parameters.txt   |   8 +-
+>>  Documentation/security/keys/trusted-encrypted.rst |  60 +++-
+>>  MAINTAINERS                                       |   9 +-
+>>  drivers/crypto/caam/Kconfig                       |   3 +-
+>>  drivers/crypto/caam/Makefile                      |   1 +-
+>>  drivers/crypto/caam/blob_gen.c                    | 230 +++++++++++++++-
+>>  include/keys/trusted-type.h                       |   2 +-
+>>  include/keys/trusted_caam.h                       |  11 +-
+>>  include/soc/fsl/caam-blob.h                       |  56 ++++-
+>>  security/keys/trusted-keys/Kconfig                |  11 +-
+>>  security/keys/trusted-keys/Makefile               |   2 +-
+>>  security/keys/trusted-keys/trusted_caam.c         |  74 +++++-
+>>  security/keys/trusted-keys/trusted_core.c         |  23 +-
+>>  13 files changed, 477 insertions(+), 13 deletions(-)
+>>  create mode 100644 drivers/crypto/caam/blob_gen.c
+>>  create mode 100644 include/keys/trusted_caam.h
+>>  create mode 100644 include/soc/fsl/caam-blob.h
+>>  create mode 100644 security/keys/trusted-keys/trusted_caam.c
+>>
+>> base-commit: 97408d81ed533b953326c580ff2c3f1948b3fcee
+>> --
+>> git-series 0.9.1
 > 
-> Changelog:
-> v3:
->  * Rewrote to new API suggestion
->  * Split for more patches
-> v2: https://lore.kernel.org/lkml/cover.1626605893.git.leonro@nvidia.com
->  * Changed implementation of first patch, based on our discussion with Christoph.
->    https://lore.kernel.org/lkml/YNwaVTT0qmQdxaZz@infradead.org/
-> v1: https://lore.kernel.org/lkml/cover.1624955710.git.leonro@nvidia.com/
->  * Fixed sg_page with a _dma_ API in the umem.c
-> v0: https://lore.kernel.org/lkml/cover.1624361199.git.leonro@nvidia.com
+> Ahmad,
+> 
+> Thanks for your work!
+> 
+> I've been asked to integrate the capability of using CAAM to
+> blob/deblob data to an older 5.4 kernel such as NXP's downstream
+> vendor kernel does [1] and I'm trying to understand how your series
+> works. I'm not at all familiar with the Linux Key Management API's or
+> trusted keys. Can you provide an example of how this can be used for
+> such a thing?
+
+Here's an example with dm-crypt:
+
+  https://lore.kernel.org/linux-integrity/5d44e50e-4309-830b-79f6-f5d888b1ef69@pengutronix.de/
+
+dm-crypt is a bit special at the moment, because it has direct support for
+trusted keys. For interfacing with other parts of the kernel like ecryptfs
+or EVM, you have to create encrypted keys rooted to the trusted keys and use
+those. The kernel documentation has an example:
+
+  https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
+
+If you backport this series, you can include the typo fix spotted by David.
+
+I'll send out a revised series, but given that a regression fix I want to
+rebase on hasn't been picked up for 3 weeks now, I am not in a hurry.
+
+Cheers,
+Ahmad
+
+> 
+> Best regards,
+> 
+> Tim
+> [1] https://source.codeaurora.org/external/imxsupport/imx_sec_apps/tree/demo-caam-blobs/README.txt
 > 
 > 
-> Maor Gottlieb (3):
->   lib/scatterlist: Provide a dedicated function to support table append
->   lib/scatterlist: Fix wrong update of orig_nents
->   RDMA: Use the sg_table directly and remove the opencoded version from
->     umem
 
-I'm going to send this into linux-next, last time that triggered some
-bug reports.
 
-But overall it looks okay, though some of the sg_append_table is bit
-odd. Certainly using the sg_table throughout the RDMA code is big
-improvement.
-
-Lets see a v4, reviews/etc and I'll update it.
-
-Jason
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
