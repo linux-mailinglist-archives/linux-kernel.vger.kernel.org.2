@@ -2,164 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE293F35C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD103F35C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240326AbhHTUwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        id S240215AbhHTUy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239615AbhHTUwM (ORCPT
+        with ESMTP id S231171AbhHTUy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:52:12 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15140C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:51:34 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id oa17so8164996pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:51:34 -0700 (PDT)
+        Fri, 20 Aug 2021 16:54:26 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC74C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:53:48 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id n11so12243206qkk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:53:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ULkGRivL56ptdhLg0qblOi29E6UuI3GKppQ73W5RcQM=;
-        b=wljVRLX4qPe+NrAUHjhvsefxSXN6ijVZv63Pk+E8YjbzTLnFXsawQ4zasGGHJ9DI/j
-         LNnvEAJOChgaeq15qhAKQrNdM+zSHl83TKm21KHMzu/Kj34ogt2J8PlNoComIFiSxTux
-         ZKAeASlP7cb89cYcVuiKawdWSszkqhTR6dDUO6JiMBsI2TJxtUKHqwu8/Mu+C8IAY6TH
-         IBg2Cuwk7G5a8G6lOMJjraA6x87/5aIT/X9Nt616MtxhG+Oyu8CGTIEk74nvOt3pIg5R
-         jyMa0gao/WvU4WUXcSgzEhn+z0TTdpm2b2ioKkK5gyn1+vGrSRBrUOY03LKG9SxDZltK
-         zElQ==
+        bh=rJhLGr0SS5PF10n3fxhzHZmG/BsOEa6vMnDsgK0F/eg=;
+        b=qZHhOVfvqTDAs7Vxag262xjADvDjb6zDTWSLRTNLV6o2zdtMNDZ0PdrNxaCWpc+A0e
+         sc+C8RAHPVLMlgW1NkTt9qSzA4VewGqhNLepjU+SRJgQcjXSBZu/uC9cjhJ+baFUaLrI
+         8LyoMpMISdMlhgvNhD0FKspuDm82mfQs3hEatzgP1MLHKLT7IcinBW+r74VWOuwI0iBD
+         TN64Y51MT+g/7I+DeyavLOiqtkt/MAPa6qOEfduxISn/LRMlnX0zyOXU7cVhvdNKG4zM
+         ynaObzoRfBaliJDsBG/LJyYdIoCcmJc5YyV71/LGWvBjW7JsmZzQuMnwBWxr/7vjLA5y
+         s1Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ULkGRivL56ptdhLg0qblOi29E6UuI3GKppQ73W5RcQM=;
-        b=oxCCuEGRPMurE3a/E8gencIwMKWGzIdQclrtcAzMiNtsS2L0hjFvEJhQrvPfYUtp4U
-         11UdK0vfBvwTkMaW2qe7XhVdEPnTYr9pgxmUgae8uOsjZFUpM2MEn/Esct0G+96qUsHc
-         0sGharetfBH4Oa2EHYVxNeA1kN4h3hP1hVKCY0bfV69AYNHUjq/5VQpkC0aBowfgKuiH
-         2sbqNDwHaqtlN18RA5EIl7U07fKMQiQHh683uQtYztIOsSWWCy9xt2K5QjWYUD5yOMYm
-         UMLTPdD0cx6Xsk4nZZCMhNZaOQTNZ3HWMTCCdEfTatiGJFi6bnark+KvHnm4V/wmtR6n
-         lTDQ==
-X-Gm-Message-State: AOAM530e373GaPwfKiFtmOrgypetcSZ3pQvs7/FFDkcBIQtunHWbbhlN
-        ofEOZe3b0J2XNxXJCUqoo3dEyInJeHzDzRBeFOR8Lg==
-X-Google-Smtp-Source: ABdhPJzPJ2XQpEtJq+wbuCgzapFmXjO/y38fzH3RNB8Wj2SGZHiAnemQziTjbPerD3pCdyF6tyAETSGC8SlS9MQj/UI=
-X-Received: by 2002:a17:902:e54e:b0:12d:cca1:2c1f with SMTP id
- n14-20020a170902e54e00b0012dcca12c1fmr17574055plf.79.1629492693543; Fri, 20
- Aug 2021 13:51:33 -0700 (PDT)
+        bh=rJhLGr0SS5PF10n3fxhzHZmG/BsOEa6vMnDsgK0F/eg=;
+        b=HV1+KMmBhYCvh831GdlSxtAZ+MvZDiQKYZZpYkGfFBS80XXNjyXNu2+plZoWHGlZwG
+         g+nd4Jz+iZ3kzGa1m1QupY5SqHI9rtpFnkRpP7YZXPowm+SzwXVckr8S9+n0T76939Zt
+         3D2eAOaIrUHRmpV2dUJKKiSf2d/X1gB0Ud+0+ucP0RR3pdHllQh78pakaCqETVKau5CC
+         TWlHcd8j22m7Kl+7mbjoh0FUP6+S/sm9b3ZvLR1Aet/qNaFfZsv3vHcMoKoezBjjc5lh
+         XmB/H/1wrBDDRriEwjwC/K6tAyA71n0NzrFQHnwHQz6xobItA8aBSEj6W6itqWw2qjn4
+         T74w==
+X-Gm-Message-State: AOAM531Ql5qbqSe77SjQDuOyKBU3l9oes4tN9Sx0rEdSUdrmhFsjusuY
+        USO++xZHjuBqC9CHFVE/tBqNFIR6+VjxWsRXpGlkOg==
+X-Google-Smtp-Source: ABdhPJwxBW3OBnIrJYoEMIdO7YZ0+CadUfOZepyRoPB/TnU2muM0Q2rFEDyd51YEPYBLcCDQV4enJa3GuMlvJ12oIkE=
+X-Received: by 2002:a37:66d1:: with SMTP id a200mr10294551qkc.440.1629492827571;
+ Fri, 20 Aug 2021 13:53:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com> <20210730100158.3117319-5-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210730100158.3117319-5-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 20 Aug 2021 13:51:22 -0700
-Message-ID: <CAPcyv4hQgSV6n0nuiqm-cv7pvpwDgBgZMezW7TkdR9SaAiCNHg@mail.gmail.com>
-Subject: Re: [PATCH RESEND v6 4/9] pmem,mm: Implement ->memory_failure in pmem driver
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, david <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
+References: <20210819154910.1064090-1-pgonda@google.com> <20210819154910.1064090-2-pgonda@google.com>
+ <CAA03e5Gh0kJYHP1R3F7uh6x83LBFPp=af2xt7q3epgg+8XW53g@mail.gmail.com>
+ <CAMkAt6oJcW3MHP3fod9RnRHCEYp-whdEtBTyfuqgFgATKa=3Hg@mail.gmail.com> <YR7iD6kdTUpWwwRn@google.com>
+In-Reply-To: <YR7iD6kdTUpWwwRn@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Fri, 20 Aug 2021 13:53:36 -0700
+Message-ID: <CAA03e5F62WEcs3PN6M9qGzW+wuufp+BjwDHcTt18yaB42RDYkA@mail.gmail.com>
+Subject: Re: [PATCH 1/2 V4] KVM, SEV: Add support for SEV intra host migration
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 3:02 AM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+On Thu, Aug 19, 2021 at 3:58 PM Sean Christopherson <seanjc@google.com> wrote:
 >
-> With dax_holder notify support, we are able to notify the memory failure
-> from pmem driver to upper layers.  If there is something not support in
-> the notify routine, memory_failure will fall back to the generic hanlder.
-
-How about:
-
-"Any layer can return -EOPNOTSUPP to force memory_failure() to fall
-back to its generic implementation."
-
-
+> On Thu, Aug 19, 2021, Peter Gonda wrote:
+> > > >
+> > > > +static int svm_sev_lock_for_migration(struct kvm *kvm)
+> > > > +{
+> > > > +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> > > > +       int ret;
+> > > > +
+> > > > +       /*
+> > > > +        * Bail if this VM is already involved in a migration to avoid deadlock
+> > > > +        * between two VMs trying to migrate to/from each other.
+> > > > +        */
+> > > > +       spin_lock(&sev->migration_lock);
+> > > > +       if (sev->migration_in_progress)
+> > > > +               ret = -EBUSY;
+> > > > +       else {
+> > > > +               /*
+> > > > +                * Otherwise indicate VM is migrating and take the KVM lock.
+> > > > +                */
+> > > > +               sev->migration_in_progress = true;
+> > > > +               mutex_lock(&kvm->lock);
 >
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  drivers/nvdimm/pmem.c | 13 +++++++++++++
->  mm/memory-failure.c   | 14 ++++++++++++++
->  2 files changed, 27 insertions(+)
+> Deadlock aside, mutex_lock() can sleep, which is not allowed while holding a
+> spinlock, i.e. this patch does not work.  That's my suggestion did the crazy
+> dance of "acquiring" a flag.
 >
-> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> index 1e0615b8565e..fea4ffc333b8 100644
-> --- a/drivers/nvdimm/pmem.c
-> +++ b/drivers/nvdimm/pmem.c
-> @@ -362,9 +362,22 @@ static void pmem_release_disk(void *__pmem)
->         del_gendisk(pmem->disk);
->  }
+> What I don't know is why on earth I suggested a global spinlock, a simple atomic
+> should work, e.g.
 >
-> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
-> +               unsigned long pfn, unsigned long nr_pfns, int flags)
-> +{
-> +       struct pmem_device *pmem =
-> +                       container_of(pgmap, struct pmem_device, pgmap);
-> +       loff_t offset = PFN_PHYS(pfn) - pmem->phys_addr - pmem->data_offset;
-> +
-> +       return dax_holder_notify_failure(pmem->dax_dev, offset,
-> +                                        page_size(pfn_to_page(pfn)) * nr_pfns,
-
-I do not understand the usage of page_size() here? memory_failure()
-assumes PAGE_SIZE pages. DAX pages also do not populate the compound
-metadata yet, but even if they did I would expect memory_failure() to
-be responsible for doing something like:
-
-    pgmap->ops->memory_failure(pgmap, pfn, size >> PAGE_SHIFT, flags);
-
-...where @size is calculated from dev_pagemap_mapping_shift().
-
-> +                                        &flags);
-
-Why is the local flags variable passed by reference? At a minimum the
-memory_failure() flags should be translated to a new set dax-notify
-flags, because memory_failure() will not be the only user of this
-notification interface. See NVDIMM_REVALIDATE_POISON, and the
-discussion Dave and I had about using this notification to signal
-unsafe hot-removal of a memory device.
-
-
-> +}
-> +
->  static const struct dev_pagemap_ops fsdax_pagemap_ops = {
->         .kill                   = pmem_pagemap_kill,
->         .cleanup                = pmem_pagemap_cleanup,
-> +       .memory_failure         = pmem_pagemap_memory_failure,
->  };
+>                 if (atomic_cmpxchg_acquire(&sev->migration_in_progress, 0, 1))
+>                         return -EBUSY;
 >
->  static int pmem_attach_disk(struct device *dev,
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 3bdfcb45f66e..ab3eda335acd 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1600,6 +1600,20 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->          */
->         SetPageHWPoison(page);
+>                 mutex_lock(&kvm->lock);
 >
-> +       /*
-> +        * Call driver's implementation to handle the memory failure, otherwise
-> +        * fall back to generic handler.
-> +        */
-> +       if (pgmap->ops->memory_failure) {
-> +               rc = pgmap->ops->memory_failure(pgmap, pfn, 1, flags);
-> +               /*
-> +                * Fall back to generic handler too if operation is not
-> +                * supported inside the driver/device/filesystem.
-> +                */
-> +               if (rc != EOPNOTSUPP)
-> +                       goto out;
-> +       }
-> +
->         mf_generic_kill_procs(pfn, flags);
->  out:
->         /* drop pgmap ref acquired in caller */
-> --
-> 2.32.0
+> and on the backend...
 >
+>                 mutex_unlock(&kvm->lock);
 >
->
+>                 atomic_set_release(&sev->migration_in_progress, 0);
+
++1 to replacing the spin lock with an atomic flag. Correctness issues
+aside, I think it's also cleaner. Also, I'd suggest adding a comment
+to source code to explain that the `migration_in_progress` flag is to
+prevent deadlock due to the "double migration" discussed previously.
