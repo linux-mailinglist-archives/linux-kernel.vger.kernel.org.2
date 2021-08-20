@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDAD3F29ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9A03F29F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238945AbhHTKM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:12:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35585 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232572AbhHTKMX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:12:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629454305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PjEaCYCRogYG/WsTjECE7ZORWN2nCY9AZG2C4Rf3ynA=;
-        b=K4ttp/+tRYlof0O7ph2zp9UsgjcaefgC6Kll9OSFw7ks8cTYj6EJ6zT0ypRls09+ViES74
-        eyG4GVw51EzC/4bzCD2S4pgkr78buam36Nrjyz49ieCtu1nQHh7vRD5AH7KGsgE+AW8+gP
-        GYQ0qm83UXsI2vzwKGAv1bYNbBFLJTQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-252-M1LH0cPuMT-h_yRNLZxKcg-1; Fri, 20 Aug 2021 06:11:43 -0400
-X-MC-Unique: M1LH0cPuMT-h_yRNLZxKcg-1
-Received: by mail-ej1-f72.google.com with SMTP id j10-20020a17090686cab02905b86933b59dso3522587ejy.18
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 03:11:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PjEaCYCRogYG/WsTjECE7ZORWN2nCY9AZG2C4Rf3ynA=;
-        b=bUmAZ6eCvJbDbbYNbOo5baIh0H/rJ//KMy/oCjXOGCc/TD1KtJ9EnVt/D6huHYfBkz
-         sszIpJB47w/1Scl4ZX7RAD9IOdlV+X9s7Xw5UuusKEUZutnn+N6kfJU2zxE7ygYXxjan
-         KNn0Dk3zauNArJQz902WHe5qAmA2lpzI3gXPU4/r3QUeRxm9mKzMbXcSyDSEhu7mK7S/
-         PZRUDhFDYWWY3fwCd/jOhGlLZ3T4lvfW6L6sYpPBD4hDIdxuux6eMirE/PiPJTB7yAnY
-         DZl00Nrc3GxwQtmKKMJ1mVx2chGOJ9nxCy2BQ2AMQICYBQO5QUY2MkmVYVRoWcw6KyVo
-         2NkA==
-X-Gm-Message-State: AOAM533h1CdYmLJUwT7HrqOARIpqVg20ti8dePxWy3WsgctoOPWRMwTW
-        Ow40lzrRYDyBJdy4nLJvt9nvzlsiJffrWSrwd4eJMiYtK9Q3fKuPQGS+KRFmHFVaa6yvMTKWS8O
-        IayLnul4PlmXh//29WwTWGpZY
-X-Received: by 2002:aa7:db95:: with SMTP id u21mr21114896edt.152.1629454302678;
-        Fri, 20 Aug 2021 03:11:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcCyAeKEwj9goJVz7uy5NTJA6ZvwLj4KDC64me3YtwjFIqVstziwCl9YjISimG4vhWk7iBlA==
-X-Received: by 2002:aa7:db95:: with SMTP id u21mr21114873edt.152.1629454302486;
-        Fri, 20 Aug 2021 03:11:42 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id f19sm3323541edt.44.2021.08.20.03.11.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 03:11:41 -0700 (PDT)
-Subject: Re: linux-next: build failure after merge of the drivers-x86 tree
-To:     M D <whenov@gmail.com>, Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mark Gross <mark.gross@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210820150022.2160a348@canb.auug.org.au>
- <CAA2grmaYg8Qc4LXhcFAvNRN-zJaPcq+y3=MFVSFETr2pNb-Vgw@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d6099b61-d825-5a3d-4088-da865db35451@redhat.com>
-Date:   Fri, 20 Aug 2021 12:11:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239000AbhHTKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:12:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:30224 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238956AbhHTKMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:12:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="216478219"
+X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
+   d="scan'208";a="216478219"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 03:12:13 -0700
+X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
+   d="scan'208";a="512475401"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 03:12:09 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mH1VL-00Bmkt-8z; Fri, 20 Aug 2021 13:12:03 +0300
+Date:   Fri, 20 Aug 2021 13:12:03 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Kate Hsuan <hpa@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Dell.Client.Kernel@dell.com, Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>
+Subject: Re: [PATCH v4 00/21] platform/x86: Intel platform driver code
+ movement
+Message-ID: <YR9/83LozDtedLKZ@smile.fi.intel.com>
+References: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
+ <b152a497-9cbe-83fa-e04a-f5d2a5b875f3@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAA2grmaYg8Qc4LXhcFAvNRN-zJaPcq+y3=MFVSFETr2pNb-Vgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b152a497-9cbe-83fa-e04a-f5d2a5b875f3@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/20/21 9:31 AM, M D wrote:
-> On Fri, Aug 20, 2021 at 1:00 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> Hi all,
->>
->> After merging the drivers-x86 tree, today's linux-next build (x86_64
->> allmodconfig) failed like this:
->>
->> drivers/platform/x86/ideapad-laptop.c: In function 'ideapad_wmi_notify':
->> drivers/platform/x86/ideapad-laptop.c:1469:3: error: a label can only be part of a statement and a declaration is not a statement
->>  1469 |   unsigned long result;
->>       |   ^~~~~~~~
->>
->> Caused by commit
->>
->>   18cfd76e7b84 ("ideapad-laptop: Fix Legion 5 Fn lock LED")
->>
->> I have used the drivers-x86 tree from next-20210819 for today.
->>
->> --
->> Cheers,
->> Stephen Rothwell
+On Thu, Aug 19, 2021 at 08:46:14PM +0200, Hans de Goede wrote:
+> On 8/19/21 6:37 PM, Andy Shevchenko wrote:
+> > This is v4 of the Intel drivers move on in the source tree.
+> > v3 has been done by Kate:
+> > https://lore.kernel.org/platform-driver-x86/20210819033001.20136-1-hpa@redhat.com/
+> > 
+> > I have taken the initial set from review-hans branch and removed Hans' SoB
+> > along with Link, while leaving others' tags.
+> > 
+> > Changelog v4:
+> > - spelled fully the driver names in the commit messages
+> > - fixed SCU *.ko module names
 > 
-> Hi Stephen,
+> Actually I checked this during review and
+> CONFIG_INTEL_SCU_IPC, CONFIG_INTEL_SCU_PCI and CONFIG_INTEL_SCU_WDT
+> are booleans, iow if enabled they are always builtin so the
+> drivers/platform/x86/intel/scu/Makefile from v3 was correct.
 > 
-> Thanks for your work!
+> Since the v3 Makefile is more simple I prefer that version,
+> but if you prefer to keep the v4 version that is fine too.
+
+I prefer mine, but we need to fix what kbuild bot complained about.
+
+> > - dropped extra prefix in PMC files
+> > - dropped stray changes within the series
+> > - removed confusing comments in Makefile and Kconfig files
+> > - embedded a few of Kconfig improvements here and there (ordering, spelling)
+> > - split miscellaneous group
+> > - added a patch to fix kernel doc issue in SCU IPC code
 > 
-> This error occurs because only a statement is allowed after a label,
-> but a definition is not a statement in C99.
-> This can be fixed by wrapping the case block with curly braces like this:
-> case 208: {
-> ...
-> }
+> Thanks, I've not (re)reviewed things, but this all sounds good.
+> 
+> > So, I have noticed the report about SCU and taking into account IPS
+> > header deferred move, I think those two should be excluded from the
+> > series and sent after rc1, it will also eliminate trampoline move for
+> > IPS header, since we may send one patch which includes DRM changes.
+> > 
+> > Hans, what do you think?
+> 
+> Fixing the SCU thing will require coordination with / an 
+> ack from the MFD maintainer (Lee) so yeah dropping that for
+> now and doing the SCU move next cycle is probably the best.
+> 
+> Dropping the IPS move for now is fine with me too.
+> 
+> Can you send a v5 with those 2 patches dropped ?
 
-Yes, or just move the declaration of result to the beginning of
-the function, which is a bit cleaner IMHO.
+Yes.
 
-I've moved the declaration to the beginning of the function and
-squashed this fix into the original commit. I'll do a forced
-push with the squashed in fix to for-next as soon as a test-compile
-completes.
+> We can still fix the SCU doc, just in the old place...
 
-Stephen, as always thank you your work on linux-next and for reporting this.
+And yes, definitely.
 
-> However I don't know why my compiler did not report this error. I was
-> using gcc 11.1.0 under Arch Linux.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Yes gcc 11.2.1 under Fedora also happily compiles this, and this
-sat in my review-hans branch for a while and got happily compiled
-by "kernel test robot <lkp@intel.com> " there too.
-
-So this compile error slipped through the crack of all our (compile)
-testing until Stephen caught it :)
-
-Regards,
-
-Hans
 
