@@ -2,154 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA9B3F270E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8156D3F2710
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbhHTGtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:49:15 -0400
-Received: from mail-eopbgr1310047.outbound.protection.outlook.com ([40.107.131.47]:43904
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231998AbhHTGtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:49:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YThGy7LteuVLbR7eMGvtHnijvEo5qK/27jv/0dEGwublLrUZH1JeY33sezDOCXm35XkyT+9/r2pBXRpAZK5FtlYW6csgPfI4codhaqV5PQ0IKALK8ZbRbbQ6dyH24oyvitve1FbSDoFkGP58STIMjuldhbdnRx9JXUWJ6ynaMqpg8ikBtrkpkEB7A+lSXXrRw6ynta67Lluo3VAigcDrtIFqXC73TZs8s4yYJwRWbGGA2d8BVfaUrQH1vK2lW7sLQeSgv0WpydUIuAXDx0BMtB5kbieQClAROEsOWIapLl4q/N+8IzH95ePEqNdv8lPjM8VYFW7ESdChbkE0DPU/OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K6y5hXb+gfmbU4ZtKAYfS8D7TsjsJs2JopgUhKuIAQ0=;
- b=bdjfv23Yhd7ilLMazOp74PVzgCeDUhgE0Ltzp+mHU9AsG2pV0GUGm6JNaB1hoWALeeAOINCMfEeImLkrypjbyIjG+r71bDbHJNh7M3bqqopDFHnsDmM5lkhvsX0gPkdBos6G0L4BQ54L+4W5SlBFd37sgPXiCE8tgkyJ9qYaP8Eo5WBpm5q/wWLdi5smrIFiF9D2cvQ8rt2zdqoRQLvfZj0ZB4Bx/9uNSOGbosogzeKIjstiyxwxE1EXwEMDAr5w6PIaNxYeSv3w/DtkWyP3FgWxKrc75d/YddLtSUwoc1rFT/DO1O3NFMws5F9i7Zxw3DTOzyEPdZEDExI5BsUgfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
- header.d=nec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K6y5hXb+gfmbU4ZtKAYfS8D7TsjsJs2JopgUhKuIAQ0=;
- b=VRmFwUZqRJ1r62+HQyhCk6b0A1tWiYC+LZtc4EOuhJ82aqoHR7QDUN3gCSHBOj35xZcg8bMj++Of8n3zLAik/9/PCCco9ygEmNe+ZNh74CvUYO+2KVEdFxpAtxJSgTd6nvSnn5qgy3jtKbRAcjTCqQTr6fls9gq2t80rgCK9JK8=
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
- by TY2PR01MB2700.jpnprd01.prod.outlook.com (2603:1096:404:71::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.18; Fri, 20 Aug
- 2021 06:48:33 +0000
-Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::4401:f9e:2afb:ebc0]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
- ([fe80::4401:f9e:2afb:ebc0%7]) with mapi id 15.20.4415.024; Fri, 20 Aug 2021
- 06:48:33 +0000
-From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>
-To:     Yang Shi <shy828301@gmail.com>
-CC:     "osalvador@suse.de" <osalvador@suse.de>,
-        "tdmackey@twitter.com" <tdmackey@twitter.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [v2 PATCH 3/3] mm: hwpoison: dump page for unhandlable page
-Thread-Topic: [v2 PATCH 3/3] mm: hwpoison: dump page for unhandlable page
-Thread-Index: AQHXlLzdYeiiCRicSE2McTnzojcv9qt79U4A
-Date:   Fri, 20 Aug 2021 06:48:33 +0000
-Message-ID: <20210820064832.GA63355@hori.linux.bs1.fc.nec.co.jp>
-References: <20210819054116.266126-1-shy828301@gmail.com>
- <20210819054116.266126-3-shy828301@gmail.com>
-In-Reply-To: <20210819054116.266126-3-shy828301@gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nec.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d7ddf732-f7f1-4641-ec44-08d963a6870a
-x-ms-traffictypediagnostic: TY2PR01MB2700:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB270041820E84D8A68C3948C8E7C19@TY2PR01MB2700.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B0GXFcz49E99Arl/bJ1OihPhJQ2IwZAVkgvUZv6c/slN5i+8Ru+BOgjUeUjetw/AmGoSC+tkKENKQ57zMuAo7CWnGVrCMqZobaguhk/dXWGf1sdnb0pHy4A5hsxV8TFjb6iM7X8w/G3/aKsMm+dive2z9J6jchZuGb0/68ixbjahEOpzbVNb8HTK7SQ9tFsB0zh0IU3vVVY2s0sirncEs3IV6Hua3XgpqJoQtOezknGr0k9y/pnbr7Zu/4hDxpXKaKRRqWeHUlOG+YegGWbeqSLwwztJs72PzrBcKB3GSmPgXmie37DfkHsd5TgGdZqPrkux4dAXB/Qs1S9EoXzGyP6W2XnkAisV5hVw9udIZMefCT1KTlfjfpRIe26Nq6oqvQ4lqXv8OHNFSPJzo6EgGK2GLuE8Rlo7FFy8Dwz0nwUSanRMrqZ2ZimwIOucGqd4yuk07yndntyQNDgGGuOtcJ28r9CiLDdVroTbJv9tSHT7m7u+pBXNwxoIq01WP5v35xYU2qARhXa9cb9WbWLrx+M/zZTVyPmiDAmEh6bw76WmNCUrOSxWpjjVEOi9ohIzJzY8Z+UlFcXaBpOapf40Wzo5DScIec/+bCfMuO7LUdHeFBn6YhQhfl3vNGyhKzDYK7rl0Iujwmta8+BQzbtMX6skg1WWzneND4U2j/Cdl/zNpJHmmqKxo7vNZJ33VTEiHH9y/7vQtBkS97rb56EdjQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(66476007)(76116006)(66446008)(66556008)(38100700002)(2906002)(64756008)(86362001)(8936002)(8676002)(5660300002)(4326008)(6506007)(122000001)(85182001)(83380400001)(33656002)(9686003)(316002)(6486002)(38070700005)(26005)(1076003)(55236004)(71200400001)(6916009)(54906003)(508600001)(186003)(6512007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MVpCemRKdmFUWUx2b0wvclMxQlB0bXhGNHJPTm9CWkRxMWJFTHVLWWpHQkxE?=
- =?utf-8?B?SWc3SzlOcFZLRkg5RWFuWnY3bW1KYTM1VVl6alJldG5vK3Vzb2NtdmRaWmNJ?=
- =?utf-8?B?eHdEOWRSb2cvZ2doYXMyN0NtRk96Mk9IMDE4a1oyQmlUcUV4MzJ3eTV3MS9h?=
- =?utf-8?B?NnIrY25PV2RyeFBYczhBanZONzRwWlRHNlZ0aFU1bGYrQ0lJQ3FydFowOHhU?=
- =?utf-8?B?UXVBNk9EemJYT1UrTzhsRjJSaDZBaFAweFJLVFZnK3dFV1A0bXhua3NWY0Qz?=
- =?utf-8?B?UWRwQU5CSXVpUHhweGtUOTRRTXFNMlpCK2J5MElVYThTZDZxZDMwcERqK3J2?=
- =?utf-8?B?d0xpMXpPT2ozMkpuNTY0bTlZR2lVb2F0WmpmczZ1NmNFcDN1ZmJqc2tRZ0dO?=
- =?utf-8?B?YjZwQlU3QkhvblJYd2FWVzY1Ym5wN0gxTnpkclFva2ZPZi95TUEvanJLT2hR?=
- =?utf-8?B?Q2ZmdUszbldJdHVBMkRSU2tPWEY3dHJnc3ptbjFOODJ3M3c3OTRpbU1yWDVs?=
- =?utf-8?B?Sm5YaGFBZXUzY3B3SWNnWjhWcGdHN2VuNFc1ZjBhYzBzZFRKelZ0Sk5zWGQ3?=
- =?utf-8?B?Y096SHdRSjk5OGxqcVhZK0l0cm5oaTl4K3Uxb2E5S1h1d3BwMEt0aHdsT1h0?=
- =?utf-8?B?KytVeFNwQXZ5RTFWZDI5RUNCM1lIdzduQk9SZVZNQm94eWNXQ0NzNzFRMzF3?=
- =?utf-8?B?eDVtTnp3WndReDE2UzM5OXVBWjRrRC82elBoWk5kUEMzRG1ONFNEQSs3YTNy?=
- =?utf-8?B?U2FTU0VpRTZHNXoyRU4wNm5hYmFqVUdxb2xlclFIZUF0dzYxL3kwbHM1RzQ1?=
- =?utf-8?B?d21tQmJKOXNEeWNDMUxUamxicHpXREJHdG9lM2JIeXlsa0hqM2VUK0FwdStB?=
- =?utf-8?B?eEgyV1JQMGpvUy9zaURmTUM1N3psQldBanVmTlZLVGlheXpROHErZ0QvVkUv?=
- =?utf-8?B?RmU4YU9xQ29iWGRSeHZaazlYVW5KNjZvQlErR2VyWGl5N3BTMjBkNGUyWXh1?=
- =?utf-8?B?bVQ3TDVpTFlVbDU5MWl0aFdCakRnNkZJOUx0emNRdmwzUEFhOHFaVmpkaFJX?=
- =?utf-8?B?aFpkc0wyalQxQktKdW5DYjQ1bHY4YXNMRDU2eEt2NkdyS0VUN0htQXdud3Ur?=
- =?utf-8?B?MjhSUWFXTkpBdWNlMFFVWW9nb2dzc3cwTFAyMVVMdG55TkpubEJkM3dlWDdv?=
- =?utf-8?B?aUQvQjBZV3ZkU2EwSmZKY1QrVExiaCtYcXZBQXk3WHpFUlVkT1JtMDNDK1FP?=
- =?utf-8?B?bFVTKzFzellWcyt4Q051OGRSRHFhSkxIUW1XRmpwbmd3L3BITDhMWGhxTDk5?=
- =?utf-8?B?UjJCOTJGR09Sd0k4U2dkTDdOMG81bWxUS2hwbnBaZEJPMzgrVHFxbE40bUhk?=
- =?utf-8?B?cXlUU0dYeEExTzNBaUZqRWlEZ0tCR3FBQ0RiL01MWlJoLzVubE1WVW5nTkxu?=
- =?utf-8?B?S1dEUUpFSk1xY2d1eUtyaGpDWWVNMGEvV0tmYnNIMW5LWUozNGRZdzhuU01l?=
- =?utf-8?B?UUR5bFE1VFhjZzFoVXNSOXZnMm4wQTdweFp0Qm1mSW5ZR0kxNGttSGhrS2w2?=
- =?utf-8?B?WE8raHRxS3dxYkVTYzdlK0VEQ3htSHNKaWxLb05TL215a1NUVDQwTHpYemRW?=
- =?utf-8?B?OStCUkpVL2dQamtaZk1uUXUyRFExcDR3Z3hRdGZTT0dvQWVINmhTMDlFNk1P?=
- =?utf-8?B?eVliOUNzeXEyWmVzYUM0WUNvWkdiSTlndTdxMzNFWDJueTlPVmswZ2NMVUVL?=
- =?utf-8?B?aDA4SmhCVlVwN1o2clVxNjYvcEpLS215NzJXamc2M1EyT2xlVHdBTTVENDN5?=
- =?utf-8?B?azVuU3R4RlVoM1JwUVpZQT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <37F2AF385344BB44871FA85A59767982@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S238546AbhHTGu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:50:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231998AbhHTGu2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 02:50:28 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32E4C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:49:51 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id t1so8221536pgv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=gouExDkcyZl3ijmObUC+G2ORUVV3VspK7d7Fu2DyAHg=;
+        b=nTPXXxylyEXDYBekIaAIzp+BtlWfWK9uk9zQ2AZQeRrD58IjWAI3Xax0m2/WDtnBA4
+         HZXtXcI8R8qZ1MFS7Th4L0ULWT98saZd4j8GUX7yb4Jj7ven42yOiobysolY2N2Pdsqz
+         rTgPY50k0Ct1FbBLrkGUtgBJMg9FdJMBML7aQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=gouExDkcyZl3ijmObUC+G2ORUVV3VspK7d7Fu2DyAHg=;
+        b=chgT5DRuY2yxMyvit9QNs1eIROC2Z4H2YSxm4dPIi6RV7Vsvjerw2V5F4a8+HXpJo1
+         PIEllSXz35CRSCLoMvyxhWYAMOoFHtS1pv7N8lzedl//xmQNhECqeElapUhc/khQupPn
+         5IdMgr0aPpOxraaUhA3nPGmgjTayPGWLw4uUWxEzuKu2Y9b2HBBC0yim4hJN+g+Vnreo
+         AufjMCxpeiQzdSTrwujnuLcFDxSy/MDGVInJqwLo0DVGoy/Pg+mAxJ2w54udZdyRabkV
+         0Aw55He3XVjBdsqYUkrkLUktVHvYDjwyc4/qxbXrP/bSxpeTLin25EUYWeBfaksxgUsI
+         Pp0A==
+X-Gm-Message-State: AOAM530lsXk8Xc1BpYB18Sc4W+ZYBsCuehtLk0vp0vRzl5aLOGlP3Mqb
+        0gK0VRsoQG14CbmeB2siM5rX9g==
+X-Google-Smtp-Source: ABdhPJxWz/9TmQnG6a6Du0TX4lp94P5/KwicmwvaBeBO644dQYvRpxIV+9458y43F5RM9soOs6IFHQ==
+X-Received: by 2002:a63:3245:: with SMTP id y66mr17150880pgy.443.1629442191180;
+        Thu, 19 Aug 2021 23:49:51 -0700 (PDT)
+Received: from localhost ([2001:4479:e000:e400:a926:b5e4:f61:cefa])
+        by smtp.gmail.com with ESMTPSA id 22sm6475251pgn.88.2021.08.19.23.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 23:49:50 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v8 2/3] tty: hvc: pass DMA capable memory to put_chars()
+In-Reply-To: <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
+References: <20210818082122.166881-1-xianting.tian@linux.alibaba.com> <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
+Date:   Fri, 20 Aug 2021 16:49:47 +1000
+Message-ID: <87pmu8ehkk.fsf@linkitivity.dja.id.au>
 MIME-Version: 1.0
-X-OriginatorOrg: nec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7ddf732-f7f1-4641-ec44-08d963a6870a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Aug 2021 06:48:33.0437
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JEYeziJ4Sv9D7OdcjG5fDAN/cGdmMcQPQkOdLTriaq8zMUiMVxc72w71MAzsZFb8WtwpL1eR/8q0bDc7WkPBpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2700
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCBBdWcgMTgsIDIwMjEgYXQgMTA6NDE6MTZQTSAtMDcwMCwgWWFuZyBTaGkgd3JvdGU6
-DQo+IEN1cnJlbnRseSBqdXN0IHZlcnkgc2ltcGxlIG1lc3NhZ2UgaXMgc2hvd24gZm9yIHVuaGFu
-ZGxhYmxlIHBhZ2UsIGUuZy4NCj4gbm9uLUxSVSBwYWdlLCBsaWtlOg0KPiBzb2Z0X29mZmxpbmU6
-IDB4MTQ2OWYyOiB1bmtub3duIG5vbiBMUlUgcGFnZSB0eXBlIDVmZmZmMDAwMDAwMDAwMCAoKQ0K
-PiANCj4gSXQgaXMgbm90IHZlcnkgaGVscGZ1bCBmb3IgZnVydGhlciBkZWJ1ZywgY2FsbGluZyBk
-dW1wX3BhZ2UoKSBjb3VsZCBzaG93DQo+IG1vcmUgdXNlZnVsIGluZm9ybWF0aW9uLg0KPiANCj4g
-Q2FsbGluZyBkdW1wX3BhZ2UoKSBpbiBnZXRfYW55X3BhZ2UoKSBpbiBvcmRlciB0byBub3QgZHVw
-bGljYXRlIHRoZSBjYWxsDQo+IGluIGEgY291cGxlIG9mIGRpZmZlcmVudCBwbGFjZXMuICBJdCBt
-YXkgYmUgY2FsbGVkIHdpdGggcGNwIGRpc2FibGVkIGFuZA0KPiBob2xkaW5nIG1lbW9yeSBob3Rw
-bHVnIGxvY2ssIGl0IHNob3VsZCBiZSBub3QgYSBiaWcgZGVhbCBzaW5jZSBod3BvaXNvbg0KPiBo
-YW5kbGVyIGlzIG5vdCBjYWxsZWQgdmVyeSBvZnRlbi4NCj4gDQo+IFN1Z2dlc3RlZC1ieTogTWF0
-dGhldyBXaWxjb3ggPHdpbGx5QGluZnJhZGVhZC5vcmc+DQo+IENjOiBOYW95YSBIb3JpZ3VjaGkg
-PG5hb3lhLmhvcmlndWNoaUBuZWMuY29tPg0KPiBDYzogT3NjYXIgU2FsdmFkb3IgPG9zYWx2YWRv
-ckBzdXNlLmRlPg0KPiBTaWduZWQtb2ZmLWJ5OiBZYW5nIFNoaSA8c2h5ODI4MzAxQGdtYWlsLmNv
-bT4NCj4gLS0tDQo+ICBtbS9tZW1vcnktZmFpbHVyZS5jIHwgMyArKysNCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAzIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9tbS9tZW1vcnktZmFpbHVy
-ZS5jIGIvbW0vbWVtb3J5LWZhaWx1cmUuYw0KPiBpbmRleCA3Y2ZhMTM0YjEzNzAuLjYwZGY4ZmNk
-MDQ0NCAxMDA2NDQNCj4gLS0tIGEvbW0vbWVtb3J5LWZhaWx1cmUuYw0KPiArKysgYi9tbS9tZW1v
-cnktZmFpbHVyZS5jDQo+IEBAIC0xMjI4LDYgKzEyMjgsOSBAQCBzdGF0aWMgaW50IGdldF9hbnlf
-cGFnZShzdHJ1Y3QgcGFnZSAqcCwgdW5zaWduZWQgbG9uZyBmbGFncykNCj4gIAkJcmV0ID0gLUVJ
-TzsNCj4gIAl9DQo+ICBvdXQ6DQo+ICsJaWYgKHJldCA9PSAtRUlPKQ0KPiArCQlkdW1wX3BhZ2Uo
-cCwgImh3cG9pc29uOiB1bmhhbmRsYWJsZSBwYWdlIik7DQo+ICsNCg0KSSBmZWVsIHRoYXQgNCBj
-YWxsZXJzIG9mIGdldF9od3BvaXNvbl9wYWdlKCkgYXJlIGluIHRoZSBkaWZmZXJlbnQgY29udGV4
-dCwNCnNvIGl0IG1pZ2h0IGJlIGJldHRlciB0byBjb25zaWRlciB0aGVtIHNlcGFyYXRlbHkgdG8g
-YWRkIGR1bXBfcGFnZSgpIG9yIG5vdC4NCnNvZnRfb2ZmbGluZV9wYWdlKCkgc3RpbGwgcHJpbnRz
-IG91dCAiJXM6ICUjbHg6IHVua25vd24gcGFnZSB0eXBlOiAlbHggKCVwR3ApIg0KbWVzc2FnZSwg
-d2hpY2ggbWlnaHQgYmUgZHVwbGljYXRlIHNvIHRoaXMgcHJpbnRrKCkgbWF5IGJlIGRyb3BwZWQu
-DQpJbiBtZW1vcnlfZmFpbHVyZV9odWdldGxiKCkgYW5kIG1lbW9yeV9mYWlsdXJlKCksIHdlIGNh
-biBjYWxsIGR1bXBfcGFnZSgpIGFmdGVyDQphY3Rpb25fcmVzdWx0KCkuICB1bnBvaXNvbl9tZW1v
-cnkoKSBkb2Vzbid0IG5lZWQgZHVtcF9wYWdlKCkgYXQgYWxsIGJlY2F1c2UNCml0J3MgcmVsYXRl
-ZCB0byBhbHJlYWR5IGh3cG9pc29uZWQgcGFnZS4NCg0KVGhhbmtzLA0KTmFveWEgSG9yaWd1Y2hp
+Xianting Tian <xianting.tian@linux.alibaba.com> writes:
+
+> As well known, hvc backend driver(eg, virtio-console) can register its
+> operations to hvc framework. The operations can contain put_chars(),
+> get_chars() and so on.
+>
+> Some hvc backend may do dma in its operations. eg, put_chars() of
+> virtio-console. But in the code of hvc framework, it may pass DMA
+> incapable memory to put_chars() under a specific configuration, which
+> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
+
+We could also run into issues on powerpc where Andrew is working on
+adding vmap-stack but the opal hvc driver assumes that it is passed a
+buffer which is not in vmalloc space but in the linear mapping. So it
+would be good to fix this (or more clearly document what drivers can
+expect).
+
+> 1, c[] is on stack,
+>    hvc_console_print():
+> 	char c[N_OUTBUF] __ALIGNED__;
+> 	cons_ops[index]->put_chars(vtermnos[index], c, i);
+> 2, ch is on stack,
+>    static void hvc_poll_put_char(,,char ch)
+>    {
+> 	struct tty_struct *tty = driver->ttys[0];
+> 	struct hvc_struct *hp = tty->driver_data;
+> 	int n;
+>
+> 	do {
+> 		n = hp->ops->put_chars(hp->vtermno, &ch, 1);
+> 	} while (n <= 0);
+>    }
+>
+> Commit c4baad5029 is just the fix to avoid DMA from stack memory, which
+> is passed to virtio-console by hvc framework in above code. But I think
+> the fix is aggressive, it directly uses kmemdup() to alloc new buffer
+> from kmalloc area and do memcpy no matter the memory is in kmalloc area
+> or not. But most importantly, it should better be fixed in the hvc
+> framework, by changing it to never pass stack memory to the put_chars()
+> function in the first place. Otherwise, we still face the same issue if
+> a new hvc backend using dma added in the future.
+>
+> In this patch, we make 'char out_buf[N_OUTBUF]' and 'chat out_ch' part
+> of 'struct hvc_struct', so both two buf are no longer the stack memory.
+> we can use it in above two cases separately.
+>
+> Introduce another array(cons_outbufs[]) for buffer pointers next to
+> the cons_ops[] and vtermnos[] arrays. With the array, we can easily find
+> the buffer, instead of traversing hp list.
+>
+> With the patch, we can remove the fix c4baad5029.
+>
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> Reviewed-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+
+>  struct hvc_struct {
+>  	struct tty_port port;
+>  	spinlock_t lock;
+>  	int index;
+>  	int do_wakeup;
+> -	char *outbuf;
+> -	int outbuf_size;
+>  	int n_outbuf;
+>  	uint32_t vtermno;
+>  	const struct hv_ops *ops;
+> @@ -48,6 +56,10 @@ struct hvc_struct {
+>  	struct work_struct tty_resize;
+>  	struct list_head next;
+>  	unsigned long flags;
+> +	char out_ch;
+> +	char out_buf[N_OUTBUF] __ALIGNED__;
+> +	int outbuf_size;
+> +	char outbuf[0] __ALIGNED__;
+
+I'm trying to understand this patch but I am finding it very difficult
+to understand what the difference between `out_buf` and `outbuf`
+(without the underscore) is supposed to be. `out_buf` is statically
+sized and the size of `outbuf` is supposed to depend on the arguments to
+hvc_alloc(), but I can't quite figure out what the roles of each one are
+and their names are confusingly similiar!
+
+I looked briefly at the older revisions of the series but it didn't make
+things much clearer.
+
+Could you give them clearer names?
+
+Also, looking at Documentation/process/deprecated.rst, it looks like
+maybe we want to use a 'flexible array member' instead:
+
+.. note:: If you are using struct_size() on a structure containing a zero-length
+        or a one-element array as a trailing array member, please refactor such
+        array usage and switch to a `flexible array member
+        <#zero-length-and-one-element-arrays>`_ instead.
+
+I think we want:
+
+> +	char outbuf[] __ALIGNED__;
+
+Kind regards,
+Daniel
