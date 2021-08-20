@@ -2,131 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C4D3F2E37
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9CF3F2E3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240910AbhHTOhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240898AbhHTOhO (ORCPT
+        id S240889AbhHTOip convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Aug 2021 10:38:45 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:42421 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231706AbhHTOio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:37:14 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077D8C061575;
-        Fri, 20 Aug 2021 07:36:36 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id r9so21113299lfn.3;
-        Fri, 20 Aug 2021 07:36:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XDqog7eA/iJHQBOPdK08fND+NmYBo4Qy/uDTYkx8BoM=;
-        b=evBr/m1z8ate6foVjh98sF+mVQ/qZDlrQCid8kB+PSYQZPhvsuVE0XqNShLY93HCsG
-         wy7TO+anEbD1o+MYd+TQ2vULqMImwVh1SZ+JH84g/g6SgScty3Po2OXZVSLAxJ0tF5m8
-         AN6Ow6+C2tDavLYBudJbXQHT8cb6um1HuSkHLTg3VxlDnLCLqEa1NukOH+b70XJjaqo1
-         6lcdfQHBfd9AiRXCw4xU9T6HKdyBZQKd/gfZ6oc77yhGruU5lsYsLfWXYnqVPeIPn64F
-         rxpf4xinkt6v3OnABIWhR/VeGtdu8mZg8p0+XZWIcv85mkc8ZJvwn+8yHTgngKunYxrE
-         Xtew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XDqog7eA/iJHQBOPdK08fND+NmYBo4Qy/uDTYkx8BoM=;
-        b=Tgm8fNq70qscrzuyjfJsqLiKVH7CqS/yTVtth37pYFoyvq4sIet7xYt56Y/m39rV2B
-         CeEhllMxZZsDp2LFS6y+crBAOBaJ75PNO8U7pFQljgWlVlxf8kZAX/cZ3DbfjB2zNHDB
-         48qfmvCo/7c9msLScsVQZmbroZQCbOeZVu/zHeiboN/+U+lsDkfEyPKTOcTs4lOiTUcY
-         ONZKNBUEcQhtprby2Kj87TfQDctCxEvFZG3XSz5k1iFXpLXs7lOsHmKlDOii4WOb7fgM
-         ItJsXRoSkWNPb1iY12GE/tVqsF2N4ZwXgwr0defS1vNnPmSjZRg5ObiWROmbHwUZNv0U
-         DNoA==
-X-Gm-Message-State: AOAM531n/KDDKfbxipZgRAOSUfRBkvK+ffyPncnivBmsqh1k7wwt6vEF
-        4B5sc/9UJif1XMuRwACPJEE=
-X-Google-Smtp-Source: ABdhPJyCEYBrWNq2SC4n6u9+2CJTCo3bVEn7EvKt/Hf39WEgjKGtZTbtQ9XFFsCSaemsZC7L8A/EzQ==
-X-Received: by 2002:ac2:5fa8:: with SMTP id s8mr15652944lfe.514.1629470194386;
-        Fri, 20 Aug 2021 07:36:34 -0700 (PDT)
-Received: from reki (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
-        by smtp.gmail.com with ESMTPSA id m5sm618753lfj.72.2021.08.20.07.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 07:36:33 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 17:36:32 +0300
-From:   Maxim Devaev <mdevaev@gmail.com>
-To:     Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>
-Cc:     balbi@kernel.org, stern@rowland.harvard.edu,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        ruslan.bilovol@gmail.com, mika.westerberg@linux.intel.com,
-        jj251510319013@gmail.com, linux-usb@vger.kernel.org,
-        Kernel hackers <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
-Message-ID: <20210820173632.053b1b2d@reki>
-In-Reply-To: <CANP3RGejWk7Zj2XMGGPgrGMSjqRY+ZaVFha6jG720RCSF9HEkQ@mail.gmail.com>
-References: <20210814031231.32125-1-mdevaev@gmail.com>
-        <CANP3RGejWk7Zj2XMGGPgrGMSjqRY+ZaVFha6jG720RCSF9HEkQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        Fri, 20 Aug 2021 10:38:44 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id DA099240004;
+        Fri, 20 Aug 2021 14:38:03 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 16:38:02 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+Subject: Re: [PATCH 08/13] mtd: spinand: Reject 8D-8D-8D op_templates if
+ octal_dtr_enale() is missing in manufacturer_op
+Message-ID: <20210820163802.529482dd@xps13>
+In-Reply-To: <11d173f2-2011-d029-e905-a10fdd0f2b85@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+        <20210713130538.646-9-a-nandan@ti.com>
+        <20210806210146.3358a85b@xps13>
+        <4d428465-59d7-6771-8344-c5090add2a06@ti.com>
+        <20210820141413.6c519255@xps13>
+        <11d173f2-2011-d029-e905-a10fdd0f2b85@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maciej =C5=BBenczykowski <maze@google.com> wrote:
-> perhaps better to rephrase as 'the host ceases to change the status of
-> the gadget/keyboard LEDs',
-> unless this is actually driven by the keyboard as opposed to the other
-> way round (which is what I'd expect from AT, PS/2 keyboards).
+Hi Apurva,
 
-Since I'm describing the behavior on the gadget side,
-it seemed to me that the explanation about the impossibility
-of receiving it was more appropriate.
+Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 19:24:34
++0530:
 
-> Not clear what 'not poll' means here.  Why would they (the host) need
-> to poll an OUT endpoint?
+> Hi Miquèl,
+> 
+> On 20/08/21 5:44 pm, Miquel Raynal wrote:
+> > Hi Apurva,
+> > 
+> > Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 16:56:50
+> > +0530:
+> >   
+> >> On 07/08/21 12:31 am, Miquel Raynal wrote:  
+> >>> Hi Apurva,
+> >>>
+> >>> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:33
+> >>> +0000:  
+> >>>    >>>> The SPI NAND core doesn't know how to switch the flash to Octal DTR  
+> >>>> mode (i.e. which operations to perform). If the manufacturer hasn't
+> >>>> implemented the octal_dtr_enable() manufacturer_op, the SPI NAND core
+> >>>> wouldn't be able to switch to 8D-8D-8D mode and will also not be able
+> >>>> to run in 1S-1S-1S mode due to already selected 8D-8D-8D read/write
+> >>>> cache op_templates.
+> >>>>
+> >>>> So, avoid choosing a Octal DTR SPI op_template for read_cache,
+> >>>> write_cache and update_cache operations, if the manufacturer_op
+> >>>> octal_dtr_enable() is missing.  
+> >>>
+> >>> After looking at your previous commit I don't see why this patch would
+> >>> be needed. octal_dtr_enable() only updates the mode when it succeeds so
+> >>> I don't think this patch is really needed.  
+> >>>    >>  
+> >> I added it to prevent any errors happening dues to a missing implementation of octal_dtr_enable() from manufacturer driver side.
+> >> So, if the manufacturers skips the octal_dtr_enable() implementation, we want the spinand core to run in 1s-1s-1s mode.  
+> > 
+> > I still don't get the point: you fail the probe if the octal bit is
+> > enabled but the manufacturer did not implement octal_dtr_enable(), so
+> > how could we have issues? Maybe I am overlooking something though, but
+> > this seemed completely redundant to my eyes so far.
+> >   
+> 
+> Okay, I feel this may be redundant. This is for the case when the manufacturer has added Octal DTR read/write/update cache variants but hasn't implemented the octal_dtr_enable() method.
+> 
+> Without this patch, the probe would fail, if the manufacturer did not implement octal_dtr_enable(). But after using this patch, spinand can still use the chip in 1s-1s-1s mode in that case and just skip the Octal DTR op variants during the selection. And also the probe would succeed.
 
-Poll the IN Endpoint, fixed
+Unless I am overlooking something with this series applied
+(with or without this patch) the possibilities are:
+- no octal bit -> continue as before
+- octal bit and vendor callback -> uses octal mode
+- octal bit and no vendor callback -> will return an error from
+spinand_init_octal_dtr_enable() which will fail the probe (patch 7)
 
-> Additionally it seems like any keyboard gadget would want to default
-> to the older more compatible mode?
-> Or are there compatibility problems with it as well?
+Anyway we have a choice:
+- Either we consider the tables describing chips as pure descriptions
+  and we can support these chips in mode 1-1-1 (will require changes in
+  your series as this is not what you support as far as I understand
+  the code)
+- Or we consider these tables as "what is currently supported" and in
+  this case we just fail if one adds the octal bit without any callback
+  implementation.
 
-Yes, any keyboard should use SETUP/SET_REPORT if it wants maximum
-compatibility. This mode has no problems with hosts. I suggest it
-as optional only because for the last 9 years the default behavior
-has been OUT Endpoint and in the place of those people who use it,
-I would be upset if this was changed, since it could lead to strange
-problems like lack of a queue and loss of events if f_hid is used
-for data transmission, and not for emulating input devices.
+I think the latter is better for now. We can update this choice later
+if needed anyway.
 
-> if you look down below, this isn't actually dynamic, should we just
-> have hidg_interface_desc_{intout,ssreport} structs?
+> 
+> >>
+> >> Read/write/update op variant selection happens in select_op_variant(), much before octal_dtr_enable(). So just check if there is a definition of octal_dtr_enable in manufacturer ops and then only use 8D op variants.
+> >>
+> >> Removing this wouldn't break anything in the current implementation.
+> >> Do you think we should drop this?
+> >>  
+> >>>>
+> >>>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> >>>> ---
+> >>>>    drivers/mtd/nand/spi/core.c | 7 ++++++-
+> >>>>    1 file changed, 6 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> >>>> index 19d8affac058..8711e887b795 100644
+> >>>> --- a/drivers/mtd/nand/spi/core.c
+> >>>> +++ b/drivers/mtd/nand/spi/core.c
+> >>>> @@ -1028,6 +1028,8 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+> >>>>    		if (id[0] != manufacturer->id)
+> >>>>    			continue;  
+> >>>>    >> +		spinand->manufacturer = manufacturer;  
+> >>>> +
+> >>>>    		ret = spinand_match_and_init(spinand,
+> >>>>    					     manufacturer->chips,
+> >>>>    					     manufacturer->nchips,
+> >>>> @@ -1035,7 +1037,6 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+> >>>>    		if (ret < 0)
+> >>>>    			continue;  
+> >>>>    >> -		spinand->manufacturer = manufacturer;  
+> >>>>    		return 0;
+> >>>>    	}
+> >>>>    	return -ENOTSUPP;
+> >>>> @@ -1097,6 +1098,10 @@ spinand_select_op_variant(struct spinand_device *spinand,
+> >>>>    		unsigned int nbytes;
+> >>>>    		int ret;  
+> >>>>    >> +		if (spinand_op_is_octal_dtr(&op) &&  
+> >>>> +		    !spinand->manufacturer->ops->octal_dtr_enable)
+> >>>> +			continue;
+> >>>> +
+> >>>>    		nbytes = nanddev_per_page_oobsize(nand) +
+> >>>>    			 nanddev_page_size(nand);  
+> >>>>    > > Thanks,  
+> >>> Miquèl
+> >>>
+> >>> ______________________________________________________
+> >>> Linux MTD discussion mailing list
+> >>> http://lists.infradead.org/mailman/listinfo/linux-mtd/  
+> >>>    >>  
+> >> Thanks,
+> >> Apurva Nandan  
+> > 
+> > 
+> > 
+> > 
+> > Thanks,
+> > Miquèl
+> >   
+> 
+> Thanks,
+> Apurva Nandan
 
-DYNAMIC is indirectly provided by the no_out_endpoints flag.
-I preferred to avoid duplicating the code here.
-
-> may be better to just use an if (hidg->use_out_ep) status =3D
-> usb_assign_descriptors(...) else status =3D usb_assign_descriptors(...)
-
-Yep, you're right
-
-> maybe it would be better to use consistent naming...
->=20
-> hidg->no_out_endpoint =3D opts->no_out_endpoint
->=20
-> or call the option 'use_ssreport' instead of 'no_out_endpoint'
-> (negatives are harder to think about)
-
-Yea, I also thought about it and made such a name precisely
-based on consistency. The rest of the code contains the out_ep
-variable, so it was logical to make the use_out_ep flag.
-In addition, there are no long names like *_out_endpoint anywhere.
-At the same time, abbreviations are not used in configfs
-and I didn't want to make a flag there that the user should change
-to 0 if he does not want to use out endpoint. I would prefer
-to leave it as it is, because it does not use negation logic,
-and it will be easy for you to grep something like out_ep\>
-
-> Anyway, nothing in here is particularly important, just loose thoughts.
-> In general this seems pretty nice.
-
-Thank you for the review! I will fix this and make a third version of the p=
-atch.
-
+Thanks,
+Miquèl
