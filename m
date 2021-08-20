@@ -2,582 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9123F244A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 03:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB813F2446
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 03:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237306AbhHTBFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 21:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
+        id S235640AbhHTBEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 21:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234172AbhHTBFA (ORCPT
+        with ESMTP id S234172AbhHTBEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 21:05:00 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C709C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 18:04:23 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso8298167ybq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 18:04:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=a4S8mqIdtm95Wm29EDWZK3eBg4yjYHpwzoA/s+tSKiw=;
-        b=Rf9s+aTjNUu+SW6H+FpFJkfw9k0X5QUI5kM2FhUpoTAHgKBvvVO5MBW0PHmuJwVMcI
-         TLWFDSbW1bLNGsisuPEkKOuaHNrHdJ0Ec8aeNziehp+0d/TJy42psqJjO+G9ge8JADjo
-         UuqVnnPUJLePJwdYRgaCm0JsUTNGurlX47azWoxP5NnBZMsP5CP8oaThb/Rafwm96Nld
-         aCmJGTHzLuh7YBDIKQpoRJN7rr4KZ8TngdPzMZm6KLFbdYwXNfJzNcNgsjyCmKlOx/1+
-         5BcIQC54BD7GAlJ8BRGoVBxiu241yeENHwDkaxQuFmEv3CdNvlxzfdPjKYjVs0+Wg1K3
-         HbPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=a4S8mqIdtm95Wm29EDWZK3eBg4yjYHpwzoA/s+tSKiw=;
-        b=plUnYL9Bgk7MPbLnTVgg4b6tBMRYVWNARsNg7PqtCaHcqficNSkAqagFtnWa+HwgkB
-         vOuM4+DDOkbJ9SfEDO3qOTOe0wzYLn7J7mYyzXFMVSKn0jNUjSw3/2aKWMDJxvAwcOMg
-         C+h6RQUfMqFXaaJtA33yqeX2R+gYi9h0CCmcz9g67xQRMpkV5Pn4TnsByaBctqrfc4rp
-         YvLaB6sI/sSbZSHv8aRs0BFZcV6fYSth8OnI6bROvgN/J5JeOfeKMBjQ+6jsidi05w/1
-         DMxFf/bs2u0x4tcVJP23YIEau9YaLaumiJFnn7R+H6QY9IaO4Tyk4z21zBArAQ4Ve16f
-         OiFw==
-X-Gm-Message-State: AOAM532mBbtFXfxGaTN9aL5m3AXC+L2eraQgF8wG8rHAzC/EBHCxUCX5
-        UXy9UHxfGeSRSIyjMa4oBb4xjoIDWYKY
-X-Google-Smtp-Source: ABdhPJxzGtmt7sWyte3bqsDzZuwECHHyMdIxlB33FK5CyX2AEcIUvLJP9+5QlEJOiPe+Fy/PM9j91VqW6Fu8
-X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:23c6:59ba:fc84:7672])
- (user=joshdon job=sendgmr) by 2002:a05:6902:4ca:: with SMTP id
- v10mr22736060ybs.149.1629421462863; Thu, 19 Aug 2021 18:04:22 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 18:04:00 -0700
-In-Reply-To: <20210820010403.946838-1-joshdon@google.com>
-Message-Id: <20210820010403.946838-2-joshdon@google.com>
-Mime-Version: 1.0
-References: <20210820010403.946838-1-joshdon@google.com>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH v3 1/4] sched: cgroup SCHED_IDLE support
-From:   Josh Don <joshdon@google.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 19 Aug 2021 21:04:41 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF71AC061757;
+        Thu, 19 Aug 2021 18:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=Nfe5C/ikZRIAMRtvXT6YnyM7/jPmCqTwFy+hU2RJqRQ=; b=fiIC75sFwxlPbqIuDj2grZdrKT
+        fx6JFOpCpeLONZeTPL/prZ3NqShzXX2NFmKSMDyH3Aa4h9jtxQhfgg7Z0VOpxzfw7G0pf8u23DzMA
+        Gfh3mQXBOlXciHXqfT674WsYFjowC5hUSdzx76Q/f4RsR0lDXw4nArAOAOcowJn6AHQfOSN5xT42f
+        8u1Ly18w2jbICdvh7YYEcaxGqg+pAC2vATCs7SsGoZ2ti/wrbnInYxCJGUVby2hMTTO/1wgVWWX7i
+        Bsxrv+D9pPy/7ufqKxGSSsYUJCs9iOIMlo1g1nnDHnTnrj8w55EpzC1cJi4AC5hTgjjt5KjczfabA
+        HeXEFzpg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGsx1-009pcH-It; Fri, 20 Aug 2021 01:04:03 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     hare@suse.de, dgilbert@interlog.com, jeyu@kernel.org,
+        lucas.demarchi@intel.com, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v5 1/2] common/module: add patient module rmmod support
+Date:   Thu, 19 Aug 2021 18:04:01 -0700
+Message-Id: <20210820010402.2343320-2-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210820010402.2343320-1-mcgrof@kernel.org>
+References: <20210820010402.2343320-1-mcgrof@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This extends SCHED_IDLE to cgroups.
+When we call rmmod it will fail if the refcnt is greater than 0.
+This is expected, however, if using test modules such as scsi_debug,
+userspace tests may expect that once userspace is done issuing out
+commands it can safely remove the module, and the module will be
+removed.
 
-Interface: cgroup/cpu.idle.
- 0: default behavior
- 1: SCHED_IDLE
+This is not true for few reasons. First, a module might take a while
+to quiesce after its used. This varies module by module. For example,
+at least for scsi_debug there is one patch to help with this but
+that is not sufficient to address all the removal issues, it just helps
+quiesce the module faster. If something like LVM pvremove is used, as in
+the case of generic/108, it may take time before the module's refcnt goes
+to 0 even if DM_DEFERRED_REMOVE is *not* used and even if udevadm settle
+is used. Even *after* all this... the module refcnt is still very
+fickle. For example, any blkdev_open() against a block device will bump
+a module refcnt up and we have little control over stopping these
+sporadic userspace calls after a test. A failure on module removal then
+just becomes an inconvenience on false positives.
 
-Extending SCHED_IDLE to cgroups means that we incorporate the existing
-aspects of SCHED_IDLE; a SCHED_IDLE cgroup will count all of its
-descendant threads towards the idle_h_nr_running count of all of its
-ancestor cgroups. Thus, sched_idle_rq() will work properly.
-Additionally, SCHED_IDLE cgroups are configured with minimum weight.
+This was first observed on scsi_debug [0]. Doug worked on a patch to
+help the driver quiesce [1]. Later the issue has been determined to be
+generic [2]. The only way to properly resolve these issues is with a
+patient module remover. The kernel used to support a wait for the
+delete_module() system call, however this was later deprecated into
+kmod with a 10 second userspace sleep. That 10 second sleep is long gone
+from kmod now though. I've posted patches now for a kmod patient module
+remover then [3], in light of the fact that this issue is generic and
+the only way to then properly deal with this is implementing a userspace
+patient module remover.
 
-There are two key differences between the per-task and per-cgroup
-SCHED_IDLE interface:
+Use the kmod patient module remover when supported, otherwise we open
+code our own solution inside fstests. We default to a timeout of 100
+seconds. Each test can override the timeout by setting the variable
+MODPROBE_PATIENT_RM_TIMEOUT_SECONDS or setting it to "forever" if they
+wish for the patience to be infinite.
 
-- The cgroup interface allows tasks within a SCHED_IDLE hierarchy to
-maintain their relative weights. The entity that is "idle" is the
-cgroup, not the tasks themselves.
+This uses kmod's patient module remover if you have that feature,
+otherwise we open code a solution in fstests which is a simplified
+version of what has been proposed for kmod.
 
-- Since the idle entity is the cgroup, our SCHED_IDLE wakeup preemption
-decision is not made by comparing the current task with the woken task,
-but rather by comparing their matching sched_entity.
-
-A typical use-case for this is a user that creates an idle and a
-non-idle subtree. The non-idle subtree will dominate competition vs
-the idle subtree, but the idle subtree will still be high priority
-vs other users on the system. The latter is accomplished via comparing
-matching sched_entity in the waken preemption path (this could also be
-improved by making the sched_idle_rq() decision dependent on the
-perspective of a specific task).
-
-For now, we maintain the existing SCHED_IDLE semantics. Future patches
-may make improvements that extend how we treat SCHED_IDLE entities.
-
-The per-task_group idle field is an integer that currently only holds
-either a 0 or a 1. This is explicitly typed as an integer to allow for
-further extensions to this API. For example, a negative value may
-indicate a highly latency-sensitive cgroup that should be preferred for
-preemption/placement/etc.
-
-Signed-off-by: Josh Don <joshdon@google.com>
+[0] https://bugzilla.kernel.org/show_bug.cgi?id=212337
+[1] https://lore.kernel.org/linux-scsi/20210508230745.27923-1-dgilbert@interlog.com/
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=214015
+[3] https://lkml.kernel.org/r/20210810051602.3067384-1-mcgrof@kernel.org
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 ---
-v3:
-- no change from v2
-v2:
-- Use WEIGHT_IDLEPRIO for the idle cgroup weight
-- Add cgroup-v1 support
+ README        |   4 ++
+ common/config |  31 +++++++++++++++
+ common/module | 108 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 143 insertions(+)
 
- kernel/sched/core.c  |  25 ++++++
- kernel/sched/debug.c |   3 +
- kernel/sched/fair.c  | 197 +++++++++++++++++++++++++++++++++++++------
- kernel/sched/sched.h |   8 ++
- 4 files changed, 208 insertions(+), 25 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3431939699dc..c1d2227be7c1 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -10195,6 +10195,20 @@ static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
- }
- #endif /* CONFIG_RT_GROUP_SCHED */
+diff --git a/README b/README
+index b9877b7d..84c217ce 100644
+--- a/README
++++ b/README
+@@ -121,6 +121,10 @@ Preparing system for tests:
+                filesystem we can create. Setting this parameter will
+                skip the tests creating a filesystem less than
+                MIN_FSSIZE.
++	     - Set MODPROBE_PATIENT_RM_TIMEOUT_SECONDS to specify the amount of
++	       time we should try a patient module remove. The default is 50
++	       seconds. Set this to "forever" and we'll wait forever until the
++	       module is gone.
  
-+#ifdef CONFIG_FAIR_GROUP_SCHED
-+static s64 cpu_idle_read_s64(struct cgroup_subsys_state *css,
-+			       struct cftype *cft)
-+{
-+	return css_tg(css)->idle;
-+}
-+
-+static int cpu_idle_write_s64(struct cgroup_subsys_state *css,
-+				struct cftype *cft, s64 idle)
-+{
-+	return sched_group_set_idle(css_tg(css), idle);
-+}
-+#endif
-+
- static struct cftype cpu_legacy_files[] = {
- #ifdef CONFIG_FAIR_GROUP_SCHED
- 	{
-@@ -10202,6 +10216,11 @@ static struct cftype cpu_legacy_files[] = {
- 		.read_u64 = cpu_shares_read_u64,
- 		.write_u64 = cpu_shares_write_u64,
- 	},
-+	{
-+		.name = "idle",
-+		.read_s64 = cpu_idle_read_s64,
-+		.write_s64 = cpu_idle_write_s64,
-+	},
- #endif
- #ifdef CONFIG_CFS_BANDWIDTH
- 	{
-@@ -10409,6 +10428,12 @@ static struct cftype cpu_files[] = {
- 		.read_s64 = cpu_weight_nice_read_s64,
- 		.write_s64 = cpu_weight_nice_write_s64,
- 	},
-+	{
-+		.name = "idle",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.read_s64 = cpu_idle_read_s64,
-+		.write_s64 = cpu_idle_write_s64,
-+	},
- #endif
- #ifdef CONFIG_CFS_BANDWIDTH
- 	{
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 7e08e3d947c2..49716228efb4 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -607,6 +607,9 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
- 	SEQ_printf(m, "  .%-30s: %d\n", "nr_spread_over",
- 			cfs_rq->nr_spread_over);
- 	SEQ_printf(m, "  .%-30s: %d\n", "nr_running", cfs_rq->nr_running);
-+	SEQ_printf(m, "  .%-30s: %d\n", "h_nr_running", cfs_rq->h_nr_running);
-+	SEQ_printf(m, "  .%-30s: %d\n", "idle_h_nr_running",
-+			cfs_rq->idle_h_nr_running);
- 	SEQ_printf(m, "  .%-30s: %ld\n", "load", cfs_rq->load.weight);
- #ifdef CONFIG_SMP
- 	SEQ_printf(m, "  .%-30s: %lu\n", "load_avg",
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d425d11aa2b8..5aa3cfd15a2e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -431,6 +431,23 @@ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
- 	}
- }
+         - or add a case to the switch in common/config assigning
+           these variables based on the hostname of your test
+diff --git a/common/config b/common/config
+index 005fd50a..164381b7 100644
+--- a/common/config
++++ b/common/config
+@@ -252,6 +252,37 @@ if [[ "$UDEV_SETTLE_PROG" == "" || ! -d /proc/net ]]; then
+ fi
+ export UDEV_SETTLE_PROG
  
-+static int tg_is_idle(struct task_group *tg)
-+{
-+	return tg->idle > 0;
-+}
-+
-+static int cfs_rq_is_idle(struct cfs_rq *cfs_rq)
-+{
-+	return cfs_rq->idle > 0;
-+}
-+
-+static int se_is_idle(struct sched_entity *se)
-+{
-+	if (entity_is_task(se))
-+		return task_has_idle_policy(task_of(se));
-+	return cfs_rq_is_idle(group_cfs_rq(se));
-+}
-+
- #else	/* !CONFIG_FAIR_GROUP_SCHED */
- 
- #define for_each_sched_entity(se) \
-@@ -468,6 +485,21 @@ find_matching_se(struct sched_entity **se, struct sched_entity **pse)
- {
- }
- 
-+static int tg_is_idle(struct task_group *tg)
-+{
-+	return 0;
-+}
-+
-+static int cfs_rq_is_idle(struct cfs_rq *cfs_rq)
-+{
-+	return 0;
-+}
-+
-+static int se_is_idle(struct sched_entity *se)
-+{
-+	return 0;
-+}
-+
- #endif	/* CONFIG_FAIR_GROUP_SCHED */
- 
- static __always_inline
-@@ -4841,6 +4873,9 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
- 
- 		dequeue_entity(qcfs_rq, se, DEQUEUE_SLEEP);
- 
-+		if (cfs_rq_is_idle(group_cfs_rq(se)))
-+			idle_task_delta = cfs_rq->h_nr_running;
-+
- 		qcfs_rq->h_nr_running -= task_delta;
- 		qcfs_rq->idle_h_nr_running -= idle_task_delta;
- 
-@@ -4860,6 +4895,9 @@ static bool throttle_cfs_rq(struct cfs_rq *cfs_rq)
- 		update_load_avg(qcfs_rq, se, 0);
- 		se_update_runnable(se);
- 
-+		if (cfs_rq_is_idle(group_cfs_rq(se)))
-+			idle_task_delta = cfs_rq->h_nr_running;
-+
- 		qcfs_rq->h_nr_running -= task_delta;
- 		qcfs_rq->idle_h_nr_running -= idle_task_delta;
- 	}
-@@ -4904,39 +4942,45 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 	task_delta = cfs_rq->h_nr_running;
- 	idle_task_delta = cfs_rq->idle_h_nr_running;
- 	for_each_sched_entity(se) {
-+		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
-+
- 		if (se->on_rq)
- 			break;
--		cfs_rq = cfs_rq_of(se);
--		enqueue_entity(cfs_rq, se, ENQUEUE_WAKEUP);
-+		enqueue_entity(qcfs_rq, se, ENQUEUE_WAKEUP);
-+
-+		if (cfs_rq_is_idle(group_cfs_rq(se)))
-+			idle_task_delta = cfs_rq->h_nr_running;
- 
--		cfs_rq->h_nr_running += task_delta;
--		cfs_rq->idle_h_nr_running += idle_task_delta;
-+		qcfs_rq->h_nr_running += task_delta;
-+		qcfs_rq->idle_h_nr_running += idle_task_delta;
- 
- 		/* end evaluation on encountering a throttled cfs_rq */
--		if (cfs_rq_throttled(cfs_rq))
-+		if (cfs_rq_throttled(qcfs_rq))
- 			goto unthrottle_throttle;
- 	}
- 
- 	for_each_sched_entity(se) {
--		cfs_rq = cfs_rq_of(se);
-+		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
- 
--		update_load_avg(cfs_rq, se, UPDATE_TG);
-+		update_load_avg(qcfs_rq, se, UPDATE_TG);
- 		se_update_runnable(se);
- 
--		cfs_rq->h_nr_running += task_delta;
--		cfs_rq->idle_h_nr_running += idle_task_delta;
-+		if (cfs_rq_is_idle(group_cfs_rq(se)))
-+			idle_task_delta = cfs_rq->h_nr_running;
- 
-+		qcfs_rq->h_nr_running += task_delta;
-+		qcfs_rq->idle_h_nr_running += idle_task_delta;
- 
- 		/* end evaluation on encountering a throttled cfs_rq */
--		if (cfs_rq_throttled(cfs_rq))
-+		if (cfs_rq_throttled(qcfs_rq))
- 			goto unthrottle_throttle;
- 
- 		/*
- 		 * One parent has been throttled and cfs_rq removed from the
- 		 * list. Add it back to not break the leaf list.
- 		 */
--		if (throttled_hierarchy(cfs_rq))
--			list_add_leaf_cfs_rq(cfs_rq);
-+		if (throttled_hierarchy(qcfs_rq))
-+			list_add_leaf_cfs_rq(qcfs_rq);
- 	}
- 
- 	/* At this point se is NULL and we are at root level*/
-@@ -4949,9 +4993,9 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
- 	 * assertion below.
- 	 */
- 	for_each_sched_entity(se) {
--		cfs_rq = cfs_rq_of(se);
-+		struct cfs_rq *qcfs_rq = cfs_rq_of(se);
- 
--		if (list_add_leaf_cfs_rq(cfs_rq))
-+		if (list_add_leaf_cfs_rq(qcfs_rq))
- 			break;
- 	}
- 
-@@ -5574,6 +5618,9 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		cfs_rq->h_nr_running++;
- 		cfs_rq->idle_h_nr_running += idle_h_nr_running;
- 
-+		if (cfs_rq_is_idle(cfs_rq))
-+			idle_h_nr_running = 1;
-+
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto enqueue_throttle;
-@@ -5591,6 +5638,9 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		cfs_rq->h_nr_running++;
- 		cfs_rq->idle_h_nr_running += idle_h_nr_running;
- 
-+		if (cfs_rq_is_idle(cfs_rq))
-+			idle_h_nr_running = 1;
-+
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto enqueue_throttle;
-@@ -5668,6 +5718,9 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		cfs_rq->h_nr_running--;
- 		cfs_rq->idle_h_nr_running -= idle_h_nr_running;
- 
-+		if (cfs_rq_is_idle(cfs_rq))
-+			idle_h_nr_running = 1;
-+
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto dequeue_throttle;
-@@ -5697,6 +5750,9 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		cfs_rq->h_nr_running--;
- 		cfs_rq->idle_h_nr_running -= idle_h_nr_running;
- 
-+		if (cfs_rq_is_idle(cfs_rq))
-+			idle_h_nr_running = 1;
-+
- 		/* end evaluation on encountering a throttled cfs_rq */
- 		if (cfs_rq_throttled(cfs_rq))
- 			goto dequeue_throttle;
-@@ -7039,24 +7095,22 @@ wakeup_preempt_entity(struct sched_entity *curr, struct sched_entity *se)
- 
- static void set_last_buddy(struct sched_entity *se)
- {
--	if (entity_is_task(se) && unlikely(task_has_idle_policy(task_of(se))))
--		return;
--
- 	for_each_sched_entity(se) {
- 		if (SCHED_WARN_ON(!se->on_rq))
- 			return;
-+		if (se_is_idle(se))
-+			return;
- 		cfs_rq_of(se)->last = se;
- 	}
- }
- 
- static void set_next_buddy(struct sched_entity *se)
- {
--	if (entity_is_task(se) && unlikely(task_has_idle_policy(task_of(se))))
--		return;
--
- 	for_each_sched_entity(se) {
- 		if (SCHED_WARN_ON(!se->on_rq))
- 			return;
-+		if (se_is_idle(se))
-+			return;
- 		cfs_rq_of(se)->next = se;
- 	}
- }
-@@ -7077,6 +7131,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
- 	struct cfs_rq *cfs_rq = task_cfs_rq(curr);
- 	int scale = cfs_rq->nr_running >= sched_nr_latency;
- 	int next_buddy_marked = 0;
-+	int cse_is_idle, pse_is_idle;
- 
- 	if (unlikely(se == pse))
- 		return;
-@@ -7121,8 +7176,21 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
- 		return;
- 
- 	find_matching_se(&se, &pse);
--	update_curr(cfs_rq_of(se));
- 	BUG_ON(!pse);
-+
-+	cse_is_idle = se_is_idle(se);
-+	pse_is_idle = se_is_idle(pse);
-+
-+	/*
-+	 * Preempt an idle group in favor of a non-idle group (and don't preempt
-+	 * in the inverse case).
-+	 */
-+	if (cse_is_idle && !pse_is_idle)
-+		goto preempt;
-+	if (cse_is_idle != pse_is_idle)
-+		return;
-+
-+	update_curr(cfs_rq_of(se));
- 	if (wakeup_preempt_entity(se, pse) == 1) {
- 		/*
- 		 * Bias pick_next to pick the sched entity that is
-@@ -11416,10 +11484,12 @@ void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
- 
- static DEFINE_MUTEX(shares_mutex);
- 
--int sched_group_set_shares(struct task_group *tg, unsigned long shares)
-+static int __sched_group_set_shares(struct task_group *tg, unsigned long shares)
- {
- 	int i;
- 
-+	lockdep_assert_held(&shares_mutex);
-+
- 	/*
- 	 * We can't change the weight of the root cgroup.
- 	 */
-@@ -11428,9 +11498,8 @@ int sched_group_set_shares(struct task_group *tg, unsigned long shares)
- 
- 	shares = clamp(shares, scale_load(MIN_SHARES), scale_load(MAX_SHARES));
- 
--	mutex_lock(&shares_mutex);
- 	if (tg->shares == shares)
--		goto done;
-+		return 0;
- 
- 	tg->shares = shares;
- 	for_each_possible_cpu(i) {
-@@ -11448,10 +11517,88 @@ int sched_group_set_shares(struct task_group *tg, unsigned long shares)
- 		rq_unlock_irqrestore(rq, &rf);
- 	}
- 
--done:
-+	return 0;
-+}
-+
-+int sched_group_set_shares(struct task_group *tg, unsigned long shares)
-+{
-+	int ret;
-+
-+	mutex_lock(&shares_mutex);
-+	if (tg_is_idle(tg))
-+		ret = -EINVAL;
++# Set MODPROBE_PATIENT_RM_TIMEOUT_SECONDS to "forever" if you want the patient
++# modprobe removal to run forever trying to remove a module.
++MODPROBE_REMOVE_PATIENT=""
++modprobe --help | grep -q -1 "remove-patiently"
++if [[ $? -ne 0 ]]; then
++	if [[ -z "$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS" ]]; then
++		# We will open code our own implementation of patient module
++		# remover in fstests. Use a 50 second default.
++		export MODPROBE_PATIENT_RM_TIMEOUT_SECONDS="50"
++	fi
++else
++	MODPROBE_RM_PATIENT_TIMEOUT_ARGS=""
++	if [[ ! -z "$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS" ]]; then
++		if [[ "$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS" != "forever" ]]; then
++			MODPROBE_PATIENT_RM_TIMEOUT_MS="$((MODPROBE_PATIENT_RM_TIMEOUT_SECONDS * 1000))"
++			MODPROBE_RM_PATIENT_TIMEOUT_ARGS="-t $MODPROBE_PATIENT_RM_TIMEOUT_MS"
++		fi
 +	else
-+		ret = __sched_group_set_shares(tg, shares);
-+	mutex_unlock(&shares_mutex);
++		# We export MODPROBE_PATIENT_RM_TIMEOUT_SECONDS here for parity
++		# with environments without support for modprobe -p, but we
++		# only really need it exported right now for environments which
++		# don't have support for modprobe -p to implement our own
++		# patient module removal support within fstests.
++		export MODPROBE_PATIENT_RM_TIMEOUT_SECONDS="50"
++		MODPROBE_PATIENT_RM_TIMEOUT_MS="$((MODPROBE_PATIENT_RM_TIMEOUT_SECONDS * 1000))"
++		MODPROBE_RM_PATIENT_TIMEOUT_ARGS="-t $MODPROBE_PATIENT_RM_TIMEOUT_MS"
++	fi
++	MODPROBE_REMOVE_PATIENT="modprobe -p $MODPROBE_RM_TIMEOUT_ARGS"
++fi
++export MODPROBE_REMOVE_PATIENT
 +
-+	return ret;
-+}
-+
-+int sched_group_set_idle(struct task_group *tg, long idle)
-+{
-+	int i;
-+
-+	if (tg == &root_task_group)
-+		return -EINVAL;
-+
-+	if (idle < 0 || idle > 1)
-+		return -EINVAL;
-+
-+	mutex_lock(&shares_mutex);
-+
-+	if (tg->idle == idle) {
-+		mutex_unlock(&shares_mutex);
-+		return 0;
-+	}
-+
-+	tg->idle = idle;
-+
-+	for_each_possible_cpu(i) {
-+		struct rq *rq = cpu_rq(i);
-+		struct sched_entity *se = tg->se[i];
-+		struct cfs_rq *grp_cfs_rq = tg->cfs_rq[i];
-+		bool was_idle = cfs_rq_is_idle(grp_cfs_rq);
-+		long idle_task_delta;
-+		struct rq_flags rf;
-+
-+		rq_lock_irqsave(rq, &rf);
-+
-+		grp_cfs_rq->idle = idle;
-+		if (WARN_ON_ONCE(was_idle == cfs_rq_is_idle(grp_cfs_rq)))
-+			goto next_cpu;
-+
-+		idle_task_delta = grp_cfs_rq->h_nr_running -
-+				  grp_cfs_rq->idle_h_nr_running;
-+		if (!cfs_rq_is_idle(grp_cfs_rq))
-+			idle_task_delta *= -1;
-+
-+		for_each_sched_entity(se) {
-+			struct cfs_rq *cfs_rq = cfs_rq_of(se);
-+
-+			if (!se->on_rq)
-+				break;
-+
-+			cfs_rq->idle_h_nr_running += idle_task_delta;
-+
-+			/* Already accounted at parent level and above. */
-+			if (cfs_rq_is_idle(cfs_rq))
-+				break;
-+		}
-+
-+next_cpu:
-+		rq_unlock_irqrestore(rq, &rf);
-+	}
-+
-+	/* Idle groups have minimum weight. */
-+	if (tg_is_idle(tg))
-+		__sched_group_set_shares(tg, scale_load(WEIGHT_IDLEPRIO));
-+	else
-+		__sched_group_set_shares(tg, NICE_0_LOAD);
-+
- 	mutex_unlock(&shares_mutex);
- 	return 0;
+ export MKFS_XFS_PROG=$(type -P mkfs.xfs)
+ export MKFS_EXT4_PROG=$(type -P mkfs.ext4)
+ export MKFS_UDF_PROG=$(type -P mkudffs)
+diff --git a/common/module b/common/module
+index 39e4e793..0392f20c 100644
+--- a/common/module
++++ b/common/module
+@@ -81,3 +81,111 @@ _get_fs_module_param()
+ {
+ 	cat /sys/module/${FSTYP}/parameters/${1} 2>/dev/null
  }
 +
- #else /* CONFIG_FAIR_GROUP_SCHED */
- 
- void free_fair_sched_group(struct task_group *tg) { }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d9f8d73a1d84..8dfad8fb756c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -396,6 +396,9 @@ struct task_group {
- 	struct cfs_rq		**cfs_rq;
- 	unsigned long		shares;
- 
-+	/* A positive value indicates that this is a SCHED_IDLE group. */
-+	int			idle;
++# checks the refcount and returns 0 if we can safely remove the module. rmmod
++# does this check for us, but we can use this to also iterate checking for this
++# refcount before we even try to remove the module. This is useful when using
++# debug test modules which take a while to quiesce.
++_patient_rmmod_check_refcnt()
++{
++	local module=$1
++	local refcnt=0
 +
- #ifdef	CONFIG_SMP
- 	/*
- 	 * load_avg can be heavily contended at clock tick time, so put
-@@ -505,6 +508,8 @@ extern void sched_move_task(struct task_struct *tsk);
- #ifdef CONFIG_FAIR_GROUP_SCHED
- extern int sched_group_set_shares(struct task_group *tg, unsigned long shares);
- 
-+extern int sched_group_set_idle(struct task_group *tg, long idle);
++	if [[ -f /sys/module/$module/refcnt ]]; then
++		refcnt=$(cat /sys/module/$module/refcnt 2>/dev/null)
++		if [[ $? -ne 0 || $refcnt -eq 0 ]]; then
++			return 0
++		fi
++		return 1
++	fi
++	return 0
++}
 +
- #ifdef CONFIG_SMP
- extern void set_task_rq_fair(struct sched_entity *se,
- 			     struct cfs_rq *prev, struct cfs_rq *next);
-@@ -601,6 +606,9 @@ struct cfs_rq {
- 	struct list_head	leaf_cfs_rq_list;
- 	struct task_group	*tg;	/* group that "owns" this runqueue */
- 
-+	/* Locally cached copy of our task_group's idle value */
-+	int			idle;
++# Patiently tries to wait to remove a module by ensuring first
++# the refcnt is 0 and then trying to persistently remove the module within
++# the time allowed. The timeout is configurable per test, just set
++# MODPROBE_PATIENT_RM_TIMEOUT_SECONDS prior to including this file.
++# If you want this to try forever just set MODPROBE_PATIENT_RM_TIMEOUT_SECONDS
++# to the special value of "forever". This applies to both cases where kmod
++# supports the patient module remover (modrobe -p) and where it does not.
++#
++# If your version of kmod supports modprobe -p, we instead use that
++# instead. Otherwise we have to implement a patient module remover
++# ourselves.
++_patient_rmmod()
++{
++	local module=$1
++	local max_tries_max=$MODPROBE_PATIENT_RM_TIMEOUT_SECONDS
++	local max_tries=0
++	local mod_ret=0
++	local refcnt_is_zero=0
 +
- #ifdef CONFIG_CFS_BANDWIDTH
- 	int			runtime_enabled;
- 	s64			runtime_remaining;
++	if [[ ! -z $MODPROBE_REMOVE_PATIENT ]]; then
++		$MODPROBE_REMOVE_PATIENT $module
++		mod_ret=$?
++		if [[ $mod_ret -ne 0 ]]; then
++			echo "kmod patient module removal for $module timed out waiting for refcnt to become 0 using timeout of $max_tries_max returned $mod_ret"
++		fi
++		return $mod_ret
++	fi
++
++	max_tries=$max_tries_max
++
++	# We must use a string check as otherwise if max_tries is set to
++	# "forever" and we don't use a string check we can end up skipping
++	# entering this loop.
++	while [[ "$max_tries" != "0" ]]; do
++		_patient_rmmod_check_refcnt $module
++		if [[ $? -eq 0 ]]; then
++			refcnt_is_zero=1
++			break
++		fi
++		sleep 1
++		if [[ "$max_tries" == "forever" ]]; then
++			continue
++		fi
++		let max_tries=$max_tries-1
++	done
++
++	if [[ $refcnt_is_zero -ne 1 ]]; then
++		echo "custom patient module removal for $module timed out waiting for refcnt to become 0 using timeout of $max_tries_max"
++		return -1
++	fi
++
++	# If we ran out of time but our refcnt check confirms we had
++	# a refcnt of 0, just try to remove the module once.
++	if [[ "$max_tries" == "0" ]]; then
++		modprobe -r $module
++		return $?
++	fi
++
++	# If we have extra time left. Use the time left to now try to
++	# persistently remove the module. We do this because although through
++	# the above we found refcnt to be 0, removal can still fail since
++	# userspace can always race to bump the refcnt. An example is any
++	# blkdev_open() calls against a block device. These issues have been
++	# tracked and documented in the following bug reports, which justifies
++	# our need to do this in userspace:
++	# https://bugzilla.kernel.org/show_bug.cgi?id=212337
++	# https://bugzilla.kernel.org/show_bug.cgi?id=214015
++	while [[ $max_tries != 0 ]]; do
++		if [[ -d /sys/module/$module ]]; then
++			modprobe -r $module 2> /dev/null
++			mod_ret=$?
++			if [[ $mod_ret == 0 ]]; then
++				break;
++			fi
++			sleep 1
++			if [[ "$max_tries" == "forever" ]]; then
++				continue
++			fi
++			let max_tries=$max_tries-1
++		fi
++	done
++
++	if [[ $mod_ret -ne 0 ]]; then
++		echo "custom patient module removal for $module timed out trying to remove $module using timeout of $max_tries_max last try returned $mod_ret"
++	fi
++
++	return $mod_ret
++}
 -- 
-2.33.0.rc2.250.ged5fa647cd-goog
+2.30.2
 
