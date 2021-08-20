@@ -2,143 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D543F33A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C373F33C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237332AbhHTSZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
+        id S237182AbhHTS2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237068AbhHTSZl (ORCPT
+        with ESMTP id S236378AbhHTS2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:25:41 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBFFC061757;
-        Fri, 20 Aug 2021 11:25:03 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id lo4so21871492ejb.7;
-        Fri, 20 Aug 2021 11:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tF/rYLQ+DtMioyJLcb3Pd0DjkRnK2a1fMohMiDkI93E=;
-        b=BiEuWlvzwz1TCjxw7PuZdooB500Q4kzhIVUdIw3j2f/DYzySsEKyZHNG2apBbVlKd+
-         S26tsKYb7CsPo4zgHSDtIzzYo00dcDHQDbnFmVFdGK44zilVcYPK8XbkEB0+pAMq50gC
-         d4YZBHWkvFVZ1yHzBrmK/INfta5lh00UQTLjmPTz3Re3NlPs/oYT0HjmIRtpJk9TkiFY
-         Ff3JYakC6Th0dSUjZssoBQ2UgXVUbcjpBstZ0r2py3h3LhDGnPij8AaFsW7zcw+tcLVo
-         zI2dNXaeDh/LXQFbqvCN37iujdclM04i7cO/IY7dB1QRo+tCfc6BeP1HEMzkhkiqk5GF
-         mnDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tF/rYLQ+DtMioyJLcb3Pd0DjkRnK2a1fMohMiDkI93E=;
-        b=QhiQ7UkRthAV6ciqLJ+dcblB1xVXsT2zPsF4q8k7vapFhRPEEvvW888z0VMLlbYGmL
-         BI0D3DEU7qyE5f2+C2xJSr+aIEbGxgXc7QDylBIVP41dqplK1l2uxQ+beI9ebxXQrNWU
-         F1VJCpJwmYKu9f7d6cGG97rDIKpfSPetqLC8VYoRT7dJRpaZ+62tsUpPW7B9ErEwrbUg
-         A/sPFG1g8SeeorujhIYAyUwdbtW6khHUd/IfLvDlAmUvcnl3Q4DxU3Nl3ZjY4ykNshau
-         BluswgcMTrNCE2t5tO4L/J0ybK1MZy5soOqX2aGfmL8PG/SFcmBf1qEmqAFfQ/TU91p/
-         K1xQ==
-X-Gm-Message-State: AOAM5320xObBdtNTp8IVXBK5yVrUCyiksfwIBM4txTZScT67FIGdlGht
-        yeNesY2vV3RORZBI3/7NEv0PQ43mqx4wBPrjUrM5a/kgPfbR9Q==
-X-Google-Smtp-Source: ABdhPJz7fGXk3BnM0WOR5XhOuGf6TCNsxu1Wo/01tMBExMGZe8icmT2pSL/tQVP6uELLgOsvWPMUd8g3QIqx0O0Ktmk=
-X-Received: by 2002:a17:907:1043:: with SMTP id oy3mr3902073ejb.116.1629483901606;
- Fri, 20 Aug 2021 11:25:01 -0700 (PDT)
+        Fri, 20 Aug 2021 14:28:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F86C061756;
+        Fri, 20 Aug 2021 11:28:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tdQqeccCak7gZvzJh0sTAGQqu+YU4rsLzWI4kGslWng=; b=ZJbBe6oXsxX7AoqefdSkvbjVKX
+        P5f7bDtiCLrra3haNmrU9N9PCmgaNVQ5s/CNFqinUSqm4Qc/Jnk9gM9hVkQzYqGyZbqN8D70oNeeE
+        Xvyrwn0m9SzLjkao8fmr7ydM/5Xhiks8Z6mqMbYL+0PnJGDerVm9q+bngGnHRsXlMwzv8Wm9u/RQN
+        67qOSlYM5mos5r+CRhC630VaCVtW7wNULIkBGJDl+s+l0hkEUmzg6EzmIWL5VVWXP9t/mQJU/jihx
+        RPpHOVJGWmqyuoxA/Wb2nbldQOg6ZTwjd9PxbLAjIs2N4FRTEhrAhohu3r3RVPRFZiDQTLy+wHi/A
+        smy81+gg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mH9DC-006qfn-8u; Fri, 20 Aug 2021 18:26:17 +0000
+Date:   Fri, 20 Aug 2021 19:25:50 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        LukasBulwahn <lukas.bulwahn@gmail.com>,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
+        linux-csky@vger.kernel.org
+Subject: Re: What is the oldest perl version being used with the kernel ?
+ update oldest supported to 5.14 ?
+Message-ID: <YR/zrjiCwnzMMcmA@casper.infradead.org>
+References: <37ec9a36a5f7c71a8e23ab45fd3b7f20efd5da24.camel@perches.com>
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
- <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
- <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
- <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
- <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at> <CAAEAJfDDtGcUquyP7Jn0Urttt4kSfAQbJ_qPQ90ROtWLavW9EA@mail.gmail.com>
- <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
-In-Reply-To: <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Fri, 20 Aug 2021 23:54:50 +0530
-Message-ID: <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Sean Nyekjaer <sean@geanix.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37ec9a36a5f7c71a8e23ab45fd3b7f20efd5da24.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jul 2021 at 22:41, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Thu, 29 Jul 2021 at 17:33, Ezequiel Garcia
-> <ezequiel@vanguardiasur.com.ar> wrote:
-> >
-> > On Thu, 29 Jul 2021 at 08:45, Richard Weinberger <richard@nod.at> wrote=
-:
-> > >
-> > > Ezequiel,
-> > >
-> > > ----- Urspr=C3=BCngliche Mail -----
-> > > > [snip]
-> > > >
-> > > > Ouch, so surprised that after all these years someone is doing squa=
-shfs/mtdblock
-> > > > instead of using ubiblock :-)
-> > > >
-> > > > Can we patch either Kconfig or add some warn_once on mtdblock
-> > > > usage, suggesting to use ubiblock instead?
-> > >
-> > > a hint in Kconfig makes IMHO sense. Do you want to send a patch?
-> > > A warning is too much since on some tiny embedded system with NOR fla=
-sh mtdblock is still
-> > > a good choice.
-> > > ubiblock is mostly useful for NAND flash.
-> > >
-> > > > I remember there was still some use case(s) for mtdblock but I can'=
-t remember
-> > > > now what was it, perhaps we should document the expectations?
-> > > > (Is that for JFFS2 to mount?)
-> > >
-> > > a long time ago mount didn't accept character devices, so you had to =
-pass mtdblockX to mount
-> > > JFFS2.
-> > > This limitation is gone.
-> > >
+On Fri, Aug 20, 2021 at 10:27:59AM -0700, Joe Perches wrote:
+> Perl 5.8 is nearly 20 years old now.
+> 
+> https://en.wikipedia.org/wiki/Perl_5_version_history
+> 
+> checkpatch uses regexes that are incompatible with perl versions
+> earlier than 5.10, but these uses are currently runtime checked
+> and skipped if the perl version is too old.  This runtime checking
+> skips several useful tests.
+> 
+> There is also some desire for tools like kernel-doc, checkpatch and
+> get_maintainer to use a common library of regexes and functions:
+> https://lore.kernel.org/lkml/YR2lexDd9N0sWxIW@casper.infradead.org/
+> 
+> It'd be useful to set the minimum perl version to something more modern.
+> 
+> I believe perl 5.14, now only a decade old, is a reasonable target.
+> 
+> Any objections or suggestions for a newer minimum version?
 
-Hi,
+Not an objection per se, but some data points.
 
-Just a further follow-up on this discussion.
-Whether to use /dev/mtdblock or /dev/ubiblock for rootfs (squashfs)
-mounting during boot.
+Oracle Linux 5 (released 2007, still under support) has perl 5.8.8
+Oracle Linux 6 (released 2011) has perl 5.10.1
+Oracle Linux 7 (released 2014) has perl 5.16.3
+Oracle Linux 8 (released 2019) has perl 5.26.3
 
-As suggested here:
-Instead of using this in kernel command line:
-[    0.000000] Kernel command line: ... rootfstype=3Dsquashfs
-root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30 ...
+I don't know that we need to be able to build on a distro from 2007
+or even from 2011.  I think it's reasonable to require updating to a
+2014 distro in order to build a 2021 kernel.
 
-I used this:
-[    0.000000] Kernel command line: ... rootfstype=3Dsquashfs
-ubi.mtd=3D40,0,30 ubi.block=3D0,0 root=3D/dev/ubiblock0_0 ...
-
-The device is booting fine with ubiblock as well.
-But, per say, I could not find any visible difference.
-I just observed a slight improvement in boot time, but I need to
-double-check on this, with few more reboot cycles.
-
-Apart from this what are the other visible benefits of using ubiblock
-which can be explained to be management or internal team ?
-I could not find any documentation explaining the difference, except this o=
-ne:
-http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
-
-Can someone also point me to the respective driver code in case of
-using /dev/mtdblock and /dev/ubiblock ?
-Apart from theory I also want to check the impact at the code level..
-
-Thanks,
-Pintu
+For comparison, we currently require gcc-4.9 to build the kernel, and
+4.9.0 was released in 2014.  So perl-5.16 wouldn't be an unreasonable
+requirement, I believe.
