@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E70D3F2E8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBDD3F2E7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbhHTPFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:05:34 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60672
+        id S240865AbhHTPFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:05:16 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60588
         "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240984AbhHTPF2 (ORCPT
+        by vger.kernel.org with ESMTP id S238805AbhHTPFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:05:28 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        Fri, 20 Aug 2021 11:05:15 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2DEC940771
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:04:50 +0000 (UTC)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 649824075F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:04:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629471890;
-        bh=co/K2QfxDh6TErvx3NAqZuZOZOZtgloEm8goQR7xz/0=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=ePhZu6dunAFII3wRiyVvAta/C/lhJdsN0z/PhzH5y4z+csMfd0PSFJv4xiDbSmAKv
-         kPYMER/0BBK1iKZlKiTc6pRxbJW7w3FKzglpWIqAxNLF8P/B8Q9O9yw0aB3gV7dgv0
-         IwQPs3xq8PtKw1QHOLWnP1SqI8LBgQ8TB4S8TLcZ3CddHapCnu/F4TuQ9IBKyaAlKr
-         Xr1RKSyKG6DdaI0wWjiQ21nmLlK4BIpPzy1gM6Wb38p8fnvN8dcUCF8QBHUvJyGdhj
-         hQ2bGL2Q+gZjbUu4HEs8tSdFVH9pswqzDxZkB9VBwnVA6Ev8G8F798tR2FpXEbZtOA
-         UapOMVyBAcHdA==
-Received: by mail-ed1-f70.google.com with SMTP id di3-20020a056402318300b003bebf0828a2so4726416edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:04:50 -0700 (PDT)
+        s=20210705; t=1629471876;
+        bh=+9RVHIO7GV1Om2KHgusO6/MXkZN0OfEQMTrFuagDZKI=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=NiAqpx/BHsRMliyv/ACW72HdBctzKXhU8wc6GSz5C71fXX0iRVWFqa+koZKE3awAl
+         FTVtHkJ5jEdcNFtyFXhT8u7C8Vv2oOudbi1p9CcFIWqivU6yYYvTHIJm81hOhLr6S9
+         ql0tP5vs8g2vlz2XqYJQAUDRYi5Y6RcMix498XQTaXttCDPCvfrVJvmpN2N0eqtayD
+         ySfMzsWlsQU+fw+sOtVs1BNxhgGcQY1JayeYhqvJFoDK2jvvoF3dFwXi6aa+/AEhi0
+         F1O+JeE9APlUk7rUuRr2arbcGl9wFKEX7Tz1qY71G8TSPen4J3pEPRzDhyZ5RIaeQ3
+         xB9ImzyJEdxzA==
+Received: by mail-ed1-f71.google.com with SMTP id z4-20020a05640240c4b02903be90a10a52so4684211edb.19
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:04:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=co/K2QfxDh6TErvx3NAqZuZOZOZtgloEm8goQR7xz/0=;
-        b=Wgw3Vb8fjZbf501VrbyB8lUd3jSmUPpXaGSACdow4AGLpeE4AahGvylglsXg5goVj5
-         4Mu8OhdPSZME9kQLjuNCMxYvcP0jInq5ms+7gN3/I1IppQOrbV7WHhGkWnQokRpe0qNW
-         aeyAFOgJRvGpoMdUI7pXkRSCYedF2x9omw2KLU406at2XXuYpq1OzGXWXnZnLdNatlfa
-         duOVq4td+RMFsWtiuHxAEiXI3pmo/idkY4ccAixZebySGCIqgJuaM+022tj+o3WmJ3dh
-         ThVBWnsP3ATs+U+ukq+7n0gSnQBGAlc4W/9IJhNrEWLnXF5e1BPiyVedsbnTdRv+UDQb
-         6YgA==
-X-Gm-Message-State: AOAM533P8Sc6HP8CiVT2yz+TeqpO/FWpTw1yf/kwkSDnP1qBR0jj37Ag
-        +ApuDumOCahm6iBla3/ShrYolEdbiNv8JcmYBDEiVeiIWljzMetfFBRl0i46OuPYsBYo3AM9W0Y
-        RO9zGlH3rYzDs4hOUi/WWWgr1O78SHNCa3HE5AJudWA==
-X-Received: by 2002:aa7:de85:: with SMTP id j5mr22065115edv.147.1629471889808;
-        Fri, 20 Aug 2021 08:04:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdeLXpscZy4Zhp5zOqh9nMZYRaJqrPl/dZjs2YnBELKdAFBq4I5kEdodoEKntp1GvfTauNag==
-X-Received: by 2002:aa7:de85:: with SMTP id j5mr22065094edv.147.1629471889655;
-        Fri, 20 Aug 2021 08:04:49 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.42.198])
-        by smtp.gmail.com with ESMTPSA id ck17sm3690735edb.88.2021.08.20.08.04.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 08:04:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+9RVHIO7GV1Om2KHgusO6/MXkZN0OfEQMTrFuagDZKI=;
+        b=KKvYqETTyhd4PA5XWg8DBOl7I7su4kJuJ1JS9lCO9UL8WX+4dR/Qiqgb1fKYxStRCx
+         CANpqr5ORf2g/3S43po7yceI/NwfN8ICWDYiLRj6+/D6AMu4t8wh5fu84VxegLgfgsKV
+         lZ8oCrENO3//hBQMqIALWgB6YmzWzpNi6Q+wnpczRZPDao4VG/m9L9504G9U5y5NB4TN
+         mgM9uwTz4fgYllpru7fUPYJA4FpIEoTfI+E+cLQ0ZcOGNYnpQpC3OwgF42WfVZZU7jPV
+         LEjSy5pUxPZK/t7GPoN/roiNUfCUp8M+6nxG9hcwn+gwgQ8wUp+BtZHJ7F3u245+S8QC
+         FlZg==
+X-Gm-Message-State: AOAM532BoQohxFJ3Uf9GjqPFgkt3czMajTnTjmukjmxZ7QE285jg8GwU
+        H0uVoeesc+6PygNtV4ewU0tfRzvxJdZCBTVVT2mEVlMLms6qaTht/W9Vgow634B9N3nekRkHrjs
+        uekXlpD9VwrPvoKpQsnsDRZmUm4pT8/cRDrLEg2Ua+Q==
+X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr23183733edw.90.1629471875697;
+        Fri, 20 Aug 2021 08:04:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgDiyfkZv84mpJkewwib7hgZF+c9z+OtbNAQMGJ7h7jHN43rWGybqDCjw2we1dlKuY6kNo0A==
+X-Received: by 2002:a05:6402:1157:: with SMTP id g23mr23183722edw.90.1629471875595;
+        Fri, 20 Aug 2021 08:04:35 -0700 (PDT)
+Received: from [192.168.8.102] ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id q6sm2960038ejm.106.2021.08.20.08.04.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 08:04:35 -0700 (PDT)
+Subject: Re: [PATCH 1/2] arm64: dts: exynos: align operating-points table name
+ with dtschema in Exynos5433
+To:     Alim Akhtar <alim.akhtar@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210820081458.83406-1-krzysztof.kozlowski@canonical.com>
+ <CAGOxZ53oTWuSLupGKWd+XWPXJZQfZ28-Vo=wWT1exty0LpCfOA@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] ARM: dts: exynos: align PPMU event node names with dtschema
-Date:   Fri, 20 Aug 2021 17:03:53 +0200
-Message-Id: <20210820150353.161161-4-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210820150353.161161-1-krzysztof.kozlowski@canonical.com>
-References: <20210820150353.161161-1-krzysztof.kozlowski@canonical.com>
+Message-ID: <ed2e81ce-97ac-be28-8db5-3f1242c64a91@canonical.com>
+Date:   Fri, 20 Aug 2021 17:04:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGOxZ53oTWuSLupGKWd+XWPXJZQfZ28-Vo=wWT1exty0LpCfOA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use hyphen instead of underscore and align the PPMU event node name with
-dtschema.
+On 20/08/2021 16:44, Alim Akhtar wrote:
+> On Fri, Aug 20, 2021 at 1:51 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> Align the name of operating-points node to dtschema to fix warnings like:
+>>
+> Did you miss adding warnings here?
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Yeah, I missed. I will add it when applying.
 
----
+> 
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+> Rest looks good.
+> Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
 
-Changes since v1:
-1. New patch
----
- arch/arm/boot/dts/exynos5420.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks!
 
-diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
-index e23e8ffb093f..10ccd5cb69fd 100644
---- a/arch/arm/boot/dts/exynos5420.dtsi
-+++ b/arch/arm/boot/dts/exynos5420.dtsi
-@@ -302,7 +302,7 @@ ppmu_dmc0_0: ppmu@10d00000 {
- 			clocks = <&clock CLK_PCLK_PPMU_DREX0_0>;
- 			clock-names = "ppmu";
- 			events {
--				ppmu_event3_dmc0_0: ppmu-event3-dmc0_0 {
-+				ppmu_event3_dmc0_0: ppmu-event3-dmc0-0 {
- 					event-name = "ppmu-event3-dmc0_0";
- 				};
- 			};
-@@ -314,7 +314,7 @@ ppmu_dmc0_1: ppmu@10d10000 {
- 			clocks = <&clock CLK_PCLK_PPMU_DREX0_1>;
- 			clock-names = "ppmu";
- 			events {
--				ppmu_event3_dmc0_1: ppmu-event3-dmc0_1 {
-+				ppmu_event3_dmc0_1: ppmu-event3-dmc0-1 {
- 					event-name = "ppmu-event3-dmc0_1";
- 				};
- 			};
-@@ -326,7 +326,7 @@ ppmu_dmc1_0: ppmu@10d60000 {
- 			clocks = <&clock CLK_PCLK_PPMU_DREX1_0>;
- 			clock-names = "ppmu";
- 			events {
--				ppmu_event3_dmc1_0: ppmu-event3-dmc1_0 {
-+				ppmu_event3_dmc1_0: ppmu-event3-dmc1-0 {
- 					event-name = "ppmu-event3-dmc1_0";
- 				};
- 			};
-@@ -338,7 +338,7 @@ ppmu_dmc1_1: ppmu@10d70000 {
- 			clocks = <&clock CLK_PCLK_PPMU_DREX1_1>;
- 			clock-names = "ppmu";
- 			events {
--				ppmu_event3_dmc1_1: ppmu-event3-dmc1_1 {
-+				ppmu_event3_dmc1_1: ppmu-event3-dmc1-1 {
- 					event-name = "ppmu-event3-dmc1_1";
- 				};
- 			};
--- 
-2.30.2
 
+Best regards,
+Krzysztof
