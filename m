@@ -2,101 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD6A3F2680
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7723F2684
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhHTFea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbhHTFe3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 01:34:29 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B694AC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:33:51 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id mq3so6567159pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t77CbxubGxEGTMmMwfQTPijc/96kf1szGuSMv1EFAD4=;
-        b=Ja222Isqq11kr4ZhqVigTCcrL9fIFtekeWme0RhNsM6otO6PdQquD7rbRU6+ee4EKm
-         XhdcOSsskOxlBbZcG1GD5chnwgliVOp9yQsp5Nu7/g4B1ZIGmfUmWUnWSqXnXG/mH/vN
-         QiqPfBEv/7xk8Mw9NlHeSrwnpWhRQHDn5K0ck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t77CbxubGxEGTMmMwfQTPijc/96kf1szGuSMv1EFAD4=;
-        b=U5xCyBRQU9ZlZJNgk0qMo0j4KA2w/knHUSAw7ocFk02RsuQ1WGcsTMtb29GuHTiWW8
-         v3DszIpUMfMCWuppv4DRbLELrjz16HfPUMMhZVMaMXGaPYpauNH73yCgZ4ASNliGa2ZP
-         SkiaTHHoIWM+LIJZ8oqDgQLAXvBeoBHHlFQz3G+zBBQ+CU1dJQlsLlJBfcoAXNBvHI4t
-         QsIZBEjjOGKv10vskGSvZruuv/Y4bxaL+omLQCXeh3UDYCW9rFG3/FVCYm4ZAkxOlgCV
-         Jt1cHkXTPtslmL50V6niXpWsOztw+t5hriLjok3NZ1PE7sChTJFZsBGTUOBXH/vr6X/R
-         sh5g==
-X-Gm-Message-State: AOAM531v+UQlzxTI/J1X1IyfiWWyvHYtyRes0icjL0w8uWNdpD4qWhyS
-        Dq8WD8D6lkbTbVZ4OsgsvOFM0A==
-X-Google-Smtp-Source: ABdhPJzzhNgBKICixn1BmX+FEFq9VN9d5pl11Uew/GhdXyhQuIKrjSjYMnX4OzZV4gM7ZsT0Y14CTw==
-X-Received: by 2002:a17:90a:ba0b:: with SMTP id s11mr2736424pjr.96.1629437631270;
-        Thu, 19 Aug 2021 22:33:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id r78sm5560641pfc.206.2021.08.19.22.33.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 22:33:50 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 22:33:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jordy Zomer <jordy@pwning.systems>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Mike Rapoport <rppt@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>
-Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
-Message-ID: <202108192227.8BE02F1C@keescook>
-References: <20210820043339.2151352-1-jordy@pwning.systems>
+        id S237102AbhHTFfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 01:35:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:21021 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233661AbhHTFfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 01:35:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629437665; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=lXsbnDvim+x7SjDi+NgiA4nb25M0s3Avl7+C9WJxIls=; b=CkC6f1opiVsLW2UgdbjF4ufSZfbGGzfMy2hC4L39MQ5N8VugUJ0NxaFOPoq4zPZIITRMjEa6
+ Dqpcwh+idF/5fa0uCttcWNefh8sBPJTsM+ngMiH2/BEBsUrp7bjUXEuyr1y4kwB1VSnyBqEO
+ OmjHVGkgUKcY93tEhw8i04n52CI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 611f3edf1a9008a23e6e933d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Aug 2021 05:34:23
+ GMT
+Sender: sanm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 69587C4360D; Fri, 20 Aug 2021 05:34:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.4 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.104] (unknown [49.206.50.189])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A5B51C4338F;
+        Fri, 20 Aug 2021 05:34:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A5B51C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add USB related nodes
+To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pratham Pratap <prathampratap@codeaurora.org>
+References: <1625576413-12324-1-git-send-email-sanm@codeaurora.org>
+ <1625576413-12324-3-git-send-email-sanm@codeaurora.org>
+ <CAE-0n52d7UOWQ+hohoyV81+aB1RnNPUEnjPCtr5=nH+a=WK35Q@mail.gmail.com>
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+Message-ID: <ea2380bd-734d-a835-05f0-db9d3dbcfe38@codeaurora.org>
+Date:   Fri, 20 Aug 2021 11:04:14 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820043339.2151352-1-jordy@pwning.systems>
+In-Reply-To: <CAE-0n52d7UOWQ+hohoyV81+aB1RnNPUEnjPCtr5=nH+a=WK35Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 06:33:38AM +0200, Jordy Zomer wrote:
-> When a secret memory region is active, memfd_secret disables
-> hibernation. One of the goals is to keep the secret data from being
-> written to persistent-storage.
-> 
-> It accomplishes this by maintaining a reference count to
-> `secretmem_users`. Once this reference is held your system can not be
-> hibernated due to the check in `hibernation_available()`. However,
-> because `secretmem_users` is of type `atomic_t`, reference counter
-> overflows are possible.
+Hi Stephen,
 
-It's an unlikely condition to hit given max-open-fds, etc, but there's
-no reason to leave this weakness. Changing this to refcount_t is easy
-and better than using atomic_t.
+On 8/18/2021 1:28 AM, Stephen Boyd wrote:
+> Quoting Sandeep Maheswaram (2021-07-06 06:00:12)
+>> Add nodes for DWC3 USB controller, QMP and HS USB PHYs in sc7280 SOC.
+>>
+>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+>> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>> ---
+>> Changed qmp usb phy to usb dp phy combo node as per Stephen's comments.
+>> Changed dwc to usb and added SC7280 compatible as per Bjorn's comments.
+>>
+>>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 164 +++++++++++++++++++++++++++++++++++
+>>   1 file changed, 164 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index a8c274a..cd6908f 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -1035,6 +1035,125 @@
+>>                          };
+>>                  };
+>>
+> [...]
+>> +
+>> +               usb_2: usb@8cf8800 {
+>> +                       compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+>> +                       reg = <0 0x08cf8800 0 0x400>;
+>> +                       status = "disabled";
+>> +                       #address-cells = <2>;
+>> +                       #size-cells = <2>;
+>> +                       ranges;
+>> +                       dma-ranges;
+>> +
+>> +                       clocks = <&gcc GCC_CFG_NOC_USB3_SEC_AXI_CLK>,
+>> +                                <&gcc GCC_USB30_SEC_MASTER_CLK>,
+>> +                                <&gcc GCC_AGGRE_USB3_SEC_AXI_CLK>,
+>> +                                <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+>> +                                <&gcc GCC_USB30_SEC_SLEEP_CLK>;
+>> +                       clock-names = "cfg_noc", "core", "iface","mock_utmi",
+>> +                                     "sleep";
+>> +
+>> +                       assigned-clocks = <&gcc GCC_USB30_SEC_MOCK_UTMI_CLK>,
+>> +                                         <&gcc GCC_USB30_SEC_MASTER_CLK>;
+>> +                       assigned-clock-rates = <19200000>, <200000000>;
+>> +
+>> +                       interrupts-extended = <&intc GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                    <&pdc 13 IRQ_TYPE_EDGE_RISING>,
+>> +                                    <&pdc 12 IRQ_TYPE_EDGE_RISING>;
+> I'm seeing this cause a warning at boot
+>
+> [    4.724756] irq: type mismatch, failed to map hwirq-12 for
+> interrupt-controller@b220000!
+> [    4.733401] irq: type mismatch, failed to map hwirq-13 for
+> interrupt-controller@b220000!
+I should be using  IRQ_TYPE_LEVEL_HIGH. Will correct in next version.
+>> +                       interrupt-names = "hs_phy_irq",
+>> +                                         "dm_hs_phy_irq", "dp_hs_phy_irq";
+>> +
+>> +                       power-domains = <&gcc GCC_USB30_SEC_GDSC>;
+>> +
+>> +                       resets = <&gcc GCC_USB30_SEC_BCR>;
+>> +
+>> +                       usb_2_dwc3: usb@8c00000 {
+>> +                               compatible = "snps,dwc3";
+>> +                               reg = <0 0x08c00000 0 0xe000>;
+>> +                               interrupts = <GIC_SPI 242 IRQ_TYPE_LEVEL_HIGH>;
+>> +                               iommus = <&apps_smmu 0xa0 0x0>;
+>> +                               snps,dis_u2_susphy_quirk;
+>> +                               snps,dis_enblslpm_quirk;
+>> +                               phys = <&usb_2_hsphy>;
+>> +                               phy-names = "usb2-phy";
+>> +                               maximum-speed = "high-speed";
+>> +                       };
+>> +               };
+>> +
+>>                  dc_noc: interconnect@90e0000 {
+>>                          reg = <0 0x090e0000 0 0x5080>;
+>>                          compatible = "qcom,sc7280-dc-noc";
+>> @@ -1063,6 +1182,51 @@
+>>                          qcom,bcm-voters = <&apps_bcm_voter>;
+>>                  };
+>>
+>> +               usb_1: usb@a6f8800 {
+>> +                       compatible = "qcom,sc7280-dwc3", "qcom,dwc3";
+>> +                       reg = <0 0x0a6f8800 0 0x400>;
+>> +                       status = "disabled";
+>> +                       #address-cells = <2>;
+>> +                       #size-cells = <2>;
+>> +                       ranges;
+>> +                       dma-ranges;
+>> +
+>> +                       clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
+>> +                                <&gcc GCC_USB30_PRIM_MASTER_CLK>,
+>> +                                <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>,
+>> +                                <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+>> +                                <&gcc GCC_USB30_PRIM_SLEEP_CLK>;
+>> +                       clock-names = "cfg_noc", "core", "iface", "mock_utmi",
+>> +                                     "sleep";
+>> +
+>> +                       assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+>> +                                         <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+>> +                       assigned-clock-rates = <19200000>, <200000000>;
+>> +
+>> +                       interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+>> +                                             <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
+>> +                                             <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+> And this one too.
+>
+> [    4.898667] irq: type mismatch, failed to map hwirq-14 for
+> interrupt-controller@b220000!
+> [    4.907241] irq: type mismatch, failed to map hwirq-15 for
+> interrupt-controller@b220000!
+>
+> which looks like genirq code is complaining that the type is different
+> than what it is configured for. Are these trigger flags correct? If so,
+> then there' some sort of bug in the pdc driver.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I should be using  IRQ_TYPE_LEVEL_HIGH. Will correct in next version.
 
-> As you can see there's an `atomic_inc` for each `memfd` that is opened
-> in the `memfd_secret` syscall. If a local attacker succeeds to open 2^32
-> memfd's, the counter will wrap around to 0. This implies that you may
-> hibernate again, even though there are still regions of this secret
-> memory, thereby bypassing the security check.
 
-IMO, this hibernation check is also buggy, since it looks to be
-vulnerable to ToCToU: processes aren't frozen when
-hibernation_available() checks secretmem_users(), so a process could add
-one and fill it before the process freezer stops it.
-
-And of course, there's still the ptrace hole[1], which is think is quite
-serious as it renders the entire defense moot.
-
--Kees
-
-[1] https://lore.kernel.org/lkml/202105071620.E834B1FA92@keescook/
-
--- 
-Kees Cook
+>
+>> +                                             <&pdc 17 IRQ_TYPE_LEVEL_HIGH>;
+>> +                       interrupt-names = "hs_phy_irq", "dp_hs_phy_irq",
+>> +                                         "dm_hs_phy_irq", "ss_phy_irq";
+>> +
+>> +                       power-domains = <&gcc GCC_USB30_PRIM_GDSC>;
+>> +
+>> +                       resets = <&gcc GCC_USB30_PRIM_BCR>;
+>> +
+>> +                       usb_1_dwc3: usb@a600000 {
