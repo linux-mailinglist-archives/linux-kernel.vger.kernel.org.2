@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DFB3F3633
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95ABE3F3632
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhHTV5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        id S232349AbhHTV4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhHTV47 (ORCPT
+        with ESMTP id S229760AbhHTV4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:56:59 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38074C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:56:21 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id r7so16229216wrs.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:56:21 -0700 (PDT)
+        Fri, 20 Aug 2021 17:56:19 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBD3C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:55:41 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id y14-20020a0568302a0e00b0051acbdb2869so10471872otu.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:55:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=gX3npG6nSHEYtTzLcQI4FxI/LHa3i3+15RcFQa4MgFg=;
-        b=cO0WcSGLTozp1BsFMn671wiXsyEX7v2JxYJoO6Mw5ebYv2T0Psd3sKSyTwCrpc31ps
-         55F4P5moqxxXCPgnkomOFuPQNbXboplpXEAX2EOws4fXXcTyb6IanYN0xRtbhe6OZWh/
-         7zPifIfNdEHW5tQI64g2OMZZzuxB122V8z/dPwo1kt6+SNZK6iAsMlgquP7JU18YcU7y
-         /bBx1qpgq5Lb+wRV8Wjv1Mcwkvm9yn7jg4eQFesEcEV35s+je1O0+o5UJjA5/zVhKU3u
-         M6bjT+Bjnl4leeThkse5EpBk1h7CBJ34DPIPs5P45vtdHgh+1j+zKXysTW95AyFLhroA
-         f3Yw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KblwPmiHBhylSYmizpG5xsAGTHqdQ0PFtDpHENws1SA=;
+        b=ud0UkycghEG90duRWw53xDdlOx2cit2bN3o/e5FmKAvXNmS1aGpkaoU1077mIgU95O
+         uPyRk9e/DRfC5CMxAqFeCjvT2HNV/I8i8z9yBf2npG3a2SQIKc5UeLgQifEmianiR3tE
+         iAe66JgiJ7PCBgvxirKT1JAdkuQ1+qYjOyYVUU8DiYHMct030TnCbGLcUyl6019JY3lJ
+         XBWY/+e4s19T2uiOW9ZfcIsRjBM6Kq5JcQg+VUo32M3G82OoQe4GEBeXmhBlaFd5dIya
+         CnyHfZIN0RSYPNVLidPSGgu51e1AcP4aQWpGW8bWz4sAaSvsLugZ2RED+SD2fPtLnT/7
+         BvMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=gX3npG6nSHEYtTzLcQI4FxI/LHa3i3+15RcFQa4MgFg=;
-        b=c6M5hCWNcsZSwwb5ZyVFiAuQC+F4S0olkxGaEVS+DcdZuzojFX7WnpJd7ewTDXFGjx
-         24lpJ3ly5AN/usnSBZCMXfamZVrWClYxbd9X7aOVPWq+k4JUOtaScPmT8EWbazsuved4
-         I4sFzJ1xgvhYjhYsx3NZp59kLbda1XTTi43jcLEi6rJSOnn8opbeoVRHUL7ooQzPVcT3
-         9iGpqPD9M2w1cxqWxVS1Y9rfDd6mkJ9AoBvbd/6sDdQQq8iRLgih9bN/wcE+YFa5+E6/
-         CzinQNLw08ax/gS5lZj5aNyELOJMwkHKwH+E2ooNhzC7W6O75AYbH5muKyoinPdlg8Ht
-         jUfA==
-X-Gm-Message-State: AOAM531UppUpvbxtlbdBX7XHfXvagrsNFpL8mfa+SsZCrsnBOEGPcEX0
-        d0xFeb+rvvcU4q2H33qysH6qyw==
-X-Google-Smtp-Source: ABdhPJzR0XNKHULJiXsLYLmAHPPLIKJ3zDCAy+W7qq4yFQQUXyFFhCryaYT4I5zCzda4nbCl5u/img==
-X-Received: by 2002:adf:dc0b:: with SMTP id t11mr859514wri.259.1629496579828;
-        Fri, 20 Aug 2021 14:56:19 -0700 (PDT)
-Received: from ?IPv6:2001:8b0:dfde:e1a0::2? (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id c8sm7091974wrx.53.2021.08.20.14.56.19
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KblwPmiHBhylSYmizpG5xsAGTHqdQ0PFtDpHENws1SA=;
+        b=DnDq5FkVPQyps4bDaEJCL0ZmPILDmjvEtaEQaYnzYs62C8tivgq9DiI5bkNgllmMvJ
+         FzNAc1zJbvvr9uzWAhB1U4z895wqLiwBnCAE4MrQpq8x84K3mGZ21nyb71xpO9t5HMIc
+         teKBIUjBJX7XfF86uHCGo4YGHV3Y/hc7qdZQrmSbD55nT80xHmxGTDTc+wWSLJcB1Zvi
+         lNHCGcCRkurtaAMwJZMJjQhbQl4EptS7+H7YOn/buND/nV9rHq4Zr1Cil4fKtt8FhbIM
+         3WrAET6jubBX0UKYwsi8gw2rL4fKFd779bZJT6sbL6rdJOw2eoWfzs8WUN4fVCR/hXNf
+         PTjg==
+X-Gm-Message-State: AOAM530y6ZSoisVD4aMCfKCaTWjnOLzzy5AtrGEdmg+cEDKcdpykSa40
+        tKN9bwV7k4Xt3muTHOUv9OWnuQ==
+X-Google-Smtp-Source: ABdhPJxDcnSXZpY6iwxnZRsIZhUMFzjIxcrKNwrTrcFmM8qXBHhYFof7YBRRiMquso8BMSGWNx54jg==
+X-Received: by 2002:a54:4686:: with SMTP id k6mr4665691oic.54.1629496540907;
+        Fri, 20 Aug 2021 14:55:40 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id i19sm1643630ooe.44.2021.08.20.14.55.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 14:56:19 -0700 (PDT)
-Message-ID: <b18430516495e2e52fe6b0b1e1461bac640be44d.camel@philpotter.co.uk>
-Subject: Re: [PATCH 6/6] staging: r8188eu: remove free_xmit_priv field from
- struct hal_ops
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, straube.linux@gmail.com,
-        Larry.Finger@lwfinger.net, Greg KH <gregkh@linuxfoundation.org>
-Date:   Fri, 20 Aug 2021 22:56:18 +0100
-In-Reply-To: <3280989.scCUJ3VkD9@localhost.localdomain>
-References: <20210818234253.208271-1-phil@philpotter.co.uk>
-         <20210818234253.208271-7-phil@philpotter.co.uk>
-         <3280989.scCUJ3VkD9@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Fri, 20 Aug 2021 14:55:40 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Subject: [PATCH] cpufreq: blocklist more Qualcomm platforms in cpufreq-dt-platdev
+Date:   Fri, 20 Aug 2021 14:57:00 -0700
+Message-Id: <20210820215700.130575-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-08-19 at 05:14 +0200, Fabio M. De Francesco wrote:
-> On Thursday, August 19, 2021 1:42:53 AM CEST Phillip Potter wrote:
-> > Remove free_xmit_priv function pointer field from struct hal_ops
-> > definition
-> > in include/hal_intf.h, as it is now no longer used anywhere in the
-> > driver.
-> > 
-> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> > ---
-> >  drivers/staging/r8188eu/include/hal_intf.h | 1 -
-> >  1 file changed, 1 deletion(-)
-> 
-> This entry could have been removed in patch 4/6 or 5/6, but I guess 
-> it's okay to do that here as well. Perhaps the three patches from 4/6
-> to 6/6 could have been merged into one (because since 4/6 was 
-> immediately clear that this operation has no use at all).
-> 
-> Aside from the above considerations, it looks good. So...
-> 
-> Acked by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> 
-> Thanks,
-> 
-> Fabio
-> 
-> 
-> 
-> 
+The Qualcomm sa8155p, sm6350, sm8250 and sm8350 platforms also uses the
+qcom-cpufreq-hw driver, so add them to the cpufreq-dt-platdev driver's
+blocklist.
 
-Dear Fabio,
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/cpufreq/cpufreq-dt-platdev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thank you for your feedback and acknowledgements for this series, much
-appreciated.
-
-Regards,
-Phil
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index 231e585f6ba2..ca1d103ec449 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -137,11 +137,15 @@ static const struct of_device_id blocklist[] __initconst = {
+ 	{ .compatible = "qcom,apq8096", },
+ 	{ .compatible = "qcom,msm8996", },
+ 	{ .compatible = "qcom,qcs404", },
++	{ .compatible = "qcom,sa8155p" },
+ 	{ .compatible = "qcom,sc7180", },
+ 	{ .compatible = "qcom,sc7280", },
+ 	{ .compatible = "qcom,sc8180x", },
+ 	{ .compatible = "qcom,sdm845", },
++	{ .compatible = "qcom,sm6350", },
+ 	{ .compatible = "qcom,sm8150", },
++	{ .compatible = "qcom,sm8250", },
++	{ .compatible = "qcom,sm8350", },
+ 
+ 	{ .compatible = "st,stih407", },
+ 	{ .compatible = "st,stih410", },
+-- 
+2.29.2
 
