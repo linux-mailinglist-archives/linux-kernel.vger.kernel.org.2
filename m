@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CA93F2DFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157903F2E03
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240856AbhHTOYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237597AbhHTOYM (ORCPT
+        id S240868AbhHTOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:25:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23922 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240816AbhHTOZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:24:12 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4AAC061575;
-        Fri, 20 Aug 2021 07:23:34 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id i3-20020a056830210300b0051af5666070so4288528otc.4;
-        Fri, 20 Aug 2021 07:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LxzVE2tcDwLQcNWPqnkcWzfYNhi9aNKP+ZXfsVolznY=;
-        b=TZWzk0OCE4ctaq9uuEIbOuYkIloX0HvdPbLPlCvlT29S+lKSbE/3gvZLbNYT8K6o6K
-         WJoLh8oghL4Js0UgOS2rYHGlrVAia35fMgz5yCPkhjKrM8HfhQiJwyTN+3vwuWNqLGmp
-         EJC/1T9ULjHuzSv9bvESKMqH3jc14RyXCj12lrqechvJyHRgbSw7ipDn0Xt2RCLlrIGM
-         ie9WoALNT6pG7I0j9N/TQhUAypggPz12JTdRoaC8LcApGDKCZmUbfDyKYsKS5y/h9Q0R
-         VjXkKd+z0bV4a1uD9cLGG8ze7fjq9KimJAXG2x8DReeBiwiplvgarmos2VPk8UR5OBsa
-         xrNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LxzVE2tcDwLQcNWPqnkcWzfYNhi9aNKP+ZXfsVolznY=;
-        b=IfAi+0TeWGaCKOVbk+080rDQF9uc+XDkVtyv2wDFnwVUwMSUufEdNPza4//6D+FyTL
-         ghD5N4f/HmdRJ3UI6/0IZ2Hjqk3rl5mu1jS8qDFrUJ3fR9B+5mWHxtcYpkrm3L4w7xYg
-         Ja5DTCww/tCuqtzmPbHXivGmcsM5CuTumW93mIF2sMC5tLpDd+48VFzMcAeu1cXAPafG
-         uIZUrBfmaoA3Oar8TueHqAyMQ2DbphxocKhO3o2YbW9hegTHq+ilD4pXrhn5DcG3z0XD
-         FJJjpRijnQE2rhuynfsQPfeuwcX7h149vWbPRrjb71yGndveDhDWfZ472Ml6/akY1lGA
-         toKg==
-X-Gm-Message-State: AOAM533B7f2Aq/JXmnOd5yrkcv2Bxc9/WwEb/cFDc+r8UFoseb+X46GL
-        AXwpsfK0uUXhXDm0QB3rwYVQP1YBor4=
-X-Google-Smtp-Source: ABdhPJxQ57832FNZFZ6OwiX7NMl8p5OMcBSdvB2xyhlpR2/sOS5qngggzUMsdUTl4GDSPMw8VbG+6Q==
-X-Received: by 2002:aca:aa88:: with SMTP id t130mr3285112oie.3.1629469413796;
-        Fri, 20 Aug 2021 07:23:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g62sm1425284oif.14.2021.08.20.07.23.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 07:23:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: hwmon: merge max31785 into trivial
- devices
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210819182544.224121-1-krzysztof.kozlowski@canonical.com>
- <20210819182544.224121-2-krzysztof.kozlowski@canonical.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <fffdaaad-ac75-5c2f-6a31-7cdc3e57de20@roeck-us.net>
-Date:   Fri, 20 Aug 2021 07:23:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 20 Aug 2021 10:25:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629469474; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cd51haHP+MBwD/UOdMJv/XyRlloOaggVKU0MpKh31MM=;
+ b=e9MlSjoHzw9HOE36jdGp1I3rVig7AoeGBdcHJrd6OkgZe9j82Xm71I3YC7i5qKAb0LYod6GN
+ RfINwJyCi4qFBHHy8pEvs+h+HSQrIuktB6ho8Iqe8j6bxy7IFEsMZntFKAiUKPwURnSFNvX7
+ sRENvzlYx3DrkOscVYRMDjrAQbU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 611fbb040f9b337f117be7f5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Aug 2021 14:24:04
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B7BF2C4360C; Fri, 20 Aug 2021 14:24:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0877BC4338F;
+        Fri, 20 Aug 2021 14:24:02 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210819182544.224121-2-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 20 Aug 2021 19:54:02 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v5 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
+ property
+In-Reply-To: <CAE-0n531EgLx-gGJswmmNAFmy-P9z=Hh1N=fkLw_uemoeQnYVg@mail.gmail.com>
+References: <1629342136-3667-1-git-send-email-sibis@codeaurora.org>
+ <1629342136-3667-3-git-send-email-sibis@codeaurora.org>
+ <CAE-0n531EgLx-gGJswmmNAFmy-P9z=Hh1N=fkLw_uemoeQnYVg@mail.gmail.com>
+Message-ID: <d733d47bc6a86fe28302943e50d02bd5@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 11:25 AM, Krzysztof Kozlowski wrote:
-> Ther Maxim max31785 bindings are trivial, so simply merge it into
-> trivial-devices.yaml.
+On 2021-08-20 00:25, Stephen Boyd wrote:
+> Quoting Sibi Sankar (2021-08-18 20:02:05)
+>> The load state power-domain, used by the co-processors to notify the
+>> Always on Subsystem (AOSS) that a particular co-processor is up/down,
+>> suffers from the side-effect of changing states during suspend/resume.
+>> However the co-processors enter low-power modes independent to that of
+>> the application processor and their states are expected to remain
+>> unaltered across system suspend/resume cycles. To achieve this 
+>> behavior
+>> let's drop the load state power-domain and replace them with the qmp
+>> property for all SoCs supporting low power mode signalling.
+>> 
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->   .../devicetree/bindings/hwmon/max31785.txt    | 22 -------------------
+> How do we drop the load state property without breaking existing DTBs?
+> Maybe we need to leave it there and then somehow make it optional? Or 
+> do
+> we not care about this problem as the driver will start ignoring it?
 
-Not sure if that is a good idea. It would make more sense to standardize the
-properties needed by the driver/chip instead (see existing dts files in the kernel).
+We can afford to break the bindings
+because of the following reason:
 
-Guenter
+* Load state in mainline is currently
+   broken i.e. it doesn't serve its
+   main purpose of signalling AOP of
+   the correct state of Q6 during
+   system suspend/resume. Thus we
+   can maintain current functionality
+   even without the load state votes
+   i.e. when a new kernel with load
+   state removed is used with an older
+   dtb the remoteproc functionality
+   will remain the same.
+
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
