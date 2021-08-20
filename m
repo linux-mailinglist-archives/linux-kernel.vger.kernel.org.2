@@ -2,176 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163273F34A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387053F34A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238135AbhHTTYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:24:35 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38586 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhHTTYd (ORCPT
+        id S236293AbhHTT1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhHTT1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:24:33 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 20 Aug 2021 15:27:49 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F048C061575;
+        Fri, 20 Aug 2021 12:27:11 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f107b00a09c9d8b407e80a9.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:a09c:9d8b:407e:80a9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BC5512016A;
-        Fri, 20 Aug 2021 19:23:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629487433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/ZTHYspJWems3grCDvjCH9V3Hhhi4avlqSwNlHDseY=;
-        b=w715AXDNp3TIRo7tdKvLhrjp59r1bQccQ1zHmXeFvTGAP9S90SGPYX8yANzkrJVdT+dBTI
-        FDHMWAcwUI1kA/5bqDad5ERYL9B32IMDohhBSGMvzigj7h+aDi4IwKhEUQexe75ZD8aNuy
-        9uff1GLGaUIN8OrT8YzJapgrItfqMCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629487433;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/ZTHYspJWems3grCDvjCH9V3Hhhi4avlqSwNlHDseY=;
-        b=3dduTyFnRRIIKMQglkFUGeRkDtPYvK25MBhk7tvpM1DR1tm08KlCLiqDtrNdUizOWaBZoO
-        vh686/xKzNjcXuDw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5600D13BE5;
-        Fri, 20 Aug 2021 19:23:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 2dEQE0kBIGGIXgAAGKfGzw
-        (envelope-from <tzimmermann@suse.de>); Fri, 20 Aug 2021 19:23:53 +0000
-To:     syzbot <syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com>,
-        airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
-        daniel.vetter@intel.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linaro-mm-sig-owner@lists.linaro.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        melissa.srw@gmail.com, mripard@kernel.org, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com
-References: <00000000000047b52b05c9ff8d0b@google.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [syzbot] WARNING in drm_gem_shmem_vm_open
-Message-ID: <dc7ca5ae-afc1-f840-8dfc-3f2361cd4360@suse.de>
-Date:   Fri, 20 Aug 2021 21:23:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 421351EC0541;
+        Fri, 20 Aug 2021 21:27:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629487625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=dAnnKn0seBVhyHtYQgR1qRqGXVwhn2GxxVBa61/Itj4=;
+        b=cK2M8dRvu9WV0m7Wa1uCGcur5R4iqdqYueR7Edx8Iqp5w5THuvyYnAO4/mu1xCzfIARSFx
+        mCwbKMvGl7f35qEblt/CKWXnFC2qr8UuFbE8gHGZnYyKQE71i03c2jzXmvzO/jsTF2Xygu
+        HNvCJrV5ca7I9oV45GxKzVSomVP5kjs=
+Date:   Fri, 20 Aug 2021 21:27:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
+        naoya.horiguchi@nec.com, osalvador@suse.de,
+        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
+        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <YSACMCEoU6FxjDNh@zn.tnic>
+References: <20210706190620.1290391-1-tony.luck@intel.com>
+ <20210818002942.1607544-1-tony.luck@intel.com>
+ <20210818002942.1607544-2-tony.luck@intel.com>
+ <YR/m/8PCmCTbogey@zn.tnic>
+ <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <00000000000047b52b05c9ff8d0b@google.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh
-Content-Type: multipart/mixed; boundary="RFSfHUaXVAmGRzteq89QyZAcdgd27yXDG";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: syzbot <syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com>,
- airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
- daniel.vetter@intel.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
- linaro-mm-sig-owner@lists.linaro.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- maarten.lankhorst@linux.intel.com, melissa.srw@gmail.com,
- mripard@kernel.org, sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com
-Message-ID: <dc7ca5ae-afc1-f840-8dfc-3f2361cd4360@suse.de>
-Subject: Re: [syzbot] WARNING in drm_gem_shmem_vm_open
-References: <00000000000047b52b05c9ff8d0b@google.com>
-In-Reply-To: <00000000000047b52b05c9ff8d0b@google.com>
+On Fri, Aug 20, 2021 at 11:59:45AM -0700, Luck, Tony wrote:
+> It's the "when we return" part that is the problem here. Logical
+> trace looks like:
+> 
+> user-syscall:
+> 
+> 	kernel does get_user() or copyin(), hits user poison address
+> 
+> 		machine check
+> 		sees that this was kernel get_user()/copyin() and
+> 		uses extable to "return" to exception path
+> 
+> 	still in kernel, see that get_user() or copyin() failed
+> 
+> 	Kernel does another get_user() or copyin() (maybe the first
 
---RFSfHUaXVAmGRzteq89QyZAcdgd27yXDG
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I forgot all the details we were talking at the time but there's no way
+to tell the kernel to back off here, is it?
 
-Hi
+As in: there was an MCE while trying to access this user memory, you
+should not do get_user anymore. You did add that
 
-Am 20.08.21 um 17:45 schrieb syzbot:
-> syzbot has bisected this issue to:
+         * Return zero to pretend that this copy succeeded. This
+         * is counter-intuitive, but needed to prevent the code
+         * in lib/iov_iter.c from retrying and running back into
 
-Good bot!
+which you're removing with the last patch so I'm confused.
 
->=20
-> commit ea40d7857d5250e5400f38c69ef9e17321e9c4a2
-> Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Date:   Fri Oct 9 23:21:56 2020 +0000
->=20
->      drm/vkms: fbdev emulation support
+IOW, the problem is that with repeated MCEs while the kernel is
+accessing that memory, it should be the kernel which should back off.
+And then we should kill that process too but apparently we don't even
+come to that.
 
-Here's a guess.
+> Maybe the message could be clearer?
+> 
+> 	mce_panic("Too many consecutive machine checks in kernel while accessing user data", m, msg);
 
-GEM SHMEM + fbdev emulation requires that=20
-(drm_mode_config.prefer_shadow_fbdev =3D true). Otherwise, deferred I/O=20
-and SHMEM conflict over the use of page flags IIRC.
+That's not my point - it is rather: this is a recoverable error because
+it is in user memory even if it is the kernel which tries to access it.
+And maybe we should not panic the whole box but try to cordon off the
+faulty memory only and poison it after having killed the process using
+it...
 
- From a quick grep, vkms doesn't set prefer_shadow_fbdev and an alarming =
+> Not quite the same answer ... but similar.  We could in theory handle
+> multiple different machine check addresses by turning the "mce_addr"
+> field in the task structure into an array and saving each address so
+> that when the kernel eventually gives up poking at poison and tries
+> to return to user kill_me_maybe() could loop through them and deal
+> with each poison page.
 
-amount of SHMEM-based drivers don't do either.
+Yes, I like the aspect of making the kernel give up poking at poison and
+when we return we should kill the process and poison all pages collected
+so that the error source is hopefully contained.
 
-Best regards
-Thomas
+But again, I think the important thing is how to make the kernel to back
+off quicker so that we can poison the pages at all...
 
->=20
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D11c31d55=
-300000
-> start commit:   614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.k=
-ern..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D13c31d55=
-300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15c31d55300=
-000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D96f06022032=
-50753
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D91525b2bd4b5d=
-ff71619
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D122bce0e3=
-00000
->=20
-> Reported-by: syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com
-> Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
->=20
-> For information about bisection process see: https://goo.gl/tpsmEJ#bise=
-ction
->=20
+-- 
+Regards/Gruss,
+    Boris.
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---RFSfHUaXVAmGRzteq89QyZAcdgd27yXDG--
-
---9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmEgAUgFAwAAAAAACgkQlh/E3EQov+Ca
-QhAAkZ31x5M00jNSVFt6zSFPz7zsmP1+pIfZD9wsS8TkIJGxUsHyfbh9a/eIijkh/e8zNqQ9JP1P
-HOscLUH/AgY9d+/RCrU062w/5zKJEOhodrt+9FzVqGeavOM3csDR5ll6bPv2oo0eSpnttEJ2w6SG
-1urAbMBvUbIRvWN+vmdYIqp4ezHHj7izBuRoFeRWQNn7t8AQjaqnduIhip9takLa2nLd2zIOYAev
-vVdgtw9+JI/2ZJCnbFedn/CvDJ4A8VPLfeSQcgG8Ksqw+VHjRBrd5sS+Z7K9RFTNqi5Ec7klHdei
-JrnvVmLWoezYdjoDjVWLINuEk2r7L6GAhoF0oDhZq1kVv7K33xfDIdQB2p8JqTY9o22Rthjq0Kkc
-zg5vhhr/CBZ2H7gACKGybG86UqcO5e0z2PVlmlZvVRdgC5x0ZGGxMe79e2GVwUbCuDBepAwet/fq
-XbdBZ1JmDxdRnODXB7A6LvqDyDiCjAKI4pcTB/9OjUZ9CUSk1XXc52WJV2btzfGPSDaSMRRg6l6C
-eFKIlD/Gk9kXHttN3F6+OZeK46oFRodhgQ2ooaf1jRetNa1xd6d+b8m6UFerDQplYGiR1F3jnwvv
-3GOzP8qg0PP9tgr9/7ozH50m1IUEcNuX2iCVwVs/dkuBYH+OIQbZtmZqizDWKx3DvNg+341m4EA4
-kvA=
-=gavY
------END PGP SIGNATURE-----
-
---9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh--
+https://people.kernel.org/tglx/notes-about-netiquette
