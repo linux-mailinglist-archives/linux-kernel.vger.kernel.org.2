@@ -2,166 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249BE3F2ECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526463F2ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241101AbhHTPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
+        id S241131AbhHTPVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241048AbhHTPVb (ORCPT
+        with ESMTP id S241057AbhHTPVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Aug 2021 11:21:31 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9337C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:20:52 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id z2so21384728lft.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:20:52 -0700 (PDT)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F751C061756;
+        Fri, 20 Aug 2021 08:20:53 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id mf2so2421014ejb.9;
+        Fri, 20 Aug 2021 08:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+3Z4SJ92yMv1cU71E0Fc+Pt/WE6+UKZ4tmdm2fUYN4I=;
-        b=fGtrdnFpPtcwTxnxcEqd4hXGv5m/IwXMu6zHgsjkRMyBail4gdmQ/puuHj/QWaCVCq
-         B2+s+lrSUego0C1JxtiO6EjLCGAn/8Ck/cQE1W63CW1z2crAi+dg3BUldWvoeIg9jSu2
-         Fvmiu9DV0v9BJGeAeuge0DCOYk2uKDPdFAq3Noc5iZ2x1NFtcGPHyzds0c4H3NNOprhj
-         4wpO9zq2tB5rTwrwrld2vmyKyjFpURdVstDegxPmx9/2j8+oDmc1yas3l1RDJG8IE3NC
-         ryOzksZoKWzIW0A23CgHMu8d9BZvtMw6+B2AmKdorepfZulAzBJHoIq6XjkQ+RZE91f6
-         tbmA==
+         :cc:content-transfer-encoding;
+        bh=8KKw/Y3X2cc5tVMPl/kxkct9qTUI3pzXDdZwfJk130I=;
+        b=srQGGc4i2tywZ5Qnahhh6GTqbqMNOHKen/sEg/S9W/n/RVwuBH24EsDhB9eOpj+RXX
+         rpFj4gL5cKEV/2e20kJduWblm0chvohY959cUsSFRn7xmfcPWHf88ju/w8mHqD4Ijl0a
+         o4LRGAP30Vxhxx7FZomjjxS8qoOPXplCmt9MT40wZWO2xdiOBMJPv7tmN3j8Hlc/Xyx2
+         vTgCTo5YUZgQFd4oGf0o1nDSUuQ8jaegH6GuMZ1AxkSsROawGppbKgBJJ7NYlDkVPA4f
+         BLNnVVZIWD6bd+i9ytSr/uvicx6QSwZsgN/UX9WrAkBcEv3vzJPhYAfiPcbsiStFi7oK
+         MN3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+3Z4SJ92yMv1cU71E0Fc+Pt/WE6+UKZ4tmdm2fUYN4I=;
-        b=qIQgfvihcPBRzerZvUzaMsA0iK4RvoY0eHKnI9jcVsviF8zeY2cSX3066E3AtT5i0Z
-         WM5wSrbSaAo5HurNicE20Xpzww+BMijXWg5zDxS97bIWCsoI3rnKxnB++nyGIlITzF9e
-         LDF5mxTdR6JNh/Nm2Bt8PqOQ/YL3vdCjSW+/r/O9+drXBFsUo+LA8ocTmEomBgjsF0Y3
-         GDp5DdC3qUW/ODdXYyznIp1lgo+PnWbXRPtb5yAPXeRYbQqFCdRzsQCnOlgG9i+aNsJt
-         xAujW6VxjOyAQcOjrRnIMeE3WUvNQ/to70EJtszZHqLQ2eOikD+shg7chPRuNKmjwcYj
-         Tbpw==
-X-Gm-Message-State: AOAM531T84C9cK1mKQhYUdvFTRTQP7aYV2G3Yn0RWYZraJOsZp2rdj+i
-        vH2Ghr62PR8XxmUtcjz2iijIu59d42duqYwfsFQ=
-X-Google-Smtp-Source: ABdhPJwhgWUpB24B5xOZbrVx5H/6RcYKALsAPmKxUwkQH/ZVyccnhTyVnPNEs0g+SZBhNeYKkeBze0gjCredrfZxJ28=
-X-Received: by 2002:a05:6512:c08:: with SMTP id z8mr15321526lfu.533.1629472851101;
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8KKw/Y3X2cc5tVMPl/kxkct9qTUI3pzXDdZwfJk130I=;
+        b=s1XZa6m5bo9FuCmELDkeQRGo5P1PGCcytZ7kYopCkge0cVClcMZHCUbccjr0m+f6XV
+         zc1pxx+HZ8W7UVRlKonnqKV7mMakms0EKRIpKlRXvcjRQM8dujjpM6xaWUKWWZNTs4Cb
+         Ov42EqOiwR4SYa1Hts0CWMmUwA/O+o3QrUf/yGWsiTs4dJ0hZ33gfi1OJJJkMhdpuX/R
+         PmskZi4xgr5fqJu1LocmkgNbRN2XuC1kov7uviexc4SjkFYUt7WNAgLLdib665n59/Tg
+         nMZIvOsFYFD7m5uDdjzntNe/oxvJb9TeY9/J74ideRLnZFSFUUcOaAdxc1R78J2E3WUZ
+         S6Kg==
+X-Gm-Message-State: AOAM530uI9Tuoq0SrJFOU1/SVOcKHbE3kiKrNwDO7ro7v8aepsRPsAcb
+        ZHYH1y87HYa5DJVtwZ/XcBXHuGya2wjBm+2l+gs=
+X-Google-Smtp-Source: ABdhPJw1x49PqwFmrpp5sYyS45+q8xBuz9j8fq1eNnSPU+nccRcOxAg6jxC9zxPHiYdVyZaH5lO1SpPAuV9TdsTyef0=
+X-Received: by 2002:a17:906:3148:: with SMTP id e8mr22082804eje.240.1629472851367;
  Fri, 20 Aug 2021 08:20:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210808215234.1939266-1-daeho43@gmail.com> <5cce41d6-d59a-0596-6d14-e313aa91c78b@kernel.org>
-In-Reply-To: <5cce41d6-d59a-0596-6d14-e313aa91c78b@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 20 Aug 2021 08:20:39 -0700
-Message-ID: <CACOAw_zdL+3TPxJfsrZ0+nMHBbzU+uHNcp4vych1QCMMpvUnug@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: change fiemap print out format
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
+References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn> <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
+In-Reply-To: <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
+From:   yong w <yongw.pur@gmail.com>
+Date:   Fri, 20 Aug 2021 23:20:40 +0800
+Message-ID: <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
+ notifier is enabled
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>, Hui Su <sh_def@163.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        wang.yong12@zte.com.cn, Cgroups <cgroups@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, yang.yang29@zte.com.cn
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 3:15 AM Chao Yu <chao@kernel.org> wrote:
+Michal Hocko <mhocko@suse.com> =E4=BA=8E2021=E5=B9=B48=E6=9C=8820=E6=97=A5=
+=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=887:26=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On 2021/8/9 5:52, Daeho Jeong wrote:
-> > From: Daeho Jeong <daehojeong@google.com>
+> On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
+> > From: wangyong <wang.yong@zte.com.cn>
 > >
-> > Given fiemap way to print out extents in the kernel, we can correctly
-> > print the layout of each file in a unit of extent, not block. So, I
-> > changed fiemap print out way like below.
-> >
-> > Fiemap: offset = 0 len = 60
-> >       logical addr.    physical addr.   length           flags
-> > 0     0000000000000000 00000020032df000 0000000000004000 00001008
-> > 1     0000000000004000 00000020032e0000 0000000000004000 00001008
-> > 2     0000000000008000 00000020032e1000 0000000000004000 00001008
-> > 3     000000000000c000 00000020032e2000 0000000000004000 00001008
-> >
-> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > ---
-> >   tools/f2fs_io/f2fs_io.c | 53 ++++++++++++++++++++++++++---------------
-> >   1 file changed, 34 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
-> > index 42dbd60..0d2948e 100644
-> > --- a/tools/f2fs_io/f2fs_io.c
-> > +++ b/tools/f2fs_io/f2fs_io.c
-> > @@ -731,11 +731,11 @@ static void do_randread(int argc, char **argv, const struct cmd_desc *cmd)
-> >   #if defined(HAVE_LINUX_FIEMAP_H) && defined(HAVE_LINUX_FS_H)
-> >   static void do_fiemap(int argc, char **argv, const struct cmd_desc *cmd)
-> >   {
-> > -     unsigned count, i;
-> > -     int fd;
-> > -     __u64 phy_addr;
-> > -     struct fiemap *fm = xmalloc(sizeof(struct fiemap) +
-> > -                     sizeof(struct fiemap_extent));
-> > +     unsigned int i;
-> > +     int fd, extents_mem_size;
-> > +     u64 start, length;
-> > +     u32 mapped_extents;
-> > +     struct fiemap *fm = xmalloc(sizeof(struct fiemap));
-> >
-> >       if (argc != 4) {
-> >               fputs("Excess arguments\n\n", stderr);
-> > @@ -743,26 +743,41 @@ static void do_fiemap(int argc, char **argv, const struct cmd_desc *cmd)
-> >               exit(1);
-> >       }
-> >
-> > -     fm->fm_start = atoi(argv[1]) * F2FS_BLKSIZE;
-> > -     fm->fm_length = F2FS_BLKSIZE;
-> > -     fm->fm_extent_count = 1;
-> > -     count = atoi(argv[2]);
-> > +     memset(fm, 0, sizeof(struct fiemap));
-> > +     start = atoi(argv[1]) * F2FS_BLKSIZE;
-> > +     length = atoi(argv[2]) * F2FS_BLKSIZE;
-> > +     fm->fm_start = start;
-> > +     fm->fm_length = length;
-> >
-> >       fd = xopen(argv[3], O_RDONLY | O_LARGEFILE, 0);
-> >
-> > -     printf("Fiemap: offset = %08"PRIx64" len = %d\n",
-> > -                             (u64)fm->fm_start / F2FS_BLKSIZE, count);
-> > -     for (i = 0; i < count; i++) {
-> > -             if (ioctl(fd, FS_IOC_FIEMAP, fm) < 0)
-> > -                     die_errno("FIEMAP failed");
-> > +     printf("Fiemap: offset = %"PRIu64" len = %"PRIu64"\n",
-> > +                             start / F2FS_BLKSIZE, length / F2FS_BLKSIZE);
-> > +     if (ioctl(fd, FS_IOC_FIEMAP, fm) < 0)
-> > +             die_errno("FIEMAP failed");
-> > +
-> > +     mapped_extents = fm->fm_mapped_extents;
-> > +     extents_mem_size = sizeof(struct fiemap_extent) * mapped_extents;
-> > +     free(fm);
-> > +     fm = xmalloc(sizeof(struct fiemap) + extents_mem_size);
-> >
-> > -             phy_addr = fm->fm_extents[0].fe_physical / F2FS_BLKSIZE;
-> > -             printf("%llu: %llu\n", fm->fm_start / F2FS_BLKSIZE, phy_addr);
-> > +     memset(fm, 0, sizeof(struct fiemap));
-> > +     memset(fm->fm_extents, 0, extents_mem_size);
+> > Inspired by PSI features, vmpressure inotifier function should
+> > also be configured to decide whether it is used, because it is an
+> > independent feature which notifies the user of memory pressure.
 >
-> Is that equals to memset(fm, 0, sizeof(struct fiemap) + extents_mem_size);?
+> Yes, it is an independent feature indeed but what is the actual reason
+> to put a more configuration space here. Config options are not free both
+> from the user experience POV as well as the code maintenance. Why do we
+> need to disable this feature. Who can benefit from such a setup?
 >
+> > So we add configuration to control whether vmpressure notifier is
+> > enabled, and provide a boot parameter to use vmpressure notifier
+> > flexibly.
+>
+> Flexibility is nice but not free as mentioned above.
+>
+> > Use Christoph Lamenter=E2=80=99s pagefault tool
+> > (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
+> > Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
+> > To ensure that the vmpressure function is executed, we enable zram
+> > and let the program occupy memory so that some memory is swapped out
+> >
+> > unpatched:
+> > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     f=
+ault/wsec
+> > 2     1       1       1       0.1     0.97    1.13    485490.062      4=
+63533.34
+> > 2     1       1       1       0.11    0.96    1.12    483086.072      4=
+65309.495
+> > 2     1       1       1       0.1     0.95    1.11    496687.098      4=
+69887.643
+> > 2     1       1       1       0.09    0.97    1.11    489711.434      4=
+68402.102
+> > 2     1       1       1       0.13    0.94    1.12    484159.415      4=
+66080.941
+> > average                               0.106   0.958   1.118   487826.81=
+62     466642.7042
+> >
+> > patched and CONFIG_MEMCG_VMPRESSURE is not set:
+> > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     f=
+ault/wsec
+> > 2     1       1       1       0.1     0.96    1.1     490942.682      4=
+73125.98
+> > 2     1       1       1       0.08    0.99    1.13    484987.521      4=
+63161.975
+> > 2     1       1       1       0.09    0.96    1.09    498824.98       4=
+76696.066
+> > 2     1       1       1       0.1     0.97    1.12    484127.673      4=
+65951.238
+> > 2     1       1       1       0.1     0.97    1.11    487032          4=
+68964.662
+> > average                               0.094   0.97    1.11    489182.97=
+12     469579.9842
+> >
+> > According to flt/cpu/s, performance improved by 0.2% which is not obvio=
+us.
+>
+> I haven't checked how are those numbers calculated but from a very brief
+> look it seems like the variation between different runs is higher than
+> 0.2%. Have you checked the average against standard deviation to get a
+> better idea whether the difference is really outside of the noise?
+> --
+> Michal Hocko
+> SUSE Labs
 
-Oh, you're right~
+Thanks for your reply.
+The reason for adding configuration is as follows=EF=BC=9A
+1. Referring to [PATCH] psi: make disabling/enabling easier for vendor
+kernels, the modification
+is also applicable to vmpressure.
 
-> > +     fm->fm_start = start;
-> > +     fm->fm_length = length;
-> > +     fm->fm_extent_count = mapped_extents;
-> >
-> > -             if (fm->fm_extents[0].fe_flags & FIEMAP_EXTENT_LAST)
-> > -                     break;
-> > +     if (ioctl(fd, FS_IOC_FIEMAP, fm) < 0)
-> > +             die_errno("FIEMAP failed");
-> >
-> > -             fm->fm_start += F2FS_BLKSIZE;
-> > +     printf("\t%-17s%-17s%-17s%s\n", "logical addr.", "physical addr.", "length", "flags");
-> > +     for (i = 0; i < fm->fm_mapped_extents; i++) {
-> > +             printf("%d\t%.16llx %.16llx %.16llx %.8x\n", i,
-> > +                 fm->fm_extents[i].fe_logical, fm->fm_extents[i].fe_physical,
-> > +                 fm->fm_extents[i].fe_length, fm->fm_extents[i].fe_flags);
-> > +
-> > +             if (fm->fm_extents[i].fe_flags & FIEMAP_EXTENT_LAST)
-> > +                     break;
-> >       }
-> >       printf("\n");
-> >       free(fm);
-> >
+2. With the introduction of psi into the kernel, there are two memory
+pressure monitoring methods=EF=BC=8C
+it is not necessary to use both and it makes sense to make vmpressure
+configurable.
+
+3. In the case where the user does not need vmpressure,  vmpressure
+calculation is additional overhead.
+In some special scenes with tight memory, vmpressure will be executed
+frequently.we use "likely" and "inline"
+to improve the performance of the kernel, why not reduce some
+unnecessary calculations?
+
+4. This patch is forward compatible, because VMPRESSURE is set by
+default and user does not need to
+make any changes. For users who do not need to use vmpressure notifier
+or users who use psi, they
+can choose not to configure this function.
+
+Thanks.
