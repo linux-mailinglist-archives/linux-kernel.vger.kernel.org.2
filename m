@@ -2,71 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDBD3F24CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6854C3F24D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237739AbhHTCgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:36:06 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37222 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S237269AbhHTCgF (ORCPT
+        id S237685AbhHTCiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234797AbhHTCiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:36:05 -0400
-X-UUID: 0c8fbe722d974c54b467120459fd7fa9-20210820
-X-UUID: 0c8fbe722d974c54b467120459fd7fa9-20210820
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2033063789; Fri, 20 Aug 2021 10:35:25 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 20 Aug 2021 10:35:24 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Aug 2021 10:35:22 +0800
-From:   Jianjun Wang <jianjun.wang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        <Rex-BC.Chen@mediatek.com>, <TingHan.Shen@mediatek.com>
-Subject: [PATCH] dt-bindings: PCI: mediatek-gen3: Add support for MT8195
-Date:   Fri, 20 Aug 2021 10:35:21 +0800
-Message-ID: <20210820023521.30716-1-jianjun.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 19 Aug 2021 22:38:13 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5047C061575;
+        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id bl13so4797595qvb.5;
+        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wWMQ9DoOno+c3OyqFMSEWNvDVLmVwUI+Xz33Hz9sthU=;
+        b=halUh/5EkZaX/YBXMqTWvGtnH7NSWBlqI1rpxq0sMoxRkLhGjK4xQxOzJjbK4I6uRa
+         AJuNfyHWivm2mbLD0aKTnrqHLyzUJUL0/S/Vm9bmdd6TzPubOFNfvLulxuywrwBoZS3G
+         kUdDG3b7e9buH/sxmzB9m+KzZVpA1ZiUYMKSfBOSbqR5bSFcBwulODmFOEibRPzeWCJn
+         9qRhSpbcAT3Uy6yecQEgNmH0+gc7nBCpi0629uKGVUrILvS1aOUPt4S5KeaB4b1NN3pm
+         xd55CJba6wx/ZMu8Q9olzto3Te27JaE6tHfihuD9gJbZdMNXWTNfqHUmnr6cvCrh9aoV
+         MTZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wWMQ9DoOno+c3OyqFMSEWNvDVLmVwUI+Xz33Hz9sthU=;
+        b=D5h3/z1uoquL16MvABiF7vi3+Jo3ApUX6ShRfnamxp1smcH2KGP3o25e6GnlSNcpvz
+         gSTvhJiOYvkPBmWTpK/bAD5Hqn3bZmCaRhl3d9nyE0QOBQraP41gTiFnWV98wqPB2Kb0
+         MJj+qaQ9P5zIWHSrnV6z9uJMOGK4+tmhE7AB73atkVBcDODpHoioTyFG48tUVtx17hx0
+         fJB56NfOZn36JJ1TZf/Wduo72Mr4dyMBWmTq11BiO5eE6mYJ5F+mpWrVTSdqVb+hQSFZ
+         jW5mbPIwWdLbzjfeQwW2ICUQ+BU9YhksLzKVWcTY7Z4Y0NwJNSK135V5rTnaEl78sX+H
+         tBbw==
+X-Gm-Message-State: AOAM53017SmN8hQ8gcTbnKua6wsmkWCt993Eo+Gfdrt61u1vBv7kKVHK
+        q2T+T+uSbWKt9UnPIej1aoc=
+X-Google-Smtp-Source: ABdhPJxpWI66ECfv2tS7crK+5x37kpF5iynRBZkNqa/BPKoimx9JnWtPYDhB7OPwgoTw6vV6FNaiuA==
+X-Received: by 2002:a0c:ff48:: with SMTP id y8mr17901761qvt.29.1629427055094;
+        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c1sm2114382qtj.36.2021.08.19.19.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 19:37:34 -0700 (PDT)
+From:   jing yangyang <cgel.zte@gmail.com>
+X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] net: ethernet: fix returnvar.cocci warnings
+Date:   Thu, 19 Aug 2021 19:37:13 -0700
+Message-Id: <e2578530d099fbc0553c97585440192e548bd3dd.1629217036.git.jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MT8195 is an ARM platform SoC which has the same PCIe IP with MT8192.
+Remove unneeded variables when "0" can be returned.
 
-Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+Generated by: scripts/coccinelle/misc/returnvar.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/iavf/iavf_adminq.c | 4 +---
+ drivers/net/ethernet/mellanox/mlx4/port.c     | 8 ++------
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-index 742206dbd965..dcebb1036207 100644
---- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-+++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-@@ -48,7 +48,9 @@ allOf:
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.c b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
+index 9fa3fa9..cd4e6a2 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_adminq.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
+@@ -551,15 +551,13 @@ enum iavf_status iavf_init_adminq(struct iavf_hw *hw)
+  **/
+ enum iavf_status iavf_shutdown_adminq(struct iavf_hw *hw)
+ {
+-	enum iavf_status ret_code = 0;
+-
+ 	if (iavf_check_asq_alive(hw))
+ 		iavf_aq_queue_shutdown(hw, true);
  
- properties:
-   compatible:
--    const: mediatek,mt8192-pcie
-+    oneOf:
-+      - const: mediatek,mt8192-pcie
-+      - const: mediatek,mt8195-pcie
+ 	iavf_shutdown_asq(hw);
+ 	iavf_shutdown_arq(hw);
  
-   reg:
-     maxItems: 1
+-	return ret_code;
++	return 0;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
+index 256a06b..754c253 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/port.c
+@@ -1820,9 +1820,7 @@ int mlx4_SET_MCAST_FLTR_wrapper(struct mlx4_dev *dev, int slave,
+ 				struct mlx4_cmd_mailbox *outbox,
+ 				struct mlx4_cmd_info *cmd)
+ {
+-	int err = 0;
+-
+-	return err;
++	return 0;
+ }
+ 
+ int mlx4_SET_MCAST_FLTR(struct mlx4_dev *dev, u8 port,
+@@ -1840,9 +1838,7 @@ int mlx4_SET_VLAN_FLTR_wrapper(struct mlx4_dev *dev, int slave,
+ 			       struct mlx4_cmd_mailbox *outbox,
+ 			       struct mlx4_cmd_info *cmd)
+ {
+-	int err = 0;
+-
+-	return err;
++	return 0;
+ }
+ 
+ int mlx4_DUMP_ETH_STATS_wrapper(struct mlx4_dev *dev, int slave,
 -- 
-2.18.0
+1.8.3.1
+
 
