@@ -2,250 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEEA3F316A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9597E3F3171
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhHTQUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33102 "EHLO
+        id S231226AbhHTQZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbhHTQUo (ORCPT
+        with ESMTP id S229564AbhHTQZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:20:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B43AC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:20:06 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mH7FQ-0003Zo-4a; Fri, 20 Aug 2021 18:20:00 +0200
-Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
- trusted keys
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     David Gstir <david@sigma-star.at>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        linux-security-module@vger.kernel.org,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        James Morris <jmorris@namei.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        David Howells <dhowells@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        linux-integrity@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de>
-Date:   Fri, 20 Aug 2021 18:19:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 20 Aug 2021 12:25:46 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B59C061575;
+        Fri, 20 Aug 2021 09:25:08 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id z128so19750498ybc.10;
+        Fri, 20 Aug 2021 09:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6VZCSSOV2n/gWns4DjmOfS9JxRsEI80q1JgKp20DaiU=;
+        b=Blt7C7HF61jQPsI2S3yLok3O9lMOs19crz3wOeZn82vT0qRG16QOQjZhQnk6TGFEMF
+         BYZYFOEb5UgusDNAZjaCHpKpp/TnE/kK775RWJVqJEW0Cj+ihFxKPOCjpaor4rNmYmIS
+         ixzRLpX43c8Ie8pKIcnNuu3m7KD/q55VWIEoWRt65bESJKB1bbBaJayRRYfv8yZUGUxU
+         ImnA2Srn/a+2w6drXWw+5ebgIHp7Ky5VVXBvXxUJY9Ggl10XDxBmy12fXhrk4nAo7GYB
+         ioB2UXLn/NQ11AEZM1blRF/M6DlxGG8yk2rkWFNQDt7dCIiCB/X2TOmDYYHJO7td/Onw
+         ut+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6VZCSSOV2n/gWns4DjmOfS9JxRsEI80q1JgKp20DaiU=;
+        b=VlClIkwNhigzBVkjJt1iY2Iy/nwvv+8bpjHyb3kNQL0I5FqDjSrbqrqz0fyAxSTdOm
+         f/u8uuE5gKnNJDDTOdspGMveyKNTKAdeaYCdZN9j+uqQvrS7AVjWaOoeWV6ZVKax7rLC
+         jRPacv44RpxibOSsUyDlTmzZFshdgJleRCMJCDAvNBE6VC0yRSD9celxR83lHCzm/S75
+         ql9hjRphjwu6WzovSLTzSgIgq38uI+jqtFIm0ipzuP8nGzdPpaIVROj4hmm8P7t3Bsdk
+         OUmjXVt3Ma5nfJzQQw9eMBqsgj8+Lt+G0Bu6LzRzpmezFbKiMio5ZDmhaBztiwF+UOic
+         KmKA==
+X-Gm-Message-State: AOAM530LVlN8o00jvtzS4SZBuramGPj1/vxSfFxBbnhz0JjwZMShhFUw
+        dNwYrFMX6CIXfYmnm7nM+1VXU1+EOe0qQSEWVls=
+X-Google-Smtp-Source: ABdhPJw1ZUpVR170oLXAyD4ypnPZ0EmfbIzs9LEyfrT9hYaTsazcX5dWLWuXBRS0G2XGswsBbxtpRf9j135aMcD8TzU=
+X-Received: by 2002:a25:5646:: with SMTP id k67mr6775018ybb.151.1629476708066;
+ Fri, 20 Aug 2021 09:25:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210819145114.21074-1-lukas.bulwahn@gmail.com>
+ <20210819150703.GA3204796@bjorn-Precision-5520> <20210819141053.17a8a540.alex.williamson@redhat.com>
+ <CAKXUXMxM6oUkwP-YGDY1WEA8T0mCrR-5c-HLAjW-UrNotfHiCQ@mail.gmail.com> <20210820094545.1f62dde1.alex.williamson@redhat.com>
+In-Reply-To: <20210820094545.1f62dde1.alex.williamson@redhat.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 20 Aug 2021 18:25:04 +0200
+Message-ID: <CAKXUXMzr50u_YVZ51Hb3_hXQ-w1N4orogJR5VO1-QgQf_+3imw@mail.gmail.com>
+Subject: Re: [PATCH] mei: improve Denverton HSM & IFSI support
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Tim,
+On Fri, Aug 20, 2021 at 5:45 PM Alex Williamson
+<alex.williamson@redhat.com> wrote:
+>
+> On Fri, 20 Aug 2021 10:28:21 +0200
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> > On Thu, Aug 19, 2021 at 10:10 PM Alex Williamson
+> > <alex.williamson@redhat.com> wrote:
+> > >
+> > > On Thu, 19 Aug 2021 10:07:03 -0500
+> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
+> > > > [+cc Alex]
+> > > >
+> > > > On Thu, Aug 19, 2021 at 04:51:14PM +0200, Lukas Bulwahn wrote:
+> > > > > The Intel Denverton chip provides HSM & IFSI. In order to access
+> > > > > HSM & IFSI at the same time, provide two HECI hardware IDs for ac=
+cessing.
+> > > > >
+> > > > > Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@inte=
+l.com>
+> > > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > > > > ---
+> > > > > Tomas, please pick this quick helpful extension for the hardware.
+> > > > >
+> > > > >  drivers/misc/mei/hw-me-regs.h | 3 ++-
+> > > > >  drivers/misc/mei/pci-me.c     | 1 +
+> > > > >  drivers/pci/quirks.c          | 3 +++
+> > > > >  3 files changed, 6 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-=
+me-regs.h
+> > > > > index cb34925e10f1..c1c41912bb72 100644
+> > > > > --- a/drivers/misc/mei/hw-me-regs.h
+> > > > > +++ b/drivers/misc/mei/hw-me-regs.h
+> > > > > @@ -68,7 +68,8 @@
+> > > > >  #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
+> > > > >  #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
+> > > > >
+> > > > > -#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
+> > > > > +#define MEI_DEV_ID_DNV_IE  0x19E5  /* Denverton for HECI1 - IFSI=
+ */
+> > > > > +#define MEI_DEV_ID_DNV_IE_2        0x19E6  /* Denverton 2 for HE=
+CI2 - HSM */
+> > > > >
+> > > > >  #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
+> > > > >
+> > > > > diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.=
+c
+> > > > > index c3393b383e59..30827cd2a1c2 100644
+> > > > > --- a/drivers/misc/mei/pci-me.c
+> > > > > +++ b/drivers/misc/mei/pci-me.c
+> > > > > @@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tb=
+l[] =3D {
+> > > > >     {MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
+> > > > >
+> > > > >     {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
+> > > > > +   {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
+> > > > >
+> > > > >     {MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
+> > > > >
+> > > > > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > > > > index 6899d6b198af..2ab767ef8469 100644
+> > > > > --- a/drivers/pci/quirks.c
+> > > > > +++ b/drivers/pci/quirks.c
+> > > > > @@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
+> > > > >     { PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
+> > > > >     { PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
+> > > > >     { PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
+> > > > > +   /* Denverton */
+> > > > > +   { PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
+> > > > > +   { PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
+> > > >
+> > > > This looks like it should be a separate patch with a commit log tha=
+t
+> > > > explains it.  For example, see these:
+> > > >
+> > > >   db2f77e2bd99 ("PCI: Add ACS quirk for Broadcom BCM57414 NIC")
+> > > >   3247bd10a450 ("PCI: Add ACS quirk for Intel Root Complex Integrat=
+ed Endpoints")
+> > > >   299bd044a6f3 ("PCI: Add ACS quirk for Zhaoxin Root/Downstream Por=
+ts")
+> > > >   0325837c51cb ("PCI: Add ACS quirk for Zhaoxin multi-function devi=
+ces")
+> > > >   76e67e9e0f0f ("PCI: Add ACS quirk for Amazon Annapurna Labs root =
+ports")
+> > > >   46b2c32df7a4 ("PCI: Add ACS quirk for iProc PAXB")
+> > > >   01926f6b321b ("PCI: Add ACS quirk for HXT SD4800")
+> > > >
+> > > > It should be acked by somebody at Intel since this quirk relies on
+> > > > behavior of the device for VM security.
+> > >
+> > > +1 Thanks Bjorn.  I got curious and AFAICT these functions are the
+> > > interface for the host system to communicate with "Innovation Engine"
+> > > processors within the SoC, which seem to be available for system
+> > > builders to innovate and differentiate system firmware features.  I'm
+> > > not sure then how we can assume a specific interface ("HSM" or "IFSI"=
+,
+> > > whatever those are) for each function, nor of course how we can assum=
+e
+> > > isolation between them.  Thanks,
+> >
+> > Alex, I got a Denverton hardware with Innovation Engine and the
+> > specific system firmware (basically delivered from Intel). To make use
+> > of that hardware, someone at Intel suggested adding these PCI ACS
+> > quirks. It is unclear to me if there are various different Denverton
+> > systems out there (I only got one!) with many different system
+> > firmware variants for the Innovation Engine or if there is just one
+> > Denverton with IE support and with one firmware from Intel, i.e., the
+> > one I got.
+> >
+> > If there is only one or two variants of the Denverton with Innovation
+> > Engine firmware out there, then we could add this ACS quirk here
+> > unconditionally (basically assuming that if the other firmware is
+> > there, the IE would just do the right thing, e.g., deny any operation
+> > for a non-existing firmware function), right? Just adding a commit
+> > similar to the commits Bjorn pointed out above. Otherwise, we would
+> > need to make that conditional for possible different variants, but I
+> > would need a bit more guidance from you on which other variants exist
+> > and how one can differentiate between them.
+>
+> Hi Lukas,
+>
+> I'm looking at the C3000 datasheet, Intel document #337018-002, where I
+> see:
+>
+> 1.2.7 Innovation Engine (IE)
+>         ...
+>         For the IE, the system builder can install an embedded
+>         operating system, drivers and application they develop on their
+>         own, or purchase them from a third-party vendor. Intel does not
+>         provide operating systems, drivers or applications for the IE.
+>
 
-On 20.08.21 17:39, Tim Harvey wrote:
-> On Wed, Jul 21, 2021 at 9:49 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>
->> Series applies on top of
->> https://lore.kernel.org/linux-integrity/20210721160258.7024-1-a.fatoum@pengutronix.de/T/#u
->>
->> v2 -> v3:
->>  - Split off first Kconfig preparation patch. It fixes a regression,
->>    so sent that out, so it can be applied separately (Sumit)
->>  - Split off second key import patch. I'll send that out separately
->>    as it's a development aid and not required within the CAAM series
->>  - add MAINTAINERS entry
->>
->> v1 -> v2:
->>  - Added new commit to make trusted key Kconfig option independent
->>    of TPM and added new Kconfig file for trusted keys
->>  - Add new commit for importing existing key material
->>  - Allow users to force use of kernel RNG (Jarkko)
->>  - Enforce maximum keymod size (Horia)
->>  - Use append_seq_(in|out)_ptr_intlen instead of append_seq_(in|out)_ptr
->>    (Horia)
->>  - Make blobifier handle private to CAAM glue code file (Horia)
->>  - Extend trusted keys documentation for CAAM
->>  - Rebased and updated original cover letter:
->>
->> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
->> built into many newer i.MX and QorIQ SoCs by NXP.
->>
->> Its blob mechanism can AES encrypt/decrypt user data using a unique
->> never-disclosed device-specific key.
->>
->> There has been multiple discussions on how to represent this within the kernel:
->>
->> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP core
->> built into many newer i.MX and QorIQ SoCs by NXP.
->>
->> Its blob mechanism can AES encrypt/decrypt user data using a unique
->> never-disclosed device-specific key. There has been multiple
->> discussions on how to represent this within the kernel:
->>
->>  - [RFC] crypto: caam - add red blobifier
->>    Steffen implemented[1] a PoC sysfs driver to start a discussion on how to
->>    best integrate the blob mechanism.
->>    Mimi suggested that it could be used to implement trusted keys.
->>    Trusted keys back then were a TPM-only feature.
->>
->>  - security/keys/secure_key: Adds the secure key support based on CAAM.
->>    Udit added[2] a new "secure" key type with the CAAM as backend. The key
->>    material stays within the kernel only.
->>    Mimi and James agreed that this needs a generic interface, not specific
->>    to CAAM. Mimi suggested trusted keys. Jan noted that this could serve as
->>    basis for TEE-backed keys.
->>
->>  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
->>    Franck added[3] a new "caam_tk" key type based on Udit's work. This time
->>    it uses CAAM "black blobs" instead of "red blobs", so key material stays
->>    within the CAAM and isn't exposed to kernel in plaintext.
->>    James voiced the opinion that there should be just one user-facing generic
->>    wrap/unwrap key type with multiple possible handlers.
->>    David suggested trusted keys.
->>
->>  - Introduce TEE based Trusted Keys support
->>    Sumit reworked[4] trusted keys to support multiple possible backends with
->>    one chosen at boot time and added a new TEE backend along with TPM.
->>    This now sits in Jarkko's master branch to be sent out for v5.13
->>
->> This patch series builds on top of Sumit's rework to have the CAAM as yet another
->> trusted key backend.
->>
->> The CAAM bits are based on Steffen's initial patch from 2015. His work had been
->> used in the field for some years now, so I preferred not to deviate too much from it.
->>
->> This series has been tested with dmcrypt[5] on an i.MX6DL.
->>
->> Looking forward to your feedback.
->>
->> Cheers,
->> Ahmad
->>
->>  [1]: https://lore.kernel.org/linux-crypto/1447082306-19946-2-git-send-email-s.trumtrar@pengutronix.de/
->>  [2]: https://lore.kernel.org/linux-integrity/20180723111432.26830-1-udit.agarwal@nxp.com/
->>  [3]: https://lore.kernel.org/lkml/1551456599-10603-2-git-send-email-franck.lenormand@nxp.com/
->>  [4]: https://lore.kernel.org/lkml/1604419306-26105-1-git-send-email-sumit.garg@linaro.org/
->>  [5]: https://lore.kernel.org/linux-integrity/20210122084321.24012-2-a.fatoum@pengutronix.de/
->>
->> ---
->> To: Jarkko Sakkinen <jarkko@kernel.org>
->> To: "Horia Geantă" <horia.geanta@nxp.com>
->> To: Mimi Zohar <zohar@linux.ibm.com>
->> To: Aymen Sghaier <aymen.sghaier@nxp.com>
->> To: Herbert Xu <herbert@gondor.apana.org.au>
->> To: "David S. Miller" <davem@davemloft.net>
->> To: James Bottomley <jejb@linux.ibm.com>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: James Morris <jmorris@namei.org>
->> Cc: "Serge E. Hallyn" <serge@hallyn.com>
->> Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
->> Cc: Udit Agarwal <udit.agarwal@nxp.com>
->> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
->> Cc: David Gstir <david@sigma-star.at>
->> Cc: Eric Biggers <ebiggers@kernel.org>
->> Cc: Richard Weinberger <richard@nod.at>
->> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
->> Cc: Sumit Garg <sumit.garg@linaro.org>
->> Cc: linux-integrity@vger.kernel.org
->> Cc: keyrings@vger.kernel.org
->> Cc: linux-crypto@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: linux-security-module@vger.kernel.org
->>
->> Ahmad Fatoum (4):
->>   KEYS: trusted: allow users to use kernel RNG for key material
->>   KEYS: trusted: allow trust sources to use kernel RNG for key material
->>   crypto: caam - add in-kernel interface for blob generator
->>   KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
->>
->>  Documentation/admin-guide/kernel-parameters.txt   |   8 +-
->>  Documentation/security/keys/trusted-encrypted.rst |  60 +++-
->>  MAINTAINERS                                       |   9 +-
->>  drivers/crypto/caam/Kconfig                       |   3 +-
->>  drivers/crypto/caam/Makefile                      |   1 +-
->>  drivers/crypto/caam/blob_gen.c                    | 230 +++++++++++++++-
->>  include/keys/trusted-type.h                       |   2 +-
->>  include/keys/trusted_caam.h                       |  11 +-
->>  include/soc/fsl/caam-blob.h                       |  56 ++++-
->>  security/keys/trusted-keys/Kconfig                |  11 +-
->>  security/keys/trusted-keys/Makefile               |   2 +-
->>  security/keys/trusted-keys/trusted_caam.c         |  74 +++++-
->>  security/keys/trusted-keys/trusted_core.c         |  23 +-
->>  13 files changed, 477 insertions(+), 13 deletions(-)
->>  create mode 100644 drivers/crypto/caam/blob_gen.c
->>  create mode 100644 include/keys/trusted_caam.h
->>  create mode 100644 include/soc/fsl/caam-blob.h
->>  create mode 100644 security/keys/trusted-keys/trusted_caam.c
->>
->> base-commit: 97408d81ed533b953326c580ff2c3f1948b3fcee
->> --
->> git-series 0.9.1
-> 
-> Ahmad,
-> 
-> Thanks for your work!
-> 
-> I've been asked to integrate the capability of using CAAM to
-> blob/deblob data to an older 5.4 kernel such as NXP's downstream
-> vendor kernel does [1] and I'm trying to understand how your series
-> works. I'm not at all familiar with the Linux Key Management API's or
-> trusted keys. Can you provide an example of how this can be used for
-> such a thing?
+Well, IMHO, my observation of what Intel provided to me clearly
+contradicts that statement. It seems that Intel did provide an
+operating system, driver and applications for the IE, and suggested
+modifying/extending the kernel sources for that purpose beyond what
+was already existing in the kernel tree, which already suggests by
+itself that Intel has a specific driver and application for the IE in
+mind.
 
-Here's an example with dm-crypt:
+> 15.2.3.1 Interrupt Timer Sub System (ITSS)
+>         ...
+>         The Innovation Engine (IE) has a sideband connection to the
+>         ITSS components.
+>
+> 16 Power Management Controller (PMC)
+>         ...
+>         16.2 Feature List
+>                 ...
+>                 =E2=80=A2 Interacts with the SoC Innovation Engine (IE)
+>
+> Table 16-4. Causes of SMI and SCI
+>         ...
+>         [IE can cause SMI or SCI]
+>
+> 16.10.1 Initiating State Changes when in the G0 (S0) Working State
+>         ...
+>         The Intel=C2=AE Management Engine and Innovation Engine firmware
+>         each has a mechanism to turn off a hung system similar to the
+>         Power-Button Override by writing bits in their power-management
+>         control registers.
+>
+> And the apparent coup de gr=C3=A2ce:
+>
+> 37 Innovation Engine
+>         The Innovation Engine (IE) is an optional, complete, embedded
+>         engine intended to enable SoC customers to provide their own
+>         custom system management. This chapter provides a brief
+>         overview of the IE. It is reserved for system-builder code, not
+>         for Intel firmware since Intel supplies IE hardware only. IE
+>         activation is not required for normal system operation.
+>         ...
+>         IE is a completely optional feature, and is disabled by default
+>         in the silicon. It can be enabled by system builders and OEMs
+>         to run signed firmware created by the system builder or a third
+>         party software vendor. IE is not like the Intel=C2=AE Management
+>         Engine (Intel=C2=AE ME) where Intel provides the HW plus a comple=
+te
+>         FW solution. Intel only provides IE hardware (along with
+>         collateral and tools enabling).
+>
+> For the HECI, I see:
+>
+> 37.3 Architectural Overview
+>         ...
+>         The devices exposed by the IE subsystem to the Host Root Space
+>         are:
+>                 =E2=80=A2 HECI (1, 2 and 3) =E2=80=93 These functions def=
+ine the
+>                   mechanism for host software and IE firmware to
+>                   communicate. This device exposes three PCI functions
+>                   to the host during PCI bus enumeration. The message
+>                   format is OEM dependent and communication between
+>                   host and IE subsystem takes place via circular
+>                   buffers and control/status registers. This function
+>                   supports host MSI, SMI and SCI# interrupt generation
+>                   mechanisms.
+>
+>
+> So I don't see how the datasheet supports that there's either any
+> specific API defined per HECI interface or that these functions would
+> ever be intended in a generic way for independent use of by a userspace
+> driver or VM.  Perhaps with DMI or ACPI info an HECI could be
+> associated to a specific vendor API, by why we'd describe them as using
+> isolated IOMMU grouping is a complete mystery to me.  Thanks,
+>
 
-  https://lore.kernel.org/linux-integrity/5d44e50e-4309-830b-79f6-f5d888b1ef69@pengutronix.de/
+I agree with that mystery, but I do not know if I should rather trust
+the Intel documentation you cite or simply the bits and pieces that
+already landed in the kernel tree here for the Denverton IE.
 
-dm-crypt is a bit special at the moment, because it has direct support for
-trusted keys. For interfacing with other parts of the kernel like ecryptfs
-or EVM, you have to create encrypted keys rooted to the trusted keys and use
-those. The kernel documentation has an example:
+Am I right that we are basically stuck here without any further
+explanation by somebody from Intel?
 
-  https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
+Do I also get it right that:
 
-If you backport this series, you can include the typo fix spotted by David.
+If we would trust the Intel documentation, we would not really see the
+purpose of the existing line
+MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG) in
+drivers/misc/mei/pci-me.c, added with commit f7ee8ead151f ("mei: me:
+add denverton innovation engine device IDs"), because that also
+depends on the existence of a specific system-builder code?
 
-I'll send out a revised series, but given that a regression fix I want to
-rebase on hasn't been picked up for 3 weeks now, I am not in a hurry.
+Thanks for all your explanations and pointers, Alex.
 
-Cheers,
-Ahmad
-
-> 
-> Best regards,
-> 
-> Tim
-> [1] https://source.codeaurora.org/external/imxsupport/imx_sec_apps/tree/demo-caam-blobs/README.txt
-> 
-> 
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Lukas
