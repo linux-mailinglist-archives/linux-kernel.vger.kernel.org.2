@@ -2,247 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000D23F351C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704DD3F3523
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238757AbhHTUUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
+        id S239023AbhHTUVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhHTUUA (ORCPT
+        with ESMTP id S238872AbhHTUV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:20:00 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D1BC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:19:21 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id b9so2215043plx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:19:21 -0700 (PDT)
+        Fri, 20 Aug 2021 16:21:28 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E34C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:20:50 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id m26so9581970pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 13:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BkGBH+Sk2bQQ3B5sfYf3Y77q6TOaLfRpAcPAwL8BdAo=;
-        b=ecXEd1DeQkdKgu9gLiR1FnqZyViNsljclorUBJyGwLxYUHCPK4WZISv10/u9Zptlus
-         FVsZhPWNk6afCvlXCEt/KypYJRqjVv5p4tB38Y4xQ7N8hQCHiFCI1Wy/0r13jIzLcFY3
-         SVzcwNQEvMNUNmxDkS84Rd3A8dwjCiHQJ1/v/P2RaI7/M6PwE2f4GmEJ0J669WZT+2vw
-         K5jV5336LwDoCgbQu5A590/GgUZUWFEILYVLvL2rDGR+IP8aJRMkYB8JDJcpGwXt0HxZ
-         hsjVMAkPb8RtHCOiKvnFbj2Fg4ExPof2GDhJELQ4h5ADtPHTZbBazYzWXh/7eNNia8NY
-         lOHw==
+         :cc:content-transfer-encoding;
+        bh=90zs5aa37P7zEnS7CuHQxNNBqQQ4S3sRRs1VkdFPZqM=;
+        b=zA8Qvkux1azGsd3++zo4/iy/OVuHoTkPMngPmM4VtfmoWcdeHaC3B+hDR+nAmrcGJm
+         qmyXVTfQtxAXxAr3Aegoe0ZTVz3dDmGoybUfPP1D0Byc0X+uYAe8VS7WDZazdbIVtzKO
+         y6CnX2jyn0djdSrmSgRryoanDJcvOM88gQqTKuUWb2jFE6hEpftcrE/gUD1/Db7BkJno
+         S7M6oVetKv77Cs6TKECdUK/YJb3dNjWpiUgjZiFMtcrsA40edieVsb/GFnvZE2AjvbjQ
+         PvB5OQvgq0x0pqBoTIxjazVOB5wM/AHeMNfH7YNn5t8hy6p8mBlF67H75YCh62PB2WpP
+         nikQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BkGBH+Sk2bQQ3B5sfYf3Y77q6TOaLfRpAcPAwL8BdAo=;
-        b=BzDUjH8ZadJL3ooCViScirf9AdpoyscaH/XyAeKIIDegqUpXg6lcdejl091mJquNbn
-         Z1KVLppkyXaljpva1bC9kGBKBl+UE17zCsAxrxStzxoI0Rm3jCvBvepzL89SqyqQlAM2
-         VoVyQ9+CV4sKatwwkoI+X+HGJcTdsiMdP3X9FXOWcEMzWJ3VRptplKlahkixOr0aaj8g
-         luJAB0pPoArIEudIfQCZ/uU6HDORxH7E1UI3EZ0/7If6uirHmPawsxm8aaaNH2gxTGzT
-         RDGSN3OLr2NOvgtRZ3yPbJO8jJOggFYBQGuwt6c/NmegrCb/xTx3fsdO6jkPtVpVxRhA
-         4LZQ==
-X-Gm-Message-State: AOAM533Q4AkmGhfzblYZLwtGqeHz5dygyRuq+eWQ8IgCV16N0XGjOQPW
-        bmnahoWeSK0tJyvgluXzlpH3zSLnATvQLP7btCwrcw==
-X-Google-Smtp-Source: ABdhPJzHkxMGpPeA9h8LIot15bFD38zvkcY7p2LLxN6VLnB4hejIZ98f8Ub0InyuHc2GQ/N4yQ3nMHLlOt8cA/d6bXM=
-X-Received: by 2002:a17:902:c10a:b0:12d:97e1:f035 with SMTP id
- 10-20020a170902c10a00b0012d97e1f035mr17854315pli.52.1629490761440; Fri, 20
- Aug 2021 13:19:21 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=90zs5aa37P7zEnS7CuHQxNNBqQQ4S3sRRs1VkdFPZqM=;
+        b=kzijRSolcaDr5kVD0k95OQpl4MEka600Exdo5W0UFpmXbRgDXXjpDM3as6tmwpP4me
+         2pYynAbQhLrl9qXUGAxMhwXhl332HWIbH8aFb7iw9WKk5vPCWOTg7ZJl1L4DVgb7vJaO
+         5JLIEQD1p2MRlpUke+80dZdFIKN+TvWUVD9Yhggb8wD0T3YQ6WalS66CwTwY/0TYG29L
+         TzDV0ikz5J/YHfW8GBUi/BUnLEZiEfWWEgMUUBItZPZ/1knheZzryDTlJND4sgd/vbT9
+         rD+cccnsoIDUhSa8YXwqOdtRmuPE0zPn9ki9IYZ/OU/1uIRhCsv53inZF+BC7wXOtjGm
+         L4xQ==
+X-Gm-Message-State: AOAM53013qpHM35RyejwueHc3eMX9g67cJFjox9afReNEwbIOSldWC0h
+        cByoCuBWfDlIXtWy1laqvOsBZfr/ipMYRlJp+0jeog==
+X-Google-Smtp-Source: ABdhPJz8zzpWL7Z1D+zTgor8ZfiKg4yUUpcqc69JLsIJptQKuAv19W3FX1yAgX2IqeJplT7POkctdRg8GKolcohw/98=
+X-Received: by 2002:a63:db4a:: with SMTP id x10mr6433163pgi.30.1629490849582;
+ Fri, 20 Aug 2021 13:20:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730100158.3117319-1-ruansy.fnst@fujitsu.com> <20210730100158.3117319-3-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210730100158.3117319-3-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 20 Aug 2021 13:19:10 -0700
-Message-ID: <CAPcyv4gd6O=Aaghn3bnAchc3o06J01SwPCg0KHPQLTTguoxdLw@mail.gmail.com>
-Subject: Re: [PATCH RESEND v6 2/9] dax: Introduce holder for dax_device
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>, david <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
+References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
+ <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com> <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de>
+In-Reply-To: <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Fri, 20 Aug 2021 13:20:38 -0700
+Message-ID: <CAJ+vNU225mgHHg00r67f1L6bEub+_h55hCBAMhCq2rd8kWU-qg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
+ trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     David Gstir <david@sigma-star.at>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
+        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
+        linux-security-module@vger.kernel.org,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Richard Weinberger <richard@nod.at>,
+        James Morris <jmorris@namei.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        David Howells <dhowells@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
+        linux-integrity@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 3:02 AM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
+On Fri, Aug 20, 2021 at 9:20 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrot=
+e:
 >
-> To easily track filesystem from a pmem device, we introduce a holder for
-> dax_device structure, and also its operation.  This holder is used to
-> remember who is using this dax_device:
->  - When it is the backend of a filesystem, the holder will be the
->    superblock of this filesystem.
->  - When this pmem device is one of the targets in a mapped device, the
->    holder will be this mapped device.  In this case, the mapped device
->    has its own dax_device and it will follow the first rule.  So that we
->    can finally track to the filesystem we needed.
+> Hello Tim,
 >
-> The holder and holder_ops will be set when filesystem is being mounted,
-> or an target device is being activated.
+> On 20.08.21 17:39, Tim Harvey wrote:
+> > On Wed, Jul 21, 2021 at 9:49 AM Ahmad Fatoum <a.fatoum@pengutronix.de> =
+wrote:
+> >>
+> >> Series applies on top of
+> >> https://lore.kernel.org/linux-integrity/20210721160258.7024-1-a.fatoum=
+@pengutronix.de/T/#u
+> >>
+> >> v2 -> v3:
+> >>  - Split off first Kconfig preparation patch. It fixes a regression,
+> >>    so sent that out, so it can be applied separately (Sumit)
+> >>  - Split off second key import patch. I'll send that out separately
+> >>    as it's a development aid and not required within the CAAM series
+> >>  - add MAINTAINERS entry
+> >>
+> >> v1 -> v2:
+> >>  - Added new commit to make trusted key Kconfig option independent
+> >>    of TPM and added new Kconfig file for trusted keys
+> >>  - Add new commit for importing existing key material
+> >>  - Allow users to force use of kernel RNG (Jarkko)
+> >>  - Enforce maximum keymod size (Horia)
+> >>  - Use append_seq_(in|out)_ptr_intlen instead of append_seq_(in|out)_p=
+tr
+> >>    (Horia)
+> >>  - Make blobifier handle private to CAAM glue code file (Horia)
+> >>  - Extend trusted keys documentation for CAAM
+> >>  - Rebased and updated original cover letter:
+> >>
+> >> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP co=
+re
+> >> built into many newer i.MX and QorIQ SoCs by NXP.
+> >>
+> >> Its blob mechanism can AES encrypt/decrypt user data using a unique
+> >> never-disclosed device-specific key.
+> >>
+> >> There has been multiple discussions on how to represent this within th=
+e kernel:
+> >>
+> >> The Cryptographic Acceleration and Assurance Module (CAAM) is an IP co=
+re
+> >> built into many newer i.MX and QorIQ SoCs by NXP.
+> >>
+> >> Its blob mechanism can AES encrypt/decrypt user data using a unique
+> >> never-disclosed device-specific key. There has been multiple
+> >> discussions on how to represent this within the kernel:
+> >>
+> >>  - [RFC] crypto: caam - add red blobifier
+> >>    Steffen implemented[1] a PoC sysfs driver to start a discussion on =
+how to
+> >>    best integrate the blob mechanism.
+> >>    Mimi suggested that it could be used to implement trusted keys.
+> >>    Trusted keys back then were a TPM-only feature.
+> >>
+> >>  - security/keys/secure_key: Adds the secure key support based on CAAM=
+.
+> >>    Udit added[2] a new "secure" key type with the CAAM as backend. The=
+ key
+> >>    material stays within the kernel only.
+> >>    Mimi and James agreed that this needs a generic interface, not spec=
+ific
+> >>    to CAAM. Mimi suggested trusted keys. Jan noted that this could ser=
+ve as
+> >>    basis for TEE-backed keys.
+> >>
+> >>  - [RFC] drivers: crypto: caam: key: Add caam_tk key type
+> >>    Franck added[3] a new "caam_tk" key type based on Udit's work. This=
+ time
+> >>    it uses CAAM "black blobs" instead of "red blobs", so key material =
+stays
+> >>    within the CAAM and isn't exposed to kernel in plaintext.
+> >>    James voiced the opinion that there should be just one user-facing =
+generic
+> >>    wrap/unwrap key type with multiple possible handlers.
+> >>    David suggested trusted keys.
+> >>
+> >>  - Introduce TEE based Trusted Keys support
+> >>    Sumit reworked[4] trusted keys to support multiple possible backend=
+s with
+> >>    one chosen at boot time and added a new TEE backend along with TPM.
+> >>    This now sits in Jarkko's master branch to be sent out for v5.13
+> >>
+> >> This patch series builds on top of Sumit's rework to have the CAAM as =
+yet another
+> >> trusted key backend.
+> >>
+> >> The CAAM bits are based on Steffen's initial patch from 2015. His work=
+ had been
+> >> used in the field for some years now, so I preferred not to deviate to=
+o much from it.
+> >>
+> >> This series has been tested with dmcrypt[5] on an i.MX6DL.
+> >>
+> >> Looking forward to your feedback.
+> >>
+> >> Cheers,
+> >> Ahmad
+> >>
+> >>  [1]: https://lore.kernel.org/linux-crypto/1447082306-19946-2-git-send=
+-email-s.trumtrar@pengutronix.de/
+> >>  [2]: https://lore.kernel.org/linux-integrity/20180723111432.26830-1-u=
+dit.agarwal@nxp.com/
+> >>  [3]: https://lore.kernel.org/lkml/1551456599-10603-2-git-send-email-f=
+ranck.lenormand@nxp.com/
+> >>  [4]: https://lore.kernel.org/lkml/1604419306-26105-1-git-send-email-s=
+umit.garg@linaro.org/
+> >>  [5]: https://lore.kernel.org/linux-integrity/20210122084321.24012-2-a=
+.fatoum@pengutronix.de/
+> >>
+> >> ---
+> >> To: Jarkko Sakkinen <jarkko@kernel.org>
+> >> To: "Horia Geant=C4=83" <horia.geanta@nxp.com>
+> >> To: Mimi Zohar <zohar@linux.ibm.com>
+> >> To: Aymen Sghaier <aymen.sghaier@nxp.com>
+> >> To: Herbert Xu <herbert@gondor.apana.org.au>
+> >> To: "David S. Miller" <davem@davemloft.net>
+> >> To: James Bottomley <jejb@linux.ibm.com>
+> >> Cc: David Howells <dhowells@redhat.com>
+> >> Cc: James Morris <jmorris@namei.org>
+> >> Cc: "Serge E. Hallyn" <serge@hallyn.com>
+> >> Cc: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> >> Cc: Udit Agarwal <udit.agarwal@nxp.com>
+> >> Cc: Jan Luebbe <j.luebbe@pengutronix.de>
+> >> Cc: David Gstir <david@sigma-star.at>
+> >> Cc: Eric Biggers <ebiggers@kernel.org>
+> >> Cc: Richard Weinberger <richard@nod.at>
+> >> Cc: Franck LENORMAND <franck.lenormand@nxp.com>
+> >> Cc: Sumit Garg <sumit.garg@linaro.org>
+> >> Cc: linux-integrity@vger.kernel.org
+> >> Cc: keyrings@vger.kernel.org
+> >> Cc: linux-crypto@vger.kernel.org
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Cc: linux-security-module@vger.kernel.org
+> >>
+> >> Ahmad Fatoum (4):
+> >>   KEYS: trusted: allow users to use kernel RNG for key material
+> >>   KEYS: trusted: allow trust sources to use kernel RNG for key materia=
+l
+> >>   crypto: caam - add in-kernel interface for blob generator
+> >>   KEYS: trusted: Introduce support for NXP CAAM-based trusted keys
+> >>
+> >>  Documentation/admin-guide/kernel-parameters.txt   |   8 +-
+> >>  Documentation/security/keys/trusted-encrypted.rst |  60 +++-
+> >>  MAINTAINERS                                       |   9 +-
+> >>  drivers/crypto/caam/Kconfig                       |   3 +-
+> >>  drivers/crypto/caam/Makefile                      |   1 +-
+> >>  drivers/crypto/caam/blob_gen.c                    | 230 +++++++++++++=
+++-
+> >>  include/keys/trusted-type.h                       |   2 +-
+> >>  include/keys/trusted_caam.h                       |  11 +-
+> >>  include/soc/fsl/caam-blob.h                       |  56 ++++-
+> >>  security/keys/trusted-keys/Kconfig                |  11 +-
+> >>  security/keys/trusted-keys/Makefile               |   2 +-
+> >>  security/keys/trusted-keys/trusted_caam.c         |  74 +++++-
+> >>  security/keys/trusted-keys/trusted_core.c         |  23 +-
+> >>  13 files changed, 477 insertions(+), 13 deletions(-)
+> >>  create mode 100644 drivers/crypto/caam/blob_gen.c
+> >>  create mode 100644 include/keys/trusted_caam.h
+> >>  create mode 100644 include/soc/fsl/caam-blob.h
+> >>  create mode 100644 security/keys/trusted-keys/trusted_caam.c
+> >>
+> >> base-commit: 97408d81ed533b953326c580ff2c3f1948b3fcee
+> >> --
+> >> git-series 0.9.1
+> >
+> > Ahmad,
+> >
+> > Thanks for your work!
+> >
+> > I've been asked to integrate the capability of using CAAM to
+> > blob/deblob data to an older 5.4 kernel such as NXP's downstream
+> > vendor kernel does [1] and I'm trying to understand how your series
+> > works. I'm not at all familiar with the Linux Key Management API's or
+> > trusted keys. Can you provide an example of how this can be used for
+> > such a thing?
 >
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> ---
->  drivers/dax/super.c | 46 +++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/dax.h | 17 +++++++++++++++++
->  2 files changed, 63 insertions(+)
+> Here's an example with dm-crypt:
 >
-> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
-> index 5fa6ae9dbc8b..00c32dfa5665 100644
-> --- a/drivers/dax/super.c
-> +++ b/drivers/dax/super.c
-> @@ -214,6 +214,8 @@ enum dax_device_flags {
->   * @cdev: optional character interface for "device dax"
->   * @host: optional name for lookups where the device path is not available
->   * @private: dax driver private data
-> + * @holder_rwsem: prevent unregistration while holder_ops is in progress
-> + * @holder_data: holder of a dax_device: could be filesystem or mapped device
->   * @flags: state and boolean properties
->   */
->  struct dax_device {
-> @@ -222,8 +224,11 @@ struct dax_device {
->         struct cdev cdev;
->         const char *host;
->         void *private;
-> +       struct rw_semaphore holder_rwsem;
-> +       void *holder_data;
->         unsigned long flags;
->         const struct dax_operations *ops;
-> +       const struct dax_holder_operations *holder_ops;
->  };
+>   https://lore.kernel.org/linux-integrity/5d44e50e-4309-830b-79f6-f5d888b=
+1ef69@pengutronix.de/
 >
->  static ssize_t write_cache_show(struct device *dev,
-> @@ -373,6 +378,25 @@ int dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
->  }
->  EXPORT_SYMBOL_GPL(dax_zero_page_range);
+> dm-crypt is a bit special at the moment, because it has direct support fo=
+r
+> trusted keys. For interfacing with other parts of the kernel like ecryptf=
+s
+> or EVM, you have to create encrypted keys rooted to the trusted keys and =
+use
+> those. The kernel documentation has an example:
 >
-> +int dax_holder_notify_failure(struct dax_device *dax_dev, loff_t offset,
-> +                             size_t size, void *data)
-I took a look at patch3 and had some questions about the api.
+>   https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.h=
+tml
+>
+> If you backport this series, you can include the typo fix spotted by Davi=
+d.
+>
+> I'll send out a revised series, but given that a regression fix I want to
+> rebase on hasn't been picked up for 3 weeks now, I am not in a hurry.
+>
 
-Can you add kernel-doc for this api and specifically clarify what is
-@data used for vs dax_dev->holder_data?
+Ahmad,
 
-I also think the holder needs to know whether this failure is being
-signaled synchronously. or asynchronously. In the synchronous case a
-process has consumed poison and action needs to be taken immediately.
-In the asynchronous case the driver stack has encountered failed
-address ranges and is notifying the holder to avoid those ranges, but
-no immediate action needs to be taken to shoot down mappings. For
-example, I would use the synchronous notification when
-memory_failure() is invoked with the "action required" indication, and
-the asynchronous notification when an NVDIMM_REVALIDATE_POISON event
-fires, or the "action optional" memory_failure() case.
+Thanks for the reference.
 
-In short I think the interface just needs a flags argument.
+I'm still trying to understand the keyctl integration with caam. For
+the 'data' param to keyctl you are using tings like 'new <len>' and
+'load <data>'. Where are these 'commands' identified?
 
+I may still be missing something. I'm using 4.14-rc6 with your series
+and seeing the following:
+# cat /proc/cmdline
+trusted.source=3Dcaam
+# keyctl add trusted mykey 'new 32' @s)# create new trusted key named
+'mykey' of 32 bytes in the session keyring
+480104283
+# keyctl print 480104283 # dump the key
+keyctl_read_alloc: Unknown error 126
+^^^ not clear what this is
 
-> +{
-> +       int rc;
-> +
-> +       if (!dax_dev)
-> +               return -ENXIO;
-> +
-> +       if (!dax_dev->holder_data)
-> +               return -EOPNOTSUPP;
-> +
-> +       down_read(&dax_dev->holder_rwsem);
-> +       rc = dax_dev->holder_ops->notify_failure(dax_dev, offset,
-> +                                                        size, data);
-> +       up_read(&dax_dev->holder_rwsem);
-> +       return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(dax_holder_notify_failure);
-> +
->  #ifdef CONFIG_ARCH_HAS_PMEM_API
->  void arch_wb_cache_pmem(void *addr, size_t size);
->  void dax_flush(struct dax_device *dax_dev, void *addr, size_t size)
-> @@ -603,6 +627,7 @@ struct dax_device *alloc_dax(void *private, const char *__host,
->         dax_add_host(dax_dev, host);
->         dax_dev->ops = ops;
->         dax_dev->private = private;
-> +       init_rwsem(&dax_dev->holder_rwsem);
->         if (flags & DAXDEV_F_SYNC)
->                 set_dax_synchronous(dax_dev);
->
-> @@ -624,6 +649,27 @@ void put_dax(struct dax_device *dax_dev)
->  }
->  EXPORT_SYMBOL_GPL(put_dax);
->
-> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
-> +               const struct dax_holder_operations *ops)
-> +{
-> +       if (!dax_dev)
-> +               return;
-> +       down_write(&dax_dev->holder_rwsem);
-> +       dax_dev->holder_data = holder;
-> +       dax_dev->holder_ops = ops;
-> +       up_write(&dax_dev->holder_rwsem);
-> +}
-> +EXPORT_SYMBOL_GPL(dax_set_holder);
-> +
-> +void *dax_get_holder(struct dax_device *dax_dev)
-> +{
-> +       if (!dax_dev)
-> +               return NULL;
-> +
-> +       return dax_dev->holder_data;
-> +}
-> +EXPORT_SYMBOL_GPL(dax_get_holder);
-> +
->  /**
->   * dax_get_by_host() - temporary lookup mechanism for filesystem-dax
->   * @host: alternate name for the device registered by a dax driver
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index b52f084aa643..6f4b5c97ceb0 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -38,10 +38,17 @@ struct dax_operations {
->         int (*zero_page_range)(struct dax_device *, pgoff_t, size_t);
->  };
->
-> +struct dax_holder_operations {
-> +       int (*notify_failure)(struct dax_device *, loff_t, size_t, void *);
-> +};
-> +
->  extern struct attribute_group dax_attribute_group;
->
->  #if IS_ENABLED(CONFIG_DAX)
->  struct dax_device *dax_get_by_host(const char *host);
-> +void dax_set_holder(struct dax_device *dax_dev, void *holder,
-> +               const struct dax_holder_operations *ops);
-> +void *dax_get_holder(struct dax_device *dax_dev);
->  struct dax_device *alloc_dax(void *private, const char *host,
->                 const struct dax_operations *ops, unsigned long flags);
->  void put_dax(struct dax_device *dax_dev);
-> @@ -77,6 +84,14 @@ static inline struct dax_device *dax_get_by_host(const char *host)
->  {
->         return NULL;
->  }
-> +static inline void dax_set_holder(struct dax_device *dax_dev, void *holder,
-> +               const struct dax_holder_operations *ops)
-> +{
-> +}
-> +static inline void *dax_get_holder(struct dax_device *dax_dev)
-> +{
-> +       return NULL;
-> +}
->  static inline struct dax_device *alloc_dax(void *private, const char *host,
->                 const struct dax_operations *ops, unsigned long flags)
->  {
-> @@ -226,6 +241,8 @@ size_t dax_copy_to_iter(struct dax_device *dax_dev, pgoff_t pgoff, void *addr,
->                 size_t bytes, struct iov_iter *i);
->  int dax_zero_page_range(struct dax_device *dax_dev, pgoff_t pgoff,
->                         size_t nr_pages);
-> +int dax_holder_notify_failure(struct dax_device *dax_dev, loff_t offset,
-> +               size_t size, void *data);
->  void dax_flush(struct dax_device *dax_dev, void *addr, size_t size);
->
->  ssize_t dax_iomap_rw(struct kiocb *iocb, struct iov_iter *iter,
-> --
-> 2.32.0
->
->
->
+Best regards,
+
+Tim
