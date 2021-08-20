@@ -2,186 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286AB3F2BE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7523F2BD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240597AbhHTMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240458AbhHTMUG (ORCPT
+        id S237940AbhHTMTH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Aug 2021 08:19:07 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:34983 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237921AbhHTMTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:20:06 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CDAC0613A3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:19:26 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d17so5828604plr.12
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=V66TcVnnLLXnsOkSNJoy0NTjFFt1VS/qsJiFjaXSQVI=;
-        b=cQ8KZSHFCSwL+XJ9PDlQ1oQzn8JeHlEmym3UjdXgosIz/nhZ6xSxHJsibV9utqbev1
-         +CuMLK+H+YkiIJge5x/50Mz1hTgKO6GoBbORG15Do8D1Cg3uElngeRbO6lEee42ONIap
-         Bz9/5djBWskuEUkJQVDIU7Sz32JIwgxxi4bvs14LGmnwIqmNRUFfBBDQ6MJJV+NzhL1i
-         tttSrk7YQtDj42vckr2nhI5bp8PJ6zkEiS5jNvU94tJuariMtAWZEil3MIbAKttvzvh7
-         zIp8rwlr82VpgI24l9selZL+wEhm4gbYpWjvggySVkCgu+YavgaEzH5xSdgGNn1Vc7uY
-         dkkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=V66TcVnnLLXnsOkSNJoy0NTjFFt1VS/qsJiFjaXSQVI=;
-        b=Pn8Lg3ZSw6dIEMkglgEGiQ0PpHHmIk+GyhnNMrzQA6RUqj4Gd8/YnSNGnxB/JMIHns
-         i5nr8A4YSGemRWpVP5e2rZUoI5j/niRQodladUjA/SpjuHjMufvg0bgf+SLo4zI/IS/b
-         GeGx05FJu4PEIsLGiSmU453SlbIlK+18MV8shnsgORD+ovdtgvYmNHSgxzTMDDT3ofgG
-         aC6+yZ6boesTh4awWXlZZiJiQ/VhZXIWX0SuZ33QP+j6lilOLJRrkrT/pWhQsuc25s8l
-         HJSO3V9glkK3+3XG/w8xlCK6WkIl6Ve7wFlDnf8ynkoMz5Gb06sITBxr/MzVJQc1od2t
-         Gg6w==
-X-Gm-Message-State: AOAM53336mZ2OShXlV1AwUcD52zVvH1zCLNAztyeO+Js4sfCoiQwL/lp
-        MYMnRHfBlGHYCRMBIMx6cOs=
-X-Google-Smtp-Source: ABdhPJxMxl8xLi5muELOCWLPLZuAPDmBY3MKRhLEylxTSvdoSeghiNAs2gepE8qcdtRlX7Vlpwu9CA==
-X-Received: by 2002:a17:90a:cb86:: with SMTP id a6mr4338830pju.137.1629461965888;
-        Fri, 20 Aug 2021 05:19:25 -0700 (PDT)
-Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id t18sm6629554pfg.111.2021.08.20.05.19.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 20 Aug 2021 05:19:25 -0700 (PDT)
-From:   Zhenguo Zhao <zhenguo6858@gmail.com>
-To:     nianfu.bai@unisoc.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] tty: n_gsm: Save dlci address open status when config requester
-Date:   Fri, 20 Aug 2021 20:17:52 +0800
-Message-Id: <1629461872-26965-8-git-send-email-zhenguo6858@gmail.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1629461872-26965-1-git-send-email-zhenguo6858@gmail.com>
-References: <1629461872-26965-1-git-send-email-zhenguo6858@gmail.com>
+        Fri, 20 Aug 2021 08:19:03 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 48BC224000C;
+        Fri, 20 Aug 2021 12:18:24 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 14:18:22 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Apurva Nandan <a-nandan@ti.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset
+ (PoR) instruction
+Message-ID: <20210820141822.03d658b8@xps13>
+In-Reply-To: <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+        <20210713130538.646-12-a-nandan@ti.com>
+        <20210806210840.65c06b67@xps13>
+        <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
+Hi Apurva,
 
-When n_gsm config "initiator=0",as requester ,receive SABM frame,n_gsm
-register gsmtty dev,and save dlci open address status,if receive DLC0
-DISC or CLD frame,it can unregister the gsmtty dev by saving dlci address.
+Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 17:09:07
++0530:
 
-Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
----
- drivers/tty/n_gsm.c | 57 +++++++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 53 insertions(+), 4 deletions(-)
+> Hi Miquèl,
+> 
+> On 07/08/21 12:38 am, Miquel Raynal wrote:
+> > Hi Apurva,
+> > 
+> > Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
+> > +0000:
+> >   
+> >> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset
+> >> functionality in their SPI NAND flash chips. PoR instruction consists
+> >> of a 66h command followed by 99h command, and is different from the FFh
+> >> reset. The reset command FFh just clears the status only registers,
+> >> while the PoR command erases all the configurations written to the
+> >> flash and is equivalent to a power-down -> power-up cycle.
+> >>
+> >> Add support for the Power-on-Reset command for any flash that provides
+> >> this feature.
+> >>
+> >> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+> >>
+> >> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+> >> ---  
+> > 
+> > [...]
+> > 				\  
+> >> @@ -218,6 +230,8 @@ struct spinand_device;
+> >>    * reading/programming/erasing when the RESET occurs. Since we always
+> >>    * issue a RESET when the device is IDLE, 5us is selected for both initial
+> >>    * and poll delay.
+> >> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us  
+> > 
+> > s/max upto/up to/
+> >   
+> 
+> Okay!
+> 
+> >> + * to 1200 us safely.  
+> > 
+> > I don't really get why, if the maximum is 500, then let's wait for
+> > 500us.
+> >   
+> 
+> Generally we keep some margin from the maximum time, no?
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 9001805..0b52d78 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -271,6 +271,10 @@ struct gsm_mux {
- 
- static struct tty_driver *gsm_tty_driver;
- 
-+/* Save dlci open address */
-+static int addr_open[256] = { 0 };
-+/* Save dlci open count */
-+static int addr_cnt;
- /*
-  *	This section of the driver logic implements the GSM encodings
-  *	both the basic and the 'advanced'. Reliable transport is not
-@@ -1181,6 +1185,7 @@ static void gsm_control_rls(struct gsm_mux *gsm, const u8 *data, int clen)
- }
- 
- static void gsm_dlci_begin_close(struct gsm_dlci *dlci);
-+static void gsm_dlci_close(struct gsm_dlci *dlci);
- 
- /**
-  *	gsm_control_message	-	DLCI 0 control processing
-@@ -1199,15 +1204,28 @@ static void gsm_control_message(struct gsm_mux *gsm, unsigned int command,
- {
- 	u8 buf[1];
- 	unsigned long flags;
-+	struct gsm_dlci *dlci;
-+	int i;
-+	int address;
- 
- 	switch (command) {
- 	case CMD_CLD: {
--		struct gsm_dlci *dlci = gsm->dlci[0];
-+		if (addr_cnt > 0) {
-+			for (i = 0; i < addr_cnt; i++) {
-+				address = addr_open[i];
-+				dlci = gsm->dlci[address];
-+				gsm_dlci_close(dlci);
-+				addr_open[i] = 0;
-+			}
-+		}
- 		/* Modem wishes to close down */
-+		dlci = gsm->dlci[0];
- 		if (dlci) {
- 			dlci->dead = true;
- 			gsm->dead = true;
--			gsm_dlci_begin_close(dlci);
-+			gsm_dlci_close(dlci);
-+			addr_cnt = 0;
-+			gsm_response(gsm, 0, UA|PF);
- 		}
- 		}
- 		break;
-@@ -1756,6 +1774,7 @@ static void gsm_queue(struct gsm_mux *gsm)
- 	struct gsm_dlci *dlci;
- 	u8 cr;
- 	int address;
-+	int i, j, k, address_tmp;
- 	/* We have to sneak a look at the packet body to do the FCS.
- 	   A somewhat layering violation in the spec */
- 
-@@ -1798,6 +1817,11 @@ static void gsm_queue(struct gsm_mux *gsm)
- 		else {
- 			gsm_response(gsm, address, UA|PF);
- 			gsm_dlci_open(dlci);
-+			/* Save dlci open address */
-+			if (address) {
-+				addr_open[addr_cnt] = address;
-+				addr_cnt++;
-+			}
- 		}
- 		break;
- 	case DISC|PF:
-@@ -1808,8 +1832,33 @@ static void gsm_queue(struct gsm_mux *gsm)
- 			return;
- 		}
- 		/* Real close complete */
--		gsm_response(gsm, address, UA|PF);
--		gsm_dlci_close(dlci);
-+		if (!address) {
-+			if (addr_cnt > 0) {
-+				for (i = 0; i < addr_cnt; i++) {
-+					address = addr_open[i];
-+					dlci = gsm->dlci[address];
-+					gsm_dlci_close(dlci);
-+					addr_open[i] = 0;
-+				}
-+			}
-+			dlci = gsm->dlci[0];
-+			gsm_dlci_close(dlci);
-+			addr_cnt = 0;
-+			gsm_response(gsm, 0, UA|PF);
-+		} else {
-+			gsm_response(gsm, address, UA|PF);
-+			gsm_dlci_close(dlci);
-+			/* clear dlci address */
-+			for (j = 0; j < addr_cnt; j++) {
-+				address_tmp = addr_open[j];
-+				if (address_tmp == address) {
-+					for (k = j; k < addr_cnt; k++)
-+						addr_open[k] = addr_open[k+1];
-+				addr_cnt--;
-+				break;
-+				}
-+			}
-+		}
- 		break;
- 	case UA:
- 	case UA|PF:
--- 
-1.9.1
+Well, yes and no.
 
+If you know that an operation will last Xms and have nothing else to
+do, then you can take some margin if you are in a probe (called once)
+but definitely not if you are in a fast path.
+
+Otherwise the best is to have some kind of signaling but I'm not sure
+you'll have one for the reset op...
+
+> 
+> >>    */
+> >>   #define SPINAND_READ_INITIAL_DELAY_US	6
+> >>   #define SPINAND_READ_POLL_DELAY_US	5
+> >> @@ -227,6 +241,8 @@ struct spinand_device;
+> >>   #define SPINAND_WRITE_POLL_DELAY_US	15
+> >>   #define SPINAND_ERASE_INITIAL_DELAY_US	250
+> >>   #define SPINAND_ERASE_POLL_DELAY_US	50
+> >> +#define SPINAND_POR_MIN_DELAY_US	1000
+> >> +#define SPINAND_POR_MAX_DELAY_US	1200  
+> >>   >>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
+> >>   >> @@ -351,6 +367,7 @@ struct spinand_ecc_info {  
+> >>   #define SPINAND_HAS_QE_BIT		BIT(0)
+> >>   #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+> >>   #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
+> >> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)  
+> >>   >>   /**  
+> >>    * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure  
+> > 
+> > 
+> > 
+> > 
+> > Thanks,
+> > Miquèl
+> > 
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >   
+> 
+> Thanks,
+> Apurva Nandan
+
+Thanks,
+Miquèl
