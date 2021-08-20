@@ -2,72 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD2C3F313A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E0A3F3145
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhHTQKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:10:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46976 "EHLO mail.kernel.org"
+        id S234564AbhHTQMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:12:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238564AbhHTQJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:09:35 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8898D61213;
-        Fri, 20 Aug 2021 16:08:55 +0000 (UTC)
-Date:   Fri, 20 Aug 2021 12:08:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Jeff Layton <jlayton@kernel.org>, torvalds@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ebiederm@xmission.com, willy@infradead.org,
-        linux-nfs@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-doc@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, luto@kernel.org, bfields@fieldses.org,
-        w@1wt.eu, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] fs: warn about impending deprecation of
- mandatory locks
-Message-ID: <20210820120848.5692d25a@oasis.local.home>
-In-Reply-To: <0f4f3e65-1d2d-e512-2a6f-d7d63effc479@redhat.com>
-References: <20210820135707.171001-1-jlayton@kernel.org>
-        <20210820135707.171001-2-jlayton@kernel.org>
-        <0f4f3e65-1d2d-e512-2a6f-d7d63effc479@redhat.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235634AbhHTQLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 12:11:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D147E61244;
+        Fri, 20 Aug 2021 16:11:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629475875;
+        bh=QtHvxXjD6Lxo5RaKara/Y2QvqxDS6ThacQcb91QFjy8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Cm8q6m2PtljGp+99RX9+Khsax5QCk8ma2yXHvKEh8RrOqdQSjmdQD2FlsFBC5lfPd
+         hDf7fZUEaGki4tlDFutbg5ca6FLVXGfPxHWaOBD4XhqmxjD5ePMawLPi6bmTjgSHcj
+         8DgCDWq5VV5OHyCMsJm5rGAQ/UScpbb7txwU6ToO1lJuBsRHIKQLuxTBS3CKRDxgkY
+         zbUcPhLTjOj0CWY3U2jpczxlNukz8oI1saQ7GA/O6BTQCSTo/8mMx+D4koYcDYvj2z
+         VhBU9Lvgl0wa0B8f5+WyDtCS3bjffcF1LCILvKtgT/qWDSeF7AMzYCV7dZ3fCz/Xm4
+         QMcNMCjdf825A==
+Date:   Fri, 20 Aug 2021 18:11:10 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stefan Achatz <erazor_de@users.sourceforge.net>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, linux-staging@lists.linux.dev,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 55/63] HID: roccat: Use struct_group() to zero
+ kone_mouse_event
+In-Reply-To: <202108200857.FA4AA13@keescook>
+Message-ID: <nycvar.YFH.7.76.2108201810560.15313@cbobk.fhfr.pm>
+References: <20210818060533.3569517-1-keescook@chromium.org> <20210818060533.3569517-56-keescook@chromium.org> <nycvar.YFH.7.76.2108201501510.15313@cbobk.fhfr.pm> <CAJr-aD=6-g7VRw2Hw0dhs+RrtA=Tago5r6Dukfw_gGPB0YYKOQ@mail.gmail.com>
+ <nycvar.YFH.7.76.2108201725360.15313@cbobk.fhfr.pm> <202108200857.FA4AA13@keescook>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 17:52:19 +0200
-David Hildenbrand <david@redhat.com> wrote:
+On Fri, 20 Aug 2021, Kees Cook wrote:
 
-> > +static bool warned_mand;
-> >   static inline bool may_mandlock(void)
-> >   {
-> > +	if (!warned_mand) {
-> > +		warned_mand = true;
-> > +		pr_warn("======================================================\n");
-> > +		pr_warn("WARNING: the mand mount option is being deprecated and\n");
-> > +		pr_warn("         will be removed in v5.15!\n");
-> > +		pr_warn("======================================================\n");
-> > +	}  
+> > > > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> > > > > field bounds checking for memset(), avoid intentionally writing across
+> > > > > neighboring fields.
+> > > > >
+> > > > > Add struct_group() to mark region of struct kone_mouse_event that should
+> > > > > be initialized to zero.
+> > > > >
+> > > > > Cc: Stefan Achatz <erazor_de@users.sourceforge.net>
+> > > > > Cc: Jiri Kosina <jikos@kernel.org>
+> > > > > Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > > > > Cc: linux-input@vger.kernel.org
+> > > > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > >
+> > > > Applied, thank you Kees.
+> > > >
+> > > 
+> > > Eek! No, this will break the build: struct_group() is not yet in the tree.
+> > > I can carry this with an Ack, etc.
+> > 
+> > I was pretty sure I saw struct_group() already in linux-next, but that was 
+> > apparently a vacation-induced brainfart, sorry. Dropping.
 > 
-> Is there a reason not to use pr_warn_once() ?
+> Oh, for these two patches, can I add your Acked-by while I carry them?
 
-You would need a single call though, otherwise each pr_warn_once()
-would have its own state that it warned once.
+Yes, thanks, and sorry for the noise.
 
-	const char warning[] =
-		"======================================================\n"
-		"WARNING: the mand mount option is being deprecated and\n"
-		"         will be removed in v5.15!\n"
-		"======================================================\n";
+-- 
+Jiri Kosina
+SUSE Labs
 
-	pr_warn_once(warning);
-
--- Steve
