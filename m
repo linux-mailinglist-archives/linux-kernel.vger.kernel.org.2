@@ -2,57 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C023F3623
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22E63F3626
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232418AbhHTVqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:46:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhHTVqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:46:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 003E560C41;
-        Fri, 20 Aug 2021 21:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629495971;
-        bh=dvXYyE008dY2XVm/6wcJwDcH+fUjvkok72nH9XXHRyc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NQ+hPQHZcFnLpHQ6ENtzfrOntz0BsUdik0+iTLrLJWz8sm6eF9Y5ayKMrxqQxriz7
-         PRLGPeU1DH1sH4fOGFf0rkP5o3L9QnyU1G6Q83Nt+1JVi+wr46Poc+S/wN67sm4P5z
-         veqke3VjlHVcA7R/oKxAIlFLdqChXU43aGqtGoQu1mY5e6OAOk/U81hHF1kJGvKnht
-         wiEpq42SrKOJkjqaAe/ezRm3j/Od5mJo8yNt0Y12UIHIjp6MypbiBJUIYTrEEw0Flm
-         qf2ARu2fmvZsz0/TAOHAQMUEc57Ad0q6JlqHi2DnxVVYG2R5ZR+65I7ORAyfKmEXXD
-         Rqya1PUPMyGgg==
-Date:   Fri, 20 Aug 2021 14:46:10 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     netdev@vger.kernel.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Subject: Re: [PATCH net] stmmac: Revert "stmmac: align RX buffers"
-Message-ID: <20210820144610.7576c36a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210820183002.457226-1-maz@kernel.org>
-References: <20210820183002.457226-1-maz@kernel.org>
+        id S232732AbhHTVre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:47:34 -0400
+Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:35576 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229760AbhHTVrd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 17:47:33 -0400
+Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 0E5E318158412;
+        Fri, 20 Aug 2021 21:46:54 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id F28B4268E46;
+        Fri, 20 Aug 2021 21:46:52 +0000 (UTC)
+Message-ID: <976c6cdd680db4b55ae31b5fc2d1779da5c0dc66.camel@perches.com>
+Subject: [PATCH] checkpatch: Improve GIT_COMMIT_ID test
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org
+Date:   Fri, 20 Aug 2021 14:46:51 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: F28B4268E46
+X-Stat-Signature: moppyeq913mno7y98rmh4dtcudptd95w
+X-Spam-Status: No, score=6.70
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+hl3opKU5IWZzt1mi+lv/Hmh8ySKHdcRE=
+X-HE-Tag: 1629496012-702855
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 19:30:02 +0100 Marc Zyngier wrote:
-> This reverts commit a955318fe67e ("stmmac: align RX buffers"),
-> which breaks at least one platform (Nvidia Jetson-X1), causing
-> packet corruption. This is 100% reproducible, and reverting
-> the patch results in a working system again.
-> 
-> Given that it is "only" a performance optimisation, let's
-> return to a known working configuration until we can have a
-> good understanding of what is happening here.
+The preferred git commit id reference has the form
 
-Seems reasonable. Hopefully it wont discourage Matteo from revisiting
-the optimization. Applied, thanks!
+	commit <SHA-1> ("Title line")
+
+where SHA-1 is the commit hex hash with a minimum lenth of 12 and
+("Title line") is the complete title line of the commit with a (" prefix
+and ") suffix.
+
+The current tests fail when the "Title line" has one or more embedded
+double quotes.
+
+Improve the test that finds the commit SHA-1 hex hash then ("Title line")
+by using $balanced_parens for a maximum of 3 consecutive lines.
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ scripts/checkpatch.pl | 82 +++++++++++++++++++++++++++----------------
+ 1 file changed, 51 insertions(+), 31 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 161ce7fe5d1e5..7c33ffafa3f0c 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -1181,7 +1181,8 @@ sub git_commit_info {
+ #		    git log --format='%H %s' -1 $line |
+ #		    echo "commit $(cut -c 1-12,41-)"
+ #		done
+-	} elsif ($lines[0] =~ /^fatal: ambiguous argument '$commit': unknown revision or path not in the working tree\./) {
++	} elsif ($lines[0] =~ /^fatal: ambiguous argument '$commit': unknown revision or path not in the working tree\./ ||
++		 $lines[0] =~ /^fatal: bad object $commit/) {
+ 		$id = undef;
+ 	} else {
+ 		$id = substr($lines[0], 0, 12);
+@@ -2587,6 +2588,8 @@ sub process {
+ 	my $reported_maintainer_file = 0;
+ 	my $non_utf8_charset = 0;
+ 
++	my $last_git_commit_id_linenr = -1;
++
+ 	my $last_blank_line = 0;
+ 	my $last_coalesced_string_linenr = -1;
+ 
+@@ -3170,10 +3173,20 @@ sub process {
+ 		}
+ 
+ # Check for git id commit length and improperly formed commit descriptions
+-		if ($in_commit_log && !$commit_log_possible_stack_dump &&
++# A correctly formed commit description is:
++#    commit <SHA-1 hash length 12+ chars> ("Complete commit subject")
++# with the commit subject '("' prefix and '")' suffix
++# This is a fairly compilicated block as it tests for what appears to be
++# bare SHA-1 hash with  minimum length of 5.  It also avoids several types of
++# possible SHA-1 matches.
++# A commit match can span multiple lines so this block attempts to find a
++# complete typical commit on a maximum of 3 lines
++		if ($perl_version_ok
++		    $in_commit_log && !$commit_log_possible_stack_dump &&
+ 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
+ 		    $line !~ /^This reverts commit [0-9a-f]{7,40}/ &&
+-		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
++		    (($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
++		      ($line =~ /\bcommit\s*$/i && defined($rawlines[$linenr]) && $rawlines[$linenr] =~ /^\s*[0-9a-f]{5,}\b/i)) ||
+ 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
+ 		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
+ 		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
+@@ -3183,49 +3196,56 @@ sub process {
+ 			my $long = 0;
+ 			my $case = 1;
+ 			my $space = 1;
+-			my $hasdesc = 0;
+-			my $hasparens = 0;
+ 			my $id = '0123456789ab';
+ 			my $orig_desc = "commit description";
+ 			my $description = "";
++			my $herectx = $herecurr;
++			my $has_parens = 0;
++			my $has_quotes = 0;
++
++			my $input = $line;
++			if ($line =~ /(?:\bcommit\s+[0-9a-f]{5,}|\bcommit\s*$)/i) {
++				for (my $n = 0; $n < 2; $n++) {
++					if ($input =~ /\bcommit\s+[0-9a-f]{5,}\s*($balanced_parens)/i) {
++						$orig_desc = $1;
++						$has_parens = 1;
++						# Always strip leading/trailing parens then double quotes if existing
++						$orig_desc = substr($orig_desc, 1, -1);
++						if ($orig_desc =~ /^".*"$/) {
++							$orig_desc = substr($orig_desc, 1, -1);
++							$has_quotes = 1;
++						}
++						last;
++					}
++					last if ($#lines < $linenr + $n);
++					$input .= " " . trim($rawlines[$linenr + $n]);
++					$herectx .= "$rawlines[$linenr + $n]\n";
++				}
++				$herectx = $herecurr if (!$has_parens);
++			}
+ 
+-			if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
++			if ($input =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
+ 				$init_char = $1;
+ 				$orig_commit = lc($2);
+-			} elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
++				$short = 0 if ($input =~ /\bcommit\s+[0-9a-f]{12,40}/i);
++				$long = 1 if ($input =~ /\bcommit\s+[0-9a-f]{41,}/i);
++				$space = 0 if ($input =~ /\bcommit [0-9a-f]/i);
++				$case = 0 if ($input =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
++			} elsif ($input =~ /\b([0-9a-f]{12,40})\b/i) {
+ 				$orig_commit = lc($1);
+ 			}
+ 
+-			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
+-			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+-			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+-			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+-			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
+-				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+-				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
+-				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
+-				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+-				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
+-				$orig_desc = $1;
+-				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
+-				$orig_desc .= " " . $1;
+-				$hasparens = 1;
+-			}
+-
+ 			($id, $description) = git_commit_info($orig_commit,
+ 							      $id, $orig_desc);
+ 
+ 			if (defined($id) &&
+-			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
++			    ($short || $long || $space || $case || ($orig_desc ne $description) || !$has_quotes) &&
++			    $last_git_commit_id_linenr != $linenr - 1) {
+ 				ERROR("GIT_COMMIT_ID",
+-				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
++				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herectx);
+ 			}
++			#don't report the next line if this line ends in commit and the sha1 hash is the next line
++			$last_git_commit_id_linenr = $linenr if ($line =~ /\bcommit\s*$/i);
+ 		}
+ 
+ # Check for added, moved or deleted files
+-- 
+2.30.0
+
+
