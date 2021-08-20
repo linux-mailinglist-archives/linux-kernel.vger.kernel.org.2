@@ -2,352 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F203F2984
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB86F3F2986
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbhHTJw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:52:56 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:41350 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234846AbhHTJwz (ORCPT
+        id S237319AbhHTJxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234846AbhHTJxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:52:55 -0400
-X-UUID: 3f5f9730bdee4972bf3ff86d8e040e4d-20210820
-X-UUID: 3f5f9730bdee4972bf3ff86d8e040e4d-20210820
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <ben.tseng@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1220063913; Fri, 20 Aug 2021 17:52:14 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 20 Aug 2021 17:52:13 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 20 Aug 2021 17:52:12 +0800
-From:   Ben Tseng <ben.tseng@mediatek.com>
-To:     Fan Chen <fan.chen@mediatek.com>, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
-CC:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Michael Kao <michael.kao@mediatek.com>,
-        Ben Tseng <ben.tseng@mediatek.com>
-Subject: [PATCH v9] thermal: mediatek: add another get_temp ops for thermal sensors
-Date:   Fri, 20 Aug 2021 17:52:06 +0800
-Message-ID: <20210820095206.30981-1-ben.tseng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 20 Aug 2021 05:53:32 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6251C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:52:54 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mH1Ch-0000Zh-4v; Fri, 20 Aug 2021 11:52:47 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mH1Cf-0000gz-0D; Fri, 20 Aug 2021 11:52:45 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH net 1/1] net: usb: asix: ax88772: move embedded PHY detection as early as possible
+Date:   Fri, 20 Aug 2021 11:52:43 +0200
+Message-Id: <20210820095243.2452-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Kao <michael.kao@mediatek.com>
+Some HW revisions need additional MAC configuration before the embedded PHY
+can be enabled. If this is not done, we won't be able to get response
+from the internal PHY.
 
-Provide thermal zone to read thermal sensor
-in the SoC. We can read all the thermal sensors
-value in the SoC by the node /sys/class/thermal/
+This issue was detected on chipcode == AX_AX88772_CHIPCODE variant,
+where ax88772_hw_reset() was executed with missing embd_phy flag.
 
-In mtk_thermal_bank_temperature, return -EAGAIN instead of -EACCESS
-on the first read of sensor that often are bogus values.
-This can avoid following warning on boot:
-
-  thermal thermal_zone6: failed to read out thermal zone (-13)
-
-Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Signed-off-by: Ben Tseng <ben.tseng@mediatek.com>
+Fixes: e532a096be0e ("net: usb: asix: ax88772: add phylib support")
+Reported-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
+ drivers/net/usb/asix.h         |  1 +
+ drivers/net/usb/asix_devices.c | 41 +++++++++++++++++-----------------
+ 2 files changed, 21 insertions(+), 21 deletions(-)
 
-This patchset supports for MT8183 chip to mtk_thermal.c.
-Add thermal zone of all the thermal sensor in SoC for
-another get temperatrue. They don't need to thermal throttle.
-And we bind coolers for thermal zone nodes of cpu_thermal.
-
-Changes in V9:
-    - Rebase to kernel-v5.14-rc1
-    - Bind raw_to_mcelsius_v1 or raw_to_mcelsius_v2 to compatible
-      data of struct mtk_thermal_data
-    - Remove duplicate struct 'mtk_thermal_bank'
-    - Remove unnecessary if condition check
-    - Return error if any thermal zone fail to register
-
-Changes in V8:
-    - Rebase to kernel-v5.13-rc1
-    - Resend
-
-Changes in v7:
-    - Fix build error in v6.
-
-Changes in v6:
-    - Rebase to kernel-5.11-rc1.
-    - [1/3]
-        - add interrupts property.
-    - [2/3]
-        - add the Tested-by in the commit message.
-    - [3/3]
-        - use the mt->conf->msr[id] instead of conf->msr[id] in the
-          _get_sensor_temp and mtk_thermal_bank_temperature.
-        - remove the redundant space in _get_sensor_temp and
-          mtk_read_sensor_temp.
-        - change kmalloc to dev_kmalloc in mtk_thermal_probe.
-
-Changes in v5:
-    - Rebase to kernel-5.9-rc1.
-    - Revise the title of cover letter.
-    - Drop "[v4,7/7] thermal: mediatek: use spinlock to protect PTPCORESEL"
-    - [2/2]
-        -  Add the judgement to the version of raw_to_mcelsius.
-
-Changes in v4:
-    - Rebase to kernel-5.6-rc1.
-    - [1/7]
-        - Squash thermal zone settings in the dtsi from [v3,5/8]
-          arm64: dts: mt8183: Increase polling frequency for CPU thermal zone.
-        - Remove the property of interrupts and mediatek,hw-reset-temp.
-    - [2/7]
-        - Correct commit message.
-    - [4/7]
-        - Change the target temperature to the 80C and change the commit message.
-    - [6/7]
-        - Adjust newline alignment.
-        - Fix the judgement on the return value of registering thermal zone.
-
-Changes in v3:
-    - Rebase to kernel-5.5-rc1.
-    - [1/8]
-        - Update sustainable power of cpu, tzts1~5 and tztsABB.
-    - [7/8]
-        - Bypass the failure that non cpu_thermal sensor is not find in thermal-zones
-          in dts, which is normal for mt8173, so prompt a warning here instead of
-          failing.
-
-	Return -EAGAIN instead of -EACCESS on the first read of sensor that
-        often are bogus values. This can avoid following warning on boot:
-
-          thermal thermal_zone6: failed to read out thermal zone (-13)
-
-Changes in v2:
-    - [1/8]
-        - Add the sustainable-power,trips,cooling-maps to the tzts1~tztsABB.
-    - [4/8]
-        - Add the min opp of cpu throttle.
-
-Matthias Kaehlcke (1):
-  arm64: dts: mt8183: Configure CPU cooling
-
-Michael Kao (2):
-  thermal: mediatek: add another get_temp ops for thermal sensors
-  arm64: dts: mt8183: add thermal zone node
----
- drivers/thermal/mtk_thermal.c | 95 +++++++++++++++++++++++++++++++------------
- 1 file changed, 70 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-index ede94ea..8bb0bb2 100644
---- a/drivers/thermal/mtk_thermal.c
-+++ b/drivers/thermal/mtk_thermal.c
-@@ -271,6 +271,7 @@ struct mtk_thermal_data {
- 	bool need_switch_bank;
- 	struct thermal_bank_cfg bank_data[MAX_NUM_ZONES];
- 	enum mtk_thermal_version version;
-+	int (*raw_to_mcelsius)(struct mtk_thermal *mt, int sensno, s32 raw);
+diff --git a/drivers/net/usb/asix.h b/drivers/net/usb/asix.h
+index e1994a246122..2a1e31defe71 100644
+--- a/drivers/net/usb/asix.h
++++ b/drivers/net/usb/asix.h
+@@ -184,6 +184,7 @@ struct asix_common_private {
+ 	struct phy_device *phydev;
+ 	u16 phy_addr;
+ 	char phy_name[20];
++	bool embd_phy;
  };
  
- struct mtk_thermal {
-@@ -294,6 +295,9 @@ struct mtk_thermal {
- 	struct mtk_thermal_bank banks[MAX_NUM_ZONES];
- };
- 
-+static int raw_to_mcelsius_v1(struct mtk_thermal *mt, int sensno, s32 raw);
-+static int raw_to_mcelsius_v2(struct mtk_thermal *mt, int sensno, s32 raw);
-+
- /* MT8183 thermal sensor data */
- static const int mt8183_bank_data[MT8183_NUM_SENSORS] = {
- 	MT8183_TS1, MT8183_TS2, MT8183_TS3, MT8183_TS4, MT8183_TS5, MT8183_TSABB
-@@ -427,6 +431,7 @@ struct mtk_thermal {
- 	.adcpnp = mt8173_adcpnp,
- 	.sensor_mux_values = mt8173_mux_values,
- 	.version = MTK_THERMAL_V1,
-+	.raw_to_mcelsius = raw_to_mcelsius_v1,
- };
- 
- /*
-@@ -458,6 +463,7 @@ struct mtk_thermal {
- 	.adcpnp = mt2701_adcpnp,
- 	.sensor_mux_values = mt2701_mux_values,
- 	.version = MTK_THERMAL_V1,
-+	.raw_to_mcelsius = raw_to_mcelsius_v1,
- };
- 
- /*
-@@ -489,6 +495,7 @@ struct mtk_thermal {
- 	.adcpnp = mt2712_adcpnp,
- 	.sensor_mux_values = mt2712_mux_values,
- 	.version = MTK_THERMAL_V1,
-+	.raw_to_mcelsius = raw_to_mcelsius_v1,
- };
- 
- /*
-@@ -514,6 +521,7 @@ struct mtk_thermal {
- 	.adcpnp = mt7622_adcpnp,
- 	.sensor_mux_values = mt7622_mux_values,
- 	.version = MTK_THERMAL_V2,
-+	.raw_to_mcelsius = raw_to_mcelsius_v2,
- };
- 
- /*
-@@ -547,6 +555,7 @@ struct mtk_thermal {
- 	.adcpnp = mt8183_adcpnp,
- 	.sensor_mux_values = mt8183_mux_values,
- 	.version = MTK_THERMAL_V1,
-+	.raw_to_mcelsius = raw_to_mcelsius_v1,
- };
- 
- /**
-@@ -639,6 +648,27 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
- 		mutex_unlock(&mt->lock);
- }
- 
-+static u32 _get_sensor_temp(struct mtk_thermal *mt, int id)
-+{
-+	u32 raw;
-+	int temp;
-+
-+	raw = readl(mt->thermal_base + mt->conf->msr[id]);
-+
-+	temp = mt->conf->raw_to_mcelsius(mt, id, raw);
-+
-+	/*
-+	 * The first read of a sensor often contains very high bogus
-+	 * temperature value. Filter these out so that the system does
-+	 * not immediately shut down.
-+	 */
-+
-+	if (temp > 200000)
-+		return -EAGAIN;
-+	else
-+		return temp;
-+}
-+
- /**
-  * mtk_thermal_bank_temperature - get the temperature of a bank
-  * @bank:	The bank
-@@ -649,28 +679,11 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
- static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+ extern const struct driver_info ax88172a_info;
+diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+index cb01897c7a5d..a74e67a60436 100644
+--- a/drivers/net/usb/asix_devices.c
++++ b/drivers/net/usb/asix_devices.c
+@@ -354,24 +354,23 @@ static int ax88772_reset(struct usbnet *dev)
+ static int ax88772_hw_reset(struct usbnet *dev, int in_pm)
  {
- 	struct mtk_thermal *mt = bank->mt;
--	const struct mtk_thermal_data *conf = mt->conf;
- 	int i, temp = INT_MIN, max = INT_MIN;
--	u32 raw;
+ 	struct asix_data *data = (struct asix_data *)&dev->data;
+-	int ret, embd_phy;
++	struct asix_common_private *priv = dev->driver_priv;
+ 	u16 rx_ctl;
++	int ret;
+ 
+ 	ret = asix_write_gpio(dev, AX_GPIO_RSE | AX_GPIO_GPO_2 |
+ 			      AX_GPIO_GPO2EN, 5, in_pm);
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	embd_phy = ((dev->mii.phy_id & 0x1f) == 0x10 ? 1 : 0);
 -
--	for (i = 0; i < conf->bank_data[bank->id].num_sensors; i++) {
--		raw = readl(mt->thermal_base + conf->msr[i]);
- 
--		if (mt->conf->version == MTK_THERMAL_V1) {
--			temp = raw_to_mcelsius_v1(
--				mt, conf->bank_data[bank->id].sensors[i], raw);
--		} else {
--			temp = raw_to_mcelsius_v2(
--				mt, conf->bank_data[bank->id].sensors[i], raw);
--		}
-+	for (i = 0; i < mt->conf->bank_data[bank->id].num_sensors; i++) {
- 
--		/*
--		 * The first read of a sensor often contains very high bogus
--		 * temperature value. Filter these out so that the system does
--		 * not immediately shut down.
--		 */
--		if (temp > 200000)
--			temp = 0;
-+		temp = _get_sensor_temp(mt, i);
- 
- 		if (temp > max)
- 			max = temp;
-@@ -681,7 +694,8 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
- 
- static int mtk_read_temp(void *data, int *temperature)
- {
--	struct mtk_thermal *mt = data;
-+	struct mtk_thermal_bank *tz = data;
-+	struct mtk_thermal *mt = tz->mt;
- 	int i;
- 	int tempmax = INT_MIN;
- 
-@@ -700,10 +714,25 @@ static int mtk_read_temp(void *data, int *temperature)
- 	return 0;
- }
- 
-+static int mtk_read_sensor_temp(void *data, int *temperature)
-+{
-+	struct mtk_thermal_bank *tz = data;
-+	struct mtk_thermal *mt = tz->mt;
-+	int id = tz->id - 1;
-+
-+	*temperature = _get_sensor_temp(mt, id);
-+
-+	return 0;
-+}
-+
- static const struct thermal_zone_of_device_ops mtk_thermal_ops = {
- 	.get_temp = mtk_read_temp,
- };
- 
-+static const struct thermal_zone_of_device_ops mtk_thermal_sensor_ops = {
-+	.get_temp = mtk_read_sensor_temp,
-+};
-+
- static void mtk_thermal_init_bank(struct mtk_thermal *mt, int num,
- 				  u32 apmixed_phys_base, u32 auxadc_phys_base,
- 				  int ctrl_id)
-@@ -994,6 +1023,7 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 	u64 auxadc_phys_base, apmixed_phys_base;
- 	struct thermal_zone_device *tzdev;
- 	void __iomem *apmixed_base, *auxadc_base;
-+	struct mtk_thermal_bank *tz;
- 
- 	mt = devm_kzalloc(&pdev->dev, sizeof(*mt), GFP_KERNEL);
- 	if (!mt)
-@@ -1082,11 +1112,26 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, mt);
- 
--	tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, 0, mt,
--						     &mtk_thermal_ops);
--	if (IS_ERR(tzdev)) {
--		ret = PTR_ERR(tzdev);
--		goto err_disable_clk_peri_therm;
-+	for (i = 0; i < mt->conf->num_sensors + 1; i++) {
-+		tz = devm_kmalloc(&pdev->dev, sizeof(*tz), GFP_KERNEL);
-+		if (!tz)
-+			return -ENOMEM;
-+
-+		tz->mt = mt;
-+		tz->id = i;
-+
-+		tzdev = devm_thermal_zone_of_sensor_register(
-+						&pdev->dev, i, tz, (i == 0) ?
-+						&mtk_thermal_ops :
-+						&mtk_thermal_sensor_ops);
-+
-+		if (IS_ERR(tzdev)) {
-+			ret = PTR_ERR(tzdev);
-+			dev_err(&pdev->dev,
-+				"Error: Failed to register thermal zone %d, ret = %d\n",
-+				i, ret);
-+			goto err_disable_clk_peri_therm;
-+		}
+-	ret = asix_write_cmd(dev, AX_CMD_SW_PHY_SELECT, embd_phy,
++	ret = asix_write_cmd(dev, AX_CMD_SW_PHY_SELECT, priv->embd_phy,
+ 			     0, 0, NULL, in_pm);
+ 	if (ret < 0) {
+ 		netdev_dbg(dev->net, "Select PHY #1 failed: %d\n", ret);
+ 		goto out;
  	}
  
- 	ret = devm_thermal_add_hwmon_sysfs(tzdev);
+-	if (embd_phy) {
++	if (priv->embd_phy) {
+ 		ret = asix_sw_reset(dev, AX_SWRESET_IPPD, in_pm);
+ 		if (ret < 0)
+ 			goto out;
+@@ -449,17 +448,16 @@ static int ax88772_hw_reset(struct usbnet *dev, int in_pm)
+ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
+ {
+ 	struct asix_data *data = (struct asix_data *)&dev->data;
+-	int ret, embd_phy;
++	struct asix_common_private *priv = dev->driver_priv;
+ 	u16 rx_ctl, phy14h, phy15h, phy16h;
+ 	u8 chipcode = 0;
++	int ret;
+ 
+ 	ret = asix_write_gpio(dev, AX_GPIO_RSE, 5, in_pm);
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	embd_phy = ((dev->mii.phy_id & 0x1f) == 0x10 ? 1 : 0);
+-
+-	ret = asix_write_cmd(dev, AX_CMD_SW_PHY_SELECT, embd_phy |
++	ret = asix_write_cmd(dev, AX_CMD_SW_PHY_SELECT, priv->embd_phy |
+ 			     AX_PHYSEL_SSEN, 0, 0, NULL, in_pm);
+ 	if (ret < 0) {
+ 		netdev_dbg(dev->net, "Select PHY #1 failed: %d\n", ret);
+@@ -683,12 +681,6 @@ static int ax88772_init_phy(struct usbnet *dev)
+ 	struct asix_common_private *priv = dev->driver_priv;
+ 	int ret;
+ 
+-	ret = asix_read_phy_addr(dev, true);
+-	if (ret < 0)
+-		return ret;
+-
+-	priv->phy_addr = ret;
+-
+ 	snprintf(priv->phy_name, sizeof(priv->phy_name), PHY_ID_FMT,
+ 		 priv->mdio->id, priv->phy_addr);
+ 
+@@ -715,6 +707,12 @@ static int ax88772_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	struct asix_common_private *priv;
+ 	int ret, i;
+ 
++	priv = devm_kzalloc(&dev->udev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	dev->driver_priv = priv;
++
+ 	usbnet_get_endpoints(dev, intf);
+ 
+ 	/* Maybe the boot loader passed the MAC address via device tree */
+@@ -750,6 +748,13 @@ static int ax88772_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	dev->net->needed_headroom = 4; /* cf asix_tx_fixup() */
+ 	dev->net->needed_tailroom = 4; /* cf asix_tx_fixup() */
+ 
++	ret = asix_read_phy_addr(dev, true);
++	if (ret < 0)
++		return ret;
++
++	priv->phy_addr = ret;
++	priv->embd_phy = ((priv->phy_addr & 0x1f) == 0x10 ? true : false);
++
+ 	asix_read_cmd(dev, AX_CMD_STATMNGSTS_REG, 0, 0, 1, &chipcode, 0);
+ 	chipcode &= AX_CHIPCODE_MASK;
+ 
+@@ -768,12 +773,6 @@ static int ax88772_bind(struct usbnet *dev, struct usb_interface *intf)
+ 		dev->rx_urb_size = 2048;
+ 	}
+ 
+-	priv = devm_kzalloc(&dev->udev->dev, sizeof(*priv), GFP_KERNEL);
+-	if (!priv)
+-		return -ENOMEM;
+-
+-	dev->driver_priv = priv;
+-
+ 	priv->presvd_phy_bmcr = 0;
+ 	priv->presvd_phy_advertise = 0;
+ 	if (chipcode == AX_AX88772_CHIPCODE) {
 -- 
-1.8.1.1.dirty
+2.30.2
 
