@@ -2,150 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2693F2919
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7123F2924
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236767AbhHTJ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:28:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43355 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235063AbhHTJ2Y (ORCPT
+        id S236638AbhHTJbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:31:04 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:62293 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234754AbhHTJbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:28:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629451666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/u+8okw9NC3TUEzgwTlSaEbJlbpO/sr31TcVmCIG3eM=;
-        b=DBHx2SlI27WlW9ojjfoOSM6wjAYkCL+Tu/so9T7tu/IqAXpYn4N+t4HojW6N+vEYNR9n0Z
-        KdCda0WKDC1V6DmU5qJxGEKafDnbIMs/KzXpsdU2WNQjfASwKrfWidtbr8ZMhPP94AqdAo
-        Pm3GCT5FC7HISpupfkcxi46BQtJ80Io=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-zWsxf_OmMEKnPMtuUqaOmQ-1; Fri, 20 Aug 2021 05:27:45 -0400
-X-MC-Unique: zWsxf_OmMEKnPMtuUqaOmQ-1
-Received: by mail-wr1-f72.google.com with SMTP id n10-20020a5d660a0000b02901551ef5616eso2659057wru.20
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:27:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/u+8okw9NC3TUEzgwTlSaEbJlbpO/sr31TcVmCIG3eM=;
-        b=ATKOZAGtvyfE4b895OBw2No7YRWNVfzT6qecuGRJVu3GiKbrKeRyP81lK2sOnPSgEA
-         AQP0i5v3qMesJmdXNvImrzq5hJu5G1FFevH9U5JaVRdXepzyV/U+RFXdQPE5mcdkOiuw
-         9xxHrNjnHL+knpzLcFH21WHjgvEDk0G1lyn7PTJ+lRA0EREFEo3uokjmRC4GtWPPawhr
-         1XqEHwDUICc7TucPekazdBANssQk/F9/WITtfJtMJ0RgMY3sCtbr0yAq2uNBvAN/Pgjm
-         VJUcawnZdG3TWNnJMrrptT6UpUPTsief7EpibdpMRhxs4VNvD2B2Cr4zFswx1Z8UXse+
-         toaQ==
-X-Gm-Message-State: AOAM531Wwb3E16e5/bFrGeSdlMqyhCRGNudSwxAZ38r7VPraH3neRRaZ
-        QcWF1d5jaL/UumNeWbRQDItA4Y/Lh2QsjcC3pOYDadxgJ8UnlXLNp3pu/4ZsaSp/0eznNvpqcMc
-        4SZMW6slWuarth1Xf/Zd5nLlK
-X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr2877136wmk.96.1629451664226;
-        Fri, 20 Aug 2021 02:27:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrv/MO6I4VJiNFhu/exeX4GinBGO52T7kneA302ioQqlyE7/IysNBUL0jrYV0CaHBwzkxm4w==
-X-Received: by 2002:a7b:c7c3:: with SMTP id z3mr2877101wmk.96.1629451663998;
-        Fri, 20 Aug 2021 02:27:43 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id c7sm4478795wmq.13.2021.08.20.02.27.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 02:27:43 -0700 (PDT)
-Subject: Re: [PATCH v4 06/13] KVM: Move WARN on invalid memslot index to
- update_memslots()
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-References: <cover.1628871411.git.maciej.szmigiero@oracle.com>
- <8db0f1d1901768b5de1417caa425e62d1118e5e8.1628871413.git.maciej.szmigiero@oracle.com>
- <957c6b3d-9621-a5a5-418c-f61f87a32ee0@redhat.com>
- <fa71d652-8b7f-e0d7-5617-8958e3e78f6e@maciej.szmigiero.name>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <633bf50b-5de4-1e76-736c-067d10bf92b3@redhat.com>
-Date:   Fri, 20 Aug 2021 11:27:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 20 Aug 2021 05:31:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1629451824; x=1660987824;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nvPVSBB3/HXIc6A8s1TwSP8IKFC5JSli53f2nV415nk=;
+  b=WB16cTQf0NwHVlyVUrdTMEiXDhNNwJDWOgumg2FMaciifwRckBP7IJSQ
+   HdSclUt4554rq4eyqBmx2LwtKlWTnqmJxC261QFNGi4fzHXc/AlZlPWZA
+   8DTYpnDfq6LfCBeCSpHnC42YCZ2SQFVimY99aWwnUH1hzlNyICIVNfmwz
+   fMj8T6W1rPHKQEe+uUNsTzzb/jWycVZmvsNrKjFeSS2y2SGUWaYK0Mj+J
+   R31ZZV1v08xKruzJQLxiKh2zC2btnYwIjYRLuX5si4tixptxXMt5+9V1h
+   +VPy4XPJor7yQrOnkMdy79eP+SVhrCtCqC5+TQv9Nwz+q6UudrjNd8k2U
+   g==;
+IronPort-SDR: IUbTvMJ/fy72Ol5jFHVaFfqq3Ig1rep97fpMsAyg3EPyoKqPnxlTfWhqd/B2k0q7s1vMTtJBgA
+ 3HHpr/Zq+iwa7WrWDR+of+zUAOXyYaD2VnTykxvJzGxwfQD+yuj4WnS6vPsuvxUcWsqAaL4CFi
+ pgLPZtKC2iLydAiuze1OaZ3FaL+brdP21Vy7FuDNJyQE0D5zaOOV0wi1HnDuzOYjVGrSe1Nfwg
+ qLT9VMy2fLOEz9dxjvub6ghm8452ebVBlRas9so+pJyxy6QsLySzCqqMPxvUBQos9HoFObpP7/
+ hxUVpzTEME6H8gKKe9fEtAVs
+X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
+   d="scan'208";a="128997094"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 20 Aug 2021 02:30:23 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 20 Aug 2021 02:30:22 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 20 Aug 2021 02:30:15 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <ulf.hansson@linaro.org>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v3 0/4] mmc: pwrseq: sd8787: add support wilc1000 devices
+Date:   Fri, 20 Aug 2021 12:27:59 +0300
+Message-ID: <20210820092803.78523-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <fa71d652-8b7f-e0d7-5617-8958e3e78f6e@maciej.szmigiero.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.21 23:43, Maciej S. Szmigiero wrote:
-> On 18.08.2021 16:35, David Hildenbrand wrote:
->> On 13.08.21 21:33, Maciej S. Szmigiero wrote:
->>> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
->>>
->>> Since kvm_memslot_move_forward() can theoretically return a negative
->>> memslot index even when kvm_memslot_move_backward() returned a positive one
->>> (and so did not WARN) let's just move the warning to the common code.
->>>
->>> Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
->>> ---
->>>    virt/kvm/kvm_main.c | 6 ++++--
->>>    1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->>> index 03ef42d2e421..7000efff1425 100644
->>> --- a/virt/kvm/kvm_main.c
->>> +++ b/virt/kvm/kvm_main.c
->>> @@ -1293,8 +1293,7 @@ static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
->>>        struct kvm_memory_slot *mslots = slots->memslots;
->>>        int i;
->>> -    if (WARN_ON_ONCE(slots->id_to_index[memslot->id] == -1) ||
->>> -        WARN_ON_ONCE(!slots->used_slots))
->>> +    if (slots->id_to_index[memslot->id] == -1 || !slots->used_slots)
->>>            return -1;
->>>        /*
->>> @@ -1398,6 +1397,9 @@ static void update_memslots(struct kvm_memslots *slots,
->>>                i = kvm_memslot_move_backward(slots, memslot);
->>>            i = kvm_memslot_move_forward(slots, memslot, i);
->>> +        if (WARN_ON_ONCE(i < 0))
->>> +            return;
->>> +
->>>            /*
->>>             * Copy the memslot to its new position in memslots and update
->>>             * its index accordingly.
->>>
->>
->>
->> Note that WARN_ON_* is frowned upon, because it can result in crashes with panic_on_warn enabled, which is what some distributions do enable.
->>
->> We tend to work around that by using pr_warn()/pr_warn_once(), avoiding eventually crashing the system when there is a way to continue.
->>
-> 
-> This patch uses WARN_ON_ONCE because:
-> 1) It was used in the old code and the patch merely moves the check
-> from kvm_memslot_move_backward() to its caller,
-> 
-> 2) This chunk of code is wholly replaced by patch 11 from this series
-> anyway ("Keep memslots in tree-based structures instead of array-based ones").
+Hi,
 
-Okay, that makes sense then, thanks!
+This series adds support for WILC1000 devices on pwrseq-sd8787 driver.
+WILC1000 devices needs a minimum delay of 5ms b/w reset and power lines.
+Adapt the sd8787 driver for this by adding a new compatible for WILC1000
+devices and specify the delay on .data field of struct of_device_id.
+
+Thank you,
+Claudiu Beznea
+
+Changes in v3:
+- fixed dt binding compilation
+
+Changes in v2:
+- changed cover letter title (it was: mmc: pwrseq: sd8787: add support
+  for selectable)
+- use new compatible in pwrseq-sd8787 driver instead of adding a new
+  binding for specifying the delay; with this, the patch 1/1 from v1 is
+  not necessary
+- adapt patch 3/3 from this version with the new compatible
+
+
+Claudiu Beznea (3):
+  dt-bindings: pwrseq-sd8787: add binding for wilc1000
+  mmc: pwrseq: sd8787: add support for wilc1000
+  mmc: pwrseq: add wilc1000_sdio dependency for pwrseq_sd8787
+
+Eugen Hristev (1):
+  ARM: dts: at91: sama5d27_wlsom1: add wifi device
+
+ .../bindings/mmc/mmc-pwrseq-sd8787.yaml       |  4 +-
+ arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi   | 71 +++++++++++++++++++
+ drivers/mmc/core/Kconfig                      |  2 +-
+ drivers/mmc/core/pwrseq_sd8787.c              | 11 ++-
+ 4 files changed, 84 insertions(+), 4 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
