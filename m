@@ -2,143 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6663F2679
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD6A3F2680
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhHTF2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:28:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
+        id S234483AbhHTFea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 01:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbhHTF2F (ORCPT
+        with ESMTP id S231256AbhHTFe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 01:28:05 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE05C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:27:28 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id o10so5382163plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:27:28 -0700 (PDT)
+        Fri, 20 Aug 2021 01:34:29 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B694AC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:33:51 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id mq3so6567159pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:33:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=SGRbSAfBSvn06RBLUf1ChYkatAx1DB8aY9rwM3r+UEw=;
-        b=e8yLPfT1ZSJ15iZJiMw6qxGa0HiNLjixxvbjRpRN6qn/MyzHf3UPtdtI1dJB26alb+
-         Qiv4vMyVf+ZBzt5qL2e7P26WvObBL+fntQjp3AuRoh1x7ufZ1AuoO3AP7hJdvmFloS5X
-         C2Sk1T60D/qeAxP9SnkCnfuqUHGYhywaprLOU=
+        bh=t77CbxubGxEGTMmMwfQTPijc/96kf1szGuSMv1EFAD4=;
+        b=Ja222Isqq11kr4ZhqVigTCcrL9fIFtekeWme0RhNsM6otO6PdQquD7rbRU6+ee4EKm
+         XhdcOSsskOxlBbZcG1GD5chnwgliVOp9yQsp5Nu7/g4B1ZIGmfUmWUnWSqXnXG/mH/vN
+         QiqPfBEv/7xk8Mw9NlHeSrwnpWhRQHDn5K0ck=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SGRbSAfBSvn06RBLUf1ChYkatAx1DB8aY9rwM3r+UEw=;
-        b=qprcfbQ2mV+2oFEWdmtHBWpfvQrx74/8RrY1NpU9WWqrU1YnXWcX1Tcjl9MUkaFCAI
-         l7m6GDVFMFzFEcqv1M/ePlyaz/ZDsT801l20bthBTEejlB/j27IES35jS9BFhEbOkPWI
-         kCgkzUrKN6cSGLsleCQKZy6Iu8OjBcStJXF3d5V0uXbu+QO64oQPDWWFoJIDtZl0Sojz
-         7vho//kJ03vZ+aGecn7On8oaJrqAm23pKRQ9Zvb0TXkCVMAf5nv7IJPhRjxSqMrkQ5B1
-         Ykaw1vv8Q6t6YXkBBx9S9TLIa1Bpa9KoHTLrp3UscdXGL18edNqCytxSQ0G13dVVfeN+
-         HEjg==
-X-Gm-Message-State: AOAM5307h5M6zdnFnll+F4Lw2s3fC/rgH1Emzr00HENnYdDiYV4u4OtN
-        lHPdyN/OH0vAtomgYmZ99ATJbg==
-X-Google-Smtp-Source: ABdhPJwX1NPLF/0ZDXyifbZDds9efkUT2BZeh4+tFK3WyhH4OD0Y63/3fscyHpJrqhFd0h2f06W4Pw==
-X-Received: by 2002:a17:90a:bd08:: with SMTP id y8mr2815251pjr.123.1629437247529;
-        Thu, 19 Aug 2021 22:27:27 -0700 (PDT)
+        bh=t77CbxubGxEGTMmMwfQTPijc/96kf1szGuSMv1EFAD4=;
+        b=U5xCyBRQU9ZlZJNgk0qMo0j4KA2w/knHUSAw7ocFk02RsuQ1WGcsTMtb29GuHTiWW8
+         v3DszIpUMfMCWuppv4DRbLELrjz16HfPUMMhZVMaMXGaPYpauNH73yCgZ4ASNliGa2ZP
+         SkiaTHHoIWM+LIJZ8oqDgQLAXvBeoBHHlFQz3G+zBBQ+CU1dJQlsLlJBfcoAXNBvHI4t
+         QsIZBEjjOGKv10vskGSvZruuv/Y4bxaL+omLQCXeh3UDYCW9rFG3/FVCYm4ZAkxOlgCV
+         Jt1cHkXTPtslmL50V6niXpWsOztw+t5hriLjok3NZ1PE7sChTJFZsBGTUOBXH/vr6X/R
+         sh5g==
+X-Gm-Message-State: AOAM531v+UQlzxTI/J1X1IyfiWWyvHYtyRes0icjL0w8uWNdpD4qWhyS
+        Dq8WD8D6lkbTbVZ4OsgsvOFM0A==
+X-Google-Smtp-Source: ABdhPJzzhNgBKICixn1BmX+FEFq9VN9d5pl11Uew/GhdXyhQuIKrjSjYMnX4OzZV4gM7ZsT0Y14CTw==
+X-Received: by 2002:a17:90a:ba0b:: with SMTP id s11mr2736424pjr.96.1629437631270;
+        Thu, 19 Aug 2021 22:33:51 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 10sm5639485pjc.41.2021.08.19.22.27.26
+        by smtp.gmail.com with ESMTPSA id r78sm5560641pfc.206.2021.08.19.22.33.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 22:27:27 -0700 (PDT)
-Date:   Thu, 19 Aug 2021 22:27:26 -0700
+        Thu, 19 Aug 2021 22:33:50 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 22:33:49 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Daniel Micay <danielmicay@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>, linux-mm@kvack.org,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] percpu: Add __alloc_size attributes for better
- bounds checking
-Message-ID: <202108192221.396DFDC9@keescook>
-References: <20210818214021.2476230-1-keescook@chromium.org>
- <20210818214021.2476230-7-keescook@chromium.org>
- <20210819221115.b3a34e280cfe748ad6a76b04@linux-foundation.org>
+To:     Jordy Zomer <jordy@pwning.systems>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Mike Rapoport <rppt@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>
+Subject: Re: [PATCH] mm/secretmem: use refcount_t instead of atomic_t
+Message-ID: <202108192227.8BE02F1C@keescook>
+References: <20210820043339.2151352-1-jordy@pwning.systems>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210819221115.b3a34e280cfe748ad6a76b04@linux-foundation.org>
+In-Reply-To: <20210820043339.2151352-1-jordy@pwning.systems>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:11:15PM -0700, Andrew Morton wrote:
-> On Wed, 18 Aug 2021 14:40:20 -0700 Kees Cook <keescook@chromium.org> wrote:
+On Fri, Aug 20, 2021 at 06:33:38AM +0200, Jordy Zomer wrote:
+> When a secret memory region is active, memfd_secret disables
+> hibernation. One of the goals is to keep the secret data from being
+> written to persistent-storage.
 > 
-> > As already done in GrapheneOS, add the __alloc_size attribute for
-> > appropriate percpu allocator interfaces, to provide additional hinting
-> > for better bounds checking, assisting CONFIG_FORTIFY_SOURCE and other
-> > compiler optimizations.
-> > 
-> 
-> Caught one, I assume:
-> 
-> In file included from ./include/linux/string.h:262,
->                  from ./include/linux/bitmap.h:11,
->                  from ./include/linux/cpumask.h:12,
->                  from ./arch/x86/include/asm/cpumask.h:5,
->                  from ./arch/x86/include/asm/msr.h:11,
->                  from ./arch/x86/include/asm/processor.h:22,
->                  from ./arch/x86/include/asm/cpufeature.h:5,
->                  from ./arch/x86/include/asm/thread_info.h:53,
->                  from ./include/linux/thread_info.h:60,
->                  from ./arch/x86/include/asm/preempt.h:7,
->                  from ./include/linux/preempt.h:78,
->                  from ./include/linux/spinlock.h:55,
->                  from ./include/linux/mmzone.h:8,
->                  from ./include/linux/gfp.h:6,
->                  from ./include/linux/slab.h:15,
->                  from drivers/misc/lkdtm/heap.c:7:
-> In function 'memset',
->     inlined from 'lkdtm_VMALLOC_LINEAR_OVERFLOW' at drivers/misc/lkdtm/heap.c:27:2:
-> ./include/linux/fortify-string.h:172:3: error: call to '__write_overflow' declared with attribute error: detected write beyond size of object passed as 1st parameter
->   172 |   __write_overflow();
->       |   ^~~~~~~~~~~~~~~~~~
-> make[3]: *** [drivers/misc/lkdtm/heap.o] Error 1
-> make[2]: *** [drivers/misc/lkdtm] Error 2
-> make[1]: *** [drivers/misc] Error 2
-> make: *** [drivers] Error 2
-> 
-> I want to get a kernel release out, so I'll hide
-> mm-vmalloc-add-__alloc_size-attributes-for-better-bounds-checking.patch
-> for now.
+> It accomplishes this by maintaining a reference count to
+> `secretmem_users`. Once this reference is held your system can not be
+> hibernated due to the check in `hibernation_available()`. However,
+> because `secretmem_users` is of type `atomic_t`, reference counter
+> overflows are possible.
 
-In the cover letter[1], I listed the needed fixes that were sent
-separately from this series. Quoting here:
+It's an unlikely condition to hit given max-open-fds, etc, but there's
+no reason to leave this weakness. Changing this to refcount_t is easy
+and better than using atomic_t.
 
-> To build without warnings, this series needs a couple small fixes for
-> allmodconfig, which I sent separately:
-> https://lore.kernel.org/lkml/20210818174855.2307828-5-keescook@chromium.org/
-> https://lore.kernel.org/lkml/20210818044252.1533634-1-keescook@chromium.org/
-> https://lore.kernel.org/lkml/20210818043912.1466447-1-keescook@chromium.org/
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-What you hit is the first one, which is already in Greg's tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?h=char-misc-next&id=e6d468d32cd084edd030a8bae76440b17b854b5c
+> As you can see there's an `atomic_inc` for each `memfd` that is opened
+> in the `memfd_secret` syscall. If a local attacker succeeds to open 2^32
+> memfd's, the counter will wrap around to 0. This implies that you may
+> hibernate again, even though there are still regions of this secret
+> memory, thereby bypassing the security check.
 
-The other two have also been taken:
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-next&id=cbe34165cc1b7d1110b268ba8b9f30843c941639
-https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/commit/?id=a31e5a4158d03595ca4258b94397d4097be0ebe4
+IMO, this hibernation check is also buggy, since it looks to be
+vulnerable to ToCToU: processes aren't frozen when
+hibernation_available() checks secretmem_users(), so a process could add
+one and fill it before the process freezer stops it.
+
+And of course, there's still the ptrace hole[1], which is think is quite
+serious as it renders the entire defense moot.
 
 -Kees
 
-[1] https://lore.kernel.org/lkml/20210818214021.2476230-1-keescook@chromium.org/
+[1] https://lore.kernel.org/lkml/202105071620.E834B1FA92@keescook/
 
 -- 
 Kees Cook
