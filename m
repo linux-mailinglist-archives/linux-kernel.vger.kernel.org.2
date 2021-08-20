@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0BE3F2ABC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D873F2AC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbhHTLH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:07:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41276 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbhHTLHz (ORCPT
+        id S239217AbhHTLRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:17:17 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42446 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231852AbhHTLRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:07:55 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5113722176;
-        Fri, 20 Aug 2021 11:07:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629457637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iUeY0/Jx0gf5IEWcoYEkxJYX/Fu1Jh0sshObrM7GDEs=;
-        b=u9Yx8KfwyqLORMaVEEYoQcCFz4FHcNy2HJSrQ85J4EBdhCqStcznwh6SgGS2KkiGwNMeV2
-        JUWJcoOOtH6E4kLLlYMzyDsdNoXXSmvBBpbJ9OPsFiAyknkjVV34N98J34RBwo11tOfYF3
-        B3OuQ7+ZvehTglUw4GA44FrDB8vYvG8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629457637;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iUeY0/Jx0gf5IEWcoYEkxJYX/Fu1Jh0sshObrM7GDEs=;
-        b=WhfDachJuoxE3D/Wl0du0pqHCORRGgadW/lUXQKklauTJuXqNGCSlwmhsBe7hUbB+1D6Xr
-        nGSY6rpNDCD2cHCw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4218113AC4;
-        Fri, 20 Aug 2021 11:07:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id I48cEOWMH2FJcgAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Fri, 20 Aug 2021 11:07:17 +0000
-Date:   Fri, 20 Aug 2021 13:07:16 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
-Subject: Re: [ANNOUNCE] 4.4.277-rt224
-Message-ID: <20210820110716.zmh7te5dvmndssgm@carbon.lan>
-References: <162762714720.5121.4789079771844033633@beryllium.lan>
- <20210820104328.GA30359@amd>
+        Fri, 20 Aug 2021 07:17:16 -0400
+X-UUID: fb4d1c4365674fb69f4755982d7b767b-20210820
+X-UUID: fb4d1c4365674fb69f4755982d7b767b-20210820
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2043987533; Fri, 20 Aug 2021 19:16:33 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 20 Aug 2021 19:16:32 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 20 Aug 2021 19:16:32 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [v2 00/24] Mediatek MT8195 clock support
+Date:   Fri, 20 Aug 2021 19:14:40 +0800
+Message-ID: <20210820111504.350-1-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820104328.GA30359@amd>
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 12:43:28PM +0200, Pavel Machek wrote:
-> > Sorry for the long delay. I was refactoring and improving my test
-> > setup which took a bit longer than I expected. I switched from a
-> > Debian based rootfs to an Tumbleweed based one, for obvious
-> > reasons. Anyway, this should not matter at all.
-> 
-> A bit late thanks for the release, BTW. We are maintaining -cip-rt
-> based kernels, and were getting worried :-).
+this patch series is based on 5.14-rc1 and depends on [1]
+- for makefile dependence (patches 7 ~ 19 in [1])
+- for common driver dependence (patches 3 ~ 6 in [1])
 
-Sorry about that. I should have send out a note earlier. Anyway, I'll
-plan to work on the next update soon. There are a few futex changes
-which collide. It's going to be interesting.
+changes since v1:
+- fix resource leak if error condition happens
+- refine clock name to match datasheet
+- remove redundant data in mux parent source
+- seperate clock driver based on IP architecture
+- change to dual licence
+- refine dt-binding file
+- remove audio clock driver (handled in [4])
+- integrate vdosys0 and vdosys1 clock registration with mmsys in [2] and [3]
 
-BTW, as you certainly are aware, the v4.4 kernel is EOL soon. As I
-understand the CIP is going to take over the maintenance. So I assume
-you are going to care of the -rt version as well?
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=521127
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=531695
+[3] https://patchwork.kernel.org/project/linux-mediatek/list/?series=519617
+[4] https://patchwork.kernel.org/project/linux-mediatek/list/?series=528369
+
+Chun-Jie Chen (24):
+  dt-bindings: ARM: Mediatek: Add new document bindings of MT8195 clock
+  clk: mediatek: Add dt-bindings of MT8195 clocks
+  clk: mediatek: Fix corner case of tuner_en_reg
+  clk: mediatek: Add API for clock resource recycle
+  clk: mediatek: Fix resource leak in mtk_clk_simple_probe
+  clk: mediatek: Add MT8195 apmixedsys clock support
+  clk: mediatek: Add MT8195 topckgen clock support
+  clk: mediatek: Add MT8195 peripheral clock support
+  clk: mediatek: Add MT8195 infrastructure clock support
+  clk: mediatek: Add MT8195 camsys clock support
+  clk: mediatek: Add MT8195 ccusys clock support
+  clk: mediatek: Add MT8195 imgsys clock support
+  clk: mediatek: Add MT8195 ipesys clock support
+  clk: mediatek: Add MT8195 mfgcfg clock support
+  clk: mediatek: Add MT8195 scp adsp clock support
+  clk: mediatek: Add MT8195 vdecsys clock support
+  clk: mediatek: Add MT8195 vdosys0 clock support
+  clk: mediatek: Add MT8195 vdosys1 clock support
+  clk: mediatek: Add MT8195 vencsys clock support
+  clk: mediatek: Add MT8195 vppsys0 clock support
+  clk: mediatek: Add MT8195 vppsys1 clock support
+  clk: mediatek: Add MT8195 wpesys clock support
+  clk: mediatek: Add MT8195 imp i2c wrapper clock support
+  clk: mediatek: Add MT8195 apusys clock support
+
+ .../arm/mediatek/mediatek,mt8195-clock.yaml   |  254 ++++
+ .../mediatek/mediatek,mt8195-sys-clock.yaml   |   73 +
+ drivers/clk/mediatek/Kconfig                  |    8 +
+ drivers/clk/mediatek/Makefile                 |    4 +
+ drivers/clk/mediatek/clk-mt8195-apmixedsys.c  |  145 ++
+ drivers/clk/mediatek/clk-mt8195-apusys_pll.c  |   92 ++
+ drivers/clk/mediatek/clk-mt8195-cam.c         |  142 ++
+ drivers/clk/mediatek/clk-mt8195-ccu.c         |   50 +
+ drivers/clk/mediatek/clk-mt8195-img.c         |   96 ++
+ .../clk/mediatek/clk-mt8195-imp_iic_wrap.c    |   68 +
+ drivers/clk/mediatek/clk-mt8195-infra_ao.c    |  211 +++
+ drivers/clk/mediatek/clk-mt8195-ipe.c         |   51 +
+ drivers/clk/mediatek/clk-mt8195-mfg.c         |   47 +
+ drivers/clk/mediatek/clk-mt8195-peri_ao.c     |   62 +
+ drivers/clk/mediatek/clk-mt8195-scp_adsp.c    |   47 +
+ drivers/clk/mediatek/clk-mt8195-topckgen.c    | 1298 +++++++++++++++++
+ drivers/clk/mediatek/clk-mt8195-vdec.c        |  104 ++
+ drivers/clk/mediatek/clk-mt8195-vdo0.c        |  123 ++
+ drivers/clk/mediatek/clk-mt8195-vdo1.c        |  140 ++
+ drivers/clk/mediatek/clk-mt8195-venc.c        |   69 +
+ drivers/clk/mediatek/clk-mt8195-vpp0.c        |  110 ++
+ drivers/clk/mediatek/clk-mt8195-vpp1.c        |  108 ++
+ drivers/clk/mediatek/clk-mt8195-wpe.c         |  143 ++
+ drivers/clk/mediatek/clk-mtk.c                |   21 +-
+ drivers/clk/mediatek/clk-mtk.h                |    1 +
+ drivers/clk/mediatek/clk-pll.c                |    2 +-
+ include/dt-bindings/clock/mt8195-clk.h        |  864 +++++++++++
+ 27 files changed, 4330 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8195-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8195-sys-clock.yaml
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-apmixedsys.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-apusys_pll.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-cam.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-ccu.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-img.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-imp_iic_wrap.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-infra_ao.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-ipe.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-mfg.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-peri_ao.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-scp_adsp.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-topckgen.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-vdec.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-vdo0.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-vdo1.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-venc.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-vpp0.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-vpp1.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8195-wpe.c
+ create mode 100644 include/dt-bindings/clock/mt8195-clk.h
+
+-- 
+2.18.0
+
