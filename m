@@ -2,114 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12883F29E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D434E3F29E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbhHTKKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:10:11 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:43647 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238952AbhHTKJl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:09:41 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 03A073200A8E;
-        Fri, 20 Aug 2021 06:09:02 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Fri, 20 Aug 2021 06:09:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+jI2Ki
-        vN3nqzk1Z7b+Hk+vmvgoVRpCyCiXkdlhOpzCk=; b=OJ1ppCU4Dmv6XRrjrjdtQ0
-        yJalWXJaOAVoh5fzp+D5lZ7pX6w/o0SDX0FIsy5Cy8FMDtAkeH0BTsOErffPuKJl
-        1tufQZvvI8wL/yXzRW7woIBeGXQhSZEjhcz38OYMT2mtKqjEEXj8KT1I7ULXEWza
-        hkid4yaaucxLdpXls3DeQ29MyMKtRdSzi6pCoxtSAJ31dkLGMwEvmbLXnvjprnZF
-        zKfeATQoEYb66tVxhlgKTktmn+oGNGxkQtD87s0QPyUenv/majQwj6GMxvEuUqHH
-        UzDu/B4Rxkzeft818mqfOxU9tZcQUPzwCzW0pP3n8SrjHM8i1SVcSiR3WRFacsCA
-        ==
-X-ME-Sender: <xms:PX8fYb-dyT29D9o2OSU186rS_tBo_y4vUzzhZdKmGAbGD5iyZwu_VQ>
-    <xme:PX8fYXvgm8hDU9fGq-w8-dNEV9oZOGJbko9ij1qORjiQbJ5MPTJtDwqWNc23-UjBG
-    luYla63vvW6aIYP014>
-X-ME-Received: <xmr:PX8fYZBu0QgTincV9XlS25FSdVXJWSv6jkCr5N4V_rdvujmr2F1OwQ9kgMTMjla8PyZ1vw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleelgddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffuvffkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgvucfl
-    ohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgf
-    effedufffhgfeuheegffffgeegveeifeeutefhieejffetudfgueevteehtdetnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljh
-    honhgvshdruggvvh
-X-ME-Proxy: <xmx:PX8fYXffJPwahhNcaV9gQIsUxMuogKZWR1oE0co7g_TCoT9J6N5vbA>
-    <xmx:PX8fYQPUb-x5XQha2c-2dx3L-Z_uOJcMeHCq09Cm9C9O-PrNm9GLWA>
-    <xmx:PX8fYZmTwrFCAxb-Sm-PhCp1Nbux-uTddYwHvAuZm4vf09iSpC0FLw>
-    <xmx:Pn8fYa3CFbiW7DY-qRoBQNLshbiZvv3j5Ke5mEveiaq-zR-fi9CpHw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 20 Aug 2021 06:08:57 -0400 (EDT)
-Date:   Fri, 20 Aug 2021 22:08:40 +1200
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH v4 0/1] asus-wmi: Add support for custom fan curves
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, hadess@hadess.net,
-        platform-driver-x86@vger.kernel.org
-Message-Id: <HUU4YQ.B56UY5B3K9V6@ljones.dev>
-In-Reply-To: <b94a452c-696f-d879-d239-701223c8caff@redhat.com>
-References: <20210820095726.14131-1-luke@ljones.dev>
-        <b94a452c-696f-d879-d239-701223c8caff@redhat.com>
-X-Mailer: geary/40.0
+        id S239095AbhHTKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:10:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237612AbhHTKJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:09:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E45606024A;
+        Fri, 20 Aug 2021 10:09:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629454160;
+        bh=F4BJjKuViErcs55tly6mOJQ8GhJw9eMYE3RG4bvDHvk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eTFUqtz5/84F3s0Un5c9pkN7cqKHpXHIBlvO4p0SAubvZKv6O7+4h6VEC+7iE7GZo
+         B+OFTZZ/jhRnCuD6wm2oqaX3fP1FhekoP5w+CC7lwkXu5tERGrZK/etDnkMZsRzCSM
+         TNzZuMhrGRZcSM0aniOk1YKLJ6S7Sw74mRKpqx+CfaqGHu3PQcsCXzqMLiBqGaHy6C
+         5n3itFvsmS36BJ20UyfCkFNZ3N7O/m1N6FmShXavJc4CRjre2rrsJmS6f3ni7Ptbxl
+         PgCX+PQq8Z7CGOnHPKA/bRZyY58RH9OMw4pYfREuGWrH/xSCLjiNxObHjOYvluIJWL
+         rYFl5Hv2+fyuw==
+Date:   Fri, 20 Aug 2021 12:09:16 +0200
+From:   Alexey Gladkov <legion@kernel.org>
+To:     syzbot <syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com>
+Cc:     ebiederm@xmission.com, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: use-after-free Write in dec_rlimit_ucounts
+Message-ID: <20210820100916.oyjwyteskvbxwyvg@example.org>
+References: <000000000000f2d84305c74bb986@google.com>
+ <000000000000b1f4d305c9ef72ad@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000b1f4d305c9ef72ad@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
-
-Yes sorry about that. It is now stabilised and ready for review. I 
-don't expect any more changes unless some of the folks testing it find 
-issues - and then I'll hold off on new versions until first review is 
-completed.
-
-Cheers,
-Luke.
-
-On Fri, Aug 20 2021 at 12:05:15 +0200, Hans de Goede 
-<hdegoede@redhat.com> wrote:
-> Hi Luke,
-> On 8/20/21 11:57 AM, Luke D. Jones wrote:
->>  Add support for custom fan curves found on some ASUS ROG laptops.
->> 
->>  The patch has gone through a few revisions as others tested it and
->>  requested bahaviour changes or reported issues. V4 should be 
->> considered
->>  finalised for now and I won't submit a new version until V4 has been
->>  reviewed.
->> 
->>  - V1
->>    + Initial patch work
->>  - V2
->>    + Don't fail and remove wmi driver if error from
->>      asus_wmi_evaluate_method_buf() if error is -ENODEV
->>  - V3
->>    + Store the "default" fan curves
->>    + Call throttle_thermal_policy_write() if a curve is erased to 
->> ensure
->>      that the factory default for a profile is applied again
->>  - V4
->>    + Do not apply default curves by default. Testers have found that 
->> the
->>      default curves don't quite match actual no-curve behaviours
->>    + Add method to enable/disable curves for each profile
+On Thu, Aug 19, 2021 at 01:32:22PM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> You are sending new revisions pretty fast. I don't really have an 
-> issue
-> with that, but can you let me know when you think this has stabilized
-> a bit ?  Then I can review it when it is not changing so much anymore 
-> :)
+> HEAD commit:    d6d09a694205 Merge tag 'for-5.14-rc6-tag' of git://git.ker..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16c8081e300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=01985d7909f9468f013c
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d0ec1e300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1516c341300000
 > 
-> Regards,
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
 > 
-> Hans
+> RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca4cc
+> RBP: 00000000004ca4c0 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004ca4cc
+> R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
+> ==================================================================
+> BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+> BUG: KASAN: use-after-free in atomic64_add_return include/asm-generic/atomic-instrumented.h:640 [inline]
+> BUG: KASAN: use-after-free in atomic_long_add_return include/asm-generic/atomic-long.h:59 [inline]
+> BUG: KASAN: use-after-free in dec_rlimit_ucounts+0x88/0x170 kernel/ucount.c:279
+> Write of size 8 at addr ffff888025b8ef80 by task syz-executor668/8707
+> 
+> CPU: 1 PID: 8707 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
+>  print_address_description+0x66/0x3b0 mm/kasan/report.c:233
+>  __kasan_report mm/kasan/report.c:419 [inline]
+>  kasan_report+0x163/0x210 mm/kasan/report.c:436
+>  check_region_inline mm/kasan/generic.c:135 [inline]
+>  kasan_check_range+0x2b5/0x2f0 mm/kasan/generic.c:189
+>  instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+>  atomic64_add_return include/asm-generic/atomic-instrumented.h:640 [inline]
+>  atomic_long_add_return include/asm-generic/atomic-long.h:59 [inline]
+>  dec_rlimit_ucounts+0x88/0x170 kernel/ucount.c:279
+>  release_task+0x2d3/0x1590 kernel/exit.c:191
+
+void release_task(struct task_struct *p)
+{
+...
+	/* don't need to get the RCU readlock here - the process is dead and
+	 * can't be modifying its own credentials. But shut RCU-lockdep up */
+	rcu_read_lock();
+	dec_rlimit_ucounts(task_ucounts(p), UCOUNT_RLIMIT_NPROC, 1);
+	rcu_read_unlock();
+...
+}
+
+It looks like the ucounts have been released before this in the put_cred_rcu().
+
+>  exit_notify kernel/exit.c:699 [inline]
+>  do_exit+0x1aa2/0x2510 kernel/exit.c:845
+>  do_group_exit+0x168/0x2d0 kernel/exit.c:922
+>  get_signal+0x16b0/0x2080 kernel/signal.c:2808
+>  arch_do_signal_or_restart+0x8e/0x6d0 arch/x86/kernel/signal.c:865
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x4c/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x445a69
+> Code: Unable to access opcode bytes at RIP 0x445a3f.
+> RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+> RAX: fffffffffffffff2 RBX: 00000000004ca4c8 RCX: 0000000000445a69
+> RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00000000004ca4cc
+> RBP: 00000000004ca4c0 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004ca4cc
+> R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
+> 
+> Allocated by task 8441:
+>  kasan_save_stack mm/kasan/common.c:38 [inline]
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:434 [inline]
+>  ____kasan_kmalloc+0xc4/0xf0 mm/kasan/common.c:513
+>  kasan_kmalloc include/linux/kasan.h:264 [inline]
+>  kmem_cache_alloc_trace+0x96/0x340 mm/slub.c:2986
+>  kmalloc include/linux/slab.h:591 [inline]
+>  kzalloc include/linux/slab.h:721 [inline]
+>  alloc_ucounts+0x1b1/0x5d0 kernel/ucount.c:173
+>  set_cred_ucounts+0x220/0x2d0 kernel/cred.c:684
+>  __sys_setresuid+0x6d5/0x920 kernel/sys.c:702
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Freed by task 13:
+>  kasan_save_stack mm/kasan/common.c:38 [inline]
+>  kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+>  kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:360
+>  ____kasan_slab_free+0x109/0x150 mm/kasan/common.c:366
+>  kasan_slab_free include/linux/kasan.h:230 [inline]
+>  slab_free_hook mm/slub.c:1628 [inline]
+>  slab_free_freelist_hook+0x1d8/0x290 mm/slub.c:1653
+>  slab_free mm/slub.c:3213 [inline]
+>  kfree+0xcf/0x2e0 mm/slub.c:4267
+>  put_ucounts+0x15c/0x1a0 kernel/ucount.c:207
+>  put_cred_rcu+0x221/0x400 kernel/cred.c:124
+>  rcu_do_batch kernel/rcu/tree.c:2550 [inline]
+>  rcu_core+0x906/0x14b0 kernel/rcu/tree.c:2785
+>  __do_softirq+0x372/0x783 kernel/softirq.c:558
+> 
+> Last potentially related work creation:
+>  kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
+>  insert_work+0x54/0x400 kernel/workqueue.c:1332
+>  __queue_work+0x928/0xc60 kernel/workqueue.c:1498
+>  queue_work_on+0x111/0x200 kernel/workqueue.c:1525
+>  queue_work include/linux/workqueue.h:507 [inline]
+>  call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
+>  kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
+>  device_add+0x1073/0x1790 drivers/base/core.c:3336
+>  device_create_groups_vargs drivers/base/core.c:4014 [inline]
+>  device_create+0x241/0x2d0 drivers/base/core.c:4056
+>  vc_allocate+0x66a/0x780 drivers/tty/vt/vt.c:1157
+>  con_install+0x9f/0x880 drivers/tty/vt/vt.c:3342
+>  tty_driver_install_tty drivers/tty/tty_io.c:1315 [inline]
+>  tty_init_dev+0xc6/0x4c0 drivers/tty/tty_io.c:1429
+>  tty_open_by_driver drivers/tty/tty_io.c:2098 [inline]
+>  tty_open+0x89a/0xdd0 drivers/tty/tty_io.c:2146
+>  chrdev_open+0x53b/0x5f0 fs/char_dev.c:414
+>  do_dentry_open+0x7cb/0x1020 fs/open.c:826
+>  do_open fs/namei.c:3374 [inline]
+>  path_openat+0x27e7/0x36b0 fs/namei.c:3507
+>  do_filp_open+0x253/0x4d0 fs/namei.c:3534
+>  do_sys_openat2+0x124/0x460 fs/open.c:1204
+>  do_sys_open fs/open.c:1220 [inline]
+>  __do_sys_open fs/open.c:1228 [inline]
+>  __se_sys_open fs/open.c:1224 [inline]
+>  __x64_sys_open+0x221/0x270 fs/open.c:1224
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Second to last potentially related work creation:
+>  kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xee/0x120 mm/kasan/generic.c:348
+>  insert_work+0x54/0x400 kernel/workqueue.c:1332
+>  __queue_work+0x928/0xc60 kernel/workqueue.c:1498
+>  queue_work_on+0x111/0x200 kernel/workqueue.c:1525
+>  queue_work include/linux/workqueue.h:507 [inline]
+>  call_usermodehelper_exec+0x283/0x470 kernel/umh.c:435
+>  kobject_uevent_env+0x1337/0x1700 lib/kobject_uevent.c:618
+>  kobject_synth_uevent+0x3bf/0x900 lib/kobject_uevent.c:208
+>  uevent_store+0x20/0x60 drivers/base/core.c:2372
+>  kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+>  call_write_iter include/linux/fs.h:2114 [inline]
+>  new_sync_write fs/read_write.c:518 [inline]
+>  vfs_write+0xa39/0xc90 fs/read_write.c:605
+>  ksys_write+0x171/0x2a0 fs/read_write.c:658
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The buggy address belongs to the object at ffff888025b8ef00
+>  which belongs to the cache kmalloc-192 of size 192
+> The buggy address is located 128 bytes inside of
+>  192-byte region [ffff888025b8ef00, ffff888025b8efc0)
+> The buggy address belongs to the page:
+> page:ffffea000096e380 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x25b8e
+> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+> raw: 00fff00000000200 ffffea00005dac80 0000000c0000000c ffff888011041a00
+> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 9979944008, free_ts 0
+>  prep_new_page mm/page_alloc.c:2436 [inline]
+>  get_page_from_freelist+0x779/0xa30 mm/page_alloc.c:4169
+>  __alloc_pages+0x26c/0x5f0 mm/page_alloc.c:5391
+>  alloc_page_interleave+0x22/0x1c0 mm/mempolicy.c:2119
+>  alloc_slab_page mm/slub.c:1691 [inline]
+>  allocate_slab+0xf1/0x540 mm/slub.c:1831
+>  new_slab mm/slub.c:1894 [inline]
+>  new_slab_objects mm/slub.c:2640 [inline]
+>  ___slab_alloc+0x1cf/0x350 mm/slub.c:2803
+>  __slab_alloc mm/slub.c:2843 [inline]
+>  slab_alloc_node mm/slub.c:2925 [inline]
+>  slab_alloc mm/slub.c:2967 [inline]
+>  kmem_cache_alloc_trace+0x29d/0x340 mm/slub.c:2984
+>  kmalloc include/linux/slab.h:591 [inline]
+>  kzalloc include/linux/slab.h:721 [inline]
+>  call_usermodehelper_setup+0x8a/0x260 kernel/umh.c:365
+>  kobject_uevent_env+0x1311/0x1700 lib/kobject_uevent.c:614
+>  device_add+0x1073/0x1790 drivers/base/core.c:3336
+>  __video_register_device+0x37fc/0x4580 drivers/media/v4l2-core/v4l2-dev.c:1036
+>  video_register_device include/media/v4l2-dev.h:384 [inline]
+>  vivid_create_devnodes drivers/media/test-drivers/vivid/vivid-core.c:1585 [inline]
+>  vivid_create_instance+0x85df/0xac90 drivers/media/test-drivers/vivid/vivid-core.c:1946
+>  vivid_probe+0x9a/0x140 drivers/media/test-drivers/vivid/vivid-core.c:2001
+>  platform_probe+0x130/0x1b0 drivers/base/platform.c:1427
+>  call_driver_probe+0x96/0x250 drivers/base/dd.c:517
+>  really_probe+0x223/0x9b0 drivers/base/dd.c:595
+>  __driver_probe_device+0x1f8/0x3e0 drivers/base/dd.c:747
+> page_owner free stack trace missing
+> 
+> Memory state around the buggy address:
+>  ffff888025b8ee80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>  ffff888025b8ef00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >ffff888025b8ef80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>                    ^
+>  ffff888025b8f000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>  ffff888025b8f080: 00 00 00 00 00 fc fc fc fc fc fc fc fc 00 00 00
+> ==================================================================
 > 
 
+-- 
+Rgrds, legion
 
