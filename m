@@ -2,57 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3531E3F2A40
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8E63F2A41
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236038AbhHTKn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:43:57 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34267 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhHTKn5 (ORCPT
+        id S238356AbhHTKoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:44:18 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54714 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhHTKoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:43:57 -0400
-Received: (Authenticated sender: hadess@hadess.net)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 985231BF20A;
-        Fri, 20 Aug 2021 10:43:17 +0000 (UTC)
-Message-ID: <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
-Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Luke Jones <luke@ljones.dev>
-Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
-        platform-driver-x86@vger.kernel.org
-Date:   Fri, 20 Aug 2021 12:43:17 +0200
-In-Reply-To: <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
-References: <20210820095726.14131-1-luke@ljones.dev>
-         <20210820095726.14131-2-luke@ljones.dev>
-         <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
-         <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Fri, 20 Aug 2021 06:44:13 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 577191C0B80; Fri, 20 Aug 2021 12:43:34 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 12:43:28 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
+Subject: Re: [ANNOUNCE] 4.4.277-rt224
+Message-ID: <20210820104328.GA30359@amd>
+References: <162762714720.5121.4789079771844033633@beryllium.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
+Content-Disposition: inline
+In-Reply-To: <162762714720.5121.4789079771844033633@beryllium.lan>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
-> > Am I going to get bug reports from Asus users that will complain
-> > that
-> > power-profiles-daemon doesn't work correctly, where I will have to
-> > wearily ask if they're using an Asus Rog laptop?
-> 
-> No. Definitely not. The changes to fan curves per-profile need to be 
-> explicitly enabled and set. So a new user will be unaware that this 
-> control exists (until they look for it) and their laptop will behave 
-> exactly as default.
 
-"The user will need to change the fan curves manually so will
-definitely remember to mention it in bug reports" is a very different
-thing to "the user can't change the fan curves to be nonsensical and
-mean opposite things".
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I can assure you that I will eventually get bug reports from "power
-users" who break their setup and wonder why things don't work properly,
-without ever mentioning the changes they made changes to the fan
-curves, or anything else they might have changed.
+Hi!
 
+> I'm pleased to announce the 4.4.277-rt224 stable release.
+>=20
+> This is just an update to the latest stable release. No RT specific
+> changes.
+>=20
+> Sorry for the long delay. I was refactoring and improving my test
+> setup which took a bit longer than I expected. I switched from a
+> Debian based rootfs to an Tumbleweed based one, for obvious
+> reasons. Anyway, this should not matter at all.
+
+A bit late thanks for the release, BTW. We are maintaining -cip-rt
+based kernels, and were getting worried :-).
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmEfh1AACgkQMOfwapXb+vKuRwCgupWDZwOxxiIzICzz85B/9zRL
+XE8AoIqtjRr71fTGD4RO1/8uFiUSPSSg
+=znr5
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
