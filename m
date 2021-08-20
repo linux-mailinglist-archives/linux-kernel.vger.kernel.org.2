@@ -2,112 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9A03F29F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9933F29F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239000AbhHTKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:12:54 -0400
-Received: from mga14.intel.com ([192.55.52.115]:30224 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238956AbhHTKMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:12:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="216478219"
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="216478219"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 03:12:13 -0700
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="512475401"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 03:12:09 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mH1VL-00Bmkt-8z; Fri, 20 Aug 2021 13:12:03 +0300
-Date:   Fri, 20 Aug 2021 13:12:03 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Kate Hsuan <hpa@redhat.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Dell.Client.Kernel@dell.com, Mark Gross <mgross@linux.intel.com>,
-        Alex Hung <alex.hung@canonical.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        David E Box <david.e.box@intel.com>,
-        Zha Qipeng <qipeng.zha@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Jithu Joseph <jithu.joseph@intel.com>,
-        Maurice Ma <maurice.ma@intel.com>
-Subject: Re: [PATCH v4 00/21] platform/x86: Intel platform driver code
- movement
-Message-ID: <YR9/83LozDtedLKZ@smile.fi.intel.com>
-References: <20210819163735.81803-1-andriy.shevchenko@linux.intel.com>
- <b152a497-9cbe-83fa-e04a-f5d2a5b875f3@redhat.com>
+        id S238799AbhHTKQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232572AbhHTKQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:16:24 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 088E7C061575;
+        Fri, 20 Aug 2021 03:15:44 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id A7D22AE0DB1;
+        Fri, 20 Aug 2021 18:15:55 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lDbXKbdjmBrI; Fri, 20 Aug 2021 18:15:34 +0800 (CST)
+Received: from [172.30.18.174] (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id 2638CAE0DD4;
+        Fri, 20 Aug 2021 18:15:34 +0800 (CST)
+Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
+ function.
+To:     THOBY Simon <Simon.THOBY@viveris.fr>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210819101529.28001-1-liqiong@nfschina.com>
+ <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
+From:   =?UTF-8?B?5p2O5Yqb55C8?= <liqiong@nfschina.com>
+Message-ID: <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
+Date:   Fri, 20 Aug 2021 18:15:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b152a497-9cbe-83fa-e04a-f5d2a5b875f3@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 08:46:14PM +0200, Hans de Goede wrote:
-> On 8/19/21 6:37 PM, Andy Shevchenko wrote:
-> > This is v4 of the Intel drivers move on in the source tree.
-> > v3 has been done by Kate:
-> > https://lore.kernel.org/platform-driver-x86/20210819033001.20136-1-hpa@redhat.com/
-> > 
-> > I have taken the initial set from review-hans branch and removed Hans' SoB
-> > along with Link, while leaving others' tags.
-> > 
-> > Changelog v4:
-> > - spelled fully the driver names in the commit messages
-> > - fixed SCU *.ko module names
-> 
-> Actually I checked this during review and
-> CONFIG_INTEL_SCU_IPC, CONFIG_INTEL_SCU_PCI and CONFIG_INTEL_SCU_WDT
-> are booleans, iow if enabled they are always builtin so the
-> drivers/platform/x86/intel/scu/Makefile from v3 was correct.
-> 
-> Since the v3 Makefile is more simple I prefer that version,
-> but if you prefer to keep the v4 version that is fine too.
+Hi, Simon:
 
-I prefer mine, but we need to fix what kbuild bot complained about.
+This solution is better then rwsem, a temp "ima_rules" variable should 
+can fix. I also have a another idea, with a little trick, default list
+can traverse to the new list, so we don't need care about the read side. 
 
-> > - dropped extra prefix in PMC files
-> > - dropped stray changes within the series
-> > - removed confusing comments in Makefile and Kconfig files
-> > - embedded a few of Kconfig improvements here and there (ordering, spelling)
-> > - split miscellaneous group
-> > - added a patch to fix kernel doc issue in SCU IPC code
-> 
-> Thanks, I've not (re)reviewed things, but this all sounds good.
-> 
-> > So, I have noticed the report about SCU and taking into account IPS
-> > header deferred move, I think those two should be excluded from the
-> > series and sent after rc1, it will also eliminate trampoline move for
-> > IPS header, since we may send one patch which includes DRM changes.
-> > 
-> > Hans, what do you think?
-> 
-> Fixing the SCU thing will require coordination with / an 
-> ack from the MFD maintainer (Lee) so yeah dropping that for
-> now and doing the SCU move next cycle is probably the best.
-> 
-> Dropping the IPS move for now is fine with me too.
-> 
-> Can you send a v5 with those 2 patches dropped ?
+here is the patch:
 
-Yes.
+@@ -918,8 +918,21 @@ void ima_update_policy(void)
+        list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
 
-> We can still fix the SCU doc, just in the old place...
+        if (ima_rules != policy) {
++               struct list_head *prev_rules = ima_rules;
++               struct list_head *first = ima_rules->next;
+                ima_policy_flag = 0;
++
++               /*
++                * Make the previous list can traverse to new list,
++                * that is tricky, or there is a deadly loop whithin
++                * "list_for_each_entry_rcu(entry, ima_rules, list)"
++                *
++                * After update "ima_rules", restore the previous list.
++                */
++               prev_rules->next = policy->next;
+                ima_rules = policy;
++               syncchronize_rcu();
++               prev_rules->next = first;
 
-And yes, definitely.
+
+The side effect is the "ima_default_rules" will be changed a little while.
+But it make sense, the process should be checked again by the new policy.
+
+This patch has been tested, if will do, I can resubmit this patch.
+
+How about this ?
+
+----------
+Regards,
+liqiong
+
+在 2021年08月19日 20:58, THOBY Simon 写道:
+> Hi Liqiong,
+>
+> On 8/19/21 12:15 PM, liqiong wrote:
+>> When "ima_match_policy" is looping while "ima_update_policy" changs
+>> the variable "ima_rules", then "ima_match_policy" may can't exit loop,
+>> and kernel keeps printf "rcu_sched detected stall on CPU ...".
+>>
+>> It occurs at boot phase, systemd-services are being checked within
+>> "ima_match_policy,at the same time, the variable "ima_rules"
+>> is changed by a service.
+> First off, thanks for finding and identifying this nasty bug.
+>
+>> Signed-off-by: liqiong <liqiong@nfschina.com>
+>> ---
+>>  security/integrity/ima/ima_policy.c | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+>> index fd5d46e511f1..7e71e643457c 100644
+>> --- a/security/integrity/ima/ima_policy.c
+>> +++ b/security/integrity/ima/ima_policy.c
+>> @@ -217,6 +217,7 @@ static LIST_HEAD(ima_default_rules);
+>>  static LIST_HEAD(ima_policy_rules);
+>>  static LIST_HEAD(ima_temp_rules);
+>>  static struct list_head *ima_rules = &ima_default_rules;
+>> +static DECLARE_RWSEM(ima_rules_sem);
+>>  
+>>  static int ima_policy __initdata;
+>>  
+>> @@ -666,6 +667,7 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
+>>  	if (template_desc && !*template_desc)
+>>  		*template_desc = ima_template_desc_current();
+>>  
+>> +	down_read(&ima_rules_sem);
+>>  	rcu_read_lock();
+>>  	list_for_each_entry_rcu(entry, ima_rules, list) {
+>>  
+>> @@ -702,6 +704,7 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
+>>  			break;
+>>  	}
+>>  	rcu_read_unlock();
+>> +	up_read(&ima_rules_sem);
+>>  
+>>  	return action;
+>>  }
+>> @@ -919,7 +922,9 @@ void ima_update_policy(void)
+>>  
+>>  	if (ima_rules != policy) {
+>>  		ima_policy_flag = 0;
+>> +		down_write(&ima_rules_sem);
+>>  		ima_rules = policy;
+>> +		up_write(&ima_rules_sem);
+>>  
+>>  		/*
+>>  		 * IMA architecture specific policy rules are specified
+>>
+> Rather than introducing a new semaphore, I wonder if you couldn't have done something
+> like the following?
+>
+> @@ -674,13 +674,15 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
+>                      const char *func_data, unsigned int *allowed_algos)
+>  {
+>         struct ima_rule_entry *entry;
+> +       struct list_head *ima_rules_tmp;
+>         int action = 0, actmask = flags | (flags << 1);
+>
+>         if (template_desc && !*template_desc)
+>                 *template_desc = ima_template_desc_current();
+>
+>         rcu_read_lock();
+> -       list_for_each_entry_rcu(entry, ima_rules, list) {
+> +       ima_rules_tmp = rcu_dereference(ima_rules);
+> +       list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+>
+>                 if (!(entry->action & actmask))
+>                         continue;
+> @@ -970,7 +972,7 @@ void ima_update_policy(void)
+>
+>         if (ima_rules != policy) {
+>                 ima_policy_flag = 0;
+> -               ima_rules = policy;
+> +               rcu_assign_pointer(ima_rules, policy);
+>
+>                 /*
+>                  * IMA architecture specific policy rules are specified
+>
+>
+> Also, ima_match_policy is not the only place where we iterate over ima_rules, maybe
+> this change should be applied to every function that perform a call the like of
+> "list_for_each_entry_rcu(entry, ima_rules_tmp, list)" ?
+>
+> All that being said, your change is quite small and I have no objection to it,
+> I was just wondering whether we could achieve the same effect without locks
+> with RCU.
+>
+> What do you think?
+>
+> Thanks,
+> Simon
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+李力琼<liqiong@nfschina.com>  13524287433
+上海市浦东新区海科路99号中科院上海高等研究院3号楼3楼
 
