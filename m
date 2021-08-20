@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A09F3F2C2F
+	by mail.lfdr.de (Postfix) with ESMTP id 635A23F2C30
 	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240553AbhHTMeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S240614AbhHTMes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:34:48 -0400
+Received: from ozlabs.org ([203.11.71.1]:43873 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240538AbhHTMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Aug 2021 08:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240329AbhHTMek (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:34:40 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92116C061764
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:34:02 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id jv8so5405820qvb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FxHzHqYkZIYKuBII5yJmxkfX68sHHNA5VrSWbqQXyKE=;
-        b=LKWHjCeNEUlwo8stybqJCnXzWMQM7x0bGZxSQUSvDEzvNf1rR/5NIRBxcsq8j+/O1Q
-         n0nUB2SGq4I944/SzVA06PgpS5TZJLAeuT0eHnupeq9B+6Ke4eApnMJzh0PSSn3USY22
-         DCevWLZt6mnoLjPVwnT/B6qIy3u8gu6R9V0eYF2w1BUAXn85ddRUOkrnCFaTavga7CyB
-         OHwKCMDxBA7mQeV8i9u/U1itYCfjgHgpthcASaDTqWMWWREFiEjUsvbxUeQR41p24/42
-         cXB4sxzSr+JXUbmuhE4oft2wqIs67/Ai41z+4L6PkD8HA2B/GtZI5tt/EczYHI2wefxZ
-         10cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FxHzHqYkZIYKuBII5yJmxkfX68sHHNA5VrSWbqQXyKE=;
-        b=aoeELLSQD7tNLzRm5gN/XbxMA5xoX+KDg3fAZnyNpnEg7Qsp2V2EGJ5JUX7UZLpz7t
-         CgdTXuhz962vo/IHoqBnJ0ihEsEWhFIP3jHPs7IsvwwcUDkZ1QJDapaMawBzCXJYB7ly
-         gTOkLUH0KLjPOYAyM6TC7gWmaKKlaWUmSp6SKmu0Rai409wqC1S26Pr3EK03hw625Ov6
-         yTZRXPPKXqaN/5MpbG8GqH67WUyXomrGqljzyFBQ7c2n1zxyuxGZlRcG20snvtDR9Lve
-         dIR7AZVSLWmoDi7UpipaMToPCmQk7wLvf0iuvJo1o9wPRG6Q0W7MtXPveJwb7GEXTgFE
-         SgMA==
-X-Gm-Message-State: AOAM531HPRc7qEdJUXjxuYE/D2A58F2J6yPLrIwMHcKqmvS79AHwSVVy
-        LDF0pCVCWbqkFbfAbN8yUWbZxw==
-X-Google-Smtp-Source: ABdhPJwGEOvhoU1c/BkmKt9S+cy9PyrWCoEZ7eevTf7BK/BVeVCzTaDTUl3qnqghNI/H9rEss9GPTg==
-X-Received: by 2002:a0c:d6cd:: with SMTP id l13mr1047928qvi.24.1629462841673;
-        Fri, 20 Aug 2021 05:34:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id 69sm3472288qke.55.2021.08.20.05.34.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 05:34:01 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mH3ii-001q0s-MH; Fri, 20 Aug 2021 09:34:00 -0300
-Date:   Fri, 20 Aug 2021 09:34:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 56/63] RDMA/mlx5: Use struct_group() to zero struct
- mlx5_ib_mr
-Message-ID: <20210820123400.GW543798@ziepe.ca>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-57-keescook@chromium.org>
- <20210819122716.GP543798@ziepe.ca>
- <202108190916.7CC455DA@keescook>
- <20210819164757.GS543798@ziepe.ca>
- <202108191106.1956C05A@keescook>
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Grgzv3Qhxz9sWq;
+        Fri, 20 Aug 2021 22:34:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1629462845;
+        bh=RvSoZj9qGbuGPBLusBDgZESowYHwhMMiBJyC8aIMk60=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=mtQUVDWVN21fl7CB8Gv+bXzF4FyNyW44mL2BYz7qsbt/eYeNT69e584cR6zMVbxqO
+         ynl5XZWnLQ45izhHFGBbzG1riwSDXF5HxR7P6MYnAHHiOX2/bE53XIUnaRqRJMDFAm
+         P8zAFSBs7KWapWa9nTnuKg/KNnO3bZ2mOUawCw+CDy+9UnJXlCv1wJXqDWlnNolPaB
+         rXl1Ck3kKrE+EXgUNuoH0szMYFn4EqkJTs0hQNEXiHpEp16L82OBAnWkCq19clUSEG
+         6/9GTOU9oqC5kGb9R5dOO/Mh4wDbKHUsiboA1eolxLil/INGfzViLXj4lvJnbxaRGw
+         0qe92o3jgy8cw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Daniel Axtens <dja@axtens.net>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
+        arnd@arndb.de, osandov@fb.com
+Cc:     Xianting Tian <xianting.tian@linux.alibaba.com>,
+        shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v8 2/3] tty: hvc: pass DMA capable memory to put_chars()
+In-Reply-To: <87pmu8ehkk.fsf@linkitivity.dja.id.au>
+References: <20210818082122.166881-1-xianting.tian@linux.alibaba.com>
+ <20210818082122.166881-3-xianting.tian@linux.alibaba.com>
+ <87pmu8ehkk.fsf@linkitivity.dja.id.au>
+Date:   Fri, 20 Aug 2021 22:34:02 +1000
+Message-ID: <87pmu8cn2d.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108191106.1956C05A@keescook>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 11:14:37AM -0700, Kees Cook wrote:
+Daniel Axtens <dja@axtens.net> writes:
+> Xianting Tian <xianting.tian@linux.alibaba.com> writes:
+>
+>> As well known, hvc backend driver(eg, virtio-console) can register its
+>> operations to hvc framework. The operations can contain put_chars(),
+>> get_chars() and so on.
+>>
+>> Some hvc backend may do dma in its operations. eg, put_chars() of
+>> virtio-console. But in the code of hvc framework, it may pass DMA
+>> incapable memory to put_chars() under a specific configuration, which
+>> is explained in commit c4baad5029(virtio-console: avoid DMA from stack):
+>
+> We could also run into issues on powerpc where Andrew is working on
+> adding vmap-stack but the opal hvc driver assumes that it is passed a
+> buffer which is not in vmalloc space but in the linear mapping.
 
-> Which do you mean? When doing the conversions I tended to opt for
-> struct_group() since it provides more robust "intentionality". Strictly
-> speaking, the new memset helpers are doing field-spanning writes, but the
-> "clear to the end" pattern was so common it made sense to add the helpers,
-> as they're a bit less disruptive. It's totally up to you! :)
+The right fix for that is our code that calls opal has to be careful
+that it's not passing vmalloc addresses.
 
-Well, of the patches you cc'd to me only this one used the struct
-group..
+We have many cases where we pass stack variables to opal, they'll all
+have to be fixed to pass the underlying phyiscal/linear map address. The
+opal hvc code will just be one more case of that.
 
-Jason 
+cheers
