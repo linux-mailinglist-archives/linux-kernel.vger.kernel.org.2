@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E104E3F2612
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 06:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403053F262A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 06:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbhHTEk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 00:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhHTEkz (ORCPT
+        id S232686AbhHTE7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 00:59:14 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:51902 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbhHTE7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 00:40:55 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B69AC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 21:40:18 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso11480067oth.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 21:40:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=U95kMWvbpVh0veAC4zTebnZuRjnR8xBCS9KpNNAr5tQ=;
-        b=dqAK0BMresy6mFI9l72sf0WtDdMOWE1j9PoghCJJOPyrZNMMNtK4cpkOiKqaaArutj
-         3AGlTD+n+pw1tWLl5weBT87zEBv0TXCiFnF9YeJ1g7cMW0vmhgWi05Ce8wgljnPLuSNM
-         hbiU0xgtg7HHd49ijUDcE1hw/dG6PnTDO8CDKj6mpKFZ6G3J+x8/We/aNPS10+4+JNQ5
-         jBGetZp5yl8wxbzzvYe2ay6jcGBKUVeijM4kI/Wjv6Cbho0ntrwzgNGB3pTFMe+0pXun
-         sV58DWbQKtvDw/rUkdS6tt7mCgeBJvGa87mjBLLNMlrll4vgAbJKsDm3ynFakmpWPyAt
-         xakw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=U95kMWvbpVh0veAC4zTebnZuRjnR8xBCS9KpNNAr5tQ=;
-        b=Enm9UyutdKEqops7dTHBYp/mQ7Y/XCvwHZH6hU5WbMBv2iy6uBvxCPcm/mn9X76JTT
-         xHOih5ZsMZ7QkfRoWCRIqo40P/FkD/cFIBDVpN4NwSheTuSB/WgYfTO/oZHlxWhyLekH
-         qKFJsqXsAfuivHURGIE0VhoU4IjEdFK/ULfpkQjDeUZv/2uEIh9xy8EyS1FqAkuQ7RnK
-         XbxS5V431I7ahRU0FlI/LmPcT2lpjVNy/edg2gqYTLcsoD/hzE1Q0dl9CHE34KC65555
-         lQedTqHuQ2dxjp0h7EbYLIQBnchz4f9GWlqkT6Cl6WaQS/cH2uNbAZ4sFCLJ0eXl9c+H
-         UxNw==
-X-Gm-Message-State: AOAM531M0HQWJwON/f/Dj1CadpM+jD57zMd6NYf0xz+rqqBY6God/8t7
-        TX6dPx+1DVtDLztkhUSAcR8=
-X-Google-Smtp-Source: ABdhPJwupivAk1N9MgrVRfeLIuGpMWP5Kyf0EI8ijczY41hBE7aYMyQPoMFzZEL0p9tHGfnhDxkH8Q==
-X-Received: by 2002:a05:6830:b8b:: with SMTP id a11mr15162078otv.179.1629434417359;
-        Thu, 19 Aug 2021 21:40:17 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t30sm1023166oiw.42.2021.08.19.21.40.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 21:40:16 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 19 Aug 2021 21:40:15 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v2] locking/ww_mutex: Initialize waiter.ww_ctx properly
-Message-ID: <20210820044015.GA2751666@roeck-us.net>
+        Fri, 20 Aug 2021 00:59:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1629435515; x=1660971515;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=tKayTa4Fur8gXkrlZH2QDOGstOTksSbXKUYa8mjJuFg=;
+  b=AFY8KdQTOZyQ3L6IZTlwSUjY3TRz0fKyYePKh72knGjtfG2pdf4Rrq8n
+   xjS5Sq+MfxQC8Y7QBuE4Ql2R/in9veK24foe0w1BgYRBd0GopPC0QkMsI
+   7J+VmFYfP587OulbvEA/m24c8b2VN3QkAZLeiOIlA3mdkEpa96tOgA3LZ
+   I=;
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 19 Aug 2021 21:58:35 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+  by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 21:58:35 -0700
+Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.858.15; Thu, 19 Aug 2021 21:58:34 -0700
+Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.858.15; Thu, 19 Aug 2021 21:58:32 -0700
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sboyd@kernel.org>
+CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
+        <quic_fenglinw@quicinc.com>
+Subject: [PATCH V1 0/9] A bunch of fix and optimization patches in spmi-pmic-arb.c
+Date:   Fri, 20 Aug 2021 12:57:55 +0800
+Message-ID: <1629435488-10228-1-git-send-email-quic_fenglinw@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03h.na.qualcomm.com (10.85.0.50) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 09:30:30PM +0200, Sebastian Andrzej Siewior wrote:
-> The gathering of the debug code for the ww-mutex initialized moved the
-> POISON initialiation into one spot and only set waiter.ww_ctx if the
-> ww_ctx was non-NULL thus keeping the POISON value in ww-mutex case.
-> 
-> For ww-mutex without a context it is expected to set the context to
-> NULL, the poison value was intended only for the regular mutex.
-> 
-> Always initialized waiter.ww_ctx to ww_ctx in the ww-mutex case.
-> 
-> Fixes: c0afb0ffc06e6 ("locking/ww_mutex: Gather mutex_waiter initialization")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+This change series includes some fixes and optimizations in spmi-pmic-arb.c.
+Please see change detail and description in each of the patch. Thanks!
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Abhijeet Dharmapurikar (1):
+  spmi: pmic-arb: add a print in cleanup_irq
 
-> ---
-> v1…v2: Use PeterZ' approach.
-> 
->  kernel/locking/mutex.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 05b68931622d1..2c70213934cd4 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -614,7 +614,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
->  
->  	debug_mutex_lock_common(lock, &waiter);
->  	waiter.task = current;
-> -	if (ww_ctx)
-> +	if (use_ww_ctx)
->  		waiter.ww_ctx = ww_ctx;
->  
->  	lock_contended(&lock->dep_map, ip);
-> -- 
-> 2.33.0
-> 
+Ashay Jaiswal (1):
+  spmi: pmic-arb: add support to dispatch interrupt based on IRQ status
+
+David Collins (5):
+  spmi: pmic-arb: check apid against limits before calling irq handler
+  spmi: pmic-arb: correct duplicate APID to PPID mapping logic
+  spmi: pmic-arb: block access for invalid PMIC arbiter v5 SPMI writes
+  spmi: pmic-arb: make interrupt support optional
+  spmi: pmic-arb: increase SPMI transaction timeout delay
+
+Subbaraman Narayanamurthy (1):
+  spmi: pmic-arb: do not ack and clear peripheral interrupts in
+    cleanup_irq
+
+Yimin Peng (1):
+  spmi: pmic-arb: support updating interrupt type flags
+
+ drivers/spmi/spmi-pmic-arb.c | 127 +++++++++++++++++++++++++++++++------------
+ 1 file changed, 91 insertions(+), 36 deletions(-)
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
+
