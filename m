@@ -2,169 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2493F2869
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9833F286E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhHTI3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhHTI3D (ORCPT
+        id S232240AbhHTIbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:31:22 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:30241 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231757AbhHTIbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:29:03 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC416C061575;
-        Fri, 20 Aug 2021 01:28:25 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id z18so17408985ybg.8;
-        Fri, 20 Aug 2021 01:28:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vdq+Asx3o4yD/FR2CqSULa1+X944ILDoCu3HB23Mx3g=;
-        b=IQY8gJ3jyuJ3XjjqiV9rSLsGOks9PtZ9qfZ+DFER9/NaUyiXkwo7JPkDV24/24kZSC
-         0l8MjP2TWSvUnBYQD5ZEMTs564KjkJdpeAQfjhULoDTV1RFrwtl832ynm5e5tlWDWatB
-         Vgz3EjBH0DWTr9Ha4oqxnKpQD9013TBMhkNXda8V0yoUVYmEstZn+tAdCi3iDKGGcfB3
-         eDMnAejQkQ1MKJwSBPisfDBxYKlsTiC1iZJy/J/lJwFOZoVemVjrdL93Hr2aMOS2EBCJ
-         TpTg8tR+awoDKsFzANZQduO2YB9OON13QYlBb8kT+XF/JTgHeXkhPJEebDXaBJuQvDBm
-         Xt0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vdq+Asx3o4yD/FR2CqSULa1+X944ILDoCu3HB23Mx3g=;
-        b=Vgq7Bt9DS6tfbLFjcuBCCMy4TxwnIr6D5znDnkpICU2e9q1zovWQhqwaL+O5BhOxaa
-         ZYfeoUWPkoax6fuxFWbmhFJ0ef9U4lpazjzgwxAjJ4wOfjzmPPmL6c3k5LkdX+duH+qh
-         i3j5eM8Xm+Ot/TbPJ3MYYnW2e9s4UQNAWtA1nvSsW8B0H4CRGYfbPqVi0QIXJ5av2kk2
-         pluul0AllJts6okEFb/u+WNVN/VbJvy+ToTZy7EIviS05PDanad0SWgRb49AgpwVF0wi
-         EP8zKYU5oG2scD/T6qXS4sJzvXMqqKwKk9lYCei/FyUBr0PdurOR+BfdNWKgWRLkIBsZ
-         VKdA==
-X-Gm-Message-State: AOAM5339Oe/9lCjrPB4Cs0ez8v6veFeaap7n4vqyMrxr+ltUHG02kko+
-        mb44788B/FsKC6UrefLd1vfSy+BqL7QK6pC5FJ4=
-X-Google-Smtp-Source: ABdhPJwOpjlOtYBbtglbGMf8WzHdOM7BhLlE+/8zkazTjw2cP4dcMowFABjZJBRD/o6Tzf5o7yn1a9pqm35FFBwBZiw=
-X-Received: by 2002:a25:b08d:: with SMTP id f13mr24381577ybj.518.1629448104971;
- Fri, 20 Aug 2021 01:28:24 -0700 (PDT)
+        Fri, 20 Aug 2021 04:31:21 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-274-2Q2jLTjjOQuEz4g5fh9Tsg-1; Fri, 20 Aug 2021 09:30:42 +0100
+X-MC-Unique: 2Q2jLTjjOQuEz4g5fh9Tsg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 09:30:39 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 20 Aug 2021 09:30:39 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>
+CC:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Sergey Senozhatsky" <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        "Jann Horn" <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Shawn Anastasio" <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Marco Elver" <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Florian Weimer" <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: RE: Removing Mandatory Locks
+Thread-Topic: Removing Mandatory Locks
+Thread-Index: AQHXlUolKQrpfCPkWUimXalbi9gnr6t8D3Ag
+Date:   Fri, 20 Aug 2021 08:30:39 +0000
+Message-ID: <ec075ee5764f4c7f9dd630090fb01f70@AcuMS.aculab.com>
+References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
+ <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>
+ <87lf56bllc.fsf@disp2133>
+ <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+ <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+ <87h7ft2j68.fsf@disp2133>
+ <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+ <YRcyqbpVqwwq3P6n@casper.infradead.org> <87k0kkxbjn.fsf_-_@disp2133>
+ <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
+ <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
+ <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
+ <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
+ <639d90212662cf5cdf80c71bbfec95907c70114a.camel@kernel.org>
+ <CAHk-=wgHbYmUZvFkthGJ6zZx+ofTiiTRxPai5mPkmbtE=6JbaQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgHbYmUZvFkthGJ6zZx+ofTiiTRxPai5mPkmbtE=6JbaQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210819145114.21074-1-lukas.bulwahn@gmail.com>
- <20210819150703.GA3204796@bjorn-Precision-5520> <20210819141053.17a8a540.alex.williamson@redhat.com>
-In-Reply-To: <20210819141053.17a8a540.alex.williamson@redhat.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 20 Aug 2021 10:28:21 +0200
-Message-ID: <CAKXUXMxM6oUkwP-YGDY1WEA8T0mCrR-5c-HLAjW-UrNotfHiCQ@mail.gmail.com>
-Subject: Re: [PATCH] mei: improve Denverton HSM & IFSI support
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 10:10 PM Alex Williamson
-<alex.williamson@redhat.com> wrote:
->
-> On Thu, 19 Aug 2021 10:07:03 -0500
-> Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> > [+cc Alex]
-> >
-> > On Thu, Aug 19, 2021 at 04:51:14PM +0200, Lukas Bulwahn wrote:
-> > > The Intel Denverton chip provides HSM & IFSI. In order to access
-> > > HSM & IFSI at the same time, provide two HECI hardware IDs for accessing.
-> > >
-> > > Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>
-> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > ---
-> > > Tomas, please pick this quick helpful extension for the hardware.
-> > >
-> > >  drivers/misc/mei/hw-me-regs.h | 3 ++-
-> > >  drivers/misc/mei/pci-me.c     | 1 +
-> > >  drivers/pci/quirks.c          | 3 +++
-> > >  3 files changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me-regs.h
-> > > index cb34925e10f1..c1c41912bb72 100644
-> > > --- a/drivers/misc/mei/hw-me-regs.h
-> > > +++ b/drivers/misc/mei/hw-me-regs.h
-> > > @@ -68,7 +68,8 @@
-> > >  #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
-> > >  #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
-> > >
-> > > -#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
-> > > +#define MEI_DEV_ID_DNV_IE  0x19E5  /* Denverton for HECI1 - IFSI */
-> > > +#define MEI_DEV_ID_DNV_IE_2        0x19E6  /* Denverton 2 for HECI2 - HSM */
-> > >
-> > >  #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
-> > >
-> > > diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
-> > > index c3393b383e59..30827cd2a1c2 100644
-> > > --- a/drivers/misc/mei/pci-me.c
-> > > +++ b/drivers/misc/mei/pci-me.c
-> > > @@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[] = {
-> > >     {MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
-> > >
-> > >     {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
-> > > +   {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
-> > >
-> > >     {MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
-> > >
-> > > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > > index 6899d6b198af..2ab767ef8469 100644
-> > > --- a/drivers/pci/quirks.c
-> > > +++ b/drivers/pci/quirks.c
-> > > @@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
-> > >     { PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
-> > >     { PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
-> > >     { PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
-> > > +   /* Denverton */
-> > > +   { PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
-> > > +   { PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs },
-> >
-> > This looks like it should be a separate patch with a commit log that
-> > explains it.  For example, see these:
-> >
-> >   db2f77e2bd99 ("PCI: Add ACS quirk for Broadcom BCM57414 NIC")
-> >   3247bd10a450 ("PCI: Add ACS quirk for Intel Root Complex Integrated Endpoints")
-> >   299bd044a6f3 ("PCI: Add ACS quirk for Zhaoxin Root/Downstream Ports")
-> >   0325837c51cb ("PCI: Add ACS quirk for Zhaoxin multi-function devices")
-> >   76e67e9e0f0f ("PCI: Add ACS quirk for Amazon Annapurna Labs root ports")
-> >   46b2c32df7a4 ("PCI: Add ACS quirk for iProc PAXB")
-> >   01926f6b321b ("PCI: Add ACS quirk for HXT SD4800")
-> >
-> > It should be acked by somebody at Intel since this quirk relies on
-> > behavior of the device for VM security.
->
-> +1 Thanks Bjorn.  I got curious and AFAICT these functions are the
-> interface for the host system to communicate with "Innovation Engine"
-> processors within the SoC, which seem to be available for system
-> builders to innovate and differentiate system firmware features.  I'm
-> not sure then how we can assume a specific interface ("HSM" or "IFSI",
-> whatever those are) for each function, nor of course how we can assume
-> isolation between them.  Thanks,
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTkgQXVndXN0IDIwMjEgMjM6MzMNCj4gDQo+
+IE9uIFRodSwgQXVnIDE5LCAyMDIxIGF0IDI6NDMgUE0gSmVmZiBMYXl0b24gPGpsYXl0b25Aa2Vy
+bmVsLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiBXaGF0IHNvcnQgb2YgYmlnLCB1Z2x5IHdhcm5pbmcg
+ZGlkIHlvdSBoYXZlIGluIG1pbmQ/DQo+IA0KPiBJIG9yaWdpbmFsbHkgdGhvdWdodCBXQVJOX09O
+X09OQ0UoKSBqdXN0IHRvIGdldCB0aGUgZGlzdHJvIGF1dG9tYXRpYw0KPiBlcnJvciBoYW5kbGlu
+ZyBpbnZvbHZlZCwgYnV0IGl0IHdvdWxkIHByb2JhYmx5IGJlIGEgYmlnIHByb2JsZW0gZm9yDQo+
+IHRoZSBwZW9wbGUgd2hvIGVuZCB1cCBoYXZpbmcgcGFuaWMtb24td2FybiBvciBzb21ldGhpbmcu
+DQoNCkV2ZW4gcGFuaWMtb24tb29wcyBpcyBhIFBJVEEuDQpUb29rIHVzIHdlZWtzIHRvIHJlYWxp
+c2UgdGhhdCBhIGN1c3RvbWVyIHN5c3RlbSB0aGF0IHdhcyByYW5kb21seQ0KcmVib290aW5nIHdh
+cyAnanVzdCcgaGF2aW5nIGEgYm9yaW5nIE5VTEwgcG9pbnRlciBhY2Nlc3MuDQogDQo+IFNvIHBy
+b2JhYmx5IGp1c3QgYSAibWFrZSBpdCBhIGJpZyBib3giIHRoaW5nIHRoYXQgc3RhbmRzIG91dCwg
+a2luZCBvZg0KPiB3aGF0IGxvY2tkZXAgZXRjIGRvZXMgd2l0aA0KPiANCj4gICAgICAgICBwcl93
+YXJuKCI9PT09PT0uLi49PT09XG4iKTsNCj4gDQo+IGFyb3VuZCB0aGUgbWVzc2FnZXMuLg0KPiAN
+Cj4gSSBkb24ndCBrbm93IGlmIGRpc3Ryb3MgaGF2ZSBzb21lIHBhdHRlcm4gd2UgY291bGQgdXNl
+IHRoYXQgd291bGQgZW5kDQo+IHVwIGJlaW5nIHNvbWV0aGluZyB0aGF0IGdldHMgcmVwb3J0ZWQg
+dG8gdGhlIHVzZXI/DQoNCldpbGwgdXNlcnMgZXZlbiBzZWUgaXQ/DQpBIGxvdCBvZiByZWNlbnQg
+ZGlzdHJvIGluc3RhbGxzIHRyeSB2ZXJ5IGhhcmQgdG8gaGlkZSBhbGwgdGhlIGtlcm5lbA0KbWVz
+c2FnZXMuDQpPVE9IIEkgZ3Vlc3MgJy1vIG1hbmQnIGlzIHVubGlrZWx5IHRvIGJlIHNldCBvbiBh
+bnkgb2YgdGhvc2Ugc3lzdGVtcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
+YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
+LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Alex, I got a Denverton hardware with Innovation Engine and the
-specific system firmware (basically delivered from Intel). To make use
-of that hardware, someone at Intel suggested adding these PCI ACS
-quirks. It is unclear to me if there are various different Denverton
-systems out there (I only got one!) with many different system
-firmware variants for the Innovation Engine or if there is just one
-Denverton with IE support and with one firmware from Intel, i.e., the
-one I got.
-
-If there is only one or two variants of the Denverton with Innovation
-Engine firmware out there, then we could add this ACS quirk here
-unconditionally (basically assuming that if the other firmware is
-there, the IE would just do the right thing, e.g., deny any operation
-for a non-existing firmware function), right? Just adding a commit
-similar to the commits Bjorn pointed out above. Otherwise, we would
-need to make that conditional for possible different variants, but I
-would need a bit more guidance from you on which other variants exist
-and how one can differentiate between them.
-
-Lukas
