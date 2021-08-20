@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CEB3F2B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38203F2B1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239601AbhHTLZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:25:20 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:20770 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239624AbhHTLZR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:25:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629458680; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=aRDo/wiZpYzTq3buxPSsGVJx60A3/h5ElkMW1ANqrlo=; b=RSBlTQxEJojPvnYz6F7YQ+ksfn7BnBtXKioNNq8Fm/qmCKxvxYlzcppk9b+aXgrEagjRVtyz
- TLTUeslXTBlYE/y9bgnItDFrN6pwSxDO4PImyWrBz+VtHTIX9VdDdAaxAdRDj3sTiQQwiVu9
- rQuOXCTyrvK/VUJHab08oVsqdsk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 611f90e289fbdf3ffe38c613 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Aug 2021 11:24:18
- GMT
-Sender: okukatla=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1473EC4360C; Fri, 20 Aug 2021 11:24:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S239336AbhHTLYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:24:36 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51172 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237509AbhHTLYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 07:24:35 -0400
+Received: from zn.tnic (p200300ec2f107b00e7e9cb6e773cca66.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:e7e9:cb6e:773c:ca66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: okukatla)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09616C4360C;
-        Fri, 20 Aug 2021 11:24:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 09616C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Odelu Kukatla <okukatla@codeaurora.org>
-To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, okukatla@codeaurora.org,
-        seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Subject: [v7 3/3] arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
-Date:   Fri, 20 Aug 2021 16:53:41 +0530
-Message-Id: <1629458622-4915-4-git-send-email-okukatla@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
-References: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 858051EC0531;
+        Fri, 20 Aug 2021 13:23:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629458632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=2mcU7b/Mo2+LoFnyaUn6inWnkrw/BsDqWaLY12vZxfk=;
+        b=dp+HFCu/8Hu4vnyrcGRLbhSTIofYyXLtA2DR2J2wL8g65ndA5pGWsBHoAzEFTwDGWSYHvM
+        gCKBV6UR8UeO1b8qDEdSMO0ynrLXeW+AF4fnnwh9HGHVRmeYl1yRq94gbZqVgba6tvhrsL
+        vxFuyFcbQH6j6qKqcq37pHIQtG6FajM=
+Date:   Fri, 20 Aug 2021 13:24:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, hpa@zytor.com,
+        Joerg Roedel <jroedel@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/efi: Restore Firmware IDT in before
+ ExitBootServices()
+Message-ID: <YR+Q7zOPuzK2W/8T@zn.tnic>
+References: <20210820073429.19457-1-joro@8bytes.org>
+ <YR91KKJ1Bq/KNBnY@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YR91KKJ1Bq/KNBnY@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Epoch Subsystem (EPSS) L3 interconnect provider node on SC7280
-SoCs.
+On Fri, Aug 20, 2021 at 11:26:00AM +0200, Borislav Petkov wrote:
+> Lemme go test it on whatever I can - if others wanna run this, it would
+> be very much appreciated!
 
-Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+FWIW, it boots fine here on my machines - not that it means a whole lot.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 53a21d0..cf59b47 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -1848,6 +1848,17 @@
- 			};
- 		};
- 
-+		epss_l3: interconnect@18590000 {
-+			compatible = "qcom,sc7280-epss-l3";
-+			reg = <0 0x18590000 0 1000>,
-+			      <0 0x18591000 0 0x100>,
-+			      <0 0x18592000 0 0x100>,
-+			      <0 0x18593000 0 0x100>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL0>;
-+			clock-names = "xo", "alternate";
-+			#interconnect-cells = <1>;
-+		};
-+
- 		cpufreq_hw: cpufreq@18591000 {
- 			compatible = "qcom,cpufreq-epss";
- 			reg = <0 0x18591100 0 0x900>,
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
