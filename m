@@ -2,56 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05BA3F2DA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB2A3F2DAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240739AbhHTOG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:06:59 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:34365 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S234189AbhHTOG6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:06:58 -0400
-Received: (qmail 36556 invoked by uid 1000); 20 Aug 2021 10:06:20 -0400
-Date:   Fri, 20 Aug 2021 10:06:20 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     syzbot <syzbot+9b57a46bf1801ce2a2ca@syzkaller.appspotmail.com>
-Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, mkubecek@suse.cz,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in hid_submit_ctrl/usb_submit_urb
-Message-ID: <20210820140620.GA35867@rowland.harvard.edu>
-References: <20210819195300.GA8613@rowland.harvard.edu>
- <000000000000c322ab05c9f2e880@google.com>
+        id S240681AbhHTOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234189AbhHTOJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:09:42 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DC02610FF;
+        Fri, 20 Aug 2021 14:09:03 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 10:08:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Tzvetomir Stoyanov" <tz.stoyanov@gmail.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v8 4/5] selftests/ftrace: Add selftest for testing
+ eprobe events
+Message-ID: <20210820100856.0fb17ca9@oasis.local.home>
+In-Reply-To: <20210820094639.77a9d0eec97bde10e28f5b47@kernel.org>
+References: <20210819152604.704335282@goodmis.org>
+        <20210819152825.526931866@goodmis.org>
+        <20210820094639.77a9d0eec97bde10e28f5b47@kernel.org>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000c322ab05c9f2e880@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 05:40:07PM -0700, syzbot wrote:
-> Hello,
+On Fri, 20 Aug 2021 09:46:39 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> > +
+> > +echo "$SYNTH u64 filename; s64 ret;" > synthetic_events
+> > +echo "hist:keys=common_pid:__arg__1=$FIELD" > events/$SYSTEM/$START/trigger
+> > +echo "hist:keys=common_pid:filename=\$__arg__1,ret=ret:onmatch($SYSTEM.$START).trace($SYNTH,\$filename,\$ret)" > events/$SYSTEM/$END/trigger  
 > 
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> Hmm, can you make this more simple one without synthetic events?
+> Since synthetic event depends on CONFIG_SYNTH_EVENTS, you need to add
+> "synth_events" to 'requires' tag.
+> However, this means that this testcase doesn't run when CONFIG_SYNTH_EVENTS=n
+> but CONFIG_*PROBE_EVENTS=y.
 
-That's good to know.  Still, I suspect there's a better way of handling 
-this condition.
+Sure. I just used this because it was one of the main purposes I was
+using it for. I may keep this as a test, but will rename it as
+something else, and make a more simple one for just testing the event
+probe add and removal.
 
-In particular, does it make sense to accept descriptors for input or 
-feature reports with length zero?  I can't imagine what good such 
-reports would do.
-
-On the other hand, I'm not familiar enough with the code to know the 
-right way to reject these descriptors and reports.  It looks like the 
-HID subsystem was not designed with this sort of check in mind.
-
-Benjamin and Jiri, what do you think?  Is it okay to allow descriptors 
-for zero-length reports and just pretend they have length 1 (as the 
-patch tested by syzbot did), or should we instead reject them during 
-probing?
-
-Alan Stern
+-- Steve
