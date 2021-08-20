@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2E33F2A4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A753F2A50
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 12:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237262AbhHTKvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 06:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhHTKve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 06:51:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C00B60FDA;
-        Fri, 20 Aug 2021 10:50:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629456656;
-        bh=q8gLSnrTAf3x+Wghr7BlfshsmKBhWmCOudXqUTpNQXk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=L7lb99ewy3BYP6mgeycwTX79zyznsksvDG7mQHW/mjHQy1MiO9O6wLT9G6A0qJ/tv
-         CHKdyHe1KBGGtno1+jq8yN0f0YUd9q9U8Wxs1mYfa6D2xbqRIuxNqh3vmrRC52GdgU
-         C/TWLHkTBczm78vSlcx6ogH9OVLpZaJkYI5pkGYW3WBmq9rYmU/8QpCZN5o2hDUA3L
-         HwO757h9VJlZjl8Z2on1nEBvMMVhbXlZ8PZFChf+34fSgvp+ypTx0gttNuBB22y5PE
-         Hbgs6PDnft4a2ZMo90CW+QuD/zJqu+bfxZEMn2qzS06vTlmH5eIpIyfIOabkYinoGA
-         5bDlJdeybYyuQ==
-Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: introduce periodic iostat io
- latency traces
-To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-References: <20210820035229.216975-1-daeho43@gmail.com>
- <20210820035229.216975-2-daeho43@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <48725f58-1a48-73f3-80cf-a0c5efc3b470@kernel.org>
-Date:   Fri, 20 Aug 2021 18:50:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238720AbhHTKvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 06:51:50 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:47225 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237674AbhHTKvs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 06:51:48 -0400
+Received: (Authenticated sender: hadess@hadess.net)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 3A5D540003;
+        Fri, 20 Aug 2021 10:51:09 +0000 (UTC)
+Message-ID: <c19dfdde11754c234ca8a45c4af2187699498ee8.camel@hadess.net>
+Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Luke Jones <luke@ljones.dev>
+Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+        platform-driver-x86@vger.kernel.org
+Date:   Fri, 20 Aug 2021 12:51:08 +0200
+In-Reply-To: <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
+References: <20210820095726.14131-1-luke@ljones.dev>
+         <20210820095726.14131-2-luke@ljones.dev>
+         <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
+         <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
+         <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
 MIME-Version: 1.0
-In-Reply-To: <20210820035229.216975-2-daeho43@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/20 11:52, Daeho Jeong wrote:
-> +void iostat_update_and_unbind_ctx(struct bio *bio, int rw)
-> +{
-> +	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-> +	int sync_type = bio->bi_opf & REQ_SYNC ? 0 : 1;
+On Fri, 2021-08-20 at 12:43 +0200, Bastien Nocera wrote:
+> On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
+> > > Am I going to get bug reports from Asus users that will complain
+> > > that
+> > > power-profiles-daemon doesn't work correctly, where I will have
+> > > to
+> > > wearily ask if they're using an Asus Rog laptop?
+> > 
+> > No. Definitely not. The changes to fan curves per-profile need to
+> > be 
+> > explicitly enabled and set. So a new user will be unaware that this
+> > control exists (until they look for it) and their laptop will
+> > behave 
+> > exactly as default.
+> 
+> "The user will need to change the fan curves manually so will
+> definitely remember to mention it in bug reports" is a very different
+> thing to "the user can't change the fan curves to be nonsensical and
+> mean opposite things".
+> 
+> I can assure you that I will eventually get bug reports from "power
+> users" who break their setup and wonder why things don't work
+> properly,
+> without ever mentioning the changes they made changes to the fan
+> curves, or anything else they might have changed.
 
-int sync_type = bio->bi_opf & REQ_SYNC ? 1 : 0;
+A way to taint the settings that power-profiles-daemon could catch
+would be fine by me. I absolutely don't want to have to support
+somebody's tweaks until they undo them.
 
-Right?
-
->   int f2fs_init_iostat(struct f2fs_sb_info *sbi)
->   {
->   	/* init iostat info */
->   	spin_lock_init(&sbi->iostat_lock);
-> +	spin_lock_init(&sbi->iostat_lat_lock);
->   	sbi->iostat_enable = false;
->   	sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
-> +	sbi->iostat_io_lat = f2fs_kzalloc(sbi, sizeof(struct iostat_lat_info),
-> +					GFP_KERNEL);
-> +	if (!sbi->iostat_io_lat)
-> +		return -ENOMEM;
-
-What do you think of just embedding iostat_io_lat structure into f2fs_sb_info
-structure? it's minor thing though.
-
-Thanks,
