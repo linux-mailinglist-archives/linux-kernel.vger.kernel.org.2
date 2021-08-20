@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79AA3F2B3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA8F3F2B45
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239680AbhHTLbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
+        id S239903AbhHTLdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239511AbhHTLbI (ORCPT
+        with ESMTP id S239812AbhHTLdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:31:08 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934DAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 04:30:30 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id k8so13788727wrn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 04:30:30 -0700 (PDT)
+        Fri, 20 Aug 2021 07:33:05 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BECC061575;
+        Fri, 20 Aug 2021 04:32:27 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b7so13584209edu.3;
+        Fri, 20 Aug 2021 04:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qDKfRZRU7nzYZWhRJJ9/0dIDBxxKxoJMevlwhIQ2MBE=;
-        b=K9ZRFlHl8vmyynKsEHwmhmZn0L2EbAYxMEMV/C4Vbc5Qe4HOZC6X+5qWCoBXRa1xKB
-         bBH71UNA71ckpnPSCf4XjKX1WTOkG/1ASY6fGe51D5of8fPZ9Q+HBcx/WIZycmN1PBuK
-         K1bTez5YaDVNTYpDAMfkGm9FMzEJQ6/yAtxrtY2Gag3iZpE6oAHM+BaBadhpFlMUrhaG
-         NpjUALqy+A0xidp/HSgA3n7AjGS3qVvQytL0ErA07LSRqGgCs7VKwHAq5dcInFZ5qb5K
-         8YGP7znljbcJEFBBbZvHijsJrFGCGOSTYMvu0gmALqNVTXD0BOqza24oJ4G0yLMgq3Po
-         upSQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+dxqelAbvAgNzB6Yr+hihCSpE0opyXvrOZ0GbMhC7Fo=;
+        b=IzXjk5b14F2daFLa65zWeNOReFFiTePMbSrS3KBKO1lYrdhxSFmcN0hkmNj6A3N968
+         EtxIuUT+JPTRSHoNBQ/zejh6gt4Mai9VID/KWsprOSomppPZXas38GoZJJKx2rCBb/F7
+         3cD1Y02Xv7asguMQZ/4gQApF9l3nJxB4S9GvoGsUkEyRMbD8n+n0SvvvrBatmHVf8fHw
+         vJSSq5Pcrh2CcJnHA4s27ItuIY6gAwPNNkoLu0v9eY6frzWYH+t9t0vqzOzSoDRO0Fg7
+         wYY52oeA29fRejQ/XB1TsAlSVY+dtzoFqfyiRZK0rH6QqdtB+i6rBqjkoABJkHIYtJpd
+         2QVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qDKfRZRU7nzYZWhRJJ9/0dIDBxxKxoJMevlwhIQ2MBE=;
-        b=sUCXMNyuhyotwXEnGiAt8QESF2ovYydurcLBUErY9jC86YZOEGUaKxjKUB6xalM+cc
-         dv5tuTSPPwGyd8VqBLv319XvTWnNOhG/pvDXuaBl1ZA71vchHnvjNKi92EpGjnw9u1Vf
-         YSP0QfjYqdbiqv7sCFzMj7vgvwPNXSED71jEMWkALY+c00U7FcGvafjGtaTORzqiqvol
-         cxlXijwNefPLTFx318Aw5WslgteH5E9eX95ozvli2ZkImvTp2OqiNNIO+eKU6l3jVOGY
-         rumdvY19TjCJnKb7xjjqLmJHIalyp2wCSOlSAbNucuphkE4MZBzex5cZQDj3zYeP6yX3
-         cr/g==
-X-Gm-Message-State: AOAM5310xKZs7XBi/d7HyHoGkHIemnBOA2H2Lkq0Hn0L9eK8o7SWAtXN
-        7825cZpa8dIP4C45vrJX/xrSxw==
-X-Google-Smtp-Source: ABdhPJxgiXh5Uwv9cgb9XBAyiujiZHro30bND8lWH4Gh5erzv2Oh3PODyusAuRD+3aJZyfhhVApvJQ==
-X-Received: by 2002:adf:f0c2:: with SMTP id x2mr9412185wro.107.1629459028907;
-        Fri, 20 Aug 2021 04:30:28 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c378:b01b:5d2d:5223? ([2a01:e34:ed2f:f020:c378:b01b:5d2d:5223])
-        by smtp.googlemail.com with ESMTPSA id h11sm11696878wmc.23.2021.08.20.04.30.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 04:30:28 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/2] Add a generic virtual thermal sensor
-To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com
-References: <20210819123215.591593-1-abailon@baylibre.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f7d1205b-e859-e059-c835-c09a85c8c480@linaro.org>
-Date:   Fri, 20 Aug 2021 13:30:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=+dxqelAbvAgNzB6Yr+hihCSpE0opyXvrOZ0GbMhC7Fo=;
+        b=f0/11XEKtNEwyaiy9s2VKS7JWobp4zHe328/FqZ88WYe1iRuKxCGFdvNlBWDcCy8Pm
+         sriDttvVy821ZzDTLLK9rYDxJW56r4c6IkqBehOYsskZ+/bBSYgwf9H+7Sb7oQpiot1H
+         OVl/NrW4zvZzBSpGW9N22y+Tg1h/vW+5M+DusYoVKLz/OUVakuyfDcbwBdFxF8IIQyuq
+         lXFycNTKn9ddS9Sw5Yt7llCG1k70VHbTgKUGJyWFdtM/PBTzgaVfiZKvLZjzksplbSSe
+         ehJ5kJ5nUbpRISEyABZE2V4L8FTHDMvHqZ8knwDq/i9GzWs50Oq0h1HmU+LVNQO6YxdT
+         V3fQ==
+X-Gm-Message-State: AOAM532atuT/sFtNjm33q5ZPd/BGsRxkJPLhMlNwf2zZjZHHWEN2huqz
+        CGd/93ZQKu3Iid+KyEg3scg=
+X-Google-Smtp-Source: ABdhPJz9HznewVbDKl9DS6Jhsntt2saEODUgRgMy2oYmpymp57dSQ746yWqT/+skGHa7Q/u/Eo3W/A==
+X-Received: by 2002:a05:6402:1206:: with SMTP id c6mr22181041edw.264.1629459146274;
+        Fri, 20 Aug 2021 04:32:26 -0700 (PDT)
+Received: from honeypot.epfl.ch (mob-37-181-187-184.net.vodafone.it. [37.181.187.184])
+        by smtp.googlemail.com with ESMTPSA id x15sm2693333ejv.95.2021.08.20.04.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 04:32:25 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf tests: dlfilter: free desc and long_desc in check_filter_desc
+Date:   Fri, 20 Aug 2021 13:31:29 +0200
+Message-Id: <20210820113132.724034-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210819123215.591593-1-abailon@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In dlfilter-test, the function check_filter_desc calls get_filter_desc
+which allocates desc and long_desc.
+However, these variables are never deallocated.
 
-Hi Alexandre,
+This patch adds the missing frees.
 
-thanks for the proposal.
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Fixes: 9f9c9a8de2d5e96c ("perf tests: Add dlfilter test")
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/tests/dlfilter-test.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-On 19/08/2021 14:32, Alexandre Bailon wrote:
-> This series add a virtual thermal sensor that uses the hardware thermal sensors,
-> aggregate them to return a temperature.
-> 
-> My first aptempt was to do the aggregation in the thermal zone but it was not
-> that easy to do, and, there were some case that would have been conflictual
-> such as setting differents trip for a regular zone and a multisensor zone.
-> 
-> Instead, I made a virtual thermal sensor that could registered in a thermal
-> zone, and have its own properties.
-> It could be added in the device tree, with the list of sensors to aggregate,
-> and the type of aggregation to be done.
-> 
-> As example:
->   soc_max_sensor: soc_max_sensor {
->     compatible = "generic,thermal-aggregator";
->     #thermal-sensor-cells = <1>;
->     type = "max";
->     thermal-sensors = <&lvts 0>, <&lvts 1>, <&lvts 2>, <&lvts 3>,
->           <&lvts 4>, <&lvts 5>, <&lvts 6>, <&lvts 7>,
->           <&lvts 8>, <&lvts 9>, <&lvts 10>, <&lvts 11>,
->           <&lvts 12>, <&lvts 13>, <&lvts 14>, <&lvts 15>,
->           <&lvts 16>;
->   };
-> 
-> The current series build and work but it would require to be completed
-> aswell a lot of cleanup.
-> Before working on it, I would like to get some feedback and I know if that
-> would an acceptable solution and continue that way.
-
-Yes, I think it is going to the right direction.
-
-IMO, we can get rid of the thermal_of changes. From a design PoV, the
-patch itself should be the virtual thermal driver without any changes in
-the core code, including thermal_of.
-
-I have some comments on patch 2/2
-
-
-> Follows the following discussion:
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20210617114707.10618-3-ben.tseng@mediatek.com/
-> 
-> Alexandre Bailon (2):
->   thermal: provide a way to get thermal sensor from a device tree node
->   thermal: add a virtual sensor to aggregate temperatures
-> 
->  drivers/thermal/Kconfig              |   8 ++
->  drivers/thermal/Makefile             |   1 +
->  drivers/thermal/thermal_aggregator.c | 134 +++++++++++++++++++++++++++
->  drivers/thermal/thermal_of.c         |  43 +++++++++
->  include/linux/thermal.h              |  12 +++
->  5 files changed, 198 insertions(+)
->  create mode 100644 drivers/thermal/thermal_aggregator.c
-> 
-
-
+diff --git a/tools/perf/tests/dlfilter-test.c b/tools/perf/tests/dlfilter-test.c
+index 7eba7955d53154e1..bc03b5df6828d6fa 100644
+--- a/tools/perf/tests/dlfilter-test.c
++++ b/tools/perf/tests/dlfilter-test.c
+@@ -239,15 +239,20 @@ static int get_dlfilters_path(char *buf, size_t sz)
+ 
+ static int check_filter_desc(struct test_data *td)
+ {
+-	char *long_desc;
+-	char *desc;
++	char *long_desc = NULL;
++	char *desc = NULL;
++	int ret;
+ 
+ 	if (get_filter_desc(td->dlfilters, "dlfilter-test-api-v0.so", &desc, &long_desc) &&
+ 	    long_desc && !strcmp(long_desc, "Filter used by the 'dlfilter C API' perf test") &&
+ 	    desc && !strcmp(desc, "dlfilter to test v0 C API"))
+-		return 0;
++		ret = 0;
++	else
++		ret = -1;
+ 
+-	return -1;
++	free(desc);
++	free(long_desc);
++	return ret;
+ }
+ 
+ static int get_ip_addr(struct test_data *td)
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.31.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
