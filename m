@@ -2,112 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679533F34A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163273F34A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbhHTTYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:24:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35581 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229923AbhHTTYO (ORCPT
+        id S238135AbhHTTYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:24:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38586 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhHTTYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:24:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629487414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 20 Aug 2021 15:24:33 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BC5512016A;
+        Fri, 20 Aug 2021 19:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629487433; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=e9w0Wui0S9JFIo8imxcdNxMuJT75RM52d050cVRzcis=;
-        b=iQFO1TDdCaOgynMKDXgHhGHu8UlVg2XZw9GpACecNeMjmIqYIRZuHVr2C1sjs8SBCgoVPL
-        IQ2JbkXwvf2BUJ8qCVAidHq2Gjwp8zm5r3rg0nNFY5zWVWs4wZsISsHe6AFK0TCojJjgPn
-        mFywLrxjyoirzkSNHqyEgc1DsNphgps=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-b539qGrFMgyZPu9pB5p0vw-1; Fri, 20 Aug 2021 15:22:29 -0400
-X-MC-Unique: b539qGrFMgyZPu9pB5p0vw-1
-Received: by mail-ot1-f72.google.com with SMTP id k18-20020a9d7dd2000000b0051aec75d1abso2342428otn.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 12:22:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e9w0Wui0S9JFIo8imxcdNxMuJT75RM52d050cVRzcis=;
-        b=lv87G2NLMBLIdG6CShnKy+tmwHjp3Oxw1VypNt3bEH+TTKP+7M3VfuPE6CFMsHT28l
-         8J7Com/Eit6VW+yC6pfuM8ZRyiayH/jXy3Rjb1c2UPYIoVr5J0gleHyUr8gxQK9E0z4L
-         aCFUdEeFjHdo9mZua7YISTlyQPbvzH52foh67+011rlYXX6uIkg4wqg0SPJvKf3rkiTW
-         Yg1wxpFpDkx1MAjtinOLmPQDZlh+vQ20mAmnf1x2tGRLGRqho8jJ0Z9oc0MirOx7q4da
-         pGMvFqeotTN9hZQcUKs99/0pb9hw0JzWlWNykeffd33AZVee9jcyuJ3JEbASDR7kNvfZ
-         AJhA==
-X-Gm-Message-State: AOAM532bZsTPvpO9KCljwwbDlmSlDiX/NLcwSBa0tEqrJ/8ndVCDElHu
-        moCnZcyFafSr2pFtBQlXPCzlGY0vuMUvlxlIMjJjrV6yGoH1Gn0rK1cac5y1ZkTYzgfY0ZRb9J9
-        +/f+xnRKc1obmfayXMJzXURwo
-X-Received: by 2002:aca:d610:: with SMTP id n16mr4308889oig.170.1629487348373;
-        Fri, 20 Aug 2021 12:22:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwycWbSNov2qN6XA73agM+PuKLxBN3y6vQRFUuctvPXGJvCN2UJVNMeRaFpFDSARAcAb3v3tQ==
-X-Received: by 2002:aca:d610:: with SMTP id n16mr4308878oig.170.1629487348160;
-        Fri, 20 Aug 2021 12:22:28 -0700 (PDT)
-Received: from treble ([68.74.140.199])
-        by smtp.gmail.com with ESMTPSA id y33sm1658640ota.66.2021.08.20.12.22.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 12:22:27 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 12:22:24 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
-        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
-        elver@google.com
-Subject: Re: [PATCH v2 01/24] x86/xen: Mark cpu_bringup_and_idle() as
- dead_end_function
-Message-ID: <20210820192224.ytrr6ybuuwegbeov@treble>
-References: <20210624094059.886075998@infradead.org>
- <20210624095147.693801717@infradead.org>
+        bh=J/ZTHYspJWems3grCDvjCH9V3Hhhi4avlqSwNlHDseY=;
+        b=w715AXDNp3TIRo7tdKvLhrjp59r1bQccQ1zHmXeFvTGAP9S90SGPYX8yANzkrJVdT+dBTI
+        FDHMWAcwUI1kA/5bqDad5ERYL9B32IMDohhBSGMvzigj7h+aDi4IwKhEUQexe75ZD8aNuy
+        9uff1GLGaUIN8OrT8YzJapgrItfqMCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629487433;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J/ZTHYspJWems3grCDvjCH9V3Hhhi4avlqSwNlHDseY=;
+        b=3dduTyFnRRIIKMQglkFUGeRkDtPYvK25MBhk7tvpM1DR1tm08KlCLiqDtrNdUizOWaBZoO
+        vh686/xKzNjcXuDw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5600D13BE5;
+        Fri, 20 Aug 2021 19:23:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 2dEQE0kBIGGIXgAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Fri, 20 Aug 2021 19:23:53 +0000
+To:     syzbot <syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com>,
+        airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
+        daniel.vetter@intel.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linaro-mm-sig-owner@lists.linaro.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        melissa.srw@gmail.com, mripard@kernel.org, sumit.semwal@linaro.org,
+        syzkaller-bugs@googlegroups.com
+References: <00000000000047b52b05c9ff8d0b@google.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [syzbot] WARNING in drm_gem_shmem_vm_open
+Message-ID: <dc7ca5ae-afc1-f840-8dfc-3f2361cd4360@suse.de>
+Date:   Fri, 20 Aug 2021 21:23:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210624095147.693801717@infradead.org>
+In-Reply-To: <00000000000047b52b05c9ff8d0b@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 11:41:00AM +0200, Peter Zijlstra wrote:
-> The asm_cpu_bringup_and_idle() function is required to push the return
-> value on the stack in order to make ORC happy, but the only reason
-> objtool doesn't complain is because of a happy accident.
-> 
-> The thing is that asm_cpu_bringup_and_idle() doesn't return, so
-> validate_branch() never terminates and falls through to the next
-> function, which in the normal case is the hypercall_page. And that, as
-> it happens, is 4095 NOPs and a RET.
-> 
-> Make asm_cpu_bringup_and_idle() terminate on it's own, by making the
-> function it calls as a dead-end. This way we no longer rely on what
-> code happens to come after.
-> 
-> Fixes: c3881eb58d56 ("x86/xen: Make the secondary CPU idle tasks reliable")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh
+Content-Type: multipart/mixed; boundary="RFSfHUaXVAmGRzteq89QyZAcdgd27yXDG";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: syzbot <syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com>,
+ airlied@linux.ie, christian.koenig@amd.com, daniel.vetter@ffwll.ch,
+ daniel.vetter@intel.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig-owner@lists.linaro.org, linaro-mm-sig@lists.linaro.org,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ maarten.lankhorst@linux.intel.com, melissa.srw@gmail.com,
+ mripard@kernel.org, sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com
+Message-ID: <dc7ca5ae-afc1-f840-8dfc-3f2361cd4360@suse.de>
+Subject: Re: [syzbot] WARNING in drm_gem_shmem_vm_open
+References: <00000000000047b52b05c9ff8d0b@google.com>
+In-Reply-To: <00000000000047b52b05c9ff8d0b@google.com>
 
-Looks right.  Only problem is, with my assembler I get this:
+--RFSfHUaXVAmGRzteq89QyZAcdgd27yXDG
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-  arch/x86/kernel/head_64.o: warning: objtool: .text+0x5: unreachable instruction
+Hi
 
-Because gas insists on jumping over the page of nops...
+Am 20.08.21 um 17:45 schrieb syzbot:
+> syzbot has bisected this issue to:
 
-0000000000000000 <asm_cpu_bringup_and_idle>:
-       0:	e8 00 00 00 00       	callq  5 <asm_cpu_bringup_and_idle+0x5>
-			1: R_X86_64_PLT32	cpu_bringup_and_idle-0x4
-       5:	e9 f6 0f 00 00       	jmpq   1000 <xen_hypercall_set_trap_table>
-       a:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-      11:	00 00 00 00 
-      15:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-      1c:	00 00 00 00 
-      20:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-      27:	00 00 00 00 
-      2b:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-      32:	00 00 00 00 
-      36:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
-      3d:	00 00 00 00 
+Good bot!
 
--- 
-Josh
+>=20
+> commit ea40d7857d5250e5400f38c69ef9e17321e9c4a2
+> Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Date:   Fri Oct 9 23:21:56 2020 +0000
+>=20
+>      drm/vkms: fbdev emulation support
 
+Here's a guess.
+
+GEM SHMEM + fbdev emulation requires that=20
+(drm_mode_config.prefer_shadow_fbdev =3D true). Otherwise, deferred I/O=20
+and SHMEM conflict over the use of page flags IIRC.
+
+ From a quick grep, vkms doesn't set prefer_shadow_fbdev and an alarming =
+
+amount of SHMEM-based drivers don't do either.
+
+Best regards
+Thomas
+
+>=20
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D11c31d55=
+300000
+> start commit:   614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.k=
+ern..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D13c31d55=
+300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15c31d55300=
+000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D96f06022032=
+50753
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D91525b2bd4b5d=
+ff71619
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D122bce0e3=
+00000
+>=20
+> Reported-by: syzbot+91525b2bd4b5dff71619@syzkaller.appspotmail.com
+> Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
+>=20
+> For information about bisection process see: https://goo.gl/tpsmEJ#bise=
+ction
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--RFSfHUaXVAmGRzteq89QyZAcdgd27yXDG--
+
+--9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmEgAUgFAwAAAAAACgkQlh/E3EQov+Ca
+QhAAkZ31x5M00jNSVFt6zSFPz7zsmP1+pIfZD9wsS8TkIJGxUsHyfbh9a/eIijkh/e8zNqQ9JP1P
+HOscLUH/AgY9d+/RCrU062w/5zKJEOhodrt+9FzVqGeavOM3csDR5ll6bPv2oo0eSpnttEJ2w6SG
+1urAbMBvUbIRvWN+vmdYIqp4ezHHj7izBuRoFeRWQNn7t8AQjaqnduIhip9takLa2nLd2zIOYAev
+vVdgtw9+JI/2ZJCnbFedn/CvDJ4A8VPLfeSQcgG8Ksqw+VHjRBrd5sS+Z7K9RFTNqi5Ec7klHdei
+JrnvVmLWoezYdjoDjVWLINuEk2r7L6GAhoF0oDhZq1kVv7K33xfDIdQB2p8JqTY9o22Rthjq0Kkc
+zg5vhhr/CBZ2H7gACKGybG86UqcO5e0z2PVlmlZvVRdgC5x0ZGGxMe79e2GVwUbCuDBepAwet/fq
+XbdBZ1JmDxdRnODXB7A6LvqDyDiCjAKI4pcTB/9OjUZ9CUSk1XXc52WJV2btzfGPSDaSMRRg6l6C
+eFKIlD/Gk9kXHttN3F6+OZeK46oFRodhgQ2ooaf1jRetNa1xd6d+b8m6UFerDQplYGiR1F3jnwvv
+3GOzP8qg0PP9tgr9/7ozH50m1IUEcNuX2iCVwVs/dkuBYH+OIQbZtmZqizDWKx3DvNg+341m4EA4
+kvA=
+=gavY
+-----END PGP SIGNATURE-----
+
+--9BSk7OnrvXIspcoyXpuha4Szaal3Vonnh--
