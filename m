@@ -2,106 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980363F3235
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772A43F3238
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhHTR1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:27:01 -0400
-Received: from mga17.intel.com ([192.55.52.151]:61220 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230151AbhHTR1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:27:00 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="197066296"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="197066296"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 10:26:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="463445143"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by orsmga007.jf.intel.com with SMTP; 20 Aug 2021 10:26:15 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 20 Aug 2021 20:26:14 +0300
-Date:   Fri, 20 Aug 2021 20:26:14 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Imre Deak <imre.deak@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
-        <jose.souza@intel.com>, Sean Paul <seanpaul@chromium.org>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm/i915/dp: Use max params for panels < eDP 1.4
-Message-ID: <YR/ltlF5jRTYzQ3F@intel.com>
-References: <20210820075301.693099-1-kai.heng.feng@canonical.com>
+        id S234629AbhHTR1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233383AbhHTR1S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:27:18 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCAEC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:26:40 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id u22so21974841lfq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=hoZptJSdaDJwUGImblbB/rkim6JUrWognoqp4l4Tb6E=;
+        b=LksxcD2tZr2tFmmoc3mpoLjxF48zLEHPBi2Kv6Cr2nLteBjohPb7Hok+EPA2EsGR4y
+         fxnX4EsQFAEz3AVDB+4wJitvY9OO8uu8uW/hR05eV2Nx3vHCzyfgx5WcSz/USleIvq9R
+         umyuKE5g11g5SnIoKSYhuBtLzCqY39gjkCdNzjJu3610Qg8Ix95sWY8n9yo0Ht2T1/Kg
+         HyNHNNcCfHjOQ0p+xNta48aLkQa4Jw/JlBrWot/yl85Idc/JWzUvMMFqflVxLRxXnMEW
+         o/lkNnyhen/+VBIQZtXUsqt1Q+6ihvKiuUoM9Ck3aPfWQdBv6LsftJJnowcfWNKCgGmv
+         mK3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=hoZptJSdaDJwUGImblbB/rkim6JUrWognoqp4l4Tb6E=;
+        b=pIJu18EjKwjoKqj4i8dIRkSEc68KdHUUXXBOvAZocfOgdWG8hcHB9F15hk+TvB8JLi
+         GX2tBVGNt9RW1gktFZQBEXnsfjKX5oYWoSONO+D0VgcXaFHaqWIuffbS/uEyoMxU+LCq
+         woj6peIedSq8As76nzF+8fFJVJ2M3SBqHRZ1J21waVRauiGtxE5U74Y43PmhoBZknm4Y
+         uMzVP5FUHFW0QY7zvfqSGxZDYCr1uq6CuAdVEKHvCFXgI5Q2XN81eHrMazhNfq5wUKC3
+         tlKU6xVvAB9f9GvX1zP+Xs1vXz1joW60voRU0IebxTBeNxqsECyGXCQunQonkcrXd3r+
+         Xvhw==
+X-Gm-Message-State: AOAM53195xZZ+lruqkiW9j8WlJnBK0F5KX3jHtn9tBxIhC8BpjjkFRGG
+        K6sDJh9XcVoO/nn1AQukGoLWGEP6fuintmsKsZs=
+X-Google-Smtp-Source: ABdhPJwFbqZb3ptsJhLD9zaLxzSWbXFa8gQ8pbCQJJkzoEOXjWI50l1fLLXIm5NP1z1arV8YyWOUYWJy9wqlS5cFP2g=
+X-Received: by 2002:a19:f719:: with SMTP id z25mr15446153lfe.339.1629480398168;
+ Fri, 20 Aug 2021 10:26:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210820075301.693099-1-kai.heng.feng@canonical.com>
-X-Patchwork-Hint: comment
+Received: by 2002:a05:6512:6c6:0:0:0:0 with HTTP; Fri, 20 Aug 2021 10:26:37
+ -0700 (PDT)
+Reply-To: Bill.Chantal.Lawrence@mail.com
+From:   "Mrs. bill Chantal" <ghyiuobn0069@gmail.com>
+Date:   Fri, 20 Aug 2021 10:26:37 -0700
+Message-ID: <CAH5hvMBQKV6FjDFHQzk_cO0f1pmXo3J7U8guh=qvJvvDB4geRQ@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:52:59PM +0800, Kai-Heng Feng wrote:
-> Users reported that after commit 2bbd6dba84d4 ("drm/i915: Try to use
-> fast+narrow link on eDP again and fall back to the old max strategy on
-> failure"), the screen starts to have wobbly effect.
-> 
-> Commit a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for
-> everything") doesn't help either, that means the affected eDP 1.2 panels
-> only work with max params.
-> 
-> So use max params for panels < eDP 1.4 as Windows does to solve the
-> issue.
-> 
-> v3:
->  - Do the eDP rev check in intel_edp_init_dpcd()
-> 
-> v2:
->  - Check eDP 1.4 instead of DPCD 1.1 to apply max params
-> 
-> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3714
-> Fixes: 2bbd6dba84d4 ("drm/i915: Try to use fast+narrow link on eDP again and fall back to the old max strategy on failure")
-> Fixes: a5c936add6a2 ("drm/i915/dp: Use slow and wide link training for everything")
-> Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-
-Slapped a cc:stable on it and pushed to drm-intel-next. Thanks.
-
-> ---
->  drivers/gpu/drm/i915/display/intel_dp.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 75d4ebc669411..e0dbd35ae7bc0 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -2445,11 +2445,14 @@ intel_edp_init_dpcd(struct intel_dp *intel_dp)
->  	 */
->  	if (drm_dp_dpcd_read(&intel_dp->aux, DP_EDP_DPCD_REV,
->  			     intel_dp->edp_dpcd, sizeof(intel_dp->edp_dpcd)) ==
-> -			     sizeof(intel_dp->edp_dpcd))
-> +			     sizeof(intel_dp->edp_dpcd)) {
->  		drm_dbg_kms(&dev_priv->drm, "eDP DPCD: %*ph\n",
->  			    (int)sizeof(intel_dp->edp_dpcd),
->  			    intel_dp->edp_dpcd);
->  
-> +		intel_dp->use_max_params = intel_dp->edp_dpcd[0] < DP_EDP_14;
-> +	}
-> +
->  	/*
->  	 * This has to be called after intel_dp->edp_dpcd is filled, PSR checks
->  	 * for SET_POWER_CAPABLE bit in intel_dp->edp_dpcd[1]
-> -- 
-> 2.32.0
-
--- 
-Ville Syrjälä
-Intel
+Dear Friend
+You have been compensated with the sum of 4.4 million dollars in this
+united nation the payment will be Issue into ATM visa card and send to
+you from the Santander bank in Spain we need your address passport and
+your Whatsapp Number.
+Thanks
+Mrs. bill Chantal
