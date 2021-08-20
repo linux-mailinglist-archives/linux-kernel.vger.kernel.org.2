@@ -2,83 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE9B3F3761
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B89B3F3763
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239217AbhHTXpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 19:45:18 -0400
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:57430 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229529AbhHTXpR (ORCPT
+        id S239249AbhHTXqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 19:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhHTXqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:45:17 -0400
-Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A8CFD181B9DC3;
-        Fri, 20 Aug 2021 23:44:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id B62101D42F4;
-        Fri, 20 Aug 2021 23:44:37 +0000 (UTC)
-Message-ID: <56a7a9a9f8d71cb47431ea18c7394cd3d3bdb3e4.camel@perches.com>
-Subject: Re: [PATCH] Usb: storage: usb: fixed coding style issues
-From:   Joe Perches <joe@perches.com>
-To:     Niklas Lantau <niklaslantau@gmail.com>, stern@rowland.harvard.edu
-Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 20 Aug 2021 16:44:36 -0700
-In-Reply-To: <20210820223954.2945-1-niklaslantau@gmail.com>
-References: <20210820223954.2945-1-niklaslantau@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 20 Aug 2021 19:46:45 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF9AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:46:07 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id u16so16399551wrn.5
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=vieaJ3C3q1rlxntIf94ayuVK4B7mMl49RQ6bkOme9l0=;
+        b=QhLiobgYw8JVpWAokVZNBLWBkDcOFxIHcsV7qO3cE0l5FdqWZ9Agpbu6pec2xun5s9
+         YOpeeA4948aHDCN5milbMu9Z0xlOeSYWBvKwAcSIzhMba7TwYrX16Z8SjMJxIwgREXYw
+         2WrwHq3Kw8vu6IlvejnJyCf6qGVNvmNAE9B8nm+ePc7xlqjUePZilJErCTUIY2oPvTIp
+         51OFE3gbk4x3YoiX5xCmgYuR+1Z4WjMSgVqMDyCufl4Ptmxk4LocEPO22RDczpu6IuTd
+         G5FVGg9lXTsjg1kZe6u+dHfV1O67TiH0bfHoN5FsWpZklOfy4bH+h6MidLtiCSWOATiS
+         pFUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=vieaJ3C3q1rlxntIf94ayuVK4B7mMl49RQ6bkOme9l0=;
+        b=rK+or5FDoRt4YFwxusWdBBGfSx425wNUDWtteBhSmUgyRixXt6tj/13XiB3S0D9/zh
+         vaAjANXKQZVHfTc/kxjCAZhebSF0K2GfNz6ejJ50fhjZpvXUYqid2uDpIVuxIJQNXsdW
+         2JntAZPT9cC/giMT9MTH5sFNjYp6TEDmpGhcrFxs7+gXdzT+WzUfZ+34f6ZTQnbjS4Ee
+         CArqYr2ld23wtmY7UwlOSsDoeVxGIjI+o9kkTk2BNr9SBPsxzqMeE55/w8qwTh4Xaq4/
+         Nes9EyW9TwAzDUyqj0baWAXGuOWmrTrXT7TqIcLGOvZ2dHbF0Aqb7myVe0BD2BwLmwv7
+         XUEw==
+X-Gm-Message-State: AOAM533nRqpUC4nG6nOCV9wDU0Av+IHXo+bL3Eb/oRUIFzdL6FtVz/ir
+        eoVbN+JrjyhPUxyJkiM9U1E=
+X-Google-Smtp-Source: ABdhPJyNM7QhSB3RgIF6KhPDlpajohu95SrhhJ058BOYIxEt/XSongRFwYvUrAQGTxNjOU2E7Dm/9w==
+X-Received: by 2002:adf:e28a:: with SMTP id v10mr1150045wri.289.1629503165896;
+        Fri, 20 Aug 2021 16:46:05 -0700 (PDT)
+Received: from [10.10.10.12] ([102.64.138.253])
+        by smtp.gmail.com with ESMTPSA id d8sm7202743wrx.12.2021.08.20.16.46.01
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Fri, 20 Aug 2021 16:46:04 -0700 (PDT)
+Message-ID: <61203ebc.1c69fb81.b33d9.c0bb@mx.google.com>
+From:   Leong Su ling <tchagodomoumouftaou750@gmail.com>
+X-Google-Original-From: Leong Su ling
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.14
-X-Stat-Signature: tm41na3m44sha8qygahtu4kod5goqh3x
-X-Rspamd-Server: rspamout02
-X-Rspamd-Queue-Id: B62101D42F4
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX192M261RX/kpJDJeC+wap5OjtUmjrmddBo=
-X-HE-Tag: 1629503077-830485
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Hi
+To:     Recipients <Leong@vger.kernel.org>
+Date:   Fri, 20 Aug 2021 23:45:58 +0000
+Reply-To: leongnsuling@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-08-21 at 00:39 +0200, Niklas Lantau wrote:
-> Fixed coding style issues that generated 1 error and 1 warning.
+Dear Sir/Madam!
+Did you receive my inquiry? Pls respond
 
-While this hardly needs changing:
-
-> diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
-[]
-> @@ -295,7 +295,7 @@ void fill_inquiry_response(struct us_data *us, unsigned char *data,
->  }
->  EXPORT_SYMBOL_GPL(fill_inquiry_response);
->  
-> 
-> -static int usb_stor_control_thread(void * __us)
-> +static int usb_stor_control_thread(void *__us)
->  {
->  	struct us_data *us = (struct us_data *)__us;
->  	struct Scsi_Host *host = us_to_host(us);
-
-I'd write this renaming __us to the much more typical data
-and remove the useless cast of a void *.
----
- drivers/usb/storage/usb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
-index 90aa9c12ffac5..e78e20fb1afa5 100644
---- a/drivers/usb/storage/usb.c
-+++ b/drivers/usb/storage/usb.c
-@@ -295,9 +295,9 @@ void fill_inquiry_response(struct us_data *us, unsigned char *data,
- }
- EXPORT_SYMBOL_GPL(fill_inquiry_response);
- 
--static int usb_stor_control_thread(void * __us)
-+static int usb_stor_control_thread(void *data)
- {
--	struct us_data *us = (struct us_data *)__us;
-+	struct us_data *us = data;
- 	struct Scsi_Host *host = us_to_host(us);
- 	struct scsi_cmnd *srb;
- 
-
+Best Regards
+Leong Su ling
+London, UK.
