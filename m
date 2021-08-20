@@ -2,190 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89803F2D63
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830643F2D6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240739AbhHTNsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:48:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231202AbhHTNsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:48:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629467277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S4VaO/ZlpDnEtWAJ02e00kwDAMMR+6kRDVmQuNZWgk0=;
-        b=D6SATk9LT3KkHBBS1Gik/0ohUYvY6Ec/Su59ofc8gmRf5wuotcO58+L+3EZL59/bQRrpKn
-        BdLtaozN24uVmzyWPWtCGTRWDLl+MIVevUxKvFlwJZpQUo+LDLifR7oRnLpHmTPziV1az6
-        AUC1t6SE4OX1T98iM+NTCb3aXwKEU5o=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-8C0kiTdBMZKYOsdKQ_5sNw-1; Fri, 20 Aug 2021 09:47:56 -0400
-X-MC-Unique: 8C0kiTdBMZKYOsdKQ_5sNw-1
-Received: by mail-ej1-f70.google.com with SMTP id e15-20020a1709061fcf00b005bd9d618ea0so3723814ejt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:47:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=S4VaO/ZlpDnEtWAJ02e00kwDAMMR+6kRDVmQuNZWgk0=;
-        b=be/VbxW9f4fMnkzbz3fX29fadzN/IWVJ2DlSgm4epxiA7rVLb1prMAKqUxHeSv0tEO
-         es9jjF/7sadq/tApwKyKHsw6nltJ0o8p0u2QgPwLA9jk3SjYvJqdFiBQte7XH0izgfWn
-         n7k7SM6AbqbuBGVGEO0psEFOt8j6SyUmS8M72k0R3YBMGqqof7cbUx462AnTLYv4N+XF
-         zgJHtAdDC0B8Ol/feGhdhVgIkL6pOvEwqoFKmu/qJoP5yFKGdJ4cfyUS6L8CRs0Sil8m
-         FSFZt0T7QMNdwbSAOI+iCe/lUwfzSbZK1+VrtlpmB3YTcC7jwze0cjh+mMCSV7MVA0kS
-         VYmg==
-X-Gm-Message-State: AOAM532air/PBGZQpOoK70g1FQJ71ytg9vO09TRBoBHUflbMHZ37GcaU
-        O1R9SjI84e1lMYfhvcvPSWAbDgb9hKlrh05HC6hbSrLBTb8Qek1DCdn6BH3MuSGjwiYfEBqgyGH
-        +8lTjftREnHoLmUWEWrVwiYKn
-X-Received: by 2002:a17:906:c52:: with SMTP id t18mr17733336ejf.148.1629467275450;
-        Fri, 20 Aug 2021 06:47:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxGgzFzFSgxvMjImNOJovDn+MR8vHdHX44QmGlTVPfBl8l/23tH/xJ53AhweH4OH2mV6s+mw==
-X-Received: by 2002:a17:906:c52:: with SMTP id t18mr17733309ejf.148.1629467275222;
-        Fri, 20 Aug 2021 06:47:55 -0700 (PDT)
-Received: from 0.7.3.c.2.b.0.0.0.3.7.8.9.5.0.2.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa (0.7.3.c.2.b.0.0.0.3.7.8.9.5.0.2.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:ffda:0:2059:8730:b2:c370])
-        by smtp.gmail.com with ESMTPSA id e22sm3641397edu.35.2021.08.20.06.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 06:47:54 -0700 (PDT)
-Message-ID: <d5fbfeff64cee4a2045e4e53abbd205618888044.camel@redhat.com>
-Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
- holder auto-demotion
-From:   Steven Whitehouse <swhiteho@redhat.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Date:   Fri, 20 Aug 2021 14:47:54 +0100
-In-Reply-To: <CAHc6FU7jz9z9FEu3gY0S2A2Rv6cQJzp7p_5NOnU3b8Zpz+QsVg@mail.gmail.com>
-References: <20210819194102.1491495-1-agruenba@redhat.com>
-         <20210819194102.1491495-11-agruenba@redhat.com>
-         <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com>
-         <CAHc6FU7jz9z9FEu3gY0S2A2Rv6cQJzp7p_5NOnU3b8Zpz+QsVg@mail.gmail.com>
-Organization: Red Hat UK Ltd
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S240788AbhHTNuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:50:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231202AbhHTNun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 09:50:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AA1AC610CC;
+        Fri, 20 Aug 2021 13:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629467405;
+        bh=VXIlAOLUdDwIKvLlDCKAKZ+eNokx5cWoRnjeefOU1GI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=M/aEImMzLvQ3Eeq4XvApubmrofXtmGhyM+Thiv1fSMKviv0fnpYQHw6wfrzlPF6+8
+         r0tsJzqtd07znDnS8qFsYKX6e2NhERA4ZFIy1qaHBzlVSQr1qPg8YgG7C3OqmJyEi5
+         TSEqU12DDsilqFsAMt0Gp87kEil8924Kt5f6O0aIDAx9HKqOryaYAXVT6bG1Q+7x9F
+         K1RhJb5Rs4ghmNfLpoh1blCxHCaqUP5/FvaWyRXzg+8HigsKeWQGOKlhj65gQzEacJ
+         F2GLlhSvf7xyGaSIJRMXQNerICbY3EmFhM6xm3OxTQEKruSmweL0lfUnl6KiAXECFI
+         4KzjPaMuQrdQw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9CED960A6B;
+        Fri, 20 Aug 2021 13:50:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND PATCH] net: qrtr: fix another OOB Read in qrtr_endpoint_post
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162946740563.29437.12714663640342835592.git-patchwork-notify@kernel.org>
+Date:   Fri, 20 Aug 2021 13:50:05 +0000
+References: <20210819195034.632132-1-butterflyhuangxx@gmail.com>
+In-Reply-To: <20210819195034.632132-1-butterflyhuangxx@gmail.com>
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc:     mani@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-On Fri, 2021-08-20 at 15:17 +0200, Andreas Gruenbacher wrote:
-> On Fri, Aug 20, 2021 at 11:35 AM Steven Whitehouse <
-> swhiteho@redhat.com> wrote:
-> > On Thu, 2021-08-19 at 21:40 +0200, Andreas Gruenbacher wrote:
-> > > From: Bob Peterson <rpeterso@redhat.com>
-> > > 
-> > > This patch introduces a new HIF_MAY_DEMOTE flag and
-> > > infrastructure
-> > > that will allow glocks to be demoted automatically on locking
-> > > conflicts.
-> > > When a locking request comes in that isn't compatible with the
-> > > locking
-> > > state of a holder and that holder has the HIF_MAY_DEMOTE flag
-> > > set, the
-> > > holder will be demoted automatically before the incoming locking
-> > > request
-> > > is granted.
-> > 
-> > I'm not sure I understand what is going on here. When there are
-> > locking
-> > conflicts we generate call backs and those result in glock
-> > demotion.
-> > There is no need for a flag to indicate that I think, since it is
-> > the
-> > default behaviour anyway. Or perhaps the explanation is just a bit
-> > confusing...
-> 
-> When a glock has active holders (with the HIF_HOLDER flag set), the
-> glock won't be demoted to a state incompatible with any of those
-> holders.
-> 
-Ok, that is a much clearer explanation of what the patch does. Active
-holders have always prevented demotions previously.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-> > > Processes that allow a glock holder to be taken away indicate
-> > > this by
-> > > calling gfs2_holder_allow_demote().  When they need the glock
-> > > again,
-> > > they call gfs2_holder_disallow_demote() and then they check if
-> > > the
-> > > holder is still queued: if it is, they're still holding the
-> > > glock; if
-> > > it isn't, they need to re-acquire the glock.
-> > > 
-> > > This allows processes to hang on to locks that could become part
-> > > of a
-> > > cyclic locking dependency.  The locks will be given up when a
-> > > (rare)
-> > > conflicting locking request occurs, and don't need to be given up
-> > > prematurely.
-> > 
-> > This seems backwards to me. We already have the glock layer cache
-> > the
-> > locks until they are required by another node. We also have the min
-> > hold time to make sure that we don't bounce locks too much. So what
-> > is
-> > the problem that you are trying to solve here I wonder?
+On Fri, 20 Aug 2021 03:50:34 +0800 you wrote:
+> This check was incomplete, did not consider size is 0:
 > 
-> This solves the problem of faulting in pages during read and write
-> operations: on the one hand, we want to hold the inode glock across
-> those operations. On the other hand, those operations may fault in
-> pages, which may require taking the same or other inode glocks,
-> directly or indirectly, which can deadlock.
+> 	if (len != ALIGN(size, 4) + hdrlen)
+>                     goto err;
 > 
-> So before we fault in pages, we indicate with
-> gfs2_holder_allow_demote(gh) that we can cope if the glock is taken
-> away from us. After faulting in the pages, we indicate with
-> gfs2_holder_disallow_demote(gh) that we now actually need the glock
-> again. At that point, we either still have the glock (i.e., the
-> holder
-> is still queued and it has the HIF_HOLDER flag set), or we don't.
+> if size from qrtr_hdr is 0, the result of ALIGN(size, 4)
+> will be 0, In case of len == hdrlen and size == 0
+> in header this check won't fail and
 > 
-> The different kinds of read and write operations differ in how they
-> handle the latter case:
-> 
->  * When a buffered read or write loses the inode glock, it returns a
-> short result. This
->    prevents torn writes and reading things that have never existed on
-> disk in that form.
-> 
->  * When a direct read or write loses the inode glock, it re-acquires
-> it before resuming
->    the operation. Direct I/O is not expected to return partial
-> results
-> and doesn't provide
->    any kind of synchronization among processes.
-> 
-> We could solve this kind of problem in other ways, for example, by
-> keeping a glock generation number, dropping the glock before faulting
-> in pages, re-acquiring it afterwards, and checking if the generation
-> number has changed. This would still be an additional piece of glock
-> infrastructure, but more heavyweight than the HIF_MAY_DEMOTE flag
-> which uses the existing glock holder infrastructure.
+> [...]
 
-This is working towards the "why" but could probably be summarised a
-bit more. We always used to manage to avoid holding fs locks when
-copying to/from userspace to avoid these complications. If that is no
-longer possible then it would be good to document what the new
-expectations are somewhere suitable in Documentation/filesystems/...
-just so we make sure it is clear what the new system is, and everyone
-will be on the same page,
+Here is the summary with links:
+  - [RESEND] net: qrtr: fix another OOB Read in qrtr_endpoint_post
+    https://git.kernel.org/netdev/net/c/7e78c597c3eb
 
-Steve.
-
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
