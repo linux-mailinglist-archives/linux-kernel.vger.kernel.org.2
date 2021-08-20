@@ -2,143 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24653F33C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DA53F33B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238185AbhHTS3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237794AbhHTS3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:29:33 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C32AC061575;
-        Fri, 20 Aug 2021 11:28:55 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id mf2so3415225ejb.9;
-        Fri, 20 Aug 2021 11:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y2TFOiJdD6/bVUi+HowGp/lkXbvGkSZjNzeuPAsFmZo=;
-        b=Hf88SitH2sHhCyvdUquEOOLpu3bSpXYNlW/Yh2d9WI3ZxRTs9MNQYLvBlecNfNamct
-         VXl7SWUq8duQtFMCrLYgcZtvILuUxEe3XOoCWPnnK7EMbVDFslmoSBELjg3ZXo1TFjZ2
-         7nrc0CkXZjQ+Mm+aL4wG+7D8NwcIurb+XYJxmCC9Blt9+QEddvtjuyRiEoUV7ygH6vrW
-         NkGfKQjJd5MTT6dw60W2+eC5006o/GUpbjMdmrNaGFtXiyczFNBZr2EcCvefKFTfHacH
-         tv0QPfiFr0sjh8N5uy1niNdYnyTl0pA6/0diwuHYu5q2oSD/eXegGRq929PfdPrH62Kd
-         +CMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y2TFOiJdD6/bVUi+HowGp/lkXbvGkSZjNzeuPAsFmZo=;
-        b=scDgeC9CYwHj+jboTfDscWR1/li+of7fevZD9Xqm1jX6RRNvxFOP7ayc76Ia+ZFzgm
-         /yrk+ELtxJohkadvKlLRq3QQgQ1Fn3zxvSGapSfYUl93S+A7xh9OxrQ3cuZ05W58QVRO
-         bW+hKRcGXn5r4/yIDAMQWDx5ho8Ff4i+BzWrUmtzowTlR40M01z9hQTQRQdfELzhxZCG
-         k67u7SWsacZFeZkKgVilv3rqRqJSvyRCKEoL1xQLsn8mr2mX+Jq4BFoc51P1BXhzvat0
-         g+qRP2MtpgumTFz02OpFAXOwl8pbsCNNy7WDgoZ3klejgklj9MxaEOWDCA/HTS18oB+Q
-         Z/xA==
-X-Gm-Message-State: AOAM531gSsOqpbrUpK8zOrjImvx1MxkXPTiPI6b/OvvsopxLzugMrNch
-        YVunP62av/SoTHOWA4aYQZ8=
-X-Google-Smtp-Source: ABdhPJydRKKIbGPJcmnQMsf+qQjxZ2VmsIQ8pfrRLYKH5AeNCcUX+Ys0M5X+iVaGiUaGIkjboYXspg==
-X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr22586377ejd.268.1629484133925;
-        Fri, 20 Aug 2021 11:28:53 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id n10sm3255724ejk.86.2021.08.20.11.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 11:28:53 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] arm64: dts: rockchip: add analog audio on Quartz64
-Date:   Fri, 20 Aug 2021 20:27:31 +0200
-Message-Id: <20210820182731.29370-5-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210820182731.29370-1-frattaroli.nicolas@gmail.com>
-References: <20210820182731.29370-1-frattaroli.nicolas@gmail.com>
+        id S236029AbhHTS2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:28:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhHTS2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 14:28:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CCE26124C;
+        Fri, 20 Aug 2021 18:27:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629484073;
+        bh=bKkSyF0cIR7C2YqfM8yKj7Qp9nOnaWZgsyvjnNl53BI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QDmhDcr5RLG8KteL+FGyHFgWOAWE40/VW5F4h8utD1g+VxmZdTbDF9huphbCCp+Ta
+         FidIR7HZRM+/1ss8nyoryVG9x71BlMsuGJEzOrDAtrlxMmF/LV/YOT5v00Ib46HdOE
+         eUWufuhKaUJUKprf+MogP8oWx/N7rXNrP4xknPuXIPkx8rslUnhxphTKhivhgGIRct
+         m1ozWbRNMnYVCOp8CqCzPD+qzIuqMZCa8BshvzLDonKMTX6BmPzem1XUcABurrXHYl
+         plH8o7pn/7S14BiBjNXQjxHOSbmg5hkjig1RRXNHjHoI4nPq1bRALPpqfHAQj1D6C0
+         HYwR6yAVNiSVg==
+Received: by mail-ej1-f44.google.com with SMTP id d11so21892467eja.8;
+        Fri, 20 Aug 2021 11:27:53 -0700 (PDT)
+X-Gm-Message-State: AOAM533P5cz1oMe4nSAKxtqZFmBRHIr7NsPuUXSBpL36OqWw9Z22ODGu
+        VAgyhw5ncl3kAOvr5TI/w7moEIw3U1YVMADFsw==
+X-Google-Smtp-Source: ABdhPJwOYOWWMI4zSQFJ24B+WJkFRlio9QXgQqVaM4RY0hWlajQIWpruaO0OcC7vKJS6BHduuCFJ2xo7g+YB1b5UJkw=
+X-Received: by 2002:a17:906:25db:: with SMTP id n27mr22606820ejb.108.1629484071600;
+ Fri, 20 Aug 2021 11:27:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CGME20210817221734eucas1p2e4a0aa41406137b90e49230371b92ac6@eucas1p2.samsung.com>
+ <da43d243-35b0-2cc6-f8a0-a5d02c997301@canonical.com> <dleftjtujnemx7.fsf%l.stelmach@samsung.com>
+In-Reply-To: <dleftjtujnemx7.fsf%l.stelmach@samsung.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 20 Aug 2021 13:27:39 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK7MfUL8=0SfaKDoZmtN7qrgejdsZnNFENeEJpJVDuOKw@mail.gmail.com>
+Message-ID: <CAL_JsqK7MfUL8=0SfaKDoZmtN7qrgejdsZnNFENeEJpJVDuOKw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: rng: convert Samsung Exynos TRNG to dtschema
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the Quartz64 Model A, the I2S1 TDM controller is connected
-to the rk817 codec in I2S mode. Enabling it and adding the
-necessary simple-sound-card and codec nodes allows for analog
-audio output on the PINE64 Quartz64 Model A SBC.
+On Tue, Aug 17, 2021 at 5:17 PM Lukasz Stelmach <l.stelmach@samsung.com> wr=
+ote:
+>
+> It was <2021-08-17 wto 16:07>, when Krzysztof Kozlowski wrote:
+> > On 17/08/2021 14:34, Lukasz Stelmach wrote:
+> >> It was <2021-08-17 wto 12:05>, when Krzysztof Kozlowski wrote:
+> >>> On 17/08/2021 11:55, Lukasz Stelmach wrote:
+> >>>> It was <2021-08-11 =C5=9Bro 10:43>, when Krzysztof Kozlowski wrote:
+> >>>>> Convert Samsung Exynos SoC True Random Number Generator bindings to=
+ DT
+> >>>>> schema format using json-schema.
+> >>>>>
+> >>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.c=
+om>
+> >>>>> ---
+> >>>>>  .../bindings/rng/samsung,exynos5250-trng.txt  | 17 -------
+> >>>>>  .../bindings/rng/samsung,exynos5250-trng.yaml | 44 +++++++++++++++=
+++++
+> >>>>>  MAINTAINERS                                   |  2 +-
+> >>>>>  3 files changed, 45 insertions(+), 18 deletions(-)
+> >>>>>  delete mode 100644 Documentation/devicetree/bindings/rng/samsung,e=
+xynos5250-trng.txt
+> >>>>>  create mode 100644 Documentation/devicetree/bindings/rng/samsung,e=
+xynos5250-trng.yaml
+> >>>>>
+> >>>>> diff --git
+> >>>>> a/Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.txt
+> >>>>> b/Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.txt
+> >>>>> deleted file mode 100644
+> >>>>> index 5a613a4ec780..000000000000
+> >>>>> --- a/Documentation/devicetree/bindings/rng/samsung,exynos5250-trng=
+.txt
+> >>>>> +++ /dev/null
+> >>>>> @@ -1,17 +0,0 @@
+> >>>>> -Exynos True Random Number Generator
+> >>>>> -
+> >>>>> -Required properties:
+> >>>>> -
+> >>>>> -- compatible  : Should be "samsung,exynos5250-trng".
+> >>>>> -- reg         : Specifies base physical address and size of the re=
+gisters map.
+> >>>>> -- clocks      : Phandle to clock-controller plus clock-specifier p=
+air.
+> >>>>> -- clock-names : "secss" as a clock name.
+> >>>>> -
+> >>>>> -Example:
+> >>>>> -
+> >>>>> - rng@10830600 {
+> >>>>> -         compatible =3D "samsung,exynos5250-trng";
+> >>>>> -         reg =3D <0x10830600 0x100>;
+> >>>>> -         clocks =3D <&clock CLK_SSS>;
+> >>>>> -         clock-names =3D "secss";
+> >>>>> - };
+> >>>>> diff --git
+> >>>>> a/Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.yam=
+l
+> >>>>> b/Documentation/devicetree/bindings/rng/samsung,exynos5250-trng.yam=
+l
+> >>>>> new file mode 100644
+> >>>>> index 000000000000..a50c34d5d199
+> >>>>> --- /dev/null
+> >>>>> +++ b/Documentation/devicetree/bindings/rng/samsung,exynos5250-trng=
+.yaml
+> >>>>> @@ -0,0 +1,44 @@
+> >>>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> >>>>> +%YAML 1.2
+> >>>>> +---
+> >>>>> +$id:
+> >>>>> https://protect2.fireeye.com/v1/url?k=3Df38ca35b-ac179a0d-f38d2814-=
+0cc47a31ce52-1faa1ecb65482b8a&q=3D1&e=3D8b3490f9-a5fc-4da0-b2ee-7b0aec78140=
+3&u=3Dhttp%3A%2F%2Fdevicetree.org%2Fschemas%2Frng%2Fsamsung%2Cexynos5250-tr=
+ng.yaml%23
+> >>>>> +$schema:
+> >>>>> https://protect2.fireeye.com/v1/url?k=3D9409519d-cb9268cb-9408dad2-=
+0cc47a31ce52-12394c4409905980&q=3D1&e=3D8b3490f9-a5fc-4da0-b2ee-7b0aec78140=
+3&u=3Dhttp%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
+> >>>>> +
+> >>>>> +title: Samsung Exynos SoC True Random Number Generator
+> >>>>> +
+> >>>>> +maintainers:
+> >>>>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >>>>> +  - =C5=81ukasz Stelmach <l.stelmach@samsung.com>
+> >>>>> +
+> >>>>> +properties:
+> >>>>> +  compatible:
+> >>>>> +    const: samsung,exynos5250-trng
+> >>>>> +
+> >>>>> +  clocks:
+> >>>>> +    maxItems: 1
+> >>>>
+> >>>> How about copying description from above into the description: prope=
+rty?
+> >>>
+> >>> But what to copy? There is no description except generic clock bindin=
+gs.
+> >>>
+> >>
+> >> The description that "was" in the txt file.
+> >
+> > But there was no description of fields except copy&paste of the core
+> > schema. Do you describe C code like:
+> >
+> > ...
+> > /* unsigned int is a integer number greater or equal 0 */
+> > unsigned int i;
+> > ...
+>
+> I believe having descriptions for reg and clocks
+>
+> >>>>> -- reg         : Specifies base physical address and size of the re=
+gisters map.
+> >>>>> -- clocks      : Phandle to clock-controller plus clock-specifier p=
+air.
+>
+> right next to properties' formal definitions is beneficial for anyone
+> browsing the YAML file. If you think otherwise, oh well, I am fine with
+> that.
 
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   | 35 ++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+We have 2000 schemas currently (and 2300 still to convert). Of the
+~2000, 1646 have 'reg' and 1005 have 'clocks' (I was going to guess
+3/4 and 1/2, respectively, but with a nice uniform, parsable format we
+don't have to guess). Do we need that many copies of variations of the
+same description?
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-index b239f314b38a..c974b0e22ac0 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-@@ -50,6 +50,20 @@ led-diy {
- 		};
- 	};
- 
-+	rk817-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "Analog RK817";
-+		simple-audio-card,mclk-fs = <256>;
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s1_8ch>;
-+		};
-+		simple-audio-card,codec {
-+			sound-dai = <&rk817>;
-+		};
-+	};
-+
- 	vcc12v_dcin: vcc12v_dcin {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc12v_dcin";
-@@ -174,8 +188,13 @@ rk817: pmic@20 {
- 		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_LOW>;
- 		clock-output-names = "rk808-clkout1", "rk808-clkout2";
- 
-+		#sound-dai-cells = <0>;
-+		clock-names = "mclk";
-+		clocks = <&cru I2S1_MCLKOUT_TX>;
-+		assigned-clocks = <&cru I2S1_MCLKOUT_TX>;
-+		assigned-clock-parents = <&cru CLK_I2S1_8CH_TX>;
- 		pinctrl-names = "default";
--		pinctrl-0 = <&pmic_int_l>;
-+		pinctrl-0 = <&pmic_int_l>, <&i2s1m0_mclk>;
- 		rockchip,system-power-controller;
- 		wakeup-source;
- 		#clock-cells = <1>;
-@@ -364,9 +383,23 @@ regulator-state-mem {
- 				};
- 			};
- 		};
-+
-+		rk817_codec: codec {
-+		};
-+
- 	};
- };
- 
-+&i2s1_8ch {
-+	status = "okay";
-+	rockchip,trcm-sync-tx-only;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2s1m0_sclktx
-+		     &i2s1m0_lrcktx
-+		     &i2s1m0_sdi0
-+		     &i2s1m0_sdo0>;
-+};
-+
- &mdio1 {
- 	rgmii_phy1: ethernet-phy@0 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
--- 
-2.32.0
+What I would like to have is generated documentation from the schemas.
+With that we could either insert a description or a link on all the
+common properties. There are already tools that generate documentation
+out of json-schema, but I don't have the time to investigate them or
+work on any of that.
 
+My other idea is some sort of property grepping utility. While grep
+generally works, it would be nice to have some tools aware of the
+schema structure where you could just run 'dt-grep clocks' and have it
+spit out the description. Another example would be to list all the
+valid properties for a given compatible string. Lots of possibilities
+with machine readable bindings.
+
+Rob
