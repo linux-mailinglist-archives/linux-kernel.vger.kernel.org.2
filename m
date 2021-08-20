@@ -2,647 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A049B3F2571
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A503F2576
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238071AbhHTDxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbhHTDxR (ORCPT
+        id S238160AbhHTD6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:58:00 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:50989 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235156AbhHTD56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:53:17 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D0CC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:52:40 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 7so7457646pfl.10
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aqNrH/JShYz1EIPesNbvG6DNb9cYbdeOqatFIRy86TU=;
-        b=odwQO8bPObECaQBV7QWBjSvDrmR2UP90ML1ys/IoF5WmRUiJUekJXBaXYz30TOmoBZ
-         vS5hgtaFKgpcKM4SMVYi5fXUnDR/6o+o2UB2Z5+Ay1se8LFCX49PIf5Z1Bu9Q5oIUBvw
-         b/YCyMhhGadP2jVWxX5+mki/V0BLMm49hd2I6Lm0OKyMCvy9rg5+qdynOovLqxkCwL36
-         gm7t12KEdB6IbbiEaUG75uD2e/F6iGMs/a4dq3hm/fY5ULy0spmAHJu04wcj2UgbucsR
-         KgUkZ/VVcTbvS+5UO2s5mxohRhAn/yqUX5w8YaCxYc8AZ2zIi7QyApd62jxbAbU/7Sk9
-         GZkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aqNrH/JShYz1EIPesNbvG6DNb9cYbdeOqatFIRy86TU=;
-        b=jGW7mPuNgrjsOuPqaWHCNzJSUMh/vap8ySKIjBeLu0v7M0bgnZ6pyZmIPJqfD0ftM5
-         siMtm8u/2UakhhlYn2apKaahiRdW+PdWwMKpmsLduMBOfUxG7MT5qW8Xnprj4wf6Uhdk
-         0dqNKxLkq8YhlMNqOnnC8L5683PpJys0PgxEGKMpn5PUggKhEfjB/QOGMTvDAUrNFbAw
-         7vSPCbpCUT7LgpfW+kbQER5Z19GG06HWspaFUBXhACv7rC/YB9+PltwI3uAqxdbWJJf0
-         yooo/TiuI5w/KM5oLRDSHtjl+t1w5kDmw7hHAOKDmipQCFNFJxj5/FRVZwmiYBQHMLPh
-         iZTw==
-X-Gm-Message-State: AOAM530qDopkmEqzckq6XIZZ6Nm/U4Sk/Y/XVffWdNd3Nd5fsZGsIUkc
-        BKKktI0eNK9lfG6CeKOkI/ujngCpke8=
-X-Google-Smtp-Source: ABdhPJzP5QEWBkVTNm0vof9DPFtubkDpdDVrXhNH4amWr0Stw8o7j+YWC9TBYs5ZUcMF9CszWjBzeg==
-X-Received: by 2002:a62:7d84:0:b029:3b8:49bb:4c3f with SMTP id y126-20020a627d840000b02903b849bb4c3fmr17844170pfc.49.1629431559246;
-        Thu, 19 Aug 2021 20:52:39 -0700 (PDT)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:15c:211:201:ab38:89b9:1824:6a27])
-        by smtp.gmail.com with ESMTPSA id q1sm4617515pjl.44.2021.08.19.20.52.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:52:38 -0700 (PDT)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH v4 2/2] f2fs: introduce periodic iostat io latency traces
-Date:   Thu, 19 Aug 2021 20:52:29 -0700
-Message-Id: <20210820035229.216975-2-daeho43@gmail.com>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-In-Reply-To: <20210820035229.216975-1-daeho43@gmail.com>
-References: <20210820035229.216975-1-daeho43@gmail.com>
+        Thu, 19 Aug 2021 23:57:58 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 68D4F580B0E;
+        Thu, 19 Aug 2021 23:57:19 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 19 Aug 2021 23:57:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=U
+        jmLtA+f8OC3+lbFmpzvt1mYLDqKmlXSvR6zMgM6p1A=; b=GxElH6unmVGlWH1XX
+        xSciszONKWEZ4UrBmkA650Mjbaef43UhTvWDM6fag5s0kzUdcdaOQQBHze3VukOA
+        r0wS/L55YW9kyBZONqR4ivtqi4AlelWftqunRuptqVQudIXU+PxZ21dp/95aUxpN
+        yF/XiqXnTHb4XDf1rS0EIaKajm8IUgnSzK1m2VcrwfJRacFeb23/77EKQzDWeViv
+        5m36/6FibT4sKTFXy+JawD69Sz4++GyS66JRvVPKHEbKLajy3ctVuZ5jC3J40pHp
+        uSzywtbnYnfqYmAEUnccA7Bt6L4FGTnbIzK4wtWxCbOLZl6e5yLgrIo3qtwHGP57
+        YZhqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=UjmLtA+f8OC3+lbFmpzvt1mYLDqKmlXSvR6zMgM6p
+        1A=; b=neiht85Bgu9HmSeDxveJQpmMXAaDoAe7lerhbWe5+y4R99ejb6FOtBhHk
+        rIK3nJpQ02VCD9zA9wyFWl6FCjNA1p23eF5GbGWPNk3lHDLYfGJCp3685mdY5a7y
+        7K1Q7pp/x4OoNu/Ue5gPxQZYm1GqsFimZ5C+cn9E0jBMQ6Y014tIikqw9OEQ41c9
+        VvL3bFQ4y0eIZXDPKZtN0bS9BlamR1yeOKj+FDLQewLVC0N4x/oG40F5aDGJcGMA
+        g698O+f0xqciOMVhKCgVmtUdwgusMqmB0M3FYVVjBH7fhi2ROBrtqiDcjLf7XhE+
+        RJ+EXB+Eg/hnqzP1ddyWFukENjmmA==
+X-ME-Sender: <xms:HCgfYanmo28FcpWj-bTXtHwllKR4hMhu9nvxBO3HUlOPl00w81LwCQ>
+    <xme:HCgfYR0ox0MWidTstZ6XrquAfYXQ8tmO-sipC4XiE0qKsk2DziZalPKrtGdbepQ6g
+    j363Xv5ORu_cl-GzQ>
+X-ME-Received: <xmr:HCgfYYp68uHhhCpZEcTCWL_Ib2rIdIIB-98-ndbJhqCQBOjB-kELOlddipoGV-qN5Dp_8jwLVq0gjLTIC-cIgESvwCvGjTYlO2hFZA6yD4F7iDw4Kfn86JNQMg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleekgdejgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpeetteffjeefhfegtdduledutdegudffleduueeftddvlefgieffveef
+    hfdukeegvdenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
+    ugdrohhrgh
+X-ME-Proxy: <xmx:HCgfYemUcfbGXxM6CwpXu0wkmFrvIXMMBqHbH5whVhZNXZ-7SU9pzQ>
+    <xmx:HCgfYY2BNYsD0I44glEMho1T7Ho1X1OdijCUTN4C1oqdge-NUJxAaw>
+    <xmx:HCgfYVtzD41eBUxZxqy-oCnO4WAB67hYluQjZYB62GyifEiiEYOClQ>
+    <xmx:HygfYT0qoh3_k0BXyvrsVkw-pEEIE9pwC6TI43KI-JjtO9r8uYZkOw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 19 Aug 2021 23:57:15 -0400 (EDT)
+Subject: Re: [PATCH v8 02/11] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+To:     Andre Przywara <andre.przywara@arm.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+References: <20210723153838.6785-1-andre.przywara@arm.com>
+ <20210723153838.6785-3-andre.przywara@arm.com>
+ <20210726144137.6dauuxdssu7yszox@gilmour>
+ <20210802013938.29fa18ed@slackpad.fritz.box>
+ <20210817073810.7stuzrppyjf4spab@gilmour>
+ <20210818100407.7cf7cfb7@slackpad.fritz.box>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <2b0504f6-9e01-88c1-84c9-c7714715dcb7@sholland.org>
+Date:   Thu, 19 Aug 2021 22:57:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210818100407.7cf7cfb7@slackpad.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On 8/18/21 4:04 AM, Andre Przywara wrote:
+> On Tue, 17 Aug 2021 09:38:10 +0200
+> Maxime Ripard <maxime@cerno.tech> wrote:
+> 
+> Hi Maxime,
+> 
+>> On Mon, Aug 02, 2021 at 01:39:38AM +0100, Andre Przywara wrote:
+>>> On Mon, 26 Jul 2021 16:41:37 +0200
+>>> Maxime Ripard <maxime@cerno.tech> wrote:
+>>>   
+>>>> Hi,
+>>>>
+>>>> On Fri, Jul 23, 2021 at 04:38:29PM +0100, Andre Przywara wrote:  
+>>>>> Add the obvious compatible name to the existing RTC binding.
+>>>>> The actual RTC part of the device uses a different day/month/year
+>>>>> storage scheme, so it's not compatible with the previous devices.
+>>>>> Also the clock part is quite different, as there is no external 32K LOSC
+>>>>> oscillator input.
+>>>>>
+>>>>> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+>>>>>
+>>>>> ---
+>>>>>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml      | 14 ++++++++++++++
+>>>>>  1 file changed, 14 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+>>>>> index beeb90e55727..d8a6500e5840 100644
+>>>>> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+>>>>> @@ -26,6 +26,7 @@ properties:
+>>>>>            - const: allwinner,sun50i-a64-rtc
+>>>>>            - const: allwinner,sun8i-h3-rtc
+>>>>>        - const: allwinner,sun50i-h6-rtc
+>>>>> +      - const: allwinner,sun50i-h616-rtc
+>>>>>  
+>>>>>    reg:
+>>>>>      maxItems: 1
+>>>>> @@ -104,6 +105,19 @@ allOf:
+>>>>>            minItems: 3
+>>>>>            maxItems: 3
+>>>>>  
+>>>>> +  - if:
+>>>>> +      properties:
+>>>>> +        compatible:
+>>>>> +          contains:
+>>>>> +            const: allwinner,sun50i-h616-rtc
+>>>>> +
+>>>>> +    then:
+>>>>> +      properties:
+>>>>> +        clock-output-names:
+>>>>> +          minItems: 3
+>>>>> +          maxItems: 3    
+>>>>
+>>>> You don't need both of them when they are equal
+>>>>   
+>>>>> +        clocks: false
+>>>>> +    
+>>>>
+>>>> It's not entirely clear to me what those clocks are about though. If we
+>>>> look at the clock output in the user manual, it looks like there's only
+>>>> two clocks that are actually being output: the 32k "fanout" clock and
+>>>> the losc. What are the 3 you're talking about?]  
+>>>
+>>> I see three: the raw SYSTEM "CLK32K_LOSC", the RTC input + debounce
+>>> clock (/32), and the multiplexed PAD.  
+>>
+>> But the input and debounce clock is only for the RTC itself right? So it
+>> should be local to the driver and doesn't need to be made available to
+>> the other drivers
+> 
+> I understood "debounce" as being the clock used for the pinctrl
+> debouncer. What would it debounce otherwise? Do you think that this
+> "debounce circuit" is something internal to the RTC and is totally
+> irrelevant for us?
 
-Whenever we notice some sluggish issues on our machines, we are always
-curious about how well all types of I/O in the f2fs filesystem are
-handled. But, it's hard to get this kind of real data. First of all,
-we need to reproduce the issue while turning on the profiling tool like
-blktrace, but the issue doesn't happen again easily. Second, with the
-intervention of any tools, the overall timing of the issue will be
-slightly changed and it sometimes makes us hard to figure it out.
+I'm pretty sure this is the debounce for the NMI and the SoC reset signal, not
+the pinctrl. The pinctrl debounce clock pretty clearly references 32 kHz.
 
-So, I added the feature printing out IO latency statistics tracepoint
-events, which are minimal things to understand filesystem's I/O related
-behaviors, into F2FS_IOSTAT kernel config. With "iostat_enable" sysfs
-node on, we can get this statistics info in a periodic way and it
-would cause the least overhead.
+> But in general I looked at how many *different* clocks this diagram
+> describes, and I count: one unaltered ("SYSTEM"), one "div by
+> 32" (RTC/debounce), and one multiplexed. My aim was to avoid
+> DT binding changes when we later discover we do need one of them for
+> something (as happened in the past). So three seemed to be the safe
+> choice here, to avoid surprises. In the worst case we just will never
+> reference one of them.
 
-[samples]
- f2fs_ckpt-254:1-507     [003] ....  2842.439683: f2fs_iostat_latency:
-dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-rd_data [136/1/801], rd_node [136/1/1704], rd_meta [4/2/4],
-wr_sync_data [164/16/3331], wr_sync_node [152/3/648],
-wr_sync_meta [160/2/4243], wr_async_data [24/13/15],
-wr_async_node [0/0/0], wr_async_meta [0/0/0]
+Plus RC16M/IOSC (and depending on how you look at it, DCXO24M/HOSC).
 
- f2fs_ckpt-254:1-507     [002] ....  2845.450514: f2fs_iostat_latency:
-dev = (254,11), iotype [peak lat.(ms)/avg lat.(ms)/count],
-rd_data [60/3/456], rd_node [60/3/1258], rd_meta [0/0/1],
-wr_sync_data [120/12/2285], wr_sync_node [88/5/428],
-wr_sync_meta [52/6/2990], wr_async_data [4/1/3],
-wr_async_node [0/0/0], wr_async_meta [0/0/0]
+>> Either way, what this list is must be documented.
+> 
+> You mean to overwrite the "description" stanza for clock-output-names?
+> And can this be done in the per-SoC parts in the later part of the
+> binding, keeping the existing description?
+> 
+> Cheers,
+> Andre
+> 
+>>
+>>>> Also, it looks like the 32k fanout clock needs at least the hosc or
+>>>> pll-periph in input, so we probably don't want to ask for no parent
+>>>> clock?  
 
----
-v4: separate the previous patch into two patches
-v3: moved other I/O statistics related features into a separate file
-    with the same kernel config option for better maintenance.
-v2: clean up with wrappers and fix a build breakage reported by
-    kernel test robot <lkp@intel.com>
+Do you suggest we fix this for the existing bindings?
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fs/f2fs/data.c              |  19 ++++-
- fs/f2fs/f2fs.h              |   4 +
- fs/f2fs/iostat.c            | 141 ++++++++++++++++++++++++++++++++++++
- fs/f2fs/iostat.h            |  57 +++++++++++++++
- fs/f2fs/super.c             |  13 +++-
- include/trace/events/f2fs.h |  95 ++++++++++++++++++++++++
- 6 files changed, 323 insertions(+), 6 deletions(-)
+>>> Well, we never seem to reference the HOSC this way, this was always
+>>> somewhat explicit. And yes, there is PLL-PERIPH as an input, but we
+>>> don't support this yet. So I went with 0 input clocks *for now*: the
+>>> driver can then ignore all clocks, so any clock referenced in the DT
+>>> later won't cause any harm. This will all be addressed by Samuel's RTC
+>>> clock patch, which will also touch the H6, IIRC. And it looks like we
+>>> will need to touch the binding anyway then, but can then just *extend*
+>>> this.  
+>>
+>> You mentioned that series several times already and never provided an
+>> explanation for what it was supposed to be doing except fixing
+>> everything. What's the general plan for that series?
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index fd16c4fc4507..5e4120b92f59 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -271,7 +271,10 @@ static void f2fs_post_read_work(struct work_struct *work)
- static void f2fs_read_end_io(struct bio *bio)
- {
- 	struct f2fs_sb_info *sbi = F2FS_P_SB(bio_first_page_all(bio));
--	struct bio_post_read_ctx *ctx = bio->bi_private;
-+	struct bio_post_read_ctx *ctx;
-+
-+	iostat_update_and_unbind_ctx(bio, 0);
-+	ctx = bio->bi_private;
- 
- 	if (time_to_inject(sbi, FAULT_READ_IO)) {
- 		f2fs_show_injection_info(sbi, FAULT_READ_IO);
-@@ -293,10 +296,13 @@ static void f2fs_read_end_io(struct bio *bio)
- 
- static void f2fs_write_end_io(struct bio *bio)
- {
--	struct f2fs_sb_info *sbi = bio->bi_private;
-+	struct f2fs_sb_info *sbi;
- 	struct bio_vec *bvec;
- 	struct bvec_iter_all iter_all;
- 
-+	iostat_update_and_unbind_ctx(bio, 1);
-+	sbi = bio->bi_private;
-+
- 	if (time_to_inject(sbi, FAULT_WRITE_IO)) {
- 		f2fs_show_injection_info(sbi, FAULT_WRITE_IO);
- 		bio->bi_status = BLK_STS_IOERR;
-@@ -400,6 +406,8 @@ static struct bio *__bio_alloc(struct f2fs_io_info *fio, int npages)
- 		bio->bi_write_hint = f2fs_io_type_to_rw_hint(sbi,
- 						fio->type, fio->temp);
- 	}
-+	iostat_alloc_and_bind_ctx(sbi, bio, NULL);
-+
- 	if (fio->io_wbc)
- 		wbc_init_bio(fio->io_wbc, bio);
- 
-@@ -481,6 +489,8 @@ static inline void __submit_bio(struct f2fs_sb_info *sbi,
- 		trace_f2fs_submit_read_bio(sbi->sb, type, bio);
- 	else
- 		trace_f2fs_submit_write_bio(sbi->sb, type, bio);
-+
-+	iostat_update_submit_ctx(bio, type);
- 	submit_bio(bio);
- }
- 
-@@ -972,7 +982,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
- 	struct bio *bio;
--	struct bio_post_read_ctx *ctx;
-+	struct bio_post_read_ctx *ctx = NULL;
- 	unsigned int post_read_steps = 0;
- 
- 	bio = bio_alloc_bioset(for_write ? GFP_NOIO : GFP_KERNEL,
-@@ -1008,6 +1018,7 @@ static struct bio *f2fs_grab_read_bio(struct inode *inode, block_t blkaddr,
- 		ctx->fs_blkaddr = blkaddr;
- 		bio->bi_private = ctx;
- 	}
-+	iostat_alloc_and_bind_ctx(sbi, bio, ctx);
- 
- 	return bio;
- }
-@@ -2253,7 +2264,7 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
- 		if (bio_add_page(bio, page, blocksize, 0) < blocksize)
- 			goto submit_and_realloc;
- 
--		ctx = bio->bi_private;
-+		ctx = get_post_read_ctx(bio);
- 		ctx->enabled_steps |= STEP_DECOMPRESS;
- 		refcount_inc(&dic->refcnt);
- 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 12ecf6ee9cb5..26d084a1fea8 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1781,6 +1781,10 @@ struct f2fs_sb_info {
- 	bool iostat_enable;
- 	unsigned long iostat_next_period;
- 	unsigned int iostat_period_ms;
-+
-+	/* For io latency related statistics info in one iostat period */
-+	spinlock_t iostat_lat_lock;
-+	struct iostat_lat_info *iostat_io_lat;
- #endif
- };
- 
-diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
-index 21c29e121a86..8534576aba82 100644
---- a/fs/f2fs/iostat.c
-+++ b/fs/f2fs/iostat.c
-@@ -14,6 +14,10 @@
- #include "iostat.h"
- #include <trace/events/f2fs.h>
- 
-+#define NUM_PREALLOC_IOSTAT_CTXS	128
-+static struct kmem_cache *bio_iostat_ctx_cache;
-+static mempool_t *bio_iostat_ctx_pool;
-+
- int __maybe_unused iostat_info_seq_show(struct seq_file *seq, void *offset)
- {
- 	struct super_block *sb = seq->private;
-@@ -81,6 +85,32 @@ int __maybe_unused iostat_info_seq_show(struct seq_file *seq, void *offset)
- 	return 0;
- }
- 
-+static inline void __record_iostat_latency(struct f2fs_sb_info *sbi)
-+{
-+	int io, idx = 0;
-+	unsigned int cnt;
-+	struct f2fs_iostat_latency iostat_lat[MAX_IO_TYPE][NR_PAGE_TYPE];
-+	struct iostat_lat_info *io_lat = sbi->iostat_io_lat;
-+
-+	spin_lock_irq(&sbi->iostat_lat_lock);
-+	for (idx = 0; idx < MAX_IO_TYPE; idx++) {
-+		for (io = 0; io < NR_PAGE_TYPE; io++) {
-+			cnt = io_lat->bio_cnt[idx][io];
-+			iostat_lat[idx][io].peak_lat =
-+			   jiffies_to_msecs(io_lat->peak_lat[idx][io]);
-+			iostat_lat[idx][io].cnt = cnt;
-+			iostat_lat[idx][io].avg_lat = cnt ?
-+			   jiffies_to_msecs(io_lat->sum_lat[idx][io]) / cnt : 0;
-+			io_lat->sum_lat[idx][io] = 0;
-+			io_lat->peak_lat[idx][io] = 0;
-+			io_lat->bio_cnt[idx][io] = 0;
-+		}
-+	}
-+	spin_unlock_irq(&sbi->iostat_lat_lock);
-+
-+	trace_f2fs_iostat_latency(sbi, iostat_lat);
-+}
-+
- static inline void f2fs_record_iostat(struct f2fs_sb_info *sbi)
- {
- 	unsigned long long iostat_diff[NR_IO_TYPE];
-@@ -106,10 +136,13 @@ static inline void f2fs_record_iostat(struct f2fs_sb_info *sbi)
- 	spin_unlock(&sbi->iostat_lock);
- 
- 	trace_f2fs_iostat(sbi, iostat_diff);
-+
-+	__record_iostat_latency(sbi);
- }
- 
- void f2fs_reset_iostat(struct f2fs_sb_info *sbi)
- {
-+	struct iostat_lat_info *io_lat = sbi->iostat_io_lat;
- 	int i;
- 
- 	spin_lock(&sbi->iostat_lock);
-@@ -118,6 +151,18 @@ void f2fs_reset_iostat(struct f2fs_sb_info *sbi)
- 		sbi->prev_rw_iostat[i] = 0;
- 	}
- 	spin_unlock(&sbi->iostat_lock);
-+
-+	spin_lock_irq(&sbi->iostat_lat_lock);
-+	for (i = 0; i < MAX_IO_TYPE; i++) {
-+		int iotype;
-+
-+		for (iotype = 0; iotype < NR_PAGE_TYPE; iotype++) {
-+			io_lat->sum_lat[i][iotype] = 0;
-+			io_lat->peak_lat[i][iotype] = 0;
-+			io_lat->bio_cnt[i][iotype] = 0;
-+		}
-+	}
-+	spin_unlock_irq(&sbi->iostat_lat_lock);
- }
- 
- void f2fs_update_iostat(struct f2fs_sb_info *sbi,
-@@ -143,12 +188,108 @@ void f2fs_update_iostat(struct f2fs_sb_info *sbi,
- 	f2fs_record_iostat(sbi);
- }
- 
-+static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
-+				int rw, int sync_type)
-+{
-+	unsigned long ts_diff;
-+	unsigned int iotype = iostat_ctx->type;
-+	unsigned long flags;
-+	struct f2fs_sb_info *sbi = iostat_ctx->sbi;
-+	struct iostat_lat_info *io_lat = sbi->iostat_io_lat;
-+	int idx;
-+
-+	if (!sbi->iostat_enable)
-+		return;
-+
-+	ts_diff = jiffies - iostat_ctx->submit_ts;
-+	if (iotype >= META_FLUSH)
-+		iotype = META;
-+
-+	if (rw == 0) {
-+		idx = READ_IO;
-+	} else {
-+		if (sync_type == 0)
-+			idx = WRITE_SYNC_IO;
-+		else
-+			idx = WRITE_ASYNC_IO;
-+	}
-+
-+	spin_lock_irqsave(&sbi->iostat_lat_lock, flags);
-+	io_lat->sum_lat[idx][iotype] += ts_diff;
-+	io_lat->bio_cnt[idx][iotype]++;
-+	if (ts_diff > io_lat->peak_lat[idx][iotype])
-+		io_lat->peak_lat[idx][iotype] = ts_diff;
-+	spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
-+}
-+
-+void iostat_update_and_unbind_ctx(struct bio *bio, int rw)
-+{
-+	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-+	int sync_type = bio->bi_opf & REQ_SYNC ? 0 : 1;
-+
-+	if (rw == 0)
-+		bio->bi_private = iostat_ctx->post_read_ctx;
-+	else
-+		bio->bi_private = iostat_ctx->sbi;
-+	__update_iostat_latency(iostat_ctx, rw, sync_type);
-+	mempool_free(iostat_ctx, bio_iostat_ctx_pool);
-+}
-+
-+void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
-+		struct bio *bio, struct bio_post_read_ctx *ctx)
-+{
-+	struct bio_iostat_ctx *iostat_ctx;
-+	/* Due to the mempool, this never fails. */
-+	iostat_ctx = mempool_alloc(bio_iostat_ctx_pool, GFP_NOFS);
-+	iostat_ctx->sbi = sbi;
-+	iostat_ctx->submit_ts = 0;
-+	iostat_ctx->type = 0;
-+	iostat_ctx->post_read_ctx = ctx;
-+	bio->bi_private = iostat_ctx;
-+}
-+
-+int __init f2fs_init_iostat_processing(void)
-+{
-+	bio_iostat_ctx_cache =
-+		kmem_cache_create("f2fs_bio_iostat_ctx",
-+				  sizeof(struct bio_iostat_ctx), 0, 0, NULL);
-+	if (!bio_iostat_ctx_cache)
-+		goto fail;
-+	bio_iostat_ctx_pool =
-+		mempool_create_slab_pool(NUM_PREALLOC_IOSTAT_CTXS,
-+					 bio_iostat_ctx_cache);
-+	if (!bio_iostat_ctx_pool)
-+		goto fail_free_cache;
-+	return 0;
-+
-+fail_free_cache:
-+	kmem_cache_destroy(bio_iostat_ctx_cache);
-+fail:
-+	return -ENOMEM;
-+}
-+
-+void f2fs_destroy_iostat_processing(void)
-+{
-+	mempool_destroy(bio_iostat_ctx_pool);
-+	kmem_cache_destroy(bio_iostat_ctx_cache);
-+}
-+
- int f2fs_init_iostat(struct f2fs_sb_info *sbi)
- {
- 	/* init iostat info */
- 	spin_lock_init(&sbi->iostat_lock);
-+	spin_lock_init(&sbi->iostat_lat_lock);
- 	sbi->iostat_enable = false;
- 	sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
-+	sbi->iostat_io_lat = f2fs_kzalloc(sbi, sizeof(struct iostat_lat_info),
-+					GFP_KERNEL);
-+	if (!sbi->iostat_io_lat)
-+		return -ENOMEM;
- 
- 	return 0;
- }
-+
-+void f2fs_destroy_iostat(struct f2fs_sb_info *sbi)
-+{
-+	kfree(sbi->iostat_io_lat);
-+}
-diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
-index 46e4a36fc8e9..22a2d01f57ef 100644
---- a/fs/f2fs/iostat.h
-+++ b/fs/f2fs/iostat.h
-@@ -6,6 +6,8 @@
- #ifndef __F2FS_IOSTAT_H__
- #define __F2FS_IOSTAT_H__
- 
-+struct bio_post_read_ctx;
-+
- #ifdef CONFIG_F2FS_IOSTAT
- 
- #define DEFAULT_IOSTAT_PERIOD_MS	3000
-@@ -13,15 +15,70 @@
- /* maximum period of iostat tracing is 1 day */
- #define MAX_IOSTAT_PERIOD_MS		8640000
- 
-+enum {
-+	READ_IO,
-+	WRITE_SYNC_IO,
-+	WRITE_ASYNC_IO,
-+	MAX_IO_TYPE,
-+};
-+
-+struct iostat_lat_info {
-+	unsigned long sum_lat[MAX_IO_TYPE][NR_PAGE_TYPE];	/* sum of io latencies */
-+	unsigned long peak_lat[MAX_IO_TYPE][NR_PAGE_TYPE];	/* peak io latency */
-+	unsigned int bio_cnt[MAX_IO_TYPE][NR_PAGE_TYPE];	/* bio count */
-+};
-+
- extern int __maybe_unused iostat_info_seq_show(struct seq_file *seq,
- 			void *offset);
- extern void f2fs_reset_iostat(struct f2fs_sb_info *sbi);
- extern void f2fs_update_iostat(struct f2fs_sb_info *sbi,
- 			enum iostat_type type, unsigned long long io_bytes);
-+
-+struct bio_iostat_ctx {
-+	struct f2fs_sb_info *sbi;
-+	unsigned long submit_ts;
-+	enum page_type type;
-+	struct bio_post_read_ctx *post_read_ctx;
-+};
-+
-+static inline void iostat_update_submit_ctx(struct bio *bio,
-+			enum page_type type)
-+{
-+	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-+
-+	iostat_ctx->submit_ts = jiffies;
-+	iostat_ctx->type = type;
-+}
-+
-+static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
-+{
-+	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-+
-+	return iostat_ctx->post_read_ctx;
-+}
-+
-+extern void iostat_update_and_unbind_ctx(struct bio *bio, int rw);
-+extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
-+		struct bio *bio, struct bio_post_read_ctx *ctx);
-+extern int f2fs_init_iostat_processing(void);
-+extern void f2fs_destroy_iostat_processing(void);
- extern int f2fs_init_iostat(struct f2fs_sb_info *sbi);
-+extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
- #else
- static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi,
- 		enum iostat_type type, unsigned long long io_bytes) {}
-+static inline void iostat_update_and_unbind_ctx(struct bio *bio, int rw) {}
-+static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
-+		struct bio *bio, struct bio_post_read_ctx *ctx) {}
-+static inline void iostat_update_submit_ctx(struct bio *bio,
-+		enum page_type type) {}
-+static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
-+{
-+	return bio->bi_private;
-+}
-+static inline int f2fs_init_iostat_processing(void) { return 0; }
-+static inline void f2fs_destroy_iostat_processing(void) {}
- static inline int f2fs_init_iostat(struct f2fs_sb_info *sbi) { return 0; }
-+static inline void f2fs_destroy_iostat(struct f2fs_sb_info *sbi) {}
- #endif
- #endif /* __F2FS_IOSTAT_H__ */
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index a23926d1a77b..f5148f2fd884 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1574,6 +1574,7 @@ static void f2fs_put_super(struct super_block *sb)
- #endif
- 	fscrypt_free_dummy_policy(&F2FS_OPTION(sbi).dummy_enc_policy);
- 	destroy_percpu_info(sbi);
-+	f2fs_destroy_iostat(sbi);
- 	for (i = 0; i < NR_PAGE_TYPE; i++)
- 		kvfree(sbi->write_io[i]);
- #ifdef CONFIG_UNICODE
-@@ -4001,7 +4002,7 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 
- 	err = init_percpu_info(sbi);
- 	if (err)
--		goto free_bio_info;
-+		goto free_iostat;
- 
- 	if (F2FS_IO_ALIGNED(sbi)) {
- 		sbi->write_io_dummy =
-@@ -4334,6 +4335,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 	mempool_destroy(sbi->write_io_dummy);
- free_percpu:
- 	destroy_percpu_info(sbi);
-+free_iostat:
-+	f2fs_destroy_iostat(sbi);
- free_bio_info:
- 	for (i = 0; i < NR_PAGE_TYPE; i++)
- 		kvfree(sbi->write_io[i]);
-@@ -4476,9 +4479,12 @@ static int __init init_f2fs_fs(void)
- 	err = f2fs_init_post_read_processing();
- 	if (err)
- 		goto free_root_stats;
--	err = f2fs_init_bio_entry_cache();
-+	err = f2fs_init_iostat_processing();
- 	if (err)
- 		goto free_post_read;
-+	err = f2fs_init_bio_entry_cache();
-+	if (err)
-+		goto free_iostat;
- 	err = f2fs_init_bioset();
- 	if (err)
- 		goto free_bio_enrty_cache;
-@@ -4500,6 +4506,8 @@ static int __init init_f2fs_fs(void)
- 	f2fs_destroy_bioset();
- free_bio_enrty_cache:
- 	f2fs_destroy_bio_entry_cache();
-+free_iostat:
-+	f2fs_destroy_iostat_processing();
- free_post_read:
- 	f2fs_destroy_post_read_processing();
- free_root_stats:
-@@ -4534,6 +4542,7 @@ static void __exit exit_f2fs_fs(void)
- 	f2fs_destroy_compress_mempool();
- 	f2fs_destroy_bioset();
- 	f2fs_destroy_bio_entry_cache();
-+	f2fs_destroy_iostat_processing();
- 	f2fs_destroy_post_read_processing();
- 	f2fs_destroy_root_stats();
- 	unregister_filesystem(&f2fs_fs_type);
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index 3eaf19aa89af..4e881d91c874 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -1894,6 +1894,101 @@ TRACE_EVENT(f2fs_iostat,
- 		__entry->app_mrio, __entry->fs_drio, __entry->fs_gdrio,
- 		__entry->fs_cdrio, __entry->fs_nrio, __entry->fs_mrio)
- );
-+
-+#ifndef __F2FS_IOSTAT_LATENCY_TYPE
-+#define __F2FS_IOSTAT_LATENCY_TYPE
-+struct f2fs_iostat_latency {
-+	unsigned int peak_lat;
-+	unsigned int avg_lat;
-+	unsigned int cnt;
-+};
-+#endif /* __F2FS_IOSTAT_LATENCY_TYPE */
-+
-+TRACE_EVENT(f2fs_iostat_latency,
-+
-+	TP_PROTO(struct f2fs_sb_info *sbi, struct f2fs_iostat_latency (*iostat_lat)[NR_PAGE_TYPE]),
-+
-+	TP_ARGS(sbi, iostat_lat),
-+
-+	TP_STRUCT__entry(
-+		__field(dev_t,	dev)
-+		__field(unsigned int,	d_rd_peak)
-+		__field(unsigned int,	d_rd_avg)
-+		__field(unsigned int,	d_rd_cnt)
-+		__field(unsigned int,	n_rd_peak)
-+		__field(unsigned int,	n_rd_avg)
-+		__field(unsigned int,	n_rd_cnt)
-+		__field(unsigned int,	m_rd_peak)
-+		__field(unsigned int,	m_rd_avg)
-+		__field(unsigned int,	m_rd_cnt)
-+		__field(unsigned int,	d_wr_s_peak)
-+		__field(unsigned int,	d_wr_s_avg)
-+		__field(unsigned int,	d_wr_s_cnt)
-+		__field(unsigned int,	n_wr_s_peak)
-+		__field(unsigned int,	n_wr_s_avg)
-+		__field(unsigned int,	n_wr_s_cnt)
-+		__field(unsigned int,	m_wr_s_peak)
-+		__field(unsigned int,	m_wr_s_avg)
-+		__field(unsigned int,	m_wr_s_cnt)
-+		__field(unsigned int,	d_wr_as_peak)
-+		__field(unsigned int,	d_wr_as_avg)
-+		__field(unsigned int,	d_wr_as_cnt)
-+		__field(unsigned int,	n_wr_as_peak)
-+		__field(unsigned int,	n_wr_as_avg)
-+		__field(unsigned int,	n_wr_as_cnt)
-+		__field(unsigned int,	m_wr_as_peak)
-+		__field(unsigned int,	m_wr_as_avg)
-+		__field(unsigned int,	m_wr_as_cnt)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->dev		= sbi->sb->s_dev;
-+		__entry->d_rd_peak	= iostat_lat[0][DATA].peak_lat;
-+		__entry->d_rd_avg	= iostat_lat[0][DATA].avg_lat;
-+		__entry->d_rd_cnt	= iostat_lat[0][DATA].cnt;
-+		__entry->n_rd_peak	= iostat_lat[0][NODE].peak_lat;
-+		__entry->n_rd_avg	= iostat_lat[0][NODE].avg_lat;
-+		__entry->n_rd_cnt	= iostat_lat[0][NODE].cnt;
-+		__entry->m_rd_peak	= iostat_lat[0][META].peak_lat;
-+		__entry->m_rd_avg	= iostat_lat[0][META].avg_lat;
-+		__entry->m_rd_cnt	= iostat_lat[0][META].cnt;
-+		__entry->d_wr_s_peak	= iostat_lat[1][DATA].peak_lat;
-+		__entry->d_wr_s_avg	= iostat_lat[1][DATA].avg_lat;
-+		__entry->d_wr_s_cnt	= iostat_lat[1][DATA].cnt;
-+		__entry->n_wr_s_peak	= iostat_lat[1][NODE].peak_lat;
-+		__entry->n_wr_s_avg	= iostat_lat[1][NODE].avg_lat;
-+		__entry->n_wr_s_cnt	= iostat_lat[1][NODE].cnt;
-+		__entry->m_wr_s_peak	= iostat_lat[1][META].peak_lat;
-+		__entry->m_wr_s_avg	= iostat_lat[1][META].avg_lat;
-+		__entry->m_wr_s_cnt	= iostat_lat[1][META].cnt;
-+		__entry->d_wr_as_peak	= iostat_lat[2][DATA].peak_lat;
-+		__entry->d_wr_as_avg	= iostat_lat[2][DATA].avg_lat;
-+		__entry->d_wr_as_cnt	= iostat_lat[2][DATA].cnt;
-+		__entry->n_wr_as_peak	= iostat_lat[2][NODE].peak_lat;
-+		__entry->n_wr_as_avg	= iostat_lat[2][NODE].avg_lat;
-+		__entry->n_wr_as_cnt	= iostat_lat[2][NODE].cnt;
-+		__entry->m_wr_as_peak	= iostat_lat[2][META].peak_lat;
-+		__entry->m_wr_as_avg	= iostat_lat[2][META].avg_lat;
-+		__entry->m_wr_as_cnt	= iostat_lat[2][META].cnt;
-+	),
-+
-+	TP_printk("dev = (%d,%d), "
-+		"iotype [peak lat.(ms)/avg lat.(ms)/count], "
-+		"rd_data [%u/%u/%u], rd_node [%u/%u/%u], rd_meta [%u/%u/%u], "
-+		"wr_sync_data [%u/%u/%u], wr_sync_node [%u/%u/%u], "
-+		"wr_sync_meta [%u/%u/%u], wr_async_data [%u/%u/%u], "
-+		"wr_async_node [%u/%u/%u], wr_async_meta [%u/%u/%u]",
-+		show_dev(__entry->dev),
-+		__entry->d_rd_peak, __entry->d_rd_avg, __entry->d_rd_cnt,
-+		__entry->n_rd_peak, __entry->n_rd_avg, __entry->n_rd_cnt,
-+		__entry->m_rd_peak, __entry->m_rd_avg, __entry->m_rd_cnt,
-+		__entry->d_wr_s_peak, __entry->d_wr_s_avg, __entry->d_wr_s_cnt,
-+		__entry->n_wr_s_peak, __entry->n_wr_s_avg, __entry->n_wr_s_cnt,
-+		__entry->m_wr_s_peak, __entry->m_wr_s_avg, __entry->m_wr_s_cnt,
-+		__entry->d_wr_as_peak, __entry->d_wr_as_avg, __entry->d_wr_as_cnt,
-+		__entry->n_wr_as_peak, __entry->n_wr_as_avg, __entry->n_wr_as_cnt,
-+		__entry->m_wr_as_peak, __entry->m_wr_as_avg, __entry->m_wr_as_cnt)
-+);
- #endif
- 
- TRACE_EVENT(f2fs_bmap,
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+This is my fault for not sending anything yet. Since the initial version of the
+driver had the RTC providing HOSC, it depended on converting the existing A100,
+H6, and H616 CCU drivers to use .fw_name for parents, since those drivers
+hardcode two different global names for HOSC. And I had no opportunit to do that
+yet.
 
+However, I should really send something that 100% matches the current binding
+for SoCs where that exists (i.e. osc24M is a fixed clock), and doing so is a
+smaller job.
+
+On the other hand, having osc24M as an RTC *output* neatly sidesteps the fact
+that it has been missing from the input list :)
+
+(But on the other-other hand, A50 gets even more fun, as the HOSC crystal may
+not be 24MHz anymore. So the RTC has to choose one of three possible HOSC->LOSC
+dividers based on the HOSC frequency. But there is no register for HOSC
+frequency. So in this case it is convenient to have HOSC as a separate fixed
+clock input.)
+
+The basic idea of my patch is that using the CCU library code lets us cleanly
+have slightly different clock trees for each of the RTC variants that Allwinner
+comes up with.
+
+The secondary goal is to add support for osc32k calibration.
+
+An early version of the patch is here[1], and I will send something as soon as I
+have made the modifications described above. But I know you were skeptical about
+moving the clock part out of the RTC driver. So if you NACK that, somebody will
+have to add all of the variants to the RTC driver.
+
+Regards,
+Samuel
+
+[1]: https://github.com/smaeul/linux/commit/9510ca9e95cb.patch
