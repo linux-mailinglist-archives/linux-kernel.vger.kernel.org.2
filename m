@@ -2,60 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D303F2C7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540323F2C81
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240589AbhHTMw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:52:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240278AbhHTMw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:52:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E65A4610FA;
-        Fri, 20 Aug 2021 12:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629463939;
-        bh=OoTJIf38pBPH9S17dKpOwgVaFTVAqEHRnEu6JveyWhc=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=FZTsqA43x2jGcRP7WydZPjCvsyKRJxaT/FCaKij0xwsDQThXVEKN4gQCqeR0iVGFh
-         2EEWXroZTpX8PRXsxqpRdJddGSuU8XWzFB0WGsErBbGGwTr1Ung6585tbHtsj8JGGR
-         W0vVrgMiOUe3B9u5uyqTNzOM2gpchriw9W3Zw68liRHjpzbG7gPy0m4hPGA6s2VJOE
-         /MdBDQICa6ZSR66VsCvB6ffhebCXfUH8T51dS7cDQnWjwUTI+c3h0b5WlBz6Pcn+Ml
-         5u1yMM/Ov2lrvYiaNgDHkIWJUiVWk/f+WogAUDi3jKpn0bMUki+ano3Vfy8xL586sv
-         pjT3RbXkfcJ7w==
-Date:   Fri, 20 Aug 2021 14:52:15 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jim Broadus <jbroadus@gmail.com>
-cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, johnny.chuang.emc@gmail.com,
-        kai.heng.feng@canonical.com
-Subject: Re: [PATCH] HID: i2c-hid: Fix Elan touchpad regression
-In-Reply-To: <20210809065505.6823-1-jbroadus@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2108201452050.15313@cbobk.fhfr.pm>
-References: <20210809065505.6823-1-jbroadus@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S240616AbhHTMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240613AbhHTMxO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:53:14 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E75C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:52:36 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id q6so14131771wrv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 05:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uDTdVQ6VcZqXNEvJcgw1HUA2KyfCBkRaPWncrxYNJWk=;
+        b=eaqy9ksXHq1q+ufHfMy7Qz7AXCXvmsVesluSW3w0jpQYOQhekVNJ+E0Pj6/oxpOT0O
+         TF+mRFG7M+BYd2TI3lnDniRRUSfJpkDFXou7iZytU2SRMtQvUuATihVA92x8Nngp7lNn
+         /9Y3+c3mGSiJ5REDTQohfw145gDG131qbXqs23kUILV1uKkHBBzjaKawMiJSGydsw/cF
+         8iOHq8CDfOvTX0AzW7OaFfg9tQwsYd83paPmEhGtz31h06j7jt7p4Y4XQbeYqaRNCaeA
+         gJRMi8gCwFT1Et3aD+b1IIXE7DlSoKo/jvOdMJ6BTFSTFEI61i5ONZJH1jKVZy6xjisH
+         KZgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uDTdVQ6VcZqXNEvJcgw1HUA2KyfCBkRaPWncrxYNJWk=;
+        b=N6mOr1bT9N+mVl9eFTcb6r+p3seo0fTYnh6HpBg+/OMR2F+kKjezId3KB13iY96Rui
+         uCxkAxlg73CZkaoMpNkoeg+QWjk1TVZ82PLOzenSkBeUrG1RiOFaYpheUjEBh5twAi7l
+         kZDmtR0M/tqDDhda8tVl+17UX42u8aNizoCct9h9dJqL7LET3L3d/z+FOmSBdCITk7ed
+         CdoJesGYoyA6Dszavv7MSt8VscHc04F8YFrWBL4redUMUmKlsSygHO7Wtp4bXy2YBON6
+         bpoBZmbrauCfvyKtp/+4jEnzBmUe1gADBiaA8Z0EuaHbCmpI0+CkR3jW0CUTk4RBWwRE
+         Or+Q==
+X-Gm-Message-State: AOAM530zzJzc3YGTF8cAvmz0ZFxRZieTUrwJXZeysxdNw00P4b8+BvrL
+        Lh0o1U+8k+9oOAnp2HsZ/Ag2QQ==
+X-Google-Smtp-Source: ABdhPJyEMhIbVJ1kesB31+cLegNOQi/PQSCZwwVw08RHY1eqJxi2kXF8pHctFA3eKG6OzuND2D+ezg==
+X-Received: by 2002:a5d:4c4e:: with SMTP id n14mr9750950wrt.226.1629463955154;
+        Fri, 20 Aug 2021 05:52:35 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:c378:b01b:5d2d:5223? ([2a01:e34:ed2f:f020:c378:b01b:5d2d:5223])
+        by smtp.googlemail.com with ESMTPSA id y14sm3820717wma.28.2021.08.20.05.52.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 05:52:34 -0700 (PDT)
+Subject: Re: [RFC PATCH 2/2] thermal: add a virtual sensor to aggregate
+ temperatures
+To:     Alexandre Bailon <abailon@baylibre.com>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.tseng@mediatek.com, khilman@baylibre.com
+References: <20210819123215.591593-1-abailon@baylibre.com>
+ <20210819123215.591593-3-abailon@baylibre.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <068ad0f9-ca73-6f62-f04a-6916c055279a@linaro.org>
+Date:   Fri, 20 Aug 2021 14:52:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210819123215.591593-3-abailon@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 8 Aug 2021, Jim Broadus wrote:
-
-> A quirk was recently added for Elan devices that has same device match
-> as an entry earlier in the list. The i2c_hid_lookup_quirk function will
-> always return the last match in the list, so the new entry shadows the
-> old entry. The quirk in the previous entry, I2C_HID_QUIRK_BOGUS_IRQ,
-> silenced a flood of messages which have reappeared in the 5.13 kernel.
+On 19/08/2021 14:32, Alexandre Bailon wrote:
+> This adds a virtual thermal sensor that reads temperature from
+> hardware sensor and return an aggregated temperature.
+> Currently, this only return the max temperature.
 > 
-> This change moves the two quirk flags into the same entry.
+> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+> ---
+>  drivers/thermal/Kconfig              |   8 ++
+>  drivers/thermal/Makefile             |   1 +
+>  drivers/thermal/thermal_aggregator.c | 134 +++++++++++++++++++++++++++
+>  3 files changed, 143 insertions(+)
+>  create mode 100644 drivers/thermal/thermal_aggregator.c
 > 
-> Fixes: ca66a6770bd9 (HID: i2c-hid: Skip ELAN power-on command after reset)
-> Signed-off-by: Jim Broadus <jbroadus@gmail.com>
+> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+> index 7a4ba50ba97d0..f9c152cfb95bc 100644
+> --- a/drivers/thermal/Kconfig
+> +++ b/drivers/thermal/Kconfig
+> @@ -228,6 +228,14 @@ config THERMAL_MMIO
+>  	  register or shared memory, is a potential candidate to work with this
+>  	  driver.
+>  
+> +config THERMAL_AGGREGATOR
 
-Applied, thank you.
+We discussed the virtual sensor doing aggregation but may be we can give
+it another purpose in the future like returning a constant temp or
+low/high pass filter.
+
+It may make sense to use a more generic name like virtual sensor for
+example.
+
+> +	tristate "Generic thermal aggregator driver"
+> +	depends on TERMAL_OF || COMPILE_TEST
+
+s/TERMAL_OF/THERMAL_OF/
+
+> +	help
+> +	  This option enables the generic thermal sensor aggregator.
+> +	  This driver creates a thermal sensor that reads the hardware sensors
+> +	  and aggregate the temperature.
+> +
+>  config HISI_THERMAL
+>  	tristate "Hisilicon thermal driver"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
+> index 9729a2b089919..5b20ef15aebbe 100644
+> --- a/drivers/thermal/Makefile
+> +++ b/drivers/thermal/Makefile
+> @@ -60,3 +60,4 @@ obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
+>  obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
+>  obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
+>  obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
+> +obj-$(CONFIG_THERMAL_AGGREGATOR) += thermal_aggregator.o
+> diff --git a/drivers/thermal/thermal_aggregator.c b/drivers/thermal/thermal_aggregator.c
+> new file mode 100644
+> index 0000000000000..76f871dbfee9e
+> --- /dev/null
+> +++ b/drivers/thermal/thermal_aggregator.c
+> @@ -0,0 +1,134 @@
+> +#include <linux/err.h>
+> +#include <linux/export.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/slab.h>
+> +#include <linux/thermal.h>
+> +#include <linux/types.h>
+> +#include <linux/string.h>
+> +
+> +const char *aggr_types[] = {
+> +	"min",
+> +	"max",
+> +	"avg",
+> +};
+> +
+> +struct thermal_aggr;
+> +
+> +typedef int (*aggregate_fn)(struct thermal_aggr *aggr);
+> +
+> +struct thermal_aggr_sensor {
+> +	struct thermal_sensor *sensor;
+> +
+> +	struct list_head node;
+> +};
+> +
+> +struct thermal_aggr {
+> +	struct list_head sensors;
+> +	aggregate_fn *aggregate;
+> +	//struct thermal_zone_device *tz;
+> +};
+> +
+> +static int thermal_aggr_read_temp(void *data, int *temperature)
+> +{
+> +	struct thermal_aggr *aggr = data;
+> +	struct thermal_aggr_sensor *sensor;
+> +	int max_temp = 0;
+> +	int temp;
+> +
+
+What happens if a hardware sensor module is unloaded ?
+
+> +	list_for_each_entry(sensor, &aggr->sensors, node) {
+> +		if (!sensor->sensor) {
+> +			return -ENODEV;
+> +		}
+
+
+
+
+> +		sensor->sensor->ops->get_temp(sensor->sensor->sensor_data, &temp);
+> +		max_temp = max(max_temp, temp);
+> +	}
+> +
+> +	*temperature = max_temp;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct thermal_zone_of_device_ops thermal_aggr_max_ops = {
+> +	.get_temp = thermal_aggr_read_temp,
+
+	.get_temp = thermal_virtual_sensor_get_temp ?
+> +};
+> +
+> +static int thermal_aggr_probe(struct platform_device *pdev)
+> +{
+> +	struct thermal_aggr *aggr;
+> +	struct device *dev = &pdev->dev;
+> +	struct of_phandle_args args;
+> +	int count;
+> +	int ret;
+> +	int i;
+> +
+> +	count = of_count_phandle_with_args(dev->of_node,
+> +					   "thermal-sensors",
+> +					   "#thermal-sensor-cells");
+> +	if (count <= 0)
+> +		return -EINVAL;
+> +
+> +	aggr = kzalloc(sizeof(*aggr), GFP_KERNEL);
+
+	devm_kzalloc
+
+> +	INIT_LIST_HEAD(&aggr->sensors);
+> +
+> +	for (i = 0; i < count; i++) {
+> +		struct thermal_sensor *sensor;
+> +		struct thermal_aggr_sensor *aggr_sensor;
+> +		int id;
+> +
+> +		ret = of_parse_phandle_with_args(dev->of_node,
+> +						 "thermal-sensors",
+> +						 "#thermal-sensor-cells",
+> +						 i,
+> +						 &args);
+> +		if (ret) {
+> +			return ret;
+> +		}
+> +
+> +		id = args.args_count ? args.args[0] : 0;
+> +		sensor = thermal_of_get_sensor(args.np, id);
+> +		if (sensor == NULL) {
+> +			return -EPROBE_DEFER;
+> +		}
+> +
+> +		aggr_sensor = kzalloc(sizeof(*aggr_sensor), GFP_KERNEL);
+
+		devm_kzalloc
+
+> +		aggr_sensor->np = args.np;
+
+Why the 'np' and id are stored, they won't be needed anymore, no ?
+
+> +		aggr_sensor->id = id;
+> +		aggr_sensor->sensor = sensor;
+> +		list_add(&aggr_sensor->node, &aggr->sensors);
+> +	}
+> +
+> +	/*tzdev = */devm_thermal_zone_of_sensor_register(dev, 0, aggr, &thermal_aggr_max_ops);
+> +
+> +	return 0;
+> +}
+> +
+> +static int thermal_aggr_remove(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id thermal_aggr_of_match[] = {
+> +	{
+> +		.compatible = "generic,thermal-aggregator",  "^virtual,.*":
+
+As stated in the documentation
+Documentation/devicetree/bindings/vendor-prefixes.yaml
+
+  "^virtual,.*":
+    description: Used for virtual device without specific vendor.
+
+I suggest something like:
+
+	.compatible = "virtual,thermal-sensor",
+
+
+> +	},
+> +	{
+> +	},
+> +};
+> +MODULE_DEVICE_TABLE(of, thermal_aggr_of_match);
+> +
+> +static struct platform_driver thermal_aggr = {
+> +	.probe = thermal_aggr_probe,
+> +	.remove = thermal_aggr_remove,
+> +	.driver = {
+> +		.name = "thermal-aggregator",
+> +		.of_match_table = thermal_aggr_of_match,
+> +	},
+> +};
+> +
+> +module_platform_driver(thermal_aggr);
+> +MODULE_AUTHOR("Alexandre Bailon <abailon@baylibre.com>");
+> +MODULE_DESCRIPTION("Thermal sensor aggregator");
+> +MODULE_LICENSE("GPL v2");
+> 
+
 
 -- 
-Jiri Kosina
-SUSE Labs
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
