@@ -2,163 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D783F3257
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640B83F325C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbhHTRhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:37:01 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38542 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbhHTRhA (ORCPT
+        id S234992AbhHTRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:37:57 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3677 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233320AbhHTRhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:37:00 -0400
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CDEE620C33CF;
-        Fri, 20 Aug 2021 10:36:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CDEE620C33CF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1629480981;
-        bh=dkfEmMb69UrtMjAtZDzM024/xNYhw2xqJs/2HMtdXmc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fKJaNRe8+MCJB0KJLYLvuDKp8miNx/jC+Jp6ZFrZ/FSt75nUdzW7vqaje/ZCxEddS
-         X1RCR3Q0xhrifCeUBjS8HIIGUazF5dt53FF+RHgPhOhZShRZ/Vtn8JJ0xnojFiss25
-         j5aeXUNKAwvg/MfJ61hfAyj8lo1T6rLcfqiYLK3I=
-Received: by mail-pf1-f180.google.com with SMTP id i21so9216743pfd.8;
-        Fri, 20 Aug 2021 10:36:21 -0700 (PDT)
-X-Gm-Message-State: AOAM533XXowtFxrlGkytLP4elrr3pMoEliRu4bpa5blSaS5g06dI6Ggo
-        ULtAuy4v7g96piWkiZN5krq/eZn1hnsjKYJQjFc=
-X-Google-Smtp-Source: ABdhPJwDqdmiMWbW301B7gj3cCHgzAv37q1C8TWjN54+gM1cNuz47Xk/ccxokkdxTMTsLiOUgggFMTvJ67uWm/H0mzM=
-X-Received: by 2002:a63:fe41:: with SMTP id x1mr19382794pgj.272.1629480981404;
- Fri, 20 Aug 2021 10:36:21 -0700 (PDT)
+        Fri, 20 Aug 2021 13:37:55 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GrphV5lX2z67RS4;
+        Sat, 21 Aug 2021 01:36:10 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 20 Aug 2021 19:37:15 +0200
+Received: from [10.47.93.229] (10.47.93.229) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 20 Aug
+ 2021 18:37:14 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: arm scsi drivers
+To:     <linux@armlinux.org.uk>
+CC:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "Christoph Hellwig" <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Message-ID: <5a72842f-99db-8787-120b-6d85e7884e2d@huawei.com>
+Date:   Fri, 20 Aug 2021 18:37:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
- <871r71azjw.wl-maz@kernel.org> <YROmOQ+4Kqukgd6z@orome.fritz.box>
- <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com> <87o8a49idp.wl-maz@kernel.org>
- <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com> <20210812121835.405d2e37@linux.microsoft.com>
- <874kbuapod.wl-maz@kernel.org> <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
- <87wnohqty1.wl-maz@kernel.org> <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
- <87fsv4qdzm.wl-maz@kernel.org> <CAFnufp2T75cvDLUx+ZyPQbkaNeY_S1OJ7KTJe=2EK-qXRNkwyw@mail.gmail.com>
- <87mtpcyrdv.wl-maz@kernel.org> <CAFnufp0N2MzaTjF95tx9Q1D33z9f9AAK6UHbhU9rhG1ue_r1ug@mail.gmail.com>
- <87h7fkyqpv.wl-maz@kernel.org>
-In-Reply-To: <87h7fkyqpv.wl-maz@kernel.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 20 Aug 2021 19:35:45 +0200
-X-Gmail-Original-Message-ID: <CAFnufp3HbyeTGhxB33mej4Y4G2T2Yv5swKCx_C41zfc71Kj11A@mail.gmail.com>
-Message-ID: <CAFnufp3HbyeTGhxB33mej4Y4G2T2Yv5swKCx_C41zfc71Kj11A@mail.gmail.com>
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.93.229]
+X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:24 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Fri, 20 Aug 2021 18:14:30 +0100,
-> Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> >
-> > On Fri, Aug 20, 2021 at 7:09 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > On Fri, 20 Aug 2021 17:38:14 +0100,
-> > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > > >
-> > > > On Fri, Aug 20, 2021 at 6:26 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >
-> > > > > On Fri, 20 Aug 2021 11:37:03 +0100,
-> > > > > Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> > > > > >
-> > > > > > On Thu, Aug 19, 2021 at 6:29 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > > > > > index fcdb1d20389b..244aa6579ef4 100644
-> > > > > > > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > > > > > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > > > > > > @@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
-> > > > > > >         if (stmmac_xdp_is_enabled(priv))
-> > > > > > >                 return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
-> > > > > > >
-> > > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > > > > > > +       return 8 + NET_IP_ALIGN;
-> > > > > > >  }
-> > > > > > >
-> > > > > > >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
-> > > > > > >
-> > > > > > > I don't see the system corrupting packets anymore. Is that exactly
-> > > > > > > what you had in mind? This really seems to point to a basic buffer
-> > > > > > > overflow.
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > Sorry, I meant something like:
-> > > > > >
-> > > > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > > > > > +       return 8;
-> > > > > >
-> > > > > > I had some hardware which DMA fails if the receive buffer was not word
-> > > > > > aligned, but this seems not the case, as 8 + NET_IP_ALIGN = 10, and
-> > > > > > it's not aligned too.
-> > > > >
-> > > > > No error in that case either, as expected. Given that NET_SKB_PAD is
-> > > > > likely to expand to 64, it is likely a DMA buffer overflow which
-> > > > > probably only triggers for large-ish packets.
-> > > > >
-> > > > > Now, we're almost at -rc7, and we don't have a solution in sight.
-> > > > >
-> > > > > Can we please revert this until we have an understanding of what is
-> > > > > happening? I'll hopefully have more cycles to work on the issue once
-> > > > > 5.14 is out, and hopefully the maintainers of this driver can chime in
-> > > > > (they have been pretty quiet so far).
-> > > > >
-> > > > > Thanks,
-> > > > >
-> > > > >         M.
-> > > > >
-> > > > > --
-> > > > > Without deviation from the norm, progress is not possible.
-> > > >
-> > > > Last try, what about adding only NET_IP_ALIGN and leaving NET_SKB_PAD?
-> > > >
-> > > > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > > > +       return NET_IP_ALIGN;
-> > > >
-> > > > I think that alloc_skb adds another NET_SKB_PAD anyway.
-> > >
-> > > I don't see any packet corruption with this. However, this doesn't
-> > > prove that this is correct either. What was the rational for adding
-> > > NET_SKB_PAD the first place?
-> > >
-> >
-> > I think it's wrong. The original offset was 0, and to align it to the
-> > boundary we need to add just NET_IP_ALIGN, which is two.
-> > NET_SKB_PAD is a much bigger value, (I think 64), which is used to
-> > reserve space to prepend an header, e.g. with tunnels.
->
-> How about the other adjustments that Eric mentioned regarding the size
-> of the buffer? Aren't they required?
->
+Hi Russell,
 
-I guess that if stmmac_rx_buf1_len() needed such adjustment, it would
-be already broken when XDP is in use.
-When you use XDP, stmmac_rx_offset() adds a pretty big headroom of 256
-byte, which would easily trigger an overflow if not accounted.
-Did you try attaching a simple XDP program on a stock 5.13 kernel?
+Recently we tried to remove scsi_cmnd.tags struct member [0].
 
--- 
-per aspera ad upstream
+However it now shows that some of the arm SCSI drivers continue to use 
+this [1]. I think any other driver usage of this member had been found 
+and removed.
+
+The impression is that the usage of scsi_cmnd.tag in those drivers is 
+quite dubious.
+
+Now checking [2], it appears that you may have had some patches for 
+these drivers locally.
+
+So is that the case? Is this HW still used with bleeding edge kernels? 
+If so, can we fix up this tag management?
+
+[0] 
+https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#mb47909f38f35837686734369600051b278d124af
+
+[1] 
+https://lore.kernel.org/linux-scsi/6c83bd7f-9fd2-1b43-627f-615467fa55d4@huawei.com/T/#md5d786e5753083b2f3e8e761b1c69809f82c7485
+
+[2] 
+https://lore.kernel.org/lkml/20210109174357.GB1551@shell.armlinux.org.uk/
+
+Thanks,
+John
