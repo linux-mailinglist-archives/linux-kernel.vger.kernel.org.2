@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC433F29A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F95B3F29A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238975AbhHTJ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237840AbhHTJ4V (ORCPT
+        id S237139AbhHTJ6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:58:17 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:35027 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235321AbhHTJ6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:56:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194CBC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:55:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=cm7YxYZOEUkP6Dnb1/JQxXIHjE0MtDK0+1YjijMBUBc=; b=i52s9L/z9eHow6roQ4zUj8WygW
-        asPhat2AvBzFwX4cGIalNCBvuQxXz+MFaaXbK083qtz7QvvNGgurvuDflAbHmHTf048NeOSrR1ElR
-        uduM75V9TTbfw/Wgcx60hTa07MmMmwSB4z7HuofMLpssC2d6Z3kPQKhgwLQA0Lw9TC1QCV0aIBxwQ
-        1Kx3Zyu63kSM1UV1pFS8YMiHTJ6ydH0oXNTsDvHm7/fPqqUd+gEkI3X4NEP0Ig9dBTMOPw5ubyEey
-        xkPIhauyvq9OE2YUXRZv9htomkAIZXLaUWGgxHJhNGOJR6oUQCodHa1UhC5HTxzb1ZoeB2QRB3WMs
-        67hVoOjg==;
-Received: from [2001:4bb8:188:1b1:43a3:4b88:ec18:d4de] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mH1EN-006Ks5-Ds; Fri, 20 Aug 2021 09:55:03 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel: unexport get_{mm,task}_exe_file
-Date:   Fri, 20 Aug 2021 11:54:30 +0200
-Message-Id: <20210820095430.445242-1-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
+        Fri, 20 Aug 2021 05:58:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 138D33200A80;
+        Fri, 20 Aug 2021 05:57:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 20 Aug 2021 05:57:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=CfCw/ZeNoblI7uaS1
+        4NFIKhhpVcANOaKc3OV06nLfKM=; b=Qyw0NBbGIt+FdY07hbK1DbRxoRm7iWmSX
+        7XM5y9/vvnudq/8XsoyMORjhTH240OkLMHX+CQzMlOrY5KArT4lauL97RLcJULXn
+        0JRrLtQsHv4yNEf1AB7lNgHzkYbNoJP3b8e+h5ZgSUiGUwtSCzA7loQXQr9g1rnW
+        XrUlplxp9Iu7gZC1udgSjRDt8qphzOXMaDsLye8aLSWyC2YcfpiCR8OBMAFgw1Fh
+        uJPvUEg3fH4iApnD6kGVMvSiJLiYooswIrnO16hMunJCqyc0iiYuVOERCV/69vTv
+        B9PJ5kdwLK5dxiTNaE+jVgUqZ0KmvI/xGUodth3R263F/YQQ+sY0g==
+X-ME-Sender: <xms:kXwfYb20_eroAxSXQtS1pWxwhWrAAwwGexS26Uh0-dO3KaU4_mDdfg>
+    <xme:kXwfYaHemcrDhS_f4aOfLx6ZVr_gsXQvYqNAOFbQJnI__JtokR_R1MswjfBrKhEDB
+    ZGaFKFdYYwNrJ5ezfA>
+X-ME-Received: <xmr:kXwfYb7IVFOpjAmOqWLF27nlMjbzheNvifxuaeuFssk2ocxLqL6U8evxQz2T>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrleelgddvudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgv
+    shdruggvvheqnecuggftrfgrthhtvghrnheplefflefhledthfdtveeugfevueeukeegte
+    eigfeihffgjedvtedvueevtdfhvdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:kXwfYQ2Zf7-JlTOhOx7KuxSAg9-cUmXkXT8ekWGk-YeM4ivUyLbnVg>
+    <xmx:kXwfYeGcFcezrghy_jRBUYDVzZR1HrGmaKPS8dcF6JTxsIs2YZcfJg>
+    <xmx:kXwfYR-OeG3QJtvd9cwZjs8iSczYLjhKGpWnZVDjwv6hJ1o9DEyEAA>
+    <xmx:kXwfYTQFiT4nsWNWl9GUXOAmzUWlFM4HGJI2XR6fDqsbgEyhWRWaxg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 20 Aug 2021 05:57:33 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, hadess@hadess.net,
+        platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v4 0/1] asus-wmi: Add support for custom fan curves
+Date:   Fri, 20 Aug 2021 21:57:25 +1200
+Message-Id: <20210820095726.14131-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only used by core code and the tomoyo which can't be a module either.
+Add support for custom fan curves found on some ASUS ROG laptops.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/fork.c | 2 --
- 1 file changed, 2 deletions(-)
+The patch has gone through a few revisions as others tested it and
+requested bahaviour changes or reported issues. V4 should be considered
+finalised for now and I won't submit a new version until V4 has been
+reviewed.
 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index af408d06e1fb7..dc8eb1300418a 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1238,7 +1238,6 @@ struct file *get_mm_exe_file(struct mm_struct *mm)
- 	rcu_read_unlock();
- 	return exe_file;
- }
--EXPORT_SYMBOL(get_mm_exe_file);
- 
- /**
-  * get_task_exe_file - acquire a reference to the task's executable file
-@@ -1261,7 +1260,6 @@ struct file *get_task_exe_file(struct task_struct *task)
- 	task_unlock(task);
- 	return exe_file;
- }
--EXPORT_SYMBOL(get_task_exe_file);
- 
- /**
-  * get_task_mm - acquire a reference to the task's mm
+- V1
+  + Initial patch work
+- V2
+  + Don't fail and remove wmi driver if error from
+    asus_wmi_evaluate_method_buf() if error is -ENODEV
+- V3
+  + Store the "default" fan curves
+  + Call throttle_thermal_policy_write() if a curve is erased to ensure
+    that the factory default for a profile is applied again
+- V4
+  + Do not apply default curves by default. Testers have found that the
+    default curves don't quite match actual no-curve behaviours
+  + Add method to enable/disable curves for each profile
+
+Luke D. Jones (1):
+  asus-wmi: Add support for custom fan curves
+
+ drivers/platform/x86/asus-wmi.c            | 672 +++++++++++++++++++++
+ include/linux/platform_data/x86/asus-wmi.h |   2 +
+ 2 files changed, 674 insertions(+)
+
 -- 
-2.30.2
+2.31.1
 
