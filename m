@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152DD3F27AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CB53F27B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238756AbhHTHek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 03:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
+        id S238804AbhHTHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 03:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238646AbhHTHej (ORCPT
+        with ESMTP id S238710AbhHTHfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 03:34:39 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3267C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 00:34:01 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id j187so7855073pfg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 00:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OdZwHSPvBf7v8TQzJgGvLUz2M9eAxdHhfezfY1ArgPY=;
-        b=EmvoMyKhPrYNoLdElwrJbx+ch2kLlhtAaBuHABjBtXG7s3LErAyDyTpRW0WKYwDYu7
-         lnBgLN0SGA67qYrSd9mlyGLzp9/QllciG0rtYIy2koKjYw51O7wnBAscI2X6IjExvOV8
-         ucWJBay9ZSVGQ3xNPVqOwJb0tucMYAZlIdKTg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OdZwHSPvBf7v8TQzJgGvLUz2M9eAxdHhfezfY1ArgPY=;
-        b=eUF9DmUT69GNtPv9fimZP3RWxWNHatD4hUZWBK4+CnyXrDVDSJd4HaPREeXtWf+zk4
-         oWBEjeMS8jAyEle07xX11q8dOl0VPCth5wdNUmydJO3Gf5jR0RFQmrD6DkhnmPaneDog
-         SLmrii6yXu//uePdhg9M/IdmwfcHFyXvpVkKLM1AyZFTrfUOMAiV2FixZiuhicJMfz1H
-         eG2khFJULo9wGVWR9SQoKon5tCMBKLQ+8POVT1x+sij7hUuHWbKaKGHusvqtlArs34K4
-         Od1KWcoaMuRiI+G0+X2Fb6cRtisoFKfBHCxpntoGbULoU0kU854RQB1xqrBnsZ4Htjo1
-         eHhg==
-X-Gm-Message-State: AOAM530nr5FL0VpwgpSv5yOEWyUUUHR9DKRQ7IsoUfI6H/riq8Q7HSRj
-        74xWuhVwH7Mxn6OIKC5izXbxpc5rXnp1/g==
-X-Google-Smtp-Source: ABdhPJyl8Pz1tgvSdMmTUn1bWAcfV38nnU6/ESt68A28mRcBFWuomuJUbGtSteVQqR4uvUtUHcHy9A==
-X-Received: by 2002:a63:1b45:: with SMTP id b5mr17581761pgm.302.1629444841222;
-        Fri, 20 Aug 2021 00:34:01 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 22sm6656587pgn.88.2021.08.20.00.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 00:34:00 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 00:33:59 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] mm/rmap: Convert from atomic_t to refcount_t on
- anon_vma->refcount
-Message-ID: <202108200017.9F1744F76@keescook>
-References: <1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20210720160127.ac5e76d1e03a374b46f25077@linux-foundation.org>
- <20210819132131.GA15779@willie-the-truck>
- <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
- <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
- <CAHk-=wh_vEzmYnMufOa=03WAU=DRM5+n6uZy=dVtJERFJm3Q-Q@mail.gmail.com>
- <YR9PHD+pWTelGKVd@hirez.programming.kicks-ass.net>
+        Fri, 20 Aug 2021 03:35:21 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DB3C061756;
+        Fri, 20 Aug 2021 00:34:44 -0700 (PDT)
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 7DEAB133;
+        Fri, 20 Aug 2021 09:34:40 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        hpa@zytor.com, Joerg Roedel <jroedel@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] x86/efi: Restore Firmware IDT in before ExitBootServices()
+Date:   Fri, 20 Aug 2021 09:34:29 +0200
+Message-Id: <20210820073429.19457-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR9PHD+pWTelGKVd@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 08:43:40AM +0200, Peter Zijlstra wrote:
-> On Thu, Aug 19, 2021 at 12:09:37PM -0700, Linus Torvalds wrote:
-> > On Thu, Aug 19, 2021 at 8:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > If we can skip the OF... we can do something like this:
-> > 
-> > Honestly, I think a lot of the refcount code is questionable. It was
-> > absolutely written with no care for performance AT ALL.
-> 
-> That's a bit unfair I feel. Will's last rewrite of the stuff was
-> specifically to address performance issues.
+From: Joerg Roedel <jroedel@suse.de>
 
-Well, to address performance issues with the "full" version. The default
-x86-specific code was already as fast as atomic_t. Will got it to nearly
-match while making it catch all conditions, not just the exploitable
-ones. (i.e. it didn't bother trying to catch underflow; there's no way
-to mitigate it).
+Commit 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32
+boot path") introduced an IDT into the 32 bit boot path of the
+decompressor stub.  But the IDT is set up before ExitBootServices() is
+called and some UEFI firmwares rely on their own IDT.
 
-Will's version gave us three properties: correctness (it catches all the
-pathological conditions), speed (it was very nearly the same speed as
-regular atomic_t), and arch-agnosticism, which expanded this protection
-to things beyond just x86 and arm64.
+Save the firmware IDT on boot and restore it before calling into EFI
+functions to fix boot failures introduced by above commit.
 
-> > But see above: maybe just make this a separate "careful atomic_t",
-> > with the option to panic-on-overflow. So then we could get rid of
-> > refcount_warn_saturate() enmtirely above, and instead just have a
-> > (compile-time option) BUG() case, with the non-careful version just
-> > being our existing atomic_dec_and_test.
+Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Fixes: 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32 boot path")
+Cc: stable@vger.kernel.org # 5.13+
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+---
+ arch/x86/boot/compressed/efi_thunk_64.S | 23 ++++++++++++++++++-----
+ arch/x86/boot/compressed/head_64.S      |  3 +++
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
-This is nearly what we had before. But refcount_t should always saturate
-on overflow -- that's specifically the mitigation needed to defang the
-traditional atomic_t overflow exploits (of which we had several a year
-before refcount_t and now we've seen zero since).
-
-> We used to have that option; the argument was made that everybody cares
-> about security and as long as this doesn't show up on benchmarks we
-> good.
-> 
-> Also, I don't think most people want the overflow to go BUG, WARN is
-> mostly the right thing and only the super paranoid use panic-on-warn or
-> something.
-
-Saturating on overflow stops exploitability. WARNing is informational.
-BUG kills the system for no good reason: the saturation is the defense
-against attack, and the WARN is the "oh, I found a bug" details needed
-to fix it.
-
-I prefer the arch-agnostic, fully checked, very fast version of this
-(i.e. what we have right now). :P I appreciate it's larger, but in my
-opinion size isn't as important as correctness and speed. If it's just
-as fast as a small version but has greater coverage, that seems worth
-the size.
-
+diff --git a/arch/x86/boot/compressed/efi_thunk_64.S b/arch/x86/boot/compressed/efi_thunk_64.S
+index 95a223b3e56a..99cfd5dea23c 100644
+--- a/arch/x86/boot/compressed/efi_thunk_64.S
++++ b/arch/x86/boot/compressed/efi_thunk_64.S
+@@ -39,7 +39,7 @@ SYM_FUNC_START(__efi64_thunk)
+ 	/*
+ 	 * Convert x86-64 ABI params to i386 ABI
+ 	 */
+-	subq	$32, %rsp
++	subq	$64, %rsp
+ 	movl	%esi, 0x0(%rsp)
+ 	movl	%edx, 0x4(%rsp)
+ 	movl	%ecx, 0x8(%rsp)
+@@ -49,14 +49,19 @@ SYM_FUNC_START(__efi64_thunk)
+ 	leaq	0x14(%rsp), %rbx
+ 	sgdt	(%rbx)
+ 
++	addq	$16, %rbx
++	sidt	(%rbx)
++
+ 	/*
+-	 * Switch to gdt with 32-bit segments. This is the firmware GDT
+-	 * that was installed when the kernel started executing. This
+-	 * pointer was saved at the EFI stub entry point in head_64.S.
++	 * Switch to idt and gdt with 32-bit segments. This is the firmware GDT
++	 * and IDT that was installed when the kernel started executing. The
++	 * pointers were saved at the EFI stub entry point in head_64.S.
+ 	 *
+ 	 * Pass the saved DS selector to the 32-bit code, and use far return to
+ 	 * restore the saved CS selector.
+ 	 */
++	leaq	efi32_boot_idt(%rip), %rax
++	lidt	(%rax)
+ 	leaq	efi32_boot_gdt(%rip), %rax
+ 	lgdt	(%rax)
+ 
+@@ -67,7 +72,7 @@ SYM_FUNC_START(__efi64_thunk)
+ 	pushq	%rax
+ 	lretq
+ 
+-1:	addq	$32, %rsp
++1:	addq	$64, %rsp
+ 	movq	%rdi, %rax
+ 
+ 	pop	%rbx
+@@ -132,6 +137,9 @@ SYM_FUNC_START_LOCAL(efi_enter32)
+ 	 */
+ 	cli
+ 
++	lidtl	(%ebx)
++	subl	$16, %ebx
++
+ 	lgdtl	(%ebx)
+ 
+ 	movl	%cr4, %eax
+@@ -166,6 +174,11 @@ SYM_DATA_START(efi32_boot_gdt)
+ 	.quad	0
+ SYM_DATA_END(efi32_boot_gdt)
+ 
++SYM_DATA_START(efi32_boot_idt)
++	.word	0
++	.quad	0
++SYM_DATA_END(efi32_boot_idt)
++
+ SYM_DATA_START(efi32_boot_cs)
+ 	.word	0
+ SYM_DATA_END(efi32_boot_cs)
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index a2347ded77ea..572c535cf45b 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -319,6 +319,9 @@ SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
+ 	movw	%cs, rva(efi32_boot_cs)(%ebp)
+ 	movw	%ds, rva(efi32_boot_ds)(%ebp)
+ 
++	/* Store firmware IDT descriptor */
++	sidtl	rva(efi32_boot_idt)(%ebp)
++
+ 	/* Disable paging */
+ 	movl	%cr0, %eax
+ 	btrl	$X86_CR0_PG_BIT, %eax
 -- 
-Kees Cook
+2.32.0
+
