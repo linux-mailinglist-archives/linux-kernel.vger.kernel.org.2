@@ -2,320 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA893F321C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85CA3F321D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233646AbhHTRQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:16:45 -0400
-Received: from out0.migadu.com ([94.23.1.103]:18748 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232240AbhHTRQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:16:41 -0400
-Content-Type: text/plain; charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1629479761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/um8cGImJu7UaKiwo05KQmx0tqr9Tudb/l1VOAYosQc=;
-        b=i0WO3+jnw6j/EAdfH6hi8Xx8tV6SwX8P4JaPWMFvOLnqW6Szh6bKF00dta7rIdhcG6PiT8
-        T0oArjZQL0P6HREbCWlxsE9ArkRifMcSeZSPepeBnaVsYM/nYji24ikaPrzTeYzTNaesLd
-        oVDjKWbYKvnsoR1uuWFxhRsk5CgC1pM=
-Content-Transfer-Encoding: quoted-printable
+        id S233677AbhHTRRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232598AbhHTRRQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:17:16 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F950C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:16:38 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id j9so5882689qvt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=Z4Jno17Dms0KLq7XjB4K7ABpOau2kQktK28CGQWNujk=;
+        b=P217ffHHzJSqKDPRaest8rKYxztRBEh19rY67W2jt1mNF+4i7QSjZHw6jTbPxwKuPD
+         lJHzVCcnl1xx8mtaV18SO8d98uVnMQxH8uVbJbIfyLcQSrY22XECiAVRGdVGNbVEHowO
+         ysMA2RJQdDAxUUgUies/i1su9WY4zAknbNtiA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=Z4Jno17Dms0KLq7XjB4K7ABpOau2kQktK28CGQWNujk=;
+        b=IrmwbinJZU1iCVI98ZidalvbwNQ4X3IkEforPKBN30jWhmY0OP7GTpdU+teavmyDT/
+         0FXBzYmlcL0zjv9b+KbDO6BIteCGYBSgHe7oSVozrTe1mvpBqJLZdR3pnGTbltbyW2Ea
+         kbuhSWrhBHTT+D2tlwUOteTsGiYvkwGXhjHcRJ197HebdRciHqRxOVVpe6MBTouZfBna
+         2BnTQ2rF906SyDA3LWCXulvzhUFzYPHHv4VdkcQwFunCR1UyUtJ9Nm4nSYrSOjtyWhIo
+         ZUGBRKRxQi8dNsATnrgFs4E1dCLZ4O42H6PMzDiY5y4Y3tbk7iazdGalLN3HZ/JbKmP+
+         SFrA==
+X-Gm-Message-State: AOAM532Y4wHHYJTzN31f03EOUwvqASwvvFjbp7UasGghTiHzQW8a9gQU
+        YiJvmWer9UhWaqHcDToBu/cV9yrgeFfmiWbT
+X-Google-Smtp-Source: ABdhPJxOvphabWwNY8w5Ev1Bg28SILqidAEs21uOf0bLvVmztye7qPmmPoqTivADjxwK7wIXyzX++A==
+X-Received: by 2002:a05:6214:9ce:: with SMTP id dp14mr21172513qvb.42.1629479797514;
+        Fri, 20 Aug 2021 10:16:37 -0700 (PDT)
+Received: from nitro.local ([89.36.78.230])
+        by smtp.gmail.com with ESMTPSA id x83sm3511343qkb.118.2021.08.20.10.16.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 10:16:37 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 13:16:33 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     users@linux.kernel.org, linux-kernel@vger.kernel.org
+Subject: PSA: lore.kernel.org/patchwork/project/lkml is going away
+Message-ID: <20210820171633.43xhblvzuk4swxln@nitro.local>
 MIME-Version: 1.0
-Subject: Re: [PATCH] PCI: VMD: ACPI: Make ACPI companion lookup work for VMD bus
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Jon Derrick <jonathan.derrick@linux.dev>
-In-Reply-To: <11834551.O9o76ZdvQC@kreacher>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        Jonathan Derrick <jonathan.derrick@intel.com>,
-        Wendy Wang <wendy.wang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        David Box <david.e.box@linux.intel.com>
-Date:   Fri, 20 Aug 2021 12:15:57 -0500
-Message-Id: <97334947-BE92-4A9C-839E-5A789F431553@linux.dev>
-References: <11834551.O9o76ZdvQC@kreacher>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: jonathan.derrick@linux.dev
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kmba7i4hrxidurry"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--kmba7i4hrxidurry
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Aug 20, 2021, at 11:12 AM, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:=
+Hello:
 
->=20
-> =EF=BB=BFFrom: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->=20
-> On some systems, in order to get to the deepest low-power state of
-> the platform (which may be necessary to save significant enough
-> amounts of energy while suspended to idle. for example), devices on
-> the PCI bus exposed by the VMD driver need to be power-managed via
-> ACPI.  However, the layout of the ACPI namespace below the VMD
-> controller device object does not reflect the layout of the PCI bus
-> under the VMD host bridge, so in order to identify the ACPI companion
-> objects for the devices on that bus, it is necessary to use a special
-> _ADR encoding on the ACPI side.  In other words, acpi_pci_find_companion()=
+lore.kernel.org/patchwork is a read-only patchwork instance just for patches
+sent to linux-kernel@vger.kernel.org ("LKML"). It's huge, resource-hungry, =
+and
+serves little actual purpose alongside public-inbox, with >99% of all traff=
+ic
+coming from bots.
 
-> does not work for these devices, so it needs to be amended with a
-> special lookup logic specific to the VMD bus.
->=20
-> Address this issue by allowing the VMD driver to temporarily install
-> an ACPI companion lookup hook containing the code matching the devices
-> on the VMD PCI bus with the corresponding objects in the ACPI
-> namespace.
->=20
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Tested-by: Wendy Wang <wendy.wang@intel.com>
-> ---
-> drivers/pci/controller/vmd.c |   48 ++++++++++++++++++++++++++
-> drivers/pci/host-bridge.c    |    1=20
-> drivers/pci/pci-acpi.c       |   78 ++++++++++++++++++++++++++++++++++++++=
-+++++
-> include/linux/pci-acpi.h     |    3 +
-> 4 files changed, 130 insertions(+)
->=20
-> Index: linux-pm/drivers/pci/controller/vmd.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/pci/controller/vmd.c
-> +++ linux-pm/drivers/pci/controller/vmd.c
-> @@ -11,6 +11,7 @@
-> #include <linux/module.h>
-> #include <linux/msi.h>
-> #include <linux/pci.h>
-> +#include <linux/pci-acpi.h>
-> #include <linux/pci-ecam.h>
-> #include <linux/srcu.h>
-> #include <linux/rculist.h>
-> @@ -447,6 +448,49 @@ static struct pci_ops vmd_ops =3D {
->   .write        =3D vmd_pci_write,
-> };
->=20
-> +#ifdef CONFIG_ACPI
-> +static struct acpi_device *vmd_acpi_find_companion(struct pci_dev *pci_de=
-v)
-> +{
-> +    struct pci_host_bridge *bridge;
-> +    u32 busnr, addr;
-> +
-> +    if (pci_dev->bus->ops !=3D &vmd_ops)
-> +        return NULL;
-Can we use is_vmd(pci_dev->bus)?
+This service will be discontinued and removed:
 
-> +
-> +    bridge =3D pci_find_host_bridge(pci_dev->bus);
-> +    busnr =3D pci_dev->bus->number - bridge->bus->number;
-This is just the bus->number - vmd->busn_start, correct?
+- we will stop delivery of new messages to the LKML patchwork effective=20
+  Monday, August 23, 2021
+- we will generate a one-time mapping of patchwork patch-id's to message-ids
+- we will set up a simple redirector to preserve existing links, such that
+  lore.kernel.org/patchwork/patch/{patchid} -> lore.kernel.org/r/{messageid}
 
+To clarify, this does NOT in any way affect patchwork.kernel.org, which will
+continue being maintained and supported, just the little-known and little-u=
+sed
+instance of patchwork at lore.kernel.org/patchwork/.
 
-> +    addr =3D (busnr << 24) | ((u32)pci_dev->devfn << 16) | 0x8000FFFFU;
-So the descriptor assumes busnr < 128 and requires an appropriately sized CFG=
-BAR. Client is typically limited to 32 sub device buses but I=E2=80=99m not c=
-ertain if enterprise will ever need > 128 (256 is allowed).
+If you have any questions or concerns, please let me know.
 
-> +
-> +    dev_dbg(&pci_dev->dev, "Looking for ACPI companion (address 0x%x)\n",=
+-K
 
-> +        addr);
-> +
-> +    return acpi_find_child_device(ACPI_COMPANION(bridge->dev.parent), add=
-r,
-> +                      false);
-> +}
-> +
-> +static bool hook_installed;
-> +
-> +static void vmd_acpi_begin(void)
-> +{
-> +    if (pci_acpi_set_companion_lookup_hook(vmd_acpi_find_companion))
-> +        return;
-> +
-> +    hook_installed =3D true;
-> +}
-> +
-> +static void vmd_acpi_end(void)
-> +{
-> +    if (!hook_installed)
-> +        return;
-> +
-> +    pci_acpi_clear_companion_lookup_hook();
-> +    hook_installed =3D false;
-> +}
-> +#else
-> +static inline void vmd_acpi_begin(void) { }
-> +static inline void vmd_acpi_end(void) { }
-> +#endif /* CONFIG_ACPI */
-> +
-> static void vmd_attach_resources(struct vmd_dev *vmd)
-> {
->   vmd->dev->resource[VMD_MEMBAR1].child =3D &vmd->resources[1];
-> @@ -747,6 +791,8 @@ static int vmd_enable_domain(struct vmd_
->   if (vmd->irq_domain)
->       dev_set_msi_domain(&vmd->bus->dev, vmd->irq_domain);
->=20
-> +    vmd_acpi_begin();
-> +
->   pci_scan_child_bus(vmd->bus);
->   pci_assign_unassigned_bus_resources(vmd->bus);
->=20
-> @@ -760,6 +806,8 @@ static int vmd_enable_domain(struct vmd_
->=20
->   pci_bus_add_devices(vmd->bus);
->=20
-> +    vmd_acpi_end();
-> +
->   WARN(sysfs_create_link(&vmd->dev->dev.kobj, &vmd->bus->dev.kobj,
->                  "domain"), "Can't create symlink to domain\n");
->   return 0;
-> Index: linux-pm/drivers/pci/host-bridge.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/pci/host-bridge.c
-> +++ linux-pm/drivers/pci/host-bridge.c
-> @@ -23,6 +23,7 @@ struct pci_host_bridge *pci_find_host_br
->=20
->   return to_pci_host_bridge(root_bus->bridge);
-> }
-> +EXPORT_SYMBOL_GPL(pci_find_host_bridge);
->=20
-> struct device *pci_get_host_bridge_device(struct pci_dev *dev)
-> {
-> Index: linux-pm/drivers/pci/pci-acpi.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/pci/pci-acpi.c
-> +++ linux-pm/drivers/pci/pci-acpi.c
-> @@ -1159,6 +1159,72 @@ void acpi_pci_remove_bus(struct pci_bus
-> }
->=20
-> /* ACPI bus type */
-> +
-> +
-> +DEFINE_STATIC_KEY_FALSE(pci_acpi_companion_lookup_key);
-> +static DEFINE_MUTEX(pci_acpi_companion_lookup_mtx);
-> +static struct acpi_device *(*pci_acpi_find_companion_hook)(struct pci_dev=
- *);
-Wouldn=E2=80=99t a hook list be a better structure? Or is that too heavy han=
-ded for the purpose?
+--kmba7i4hrxidurry
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +
-> +/**
-> + * pci_acpi_set_companion_lookup_hook - Set ACPI companion lookup callbac=
-k.
-> + * @func: ACPI companion lookup callback pointer or NULL.
-> + *
-> + * Set a special ACPI companion lookup callback for PCI devices whose com=
-panion
-> + * objects in the ACPI namespace have _ADR with non-standard bus-device-f=
-unction
-> + * encodings.
-> + *
-> + * Return 0 on success or a negative error code on failure (in which case=
- no
-> + * changes are made).
-> + *
-> + * The caller is responsible for the appropriate ordering of the invocati=
-ons of
-> + * this function with respect to the enumeration of the PCI devices needi=
-ng the
-> + * callback installed by it.
-> + */
-> +int pci_acpi_set_companion_lookup_hook(struct acpi_device *(*func)(struct=
- pci_dev *))
-> +{
-> +    int ret;
-> +
-> +    if (!func)
-> +        return -EINVAL;
-> +
-> +    mutex_lock(&pci_acpi_companion_lookup_mtx);
-> +
-> +    if (pci_acpi_find_companion_hook) {
-> +        ret =3D -EBUSY;
-> +    } else {
-> +        pci_acpi_find_companion_hook =3D func;
-> +        static_branch_enable(&pci_acpi_companion_lookup_key);
-> +        ret =3D 0;
-> +    }
-> +
-> +    mutex_unlock(&pci_acpi_companion_lookup_mtx);
-> +
-> +    return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_acpi_set_companion_lookup_hook);
-> +
-> +/**
-> + * pci_acpi_clear_companion_lookup_hook - Clear ACPI companion lookup cal=
-lback.
-> + *
-> + * Clear the special ACPI companion lookup callback previously set by
-> + * pci_acpi_set_companion_lookup_hook().  Block until the last running in=
-stance
-> + * of the callback returns before clearing it.
-> + *
-> + * The caller is responsible for the appropriate ordering of the invocati=
-ons of
-> + * this function with respect to the enumeration of the PCI devices needi=
-ng the
-> + * callback cleared by it.
-> + */
-> +void pci_acpi_clear_companion_lookup_hook(void)
-> +{
-> +    mutex_lock(&pci_acpi_companion_lookup_mtx);
-> +
-> +    pci_acpi_find_companion_hook =3D NULL;
-> +    static_branch_disable(&pci_acpi_companion_lookup_key);
-> +
-> +    mutex_unlock(&pci_acpi_companion_lookup_mtx);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_acpi_clear_companion_lookup_hook);
-> +
-> static struct acpi_device *acpi_pci_find_companion(struct device *dev)
-> {
->   struct pci_dev *pci_dev =3D to_pci_dev(dev);
-> @@ -1166,6 +1232,18 @@ static struct acpi_device *acpi_pci_find
->   bool check_children;
->   u64 addr;
->=20
-> +    if (static_branch_unlikely(&pci_acpi_companion_lookup_key)) {
-> +        mutex_lock(&pci_acpi_companion_lookup_mtx);
-> +
-> +        adev =3D pci_acpi_find_companion_hook ?
-> +            pci_acpi_find_companion_hook(pci_dev) : NULL;
-> +
-> +        mutex_unlock(&pci_acpi_companion_lookup_mtx);
-> +
-> +        if (adev)
-> +            return adev;
-> +    }
-> +
->   check_children =3D pci_is_bridge(pci_dev);
->   /* Please ref to ACPI spec for the syntax of _ADR */
->   addr =3D (PCI_SLOT(pci_dev->devfn) << 16) | PCI_FUNC(pci_dev->devfn);
-> Index: linux-pm/include/linux/pci-acpi.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/include/linux/pci-acpi.h
-> +++ linux-pm/include/linux/pci-acpi.h
-> @@ -122,6 +122,9 @@ static inline void pci_acpi_add_edr_noti
-> static inline void pci_acpi_remove_edr_notifier(struct pci_dev *pdev) { }
-> #endif /* CONFIG_PCIE_EDR */
->=20
-> +int pci_acpi_set_companion_lookup_hook(struct acpi_device *(*func)(struct=
- pci_dev *));
-> +void pci_acpi_clear_companion_lookup_hook(void);
-> +
-> #else    /* CONFIG_ACPI */
-> static inline void acpi_pci_add_bus(struct pci_bus *bus) { }
-> static inline void acpi_pci_remove_bus(struct pci_bus *bus) { }
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQR2vl2yUnHhSB5njDW2xBzjVmSZbAUCYR/jcQAKCRC2xBzjVmSZ
+bMvXAQCbju/LTzY3Ix8MjD0ToVp7PMnLzsozbsjwtrkhfTL9lAD/VzQHbodWSw3h
+Dl61MOR2l6lT64BwGOlzXojOVCFy1AE=
+=CqEa
+-----END PGP SIGNATURE-----
+
+--kmba7i4hrxidurry--
