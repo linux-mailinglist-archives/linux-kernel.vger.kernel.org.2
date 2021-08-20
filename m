@@ -2,120 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA4B3F3178
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699013F317E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbhHTQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:27:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhHTQ1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:27:01 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A6F861057;
-        Fri, 20 Aug 2021 16:26:24 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mH7LZ-006EXS-SX; Fri, 20 Aug 2021 17:26:22 +0100
-Date:   Fri, 20 Aug 2021 17:26:21 +0100
-Message-ID: <87fsv4qdzm.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        netdev@vger.kernel.org,
+        id S230295AbhHTQbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhHTQbL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 12:31:11 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40D3C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:30:33 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x16so9058093pfh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hx/7x/JErQYdtBSrXWm/zLl3le+VQc9WWGW/gattMeA=;
+        b=AHhWe/b1QJudaK4piB/jpm81AVtQQUsE+FQy6FY3gPQsXxurQppN29+lwRB1w87Hk9
+         s5LnDo+Sqxo/2pCK/R5LdbAN1tgOMvgop4IKUrmYIGWWy9GZBoPvfMqYDTrPjGlW+5pa
+         Zl5yoXP7YgbsHkiiQ3CQ7BLFzXLsUcMFh1zuU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hx/7x/JErQYdtBSrXWm/zLl3le+VQc9WWGW/gattMeA=;
+        b=JmEEKj0hlvuRRDIvmIS50yqI1zmfcjaJs7oR6PKXC9B5HxrtuVc0acxuEqZZqGDHmw
+         Crf4MY6ak7/+izA3DOFpvZZzv0w02/0Cquzb6A2RzP0PgJYUmHKFqhMF4teZXVlXTorG
+         MdrV0g9FYYucNa9WDJ/G2eEb1fLwVlejnygIfvsHEYU69AckQvAltef1SthlT+t5CiKc
+         8oCoxj/rILx2MeYwkEz3a9Jc0BLtI5+hE16WsR3Y18PR+djAXr15hNiohAss2/hPn7B4
+         0AviSzUWVPpn3tmXHIEHif6mz6JGAe4Fw4rKObUzzCAuYnvpVqLrtxu6lhSHa1aimqn1
+         vC8A==
+X-Gm-Message-State: AOAM531tYuP51ink6qcp9BI+cbygVOiBMeMvDP4R7u4+hZPueUrysm//
+        wyt4DWKD6k2+4AAKjLcP/c0agA==
+X-Google-Smtp-Source: ABdhPJwaxnuALu+UM0AoVLj6IiQMA+NoS7/1nkP1/GdVgN0I1V5xyMU8srw+/7RYQUxQMtn9M0uIlg==
+X-Received: by 2002:a65:608f:: with SMTP id t15mr19281560pgu.452.1629477033146;
+        Fri, 20 Aug 2021 09:30:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b7sm7023269pfl.195.2021.08.20.09.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 09:30:32 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 09:30:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH net-next] stmmac: align RX buffers
-In-Reply-To: <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
-References: <20210614022504.24458-1-mcroce@linux.microsoft.com>
-        <871r71azjw.wl-maz@kernel.org>
-        <YROmOQ+4Kqukgd6z@orome.fritz.box>
-        <202417ef-f8ae-895d-4d07-1f9f3d89b4a4@gmail.com>
-        <87o8a49idp.wl-maz@kernel.org>
-        <fe5f99c8-5655-7fbb-a64e-b5f067c3273c@gmail.com>
-        <20210812121835.405d2e37@linux.microsoft.com>
-        <874kbuapod.wl-maz@kernel.org>
-        <CAFnufp2=1t2+fmxyGJ0Qu3Z+=wRwAX8faaPvrJdFpFeTS3J7Uw@mail.gmail.com>
-        <87wnohqty1.wl-maz@kernel.org>
-        <CAFnufp3xjYqe_iVfbmdjz4-xN2UX_oo3GUw4Z4M_q-R38EN+uQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: mcroce@linux.microsoft.com, eric.dumazet@gmail.com, thierry.reding@gmail.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com, davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com, drew@beagleboard.org, kernel@esmil.dk, jonathanh@nvidia.com, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: Removing Mandatory Locks
+Message-ID: <202108200905.BE8AF7C@keescook>
+References: <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
+ <87eeay8pqx.fsf@disp2133>
+ <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+ <87h7ft2j68.fsf@disp2133>
+ <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+ <YRcyqbpVqwwq3P6n@casper.infradead.org>
+ <87k0kkxbjn.fsf_-_@disp2133>
+ <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
+ <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 11:37:03 +0100,
-Matteo Croce <mcroce@linux.microsoft.com> wrote:
-> 
-> On Thu, Aug 19, 2021 at 6:29 PM Marc Zyngier <maz@kernel.org> wrote:
-
-[...]
-
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > index fcdb1d20389b..244aa6579ef4 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-> > @@ -341,7 +341,7 @@ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
-> >         if (stmmac_xdp_is_enabled(priv))
-> >                 return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
+On Thu, Aug 19, 2021 at 12:15:08PM -0700, Linus Torvalds wrote:
+> On Thu, Aug 19, 2021 at 11:39 AM Jeff Layton <jlayton@kernel.org> wrote:
 > >
-> > -       return NET_SKB_PAD + NET_IP_ALIGN;
-> > +       return 8 + NET_IP_ALIGN;
-> >  }
+> > I'm all for ripping it out too. It's an insane interface anyway.
 > >
-> >  void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
-> >
-> > I don't see the system corrupting packets anymore. Is that exactly
-> > what you had in mind? This really seems to point to a basic buffer
-> > overflow.
-
-[...]
-
-> Sorry, I meant something like:
+> > I've not heard a single complaint about this being turned off in
+> > fedora/rhel or any other distro that has this disabled.
 > 
-> -       return NET_SKB_PAD + NET_IP_ALIGN;
-> +       return 8;
-> 
-> I had some hardware which DMA fails if the receive buffer was not word
-> aligned, but this seems not the case, as 8 + NET_IP_ALIGN = 10, and
-> it's not aligned too.
+> I'd love to remove it, we could absolutely test it. The fact that
+> several major distros have it disabled makes me think it's fine.
 
-No error in that case either, as expected. Given that NET_SKB_PAD is
-likely to expand to 64, it is likely a DMA buffer overflow which
-probably only triggers for large-ish packets.
+FWIW, it is now disabled in Ubuntu too:
 
-Now, we're almost at -rc7, and we don't have a solution in sight.
+https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/impish/commit/?h=master-next&id=f3aac5e47789cbeb3177a14d3d2a06575249e14b
 
-Can we please revert this until we have an understanding of what is
-happening? I'll hopefully have more cycles to work on the issue once
-5.14 is out, and hopefully the maintainers of this driver can chime in
-(they have been pretty quiet so far).
+> But as always, it would be good to check Android.
 
-Thanks,
+It looks like it's enabled (checking the Pixel 4 kernel image), but it's
+not specifically mentioned in any of the build configs that are used to
+construct the image, so I think this is just catching the "default y". I
+expect it'd be fine to turn this off.
 
-	M.
+I will ask around to see if it's actually used.
 
 -- 
-Without deviation from the norm, progress is not possible.
+Kees Cook
