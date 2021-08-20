@@ -2,87 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4CF3F2BC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79733F2BCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240203AbhHTMMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:12:35 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34756 "EHLO mga07.intel.com"
+        id S240298AbhHTMOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:14:39 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45181 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238179AbhHTMMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:12:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="280493852"
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="280493852"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 05:11:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,337,1620716400"; 
-   d="scan'208";a="506454729"
-Received: from srpawnik.iind.intel.com ([10.223.107.57])
-  by orsmga001.jf.intel.com with ESMTP; 20 Aug 2021 05:11:54 -0700
-From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-To:     lenb@kernel.org, x86@kernel.org, tony.luck@intel.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     sumeet.r.pawnikar@intel.com
-Subject: [PATCH] tools/power/turbostat: Add Power Limit4 support
-Date:   Fri, 20 Aug 2021 17:42:43 +0530
-Message-Id: <20210820121243.5543-1-sumeet.r.pawnikar@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S237882AbhHTMOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:14:37 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrgXg1cMHz9sSs;
+        Fri, 20 Aug 2021 22:13:54 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1629461637;
+        bh=GaPKIeDl8hhkmPkLrvrJ9stzgKavrRQRLEdG6v/pbF8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Cg5iz+FrUHTpi7DCGlIH7oXwkf4XcqnUHNlNAsx67J8ipGyBRlXQyjIQBkg1fYcl8
+         GV+t0VyhBXDRR97pVPUxVgp868U+GNvxTlPP6U2zCnk47Np7XQp1FjrHxff4fmXpif
+         8KAqXR527PErlM6JgshcTwv7RJvULaJSG2WBf/CdesX8nJ3mGPOyc/62wOlIhiuiK4
+         pHFjOmTd7s4UU/4Kk0VVQGMkOsTQ4C/5DX7na2EhBWLRpjDz6EOnwY09XINL4JSd2V
+         9F5kX7hGtMD+XnYF6MYL6RHkdxZzx1LCjbCfB1+2VyGkTnXO9jkpYniGuZF7TGKKHz
+         ymJThU067ZGkA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 57/63] powerpc/signal32: Use struct_group() to zero
+ spe regs
+In-Reply-To: <0f6e508e-62b6-3840-5ff4-eb5a77635bd1@csgroup.eu>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-58-keescook@chromium.org>
+ <877dggeesw.fsf@mpe.ellerman.id.au>
+ <0f6e508e-62b6-3840-5ff4-eb5a77635bd1@csgroup.eu>
+Date:   Fri, 20 Aug 2021 22:13:53 +1000
+Message-ID: <874kbke2ke.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Power Limit4 support.
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 20/08/2021 =C3=A0 09:49, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Kees Cook <keescook@chromium.org> writes:
+>>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+>>> field bounds checking for memset(), avoid intentionally writing across
+>>> neighboring fields.
+>>>
+>>> Add a struct_group() for the spe registers so that memset() can correct=
+ly reason
+>>> about the size:
+>>>
+>>>     In function 'fortify_memset_chk',
+>>>         inlined from 'restore_user_regs.part.0' at arch/powerpc/kernel/=
+signal_32.c:539:3:
+>>>>> include/linux/fortify-string.h:195:4: error: call to '__write_overflo=
+w_field' declared with attribute warning: detected write beyond size of fie=
+ld (1st parameter); maybe use struct_group()? [-Werror=3Dattribute-warning]
+>>>       195 |    __write_overflow_field();
+>>>           |    ^~~~~~~~~~~~~~~~~~~~~~~~
+>>>
+>>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>>> Cc: Paul Mackerras <paulus@samba.org>
+>>> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>>> Cc: linuxppc-dev@lists.ozlabs.org
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>>> ---
+>>>   arch/powerpc/include/asm/processor.h | 6 ++++--
+>>>   arch/powerpc/kernel/signal_32.c      | 6 +++---
+>>>   2 files changed, 7 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/includ=
+e/asm/processor.h
+>>> index f348e564f7dd..05dc567cb9a8 100644
+>>> --- a/arch/powerpc/include/asm/processor.h
+>>> +++ b/arch/powerpc/include/asm/processor.h
+>>> @@ -191,8 +191,10 @@ struct thread_struct {
+>>>   	int		used_vsr;	/* set if process has used VSX */
+>>>   #endif /* CONFIG_VSX */
+>>>   #ifdef CONFIG_SPE
+>>> -	unsigned long	evr[32];	/* upper 32-bits of SPE regs */
+>>> -	u64		acc;		/* Accumulator */
+>>> +	struct_group(spe,
+>>> +		unsigned long	evr[32];	/* upper 32-bits of SPE regs */
+>>> +		u64		acc;		/* Accumulator */
+>>> +	);
+>>>   	unsigned long	spefscr;	/* SPE & eFP status */
+>>>   	unsigned long	spefscr_last;	/* SPEFSCR value on last prctl
+>>>   					   call or trap return */
+>>> diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/sign=
+al_32.c
+>>> index 0608581967f0..77b86caf5c51 100644
+>>> --- a/arch/powerpc/kernel/signal_32.c
+>>> +++ b/arch/powerpc/kernel/signal_32.c
+>>> @@ -532,11 +532,11 @@ static long restore_user_regs(struct pt_regs *reg=
+s,
+>>>   	regs_set_return_msr(regs, regs->msr & ~MSR_SPE);
+>>>   	if (msr & MSR_SPE) {
+>>>   		/* restore spe registers from the stack */
+>>> -		unsafe_copy_from_user(current->thread.evr, &sr->mc_vregs,
+>>> -				      ELF_NEVRREG * sizeof(u32), failed);
+>>> +		unsafe_copy_from_user(&current->thread.spe, &sr->mc_vregs,
+>>> +				      sizeof(current->thread.spe), failed);
+>>=20
+>> This makes me nervous, because the ABI is that we copy ELF_NEVRREG *
+>> sizeof(u32) bytes, not whatever sizeof(current->thread.spe) happens to
+>> be.
+>>=20
+>> ie. if we use sizeof an inadvertent change to the fields in
+>> thread_struct could change how many bytes we copy out to userspace,
+>> which would be an ABI break.
+>>=20
+>> And that's not that hard to do, because it's not at all obvious that the
+>> size and layout of fields in thread_struct affects the user ABI.
+>>=20
+>> At the same time we don't want to copy the right number of bytes but
+>> the wrong content, so from that point of view using sizeof is good :)
+>>=20
+>> The way we handle it in ptrace is to have BUILD_BUG_ON()s to verify that
+>> things match up, so maybe we should do that here too.
+>>=20
+>> ie. add:
+>>=20
+>> 	BUILD_BUG_ON(sizeof(current->thread.spe) =3D=3D ELF_NEVRREG * sizeof(u3=
+2));
+>
+> You mean !=3D I guess ?
 
-Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-Acked-by: Zhang Rui <rui.zhang@intel.com>
----
-We can see below output with this patch under turbostat.
-On Alder Lake:
-cpu0: MSR_VR_CURRENT_CONFIG: 0x000003f0
-cpu0: PKG Limit #4: 126.000000 Watts (UNlocked)
+Gah. Yes I do :)
 
-On Tiger Lake:
-cpu0: MSR_VR_CURRENT_CONFIG: 0x00000348
-cpu0: PKG Limit #4: 105.000000 Watts (UNlocked)
----
- arch/x86/include/asm/msr-index.h      | 1 +
- tools/power/x86/turbostat/turbostat.c | 9 +++++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index a7c413432b33..336a811c8683 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -310,6 +310,7 @@
- 
- /* Run Time Average Power Limiting (RAPL) Interface */
- 
-+#define MSR_VR_CURRENT_CONFIG	0x00000601
- #define MSR_RAPL_POWER_UNIT		0x00000606
- 
- #define MSR_PKG_POWER_LIMIT		0x00000610
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 47d3ba895d6d..4eb59f459830 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -4768,6 +4768,15 @@ int print_rapl(struct thread_data *t, struct core_data *c, struct pkg_data *p)
- 			((msr >> 32) & 0x7FFF) * rapl_power_units,
- 			(1.0 + (((msr >> 54) & 0x3) / 4.0)) * (1 << ((msr >> 49) & 0x1F)) * rapl_time_units,
- 			((msr >> 48) & 1) ? "EN" : "DIS");
-+
-+		if (get_msr(cpu, MSR_VR_CURRENT_CONFIG, &msr))
-+			return -9;
-+
-+		fprintf(outf, "cpu%d: MSR_VR_CURRENT_CONFIG: 0x%08llx\n", cpu, msr);
-+		fprintf(outf, "cpu%d: PKG Limit #4: %f Watts (%slocked)\n",
-+			cpu,
-+			((msr >> 0) & 0x1FFF) * rapl_power_units,
-+			(msr >> 31) & 1 ? "" : "UN");
- 	}
- 
- 	if (do_rapl & RAPL_DRAM_POWER_INFO) {
--- 
-2.17.1
-
+cheers
