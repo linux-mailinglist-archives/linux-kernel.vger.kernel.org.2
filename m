@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D63F2901
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B3C3F2908
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236215AbhHTJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:17:08 -0400
-Received: from verein.lst.de ([213.95.11.211]:40267 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233437AbhHTJRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:17:07 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id DA66A67373; Fri, 20 Aug 2021 11:16:27 +0200 (CEST)
-Date:   Fri, 20 Aug 2021 11:16:27 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org, lkp@intel.com
-Subject: Re: [scsi]  61b3baad24: last_state.load_disk_fail
-Message-ID: <20210820091627.GA6035@lst.de>
-References: <20210729082528.GA26618@xsang-OptiPlex-9020> <20210820074013.GC29369@xsang-OptiPlex-9020>
+        id S236384AbhHTJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235063AbhHTJTA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:19:00 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1569DC061575;
+        Fri, 20 Aug 2021 02:18:23 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id k24so8540444pgh.8;
+        Fri, 20 Aug 2021 02:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qcKjNJ245vgXkYDCK3fscDqcfPmoCHJwUwzzjEOFm9w=;
+        b=KldDjx+4deNAq8RuCrxjwWAscLzgXpjMx+wScTUJ4b6oG0/t6Gvq7MLF/LK0SfjFa2
+         tlCffeCWYACzN8pKvFKyPiBgtp22zbU8U24sZdHFLCQmEuWcySyn87S14HZae6fT3HUO
+         jALT21XG7OyIaRHAkmGoaP51Pynfned6wv0yG7AWbEJ61lOhd94GfC2pj1C+1WRf2tH6
+         +o7DvpdKiF9TtQyHNf7LSVQNO6mKEOl0D7A0f6RliwaSYXNHhgVDqhXxXBNUHrrgcxsi
+         syyT3wFoigSScfR/l6F4OX98lUNfVV5WK8/Du6dgWMwsZo//JHNFv4tpnaHv3D3uGEXm
+         f31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qcKjNJ245vgXkYDCK3fscDqcfPmoCHJwUwzzjEOFm9w=;
+        b=BenDHTBsTQ/s6jVupEGwjMMo7DWbbEuhP+xs89shdeLN9jSTifbo15w9XP3LkpppYt
+         3Id0u4cyKrdDyCR5aQuN/WQHQzl6UTRdeq+Im66GUG2QOES301DO0tIux0iV4RIGsXbo
+         05tUavicvh+6gC93CsMOZ6X6LyHllv3em8ELWO/ATjaRTATPnjwEJNP8GlfPaj5f5KI9
+         Oz+LP1N8MjHUNk/TIpZ0dvUHImFo91XSctkk4rmBOavW2mzAeOSElKb5f7k+D84QA+56
+         M+iLJv1GTR/zGa63t4lv9c98V/d60EAtTtcvdD13X+8YV7sR2mpGhmMv2Ixhx5JPBXU2
+         +OeQ==
+X-Gm-Message-State: AOAM531U13w1BJKjkKbes43P93l2D9AeRON6jdIMCqUp5NFnilECcPaW
+        Ovfj0GESFMxRNEyRgxpBvV2NscHx1hXcWxdfADs=
+X-Google-Smtp-Source: ABdhPJzupCmshVSpth/8oJXEYvw8HZi7Ue6oqqg1DP4aio42xLNgH9e7xfflT9CWGvNI8THNag1cDqG4O1Bq33K3duY=
+X-Received: by 2002:a05:6a00:d41:b0:3e1:3316:2ef with SMTP id
+ n1-20020a056a000d4100b003e1331602efmr19029953pfv.40.1629451102470; Fri, 20
+ Aug 2021 02:18:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820074013.GC29369@xsang-OptiPlex-9020>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210819132416.175644-1-yangyingliang@huawei.com>
+ <CAHp75Vd22aP098s9iXCGmBG505dW1vmZgvy3h9NoNA=J-eQ-CQ@mail.gmail.com> <9b848f1c-9acd-243e-2c5b-d489d2427464@huawei.com>
+In-Reply-To: <9b848f1c-9acd-243e-2c5b-d489d2427464@huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 20 Aug 2021 12:17:46 +0300
+Message-ID: <CAHp75Vdim8S5kMZY1DYSMM-gLbPHoqRcEMD-rcZ1sm9hPeTaOw@mail.gmail.com>
+Subject: Re: [PATCH -next] iio: adc: add missing clk_disable_unprepare() in rzg2l_adc_pm_runtime_resume()
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:40:13PM +0800, Oliver Sang wrote:
-> Hi, Christoph Hellwig,
-> 
-> recently we checked this commit again, and find it has a new commit id
-> as well as the parent:
->     f2542a3be3277 scsi: scsi_ioctl: Move the "block layer" SCSI ioctl handling to drivers/scsi
->     7353dc06c9a8e scsi: scsi_ioctl: Simplify SCSI passthrough permission checking
-> 
-> so we tested it again, and found the issue is still reproduced in
-> our environment persistently.
-> 
-> we also tried another platform, and could reproduce, too.
->     Intel(R) Xeon(R) CPU E7-8890 v3 @ 2.50GHz
-> 
-> in parent dmesg (attached as dmesg-7353dc06c9.xz),
-> it's clear that the disk mounted without problem:
-> [   31.549031][ T1791] XFS (sda1): Mounting V5 Filesystem
-> [   31.591680][ T1791] XFS (sda1): Starting recovery (logdev: internal)
-> [   31.608990][ T1791] XFS (sda1): Ending recovery (logdev: internal)
-> [   31.625155][ T1791] xfs filesystem being mounted at /opt/rootfs supports timestamps until 2038 (0x7fffffff)
-> 
-> but in the dmesg for commit f2542a3be3277 (attached as dmesg-f2542a3be3.xz),
-> which is from the identical test environment except kernel,
-> just failed like below:
-> [   62.411699][ T1661] can't load the disk /dev/disk/by-id/ata-INTEL_SSDSC2BA400G4_BTHV634503K3400NGN-part1, skip testing...
+On Fri, Aug 20, 2021 at 4:52 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
+> On 2021/8/20 1:20, Andy Shevchenko wrote:
+> > On Thu, Aug 19, 2021 at 4:19 PM Yang Yingliang <yangyingliang@huawei.com> wrote:
+> >> Add clk_disable_unprepare() on error path in rzg2l_adc_pm_runtime_resume().
+> > ...
+> >
+> >>          ret = clk_prepare_enable(adc->adclk);
+> >> -       if (ret)
+> >> +       if (ret) {
+> >> +               clk_disable_unprepare(adc->pclk);
+> >>                  return ret;
+> >> +       }
+> > Huh?!
+> The pclk need be disabled, when enable adclk failed.
+>        ^                                                         ^^
 
-Really strange.  This message is printed when wait_load_disk fails.
+Indeed. I'm wondering if those clocks behave like a bulk or any
+combination is possible on a working case?
 
-The kernel has probed all disks before, then apparently something
-is installed using dpkg and then it waits for this rootfs (which
-obviously isn't the root at that point).
-
-Also at least on my debian testing and oldstable systems a plain
-blkid call never even calls SG_IO or related ioctls (which makes sense
-given that it looks at the file system labels).
-
-Does tis issue just show up on one particular system or on multiple
-different ones?
+-- 
+With Best Regards,
+Andy Shevchenko
