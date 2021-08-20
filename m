@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE40E3F360F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E623F3611
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240854AbhHTVcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:32:20 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46134 "EHLO
+        id S240739AbhHTVcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:32:24 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:46144 "EHLO
         bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240695AbhHTVcS (ORCPT
+        with ESMTP id S240876AbhHTVcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:32:18 -0400
+        Fri, 20 Aug 2021 17:32:21 -0400
 Received: from localhost.localdomain (unknown [IPv6:2600:8800:8c06:1000::c8f3])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D758B1F44A90;
-        Fri, 20 Aug 2021 22:31:35 +0100 (BST)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D211E1F44A8F;
+        Fri, 20 Aug 2021 22:31:38 +0100 (BST)
 From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Rob Herring <robh@kernel.org>,
@@ -26,10 +26,10 @@ Cc:     Rob Herring <robh@kernel.org>,
         Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
-Subject: [PATCH 1/3] drm/panfrost: Simplify lock_region calculation
-Date:   Fri, 20 Aug 2021 17:31:15 -0400
-Message-Id: <20210820213117.13050-2-alyssa.rosenzweig@collabora.com>
+        Chris Morgan <macromorgan@hotmail.com>
+Subject: [PATCH 2/3] drm/panfrost: Use u64 for size in lock_region
+Date:   Fri, 20 Aug 2021 17:31:16 -0400
+Message-Id: <20210820213117.13050-3-alyssa.rosenzweig@collabora.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com>
 References: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com>
@@ -39,53 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In lock_region, simplify the calculation of the region_width parameter.
-This field is the size, but encoded as log2(ceil(size)) - 1.
-log2(ceil(size)) may be computed directly as fls(size - 1). However, we
-want to use the 64-bit versions as the amount to lock can exceed
-32-bits.
-
-This avoids undefined behaviour when locking all memory (size ~0),
-caught by UBSAN.
+Mali virtual addresses are 48-bit. Use a u64 instead of size_t to ensure
+we can express the "lock everything" condition as ~0ULL without relying
+on platform-specific behaviour.
 
 Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Reported-and-tested-by: Chris Morgan <macromorgan@hotmail.com>
-Cc: <stable@vger.kernel.org>
+Suggested-by: Rob Herring <robh@kernel.org>
+Tested-by: Chris Morgan <macromorgan@hotmail.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_mmu.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_mmu.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index 0da5b3100ab1..f6e02d0392f4 100644
+index f6e02d0392f4..3a795273e505 100644
 --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
 +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -62,21 +62,12 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+@@ -58,7 +58,7 @@ static int write_cmd(struct panfrost_device *pfdev, u32 as_nr, u32 cmd)
+ }
+ 
+ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+-			u64 iova, size_t size)
++			u64 iova, u64 size)
  {
  	u8 region_width;
  	u64 region = iova & PAGE_MASK;
--	/*
--	 * fls returns:
--	 * 1 .. 32
--	 *
--	 * 10 + fls(num_pages)
--	 * results in the range (11 .. 42)
--	 */
--
--	size = round_up(size, PAGE_SIZE);
+@@ -78,7 +78,7 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
  
--	region_width = 10 + fls(size >> PAGE_SHIFT);
--	if ((size >> PAGE_SHIFT) != (1ul << (region_width - 11))) {
--		/* not pow2, so must go up to the next pow2 */
--		region_width += 1;
--	}
-+	/* The size is encoded as ceil(log2) minus(1), which may be calculated
-+	 * with fls. The size must be clamped to hardware bounds.
-+	 */
-+	size = max_t(u64, size, PAGE_SIZE);
-+	region_width = fls64(size - 1) - 1;
- 	region |= region_width;
  
- 	/* Lock the region that needs to be updated */
+ static int mmu_hw_do_operation_locked(struct panfrost_device *pfdev, int as_nr,
+-				      u64 iova, size_t size, u32 op)
++				      u64 iova, u64 size, u32 op)
+ {
+ 	if (as_nr < 0)
+ 		return 0;
+@@ -95,7 +95,7 @@ static int mmu_hw_do_operation_locked(struct panfrost_device *pfdev, int as_nr,
+ 
+ static int mmu_hw_do_operation(struct panfrost_device *pfdev,
+ 			       struct panfrost_mmu *mmu,
+-			       u64 iova, size_t size, u32 op)
++			       u64 iova, u64 size, u32 op)
+ {
+ 	int ret;
+ 
+@@ -112,7 +112,7 @@ static void panfrost_mmu_enable(struct panfrost_device *pfdev, struct panfrost_m
+ 	u64 transtab = cfg->arm_mali_lpae_cfg.transtab;
+ 	u64 memattr = cfg->arm_mali_lpae_cfg.memattr;
+ 
+-	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
++	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0ULL, AS_COMMAND_FLUSH_MEM);
+ 
+ 	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), transtab & 0xffffffffUL);
+ 	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), transtab >> 32);
+@@ -128,7 +128,7 @@ static void panfrost_mmu_enable(struct panfrost_device *pfdev, struct panfrost_m
+ 
+ static void panfrost_mmu_disable(struct panfrost_device *pfdev, u32 as_nr)
+ {
+-	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
++	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0ULL, AS_COMMAND_FLUSH_MEM);
+ 
+ 	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), 0);
+ 	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), 0);
+@@ -242,7 +242,7 @@ static size_t get_pgsize(u64 addr, size_t size)
+ 
+ static void panfrost_mmu_flush_range(struct panfrost_device *pfdev,
+ 				     struct panfrost_mmu *mmu,
+-				     u64 iova, size_t size)
++				     u64 iova, u64 size)
+ {
+ 	if (mmu->as < 0)
+ 		return;
 -- 
 2.30.2
 
