@@ -2,120 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763733F26E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1C83F26E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 08:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238535AbhHTGfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 02:35:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:54446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238406AbhHTGfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 02:35:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42D681042;
-        Thu, 19 Aug 2021 23:34:42 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.69.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 40FCC3F40C;
-        Thu, 19 Aug 2021 23:34:39 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/mm: Drop page-def.h
-Date:   Fri, 20 Aug 2021 12:05:31 +0530
-Message-Id: <1629441331-19530-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S238571AbhHTGgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 02:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238318AbhHTGge (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 02:36:34 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC1DC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:35:57 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id e3so509489qth.9
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 23:35:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x4BUx2XF2g+eANj8K3DiizaXKH8rES+7+IBJDMT/M84=;
+        b=fEKmCkmPW2WRSTH0UOBZIggTO3VzSvZceyA2rDxv0GHM/eIW9xyTtwRGG/IG/RrvHQ
+         RBDQ3PojrK85BTJLS06A3fsNsYc5EVQtSPEq9AzUDWDIvX6a0h16icO9BtnIDDmt3BP3
+         U/6YCDEnnYBoCiSP8ZOF5TFvwLEzE38eCQ2Srvh3Xtik7z8B+nPZUESn81VTYA1NWtyh
+         cf/Ps0dsmzJ3hwsXf1UUDYyOP13BVC5tGK59tTydrAvmHV+93tpyzOPdKT9yYT3UpP6a
+         Kq2TMZY1/YwVAivFFABqh2kp+D4Bvqecwmlhx2/MFzKwkba0wXFURlimYWn0vDLbsTIL
+         ALNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x4BUx2XF2g+eANj8K3DiizaXKH8rES+7+IBJDMT/M84=;
+        b=WOJqTY34YdxGPGcDGEbCYIBxsy90uZE0Q1qsD6pGcBCUIXO98iYU7Au2g6Ru5SBORH
+         DEm6j6ju199D3lzZFS41RBvQ3lXpRw8X4PtNALu7UHH4amephqI2MuWwMzUJ3ffYqur5
+         dmdmJF69iR+WM2vJoVlO5f5sTzr8zbaYEcs69mDuEEkc8rHi+fK//wDCmsyn3qZkGLrC
+         Z6f53YO7P4ORXGBmrjEr8dM4O4goVF6FcEGUWVZXOL3x5W5MRp+/uylTtpon8zSq8I1q
+         z9sYiygaQZp6HeAdHOs1dblN/GLcAys00R0y5W15QFp5MiJ3T5kUxbIOnWyUILmbAQnS
+         R7IQ==
+X-Gm-Message-State: AOAM531D9gWcrHpCGkj87ktmtd4J7mMVknSTrbPXZNHkJsIaH9LEP07e
+        BmImlE+kY+atp2EjHcq8+BRVpwBK9u7GIc1Sj6pTaw==
+X-Google-Smtp-Source: ABdhPJzszjsxOcKw23gqj3JYe++tO8Il5Wrqncm/dBgLF58wQcrlK8qhJO/51V6bt9Fg98a0gcw497JTpdQHs5q+b14=
+X-Received: by 2002:ac8:7154:: with SMTP id h20mr16540010qtp.251.1629441356449;
+ Thu, 19 Aug 2021 23:35:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210819154910.1064090-1-pgonda@google.com> <20210819154910.1064090-2-pgonda@google.com>
+ <CAA03e5Gh0kJYHP1R3F7uh6x83LBFPp=af2xt7q3epgg+8XW53g@mail.gmail.com>
+ <CAMkAt6oJcW3MHP3fod9RnRHCEYp-whdEtBTyfuqgFgATKa=3Hg@mail.gmail.com> <YR7iD6kdTUpWwwRn@google.com>
+In-Reply-To: <YR7iD6kdTUpWwwRn@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Thu, 19 Aug 2021 23:35:45 -0700
+Message-ID: <CAA03e5FAXDVSwMAQO57gztYmB2K8K8fNrHwsX_N3Hbgwch8pBw@mail.gmail.com>
+Subject: Re: [PATCH 1/2 V4] KVM, SEV: Add support for SEV intra host migration
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PAGE_SHIFT (PAGE_SIZE and PAGE_MASK) which is derived from ARM64_PAGE_SHIFT
-should be moved into pgtable-hwdef.h instead, and subsequently page-def.h
-can be just dropped off completely.
+On Thu, Aug 19, 2021 at 3:58 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Thu, Aug 19, 2021, Peter Gonda wrote:
+> > > >
+> > > > +static int svm_sev_lock_for_migration(struct kvm *kvm)
+> > > > +{
+> > > > +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> > > > +       int ret;
+> > > > +
+> > > > +       /*
+> > > > +        * Bail if this VM is already involved in a migration to avoid deadlock
+> > > > +        * between two VMs trying to migrate to/from each other.
+> > > > +        */
+> > > > +       spin_lock(&sev->migration_lock);
+> > > > +       if (sev->migration_in_progress)
+> > > > +               ret = -EBUSY;
+> > > > +       else {
+> > > > +               /*
+> > > > +                * Otherwise indicate VM is migrating and take the KVM lock.
+> > > > +                */
+> > > > +               sev->migration_in_progress = true;
+> > > > +               mutex_lock(&kvm->lock);
+>
+> Deadlock aside, mutex_lock() can sleep, which is not allowed while holding a
+> spinlock, i.e. this patch does not work.  That's my suggestion did the crazy
+> dance of "acquiring" a flag.
+>
+> What I don't know is why on earth I suggested a global spinlock, a simple atomic
+> should work, e.g.
+>
+>                 if (atomic_cmpxchg_acquire(&sev->migration_in_progress, 0, 1))
+>                         return -EBUSY;
+>
+>                 mutex_lock(&kvm->lock);
+>
+> and on the backend...
+>
+>                 mutex_unlock(&kvm->lock);
+>
+>                 atomic_set_release(&sev->migration_in_progress, 0);
+>
+> > > > +               ret = 0;
+> > > > +       }
+> > > > +       spin_unlock(&sev->migration_lock);
+> > > > +
+> > > > +       return ret;
+> > > > +}
+> > > > +
+> > > > +static void svm_unlock_after_migration(struct kvm *kvm)
+> > > > +{
+> > > > +       struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> > > > +
+> > > > +       mutex_unlock(&kvm->lock);
+> > > > +       WRITE_ONCE(sev->migration_in_progress, false);
+> > > > +}
+> > > > +
+> > >
+> > > This entire locking scheme seems over-complicated to me. Can we simply
+> > > rely on `migration_lock` and get rid of `migration_in_progress`? I was
+> > > chatting about these patches with Peter, while he worked on this new
+> > > version. But he mentioned that this locking scheme had been suggested
+> > > by Sean in a previous review. Sean: what do you think? My rationale
+> > > was that this is called via a VM-level ioctl. So serializing the
+> > > entire code path on `migration_lock` seems fine. But maybe I'm missing
+> > > something?
+> >
+> >
+> > Marc I think that only having the spin lock could result in
+> > deadlocking. If userspace double migrated 2 VMs, A and B for
+> > discussion, A could grab VM_A.spin_lock then VM_A.kvm_mutex. Meanwhile
+> > B could grab VM_B.spin_lock and VM_B.kvm_mutex. Then A attempts to
+> > grab VM_B.spin_lock and we have a deadlock. If the same happens with
+> > the proposed scheme when A attempts to lock B, VM_B.spin_lock will be
+> > open but the bool will mark the VM under migration so A will unlock
+> > and bail. Sean originally proposed a global spin lock but I thought a
+> > per kvm_sev_info struct would also be safe.
+>
+> Close.  The issue is taking kvm->lock from both VM_A and VM_B.  If userspace
+> double migrates we'll end up with lock ordering A->B and B-A, so we need a way
+> to guarantee one of those wins.  My proposed solution is to use a flag as a sort
+> of one-off "try lock" to detect a mean userspace.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on 5.14-rc6. Could move these definitions into <asm/page.h>
-if that is preferred. But <asm/page-def.h> is neither really required as
-a separate header nor is present on other platforms.
-
- arch/arm64/include/asm/memory.h        |  2 +-
- arch/arm64/include/asm/page-def.h      | 18 ------------------
- arch/arm64/include/asm/page.h          |  2 +-
- arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
- 4 files changed, 6 insertions(+), 20 deletions(-)
- delete mode 100644 arch/arm64/include/asm/page-def.h
-
-diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-index 824a3655dd93..f987204c716a 100644
---- a/arch/arm64/include/asm/memory.h
-+++ b/arch/arm64/include/asm/memory.h
-@@ -12,7 +12,7 @@
- 
- #include <linux/const.h>
- #include <linux/sizes.h>
--#include <asm/page-def.h>
-+#include <asm/pgtable-hwdef.h>
- 
- /*
-  * Size of the PCI I/O space. This must remain a power of two so that
-diff --git a/arch/arm64/include/asm/page-def.h b/arch/arm64/include/asm/page-def.h
-deleted file mode 100644
-index 2403f7b4cdbf..000000000000
---- a/arch/arm64/include/asm/page-def.h
-+++ /dev/null
-@@ -1,18 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Based on arch/arm/include/asm/page.h
-- *
-- * Copyright (C) 1995-2003 Russell King
-- * Copyright (C) 2017 ARM Ltd.
-- */
--#ifndef __ASM_PAGE_DEF_H
--#define __ASM_PAGE_DEF_H
--
--#include <linux/const.h>
--
--/* PAGE_SHIFT determines the page size */
--#define PAGE_SHIFT		CONFIG_ARM64_PAGE_SHIFT
--#define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
--#define PAGE_MASK		(~(PAGE_SIZE-1))
--
--#endif /* __ASM_PAGE_DEF_H */
-diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-index 993a27ea6f54..40313964d4b2 100644
---- a/arch/arm64/include/asm/page.h
-+++ b/arch/arm64/include/asm/page.h
-@@ -8,7 +8,7 @@
- #ifndef __ASM_PAGE_H
- #define __ASM_PAGE_H
- 
--#include <asm/page-def.h>
-+#include <asm/pgtable-hwdef.h>
- 
- #ifndef __ASSEMBLY__
- 
-diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
-index 40085e53f573..be8045080ebd 100644
---- a/arch/arm64/include/asm/pgtable-hwdef.h
-+++ b/arch/arm64/include/asm/pgtable-hwdef.h
-@@ -5,6 +5,10 @@
- #ifndef __ASM_PGTABLE_HWDEF_H
- #define __ASM_PGTABLE_HWDEF_H
- 
-+#define PAGE_SHIFT		CONFIG_ARM64_PAGE_SHIFT
-+#define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
-+#define PAGE_MASK		(~(PAGE_SIZE-1))
-+
- #include <asm/memory.h>
- 
- /*
--- 
-2.20.1
-
+Got it now. Thanks to you both, for the explanation. By the way, just
+to make sure I completely follow, I assume that if a "double
+migration" occurs, then user space is mis-behaving -- correct? But
+presumably, we need to reason about how to respond to such
+mis-behavior so that buggy or malicious user-space code cannot stumble
+over/exploit this scenario?
