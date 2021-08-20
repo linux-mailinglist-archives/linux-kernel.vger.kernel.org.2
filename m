@@ -2,111 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8147A3F28A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C615D3F28AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhHTItM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:49:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41396 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbhHTItL (ORCPT
+        id S230450AbhHTIuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230418AbhHTIux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:49:11 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BDA2F22137;
-        Fri, 20 Aug 2021 08:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629449312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VCaN0M5amMyZRXL8tzm/AX/hJ8arauZM7tvxoIPOVXY=;
-        b=J6uwkYNyjhSkdRI9DQp/ktI23jMY43QGD4lspGzN7ETfV32kT89QCV/g6oDNNPY9BoI3ZI
-        ewlvw+eL6vtEEqLBBCTfiEZj8vEqyDWw8bRKnxjQ45Lk6Ynt+mvkL5NGMET9PigBi4QDQ3
-        w3cNKXgQ2FEkKo468F9hAyAXjQvqD7s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629449312;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VCaN0M5amMyZRXL8tzm/AX/hJ8arauZM7tvxoIPOVXY=;
-        b=3RlKmB/KCREuzvOCADE6fhAT5sFxtWEWxg4Mo7SDzTGdpLPioigWW9+mzLBwAvA4pQR/fa
-        063pT9bYeXA3A1BQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AD6881333E;
-        Fri, 20 Aug 2021 08:48:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id kc8wKmBsH2FwTwAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Fri, 20 Aug 2021 08:48:32 +0000
-Date:   Fri, 20 Aug 2021 10:48:32 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>
-Subject: Re: [PATCH v5 0/3] Handle update hardware queues and queue freeze
- more carefully
-Message-ID: <20210820084832.nlsbiztn26fv3b73@carbon.lan>
-References: <20210818120530.130501-1-dwagner@suse.de>
+        Fri, 20 Aug 2021 04:50:53 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DFCC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:50:16 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id g11so5149873qvd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SvhAeR492M8EeJTTsM7VxBsaJ8w8PTYW6CNfHJ9BY2c=;
+        b=dKLqKUJhPoyCJWDUu8gJmjjE0Wc3rdqQkmBcmfkwom8eSKEyeb8rOpa4aupFDqivwV
+         VRU0qIuQrbVN0Ha4h5IF4dJMIt7G6fy8Ip/cpeCDRQx2J/VqQW28GSLRSHv2Jt0Dbcg7
+         gkECVHdOZbmswNg9/PsZhRkVS0bXWp/UZ0nL5ET9j5+/DoAWCrAjkD/sP1HCYsxemvX7
+         x7whEy0Hs49bDP4HdIYRvYY8oDAAE5CuZhvjCCAtkyC6AyZG2H1J5CCgJN8WeJcoMDwo
+         2vAJYsgWHNjAi+R1OjOm7ppdpCeL4TmH1ILRGmwSQCSdM1NZvTkEBLdUO4YpS9c0clBQ
+         Noag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SvhAeR492M8EeJTTsM7VxBsaJ8w8PTYW6CNfHJ9BY2c=;
+        b=pYMHApdIoXB04yfUf4eg/PPwVcwk0KqXJ2SaMspchGOzhKSNyTzAnzrVrmZM0Z56eR
+         8nFBhO/fOrnsGZiPbT/mbOELTUf1GfsxQfTm6AB0tXjOx3H0pRAZxp60kZUblgV7r2L6
+         Cp9N+sABfmhtilTjV0iaq3i2bTJAi2mnzACx08ItI8JQK8O/jXnKpT37iCyPjK0gOkcR
+         qjsFCNncutHsMs5eeGKEMK5ZlWpE4VRC1OObGBroxiwoe1ACJ/TSREdhaxetGQmQZPE9
+         Z33XbzvIBLkzULdZSCGjfBGDxUUNFKc1/G1Z+kFkcJcZl6xCzHdrx/U4a4ERl/yruK9d
+         W4Ag==
+X-Gm-Message-State: AOAM533vHJwEJMMBa7yftyPZjwotomgNrCVsC1d6ZmBl3Jn5DWW/1sT8
+        +Lgd43oUNuFGm8jQoEtsidJjBruQDdC71SIer1kCtA==
+X-Google-Smtp-Source: ABdhPJy/QJn6fSqlmsALEyKeczIYJGYK90zosKS269iQJbHQVvas6xuChnmDApCtJxPNdNz0fntXs47ZI4/8W6cdsu4=
+X-Received: by 2002:a05:6214:126:: with SMTP id w6mr18974742qvs.61.1629449415210;
+ Fri, 20 Aug 2021 01:50:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818120530.130501-1-dwagner@suse.de>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <20210817005507.1507580-15-dmitry.baryshkov@linaro.org> <YR7s2vK7jdUssx+A@ripper>
+In-Reply-To: <YR7s2vK7jdUssx+A@ripper>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 20 Aug 2021 11:50:04 +0300
+Message-ID: <CAA8EJpptHqBR=deRaf72iGqXtWX5+3EgE4nKKGCPE7Cg9R0PBg@mail.gmail.com>
+Subject: Re: [RFC PATCH 14/15] WIP: PCI: qcom: use pwrseq to power up bus devices
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 02:05:27PM +0200, Daniel Wagner wrote:
-> I've dropped all non FC patches as they were bogus. I've retested this
-> version with all combinations and all looks good now. Also I gave
-> nvme-tcp a spin and again all is good.
+Hi,
 
-I forgot to mention I also dropped the first three patches from v4.
-Which seems to break her testing again.
+On Fri, 20 Aug 2021 at 02:43, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Mon 16 Aug 17:55 PDT 2021, Dmitry Baryshkov wrote:
+>
+> > Use bus-pwrseq device tree node to power up the devices on the bus. This
+> > is to be rewritten with the proper code parsing the device tree and
+> > powering up individual devices.
+> >
+>
+> How about describing the PCI device in DT and having the PCIe controller
+> dig it up up from there? Although we won't have a struct device until
+> later, so perhaps we need the of-based pwrseq_get() for that.
 
-Wendy reported all her tests pass with Ming's V7 of 'blk-mq: fix
-blk_mq_alloc_request_hctx' and this series *only* if 'nvme-fc: Update
-hardware queues before using them' from previous version is also used.
+Yes, this is the plan. Currently I just wanted to have a way to power
+up the PCIe part of the chip and be able to test that.
+In the previous attempts to provide qca6390 support, Rob has clearly
+stated that we'd have to have the following device tree snippet:
 
-After starring at it once more, I think I finally understood the
-problem. So when we do
+pcie0 {
+    bridge@0,0 {
+        qca6390@1,0 {
+            supplies-or-whatever = ....;
+        };
+    };
+};
 
-        ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
-        if (ret)
-                goto out_free_io_queues;
+>
+> Regards,
+> Bjorn
+>
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+> >  drivers/power/pwrseq/pwrseq_qca.c      |  1 +
+> >  2 files changed, 14 insertions(+)
+> >
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > index 8a7a300163e5..a60d41fbcd6f 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > @@ -23,6 +23,7 @@
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/phy/phy.h>
+> > +#include <linux/pwrseq/consumer.h>
+> >  #include <linux/regulator/consumer.h>
+> >  #include <linux/reset.h>
+> >  #include <linux/slab.h>
+> > @@ -1467,6 +1468,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+> >       struct pcie_port *pp;
+> >       struct dw_pcie *pci;
+> >       struct qcom_pcie *pcie;
+> > +     struct pwrseq *pwrseq;
+> >       int ret;
+> >
+> >       pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+> > @@ -1520,6 +1522,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+> >
+> >       pp->ops = &qcom_pcie_dw_ops;
+> >
+> > +     pwrseq = devm_pwrseq_get_optional(dev, "bus");
+> > +     if (IS_ERR(pwrseq)) {
+> > +             ret = PTR_ERR(pwrseq);
+> > +             goto err_pm_runtime_put;
+> > +     }
+> > +     if (pwrseq) {
+> > +             ret = pwrseq_full_power_on(pwrseq);
+> > +             if (ret)
+> > +                     goto err_pm_runtime_put;
+> > +     }
+> > +
+> >       ret = phy_init(pcie->phy);
+> >       if (ret) {
+> >               pm_runtime_disable(&pdev->dev);
+> > diff --git a/drivers/power/pwrseq/pwrseq_qca.c b/drivers/power/pwrseq/pwrseq_qca.c
+> > index 3421a4821126..4107f0a9c05d 100644
+> > --- a/drivers/power/pwrseq/pwrseq_qca.c
+> > +++ b/drivers/power/pwrseq/pwrseq_qca.c
+> > @@ -1,3 +1,4 @@
+> > +#define DEBUG
+> >  // SPDX-License-Identifier: GPL-2.0-only
+> >  /*
+> >   * Copyright (c) 2021, Linaro Ltd.
+> > --
+> > 2.30.2
+> >
 
-        ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
-        if (ret)
-                goto out_delete_hw_queues;
 
-and the number of queues has changed, the connect call will fail:
 
- nvme2: NVME-FC{2}: create association : host wwpn 0x100000109b5a4dfa rport wwpn 0x50050768101935e5: NQN "nqn.1986-03.com.ibm:nvme:2145.0000020420006CEA"
- nvme2: Connect command failed, error wo/DNR bit: -16389
-
-and we stop the current reconnect attempt and reschedule a new
-reconnect attempt:
-
- nvme2: NVME-FC{2}: reset: Reconnect attempt failed (-5)
- nvme2: NVME-FC{2}: Reconnect attempt in 2 seconds
-
-Then we try to do the same thing again which fails, thus we never
-make progress.
-
-So clearly we need to update number of queues at one point. What would
-be the right thing to do here? As I understood we need to be careful
-with frozen requests. Can we abort them (is this even possible in this
-state?) and requeue them before we update the queue numbers?
-
-Daniel
+-- 
+With best wishes
+Dmitry
