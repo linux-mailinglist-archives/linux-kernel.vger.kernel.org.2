@@ -2,164 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6AD3F303E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E4C3F3041
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241275AbhHTPzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:55:10 -0400
-Received: from mail-dm6nam10on2082.outbound.protection.outlook.com ([40.107.93.82]:27680
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241279AbhHTPzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:55:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UszMLnV2zAVZRAu0uJZfbyDaXpdsS4nM/WEJtCUaXgJxLehGEXEWdqxbJr+zUdskhFdgxWRdGjpSxVMwr/SowLXX+7eTIjlHXuTSgIeK1DOljEhz2gMmTF4SEkfk4FnTzITer3O296dW2B3FGTB2mrg2WbDUSwB24CwzHGGWbDaF1eJT6tZBYOkPOA5nskNFwIY+vq4VSjW6jU7yke6hU0aAq+onTVkkSt0JKA+M7AmrSzNkVa3dc12OgQUgvkfWRDXVAzLlVY0RxvOuHv7unZNHB+AqCzTcmW8r63zgak6O4GreFCoLb4z1rCtDmt7KXd+apVIppipkiKPW0iC63A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5GvcbIIW59Hby27PXUyauwvjo5NactKFJBtGjRJiFXk=;
- b=NDg0K8PAW7IVcebpRI4A/kxgBDUW0kw4VN+z9FP8368nMoG92CMxf8Z6Qp/JIfsqzShQL+jutfkjwGq+FTF5Bn+JuRCnRRuCATCUrqcpq33go8wghrEEFmIVvns8zeYU5/JdupC3/LliD5YAkB2YTgn5/JNE8O4FM8BE+Qfw8vBtPRKy4WlXg05Q5he30DWQ6hTg7CGGd1lPwiBEFcfMzA58DuvKSMXaLRZgVe62cTlXkot+ns1YvDcCDeDjItgCjAI8NkVUFjMCuGIrG3hbcDYJqUQGzWr29IN5pwoDOxG7cSVd74ekHyOwJatM2bcZnJ+j5TEBxVTxAqaD6w0zhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5GvcbIIW59Hby27PXUyauwvjo5NactKFJBtGjRJiFXk=;
- b=H07M3nlqdRw4eb0UJZRUVZCnPiHxLnC69LqJMlqhMlni1evf02a8aNs1oXGU5IShX4xU/W5ByQOvz0fkqnn/XUgSDtrUmwHuMCOBT1fZ/Zbczx1Ni6P1oVe+bbiCfW4xOtCQhiv1gAdIqfWAhd4hYX+DY2xmK4dZHcVnyBZIJZ442/ummjTICeSNmEaX4dxM7PtlsDzqX+syQdPPRhmp3IhvzaEDsig22i5GtBurJhTvAYi2m7WgB4TlGsSBIJfYbyRVnv8/5BRfInqeuM8pT4/5UmucA//6fr5IiG4CYHLt4DRosL8ZcK6rAFvkz9MFTdzm2fJ7B4XDz5ecbx6ILg==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5125.namprd12.prod.outlook.com (2603:10b6:208:309::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Fri, 20 Aug
- 2021 15:54:26 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.021; Fri, 20 Aug 2021
- 15:54:26 +0000
-Date:   Fri, 20 Aug 2021 12:54:25 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <20210820155425.GA530861@nvidia.com>
-References: <cover.1627551226.git.leonro@nvidia.com>
- <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
+        id S241303AbhHTP4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240865AbhHTP4U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:56:20 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618DBC061575;
+        Fri, 20 Aug 2021 08:55:42 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id o2so9594984pgr.9;
+        Fri, 20 Aug 2021 08:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MIoupKU3Moruzsm8QPKL5bg4Lip5l5y1B47NuZC/4IM=;
+        b=r+PvnCwYImSiC3Nut0xm3m3wb4UrN969SsszBr9JKgB77hlBUNTQNyfL6roOkkOGRa
+         KrBKP9+u4YE7Ktfu/AAprpCxD5Yxi9YNuiDNBsGi7iHpzasmrGfQ6JmV4o1AL+IFHzNc
+         JzQU5IOIFznyFiNTx+N5FPFBFbPh50YpyRsWSimyeF/56PotRBuV7PTrZVwYD1+GyhPv
+         boxGSl6k1FfmQCZ7qUDKTxwcBYb8LhG393aAuVYqWgs/wN9/O2qwT+mHojzrfu4+5shE
+         dd6+hsApWdJ6Iwz6PF0weL9bsbojahtIhj2aOxhIYjZE/fg49rq5CWwNKQhdbA+R7mAO
+         hr4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MIoupKU3Moruzsm8QPKL5bg4Lip5l5y1B47NuZC/4IM=;
+        b=WMMJ00CtyFga8bI/ZfPte7CSAV6QA+Swo70msNBdWftUvHUV5zjQSCPDN942RpcNuC
+         Cspoi2AYAOUjL/IhTHIleRo5NK6JASMXelaylF4P1IK1WdbcaTKYmGDMsRx3bfY3yBHD
+         bayyMCc0fzNGVD7dsPg5aSWQ6+2TP64W18JyXkCOlDJXZnUq4QQe6l+BESRqKJQgXvAD
+         jA6QpZ8HidcHGs/crn1pjtQJYZP3wRSWCfcei3k3O4eNk/B6+a7VHi4YIynFPE5lIcVO
+         vZFC44pmc4wpYsh54KNRBf43WASZCwA8vy+QKHpYYgtNU7Y3e+lGYNFkbQo1N5yhfUI3
+         3YsQ==
+X-Gm-Message-State: AOAM530NnvjSbW8BXx+5wySbjH4VsR398mhMS+DfBf1bG4flqSLCqxub
+        OVsylAnc3qx6uDOk3j/P9Yc=
+X-Google-Smtp-Source: ABdhPJzRSioBxgzRHifQYGk7LPxW9/eAyxuZnBnOOY1SstliQrJ2oxeWZsCv7JeKODoMIZGifx1H3g==
+X-Received: by 2002:a62:154b:0:b0:3e2:c15d:f173 with SMTP id 72-20020a62154b000000b003e2c15df173mr16637025pfv.9.1629474941955;
+        Fri, 20 Aug 2021 08:55:41 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id p15sm7632095pff.14.2021.08.20.08.55.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 08:55:41 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 08:55:38 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     "Machnikowski, Maciej" <maciej.machnikowski@intel.com>
+Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "Bross, Kevin" <kevin.bross@intel.com>,
+        "Stanton, Kevin B" <kevin.b.stanton@intel.com>,
+        Ahmad Byagowi <abyagowi@fb.com>
+Subject: Re: [RFC net-next 1/7] ptp: Add interface for acquiring DPLL state
+Message-ID: <20210820155538.GB9604@hoboy.vegasvil.org>
+References: <20210816160717.31285-1-arkadiusz.kubalewski@intel.com>
+ <20210816160717.31285-2-arkadiusz.kubalewski@intel.com>
+ <20210816235400.GA24680@hoboy.vegasvil.org>
+ <PH0PR11MB4951762ECB04D90D634E905DEAFE9@PH0PR11MB4951.namprd11.prod.outlook.com>
+ <20210818170259.GD9992@hoboy.vegasvil.org>
+ <PH0PR11MB495162EC9116F197D79589F5EAFF9@PH0PR11MB4951.namprd11.prod.outlook.com>
+ <20210819153414.GC26242@hoboy.vegasvil.org>
+ <PH0PR11MB4951F51CBA231DFD65806CDAEAC09@PH0PR11MB4951.namprd11.prod.outlook.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0289.namprd13.prod.outlook.com
- (2603:10b6:208:2bc::24) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0289.namprd13.prod.outlook.com (2603:10b6:208:2bc::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.5 via Frontend Transport; Fri, 20 Aug 2021 15:54:26 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mH6qf-002E7T-8L; Fri, 20 Aug 2021 12:54:25 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3757c276-b496-4618-d15a-08d963f2c951
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5125:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5125F488AB523766B7810F6DC2C19@BL1PR12MB5125.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZhTY295V4PWMRJlekY6KAHXYMFLQoH15RzPXRQD2Xv5V8ZAGP86n/KrOrrr5vhO0TRB/+RmFecsB19/ovAhc1su+e4S49Si4g82AX7T903TgQO5+lr9eZt01QaX2jibtxNTEOJRlr5o+9KIqga7T8Hnh7CyasSdpBkRb+YyDKmwm3EkMl0BodbpuA85uwfBUSIPAvLCD3lNMqTMXO6GN205s8StOnFmp/FmPZhUL3+37tvlIlywLXd8Z5i1uKPMd6HrXCaq7UyFc8pKpzKSfHxzohr0sQ74WP6k5Gg02wCRvZZdtn8b1QubGj44ID73TfkgLFpfjrjWInRnsfkgGsCXdTGugKFoKu8jIvhovfvhObbq+Itz67SzyDWz6oA2vjDuYc2o5pXDyIMAnv5vV4E6Me9WvSAX69RULDz3SxXPsOWcZy5ZZDhFykgG7/cCd1oBZo4ZxmMjgvUG1IKcziM3qxihZ6v6mEysIUuUrrMyQPQ0PY/buldNFObQ/mS8Zz0jwdRBbaGJ2j6DfF2y2PnAvLIrhA1pClHWG66nyWtAJgTqeRkTsAnjXjVKdojeH18Fmu3OgOjwOIfPCDy2s0tl8eRzB6CUYcrSqkkcFV4GgE9jHt/lxyeewU777/0NipJdptpXvN6wvS1s8D2Ioelfwp2AQ+oI0nV7u37jK4NajgHYNy2hUeLZeD5HDVeMx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(396003)(346002)(136003)(8676002)(6916009)(66556008)(9746002)(9786002)(8936002)(7416002)(5660300002)(4326008)(186003)(66946007)(316002)(66476007)(1076003)(2906002)(54906003)(36756003)(33656002)(26005)(86362001)(478600001)(426003)(38100700002)(2616005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?InPjQYC2kiaZz1urE0G77dEjXrmLH2jjK8k3Z+cmsNFbKuxChj6nZbgrvbEx?=
- =?us-ascii?Q?GakPaHZjfQHeOqgvJ1iyUCbJmxJF/I2OTB1ycz5E22sJIK9xyrb1JTbljVsq?=
- =?us-ascii?Q?XozfNnyMepz4EvifXFXwElAeObuz610TblDVK0Yd9CioDOrms+izgg3eQxIh?=
- =?us-ascii?Q?Bd144OxLNiddwYuNZvguEzvOe1YIw8th0n36cDxnbuKSuj03og04osBkayrC?=
- =?us-ascii?Q?jwoYfauaqvC/XpzTH/NaqL+qNDLdQYoqL9sGAJsYOROcDQEhJzNsePOv4wBB?=
- =?us-ascii?Q?6zNxhu5T01qPB9rLTeq5z0P0Ii8jasWnCIr6ciJT/mKU5isXqe4jfD8AE0Se?=
- =?us-ascii?Q?9ugIvdFT0MQ8tAq/XqQ/N292A4vkTu6QjV+39DD6niDoV210p482X2Jb/5Xf?=
- =?us-ascii?Q?RIKSAJO51FD4yT4+anrd0gILZJ4Jyx1jDjCUpr/XRfmR6FhDGcdeZyRW8jEh?=
- =?us-ascii?Q?rwpNXo7qYYmMWhigpqK8xXSCWPiqv2t+7zdKDpwxc/vefcZcYvYEzZ/0pDi8?=
- =?us-ascii?Q?jbZojxL0F9rQ55v2xVWZBZLDanl6s0BE6RRnHzGPPp3ID3SZVFQq5qmtNPdG?=
- =?us-ascii?Q?2uLY8G5cVUN4VIrcwc5cZrkiarKRiEolfpO1V1yRAkSMEqGufiM7fSWqlqjZ?=
- =?us-ascii?Q?UomRK5PXlA707KX6G5gAViGn8c4QePraZkJKAxXsYMgWJsMIv32EWCAJNQcM?=
- =?us-ascii?Q?VhZFH1fVymMS0qIZOJbXi6E9uvFyYiGtBmHZegxrifRbV22/Wv4nm9iHGfGS?=
- =?us-ascii?Q?ko4igUazwC7UUvbK1f9gbUqyxZz8trvcN4qGFC4O3K9JL/N/KGWZZLQeTtd3?=
- =?us-ascii?Q?BXIAp8sIuU2aB9wpKwr7kpoRHkzpsxMnqZ2xdbB9sxzG0OpN2FNrb8MTcHHD?=
- =?us-ascii?Q?FMjtgnYE0t9hbcyBtJkEKt0CMMbMVwLInSF7FinGsVyxHdHX1PriKpfZzcdB?=
- =?us-ascii?Q?MxepJF4CFCCBru32ztcrboVt56XZec0x+z2ohWtuRMybLjcbup6WXJiaW4p7?=
- =?us-ascii?Q?qegobR1GqrcwCHgE/z+baF8MYLi2Tj42YXRYV6oRJly2m2Ezme2POa8Gn9RH?=
- =?us-ascii?Q?7RDNTgDiuwGXIsjfsg6ujNjRvToCsE1xTtzLX36L2NBsPrzsY0+GzdmaYOVh?=
- =?us-ascii?Q?uylr4Mwj5dSo6gLlglVgeJ5HnJMyLpXRHeuPEpuADd9qGmdCaPLf9HzZueiQ?=
- =?us-ascii?Q?iZxnXE+pGxA+10pZlBbn7L8uHUJANReex4v1K6Ex/rwS2DnVZ2kQJt52JVOa?=
- =?us-ascii?Q?KSXqvwrG2vFxf7sdmiuAKml7eEES0RAJJHt8LwYXdzqdgVBQkhUPLMOMj03g?=
- =?us-ascii?Q?jrrFhWN6PjJ52iizBDt61Yzw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3757c276-b496-4618-d15a-08d963f2c951
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 15:54:26.3022
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3u6PkxRmmtOPMBKh9IxCb3ZjsMKrU0X2FoWTmtlNPVIXRrhtqXVY/wubNLi/ZlQQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5125
+In-Reply-To: <PH0PR11MB4951F51CBA231DFD65806CDAEAC09@PH0PR11MB4951.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
+On Thu, Aug 19, 2021 at 03:40:22PM +0000, Machnikowski, Maciej wrote:
 
-> +/**
-> + * __sg_free_table - Free a previously mapped sg table
-> + * @table:	The sg table header to use
-> + * @max_ents:	The maximum number of entries per single scatterlist
-> + * @total_ents:	The total number of entries in the table
-> + * @nents_first_chunk: Number of entries int the (preallocated) first
-> + *                     scatterlist chunk, 0 means no such preallocated
-> + *                     first chunk
-> + * @free_fn:	Free function
-> + *
-> + *  Description:
-> + *    Free an sg table previously allocated and setup with
-> + *    __sg_alloc_table().  The @max_ents value must be identical to
-> + *    that previously used with __sg_alloc_table().
-> + *
-> + **/
-> +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
-> +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
-> +{
-> +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
-> +			      table->orig_nents);
-> +}
->  EXPORT_SYMBOL(__sg_free_table);
+> If it helps we'd be happy to separate that in 2 separate RFCs.
 
-This is getting a bit indirect, there is only one caller of
-__sg_free_table() in sg_pool.c, so may as well just export
-sg_free_table_entries have have it use that directly.
+It would help me if you could explain the connection.  I have a
+totally different understanding of SyncE which I explained here:
 
-Jason
+   https://lore.kernel.org/netdev/20150317161128.GA8793@localhost.localdomain/
+
+So you need to implement two things, one in kernel and one in user
+space.
+
+1. Control bits according to IEEE 802.3 Section 40.5.2 as Ethtool or RTNL.
+
+2. User space Ethernet Synchronization Messaging Channel (ESMC)
+   service according to IEEE 802.3ay
+
+The PHY should be automatically controlled by #1.
+
+As I said before, none of this belongs in the PHC subsystem.
+
+Thanks,
+Richard
