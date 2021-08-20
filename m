@@ -2,161 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BCF3F2E90
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD63A3F2E91
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240955AbhHTPIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:08:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50354 "EHLO mail.kernel.org"
+        id S240992AbhHTPIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:08:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238805AbhHTPIF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:08:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE98F61053;
-        Fri, 20 Aug 2021 15:07:26 +0000 (UTC)
+        id S240956AbhHTPIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:08:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D18D60FDA
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 15:07:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629472047;
-        bh=iYNDHH1x+/1JntY+1B165lij+k4ViTs0KYXKXaGq1Is=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gKBR28KGFFenmNCWf12bd7CcBa7Ge4/SEV9QBZ4MLBnAQG7DA7/pRPbLvoMo+Rg24
-         Yxk7ENdrXN/0D6U5PZXrHSvTVwuV/yOZ4+n0fVdIcWzCcnK2M4hPHGjr0A5TexDSuA
-         5l20WEg/TrDnPS3sXpL7wKRy6IbyEEMcXL7De7hE/6w1enfbvM8yydUUYiFSXPHqqL
-         9zLA8OxU4gZQxaLol8Cp5yjl2MhhzY7gXRF8dTQYxGJojixVWeJKe7rfgd87R3aajj
-         CcnEvk2Pv5t8VTTwZlpoHenQeN8iyvwKf8dc/haZ9snAwausEHCxmdb9t5uR0PY1Hf
-         q+EvB2pnkx1BQ==
+        s=k20201202; t=1629472048;
+        bh=tWufcxFkKtxB7AT4OiAkVQ5Q/bP625jdgo4IPuIhtJA=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=OBjnP7LuhmV64IZcPMGG04g7VUPDl1VbuV7uz+aedQv3j8x7qIXPSOtRxAz1i1Zd5
+         0lCWMozyWnIF2/FoygycH6z0gZ0GmMFpnfCOGPIanJoYARu6OVsUtA/QSY1TvH05PB
+         GgTvNFLz45n6cCWHwyd62F9MGjIjVt+iZw1AojZx/OAxdu6VpRNCO08WevD3tvIfBM
+         hUWFiXRLzu+KfctrktC2coKh00652kvPqRHsgBe7qSeNTLv5fD6nhRXKQ+a2PjZKOO
+         h4l8xDh0NktYy1DXwNAyfyJq9QP6CWWvZzAVPP5c3kqp7xws0HlBZP+GONRexX9ZiX
+         X7sFalt4+ZN5A==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Omer Shpigelman <oshpigelman@habana.ai>
-Subject: [PATCH 1/4] habanalabs: add "in device creation" status
-Date:   Fri, 20 Aug 2021 18:07:16 +0300
-Message-Id: <20210820150719.67934-1-ogabbay@kernel.org>
+Subject: [PATCH 2/4] habanalabs: disable IRQ in user interrupts spinlock
+Date:   Fri, 20 Aug 2021 18:07:17 +0300
+Message-Id: <20210820150719.67934-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210820150719.67934-1-ogabbay@kernel.org>
+References: <20210820150719.67934-1-ogabbay@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+Because this spinlock is taken in an interrupt handler, we must use
+the spin_lock_irqsave/irqrestore version to disable the interrupts
+on the local CPU. Otherwise, we can have a potential deadlock (if
+the interrupt handler is scheduled to run on the same cpu that the
+code who took the lock was running on).
 
-On init, the disabled state is cleared right before hw_init and that
-causes the device to report on "Operational" state before the device
-initialization is finished. Although the char device is not yet exposed
-to the user at this stage, the sysfs entries are exposed.
-
-This can cause errors in monitoring applications that use the sysfs
-entries.
-
-In order to avoid this, a new state "in device creation" is introduced
-to ne reported when the device is not disabled but is still in init
-flow.
-
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/device.c         |  3 +++
- drivers/misc/habanalabs/common/habanalabs.h     |  2 +-
- drivers/misc/habanalabs/common/habanalabs_drv.c |  8 ++++++--
- drivers/misc/habanalabs/common/sysfs.c          | 14 +++++---------
- include/uapi/misc/habanalabs.h                  |  4 +++-
- 5 files changed, 18 insertions(+), 13 deletions(-)
+ .../habanalabs/common/command_submission.c    | 25 ++++++++++---------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 3751c915f731..c2641030d9ff 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -23,6 +23,8 @@ enum hl_device_status hl_device_status(struct hl_device *hdev)
- 		status = HL_DEVICE_STATUS_NEEDS_RESET;
- 	else if (hdev->disabled)
- 		status = HL_DEVICE_STATUS_MALFUNCTION;
-+	else if (!hdev->init_done)
-+		status = HL_DEVICE_STATUS_IN_DEVICE_CREATION;
- 	else
- 		status = HL_DEVICE_STATUS_OPERATIONAL;
- 
-@@ -44,6 +46,7 @@ bool hl_device_operational(struct hl_device *hdev,
- 	case HL_DEVICE_STATUS_NEEDS_RESET:
- 		return false;
- 	case HL_DEVICE_STATUS_OPERATIONAL:
-+	case HL_DEVICE_STATUS_IN_DEVICE_CREATION:
- 	default:
- 		return true;
- 	}
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 465fd909a7b7..d22ad9e4d5e8 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -2010,7 +2010,7 @@ struct hl_state_dump_specs {
- 
- #define HL_STR_MAX	32
- 
--#define HL_DEV_STS_MAX (HL_DEVICE_STATUS_NEEDS_RESET + 1)
-+#define HL_DEV_STS_MAX (HL_DEVICE_STATUS_LAST + 1)
- 
- /* Theoretical limit only. A single host can only contain up to 4 or 8 PCIe
-  * x16 cards. In extreme cases, there are hosts that can accommodate 16 cards.
-diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
-index 3df4313d72cd..2ef59fd465ba 100644
---- a/drivers/misc/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
-@@ -317,12 +317,16 @@ int create_hdev(struct hl_device **dev, struct pci_dev *pdev,
- 		hdev->asic_prop.fw_security_enabled = false;
- 
- 	/* Assign status description string */
--	strncpy(hdev->status[HL_DEVICE_STATUS_MALFUNCTION],
--					"disabled", HL_STR_MAX);
-+	strncpy(hdev->status[HL_DEVICE_STATUS_OPERATIONAL],
-+					"operational", HL_STR_MAX);
- 	strncpy(hdev->status[HL_DEVICE_STATUS_IN_RESET],
- 					"in reset", HL_STR_MAX);
-+	strncpy(hdev->status[HL_DEVICE_STATUS_MALFUNCTION],
-+					"disabled", HL_STR_MAX);
- 	strncpy(hdev->status[HL_DEVICE_STATUS_NEEDS_RESET],
- 					"needs reset", HL_STR_MAX);
-+	strncpy(hdev->status[HL_DEVICE_STATUS_IN_DEVICE_CREATION],
-+					"in device creation", HL_STR_MAX);
- 
- 	hdev->major = hl_major;
- 	hdev->reset_on_lockup = reset_on_lockup;
-diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
-index db72df282ef8..3b590a0515fb 100644
---- a/drivers/misc/habanalabs/common/sysfs.c
-+++ b/drivers/misc/habanalabs/common/sysfs.c
-@@ -285,16 +285,12 @@ static ssize_t status_show(struct device *dev, struct device_attribute *attr,
- 				char *buf)
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 3a67265312ee..8a2f75de6df8 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -923,13 +923,14 @@ static void
+ wake_pending_user_interrupt_threads(struct hl_user_interrupt *interrupt)
  {
- 	struct hl_device *hdev = dev_get_drvdata(dev);
--	char *str;
-+	char str[HL_STR_MAX];
+ 	struct hl_user_pending_interrupt *pend;
++	unsigned long flags;
  
--	if (atomic_read(&hdev->in_reset))
--		str = "In reset";
--	else if (hdev->disabled)
--		str = "Malfunction";
--	else if (hdev->needs_reset)
--		str = "Needs Reset";
--	else
--		str = "Operational";
-+	strncpy(str, hdev->status[hl_device_status(hdev)], HL_STR_MAX);
-+
-+	/* use uppercase for backward compatibility */
-+	str[0] = 'A' + (str[0] - 'a');
- 
- 	return sprintf(buf, "%s\n", str);
+-	spin_lock(&interrupt->wait_list_lock);
++	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
+ 	list_for_each_entry(pend, &interrupt->wait_list_head, wait_list_node) {
+ 		pend->fence.error = -EIO;
+ 		complete_all(&pend->fence.completion);
+ 	}
+-	spin_unlock(&interrupt->wait_list_lock);
++	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
  }
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index e3425bcc6d15..52ddb8365119 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -276,7 +276,9 @@ enum hl_device_status {
- 	HL_DEVICE_STATUS_OPERATIONAL,
- 	HL_DEVICE_STATUS_IN_RESET,
- 	HL_DEVICE_STATUS_MALFUNCTION,
--	HL_DEVICE_STATUS_NEEDS_RESET
-+	HL_DEVICE_STATUS_NEEDS_RESET,
-+	HL_DEVICE_STATUS_IN_DEVICE_CREATION,
-+	HL_DEVICE_STATUS_LAST = HL_DEVICE_STATUS_IN_DEVICE_CREATION
- };
  
- enum hl_server_type {
+ void hl_release_pending_user_interrupts(struct hl_device *hdev)
+@@ -2714,9 +2715,9 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ {
+ 	struct hl_user_pending_interrupt *pend;
+ 	struct hl_user_interrupt *interrupt;
+-	unsigned long timeout;
+-	long completion_rc;
++	unsigned long timeout, flags;
+ 	u32 completion_value;
++	long completion_rc;
+ 	int rc = 0;
+ 
+ 	if (timeout_us == U32_MAX)
+@@ -2739,7 +2740,7 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	else
+ 		interrupt = &hdev->user_interrupt[interrupt_offset];
+ 
+-	spin_lock(&interrupt->wait_list_lock);
++	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
+ 	if (!hl_device_operational(hdev, NULL)) {
+ 		rc = -EPERM;
+ 		goto unlock_and_free_fence;
+@@ -2765,7 +2766,7 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	 * handler to monitor
+ 	 */
+ 	list_add_tail(&pend->wait_list_node, &interrupt->wait_list_head);
+-	spin_unlock(&interrupt->wait_list_lock);
++	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 
+ wait_again:
+ 	/* Wait for interrupt handler to signal completion */
+@@ -2777,12 +2778,12 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	 * If comparison fails, keep waiting until timeout expires
+ 	 */
+ 	if (completion_rc > 0) {
+-		spin_lock(&interrupt->wait_list_lock);
++		spin_lock_irqsave(&interrupt->wait_list_lock, flags);
+ 
+ 		if (copy_from_user(&completion_value,
+ 				u64_to_user_ptr(user_address), 4)) {
+ 
+-			spin_unlock(&interrupt->wait_list_lock);
++			spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 
+ 			dev_err(hdev->dev,
+ 				"Failed to copy completion value from user\n");
+@@ -2792,13 +2793,13 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 		}
+ 
+ 		if (completion_value >= target_value) {
+-			spin_unlock(&interrupt->wait_list_lock);
++			spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 			*status = CS_WAIT_STATUS_COMPLETED;
+ 		} else {
+ 			reinit_completion(&pend->fence.completion);
+ 			timeout = completion_rc;
+ 
+-			spin_unlock(&interrupt->wait_list_lock);
++			spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 			goto wait_again;
+ 		}
+ 	} else if (completion_rc == -ERESTARTSYS) {
+@@ -2812,11 +2813,11 @@ static int _hl_interrupt_wait_ioctl(struct hl_device *hdev, struct hl_ctx *ctx,
+ 	}
+ 
+ remove_pending_user_interrupt:
+-	spin_lock(&interrupt->wait_list_lock);
++	spin_lock_irqsave(&interrupt->wait_list_lock, flags);
+ 	list_del(&pend->wait_list_node);
+ 
+ unlock_and_free_fence:
+-	spin_unlock(&interrupt->wait_list_lock);
++	spin_unlock_irqrestore(&interrupt->wait_list_lock, flags);
+ 	kfree(pend);
+ 	hl_ctx_put(ctx);
+ 
 -- 
 2.17.1
 
