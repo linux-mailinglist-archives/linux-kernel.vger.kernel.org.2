@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3407B3F2FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87253F2FF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241199AbhHTPq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:46:56 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:53095 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240966AbhHTPqw (ORCPT
+        id S241244AbhHTPrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238278AbhHTPrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:46:52 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-88-F1DQbSqpMu6M5LHnyNb7xg-1; Fri, 20 Aug 2021 16:46:12 +0100
-X-MC-Unique: F1DQbSqpMu6M5LHnyNb7xg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 16:46:11 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Fri, 20 Aug 2021 16:46:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Ard Biesheuvel' <ardb@kernel.org>, Joerg Roedel <joro@8bytes.org>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "hpa@zytor.com" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] x86/efi: Restore Firmware IDT in before
- ExitBootServices()
-Thread-Topic: [PATCH] x86/efi: Restore Firmware IDT in before
- ExitBootServices()
-Thread-Index: AQHXlZXa+jtHdymQB0W1fhKjcUB7Wqt8EPPg///0gwCAABNdkIAAKfIdgABE/BA=
-Date:   Fri, 20 Aug 2021 15:46:11 +0000
-Message-ID: <cdd7869a14ad4021acfacffa3918981c@AcuMS.aculab.com>
-References: <20210820073429.19457-1-joro@8bytes.org>
- <e43eb0d137164270bf16258e6d11879e@AcuMS.aculab.com>
- <YR9tSuLyX8QHV5Pv@8bytes.org>
- <f68a175362984e4abbb0a1da2004c936@AcuMS.aculab.com>
- <YR+Bxgq4aIo1DI8j@8bytes.org>
- <CAMj1kXHj12FQn_488V_9k9k_LE51K=7n3sS9QnN9gkhBgzw-Kw@mail.gmail.com>
-In-Reply-To: <CAMj1kXHj12FQn_488V_9k9k_LE51K=7n3sS9QnN9gkhBgzw-Kw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 20 Aug 2021 11:47:31 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9543DC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:46:52 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id i7so12872334iow.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:46:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=92ifLfUdCfgzu4dobglorYhOZke3wvKfuSJrLJppmSI=;
+        b=PNYN10dYDhFe0EbJZmnbL2MpCc/Phz+KekA56PuYlXGfyhrgadC8ZBvqP4bgYpHkrD
+         c2NV9qlj5/XxJrm1f5erIMDqX8r37yNUz6tT+xYNmRz4LnKQL400qBwAXSZ5vavybAHB
+         nq3oU74XvwgJ7R8daQQsXnf3Ste24aetEfBeA1H31in6MI2EyaFoKvWIjoKLcV8zxTpV
+         c0vR23TBx0Ul3wqKuqc39RVQMyDBBxgAdnkqdQSgTxNEgVi/YN0sn246I6wEzw7BWwmq
+         SDTDniiYRrRkYvS90ZsL67MedF0t9Z/SfccTQlPILAXazDy0obz1nyx7gNxfzMB1SFpE
+         H7Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=92ifLfUdCfgzu4dobglorYhOZke3wvKfuSJrLJppmSI=;
+        b=H9XCu2V1F5M7g9setPwwTxozSZId9aBNXSy4tOrGeKMJ5MC2yVBVtDZAO2USa1szkW
+         /RB41eFSUbts/t+5d0f8V6ZnZCc+EPTZUUAx2CF6NnCJkVAJPMpOgq8H5h7vWJYDva6N
+         fnl7pKH+UWvoGSLt+Kcow2p0MO6BBcHtmZQOqjcGPPg1VLyXEcqPphEJO0xkcrmiKr8P
+         8zzsracu7TxJMwGsxSXyTx8G8rh8UIO6W7xdSGdzMAkKm/u/7uH9zBs3rM7JdQEGsU0p
+         idxlRhxPKWEORg5J0VMwLSsZmzObfBd7SXf7az3GVbMZjC4ARI70/dR9k6JaBoE94G+p
+         ko1g==
+X-Gm-Message-State: AOAM532vWzaw+wcnk0KCkfYMeCw7QN/mmObxD3UyzfFIgIpaJLgq8pxQ
+        1GTu2EI9duVQILUVv3WWorN3Jh9/2/iVAkVUtx8osg==
+X-Google-Smtp-Source: ABdhPJyeDULv+E/a2RqKOUTOS0IIYgxZw7LAHi9Cjof6nWXftZVSKfx+/Uvzqc2gH3xg/vAkChi9QjcC53vMuWU9SEA=
+X-Received: by 2002:a02:cf18:: with SMTP id q24mr18404225jar.5.1629474411859;
+ Fri, 20 Aug 2021 08:46:51 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210819124844.12424-1-yangcong5@huaqin.corp-partner.google.com>
+ <20210820070113.45191-1-yangcong5@huaqin.corp-partner.google.com> <20210820070113.45191-2-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20210820070113.45191-2-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Fri, 20 Aug 2021 08:46:38 -0700
+Message-ID: <CAD=FV=UTQz8_a+nNE9JiaD-bAa_jxDyho6VBMfqG5Jz6qwcUSw@mail.gmail.com>
+Subject: Re: [v2 1/2] drm/panel: boe-tv101wum-nl6: Support enabling a 3.3V rail
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJkIEJpZXNoZXV2ZWwNCj4gU2VudDogMjAgQXVndXN0IDIwMjEgMTI6MzINCj4gDQo+
-IE9uIEZyaSwgMjAgQXVnIDIwMjEgYXQgMTI6MTksIEpvZXJnIFJvZWRlbCA8am9yb0A4Ynl0ZXMu
-b3JnPiB3cm90ZToNCj4gPg0KPiA+IE9uIEZyaSwgQXVnIDIwLCAyMDIxIGF0IDA5OjAyOjQ2QU0g
-KzAwMDAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiA+IFNvIGFsbG9jYXRlIGFuZCBpbml0aWFs
-aXNlIHRoZSBMaW51eCBJRFQgLSBzbyBlbnRyaWVzIGNhbiBiZSBhZGRlZC4NCj4gPiA+IEJ1dCBk
-b24ndCBleGVjdXRlICdsaWR0JyB1bnRpbCBsYXRlciBvbi4NCj4gPg0KPiA+IFRoZSBJRFQgaXMg
-bmVlZGVkIGluIHRoaXMgcGF0aCB0byBoYW5kbGUgI1ZDIGV4Y2VwdGlvbnMgY2F1c2VkIGJ5IENQ
-VUlEDQo+ID4gaW5zdHJ1Y3Rpb25zLiBTbyBsb2FkaW5nIHRoZSBJRFQgbGF0ZXIgaXMgbm90IGFu
-IG9wdGlvbi4NCj4gPg0KPiANCj4gVGhhdCBkb2VzIHJhaXNlIGEgcXVlc3Rpb24sIHRob3VnaC4g
-RG9lcyBjaGFuZ2luZyB0aGUgSURUIGludGVyZmVyZQ0KPiB3aXRoIHRoZSBhYmlsaXR5IG9mIHRo
-ZSBVRUZJIGJvb3Qgc2VydmljZXMgdG8gcmVjZWl2ZSBhbmQgaGFuZGxlIHRoZQ0KPiB0aW1lciBp
-bnRlcnJ1cHQ/IEJlY2F1c2UgYmVmb3JlIEV4aXRCb290U2VydmljZXMoKSwgdGhhdCBpcyBvd25l
-ZCBieQ0KPiB0aGUgZmlybXdhcmUsIGFuZCBVRUZJIGhlYXZpbHkgcmVsaWVzIG9uIGl0IGZvciBl
-dmVyeXRoaW5nIChldmVudA0KPiBoYW5kbGluZywgcG9sbGluZyBtb2RlIGJsb2NrL25ldHdvcmsg
-ZHJpdmVycywgZXRjKQ0KPiANCj4gSWYgcmVzdG9yaW5nIHRoZSBJRFQgdGVtcG9yYXJpbHkganVz
-dCBwYXBlcnMgb3ZlciB0aGlzIGJ5IGNyZWF0aW5nDQo+IHRpbnkgd2luZG93cyB3aGVyZSB0aGUg
-dGltZXIgaW50ZXJydXB0IHN0YXJ0cyB3b3JraW5nIGFnYWluLCB0aGlzIGlzDQo+IGJhZCwgYW5k
-IHdlIG5lZWQgdG8gZmlndXJlIG91dCBhbm90aGVyIHdheSB0byBhZGRyZXNzIHRoZSBvcmlnaW5h
-bA0KPiBwcm9ibGVtLg0KDQpDb3VsZCB0aGUgd2hvbGUgdGhpbmcgYmUgZmxpcHBlZD8NCg0KU28g
-bG9hZCBhIHRlbXBvcmFyeSBJRFQgc28gdGhhdCB5b3UgY2FuIGRldGVjdCBpbnZhbGlkIGluc3Ry
-dWN0aW9ucw0KYW5kIHJlc3RvcmUgdGhlIFVFRkkgSURUIGltbWVkaWF0ZWx5IGFmdGVyd2FyZHM/
-DQoNCkknbSBndWVzc2luZyB0aGUgR0RUIGlzIGNoYW5nZWQgaW4gb3JkZXIgdG8gYWNjZXNzIGFs
-bCBvZiBwaHlzaWNhbA0KbWVtb3J5ICh3ZWxsIGVub3VnaCB0byBsb2FkIHRoZSBrZXJuZWwpLg0K
-Q291bGQgdGhhdCBiZSBkb25lIHVzaW5nIHRoZSBMRFQ/DQpJdCBpcyB1bmxpa2VseSB0aGF0IHRo
-ZSBVRUZJIGNhcmVzIGFib3V0IHRoYXQ/DQoNCklzIHRoaXMgMzJiaXQgbm9uLXBhZ2VkIGNvZGU/
-DQpSdW5uaW5nIHRoYXQgd2l0aCBhIHBoeXNpY2FsIG1lbW9yeSBvZmZzZXQgbWFkZSBteSBoZWFk
-IGh1cnQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
-ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
-dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+Hi,
 
+On Fri, Aug 20, 2021 at 12:01 AM yangcong
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> The auo,b101uan08.3 panel (already supported by this driver) has
+> a 3.3V rail that needs to be turned on. For previous users of
+> this panel this voltage was directly output by pmic. On a new
+> user (the not-yet-upstream sc7180-trogdor-mrbland board) we need
+> to turn the 3.3V rail on. Add support in the driver for this.
+>
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
