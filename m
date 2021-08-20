@@ -2,69 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E52E3F3619
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3204A3F361B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhHTVio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhHTVin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:38:43 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64200C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:38:05 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id y14-20020a0568302a0e00b0051acbdb2869so10365495otu.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=N7XPfZrpLOPQ3NWuP/cwpVYxz6UbQiCYNHlikEjuLok=;
-        b=aWIMoTVoWZNs3yRDn8pUNWaxKg7XQsvdmhbRj3EmZJPwSb6AlzJfB2UNPGfbahts95
-         wkTIbGsPD2D8SxBmn08rbtOTq+m4IM+U3cihi57neg+8i310yjAsdz9iwKE5NANCYtIW
-         H2B+3fnEeHnjyEZoQgnahSS7QsGSWWg8C7XkRVGUX8QbSUpDeC3d8iwfidVuem6bayU2
-         FWQiVc+Ak8vfgrdHIeuQG5Py8MtaCCiVXkzTJrsi5kkiShh7oNK3Qe7SuEQLTvvmZ19p
-         05CiZAcuscEZ1BDS89S7XC/XP96IhQyVw+0WClUpxl+FjfmK2B6PuQFtKyr4qRJLlAoM
-         WH5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=N7XPfZrpLOPQ3NWuP/cwpVYxz6UbQiCYNHlikEjuLok=;
-        b=Rx6L92qW+BjxgKwA+QbkYndWBRIcXnpZHhfHgk8aeRlKPOx9CX8encLq5v+u8lVHX7
-         4NRkMD27byJYPAcjgOFDvzDnltDtV7xbdTbGE/Ydsw8wxD6LDtzFYUCiE74e0ZgOskOc
-         vPhVwsTzwNF19R/FCYMvzpck7kN8f58FE/RvqTPMt672eaDzVGSMsa9aBMKB+JRSkG5q
-         oph6WLymP99gdjvdrLC95GdQ7emvBQ6gs3ybjaHnpAZ5A5c91JEydu3hwiuKOCMIobD1
-         EZY8AMS2w/aFmlEeePCl6vYx3ouPlJ6FQYQ/4FP2xJ/NKHZVpUslazkSJ8nfso+himmJ
-         BVjg==
-X-Gm-Message-State: AOAM530dr0VUrOiWq+1lBNzoEu3WDpK0LrcniHfw+m45RgHiwAMN5Obo
-        ctV7HnDNYV1NofDEsUoGL49+3d8VK10=
-X-Google-Smtp-Source: ABdhPJzH5eoNOZtzG9sfDPwdjn719WDuQCmILJNb57uiTpUzsBCEH6pfQM2n10F4M0yoDNiJYJtcqA==
-X-Received: by 2002:a05:6808:690:: with SMTP id k16mr4514518oig.152.1629495484559;
-        Fri, 20 Aug 2021 14:38:04 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com. [2603:8090:2005:39b3::1023])
-        by smtp.gmail.com with ESMTPSA id f33sm1761642otf.0.2021.08.20.14.38.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 14:38:03 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH v2 3/5] staging: r8188eu: incorrect type in
- csum_ipv6_magic
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <cover.1629360917.git.aakashhemadri123@gmail.com>
- <8bc15e51751c26fd19428f3b4976b7495feecd34.1629360917.git.aakashhemadri123@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <58069e38-a457-9fcc-0a9a-6bfe8723a178@lwfinger.net>
-Date:   Fri, 20 Aug 2021 16:38:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S231557AbhHTVmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229760AbhHTVmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 17:42:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EFBE6115A;
+        Fri, 20 Aug 2021 21:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629495699;
+        bh=Hcyczx0dUv6OOPsK53/cEFLZyL+VYmXz7Ndl9CnAKy0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=YKxJxyEKRrHb/B3gpyM+AT6e+2qO6u2bTONGLcP4ZizlmXZ0MqbDuMVEECgT9VD2y
+         p7p4d1hu5PZrSB87avSQ2kGofxgkt5vLjs3hjdyCMy5pycJJoj0yLWbdZyqXNaeBtd
+         lqVlodVvm/czeHtMrXdyrmQSwGDPiBHcrvwLkkIsJFwt4aUyKwzHVj0QpCgnJKo9XQ
+         4Q4wtyjDXvcoPaxxKkQmGRiuLig9OfT6c0eiCasAFaR1yGBthXFe68bF0VHgpFvuFk
+         ibHyfPhxMVRFRAnfdn/DNWN2VLeODJ6O3N7wHkWQjIeclfx1PI1fBeiBX6JtpAdBo8
+         q5aB9Vd5qELNw==
+Subject: Re: [f2fs-dev] [PATCH v4 2/2] f2fs: introduce periodic iostat io
+ latency traces
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+References: <20210820035229.216975-1-daeho43@gmail.com>
+ <20210820035229.216975-2-daeho43@gmail.com>
+ <48725f58-1a48-73f3-80cf-a0c5efc3b470@kernel.org>
+ <CACOAw_xcwZN_H7_zi7iMJh9HpzXnPd67fNAcxhu5UUSmJk7c1Q@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <f2ff8fd5-83e0-0c63-ed48-f21a49ab90dc@kernel.org>
+Date:   Sat, 21 Aug 2021 05:41:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <8bc15e51751c26fd19428f3b4976b7495feecd34.1629360917.git.aakashhemadri123@gmail.com>
+In-Reply-To: <CACOAw_xcwZN_H7_zi7iMJh9HpzXnPd67fNAcxhu5UUSmJk7c1Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,41 +47,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 3:17 AM, Aakash Hemadri wrote:
-> Fix sparse warning:
->> rtw_br_ext.c:771:84:    got restricted __be16 [usertype] payload_len
->> rtw_br_ext.c:773:110: warning: incorrect type in argument 2
->      (different base types)
->> rtw_br_ext.c:773:110:    expected int len
->> rtw_br_ext.c:773:110:    got restricted __be16 [usertype] payload_len
+On 2021/8/20 23:23, Daeho Jeong wrote:
+> On Fri, Aug 20, 2021 at 3:50 AM Chao Yu <chao@kernel.org> wrote:
+>>
+>> On 2021/8/20 11:52, Daeho Jeong wrote:
+>>> +void iostat_update_and_unbind_ctx(struct bio *bio, int rw)
+>>> +{
+>>> +     struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
+>>> +     int sync_type = bio->bi_opf & REQ_SYNC ? 0 : 1;
+>>
+>> int sync_type = bio->bi_opf & REQ_SYNC ? 1 : 0;
+>>
+>> Right?
 > 
-> csum_ipv6_magic and csum_partial expect int len not __be16, use ntohs()
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->   drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> index 6a0462ce6230..d4acf02ca64f 100644
-> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> @@ -615,9 +615,9 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
->   						struct icmp6hdr  *hdr = (struct icmp6hdr *)(skb->data + ETH_HLEN + sizeof(*iph));
->   						hdr->icmp6_cksum = 0;
->   						hdr->icmp6_cksum = csum_ipv6_magic(&iph->saddr, &iph->daddr,
-> -										iph->payload_len,
-> +										ntohs(iph->payload_len),
->   										IPPROTO_ICMPV6,
-> -										csum_partial((__u8 *)hdr, iph->payload_len, 0));
-> +										csum_partial((__u8 *)hdr, ntohs(iph->payload_len), 0));
->   					}
->   				}
->   			}
-> 
+> This means just type, not boolean number. So, I set type 0 is sync and
+> type 1 is async.
 
-This patch is correct, but I prefer that you use be16_to_cpu() rather than 
-ntohs(). I think it makes the code easier to read.
+How about changing this to is_sync or similar name of bool type variable?
 
-Larry
+> 
+>>
+>>>    int f2fs_init_iostat(struct f2fs_sb_info *sbi)
+>>>    {
+>>>        /* init iostat info */
+>>>        spin_lock_init(&sbi->iostat_lock);
+>>> +     spin_lock_init(&sbi->iostat_lat_lock);
+>>>        sbi->iostat_enable = false;
+>>>        sbi->iostat_period_ms = DEFAULT_IOSTAT_PERIOD_MS;
+>>> +     sbi->iostat_io_lat = f2fs_kzalloc(sbi, sizeof(struct iostat_lat_info),
+>>> +                                     GFP_KERNEL);
+>>> +     if (!sbi->iostat_io_lat)
+>>> +             return -ENOMEM;
+>>
+>> What do you think of just embedding iostat_io_lat structure into f2fs_sb_info
+>> structure? it's minor thing though.
+>>
+> 
+> I also wanted to do that, but if we embed this type, we need to define
+> that structure in f2fs.h file.
+> Is it okay with you?
 
+Oh, correct, it will be more appropriate to define the structure in iostat.h.
+
+Is it fine to just use memset(io_lat, 0, sizeof(struct iostat_lat_info)) to
+reset all fields in f2fs_reset_iostat()?
+
+Thanks,
+
+> 
+>> Thanks,
