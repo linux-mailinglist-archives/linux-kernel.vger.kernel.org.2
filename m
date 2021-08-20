@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480C53F28AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1083F28B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhHTIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:52:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:56676 "EHLO foss.arm.com"
+        id S232991AbhHTIxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:53:11 -0400
+Received: from 8bytes.org ([81.169.241.247]:37976 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230418AbhHTIv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:51:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B911E1042;
-        Fri, 20 Aug 2021 01:51:16 -0700 (PDT)
-Received: from [10.163.69.60] (unknown [10.163.69.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 479D03F40C;
-        Fri, 20 Aug 2021 01:51:15 -0700 (PDT)
-Subject: Re: [PATCH] arm64/mm: Drop page-def.h
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <1629441331-19530-1-git-send-email-anshuman.khandual@arm.com>
- <20210820083131.GB16784@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <4043e66c-c70b-00f8-4c0f-78b62b21a023@arm.com>
-Date:   Fri, 20 Aug 2021 14:22:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231992AbhHTIxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 04:53:10 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id CB105309; Fri, 20 Aug 2021 10:52:31 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 10:52:26 +0200
+From:   'Joerg Roedel' <joro@8bytes.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "hpa@zytor.com" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] x86/efi: Restore Firmware IDT in before
+ ExitBootServices()
+Message-ID: <YR9tSuLyX8QHV5Pv@8bytes.org>
+References: <20210820073429.19457-1-joro@8bytes.org>
+ <e43eb0d137164270bf16258e6d11879e@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <20210820083131.GB16784@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e43eb0d137164270bf16258e6d11879e@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 20, 2021 at 08:43:47AM +0000, David Laight wrote:
+> Hmmm...
+> If Linux needs its own IDT then temporarily substituting the old IDT
+> prior to a UEFI call will cause 'grief' if a 'Linux' interrupt
+> happens during the UEFI call.
 
+This is neede only during very early boot before Linux called
+ExitBootServices(). Nothing that causes IRQs is set up by Linux yet. Of
+course the Firmware could have set something up, but Linux runs with
+IRQs disabled when on its own IDT at that stage.
 
-On 8/20/21 2:01 PM, Will Deacon wrote:
-> On Fri, Aug 20, 2021 at 12:05:31PM +0530, Anshuman Khandual wrote:
->> PAGE_SHIFT (PAGE_SIZE and PAGE_MASK) which is derived from ARM64_PAGE_SHIFT
->> should be moved into pgtable-hwdef.h instead, and subsequently page-def.h
->> can be just dropped off completely.
-> 
-> According to who?
-> 
-> Every other architecture defines PAGE_SHIFT in page.h, so if you're moving
-> things around then that sounds like a better choice.
+Regards,
 
-Sure, will change. That is why I had asked the question :)
-
-> 
-> Will
-> 
+	Joerg
