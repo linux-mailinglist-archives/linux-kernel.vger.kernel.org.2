@@ -2,87 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D583F2FB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6183F2FBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241221AbhHTPmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241045AbhHTPmg (ORCPT
+        id S241226AbhHTPmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:42:49 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45030 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241045AbhHTPms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:42:36 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A36C061575;
-        Fri, 20 Aug 2021 08:41:58 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id t66so11356776qkb.0;
-        Fri, 20 Aug 2021 08:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TD7UO1vJGwoGQ4AHaMGplRumS39Xg7e9O3vaqdkaZ5U=;
-        b=SJaUzvFitYP7TFhiy3lgxeXWaBq932MSG8nV37JOmsJKQQOwfvYzZtMzWu9JkVa11g
-         PYa8xrz+JEcRNf4xOufuPELYvRmozfYBnZMEw6oKUQgO4mKPTKCktNNUvyOlON9AX8Nc
-         4HNjc3c0Nu0S9Hl+MI1ovbVthOb+yfk4kItIo/XTHiEK9o0sda40IGwb+l4MGPMeNJvZ
-         P7QnOW7iUZNnfA6qJGPXw+06sx9M1quI6Fxl/4VhEEUIyH+pN/7VMkwjvHFcA6KUKKS0
-         HRbblI7ktfN9ci+3zTFXviWk1lH6l1wjDZR+uJbxMb9SIwDEG9NQ7u384CwoFUQKOyhq
-         zsDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TD7UO1vJGwoGQ4AHaMGplRumS39Xg7e9O3vaqdkaZ5U=;
-        b=Ezrwu7DXWO/YsMOw9WQXv+8I9Tu/NBCnEGOqx8ohHGdwsF6hIaJ13VEjFxWdkPhZK1
-         vYM9C6e+0O8R3zdlZS1TPpzst8h03k7i/zE5AWC4eL1+s6B9ACQ1hlKHGMImlU7Z9iTx
-         BADeTQKKar9xseEhG27GSD6GieQnyZAGX9bdu5ibIU1DUlhtywzif/SYMqG/N8rtgs+4
-         nHI2efG4qV2nrJQPI8Sxu5gpzMozG3sLhr1fQ6xOX3KvxxYkfZ2dlZ8eDCCf3lyrBEbb
-         D4vbpqx17uxQ7iOF/sShO59WAnrnTysEwcShetpBERS8rFHa5hAqoM7vNhfi005p6ZWc
-         sBnw==
-X-Gm-Message-State: AOAM532jYlzHZHkyc6m+pvA0+5CbcOtDOgqFIIj7UtaSzxnLyNCtgSDy
-        7sLIbsjbYbqQm5sqZtUvm6Y=
-X-Google-Smtp-Source: ABdhPJwX53foXCG5VyO/NCU64TCkvABQkPm0s+1gx7rxvckm/C+niyJBdg+nD7V5LMATb+hM7XKbRQ==
-X-Received: by 2002:a05:620a:11af:: with SMTP id c15mr1820768qkk.82.1629474117311;
-        Fri, 20 Aug 2021 08:41:57 -0700 (PDT)
-Received: from Desktop64 ([138.229.29.116])
-        by smtp.gmail.com with ESMTPSA id j18sm3438659qkg.31.2021.08.20.08.41.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 08:41:56 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 11:41:55 -0400
-From:   Stephan Losa <stephan.losa@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: apple: Add support for Keychron K8, K2 in bluetooth
- mode
-Message-ID: <20210820154155.GB26305@Desktop64>
-References: <20210819193221.558454-1-stephan.losa@gmail.com>
- <nycvar.YFH.7.76.2108201506010.15313@cbobk.fhfr.pm>
+        Fri, 20 Aug 2021 11:42:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id CAAE21FE2C;
+        Fri, 20 Aug 2021 15:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629474129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IvfDF5eMx9B1DGeIPF2eXAnu9j+546SJreXX4X/2/LM=;
+        b=C5IT/PW1hmbH61XIjN7Wc8SbyMIvagbJL2zGwVShR9zzsjkQRtKGAC85D9AhbS5PM/r/SX
+        Q1MANu0muX1nsJwo5+SvI+3h3LVOew+eE86kVRkT93DMgacaQWSR0GVtEuA7n44G23prmR
+        JcaLFXEvnXE+yBZGph5yVDTbFq1/Z5U=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 163BFA3B9B;
+        Fri, 20 Aug 2021 15:42:08 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 17:41:56 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     yong w <yongw.pur@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>, Hui Su <sh_def@163.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        wang.yong12@zte.com.cn, Cgroups <cgroups@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, yang.yang29@zte.com.cn
+Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
+ notifier is enabled
+Message-ID: <YR/NRJEhPKRQ1r22@dhcp22.suse.cz>
+References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
+ <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
+ <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2108201506010.15313@cbobk.fhfr.pm>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:06:29PM +0200, Jiri Kosina wrote:
-> On Thu, 19 Aug 2021, Stephan Losa wrote:
+On Fri 20-08-21 23:20:40, yong w wrote:
+> Michal Hocko <mhocko@suse.com> 于2021年8月20日周五 下午7:26写道：
+> >
+> > On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
+> > > From: wangyong <wang.yong@zte.com.cn>
+> > >
+> > > Inspired by PSI features, vmpressure inotifier function should
+> > > also be configured to decide whether it is used, because it is an
+> > > independent feature which notifies the user of memory pressure.
+> >
+> > Yes, it is an independent feature indeed but what is the actual reason
+> > to put a more configuration space here. Config options are not free both
+> > from the user experience POV as well as the code maintenance. Why do we
+> > need to disable this feature. Who can benefit from such a setup?
+> >
+> > > So we add configuration to control whether vmpressure notifier is
+> > > enabled, and provide a boot parameter to use vmpressure notifier
+> > > flexibly.
+> >
+> > Flexibility is nice but not free as mentioned above.
+> >
+> > > Use Christoph Lamenter’s pagefault tool
+> > > (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
+> > > Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
+> > > To ensure that the vmpressure function is executed, we enable zram
+> > > and let the program occupy memory so that some memory is swapped out
+> > >
+> > > unpatched:
+> > > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     fault/wsec
+> > > 2     1       1       1       0.1     0.97    1.13    485490.062      463533.34
+> > > 2     1       1       1       0.11    0.96    1.12    483086.072      465309.495
+> > > 2     1       1       1       0.1     0.95    1.11    496687.098      469887.643
+> > > 2     1       1       1       0.09    0.97    1.11    489711.434      468402.102
+> > > 2     1       1       1       0.13    0.94    1.12    484159.415      466080.941
+> > > average                               0.106   0.958   1.118   487826.8162     466642.7042
+> > >
+> > > patched and CONFIG_MEMCG_VMPRESSURE is not set:
+> > > Gb    Rep     Thr     CLine   User(s) System(s) Wall(s) flt/cpu/s     fault/wsec
+> > > 2     1       1       1       0.1     0.96    1.1     490942.682      473125.98
+> > > 2     1       1       1       0.08    0.99    1.13    484987.521      463161.975
+> > > 2     1       1       1       0.09    0.96    1.09    498824.98       476696.066
+> > > 2     1       1       1       0.1     0.97    1.12    484127.673      465951.238
+> > > 2     1       1       1       0.1     0.97    1.11    487032          468964.662
+> > > average                               0.094   0.97    1.11    489182.9712     469579.9842
+> > >
+> > > According to flt/cpu/s, performance improved by 0.2% which is not obvious.
+> >
+> > I haven't checked how are those numbers calculated but from a very brief
+> > look it seems like the variation between different runs is higher than
+> > 0.2%. Have you checked the average against standard deviation to get a
+> > better idea whether the difference is really outside of the noise?
+> > --
+> > Michal Hocko
+> > SUSE Labs
 > 
-> > Use hid-apple in bluetooth mode like in wired mode for Keychron K8, K2
-> > (and others). Those keyboards use vendor/product ids 05AC:024F (APPLE_ALU_REVB_ANSI).
-> > 
-> > Signed-off-by: Stephan Losa <stephan.losa@gmail.com>
-> 
-> Applied, thanks.
-> 
-> -- 
-> Jiri Kosina
-> SUSE Labs
-> 
-FYI
+> Thanks for your reply.
+> The reason for adding configuration is as follows：
 
-Someone brought to my attention that a similar fix has been already merged
-into 5.14-rc4 three weeks ago torvalds/linux@ebe0b42.
+All those reasons should be a part of the changelog.
 
-Stephan
+> 1. Referring to [PATCH] psi: make disabling/enabling easier for vendor
+> kernels, the modification
+> is also applicable to vmpressure.
+> 
+> 2. With the introduction of psi into the kernel, there are two memory
+> pressure monitoring methods，
+> it is not necessary to use both and it makes sense to make vmpressure
+> configurable.
+
+I am not sure these are sufficient justifications but that is something
+to discuss. And hence it should be a part of the changelog.
+
+> 3. In the case where the user does not need vmpressure,  vmpressure
+> calculation is additional overhead.
+
+You should quantify that and argue why that overhead cannot be further
+reduced without config/boot time knobs.
+
+> In some special scenes with tight memory, vmpressure will be executed
+> frequently.we use "likely" and "inline"
+> to improve the performance of the kernel, why not reduce some
+> unnecessary calculations?
+
+I am all for improving the code. Is it possible to do it by other means?
+E.g. reduce a potential overhead when there no events registered?
+-- 
+Michal Hocko
+SUSE Labs
