@@ -2,147 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C90F3F2F9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC4C3F2F96
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241177AbhHTPiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241159AbhHTPiw (ORCPT
+        id S241139AbhHTPip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:38:45 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:56792 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241120AbhHTPin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:38:52 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1213DC061575;
-        Fri, 20 Aug 2021 08:38:12 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id o2so9544148pgr.9;
-        Fri, 20 Aug 2021 08:38:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dVOZ4z0XPa7OayGE8ECMnwdJyIdPwvP3nXcnH8MPASM=;
-        b=A/zNrhCd3U9O9ero/5NghZBre9EOOjJ3OGobszwgvGoiOz7/5WsjufLewqFNiAvU0v
-         UdflMS96g40+NfLrBAqJeCjCdymuciBQ80Yx/AQ8ITRU/L7SATQ2tHnIIaF5k29JMsjP
-         WAvdDEXHkH/FVzOYK69bzTjmosbJipBqxfsdB/cAPu2yYaYLLNyru8HIfNH/zhlEl+mU
-         b5+PJ4XRQM2BJW9oXzisu/vOdi7dHLX+vQAJHyTA5vk0DQ7OMESbpxAVqABg7O8/+78J
-         3nht4WbwZ0TDJVCxNgnUkxAG6lFfKLPK4ZeS+qG0noIJNBwIfI2dl2YXRq8khGR4QbyN
-         AtMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dVOZ4z0XPa7OayGE8ECMnwdJyIdPwvP3nXcnH8MPASM=;
-        b=sZGs0E9Hjaqwpzs1+GlX8nNK5nXheFFnPAKRE6Yf8m1gM8ASM+DhhdIkL3M7h+fqay
-         tlXGOdrOoGFzLGqehpzxiLr+64rRhkIf2fH5GBqd+AABDjZRV6wJX6h8bnp5plEIyXzA
-         tfDZkgqO0QcDHZxGe9uEY3iTaHsgjNU2EfaPoeHl3Ar6qLm6hy28Yy7FUO3y17BOOJoR
-         5C399AHGbkgDw9LanJJeJmHiIguETA70Y850qZGMxkKDxl23SDzyhyTZUro/4y2Bxvo8
-         FTKPSOlOUyIaCdzJoKZoPtT9O5RHm7MvffVLc4wq9J5OUYhU4ejNOXfmc0Y7hIn4yOF6
-         BJJA==
-X-Gm-Message-State: AOAM531RUu04c5KccPJaHZtyCF9dCsAjUgkdtohpV+msPPHqzIxUwGbm
-        v0C5ChMCkSSmK6/ls7ovCR0=
-X-Google-Smtp-Source: ABdhPJyVl6KA/n8a2L0ZyHmpD0HkIjOfmbblHOo22Ydnq/pt3+qZWO40wgWo8CzM7IJsFIvGGIvzGQ==
-X-Received: by 2002:a63:1962:: with SMTP id 34mr19583687pgz.14.1629473891609;
-        Fri, 20 Aug 2021 08:38:11 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id i26sm7738720pfu.6.2021.08.20.08.37.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 08:38:11 -0700 (PDT)
-Subject: Re: [PATCH V3 13/13] HV/Storvsc: Add Isolation VM support for storvsc
- driver
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "tj@kernel.org" <tj@kernel.org>
-Cc:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-References: <20210809175620.720923-1-ltykernel@gmail.com>
- <20210809175620.720923-14-ltykernel@gmail.com>
- <MWHPR21MB1593EEF30FFD5C60ED744985D7C09@MWHPR21MB1593.namprd21.prod.outlook.com>
- <a96626db-4ac9-3ce4-64e9-92568e4f827a@gmail.com>
-Message-ID: <9ae704a9-838c-0a54-9c16-f0f10eaaaefe@gmail.com>
-Date:   Fri, 20 Aug 2021 23:37:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 20 Aug 2021 11:38:43 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d04 with ME
+        id jre42500U3riaq203re415; Fri, 20 Aug 2021 17:38:05 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 20 Aug 2021 17:38:05 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        alexandru.marginean@nxp.com, Laurentiu.Tudor@nxp.com,
+        hui.song_1@nxp.com, andy.shevchenko@gmail.com, ran.wang_1@nxp.com
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 2/3] gpio: mpc8xxx: Fix a potential double iounmap call in 'mpc8xxx_probe()'
+Date:   Fri, 20 Aug 2021 17:38:03 +0200
+Message-Id: <5341e631dc93902ef13840807163a2883764b8ed.1629472813.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <cover.1629472813.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1629472813.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-In-Reply-To: <a96626db-4ac9-3ce4-64e9-92568e4f827a@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/2021 11:20 PM, Tianyu Lan wrote:
->> The whole approach here is to do dma remapping on each individual page
->> of the I/O buffer.  But wouldn't it be possible to use dma_map_sg() to 
->> map
->> each scatterlist entry as a unit?  Each scatterlist entry describes a 
->> range of
->> physically contiguous memory.  After dma_map_sg(), the resulting dma
->> address must also refer to a physically contiguous range in the swiotlb
->> bounce buffer memory.   So at the top of the "for" loop over the 
->> scatterlist
->> entries, do dma_map_sg() if we're in an isolated VM.  Then compute the
->> hvpfn value based on the dma address instead of sg_page().  But 
->> everything
->> else is the same, and the inner loop for populating the pfn_arry is 
->> unmodified.
->> Furthermore, the dma_range array that you've added is not needed, since
->> scatterlist entries already have a dma_address field for saving the 
->> mapped
->> address, and dma_unmap_sg() uses that field.
-> 
-> I don't use dma_map_sg() here in order to avoid introducing one more 
-> loop(e,g dma_map_sg()). We already have a loop to populate 
-> cmd_request->dma_range[] and so do the dma map in the same loop.
+Commit 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support") has switched to a
+managed version when dealing with 'mpc8xxx_gc->regs'. So the corresponding
+'iounmap()' call in the error handling path and in the remove should be
+removed to avoid a double unmap.
 
-Sorry for a typo. s/cmd_request->dma_range[]/payload->range.pfn_array[]/
+This also allows some simplification in the probe. All the error handling
+paths related to managed resources can be direct returns and a NULL check
+in what remains in the error handling path can be removed.
+
+Fixes: 76c47d1449fc ("gpio: mpc8xxx: Add ACPI support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/gpio/gpio-mpc8xxx.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+index 241bcc80612e..fa4aaeced3f1 100644
+--- a/drivers/gpio/gpio-mpc8xxx.c
++++ b/drivers/gpio/gpio-mpc8xxx.c
+@@ -332,7 +332,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 				 mpc8xxx_gc->regs + GPIO_DIR, NULL,
+ 				 BGPIOF_BIG_ENDIAN);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 		dev_dbg(&pdev->dev, "GPIO registers are LITTLE endian\n");
+ 	} else {
+ 		ret = bgpio_init(gc, &pdev->dev, 4,
+@@ -342,7 +342,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 				 BGPIOF_BIG_ENDIAN
+ 				 | BGPIOF_BIG_ENDIAN_BYTE_ORDER);
+ 		if (ret)
+-			goto err;
++			return ret;
+ 		dev_dbg(&pdev->dev, "GPIO registers are BIG endian\n");
+ 	}
+ 
+@@ -384,7 +384,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+ 			"GPIO chip registration failed with status %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	mpc8xxx_gc->irqn = platform_get_irq(pdev, 0);
+@@ -416,9 +416,7 @@ static int mpc8xxx_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ err:
+-	if (mpc8xxx_gc->irq)
+-		irq_domain_remove(mpc8xxx_gc->irq);
+-	iounmap(mpc8xxx_gc->regs);
++	irq_domain_remove(mpc8xxx_gc->irq);
+ 	return ret;
+ }
+ 
+@@ -432,7 +430,6 @@ static int mpc8xxx_remove(struct platform_device *pdev)
+ 	}
+ 
+ 	gpiochip_remove(&mpc8xxx_gc->gc);
+-	iounmap(mpc8xxx_gc->regs);
+ 
+ 	return 0;
+ }
+-- 
+2.30.2
+
