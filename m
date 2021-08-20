@@ -2,112 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69583F3063
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D724F3F3069
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241415AbhHTP6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241310AbhHTP6G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:58:06 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C85AC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:57:28 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so1301971pjx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AJeoq+Z5WucmTQVKUtIcwcvIvzIMIDi7YIzeoCuQoP0=;
-        b=oIxFw+GWAwZs8paucH0s/In4m5BgJDLq+dmzX+m7YKc4gCfgmo4JI2M4BsORRDjuci
-         qAYG9G5n+7RQUkylKMqlb1PMW/ybYfuvOAKQsZeE3AgNOJAe0FYCQwED3j3ea2q1qoXd
-         5B7pTsEFDxH8oJwSmaEr+SvpFW0GYanuTjebY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AJeoq+Z5WucmTQVKUtIcwcvIvzIMIDi7YIzeoCuQoP0=;
-        b=r5Lyf3NOqlO5e82KoJl2pJvmFtRGW8yiRHPdUd4ki6HX6LPkbHRp+bgpFsLYKcUjjE
-         WH/P2TTYRaSFEP170+qe8P2XrEnM7mIPOf4HR5MG3wN3uG7bq9kYLr1ngu+GQuCCsq9o
-         tpW3ugUdSQHh6WyojXOTg54x7YKskqRqDom5LoyYzYCf/NXkuaqMm9i9/YfCGsi0IjhI
-         HNraYb1qYuPbsRYTE+m4CZc96qhKL1QX09IuVxiJup/RpvqzPCBvjYwPKnwbDMbUjcDg
-         fdMxw6HcKmQryKZgoVQxaa/Xe844UVagYM4loX3BH1Z65eljwivo951IFkaBpmzIaqXN
-         +Yxg==
-X-Gm-Message-State: AOAM531200gYaoeHgP4OkC21x4dAivVrOfmo0BkZVlSYNfXp529HZiVT
-        8LVtzMO0ZWTlXSBy2MItB3jOmw==
-X-Google-Smtp-Source: ABdhPJzw8iPuALjJ/8kpXHMg33VLmYMXrF5AQDF992t6FjpOqQ1z2rFQNZkt6dgaqjw8sRY3eqQNTg==
-X-Received: by 2002:a17:902:c215:b0:12f:b1b6:9f07 with SMTP id 21-20020a170902c21500b0012fb1b69f07mr7880820pll.82.1629475048022;
-        Fri, 20 Aug 2021 08:57:28 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z20sm7604377pfr.121.2021.08.20.08.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 08:57:27 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 08:57:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stefan Achatz <erazor_de@users.sourceforge.net>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, linux-staging@lists.linux.dev,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 55/63] HID: roccat: Use struct_group() to zero
- kone_mouse_event
-Message-ID: <202108200857.FA4AA13@keescook>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-56-keescook@chromium.org>
- <nycvar.YFH.7.76.2108201501510.15313@cbobk.fhfr.pm>
- <CAJr-aD=6-g7VRw2Hw0dhs+RrtA=Tago5r6Dukfw_gGPB0YYKOQ@mail.gmail.com>
- <nycvar.YFH.7.76.2108201725360.15313@cbobk.fhfr.pm>
-MIME-Version: 1.0
+        id S241423AbhHTP6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:58:22 -0400
+Received: from mail-co1nam11on2074.outbound.protection.outlook.com ([40.107.220.74]:55584
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241279AbhHTP6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:58:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QS35s1bfgA2NXZALKi/ZJ5u4nezfjy+XhzCYG0BHlNI6iy64qWMn0RsBID4JaJMHUr4OtV8O1i9tZLvlpuKjlt9ubPjy2v4dp06P9l+3/DTum+zOahzmK9Fm5d98coJA2V3tOlHKrvWHUrAXaaMzEpwf1hQfTNOMGM/eBQk8zbUInUe65BRef2TnoSDAih+ONJcdIGiabA+C/mXBk9ZC73bBZ29Z+jnCqfhKdFBxEnA4ziFhobBui3fQbwQ63n4V5xnVKKwELfW2UlEeIVNntbJsMYhzhHyRpwwgYXgEJnpZsUAChEgtXir0N2oOT7kF2fVFfUZ9wcHL9O2o11POcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9s/tvyiXFzbgWFPj8QniTxZQLSk+YCilmatz4XKHtDI=;
+ b=noDYxGrCHl+I8IcTmqe1LxWgGTHqeLf7ho5TjQj8tzO1nGoPQg1a6rHkrnQNQ9yN2/ghVvAoHM5mp4+1bPikZNgAGjNbBgmaKbQN4f5O1FR9si5ozjCt397KTLA+rS1nYhHe+GISAM7/gKIkDbYEz6ZQJ9UvLIxC9xr0lKh62ztcrvN5J1Xw7CckBEW4L233daYUbXk01V5XrW5Kbk97+EsBQz91ybOw1Dn2BM+EarQQV0yu7rkCajhNdhVV3F3rgFSkbI9nXA1yCYMfiEUWgi7AE8e6ktYbYitqbtQViF/YakBbp3dW5KIBgAI6uJ1yycD6/6ghX4ddJEtS20+2DA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9s/tvyiXFzbgWFPj8QniTxZQLSk+YCilmatz4XKHtDI=;
+ b=bHbjVLp4dH1zLeczXQoS+76qupnStm3BOv0kN7ZLeorem6d55swejuvKK+BIL0U4PEfMYtYWRjIsiyi1yXYAt6+u3rMSaQm/LyVjrnUpmaceSNoqFgP5L4Gb6Ds6pTGgHSiAdf6IVv0v0tzJKrJvz0/klZgmAut/+NNnwuIB4HBAh3yOQanHfsNhbGqroRKKkeCaJUTy6UxZEI2wIojBvUg6ZDUXpbxBO9y7MWeZ34/aNlHYweoT0s9UaTsvBIM6+RVgZjE9zXJQMpt13BpyWI8dfC6Bbvtaid+HwrZWqZBpl7EP2PNBjgOezELOZEiFwLqNdf7ebna3pPbI4V2ApA==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5538.namprd12.prod.outlook.com (2603:10b6:208:1c9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Fri, 20 Aug
+ 2021 15:57:40 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.021; Fri, 20 Aug 2021
+ 15:57:40 +0000
+Date:   Fri, 20 Aug 2021 12:57:39 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
+ orig_nents
+Message-ID: <20210820155739.GA531044@nvidia.com>
+References: <cover.1627551226.git.leonro@nvidia.com>
+ <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
+ <20210820155425.GA530861@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2108201725360.15313@cbobk.fhfr.pm>
+In-Reply-To: <20210820155425.GA530861@nvidia.com>
+X-ClientProxiedBy: MN2PR18CA0019.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::24) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR18CA0019.namprd18.prod.outlook.com (2603:10b6:208:23c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Fri, 20 Aug 2021 15:57:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mH6tn-002EC7-GM; Fri, 20 Aug 2021 12:57:39 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 69a09fec-a532-425f-db19-08d963f33d2c
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5538:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5538F6B9D5850A88ACE0D006C2C19@BL0PR12MB5538.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VAlvrg2RTbzFbeXm3vEuBgJz4GAE3synw4tYU80nUUGmWEnW062PB4WT5esnxLkh2aVLPCAHoIzZSc77Rr7vapDR9xGVFmLT5G+tUiDtARA+7Mh5H1wYXb+Nz81UVx7qSfiGaC810fIHOUq2Zz2wmCxmcyMwzFvbL5103PsFBnEN0wD+mZlOC35KqQTc32olOUAM07Z68YdZ1m+0r5pXkl/+81qWNDuX8/92+K/JaWKzZciw/YShPBEekKhg0XyE9WFHRm+f85mkOuXeWGoo/sWy7JFrgz2XetsH84jxrNZ5hWhXeSso7hVDLQsQhiIur1MHtO+gHN3miN64xJ265L8y2Dw+QDNYNEmH303EPRZApc7Jz3UF7BC+3+8MxjIrL5Hi/cAZfWbC+JCIXPt6y4OC5+9TgGHMXiPZL8Y9qNMbFzOSXGwoOhUhrt+yeuP8kZM+HrBfHi8Up9pS3d7efYvkgm1L9XvfjcBZF9VHO7XDStyxxPm/39kOvJrx7WkSzirASojW5k1+to0AREybwxp+yNWJjJD1trDkMP1dOw6XBk8tXQzSA8PfmDgFAmotRfii9dFl5p8XLjUWnsqgKoOTBprox4dxCVsTSkAq6jILh7J1pM20xeMDLGLkoPkf6k45WoM3q6Up47QTDBLCP0ZaXN4xLSp+kWx9vnqkzF8BAVgUJyy0ny1WGV4mqmuqX/3AZpuXWwe1nECws63gKw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(136003)(376002)(396003)(36756003)(66946007)(9746002)(86362001)(9786002)(8936002)(4326008)(426003)(8676002)(478600001)(2616005)(186003)(66476007)(66556008)(26005)(33656002)(316002)(5660300002)(7416002)(2906002)(54906003)(1076003)(6916009)(38100700002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7bFGAEFPt0ujVIi+V692bFa2NQZal6RLy2ztHYTKXzt8Gkl2EcbdBatvxDvF?=
+ =?us-ascii?Q?IcrAiscCQL7DF1B4gdruHaSUSV9rMRzUtY5DhPOqhf4VpL5Rn2xlEPkXpgMC?=
+ =?us-ascii?Q?3PtGhB8psJcwM/5PgLYGEnehX6feXIVoafNMi/cfa0Qi0GxuDAaWEvwcBK9h?=
+ =?us-ascii?Q?MGUwUvMV/NL2FWkrmlrOt3ltf8qyekMuuk7hKI2CdnHeLaZJZsvJ68IjBbTe?=
+ =?us-ascii?Q?niAfNUmSzu/vEef0yHDs3fjG4oFBoSSYNGGwquDKGdli2NnGgPkGf39CrL+F?=
+ =?us-ascii?Q?nPEUv4HKRr1x+z+HaGeZvb+lvGnoAIZbeUU1NkyPpAtLtOQzl35QHFHK+BBH?=
+ =?us-ascii?Q?ZcI1IJow+OGobnWaCqtJF1JpoB/tbnvmcsWQZyLBuXmr9Q0fsnWfwhYb7pk7?=
+ =?us-ascii?Q?DwdmkFY6jHjEiFGgYT+baHGm/G0LsKpZlykXpznRba/Vs2MudjCurbr2MNhK?=
+ =?us-ascii?Q?Pn6aPo4ZkB6HGs96lNDID/8o7znWvnOk6knAxb2evMmX72+owEaw7IUeMzj9?=
+ =?us-ascii?Q?ysmhtQkSY0+2yKv8IczoieRPsH74sQi+g1FTFpVgo4T4t9UyUFzqTNAlRowa?=
+ =?us-ascii?Q?K93NOJQnXfNcEMFURX+5X6cqyfKxIoAKqmpWCzU61v1/ipfKRmH/kpiJAcNG?=
+ =?us-ascii?Q?6H+97Sxg0tuKXc3LRBY/yfchjS6FYpaCzI62oBEdfT7n3fezRkLy0VVQQUYI?=
+ =?us-ascii?Q?pX6xU+PFLId0z97bTrxSAJT/vXUfCTEoAv02gvBkKiSp44WE8evpujiyL3fu?=
+ =?us-ascii?Q?pLbs2hj8VZrq5W+/FKr/iBQQBJXZRqDoZe3BqA/p+W4JpxUdVmJ+Btj7uuwJ?=
+ =?us-ascii?Q?IoXeq9d0Sr60Yv9ZrAiyXq5LPKY0PXEWGb6OlZT0y//uBZgvxOcij94da2eb?=
+ =?us-ascii?Q?BpXpk1PhNHOSGvKxIdSFTTmYbaeCrtXoQyvkKUFlCXCFpYWKuij1j2Ueo2On?=
+ =?us-ascii?Q?L97J5GbYSmud8kSjusessnW4s5Rh+SVgqdglaWBzQJcj+LVoIsaEQnbv70Kt?=
+ =?us-ascii?Q?jCo8pTHTHwW7ARZxlcj4afWYbV+FdfCnYKRA3gcZsgAHY3HC5XxpbgljlIgu?=
+ =?us-ascii?Q?xLEE7TczcBoP2qdk6dCESs3rNVNjcVLAm2+tt3bpkh4qME0+UDMxqOPL0VWo?=
+ =?us-ascii?Q?jAncPi1iw5YnzQuRcIQ49QEYmevAxF3JAfaffYKkriIA6JKWWsP4A20N17xb?=
+ =?us-ascii?Q?PquLgQMK/YE/rVlze0gv/V3muZCkqEYBTtip/CWgQbqXJ6xXEpvx8zd+gaV5?=
+ =?us-ascii?Q?DYO+5F+3JdJPCEdTws8wZ4RjU+Zw3i/3WWzvY3BQh3omYIvdekW0JzgB7Nkd?=
+ =?us-ascii?Q?T1wTEyGa5LKgO3Bg4m/FeSwI?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69a09fec-a532-425f-db19-08d963f33d2c
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 15:57:40.6169
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g5uH5r3PdiNJsMnBfBi6Gl/CknmHlQnsy01nbVhWbSH2cFia3+9JPERUw+n/zDAZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5538
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 05:27:35PM +0200, Jiri Kosina wrote:
-> On Fri, 20 Aug 2021, Kees Cook wrote:
+On Fri, Aug 20, 2021 at 12:54:25PM -0300, Jason Gunthorpe wrote:
+> On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
 > 
-> > > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > > field bounds checking for memset(), avoid intentionally writing across
-> > > > neighboring fields.
-> > > >
-> > > > Add struct_group() to mark region of struct kone_mouse_event that should
-> > > > be initialized to zero.
-> > > >
-> > > > Cc: Stefan Achatz <erazor_de@users.sourceforge.net>
-> > > > Cc: Jiri Kosina <jikos@kernel.org>
-> > > > Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > > > Cc: linux-input@vger.kernel.org
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > >
-> > > Applied, thank you Kees.
-> > >
-> > 
-> > Eek! No, this will break the build: struct_group() is not yet in the tree.
-> > I can carry this with an Ack, etc.
+> > +/**
+> > + * __sg_free_table - Free a previously mapped sg table
+> > + * @table:	The sg table header to use
+> > + * @max_ents:	The maximum number of entries per single scatterlist
+> > + * @total_ents:	The total number of entries in the table
+> > + * @nents_first_chunk: Number of entries int the (preallocated) first
+> > + *                     scatterlist chunk, 0 means no such preallocated
+> > + *                     first chunk
+> > + * @free_fn:	Free function
+> > + *
+> > + *  Description:
+> > + *    Free an sg table previously allocated and setup with
+> > + *    __sg_alloc_table().  The @max_ents value must be identical to
+> > + *    that previously used with __sg_alloc_table().
+> > + *
+> > + **/
+> > +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
+> > +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
+> > +{
+> > +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
+> > +			      table->orig_nents);
+> > +}
+> >  EXPORT_SYMBOL(__sg_free_table);
 > 
-> I was pretty sure I saw struct_group() already in linux-next, but that was 
-> apparently a vacation-induced brainfart, sorry. Dropping.
+> This is getting a bit indirect, there is only one caller of
+> __sg_free_table() in sg_pool.c, so may as well just export
+> sg_free_table_entries have have it use that directly.
 
-Oh, for these two patches, can I add your Acked-by while I carry them?
+And further since sg_free_table_entries() doesn't actually use table->
+except for the SGL it should probably be called sg_free_table_sgl()
 
-Thanks!
-
--- 
-Kees Cook
+Jason
