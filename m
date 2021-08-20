@@ -2,138 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51CC3F2CA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E821B3F2C9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240658AbhHTM7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:59:39 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:3640 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240375AbhHTM7h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S240591AbhHTM7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 20 Aug 2021 08:59:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1629464339; x=1661000339;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=3GaV9/2LUBs09neoeWMPRUX3WscxmyrwA0SK3q39Ixc=;
-  b=LoiS9i1T4OYa9V0iTVCQMRtb+09rHznROQ0llkwBwc60EnXQM1LWnakC
-   sMto0Nam+V98/RHoIBxYwYf54Jm1wCYSEhPXSDVoAOMOl2QhFY8YozJJX
-   jMR2J5Sub2VhzDbF/XlnWcumtCFhZTgnUh63B4pcL0aIK1nDdfkf2Yulc
-   w=;
-X-IronPort-AV: E=Sophos;i="5.84,337,1620691200"; 
-   d="scan'208";a="135308554"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 20 Aug 2021 12:58:51 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 8E868A2760;
-        Fri, 20 Aug 2021 12:58:49 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.41) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Fri, 20 Aug 2021 12:58:38 +0000
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Daniel Vetter <daniel@ffwll.ch>
-CC:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20210818074352.29950-1-galpress@amazon.com>
- <CAKMK7uGZ_eX+XfYJU6EkKEOVrHz3q6QMxaEbyyD3_1iqj9YSjw@mail.gmail.com>
- <20210819230602.GU543798@ziepe.ca>
- <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
- <20210820123316.GV543798@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
-Date:   Fri, 20 Aug 2021 15:58:33 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210820123316.GV543798@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.41]
-X-ClientProxiedBy: EX13D46UWB002.ant.amazon.com (10.43.161.70) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Received: from mail.kernel.org ([198.145.29.99]:41766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237886AbhHTM7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:59:36 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEE2A6101A;
+        Fri, 20 Aug 2021 12:58:58 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH46q-006BtP-VK; Fri, 20 Aug 2021 13:58:57 +0100
+Date:   Fri, 20 Aug 2021 13:58:56 +0100
+Message-ID: <87pmu8qnlb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqchip/gic-v3: Fix priority comparison when non-secure priorities are used
+In-Reply-To: <061bafb6-b0fe-bd7c-1567-a642d3ddd4a5@arm.com>
+References: <20210811171505.1502090-1-wenst@chromium.org>
+        <87fsvfal4n.wl-maz@kernel.org>
+        <79eabae1-e4a3-7a12-7aa0-3680569584e5@arm.com>
+        <871r6yajy7.wl-maz@kernel.org>
+        <061bafb6-b0fe-bd7c-1567-a642d3ddd4a5@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, wenst@chromium.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/2021 15:33, Jason Gunthorpe wrote:
-> On Fri, Aug 20, 2021 at 09:25:30AM +0200, Daniel Vetter wrote:
->> On Fri, Aug 20, 2021 at 1:06 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>> On Wed, Aug 18, 2021 at 11:34:51AM +0200, Daniel Vetter wrote:
->>>> On Wed, Aug 18, 2021 at 9:45 AM Gal Pressman <galpress@amazon.com> wrote:
->>>>>
->>>>> Hey all,
->>>>>
->>>>> Currently, the RDMA subsystem can only work with dynamic dmabuf
->>>>> attachments, which requires the RDMA device to support on-demand-paging
->>>>> (ODP) which is not common on most devices (only supported by mlx5).
->>>>>
->>>>> While the dynamic requirement makes sense for certain GPUs, some devices
->>>>> (such as habanalabs) have device memory that is always "pinned" and do
->>>>> not need/use the move_notify operation.
->>>>>
->>>>> The motivation of this RFC is to use habanalabs as the dmabuf exporter,
->>>>> and EFA as the importer to allow for peer2peer access through libibverbs.
->>>>>
->>>>> This draft patch changes the dmabuf driver to differentiate between
->>>>> static/dynamic attachments by looking at the move_notify op instead of
->>>>> the importer_ops struct, and allowing the peer2peer flag to be enabled
->>>>> in case of a static exporter.
->>>>>
->>>>> Thanks
->>>>>
->>>>> Signed-off-by: Gal Pressman <galpress@amazon.com>
->>>>
->>>> Given that habanalabs dma-buf support is very firmly in limbo (at
->>>> least it's not yet in linux-next or anywhere else) I think you want to
->>>> solve that problem first before we tackle the additional issue of
->>>> making p2p work without dynamic dma-buf. Without that it just doesn't
->>>> make a lot of sense really to talk about solutions here.
->>>
->>> I have been thinking about adding a dmabuf exporter to VFIO, for
->>> basically the same reason habana labs wants to do it.
->>>
->>> In that situation we'd want to see an approach similar to this as well
->>> to have a broad usability.
->>>
->>> The GPU drivers also want this for certain sophisticated scenarios
->>> with RDMA, the intree drivers just haven't quite got there yet.
->>>
->>> So, I think it is worthwhile to start thinking about this regardless
->>> of habana labs.
->>
->> Oh sure, I've been having these for a while. I think there's two options:
->> - some kind of soft-pin, where the contract is that we only revoke
->> when absolutely necessary, and it's expected to be catastrophic on the
->> importer's side. 
-> 
-> Honestly, I'm not very keen on this. We don't really have HW support
-> in several RDMA scenarios for even catastrophic unpin.
-> 
-> Gal, can EFA even do this for a MR? You basically have to resize the
-> rkey/lkey to zero length (or invalidate it like a FMR) under the
-> catstrophic revoke. The rkey/lkey cannot just be destroyed as that
-> opens a security problem with rkey/lkey re-use.
+Hi Alex,
 
-I had some discussions with our hardware guys about such functionality in the
-past, I think it should be doable (not necessarily the same way that FMR does it).
+On Thu, 12 Aug 2021 15:24:03 +0100,
+Alexandru Elisei <alexandru.elisei@arm.com> wrote:
+> 
+> Hi Marc,
+> 
+> On 8/12/21 2:09 PM, Marc Zyngier wrote:
+> > On Thu, 12 Aug 2021 12:51:34 +0100,
+> > Alexandru Elisei <alexandru.elisei@arm.com> wrote:
+> >> Hi,
+> >>
+> >> After re-familiarizing myself with the spec, it starting to look to
+> >> me like indeed there's something not quite right (read as: totally
+> >> broken) with my patch.
+> >>
+> >> Arm IHI 0069F, the pseudocode for reading ICC_RPR_EL1 (page 11-797),
+> >> says that the priority returned is unchanged if SCTLR_EL3.FIQ ==
+> >> 0.
+> > Sure, but look at what ICC_RPR_EL1 does for FIQ==1:
+> >
+> > <quote>
+> > if HaveEL(EL3) && !IsSecure() && SCR_EL3.FIQ == '1' then
+> >     // A Non-secure GIC access and Group 0 inaccessible to Non-secure.
+> >         if pPriority<7> == '0' then
+> > 	    // Priority is in Secure half and not visible to Non-secure
+> > 	    Priority = Zeros();
+> >         elsif !IsOnes(pPriority) then
+> > 	    // Non-secure access and not idle, so physical priority must be shifted
+> >             pPriority<7:0> = (pPriority AND PRIMask())<6:0>:'0';
+> >
+> > return ZeroExtend(pPriority);
+> > </quote>
+> >
+> > See how the the priority is shifted *left* (bits [6:0] end up in
+> > [7:1])?
+> 
+> Yes, when SCR_EL3.FIQ=1, but gic_nonsecure_priorities is enabled
+> when SCR_EL3.FIQ=0 (gic_has_group0()). In that case ICC_RPR_EL1
+> returns (what I assume to be) the highest priority interrupt from
+> ICC_AP0R_EL1, ICC_AP1R_EL1NS and ICC_AP1R_EL1S. Isn't that the
+> secure view (or Distributor value) of the priority?
 
-Though it would've been nicer if we could agree on a solution that could work
-for more than 1-2 RDMA devices, using the existing tools the RDMA subsystem has.
-That's why I tried to approach this by denying such attachments for non-ODP
-importers instead of exposing a "limited" dynamic importer.
+Yup. I guess I got confused with what "non-secure" priorities mean in
+this context.
+
+[...]
+
+> I don't see how that is the case - ICC_RPR_EL1 contains the priority
+> value as seen by the Distributor, and non-secure priorities get
+> right-shifted when SCR_EL3.FIQ=0, meaning that GICD_INT_NMI_PRI
+> becomes (GICD_INT_NMI_PRI >> 1) | 0x80 in the Distributor. Can you
+> elaborate where I'm contradicting myself?
+
+I think I know why I confused myself. When FIQ==0, G0 is NS. On the
+face of it, this should mean that no shift occurs. However, G1S is
+still in the picture, and we get the extra shift to preserve the
+ordering with G1S.
+
+This is a different configuration from that of a guest, where G0 is
+also NS, but there is no shift at all, as there is no G1S.
+
+The GIC strikes back. Again.
+
+I run some more tests with this patch, and merge it of nothing breaks.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
