@@ -2,95 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BC13F252A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F733F2534
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238011AbhHTDNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbhHTDNY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:13:24 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE2FC061575;
-        Thu, 19 Aug 2021 20:12:47 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id m21so9464602qkm.13;
-        Thu, 19 Aug 2021 20:12:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=akZ47LkIwJza3NQSjT7KsUOp7i2Wia4p8p52WL3MA+U=;
-        b=CGBrFBV1rf31iSSYo4dsKmXUBY5wv+gI8d8hOHMuxSdqqTc35xM1BExNLqgpz0ktSL
-         1SeBZWIfjcLPyLDVCol8sUS+ofj99pZsXC5EcS+w/gw+osD4SBLLLM9A8rHbUW+I9k0a
-         vxLP45CozETKeuVE/TGvrtXWJpxbgvi2bTHRyZnmBV0IuAZ67VvipCWeR2cEQCj2otab
-         TuwbgObZ4FMQIznzrknQlWXvfPntwfdby5bkY0GqKeMU2Nk66ql/CRfhgfyfDwzGMvyG
-         rA/Pl578Q9v6RD72EPM4GdIgzLRsKi0QZqhVY8rpjagvojkkyVaY39W/5F1ZQJvqwIJb
-         d+8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=akZ47LkIwJza3NQSjT7KsUOp7i2Wia4p8p52WL3MA+U=;
-        b=DMpxo/9jsfzWVB2rcRiLt2sbluWTVjQL5Ek074IaBjy+U/96Lc/4nApOOf9zDo5Kka
-         u6nBoHfXTtycM4B6i61c8N3/L+pnjEU8sl5SabI9M14Zaqz4dsanK8Wlz6hIMCJsx1lg
-         EVH5m7yld57FKfBUf4i7OMfbnbavYNCqvsFO3ZiSy89XIbfqUs6JIk1URiRGiHOTm9v0
-         SnXQBjYpkAaLYNcIQYo7cfhsrylIMZ0QPJr/WhHb45ZyayJqxmwEJ+CNhWvJ0WJPxTjH
-         qhJ5MKXYgRsHdc23tjI0crW1OQ2jiNjNg0iqJKamzOEgWDJL6qmN+cL2FK0aZvMYYT0W
-         d5IA==
-X-Gm-Message-State: AOAM531hY8F+nvpaqlp7sFJ6vSoxy4nU7GGALlyW7aPI3NUSSCxITzn0
-        G1OpT9t2IUMTdZqsiE1H6mQ=
-X-Google-Smtp-Source: ABdhPJw+KatUs12uZ3pwyM3LT4m2Jraj+KssxFGkMPnVratIdCrKKV/cBSD+LmOcyDkpmXFTNqd3Lw==
-X-Received: by 2002:a05:620a:4495:: with SMTP id x21mr6633680qkp.378.1629429166399;
-        Thu, 19 Aug 2021 20:12:46 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id g131sm2664735qke.122.2021.08.19.20.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:12:45 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        id S238125AbhHTDR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:17:56 -0400
+Received: from mout.gmx.net ([212.227.17.21]:55315 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238160AbhHTDRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 23:17:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629429391;
+        bh=V5XZJQsl6GSU/nN3lVaCUhZx1eo1YnmpBA/pDoQCiog=;
+        h=X-UI-Sender-Class:To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=GbPdpoznZaRuE5D2d1ytyoqbqAh2kmVF5Zk0NPT35btiW5QtQ7V+VRAIsYzKcHt1t
+         V5RleeB/ooOSmIp8Y203RCkppycyhocknbaklkWA0bU5Qd8jR0Jkhw5YrSLjfIYyYp
+         Ake4jpyhDlrTk4GMbN6m1MeapdvTc/amrRuDcMIY=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmlXK-1mxQmP02VS-00jqVm; Fri, 20
+ Aug 2021 05:16:31 +0200
+To:     jing yangyang <cgel.zte@gmail.com>, Chris Mason <clm@fb.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         jing yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] scsi/ncr53c8xx: Use bitwise instead of arithmetic operator for flags 
-Date:   Thu, 19 Aug 2021 20:12:35 -0700
-Message-Id: <20210820031235.12535-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+References: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: Re: [PATCH linux-next] fs: btrfs: fix returnvar.cocci warnings
+Message-ID: <900f28f9-6efe-48a7-246f-797a9aa48c07@gmx.com>
+Date:   Fri, 20 Aug 2021 11:16:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210820023229.11369-1-jing.yangyang@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1Eb3Xh2BClx/T3S4d2pYDXg2iPk43ppjnD4Aw069EVEIIWTqTPr
+ B4bF7Whl9O88FfS/0LBNlQhnKKJPmTlx13zDCqZD0lZ2wA4Ui0zseN9xe7BVsTjg0aJk5Yb
+ YLy9EPPD6bA5suUMntxeyrnU6w2hQBwdQMVcL4Slp4AJIF5l8GaHyNEWpJ40bUjeZsDMKIn
+ e/AY+LAiqpcHTtcKEDFpg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wrz3KltuxhI=:aX8//oYvG0j9hP7cs8mwP4
+ KhwzEhAk64V8hxZohgtVhORYIRPYbSHJZOWHLWHfThnVAozpMtfKi5GEMOzxYDxI5ds51EojG
+ EgxoBdjQewTPBm7mtjcwkDP+Y9C3TVlPymOVS7uQtRORwF3IfnIsIclwmU1quZ2mslkn2DoA3
+ D6aOKOrHkmH9qmux10ws08ckntaF3J5Wz5i8FXHeyAE9AGa3k7vPRlZoyBTHCQeDo/gxurYfi
+ fthWk1xVS7VKH5QQ3pFnjgUYqVFDQNW69zSUyoEGYDNvbwN0Gw513CMDySYpYxmLByovqjIbk
+ P2RSrw6TSiuAwATJ1AYWLoEdqCTsZoxgnCQREFsdjuaPLpYeAfuIAYZY2xO4vHfolTcgwV4iB
+ foii0UrkcTD9GrdYMZKyltKOfMztW3JlX0vCsOduzEzwAJ33BJYkH6hp3u7jeAYom1aWbrqoF
+ vW63wB7KeQ4MubyVyBKzry6Vwp3VXeEuOt4yBp2ZHauipQg+rbZQ2pnnse2BrXE8/zL1g4R9d
+ 1mzXNZLbdWArbia3K0MJOhJD3ee3CwxNALid7P7iGzybzO2tZvB+RHsF/UtxiYk4XZl8SDkmG
+ AzYYb+zyL6nnDdlc/PUeQYbp4f6cQI9c1YvWhkjvEO0eVekYjncqrp7kBxkA+cBSqk+MTCHJ/
+ ozW7Il2LhfZz5hehkfBTPkuRi3OADbswM5vmuBCZKsdeZfTdNYsGHWIejaWaSCm01vSd+8FVN
+ Vu39RNBf4uYsPqbgYpDwj8mnZ6M9an7yncIIQqDEBJPyD76G408AaLR70oGGRr5WgS/2XwvSZ
+ AjG0LxbaPSBH3ZUFUDLwRynv1b2xaZzn9wOEhfWatsPhsVKQL2sZ/eCVLbThKNgC/H9JVZiYc
+ UgPQApN6ZgVVvCpt2hrv5eS4eO6jrJeQ7dDNjfm+QezmJkyw1phFjcKutNt6eebjjsR5DiCZo
+ 5PWC1nLN6QzVaYsyvNYBaWECUyR2edMODbcXjqpAVmuXBOgbxBzuXdfTIOHgzDIbtOI/IvlpP
+ pC/GOn1rTSXjfuIabah/Cq5/WZKls8jDyLQToebdikJWyfsupX8IwIlPHuk+Y7mc67FXjtrHv
+ nbkCdWNdqu1203JvsrHvBKBhhkih6s08jliQ66urmv9z9f9YiW62JjN8w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
-
-This silences the following coccinelle warning:
-
-"WARNING: sum of probable bitmasks, consider |"
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/scsi/ncr53c8xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/ncr53c8xx.c b/drivers/scsi/ncr53c8xx.c
-index 09958f7..5c27afb 100644
---- a/drivers/scsi/ncr53c8xx.c
-+++ b/drivers/scsi/ncr53c8xx.c
-@@ -7910,7 +7910,7 @@ static void __init ncr_getclock (struct ncb *np, int mult)
- 	/*
- 	**	True with 875 or 895 with clock multiplier selected
- 	*/
--	if (mult > 1 && (stest1 & (DBLEN+DBLSEL)) == DBLEN+DBLSEL) {
-+	if (mult > 1 && (stest1 & (DBLEN | DBLSEL)) == DBLEN | DBLSEL) {
- 		if (bootverbose >= 2)
- 			printk ("%s: clock multiplier found\n", ncr_name(np));
- 		np->multiplier = mult;
--- 
-1.8.3.1
 
 
+On 2021/8/20 =E4=B8=8A=E5=8D=8810:32, jing yangyang wrote:
+> Remove unneeded variables when "0" can be returned.
+>
+> Generated by: scripts/coccinelle/misc/returnvar.cocci
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> ---
+>   fs/btrfs/extent_map.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+> index 4a8e02f..58860d7 100644
+> --- a/fs/btrfs/extent_map.c
+> +++ b/fs/btrfs/extent_map.c
+> @@ -296,7 +296,6 @@ static void try_merge_map(struct extent_map_tree *tr=
+ee, struct extent_map *em)
+>   int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 le=
+n,
+>   		       u64 gen)
+>   {
+> -	int ret =3D 0;
+>   	struct extent_map *em;
+>   	bool prealloc =3D false;
+>
+
+Please just check the lines below:
+
+	em =3D lookup_extent_mapping(tree, start, len);
+
+	WARN_ON(!em || em->start !=3D start);
+
+	if (!em)
+		goto out;
+
+This looks more like a missing error handling.
+
+Thus the proper way to fix it is not just simply remove the "int ret =3D
+0;" line (which compiler is more than able to optimize it out), but
+properly add the error handling, and modify the only caller to catch
+such error properly.
+
+Some diff like the below would be more meaningful:
+
+diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
+index 4a8e02f7b6c7..9182d747a50e 100644
+=2D-- a/fs/btrfs/extent_map.c
++++ b/fs/btrfs/extent_map.c
+@@ -303,10 +303,11 @@ int unpin_extent_cache(struct extent_map_tree
+*tree, u64 start, u64 len,
+  	write_lock(&tree->lock);
+  	em =3D lookup_extent_mapping(tree, start, len);
+
+-	WARN_ON(!em || em->start !=3D start);
+-
+-	if (!em)
++	if (!em || em->start !=3D start) {
++		WARN(1, KERN_WARNING "unexpected extent mapping\n");
++		ret =3D -EUCLEAN;
+  		goto out;
++	}
+
+  	em->generation =3D gen;
+  	clear_bit(EXTENT_FLAG_PINNED, &em->flags);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 2aa9646bce56..313b0a314c0b 100644
+=2D-- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2989,6 +2989,7 @@ static int btrfs_finish_ordered_io(struct
+btrfs_ordered_extent *ordered_extent)
+  	u64 start, end;
+  	int compress_type =3D 0;
+  	int ret =3D 0;
++	int ret2;
+  	u64 logical_len =3D ordered_extent->num_bytes;
+  	bool freespace_inode;
+  	bool truncated =3D false;
+@@ -3076,8 +3077,11 @@ static int btrfs_finish_ordered_io(struct
+btrfs_ordered_extent *ordered_extent)
+  						ordered_extent->disk_num_bytes);
+  		}
+  	}
+-	unpin_extent_cache(&inode->extent_tree, ordered_extent->file_offset,
++	ret2 =3D unpin_extent_cache(&inode->extent_tree,
+ordered_extent->file_offset,
+  			   ordered_extent->num_bytes, trans->transid);
++	if (ret2 < 0 && !ret)
++		ret =3D ret2;
++
+  	if (ret < 0) {
+  		btrfs_abort_transaction(trans, ret);
+  		goto out;
+
+
+Thanks,
+Qu
+> @@ -328,7 +327,7 @@ int unpin_extent_cache(struct extent_map_tree *tree,=
+ u64 start, u64 len,
+>   	free_extent_map(em);
+>   out:
+>   	write_unlock(&tree->lock);
+> -	return ret;
+> +	return 0;
+>
+>   }
+>
+>
