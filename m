@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194A83F263C
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 06:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4A83F2640
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238525AbhHTFAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:00:04 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:43499 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238484AbhHTE7o (ORCPT
+        id S235342AbhHTFBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 01:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233148AbhHTFBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 00:59:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1629435547; x=1660971547;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=vWwEvArIAhoutDVPC+RAhs2Lierm8rahTWWjKXhsZnw=;
-  b=tlkt80tabn3k7ncLVKAb3BRijTJfHMtmD+O2CEvV9C+NT1nGK0+QepGT
-   chNFm/zmmut3N3QS+F+OZzrzHDp5WgwCcOmZzWHJ1qWK6hWN2O7xJWZDj
-   dMP17FhD2MmgRKeLm7WzFnqXo+OMMBY0qpWgOKuI9DlK/FEVomNj+z4rI
-   c=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 19 Aug 2021 21:58:56 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
-  by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 21:58:55 -0700
-Received: from nalasex01c.na.qualcomm.com (10.47.97.35) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.15; Thu, 19 Aug 2021 21:58:55 -0700
-Received: from fenglinw-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.858.15; Thu, 19 Aug 2021 21:58:53 -0700
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sboyd@kernel.org>
-CC:     <collinsd@codeaurora.org>, <subbaram@codeaurora.org>,
-        <quic_fenglinw@quicinc.com>
-Subject: [PATCH V1 9/9] spmi: pmic-arb: increase SPMI transaction timeout delay
-Date:   Fri, 20 Aug 2021 12:58:04 +0800
-Message-ID: <1629435488-10228-10-git-send-email-quic_fenglinw@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629435488-10228-1-git-send-email-quic_fenglinw@quicinc.com>
-References: <1629435488-10228-1-git-send-email-quic_fenglinw@quicinc.com>
+        Fri, 20 Aug 2021 01:01:04 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8200C061575;
+        Thu, 19 Aug 2021 22:00:26 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GrTwR5l2bz9sWl;
+        Fri, 20 Aug 2021 15:00:23 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629435624;
+        bh=zaRQOtdUudekI3U8BHK5Nmz50i9XCavgVORW58yptvQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ivT+npR5a35enc5YIX/ASSqN8lfQmbLtWtp6Hfrecfxa15e2azaWullG+/Ix8dwno
+         oi12OxSg82sHhwm0lqjHY7RUptLrqwD0g6uShsdXqiZhUfAzTrsx6brtlLAfbgyFC3
+         NJ7E3WNBRayTiwf12+n8GkoXtAKfrC3xI36GZJip1Yh+TYX88ntz9F9300dOAAQ2Jc
+         uq72/BZRcYQL/5+AHqJgEOlSTDjF8Db40bav+FTFvcwy7oVMwQb/cnRu02z13LH3eu
+         TnUFGTQgChLwM/q50XOvc3fe2HmfO+sE4AajvbyKJ+/PtxhyczYTk5cmsyOZGaLmkh
+         nCU/aOHd6TEUw==
+Date:   Fri, 20 Aug 2021 15:00:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Meng Dong <whenov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drivers-x86 tree
+Message-ID: <20210820150022.2160a348@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03h.na.qualcomm.com (10.85.0.50) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+Content-Type: multipart/signed; boundary="Sig_//EhndGbVAvoXj+l_0i8q638";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Collins <collinsd@codeaurora.org>
+--Sig_//EhndGbVAvoXj+l_0i8q638
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Increase the SPMI transaction timeout delay from 100 us to
-1000 us in order to account for the slower execution time
-found on some simulator targets.
+Hi all,
 
-Signed-off-by: David Collins <collinsd@codeaurora.org>
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
----
- drivers/spmi/spmi-pmic-arb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+After merging the drivers-x86 tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-index 55fa981..08c2566 100644
---- a/drivers/spmi/spmi-pmic-arb.c
-+++ b/drivers/spmi/spmi-pmic-arb.c
-@@ -91,7 +91,7 @@ enum pmic_arb_channel {
- 
- /* Maximum number of support PMIC peripherals */
- #define PMIC_ARB_MAX_PERIPHS		512
--#define PMIC_ARB_TIMEOUT_US		100
-+#define PMIC_ARB_TIMEOUT_US		1000
- #define PMIC_ARB_MAX_TRANS_BYTES	(8)
- 
- #define PMIC_ARB_APID_MASK		0xFF
--- 
-Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+drivers/platform/x86/ideapad-laptop.c: In function 'ideapad_wmi_notify':
+drivers/platform/x86/ideapad-laptop.c:1469:3: error: a label can only be pa=
+rt of a statement and a declaration is not a statement
+ 1469 |   unsigned long result;
+      |   ^~~~~~~~
 
+Caused by commit
+
+  18cfd76e7b84 ("ideapad-laptop: Fix Legion 5 Fn lock LED")
+
+I have used the drivers-x86 tree from next-20210819 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_//EhndGbVAvoXj+l_0i8q638
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEfNuYACgkQAVBC80lX
+0GzICwf+NH9l71Ae37AcDBaIgOkW1257gJaXIW7Up1CFCNK+yJfWf9u77qdTTjfs
+0ufn0gfCqQgLK4VmkozF3d56uqXQ8RZqBBFzgCeCtthxz91X68Hcq2sUjXAAsZP0
+81cdXjPFhDkf+pWk2guhzftLbdvHlQ2om4l4KBehDjhYmhnGz8o6gZe85uagVNAg
+uKuc3jmosDTy/2Q59yf3xccjuqzQRR8lPgsXOHOT+yHHLh5NnBNI2qlcnWsrFlss
+huBvPI7NzxLQCsbI/U/kgKqpejm3ffHrLJXaNYli1aETMAUtEZBQerBpPCGEqcAQ
+XB2SxZCaxEW/rkURAzStDkYbn20YLw==
+=aZ+f
+-----END PGP SIGNATURE-----
+
+--Sig_//EhndGbVAvoXj+l_0i8q638--
