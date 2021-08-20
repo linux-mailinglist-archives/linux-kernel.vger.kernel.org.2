@@ -2,69 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1D13F2871
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219B23F286F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbhHTIcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:32:16 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53678 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231757AbhHTIcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232380AbhHTIcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 20 Aug 2021 04:32:14 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mGzvp-00022Y-UW; Fri, 20 Aug 2021 16:31:17 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mGzvj-0007Py-39; Fri, 20 Aug 2021 16:31:11 +0800
-Date:   Fri, 20 Aug 2021 16:31:11 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
-Subject: Re: [PATCH] crypto: xts_crypt() return if walk.nbytes is 0
-Message-ID: <20210820083111.GA28484@gondor.apana.org.au>
-References: <YQ0Qm+Xs1g/7Eant@fedora>
- <20210809141027.860850-1-chouhan.shreyansh630@gmail.com>
+Received: from mail.kernel.org ([198.145.29.99]:48246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231841AbhHTIcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 04:32:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE2F61075;
+        Fri, 20 Aug 2021 08:31:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629448296;
+        bh=Xm4VK8gc0LS1XxhzHAqTJlbzlRQpgW95Qm06l3aauvg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LcAZW9mi5E2m/cmQXXBn8u2y5r7lSJXrrz5wumwkW4I6wF5DiAqa1IzyVx3KPMX56
+         bt8CCk4o5TM+c9v9bK7D9u2lkEP6ImyymfQ6mJfCjDjYQNv1i5xDSEE3cv4vlJjFO3
+         afM4l2/4uyNayAdTttNT2fA0xXD0ExHvMhvfhFArtXNJNVOqzpbaCaNYSZywQXkjLm
+         cC7aL1y7ngc60KfS67l4MsbOCQPif58qijiGSJFU9UaWdEfCYuzsDIasznVWp8hCqI
+         JR2zkTQoTyw+HSjkKU464+yHsciWxzTgivMUEp40buMFjrUqSxLYapZ8F9s+7mDoIz
+         Y3IhTV9DshplA==
+Date:   Fri, 20 Aug 2021 09:31:31 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/mm: Drop page-def.h
+Message-ID: <20210820083131.GB16784@willie-the-truck>
+References: <1629441331-19530-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210809141027.860850-1-chouhan.shreyansh630@gmail.com>
+In-Reply-To: <1629441331-19530-1-git-send-email-anshuman.khandual@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 07:40:27PM +0530, Shreyansh Chouhan wrote:
-> xts_crypt() code doesn't call kernel_fpu_end() after calling
-> kernel_fpu_begin() if walk.nbytes is 0. The correct behavior should be
-> not calling kernel_fpu_begin() if walk.nbytes is 0.
-> 
-> Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
-> Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> ---
->  arch/x86/crypto/aesni-intel_glue.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-> index 388643ca2177..ec6eac57c493 100644
-> --- a/arch/x86/crypto/aesni-intel_glue.c
-> +++ b/arch/x86/crypto/aesni-intel_glue.c
-> @@ -849,7 +849,7 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
->  		return -EINVAL;
->  
->  	err = skcipher_walk_virt(&walk, req, false);
-> -	if (err)
-> +	if (err || !walk.nbytes)
->  		return err;
+On Fri, Aug 20, 2021 at 12:05:31PM +0530, Anshuman Khandual wrote:
+> PAGE_SHIFT (PAGE_SIZE and PAGE_MASK) which is derived from ARM64_PAGE_SHIFT
+> should be moved into pgtable-hwdef.h instead, and subsequently page-def.h
+> can be just dropped off completely.
 
-The err check is now redundant because when there is an error
-nbytes is always zero.
+According to who?
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Every other architecture defines PAGE_SHIFT in page.h, so if you're moving
+things around then that sounds like a better choice.
+
+Will
