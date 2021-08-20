@@ -2,75 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597453F2D4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ADE3F2D4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240742AbhHTNms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235096AbhHTNmr (ORCPT
+        id S240769AbhHTNm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 09:42:59 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:38070 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240760AbhHTNm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:42:47 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8E2C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:42:09 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id f2so17446506ljn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3DhOH14/6lzie5JE/kLqdu0LS3u763/qjtgmVKcWngA=;
-        b=zabsO4jEjrqC54MNbZPJHDq4ijAV1KPbEh6BP8i2kEs0sPVk075P9lSvJpRxoXuY5D
-         mZ0vxdr/mAdAKNoFpqACJXcxddk/v/L6svqpliziyehv7hgF4APRnmcyeY2I1Dlx01vA
-         +ZEX6oGgoGHrTEWC0wnCGzH/lJCtBPT3t0nJNKrleREeWl4j5XLoE/SXmQrXvg0fSq0H
-         VB5LPOwP6K4k1bR1c2ksBBYauoE9+mh3xnhdKmjTVIVeGLJBYf4iTzJXcDarEUdA7Q7I
-         nc+TZletAllWT/9raEvaeKiw81q+vifHItZHVSnC/zQ6hYaAbPA6wX03Us6rgVEtnJjk
-         WfbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3DhOH14/6lzie5JE/kLqdu0LS3u763/qjtgmVKcWngA=;
-        b=tkkyi1ttnYODNrtekNhT78Uu7Lh165+phf8FSkXML9M3ev7zkqF5SD8o3xhEd1TJ9f
-         4lzAonU+/sBBtOc/SU+oQZ1fikvkdYbnTTMQ6vS30U1bnDeBdr1eZ3r1swTqkxyUNSbV
-         Cue9rNLozlLvome3PCmTqt/2fJXTH0CmG4wFPjsA4QuG6Cc5CD9h8xm16p300nztV7/O
-         hWIgx2ut9qdQlhlZD9N4pTfRailZuKkf/3NT2MltaRQOo8biJpfnJf9WMYFZ4k59jIbA
-         H6pTWgv3HmdwizL6+iCIijenTIhBVqBpW5zJBgIZ/P6qqs5U/BK6yUdHcpei+ckiuJT1
-         5SjA==
-X-Gm-Message-State: AOAM531u+kWB2rmDBf3CThVHbrZCal7mXgyD/bMD1BeTOLxPMNJur2qd
-        O1DV0FIhfoTrXx8EbndjN97NDwvtc91y5SaiBfU2PQ==
-X-Google-Smtp-Source: ABdhPJxy7I2ZoIN04yH4cApSk/hCQ1gO2a2bE2macF6+9WF0KIXIBaWfG7BeNnu0GwGNz/NVXmNNvg5vCoUYKMWT4D8=
-X-Received: by 2002:a2e:3807:: with SMTP id f7mr16160137lja.200.1629466928042;
- Fri, 20 Aug 2021 06:42:08 -0700 (PDT)
+        Fri, 20 Aug 2021 09:42:58 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KDg3iJ037556;
+        Fri, 20 Aug 2021 08:42:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629466923;
+        bh=l6lfOIIzUGkJ1AiwUMjQziIUZErEf/aO/EeX73Fg1/U=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=a517rtmjB9n/uhgSEd89trKRErN9NV/CIVoV4CiZRqgi57Rmj5t94VX5CWjvdCLgf
+         YtUoz99UlTgyF76h+dl4bZnaN67hqf8yymqmPCQmW8Lq7KH97ssSoVETiynqdwm3sO
+         0Aae5A4FAd2McMtWPCchuNMVSA+phL1+UDZWHL6E=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KDg2KI047132
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Aug 2021 08:42:03 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
+ Aug 2021 08:42:03 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 20 Aug 2021 08:42:03 -0500
+Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KDfwM4100508;
+        Fri, 20 Aug 2021 08:41:59 -0500
+Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset (PoR)
+ instruction
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+ <20210713130538.646-12-a-nandan@ti.com> <20210806210840.65c06b67@xps13>
+ <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com> <20210820141822.03d658b8@xps13>
+From:   Apurva Nandan <a-nandan@ti.com>
+Message-ID: <c4a1eae9-7c0b-62c8-f10a-000e65c94f1b@ti.com>
+Date:   Fri, 20 Aug 2021 19:11:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210819235111.25357-1-digetx@gmail.com>
-In-Reply-To: <20210819235111.25357-1-digetx@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 20 Aug 2021 15:41:56 +0200
-Message-ID: <CACRpkda=hcw5dN8TfV01egb4_fzSi3kNOCz1UguYcKyQKDW9mA@mail.gmail.com>
-Subject: Re: [PATCH v1] power: supply: core: Fix parsing of battery chemistry/technology
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210820141822.03d658b8@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 1:51 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+Hi Miquèl,
 
-> The power_supply_get_battery_info() fails if device-chemistry property
-> is missing in a device-tree because error variable is propagated to the
-> final return of the function, fix it.
->
-> Fixes: 4eef766b7d4d ("power: supply: core: Parse battery chemistry/technology")
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+On 20/08/21 5:48 pm, Miquel Raynal wrote:
+> Hi Apurva,
+> 
+> Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 17:09:07
+> +0530:
+> 
+>> Hi Miquèl,
+>>
+>> On 07/08/21 12:38 am, Miquel Raynal wrote:
+>>> Hi Apurva,
+>>>
+>>> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
+>>> +0000:
+>>>    
+>>>> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset
+>>>> functionality in their SPI NAND flash chips. PoR instruction consists
+>>>> of a 66h command followed by 99h command, and is different from the FFh
+>>>> reset. The reset command FFh just clears the status only registers,
+>>>> while the PoR command erases all the configurations written to the
+>>>> flash and is equivalent to a power-down -> power-up cycle.
+>>>>
+>>>> Add support for the Power-on-Reset command for any flash that provides
+>>>> this feature.
+>>>>
+>>>> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+>>>>
+>>>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>>>> ---
+>>>
+>>> [...]
+>>> 				\
+>>>> @@ -218,6 +230,8 @@ struct spinand_device;
+>>>>     * reading/programming/erasing when the RESET occurs. Since we always
+>>>>     * issue a RESET when the device is IDLE, 5us is selected for both initial
+>>>>     * and poll delay.
+>>>> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us
+>>>
+>>> s/max upto/up to/
+>>>    
+>>
+>> Okay!
+>>
+>>>> + * to 1200 us safely.
+>>>
+>>> I don't really get why, if the maximum is 500, then let's wait for
+>>> 500us.
+>>>    
+>>
+>> Generally we keep some margin from the maximum time, no?
+> 
+> Well, yes and no.
+> 
+> If you know that an operation will last Xms and have nothing else to
+> do, then you can take some margin if you are in a probe (called once)
+> but definitely not if you are in a fast path.
+> 
 
-Oops,
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I think as PoR reset would be called at every mtd_suspend() call, so we 
+can reduce the delay. And we would be expecting some time gap before the 
+next mtd_resume() call.
 
-Yours,
-Linus Walleij
+> Otherwise the best is to have some kind of signaling but I'm not sure
+> you'll have one for the reset op...
+> 
+
+According to public datasheet, it doesn't set the busy bit during reset.
+
+So do you suggest in the favor of removing the delay margin?
+
+>>
+>>>>     */
+>>>>    #define SPINAND_READ_INITIAL_DELAY_US	6
+>>>>    #define SPINAND_READ_POLL_DELAY_US	5
+>>>> @@ -227,6 +241,8 @@ struct spinand_device;
+>>>>    #define SPINAND_WRITE_POLL_DELAY_US	15
+>>>>    #define SPINAND_ERASE_INITIAL_DELAY_US	250
+>>>>    #define SPINAND_ERASE_POLL_DELAY_US	50
+>>>> +#define SPINAND_POR_MIN_DELAY_US	1000
+>>>> +#define SPINAND_POR_MAX_DELAY_US	1200
+>>>>    >>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
+>>>>    >> @@ -351,6 +367,7 @@ struct spinand_ecc_info {
+>>>>    #define SPINAND_HAS_QE_BIT		BIT(0)
+>>>>    #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+>>>>    #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
+>>>> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)
+>>>>    >>   /**
+>>>>     * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+>>>
+>>>
+>>>
+>>>
+>>> Thanks,
+>>> Miquèl
+>>>
+>>> ______________________________________________________
+>>> Linux MTD discussion mailing list
+>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>    
+>>
+>> Thanks,
+>> Apurva Nandan
+> 
+> Thanks,
+> Miquèl
+> 
+
+Thanks,
+Apurva Nandan
