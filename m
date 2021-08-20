@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2DF3F2F74
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0963F2F76
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241059AbhHTP2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240472AbhHTP2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:28:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9331A60F44;
-        Fri, 20 Aug 2021 15:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629473260;
-        bh=OwwtgX2M/Z1j8G1sPd2l0muzQPlxYWaQWBaFFSOCB3I=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=hD1bmNxq2pXA6JY0w3JSfU6ec1u4utu+1+zz9abtVNra03vaEswGGJOV+Z2853GXD
-         oWJ5vmjMvcenUtdBVw1+fZ+L5fZOztbObkcT5iIaya9Tcvq/cYGfTGfh6LnoChpBR+
-         iGroeoSTE1zbRytr6N7HLC8nAHksqo/5ucG0afMSW2Famnb5JgFraG/JaJFaJandAh
-         zToyO+JNLN+2FsSfuo9qIsrx3YbBTwpSaj8JU5ZQwb83Adi++CTjgtUK8mlvC1lY6x
-         2angoBbLeQxbPm9CmNpz2Vmc9cCVXYEkeNBrRT70CAVatQvZR6NiwmD3WIRrEnz9q1
-         PGj2wVDAgorvQ==
-Date:   Fri, 20 Aug 2021 17:27:35 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stefan Achatz <erazor_de@users.sourceforge.net>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, linux-staging@lists.linux.dev,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 55/63] HID: roccat: Use struct_group() to zero
- kone_mouse_event
-In-Reply-To: <CAJr-aD=6-g7VRw2Hw0dhs+RrtA=Tago5r6Dukfw_gGPB0YYKOQ@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2108201725360.15313@cbobk.fhfr.pm>
-References: <20210818060533.3569517-1-keescook@chromium.org> <20210818060533.3569517-56-keescook@chromium.org> <nycvar.YFH.7.76.2108201501510.15313@cbobk.fhfr.pm> <CAJr-aD=6-g7VRw2Hw0dhs+RrtA=Tago5r6Dukfw_gGPB0YYKOQ@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S240952AbhHTP2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241070AbhHTP22 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:28:28 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCBAC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:27:50 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so9485084pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xWUYFVShPfBnoUhetkkSmNUWocaFeL6/9s7+z7WErjc=;
+        b=bghtBO7IJBFQP2SOMr7k6cKho3fdH1dZ1vC3B+ySOux1h8a172sFF7xofaaPaGrMoe
+         r4giNUdyDZzTMdQ2KvnFfh5Vcp/3NwGyT6rargw2sfQkQ15wVdWeBTRJvafCPilot86o
+         obXDCh2+74jQ2GCmL+6BDAQzGksxjgc5wDe3OS/lXHDBFoO17TyoED/dNVItoTUC6nM1
+         tDC42Y3mJGa+B6CJ6PaEkb4AZJDKadBLrI+WvRV70AhnUdfqhwqvfcU6m1x4ddycBaeW
+         zIeO0NZqzNEVV0LIzuxDFPg4NdpKLHx+vma77rBiJ4R7ECo8zyt2v79R4sHIkbTl99Kd
+         DRrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xWUYFVShPfBnoUhetkkSmNUWocaFeL6/9s7+z7WErjc=;
+        b=fF+WQf+DNEkXOmh8+gzjz64C/EehPVKn9amIeJnBLV8ZB3at3iF6f0a3P+pMjQXiR6
+         Ec6Bx0fauYpndcfr+cD2quYlIdXL7jw2IaikO4+vIUcwB3wNqMRcnFsNOsol35aw79Ki
+         fiK+GwRqIkSNzyu+ZR1C57D5VnU2AGvBQn5flHPwcVz3Aj2CMo3XQpZAGysRDI0zTaT4
+         oVrQkEORQjpmHA5Q4JZ4PrVCn5/nW/OZJhl2Q/j/O61NCKdSvC5nwr9I7NyF0UjUARX6
+         6rC3AMZUem/hfTNWgu7iPqPvNzXibVfO+XOdy4EzSBDnIYCkj005DKyCDMQOpLoomWcW
+         6feQ==
+X-Gm-Message-State: AOAM532tkN/jTyuw9shuIN8K8+h53GuZn0m2s2SdeyMKHG1Nh4dFWb3w
+        /Gib/bOKXLT2NPg6bWbKaj4=
+X-Google-Smtp-Source: ABdhPJxysHeQTtCzXK0dNQgiidOi1ZOG5MX3uXaDcnuxN7BT2yxhF8TCrIcihHJZvUkwVkb0KPSeAw==
+X-Received: by 2002:a17:90b:d94:: with SMTP id bg20mr5105902pjb.61.1629473269873;
+        Fri, 20 Aug 2021 08:27:49 -0700 (PDT)
+Received: from [192.168.1.40] (ip174-67-196-173.oc.oc.cox.net. [174.67.196.173])
+        by smtp.gmail.com with ESMTPSA id o10sm7984608pgp.68.2021.08.20.08.27.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 08:27:49 -0700 (PDT)
+Subject: Re: [PATCH v5 0/3] Handle update hardware queues and queue freeze
+ more carefully
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Smart <james.smart@broadcom.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Ming Lei <ming.lei@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>,
+        Wen Xiong <wenxiong@us.ibm.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+References: <20210818120530.130501-1-dwagner@suse.de>
+ <20210820084832.nlsbiztn26fv3b73@carbon.lan>
+ <20210820115521.alveifzvad3zuwh4@carbon.lan>
+From:   James Smart <jsmart2021@gmail.com>
+Message-ID: <73a430da-84c8-5457-108a-7e1e2d81fa61@gmail.com>
+Date:   Fri, 20 Aug 2021 08:27:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210820115521.alveifzvad3zuwh4@carbon.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021, Kees Cook wrote:
-
-> > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > field bounds checking for memset(), avoid intentionally writing across
-> > > neighboring fields.
-> > >
-> > > Add struct_group() to mark region of struct kone_mouse_event that should
-> > > be initialized to zero.
-> > >
-> > > Cc: Stefan Achatz <erazor_de@users.sourceforge.net>
-> > > Cc: Jiri Kosina <jikos@kernel.org>
-> > > Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > > Cc: linux-input@vger.kernel.org
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> >
-> > Applied, thank you Kees.
-> >
+On 8/20/2021 4:55 AM, Daniel Wagner wrote:
+> On Fri, Aug 20, 2021 at 10:48:32AM +0200, Daniel Wagner wrote:
+>> Then we try to do the same thing again which fails, thus we never
+>> make progress.
+>>
+>> So clearly we need to update number of queues at one point. What would
+>> be the right thing to do here? As I understood we need to be careful
+>> with frozen requests. Can we abort them (is this even possible in this
+>> state?) and requeue them before we update the queue numbers?
 > 
-> Eek! No, this will break the build: struct_group() is not yet in the tree.
-> I can carry this with an Ack, etc.
+> After starring a bit longer at the reset path, I think there is no
+> pending request in any queue. nvme_fc_delete_association() calls
+> __nvme_fc_abort_outstanding_ios() which makes sure all queues are
+> drained (usage counter is 0). Also it clears the NVME_FC_Q_LIVE bit,
+> which prevents further request added to queues.
 
-I was pretty sure I saw struct_group() already in linux-next, but that was 
-apparently a vacation-induced brainfart, sorry. Dropping.
+yes, as long as we haven't attempted to create the io queues via 
+nvme_fc_connect_io_queues(), nothing should be successful queueing and 
+running down the hctx to start the io. nvme_fc_connect_io_queues() will 
+use the queue for the Connect cmd, which is probably what generated the 
+prior -16389 error.
 
--- 
-Jiri Kosina
-SUSE Labs
+Which says:"nvme-fc: Update hardware queues before using them" should be 
+good to use.
+
+> 
+> I start wonder why we have to do the nvme_start_freeze() in the first
+> place and why we want to wait for the freeze. 88e837ed0f1f ("nvme-fc:
+> wait for queues to freeze before calling update_hr_hw_queues") doesn't
+> really tell why we need wait for the freeze.
+
+I think that is probably going to be true as well - no need to 
+freeze/unfreeze around this path.  This was also a rather late add (last 
+oct), so we had been running without the freezes for a long time, 
+granted few devices change their queue counts.
+
+I'll have to see if I can find what prompted the change. At first blush, 
+I'm fine reverting it.
+
+> 
+> Given we know the usage counter of the queues is 0, I think we are
+> safe to move the blk_mq_update_nr_hw_queues() before the start queue
+> code. Also note nvme_fc_create_hw_io_queues() calls
+> blk_mq_freeze_queue() but it wont block as we are sure there is no
+> pending request.
+
+Agree.
+
+-- james
+
+> 
+> _______________________________________________
+> Linux-nvme mailing list
+> Linux-nvme@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-nvme
+> 
 
