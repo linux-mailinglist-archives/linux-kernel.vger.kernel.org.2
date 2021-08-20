@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7896F3F2541
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7B03F2543
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238144AbhHTDZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:25:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S238156AbhHTD0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhHTDZc (ORCPT
+        with ESMTP id S237934AbhHTD0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:25:32 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4C4C061575;
-        Thu, 19 Aug 2021 20:24:55 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id bk29so3786583qkb.8;
-        Thu, 19 Aug 2021 20:24:55 -0700 (PDT)
+        Thu, 19 Aug 2021 23:26:04 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2313C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:25:27 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id u15so5143007plg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:25:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AF5bhbYoJf9SXOblGMdmj7Y+6qx0GyikKNHYj6CQ+rg=;
-        b=HnwPaAA70RowsHgQJXQNjtcr9MDcOcmnElroFhPNOIxfA6HkB73Tc+ER429vv+O/1a
-         BBhtbNN8Z0pwDiNYUv89XvakXdkqApjJJ1FOMchg97U3QYHNxI+ZXkbBqazCJ5Z7ScXv
-         T3w4xKbAEn3KlvtZQQnldK79GfRwVKyFyqr6DMG51buW68m5cMXrBfthmGqDbsifZiy4
-         BGC9UBY+5DcSnNNfpjdlFv8eC/ixszQ/otl0sAgamJEc0GATQreuIpFsTzOLAWQ8AtAY
-         VQv94kc/c+iWA7L0RlbKPdreMle1J2DIQPCrP4SkLdVEDsxnFHiKyLf3h9IkmpiGQoin
-         mJYA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Tb+3c4sIXia8Tj7TXbcGSfKzAoHqBRtrMhGgnoxQz9c=;
+        b=UlcCDs1covM/o5EVQkDUvKUq4BYzlVfj1O2NkuVwbGewbHLaYA1k7cDj99iuCJ4Hdr
+         xqc/9D4LE2CQyZxqjlgvQYwYXY7f7d9Ln2txosp4PvwCHCGsanahVQNsdHVVTDpqy4Ph
+         4gcyPp4AY4mgBwL4Naw3GS/5eoZXW4DEBE9Y7AilAJWtI+j4IvSR4gztQ4iuCR+l7Ya0
+         wnJWFKfHLajnhyHepNgovu2GaEkbJs+34/1u9qZtpurbnl5UA47SCUUfskBIjfMaiGlC
+         WlgX8qJGVA9wnFreDDWgmMokCHhor0vJxt511fs0jyPIhuo5R3qyJvUuDbf5x1+FLrpC
+         sDxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AF5bhbYoJf9SXOblGMdmj7Y+6qx0GyikKNHYj6CQ+rg=;
-        b=tZS/p4ZqfDTGKcIxEDzfHwptM9qqMnZEgefwZUFWZmOc9qduNggjMhIVmi2/h/4/2V
-         qFkr0lwceAtT5CAj15J1r+M9a6cqF6n/hzQQ+KXkE+D1SCcybIpcY9ahTmm5v37xcCxm
-         80HK3CGI2Ck7S9KMV2lvUVudIsTlzQmZvPrgwVYtXnjje/A50zQEp1BDhZyawnxkoPOU
-         yG6FwE41mZQnPwaU3NaizFvjCzMFlv0kBQprgYPh/mHqIkoQfI4ONpqKcSO6hZ9dCpVS
-         2/BcRWIZMc6DJXDggxsa5m6v7UXJlR6LC2hBNAmJ+V0qN13d4RRtpaJf5cCWYwMQU1fv
-         dVOg==
-X-Gm-Message-State: AOAM530JmlXDoeH8QX9ETakNZDiAxfL/UIMRE/AaNl9qY0A1hQVA/zAr
-        CenOTdH/60ZstqUMUnDHgLw=
-X-Google-Smtp-Source: ABdhPJyWSdkAUQQwApTH15HwRfS5OXow5G9my1pLg9cueDS+K+Xhm9vaUzJNV9mgi4CmC9+DfE3Epw==
-X-Received: by 2002:a37:67d7:: with SMTP id b206mr6833446qkc.395.1629429894761;
-        Thu, 19 Aug 2021 20:24:54 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id y15sm2523164qko.78.2021.08.19.20.24.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tb+3c4sIXia8Tj7TXbcGSfKzAoHqBRtrMhGgnoxQz9c=;
+        b=TndzgMK+Dr9WzxiMMDfo5sWO+4YdsY7NHqSDo4Uoka86XOa0XH0PtnDaa/WOgyXjqD
+         jftIxOD0w8Q2ZZ7CLxAj2n9tHwmKZSwneLtZsTJcgj4crbsKcss3W976rx6Cr11sGRPV
+         MzAodBYBalqsJrn+iIpk8EjFw6k/gb2I1XmTm6ySQW1XNB4QAvow6S4rjm9/8Gc+vO/z
+         PzEeCFfkg1ys8b4uV5LyWVETNuvoaRNmAVPQUlLH94tgaErVf6DglIYscT9rlRpIGmRX
+         IJI2aOdo3mLsthxPhC51/smf2nZGdeFZtVtgVABmA1wb5CNRxiIzUTlUy+++dTtQPqKn
+         gmAQ==
+X-Gm-Message-State: AOAM530zOVuzISVpfyAIfCf+mANQPIWjUiPNQq5naEDswqljIw8GB+Z4
+        btCqZLxQlhRMSYThrfQkmaaQtA==
+X-Google-Smtp-Source: ABdhPJy5lEitPCHFg1OSUQG2byPt0M4/Vn2i9PLMWC8UpSbU447SdR7DBz6vRKpV6owBYA+uCyeJpQ==
+X-Received: by 2002:a17:902:d3c5:b029:12d:32f2:8495 with SMTP id w5-20020a170902d3c5b029012d32f28495mr14949223plb.72.1629429927093;
+        Thu, 19 Aug 2021 20:25:27 -0700 (PDT)
+Received: from google.com ([2401:fa00:1:10:549a:ad5a:e5bd:8c8a])
+        by smtp.gmail.com with ESMTPSA id u3sm9211597pjr.2.2021.08.19.20.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:24:54 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] testing/vm/: fix application of sizeof to pointer
-Date:   Thu, 19 Aug 2021 20:24:30 -0700
-Message-Id: <20210820032430.12948-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 19 Aug 2021 20:25:26 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 11:25:23 +0800
+From:   Tzung-Bi Shih <tzungbi@google.com>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Wilczyski <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        qizhong.cheng@mediatek.com, Ryan-JH.Yu@mediatek.com
+Subject: Re: [PATCH] PCI: mediatek-gen3: Disable DVFSRC voltage request
+Message-ID: <YR8go1l0Xnvvqn5E@google.com>
+References: <20210819125939.21253-1-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210819125939.21253-1-jianjun.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
-
-sizeof when applied to a pointer typed expression gives the size of the
-pointer.
-
-./tools/testing/selftests/vm/split_huge_page_test.c:344:36-42: ERROR application
-of sizeof to pointer
-
-This issue was detected with the help of Coccinelle.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- tools/testing/selftests/vm/split_huge_page_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/vm/split_huge_page_test.c b/tools/testing/selftests/vm/split_huge_page_test.c
-index 1af16d2..54bf57f 100644
---- a/tools/testing/selftests/vm/split_huge_page_test.c
-+++ b/tools/testing/selftests/vm/split_huge_page_test.c
-@@ -341,7 +341,7 @@ void split_file_backed_thp(void)
- 	}
- 
- 	/* write something to the file, so a file-backed THP can be allocated */
--	num_written = write(fd, tmpfs_loc, sizeof(tmpfs_loc));
-+	num_written = write(fd, tmpfs_loc, sizeof(*tmpfs_loc));
- 	close(fd);
- 
- 	if (num_written < 1) {
--- 
-1.8.3.1
-
-
+On Thu, Aug 19, 2021 at 08:59:39PM +0800, Jianjun Wang wrote:
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
