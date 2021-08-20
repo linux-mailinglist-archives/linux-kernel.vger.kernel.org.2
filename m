@@ -2,67 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25DE3F27C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4973F27C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238840AbhHTHmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 03:42:42 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:54804 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233162AbhHTHml (ORCPT
+        id S238920AbhHTHnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 03:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238492AbhHTHnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 03:42:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UkIp0ln_1629445319;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0UkIp0ln_1629445319)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 20 Aug 2021 15:42:00 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     amit@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH 2/2] virtio_console: protect max_nr_ports to avoid invalid value
-Date:   Fri, 20 Aug 2021 15:41:56 +0800
-Message-Id: <20210820074156.202243-1-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 20 Aug 2021 03:43:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992E6C061575;
+        Fri, 20 Aug 2021 00:42:39 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 09:42:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629445358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqLJ5hLgypHjC+dPcfPr/kJzRdclrHJYAqLQV0dAdEw=;
+        b=g6LBHUbuUuaKS7iLj/rq/HenZvtqMhIdpv6h9jHvL2mMQ1G8twRJ6ZuFDcUW0mAt2fJNus
+        2BW7BZa0Tk+boWtwcHKfYLsS82GZJKrbi66XX+SB8DL3xAoFm6u30xq5vlnFt+nNmbF9t4
+        mzqqIv21MEvSMlrR2UPHdbJYohVFE/pFX6UeyGYYqdRujoGWXst3r+1vaTn3T83J4eFb02
+        ZFBbKFMBuQUGhP4j/pimXXrH24fp4ya7JQUNc0JaIqC20ZrKUQ2oNv7GU8s+FFrIRBPGae
+        ohi3sVlhym6sFQf1kPg6YaedT5TS7O1G+HtGuEGESKo6FopGhPmMnv5CHIzFFg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629445358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QqLJ5hLgypHjC+dPcfPr/kJzRdclrHJYAqLQV0dAdEw=;
+        b=wsuSg+75ukkN1vLdCQFGN6RyBHfLjVDg935WLJlTpS0CGzPjugK9gfFX8WSrj759boMFhb
+        Ns3K4K3TcJFLkGAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Scott Wood <swood@redhat.com>
+Cc:     paulmck@kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mike Galbraith <efault@gmx.de>
+Subject: [PATCH v2] rcutorture: Avoid problematic critical section nesting on
+ PREEMPT_RT
+Message-ID: <20210820074236.2zli4nje7bof62rh@linutronix.de>
+References: <20210811201354.1976839-1-valentin.schneider@arm.com>
+ <20210811201354.1976839-2-valentin.schneider@arm.com>
+ <20210817121345.5iyj5epemczn3a52@linutronix.de>
+ <20210817131741.evduh4fw7vyv2dzt@linutronix.de>
+ <20210817144018.nqssoq475vitrqlv@linutronix.de>
+ <20210818224651.GY4126399@paulmck-ThinkPad-P17-Gen-1>
+ <20210819153927.clqxr4f7qegpflbr@linutronix.de>
+ <20210819154708.3efz6jtgwtuhpeds@linutronix.de>
+ <20210819182035.GF4126399@paulmck-ThinkPad-P17-Gen-1>
+ <561ab28b18c31fbc221f4cb0c4df6db9b0538675.camel@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <561ab28b18c31fbc221f4cb0c4df6db9b0538675.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In theory untrusted remote host can pass a big or overflow value
-of max_nr_ports to guest, it may cause guest system consumes
-a lot of memory when create vqs and other impacts.
+=46rom: "From: Scott Wood" <swood@redhat.com>
 
-Add the protection to guarantee max_nr_ports to get a safa value.
+rcutorture is generating some nesting scenarios that are not compatible on =
+PREEMPT_RT.
+For example:
+	preempt_disable();
+	rcu_read_lock_bh();
+	preempt_enable();
+	rcu_read_unlock_bh();
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+The problem here is that on PREEMPT_RT the bottom halves have to be
+disabled and enabled in preemptible context.
+
+Reorder locking: start with BH locking and continue with then with
+disabling preemption or interrupts. In the unlocking do it reverse by
+first enabling interrupts and preemption and BH at the very end.
+Ensure that on PREEMPT_RT BH locking remains unchanged if in
+non-preemptible context.
+
+Link: https://lkml.kernel.org/r/20190911165729.11178-6-swood@redhat.com
+Link: https://lkml.kernel.org/r/20210819182035.GF4126399@paulmck-ThinkPad-P=
+17-Gen-1
+Signed-off-by: Scott Wood <swood@redhat.com>
+[bigeasy: Drop ATOM_BH, make it only about changing BH in atomic
+context. Allow enabling RCU in IRQ-off section. Reword commit message.]
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/char/virtio_console.c | 5 +++++
- 1 file changed, 5 insertions(+)
+v1=E2=80=A6v2:
+  - Drop the ATOM_BH* bits. There don't seem to be needed, Paul did not
+    ant the preempt-disable around enabling/disabling BH as it might fix
+    things that RCU should take care.
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 7eaf303a7..bba985c81 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -29,6 +29,8 @@
- 
- #define is_rproc_enabled IS_ENABLED(CONFIG_REMOTEPROC)
- 
-+#define MAX_NR_PORTS	MAX_NR_HVC_CONSOLES
+  - Allow enabling RCU with disabled interrupts on RT. Scott confirmed
+    that it was needed but might no longer be needed. Paul said that it
+    might have been required at some point. It survived multiple 6h long
+    TREE01 and TREE06 testing.
+
+ kernel/rcu/rcutorture.c | 48 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 40ef5417d9545..d2ef535530b10 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1432,28 +1432,34 @@ static void rcutorture_one_extend(int *readstate, i=
+nt newstate,
+ 	/* First, put new protection in place to avoid critical-section gap. */
+ 	if (statesnew & RCUTORTURE_RDR_BH)
+ 		local_bh_disable();
++	if (statesnew & RCUTORTURE_RDR_RBH)
++		rcu_read_lock_bh();
+ 	if (statesnew & RCUTORTURE_RDR_IRQ)
+ 		local_irq_disable();
+ 	if (statesnew & RCUTORTURE_RDR_PREEMPT)
+ 		preempt_disable();
+-	if (statesnew & RCUTORTURE_RDR_RBH)
+-		rcu_read_lock_bh();
+ 	if (statesnew & RCUTORTURE_RDR_SCHED)
+ 		rcu_read_lock_sched();
+ 	if (statesnew & RCUTORTURE_RDR_RCU)
+ 		idxnew =3D cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
+=20
+-	/* Next, remove old protection, irq first due to bh conflict. */
++	/*
++	 * Next, remove old protection, in decreasing order of strength
++	 * to avoid unlock paths that aren't safe in the stronger
++	 * context. Namely: BH can not be enabled with disabled interrupts.
++	 * Additionally PREEMPT_RT requires that BH is enabled in preemptible
++	 * context.
++	 */
+ 	if (statesold & RCUTORTURE_RDR_IRQ)
+ 		local_irq_enable();
+-	if (statesold & RCUTORTURE_RDR_BH)
+-		local_bh_enable();
+ 	if (statesold & RCUTORTURE_RDR_PREEMPT)
+ 		preempt_enable();
+-	if (statesold & RCUTORTURE_RDR_RBH)
+-		rcu_read_unlock_bh();
+ 	if (statesold & RCUTORTURE_RDR_SCHED)
+ 		rcu_read_unlock_sched();
++	if (statesold & RCUTORTURE_RDR_BH)
++		local_bh_enable();
++	if (statesold & RCUTORTURE_RDR_RBH)
++		rcu_read_unlock_bh();
+ 	if (statesold & RCUTORTURE_RDR_RCU) {
+ 		bool lockit =3D !statesnew && !(torture_random(trsp) & 0xffff);
+=20
+@@ -1496,6 +1502,9 @@ rcutorture_extend_mask(int oldmask, struct torture_ra=
+ndom_state *trsp)
+ 	int mask =3D rcutorture_extend_mask_max();
+ 	unsigned long randmask1 =3D torture_random(trsp) >> 8;
+ 	unsigned long randmask2 =3D randmask1 >> 3;
++	unsigned long preempts =3D RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
++	unsigned long preempts_irq =3D preempts | RCUTORTURE_RDR_IRQ;
++	unsigned long bhs =3D RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
+=20
+ 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
+ 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
+@@ -1503,11 +1512,26 @@ rcutorture_extend_mask(int oldmask, struct torture_=
+random_state *trsp)
+ 		mask =3D mask & randmask2;
+ 	else
+ 		mask =3D mask & (1 << (randmask2 % RCUTORTURE_RDR_NBITS));
+-	/* Can't enable bh w/irq disabled. */
+-	if ((mask & RCUTORTURE_RDR_IRQ) &&
+-	    ((!(mask & RCUTORTURE_RDR_BH) && (oldmask & RCUTORTURE_RDR_BH)) ||
+-	     (!(mask & RCUTORTURE_RDR_RBH) && (oldmask & RCUTORTURE_RDR_RBH))))
+-		mask |=3D RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
 +
- /*
-  * This is a global struct for storing common data for all the devices
-  * this driver handles.
-@@ -2039,6 +2041,9 @@ static int virtcons_probe(struct virtio_device *vdev)
- 		multiport = true;
- 	}
- 
-+	/* limit max_nr_ports to avoid invalid value from untrusted remote host */
-+	portdev->max_nr_ports = min_t(u32, portdev->max_nr_ports, MAX_NR_PORTS);
++	/*
++	 * Can't enable bh w/irq disabled.
++	 */
++	if (mask & RCUTORTURE_RDR_IRQ)
++		mask |=3D oldmask & bhs;
 +
- 	err = init_vqs(portdev);
- 	if (err < 0) {
- 		dev_err(&vdev->dev, "Error %d initializing vqs\n", err);
--- 
-2.17.1
++	/*
++	 * Ideally these sequences would be detected in debug builds
++	 * (regardless of RT), but until then don't stop testing
++	 * them on non-RT.
++	 */
++	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		/* Can't modify BH in atomic context */
++		if (oldmask & preempts_irq)
++			mask &=3D ~bhs;
++		if ((oldmask | mask) & preempts_irq)
++			mask |=3D oldmask & bhs;
++	}
++
+ 	return mask ?: RCUTORTURE_RDR_RCU;
+ }
+=20
+--=20
+2.33.0
 
