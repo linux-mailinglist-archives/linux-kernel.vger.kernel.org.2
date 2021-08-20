@@ -2,270 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA3F3F2FEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3407B3F2FF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241228AbhHTPq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:46:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41510 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241195AbhHTPq2 (ORCPT
+        id S241199AbhHTPq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:46:56 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:53095 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240966AbhHTPqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:46:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629474349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHszTNWWcRskVDzdZXlLHDswkAE20E1/YSogilkamCc=;
-        b=LTGvJpbJvTBn0qZUSPobTEcqQ7+coWDKIS8izA+tqlHSogxDlFuXV8086O0jCRAwQ5HjOZ
-        BYS82/FAmeWQQJ7Iq9JVj0ixezmhFgGRmrkzWJpowMh5Y/zuy7cxi0Uj2mMUDS0MtSBK+T
-        Ajlp5KiHsOyyEjEqBPGmYCtbaddoJGQ=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-lYWCACPMOQiZfIVliyXulw-1; Fri, 20 Aug 2021 11:45:48 -0400
-X-MC-Unique: lYWCACPMOQiZfIVliyXulw-1
-Received: by mail-il1-f199.google.com with SMTP id a15-20020a92444f000000b0022473393120so5598340ilm.16
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:45:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=uHszTNWWcRskVDzdZXlLHDswkAE20E1/YSogilkamCc=;
-        b=iyw7Y5/t8DMHtSnVBH6+C4kVOY9v752V0vjfkFx3hiDEwT91m/UFTn0xHvVnDJQqFF
-         8pwhSiq8a9gejL3bCKJBpMLoIy7L5RyUI/g08R2gJdPd6kCJY3n2g+o6BEnf5WopQySm
-         58qUI9Xl4Uht9NzCeOEP+ch4wvS226CjwcKRQ1Q1mS2oLLvI51zh7JCpxEqfmdOeUqt+
-         pCJ2aX6xFegKpXCixjXADtiEGO3SlflFZB1d8GLcuoi2z0qp6/+j8gMjaCotQKBWnsvM
-         mp0rjOYOO40Emglh+rC1Z+3J1TIHu4qQ2EwJkdykuQz8kHfKeJAKy7LfhRYaqJoKDPmw
-         k2rw==
-X-Gm-Message-State: AOAM5304ujqdBwTTACJQMACS0g6bIiKoROYjCOWC7HxwvehnaIZjclLr
-        gBmpEMSTDlGHrQ2FWYbT0HxLYA0WG0Vg0tj4Y+nER0wRX1z2u8h717alVwAL1MD9BChKe2bJUum
-        Ve14+gFpw/fAdHDCFQWg33gUI
-X-Received: by 2002:a92:730d:: with SMTP id o13mr14120047ilc.183.1629474348077;
-        Fri, 20 Aug 2021 08:45:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzg2sjYKFA9AAWfuBbHn5L0SErcEsE1gs6oiT41MLFTDJOtnKXglu2pDmfySls1D7mHv8Hm/A==
-X-Received: by 2002:a92:730d:: with SMTP id o13mr14120023ilc.183.1629474347574;
-        Fri, 20 Aug 2021 08:45:47 -0700 (PDT)
-Received: from redhat.com (c-73-14-100-188.hsd1.co.comcast.net. [73.14.100.188])
-        by smtp.gmail.com with ESMTPSA id j18sm3461883ioa.53.2021.08.20.08.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 08:45:47 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 09:45:45 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mei: improve Denverton HSM & IFSI support
-Message-ID: <20210820094545.1f62dde1.alex.williamson@redhat.com>
-In-Reply-To: <CAKXUXMxM6oUkwP-YGDY1WEA8T0mCrR-5c-HLAjW-UrNotfHiCQ@mail.gmail.com>
-References: <20210819145114.21074-1-lukas.bulwahn@gmail.com>
-        <20210819150703.GA3204796@bjorn-Precision-5520>
-        <20210819141053.17a8a540.alex.williamson@redhat.com>
-        <CAKXUXMxM6oUkwP-YGDY1WEA8T0mCrR-5c-HLAjW-UrNotfHiCQ@mail.gmail.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Fri, 20 Aug 2021 11:46:52 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-88-F1DQbSqpMu6M5LHnyNb7xg-1; Fri, 20 Aug 2021 16:46:12 +0100
+X-MC-Unique: F1DQbSqpMu6M5LHnyNb7xg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 16:46:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 20 Aug 2021 16:46:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Ard Biesheuvel' <ardb@kernel.org>, Joerg Roedel <joro@8bytes.org>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "hpa@zytor.com" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] x86/efi: Restore Firmware IDT in before
+ ExitBootServices()
+Thread-Topic: [PATCH] x86/efi: Restore Firmware IDT in before
+ ExitBootServices()
+Thread-Index: AQHXlZXa+jtHdymQB0W1fhKjcUB7Wqt8EPPg///0gwCAABNdkIAAKfIdgABE/BA=
+Date:   Fri, 20 Aug 2021 15:46:11 +0000
+Message-ID: <cdd7869a14ad4021acfacffa3918981c@AcuMS.aculab.com>
+References: <20210820073429.19457-1-joro@8bytes.org>
+ <e43eb0d137164270bf16258e6d11879e@AcuMS.aculab.com>
+ <YR9tSuLyX8QHV5Pv@8bytes.org>
+ <f68a175362984e4abbb0a1da2004c936@AcuMS.aculab.com>
+ <YR+Bxgq4aIo1DI8j@8bytes.org>
+ <CAMj1kXHj12FQn_488V_9k9k_LE51K=7n3sS9QnN9gkhBgzw-Kw@mail.gmail.com>
+In-Reply-To: <CAMj1kXHj12FQn_488V_9k9k_LE51K=7n3sS9QnN9gkhBgzw-Kw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 10:28:21 +0200
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-
-> On Thu, Aug 19, 2021 at 10:10 PM Alex Williamson
-> <alex.williamson@redhat.com> wrote:
-> >
-> > On Thu, 19 Aug 2021 10:07:03 -0500
-> > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > =20
-> > > [+cc Alex]
-> > >
-> > > On Thu, Aug 19, 2021 at 04:51:14PM +0200, Lukas Bulwahn wrote: =20
-> > > > The Intel Denverton chip provides HSM & IFSI. In order to access
-> > > > HSM & IFSI at the same time, provide two HECI hardware IDs for acce=
-ssing.
-> > > >
-> > > > Suggested-by: Ionel-Catalin Mititelu <ionel-catalin.mititelu@intel.=
-com>
-> > > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > > > ---
-> > > > Tomas, please pick this quick helpful extension for the hardware.
-> > > >
-> > > >  drivers/misc/mei/hw-me-regs.h | 3 ++-
-> > > >  drivers/misc/mei/pci-me.c     | 1 +
-> > > >  drivers/pci/quirks.c          | 3 +++
-> > > >  3 files changed, 6 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/misc/mei/hw-me-regs.h b/drivers/misc/mei/hw-me=
--regs.h
-> > > > index cb34925e10f1..c1c41912bb72 100644
-> > > > --- a/drivers/misc/mei/hw-me-regs.h
-> > > > +++ b/drivers/misc/mei/hw-me-regs.h
-> > > > @@ -68,7 +68,8 @@
-> > > >  #define MEI_DEV_ID_BXT_M      0x1A9A  /* Broxton M */
-> > > >  #define MEI_DEV_ID_APL_I      0x5A9A  /* Apollo Lake I */
-> > > >
-> > > > -#define MEI_DEV_ID_DNV_IE     0x19E5  /* Denverton IE */
-> > > > +#define MEI_DEV_ID_DNV_IE  0x19E5  /* Denverton for HECI1 - IFSI */
-> > > > +#define MEI_DEV_ID_DNV_IE_2        0x19E6  /* Denverton 2 for HECI=
-2 - HSM */
-> > > >
-> > > >  #define MEI_DEV_ID_GLK        0x319A  /* Gemini Lake */
-> > > >
-> > > > diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
-> > > > index c3393b383e59..30827cd2a1c2 100644
-> > > > --- a/drivers/misc/mei/pci-me.c
-> > > > +++ b/drivers/misc/mei/pci-me.c
-> > > > @@ -77,6 +77,7 @@ static const struct pci_device_id mei_me_pci_tbl[=
-] =3D {
-> > > >     {MEI_PCI_DEVICE(MEI_DEV_ID_APL_I, MEI_ME_PCH8_CFG)},
-> > > >
-> > > >     {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE, MEI_ME_PCH8_CFG)},
-> > > > +   {MEI_PCI_DEVICE(MEI_DEV_ID_DNV_IE_2, MEI_ME_PCH8_SPS_CFG)},
-> > > >
-> > > >     {MEI_PCI_DEVICE(MEI_DEV_ID_GLK, MEI_ME_PCH8_CFG)},
-> > > >
-> > > > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > > > index 6899d6b198af..2ab767ef8469 100644
-> > > > --- a/drivers/pci/quirks.c
-> > > > +++ b/drivers/pci/quirks.c
-> > > > @@ -4842,6 +4842,9 @@ static const struct pci_dev_acs_enabled {
-> > > >     { PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
-> > > >     { PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
-> > > >     { PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
-> > > > +   /* Denverton */
-> > > > +   { PCI_VENDOR_ID_INTEL, 0x19e5, pci_quirk_mf_endpoint_acs },
-> > > > +   { PCI_VENDOR_ID_INTEL, 0x19e6, pci_quirk_mf_endpoint_acs }, =20
-> > >
-> > > This looks like it should be a separate patch with a commit log that
-> > > explains it.  For example, see these:
-> > >
-> > >   db2f77e2bd99 ("PCI: Add ACS quirk for Broadcom BCM57414 NIC")
-> > >   3247bd10a450 ("PCI: Add ACS quirk for Intel Root Complex Integrated=
- Endpoints")
-> > >   299bd044a6f3 ("PCI: Add ACS quirk for Zhaoxin Root/Downstream Ports=
-")
-> > >   0325837c51cb ("PCI: Add ACS quirk for Zhaoxin multi-function device=
-s")
-> > >   76e67e9e0f0f ("PCI: Add ACS quirk for Amazon Annapurna Labs root po=
-rts")
-> > >   46b2c32df7a4 ("PCI: Add ACS quirk for iProc PAXB")
-> > >   01926f6b321b ("PCI: Add ACS quirk for HXT SD4800")
-> > >
-> > > It should be acked by somebody at Intel since this quirk relies on
-> > > behavior of the device for VM security. =20
-> >
-> > +1 Thanks Bjorn.  I got curious and AFAICT these functions are the
-> > interface for the host system to communicate with "Innovation Engine"
-> > processors within the SoC, which seem to be available for system
-> > builders to innovate and differentiate system firmware features.  I'm
-> > not sure then how we can assume a specific interface ("HSM" or "IFSI",
-> > whatever those are) for each function, nor of course how we can assume
-> > isolation between them.  Thanks, =20
->=20
-> Alex, I got a Denverton hardware with Innovation Engine and the
-> specific system firmware (basically delivered from Intel). To make use
-> of that hardware, someone at Intel suggested adding these PCI ACS
-> quirks. It is unclear to me if there are various different Denverton
-> systems out there (I only got one!) with many different system
-> firmware variants for the Innovation Engine or if there is just one
-> Denverton with IE support and with one firmware from Intel, i.e., the
-> one I got.
->=20
-> If there is only one or two variants of the Denverton with Innovation
-> Engine firmware out there, then we could add this ACS quirk here
-> unconditionally (basically assuming that if the other firmware is
-> there, the IE would just do the right thing, e.g., deny any operation
-> for a non-existing firmware function), right? Just adding a commit
-> similar to the commits Bjorn pointed out above. Otherwise, we would
-> need to make that conditional for possible different variants, but I
-> would need a bit more guidance from you on which other variants exist
-> and how one can differentiate between them.
-
-Hi Lukas,
-
-I'm looking at the C3000 datasheet, Intel document #337018-002, where I
-see:
-
-1.2.7 Innovation Engine (IE)
-	...
-	For the IE, the system builder can install an embedded
-	operating system, drivers and application they develop on their
-	own, or purchase them from a third-party vendor. Intel does not
-	provide operating systems, drivers or applications for the IE.
-
-15.2.3.1 Interrupt Timer Sub System (ITSS)
-	...
-	The Innovation Engine (IE) has a sideband connection to the
-	ITSS components.
-
-16 Power Management Controller (PMC)
-	...
-	16.2 Feature List
-		...
-		=E2=80=A2 Interacts with the SoC Innovation Engine (IE)
-
-Table 16-4. Causes of SMI and SCI=20
-	...
-	[IE can cause SMI or SCI]
-
-16.10.1 Initiating State Changes when in the G0 (S0) Working State
-	...
-	The Intel=C2=AE Management Engine and Innovation Engine firmware
-	each has a mechanism to turn off a hung system similar to the
-	Power-Button Override by writing bits in their power-management
-	control registers.
-
-And the apparent coup de gr=C3=A2ce:
-
-37 Innovation Engine
-	The Innovation Engine (IE) is an optional, complete, embedded
-	engine intended to enable SoC customers to provide their own
-	custom system management. This chapter provides a brief
-	overview of the IE. It is reserved for system-builder code, not
-	for Intel firmware since Intel supplies IE hardware only. IE
-	activation is not required for normal system operation.
-	...
-	IE is a completely optional feature, and is disabled by default
-	in the silicon. It can be enabled by system builders and OEMs
-	to run signed firmware created by the system builder or a third
-	party software vendor. IE is not like the Intel=C2=AE Management
-	Engine (Intel=C2=AE ME) where Intel provides the HW plus a complete
-	FW solution. Intel only provides IE hardware (along with
-	collateral and tools enabling).
-
-For the HECI, I see:
-
-37.3 Architectural Overview
-	...
-	The devices exposed by the IE subsystem to the Host Root Space
-	are:
-		=E2=80=A2 HECI (1, 2 and 3) =E2=80=93 These functions define the
-		  mechanism for host software and IE firmware to
-		  communicate. This device exposes three PCI functions
-		  to the host during PCI bus enumeration. The message
-		  format is OEM dependent and communication between
-		  host and IE subsystem takes place via circular
-		  buffers and control/status registers. This function
-		  supports host MSI, SMI and SCI# interrupt generation
-		  mechanisms.
-
-
-So I don't see how the datasheet supports that there's either any
-specific API defined per HECI interface or that these functions would
-ever be intended in a generic way for independent use of by a userspace
-driver or VM.  Perhaps with DMI or ACPI info an HECI could be
-associated to a specific vendor API, by why we'd describe them as using
-isolated IOMMU grouping is a complete mystery to me.  Thanks,
-
-Alex
+RnJvbTogQXJkIEJpZXNoZXV2ZWwNCj4gU2VudDogMjAgQXVndXN0IDIwMjEgMTI6MzINCj4gDQo+
+IE9uIEZyaSwgMjAgQXVnIDIwMjEgYXQgMTI6MTksIEpvZXJnIFJvZWRlbCA8am9yb0A4Ynl0ZXMu
+b3JnPiB3cm90ZToNCj4gPg0KPiA+IE9uIEZyaSwgQXVnIDIwLCAyMDIxIGF0IDA5OjAyOjQ2QU0g
+KzAwMDAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiA+IFNvIGFsbG9jYXRlIGFuZCBpbml0aWFs
+aXNlIHRoZSBMaW51eCBJRFQgLSBzbyBlbnRyaWVzIGNhbiBiZSBhZGRlZC4NCj4gPiA+IEJ1dCBk
+b24ndCBleGVjdXRlICdsaWR0JyB1bnRpbCBsYXRlciBvbi4NCj4gPg0KPiA+IFRoZSBJRFQgaXMg
+bmVlZGVkIGluIHRoaXMgcGF0aCB0byBoYW5kbGUgI1ZDIGV4Y2VwdGlvbnMgY2F1c2VkIGJ5IENQ
+VUlEDQo+ID4gaW5zdHJ1Y3Rpb25zLiBTbyBsb2FkaW5nIHRoZSBJRFQgbGF0ZXIgaXMgbm90IGFu
+IG9wdGlvbi4NCj4gPg0KPiANCj4gVGhhdCBkb2VzIHJhaXNlIGEgcXVlc3Rpb24sIHRob3VnaC4g
+RG9lcyBjaGFuZ2luZyB0aGUgSURUIGludGVyZmVyZQ0KPiB3aXRoIHRoZSBhYmlsaXR5IG9mIHRo
+ZSBVRUZJIGJvb3Qgc2VydmljZXMgdG8gcmVjZWl2ZSBhbmQgaGFuZGxlIHRoZQ0KPiB0aW1lciBp
+bnRlcnJ1cHQ/IEJlY2F1c2UgYmVmb3JlIEV4aXRCb290U2VydmljZXMoKSwgdGhhdCBpcyBvd25l
+ZCBieQ0KPiB0aGUgZmlybXdhcmUsIGFuZCBVRUZJIGhlYXZpbHkgcmVsaWVzIG9uIGl0IGZvciBl
+dmVyeXRoaW5nIChldmVudA0KPiBoYW5kbGluZywgcG9sbGluZyBtb2RlIGJsb2NrL25ldHdvcmsg
+ZHJpdmVycywgZXRjKQ0KPiANCj4gSWYgcmVzdG9yaW5nIHRoZSBJRFQgdGVtcG9yYXJpbHkganVz
+dCBwYXBlcnMgb3ZlciB0aGlzIGJ5IGNyZWF0aW5nDQo+IHRpbnkgd2luZG93cyB3aGVyZSB0aGUg
+dGltZXIgaW50ZXJydXB0IHN0YXJ0cyB3b3JraW5nIGFnYWluLCB0aGlzIGlzDQo+IGJhZCwgYW5k
+IHdlIG5lZWQgdG8gZmlndXJlIG91dCBhbm90aGVyIHdheSB0byBhZGRyZXNzIHRoZSBvcmlnaW5h
+bA0KPiBwcm9ibGVtLg0KDQpDb3VsZCB0aGUgd2hvbGUgdGhpbmcgYmUgZmxpcHBlZD8NCg0KU28g
+bG9hZCBhIHRlbXBvcmFyeSBJRFQgc28gdGhhdCB5b3UgY2FuIGRldGVjdCBpbnZhbGlkIGluc3Ry
+dWN0aW9ucw0KYW5kIHJlc3RvcmUgdGhlIFVFRkkgSURUIGltbWVkaWF0ZWx5IGFmdGVyd2FyZHM/
+DQoNCkknbSBndWVzc2luZyB0aGUgR0RUIGlzIGNoYW5nZWQgaW4gb3JkZXIgdG8gYWNjZXNzIGFs
+bCBvZiBwaHlzaWNhbA0KbWVtb3J5ICh3ZWxsIGVub3VnaCB0byBsb2FkIHRoZSBrZXJuZWwpLg0K
+Q291bGQgdGhhdCBiZSBkb25lIHVzaW5nIHRoZSBMRFQ/DQpJdCBpcyB1bmxpa2VseSB0aGF0IHRo
+ZSBVRUZJIGNhcmVzIGFib3V0IHRoYXQ/DQoNCklzIHRoaXMgMzJiaXQgbm9uLXBhZ2VkIGNvZGU/
+DQpSdW5uaW5nIHRoYXQgd2l0aCBhIHBoeXNpY2FsIG1lbW9yeSBvZmZzZXQgbWFkZSBteSBoZWFk
+IGh1cnQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
+ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
+dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
