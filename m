@@ -2,186 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896C23F27D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB57A3F27D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 09:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238945AbhHTHrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 03:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
+        id S238933AbhHTHrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 03:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238664AbhHTHrh (ORCPT
+        with ESMTP id S238776AbhHTHrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 03:47:37 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5BFC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 00:47:00 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id a201-20020a1c7fd2000000b002e6d33447f9so6638452wmd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 00:46:59 -0700 (PDT)
+        Fri, 20 Aug 2021 03:47:18 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22ECCC061575;
+        Fri, 20 Aug 2021 00:46:41 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d9so6776792qty.12;
+        Fri, 20 Aug 2021 00:46:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=X/2GAbppTE9OSGgG1A1OZF+8Y2MWWqsdhY6crguMTvk=;
-        b=CFe6IR04cSEVT71m9OhQvtAcEVOF9HPMr0lcoCrj7+uJezaF1xBQ4Cr0vhTx1zwlDU
-         bFub2fwS9IDgxdWr+NJKV49JCpAxKUy0rbHhw6qtKcUXWpb0xqYU2KD1hKLTIFgrZRFJ
-         GN6pkJC88ywRlbT6e1IldahGq4Z7/H4prQkaUP/WqDmaq5fZcjbWm+Eh3b2s6aGaeL2F
-         4bVaOaXn0+oopjvnHyYA7WJuaex0PReqxAwRuPb+zZARaUyo/Nhr3eBVFvHE/q+RhvaZ
-         x0KIgA7S1Hi8mpe6jZzIvE6KELkSIGMYpgVRQepBtlRjwGAXMTzSxjUATRz3BJnlcg+0
-         1sdg==
+        bh=Kq7tK7YGhE/+PaJamAkkvlm7bSWZjJfKlm0O98NWiAo=;
+        b=UUKANxUc5S8DBMv9pxXRM63MOlAsgCoVi9n6eY8tBPPQLIpUiCrB7NRuLemEdP8odc
+         XhMariKAYNVZ1T2JQD9UpYuHfwh8nbRmFhqmnqtZ1u3XZM+ZIc8fEVMK3Ku0JNKlO21B
+         7/PbR8pWJS671SC1NF4c6awERELgJnxkuW360=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=X/2GAbppTE9OSGgG1A1OZF+8Y2MWWqsdhY6crguMTvk=;
-        b=QOELNpjjcBQI/GdsSRqXZm3SYOLUTGiRJfGZhWD7cfAVSWD8APJYOkE5iqgW/aUad3
-         NVmpUpufCg5fIemJdjB5tUeBxElvXTJE6L5QgudUvmSVftPv4nYVntJTlzTFROkGOpdE
-         vVqiwg/Wyru4ykeriHGWUlSewBj6L8CI9GN4woD3vrowhupxi2Y1jM2EYyl7+xj+SADn
-         d5LKEkVQZUuKQ/xn/symgU+KKDVmwCvxYlzL+vH2I6XSZKmtFXfzVTFIK5b0260BTiBi
-         HvjK8eHx/zguR83AOeO/UibVniNb4Ag8hBq7lFvZ/881bAgcHdFigEbT2NfNZS3NmnUD
-         MzRg==
-X-Gm-Message-State: AOAM530aKCTdaXOu1fwAKqLAAykvkrOl0qYLIAhHLM5Refgkt08C5AdJ
-        o2YXjBPmoQGI9x8PAD/jhwQzKt9YVCr1gYfXrpw=
-X-Google-Smtp-Source: ABdhPJwGezXtxlKMN5JtHuEYfDMuLQU7OpjO2DAvMHPT7RyS+4oXMa1lZ3k3MtLwnxRH+flf1TyUCaoer7lEf51G7Fg=
-X-Received: by 2002:a1c:f60c:: with SMTP id w12mr2422502wmc.3.1629445618481;
- Fri, 20 Aug 2021 00:46:58 -0700 (PDT)
+        bh=Kq7tK7YGhE/+PaJamAkkvlm7bSWZjJfKlm0O98NWiAo=;
+        b=btgIXzcKosZwWxdZAso2wTF6JlRv2r1Soxi9BZ762S7SwHM5oZCjae3hu319x4kpVT
+         nXl9vUKjWMIqQpHG0QW/BXeCK+/SyqhHcTeGFtqzkNaBN1kJ661497myTTXHOo4tLJmH
+         I90GqUW90dfG0rjnWOiJIgr2j5n7lnK3xW34/JWZDZwaTLcwOfEH+L6hvhsvArqCv6VV
+         bn+Qo0x8My/ZOeW5+seuhCENY55yZTj6OTK11esCNez1vmfmonaQvtujXZ0B23n9oXd2
+         mocWV9i1bl1HrTRp5hvel2mVou5JIBXc9rcuzPamWoJoKbHfdb5pDIZGADPvM+kb9Udq
+         ANSw==
+X-Gm-Message-State: AOAM531sAxD1Fj+EXlzBB1MhY8oSzurgWJZcfJJn4lU0zaCVVLICxhrs
+        XE4zyhRwezsf/ynwsr+jZD9nSoH1TffxhGqf31p/hGnlQGI=
+X-Google-Smtp-Source: ABdhPJwkjoD/pZdCC0HerMc8tzD0FnCSiazwQuCDvSRvo3mgfFxzcUy9DDbI5DhW0eoROwPAxBeLcqyIwdKQWjezsCc=
+X-Received: by 2002:ac8:72ca:: with SMTP id o10mr16658363qtp.385.1629445600099;
+ Fri, 20 Aug 2021 00:46:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210715065455.392923-1-zhang.lyra@gmail.com> <20210715065455.392923-4-zhang.lyra@gmail.com>
- <47dcce5a-f438-9f12-5b60-651dc5f2b92c@linaro.org>
-In-Reply-To: <47dcce5a-f438-9f12-5b60-651dc5f2b92c@linaro.org>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Fri, 20 Aug 2021 15:46:22 +0800
-Message-ID: <CAAfSe-sf7U96rL1Pyotggr6S2j5hH7YAYHWtLgLh65PsH5Ba8Q@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] clocksource/drivers/sprd: Add module support to
- Unisoc timer
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Saravana Kannan <saravanak@google.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210806054904.534315-1-joel@jms.id.au> <20210806054904.534315-3-joel@jms.id.au>
+ <YQ0hk/lsHXUu+ykC@errol.ini.cmu.edu> <CA+96J6JxAkNd_QkVxfSdAJwWVLJTtSaDsCmVKw3KBfYySJytKA@mail.gmail.com>
+In-Reply-To: <CA+96J6JxAkNd_QkVxfSdAJwWVLJTtSaDsCmVKw3KBfYySJytKA@mail.gmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 20 Aug 2021 07:46:27 +0000
+Message-ID: <CACPK8Xds9RysihvNSJfxcL4n1-eum3v1gauh406jEfdu=S7pcw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] net: Add driver for LiteX's LiteETH network interface
+To:     Florent Kermarrec <florent@enjoy-digital.fr>
+Cc:     "Gabriel L. Somlo" <gsomlo@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Anton Blanchard <anton@ozlabs.org>, David Shah <dave@ds0.me>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi Florent and Gabriel,
 
-On Sat, 14 Aug 2021 at 00:00, Daniel Lezcano <daniel.lezcano@linaro.org> wr=
-ote:
+On Fri, 6 Aug 2021 at 12:27, Florent Kermarrec <florent@enjoy-digital.fr> w=
+rote:
 >
-> On 15/07/2021 08:54, Chunyan Zhang wrote:
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >
-> > Timers still have devices created for them. So, when compiling a timer
-> > driver as a module, implement it as a normal platform device driver.
-> >
-> > Original-by: Baolin Wang <baolin.wang7@gmail.com>
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> >  drivers/clocksource/Kconfig      |  2 +-
-> >  drivers/clocksource/timer-sprd.c | 15 ++++++++++-----
-> >  2 files changed, 11 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-> > index eb661b539a3e..a5a5b7c883ec 100644
-> > --- a/drivers/clocksource/Kconfig
-> > +++ b/drivers/clocksource/Kconfig
-> > @@ -461,7 +461,7 @@ config MTK_TIMER
-> >         Support for Mediatek timer driver.
-> >
-> >  config SPRD_TIMER
-> > -     bool "Spreadtrum timer driver" if EXPERT
-> > +     tristate "Spreadtrum timer driver" if EXPERT
-> >       depends on HAS_IOMEM
-> >       depends on (ARCH_SPRD || COMPILE_TEST)
-> >       default ARCH_SPRD
-> > diff --git a/drivers/clocksource/timer-sprd.c b/drivers/clocksource/tim=
-er-sprd.c
-> > index 430cb99d8d79..a8a7d3ea3464 100644
-> > --- a/drivers/clocksource/timer-sprd.c
-> > +++ b/drivers/clocksource/timer-sprd.c
-> > @@ -5,6 +5,8 @@
-> >
-> >  #include <linux/init.h>
-> >  #include <linux/interrupt.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> >
-> >  #include "timer-of.h"
-> >
-> > @@ -141,7 +143,7 @@ static struct timer_of to =3D {
-> >       },
-> >  };
-> >
-> > -static int __init sprd_timer_init(struct device_node *np)
-> > +static int sprd_timer_init(struct device_node *np)
+> Hi Gabriel, Joel,
 >
-> Does the __init annotation really need to be removed ?
+> for 1), the polling mode has been useful recently with Linux-On-LiteX-Vex=
+riscv to bring up the SMP version before enabling the IRQs and can probably=
+ be useful in the future for similar purposes. So if it's not too complicat=
+ed to maintain, this could be useful to keep it.
 
-Yes, since sprd_timer_init() would be invoked by
-platform_timer_probe() which seems not able to be marked as __init.
+I would prefer to get a basic working driver for the straight forward
+Linux-on-FPGA use case merged first. We can then work out what should
+be done next. I would like to see hardware improvements to make it go
+faster, and we can look at other features like polling if you still
+need them.
 
 >
-> >  {
-> >       int ret;
-> >
-> > @@ -190,7 +192,7 @@ static struct clocksource suspend_clocksource =3D {
-> >       .flags  =3D CLOCK_SOURCE_IS_CONTINUOUS | CLOCK_SOURCE_SUSPEND_NON=
-STOP,
-> >  };
-> >
-> > -static int __init sprd_suspend_timer_init(struct device_node *np)
-> > +static int sprd_suspend_timer_init(struct device_node *np)
-> >  {
-> >       int ret;
-> >
-> > @@ -204,6 +206,9 @@ static int __init sprd_suspend_timer_init(struct de=
-vice_node *np)
-> >       return 0;
-> >  }
-> >
-> > -TIMER_OF_DECLARE(sc9860_timer, "sprd,sc9860-timer", sprd_timer_init);
-> > -TIMER_OF_DECLARE(sc9860_persistent_timer, "sprd,sc9860-suspend-timer",
-> > -              sprd_suspend_timer_init);
-> > +TIMER_PLATFORM_DRIVER_BEGIN(sprd_timer)
-> > +TIMER_MATCH("sprd,sc9860-timer", sprd_timer_init)
-> > +TIMER_MATCH("sprd,sc9860-suspend-timer", sprd_suspend_timer_init)
-> > +TIMER_PLATFORM_DRIVER_END(sprd_timer);
->
-> Please replace the above by something like:
->
-> TIMER_PLATFORM_DECLARE(sc9860_timer,
->                         "sprd,sc9860-timer",
->                         sprd_timer_init);
->
-> TIMER_PLATFORM_DECLARE(sc9860_persistent_timer,
->                         "sprd,sc9860-suspend-timer",
->                         sprd_suspend_timer_init);
->
-> Without TIMER_PLATFORM_DRIVER_BEGIN/END, and if possible the
-> MODULE_DESCRIPTION/LICENSE in the TIMER_PLATFORM_DECLARE macro itself.
-> The module description could be the first argument of the timer platform
-> declaration.
+> Le ven. 6 ao=C3=BBt 2021 =C3=A0 13:48, Gabriel L. Somlo <gsomlo@gmail.com=
+> a =C3=A9crit :
+>>
+>> Hi Joel,
+>>
+>> Thanks for pushing this upstream (and for writing it to begin with)!
+>>
+>> Would you mind diff-ing your version of litex_liteeth.c against what
+>> is currently in
+>> https://github.com/litex-hub/linux/blob/litex-rebase/drivers/net/etherne=
+t/litex/litex_liteeth.c ?
+>>
+>> Two main differences we should discuss:
+>>
+>>         1. there's a polling mode (added by Antony Pavlov), and if we
+>>            decide *not* to keep it around, I want to ensure we do that
+>>            deliberately, with an explanation as to why;
 
-I hope I got your point, will address this in the next version.
-Let's see if changes are what you want then.
+I assumed this was only for broken systems, or systems that were still
+being brought up. Haven't the risc-v socs improved to the point where
+they have working interrupts now?
 
-Thanks for your review,
-Chunyan
+>>
+>>         2. LiteX CSRs are accessed using `litex_[read|write][8|16|32]()`
+>>            as opposed to simply `[read|write][b|w|l]()`. The former set
+>>            are defined in `include/linux/litex.h` and are needed to
+>>            ensure correct accesses regardless of endianness, since by
+>>            default LiteX registers' endianness mirrors that of the
+>>            configured CPU.
 
+I don't like that they get the parameters in the wrong order compared
+to the rest of the kernel, and that they force 32-bit access no matter
+the width of the access being performed. They also mean we can't use
+_releaxed variants of accessors to eg. read a set of registers without
+having a barrier in between.
 
->
-> > +MODULE_DESCRIPTION("Unisoc broadcast timer module");
-> > +MODULE_LICENSE("GPL");
->
->
->
-> --
-> <http://www.linaro.org/> Linaro.org =E2=94=82 Open source software for AR=
-M SoCs
->
-> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-> <http://twitter.com/#!/linaroorg> Twitter |
-> <http://www.linaro.org/linaro-blog/> Blog
+That said, I have used the csr accessors so we can support the mor1k,
+which afaict is the only litex CPU that defaults to big endian.
+
+If you could help review the patch so we can get it merged this cycle,
+then we can work on future enhancements.
+
+Cheers,
+
+Joel
