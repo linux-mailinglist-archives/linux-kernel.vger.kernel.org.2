@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4383F34E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE543F34EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 22:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238779AbhHTUCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 16:02:37 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:41911 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236881AbhHTUCf (ORCPT
+        id S238917AbhHTUD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 16:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236881AbhHTUD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 16:02:35 -0400
-Received: by mail-oo1-f43.google.com with SMTP id f33-20020a4a89240000b029027c19426fbeso3212760ooi.8;
-        Fri, 20 Aug 2021 13:01:57 -0700 (PDT)
+        Fri, 20 Aug 2021 16:03:57 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D0CC061575;
+        Fri, 20 Aug 2021 13:03:19 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id n5so8047535pjt.4;
+        Fri, 20 Aug 2021 13:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xttFianAmqntTt9y9P8CARsBxqzMMvy7ycSER0i/iEM=;
+        b=Cs7zs2GEBI2TtvHqqAY5q8nIbq0mpHsdj7ejJbpx3j7cTwSV0k+ZcxEjP0gjad2/WQ
+         8HAUP+wRAqJRHVBbrt8a2i33syumtByWDd+QepHIAjUc66Ros6/djv6ybZgmNe4MX9vI
+         fx8snDZ1t4GVrRjdbjfrO7iLEMud5WFIjwQKJT7PaqFRQYZTIu2k74H3urFQ9PyRv0qB
+         ofYh4S1TVGIvxT8D/jga7JoIshv8UREXbcrq00NDG6mioT9foVVb645OKjuPcODQ1461
+         nNCyLQDz0TIDt6qgAjBZO/w/20V22dfBFQmbWGbpP2eLyWjWOvPIH3ot+hYBLtsBPlxR
+         BqOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wlbFPYPY/Xtj1KW5rp0UccGo9s5jQlV0fCqX0LEM8rA=;
-        b=e/59TO5cJ69b/pa1GrdqAeWrgKfn8mLoOiv2MhI89dMXLbf2LWZPAksP6TWMalF4uD
-         kJebtNNCOLBYTTEREwoZ8tTzgbWrV9zMM+UsyuLXA6ANmxIOcFo1QHR+EAnZ4uIfZKRi
-         D159CARt5t8vxFw4Z5no3IknwBXbTrnYlEVTp3CgKyWoSi7t4GswiOr2V10qwnX2mF/d
-         erO/BUTSUtOYyYLoXOWcoK8++xc2Tg7evBHzS2qzDR+GTV6LpSSOAIC1l5+fyInhzBiB
-         rlmozJHRwAQB9hEHYUe3xXNlkDiPHNZLhL+K8c6FrXrpdPW2P9dOLYBrKrcZyH1ZlkNz
-         jX4A==
-X-Gm-Message-State: AOAM530YgZy0Xi6MVUojjMQivf/qQ3t3LU2nh7n8UDmnzRrlys0E7ogu
-        a4zy6dETeItqrJL0Exbtzw==
-X-Google-Smtp-Source: ABdhPJys2nyF9UYQYqZJu3h13pyM0x7e7+IP1RxgPq7sPk58kOG6bqF1k5cdEbYjpsmGblW/KXee2Q==
-X-Received: by 2002:a4a:bc90:: with SMTP id m16mr17240148oop.33.1629489717171;
-        Fri, 20 Aug 2021 13:01:57 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w15sm1385177oiw.19.2021.08.20.13.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 13:01:56 -0700 (PDT)
-Received: (nullmailer pid 3886974 invoked by uid 1000);
-        Fri, 20 Aug 2021 20:01:55 -0000
-Date:   Fri, 20 Aug 2021 15:01:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-Cc:     joel@jms.id.au, andrew@aj.id.au, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ryan_chen@aspeedtech.com
-Subject: Re: [PATCH v2 1/5] dt-bindings: aspeed: Add eSPI controller
-Message-ID: <YSAKM16WLx4UWIQu@robh.at.kernel.org>
-References: <20210819080040.31242-1-chiawei_wang@aspeedtech.com>
- <20210819080040.31242-2-chiawei_wang@aspeedtech.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xttFianAmqntTt9y9P8CARsBxqzMMvy7ycSER0i/iEM=;
+        b=QSOgsVU2yImsXYXGmgKQFs7TMJdKTIhqfWCWz4UrtNeXQx0w//Uu5LyLAl/q9pWX69
+         0av7fGllRO+h1QautvLCg3fpFrgJ0+BT0Og3sGLEYS3ehMAZsuYbe4sGp5nx8tFKephJ
+         jp1qra7KtdiN2scP/xQhhH2Mut66DY7wzxMnpjPKjuciuS4VTs8XjOCP0T2464O34vHc
+         xWry8lLluEnwXMh/sQ2hlcIQL54AIbqSx/JWs8E1VS/LNNQtyaAgK3ech4cZzs9hOaZc
+         3M9XrgXd9g4CzbyNP5DsJwIyyH4ufB0MK6SV32ddH0VYIPwJSG4A9NjVV6ot9FFseFXf
+         gsxA==
+X-Gm-Message-State: AOAM532tM1G6OwhMONXVej4QUq/S4kb7iZarSY6fosLsjomEjBZdBrxH
+        xuixzCvU2vJZbWdYplIFCrYjLvW2toxwxg==
+X-Google-Smtp-Source: ABdhPJzNrXDsexiR0gCnSs3/r+vkGwC4lvVw0fXDScRPTuDwTGTdX3W/+k3of9gAtWWdMOfXygaTXA==
+X-Received: by 2002:a17:902:c202:b029:12d:65b0:fd3b with SMTP id 2-20020a170902c202b029012d65b0fd3bmr17604102pll.25.1629489798283;
+        Fri, 20 Aug 2021 13:03:18 -0700 (PDT)
+Received: from [10.230.32.55] ([192.19.148.250])
+        by smtp.gmail.com with ESMTPSA id d15sm6426116pfh.34.2021.08.20.13.03.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 13:03:17 -0700 (PDT)
+Subject: Re: [PATCH 2/2] usb: bdc: Fix a resource leak in the error handling
+ path of 'bdc_probe()'
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        alcooperx@gmail.com, balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <0c5910979f39225d5d8fe68c9ab1c147c68ddee1.1629314734.git.christophe.jaillet@wanadoo.fr>
+ <f8a4a6897deb0c8cb2e576580790303550f15fcd.1629314734.git.christophe.jaillet@wanadoo.fr>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <c56617ff-5d74-9b07-4bcc-25f3dd2aca64@gmail.com>
+Date:   Fri, 20 Aug 2021 22:03:11 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819080040.31242-2-chiawei_wang@aspeedtech.com>
+In-Reply-To: <f8a4a6897deb0c8cb2e576580790303550f15fcd.1629314734.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 04:00:36PM +0800, Chia-Wei Wang wrote:
-> Add dt-bindings for Aspeed eSPI controller
+
+
+On 8/18/2021 9:32 PM, Christophe JAILLET wrote:
+> If an error occurs after a successful 'clk_prepare_enable()' call, it must
+> be undone by a corresponding 'clk_disable_unprepare()' call.
+> This call is already present in the remove function.
 > 
-> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> Add this call in the error handling path and reorder the code so that the
+> 'clk_prepare_enable()' call happens later in the function.
+> The goal is to have as much managed resources functions as possible
+> before the 'clk_prepare_enable()' call in order to keep the error handling
+> path simple.
+> 
+> While at it, remove the now unneeded 'clk' variable.
+> 
+> Fixes: c87dca047849 ("usb: bdc: Add clock enable for new chips with a separate BDC clock")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+
 > ---
->  .../devicetree/bindings/soc/aspeed/espi.yaml  | 158 ++++++++++++++++++
->  1 file changed, 158 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/aspeed/espi.yaml b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> new file mode 100644
-> index 000000000000..fec3d37f3ffd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/aspeed/espi.yaml
-> @@ -0,0 +1,158 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# # Copyright (c) 2021 Aspeed Technology Inc.
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/aspeed/espi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Aspeed eSPI Controller
-> +
-> +maintainers:
-> +  - Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> +  - Ryan Chen <ryan_chen@aspeedtech.com>
-> +
-> +description:
-> +  Aspeed eSPI controller implements a slave side eSPI endpoint device
-> +  supporting the four eSPI channels, namely peripheral, virtual wire,
-> +  out-of-band, and flash.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - aspeed,ast2500-espi
-> +          - aspeed,ast2600-espi
-> +      - const: simple-mfd
-> +      - const: syscon
+> Review with care.
+> I don't like shuffling code like that because of possible side effect.
+> Moving the code related to this clk looks fine to me, but who knows...
 
-Is this really 2 sub devices that could be used individually or in a 
-different combination? If not, then I'd make all this 1 node.
-
-Rob
+There are no register accesses until bdc_phy_init() gets called, so this 
+looks fine to me. Al knows this code better than I do though, so it 
+would be better to wait for his Acked-by tag.
+-- 
+Florian
