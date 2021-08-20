@@ -2,75 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7B03F2543
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07943F2546
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 05:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238156AbhHTD0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 23:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S238170AbhHTD3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 23:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237934AbhHTD0E (ORCPT
+        with ESMTP id S237998AbhHTD3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 23:26:04 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2313C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:25:27 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id u15so5143007plg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:25:27 -0700 (PDT)
+        Thu, 19 Aug 2021 23:29:04 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809ABC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:28:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id k4-20020a25b284000000b0059844c88867so1699731ybj.6
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 20:28:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tb+3c4sIXia8Tj7TXbcGSfKzAoHqBRtrMhGgnoxQz9c=;
-        b=UlcCDs1covM/o5EVQkDUvKUq4BYzlVfj1O2NkuVwbGewbHLaYA1k7cDj99iuCJ4Hdr
-         xqc/9D4LE2CQyZxqjlgvQYwYXY7f7d9Ln2txosp4PvwCHCGsanahVQNsdHVVTDpqy4Ph
-         4gcyPp4AY4mgBwL4Naw3GS/5eoZXW4DEBE9Y7AilAJWtI+j4IvSR4gztQ4iuCR+l7Ya0
-         wnJWFKfHLajnhyHepNgovu2GaEkbJs+34/1u9qZtpurbnl5UA47SCUUfskBIjfMaiGlC
-         WlgX8qJGVA9wnFreDDWgmMokCHhor0vJxt511fs0jyPIhuo5R3qyJvUuDbf5x1+FLrpC
-         sDxg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=PPVWx1bdM2r6k6HCDP6FMLkldqZlCb3M27xZWJhcudQ=;
+        b=gJN5GOKfS246dQiqnCnxZvxuC/yXOqjmoGhZvQVQ2BLGma8RRmBU3gem6jqeHf+y4z
+         I/L1/iYKjkKHs3cQflrmo/FHJ9ltxCadW1advCtd+c0D0MO6WJiYxV2LjQG6kQoJwOuT
+         a5QEMxVkRWM/WDwb4JRs48V0egXca37UP7kdkA3VVU8jxtyw9ApSKkTAGX7G7XdO1Fmw
+         nOcFn7JwJbENq4wX3k6NV+rqoZyYqJdwU+kisrl8NmfDj9WaMsgCmC7G55hUQZZW8xEn
+         Jr5jt2xH84vG8N5ZXfw5J+6Nd/Z+1lMtP8ZbTqWVwWRVMtRUmbtT4nzDctfNmKFXh45l
+         xzAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tb+3c4sIXia8Tj7TXbcGSfKzAoHqBRtrMhGgnoxQz9c=;
-        b=TndzgMK+Dr9WzxiMMDfo5sWO+4YdsY7NHqSDo4Uoka86XOa0XH0PtnDaa/WOgyXjqD
-         jftIxOD0w8Q2ZZ7CLxAj2n9tHwmKZSwneLtZsTJcgj4crbsKcss3W976rx6Cr11sGRPV
-         MzAodBYBalqsJrn+iIpk8EjFw6k/gb2I1XmTm6ySQW1XNB4QAvow6S4rjm9/8Gc+vO/z
-         PzEeCFfkg1ys8b4uV5LyWVETNuvoaRNmAVPQUlLH94tgaErVf6DglIYscT9rlRpIGmRX
-         IJI2aOdo3mLsthxPhC51/smf2nZGdeFZtVtgVABmA1wb5CNRxiIzUTlUy+++dTtQPqKn
-         gmAQ==
-X-Gm-Message-State: AOAM530zOVuzISVpfyAIfCf+mANQPIWjUiPNQq5naEDswqljIw8GB+Z4
-        btCqZLxQlhRMSYThrfQkmaaQtA==
-X-Google-Smtp-Source: ABdhPJy5lEitPCHFg1OSUQG2byPt0M4/Vn2i9PLMWC8UpSbU447SdR7DBz6vRKpV6owBYA+uCyeJpQ==
-X-Received: by 2002:a17:902:d3c5:b029:12d:32f2:8495 with SMTP id w5-20020a170902d3c5b029012d32f28495mr14949223plb.72.1629429927093;
-        Thu, 19 Aug 2021 20:25:27 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:549a:ad5a:e5bd:8c8a])
-        by smtp.gmail.com with ESMTPSA id u3sm9211597pjr.2.2021.08.19.20.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 20:25:26 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 11:25:23 +0800
-From:   Tzung-Bi Shih <tzungbi@google.com>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Wilczyski <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        qizhong.cheng@mediatek.com, Ryan-JH.Yu@mediatek.com
-Subject: Re: [PATCH] PCI: mediatek-gen3: Disable DVFSRC voltage request
-Message-ID: <YR8go1l0Xnvvqn5E@google.com>
-References: <20210819125939.21253-1-jianjun.wang@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819125939.21253-1-jianjun.wang@mediatek.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=PPVWx1bdM2r6k6HCDP6FMLkldqZlCb3M27xZWJhcudQ=;
+        b=FR0o+A9Uoir6QjaXnks3Ah7gTPHg7wBjN/IkVKisSj9wjZYkEdpVhji43NKASSWtKO
+         w4u3eTECJNgJZ4OhrvYSuOoQM/PTIAzyIVIOs7UIAPEyab4pzUibmxMa7Q0RGzyB6x9+
+         RGvdfDJRjgKWIEluzN++lgzWYpeI4QcdiWcjLblPbK4M8XI28A6zNg/K3HRZkWpwn2H7
+         5G5Iw6vqRvlkwVIyNReZIUBxHPkLX4gA+duCyPPUT7jZFuiU2L5pu48gU+TrgBusNktK
+         cQhi9U4qPtejTeZXWVzhBqCmX64KAwaBEbqZKi8wzIpiT7fE2omz2XyJh1ifoDAemuTy
+         +ccA==
+X-Gm-Message-State: AOAM531450oxEHXacaCE/SNdEdNoJQ7YDdEIOoAsYoK6PYt8p05ns2vE
+        43sLfYWVLSzOlUFWxCtwfVCLWH16XiyMvA==
+X-Google-Smtp-Source: ABdhPJzCh/1CY9NFlmYEsuZDv3AWwnW88JmxfsBsDibcRNOWieWtPeEac36CDQ+YgoLoeoCGd7Zv1ubtLBAIMA==
+X-Received: from mmandlik.mtv.corp.google.com ([2620:15c:202:201:f6f9:890a:ebc2:929c])
+ (user=mmandlik job=sendgmr) by 2002:a25:cec6:: with SMTP id
+ x189mr21255905ybe.89.1629430106592; Thu, 19 Aug 2021 20:28:26 -0700 (PDT)
+Date:   Thu, 19 Aug 2021 20:28:22 -0700
+Message-Id: <20210819202819.v5.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+Subject: [PATCH v5] Bluetooth: Keep MSFT ext info throughout a hci_dev's life cycle
+From:   Manish Mandlik <mmandlik@google.com>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     Archie Pusaka <apusaka@chromium.org>,
+        linux-bluetooth@vger.kernel.org,
+        Alain Michaud <alainm@chromium.org>,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Manish Mandlik <mmandlik@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 08:59:39PM +0800, Jianjun Wang wrote:
-> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+From: Miao-chen Chou <mcchou@chromium.org>
+
+This moves msft_do_close() from hci_dev_do_close() to
+hci_unregister_dev() to avoid clearing MSFT extension info. This also
+re-reads MSFT info upon every msft_do_open() even if MSFT extension has
+been initialized.
+
+The following test steps were performed.
+(1) boot the test device and verify the MSFT support debug log in syslog
+(2) restart bluetoothd and verify msft_do_close() doesn't get invoked
+    and msft_do_open re-reads the MSFT support.
+
+Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+Signed-off-by: Manish Mandlik <mmandlik@google.com>
+---
+
+Changes in v5:
+- Rebase on ToT and remove extra blank line
+
+Changes in v4:
+- Re-read the MSFT data instead of skipping if it's initiated already
+
+Changes in v3:
+- Remove the accepted commits from the series
+
+ net/bluetooth/hci_core.c |  3 ++-
+ net/bluetooth/msft.c     | 20 +++++++++++++++++---
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index fb296478b86e..681c6dabb550 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -1798,7 +1798,6 @@ int hci_dev_do_close(struct hci_dev *hdev)
+ 	hci_sock_dev_event(hdev, HCI_DEV_DOWN);
+ 
+ 	aosp_do_close(hdev);
+-	msft_do_close(hdev);
+ 
+ 	if (hdev->flush)
+ 		hdev->flush(hdev);
+@@ -4026,6 +4025,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+ 		cancel_work_sync(&hdev->suspend_prepare);
+ 	}
+ 
++	msft_do_close(hdev);
++
+ 	hci_dev_do_close(hdev);
+ 
+ 	if (!test_bit(HCI_INIT, &hdev->flags) &&
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index b4bfae41e8a5..c2568e93598a 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -184,16 +184,30 @@ static void reregister_monitor_on_restart(struct hci_dev *hdev, int handle)
+ 
+ void msft_do_open(struct hci_dev *hdev)
+ {
+-	struct msft_data *msft;
++	struct msft_data *msft = NULL;
+ 
+ 	if (hdev->msft_opcode == HCI_OP_NOP)
+ 		return;
+ 
+ 	bt_dev_dbg(hdev, "Initialize MSFT extension");
+ 
+-	msft = kzalloc(sizeof(*msft), GFP_KERNEL);
+-	if (!msft)
++	/* If MSFT data exists, reset its members */
++	if (hdev->msft_data) {
++		msft = hdev->msft_data;
++		hdev->msft_data = NULL;
++
++		msft->features = 0;
++		kfree(msft->evt_prefix);
++		msft->evt_prefix = NULL;
++		msft->evt_prefix_len = 0;
++	} else {
++		msft = kzalloc(sizeof(*msft), GFP_KERNEL);
++	}
++
++	if (!msft) {
++		bt_dev_err(hdev, "Failed to init MSFT extension");
+ 		return;
++	}
+ 
+ 	if (!read_supported_features(hdev, msft)) {
+ 		kfree(msft);
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
