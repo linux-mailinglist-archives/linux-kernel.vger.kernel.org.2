@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1733F3F2BF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20AC3F2BF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 14:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240509AbhHTMVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 08:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34338 "EHLO mail.kernel.org"
+        id S240394AbhHTMXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 08:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240526AbhHTMVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 08:21:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80C2860FE6;
-        Fri, 20 Aug 2021 12:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629462068;
-        bh=XokPNaEZzCBVxZsGy8OxFfqbu3eCtU/5yezA3ayFAVE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=fuaiNjmrqEGqEyZ0Td9kJzBEOFdZR1XtiyRqYRBAUQ6cgnwHen8DbRX1WbhDLK4sp
-         fg6t0e/X0bIo6ghCAbHQ4q9OnJheCUDkzcUXuEFzkjQbx7hyOFhjM3lw9N6R5DZwwS
-         RyuV/ZootL/25yfGBgx2+OonSLAzV6yuay+Z3AVYD4HFCoa52ip+zot/jdv5hL4C7p
-         dOGRUroa2bfHf/xlXOQ8bsqpH9YjwyfQh+vNORkDGJKXNiUGtcf6gH/+MOD7xXJ3LJ
-         glioz7ThqLAz2ypXdFWdGdlgCir6VygZ51YKIjoDkcFcvv0Hb+X7dpqXcSR+4mkVDj
-         TO2qcKyKmczKQ==
-Date:   Fri, 20 Aug 2021 14:21:05 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] HID: logitech-hidpp: Use 'atomic_inc_return' instead of
- hand-writing it
-In-Reply-To: <1091bc38881086be28d561adca042caba234f3f2.1627054657.git.christophe.jaillet@wanadoo.fr>
-Message-ID: <nycvar.YFH.7.76.2108201420570.15313@cbobk.fhfr.pm>
-References: <1091bc38881086be28d561adca042caba234f3f2.1627054657.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S237882AbhHTMXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 08:23:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0878460F45;
+        Fri, 20 Aug 2021 12:22:25 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH3XT-006BUP-26; Fri, 20 Aug 2021 13:22:23 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] irqchip/apple-aic: fix irq_disable from within irq handlers
+Date:   Fri, 20 Aug 2021 13:22:18 +0100
+Message-Id: <162946212617.2128248.7705849006178271820.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210812100942.17206-1-sven@svenpeter.dev>
+References: <20210812100942.17206-1-sven@svenpeter.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: marcan@marcan.st, sven@svenpeter.dev, will@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021, Christophe JAILLET wrote:
-
-> This function logs a warning if the workqueue gets too big.
-> In order to save a few cycles, use 'atomic_inc_return()' instead of an
-> 'atomic_inc()/atomic_read()' sequence.
+On Thu, 12 Aug 2021 12:09:42 +0200, Sven Peter wrote:
+> When disable_irq_nosync for an interrupt is called from within its
+> interrupt handler, this interrupt is only marked as disabled with the
+> intention to mask it when it triggers again.
+> The AIC hardware however automatically masks the interrupt when it is read.
+> aic_irq_eoi then unmasks it again if it's not disabled *and* not masked.
+> This results in a state mismatch between the hardware state and the
+> state kept in irq_data: The hardware interrupt is masked but
+> IRQD_IRQ_MASKED is not set. Any further calls to unmask_irq will directly
+> return and the interrupt can never be enabled again.
 > 
-> This axes a line of code and saves a 'atomic_read()' call.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/hid/hid-logitech-hidpp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-> index 61635e629469..a7fa35245c2e 100644
-> --- a/drivers/hid/hid-logitech-hidpp.c
-> +++ b/drivers/hid/hid-logitech-hidpp.c
-> @@ -2240,11 +2240,10 @@ static int hidpp_ff_queue_work(struct hidpp_ff_private_data *data, int effect_id
->  	wd->size = size;
->  	memcpy(wd->params, params, size);
->  
-> -	atomic_inc(&data->workqueue_size);
-> +	s = atomic_inc_return(&data->workqueue_size);
->  	queue_work(data->wq, &wd->work);
->  
->  	/* warn about excessive queue size */
-> -	s = atomic_read(&data->workqueue_size);
->  	if (s >= 20 && s % 20 == 0)
->  		hid_warn(data->hidpp->hid_dev, "Force feedback command queue contains %d commands, causing substantial delays!", s);
+> [...]
 
-Applied, thank you.
+Applied to irq/misc-5.15, thanks!
 
+[1/1] irqchip/apple-aic: fix irq_disable from within irq handlers
+      commit: 0fb038ba08dba0a5e937b79a67ed9c21ab5b59c5
+
+Cheers,
+
+	M.
 -- 
-Jiri Kosina
-SUSE Labs
+Without deviation from the norm, progress is not possible.
+
 
