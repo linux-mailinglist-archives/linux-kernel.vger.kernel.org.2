@@ -2,171 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F0F3F2CE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B09A3F2CEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 15:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240737AbhHTNMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 09:12:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38095 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240614AbhHTNMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 09:12:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629465098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bqh06A4IsUEWpw6rhzLKw/iWZwAPu+rG9dT74f0JO44=;
-        b=L5kJVMfOpVt3JxEOM8yc4L8dOLIPHTh4cQB6QJ1F2TQgDB3IGnQ5q/KlCYnBd0W41hwZWr
-        j6GAAmIG+Lf7oAwVMSjwYYFdAIQk1VtAFIIbrWa/9vze0pRAZYledT/8TtJU2BrDHcr4l2
-        BLMp6grb8oo/0qfk0W/SDn0hIUtaKKU=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-1WZ0FBx5PcWvM_T2S0nWjw-1; Fri, 20 Aug 2021 09:11:37 -0400
-X-MC-Unique: 1WZ0FBx5PcWvM_T2S0nWjw-1
-Received: by mail-il1-f198.google.com with SMTP id x3-20020a92de03000000b0022458d4e768so5386305ilm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 06:11:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bqh06A4IsUEWpw6rhzLKw/iWZwAPu+rG9dT74f0JO44=;
-        b=Hi45AaiLwLu6eLCkzAnNh6a9GeahCH92KbTgica/Zadd5L8HvgVKi6/1BfyWvzHkAB
-         bDiFl0+fsB4xQ/rsut5Ga+QN0o/9NsR7t/DAVPCGxvxE6RzsMtf57IsiAdgJP7uXvHXv
-         XUKvh7/VkANO9WqeGL36dfwlrKOkCGRolNtHKRrDsjiIDdGG28PKdNODjueAQWxOmebt
-         wi/q3Vtz/OtgHDx4i17ISXdyTxXEPv1pl10m/WVoY6fsFmZvMUgKaMk7+ZEI015vc6vg
-         jhVtbDEtgow1V4nXrwEwe1LpnKqKe4u2LI7ZziQKsTwfbms4C5pUYbbpcBqwh/bFd/jf
-         vpsw==
-X-Gm-Message-State: AOAM532Vvu2eoHUCJjOxd2VwsnHpSsLQF9ZaJJpwgwBbzK3jk66tnNe1
-        99ag4DluSzEjZvwI2Ma/SUMV8Dn6S1B9YRoH3mFuPdKzACRH4A2yhEpluUsXxeblXvyB2OqHFRc
-        CvEhiu/hDj6zFN+yf8b52N1bT
-X-Received: by 2002:a05:6638:1905:: with SMTP id p5mr17720509jal.25.1629465096939;
-        Fri, 20 Aug 2021 06:11:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwn2FwXIDsFpu5O60lFgWVHR+E5ie3a+l6OotzkonnnUZdMfF8XP6FuEiuSEv0LvgDyL5UuiQ==
-X-Received: by 2002:a05:6638:1905:: with SMTP id p5mr17720468jal.25.1629465096680;
-        Fri, 20 Aug 2021 06:11:36 -0700 (PDT)
-Received: from [172.16.0.19] (209-212-39-192.brainerd.net. [209.212.39.192])
-        by smtp.gmail.com with ESMTPSA id k9sm3452624ilo.49.2021.08.20.06.11.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 06:11:36 -0700 (PDT)
-Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
- holder auto-demotion
-To:     Steven Whitehouse <swhiteho@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, ocfs2-devel@oss.oracle.com
-References: <20210819194102.1491495-1-agruenba@redhat.com>
- <20210819194102.1491495-11-agruenba@redhat.com>
- <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com>
-From:   Bob Peterson <rpeterso@redhat.com>
-Message-ID: <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
-Date:   Fri, 20 Aug 2021 08:11:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S240743AbhHTNM4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Aug 2021 09:12:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240739AbhHTNMy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 09:12:54 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDE7560F91;
+        Fri, 20 Aug 2021 13:12:15 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH4Jh-006C42-Qa; Fri, 20 Aug 2021 14:12:13 +0100
+Date:   Fri, 20 Aug 2021 14:12:13 +0100
+Message-ID: <87o89sqmz6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
+Cc:     Chester Lin <clin@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        s32@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 4/8] arm64: dts: add NXP S32G2 support
+In-Reply-To: <d09ed0fd-83e7-a6aa-0bd6-f679ffb64eaf@suse.de>
+References: <20210805065429.27485-1-clin@suse.com>
+        <20210805065429.27485-5-clin@suse.com>
+        <d09ed0fd-83e7-a6aa-0bd6-f679ffb64eaf@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: afaerber@suse.de, clin@suse.com, robh+dt@kernel.org, s32@nxp.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org, gregkh@linuxfoundation.org, shawnguo@kernel.org, krzk@kernel.org, linux@rempel-privat.de, s.riedmueller@phytec.de, matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com, festevam@gmail.com, matteo.lisi@engicam.com, frieder.schrempf@kontron.de, tharvey@gateworks.com, jagan@amarulasolutions.com, catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com, bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com, radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com, matthias.bgg@gmail.com, iivanov@suse.de, jlee@suse.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/21 4:35 AM, Steven Whitehouse wrote:
-> Hi,
+On Thu, 12 Aug 2021 18:26:28 +0100,
+Andreas Färber <afaerber@suse.de> wrote:
 > 
-> On Thu, 2021-08-19 at 21:40 +0200, Andreas Gruenbacher wrote:
->> From: Bob Peterson <rpeterso@redhat.com>
->>
->> This patch introduces a new HIF_MAY_DEMOTE flag and infrastructure
->> that
->> will allow glocks to be demoted automatically on locking conflicts.
->> When a locking request comes in that isn't compatible with the
->> locking
->> state of a holder and that holder has the HIF_MAY_DEMOTE flag set,
->> the
->> holder will be demoted automatically before the incoming locking
->> request
->> is granted.
->>
-> I'm not sure I understand what is going on here. When there are locking
-> conflicts we generate call backs and those result in glock demotion.
-> There is no need for a flag to indicate that I think, since it is the
-> default behaviour anyway. Or perhaps the explanation is just a bit
-> confusing...
+> Hi Chester et al.,
+> 
+> On 05.08.21 08:54, Chester Lin wrote:
+> > Add an initial dtsi file for generic SoC features of NXP S32G2.
+> > 
+> > Signed-off-by: Chester Lin <clin@suse.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/s32g2.dtsi | 98 ++++++++++++++++++++++++
+> >  1 file changed, 98 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > new file mode 100644
+> > index 000000000000..3321819c1a2d
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
 
-I agree that the whole concept and explanation are confusing. Andreas 
-and I went through several heated arguments about the symantics, 
-comments, patch descriptions, etc. We played around with many different 
-flag name ideas, etc. We did not agree on the best way to describe the 
-whole concept. He didn't like my explanation and I didn't like his. So 
-yes, it is confusing.
+[...]
 
-My preferred terminology was "DOD" or "Dequeue On Demand" which makes 
-the concept more understandable to me. So basically a process can say
-"I need to hold this glock, but for an unknown and possibly lengthy 
-period of time, but please feel free to dequeue it if it's in your way."
-And bear in mind that several processes may do the same, simultaneously.
+> > +		gic: interrupt-controller@50800000 {
+> > +			compatible = "arm,gic-v3";
+> > +			#interrupt-cells = <3>;
+> > +			interrupt-controller;
+> > +			reg = <0 0x50800000 0 0x10000>,
+> > +			      <0 0x50880000 0 0x200000>,
 
-You can almost think of this as a performance enhancement. This concept 
-allows a process to hold a glock for much longer periods of time, at a 
-lower priority, for example, when gfs2_file_read_iter needs to hold the 
-glock for very long-running iterative reads.
+That's enough redistributor space for 16 CPUs. However, you only
+describe 4. Either the number of CPUs is wrong, the size is wrong, or
+the GIC has been configured for more cores than the SoC has.
 
-The process requesting a holder with "Demote On Demand" must then 
-determine if its holder has been stolen away (dequeued on demand) after 
-its lengthy operation, and therefore needs to pick up the pieces of 
-where it left off in its process.
+> > +			      <0 0x50400000 0 0x2000>,
+> > +			      <0 0x50410000 0 0x2000>,
+> > +			      <0 0x50420000 0 0x2000>;
+> 
+> Please order reg after compatible by convention, and sort
+> interrupt-controller or at least #interrupt-cells (applying to
+> consumers) last, after the below one applying to this device itself.
+> 
+> > +			interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) |
+> > +						 IRQ_TYPE_LEVEL_HIGH)>;
+> > +		};
+> 
+> CC'ing Marc for additional GIC scrutiny, often the sizes are wrong.
 
-Meanwhile, another process may need to hold the glock. If its requested 
-mode is compatible, say SH and SH, the lock is simply granted with no 
-further delay. If the mode is incompatible, regardless of whether it's 
-on the local node or a different node in the cluster, these 
-longer-term/lower-priority holders may be dequeued or prempted by 
-another request to hold the glock. Note that although these holders are 
-dequeued-on-demand, they are never "uninitted" as part of the process. 
-Nor must they ever be, since they may be on another process's heap.
+There is more than just sizes. The interrupt specifier for the
+maintenance interrupt is also wrong.
 
-This differs from the normal glock demote process in which the demote 
-bit is set on ("requesting" the glock be demoted) but still needs to 
-block until the holder does its actual dequeue.
+	M.
 
->> Processes that allow a glock holder to be taken away indicate this by
->> calling gfs2_holder_allow_demote().  When they need the glock again,
->> they call gfs2_holder_disallow_demote() and then they check if the
->> holder is still queued: if it is, they're still holding the glock; if
->> it
->> isn't, they need to re-acquire the glock.
->>
->> This allows processes to hang on to locks that could become part of a
->> cyclic locking dependency.  The locks will be given up when a (rare)
->> conflicting locking request occurs, and don't need to be given up
->> prematurely.
-> This seems backwards to me. We already have the glock layer cache the
-> locks until they are required by another node. We also have the min
-> hold time to make sure that we don't bounce locks too much. So what is
-> the problem that you are trying to solve here I wonder?
-
-Again, this is simply allowing premption of lenghy/low-priority holders 
-whereas the normal demote process will only demote when the glock is 
-dequeued after this potentially very-long period of time.
-
-The minimum hold time solves a different problem, and Andreas and I 
-talked just yesterday about possibly revisiting how that all works. The 
-problem with minimum hold time is that in many cases the glock state 
-machine does not want to grant new holders if the demote bit is on, so 
-it ends up wasting more time than solving the actual problem.
-But that's another problem for another day.
-
-Regards,
-
-Bob Peterson
-
+-- 
+Without deviation from the norm, progress is not possible.
