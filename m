@@ -2,178 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3591D3F2E00
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455B63F2E06
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240840AbhHTOZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:25:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28834 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S240721AbhHTOZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:25:05 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17KEF5Q8085303;
-        Fri, 20 Aug 2021 10:24:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=BcoMMflsLYE3BWsm/Yp3/r4I8XFQP6V5LFbLZTJmZxQ=;
- b=rUMGvnq9VhzQuTY8xiNG0HrFyAGdbIKmGf94elUlXZAXNzcOzHzx2y/13NN/ERjMBzXV
- DOplkdNNCeARX5+1+5tkXHU+UzrDgrwnE2x9L04ucx17XaaLWKktzJOZ9COl+m3VIYYL
- 31VZ9PZLV3p737AE288h69jxxS7TLz+NwHG3i92/WybS9LTY3LIqUFFC3lmwRbIB3X2F
- oysCsHIsLCXwrPKM0NFjIWqVifEm4A8xeTy2iJswTGQO3jqyVlNozDwei9MCiMg2MXKi
- vHVzl+SXPHEE1ZU3u8gcB2/BDBQgCTcCbpStm2OlY9vJCSEDwYLkPivy3WZWyZkQ07Y8 sw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aj04tukas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 10:24:25 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17KEFBid085663;
-        Fri, 20 Aug 2021 10:24:25 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aj04tukak-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 10:24:25 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17KECUfH006452;
-        Fri, 20 Aug 2021 14:24:24 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma01wdc.us.ibm.com with ESMTP id 3ae5ffm785-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 14:24:24 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17KEONPd25952662
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Aug 2021 14:24:23 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 083A4136060;
-        Fri, 20 Aug 2021 14:24:23 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F455136051;
-        Fri, 20 Aug 2021 14:24:21 +0000 (GMT)
-Received: from cpe-172-100-181-211.stny.res.rr.com (unknown [9.160.182.229])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 20 Aug 2021 14:24:20 +0000 (GMT)
-Subject: Re: [PATCH 0/2] s390/vfio-ap: do not open code locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pasic@linux.vnet.ibm.com,
-        jjherne@linux.ibm.com, jgg@nvidia.com, kwankhede@nvidia.com,
-        david@redhat.com, pbonzini@redhat.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <3f45fe31-6666-ac87-3a98-dd942b5dfb3c@linux.ibm.com>
- <20210802155355.22b98789.pasic@linux.ibm.com>
- <6f37ef28-3cce-2f4f-3173-2c1e916900cc@linux.ibm.com>
- <6d64bd83-1519-6065-a4cd-9356c6be5d1a@de.ibm.com>
- <20210818103908.31eb5848.alex.williamson@redhat.com>
- <8735r5sb8y.fsf@redhat.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <3b7451cc-6409-5611-b85d-b37060b24d6d@linux.ibm.com>
-Date:   Fri, 20 Aug 2021 10:24:20 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <8735r5sb8y.fsf@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Zmrtjif4Nru3aFKnDIzoimM1_u4GWes5
-X-Proofpoint-GUID: TK3z_0hDKyJiBVnOs7vYrLgCKjrrasnX
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S240874AbhHTOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:25:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240802AbhHTOZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:25:37 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55B5E610FF;
+        Fri, 20 Aug 2021 14:24:59 +0000 (UTC)
+Date:   Fri, 20 Aug 2021 10:24:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     <Viktor.Rosendahl@bmw.de>
+Cc:     <jing.yangyang@zte.com.cn>, <cgel.zte@gmail.com>,
+        <vulab@iscas.ac.cn>, <colin.king@canonical.com>,
+        <linux-kernel@vger.kernel.org>, <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] tools/tracing: fix application of sizeof to
+ pointer
+Message-ID: <20210820102452.341d25f8@oasis.local.home>
+In-Reply-To: <e43ee2b8ed6e69bdda1ab859a4a16bc80bbba8d6.camel@bmw.de>
+References: <8fd4bb65ef3da67feac9ce3258cdbe9824752cf1.1629198502.git.jing.yangyang@zte.com.cn>
+        <e43ee2b8ed6e69bdda1ab859a4a16bc80bbba8d6.camel@bmw.de>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-20_06:2021-08-20,2021-08-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108200079
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 20 Aug 2021 09:00:09 +0000
+<Viktor.Rosendahl@bmw.de> wrote:
 
+> > Reported-by: Zeal Robot <zealci@zte.com.cn>
+> > Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> > ---
+> >  tools/tracing/latency/latency-collector.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/tracing/latency/latency-collector.c
+> > b/tools/tracing/latency/latency-collector.c
+> > index 3a2e6bb..64d531d 100644
+> > --- a/tools/tracing/latency/latency-collector.c
+> > +++ b/tools/tracing/latency/latency-collector.c
+> > @@ -1538,7 +1538,7 @@ static void tracing_loop(void)
+> >  				mutex_lock(&print_mtx);
+> >  				check_signals();
+> >  				write_or_die(fd_stdout, queue_full_warning,
+> > -					     sizeof(queue_full_warning));
+> > +					     sizeof(*queue_full_warning));  
+> 
+> The old code would give a size of 8, i.e. the size of the pointer. Your
+> suggestion will give a size of 1, i.e. the size of the first character of the
+> error message. So instead of ouputing "Could no" we would only write out "C".
 
-On 8/19/21 11:30 AM, Cornelia Huck wrote:
-> On Wed, Aug 18 2021, Alex Williamson <alex.williamson@redhat.com> wrote:
->
->> On Wed, 18 Aug 2021 17:59:51 +0200
->> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->>
->>> On 02.08.21 18:32, Tony Krowiak wrote:
->>>>
->>>> On 8/2/21 9:53 AM, Halil Pasic wrote:
->>>>> On Mon, 2 Aug 2021 09:10:26 -0400
->>>>> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->>>>>   
->>>>>> PING!
->>>>>>
->>>>>> This patch will pre-req version 17 of a patch series I have waiting in
->>>>>> the wings,
->>>>>> so I'd like to get this one merged ASAP. In particular, if a KVM
->>>>>> maintainer can
->>>>>> take a look at the comments concerning the taking of the kvm->lock
->>>>>> before the
->>>>>> matrix_mdev->lock it would be greatly appreciated. Those comments begin with
->>>>>> Message ID <20210727004329.3bcc7d4f.pasic@linux.ibm.com> from Halil Pasic.
->>>>> As far as I'm concerned, we can move forward with this. Was this
->>>>> supposed to go in via Alex's tree?
->>>> I am not certain, Christian queued the previous patches related to
->>>> this on:
->>>>
->>>>
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/log/?h=fixes
->>>>
->>>> Jason G., since this will need to be integrated with your other patches,
->>>> where should this be queued?
->>>
->>> This previous patch (s390/vfio-ap: clean up mdev resources when remove callback invoked) is
->>> already in master.
->>> Can you respin the series with all Acks and RBs?
->>>
->>> Alex, can you then take these 2 patches via your tree? Thanks
->>>
->>> Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
->>> for this series.
->>
->> I see some review feedback that seems to suggest a new version would be
->> posted:
->>
->> https://lore.kernel.org/linux-s390/0f03ab0b-2dfd-e1c1-fe43-be2a59030a71@linux.ibm.com/
-> Yeah, I thought so as well. But it also looks like something that could
-> be a fixup on top.
+Which is obviously incorrect to use sizeof(*queue_full_warning), and
+just makes the current bug into an even worse bug.
 
-I will post the new patch today. I was waiting for the remainder of
-the feedback and frankly forgot to post the patch incorporating
-the changes precipitated by the previous comments.
+> 
+> What we want is the length of the error message. This could be achieved in two
+> ways:
+> 
+> 1. By changing the sizeof(queue_full_warning) to strlen(queue_full_warning).
+> 
+> 2. By changing the definition of queue_full_warning to be an array, in that case
+> we would like to use sizeof(queue_full_warning) - 1, the "- 1" comes from the
+> fact that we don't want to write out the terminating null character.
+> 
+> I think the first approach with strlen() is the better solution because it's
+> shorter and modern compilers will do the strlen() calculation of constant
+> strings at compile time anyway.
 
->
->> I also see in this thread:
->>
->> https://lore.kernel.org/linux-s390/20210721164550.5402fe1c.pasic@linux.ibm.com/
->>
->> that Halil's concern's around open/close races are addressed by Jason's
->> device_open/close series that's already in my next branch and he
->> provided an Ack, but there's still the above question regarding the
->> kvm->lock that was looking for a review from... I'm not sure, maybe
->> Connie or Paolo.  Christian, is this specifically what you're ack'ing?
-> I'm also unsure about the kvm->lock thing. Is taking the lock buried
-> somewhere deep in the code that will ultimately trigger the release?
-> I would at least like a pointer.
+Either approach is fine. But it needs to fix the issue, and not just
+blindly follow what Coccinelle tells you. Tools like Coccinelle can
+help point you where a problem is. But people still need to use their
+brain to actually fix the issue.
 
-I'm not quite sure what you're asking here, but if you follow the
-thread starting with the link above it may reveal the answer to
-what you are asking here.
-
-
->
->> It can ultimately go in through my tree, but not being familiar with
->> this code I'd hope for more closure.  Thanks,
->>
->> Alex
-
+-- Steve
