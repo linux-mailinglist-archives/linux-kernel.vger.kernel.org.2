@@ -2,72 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D833C3F2EB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF05D3F2EB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240988AbhHTPTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:19:16 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:48014
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234323AbhHTPTP (ORCPT
+        id S241013AbhHTPTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240992AbhHTPTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:19:15 -0400
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net [80.193.200.194])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id F08E73F359;
-        Fri, 20 Aug 2021 15:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629472716;
-        bh=2y4JX8nWM9/z4xlhCMBctS5hhey+EW6iTHOPrc38Ugk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=EidheyWAH6xXtFZTJRd3DF6qMtC84raAWLT30+fFGzxv/j4aLR7tIl2TtGW6gQYQ4
-         3ssQP5VTIhjfzewzsu2hErFFVOFQfCbHaHlWSQamBpQOPHlqTr814jogdgG958Yft1
-         AYUdlENuNgCczIuZE/2tCp4SfUP9tWGd7CgZOdfnZEpg4FdOA37bty4UreNKcpovBD
-         t5CGQjN1ur4oEKI0xhH7kZLJEdquSCtlKvw//yH36opl2ac91aPFeqMUXteKvxqWmj
-         jHMi1b/XGRSQdHtEHg3dvLA9CErslc6QxzqKtj5fk3qvapnrrh+nM/ty5a826l8dEl
-         ajfcU5Mf3rZNQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Karan Tilak Kumar <kartilak@cisco.com>,
-        Sesidhar Baddela <sebaddel@cisco.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: snic: Fix spelling mistake "progres" -> "progress"
-Date:   Fri, 20 Aug 2021 16:18:35 +0100
-Message-Id: <20210820151835.59804-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 20 Aug 2021 11:19:40 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D19C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:18:56 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so14040226pjr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e7Os9VAnizBXv51HC/2jWtdqVC6IT3MX2PEly7Hzllc=;
+        b=M+ibRtOTQAZRmC0FnL3AMilGRh2mUgMJmWUfg9JNOtAKXFs9lFLPXucpaO7ELUpNDb
+         EGbzGydfkHCtIjzQLeNz+1/fIOA2rFhRJv3yC4ZhYvpISJH4iNfkhazi5Hz/Nq0fpYXO
+         QpGdn8L+8PdTFb0E+p78qZDHRXkUnXo7JNSYlGQecnF0IhE5VtdC/Y+7Y9yUsL+y7PV3
+         5x4ObvPPy0AxrVohJG1gL8vPnbME69k1gCKAA1GyMrEqgR+PWW/PMthly7voCniXVW59
+         FcwvvH0AWzl2X+1XFpdijT2XoPDvNcAXBc2pyggbrImBdT+vil40sbH7g0dNEEtf0bPA
+         hjMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e7Os9VAnizBXv51HC/2jWtdqVC6IT3MX2PEly7Hzllc=;
+        b=ewiD5ihzOk2DZO4QIlV1cjHYfK7N9sjRZjXQn8Fy9wTNogDKMPW25mVSB5FHGGYgnj
+         uR3Zc8EYJZ+sfIrJWsnhuRAbG5Ip6YUeMVcWg0bpaNW2YrpfSul8lCDUvZn7FhXGQ8Bf
+         asOKAaC9Z7vZloMr94MMFdTsW4lMDZ5ZT92152sTq7oHehuWhgn+FrXepRuCCY2Dv9T8
+         QvERu7bTnLurfqUOojtsMhDKEi/rwT3j0e2bPEe2xZRGHsfPK0D6ptuhQELqGe0MHVoh
+         F4nP9GMfF/zq0yI3ODLdUcxq367kdXEwHcUEpL7JhdXLKGXR0a8h1tqDNM58t/PD/ap1
+         LLHw==
+X-Gm-Message-State: AOAM531qal42p9BGOaM/RJ+EQSDQP4pg9OfPmFSpt2ec0stSfDZ4oEwU
+        6E9e2stx7hjUtxTKe+xfb6s40OfKDNRL4Iy5lgFWbQ==
+X-Google-Smtp-Source: ABdhPJzh0Gic3915Mh1iFhrG9Et6Tc2pawPckB/akGEtXtIixYmIi3AnAExi5rU0t9vJgG3HUdy+9gqyxaTkb99WGQ0=
+X-Received: by 2002:a17:90a:708c:: with SMTP id g12mr5224172pjk.13.1629472735668;
+ Fri, 20 Aug 2021 08:18:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com>
+ <20210816060359.1442450-8-ruansy.fnst@fujitsu.com> <CAPcyv4jbi=p=SjFYZcHnEAu+KY821pW_k_yA5u6hya4jEfrTUg@mail.gmail.com>
+ <c7e68dc8-5a43-f727-c262-58dcf244c711@fujitsu.com>
+In-Reply-To: <c7e68dc8-5a43-f727-c262-58dcf244c711@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 20 Aug 2021 08:18:44 -0700
+Message-ID: <CAPcyv4jM86gy-T5EEZf6M2m44v4MiGqYDhxisX59M5QJii6DVg@mail.gmail.com>
+Subject: Re: [PATCH v7 7/8] fsdax: Introduce dax_iomap_ops for end of reflink
+To:     "ruansy.fnst" <ruansy.fnst@fujitsu.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        david <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVDIMM <nvdimm@lists.linux.dev>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Aug 19, 2021 at 11:13 PM ruansy.fnst <ruansy.fnst@fujitsu.com> wrot=
+e:
+>
+>
+>
+> On 2021/8/20 =E4=B8=8A=E5=8D=8811:01, Dan Williams wrote:
+> > On Sun, Aug 15, 2021 at 11:05 PM Shiyang Ruan <ruansy.fnst@fujitsu.com>=
+ wrote:
+> >>
+> >> After writing data, reflink requires end operations to remap those new
+> >> allocated extents.  The current ->iomap_end() ignores the error code
+> >> returned from ->actor(), so we introduce this dax_iomap_ops and change
+> >> the dax_iomap_*() interfaces to do this job.
+> >>
+> >> - the dax_iomap_ops contains the original struct iomap_ops and fsdax
+> >>      specific ->actor_end(), which is for the end operations of reflin=
+k
+> >> - also introduce dax specific zero_range, truncate_page
+> >> - create new dax_iomap_ops for ext2 and ext4
+> >>
+> >> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+> >> ---
+> >>   fs/dax.c               | 68 +++++++++++++++++++++++++++++++++++++---=
+--
+> >>   fs/ext2/ext2.h         |  3 ++
+> >>   fs/ext2/file.c         |  6 ++--
+> >>   fs/ext2/inode.c        | 11 +++++--
+> >>   fs/ext4/ext4.h         |  3 ++
+> >>   fs/ext4/file.c         |  6 ++--
+> >>   fs/ext4/inode.c        | 13 ++++++--
+> >>   fs/iomap/buffered-io.c |  3 +-
+> >>   fs/xfs/xfs_bmap_util.c |  3 +-
+> >>   fs/xfs/xfs_file.c      |  8 ++---
+> >>   fs/xfs/xfs_iomap.c     | 36 +++++++++++++++++++++-
+> >>   fs/xfs/xfs_iomap.h     | 33 ++++++++++++++++++++
+> >>   fs/xfs/xfs_iops.c      |  7 ++---
+> >>   fs/xfs/xfs_reflink.c   |  3 +-
+> >>   include/linux/dax.h    | 21 ++++++++++---
+> >>   include/linux/iomap.h  |  1 +
+> >>   16 files changed, 189 insertions(+), 36 deletions(-)
+> >>
+> >> diff --git a/fs/dax.c b/fs/dax.c
+> >> index 74dd918cff1f..0e0536765a7e 100644
+> >> --- a/fs/dax.c
+> >> +++ b/fs/dax.c
+> >> @@ -1348,11 +1348,30 @@ static loff_t dax_iomap_iter(const struct ioma=
+p_iter *iomi,
+> >>          return done ? done : ret;
+> >>   }
+> >>
+> >> +static inline int
+> >> +__dax_iomap_iter(struct iomap_iter *iter, const struct dax_iomap_ops =
+*ops)
+> >> +{
+> >> +       int ret;
+> >> +
+> >> +       /*
+> >> +        * Call dax_iomap_ops->actor_end() before iomap_ops->iomap_end=
+() in
+> >> +        * each iteration.
+> >> +        */
+> >> +       if (iter->iomap.length && ops->actor_end) {
+> >> +               ret =3D ops->actor_end(iter->inode, iter->pos, iter->l=
+en,
+> >> +                                    iter->processed);
+> >> +               if (ret < 0)
+> >> +                       return ret;
+> >> +       }
+> >> +
+> >> +       return iomap_iter(iter, &ops->iomap_ops);
+> >
+> > This reorganization looks needlessly noisy. Why not require the
+> > iomap_end operation to perform the actor_end work. I.e. why can't
+> > xfs_dax_write_iomap_actor_end() just be the passed in iomap_end? I am
+> > not seeing where the ->iomap_end() result is ignored?
+> >
+>
+> The V6 patch[1] was did in this way.
+> [1]https://lore.kernel.org/linux-xfs/20210526005159.GF202144@locust/T/#m7=
+9a66a928da2d089e2458c1a97c0516dbfde2f7f
+>
+> But Darrick reminded me that ->iomap_end() will always take zero or
+> positive 'written' because iomap_apply() handles this argument.
+>
+> ```
+>         if (ops->iomap_end) {
+>                 ret =3D ops->iomap_end(inode, pos, length,
+>                                      written > 0 ? written : 0,
+>                                      flags, &iomap);
+>         }
+> ```
+>
+> So, we cannot get actual return code from CoW in ->actor(), and as a
+> result, we cannot handle the xfs end_cow correctly in ->iomap_end().
+> That's where the result of CoW was ignored.
 
-There is a spelling mistake in a SNIC_HOST_INFO message. Fix it.
+Ah, thank you for the explanation.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/snic/snic_scsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+However, this still seems like too much code thrash just to get back
+to the original value of iter->processed. I notice you are talking
+about iomap_apply(), but that routine is now gone in Darrick's latest
+iomap-for-next branch. Instead iomap_iter() does this:
 
-diff --git a/drivers/scsi/snic/snic_scsi.c b/drivers/scsi/snic/snic_scsi.c
-index 95740caa1eb0..43a950185e24 100644
---- a/drivers/scsi/snic/snic_scsi.c
-+++ b/drivers/scsi/snic/snic_scsi.c
-@@ -2335,7 +2335,7 @@ snic_reset(struct Scsi_Host *shost, struct scsi_cmnd *sc)
- 	spin_lock_irqsave(&snic->snic_lock, flags);
- 	if (snic_get_state(snic) == SNIC_FWRESET) {
- 		spin_unlock_irqrestore(&snic->snic_lock, flags);
--		SNIC_HOST_INFO(shost, "reset:prev reset is in progres\n");
-+		SNIC_HOST_INFO(shost, "reset:prev reset is in progress\n");
- 
- 		msleep(SNIC_HOST_RESET_TIMEOUT);
- 		ret = SUCCESS;
--- 
-2.32.0
+        if (iter->iomap.length && ops->iomap_end) {
+                ret =3D ops->iomap_end(iter->inode, iter->pos, iomap_length=
+(iter),
+                                iter->processed > 0 ? iter->processed : 0,
+                                iter->flags, &iter->iomap);
+                if (ret < 0 && !iter->processed)
+                        return ret;
+        }
 
+
+I notice that the @iomap argument to ->iomap_end() is reliably coming
+from @iter. So you could do the following in your iomap_end()
+callback:
+
+        struct iomap_iter *iter =3D container_of(iomap, typeof(*iter), ioma=
+p);
+        struct xfs_inode *ip =3D XFS_I(inode);
+        ssize_t written =3D iter->processed;
+        bool cow =3D xfs_is_cow_inode(ip);
+
+        if (cow) {
+                if (written <=3D 0)
+                        xfs_reflink_cancel_cow_range(ip, pos, length, true)
+        }
