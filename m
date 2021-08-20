@@ -2,168 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FA23F304B
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EDF3F305B
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241378AbhHTP4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241289AbhHTP4g (ORCPT
+        id S241401AbhHTP5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:57:13 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:45614 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241379AbhHTP5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:56:36 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEF2C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:55:58 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id r2so9586983pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DfMkWVrhrXjOa4WT8fjUg2g99cfma/KNVtPegOy6YVA=;
-        b=Tn/7uDGMiPjXxAM3ovBYEVyLtygFwlSJAWHrob1PWt4oz/x2Imgk0GhPN2Q3ecFemj
-         9aGJEzabYG/yp6A5N5Z9cTlvPVLlh/yP6oNypqN5vG8oOziU+OSzJRTu7fqXk/NgneL3
-         +EIYwoyeYH2hiFo8BxwiCpYmqjeLAOAaaL9bA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DfMkWVrhrXjOa4WT8fjUg2g99cfma/KNVtPegOy6YVA=;
-        b=TTrbnRwkF75oo8YlMCs1zQfMye6dQ/JmIGlSrnfd1Jb8wogNt5QMbKzI70dBVasLhi
-         dlkp6bnnnpx28TE3MrdnkFE+NKfhQv5G2uWzU9lW027RcLY00VTcL3gzqL34KJgf8KTY
-         W+xuksy+pIOVY2G0dR1DnnT+SG+ojXj/JrcgcUOyXS6FCVOGHZUjdtvOvQi+5Y9I8wdk
-         4yj0WbZ1aX/jpACNVpTItkhWpPFDLxgletIbB/sAtCd1Tz0J78EK4CvYeNqbkL4ZbypP
-         FWciX1zR2YnNAMvoZdtsZKt+So8oMC/zPtAdl8nuMlPdoAzilRq2YgAedRrC/p6Og9PL
-         rZ3A==
-X-Gm-Message-State: AOAM530nEY4zDwWxn2E17ndyPiqHWDnI8ZrnGvMQIuwKOZmlc1N7bKj+
-        /TmbBxRQWEAovaDWOv87/F6oqg==
-X-Google-Smtp-Source: ABdhPJxNmkkLS0IYvcJdUty1efO3ATpriVc4oMEh5d9+VW4AFW/Rt8LdZFCR+Kj2vvrc2GQCiXZJ9w==
-X-Received: by 2002:a63:4d24:: with SMTP id a36mr6002323pgb.37.1629474957688;
-        Fri, 20 Aug 2021 08:55:57 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o10sm6412690pjg.34.2021.08.20.08.55.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 08:55:57 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 08:55:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
-        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 57/63] powerpc/signal32: Use struct_group() to zero
- spe regs
-Message-ID: <202108200851.8AF09CDB71@keescook>
-References: <20210818060533.3569517-1-keescook@chromium.org>
- <20210818060533.3569517-58-keescook@chromium.org>
- <877dggeesw.fsf@mpe.ellerman.id.au>
+        Fri, 20 Aug 2021 11:57:12 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KFuJPN094234;
+        Fri, 20 Aug 2021 10:56:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629474979;
+        bh=lAyyVBpfElD6cu6xrM/uJCISbQOywOKtDruM38jJLB8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=RUpQdG961E5zH+t7IjdUw5YnEQbuXn+z/MtkEjymx2F7PIZZPpktSTRQ4mzglUxWe
+         DjnvjxyYcQURkfcYAlGSyN+z1BlhoN8SDHVlLCYItZ8KWE7L0AlUdYrx4DClfwXs4d
+         CXb5KPCw4yHwFiAVpM/1hhKGqby0WMot+UM498Os=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KFuJwr080577
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Aug 2021 10:56:19 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
+ Aug 2021 10:56:18 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 20 Aug 2021 10:56:18 -0500
+Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KFuElV051653;
+        Fri, 20 Aug 2021 10:56:15 -0500
+Subject: Re: [PATCH 11/13] mtd: spinand: Add support for Power-on-Reset (PoR)
+ instruction
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+ <20210713130538.646-12-a-nandan@ti.com> <20210806210840.65c06b67@xps13>
+ <403a2b26-fd95-31ab-8992-a6e6862249e6@ti.com> <20210820141822.03d658b8@xps13>
+ <c4a1eae9-7c0b-62c8-f10a-000e65c94f1b@ti.com> <20210820161744.148b3003@xps13>
+From:   Apurva Nandan <a-nandan@ti.com>
+Message-ID: <a8fb82f1-e671-aed1-a2d1-39b974d53fee@ti.com>
+Date:   Fri, 20 Aug 2021 21:26:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dggeesw.fsf@mpe.ellerman.id.au>
+In-Reply-To: <20210820161744.148b3003@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 05:49:35PM +1000, Michael Ellerman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > field bounds checking for memset(), avoid intentionally writing across
-> > neighboring fields.
-> >
-> > Add a struct_group() for the spe registers so that memset() can correctly reason
-> > about the size:
-> >
-> >    In function 'fortify_memset_chk',
-> >        inlined from 'restore_user_regs.part.0' at arch/powerpc/kernel/signal_32.c:539:3:
-> >>> include/linux/fortify-string.h:195:4: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
-> >      195 |    __write_overflow_field();
-> >          |    ^~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > Cc: linuxppc-dev@lists.ozlabs.org
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  arch/powerpc/include/asm/processor.h | 6 ++++--
-> >  arch/powerpc/kernel/signal_32.c      | 6 +++---
-> >  2 files changed, 7 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/powerpc/include/asm/processor.h b/arch/powerpc/include/asm/processor.h
-> > index f348e564f7dd..05dc567cb9a8 100644
-> > --- a/arch/powerpc/include/asm/processor.h
-> > +++ b/arch/powerpc/include/asm/processor.h
-> > @@ -191,8 +191,10 @@ struct thread_struct {
-> >  	int		used_vsr;	/* set if process has used VSX */
-> >  #endif /* CONFIG_VSX */
-> >  #ifdef CONFIG_SPE
-> > -	unsigned long	evr[32];	/* upper 32-bits of SPE regs */
-> > -	u64		acc;		/* Accumulator */
-> > +	struct_group(spe,
-> > +		unsigned long	evr[32];	/* upper 32-bits of SPE regs */
-> > +		u64		acc;		/* Accumulator */
-> > +	);
-> >  	unsigned long	spefscr;	/* SPE & eFP status */
-> >  	unsigned long	spefscr_last;	/* SPEFSCR value on last prctl
-> >  					   call or trap return */
-> > diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
-> > index 0608581967f0..77b86caf5c51 100644
-> > --- a/arch/powerpc/kernel/signal_32.c
-> > +++ b/arch/powerpc/kernel/signal_32.c
-> > @@ -532,11 +532,11 @@ static long restore_user_regs(struct pt_regs *regs,
-> >  	regs_set_return_msr(regs, regs->msr & ~MSR_SPE);
-> >  	if (msr & MSR_SPE) {
-> >  		/* restore spe registers from the stack */
-> > -		unsafe_copy_from_user(current->thread.evr, &sr->mc_vregs,
-> > -				      ELF_NEVRREG * sizeof(u32), failed);
-> > +		unsafe_copy_from_user(&current->thread.spe, &sr->mc_vregs,
-> > +				      sizeof(current->thread.spe), failed);
-> 
-> This makes me nervous, because the ABI is that we copy ELF_NEVRREG *
-> sizeof(u32) bytes, not whatever sizeof(current->thread.spe) happens to
-> be.
-> 
-> ie. if we use sizeof an inadvertent change to the fields in
-> thread_struct could change how many bytes we copy out to userspace,
-> which would be an ABI break.
-> 
-> And that's not that hard to do, because it's not at all obvious that the
-> size and layout of fields in thread_struct affects the user ABI.
-> 
-> At the same time we don't want to copy the right number of bytes but
-> the wrong content, so from that point of view using sizeof is good :)
-> 
-> The way we handle it in ptrace is to have BUILD_BUG_ON()s to verify that
-> things match up, so maybe we should do that here too.
-> 
-> ie. add:
-> 
-> 	BUILD_BUG_ON(sizeof(current->thread.spe) == ELF_NEVRREG * sizeof(u32));
-> 
-> Not sure if you are happy doing that as part of this patch. I can always
-> do it later if not.
+Hi Miquèl,
 
-Sounds good to me; I did that in a few other cases in the series where
-the relationships between things seemed tenuous. :) I'll add this (as
-!=) in v3.
+On 20/08/21 7:47 pm, Miquel Raynal wrote:
+> Hi Apurva,
+> 
+> Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 19:11:58
+> +0530:
+> 
+>> Hi Miquèl,
+>>
+>> On 20/08/21 5:48 pm, Miquel Raynal wrote:
+>>> Hi Apurva,
+>>>
+>>> Apurva Nandan <a-nandan@ti.com> wrote on Fri, 20 Aug 2021 17:09:07
+>>> +0530:
+>>>    
+>>>> Hi Miquèl,
+>>>>
+>>>> On 07/08/21 12:38 am, Miquel Raynal wrote:
+>>>>> Hi Apurva,
+>>>>>
+>>>>> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:36
+>>>>> +0000:
+>>>>>     >>>> Manufacturers like Gigadevice and Winbond are adding Power-on-Reset
+>>>>>> functionality in their SPI NAND flash chips. PoR instruction consists
+>>>>>> of a 66h command followed by 99h command, and is different from the FFh
+>>>>>> reset. The reset command FFh just clears the status only registers,
+>>>>>> while the PoR command erases all the configurations written to the
+>>>>>> flash and is equivalent to a power-down -> power-up cycle.
+>>>>>>
+>>>>>> Add support for the Power-on-Reset command for any flash that provides
+>>>>>> this feature.
+>>>>>>
+>>>>>> Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
+>>>>>>
+>>>>>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>>>>>> ---
+>>>>>
+>>>>> [...]
+>>>>> 				\
+>>>>>> @@ -218,6 +230,8 @@ struct spinand_device;
+>>>>>>      * reading/programming/erasing when the RESET occurs. Since we always
+>>>>>>      * issue a RESET when the device is IDLE, 5us is selected for both initial
+>>>>>>      * and poll delay.
+>>>>>> + * Power on Reset can take max upto 500 us to complete, so sleep for 1000 us
+>>>>>
+>>>>> s/max upto/up to/
+>>>>>     >>
+>>>> Okay!
+>>>>   
+>>>>>> + * to 1200 us safely.
+>>>>>
+>>>>> I don't really get why, if the maximum is 500, then let's wait for
+>>>>> 500us.
+>>>>>     >>
+>>>> Generally we keep some margin from the maximum time, no?
+>>>
+>>> Well, yes and no.
+>>>
+>>> If you know that an operation will last Xms and have nothing else to
+>>> do, then you can take some margin if you are in a probe (called once)
+>>> but definitely not if you are in a fast path.
+>>>    
+>>
+>> I think as PoR reset would be called at every mtd_suspend() call, so we can reduce the delay. And we would be expecting some time gap before the next mtd_resume() call.
+>>
+>>> Otherwise the best is to have some kind of signaling but I'm not sure
+>>> you'll have one for the reset op...
+>>>    
+>>
+>> According to public datasheet, it doesn't set the busy bit during reset.
+>>
+>> So do you suggest in the favor of removing the delay margin?
+> 
+> Well, it's microseconds, maybe you can reduce it a little bit but that
+> will be ok.
+> 
 
-Thanks!
+Yes, I got it. Will improve this in v2. Thanks!
 
--- 
-Kees Cook
+>>
+>>>>   
+>>>>>>      */
+>>>>>>     #define SPINAND_READ_INITIAL_DELAY_US	6
+>>>>>>     #define SPINAND_READ_POLL_DELAY_US	5
+>>>>>> @@ -227,6 +241,8 @@ struct spinand_device;
+>>>>>>     #define SPINAND_WRITE_POLL_DELAY_US	15
+>>>>>>     #define SPINAND_ERASE_INITIAL_DELAY_US	250
+>>>>>>     #define SPINAND_ERASE_POLL_DELAY_US	50
+>>>>>> +#define SPINAND_POR_MIN_DELAY_US	1000
+>>>>>> +#define SPINAND_POR_MAX_DELAY_US	1200
+>>>>>>     >>   #define SPINAND_WAITRDY_TIMEOUT_MS	400
+>>>>>>     >> @@ -351,6 +367,7 @@ struct spinand_ecc_info {
+>>>>>>     #define SPINAND_HAS_QE_BIT		BIT(0)
+>>>>>>     #define SPINAND_HAS_CR_FEAT_BIT		BIT(1)
+>>>>>>     #define SPINAND_HAS_OCTAL_DTR_BIT	BIT(2)
+>>>>>> +#define SPINAND_HAS_POR_CMD_BIT		BIT(3)
+>>>>>>     >>   /**
+>>>>>>      * struct spinand_ondie_ecc_conf - private SPI-NAND on-die ECC engine structure
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Miquèl
+>>>>>
+>>>>> ______________________________________________________
+>>>>> Linux MTD discussion mailing list
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>>>     >>
+>>>> Thanks,
+>>>> Apurva Nandan
+>>>
+>>> Thanks,
+>>> Miquèl
+>>>    
+>>
+>> Thanks,
+>> Apurva Nandan
+> 
+> Thanks,
+> Miquèl
+> 
+
+Thanks,
+Apurva Nandan
