@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EB23F3224
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4846E3F322A
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhHTRVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbhHTRVU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:21:20 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EA7C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:20:42 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id bq25so21532665ejb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 10:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CSRFa71O1Abz3CtsCgtEjDNe3nuYOG3QUi11RU5JHrg=;
-        b=aQy1+sd63YYpCZOrulJQMkLK2awdFz2FpqFEiZc3cIQG36r1DGK8GKykRKWbpi+OdG
-         9l73NdbHKb1W0J4nM8drPm0iwly+paS/Yhe/D4tQbjN8DZlNGW41FCX9QGZPmnqwz187
-         cFzmvZTmFfffU8nrlZILZIBcZtKBFAvbhWbzwsByCf/p0b4upgcpSDcnjOq75gZv5n5Y
-         gqQkEeF/qhGwT2zsb69Qaz0+xFoTqocWJTUpSbxTAYuSpaaiWERnMwPuEMEJm5Bp45w8
-         7hP1aRMzD1pnkK8UDQP4pQ+4KxbAaIVAEVHe8FMU6Y7ft2zouKpCemINyHSe3Qsqa8fA
-         FsCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CSRFa71O1Abz3CtsCgtEjDNe3nuYOG3QUi11RU5JHrg=;
-        b=D3D9ppoomILsa9jLhBiNZwZaEInxxYCzC52Or3Myic1zA4ZADCiknJREtqbLy5va8W
-         1MLNrQ05EatEXiUpV25CN+CrqfRxJKNbNJNs7i+8c1E0n5KC6ZKG70A/br7hrUg8lnnf
-         UcMjxhaipKDYLGNmMM2xgdjQ3njd7TD6ke56y/wksHXf4YKJU7yoY08C4d5QHvzLW1mh
-         UMUss3/9txQDTdiKJiWreeXfIyv5YUy26zUIOC2aAcz6TIPBJwN2HjsTaXuNQisebQUI
-         9aboT9P82IFbEPcsghyOIk50JChCLf2YO5EAEr06t5x3noU998hTS2rO7UM0NoPIWyZE
-         BlMA==
-X-Gm-Message-State: AOAM530VX4iQXBXxpQJLxURUpospZ7k5/RNhoRqGEwaw5Z6M0H5Cvsc2
-        6HHRjunoTCq91kAp7BE34JBZD1Mz++Zzgr4gzYZKDQ==
-X-Google-Smtp-Source: ABdhPJyvZorW7EcurksXyiF19X7N66fLf9JK5b88Zy4/UR6KRUufyUQzC7h0X45htFcDrhic1PId5LzO7MPkT7mVDJA=
-X-Received: by 2002:a17:907:f95:: with SMTP id kb21mr22991486ejc.541.1629480040739;
- Fri, 20 Aug 2021 10:20:40 -0700 (PDT)
+        id S233455AbhHTRXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:23:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232598AbhHTRXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:23:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5341D61154;
+        Fri, 20 Aug 2021 17:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629480161;
+        bh=NtBbpRqS1/eYwYOxSrX1KDFfMTuxY8jViL2MBLXG2Ag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bIh2j4rnKv4rLSL2S/xW+E95f5meZHEUMlJhw7ffG+4wWQjELyVecEyBc7fr0PeHD
+         1jwPDMM01WLqV2cUQgupVegZwFv622VKVHqnfWImWZlXCtvIkGky388p5sKRqY4w8g
+         6wL8mKaTox1a0v7Lv3CRgXSKM9E+gArd9XG7Dg7MFVJ5zR5L1Ec85tL221/y1adKDc
+         jvwZW6gwD71iJK4Z5nRas07sD/hhBdv0vMjssStMB2lFJXAp+WzIe+KV8bsOwpmLFz
+         FQB3CO/gs0hJAX+vuzzWH7PFqp9PrMu9ftVvhO8MiTxiac+edyy1hkq+4bTjOVTI8b
+         7lrzKaS25px/Q==
+Received: by pali.im (Postfix)
+        id 22CDAB8A; Fri, 20 Aug 2021 19:22:39 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 19:22:38 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 0/6] serial: mvebu-uart: Support for higher baudrates
+Message-ID: <20210820172238.ekvo42s7oqxkeomt@pali>
+References: <20210624224909.6350-1-pali@kernel.org>
+ <20210809145329.24177-1-pali@kernel.org>
 MIME-Version: 1.0
-References: <cover.1629386192.git.zhansayabagdaulet@gmail.com>
- <1d03ee0d1b341959d4b61672c6401d498bff5652.1629386192.git.zhansayabagdaulet@gmail.com>
- <20210819163117.GO5469@sequoia>
-In-Reply-To: <20210819163117.GO5469@sequoia>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 20 Aug 2021 13:20:04 -0400
-Message-ID: <CA+CK2bB5kC=wVO0g4mC0VVFHhJyuoL_Kd7zqiHrmXC7jwejcWQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] selftests: vm: add COW time test for KSM pages
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210809145329.24177-1-pali@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 12:31 PM Tyler Hicks
-<tyhicks@linux.microsoft.com> wrote:
->
-> On 2021-08-19 21:33:43, Zhansaya Bagdauletkyzy wrote:
-> > Since merged pages are copied every time they need to be modified,
-> > the write access time is different between shared and non-shared pages.
-> > Add ksm_cow_time() function which evaluates latency of these COW
-> > breaks. First, 4000 pages are allocated and the time, required to modify
-> > 1 byte in every other page, is measured. After this, the pages are
-> > merged into 2000 pairs and in each pair, 1 page is modified (i.e. they
-> > are decoupled) to detect COW breaks. The time needed to break COW of
-> > merged pages is then compared with performance of non-shared pages.
-> >
-> > The test is run as follows: ./ksm_tests -C
-> > The output:
-> >       Total size:    15 MiB
-> >
-> >       Not merged pages:
-> >       Total time:     0.002185489 s
-> >       Average speed:  3202.945 MiB/s
-> >
-> >       Merged pages:
-> >       Total time:     0.004386872 s
-> >       Average speed:  1595.670 MiB/s
-> >
-> > Signed-off-by: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
-> > ---
-> > v2 -> v3:
-> >  - address Tyler's feedback
->
-> Thanks for incorporating my suggestions! I can confirm that my feedback
-> was completely addressed.
->
->  Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
->
-> Tyler
+On Monday 09 August 2021 16:53:23 Pali Rohár wrote:
+> This patch series add support for baudrates higher than 230400 on
+> Marvell Armada 37xx boards.
+> 
+> Please review these patches as they touch both Device Tree bindings and
+> mvebu-uart.c driver.
 
-Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+Stephen, is this patch series OK now? Or is there any other issue?
+
+> Changes in v5:
+> * fixed yaml binding file
+> 
+> Changes in v4:
+> * converted armada3700-uart-clock documentation to YAML
+> * split documentation changes into two commits:
+>   - first which adds clock documentation
+>   - second which updates UART documentation
+> 
+> Changes in v3:
+> v3 is rebased on top of Linus master branch and all already applied patches
+> were dropped. There are no changes in patches itself since v2.
+> 
+> Pali Rohár (6):
+>   math64: New DIV_U64_ROUND_CLOSEST helper
+>   serial: mvebu-uart: implement UART clock driver for configuring UART
+>     base clock
+>   dt-bindings: mvebu-uart: document DT bindings for
+>     marvell,armada-3700-uart-clock
+>   dt-bindings: mvebu-uart: update information about UART clock
+>   arm64: dts: marvell: armada-37xx: add device node for UART clock and
+>     use it
+>   serial: mvebu-uart: implement support for baudrates higher than 230400
+> 
+>  .../bindings/clock/armada3700-uart-clock.yaml |  57 ++
+>  .../devicetree/bindings/serial/mvebu-uart.txt |   9 +-
+>  .../arm64/boot/dts/marvell/armada-3720-db.dts |   4 +
+>  .../dts/marvell/armada-3720-espressobin.dtsi  |   4 +
+>  .../dts/marvell/armada-3720-turris-mox.dts    |   4 +
+>  .../boot/dts/marvell/armada-3720-uDPU.dts     |   4 +
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi  |  15 +-
+>  drivers/tty/serial/Kconfig                    |   1 +
+>  drivers/tty/serial/mvebu-uart.c               | 592 +++++++++++++++++-
+>  include/linux/math64.h                        |  13 +
+>  10 files changed, 682 insertions(+), 21 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/clock/armada3700-uart-clock.yaml
+> 
+> -- 
+> 2.20.1
+> 
