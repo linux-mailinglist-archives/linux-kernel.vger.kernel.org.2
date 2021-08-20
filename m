@@ -2,116 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387053F34A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F413F34AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236293AbhHTT1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhHTT1t (ORCPT
+        id S236881AbhHTTb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:31:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53062 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229923AbhHTTbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:27:49 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F048C061575;
-        Fri, 20 Aug 2021 12:27:11 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f107b00a09c9d8b407e80a9.dip0.t-ipconnect.de [IPv6:2003:ec:2f10:7b00:a09c:9d8b:407e:80a9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 421351EC0541;
-        Fri, 20 Aug 2021 21:27:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629487625;
+        Fri, 20 Aug 2021 15:31:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629487876;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=dAnnKn0seBVhyHtYQgR1qRqGXVwhn2GxxVBa61/Itj4=;
-        b=cK2M8dRvu9WV0m7Wa1uCGcur5R4iqdqYueR7Edx8Iqp5w5THuvyYnAO4/mu1xCzfIARSFx
-        mCwbKMvGl7f35qEblt/CKWXnFC2qr8UuFbE8gHGZnYyKQE71i03c2jzXmvzO/jsTF2Xygu
-        HNvCJrV5ca7I9oV45GxKzVSomVP5kjs=
-Date:   Fri, 20 Aug 2021 21:27:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        naoya.horiguchi@nec.com, osalvador@suse.de,
-        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
-        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <YSACMCEoU6FxjDNh@zn.tnic>
-References: <20210706190620.1290391-1-tony.luck@intel.com>
- <20210818002942.1607544-1-tony.luck@intel.com>
- <20210818002942.1607544-2-tony.luck@intel.com>
- <YR/m/8PCmCTbogey@zn.tnic>
- <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=uykJqgkE+kPdNzBqUQrrrtd5PWdUlHLOHNNK2Rgle2A=;
+        b=EnjvErLzWe+fnvCudZv6SvnHyGwnxpBJDJcWb6K0sY+9IZjLMZGIKDdYHHaJ5/GbgPIihm
+        TXtSKs/Rxpj8lutTcpfyi3jriOFMJzyriNNSKu3rTHR+kurpcKs/twxz6Gh46IG1AMBS8Q
+        9OIJ2LafaR0DIS5J9NNuAvrs6IsU5vM=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-r_lKyvIrPg-a5Y2Bh18D1g-1; Fri, 20 Aug 2021 15:31:12 -0400
+X-MC-Unique: r_lKyvIrPg-a5Y2Bh18D1g-1
+Received: by mail-ot1-f72.google.com with SMTP id w4-20020a9d63840000b02905175db63035so5212639otk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 12:31:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uykJqgkE+kPdNzBqUQrrrtd5PWdUlHLOHNNK2Rgle2A=;
+        b=XGmHhkbrIeyM9iKA9cn26OX8gi8bsCz/vQ66/YQC8PIhs416qgqgS3PXWoQbLNfC7I
+         8ae3vhvizCVSwOTVFrEO2b5tMhbMiueAk8v1wIR5q+8oanqbewrZVsUhU95qY3KYgQP/
+         1hDnTVlhYij/FRfB7ve7Ka02kpjGAKL18ebsTd9YfMoTWAjHVgbdmJhR4Ai+YejnEeXz
+         bdnDzPgNcfLVhOyuXK/AsoRhsKnwotkVEkWdvy+1POzsV/+phsnZvWvUBWVMtYJGI/SE
+         +DeoJng2cMdJ6Pov0nuppoaq3C79wTE7vycW0i9LyLh7CzpJTQm5pAw7e0TmSAors/ty
+         DuMQ==
+X-Gm-Message-State: AOAM531qzwIpVpNW9HQutBxyDa32dYjnakwPWWZMErNOkg7a/I4/+1Ps
+        hNUVhZ4puj6FT1PT8xM4orj5sOQ7iHMzMy/3+ybpeCgQ9OZ8T4JNLVHtkuAtGEJxPn+uAj+DmoX
+        29frX9KlB847UBRBCeWzHVs32
+X-Received: by 2002:a4a:98b0:: with SMTP id a45mr17633886ooj.22.1629487871036;
+        Fri, 20 Aug 2021 12:31:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzo5IXxqhXQmEbioUfJ8VlpiVbWmwbWE3cGa9PLFAiwMkrcD+w3j7LenOCU+iFvQH/62qfLkg==
+X-Received: by 2002:a4a:98b0:: with SMTP id a45mr17633869ooj.22.1629487870837;
+        Fri, 20 Aug 2021 12:31:10 -0700 (PDT)
+Received: from treble ([68.74.140.199])
+        by smtp.gmail.com with ESMTPSA id 65sm1534521ooc.2.2021.08.20.12.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 12:31:10 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 12:31:07 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com, x86@kernel.org,
+        mbenes@suse.com, rostedt@goodmis.org, dvyukov@google.com,
+        elver@google.com
+Subject: Re: [PATCH v2 01/24] x86/xen: Mark cpu_bringup_and_idle() as
+ dead_end_function
+Message-ID: <20210820193107.omvshmsqbpxufzkc@treble>
+References: <20210624094059.886075998@infradead.org>
+ <20210624095147.693801717@infradead.org>
+ <20210820192224.ytrr6ybuuwegbeov@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20210820192224.ytrr6ybuuwegbeov@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 11:59:45AM -0700, Luck, Tony wrote:
-> It's the "when we return" part that is the problem here. Logical
-> trace looks like:
+On Fri, Aug 20, 2021 at 12:22:28PM -0700, Josh Poimboeuf wrote:
+> On Thu, Jun 24, 2021 at 11:41:00AM +0200, Peter Zijlstra wrote:
+> > The asm_cpu_bringup_and_idle() function is required to push the return
+> > value on the stack in order to make ORC happy, but the only reason
+> > objtool doesn't complain is because of a happy accident.
+> > 
+> > The thing is that asm_cpu_bringup_and_idle() doesn't return, so
+> > validate_branch() never terminates and falls through to the next
+> > function, which in the normal case is the hypercall_page. And that, as
+> > it happens, is 4095 NOPs and a RET.
+> > 
+> > Make asm_cpu_bringup_and_idle() terminate on it's own, by making the
+> > function it calls as a dead-end. This way we no longer rely on what
+> > code happens to come after.
+> > 
+> > Fixes: c3881eb58d56 ("x86/xen: Make the secondary CPU idle tasks reliable")
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > 
-> user-syscall:
+> Looks right.  Only problem is, with my assembler I get this:
 > 
-> 	kernel does get_user() or copyin(), hits user poison address
+>   arch/x86/kernel/head_64.o: warning: objtool: .text+0x5: unreachable instruction
 > 
-> 		machine check
-> 		sees that this was kernel get_user()/copyin() and
-> 		uses extable to "return" to exception path
+> Because gas insists on jumping over the page of nops...
 > 
-> 	still in kernel, see that get_user() or copyin() failed
-> 
-> 	Kernel does another get_user() or copyin() (maybe the first
+> 0000000000000000 <asm_cpu_bringup_and_idle>:
+>        0:	e8 00 00 00 00       	callq  5 <asm_cpu_bringup_and_idle+0x5>
+> 			1: R_X86_64_PLT32	cpu_bringup_and_idle-0x4
+>        5:	e9 f6 0f 00 00       	jmpq   1000 <xen_hypercall_set_trap_table>
+>        a:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+>       11:	00 00 00 00 
+>       15:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+>       1c:	00 00 00 00 
+>       20:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+>       27:	00 00 00 00 
+>       2b:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+>       32:	00 00 00 00 
+>       36:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
+>       3d:	00 00 00 00 
 
-I forgot all the details we were talking at the time but there's no way
-to tell the kernel to back off here, is it?
+Here's a fix:
 
-As in: there was an MCE while trying to access this user memory, you
-should not do get_user anymore. You did add that
+From: Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] x86/xen: Move hypercall_page to top of the file
 
-         * Return zero to pretend that this copy succeeded. This
-         * is counter-intuitive, but needed to prevent the code
-         * in lib/iov_iter.c from retrying and running back into
+Because hypercall_page is page-aligned, the assembler inexplicably adds
+an unreachable jump from after the end of the previous code to the
+beginning of hypercall_page.
 
-which you're removing with the last patch so I'm confused.
+That confuses objtool, understandably.  It also creates significant text
+fragmentation.  As a result, much of the object file is wasted text
+(nops).
 
-IOW, the problem is that with repeated MCEs while the kernel is
-accessing that memory, it should be the kernel which should back off.
-And then we should kill that process too but apparently we don't even
-come to that.
+Move hypercall_page to the beginning of the file to both prevent the
+text fragmentation and avoid the dead jump instruction.
 
-> Maybe the message could be clearer?
-> 
-> 	mce_panic("Too many consecutive machine checks in kernel while accessing user data", m, msg);
+$ size /tmp/head_64.before.o /tmp/head_64.after.o
+   text	   data	    bss	    dec	    hex	filename
+  10924	 307252	   4096	 322272	  4eae0	/tmp/head_64.before.o
+   6823	 307252	   4096	 318171	  4dadb	/tmp/head_64.after.o
 
-That's not my point - it is rather: this is a recoverable error because
-it is in user memory even if it is the kernel which tries to access it.
-And maybe we should not panic the whole box but try to cordon off the
-faulty memory only and poison it after having killed the process using
-it...
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ arch/x86/xen/xen-head.S | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-> Not quite the same answer ... but similar.  We could in theory handle
-> multiple different machine check addresses by turning the "mce_addr"
-> field in the task structure into an array and saving each address so
-> that when the kernel eventually gives up poking at poison and tries
-> to return to user kill_me_maybe() could loop through them and deal
-> with each poison page.
-
-Yes, I like the aspect of making the kernel give up poking at poison and
-when we return we should kill the process and poison all pages collected
-so that the error source is hopefully contained.
-
-But again, I think the important thing is how to make the kernel to back
-off quicker so that we can poison the pages at all...
-
+diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
+index cb6538ae2fe0..488944d6d430 100644
+--- a/arch/x86/xen/xen-head.S
++++ b/arch/x86/xen/xen-head.S
+@@ -20,6 +20,23 @@
+ #include <xen/interface/xen-mca.h>
+ #include <asm/xen/interface.h>
+ 
++.pushsection .text
++	.balign PAGE_SIZE
++SYM_CODE_START(hypercall_page)
++	.rept (PAGE_SIZE / 32)
++		UNWIND_HINT_FUNC
++		.skip 31, 0x90
++		ret
++	.endr
++
++#define HYPERCALL(n) \
++	.equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
++	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
++#include <asm/xen-hypercalls.h>
++#undef HYPERCALL
++SYM_CODE_END(hypercall_page)
++.popsection
++
+ #ifdef CONFIG_XEN_PV
+ 	__INIT
+ SYM_CODE_START(startup_xen)
+@@ -64,23 +81,6 @@ SYM_CODE_END(asm_cpu_bringup_and_idle)
+ #endif
+ #endif
+ 
+-.pushsection .text
+-	.balign PAGE_SIZE
+-SYM_CODE_START(hypercall_page)
+-	.rept (PAGE_SIZE / 32)
+-		UNWIND_HINT_FUNC
+-		.skip 31, 0x90
+-		ret
+-	.endr
+-
+-#define HYPERCALL(n) \
+-	.equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
+-	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
+-#include <asm/xen-hypercalls.h>
+-#undef HYPERCALL
+-SYM_CODE_END(hypercall_page)
+-.popsection
+-
+ 	ELFNOTE(Xen, XEN_ELFNOTE_GUEST_OS,       .asciz "linux")
+ 	ELFNOTE(Xen, XEN_ELFNOTE_GUEST_VERSION,  .asciz "2.6")
+ 	ELFNOTE(Xen, XEN_ELFNOTE_XEN_VERSION,    .asciz "xen-3.0")
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
