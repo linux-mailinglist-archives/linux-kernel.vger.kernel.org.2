@@ -2,161 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FAE3F2834
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CB43F2861
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhHTIRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbhHTIRi (ORCPT
+        id S232606AbhHTI0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:26:34 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:52586
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233287AbhHTI0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:17:38 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CBF7C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:17:01 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id n18so8400327pgm.12
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ONnQCjiuuVN7sYyR4Kd/uk8WkCxlaYaADHY3X+OYUT8=;
-        b=JX8s55nAHKiVmzI03LV5BJ+NxDX9ukKINSnPlvrS+ZxMpiDi8Wp4xfEvni+Kzq0mqP
-         +KXk6Aq+W87ZRCMiwInHhaplr8C1WztYBDyjgkCosTcswETPO7scpvz7v5Jftbo8xDsx
-         9hgz54TDYLwGV+dSm7WAWzpDl4mLvTdADKDJ0=
+        Fri, 20 Aug 2021 04:26:24 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id CA27A40799
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 08:16:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629447410;
+        bh=CAnM46WD3rUSG/zVXFycLibrCZJUMVr4dm8Wv62opn8=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=C3h2fzJMMThVMtDQtqxDUhNURt2onHj3rv6AM9nc3aGf1Lo5iWsU+6xLDxNwFQ6j+
+         /Edk3oap+J8YbEZzayEUQKmCOv0QQv6N8dD7UcAbBaLk6OWma8h0cQHxPmEPaT4Jpv
+         xCe/yh/Zk2aEussNJHrxS6ihnmaYUbretCu/5b+OngZQgNTuFjNkeKQJ/XfRZynk6C
+         yJHfKXth4dAxg5vAPN3BtKmJS5AHxXEft1nIxOoIITJDK5lSjKV8giDknNdGt3IItd
+         QFXp7reNf9w+28Du9SZu5mH9Gsg9IbuTUQVT9jD/2FzV1DwSqbYxSCBUXnsR5Tv5Js
+         lzpPzCZfDi8eg==
+Received: by mail-ed1-f72.google.com with SMTP id x24-20020aa7dad8000000b003bed477317eso4184412eds.18
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:16:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ONnQCjiuuVN7sYyR4Kd/uk8WkCxlaYaADHY3X+OYUT8=;
-        b=E8zbgcB1/ZvjeVQx2lVNOH1jUXN7eq6pPs4N8sKAwvLxB/DgaM2kI1OKtlmQcRTC/b
-         ArZrztuR/YqDSo+SY9K068HakvmHm3Hbwzla02p7sMlizFlVLSdxoFn+MwAFMXbdW0iy
-         pFK7FHrWfVRkvvvBjfU4MOL27t68L6eXwYZcCmGGJmlear8sL7Jxh/ie2Y8J0gLRBLnT
-         IEvd8kvFpHL+HB2dAoGVQWlsUTS4pu1whbbVOvj2zi4BTP47cl0fGpySjvdFCExn13sW
-         dGjPkIXMpuwAObH0240wyq3r33Kg3BWm5Fw+HZBWmJyxzMaOc+qtA4i+yo9L31efKGy5
-         2ShQ==
-X-Gm-Message-State: AOAM532abCglt3fZaZ5xp/K0rqDokXcYpUNsQSacejOxAYTtDrSrHvpT
-        vGUMyyNel+G9MiD+Fh/IJGiPicM28uy8VoQE6inafQ==
-X-Google-Smtp-Source: ABdhPJx4GM3KwrFyxr+U0DsDj352kxtjr+OB2hExtho01goAnaCN+A8x9JNQsS8DDweSlmu8+vuL0GJjX02DhtHC7xQ=
-X-Received: by 2002:a65:6708:: with SMTP id u8mr17766307pgf.334.1629447420711;
- Fri, 20 Aug 2021 01:17:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CAnM46WD3rUSG/zVXFycLibrCZJUMVr4dm8Wv62opn8=;
+        b=IC4KoBp8nOBSLLcyMaMoHEMQ5JL6r+pUvVnnbEwT5UECow93r628lPdjEX2aJ0Ozf3
+         TWAbhWU1vpjTdxrTkzgrG7hPRMbfHx+dPEO9nMo7BLOUTd9Frjv68UewtTYEdeIK82mC
+         1US0qm5Iy773QpkzPu3UCTirMiOUss5DiCZKTRgyjZJjAX/O7pAIh5v2UcXoTz1FFB/y
+         7ofhrekDeLCbB5VP2sRrP74Eb0If8jH6FEJOz6OgTCI0n8ZDz54TRX6hDoeAas/oJ2Sq
+         PARnwaLvl1U59y3YzZ3nFXXp2CtPYpgtlz2wC+wTWBAwrr8usRZB693IlHWYxTCHdjt5
+         4m9Q==
+X-Gm-Message-State: AOAM533JMl1lOF1EMr+GaOrd0HK5fwNpiAb+TK7YH03jpQAGiTH4W3dN
+        MQOFgwfSYLjW1UaH7XXvfpGPg1w3bXVZLP9YWGtCKW8fvNGFd31XHFX7kS0WZeDggtUQmSxZCQn
+        0WWoDqj+HFOoUqBmH2wjTFyqq+//4y1XaE5n6PgKeuw==
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr11816017ejb.113.1629447409105;
+        Fri, 20 Aug 2021 01:16:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvwviqEoH9UbW+nsSARGzJTvy19NqOU+gEpu6eWTsyTkkmX+RW4mWEDT0jMql+QW4qXh1vGg==
+X-Received: by 2002:a17:906:ad8e:: with SMTP id la14mr11816006ejb.113.1629447408938;
+        Fri, 20 Aug 2021 01:16:48 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.42.198])
+        by smtp.gmail.com with ESMTPSA id g16sm2457764ejw.74.2021.08.20.01.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 01:16:48 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 1/2] arm64: dts: allwinner: h5: align operating-points table name with dtschema
+Date:   Fri, 20 Aug 2021 10:16:44 +0200
+Message-Id: <20210820081645.83796-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210820030805.12383-1-jing.yangyang@zte.com.cn>
-In-Reply-To: <20210820030805.12383-1-jing.yangyang@zte.com.cn>
-From:   Sumit Saxena <sumit.saxena@broadcom.com>
-Date:   Fri, 20 Aug 2021 13:46:34 +0530
-Message-ID: <CAL2rwxp8msYZLqC93WgQy_vEMH1X0UE+upE4g+PkDKG4hiQg9A@mail.gmail.com>
-Subject: Re: [PATCH linux-next] scsi: megaraid: fix Coccinelle warnings
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "PDL,MEGARAIDLINUX" <megaraidlinux.pdl@broadcom.com>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b9c9b105c9f94acf"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b9c9b105c9f94acf
-Content-Type: text/plain; charset="UTF-8"
+Align the name of operating-points node to dtschema to fix warnings like:
 
-On Fri, Aug 20, 2021 at 8:38 AM CGEL <cgel.zte@gmail.com> wrote:
->
-> From: jing yangyang <jing.yangyang@zte.com.cn>
->
-> WARNING !A || A && B is equivalent to !A || B
->
-> This issue was detected with the help of Coccinelle.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
-Acked-by: Sumit Saxena <sumit.saxena@broadcom.com>
+  arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-r1s-h5.dt.yaml:
+    cpu-opp-table: $nodename:0: 'cpu-opp-table' does not match '^opp-table(-[a-z0-9]+)?$'
 
---000000000000b9c9b105c9f94acf
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-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
-GmgWG68YahkDuVSTTt2beZdyMeDwq/KifJFo18EkhcL3e7rmDAh8SniUI/0o3HX6hrgdmUI1wSdz
-uIVL/m6Ok9mIl2U5kvguitOSC0bVaQPfNzlj+7PCKBECAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZc3VtaXQuc2F4ZW5hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUNz+JSIXEXl2uQ4Utcnx7FnFi
-hhowDQYJKoZIhvcNAQELBQADggEBAL0HLbxgPSW4BFbbIMN3A/ifBg4Lzaph8ARJOnZpGQivo9jG
-kQOd95knQi9Lm95JlBAJZCqXXj7QS+dnE71tsFeHWcHNNxHrTSwn4Xi5EqaRjLC6g4IEPyZHWDrD
-zzJidgfwQvfZONkf4IXnnrIEFle+26/gPs2kOjCeLMo6XGkNC4HNla1ol1htToQaNN8974pCqwIC
-rTXcWqD03VkqSOo+oPP/NAgFAZVfpeuBoK2Xv8zYlrF49Q4hxgFpWhaiDsZUSdWIS7vg1ak1n+6L
-3aHRY/lheSkOn/uJWXsqsTDp613hVtOTEDsHSQK32yTGr8jN/oRQgJASuUqQFdD4VzAxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwoQTpBmhDxj9JoN1ow
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFUWHy/+YeJRKxtcudaokDWeizuY/lhc
-QldrwQRhK7OrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDgy
-MDA4MTcwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQCbiLLCTxmovpOTWfYiW/P24uuMSgqbS2z7vCLCb+lptY1u9zTE
-xjnT+/cezVcoXWpsEGos1jykNGjioGodoEchMIqBxTryRU8R9e/eXyCsTsrFqs3UEB1CpBqkslom
-Tkpjc3Ow7Iy6XKQbRnkpT80bd6jV64EWHX149S8j7taYi6PTWYmNf2S61rV3gMeyUnCgl9EKlDp5
-cNWMY1WU4400LxlXTDQxgAi2cQlqYZWYdZy/lI8FTWWuWiN93C+ijuI/b2WpLhbJRZzpSx7jHNKU
-vOtFKJ/3MGgP5QtEB18umstrvI7Wo7qKHBkkNd9/07fdOj1FwNtkTOIENbAd604I
---000000000000b9c9b105c9f94acf--
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
+index b2657201957e..0b6914a165b0 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-cpu-opp.dtsi
+@@ -2,7 +2,7 @@
+ // Copyright (C) 2020 Chen-Yu Tsai <wens@csie.org>
+ 
+ / {
+-	cpu_opp_table: cpu-opp-table {
++	cpu_opp_table: opp-table-0 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+-- 
+2.30.2
+
