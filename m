@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804D33F2993
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC433F29A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237199AbhHTJyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 05:54:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238646AbhHTJy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 05:54:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0B0761075;
-        Fri, 20 Aug 2021 09:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629453230;
-        bh=YwVroQlCD3HpD8GroY9rflOTohiSOSTbQeX2JXJsH1o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GdUavER4oaQFGgBvYR1S13WNB2oTGGv8Q8QB4lS/+dwMXf4ZXn0FeZieizUvAcbxL
-         hQZkaqq3UICI7J+x2du0nHSruVpbSvT7QmcWokHsVeFJhteapztbOcmbxodX+1DYBv
-         tzDSER5qkoKyNRpiNjJzhVCjMAVCDccVVXie2FiajHRTjajlV/Imld69jCW6LqSVed
-         W4eL7SlGiyuIyTcMz9dIv1s3WhLJJgxA6F+mLvWDdtxXyxsIu7y1zv4kUEmM86L6qR
-         +R11c4gmCOOk8AWPLE9l17VbWJQFOonMeHYfjTbbVdODzKZnff7N4oqkHnmbQjnNqR
-         EN4SoFamVv9Kw==
-From:   Roger Quadros <rogerq@kernel.org>
-To:     ssantosh@kernel.org
-Cc:     nm@ti.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH 2/2] ARM: dts: keystone-k2g-evm: Fix dss node status to "okay"
-Date:   Fri, 20 Aug 2021 12:53:41 +0300
-Message-Id: <20210820095341.5619-3-rogerq@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210820095341.5619-1-rogerq@kernel.org>
-References: <20210820095341.5619-1-rogerq@kernel.org>
+        id S238975AbhHTJ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237840AbhHTJ4V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 05:56:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194CBC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 02:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=cm7YxYZOEUkP6Dnb1/JQxXIHjE0MtDK0+1YjijMBUBc=; b=i52s9L/z9eHow6roQ4zUj8WygW
+        asPhat2AvBzFwX4cGIalNCBvuQxXz+MFaaXbK083qtz7QvvNGgurvuDflAbHmHTf048NeOSrR1ElR
+        uduM75V9TTbfw/Wgcx60hTa07MmMmwSB4z7HuofMLpssC2d6Z3kPQKhgwLQA0Lw9TC1QCV0aIBxwQ
+        1Kx3Zyu63kSM1UV1pFS8YMiHTJ6ydH0oXNTsDvHm7/fPqqUd+gEkI3X4NEP0Ig9dBTMOPw5ubyEey
+        xkPIhauyvq9OE2YUXRZv9htomkAIZXLaUWGgxHJhNGOJR6oUQCodHa1UhC5HTxzb1ZoeB2QRB3WMs
+        67hVoOjg==;
+Received: from [2001:4bb8:188:1b1:43a3:4b88:ec18:d4de] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mH1EN-006Ks5-Ds; Fri, 20 Aug 2021 09:55:03 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel: unexport get_{mm,task}_exe_file
+Date:   Fri, 20 Aug 2021 11:54:30 +0200
+Message-Id: <20210820095430.445242-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per Device Tree core schema [1], status parameter of nodes can be either
-"okay" or "disabled".
+Only used by core code and the tomoyo which can't be a module either.
 
-U-boot Driver Model does not recognize status="ok" either and treats
-the node as disabled.
-
-[1] https://github.com/devicetree-org/dt-schema/blob/master/schemas/dt-core.yaml#L36
-
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm/boot/dts/keystone-k2g-evm.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/fork.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/keystone-k2g-evm.dts b/arch/arm/boot/dts/keystone-k2g-evm.dts
-index d800f26b6275..57680323e202 100644
---- a/arch/arm/boot/dts/keystone-k2g-evm.dts
-+++ b/arch/arm/boot/dts/keystone-k2g-evm.dts
-@@ -534,7 +534,7 @@
- &dss {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&vout_pins>;
--	status = "ok";
-+	status = "okay";
+diff --git a/kernel/fork.c b/kernel/fork.c
+index af408d06e1fb7..dc8eb1300418a 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1238,7 +1238,6 @@ struct file *get_mm_exe_file(struct mm_struct *mm)
+ 	rcu_read_unlock();
+ 	return exe_file;
+ }
+-EXPORT_SYMBOL(get_mm_exe_file);
  
- 	port {
- 		dpi_out: endpoint {
+ /**
+  * get_task_exe_file - acquire a reference to the task's executable file
+@@ -1261,7 +1260,6 @@ struct file *get_task_exe_file(struct task_struct *task)
+ 	task_unlock(task);
+ 	return exe_file;
+ }
+-EXPORT_SYMBOL(get_task_exe_file);
+ 
+ /**
+  * get_task_mm - acquire a reference to the task's mm
 -- 
-2.17.1
+2.30.2
 
