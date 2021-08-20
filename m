@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625DB3F2B2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A638D3F2B31
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239377AbhHTL11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:27:27 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:42918 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbhHTL1Z (ORCPT
+        id S239566AbhHTL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:27:54 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37870 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232681AbhHTL1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:27:25 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B6E2322176;
-        Fri, 20 Aug 2021 11:26:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629458806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DjkvT2NEndnW8rVNpc3XomY8rLqZ81An0wqzo8QeK40=;
-        b=vXeKWUgjEdvh/lzioOhY2eg1/DJt11NZzQwemLxBb1KWhRBfFMi6b7QTuZ1JdbPS1eepSt
-        1nQrFTETcDceXccTyi4TY0XNMakY7IZtrUwJJQteJvjs2CtVzVOdRGLDG1RK9kh9PKHJIY
-        rjQHUKHLxdKpIC0jRmQ7N8EZAtLzABo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E63C2A3B88;
-        Fri, 20 Aug 2021 11:26:45 +0000 (UTC)
-Date:   Fri, 20 Aug 2021 13:26:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     yongw.pur@gmail.com
-Cc:     tj@kernel.org, corbet@lwn.net, akpm@linux-foundation.org,
-        vdavydov.dev@gmail.com, tglx@linutronix.de, peterz@infradead.org,
-        shakeelb@google.com, guro@fb.com, alexs@kernel.org,
-        richard.weiyang@gmail.com, sh_def@163.com, sfr@canb.auug.org.au,
-        wang.yong12@zte.com.cn, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, yang.yang29@zte.com.cn,
-        wangyong <wang.yong@zte.com.cn>
-Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
- notifier is enabled
-Message-ID: <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz>
-References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
+        Fri, 20 Aug 2021 07:27:52 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KBQuZE119613;
+        Fri, 20 Aug 2021 06:26:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629458816;
+        bh=blrgn41yMQlxOpCV/VPuXs84NzoE3cc6qLpb8S94VE4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=swjkvz54exp+Wi8TBkY4OTQeimFIS/ZAQdEWw/vHHso+agYXhpWiR550eC656sl3t
+         XiWTMU8DWzoRHLsb2tUralWWqGBjzuP0NdGP2cGuV6cQ/yJ7aqk5+REsNCED7UM6OJ
+         p5g+gjNafB2qlViDVgxuC5tFSTpmCY4zvPEkQdCE=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KBQuue098116
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Aug 2021 06:26:56 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
+ Aug 2021 06:26:55 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 20 Aug 2021 06:26:55 -0500
+Received: from [10.250.232.95] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KBQpoU097699;
+        Fri, 20 Aug 2021 06:26:52 -0500
+Subject: Re: [PATCH 08/13] mtd: spinand: Reject 8D-8D-8D op_templates if
+ octal_dtr_enale() is missing in manufacturer_op
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
+References: <20210713130538.646-1-a-nandan@ti.com>
+ <20210713130538.646-9-a-nandan@ti.com> <20210806210146.3358a85b@xps13>
+From:   Apurva Nandan <a-nandan@ti.com>
+Message-ID: <4d428465-59d7-6771-8344-c5090add2a06@ti.com>
+Date:   Fri, 20 Aug 2021 16:56:50 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210806210146.3358a85b@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 19-08-21 16:53:39, yongw.pur@gmail.com wrote:
-> From: wangyong <wang.yong@zte.com.cn>
+
+
+On 07/08/21 12:31 am, Miquel Raynal wrote:
+> Hi Apurva,
 > 
-> Inspired by PSI features, vmpressure inotifier function should
-> also be configured to decide whether it is used, because it is an
-> independent feature which notifies the user of memory pressure.
-
-Yes, it is an independent feature indeed but what is the actual reason
-to put a more configuration space here. Config options are not free both
-from the user experience POV as well as the code maintenance. Why do we
-need to disable this feature. Who can benefit from such a setup?
-
-> So we add configuration to control whether vmpressure notifier is
-> enabled, and provide a boot parameter to use vmpressure notifier
-> flexibly.
-
-Flexibility is nice but not free as mentioned above.
-
-> Use Christoph Lamenter’s pagefault tool
-> (https://lkml.org/lkml/2006/8/29/294) for comparative testing.
-> Test with 5.14.0-rc5-next-20210813 on x86_64 4G Ram
-> To ensure that the vmpressure function is executed, we enable zram
-> and let the program occupy memory so that some memory is swapped out
+> Apurva Nandan <a-nandan@ti.com> wrote on Tue, 13 Jul 2021 13:05:33
+> +0000:
 > 
-> unpatched:
-> Gb	Rep	Thr	CLine	User(s)	System(s) Wall(s) flt/cpu/s	fault/wsec
-> 2	1	1	1	0.1	0.97	1.13	485490.062	463533.34
-> 2	1	1	1	0.11	0.96	1.12	483086.072	465309.495
-> 2	1	1	1	0.1	0.95	1.11	496687.098	469887.643
-> 2	1	1	1	0.09	0.97	1.11	489711.434	468402.102
-> 2	1	1	1	0.13	0.94	1.12	484159.415	466080.941
-> average				0.106	0.958	1.118	487826.8162	466642.7042
+>> The SPI NAND core doesn't know how to switch the flash to Octal DTR
+>> mode (i.e. which operations to perform). If the manufacturer hasn't
+>> implemented the octal_dtr_enable() manufacturer_op, the SPI NAND core
+>> wouldn't be able to switch to 8D-8D-8D mode and will also not be able
+>> to run in 1S-1S-1S mode due to already selected 8D-8D-8D read/write
+>> cache op_templates.
+>>
+>> So, avoid choosing a Octal DTR SPI op_template for read_cache,
+>> write_cache and update_cache operations, if the manufacturer_op
+>> octal_dtr_enable() is missing.
 > 
-> patched and CONFIG_MEMCG_VMPRESSURE is not set:
-> Gb	Rep	Thr	CLine	User(s)	System(s) Wall(s) flt/cpu/s	fault/wsec
-> 2	1	1	1	0.1	0.96	1.1	490942.682	473125.98
-> 2	1	1	1	0.08	0.99	1.13	484987.521	463161.975
-> 2	1	1	1	0.09	0.96	1.09	498824.98	476696.066
-> 2	1	1	1	0.1	0.97	1.12	484127.673	465951.238
-> 2	1	1	1	0.1	0.97	1.11	487032		468964.662
-> average				0.094	0.97	1.11	489182.9712	469579.9842
+> After looking at your previous commit I don't see why this patch would
+> be needed. octal_dtr_enable() only updates the mode when it succeeds so
+> I don't think this patch is really needed.
 > 
-> According to flt/cpu/s, performance improved by 0.2% which is not obvious.
 
-I haven't checked how are those numbers calculated but from a very brief
-look it seems like the variation between different runs is higher than
-0.2%. Have you checked the average against standard deviation to get a
-better idea whether the difference is really outside of the noise?
--- 
-Michal Hocko
-SUSE Labs
+I added it to prevent any errors happening dues to a missing 
+implementation of octal_dtr_enable() from manufacturer driver side.
+So, if the manufacturers skips the octal_dtr_enable() implementation, we 
+want the spinand core to run in 1s-1s-1s mode.
+
+Read/write/update op variant selection happens in select_op_variant(), 
+much before octal_dtr_enable(). So just check if there is a definition 
+of octal_dtr_enable in manufacturer ops and then only use 8D op variants.
+
+Removing this wouldn't break anything in the current implementation.
+Do you think we should drop this?
+
+>>
+>> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
+>> ---
+>>   drivers/mtd/nand/spi/core.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+>> index 19d8affac058..8711e887b795 100644
+>> --- a/drivers/mtd/nand/spi/core.c
+>> +++ b/drivers/mtd/nand/spi/core.c
+>> @@ -1028,6 +1028,8 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+>>   		if (id[0] != manufacturer->id)
+>>   			continue;
+>>   
+>> +		spinand->manufacturer = manufacturer;
+>> +
+>>   		ret = spinand_match_and_init(spinand,
+>>   					     manufacturer->chips,
+>>   					     manufacturer->nchips,
+>> @@ -1035,7 +1037,6 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+>>   		if (ret < 0)
+>>   			continue;
+>>   
+>> -		spinand->manufacturer = manufacturer;
+>>   		return 0;
+>>   	}
+>>   	return -ENOTSUPP;
+>> @@ -1097,6 +1098,10 @@ spinand_select_op_variant(struct spinand_device *spinand,
+>>   		unsigned int nbytes;
+>>   		int ret;
+>>   
+>> +		if (spinand_op_is_octal_dtr(&op) &&
+>> +		    !spinand->manufacturer->ops->octal_dtr_enable)
+>> +			continue;
+>> +
+>>   		nbytes = nanddev_per_page_oobsize(nand) +
+>>   			 nanddev_page_size(nand);
+>>   
+> 
+> Thanks,
+> Miquèl
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+
+Thanks,
+Apurva Nandan
