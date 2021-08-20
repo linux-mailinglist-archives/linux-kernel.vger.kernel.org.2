@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC41C3F2851
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6983F2866
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhHTIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:25:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230077AbhHTIZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:25:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A112610A3;
-        Fri, 20 Aug 2021 08:25:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629447904;
-        bh=4zuMd4m7p1eR8VRfwtyd8SamPC6YHM7BjTVw1hV8o74=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eg7LkK5l4UtJTA97Lw2VDJbt56j5SiiDvAZqCGMDbaWHkEO/kEUQQrEg7GSbT2RVJ
-         QWNdqk+kK2mmFFe8hGO1hFcIWoJMGwNJKtQPeUqKw60/c4pDITEmoVmP4tpKv37fhK
-         +sRU8TbrsHWSjKLTzsaWyRDHX9KhH3qjio56ARaRxOHGBU8QLd+YVwU6/PkY/vgKSq
-         GLTQKbpuGuUXPoD0oHibx4AeBr/XogQOlWkRyUAB6FipROU4FYibQjliClTUDbHjmy
-         NUMMVeqAv3HAd9LTGqnlcx9aF1DTUbPtw1QdrVnFbRQ+qaGDBoYpisA1QsOIsIVc+c
-         TmONRcZZVw3hg==
-Date:   Fri, 20 Aug 2021 09:24:58 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
+        id S230176AbhHTI0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 04:26:40 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:59182 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234825AbhHTI0a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 04:26:30 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-50-1lwXgCl5MSC7hSZT66iCNQ-1; Fri, 20 Aug 2021 09:25:49 +0100
+X-MC-Unique: 1lwXgCl5MSC7hSZT66iCNQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Fri, 20 Aug 2021 09:25:47 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Fri, 20 Aug 2021 09:25:47 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'NeilBrown' <neilb@suse.de>,
+        "J. Bruce Fields" <bfields@fieldses.org>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        David Hildenbrand <david@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, yuanxzhang@fudan.edu.cn,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        David Howells <dhowells@redhat.com>, keescook@chromium.org
-Subject: Re: [PATCH] mm/rmap: Convert from atomic_t to refcount_t on
- anon_vma->refcount
-Message-ID: <20210820082457.GA16784@willie-the-truck>
-References: <1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn>
- <20210720160127.ac5e76d1e03a374b46f25077@linux-foundation.org>
- <20210819132131.GA15779@willie-the-truck>
- <YR5ldaQvAnCKMnkk@hirez.programming.kicks-ass.net>
- <YR52igt/lJ7gQqOG@hirez.programming.kicks-ass.net>
- <CAHk-=wh_vEzmYnMufOa=03WAU=DRM5+n6uZy=dVtJERFJm3Q-Q@mail.gmail.com>
- <YR9PHD+pWTelGKVd@hirez.programming.kicks-ass.net>
- <YR9k0hzMJpNF/0qL@hirez.programming.kicks-ass.net>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Shawn Anastasio" <shawn@anastas.io>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Christian Brauner" <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Gabriel Krisman Bertazi" <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Suren Baghdasaryan" <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Marco Elver" <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Nicolas Viennot" <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Florian Weimer" <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: RE: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Thread-Topic: [PATCH v1 0/7] Remove in-tree usage of MAP_DENYWRITE
+Thread-Index: AQHXj6qO2FP1eIrarUmjR9CxLZPkE6txIhrAgAqqIaSAAEsGQA==
+Date:   Fri, 20 Aug 2021 08:25:47 +0000
+Message-ID: <aacb44aad4064d4b84dca97c38d0b6a0@AcuMS.aculab.com>
+References: <20210812084348.6521-1-david@redhat.com>,
+ <87o8a2d0wf.fsf@disp2133>,
+ <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com>,
+ <87lf56bllc.fsf@disp2133>,
+ <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>,
+ <87eeay8pqx.fsf@disp2133>,
+ <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>,
+ <87h7ft2j68.fsf@disp2133>,
+ <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>,
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>,
+ <20210818154217.GB24115@fieldses.org>
+ <162943109106.9892.7426782042253067338@noble.neil.brown.name>
+In-Reply-To: <162943109106.9892.7426782042253067338@noble.neil.brown.name>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR9k0hzMJpNF/0qL@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:16:18AM +0200, Peter Zijlstra wrote:
-> On Fri, Aug 20, 2021 at 08:43:40AM +0200, Peter Zijlstra wrote:
-> 
-> > Fine with me; although the immediate complaint from Andrew was about
-> > size, hence my UD1 hackery.
-> > 
-> > > So if we do this, I think it should be something like
-> > > 
-> > >    static inline __must_check bool refcount_dec_and_test(refcount_t *r)
-> > >    {
-> > >         asm_volatile_goto (LOCK_PREFIX "decl %[var]\n\t"
-> > >                 "jz %l[cc_zero]\n\t"
-> > >                 "jl %l[cc_error]"
-> > >                 : : [var] "m" (r->refs.counter)
-> > >                 : "memory" : cc_zero, cc_error);
-> > > 
-> > >         return false;
-> > > 
-> > >    cc_zero:
-> > >         return true;
-> > >    cc_error:
-> > >         refcount_warn_saturate(r, REFCOUNT_SUB_UAF);
-> > >         return false;
-> > >    }
-> > > 
-> > > and we can discuss whether we could improve on the
-> > > refcount_warn_saturate() separately.
-> > 
-> > I can do the refcount_warn_saturate() change separately.
-> > 
-> > Let me go check how small I can get it...
-> 
-> gcc-10.2.1, x86_64-defconfig
-> 
-> kernel/event/core.o-inline-ud1:     96454
-> kernel/event/core.o-outofline-ud1:  96604
-> kernel/event/core.o-outofline-call: 97072
-> 
-> (42 refcount_warn_saturate/ud1 instances in that file,
->  10 of which are refcount_dec_and_test)
+RnJvbTogTmVpbEJyb3duDQo+IFNlbnQ6IDIwIEF1Z3VzdCAyMDIxIDA0OjQ1DQouLi4NCj4gT19E
+RU5ZUkVBRCBpcyBhbiBpbnNhbmUgZmxhZy4gIElmIGEgcHJvY2VzcyByZWFkcyBhIGZpbGUgdGhh
+dCBzb21lIG90aGVyDQo+IHByb2Nlc3MgaXMgd29ya2luZyBvbiwgdGhlbiB0aGUgb25seSB3aGlj
+aCBjb3VsZCBiZSBodXJ0IGlzIHRoZSByZWFkZXIuDQo+IFNvIGFsbG93aW5nIGEgcHJvY2VzcyB0
+byBhc2sgZm9yIHRoZSBvcGVuIHRvIGZhaWwgaWYgc29tZW9uZSBpcyB3cml0aW5nDQo+IG1pZ2h0
+IG1ha2Ugc2Vuc2UuICBJbnNpc3RpbmcgdGhhdCBhbGwgb3BlbnMgZmFpbCBkb2VzIG5vdC4NCj4g
+QW55IGNvZGUgd2FudGluZyBPX0RFTllSRUFEICpzaG91bGQqIHVzZSBhZHZpc29yeSBsb2NraW5n
+LCBhbmQgYW55IGNvZGUNCj4gd2FudGluZyB0byBrbm93IGFib3V0IHJlYWQgZGVuaWFsIHNob3Vs
+ZCB0b28uDQoNCkl0IG1pZ2h0IG1ha2Ugc2Vuc2UgaWYgT19ERU5ZUkVBRCB8IE9fREVOWVdSSVRF
+IHwgT19SRFdSIGFyZSBhbGwgc2V0Lg0KVGhhdCB3b3VsZCBiZSB3aGF0IE9fRVhDTCBvdWdodCB0
+byBtZWFuIGZvciBhIG5vcm1hbCBmaWxlLg0KU28gd291bGQgYmUgdXNlZnVsIGZvciBhIHByb2dy
+YW0gdGhhdCB3YW50cyB0byB1cGRhdGUgYSBjb25maWcgZmlsZS4NCg0KLi4uDQo+IEl0IHdvdWxk
+IGJlIG5pY2UgdG8gYmUgYWJsZSB0byBjb21iaW5lIE9fREVOWVdSSVRFIHdpdGggT19SRFdSLiAg
+VGhpcw0KPiBjb21iaW5hdGlvbiBpcyBleGFjdGx5IHdoYXQgdGhlIGtlcm5lbCAqc2hvdWxkKiBk
+byBmb3Igc3dhcCBmaWxlcy4NCg0KSSBzdXNwZWN0IHRoYXQgaXMgYSBjb21tb24gdXNhZ2UgLSBl
+ZyBmb3IgdXBkYXRpbmcgYSBmaWxlIHRoYXQgY29udGFpbnMNCmEgbG9nIGZpbGUgc2VxdWVuY2Ug
+bnVtYmVyLg0KDQouLi4NCj4gSSdtIG5vdCBzdXJlIGFib3V0IE9fREVOWURFTEVURS4gIEl0IGlz
+IGEgbG9jayBvbiB0aGUgbmFtZS4gIFVuaXggaGFzDQo+IHRyYWRpdGlvbmFsbHkgdXNlZCBsb2Nr
+LWZpbGVzIHRvIGxvY2sgYSBuYW1lLiAgVGhlIGZ1bmN0aW9uYWxpdHkgbWFrZXMNCj4gc2Vuc2Ug
+Zm9yIHByb2Nlc3NlcyB3aXRoIHdyaXRlLWFjY2VzcyB0byB0aGUgZGlyZWN0b3J5Li4uDQoNCkkn
+bSBub3Qgc3VyZSBpdCBtYWtlcyBhbnkgc2Vuc2Ugb24gZmlsZXN5c3RlbXMgdGhhdCB1c2UgaW5v
+ZGUgbnVtYmVycy4NCldoaWNoIG5hbWUgd291bGQgeW91IHByb3RlY3QsIGFuZCBob3cgd291bGQg
+eW91IG1hbmFnZSB0byBkbyB0aGUgdGVzdC4NCk9uIHdpbmRvd3MgT19ERU5ZREVMRVRFIGlzIHBy
+ZXR0eSBtdWNoIHRoZSBkZWZhdWx0Lg0KV2hpY2ggaXMgd2h5IHNvZnR3YXJlIHVwZGF0ZXMgYXJl
+IHN1Y2ggYSBQSVRBLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRl
+LCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpS
+ZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Is that with the saturation moved to the UD handler as well? I think it
-would be good to keep that as close to the point at which we detect the
-problem as we can, so perhaps we can inline that part and leave the
-diagnostics to the exception handler?
-
-Will
