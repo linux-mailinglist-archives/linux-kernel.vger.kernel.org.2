@@ -2,268 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8D03F2F79
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10703F2F7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241089AbhHTP2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238130AbhHTP2q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:28:46 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E313DC061575;
-        Fri, 20 Aug 2021 08:28:08 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id r17-20020a0568302371b0290504f3f418fbso14442351oth.12;
-        Fri, 20 Aug 2021 08:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2eS3QJuOoUmoESeURE1tHhGFVya6B6JGJbYvqJ7L3mA=;
-        b=FZ30HpWsbdlvXLmE01aRY6a5J0fsLSGL6MIQb3E4ZaPfC2mLNqAtbEhCO5fgoSiLs3
-         oa53tBxjoVERf3EJVHYSJKtQNlGGR3nf9CeQQntTgmqxipOigi9bAvc+Ztab/7qEMHC4
-         vuWtBbUXz7e33mw4bWrwS9kDvLC/SDhFAvKfK0Ar+XyubJ1C4m9+t2tpzkxsgYr0haWp
-         3+V073rf9UyztDAC4/gpGYkwNxeth0CkkYDvxeGkzmWFMwUOCK0rg0YlsvITRIseNsGT
-         Z1yXHtFwLVaMCClbJMNxkAHywYEQszfcH25Uy5kQTRECBWb8ORudoaaFqgGiUy2q2dQM
-         Ft6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2eS3QJuOoUmoESeURE1tHhGFVya6B6JGJbYvqJ7L3mA=;
-        b=Kk1wcfRi18AaatXUusjwxHAK4eaHohBmuwcQ6QnPjlno3HBXjzKlMQJkEAtnWtCQ1S
-         AZzFB6E65Gk9B26RQlIDmfqgd+WXj2UrwQMbf5dHnZ85dbnvOYRMn+C9T2HwQuSLkOnG
-         56LjIf3golUgLBMmSyk9Qu86khyF4I+CUUmPQ1XQTM8dS2XXDkGpYYAZC4qJwr0I3V3p
-         twbYlRaSY4dw/eU2TwA6mppf4UiSPmssiEMDd3ShyztNITnrrR8v2Qz58eA4O73MTzy9
-         6G+X0r8wjOAFKjCsqThenZTigxb+tTqz5pnoU5wbXGdQFgKTp8uyfnGIe8Bl3Sw4sEcH
-         tmYA==
-X-Gm-Message-State: AOAM533xLaPnUgQEWi8rLGJjtBhF7+1wcQ21mI8KeuLArVhppW8tTLzU
-        fW6/bYNV9DCSErqEuoLOjHeaI8ZzOC36xvPrfV4=
-X-Google-Smtp-Source: ABdhPJz+x71nb8V3O2jBnnr5ntdbi4qL0VsQawio7iYcolm+2DfPCDbQyZTpmUm3IGebywOFOzSmealTe3sJF4YoDkk=
-X-Received: by 2002:a05:6808:483:: with SMTP id z3mr3318825oid.5.1629473288249;
- Fri, 20 Aug 2021 08:28:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210819201441.3545027-1-keescook@chromium.org>
-In-Reply-To: <20210819201441.3545027-1-keescook@chromium.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 20 Aug 2021 11:27:57 -0400
-Message-ID: <CADnq5_PzoQjeESSANzQEkYy_3as8hu1zq-vXmujZExE4=CnpBQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: And destination bounds checking to struct copy
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Lijo Lazar <lijo.lazar@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
-        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>,
-        Sathishkumar S <sathishkumar.sundararaju@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        David M Nieto <David.Nieto@amd.com>,
-        Kenneth Feng <kenneth.feng@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        John Clements <John.Clements@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S241090AbhHTP3m convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Aug 2021 11:29:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238097AbhHTP3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 11:29:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC10A61102;
+        Fri, 20 Aug 2021 15:29:02 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH6S4-006Dc2-Vr; Fri, 20 Aug 2021 16:29:01 +0100
+Date:   Fri, 20 Aug 2021 16:29:00 +0100
+Message-ID: <87lf4wqgn7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Chester Lin <clin@suse.com>
+Cc:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>,
+        Rob Herring <robh+dt@kernel.org>, s32@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 4/8] arm64: dts: add NXP S32G2 support
+In-Reply-To: <YR/HJQDGJ1C+ku6O@linux-8mug>
+References: <20210805065429.27485-1-clin@suse.com>
+        <20210805065429.27485-5-clin@suse.com>
+        <d09ed0fd-83e7-a6aa-0bd6-f679ffb64eaf@suse.de>
+        <87o89sqmz6.wl-maz@kernel.org>
+        <YR/HJQDGJ1C+ku6O@linux-8mug>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: clin@suse.com, afaerber@suse.de, robh+dt@kernel.org, s32@nxp.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org, gregkh@linuxfoundation.org, shawnguo@kernel.org, krzk@kernel.org, linux@rempel-privat.de, s.riedmueller@phytec.de, matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com, festevam@gmail.com, matteo.lisi@engicam.com, frieder.schrempf@kontron.de, tharvey@gateworks.com, jagan@amarulasolutions.com, catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com, bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com, radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com, matthias.bgg@gmail.com, iivanov@suse.de, jlee@suse.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 4:14 PM Kees Cook <keescook@chromium.org> wrote:
->
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
->
-> The "Board Parameters" members of the structs:
->         struct atom_smc_dpm_info_v4_5
->         struct atom_smc_dpm_info_v4_6
->         struct atom_smc_dpm_info_v4_7
->         struct atom_smc_dpm_info_v4_10
-> are written to the corresponding members of the corresponding PPTable_t
-> variables, but they lack destination size bounds checking, which means
-> the compiler cannot verify at compile time that this is an intended and
-> safe memcpy().
->
-> Since the header files are effectively immutable[1] and a struct_group()
-> cannot be used, nor a common struct referenced by both sides of the
-> memcpy() arguments, add a new helper, memcpy_trailing(), to perform the
-> bounds checking at compile time. Replace the open-coded memcpy()s with
-> memcpy_trailing() which includes enough context for the bounds checking.
->
-> "objdump -d" shows no object code changes.
->
-> [1] https://lore.kernel.org/lkml/e56aad3c-a06f-da07-f491-a894a570d78f@amd=
-.com
->
-> Cc: Lijo Lazar <lijo.lazar@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-> Cc: Feifei Xu <Feifei.Xu@amd.com>
-> Cc: Likun Gao <Likun.Gao@amd.com>
-> Cc: Jiawei Gu <Jiawei.Gu@amd.com>
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Link: https://lore.kernel.org/lkml/CADnq5_Npb8uYvd+R4UHgf-w8-cQj3JoODjviJ=
-R_Y9w9wqJ71mQ@mail.gmail.com
-> ---
-> Alex, I dropped your prior Acked-by, since the implementation is very
-> different. If you're still happy with it, I can add it back. :)
+On Fri, 20 Aug 2021 16:15:49 +0100,
+Chester Lin <clin@suse.com> wrote:
+> 
+> On Fri, Aug 20, 2021 at 02:12:13PM +0100, Marc Zyngier wrote:
+> > On Thu, 12 Aug 2021 18:26:28 +0100,
+> > Andreas Färber <afaerber@suse.de> wrote:
+> > > 
+> > > Hi Chester et al.,
+> > > 
+> > > On 05.08.21 08:54, Chester Lin wrote:
+> > > > Add an initial dtsi file for generic SoC features of NXP S32G2.
+> > > > 
+> > > > Signed-off-by: Chester Lin <clin@suse.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/freescale/s32g2.dtsi | 98 ++++++++++++++++++++++++
+> > > >  1 file changed, 98 insertions(+)
+> > > >  create mode 100644 arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > > > new file mode 100644
+> > > > index 000000000000..3321819c1a2d
+> > > > --- /dev/null
+> > > > +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > 
+> > [...]
+> > 
+> > > > +		gic: interrupt-controller@50800000 {
+> > > > +			compatible = "arm,gic-v3";
+> > > > +			#interrupt-cells = <3>;
+> > > > +			interrupt-controller;
+> > > > +			reg = <0 0x50800000 0 0x10000>,
+> > > > +			      <0 0x50880000 0 0x200000>,
+> > 
+> > That's enough redistributor space for 16 CPUs. However, you only
+> > describe 4. Either the number of CPUs is wrong, the size is wrong, or
+> > the GIC has been configured for more cores than the SoC has.
+> 
+> Confirmed the SoC can only find 4 redistributors:
+> 
+> localhost:~ # dmesg | grep CPU
+> [    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+> [    0.000000] Detected VIPT I-cache on CPU0
+> [    0.000000] CPU features: detected: GIC system register CPU interface
+> [    0.000000] CPU features: detected: ARM erratum 845719
+> [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+> [    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=480 to nr_cpu_ids=4.
+> [    0.000000] GICv3: CPU0: found redistributor 0 region 0:0x0000000050880000
+> [    0.063865] smp: Bringing up secondary CPUs ...
+> [    0.068852] Detected VIPT I-cache on CPU1
+> [    0.068894] GICv3: CPU1: found redistributor 1 region 0:0x00000000508a0000
+> [    0.068963] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+> [    0.069809] Detected VIPT I-cache on CPU2
+> [    0.069851] GICv3: CPU2: found redistributor 100 region 0:0x00000000508c0000
+> [    0.069903] CPU2: Booted secondary processor 0x0000000100 [0x410fd034]
+> [    0.070698] Detected VIPT I-cache on CPU3
+> [    0.070722] GICv3: CPU3: found redistributor 101 region 0:0x00000000508e0000
+> [    0.070749] CPU3: Booted secondary processor 0x0000000101 [0x410fd034]
+> [    0.070847] smp: Brought up 1 node, 4 CPUs
+> <..snip..>
 
-This looks reasonable to me:
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+That's not the correct way to find out. Each CPU tries to find its
+matching RD in the region. This doesn't mean there aren't more RDs
+present in the GIC.
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h           | 25 +++++++++++++++++++
->  .../gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c |  6 ++---
->  .../gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c   |  8 +++---
->  .../drm/amd/pm/swsmu/smu13/aldebaran_ppt.c    |  5 ++--
->  4 files changed, 33 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/am=
-dgpu/amdgpu.h
-> index 96e895d6be35..4605934a4fb7 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -1446,4 +1446,29 @@ static inline int amdgpu_in_reset(struct amdgpu_de=
-vice *adev)
->  {
->         return atomic_read(&adev->in_gpu_reset);
->  }
-> +
-> +/**
-> + * memcpy_trailing - Copy the end of one structure into the middle of an=
-other
-> + *
-> + * @dst: Pointer to destination struct
-> + * @first_dst_member: The member name in @dst where the overwrite begins
-> + * @last_dst_member: The member name in @dst where the overwrite ends af=
-ter
-> + * @src: Pointer to the source struct
-> + * @first_src_member: The member name in @src where the copy begins
-> + *
-> + */
-> +#define memcpy_trailing(dst, first_dst_member, last_dst_member,         =
-          \
-> +                       src, first_src_member)                           =
-  \
-> +({                                                                      =
-  \
-> +       size_t __src_offset =3D offsetof(typeof(*(src)), first_src_member=
-);  \
-> +       size_t __src_size =3D sizeof(*(src)) - __src_offset;             =
-    \
-> +       size_t __dst_offset =3D offsetof(typeof(*(dst)), first_dst_member=
-);  \
-> +       size_t __dst_size =3D offsetofend(typeof(*(dst)), last_dst_member=
-) - \
-> +                           __dst_offset;                                =
-  \
-> +       BUILD_BUG_ON(__src_size !=3D __dst_size);                        =
-    \
-> +       __builtin_memcpy((u8 *)(dst) + __dst_offset,                     =
-  \
-> +                        (u8 *)(src) + __src_offset,                     =
-  \
-> +                        __dst_size);                                    =
-  \
-> +})
-> +
->  #endif
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c b/drivers/=
-gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-> index 8ab58781ae13..1918e6232319 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c
-> @@ -465,10 +465,8 @@ static int arcturus_append_powerplay_table(struct sm=
-u_context *smu)
->
->         if ((smc_dpm_table->table_header.format_revision =3D=3D 4) &&
->             (smc_dpm_table->table_header.content_revision =3D=3D 6))
-> -               memcpy(&smc_pptable->MaxVoltageStepGfx,
-> -                      &smc_dpm_table->maxvoltagestepgfx,
-> -                      sizeof(*smc_dpm_table) - offsetof(struct atom_smc_=
-dpm_info_v4_6, maxvoltagestepgfx));
-> -
-> +               memcpy_trailing(smc_pptable, MaxVoltageStepGfx, BoardRese=
-rved,
-> +                               smc_dpm_table, maxvoltagestepgfx);
->         return 0;
->  }
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gp=
-u/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-> index 2e5d3669652b..b738042e064d 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
-> @@ -431,16 +431,16 @@ static int navi10_append_powerplay_table(struct smu=
-_context *smu)
->
->         switch (smc_dpm_table->table_header.content_revision) {
->         case 5: /* nv10 and nv14 */
-> -               memcpy(smc_pptable->I2cControllers, smc_dpm_table->I2cCon=
-trollers,
-> -                       sizeof(*smc_dpm_table) - sizeof(smc_dpm_table->ta=
-ble_header));
-> +               memcpy_trailing(smc_pptable, I2cControllers, BoardReserve=
-d,
-> +                               smc_dpm_table, I2cControllers);
->                 break;
->         case 7: /* nv12 */
->                 ret =3D amdgpu_atombios_get_data_table(adev, index, NULL,=
- NULL, NULL,
->                                               (uint8_t **)&smc_dpm_table_=
-v4_7);
->                 if (ret)
->                         return ret;
-> -               memcpy(smc_pptable->I2cControllers, smc_dpm_table_v4_7->I=
-2cControllers,
-> -                       sizeof(*smc_dpm_table_v4_7) - sizeof(smc_dpm_tabl=
-e_v4_7->table_header));
-> +               memcpy_trailing(smc_pptable, I2cControllers, BoardReserve=
-d,
-> +                               smc_dpm_table_v4_7, I2cControllers);
->                 break;
->         default:
->                 dev_err(smu->adev->dev, "smc_dpm_info with unsupported co=
-ntent revision %d!\n",
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers=
-/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> index c8eefacfdd37..a6fd7ee314a9 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-> @@ -409,9 +409,8 @@ static int aldebaran_append_powerplay_table(struct sm=
-u_context *smu)
->
->         if ((smc_dpm_table->table_header.format_revision =3D=3D 4) &&
->             (smc_dpm_table->table_header.content_revision =3D=3D 10))
-> -               memcpy(&smc_pptable->GfxMaxCurrent,
-> -                      &smc_dpm_table->GfxMaxCurrent,
-> -                      sizeof(*smc_dpm_table) - offsetof(struct atom_smc_=
-dpm_info_v4_10, GfxMaxCurrent));
-> +               memcpy_trailing(smc_pptable, GfxMaxCurrent, reserved,
-> +                               smc_dpm_table, GfxMaxCurrent);
->         return 0;
->  }
->
-> --
-> 2.30.2
->
+You need to iterate over all the RDs in the region until you find one
+that has GICR_TYPER.Last == 1. This will give you the actual count.
+Alternatively, you can check whether the RD at 508e0000 has that bit
+set. If it doesn't, then you know there are more RDs than CPUs.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
