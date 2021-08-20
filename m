@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749A13F3675
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5283F367A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 00:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237366AbhHTWbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 18:31:32 -0400
-Received: from mail-mw2nam12on2079.outbound.protection.outlook.com ([40.107.244.79]:35745
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231274AbhHTWba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 18:31:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=USHCj+Bi4CVE6fyRmpwtnJ+ck58RbVJt8w/eo+52k2chOe77Cec9pHgloAA5XMpZSJofCtFkZ6N6k9MWPcxDxydaRqemXv35do0iGY29xnuIXiF9pmvh14SF2Tgw/cgMyIJRwZU/DwtaiYySHZxSq3nlbZSCjtAlW9KzzK95Rr8LGf6KbDngUtdSWdxv+JdKB/r6Cn1+6T4JE8r0l6qZYEfpD/w4koeT/xrWdh9h8bPxVS7B5Yq6KHD+NUifwcukbdCxieK5UV48jvt+D4Tr5W20kOTD31Pca5UO+MJZmxmx0DeqDaKEWwTCwaJKvgm4yfilYRhf+LtblHK1Eic2sQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fcxb74VCHGrw9I9O2Fke7DwnF2MioTUTGbr9Xu1InH8=;
- b=eyrpQPtMfPsFSpglllOdu2hSBZ6/iWf2Low8mQ3ngdGRzpTmBAHtaz8qScx0SA/OwhFHQW1x/R7eAq0BeUfmXEO6EgA8GTtzrNilsXWurZk20HpaigAfxDFfHY7NjiF387u3oj0uDZC7fQdnGTcQ/xzCxfJx/npqAY3O97WJDLAYjBqTdhf1F1jyaly+ylz81EoXmeJJ/okY2TvhS3oD5FjBUCe03bgDEt1eHWwC3Hffn+V7b8mdRtukDAKmn/n9zxbMDxBNGT2Pky/rQfK3/+iciseLCKlpyTQcg9szqpBB5gefpyphXMMmVdMYu8TmWwLkVCIE2Ol+cdoFdcwXTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Fcxb74VCHGrw9I9O2Fke7DwnF2MioTUTGbr9Xu1InH8=;
- b=DSGsLSxE0+wxjERIYu+d/yib4BMn9PUCogAEE49ugLtE0Z4tHHClxARRfRktQXNkeU3gQoYF4uNE8Z0NpEcpLk/o19/FReRLbwr84ersU6nsy+Lgght250eErDHwPl7bibEmb6kliu6lPTL+RXHwIXqvY+3TvhTi9NDbvqjoa2e1uSG9C7eAFot3XSUVqX+Dd/zQo1mRJDd8Dsj+54X58QuNVVfgMGGSQ7WubIFWjt5di6RTb6Kj+tgEID13ZdnvTNQ7cmcfPG19zfiqIxr5nI3/Tjw3L4gpkmFabQfI49Y8vIVlcTc5DJ8DShwuRXYj0g0X80Ky7Ajb3wx9dOpBCw==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5208.namprd12.prod.outlook.com (2603:10b6:208:311::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.18; Fri, 20 Aug
- 2021 22:30:51 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.021; Fri, 20 Aug 2021
- 22:30:51 +0000
-Date:   Fri, 20 Aug 2021 19:30:49 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        kwankhede@nvidia.com, david@redhat.com
-Subject: Re: [PATCH 1/2] s390/vfio-ap: r/w lock for PQAP interception handler
- function pointer
-Message-ID: <20210820223049.GJ1721383@nvidia.com>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-2-akrowiak@linux.ibm.com>
- <1a9f15d7-0f4d-00a0-0a8b-f1c08aa52eeb@de.ibm.com>
- <358b1052-c751-7417-1263-308b133325b6@linux.ibm.com>
- <20210819115433.76153ae4.alex.williamson@redhat.com>
- <20210819175807.GC1721383@nvidia.com>
- <d905d1fa-2852-4fb7-5b56-4b3b12d8994f@linux.ibm.com>
+        id S233567AbhHTWdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 18:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229451AbhHTWdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 18:33:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE86C061575;
+        Fri, 20 Aug 2021 15:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Rqd7XZjlI+nNgy4uwpEVUNLUjFWyJ9EMV7pUgmSDTMM=; b=ScMaiyryPuwarKlOD4teq+Ru/Q
+        wv7TrfDsI7YN5IkHpuXdP0Wz99OxXtNoibwbOYSZbJ7N/oL+yem9/3XsoJyK2D+YWGJrCnnYQvm2h
+        qV30W6G8LNquDniLNXz/nRBs3Z1mAmvdDTgC3MNIppohKZUExmN+apIfxJLHksWCOa67p9+1GwAuh
+        f5FvMDA9G9rWZohHRQWV2w5pTT+FyUrnAdFCPsE/FSuCVG8+VoKxMjs+4JrS//xNOW5rk5cS4DPj4
+        aS2Ets2iO3kIAh6Tftnn5hacmQmzeoMaQKS211gaqDIdFYqQE6lpkb8D8CRtzCNTSla6apcYpJdV8
+        SrI9ABTQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mHD2X-0073QU-D1; Fri, 20 Aug 2021 22:31:21 +0000
+Date:   Fri, 20 Aug 2021 23:31:05 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: Removing Mandatory Locks
+Message-ID: <YSAtKesNFlSIhHar@casper.infradead.org>
+References: <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
+ <87h7ft2j68.fsf@disp2133>
+ <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+ <YRcyqbpVqwwq3P6n@casper.infradead.org>
+ <87k0kkxbjn.fsf_-_@disp2133>
+ <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
+ <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
+ <202108200905.BE8AF7C@keescook>
+ <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d905d1fa-2852-4fb7-5b56-4b3b12d8994f@linux.ibm.com>
-X-ClientProxiedBy: MN2PR10CA0021.namprd10.prod.outlook.com
- (2603:10b6:208:120::34) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR10CA0021.namprd10.prod.outlook.com (2603:10b6:208:120::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Fri, 20 Aug 2021 22:30:51 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mHD2H-002SJY-VT; Fri, 20 Aug 2021 19:30:49 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 17f4d5e4-78c4-4a85-51a1-08d9642a2a62
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5208:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52086984CBA79FCB0EABCEEBC2C19@BL1PR12MB5208.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XKkjZnu7JRPOdUNLhRcQRo2vU6/rOCk2d7HGFR8bNJzTJ9R2jEsJlPNMk2VRDmv6ddELpnhlBP+UO8+lmgkDC+bX3ybhFZmdnBp929skW9mM96Wy7YKtLIOXqBbaBIaNLVyYXzOaTTSj705nCL2AGA9NEaZcW1cjAG8XvdnaI7CmxnUFbDNy9VjWKNxwS4jGeXMU5VYGFHAtAqfjtdWk8RwcxWjv1MHRvuNtBU810m1EnB8H+L1vE8LFHaCHdHc7a2RxvEKf7SBvd+6DTQ05Uj7SffZGdM4MtFFEK9xYZ7dFEwRlQRfMCjNETz0WosCwJoXM1jw756pBz5j0j1gM0j3qlmgXdyUw+j08g91pFyXuyJa+bHvFTwk4ifHseK0Rg3IzFUBYq/xPeQphqhIBIuuYKB3sp5pnijTUJYs0A6frKDA0UaTYIj82zZM/kEuKbx7ppuN6rWGQAmEpU+6nPzPjnZGeu15cWQrt24w0JgRWciK/P0fQd5rP5heTl7/aecHaChEBh85MZFwxnnxHeW2f0OToqK+SVu3H9kI6RtUTMoEZu4xlktD84pgC2Aybr6ikH2E7eC2F6azZxKsgOrG3wONma8LH4YcTcMcoEHtIdvzeotVy4Tx4F9rvDwhJHW2v0zikXC9lt5wvTQ7UqFNFjGgdZNlTVyny8MHyymWSc0flPmT0sUE9l3gMp23igsHPcWt8vCq8IetfbDJ3Ux5JsppPULPK4e5EpWr4+B4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(366004)(376002)(39860400002)(966005)(186003)(426003)(478600001)(316002)(26005)(86362001)(66946007)(66556008)(66476007)(36756003)(33656002)(9786002)(9746002)(4744005)(4326008)(5660300002)(2906002)(1076003)(2616005)(8936002)(54906003)(38100700002)(8676002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2LlaCtCnnmboWDAG0hkdcFhlYbilGpFqrCHCuoqrODYglQMyFCipAGvpU7Dv?=
- =?us-ascii?Q?ZyZRa9X8bA4cRXX19pyien4DQYZg0ZzNOpMN221iDNAfjs941RObAitoivHY?=
- =?us-ascii?Q?9rldQFOXeAwaNTAla/z+xX1sLlxkoY0CnBQknM1yCmrIRJC0jj54Ai2OBukO?=
- =?us-ascii?Q?JgqCMaYhmdIv9HVxGUr7WFKF8xhiwKHhkK13inKCL6wJBjE0ki7vD5jTycNj?=
- =?us-ascii?Q?vSRRcnDHfO3W9rAmKcVzJsOfFCXlyYWHqJA3oza0BzSAtuMqr7wItQK4Dfze?=
- =?us-ascii?Q?1E6WyzaIYnd2Got8hLEg9TP6zcwlDjx3FrYYA/bttP2gkIVQxVAMCnevlfZe?=
- =?us-ascii?Q?uDF/3PI5gOEBM/uLLy4L+CYTZsC2NWfbw5H0Rv0jBMfTBq/TR+HV2cfVQTlO?=
- =?us-ascii?Q?ty9hV+tIxhDH8pev6+1cpdCplVTe89wUUIIxH3085Z5KT/o0SPuHG6GEj9l4?=
- =?us-ascii?Q?fmJjEa7VlEAptrRCMyIBsqP4D4moy1GW+26X1TbAxRTu8RnYZz3C42r+zxeB?=
- =?us-ascii?Q?P94Mm4gRCymJ+z9368eKE1e7RRPcplL9EsNmx4AKtU9I+WZ/mlmzRKO+xAfg?=
- =?us-ascii?Q?f64HsWtQQHUw8Mn4Dn/2VXzbdfvyUZzdtZ0QeGoebzVwx4Nw3cbScN3zdAQb?=
- =?us-ascii?Q?xuGxP9Y2FAa/ubuL+ybqX0kBNkmxlyqZ/KzGHRa7ypXTEkHdSwiNPOI0eaYA?=
- =?us-ascii?Q?+7jjkgvsGoX9DrdvsETo50LGtCjQ/LbhQWnrZAsZjEl63zAHBiabzJiAfbOv?=
- =?us-ascii?Q?j2nOBHJNY7nMSPEzGC5RFObzfZdx8lY/vuN0ZnUWBmbUjm3ec7niFqciY9LG?=
- =?us-ascii?Q?zOrztaPlO4EDsXBmgCy3iYW/JM7SQPbAx8lz1f5bTIMGc/FODOKizJUDvPjK?=
- =?us-ascii?Q?z8HEi5RxIgb+dTeZGw7Pxkl62KRyaoefC6ndymz5TYPNTbKAsCsy7sTpKPdR?=
- =?us-ascii?Q?GX7QY9Lqd+GljAI3VpoZ2VLyEPmMmIgAAN9UYXCXaWiS1ncgUjiU4Bck5SYy?=
- =?us-ascii?Q?Kouo5gcyOfWTl3SflRxJI4XzsTmQh3j2z+o6wGQoZl84BKVIjxEPX2EMfviR?=
- =?us-ascii?Q?4sfc31wgDqiGINaA5oWNmlqQqV2tntaEThlRnupqnr4qLEIWqJDL+nl8oDFw?=
- =?us-ascii?Q?jjxeRrydQh0jMPW2rVI88ZS1oY1d7/pKCmcbp3ej3EJpjNMr342XtQvxA78Y?=
- =?us-ascii?Q?drZ8XKNUcJVphFy3q7dBjwCsyu+rfkRouQxfrhGp6K5mp3D8iKHdiPG0zffE?=
- =?us-ascii?Q?bfymJHa883kZiEqpyPn7Cxck5e28G6nuIhuKnNVMfdA3L42roCg2m56nqGA5?=
- =?us-ascii?Q?uUY1Ze71TSSr3IXo6Nr3X2v5?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17f4d5e4-78c4-4a85-51a1-08d9642a2a62
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 22:30:51.3669
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CRM6Td58mMSKBrZQH7WMe5YHJYjV5lQK0XTKfjNEJwDXoS7PtZCKWZbzWCjMW3A5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5208
+In-Reply-To: <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 06:05:08PM -0400, Tony Krowiak wrote:
+On Fri, Aug 20, 2021 at 12:17:49PM -0700, H. Peter Anvin wrote:
+> I thought the main user was Samba and/or otherwise providing file service for M$ systems?
 
-> So, the question is, how to I get the linux-vfio-next repo upon which I
-> can rebase my patches? I apologize for my ignorance.
-
-Get yourself a kernel git tree somehow, eg by cloning one you already
-have
-
-Then something like
-
-$ git fetch https://github.com/awilliam/linux-vfio.git next
-$ git reset --hard FETCH_HEAD
-
-Will sort it out, though there are many other varients such as adding
-a remote/etc.
-
-When you cloned it from github git checked out the wrong branch for
-you - 'git reset --hard origin/next' would fix it too.
-
-Jason
+When I asked around about this in ~2001, the only example anyoe was able
+to come up with was some database that I no longer remember the name of.
