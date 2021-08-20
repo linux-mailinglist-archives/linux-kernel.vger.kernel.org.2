@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5923F34D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46F03F34DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 21:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbhHTT5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 15:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237764AbhHTT5U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 15:57:20 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA958C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 12:56:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VbTON6RvZeZhGJt6ehyn/UMw7061NqQ9ISQ7HVHxgAQ=; b=Nz+M9aqAdzrwVlpMtHBAoKM3sQ
-        /MC1a1UMn1TH8I0i3RIECs05+soT9W1PjPzTbJ9rJrBlQZiWwYwPq5gPiNraa8QlgzaxsxKTtNK51
-        xfHrhec5YI34f1OJr5TdE25HisAWUsCmZJlfg36RHrmqUjwzulPaeZmFyCQjOLZek95gCw4CfmWlT
-        +NwsZjpJZ7dW4R+GpB9sCknUYdpVqI5Cy28SWGT6seS6n8qKOZLjSm9RoGhsy/82Rwg4KCVU8B1K7
-        vj3/f3pKGq5u6+BekrrvIUuufXlQ8QjCnK+AZbqc6s1HEqxrDWtOgT5+qZjbt4NuQI6nmdeG+FTns
-        mYHecTpA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mHAd0-00C0kX-OY; Fri, 20 Aug 2021 19:56:34 +0000
-Date:   Fri, 20 Aug 2021 12:56:34 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Subject: Re: refactor the i915 GVT support
-Message-ID: <YSAI8pKAvvW/8S2O@bombadil.infradead.org>
-References: <20210728175925.GU1721383@nvidia.com>
- <20210729072022.GB31896@lst.de>
- <20210803094315.GF13928@zhen-hp.sh.intel.com>
- <20210803143058.GA1721383@nvidia.com>
- <20210804052606.GG13928@zhen-hp.sh.intel.com>
- <20210816173458.GA9183@lst.de>
- <20210817010851.GW13928@zhen-hp.sh.intel.com>
- <20210817052203.GX13928@zhen-hp.sh.intel.com>
- <20210819082929.GB13928@zhen-hp.sh.intel.com>
- <20210820141724.GA29034@lst.de>
+        id S238710AbhHTT56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 15:57:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238427AbhHTT5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 15:57:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C576115A;
+        Fri, 20 Aug 2021 19:57:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629489433;
+        bh=oXG50X/22uTzFUboG7/PpKEBPWt2Csv6a5jCy+z/ccY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Z+9074sEzmiVFaCRvwMytW8rZxrRTSyhyY0TEn010k6sr3ooIX8QVzteNOifz+2b2
+         RcvXkzSiK1WQnvJrmaXd6ve6Ah7SR9LOB8HcYrzkys8Sep5RUmuki8SpCx2UymxqLq
+         3ok9NxBS2JMMrH7BQAnYsDWHC96CMnN13JYcCFzcJy/hd6EqvBRSRIUVvzTr5km6sJ
+         NXuUuRnN5a7Q4lGS16Hg7yp3sJwxiNnOl7DgkxygPUNbtu++uQKLQAXb5xZVjhf6Qz
+         K1GkPx9bMOBIWsn/oI5lt7kkgki9RCzq3A2DlYYincueSVFVHyAl5FLSEN0nUA/PxT
+         SqqnkNShr+APg==
+Date:   Fri, 20 Aug 2021 14:57:12 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wang Xingang <wangxingang5@huawei.com>
+Cc:     robh@kernel.org, will@kernel.org, joro@8bytes.org,
+        robh+dt@kernel.org, gregkh@linuxfoundation.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, xieyingtai@huawei.com
+Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating
+ PCI devices
+Message-ID: <20210820195712.GA3342877@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210820141724.GA29034@lst.de>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 04:17:24PM +0200, Christoph Hellwig wrote:
-> On Thu, Aug 19, 2021 at 04:29:29PM +0800, Zhenyu Wang wrote:
-> > I'm working on below patch to resolve this. But I met a weird issue in
-> > case when building i915 as module and also kvmgt module, it caused
-> > busy wait on request_module("kvmgt") when boot, it doesn't happen if
-> > building i915 into kernel. I'm not sure what could be the reason?
+On Fri, May 21, 2021 at 03:03:24AM +0000, Wang Xingang wrote:
+> From: Xingang Wang <wangxingang5@huawei.com>
 > 
-> Luis, do you know if there is a problem with a request_module from
-> a driver ->probe routine that is probably called by a module_init
-> function itself?
+> When booting with devicetree, the pci_request_acs() is called after the
+> enumeration and initialization of PCI devices, thus the ACS is not
+> enabled. And ACS should be enabled when IOMMU is detected for the
+> PCI host bridge, so add check for IOMMU before probe of PCI host and call
+> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
+> devices.
+> 
+> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+> configuring IOMMU linkage")
+> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
 
-Generally no, but you can easily foot yourself in the feet by creating
-cross dependencies and not dealing with them properly. I'd make sure
-to keep module initialization as simple as possible, and run whatever
-takes more time asynchronously, then use a state machine to allow
-you to verify where you are in the initialization phase or query it
-or wait for a completion with a timeout.
+Applied to pci/virtualization for v5.15, thanks!
 
-It seems the code in question is getting some spring cleaning, and its
-unclear where the code is I can inspect. If there's a tree somewhere I
-can take a peak I'd be happy to review possible oddities that may stick
-out.
-
-My goto model for these sorts of problems is to abstract the issue
-*outside* of the driver in question and implement new selftests to
-try to reproduce. This serves two purposes, 1) helps with testing
-2) may allow you to see the problem more clearly.
-
-  Luis
+> ---
+>  drivers/iommu/of_iommu.c | 1 -
+>  drivers/pci/of.c         | 8 +++++++-
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index a9d2df001149..54a14da242cc 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>  			.np = master_np,
+>  		};
+>  
+> -		pci_request_acs();
+>  		err = pci_for_each_dma_alias(to_pci_dev(dev),
+>  					     of_pci_iommu_init, &info);
+>  	} else {
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index da5b414d585a..2313c3f848b0 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>  
+>  int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
+>  {
+> -	if (!dev->of_node)
+> +	struct device_node *node = dev->of_node;
+> +
+> +	if (!node)
+>  		return 0;
+>  
+> +	/* Detect IOMMU and make sure ACS will be enabled */
+> +	if (of_property_read_bool(node, "iommu-map"))
+> +		pci_request_acs();
+> +
+>  	bridge->swizzle_irq = pci_common_swizzle;
+>  	bridge->map_irq = of_irq_parse_and_map_pci;
+>  
+> -- 
+> 2.19.1
+> 
