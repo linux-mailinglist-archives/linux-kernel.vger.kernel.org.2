@@ -2,242 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCF03F3290
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B943F328D
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235644AbhHTRzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
+        id S235631AbhHTRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhHTRy7 (ORCPT
+        with ESMTP id S234977AbhHTRyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:54:59 -0400
-Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28727C061575;
-        Fri, 20 Aug 2021 10:54:20 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by ha0.nfschina.com (Postfix) with ESMTP id 6DF53AE0DB1;
-        Sat, 21 Aug 2021 01:54:27 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from ha0.nfschina.com ([127.0.0.1])
-        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BcXU23MVm0PP; Sat, 21 Aug 2021 01:54:06 +0800 (CST)
-Received: from [192.168.10.13] (unknown [112.3.220.165])
-        (Authenticated sender: liqiong@nfschina.com)
-        by ha0.nfschina.com (Postfix) with ESMTPA id E0D9CAE0D4F;
-        Sat, 21 Aug 2021 01:54:05 +0800 (CST)
-Message-ID: <6d60893c-63dc-394f-d43c-9ecab7b6d06e@nfschina.com>
-Date:   Sat, 21 Aug 2021 01:53:42 +0800
+        Fri, 20 Aug 2021 13:54:31 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D4CC061575;
+        Fri, 20 Aug 2021 10:53:53 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id mq2-20020a17090b3802b0290178911d298bso7813217pjb.1;
+        Fri, 20 Aug 2021 10:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=wGEmsQipr5gzuljiPseq2A0Fn1otMeloCg6zZW6nEZM=;
+        b=Z7iolNUcZI7SC3hr+wJwvmRBysaz9H/26a5BtromWHnFojn2eMmJX7iO+ARXKVgNRo
+         P26oAv6NLCeH2FS7F5rk3ovdhh5nOJbsgoXdt8y0ZwoWM5Z7dS+ObBGpySxUuO9/mPM2
+         +kVF4Cd0On7pNvyIv58CBmKNMGvOl2/fypV67NpUYt9p2bvHbAdBb/ypvTs9n2QHozJY
+         zXGIZo7Wq082AqdIqvmKIaUEXad6z114VT+WUYOJ7z6SNuDMDz4BbF99h2eFE3IIefyg
+         8xfH34vDfYbbeBC3VzQu+pB1x1svtypQql7yl7dvjNC7GCFDTtpyLWo2UA7qHVqZZJSn
+         jDKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wGEmsQipr5gzuljiPseq2A0Fn1otMeloCg6zZW6nEZM=;
+        b=DN8IPe1jxibtSw5yzUrH9EkDCMNMVRfley7GSFqXBziyLsCOK6VLRLdTVDmFRSsMol
+         U3srrWyXJYMf1UT8Nlx3yLt4DsCgkloG8SMX0mFNJRmPoajGCW9vHUd+JsBPmhXsjKgY
+         TC+dri5koXaZmsk87wl+Y1gVWVfnBQ99/NRqaZLVK3iXoZataUflHl11qF7vf0aR8trF
+         tgmoRWIpQacLbfLVyFbkyn2z5cVUwdHVZbrXrBdFJDhrnqt7zNLkE5lGn2nCQpFuELVE
+         8N69ItkLNFZQ/TSAKxjMyvfpSe8nwV6kPZZq47u7jiSMQb9d5gVZBQCh+ANzbcRxuo43
+         af8w==
+X-Gm-Message-State: AOAM532ZD+KVbPkdZgPO1nzw6i+KGj90B77gYtwA7XfVZm8unLY+0Huu
+        fu/f3wy8Oa4IYx4GarqwpEQ=
+X-Google-Smtp-Source: ABdhPJycAHJDcAUXZIxndEcPoSl619LFgLTgEMLLDpnLHIsB4NecSA18q3/B2VgxNkvcnM5UX5E4uQ==
+X-Received: by 2002:a17:902:8506:b029:12c:76a8:d1b8 with SMTP id bj6-20020a1709028506b029012c76a8d1b8mr17413188plb.14.1629482032699;
+        Fri, 20 Aug 2021 10:53:52 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id m2sm8883434pgu.15.2021.08.20.10.53.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 10:53:52 -0700 (PDT)
+Subject: Re: [PATCH v2] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210812103851.GC5047@twin.jikos.cz>
+ <3c48eec9-590c-4974-4026-f74cafa5ac48@gmail.com>
+ <20210812155032.GL5047@twin.jikos.cz>
+ <1e0aafb2-9e55-5f64-d347-1765de0560c5@gmail.com>
+ <20210813085137.GQ5047@twin.jikos.cz>
+ <a5690ae1-28ba-a933-6473-e9c1e5480f0c@gmail.com>
+ <20210813103032.GR5047@twin.jikos.cz>
+ <89172356-335f-1ca3-d3a2-78fac7ef93fb@gmail.com>
+ <20210819173403.GI5047@twin.jikos.cz>
+ <e9c5bb00-b609-aff9-fc95-ca1c5b9c2899@gmail.com>
+ <20210820105828.GN5047@twin.jikos.cz>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <e1bce692-b233-2d74-f366-dc0ec43ead84@gmail.com>
+Date:   Sat, 21 Aug 2021 01:53:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.0.1
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
+In-Reply-To: <20210820105828.GN5047@twin.jikos.cz>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-To:     THOBY Simon <Simon.THOBY@viveris.fr>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
- <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
- <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
-From:   liqiong <liqiong@nfschina.com>
-In-Reply-To: <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
-
-On 2021/8/20 21:23, THOBY Simon wrote:
-> Hi Liqiong,
->
-> On 8/20/21 12:15 PM, 李力琼 wrote:
->> Hi, Simon:
+On 20/8/21 6:58 pm, David Sterba wrote:
+> On Fri, Aug 20, 2021 at 11:09:05AM +0800, Desmond Cheong Zhi Xi wrote:
+>> On 20/8/21 1:34 am, David Sterba wrote:
+>>> On Fri, Aug 20, 2021 at 01:11:58AM +0800, Desmond Cheong Zhi Xi wrote:
+>>>>>>> The option #2 does not sound safe because the TGT bit is checked in
+>>>>>>> several places where device list is queried for various reasons, even
+>>>>>>> without a mounted filesystem.
+>>>>>>>
+>>>>>>> Removing the assertion makes more sense but I'm still not convinced that
+>>>>>>> the this is expected/allowed state of a closed device.
+>>>>>>>
+>>>>>>
+>>>>>> Would it be better if we cleared the REPLACE_TGT bit only when closing
+>>>>>> the device where device->devid == BTRFS_DEV_REPLACE_DEVID?
+>>>>>>
+>>>>>> The first conditional in btrfs_close_one_device assumes that we can come
+>>>>>> across such a device. If we come across it, we should properly reset it.
+>>>>>>
+>>>>>> If other devices has this bit set, the ASSERT will still catch it and
+>>>>>> let us know something is wrong.
+>>>>>
+>>>>> That sounds great.
+>>>>>
+>>>>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>>>>> index 70f94b75f25a..a5afebb78ecf 100644
+>>>>>> --- a/fs/btrfs/volumes.c
+>>>>>> +++ b/fs/btrfs/volumes.c
+>>>>>> @@ -1130,6 +1130,9 @@ static void btrfs_close_one_device(struct btrfs_device *device)
+>>>>>>                     fs_devices->rw_devices--;
+>>>>>>             }
+>>>>>>      
+>>>>>> +       if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+>>>>>> +               clear_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state);
+>>>>>> +
+>>>>>>             if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+>>>>>>                     fs_devices->missing_devices--;
+>>>>>
+>>>>> I'll do a few test rounds, thanks.
+>>>>
+>>>> Just following up. Did that resolve the issue or is further
+>>>> investigation needed?
+>>>
+>>> The fix seems to work, I haven't seen the assertion fail anymore,
+>>> incidentally the crash also stopped to show up on an unpatched branch.
+>>>
 >>
->> This solution is better then rwsem, a temp "ima_rules" variable should
->> can fix. I also have a another idea, with a little trick, default list
->> can traverse to the new list, so we don't need care about the read side.
->>
->> here is the patch:
->>
->> @@ -918,8 +918,21 @@ void ima_update_policy(void)
->>          list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
->>
->>          if (ima_rules != policy) {
->> +               struct list_head *prev_rules = ima_rules;
->> +               struct list_head *first = ima_rules->next;
->>                  ima_policy_flag = 0;
->> +
->> +               /*
->> +                * Make the previous list can traverse to new list,
->> +                * that is tricky, or there is a deadly loop whithin
->> +                * "list_for_each_entry_rcu(entry, ima_rules, list)"
->> +                *
->> +                * After update "ima_rules", restore the previous list.
->> +                */
-> I think this could be rephrased to be a tad clearer, I am not quite sure
-> how I must interpret the first sentence of the comment.
-I got it,  how about this:
-  /*
-   * The previous list has to traverse to new list,
-   * Or there may be a deadly loop within
-   * "list_for_each_entry_rcu(entry, ima_rules, list)"
-   *
-   * That is tricky, after updated "ima_rules", restore the previous list.
-   */
->
->
->> +               prev_rules->next = policy->next;
->>                  ima_rules = policy;
->> +               syncchronize_rcu();
-> I'm a bit puzzled as you seem to imply in the mail this patch was tested,
-> but there is no 'syncchronize_rcu' (with two 'c') symbol in the kernel.
-> Was that a copy/paste error? Or maybe you forgot the 'not' in "This
-> patch has been tested"? These errors happen, and I am myself quite an
-> expert in doing them :)
+>> Sounds good, thanks for the update. If there's anything else I can help
+>> with, please let me know.
+> 
+> So are you going to send the patch with the fix?
+> 
 
-
-Sorry for the mistake, I copy/paste the patch and delete/edit some lines,
-have reviewed before sending, but not found. I have made a case to reproduce
-the error, dumping "ima_rules" and every item address of list in the error
-situaiton, I can watchthe "ima_rules" change, old list traversing to the 
-new list.
-And I have been doing a reboot test which found this bug. This patch 
-seems to work fine.
-
-
->
->> +               prev_rules->next = first;
->>
->>
->> The side effect is the "ima_default_rules" will be changed a little while.
->> But it make sense, the process should be checked again by the new policy.
->>
->> This patch has been tested, if will do, I can resubmit this patch.>
->> How about this ?
->
-> Correct me if I'm wrong, here is how I think I understand you patch.
-> We start with a situation like that (step 0):
-> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
->
-> Then we decide to update the policy for the first time, so
-> 'ima_rules [&ima_default_rules] != policy [&ima_policy_rules]'.
-> We enter the condition.
-> First we copy the current value of ima_rules (&ima_default_rules)
-> to a temporary variable 'prev_rules'. We also create a pointer dubbed
-> 'first' to the entry 1 in the default list (step 1):
-> prev_rules -------------
->                         \/
-> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
->                                                                     /\
-> first --------------------------------------------------------------
->
->
-> Then we update prev_rules->next to point to policy->next (step 2):
-> List entry 1 <-> List entry 2 <-> ... -> List entry 0
->   /\
-> first
-> 	(notice that list entry 0 no longer points backwards to 'list entry 1',
-> 	but I don't think there is any reverse iteration in IMA, so it should be
-> 	safe)
->
-> prev_rules -------------
->                         \/
-> ima_rules --> List entry 0 (head node) = ima_default_rules
->                         |
->                         |
->                         -------------------------------------------
->                                                                   \/
-> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
->
->
-> We then update ima_rules to point to ima_policy_rules (step 3):
-> List entry 1 <-> List entry 2 <-> ... -> List entry 0
->   /\
-> first
->
-> prev_rules -------------
->                         \/
-> ima_rules     List entry 0 (head node) = ima_default_rules
->       |                 |
->       |                 |
->       |                 ------------------------------------------
->       ---------------                                            |
->                     \/                                           \/
-> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
->                                                                     /\
-> first --------------------------------------------------------------
->
-> Then we run synchronize_rcu() to wait for any RCU reader to exit their loops (step 4).
->
-> Finally we update prev_rules->next to point back to the ima policy and fix the loop (step 5):
->
-> List entry 1 <-> List entry 2 <-> ... -> List entry 0
->   /\
-> first
->
-> prev_rules ---> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
->                                                                       /\
->                                                                   first (now useless)
-> ima_rules
->       |
->       |
->       |
->       ---------------
->                     \/
-> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
->
-> The goal is that readers should still be able to loop
-> (forward, as we saw that backward looping is temporarily broken)
-> while in steps 0-4.
-
-
-Yes, It's the workflow.
-
-
-> I'm not completely sure what would happen to a client that started iterating
-> over ima_rules right after step 2.
->
-> Wouldn't they be able to start looping through the new policy
-> as 'List entry 0 (head node) = ima_default_rules' points to ima_policy_rules?
-> And if they, wouldn't they loop until the write to 'ima_rule' at step 3 (admittedly
-> very shortly thereafter) completed?
-> And would the compiler be allowed to optimize the read to 'ima_rules' in the
-> list_for_each_entry() loop, thereby never reloading the new value for
-> 'ima_rules', and thus looping forever, just what we are trying to avoid?
-
-
-Yes,  "ima_rules" cache not update in time, It's a risk. I am not sure 
-if "WRITE_ONCE"
-can do this trick. How about:
-     WRITE_ONCE(prev_rules->next, policy->next);
-     WRITE_ONCE(ima_rules, policy);
-
-
-If can't fix the cache issue, maybe the "ima_rules_tmp" solution is the 
-best way.
-I will test it.
-
-
-> Overall, I'm tempted to say this is perhaps a bit too complex (at least,
-> my head tells me it is, but that may very well be because I'm terrible
-> at concurrency issues).
->
-> Honestly, in this case I think awaiting input from more experienced
-> kernel devs than I is the best path forward :-)
->
->> ----------
->> Regards,
->> liqiong
->>
-> Thanks,
-> Simon
+Right, just sent. For some reason I thought it was already patched.
