@@ -2,155 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321253F264E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93493F2652
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 07:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233073AbhHTFIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 01:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S238100AbhHTFJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 01:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhHTFIN (ORCPT
+        with ESMTP id S235390AbhHTFJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 01:08:13 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348E1C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:07:36 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id k14so8021770pga.13
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:07:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=I11c1cKgPr/Sp26Jfws1CaBTqYhcyWk53u2DaXhbwr4=;
-        b=UpF+nH2OkwIlPICwJCGnmyjIr4B9zvEagcPYbt+FJYBnDajj0m1nO6tNVE8qbt0+Fb
-         dvuJgN/eTqaJJteqhCVn/rpcLUbjjgUdxm7UyfiENQfoJm1xoF4RsPXSRRmHR5JJ+BPY
-         PyeM7sN+r+QeMIx3F/9qJdfTHD7pTlzTgVcV3EQwfDc98f2L+ENvpCEJkt6OSiVH99HJ
-         DBrXa6YTNx2fJk97BqJPlKXpgux1dBNrNVjVGSJvKx8onkggk5QqicWc5AuujjenjwE8
-         18Ew9Inp2nlX4py5sLi42iaANQsw78fFTvRX/HOAZ1Q/cYx042ZZ2sxqM8pjRICPn4KS
-         FXng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=I11c1cKgPr/Sp26Jfws1CaBTqYhcyWk53u2DaXhbwr4=;
-        b=H5rgk5MvWMjmnjr2ECaN4uac99BlNaU6FMbf9d0GEs0NgZFchAUDk8IblVFd6FM1Em
-         cRGejx2iFKIHfBUErfI5XoYFebhRXwYz6Rzr8dlqYI9SIgdWS9OkUcyc66EX0nyAhjws
-         DDwhHYyX7EljkxsDQ0HDDuP2baA5MefrZMP1SucyXLFsVRDJ4kWoOlqBdWWn7Hptc5RM
-         5+eXRsAoBUk/diNE1wAh8NExfWCTvpMQbbt8O/fjDgXDGilGazAx0Hl6+g0mkVv+9DvB
-         L5q+iOHSlhLmHO7mmL3/5QOZeUTPa/6SKee4RJ/g/CNWXMtFbFVrRXJOebz9O8j3UbN5
-         6XWw==
-X-Gm-Message-State: AOAM533gxUWYDIQWu8JaJgy75HsekAyd952Y6cvw6RIsTde13jGs6Eoo
-        HKq2E44pFKxNa4IYgfkG0T25YQ==
-X-Google-Smtp-Source: ABdhPJy16/E+lvO8MOOTzYuxWhro60JOgxJRFDA2oDgCU53rDXdaeG2jdAFewa07ZsImLDOdZ74p+w==
-X-Received: by 2002:a05:6a00:791:b0:3e1:3316:2e8 with SMTP id g17-20020a056a00079100b003e1331602e8mr18151438pfu.10.1629436055638;
-        Thu, 19 Aug 2021 22:07:35 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id m5sm6747464pgn.70.2021.08.19.22.07.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Aug 2021 22:07:35 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 10:37:32 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-Message-ID: <20210820050732.oy2qdtwha5zioasq@vireshk-i7>
-References: <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <20210818095044.e2ntsm45h5cddk7s@vireshk-i7>
- <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
- <0354acbe-d856-4040-f453-8e8164102045@gmail.com>
- <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
- <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com>
+        Fri, 20 Aug 2021 01:09:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070B1C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 22:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=gtlfkhGirRBJ8Rr1d2z1tTWoOCPLuNEfEmn6mu6cjLA=; b=zsCwN4DVnmIEnuaqX8EyuapcBq
+        IZ1aPF0kFZO3gVoseO7Egt7H6jdzUTRt0gK4Mphf+Q1pbWwT8XDv40DZgswofC9kIkx2HObR8Gz57
+        5ZB0IYkfY9jTbEjWt6p23Jb8+RGwshevMkxNhO4EC5RfhVZ0DQBjhSh8lrbMFxjAGsq25ss8auMeq
+        K7zfgmc9lQs2Oz3e2C7ZjONDPNg+iTU3KXclnFnunOaFrL1q2+aNdYnDSJ8S9QE7jovXWs7cDJEsk
+        wssGU9pIDLfne3mEaU9kozsWxurmchofdo/6YmJBIAobmarmm9B77Jk9d+TYUF9yTaxw6JLIsiQEd
+        Yrp/6wAA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mGwle-00A6pi-EP; Fri, 20 Aug 2021 05:08:34 +0000
+To:     alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: HDA codec problem
+Message-ID: <12bbf54b-3ef6-8fa8-37fc-5f1e8d134bba@infradead.org>
+Date:   Thu, 19 Aug 2021 22:08:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-08-21, 22:35, Dmitry Osipenko wrote:
-> 19.08.2021 16:07, Ulf Hansson пишет:
-> > In the other scenario where a consumer driver prefers to *not* call
-> > pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
-> > to power on the device to complete probing, then we don't want to vote
-> > for an OPP at all - and we also want the performance state for the
-> > device in genpd to be set to zero. Correct?
-> 
-> Yes
-> 
-> > Is this the main problem you are trying to solve, because I think this
-> > doesn't work out of the box as of today?
-> 
-> The main problem is that the restored performance state is zero for the
-> first genpd_runtime_resume(), while it's not zero from the h/w perspective.
+Hi,
 
-This is exactly why I have been advocating that the genpd needs to
-sync up with the hardware before any calls are made to it from the
-consumer driver. Just what clock framework does to get the clock rate.
+I am having problems getting audio working on my computer:
 
-> > There is another concern though, but perhaps it's not a problem after
-> > all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
-> > like clock/regulators. That could certainly be problematic, in
-> > particular if the device and its genpd have OPP tables associated with
-> > it and the consumer driver wants to follow the above sequence in
-> > probe.
-> 
-> dev_pm_opp_set_rate() won't enable clocks and regulators, but it may
+00:1f.3 Audio device: Intel Corporation Device f1c8
 
-It does enable regulators right now, it may choose to enable clocks
-later on, no guarantees.
+I did an internet search that said that I would need 5.13 or later to
+have support for this device.
 
-> change the clock rate and voltage. This is also platform/driver specific
-> because it's up to OPP user how to configure OPP table. On Tegra we only
-> assign clock to OPP table, regulators are unused.
 
-Right, over that platforms can set their own version of set-opp
-callback, where all this is done from a platform specific callback.
+openSUSE 15.3 kernel 5.3.18-59.19-default says:
 
-> > Viresh, can you please chime in here and elaborate on some of the
-> > magic happening behind dev_pm_opp_set_rate() API - is there a problem
-> > here or not?
+snd_hda_codec_realtek hdaudioC0D0: autoconfig for ALC233: line_outs=1 (0x1b/0x0/0x0/0x0/0x0) type:line
+snd_hda_codec_realtek hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+snd_hda_codec_realtek hdaudioC0D0:    hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
+snd_hda_codec_realtek hdaudioC0D0:    mono: mono_out=0x0
+snd_hda_codec_realtek hdaudioC0D0:    inputs:
+snd_hda_codec_realtek hdaudioC0D0:      Mic=0x1a
+snd_hda_codec_realtek hdaudioC0D0:      Mic=0x19
 
-It configures clock, regulators, genpds, any required OPPs, + it
-enables regulators right now.
+but produces no sound output.
 
+Kernel 5.13.10 or 5.14-rc6 say:
+
+calling  azx_driver_init+0x0/0x20 @ 1
+snd_hda_intel 0000:00:1f.3: enabling device (0000 -> 0002)
+snd_hda_intel 0000:00:1f.3: bound 0000:00:02.0 (ops i915_audio_component_bind_ops)
+snd_hda_intel 0000:00:1f.3: azx_get_response timeout, switching to polling mode: last cmd=0x200f0000
+snd_hda_intel 0000:00:1f.3: No response from codec, disabling MSI: last cmd=0x200f0000
+snd_hda_intel 0000:00:1f.3: Codec #2 probe error; disabling it...
+snd_hda_intel 0000:00:1f.3: azx_get_response timeout, switching to single_cmd mode: last cmd=0x000f0001
+hdaudio hdaudioC0D0: no AFG or MFG node found
+snd_hda_intel 0000:00:1f.3: no codecs initialized
+
+and of course no sound output.
+
+
+Anyone have suggestions or has a fix for this already been posted?
+or maybe I am just doing something wrong?
+
+thanks.
 -- 
-viresh
+~Randy
+
