@@ -2,64 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67C83F324E
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9F13F3253
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 19:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhHTRei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 13:34:38 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:37202 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229516AbhHTReg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 13:34:36 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 17KHXall026146;
-        Fri, 20 Aug 2021 19:33:36 +0200
-Date:   Fri, 20 Aug 2021 19:33:36 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        LukasBulwahn <lukas.bulwahn@gmail.com>,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-riscv@lists.infradead.org, netdev@vger.kernel.org,
-        linux-csky@vger.kernel.org
-Subject: Re: What is the oldest perl version being used with the kernel ?
- update oldest supported to 5.14 ?
-Message-ID: <20210820173336.GA26130@1wt.eu>
-References: <37ec9a36a5f7c71a8e23ab45fd3b7f20efd5da24.camel@perches.com>
+        id S234553AbhHTRfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 13:35:12 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:52150 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230214AbhHTRfH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 13:35:07 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17KHYPNJ049520;
+        Fri, 20 Aug 2021 12:34:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629480865;
+        bh=+XbcJSuY0Df5YiHO6GVZDgpFmgmiCulw8J/47/Y/D+c=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=shzTvBNbFRg50mSuYv5C0Owp7va8nD3UGAwRerkH23vXN/YRUDdDf2vdQgHPDGO6I
+         1MDX1AqJAL3s+QK6pdTMrrk0z1Z1xWvrXpfahSrPYSVqvrw/o2ffJQRlKJg9kWrDSL
+         CCECW7EFErPGnMDesLS1dUQro1Yo0T2M4/N2pQWs=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17KHYPT8089880
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 20 Aug 2021 12:34:25 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 20
+ Aug 2021 12:34:24 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 20 Aug 2021 12:34:24 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17KHYOBc093956;
+        Fri, 20 Aug 2021 12:34:24 -0500
+Date:   Fri, 20 Aug 2021 12:34:24 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Sinthu Raja M <sinthu.raja@mistralsolutions.com>
+CC:     "Nagalla, Hari" <hnagalla@ti.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh+dt@kernel.org>, Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Sinthu Raja <sinthu.raja@ti.com>
+Subject: Re: [PATCH V1] dt-bindings: remoteproc: k3-dsp: Update example to
+ remove board specific
+Message-ID: <20210820173424.3cqqbhbw5cdmrbum@disrupt>
+References: <20210818074030.1877-1-sinthu.raja@ti.com>
+ <20210818130535.siv7jpjjzfwonwdt@unsteady>
+ <CAEd-yTQgWLZUKPJQvByWfo3w=gNFLz=F6q6_oF_0WC7cRpZ6dw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <37ec9a36a5f7c71a8e23ab45fd3b7f20efd5da24.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAEd-yTQgWLZUKPJQvByWfo3w=gNFLz=F6q6_oF_0WC7cRpZ6dw@mail.gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:27:59AM -0700, Joe Perches wrote:
-> Perl 5.8 is nearly 20 years old now.
-> 
-> https://en.wikipedia.org/wiki/Perl_5_version_history
-> 
-> checkpatch uses regexes that are incompatible with perl versions
-> earlier than 5.10, but these uses are currently runtime checked
-> and skipped if the perl version is too old.  This runtime checking
-> skips several useful tests.
-> 
-> There is also some desire for tools like kernel-doc, checkpatch and
-> get_maintainer to use a common library of regexes and functions:
-> https://lore.kernel.org/lkml/YR2lexDd9N0sWxIW@casper.infradead.org/
-> 
-> It'd be useful to set the minimum perl version to something more modern.
-> 
-> I believe perl 5.14, now only a decade old, is a reasonable target.
-> 
-> Any objections or suggestions for a newer minimum version?
+On 11:56-20210820, Sinthu Raja M wrote:
+[...]
 
-It's probably reasonable, even the Slackware 14.2 on my home PC, which
-is starting to date, ships a 5.22.
+> May I know to which commit I have to tag the Fixes. If you are
 
-Willy
+git blame Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml ?
+
+Look at the commit that introduced the original code that you are
+fixing. In this case, 2a2180206ab62 perhaps?
+
+[...]
+> It didn't catch in my basic patch verification. But the generated
+> patch does have the From header, but sometimes the From header is
+> getting truncated when submitting for review. Still working on that to
+> fix it. (using Gmail client to submitting the patch)
+
+
+https://www.kernel.org/doc/html/v4.11/process/email-clients.html
+
+"Gmail (Web GUI)
+
+Does not work for sending patches.
+"
+
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
