@@ -2,175 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2253F312A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0E03F313C
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 18:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236202AbhHTQJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 12:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        id S236193AbhHTQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 12:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbhHTQIC (ORCPT
+        with ESMTP id S233276AbhHTQLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 12:08:02 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B65C061A30
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:01:35 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id j18so10008657ile.8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 09:01:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+xvyCS57Ky9mXjy9GSWsgQWRoboZkVQYnv00hsJDwZ0=;
-        b=sdFug4DY3//S741fPrvcmjuXsmN1mMCQe+xaHE/ZIT7g6dD4QSftvDT6wEXluYfT7h
-         XZlejSColDSo/bzBoUNPnMfXaEEc6E9lZLw+KFM77XSqLeXDeLdSoObgFODtP2ZcuUjd
-         pGWTabfMiZQv79TT8FJlwFxWE55sculkfW61bBlJd1fTS96rL2j2W5uHWvlE74RUML8P
-         o+tlfS1iHe1hhHLWtQK958C0Jd6uYdhuAwGUdQBfQWhmFlurAEcCnDcYVu0IEGxfwP6d
-         G5Tj0X+B8mhUSJSafW6OT2ryfuza1IJ0WkjLQLdvJs6sVuWrnpbSkVYz50o6PghUCAU2
-         0CRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+xvyCS57Ky9mXjy9GSWsgQWRoboZkVQYnv00hsJDwZ0=;
-        b=Oyru/MMhn/D9zPPn78GGblKci8uLonBp4e2ryxtdYnuc0UnxQEeTtVKmaDhXh69xn/
-         VzbEbHGL8DPfIMIjqXFgdVCqetInVRLFi+yK5zML/yxKiZ1FPAZqJcyuoIR1qNTSde74
-         fx+R77U2iIfROIbqDeAp1OIH1idzLsy5UX64MF1k/MS2yntoa34KOaOtxMrYQHxGfkWq
-         HN5qkZdPSgK5B5SZIh6oqMncDGeoASsa2IPYFR6jv4vwyevdc0+AqKPP5CE3cXQMIQ8U
-         Ilpc1LgTSFOFdxrDqFyHPPCWRTdnZcsIIqyXcjiGaeuAj2phmInRd0GQOQcIQz/tg5ZH
-         4g5g==
-X-Gm-Message-State: AOAM532II8n3q07O/YXvDZMgVo1alkH+6FJUTXn8qTzwbCCI69h+TcSE
-        ec4AoYUjh5BCOwhOufXVcAsy2A==
-X-Google-Smtp-Source: ABdhPJywRI8c+svTbMRdCq89d+DGH5ZvU162aCpGt6eB2SvWjt6J+CBf20kYrzSlWMbsgeWIcR6blg==
-X-Received: by 2002:a92:6610:: with SMTP id a16mr13534176ilc.71.1629475295431;
-        Fri, 20 Aug 2021 09:01:35 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id a8sm3521317ilq.63.2021.08.20.09.01.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 09:01:35 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/3] net: ipa: rename "ipa_clock.c"
-Date:   Fri, 20 Aug 2021 11:01:29 -0500
-Message-Id: <20210820160129.3473253-4-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210820160129.3473253-1-elder@linaro.org>
-References: <20210820160129.3473253-1-elder@linaro.org>
+        Fri, 20 Aug 2021 12:11:43 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F22C08EB27;
+        Fri, 20 Aug 2021 09:04:51 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 8A63A95D; Fri, 20 Aug 2021 18:04:47 +0200 (CEST)
+Date:   Fri, 20 Aug 2021 18:04:18 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Ard Biesheuvel' <ardb@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "hpa@zytor.com" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] x86/efi: Restore Firmware IDT in before
+ ExitBootServices()
+Message-ID: <YR/SgrOiBLs53SJ5@8bytes.org>
+References: <20210820073429.19457-1-joro@8bytes.org>
+ <e43eb0d137164270bf16258e6d11879e@AcuMS.aculab.com>
+ <YR9tSuLyX8QHV5Pv@8bytes.org>
+ <f68a175362984e4abbb0a1da2004c936@AcuMS.aculab.com>
+ <YR+Bxgq4aIo1DI8j@8bytes.org>
+ <CAMj1kXHj12FQn_488V_9k9k_LE51K=7n3sS9QnN9gkhBgzw-Kw@mail.gmail.com>
+ <cdd7869a14ad4021acfacffa3918981c@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cdd7869a14ad4021acfacffa3918981c@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finally, rename "ipa_clock.c" to be "ipa_power.c" and "ipa_clock.h"
-to be "ipa_power.h".
+On Fri, Aug 20, 2021 at 03:46:11PM +0000, David Laight wrote:
+> So load a temporary IDT so that you can detect invalid instructions
+> and restore the UEFI IDT immediately afterwards?
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/Makefile                     | 2 +-
- drivers/net/ipa/ipa_endpoint.c               | 2 +-
- drivers/net/ipa/ipa_main.c                   | 2 +-
- drivers/net/ipa/ipa_modem.c                  | 2 +-
- drivers/net/ipa/{ipa_clock.c => ipa_power.c} | 2 +-
- drivers/net/ipa/{ipa_clock.h => ipa_power.h} | 6 +++---
- 6 files changed, 8 insertions(+), 8 deletions(-)
- rename drivers/net/ipa/{ipa_clock.c => ipa_power.c} (99%)
- rename drivers/net/ipa/{ipa_clock.h => ipa_power.h} (95%)
+Going forward with SEV-SNP, the IDT is not only needed for special
+instructions, but also to detect when the hypervisor is doing fishy
+things with the guests memory, which could happen at _any_ instruction
+boundary.
 
-diff --git a/drivers/net/ipa/Makefile b/drivers/net/ipa/Makefile
-index 75435d40b9200..bdfb2430ab2c7 100644
---- a/drivers/net/ipa/Makefile
-+++ b/drivers/net/ipa/Makefile
-@@ -1,6 +1,6 @@
- obj-$(CONFIG_QCOM_IPA)	+=	ipa.o
- 
--ipa-y			:=	ipa_main.o ipa_clock.o ipa_reg.o ipa_mem.o \
-+ipa-y			:=	ipa_main.o ipa_power.o ipa_reg.o ipa_mem.o \
- 				ipa_table.o ipa_interrupt.o gsi.o gsi_trans.o \
- 				ipa_gsi.o ipa_smp2p.o ipa_uc.o \
- 				ipa_endpoint.o ipa_cmd.o ipa_modem.o \
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index f88b43d44ba10..5528d97110d56 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -21,7 +21,7 @@
- #include "ipa_modem.h"
- #include "ipa_table.h"
- #include "ipa_gsi.h"
--#include "ipa_clock.h"
-+#include "ipa_power.h"
- 
- #define atomic_dec_not_zero(v)	atomic_add_unless((v), -1, 0)
- 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index c8d9c6db0b7ed..cdfa98a76e1f4 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -20,7 +20,7 @@
- #include <linux/soc/qcom/mdt_loader.h>
- 
- #include "ipa.h"
--#include "ipa_clock.h"
-+#include "ipa_power.h"
- #include "ipa_data.h"
- #include "ipa_endpoint.h"
- #include "ipa_resource.h"
-diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
-index 2ed80855f7cf1..ad116bcc0580e 100644
---- a/drivers/net/ipa/ipa_modem.c
-+++ b/drivers/net/ipa/ipa_modem.c
-@@ -21,7 +21,7 @@
- #include "ipa_smp2p.h"
- #include "ipa_qmi.h"
- #include "ipa_uc.h"
--#include "ipa_clock.h"
-+#include "ipa_power.h"
- 
- #define IPA_NETDEV_NAME		"rmnet_ipa%d"
- #define IPA_NETDEV_TAILROOM	0	/* for padding by mux layer */
-diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_power.c
-similarity index 99%
-rename from drivers/net/ipa/ipa_clock.c
-rename to drivers/net/ipa/ipa_power.c
-index 3ebc44ea7f3c8..b1c6c0fcb654f 100644
---- a/drivers/net/ipa/ipa_clock.c
-+++ b/drivers/net/ipa/ipa_power.c
-@@ -12,7 +12,7 @@
- #include <linux/bitops.h>
- 
- #include "ipa.h"
--#include "ipa_clock.h"
-+#include "ipa_power.h"
- #include "ipa_endpoint.h"
- #include "ipa_modem.h"
- #include "ipa_data.h"
-diff --git a/drivers/net/ipa/ipa_clock.h b/drivers/net/ipa/ipa_power.h
-similarity index 95%
-rename from drivers/net/ipa/ipa_clock.h
-rename to drivers/net/ipa/ipa_power.h
-index 7a6a910241c1f..2151805d7fbb0 100644
---- a/drivers/net/ipa/ipa_clock.h
-+++ b/drivers/net/ipa/ipa_power.h
-@@ -3,8 +3,8 @@
- /* Copyright (c) 2012-2018, The Linux Foundation. All rights reserved.
-  * Copyright (C) 2018-2020 Linaro Ltd.
-  */
--#ifndef _IPA_CLOCK_H_
--#define _IPA_CLOCK_H_
-+#ifndef _IPA_POWER_H_
-+#define _IPA_POWER_H_
- 
- struct device;
- 
-@@ -70,4 +70,4 @@ struct ipa_power *ipa_power_init(struct device *dev,
-  */
- void ipa_power_exit(struct ipa_power *power);
- 
--#endif /* _IPA_CLOCK_H_ */
-+#endif /* _IPA_POWER_H_ */
--- 
-2.27.0
+> I'm guessing the GDT is changed in order to access all of physical
+> memory (well enough to load the kernel).
 
+The kernels GDT is needed to switch from 32-bit protected mode to long
+mode, where it calls ExitBootServices().
+
+I think the reason is to avoid compiling a 64-bit and a 32-bit EFI
+library into the decompressor stub. With a 32-bit library the kernel
+could call ExitBootServices() right away before it jumps to startup_32.
+But it only has the 64-bit library, so it has to switch to long-mode
+first before it make subsequent EFI calls.
+
+> Could that be done using the LDT?
+> It is unlikely that the UEFI cares about that?
+
+Well, I guess it could work via the LDT too, but the current GDT
+switching code if proven to work on exiting BIOSes and I'd rather not
+change it to something less proven when there is no serious problem with
+it.
+
+> Is this 32bit non-paged code?
+> Running that with a physical memory offset made my head hurt.
+
+Yes, 32-bit EFI launches the kernel in 32-bit protected mode, paging
+disabled. I think that it also has to use a flat segmentation model
+without offsets. But someone who knows the EFI spec better than me can
+correct me here :)
+
+Regards,
+
+	Joerg
