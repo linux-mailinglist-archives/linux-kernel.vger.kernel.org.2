@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98453F35EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F58F3F35EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 23:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240557AbhHTVPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 17:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239997AbhHTVPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 17:15:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6D79610CC;
-        Fri, 20 Aug 2021 21:14:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629494062;
-        bh=G6ak4MPoXfP+D+22vDf1POlItZNsAjtB8G/diCkHPtc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Ix07Xbqpe7IECD5DacDTXHLh53szEimduCgkTfoa+U4HfSfAmqIBGGdxaiAAZx0PY
-         HzBSZoZpWWmDdGEE0Yb7TksVYqCC1mbSekhOrgZ1Y5O4A3k3e1JATd+yW6po3h2iUj
-         PN+Xa5uFthnkbiTvbgNJWj5wJdO3jeqhBM0CVRfY3cRSOCSnsVLdpEtp/wAqegvebG
-         RSKpcnrIBjcgGjwA1Hm0+RMbrIteydLTY2109V0bD8QnLIYqICDxepNxZReNvuuMCu
-         LQv+mmRJ2JodNBr1OwxIe0T+xAI6zrIQPjyt7MZp1iplxRhTOJ0aAe7V8IT3AcyT28
-         g8ejx97j+royg==
-Date:   Fri, 20 Aug 2021 16:14:20 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     George Cherian <george.cherian@marvell.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com
-Subject: Re: [PATCH] PCI: Add ACS quirk for Cavium multi-function devices
-Message-ID: <20210820211420.GA3359633@bjorn-Precision-5520>
+        id S240613AbhHTVP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 17:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231200AbhHTVP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 17:15:28 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC746C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:14:49 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id oa17so8201747pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 14:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sqivqGiZbtT3bHnPqaZ77QHGz4DhlbspECZeNfhdNXs=;
+        b=cpgnvjbRqzen+enbSUfeRNsKSrhYHo0lBkvpQ/e+Hfoueiy3Ux/3D3mGHmGf1vPSfN
+         W3xyZoaKRLJyp2W920JWOtspZC3D6czP6z6TEL+pVRmw/dQ8M+FYInE3FrrLS+T6tAWL
+         ibU8AeNp96jta/F/Dn8J+PCXlfwR3ks8iZo2kFsuhZYRKIplaEzBjr8tSHI5gAHXNaYF
+         Gh3yT3iqRCuRgJt/2ObYI0x1kT7dLbS3BRW49VriRljjkAyhgVz4jZpCxmCb4dNYKzHu
+         P8q90DxpDyX5fquCkL01EQ6kTfnZ8WSFIzxnCQiZBfCb7PM/g8yn78W+ujX7dbCHa+0V
+         JAjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sqivqGiZbtT3bHnPqaZ77QHGz4DhlbspECZeNfhdNXs=;
+        b=hZSzmp1sYNmrjJdOcggM52n73nBKfEGHwnYk9Euj8Ds09SvPgVdEYg/us3WFiITSDn
+         PAOMC3P/eErzvdW+whMTfRUsIb4/Movrx/0VSbPckDXdi5nxkk/RP2+i72Zz7kzo6BS5
+         jWCFhNO0PG8LuQakkHhdnhrfgqUi1XCZbcAsGRMtGYYlEhADkepWavVrzbQLSpEmIlrB
+         V9xYUsF5tIaEWhiatSKg+DqxJt7mPkXjOw3Wl6GQtCLVZLngCAZc+yaj5BAGQazNDWTz
+         a8wm7Bwm6BKZJ9jwpACrJk/3+G1/fOKTDxTYHmCFze4WOJvUAos07ZQIEEuCkWUU118Z
+         RPcQ==
+X-Gm-Message-State: AOAM5300Qy1dFaDAAyLNYdxwaZADgWntJXLdhBz7GOqkCImLCVgE7607
+        mJRcFdwzKkG40HTBnfqYK2BY6UFffX4sebz0OtQGQg==
+X-Google-Smtp-Source: ABdhPJyHzo9ZZTde9sOEGhzO/2ASdklPFXG/UIdMwqy//evdOkVK3TbCzcEp/WIYgNeG1wWkB+rbxWhgEbcq909f2Uw=
+X-Received: by 2002:a17:902:c406:b0:12d:d0ff:4a9 with SMTP id
+ k6-20020a170902c40600b0012dd0ff04a9mr17895286plk.65.1629494089179; Fri, 20
+ Aug 2021 14:14:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210810122425.1115156-1-george.cherian@marvell.com>
+References: <20210820200032.2178134-1-rmoar@google.com>
+In-Reply-To: <20210820200032.2178134-1-rmoar@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 20 Aug 2021 14:14:38 -0700
+Message-ID: <CAFd5g45vKkpHhm0X3N+mRCAH8RNEXJTnFm2Dk9sPKzZY+qmMXQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: improve compatibility of kunit_parser with
+ KTAP specification
+To:     Rae Moar <rmoar@google.com>
+Cc:     davidgow@google.com, dlatypov@google.com, shuah@kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 05:54:25PM +0530, George Cherian wrote:
-> Some Cavium endpoints are implemented as multi-function devices
-> without ACS capability, but they actually don't support peer-to-peer
-> transactions.
-> 
-> Add ACS quirks to declare DMA isolation.
-> 
-> Apply te quirk for following devices
-> 1. BGX device found on Octeon-TX (8xxx)
-> 2. CGX device found on Octeon-TX2 (9xxx)
-> 3. RPM device found on Octeon-TX3 (10xxx)
-> 
-> Signed-off-by: George Cherian <george.cherian@marvell.com>
+On Fri, Aug 20, 2021 at 1:01 PM Rae Moar <rmoar@google.com> wrote:
+>
+> Update to kunit_parser to improve compatibility with KTAP
+> specification including arbitrarily nested tests. Patch accomplishes
+> three major changes:
+>
+> - Use a general Test object to represent all tests rather than TestCase
+> and TestSuite objects. This allows for easier implementation of arbitrary
+> levels of nested test and promotes the idea that both test suites and test
+> cases are tests.
+>
+> - Print errors incrementally rather than all at once after the
+> parsing finishes to maximize information given to the user in the
+> case of the parser given invalid input and to increase the helpfulness
+> of the timestamps given during printing.
+>
+> - Increase compatibility for different formats of input. Arbitrary levels
+> of nested tests supported. Also, test cases and test suites are now
+> supported to be present on the same level of testing.
+>
+> This patch now implements the KTAP specification as described here:
+> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/.
+>
+> This patch adjusts the kunit_tool_test.py file to check for
+> the correct outputs from the new parser and adds a new test to check
+> the parsing for a KTAP result log with correct format for multiple nested
+> subtests (test_is_test_passed-all_passed_nested.log).
+>
+> This patch also alters the kunit_json.py file to allow for arbitrarily
+> nested tests.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
 
-Applied to pci/virtualization for v5.15, thanks!
+One minor question/potential issue below, otherwise:
 
-> ---
->  drivers/pci/quirks.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 6d74386eadc2..076932018494 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -4840,6 +4840,10 @@ static const struct pci_dev_acs_enabled {
->  	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
->  	/* Cavium ThunderX */
->  	{ PCI_VENDOR_ID_CAVIUM, PCI_ANY_ID, pci_quirk_cavium_acs },
-> +	/* Cavium multi-function devices */
-> +	{ PCI_VENDOR_ID_CAVIUM, 0xA026, pci_quirk_mf_endpoint_acs },
-> +	{ PCI_VENDOR_ID_CAVIUM, 0xA059, pci_quirk_mf_endpoint_acs },
-> +	{ PCI_VENDOR_ID_CAVIUM, 0xA060, pci_quirk_mf_endpoint_acs },
->  	/* APM X-Gene */
->  	{ PCI_VENDOR_ID_AMCC, 0xE004, pci_quirk_xgene_acs },
->  	/* Ampere Computing */
-> -- 
-> 2.25.1
-> 
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+
+[...]
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 75045aa0f8a1..ca760ee32096 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -106,10 +106,10 @@ class KUnitParserTest(unittest.TestCase):
+>                 with open(log_path) as file:
+>                         result = kunit_parser.extract_tap_lines(file.readlines())
+>                 self.assertContains('TAP version 14', result)
+> -               self.assertContains('   # Subtest: example', result)
+> -               self.assertContains('   1..2', result)
+> -               self.assertContains('   ok 1 - example_simple_test', result)
+> -               self.assertContains('   ok 2 - example_mock_test', result)
+> +               self.assertContains('# Subtest: example', result)
+> +               self.assertContains('1..2', result)
+> +               self.assertContains('ok 1 - example_simple_test', result)
+> +               self.assertContains('ok 2 - example_mock_test', result)
+>                 self.assertContains('ok 1 - example', result)
+
+Do you have any test cases which accept "ok/not ok" lines without a
+"-"? (Or tests for any other KTAP compliant Kselftest output?)
+
+>         def test_output_with_prefix_isolated_correctly(self):
+
+Cheers!
