@@ -2,179 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A003F33EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6EA03F33EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236590AbhHTShw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:37:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26782 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229927AbhHTShv (ORCPT
+        id S236939AbhHTSjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:39:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45222 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229927AbhHTSjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:37:51 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17KIWaAw123077;
-        Fri, 20 Aug 2021 14:36:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=wuzUIU8KjfQ54EF54lX/CiPbBu8YyPftPw/seHB3IRI=;
- b=LEQbwOtASKCUrd2nNr8HLXglnqVmAtvI2pNybnG0lcKwF64aFnvU+roMgZ9LB/HGKEFX
- 8O99oGEE51Hepuy+fM1wdnXxPJbVc45p2O95FUeir0BCgHNxagQo8kecFqSSINsEok6s
- qPVJoJ5S+Pji9UHxgu+/1mTvcXgk1s0H9HIox8F7ST1yL4vn4TysEZKulCF4W5bEV0UM
- x4iX/5Q4bSrNC4htwwgjrKuTa3Dy7r6vK+GMjgQOxhH9W0nFm0q1VQiecXkYFRTRdS+F
- U/Cmq6lAIaCXXRsoQFpl38yUywm4G57HPTPqHFxMHH2rdBpTsLP/dtUzj7uBkoJ+tekk rw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahkacjv6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 14:36:57 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17KIXH52124317;
-        Fri, 20 Aug 2021 14:36:57 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ahkacjv5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 14:36:57 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17KIXUXt009972;
-        Fri, 20 Aug 2021 18:36:55 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma04wdc.us.ibm.com with ESMTP id 3ae5fg3hw4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 18:36:54 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17KIarMd37290302
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Aug 2021 18:36:53 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C94D0B2066;
-        Fri, 20 Aug 2021 18:36:53 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EADA0B2065;
-        Fri, 20 Aug 2021 18:36:48 +0000 (GMT)
-Received: from [9.160.110.229] (unknown [9.160.110.229])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 20 Aug 2021 18:36:48 +0000 (GMT)
-Subject: Re: [PATCH 3/3] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     Andrew Scull <ascull@google.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dov Murik <dovmurik@linux.ibm.com>
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
- <20210809190157.279332-4-dovmurik@linux.ibm.com>
- <YRZuIIVIzMfgjtEl@google.com>
- <CAMj1kXFC-cizTw2Tv40uZHdLArKtdMNxdQXWoPWSL-8qexdkLQ@mail.gmail.com>
- <CADcWuH0mP+e6GxkUGN3ni_Yu0z8YTn-mo677obH+p-OFCL+wOQ@mail.gmail.com>
-From:   Dov Murik <dovmurik@linux.ibm.com>
-Message-ID: <b3c65f9d-5fd3-22c5-cd23-481774d92222@linux.ibm.com>
-Date:   Fri, 20 Aug 2021 21:36:46 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 20 Aug 2021 14:39:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629484721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JAkE9dw5nw4AoSHq24fVTDHYd4yCF4qEaK9JbE07S7c=;
+        b=eBTQCODEWp+3egu/9za1j1Fzw9E1ae5nJ010g6DWwouqynDNDZGHY0irK0F16FcAbVW240
+        5rQrp3UpxEmfU13BxfUVM03qFLKFHLqnTy83bnkkBZXIGf8/aHNLeQ4DZ2C8sd3+E/jF2X
+        Rrqgl/aqf1rmkX/nDxZArY94bXhba3w=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-063TjBD2NJ-PKAekFJRgJw-1; Fri, 20 Aug 2021 14:38:40 -0400
+X-MC-Unique: 063TjBD2NJ-PKAekFJRgJw-1
+Received: by mail-ej1-f69.google.com with SMTP id z5-20020a1709067e4500b005c2512038bcso2093295ejr.19
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 11:38:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JAkE9dw5nw4AoSHq24fVTDHYd4yCF4qEaK9JbE07S7c=;
+        b=rOXtjuFo2fFfeMyCSo7pUZCH5F1BqHlEBP2NCFJb/sTdIJLuvlpJi4AONdIuPBeynM
+         JBgE5nfEDJWBZzI6XyHkkxfHmTzwHKxPPNtSgw7fpOPikmehQzFomsVqlJhZEsiL6ZX+
+         T0kY452Kr3qiFyvmas81IKYMjNEENtK+gNKpi1XcQTr/txvYzhTp8pxRDp8GLyrjAmS2
+         +rMaqJ0FmJCbbb07EFnjL4N/AWAElJ7aSn5qFf/UPdf5HhH2TY20gA5sx7uOHZy6wobO
+         Aon9SmnshvuCmxu52bxoj2V8ST64C2C8aTSbk+drCI+EfF8DwA7YOmZcItBOkkuaHN4b
+         U4Pw==
+X-Gm-Message-State: AOAM533lWiYO4pKNv16vUUzpobOolnufPSLj84IJgOD2EG25O7q4/WwZ
+        rVwc93HtSUWM6C5qUt8EjCPHlp/htEbmCbaZgIvTSHbGeOV/rjP+PA9HIyVtuKYcQF8Zv4SINLL
+        17QnPy1Ei7tCertY+6Zn2gdaT
+X-Received: by 2002:a17:906:6011:: with SMTP id o17mr22669027ejj.157.1629484719315;
+        Fri, 20 Aug 2021 11:38:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx8MnoviMUxtgOFJxiQk/ic8BxfXCsKwZNzaQUSrV4NxwN0HeCKTjBCN523fkLlULgTaEED4A==
+X-Received: by 2002:a17:906:6011:: with SMTP id o17mr22669008ejj.157.1629484719135;
+        Fri, 20 Aug 2021 11:38:39 -0700 (PDT)
+Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
+        by smtp.gmail.com with ESMTPSA id v6sm3205529ejk.117.2021.08.20.11.38.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Aug 2021 11:38:38 -0700 (PDT)
+Subject: Re: [PATCH v5 00/20] platform/x86: Intel platform driver code
+ movement
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Dell.Client.Kernel@dell.com
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>
+References: <20210820110458.73018-1-andriy.shevchenko@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <6ddeac3f-b06e-8f07-0e34-9bbe4da3967c@redhat.com>
+Date:   Fri, 20 Aug 2021 20:38:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CADcWuH0mP+e6GxkUGN3ni_Yu0z8YTn-mo677obH+p-OFCL+wOQ@mail.gmail.com>
+In-Reply-To: <20210820110458.73018-1-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9kbPMz4xAuUJD4vBYofJZIqKJOViYTrP
-X-Proofpoint-ORIG-GUID: b3ZcUyslaSKfRcKCznK32dCVOs4aM1z5
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-20_06:2021-08-20,2021-08-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 suspectscore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108200103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 19/08/2021 16:02, Andrew Scull wrote:
-> On Mon, 16 Aug 2021 at 10:57, Ard Biesheuvel <ardb@kernel.org> wrote:
->>
->> On Fri, 13 Aug 2021 at 15:05, Andrew Scull <ascull@google.com> wrote:
->>>
->>> On Mon, Aug 09, 2021 at 07:01:57PM +0000, Dov Murik wrote:
-
-[...]
-
->>>
->>>> +static int sev_secret_unlink(struct inode *dir, struct dentry *dentry)
->>>> +{
->>>> +     struct sev_secret *s = sev_secret_get();
->>>> +     struct inode *inode = d_inode(dentry);
->>>> +     struct secret_entry *e = (struct secret_entry *)inode->i_private;
->>>> +     int i;
->>>> +
->>>> +     if (e) {
->>>> +             /* Zero out the secret data */
->>>> +             memzero_explicit(e->data, secret_entry_data_len(e));
->>>
->>> Would there be a benefit in flushing these zeros?
->>>
->>
->> Do you mean cache clean+invalidate? Better to be precise here.
+On 8/20/21 1:04 PM, Andy Shevchenko wrote:
+> This is v5 of the Intel drivers move on in the source tree.
+> v4: https://lore.kernel.org/platform-driver-x86/20210819163735.81803-1-andriy.shevchenko@linux.intel.com/
+> v3 has been done by Kate:
+> https://lore.kernel.org/platform-driver-x86/20210819033001.20136-1-hpa@redhat.com/
 > 
-> At least a clean, to have the zeros written back to memory from the
-> cache, in order to overwrite the secret.
+> I have taken the initial set from review-hans branch and removed Hans' SoB
+> along with Link, while leaving others' tags.
+> 
+> Changelog v5:
+> - dropped SCU and IPS patches since there are somehow problematic
+> - added Intel Atom PMC driver move
+> - moved SCU kernel doc fix to be first in the series
+
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+I've also re-added the pmc-core Alder Lake support patches from:
+https://lore.kernel.org/platform-driver-x86/cover.1629091915.git.gayatri.kammela@intel.com/
+Now that the pmc rename is in place.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+> 
+> Changelog v4:
+> - spelled fully the driver names in the commit messages
+> - fixed SCU *.ko module names
+> - dropped extra prefix in PMC files
+> - dropped stray changes within the series
+> - removed confusing comments in Makefile and Kconfig files
+> - embedded a few of Kconfig improvements here and there (ordering, spelling)
+> - split miscellaneous group
+> - added a patch to fix kernel doc issue in SCU IPC code
+> 
+> Andy Shevchenko (2):
+>   platform/x86: intel_scu_ipc: Fix doc of
+>     intel_scu_ipc_dev_command_with_size()
+>   platform/x86: pmc_atom: Move to intel sub-directory
+> 
+> Kate Hsuan (18):
+>   platform/x86: intel_bxtwc_tmu: Move to intel sub-directory
+>   platform/x86: intel_chtdc_ti_pwrbtn: Move to intel sub-directory
+>   platform/x86: intel_mrfld_pwrbtn: Move to intel sub-directory
+>   platform/x86: intel_punit_ipc: Move to intel sub-directory
+>   platform/x86: intel_pmc_core: Move to intel sub-directory
+>   platform/x86: intel_telemetry: Move to intel sub-directory
+>   platform/x86: intel-rst: Move to intel sub-directory
+>   platform/x86: intel-smartconnect: Move to intel sub-directory
+>   platform/x86: intel_turbo_max_3: Move to intel sub-directory
+>   platform/x86: intel-uncore-frequency: Move to intel sub-directory
+>   platform/x86: intel_speed_select_if: Move to intel sub-directory
+>   platform/x86: intel_atomisp2: Move to intel sub-directory
+>   platform/x86: intel-hid: Move to intel sub-directory
+>   platform/x86: intel_int0002_vgpio: Move to intel sub-directory
+>   platform/x86: intel_oaktrail: Move to intel sub-directory
+>   platform/x86: intel-vbtn: Move to intel sub-directory
+>   platform/x86: intel-wmi-sbl-fw-update: Move to intel sub-directory
+>   platform/x86: intel-wmi-thunderbolt: Move to intel sub-directory
+> 
+>  MAINTAINERS                                   |  22 +-
+>  drivers/platform/x86/Kconfig                  | 236 ------------------
+>  drivers/platform/x86/Makefile                 |  23 --
+>  drivers/platform/x86/intel/Kconfig            | 152 +++++++++++
+>  drivers/platform/x86/intel/Makefile           |  38 +++
+>  drivers/platform/x86/intel/atomisp2/Kconfig   |  43 ++++
+>  drivers/platform/x86/intel/atomisp2/Makefile  |   9 +
+>  .../atomisp2/led.c}                           |   0
+>  .../atomisp2/pm.c}                            |   0
+>  .../{intel_bxtwc_tmu.c => intel/bxtwc_tmu.c}  |   0
+>  .../chtdc_ti_pwrbtn.c}                        |   0
+>  .../platform/x86/{intel-hid.c => intel/hid.c} |   2 +-
+>  .../int0002_vgpio.c}                          |   0
+>  .../mrfld_pwrbtn.c}                           |   0
+>  .../{intel_oaktrail.c => intel/oaktrail.c}    |   0
+>  drivers/platform/x86/intel/pmc/Kconfig        |  25 ++
+>  drivers/platform/x86/intel/pmc/Makefile       |   9 +
+>  .../{intel_pmc_core.c => intel/pmc/core.c}    |   2 +-
+>  .../{intel_pmc_core.h => intel/pmc/core.h}    |   0
+>  .../pmc/pltdrv.c}                             |   0
+>  drivers/platform/x86/{ => intel}/pmc_atom.c   |   0
+>  .../{intel_punit_ipc.c => intel/punit_ipc.c}  |   0
+>  .../platform/x86/{intel-rst.c => intel/rst.c} |   0
+>  .../smartconnect.c}                           |   0
+>  .../speed_select_if}/Kconfig                  |   0
+>  .../speed_select_if}/Makefile                 |   0
+>  .../speed_select_if}/isst_if_common.c         |   0
+>  .../speed_select_if}/isst_if_common.h         |   0
+>  .../speed_select_if}/isst_if_mbox_msr.c       |   0
+>  .../speed_select_if}/isst_if_mbox_pci.c       |   0
+>  .../speed_select_if}/isst_if_mmio.c           |   0
+>  drivers/platform/x86/intel/telemetry/Kconfig  |  16 ++
+>  drivers/platform/x86/intel/telemetry/Makefile |  11 +
+>  .../telemetry/core.c}                         |   0
+>  .../telemetry/debugfs.c}                      |   0
+>  .../telemetry/pltdrv.c}                       |   0
+>  .../turbo_max_3.c}                            |   0
+>  .../uncore-frequency.c}                       |   0
+>  .../x86/{intel-vbtn.c => intel/vbtn.c}        |   2 +-
+>  drivers/platform/x86/intel/wmi/Kconfig        |  31 +++
+>  drivers/platform/x86/intel/wmi/Makefile       |   9 +
+>  .../wmi/sbl-fw-update.c}                      |   0
+>  .../wmi/thunderbolt.c}                        |   0
+>  drivers/platform/x86/intel_scu_ipc.c          |   2 +-
+>  44 files changed, 358 insertions(+), 274 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/atomisp2/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/atomisp2/Makefile
+>  rename drivers/platform/x86/{intel_atomisp2_led.c => intel/atomisp2/led.c} (100%)
+>  rename drivers/platform/x86/{intel_atomisp2_pm.c => intel/atomisp2/pm.c} (100%)
+>  rename drivers/platform/x86/{intel_bxtwc_tmu.c => intel/bxtwc_tmu.c} (100%)
+>  rename drivers/platform/x86/{intel_chtdc_ti_pwrbtn.c => intel/chtdc_ti_pwrbtn.c} (100%)
+>  rename drivers/platform/x86/{intel-hid.c => intel/hid.c} (99%)
+>  rename drivers/platform/x86/{intel_int0002_vgpio.c => intel/int0002_vgpio.c} (100%)
+>  rename drivers/platform/x86/{intel_mrfld_pwrbtn.c => intel/mrfld_pwrbtn.c} (100%)
+>  rename drivers/platform/x86/{intel_oaktrail.c => intel/oaktrail.c} (100%)
+>  create mode 100644 drivers/platform/x86/intel/pmc/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/pmc/Makefile
+>  rename drivers/platform/x86/{intel_pmc_core.c => intel/pmc/core.c} (99%)
+>  rename drivers/platform/x86/{intel_pmc_core.h => intel/pmc/core.h} (100%)
+>  rename drivers/platform/x86/{intel_pmc_core_pltdrv.c => intel/pmc/pltdrv.c} (100%)
+>  rename drivers/platform/x86/{ => intel}/pmc_atom.c (100%)
+>  rename drivers/platform/x86/{intel_punit_ipc.c => intel/punit_ipc.c} (100%)
+>  rename drivers/platform/x86/{intel-rst.c => intel/rst.c} (100%)
+>  rename drivers/platform/x86/{intel-smartconnect.c => intel/smartconnect.c} (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/Kconfig (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/Makefile (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_common.c (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_common.h (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mbox_msr.c (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mbox_pci.c (100%)
+>  rename drivers/platform/x86/{intel_speed_select_if => intel/speed_select_if}/isst_if_mmio.c (100%)
+>  create mode 100644 drivers/platform/x86/intel/telemetry/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/telemetry/Makefile
+>  rename drivers/platform/x86/{intel_telemetry_core.c => intel/telemetry/core.c} (100%)
+>  rename drivers/platform/x86/{intel_telemetry_debugfs.c => intel/telemetry/debugfs.c} (100%)
+>  rename drivers/platform/x86/{intel_telemetry_pltdrv.c => intel/telemetry/pltdrv.c} (100%)
+>  rename drivers/platform/x86/{intel_turbo_max_3.c => intel/turbo_max_3.c} (100%)
+>  rename drivers/platform/x86/{intel-uncore-frequency.c => intel/uncore-frequency.c} (100%)
+>  rename drivers/platform/x86/{intel-vbtn.c => intel/vbtn.c} (99%)
+>  create mode 100644 drivers/platform/x86/intel/wmi/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/wmi/Makefile
+>  rename drivers/platform/x86/{intel-wmi-sbl-fw-update.c => intel/wmi/sbl-fw-update.c} (100%)
+>  rename drivers/platform/x86/{intel-wmi-thunderbolt.c => intel/wmi/thunderbolt.c} (100%)
 > 
 
-I agree, but not sure how to implement this:
-
-I see there's an arch_wb_cache_pmem exported function which internally
-(in arch/x86/lib/usercopy_64.c) calls clean_cache_range which seems to
-do what we want (assume the secret can be longer than the cache line).
-
-But arch_wb_cache_pmem is declared in include/linux/libnvdimm.h and
-guarded with #ifdef CONFIG_ARCH_HAS_PMEM_API -- both seem not related to
-what I'm trying to do.
-
-I see there's an exported clflush_cache_range for x86 -- but that's a
-clean+flush if I understand correctly.
-
-Suggestions on how to approach? I can copy the clean_cache_range
-implementation into the sev_secret module but hopefully there's a better
-way to reuse.  Maybe export clean_cache_range in x86?
-
-Since this is for SEV the solution can be x86-specific, but if there's a
-generic way I guess it's better (I think all of sev_secret module
-doesn't have x86-specific stuff).
-
--Dov
-
-
->>
->>>> +             e->guid = NULL_GUID;
->>>> +     }
->>>> +
->>>> +     inode->i_private = NULL;
->>>> +
->>>> +     for (i = 0; i < SEV_SECRET_NUM_FILES; i++)
->>>> +             if (s->fs_files[i] == dentry)
->>>> +                     s->fs_files[i] = NULL;
->>>> +
->>>> +     /*
->>>> +      * securityfs_remove tries to lock the directory's inode, but we reach
->>>> +      * the unlink callback when it's already locked
->>>> +      */
->>>> +     inode_unlock(dir);
->>>> +     securityfs_remove(dentry);
->>>> +     inode_lock(dir);
->>>> +
->>>> +     return 0;
->>>> +}
