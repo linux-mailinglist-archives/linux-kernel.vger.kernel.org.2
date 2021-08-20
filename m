@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBAD3F2DB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1443F2DB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240784AbhHTOJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:09:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235032AbhHTOJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:09:42 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6801C061575;
-        Fri, 20 Aug 2021 07:09:04 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 0D0065BAF; Fri, 20 Aug 2021 10:09:03 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 0D0065BAF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1629468543;
-        bh=wY8RC3nRl8mw74fg4RiQly9sGS6KY5S4e1kT6ficbDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uLNQrICJHtuq70LWUUqRVgWozgalJ08WFOOsOZqBRr7hBYe8itNg2uNRHfsX8hV9w
-         iqbK/sRw2HXqb1WneQoev11t5SeB+7ucMp6ayp/tLrKmxHPhmbqboCVfkuJrHpOG7M
-         yUwi7bYbplF6X0LxX0UaNOAxpOKbsXq8dEkfIV4U=
-Date:   Fri, 20 Aug 2021 10:09:03 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ebiederm@xmission.com,
-        david@redhat.com, willy@infradead.org, linux-nfs@vger.kernel.org,
-        viro@zeniv.linux.org.uk, linux-doc@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-mm@kvack.org,
-        akpm@linux-foundation.org, luto@kernel.org, w@1wt.eu,
-        rostedt@goodmis.org
-Subject: Re: [PATCH v2 0/2] fs: remove support for mandatory locking
-Message-ID: <20210820140903.GA18096@fieldses.org>
-References: <20210820135707.171001-1-jlayton@kernel.org>
+        id S240790AbhHTOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:10:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29895 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240308AbhHTOKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:10:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629468579; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=fVCSE7hz6ko9DvjFHxEH90YGtVAG7qCFoGVMBJSP10E=;
+ b=Y3F3waGpo6yWRskGWQCu4Ygrx4/+jX1h1LTk7vYDZRBSUarKTiH2d/guQbF8/bXFReV0cxFN
+ 9tUygJzjYo8AnQhJ3yJ7yZdlKRR8KzZzO9w7bhl9MwCgQS7KHd0jv2rNRtN13/m7VJyYQe6l
+ 4IcW5E1UgC/qD5Jo0IqT+7wke5w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 611fb7912b9e91b688427465 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 20 Aug 2021 14:09:21
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 78CEBC4361B; Fri, 20 Aug 2021 14:09:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9E786C4338F;
+        Fri, 20 Aug 2021 14:09:20 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820135707.171001-1-jlayton@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 20 Aug 2021 19:39:20 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org, will@kernel.org,
+        saiprakash.ranjan@codeaurora.org, swboyd@chromium.org,
+        mka@chromium.org, ohad@wizery.com, agross@kernel.org,
+        mathieu.poirier@linaro.org, robin.murphy@arm.com, joro@8bytes.org,
+        p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        evgreen@chromium.org, dianders@chromium.org
+Subject: Re: [PATCH v3 06/10] arm64: dts: qcom: sc7280: Update reserved memory
+ map
+In-Reply-To: <YR3gAD68xRtNJRhi@matsya>
+References: <1629344185-27368-1-git-send-email-sibis@codeaurora.org>
+ <1629344185-27368-7-git-send-email-sibis@codeaurora.org>
+ <YR3gAD68xRtNJRhi@matsya>
+Message-ID: <39da02506af192de14d346cdf80d0e4c@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 09:57:05AM -0400, Jeff Layton wrote:
-> The first patch in this series adds a new warning that should pop on
-> kernels have mandatory locking enabled when someone mounts a filesystem
-> with -o mand. The second patch removes support for mandatory locking
-> altogether.
+On 2021-08-19 10:07, Vinod Koul wrote:
+> Hi Sibi,
 > 
-> What I think we probably want to do is apply the first to v5.14 before
-> it ships and allow the new warning to trickle out into stable kernels.
-> Then we can merge the second patch in v5.15 to go ahead and remove it.
+> On 19-08-21, 09:06, Sibi Sankar wrote:
 > 
-> Sound like a plan?
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 5e4f4f3b738a..894106efadfe 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -48,6 +48,16 @@
+>>  		#size-cells = <2>;
+>>  		ranges;
+>> 
+>> +		hyp_mem: memory@80000000 {
+>> +			reg = <0x0 0x80000000 0x0 0x600000>;
+>> +			no-map;
+> 
+> This should conflict with the memory defined in this file:
+> 
+>         memory@80000000 {
+>                 device_type = "memory";
+>                 /* We expect the bootloader to fill in the size */
+>                 reg = <0 0x80000000 0 0>;
+>         };
+> 
+> I think this should be updated?
 
-Sounds good to me.--b.
+Vinod,
 
-> 
-> Jeff Layton (2):
->   fs: warn about impending deprecation of mandatory locks
->   fs: remove mandatory file locking support
-> 
->  .../filesystems/mandatory-locking.rst         | 188 ------------------
->  fs/9p/vfs_file.c                              |  12 --
->  fs/Kconfig                                    |  10 -
->  fs/afs/flock.c                                |   4 -
->  fs/ceph/locks.c                               |   3 -
->  fs/gfs2/file.c                                |   3 -
->  fs/locks.c                                    | 116 +----------
->  fs/namei.c                                    |   4 +-
->  fs/namespace.c                                |  31 +--
->  fs/nfs/file.c                                 |   4 -
->  fs/nfsd/nfs4state.c                           |  13 --
->  fs/nfsd/vfs.c                                 |  15 --
->  fs/ocfs2/locks.c                              |   4 -
->  fs/open.c                                     |   8 +-
->  fs/read_write.c                               |   7 -
->  fs/remap_range.c                              |  10 -
->  include/linux/fs.h                            |  84 --------
->  mm/mmap.c                                     |   6 -
->  mm/nommu.c                                    |   3 -
->  19 files changed, 20 insertions(+), 505 deletions(-)
->  delete mode 100644 Documentation/filesystems/mandatory-locking.rst
-> 
-> -- 
-> 2.31.1
+I prefer we leave ^^ node untouched.
+For platforms using hyp_mem, the
+regions defined in the memory map
+are valid and for the other platforms
+not using hyp_mem we would just delete
+them in the board files anyway.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
