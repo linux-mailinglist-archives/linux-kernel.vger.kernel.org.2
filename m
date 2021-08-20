@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5055A3F33CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 674993F33D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 20:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbhHTS34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 14:29:56 -0400
-Received: from mga14.intel.com ([192.55.52.115]:18683 "EHLO mga14.intel.com"
+        id S238332AbhHTSbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 14:31:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238667AbhHTS3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 14:29:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="216548891"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="216548891"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 11:29:03 -0700
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="scan'208";a="506572106"
-Received: from jmorauga-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.135.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 11:29:02 -0700
-Subject: Re: [PATCH v5 06/12] x86/tdx: Get TD execution environment
- information via TDINFO
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-7-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YR/in4WqEQQ/LyPA@zn.tnic>
- <c5dc6c26-6157-c022-9d6b-f1ef10e6f736@linux.intel.com>
- <YR/n5FgCUSlZ5npc@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <174d5062-3618-4343-bdfb-22b5cd2662f8@linux.intel.com>
-Date:   Fri, 20 Aug 2021 11:29:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S238667AbhHTSbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 14:31:10 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3D6F61242;
+        Fri, 20 Aug 2021 18:30:32 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mH9Hi-006G2t-TC; Fri, 20 Aug 2021 19:30:31 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     kernel-team@android.com, linux-kernel@vger.kernel.org,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Subject: [PATCH net] stmmac: Revert "stmmac: align RX buffers"
+Date:   Fri, 20 Aug 2021 19:30:02 +0100
+Message-Id: <20210820183002.457226-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YR/n5FgCUSlZ5npc@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: netdev@vger.kernel.org, kernel-team@android.com, linux-kernel@vger.kernel.org, mcroce@linux.microsoft.com, kuba@kernel.org, davem@davemloft.net, eric.dumazet@gmail.com, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This reverts commit a955318fe67e ("stmmac: align RX buffers"),
+which breaks at least one platform (Nvidia Jetson-X1), causing
+packet corruption. This is 100% reproducible, and reverting
+the patch results in a working system again.
 
+Given that it is "only" a performance optimisation, let's
+return to a known working configuration until we can have a
+good understanding of what is happening here.
 
-On 8/20/21 10:35 AM, Borislav Petkov wrote:
-> Ok, put that as a comment above it to explain why it cannot continue.
-> Also, make sure you issue an error message before it explodes so that
-> the user knows.
+Cc: Matteo Croce <mcroce@linux.microsoft.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Link: https://lore.kernel.org/netdev/871r71azjw.wl-maz@kernel.org
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ok. I will fix this in next version.
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+index fcdb1d20389b..43eead726886 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
+@@ -339,9 +339,9 @@ static inline bool stmmac_xdp_is_enabled(struct stmmac_priv *priv)
+ static inline unsigned int stmmac_rx_offset(struct stmmac_priv *priv)
+ {
+ 	if (stmmac_xdp_is_enabled(priv))
+-		return XDP_PACKET_HEADROOM + NET_IP_ALIGN;
++		return XDP_PACKET_HEADROOM;
+ 
+-	return NET_SKB_PAD + NET_IP_ALIGN;
++	return 0;
+ }
+ 
+ void stmmac_disable_rx_queue(struct stmmac_priv *priv, u32 queue);
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.30.2
+
