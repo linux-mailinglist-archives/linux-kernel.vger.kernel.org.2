@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A313F24D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B393F24DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 04:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237746AbhHTCju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Aug 2021 22:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237643AbhHTCjt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Aug 2021 22:39:49 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93463C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 19:39:11 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id n18so7764976pgm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Aug 2021 19:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B1IPaWShRHO+S25ine4LYsuzUXNhBul7A3bHVmcZDqE=;
-        b=0gwRYHEqYWePuJCzO2svmy0/lNuaBmSffRSw1ZofYgxmAU/rssfc+J1MepkcG6/okN
-         7V8fqOUyi+1+K8GqJ1GgeDmO8mORGRYMVNU9mnG2b171m9Hy/3u4njWDORMDsh5hJ06V
-         LNMSW1mDL9CaYbJXLwxx2k2tgtvsz/1cBki1zgdzoCq799wzfIPJLoJLsR2geNBdRzzf
-         iVkedpOQXO0SHka0x3RqsLVCzVRDc/tYrK3D43xKZQF5ffMDIRRJNy2q2wz9+86t64aD
-         IHOgNhxcPwN8gOBwQFkQTUCj/xQ3XX3FMqILbPVk5NnmdwWtZqv6AkcT3rUl3YWu9d47
-         NkTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B1IPaWShRHO+S25ine4LYsuzUXNhBul7A3bHVmcZDqE=;
-        b=r4DNUJxBGuMNJaDMFCjdgrD6o2AM7qAMM2AOkp7jiTURRepwKfP1fRFhnPDzJiYUvo
-         NQjd3SD97vUwQJsjw6YwHPNPj++SZOHTeEpM6Vvd8siACip4KoSyCMKQGnw5IFfxvFV2
-         grQLVH+f3clYZ4Ecg37k9Q08LW9koSf1cWe1kJqt+/f/yL5GH8b+WobVCOBmipttmwC7
-         y7wuEr6EmvgIRcgs0X27DI+3r4uCM3nPo6CULJcBsn4wXKdbyjhWM+mnlru3Hs+iLqL9
-         xC1nb6wYm1cSLSO6ezRc/hEV/rR8gf6Q0YsizZ6++6Ce4301vVQjv2nyurcr4j0E3XCm
-         8Pog==
-X-Gm-Message-State: AOAM531I/f+9VAlATy1QpSSPZ0YHjdRkPVmNvaXnpQLI/Td6iqHz9RuC
-        5eZuRNZYewn23cRUJyxOLAYFJITCgRpq7wVi14S1ww==
-X-Google-Smtp-Source: ABdhPJwc+o+M3KzvmYCuetm2zFZXHE5MraYO1ybETeCPb1awpwHv4HohqKP5JpPREoXBHHDM7lWNAj4l1bsIBGP++Fw=
-X-Received: by 2002:a63:311:: with SMTP id 17mr16548751pgd.450.1629427151147;
- Thu, 19 Aug 2021 19:39:11 -0700 (PDT)
+        id S237773AbhHTClF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Aug 2021 22:41:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:28085 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237269AbhHTClE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 19 Aug 2021 22:41:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="213577046"
+X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
+   d="scan'208";a="213577046"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2021 19:40:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,336,1620716400"; 
+   d="scan'208";a="532781071"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Aug 2021 19:40:27 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, lenb@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 1/2] thermal: intel: Allow processing of HWP interrupt
+Date:   Thu, 19 Aug 2021 19:40:05 -0700
+Message-Id: <20210820024006.2347720-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com> <20210816060359.1442450-5-ruansy.fnst@fujitsu.com>
-In-Reply-To: <20210816060359.1442450-5-ruansy.fnst@fujitsu.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 19 Aug 2021 19:39:00 -0700
-Message-ID: <CAPcyv4gFDyXqu5NyrWQ9Y_JqjLmCb8pWQgPZVBYE=dOir2KdzA@mail.gmail.com>
-Subject: Re: [PATCH v7 4/8] fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVDIMM <nvdimm@lists.linux.dev>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 11:04 PM Shiyang Ruan <ruansy.fnst@fujitsu.com> wrote:
->
-> Punch hole on a reflinked file needs dax_iomap_cow_copy() too.
-> Otherwise, data in not aligned area will be not correct.  So, add the
-> srcmap to dax_iomap_zero() and replace memset() as dax_iomap_cow_copy().
->
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> ---
->  fs/dax.c               | 25 +++++++++++++++----------
->  fs/iomap/buffered-io.c |  4 ++--
->  include/linux/dax.h    |  3 ++-
->  3 files changed, 19 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/dax.c b/fs/dax.c
-> index e49ba68cc7e4..91ceb518f66a 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1198,7 +1198,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->  }
->  #endif /* CONFIG_FS_DAX_PMD */
->
-> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
-> +s64 dax_iomap_zero(loff_t pos, u64 length, const struct iomap *iomap,
-> +               const struct iomap *srcmap)
->  {
->         sector_t sector = iomap_sector(iomap, pos & PAGE_MASK);
->         pgoff_t pgoff;
-> @@ -1220,19 +1221,23 @@ s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
->
->         if (page_aligned)
->                 rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
-> -       else
-> +       else {
->                 rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
-> -       if (rc < 0) {
-> -               dax_read_unlock(id);
-> -               return rc;
-> -       }
-> -
-> -       if (!page_aligned) {
-> -               memset(kaddr + offset, 0, size);
-> +               if (rc < 0)
-> +                       goto out;
-> +               if (iomap->addr != srcmap->addr) {
-> +                       rc = dax_iomap_cow_copy(pos, size, PAGE_SIZE, srcmap,
-> +                                               kaddr);
+Add a weak function to process HWP (Hardware P-states) notifications and
+move updating HWP_STATUS MSR to this function.
 
-Apologies, I'm confused, why is it ok to skip zeroing here?
+This allows HWP interrupts to be processed by the intel_pstate driver in
+HWP mode by overriding the implementation.
+
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ drivers/thermal/intel/therm_throt.c       | 7 ++++++-
+ drivers/thermal/intel/thermal_interrupt.h | 3 +++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/intel/therm_throt.c b/drivers/thermal/intel/therm_throt.c
+index 99abdc03c44c..dab7e8fb1059 100644
+--- a/drivers/thermal/intel/therm_throt.c
++++ b/drivers/thermal/intel/therm_throt.c
+@@ -569,13 +569,18 @@ static void notify_thresholds(__u64 msr_val)
+ 		platform_thermal_notify(msr_val);
+ }
+ 
++void __weak notify_hwp_interrupt(void)
++{
++	wrmsrl_safe(MSR_HWP_STATUS, 0);
++}
++
+ /* Thermal transition interrupt handler */
+ void intel_thermal_interrupt(void)
+ {
+ 	__u64 msr_val;
+ 
+ 	if (static_cpu_has(X86_FEATURE_HWP))
+-		wrmsrl_safe(MSR_HWP_STATUS, 0);
++		notify_hwp_interrupt();
+ 
+ 	rdmsrl(MSR_IA32_THERM_STATUS, msr_val);
+ 
+diff --git a/drivers/thermal/intel/thermal_interrupt.h b/drivers/thermal/intel/thermal_interrupt.h
+index 53f427bb58dc..01e7bed2ffc7 100644
+--- a/drivers/thermal/intel/thermal_interrupt.h
++++ b/drivers/thermal/intel/thermal_interrupt.h
+@@ -12,4 +12,7 @@ extern int (*platform_thermal_notify)(__u64 msr_val);
+  * callback has rate control */
+ extern bool (*platform_thermal_package_rate_control)(void);
+ 
++/* Handle HWP interrupt */
++extern void notify_hwp_interrupt(void);
++
+ #endif /* _INTEL_THERMAL_INTERRUPT_H */
+-- 
+2.31.1
+
