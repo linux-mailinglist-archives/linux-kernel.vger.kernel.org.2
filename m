@@ -2,905 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7663E3F2EA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C6D3F2EAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 17:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbhHTPOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 11:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbhHTPOx (ORCPT
+        id S240992AbhHTPQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 11:16:53 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:48233 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234323AbhHTPQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 11:14:53 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52E1C061575;
-        Fri, 20 Aug 2021 08:14:12 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id c12so17865799ljr.5;
-        Fri, 20 Aug 2021 08:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=//3YypuACKa7AzwXeL7HZDS0QZGJb2/pG40sHaktyGQ=;
-        b=UxLSzYOnj/0wNu6L0Nqj3iSqK7SN36I31dt/xQGLJ978ZKMqUw8Ah2913/FUdaXuZ0
-         POO+6Ndsv1AfzrJap/X29YJnpRo+6IpThH1uJGNjNH3A/rpI9+ebwVJJb3cnT+kqpOB+
-         eqrtU0RefoLqH7FJUT+6fIIuhNp31/+rI3a3LbCcbK1xiRVC8gJytWaYAeI+ps50G35o
-         OXx5Z2RlfUkn/fduYcK4AThQlu/Iu9HvY5E2xuh07HFrRXwO+qMiXXBEuic9yqm0omWo
-         7n1zvG2B0058v1ITyHe1/UWp/cb2Y7b5Eu3krykS3qGlnbsVih2qWgqGd6mPnKP+crVs
-         mfEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=//3YypuACKa7AzwXeL7HZDS0QZGJb2/pG40sHaktyGQ=;
-        b=poftb1wTAGjIPCUpIleWIBEMTDg1Sjw4goSfK3HvnvjArULjZAYq6GoctcggyouWAJ
-         8tX9shH9ochSTBR0hfRLxN2wYQnHambWepGEUqI3HKCNKUDcp41NsM1KJKfcO2c+iHy5
-         VkaCse2uKJXQCOYDmg7bKJAiSFyHvdLhYEB8wknbOuXC9cqn79tPoY4o96knuCIKMg44
-         eDizwbkYAeaHic0AChchsobxV10CUHxlusQAL6cZN8P1MUnN/gx5+B+K903xKEyc8xl1
-         /h96UH55GFHyTPagnsd7NmYi1WDPAiaGAq75WllniipDQY39awp6LgZTr6/LqHq+ohKp
-         bbCA==
-X-Gm-Message-State: AOAM5319rh7TGgEd7oILTHnWtOb1Vkmfc40WucFZKMDosu0XgWAHMqaj
-        z5N5dDQILN1p1GZAVBmRzOYLWcTKBohjUzqs
-X-Google-Smtp-Source: ABdhPJy1UDL8TUgvxmp8ZrlEkiYvgoJGbbuC2vV7gcTVs/4DWUCSL5XGx85nPgPTChA7we7X+vHkGA==
-X-Received: by 2002:a05:651c:894:: with SMTP id d20mr16188977ljq.483.1629472450928;
-        Fri, 20 Aug 2021 08:14:10 -0700 (PDT)
-Received: from [192.168.0.153] (95-28-166-221.broadband.corbina.ru. [95.28.166.221])
-        by smtp.gmail.com with ESMTPSA id u9sm717827lff.290.2021.08.20.08.14.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 08:14:10 -0700 (PDT)
-Subject: [PATCH v4 1/1] NAX LSM: Add initial support
-From:   Igor Zhbanov <izh1979@gmail.com>
-To:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        THOBY Simon <Simon.THOBY@viveris.fr>,
-        linux-kernel@vger.kernel.org
-References: <57e58b7f-e601-e9c7-5adf-1d189ba4982d@gmail.com>
-Message-ID: <cddb2e03-794d-b126-10aa-3670607bf477@gmail.com>
-Date:   Fri, 20 Aug 2021 18:14:16 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 20 Aug 2021 11:16:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1629472571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=klp+6b8zvhTMY6DL3XHrPsuOrmt80/fuCsVxEmvC4dc=;
+        b=BqnOJuZDbXmuU22xzgMJw1VWxJDm3Y7h9396/aNJDMiI90DAq/WNg3WzTHC4ZtUqy9oUAO
+        yD5edf7JCq5bEj0cJf2XHJXviFt8u2W1RU2AmgDcyG0P/Mr/AvjZwIeVKxH8eU783y0YVp
+        9vEDzFeDMxShZjSsTSqbXGUIaOQufBE=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2168.outbound.protection.outlook.com [104.47.17.168])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-29-lVrR_MbcOru9p3goYepU_g-1; Fri, 20 Aug 2021 17:16:10 +0200
+X-MC-Unique: lVrR_MbcOru9p3goYepU_g-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fVWVaN/z35l80JMfj8EABijQnRZVMEQpgTDUrd8YPEQy32UljZdO5ATbin5aSTLvfntuOobujYObWIqVh7AvY5khXtlWAqI+hACqBx8T+BppjuTxBI71UmDkJo8KaTdMzJmn21rFmzAC3afbYkEuuJIMjPHwZgn1UwtW3XVr0y5+yB9cy6jUd1AYN/vlTpWQPeJ95CwGt2K1BnzkAqUPJb+vOmLFLNKC6MU+zoo5Bm48mukhjeKHOeN2OdJU8Zsw2vF4SsCvYrsLni9JZR1SzJF46g8d8Kfhn08WMEBVfwwwXQBKkU4SlNYM7ZTXeVV3LaVrwdk9uyVKld33gnQDcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u7RZ5YLSc7IwfRJf+8vFufugwpWAPmLIx++tFNe3+Jc=;
+ b=HdTSGGjtg2PtQRzkmUD1sbX6K6hMXOq9ll1kfu4UDkugU/eCaW3YfOSzfsTcQKDCWHYYtlghtAH71+n3/EHYjLlm2vwfeflnBBnP5SRCEQe7iUDFYLdtWWkNTRE/Jf73Y4CcCyXYxekIe6jK642X3biPIZ+1qi2TQ9O1xk48HEzDU/GRLRJdHTPxc23ZrXtcmXm/llz4T6siXHrPmtpun4ebrYkFMjteBxL7b8S6wx0KfT/ZPeup4G9uekgXKYwSNku+bmX2beLSRbobpKsSjlQVcN53/YliAbxMd2bUcae2gXjPFxX09yPcCwzPSDazRqbukTGYiOQbXQhrKIFq8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com (2603:10a6:803:4::13)
+ by VI1PR04MB4094.eurprd04.prod.outlook.com (2603:10a6:803:43::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Fri, 20 Aug
+ 2021 15:16:09 +0000
+Received: from VI1PR0402MB3439.eurprd04.prod.outlook.com
+ ([fe80::504b:de61:1358:c344]) by VI1PR0402MB3439.eurprd04.prod.outlook.com
+ ([fe80::504b:de61:1358:c344%4]) with mapi id 15.20.4436.019; Fri, 20 Aug 2021
+ 15:16:09 +0000
+Date:   Fri, 20 Aug 2021 23:15:49 +0800
+From:   Chester Lin <clin@suse.com>
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Rob Herring <robh+dt@kernel.org>, s32@nxp.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+Subject: Re: [PATCH 4/8] arm64: dts: add NXP S32G2 support
+Message-ID: <YR/HJQDGJ1C+ku6O@linux-8mug>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-5-clin@suse.com>
+ <d09ed0fd-83e7-a6aa-0bd6-f679ffb64eaf@suse.de>
+ <87o89sqmz6.wl-maz@kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87o89sqmz6.wl-maz@kernel.org>
+X-ClientProxiedBy: HK2PR03CA0066.apcprd03.prod.outlook.com
+ (2603:1096:202:17::36) To VI1PR0402MB3439.eurprd04.prod.outlook.com
+ (2603:10a6:803:4::13)
 MIME-Version: 1.0
-In-Reply-To: <57e58b7f-e601-e9c7-5adf-1d189ba4982d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-8mug (118.160.215.224) by HK2PR03CA0066.apcprd03.prod.outlook.com (2603:1096:202:17::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.6 via Frontend Transport; Fri, 20 Aug 2021 15:15:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f0ae009a-d712-4d4a-3129-08d963ed6ffe
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4094:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4094F4094F657B7E3F0AFCA3ADC19@VI1PR04MB4094.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EUJLr0uF7ZYSoMEwxQyaN2yqSpdDLMp2DRA2ztTGIVM7JWMl2vCdRvZhJXxCqh3at76OxtM64Mn/WOoYFCB+7gxqWx0BZ4w3oVyODF4lKN3nzSoegqlu8Fwt+e4BwqahcGxf4kFRNBmADhk4C1ET8kNeYDuG/IeuPTzu2LNZyuYRPeo6RF66oiQzO2Wrrpg/wQRXdQsidNo12KaISSWnWK6zy+78QB6nUhjYUVoSoe3lj4Ofx6tQaNZ7dipxHyLmJtolS41dotW2lt9/qmtqRvaXPYqgXBphTpojQA1ypAPLF41B8O6cGFM54XwA/RLMglkqYYkmUu87CHkfGWzF3ksaZ+8241mS71WKpa00zJcdu1C0mfs8BwliSbNSgSAs9xMyOMgR+wKyIG0PuA1Eo6i4X4eMB5vNU2vONPOMrWIR58xBxxcVSvnZCRf2lgFgeM5EaBCjTbsHc+9fBft7i3R1kfw8apv9d3pMQiTzo5/vmmsSGsIfIK+sqQKy4TsjaYfK3gneHzrYw0IlosVQaKzewBg4QLA89Czs6d0fReihkZPeIP8EEujUwUJYCCAoO5LVAgoV9ZpF+o1+7mq86aaL3zB6MHvCOcr9Yw51ejVpK9DceovO0xajISOeG2qzrRjajV5CT1Nfco8gXMbHNQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3439.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(39860400002)(376002)(38100700002)(26005)(86362001)(54906003)(66574015)(956004)(107886003)(6666004)(4326008)(55016002)(2906002)(9686003)(6496006)(5660300002)(55236004)(316002)(478600001)(33716001)(83380400001)(66476007)(66556008)(66946007)(8936002)(186003)(8676002)(6916009)(53546011)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a1Ojzq6wiA1MGDJFEFl0Np4yoMqbmDVxadiEa52K6us4VnorNABc0jE/pWUf?=
+ =?us-ascii?Q?Jxyg9RmVxwhMn7VOAUml7gPXII/F08lvSzxL1eD5AVURgsbs7ZKZlOdUmoRH?=
+ =?us-ascii?Q?5nS0IZDTIOxkz+gUckljwLZvg2ajWSb2nniHNyOsqsZ/IRHvmKzpE7L88fMd?=
+ =?us-ascii?Q?Qkj9qHXuspC25fQO7od/ylVFHVWEAutgQqdRBomxfhhVQPz+GtX79ml+YbSP?=
+ =?us-ascii?Q?PFP93kZj/UQUD0vZ/I+7rGocBrV3MQ/2a8jJ3Ucc5GPvqkicj0baYHNRazCO?=
+ =?us-ascii?Q?nKoz2W1thp1/whYzVD1WzL4UxqA13t0iUXcie2E1hRB3l4mfpoNkUbrCkPk6?=
+ =?us-ascii?Q?rPikMKbcKf/tbsSRE0+OgJKwdA7R0NoeCJ6PMmqBJj5J4fxJYJ/AyjHdQ7wE?=
+ =?us-ascii?Q?OMeGb6ffIv3UFgAjK3ZJGNpDvey3XnzsuGPDmCAxcOMs+vZyqGBwRpr9kj/n?=
+ =?us-ascii?Q?v77BF7CQbo2BSBc3m09kHhLYL+UijkccBzb3Ti6WDIPYrt6y5b4Ml3gCgXQ9?=
+ =?us-ascii?Q?rcclDVaRzimwt5c0uJ+W3tj0sEZwyZdVYkIAZ4AJvSM4NxStkSHB5gNr5ANc?=
+ =?us-ascii?Q?Gv1DyvvcZ7V0jWhhJUwjhVm+3ua4rl70rRggEfwxs/F9poFd8+aX/XYe4m5O?=
+ =?us-ascii?Q?83P0V8WTEabr/51CdDyztY98PHNHwbiGlpdbFzJcz42E4Au89w8/h70QurdX?=
+ =?us-ascii?Q?teqcPSBsjwPuT0ARfdSmQC8OVINquW74TbdJLy+rVVf9tZ8vgUxWvGqaTmrx?=
+ =?us-ascii?Q?S/XFI0NwUbpFpzAaktxDI1JyQdMUQDLGR8nWYxSxp+FojFfVIIyYP2u86/8a?=
+ =?us-ascii?Q?H0043s1S+rsRXw3mVRdOkUQwBSo5ybEI5C6jyV3bZiRLsAx0u/+ojAjjhPJP?=
+ =?us-ascii?Q?AVmVns7aFRmpPAEEU3ywAmZvAS6HtuCwgb0J3h6lxP6xNPoh3VkUQktPanry?=
+ =?us-ascii?Q?hLZwpiLv4adSNuiHAw2YFKaGJZ7a2Erj+wuU+nfCl46AzGHToPle4s+1mCaj?=
+ =?us-ascii?Q?GjDaOT2raC2XdsqL3r3nAwAQBrwhuBmPkuGKPa1uX89rtQZrWIxE/HiihA+z?=
+ =?us-ascii?Q?zH0hetsZqfHd39fMZzWiHTl/wOCS7r+/c/RrdOQdYL75Xw3xPPYDKPMFISps?=
+ =?us-ascii?Q?3Hv6os5bvPO98LMdbduU3VaYxALq2/Ly4he9gz0gtDz4sPEdrq4pKVw2FXd8?=
+ =?us-ascii?Q?qFUp3h5uvz4XB9arjNSE0u62wv3E+9tV77U22a2coTq3fBu1nKHRsJ3NY9ZR?=
+ =?us-ascii?Q?bquzynoQ8aMZyzzcNjdSGZKzKvRQWWeFBnmNWLsXwaRMkI+N10dgXBi12qKM?=
+ =?us-ascii?Q?u1MqRPKkfbtaHx/ZX5XFllvo?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0ae009a-d712-4d4a-3129-08d963ed6ffe
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3439.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Aug 2021 15:16:09.0432
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rR6igNikNTwAb7MUnoO9zYCjN/aImMvRUup/zP3Ynw+Lz5OalLBfxZRWjKjiFynW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for NAX (No Anonymous Execution), which is a Linux
-Security Module that extends DAC by making impossible to make anonymous
-and modified pages executable for privileged processes.
+On Fri, Aug 20, 2021 at 02:12:13PM +0100, Marc Zyngier wrote:
+> On Thu, 12 Aug 2021 18:26:28 +0100,
+> Andreas F=E4rber <afaerber@suse.de> wrote:
+> >=20
+> > Hi Chester et al.,
+> >=20
+> > On 05.08.21 08:54, Chester Lin wrote:
+> > > Add an initial dtsi file for generic SoC features of NXP S32G2.
+> > >=20
+> > > Signed-off-by: Chester Lin <clin@suse.com>
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/s32g2.dtsi | 98 ++++++++++++++++++++++=
+++
+> > >  1 file changed, 98 insertions(+)
+> > >  create mode 100644 arch/arm64/boot/dts/freescale/s32g2.dtsi
+> > >=20
+> > > diff --git a/arch/arm64/boot/dts/freescale/s32g2.dtsi b/arch/arm64/bo=
+ot/dts/freescale/s32g2.dtsi
+> > > new file mode 100644
+> > > index 000000000000..3321819c1a2d
+> > > --- /dev/null
+> > > +++ b/arch/arm64/boot/dts/freescale/s32g2.dtsi
+>=20
+> [...]
+>=20
+> > > +		gic: interrupt-controller@50800000 {
+> > > +			compatible =3D "arm,gic-v3";
+> > > +			#interrupt-cells =3D <3>;
+> > > +			interrupt-controller;
+> > > +			reg =3D <0 0x50800000 0 0x10000>,
+> > > +			      <0 0x50880000 0 0x200000>,
+>=20
+> That's enough redistributor space for 16 CPUs. However, you only
+> describe 4. Either the number of CPUs is wrong, the size is wrong, or
+> the GIC has been configured for more cores than the SoC has.
 
-Intercepts anonymous executable pages created with mmap() and mprotect()
-system calls.
+Confirmed the SoC can only find 4 redistributors:
 
-Log violations (in non-quiet mode) and block the action or kill the
-offending process, depending on the enabled settings.
+localhost:~ # dmesg | grep CPU
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[    0.000000] Detected VIPT I-cache on CPU0
+[    0.000000] CPU features: detected: GIC system register CPU interface
+[    0.000000] CPU features: detected: ARM erratum 845719
+[    0.000000] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, N=
+odes=3D1
+[    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=3D480 to nr_cpu_i=
+ds=3D4.
+[    0.000000] GICv3: CPU0: found redistributor 0 region 0:0x00000000508800=
+00
+[    0.063865] smp: Bringing up secondary CPUs ...
+[    0.068852] Detected VIPT I-cache on CPU1
+[    0.068894] GICv3: CPU1: found redistributor 1 region 0:0x00000000508a00=
+00
+[    0.068963] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[    0.069809] Detected VIPT I-cache on CPU2
+[    0.069851] GICv3: CPU2: found redistributor 100 region 0:0x00000000508c=
+0000
+[    0.069903] CPU2: Booted secondary processor 0x0000000100 [0x410fd034]
+[    0.070698] Detected VIPT I-cache on CPU3
+[    0.070722] GICv3: CPU3: found redistributor 101 region 0:0x00000000508e=
+0000
+[    0.070749] CPU3: Booted secondary processor 0x0000000101 [0x410fd034]
+[    0.070847] smp: Brought up 1 node, 4 CPUs
+<..snip..>
 
-See Documentation/admin-guide/LSM/NAX.rst.
+I will correct the size to 0x80000, thanks!
 
-Signed-off-by: Igor Zhbanov <izh1979@gmail.com>
----
- Documentation/admin-guide/LSM/NAX.rst         |  72 +++
- Documentation/admin-guide/LSM/index.rst       |   1 +
- .../admin-guide/kernel-parameters.rst         |   1 +
- .../admin-guide/kernel-parameters.txt         |  32 ++
- security/Kconfig                              |  11 +-
- security/Makefile                             |   2 +
- security/nax/Kconfig                          | 113 +++++
- security/nax/Makefile                         |   4 +
- security/nax/nax-lsm.c                        | 472 ++++++++++++++++++
- 9 files changed, 703 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/admin-guide/LSM/NAX.rst
- create mode 100644 security/nax/Kconfig
- create mode 100644 security/nax/Makefile
- create mode 100644 security/nax/nax-lsm.c
+>=20
+> > > +			      <0 0x50400000 0 0x2000>,
+> > > +			      <0 0x50410000 0 0x2000>,
+> > > +			      <0 0x50420000 0 0x2000>;
+> >=20
+> > Please order reg after compatible by convention, and sort
+> > interrupt-controller or at least #interrupt-cells (applying to
+> > consumers) last, after the below one applying to this device itself.
+> >=20
+> > > +			interrupts =3D <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) |
+> > > +						 IRQ_TYPE_LEVEL_HIGH)>;
+> > > +		};
+> >=20
+> > CC'ing Marc for additional GIC scrutiny, often the sizes are wrong.
+>=20
+> There is more than just sizes. The interrupt specifier for the
+> maintenance interrupt is also wrong.
+>=20
+> 	M.
 
-diff --git a/Documentation/admin-guide/LSM/NAX.rst b/Documentation/admin-guide/LSM/NAX.rst
-new file mode 100644
-index 000000000000..da54b3be4cda
---- /dev/null
-+++ b/Documentation/admin-guide/LSM/NAX.rst
-@@ -0,0 +1,72 @@
-+=======
-+NAX LSM
-+=======
-+
-+:Author: Igor Zhbanov
-+
-+NAX (No Anonymous Execution) is a Linux Security Module that extends DAC
-+by making impossible to make anonymous and modified pages executable for
-+processes. The module intercepts anonymous executable pages created with
-+mmap() and mprotect() system calls.
-+
-+To select it at boot time, add ``nax`` to ``security`` kernel command-line
-+parameter.
-+
-+The following sysctl parameters are available:
-+
-+* ``kernel.nax.check_all``:
-+ - 0: Check all processes.
-+ - 1: Check only privileged processes. The privileged process is a process
-+      for which any of the following is true:
-+      - ``uid  == 0``
-+      - ``euid == 0``
-+      - ``suid == 0``
-+      - ``cap_effective`` has any capability except for the ones allowed
-+        in ``kernel.nax.allowed_caps``
-+      - ``cap_permitted`` has any capability except for the ones allowed
-+        in ``kernel.nax.allowed_caps``
-+
-+ Checking of uid/euid/suid is important because a process may call seteuid(0)
-+ to gain privileges (if SECURE_NO_SETUID_FIXUP secure bit is not set).
-+
-+* ``kernel.nax.allowed_caps``:
-+
-+ Hexadecimal number representing the set of capabilities a non-root
-+ process can possess without being considered "privileged" by NAX LSM.
-+
-+ For the meaning of the capabilities bits and their value, please check
-+ ``include/uapi/linux/capability.h`` and ``capabilities(7)`` manual page.
-+
-+ For example, ``CAP_SYS_PTRACE`` has a number 19. Therefore, to add it to
-+ allowed capabilities list, we need to set 19'th bit (2^19 or 1 << 19)
-+ or 80000 in hexadecimal form. Capabilities can be bitwise ORed.
-+
-+* ``kernel.nax.mode``:
-+
-+ - 0: Only log errors (when enabled by ``kernel.nax.quiet``) (default mode)
-+ - 1: Forbid unsafe pages mappings (and log when enabled)
-+ - 2: Kill the violating process (and log when enabled)
-+
-+* ``kernel.nax.quiet``:
-+
-+ - 0: Log violations (default)
-+ - 1: Be quiet
-+
-+* ``kernel.nax.locked``:
-+
-+ - 0: Changing of the module's sysctl parameters is allowed
-+ - 1: Further changing of the module's sysctl parameters is forbidden
-+
-+ Setting this parameter to ``1`` after initial setup during the system boot
-+ will prevent the module disabling at the later time.
-+
-+There are matching kernel command-line parameters (with the same values):
-+
-+- ``nax_allowed_caps``
-+- ``nax_check_all``
-+- ``nax_mode``
-+- ``nax_quiet``
-+- ``nax_locked``
-+
-+The ``nax_locked`` command-line parameter must be specified last to avoid
-+premature setting locking.
-diff --git a/Documentation/admin-guide/LSM/index.rst b/Documentation/admin-guide/LSM/index.rst
-index a6ba95fbaa9f..e9df7fc9a461 100644
---- a/Documentation/admin-guide/LSM/index.rst
-+++ b/Documentation/admin-guide/LSM/index.rst
-@@ -42,6 +42,7 @@ subdirectories.
- 
-    apparmor
-    LoadPin
-+   NAX
-    SELinux
-    Smack
-    tomoyo
-diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-index 01ba293a2d70..f4e91dc729f0 100644
---- a/Documentation/admin-guide/kernel-parameters.rst
-+++ b/Documentation/admin-guide/kernel-parameters.rst
-@@ -136,6 +136,7 @@ parameter is applicable::
- 	MOUSE	Appropriate mouse support is enabled.
- 	MSI	Message Signaled Interrupts (PCI).
- 	MTD	MTD (Memory Technology Device) support is enabled.
-+	NAX	NAX support is enabled.
- 	NET	Appropriate network support is enabled.
- 	NUMA	NUMA support is enabled.
- 	NFS	Appropriate NFS support is enabled.
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index bdb22006f713..10ed55e28d49 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3100,6 +3100,38 @@
- 
- 	n2=		[NET] SDL Inc. RISCom/N2 synchronous serial card
- 
-+	nax_allowed_caps= [NAX] Hexadecimal number representing the set of
-+			capabilities a non-root process can possess without
-+			being considered "privileged" by NAX LSM.
-+
-+			For the meaning of the capabilities bits and their
-+			value, please check include/uapi/linux/capability.h
-+			and capabilities(7) manual page.
-+
-+			For example, `CAP_SYS_PTRACE` has a number 19.
-+			Therefore, to add it to allowed capabilities list,
-+			we need to set 19'th bit (2^19 or 1 << 19) or 80000
-+			in hexadecimal form. Capabilities can be bitwise ORed.
-+
-+	nax_check_all=	[NAX] NAX LSM processes checking mode:
-+			0 - Check only privileged processes (default).
-+			1 - Check all processes.
-+
-+	nax_locked=	[NAX] NAX LSM settings' locking mode:
-+			0 - Changing NAX sysctl parameters is allowed.
-+			1 - Changing NAX sysctl parameters is forbidden until
-+			    reboot.
-+
-+	nax_mode=	[NAX] NAX LSM violation reaction mode:
-+			0 - Only log errors (when not in quiet mode; default).
-+			1 - Forbid unsafe pages mappings (and log when
-+			    enabled).
-+			2 - Kill the violating process (and log when enabled).
-+
-+	nax_quiet=	[NAX] NAX LSM log verbosity:
-+			0 - Log messages to syslog.
-+			1 - Be quiet.
-+
- 	netdev=		[NET] Network devices parameters
- 			Format: <irq>,<io>,<mem_start>,<mem_end>,<name>
- 			Note that mem_start is often overloaded to mean
-diff --git a/security/Kconfig b/security/Kconfig
-index 0ced7fd33e4d..771419647ae1 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -239,6 +239,7 @@ source "security/yama/Kconfig"
- source "security/safesetid/Kconfig"
- source "security/lockdown/Kconfig"
- source "security/landlock/Kconfig"
-+source "security/nax/Kconfig"
- 
- source "security/integrity/Kconfig"
- 
-@@ -278,11 +279,11 @@ endchoice
- 
- config LSM
- 	string "Ordered list of enabled LSMs"
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
--	default "landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
-+	default "nax,landlock,lockdown,yama,loadpin,safesetid,integrity,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
-+	default "nax,landlock,lockdown,yama,loadpin,safesetid,integrity,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
-+	default "nax,landlock,lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
-+	default "nax,landlock,lockdown,yama,loadpin,safesetid,integrity,bpf" if DEFAULT_SECURITY_DAC
-+	default "nax,landlock,lockdown,yama,loadpin,safesetid,integrity,selinux,smack,tomoyo,apparmor,bpf"
- 	help
- 	  A comma-separated list of LSMs, in initialization order.
- 	  Any LSMs left off this list will be ignored. This can be
-diff --git a/security/Makefile b/security/Makefile
-index 47e432900e24..5c261bbf4659 100644
---- a/security/Makefile
-+++ b/security/Makefile
-@@ -14,6 +14,7 @@ subdir-$(CONFIG_SECURITY_SAFESETID)    += safesetid
- subdir-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown
- subdir-$(CONFIG_BPF_LSM)		+= bpf
- subdir-$(CONFIG_SECURITY_LANDLOCK)	+= landlock
-+subdir-$(CONFIG_SECURITY_NAX)		+= nax
- 
- # always enable default capabilities
- obj-y					+= commoncap.o
-@@ -34,6 +35,7 @@ obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
- obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
- obj-$(CONFIG_BPF_LSM)			+= bpf/
- obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
-+obj-$(CONFIG_SECURITY_NAX)		+= nax/
- 
- # Object integrity file lists
- subdir-$(CONFIG_INTEGRITY)		+= integrity
-diff --git a/security/nax/Kconfig b/security/nax/Kconfig
-new file mode 100644
-index 000000000000..71fc0175cfb2
---- /dev/null
-+++ b/security/nax/Kconfig
-@@ -0,0 +1,113 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config SECURITY_NAX
-+	bool "NAX support"
-+	depends on SECURITY
-+	help
-+	  This selects NAX (No Anonymous Execution), which extends DAC
-+	  support with additional system-wide security settings beyond
-+	  regular Linux discretionary access controls. Currently, the only
-+	  available behavior is restricting the execution of anonymous and
-+	  modified pages.
-+
-+	  The module can restrict either privileged or all processes,
-+	  depending on the settings. It is possible to configure action,
-+	  performed when the violation is detected (log, log + block,
-+	  log + kill).
-+
-+	  Further information can be found in
-+	  Documentation/admin-guide/LSM/NAX.rst.
-+
-+	  If you are unsure how to answer this question, answer N.
-+
-+choice
-+	prompt "NAX violation action mode"
-+	default SECURITY_NAX_MODE_LOG
-+	depends on SECURITY_NAX
-+	help
-+	  Select the NAX violation action mode.
-+
-+	  In the default permissive mode the violations are only logged
-+	  (if logging is not suppressed). In the enforcing mode the violations
-+	  are prohibited. And in the kill mode the process is terminated.
-+
-+	  The value can be overridden at boot time with the kernel command-line
-+	  parameter "nax_mode=" (0, 1, 2) or "kernel.nax.mode=" (0, 1, 2)
-+	  sysctl parameter (if the settings are not locked).
-+
-+	config SECURITY_NAX_MODE_LOG
-+		bool "Permissive mode"
-+		help
-+		  In this mode violations are only logged (if logging is not
-+		  suppressed by the "kernel.nax.quiet" parameter). The
-+		  violating system call will not be prohibited.
-+	config SECURITY_NAX_MODE_ENFORCING
-+		bool "Enforcing mode"
-+		help
-+		  In this mode violations are prohibited and logged (if
-+		  logging is not suppressed by the "kernel.nax.quiet"
-+		  parameter). The violating system call will return -EACCES
-+		  error.
-+	config SECURITY_NAX_MODE_KILL
-+		bool "Kill mode"
-+		help
-+		  In this mode the violating process is terminated on the
-+		  first violation system call. The violation event is logged
-+		  (if logging is not suppressed by the "kernel.nax.quiet"
-+		  parameter).
-+endchoice
-+
-+config SECURITY_NAX_MODE
-+	int
-+	depends on SECURITY_NAX
-+	default 0 if SECURITY_NAX_MODE_LOG
-+	default 1 if SECURITY_NAX_MODE_ENFORCING
-+	default 2 if SECURITY_NAX_MODE_KILL
-+
-+config SECURITY_NAX_CHECK_ALL
-+	bool "Check all processes"
-+	depends on SECURITY_NAX
-+	help
-+	  If selected, NAX will check all processes. If not selected, NAX
-+	  will check only privileged processes (which is determined either
-+	  by having zero uid, euid, suid or fsuid; or by possessing
-+	  capabilities outside of allowed set).
-+
-+	  The value can also be overridden at boot time with the kernel
-+	  command-line parameter "nax_check_all=" (0, 1) or
-+	  "kernel.nax.check_all=" (0, 1) sysctl parameter (if the settings
-+	  are not locked).
-+
-+config SECURITY_NAX_ALLOWED_CAPS
-+	hex "Process capabilities ignored by NAX"
-+	default 0x0
-+	range 0x0 0xffffffffffff
-+	depends on SECURITY_NAX
-+	help
-+	  Hexadecimal number representing the set of capabilities
-+	  a non-root process can possess without being considered
-+	  "privileged" by NAX LSM.
-+
-+	  The value can be overridden at boot time with the command-line
-+	  parameter "nax_allowed_caps=" or "kernel.nax.allowed_caps=" sysctl
-+	  parameter (if the settings are not locked).
-+
-+config SECURITY_NAX_QUIET
-+	bool "Silence NAX messages"
-+	depends on SECURITY_NAX
-+	help
-+	  If selected, NAX will not print violations.
-+
-+	  The value can be overridden at boot with the command-line
-+	  parameter "nax_quiet=" (0, 1) or "kernel.nax.quiet=" (0, 1) sysctl
-+	  parameter (if the settings are not locked).
-+
-+config SECURITY_NAX_LOCKED
-+	bool "Lock NAX settings"
-+	depends on SECURITY_NAX
-+	help
-+	  Prevent any update to the settings of the NAX LSM. This applies to
-+	  both sysctl writes and the kernel command line.
-+
-+	  If not selected, it can be enabled at boot time with the kernel
-+	  command-line parameter "nax_locked=1" or "kernel.nax_locked=1"
-+	  sysctl parameter (if the settings are not locked).
-diff --git a/security/nax/Makefile b/security/nax/Makefile
-new file mode 100644
-index 000000000000..9c3372210c77
---- /dev/null
-+++ b/security/nax/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_SECURITY_NAX) := nax.o
-+
-+nax-y := nax-lsm.o
-diff --git a/security/nax/nax-lsm.c b/security/nax/nax-lsm.c
-new file mode 100644
-index 000000000000..5ff3ba12079d
---- /dev/null
-+++ b/security/nax/nax-lsm.c
-@@ -0,0 +1,472 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2016-2021 Open Mobile Platform LLC.
-+ *
-+ * Written by: Igor Zhbanov <i.zhbanov@omp.ru, izh1979@gmail.com>
-+ *
-+ * NAX (No Anonymous Execution) Linux Security Module
-+ * This module prevents execution of the code in anonymous or modified pages.
-+ * For more details, see Documentation/admin-guide/LSM/NAX.rst and
-+ * Documentation/admin-guide/kernel-parameters.rst
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2, as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#define pr_fmt(fmt) "NAX: " fmt
-+
-+#include <linux/capability.h>
-+#include <linux/cred.h>
-+#include <linux/ctype.h>
-+#include <linux/lsm_hooks.h>
-+#include <linux/mman.h>
-+#include <linux/rcupdate.h>
-+#include <linux/sched.h>
-+#include <linux/securebits.h>
-+#include <linux/security.h>
-+#include <linux/spinlock.h>
-+#include <linux/sysctl.h>
-+#include <linux/uidgid.h>
-+
-+#define NAX_MODE_PERMISSIVE 0 /* Log only             */
-+#define NAX_MODE_ENFORCING  1 /* Enforce and log      */
-+#define NAX_MODE_KILL       2 /* Kill process and log */
-+
-+static int mode      = CONFIG_SECURITY_NAX_MODE,
-+	   quiet     = IS_ENABLED(CONFIG_SECURITY_NAX_QUIET),
-+	   locked    = IS_ENABLED(CONFIG_SECURITY_NAX_LOCKED),
-+	   check_all = IS_ENABLED(CONFIG_SECURITY_NAX_CHECK_ALL);
-+
-+#define ALLOWED_CAPS_HEX_LEN (_KERNEL_CAPABILITY_U32S * 8)
-+
-+static char allowed_caps_hex[ALLOWED_CAPS_HEX_LEN + 1];
-+static kernel_cap_t __rcu *allowed_caps;
-+DEFINE_SPINLOCK(allowed_caps_mutex);
-+
-+static bool
-+is_interesting_process(void)
-+{
-+	bool ret = false;
-+	const struct cred *cred;
-+	kuid_t root_uid;
-+	kernel_cap_t *caps;
-+
-+	if (check_all)
-+		return true;
-+
-+	cred = current_cred();
-+	root_uid = make_kuid(cred->user_ns, 0);
-+
-+	rcu_read_lock();
-+	caps = rcu_dereference(allowed_caps);
-+	/*
-+	 * We count a process as interesting if it any of its uid/euid/suid
-+	 * is zero (because it may call seteuid(0) to gain privileges) or
-+	 * it has any not allowed capability (even in a user namespace)
-+	 */
-+	if ((!issecure(SECURE_NO_SETUID_FIXUP) &&
-+	     (uid_eq(cred->uid,  root_uid) ||
-+	      uid_eq(cred->euid, root_uid) ||
-+	      uid_eq(cred->suid, root_uid))) ||
-+	    (!cap_issubset(cred->cap_effective, *caps)) ||
-+	    (!cap_issubset(cred->cap_permitted, *caps)))
-+		ret = true;
-+
-+	rcu_read_unlock();
-+	return ret;
-+}
-+
-+static void
-+log_warn(const char *reason)
-+{
-+	if (quiet)
-+		return;
-+
-+	pr_warn_ratelimited("%s: pid=%d, uid=%u, comm=\"%s\"\n",
-+			    reason, current->pid,
-+			    from_kuid(&init_user_ns, current_cred()->uid),
-+				      current->comm);
-+}
-+
-+static void
-+kill_current_task(void)
-+{
-+	pr_warn("Killing pid=%d, uid=%u, comm=\"%s\"\n",
-+		current->pid, from_kuid(&init_user_ns, current_cred()->uid),
-+		current->comm);
-+	force_sig(SIGKILL);
-+}
-+
-+static int
-+nax_mmap_file(struct file *file, unsigned long reqprot,
-+	      unsigned long prot, unsigned long flags)
-+{
-+	int ret = 0;
-+
-+	if (mode == NAX_MODE_PERMISSIVE && quiet)
-+		return 0; /* Skip further checks in this case */
-+
-+	if (!(prot & PROT_EXEC)) /* Not executable memory */
-+		return 0;
-+
-+	if (!is_interesting_process())
-+		return 0; /* Not interesting processes can do anything */
-+
-+	if (!file) { /* Anonymous executable memory */
-+		log_warn("MMAP_ANON_EXEC");
-+		ret = -EACCES;
-+	} else if (prot & PROT_WRITE) { /* Mapping file RWX */
-+		log_warn("MMAP_FILE_WRITE_EXEC");
-+		ret = -EACCES;
-+	}
-+
-+	if (ret && mode == NAX_MODE_KILL)
-+		kill_current_task();
-+
-+	return (mode != NAX_MODE_PERMISSIVE) ? ret : 0;
-+}
-+
-+static int
-+nax_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
-+		  unsigned long prot)
-+{
-+	int ret = 0;
-+
-+	if (mode == NAX_MODE_PERMISSIVE && quiet)
-+		return 0; /* Skip further checks in this case */
-+
-+	if (!(prot & PROT_EXEC)) /* Not executable memory */
-+		return 0;
-+
-+	if (!is_interesting_process())
-+		return 0; /* Not interesting processes can do anything */
-+
-+	if (!(vma->vm_flags & VM_EXEC)) {
-+		if (vma->vm_start >= vma->vm_mm->start_brk &&
-+		    vma->vm_end   <= vma->vm_mm->brk) {
-+			log_warn("MPROTECT_EXEC_HEAP");
-+			ret = -EACCES;
-+		} else if (!vma->vm_file &&
-+			   ((vma->vm_start <= vma->vm_mm->start_stack &&
-+			     vma->vm_end   >= vma->vm_mm->start_stack) ||
-+			    vma_is_stack_for_current(vma))) {
-+			log_warn("MPROTECT_EXEC_STACK");
-+			ret = -EACCES;
-+		} else if (vma->vm_file && vma->anon_vma) {
-+			/*
-+			 * We are making executable a file mapping that has
-+			 * had some COW done. Since pages might have been
-+			 * written, check ability to execute the possibly
-+			 * modified content. This typically should only
-+			 * occur for text relocations.
-+			 */
-+			log_warn("MPROTECT_EXEC_MODIFIED");
-+			ret = -EACCES;
-+		}
-+	}
-+
-+	if (!ret) {
-+		if (!vma->vm_file) { /* Anonymous executable memory */
-+			log_warn("MPROTECT_ANON_EXEC");
-+			ret = -EACCES;
-+		} else if (prot & PROT_WRITE) { /* Remapping file as RWX */
-+			log_warn("MPROTECT_FILE_WRITE_EXEC");
-+			ret = -EACCES;
-+		}
-+	}
-+
-+	if (ret && mode == NAX_MODE_KILL)
-+		kill_current_task();
-+
-+	return (mode != NAX_MODE_PERMISSIVE) ? ret : 0;
-+}
-+
-+static struct security_hook_list nax_hooks[] __lsm_ro_after_init = {
-+	LSM_HOOK_INIT(mmap_file, nax_mmap_file),
-+	LSM_HOOK_INIT(file_mprotect, nax_file_mprotect),
-+};
-+
-+static void
-+update_allowed_caps(kernel_cap_t *caps)
-+{
-+	kernel_cap_t *old_caps;
-+
-+	*caps = cap_intersect(*caps, CAP_FULL_SET); /* Drop unsupported */
-+	spin_lock(&allowed_caps_mutex);
-+	old_caps = rcu_dereference_protected(allowed_caps,
-+					     lockdep_is_held(&allowed_caps_mutex));
-+	rcu_assign_pointer(allowed_caps, caps);
-+	spin_unlock(&allowed_caps_mutex);
-+	synchronize_rcu();
-+	kfree(old_caps);
-+}
-+
-+static int
-+set_default_allowed_caps(void)
-+{
-+	size_t i;
-+	kernel_cap_t *caps;
-+
-+	caps = kmalloc(sizeof(*caps), GFP_KERNEL);
-+	if (!caps)
-+		return -ENOMEM;
-+
-+	CAP_FOR_EACH_U32(i)
-+		caps->cap[i] = (CONFIG_SECURITY_NAX_ALLOWED_CAPS >> (i * 8)) &
-+			       0xff;
-+
-+	update_allowed_caps(caps);
-+	return 0;
-+}
-+
-+static int
-+parse_and_set_caps(char *str)
-+{
-+	size_t len, i;
-+	kernel_cap_t *caps;
-+
-+	/* len is guaranteed not to exceed ALLOWED_CAPS_HEX_LEN */
-+	len = strlen(str);
-+	for (i = 0; i < len; i++)
-+		if (!isxdigit(str[i]))
-+			return -EINVAL;
-+
-+	caps = kmalloc(sizeof(*caps), GFP_KERNEL);
-+	if (!caps)
-+		return -ENOMEM;
-+
-+	CAP_FOR_EACH_U32(i) {
-+		unsigned long l;
-+
-+		if (kstrtoul(str + (len >= 8 ? len - 8 : 0), 16, &l))
-+			return -EINVAL;
-+
-+		caps->cap[i] = l;
-+		if (len < 8)
-+			break;
-+
-+		len -= 8;
-+		str[len] = '\0';
-+	}
-+
-+	update_allowed_caps(caps);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_SYSCTL
-+
-+static int
-+nax_dointvec_minmax(struct ctl_table *table, int write,
-+		    void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	if (write && (!capable(CAP_SYS_ADMIN) || locked))
-+		return -EPERM;
-+
-+	return proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-+}
-+
-+static int
-+nax_dostring(struct ctl_table *table, int write, void *buffer,
-+	     size_t *lenp, loff_t *ppos)
-+{
-+	int ret;
-+
-+	if (write) { /* A user is setting the allowed capabilities */
-+		int error;
-+		char *buf = (char *)buffer;
-+		size_t len = *lenp;
-+
-+		if (!capable(CAP_SYS_ADMIN) || locked)
-+			return -EPERM;
-+
-+		/* Do not allow trailing garbage or excessive length */
-+		if (len == ALLOWED_CAPS_HEX_LEN + 1) {
-+			if (buf[--len] != '\n')
-+				return -EINVAL;
-+		} else if (len > ALLOWED_CAPS_HEX_LEN || len <= 0) {
-+			return -EINVAL;
-+		}
-+
-+		error = proc_dostring(table, write, buffer, lenp, ppos);
-+		if (error)
-+			return error;
-+
-+		ret = parse_and_set_caps(allowed_caps_hex);
-+	} else { /* A user is getting the allowed capabilities */
-+		unsigned int i;
-+		kernel_cap_t *caps;
-+
-+		rcu_read_lock();
-+		caps = rcu_dereference(allowed_caps);
-+		CAP_FOR_EACH_U32(i)
-+			snprintf(allowed_caps_hex + i * 8, 9, "%08x",
-+				 caps->cap[CAP_LAST_U32 - i]);
-+
-+		rcu_read_unlock();
-+		ret = proc_dostring(table, write, buffer, lenp, ppos);
-+	}
-+
-+	return ret;
-+}
-+
-+struct ctl_path nax_sysctl_path[] = {
-+	{ .procname = "kernel" },
-+	{ .procname = "nax"    },
-+	{ }
-+};
-+
-+static int max_mode = NAX_MODE_KILL;
-+
-+static struct ctl_table nax_sysctl_table[] = {
-+	{
-+		.procname     = "allowed_caps",
-+		.data         = allowed_caps_hex,
-+		.maxlen       = ALLOWED_CAPS_HEX_LEN + 1,
-+		.mode         = 0644,
-+		.proc_handler = nax_dostring,
-+	}, {
-+		.procname     = "check_all",
-+		.data         = &check_all,
-+		.maxlen       = sizeof(int),
-+		.mode         = 0644,
-+		.proc_handler = nax_dointvec_minmax,
-+		.extra1       = SYSCTL_ZERO,
-+		.extra2       = SYSCTL_ONE,
-+	}, {
-+		.procname     = "locked",
-+		.data         = &locked,
-+		.maxlen       = sizeof(int),
-+		.mode         = 0644,
-+		.proc_handler = nax_dointvec_minmax,
-+		.extra1       = SYSCTL_ZERO,
-+		.extra2       = SYSCTL_ONE,
-+	}, {
-+		.procname     = "mode",
-+		.data         = &mode,
-+		.maxlen       = sizeof(int),
-+		.mode         = 0644,
-+		.proc_handler = nax_dointvec_minmax,
-+		.extra1       = SYSCTL_ZERO,
-+		.extra2       = &max_mode,
-+	}, {
-+		.procname     = "quiet",
-+		.data         = &quiet,
-+		.maxlen       = sizeof(int),
-+		.mode         = 0644,
-+		.proc_handler = nax_dointvec_minmax,
-+		.extra1       = SYSCTL_ZERO,
-+		.extra2       = SYSCTL_ONE,
-+	},
-+	{ }
-+};
-+
-+static void __init
-+nax_init_sysctl(void)
-+{
-+	if (!register_sysctl_paths(nax_sysctl_path, nax_sysctl_table))
-+		panic("NAX: sysctl registration failed.\n");
-+}
-+
-+#else /* !CONFIG_SYSCTL */
-+
-+static inline void
-+nax_init_sysctl(void)
-+{
-+
-+}
-+
-+#endif /* !CONFIG_SYSCTL */
-+
-+static int __init setup_allowed_caps(char *str)
-+{
-+	if (locked)
-+		return 1;
-+
-+	/* Do not allow trailing garbage or excessive length */
-+	if (strlen(str) > ALLOWED_CAPS_HEX_LEN) {
-+		pr_err("Invalid 'nax_allowed_caps' parameter value (%s)\n",
-+		       str);
-+		return 1;
-+	}
-+
-+	strscpy(allowed_caps_hex, str, sizeof(allowed_caps_hex));
-+	if (parse_and_set_caps(allowed_caps_hex))
-+		pr_err("Invalid 'nax_allowed_caps' parameter value (%s)\n",
-+		       str);
-+
-+	return 1;
-+}
-+__setup("nax_allowed_caps=", setup_allowed_caps);
-+
-+static int __init setup_check_all(char *str)
-+{
-+	unsigned long val;
-+
-+	if (!locked && !kstrtoul(str, 0, &val))
-+		check_all = val ? 1 : 0;
-+
-+	return 1;
-+}
-+__setup("nax_quiet=", setup_check_all);
-+
-+static int __init setup_locked(char *str)
-+{
-+	unsigned long val;
-+
-+	if (!locked && !kstrtoul(str, 0, &val))
-+		locked = val ? 1 : 0;
-+
-+	return 1;
-+}
-+__setup("nax_locked=", setup_locked);
-+
-+static int __init setup_mode(char *str)
-+{
-+	unsigned long val;
-+
-+	if (!locked && !kstrtoul(str, 0, &val)) {
-+		if (val > max_mode) {
-+			pr_err("Invalid 'nax_mode' parameter value (%s)\n",
-+			       str);
-+			val = max_mode;
-+		}
-+
-+		mode = val;
-+	}
-+
-+	return 1;
-+}
-+__setup("nax_mode=", setup_mode);
-+
-+static int __init setup_quiet(char *str)
-+{
-+	unsigned long val;
-+
-+	if (!locked && !kstrtoul(str, 0, &val))
-+		quiet = val ? 1 : 0;
-+
-+	return 1;
-+}
-+__setup("nax_quiet=", setup_quiet);
-+
-+static __init int
-+nax_init(void)
-+{
-+	int rc;
-+
-+	pr_info("Starting.\n");
-+	rc = set_default_allowed_caps();
-+	if (rc < 0)
-+		return rc;
-+
-+	security_add_hooks(nax_hooks, ARRAY_SIZE(nax_hooks), "nax");
-+	nax_init_sysctl();
-+
-+	return 0;
-+}
-+
-+DEFINE_LSM(nax) = {
-+	.name = "nax",
-+	.init = nax_init,
-+};
--- 
-2.26.2
+I will remove the wrong interrupt specifier. Thanks!
 
+Chester.
+
+>=20
+> --=20
+> Without deviation from the norm, progress is not possible.
+>=20
 
