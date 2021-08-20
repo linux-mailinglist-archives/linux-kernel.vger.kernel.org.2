@@ -2,158 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490513F28B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 10:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9093F28D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 11:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhHTIyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 04:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhHTIyD (ORCPT
+        id S232774AbhHTJID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 05:08:03 -0400
+Received: from esa7.hc324-48.eu.iphmx.com ([207.54.71.126]:8945 "EHLO
+        esa7.hc324-48.eu.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230450AbhHTJH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 04:54:03 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECE0C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:53:25 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id k8so13114354wrn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 01:53:25 -0700 (PDT)
+        Fri, 20 Aug 2021 05:07:59 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Fri, 20 Aug 2021 05:07:58 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=muVxSSnWXrAGYCBfONFivzVwtzwUv5AlDfVwR+hS/y0=;
-        b=YI4N8XTnAxShJ13vkSRvtaLf2+3vhldsVLM2/tsQxs2XsLTuBXF+lQJ5FEZrTJgy5v
-         s7lEuAYomX9HEI0icY5Z8Pxs3m8PjIqr0phaDGQov2+mZrmWX/YWkvdyMKZPjcMilZ1L
-         m3ZQhCe83k38e89DQHoNlSsqUXUvN/2NCjBhvVU1sEUosworvcPfixe+/pegHkXoTRPs
-         juvI3WN3ThWxw/g4jKXIgh9U8K610MNQ8AGCSw7t8lAu27iq0zS0gC5fKby2hck4Hk+C
-         szE2s3lThKLnqi+HQjGESGSANADL5V6Nu/Fe5jHoZNGgrZAQLGXsV6O967m+GwpoLUSd
-         nO4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=muVxSSnWXrAGYCBfONFivzVwtzwUv5AlDfVwR+hS/y0=;
-        b=FstbINPvHuYwpGmjHQzx+YAHT9x4bXLyCL86x6+0rRaZSQBaLdx2HVD+R5lsIRrKBQ
-         ZNdTQ3pCnkXAWPhU3r9H6kWVH49e/P5kB+GiaE+hHZWbDo7L/ZE469uLqiDJQIp7d8UR
-         XnS3JLI4ECtQ8yXHpKrHL3ZTSM0/JoZDw+ZsTkhqUWvVkw5Ck8exITV+7qaSfwh02dx8
-         kbntrRCP0QudTiSMM1Vd0TNqxj2HrG5IvfGDG1dm2lPhrD56g1ksG9hoU0/28N3/L9Sx
-         VU+IAofJIh7V0kzsRTuoT7l+XPdH2cFEKnwb5AKVkayTU0tpyVEhOq8HQMAFVeOaCIg3
-         BcKw==
-X-Gm-Message-State: AOAM532MHEZYHGjhMD/N9mZWTYhkLvQAqJ9Au62ClFYw8PrTc8JuXAlQ
-        OoXldwh5Vn2EmFhYTzO3b4PBuQ==
-X-Google-Smtp-Source: ABdhPJzH3DIzHUq9oFHpk7M6g/EnGB2FPr7fK544S9iA2FVuCrfVU2QT32vXluI0GoMAt2gM9ZEaRA==
-X-Received: by 2002:a5d:50cd:: with SMTP id f13mr8735656wrt.68.1629449603803;
-        Fri, 20 Aug 2021 01:53:23 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:c378:b01b:5d2d:5223? ([2a01:e34:ed2f:f020:c378:b01b:5d2d:5223])
-        by smtp.googlemail.com with ESMTPSA id k1sm5441971wrz.61.2021.08.20.01.53.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Aug 2021 01:53:23 -0700 (PDT)
-Subject: Re: [PATCH 2/2] clocksource/drivers/fttmr010: Be stricter on IRQs
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
-        Joel Stanley <joel@jms.id.au>
-References: <20210724224424.2085404-1-linus.walleij@linaro.org>
- <20210724224424.2085404-2-linus.walleij@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <e997cca5-e6d4-1aac-4e0c-de15d7664a1b@linaro.org>
-Date:   Fri, 20 Aug 2021 10:53:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210724224424.2085404-2-linus.walleij@linaro.org>
-Content-Type: text/plain; charset=utf-8
+  d=bmw.de; i=@bmw.de; q=dns/txt; s=mailing1;
+  t=1629450441; x=1660986441;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=G1n+8bgWi/ssCFhnKCSb4Xb7TsSj5f5/9symsjL3PVk=;
+  b=drMyAHxcynM6dsFdfVhNHLV9IJbjJgDA4zcYBeZZ0UUsWGPQq2Omb5nU
+   d8L1my5obWfco15dHmAS47ko9e3Y1bPoVmMAvW2M5msVuS5RBs+nFIw/s
+   DNXBx4HhMKDA1URZNrpOQ6U1pqkKkq+qP8HUELvrD+sKbeNsavkNjTvsf
+   o=;
+Received: from esagw3.bmwgroup.com (HELO esagw3.muc) ([160.46.252.35]) by
+ esa7.hc324-48.eu.iphmx.com with ESMTP/TLS; 20 Aug 2021 11:00:10 +0200
+Received: from esabb2.muc ([160.50.100.34])  by esagw3.muc with ESMTP/TLS;
+ 20 Aug 2021 11:00:10 +0200
+Received: from smucm10k.bmwgroup.net (HELO smucm10k.europe.bmw.corp) ([160.48.96.47])
+ by esabb2.muc with ESMTP/TLS; 20 Aug 2021 11:00:10 +0200
+Received: from smucm10m.europe.bmw.corp (160.48.96.49) by smucm10k.europe.bmw.corp
+ (160.48.96.47) with Microsoft SMTP Server (TLS;
+ Fri, 20 Aug 2021 11:00:09 +0200
+Received: from smucm10m.europe.bmw.corp ([160.48.96.49]) by
+ smucm10m.europe.bmw.corp ([160.48.96.49]) with mapi id 15.00.1497.018; Fri,
+ 20 Aug 2021 11:00:09 +0200
+From:   <Viktor.Rosendahl@bmw.de>
+To:     <jing.yangyang@zte.com.cn>, <rostedt@goodmis.org>,
+        <cgel.zte@gmail.com>
+CC:     <vulab@iscas.ac.cn>, <colin.king@canonical.com>,
+        <linux-kernel@vger.kernel.org>, <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] tools/tracing: fix application of sizeof to
+ pointer
+Thread-Topic: [PATCH linux-next] tools/tracing: fix application of sizeof to
+ pointer
+Thread-Index: AQHXlYjEnbB5M+F6BEO7WdwWmrco06t79vWA
+Date:   Fri, 20 Aug 2021 09:00:09 +0000
+Message-ID: <e43ee2b8ed6e69bdda1ab859a4a16bc80bbba8d6.camel@bmw.de>
+References: <8fd4bb65ef3da67feac9ce3258cdbe9824752cf1.1629198502.git.jing.yangyang@zte.com.cn>
+In-Reply-To: <8fd4bb65ef3da67feac9ce3258cdbe9824752cf1.1629198502.git.jing.yangyang@zte.com.cn>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <23D387B9E269704592EBCBE066DD89B7@bmwmail.corp>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2021 00:44, Linus Walleij wrote:
-> Make sure we check that the right interrupt occurred before
-> calling the event handler for timer 1. Report spurious IRQs
-> as IRQ_NONE.
-
-Does it not mean there is something wrong with the initial setup ?
-
-
-> Cc: Cédric Le Goater <clg@kaod.org>
-> Cc: Joel Stanley <joel@jms.id.au>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  drivers/clocksource/timer-fttmr010.c | 32 +++++++++++++++++++++-------
->  1 file changed, 24 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/clocksource/timer-fttmr010.c b/drivers/clocksource/timer-fttmr010.c
-> index 126fb1f259b2..de29d424ec95 100644
-> --- a/drivers/clocksource/timer-fttmr010.c
-> +++ b/drivers/clocksource/timer-fttmr010.c
-> @@ -253,20 +253,36 @@ static int fttmr010_timer_set_periodic(struct clock_event_device *evt)
->   */
->  static irqreturn_t fttmr010_timer_interrupt(int irq, void *dev_id)
->  {
-> -	struct clock_event_device *evt = dev_id;
-> +	struct fttmr010 *fttmr010 = dev_id;
-> +	struct clock_event_device *evt = &fttmr010->clkevt;
-> +	u32 val;
-> +
-> +	val = readl(fttmr010->base + TIMER_INTR_STATE);
-> +	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW))
-> +		evt->event_handler(evt);
-> +	else
-> +		/* Spurious IRQ */
-> +		return IRQ_NONE;
->  
-> -	evt->event_handler(evt);
->  	return IRQ_HANDLED;
->  }
->  
->  static irqreturn_t ast2600_timer_interrupt(int irq, void *dev_id)
->  {
-> -	struct clock_event_device *evt = dev_id;
-> -	struct fttmr010 *fttmr010 = to_fttmr010(evt);
-> +	struct fttmr010 *fttmr010 = dev_id;
-> +	struct clock_event_device *evt = &fttmr010->clkevt;
-> +	u32 val;
->  
-> -	writel(0x1, fttmr010->base + TIMER_INTR_STATE);
-> +	val = readl(fttmr010->base + TIMER_INTR_STATE);
-> +	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW)) {
-> +		writel(TIMER_1_INT_MATCH1, fttmr010->base + TIMER_INTR_STATE);
-> +		evt->event_handler(evt);
-> +	} else {
-> +		/* Just clear any spurious IRQs from the block */
-> +		writel(val, fttmr010->base + TIMER_INTR_STATE);
-> +		return IRQ_NONE;
-> +	}
->  
-> -	evt->event_handler(evt);
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -384,12 +400,12 @@ static int __init fttmr010_common_init(struct device_node *np,
->  		fttmr010->timer_shutdown = ast2600_timer_shutdown;
->  		ret = request_irq(irq, ast2600_timer_interrupt,
->  				  IRQF_TIMER, "FTTMR010-TIMER1",
-> -				  &fttmr010->clkevt);
-> +				  fttmr010);
->  	} else {
->  		fttmr010->timer_shutdown = fttmr010_timer_shutdown;
->  		ret = request_irq(irq, fttmr010_timer_interrupt,
->  				  IRQF_TIMER, "FTTMR010-TIMER1",
-> -				  &fttmr010->clkevt);
-> +				  fttmr010);
->  	}
->  	if (ret) {
->  		pr_err("FTTMR010-TIMER1 no IRQ\n");
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+SGkgWWFuZ3lhbmcsDQoNCk9uIFRodSwgMjAyMS0wOC0xOSBhdCAyMzowMCAtMDcwMCwgQ0dFTCB3
+cm90ZToNCj4gRnJvbTogamluZyB5YW5neWFuZyA8amluZy55YW5neWFuZ0B6dGUuY29tLmNuPg0K
+PiANCj4gc2l6ZW9mIHdoZW4gYXBwbGllZCB0byBhIHBvaW50ZXIgdHlwZWQgZXhwcmVzc2lvbiBn
+aXZlcyB0aGUgc2l6ZSBvZg0KPiB0aGUgcG9pbnRlci4NCj4gDQo+IC4vdG9vbHMvdHJhY2luZy9s
+YXRlbmN5L2xhdGVuY3ktY29sbGVjdG9yLmM6MTU0MToxMC0xNjpFUlJPUiBhcHBsaWNhdGlvbiBv
+Zg0KPiBzaXplb2YgdG8gcG9pbnRlcg0KPiANCj4gVGhpcyBpc3N1ZSB3YXMgZGV0ZWN0ZWQgd2l0
+aCB0aGUgaGVscCBvZiBDb2NjaW5lbGxlLg0KPiANCj4gUmVwb3J0ZWQtYnk6IFplYWwgUm9ib3Qg
+PHplYWxjaUB6dGUuY29tLmNuPg0KPiBTaWduZWQtb2ZmLWJ5OiBqaW5nIHlhbmd5YW5nIDxqaW5n
+Lnlhbmd5YW5nQHp0ZS5jb20uY24+DQo+IC0tLQ0KPiAgdG9vbHMvdHJhY2luZy9sYXRlbmN5L2xh
+dGVuY3ktY29sbGVjdG9yLmMgfCAyICstDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24o
+KyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS90b29scy90cmFjaW5nL2xhdGVu
+Y3kvbGF0ZW5jeS1jb2xsZWN0b3IuYw0KPiBiL3Rvb2xzL3RyYWNpbmcvbGF0ZW5jeS9sYXRlbmN5
+LWNvbGxlY3Rvci5jDQo+IGluZGV4IDNhMmU2YmIuLjY0ZDUzMWQgMTAwNjQ0DQo+IC0tLSBhL3Rv
+b2xzL3RyYWNpbmcvbGF0ZW5jeS9sYXRlbmN5LWNvbGxlY3Rvci5jDQo+ICsrKyBiL3Rvb2xzL3Ry
+YWNpbmcvbGF0ZW5jeS9sYXRlbmN5LWNvbGxlY3Rvci5jDQo+IEBAIC0xNTM4LDcgKzE1MzgsNyBA
+QCBzdGF0aWMgdm9pZCB0cmFjaW5nX2xvb3Aodm9pZCkNCj4gIAkJCQltdXRleF9sb2NrKCZwcmlu
+dF9tdHgpOw0KPiAgCQkJCWNoZWNrX3NpZ25hbHMoKTsNCj4gIAkJCQl3cml0ZV9vcl9kaWUoZmRf
+c3Rkb3V0LCBxdWV1ZV9mdWxsX3dhcm5pbmcsDQo+IC0JCQkJCSAgICAgc2l6ZW9mKHF1ZXVlX2Z1
+bGxfd2FybmluZykpOw0KPiArCQkJCQkgICAgIHNpemVvZigqcXVldWVfZnVsbF93YXJuaW5nKSk7
+DQoNClRoZSBvbGQgY29kZSB3b3VsZCBnaXZlIGEgc2l6ZSBvZiA4LCBpLmUuIHRoZSBzaXplIG9m
+IHRoZSBwb2ludGVyLiBZb3VyDQpzdWdnZXN0aW9uIHdpbGwgZ2l2ZSBhIHNpemUgb2YgMSwgaS5l
+LiB0aGUgc2l6ZSBvZiB0aGUgZmlyc3QgY2hhcmFjdGVyIG9mIHRoZQ0KZXJyb3IgbWVzc2FnZS4g
+U28gaW5zdGVhZCBvZiBvdXB1dGluZyAiQ291bGQgbm8iIHdlIHdvdWxkIG9ubHkgd3JpdGUgb3V0
+ICJDIi4NCg0KV2hhdCB3ZSB3YW50IGlzIHRoZSBsZW5ndGggb2YgdGhlIGVycm9yIG1lc3NhZ2Uu
+IFRoaXMgY291bGQgYmUgYWNoaWV2ZWQgaW4gdHdvDQp3YXlzOg0KDQoxLiBCeSBjaGFuZ2luZyB0
+aGUgc2l6ZW9mKHF1ZXVlX2Z1bGxfd2FybmluZykgdG8gc3RybGVuKHF1ZXVlX2Z1bGxfd2Fybmlu
+ZykuDQoNCjIuIEJ5IGNoYW5naW5nIHRoZSBkZWZpbml0aW9uIG9mIHF1ZXVlX2Z1bGxfd2Fybmlu
+ZyB0byBiZSBhbiBhcnJheSwgaW4gdGhhdCBjYXNlDQp3ZSB3b3VsZCBsaWtlIHRvIHVzZSBzaXpl
+b2YocXVldWVfZnVsbF93YXJuaW5nKSAtIDEsIHRoZSAiLSAxIiBjb21lcyBmcm9tIHRoZQ0KZmFj
+dCB0aGF0IHdlIGRvbid0IHdhbnQgdG8gd3JpdGUgb3V0IHRoZSB0ZXJtaW5hdGluZyBudWxsIGNo
+YXJhY3Rlci4NCg0KSSB0aGluayB0aGUgZmlyc3QgYXBwcm9hY2ggd2l0aCBzdHJsZW4oKSBpcyB0
+aGUgYmV0dGVyIHNvbHV0aW9uIGJlY2F1c2UgaXQncw0Kc2hvcnRlciBhbmQgbW9kZXJuIGNvbXBp
+bGVycyB3aWxsIGRvIHRoZSBzdHJsZW4oKSBjYWxjdWxhdGlvbiBvZiBjb25zdGFudA0Kc3RyaW5n
+cyBhdCBjb21waWxlIHRpbWUgYW55d2F5Lg0KDQpiZXN0IHJlZ2FyZHMsDQoNClZpa3RvciANCg0K
+DQo+ICAJCQkJbXV0ZXhfdW5sb2NrKCZwcmludF9tdHgpOw0KPiAgCQkJfQ0KPiAgCQkJbW9kaWZp
+ZWQtLTsNCg==
