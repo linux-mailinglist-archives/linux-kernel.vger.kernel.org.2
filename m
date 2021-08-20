@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243A53F2AB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0BE3F2ABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 13:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240568AbhHTLHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 07:07:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240262AbhHTLGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 07:06:30 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S237509AbhHTLH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 07:07:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:41276 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231852AbhHTLHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 07:07:55 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4016C60FDC;
-        Fri, 20 Aug 2021 11:05:53 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mH2LO-006AgP-Dv; Fri, 20 Aug 2021 12:05:51 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     kvmarm@lists.cs.columbia.edu, David Brazdil <dbrazdil@google.com>
-Cc:     linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: (subset) [PATCH 0/2] Fix off-by-one in range_is_memory
-Date:   Fri, 20 Aug 2021 12:05:44 +0100
-Message-Id: <162945752305.2126143.7959914980998500483.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210728153232.1018911-1-dbrazdil@google.com>
-References: <20210728153232.1018911-1-dbrazdil@google.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5113722176;
+        Fri, 20 Aug 2021 11:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1629457637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iUeY0/Jx0gf5IEWcoYEkxJYX/Fu1Jh0sshObrM7GDEs=;
+        b=u9Yx8KfwyqLORMaVEEYoQcCFz4FHcNy2HJSrQ85J4EBdhCqStcznwh6SgGS2KkiGwNMeV2
+        JUWJcoOOtH6E4kLLlYMzyDsdNoXXSmvBBpbJ9OPsFiAyknkjVV34N98J34RBwo11tOfYF3
+        B3OuQ7+ZvehTglUw4GA44FrDB8vYvG8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1629457637;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iUeY0/Jx0gf5IEWcoYEkxJYX/Fu1Jh0sshObrM7GDEs=;
+        b=WhfDachJuoxE3D/Wl0du0pqHCORRGgadW/lUXQKklauTJuXqNGCSlwmhsBe7hUbB+1D6Xr
+        nGSY6rpNDCD2cHCw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 4218113AC4;
+        Fri, 20 Aug 2021 11:07:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id I48cEOWMH2FJcgAAGKfGzw
+        (envelope-from <dwagner@suse.de>); Fri, 20 Aug 2021 11:07:17 +0000
+Date:   Fri, 20 Aug 2021 13:07:16 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
+Subject: Re: [ANNOUNCE] 4.4.277-rt224
+Message-ID: <20210820110716.zmh7te5dvmndssgm@carbon.lan>
+References: <162762714720.5121.4789079771844033633@beryllium.lan>
+ <20210820104328.GA30359@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, dbrazdil@google.com, linux-kernel@vger.kernel.org, will@kernel.org, qperret@google.com, alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820104328.GA30359@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 28 Jul 2021 15:32:30 +0000, David Brazdil wrote:
-> the range_is_memory function in hyp.
+On Fri, Aug 20, 2021 at 12:43:28PM +0200, Pavel Machek wrote:
+> > Sorry for the long delay. I was refactoring and improving my test
+> > setup which took a bit longer than I expected. I switched from a
+> > Debian based rootfs to an Tumbleweed based one, for obvious
+> > reasons. Anyway, this should not matter at all.
 > 
-> David Brazdil (2):
->   KVM: arm64: Fix off-by-one in range_is_memory
->   KVM: arm64: Minor optimization of range_is_memory
-> 
->  arch/arm64/kvm/hyp/nvhe/mem_protect.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
+> A bit late thanks for the release, BTW. We are maintaining -cip-rt
+> based kernels, and were getting worried :-).
 
-Applied to kvm-arm64/mmu/el2-tracking, thanks!
+Sorry about that. I should have send out a note earlier. Anyway, I'll
+plan to work on the next update soon. There are a few futex changes
+which collide. It's going to be interesting.
 
-[2/2] KVM: arm64: Minor optimization of range_is_memory
-      commit: 14ecf075fe5be01860927fdf3aa11d7b18023ab2
-
-Cheers,
-
-	M.
--- 
-Without deviation from the norm, progress is not possible.
-
-
+BTW, as you certainly are aware, the v4.4 kernel is EOL soon. As I
+understand the CIP is going to take over the maintenance. So I assume
+you are going to care of the -rt version as well?
