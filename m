@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCED3F2E5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0437D3F2E5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240940AbhHTOsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:48:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44558 "EHLO mail.kernel.org"
+        id S240959AbhHTOsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:48:17 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:58472 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240894AbhHTOsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:48:06 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30D6B61101;
-        Fri, 20 Aug 2021 14:47:28 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mH5nq-006D0z-1S; Fri, 20 Aug 2021 15:47:26 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     frowand.list@gmail.com, robh+dt@kernel.org, kernel-team@android.com
-Subject: [PATCH] of: Don't allow __of_attached_node_sysfs() without CONFIG_SYSFS
-Date:   Fri, 20 Aug 2021 15:47:22 +0100
-Message-Id: <20210820144722.169226-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S240935AbhHTOsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:48:16 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 17KElYgX006287
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Aug 2021 16:47:34 +0200
+Received: from [167.87.0.29] ([167.87.0.29])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 17KElX7I007803;
+        Fri, 20 Aug 2021 16:47:33 +0200
+Subject: Re: [PATCH] PCI/portdrv: Do not setup up IRQs if there are no users
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <43e1591d-51ed-39fa-3bc5-c11777f27b62@siemens.com>
+ <20210820144532.GA25391@wunner.de>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <53a826fb-ece9-450d-e5fc-f145c2513688@siemens.com>
+Date:   Fri, 20 Aug 2021 16:47:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, frowand.list@gmail.com, robh+dt@kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20210820144532.GA25391@wunner.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Trying to boot without SYSFS, but with OF_DYNAMIC quickly
-results in a crash:
+On 20.08.21 16:45, Lukas Wunner wrote:
+> On Fri, Aug 20, 2021 at 03:52:18PM +0200, Jan Kiszka wrote:
+>> --- a/drivers/pci/pcie/portdrv_core.c
+>> +++ b/drivers/pci/pcie/portdrv_core.c
+>> @@ -312,7 +312,7 @@ static int pcie_device_init(struct pci_dev *pdev, int service, int irq)
+>>   */
+>>  int pcie_port_device_register(struct pci_dev *dev)
+>>  {
+>> -	int status, capabilities, i, nr_service;
+>> +	int status, capabilities, irq_services, i, nr_service;
+>>  	int irqs[PCIE_PORT_DEVICE_MAXSERVICES];
+>>  
+>>  	/* Enable PCI Express port device */
+>> @@ -326,18 +326,32 @@ int pcie_port_device_register(struct pci_dev *dev)
+>>  		return 0;
+>>  
+>>  	pci_set_master(dev);
+>> -	/*
+>> -	 * Initialize service irqs. Don't use service devices that
+>> -	 * require interrupts if there is no way to generate them.
+>> -	 * However, some drivers may have a polling mode (e.g. pciehp_poll_mode)
+>> -	 * that can be used in the absence of irqs.  Allow them to determine
+>> -	 * if that is to be used.
+>> -	 */
+>> -	status = pcie_init_service_irqs(dev, irqs, capabilities);
+>> -	if (status) {
+>> -		capabilities &= PCIE_PORT_SERVICE_HP;
+>> -		if (!capabilities)
+>> -			goto error_disable;
+>> +
+>> +	irq_services = 0;
+>> +	if (IS_ENABLED(CONFIG_PCIE_PME))
+>> +		irq_services |= PCIE_PORT_SERVICE_PME;
+>> +	if (IS_ENABLED(CONFIG_PCIEAER))
+>> +		irq_services |= PCIE_PORT_SERVICE_AER;
+>> +	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
+>> +		irq_services |= PCIE_PORT_SERVICE_HP;
+>> +	if (IS_ENABLED(CONFIG_PCIE_DPC))
+>> +		irq_services |= PCIE_PORT_SERVICE_DPC;
+>> +	irq_services &= capabilities;
+> 
+> get_port_device_capability() would seem like a more natural place
+> to put these checks.
+> 
+> Note that your check for CONFIG_PCIEAER is superfluous due to
+> the "#ifdef CONFIG_PCIEAER" in get_port_device_capability().
+> 
 
-[    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
-[...]
-[    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
-[    0.105810] Hardware name: linux,dummy-virt (DT)
-[    0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-[    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
-[    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
-[...]
-[    0.134087] Call trace:
-[    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
-[    0.136054]  safe_name+0x4c/0xd0
-[    0.136994]  __of_attach_node_sysfs+0xf8/0x124
-[    0.138287]  of_core_init+0x90/0xfc
-[    0.139296]  driver_init+0x30/0x4c
-[    0.140283]  kernel_init_freeable+0x160/0x1b8
-[    0.141543]  kernel_init+0x30/0x140
-[    0.142561]  ret_from_fork+0x10/0x18
+Not all service drivers need IRQs. That's why the test is separate. See
+also the comment I shuffled around.
 
-While not having sysfs isn't a very common option these days,
-it is still expected that such configuration would work.
+Jan
 
-Paper over it by bailing out from __of_attach_node_sysfs() if
-CONFIG_SYSFS isn't enabled.
-
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/of/kobj.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
-index a32e60b024b8..6675b5e56960 100644
---- a/drivers/of/kobj.c
-+++ b/drivers/of/kobj.c
-@@ -119,7 +119,7 @@ int __of_attach_node_sysfs(struct device_node *np)
- 	struct property *pp;
- 	int rc;
- 
--	if (!of_kset)
-+	if (!IS_ENABLED(CONFIG_SYSFS) || !of_kset)
- 		return 0;
- 
- 	np->kobj.kset = of_kset;
 -- 
-2.30.2
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
