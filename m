@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF9F3F2E65
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680C23F2E69
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Aug 2021 16:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240931AbhHTOt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 10:49:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:33536 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240879AbhHTOtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 10:49:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DA3511FB;
-        Fri, 20 Aug 2021 07:49:17 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A67A3F70D;
-        Fri, 20 Aug 2021 07:49:16 -0700 (PDT)
-Subject: Re: [PATCH] ARM: dts: rockchip: remove cap-mmc-highspeed property
- from mk808 &mmc0 node
-To:     Johan Jonker <jbx6244@gmail.com>, heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paweljarosz3691@gmail.com
-References: <20210820131920.1831-1-jbx6244@gmail.com>
- <bf6cba99-da3b-a6fe-4e4b-f4ea6e3c6e63@arm.com>
- <c52b4cf0-d018-f6b4-8728-41551b8bf62b@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d3b574f5-b49e-60be-1559-b98e0832bd62@arm.com>
-Date:   Fri, 20 Aug 2021 15:49:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240953AbhHTOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 10:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240879AbhHTOvY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 10:51:24 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A477AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 07:50:46 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id k19so8814115pfc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 07:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JGuj1VwD0W0DzU9vP04cQlmRF+lXog9aAVn3JecGAeQ=;
+        b=RR1lilCvXWY2ei1/zxEkDhnMybfRnhBQOWM9qAnQKXFZ2v2sCEgE8DzPgCM1fKhN5H
+         STsNMm/YX7+lpJnsUbktiONRrpL+Wr4EHjg/7Z1+EfV7gBCqO2cZ7hbqpmKmhIBLLUPh
+         Z8wE+NS1ikXdLgy3nwfujgpyMLw7K+n4o1SqRaqaZIbQqWvsA+kw36HQ/1Si0x78QEM8
+         05j9nhn1e+Ty7u1lX27j1oeC61eicOJuWvm5GqgzDB1AHuvFqvsqmHnmUK2FLOu/s+f5
+         qyrhQkKE6kIFg+e0iAlb4IX7SN6Fly66xEdgsONLbUrlEmtSTosX3xA6A4Nt0/nETTep
+         S8pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JGuj1VwD0W0DzU9vP04cQlmRF+lXog9aAVn3JecGAeQ=;
+        b=GFcYkV8Uu2lQFOCtRfjmj7/hiMnKU7uOl9UUPyW0BqJ0YMOHIMj7DxOkXjsi1Nr9s/
+         AIbefSj91GWv2f67w16oUvd1YulFVCOI7M8rSAqkOBSs3eID/ir0Gf5KKZ3ptORYaiTK
+         0ODuscf94lQwnA+CqS9Nk4YoTSS7X98u2tRtWloJGiaSACVl+FdPcuKtZbGVLUPNGF+e
+         fQfgkVGQ8ccW3yVnRYsMu7cN/3n+hX5e/4lmDNISlfy9NJ3OLwBI6ccVyIhWdQHL+NnT
+         wdL4IX2VxGwFZZxmsESQlnKCOVL92M4BimhpkS+1MSLVEYApOBNWrlD4dcWynbQiesy0
+         wPuw==
+X-Gm-Message-State: AOAM532gwIGRnpaqUcYGJcQt3tXaEU0nFDvO95oen7v1eHxTkFrJ3FoI
+        xaprk59AR4NTPfJpMYfnlQwJpA==
+X-Google-Smtp-Source: ABdhPJyEx3dnS6ofqod/ujgRqTLIZJ1PZiU9m3YtE6sLUF44vp5o8uI243eQ9JwfQJUeEFs6w4uJaw==
+X-Received: by 2002:a05:6a00:1712:b0:3e2:fb85:79f5 with SMTP id h18-20020a056a00171200b003e2fb8579f5mr12414289pfc.27.1629471045996;
+        Fri, 20 Aug 2021 07:50:45 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id t38sm7330306pfg.207.2021.08.20.07.50.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 07:50:45 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 14:50:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Orr <marcorr@google.com>
+Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2 V4] KVM, SEV: Add support for SEV intra host migration
+Message-ID: <YR/BPwnj6Nudgu1r@google.com>
+References: <20210819154910.1064090-1-pgonda@google.com>
+ <20210819154910.1064090-2-pgonda@google.com>
+ <CAA03e5Gh0kJYHP1R3F7uh6x83LBFPp=af2xt7q3epgg+8XW53g@mail.gmail.com>
+ <CAMkAt6oJcW3MHP3fod9RnRHCEYp-whdEtBTyfuqgFgATKa=3Hg@mail.gmail.com>
+ <YR7iD6kdTUpWwwRn@google.com>
+ <CAA03e5FAXDVSwMAQO57gztYmB2K8K8fNrHwsX_N3Hbgwch8pBw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c52b4cf0-d018-f6b4-8728-41551b8bf62b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA03e5FAXDVSwMAQO57gztYmB2K8K8fNrHwsX_N3Hbgwch8pBw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-20 15:41, Johan Jonker wrote:
+On Thu, Aug 19, 2021, Marc Orr wrote:
+> On Thu, Aug 19, 2021 at 3:58 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Thu, Aug 19, 2021, Peter Gonda wrote:
+> > > Marc I think that only having the spin lock could result in
+> > > deadlocking. If userspace double migrated 2 VMs, A and B for
+> > > discussion, A could grab VM_A.spin_lock then VM_A.kvm_mutex. Meanwhile
+> > > B could grab VM_B.spin_lock and VM_B.kvm_mutex. Then A attempts to
+> > > grab VM_B.spin_lock and we have a deadlock. If the same happens with
+> > > the proposed scheme when A attempts to lock B, VM_B.spin_lock will be
+> > > open but the bool will mark the VM under migration so A will unlock
+> > > and bail. Sean originally proposed a global spin lock but I thought a
+> > > per kvm_sev_info struct would also be safe.
+> >
+> > Close.  The issue is taking kvm->lock from both VM_A and VM_B.  If userspace
+> > double migrates we'll end up with lock ordering A->B and B-A, so we need a way
+> > to guarantee one of those wins.  My proposed solution is to use a flag as a sort
+> > of one-off "try lock" to detect a mean userspace.
 > 
-> 
-> On 8/20/21 4:17 PM, Robin Murphy wrote:
->> On 2021-08-20 14:19, Johan Jonker wrote:
->>> On the MK808 only a microSD slot is connected with the SDMMC Host
->>> Controller,
->>> so remove the cap-mmc-highspeed property from the &mmc0 node.
->>
->> Why, does it do any harm?
-> 
-> Harm not. Example rk3066 u-boot:
-> 
->>>>> sd_select_mode_and_width
-> sd card: widths [4, 1, ] modes [MMC legacy, SD High Speed (50MHz), UHS
-> SDR12 (25MHz), UHS SDR25 (50MHz), ]
-> host: widths [4, 1, ] modes [MMC legacy, MMC High Speed (26MHz), SD
-> High Speed (50MHz), MMC High Speed (52MHz), ]
-> trying mode SD High Speed (50MHz) width 4 (at 50 MHz)
-> 
-> I would say only advertise host capabilities that are under normal
-> circumstances occur. How realistic is it to use a TF/Micro SD TO SD Card
-> Extension Cable Adapter (giggle) for a deprecated mmc card?
+> Got it now. Thanks to you both, for the explanation. By the way, just
+> to make sure I completely follow, I assume that if a "double
+> migration" occurs, then user space is mis-behaving -- correct?
 
-Well, if you want a far more realistic example:
+Yep.
 
-https://www.hardkernel.com/shop/emmc-module-reader-board-for-os-upgrade/
+> But presumably, we need to reason about how to respond to such mis-behavior
+> so that buggy or malicious user-space code cannot stumble over/exploit this
+> scenario?
 
-Who are we to dictate what "normal circumstances" are, and what do we 
-gain by removing support for modes that could work fine and at least be 
-useful to someone on occasion?
-
-Robin.
+That's what the anti-deadlock flag is for. :-)  With that in place, there's no
+meaningful difference between say a bad userspace doing double migrate and a bad
+userspace migrating from garbage, e.g. passing in a bogus fd.
