@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1D03F3C05
+	by mail.lfdr.de (Postfix) with ESMTP id 344523F3C04
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 20:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhHUSSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 14:18:20 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34244 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232266AbhHUSSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 14:18:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629569859; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=6jM6Tcu7b03+DyLNo1tN4dfPn6HBIgxRCL0CyHJ9Wsc=;
- b=Rak2a4WbbUeEfvCu+z2ucDDWQY+CaJXloaSyOt7HdbSyvCVADI+AoK8OGStBoHOfWvMMhDbu
- 32phZt8UAHc58rKU4zrYg9I9JYCOptHryDElZ0uRUNGk++2zQZztv75do40wx71Hg4ATrVgO
- PH/4qc6zm+COgZZfm1MOARlfmi8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6121433f89fbdf3ffeb47e8b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 18:17:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3E87C4360C; Sat, 21 Aug 2021 18:17:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28A59C4338F;
-        Sat, 21 Aug 2021 18:17:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 28A59C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S232757AbhHUSST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 14:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231447AbhHUSSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 14:18:15 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08002C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 11:17:36 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id x10-20020a056830408a00b004f26cead745so23175397ott.10
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 11:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=2MKqqfHMC9DXCZ5xc/Z5j/sgvGFltKULDdY+rzqw+xI=;
+        b=fB2gtJr+5qSucpbo/Htu+gWHsd5m6BQLDuOP2RIzcFVcA4UNf6kYwNfvBWnFOCsiXV
+         sAKHY4MVkMqsls1si64SP/MHHeSH9hMsqBLhYDHVBrqP5qGxS83E5QYhoxDJnm3/fZTw
+         F2PREdmGa2lzOs8Rlg5fl2hsZp7zu0CLnNyJo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=2MKqqfHMC9DXCZ5xc/Z5j/sgvGFltKULDdY+rzqw+xI=;
+        b=Xv4XgHBeET84U0JRiHV1ZO5o4XeEDQdsVDbsN02kmn/hq5OG5+30ENLqG3+jC03Gat
+         nmwVWWZM9seHDgkSh12izL0Hu8X+Af67ave9Q91Kp0eRoEYFjP8TiGv3T3bBvH+q2OCu
+         1yhoiwJPZ4dEVeXZnQ/pfv6DVSanToB4FTedCTNv0sggwEw/Dd8WmF1DXHBEuuwaCdOu
+         eUTWmACMnJJ9VVZMFYYYmByuHhqgelnkX4kdcuLfSFixXuwJc+eOSkTBKB8e5ROITdWQ
+         RA5TREkTZRIpFrI3UWZQ6Am8Wq1DhHhbEJlQhU+tg2e5M1fWiSXmcStoS3PGSdvux9gf
+         dwLQ==
+X-Gm-Message-State: AOAM5306EgdoT+HMRwSvKx0+mB2vQUXszJtyNrNVe0OzTb2h3lko+sW5
+        BlCEUt6Uf5QHcQpmQ3gzu5kKfkfPJP9dtZVxI6gnpw==
+X-Google-Smtp-Source: ABdhPJyrMLTV+CWdNDmUPr7eiJ450LgaPMm/6QyCI2ugSBUfQT/aHAxPyhwPwc5pCP7HOzreW/pBZhds3Uo30GK/ALc=
+X-Received: by 2002:a05:6808:114a:: with SMTP id u10mr7110085oiu.19.1629569855413;
+ Sat, 21 Aug 2021 11:17:35 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Sat, 21 Aug 2021 11:17:34 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2] rtl8xxxu: Fix the handling of TX A-MPDU aggregation
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210804151325.86600-1-chris.chiu@canonical.com>
-References: <20210804151325.86600-1-chris.chiu@canonical.com>
-To:     chris.chiu@canonical.com
-Cc:     jes.sorensen@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        code@reto-schneider.ch, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Chiu <chris.chiu@canonical.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210821181734.A3E87C4360C@smtp.codeaurora.org>
-Date:   Sat, 21 Aug 2021 18:17:34 +0000 (UTC)
+In-Reply-To: <d733d47bc6a86fe28302943e50d02bd5@codeaurora.org>
+References: <1629342136-3667-1-git-send-email-sibis@codeaurora.org>
+ <1629342136-3667-3-git-send-email-sibis@codeaurora.org> <CAE-0n531EgLx-gGJswmmNAFmy-P9z=Hh1N=fkLw_uemoeQnYVg@mail.gmail.com>
+ <d733d47bc6a86fe28302943e50d02bd5@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Sat, 21 Aug 2021 11:17:34 -0700
+Message-ID: <CAE-0n50z=MaEZhXRSQpN6Jo8m7nyQSS6MqikAgT5cfkH1ZvL_g@mail.gmail.com>
+Subject: Re: [PATCH v5 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP property
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-chris.chiu@canonical.com wrote:
+Quoting Sibi Sankar (2021-08-20 07:24:02)
+> On 2021-08-20 00:25, Stephen Boyd wrote:
+> > Quoting Sibi Sankar (2021-08-18 20:02:05)
+> >> The load state power-domain, used by the co-processors to notify the
+> >> Always on Subsystem (AOSS) that a particular co-processor is up/down,
+> >> suffers from the side-effect of changing states during suspend/resume.
+> >> However the co-processors enter low-power modes independent to that of
+> >> the application processor and their states are expected to remain
+> >> unaltered across system suspend/resume cycles. To achieve this
+> >> behavior
+> >> let's drop the load state power-domain and replace them with the qmp
+> >> property for all SoCs supporting low power mode signalling.
+> >>
+> >
+> > How do we drop the load state property without breaking existing DTBs?
+> > Maybe we need to leave it there and then somehow make it optional? Or
+> > do
+> > we not care about this problem as the driver will start ignoring it?
+>
+> We can afford to break the bindings
+> because of the following reason:
+>
+> * Load state in mainline is currently
+>    broken i.e. it doesn't serve its
+>    main purpose of signalling AOP of
+>    the correct state of Q6 during
+>    system suspend/resume. Thus we
+>    can maintain current functionality
+>    even without the load state votes
+>    i.e. when a new kernel with load
+>    state removed is used with an older
+>    dtb the remoteproc functionality
+>    will remain the same.
+>
 
-> From: Chris Chiu <chris.chiu@canonical.com>
-> 
-> The TX A-MPDU aggregation is not handled in the driver since the
-> ieee80211_start_tx_ba_session has never been started properly.
-> Start and stop the TX BA session by tracking the TX aggregation
-> status of each TID. Fix the ampdu_action and the tx descriptor
-> accordingly with the given TID.
-> 
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-
-Patch applied to wireless-drivers-next.git, thanks.
-
-95a581ab3592 rtl8xxxu: Fix the handling of TX A-MPDU aggregation
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210804151325.86600-1-chris.chiu@canonical.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Alright. Is that reflected somewhere in the commit text? I must have
+missed it. Can you please add it?
