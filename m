@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCCF3F397F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 10:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701453F3982
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 10:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233147AbhHUITL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 04:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S233225AbhHUIWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 04:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233068AbhHUITJ (ORCPT
+        with ESMTP id S232802AbhHUIWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 04:19:09 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35249C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:18:30 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id t42so8129059pfg.12
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:18:30 -0700 (PDT)
+        Sat, 21 Aug 2021 04:22:32 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9622AC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:21:53 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id lo4so24960772ejb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RJAC/f07BpsuUiR9wwzNtLb3iU9MWyJ5HfzOTPegqZA=;
-        b=Qymu3qti9HvPD6olebVf3QwWfgX7tqoAtvo+fiNBoVq/jnCPaBG1NSrQQ8T8KZaS94
-         N2k/WhlmnTj8XDw/qD0i4fFmTvMi0GTazJTFFZrc58/LlJBsN/tD+qL9OJ7eBWiOeUal
-         Far2W5nnFNVO/W7tAMnRZd4Egzl50gA6utOzsKMVAxhFmzVlJlU70p+ntm2fLFVwz7Mu
-         I6T5k2ISpRYWK/F9sigQisKIQinVBcczpZUEN6hSY0cAbw4A3wNHddQvIU0gQeX8lBiH
-         64G2du0pTuNiweoer+hpd5Nj+1Rf5VrXxFEXTZdwnVITZ+suazbNUWVKQgKQHpsWn8vM
-         xX3A==
+        bh=DLNxIQ4b36nOK8YiQqh9tj6nRfmDkfjYUObbVW/rzuE=;
+        b=Fr6EEYIqKzlYJL29Bk6kAN0wVc2ohjHDeSEBJJ3s89jdf/bzRME8wKYuaxRVpDvTSr
+         Pa/dLXpP5vKCZaSha5zbjNYyynxqvwGWy2/6TlZmVK6YSIiD3oYytqubmQZfh7RpGovV
+         6LYX4aOeXx5pavlsuD+yrLBrQQ4AyPo8SmrZMPzO9ViEAqDtNmRrzd90PMStPy608oEi
+         1suZXYDqceKxL83xTQcSWZ+8QBWDy5Z/tilnWr4cUWTl8fbXU1cKmtrn/jY9Qd7WXrM9
+         ZT6LwHr39F8K7aJSOtu91mjN+c28v96xOW93LJjj5mS6SpVDhXsbVP1rtCb99SNx39oy
+         RVyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=RJAC/f07BpsuUiR9wwzNtLb3iU9MWyJ5HfzOTPegqZA=;
-        b=PCBruZyE2jzcApxuy+YwWk2ucY9m4x+oIas/tNkiY8quCcctkMb3ti7/ED8OHkeUaL
-         uQDdvhSnrP9Mk61jD8DnqFaNzRxPgnMnFqR534SAf0h99rEC3FHYXWmByxwKcm3EDenI
-         LkbRN8LTlYtWrv4KRvC2NuzeWtKFsNb8gH6HNl/+aLjWtIIC4rQ1KiBuUMJdcxQ8OhSg
-         GVlGldjycGceIkDrs+B1obtoOiH7rqwbF+PsEzmnIOLCLTHpj39PRICGkVbK9BJlZQNy
-         /hcZXwy8RLXNH/W6lxzVV4na76xYKxx1mip7vgICOd6P34U06tmCJ1ydVW0+YehuTKur
-         v6Lg==
-X-Gm-Message-State: AOAM530A0swr9jOWGVWQNqeSVQK1uH2o0nuiJrjLZ1m7YJlRlDrtj7HD
-        P8myrCHevrx7nZTtw+DY1wY=
-X-Google-Smtp-Source: ABdhPJxzipel1SxX8sboBYvkUiTP+xSip/Yj3F9h8DRpn7dFGrHF6KW/f67RUv1KYhOwEuidv20vnA==
-X-Received: by 2002:a62:1ad2:0:b029:3e0:7eb7:a6bd with SMTP id a201-20020a621ad20000b02903e07eb7a6bdmr23968580pfa.51.1629533909800;
-        Sat, 21 Aug 2021 01:18:29 -0700 (PDT)
-Received: from localhost ([203.205.141.70])
-        by smtp.gmail.com with ESMTPSA id e4sm10803463pgt.22.2021.08.21.01.18.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 21 Aug 2021 01:18:29 -0700 (PDT)
-From:   Xiangyang Zhang <xyz.sun.ok@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        xyz.sun.ok@gmail.com
-Subject: [PATCH] staging: r8188eu: Fix a resource leak in update_bcn_wps_ie
-Date:   Sat, 21 Aug 2021 16:18:24 +0800
-Message-Id: <20210821081824.14745-1-xyz.sun.ok@gmail.com>
-X-Mailer: git-send-email 2.19.1
+        bh=DLNxIQ4b36nOK8YiQqh9tj6nRfmDkfjYUObbVW/rzuE=;
+        b=JKMgBYb/1AxuTW47eO+dKkfI/TpQxAlNmIqxRHAOQB523qa151sUrHQF09zq9HbIOz
+         1qi2tktGzswywkLvwFYQLFq/w784M8x2dTGMkt0a76q7P9Vd5Y64BprKC9SSi1ym5Gw+
+         JOgI+FiF27l1ZrxFxzAjQjgwnWTru8+14OCyzE+L5TN5wS9OfMCk/ne90Eku8jI2slG2
+         ErOYxGVC/xNKnsiSEdZL5uIcDoSCpJWOexKO5cSQ/GnxqQ3AE7D3ajffOTCmvQFGq480
+         IjsdAzxQuCL10p0D73GBZ+TfQiz0p7pS05liUA/ZZgrPyCVci+vsDP8i3ZuSK2So7N/E
+         ZV2w==
+X-Gm-Message-State: AOAM531lLbRVvUoUJf/VIMRnnpUq1wx0uKH8CZsLFhpbsEguZd0P8T2l
+        m2syh+Hj22ITLZEBDmqjKHI=
+X-Google-Smtp-Source: ABdhPJxkIkynxwDeHi53+v+uOYVEfg0/kL1L316cPovUVthOvnCB/ud9O4FzhIVP8auxpcmvbFQzUA==
+X-Received: by 2002:a17:907:2b09:: with SMTP id gc9mr26430452ejc.49.1629534112230;
+        Sat, 21 Aug 2021 01:21:52 -0700 (PDT)
+Received: from robot.. ([2a02:2f0d:b800:ab00:6398:283c:6862:f51e])
+        by smtp.gmail.com with ESMTPSA id r27sm4888327edb.66.2021.08.21.01.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 01:21:51 -0700 (PDT)
+From:   Liviu Cheru <liviucheru@gmail.com>
+X-Google-Original-From: Liviu Cheru <liviu.cheru@gmail.com>
+To:     airlied@linux.ie
+Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        liviu.cheru@gmail.com
+Subject: [PATCH] gpu: drm: amd: amdgpu: Fixed a few warnings
+Date:   Sat, 21 Aug 2021 11:21:41 +0300
+Message-Id: <20210821082141.8608-1-liviu.cheru@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "pbackup_remainder_ie" variable is not freed when "pwps_ie_src" is null
+Fixed warnings regarding SPDX license, using "unsigned" instead
+of "unsigned int", wrong function parameter name for the
+documentation and a space between the function name and "(".
 
-Fixes: 15865124feed ("staging: r8188eu: introduce new core dir for RTL8188eu driver")
-Signed-off-by: Xiangyang Zhang <xyz.sun.ok@gmail.com>
+Signed-off-by: Liviu Cheru <liviu.cheru@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_ap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index 1127e9a52458..2ce982390c7b 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -1300,7 +1300,7 @@ static void update_bcn_wps_ie(struct adapter *padapter)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+index 795fa7445abe..af1abb281c6d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright 2009 Jerome Glisse.
+  * All Rights Reserved.
+@@ -129,7 +130,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *abo, u32 domain)
+ 	u32 c = 0;
  
- 	pwps_ie_src = pmlmepriv->wps_beacon_ie;
- 	if (!pwps_ie_src)
--		return;
-+		goto exit;
+ 	if (domain & AMDGPU_GEM_DOMAIN_VRAM) {
+-		unsigned visible_pfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
++		unsigned int visible_pfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
  
- 	wps_ielen = (uint)pwps_ie_src[1];/* to get ie data len */
- 	if ((wps_offset + wps_ielen + 2 + remainder_ielen) <= MAX_IE_SZ) {
-@@ -1314,6 +1314,7 @@ static void update_bcn_wps_ie(struct adapter *padapter)
- 		pnetwork->IELength = wps_offset + (wps_ielen + 2) + remainder_ielen;
- 	}
+ 		places[c].fpfn = 0;
+ 		places[c].lpfn = 0;
+@@ -731,7 +732,7 @@ int amdgpu_bo_validate(struct amdgpu_bo *bo)
+ /**
+  * amdgpu_bo_add_to_shadow_list - add a BO to the shadow list
+  *
+- * @bo: BO that will be inserted into the shadow list
++ * @vmbo: BO that will be inserted into the shadow list
+  *
+  * Insert a BO to the shadow list.
+  */
+@@ -957,7 +958,7 @@ int amdgpu_bo_pin_restricted(struct amdgpu_bo *bo, u32 domain,
+ 		bo->flags |= AMDGPU_GEM_CREATE_CPU_ACCESS_REQUIRED;
+ 	amdgpu_bo_placement_from_domain(bo, domain);
+ 	for (i = 0; i < bo->placement.num_placement; i++) {
+-		unsigned fpfn, lpfn;
++		unsigned int fpfn, lpfn;
  
-+exit:
- 	kfree(pbackup_remainder_ie);
- }
- 
+ 		fpfn = min_offset >> PAGE_SHIFT;
+ 		lpfn = max_offset >> PAGE_SHIFT;
+@@ -1175,7 +1176,7 @@ void amdgpu_bo_get_tiling_flags(struct amdgpu_bo *bo, u64 *tiling_flags)
+  * Returns:
+  * 0 for success or a negative error code on failure.
+  */
+-int amdgpu_bo_set_metadata (struct amdgpu_bo *bo, void *metadata,
++int amdgpu_bo_set_metadata(struct amdgpu_bo *bo, void *metadata,
+ 			    uint32_t metadata_size, uint64_t flags)
+ {
+ 	struct amdgpu_bo_user *ubo;
 -- 
-2.19.1
+2.30.2
 
