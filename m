@@ -2,64 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2773B3F3B65
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14073F3B67
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhHUQUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 12:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232197AbhHUQUe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 12:20:34 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058EDC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:19:55 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id d11so26655061eja.8
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=/alB5h0gQfW9FzGIyLs4BWi7g0xqZIGqbJ3FTO0wCLc=;
-        b=WKiWOkltLruZ0DxT597rFznXg3fPQE9b1IFGL1wQWnbe+VSukFCBGvmqLuTFd2DpSb
-         9aPypaZbBDPRYji95n+kORyIe5TYi/Cf2EEP9m5OHRUGsxXPv/v8c/PUbBlX4Rk5GTIe
-         YPfg9GhNlsl5o/ZyFXegcV5yVU8vgasRLqEwM3U7pB5tbzZjb0aJGTAnv1drvWWj8j+2
-         fypwFZ65MD74yTHLV9nI3ojuAEFy+wvKikyKfazZH6EaR8tPeMXJCV45IpdocGn2vJeJ
-         WEX+bEHbUGQYCHko1EPiqVf2u2n4qR0nU3vG7HoJIZEJhkf4sTuj0To+161TwRQJVo+o
-         pHTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=/alB5h0gQfW9FzGIyLs4BWi7g0xqZIGqbJ3FTO0wCLc=;
-        b=jTAzUdmngLd53JwQN8/wHHEZQUcjvQdbvzBRqUw4od3WNRmqCzXpxKbIcMJqt+XPMH
-         zkFfQf+Yhe96ChAxqfyXrNJ471b/FSRIVIX2tQjVPR67xoeQsk/Q0IENNjc9Srgm9VnO
-         7Cz2djcK2G8Tr+Wbpwea10u8e7fA6TGUQGbuafXKLmaa7ocg/J4gr79f5HkKxhNJTYw6
-         FTKheiYji8fhpFBPl5j6Bq5DUEyWWeM8ZgozPr+JSKq9atft3E4OIjvi7Cl6LtEvkX+q
-         4hZCxgj5bUxmskvYQOSqjTOp4q05+cZ/mFGaMvDKeXeGkFrz+SXLaCziLZWi5uVbKPIW
-         hg2g==
-X-Gm-Message-State: AOAM5318hFsEsXSToJYZOaUIA8t5hsbX7iBNM6bjl82MX1VIBShN4Ffl
-        2u8taveJTs6QHhBxoGcLbqrI+9qHDbpLWDrVgdM=
-X-Google-Smtp-Source: ABdhPJwSvlrnmCuxuBRwOaiNDC+xEkK4D7SUDFYywdxYyO8hGPigQGanwJNoCusxzHMMEDrgIawTjAGJXnCFSB69MO0=
-X-Received: by 2002:a17:907:217a:: with SMTP id rl26mr27733433ejb.9.1629562793513;
- Sat, 21 Aug 2021 09:19:53 -0700 (PDT)
+        id S233320AbhHUQU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 12:20:58 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:38856 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232965AbhHUQU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 12:20:56 -0400
+Received: from p5b3b3c9d.dip0.t-ipconnect.de ([91.59.60.157] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mHTjE-0000Sj-3I; Sat, 21 Aug 2021 18:20:16 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: dts: rockchip: add RK3399 Gru gpio-line-names
+Date:   Sat, 21 Aug 2021 18:20:13 +0200
+Message-Id: <162956281042.2943041.17828992937259243282.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid>
+References: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid>
 MIME-Version: 1.0
-Sender: boyb82397@gmail.com
-Received: by 2002:a55:be01:0:b029:f7:352:6a79 with HTTP; Sat, 21 Aug 2021
- 09:19:53 -0700 (PDT)
-From:   Anita lawrence lee <combatant441@gmail.com>
-Date:   Sat, 21 Aug 2021 16:19:53 +0000
-X-Google-Sender-Auth: uUtCb6ifcaRQaFPg8iDSpIYnuAc
-Message-ID: <CANJw1guEK203rnyCVxMSSk8n_Mso5GKF80OW7qFcSWM83b2etQ@mail.gmail.com>
-Subject: Re: PLEASE DO NOT IGNORE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 20 Aug 2021 13:38:35 -0700, Brian Norris wrote:
+> It's convenient to get nice names for GPIOs. In particular, Chrome OS
+> tooling looks for "AP_FLASH_WP" and "AP_FLASH_WP_L". The rest are
+> provided for convenience.
+> 
+> Gru-Bob and Gru-Kevin share the gru-chromebook.dtsi, and for the most
+> part they share pin meanings. I omitted a few areas where components
+> were available only on one or the other.
+
+Applied, thanks!
+
+[1/1] arm64: dts: rockchip: add RK3399 Gru gpio-line-names
+      commit: 9a35fd01f4abc3974e12539448038307acf27f16
+
+Best regards,
 -- 
-Hello
-Please contact me via my email id [ combatant441@gmail.com ]
- It's very urgent, I have a vital issue to discuss with you.
-Rachel .
+Heiko Stuebner <heiko@sntech.de>
