@@ -2,303 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A91E3F3BEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1308B3F3BF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 20:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhHURu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 13:50:57 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:57069 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231969AbhHURuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:50:52 -0400
+        id S231356AbhHUSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 14:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229484AbhHUSId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 14:08:33 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DF1C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id c17so12485228pgc.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1629568213;
-  x=1661104213;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yLDM+vNDD8JHbT4us+SoFhJVh82f80/OA2KMHUrnBOQ=;
-  b=BMRjDBAG1YeShviwbkedSjfEEjyfUlngiXs7B/Y24xaTYBDSKjdX1fTj
-   Ot/ct6ZcLxuNGp6ZQSSBvePWrawCCAbhMInY+Eyfmo0vWp8Qwtvgb4R8z
-   QWHXk3O0cFiVt9fw5N5VPTgjuFYLY3peTbzQ8pQVphIYahi7KeEIpYZhy
-   BD/HsaTBn4AU+9OOk1CxDVyTfHcQapbRdi9302loTwJCNVgaJ0wFX9yC8
-   TrIiV+CCFeSdOqEjlbsznL1P0N89eBMcEYIFy69JZAetXqvYiRD2/YwXg
-   kZdELdOCmVuQhLh7hRXWV/71ScjS0ZMw6xuCtNKt2EAOj8PvdJ+rvKFFo
-   A==;
-Date:   Sat, 21 Aug 2021 19:53:01 +0200
-From:   Borys Movchan <borysmn@axis.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-CC:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        kernel <kernel@axis.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5] tpm: Add Upgrade/Reduced mode support for TPM2 modules
-Message-ID: <20210821175301.7sjqc736pwdi6k5v@lnxborysmn.se.axis.com>
-References: <20210809174731.27924-1-borysmn@axis.com>
- <20210810175312.ziglxdlqimsmxbak@kernel.org>
- <20210815172858.GA14375@lnxborysmn.se.axis.com>
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
+        b=TIB+RBAgH2h2zSki63S+WYlw3AyD3MPcXf0osPvAucaDGEClyzYSEiH2OLT6cAE7+U
+         O4ekTzJhQ2rj6aA6mdvWqF9pKqq9sLBxz5BNDn04HlXBcZ2oOt/khfZyJF5b29c/e2he
+         hd5PsYah1pEx9nGWZDNfz+IMmUckPALs1wq2tI+oNDWTbQaRH5V9wL2+wdfGrULX8P9c
+         pOnxnJzMfq32VcsDmelDCfyG9Gymgd6XD2yoVWBgDY47nR16YUQkE8yaMmWER80D0Bh7
+         fkB3G271uCIe6KZIvl1BMvaUxaiKuN/hIi8DGQ2Gk5I7s7W0DMNdAlJR4UsoRE9Ktt/S
+         K/ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
+        b=LVTY6H90UfZrVaC2EwHQkmsW+0OsLuW40ePqCv1J9TwchxsFq8Ju5xUfePa7EH0uff
+         240CiU6upRSs49ja5SAypvROAzCVH90Ic8rM39SXL+XasB4fMsJz+rD2cNWe+r/e7Q3L
+         vWP37u43l2oNpIaDtEz+lwYjOWJ7pY7QWn2AmsloR5hXENrxFhLigi7gKZ2HEJmE4aHH
+         UR6IguUHeqWv4JgOhOMKsk+i8A3Q5JqEBr6xZc9Y7Wemdupl6xUO9QBLI95Cms03owy6
+         WX56ZUJec0LObSw87Fq0dB+QFDKfaJpEztl/irNxPQ9FupEyCrwL7xRtT85HTfdYXS4j
+         Y7nA==
+X-Gm-Message-State: AOAM5314VK/5rZqAxb/wgXd9ZHR6o937XxOy1WHtlhuSEQfqaq5FbnpR
+        /p1bpcQOX3Gobaw0Zixh8GY85Q==
+X-Google-Smtp-Source: ABdhPJwWegNY4tNj3aN8baq189DLQrBmrG3fbjMv6aFrT3BR5GjwReseEtyfLb0IyUEWHMuurCs3dA==
+X-Received: by 2002:aa7:8d0c:0:b029:3e0:2e32:3148 with SMTP id j12-20020aa78d0c0000b02903e02e323148mr25776486pfe.23.1629569272676;
+        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
+Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id n32sm11944585pgl.69.2021.08.21.11.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
+        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        kuniyu@amazon.co.jp, Dmitry Osipenko <digetx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Rao Shoaib <rao.shoaib@oracle.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] af_unix: fix NULL pointer bug in unix_shutdown
+Date:   Sat, 21 Aug 2021 18:07:36 +0000
+Message-Id: <20210821180738.1151155-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210815172858.GA14375@lnxborysmn.se.axis.com>
-User-Agent: NeoMutt/20180716
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail07w.axis.com (10.20.40.13) To se-mail07w.axis.com
- (10.20.40.13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 07:28:58PM +0200, Borys Movchan wrote:
-> On Tue, Aug 10, 2021 at 07:53:12PM +0200, Jarkko Sakkinen wrote:
-> > On Mon, Aug 09, 2021 at 07:47:30PM +0200, Borys Movchan wrote:
-> > > If something went wrong during the TPM firmware upgrade, like power
-> > > failure or the firmware image file get corrupted, the TPM might end
-> > > up in Upgrade or Failure mode upon the next start. The state is
-> > > persistent between the TPM power cycle/restart.
-> > > 
-> > > According to TPM specification:
-> > >  * If the TPM is in Upgrade mode, it will answer with TPM2_RC_UPGRADE
-> > >    to all commands except Field Upgrade related ones.
-> > >  * If the TPM is in Failure mode, it will allow performing TPM
-> > >    initialization but will not provide any crypto operations.
-> > >    Will happily respond to Field Upgrade calls.
-> > > 
-> > > Change the behavior of the tpm2_auto_startup(), so it detects the active
-> > > running mode of the TPM by adding the following checks.  If
-> > > tpm2_do_selftest() call returns TPM2_RC_UPGRADE, the TPM is in Upgrade
-> > > mode.
-> > > If the TPM is in Failure mode, it will successfully respond to both
-> > > tpm2_do_selftest() and tpm2_startup() calls. Although, will fail to
-> > > answer to tpm2_get_cc_attrs_tbl(). Use this fact to conclude that TPM is
-> > > in Failure mode.
-> > > 
-> > > If detected that the TPM is in the Upgrade or Failure mode, the function
-> > > sets TPM_CHIP_FLAG_LIMITED_MODE flag.
-> > 
-> > Does this apply for TPM 1.2? Are there differences?
-> > 
-> 
-> Actually I am not sure, I am working with TPM 2 exclusively have no
-> knowledge regarding other versions.
-> 
-> > > The limited mode flag is used later during driver
-> > > initialization/deinitialization to disable functionality which makes no
-> > > sense or will fail in the current TPM state. Following functionality is
-> > > affected:
-> > >  * do not register TPM as a hwrng
-> > >  * do not register sysfs entries which provide information impossible to
-> > >    obtain in limited mode
-> > >  * do not register resource managed character device
-> > 
-> > Maybe for consistency call it TPM_CHIP_FLAG_UPGRADE_MODE? It makes easier
-> > to "connect dots" later on (has probably something to do TPM_RC_UPGRADE).
-> > 
-> > 
-> 
-> My idea was to group both Failure and Upgrade mode and call them limited
-> mode. As functionality of the TPM is limited in both of them. I was
-> afraid that if I call it upgrade mode and map failure mode into it, it
-> might get confusing. So please confirm that you prefer to name the flag
-> as TPM_CHIP_FLAG_UPGRADE_MODE.
-> 
-> > > 
-> > > Signed-off-by: Borys Movchan <borysmn@axis.com>
-> > > ---
-> > > 
-> > > Notes:
-> > >     v2:
-> > >      * Commit message updated.
-> > >     
-> > >     v3:
-> > >      * Commit message reworked.
-> > >     
-> > >     v4:
-> > >      * Description of how tpm2_auto_startup() detects the mode added to
-> > >        commit message.
-> > >     
-> > >     v5:
-> > >      * Introduce global flag: TPM_CHIP_FLAG_LIMITED_MODE.
-> > >      * Add checks for the flag in places that will not work properly when TPM
-> > >        functionality is limited.
-> > >      * Avoid registering sysfs and character device entries that have no useful
-> > >        function in limited mode.
-> > >      * Do not register TPM as a hwrng.
-> > >      * Do not try to obtain any crypto-related properties from TPM as it will fail
-> > >        in limited mode.
-> > > 
-> > >  drivers/char/tpm/tpm-chip.c  | 16 ++++++++++------
-> > >  drivers/char/tpm/tpm-sysfs.c |  3 +++
-> > >  drivers/char/tpm/tpm2-cmd.c  | 13 ++++++++++++-
-> > >  include/linux/tpm.h          |  2 ++
-> > >  4 files changed, 27 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> > > index ddaeceb7e109..8d159db39392 100644
-> > > --- a/drivers/char/tpm/tpm-chip.c
-> > > +++ b/drivers/char/tpm/tpm-chip.c
-> > > @@ -444,7 +444,7 @@ static int tpm_add_char_device(struct tpm_chip *chip)
-> > >  		return rc;
-> > >  	}
-> > >  
-> > > -	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> > > +	if (chip->flags & TPM_CHIP_FLAG_TPM2 && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)) {
-> > 
-> > You cannot rely on validity of TPM_CHIP_FLAG_TPM2, as tpm_tis driver
-> > uses a TPM command to probe the TPM version.
-> > 
-> 
-> Good point, will fix in next patch version.
-> 
+Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
+introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the
+unhash function will call prot->unhash(), which is NULL for SEQPACKET.
+And kernel will panic. On ARM32, it will show following messages: (it 
+likely affects x86 too).
 
-After giving it a 2nd thought, I would say, it doesn't meter in this
-case. Changing the condition to ignore TPM_CHIP_FLAG_TPM2 will not
-change the behavior of the condition at all.
+Fix the bug by checking the prot->unhash is NULL or not first.
 
-Please let me know what should I do next.
+Kernel log:
+<--- cut here ---
+ Unable to handle kernel NULL pointer dereference at virtual address
+00000000
+ pgd = 2fba1ffb
+ *pgd=00000000
+ Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
+ Modules linked in:
+ CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
+5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
+ Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+ PC is at 0x0
+ LR is at unix_shutdown+0x81/0x1a8
+ pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
+ sp : e45aff70  ip : e463a3c0  fp : beb54f04
+ r10: 00000125  r9 : e45ae000  r8 : c4a56664
+ r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
+ r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
+ Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+ Control: 50c5387d  Table: 05aa804a  DAC: 00000051
+ Register r0 information: slab PING start c4a56400 pointer offset 0
+ Register r1 information: NULL pointer
+ Register r2 information: slab task_struct start c5a6b180 pointer offset 0
+ Register r3 information: NULL pointer
+ Register r4 information: slab PING start c4a56400 pointer offset 0
+ Register r5 information: non-paged memory
+ Register r6 information: slab PING start c4a56400 pointer offset 100
+ Register r7 information: non-paged memory
+ Register r8 information: slab PING start c4a56400 pointer offset 612
+ Register r9 information: non-slab/vmalloc memory
+ Register r10 information: non-paged memory
+ Register r11 information: non-paged memory
+ Register r12 information: slab filp start e463a3c0 pointer offset 0
+ Process falkon (pid: 1999, stack limit = 0x9ec48895)
+ Stack: (0xe45aff70 to 0xe45b0000)
+ ff60:                                     e45ae000 c5f26a00 00000000 00000125
+ ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
+ ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
+ ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
+ ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
+ [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
+ [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
+(__sys_trace_return+0x1/0x16)
+ Exception stack(0xe45affa8 to 0xe45afff0)
 
-> > >  		rc = cdev_device_add(&chip->cdevs, &chip->devs);
-> > >  		if (rc) {
-> > >  			dev_err(&chip->devs,
-> > > @@ -506,7 +506,8 @@ static int tpm_add_legacy_sysfs(struct tpm_chip *chip)
-> > >  	struct attribute **i;
-> > >  	int rc;
-> > >  
-> > > -	if (chip->flags & (TPM_CHIP_FLAG_TPM2 | TPM_CHIP_FLAG_VIRTUAL))
-> > > +	if (chip->flags & (TPM_CHIP_FLAG_TPM2 | TPM_CHIP_FLAG_VIRTUAL) ||
-> > > +		chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
-> > >  		return 0;
-> > >  
-> > >  	rc = compat_only_sysfs_link_entry_to_kobj(
-> > > @@ -536,7 +537,7 @@ static int tpm_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-> > >  
-> > >  static int tpm_add_hwrng(struct tpm_chip *chip)
-> > >  {
-> > > -	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-> > > +	if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM) || chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
-> > >  		return 0;
-> > >  
-> > >  	snprintf(chip->hwrng_name, sizeof(chip->hwrng_name),
-> > > @@ -550,6 +551,9 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
-> > >  {
-> > >  	int rc;
-> > >  
-> > > +	if (chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
-> > > +		return 0;
-> > > +
-> > >  	rc = (chip->flags & TPM_CHIP_FLAG_TPM2) ?
-> > >  	     tpm2_get_pcr_allocation(chip) :
-> > >  	     tpm1_get_pcr_allocation(chip);
-> > > @@ -612,7 +616,7 @@ int tpm_chip_register(struct tpm_chip *chip)
-> > >  	return 0;
-> > >  
-> > >  out_hwrng:
-> > > -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-> > > +	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE))
-> > >  		hwrng_unregister(&chip->hwrng);
-> > >  out_ppi:
-> > >  	tpm_bios_log_teardown(chip);
-> > > @@ -637,10 +641,10 @@ EXPORT_SYMBOL_GPL(tpm_chip_register);
-> > >  void tpm_chip_unregister(struct tpm_chip *chip)
-> > >  {
-> > >  	tpm_del_legacy_sysfs(chip);
-> > > -	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-> > > +	if (IS_ENABLED(CONFIG_HW_RANDOM_TPM) && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE))
-> > >  		hwrng_unregister(&chip->hwrng);
-> > >  	tpm_bios_log_teardown(chip);
-> > > -	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> > > +	if (chip->flags & TPM_CHIP_FLAG_TPM2 && !(chip->flags & TPM_CHIP_FLAG_LIMITED_MODE))
-> > >  		cdev_device_del(&chip->cdevs, &chip->devs);
-> > >  	tpm_del_char_device(chip);
-> > >  }
-> > > diff --git a/drivers/char/tpm/tpm-sysfs.c b/drivers/char/tpm/tpm-sysfs.c
-> > > index 63f03cfb8e6a..43ea9c66342d 100644
-> > > --- a/drivers/char/tpm/tpm-sysfs.c
-> > > +++ b/drivers/char/tpm/tpm-sysfs.c
-> > > @@ -478,6 +478,9 @@ void tpm_sysfs_add_device(struct tpm_chip *chip)
-> > >  {
-> > >  	int i;
-> > >  
-> > > +	if (chip->flags & TPM_CHIP_FLAG_LIMITED_MODE)
-> > > +		return;
-> > > +
-> > >  	WARN_ON(chip->groups_cnt != 0);
-> > >  
-> > >  	if (chip->flags & TPM_CHIP_FLAG_TPM2)
-> > > diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> > > index a25815a6f625..598d62695310 100644
-> > > --- a/drivers/char/tpm/tpm2-cmd.c
-> > > +++ b/drivers/char/tpm/tpm2-cmd.c
-> > > @@ -729,7 +729,12 @@ int tpm2_auto_startup(struct tpm_chip *chip)
-> > >  		goto out;
-> > >  
-> > >  	rc = tpm2_do_selftest(chip);
-> > > -	if (rc && rc != TPM2_RC_INITIALIZE)
-> > > +	if (rc == TPM2_RC_UPGRADE) {
-> > > +		dev_info(&chip->dev, "TPM is in upgrade mode, functionality limited\n");
-> > > +		chip->flags |= TPM_CHIP_FLAG_LIMITED_MODE;
-> > > +		rc = 0;
-> > > +		goto out;
-> > > +	} else if (rc && rc != TPM2_RC_INITIALIZE)
-> > >  		goto out;
-> > >  
-> > >  	if (rc == TPM2_RC_INITIALIZE) {
-> > > @@ -743,6 +748,12 @@ int tpm2_auto_startup(struct tpm_chip *chip)
-> > >  	}
-> > >  
-> > >  	rc = tpm2_get_cc_attrs_tbl(chip);
-> > > +	if (rc) {
-> > 
-> > Why all rc's apply?
-> > 
-> 
-> Different vendors return different error codes here. Some, like STM
-> return vendor specific ones.
-> 
-> > > +		dev_info(&chip->dev, "TPM is in failure mode, functionality limited\n");
-> > 
-> > Here is again a different name for the same thing (different than
-> > TPM_CHIP_FLAG_LIMITED_MODE).
-> > 
-> 
-> This check is triggered only if TPM is in Failure mode. It is different
-> from Upgrade mode.
-> 
-> > > +		chip->flags |= TPM_CHIP_FLAG_LIMITED_MODE;
-> > > +		rc = 0;
-> > > +		goto out;
-> > > +	}
-> > >  
-> > >  out:
-> > >  	if (rc > 0)
-> > > diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> > > index aa11fe323c56..231d7c7ec913 100644
-> > > --- a/include/linux/tpm.h
-> > > +++ b/include/linux/tpm.h
-> > > @@ -207,6 +207,7 @@ enum tpm2_return_codes {
-> > >  	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
-> > >  	TPM2_RC_FAILURE		= 0x0101,
-> > >  	TPM2_RC_DISABLED	= 0x0120,
-> > > +	TPM2_RC_UPGRADE		= 0x012D,
-> > >  	TPM2_RC_COMMAND_CODE    = 0x0143,
-> > >  	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
-> > >  	TPM2_RC_REFERENCE_H0	= 0x0910,
-> > > @@ -277,6 +278,7 @@ enum tpm_chip_flags {
-> > >  	TPM_CHIP_FLAG_HAVE_TIMEOUTS	= BIT(4),
-> > >  	TPM_CHIP_FLAG_ALWAYS_POWERED	= BIT(5),
-> > >  	TPM_CHIP_FLAG_FIRMWARE_POWER_MANAGED	= BIT(6),
-> > > +	TPM_CHIP_FLAG_LIMITED_MODE	= BIT(7),
-> > >  };
-> > >  
-> > >  #define to_tpm_chip(d) container_of(d, struct tpm_chip, dev)
-> > > -- 
-> > > 2.20.1
-> > > 
-> > > 
-> > 
-> > /Jarkko
-> 
-> Kind regards,
-> Borys
+Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+Reported-by: Dmitry Osipenko <digetx@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+---
+v1 -> v2: check prot->unhash directly.
 
-Kind regards,
-Borys
+ net/unix/af_unix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 443c49081636..15c1e4e4012d 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
+ 		int peer_mode = 0;
+ 		const struct proto *prot = READ_ONCE(other->sk_prot);
+ 
+-		prot->unhash(other);
++		if (prot->unhash)
++			prot->unhash(other);
+ 		if (mode&RCV_SHUTDOWN)
+ 			peer_mode |= SEND_SHUTDOWN;
+ 		if (mode&SEND_SHUTDOWN)
+-- 
+2.20.1
+
