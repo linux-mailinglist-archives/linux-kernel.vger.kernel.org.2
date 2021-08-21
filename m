@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7DC3F3772
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 01:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F243F3778
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 02:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238315AbhHTXws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 19:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        id S238544AbhHUAFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 20:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhHTXwr (ORCPT
+        with ESMTP id S229783AbhHUAFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 19:52:47 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082D5C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:52:09 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so2120104pjx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 16:52:09 -0700 (PDT)
+        Fri, 20 Aug 2021 20:05:44 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BB3C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 17:05:06 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b9-20020a5b07890000b0290558245b7eabso11242951ybq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 17:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7a7pr5fcERkUw6OUxCu6Pi6Dvka3zNiGFTz7cgPMCq4=;
-        b=Jhuhy1hiJYwkPASf5kx5v9//OFHdZH3ukTgAqvjXPa0cbrH0YLNSZxdWo33VLN6Y8E
-         cmpoJoplP0cba+qV16kp+yvU5qSJzik8AICpXI33WjiQHHSHkqcjZeNDn8fpPa9JKWmW
-         zeWBgTOz6uS6GbFAlSe4j5OcTaWDYvAazg96UfU+UJ4dxH9vN0JqY2eo+xxG9lmSRk4G
-         QxVKwyQ8xTRJ6baahEPMt19dYtdGJsxB53LYeqA5AgreSAKwL+QxX7XVX6JMA2IxVo6O
-         jKJShSHjErWSZKV0oiY6tQ/c33zkTvHJlyPZ7cKsdjWXW/3sfmMAwUYmL+PM1EqDT9wD
-         SGdQ==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=v5+oztcUWF1tsHkXWU5dtrULoyd6t4n/rFzGBM2+LiE=;
+        b=e+bb+TkiQMZJXlGX82szk2loy6RZejnh/9ul5hxji7BXLcGBs/qHQ2y3USTrrr3RLk
+         G4qD2UDaZpqeuGtqDo/XCtu1vog/i+aVVz8wOwFtwncWz+N78YghqvOOjPMeJ5NJ6a0C
+         VjK4ENTRg59Gb54HGfdyfZLyUsvNTLTwASucxsvnfc9EoZizmHOFouSyDryWXUtb7MaJ
+         PYhCG7qmP192KO63u60EgYoNukRDrMsB/ltXQVdgnPTj/vw/MLP/T91JpzXqDMDrbGV5
+         MFDdo+UVSz5IXVnSPx+G3CIma5sp+0yQ7nbMMhYLu5OvGUF+zG7FwUih5xFrZ15HjKBi
+         Q5eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7a7pr5fcERkUw6OUxCu6Pi6Dvka3zNiGFTz7cgPMCq4=;
-        b=ERSbC8n8i0Gn702Nhvtl7WoHrbTCwr3PuwYZj2XiaoqRUHL8u39ofaB+XYppyoWDDE
-         B8qKEsfhaA1BGSU2RpabcktmgkXBBo+c//T0wwV7TK9ttkobuzWxwuwvNZ8AmYOMwvfm
-         +NUcWN+fmSUo3R0tcK74hLwLnaSfRKxCzrtCLlFRcR0RA+aZIj+e77y6BJDz5YmR5A3Y
-         Wb0Q+yCRh/EeQvD4BRmzgFv9BaqQDnoAjp3KMDJPafosLYx8DOw3Mi0FRzpDXyz5X3wY
-         hjNc4vg4d67Qp+RarJCKFy6HYgcfrA1r5z2HtL3zbJAwg7ikeQ2aDdF+0qCHLzBF/rEO
-         5c6w==
-X-Gm-Message-State: AOAM530H4HbZ2L1dILW6Hia9VDwbz1ZeKxvn8U+QSP3L1AU0Yll+Fq09
-        NAtTYhVvmnxirwbyCow4F/cbq7doHkNcoLjHSKLeyw==
-X-Google-Smtp-Source: ABdhPJykm1WZbuaKnzPgpoWymSbBAfEjvJasZps8xZocpTe0mKrTl0kVWZOm2C43IMr+90baGNlU3BPHqAWy60VT4dc=
-X-Received: by 2002:a17:90a:6906:: with SMTP id r6mr7106659pjj.162.1629503528537;
- Fri, 20 Aug 2021 16:52:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1629479152.git.paskripkin@gmail.com> <0e2df1ac9e1031824a1cdb7b24594d2d1b99e382.1629479152.git.paskripkin@gmail.com>
-In-Reply-To: <0e2df1ac9e1031824a1cdb7b24594d2d1b99e382.1629479152.git.paskripkin@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 21 Aug 2021 00:51:57 +0100
-Message-ID: <CAA=Fs0=xVqe=QqRwyNGzR7y03na+GF0ktrE3GNhOiD-oObse8A@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/3] staging: r8188eu: add error handling to ReadFuse
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=v5+oztcUWF1tsHkXWU5dtrULoyd6t4n/rFzGBM2+LiE=;
+        b=PgfichDGRAjvVxeSkCw8BOXcdi/EaxSeRVpLQc/5FrmtQGaPqnjZg5NukTs5Motu8D
+         2LY20CfjNphrx3Ghb9QAOvV5ZB+D92TgJw7A8T6Fd3j2bqNSAHx1kt6g85tYCZY9aM2v
+         zI3YfTosmbmr7lIqEMbP0yYXYtpncSgdGTpsxHMYgJlXfUO0gYGKMQqRuaH7NUwot8Y3
+         QojdCh3nNJAKBrFxQyIedImGcX6TVzBgUAHasKa+arB9B2OtA1mjFvVpL92fw8NjSV/u
+         +2bekhsFsZfNbilflPcUM8mxqwwkCxplwhvNNBM4YsLGu7eqJwr8RTkj5REadpNtrbaC
+         5K5g==
+X-Gm-Message-State: AOAM530ycOOSjkyKz/aqX0+tk+EHQg3Txl8o9D096qc9i4gO3StwazER
+        i4R+SVopbdlzQKjRaT4NgYPNF29urTw=
+X-Google-Smtp-Source: ABdhPJw6qyZ/x0/x8bWL4yd+NvmJ6KamcS8WpBb1Ezie6D9yRM/YBI+Kr7Dfm9WJxC8UO8GuCupKMqxWjro=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:f11d:a281:af9b:5de6])
+ (user=seanjc job=sendgmr) by 2002:a25:3625:: with SMTP id d37mr31728766yba.140.1629504305587;
+ Fri, 20 Aug 2021 17:05:05 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 20 Aug 2021 17:04:59 -0700
+Message-Id: <20210821000501.375978-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+Subject: [PATCH 0/2] VM: Fix a benign race in kicking vCPUs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Venkatesh Srinivas <venkateshs@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 at 18:07, Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> ReadEFuseByte() internally calls rtw_read8() which can fail. To avoid
-> uninit value bugs we should properly handle error sutiation and deliver
-> the error to caller.
->
-> To achieve it, some functions now return an int, and the error
-> which could occur in ReadEFuseByte() is handled on the top level.
->
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_efuse.c      | 46 +++++++++-----
->  drivers/staging/r8188eu/hal/hal_intf.c        |  6 +-
->  .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 62 +++++++++++++------
->  drivers/staging/r8188eu/hal/usb_halinit.c     | 20 ++++--
->  drivers/staging/r8188eu/hal/usb_ops_linux.c   | 43 +++++++++++--
->  drivers/staging/r8188eu/include/hal_intf.h    |  6 +-
->  .../staging/r8188eu/include/rtl8188e_hal.h    |  2 +-
->  drivers/staging/r8188eu/include/rtw_efuse.h   |  4 +-
->  drivers/staging/r8188eu/os_dep/usb_intf.c     |  4 +-
->  9 files changed, 138 insertions(+), 55 deletions(-)
->
+Fix benign races when kicking vCPUs where the task doing the kicking can
+consume a stale vcpu->cpu.  The races are benign because of the
+impliciations of task migration with respect to interrupts and being in
+guest mode, but IMO they're worth fixing if only as an excuse to
+document the flows.
 
-Dear Pavel,
+Patch 2 is a tangentially related cleanup to prevent future me from
+trying to get rid of the NULL check on the cpumask parameters, which
+_looks_ like it can't ever be NULL, but has a subtle edge case due to the
+way CONFIG_CPUMASK_OFFSTACK=y handles cpumasks.
 
-I like the code, just a few things though:
-(1) the comments I made in the previous e-mail r.e. what we actually
-do with the errors, and grouping logically related changes (the rest
-of the usb_read*() changes being in this patch for example).
-(2) I got trailing whitespace errors from this patch and the last one.
-For a v2 I would say stripping the whitespace is a good idea too - I
-have submitted many patches myself to this driver that had whitespace
-in - indeed, the original version of my patch series to import the
-driver still had a load as well :-)
+Sean Christopherson (2):
+  KVM: Clean up benign vcpu->cpu data races when kicking vCPUs
+  KVM: Guard cpusmask NULL check with CONFIG_CPUMASK_OFFSTACK
 
-Regards,
-Phil
+ virt/kvm/kvm_main.c | 46 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 37 insertions(+), 9 deletions(-)
+
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
