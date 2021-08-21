@@ -2,1140 +2,4317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A983F3845
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6314A3F3847
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232723AbhHUDLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:11:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:42803 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhHUDLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:11:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10082"; a="204069766"
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="gz'50?scan'50,208,50";a="204069766"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2021 20:10:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,338,1620716400"; 
-   d="gz'50?scan'50,208,50";a="680524645"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Aug 2021 20:10:54 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mHHPJ-000VSt-BY; Sat, 21 Aug 2021 03:10:53 +0000
-Date:   Sat, 21 Aug 2021 11:10:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     kbuild-all@lists.01.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, martin@kaiser.cx,
-        straube.linux@gmail.com, Larry.Finger@lwfinger.net
-Subject: Re: [PATCH] staging: r8188eu: remove forward declaration of
- Efuse_Read1ByteFromFakeContent
-Message-ID: <202108211104.R2np9jK2-lkp@intel.com>
-References: <20210821000508.79422-1-phil@philpotter.co.uk>
+        id S232193AbhHUDPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:15:00 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:14306 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhHUDO4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 20 Aug 2021 23:14:56 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gs3WH5Bcjz88DH;
+        Sat, 21 Aug 2021 11:14:03 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 21 Aug 2021 11:14:13 +0800
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 21 Aug 2021 11:14:12 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <airlied@linux.ie>, <daniel@ffwll.ch>, <robh+dt@kernel.org>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <wanghaibin.wang@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH] drm: remove zxdrm driver
+Date:   Sat, 21 Aug 2021 11:13:57 +0800
+Message-ID: <20210821031357.289-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="VS++wcV0S1rZb1Fb"
-Content-Disposition: inline
-In-Reply-To: <20210821000508.79422-1-phil@philpotter.co.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The zte zx platform had been removed in commit 89d4f98ae90d ("ARM: remove
+zte zx platform"), so this driver is no longer needed.
 
---VS++wcV0S1rZb1Fb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Phillip,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on staging/staging-testing]
-
-url:    https://github.com/0day-ci/linux/commits/Phillip-Potter/staging-r8188eu-remove-forward-declaration-of-Efuse_Read1ByteFromFakeContent/20210821-080835
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 093991aaadf0fbb34184fa37a46e7a157da3f386
-config: sh-allmodconfig (attached as .config)
-compiler: sh4-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/195b942818ec8dcaa8f3ffd7e8c623d172d75a50
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Phillip-Potter/staging-r8188eu-remove-forward-declaration-of-Efuse_Read1ByteFromFakeContent/20210821-080835
-        git checkout 195b942818ec8dcaa8f3ffd7e8c623d172d75a50
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=sh 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/staging/r8188eu/core/rtw_efuse.c:33:1: warning: no previous prototype for 'Efuse_Read1ByteFromFakeContent' [-Wmissing-prototypes]
-      33 | Efuse_Read1ByteFromFakeContent(
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-   Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
-   Selected by
-   - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
-   - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
-
-
-vim +/Efuse_Read1ByteFromFakeContent +33 drivers/staging/r8188eu/core/rtw_efuse.c
-
-15865124feed88 Phillip Potter 2021-07-28  27  
-15865124feed88 Phillip Potter 2021-07-28  28  /*  */
-15865124feed88 Phillip Potter 2021-07-28  29  #define REG_EFUSE_CTRL		0x0030
-15865124feed88 Phillip Potter 2021-07-28  30  #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
-15865124feed88 Phillip Potter 2021-07-28  31  /*  */
-15865124feed88 Phillip Potter 2021-07-28  32  bool
-15865124feed88 Phillip Potter 2021-07-28 @33  Efuse_Read1ByteFromFakeContent(
-15865124feed88 Phillip Potter 2021-07-28  34  			struct adapter *pAdapter,
-15865124feed88 Phillip Potter 2021-07-28  35  			u16 Offset,
-15865124feed88 Phillip Potter 2021-07-28  36  		u8 *Value)
-15865124feed88 Phillip Potter 2021-07-28  37  {
-15865124feed88 Phillip Potter 2021-07-28  38  	if (Offset >= EFUSE_MAX_HW_SIZE)
-15865124feed88 Phillip Potter 2021-07-28  39  		return false;
-15865124feed88 Phillip Potter 2021-07-28  40  	if (fakeEfuseBank == 0)
-15865124feed88 Phillip Potter 2021-07-28  41  		*Value = fakeEfuseContent[Offset];
-15865124feed88 Phillip Potter 2021-07-28  42  	else
-15865124feed88 Phillip Potter 2021-07-28  43  		*Value = fakeBTEfuseContent[fakeEfuseBank - 1][Offset];
-15865124feed88 Phillip Potter 2021-07-28  44  	return true;
-15865124feed88 Phillip Potter 2021-07-28  45  }
-15865124feed88 Phillip Potter 2021-07-28  46  
-
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jun Nie <jun.nie@linaro.org>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ .../devicetree/bindings/display/zte,vou.txt   | 120 ---
+ drivers/gpu/drm/Kconfig                       |   2 -
+ drivers/gpu/drm/Makefile                      |   1 -
+ drivers/gpu/drm/zte/Kconfig                   |  10 -
+ drivers/gpu/drm/zte/Makefile                  |  10 -
+ drivers/gpu/drm/zte/zx_common_regs.h          |  28 -
+ drivers/gpu/drm/zte/zx_drm_drv.c              | 190 ----
+ drivers/gpu/drm/zte/zx_drm_drv.h              |  34 -
+ drivers/gpu/drm/zte/zx_hdmi.c                 | 760 ---------------
+ drivers/gpu/drm/zte/zx_hdmi_regs.h            |  66 --
+ drivers/gpu/drm/zte/zx_plane.c                | 537 ----------
+ drivers/gpu/drm/zte/zx_plane.h                |  26 -
+ drivers/gpu/drm/zte/zx_plane_regs.h           | 120 ---
+ drivers/gpu/drm/zte/zx_tvenc.c                | 400 --------
+ drivers/gpu/drm/zte/zx_tvenc_regs.h           |  27 -
+ drivers/gpu/drm/zte/zx_vga.c                  | 527 ----------
+ drivers/gpu/drm/zte/zx_vga_regs.h             |  33 -
+ drivers/gpu/drm/zte/zx_vou.c                  | 921 ------------------
+ drivers/gpu/drm/zte/zx_vou.h                  |  64 --
+ drivers/gpu/drm/zte/zx_vou_regs.h             | 212 ----
+ 20 files changed, 4088 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/zte,vou.txt
+ delete mode 100644 drivers/gpu/drm/zte/Kconfig
+ delete mode 100644 drivers/gpu/drm/zte/Makefile
+ delete mode 100644 drivers/gpu/drm/zte/zx_common_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_drm_drv.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_hdmi.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_hdmi_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_plane.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_plane.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_plane_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_tvenc.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_tvenc_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_vga.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_vga_regs.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_vou.c
+ delete mode 100644 drivers/gpu/drm/zte/zx_vou.h
+ delete mode 100644 drivers/gpu/drm/zte/zx_vou_regs.h
 
---VS++wcV0S1rZb1Fb
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+diff --git a/Documentation/devicetree/bindings/display/zte,vou.txt b/Documentation/devicetree/bindings/display/zte,vou.txt
+deleted file mode 100644
+index 38476475fd60..000000000000
+--- a/Documentation/devicetree/bindings/display/zte,vou.txt
++++ /dev/null
+@@ -1,120 +0,0 @@
+-ZTE VOU Display Controller
+-
+-This is a display controller found on ZTE ZX296718 SoC.  It includes multiple
+-Graphic Layer (GL) and Video Layer (VL), two Mixers/Channels, and a few blocks
+-handling scaling, color space conversion etc.  VOU also integrates the support
+-for typical output devices, like HDMI, TV Encoder, VGA, and RGB LCD.
+-
+-* Master VOU node
+-
+-It must be the parent node of all the sub-device nodes.
+-
+-Required properties:
+- - compatible: should be "zte,zx296718-vou"
+- - #address-cells: should be <1>
+- - #size-cells: should be <1>
+- - ranges: list of address translations between VOU and sub-devices
+-
+-* VOU DPC device
+-
+-Required properties:
+- - compatible: should be "zte,zx296718-dpc"
+- - reg: Physical base address and length of DPC register regions, one for each
+-   entry in 'reg-names'
+- - reg-names: The names of register regions. The following regions are required:
+-	"osd"
+-	"timing_ctrl"
+-	"dtrc"
+-	"vou_ctrl"
+-	"otfppu"
+- - interrupts: VOU DPC interrupt number to CPU
+- - clocks: A list of phandle + clock-specifier pairs, one for each entry
+-   in 'clock-names'
+- - clock-names: A list of clock names.  The following clocks are required:
+-	"aclk"
+-	"ppu_wclk"
+-	"main_wclk"
+-	"aux_wclk"
+-
+-* HDMI output device
+-
+-Required properties:
+- - compatible: should be "zte,zx296718-hdmi"
+- - reg: Physical base address and length of the HDMI device IO region
+- - interrupts : HDMI interrupt number to CPU
+- - clocks: A list of phandle + clock-specifier pairs, one for each entry
+-   in 'clock-names'
+- - clock-names: A list of clock names.  The following clocks are required:
+-	"osc_cec"
+-	"osc_clk"
+-	"xclk"
+-
+-* TV Encoder output device
+-
+-Required properties:
+- - compatible: should be "zte,zx296718-tvenc"
+- - reg: Physical base address and length of the TVENC device IO region
+- - zte,tvenc-power-control: the phandle to SYSCTRL block followed by two
+-   integer cells.  The first cell is the offset of SYSCTRL register used
+-   to control TV Encoder DAC power, and the second cell is the bit mask.
+-
+-* VGA output device
+-
+-Required properties:
+- - compatible: should be "zte,zx296718-vga"
+- - reg: Physical base address and length of the VGA device IO region
+- - interrupts : VGA interrupt number to CPU
+- - clocks: Phandle with clock-specifier pointing to VGA I2C clock.
+- - clock-names: Must be "i2c_wclk".
+- - zte,vga-power-control: the phandle to SYSCTRL block followed by two
+-   integer cells.  The first cell is the offset of SYSCTRL register used
+-   to control VGA DAC power, and the second cell is the bit mask.
+-
+-Example:
+-
+-vou: vou@1440000 {
+-	compatible = "zte,zx296718-vou";
+-	#address-cells = <1>;
+-	#size-cells = <1>;
+-	ranges = <0 0x1440000 0x10000>;
+-
+-	dpc: dpc@0 {
+-		compatible = "zte,zx296718-dpc";
+-		reg = <0x0000 0x1000>, <0x1000 0x1000>,
+-		      <0x5000 0x1000>, <0x6000 0x1000>,
+-		      <0xa000 0x1000>;
+-		reg-names = "osd", "timing_ctrl",
+-			    "dtrc", "vou_ctrl",
+-			    "otfppu";
+-		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&topcrm VOU_ACLK>, <&topcrm VOU_PPU_WCLK>,
+-			 <&topcrm VOU_MAIN_WCLK>, <&topcrm VOU_AUX_WCLK>;
+-		clock-names = "aclk", "ppu_wclk",
+-			      "main_wclk", "aux_wclk";
+-	};
+-
+-	vga: vga@8000 {
+-		compatible = "zte,zx296718-vga";
+-		reg = <0x8000 0x1000>;
+-		interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+-		clocks = <&topcrm VGA_I2C_WCLK>;
+-		clock-names = "i2c_wclk";
+-		zte,vga-power-control = <&sysctrl 0x170 0xe0>;
+-	};
+-
+-	hdmi: hdmi@c000 {
+-		compatible = "zte,zx296718-hdmi";
+-		reg = <0xc000 0x4000>;
+-		interrupts = <GIC_SPI 82 IRQ_TYPE_EDGE_RISING>;
+-		clocks = <&topcrm HDMI_OSC_CEC>,
+-			 <&topcrm HDMI_OSC_CLK>,
+-			 <&topcrm HDMI_XCLK>;
+-		clock-names = "osc_cec", "osc_clk", "xclk";
+-	};
+-
+-	tvenc: tvenc@2000 {
+-		compatible = "zte,zx296718-tvenc";
+-		reg = <0x2000 0x1000>;
+-		zte,tvenc-power-control = <&sysctrl 0x170 0x10>;
+-	};
+-};
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 7ff89690a976..4650e4ff0e76 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -349,8 +349,6 @@ source "drivers/gpu/drm/hisilicon/Kconfig"
+ 
+ source "drivers/gpu/drm/mediatek/Kconfig"
+ 
+-source "drivers/gpu/drm/zte/Kconfig"
+-
+ source "drivers/gpu/drm/mxsfb/Kconfig"
+ 
+ source "drivers/gpu/drm/meson/Kconfig"
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index a118692a6df7..7d4a3d9b3c30 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -112,7 +112,6 @@ obj-y			+= bridge/
+ obj-$(CONFIG_DRM_FSL_DCU) += fsl-dcu/
+ obj-$(CONFIG_DRM_ETNAVIV) += etnaviv/
+ obj-y			+= hisilicon/
+-obj-$(CONFIG_DRM_ZTE)	+= zte/
+ obj-$(CONFIG_DRM_MXSFB)	+= mxsfb/
+ obj-y			+= tiny/
+ obj-$(CONFIG_DRM_PL111) += pl111/
+diff --git a/drivers/gpu/drm/zte/Kconfig b/drivers/gpu/drm/zte/Kconfig
+deleted file mode 100644
+index aa8594190b50..000000000000
+--- a/drivers/gpu/drm/zte/Kconfig
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-config DRM_ZTE
+-	tristate "DRM Support for ZTE SoCs"
+-	depends on DRM && ARCH_ZX
+-	select DRM_KMS_CMA_HELPER
+-	select DRM_KMS_HELPER
+-	select SND_SOC_HDMI_CODEC if SND_SOC
+-	select VIDEOMODE_HELPERS
+-	help
+-	  Choose this option to enable DRM on ZTE ZX SoCs.
+diff --git a/drivers/gpu/drm/zte/Makefile b/drivers/gpu/drm/zte/Makefile
+deleted file mode 100644
+index b6d966d849dd..000000000000
+--- a/drivers/gpu/drm/zte/Makefile
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0
+-zxdrm-y := \
+-	zx_drm_drv.o \
+-	zx_hdmi.o \
+-	zx_plane.o \
+-	zx_tvenc.o \
+-	zx_vga.o \
+-	zx_vou.o
+-
+-obj-$(CONFIG_DRM_ZTE) += zxdrm.o
+diff --git a/drivers/gpu/drm/zte/zx_common_regs.h b/drivers/gpu/drm/zte/zx_common_regs.h
+deleted file mode 100644
+index b7b996db129d..000000000000
+--- a/drivers/gpu/drm/zte/zx_common_regs.h
++++ /dev/null
+@@ -1,28 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
+- * Copyright 2017 Linaro Ltd.
+- */
+-
+-#ifndef __ZX_COMMON_REGS_H__
+-#define __ZX_COMMON_REGS_H__
+-
+-/* CSC registers */
+-#define CSC_CTRL0			0x30
+-#define CSC_COV_MODE_SHIFT		16
+-#define CSC_COV_MODE_MASK		(0xffff << CSC_COV_MODE_SHIFT)
+-#define CSC_BT601_IMAGE_RGB2YCBCR	0
+-#define CSC_BT601_IMAGE_YCBCR2RGB	1
+-#define CSC_BT601_VIDEO_RGB2YCBCR	2
+-#define CSC_BT601_VIDEO_YCBCR2RGB	3
+-#define CSC_BT709_IMAGE_RGB2YCBCR	4
+-#define CSC_BT709_IMAGE_YCBCR2RGB	5
+-#define CSC_BT709_VIDEO_RGB2YCBCR	6
+-#define CSC_BT709_VIDEO_YCBCR2RGB	7
+-#define CSC_BT2020_IMAGE_RGB2YCBCR	8
+-#define CSC_BT2020_IMAGE_YCBCR2RGB	9
+-#define CSC_BT2020_VIDEO_RGB2YCBCR	10
+-#define CSC_BT2020_VIDEO_YCBCR2RGB	11
+-#define CSC_WORK_ENABLE			BIT(0)
+-
+-#endif /* __ZX_COMMON_REGS_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_drm_drv.c b/drivers/gpu/drm/zte/zx_drm_drv.c
+deleted file mode 100644
+index 5506336594e2..000000000000
+--- a/drivers/gpu/drm/zte/zx_drm_drv.c
++++ /dev/null
+@@ -1,190 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/component.h>
+-#include <linux/list.h>
+-#include <linux/module.h>
+-#include <linux/of_graph.h>
+-#include <linux/of_platform.h>
+-#include <linux/spinlock.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_crtc.h>
+-#include <drm/drm_drv.h>
+-#include <drm/drm_fb_cma_helper.h>
+-#include <drm/drm_fb_helper.h>
+-#include <drm/drm_gem_cma_helper.h>
+-#include <drm/drm_gem_framebuffer_helper.h>
+-#include <drm/drm_of.h>
+-#include <drm/drm_probe_helper.h>
+-#include <drm/drm_vblank.h>
+-
+-#include "zx_drm_drv.h"
+-#include "zx_vou.h"
+-
+-static const struct drm_mode_config_funcs zx_drm_mode_config_funcs = {
+-	.fb_create = drm_gem_fb_create,
+-	.atomic_check = drm_atomic_helper_check,
+-	.atomic_commit = drm_atomic_helper_commit,
+-};
+-
+-DEFINE_DRM_GEM_CMA_FOPS(zx_drm_fops);
+-
+-static const struct drm_driver zx_drm_driver = {
+-	.driver_features = DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
+-	DRM_GEM_CMA_DRIVER_OPS,
+-	.fops = &zx_drm_fops,
+-	.name = "zx-vou",
+-	.desc = "ZTE VOU Controller DRM",
+-	.date = "20160811",
+-	.major = 1,
+-	.minor = 0,
+-};
+-
+-static int zx_drm_bind(struct device *dev)
+-{
+-	struct drm_device *drm;
+-	int ret;
+-
+-	drm = drm_dev_alloc(&zx_drm_driver, dev);
+-	if (IS_ERR(drm))
+-		return PTR_ERR(drm);
+-
+-	dev_set_drvdata(dev, drm);
+-
+-	drm_mode_config_init(drm);
+-	drm->mode_config.min_width = 16;
+-	drm->mode_config.min_height = 16;
+-	drm->mode_config.max_width = 4096;
+-	drm->mode_config.max_height = 4096;
+-	drm->mode_config.funcs = &zx_drm_mode_config_funcs;
+-
+-	ret = component_bind_all(dev, drm);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to bind all components: %d\n", ret);
+-		goto out_unregister;
+-	}
+-
+-	ret = drm_vblank_init(drm, drm->mode_config.num_crtc);
+-	if (ret < 0) {
+-		DRM_DEV_ERROR(dev, "failed to init vblank: %d\n", ret);
+-		goto out_unbind;
+-	}
+-
+-	/*
+-	 * We will manage irq handler on our own.  In this case, irq_enabled
+-	 * need to be true for using vblank core support.
+-	 */
+-	drm->irq_enabled = true;
+-
+-	drm_mode_config_reset(drm);
+-	drm_kms_helper_poll_init(drm);
+-
+-	ret = drm_dev_register(drm, 0);
+-	if (ret)
+-		goto out_poll_fini;
+-
+-	drm_fbdev_generic_setup(drm, 32);
+-
+-	return 0;
+-
+-out_poll_fini:
+-	drm_kms_helper_poll_fini(drm);
+-	drm_mode_config_cleanup(drm);
+-out_unbind:
+-	component_unbind_all(dev, drm);
+-out_unregister:
+-	dev_set_drvdata(dev, NULL);
+-	drm_dev_put(drm);
+-	return ret;
+-}
+-
+-static void zx_drm_unbind(struct device *dev)
+-{
+-	struct drm_device *drm = dev_get_drvdata(dev);
+-
+-	drm_dev_unregister(drm);
+-	drm_kms_helper_poll_fini(drm);
+-	drm_atomic_helper_shutdown(drm);
+-	drm_mode_config_cleanup(drm);
+-	component_unbind_all(dev, drm);
+-	dev_set_drvdata(dev, NULL);
+-	drm_dev_put(drm);
+-}
+-
+-static const struct component_master_ops zx_drm_master_ops = {
+-	.bind = zx_drm_bind,
+-	.unbind = zx_drm_unbind,
+-};
+-
+-static int compare_of(struct device *dev, void *data)
+-{
+-	return dev->of_node == data;
+-}
+-
+-static int zx_drm_probe(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct device_node *parent = dev->of_node;
+-	struct device_node *child;
+-	struct component_match *match = NULL;
+-	int ret;
+-
+-	ret = devm_of_platform_populate(dev);
+-	if (ret)
+-		return ret;
+-
+-	for_each_available_child_of_node(parent, child)
+-		component_match_add(dev, &match, compare_of, child);
+-
+-	return component_master_add_with_match(dev, &zx_drm_master_ops, match);
+-}
+-
+-static int zx_drm_remove(struct platform_device *pdev)
+-{
+-	component_master_del(&pdev->dev, &zx_drm_master_ops);
+-	return 0;
+-}
+-
+-static const struct of_device_id zx_drm_of_match[] = {
+-	{ .compatible = "zte,zx296718-vou", },
+-	{ /* end */ },
+-};
+-MODULE_DEVICE_TABLE(of, zx_drm_of_match);
+-
+-static struct platform_driver zx_drm_platform_driver = {
+-	.probe = zx_drm_probe,
+-	.remove = zx_drm_remove,
+-	.driver	= {
+-		.name = "zx-drm",
+-		.of_match_table	= zx_drm_of_match,
+-	},
+-};
+-
+-static struct platform_driver *drivers[] = {
+-	&zx_crtc_driver,
+-	&zx_hdmi_driver,
+-	&zx_tvenc_driver,
+-	&zx_vga_driver,
+-	&zx_drm_platform_driver,
+-};
+-
+-static int zx_drm_init(void)
+-{
+-	return platform_register_drivers(drivers, ARRAY_SIZE(drivers));
+-}
+-module_init(zx_drm_init);
+-
+-static void zx_drm_exit(void)
+-{
+-	platform_unregister_drivers(drivers, ARRAY_SIZE(drivers));
+-}
+-module_exit(zx_drm_exit);
+-
+-MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
+-MODULE_DESCRIPTION("ZTE ZX VOU DRM driver");
+-MODULE_LICENSE("GPL v2");
+diff --git a/drivers/gpu/drm/zte/zx_drm_drv.h b/drivers/gpu/drm/zte/zx_drm_drv.h
+deleted file mode 100644
+index 80cdaf479c74..000000000000
+--- a/drivers/gpu/drm/zte/zx_drm_drv.h
++++ /dev/null
+@@ -1,34 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_DRM_DRV_H__
+-#define __ZX_DRM_DRV_H__
+-
+-extern struct platform_driver zx_crtc_driver;
+-extern struct platform_driver zx_hdmi_driver;
+-extern struct platform_driver zx_tvenc_driver;
+-extern struct platform_driver zx_vga_driver;
+-
+-static inline u32 zx_readl(void __iomem *reg)
+-{
+-	return readl_relaxed(reg);
+-}
+-
+-static inline void zx_writel(void __iomem *reg, u32 val)
+-{
+-	writel_relaxed(val, reg);
+-}
+-
+-static inline void zx_writel_mask(void __iomem *reg, u32 mask, u32 val)
+-{
+-	u32 tmp;
+-
+-	tmp = zx_readl(reg);
+-	tmp = (tmp & ~mask) | (val & mask);
+-	zx_writel(reg, tmp);
+-}
+-
+-#endif /* __ZX_DRM_DRV_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_hdmi.c b/drivers/gpu/drm/zte/zx_hdmi.c
+deleted file mode 100644
+index cd79ca0a92a9..000000000000
+--- a/drivers/gpu/drm/zte/zx_hdmi.c
++++ /dev/null
+@@ -1,760 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/component.h>
+-#include <linux/delay.h>
+-#include <linux/err.h>
+-#include <linux/hdmi.h>
+-#include <linux/irq.h>
+-#include <linux/mfd/syscon.h>
+-#include <linux/module.h>
+-#include <linux/mutex.h>
+-#include <linux/of_device.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_edid.h>
+-#include <drm/drm_of.h>
+-#include <drm/drm_probe_helper.h>
+-#include <drm/drm_print.h>
+-#include <drm/drm_simple_kms_helper.h>
+-
+-#include <sound/hdmi-codec.h>
+-
+-#include "zx_hdmi_regs.h"
+-#include "zx_vou.h"
+-
+-#define ZX_HDMI_INFOFRAME_SIZE		31
+-#define DDC_SEGMENT_ADDR		0x30
+-
+-struct zx_hdmi_i2c {
+-	struct i2c_adapter adap;
+-	struct mutex lock;
+-};
+-
+-struct zx_hdmi {
+-	struct drm_connector connector;
+-	struct drm_encoder encoder;
+-	struct zx_hdmi_i2c *ddc;
+-	struct device *dev;
+-	struct drm_device *drm;
+-	void __iomem *mmio;
+-	struct clk *cec_clk;
+-	struct clk *osc_clk;
+-	struct clk *xclk;
+-	bool sink_is_hdmi;
+-	bool sink_has_audio;
+-	struct platform_device *audio_pdev;
+-};
+-
+-#define to_zx_hdmi(x) container_of(x, struct zx_hdmi, x)
+-
+-static inline u8 hdmi_readb(struct zx_hdmi *hdmi, u16 offset)
+-{
+-	return readl_relaxed(hdmi->mmio + offset * 4);
+-}
+-
+-static inline void hdmi_writeb(struct zx_hdmi *hdmi, u16 offset, u8 val)
+-{
+-	writel_relaxed(val, hdmi->mmio + offset * 4);
+-}
+-
+-static inline void hdmi_writeb_mask(struct zx_hdmi *hdmi, u16 offset,
+-				    u8 mask, u8 val)
+-{
+-	u8 tmp;
+-
+-	tmp = hdmi_readb(hdmi, offset);
+-	tmp = (tmp & ~mask) | (val & mask);
+-	hdmi_writeb(hdmi, offset, tmp);
+-}
+-
+-static int zx_hdmi_infoframe_trans(struct zx_hdmi *hdmi,
+-				   union hdmi_infoframe *frame, u8 fsel)
+-{
+-	u8 buffer[ZX_HDMI_INFOFRAME_SIZE];
+-	int num;
+-	int i;
+-
+-	hdmi_writeb(hdmi, TPI_INFO_FSEL, fsel);
+-
+-	num = hdmi_infoframe_pack(frame, buffer, ZX_HDMI_INFOFRAME_SIZE);
+-	if (num < 0) {
+-		DRM_DEV_ERROR(hdmi->dev, "failed to pack infoframe: %d\n", num);
+-		return num;
+-	}
+-
+-	for (i = 0; i < num; i++)
+-		hdmi_writeb(hdmi, TPI_INFO_B0 + i, buffer[i]);
+-
+-	hdmi_writeb_mask(hdmi, TPI_INFO_EN, TPI_INFO_TRANS_RPT,
+-			 TPI_INFO_TRANS_RPT);
+-	hdmi_writeb_mask(hdmi, TPI_INFO_EN, TPI_INFO_TRANS_EN,
+-			 TPI_INFO_TRANS_EN);
+-
+-	return num;
+-}
+-
+-static int zx_hdmi_config_video_vsi(struct zx_hdmi *hdmi,
+-				    struct drm_display_mode *mode)
+-{
+-	union hdmi_infoframe frame;
+-	int ret;
+-
+-	ret = drm_hdmi_vendor_infoframe_from_display_mode(&frame.vendor.hdmi,
+-							  &hdmi->connector,
+-							  mode);
+-	if (ret) {
+-		DRM_DEV_ERROR(hdmi->dev, "failed to get vendor infoframe: %d\n",
+-			      ret);
+-		return ret;
+-	}
+-
+-	return zx_hdmi_infoframe_trans(hdmi, &frame, FSEL_VSIF);
+-}
+-
+-static int zx_hdmi_config_video_avi(struct zx_hdmi *hdmi,
+-				    struct drm_display_mode *mode)
+-{
+-	union hdmi_infoframe frame;
+-	int ret;
+-
+-	ret = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi,
+-						       &hdmi->connector,
+-						       mode);
+-	if (ret) {
+-		DRM_DEV_ERROR(hdmi->dev, "failed to get avi infoframe: %d\n",
+-			      ret);
+-		return ret;
+-	}
+-
+-	/* We always use YUV444 for HDMI output. */
+-	frame.avi.colorspace = HDMI_COLORSPACE_YUV444;
+-
+-	return zx_hdmi_infoframe_trans(hdmi, &frame, FSEL_AVI);
+-}
+-
+-static void zx_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+-				     struct drm_display_mode *mode,
+-				     struct drm_display_mode *adj_mode)
+-{
+-	struct zx_hdmi *hdmi = to_zx_hdmi(encoder);
+-
+-	if (hdmi->sink_is_hdmi) {
+-		zx_hdmi_config_video_avi(hdmi, mode);
+-		zx_hdmi_config_video_vsi(hdmi, mode);
+-	}
+-}
+-
+-static void zx_hdmi_phy_start(struct zx_hdmi *hdmi)
+-{
+-	/* Copy from ZTE BSP code */
+-	hdmi_writeb(hdmi, 0x222, 0x0);
+-	hdmi_writeb(hdmi, 0x224, 0x4);
+-	hdmi_writeb(hdmi, 0x909, 0x0);
+-	hdmi_writeb(hdmi, 0x7b0, 0x90);
+-	hdmi_writeb(hdmi, 0x7b1, 0x00);
+-	hdmi_writeb(hdmi, 0x7b2, 0xa7);
+-	hdmi_writeb(hdmi, 0x7b8, 0xaa);
+-	hdmi_writeb(hdmi, 0x7b2, 0xa7);
+-	hdmi_writeb(hdmi, 0x7b3, 0x0f);
+-	hdmi_writeb(hdmi, 0x7b4, 0x0f);
+-	hdmi_writeb(hdmi, 0x7b5, 0x55);
+-	hdmi_writeb(hdmi, 0x7b7, 0x03);
+-	hdmi_writeb(hdmi, 0x7b9, 0x12);
+-	hdmi_writeb(hdmi, 0x7ba, 0x32);
+-	hdmi_writeb(hdmi, 0x7bc, 0x68);
+-	hdmi_writeb(hdmi, 0x7be, 0x40);
+-	hdmi_writeb(hdmi, 0x7bf, 0x84);
+-	hdmi_writeb(hdmi, 0x7c1, 0x0f);
+-	hdmi_writeb(hdmi, 0x7c8, 0x02);
+-	hdmi_writeb(hdmi, 0x7c9, 0x03);
+-	hdmi_writeb(hdmi, 0x7ca, 0x40);
+-	hdmi_writeb(hdmi, 0x7dc, 0x31);
+-	hdmi_writeb(hdmi, 0x7e2, 0x04);
+-	hdmi_writeb(hdmi, 0x7e0, 0x06);
+-	hdmi_writeb(hdmi, 0x7cb, 0x68);
+-	hdmi_writeb(hdmi, 0x7f9, 0x02);
+-	hdmi_writeb(hdmi, 0x7b6, 0x02);
+-	hdmi_writeb(hdmi, 0x7f3, 0x0);
+-}
+-
+-static void zx_hdmi_hw_enable(struct zx_hdmi *hdmi)
+-{
+-	/* Enable pclk */
+-	hdmi_writeb_mask(hdmi, CLKPWD, CLKPWD_PDIDCK, CLKPWD_PDIDCK);
+-
+-	/* Enable HDMI for TX */
+-	hdmi_writeb_mask(hdmi, FUNC_SEL, FUNC_HDMI_EN, FUNC_HDMI_EN);
+-
+-	/* Enable deep color packet */
+-	hdmi_writeb_mask(hdmi, P2T_CTRL, P2T_DC_PKT_EN, P2T_DC_PKT_EN);
+-
+-	/* Enable HDMI/MHL mode for output */
+-	hdmi_writeb_mask(hdmi, TEST_TXCTRL, TEST_TXCTRL_HDMI_MODE,
+-			 TEST_TXCTRL_HDMI_MODE);
+-
+-	/* Configure reg_qc_sel */
+-	hdmi_writeb(hdmi, HDMICTL4, 0x3);
+-
+-	/* Enable interrupt */
+-	hdmi_writeb_mask(hdmi, INTR1_MASK, INTR1_MONITOR_DETECT,
+-			 INTR1_MONITOR_DETECT);
+-
+-	/* Start up phy */
+-	zx_hdmi_phy_start(hdmi);
+-}
+-
+-static void zx_hdmi_hw_disable(struct zx_hdmi *hdmi)
+-{
+-	/* Disable interrupt */
+-	hdmi_writeb_mask(hdmi, INTR1_MASK, INTR1_MONITOR_DETECT, 0);
+-
+-	/* Disable deep color packet */
+-	hdmi_writeb_mask(hdmi, P2T_CTRL, P2T_DC_PKT_EN, P2T_DC_PKT_EN);
+-
+-	/* Disable HDMI for TX */
+-	hdmi_writeb_mask(hdmi, FUNC_SEL, FUNC_HDMI_EN, 0);
+-
+-	/* Disable pclk */
+-	hdmi_writeb_mask(hdmi, CLKPWD, CLKPWD_PDIDCK, 0);
+-}
+-
+-static void zx_hdmi_encoder_enable(struct drm_encoder *encoder)
+-{
+-	struct zx_hdmi *hdmi = to_zx_hdmi(encoder);
+-
+-	clk_prepare_enable(hdmi->cec_clk);
+-	clk_prepare_enable(hdmi->osc_clk);
+-	clk_prepare_enable(hdmi->xclk);
+-
+-	zx_hdmi_hw_enable(hdmi);
+-
+-	vou_inf_enable(VOU_HDMI, encoder->crtc);
+-}
+-
+-static void zx_hdmi_encoder_disable(struct drm_encoder *encoder)
+-{
+-	struct zx_hdmi *hdmi = to_zx_hdmi(encoder);
+-
+-	vou_inf_disable(VOU_HDMI, encoder->crtc);
+-
+-	zx_hdmi_hw_disable(hdmi);
+-
+-	clk_disable_unprepare(hdmi->xclk);
+-	clk_disable_unprepare(hdmi->osc_clk);
+-	clk_disable_unprepare(hdmi->cec_clk);
+-}
+-
+-static const struct drm_encoder_helper_funcs zx_hdmi_encoder_helper_funcs = {
+-	.enable	= zx_hdmi_encoder_enable,
+-	.disable = zx_hdmi_encoder_disable,
+-	.mode_set = zx_hdmi_encoder_mode_set,
+-};
+-
+-static int zx_hdmi_connector_get_modes(struct drm_connector *connector)
+-{
+-	struct zx_hdmi *hdmi = to_zx_hdmi(connector);
+-	struct edid *edid;
+-	int ret;
+-
+-	edid = drm_get_edid(connector, &hdmi->ddc->adap);
+-	if (!edid)
+-		return 0;
+-
+-	hdmi->sink_is_hdmi = drm_detect_hdmi_monitor(edid);
+-	hdmi->sink_has_audio = drm_detect_monitor_audio(edid);
+-	drm_connector_update_edid_property(connector, edid);
+-	ret = drm_add_edid_modes(connector, edid);
+-	kfree(edid);
+-
+-	return ret;
+-}
+-
+-static enum drm_mode_status
+-zx_hdmi_connector_mode_valid(struct drm_connector *connector,
+-			     struct drm_display_mode *mode)
+-{
+-	return MODE_OK;
+-}
+-
+-static struct drm_connector_helper_funcs zx_hdmi_connector_helper_funcs = {
+-	.get_modes = zx_hdmi_connector_get_modes,
+-	.mode_valid = zx_hdmi_connector_mode_valid,
+-};
+-
+-static enum drm_connector_status
+-zx_hdmi_connector_detect(struct drm_connector *connector, bool force)
+-{
+-	struct zx_hdmi *hdmi = to_zx_hdmi(connector);
+-
+-	return (hdmi_readb(hdmi, TPI_HPD_RSEN) & TPI_HPD_CONNECTION) ?
+-		connector_status_connected : connector_status_disconnected;
+-}
+-
+-static const struct drm_connector_funcs zx_hdmi_connector_funcs = {
+-	.fill_modes = drm_helper_probe_single_connector_modes,
+-	.detect = zx_hdmi_connector_detect,
+-	.destroy = drm_connector_cleanup,
+-	.reset = drm_atomic_helper_connector_reset,
+-	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+-};
+-
+-static int zx_hdmi_register(struct drm_device *drm, struct zx_hdmi *hdmi)
+-{
+-	struct drm_encoder *encoder = &hdmi->encoder;
+-
+-	encoder->possible_crtcs = VOU_CRTC_MASK;
+-
+-	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
+-	drm_encoder_helper_add(encoder, &zx_hdmi_encoder_helper_funcs);
+-
+-	hdmi->connector.polled = DRM_CONNECTOR_POLL_HPD;
+-
+-	drm_connector_init_with_ddc(drm, &hdmi->connector,
+-				    &zx_hdmi_connector_funcs,
+-				    DRM_MODE_CONNECTOR_HDMIA,
+-				    &hdmi->ddc->adap);
+-	drm_connector_helper_add(&hdmi->connector,
+-				 &zx_hdmi_connector_helper_funcs);
+-
+-	drm_connector_attach_encoder(&hdmi->connector, encoder);
+-
+-	return 0;
+-}
+-
+-static irqreturn_t zx_hdmi_irq_thread(int irq, void *dev_id)
+-{
+-	struct zx_hdmi *hdmi = dev_id;
+-
+-	drm_helper_hpd_irq_event(hdmi->connector.dev);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static irqreturn_t zx_hdmi_irq_handler(int irq, void *dev_id)
+-{
+-	struct zx_hdmi *hdmi = dev_id;
+-	u8 lstat;
+-
+-	lstat = hdmi_readb(hdmi, L1_INTR_STAT);
+-
+-	/* Monitor detect/HPD interrupt */
+-	if (lstat & L1_INTR_STAT_INTR1) {
+-		u8 stat;
+-
+-		stat = hdmi_readb(hdmi, INTR1_STAT);
+-		hdmi_writeb(hdmi, INTR1_STAT, stat);
+-
+-		if (stat & INTR1_MONITOR_DETECT)
+-			return IRQ_WAKE_THREAD;
+-	}
+-
+-	return IRQ_NONE;
+-}
+-
+-static int zx_hdmi_audio_startup(struct device *dev, void *data)
+-{
+-	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
+-	struct drm_encoder *encoder = &hdmi->encoder;
+-
+-	vou_inf_hdmi_audio_sel(encoder->crtc, VOU_HDMI_AUD_SPDIF);
+-
+-	return 0;
+-}
+-
+-static void zx_hdmi_audio_shutdown(struct device *dev, void *data)
+-{
+-	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
+-
+-	/* Disable audio input */
+-	hdmi_writeb_mask(hdmi, AUD_EN, AUD_IN_EN, 0);
+-}
+-
+-static inline int zx_hdmi_audio_get_n(unsigned int fs)
+-{
+-	unsigned int n;
+-
+-	if (fs && (fs % 44100) == 0)
+-		n = 6272 * (fs / 44100);
+-	else
+-		n = fs * 128 / 1000;
+-
+-	return n;
+-}
+-
+-static int zx_hdmi_audio_hw_params(struct device *dev,
+-				   void *data,
+-				   struct hdmi_codec_daifmt *daifmt,
+-				   struct hdmi_codec_params *params)
+-{
+-	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
+-	struct hdmi_audio_infoframe *cea = &params->cea;
+-	union hdmi_infoframe frame;
+-	int n;
+-
+-	/* We only support spdif for now */
+-	if (daifmt->fmt != HDMI_SPDIF) {
+-		DRM_DEV_ERROR(hdmi->dev, "invalid daifmt %d\n", daifmt->fmt);
+-		return -EINVAL;
+-	}
+-
+-	switch (params->sample_width) {
+-	case 16:
+-		hdmi_writeb_mask(hdmi, TPI_AUD_CONFIG, SPDIF_SAMPLE_SIZE_MASK,
+-				 SPDIF_SAMPLE_SIZE_16BIT);
+-		break;
+-	case 20:
+-		hdmi_writeb_mask(hdmi, TPI_AUD_CONFIG, SPDIF_SAMPLE_SIZE_MASK,
+-				 SPDIF_SAMPLE_SIZE_20BIT);
+-		break;
+-	case 24:
+-		hdmi_writeb_mask(hdmi, TPI_AUD_CONFIG, SPDIF_SAMPLE_SIZE_MASK,
+-				 SPDIF_SAMPLE_SIZE_24BIT);
+-		break;
+-	default:
+-		DRM_DEV_ERROR(hdmi->dev, "invalid sample width %d\n",
+-			      params->sample_width);
+-		return -EINVAL;
+-	}
+-
+-	/* CTS is calculated by hardware, and we only need to take care of N */
+-	n = zx_hdmi_audio_get_n(params->sample_rate);
+-	hdmi_writeb(hdmi, N_SVAL1, n & 0xff);
+-	hdmi_writeb(hdmi, N_SVAL2, (n >> 8) & 0xff);
+-	hdmi_writeb(hdmi, N_SVAL3, (n >> 16) & 0xf);
+-
+-	/* Enable spdif mode */
+-	hdmi_writeb_mask(hdmi, AUD_MODE, SPDIF_EN, SPDIF_EN);
+-
+-	/* Enable audio input */
+-	hdmi_writeb_mask(hdmi, AUD_EN, AUD_IN_EN, AUD_IN_EN);
+-
+-	memcpy(&frame.audio, cea, sizeof(*cea));
+-
+-	return zx_hdmi_infoframe_trans(hdmi, &frame, FSEL_AUDIO);
+-}
+-
+-static int zx_hdmi_audio_mute(struct device *dev, void *data,
+-			      bool enable, int direction)
+-{
+-	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
+-
+-	if (enable)
+-		hdmi_writeb_mask(hdmi, TPI_AUD_CONFIG, TPI_AUD_MUTE,
+-				 TPI_AUD_MUTE);
+-	else
+-		hdmi_writeb_mask(hdmi, TPI_AUD_CONFIG, TPI_AUD_MUTE, 0);
+-
+-	return 0;
+-}
+-
+-static int zx_hdmi_audio_get_eld(struct device *dev, void *data,
+-				 uint8_t *buf, size_t len)
+-{
+-	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
+-	struct drm_connector *connector = &hdmi->connector;
+-
+-	memcpy(buf, connector->eld, min(sizeof(connector->eld), len));
+-
+-	return 0;
+-}
+-
+-static const struct hdmi_codec_ops zx_hdmi_codec_ops = {
+-	.audio_startup = zx_hdmi_audio_startup,
+-	.hw_params = zx_hdmi_audio_hw_params,
+-	.audio_shutdown = zx_hdmi_audio_shutdown,
+-	.mute_stream = zx_hdmi_audio_mute,
+-	.get_eld = zx_hdmi_audio_get_eld,
+-	.no_capture_mute = 1,
+-};
+-
+-static struct hdmi_codec_pdata zx_hdmi_codec_pdata = {
+-	.ops = &zx_hdmi_codec_ops,
+-	.spdif = 1,
+-};
+-
+-static int zx_hdmi_audio_register(struct zx_hdmi *hdmi)
+-{
+-	struct platform_device *pdev;
+-
+-	pdev = platform_device_register_data(hdmi->dev, HDMI_CODEC_DRV_NAME,
+-					     PLATFORM_DEVID_AUTO,
+-					     &zx_hdmi_codec_pdata,
+-					     sizeof(zx_hdmi_codec_pdata));
+-	if (IS_ERR(pdev))
+-		return PTR_ERR(pdev);
+-
+-	hdmi->audio_pdev = pdev;
+-
+-	return 0;
+-}
+-
+-static int zx_hdmi_i2c_read(struct zx_hdmi *hdmi, struct i2c_msg *msg)
+-{
+-	int len = msg->len;
+-	u8 *buf = msg->buf;
+-	int retry = 0;
+-	int ret = 0;
+-
+-	/* Bits [9:8] of bytes */
+-	hdmi_writeb(hdmi, ZX_DDC_DIN_CNT2, (len >> 8) & 0xff);
+-	/* Bits [7:0] of bytes */
+-	hdmi_writeb(hdmi, ZX_DDC_DIN_CNT1, len & 0xff);
+-
+-	/* Clear FIFO */
+-	hdmi_writeb_mask(hdmi, ZX_DDC_CMD, DDC_CMD_MASK, DDC_CMD_CLEAR_FIFO);
+-
+-	/* Kick off the read */
+-	hdmi_writeb_mask(hdmi, ZX_DDC_CMD, DDC_CMD_MASK,
+-			 DDC_CMD_SEQUENTIAL_READ);
+-
+-	while (len > 0) {
+-		int cnt, i;
+-
+-		/* FIFO needs some time to get ready */
+-		usleep_range(500, 1000);
+-
+-		cnt = hdmi_readb(hdmi, ZX_DDC_DOUT_CNT) & DDC_DOUT_CNT_MASK;
+-		if (cnt == 0) {
+-			if (++retry > 5) {
+-				DRM_DEV_ERROR(hdmi->dev,
+-					      "DDC FIFO read timed out!");
+-				return -ETIMEDOUT;
+-			}
+-			continue;
+-		}
+-
+-		for (i = 0; i < cnt; i++)
+-			*buf++ = hdmi_readb(hdmi, ZX_DDC_DATA);
+-		len -= cnt;
+-	}
+-
+-	return ret;
+-}
+-
+-static int zx_hdmi_i2c_write(struct zx_hdmi *hdmi, struct i2c_msg *msg)
+-{
+-	/*
+-	 * The DDC I2C adapter is only for reading EDID data, so we assume
+-	 * that the write to this adapter must be the EDID data offset.
+-	 */
+-	if ((msg->len != 1) ||
+-	    ((msg->addr != DDC_ADDR) && (msg->addr != DDC_SEGMENT_ADDR)))
+-		return -EINVAL;
+-
+-	if (msg->addr == DDC_SEGMENT_ADDR)
+-		hdmi_writeb(hdmi, ZX_DDC_SEGM, msg->addr << 1);
+-	else if (msg->addr == DDC_ADDR)
+-		hdmi_writeb(hdmi, ZX_DDC_ADDR, msg->addr << 1);
+-
+-	hdmi_writeb(hdmi, ZX_DDC_OFFSET, msg->buf[0]);
+-
+-	return 0;
+-}
+-
+-static int zx_hdmi_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+-			    int num)
+-{
+-	struct zx_hdmi *hdmi = i2c_get_adapdata(adap);
+-	struct zx_hdmi_i2c *ddc = hdmi->ddc;
+-	int i, ret = 0;
+-
+-	mutex_lock(&ddc->lock);
+-
+-	/* Enable DDC master access */
+-	hdmi_writeb_mask(hdmi, TPI_DDC_MASTER_EN, HW_DDC_MASTER, HW_DDC_MASTER);
+-
+-	for (i = 0; i < num; i++) {
+-		DRM_DEV_DEBUG(hdmi->dev,
+-			      "xfer: num: %d/%d, len: %d, flags: %#x\n",
+-			      i + 1, num, msgs[i].len, msgs[i].flags);
+-
+-		if (msgs[i].flags & I2C_M_RD)
+-			ret = zx_hdmi_i2c_read(hdmi, &msgs[i]);
+-		else
+-			ret = zx_hdmi_i2c_write(hdmi, &msgs[i]);
+-
+-		if (ret < 0)
+-			break;
+-	}
+-
+-	if (!ret)
+-		ret = num;
+-
+-	/* Disable DDC master access */
+-	hdmi_writeb_mask(hdmi, TPI_DDC_MASTER_EN, HW_DDC_MASTER, 0);
+-
+-	mutex_unlock(&ddc->lock);
+-
+-	return ret;
+-}
+-
+-static u32 zx_hdmi_i2c_func(struct i2c_adapter *adapter)
+-{
+-	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+-}
+-
+-static const struct i2c_algorithm zx_hdmi_algorithm = {
+-	.master_xfer	= zx_hdmi_i2c_xfer,
+-	.functionality	= zx_hdmi_i2c_func,
+-};
+-
+-static int zx_hdmi_ddc_register(struct zx_hdmi *hdmi)
+-{
+-	struct i2c_adapter *adap;
+-	struct zx_hdmi_i2c *ddc;
+-	int ret;
+-
+-	ddc = devm_kzalloc(hdmi->dev, sizeof(*ddc), GFP_KERNEL);
+-	if (!ddc)
+-		return -ENOMEM;
+-
+-	hdmi->ddc = ddc;
+-	mutex_init(&ddc->lock);
+-
+-	adap = &ddc->adap;
+-	adap->owner = THIS_MODULE;
+-	adap->class = I2C_CLASS_DDC;
+-	adap->dev.parent = hdmi->dev;
+-	adap->algo = &zx_hdmi_algorithm;
+-	snprintf(adap->name, sizeof(adap->name), "zx hdmi i2c");
+-
+-	ret = i2c_add_adapter(adap);
+-	if (ret) {
+-		DRM_DEV_ERROR(hdmi->dev, "failed to add I2C adapter: %d\n",
+-			      ret);
+-		return ret;
+-	}
+-
+-	i2c_set_adapdata(adap, hdmi);
+-
+-	return 0;
+-}
+-
+-static int zx_hdmi_bind(struct device *dev, struct device *master, void *data)
+-{
+-	struct platform_device *pdev = to_platform_device(dev);
+-	struct drm_device *drm = data;
+-	struct resource *res;
+-	struct zx_hdmi *hdmi;
+-	int irq;
+-	int ret;
+-
+-	hdmi = devm_kzalloc(dev, sizeof(*hdmi), GFP_KERNEL);
+-	if (!hdmi)
+-		return -ENOMEM;
+-
+-	hdmi->dev = dev;
+-	hdmi->drm = drm;
+-
+-	dev_set_drvdata(dev, hdmi);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	hdmi->mmio = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(hdmi->mmio)) {
+-		ret = PTR_ERR(hdmi->mmio);
+-		DRM_DEV_ERROR(dev, "failed to remap hdmi region: %d\n", ret);
+-		return ret;
+-	}
+-
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
+-		return irq;
+-
+-	hdmi->cec_clk = devm_clk_get(hdmi->dev, "osc_cec");
+-	if (IS_ERR(hdmi->cec_clk)) {
+-		ret = PTR_ERR(hdmi->cec_clk);
+-		DRM_DEV_ERROR(dev, "failed to get cec_clk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	hdmi->osc_clk = devm_clk_get(hdmi->dev, "osc_clk");
+-	if (IS_ERR(hdmi->osc_clk)) {
+-		ret = PTR_ERR(hdmi->osc_clk);
+-		DRM_DEV_ERROR(dev, "failed to get osc_clk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	hdmi->xclk = devm_clk_get(hdmi->dev, "xclk");
+-	if (IS_ERR(hdmi->xclk)) {
+-		ret = PTR_ERR(hdmi->xclk);
+-		DRM_DEV_ERROR(dev, "failed to get xclk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_hdmi_ddc_register(hdmi);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to register ddc: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_hdmi_audio_register(hdmi);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to register audio: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_hdmi_register(drm, hdmi);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to register hdmi: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = devm_request_threaded_irq(dev, irq, zx_hdmi_irq_handler,
+-					zx_hdmi_irq_thread, IRQF_SHARED,
+-					dev_name(dev), hdmi);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to request threaded irq: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static void zx_hdmi_unbind(struct device *dev, struct device *master,
+-			   void *data)
+-{
+-	struct zx_hdmi *hdmi = dev_get_drvdata(dev);
+-
+-	hdmi->connector.funcs->destroy(&hdmi->connector);
+-	hdmi->encoder.funcs->destroy(&hdmi->encoder);
+-
+-	if (hdmi->audio_pdev)
+-		platform_device_unregister(hdmi->audio_pdev);
+-}
+-
+-static const struct component_ops zx_hdmi_component_ops = {
+-	.bind = zx_hdmi_bind,
+-	.unbind = zx_hdmi_unbind,
+-};
+-
+-static int zx_hdmi_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &zx_hdmi_component_ops);
+-}
+-
+-static int zx_hdmi_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &zx_hdmi_component_ops);
+-	return 0;
+-}
+-
+-static const struct of_device_id zx_hdmi_of_match[] = {
+-	{ .compatible = "zte,zx296718-hdmi", },
+-	{ /* end */ },
+-};
+-MODULE_DEVICE_TABLE(of, zx_hdmi_of_match);
+-
+-struct platform_driver zx_hdmi_driver = {
+-	.probe = zx_hdmi_probe,
+-	.remove = zx_hdmi_remove,
+-	.driver	= {
+-		.name = "zx-hdmi",
+-		.of_match_table	= zx_hdmi_of_match,
+-	},
+-};
+diff --git a/drivers/gpu/drm/zte/zx_hdmi_regs.h b/drivers/gpu/drm/zte/zx_hdmi_regs.h
+deleted file mode 100644
+index 397949e64eff..000000000000
+--- a/drivers/gpu/drm/zte/zx_hdmi_regs.h
++++ /dev/null
+@@ -1,66 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_HDMI_REGS_H__
+-#define __ZX_HDMI_REGS_H__
+-
+-#define FUNC_SEL			0x000b
+-#define FUNC_HDMI_EN			BIT(0)
+-#define CLKPWD				0x000d
+-#define CLKPWD_PDIDCK			BIT(2)
+-#define P2T_CTRL			0x0066
+-#define P2T_DC_PKT_EN			BIT(7)
+-#define L1_INTR_STAT			0x007e
+-#define L1_INTR_STAT_INTR1		BIT(0)
+-#define INTR1_STAT			0x008f
+-#define INTR1_MASK			0x0095
+-#define INTR1_MONITOR_DETECT		(BIT(5) | BIT(6))
+-#define ZX_DDC_ADDR			0x00ed
+-#define ZX_DDC_SEGM			0x00ee
+-#define ZX_DDC_OFFSET			0x00ef
+-#define ZX_DDC_DIN_CNT1			0x00f0
+-#define ZX_DDC_DIN_CNT2			0x00f1
+-#define ZX_DDC_CMD			0x00f3
+-#define DDC_CMD_MASK			0xf
+-#define DDC_CMD_CLEAR_FIFO		0x9
+-#define DDC_CMD_SEQUENTIAL_READ		0x2
+-#define ZX_DDC_DATA			0x00f4
+-#define ZX_DDC_DOUT_CNT			0x00f5
+-#define DDC_DOUT_CNT_MASK		0x1f
+-#define TEST_TXCTRL			0x00f7
+-#define TEST_TXCTRL_HDMI_MODE		BIT(1)
+-#define HDMICTL4			0x0235
+-#define TPI_HPD_RSEN			0x063b
+-#define TPI_HPD_CONNECTION		(BIT(1) | BIT(2))
+-#define TPI_INFO_FSEL			0x06bf
+-#define FSEL_AVI			0
+-#define FSEL_GBD			1
+-#define FSEL_AUDIO			2
+-#define FSEL_SPD			3
+-#define FSEL_MPEG			4
+-#define FSEL_VSIF			5
+-#define TPI_INFO_B0			0x06c0
+-#define TPI_INFO_EN			0x06df
+-#define TPI_INFO_TRANS_EN		BIT(7)
+-#define TPI_INFO_TRANS_RPT		BIT(6)
+-#define TPI_DDC_MASTER_EN		0x06f8
+-#define HW_DDC_MASTER			BIT(7)
+-#define N_SVAL1				0xa03
+-#define N_SVAL2				0xa04
+-#define N_SVAL3				0xa05
+-#define AUD_EN				0xa13
+-#define AUD_IN_EN			BIT(0)
+-#define AUD_MODE			0xa14
+-#define SPDIF_EN			BIT(1)
+-#define TPI_AUD_CONFIG			0xa62
+-#define SPDIF_SAMPLE_SIZE_SHIFT		6
+-#define SPDIF_SAMPLE_SIZE_MASK		(0x3 << SPDIF_SAMPLE_SIZE_SHIFT)
+-#define SPDIF_SAMPLE_SIZE_16BIT		(0x1 << SPDIF_SAMPLE_SIZE_SHIFT)
+-#define SPDIF_SAMPLE_SIZE_20BIT		(0x2 << SPDIF_SAMPLE_SIZE_SHIFT)
+-#define SPDIF_SAMPLE_SIZE_24BIT		(0x3 << SPDIF_SAMPLE_SIZE_SHIFT)
+-#define TPI_AUD_MUTE			BIT(4)
+-
+-#endif /* __ZX_HDMI_REGS_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_plane.c b/drivers/gpu/drm/zte/zx_plane.c
+deleted file mode 100644
+index 93bcca428e35..000000000000
+--- a/drivers/gpu/drm/zte/zx_plane.c
++++ /dev/null
+@@ -1,537 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#include <drm/drm_atomic.h>
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_fb_cma_helper.h>
+-#include <drm/drm_fourcc.h>
+-#include <drm/drm_gem_cma_helper.h>
+-#include <drm/drm_modeset_helper_vtables.h>
+-#include <drm/drm_plane_helper.h>
+-
+-#include "zx_common_regs.h"
+-#include "zx_drm_drv.h"
+-#include "zx_plane.h"
+-#include "zx_plane_regs.h"
+-#include "zx_vou.h"
+-
+-static const uint32_t gl_formats[] = {
+-	DRM_FORMAT_ARGB8888,
+-	DRM_FORMAT_XRGB8888,
+-	DRM_FORMAT_RGB888,
+-	DRM_FORMAT_RGB565,
+-	DRM_FORMAT_ARGB1555,
+-	DRM_FORMAT_ARGB4444,
+-};
+-
+-static const uint32_t vl_formats[] = {
+-	DRM_FORMAT_NV12,	/* Semi-planar YUV420 */
+-	DRM_FORMAT_YUV420,	/* Planar YUV420 */
+-	DRM_FORMAT_YUYV,	/* Packed YUV422 */
+-	DRM_FORMAT_YVYU,
+-	DRM_FORMAT_UYVY,
+-	DRM_FORMAT_VYUY,
+-	DRM_FORMAT_YUV444,	/* YUV444 8bit */
+-	/*
+-	 * TODO: add formats below that HW supports:
+-	 *  - YUV420 P010
+-	 *  - YUV420 Hantro
+-	 *  - YUV444 10bit
+-	 */
+-};
+-
+-#define FRAC_16_16(mult, div)    (((mult) << 16) / (div))
+-
+-static int zx_vl_plane_atomic_check(struct drm_plane *plane,
+-				    struct drm_atomic_state *state)
+-{
+-	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state,
+-									     plane);
+-	struct drm_framebuffer *fb = plane_state->fb;
+-	struct drm_crtc *crtc = plane_state->crtc;
+-	struct drm_crtc_state *crtc_state;
+-	int min_scale = FRAC_16_16(1, 8);
+-	int max_scale = FRAC_16_16(8, 1);
+-
+-	if (!crtc || WARN_ON(!fb))
+-		return 0;
+-
+-	crtc_state = drm_atomic_get_existing_crtc_state(state,
+-							crtc);
+-	if (WARN_ON(!crtc_state))
+-		return -EINVAL;
+-
+-	/* nothing to check when disabling or disabled */
+-	if (!crtc_state->enable)
+-		return 0;
+-
+-	/* plane must be enabled */
+-	if (!plane_state->crtc)
+-		return -EINVAL;
+-
+-	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+-						   min_scale, max_scale,
+-						   true, true);
+-}
+-
+-static int zx_vl_get_fmt(uint32_t format)
+-{
+-	switch (format) {
+-	case DRM_FORMAT_NV12:
+-		return VL_FMT_YUV420;
+-	case DRM_FORMAT_YUV420:
+-		return VL_YUV420_PLANAR | VL_FMT_YUV420;
+-	case DRM_FORMAT_YUYV:
+-		return VL_YUV422_YUYV | VL_FMT_YUV422;
+-	case DRM_FORMAT_YVYU:
+-		return VL_YUV422_YVYU | VL_FMT_YUV422;
+-	case DRM_FORMAT_UYVY:
+-		return VL_YUV422_UYVY | VL_FMT_YUV422;
+-	case DRM_FORMAT_VYUY:
+-		return VL_YUV422_VYUY | VL_FMT_YUV422;
+-	case DRM_FORMAT_YUV444:
+-		return VL_FMT_YUV444_8BIT;
+-	default:
+-		WARN_ONCE(1, "invalid pixel format %d\n", format);
+-		return -EINVAL;
+-	}
+-}
+-
+-static inline void zx_vl_set_update(struct zx_plane *zplane)
+-{
+-	void __iomem *layer = zplane->layer;
+-
+-	zx_writel_mask(layer + VL_CTRL0, VL_UPDATE, VL_UPDATE);
+-}
+-
+-static inline void zx_vl_rsz_set_update(struct zx_plane *zplane)
+-{
+-	zx_writel(zplane->rsz + RSZ_VL_ENABLE_CFG, 1);
+-}
+-
+-static int zx_vl_rsz_get_fmt(uint32_t format)
+-{
+-	switch (format) {
+-	case DRM_FORMAT_NV12:
+-	case DRM_FORMAT_YUV420:
+-		return RSZ_VL_FMT_YCBCR420;
+-	case DRM_FORMAT_YUYV:
+-	case DRM_FORMAT_YVYU:
+-	case DRM_FORMAT_UYVY:
+-	case DRM_FORMAT_VYUY:
+-		return RSZ_VL_FMT_YCBCR422;
+-	case DRM_FORMAT_YUV444:
+-		return RSZ_VL_FMT_YCBCR444;
+-	default:
+-		WARN_ONCE(1, "invalid pixel format %d\n", format);
+-		return -EINVAL;
+-	}
+-}
+-
+-static inline u32 rsz_step_value(u32 src, u32 dst)
+-{
+-	u32 val = 0;
+-
+-	if (src == dst)
+-		val = 0;
+-	else if (src < dst)
+-		val = RSZ_PARA_STEP((src << 16) / dst);
+-	else if (src > dst)
+-		val = RSZ_DATA_STEP(src / dst) |
+-		      RSZ_PARA_STEP(((src << 16) / dst) & 0xffff);
+-
+-	return val;
+-}
+-
+-static void zx_vl_rsz_setup(struct zx_plane *zplane, uint32_t format,
+-			    u32 src_w, u32 src_h, u32 dst_w, u32 dst_h)
+-{
+-	void __iomem *rsz = zplane->rsz;
+-	u32 src_chroma_w = src_w;
+-	u32 src_chroma_h = src_h;
+-	int fmt;
+-
+-	/* Set up source and destination resolution */
+-	zx_writel(rsz + RSZ_SRC_CFG, RSZ_VER(src_h - 1) | RSZ_HOR(src_w - 1));
+-	zx_writel(rsz + RSZ_DEST_CFG, RSZ_VER(dst_h - 1) | RSZ_HOR(dst_w - 1));
+-
+-	/* Configure data format for VL RSZ */
+-	fmt = zx_vl_rsz_get_fmt(format);
+-	if (fmt >= 0)
+-		zx_writel_mask(rsz + RSZ_VL_CTRL_CFG, RSZ_VL_FMT_MASK, fmt);
+-
+-	/* Calculate Chroma height and width */
+-	if (fmt == RSZ_VL_FMT_YCBCR420) {
+-		src_chroma_w = src_w >> 1;
+-		src_chroma_h = src_h >> 1;
+-	} else if (fmt == RSZ_VL_FMT_YCBCR422) {
+-		src_chroma_w = src_w >> 1;
+-	}
+-
+-	/* Set up Luma and Chroma step registers */
+-	zx_writel(rsz + RSZ_VL_LUMA_HOR, rsz_step_value(src_w, dst_w));
+-	zx_writel(rsz + RSZ_VL_LUMA_VER, rsz_step_value(src_h, dst_h));
+-	zx_writel(rsz + RSZ_VL_CHROMA_HOR, rsz_step_value(src_chroma_w, dst_w));
+-	zx_writel(rsz + RSZ_VL_CHROMA_VER, rsz_step_value(src_chroma_h, dst_h));
+-
+-	zx_vl_rsz_set_update(zplane);
+-}
+-
+-static void zx_vl_plane_atomic_update(struct drm_plane *plane,
+-				      struct drm_atomic_state *state)
+-{
+-	struct zx_plane *zplane = to_zx_plane(plane);
+-	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+-									   plane);
+-	struct drm_framebuffer *fb = new_state->fb;
+-	struct drm_rect *src = &new_state->src;
+-	struct drm_rect *dst = &new_state->dst;
+-	struct drm_gem_cma_object *cma_obj;
+-	void __iomem *layer = zplane->layer;
+-	void __iomem *hbsc = zplane->hbsc;
+-	void __iomem *paddr_reg;
+-	dma_addr_t paddr;
+-	u32 src_x, src_y, src_w, src_h;
+-	u32 dst_x, dst_y, dst_w, dst_h;
+-	uint32_t format;
+-	int fmt;
+-	int i;
+-
+-	if (!fb)
+-		return;
+-
+-	format = fb->format->format;
+-
+-	src_x = src->x1 >> 16;
+-	src_y = src->y1 >> 16;
+-	src_w = drm_rect_width(src) >> 16;
+-	src_h = drm_rect_height(src) >> 16;
+-
+-	dst_x = dst->x1;
+-	dst_y = dst->y1;
+-	dst_w = drm_rect_width(dst);
+-	dst_h = drm_rect_height(dst);
+-
+-	/* Set up data address registers for Y, Cb and Cr planes */
+-	paddr_reg = layer + VL_Y;
+-	for (i = 0; i < fb->format->num_planes; i++) {
+-		cma_obj = drm_fb_cma_get_gem_obj(fb, i);
+-		paddr = cma_obj->paddr + fb->offsets[i];
+-		paddr += src_y * fb->pitches[i];
+-		paddr += src_x * fb->format->cpp[i];
+-		zx_writel(paddr_reg, paddr);
+-		paddr_reg += 4;
+-	}
+-
+-	/* Set up source height/width register */
+-	zx_writel(layer + VL_SRC_SIZE, GL_SRC_W(src_w) | GL_SRC_H(src_h));
+-
+-	/* Set up start position register */
+-	zx_writel(layer + VL_POS_START, GL_POS_X(dst_x) | GL_POS_Y(dst_y));
+-
+-	/* Set up end position register */
+-	zx_writel(layer + VL_POS_END,
+-		  GL_POS_X(dst_x + dst_w) | GL_POS_Y(dst_y + dst_h));
+-
+-	/* Strides of Cb and Cr planes should be identical */
+-	zx_writel(layer + VL_STRIDE, LUMA_STRIDE(fb->pitches[0]) |
+-		  CHROMA_STRIDE(fb->pitches[1]));
+-
+-	/* Set up video layer data format */
+-	fmt = zx_vl_get_fmt(format);
+-	if (fmt >= 0)
+-		zx_writel(layer + VL_CTRL1, fmt);
+-
+-	/* Always use scaler since it exists (set for not bypass) */
+-	zx_writel_mask(layer + VL_CTRL2, VL_SCALER_BYPASS_MODE,
+-		       VL_SCALER_BYPASS_MODE);
+-
+-	zx_vl_rsz_setup(zplane, format, src_w, src_h, dst_w, dst_h);
+-
+-	/* Enable HBSC block */
+-	zx_writel_mask(hbsc + HBSC_CTRL0, HBSC_CTRL_EN, HBSC_CTRL_EN);
+-
+-	zx_vou_layer_enable(plane);
+-
+-	zx_vl_set_update(zplane);
+-}
+-
+-static void zx_plane_atomic_disable(struct drm_plane *plane,
+-				    struct drm_atomic_state *state)
+-{
+-	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
+-									   plane);
+-	struct zx_plane *zplane = to_zx_plane(plane);
+-	void __iomem *hbsc = zplane->hbsc;
+-
+-	zx_vou_layer_disable(plane, old_state);
+-
+-	/* Disable HBSC block */
+-	zx_writel_mask(hbsc + HBSC_CTRL0, HBSC_CTRL_EN, 0);
+-}
+-
+-static const struct drm_plane_helper_funcs zx_vl_plane_helper_funcs = {
+-	.atomic_check = zx_vl_plane_atomic_check,
+-	.atomic_update = zx_vl_plane_atomic_update,
+-	.atomic_disable = zx_plane_atomic_disable,
+-};
+-
+-static int zx_gl_plane_atomic_check(struct drm_plane *plane,
+-				    struct drm_atomic_state *state)
+-{
+-	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state,
+-									     plane);
+-	struct drm_framebuffer *fb = plane_state->fb;
+-	struct drm_crtc *crtc = plane_state->crtc;
+-	struct drm_crtc_state *crtc_state;
+-
+-	if (!crtc || WARN_ON(!fb))
+-		return 0;
+-
+-	crtc_state = drm_atomic_get_existing_crtc_state(state,
+-							crtc);
+-	if (WARN_ON(!crtc_state))
+-		return -EINVAL;
+-
+-	/* nothing to check when disabling or disabled */
+-	if (!crtc_state->enable)
+-		return 0;
+-
+-	/* plane must be enabled */
+-	if (!plane_state->crtc)
+-		return -EINVAL;
+-
+-	return drm_atomic_helper_check_plane_state(plane_state, crtc_state,
+-						   DRM_PLANE_HELPER_NO_SCALING,
+-						   DRM_PLANE_HELPER_NO_SCALING,
+-						   false, true);
+-}
+-
+-static int zx_gl_get_fmt(uint32_t format)
+-{
+-	switch (format) {
+-	case DRM_FORMAT_ARGB8888:
+-	case DRM_FORMAT_XRGB8888:
+-		return GL_FMT_ARGB8888;
+-	case DRM_FORMAT_RGB888:
+-		return GL_FMT_RGB888;
+-	case DRM_FORMAT_RGB565:
+-		return GL_FMT_RGB565;
+-	case DRM_FORMAT_ARGB1555:
+-		return GL_FMT_ARGB1555;
+-	case DRM_FORMAT_ARGB4444:
+-		return GL_FMT_ARGB4444;
+-	default:
+-		WARN_ONCE(1, "invalid pixel format %d\n", format);
+-		return -EINVAL;
+-	}
+-}
+-
+-static inline void zx_gl_set_update(struct zx_plane *zplane)
+-{
+-	void __iomem *layer = zplane->layer;
+-
+-	zx_writel_mask(layer + GL_CTRL0, GL_UPDATE, GL_UPDATE);
+-}
+-
+-static inline void zx_gl_rsz_set_update(struct zx_plane *zplane)
+-{
+-	zx_writel(zplane->rsz + RSZ_ENABLE_CFG, 1);
+-}
+-
+-static void zx_gl_rsz_setup(struct zx_plane *zplane, u32 src_w, u32 src_h,
+-			    u32 dst_w, u32 dst_h)
+-{
+-	void __iomem *rsz = zplane->rsz;
+-
+-	zx_writel(rsz + RSZ_SRC_CFG, RSZ_VER(src_h - 1) | RSZ_HOR(src_w - 1));
+-	zx_writel(rsz + RSZ_DEST_CFG, RSZ_VER(dst_h - 1) | RSZ_HOR(dst_w - 1));
+-
+-	zx_gl_rsz_set_update(zplane);
+-}
+-
+-static void zx_gl_plane_atomic_update(struct drm_plane *plane,
+-				      struct drm_atomic_state *state)
+-{
+-	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+-									   plane);
+-	struct zx_plane *zplane = to_zx_plane(plane);
+-	struct drm_framebuffer *fb = new_state->fb;
+-	struct drm_gem_cma_object *cma_obj;
+-	void __iomem *layer = zplane->layer;
+-	void __iomem *csc = zplane->csc;
+-	void __iomem *hbsc = zplane->hbsc;
+-	u32 src_x, src_y, src_w, src_h;
+-	u32 dst_x, dst_y, dst_w, dst_h;
+-	unsigned int bpp;
+-	uint32_t format;
+-	dma_addr_t paddr;
+-	u32 stride;
+-	int fmt;
+-
+-	if (!fb)
+-		return;
+-
+-	format = fb->format->format;
+-	stride = fb->pitches[0];
+-
+-	src_x = new_state->src_x >> 16;
+-	src_y = new_state->src_y >> 16;
+-	src_w = new_state->src_w >> 16;
+-	src_h = new_state->src_h >> 16;
+-
+-	dst_x = new_state->crtc_x;
+-	dst_y = new_state->crtc_y;
+-	dst_w = new_state->crtc_w;
+-	dst_h = new_state->crtc_h;
+-
+-	bpp = fb->format->cpp[0];
+-
+-	cma_obj = drm_fb_cma_get_gem_obj(fb, 0);
+-	paddr = cma_obj->paddr + fb->offsets[0];
+-	paddr += src_y * stride + src_x * bpp / 8;
+-	zx_writel(layer + GL_ADDR, paddr);
+-
+-	/* Set up source height/width register */
+-	zx_writel(layer + GL_SRC_SIZE, GL_SRC_W(src_w) | GL_SRC_H(src_h));
+-
+-	/* Set up start position register */
+-	zx_writel(layer + GL_POS_START, GL_POS_X(dst_x) | GL_POS_Y(dst_y));
+-
+-	/* Set up end position register */
+-	zx_writel(layer + GL_POS_END,
+-		  GL_POS_X(dst_x + dst_w) | GL_POS_Y(dst_y + dst_h));
+-
+-	/* Set up stride register */
+-	zx_writel(layer + GL_STRIDE, stride & 0xffff);
+-
+-	/* Set up graphic layer data format */
+-	fmt = zx_gl_get_fmt(format);
+-	if (fmt >= 0)
+-		zx_writel_mask(layer + GL_CTRL1, GL_DATA_FMT_MASK,
+-			       fmt << GL_DATA_FMT_SHIFT);
+-
+-	/* Initialize global alpha with a sane value */
+-	zx_writel_mask(layer + GL_CTRL2, GL_GLOBAL_ALPHA_MASK,
+-		       0xff << GL_GLOBAL_ALPHA_SHIFT);
+-
+-	/* Setup CSC for the GL */
+-	if (dst_h > 720)
+-		zx_writel_mask(csc + CSC_CTRL0, CSC_COV_MODE_MASK,
+-			       CSC_BT709_IMAGE_RGB2YCBCR << CSC_COV_MODE_SHIFT);
+-	else
+-		zx_writel_mask(csc + CSC_CTRL0, CSC_COV_MODE_MASK,
+-			       CSC_BT601_IMAGE_RGB2YCBCR << CSC_COV_MODE_SHIFT);
+-	zx_writel_mask(csc + CSC_CTRL0, CSC_WORK_ENABLE, CSC_WORK_ENABLE);
+-
+-	/* Always use scaler since it exists (set for not bypass) */
+-	zx_writel_mask(layer + GL_CTRL3, GL_SCALER_BYPASS_MODE,
+-		       GL_SCALER_BYPASS_MODE);
+-
+-	zx_gl_rsz_setup(zplane, src_w, src_h, dst_w, dst_h);
+-
+-	/* Enable HBSC block */
+-	zx_writel_mask(hbsc + HBSC_CTRL0, HBSC_CTRL_EN, HBSC_CTRL_EN);
+-
+-	zx_vou_layer_enable(plane);
+-
+-	zx_gl_set_update(zplane);
+-}
+-
+-static const struct drm_plane_helper_funcs zx_gl_plane_helper_funcs = {
+-	.atomic_check = zx_gl_plane_atomic_check,
+-	.atomic_update = zx_gl_plane_atomic_update,
+-	.atomic_disable = zx_plane_atomic_disable,
+-};
+-
+-static const struct drm_plane_funcs zx_plane_funcs = {
+-	.update_plane = drm_atomic_helper_update_plane,
+-	.disable_plane = drm_atomic_helper_disable_plane,
+-	.destroy = drm_plane_cleanup,
+-	.reset = drm_atomic_helper_plane_reset,
+-	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
+-};
+-
+-void zx_plane_set_update(struct drm_plane *plane)
+-{
+-	struct zx_plane *zplane = to_zx_plane(plane);
+-
+-	/* Do nothing if the plane is not enabled */
+-	if (!plane->state->crtc)
+-		return;
+-
+-	switch (plane->type) {
+-	case DRM_PLANE_TYPE_PRIMARY:
+-		zx_gl_rsz_set_update(zplane);
+-		zx_gl_set_update(zplane);
+-		break;
+-	case DRM_PLANE_TYPE_OVERLAY:
+-		zx_vl_rsz_set_update(zplane);
+-		zx_vl_set_update(zplane);
+-		break;
+-	default:
+-		WARN_ONCE(1, "unsupported plane type %d\n", plane->type);
+-	}
+-}
+-
+-static void zx_plane_hbsc_init(struct zx_plane *zplane)
+-{
+-	void __iomem *hbsc = zplane->hbsc;
+-
+-	/*
+-	 *  Initialize HBSC block with a sane configuration per recommedation
+-	 *  from ZTE BSP code.
+-	 */
+-	zx_writel(hbsc + HBSC_SATURATION, 0x200);
+-	zx_writel(hbsc + HBSC_HUE, 0x0);
+-	zx_writel(hbsc + HBSC_BRIGHT, 0x0);
+-	zx_writel(hbsc + HBSC_CONTRAST, 0x200);
+-
+-	zx_writel(hbsc + HBSC_THRESHOLD_COL1, (0x3ac << 16) | 0x40);
+-	zx_writel(hbsc + HBSC_THRESHOLD_COL2, (0x3c0 << 16) | 0x40);
+-	zx_writel(hbsc + HBSC_THRESHOLD_COL3, (0x3c0 << 16) | 0x40);
+-}
+-
+-int zx_plane_init(struct drm_device *drm, struct zx_plane *zplane,
+-		  enum drm_plane_type type)
+-{
+-	const struct drm_plane_helper_funcs *helper;
+-	struct drm_plane *plane = &zplane->plane;
+-	struct device *dev = zplane->dev;
+-	const uint32_t *formats;
+-	unsigned int format_count;
+-	int ret;
+-
+-	zx_plane_hbsc_init(zplane);
+-
+-	switch (type) {
+-	case DRM_PLANE_TYPE_PRIMARY:
+-		helper = &zx_gl_plane_helper_funcs;
+-		formats = gl_formats;
+-		format_count = ARRAY_SIZE(gl_formats);
+-		break;
+-	case DRM_PLANE_TYPE_OVERLAY:
+-		helper = &zx_vl_plane_helper_funcs;
+-		formats = vl_formats;
+-		format_count = ARRAY_SIZE(vl_formats);
+-		break;
+-	default:
+-		return -ENODEV;
+-	}
+-
+-	ret = drm_universal_plane_init(drm, plane, VOU_CRTC_MASK,
+-				       &zx_plane_funcs, formats, format_count,
+-				       NULL, type, NULL);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init universal plane: %d\n", ret);
+-		return ret;
+-	}
+-
+-	drm_plane_helper_add(plane, helper);
+-
+-	return 0;
+-}
+diff --git a/drivers/gpu/drm/zte/zx_plane.h b/drivers/gpu/drm/zte/zx_plane.h
+deleted file mode 100644
+index 5a7cc8b3b985..000000000000
+--- a/drivers/gpu/drm/zte/zx_plane.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_PLANE_H__
+-#define __ZX_PLANE_H__
+-
+-struct zx_plane {
+-	struct drm_plane plane;
+-	struct device *dev;
+-	void __iomem *layer;
+-	void __iomem *csc;
+-	void __iomem *hbsc;
+-	void __iomem *rsz;
+-	const struct vou_layer_bits *bits;
+-};
+-
+-#define to_zx_plane(plane) container_of(plane, struct zx_plane, plane)
+-
+-int zx_plane_init(struct drm_device *drm, struct zx_plane *zplane,
+-		  enum drm_plane_type type);
+-void zx_plane_set_update(struct drm_plane *plane);
+-
+-#endif /* __ZX_PLANE_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_plane_regs.h b/drivers/gpu/drm/zte/zx_plane_regs.h
+deleted file mode 100644
+index ce830637a92d..000000000000
+--- a/drivers/gpu/drm/zte/zx_plane_regs.h
++++ /dev/null
+@@ -1,120 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_PLANE_REGS_H__
+-#define __ZX_PLANE_REGS_H__
+-
+-/* GL registers */
+-#define GL_CTRL0			0x00
+-#define GL_UPDATE			BIT(5)
+-#define GL_CTRL1			0x04
+-#define GL_DATA_FMT_SHIFT		0
+-#define GL_DATA_FMT_MASK		(0xf << GL_DATA_FMT_SHIFT)
+-#define GL_FMT_ARGB8888			0
+-#define GL_FMT_RGB888			1
+-#define GL_FMT_RGB565			2
+-#define GL_FMT_ARGB1555			3
+-#define GL_FMT_ARGB4444			4
+-#define GL_CTRL2			0x08
+-#define GL_GLOBAL_ALPHA_SHIFT		8
+-#define GL_GLOBAL_ALPHA_MASK		(0xff << GL_GLOBAL_ALPHA_SHIFT)
+-#define GL_CTRL3			0x0c
+-#define GL_SCALER_BYPASS_MODE		BIT(0)
+-#define GL_STRIDE			0x18
+-#define GL_ADDR				0x1c
+-#define GL_SRC_SIZE			0x38
+-#define GL_SRC_W_SHIFT			16
+-#define GL_SRC_W_MASK			(0x3fff << GL_SRC_W_SHIFT)
+-#define GL_SRC_H_SHIFT			0
+-#define GL_SRC_H_MASK			(0x3fff << GL_SRC_H_SHIFT)
+-#define GL_POS_START			0x9c
+-#define GL_POS_END			0xa0
+-#define GL_POS_X_SHIFT			16
+-#define GL_POS_X_MASK			(0x1fff << GL_POS_X_SHIFT)
+-#define GL_POS_Y_SHIFT			0
+-#define GL_POS_Y_MASK			(0x1fff << GL_POS_Y_SHIFT)
+-
+-#define GL_SRC_W(x)	(((x) << GL_SRC_W_SHIFT) & GL_SRC_W_MASK)
+-#define GL_SRC_H(x)	(((x) << GL_SRC_H_SHIFT) & GL_SRC_H_MASK)
+-#define GL_POS_X(x)	(((x) << GL_POS_X_SHIFT) & GL_POS_X_MASK)
+-#define GL_POS_Y(x)	(((x) << GL_POS_Y_SHIFT) & GL_POS_Y_MASK)
+-
+-/* VL registers */
+-#define VL_CTRL0			0x00
+-#define VL_UPDATE			BIT(3)
+-#define VL_CTRL1			0x04
+-#define VL_YUV420_PLANAR		BIT(5)
+-#define VL_YUV422_SHIFT			3
+-#define VL_YUV422_YUYV			(0 << VL_YUV422_SHIFT)
+-#define VL_YUV422_YVYU			(1 << VL_YUV422_SHIFT)
+-#define VL_YUV422_UYVY			(2 << VL_YUV422_SHIFT)
+-#define VL_YUV422_VYUY			(3 << VL_YUV422_SHIFT)
+-#define VL_FMT_YUV420			0
+-#define VL_FMT_YUV422			1
+-#define VL_FMT_YUV420_P010		2
+-#define VL_FMT_YUV420_HANTRO		3
+-#define VL_FMT_YUV444_8BIT		4
+-#define VL_FMT_YUV444_10BIT		5
+-#define VL_CTRL2			0x08
+-#define VL_SCALER_BYPASS_MODE		BIT(0)
+-#define VL_STRIDE			0x0c
+-#define LUMA_STRIDE_SHIFT		16
+-#define LUMA_STRIDE_MASK		(0xffff << LUMA_STRIDE_SHIFT)
+-#define CHROMA_STRIDE_SHIFT		0
+-#define CHROMA_STRIDE_MASK		(0xffff << CHROMA_STRIDE_SHIFT)
+-#define VL_SRC_SIZE			0x10
+-#define VL_Y				0x14
+-#define VL_POS_START			0x30
+-#define VL_POS_END			0x34
+-
+-#define LUMA_STRIDE(x)	 (((x) << LUMA_STRIDE_SHIFT) & LUMA_STRIDE_MASK)
+-#define CHROMA_STRIDE(x) (((x) << CHROMA_STRIDE_SHIFT) & CHROMA_STRIDE_MASK)
+-
+-/* RSZ registers */
+-#define RSZ_SRC_CFG			0x00
+-#define RSZ_DEST_CFG			0x04
+-#define RSZ_ENABLE_CFG			0x14
+-
+-#define RSZ_VL_LUMA_HOR			0x08
+-#define RSZ_VL_LUMA_VER			0x0c
+-#define RSZ_VL_CHROMA_HOR		0x10
+-#define RSZ_VL_CHROMA_VER		0x14
+-#define RSZ_VL_CTRL_CFG			0x18
+-#define RSZ_VL_FMT_SHIFT		3
+-#define RSZ_VL_FMT_MASK			(0x3 << RSZ_VL_FMT_SHIFT)
+-#define RSZ_VL_FMT_YCBCR420		(0x0 << RSZ_VL_FMT_SHIFT)
+-#define RSZ_VL_FMT_YCBCR422		(0x1 << RSZ_VL_FMT_SHIFT)
+-#define RSZ_VL_FMT_YCBCR444		(0x2 << RSZ_VL_FMT_SHIFT)
+-#define RSZ_VL_ENABLE_CFG		0x1c
+-
+-#define RSZ_VER_SHIFT			16
+-#define RSZ_VER_MASK			(0xffff << RSZ_VER_SHIFT)
+-#define RSZ_HOR_SHIFT			0
+-#define RSZ_HOR_MASK			(0xffff << RSZ_HOR_SHIFT)
+-
+-#define RSZ_VER(x)	(((x) << RSZ_VER_SHIFT) & RSZ_VER_MASK)
+-#define RSZ_HOR(x)	(((x) << RSZ_HOR_SHIFT) & RSZ_HOR_MASK)
+-
+-#define RSZ_DATA_STEP_SHIFT		16
+-#define RSZ_DATA_STEP_MASK		(0xffff << RSZ_DATA_STEP_SHIFT)
+-#define RSZ_PARA_STEP_SHIFT		0
+-#define RSZ_PARA_STEP_MASK		(0xffff << RSZ_PARA_STEP_SHIFT)
+-
+-#define RSZ_DATA_STEP(x) (((x) << RSZ_DATA_STEP_SHIFT) & RSZ_DATA_STEP_MASK)
+-#define RSZ_PARA_STEP(x) (((x) << RSZ_PARA_STEP_SHIFT) & RSZ_PARA_STEP_MASK)
+-
+-/* HBSC registers */
+-#define HBSC_SATURATION			0x00
+-#define HBSC_HUE			0x04
+-#define HBSC_BRIGHT			0x08
+-#define HBSC_CONTRAST			0x0c
+-#define HBSC_THRESHOLD_COL1		0x10
+-#define HBSC_THRESHOLD_COL2		0x14
+-#define HBSC_THRESHOLD_COL3		0x18
+-#define HBSC_CTRL0			0x28
+-#define HBSC_CTRL_EN			BIT(2)
+-
+-#endif /* __ZX_PLANE_REGS_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_tvenc.c b/drivers/gpu/drm/zte/zx_tvenc.c
+deleted file mode 100644
+index d8a89ba383bc..000000000000
+--- a/drivers/gpu/drm/zte/zx_tvenc.c
++++ /dev/null
+@@ -1,400 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright 2017 Linaro Ltd.
+- * Copyright 2017 ZTE Corporation.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/component.h>
+-#include <linux/mfd/syscon.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/regmap.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_print.h>
+-#include <drm/drm_probe_helper.h>
+-#include <drm/drm_simple_kms_helper.h>
+-
+-#include "zx_drm_drv.h"
+-#include "zx_tvenc_regs.h"
+-#include "zx_vou.h"
+-
+-struct zx_tvenc_pwrctrl {
+-	struct regmap *regmap;
+-	u32 reg;
+-	u32 mask;
+-};
+-
+-struct zx_tvenc {
+-	struct drm_connector connector;
+-	struct drm_encoder encoder;
+-	struct device *dev;
+-	void __iomem *mmio;
+-	const struct vou_inf *inf;
+-	struct zx_tvenc_pwrctrl pwrctrl;
+-};
+-
+-#define to_zx_tvenc(x) container_of(x, struct zx_tvenc, x)
+-
+-struct zx_tvenc_mode {
+-	struct drm_display_mode mode;
+-	u32 video_info;
+-	u32 video_res;
+-	u32 field1_param;
+-	u32 field2_param;
+-	u32 burst_line_odd1;
+-	u32 burst_line_even1;
+-	u32 burst_line_odd2;
+-	u32 burst_line_even2;
+-	u32 line_timing_param;
+-	u32 weight_value;
+-	u32 blank_black_level;
+-	u32 burst_level;
+-	u32 control_param;
+-	u32 sub_carrier_phase1;
+-	u32 phase_line_incr_cvbs;
+-};
+-
+-/*
+- * The CRM cannot directly provide a suitable frequency, and we have to
+- * ask a multiplied rate from CRM and use the divider in VOU to get the
+- * desired one.
+- */
+-#define TVENC_CLOCK_MULTIPLIER	4
+-
+-static const struct zx_tvenc_mode tvenc_mode_pal = {
+-	.mode = {
+-		.clock = 13500 * TVENC_CLOCK_MULTIPLIER,
+-		.hdisplay = 720,
+-		.hsync_start = 720 + 12,
+-		.hsync_end = 720 + 12 + 2,
+-		.htotal = 720 + 12 + 2 + 130,
+-		.vdisplay = 576,
+-		.vsync_start = 576 + 2,
+-		.vsync_end = 576 + 2 + 2,
+-		.vtotal = 576 + 2 + 2 + 20,
+-		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC |
+-			 DRM_MODE_FLAG_INTERLACE,
+-	},
+-	.video_info = 0x00040040,
+-	.video_res = 0x05a9c760,
+-	.field1_param = 0x0004d416,
+-	.field2_param = 0x0009b94f,
+-	.burst_line_odd1 = 0x0004d406,
+-	.burst_line_even1 = 0x0009b53e,
+-	.burst_line_odd2 = 0x0004d805,
+-	.burst_line_even2 = 0x0009b93f,
+-	.line_timing_param = 0x06a96fdf,
+-	.weight_value = 0x00c188a0,
+-	.blank_black_level = 0x0000fcfc,
+-	.burst_level = 0x00001595,
+-	.control_param = 0x00000001,
+-	.sub_carrier_phase1 = 0x1504c566,
+-	.phase_line_incr_cvbs = 0xc068db8c,
+-};
+-
+-static const struct zx_tvenc_mode tvenc_mode_ntsc = {
+-	.mode = {
+-		.clock = 13500 * TVENC_CLOCK_MULTIPLIER,
+-		.hdisplay = 720,
+-		.hsync_start = 720 + 16,
+-		.hsync_end = 720 + 16 + 2,
+-		.htotal = 720 + 16 + 2 + 120,
+-		.vdisplay = 480,
+-		.vsync_start = 480 + 3,
+-		.vsync_end = 480 + 3 + 2,
+-		.vtotal = 480 + 3 + 2 + 17,
+-		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC |
+-			 DRM_MODE_FLAG_INTERLACE,
+-	},
+-	.video_info = 0x00040080,
+-	.video_res = 0x05a8375a,
+-	.field1_param = 0x00041817,
+-	.field2_param = 0x0008351e,
+-	.burst_line_odd1 = 0x00041006,
+-	.burst_line_even1 = 0x0008290d,
+-	.burst_line_odd2 = 0x00000000,
+-	.burst_line_even2 = 0x00000000,
+-	.line_timing_param = 0x06a8ef9e,
+-	.weight_value = 0x00b68197,
+-	.blank_black_level = 0x0000f0f0,
+-	.burst_level = 0x0000009c,
+-	.control_param = 0x00000001,
+-	.sub_carrier_phase1 = 0x10f83e10,
+-	.phase_line_incr_cvbs = 0x80000000,
+-};
+-
+-static const struct zx_tvenc_mode *tvenc_modes[] = {
+-	&tvenc_mode_pal,
+-	&tvenc_mode_ntsc,
+-};
+-
+-static const struct zx_tvenc_mode *
+-zx_tvenc_find_zmode(struct drm_display_mode *mode)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tvenc_modes); i++) {
+-		const struct zx_tvenc_mode *zmode = tvenc_modes[i];
+-
+-		if (drm_mode_equal(mode, &zmode->mode))
+-			return zmode;
+-	}
+-
+-	return NULL;
+-}
+-
+-static void zx_tvenc_encoder_mode_set(struct drm_encoder *encoder,
+-				      struct drm_display_mode *mode,
+-				      struct drm_display_mode *adj_mode)
+-{
+-	struct zx_tvenc *tvenc = to_zx_tvenc(encoder);
+-	const struct zx_tvenc_mode *zmode;
+-	struct vou_div_config configs[] = {
+-		{ VOU_DIV_INF,   VOU_DIV_4 },
+-		{ VOU_DIV_TVENC, VOU_DIV_1 },
+-		{ VOU_DIV_LAYER, VOU_DIV_2 },
+-	};
+-
+-	zx_vou_config_dividers(encoder->crtc, configs, ARRAY_SIZE(configs));
+-
+-	zmode = zx_tvenc_find_zmode(mode);
+-	if (!zmode) {
+-		DRM_DEV_ERROR(tvenc->dev, "failed to find zmode\n");
+-		return;
+-	}
+-
+-	zx_writel(tvenc->mmio + VENC_VIDEO_INFO, zmode->video_info);
+-	zx_writel(tvenc->mmio + VENC_VIDEO_RES, zmode->video_res);
+-	zx_writel(tvenc->mmio + VENC_FIELD1_PARAM, zmode->field1_param);
+-	zx_writel(tvenc->mmio + VENC_FIELD2_PARAM, zmode->field2_param);
+-	zx_writel(tvenc->mmio + VENC_LINE_O_1, zmode->burst_line_odd1);
+-	zx_writel(tvenc->mmio + VENC_LINE_E_1, zmode->burst_line_even1);
+-	zx_writel(tvenc->mmio + VENC_LINE_O_2, zmode->burst_line_odd2);
+-	zx_writel(tvenc->mmio + VENC_LINE_E_2, zmode->burst_line_even2);
+-	zx_writel(tvenc->mmio + VENC_LINE_TIMING_PARAM,
+-		  zmode->line_timing_param);
+-	zx_writel(tvenc->mmio + VENC_WEIGHT_VALUE, zmode->weight_value);
+-	zx_writel(tvenc->mmio + VENC_BLANK_BLACK_LEVEL,
+-		  zmode->blank_black_level);
+-	zx_writel(tvenc->mmio + VENC_BURST_LEVEL, zmode->burst_level);
+-	zx_writel(tvenc->mmio + VENC_CONTROL_PARAM, zmode->control_param);
+-	zx_writel(tvenc->mmio + VENC_SUB_CARRIER_PHASE1,
+-		  zmode->sub_carrier_phase1);
+-	zx_writel(tvenc->mmio + VENC_PHASE_LINE_INCR_CVBS,
+-		  zmode->phase_line_incr_cvbs);
+-}
+-
+-static void zx_tvenc_encoder_enable(struct drm_encoder *encoder)
+-{
+-	struct zx_tvenc *tvenc = to_zx_tvenc(encoder);
+-	struct zx_tvenc_pwrctrl *pwrctrl = &tvenc->pwrctrl;
+-
+-	/* Set bit to power up TVENC DAC */
+-	regmap_update_bits(pwrctrl->regmap, pwrctrl->reg, pwrctrl->mask,
+-			   pwrctrl->mask);
+-
+-	vou_inf_enable(VOU_TV_ENC, encoder->crtc);
+-
+-	zx_writel(tvenc->mmio + VENC_ENABLE, 1);
+-}
+-
+-static void zx_tvenc_encoder_disable(struct drm_encoder *encoder)
+-{
+-	struct zx_tvenc *tvenc = to_zx_tvenc(encoder);
+-	struct zx_tvenc_pwrctrl *pwrctrl = &tvenc->pwrctrl;
+-
+-	zx_writel(tvenc->mmio + VENC_ENABLE, 0);
+-
+-	vou_inf_disable(VOU_TV_ENC, encoder->crtc);
+-
+-	/* Clear bit to power down TVENC DAC */
+-	regmap_update_bits(pwrctrl->regmap, pwrctrl->reg, pwrctrl->mask, 0);
+-}
+-
+-static const struct drm_encoder_helper_funcs zx_tvenc_encoder_helper_funcs = {
+-	.enable	= zx_tvenc_encoder_enable,
+-	.disable = zx_tvenc_encoder_disable,
+-	.mode_set = zx_tvenc_encoder_mode_set,
+-};
+-
+-static int zx_tvenc_connector_get_modes(struct drm_connector *connector)
+-{
+-	struct zx_tvenc *tvenc = to_zx_tvenc(connector);
+-	struct device *dev = tvenc->dev;
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tvenc_modes); i++) {
+-		const struct zx_tvenc_mode *zmode = tvenc_modes[i];
+-		struct drm_display_mode *mode;
+-
+-		mode = drm_mode_duplicate(connector->dev, &zmode->mode);
+-		if (!mode) {
+-			DRM_DEV_ERROR(dev, "failed to duplicate drm mode\n");
+-			continue;
+-		}
+-
+-		drm_mode_set_name(mode);
+-		drm_mode_probed_add(connector, mode);
+-	}
+-
+-	return i;
+-}
+-
+-static enum drm_mode_status
+-zx_tvenc_connector_mode_valid(struct drm_connector *connector,
+-			      struct drm_display_mode *mode)
+-{
+-	struct zx_tvenc *tvenc = to_zx_tvenc(connector);
+-	const struct zx_tvenc_mode *zmode;
+-
+-	zmode = zx_tvenc_find_zmode(mode);
+-	if (!zmode) {
+-		DRM_DEV_ERROR(tvenc->dev, "unsupported mode: %s\n", mode->name);
+-		return MODE_NOMODE;
+-	}
+-
+-	return MODE_OK;
+-}
+-
+-static struct drm_connector_helper_funcs zx_tvenc_connector_helper_funcs = {
+-	.get_modes = zx_tvenc_connector_get_modes,
+-	.mode_valid = zx_tvenc_connector_mode_valid,
+-};
+-
+-static const struct drm_connector_funcs zx_tvenc_connector_funcs = {
+-	.fill_modes = drm_helper_probe_single_connector_modes,
+-	.destroy = drm_connector_cleanup,
+-	.reset = drm_atomic_helper_connector_reset,
+-	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+-};
+-
+-static int zx_tvenc_register(struct drm_device *drm, struct zx_tvenc *tvenc)
+-{
+-	struct drm_encoder *encoder = &tvenc->encoder;
+-	struct drm_connector *connector = &tvenc->connector;
+-
+-	/*
+-	 * The tvenc is designed to use aux channel, as there is a deflicker
+-	 * block for the channel.
+-	 */
+-	encoder->possible_crtcs = BIT(1);
+-
+-	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TVDAC);
+-	drm_encoder_helper_add(encoder, &zx_tvenc_encoder_helper_funcs);
+-
+-	connector->interlace_allowed = true;
+-
+-	drm_connector_init(drm, connector, &zx_tvenc_connector_funcs,
+-			   DRM_MODE_CONNECTOR_Composite);
+-	drm_connector_helper_add(connector, &zx_tvenc_connector_helper_funcs);
+-
+-	drm_connector_attach_encoder(connector, encoder);
+-
+-	return 0;
+-}
+-
+-static int zx_tvenc_pwrctrl_init(struct zx_tvenc *tvenc)
+-{
+-	struct zx_tvenc_pwrctrl *pwrctrl = &tvenc->pwrctrl;
+-	struct device *dev = tvenc->dev;
+-	struct of_phandle_args out_args;
+-	struct regmap *regmap;
+-	int ret;
+-
+-	ret = of_parse_phandle_with_fixed_args(dev->of_node,
+-				"zte,tvenc-power-control", 2, 0, &out_args);
+-	if (ret)
+-		return ret;
+-
+-	regmap = syscon_node_to_regmap(out_args.np);
+-	if (IS_ERR(regmap)) {
+-		ret = PTR_ERR(regmap);
+-		goto out;
+-	}
+-
+-	pwrctrl->regmap = regmap;
+-	pwrctrl->reg = out_args.args[0];
+-	pwrctrl->mask = out_args.args[1];
+-
+-out:
+-	of_node_put(out_args.np);
+-	return ret;
+-}
+-
+-static int zx_tvenc_bind(struct device *dev, struct device *master, void *data)
+-{
+-	struct platform_device *pdev = to_platform_device(dev);
+-	struct drm_device *drm = data;
+-	struct resource *res;
+-	struct zx_tvenc *tvenc;
+-	int ret;
+-
+-	tvenc = devm_kzalloc(dev, sizeof(*tvenc), GFP_KERNEL);
+-	if (!tvenc)
+-		return -ENOMEM;
+-
+-	tvenc->dev = dev;
+-	dev_set_drvdata(dev, tvenc);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	tvenc->mmio = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(tvenc->mmio)) {
+-		ret = PTR_ERR(tvenc->mmio);
+-		DRM_DEV_ERROR(dev, "failed to remap tvenc region: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_tvenc_pwrctrl_init(tvenc);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init power control: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_tvenc_register(drm, tvenc);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to register tvenc: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-
+-static void zx_tvenc_unbind(struct device *dev, struct device *master,
+-			    void *data)
+-{
+-	/* Nothing to do */
+-}
+-
+-static const struct component_ops zx_tvenc_component_ops = {
+-	.bind = zx_tvenc_bind,
+-	.unbind = zx_tvenc_unbind,
+-};
+-
+-static int zx_tvenc_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &zx_tvenc_component_ops);
+-}
+-
+-static int zx_tvenc_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &zx_tvenc_component_ops);
+-	return 0;
+-}
+-
+-static const struct of_device_id zx_tvenc_of_match[] = {
+-	{ .compatible = "zte,zx296718-tvenc", },
+-	{ /* end */ },
+-};
+-MODULE_DEVICE_TABLE(of, zx_tvenc_of_match);
+-
+-struct platform_driver zx_tvenc_driver = {
+-	.probe = zx_tvenc_probe,
+-	.remove = zx_tvenc_remove,
+-	.driver	= {
+-		.name = "zx-tvenc",
+-		.of_match_table	= zx_tvenc_of_match,
+-	},
+-};
+diff --git a/drivers/gpu/drm/zte/zx_tvenc_regs.h b/drivers/gpu/drm/zte/zx_tvenc_regs.h
+deleted file mode 100644
+index 40f033109374..000000000000
+--- a/drivers/gpu/drm/zte/zx_tvenc_regs.h
++++ /dev/null
+@@ -1,27 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2017 Linaro Ltd.
+- * Copyright 2017 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_TVENC_REGS_H__
+-#define __ZX_TVENC_REGS_H__
+-
+-#define VENC_VIDEO_INFO			0x04
+-#define VENC_VIDEO_RES			0x08
+-#define VENC_FIELD1_PARAM		0x10
+-#define VENC_FIELD2_PARAM		0x14
+-#define VENC_LINE_O_1			0x18
+-#define VENC_LINE_E_1			0x1c
+-#define VENC_LINE_O_2			0x20
+-#define VENC_LINE_E_2			0x24
+-#define VENC_LINE_TIMING_PARAM		0x28
+-#define VENC_WEIGHT_VALUE		0x2c
+-#define VENC_BLANK_BLACK_LEVEL		0x30
+-#define VENC_BURST_LEVEL		0x34
+-#define VENC_CONTROL_PARAM		0x3c
+-#define VENC_SUB_CARRIER_PHASE1		0x40
+-#define VENC_PHASE_LINE_INCR_CVBS	0x48
+-#define VENC_ENABLE			0xa8
+-
+-#endif /* __ZX_TVENC_REGS_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_vga.c b/drivers/gpu/drm/zte/zx_vga.c
+deleted file mode 100644
+index 0f9bbb7e3b8d..000000000000
+--- a/drivers/gpu/drm/zte/zx_vga.c
++++ /dev/null
+@@ -1,527 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
+- * Copyright 2017 Linaro Ltd.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/component.h>
+-#include <linux/mfd/syscon.h>
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/regmap.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_print.h>
+-#include <drm/drm_probe_helper.h>
+-#include <drm/drm_simple_kms_helper.h>
+-
+-#include "zx_drm_drv.h"
+-#include "zx_vga_regs.h"
+-#include "zx_vou.h"
+-
+-struct zx_vga_pwrctrl {
+-	struct regmap *regmap;
+-	u32 reg;
+-	u32 mask;
+-};
+-
+-struct zx_vga_i2c {
+-	struct i2c_adapter adap;
+-	struct mutex lock;
+-};
+-
+-struct zx_vga {
+-	struct drm_connector connector;
+-	struct drm_encoder encoder;
+-	struct zx_vga_i2c *ddc;
+-	struct device *dev;
+-	void __iomem *mmio;
+-	struct clk *i2c_wclk;
+-	struct zx_vga_pwrctrl pwrctrl;
+-	struct completion complete;
+-	bool connected;
+-};
+-
+-#define to_zx_vga(x) container_of(x, struct zx_vga, x)
+-
+-static void zx_vga_encoder_enable(struct drm_encoder *encoder)
+-{
+-	struct zx_vga *vga = to_zx_vga(encoder);
+-	struct zx_vga_pwrctrl *pwrctrl = &vga->pwrctrl;
+-
+-	/* Set bit to power up VGA DACs */
+-	regmap_update_bits(pwrctrl->regmap, pwrctrl->reg, pwrctrl->mask,
+-			   pwrctrl->mask);
+-
+-	vou_inf_enable(VOU_VGA, encoder->crtc);
+-}
+-
+-static void zx_vga_encoder_disable(struct drm_encoder *encoder)
+-{
+-	struct zx_vga *vga = to_zx_vga(encoder);
+-	struct zx_vga_pwrctrl *pwrctrl = &vga->pwrctrl;
+-
+-	vou_inf_disable(VOU_VGA, encoder->crtc);
+-
+-	/* Clear bit to power down VGA DACs */
+-	regmap_update_bits(pwrctrl->regmap, pwrctrl->reg, pwrctrl->mask, 0);
+-}
+-
+-static const struct drm_encoder_helper_funcs zx_vga_encoder_helper_funcs = {
+-	.enable	= zx_vga_encoder_enable,
+-	.disable = zx_vga_encoder_disable,
+-};
+-
+-static int zx_vga_connector_get_modes(struct drm_connector *connector)
+-{
+-	struct zx_vga *vga = to_zx_vga(connector);
+-	struct edid *edid;
+-	int ret;
+-
+-	/*
+-	 * Clear both detection bits to switch I2C bus from device
+-	 * detecting to EDID reading.
+-	 */
+-	zx_writel(vga->mmio + VGA_AUTO_DETECT_SEL, 0);
+-
+-	edid = drm_get_edid(connector, &vga->ddc->adap);
+-	if (!edid) {
+-		/*
+-		 * If EDID reading fails, we set the device state into
+-		 * disconnected.  Locking is not required here, since the
+-		 * VGA_AUTO_DETECT_SEL register write in irq handler cannot
+-		 * be triggered when both detection bits are cleared as above.
+-		 */
+-		zx_writel(vga->mmio + VGA_AUTO_DETECT_SEL,
+-			  VGA_DETECT_SEL_NO_DEVICE);
+-		vga->connected = false;
+-		return 0;
+-	}
+-
+-	/*
+-	 * As edid reading succeeds, device must be connected, so we set
+-	 * up detection bit for unplug interrupt here.
+-	 */
+-	zx_writel(vga->mmio + VGA_AUTO_DETECT_SEL, VGA_DETECT_SEL_HAS_DEVICE);
+-
+-	drm_connector_update_edid_property(connector, edid);
+-	ret = drm_add_edid_modes(connector, edid);
+-	kfree(edid);
+-
+-	return ret;
+-}
+-
+-static enum drm_mode_status
+-zx_vga_connector_mode_valid(struct drm_connector *connector,
+-			    struct drm_display_mode *mode)
+-{
+-	return MODE_OK;
+-}
+-
+-static struct drm_connector_helper_funcs zx_vga_connector_helper_funcs = {
+-	.get_modes = zx_vga_connector_get_modes,
+-	.mode_valid = zx_vga_connector_mode_valid,
+-};
+-
+-static enum drm_connector_status
+-zx_vga_connector_detect(struct drm_connector *connector, bool force)
+-{
+-	struct zx_vga *vga = to_zx_vga(connector);
+-
+-	return vga->connected ? connector_status_connected :
+-				connector_status_disconnected;
+-}
+-
+-static const struct drm_connector_funcs zx_vga_connector_funcs = {
+-	.fill_modes = drm_helper_probe_single_connector_modes,
+-	.detect = zx_vga_connector_detect,
+-	.destroy = drm_connector_cleanup,
+-	.reset = drm_atomic_helper_connector_reset,
+-	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+-};
+-
+-static int zx_vga_register(struct drm_device *drm, struct zx_vga *vga)
+-{
+-	struct drm_encoder *encoder = &vga->encoder;
+-	struct drm_connector *connector = &vga->connector;
+-	struct device *dev = vga->dev;
+-	int ret;
+-
+-	encoder->possible_crtcs = VOU_CRTC_MASK;
+-
+-	ret = drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_DAC);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init encoder: %d\n", ret);
+-		return ret;
+-	}
+-
+-	drm_encoder_helper_add(encoder, &zx_vga_encoder_helper_funcs);
+-
+-	vga->connector.polled = DRM_CONNECTOR_POLL_HPD;
+-
+-	ret = drm_connector_init_with_ddc(drm, connector,
+-					  &zx_vga_connector_funcs,
+-					  DRM_MODE_CONNECTOR_VGA,
+-					  &vga->ddc->adap);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init connector: %d\n", ret);
+-		goto clean_encoder;
+-	}
+-
+-	drm_connector_helper_add(connector, &zx_vga_connector_helper_funcs);
+-
+-	ret = drm_connector_attach_encoder(connector, encoder);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to attach encoder: %d\n", ret);
+-		goto clean_connector;
+-	}
+-
+-	return 0;
+-
+-clean_connector:
+-	drm_connector_cleanup(connector);
+-clean_encoder:
+-	drm_encoder_cleanup(encoder);
+-	return ret;
+-}
+-
+-static int zx_vga_pwrctrl_init(struct zx_vga *vga)
+-{
+-	struct zx_vga_pwrctrl *pwrctrl = &vga->pwrctrl;
+-	struct device *dev = vga->dev;
+-	struct of_phandle_args out_args;
+-	struct regmap *regmap;
+-	int ret;
+-
+-	ret = of_parse_phandle_with_fixed_args(dev->of_node,
+-				"zte,vga-power-control", 2, 0, &out_args);
+-	if (ret)
+-		return ret;
+-
+-	regmap = syscon_node_to_regmap(out_args.np);
+-	if (IS_ERR(regmap)) {
+-		ret = PTR_ERR(regmap);
+-		goto out;
+-	}
+-
+-	pwrctrl->regmap = regmap;
+-	pwrctrl->reg = out_args.args[0];
+-	pwrctrl->mask = out_args.args[1];
+-
+-out:
+-	of_node_put(out_args.np);
+-	return ret;
+-}
+-
+-static int zx_vga_i2c_read(struct zx_vga *vga, struct i2c_msg *msg)
+-{
+-	int len = msg->len;
+-	u8 *buf = msg->buf;
+-	u32 offset = 0;
+-	int i;
+-
+-	reinit_completion(&vga->complete);
+-
+-	/* Select combo write */
+-	zx_writel_mask(vga->mmio + VGA_CMD_CFG, VGA_CMD_COMBO, VGA_CMD_COMBO);
+-	zx_writel_mask(vga->mmio + VGA_CMD_CFG, VGA_CMD_RW, 0);
+-
+-	while (len > 0) {
+-		u32 cnt;
+-
+-		/* Clear RX FIFO */
+-		zx_writel_mask(vga->mmio + VGA_RXF_CTRL, VGA_RX_FIFO_CLEAR,
+-			       VGA_RX_FIFO_CLEAR);
+-
+-		/* Data offset to read from */
+-		zx_writel(vga->mmio + VGA_SUB_ADDR, offset);
+-
+-		/* Kick off the transfer */
+-		zx_writel_mask(vga->mmio + VGA_CMD_CFG, VGA_CMD_TRANS,
+-			       VGA_CMD_TRANS);
+-
+-		if (!wait_for_completion_timeout(&vga->complete,
+-						 msecs_to_jiffies(1000))) {
+-			DRM_DEV_ERROR(vga->dev, "transfer timeout\n");
+-			return -ETIMEDOUT;
+-		}
+-
+-		cnt = zx_readl(vga->mmio + VGA_RXF_STATUS);
+-		cnt = (cnt & VGA_RXF_COUNT_MASK) >> VGA_RXF_COUNT_SHIFT;
+-		/* FIFO status may report more data than we need to read */
+-		cnt = min_t(u32, len, cnt);
+-
+-		for (i = 0; i < cnt; i++)
+-			*buf++ = zx_readl(vga->mmio + VGA_DATA);
+-
+-		len -= cnt;
+-		offset += cnt;
+-	}
+-
+-	return 0;
+-}
+-
+-static int zx_vga_i2c_write(struct zx_vga *vga, struct i2c_msg *msg)
+-{
+-	/*
+-	 * The DDC I2C adapter is only for reading EDID data, so we assume
+-	 * that the write to this adapter must be the EDID data offset.
+-	 */
+-	if ((msg->len != 1) || ((msg->addr != DDC_ADDR)))
+-		return -EINVAL;
+-
+-	/* Hardware will take care of the slave address shifting */
+-	zx_writel(vga->mmio + VGA_DEVICE_ADDR, msg->addr);
+-
+-	return 0;
+-}
+-
+-static int zx_vga_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+-			   int num)
+-{
+-	struct zx_vga *vga = i2c_get_adapdata(adap);
+-	struct zx_vga_i2c *ddc = vga->ddc;
+-	int ret = 0;
+-	int i;
+-
+-	mutex_lock(&ddc->lock);
+-
+-	for (i = 0; i < num; i++) {
+-		if (msgs[i].flags & I2C_M_RD)
+-			ret = zx_vga_i2c_read(vga, &msgs[i]);
+-		else
+-			ret = zx_vga_i2c_write(vga, &msgs[i]);
+-
+-		if (ret < 0)
+-			break;
+-	}
+-
+-	if (!ret)
+-		ret = num;
+-
+-	mutex_unlock(&ddc->lock);
+-
+-	return ret;
+-}
+-
+-static u32 zx_vga_i2c_func(struct i2c_adapter *adapter)
+-{
+-	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
+-}
+-
+-static const struct i2c_algorithm zx_vga_algorithm = {
+-	.master_xfer	= zx_vga_i2c_xfer,
+-	.functionality	= zx_vga_i2c_func,
+-};
+-
+-static int zx_vga_ddc_register(struct zx_vga *vga)
+-{
+-	struct device *dev = vga->dev;
+-	struct i2c_adapter *adap;
+-	struct zx_vga_i2c *ddc;
+-	int ret;
+-
+-	ddc = devm_kzalloc(dev, sizeof(*ddc), GFP_KERNEL);
+-	if (!ddc)
+-		return -ENOMEM;
+-
+-	vga->ddc = ddc;
+-	mutex_init(&ddc->lock);
+-
+-	adap = &ddc->adap;
+-	adap->owner = THIS_MODULE;
+-	adap->class = I2C_CLASS_DDC;
+-	adap->dev.parent = dev;
+-	adap->algo = &zx_vga_algorithm;
+-	snprintf(adap->name, sizeof(adap->name), "zx vga i2c");
+-
+-	ret = i2c_add_adapter(adap);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to add I2C adapter: %d\n", ret);
+-		return ret;
+-	}
+-
+-	i2c_set_adapdata(adap, vga);
+-
+-	return 0;
+-}
+-
+-static irqreturn_t zx_vga_irq_thread(int irq, void *dev_id)
+-{
+-	struct zx_vga *vga = dev_id;
+-
+-	drm_helper_hpd_irq_event(vga->connector.dev);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static irqreturn_t zx_vga_irq_handler(int irq, void *dev_id)
+-{
+-	struct zx_vga *vga = dev_id;
+-	u32 status;
+-
+-	status = zx_readl(vga->mmio + VGA_I2C_STATUS);
+-
+-	/* Clear interrupt status */
+-	zx_writel_mask(vga->mmio + VGA_I2C_STATUS, VGA_CLEAR_IRQ,
+-		       VGA_CLEAR_IRQ);
+-
+-	if (status & VGA_DEVICE_CONNECTED) {
+-		/*
+-		 * Since VGA_DETECT_SEL bits need to be reset for switching DDC
+-		 * bus from device detection to EDID read, rather than setting
+-		 * up HAS_DEVICE bit here, we need to do that in .get_modes
+-		 * hook for unplug detecting after EDID read succeeds.
+-		 */
+-		vga->connected = true;
+-		return IRQ_WAKE_THREAD;
+-	}
+-
+-	if (status & VGA_DEVICE_DISCONNECTED) {
+-		zx_writel(vga->mmio + VGA_AUTO_DETECT_SEL,
+-			  VGA_DETECT_SEL_NO_DEVICE);
+-		vga->connected = false;
+-		return IRQ_WAKE_THREAD;
+-	}
+-
+-	if (status & VGA_TRANS_DONE) {
+-		complete(&vga->complete);
+-		return IRQ_HANDLED;
+-	}
+-
+-	return IRQ_NONE;
+-}
+-
+-static void zx_vga_hw_init(struct zx_vga *vga)
+-{
+-	unsigned long ref = clk_get_rate(vga->i2c_wclk);
+-	int div;
+-
+-	/*
+-	 * Set up I2C fast speed divider per formula below to get 400kHz.
+-	 *   scl = ref / ((div + 1) * 4)
+-	 */
+-	div = DIV_ROUND_UP(ref / 1000, 400 * 4) - 1;
+-	zx_writel(vga->mmio + VGA_CLK_DIV_FS, div);
+-
+-	/* Set up device detection */
+-	zx_writel(vga->mmio + VGA_AUTO_DETECT_PARA, 0x80);
+-	zx_writel(vga->mmio + VGA_AUTO_DETECT_SEL, VGA_DETECT_SEL_NO_DEVICE);
+-
+-	/*
+-	 * We need to poke monitor via DDC bus to get connection irq
+-	 * start working.
+-	 */
+-	zx_writel(vga->mmio + VGA_DEVICE_ADDR, DDC_ADDR);
+-	zx_writel_mask(vga->mmio + VGA_CMD_CFG, VGA_CMD_TRANS, VGA_CMD_TRANS);
+-}
+-
+-static int zx_vga_bind(struct device *dev, struct device *master, void *data)
+-{
+-	struct platform_device *pdev = to_platform_device(dev);
+-	struct drm_device *drm = data;
+-	struct resource *res;
+-	struct zx_vga *vga;
+-	int irq;
+-	int ret;
+-
+-	vga = devm_kzalloc(dev, sizeof(*vga), GFP_KERNEL);
+-	if (!vga)
+-		return -ENOMEM;
+-
+-	vga->dev = dev;
+-	dev_set_drvdata(dev, vga);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	vga->mmio = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(vga->mmio))
+-		return PTR_ERR(vga->mmio);
+-
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
+-		return irq;
+-
+-	vga->i2c_wclk = devm_clk_get(dev, "i2c_wclk");
+-	if (IS_ERR(vga->i2c_wclk)) {
+-		ret = PTR_ERR(vga->i2c_wclk);
+-		DRM_DEV_ERROR(dev, "failed to get i2c_wclk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_vga_pwrctrl_init(vga);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init power control: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_vga_ddc_register(vga);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to register ddc: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_vga_register(drm, vga);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to register vga: %d\n", ret);
+-		return ret;
+-	}
+-
+-	init_completion(&vga->complete);
+-
+-	ret = devm_request_threaded_irq(dev, irq, zx_vga_irq_handler,
+-					zx_vga_irq_thread, IRQF_SHARED,
+-					dev_name(dev), vga);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to request threaded irq: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = clk_prepare_enable(vga->i2c_wclk);
+-	if (ret)
+-		return ret;
+-
+-	zx_vga_hw_init(vga);
+-
+-	return 0;
+-}
+-
+-static void zx_vga_unbind(struct device *dev, struct device *master,
+-			  void *data)
+-{
+-	struct zx_vga *vga = dev_get_drvdata(dev);
+-
+-	clk_disable_unprepare(vga->i2c_wclk);
+-}
+-
+-static const struct component_ops zx_vga_component_ops = {
+-	.bind = zx_vga_bind,
+-	.unbind = zx_vga_unbind,
+-};
+-
+-static int zx_vga_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &zx_vga_component_ops);
+-}
+-
+-static int zx_vga_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &zx_vga_component_ops);
+-	return 0;
+-}
+-
+-static const struct of_device_id zx_vga_of_match[] = {
+-	{ .compatible = "zte,zx296718-vga", },
+-	{ /* end */ },
+-};
+-MODULE_DEVICE_TABLE(of, zx_vga_of_match);
+-
+-struct platform_driver zx_vga_driver = {
+-	.probe = zx_vga_probe,
+-	.remove = zx_vga_remove,
+-	.driver	= {
+-		.name = "zx-vga",
+-		.of_match_table	= zx_vga_of_match,
+-	},
+-};
+diff --git a/drivers/gpu/drm/zte/zx_vga_regs.h b/drivers/gpu/drm/zte/zx_vga_regs.h
+deleted file mode 100644
+index 1e8825ae70a5..000000000000
+--- a/drivers/gpu/drm/zte/zx_vga_regs.h
++++ /dev/null
+@@ -1,33 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) 2017 Sanechips Technology Co., Ltd.
+- * Copyright 2017 Linaro Ltd.
+- */
+-
+-#ifndef __ZX_VGA_REGS_H__
+-#define __ZX_VGA_REGS_H__
+-
+-#define VGA_CMD_CFG			0x04
+-#define VGA_CMD_TRANS			BIT(6)
+-#define VGA_CMD_COMBO			BIT(5)
+-#define VGA_CMD_RW			BIT(4)
+-#define VGA_SUB_ADDR			0x0c
+-#define VGA_DEVICE_ADDR			0x10
+-#define VGA_CLK_DIV_FS			0x14
+-#define VGA_RXF_CTRL			0x20
+-#define VGA_RX_FIFO_CLEAR		BIT(7)
+-#define VGA_DATA			0x24
+-#define VGA_I2C_STATUS			0x28
+-#define VGA_DEVICE_DISCONNECTED		BIT(7)
+-#define VGA_DEVICE_CONNECTED		BIT(6)
+-#define VGA_CLEAR_IRQ			BIT(4)
+-#define VGA_TRANS_DONE			BIT(0)
+-#define VGA_RXF_STATUS			0x30
+-#define VGA_RXF_COUNT_SHIFT		2
+-#define VGA_RXF_COUNT_MASK		GENMASK(7, 2)
+-#define VGA_AUTO_DETECT_PARA		0x34
+-#define VGA_AUTO_DETECT_SEL		0x38
+-#define VGA_DETECT_SEL_HAS_DEVICE	BIT(1)
+-#define VGA_DETECT_SEL_NO_DEVICE	BIT(0)
+-
+-#endif /* __ZX_VGA_REGS_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_vou.c b/drivers/gpu/drm/zte/zx_vou.c
+deleted file mode 100644
+index 904f62f3bfc1..000000000000
+--- a/drivers/gpu/drm/zte/zx_vou.c
++++ /dev/null
+@@ -1,921 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#include <linux/clk.h>
+-#include <linux/component.h>
+-#include <linux/module.h>
+-#include <linux/of_address.h>
+-#include <linux/platform_device.h>
+-
+-#include <video/videomode.h>
+-
+-#include <drm/drm_atomic_helper.h>
+-#include <drm/drm_crtc.h>
+-#include <drm/drm_fb_cma_helper.h>
+-#include <drm/drm_fb_helper.h>
+-#include <drm/drm_gem_cma_helper.h>
+-#include <drm/drm_of.h>
+-#include <drm/drm_plane_helper.h>
+-#include <drm/drm_probe_helper.h>
+-#include <drm/drm_vblank.h>
+-
+-#include "zx_common_regs.h"
+-#include "zx_drm_drv.h"
+-#include "zx_plane.h"
+-#include "zx_vou.h"
+-#include "zx_vou_regs.h"
+-
+-#define GL_NUM	2
+-#define VL_NUM	3
+-
+-enum vou_chn_type {
+-	VOU_CHN_MAIN,
+-	VOU_CHN_AUX,
+-};
+-
+-struct zx_crtc_regs {
+-	u32 fir_active;
+-	u32 fir_htiming;
+-	u32 fir_vtiming;
+-	u32 sec_vtiming;
+-	u32 timing_shift;
+-	u32 timing_pi_shift;
+-};
+-
+-static const struct zx_crtc_regs main_crtc_regs = {
+-	.fir_active = FIR_MAIN_ACTIVE,
+-	.fir_htiming = FIR_MAIN_H_TIMING,
+-	.fir_vtiming = FIR_MAIN_V_TIMING,
+-	.sec_vtiming = SEC_MAIN_V_TIMING,
+-	.timing_shift = TIMING_MAIN_SHIFT,
+-	.timing_pi_shift = TIMING_MAIN_PI_SHIFT,
+-};
+-
+-static const struct zx_crtc_regs aux_crtc_regs = {
+-	.fir_active = FIR_AUX_ACTIVE,
+-	.fir_htiming = FIR_AUX_H_TIMING,
+-	.fir_vtiming = FIR_AUX_V_TIMING,
+-	.sec_vtiming = SEC_AUX_V_TIMING,
+-	.timing_shift = TIMING_AUX_SHIFT,
+-	.timing_pi_shift = TIMING_AUX_PI_SHIFT,
+-};
+-
+-struct zx_crtc_bits {
+-	u32 polarity_mask;
+-	u32 polarity_shift;
+-	u32 int_frame_mask;
+-	u32 tc_enable;
+-	u32 sec_vactive_shift;
+-	u32 sec_vactive_mask;
+-	u32 interlace_select;
+-	u32 pi_enable;
+-	u32 div_vga_shift;
+-	u32 div_pic_shift;
+-	u32 div_tvenc_shift;
+-	u32 div_hdmi_pnx_shift;
+-	u32 div_hdmi_shift;
+-	u32 div_inf_shift;
+-	u32 div_layer_shift;
+-};
+-
+-static const struct zx_crtc_bits main_crtc_bits = {
+-	.polarity_mask = MAIN_POL_MASK,
+-	.polarity_shift = MAIN_POL_SHIFT,
+-	.int_frame_mask = TIMING_INT_MAIN_FRAME,
+-	.tc_enable = MAIN_TC_EN,
+-	.sec_vactive_shift = SEC_VACT_MAIN_SHIFT,
+-	.sec_vactive_mask = SEC_VACT_MAIN_MASK,
+-	.interlace_select = MAIN_INTERLACE_SEL,
+-	.pi_enable = MAIN_PI_EN,
+-	.div_vga_shift = VGA_MAIN_DIV_SHIFT,
+-	.div_pic_shift = PIC_MAIN_DIV_SHIFT,
+-	.div_tvenc_shift = TVENC_MAIN_DIV_SHIFT,
+-	.div_hdmi_pnx_shift = HDMI_MAIN_PNX_DIV_SHIFT,
+-	.div_hdmi_shift = HDMI_MAIN_DIV_SHIFT,
+-	.div_inf_shift = INF_MAIN_DIV_SHIFT,
+-	.div_layer_shift = LAYER_MAIN_DIV_SHIFT,
+-};
+-
+-static const struct zx_crtc_bits aux_crtc_bits = {
+-	.polarity_mask = AUX_POL_MASK,
+-	.polarity_shift = AUX_POL_SHIFT,
+-	.int_frame_mask = TIMING_INT_AUX_FRAME,
+-	.tc_enable = AUX_TC_EN,
+-	.sec_vactive_shift = SEC_VACT_AUX_SHIFT,
+-	.sec_vactive_mask = SEC_VACT_AUX_MASK,
+-	.interlace_select = AUX_INTERLACE_SEL,
+-	.pi_enable = AUX_PI_EN,
+-	.div_vga_shift = VGA_AUX_DIV_SHIFT,
+-	.div_pic_shift = PIC_AUX_DIV_SHIFT,
+-	.div_tvenc_shift = TVENC_AUX_DIV_SHIFT,
+-	.div_hdmi_pnx_shift = HDMI_AUX_PNX_DIV_SHIFT,
+-	.div_hdmi_shift = HDMI_AUX_DIV_SHIFT,
+-	.div_inf_shift = INF_AUX_DIV_SHIFT,
+-	.div_layer_shift = LAYER_AUX_DIV_SHIFT,
+-};
+-
+-struct zx_crtc {
+-	struct drm_crtc crtc;
+-	struct drm_plane *primary;
+-	struct zx_vou_hw *vou;
+-	void __iomem *chnreg;
+-	void __iomem *chncsc;
+-	void __iomem *dither;
+-	const struct zx_crtc_regs *regs;
+-	const struct zx_crtc_bits *bits;
+-	enum vou_chn_type chn_type;
+-	struct clk *pixclk;
+-};
+-
+-#define to_zx_crtc(x) container_of(x, struct zx_crtc, crtc)
+-
+-struct vou_layer_bits {
+-	u32 enable;
+-	u32 chnsel;
+-	u32 clksel;
+-};
+-
+-static const struct vou_layer_bits zx_gl_bits[GL_NUM] = {
+-	{
+-		.enable = OSD_CTRL0_GL0_EN,
+-		.chnsel = OSD_CTRL0_GL0_SEL,
+-		.clksel = VOU_CLK_GL0_SEL,
+-	}, {
+-		.enable = OSD_CTRL0_GL1_EN,
+-		.chnsel = OSD_CTRL0_GL1_SEL,
+-		.clksel = VOU_CLK_GL1_SEL,
+-	},
+-};
+-
+-static const struct vou_layer_bits zx_vl_bits[VL_NUM] = {
+-	{
+-		.enable = OSD_CTRL0_VL0_EN,
+-		.chnsel = OSD_CTRL0_VL0_SEL,
+-		.clksel = VOU_CLK_VL0_SEL,
+-	}, {
+-		.enable = OSD_CTRL0_VL1_EN,
+-		.chnsel = OSD_CTRL0_VL1_SEL,
+-		.clksel = VOU_CLK_VL1_SEL,
+-	}, {
+-		.enable = OSD_CTRL0_VL2_EN,
+-		.chnsel = OSD_CTRL0_VL2_SEL,
+-		.clksel = VOU_CLK_VL2_SEL,
+-	},
+-};
+-
+-struct zx_vou_hw {
+-	struct device *dev;
+-	void __iomem *osd;
+-	void __iomem *timing;
+-	void __iomem *vouctl;
+-	void __iomem *otfppu;
+-	void __iomem *dtrc;
+-	struct clk *axi_clk;
+-	struct clk *ppu_clk;
+-	struct clk *main_clk;
+-	struct clk *aux_clk;
+-	struct zx_crtc *main_crtc;
+-	struct zx_crtc *aux_crtc;
+-};
+-
+-enum vou_inf_data_sel {
+-	VOU_YUV444	= 0,
+-	VOU_RGB_101010	= 1,
+-	VOU_RGB_888	= 2,
+-	VOU_RGB_666	= 3,
+-};
+-
+-struct vou_inf {
+-	enum vou_inf_id id;
+-	enum vou_inf_data_sel data_sel;
+-	u32 clocks_en_bits;
+-	u32 clocks_sel_bits;
+-};
+-
+-static struct vou_inf vou_infs[] = {
+-	[VOU_HDMI] = {
+-		.data_sel = VOU_YUV444,
+-		.clocks_en_bits = BIT(24) | BIT(18) | BIT(6),
+-		.clocks_sel_bits = BIT(13) | BIT(2),
+-	},
+-	[VOU_TV_ENC] = {
+-		.data_sel = VOU_YUV444,
+-		.clocks_en_bits = BIT(15),
+-		.clocks_sel_bits = BIT(11) | BIT(0),
+-	},
+-	[VOU_VGA] = {
+-		.data_sel = VOU_RGB_888,
+-		.clocks_en_bits = BIT(1),
+-		.clocks_sel_bits = BIT(10),
+-	},
+-};
+-
+-static inline struct zx_vou_hw *crtc_to_vou(struct drm_crtc *crtc)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-
+-	return zcrtc->vou;
+-}
+-
+-void vou_inf_hdmi_audio_sel(struct drm_crtc *crtc,
+-			    enum vou_inf_hdmi_audio aud)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-
+-	zx_writel_mask(vou->vouctl + VOU_INF_HDMI_CTRL, VOU_HDMI_AUD_MASK, aud);
+-}
+-
+-void vou_inf_enable(enum vou_inf_id id, struct drm_crtc *crtc)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-	struct vou_inf *inf = &vou_infs[id];
+-	void __iomem *dither = zcrtc->dither;
+-	void __iomem *csc = zcrtc->chncsc;
+-	bool is_main = zcrtc->chn_type == VOU_CHN_MAIN;
+-	u32 data_sel_shift = id << 1;
+-
+-	if (inf->data_sel != VOU_YUV444) {
+-		/* Enable channel CSC for RGB output */
+-		zx_writel_mask(csc + CSC_CTRL0, CSC_COV_MODE_MASK,
+-			       CSC_BT709_IMAGE_YCBCR2RGB << CSC_COV_MODE_SHIFT);
+-		zx_writel_mask(csc + CSC_CTRL0, CSC_WORK_ENABLE,
+-			       CSC_WORK_ENABLE);
+-
+-		/* Bypass Dither block for RGB output */
+-		zx_writel_mask(dither + OSD_DITHER_CTRL0, DITHER_BYSPASS,
+-			       DITHER_BYSPASS);
+-	} else {
+-		zx_writel_mask(csc + CSC_CTRL0, CSC_WORK_ENABLE, 0);
+-		zx_writel_mask(dither + OSD_DITHER_CTRL0, DITHER_BYSPASS, 0);
+-	}
+-
+-	/* Select data format */
+-	zx_writel_mask(vou->vouctl + VOU_INF_DATA_SEL, 0x3 << data_sel_shift,
+-		       inf->data_sel << data_sel_shift);
+-
+-	/* Select channel */
+-	zx_writel_mask(vou->vouctl + VOU_INF_CH_SEL, 0x1 << id,
+-		       zcrtc->chn_type << id);
+-
+-	/* Select interface clocks */
+-	zx_writel_mask(vou->vouctl + VOU_CLK_SEL, inf->clocks_sel_bits,
+-		       is_main ? 0 : inf->clocks_sel_bits);
+-
+-	/* Enable interface clocks */
+-	zx_writel_mask(vou->vouctl + VOU_CLK_EN, inf->clocks_en_bits,
+-		       inf->clocks_en_bits);
+-
+-	/* Enable the device */
+-	zx_writel_mask(vou->vouctl + VOU_INF_EN, 1 << id, 1 << id);
+-}
+-
+-void vou_inf_disable(enum vou_inf_id id, struct drm_crtc *crtc)
+-{
+-	struct zx_vou_hw *vou = crtc_to_vou(crtc);
+-	struct vou_inf *inf = &vou_infs[id];
+-
+-	/* Disable the device */
+-	zx_writel_mask(vou->vouctl + VOU_INF_EN, 1 << id, 0);
+-
+-	/* Disable interface clocks */
+-	zx_writel_mask(vou->vouctl + VOU_CLK_EN, inf->clocks_en_bits, 0);
+-}
+-
+-void zx_vou_config_dividers(struct drm_crtc *crtc,
+-			    struct vou_div_config *configs, int num)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-	const struct zx_crtc_bits *bits = zcrtc->bits;
+-	int i;
+-
+-	/* Clear update flag bit */
+-	zx_writel_mask(vou->vouctl + VOU_DIV_PARA, DIV_PARA_UPDATE, 0);
+-
+-	for (i = 0; i < num; i++) {
+-		struct vou_div_config *cfg = configs + i;
+-		u32 reg, shift;
+-
+-		switch (cfg->id) {
+-		case VOU_DIV_VGA:
+-			reg = VOU_CLK_SEL;
+-			shift = bits->div_vga_shift;
+-			break;
+-		case VOU_DIV_PIC:
+-			reg = VOU_CLK_SEL;
+-			shift = bits->div_pic_shift;
+-			break;
+-		case VOU_DIV_TVENC:
+-			reg = VOU_DIV_PARA;
+-			shift = bits->div_tvenc_shift;
+-			break;
+-		case VOU_DIV_HDMI_PNX:
+-			reg = VOU_DIV_PARA;
+-			shift = bits->div_hdmi_pnx_shift;
+-			break;
+-		case VOU_DIV_HDMI:
+-			reg = VOU_DIV_PARA;
+-			shift = bits->div_hdmi_shift;
+-			break;
+-		case VOU_DIV_INF:
+-			reg = VOU_DIV_PARA;
+-			shift = bits->div_inf_shift;
+-			break;
+-		case VOU_DIV_LAYER:
+-			reg = VOU_DIV_PARA;
+-			shift = bits->div_layer_shift;
+-			break;
+-		default:
+-			continue;
+-		}
+-
+-		/* Each divider occupies 3 bits */
+-		zx_writel_mask(vou->vouctl + reg, 0x7 << shift,
+-			       cfg->val << shift);
+-	}
+-
+-	/* Set update flag bit to get dividers effected */
+-	zx_writel_mask(vou->vouctl + VOU_DIV_PARA, DIV_PARA_UPDATE,
+-		       DIV_PARA_UPDATE);
+-}
+-
+-static inline void vou_chn_set_update(struct zx_crtc *zcrtc)
+-{
+-	zx_writel(zcrtc->chnreg + CHN_UPDATE, 1);
+-}
+-
+-static void zx_crtc_atomic_enable(struct drm_crtc *crtc,
+-				  struct drm_atomic_state *state)
+-{
+-	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+-	bool interlaced = mode->flags & DRM_MODE_FLAG_INTERLACE;
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-	const struct zx_crtc_regs *regs = zcrtc->regs;
+-	const struct zx_crtc_bits *bits = zcrtc->bits;
+-	struct videomode vm;
+-	u32 scan_mask;
+-	u32 pol = 0;
+-	u32 val;
+-	int ret;
+-
+-	drm_display_mode_to_videomode(mode, &vm);
+-
+-	/* Set up timing parameters */
+-	val = V_ACTIVE((interlaced ? vm.vactive / 2 : vm.vactive) - 1);
+-	val |= H_ACTIVE(vm.hactive - 1);
+-	zx_writel(vou->timing + regs->fir_active, val);
+-
+-	val = SYNC_WIDE(vm.hsync_len - 1);
+-	val |= BACK_PORCH(vm.hback_porch - 1);
+-	val |= FRONT_PORCH(vm.hfront_porch - 1);
+-	zx_writel(vou->timing + regs->fir_htiming, val);
+-
+-	val = SYNC_WIDE(vm.vsync_len - 1);
+-	val |= BACK_PORCH(vm.vback_porch - 1);
+-	val |= FRONT_PORCH(vm.vfront_porch - 1);
+-	zx_writel(vou->timing + regs->fir_vtiming, val);
+-
+-	if (interlaced) {
+-		u32 shift = bits->sec_vactive_shift;
+-		u32 mask = bits->sec_vactive_mask;
+-
+-		val = zx_readl(vou->timing + SEC_V_ACTIVE);
+-		val &= ~mask;
+-		val |= ((vm.vactive / 2 - 1) << shift) & mask;
+-		zx_writel(vou->timing + SEC_V_ACTIVE, val);
+-
+-		val = SYNC_WIDE(vm.vsync_len - 1);
+-		/*
+-		 * The vback_porch for the second field needs to shift one on
+-		 * the value for the first field.
+-		 */
+-		val |= BACK_PORCH(vm.vback_porch);
+-		val |= FRONT_PORCH(vm.vfront_porch - 1);
+-		zx_writel(vou->timing + regs->sec_vtiming, val);
+-	}
+-
+-	/* Set up polarities */
+-	if (vm.flags & DISPLAY_FLAGS_VSYNC_LOW)
+-		pol |= 1 << POL_VSYNC_SHIFT;
+-	if (vm.flags & DISPLAY_FLAGS_HSYNC_LOW)
+-		pol |= 1 << POL_HSYNC_SHIFT;
+-
+-	zx_writel_mask(vou->timing + TIMING_CTRL, bits->polarity_mask,
+-		       pol << bits->polarity_shift);
+-
+-	/* Setup SHIFT register by following what ZTE BSP does */
+-	val = H_SHIFT_VAL;
+-	if (interlaced)
+-		val |= V_SHIFT_VAL << 16;
+-	zx_writel(vou->timing + regs->timing_shift, val);
+-	zx_writel(vou->timing + regs->timing_pi_shift, H_PI_SHIFT_VAL);
+-
+-	/* Progressive or interlace scan select */
+-	scan_mask = bits->interlace_select | bits->pi_enable;
+-	zx_writel_mask(vou->timing + SCAN_CTRL, scan_mask,
+-		       interlaced ? scan_mask : 0);
+-
+-	/* Enable TIMING_CTRL */
+-	zx_writel_mask(vou->timing + TIMING_TC_ENABLE, bits->tc_enable,
+-		       bits->tc_enable);
+-
+-	/* Configure channel screen size */
+-	zx_writel_mask(zcrtc->chnreg + CHN_CTRL1, CHN_SCREEN_W_MASK,
+-		       vm.hactive << CHN_SCREEN_W_SHIFT);
+-	zx_writel_mask(zcrtc->chnreg + CHN_CTRL1, CHN_SCREEN_H_MASK,
+-		       vm.vactive << CHN_SCREEN_H_SHIFT);
+-
+-	/* Configure channel interlace buffer control */
+-	zx_writel_mask(zcrtc->chnreg + CHN_INTERLACE_BUF_CTRL, CHN_INTERLACE_EN,
+-		       interlaced ? CHN_INTERLACE_EN : 0);
+-
+-	/* Update channel */
+-	vou_chn_set_update(zcrtc);
+-
+-	/* Enable channel */
+-	zx_writel_mask(zcrtc->chnreg + CHN_CTRL0, CHN_ENABLE, CHN_ENABLE);
+-
+-	drm_crtc_vblank_on(crtc);
+-
+-	ret = clk_set_rate(zcrtc->pixclk, mode->clock * 1000);
+-	if (ret) {
+-		DRM_DEV_ERROR(vou->dev, "failed to set pixclk rate: %d\n", ret);
+-		return;
+-	}
+-
+-	ret = clk_prepare_enable(zcrtc->pixclk);
+-	if (ret)
+-		DRM_DEV_ERROR(vou->dev, "failed to enable pixclk: %d\n", ret);
+-}
+-
+-static void zx_crtc_atomic_disable(struct drm_crtc *crtc,
+-				   struct drm_atomic_state *state)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	const struct zx_crtc_bits *bits = zcrtc->bits;
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-
+-	clk_disable_unprepare(zcrtc->pixclk);
+-
+-	drm_crtc_vblank_off(crtc);
+-
+-	/* Disable channel */
+-	zx_writel_mask(zcrtc->chnreg + CHN_CTRL0, CHN_ENABLE, 0);
+-
+-	/* Disable TIMING_CTRL */
+-	zx_writel_mask(vou->timing + TIMING_TC_ENABLE, bits->tc_enable, 0);
+-}
+-
+-static void zx_crtc_atomic_flush(struct drm_crtc *crtc,
+-				  struct drm_atomic_state *state)
+-{
+-	struct drm_pending_vblank_event *event = crtc->state->event;
+-
+-	if (!event)
+-		return;
+-
+-	crtc->state->event = NULL;
+-
+-	spin_lock_irq(&crtc->dev->event_lock);
+-	if (drm_crtc_vblank_get(crtc) == 0)
+-		drm_crtc_arm_vblank_event(crtc, event);
+-	else
+-		drm_crtc_send_vblank_event(crtc, event);
+-	spin_unlock_irq(&crtc->dev->event_lock);
+-}
+-
+-static const struct drm_crtc_helper_funcs zx_crtc_helper_funcs = {
+-	.atomic_flush = zx_crtc_atomic_flush,
+-	.atomic_enable = zx_crtc_atomic_enable,
+-	.atomic_disable = zx_crtc_atomic_disable,
+-};
+-
+-static int zx_vou_enable_vblank(struct drm_crtc *crtc)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	struct zx_vou_hw *vou = crtc_to_vou(crtc);
+-	u32 int_frame_mask = zcrtc->bits->int_frame_mask;
+-
+-	zx_writel_mask(vou->timing + TIMING_INT_CTRL, int_frame_mask,
+-		       int_frame_mask);
+-
+-	return 0;
+-}
+-
+-static void zx_vou_disable_vblank(struct drm_crtc *crtc)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(crtc);
+-	struct zx_vou_hw *vou = crtc_to_vou(crtc);
+-
+-	zx_writel_mask(vou->timing + TIMING_INT_CTRL,
+-		       zcrtc->bits->int_frame_mask, 0);
+-}
+-
+-static const struct drm_crtc_funcs zx_crtc_funcs = {
+-	.destroy = drm_crtc_cleanup,
+-	.set_config = drm_atomic_helper_set_config,
+-	.page_flip = drm_atomic_helper_page_flip,
+-	.reset = drm_atomic_helper_crtc_reset,
+-	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
+-	.enable_vblank = zx_vou_enable_vblank,
+-	.disable_vblank = zx_vou_disable_vblank,
+-};
+-
+-static int zx_crtc_init(struct drm_device *drm, struct zx_vou_hw *vou,
+-			enum vou_chn_type chn_type)
+-{
+-	struct device *dev = vou->dev;
+-	struct zx_plane *zplane;
+-	struct zx_crtc *zcrtc;
+-	int ret;
+-
+-	zcrtc = devm_kzalloc(dev, sizeof(*zcrtc), GFP_KERNEL);
+-	if (!zcrtc)
+-		return -ENOMEM;
+-
+-	zcrtc->vou = vou;
+-	zcrtc->chn_type = chn_type;
+-
+-	zplane = devm_kzalloc(dev, sizeof(*zplane), GFP_KERNEL);
+-	if (!zplane)
+-		return -ENOMEM;
+-
+-	zplane->dev = dev;
+-
+-	if (chn_type == VOU_CHN_MAIN) {
+-		zplane->layer = vou->osd + MAIN_GL_OFFSET;
+-		zplane->csc = vou->osd + MAIN_GL_CSC_OFFSET;
+-		zplane->hbsc = vou->osd + MAIN_HBSC_OFFSET;
+-		zplane->rsz = vou->otfppu + MAIN_RSZ_OFFSET;
+-		zplane->bits = &zx_gl_bits[0];
+-		zcrtc->chnreg = vou->osd + OSD_MAIN_CHN;
+-		zcrtc->chncsc = vou->osd + MAIN_CHN_CSC_OFFSET;
+-		zcrtc->dither = vou->osd + MAIN_DITHER_OFFSET;
+-		zcrtc->regs = &main_crtc_regs;
+-		zcrtc->bits = &main_crtc_bits;
+-	} else {
+-		zplane->layer = vou->osd + AUX_GL_OFFSET;
+-		zplane->csc = vou->osd + AUX_GL_CSC_OFFSET;
+-		zplane->hbsc = vou->osd + AUX_HBSC_OFFSET;
+-		zplane->rsz = vou->otfppu + AUX_RSZ_OFFSET;
+-		zplane->bits = &zx_gl_bits[1];
+-		zcrtc->chnreg = vou->osd + OSD_AUX_CHN;
+-		zcrtc->chncsc = vou->osd + AUX_CHN_CSC_OFFSET;
+-		zcrtc->dither = vou->osd + AUX_DITHER_OFFSET;
+-		zcrtc->regs = &aux_crtc_regs;
+-		zcrtc->bits = &aux_crtc_bits;
+-	}
+-
+-	zcrtc->pixclk = devm_clk_get(dev, (chn_type == VOU_CHN_MAIN) ?
+-					  "main_wclk" : "aux_wclk");
+-	if (IS_ERR(zcrtc->pixclk)) {
+-		ret = PTR_ERR(zcrtc->pixclk);
+-		DRM_DEV_ERROR(dev, "failed to get pix clk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = zx_plane_init(drm, zplane, DRM_PLANE_TYPE_PRIMARY);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init primary plane: %d\n", ret);
+-		return ret;
+-	}
+-
+-	zcrtc->primary = &zplane->plane;
+-
+-	ret = drm_crtc_init_with_planes(drm, &zcrtc->crtc, zcrtc->primary, NULL,
+-					&zx_crtc_funcs, NULL);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init drm crtc: %d\n", ret);
+-		return ret;
+-	}
+-
+-	drm_crtc_helper_add(&zcrtc->crtc, &zx_crtc_helper_funcs);
+-
+-	if (chn_type == VOU_CHN_MAIN)
+-		vou->main_crtc = zcrtc;
+-	else
+-		vou->aux_crtc = zcrtc;
+-
+-	return 0;
+-}
+-
+-void zx_vou_layer_enable(struct drm_plane *plane)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(plane->state->crtc);
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-	struct zx_plane *zplane = to_zx_plane(plane);
+-	const struct vou_layer_bits *bits = zplane->bits;
+-
+-	if (zcrtc->chn_type == VOU_CHN_MAIN) {
+-		zx_writel_mask(vou->osd + OSD_CTRL0, bits->chnsel, 0);
+-		zx_writel_mask(vou->vouctl + VOU_CLK_SEL, bits->clksel, 0);
+-	} else {
+-		zx_writel_mask(vou->osd + OSD_CTRL0, bits->chnsel,
+-			       bits->chnsel);
+-		zx_writel_mask(vou->vouctl + VOU_CLK_SEL, bits->clksel,
+-			       bits->clksel);
+-	}
+-
+-	zx_writel_mask(vou->osd + OSD_CTRL0, bits->enable, bits->enable);
+-}
+-
+-void zx_vou_layer_disable(struct drm_plane *plane,
+-			  struct drm_plane_state *old_state)
+-{
+-	struct zx_crtc *zcrtc = to_zx_crtc(old_state->crtc);
+-	struct zx_vou_hw *vou = zcrtc->vou;
+-	struct zx_plane *zplane = to_zx_plane(plane);
+-	const struct vou_layer_bits *bits = zplane->bits;
+-
+-	zx_writel_mask(vou->osd + OSD_CTRL0, bits->enable, 0);
+-}
+-
+-static void zx_overlay_init(struct drm_device *drm, struct zx_vou_hw *vou)
+-{
+-	struct device *dev = vou->dev;
+-	struct zx_plane *zplane;
+-	int i;
+-	int ret;
+-
+-	/*
+-	 * VL0 has some quirks on scaling support which need special handling.
+-	 * Let's leave it out for now.
+-	 */
+-	for (i = 1; i < VL_NUM; i++) {
+-		zplane = devm_kzalloc(dev, sizeof(*zplane), GFP_KERNEL);
+-		if (!zplane) {
+-			DRM_DEV_ERROR(dev, "failed to allocate zplane %d\n", i);
+-			return;
+-		}
+-
+-		zplane->layer = vou->osd + OSD_VL_OFFSET(i);
+-		zplane->hbsc = vou->osd + HBSC_VL_OFFSET(i);
+-		zplane->rsz = vou->otfppu + RSZ_VL_OFFSET(i);
+-		zplane->bits = &zx_vl_bits[i];
+-
+-		ret = zx_plane_init(drm, zplane, DRM_PLANE_TYPE_OVERLAY);
+-		if (ret) {
+-			DRM_DEV_ERROR(dev, "failed to init overlay %d\n", i);
+-			continue;
+-		}
+-	}
+-}
+-
+-static inline void zx_osd_int_update(struct zx_crtc *zcrtc)
+-{
+-	struct drm_crtc *crtc = &zcrtc->crtc;
+-	struct drm_plane *plane;
+-
+-	vou_chn_set_update(zcrtc);
+-
+-	drm_for_each_plane_mask(plane, crtc->dev, crtc->state->plane_mask)
+-		zx_plane_set_update(plane);
+-}
+-
+-static irqreturn_t vou_irq_handler(int irq, void *dev_id)
+-{
+-	struct zx_vou_hw *vou = dev_id;
+-	u32 state;
+-
+-	/* Handle TIMING_CTRL frame interrupts */
+-	state = zx_readl(vou->timing + TIMING_INT_STATE);
+-	zx_writel(vou->timing + TIMING_INT_STATE, state);
+-
+-	if (state & TIMING_INT_MAIN_FRAME)
+-		drm_crtc_handle_vblank(&vou->main_crtc->crtc);
+-
+-	if (state & TIMING_INT_AUX_FRAME)
+-		drm_crtc_handle_vblank(&vou->aux_crtc->crtc);
+-
+-	/* Handle OSD interrupts */
+-	state = zx_readl(vou->osd + OSD_INT_STA);
+-	zx_writel(vou->osd + OSD_INT_CLRSTA, state);
+-
+-	if (state & OSD_INT_MAIN_UPT)
+-		zx_osd_int_update(vou->main_crtc);
+-
+-	if (state & OSD_INT_AUX_UPT)
+-		zx_osd_int_update(vou->aux_crtc);
+-
+-	if (state & OSD_INT_ERROR)
+-		DRM_DEV_ERROR(vou->dev, "OSD ERROR: 0x%08x!\n", state);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static void vou_dtrc_init(struct zx_vou_hw *vou)
+-{
+-	/* Clear bit for bypass by ID */
+-	zx_writel_mask(vou->dtrc + DTRC_DETILE_CTRL,
+-		       TILE2RASTESCAN_BYPASS_MODE, 0);
+-
+-	/* Select ARIDR mode */
+-	zx_writel_mask(vou->dtrc + DTRC_DETILE_CTRL, DETILE_ARIDR_MODE_MASK,
+-		       DETILE_ARID_IN_ARIDR);
+-
+-	/* Bypass decompression for both frames */
+-	zx_writel_mask(vou->dtrc + DTRC_F0_CTRL, DTRC_DECOMPRESS_BYPASS,
+-		       DTRC_DECOMPRESS_BYPASS);
+-	zx_writel_mask(vou->dtrc + DTRC_F1_CTRL, DTRC_DECOMPRESS_BYPASS,
+-		       DTRC_DECOMPRESS_BYPASS);
+-
+-	/* Set up ARID register */
+-	zx_writel(vou->dtrc + DTRC_ARID, DTRC_ARID3(0xf) | DTRC_ARID2(0xe) |
+-		  DTRC_ARID1(0xf) | DTRC_ARID0(0xe));
+-}
+-
+-static void vou_hw_init(struct zx_vou_hw *vou)
+-{
+-	/* Release reset for all VOU modules */
+-	zx_writel(vou->vouctl + VOU_SOFT_RST, ~0);
+-
+-	/* Enable all VOU module clocks */
+-	zx_writel(vou->vouctl + VOU_CLK_EN, ~0);
+-
+-	/* Clear both OSD and TIMING_CTRL interrupt state */
+-	zx_writel(vou->osd + OSD_INT_CLRSTA, ~0);
+-	zx_writel(vou->timing + TIMING_INT_STATE, ~0);
+-
+-	/* Enable OSD and TIMING_CTRL interrrupts */
+-	zx_writel(vou->osd + OSD_INT_MSK, OSD_INT_ENABLE);
+-	zx_writel(vou->timing + TIMING_INT_CTRL, TIMING_INT_ENABLE);
+-
+-	/* Select GPC as input to gl/vl scaler as a sane default setting */
+-	zx_writel(vou->otfppu + OTFPPU_RSZ_DATA_SOURCE, 0x2a);
+-
+-	/*
+-	 * Needs to reset channel and layer logic per frame when frame starts
+-	 * to get VOU work properly.
+-	 */
+-	zx_writel_mask(vou->osd + OSD_RST_CLR, RST_PER_FRAME, RST_PER_FRAME);
+-
+-	vou_dtrc_init(vou);
+-}
+-
+-static int zx_crtc_bind(struct device *dev, struct device *master, void *data)
+-{
+-	struct platform_device *pdev = to_platform_device(dev);
+-	struct drm_device *drm = data;
+-	struct zx_vou_hw *vou;
+-	struct resource *res;
+-	int irq;
+-	int ret;
+-
+-	vou = devm_kzalloc(dev, sizeof(*vou), GFP_KERNEL);
+-	if (!vou)
+-		return -ENOMEM;
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "osd");
+-	vou->osd = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(vou->osd)) {
+-		ret = PTR_ERR(vou->osd);
+-		DRM_DEV_ERROR(dev, "failed to remap osd region: %d\n", ret);
+-		return ret;
+-	}
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "timing_ctrl");
+-	vou->timing = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(vou->timing)) {
+-		ret = PTR_ERR(vou->timing);
+-		DRM_DEV_ERROR(dev, "failed to remap timing_ctrl region: %d\n",
+-			      ret);
+-		return ret;
+-	}
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dtrc");
+-	vou->dtrc = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(vou->dtrc)) {
+-		ret = PTR_ERR(vou->dtrc);
+-		DRM_DEV_ERROR(dev, "failed to remap dtrc region: %d\n", ret);
+-		return ret;
+-	}
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "vou_ctrl");
+-	vou->vouctl = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(vou->vouctl)) {
+-		ret = PTR_ERR(vou->vouctl);
+-		DRM_DEV_ERROR(dev, "failed to remap vou_ctrl region: %d\n",
+-			      ret);
+-		return ret;
+-	}
+-
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "otfppu");
+-	vou->otfppu = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(vou->otfppu)) {
+-		ret = PTR_ERR(vou->otfppu);
+-		DRM_DEV_ERROR(dev, "failed to remap otfppu region: %d\n", ret);
+-		return ret;
+-	}
+-
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq < 0)
+-		return irq;
+-
+-	vou->axi_clk = devm_clk_get(dev, "aclk");
+-	if (IS_ERR(vou->axi_clk)) {
+-		ret = PTR_ERR(vou->axi_clk);
+-		DRM_DEV_ERROR(dev, "failed to get axi_clk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	vou->ppu_clk = devm_clk_get(dev, "ppu_wclk");
+-	if (IS_ERR(vou->ppu_clk)) {
+-		ret = PTR_ERR(vou->ppu_clk);
+-		DRM_DEV_ERROR(dev, "failed to get ppu_clk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = clk_prepare_enable(vou->axi_clk);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to enable axi_clk: %d\n", ret);
+-		return ret;
+-	}
+-
+-	clk_prepare_enable(vou->ppu_clk);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to enable ppu_clk: %d\n", ret);
+-		goto disable_axi_clk;
+-	}
+-
+-	vou->dev = dev;
+-	dev_set_drvdata(dev, vou);
+-
+-	vou_hw_init(vou);
+-
+-	ret = devm_request_irq(dev, irq, vou_irq_handler, 0, "zx_vou", vou);
+-	if (ret < 0) {
+-		DRM_DEV_ERROR(dev, "failed to request vou irq: %d\n", ret);
+-		goto disable_ppu_clk;
+-	}
+-
+-	ret = zx_crtc_init(drm, vou, VOU_CHN_MAIN);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init main channel crtc: %d\n",
+-			      ret);
+-		goto disable_ppu_clk;
+-	}
+-
+-	ret = zx_crtc_init(drm, vou, VOU_CHN_AUX);
+-	if (ret) {
+-		DRM_DEV_ERROR(dev, "failed to init aux channel crtc: %d\n",
+-			      ret);
+-		goto disable_ppu_clk;
+-	}
+-
+-	zx_overlay_init(drm, vou);
+-
+-	return 0;
+-
+-disable_ppu_clk:
+-	clk_disable_unprepare(vou->ppu_clk);
+-disable_axi_clk:
+-	clk_disable_unprepare(vou->axi_clk);
+-	return ret;
+-}
+-
+-static void zx_crtc_unbind(struct device *dev, struct device *master,
+-			   void *data)
+-{
+-	struct zx_vou_hw *vou = dev_get_drvdata(dev);
+-
+-	clk_disable_unprepare(vou->axi_clk);
+-	clk_disable_unprepare(vou->ppu_clk);
+-}
+-
+-static const struct component_ops zx_crtc_component_ops = {
+-	.bind = zx_crtc_bind,
+-	.unbind = zx_crtc_unbind,
+-};
+-
+-static int zx_crtc_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &zx_crtc_component_ops);
+-}
+-
+-static int zx_crtc_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &zx_crtc_component_ops);
+-	return 0;
+-}
+-
+-static const struct of_device_id zx_crtc_of_match[] = {
+-	{ .compatible = "zte,zx296718-dpc", },
+-	{ /* end */ },
+-};
+-MODULE_DEVICE_TABLE(of, zx_crtc_of_match);
+-
+-struct platform_driver zx_crtc_driver = {
+-	.probe = zx_crtc_probe,
+-	.remove = zx_crtc_remove,
+-	.driver	= {
+-		.name = "zx-crtc",
+-		.of_match_table	= zx_crtc_of_match,
+-	},
+-};
+diff --git a/drivers/gpu/drm/zte/zx_vou.h b/drivers/gpu/drm/zte/zx_vou.h
+deleted file mode 100644
+index b25f34f865ae..000000000000
+--- a/drivers/gpu/drm/zte/zx_vou.h
++++ /dev/null
+@@ -1,64 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_VOU_H__
+-#define __ZX_VOU_H__
+-
+-#define VOU_CRTC_MASK		0x3
+-
+-/* VOU output interfaces */
+-enum vou_inf_id {
+-	VOU_HDMI	= 0,
+-	VOU_RGB_LCD	= 1,
+-	VOU_TV_ENC	= 2,
+-	VOU_MIPI_DSI	= 3,
+-	VOU_LVDS	= 4,
+-	VOU_VGA		= 5,
+-};
+-
+-enum vou_inf_hdmi_audio {
+-	VOU_HDMI_AUD_SPDIF	= BIT(0),
+-	VOU_HDMI_AUD_I2S	= BIT(1),
+-	VOU_HDMI_AUD_DSD	= BIT(2),
+-	VOU_HDMI_AUD_HBR	= BIT(3),
+-	VOU_HDMI_AUD_PARALLEL	= BIT(4),
+-};
+-
+-void vou_inf_hdmi_audio_sel(struct drm_crtc *crtc,
+-			    enum vou_inf_hdmi_audio aud);
+-void vou_inf_enable(enum vou_inf_id id, struct drm_crtc *crtc);
+-void vou_inf_disable(enum vou_inf_id id, struct drm_crtc *crtc);
+-
+-enum vou_div_id {
+-	VOU_DIV_VGA,
+-	VOU_DIV_PIC,
+-	VOU_DIV_TVENC,
+-	VOU_DIV_HDMI_PNX,
+-	VOU_DIV_HDMI,
+-	VOU_DIV_INF,
+-	VOU_DIV_LAYER,
+-};
+-
+-enum vou_div_val {
+-	VOU_DIV_1 = 0,
+-	VOU_DIV_2 = 1,
+-	VOU_DIV_4 = 3,
+-	VOU_DIV_8 = 7,
+-};
+-
+-struct vou_div_config {
+-	enum vou_div_id id;
+-	enum vou_div_val val;
+-};
+-
+-void zx_vou_config_dividers(struct drm_crtc *crtc,
+-			    struct vou_div_config *configs, int num);
+-
+-void zx_vou_layer_enable(struct drm_plane *plane);
+-void zx_vou_layer_disable(struct drm_plane *plane,
+-			  struct drm_plane_state *old_state);
+-
+-#endif /* __ZX_VOU_H__ */
+diff --git a/drivers/gpu/drm/zte/zx_vou_regs.h b/drivers/gpu/drm/zte/zx_vou_regs.h
+deleted file mode 100644
+index 2ddb199cb912..000000000000
+--- a/drivers/gpu/drm/zte/zx_vou_regs.h
++++ /dev/null
+@@ -1,212 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright 2016 Linaro Ltd.
+- * Copyright 2016 ZTE Corporation.
+- */
+-
+-#ifndef __ZX_VOU_REGS_H__
+-#define __ZX_VOU_REGS_H__
+-
+-/* Sub-module offset */
+-#define MAIN_GL_OFFSET			0x130
+-#define MAIN_GL_CSC_OFFSET		0x580
+-#define MAIN_CHN_CSC_OFFSET		0x6c0
+-#define MAIN_HBSC_OFFSET		0x820
+-#define MAIN_DITHER_OFFSET		0x960
+-#define MAIN_RSZ_OFFSET			0x600 /* OTFPPU sub-module */
+-
+-#define AUX_GL_OFFSET			0x200
+-#define AUX_GL_CSC_OFFSET		0x5d0
+-#define AUX_CHN_CSC_OFFSET		0x710
+-#define AUX_HBSC_OFFSET			0x860
+-#define AUX_DITHER_OFFSET		0x970
+-#define AUX_RSZ_OFFSET			0x800
+-
+-#define OSD_VL0_OFFSET			0x040
+-#define OSD_VL_OFFSET(i)		(OSD_VL0_OFFSET + 0x050 * (i))
+-
+-#define HBSC_VL0_OFFSET			0x760
+-#define HBSC_VL_OFFSET(i)		(HBSC_VL0_OFFSET + 0x040 * (i))
+-
+-#define RSZ_VL1_U0			0xa00
+-#define RSZ_VL_OFFSET(i)		(RSZ_VL1_U0 + 0x200 * (i))
+-
+-/* OSD (GPC_GLOBAL) registers */
+-#define OSD_INT_STA			0x04
+-#define OSD_INT_CLRSTA			0x08
+-#define OSD_INT_MSK			0x0c
+-#define OSD_INT_AUX_UPT			BIT(14)
+-#define OSD_INT_MAIN_UPT		BIT(13)
+-#define OSD_INT_GL1_LBW			BIT(10)
+-#define OSD_INT_GL0_LBW			BIT(9)
+-#define OSD_INT_VL2_LBW			BIT(8)
+-#define OSD_INT_VL1_LBW			BIT(7)
+-#define OSD_INT_VL0_LBW			BIT(6)
+-#define OSD_INT_BUS_ERR			BIT(3)
+-#define OSD_INT_CFG_ERR			BIT(2)
+-#define OSD_INT_ERROR (\
+-	OSD_INT_GL1_LBW | OSD_INT_GL0_LBW | \
+-	OSD_INT_VL2_LBW | OSD_INT_VL1_LBW | OSD_INT_VL0_LBW | \
+-	OSD_INT_BUS_ERR | OSD_INT_CFG_ERR \
+-)
+-#define OSD_INT_ENABLE (OSD_INT_ERROR | OSD_INT_AUX_UPT | OSD_INT_MAIN_UPT)
+-#define OSD_CTRL0			0x10
+-#define OSD_CTRL0_VL0_EN		BIT(13)
+-#define OSD_CTRL0_VL0_SEL		BIT(12)
+-#define OSD_CTRL0_VL1_EN		BIT(11)
+-#define OSD_CTRL0_VL1_SEL		BIT(10)
+-#define OSD_CTRL0_VL2_EN		BIT(9)
+-#define OSD_CTRL0_VL2_SEL		BIT(8)
+-#define OSD_CTRL0_GL0_EN		BIT(7)
+-#define OSD_CTRL0_GL0_SEL		BIT(6)
+-#define OSD_CTRL0_GL1_EN		BIT(5)
+-#define OSD_CTRL0_GL1_SEL		BIT(4)
+-#define OSD_RST_CLR			0x1c
+-#define RST_PER_FRAME			BIT(19)
+-
+-/* Main/Aux channel registers */
+-#define OSD_MAIN_CHN			0x470
+-#define OSD_AUX_CHN			0x4d0
+-#define CHN_CTRL0			0x00
+-#define CHN_ENABLE			BIT(0)
+-#define CHN_CTRL1			0x04
+-#define CHN_SCREEN_W_SHIFT		18
+-#define CHN_SCREEN_W_MASK		(0x1fff << CHN_SCREEN_W_SHIFT)
+-#define CHN_SCREEN_H_SHIFT		5
+-#define CHN_SCREEN_H_MASK		(0x1fff << CHN_SCREEN_H_SHIFT)
+-#define CHN_UPDATE			0x08
+-#define CHN_INTERLACE_BUF_CTRL		0x24
+-#define CHN_INTERLACE_EN		BIT(2)
+-
+-/* Dither registers */
+-#define OSD_DITHER_CTRL0		0x00
+-#define DITHER_BYSPASS			BIT(31)
+-
+-/* TIMING_CTRL registers */
+-#define TIMING_TC_ENABLE		0x04
+-#define AUX_TC_EN			BIT(1)
+-#define MAIN_TC_EN			BIT(0)
+-#define FIR_MAIN_ACTIVE			0x08
+-#define FIR_AUX_ACTIVE			0x0c
+-#define V_ACTIVE_SHIFT			16
+-#define V_ACTIVE_MASK			(0xffff << V_ACTIVE_SHIFT)
+-#define H_ACTIVE_SHIFT			0
+-#define H_ACTIVE_MASK			(0xffff << H_ACTIVE_SHIFT)
+-#define FIR_MAIN_H_TIMING		0x10
+-#define FIR_MAIN_V_TIMING		0x14
+-#define FIR_AUX_H_TIMING		0x18
+-#define FIR_AUX_V_TIMING		0x1c
+-#define SYNC_WIDE_SHIFT			22
+-#define SYNC_WIDE_MASK			(0x3ff << SYNC_WIDE_SHIFT)
+-#define BACK_PORCH_SHIFT		11
+-#define BACK_PORCH_MASK			(0x7ff << BACK_PORCH_SHIFT)
+-#define FRONT_PORCH_SHIFT		0
+-#define FRONT_PORCH_MASK		(0x7ff << FRONT_PORCH_SHIFT)
+-#define TIMING_CTRL			0x20
+-#define AUX_POL_SHIFT			3
+-#define AUX_POL_MASK			(0x7 << AUX_POL_SHIFT)
+-#define MAIN_POL_SHIFT			0
+-#define MAIN_POL_MASK			(0x7 << MAIN_POL_SHIFT)
+-#define POL_DE_SHIFT			2
+-#define POL_VSYNC_SHIFT			1
+-#define POL_HSYNC_SHIFT			0
+-#define TIMING_INT_CTRL			0x24
+-#define TIMING_INT_STATE		0x28
+-#define TIMING_INT_AUX_FRAME		BIT(3)
+-#define TIMING_INT_MAIN_FRAME		BIT(1)
+-#define TIMING_INT_AUX_FRAME_SEL_VSW	(0x2 << 10)
+-#define TIMING_INT_MAIN_FRAME_SEL_VSW	(0x2 << 6)
+-#define TIMING_INT_ENABLE (\
+-	TIMING_INT_MAIN_FRAME_SEL_VSW | TIMING_INT_AUX_FRAME_SEL_VSW | \
+-	TIMING_INT_MAIN_FRAME | TIMING_INT_AUX_FRAME \
+-)
+-#define TIMING_MAIN_SHIFT		0x2c
+-#define TIMING_AUX_SHIFT		0x30
+-#define H_SHIFT_VAL			0x0048
+-#define V_SHIFT_VAL			0x0001
+-#define SCAN_CTRL			0x34
+-#define AUX_PI_EN			BIT(19)
+-#define MAIN_PI_EN			BIT(18)
+-#define AUX_INTERLACE_SEL		BIT(1)
+-#define MAIN_INTERLACE_SEL		BIT(0)
+-#define SEC_V_ACTIVE			0x38
+-#define SEC_VACT_MAIN_SHIFT		0
+-#define SEC_VACT_MAIN_MASK		(0xffff << SEC_VACT_MAIN_SHIFT)
+-#define SEC_VACT_AUX_SHIFT		16
+-#define SEC_VACT_AUX_MASK		(0xffff << SEC_VACT_AUX_SHIFT)
+-#define SEC_MAIN_V_TIMING		0x3c
+-#define SEC_AUX_V_TIMING		0x40
+-#define TIMING_MAIN_PI_SHIFT		0x68
+-#define TIMING_AUX_PI_SHIFT		0x6c
+-#define H_PI_SHIFT_VAL			0x000f
+-
+-#define V_ACTIVE(x)	(((x) << V_ACTIVE_SHIFT) & V_ACTIVE_MASK)
+-#define H_ACTIVE(x)	(((x) << H_ACTIVE_SHIFT) & H_ACTIVE_MASK)
+-
+-#define SYNC_WIDE(x)	(((x) << SYNC_WIDE_SHIFT) & SYNC_WIDE_MASK)
+-#define BACK_PORCH(x)	(((x) << BACK_PORCH_SHIFT) & BACK_PORCH_MASK)
+-#define FRONT_PORCH(x)	(((x) << FRONT_PORCH_SHIFT) & FRONT_PORCH_MASK)
+-
+-/* DTRC registers */
+-#define DTRC_F0_CTRL			0x2c
+-#define DTRC_F1_CTRL			0x5c
+-#define DTRC_DECOMPRESS_BYPASS		BIT(17)
+-#define DTRC_DETILE_CTRL		0x68
+-#define TILE2RASTESCAN_BYPASS_MODE	BIT(30)
+-#define DETILE_ARIDR_MODE_MASK		(0x3 << 0)
+-#define DETILE_ARID_ALL			0
+-#define DETILE_ARID_IN_ARIDR		1
+-#define DETILE_ARID_BYP_BUT_ARIDR	2
+-#define DETILE_ARID_IN_ARIDR2		3
+-#define DTRC_ARID			0x6c
+-#define DTRC_ARID3_SHIFT		24
+-#define DTRC_ARID3_MASK			(0xff << DTRC_ARID3_SHIFT)
+-#define DTRC_ARID2_SHIFT		16
+-#define DTRC_ARID2_MASK			(0xff << DTRC_ARID2_SHIFT)
+-#define DTRC_ARID1_SHIFT		8
+-#define DTRC_ARID1_MASK			(0xff << DTRC_ARID1_SHIFT)
+-#define DTRC_ARID0_SHIFT		0
+-#define DTRC_ARID0_MASK			(0xff << DTRC_ARID0_SHIFT)
+-#define DTRC_DEC2DDR_ARID		0x70
+-
+-#define DTRC_ARID3(x)	(((x) << DTRC_ARID3_SHIFT) & DTRC_ARID3_MASK)
+-#define DTRC_ARID2(x)	(((x) << DTRC_ARID2_SHIFT) & DTRC_ARID2_MASK)
+-#define DTRC_ARID1(x)	(((x) << DTRC_ARID1_SHIFT) & DTRC_ARID1_MASK)
+-#define DTRC_ARID0(x)	(((x) << DTRC_ARID0_SHIFT) & DTRC_ARID0_MASK)
+-
+-/* VOU_CTRL registers */
+-#define VOU_INF_EN			0x00
+-#define VOU_INF_CH_SEL			0x04
+-#define VOU_INF_DATA_SEL		0x08
+-#define VOU_SOFT_RST			0x14
+-#define VOU_CLK_SEL			0x18
+-#define VGA_AUX_DIV_SHIFT		29
+-#define VGA_MAIN_DIV_SHIFT		26
+-#define PIC_MAIN_DIV_SHIFT		23
+-#define PIC_AUX_DIV_SHIFT		20
+-#define VOU_CLK_VL2_SEL			BIT(8)
+-#define VOU_CLK_VL1_SEL			BIT(7)
+-#define VOU_CLK_VL0_SEL			BIT(6)
+-#define VOU_CLK_GL1_SEL			BIT(5)
+-#define VOU_CLK_GL0_SEL			BIT(4)
+-#define VOU_DIV_PARA			0x1c
+-#define DIV_PARA_UPDATE			BIT(31)
+-#define TVENC_AUX_DIV_SHIFT		28
+-#define HDMI_AUX_PNX_DIV_SHIFT		25
+-#define HDMI_MAIN_PNX_DIV_SHIFT		22
+-#define HDMI_AUX_DIV_SHIFT		19
+-#define HDMI_MAIN_DIV_SHIFT		16
+-#define TVENC_MAIN_DIV_SHIFT		13
+-#define INF_AUX_DIV_SHIFT		9
+-#define INF_MAIN_DIV_SHIFT		6
+-#define LAYER_AUX_DIV_SHIFT		3
+-#define LAYER_MAIN_DIV_SHIFT		0
+-#define VOU_CLK_REQEN			0x20
+-#define VOU_CLK_EN			0x24
+-#define VOU_INF_HDMI_CTRL		0x30
+-#define VOU_HDMI_AUD_MASK		0x1f
+-
+-/* OTFPPU_CTRL registers */
+-#define OTFPPU_RSZ_DATA_SOURCE		0x04
+-
+-#endif /* __ZX_VOU_REGS_H__ */
+-- 
+2.19.1
 
-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
-AA==
-
---VS++wcV0S1rZb1Fb--
