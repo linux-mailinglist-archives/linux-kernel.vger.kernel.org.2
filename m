@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0423F3801
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 04:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5413F3804
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 04:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240927AbhHUCML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 22:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
+        id S240979AbhHUCMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 22:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhHUCMK (ORCPT
+        with ESMTP id S230455AbhHUCMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 22:12:10 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60DBC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 19:11:31 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id l24so9025195qtj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 19:11:31 -0700 (PDT)
+        Fri, 20 Aug 2021 22:12:37 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E8AC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 19:11:58 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id l24so9025675qtj.4
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 19:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AMOMaJvaeTN/zMSoH+yottbjrmkkaZ//2BiPGEM7agI=;
-        b=AqXuCh9/8Gm644jDgI2P8NHhFOE05XE2pP0Mi6OJqgKdrdFVIBYUokPuBPnApxJgFE
-         3+VMh/BLiG9oQUQShDiF80pIoYwLiY+Yoq+7qTXfMQRAnMacSCNMqcYxSRO9byfG6yKc
-         HJTu+WCwXBArb2J6MSFbJeHqjplAgWLLPl6k8HjMCvvRy3bVBCysfdwjg6tOOlm9OWZI
-         /1F/JEl6klG1/zEap+9tln/P8wdOk1njxgbOyMsEXIX4CeSRFiRiYN8h7P27ubvEYB9q
-         w//VOEHSFC/A/yb3h94Ea96VsypxaC4Aab+AotXxU73dzZkxgkD1nkyje9c4AJcxxbND
-         HgNQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2gOO2S7Mv0HOYYeN5193uyMUGfsmPjSlzi2OFU8Y+fo=;
+        b=L8bsYCZr6W6WOVgqBP0nhp9qabhe3vp0nXQEfWFvEEp2V3ftXg/ZVGt48988QCyJSN
+         g25s9q0q+k+UI5gdlyy9fDtxUQoosqOy3QODvoWrq8d0AnMZhf1sxLSuZPst5G6XO6xG
+         2hwDr+08s5ajJotnhZDie1AgvEX74LQd6O7wpL3SXiNZ44td+ePm+EA7aFhW04nhLXm7
+         uXG5PwIm36yZVEfQh3e28iJymNdJctSE/4a3tpCFmkjnzZ3fpIulLnS+f1cVjo0KlD1s
+         Jizp09BdIWghNYDyA/mEQ/CDqEyNTeKUZdu8AFvQ7PyKOUsUIjvlHXPIXPdetrTN/ykm
+         5nEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AMOMaJvaeTN/zMSoH+yottbjrmkkaZ//2BiPGEM7agI=;
-        b=jKwgFm02Er2HgBelFdmCoV+tuf3AmHpHLldrCn0ktfHYeZec/U5IWxqeSJjzHwXIVt
-         bt4xfPly5ETlAcySxBa/E41Of4616Fs3SWc6IHnMLGrlkeMgRTpHdkZRR1IF7o5ZGCKf
-         jwIoFbSzywBaenHiO1FhXrTZGasqUROIfF5IGJaGAEHoXAFVeEnBJs43kAsnbqWOUqcT
-         tSrpHA4mCYJeBOiDaszTXV9SPcsnMz4AHB5yXyInmOEi51kmjJ93z/YAa1GXpGsbGgbg
-         2o2DfTqmf5+AWExF4QOPwnIyj5/76TE2M0CBF5M2WVN4r22WyzIsL3Tdc/HHuf5H4KWY
-         yISA==
-X-Gm-Message-State: AOAM5333wpH0/Nit3gkX60aRvfT+jQfrT0xPOeC8Wkta1lLeNX6eF/9n
-        3Xc2j2HlXS98ozxGMvgTonCt19bUEI4=
-X-Google-Smtp-Source: ABdhPJx7jHQlITGbPG1pD7X0WSMeLJdpYKDi+OcXhx+LFEb+S4DIg5FSZMDGWs9MqJK+54Ikcn7Hig==
-X-Received: by 2002:aed:2029:: with SMTP id 38mr20651107qta.71.1629511890769;
-        Fri, 20 Aug 2021 19:11:30 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id c2sm4186054qkd.57.2021.08.20.19.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 19:11:30 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <luo.penghao@zte.com.cn>
-To:     Ben Skeggs <bskeggs@redhat.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] drm/nouveau/mmu: drop unneeded assignment in the nvkm_uvmm_mthd_page()
-Date:   Fri, 20 Aug 2021 19:11:06 -0700
-Message-Id: <20210821021106.27010-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2gOO2S7Mv0HOYYeN5193uyMUGfsmPjSlzi2OFU8Y+fo=;
+        b=FAHKzb9g7NnoVqK8jzy804v5+wuj2CdEOGt/+F22AOiDFIGEZOipT3khBQfmCooQnc
+         d+ignaq+xIrHEwy6Fj3nA/n3vErtc967ftbr4xUS0Cl+4wNM9XsxZeiKQ/rQMPDvQY2u
+         UkMFUrsEvCVaU2a3F6hLcMvGvjHGxd80ZnZD/aXYCmB6R1X+xTbymoHR5+b4K9VJMC2O
+         nAAx0kPWf7mIR+9DLeuuGUk3htoweE/hXsFhxEWDmnWPEfEkGYMdi/cl9V+It57lGYHW
+         n1VCWeT4Fo95sFgQlM37OEtvuF4/kzdMYRIJCLk3MNw3AypvU1aLWz+SKWO/DjryK811
+         Zo6w==
+X-Gm-Message-State: AOAM531eKPipFEX4EYIs9uV3wWKCEmAs8jmf+SEMqo5t3Q0IJRmt/y6H
+        a6iPGI0akmrZRt5wYT+dcYeI/RP29P08yhKUA3f8pQ==
+X-Google-Smtp-Source: ABdhPJxvczIWQNg+cxCoCUPQp8oANeSbmnqZtLwQvuXY+SvSo6y+6aTdmCOV51JpAiZA3j9p/g2HEN6baPINaTMxVno=
+X-Received: by 2002:a05:622a:488:: with SMTP id p8mr20558647qtx.159.1629511917617;
+ Fri, 20 Aug 2021 19:11:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210818053908.1907051-1-mizhang@google.com> <20210818053908.1907051-2-mizhang@google.com>
+In-Reply-To: <20210818053908.1907051-2-mizhang@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Fri, 20 Aug 2021 19:11:46 -0700
+Message-ID: <CAA03e5Ggh4gODFspxcXAU6WRe0aMCvkG794JpwvyBf6ERs_6dA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] KVM: SVM: fix missing sev_decommission in sev_receive_start
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alper Gun <alpergun@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        David Rienjes <rientjes@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo penghao <luo.penghao@zte.com.cn>
+On Tue, Aug 17, 2021 at 10:39 PM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> sev_decommission is needed in the error path of sev_bind_asid. The purpose
+> of this function is to clear the firmware context. Missing this step may
+> cause subsequent SEV launch failures.
+>
+> Although missing sev_decommission issue has previously been found and was
+> fixed in sev_launch_start function. It is supposed to be fixed on all
+> scenarios where a firmware context needs to be freed. According to the AMD
+> SEV API v0.24 Section 1.3.3:
+>
+> "The RECEIVE_START command is the only command other than the LAUNCH_START
+> command that generates a new guest context and guest handle."
+>
+> The above indicates that RECEIVE_START command also requires calling
+> sev_decommission if ASID binding fails after RECEIVE_START succeeds.
+>
+> So add the sev_decommission function in sev_receive_start.
+>
+> Cc: Alper Gun <alpergun@google.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: David Rienjes <rientjes@google.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Vipin Sharma <vipinsh@google.com>
+>
+> Fixes: af43cbbf954b ("KVM: SVM: Add support for KVM_SEV_RECEIVE_START command")
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 75e0b21ad07c..55d8b9c933c3 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1397,8 +1397,10 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>
+>         /* Bind ASID to this guest */
+>         ret = sev_bind_asid(kvm, start.handle, error);
+> -       if (ret)
+> +       if (ret) {
+> +               sev_decommission(start.handle);
+>                 goto e_free_session;
+> +       }
+>
+>         params.handle = start.handle;
+>         if (copy_to_user((void __user *)(uintptr_t)argp->data,
+> --
+> 2.33.0.rc1.237.g0d66db33f3-goog
 
-In order to keep the code style consistency of the whole file,
-the 'ret' assignments should be deleted.
+Should this patch have the following Fixes tag?
 
-The clang_analyzer complains as follows:
+Fixes: af43cbbf954b ("KVM: SVM: Add support for KVM_SEV_RECEIVE_START command")
 
-drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c:317:8:warning:
-Although the value storedto 'ret' is used in the enclosing expression,
-the value is never actually read from 'ret'.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
----
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c
-index c43b824..d9f8e11 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/uvmm.c
-@@ -314,7 +314,7 @@ nvkm_uvmm_mthd_page(struct nvkm_uvmm *uvmm, void *argv, u32 argc)
- 	page = uvmm->vmm->func->page;
- 	for (nr = 0; page[nr].shift; nr++);
- 
--	if (!(ret = nvif_unpack(ret, &argv, &argc, args->v0, 0, 0, false))) {
-+	if (!(nvif_unpack(ret, &argv, &argc, args->v0, 0, 0, false))) {
- 		if ((index = args->v0.index) >= nr)
- 			return -EINVAL;
- 		type = page[index].type;
--- 
-2.15.2
-
-
+Reviewed-by: Marc Orr <marcorr@google.com>
