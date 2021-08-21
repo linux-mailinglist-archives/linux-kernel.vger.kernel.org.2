@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217033F3B9D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121783F3BA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhHURQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 13:16:48 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56601 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhHURQr (ORCPT
+        id S229862AbhHURUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 13:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhHURUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:16:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629566167; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=MLXw2kAV40fUYj05/3m6TBzD/fnzpbaaqB86lj9wxNQ=;
- b=adVTl/bAR/vARRJz3qajtU/nH+62wvkd4mioA1552wZ9LGg9yFDwYRkvguZtsgda0CkO/zHw
- XJxThJNZhs3fobUmKNX+hA/1o4fl3tfMfCFO1MoBp2q+CMq5V8jo06+zubEKQEp09Ad0s0/d
- Ls8bvFKcCHcKrOlUjALaBzxxwGc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 612134cb89fbdf3ffe78282b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 17:15:55
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 398BEC43619; Sat, 21 Aug 2021 17:15:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AEA07C4360C;
-        Sat, 21 Aug 2021 17:15:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org AEA07C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Sat, 21 Aug 2021 13:20:35 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76B6C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:19:55 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id j187so11504572pfg.4
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JJqDRMlDTbCVcYPNxrceaAe7PZIeJkJfPeabIkZWfYk=;
+        b=TAubwlClWIgR+E7imbcoZoD84wK9ZBHruAslXeVraHZLyeodHIVEQtMk7sGO7C+a8Q
+         ITItDAfybuoXr9dnsN5aAShG0Edz0afI4B5Gi6Oq479bmvXJZMlesXpefSX5V0FJWlKA
+         Pmmclv77/6LXrneXkggntH+ZD9qUPwWSa9pV/52c++CWkrv2sGV98Aw/H3lCbpYTig6c
+         Y7tP/I3FTqKtyWOr92K7cOYPU8UKO5UyLz7ptAwV9j0uVgPVYHAHIVIsNt52yNjnn4up
+         o53pLrr5/PjIBMLEU6eqUqUbQn5VUv94EiiuCiKCahfH+8EFGR96F/p+7E8dldcZkJb2
+         7sZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JJqDRMlDTbCVcYPNxrceaAe7PZIeJkJfPeabIkZWfYk=;
+        b=oHrtKmPe7HLTP5EgXLYfjcpmZG6DIXmpyA0SplxUFOFXW6B38+EJFLDv9bSGmqGnhD
+         l4LRpsuTod+SGK8OXOqLtopE1ZCHRikA/QVnb6MEMaHHZnzGzfvqNd7RxU5jjJGqPddN
+         8Tlkql0QFyit15nD2iV/mdGUZTVlPNVJHnrXcS4Quqlf4Ik0N6m7+/nquI6xZOL4aaUR
+         PjvzIMOxmIXkvOpNUJszo1cao68uHfxJyFt7v13Vnbavz3a2NZjpO9cs27WqwIFAWTJh
+         QjKwYjzE15MolLOk+ESSmnsviqh/gPORfp4re3SnX3tCIRao8lyVFD0TuNJhsYr6xCym
+         p+0g==
+X-Gm-Message-State: AOAM530wzPmlaUB5lA3DjNqXAcXlUCKLDv06nXqq60Ap3XO0bmHLnCXb
+        QxbwZ4lbr53P3qjoWqvZVGPLG8NjrtGcCJzKHtE3A8QBNiDxAQ==
+X-Google-Smtp-Source: ABdhPJy6ylZbR57e+7hyJLrXYjwGJm131TCM8DexgRkBOH5xugPIZAdzrIHAZ55jalo4ypShBWzRO7n0KHlY2wUys+Q=
+X-Received: by 2002:a63:d910:: with SMTP id r16mr24100046pgg.318.1629566395100;
+ Sat, 21 Aug 2021 10:19:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/3] ipw2x00: Avoid field-overflowing memcpy()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210819202825.3545692-2-keescook@chromium.org>
-References: <20210819202825.3545692-2-keescook@chromium.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-Id: <20210821171554.398BEC43619@smtp.codeaurora.org>
-Date:   Sat, 21 Aug 2021 17:15:54 +0000 (UTC)
+References: <20210821151459.26078-1-Larry.Finger@lwfinger.net>
+In-Reply-To: <20210821151459.26078-1-Larry.Finger@lwfinger.net>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Sat, 21 Aug 2021 18:19:44 +0100
+Message-ID: <CAA=Fs0=8mr_+wBERVSbJD-5HYDLo3pYB8P51xxo96b-nod=h6g@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: Make mult-byte entities in dhcp header
+ be big endian
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> wrote:
+On Sat, 21 Aug 2021 at 16:15, Larry Finger <Larry.Finger@lwfinger.net> wrote:
+>
+> The 16- and 32-bit quantities in the dhcp message definition must be
+> big endian.
+>
+> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+> ---
+> This patch will set up all the reset of the endian warnings,
+>
+> Larry
+> ---
+>
+>  drivers/staging/r8188eu/core/rtw_br_ext.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> index ee52f28a1e56..62a672243696 100644
+> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> @@ -640,16 +640,16 @@ struct dhcpMessage {
+>         u_int8_t hlen;
+>         u_int8_t hops;
+>         u_int32_t xid;
+> -       u_int16_t secs;
+> -       u_int16_t flags;
+> -       u_int32_t ciaddr;
+> -       u_int32_t yiaddr;
+> -       u_int32_t siaddr;
+> -       u_int32_t giaddr;
+> +       __be16 secs;
+> +       __be16 flags;
+> +       __be32 ciaddr;
+> +       __be32 yiaddr;
+> +       __be32 siaddr;
+> +       __be32 giaddr;
+>         u_int8_t chaddr[16];
+>         u_int8_t sname[64];
+>         u_int8_t file[128];
+> -       u_int32_t cookie;
+> +       __be32 cookie;
+>         u_int8_t options[308]; /* 312 - cookie */
+>  };
+>
+> --
+> 2.32.0
+>
 
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
-> 
-> libipw_read_qos_param_element() copies a struct libipw_info_element
-> into a struct libipw_qos_information_element, but is actually wanting to
-> copy into the larger struct libipw_qos_parameter_info (the contents of
-> ac_params_record[] is later examined). Refactor the routine to perform
-> centralized checks, and copy the entire contents directly (since the id
-> and len members match the elementID and length members):
-> 
-> struct libipw_info_element {
->         u8 id;
->         u8 len;
->         u8 data[];
-> } __packed;
-> 
-> struct libipw_qos_information_element {
->         u8 elementID;
->         u8 length;
->         u8 qui[QOS_OUI_LEN];
->         u8 qui_type;
->         u8 qui_subtype;
->         u8 version;
->         u8 ac_info;
-> } __packed;
-> 
-> struct libipw_qos_parameter_info {
->         struct libipw_qos_information_element info_element;
->         u8 reserved;
->         struct libipw_qos_ac_parameter ac_params_record[QOS_QUEUE_NUM];
-> } __packed;
-> 
-> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Nice, thanks.
 
-2 patches applied to wireless-drivers-next.git, thanks.
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
-d6b6d1bb80be ipw2x00: Avoid field-overflowing memcpy()
-92276c592a6b ray_cs: Split memcpy() to avoid bounds check warning
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210819202825.3545692-2-keescook@chromium.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Regards,
+Phil
