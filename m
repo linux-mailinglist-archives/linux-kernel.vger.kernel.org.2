@@ -2,94 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C113F383E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD03B3F3841
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhHUDJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUDJC (ORCPT
+        id S232801AbhHUDKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:10:14 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8914 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhHUDKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:09:02 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F658C061575;
-        Fri, 20 Aug 2021 20:08:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gs3Nf130pz9sW8;
-        Sat, 21 Aug 2021 13:08:17 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629515300;
-        bh=mEhJjhXS+qMda3U7FwpADzeee1VExK11iy0O7hbSvZo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vBzPXamOxihY1Fl3SbNh+ZYp2HaegQrh5PMQadAFw71TEBrgewwRy5RpLCASl8gok
-         +kdWsbwBJB67mng9XACTmNzyYPqlROAyGrIrwHD/Y2Dw+IBj4CnL0tdkdpoyaXwzou
-         Adl28mM6dfF02E2eWpwWBWW0gKDEGPlDpiooqYBb+EKcDEMdwSijz8TzLTgBABNCBm
-         SdgTvvcCktjSa9ZShvGn4tIUFDF/2piS41bVeaP/y0IwTMVi9u1YXMqnaKy4YcjJUv
-         3yIh/L/4fSmZ9UkpEtDf2bClc6zuV3ts3OFKHzy95O98Xe0CaoMGB5IoH9F69FK+LS
-         sxeLDZbSoqTAw==
-Date:   Sat, 21 Aug 2021 13:08:15 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        Sven Eckelmann <sven@narfation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commits in the net-next tree
-Message-ID: <20210821130815.22b5cfc3@canb.auug.org.au>
+        Fri, 20 Aug 2021 23:10:13 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gs3KL4hg7z8sXc;
+        Sat, 21 Aug 2021 11:05:26 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 21 Aug 2021 11:09:31 +0800
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 21 Aug 2021 11:09:31 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <wanghaibin.wang@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jun Nie <jun.nie@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: clock: remove obsolete zte zx header
+Date:   Sat, 21 Aug 2021 11:09:23 +0800
+Message-ID: <20210821030924.192-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CA.HyUEqCjRIq9lItb9qTcl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CA.HyUEqCjRIq9lItb9qTcl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The zx296718-clkc driver had been removed in commit bcbe6005eb18 ("clk:
+remove zte zx driver"), so this header is no longer needed.
 
-Hi all,
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Jun Nie <jun.nie@linaro.org>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+ include/dt-bindings/clock/zx296718-clock.h | 164 ---------------------
+ 1 file changed, 164 deletions(-)
+ delete mode 100644 include/dt-bindings/clock/zx296718-clock.h
 
-Commits
+diff --git a/include/dt-bindings/clock/zx296718-clock.h b/include/dt-bindings/clock/zx296718-clock.h
+deleted file mode 100644
+index bf2ff6d2ee23..000000000000
+--- a/include/dt-bindings/clock/zx296718-clock.h
++++ /dev/null
+@@ -1,164 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Copyright (C) 2015 - 2016 ZTE Corporation.
+- */
+-#ifndef __DT_BINDINGS_CLOCK_ZX296718_H
+-#define __DT_BINDINGS_CLOCK_ZX296718_H
+-
+-/* PLL */
+-#define ZX296718_PLL_CPU	1
+-#define ZX296718_PLL_MAC	2
+-#define ZX296718_PLL_MM0	3
+-#define ZX296718_PLL_MM1	4
+-#define ZX296718_PLL_VGA	5
+-#define ZX296718_PLL_DDR	6
+-#define ZX296718_PLL_AUDIO	7
+-#define ZX296718_PLL_HSIC	8
+-#define CPU_DBG_GATE		9
+-#define A72_GATE		10
+-#define CPU_PERI_GATE		11
+-#define A53_GATE		12
+-#define DDR1_GATE		13
+-#define DDR0_GATE		14
+-#define SD1_WCLK		15
+-#define SD1_AHB			16
+-#define SD0_WCLK		17
+-#define SD0_AHB			18
+-#define EMMC_WCLK		19
+-#define EMMC_NAND_AXI		20
+-#define NAND_WCLK		21
+-#define EMMC_NAND_AHB		22
+-#define LSP1_148M5		23
+-#define LSP1_99M		24
+-#define LSP1_24M		25
+-#define LSP0_74M25		26
+-#define LSP0_32K		27
+-#define LSP0_148M5		28
+-#define LSP0_99M		29
+-#define LSP0_24M		30
+-#define DEMUX_AXI		31
+-#define DEMUX_APB		32
+-#define DEMUX_148M5		33
+-#define DEMUX_108M		34
+-#define AUDIO_APB		35
+-#define AUDIO_99M		36
+-#define AUDIO_24M		37
+-#define AUDIO_16M384		38
+-#define AUDIO_32K		39
+-#define WDT_WCLK		40
+-#define TIMER_WCLK		41
+-#define VDE_ACLK		42
+-#define VCE_ACLK		43
+-#define HDE_ACLK		44
+-#define GPU_ACLK		45
+-#define SAPPU_ACLK		46
+-#define SAPPU_WCLK		47
+-#define VOU_ACLK		48
+-#define VOU_MAIN_WCLK		49
+-#define VOU_AUX_WCLK		50
+-#define VOU_PPU_WCLK		51
+-#define MIPI_CFG_CLK		52
+-#define VGA_I2C_WCLK		53
+-#define MIPI_REF_CLK		54
+-#define HDMI_OSC_CEC		55
+-#define HDMI_OSC_CLK		56
+-#define HDMI_XCLK		57
+-#define VIU_M0_ACLK		58
+-#define VIU_M1_ACLK		59
+-#define VIU_WCLK		60
+-#define VIU_JPEG_WCLK		61
+-#define VIU_CFG_CLK		62
+-#define TS_SYS_WCLK		63
+-#define TS_SYS_108M		64
+-#define USB20_HCLK		65
+-#define USB20_PHY_CLK		66
+-#define USB21_HCLK		67
+-#define USB21_PHY_CLK		68
+-#define GMAC_RMIICLK		69
+-#define GMAC_PCLK		70
+-#define GMAC_ACLK		71
+-#define GMAC_RFCLK		72
+-#define TEMPSENSOR_GATE		73
+-
+-#define TOP_NR_CLKS		74
+-
+-
+-#define LSP0_TIMER3_PCLK	1
+-#define LSP0_TIMER3_WCLK	2
+-#define LSP0_TIMER4_PCLK	3
+-#define LSP0_TIMER4_WCLK	4
+-#define LSP0_TIMER5_PCLK	5
+-#define LSP0_TIMER5_WCLK	6
+-#define LSP0_UART3_PCLK		7
+-#define LSP0_UART3_WCLK		8
+-#define LSP0_UART1_PCLK		9
+-#define LSP0_UART1_WCLK		10
+-#define LSP0_UART2_PCLK		11
+-#define LSP0_UART2_WCLK		12
+-#define LSP0_SPIFC0_PCLK	13
+-#define LSP0_SPIFC0_WCLK	14
+-#define LSP0_I2C4_PCLK		15
+-#define LSP0_I2C4_WCLK		16
+-#define LSP0_I2C5_PCLK		17
+-#define LSP0_I2C5_WCLK		18
+-#define LSP0_SSP0_PCLK		19
+-#define LSP0_SSP0_WCLK		20
+-#define LSP0_SSP1_PCLK		21
+-#define LSP0_SSP1_WCLK		22
+-#define LSP0_USIM_PCLK		23
+-#define LSP0_USIM_WCLK		24
+-#define LSP0_GPIO_PCLK		25
+-#define LSP0_GPIO_WCLK		26
+-#define LSP0_I2C3_PCLK		27
+-#define LSP0_I2C3_WCLK		28
+-
+-#define LSP0_NR_CLKS		29
+-
+-
+-#define LSP1_UART4_PCLK		1
+-#define LSP1_UART4_WCLK		2
+-#define LSP1_UART5_PCLK		3
+-#define LSP1_UART5_WCLK		4
+-#define LSP1_PWM_PCLK		5
+-#define LSP1_PWM_WCLK		6
+-#define LSP1_I2C2_PCLK		7
+-#define LSP1_I2C2_WCLK		8
+-#define LSP1_SSP2_PCLK		9
+-#define LSP1_SSP2_WCLK		10
+-#define LSP1_SSP3_PCLK		11
+-#define LSP1_SSP3_WCLK		12
+-#define LSP1_SSP4_PCLK		13
+-#define LSP1_SSP4_WCLK		14
+-#define LSP1_USIM1_PCLK		15
+-#define LSP1_USIM1_WCLK		16
+-
+-#define LSP1_NR_CLKS		17
+-
+-
+-#define AUDIO_I2S0_WCLK		1
+-#define AUDIO_I2S0_PCLK		2
+-#define AUDIO_I2S1_WCLK		3
+-#define AUDIO_I2S1_PCLK		4
+-#define AUDIO_I2S2_WCLK		5
+-#define AUDIO_I2S2_PCLK		6
+-#define AUDIO_I2S3_WCLK		7
+-#define AUDIO_I2S3_PCLK		8
+-#define AUDIO_I2C0_WCLK		9
+-#define AUDIO_I2C0_PCLK		10
+-#define AUDIO_SPDIF0_WCLK	11
+-#define AUDIO_SPDIF0_PCLK	12
+-#define AUDIO_SPDIF1_WCLK	13
+-#define AUDIO_SPDIF1_PCLK	14
+-#define AUDIO_TIMER_WCLK	15
+-#define AUDIO_TIMER_PCLK	16
+-#define AUDIO_TDM_WCLK		17
+-#define AUDIO_TDM_PCLK		18
+-#define AUDIO_TS_PCLK		19
+-#define I2S0_WCLK_MUX		20
+-#define I2S1_WCLK_MUX		21
+-#define I2S2_WCLK_MUX		22
+-#define I2S3_WCLK_MUX		23
+-
+-#define AUDIO_NR_CLKS		24
+-
+-#endif
+-- 
+2.19.1
 
-  3202ea65f85c ("net/mlx5: E-switch, Add QoS tracepoints")
-  0fe132eac38c ("net/mlx5: E-switch, Allow to add vports to rate groups")
-  f47e04eb96e0 ("net/mlx5: E-switch, Allow setting share/max tx rate limits=
- of rate groups")
-  1ae258f8b343 ("net/mlx5: E-switch, Introduce rate limiting groups API")
-  ad34f02fe2c9 ("net/mlx5: E-switch, Enable devlink port tx_{share|max} rat=
-e control")
-  2d116e3e7e49 ("net/mlx5: E-switch, Move QoS related code to dedicated fil=
-e")
-  71d41c09f1fa ("batman-adv: Move IRC channel to hackint.org")
-
-are missing a Signed-off-by from their committers.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/CA.HyUEqCjRIq9lItb9qTcl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEgbh8ACgkQAVBC80lX
-0GwqWgf8D1+t0P9Z9FAdzzF53G4cG26V8P323a+0hs8SVQvUWIZN+1tZ0siaVeE4
-pcSnIZ6Qz9UN7EKqF/4RHRyPPHyMuPXraVc4v9rXTpY+LlyxSe3slJfJLMcBuU7Z
-TG/l7m3bffS28r+5nLGzOHxMbrd9++xVFTp8cq0WumnO61FrzvrYS3giW8WncpvD
-8QrDBrhIpLW/xEF33G7RwYf3YC+aUtrcvrAJyMuy5bVCJg1OA1jKmH7AIzbHPWv7
-bXpqkwXJI9OOcFhPTP33xwF8c8diSkYQPkljCksb+ayHC7nWLnC06vtmWcfvIWRm
-m+eB1lXHk77CYxxO/RPLslLd6pydqA==
-=MnGt
------END PGP SIGNATURE-----
-
---Sig_/CA.HyUEqCjRIq9lItb9qTcl--
