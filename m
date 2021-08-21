@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249213F3869
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9AA3F386C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhHUDyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
+        id S233018AbhHUD4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUDyq (ORCPT
+        with ESMTP id S229610AbhHUD4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:54:46 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75009C061575;
-        Fri, 20 Aug 2021 20:54:07 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id t66so13096990qkb.0;
-        Fri, 20 Aug 2021 20:54:07 -0700 (PDT)
+        Fri, 20 Aug 2021 23:56:39 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C37C061575;
+        Fri, 20 Aug 2021 20:56:00 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id m21so12969741qkm.13;
+        Fri, 20 Aug 2021 20:56:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
-        b=Yc0Wk8KKOSVZezqoSGs9GlVp/OUlVXPEDqWGxea9T/DaFFD3QYTjJb7HxabEJjxyjn
-         H+MlOz1JGtO/hl8iqnDLpr9Y3oprEf0CIMLKE+WPmKhx1qACS58pXM43SyMGLSISexX0
-         Qzo4hAphyRJDgVRBlQ9DG4PC6jGDtwKkySpximippebGr7W9NEfx47J9xuOi1GS3nMFe
-         NESdaXbS6W/yEjwGDbBeffZOgZO8/F7lYZbYU9/nyHTvEjwHuMH5BR1zjIe9I10DZsZM
-         QrPfQ3Y5jgSufYLmspK9PpRZxHnjkJUx9UaRl8Y5cTP9i5JWSRE7cZaU7CkY4cJbYWa9
-         kduw==
+        bh=LKoKG/sND2csb1UdQ5fsSYSSpFb28MbuaJ6BEIHj7yQ=;
+        b=njEFK8tzexXCnZXbDhdfPBKiQAAfAhPLhvAy6Uv+JZEtPhTVwF+4Z24/URYYlRhnpI
+         +h2WcIKpHU79KQZnk97vNdi04KLdclyvyD88/LdKyg+YB3kg5GNHojwoY3tLS1vpQfMY
+         ijZJd4ZrDLP2bvZHZawilRQq4kpPLs/oENiU6+FslJKNRtHpqfKRU9ertXBxRAwF3CRg
+         tQSwfjg3jj2YR9ZYLggK8Bpu+45gXpNXj5wVVltjUfceXTsoOOYSNke6dU1QiPMHuI5R
+         I90da4kZu8hL8Uvrol8IxT7BB5+M9vHLm5q85xyqTsRjSnEzVk4tYA9JDwdZNmm9va+0
+         Cylg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
-        b=rKwz5rwJF0wn8gksZjpdo3LOICpKBjTtuiZT4SRCTXQNtM7iuuC0hfwrd6j/4uXnro
-         yQwE1WdpteE4xrfO7YnkP+/qhUcyleSOCj2DOdwmhmuftljpirBWdaZnKolCcFwBfHtB
-         PL0vKzmm9Ui8g01sxat25/HjAuL7Jv/JvhHiZRf+Ek/Bo4UXWl73ug/K+82NWZwlUXd9
-         cecWp8jm92kprFhzgUEAiUBuNmzbNUkU6om+8RrQDt+3UdYyLbbv4oQNIuF1l8GR7FHH
-         SncI40Yd+rQNUU9AhXSDnFEL4u3XMBBXMZnTgA2qm7eezJn7Acd3Vran7kBxS7NO/8wt
-         +3hA==
-X-Gm-Message-State: AOAM530lBFsMcwouPoNmIbee4s+kSlJSGU58UlA330Y7v5xuRCy3T5F+
-        S5e0KkzxyJ69Spt7ILLBks5CQS38ctxunQ==
-X-Google-Smtp-Source: ABdhPJzELzGQ5lFGx2Z0651S47KN8nX/2N7WNCSjGrZPJQKp/SPBKIstJVI76apx3J/7L+fTaLkGQQ==
-X-Received: by 2002:a37:a592:: with SMTP id o140mr12060620qke.220.1629518046730;
-        Fri, 20 Aug 2021 20:54:06 -0700 (PDT)
+        bh=LKoKG/sND2csb1UdQ5fsSYSSpFb28MbuaJ6BEIHj7yQ=;
+        b=CvGig2QaNjr20IFcbvBqyQeSfpDMuRkPOEge87fJoVE+JnoUM3bUwlHnsQwm2lfTvv
+         13OdyaklhhtrWBD/fpmtdIDLdAicYAZttCvTr6z9q0jpSIkfpXNYP/iV7h67rpnPTF4j
+         ogS5ITwIXoYtdU5dUBY72aY5luvlcNy00Fb3AqTRdg59XqDcwXD/arJs4/zb/Ps1PedM
+         J+FGL8h5HHTqhmVX3FT0dllqw7T2vpmezTxa+RKeh49o5qaG4FtiHWM/lVSe1HfTqolz
+         QXSNQoge4JQiSEzQHJHlNG6nuCmVBJpuiRvF1fE6o2SxTuyRBIB7BqiUfR/ry9w2yLum
+         4Vkg==
+X-Gm-Message-State: AOAM533a4/38QPOPFiVl5ydsR11+OV/sHEcQbHoUI50FdasRCG8G3IUp
+        uD1JZ9SsUrE5bKopgctA1p4=
+X-Google-Smtp-Source: ABdhPJwHz+yvtnz9viuBaUmmHb/HJaXFLlUyIms0uGAtUgJTk/yhQyC/fzRn8z+TJHSOmvdTGGVJ0Q==
+X-Received: by 2002:a05:620a:145c:: with SMTP id i28mr11495077qkl.118.1629518159770;
+        Fri, 20 Aug 2021 20:55:59 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f12sm3434230qtj.40.2021.08.20.20.54.04
+        by smtp.gmail.com with ESMTPSA id z21sm845699qts.27.2021.08.20.20.55.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 20:54:06 -0700 (PDT)
+        Fri, 20 Aug 2021 20:55:59 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Karan Tilak Kumar <kartilak@cisco.com>
+Cc:     Sesidhar Baddela <sebaddel@cisco.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
         jing yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] s390:raw3270: Convert sysfs sprintf/snprintf family to sysfs_emit
-Date:   Fri, 20 Aug 2021 20:53:58 -0700
-Message-Id: <20210821035358.28350-1-jing.yangyang@zte.com.cn>
+Subject: [PATCH linux-next] scsi:snic_attrs:Convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Fri, 20 Aug 2021 20:55:52 -0700
+Message-Id: <20210821035553.28419-1-jing.yangyang@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -70,47 +70,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: jing yangyang <jing.yangyang@zte.com.cn>
 
 Fix the following coccicheck warning:
-./drivers/s390/char/raw3270.c:1066:8-16: WARNING: use scnprintf or sprintf
-./drivers/s390/char/raw3270.c:1050:8-16: WARNING:use scnprintf or sprintf
-./drivers/s390/char/raw3270.c:1058:8-16: WARNING:use scnprintf or sprintf
+./drivers/scsi/snic/snic_attrs.c:49: 8-16: WARNING:  use scnprintf or sprintf
+./drivers/scsi/snic/snic_attrs.c:62: 8-16: WARNING:  use scnprintf or sprintf
+./drivers/scsi/snic/snic_attrs.c:40: 8-16: WARNING:  use scnprintf or sprintf
+./drivers/scsi/snic/snic_attrs.c:30: 8-16: WARNING:  use scnprintf or sprintf
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/s390/char/raw3270.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/snic/snic_attrs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/s390/char/raw3270.c b/drivers/s390/char/raw3270.c
-index 646ec79..be8529f 100644
---- a/drivers/s390/char/raw3270.c
-+++ b/drivers/s390/char/raw3270.c
-@@ -1047,7 +1047,7 @@ struct raw3270_view *
- static ssize_t
- raw3270_model_show(struct device *dev, struct device_attribute *attr, char *buf)
+diff --git a/drivers/scsi/snic/snic_attrs.c b/drivers/scsi/snic/snic_attrs.c
+index 32d5d55..0d41a00 100644
+--- a/drivers/scsi/snic/snic_attrs.c
++++ b/drivers/scsi/snic/snic_attrs.c
+@@ -27,7 +27,7 @@
  {
--	return snprintf(buf, PAGE_SIZE, "%i\n",
-+	return sysfs_emit(buf, "%i\n",
- 			((struct raw3270 *) dev_get_drvdata(dev))->model);
+ 	struct snic *snic = shost_priv(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", snic->name);
++	return sysfs_emit(buf, "%s\n", snic->name);
  }
- static DEVICE_ATTR(model, 0444, raw3270_model_show, NULL);
-@@ -1055,7 +1055,7 @@ struct raw3270_view *
+ 
  static ssize_t
- raw3270_rows_show(struct device *dev, struct device_attribute *attr, char *buf)
+@@ -37,7 +37,7 @@
  {
--	return snprintf(buf, PAGE_SIZE, "%i\n",
-+	return sysfs_emit(buf, "%i\n",
- 			((struct raw3270 *) dev_get_drvdata(dev))->rows);
+ 	struct snic *snic = shost_priv(class_to_shost(dev));
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			snic_state_str[snic_get_state(snic)]);
  }
- static DEVICE_ATTR(rows, 0444, raw3270_rows_show, NULL);
-@@ -1063,7 +1063,7 @@ struct raw3270_view *
+ 
+@@ -46,7 +46,7 @@
+ 		      struct device_attribute *attr,
+ 		      char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%s\n", SNIC_DRV_VERSION);
++	return sysfs_emit(buf, "%s\n", SNIC_DRV_VERSION);
+ }
+ 
  static ssize_t
- raw3270_columns_show(struct device *dev, struct device_attribute *attr, char *buf)
- {
--	return snprintf(buf, PAGE_SIZE, "%i\n",
-+	return sysfs_emit(buf, "%i\n",
- 			((struct raw3270 *) dev_get_drvdata(dev))->cols);
+@@ -59,7 +59,7 @@
+ 	if (snic->config.xpt_type == SNIC_DAS)
+ 		snic->link_status = svnic_dev_link_status(snic->vdev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n",
++	return sysfs_emit(buf, "%s\n",
+ 			(snic->link_status) ? "Link Up" : "Link Down");
  }
- static DEVICE_ATTR(columns, 0444, raw3270_columns_show, NULL);
+ 
 -- 
 1.8.3.1
 
