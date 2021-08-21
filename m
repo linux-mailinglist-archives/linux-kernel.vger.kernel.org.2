@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9963F3A8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3953F3A8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhHUMNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 08:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHUMN3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 08:13:29 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8ECC061575;
-        Sat, 21 Aug 2021 05:12:49 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w4so20395571ljh.13;
-        Sat, 21 Aug 2021 05:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWm+SXTgQ6Ye71KEJYrX8x4GdkySoQhJ1rIbykcEo+8=;
-        b=PdP+FH0V3HehypF44h9BTbNRXagbI8NQNesGa1I8ZVFYZPAcDWzTJE2xucd63ht4+k
-         L+Sm2L/Wlzx5wAE/Yy6TZtmGDMEGVfeOedQ1tTm0+fgRmo95U2nu94lusFnvvatXkk55
-         VMu5HEmvzp4BAYMshEri4nZi1dSjsdMfZpkthNEaJoQQ/L3w/nSqg9E2UVVq0YS5hcJz
-         QuTv/RDadePY6PlhoQ20lDtQ5M7+S5Rc3qVO9bG68hh+p7OyibiBFu702T6FdpvW4UQE
-         K1xF2fLZuDv1JY0dBhLl1MK5X5/jknYa3lleWtBovCuCnbRDvRV6T8pXwif4BtlhE6QM
-         7O6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pWm+SXTgQ6Ye71KEJYrX8x4GdkySoQhJ1rIbykcEo+8=;
-        b=IFU/MBEdqOc+DbHmLQnLQIuqFn56CW4vXfZzKaySeRKXWCFo7PYcVtigaLIJjzNDVM
-         ghqfIWeQKXP4LBGc5p61KL5Nx0/OnT9M+kg//W3o9TJrqXX/Obc3BDHc4IXXnn9IftfL
-         RCj2jxWVroPWMPZJRWfAnejJ+nkiZUtJVPD9ebUr5L57pLXYzDgjwyX0GH4PL0Dqsgrw
-         b2YzuJwODUo58JupRGQz6UZqKzp7twuqxb1sX12hRwx6nmCLt2nEGcfP3vQVSTn06G3H
-         mlxi2GT0E1EGYlnc7w7bix54MM4aBpxXRAKtPFWnhhoBORBqUhRAHnyLv8CKDwCdh848
-         O4bw==
-X-Gm-Message-State: AOAM533ty7bYdOoT1VDIJYwygI0vPxCGOkZXbImyqJxZLMQZLs4VPLHS
-        d7J7WWT9NYRpk7L534bi6Bq4tqG9IIKnRLdn
-X-Google-Smtp-Source: ABdhPJxzpXGpfr6mM+l1iD9N4mn5klFS4XearVaT6UBA181MqbAgcDLRPpOff+u9pa0lw0HABapafQ==
-X-Received: by 2002:a2e:7c0a:: with SMTP id x10mr19613907ljc.340.1629547968108;
-        Sat, 21 Aug 2021 05:12:48 -0700 (PDT)
-Received: from localhost.localdomain (h-62-63-208-27.A230.priv.bahnhof.se. [62.63.208.27])
-        by smtp.googlemail.com with ESMTPSA id bp18sm564914lfb.201.2021.08.21.05.12.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 05:12:47 -0700 (PDT)
-From:   Niklas Lantau <niklaslantau@gmail.com>
-To:     stern@rowland.harvard.edu
-Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        linux-kernel@vger.kernel.org,
-        Niklas Lantau <niklaslantau@gmail.com>
-Subject: [PATCH] Usb: storage: usb: removed useless cast of void*
-Date:   Sat, 21 Aug 2021 14:11:34 +0200
-Message-Id: <20210821121134.23205-1-niklaslantau@gmail.com>
-X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234572AbhHUMOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 08:14:54 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:53002 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234466AbhHUMOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 08:14:53 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx30EH7iBhLFozAA--.19387S2;
+        Sat, 21 Aug 2021 20:14:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: test_bpf: Print total time of test in the summary
+Date:   Sat, 21 Aug 2021 20:13:59 +0800
+Message-Id: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx30EH7iBhLFozAA--.19387S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar17Ary3ur1UtrWxtw1UKFg_yoW8Kw45pF
+        WYg3s2gw45ta1fuFyxJFWUtF4fKFW0k3yfCryxG34Yyan3Kw1jqF48tryFvrySy3yFqr4a
+        y3W0yrW5CF1fKaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvlb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x07jcPE-UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed useless cast of a void* and changed __us to data
+The total time of test is useful to compare the performance
+when bpf_jit_enable is 0 or 1, so print it in the summary.
 
-Signed-off-by: Niklas Lantau <niklaslantau@gmail.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/usb/storage/usb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ lib/test_bpf.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
-index 90aa9c12ffac..e78e20fb1afa 100644
---- a/drivers/usb/storage/usb.c
-+++ b/drivers/usb/storage/usb.c
-@@ -295,9 +295,9 @@ void fill_inquiry_response(struct us_data *us, unsigned char *data,
- }
- EXPORT_SYMBOL_GPL(fill_inquiry_response);
- 
--static int usb_stor_control_thread(void * __us)
-+static int usb_stor_control_thread(void *data)
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 830a18e..b1b17ba 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -8920,6 +8920,9 @@ static __init int test_skb_segment_single(const struct skb_segment_test *test)
+ static __init int test_skb_segment(void)
  {
--	struct us_data *us = (struct us_data *)__us;
-+	struct us_data *us = data;
- 	struct Scsi_Host *host = us_to_host(us);
- 	struct scsi_cmnd *srb;
+ 	int i, err_cnt = 0, pass_cnt = 0;
++	u64 start, finish;
++
++	start = ktime_get_ns();
  
+ 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+ 		const struct skb_segment_test *test = &skb_segment_tests[i];
+@@ -8935,8 +8938,10 @@ static __init int test_skb_segment(void)
+ 		}
+ 	}
+ 
+-	pr_info("%s: Summary: %d PASSED, %d FAILED\n", __func__,
+-		pass_cnt, err_cnt);
++	finish = ktime_get_ns();
++
++	pr_info("%s: Summary: %d PASSED, %d FAILED in %llu nsec\n",
++		__func__, pass_cnt, err_cnt, finish - start);
+ 	return err_cnt ? -EINVAL : 0;
+ }
+ 
+@@ -8944,6 +8949,9 @@ static __init int test_bpf(void)
+ {
+ 	int i, err_cnt = 0, pass_cnt = 0;
+ 	int jit_cnt = 0, run_cnt = 0;
++	u64 start, finish;
++
++	start = ktime_get_ns();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		struct bpf_prog *fp;
+@@ -8983,8 +8991,10 @@ static __init int test_bpf(void)
+ 		}
+ 	}
+ 
+-	pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
+-		pass_cnt, err_cnt, jit_cnt, run_cnt);
++	finish = ktime_get_ns();
++
++	pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
++		pass_cnt, err_cnt, jit_cnt, run_cnt, finish - start);
+ 
+ 	return err_cnt ? -EINVAL : 0;
+ }
+@@ -9192,6 +9202,9 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ {
+ 	int i, err_cnt = 0, pass_cnt = 0;
+ 	int jit_cnt = 0, run_cnt = 0;
++	u64 start, finish;
++
++	start = ktime_get_ns();
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
+ 		struct tail_call_test *test = &tail_call_tests[i];
+@@ -9222,8 +9235,10 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 		}
+ 	}
+ 
+-	pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
+-		__func__, pass_cnt, err_cnt, jit_cnt, run_cnt);
++	finish = ktime_get_ns();
++
++	pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
++		__func__, pass_cnt, err_cnt, jit_cnt, run_cnt, finish - start);
+ 
+ 	return err_cnt ? -EINVAL : 0;
+ }
 -- 
-2.33.0
+2.1.0
 
