@@ -2,100 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE023F3CB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 01:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207073F3CB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 01:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhHUXO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 19:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhHUXO0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 19:14:26 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FFEC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 16:13:46 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id b4so3782745ilr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 16:13:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z1dd7qB2dn2ZlP15fr9/XnHG7J/ipuohJDgOwA4dvfE=;
-        b=cBgsPFy08HLg97aYXrYkozG0I5vo9drn2oiSnFRmKFkcRmQ5RN0h4XEhFpIp/e8OA+
-         iuPhHEModNiSa4fy8S/RdkqiS9X0RwuuFuy8+f0vWVO7q+0qZjHDZ/qER3QsDDITCQJB
-         yr/leLbkuO7jrJjKrOQxSwnh5lXAgWCj4Y7e1IzEk+xQHuj/ULdhA+S7s1LXB+EIX4/3
-         QK99uvI6K5Ysl8mdDz/tc3EdRkSYydAiThxz2BvUbIfgt1wUfnahm1wUD0Z7XuZkDQ+f
-         1B+y5hCC/J0nAmbncW349iPPWTxqh/xbwWCp2YprZW9pTTh+bu79n0nLLoJFCg8VT4gF
-         lHuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z1dd7qB2dn2ZlP15fr9/XnHG7J/ipuohJDgOwA4dvfE=;
-        b=IYYV6JJ4o5pzmz011wkzzqeAY/Op3za8HdrBCpL9TGskFMtyf4AE13zDe0oIjgM2B+
-         EnRZ0I4jWOZgXFm3NOG6eU7h+39bNkAeYgxaaB/mzb444P+zy+2s0VMd7/y4dWBsunNL
-         hXiUxjGlp2clBBfzoKF3SpF7EbgzXxvy8VvRcdBlR+7fotOHlYkWTwCPAmv6ViqKZ8tn
-         M9sDFnx+ohFjG1QRk3q/Zn4YQkHXMonUKPIzRiCRv0JTVkgF7A0r5naqr2NGrT2A/NE+
-         WH/BKKVOY3e/Img4CL/Dwmixc/7gE7DG25raXg5uCB+VDQtCN44ol/575qSXtE3ODJhn
-         zM7w==
-X-Gm-Message-State: AOAM532aXI4MuFu5kiNgi2LHtFmXMpJegWPBjY/WNEOlQLrVNgAgY8HO
-        Jz+oJTlYNUiOy5TJLMYjJjxqMA==
-X-Google-Smtp-Source: ABdhPJwuZcs5+9WXBEWkP5hvXAt6zeEg+8AY7vGi1nuZt++LvhGEAW3JmwvXNE4INJH5NlWRHEdSXA==
-X-Received: by 2002:a05:6e02:13e1:: with SMTP id w1mr19413927ilj.116.1629587625695;
-        Sat, 21 Aug 2021 16:13:45 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id c4sm882045ioo.2.2021.08.21.16.13.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Aug 2021 16:13:45 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] iter revert problems
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Palash Oswal <oswalpalash@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-References: <cover.1628780390.git.asml.silence@gmail.com>
- <3eaf5365-586d-700b-0277-e0889bfeb05d@gmail.com>
- <YSF9UFyLGZQeKbLt@zeniv-ca.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <120e5aac-e056-1158-505b-fda41f1c99a5@kernel.dk>
-Date:   Sat, 21 Aug 2021 17:13:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231314AbhHUXPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 19:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhHUXOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 19:14:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4F916127C;
+        Sat, 21 Aug 2021 23:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629587652;
+        bh=tdGAnKxM6kcsoZk3AJYnO2VXuyN1lhYFWXouYEoZxx8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RVI+ysbAJjBVl8En6Vs6QLGPSDp6AF0fy0i7mrmaMSSjeQpz5Pf+r0dc0wQhRI7TV
+         Kwvrkg+yiFOhgR4iCbVQOo7tKeD4yasJQl6UTs6ErZdFrr0+uR2VrGY7QUNxDzH6+w
+         9iH8RVxmt+kqUpV0zJs4jF8hwCVbOyPJqrZkcRLTarM1NqycsWOMv6tMTgh7pwbd+n
+         rj5hf9VhejMa/2NxaC5/3DtAZF80309hB0zAUPeOvYpyFZDCSuDkH/fbdE3nG5kOCc
+         3lkT4RZ6V+vrqBJ94Bp92JJ/0fdZy6A1HR6zxEgWlomfN1/Yn8LQG9cGsqywL0Y39u
+         bkpGgl9NeBvaA==
+Received: by mail-ej1-f48.google.com with SMTP id u3so28129901ejz.1;
+        Sat, 21 Aug 2021 16:14:12 -0700 (PDT)
+X-Gm-Message-State: AOAM533ojJiQOEugzYQ6rJPzB4OGK/x06/xBkS5IGEtENSfFUBmgwJS/
+        hBDlcAr+dl/k/4UZmflg427J9QEBhAuRa0sM6Q==
+X-Google-Smtp-Source: ABdhPJwTRztprBtYY7QES1iZ4ScD8mkXMBE/wRVHlguKZVJ/TxTvzU9+aJ8opXWxfoCtbK7Nd3DULgP8hMTBvn6pcmo=
+X-Received: by 2002:a17:906:f43:: with SMTP id h3mr29009091ejj.267.1629587651408;
+ Sat, 21 Aug 2021 16:14:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSF9UFyLGZQeKbLt@zeniv-ca.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210819022327.13040-1-jason-jh.lin@mediatek.com> <20210819022327.13040-4-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210819022327.13040-4-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 22 Aug 2021 07:14:00 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9BUZ3x01FXY=UKmcrqGxmP7bfpqyz7zCJXK=+2xUhrYA@mail.gmail.com>
+Message-ID: <CAAOTY_9BUZ3x01FXY=UKmcrqGxmP7bfpqyz7zCJXK=+2xUhrYA@mail.gmail.com>
+Subject: Re: [PATCH v8 03/13] dt-bindings: mediatek: add mediatek,dsc.yaml for
+ mt8195 SoC binding
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>, fshao@chromium.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 4:25 PM, Al Viro wrote:
-> On Sat, Aug 21, 2021 at 03:24:28PM +0100, Pavel Begunkov wrote:
->> On 8/12/21 9:40 PM, Pavel Begunkov wrote:
->>> For the bug description see 2/2. As mentioned there the current problems
->>> is because of generic_write_checks(), but there was also a similar case
->>> fixed in 5.12, which should have been triggerable by normal
->>> write(2)/read(2) and others.
->>>
->>> It may be better to enforce reexpands as a long term solution, but for
->>> now this patchset is quickier and easier to backport.
->>
->> We need to do something with this, hopefully soon.
-> 
-> I still don't like that approach ;-/  If anything, I would rather do
-> something like this, and to hell with one extra word on stack in
-> several functions; at least that way the semantics is easy to describe.
+Hi, Jason:
 
-Pavel suggested this very approach initially as well when we discussed
-it, and if you're fine with the extra size_t, it is by far the best way
-to get this done and not have a wonky/fragile API.
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=881=
+9=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:23=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> 1. Add mediatek,dsc.yaml to describe DSC module in details.
+> 2. Add mt8195 SoC binding to mediatek,dsc.yaml.
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,dsc.yaml        | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,dsc.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+dsc.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.=
+yaml
+> new file mode 100644
+> index 000000000000..f94a95c6a1c5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.yam=
+l
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,dsc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: mediatek display DSC controller
+> +
+> +maintainers:
+> +  - CK Hu <ck.hu@mediatek.com>
 
--- 
-Jens Axboe
+According to [1], the maintainer should be
 
+Chun-Kuang Hu <chunkuang.hu@kernel.org>, Philipp Zabel <p.zabel@pengutronix=
+.de>
+
+[1] https://www.kernel.org/doc/html/latest/process/maintainers.html
+
+> +
+> +description: |
+> +  The DSC standard is a specification of the algorithms used for
+> +  compressing and decompressing image display streams, including
+> +  the specification of the syntax and semantics of the compressed
+> +  video bit stream. DSC is designed for real-time systems with
+> +  real-time compression, transmission, decompression and Display.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: mediatek,mt8195-disp-dsc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: DSC Wrapper Clock
+> +
+> +  power-domains:
+> +    description: A phandle and PM domain specifier as defined by binding=
+s of
+> +      the power controller specified by phandle. See
+> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
+ils.
+> +
+> +  mediatek,gce-client-reg:
+> +      description:
+> +        The register of display function block to be set by gce. There a=
+re 4 arguments,
+> +        such as gce node, subsys id, offset and register size. The subsy=
+s id that is
+> +        mapping to the register of display function blocks is defined in=
+ the gce header
+> +        include/include/dt-bindings/gce/<chip>-gce.h of each chips.
+> +      $ref: /schemas/types.yaml#/definitions/phandle-array
+> +      maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-domains
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+> +    dsc0: disp_dsc_wrap@1c009000 {
+> +        compatible =3D "mediatek,mt8195-disp-dsc";
+> +        reg =3D <0 0x1c009000 0 0x1000>;
+> +        interrupts =3D <GIC_SPI 645 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
+> +        clocks =3D <&vdosys0 CLK_VDO0_DSC_WRAP0>;
+> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c00XXXX 0x9000 0x1000=
+>;
+> +    };
+> +
+> --
+> 2.18.0
+>
