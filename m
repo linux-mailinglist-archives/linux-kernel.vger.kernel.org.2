@@ -2,261 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78F03F3B47
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA483F3B4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234954AbhHUPyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 11:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S232483AbhHUP5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 11:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234940AbhHUPyr (ORCPT
+        with ESMTP id S231690AbhHUP5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:54:47 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151B2C061224;
-        Sat, 21 Aug 2021 08:53:53 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id w68so11385190pfd.0;
-        Sat, 21 Aug 2021 08:53:53 -0700 (PDT)
+        Sat, 21 Aug 2021 11:57:43 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89DBC061575;
+        Sat, 21 Aug 2021 08:57:03 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id v2so18658287edq.10;
+        Sat, 21 Aug 2021 08:57:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zRpYwGeL8XTo33SfCVOcmqX7DUSwoGgUjS+gHhg53uE=;
-        b=VFe1LSLOInW6zThI798Aqu4wyQ95LRYKLefq/NWxyh9ABl56vmV9Ji3DMl6plCNz+p
-         q4vku+63l/YMQNfB5v3oL49xKZDY8pqaBTfiHfvrkJPGnkJD7DIXhWSRxc39jgkjQZMa
-         LN3PGr+d5dAgx97c5PtxENWLKXkfuQdhda7i+qVAKQsfKVHv/KxcsvM06Vmg8UZsK/Cl
-         OV6tAvmSEFYo8c/YD6HqQ1HHunMo4B8UIcjvOOjrCWm/Pmjd8OBt1Qsv+En7lSIKhFQd
-         HU7GGsEY8mhtYp7qoUbMqgyplJBKCNaY6yivneoATa+ZTiDK8O0Q0rqluaB5al8EW2CW
-         D3XQ==
+        bh=dQeI7rq5UyNj25/cgHXT21cjW1M3absAwcr0nFDGAXQ=;
+        b=fZYtJBeIc2tsEP0dXutmscR7rVvQUGZi7n6iVg6qm9xG1rP4pi4p/BnWh+LLjyF7el
+         VH0X5JUuzLMui8Nqz0/0JYmP/axGa1rnZOCbMlX7qZPNgGErUt1DIfYPvdyDmoSP9n1z
+         eyaFqm4GfgVkGLYbDqfXH48Omo1urK2MSbpGm8BvRn/Vh/TAdtaucJQ2Leu6svNs8goL
+         +GMrsDdWK7NLEqYrcOM7oevwXQ33hmxyyjaRha9a3ZStxSGdIqIOOCuJeiXfAGtDWJe9
+         FX/ww03O2gFBEgrrCyGL9YY+EGQRZJoWImjHquIEfqsPEPz/AF8x/IS8ipY7/PG1DvAL
+         bJ3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zRpYwGeL8XTo33SfCVOcmqX7DUSwoGgUjS+gHhg53uE=;
-        b=EFqvD+M6bptgxgHQ5MBgIznl/uRnEJD5oSw4CyYn9RJQOSymxhlSRgHGy6wptP/kmp
-         9I6hdUOL9oDjlDA2bsCVDUC07/qvSleLVhfgal5aWtEsvD1IGKjJJ43iLO57snF9MCSr
-         zapdtsMpLN5ihFyKzNtxcWVPUPfYzi8gqkLRGuRwQR/aLirLD1V2tdLOjAZH7TdJJ1Dg
-         ZCENvD27Ud/abtOCzm8aBzeRwG4l2Lkq6h9Dp+Eym7l5n9F3GFZMi2AFZhKEllwDnZ7D
-         pVWlpbLeAF6+puAog3tWdCLTIlLW6hgg5b9PL+nxg4pxmHG4XvR6x95eA2H91uUzD7An
-         UezA==
-X-Gm-Message-State: AOAM5311rMGy+scDp3tWgdkxHTOM385pA0BEL7wT1gH1fAc4WP15fZ+p
-        +CSK6aLT/CcwBUA9k1lBUtE=
-X-Google-Smtp-Source: ABdhPJz0wOXLZrc/S73w9devvoQzXg/4smtNR7mKHf3B4mkxetFnKFDGAZ6FHf5mrcbURHL4dWru3Q==
-X-Received: by 2002:a63:6602:: with SMTP id a2mr24241086pgc.93.1629561232644;
-        Sat, 21 Aug 2021 08:53:52 -0700 (PDT)
-Received: from localhost.localdomain ([223.106.48.93])
-        by smtp.googlemail.com with ESMTPSA id x42sm10615384pfh.205.2021.08.21.08.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 08:53:52 -0700 (PDT)
-From:   jony-one <yan2228598786@gmail.com>
-To:     kuba@kernel.org
-Cc:     edumazet@google.com, rostedt@goodmis.org, mingo@redhat.com,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hengqi.chen@gmail.com, yhs@fb.com,
-        jony-one <yan2228598786@gmail.com>
-Subject: [PATCH] net/mlx4: tcp_drop replace of tcp_drop_new
-Date:   Sat, 21 Aug 2021 08:53:27 -0700
-Message-Id: <20210821155327.251284-1-yan2228598786@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=dQeI7rq5UyNj25/cgHXT21cjW1M3absAwcr0nFDGAXQ=;
+        b=PeYyxmwPtD6y/znCSzhDL38v9IFV+C6oYZRHMWyMUlZhsLPQcY8S8TZywdJewO2JX5
+         p4+3K6gQv1lbINhinwL+Ck+6n1r0CnrnFdSJy4lxmO2OfHEibjSpjY586a9AM2yGrEWl
+         X4nkS+0abI4xAVlamMqmJpyBWmF+oxeW12Vrih3dML7Jv8XfDl9GFZ6KvatG0/GjhQn3
+         HS3pdwlFOYLIiImEDDSnprL9J6LxHhC7pegCYknuDNJvTWMHfSsxTRSsdYxtwXAXbDgV
+         yyuRNOhL8Ul3lUwuogmenfLRFAhLNv/hCcM3odHkHVb9j3gO4DURG5AxffYmbzEF68a4
+         hl0A==
+X-Gm-Message-State: AOAM532Noira9dSBTPPmmG35zkFVYXbvubCJGV6QZM9jOVHQdpyEF2t3
+        gvIDvdFo7/L1PuTe4Eajc/o=
+X-Google-Smtp-Source: ABdhPJzQmYjLjA+FlqyLcD31UFy2RE43X7Yv4nv+8ViR9APl56Rb7LO0JixDaD6gtbVbcIPInHLuNw==
+X-Received: by 2002:a05:6402:3099:: with SMTP id de25mr28016818edb.36.1629561422535;
+        Sat, 21 Aug 2021 08:57:02 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id g10sm4471314ejj.44.2021.08.21.08.57.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Aug 2021 08:57:01 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v3 0/2] Add UFS PHY support for SM6115/4250
+Date:   Sat, 21 Aug 2021 18:56:54 +0300
+Message-Id: <20210821155657.893165-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never know why we are deleting a tcp packet when we delete it,
-and the tcp_drop_new() function can effectively solve this problem.
-The tcp_drop_new() will learn from the specified status code why the
-packet was deleted, and the caller from whom the packet was deleted.
-The kernel should be a little more open to data that is about to be
-destroyed and useless, and users should be able to keep track of it.
+The UFS PHY found on SM6115/4250 has a lot of common registers with ufs phy v2,
+even though in downstream it is named v3-660. Due to register similarity with
+v2, the few extra registers that are needed are added as v2 registers.
 
-Signed-off-by: jony-one <yan2228598786@gmail.com>
----
- include/trace/events/tcp.h | 51 ++++++++++++++++++++++++++++++++++++++
- net/ipv4/tcp_input.c       | 29 ++++++++++++++--------
- 2 files changed, 69 insertions(+), 11 deletions(-)
+The register values/sequences are taken from OnePlus repo [1].
 
-diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-index 521059d8d..5a0478440 100644
---- a/include/trace/events/tcp.h
-+++ b/include/trace/events/tcp.h
-@@ -371,6 +371,57 @@ DEFINE_EVENT(tcp_event_skb, tcp_bad_csum,
- 	TP_ARGS(skb)
- );
- 
-+/*
-+ * tcp event whit argument sk, skb, reason
-+ */
-+TRACE_EVENT(tcp_drop_new,
-+
-+		TP_PROTO(struct sock *sk, struct sk_buff *skb, const char *reason),
-+
-+		TP_ARGS(sk, skb, reason),
-+
-+		TP_STRUCT__entry(
-+			__field(const void *, skbaddr)
-+			__field(const void *, skaddr)
-+			__string(reason, reason)
-+			__field(int, state)
-+			__field(__u16, sport)
-+			__field(__u16, dport)
-+			__array(__u8, saddr, 4)
-+			__array(__u8, daddr, 4)
-+			__array(__u8, saddr_v6, 16)
-+			__array(__u8, daddr_v6, 16)
-+		),
-+
-+		TP_fast_assign(
-+			struct inet_sock *inet = inet_sk(sk);
-+			__be32 *p32;
-+
-+			__assign_str(reason, reason);
-+
-+			__entry->skbaddr = skb;
-+			__entry->skaddr = sk;
-+			__entry->state = sk->sk_state;
-+
-+			__entry->sport = ntohs(inet->inet_sport);
-+			__entry->dport = ntohs(inet->inet_dport);
-+
-+			p32 = (__be32 *) __entry->saddr;
-+			*p32 = inet->inet_saddr;
-+
-+			p32 = (__be32 *) __entry->daddr;
-+			*p32 =  inet->inet_daddr;
-+
-+			TP_STORE_ADDRS(__entry, inet->inet_saddr, inet->inet_daddr,
-+				sk->sk_v6_rcv_saddr, sk->sk_v6_daddr);
-+		),
-+
-+		TP_printk("sport=%hu dport=%hu saddr=%pI4 daddr=%pI4 saddrv6=%pI6c daddrv6=%pI6c state=%s reason=%s",
-+				__entry->sport, __entry->dport, __entry->saddr, __entry->daddr,
-+				__entry->saddr_v6, __entry->daddr_v6,
-+				show_tcp_state_name(__entry->state), __get_str(reason))
-+);
-+
- #endif /* _TRACE_TCP_H */
- 
- /* This part must be outside protection */
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 149ceb5c9..988989e25 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -4649,6 +4649,13 @@ static void tcp_drop(struct sock *sk, struct sk_buff *skb)
- 	__kfree_skb(skb);
- }
- 
-+static void tcp_drop_new(struct sock *sk, struct sk_buff *skb, const char *reason)
-+{
-+	trace_tcp_drop_new(sk, skb, reason);
-+	sk_drops_add(sk, skb);
-+	__kfree_skb(skb);
-+}
-+
- /* This one checks to see if we can put data from the
-  * out_of_order queue into the receive_queue.
-  */
-@@ -4676,7 +4683,7 @@ static void tcp_ofo_queue(struct sock *sk)
- 		rb_erase(&skb->rbnode, &tp->out_of_order_queue);
- 
- 		if (unlikely(!after(TCP_SKB_CB(skb)->end_seq, tp->rcv_nxt))) {
--			tcp_drop(sk, skb);
-+			tcp_drop_new(sk, skb, __func__);
- 			continue;
- 		}
- 
-@@ -4732,7 +4739,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
- 	if (unlikely(tcp_try_rmem_schedule(sk, skb, skb->truesize))) {
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPOFODROP);
- 		sk->sk_data_ready(sk);
--		tcp_drop(sk, skb);
-+		tcp_drop_new(sk, skb, __func__);
- 		return;
- 	}
- 
-@@ -4795,7 +4802,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
- 				/* All the bits are present. Drop. */
- 				NET_INC_STATS(sock_net(sk),
- 					      LINUX_MIB_TCPOFOMERGE);
--				tcp_drop(sk, skb);
-+				tcp_drop_new(sk, skb, __func__);
- 				skb = NULL;
- 				tcp_dsack_set(sk, seq, end_seq);
- 				goto add_sack;
-@@ -4814,7 +4821,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
- 						 TCP_SKB_CB(skb1)->end_seq);
- 				NET_INC_STATS(sock_net(sk),
- 					      LINUX_MIB_TCPOFOMERGE);
--				tcp_drop(sk, skb1);
-+				tcp_drop_new(sk, skb1, __func__);
- 				goto merge_right;
- 			}
- 		} else if (tcp_ooo_try_coalesce(sk, skb1,
-@@ -4842,7 +4849,7 @@ static void tcp_data_queue_ofo(struct sock *sk, struct sk_buff *skb)
- 		tcp_dsack_extend(sk, TCP_SKB_CB(skb1)->seq,
- 				 TCP_SKB_CB(skb1)->end_seq);
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPOFOMERGE);
--		tcp_drop(sk, skb1);
-+		tcp_drop_new(sk, skb1, __func__);
- 	}
- 	/* If there is no skb after us, we are the last_skb ! */
- 	if (!skb1)
-@@ -5019,7 +5026,7 @@ static void tcp_data_queue(struct sock *sk, struct sk_buff *skb)
- 		tcp_enter_quickack_mode(sk, TCP_MAX_QUICKACKS);
- 		inet_csk_schedule_ack(sk);
- drop:
--		tcp_drop(sk, skb);
-+		tcp_drop_new(sk, skb, __func__);
- 		return;
- 	}
- 
-@@ -5276,7 +5283,7 @@ static bool tcp_prune_ofo_queue(struct sock *sk)
- 		prev = rb_prev(node);
- 		rb_erase(node, &tp->out_of_order_queue);
- 		goal -= rb_to_skb(node)->truesize;
--		tcp_drop(sk, rb_to_skb(node));
-+		tcp_drop_new(sk, rb_to_skb(node), __func__);
- 		if (!prev || goal <= 0) {
- 			sk_mem_reclaim(sk);
- 			if (atomic_read(&sk->sk_rmem_alloc) <= sk->sk_rcvbuf &&
-@@ -5701,7 +5708,7 @@ static bool tcp_validate_incoming(struct sock *sk, struct sk_buff *skb,
- 	return true;
- 
- discard:
--	tcp_drop(sk, skb);
-+	tcp_drop_new(sk, skb, __func__);
- 	return false;
- }
- 
-@@ -5905,7 +5912,7 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb)
- 	TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
- 
- discard:
--	tcp_drop(sk, skb);
-+	tcp_drop_new(sk, skb, __func__);
- }
- EXPORT_SYMBOL(tcp_rcv_established);
- 
-@@ -6196,7 +6203,7 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
- 						  TCP_DELACK_MAX, TCP_RTO_MAX);
- 
- discard:
--			tcp_drop(sk, skb);
-+			tcp_drop_new(sk, skb, __func__);
- 			return 0;
- 		} else {
- 			tcp_send_ack(sk);
-@@ -6568,7 +6575,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
- 
- 	if (!queued) {
- discard:
--		tcp_drop(sk, skb);
-+		tcp_drop_new(sk, skb, __func__);
- 	}
- 	return 0;
- }
+[1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm4250
+
+v1: https://lkml.org/lkml/2021/8/5/235
+v2: https://lkml.org/lkml/2021/8/13/889
+
+Changes from v2:
+- Suggested by Vinod
+  - the 6115 registers had a lot in common with v2 registers (and not v3, as
+    was initially assumed), so those were reused whenever possible, and new
+    regs were added along other v2 registers.
+
+Changes from v1:
+- Suggested by Vinod
+  - removed v3-660 constants for regs with same name and value as v3 regs
+
+Iskren Chernev (2):
+  dt-bindings: phy: qcom,qmp: Add SM6115 UFS PHY bindings
+  phy: qcom-qmp: Add support for SM6115 UFS phy
+
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml |   1 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c           | 124 ++++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h           |  18 +++
+ 3 files changed, 143 insertions(+)
+
+
+base-commit: 86ed57fd8c93fdfaabb4f58e78455180fa7d8a84
 -- 
-2.25.1
+2.32.0
 
