@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2F03F3B36
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6163F3B3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhHUPxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 11:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        id S233472AbhHUPyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 11:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbhHUPxd (ORCPT
+        with ESMTP id S232533AbhHUPyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:53:33 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649BEC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:52:53 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id f10so7703994wml.2
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:52:53 -0700 (PDT)
+        Sat, 21 Aug 2021 11:54:00 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD70C061575;
+        Sat, 21 Aug 2021 08:53:20 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id v10so7511362wrd.4;
+        Sat, 21 Aug 2021 08:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JDjoRrO86i0x0pgh7O1gS7MImh2qtoWDpf+3Wu7hPlY=;
-        b=JJeYDUTgItIzLNg9PuiizMppcQhRh/gbLbe+EaJS9DLLsSVvOVlbOmEXdOBoxA8y/K
-         aJ+f7P+7aRiJqV/kRbN5wyU6KFsv2ZbNTMcG6ZJhhiDPK68HhS8iIP5vQNfSev3dnsEq
-         hWNajYlmu4WGqF+Ae6d/36Z0Z0n44yp9IQQw24/5fqbtiyiDMr5+e46rRlm5DHNIhu24
-         GQmIYolmtabssvwdZXNoSpVa/zy9qwhU8/o6160TRqlt4GZNimrgU5UGaI7RszH4KzPX
-         ylAKG77A9Us8aaifrV4g32N0m46J9+qrdKOmlR0wGvlV/pElF4AePjA+n5+NVlKJssGr
-         Dt5Q==
+        bh=3no8bjlTC7qG2fVZz3i3VTGfYtIjxhSSicUhax0MRz4=;
+        b=qbIgQsGJ4NKkBTRex/r3TPba7U5y7NqF18rCVNREbYIa2mEKAoUP/isyAVxDQpDbVa
+         etlzoccomTsu/ipCqEU6rDxNfz09bEjpqmK1esD0sgSPWJ54KAlvrxV5tI7P4ts/lXv7
+         fWNGMFMQn+JN9PhpPHfn3F9rbPyjLwIFYwR5YssPdPmDqlGr6Pj0HzJ0l3WZTuQtUj9e
+         Ab//0/uTBy1H53kg13PjCEB+joyueLTgxmokA0Eu+i3Wv33JtaTUH/sdVOeu0YurKLY6
+         5IUahl2BZeu182mNeG68741Ahc+7sgcushXRQDxhASDLwFqc43UTJ2QOd306SnrQOVEu
+         FVqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=JDjoRrO86i0x0pgh7O1gS7MImh2qtoWDpf+3Wu7hPlY=;
-        b=hvkDhzqGwA0/8/UDs3ZhAo1dr1FtidiB/4s1gXfZVvn2k3SNIXy0B+7B0HtQ30iWkX
-         AQrE0DW3BNTsDe5mck8gEqWpk/MQ/zlepUNpUsfHr/6ONm2qNYyDmDx2pquJuw3Iw9XJ
-         RC+gIwGlc7BB2DMuVUhaOOFj+DjtPRE6oM/65Emlq3+yfFFGIo2Uys2WEG5o42fqYWiG
-         aTI5caVHC9S5J+H0YICeW9eDcF19Iuo0F6oX+d3HdOcdv6ygHAIULmx+CdN9iW3iwtY4
-         kNJEw78evrF49ml6NeOAuH3KPWDBdTBWs4Y2cGS1CcUJoIIfnXesXMqn8Xv7noMdz2/h
-         f44w==
-X-Gm-Message-State: AOAM533PGpGVTya17oAtToBOh6Q1ExTYZ8etyzRa386OlNgkYi/R6ByU
-        nYqUOmYCOgKKPsZmhjuE5z8=
-X-Google-Smtp-Source: ABdhPJx8+or3o3DbhJZf1pgDRL7OYdmZ0Pw3RNoIwQqFU1HUv+O95gyChd9PpvJR7W64dW423RjTAQ==
-X-Received: by 2002:a05:600c:252:: with SMTP id 18mr9159673wmj.61.1629561172059;
-        Sat, 21 Aug 2021 08:52:52 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id k18sm1875032wmi.25.2021.08.21.08.52.51
+        bh=3no8bjlTC7qG2fVZz3i3VTGfYtIjxhSSicUhax0MRz4=;
+        b=mWh/P5rNOA4RhQFTJqt1sOW9sfSjqLaYS+tRilVKZdTMTQZ8Uq0NqyF21tDuqPiseN
+         GBrkSa4+hyYO6+yhl3bawadfdU4vY4WAUTRAEzy1LJ4CB5RALi749y/ZsY2Yej6/nb2n
+         +1WUhftEFWTQo/5GkjBb8hMDDxRoqVlcnxWjc8NAB5/sz4EbYx4I+0Kf/e64bJO97o0W
+         wmRPfiKDkEy6j4txWJQjbJGYjZkdBTIvXvfp6OxqkoBlcf+dIS2whsP1dyBDSySkoNqt
+         C0tUXRGhvBhgODReMs+OOEmpLJ6ER+alKcRjVAgGdM/ijwmZ1mbZfJ7PZZnI8YGi+8je
+         AMRQ==
+X-Gm-Message-State: AOAM533kpW3JR27D7vtwtDJ1WgJSWRBlv26kY7V7TL5HZlU54JmiRPPu
+        /2XtyLT+2k5TzJIuN3PJQ28=
+X-Google-Smtp-Source: ABdhPJwtv94+OnpvcNSQQUev8ESWsIq+ajwCOY8LzcCeq0TWgSjaPuIsSbBFLYzD4A8cbPcPhhtNAQ==
+X-Received: by 2002:a05:6000:1091:: with SMTP id y17mr4418460wrw.202.1629561199016;
+        Sat, 21 Aug 2021 08:53:19 -0700 (PDT)
+Received: from localhost.localdomain ([85.255.233.174])
+        by smtp.gmail.com with ESMTPSA id e3sm9479554wro.15.2021.08.21.08.53.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 08:52:51 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove cmd_osdep.h header file
-Date:   Sat, 21 Aug 2021 17:51:51 +0200
-Message-Id: <20210821155151.25822-1-straube.linux@gmail.com>
+        Sat, 21 Aug 2021 08:53:18 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+Subject: [PATCH v3 0/4] open/accept directly into io_uring fixed file table 
+Date:   Sat, 21 Aug 2021 16:52:36 +0100
+Message-Id: <cover.1629559905.git.asml.silence@gmail.com>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,109 +64,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All functions declared in the cmd_osdep.h header file are only used in
-a single c source file. Make the functions static and remove the header
-file and its includes.
+Add an optional feature to open/accept directly into io_uring's fixed
+file table bypassing the normal file table. Same behaviour if as the
+snippet below, but in one operation:
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_cmd.c      | 11 +++++------
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c  |  1 -
- drivers/staging/r8188eu/include/cmd_osdep.h | 16 ----------------
- 3 files changed, 5 insertions(+), 23 deletions(-)
- delete mode 100644 drivers/staging/r8188eu/include/cmd_osdep.h
+sqe = prep_[open,accept](...);
+cqe = submit_and_wait(sqe);
+io_uring_register_files_update(uring_idx, (fd = cqe->res));
+close((fd = cqe->res));
 
-diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
-index 955499eb608a..ce73ac7cf973 100644
---- a/drivers/staging/r8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/r8188eu/core/rtw_cmd.c
-@@ -6,7 +6,6 @@
- #include "../include/osdep_service.h"
- #include "../include/drv_types.h"
- #include "../include/recv_osdep.h"
--#include "../include/cmd_osdep.h"
- #include "../include/mlme_osdep.h"
- #include "../include/rtw_br_ext.h"
- #include "../include/rtw_mlme_ext.h"
-@@ -16,7 +15,7 @@ Caller and the rtw_cmd_thread can protect cmd_q by spin_lock.
- No irqsave is necessary.
- */
- 
--int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
-+static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
- {
- 	int res = _SUCCESS;
- 
-@@ -59,7 +58,7 @@ int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
- 
- static void c2h_wk_callback(struct work_struct *work);
- 
--int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
-+static int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
- {
- 	int res = _SUCCESS;
- 
-@@ -87,7 +86,7 @@ void rtw_free_evt_priv(struct	evt_priv *pevtpriv)
- 	}
- }
- 
--void _rtw_free_cmd_priv(struct cmd_priv *pcmdpriv)
-+static void _rtw_free_cmd_priv(struct cmd_priv *pcmdpriv)
- {
- 	if (pcmdpriv) {
- 		kfree(pcmdpriv->cmd_allocated_buf);
-@@ -105,7 +104,7 @@ ISR/Call-Back functions can't call this sub-function.
- 
- */
- 
--int	_rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj)
-+static int _rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj)
- {
- 	unsigned long flags;
- 
-@@ -123,7 +122,7 @@ int	_rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj)
- 	return _SUCCESS;
- }
- 
--struct	cmd_obj	*_rtw_dequeue_cmd(struct __queue *queue)
-+static struct cmd_obj *_rtw_dequeue_cmd(struct __queue *queue)
- {
- 	struct cmd_obj *obj;
- 	unsigned long flags;
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-index 3e1a45030bc8..7d50d64cf34d 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
-@@ -6,7 +6,6 @@
- #include "../include/osdep_service.h"
- #include "../include/drv_types.h"
- #include "../include/recv_osdep.h"
--#include "../include/cmd_osdep.h"
- #include "../include/mlme_osdep.h"
- #include "../include/rtw_ioctl_set.h"
- 
-diff --git a/drivers/staging/r8188eu/include/cmd_osdep.h b/drivers/staging/r8188eu/include/cmd_osdep.h
-deleted file mode 100644
-index 3954d6350cc6..000000000000
---- a/drivers/staging/r8188eu/include/cmd_osdep.h
-+++ /dev/null
-@@ -1,16 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
--/* Copyright(c) 2007 - 2011 Realtek Corporation. */
--
--#ifndef __CMD_OSDEP_H_
--#define __CMD_OSDEP_H_
--
--#include "osdep_service.h"
--#include "drv_types.h"
--
--extern int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv);
--extern int _rtw_init_evt_priv(struct evt_priv *pevtpriv);
--extern void _rtw_free_cmd_priv(struct cmd_priv *pcmdpriv);
--extern int _rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj);
--extern struct cmd_obj	*_rtw_dequeue_cmd(struct __queue *queue);
--
--#endif
+The idea in pretty old, and was brough up and implemented a year ago
+by Josh Triplett, though haven't sought the light for some reasons.
+
+The behaviour is controlled by setting sqe->file_index, where 0 implies
+the old behaviour. If non-zero value is specified, then it will behave
+as described and place the file into a fixed file slot
+sqe->file_index - 1. A file table should be already created, the slot
+should be valid and empty, otherwise the operation will fail.
+
+we can't use IOSQE_FIXED_FILE to switch between modes, because accept
+takes a file, and it already uses the flag with a different meaning.
+
+since RFC:
+ - added attribution
+ - updated descriptions
+ - rebased
+
+since v1:
+ - EBADF if slot is already used (Josh Triplett)
+ - alias index with splice_fd_in (Josh Triplett)
+ - fix a bound check bug
+
+Pavel Begunkov (4):
+  net: add accept helper not installing fd
+  io_uring: openat directly into fixed fd table
+  io_uring: hand code io_accept() fd installing
+  io_uring: accept directly into fixed file table
+
+ fs/io_uring.c                 | 129 +++++++++++++++++++++++++++++-----
+ include/linux/socket.h        |   3 +
+ include/uapi/linux/io_uring.h |   5 +-
+ net/socket.c                  |  71 ++++++++++---------
+ 4 files changed, 157 insertions(+), 51 deletions(-)
+
 -- 
 2.32.0
 
