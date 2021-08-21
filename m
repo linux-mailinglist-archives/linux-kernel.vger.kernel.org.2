@@ -2,116 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209E33F3936
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 08:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4963F393C
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 09:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbhHUGvY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 21 Aug 2021 02:51:24 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:54252 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhHUGvX (ORCPT
+        id S232514AbhHUHEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 03:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232037AbhHUHEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 02:51:23 -0400
-Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D102DCED43;
-        Sat, 21 Aug 2021 08:50:40 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [RFC PATCH 00/15] create power sequencing subsystem
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
-Date:   Sat, 21 Aug 2021 08:50:40 +0200
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        MSM <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <551758F2-0B00-4DEB-92C9-37472E46B75D@holtmann.org>
-References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
- <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
- <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
+        Sat, 21 Aug 2021 03:04:53 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC7CC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 00:04:14 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id z4so1768412wrr.6
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 00:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rtst-co-kr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WgM87f7rpLd/jbOLyf9WZP12/bowR6IrwwDEu2GtuV8=;
+        b=Pv336bT6BS8zVUAFL8pWU1CGoQdBEw/yAxLORZT8Cj/Ba0BPBttWUz+vdEQINtnec5
+         q2RFdHep9cG1R6MfS7RuAsBAUf71QOvvsylwQVXcszxZWZLGdJfao5uT5J80KXdOtlu9
+         SHtyBk5SWC/eZGBBjo+tV85udJiqv5I8QHTKOfnvsQMkqX7SlRtnfYau5O4uzOrkvo+l
+         rMFJR4MAD1C3+4bzI0SoUQ3gTZd6u6nch6F4B+kxdf2ImkNJD5dIfgb1PX9TFJTZz2vf
+         KbzOGeFnG9Mwqm9PfoEJXDhVxDOelhrZAmwoosSLEOPzfXQGSu5fxkL7R5sg5qkiGjhx
+         WiHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WgM87f7rpLd/jbOLyf9WZP12/bowR6IrwwDEu2GtuV8=;
+        b=HfJIGtL77Q/TIHKmuOkBbPGogH3d8XZwVOFUAj4CryKfKTdHf/5+iP2lx8+GKleV+Z
+         hioPgFt9CcQlDPzUJGRitqMqYWcgXchK01XMkFBfwHYt/oxKn5tIUd5ENlAR9iCdZgoP
+         4O4/g4OsodHfAG//dGbp+oebt5jDbk3/4ij2Qr6VV/ANHoUXeeAgfIlCddQOmh0boA6w
+         Wc79BoEYDCWA1XxalmqSmU2Z7as4qOr20YHZklKHrNe6QCWIZr9/bpiJaPx4Rr0qHkfZ
+         HuRGhmGTsR1ii6nsw2JQUiBhk3ZTplj9/angDxLZdT+Av3qn7gQY4CVq50fXUdcysOjz
+         sK2g==
+X-Gm-Message-State: AOAM533XrVgtlCy+WXBQ/Gg3C5Lg8Sy7ArP4t2JPJjgnaRDplAeVolc0
+        yWB8TB/gCghEHTnpVBAOlPhofAKpKENrJH4UyL7slQ==
+X-Google-Smtp-Source: ABdhPJxcQ/ExlMzakQLKVKtgk8fM+2HQQTzsMvU9f1V4BSUasYqP11DQmXznbj5+lLlT6kQekSR6zYmUaeHXoLJb/44=
+X-Received: by 2002:adf:e7d1:: with SMTP id e17mr2450792wrn.151.1629529452393;
+ Sat, 21 Aug 2021 00:04:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210817095313.GA671484@ubuntu> <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
+ <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
+ <20210819084759.stnmit32vs2be46m@linutronix.de> <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
+ <20210821050511.GA14810@Peter>
+In-Reply-To: <20210821050511.GA14810@Peter>
+From:   Jeaho Hwang <jhhwang@rtst.co.kr>
+Date:   Sat, 21 Aug 2021 16:04:01 +0900
+Message-ID: <CAJk_X9gqBACA3O=4LdY3XJP5UzJe2p4bE72X_jNEHR1Cn=vDNQ@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for hw_ep_prime
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
+        =?UTF-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm0=?=
+         =?UTF-8?B?7Jew6rWs7YyA?= <mkbyeon@lselectric.co.kr>,
+        =?UTF-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRpb24gUGxhdGZvcm3sl7A=?=
+         =?UTF-8?B?6rWs7YyA?= <khchoib@lselectric.co.kr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+2021=EB=85=84 8=EC=9B=94 21=EC=9D=BC (=ED=86=A0) =EC=98=A4=ED=9B=84 2:05, P=
+eter Chen <peter.chen@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 21-08-20 14:15:55, Jeaho Hwang wrote:
+> > 2021=EB=85=84 8=EC=9B=94 19=EC=9D=BC (=EB=AA=A9) =EC=98=A4=ED=9B=84 5:4=
+8, Sebastian Andrzej Siewior
+> > <bigeasy@linutronix.de>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> > >
+> > > On 2021-08-19 08:50:27 [+0900], Jeaho Hwang wrote:
+> > > > Without RT, udc_irq runs as a forced threaded irq handler, so it ru=
+ns
+> > > > without any interruption or preemption. NO similar case is found on
+> > > > non-RT.
+> > >
+> > > I see only a devm_request_irq() so no force-threading here. Booting w=
+ith
+> > > threadirqs would not lead to the problem since commit
+> > >    81e2073c175b8 ("genirq: Disable interrupts for force threaded hand=
+lers")
+> > >
+> >
+> > I was wrong. udc threaded irq handler allows twd interrupt even on
+> > non-RT and with threaded irq.
+> > I believed Chen's comment "The function hw_ep_prime is only called at
+> > udc_irq which is registered as top-half irq handlers. Why the timer
+> > interrupt is occurred when hw_ep_prime is executing?".
+>
+> Hi Jeaho,
+>
+> How could you let udc irq as threaded irq? The chipidea interrupt
+> is registered using devm_request_irq.
+>
 
->>> This is an RFC of the proposed power sequencer subsystem. This is a
->>> generification of the MMC pwrseq code. The subsystem tries to abstract
->>> the idea of complex power-up/power-down/reset of the devices.
->>> 
->>> The primary set of devices that promted me to create this patchset is
->>> the Qualcomm BT+WiFi family of chips. They reside on serial+platform
->>> interfaces (older generations) or on serial+PCIe (newer generations).
->>> They require a set of external voltage regulators to be powered on and
->>> (some of them) have separate WiFi and Bluetooth enable GPIOs.
->>> 
->>> This patchset being an RFC tries to demonstrate the approach, design and
->>> usage of the pwrseq subsystem. Following issues are present in the RFC
->>> at this moment but will be fixed later if the overall approach would be
->>> viewed as acceptable:
->>> 
->>> - No documentation
->>> While the code tries to be self-documenting proper documentation
->>> would be required.
->>> 
->>> - Minimal device tree bindings changes
->>> There are no proper updates for the DT bindings (thus neither Rob
->>> Herring nor devicetree are included in the To/Cc lists). The dt
->>> schema changes would be a part of v1.
->>> 
->>> - Lack of proper PCIe integration
->>> At this moment support for PCIe is hacked up to be able to test the
->>> PCIe part of qca6390. Proper PCIe support would require automatically
->>> powering up the devices before the scan basing on the proper device
->>> structure in the device tree.
->>> 
->>> ----------------------------------------------------------------
->>> Dmitry Baryshkov (15):
->>>    power: add power sequencer subsystem
->>>    pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
->>>    mmc: core: switch to new pwrseq subsystem
->>>    ath10k: add support for pwrseq sequencing
->>>    Bluetooth: hci_qca: merge qca_power into qca_serdev
->>>    Bluetooth: hci_qca: merge init paths
->>>    Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
->>>    Bluetooth: hci_qca: futher rework of power on/off handling
->>>    Bluetooth: hci_qca: add support for pwrseq
->> 
->> any chance you can try to abandon patching hci_qca. The serdev support in hci_uart is rather hacking into old line discipline code and it is not aging well. It is really becoming a mess.
-> 
-> I wanted to stay away from rewriting the BT code. But... New driver
-> would have a bonus point that I don't have to be compatible with old
-> bindings. In fact we can even make it the other way around: let the
-> old driver always use regulators and make the new driver support only
-> the pwrseq. Then it should be possible to drop the old hci_qca driver
-> together with dropping the old bindings.
-> 
->> I would say that the Qualcomm serial devices could use a separate standalone serdev driver. A while I send an RFC for a new serdev driver.
->> 
->> https://www.spinics.net/lists/linux-bluetooth/msg74918.html
-> 
-> Any reason why your driver stayed as an RFC and never made it into the
-> kernel? Do you plan to revive your old RFCs on H:4 and H:5?
+HI Peter.
 
-I was missing enough hardware to test it on and frankly I hoped that someone would pick up this work. The HCI line discipline “hack” needs to be removed soon. It is complicated, cumbersome and has a bunch of issues with locking. Mind you that originated in 2.4.6 kernel and is at its core bit-rotting.
+We configured the kernel as "low latency desktop" and added
+"threadirqs" inside the cmdline parameter.
+Then udc irq handler runs as a thread and shows no suspicious working.
+I Hope It will help.
 
-If you manage to put QCA support into a separate btqcauart driver, that would be awesome. The btmtkuart driver is another example where Mediatek got its own serdev based driver.
+Thanks.
 
-Regards
+> > We have additional experiments and got the results like below. RNDIS
+> > host was Windows.
+> >
+> > RT, 1ms delay between first ENDPTSETUPSTAT read and priming : error
+> > case occurred
+> > RT, 1ms delay + irq_save : no error case occurred.
+> > non-RT, threaded irq, 1ms delay : no error case occurred even twd
+> > fires inside the function execution.
+>
+> Again, how do you observe it?
+>
+> Peter
+>
+> >
+> > It doesn't seem to be a timing issue. But irq definitely affects
+> > priming on the RT kernel. Do you RT experts have any idea about the
+> > causes?
+> > If isr_tr_complete_handler fails ep priming it calls _ep_set_halt and
+> > goes an infinite loop in hw_ep_set_halt. It was an actual problem we
+> > experienced.
+> > So we protect irqs inside hw_ep_priming not to make error cases and
+> > also add a timeout inside the hw_ep_set_halt loop for a walkaround.
+> > The timeout patch is submitted to linux-usb.
+> > ( https://marc.info/?l=3Dlinux-usb&m=3D162918269024007&w=3D2 )
+> >
+> > We withdrew this patch since we don't know if disabling irq is the
+> > best solution to solve the problem and udc would work fine with
+> > hw_ep_set_halt walkaround even though hw_ep_prime fails.
+> > But we are still trying to find out the cause of this symptom so We'd
+> > so appreciate it if RT or USB experts share some ideas or ways to
+> > report somewhere. Xilinx doesn't provide any support without their
+> > official kernel :(
+> >
+> > Thanks for the discussion Sebastian.
+> >
+> > Jeaho Hwang.
+> >
+> > > =E2=80=A6
+> > > > > If this function here is sensitive to timing (say the cpu_relax()=
+ loop
+> > > > > gets interrupt for 1ms) then it has to be documented as such.
+> > > >
+> > > > The controller sets ENDPTSETUPSTAT register if the host sent a setu=
+p packet.
+> > > > yes it is a timing problem. I will document that and resubmit again=
+ if
+> > > > you agree that local_irq_save could help from the timing problem.
+> > > >
+> > > > Thanks for the advice.
+> > >
+> > > If it is really a timing issue in the function as you describe below
+> > > then disabling interrupts would help and it is indeed an RT only issu=
+e.
+> > >
+> > > So you read OP_ENDPTSETUPSTAT, it is 0, all good.
+> > > You write OP_ENDPTPRIME, wait for it to be cleared.
+> > > Then you read OP_ENDPTSETUPSTAT again and if it is 0, all good.
+> > >
+> > > And the TWD interrupt could delay say the second read would read 1 an=
+d
+> > > it is invalidated. Which looks odd.
+> > > However, it is "okay" if the TWD interrupt happens after the second
+> > > read? Even if the host sends a setup packet, nothing breaks?
+> > > Do you have numbers on how long irq-off section is here? It seems to
+> > > depend on how long the HW needs to clear the OP_ENDPTPRIME bits.
+> > >
+> > > Sebastian
+> >
+> >
+> >
+> > --
+> > =ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
+> > 010-7242-1593
+>
+> --
+>
+> Thanks,
+> Peter Chen
+>
 
-Marcel
 
+--=20
+=ED=99=A9=EC=9E=AC=ED=98=B8, Jay Hwang, linux team manager of RTst
