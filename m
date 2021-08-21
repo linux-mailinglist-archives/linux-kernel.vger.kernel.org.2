@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEA43F3AD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 15:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DD63F3ACF
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 15:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbhHUNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 09:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbhHUNnk (ORCPT
+        id S234275AbhHUNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 09:43:31 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22837 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhHUNna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 09:43:40 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C56AC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:43:01 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id bq25so26047020ejb.11
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uw7aN7lfs0C03Rj2YgAtsSHpPr93tKVvkhtBhU3EaV4=;
-        b=KerdWP+OraMwIr7d7Aabo37FJBLYFSdftGQHrpSF4wyg1W0BYjMSH35VqNfHX010Ar
-         95MLW3kIG8sF3ctPYbjpFFdG0opV/dMg1LszEKcE0iS4hUDbIgLadtEwz5yajNSNiHGO
-         4Jqo3flRJzS1uW4aML7tcMZpAYqR6Sct1fk3hE7S+UmtdtqBeL3COaaCstG3PVOg9RMd
-         wWAT105+Nw+d6Z+Oa7bRuy+WZMNhlVRHvmqOrph+cqxB6CKL7ZqsKxnC5xkBhkFClpgg
-         iBNKHbemJDGym1Tv48ibzQe/PY+wd2icq0pubPBDUsrA+dtL7qUKD+A4s3lJfu9gaadp
-         DpOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uw7aN7lfs0C03Rj2YgAtsSHpPr93tKVvkhtBhU3EaV4=;
-        b=VOeAkVUjAov3rynwoKxRGIv5yXpSntlpMtCpkBueWz3KOZ4HY0svX5b8kkdbabq7P8
-         4fysEsu/fiBPTMDsaNmdTjAdbV/U4+YYNXd0KOmPZq1Yb+IxLlqhrSq+XMvakAvz01ax
-         KfgRATnbkPTDxdWv397tVkfz10xyQz3g+zysh3o5TWcUUuIE8SvwFtBRoQJl8Y9hkaJ4
-         D3w1z+WQfpX8OzIOp1KzXQ0FZo7fNXK19UjOkSMlwYlLeZRBdSRg2OO8NYIYXESWilMf
-         o8r3/4eAsv8MCk+Hvrqk/sygF8nZgmlvNeSmcMzfUsTuIR336ZYE8jQm9W5Fn+kPHdFn
-         AwpA==
-X-Gm-Message-State: AOAM531aC8gFkzDA33T458nRROpLJWBL6QowbEs0mOSf3vXtWKvI+tc6
-        yZ8Lt38p7xHSNMLJjtQp9UnrEdrN19Z+mg==
-X-Google-Smtp-Source: ABdhPJw4a4ealNakkSVx5+nwT+lPRJyOW5E9Cu/ghs/E4xxFF38PC3MXhxoOMOG1nDAGR6eWef2GqQ==
-X-Received: by 2002:a17:906:2ac1:: with SMTP id m1mr27111809eje.518.1629553379905;
-        Sat, 21 Aug 2021 06:42:59 -0700 (PDT)
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
-        by smtp.gmail.com with ESMTPSA id r11sm4350877ejy.71.2021.08.21.06.42.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Aug 2021 06:42:59 -0700 (PDT)
-Received: by mail-wr1-f49.google.com with SMTP id z9so18355002wrh.10
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:42:59 -0700 (PDT)
-X-Received: by 2002:adf:e3c7:: with SMTP id k7mr3871045wrm.327.1629553378450;
- Sat, 21 Aug 2021 06:42:58 -0700 (PDT)
+        Sat, 21 Aug 2021 09:43:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629553371; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=+3hD0keNjM2fSKlKxzNlIIPlWObJlXI+6cdOTa4unVo=; b=VHydMQeZrVV+AXhV6WFaMU/iklytwHYEPCkjXLN90eR4vqYxaq3Vb7r2Ef93KLUfgowKn2J8
+ LXlUWrUH5VQeIaAaySMDTXDZ6pEWj5avNNchlht22hfafmEciM5eOK2sHEIj+Mes3HNNAYyU
+ zxP/SZn7Ta1tiHZPFtynfd3VWDQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 612102da89fbdf3ffe7a9bf6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 13:42:50
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1F626C43618; Sat, 21 Aug 2021 13:42:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1E14C43460;
+        Sat, 21 Aug 2021 13:42:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A1E14C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     Mostafa Afgani <mostafa.afgani@purelifi.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list\:NETWORKING DRIVERS \(WIRELESS\)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list\:NETWORKING DRIVERS" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] [v14] wireless: Initial driver submission for pureLiFi STA devices
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+        <20210226130810.119216-1-srini.raju@purelifi.com>
+        <CWLP265MB17945FD418D1D242756B2AC4E0499@CWLP265MB1794.GBRP265.PROD.OUTLOOK.COM>
+        <CWLP265MB321782CCA0CC2130A2D59A53E0F79@CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM>
+Date:   Sat, 21 Aug 2021 16:42:44 +0300
+In-Reply-To: <CWLP265MB321782CCA0CC2130A2D59A53E0F79@CWLP265MB3217.GBRP265.PROD.OUTLOOK.COM>
+        (Srinivasan Raju's message of "Tue, 10 Aug 2021 13:02:46 +0000")
+Message-ID: <87eeamud63.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210821071425.512834-2-chouhan.shreyansh630@gmail.com>
-In-Reply-To: <20210821071425.512834-2-chouhan.shreyansh630@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sat, 21 Aug 2021 09:42:20 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSdTh5ZuEV0LpZQGngtxAA8-43KqFCBNRMWHqQZxnVKafg@mail.gmail.com>
-Message-ID: <CA+FuTSdTh5ZuEV0LpZQGngtxAA8-43KqFCBNRMWHqQZxnVKafg@mail.gmail.com>
-Subject: Re: [PATCH 2/2 net] ip6_gre: add validation for csum_start
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pshelar@nicira.com,
-        willemdebruijn.kernel@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 3:14 AM Shreyansh Chouhan
-<chouhan.shreyansh630@gmail.com> wrote:
->
-> Validate csum_start in gre_handle_offloads before we call _gre_xmit so
-> that we do not crash later when the csum_start value is used in the
-> lco_csum function call.
->
-> This patch deals with ipv6 code.
->
-> Fixes: Fixes: b05229f44228 ("gre6: Cleanup GREv6 transmit path, call common
-> GRE functions")
-> Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-> Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+> Could you please review this patch and let us know if there are any comments.
+> And please let us know if any changes has to be made to the driver for getting into wireless-next. 
+> We have already submitted the firmware for review as well. The patch is in "Awaiting Upstream" state for a long time. 
+> Please let us know.
+
+Reviewing new drivers is time consuming and it's not always easy to find
+time for that. It's unfortunate that the review takes so long, but
+please take into account that we are volunteers.
+
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210226130810.119216-1-srini.raju@purelifi.com/
+
+You are looking at the wrong patchwork project, you should follow
+linux-wireless project. Direct link below.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
