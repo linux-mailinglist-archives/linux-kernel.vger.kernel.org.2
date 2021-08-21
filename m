@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7243F39A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A8F3F39AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbhHUJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 05:02:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3720 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232802AbhHUJCT (ORCPT
+        id S233340AbhHUJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 05:17:11 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:34121 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233240AbhHUJRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 05:02:19 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17L8Xd6h072734;
-        Sat, 21 Aug 2021 05:01:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=/ppwdrIZvWqoBpVpD+YZrWNWlgW2mEGx190V7dl3dGc=;
- b=Vd5fHIvUa/momlfeoh7+zEdYbeiU46c4R3QjxQ5mI7mGxqa+B266IRIDCj5jTb7GASg5
- YGtTBkapG5hXqfJE/zCc20M5Nwu4NNEupF2hVxckYC0fULOSdNW2G7pKk8O1d2IvNeN1
- zuZuWcUOyiLOrUSp76VctvCbEoZ8yQtjkE1WFH8VhUqgvp9ooQMpL1nUOhKSwRLhJTab
- 1O+DHcBT111YXoiBua0c18arTGs8yvxG5fbGL2RXKjARBJ4EnolzseYGQO+2hzhsX0fW
- Kg8UCJzGiRk/O/cpSn+4y4uObzw3jzv1K4xExCJhOydwP9qDxNuHRjKyVFaKP7gj68gO /A== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ajwmygu70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 21 Aug 2021 05:01:38 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17L8x1nO018260;
-        Sat, 21 Aug 2021 09:01:36 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 3ajs48893f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 21 Aug 2021 09:01:36 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17L8vwCu27853096
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 21 Aug 2021 08:57:58 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5DFEEA4064;
-        Sat, 21 Aug 2021 09:01:32 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C32CA4066;
-        Sat, 21 Aug 2021 09:01:32 +0000 (GMT)
-Received: from localhost (unknown [9.171.52.52])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 21 Aug 2021 09:01:31 +0000 (GMT)
-Date:   Sat, 21 Aug 2021 11:01:30 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.14-rc7
-Message-ID: <your-ad-here.call-01629536490-ext-4991@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: N9u4L4OgwVXqh1tcbfY-83dcV_CDGNEA
-X-Proofpoint-ORIG-GUID: N9u4L4OgwVXqh1tcbfY-83dcV_CDGNEA
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sat, 21 Aug 2021 05:17:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1629537391; x=1661073391;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=6zdtuD4K5LXWMKHYbnVqH1TC+OHwCabeh7riv5NUDRU=;
+  b=DsRAjwkrxN52eO2kC6ZXR+YbiIeFkxBK2OIDxybnREXpac63sPFK4hmD
+   +U12HkvOdSQ7B+HKHrhxV9jrvvB2fnLg2OaEr6unw4r4nm/Mu/ze3g4ZL
+   fe9mpLxPPmjct+CqAGYK+5O751gmTv3fEEm8hyxj94kaIhW+EC4cCFmtX
+   k=;
+X-IronPort-AV: E=Sophos;i="5.84,340,1620691200"; 
+   d="scan'208";a="154103456"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 21 Aug 2021 09:16:24 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 493B4A26F2;
+        Sat, 21 Aug 2021 09:16:21 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.41) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 21 Aug 2021 09:16:13 +0000
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <20210818074352.29950-1-galpress@amazon.com>
+ <CAKMK7uGZ_eX+XfYJU6EkKEOVrHz3q6QMxaEbyyD3_1iqj9YSjw@mail.gmail.com>
+ <20210819230602.GU543798@ziepe.ca>
+ <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+ <20210820123316.GV543798@ziepe.ca>
+ <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+Date:   Sat, 21 Aug 2021 12:16:08 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-21_03:2021-08-20,2021-08-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- clxscore=1011 spamscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
- mlxlogscore=909 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108210050
+In-Reply-To: <20210820143248.GX543798@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.41]
+X-ClientProxiedBy: EX13P01UWA001.ant.amazon.com (10.43.160.213) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On 20/08/2021 17:32, Jason Gunthorpe wrote:
+> On Fri, Aug 20, 2021 at 03:58:33PM +0300, Gal Pressman wrote:
+> 
+>> Though it would've been nicer if we could agree on a solution that could work
+>> for more than 1-2 RDMA devices, using the existing tools the RDMA subsystem has.
+> 
+> I don't think it can really be done, revoke is necessary, and isn't a
+> primitive we have today.
+> 
+> Revoke is sort of like rereg MR, but with a guaranteed no-change to
+> the lkey/rkey
+> 
+> Then there is the locking complexity of linking the mr creation and
+> destruction to the lifecycle of the pages, which is messy and maybe
+> not general. For instance mlx5 would call its revoke_mr, disconnect
+> the dmabuf then destroy the mkey - but this is only safe because mlx5
+> HW can handle concurrent revokes.
 
-please pull s390 fix for 5.14-rc7.
+Thanks, that makes sense.
 
-Thank you,
-Vasily
+>> That's why I tried to approach this by denying such attachments for non-ODP
+>> importers instead of exposing a "limited" dynamic importer.
+> 
+> That is fine if there is no revoke - once revoke exists we must have
+> driver and HW support.
 
-The following changes since commit 7c60610d476766e128cc4284bb6349732cbd6606:
+Agree.
+IIUC, we're talking about three different exporter "types":
+- Dynamic with move_notify (requires ODP)
+- Dynamic with revoke_notify
+- Static
 
-  Linux 5.14-rc6 (2021-08-15 13:40:53 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-5
-
-for you to fetch changes up to 2a671f77ee49f3e78997b77fdee139467ff6a598:
-
-  s390/pci: fix use after free of zpci_dev (2021-08-18 10:12:42 +0200)
-
-----------------------------------------------------------------
-s390 updates for 5.14-rc7
-
-- fix use after free of zpci_dev in pci code
-
-----------------------------------------------------------------
-Niklas Schnelle (1):
-      s390/pci: fix use after free of zpci_dev
-
- arch/s390/pci/pci.c     | 6 ++++++
- arch/s390/pci/pci_bus.h | 5 +++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index b0993e05affe..8fcb7ecb7225 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -560,9 +560,12 @@ static void zpci_cleanup_bus_resources(struct zpci_dev *zdev)
- 
- int pcibios_add_device(struct pci_dev *pdev)
- {
-+	struct zpci_dev *zdev = to_zpci(pdev);
- 	struct resource *res;
- 	int i;
- 
-+	/* The pdev has a reference to the zdev via its bus */
-+	zpci_zdev_get(zdev);
- 	if (pdev->is_physfn)
- 		pdev->no_vf_scan = 1;
- 
-@@ -582,7 +585,10 @@ int pcibios_add_device(struct pci_dev *pdev)
- 
- void pcibios_release_device(struct pci_dev *pdev)
- {
-+	struct zpci_dev *zdev = to_zpci(pdev);
-+
- 	zpci_unmap_resources(pdev);
-+	zpci_zdev_put(zdev);
- }
- 
- int pcibios_enable_device(struct pci_dev *pdev, int mask)
-diff --git a/arch/s390/pci/pci_bus.h b/arch/s390/pci/pci_bus.h
-index b877a97e6745..e359d2686178 100644
---- a/arch/s390/pci/pci_bus.h
-+++ b/arch/s390/pci/pci_bus.h
-@@ -22,6 +22,11 @@ static inline void zpci_zdev_put(struct zpci_dev *zdev)
- 	kref_put(&zdev->kref, zpci_release_device);
- }
- 
-+static inline void zpci_zdev_get(struct zpci_dev *zdev)
-+{
-+	kref_get(&zdev->kref);
-+}
-+
- int zpci_alloc_domain(int domain);
- void zpci_free_domain(int domain);
- int zpci_setup_bus_resources(struct zpci_dev *zdev,
+Which changes do we need to make the third one work?
