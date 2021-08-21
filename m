@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0D73F3930
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 08:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209E33F3936
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 08:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhHUGsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 02:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbhHUGsN (ORCPT
+        id S232719AbhHUGvY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 21 Aug 2021 02:51:24 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:54252 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231738AbhHUGvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 02:48:13 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6187C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 23:47:34 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id v1so6758329qva.7
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 23:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=0zxPduS5IUlaKoDmCEn68k89T9YkKaQNgugxVbUHaKI=;
-        b=MmSCxbFbX/nh9ES1DS9Dmkt9meyeYheJLz4EWcsKJTB3obMbTliTB1SGMVCeNHogUg
-         GU70jkRDM881SZrk6p92EjKKX58z2ZASr2p+37E8feTBOPvIt+4EXzRpX7BtjXF3u41c
-         QdDESupfgtDQc7ViGWFvCKdJat1IZtVINDtLMJb7FtB7YYLurf+hv8/G05Pf9T8rQDB8
-         1ErWamHIcUxQi0yNfBB+MNgUcXGXbiB2GfGMYm2LoF2SVCpyT9MrwbolP4lUqK+/vWTc
-         DF1uc61/TIaDTaZ2OzFGmpHtNZQ5hZvyhFhu3FP0jaKXsn4x3lP2x/nKC+mkog1yRBMG
-         qJvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=0zxPduS5IUlaKoDmCEn68k89T9YkKaQNgugxVbUHaKI=;
-        b=j7/KpV+qQnfCQSx0L09KBfqvDrMJXnUVeEBU3Ea93O/KGXTqi+6QbGq5uRyVUSdfAX
-         +6QodNtcHslr2yFAsirWASOBZ39N+CTahMD28Pghf4ut9WYMkVs/FRGmpp3DjA7Yd4JY
-         ocx/Lsg/o7oQ1R1pD5lMDuE22uWk2dPRf+b4yhiGlW1Y5ZaoLG2yBChGWwkmn2D6Em23
-         EH/TOnSg9RdJS/p1Xf9cl8gn1uIlSG+Plp7eXzQw14K7FqgDOpLxBlUYcn7/+4yJZO9k
-         giijt2Y0tDoJIceRH74J5EGs++b9dYs/f8HZTPEjz5QO61fGGZD6CMbJwuNpf/fEH/Ke
-         tw0Q==
-X-Gm-Message-State: AOAM533hXgk9e+NNPMf5sdm6Q6an6Hi1RBLMqNUp+R1+mB5ZwV95r/wR
-        mUc2J1OhJPh2NFpS2tBU47BFIWhflk7cE2zJoQ==
-X-Google-Smtp-Source: ABdhPJw9RQZsMPm/Rbtlj7wk2LiQuGiH5Lb4h/3z54CXmSUBdgZTX2YV7xodcfF6671L2l9/RATq7TuoLOy93zmHF3k=
-X-Received: by 2002:a05:6214:2609:: with SMTP id gu9mr23167565qvb.35.1629528453826;
- Fri, 20 Aug 2021 23:47:33 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: tofilbamar@gmail.com
-Sender: aliftomarn0@gmail.com
-Received: by 2002:ad4:594b:0:0:0:0:0 with HTTP; Fri, 20 Aug 2021 23:47:33
- -0700 (PDT)
-From:   Tofil Bama <tofilbamarn@gmail.com>
-Date:   Fri, 20 Aug 2021 23:47:33 -0700
-X-Google-Sender-Auth: C884eKIHeM3kiLBs7NODvES6vx8
-Message-ID: <CAFzt4xVNq=WoX2qq=u173JF9RZ31YO_-3Rgt-z_FdM7tcvhDiw@mail.gmail.com>
-Subject: GOOD NEWS.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 21 Aug 2021 02:51:23 -0400
+Received: from smtpclient.apple (p5b3d23f8.dip0.t-ipconnect.de [91.61.35.248])
+        by mail.holtmann.org (Postfix) with ESMTPSA id D102DCED43;
+        Sat, 21 Aug 2021 08:50:40 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: [RFC PATCH 00/15] create power sequencing subsystem
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
+Date:   Sat, 21 Aug 2021 08:50:40 +0200
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        MSM <linux-arm-msm@vger.kernel.org>, linux-mmc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <551758F2-0B00-4DEB-92C9-37472E46B75D@holtmann.org>
+References: <20210817005507.1507580-1-dmitry.baryshkov@linaro.org>
+ <1CA665D1-86F0-45A1-862D-17DAB3ABA974@holtmann.org>
+ <CAA8EJpoOxerwmwQozL3gp1nX-+oxLMFUFjVPvRy-MoVfPuvqrw@mail.gmail.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear,
+Hi Dmitry,
 
-My name is Mr Tofil Bama, I am the Bill and Exchange assistant
-Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
-I discovered an abandoned sum of eighteen million three hundred
-thousand United State of American dollars (18.3MILLION USA DOLLARS)
-in an account that belongs to one of our foreign customer
-(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
-crashed into the Mediterranean Sea on 25th January 2010.
+>>> This is an RFC of the proposed power sequencer subsystem. This is a
+>>> generification of the MMC pwrseq code. The subsystem tries to abstract
+>>> the idea of complex power-up/power-down/reset of the devices.
+>>> 
+>>> The primary set of devices that promted me to create this patchset is
+>>> the Qualcomm BT+WiFi family of chips. They reside on serial+platform
+>>> interfaces (older generations) or on serial+PCIe (newer generations).
+>>> They require a set of external voltage regulators to be powered on and
+>>> (some of them) have separate WiFi and Bluetooth enable GPIOs.
+>>> 
+>>> This patchset being an RFC tries to demonstrate the approach, design and
+>>> usage of the pwrseq subsystem. Following issues are present in the RFC
+>>> at this moment but will be fixed later if the overall approach would be
+>>> viewed as acceptable:
+>>> 
+>>> - No documentation
+>>> While the code tries to be self-documenting proper documentation
+>>> would be required.
+>>> 
+>>> - Minimal device tree bindings changes
+>>> There are no proper updates for the DT bindings (thus neither Rob
+>>> Herring nor devicetree are included in the To/Cc lists). The dt
+>>> schema changes would be a part of v1.
+>>> 
+>>> - Lack of proper PCIe integration
+>>> At this moment support for PCIe is hacked up to be able to test the
+>>> PCIe part of qca6390. Proper PCIe support would require automatically
+>>> powering up the devices before the scan basing on the proper device
+>>> structure in the device tree.
+>>> 
+>>> ----------------------------------------------------------------
+>>> Dmitry Baryshkov (15):
+>>>    power: add power sequencer subsystem
+>>>    pwrseq: port MMC's pwrseq drivers to new pwrseq subsystem
+>>>    mmc: core: switch to new pwrseq subsystem
+>>>    ath10k: add support for pwrseq sequencing
+>>>    Bluetooth: hci_qca: merge qca_power into qca_serdev
+>>>    Bluetooth: hci_qca: merge init paths
+>>>    Bluetooth: hci_qca: merge qca_power_on with qca_regulators_init
+>>>    Bluetooth: hci_qca: futher rework of power on/off handling
+>>>    Bluetooth: hci_qca: add support for pwrseq
+>> 
+>> any chance you can try to abandon patching hci_qca. The serdev support in hci_uart is rather hacking into old line discipline code and it is not aging well. It is really becoming a mess.
+> 
+> I wanted to stay away from rewriting the BT code. But... New driver
+> would have a bonus point that I don't have to be compatible with old
+> bindings. In fact we can even make it the other way around: let the
+> old driver always use regulators and make the new driver support only
+> the pwrseq. Then it should be possible to drop the old hci_qca driver
+> together with dropping the old bindings.
+> 
+>> I would say that the Qualcomm serial devices could use a separate standalone serdev driver. A while I send an RFC for a new serdev driver.
+>> 
+>> https://www.spinics.net/lists/linux-bluetooth/msg74918.html
+> 
+> Any reason why your driver stayed as an RFC and never made it into the
+> kernel? Do you plan to revive your old RFCs on H:4 and H:5?
 
-Since I got information about his death I have been expecting
-his next of kin to come over and claim his money because we
-cannot release it unless somebody applies for it as the next
-of kin or relation to the deceased as indicated in our banking
-guidelines, unfortunately we learnt that all his supposed next of
-kin or relation died alongside with him in the plane crash leaving
-nobody behind for the claim.
+I was missing enough hardware to test it on and frankly I hoped that someone would pick up this work. The HCI line discipline “hack” needs to be removed soon. It is complicated, cumbersome and has a bunch of issues with locking. Mind you that originated in 2.4.6 kernel and is at its core bit-rotting.
 
-It is therefore upon this discovery that I decided to make this
-business proposal to you and release the money to you as next of kin
-to the deceased for safety and subsequent disbursement since nobody
-is coming for the fund, it is 11 years now the money is lying pending
-in the account of our deceased and I don't want the money to go into
-the bank treasury as unclaimed bill.
+If you manage to put QCA support into a separate btqcauart driver, that would be awesome. The btmtkuart driver is another example where Mediatek got its own serdev based driver.
 
-You will be entitled with 40% of the total sum while 60% will be for
-me after which I will visit your Country to invest my own share when
-the fund is successfully transferred into your account, Please I would
-like you to keep this transaction confidential and as a top secret
-between me and you until we successfully achieve this golden
-opportunity.
+Regards
 
-Yours sincerely,
-Mr Tofil Bama.
+Marcel
+
