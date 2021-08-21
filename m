@@ -2,190 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6733F39A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 10:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7243F39A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbhHUJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 05:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhHUJAY (ORCPT
+        id S233306AbhHUJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 05:02:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3720 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232802AbhHUJCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 05:00:24 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1076C061575;
-        Sat, 21 Aug 2021 01:59:44 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id n7so21418705ljq.0;
-        Sat, 21 Aug 2021 01:59:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:mime-version:content-disposition;
-        bh=kEULimDkzu2M4h9diM+nwbfqNFbIaITyZl/LMTcXmtk=;
-        b=K0aYCO8PMpgon87D7F2CTTaqDiMRs2KGuFq2vDtMIv4Xmp8fYir7jmiAMfqNaj02MG
-         cPgbs0WnCxilBORJVvbeZrTsalx3Y4bdxr7sDDNf/7IqrPHkH4Es9lyy2g3GtyzWlkCu
-         +MYah9lR8XJ5qQOn///dfWXSOK+nkZMWyyV4OfZPtZoYqrHKbhlsol5iM3nvax+zP0p5
-         F0mTS3ViFzObmD1tvoVyeXCKKbxcKrKkuf4zbUSVlsQlcz7RvEtZ1QzQZyMrHtzSFZmK
-         swJXdXV5y9P2g9xzyidOXjejpsMjatMqbZL/pojvhJnYCxpeaR+0C/UHf9a3YAjrmmO3
-         Bzcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:mime-version
-         :content-disposition;
-        bh=kEULimDkzu2M4h9diM+nwbfqNFbIaITyZl/LMTcXmtk=;
-        b=npTEsYXGBS3Kuy+ubjPbGCmfI1Qe/PDCjZQljbgpJP52mzc1mAckbD9WXODGrCTG6/
-         mYyftpw9S8FoKrPo08fQ+J5KDXIR82iO/AS7zBHg8ffE6SRZkT/Ymsxcy17q8gS/idtL
-         PdAXrOhOfYuYPZxQwJlJ5lLWGqnPLA5CSMymdWQzpM645NCAdTs5nU/ZVvcojNIJ5LY1
-         mVSP+kpvA5vfgV4NF7K0yERCxcxuFaHKUH9naY6er7o9Iz0XkLlf5GXYfAfwxBt+Lics
-         A9hC2Buk3EGrG70loeWTX2vWETU6USipL/rXnkQT8qZsU+jERjbc5IAvJhIcWk4az5/q
-         +bQw==
-X-Gm-Message-State: AOAM530w90tFwXnJlP1PDsiGUriDNK2qUtEjcmYTrtiWRFPcCyT9qNhF
-        avceLXgLh8i1RNklqydLvMA=
-X-Google-Smtp-Source: ABdhPJyqEghdCLO/2Od3zhM7ahPm6vDvyQjeQjIhPezZzQLGIo669guVhL0rGlfbAlSd/PLIPzEG0g==
-X-Received: by 2002:a2e:88d0:: with SMTP id a16mr3420767ljk.81.1629536382735;
-        Sat, 21 Aug 2021 01:59:42 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id y6sm858662lfg.225.2021.08.21.01.59.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 01:59:41 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 11:59:39 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     cgel.zte@gmail.com
-Cc:     viro@zeniv.linux.org.uk, christian.brauner@ubuntu.com,
-        jamorris@linux.microsoft.com, gladkov.alexey@gmail.com,
-        yang.yang29@zte.com.cn, tj@kernel.org,
-        paul.gortmaker@windriver.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Message-ID: <20210821085939.3sj66wdkshnadnjm@kari-VirtualBox>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Sat, 21 Aug 2021 05:02:19 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17L8Xd6h072734;
+        Sat, 21 Aug 2021 05:01:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=/ppwdrIZvWqoBpVpD+YZrWNWlgW2mEGx190V7dl3dGc=;
+ b=Vd5fHIvUa/momlfeoh7+zEdYbeiU46c4R3QjxQ5mI7mGxqa+B266IRIDCj5jTb7GASg5
+ YGtTBkapG5hXqfJE/zCc20M5Nwu4NNEupF2hVxckYC0fULOSdNW2G7pKk8O1d2IvNeN1
+ zuZuWcUOyiLOrUSp76VctvCbEoZ8yQtjkE1WFH8VhUqgvp9ooQMpL1nUOhKSwRLhJTab
+ 1O+DHcBT111YXoiBua0c18arTGs8yvxG5fbGL2RXKjARBJ4EnolzseYGQO+2hzhsX0fW
+ Kg8UCJzGiRk/O/cpSn+4y4uObzw3jzv1K4xExCJhOydwP9qDxNuHRjKyVFaKP7gj68gO /A== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3ajwmygu70-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 21 Aug 2021 05:01:38 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17L8x1nO018260;
+        Sat, 21 Aug 2021 09:01:36 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3ajs48893f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 21 Aug 2021 09:01:36 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17L8vwCu27853096
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 21 Aug 2021 08:57:58 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DFEEA4064;
+        Sat, 21 Aug 2021 09:01:32 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C32CA4066;
+        Sat, 21 Aug 2021 09:01:32 +0000 (GMT)
+Received: from localhost (unknown [9.171.52.52])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 21 Aug 2021 09:01:31 +0000 (GMT)
+Date:   Sat, 21 Aug 2021 11:01:30 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 updates for 5.14-rc7
+Message-ID: <your-ad-here.call-01629536490-ext-4991@work.hours>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: N9u4L4OgwVXqh1tcbfY-83dcV_CDGNEA
+X-Proofpoint-ORIG-GUID: N9u4L4OgwVXqh1tcbfY-83dcV_CDGNEA
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-21_03:2021-08-20,2021-08-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ clxscore=1011 spamscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=909 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108210050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bcc:
-Subject: Re: [PATCH] proc: prevent mount proc on same mountpoint in one pid
- namespace
-Reply-To:
-In-Reply-To: <20210821083105.30336-1-yang.yang29@zte.com.cn>
+Hello Linus,
 
-On Sat, Aug 21, 2021 at 01:31:05AM -0700, cgel.zte@gmail.com wrote:
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> 
-> Patch "proc: allow to mount many instances of proc in one pid namespace"
-> aims to mount many instances of proc on different mountpoint, see
-> tools/testing/selftests/proc/proc-multiple-procfs.c.
-> 
-> But there is a side-effects, user can mount many instances of proc on
-> the same mountpoint in one pid namespace, which is not allowed before.
-> This duplicate mount makes no sense but wastes memory and CPU, and user
-> may be confused why kernel allows it.
-> 
-> The logic of this patch is: when try to mount proc on /mnt, check if
-> there is a proc instance mount on /mnt in the same pid namespace. If
-> answer is yes, return -EBUSY.
-> 
-> Since this check can't be done in proc_get_tree(), which call
-> get_tree_nodev() and will create new super_block unconditionally.
-> And other nodev fs may faces the same case, so add a new hook in
-> fs_context_operations.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
-> ---
->  fs/namespace.c             |  9 +++++++++
->  fs/proc/root.c             | 15 +++++++++++++++
->  include/linux/fs_context.h |  1 +
->  3 files changed, 25 insertions(+)
-> 
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index f79d9471cb76..84da649a70c5 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -2878,6 +2878,7 @@ static int do_new_mount_fc(struct fs_context *fc, struct path *mountpoint,
->  static int do_new_mount(struct path *path, const char *fstype, int sb_flags,
->  			int mnt_flags, const char *name, void *data)
->  {
-> +	int (*check_mntpoint)(struct fs_context *fc, struct path *path);
->  	struct file_system_type *type;
->  	struct fs_context *fc;
->  	const char *subtype = NULL;
-> @@ -2906,6 +2907,13 @@ static int do_new_mount(struct path *path, const char *fstype, int sb_flags,
->  	if (IS_ERR(fc))
->  		return PTR_ERR(fc);
->  
-> +	/* check if there is a same super_block mount on path*/
-> +	check_mntpoint = fc->ops->check_mntpoint;
-> +	if (check_mntpoint)
-> +		err = check_mntpoint(fc, path);
-> +	if (err < 0)
-> +		goto err_fc;
-> +
->  	if (subtype)
->  		err = vfs_parse_fs_string(fc, "subtype",
->  					  subtype, strlen(subtype));
-> @@ -2920,6 +2928,7 @@ static int do_new_mount(struct path *path, const char *fstype, int sb_flags,
->  	if (!err)
->  		err = do_new_mount_fc(fc, path, mnt_flags);
->  
-> +err_fc:
->  	put_fs_context(fc);
->  	return err;
->  }
-> diff --git a/fs/proc/root.c b/fs/proc/root.c
-> index c7e3b1350ef8..0971d6b0bec2 100644
-> --- a/fs/proc/root.c
-> +++ b/fs/proc/root.c
-> @@ -237,11 +237,26 @@ static void proc_fs_context_free(struct fs_context *fc)
->  	kfree(ctx);
->  }
->  
-> +static int proc_check_mntpoint(struct fs_context *fc, struct path *path)
-> +{
-> +	struct super_block *mnt_sb = path->mnt->mnt_sb;
-> +	struct proc_fs_info *fs_info;
-> +
-> +	if (strcmp(mnt_sb->s_type->name, "proc") == 0) {
-> +		fs_info = mnt_sb->s_fs_info;
-> +		if (fs_info->pid_ns == task_active_pid_ns(current) &&
-> +		    path->mnt->mnt_root == path->dentry)
-> +			return -EBUSY;
-> +	}
-> +	return 0;
-> +}
-> +
->  static const struct fs_context_operations proc_fs_context_ops = {
->  	.free		= proc_fs_context_free,
->  	.parse_param	= proc_parse_param,
->  	.get_tree	= proc_get_tree,
->  	.reconfigure	= proc_reconfigure,
-> +	.check_mntpoint	= proc_check_mntpoint,
->  };
->  
->  static int proc_init_fs_context(struct fs_context *fc)
-> diff --git a/include/linux/fs_context.h b/include/linux/fs_context.h
-> index 6b54982fc5f3..090a05fb2d7d 100644
-> --- a/include/linux/fs_context.h
-> +++ b/include/linux/fs_context.h
-> @@ -119,6 +119,7 @@ struct fs_context_operations {
->  	int (*parse_monolithic)(struct fs_context *fc, void *data);
->  	int (*get_tree)(struct fs_context *fc);
->  	int (*reconfigure)(struct fs_context *fc);
-> +	int (*check_mntpoint)(struct fs_context *fc, struct path *path);
+please pull s390 fix for 5.14-rc7.
 
-Don't you think this should be it's own patch. It is after all internal
-api change. This also needs documentation. It would be confusing if
-someone convert to new mount api and there is one line which just
-address some proc stuff but even commit message does not address does
-every fs needs to add this. 
+Thank you,
+Vasily
 
-Documentation is very good shape right now and we are in face that
-everyone is migrating to use new mount api so everyting should be well
-documented.
+The following changes since commit 7c60610d476766e128cc4284bb6349732cbd6606:
 
->  };
->  
->  /*
-> -- 
-> 2.25.1
-> 
+  Linux 5.14-rc6 (2021-08-15 13:40:53 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-5
+
+for you to fetch changes up to 2a671f77ee49f3e78997b77fdee139467ff6a598:
+
+  s390/pci: fix use after free of zpci_dev (2021-08-18 10:12:42 +0200)
+
+----------------------------------------------------------------
+s390 updates for 5.14-rc7
+
+- fix use after free of zpci_dev in pci code
+
+----------------------------------------------------------------
+Niklas Schnelle (1):
+      s390/pci: fix use after free of zpci_dev
+
+ arch/s390/pci/pci.c     | 6 ++++++
+ arch/s390/pci/pci_bus.h | 5 +++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
+index b0993e05affe..8fcb7ecb7225 100644
+--- a/arch/s390/pci/pci.c
++++ b/arch/s390/pci/pci.c
+@@ -560,9 +560,12 @@ static void zpci_cleanup_bus_resources(struct zpci_dev *zdev)
+ 
+ int pcibios_add_device(struct pci_dev *pdev)
+ {
++	struct zpci_dev *zdev = to_zpci(pdev);
+ 	struct resource *res;
+ 	int i;
+ 
++	/* The pdev has a reference to the zdev via its bus */
++	zpci_zdev_get(zdev);
+ 	if (pdev->is_physfn)
+ 		pdev->no_vf_scan = 1;
+ 
+@@ -582,7 +585,10 @@ int pcibios_add_device(struct pci_dev *pdev)
+ 
+ void pcibios_release_device(struct pci_dev *pdev)
+ {
++	struct zpci_dev *zdev = to_zpci(pdev);
++
+ 	zpci_unmap_resources(pdev);
++	zpci_zdev_put(zdev);
+ }
+ 
+ int pcibios_enable_device(struct pci_dev *pdev, int mask)
+diff --git a/arch/s390/pci/pci_bus.h b/arch/s390/pci/pci_bus.h
+index b877a97e6745..e359d2686178 100644
+--- a/arch/s390/pci/pci_bus.h
++++ b/arch/s390/pci/pci_bus.h
+@@ -22,6 +22,11 @@ static inline void zpci_zdev_put(struct zpci_dev *zdev)
+ 	kref_put(&zdev->kref, zpci_release_device);
+ }
+ 
++static inline void zpci_zdev_get(struct zpci_dev *zdev)
++{
++	kref_get(&zdev->kref);
++}
++
+ int zpci_alloc_domain(int domain);
+ void zpci_free_domain(int domain);
+ int zpci_setup_bus_resources(struct zpci_dev *zdev,
