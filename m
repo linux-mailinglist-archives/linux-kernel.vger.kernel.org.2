@@ -2,207 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36AF3F3C71
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 22:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFEF03F3C75
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 22:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbhHUUql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 16:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhHUUqk (ORCPT
+        id S230273AbhHUUzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 16:55:45 -0400
+Received: from out05.smtpout.orange.fr ([193.252.22.214]:46621 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhHUUzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 16:46:40 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9DDC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 13:46:00 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id e21so11731475ejz.12
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 13:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jW6WgkkcgqeMv2g70HWibDwKNVYFyjoAOtV6/XbdB3I=;
-        b=qqY8UxSxlX5wea3lPQ0OcfWiDDRe3k47+uUluXghkrYr5Iwu/+xTeJVZepCNhD9FDx
-         hSnV7rQVGcsYDrNkKL4NK/Iiic0cOQnAVm3a+F85vu25NDyTQS5P+Q2v95e7/V4FpRhw
-         AxArOzTMRYHNlwdO5xtWiLJ4EbNU2CYyyvwr1G8ylP2AHFggPe4hO0UDkHZVdJwtjhY/
-         vdZH/BjCC8dlxI0p7w6p3CimbD9aEk/QACb27bGRGY64coKJtYtqXGSoGWtYS6UGEno2
-         26A1SCtxhH/QTspbix9EuFOWfpliO8a8/0ijMxxyKxPtBwog7NwJUZLfbp7xi2PeQ84d
-         1ziQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jW6WgkkcgqeMv2g70HWibDwKNVYFyjoAOtV6/XbdB3I=;
-        b=CvYkWh5bP+WvoPzRGQV2yK7bWgQCB+BljOiEwe0w0D2jT388vcVFKTElCttWO7Pvxd
-         jrKcr3h2cIF+nyTBXbiZwoEwX13E0UHjvP84uo66qrwwlM+j8t1bO9Lbsmy4gUaygij4
-         4pKudYnvyAVzt7NTHoAYguayzE0gxSELeA25BAyMBhSdxMGacs0a0oBCRWr//6nWLlrl
-         YjO7bvdplLYxjwWkZxck1qh69Ghgh018AcVwX3Wf01oXXsFFS0igdAxs89Y3Qo+VhQLG
-         Vd8nu3PT0vhiUIQQZWgx2S9wLb9tduwmBNRtiLIMqXrLPo6DtMYkNWV+WUWi5yPRJjLj
-         zJPg==
-X-Gm-Message-State: AOAM533eqLSI/eRaqirT2FD0xzhC0JOb9uvbTopJqntQ71ZGxg1TuG3M
-        94TUEzF1Tyauoz5i0kfK31M=
-X-Google-Smtp-Source: ABdhPJylGo+JqRqLQ/39m2bF0KZUWoYNkH79V+Bh47oCk6+evGfniowz7vDAvz9iwcOv5AjqB18Djg==
-X-Received: by 2002:a17:906:5f93:: with SMTP id a19mr29018008eju.126.1629578758085;
-        Sat, 21 Aug 2021 13:45:58 -0700 (PDT)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id o6sm229307eje.6.2021.08.21.13.45.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 13:45:57 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] ASoC: rockchip: add support for i2s-tdm controller
-Date:   Sat, 21 Aug 2021 22:45:52 +0200
-Message-ID: <3469189.PC3msRC2N5@archbook>
-In-Reply-To: <66d6bd43-ee43-eff4-7a68-333fbb996787@linux.intel.com>
-References: <20210820182731.29370-1-frattaroli.nicolas@gmail.com> <20210820182731.29370-2-frattaroli.nicolas@gmail.com> <66d6bd43-ee43-eff4-7a68-333fbb996787@linux.intel.com>
+        Sat, 21 Aug 2021 16:55:44 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d69 with ME
+        id kLuz250043riaq203LuzY0; Sat, 21 Aug 2021 22:55:02 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Aug 2021 22:55:02 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     m.chetan.kumar@intel.com, linuxwwan@intel.com,
+        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
+        johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net: wwan: iosm: switch from 'pci_' to 'dma_' API
+Date:   Sat, 21 Aug 2021 22:54:57 +0200
+Message-Id: <a0a70eb0a65f16d870ecf2a14d7a8e931bc63d2e.1629579202.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Freitag, 20. August 2021 21:02:16 CEST Pierre-Louis Bossart wrote:
-> > +	regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
-> > +	/* Wait on the clear operation to finish */
-> > +	while (val) {
-> 
-> delay needed here?
-> 
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The rockchip_i2s.c code doesn't have a delay here either, but I can
-add one of 1 usec for good measure, it seems weird to retry the
-read as fast as it can.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-> > +static int rockchip_i2s_tdm_clk_set_rate(struct rk_i2s_tdm_dev *i2s_tdm,
-> > +					 struct clk *clk, unsigned long rate,
-> > +					 int ppm)
-> > +{
-> > +	unsigned long rate_target;
-> > +	int delta, ret;
-> > +
-> > +	if (ppm == i2s_tdm->clk_ppm)
-> > +		return 0;
-> > +
-> > +	delta = (ppm < 0) ? -1 : 1;
-> > +	delta *= (int)div64_u64((u64)rate * (u64)abs(ppm) + 500000,
-> > +				1000000);
-> 
-> formula looks odd? looks like you are implementing a round to nearest
-> operation, but that shouldn't require this multiplication?
-> 
+'ipc_protocol_init()' can use GFP_KERNEL, because this flag is already used
+by a 'kzalloc()' call a few lines above.
 
-I believe the multiplication is there to compensate for clock drift.
-ppm is a value between -1000 and 1000 that specifies the clock drift
-in presumably parts per million, going by the variable name.
+'ipc_protocol_msg_prepipe_open()' must use GFP_ATOMIC, because this flag is
+already used by a 'kcalloc()' call a few lines above.
 
-> > +	pm_runtime_enable(&pdev->dev);
-> > +	if (!pm_runtime_enabled(&pdev->dev)) {
-> > +		ret = i2s_tdm_runtime_resume(&pdev->dev);
-> 
-> that looks like dead code? you've just enabled pm_runtime, why would
-> this fail?
-> 
+@@ @@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-I've had a look at the upstream rockchip_i2s.c code which does the
-same thing, and I believe the idea here is that we need to manually
-prepare and enable the master clocks (mclk_rx/mclk_tx) if pm_runtime
-is not available. Otherwise, pm_runtime will presumably call our
-resume callback at some point.
+@@ @@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-If runtime power management is disabled in the kernel config then 
-pm_runtime_enabled is always going to return false.
+@@ @@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-> > +err_suspend:
-> > +	if (!pm_runtime_status_suspended(&pdev->dev))
-> > +		i2s_tdm_runtime_suspend(&pdev->dev);
-> 
-> why is this necessary?
+@@ @@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-I believe this is the same kind of situation as before, and the
-other driver does this too: if pm_runtime is not available, we
-need to stop our clocks manually on probe failure.
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/wwan/iosm/iosm_ipc_protocol.c     | 10 +++++-----
+ drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c | 13 ++++++-------
+ 2 files changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/wwan/iosm/iosm_ipc_protocol.c b/drivers/net/wwan/iosm/iosm_ipc_protocol.c
+index 834d8b146a94..63fc7012f09f 100644
+--- a/drivers/net/wwan/iosm/iosm_ipc_protocol.c
++++ b/drivers/net/wwan/iosm/iosm_ipc_protocol.c
+@@ -239,9 +239,9 @@ struct iosm_protocol *ipc_protocol_init(struct iosm_imem *ipc_imem)
+ 	ipc_protocol->old_msg_tail = 0;
  
-> > +err_pm_disable:
-> > +	pm_runtime_disable(&pdev->dev);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int rockchip_i2s_tdm_remove(struct platform_device *pdev)
-> > +{
-> > +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(&pdev->dev);
-> > +
-> > +	pm_runtime_disable(&pdev->dev);
-> > +	if (!pm_runtime_status_suspended(&pdev->dev))
-> > +		i2s_tdm_runtime_suspend(&pdev->dev);
-> 
-> this looks backwards, if you disable pm_runtime first what is the
-> expectation for the rest.
-
-I'm not well versed in the PM code but if my theory of this being
-related to unavailable PM is correct, then my best guess is that
-pm_runtime_disable does suspend the device, so if it's not
-suspended then we don't have pm_runtime and therefore need to call
-it manually.
-
-> > +
-> > +	if (!IS_ERR(i2s_tdm->mclk_tx))
-> > +		clk_prepare_enable(i2s_tdm->mclk_tx);
-> > +	if (!IS_ERR(i2s_tdm->mclk_rx))
-> > +		clk_prepare_enable(i2s_tdm->mclk_rx);
-> > +	if (!IS_ERR(i2s_tdm->hclk))
-> > +		clk_disable_unprepare(i2s_tdm->hclk);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +#ifdef CONFIG_PM_SLEEP
-> 
-> use __maybe_unused
-
-You mean instead of the ifdef stuff to just add this attribute to
-the following functions like this?
-
-static int rockchip_i2s_tdm_suspend(struct device *dev) __maybe_unused
-
-> 
-> > +static int rockchip_i2s_tdm_suspend(struct device *dev)
-> > +{
-> > +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
-> > +
-> > +	regcache_mark_dirty(i2s_tdm->regmap);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int rockchip_i2s_tdm_resume(struct device *dev)
-> > +{
-> > +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
-> > +	int ret;
-> > +
-> > +	ret = pm_runtime_get_sync(dev);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +	ret = regcache_sync(i2s_tdm->regmap);
-> > +	pm_runtime_put(dev);
-> > +
-> > +	return ret;
-> > +}
-> > +#endif
-
-Thank you for your review!
-
-Regards,
-Nicolas Frattaroli
-
-
+ 	ipc_protocol->p_ap_shm =
+-		pci_alloc_consistent(ipc_protocol->pcie->pci,
+-				     sizeof(*ipc_protocol->p_ap_shm),
+-				     &ipc_protocol->phy_ap_shm);
++		dma_alloc_coherent(&ipc_protocol->pcie->pci->dev,
++				   sizeof(*ipc_protocol->p_ap_shm),
++				   &ipc_protocol->phy_ap_shm, GFP_KERNEL);
+ 
+ 	if (!ipc_protocol->p_ap_shm) {
+ 		dev_err(ipc_protocol->dev, "pci shm alloc error");
+@@ -275,8 +275,8 @@ struct iosm_protocol *ipc_protocol_init(struct iosm_imem *ipc_imem)
+ 
+ void ipc_protocol_deinit(struct iosm_protocol *proto)
+ {
+-	pci_free_consistent(proto->pcie->pci, sizeof(*proto->p_ap_shm),
+-			    proto->p_ap_shm, proto->phy_ap_shm);
++	dma_free_coherent(&proto->pcie->pci->dev, sizeof(*proto->p_ap_shm),
++			  proto->p_ap_shm, proto->phy_ap_shm);
+ 
+ 	ipc_pm_deinit(proto);
+ 	kfree(proto);
+diff --git a/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c b/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
+index 35d590743d3a..c6b032f95d2e 100644
+--- a/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
++++ b/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
+@@ -74,9 +74,9 @@ static int ipc_protocol_msg_prepipe_open(struct iosm_protocol *ipc_protocol,
+ 		return -ENOMEM;
+ 
+ 	/* Allocate the transfer descriptors for the pipe. */
+-	tdr = pci_alloc_consistent(ipc_protocol->pcie->pci,
+-				   pipe->nr_of_entries * sizeof(*tdr),
+-				   &pipe->phy_tdr_start);
++	tdr = dma_alloc_coherent(&ipc_protocol->pcie->pci->dev,
++				 pipe->nr_of_entries * sizeof(*tdr),
++				 &pipe->phy_tdr_start, GFP_ATOMIC);
+ 	if (!tdr) {
+ 		kfree(skbr);
+ 		dev_err(ipc_protocol->dev, "tdr alloc error");
+@@ -492,10 +492,9 @@ void ipc_protocol_pipe_cleanup(struct iosm_protocol *ipc_protocol,
+ 
+ 	/* Free and reset the td and skbuf circular buffers. kfree is save! */
+ 	if (pipe->tdr_start) {
+-		pci_free_consistent(ipc_protocol->pcie->pci,
+-				    sizeof(*pipe->tdr_start) *
+-					    pipe->nr_of_entries,
+-				    pipe->tdr_start, pipe->phy_tdr_start);
++		dma_free_coherent(&ipc_protocol->pcie->pci->dev,
++				  sizeof(*pipe->tdr_start) * pipe->nr_of_entries,
++				  pipe->tdr_start, pipe->phy_tdr_start);
+ 
+ 		pipe->tdr_start = NULL;
+ 	}
+-- 
+2.30.2
 
