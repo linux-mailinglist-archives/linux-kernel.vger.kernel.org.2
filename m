@@ -2,167 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443533F3A4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 12:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB553F3A51
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 12:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhHUKxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 06:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S234015AbhHUK47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 06:56:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHUKxP (ORCPT
+        with ESMTP id S229968AbhHUK45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 06:53:15 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374CDC061575;
-        Sat, 21 Aug 2021 03:52:36 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 17so11793403pgp.4;
-        Sat, 21 Aug 2021 03:52:36 -0700 (PDT)
+        Sat, 21 Aug 2021 06:56:57 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32065C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 03:56:18 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id u16so17990362wrn.5
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 03:56:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7GHZ71vn1IOyEe5RXN4R0wAt4wO6jCQIg+NGEUM1G7w=;
-        b=E77GypFj7f0d6klY5ylnID+eWbmqIPQxTnRVeVE4YvqcbIa6kRk+AjA6qoJk6HL6fV
-         Hm5RNXXE6JYNRLCtkAM4jL6KHsPLU8zvZKrKDL+KQI8mLnTn8KE3P+nK6GkDhOA3Q29k
-         GhxcruQtC246xFx7P8sfiQ6SzJvnqVYKDWAYM4DkkYtmTC0217zSA5lSZa/zM/8dxTxz
-         8XPDcxtevNOq4LNMoY91V0hUz7MFLXSg6O2EnrKBSXVy8T8ushel5tgWQNr/E+nCjQDV
-         EWm+V6BOo5NGC1dPEKmuKEGVUu93UfyT2mKpGu6TV5+Rw9E1HO7eo3cXffsy6QbFLtOs
-         hHUw==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f8308s6LzNzwxOqQwJQBOWsN8iyKJJAOplsgCOJjsWo=;
+        b=lEw5huwNwg814rRpxPoc6pPmJPScyh50FIR+/CmNlAcmamXnTyaIApzjV5ygCDRYpK
+         UkA8PBQPSj6UuFZwCourYxMc/2AEmk2AVAzzU4kJoSfhOgRBBi5DAVioA2Dz6fWi+a7T
+         /O1dPhyKnyk7lfNNj5yAERrCwiMv9/+A3y8xuF/HJHsUDUt7fiBBkDp7aiDPOEbeGC8T
+         QNcTGXvgdYauywqC0CxoKesKT+H5AwdyA9Ykz0lYOuY2VHQo3zNE/l06JOTyhaCGWKtV
+         ckU3mmcc/yrDrnT/AUIq+sSQv0Viw70GcUiIwPEDa9XdA4e/rqKVbZO9mM6HAVc3nTVb
+         Hbuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7GHZ71vn1IOyEe5RXN4R0wAt4wO6jCQIg+NGEUM1G7w=;
-        b=sE9GV8W3IBE3U2lUf2bY5sgknEgl+k52RDdh1EQOuEKsPaGxHpmZPNLrU6XUhPAH8c
-         O3kYoGMXnJ6eVw5vuIEYCkRAktC5OmsiOwP9Okw9/SgDMoI4Q/Rei5R3ZkRoLkQcD0gb
-         Mofo6oPNv3A3AE3P+AQrRkyluiomiqErtOD6akXbIK/4s2QG0eswHqmQUrtqLGwXHVzj
-         EXDZcWmQoecFq91XjB9TISf5t3olXEbsbYpR8HxAkR846fd/2OGe6UYnuLYwuPfjkcUX
-         iT5rEUcIPoknSyWSz9Ktyws6mRdzGVOJFKbZ2Kd18oAJ46lN54+Ua2pnycg7VhUMFnxs
-         EAEg==
-X-Gm-Message-State: AOAM533ZAgkvLs9tfKXaU4A2gbDlyjgodqyxmYHjOccCPu1PGmhVKVxT
-        oHbjCnWKnO44yrl03C85fqw=
-X-Google-Smtp-Source: ABdhPJwU1O/fyQ1CgvrQNT+/7EUp2HR/Zk2LYQNY8wRyENOHx6pzwRrzfuDSMopQdhJywkaK95asLQ==
-X-Received: by 2002:aa7:9e5d:0:b029:3e0:46a2:1dea with SMTP id z29-20020aa79e5d0000b02903e046a21deamr23891279pfq.77.1629543155036;
-        Sat, 21 Aug 2021 03:52:35 -0700 (PDT)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id y4sm8740382pjw.57.2021.08.21.03.52.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f8308s6LzNzwxOqQwJQBOWsN8iyKJJAOplsgCOJjsWo=;
+        b=Y8cFjso3Tfb5Zo1pwJ6A28P7YMTgM/+G9fsn+rP77JHkxOxBsPUrY/d+unqjlZT3q3
+         tHRbgF206qvAyQ8GMIww/6UNW/UKOPyw9SHhDwPM6K5X4GCvORyGe1iQTiHmnara7YE/
+         xbqpsWeOsO3u6YRBhS2ZWhH0F9YjGNjywTQrLrWiVui+rcvV3ee7iRuYg6+dyTVlXKAM
+         Zcp/aQhVfZdowhNV+7q42jGdR3PWkQ8r+Qq0rJxXM+2/cYUoEwrdSRHZim5MYzBbrFHd
+         o/M8HcE18p30PwjbR3cMRrdIwf3RHiLsxz9KE7ct2V8vo4JxmBX7IaDuJuK/DVwaeTCe
+         EQYw==
+X-Gm-Message-State: AOAM532hzOc5yJ7sK2fTc2nlf6YvOblAfTMmNLI4SzlrS8Q8NCMAnfqQ
+        6uomynKetG0QyzCV8PcJM0350DB50XrxFjdK
+X-Google-Smtp-Source: ABdhPJzna+c9+x4htAGBrT5mumu6CIlLz5PfTkQMTHR4+dHYFRX+yiZBkpB2McR3aZBohfbE9Ua53w==
+X-Received: by 2002:adf:e5c7:: with SMTP id a7mr3405087wrn.312.1629543376806;
+        Sat, 21 Aug 2021 03:56:16 -0700 (PDT)
+Received: from localhost.localdomain (3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16::3])
+        by smtp.gmail.com with ESMTPSA id z126sm8012969wmc.11.2021.08.21.03.56.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 03:52:34 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 19:52:27 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-stm32@st-md-mailman.stormreply.com, kernel@pengutronix.de,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v15 07/13] docs: counter: Document character device
- interface
-Message-ID: <YSDa667n6pi4O8iT@shinobu>
-References: <cover.1628511445.git.vilhelm.gray@gmail.com>
- <a6f7be32b8ff7cc1e8e416599820a30fa9aab9f5.1628511445.git.vilhelm.gray@gmail.com>
- <20210815175102.4a10a28f@jic23-huawei>
+        Sat, 21 Aug 2021 03:56:16 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        martin@kaiser.cx, straube.linux@gmail.com,
+        Larry.Finger@lwfinger.net, fmdefrancesco@gmail.com
+Subject: [PATCH v2] staging: r8188eu: change declaration of Efuse_Read1ByteFromFakeContent
+Date:   Sat, 21 Aug 2021 11:56:15 +0100
+Message-Id: <20210821105615.6307-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FonV+Z3EdOcq0SvO"
-Content-Disposition: inline
-In-Reply-To: <20210815175102.4a10a28f@jic23-huawei>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove forward declaration of Efuse_Read1ByteFromFakeContent function
+from core/rtw_efuse.c, as the function is defined in full directly
+after this and therefore this forward declaration is redundant.
 
---FonV+Z3EdOcq0SvO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In addition, convert the storage class of the function to static, as the
+function is only used with rtw_efuse.c, and tidy up the signature
+alignment.
 
-On Sun, Aug 15, 2021 at 05:51:02PM +0100, Jonathan Cameron wrote:
-> On Mon,  9 Aug 2021 21:37:32 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > This patch adds high-level documentation about the Counter subsystem
-> > character device interface.
-> >=20
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
->=20
-> Hi William,
->=20
-> Trivial probable typo inline.
->=20
-> I'm struggling somewhat with these interfaces because I simply don't know
-> enough about how people use counters to know whether they provide everyth=
-ing
-> people will want. They feel similar to the event handling type functions =
-you
-> can set up in motor drives, so they may well make sense, but ideally
-> we need review from someone (other than yourself!) who actually uses this
-> stuff on a regular basis.
->=20
-> If we don't get any additional review I guess we go ahead anyway
-> next cycle.
->=20
-> Jonathan
->=20
-> > ---
->=20
-> > +
-> > +Counter events can be configured by users to report various Counter
-> > +data of interest. This can be conceptualized as a list of Counter
-> > +component read calls to perform. For example:
-> > +
-> > +        +-------------------------------------------------+
-> > +        | COUNTER_EVENT_OVERFLOW | COUNTER_EVENT_INDEX    |
-> > +        +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D+
-> > +        | Channel 0              | Channel 0              |
-> > +        +------------------------+------------------------+
-> > +        | * Count 0              | * Signal 0             |
-> > +        | * Count 1              | * Signal 0 Extension 0 |
-> > +        | * Signal 3             | * Extension 4          |
-> > +        | * Count 4 Extension 2  +------------------------+
-> > +        | * Signal 5 Extension 0 | Channel 1              |
-> > +        |                        +------------------------+
-> > +        |                        | * Signal 4             |
-> > +        |                        | * Signal 4 Extension 0 |
-> > +        |                        | * Count 7              |
-> > +        +------------------------+------------------------+
-> > +
-> > +When ``counter_push_event(counter, COUNTER_EVENT_INDEX, 1)`` is called
-> > +for example, it will go down the list for the ``COUNTER_EVENT_INDEX``
-> > +event channel 1 and execute the read callbacks for Signal 4, Signal 4
-> > +Extension 0, and Count 4 -- the data returned for each is pushed to a
->=20
-> Count 7?
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
 
-Looks like my finger slipped on my numpad and hit 4 when I intended 7.
-I'll fix this for v16, thanks.
+V1: Removed forward declaration.
+V2: Takes account of feedback from Michael Straube and Fabio M. De
+    Francesco to make storage class of the function static.
 
-William Breathitt Gray
+---
+ drivers/staging/r8188eu/core/rtw_efuse.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
---FonV+Z3EdOcq0SvO
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
+index decccf7622f0..c1c70648f5bc 100644
+--- a/drivers/staging/r8188eu/core/rtw_efuse.c
++++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+@@ -29,17 +29,9 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+ #define REG_EFUSE_CTRL		0x0030
+ #define EFUSE_CTRL			REG_EFUSE_CTRL		/*  E-Fuse Control. */
+ /*  */
+-
+-bool
+-Efuse_Read1ByteFromFakeContent(
+-			struct adapter *pAdapter,
+-			u16 Offset,
+-		u8 *Value);
+-bool
+-Efuse_Read1ByteFromFakeContent(
+-			struct adapter *pAdapter,
+-			u16 Offset,
+-		u8 *Value)
++static bool Efuse_Read1ByteFromFakeContent(struct adapter *pAdapter,
++					   u16 Offset,
++					   u8 *Value)
+ {
+ 	if (Offset >= EFUSE_MAX_HW_SIZE)
+ 		return false;
+-- 
+2.31.1
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmEg2usACgkQhvpINdm7
-VJLlrBAA5ef/1u/fl55aa7bo8Y2TRZq13h+0JMoMFw+JkZff7ubiQ0NaVAfOZNQN
-zG9PNIwOsfw0dhWrWhPgyyQDtXewP27ISLqBjKvlXStIT6gaE/RL1IqAdR2b7PXn
-oK1LOh89aAWmD6fWX4qB/NABJ0gUnrHi7AfWU9TKfbCyYfCt6GCCvXovaol0OVLY
-9/ZZo6vgE0leqpkIYDEWUEUdVMz48GNEWlKHfRE3ajwyHVXkUKoIAVvzP+Bdo7ON
-Cwu3GdFpSGzG/f6tvOlQN3+HTyiO8F5TOe954tCCpSY27N2GLBgF3s93mFJtmYmy
-sAdtyEgEj6GhWF12gQKcnvcVt08uC1eSbg1Gh7ZUiZ9F3v4cyLUqHhTFPtxM+PyH
-flghDGTfyHgcBD3Zt66cVBJvN1v29hQVc4/Q+x7q4YDXYk5c5LKBUNThfdVsAR+x
-475bGsvth6Uq4qzOdOPfdMh8+IHJ3x6JygmxvyGdWiDaBGWk5XrgilEkVUdsf4NR
-cFvlEv7ElzQpNjsm3atDkSTYKw29QiTZzAihXPbB1WXMbGEA2B5n6wuPUFF5tgrR
-0nFVsG84EleG+u/KwZkIMWhlRpEl8e1OiJETtlObjMvwybwNn5JLlnsFvTWnsVq6
-4j4EBNsdllCs2NPTQVa5eJRXa7WsChfEYegahqRQCB0fqNQnGVg=
-=glsn
------END PGP SIGNATURE-----
-
---FonV+Z3EdOcq0SvO--
