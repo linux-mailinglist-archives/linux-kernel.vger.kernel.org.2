@@ -2,156 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1308B3F3BF8
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 20:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524E33F3BFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 20:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhHUSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 14:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbhHUSId (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 14:08:33 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DF1C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id c17so12485228pgc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 11:07:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
-        b=TIB+RBAgH2h2zSki63S+WYlw3AyD3MPcXf0osPvAucaDGEClyzYSEiH2OLT6cAE7+U
-         O4ekTzJhQ2rj6aA6mdvWqF9pKqq9sLBxz5BNDn04HlXBcZ2oOt/khfZyJF5b29c/e2he
-         hd5PsYah1pEx9nGWZDNfz+IMmUckPALs1wq2tI+oNDWTbQaRH5V9wL2+wdfGrULX8P9c
-         pOnxnJzMfq32VcsDmelDCfyG9Gymgd6XD2yoVWBgDY47nR16YUQkE8yaMmWER80D0Bh7
-         fkB3G271uCIe6KZIvl1BMvaUxaiKuN/hIi8DGQ2Gk5I7s7W0DMNdAlJR4UsoRE9Ktt/S
-         K/ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8GJsXQuTpKR2wbHDfP7I1D/01uKb8jZNCY+DWhBzgmo=;
-        b=LVTY6H90UfZrVaC2EwHQkmsW+0OsLuW40ePqCv1J9TwchxsFq8Ju5xUfePa7EH0uff
-         240CiU6upRSs49ja5SAypvROAzCVH90Ic8rM39SXL+XasB4fMsJz+rD2cNWe+r/e7Q3L
-         vWP37u43l2oNpIaDtEz+lwYjOWJ7pY7QWn2AmsloR5hXENrxFhLigi7gKZ2HEJmE4aHH
-         UR6IguUHeqWv4JgOhOMKsk+i8A3Q5JqEBr6xZc9Y7Wemdupl6xUO9QBLI95Cms03owy6
-         WX56ZUJec0LObSw87Fq0dB+QFDKfaJpEztl/irNxPQ9FupEyCrwL7xRtT85HTfdYXS4j
-         Y7nA==
-X-Gm-Message-State: AOAM5314VK/5rZqAxb/wgXd9ZHR6o937XxOy1WHtlhuSEQfqaq5FbnpR
-        /p1bpcQOX3Gobaw0Zixh8GY85Q==
-X-Google-Smtp-Source: ABdhPJwWegNY4tNj3aN8baq189DLQrBmrG3fbjMv6aFrT3BR5GjwReseEtyfLb0IyUEWHMuurCs3dA==
-X-Received: by 2002:aa7:8d0c:0:b029:3e0:2e32:3148 with SMTP id j12-20020aa78d0c0000b02903e02e323148mr25776486pfe.23.1629569272676;
-        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id n32sm11944585pgl.69.2021.08.21.11.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 11:07:52 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     bpf@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        kuniyu@amazon.co.jp, Dmitry Osipenko <digetx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] af_unix: fix NULL pointer bug in unix_shutdown
-Date:   Sat, 21 Aug 2021 18:07:36 +0000
-Message-Id: <20210821180738.1151155-1-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
+        id S231497AbhHUSLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 14:11:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229484AbhHUSLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 14:11:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE49560232;
+        Sat, 21 Aug 2021 18:10:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629569459;
+        bh=IlPbj5H/RltkSwtswu9Vrio7ZW9R2UtsxUZz7xUSCYg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Mq6TI6/eWPvlR8YZaStNBeNzn2b5ziXPG3jJFsUzJTy1dAFk7Rv4bDs1uG8TIprrh
+         vkw60DWqVII73FE9j5AB6t1+wY4sVs9tcLxPXRQUEaM665vU3SIOJ1xg7SKZ97Nu8C
+         Ckjpqfe9hJVxJG/eD9+BkZIodPCGtOoj6XzCdt4NotQJAP7mijmV/PdtslniBvWYGx
+         FGnefo7bd9EzY1WXxWWVuGgegi9wRdV2oDi0xG2BnSU1FaOjLsx8qGe3ko+Bho/0DM
+         1IgHsfmvxLk3qyxu9cCG9UoJRIiWMc+2VfBvPew+eZBKirMi1sgU39G15ExMCY5uZ5
+         Px0R1UH06jNSg==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk fixes for v5.14-rc6
+Date:   Sat, 21 Aug 2021 11:10:58 -0700
+Message-Id: <20210821181058.131854-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
-introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the
-unhash function will call prot->unhash(), which is NULL for SEQPACKET.
-And kernel will panic. On ARM32, it will show following messages: (it 
-likely affects x86 too).
+The following changes since commit f828b0bcacef189edbd247e9f48864fc36bfbe33:
 
-Fix the bug by checking the prot->unhash is NULL or not first.
+  clk: fix leak on devm_clk_bulk_get_all() unwind (2021-07-31 00:53:38 -0700)
 
-Kernel log:
-<--- cut here ---
- Unable to handle kernel NULL pointer dereference at virtual address
-00000000
- pgd = 2fba1ffb
- *pgd=00000000
- Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
- Modules linked in:
- CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
-5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
- Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
- PC is at 0x0
- LR is at unix_shutdown+0x81/0x1a8
- pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
- sp : e45aff70  ip : e463a3c0  fp : beb54f04
- r10: 00000125  r9 : e45ae000  r8 : c4a56664
- r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
- r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
- Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
- Control: 50c5387d  Table: 05aa804a  DAC: 00000051
- Register r0 information: slab PING start c4a56400 pointer offset 0
- Register r1 information: NULL pointer
- Register r2 information: slab task_struct start c5a6b180 pointer offset 0
- Register r3 information: NULL pointer
- Register r4 information: slab PING start c4a56400 pointer offset 0
- Register r5 information: non-paged memory
- Register r6 information: slab PING start c4a56400 pointer offset 100
- Register r7 information: non-paged memory
- Register r8 information: slab PING start c4a56400 pointer offset 612
- Register r9 information: non-slab/vmalloc memory
- Register r10 information: non-paged memory
- Register r11 information: non-paged memory
- Register r12 information: slab filp start e463a3c0 pointer offset 0
- Process falkon (pid: 1999, stack limit = 0x9ec48895)
- Stack: (0xe45aff70 to 0xe45b0000)
- ff60:                                     e45ae000 c5f26a00 00000000 00000125
- ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
- ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
- ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
- ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
- [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
- [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
-(__sys_trace_return+0x1/0x16)
- Exception stack(0xe45affa8 to 0xe45afff0)
+are available in the Git repository at:
 
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
----
-v1 -> v2: check prot->unhash directly.
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
 
- net/unix/af_unix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+for you to fetch changes up to 9711759a87a041705148161b937ec847048d882e:
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 443c49081636..15c1e4e4012d 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
- 		int peer_mode = 0;
- 		const struct proto *prot = READ_ONCE(other->sk_prot);
- 
--		prot->unhash(other);
-+		if (prot->unhash)
-+			prot->unhash(other);
- 		if (mode&RCV_SHUTDOWN)
- 			peer_mode |= SEND_SHUTDOWN;
- 		if (mode&SEND_SHUTDOWN)
+  clk: qcom: gdsc: Ensure regulator init state matches GDSC state (2021-08-05 18:19:04 -0700)
+
+----------------------------------------------------------------
+Two clk driver fixes
+
+ - Make the regulator state match the GDSC power domain state at boot
+   on Qualcomm SoCs so that the regulator isn't turned off
+   inadvertently.
+
+ - Fix earlycon on i.MX6Q SoCs
+
+----------------------------------------------------------------
+Bjorn Andersson (1):
+      clk: qcom: gdsc: Ensure regulator init state matches GDSC state
+
+Dong Aisheng (1):
+      clk: imx6q: fix uart earlycon unwork
+
+ drivers/clk/imx/clk-imx6q.c |  2 +-
+ drivers/clk/qcom/gdsc.c     | 54 ++++++++++++++++++++++++++++++---------------
+ 2 files changed, 37 insertions(+), 19 deletions(-)
+
 -- 
-2.20.1
-
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
