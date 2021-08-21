@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC073F39D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7003F39D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234939AbhHUJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 05:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        id S235381AbhHUJXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 05:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234073AbhHUJWc (ORCPT
+        with ESMTP id S234117AbhHUJWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 21 Aug 2021 05:22:32 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DAAC061152;
-        Sat, 21 Aug 2021 02:20:32 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id z20so25183200ejf.5;
-        Sat, 21 Aug 2021 02:20:32 -0700 (PDT)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4FCC061153;
+        Sat, 21 Aug 2021 02:20:34 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id bt14so25230366ejb.3;
+        Sat, 21 Aug 2021 02:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3Nz5cuYI+OBcCvgsxocGu8/AZ30FKdwuuYGkZjJe3RI=;
-        b=XlfGwAjvHqfY+y4udXph83bMIIMSpq+LH04Tv1UnmEAhu+SI9fZUUDs8BQlQmhWdPn
-         Y7cfA0zb+kADyU9y1OZPZ9t2mjEJQBD1OwjPxi8/76ohjBipKsx778JAaxcqaoVmQxLM
-         maTYh5GJETMpfc91FdgA8MSnIw+7IyOEkLiehoCzgC7iQnRoQEC1wXDZ3zADk1mBfOgP
-         dIGgtMI1P6+bhVPv0zCmRpO5ayN+CrHb8/nNFODRBnG+6uZy6aCkNli3/YJysAoJ5c2o
-         3bgrIeA8j/3btQV+VNS4CJ/77cTlPqsbQWmq/WUfDMr2fR90HRF6MT1jI/KimY2zRw+M
-         1YhA==
+        bh=a/3m71kP0tYYLOMpvrgSKthU0QKRYTlQxU81VqWCx9s=;
+        b=h/o/tTy2sYra0Z5LDpF/y/DoixhjUiOfLebPC7Rky5s8foQj/crzoXJFtUSV7el98k
+         kyXQWsGaFFhpPN9URIVO9wBzWmM/x9vPRFaK+PZE+fe5jTTJQy+js9eykztwU0rlcTmU
+         QsGysI70+aY6WYjnaOvQC47YpgzbpwwD/oCtlJoeLdFEHXHL1NhXpH7EOgu/gp8Sg6Fu
+         DSGYmZ+vSOImtYI6ImDViFuZNX40sq22PukcEY8NW3ZF4vDYxuB4PW8dbeb2YqqnxOom
+         0F2lRj+FU9Rc1SRw8YwvmF1vAbqsgi6HPuvP0SGge1u15Ar60vEnxCXuM+F9ibpe3ToI
+         2cJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3Nz5cuYI+OBcCvgsxocGu8/AZ30FKdwuuYGkZjJe3RI=;
-        b=JoI+5hcJi7GLEixgDoCqCkjM78MJUs7ZcPtpJLgyweEh2DuBx6fwdvzSw0S9gvvY0f
-         1Wq3r+oB/6L2FF9iJqnyCrWzqYdvPTa2NNdA/MvGgRaWBI3EUGtrGO5Vo2RAqGubWCLG
-         4/UQ9oOL4+wscAIcufWKNikSXB6XeAs7+yB5AduYGtSP+B/01bboDB+pvj1gyyQk+O5i
-         cL/ty0sstoCzrhYwhbyAYGPkWXBocGQzFPik1W0/9WZ6jQHdvHNuYgkVIIdnTdrNYk6c
-         OUfv2HRgKTSPU4x0XDysVh+j/dyg+9z9sN/CYONtfSE6T7PHT/ht0ScMECFEqNiD4mhR
-         yjPQ==
-X-Gm-Message-State: AOAM530jboCXGa/6u0KRQJxONLv8q4jfCGNtUjYC+5ipBrkGL8hcqwux
-        Lmn6ci1AskNOn5LzAmwzCis=
-X-Google-Smtp-Source: ABdhPJwEhzv1vtyyOdarPLAkKYHQELwvwBMh67mJUrR4i0LAMM810AeJvCpK5/M7CjiVNVh7D2OytQ==
-X-Received: by 2002:a17:906:ac1:: with SMTP id z1mr25592170ejf.261.1629537631322;
-        Sat, 21 Aug 2021 02:20:31 -0700 (PDT)
+        bh=a/3m71kP0tYYLOMpvrgSKthU0QKRYTlQxU81VqWCx9s=;
+        b=KExSUBP3siULC2H8pZupoWITXwZRQhCitYdjeqPSViRCB//EmpvJZSkgxUsOxQHKtf
+         CWVsbhwiuzYqEjBml7JSihtfOmK1iiNZSzzyh/ZjjFKaxIMFX0XR16/f16RQZen2h24b
+         jgMLYeA7qdsPM+JJtF48dD4HiyuSUerKHUoTHmVh163RtmaiiHhT1rrd7lnY9vwoNqVQ
+         A0jUfqWp0vSw/qNNQw/dlfGXXOFOOyYYZxaSHuDmvuw5/Ww6ZsAAJeRTQcwA64QyzQs8
+         vFLVRhZiXpClYKgMHrmq83dJ0plOOmDRFiQuma//kBII7tLV9OgbWZaPHCQ1zjp4YmTc
+         Tsug==
+X-Gm-Message-State: AOAM533nSoKjJNF4+M2JKG3c/w4z2gn/jL6Fr3P8e4wCPbl44juCP8lF
+        TB8OUnOKWnyQJFhe962hAQjEBAaEbrlj8RwaqxA=
+X-Google-Smtp-Source: ABdhPJyvyfWAk6gfVyzKvye/3Td3EzcXlBFfZ38ePuBh4t2TM/Z2PKThH+yw05dhhZwEEwbDOQYGQA==
+X-Received: by 2002:a17:906:b890:: with SMTP id hb16mr25194842ejb.383.1629537632804;
+        Sat, 21 Aug 2021 02:20:32 -0700 (PDT)
 Received: from honeypot.. (mob-176-243-254-204.net.vodafone.it. [176.243.254.204])
-        by smtp.googlemail.com with ESMTPSA id a25sm4003878ejv.91.2021.08.21.02.20.30
+        by smtp.googlemail.com with ESMTPSA id a25sm4003878ejv.91.2021.08.21.02.20.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 02:20:30 -0700 (PDT)
+        Sat, 21 Aug 2021 02:20:32 -0700 (PDT)
 From:   Riccardo Mancini <rickyman7@gmail.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Ian Rogers <irogers@google.com>,
@@ -58,9 +58,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [RFC PATCH v1 34/37] perf record: apply multithreading in init and fini phases
-Date:   Sat, 21 Aug 2021 11:19:40 +0200
-Message-Id: <f73e485eb0d29539722da396555d9fcbd0267642.1629490974.git.rickyman7@gmail.com>
+Subject: [RFC PATCH v1 35/37] perf test/evlist-open-close: add multithreading
+Date:   Sat, 21 Aug 2021 11:19:41 +0200
+Message-Id: <e01604581141e02aa29f1940879971c7e1ed791e.1629490974.git.rickyman7@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1629490974.git.rickyman7@gmail.com>
 References: <cover.1629490974.git.rickyman7@gmail.com>
@@ -70,95 +70,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch grows the multithreaded portion of perf-record, marked by the
-perf_set_multithreaded and perf_set_singlethreaded functions to the whole
-init and fini part of __cmd_record.
-By doing so, perf-record can take advantage of the parallelized evlist
-operations (open, enable, disable, close).
-
-This patch also needs to handle the case in which evlist and synthesis
-multithreading are not enabled at the same time. Therefore, in
-record__synthesize multithreading is enabled/disabled and then
-disabled/renabled if needed.
+This patch adds the new option -j/--threads to use multiple threads in
+the evlist operations in the evlist-open-close benchmark.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 ---
- tools/perf/builtin-record.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ tools/perf/bench/evlist-open-close.c | 46 ++++++++++++++++++++++++----
+ 1 file changed, 40 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index e2d2445e05d7c07a..db9ec08db672f994 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1411,6 +1411,7 @@ static int record__synthesize(struct record *rec, bool tail)
- 	struct perf_tool *tool = &rec->tool;
- 	int err = 0;
- 	event_op f = process_synthesized_event;
-+	bool perf_was_singlethreaded = perf_singlethreaded;
+diff --git a/tools/perf/bench/evlist-open-close.c b/tools/perf/bench/evlist-open-close.c
+index 674cb14cbaa9ef2c..c18aa85725281795 100644
+--- a/tools/perf/bench/evlist-open-close.c
++++ b/tools/perf/bench/evlist-open-close.c
+@@ -12,6 +12,8 @@
+ #include "../util/parse-events.h"
+ #include "internal/threadmap.h"
+ #include "internal/cpumap.h"
++#include "../util/util.h"
++#include "../util/workqueue/workqueue.h"
+ #include <linux/perf_event.h>
+ #include <linux/kernel.h>
+ #include <linux/time64.h>
+@@ -35,7 +37,8 @@ static struct record_opts opts = {
+ 		.default_per_cpu = true,
+ 	},
+ 	.mmap_flush          = MMAP_FLUSH_DEFAULT,
+-	.nr_threads_synthesize = 1,
++	.nr_threads          = 1,
++	.multithreaded_evlist = true,
+ 	.ctl_fd              = -1,
+ 	.ctl_fd_ack          = -1,
+ };
+@@ -51,6 +54,7 @@ static const struct option options[] = {
+ 	OPT_STRING('t', "tid", &opts.target.tid, "tid", "record events on existing thread id"),
+ 	OPT_STRING('u', "uid", &opts.target.uid_str, "user", "user to profile"),
+ 	OPT_BOOLEAN(0, "per-thread", &opts.target.per_thread, "use per-thread mmaps"),
++	OPT_UINTEGER_OPTARG('j', "threads", &opts.nr_threads, UINT_MAX, "Number of threads to use"),
+ 	OPT_END()
+ };
  
- 	if (rec->opts.tail_synthesize != tail)
- 		return 0;
-@@ -1499,12 +1500,16 @@ static int record__synthesize(struct record *rec, bool tail)
- 	if (rec->opts.multithreaded_synthesis) {
- 		perf_set_multithreaded();
- 		f = process_locked_synthesized_event;
-+	} else {
-+		perf_set_singlethreaded();
+@@ -106,18 +110,32 @@ static struct evlist *bench__create_evlist(char *evstr)
+ 
+ static int bench__do_evlist_open_close(struct evlist *evlist)
+ {
+-	char sbuf[STRERR_BUFSIZE];
+-	int err = evlist__open(evlist);
++	char sbuf[WORKQUEUE_STRERR_BUFSIZE];
++	int err = -1, ret;
++
++	if (opts.nr_threads > 1) {
++		err = setup_global_workqueue(opts.nr_threads);
++		if (err) {
++			create_workqueue_strerror(global_wq, sbuf, sizeof(sbuf));
++			pr_err("setup_global_workqueue: %s\n", sbuf);
++			return err;
++		}
++		if (evlist->core.all_cpus->nr <= workqueue_nr_threads(global_wq))
++			workqueue_set_affinities_cpu(global_wq, evlist->core.all_cpus);
+ 
++		perf_set_multithreaded();
++	}
++
++	err = evlist__open(evlist);
+ 	if (err < 0) {
+ 		pr_err("evlist__open: %s\n", str_error_r(errno, sbuf, sizeof(sbuf)));
+-		return err;
++		goto out;
  	}
  
- 	err = __machine__synthesize_threads(machine, tool, &opts->target, rec->evlist->core.threads,
- 					    f, opts->sample_address);
- 
--	if (rec->opts.multithreaded_synthesis)
-+	if (!perf_was_singlethreaded && perf_singlethreaded)
-+		perf_set_multithreaded();
-+	if (perf_was_singlethreaded && !perf_singlethreaded)
- 		perf_set_singlethreaded();
- 
- out:
-@@ -1735,6 +1740,9 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 
- 	record__uniquify_name(rec);
- 
-+	if (rec->opts.multithreaded_evlist)
-+		perf_set_multithreaded();
-+
- 	if (record__open(rec) != 0) {
- 		err = -1;
- 		goto out_child;
-@@ -1877,6 +1885,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		}
+ 	err = evlist__mmap(evlist, opts.mmap_pages);
+ 	if (err < 0) {
+ 		pr_err("evlist__mmap: %s\n", str_error_r(errno, sbuf, sizeof(sbuf)));
+-		return err;
++		goto out;
  	}
  
-+	// disable locks in the main thread since there is no multithreading
-+	if (rec->opts.multithreaded_evlist)
+ 	evlist__enable(evlist);
+@@ -125,7 +143,19 @@ static int bench__do_evlist_open_close(struct evlist *evlist)
+ 	evlist__munmap(evlist);
+ 	evlist__close(evlist);
+ 
+-	return 0;
++out:
++	if (opts.nr_threads > 1) {
++		ret = teardown_global_workqueue();
++		if (ret) {
++			destroy_workqueue_strerror(err, sbuf, sizeof(sbuf));
++			pr_err("teardown_global_workqueue: %s\n", sbuf);
++			err = ret;
++		}
++
 +		perf_set_singlethreaded();
++	}
 +
- 	trigger_ready(&auxtrace_snapshot_trigger);
- 	trigger_ready(&switch_output_trigger);
- 	perf_hooks__invoke_record_start();
-@@ -1998,6 +2010,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 		}
- 	}
- 
-+	// reenable multithreading for evlist
-+	if (rec->opts.multithreaded_evlist)
-+		perf_set_multithreaded();
-+
- 	trigger_off(&auxtrace_snapshot_trigger);
- 	trigger_off(&switch_output_trigger);
- 
-@@ -2099,6 +2115,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 
- 	if (!opts->no_bpf_event)
- 		evlist__stop_sb_thread(rec->sb_evlist);
-+
-+	// disable multithreaded mode on exit
-+	if (rec->opts.multithreaded_evlist)
-+		perf_set_singlethreaded();
- 	return status;
++	return err;
  }
  
+ static int bench_evlist_open_close__run(char *evstr)
+@@ -143,6 +173,7 @@ static int bench_evlist_open_close__run(char *evstr)
+ 
+ 	init_stats(&time_stats);
+ 
++	printf("  Number of workers:\t%u\n", opts.nr_threads);
+ 	printf("  Number of cpus:\t%d\n", evlist->core.cpus->nr);
+ 	printf("  Number of threads:\t%d\n", evlist->core.threads->nr);
+ 	printf("  Number of events:\t%d (%d fds)\n",
+@@ -226,6 +257,9 @@ int bench_evlist_open_close(int argc, const char **argv)
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	if (opts.nr_threads == UINT_MAX)
++		opts.nr_threads = sysconf(_SC_NPROCESSORS_ONLN);
++
+ 	err = target__validate(&opts.target);
+ 	if (err) {
+ 		target__strerror(&opts.target, err, errbuf, sizeof(errbuf));
 -- 
 2.31.1
 
