@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBBD3F3AD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 15:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975DD3F3AD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 15:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbhHUNpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 09:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35524 "EHLO
+        id S231610AbhHUN7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 09:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhHUNpk (ORCPT
+        with ESMTP id S230167AbhHUN7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 09:45:40 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAEEC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:45:00 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id w5so26156425ejq.2
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:45:00 -0700 (PDT)
+        Sat, 21 Aug 2021 09:59:46 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3D1C061575;
+        Sat, 21 Aug 2021 06:59:07 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id p4so24465907yba.3;
+        Sat, 21 Aug 2021 06:59:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XOkvmocD1NfSc6W3xyMtK2214BDZpc2SR/eJTyNI/FE=;
-        b=YZWZp6P/ZieyOFu1TyD3ip3bYxYSMY8dr/UvaOvv94p5SKwahhqrb2vrgEgLHZLGjz
-         dx+gBSRFtY7KRFsbc+8jqEmmY60tLZnOqff774HmGPWd9zIYXYS3VWgD/Wi4EbIpQcl1
-         fKmxKqOxia81b7z536hCEplZPbv1lVspPQiUjKiJoi7ktl3y0vCbCv9IuTEUUIQL+RDM
-         aAVtTIoEA11+Z6oc8oFxV70rzJ6r5v0uo3eVV8wc2U6OOB8Uv4i9zQ7Hz03E9fIO6l1u
-         dqTHj8myYjrwoof7esqsRrfBdfg9+xBUnOgSHDGxjAY0BRW50QHZnMxEQl83ik+bgsts
-         Lzqg==
+        bh=0XteRi3XzBqghOEZ5aq+q2tRiDkRnrgjY6e5r4R/fzA=;
+        b=fkkeI/XAbuTYQSDi6nIE5kLL/ITXbHgzzrTT/plbGGjiLqzNWAC0njyRghhqVFCpVR
+         Yj01o40GURVWHWZeNAuIWj0mr6Dn5cI5A5+dnkIfiwUyWXru9ZpmcNhGjKfXN2Zcyb8c
+         jlx4oAB/zoS0HbRE5t9g3zmxmEwrNfRabPVjOI1kup1vLm/TO273lVEWRQLZ3V1zxPs/
+         LFW3JzHekSaEHLudoY/fJwcIbk6xvG1lAdUSJV/2lWm63sVRMu1693tFLEpsxbcrB0Y6
+         qVhX9/+KPEIuPaH16BZ6rT8xljnLuM3jP5Ui8++hN4ejR+Fq3Ti/s61U3Wj4/wOZosyC
+         ZYJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XOkvmocD1NfSc6W3xyMtK2214BDZpc2SR/eJTyNI/FE=;
-        b=TQdtsFApC6iFYGf6Nn9YEtxvxYyw5fFMCXIX+n70BtAaN91OqtUqvHj8EukR63POHg
-         /w+Ja2Di5kxA5P7AsvPIQNM1qgOnQ9N4AnZMK4v3EI6vEsYoAI1u3dpdY+xPiSW6ekLo
-         gFN/bB830QOk2owRBk98eK1ewc7xK0FmszdZPBGvShAPzlo1lRz9Efv/UzsFCunprDVQ
-         eCvugKrhOaBxCIDm8ra24baIhWsDBw/7EK/4rRAJujUqrjFBdGlfNg3Tg+7eBUj7vEaT
-         23SalgGBqRMpUiVvcwEcgj3bd/6hM76Geb6ZKns+t8yB5De1hO6QH2FiUn1B2u5n0sR4
-         bjAg==
-X-Gm-Message-State: AOAM5337wbDdjrsgx6Qvvli4tQZ8S3ik+GokQg2vlr7vSYdZGnUqRD9q
-        qdyzPgKse6geR+/oYxsKobGYwqL6yQFOeA==
-X-Google-Smtp-Source: ABdhPJymHe03eKy+KnufxjjnWusVFUVc6cejANUEJbYWFXGCqoYGDLHUJ7h4KTgOabfIJ67ywqKS4g==
-X-Received: by 2002:a17:907:169f:: with SMTP id hc31mr26425070ejc.328.1629553499127;
-        Sat, 21 Aug 2021 06:44:59 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id gx20sm2311957ejb.58.2021.08.21.06.44.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Aug 2021 06:44:58 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id r7so18506439wrs.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:44:57 -0700 (PDT)
-X-Received: by 2002:a5d:6da4:: with SMTP id u4mr4110781wrs.50.1629553497372;
- Sat, 21 Aug 2021 06:44:57 -0700 (PDT)
+        bh=0XteRi3XzBqghOEZ5aq+q2tRiDkRnrgjY6e5r4R/fzA=;
+        b=kFqOcIyQkB5X3cuxmNvLrciatEW8CEeJGt0D540u/2gwLI5GCEIPF+RXgsy7CJ+MVx
+         /ytZLzLDxeqXCO69CHm7klI18vegKZNboaukgccFacVRBNVq5S4PQJyObQGyIvj4yvLE
+         nrMMXViV1sTKCvsAYLhuw6JKE8FneaNPsqAyeiu+Vhc2T4qDGV856eVPTpf+nyqfdS3P
+         BLozUq9x1noSmViNOidMQxWCxMf603GUvPpgHeN4RzVhXpQykKD1t9jU/ExvLl4oYcDw
+         Vw5noz475oaPUfdTiU5qIi+25BrzRJloBnkJR5YRLe/M1Z7crkZISj7yQRF6owYHzh+/
+         fcTA==
+X-Gm-Message-State: AOAM531JrTNLzryppbJjpldnA1So3vJuznZ48+gyTLeYbRS/WDtAoy8k
+        tu9A8eNh5bu3cJ+xALWSsggZ7SG9p57dbkVD+vrX22UQZDMgnlQD
+X-Google-Smtp-Source: ABdhPJxzm79gRN73mW6p8qqJLw7WCxAyPq9LvVo5cZ8owOVvOHy+/mGDq3DN+03rbo78ymm31h241yqdi1xta1hN+eI=
+X-Received: by 2002:a25:c9c6:: with SMTP id z189mr28211215ybf.497.1629554344734;
+ Sat, 21 Aug 2021 06:59:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210819143447.314539-1-chouhan.shreyansh630@gmail.com>
- <CA+FuTSdsLzjMapC-OGugkSP-ML99xF5UC-FjDhFS1_BDDSJ2sg@mail.gmail.com>
- <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <YSCos0Sdw7RYsNQu@fedora>
-In-Reply-To: <YSCos0Sdw7RYsNQu@fedora>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sat, 21 Aug 2021 09:44:19 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSceSFcRc-OxP=_1zAmBGckQL5gDsAScqoiGy2c4PLckWQ@mail.gmail.com>
-Message-ID: <CA+FuTSceSFcRc-OxP=_1zAmBGckQL5gDsAScqoiGy2c4PLckWQ@mail.gmail.com>
-Subject: Re: [PATCH] ip_gre/ip6_gre: add check for invalid csum_start
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de> <20210819133128.45ef4353@coco.lan>
+In-Reply-To: <20210819133128.45ef4353@coco.lan>
+From:   Manu Abraham <abraham.manu@gmail.com>
+Date:   Sat, 21 Aug 2021 19:28:54 +0530
+Message-ID: <CAHFNz9+2rQ+kGDM1m5mkZ9CjNjWqMsZxWQ8=i2=6UtKh0vQUrA@mail.gmail.com>
+Subject: Re: [Regression 5.14] media: dvb userspace api
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Soeren Moch <smoch@web.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 3:18 AM Shreyansh Chouhan
-<chouhan.shreyansh630@gmail.com> wrote:
+Dearest Mauro,
+
+I am not trying to annoy you or anyone else with my response here, but:
+
+
+On Thu, Aug 19, 2021 at 5:01 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
 >
-> Hi,
+> Em Wed, 11 Aug 2021 14:15:02 +0200
+> Soeren Moch <smoch@web.de> escreveu:
 >
-> Thank you Jakub and Willem for your reviews. I have separated the
-> changes into two differnet patches. Sorry for the delay.
+> > Commit 819fbd3d8ef36c09576c2a0ffea503f5c46e9177 ("media: dvb header
+> > files: move some headers to staging") moved audio, video, and osd parts
+> > of the media DVB API to staging and out of kernel headers. But this is
+> > part of the media userspace API, removing this causes regressions.
+>
+> There's no regression: a legacy driver (av7110) for a device that stopped
+> being manufactured 15 years ago and that doesn't work anymore with current
+> Digital TV transmissions was removed, together with the API that it was
+> implemented inside such driver's code.
 
-Thanks Shreyansh
 
-> Where can I read about patch targets? I have seen patches with differnet
-> targets but I do not know what they mean/how they work. I was not able
-> to find the documentation for these.
+Please do not exaggerate..
+(I can write more precise technical details in here, but that will not solve the
+real issue at hand.)
 
-Targeting these bug fixed to net was the right destination.
-Documentation/networking/netdev-FAQ.rst has more context on the net vs
-net-next distinction.
+You have only your own viewpoint, refuse to listen to anyone else. Wonder
+why all the DVB developers left development ? It's all about you, yourself
+and you. Linus doesn't care about anything else, you have been very lucky!
+
+You need serious introspection about yourself. Take a deep breath, think for
+yourself, why I stopped submitting code. Forget myself, think about the list
+of developers who were around, but not now.
+
+People need to have fun with what they are doing, but you make it, everything
+about yourself. It's all about maintaining connections, rather than destroying
+them. At least during these uncertain times, please stop the narrow thinking.
+
+If you find my view offending, just ignore it, no need to give another thousand
+mile long essay; I am on my way ..
+
+Friendly Regards,
+MA
