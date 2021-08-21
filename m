@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF193F3CC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 01:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3C73F3CCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 01:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhHUX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 19:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        id S230399AbhHUXyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 19:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhHUX1R (ORCPT
+        with ESMTP id S229519AbhHUXyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 19:27:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5CBC061575;
-        Sat, 21 Aug 2021 16:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Co5Y/EX5ifuICbWnNsfkQFUM3mlOJV+v5gGJyiXYvg0=; b=BZBEcBWop5OVJATFGiVuPVrIYh
-        xQBQRi+IUePF65ReBcVy22F2sNzwlXy1Ei+ekmD32gk0V4kHMwGMyLmbT82wdG4RA7W2mMGJ8QC32
-        hMzvTZyZyNU95YBJTj6z/aQjfrvjCaxWSk6rmAv1ubAu3gba645aQB9Y/Fsp4CmZtPZfYiY2vIQlu
-        C9CJkxKlvpT5wGk5fW58ku+GyG/UjwYClm6MoT6QJ+jrz30MvadTjQFzCwG9Mqmxjrx8H0ZbHGzOH
-        HYrv0pJpIBRu+32spOV8YCvvKUjCWv/ddaEACKRMhB2jU3P7IFxsg9Yb4U3K7Y8c8N1rBurueER5E
-        500dVG/w==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mHaNi-00DJbv-QV; Sat, 21 Aug 2021 23:26:30 +0000
-Subject: Re: [PATCH] Makefile: use -Wno-main in the full kernel tree
+        Sat, 21 Aug 2021 19:54:05 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CEEC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 16:53:25 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gsb1F315Vz9sW5;
+        Sun, 22 Aug 2021 09:53:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1629590002;
+        bh=Onr5AVHEjS7M8Si0SK8p4+KxnU55CdgeVthymwBaJDw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nu0XqUSSYyTuXZDETTjfzNFz+D7FURiP19Gmfd13EsjceY2owDp7IH+JUisr1qNqn
+         hQyHf469VuduqJ3WByutUUDFiVvfhkKntgFLqd996g4+ZEbvVWaUEhBwNl54/lvgDw
+         2RX45lcEY4nTb0tsvEOl3q1XvJi6P9tIKStlsQofSqxCWn8AqCm/SDTTjboWJYpYfk
+         TqC5DQqWPjJosmzZ0bqb6+5jWW4nJoBkykLQK6tVT3TJLdGgETSw6CxzKze12q98nO
+         kRnpvjVfV57C6061XtSjC/MHdvdFNRz53FBymGyo/k/ft4tPpFktKGAJMM3XW+xuno
+         DqgGHz/d1rgfw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-References: <20210813224131.25803-1-rdunlap@infradead.org>
- <CAHk-=wj4chmL3TUdXHhAV+eU-YVNj-ZtZBjNJEFBzTnPMP3_bA@mail.gmail.com>
- <CAHk-=wgnvC=Tyejg_ts1O7yZYRxAgS+mxStCWM+PcyFPnaw1sw@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <3c16596b-8fa1-4f36-7f4c-16a8034c92e1@infradead.org>
-Date:   Sat, 21 Aug 2021 16:26:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, nathan@kernel.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-6 tag
+Date:   Sun, 22 Aug 2021 09:53:18 +1000
+Message-ID: <87mtpacq35.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgnvC=Tyejg_ts1O7yZYRxAgS+mxStCWM+PcyFPnaw1sw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/21 5:33 PM, Linus Torvalds wrote:
-> On Fri, Aug 13, 2021 at 2:01 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->>  From a quick google, it seems like '-Wmain' means something else for
->> clang. But it is probably ok.
-> 
-> So the warnings that clang gives with -Wmain seem to be much more reasonable.
-> 
-> Which makes me think that the '-Wno-main' thing would likely be better
-> as a gcc-only thing.
-> 
-> Maybe something like this instead?
-> 
->                Linus
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Hi Linus,
 
-Should I resend the full patch?
+Please pull some more powerpc fixes for 5.14:
 
-Thanks.
+The following changes since commit cbc06f051c524dcfe52ef0d1f30647828e226d30:
 
--- 
-~Randy
+  powerpc/xive: Do not skip CPU-less nodes when creating the IPIs (2021-08-=
+12 22:31:41 +1000)
 
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.14-6
+
+for you to fetch changes up to 9f7853d7609d59172eecfc5e7ccf503bc1b690bd:
+
+  powerpc/mm: Fix set_memory_*() against concurrent accesses (2021-08-19 09=
+:41:54 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.14 #6
+
+ - Fix random crashes on some 32-bit CPUs by adding isync() after locking/u=
+nlocking KUEP
+ - Fix intermittent crashes when loading modules with strict module RWX
+ - Fix a section mismatch introduce by a previous fix.
+
+Thanks to: Christophe Leroy, Fabiano Rosas, Laurent Vivier, Murilo Opsfelde=
+r Ara=C3=BAjo,
+Nathan Chancellor, Stan Johnson.
+
+- ------------------------------------------------------------------
+Christophe Leroy (1):
+      powerpc/32s: Fix random crashes by adding isync() after locking/unloc=
+king KUEP
+
+Michael Ellerman (1):
+      powerpc/mm: Fix set_memory_*() against concurrent accesses
+
+Nathan Chancellor (1):
+      powerpc/xive: Do not mark xive_request_ipi() as __init
+
+
+ arch/powerpc/include/asm/book3s/32/kup.h | 20 +++++++++++++++++
+ arch/powerpc/mm/pageattr.c               | 23 +++++++++-----------
+ arch/powerpc/sysdev/xive/common.c        |  2 +-
+ 3 files changed, 31 insertions(+), 14 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmEhkccACgkQUevqPMjh
+pYC9Lg/+IUShkBlGUMxvOiz81E/PllRoYsj7ljHyzACZ1ofwa2u2ffSX06E8Ymqh
+GDtzSx13q6i9zInxZ4Fg8Ml7wh1oWxRu/wDOSoOS+Td2JtjhJxB0YKOxnpdr2FaS
+7wMQpQOZVQfbskr8RouuU0mvUYhrdkxQJT8Q9E5xOUl8jTuzmYsctdr5JHzUVWHF
+FrOrKDVs7thwwUlZ5vA9woCUC4CxktqR5WX89KJLd8zuwuH2nNVVq7fLVm2jC7vU
+VVww1XydwSPD77r8CCqd599Sx/yGF38xKPwJ9eVqQktceQnSCI32xSfhSTz/HfMm
+CVMTkfbqP1Mwo0dGWnZXfJICB9pUlOImT5+dwBFGzOnEent13ZJGcVivKZj8KhHu
+wT6AOSpMpS7+I3VfPwgv97YZT9Obea4Ntap1hBKCxgPg7Szb3MRvdpR+Rw77DaYW
+YAJL3gugzhWtL4xZ6gkYWlya9boS1cuOa7tVHncrouQ1XYT0ac49BwTnA85x/orV
+rlgaNg4SETnqhXWYhQOW+3K1iltgWnYHiD777y+m1jupFZv87t9F/2mjgqj/MqIV
+YIrpXfY0XLu092958taOvcjYhjjFjIuQVaXHhSLhTH3s8A6zcbULwqJCqjNPvSOx
+b7+ad8XFLLFjNqcF6MDcp63WK5zUf21ev0iNRfkXoMaat3cnn/8=3D
+=3DQn2l
+-----END PGP SIGNATURE-----
