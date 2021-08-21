@@ -2,101 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9646C3F380F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 04:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6BF3F3814
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 04:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240968AbhHUCTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 22:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUCTX (ORCPT
+        id S239133AbhHUC3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 22:29:46 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:45937 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231268AbhHUC3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 22:19:23 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B01C061575;
-        Fri, 20 Aug 2021 19:18:44 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id l3so9012988qtk.10;
-        Fri, 20 Aug 2021 19:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ICy06zsKPY88E4K8E9mtKZ1ECGVlz+4+NHijGy1OXms=;
-        b=Wci5lZvCI8k9tQqolpEzHPQrd/i8CUfaaa3O6E6N1crRhv73wLCgONGBGbXOF4FS7i
-         Eq/Wk4CoqONSBwwG1jYY9eP+gtGYwV3gJ4XpaCJwf76vaGuN/H70NjO/W5rk0GxlVr7s
-         kCUMefgx1R/QKTBtDhMTPcrpALRhCPfpy4GXMQ+OkzyNbZuCBFKbpfcEnRQ03GfrQxfg
-         n+qgsJAH59Qo+mDiBamrlWQTn3n3imTNO8G7c0FVesseGjHy0+SBhZSW940KwlBNrrA/
-         +zi8/u4uuSIHqmkuJrEp0Ne6poamr6vgLFf7j1WiJ7RF2dMluCIv1JmmVOCVbg2a3E5C
-         0Vxg==
+        Fri, 20 Aug 2021 22:29:45 -0400
+Received: by mail-il1-f198.google.com with SMTP id o12-20020a92dacc000000b00224baf7b16fso5444658ilq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 19:29:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ICy06zsKPY88E4K8E9mtKZ1ECGVlz+4+NHijGy1OXms=;
-        b=Amlsw2+Lq2T7nuvFcdz4zvDxSkz/Y3jhT6HxHiyFsKG7nhGHEF8Cvhs9EVsFKZ2mxa
-         puqPBTblOGE4tds0oCQgiCKYlVjzYdlc6UCg1/bZQrkcqGPHa6GvQOsboJM9pwGrLBWD
-         2l8zvSCZEnqzn/9mJb2MSLeuyAEGsI57UNTBRTKOxWyuXQWks0CWZU8Yr+GDbPFGl2xI
-         VPS13j6DT/LAfnNqA+1jwyHmeiRNzuLxn+Dt5uslaD4k/JXR/I45/evoRxayg01Xv5Z9
-         U6Ht+MAV4ihRJx7q/sJI8EHwtskhSg4YmYeHPLus+szf7XX7h53CARMOF/og1bhxFcyb
-         +/Kg==
-X-Gm-Message-State: AOAM532c0tLBGAX0sFV9JmRLRtY/BuFv9w2CaeCHbodZEz74vMtXiAOH
-        dQbawku9x3tOA7V6v3vbdxY=
-X-Google-Smtp-Source: ABdhPJzzUXmVc10/csCH0VPL4FXF950um6EZtMywuLnbfpe9CVLhFsPMgUZxj5OaslRyJwsDcruOEw==
-X-Received: by 2002:ac8:7c5:: with SMTP id m5mr14013073qth.180.1629512323881;
-        Fri, 20 Aug 2021 19:18:43 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id c7sm3655813qtv.9.2021.08.20.19.18.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 19:18:43 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <luo.penghao@zte.com.cn>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] video: fbdev: mb862xx: drop unneeded assignment in the mb86290fb_imageblit8()
-Date:   Fri, 20 Aug 2021 19:18:33 -0700
-Message-Id: <20210821021833.27238-1-luo.penghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=iHf8LUR6Ovn1Eydbqz2P3rlkkwnXm6QsDeIBC7GD3Qg=;
+        b=RRv00xlCEl0U4JUgrd5pj9V9qWsRJAgJnsH/eVar+zf07FH2mvrdkrbiJQQMvrvcsL
+         naappkSuEzuBfxGeobm6Vq7a2IlGKqqx5mpT9ByvCxHMcUyzQWwp1oe7SW+pxdqomQLh
+         4vwS989cE3/lJQKIeru5vFu17VaiK7KQPSWhg8+xiUVoLWf9OktHNRQ4YmRrq9rueGPS
+         U92nf85uhvx8M7e805rOXNv1o6tFtxgEK2470K2pKgzaZA9zwR/hTrsAPOGjuck5E0ME
+         DBjHsrdDnbZHY6ZittU5kQp4KW43tVrdPPNnOhaalmeOzaQZc9+xKUFIQ/w+oXE4Asf3
+         5VUg==
+X-Gm-Message-State: AOAM533a+68TWOiQHa6PnQWf6jTDIW1zhsLbD/8NKt6X8PZQE6rnL3I8
+        USuqsXEO/iArgYMmg3eOjw+U+8eLvVI6S8cK/csWL91Phk9g
+X-Google-Smtp-Source: ABdhPJzK0a8DAE41lfsQEjn583iPFBrbzLkXnZnYep9X4S+LuDPXekPfSUKswjhPhf9qYgtRx0WLpEqRtx7gWnRPEARQrCKJT9xa
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:5c8:: with SMTP id l8mr16040022ils.282.1629512946491;
+ Fri, 20 Aug 2021 19:29:06 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 19:29:06 -0700
+In-Reply-To: <00000000000000410c05c8e29289@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000552aaf05ca088c20@google.com>
+Subject: Re: [syzbot] KASAN: invalid-free in bdev_free_inode (2)
+From:   syzbot <syzbot+5fa698422954b6b9307b@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, balbi@kernel.org, corbet@lwn.net,
+        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        lorenzo@google.com, manish.narani@xilinx.com, maze@google.com,
+        netdev@vger.kernel.org, phind.uet@gmail.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo penghao <luo.penghao@zte.com.cn>
+syzbot has bisected this issue to:
 
-The first assignment is not used.In order to keep the
-code style consistency of the whole file,the first
-‘ptr’ assignment should be deleted.
+commit 63d152149b2d0860ccf8c4e6596b6175b2b7ace6
+Author: Lorenzo Colitti <lorenzo@google.com>
+Date:   Wed Jan 13 23:42:22 2021 +0000
 
-The clang_analyzer complains as follows:
+    usb: gadget: u_ether: support configuring interface names.
 
-drivers/video/fbdev/mb862xx/mb862xxfb_accel.c:135:9: warning:
-Although the value storedto 'ptr' is used in the enclosing expression,
-the value is never actually read from 'ptr'.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=155abcc1300000
+start commit:   d3432bf10f17 net: Support filtering interfaces on no master
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=175abcc1300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=135abcc1300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8075b2614f3db143
+dashboard link: https://syzkaller.appspot.com/bug?extid=5fa698422954b6b9307b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=174ebaf6300000
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
----
- drivers/video/fbdev/mb862xx/mb862xxfb_accel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reported-by: syzbot+5fa698422954b6b9307b@syzkaller.appspotmail.com
+Fixes: 63d152149b2d ("usb: gadget: u_ether: support configuring interface names.")
 
-diff --git a/drivers/video/fbdev/mb862xx/mb862xxfb_accel.c b/drivers/video/fbdev/mb862xx/mb862xxfb_accel.c
-index d40b806..61aed7f 100644
---- a/drivers/video/fbdev/mb862xx/mb862xxfb_accel.c
-+++ b/drivers/video/fbdev/mb862xx/mb862xxfb_accel.c
-@@ -132,7 +132,7 @@ static void mb86290fb_imageblit8(u32 *cmd, u16 step, u16 dx, u16 dy,
- 	cmd[2] = (height << 16) | width;
- 
- 	i = 0;
--	line = ptr = image->data;
-+	line = image->data;
- 	bytes = image->width;
- 
- 	while (i < height) {
--- 
-2.15.2
-
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
