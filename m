@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD123F3867
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249213F3869
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238570AbhHUDxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S232922AbhHUDyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUDxM (ORCPT
+        with ESMTP id S229610AbhHUDyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:53:12 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6EBC061575;
-        Fri, 20 Aug 2021 20:52:33 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id l3so9131491qtk.10;
-        Fri, 20 Aug 2021 20:52:33 -0700 (PDT)
+        Fri, 20 Aug 2021 23:54:46 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75009C061575;
+        Fri, 20 Aug 2021 20:54:07 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id t66so13096990qkb.0;
+        Fri, 20 Aug 2021 20:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sR4E5Sm8LLwOyw9xtSMIJM649G2H66OSbDzhGqNUrlw=;
-        b=nUxGpcWXP0ZRhbiJYoEE4Gs7Sw2fMWrVjFC8tZUsBb5Z4zqToWn8FPieO3UwRGgQPq
-         twEVVvP3yx9u2tJ0gHiIsqjeio9LGtM/2bMwLrG/094joM2NbLFdrA7h8Uqp6yo/YLuR
-         jfDyL3EFKqsF1Qv6QQP2IR1/ad5aY51J4nSNx3N3iaNysSYstec5d9Yuc5BTi6uWob2z
-         tiYSs9aphg0qF6n+jvWYDnyWIf5oINNVv6j86J1heZTZjjAFxY14XdPweeGZdEl7jCcj
-         0h0ZAoqpvpJO/dtsZnEbtnEI6fmTABAvmjM4cuuZ8yhgWWcqSL5WyU1GrzMIn0xZDg0x
-         1q+Q==
+        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
+        b=Yc0Wk8KKOSVZezqoSGs9GlVp/OUlVXPEDqWGxea9T/DaFFD3QYTjJb7HxabEJjxyjn
+         H+MlOz1JGtO/hl8iqnDLpr9Y3oprEf0CIMLKE+WPmKhx1qACS58pXM43SyMGLSISexX0
+         Qzo4hAphyRJDgVRBlQ9DG4PC6jGDtwKkySpximippebGr7W9NEfx47J9xuOi1GS3nMFe
+         NESdaXbS6W/yEjwGDbBeffZOgZO8/F7lYZbYU9/nyHTvEjwHuMH5BR1zjIe9I10DZsZM
+         QrPfQ3Y5jgSufYLmspK9PpRZxHnjkJUx9UaRl8Y5cTP9i5JWSRE7cZaU7CkY4cJbYWa9
+         kduw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sR4E5Sm8LLwOyw9xtSMIJM649G2H66OSbDzhGqNUrlw=;
-        b=GpFfcPV8WQZbqegiyCCLX1V191Y52WCF1ccWFNWrn5U6HkHojtM8rmJkDAlFv7kG+M
-         gVXNHdzwRx6yiMwbyzsKBgBVQXGH8qLAXAPXlLQXO/0+vvYsgqTrCVh9a1VxhI4c+6Xl
-         63bNMw/PaV0B7XawYR8AV4o3ckCKTZPTUU0GrrgolERn9CI2fY9y0YW01gw+d9aPzqpx
-         P4nJ4p9V8WvlVdRr8GFbo6o/dMOnvcGzKWBAilSx9WPv6PgFjXy09l30fed1MDiu2+vV
-         AV/89465ngg6kRJ0YjjgyzQ5HqmXkZNJo1Z6VbeaeMXGWqDUQ0OC0La69qkFgBCLX/s1
-         gGEA==
-X-Gm-Message-State: AOAM533bUNcMEtNaLarzMpeGeB/9GIr5erXu7yhUVD0rBo9UONrvp5Ov
-        w4oRN8AnGULVkDTPOt24AWU=
-X-Google-Smtp-Source: ABdhPJzujUUuwY3in9lxJJAkZV17XKQLf3iKAYUf+FzBBnu0I2O0DK7Tx9Wgs6hDsyJ/EU99nI+05Q==
-X-Received: by 2002:ac8:59c5:: with SMTP id f5mr20284178qtf.50.1629517952794;
-        Fri, 20 Aug 2021 20:52:32 -0700 (PDT)
+        bh=gPVMfJmF5apelHRJsHy850+Wr5DdBmlIDaqFUXSeNXo=;
+        b=rKwz5rwJF0wn8gksZjpdo3LOICpKBjTtuiZT4SRCTXQNtM7iuuC0hfwrd6j/4uXnro
+         yQwE1WdpteE4xrfO7YnkP+/qhUcyleSOCj2DOdwmhmuftljpirBWdaZnKolCcFwBfHtB
+         PL0vKzmm9Ui8g01sxat25/HjAuL7Jv/JvhHiZRf+Ek/Bo4UXWl73ug/K+82NWZwlUXd9
+         cecWp8jm92kprFhzgUEAiUBuNmzbNUkU6om+8RrQDt+3UdYyLbbv4oQNIuF1l8GR7FHH
+         SncI40Yd+rQNUU9AhXSDnFEL4u3XMBBXMZnTgA2qm7eezJn7Acd3Vran7kBxS7NO/8wt
+         +3hA==
+X-Gm-Message-State: AOAM530lBFsMcwouPoNmIbee4s+kSlJSGU58UlA330Y7v5xuRCy3T5F+
+        S5e0KkzxyJ69Spt7ILLBks5CQS38ctxunQ==
+X-Google-Smtp-Source: ABdhPJzELzGQ5lFGx2Z0651S47KN8nX/2N7WNCSjGrZPJQKp/SPBKIstJVI76apx3J/7L+fTaLkGQQ==
+X-Received: by 2002:a37:a592:: with SMTP id o140mr12060620qke.220.1629518046730;
+        Fri, 20 Aug 2021 20:54:06 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id 19sm3843616qkf.127.2021.08.20.20.52.30
+        by smtp.gmail.com with ESMTPSA id f12sm3434230qtj.40.2021.08.20.20.54.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 20:52:32 -0700 (PDT)
+        Fri, 20 Aug 2021 20:54:06 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
         jing yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] memory:tegra30-emc: replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Fri, 20 Aug 2021 20:52:23 -0700
-Message-Id: <20210821035223.28282-1-jing.yangyang@zte.com.cn>
+Subject: [PATCH linux-next] s390:raw3270: Convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Fri, 20 Aug 2021 20:53:58 -0700
+Message-Id: <20210821035358.28350-1-jing.yangyang@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -70,38 +70,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: jing yangyang <jing.yangyang@zte.com.cn>
 
 Fix the following coccicheck warning:
-./drivers/memory/tegra/tegra30-emc.c:1322:0-23:WARNING:
-tegra_emc_debug_max_rate_fops should be defined
-with DEFINE_DEBUGFS_ATTRIBUTE
+./drivers/s390/char/raw3270.c:1066:8-16: WARNING: use scnprintf or sprintf
+./drivers/s390/char/raw3270.c:1050:8-16: WARNING:use scnprintf or sprintf
+./drivers/s390/char/raw3270.c:1058:8-16: WARNING:use scnprintf or sprintf
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/memory/tegra/tegra30-emc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/s390/char/raw3270.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
-index 7e21a85..80f98d7 100644
---- a/drivers/memory/tegra/tegra30-emc.c
-+++ b/drivers/memory/tegra/tegra30-emc.c
-@@ -1289,7 +1289,7 @@ static int tegra_emc_debug_min_rate_set(void *data, u64 rate)
- 	return 0;
+diff --git a/drivers/s390/char/raw3270.c b/drivers/s390/char/raw3270.c
+index 646ec79..be8529f 100644
+--- a/drivers/s390/char/raw3270.c
++++ b/drivers/s390/char/raw3270.c
+@@ -1047,7 +1047,7 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_model_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
++	return sysfs_emit(buf, "%i\n",
+ 			((struct raw3270 *) dev_get_drvdata(dev))->model);
  }
- 
--DEFINE_SIMPLE_ATTRIBUTE(tegra_emc_debug_min_rate_fops,
-+DEFINE_DEBUGFS_ATTRIBUTE(tegra_emc_debug_min_rate_fops,
- 			tegra_emc_debug_min_rate_get,
- 			tegra_emc_debug_min_rate_set, "%llu\n");
- 
-@@ -1319,7 +1319,7 @@ static int tegra_emc_debug_max_rate_set(void *data, u64 rate)
- 	return 0;
+ static DEVICE_ATTR(model, 0444, raw3270_model_show, NULL);
+@@ -1055,7 +1055,7 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_rows_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
++	return sysfs_emit(buf, "%i\n",
+ 			((struct raw3270 *) dev_get_drvdata(dev))->rows);
  }
- 
--DEFINE_SIMPLE_ATTRIBUTE(tegra_emc_debug_max_rate_fops,
-+DEFINE_DEBUGFS_ATTRIBUTE(tegra_emc_debug_max_rate_fops,
- 			tegra_emc_debug_max_rate_get,
- 			tegra_emc_debug_max_rate_set, "%llu\n");
- 
+ static DEVICE_ATTR(rows, 0444, raw3270_rows_show, NULL);
+@@ -1063,7 +1063,7 @@ struct raw3270_view *
+ static ssize_t
+ raw3270_columns_show(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%i\n",
++	return sysfs_emit(buf, "%i\n",
+ 			((struct raw3270 *) dev_get_drvdata(dev))->cols);
+ }
+ static DEVICE_ATTR(columns, 0444, raw3270_columns_show, NULL);
 -- 
 1.8.3.1
 
