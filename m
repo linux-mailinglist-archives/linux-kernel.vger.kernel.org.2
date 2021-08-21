@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973693F39CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679BA3F39D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241000AbhHUJW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 05:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S234293AbhHUJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 05:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234101AbhHUJWP (ORCPT
+        with ESMTP id S233774AbhHUJWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 21 Aug 2021 05:22:15 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A66C06114D;
-        Sat, 21 Aug 2021 02:20:27 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id i6so17675554edu.1;
-        Sat, 21 Aug 2021 02:20:27 -0700 (PDT)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D7EC06114F;
+        Sat, 21 Aug 2021 02:20:28 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id i6so17675592edu.1;
+        Sat, 21 Aug 2021 02:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+Wxxt3YvhYd/zL8RWKEMmopxrwh/epV13mN5cuVdlwQ=;
-        b=HvujytgwM4KQkb8ZI9Fpf6wYN7e/cUnmsjvoxkToQuW/QmtAVt7o9vZ2boBbGYOu8B
-         LFXAvPRnnLLa2NHgTvfbHkeHY4NyhY9wvzUZoTHpdbGvcPwOpOGhDkTCpJc2pO42O4Yz
-         FXBj4sd/9t5Rn3blSDcGnttBarREc0xo4a3RsuMsKQ+A5cf1eNfU2J13Si2I7Kn5bk1E
-         d1XBFvzmMSjpehDRSQubuy2cFbtW74/0xCcASKK2VA58W6oLWStSRvYIbMk3n9JXyTAn
-         EB5hXUMu+TNihx5JZB9Ew+9Y9B+o0diXjDawUlVc/loxu7Mz8jckW169ItxoS8CG0tV3
-         0fVQ==
+        bh=FRWPQ8HxhbjIOSVCF9fueneGQHgaEtyHF4yxY4sSzec=;
+        b=JIHhV+40z3DGp/eALzG7aaet5twMq1a/vpBct8kXXSCGkw+XCFmERWJNER2GFveio/
+         o0v9jX4CHSnNnHTKAaLukGGLDp5nxdG437LX+P2XTSMmDD4FLHlGq3MlDtZZQ5LwCqNu
+         h5MM8t54E+8Hp8LRtBDgRjk+uopp2T0BAKJz5UMjtglzVwaHBBITdDWWHTDj9rVOZK9g
+         5Tg/fIEXHBhA0YDvBe1aUDPliS/qD7LPuuWZlmkDmB6VCGcoYYkmhFxY8zRBZiRr9f0G
+         RXU2fUxbSdKXMwZEvSlA+gN7CyjpG9SfpM8uJYVeqTn5rm5OaggXF6hRmQ/7FBRUO86d
+         jV5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+Wxxt3YvhYd/zL8RWKEMmopxrwh/epV13mN5cuVdlwQ=;
-        b=DzArRZe6vOF7J3QGM1j3S8N+Dmo6/VFr01Ru62WVgIyGB6qJI45Zha/8sHC+QOS8IV
-         TJHL82Hd1qqYwkSFMj3lpPO+jMgpkCYrGeg5RKXzZQwhS5nKwPIDXeXbXZUNNuBFA7LO
-         1lf4i1H5FOE54vGt4FBZRkoduznJvf6Pzpmg3xZysWkQSdjJ9NXOBTpQOjjURdEYGCbU
-         6Fq4uzQ6IY55B+06slsWyLbfCOdoTGg2Wl1sB5EFHGf9yfLRY03hg7ijo5QJLlBfYRur
-         kYtK5E59GIKwxyDbsPu/V9lUK+Qb7+vvMcBB9EdY5HmNxyxYOPxonQGXUhKJwI2QNj7S
-         592A==
-X-Gm-Message-State: AOAM533sVFgiJMy0LVhqMFh52y/gs0dhA+BLNeIUxNBcRwQKm18vjKIF
-        Ay22QrCq3PGoP9JjCievOEQ=
-X-Google-Smtp-Source: ABdhPJznttDiEJ6KkNIBl23JXKkVU2T9HNvOPQgyOzYxqVW8+2RJdTp3KEbk5jSrUrLH7aFi8119/A==
-X-Received: by 2002:a05:6402:518f:: with SMTP id q15mr26625616edd.226.1629537626130;
-        Sat, 21 Aug 2021 02:20:26 -0700 (PDT)
+        bh=FRWPQ8HxhbjIOSVCF9fueneGQHgaEtyHF4yxY4sSzec=;
+        b=lIyfXcLrBbv/h41p0lBUBw4l1JzJsVSYRyUJQWF78Jl369H0ujlKGts2aq0QhzIs9y
+         /k7AcaMJKdAnhJmoesJXcJp6st1cUiuivM+olkEtx5lM+LfZFLePTHkpS5Rjkwsn8zlS
+         w/YO3K8H2Io2NA4Yu/VILspK+kcNELKvtwmh7Evp0L9Lw8L8XM0QvDZIMUu+2clOHRdA
+         p3kDONxyQaOIrZz+jdWGB3I+aPggpmGE6lW7lUPRY2YwjjGsJe+5OwKKBEGC4U6OR/3K
+         /AFsKPoeu2l0vgyHBe1mDnaCM2qAasXgde4efXvAUhATykuYOEcA6sMcllI5aE5+l7SI
+         +BPg==
+X-Gm-Message-State: AOAM531Np01P85TtlhrH9X58aRkVWT1M4ENp7G4dbiuOzkwD7ffenQdx
+        qYxjyyPvHiRI0IdH2tuoukE=
+X-Google-Smtp-Source: ABdhPJzrnyo88qRgBmIhxwLlVU5nAHryT91dUbv2RLu+LkECJzI0/fIabuml8GZTahoyGQD+6eqbmw==
+X-Received: by 2002:a05:6402:220f:: with SMTP id cq15mr5378154edb.142.1629537627317;
+        Sat, 21 Aug 2021 02:20:27 -0700 (PDT)
 Received: from honeypot.. (mob-176-243-254-204.net.vodafone.it. [176.243.254.204])
-        by smtp.googlemail.com with ESMTPSA id a25sm4003878ejv.91.2021.08.21.02.20.25
+        by smtp.googlemail.com with ESMTPSA id a25sm4003878ejv.91.2021.08.21.02.20.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 02:20:25 -0700 (PDT)
+        Sat, 21 Aug 2021 02:20:27 -0700 (PDT)
 From:   Riccardo Mancini <rickyman7@gmail.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Ian Rogers <irogers@google.com>,
@@ -58,9 +58,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
         linux-perf-users@vger.kernel.org,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [RFC PATCH v1 30/37] perf record: use evlist__open_custom
-Date:   Sat, 21 Aug 2021 11:19:36 +0200
-Message-Id: <b05793fb68d8e0c50af9a6c600dc70a7f79fb806.1629490974.git.rickyman7@gmail.com>
+Subject: [RFC PATCH v1 31/37] tools lib/subcmd: add OPT_UINTEGER_OPTARG option type
+Date:   Sat, 21 Aug 2021 11:19:37 +0200
+Message-Id: <c46749b3dff796729078352ff164d363457a3587.1629490974.git.rickyman7@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1629490974.git.rickyman7@gmail.com>
 References: <cover.1629490974.git.rickyman7@gmail.com>
@@ -70,105 +70,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch replace the custom evlist opening implemented in record__open
-with the new standard function evlist__open_custom.
-Differently from before this patch, in case of a weak group all fds are
-closed and then reopened (instead of just closing failing ones).
+This patch adds OPT_UINTEGER_OPTARG, which is the same as OPT_UINTEGER,
+but also makes it possible to use the option without any value, setting
+the variable to a default value, d.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
 ---
- tools/perf/builtin-record.c | 63 ++++++++++++++++++++++++-------------
- 1 file changed, 42 insertions(+), 21 deletions(-)
+ tools/lib/subcmd/parse-options.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index cccc2d0f9977d5b3..dc9a814b2e7906fc 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -882,6 +882,37 @@ static int record__mmap(struct record *rec)
- 	return record__mmap_evlist(rec, rec->evlist);
- }
- 
-+struct record_open_custom_fallback {
-+	struct evlist_open_custom_fallback fallback;
-+	struct record_opts *opts;
-+	bool retry;
-+};
-+
-+static bool record__open_fallback(struct evlist_open_custom_fallback *_fallback,
-+				struct evlist *evlist, struct evsel *evsel, int err)
-+{
-+	char msg[BUFSIZ];
-+	struct record_open_custom_fallback *fallback = container_of(_fallback,
-+		struct record_open_custom_fallback, fallback);
-+
-+	if (evsel__fallback(evsel, -err, msg, sizeof(msg))) {
-+		if (verbose > 0)
-+			ui__warning("%s\n", msg);
-+		return true;
-+	}
-+	if ((err == -EINVAL || err == -EBADF) &&
-+		evsel->core.leader != &evsel->core &&
-+		evsel->weak_group) {
-+		evlist__reset_weak_group(evlist, evsel, true);
-+		fallback->retry = true;
-+		return false;
-+	}
-+
-+	evsel__open_strerror(evsel, &fallback->opts->target, -err, msg, sizeof(msg));
-+	ui__error("%s\n", msg);
-+	return false;
-+}
-+
- static int record__open(struct record *rec)
- {
- 	char msg[BUFSIZ];
-@@ -890,6 +921,12 @@ static int record__open(struct record *rec)
- 	struct perf_session *session = rec->session;
- 	struct record_opts *opts = &rec->opts;
- 	int rc = 0;
-+	struct record_open_custom_fallback cust_fb = {
-+		.fallback = {
-+			.func = record__open_fallback
-+		},
-+		.opts = opts
-+	};
- 
- 	/*
- 	 * For initial_delay, system wide or a hybrid system, we need to add a
-@@ -919,28 +956,12 @@ static int record__open(struct record *rec)
- 
- 	evlist__config(evlist, opts, &callchain_param);
- 
--	evlist__for_each_entry(evlist, pos) {
--try_again:
--		if (evsel__open(pos, pos->core.cpus, pos->core.threads) < 0) {
--			if (evsel__fallback(pos, errno, msg, sizeof(msg))) {
--				if (verbose > 0)
--					ui__warning("%s\n", msg);
--				goto try_again;
--			}
--			if ((errno == EINVAL || errno == EBADF) &&
--			    pos->core.leader != &pos->core &&
--			    pos->weak_group) {
--			        pos = evlist__reset_weak_group(evlist, pos, true);
--				goto try_again;
--			}
--			rc = -errno;
--			evsel__open_strerror(pos, &opts->target, errno, msg, sizeof(msg));
--			ui__error("%s\n", msg);
--			goto out;
--		}
- 
--		pos->supported = true;
--	}
-+	do {
-+		cust_fb.retry = false;
-+		rc = evlist__open_custom(evlist, &cust_fb.fallback);
-+	} while (cust_fb.retry);
-+
- 
- 	if (symbol_conf.kptr_restrict && !evlist__exclude_kernel(evlist)) {
- 		pr_warning(
+diff --git a/tools/lib/subcmd/parse-options.h b/tools/lib/subcmd/parse-options.h
+index d2414144eb8c9927..41b9b942504d398e 100644
+--- a/tools/lib/subcmd/parse-options.h
++++ b/tools/lib/subcmd/parse-options.h
+@@ -133,6 +133,7 @@ struct option {
+ #define OPT_SET_PTR(s, l, v, h, p)  { .type = OPTION_SET_PTR, .short_name = (s), .long_name = (l), .value = (v), .help = (h), .defval = (p) }
+ #define OPT_INTEGER(s, l, v, h)     { .type = OPTION_INTEGER, .short_name = (s), .long_name = (l), .value = check_vtype(v, int *), .help = (h) }
+ #define OPT_UINTEGER(s, l, v, h)    { .type = OPTION_UINTEGER, .short_name = (s), .long_name = (l), .value = check_vtype(v, unsigned int *), .help = (h) }
++#define OPT_UINTEGER_OPTARG(s, l, v, d, h)    { .type = OPTION_UINTEGER, .short_name = (s), .long_name = (l), .value = check_vtype(v, unsigned int *), .help = (h), .flags = PARSE_OPT_OPTARG, .defval = (intptr_t)(d) }
+ #define OPT_LONG(s, l, v, h)        { .type = OPTION_LONG, .short_name = (s), .long_name = (l), .value = check_vtype(v, long *), .help = (h) }
+ #define OPT_ULONG(s, l, v, h)        { .type = OPTION_ULONG, .short_name = (s), .long_name = (l), .value = check_vtype(v, unsigned long *), .help = (h) }
+ #define OPT_U64(s, l, v, h)         { .type = OPTION_U64, .short_name = (s), .long_name = (l), .value = check_vtype(v, u64 *), .help = (h) }
 -- 
 2.31.1
 
