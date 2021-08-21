@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DF63F3943
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 09:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32FE3F3948
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 09:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhHUHPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 03:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbhHUHP3 (ORCPT
+        id S232922AbhHUHSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 03:18:07 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:36250 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232097AbhHUHSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 03:15:29 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE9BC061575;
-        Sat, 21 Aug 2021 00:14:50 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id t42so8038441pfg.12;
-        Sat, 21 Aug 2021 00:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=G2F9LcG3CzlqOOitDkVcplNgqWD9v/P1osOYyggjlHo=;
-        b=Lp5PGR4UvGg/Nv5nQangIEIvKsSc/VPWdnj781TfUlHSLh48xqOgo9vRwByC8fBELE
-         1R/126BE98KvaRoi6Zjn4ZSfx6si6J1zDxDPAiruX+3th/T0altsH2g8zBCKaNAe6Isl
-         HFCttqw+QJaprRpWzE6MK5t6rmyqIoR1yz1ogNswgONpHbTsz2UBd8k0neh2F/xOl76C
-         eRzy/xq697131P5sUZjMhslwXtI+hEHJJi2hQbm3gVloTAQfTA42TVBlE66wTA83pqeX
-         jJ1rBlTxEqgCD0C8zE43vLvetdBFuaqpeT5X+LFpij+g4UJMaruza4ewHt7Z1a0KTP7s
-         6G9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=G2F9LcG3CzlqOOitDkVcplNgqWD9v/P1osOYyggjlHo=;
-        b=LjORUc6YrZPL8ud9TBVvTy32IT/fTIho8SxDWxhOGa+/amsWHChpcCJxZlcEkK7jOf
-         xYuEiZiX93OkYIp9gg35ULnllyb7Ev9czWIP1Q8zJlMJxJwhNYdgu6nvV59Xu3E1GuXR
-         L3NFU4QXBVUTosdRen+U0E4Gc7ZLbANvhQoaw59PyGSGXtoKE1XOvMjoXiy3ccuf4+jt
-         VHyX08207jaZ3Zz4LtW1Isq04BX40M120YXXNyvYXa1D4jO2KO85kyiepn0CD6D4wkko
-         iYJw3a4Xtsp4txXtBT9ceRz2sWi6qy8oDGHTaOExQDP0nbsnh7rLoPdDyLSF2DXZV4q/
-         +bLA==
-X-Gm-Message-State: AOAM533x/lzr5FAzBU56BybM91OOtIcEwg4j2ERlICzvYhbBO6GBep4E
-        BGYQifv0nMNobKabriCHmTg=
-X-Google-Smtp-Source: ABdhPJwpBRh3emBs6A3HeggDiou5daSspA79nMlz5XXQ25O0I3OvTdZFhhS0OG56Zf179R0XfC60aw==
-X-Received: by 2002:a63:d104:: with SMTP id k4mr22021585pgg.196.1629530090472;
-        Sat, 21 Aug 2021 00:14:50 -0700 (PDT)
-Received: from fedora.. ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
-        by smtp.googlemail.com with ESMTPSA id c7sm6901973pjc.31.2021.08.21.00.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 00:14:50 -0700 (PDT)
-From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, pshelar@nicira.com,
-        willemdebruijn.kernel@gmail.com
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-Subject: [PATCH 2/2 net] ip6_gre: add validation for csum_start
-Date:   Sat, 21 Aug 2021 12:44:25 +0530
-Message-Id: <20210821071425.512834-2-chouhan.shreyansh630@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210819100447.00201b26@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Sat, 21 Aug 2021 03:18:05 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d09 with ME
+        id k7HP2500Z3riaq2037HQhN; Sat, 21 Aug 2021 09:17:25 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Aug 2021 09:17:25 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     linus.walleij@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] i2c: busses: i2c-nomadik: Remove a useless call in the remove function
+Date:   Sat, 21 Aug 2021 09:17:22 +0200
+Message-Id: <4f4c2c5c20b61c4bb28cb3e9ab4640534dd2adec.1629530169.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Validate csum_start in gre_handle_offloads before we call _gre_xmit so
-that we do not crash later when the csum_start value is used in the
-lco_csum function call.
+Since commit a410963ba4c0 ("Merge branch 'i2c-embedded/for-next' of
+git://git.pengutronix.de/git/wsa/linux"), there is no more
+'request_mem_region()' call in this driver.
 
-This patch deals with ipv6 code.
+So remove the 'release_mem_region()' call from the remove function which is
+likely a left over.
 
-Fixes: Fixes: b05229f44228 ("gre6: Cleanup GREv6 transmit path, call common
-GRE functions")
-Reported-by: syzbot+ff8e1b9f2f36481e2efc@syzkaller.appspotmail.com
-Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+There is no details in the above commit log, but at its end we can read:
+   Conflicts:
+	   drivers/i2c/busses/i2c-nomadik.c
+
+This may explain why this call has been left here.
+
+Fixes: a410963ba4c0 ("Merge branch 'i2c-embedded/for-next' of git://git.pengutronix.de/git/wsa/linux
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- net/ipv6/ip6_gre.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch is completely speculative and without details about commit
+a410963ba4c0 it's hard to be sure of the intent.
 
-diff --git a/net/ipv6/ip6_gre.c b/net/ipv6/ip6_gre.c
-index bc224f917bbd..7a5e90e09363 100644
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -629,6 +629,8 @@ static int gre_rcv(struct sk_buff *skb)
+All I can say is that it looks logical to me and that it compiles!
+---
+ drivers/i2c/busses/i2c-nomadik.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-nomadik.c b/drivers/i2c/busses/i2c-nomadik.c
+index a2d12a5b1c34..e215a7357873 100644
+--- a/drivers/i2c/busses/i2c-nomadik.c
++++ b/drivers/i2c/busses/i2c-nomadik.c
+@@ -1057,7 +1057,6 @@ static int nmk_i2c_probe(struct amba_device *adev, const struct amba_id *id)
  
- static int gre_handle_offloads(struct sk_buff *skb, bool csum)
+ static void nmk_i2c_remove(struct amba_device *adev)
  {
-+	if (csum && skb_checksum_start(skb) < skb->data)
-+		return -EINVAL;
- 	return iptunnel_handle_offloads(skb,
- 					csum ? SKB_GSO_GRE_CSUM : SKB_GSO_GRE);
+-	struct resource *res = &adev->res;
+ 	struct nmk_i2c_dev *dev = amba_get_drvdata(adev);
+ 
+ 	i2c_del_adapter(&dev->adap);
+@@ -1067,7 +1066,6 @@ static void nmk_i2c_remove(struct amba_device *adev)
+ 	/* disable the controller */
+ 	i2c_clr_bit(dev->virtbase + I2C_CR, I2C_CR_PE);
+ 	clk_disable_unprepare(dev->clk);
+-	release_mem_region(res->start, resource_size(res));
  }
+ 
+ static struct i2c_vendor_data vendor_stn8815 = {
 -- 
-2.31.1
+2.30.2
 
