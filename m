@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEF03F3C75
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 22:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD563F3C7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 23:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhHUUzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 16:55:45 -0400
-Received: from out05.smtpout.orange.fr ([193.252.22.214]:46621 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhHUUzo (ORCPT
+        id S230180AbhHUVNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 17:13:53 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:54532 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229988AbhHUVNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 16:55:44 -0400
+        Sat, 21 Aug 2021 17:13:50 -0400
 Received: from pop-os.home ([90.126.253.178])
         by mwinf5d69 with ME
-        id kLuz250043riaq203LuzY0; Sat, 21 Aug 2021 22:55:02 +0200
+        id kMD82500A3riaq203MD9DS; Sat, 21 Aug 2021 23:13:09 +0200
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Aug 2021 22:55:02 +0200
+X-ME-Date: Sat, 21 Aug 2021 23:13:09 +0200
 X-ME-IP: 90.126.253.178
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     m.chetan.kumar@intel.com, linuxwwan@intel.com,
-        loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
-        johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: wwan: iosm: switch from 'pci_' to 'dma_' API
-Date:   Sat, 21 Aug 2021 22:54:57 +0200
-Message-Id: <a0a70eb0a65f16d870ecf2a14d7a8e931bc63d2e.1629579202.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] memstick: switch from 'pci_' to 'dma_' API
+Date:   Sat, 21 Aug 2021 23:13:07 +0200
+Message-Id: <f6fe24f2372c8c627a08ace7187bfe60d35788b6.1629580314.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,15 +36,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The wrappers in include/linux/pci-dma-compat.h should go away.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
+The patch has been generated with the coccinelle script below.
 It has been compile tested.
 
-'ipc_protocol_init()' can use GFP_KERNEL, because this flag is already used
-by a 'kzalloc()' call a few lines above.
-
-'ipc_protocol_msg_prepipe_open()' must use GFP_ATOMIC, because this flag is
-already used by a 'kcalloc()' call a few lines above.
+No memory allocation in involved in this patch, so no GFP_ tweak is needed.
 
 @@ @@
 -    PCI_DMA_BIDIRECTIONAL
@@ -165,69 +158,70 @@ Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 If needed, see post from Christoph Hellwig on the kernel-janitors ML:
    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 ---
- drivers/net/wwan/iosm/iosm_ipc_protocol.c     | 10 +++++-----
- drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c | 13 ++++++-------
- 2 files changed, 11 insertions(+), 12 deletions(-)
+ drivers/memstick/host/r592.c    |  5 ++---
+ drivers/memstick/host/tifm_ms.c | 12 ++++++------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wwan/iosm/iosm_ipc_protocol.c b/drivers/net/wwan/iosm/iosm_ipc_protocol.c
-index 834d8b146a94..63fc7012f09f 100644
---- a/drivers/net/wwan/iosm/iosm_ipc_protocol.c
-+++ b/drivers/net/wwan/iosm/iosm_ipc_protocol.c
-@@ -239,9 +239,9 @@ struct iosm_protocol *ipc_protocol_init(struct iosm_imem *ipc_imem)
- 	ipc_protocol->old_msg_tail = 0;
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index 615a83782e55..7ed984360349 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -293,7 +293,7 @@ static int r592_transfer_fifo_dma(struct r592_device *dev)
  
- 	ipc_protocol->p_ap_shm =
--		pci_alloc_consistent(ipc_protocol->pcie->pci,
--				     sizeof(*ipc_protocol->p_ap_shm),
--				     &ipc_protocol->phy_ap_shm);
-+		dma_alloc_coherent(&ipc_protocol->pcie->pci->dev,
-+				   sizeof(*ipc_protocol->p_ap_shm),
-+				   &ipc_protocol->phy_ap_shm, GFP_KERNEL);
+ 	/* TODO: hidden assumption about nenth beeing always 1 */
+ 	sg_count = dma_map_sg(&dev->pci_dev->dev, &dev->req->sg, 1, is_write ?
+-		PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
++			      DMA_TO_DEVICE : DMA_FROM_DEVICE);
  
- 	if (!ipc_protocol->p_ap_shm) {
- 		dev_err(ipc_protocol->dev, "pci shm alloc error");
-@@ -275,8 +275,8 @@ struct iosm_protocol *ipc_protocol_init(struct iosm_imem *ipc_imem)
- 
- void ipc_protocol_deinit(struct iosm_protocol *proto)
- {
--	pci_free_consistent(proto->pcie->pci, sizeof(*proto->p_ap_shm),
--			    proto->p_ap_shm, proto->phy_ap_shm);
-+	dma_free_coherent(&proto->pcie->pci->dev, sizeof(*proto->p_ap_shm),
-+			  proto->p_ap_shm, proto->phy_ap_shm);
- 
- 	ipc_pm_deinit(proto);
- 	kfree(proto);
-diff --git a/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c b/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
-index 35d590743d3a..c6b032f95d2e 100644
---- a/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
-+++ b/drivers/net/wwan/iosm/iosm_ipc_protocol_ops.c
-@@ -74,9 +74,9 @@ static int ipc_protocol_msg_prepipe_open(struct iosm_protocol *ipc_protocol,
- 		return -ENOMEM;
- 
- 	/* Allocate the transfer descriptors for the pipe. */
--	tdr = pci_alloc_consistent(ipc_protocol->pcie->pci,
--				   pipe->nr_of_entries * sizeof(*tdr),
--				   &pipe->phy_tdr_start);
-+	tdr = dma_alloc_coherent(&ipc_protocol->pcie->pci->dev,
-+				 pipe->nr_of_entries * sizeof(*tdr),
-+				 &pipe->phy_tdr_start, GFP_ATOMIC);
- 	if (!tdr) {
- 		kfree(skbr);
- 		dev_err(ipc_protocol->dev, "tdr alloc error");
-@@ -492,10 +492,9 @@ void ipc_protocol_pipe_cleanup(struct iosm_protocol *ipc_protocol,
- 
- 	/* Free and reset the td and skbuf circular buffers. kfree is save! */
- 	if (pipe->tdr_start) {
--		pci_free_consistent(ipc_protocol->pcie->pci,
--				    sizeof(*pipe->tdr_start) *
--					    pipe->nr_of_entries,
--				    pipe->tdr_start, pipe->phy_tdr_start);
-+		dma_free_coherent(&ipc_protocol->pcie->pci->dev,
-+				  sizeof(*pipe->tdr_start) * pipe->nr_of_entries,
-+				  pipe->tdr_start, pipe->phy_tdr_start);
- 
- 		pipe->tdr_start = NULL;
+ 	if (sg_count != 1 || sg_dma_len(&dev->req->sg) < R592_LFIFO_SIZE) {
+ 		message("problem in dma_map_sg");
+@@ -310,8 +310,7 @@ static int r592_transfer_fifo_dma(struct r592_device *dev)
  	}
+ 
+ 	dma_unmap_sg(&dev->pci_dev->dev, &dev->req->sg, 1, is_write ?
+-		PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
+-
++		     DMA_TO_DEVICE : DMA_FROM_DEVICE);
+ 
+ 	return dev->dma_error;
+ }
+diff --git a/drivers/memstick/host/tifm_ms.c b/drivers/memstick/host/tifm_ms.c
+index 57145374f6ac..c272453670be 100644
+--- a/drivers/memstick/host/tifm_ms.c
++++ b/drivers/memstick/host/tifm_ms.c
+@@ -279,8 +279,8 @@ static int tifm_ms_issue_cmd(struct tifm_ms *host)
+ 	if (host->use_dma) {
+ 		if (1 != tifm_map_sg(sock, &host->req->sg, 1,
+ 				     host->req->data_dir == READ
+-				     ? PCI_DMA_FROMDEVICE
+-				     : PCI_DMA_TODEVICE)) {
++				     ? DMA_FROM_DEVICE
++				     : DMA_TO_DEVICE)) {
+ 			host->req->error = -ENOMEM;
+ 			return host->req->error;
+ 		}
+@@ -350,8 +350,8 @@ static void tifm_ms_complete_cmd(struct tifm_ms *host)
+ 	if (host->use_dma) {
+ 		tifm_unmap_sg(sock, &host->req->sg, 1,
+ 			      host->req->data_dir == READ
+-			      ? PCI_DMA_FROMDEVICE
+-			      : PCI_DMA_TODEVICE);
++			      ? DMA_FROM_DEVICE
++			      : DMA_TO_DEVICE);
+ 	}
+ 
+ 	writel((~TIFM_CTRL_LED) & readl(sock->addr + SOCK_CONTROL),
+@@ -607,8 +607,8 @@ static void tifm_ms_remove(struct tifm_dev *sock)
+ 		if (host->use_dma)
+ 			tifm_unmap_sg(sock, &host->req->sg, 1,
+ 				      host->req->data_dir == READ
+-				      ? PCI_DMA_TODEVICE
+-				      : PCI_DMA_FROMDEVICE);
++				      ? DMA_TO_DEVICE
++				      : DMA_FROM_DEVICE);
+ 		host->req->error = -ETIME;
+ 
+ 		do {
 -- 
 2.30.2
 
