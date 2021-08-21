@@ -2,152 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCBA3F3B23
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9173F3B2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhHUPT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 11:19:59 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:55884 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbhHUPT6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:19:58 -0400
-Received: by mail-io1-f70.google.com with SMTP id f10-20020a6b620a0000b02904e5ab8bdc6cso7207016iog.22
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:19:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MWvlGvJX3+lC+CEYrV+NJHyCqoKq7RyLbTXAsQO2CkQ=;
-        b=rJU9k2KWOCl/lKau3mFAj8M7n78U8OK8zGDRAjZOCJ4VqAS1msQot00fw4c+RB9Ozg
-         mr0L8pKeXa0qu80xqjDeHfLLXzGV3GxsZwvc+bfTwfPf1zErzIksJaFrYbkbCLLheFwI
-         71Vnz0jPQqy/ZjBoUweD2eS+yrOyNhtWBdw7R+UxXrAT+XwVjLNF0m6NYaZXAU1+zQCe
-         22ztKh8MFgZYywnWhMX0NuiOZUaVdOsVjSHBgUpEZe5VwUC0AiViElGdNQQjnEBZvzvk
-         sfAtstbp3FR5na+Tzx8i79lcL6tMynaru6m124VqJeImfb9mQfgwi23lsd4Zm0gAmca/
-         2OaA==
-X-Gm-Message-State: AOAM531/TDLXkWPFsAlJ1OUNfAEaNNx38IU1KCdrH98PZ378Cxk3VC3v
-        m5RL4QEUwAZbOA7jLg+gPKTYDSkYwVmKwnjUHyDD4beKwK7H
-X-Google-Smtp-Source: ABdhPJwtfhWP2cfkdff8Z/zHnkfT0tZgwaUP5HKN+ka3i6qEb3FVDC/Z62GKMqghqbhutTFdaMU02QNNxsK63f/Qp3KIufdL9hPq
+        id S232292AbhHUP1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 11:27:02 -0400
+Received: from mail-co1nam11on2083.outbound.protection.outlook.com ([40.107.220.83]:55521
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231732AbhHUP1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 11:27:01 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KSRHI4UNmIxkZZlNxMdmF/de+5Yi8Hi/OP/gSygU/vI3c+mXpU6kgenqRN7V86lQAEP9GLwC5fyy+SawdvSdvyOFgSaXy8XXCm/XN2824mUYqSPe3lMQEEF/Dvix3HEXaypket7ds3Bv7uoOcUsarGMaIw51yOS3DOKwjtvWT0dgUWLCF435IWkF8XixfHoPpUWzx87uew/ZS6l0rfEBx5pV7aTberJhpUfCuf0t+px2TAl6pTWKRTVRqqDy5weZewTdvfYBVu0EXqn6FrHNGfRsB26dF0nBZLPF068xhOhbAP+usY4aQWWcoWOza5Ulbx2WR3D0PU9Zm68W9ZplXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xwjPogDO3TSbsa82gbCFuwOlaaer8naLrSo43m9KRuw=;
+ b=eG4py7hW0IcCR8LgVCXK/u4F+ZY7yGH/tBKY3Q0Fotg5mZI+lAVN2ItKx3SSr02wJolCbUFfBjs990I8uKj9uHE3+wJJoVNxiwFO0GTe0AdPCo6NqwzdAKcsEBCmd8+6+2kg1GuH/gBMBCMw2p+m08vLd0vTBBJpXBZILZH5iidhJvMyXkIfuqDznOsGRBDQjREV31JywBXTcuOQrzqOm0G0m23tuwRXFyfS/oTGeC/2T5oiS2qJxNp2Tz2+8MW7XdzQTH5q4cP1nR0bSvJD8mA4KOFUo6Xq2BZMi6+B4cnR0FT9zFCG1T00arxvYXDfY0mCFsNwWU+I8JHxIPmGAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=russell.cc smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xwjPogDO3TSbsa82gbCFuwOlaaer8naLrSo43m9KRuw=;
+ b=IISxpUq6mdFEhrOMTm/m0t+icIIrVBexkPfaf56r7/K00CZuYepEDnie8TiYeqsQga3j0/mc7EkPq6Mq8a/9qDq8tqo9nVPQd/nx9z4QAjezBbMmmjyiP/dQloQMHRdpVuRqeqfNITJ81FECRk2On9MJYwnujtYQTQQLV6S1c10A2gUtRgoe+HaAPiB3ot+2IAAMK4LyV+ejhTE42H1P/FwhJUuQ1ImeqEMX8cfndS/pbvI5jFJ0syfEhva1kfMdo2OjiEgJmwAWUEpW9cRwMtkCr+59uarKU+y75b7ABZFzKehUlet4YekZRrhM1ESTjKqGrAMhd9wYA+fT3576zw==
+Received: from BN9PR03CA0562.namprd03.prod.outlook.com (2603:10b6:408:138::27)
+ by DM6PR12MB4370.namprd12.prod.outlook.com (2603:10b6:5:2aa::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Sat, 21 Aug
+ 2021 15:26:20 +0000
+Received: from BN8NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:138:cafe::9a) by BN9PR03CA0562.outlook.office365.com
+ (2603:10b6:408:138::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
+ Transport; Sat, 21 Aug 2021 15:26:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; russell.cc; dkim=none (message not signed)
+ header.d=none;russell.cc; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ BN8NAM11FT059.mail.protection.outlook.com (10.13.177.120) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4436.19 via Frontend Transport; Sat, 21 Aug 2021 15:26:19 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 21 Aug
+ 2021 15:26:19 +0000
+Received: from [10.20.115.83] (172.20.187.6) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 21 Aug
+ 2021 15:26:17 +0000
+Subject: Re: [PATCH] PCI/AER: Continue AER recovery of device with
+ NO_BUS_RESET set
+To:     Bjorn Helgaas <bhelgaas@google.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Russell Currey <ruscur@russell.cc>
+References: <20210821133058.31583-1-sdonthineni@nvidia.com>
+From:   Shanker R Donthineni <sdonthineni@nvidia.com>
+Message-ID: <f8719589-e56a-25c1-b955-4abd67cf7490@nvidia.com>
+Date:   Sat, 21 Aug 2021 10:26:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:6711:: with SMTP id b17mr17814117ilc.122.1629559158845;
- Sat, 21 Aug 2021 08:19:18 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 08:19:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cdb89d05ca134e47@google.com>
-Subject: [syzbot] BUG: unable to handle kernel NULL pointer dereference in unix_shutdown
-From:   syzbot <syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com>
-To:     Rao.Shoaib@oracle.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, cong.wang@bytedance.com, daniel@iogearbox.net,
-        davem@davemloft.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210821133058.31583-1-sdonthineni@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c13ad4fc-55e3-4433-ae4e-08d964b806b3
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4370:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB437017EFF3C560E7E60DA2DDC7C29@DM6PR12MB4370.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pqdH+0qm0zQk6qkauCbc7r0woW9uftT4l/da0vnpqpyi93tJGJ4YlWDEgc6l5yCZeq9RewpNUmsl8Z4uDvG6hcGg4bgClVfy9L9Z+peMAKLM5bxr9pNvs3T9qRivNrCPd79cn/uQMOlsWC/kCK3wCkvvUJ7/Mdxs3XMjVuzqZaLYp76gZVbCAX8IuFn0NiAqL4C8LPCrtFCs+lu6GZLVIQhjECgqlcx9KTbOTdVufr3TD7sfRUClL7tp5MQ2KKjTYpG3OiVzdHrgBHC0k1xbCB2czrQxDCUDGG4EsnIu9CtAiZoRFkWn+3fV5bC1oKMSOB/JoTGco6EI3SYxGu6px8AtpBCmygTu8ueYtBuRjPDDAvy47/uCVDN953OcJD1KKVdtRC4VTnSo3yc4qlrCJ2ruMam5ft6JCIVwevy6SklrEwyJHPepNrtEh07kp1fjaLxUQ5zaQhHFQRJCyuann1jPzvJObFbIasJSCC/krh9KYLl3cl3Vn/FwB3dfAtvlftiOz/rphsnIzCdkfBWUDp19E9UhZ8EhYAmb1K4hQK06PHYJLUEbiid5GZP3hwcDMPOiTxeKhx9jgsMZipZ+2lUk5dctwN6/wGPFVHQEt38LYWHOA6STcabvnvj/1UD4yaFhqmJap3PJ9OcwWROsvM/ESit3wYOHMfx2fKefB+7J5ruWNNxDL7AMHhrW9JJEQKaVRJHn7X8nrilkxmOcUICP9f4P97g5TUup0REeZbyRL3ojSHRRIzkVkobGc7boS97Kjcm36aEA5X/rNTRhwA==
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(396003)(346002)(39860400002)(36840700001)(46966006)(31696002)(82310400003)(8676002)(47076005)(2906002)(478600001)(36756003)(426003)(316002)(70206006)(16576012)(336012)(70586007)(8936002)(36906005)(2616005)(54906003)(36860700001)(31686004)(26005)(16526019)(82740400003)(53546011)(83380400001)(5660300002)(4326008)(186003)(6916009)(86362001)(356005)(7636003)(21314003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2021 15:26:19.7325
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c13ad4fc-55e3-4433-ae4e-08d964b806b3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4370
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    9803fb968c8c Add linux-next specific files for 20210817
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1727c65e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=681282daead30d81
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd7ceee0d3b5892f07af
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13fb6ff9300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15272861300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com
-
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 6f812067 P4D 6f812067 PUD 6fe2f067 PMD 0 
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6569 Comm: syz-executor133 Not tainted 5.14.0-rc6-next-20210817-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90002dcfe38 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffffff8d27cfa0 RCX: 0000000000000000
-RDX: 1ffffffff1a4fa0a RSI: ffffffff87d03085 RDI: ffff888077074d80
-RBP: ffff888077074d80 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff87d03004 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888077075398 R14: ffff888077075b58 R15: ffff888077074e00
-FS:  0000000001747300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000006f93f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- unix_shutdown+0x28a/0x5b0 net/unix/af_unix.c:2857
- __sys_shutdown_sock net/socket.c:2242 [inline]
- __sys_shutdown_sock net/socket.c:2236 [inline]
- __sys_shutdown+0xf1/0x1b0 net/socket.c:2254
- __do_sys_shutdown net/socket.c:2262 [inline]
- __se_sys_shutdown net/socket.c:2260 [inline]
- __x64_sys_shutdown+0x50/0x70 net/socket.c:2260
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee29
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdc0b3c908 EFLAGS: 00000246 ORIG_RAX: 0000000000000030
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee29
-RDX: 00000000004ac018 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000402e10 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ea0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
-CR2: 0000000000000000
----[ end trace f541a02ac6ed69b5 ]---
-RIP: 0010:0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-RSP: 0018:ffffc90002dcfe38 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffffff8d27cfa0 RCX: 0000000000000000
-RDX: 1ffffffff1a4fa0a RSI: ffffffff87d03085 RDI: ffff888077074d80
-RBP: ffff888077074d80 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff87d03004 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888077075398 R14: ffff888077075b58 R15: ffff888077074e00
-FS:  0000000001747300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 000000006f93f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	28 c3                	sub    %al,%bl
-   2:	e8 2a 14 00 00       	callq  0x1431
-   7:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
-   e:	00 00 00 
-  11:	48 89 f8             	mov    %rdi,%rax
-  14:	48 89 f7             	mov    %rsi,%rdi
-  17:	48 89 d6             	mov    %rdx,%rsi
-  1a:	48 89 ca             	mov    %rcx,%rdx
-  1d:	4d 89 c2             	mov    %r8,%r10
-  20:	4d 89 c8             	mov    %r9,%r8
-  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
-  28:	0f 05                	syscall 
-  2a:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	retq   
-  33:	48 c7 c1 c0 ff ff ff 	mov    $0xffffffffffffffc0,%rcx
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 8/21/21 8:30 AM, Shanker Donthineni wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> In the current implementation, the AER FATAL and NONFTAL recovery will be
+> terminated for the device that exhibits NO_BUS_RESET quirk. The non-zero
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Correction, this problem happens only for AER_FATAL recovery case.
+
+> return value from pci_bus_error_reset() is treated as an error condition
+> in aer_root_reset() which leads to return PCI_ERS_RESULT_DISCONNECT.
+>
+>   aer_recover_work_func()
+>     pcie_do_recovery()
+>       report_frozen_detected()
+>       if (aer_root_reset() == PCI_ERS_RESULT_DISCONNECT)
+>          goto failed           # termimates here because of NO_BUS_RESET
+>
+>       ...
+>       report_mmio_enabled()
+>       report_resume()
+>       pcie_clear_xxx_status()
+>       ...
+>       return 0
+>   failed:
+>       pci_uevent_ers(PCI_ERS_RESULT_DISCONNECT);
+>
+> The return value -ENOTTY from pci_bus_error_reset() indicates SBR was
+> skipped but no real errors were encountered. This scenario could be
+> considered as a non-error case so that the PCI device driver gets the
+> opportunity to recover the device back to an operational state instead
+> of keeping it in the DISCONNECT state.
+>
+> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
+> ---
+>  drivers/pci/pcie/aer.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 9784fdcf30061..8cf6bd6a3376d 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -1414,8 +1414,12 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>                         pci_info(dev, "not reset (no FLR support: %d)\n", rc);
+>         } else {
+>                 rc = pci_bus_error_reset(dev);
+> -               pci_info(dev, "%s Port link has been reset (%d)\n",
+> -                       pci_is_root_bus(dev->bus) ? "Root" : "Downstream", rc);
+> +               pci_info(dev, "%s Port link has %sbeen reset (%d)\n",
+> +                       pci_is_root_bus(dev->bus) ? "Root" : "Downstream",
+> +                       rc == -ENOTTY ? "not " : "", rc);
+> +
+> +               if (rc == -ENOTTY)
+> +                       rc = 0;
+>         }
+>
+>         if ((host->native_aer || pcie_ports_native) && aer) {
+> --
+> 2.25.1
+>
+
