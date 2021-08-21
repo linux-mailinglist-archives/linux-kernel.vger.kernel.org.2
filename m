@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701453F3982
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 10:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494573F3987
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 10:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhHUIWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 04:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49742 "EHLO
+        id S233205AbhHUIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 04:31:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232802AbhHUIWc (ORCPT
+        with ESMTP id S232802AbhHUIb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 04:22:32 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9622AC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:21:53 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id lo4so24960772ejb.7
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:21:53 -0700 (PDT)
+        Sat, 21 Aug 2021 04:31:57 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0D8C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:31:18 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id o15so7251655wmr.3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 01:31:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DLNxIQ4b36nOK8YiQqh9tj6nRfmDkfjYUObbVW/rzuE=;
-        b=Fr6EEYIqKzlYJL29Bk6kAN0wVc2ohjHDeSEBJJ3s89jdf/bzRME8wKYuaxRVpDvTSr
-         Pa/dLXpP5vKCZaSha5zbjNYyynxqvwGWy2/6TlZmVK6YSIiD3oYytqubmQZfh7RpGovV
-         6LYX4aOeXx5pavlsuD+yrLBrQQ4AyPo8SmrZMPzO9ViEAqDtNmRrzd90PMStPy608oEi
-         1suZXYDqceKxL83xTQcSWZ+8QBWDy5Z/tilnWr4cUWTl8fbXU1cKmtrn/jY9Qd7WXrM9
-         ZT6LwHr39F8K7aJSOtu91mjN+c28v96xOW93LJjj5mS6SpVDhXsbVP1rtCb99SNx39oy
-         RVyA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=r7pMHJHEpzcWJsiIgozc5/rwwa0w5oIqSH99Gp1LvZc=;
+        b=uPCKWc8K8AKx5H4A21P2GNS3AbV/2CMVbHGyoHRDLOhZPkfYmDbe2dn7DhykZSwiNu
+         uzH+PTrsrK1UQeCUMbU+ZMO8KzEqmoML2lkzF4hByVNnnhHTPpN9Sujxe1csS9X3DeOd
+         1bJcx2ERWwrQVjhlO+NwXPiRcKFzqL1w1q51Uz43vAROVPuXXOcLMxgTOpsHFuf3kjTw
+         YGRlnPXApvJnQg+tQU9Iw7RpH2l31pxrIKNlSBljO4WB3icMr8SbOc4s3unTkLKB7DLB
+         jncwp4mbC4p42kCOyAvV9P5JZ1FvXmzPwZh50uKjEasMldBMhqGncittlmjn2c1nEbWq
+         i1xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=DLNxIQ4b36nOK8YiQqh9tj6nRfmDkfjYUObbVW/rzuE=;
-        b=JKMgBYb/1AxuTW47eO+dKkfI/TpQxAlNmIqxRHAOQB523qa151sUrHQF09zq9HbIOz
-         1qi2tktGzswywkLvwFYQLFq/w784M8x2dTGMkt0a76q7P9Vd5Y64BprKC9SSi1ym5Gw+
-         JOgI+FiF27l1ZrxFxzAjQjgwnWTru8+14OCyzE+L5TN5wS9OfMCk/ne90Eku8jI2slG2
-         ErOYxGVC/xNKnsiSEdZL5uIcDoSCpJWOexKO5cSQ/GnxqQ3AE7D3ajffOTCmvQFGq480
-         IjsdAzxQuCL10p0D73GBZ+TfQiz0p7pS05liUA/ZZgrPyCVci+vsDP8i3ZuSK2So7N/E
-         ZV2w==
-X-Gm-Message-State: AOAM531lLbRVvUoUJf/VIMRnnpUq1wx0uKH8CZsLFhpbsEguZd0P8T2l
-        m2syh+Hj22ITLZEBDmqjKHI=
-X-Google-Smtp-Source: ABdhPJxkIkynxwDeHi53+v+uOYVEfg0/kL1L316cPovUVthOvnCB/ud9O4FzhIVP8auxpcmvbFQzUA==
-X-Received: by 2002:a17:907:2b09:: with SMTP id gc9mr26430452ejc.49.1629534112230;
-        Sat, 21 Aug 2021 01:21:52 -0700 (PDT)
-Received: from robot.. ([2a02:2f0d:b800:ab00:6398:283c:6862:f51e])
-        by smtp.gmail.com with ESMTPSA id r27sm4888327edb.66.2021.08.21.01.21.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 01:21:51 -0700 (PDT)
-From:   Liviu Cheru <liviucheru@gmail.com>
-X-Google-Original-From: Liviu Cheru <liviu.cheru@gmail.com>
-To:     airlied@linux.ie
-Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        liviu.cheru@gmail.com
-Subject: [PATCH] gpu: drm: amd: amdgpu: Fixed a few warnings
-Date:   Sat, 21 Aug 2021 11:21:41 +0300
-Message-Id: <20210821082141.8608-1-liviu.cheru@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=r7pMHJHEpzcWJsiIgozc5/rwwa0w5oIqSH99Gp1LvZc=;
+        b=DeQFdEIh8h52+4PXaA317dbu9MogB2yXQ9WX+ou3PiqaHxo9BzegwrCwOINVz5t3R7
+         Gp9dYbFPXqIV1cleVJM2GPY7KTJATEpvOwQqq/0c/FAyahyjEXyUCuWZV/SXlqScgprO
+         6PdUa2DlzZGBBpVl3i4413SPIlecmZ6fOXgLEM/3G+s255ONA8Vjsvqsoa0SMzgi4z8U
+         rvcNFJ/N/IcxBkgBVN84osddt6PGGK6QZIkMW0tqn05T0LkLmI9g+tNJrdtI/hU7DpKh
+         b6PZ+QFLISisjeO79ptBaYYqiTNiHeiaw/+8YrnDxEYc3sSPtBwNyTYj/dAOpw7+PUqM
+         aqAQ==
+X-Gm-Message-State: AOAM533kdBGzoGREw2qV9zwgon77nNs7dLeWBE3SCZNTe5bbSNRz0aoq
+        98/orSdX5L8EdVd4d+72r8rWNqArmU0=
+X-Google-Smtp-Source: ABdhPJx7NgH1Z2cNI0g3ADakQrP0PNMiBePXzpV5ILN0HSt72FliKqv8qda4/OSzKlG/TVvhxlTSTQ==
+X-Received: by 2002:a1c:cc03:: with SMTP id h3mr6687171wmb.73.1629534677135;
+        Sat, 21 Aug 2021 01:31:17 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:96c0:3b88::2744? ([2a02:8108:96c0:3b88::2744])
+        by smtp.gmail.com with ESMTPSA id y13sm6991025wmj.27.2021.08.21.01.31.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Aug 2021 01:31:16 -0700 (PDT)
+Subject: Re: [PATCH] staging: r8188eu: remove forward declaration of
+ Efuse_Read1ByteFromFakeContent
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        gregkh@linuxfoundation.org, Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        martin@kaiser.cx, Larry.Finger@lwfinger.net
+References: <20210821000508.79422-1-phil@philpotter.co.uk>
+ <5110838.kRcMR4ARJC@localhost.localdomain>
+From:   Michael Straube <straube.linux@gmail.com>
+Message-ID: <b0819fe2-e7cf-b6bc-5930-a31e10da811d@gmail.com>
+Date:   Sat, 21 Aug 2021 10:30:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5110838.kRcMR4ARJC@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed warnings regarding SPDX license, using "unsigned" instead
-of "unsigned int", wrong function parameter name for the
-documentation and a space between the function name and "(".
 
-Signed-off-by: Liviu Cheru <liviu.cheru@gmail.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-index 795fa7445abe..af1abb281c6d 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
- /*
-  * Copyright 2009 Jerome Glisse.
-  * All Rights Reserved.
-@@ -129,7 +130,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *abo, u32 domain)
- 	u32 c = 0;
- 
- 	if (domain & AMDGPU_GEM_DOMAIN_VRAM) {
--		unsigned visible_pfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
-+		unsigned int visible_pfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
- 
- 		places[c].fpfn = 0;
- 		places[c].lpfn = 0;
-@@ -731,7 +732,7 @@ int amdgpu_bo_validate(struct amdgpu_bo *bo)
- /**
-  * amdgpu_bo_add_to_shadow_list - add a BO to the shadow list
-  *
-- * @bo: BO that will be inserted into the shadow list
-+ * @vmbo: BO that will be inserted into the shadow list
-  *
-  * Insert a BO to the shadow list.
-  */
-@@ -957,7 +958,7 @@ int amdgpu_bo_pin_restricted(struct amdgpu_bo *bo, u32 domain,
- 		bo->flags |= AMDGPU_GEM_CREATE_CPU_ACCESS_REQUIRED;
- 	amdgpu_bo_placement_from_domain(bo, domain);
- 	for (i = 0; i < bo->placement.num_placement; i++) {
--		unsigned fpfn, lpfn;
-+		unsigned int fpfn, lpfn;
- 
- 		fpfn = min_offset >> PAGE_SHIFT;
- 		lpfn = max_offset >> PAGE_SHIFT;
-@@ -1175,7 +1176,7 @@ void amdgpu_bo_get_tiling_flags(struct amdgpu_bo *bo, u64 *tiling_flags)
-  * Returns:
-  * 0 for success or a negative error code on failure.
-  */
--int amdgpu_bo_set_metadata (struct amdgpu_bo *bo, void *metadata,
-+int amdgpu_bo_set_metadata(struct amdgpu_bo *bo, void *metadata,
- 			    uint32_t metadata_size, uint64_t flags)
- {
- 	struct amdgpu_bo_user *ubo;
--- 
-2.30.2
+On 8/21/21 5:17 AM, Fabio M. De Francesco wrote:
+> On Saturday, August 21, 2021 2:05:08 AM CEST Phillip Potter wrote:
+>> Remove forward declaration of Efuse_Read1ByteFromFakeContent function
+>> from core/rtw_efuse.c, as the function is defined in full directly
+>> after this and therefore this forward declaration is redundant.
+>>
+>> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+>> ---
+>>   drivers/staging/r8188eu/core/rtw_efuse.c | 6 ------
+>>   1 file changed, 6 deletions(-)
+> 
+> Philip,
+> 
+> It's pretty clear that this function has only a translation unit visibility.
+> Why don't you make it clear by defining it with storage class "static"?
+> 
+> Thanks,
+> 
+> Fabio
+> 
+> 
 
+Hi Phillip,
+
+I agree with Fabio, making the function static avoids the 
+[-Wmissing-prototypes] warning and makes it clear that it is only used 
+in this file.
+
+Thanks,
+
+Michael
