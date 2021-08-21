@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C313F3B5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F2C3F3B5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbhHUQTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 12:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        id S230338AbhHUQTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 12:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhHUQTS (ORCPT
+        with ESMTP id S229627AbhHUQTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 12:19:18 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBD6C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:18:39 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so15897291pjr.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:18:39 -0700 (PDT)
+        Sat, 21 Aug 2021 12:19:20 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F04DC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:18:41 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id o2so12317357pgr.9
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ujqwGhoXkAIsKqOBu+5AHyJrM+q7QtaKNKGeGWtsMP4=;
-        b=b1DgIoDWfW00uQUDRWRZKNU3L0Ror2LLbFSuinu622OLVn5J53SU6MpUwO6xr6Epk+
-         1xWa2xFfRhSa0Zh59p39aSmQrV/vUXySzE9WcSfAivb8zly7QyTM5HPG8EIjtKJeh3nT
-         5EBElk2nMFah2h6/LbadWTL0vRcve6Iq7U6RzgKQcUmivlmPuzcPTTTBoXwkl2JW9bwq
-         vg9Iq95MgLe+JmN5KrkPGOJ6TWW5nfSphH5bj9g/wXbdV+i8KIZ8A1z6MmasDd0td96d
-         wDnCfvm16BccBBkICqV+noCtr1mKupsC+wIN9sAdAIbRlHHAdYUKGz7iVGFvtI9U3d58
-         BsEA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QUnHtBDWwuZ6b4H5N4cag1F+1r7RGxZOLo0C7Dxdnss=;
+        b=m4hf8PxIPaYiYfwAXIfKngFRpG/ZIZgSCzh/UCqUl/tsN4kTc2xlZ7WkEhX9lWMaJY
+         /KA1+z8H+jkebU6vccS56LE0LKn8cwBmWummFuR5TQc26G3KCFZV6h8PznlPwDyQHc55
+         jbuKiYQdZOCC3+EP8uxA4GdaXUH6W28KxnLX0Ocpg6w3C5ErSMPuHbzkN0cOfs3jc9Eb
+         QVYdwlaTWlGCGnsIpfrFqh2wx6wNC2nyU9ZLuTMq4TSj8GZWTXUvz92I7suDA+slUha2
+         FJPy4rXSBM+zMNHS8nIqLCAXeEy7xMv3ceOK7d83co0GFs/j/UiG0dCFluErUAMGs2tI
+         C2/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ujqwGhoXkAIsKqOBu+5AHyJrM+q7QtaKNKGeGWtsMP4=;
-        b=R9xg4lNpyGfIIxb3LBeK+1MJ8v0KvXKGTtV3wkK0KXoW3RVUl9DXB23DXXJ0XoveI2
-         NEuut98f24VNULk9xbg0/xrns7Hy+FBlGpe6OpUsBjzQ6ka7it7z0lC8aECTzDalBxkp
-         PDWLC/vhiFW8MTDA/94rXmlBJPUcXQUvCIA5Ykq2FP+dDwMez71qLudjWj7eLQa2/RqP
-         DikgP0x4BsmrCjTb2W1zSeyfwhQ5zcu/N/4FIhEWQlsQruDOPD/1PRII1aQW9yMmZOnu
-         RQZYM9wOerH/r456ehd2yS2yIMKEDR3e7KDjwILBn0eW2HX5rMW/V9GWWyETEIP/UamH
-         TuKQ==
-X-Gm-Message-State: AOAM5318s1GBmEq1jRyq+xJwiMmwk+e/DqlU0rHLs4e5ngF1hk1eyXhY
-        92PYLwxp7ac4u5a1eYAxAm4=
-X-Google-Smtp-Source: ABdhPJxRYFbfpkYRMA48a8AJFfKOOWjC/TSKs76S7gRP5rYRq6aWSOFSkL3TumD6KBYM51meilrFSg==
-X-Received: by 2002:a17:90a:a791:: with SMTP id f17mr4188714pjq.225.1629562718477;
-        Sat, 21 Aug 2021 09:18:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QUnHtBDWwuZ6b4H5N4cag1F+1r7RGxZOLo0C7Dxdnss=;
+        b=MkAuFs3FrJFQa06jj87yf/H2y5ITKUWkMxFhuW1va+BlQgPjBfe8eTaJ9+SQBfVco8
+         Ca1AFHFBBjXErUPDjBSFt3ceH+BOZV9sM3w1l8aw4N5+dfg2hRJRc7lXxlRzjpGmviAt
+         FU2j5cCVKq6qX0M92WjYhlAWqYHYy94P0NuiDbGTTrCwpoTWfi1kvRHuwh7ia0LZhL46
+         EXp0dZHKFEpTMXGW2Dmi6LnBgJugcqvfuVy4lGWgcbzI4nQ2Nz+R7YYwK2LGeabNGknw
+         3vXiTQjvu2vtTgR6fGUj7HcskjvjZ0WhUlg2Wg1x+FKbnDHJ7AYpYjoFG5Cp0ahQ46l+
+         Vm1g==
+X-Gm-Message-State: AOAM532oqmGQ3z5JGASLfxiBhiOf6h92+J5ZEFsV/+B5eJRAbJRzh6Pw
+        96kY62heJv8NU8FJR5BbQdIftCUwxRte7gIO
+X-Google-Smtp-Source: ABdhPJzK0U3AekmxkSH1AfuH/lKiE+8/IXCcCxAod00PuzhXx9jF1aFsW+5FdfB2EZ6jqc3S4H3s4w==
+X-Received: by 2002:a62:8491:0:b029:3dd:a29a:a1e4 with SMTP id k139-20020a6284910000b02903dda29aa1e4mr25268000pfd.13.1629562720637;
+        Sat, 21 Aug 2021 09:18:40 -0700 (PDT)
 Received: from xps.yggdrasil ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id y27sm4227011pfa.29.2021.08.21.09.18.36
+        by smtp.gmail.com with ESMTPSA id y27sm4227011pfa.29.2021.08.21.09.18.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 09:18:38 -0700 (PDT)
+        Sat, 21 Aug 2021 09:18:40 -0700 (PDT)
 From:   Aakash Hemadri <aakashhemadri123@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/5] staging: r8188eu: fix sparse warnings
-Date:   Sat, 21 Aug 2021 21:48:27 +0530
-Message-Id: <cover.1629562355.git.aakashhemadri123@gmail.com>
+Subject: [PATCH v3 1/5] staging: r8188eu: restricted __be16 degrades to int
+Date:   Sat, 21 Aug 2021 21:48:28 +0530
+Message-Id: <7572c80d90b499df7e9feb4781c07967fa31bf88.1629562355.git.aakashhemadri123@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <cover.1629562355.git.aakashhemadri123@gmail.com>
+References: <cover.1629562355.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-	This patch series fixes some sparse warnings in rtw_br_ext.c
+Fix sparse warning:
+> rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
 
-Thanks,
-Aakash Hemadri
+Here tag->tag_len is be16, use be16_to_cpu()
 
-Aakash Hemadri (5):
-  staging: r8188eu: restricted __be16 degrades to int
-  staging: r8188eu: cast to restricted __be32
-  staging: r8188eu: incorrect type in csum_ipv6_magic
-  staging: r8188eu: restricted __be16 degrades to int
-  staging: r8188eu: incorrect type in assignment
+Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_br_ext.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/staging/r8188eu/core/rtw_br_ext.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-
-base-commit: 093991aaadf0fbb34184fa37a46e7a157da3f386
+diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+index ee52f28a1e56..f6d1f6029ec3 100644
+--- a/drivers/staging/r8188eu/core/rtw_br_ext.c
++++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+@@ -70,7 +70,7 @@ static int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_tag *tag)
+ 	struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
+ 	int data_len;
+ 
+-	data_len = tag->tag_len + TAG_HDR_LEN;
++	data_len = be16_to_cpu(tag->tag_len) + TAG_HDR_LEN;
+ 	if (skb_tailroom(skb) < data_len) {
+ 		_DEBUG_ERR("skb_tailroom() failed in add SID tag!\n");
+ 		return -1;
 -- 
 2.32.0
 
