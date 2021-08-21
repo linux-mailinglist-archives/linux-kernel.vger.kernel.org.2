@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7B43F3B2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208FB3F3B2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232374AbhHUP3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 11:29:24 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38616 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231491AbhHUP3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:29:23 -0400
-Received: from p5b3b3c9d.dip0.t-ipconnect.de ([91.59.60.157] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mHSvK-0000I5-5o; Sat, 21 Aug 2021 17:28:42 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Doug Anderson <dianders@chromium.org>,
-        Brian Norris <briannorris@chromium.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: add RK3399 Gru gpio-line-names
-Date:   Sat, 21 Aug 2021 17:28:40 +0200
-Message-ID: <10392569.T7Z3S40VBb@phil>
-In-Reply-To: <CA+ASDXO=Bjr+f4mtXwt7vtiTz6tSw7SPuY1RvNWMp6-43Baqfg@mail.gmail.com>
-References: <20210820133829.1.Ica46f428de8c3beb600760dbcd63cf879ec24baf@changeid> <CAD=FV=UwAcJEDE3BQYuCDq4kRKPFAsuzPOseGY66wfXcW8Wn7A@mail.gmail.com> <CA+ASDXO=Bjr+f4mtXwt7vtiTz6tSw7SPuY1RvNWMp6-43Baqfg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S232241AbhHUPjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 11:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231491AbhHUPjP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 11:39:15 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BECC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:38:36 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id t1so12251065pgv.3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=RTMJMW0nE10jtTlMIfTd0xjDXr/ztqWVbOop2zPkMIw=;
+        b=DKif8Co6Mq/DJlrMwu2uroQUZwYZ6i0/rWx/+11A8iih4dM2ucXPel4otpAQg6dOks
+         gPwxkF2N0jtikITGE72bcgVyrL9ZsLrv9XW1oqc3qg1rjY7m/M5OSAzP5BILiGv16dzI
+         ZMG0KJX2Uz585+PFaV07oqpgA09jgeo0GtA30e0Pb2XTxRRwREfCgppr7emKU45/o8Yy
+         i/Sg4m7b9suOWb4sL4Uyy7X8wEdTdGkMDF7Uofjqx8iqjs0aG3uMZoCJnSVeO1K+qtu8
+         LuDOsd4PBGmJF7M06vULXKF7ptfe3vtSgmw9DfAHPw2PCO3HoE1dMzpIu6bgHQ3bk717
+         6bDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=RTMJMW0nE10jtTlMIfTd0xjDXr/ztqWVbOop2zPkMIw=;
+        b=Fc3D1yt/VHfagJVJSdwN3Kwi5Xlx5nT4jIGWS5IHo2Z0f5WQQGJlyDv3CjUBArEgpG
+         vsXbFbfv2IhJwz6ZebZHFSbCqVP2qpVlIfx0J1YBZ+NUPj7dUF41n0GW4+wROaM0WuRf
+         ywNhBMsGyLZhH/4MEccAKasV6UjbBRUJqpr3b14RuraVf+QSOU0EJ1KPvTkMMTfyPY0g
+         EuGq82JumH/CuXI13UDN2UB6dU7ouyhhGRmw0NzfWGMybV7QWcgj9PN2FKJ0FmJIanrY
+         R48bx8fYdsJQB9s6ivV2BgVpfqdWX9M2skVK2JoE6lar9wwMZUOI2gKfV/hzkjX+sV3R
+         9iQQ==
+X-Gm-Message-State: AOAM531a0uSjPW9SNq6TdsiiuwVDg4IL+Bf3cxvw1cSXB7oCvrl7FmKR
+        bm1Cs2rxZNjmJoPRFuTQ2Z1OQQ==
+X-Google-Smtp-Source: ABdhPJwu3TlVxRJa93Y6m+d60OVdtrl1funU4u6Hndsj90YBDfb6327psOtIcsvH54agNq0QqJmrdA==
+X-Received: by 2002:a05:6a00:2ba:b0:3e1:d586:c92a with SMTP id q26-20020a056a0002ba00b003e1d586c92amr25275975pfs.43.1629560315367;
+        Sat, 21 Aug 2021 08:38:35 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e13sm10816946pfi.210.2021.08.21.08.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 08:38:34 -0700 (PDT)
+Date:   Sat, 21 Aug 2021 08:38:34 -0700 (PDT)
+X-Google-Original-Date: Sat, 21 Aug 2021 08:38:25 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.14-rc7
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-182cc50e-78d7-4a85-a5bc-19e7a4648e87@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 20. August 2021, 23:16:23 CEST schrieb Brian Norris:
-> On Fri, Aug 20, 2021 at 2:05 PM Doug Anderson <dianders@chromium.org> wrote:
-> > I guess one minor nit (now that I look back on the veyron patch where
-> > I mentioned it explicitly in the commit message) is that on the veyron
-> > ones we sorted this down at the bottom with the other pinctrl stuff
-> > instead of sorting it alphabetically with everything else. I'll let
-> > Heiko say which he likes better.
-> 
-> Huh, didn't notice that semi-convention. I can sort it however Heiko prefers.
+The following changes since commit fdf3a7a1e0a67a52f631b055975c6ac7e0e49a65:
 
-Hmm, I wouldn't call it a semi-convention ... it was more an idea of
-getting all the longer pages of "stuff" out of the way.
+  riscv: Fix comment regarding kernel mapping overlapping with IS_ERR_VALUE (2021-08-12 07:16:58 -0700)
 
-I don't think I have a real hard preference for the gpioX nodes
-and I guess in the long run it might be helpful to try to limit the
-number of "semi-conventions" .
+are available in the Git repository at:
 
-I still like "pinctrl at the bottom", but I guess it might be easier to
-with alphabetical for nodes with the rest :-) .
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc7
 
+for you to fetch changes up to aa3e1ba32e553e611a58145c2eb349802feaa6eb:
 
-Heiko
+  riscv: Fix a number of free'd resources in init_resources() (2021-08-20 10:15:51 -0700)
 
+----------------------------------------------------------------
+RISC-V Fixes for 5.14-rc7
 
+* A fix to the sifive-l2-cache device tree bindings, for json-schema
+  compatibility.  This does not change the intended behavior of the
+  binding.
+* A fix to avoid improperly freeing necessary resources during early
+  boot.
 
-> > I also notice for veyron that we had a second "ABI" exception for the
-> > recovery mode pin, but I believe that goes through a different
-> > mechanism now so we're good there.
-> 
-> I believe the recovery mode pin is dropped from recent designs (don't
-> quote me in general on that), and there's a different mechanism used
-> just to get the at-boot-time "recovery mode" state directly from the
-> firmware.
-> 
-> > Even though I didn't do a line-by-line review, I'll still give:
-> >
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> >
-> > ...though it's possible an "Acked-by" would be more in the spirit of
-> > that? Not sure...
-> 
-> Thanks!
-> 
-> Brian
-> 
+----------------------------------------------------------------
+Petr Pavlu (1):
+      riscv: Fix a number of free'd resources in init_resources()
 
+Rob Herring (1):
+      dt-bindings: sifive-l2-cache: Fix 'select' matching
 
-
-
+ Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml | 8 ++++----
+ arch/riscv/kernel/setup.c                                    | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
