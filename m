@@ -2,121 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7133F3A43
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 12:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A5A3F3A47
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 12:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234301AbhHUKng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 06:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHUKnc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 06:43:32 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9FC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 03:42:53 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id j12-20020a05600c1c0c00b002e6d80c902dso7538325wms.4
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 03:42:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=kbLqnZRKHYWI/LXP7guX+yhqPeRJbgFmWn9L3bxAxt0=;
-        b=DxDmNMb226dqentrpO+PDtzDmxQeuMtpoaK8OgWXXZFZ08wCpXzBXc9GChgcjWS5h7
-         JVenDIF+I1xaCHuMV3Sm6jR19WtHe4hGhbT+OPd1DBv6S9aTVUkU4fh1AlABvWwWvxAs
-         mG1YXW6Xva0OucwIYZSbWzdAR3rkOjvaRhVO+n0zyyHP8qyHYT9MhjmqnUjbcSM1RjX/
-         vLBejuiOFgaAxIyU4JNeCbTeP3p4OHp5Ox0+4hAramtR6Fxp3EEvV837In0bO41I8eTb
-         bZVqxUK4C4HW7J9tjjg2+S8nx7d9Exn/ug4vbtYbdinZ9JFymQlXus5y7IiG4w3QM6BI
-         IXmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=kbLqnZRKHYWI/LXP7guX+yhqPeRJbgFmWn9L3bxAxt0=;
-        b=qWLI9o0YuatEchBBwBqKPSoI9dqAXc4XKPwiUQs+2X+SpRDlxE/C38LgnHfvB3xjcf
-         eDSl6bIDp5wlrGFu/vZtmUU36HhF7MPg9/mAjKvOKE73vJdsJ1nnWA5OV0IiOJWnr3QT
-         IHR4NYKLoJtAVac7BDTcXBSjP/93efTPWrT3iBS/ZzSHX5dMyMWW6X+SXT/hDajQrh//
-         gT4LlrmMEJztpBcNQ51mYafpI1BsuR0Er/qeBtjpYqcJaW0ej8QdIhJIcFhtPp7tZYMN
-         2WZh0B7VZwKqavALjpfRMtNGAysQPCQZaSCfELX7Jmp9Dk6t8Dj/2kGOjwSJpTosMFHL
-         2xFg==
-X-Gm-Message-State: AOAM531SFw+K3O0aDtn4dIPr0mA7jW5nCvKtjydqZecsxqFqoWrbgF/W
-        Bm/w9GQ8i8wTY2aDwi+1l9o+/A==
-X-Google-Smtp-Source: ABdhPJz4F2GWC0oCYtm6NQgz7eJNi5Xy0pzoWniBsWqI+BTXWIIHXB0NaVPZ+eGQtSA0IZ4okD6/7A==
-X-Received: by 2002:a7b:c8d9:: with SMTP id f25mr6384023wml.7.1629542571822;
-        Sat, 21 Aug 2021 03:42:51 -0700 (PDT)
-Received: from ?IPv6:2001:8b0:dfde:e1a0::2? (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id l2sm8462154wrx.2.2021.08.21.03.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 03:42:51 -0700 (PDT)
-Message-ID: <1cd1be12f42411b7d6d72cd4839cbbbb8153d400.camel@philpotter.co.uk>
-Subject: Re: [PATCH] staging: r8188eu: remove forward declaration of
- Efuse_Read1ByteFromFakeContent
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Michael Straube <straube.linux@gmail.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        martin@kaiser.cx, Larry.Finger@lwfinger.net,
-        gregkh@linuxfoundation.org
-Date:   Sat, 21 Aug 2021 11:42:50 +0100
-In-Reply-To: <b0819fe2-e7cf-b6bc-5930-a31e10da811d@gmail.com>
-References: <20210821000508.79422-1-phil@philpotter.co.uk>
-         <5110838.kRcMR4ARJC@localhost.localdomain>
-         <b0819fe2-e7cf-b6bc-5930-a31e10da811d@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234397AbhHUKnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 06:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229968AbhHUKnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 06:43:37 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1FF461186;
+        Sat, 21 Aug 2021 10:42:57 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mHOSl-006MAd-Ng; Sat, 21 Aug 2021 11:42:55 +0100
+Date:   Sat, 21 Aug 2021 11:42:55 +0100
+Message-ID: <877dgfqdsg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Barry Song <21cnbao@gmail.com>, bhelgaas@google.com,
+        corbet@lwn.net, Jonathan.Cameron@huawei.com, bilbao@vt.edu,
+        gregkh@linuxfoundation.org, leon@kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linuxarm@huawei.com, luzmaximilian@gmail.com,
+        mchehab+huawei@kernel.org, schnelle@linux.ibm.com,
+        song.bao.hua@hisilicon.com, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
+In-Reply-To: <20210820233328.GA3368938@bjorn-Precision-5520>
+References: <20210820223744.8439-2-21cnbao@gmail.com>
+        <20210820233328.GA3368938@bjorn-Precision-5520>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: helgaas@kernel.org, 21cnbao@gmail.com, bhelgaas@google.com, corbet@lwn.net, Jonathan.Cameron@huawei.com, bilbao@vt.edu, gregkh@linuxfoundation.org, leon@kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linuxarm@huawei.com, luzmaximilian@gmail.com, mchehab+huawei@kernel.org, schnelle@linux.ibm.com, song.bao.hua@hisilicon.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-08-21 at 10:30 +0200, Michael Straube wrote:
-> 
-> 
-> On 8/21/21 5:17 AM, Fabio M. De Francesco wrote:
-> > On Saturday, August 21, 2021 2:05:08 AM CEST Phillip Potter wrote:
-> > > Remove forward declaration of Efuse_Read1ByteFromFakeContent
-> > > function
-> > > from core/rtw_efuse.c, as the function is defined in full
-> > > directly
-> > > after this and therefore this forward declaration is redundant.
-> > > 
-> > > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> > > ---
-> > >   drivers/staging/r8188eu/core/rtw_efuse.c | 6 ------
-> > >   1 file changed, 6 deletions(-)
-> > 
-> > Philip,
-> > 
-> > It's pretty clear that this function has only a translation unit
-> > visibility.
-> > Why don't you make it clear by defining it with storage class
-> > "static"?
-> > 
-> > Thanks,
-> > 
-> > Fabio
-> > 
-> > 
-> 
-> Hi Phillip,
-> 
-> I agree with Fabio, making the function static avoids the 
-> [-Wmissing-prototypes] warning and makes it clear that it is only
-> used 
-> in this file.
-> 
-> Thanks,
-> 
-> Michael
+Hi Bjorn,
 
-Dear Michael and Fabio,
+On Sat, 21 Aug 2021 00:33:28 +0100,
+Bjorn Helgaas <helgaas@kernel.org> wrote:
+> 
+> [+cc Thomas, Marc]
+> 
+> On Sat, Aug 21, 2021 at 10:37:43AM +1200, Barry Song wrote:
+> > From: Barry Song <song.bao.hua@hisilicon.com>
+> > 
+> > /sys/bus/pci/devices/.../irq sysfs ABI is very confusing at this
+> > moment especially for MSI-X cases. 
+> 
+> AFAICT this patch *only* affects MSI-X.  So are you saying the sysfs
+> ABI is fine for MSI but confusing for MSI-X?
+> 
+> > While MSI sets IRQ to the first
+> > number in the vector, MSI-X does nothing for this though it saves
+> > default_irq in msix_setup_entries(). Weird the saved default_irq
+> > for MSI-X is never used in pci_msix_shutdown(), which is quite
+> > different with pci_msi_shutdown(). Thus, this patch moves to show
+> > the first IRQ number which is from the first msi_entry for MSI-X.
+> > Hopefully, this can make IRQ ABI more clear and more consistent.
+> > 
+> > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > ---
+> >  drivers/pci/msi.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> > index 9232255..6bbf81b 100644
+> > --- a/drivers/pci/msi.c
+> > +++ b/drivers/pci/msi.c
+> > @@ -771,6 +771,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+> >  	int ret;
+> >  	u16 control;
+> >  	void __iomem *base;
+> > +	struct msi_desc *desc;
+> >  
+> >  	/* Ensure MSI-X is disabled while it is set up */
+> >  	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+> > @@ -814,6 +815,10 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+> >  	pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_MASKALL, 0);
+> >  
+> >  	pcibios_free_irq(dev);
+> > +
+> > +	desc = first_pci_msi_entry(dev);
+> > +	dev->irq = desc->irq;
+> 
+> This change is not primarily about sysfs.  This is about changing
+> "dev->irq" when MSI-X is enabled, and it's only incidental that sysfs
+> reflects that.
+> 
+> So we need to know the effect of changing dev->irq.  Drivers may use
+> the value of dev->irq, and I'm *guessing* this change shouldn't break
+> them since we already do this for MSI, but I'd like some more expert
+> opinion than mine :)
+> 
+> For MSI we have:
+> 
+>   msi_capability_init
+>     msi_setup_entry
+>       entry = alloc_msi_entry(nvec)
+>       entry->msi_attrib.default_irq = dev->irq;     /* Save IOAPIC IRQ */
+>     dev->irq = entry->irq;
+> 
+>   pci_msi_shutdown
+>     /* Restore dev->irq to its default pin-assertion IRQ */
+>     dev->irq = desc->msi_attrib.default_irq;
+> 
+> and for MSI-X we have:
+> 
+>   msix_capability_init
+>     msix_setup_entries
+>       for (i = 0; i < nvec; i++)
+>         entry = alloc_msi_entry(1)
+> 	entry->msi_attrib.default_irq = dev->irq;
+> 
+>   pci_msix_shutdown
+>     for_each_pci_msi_entry(entry, dev)
+>       __pci_msix_desc_mask_irq
+> +   dev->irq = entry->msi_attrib.default_irq;   # added by this patch
+> 
+> 
+> Things that seem strange to me:
+> 
+>   - The msi_setup_entry() comment "Save IOAPIC IRQ" seems needlessly
+>     specific; maybe it should be "INTx IRQ".
+> 
+>   - The pci_msi_shutdown() comment "Restore ... pin-assertion IRQ"
+>     should match the msi_setup_entry() one, e.g., maybe it should also
+>     be "INTx IRQ".  There are no INTx or IOAPIC pins in PCIe.
+> 
+>   - The only use of .default_irq is to save and restore dev->irq, so
+>     it looks like a per-device thing, not a per-vector thing.
+> 
+>     In msi_setup_entry() there's only one msi_entry, so there's only
+>     one saved .default_irq.
+> 
+>     In msix_setup_entries(), we get nvecs msi_entry structs, and we
+>     get a saved .default_irq in each one?
 
-You're both absolutely right, thank you for the feedback. It did occur
-to me at the time that I could just make this static, and indeed the
-change introduces a kernel test robot warning as it is currently, due
-to -Wmissing-prototypes as mentioned. I shall rework, many thanks.
+That's a key point.
 
-Regards,
-Phil
+Old-school PCI/MSI is represented by a single interrupt, and you
+*could* somehow make it relatively easy for drivers that only
+understand INTx to migrate to MSI if you replaced whatever is held in
+dev->irq (which should only represent the INTx mapping) with the MSI
+interrupt number. Which I guess is what the MSI code is doing.
 
+This is the 21st century, and nobody should ever rely on such horror,
+but I'm sure we do have such drivers in the tree. Boo.
+
+However, this *cannot* hold true for Multi-MSI, nor MSI-X, because
+there is a plurality of interrupts. Even worse, for MSI-X, there is
+zero guarantee that the allocated interrupts will be in a contiguous
+space.
+
+Given that, what is dev->irq good for? "Absolutely Nothing! (say it
+again!)".
+
+MSI-X is not something you can "accidentally" use. You have to
+actively embrace it. In all honesty, this patch tries to move in the
+wrong direction. If anything, we should kill this hack altogether and
+fix the (handful of?) drivers that rely on it. That'd actually be a
+good way to find whether they are still worth keeping in the tree. And
+if it breaks too many of them, then at least we'll know where we
+stand.
+
+I'd be tempted to leave the below patch simmer in -next for a few
+weeks and see if how many people shout:
+
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index e5e75331b415..2be9a01cbe72 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -591,7 +591,6 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
+ 	entry->msi_attrib.is_virtual    = 0;
+ 	entry->msi_attrib.entry_nr	= 0;
+ 	entry->msi_attrib.maskbit	= !!(control & PCI_MSI_FLAGS_MASKBIT);
+-	entry->msi_attrib.default_irq	= dev->irq;	/* Save IOAPIC IRQ */
+ 	entry->msi_attrib.multi_cap	= (control & PCI_MSI_FLAGS_QMASK) >> 1;
+ 	entry->msi_attrib.multiple	= ilog2(__roundup_pow_of_two(nvec));
+ 
+@@ -682,7 +681,6 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
+ 	dev->msi_enabled = 1;
+ 
+ 	pcibios_free_irq(dev);
+-	dev->irq = entry->irq;
+ 	return 0;
+ }
+ 
+@@ -742,7 +740,6 @@ static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
+ 		entry->msi_attrib.is_virtual =
+ 			entry->msi_attrib.entry_nr >= vec_count;
+ 
+-		entry->msi_attrib.default_irq	= dev->irq;
+ 		entry->mask_base		= base;
+ 
+ 		addr = pci_msix_desc_addr(entry);
+@@ -964,8 +961,6 @@ static void pci_msi_shutdown(struct pci_dev *dev)
+ 	mask = msi_mask(desc->msi_attrib.multi_cap);
+ 	msi_mask_irq(desc, mask, 0);
+ 
+-	/* Restore dev->irq to its default pin-assertion IRQ */
+-	dev->irq = desc->msi_attrib.default_irq;
+ 	pcibios_alloc_irq(dev);
+ }
+ 
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index e8bdcb83172b..a631664c1c38 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -114,7 +114,6 @@ struct ti_sci_inta_msi_desc {
+  * @maskbit:	[PCI MSI/X] Mask-Pending bit supported?
+  * @is_64:	[PCI MSI/X] Address size: 0=32bit 1=64bit
+  * @entry_nr:	[PCI MSI/X] Entry which is described by this descriptor
+- * @default_irq:[PCI MSI/X] The default pre-assigned non-MSI irq
+  * @mask_pos:	[PCI MSI]   Mask register position
+  * @mask_base:	[PCI MSI-X] Mask register base address
+  * @platform:	[platform]  Platform device specific msi descriptor data
+@@ -148,7 +147,6 @@ struct msi_desc {
+ 				u8	is_64		: 1;
+ 				u8	is_virtual	: 1;
+ 				u16	entry_nr;
+-				unsigned default_irq;
+ 			} msi_attrib;
+ 			union {
+ 				u8	mask_pos;
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
