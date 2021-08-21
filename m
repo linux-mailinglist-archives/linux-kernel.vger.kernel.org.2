@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A643F3BA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817C43F3BAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhHURYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 13:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhHURX7 (ORCPT
+        id S230419AbhHUR1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 13:27:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:21348 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhHUR1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:23:59 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A62AC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:23:20 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id u15so7714925plg.13
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AgSKf2nq4ZeNmXzm2HLOaXRnUpP2wevjMWH3/GY16uM=;
-        b=Rn29nY7MAE884Ua/QgTZmO+tx9rci1wbOk7FuiieNr54B+2mPbssg94R5/7PIcCZJC
-         +XFG688G+qHaq96dsJciv+9QYr1UegUpd8zEfB8oN+pzI73k1Ew1eyi1/JI/EJ7C3+Wz
-         1pE9GRBEjdllgLyNW7ReOy/8kqe/uxKRDFJC1TjxwPBjOhH5y5LLV2aoja9xYPLAf03P
-         7SNGxYXIdAYT2eU37QLrs8owmsaJTm9k1Nm1uF1PlfJcatT9AUw6tz//E1opTU8eMyuQ
-         N7K/EmUSwmjJyZ7NNj5qaMn4EWoaulPx0y7SC5IhO8H4+bxn8MN1YBI5HMYEHXHwgyY/
-         MO5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AgSKf2nq4ZeNmXzm2HLOaXRnUpP2wevjMWH3/GY16uM=;
-        b=Fp5++2dgN40akCDAlnMBWX2n1wVp6FlXhwgdgz2VZ9PPno2IZMMqKe3rDNmFsfihId
-         y9OaCSelCXd9rD1z9EmnUj7qU01MCyipNIarp9orAXmfKwIumY1DmXcE8oDntTnmHoYW
-         TtZdmiSklfrM1vd3Jf4t5LbZn87qn3un+gXbhg6MRo2/d9cIAzopZ6gkDnBqN7TnaTde
-         bsGSSm6EQspoNI4yDsCS0UFORo3kUTqhibKbnYkHpTAvibq/RoVpztGyAN3nPEzli4I6
-         uEezmeS5jmlYoaAmzxxpJF6EwoFPrkijA9T+q+LbbCXTgxhYa0sAnaW/WQCUvVD/YNyI
-         zYhg==
-X-Gm-Message-State: AOAM531iyeteM6GSdwS7tV8edAYO5dJp2ttYhODf3JXZ0tvSYvjHaUZP
-        izYb5LXYd+yP7yK3jx1nvT1NWS/HqyxGKTUf/6dKMA==
-X-Google-Smtp-Source: ABdhPJx0A+af2++jJHfLsdlb6E3H2MXjYcN1tlRw8aIhDheoxarpNlOZMKj5/0sYK9BEDTDt/vgmn598jvxpcCwzIwY=
-X-Received: by 2002:a17:90a:1f49:: with SMTP id y9mr10801337pjy.225.1629566599590;
- Sat, 21 Aug 2021 10:23:19 -0700 (PDT)
+        Sat, 21 Aug 2021 13:27:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629566789; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=6WsGx9ae68Ps20lCTKcLH+Mv3aDl+4r3zhiufzd6GVI=;
+ b=buW50jxbi6YY0MnplGhBbrWdJQe4cU/U8uH4bdDF2AsKRylClCHdNpkOd06VBjtXAHVIok2k
+ yEqySCxcUgDzmd64mAwgjtofyKkjpUpEQbVdnxGZi5WnRF2ZvjXZYRjNGBrFw/o9CUoiy3c7
+ cQoE7gge6qaocF/Uku8cltGTw/k=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 61213739a2d1fbf62b2a4ede (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 17:26:17
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 06659C43616; Sat, 21 Aug 2021 17:26:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E4C6C4338F;
+        Sat, 21 Aug 2021 17:26:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5E4C6C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <cover.1629562355.git.aakashhemadri123@gmail.com> <7572c80d90b499df7e9feb4781c07967fa31bf88.1629562355.git.aakashhemadri123@gmail.com>
-In-Reply-To: <7572c80d90b499df7e9feb4781c07967fa31bf88.1629562355.git.aakashhemadri123@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 21 Aug 2021 18:23:08 +0100
-Message-ID: <CAA=Fs0=jkOB25NM=7fbaguco-WqV_emKsEkk6UXasn=wc9ndcQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] staging: r8188eu: restricted __be16 degrades to int
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/3] rsi: fix occasional initialisation failure with BT
+ coex
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1628245403-2517-2-git-send-email-martin.fuzzey@flowbird.group>
+References: <1628245403-2517-2-git-send-email-martin.fuzzey@flowbird.group>
+To:     Martin Fuzzey <martin.fuzzey@flowbird.group>
+Cc:     linux-wireless@vger.kernel.org,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Siva Rebbagondla <siva8118@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Prameela Rani Garnepudi <prameela.j04cs@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Martin Fuzzey <martin.fuzzey@flowbird.group>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210821172617.06659C43616@smtp.codeaurora.org>
+Date:   Sat, 21 Aug 2021 17:26:17 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Aug 2021 at 17:18, Aakash Hemadri <aakashhemadri123@gmail.com> wrote:
->
-> Fix sparse warning:
-> > rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
->
-> Here tag->tag_len is be16, use be16_to_cpu()
->
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_br_ext.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> index ee52f28a1e56..f6d1f6029ec3 100644
-> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> @@ -70,7 +70,7 @@ static int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_tag *tag)
->         struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
->         int data_len;
->
-> -       data_len = tag->tag_len + TAG_HDR_LEN;
-> +       data_len = be16_to_cpu(tag->tag_len) + TAG_HDR_LEN;
->         if (skb_tailroom(skb) < data_len) {
->                 _DEBUG_ERR("skb_tailroom() failed in add SID tag!\n");
->                 return -1;
-> --
-> 2.32.0
->
+Martin Fuzzey <martin.fuzzey@flowbird.group> wrote:
 
-Thanks for this - looks good from what I can see.
+> When BT coexistence is enabled (eg oper mode 13, which is the default)
+> the initialisation on startup sometimes silently fails.
+> 
+> In a normal initialisation we see
+> 	usb 1-1.3: Product: Wireless USB Network Module
+> 	usb 1-1.3: Manufacturer: Redpine Signals, Inc.
+> 	usb 1-1.3: SerialNumber: 000000000001
+> 	rsi_91x: rsi_probe: Initialized os intf ops
+> 	rsi_91x: rsi_load_9116_firmware: Loading chunk 0
+> 	rsi_91x: rsi_load_9116_firmware: Loading chunk 1
+> 	rsi_91x: rsi_load_9116_firmware: Loading chunk 2
+> 	rsi_91x: Max Stations Allowed = 1
+> 
+> But sometimes the last log is missing and the wlan net device is
+> not created.
+> 
+> Running a userspace loop that resets the hardware via a GPIO shows the
+> problem occurring ~5/100 resets.
+> 
+> The problem does not occur in oper mode 1 (wifi only).
+> 
+> Adding logs shows that the initialisation state machine requests a MAC
+> reset via rsi_send_reset_mac() but the firmware does not reply, leading
+> to the initialisation sequence being incomplete.
+> 
+> Fix this by delaying attaching the BT adapter until the wifi
+> initialisation has completed.
+> 
+> With this applied I have done > 300 reset loops with no errors.
+> 
+> Fixes: 716b840c7641 ("rsi: handle BT traffic in driver")
+> Signed-off-by: Martin Fuzzey <martin.fuzzey@flowbird.group>
+> CC: stable@vger.kernel.org
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+Failed to apply, please rebase on top of wireless-drivers-next.
 
-Regards,
-Phil
+error: sha1 information is lacking or useless (drivers/net/wireless/rsi/rsi_91x_mgmt.c).
+error: could not build fake ancestor
+hint: Use 'git am --show-current-patch' to see the failed patch
+Applying: rsi: fix occasional initialisation failure with BT coex
+Patch failed at 0001 rsi: fix occasional initialisation failure with BT coex
+
+3 patches set to Changes Requested.
+
+12423167 [1/3] rsi: fix occasional initialisation failure with BT coex
+12423171 [2/3] rsi: fix key enabled check causing unwanted encryption for vap_id > 0
+12423173 [3/3] rsi: fix rate mask set leading to P2P failure
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1628245403-2517-2-git-send-email-martin.fuzzey@flowbird.group/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
