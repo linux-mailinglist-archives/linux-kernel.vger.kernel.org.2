@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635FF3F3BB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F8D3F3BB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhHUR1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 13:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
+        id S232043AbhHUR2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 13:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhHUR1y (ORCPT
+        with ESMTP id S229862AbhHUR2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:27:54 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7925CC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:27:14 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so15910489pjb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:27:14 -0700 (PDT)
+        Sat, 21 Aug 2021 13:28:37 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC91C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:27:57 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x16so11529677pfh.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HLWCn02MgCPOMWc3SzwkfWYw42/4p4VBHBuNhVkmEPk=;
-        b=Vk3YbIKE0MG4qacLCkB6pkFHgrD1C1Lid8H5AchZ12QaAu3YGhYnvrnMYeupTk6V0Q
-         LfO7CEAdRHYtDWfel5YHGFmTwaGoBoP24sTvy6q/qRplgTjIU8R/mbIeZuDDgCV0PhQy
-         wPgRrDcqhrC7BUeuGzectdbvY9p+EvBneFbxi4muvSPY6SwlT2RWZfvB979FXC5JyZ9L
-         9Y8VTQuh+56wWWpfSTu/1juiJJgc1CE1Au9adDE/XAYO6x4e6NBZ4+Apqi2vmbHzJu6S
-         OIGbW2Sh1OlpW2KsvWua8WuwVysVFcq9nkSwU1IuJ2W97SD27KvZ0FdWMOSY6A7IqZtL
-         ibSw==
+        bh=+NImfKj+1u2UZdWcEsXkC/vWqZt0WpdSDDZujdOQQU4=;
+        b=f/9u1of0w2xloeK65yR0rLas6BnGbLJEoVFQtnEtRoXjiUYo8WJdTPdcCay6afX+M5
+         V8RDBn6I6A2tTAPE7hsQZ49NLdcgwspzXd8FeWsv3BdH7dGYCQtORswJn/T4wtlONKzl
+         TWWLpU1oASE5kxPWOKNc/2HWEIe2XMeLLXVam7eT+w4pCH4Rf3pcTsVoTaDZx1e9Dr+l
+         71NwPRpnMNniOHA+McKqv6mBoRwwNl33/4GzMgN1YnYsDzewNIjvPh5ERiExhVmykGqX
+         UXmQ4aelrI4PyRsQ3qGf59LZhZEuV+UwCiN8DfTF8imcXha6FbgacheGb+BBETaLh1XY
+         Q6sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HLWCn02MgCPOMWc3SzwkfWYw42/4p4VBHBuNhVkmEPk=;
-        b=af22RVNkkSQKsu7vNeCNCCZs6NtBimxp0AgyJTSCHGFDakE4ZorHkA69S4d7FA3f/7
-         g4HkPedQbkC4rauzXg2NKdVU/iWbhxosaL4q4/oK4psYiKujQ4FYu792NFl7UEt1F+cz
-         eBRcyGEPWPpzm5oAmcg/dVXnBds8t3hfRDUITA2CQEl1IGGGD1syAMED5jJB5iJmcjB2
-         5veqGdTbeSNyI0AHh2kWrj7RzT7vL6R8IIb8OKx9y6Fau7Qy+hJMdDsnwKO86pB4fn7e
-         Y4MLeX0Dl3gvUh437Jh9E3hkyEvjTHYwajg4x/9p4zFgZNUo6u6RcVcSXPUpetcwe3v7
-         iWxA==
-X-Gm-Message-State: AOAM531YsnmXb3WGTLhi+wskW5ItEAgoKzrm5K2cJSeCqV8LP3mvVnJq
-        kB8ZG9ntZt4HA9iOdZG+kXJhgYieY44Ie4KRGMSaxg==
-X-Google-Smtp-Source: ABdhPJyTTIoTWdj9P9z98L4sZipGb1Y2PcrZtOZxfVNO3x4w4cC9prKMVZlGLvNS8E9xh8EwcIqUIt3KLwCfrRIccOM=
-X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr10902605pjq.217.1629566833962;
- Sat, 21 Aug 2021 10:27:13 -0700 (PDT)
+        bh=+NImfKj+1u2UZdWcEsXkC/vWqZt0WpdSDDZujdOQQU4=;
+        b=VC4kgbiwLliu9L9XySzGqP2UcK8lLsRThE8Ig6+YLgi1emWtGztomToX0WUc76nJ80
+         14Kwit81fhI+dDFVuHGm4Urk3b1bJ/MS5r/4TR5a7rK6+9e0gWoPB06A4TBMDbv6dJNL
+         m+LxXo9bv9WUXY387itx6gtDletSnrWod9GEW43w17uM5yDQIg+H7gGfYHDsqDF6qoef
+         qEUIcYbDRKPyIEXHI8mzzUdiMvtBdOTXrYoLn8h3zaAOoJyJmPOR5K2pk1bH6T0xYLJE
+         AVfbzzFs7LnnOGV2Ve4LudLyoWnsoQ8zwXzYpIBtVoUFMYBjAOaFOHdau5k0EXJyaNeF
+         8BFA==
+X-Gm-Message-State: AOAM533PRivcCzsQ0PstcHyiLMKY+36bfYsru/COGtbIFYVpN0sDOtHY
+        SbM5HocfbrfIu4imB1Fh36HjnyAVnZ71el/l2H2bVQ==
+X-Google-Smtp-Source: ABdhPJwNKKlNcmoftApiFlV0ypYj+vmHEDqxoXmfvGQIONgSHEPRBYmbiTcki8CiTVSCS5XNqks/io4enOGCDUdK4x8=
+X-Received: by 2002:aa7:90d4:0:b029:3b3:2746:5449 with SMTP id
+ k20-20020aa790d40000b02903b327465449mr25685318pfk.81.1629566877052; Sat, 21
+ Aug 2021 10:27:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210821164859.4351-1-martin@kaiser.cx>
-In-Reply-To: <20210821164859.4351-1-martin@kaiser.cx>
+References: <20210821164859.4351-1-martin@kaiser.cx> <20210821164859.4351-2-martin@kaiser.cx>
+In-Reply-To: <20210821164859.4351-2-martin@kaiser.cx>
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 21 Aug 2021 18:27:03 +0100
-Message-ID: <CAA=Fs0mU0bkXPY35fkuudoWfAps2jp1qc3ga53LXgg6d+0bVSg@mail.gmail.com>
-Subject: Re: [PATCH 01/10] staging: r8188eu: remove unnecessary cast
+Date:   Sat, 21 Aug 2021 18:27:46 +0100
+Message-ID: <CAA=Fs0mB_9Uy5xSr=pin+oDOCN+J07Yzw1CNchQLHmLVN6wT1g@mail.gmail.com>
+Subject: Re: [PATCH 02/10] staging: r8188eu: remove unused define
 To:     Martin Kaiser <martin@kaiser.cx>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
@@ -65,33 +66,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sat, 21 Aug 2021 at 17:49, Martin Kaiser <martin@kaiser.cx> wrote:
 >
-> name is a const char * by default. This type should be ok for r8188eu.
+> _HCI_OPS_OS_C_ is not used in the r8188eu driver. Remove it.
 >
 > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 > ---
->  drivers/staging/r8188eu/os_dep/usb_intf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/staging/r8188eu/hal/usb_ops_linux.c | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index e002070f7fba..72556ac10d7d 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -61,7 +61,7 @@ struct rtw_usb_drv {
->  };
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index 953fa05dc30c..a11a0597e515 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -1,8 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright(c) 2007 - 2011 Realtek Corporation. */
 >
->  static struct rtw_usb_drv rtl8188e_usb_drv = {
-> -       .usbdrv.name = (char *)"r8188eu",
-> +       .usbdrv.name = "r8188eu",
->         .usbdrv.probe = rtw_drv_init,
->         .usbdrv.disconnect = rtw_dev_remove,
->         .usbdrv.id_table = rtw_usb_id_tbl,
+> -#define _HCI_OPS_OS_C_
+> -
+>  #include "../include/osdep_service.h"
+>  #include "../include/drv_types.h"
+>  #include "../include/osdep_intf.h"
 > --
 > 2.20.1
 >
-
-Looks ok to me, thanks. I would consider using a cover letter style
-[PATCH 00/10] style approach as an addition in future though, just my
-personal opinion.
 
 Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
