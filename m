@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B223F3A86
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9963F3A8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhHUMLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 08:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        id S234450AbhHUMNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 08:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHUMLt (ORCPT
+        with ESMTP id S229968AbhHUMN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 08:11:49 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D340C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 05:11:10 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id u14so978197ejf.13
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 05:11:10 -0700 (PDT)
+        Sat, 21 Aug 2021 08:13:29 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8ECC061575;
+        Sat, 21 Aug 2021 05:12:49 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id w4so20395571ljh.13;
+        Sat, 21 Aug 2021 05:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tpw2AuoZ5uilE8E10lWdNIvs/omFPqAAG7Y/I75dW9M=;
-        b=leRLTPB9gTHR0pX0nav9Z01iyQai2iWOg7SmSihwePLc3cJsOol8QJtwQGgzHu96/c
-         orQkXXDWt+pYRujIvlVxz0EBTr5BLlyOaGIKEfDFnKFhTBSO7UOcFmCrTlmAgWPdYGOX
-         tb+l8aHdq9GzT9RczvYp3r2zaphq4ScgDqcl22wbtBXBYIhbukJnz7LNFrWaYX8B93+3
-         6ZEaKqodGuvl0S1WakUZvvFF0wtXI+OlN2fYaIHorzEIom0wS6WpTLLLd/q3qEAqg2IM
-         YKG++IM0+xVOgByfnOStDWsDxza+wbQ/AiPFJOwMgGMhNrFlwkINyDQemu34Sig0a/+4
-         AAoQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pWm+SXTgQ6Ye71KEJYrX8x4GdkySoQhJ1rIbykcEo+8=;
+        b=PdP+FH0V3HehypF44h9BTbNRXagbI8NQNesGa1I8ZVFYZPAcDWzTJE2xucd63ht4+k
+         L+Sm2L/Wlzx5wAE/Yy6TZtmGDMEGVfeOedQ1tTm0+fgRmo95U2nu94lusFnvvatXkk55
+         VMu5HEmvzp4BAYMshEri4nZi1dSjsdMfZpkthNEaJoQQ/L3w/nSqg9E2UVVq0YS5hcJz
+         QuTv/RDadePY6PlhoQ20lDtQ5M7+S5Rc3qVO9bG68hh+p7OyibiBFu702T6FdpvW4UQE
+         K1xF2fLZuDv1JY0dBhLl1MK5X5/jknYa3lleWtBovCuCnbRDvRV6T8pXwif4BtlhE6QM
+         7O6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tpw2AuoZ5uilE8E10lWdNIvs/omFPqAAG7Y/I75dW9M=;
-        b=PmAKVanbg0Gb2FAKWHud4Net0ZOTyeO+WfSoUE3gwmyqxph8zJ99pX1mBXS1xB/VVA
-         6k1C4UYoDaf2dJ2wk6WcaIlBlBtGBGSvFjrGEAErN9sNTDnArHbr/hZWaWtFaGf0tQb9
-         qNOVbeUdAl3L+wcOmpv2DmNlvBLfTGzpWdXhEgIUAdL3LjKRb4rM3+PJAUdCF3CD8XPB
-         RWkBvWAq0d5g5UmL3jM95A/MIfMDzr4WrnYj+xRbwxxz1Glvt5XMYYS7zkm+Z02b37uJ
-         564eWfIIEVFcMrq/0aY8aUXe84cCUZq5l+/l6dY2DiNp0DB9tFHy/rgP2TkhoJT8GF6m
-         xcJw==
-X-Gm-Message-State: AOAM530UxgJwctYDnjBUGnK7hGmp84LVKsC8Jh1t8xzimoTWMnvZ2xpN
-        C3Uq5khxRihebjnxSdh2GiA=
-X-Google-Smtp-Source: ABdhPJybNMq0exV3RFmKZfRNZoQ51Q/aCHPVCu7Rhydr20wNiL9EJ6KEKtWZcJegkkKuzk/1f0bOnw==
-X-Received: by 2002:a17:906:781:: with SMTP id l1mr26450485ejc.289.1629547869042;
-        Sat, 21 Aug 2021 05:11:09 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id v6sm4222010ejk.117.2021.08.21.05.11.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pWm+SXTgQ6Ye71KEJYrX8x4GdkySoQhJ1rIbykcEo+8=;
+        b=IFU/MBEdqOc+DbHmLQnLQIuqFn56CW4vXfZzKaySeRKXWCFo7PYcVtigaLIJjzNDVM
+         ghqfIWeQKXP4LBGc5p61KL5Nx0/OnT9M+kg//W3o9TJrqXX/Obc3BDHc4IXXnn9IftfL
+         RCj2jxWVroPWMPZJRWfAnejJ+nkiZUtJVPD9ebUr5L57pLXYzDgjwyX0GH4PL0Dqsgrw
+         b2YzuJwODUo58JupRGQz6UZqKzp7twuqxb1sX12hRwx6nmCLt2nEGcfP3vQVSTn06G3H
+         mlxi2GT0E1EGYlnc7w7bix54MM4aBpxXRAKtPFWnhhoBORBqUhRAHnyLv8CKDwCdh848
+         O4bw==
+X-Gm-Message-State: AOAM533ty7bYdOoT1VDIJYwygI0vPxCGOkZXbImyqJxZLMQZLs4VPLHS
+        d7J7WWT9NYRpk7L534bi6Bq4tqG9IIKnRLdn
+X-Google-Smtp-Source: ABdhPJxzpXGpfr6mM+l1iD9N4mn5klFS4XearVaT6UBA181MqbAgcDLRPpOff+u9pa0lw0HABapafQ==
+X-Received: by 2002:a2e:7c0a:: with SMTP id x10mr19613907ljc.340.1629547968108;
+        Sat, 21 Aug 2021 05:12:48 -0700 (PDT)
+Received: from localhost.localdomain (h-62-63-208-27.A230.priv.bahnhof.se. [62.63.208.27])
+        by smtp.googlemail.com with ESMTPSA id bp18sm564914lfb.201.2021.08.21.05.12.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 05:11:08 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 1/3] staging: r8188eu: add proper rtw_read* error handling
-Date:   Sat, 21 Aug 2021 14:11:07 +0200
-Message-ID: <1985029.ipg07BJOT0@localhost.localdomain>
-In-Reply-To: <31d61caa-d07d-193f-cd8e-adfbda1ff9e2@gmail.com>
-References: <cover.1629479152.git.paskripkin@gmail.com> <5720270.rXTAdOU5UK@localhost.localdomain> <31d61caa-d07d-193f-cd8e-adfbda1ff9e2@gmail.com>
+        Sat, 21 Aug 2021 05:12:47 -0700 (PDT)
+From:   Niklas Lantau <niklaslantau@gmail.com>
+To:     stern@rowland.harvard.edu
+Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
+        linux-kernel@vger.kernel.org,
+        Niklas Lantau <niklaslantau@gmail.com>
+Subject: [PATCH] Usb: storage: usb: removed useless cast of void*
+Date:   Sat, 21 Aug 2021 14:11:34 +0200
+Message-Id: <20210821121134.23205-1-niklaslantau@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, August 21, 2021 12:35:48 PM CEST Pavel Skripkin wrote:
-> On 8/21/21 8:55 AM, Fabio M. De Francesco wrote:
-> > On Friday, August 20, 2021 7:07:36 PM CEST Pavel Skripkin wrote:
-> >> rtw_read*() functions call usb_read* inside. These functions could fail
-> >> in some cases; for example: failed to receive control message. These
-> >> cases should be handled to prevent uninit value bugs, since usb_read*
-> >> functions blindly return stack variable without checking if this value
-> >> _actualy_ initialized.
-> >> 
-> >> To achive it, all usb_read* and rtw_read*() argument list is expanded
-> > 
-> > []
-> >
-> >> --- a/drivers/staging/r8188eu/core/rtw_io.c
-> >> +++ b/drivers/staging/r8188eu/core/rtw_io.c
-> >> @@ -34,44 +34,44 @@ jackson@realtek.com.tw
-> >>  #define rtw_cpu_to_le16(val)		cpu_to_le16(val)
-> >>  #define rtw_cpu_to_le32(val)		cpu_to_le32(val)
-> > 
-> > Not related to your patch, these macros are useless and misleading.
-> > 
-> 
-> Sorry, I don't get it. I didn't touch these macros, it's part of diffstat.
+Removed useless cast of a void* and changed __us to data
 
-Yes, correct; in fact I wrote: "not related to your patch".
+Signed-off-by: Niklas Lantau <niklaslantau@gmail.com>
+---
+ drivers/usb/storage/usb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I just saw those macros while reading your patch. The code is  I just noticed 
-that those macros are useless (in case someone wanted to
-address that issue). 
-
-Obviously, if you find it interesting, you shouldn't do that in your series,
-because it is entirely unrelated to the purpose of your work.
-
-I hope now I've made it clearer, sorry.
-
-Regards,
-
-Fabio 
-
+diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+index 90aa9c12ffac..e78e20fb1afa 100644
+--- a/drivers/usb/storage/usb.c
++++ b/drivers/usb/storage/usb.c
+@@ -295,9 +295,9 @@ void fill_inquiry_response(struct us_data *us, unsigned char *data,
+ }
+ EXPORT_SYMBOL_GPL(fill_inquiry_response);
+ 
+-static int usb_stor_control_thread(void * __us)
++static int usb_stor_control_thread(void *data)
+ {
+-	struct us_data *us = (struct us_data *)__us;
++	struct us_data *us = data;
+ 	struct Scsi_Host *host = us_to_host(us);
+ 	struct scsi_cmnd *srb;
+ 
+-- 
+2.33.0
 
