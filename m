@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3093F3A7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 13:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C353F3A7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 13:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234301AbhHULx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 07:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhHULx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 07:53:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D12B611CB;
-        Sat, 21 Aug 2021 11:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629546768;
-        bh=jsUl4UV8kS+4boj7P+zaDX49gtU2KNCCoiB4K+ar/fw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cmvdkdrHTUx6YLz3oIcwxuKlsJwwzblS7S/pf5MaL4fQRjTQ74RYQRiE+2fpfFXes
-         RrfMNlJjzrGrgTpJL1aRoyz8lSe20VYCklNOes3VVsvDCHq3riuwlB0GrYTrCj1fKs
-         gB2G7bf/8ut3AoLS1mSi9lI+JSSB0B+L8G8W6Yks=
-Date:   Sat, 21 Aug 2021 13:52:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Daniel Steger <daniel.steger@xilinx.com>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: sysfs: do not remove files if group is null
-Message-ID: <YSDpDLYuiFDyshwj@kroah.com>
-References: <20210819191019.3380999-1-daniel.steger@xilinx.com>
+        id S234397AbhHULyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 07:54:16 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:44947 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhHULyQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 07:54:16 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N0X4e-1nDWWZ2xSm-00wRFX for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021
+ 13:53:35 +0200
+Received: by mail-wm1-f44.google.com with SMTP id u15so7459851wmj.1
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 04:53:35 -0700 (PDT)
+X-Gm-Message-State: AOAM533czMGnjLSaJEyr88Hl5ZSC7GkPXWHp1/MbHRABKJFFShJCTKr+
+        MgdPuqm5Q5AiPMs0X2O6R5yZlIthi3JBGEWnzbY=
+X-Google-Smtp-Source: ABdhPJzkPFvTgoFEnuWrfQLwjVJMwwBFAZBEBWusf8XtwuC2vnl38PUtumRo7xWPJjgVJRkAd1pRvkTzmWjlfRm9UmI=
+X-Received: by 2002:a05:600c:1991:: with SMTP id t17mr8110849wmq.120.1629546815353;
+ Sat, 21 Aug 2021 04:53:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210819191019.3380999-1-daniel.steger@xilinx.com>
+References: <20210821094528.294579-1-pbrobinson@gmail.com>
+In-Reply-To: <20210821094528.294579-1-pbrobinson@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 21 Aug 2021 13:53:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2Gdx6JQa3_GeSVAqUVXFAa-TOLb8SU2-K33Wg880Q0GA@mail.gmail.com>
+Message-ID: <CAK8P3a2Gdx6JQa3_GeSVAqUVXFAa-TOLb8SU2-K33Wg880Q0GA@mail.gmail.com>
+Subject: Re: [PATCH] reset: simple: remove ZTE details in Kconfig help
+To:     Peter Robinson <pbrobinson@gmail.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gOwSpGjPUz5Hnjuli9KhR4dvxX9+bVSTQAT487OZ3sAXWQn2cMz
+ OFGDLY7fhhElClODGcVY6Zxcx+NWmYo7JBp655hN5Qf+AfE9FjKeCPAHHT+TN6RCCnMs5Nq
+ ufGKgQV2qcQFeTGMyi8W45RDZPk41YBDv96UDdpCsUycQkqU28jxGANSdEJqc8UvLEyfEop
+ 6jeqjhAqlEh9U71jVuxsA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cn2ExzlhEJc=:kHC+S3ae1LVY6JMHNlGi8m
+ v74mYT+VjF3VI/k/xdWRho5L+j13MjxIC8JbwjwHVxe8hKyG7f1w+AFPYdF+PHkOrpQJToqem
+ Q457NpDsQVmL3xnmXl6c9Xo2mHw4Q0w4E1L1j0s+aT+AprXglsY1zdCMjYN/b+ZNq/aeOotU9
+ icOiddL3OIugQSyjnT8j18vHLr04EjLEqe7QqTczDLF5BgDV7FlRJrXrVgczQkOVyTm/Iv2en
+ t7UdojDnNqVpHP+pNCbE922mcDkU7i5UvfPhGDZyyptFYEh1RvYXsTxKSImGMIo43Qe4WAVsw
+ KjuZe9ZV4freZTgw1E/FGcpiMgej+QqAcMo8eCzhq7rmaYt01XE/Y/8inqDC1oy/s74qe2mhP
+ A8KGuxUGdqe17do0R8/BA8Mch/8WYs8PjF9JNxtOg8wAnIjsMOvcMIIQlVQ+9jNGRLlOloSaU
+ c8rw6vQrH9mp4qGwOUYF8meUY5whb7L+Xz7CeTCA8Uka3oxIzLIdyhvPtJBz3VmPjCyVkxrUy
+ CfnKZ5iiw3UxtqVD9ewP7OirwteJvPI8tiolnyWS/ZAoPyPpgK6IGQifIcemjfIDExMMYMpsp
+ E1yROVjrtxyzmHWFIoRxk2Jd9/KWRPe8a4nvpisSoPEKpvJqPiqd1lxmM7SPE6IYWpExyztRP
+ FC5EkchGw3cbhvi3uOAff0+D3BMaGicB/fQ4yDfTFVp3Sarv21FdNQrXWcjVI+2tzAIgWTgGS
+ Cy4WlvHP5ZXx8Otz3kfndm7Y1lfsA1OecSbsz6y5Jx1WHuIhzNd7KnSbh8ssk1Pthfr9f2N4d
+ dIWwJgkWjUd492b+BGEyV+WUWVhOVe7A7NIwFogczt6QzfM4KFI8Wjuh5Qn+OzXDG4wAtgm
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 12:10:20PM -0700, Daniel Steger wrote:
-> The current implementation allows the remove_files() API to be
-> called without checking if the grp->name is null. Ensure that
-> the group name is valid prior to removing files.
-> 
-> This patch fixes a race condition where device_del() will cleanup
-> sysfs entries prior to device managed sysfs entries. This results
-> in a NULL group->name and a system error during device cleanup.
-> 
-> To reproduce the issue, simply create a new child device in a
-> platform driver of your choice. Add a sysfs file group using
-> devm API.
-
-What driver is doing this today?
-
-> On driver exist ensure to unregister your child device.
-
-What child device?  Why is a platform driver creating a child device at
-all?
-
-> Do not call devm_device_remove_group() and leave it up to the
-> implementation to automatically clean up the files. Here is where
-> you will see a kernel error complaining that the files have already
-> been removed.
-> 
-> Signed-off-by: Daniel Steger <daniel.steger@xilinx.com>
+On Sat, Aug 21, 2021 at 11:46 AM Peter Robinson <pbrobinson@gmail.com> wrote:
+>
+> The ZTE platform support in the simple reset driver has been
+> removed but the comment in the help wasn't removed so clean
+> this up too.
+>
+> Fixes: 89d4f98ae90d ("ARM: remove zte zx platform")
+> Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
 > ---
->  fs/sysfs/group.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-> index 64e6a6698935..023b40840f36 100644
-> --- a/fs/sysfs/group.c
-> +++ b/fs/sysfs/group.c
-> @@ -286,9 +286,10 @@ void sysfs_remove_group(struct kobject *kobj,
->  		kernfs_get(kn);
->  	}
->  
-> -	remove_files(kn, grp);
-> -	if (grp->name)
-> +	if (grp->name) {
-> +		remove_files(kn, grp);
 
-What about groups without names?  Will then now not be removed properly?
-Why does the name matter here?
-
-thanks,
-
-greg k-h
+Acked-by: Arnd Bergmann <arnd@arndb.de>
