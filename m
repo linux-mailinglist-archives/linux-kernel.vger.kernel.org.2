@@ -2,154 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246743F38C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 07:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B8E3F38D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 07:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhHUFF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 01:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230205AbhHUFF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 01:05:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB536113E;
-        Sat, 21 Aug 2021 05:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629522317;
-        bh=CP6bFxfCSRXzuFPiAmcRUPKjPV1ToRSYlZTlKn2rgUw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bMx6nrJZCNeawQmaRTV3CnFImNHp4o7rlh7TnGdzIkpSc5xaRP3PoOhXamDmjjEGZ
-         Oxgqvly98eVZUSj1ANg6QgQKlUwSWT4MD8u4ALUTEb9KSPUOvCNy674NCgnEhUDODY
-         TSR8SjheEaDNGlQ5R+JFYtcK4jldDh92HP5ibT7eYRHK8Zxu5yyzfyyfmX8eSxk53w
-         b0E+hKvB/ojl2gW17PYniYC/xg99snjQ28FXS12PJrjJRJ6+z7X/HcXxP/HzaaXM0N
-         pC0XlWSt6Yy01qjthbcxF9nTRyT9tzNH2cvAEbN+8WHJ2w1CZ9hcyAfSi5NC5I9VwM
-         NUhcYdql3XTGA==
-Date:   Sat, 21 Aug 2021 13:05:11 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Jeaho Hwang <jhhwang@rtst.co.kr>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
-        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
-         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <mkbyeon@lselectric.co.kr>,
-        =?utf-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRp?=
-         =?utf-8?B?b24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <khchoib@lselectric.co.kr>
-Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
- hw_ep_prime
-Message-ID: <20210821050511.GA14810@Peter>
-References: <20210817095313.GA671484@ubuntu>
- <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
- <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
- <20210819084759.stnmit32vs2be46m@linutronix.de>
- <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
+        id S230526AbhHUFU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 01:20:58 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:46156 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhHUFU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 01:20:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1629523218; x=1661059218;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hRjIA2N7XqbYT9/bYzG7LF9KmVpB8TKkOtmPXU0WOg8=;
+  b=p7hKn6+vME6R58Vpi6gvRJdFXt88a0GhmCTZ/aLKoaa5vqgIbUq2nOy2
+   h8xvb7aHqNxzUTKKFboVGADZJYz1kCMB8/INiAQk+NzIa+3rUmt4AMzxu
+   n6cd3H6wnFLQSeYiyJXd/mCKdo4TkWi/nb5VA0t4nahpspP81hd/WrDRj
+   g=;
+X-IronPort-AV: E=Sophos;i="5.84,338,1620691200"; 
+   d="scan'208";a="20872219"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-25e59222.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 21 Aug 2021 05:20:16 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1d-25e59222.us-east-1.amazon.com (Postfix) with ESMTPS id 20D13A2437;
+        Sat, 21 Aug 2021 05:20:11 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 21 Aug 2021 05:20:11 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.229) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sat, 21 Aug 2021 05:20:06 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <jiang.wang@bytedance.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <chaiwen.cc@bytedance.com>,
+        <christian.brauner@ubuntu.com>, <cong.wang@bytedance.com>,
+        <davem@davemloft.net>, <digetx@gmail.com>,
+        <duanxiongchun@bytedance.com>, <kuba@kernel.org>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <rao.shoaib@oracle.com>,
+        <viro@zeniv.linux.org.uk>, <xieyongji@bytedance.com>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH v1] af_unix: fix NULL pointer bug in unix_shutdown
+Date:   Sat, 21 Aug 2021 14:20:02 +0900
+Message-ID: <20210821052002.37230-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210821035045.373991-1-jiang.wang@bytedance.com>
+References: <20210821035045.373991-1-jiang.wang@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.229]
+X-ClientProxiedBy: EX13D29UWA004.ant.amazon.com (10.43.160.33) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-08-20 14:15:55, Jeaho Hwang wrote:
-> 2021년 8월 19일 (목) 오후 5:48, Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de>님이 작성:
-> >
-> > On 2021-08-19 08:50:27 [+0900], Jeaho Hwang wrote:
-> > > Without RT, udc_irq runs as a forced threaded irq handler, so it runs
-> > > without any interruption or preemption. NO similar case is found on
-> > > non-RT.
-> >
-> > I see only a devm_request_irq() so no force-threading here. Booting with
-> > threadirqs would not lead to the problem since commit
-> >    81e2073c175b8 ("genirq: Disable interrupts for force threaded handlers")
-> >
+From:   Jiang Wang <jiang.wang@bytedance.com>
+Date:   Sat, 21 Aug 2021 03:50:44 +0000
+> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
+> introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the 
+> unhash function will call prot->unhash(), which is NULL for SEQPACKET. 
+> And kernel will panic. On ARM32, it will show following messages: (it 
+> likely affects x86 too).
 > 
-> I was wrong. udc threaded irq handler allows twd interrupt even on
-> non-RT and with threaded irq.
-> I believed Chen's comment "The function hw_ep_prime is only called at
-> udc_irq which is registered as top-half irq handlers. Why the timer
-> interrupt is occurred when hw_ep_prime is executing?".
+> Fix the bug by checking the sk->type first.
+> 
+> Kernel log:
+> <--- cut here ---
+>  Unable to handle kernel NULL pointer dereference at virtual address
+> 00000000
+>  pgd = 2fba1ffb
+>  *pgd=00000000
+>  Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
+>  Modules linked in:
+>  CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
+> 5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
+>  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+>  PC is at 0x0
+>  LR is at unix_shutdown+0x81/0x1a8
+>  pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
+>  sp : e45aff70  ip : e463a3c0  fp : beb54f04
+>  r10: 00000125  r9 : e45ae000  r8 : c4a56664
+>  r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
+>  r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
+>  Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+>  Control: 50c5387d  Table: 05aa804a  DAC: 00000051
+>  Register r0 information: slab PING start c4a56400 pointer offset 0
+>  Register r1 information: NULL pointer
+>  Register r2 information: slab task_struct start c5a6b180 pointer offset 0
+>  Register r3 information: NULL pointer
+>  Register r4 information: slab PING start c4a56400 pointer offset 0
+>  Register r5 information: non-paged memory
+>  Register r6 information: slab PING start c4a56400 pointer offset 100
+>  Register r7 information: non-paged memory
+>  Register r8 information: slab PING start c4a56400 pointer offset 612
+>  Register r9 information: non-slab/vmalloc memory
+>  Register r10 information: non-paged memory
+>  Register r11 information: non-paged memory
+>  Register r12 information: slab filp start e463a3c0 pointer offset 0
+>  Process falkon (pid: 1999, stack limit = 0x9ec48895)
+>  Stack: (0xe45aff70 to 0xe45b0000)
+>  ff60:                                     e45ae000 c5f26a00 00000000 00000125
+>  ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
+>  ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
+>  ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
+>  ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
+>  [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
+>  [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
+> (__sys_trace_return+0x1/0x16)
+>  Exception stack(0xe45affa8 to 0xe45afff0)
+> 
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> Reported-by: Dmitry Osipenko <digetx@gmail.com>
+> Tested-by: Dmitry Osipenko <digetx@gmail.com>
 
-Hi Jeaho,
+Fixes: 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
 
-How could you let udc irq as threaded irq? The chipidea interrupt
-is registered using devm_request_irq.
+And the commit is not in net-next yet, so is this patch for bpf-next?
 
-> We have additional experiments and got the results like below. RNDIS
-> host was Windows.
-> 
-> RT, 1ms delay between first ENDPTSETUPSTAT read and priming : error
-> case occurred
-> RT, 1ms delay + irq_save : no error case occurred.
-> non-RT, threaded irq, 1ms delay : no error case occurred even twd
-> fires inside the function execution.
 
-Again, how do you observe it?
+> ---
+>  net/unix/af_unix.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 443c49081636..6965bc578a80 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
+>  		int peer_mode = 0;
+>  		const struct proto *prot = READ_ONCE(other->sk_prot);
+>  
+> -		prot->unhash(other);
+> +		if (sk->sk_type == SOCK_STREAM)
 
-Peter
+		if (prot->unhash)
+is more straight?
 
-> 
-> It doesn't seem to be a timing issue. But irq definitely affects
-> priming on the RT kernel. Do you RT experts have any idea about the
-> causes?
-> If isr_tr_complete_handler fails ep priming it calls _ep_set_halt and
-> goes an infinite loop in hw_ep_set_halt. It was an actual problem we
-> experienced.
-> So we protect irqs inside hw_ep_priming not to make error cases and
-> also add a timeout inside the hw_ep_set_halt loop for a walkaround.
-> The timeout patch is submitted to linux-usb.
-> ( https://marc.info/?l=linux-usb&m=162918269024007&w=2 )
-> 
-> We withdrew this patch since we don't know if disabling irq is the
-> best solution to solve the problem and udc would work fine with
-> hw_ep_set_halt walkaround even though hw_ep_prime fails.
-> But we are still trying to find out the cause of this symptom so We'd
-> so appreciate it if RT or USB experts share some ideas or ways to
-> report somewhere. Xilinx doesn't provide any support without their
-> official kernel :(
-> 
-> Thanks for the discussion Sebastian.
-> 
-> Jeaho Hwang.
-> 
-> > …
-> > > > If this function here is sensitive to timing (say the cpu_relax() loop
-> > > > gets interrupt for 1ms) then it has to be documented as such.
-> > >
-> > > The controller sets ENDPTSETUPSTAT register if the host sent a setup packet.
-> > > yes it is a timing problem. I will document that and resubmit again if
-> > > you agree that local_irq_save could help from the timing problem.
-> > >
-> > > Thanks for the advice.
-> >
-> > If it is really a timing issue in the function as you describe below
-> > then disabling interrupts would help and it is indeed an RT only issue.
-> >
-> > So you read OP_ENDPTSETUPSTAT, it is 0, all good.
-> > You write OP_ENDPTPRIME, wait for it to be cleared.
-> > Then you read OP_ENDPTSETUPSTAT again and if it is 0, all good.
-> >
-> > And the TWD interrupt could delay say the second read would read 1 and
-> > it is invalidated. Which looks odd.
-> > However, it is "okay" if the TWD interrupt happens after the second
-> > read? Even if the host sends a setup packet, nothing breaks?
-> > Do you have numbers on how long irq-off section is here? It seems to
-> > depend on how long the HW needs to clear the OP_ENDPTPRIME bits.
-> >
-> > Sebastian
-> 
-> 
-> 
+
+> +			prot->unhash(other);
+>  		if (mode&RCV_SHUTDOWN)
+>  			peer_mode |= SEND_SHUTDOWN;
+>  		if (mode&SEND_SHUTDOWN)
 > -- 
-> 황재호, Jay Hwang, linux team manager of RTst
-> 010-7242-1593
-
--- 
-
-Thanks,
-Peter Chen
-
+> 2.20.1
