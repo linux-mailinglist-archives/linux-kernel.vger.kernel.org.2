@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A61F3F3AFA
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 16:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C663F3AFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 16:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhHUOZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 10:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44264 "EHLO
+        id S232119AbhHUO1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 10:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhHUOZl (ORCPT
+        with ESMTP id S231566AbhHUO1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 10:25:41 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94B3C061575;
-        Sat, 21 Aug 2021 07:25:01 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id q10so18555737wro.2;
-        Sat, 21 Aug 2021 07:25:01 -0700 (PDT)
+        Sat, 21 Aug 2021 10:27:46 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EA1C061575;
+        Sat, 21 Aug 2021 07:27:07 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 17so12129004pgp.4;
+        Sat, 21 Aug 2021 07:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DLjK+TCmc9BqCXwaEVOpZUxm3tmZlEUADQgsTwUiIcI=;
-        b=OJeChMwKcJlTC5d0x5snzvzdVMSpJoOK2q615NGGJ0aMH7Kd/MGw87rj5cdBGDKzp3
-         rD8gJ3cmdoOYufntUhAIhe45CoEgxaDNApEk4nusNQhGgbqPs7l/txQaiPLiPSrbBo+7
-         5lgKXbUSlaw2TeUu2E5HjoPEOxmieMJc/0OOBALoCGiJMUAAgz9vhBVWCFXUcigM4ZsT
-         WjeedD03pgZgxWD73XeIQLgZLS+vfz374a2DS/D93oZL/zzvif/xAcqkz7BevMRXbSN5
-         /u1fRoaU4VLWS2SRWIt8X2ActZ+zqtiuECDskpmVdCatIDfTky+lQhBziILXDR60VoZ+
-         whnQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VYf9DRd/QNNJE0qlgwZL5IvPj9fM3vjxa1L3tnLZdAA=;
+        b=JzW/OnwYJGYh+C03W/KTE+7ltUNH359Vy2D4+U0kGC5w93mTZ59N+OJQ9OxsHeBfZT
+         kBC3FxDVVcL89hixSsQVGf3s8D9GQ6V2ktDYZelNzMznF5lZmY4ZwIUcv2YzXGaR1Ey+
+         BQd4Ys/25UMZ3agLGafRxRzBBfmuffUbzrRrttHWvVtBKd8CjQWky1DdzaEOz+I/8DJn
+         K0Cgn3uQqDRcBRQ69qC16HhoRTVVcWXuR7oh6/GcpsO/QWlmxsyzaWMeLJduGelpurva
+         ClwNjviDPSntMJzM0ZA6IiLJr7ekAw72h4qD/yTtvyFffPXBa8+1w3C4w0RZViKp93eZ
+         Bdfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=DLjK+TCmc9BqCXwaEVOpZUxm3tmZlEUADQgsTwUiIcI=;
-        b=UxqILvYdyZxVIlRqy/Fi4jLXYs9ZXMLwlJdwmgIX4vyI8jsw5aEmvcyOt86rNMQQf/
-         q2asaATZzhVgSDCKiTiREGONCsT3Fjyys+p3KhIzBZqq0bv/+Ro4KUzaJ2KU7yL28Hj8
-         t8O2ugdvLOdo6gwKZcwqmFgwYoRcLMzfJ/W++MB7Dr/O9RmLueqmL0J8rdTOD8ybJHIH
-         zzmbUWh+BIyXAwK0wghNDm4l77SiPMOJufKyZsja7VPKxaI0MHS537nShPfYK60xU5qg
-         +ZrIOXHQZKHhgOMP/QoX+pyUMZu8sog0Tr6SSBOzxb+i9UP+KE+zf+J28O2E/bYormK5
-         V0eQ==
-X-Gm-Message-State: AOAM530w0nCRYIIsrBIJn7GjPVqSLRPSJwt91Wmf2JYoohrPysfrNbYT
-        CO1vDsxZtE2eT3Ia9PrfJMk=
-X-Google-Smtp-Source: ABdhPJygVgV/uwI57UhxLV4Uz/WhIThhKyoYc1v8ClxzcHcR0ljxE+3ObuhgwGftO+Jpl45ySaQ6ww==
-X-Received: by 2002:adf:e5c5:: with SMTP id a5mr4143703wrn.120.1629555900469;
-        Sat, 21 Aug 2021 07:25:00 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.233.174])
-        by smtp.gmail.com with ESMTPSA id c2sm9237747wrs.60.2021.08.21.07.24.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Aug 2021 07:25:00 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] iter revert problems
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Palash Oswal <oswalpalash@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-References: <cover.1628780390.git.asml.silence@gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <3eaf5365-586d-700b-0277-e0889bfeb05d@gmail.com>
-Date:   Sat, 21 Aug 2021 15:24:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=VYf9DRd/QNNJE0qlgwZL5IvPj9fM3vjxa1L3tnLZdAA=;
+        b=Mb79E3UcRhxkBY0zvyufz+p5OMpfaweFhuHo2KP/MkjJ1QRd7QPuJZY+ZZSgyPQ4cp
+         lFhvAtpnelW88XG3bjOAPD3HDPQQ8xO3ZRqdynk3w5b04dA5bKx8YCADYySYG0OvwKcm
+         gUe/0MjFVppKTO7y3RUjLbui9UpXp5hNeldfcMeGYCCNDqTa25Unb6z9QwVp83bZDxtO
+         rVq7OSyPCnNl6E2p5NILe+9UfPj66rZVrKpMahVouk8A0Kwk+x+VO/2/rqNxcg7A7T/k
+         L6lCN4MrYhO9yqq/xlOe4/P9FCCxrNE5quNITRfkKsg73HufkUP4zYdLXTJGk/wgusnL
+         y+7g==
+X-Gm-Message-State: AOAM530EXvw2q/8J7nrQScTwWCl4ThdufZ7cO+fcTSrifb0kMGfH/HVc
+        WTSKCWGu8CtianTCP65WYYj3lfRobJy0AQ==
+X-Google-Smtp-Source: ABdhPJyEWNU4GkoJmwX1ceIv9AGx76IJdRR0lvzcyxD8Am78wb1BPDeaJKzg9yzCh0RA6e7aLePq8Q==
+X-Received: by 2002:a65:6a0a:: with SMTP id m10mr23829753pgu.82.1629556026610;
+        Sat, 21 Aug 2021 07:27:06 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id a10sm10515831pfn.48.2021.08.21.07.27.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 07:27:06 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-usb@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] usb: gadget: Add description for module parameter
+Date:   Sat, 21 Aug 2021 22:26:47 +0800
+Message-Id: <20210821142647.2904-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <cover.1628780390.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/21 9:40 PM, Pavel Begunkov wrote:
-> For the bug description see 2/2. As mentioned there the current problems
-> is because of generic_write_checks(), but there was also a similar case
-> fixed in 5.12, which should have been triggerable by normal
-> write(2)/read(2) and others.
-> 
-> It may be better to enforce reexpands as a long term solution, but for
-> now this patchset is quickier and easier to backport.
+The description for "qlen" is missing, and there is a description
+for this parameter in "Documentation/usb/gadget_printer.rst"
 
-We need to do something with this, hopefully soon.
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+---
+ drivers/usb/gadget/legacy/printer.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-> v2: don't fail it has been justly fully reverted
-> 
-> Pavel Begunkov (2):
->   iov_iter: mark truncated iters
->   io_uring: don't retry with truncated iter
-> 
->  fs/io_uring.c       | 16 ++++++++++++++++
->  include/linux/uio.h |  5 ++++-
->  2 files changed, 20 insertions(+), 1 deletion(-)
-> 
-
+diff --git a/drivers/usb/gadget/legacy/printer.c b/drivers/usb/gadget/legacy/printer.c
+index 2cd389575084..ed762ba9b629 100644
+--- a/drivers/usb/gadget/legacy/printer.c
++++ b/drivers/usb/gadget/legacy/printer.c
+@@ -50,6 +50,7 @@ MODULE_PARM_DESC(iPNPstring, "MFG:linux;MDL:g_printer;CLS:PRINTER;SN:1;");
+ /* Number of requests to allocate per endpoint, not used for ep0. */
+ static unsigned qlen = 10;
+ module_param(qlen, uint, S_IRUGO|S_IWUSR);
++MODULE_PARM_DESC(qlen, "The number of 8k buffers to use per endpoint");
+ 
+ #define QLEN	qlen
+ 
 -- 
-Pavel Begunkov
+2.25.1
+
