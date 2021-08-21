@@ -2,150 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DAF3F3865
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD123F3867
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241015AbhHUDvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:51:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        id S238570AbhHUDxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUDvr (ORCPT
+        with ESMTP id S229610AbhHUDxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:51:47 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90F9C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 20:51:08 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso15126875pjh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 20:51:08 -0700 (PDT)
+        Fri, 20 Aug 2021 23:53:12 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6EBC061575;
+        Fri, 20 Aug 2021 20:52:33 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id l3so9131491qtk.10;
+        Fri, 20 Aug 2021 20:52:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mBt6S7Z+fo/h4SDQ9g4EpoFhaMYhFBfaXzFLbKkDFFQ=;
-        b=tO2QV9wvNsiuWqC4JL7cH6snBg6jTkLYrKyx7fnRSirBqO0SPMnrBUCIPTWZuE0gJS
-         KYj2N83GoWtw4M7Sui37mAjtsn1Tqb1oVNwqk0whc6jdELfthrSMuWW4jTg0wIBquuoH
-         KgGtzcAsorH8J4WVFtP4kLgDn7R/qH4+//z+h7ZYDXdRS+Oy/M0Y/n55yhVwG1o4/U6Q
-         lemNOJYfOXwexthMoTo5QVuebPm9MPAo1eUyYase5sU7Lq1VmV5jlmIC23FjSrf3UFZc
-         3vyGfWtgZ/OSl9yeCcqTStzZzItf4gSofeZM9FgDTtkOstuwG1sBwi+cdhwbfx1rHVpP
-         IHLA==
+        bh=sR4E5Sm8LLwOyw9xtSMIJM649G2H66OSbDzhGqNUrlw=;
+        b=nUxGpcWXP0ZRhbiJYoEE4Gs7Sw2fMWrVjFC8tZUsBb5Z4zqToWn8FPieO3UwRGgQPq
+         twEVVvP3yx9u2tJ0gHiIsqjeio9LGtM/2bMwLrG/094joM2NbLFdrA7h8Uqp6yo/YLuR
+         jfDyL3EFKqsF1Qv6QQP2IR1/ad5aY51J4nSNx3N3iaNysSYstec5d9Yuc5BTi6uWob2z
+         tiYSs9aphg0qF6n+jvWYDnyWIf5oINNVv6j86J1heZTZjjAFxY14XdPweeGZdEl7jCcj
+         0h0ZAoqpvpJO/dtsZnEbtnEI6fmTABAvmjM4cuuZ8yhgWWcqSL5WyU1GrzMIn0xZDg0x
+         1q+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=mBt6S7Z+fo/h4SDQ9g4EpoFhaMYhFBfaXzFLbKkDFFQ=;
-        b=csVRC9Vh24374Jc2sGZz5g9YfkRkl5KndbjP67lfbdyn1KiWIPaekeLOk5nB5DAMF5
-         vGYEH4hAKg28XabSj2jWMndGrPYPujqMAYWN5QbHNpi4So9jKcxiBpK8ZOWs8n9IKd1E
-         th4FBzWfC/kequKqNhBZ8yK3lgp87Mip1cyPw6JD1G9zcL6C9t1e+ljNGfQ7G/gfz/kD
-         3nj/TtxwwrD7lbsO7yuWcLSiVwhhsFqW78j01YEqS0oLvoJCZSGYU62eSyUtcIREWisy
-         pJr/HsQM/jwhMeggZuem9TJFZn8C7axPyUOaqASTuLGyHVSHyi3uuefNkN8EjKHYuEXJ
-         QkkA==
-X-Gm-Message-State: AOAM533atW5BrcVqzemPXjuBSmXpbWCsscwGN10Lk9tDZfZhGeXqaPpo
-        azJx9u/IZutmdJrcKq7FhtkScQ==
-X-Google-Smtp-Source: ABdhPJwyRMIhifdakZrNbsxXul0QzmRrEweAIfzCJ+TKDaxrCsEqVGtA/euOKri6VT9s929toqmHjQ==
-X-Received: by 2002:a17:90b:1981:: with SMTP id mv1mr6237053pjb.45.1629517868192;
-        Fri, 20 Aug 2021 20:51:08 -0700 (PDT)
-Received: from ip-10-124-121-13.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id fa21sm12960927pjb.20.2021.08.20.20.51.06
+        bh=sR4E5Sm8LLwOyw9xtSMIJM649G2H66OSbDzhGqNUrlw=;
+        b=GpFfcPV8WQZbqegiyCCLX1V191Y52WCF1ccWFNWrn5U6HkHojtM8rmJkDAlFv7kG+M
+         gVXNHdzwRx6yiMwbyzsKBgBVQXGH8qLAXAPXlLQXO/0+vvYsgqTrCVh9a1VxhI4c+6Xl
+         63bNMw/PaV0B7XawYR8AV4o3ckCKTZPTUU0GrrgolERn9CI2fY9y0YW01gw+d9aPzqpx
+         P4nJ4p9V8WvlVdRr8GFbo6o/dMOnvcGzKWBAilSx9WPv6PgFjXy09l30fed1MDiu2+vV
+         AV/89465ngg6kRJ0YjjgyzQ5HqmXkZNJo1Z6VbeaeMXGWqDUQ0OC0La69qkFgBCLX/s1
+         gGEA==
+X-Gm-Message-State: AOAM533bUNcMEtNaLarzMpeGeB/9GIr5erXu7yhUVD0rBo9UONrvp5Ov
+        w4oRN8AnGULVkDTPOt24AWU=
+X-Google-Smtp-Source: ABdhPJzujUUuwY3in9lxJJAkZV17XKQLf3iKAYUf+FzBBnu0I2O0DK7Tx9Wgs6hDsyJ/EU99nI+05Q==
+X-Received: by 2002:ac8:59c5:: with SMTP id f5mr20284178qtf.50.1629517952794;
+        Fri, 20 Aug 2021 20:52:32 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id 19sm3843616qkf.127.2021.08.20.20.52.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 20:51:07 -0700 (PDT)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     netdev@vger.kernel.org
-Cc:     cong.wang@bytedance.com, duanxiongchun@bytedance.com,
-        xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Rao Shoaib <rao.shoaib@oracle.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] af_unix: fix NULL pointer bug in unix_shutdown
-Date:   Sat, 21 Aug 2021 03:50:44 +0000
-Message-Id: <20210821035045.373991-1-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 20 Aug 2021 20:52:32 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] memory:tegra30-emc: replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Fri, 20 Aug 2021 20:52:23 -0700
+Message-Id: <20210821035223.28282-1-jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
-introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the 
-unhash function will call prot->unhash(), which is NULL for SEQPACKET. 
-And kernel will panic. On ARM32, it will show following messages: (it 
-likely affects x86 too).
+From: jing yangyang <jing.yangyang@zte.com.cn>
 
-Fix the bug by checking the sk->type first.
+Fix the following coccicheck warning:
+./drivers/memory/tegra/tegra30-emc.c:1322:0-23:WARNING:
+tegra_emc_debug_max_rate_fops should be defined
+with DEFINE_DEBUGFS_ATTRIBUTE
 
-Kernel log:
-<--- cut here ---
- Unable to handle kernel NULL pointer dereference at virtual address
-00000000
- pgd = 2fba1ffb
- *pgd=00000000
- Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
- Modules linked in:
- CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
-5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
- Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
- PC is at 0x0
- LR is at unix_shutdown+0x81/0x1a8
- pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
- sp : e45aff70  ip : e463a3c0  fp : beb54f04
- r10: 00000125  r9 : e45ae000  r8 : c4a56664
- r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
- r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
- Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
- Control: 50c5387d  Table: 05aa804a  DAC: 00000051
- Register r0 information: slab PING start c4a56400 pointer offset 0
- Register r1 information: NULL pointer
- Register r2 information: slab task_struct start c5a6b180 pointer offset 0
- Register r3 information: NULL pointer
- Register r4 information: slab PING start c4a56400 pointer offset 0
- Register r5 information: non-paged memory
- Register r6 information: slab PING start c4a56400 pointer offset 100
- Register r7 information: non-paged memory
- Register r8 information: slab PING start c4a56400 pointer offset 612
- Register r9 information: non-slab/vmalloc memory
- Register r10 information: non-paged memory
- Register r11 information: non-paged memory
- Register r12 information: slab filp start e463a3c0 pointer offset 0
- Process falkon (pid: 1999, stack limit = 0x9ec48895)
- Stack: (0xe45aff70 to 0xe45b0000)
- ff60:                                     e45ae000 c5f26a00 00000000 00000125
- ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
- ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
- ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
- ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
- [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
- [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
-(__sys_trace_return+0x1/0x16)
- Exception stack(0xe45affa8 to 0xe45afff0)
-
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
 ---
- net/unix/af_unix.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/memory/tegra/tegra30-emc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 443c49081636..6965bc578a80 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
- 		int peer_mode = 0;
- 		const struct proto *prot = READ_ONCE(other->sk_prot);
+diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
+index 7e21a85..80f98d7 100644
+--- a/drivers/memory/tegra/tegra30-emc.c
++++ b/drivers/memory/tegra/tegra30-emc.c
+@@ -1289,7 +1289,7 @@ static int tegra_emc_debug_min_rate_set(void *data, u64 rate)
+ 	return 0;
+ }
  
--		prot->unhash(other);
-+		if (sk->sk_type == SOCK_STREAM)
-+			prot->unhash(other);
- 		if (mode&RCV_SHUTDOWN)
- 			peer_mode |= SEND_SHUTDOWN;
- 		if (mode&SEND_SHUTDOWN)
+-DEFINE_SIMPLE_ATTRIBUTE(tegra_emc_debug_min_rate_fops,
++DEFINE_DEBUGFS_ATTRIBUTE(tegra_emc_debug_min_rate_fops,
+ 			tegra_emc_debug_min_rate_get,
+ 			tegra_emc_debug_min_rate_set, "%llu\n");
+ 
+@@ -1319,7 +1319,7 @@ static int tegra_emc_debug_max_rate_set(void *data, u64 rate)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(tegra_emc_debug_max_rate_fops,
++DEFINE_DEBUGFS_ATTRIBUTE(tegra_emc_debug_max_rate_fops,
+ 			tegra_emc_debug_max_rate_get,
+ 			tegra_emc_debug_max_rate_set, "%llu\n");
+ 
 -- 
-2.20.1
+1.8.3.1
+
 
