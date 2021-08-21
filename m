@@ -2,65 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2123F3AE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 16:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E263F3AE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 16:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhHUOL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 10:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhHUOL0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 10:11:26 -0400
-X-Greylist: delayed 66309 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 21 Aug 2021 07:10:47 PDT
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E84C061575;
-        Sat, 21 Aug 2021 07:10:47 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mHRhQ-00Egv2-Fg; Sat, 21 Aug 2021 14:10:16 +0000
-Date:   Sat, 21 Aug 2021 14:10:16 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     cgel.zte@gmail.com
-Cc:     christian.brauner@ubuntu.com, jamorris@linux.microsoft.com,
-        gladkov.alexey@gmail.com, yang.yang29@zte.com.cn, tj@kernel.org,
-        paul.gortmaker@windriver.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH] proc: prevent mount proc on same mountpoint in one pid
- namespace
-Message-ID: <YSEJSKgwNKqGupt/@zeniv-ca.linux.org.uk>
-References: <20210821083105.30336-1-yang.yang29@zte.com.cn>
+        id S234001AbhHUOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 10:12:48 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27103 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229714AbhHUOMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 10:12:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629555123; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=y7KRQfSobmPWNsi4qdqc6wl0Af72yr3bwElTiTzZROI=; b=cP5ij0ElEEpV1sYeJ7w28F/JX5gDoDhL8HKp7ps15Z0pOFuNWuVuRO7uGYVhrmBiJF80E0Gw
+ Z/zBkmi7ransUZqQ4vxY8OHxR5wBdHbVcG3NDsyy5Z5y415b4ox59LvufD/OGuCdVXTdoTYm
+ NmUpbDpAgv183Msl9PmR8wnjy+E=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6121099ff588e42af19f30d4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 14:11:43
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 33CF5C43460; Sat, 21 Aug 2021 14:11:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3DC3C4338F;
+        Sat, 21 Aug 2021 14:11:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org F3DC3C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     stas.yakovlev@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipw2x00: no need to initilise statics to 0
+References: <20210817115438.33449-1-wangborong@cdjrlc.com>
+Date:   Sat, 21 Aug 2021 17:11:34 +0300
+In-Reply-To: <20210817115438.33449-1-wangborong@cdjrlc.com> (Jason Wang's
+        message of "Tue, 17 Aug 2021 19:54:38 +0800")
+Message-ID: <87pmu6sx9l.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210821083105.30336-1-yang.yang29@zte.com.cn>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 01:31:05AM -0700, cgel.zte@gmail.com wrote:
-> From: Yang Yang <yang.yang29@zte.com.cn>
-> 
-> Patch "proc: allow to mount many instances of proc in one pid namespace"
-> aims to mount many instances of proc on different mountpoint, see
-> tools/testing/selftests/proc/proc-multiple-procfs.c.
-> 
-> But there is a side-effects, user can mount many instances of proc on
-> the same mountpoint in one pid namespace, which is not allowed before.
-> This duplicate mount makes no sense but wastes memory and CPU, and user
-> may be confused why kernel allows it.
-> 
-> The logic of this patch is: when try to mount proc on /mnt, check if
-> there is a proc instance mount on /mnt in the same pid namespace. If
-> answer is yes, return -EBUSY.
-> 
-> Since this check can't be done in proc_get_tree(), which call
-> get_tree_nodev() and will create new super_block unconditionally.
-> And other nodev fs may faces the same case, so add a new hook in
-> fs_context_operations.
+Jason Wang <wangborong@cdjrlc.com> writes:
 
-NAK.  As attack prevention it's worthless (you can just bind-mount
-a tmpfs directory between them).  Besides, filesystem does *not*
-get to decide where it would be mounted.  Especially since it couldn't
-rely upon that, anyway, what with mount --bind possible *after* it had
-been initially mounted.
+> Global static variables dont need to be initialised to 0. Because
+> the compiler will initilise them.
+>
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  drivers/net/wireless/intel/ipw2x00/ipw2100.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2100.c b/drivers/net/wireless/intel/ipw2x00/ipw2100.c
+> index 47eb89b773cf..6bfe55d79ce1 100644
+> --- a/drivers/net/wireless/intel/ipw2x00/ipw2100.c
+> +++ b/drivers/net/wireless/intel/ipw2x00/ipw2100.c
+
+[...]
+
+> @@ -7197,7 +7197,7 @@ static int ipw2100_wx_set_txpow(struct net_device *dev,
+>  {
+>  	struct ipw2100_priv *priv = libipw_priv(dev);
+>  	int err = 0, value;
+> -	
+> +
+
+Unrelated change.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
