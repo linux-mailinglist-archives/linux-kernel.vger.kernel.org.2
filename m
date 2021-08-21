@@ -2,153 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0F53F3B35
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2F03F3B36
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbhHUPww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 11:52:52 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30429 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231491AbhHUPwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:52:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10083"; a="216909885"
-X-IronPort-AV: E=Sophos;i="5.84,340,1620716400"; 
-   d="scan'208";a="216909885"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2021 08:52:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,340,1620716400"; 
-   d="scan'208";a="513345281"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2021 08:52:10 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mHTI1-000Vt8-ER; Sat, 21 Aug 2021 15:52:09 +0000
-Date:   Sat, 21 Aug 2021 23:51:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:tglx-pc.2021.08.19a] BUILD SUCCESS
- 6c858ccd538fbcfa320819932e8f9fea3f697a82
-Message-ID: <6121210f.+NrP3c06KUGQv0ro%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232613AbhHUPxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 11:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhHUPxd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 11:53:33 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649BEC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:52:53 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id f10so7703994wml.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JDjoRrO86i0x0pgh7O1gS7MImh2qtoWDpf+3Wu7hPlY=;
+        b=JJeYDUTgItIzLNg9PuiizMppcQhRh/gbLbe+EaJS9DLLsSVvOVlbOmEXdOBoxA8y/K
+         aJ+f7P+7aRiJqV/kRbN5wyU6KFsv2ZbNTMcG6ZJhhiDPK68HhS8iIP5vQNfSev3dnsEq
+         hWNajYlmu4WGqF+Ae6d/36Z0Z0n44yp9IQQw24/5fqbtiyiDMr5+e46rRlm5DHNIhu24
+         GQmIYolmtabssvwdZXNoSpVa/zy9qwhU8/o6160TRqlt4GZNimrgU5UGaI7RszH4KzPX
+         ylAKG77A9Us8aaifrV4g32N0m46J9+qrdKOmlR0wGvlV/pElF4AePjA+n5+NVlKJssGr
+         Dt5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JDjoRrO86i0x0pgh7O1gS7MImh2qtoWDpf+3Wu7hPlY=;
+        b=hvkDhzqGwA0/8/UDs3ZhAo1dr1FtidiB/4s1gXfZVvn2k3SNIXy0B+7B0HtQ30iWkX
+         AQrE0DW3BNTsDe5mck8gEqWpk/MQ/zlepUNpUsfHr/6ONm2qNYyDmDx2pquJuw3Iw9XJ
+         RC+gIwGlc7BB2DMuVUhaOOFj+DjtPRE6oM/65Emlq3+yfFFGIo2Uys2WEG5o42fqYWiG
+         aTI5caVHC9S5J+H0YICeW9eDcF19Iuo0F6oX+d3HdOcdv6ygHAIULmx+CdN9iW3iwtY4
+         kNJEw78evrF49ml6NeOAuH3KPWDBdTBWs4Y2cGS1CcUJoIIfnXesXMqn8Xv7noMdz2/h
+         f44w==
+X-Gm-Message-State: AOAM533PGpGVTya17oAtToBOh6Q1ExTYZ8etyzRa386OlNgkYi/R6ByU
+        nYqUOmYCOgKKPsZmhjuE5z8=
+X-Google-Smtp-Source: ABdhPJx8+or3o3DbhJZf1pgDRL7OYdmZ0Pw3RNoIwQqFU1HUv+O95gyChd9PpvJR7W64dW423RjTAQ==
+X-Received: by 2002:a05:600c:252:: with SMTP id 18mr9159673wmj.61.1629561172059;
+        Sat, 21 Aug 2021 08:52:52 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::687e])
+        by smtp.gmail.com with ESMTPSA id k18sm1875032wmi.25.2021.08.21.08.52.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 08:52:51 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: r8188eu: remove cmd_osdep.h header file
+Date:   Sat, 21 Aug 2021 17:51:51 +0200
+Message-Id: <20210821155151.25822-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tglx-pc.2021.08.19a
-branch HEAD: 6c858ccd538fbcfa320819932e8f9fea3f697a82  preempt: Remove PREEMPT_COUNT from Kconfig
+All functions declared in the cmd_osdep.h header file are only used in
+a single c source file. Make the functions static and remove the header
+file and its includes.
 
-elapsed time: 2421m
-
-configs tested: 95
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-nios2                               defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210820
-i386                 randconfig-a001-20210820
-i386                 randconfig-a002-20210820
-i386                 randconfig-a005-20210820
-i386                 randconfig-a003-20210820
-i386                 randconfig-a004-20210820
-x86_64               randconfig-a004-20210818
-x86_64               randconfig-a006-20210818
-x86_64               randconfig-a003-20210818
-x86_64               randconfig-a005-20210818
-x86_64               randconfig-a002-20210818
-x86_64               randconfig-a001-20210818
-i386                 randconfig-a015-20210819
-i386                 randconfig-a011-20210819
-i386                 randconfig-a014-20210819
-i386                 randconfig-a013-20210819
-i386                 randconfig-a016-20210819
-i386                 randconfig-a012-20210819
-i386                 randconfig-a011-20210821
-i386                 randconfig-a016-20210821
-i386                 randconfig-a012-20210821
-i386                 randconfig-a014-20210821
-i386                 randconfig-a013-20210821
-i386                 randconfig-a015-20210821
-arc                  randconfig-r043-20210821
-riscv                randconfig-r042-20210821
-s390                 randconfig-r044-20210821
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-a006-20210821
-i386                 randconfig-a001-20210821
-i386                 randconfig-a002-20210821
-i386                 randconfig-a005-20210821
-i386                 randconfig-a004-20210821
-i386                 randconfig-a003-20210821
-x86_64               randconfig-a014-20210820
-x86_64               randconfig-a016-20210820
-x86_64               randconfig-a015-20210820
-x86_64               randconfig-a013-20210820
-x86_64               randconfig-a012-20210820
-x86_64               randconfig-a011-20210820
-hexagon              randconfig-r041-20210820
-hexagon              randconfig-r045-20210820
-riscv                randconfig-r042-20210820
-s390                 randconfig-r044-20210820
-
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/staging/r8188eu/core/rtw_cmd.c      | 11 +++++------
+ drivers/staging/r8188eu/hal/rtl8188e_cmd.c  |  1 -
+ drivers/staging/r8188eu/include/cmd_osdep.h | 16 ----------------
+ 3 files changed, 5 insertions(+), 23 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/cmd_osdep.h
+
+diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+index 955499eb608a..ce73ac7cf973 100644
+--- a/drivers/staging/r8188eu/core/rtw_cmd.c
++++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+@@ -6,7 +6,6 @@
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/recv_osdep.h"
+-#include "../include/cmd_osdep.h"
+ #include "../include/mlme_osdep.h"
+ #include "../include/rtw_br_ext.h"
+ #include "../include/rtw_mlme_ext.h"
+@@ -16,7 +15,7 @@ Caller and the rtw_cmd_thread can protect cmd_q by spin_lock.
+ No irqsave is necessary.
+ */
+ 
+-int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
++static int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
+ {
+ 	int res = _SUCCESS;
+ 
+@@ -59,7 +58,7 @@ int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv)
+ 
+ static void c2h_wk_callback(struct work_struct *work);
+ 
+-int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
++static int _rtw_init_evt_priv(struct evt_priv *pevtpriv)
+ {
+ 	int res = _SUCCESS;
+ 
+@@ -87,7 +86,7 @@ void rtw_free_evt_priv(struct	evt_priv *pevtpriv)
+ 	}
+ }
+ 
+-void _rtw_free_cmd_priv(struct cmd_priv *pcmdpriv)
++static void _rtw_free_cmd_priv(struct cmd_priv *pcmdpriv)
+ {
+ 	if (pcmdpriv) {
+ 		kfree(pcmdpriv->cmd_allocated_buf);
+@@ -105,7 +104,7 @@ ISR/Call-Back functions can't call this sub-function.
+ 
+ */
+ 
+-int	_rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj)
++static int _rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj)
+ {
+ 	unsigned long flags;
+ 
+@@ -123,7 +122,7 @@ int	_rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj)
+ 	return _SUCCESS;
+ }
+ 
+-struct	cmd_obj	*_rtw_dequeue_cmd(struct __queue *queue)
++static struct cmd_obj *_rtw_dequeue_cmd(struct __queue *queue)
+ {
+ 	struct cmd_obj *obj;
+ 	unsigned long flags;
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+index 3e1a45030bc8..7d50d64cf34d 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_cmd.c
+@@ -6,7 +6,6 @@
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/recv_osdep.h"
+-#include "../include/cmd_osdep.h"
+ #include "../include/mlme_osdep.h"
+ #include "../include/rtw_ioctl_set.h"
+ 
+diff --git a/drivers/staging/r8188eu/include/cmd_osdep.h b/drivers/staging/r8188eu/include/cmd_osdep.h
+deleted file mode 100644
+index 3954d6350cc6..000000000000
+--- a/drivers/staging/r8188eu/include/cmd_osdep.h
++++ /dev/null
+@@ -1,16 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+-/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+-
+-#ifndef __CMD_OSDEP_H_
+-#define __CMD_OSDEP_H_
+-
+-#include "osdep_service.h"
+-#include "drv_types.h"
+-
+-extern int _rtw_init_cmd_priv(struct cmd_priv *pcmdpriv);
+-extern int _rtw_init_evt_priv(struct evt_priv *pevtpriv);
+-extern void _rtw_free_cmd_priv(struct cmd_priv *pcmdpriv);
+-extern int _rtw_enqueue_cmd(struct __queue *queue, struct cmd_obj *obj);
+-extern struct cmd_obj	*_rtw_dequeue_cmd(struct __queue *queue);
+-
+-#endif
+-- 
+2.32.0
+
