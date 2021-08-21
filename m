@@ -2,86 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877C13F38C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 07:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246743F38C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 07:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhHUFFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 01:05:41 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:27175 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhHUFFj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 01:05:39 -0400
-Received: from [192.168.1.18] ([90.126.253.178])
-        by mwinf5d11 with ME
-        id k54z250053riaq20354ztB; Sat, 21 Aug 2021 07:04:59 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Aug 2021 07:04:59 +0200
-X-ME-IP: 90.126.253.178
-Subject: Re: [PATCH linux-next] serial: drop unneeded assignment
-To:     CGEL <cgel.zte@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-        Luo penghao <luo.penghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-References: <20210821021727.27170-1-luo.penghao@zte.com.cn>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <dab03cf3-3fdd-8734-485b-469b57caf0e2@wanadoo.fr>
-Date:   Sat, 21 Aug 2021 07:04:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230375AbhHUFF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 01:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230205AbhHUFF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 01:05:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDB536113E;
+        Sat, 21 Aug 2021 05:05:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629522317;
+        bh=CP6bFxfCSRXzuFPiAmcRUPKjPV1ToRSYlZTlKn2rgUw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bMx6nrJZCNeawQmaRTV3CnFImNHp4o7rlh7TnGdzIkpSc5xaRP3PoOhXamDmjjEGZ
+         Oxgqvly98eVZUSj1ANg6QgQKlUwSWT4MD8u4ALUTEb9KSPUOvCNy674NCgnEhUDODY
+         TSR8SjheEaDNGlQ5R+JFYtcK4jldDh92HP5ibT7eYRHK8Zxu5yyzfyyfmX8eSxk53w
+         b0E+hKvB/ojl2gW17PYniYC/xg99snjQ28FXS12PJrjJRJ6+z7X/HcXxP/HzaaXM0N
+         pC0XlWSt6Yy01qjthbcxF9nTRyT9tzNH2cvAEbN+8WHJ2w1CZ9hcyAfSi5NC5I9VwM
+         NUhcYdql3XTGA==
+Date:   Sat, 21 Aug 2021 13:05:11 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Jeaho Hwang <jhhwang@rtst.co.kr>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
+        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
+         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
+        <mkbyeon@lselectric.co.kr>,
+        =?utf-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRp?=
+         =?utf-8?B?b24gUGxhdGZvcm3sl7DqtaztjIA=?= 
+        <khchoib@lselectric.co.kr>
+Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
+ hw_ep_prime
+Message-ID: <20210821050511.GA14810@Peter>
+References: <20210817095313.GA671484@ubuntu>
+ <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
+ <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
+ <20210819084759.stnmit32vs2be46m@linutronix.de>
+ <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210821021727.27170-1-luo.penghao@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 21-08-20 14:15:55, Jeaho Hwang wrote:
+> 2021년 8월 19일 (목) 오후 5:48, Sebastian Andrzej Siewior
+> <bigeasy@linutronix.de>님이 작성:
+> >
+> > On 2021-08-19 08:50:27 [+0900], Jeaho Hwang wrote:
+> > > Without RT, udc_irq runs as a forced threaded irq handler, so it runs
+> > > without any interruption or preemption. NO similar case is found on
+> > > non-RT.
+> >
+> > I see only a devm_request_irq() so no force-threading here. Booting with
+> > threadirqs would not lead to the problem since commit
+> >    81e2073c175b8 ("genirq: Disable interrupts for force threaded handlers")
+> >
+> 
+> I was wrong. udc threaded irq handler allows twd interrupt even on
+> non-RT and with threaded irq.
+> I believed Chen's comment "The function hw_ep_prime is only called at
+> udc_irq which is registered as top-half irq handlers. Why the timer
+> interrupt is occurred when hw_ep_prime is executing?".
 
-Le 21/08/2021 à 04:17, CGEL a écrit :
-> From: Luo penghao <luo.penghao@zte.com.cn>
-> 
-> The first assignment is not used. In order to keep the code style
-> consistency of the whole file, the first 'offset' assignment should be
-> deleted.
-> 
-> The clang_analyzer complains as follows:
-> 
-> drivers/tty/nozomi.c:520:6: warning:
-> Although the value storedto 'offset' is used in the enclosing expression,
-> the value is never actually read from 'offset'.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
-> ---
->   drivers/tty/nozomi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-> index 0454c78..210a48f 100644
-> --- a/drivers/tty/nozomi.c
-> +++ b/drivers/tty/nozomi.c
-> @@ -517,7 +517,7 @@ static void nozomi_setup_memory(struct nozomi *dc)
->   
->   	/* Ctrl dl configuration */
->   	dc->port[PORT_CTRL].dl_addr[CH_A] =
-> -				(offset += dc->config_table.dl_app2_len);
-> +				(offset + dc->config_table.dl_app2_len);
+Hi Jeaho,
 
-I guess that it has been written that way for consistency reasons with 
-previous lines.
+How could you let udc irq as threaded irq? The chipidea interrupt
+is registered using devm_request_irq.
 
-Should it be changed, you have the same pattern at line 554 that should 
-be updated the same way.
-
-CJ
-
->   	dc->port[PORT_CTRL].dl_size[CH_A] =
->   				dc->config_table.dl_ctrl_len - buff_offset;
->   
+> We have additional experiments and got the results like below. RNDIS
+> host was Windows.
 > 
+> RT, 1ms delay between first ENDPTSETUPSTAT read and priming : error
+> case occurred
+> RT, 1ms delay + irq_save : no error case occurred.
+> non-RT, threaded irq, 1ms delay : no error case occurred even twd
+> fires inside the function execution.
+
+Again, how do you observe it?
+
+Peter
+
+> 
+> It doesn't seem to be a timing issue. But irq definitely affects
+> priming on the RT kernel. Do you RT experts have any idea about the
+> causes?
+> If isr_tr_complete_handler fails ep priming it calls _ep_set_halt and
+> goes an infinite loop in hw_ep_set_halt. It was an actual problem we
+> experienced.
+> So we protect irqs inside hw_ep_priming not to make error cases and
+> also add a timeout inside the hw_ep_set_halt loop for a walkaround.
+> The timeout patch is submitted to linux-usb.
+> ( https://marc.info/?l=linux-usb&m=162918269024007&w=2 )
+> 
+> We withdrew this patch since we don't know if disabling irq is the
+> best solution to solve the problem and udc would work fine with
+> hw_ep_set_halt walkaround even though hw_ep_prime fails.
+> But we are still trying to find out the cause of this symptom so We'd
+> so appreciate it if RT or USB experts share some ideas or ways to
+> report somewhere. Xilinx doesn't provide any support without their
+> official kernel :(
+> 
+> Thanks for the discussion Sebastian.
+> 
+> Jeaho Hwang.
+> 
+> > …
+> > > > If this function here is sensitive to timing (say the cpu_relax() loop
+> > > > gets interrupt for 1ms) then it has to be documented as such.
+> > >
+> > > The controller sets ENDPTSETUPSTAT register if the host sent a setup packet.
+> > > yes it is a timing problem. I will document that and resubmit again if
+> > > you agree that local_irq_save could help from the timing problem.
+> > >
+> > > Thanks for the advice.
+> >
+> > If it is really a timing issue in the function as you describe below
+> > then disabling interrupts would help and it is indeed an RT only issue.
+> >
+> > So you read OP_ENDPTSETUPSTAT, it is 0, all good.
+> > You write OP_ENDPTPRIME, wait for it to be cleared.
+> > Then you read OP_ENDPTSETUPSTAT again and if it is 0, all good.
+> >
+> > And the TWD interrupt could delay say the second read would read 1 and
+> > it is invalidated. Which looks odd.
+> > However, it is "okay" if the TWD interrupt happens after the second
+> > read? Even if the host sends a setup packet, nothing breaks?
+> > Do you have numbers on how long irq-off section is here? It seems to
+> > depend on how long the HW needs to clear the OP_ENDPTPRIME bits.
+> >
+> > Sebastian
+> 
+> 
+> 
+> -- 
+> 황재호, Jay Hwang, linux team manager of RTst
+> 010-7242-1593
+
+-- 
+
+Thanks,
+Peter Chen
 
