@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D413F3C0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 20:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F13B93F3C13
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 20:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhHUSbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 14:31:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33736 "EHLO mail.kernel.org"
+        id S232532AbhHUScB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 14:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230141AbhHUSbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 14:31:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 646A561245;
-        Sat, 21 Aug 2021 18:31:12 +0000 (UTC)
+        id S231136AbhHUSby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 14:31:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 654B061246;
+        Sat, 21 Aug 2021 18:31:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629570672;
-        bh=YWRDfLaVDnT4PNphVILBnVxThGFz2SPTqXb9WHmiQz8=;
+        s=k20201202; t=1629570674;
+        bh=UCiEayyDdLE9DEGZy1L4YpimBVQKswt+O5qdf67QIio=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cijZ4jjid/WrCwox+PzIIhtGaUmLG5RbL9CfaXQmaC00GMpZqrxlhRMSRngk8S314
-         nUZ4P4m4IWAtYGNiJPvrFunYB6f/n+gJucrftKgk43K8NSDuav0yIcbDkJkYiwjZ7/
-         gV2xC+fv3zfAJjCbvg7T9pAGdptlp+aVHydN4T4jlhlFz0Cppo9CZd/YRIXF1T94tu
-         m+E+qNaL0OUWvQM19A3/8QuiblQe7g0PYP3Wd+LEbZsE6PYPYsWsnTi09Ga4Iv560g
-         tzBZPPAlpfo8sutpl83l9qBnY6iZcC9JXEfiKZmnctFzrPOsFQJUjA0ALUocjSxd7q
-         AWGMVSwJ/J03g==
+        b=dk28kcifsXccUHhHDQEfDzmf1WxkkVBqGhn//rFY6h8dOpMEy9qguqA3ITHTcpckB
+         UEXXwIe/b/+yd/tUufx1vZKaUMw63cKw/GvjIwrOA4mhjbur/yFMjr5L6L+w02z4Ei
+         pHYqzlvi8oLizWQqXtArUUKjjOcszA1M9q80lKvYOUGhPo0HjbdgjFxHTKkZQXyiXr
+         XgRWqh43OoTUniVgV0jVGDHHJrgot5PKLl8WIrWp4cfyF/kcwz9HBy3X7nod2Y2bVj
+         z00N1Xxwy2mbPELkFbwTWx0afrYeN6+r95lzzgtUIplvIAY7+3FC3BSpwqnHp7WilA
+         oYsZAL0RjRrOg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5E80D609F2;
-        Sat, 21 Aug 2021 18:31:12 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 updates for 5.14-rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5C3B360A6B;
+        Sat, 21 Aug 2021 18:31:14 +0000 (UTC)
+Subject: Re: [GIT PULL] clk fixes for v5.14-rc6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01629536490-ext-4991@work.hours>
-References: <your-ad-here.call-01629536490-ext-4991@work.hours>
-X-PR-Tracked-List-Id: <linux-s390.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01629536490-ext-4991@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-5
-X-PR-Tracked-Commit-Id: 2a671f77ee49f3e78997b77fdee139467ff6a598
+In-Reply-To: <20210821181058.131854-1-sboyd@kernel.org>
+References: <20210821181058.131854-1-sboyd@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210821181058.131854-1-sboyd@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
+X-PR-Tracked-Commit-Id: 9711759a87a041705148161b937ec847048d882e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5479a7fe89664b526d21cd62dac5dfe017e0ebd3
-Message-Id: <162957067238.18934.12917619697770334872.pr-tracker-bot@kernel.org>
-Date:   Sat, 21 Aug 2021 18:31:12 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
+X-PR-Merge-Commit-Id: 9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
+Message-Id: <162957067437.18934.11338507944975733560.pr-tracker-bot@kernel.org>
+Date:   Sat, 21 Aug 2021 18:31:14 +0000
+To:     Stephen Boyd <sboyd@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 21 Aug 2021 11:01:30 +0200:
+The pull request you sent on Sat, 21 Aug 2021 11:10:58 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.14-5
+> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5479a7fe89664b526d21cd62dac5dfe017e0ebd3
+https://git.kernel.org/torvalds/c/9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
 
 Thank you!
 
