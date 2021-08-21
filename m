@@ -2,85 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB783F3B56
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5030B3F3B5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbhHUQCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 12:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232241AbhHUQCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 12:02:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B2C761207;
-        Sat, 21 Aug 2021 16:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629561681;
-        bh=WePY85F/oodyHxze3GzmygVKpRUvQpEBmC67xVfk9ds=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BdbQYy+Qws2azBbhGL+S6QKeXQgRkgbknbxS4TRBAdwbSdqN8KaXYSwcrdqBl5lkJ
-         +PdQ3ENVFQRgD9ojYv8RCWAQ/SUnh2Bz2Y00t7a6hOJujQUd58Jb+LTl8XgyjtINBJ
-         mr/BGJra1QCEiWTjwCqM1gc63OEQ+11mx+NH1594=
-Date:   Sat, 21 Aug 2021 18:01:18 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 5.14-rc7
-Message-ID: <YSEjTuxs84bqTkCe@kroah.com>
+        id S232483AbhHUQEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 12:04:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59250 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhHUQEy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 12:04:54 -0400
+Date:   Sat, 21 Aug 2021 16:04:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629561853;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=62aTtqrzgmwTmii6G9WD9NGB+2mGa715lza6oAKvJug=;
+        b=BMnjdwJPWHtOTOTwX6sggBxrND7ySX0//0bg8pjeuwelEy+Wo4HRa85TvYZ9cGm2eFJqri
+        YS5KPAauiUHk9Kq1fM7MjtymeXUS+HLi0IVq9Ege7Sth6bqVk6ynmpFjbGSFAiV8Zx9AuW
+        3Sx4D1GsPT6/DpXf3SDBNkjKngL+b7tUdSzDbp2pAucMIB3HcvFqgA03DR6ym90qzoGwu/
+        DRP0R0HfSUZUPEH2NMVOZxWBn2hO7pZPc+1++DnVIjzv3FbfMDyXnROAhfHVitzr1RcjW5
+        XPtxd0XETS4WigW0EKAJFg9rU4fF7CTAfB8iYQX81s33fW1HtFHCZMX9L6HvOA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629561853;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=62aTtqrzgmwTmii6G9WD9NGB+2mGa715lza6oAKvJug=;
+        b=lIAc2GJukDzGZi0IEX/zs2NmiKnjQ9WGpySEP/8IVfpgiZuoXAP9dpvTB14GF/CeB0/Hu+
+        dvdY7epCxIOqaNDg==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/efi: Restore Firmware IDT before calling
+ ExitBootServices()
+Cc:     Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>, stable@vger.kernel.org,
+        #@tip-bot2.tec.linutronix.de, 5.13+@tip-bot2.tec.linutronix.de,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210820125703.32410-1-joro@8bytes.org>
+References: <20210820125703.32410-1-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <162956185258.25758.4225222196830359114.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
+The following commit has been merged into the x86/urgent branch of tip:
 
-  Linux 5.14-rc5 (2021-08-08 13:49:31 -0700)
+Commit-ID:     22aa45cb465be474e97666b3f7587ccb06ee411b
+Gitweb:        https://git.kernel.org/tip/22aa45cb465be474e97666b3f7587ccb06ee411b
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Fri, 20 Aug 2021 14:57:03 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 21 Aug 2021 17:57:04 +02:00
 
-are available in the Git repository at:
+x86/efi: Restore Firmware IDT before calling ExitBootServices()
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.14-rc7
+Commit
 
-for you to fetch changes up to d30836a9528906ee9d42b7cd59108f3bb4e16b01:
+  79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32 boot path")
 
-  Merge tag 'icc-5.14-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc into char-misc-linus (2021-08-15 11:21:02 +0200)
+introduced an IDT into the 32-bit boot path of the decompressor stub.
+But the IDT is set up before ExitBootServices() is called, and some UEFI
+firmwares rely on their own IDT.
 
-----------------------------------------------------------------
-Char/Misc driver fixes for 5.14-rc7
+Save the firmware IDT on boot and restore it before calling into EFI
+functions to fix boot failures introduced by above commit.
 
-Here are some small driver fixes for 5.14-rc7.
+Fixes: 79419e13e808 ("x86/boot/compressed/64: Setup IDT in startup_32 boot path")
+Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: stable@vger.kernel.org # 5.13+
+Link: https://lkml.kernel.org/r/20210820125703.32410-1-joro@8bytes.org
+---
+ arch/x86/boot/compressed/efi_thunk_64.S | 30 ++++++++++++++++--------
+ arch/x86/boot/compressed/head_64.S      |  3 ++-
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-They consist of:
-	- revert for an interconnect patch that was found to have
-	  problems.
-	- ipack tpci200 driver fixes for reported problems
-	- slimbus messaging and ngd fixes for reported problems.
-
-All are small and have been in linux-next for a while with no reported
-issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Dongliang Mu (2):
-      ipack: tpci200: fix many double free issues in tpci200_pci_probe
-      ipack: tpci200: fix memory leak in the tpci200_register
-
-Georgi Djakov (1):
-      Revert "interconnect: qcom: icc-rpmh: Add BCMs to commit list in pre_aggregate"
-
-Greg Kroah-Hartman (1):
-      Merge tag 'icc-5.14-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc into char-misc-linus
-
-Srinivas Kandagatla (4):
-      slimbus: messaging: start transaction ids from 1 instead of zero
-      slimbus: messaging: check for valid transaction id
-      slimbus: ngd: set correct device for pm
-      slimbus: ngd: reset dma setup during runtime pm
-
- drivers/interconnect/qcom/icc-rpmh.c | 10 +++---
- drivers/ipack/carriers/tpci200.c     | 60 +++++++++++++++++++-----------------
- drivers/slimbus/messaging.c          |  7 +++--
- drivers/slimbus/qcom-ngd-ctrl.c      | 22 +++++++------
- 4 files changed, 54 insertions(+), 45 deletions(-)
+diff --git a/arch/x86/boot/compressed/efi_thunk_64.S b/arch/x86/boot/compressed/efi_thunk_64.S
+index 95a223b..8bb92e9 100644
+--- a/arch/x86/boot/compressed/efi_thunk_64.S
++++ b/arch/x86/boot/compressed/efi_thunk_64.S
+@@ -5,9 +5,8 @@
+  * Early support for invoking 32-bit EFI services from a 64-bit kernel.
+  *
+  * Because this thunking occurs before ExitBootServices() we have to
+- * restore the firmware's 32-bit GDT before we make EFI service calls,
+- * since the firmware's 32-bit IDT is still currently installed and it
+- * needs to be able to service interrupts.
++ * restore the firmware's 32-bit GDT and IDT before we make EFI service
++ * calls.
+  *
+  * On the plus side, we don't have to worry about mangling 64-bit
+  * addresses into 32-bits because we're executing with an identity
+@@ -39,7 +38,7 @@ SYM_FUNC_START(__efi64_thunk)
+ 	/*
+ 	 * Convert x86-64 ABI params to i386 ABI
+ 	 */
+-	subq	$32, %rsp
++	subq	$64, %rsp
+ 	movl	%esi, 0x0(%rsp)
+ 	movl	%edx, 0x4(%rsp)
+ 	movl	%ecx, 0x8(%rsp)
+@@ -49,14 +48,19 @@ SYM_FUNC_START(__efi64_thunk)
+ 	leaq	0x14(%rsp), %rbx
+ 	sgdt	(%rbx)
+ 
++	addq	$16, %rbx
++	sidt	(%rbx)
++
+ 	/*
+-	 * Switch to gdt with 32-bit segments. This is the firmware GDT
+-	 * that was installed when the kernel started executing. This
+-	 * pointer was saved at the EFI stub entry point in head_64.S.
++	 * Switch to IDT and GDT with 32-bit segments. This is the firmware GDT
++	 * and IDT that was installed when the kernel started executing. The
++	 * pointers were saved at the EFI stub entry point in head_64.S.
+ 	 *
+ 	 * Pass the saved DS selector to the 32-bit code, and use far return to
+ 	 * restore the saved CS selector.
+ 	 */
++	leaq	efi32_boot_idt(%rip), %rax
++	lidt	(%rax)
+ 	leaq	efi32_boot_gdt(%rip), %rax
+ 	lgdt	(%rax)
+ 
+@@ -67,7 +71,7 @@ SYM_FUNC_START(__efi64_thunk)
+ 	pushq	%rax
+ 	lretq
+ 
+-1:	addq	$32, %rsp
++1:	addq	$64, %rsp
+ 	movq	%rdi, %rax
+ 
+ 	pop	%rbx
+@@ -128,10 +132,13 @@ SYM_FUNC_START_LOCAL(efi_enter32)
+ 
+ 	/*
+ 	 * Some firmware will return with interrupts enabled. Be sure to
+-	 * disable them before we switch GDTs.
++	 * disable them before we switch GDTs and IDTs.
+ 	 */
+ 	cli
+ 
++	lidtl	(%ebx)
++	subl	$16, %ebx
++
+ 	lgdtl	(%ebx)
+ 
+ 	movl	%cr4, %eax
+@@ -166,6 +173,11 @@ SYM_DATA_START(efi32_boot_gdt)
+ 	.quad	0
+ SYM_DATA_END(efi32_boot_gdt)
+ 
++SYM_DATA_START(efi32_boot_idt)
++	.word	0
++	.quad	0
++SYM_DATA_END(efi32_boot_idt)
++
+ SYM_DATA_START(efi32_boot_cs)
+ 	.word	0
+ SYM_DATA_END(efi32_boot_cs)
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index a2347de..572c535 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -319,6 +319,9 @@ SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
+ 	movw	%cs, rva(efi32_boot_cs)(%ebp)
+ 	movw	%ds, rva(efi32_boot_ds)(%ebp)
+ 
++	/* Store firmware IDT descriptor */
++	sidtl	rva(efi32_boot_idt)(%ebp)
++
+ 	/* Disable paging */
+ 	movl	%cr0, %eax
+ 	btrl	$X86_CR0_PG_BIT, %eax
