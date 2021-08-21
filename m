@@ -2,427 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3A93F3C9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 23:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E003F3C9D
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 00:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhHUV6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 17:58:48 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:56588 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhHUV6r (ORCPT
+        id S230387AbhHUWP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 18:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhHUWP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 17:58:47 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d69 with ME
-        id kMy2250043riaq203My2cS; Sat, 21 Aug 2021 23:58:05 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Aug 2021 23:58:05 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     awalls@md.metrocast.net, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: pci/ivtv: switch from 'pci_' to 'dma_' API
-Date:   Sat, 21 Aug 2021 23:54:22 +0200
-Message-Id: <e8e7cdaa0a439f913c5e40abb673d608046ba4e7.1629582801.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sat, 21 Aug 2021 18:15:28 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37865C061575;
+        Sat, 21 Aug 2021 15:14:48 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id z20so27901813ejf.5;
+        Sat, 21 Aug 2021 15:14:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N+hik/cixapObGzvFN3C9sH7wClAUqIJeKpPSLmVoBQ=;
+        b=g786+7deKKXxJtWM7wcVUu4v6958rQ5EjAmBnJ3NIkySKlPwdph3omEhxNyH0/6GL2
+         FXOYD/ehgvFo/rWkbfvKer0hXq9KHo+Y2N6cUAHNkUSYQRwAy30bVDoJdwc8zDMvr93/
+         8uduxu80OFzS0Y2Rj2/Ky4A92j/2GqGX9Ga13KtkkW/H1+XTuCsSwboJaJk+Q6VKuq/5
+         0qOiMm9Ewsx22vyZHDUMtGztJ+CQPX/H7Nmjkuwp3ukYVizYFkR3C9thbUzT19K8DVal
+         qzsK8zkBZvWJMwBZQwUzGEsbhZS9TBXL8u1coEC+ReIwZmaQN2UBm8KjTsan9KvKgkEo
+         epmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N+hik/cixapObGzvFN3C9sH7wClAUqIJeKpPSLmVoBQ=;
+        b=Lg8KmQgiQR8XS3JlbuvMMe/DqrMzPdT67cdaDIO1Q1ft6AQxLDeHxOYJdNxWw6tR2k
+         vwYvOMsmsvPphoDM1pCNNP+MPqZPSdZ2V2Z5cVCA6S9SXwPuUqVfVRVuw5QNLnh2ywDs
+         fZatOCyFUAg9OoF20smF9GEJucjnBgcIBeujSwfBjGmbIgnnAGS7PaDOZrru0W4B8SIr
+         E9YlWlXc0Ff6T+yvpthnQXvSSiDMkJNiM/YWrQbXHLHo5llLW1+YvOE/GtBHG5IPFZsG
+         O+DqZkucRMVFwaIqBZ0C0FLdS3nm5nd1JZ+rNqf2jmBo3Cs911+jTrP+YAO20nU3Sfyr
+         aBQg==
+X-Gm-Message-State: AOAM532pRBfLH4XDD5lyRXZqkASFcbx128SsJ+ycpSLMfnt3wYsO16xW
+        rQa/Crgm7Fxg7RXmdDmK+b7Ml/qXB756wil5mRI=
+X-Google-Smtp-Source: ABdhPJyXzgDdct8CSp+cu+YTlhvKOMoO7iYD+n8tbrK5ykiqSnfloquu0yzVz5vhtDp0UOyqjJxGBzbY9o7khmhpJRg=
+X-Received: by 2002:a17:906:11c7:: with SMTP id o7mr28425576eja.480.1629584086740;
+ Sat, 21 Aug 2021 15:14:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210820223744.8439-2-21cnbao@gmail.com> <20210820233328.GA3368938@bjorn-Precision-5520>
+ <877dgfqdsg.wl-maz@kernel.org>
+In-Reply-To: <877dgfqdsg.wl-maz@kernel.org>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Sun, 22 Aug 2021 10:14:35 +1200
+Message-ID: <CAGsJ_4wXqnudVO92qSKLdyJaMNuDE-d0srs=4rgJmOQKcG2P3g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
+        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
+        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
+        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Sat, Aug 21, 2021 at 10:42 PM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Bjorn,
+>
+> On Sat, 21 Aug 2021 00:33:28 +0100,
+> Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > [+cc Thomas, Marc]
+> >
+> > On Sat, Aug 21, 2021 at 10:37:43AM +1200, Barry Song wrote:
+> > > From: Barry Song <song.bao.hua@hisilicon.com>
+> > >
+> > > /sys/bus/pci/devices/.../irq sysfs ABI is very confusing at this
+> > > moment especially for MSI-X cases.
+> >
+> > AFAICT this patch *only* affects MSI-X.  So are you saying the sysfs
+> > ABI is fine for MSI but confusing for MSI-X?
+> >
+> > > While MSI sets IRQ to the first
+> > > number in the vector, MSI-X does nothing for this though it saves
+> > > default_irq in msix_setup_entries(). Weird the saved default_irq
+> > > for MSI-X is never used in pci_msix_shutdown(), which is quite
+> > > different with pci_msi_shutdown(). Thus, this patch moves to show
+> > > the first IRQ number which is from the first msi_entry for MSI-X.
+> > > Hopefully, this can make IRQ ABI more clear and more consistent.
+> > >
+> > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+> > > ---
+> > >  drivers/pci/msi.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> > > index 9232255..6bbf81b 100644
+> > > --- a/drivers/pci/msi.c
+> > > +++ b/drivers/pci/msi.c
+> > > @@ -771,6 +771,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+> > >     int ret;
+> > >     u16 control;
+> > >     void __iomem *base;
+> > > +   struct msi_desc *desc;
+> > >
+> > >     /* Ensure MSI-X is disabled while it is set up */
+> > >     pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_ENABLE, 0);
+> > > @@ -814,6 +815,10 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+> > >     pci_msix_clear_and_set_ctrl(dev, PCI_MSIX_FLAGS_MASKALL, 0);
+> > >
+> > >     pcibios_free_irq(dev);
+> > > +
+> > > +   desc = first_pci_msi_entry(dev);
+> > > +   dev->irq = desc->irq;
+> >
+> > This change is not primarily about sysfs.  This is about changing
+> > "dev->irq" when MSI-X is enabled, and it's only incidental that sysfs
+> > reflects that.
+> >
+> > So we need to know the effect of changing dev->irq.  Drivers may use
+> > the value of dev->irq, and I'm *guessing* this change shouldn't break
+> > them since we already do this for MSI, but I'd like some more expert
+> > opinion than mine :)
+> >
+> > For MSI we have:
+> >
+> >   msi_capability_init
+> >     msi_setup_entry
+> >       entry = alloc_msi_entry(nvec)
+> >       entry->msi_attrib.default_irq = dev->irq;     /* Save IOAPIC IRQ */
+> >     dev->irq = entry->irq;
+> >
+> >   pci_msi_shutdown
+> >     /* Restore dev->irq to its default pin-assertion IRQ */
+> >     dev->irq = desc->msi_attrib.default_irq;
+> >
+> > and for MSI-X we have:
+> >
+> >   msix_capability_init
+> >     msix_setup_entries
+> >       for (i = 0; i < nvec; i++)
+> >         entry = alloc_msi_entry(1)
+> >       entry->msi_attrib.default_irq = dev->irq;
+> >
+> >   pci_msix_shutdown
+> >     for_each_pci_msi_entry(entry, dev)
+> >       __pci_msix_desc_mask_irq
+> > +   dev->irq = entry->msi_attrib.default_irq;   # added by this patch
+> >
+> >
+> > Things that seem strange to me:
+> >
+> >   - The msi_setup_entry() comment "Save IOAPIC IRQ" seems needlessly
+> >     specific; maybe it should be "INTx IRQ".
+> >
+> >   - The pci_msi_shutdown() comment "Restore ... pin-assertion IRQ"
+> >     should match the msi_setup_entry() one, e.g., maybe it should also
+> >     be "INTx IRQ".  There are no INTx or IOAPIC pins in PCIe.
+> >
+> >   - The only use of .default_irq is to save and restore dev->irq, so
+> >     it looks like a per-device thing, not a per-vector thing.
+> >
+> >     In msi_setup_entry() there's only one msi_entry, so there's only
+> >     one saved .default_irq.
+> >
+> >     In msix_setup_entries(), we get nvecs msi_entry structs, and we
+> >     get a saved .default_irq in each one?
+>
+> That's a key point.
+>
+> Old-school PCI/MSI is represented by a single interrupt, and you
+> *could* somehow make it relatively easy for drivers that only
+> understand INTx to migrate to MSI if you replaced whatever is held in
+> dev->irq (which should only represent the INTx mapping) with the MSI
+> interrupt number. Which I guess is what the MSI code is doing.
+>
+> This is the 21st century, and nobody should ever rely on such horror,
+> but I'm sure we do have such drivers in the tree. Boo.
+>
+> However, this *cannot* hold true for Multi-MSI, nor MSI-X, because
+> there is a plurality of interrupts. Even worse, for MSI-X, there is
+> zero guarantee that the allocated interrupts will be in a contiguous
+> space.
+>
+> Given that, what is dev->irq good for? "Absolutely Nothing! (say it
+> again!)".
+>
 
-The patch has been generated with the coccinelle script below.
-It has been compile tested.
+The only thing is that dev->irq is an sysfs ABI to userspace. Due to
+the inconsistency
+between legacy PCI INTx, MSI, MSI-X, this ABI should have been
+absolutely broken nowadays.
+This is actually what the patchset was originally aiming at to fix.
 
-No memory allocation in involved in this patch, so no GFP_ tweak is needed.
+One more question from me is that does dev->irq actually hold any
+valid hardware INTx
+information while hardware is using MSI-X? At least in my hardware,
+sysfs ABI for PCI is all "0".
 
-@@ @@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat irq
+0
 
-@@ @@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# ls -l msi_irqs/*
+-r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/499
+-r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/500
+-r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/501
+...
+root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat msi_irqs/499
+msix
 
-@@ @@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+Not quite sure how it is going on different hardware platforms.
 
-@@ @@
--    PCI_DMA_NONE
-+    DMA_NONE
+> MSI-X is not something you can "accidentally" use. You have to
+> actively embrace it. In all honesty, this patch tries to move in the
+> wrong direction. If anything, we should kill this hack altogether and
+> fix the (handful of?) drivers that rely on it. That'd actually be a
+> good way to find whether they are still worth keeping in the tree. And
+> if it breaks too many of them, then at least we'll know where we
+> stand.
+>
+> I'd be tempted to leave the below patch simmer in -next for a few
+> weeks and see if how many people shout:
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+This looks like a more proper direction to go.
+but here i am wondering how sysfs ABI document should follow the below change
+doc is patch 2/2:
+https://lore.kernel.org/lkml/20210820223744.8439-3-21cnbao@gmail.com/
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+On the other hand, my feeling is that nobody should depend on sysfs
+irq entry nowadays.
+For example, userspace irqbalance is actually using /sys/devices/.../msi_irqs/
+So probably we should set this ABI invisible when devices are using
+MSI or MSI-X?
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
+>
+> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+> index e5e75331b415..2be9a01cbe72 100644
+> --- a/drivers/pci/msi.c
+> +++ b/drivers/pci/msi.c
+> @@ -591,7 +591,6 @@ msi_setup_entry(struct pci_dev *dev, int nvec, struct irq_affinity *affd)
+>         entry->msi_attrib.is_virtual    = 0;
+>         entry->msi_attrib.entry_nr      = 0;
+>         entry->msi_attrib.maskbit       = !!(control & PCI_MSI_FLAGS_MASKBIT);
+> -       entry->msi_attrib.default_irq   = dev->irq;     /* Save IOAPIC IRQ */
+>         entry->msi_attrib.multi_cap     = (control & PCI_MSI_FLAGS_QMASK) >> 1;
+>         entry->msi_attrib.multiple      = ilog2(__roundup_pow_of_two(nvec));
+>
+> @@ -682,7 +681,6 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
+>         dev->msi_enabled = 1;
+>
+>         pcibios_free_irq(dev);
+> -       dev->irq = entry->irq;
+>         return 0;
+>  }
+>
+> @@ -742,7 +740,6 @@ static int msix_setup_entries(struct pci_dev *dev, void __iomem *base,
+>                 entry->msi_attrib.is_virtual =
+>                         entry->msi_attrib.entry_nr >= vec_count;
+>
+> -               entry->msi_attrib.default_irq   = dev->irq;
+>                 entry->mask_base                = base;
+>
+>                 addr = pci_msix_desc_addr(entry);
+> @@ -964,8 +961,6 @@ static void pci_msi_shutdown(struct pci_dev *dev)
+>         mask = msi_mask(desc->msi_attrib.multi_cap);
+>         msi_mask_irq(desc, mask, 0);
+>
+> -       /* Restore dev->irq to its default pin-assertion IRQ */
+> -       dev->irq = desc->msi_attrib.default_irq;
+>         pcibios_alloc_irq(dev);
+>  }
+>
+> diff --git a/include/linux/msi.h b/include/linux/msi.h
+> index e8bdcb83172b..a631664c1c38 100644
+> --- a/include/linux/msi.h
+> +++ b/include/linux/msi.h
+> @@ -114,7 +114,6 @@ struct ti_sci_inta_msi_desc {
+>   * @maskbit:   [PCI MSI/X] Mask-Pending bit supported?
+>   * @is_64:     [PCI MSI/X] Address size: 0=32bit 1=64bit
+>   * @entry_nr:  [PCI MSI/X] Entry which is described by this descriptor
+> - * @default_irq:[PCI MSI/X] The default pre-assigned non-MSI irq
+>   * @mask_pos:  [PCI MSI]   Mask register position
+>   * @mask_base: [PCI MSI-X] Mask register base address
+>   * @platform:  [platform]  Platform device specific msi descriptor data
+> @@ -148,7 +147,6 @@ struct msi_desc {
+>                                 u8      is_64           : 1;
+>                                 u8      is_virtual      : 1;
+>                                 u16     entry_nr;
+> -                               unsigned default_irq;
+>                         } msi_attrib;
+>                         union {
+>                                 u8      mask_pos;
+>
+> Thanks,
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/ivtv/ivtv-driver.c  |  2 +-
- drivers/media/pci/ivtv/ivtv-queue.c   | 18 ++++++++++--------
- drivers/media/pci/ivtv/ivtv-streams.c | 22 +++++++++++-----------
- drivers/media/pci/ivtv/ivtv-udma.c    | 19 ++++++++++++-------
- drivers/media/pci/ivtv/ivtv-yuv.c     | 10 +++++++---
- 5 files changed, 41 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/media/pci/ivtv/ivtv-driver.c b/drivers/media/pci/ivtv/ivtv-driver.c
-index 8ebc97ebf1a2..57d4d5485d7a 100644
---- a/drivers/media/pci/ivtv/ivtv-driver.c
-+++ b/drivers/media/pci/ivtv/ivtv-driver.c
-@@ -837,7 +837,7 @@ static int ivtv_setup_pci(struct ivtv *itv, struct pci_dev *pdev,
- 		IVTV_ERR("Can't enable device!\n");
- 		return -EIO;
- 	}
--	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
-+	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) {
- 		IVTV_ERR("No suitable DMA available.\n");
- 		return -EIO;
- 	}
-diff --git a/drivers/media/pci/ivtv/ivtv-queue.c b/drivers/media/pci/ivtv/ivtv-queue.c
-index 7ac4615e92ea..f9b192ab7e7c 100644
---- a/drivers/media/pci/ivtv/ivtv-queue.c
-+++ b/drivers/media/pci/ivtv/ivtv-queue.c
-@@ -188,7 +188,7 @@ int ivtv_stream_alloc(struct ivtv_stream *s)
- 		return 0;
- 
- 	IVTV_DEBUG_INFO("Allocate %s%s stream: %d x %d buffers (%dkB total)\n",
--		s->dma != PCI_DMA_NONE ? "DMA " : "",
-+		s->dma != DMA_NONE ? "DMA " : "",
- 		s->name, s->buffers, s->buf_size, s->buffers * s->buf_size / 1024);
- 
- 	s->sg_pending = kzalloc(SGsize, GFP_KERNEL|__GFP_NOWARN);
-@@ -218,8 +218,9 @@ int ivtv_stream_alloc(struct ivtv_stream *s)
- 		return -ENOMEM;
- 	}
- 	if (ivtv_might_use_dma(s)) {
--		s->sg_handle = pci_map_single(itv->pdev, s->sg_dma,
--				sizeof(struct ivtv_sg_element), PCI_DMA_TODEVICE);
-+		s->sg_handle = dma_map_single(&itv->pdev->dev, s->sg_dma,
-+					      sizeof(struct ivtv_sg_element),
-+					      DMA_TO_DEVICE);
- 		ivtv_stream_sync_for_cpu(s);
- 	}
- 
-@@ -237,7 +238,7 @@ int ivtv_stream_alloc(struct ivtv_stream *s)
- 		}
- 		INIT_LIST_HEAD(&buf->list);
- 		if (ivtv_might_use_dma(s)) {
--			buf->dma_handle = pci_map_single(s->itv->pdev,
-+			buf->dma_handle = dma_map_single(&s->itv->pdev->dev,
- 				buf->buf, s->buf_size + 256, s->dma);
- 			ivtv_buf_sync_for_cpu(s, buf);
- 		}
-@@ -260,8 +261,8 @@ void ivtv_stream_free(struct ivtv_stream *s)
- 	/* empty q_free */
- 	while ((buf = ivtv_dequeue(s, &s->q_free))) {
- 		if (ivtv_might_use_dma(s))
--			pci_unmap_single(s->itv->pdev, buf->dma_handle,
--				s->buf_size + 256, s->dma);
-+			dma_unmap_single(&s->itv->pdev->dev, buf->dma_handle,
-+					 s->buf_size + 256, s->dma);
- 		kfree(buf->buf);
- 		kfree(buf);
- 	}
-@@ -269,8 +270,9 @@ void ivtv_stream_free(struct ivtv_stream *s)
- 	/* Free SG Array/Lists */
- 	if (s->sg_dma != NULL) {
- 		if (s->sg_handle != IVTV_DMA_UNMAPPED) {
--			pci_unmap_single(s->itv->pdev, s->sg_handle,
--				 sizeof(struct ivtv_sg_element), PCI_DMA_TODEVICE);
-+			dma_unmap_single(&s->itv->pdev->dev, s->sg_handle,
-+					 sizeof(struct ivtv_sg_element),
-+					 DMA_TO_DEVICE);
- 			s->sg_handle = IVTV_DMA_UNMAPPED;
- 		}
- 		kfree(s->sg_pending);
-diff --git a/drivers/media/pci/ivtv/ivtv-streams.c b/drivers/media/pci/ivtv/ivtv-streams.c
-index f04ee84bab5f..6e455948cc77 100644
---- a/drivers/media/pci/ivtv/ivtv-streams.c
-+++ b/drivers/media/pci/ivtv/ivtv-streams.c
-@@ -100,7 +100,7 @@ static struct {
- 	{	/* IVTV_ENC_STREAM_TYPE_MPG */
- 		"encoder MPG",
- 		VFL_TYPE_VIDEO, 0,
--		PCI_DMA_FROMDEVICE, 0,
-+		DMA_FROM_DEVICE, 0,
- 		V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_TUNER |
- 			V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_enc_fops
-@@ -108,7 +108,7 @@ static struct {
- 	{	/* IVTV_ENC_STREAM_TYPE_YUV */
- 		"encoder YUV",
- 		VFL_TYPE_VIDEO, IVTV_V4L2_ENC_YUV_OFFSET,
--		PCI_DMA_FROMDEVICE, 0,
-+		DMA_FROM_DEVICE, 0,
- 		V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_TUNER |
- 			V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_enc_fops
-@@ -116,7 +116,7 @@ static struct {
- 	{	/* IVTV_ENC_STREAM_TYPE_VBI */
- 		"encoder VBI",
- 		VFL_TYPE_VBI, 0,
--		PCI_DMA_FROMDEVICE, 0,
-+		DMA_FROM_DEVICE, 0,
- 		V4L2_CAP_VBI_CAPTURE | V4L2_CAP_SLICED_VBI_CAPTURE | V4L2_CAP_TUNER |
- 			V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_enc_fops
-@@ -124,42 +124,42 @@ static struct {
- 	{	/* IVTV_ENC_STREAM_TYPE_PCM */
- 		"encoder PCM",
- 		VFL_TYPE_VIDEO, IVTV_V4L2_ENC_PCM_OFFSET,
--		PCI_DMA_FROMDEVICE, 0,
-+		DMA_FROM_DEVICE, 0,
- 		V4L2_CAP_TUNER | V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_enc_fops
- 	},
- 	{	/* IVTV_ENC_STREAM_TYPE_RAD */
- 		"encoder radio",
- 		VFL_TYPE_RADIO, 0,
--		PCI_DMA_NONE, 1,
-+		DMA_NONE, 1,
- 		V4L2_CAP_RADIO | V4L2_CAP_TUNER,
- 		&ivtv_v4l2_radio_fops
- 	},
- 	{	/* IVTV_DEC_STREAM_TYPE_MPG */
- 		"decoder MPG",
- 		VFL_TYPE_VIDEO, IVTV_V4L2_DEC_MPG_OFFSET,
--		PCI_DMA_TODEVICE, 0,
-+		DMA_TO_DEVICE, 0,
- 		V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_dec_fops
- 	},
- 	{	/* IVTV_DEC_STREAM_TYPE_VBI */
- 		"decoder VBI",
- 		VFL_TYPE_VBI, IVTV_V4L2_DEC_VBI_OFFSET,
--		PCI_DMA_NONE, 1,
-+		DMA_NONE, 1,
- 		V4L2_CAP_SLICED_VBI_CAPTURE | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_enc_fops
- 	},
- 	{	/* IVTV_DEC_STREAM_TYPE_VOUT */
- 		"decoder VOUT",
- 		VFL_TYPE_VBI, IVTV_V4L2_DEC_VOUT_OFFSET,
--		PCI_DMA_NONE, 1,
-+		DMA_NONE, 1,
- 		V4L2_CAP_SLICED_VBI_OUTPUT | V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_dec_fops
- 	},
- 	{	/* IVTV_DEC_STREAM_TYPE_YUV */
- 		"decoder YUV",
- 		VFL_TYPE_VIDEO, IVTV_V4L2_DEC_YUV_OFFSET,
--		PCI_DMA_TODEVICE, 0,
-+		DMA_TO_DEVICE, 0,
- 		V4L2_CAP_VIDEO_OUTPUT | V4L2_CAP_AUDIO | V4L2_CAP_READWRITE,
- 		&ivtv_v4l2_dec_fops
- 	}
-@@ -179,7 +179,7 @@ static void ivtv_stream_init(struct ivtv *itv, int type)
- 	s->caps = ivtv_stream_info[type].v4l2_caps;
- 
- 	if (ivtv_stream_info[type].pio)
--		s->dma = PCI_DMA_NONE;
-+		s->dma = DMA_NONE;
- 	else
- 		s->dma = ivtv_stream_info[type].dma;
- 	s->buf_size = itv->stream_buf_size[type];
-@@ -217,7 +217,7 @@ static int ivtv_prep_dev(struct ivtv *itv, int type)
- 
- 	/* User explicitly selected 0 buffers for these streams, so don't
- 	   create them. */
--	if (ivtv_stream_info[type].dma != PCI_DMA_NONE &&
-+	if (ivtv_stream_info[type].dma != DMA_NONE &&
- 	    itv->options.kilobytes[type] == 0) {
- 		IVTV_INFO("Disabled %s device\n", ivtv_stream_info[type].name);
- 		return 0;
-diff --git a/drivers/media/pci/ivtv/ivtv-udma.c b/drivers/media/pci/ivtv/ivtv-udma.c
-index 0d8372cc364a..210be8290f24 100644
---- a/drivers/media/pci/ivtv/ivtv-udma.c
-+++ b/drivers/media/pci/ivtv/ivtv-udma.c
-@@ -81,8 +81,10 @@ void ivtv_udma_alloc(struct ivtv *itv)
- {
- 	if (itv->udma.SG_handle == 0) {
- 		/* Map DMA Page Array Buffer */
--		itv->udma.SG_handle = pci_map_single(itv->pdev, itv->udma.SGarray,
--			   sizeof(itv->udma.SGarray), PCI_DMA_TODEVICE);
-+		itv->udma.SG_handle = dma_map_single(&itv->pdev->dev,
-+						     itv->udma.SGarray,
-+						     sizeof(itv->udma.SGarray),
-+						     DMA_TO_DEVICE);
- 		ivtv_udma_sync_for_cpu(itv);
- 	}
- }
-@@ -135,7 +137,8 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_dest_addr,
- 	}
- 
- 	/* Map SG List */
--	dma->SG_length = pci_map_sg(itv->pdev, dma->SGlist, dma->page_count, PCI_DMA_TODEVICE);
-+	dma->SG_length = dma_map_sg(&itv->pdev->dev, dma->SGlist,
-+				    dma->page_count, DMA_TO_DEVICE);
- 
- 	/* Fill SG Array with new values */
- 	ivtv_udma_fill_sg_array (dma, ivtv_dest_addr, 0, -1);
-@@ -159,7 +162,8 @@ void ivtv_udma_unmap(struct ivtv *itv)
- 
- 	/* Unmap Scatterlist */
- 	if (dma->SG_length) {
--		pci_unmap_sg(itv->pdev, dma->SGlist, dma->page_count, PCI_DMA_TODEVICE);
-+		dma_unmap_sg(&itv->pdev->dev, dma->SGlist, dma->page_count,
-+			     DMA_TO_DEVICE);
- 		dma->SG_length = 0;
- 	}
- 	/* sync DMA */
-@@ -175,13 +179,14 @@ void ivtv_udma_free(struct ivtv *itv)
- 
- 	/* Unmap SG Array */
- 	if (itv->udma.SG_handle) {
--		pci_unmap_single(itv->pdev, itv->udma.SG_handle,
--			 sizeof(itv->udma.SGarray), PCI_DMA_TODEVICE);
-+		dma_unmap_single(&itv->pdev->dev, itv->udma.SG_handle,
-+				 sizeof(itv->udma.SGarray), DMA_TO_DEVICE);
- 	}
- 
- 	/* Unmap Scatterlist */
- 	if (itv->udma.SG_length) {
--		pci_unmap_sg(itv->pdev, itv->udma.SGlist, itv->udma.page_count, PCI_DMA_TODEVICE);
-+		dma_unmap_sg(&itv->pdev->dev, itv->udma.SGlist,
-+			     itv->udma.page_count, DMA_TO_DEVICE);
- 	}
- 
- 	for (i = 0; i < IVTV_DMA_SG_OSD_ENT; i++) {
-diff --git a/drivers/media/pci/ivtv/ivtv-yuv.c b/drivers/media/pci/ivtv/ivtv-yuv.c
-index 5f7dc9771f8d..e79e8a5a744a 100644
---- a/drivers/media/pci/ivtv/ivtv-yuv.c
-+++ b/drivers/media/pci/ivtv/ivtv-yuv.c
-@@ -113,7 +113,8 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struct ivtv_user_dma *dma,
- 		dma->page_count = 0;
- 		return -ENOMEM;
- 	}
--	dma->SG_length = pci_map_sg(itv->pdev, dma->SGlist, dma->page_count, PCI_DMA_TODEVICE);
-+	dma->SG_length = dma_map_sg(&itv->pdev->dev, dma->SGlist,
-+				    dma->page_count, DMA_TO_DEVICE);
- 
- 	/* Fill SG Array with new values */
- 	ivtv_udma_fill_sg_array(dma, y_buffer_offset, uv_buffer_offset, y_size);
-@@ -920,7 +921,9 @@ static void ivtv_yuv_init(struct ivtv *itv)
- 	/* We need a buffer for blanking when Y plane is offset - non-fatal if we can't get one */
- 	yi->blanking_ptr = kzalloc(720 * 16, GFP_ATOMIC|__GFP_NOWARN);
- 	if (yi->blanking_ptr) {
--		yi->blanking_dmaptr = pci_map_single(itv->pdev, yi->blanking_ptr, 720*16, PCI_DMA_TODEVICE);
-+		yi->blanking_dmaptr = dma_map_single(&itv->pdev->dev,
-+						     yi->blanking_ptr,
-+						     720 * 16, DMA_TO_DEVICE);
- 	} else {
- 		yi->blanking_dmaptr = 0;
- 		IVTV_DEBUG_WARN("Failed to allocate yuv blanking buffer\n");
-@@ -1264,7 +1267,8 @@ void ivtv_yuv_close(struct ivtv *itv)
- 	if (yi->blanking_ptr) {
- 		kfree(yi->blanking_ptr);
- 		yi->blanking_ptr = NULL;
--		pci_unmap_single(itv->pdev, yi->blanking_dmaptr, 720*16, PCI_DMA_TODEVICE);
-+		dma_unmap_single(&itv->pdev->dev, yi->blanking_dmaptr,
-+				 720 * 16, DMA_TO_DEVICE);
- 	}
- 
- 	/* Invalidate the old dimension information */
--- 
-2.30.2
-
+Thanks
+barry
