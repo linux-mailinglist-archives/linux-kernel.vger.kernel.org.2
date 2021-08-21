@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1B33F3B63
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2773B3F3B65
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhHUQTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 12:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S232613AbhHUQUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 12:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbhHUQT2 (ORCPT
+        with ESMTP id S232197AbhHUQUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 12:19:28 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D407C061760
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:18:49 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id y23so12306073pgi.7
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:18:49 -0700 (PDT)
+        Sat, 21 Aug 2021 12:20:34 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058EDC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:19:55 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id d11so26655061eja.8
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:19:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KG5rw8fq9QClpiKXfvagJa/MQ1uYCf2JiD/gsJPzlGY=;
-        b=XltUDgMW2Qf2bAKXI4A8LtmvSxIKAnIMye7ZdHSOcsDNDXXgD8iosp+UE2wSPl8waO
-         DTKyqcHlVvbjGFW5a2HRMuxf6XXrHbkM+LCDcjr2fHZCO5GxepkzYNkjaYsoM8o2QvC5
-         3OngRRWe0H99//lU4TaZ6IWZzjr5QwsyGIDuKxdBW4hz4/5dVoOW1k8rZku4felSOX/u
-         sFPFjU3G+rIub0EIOqW1iG6qGkeI+q9093FcOop8ex2BD9L7TPhxhAv85eLiugDCYZY5
-         JSg5J+XTaetCRxV4BPgxvv7OwCIlEXBMrR5QTU5vBjkFiDmEk14VpIO/n0vJFt40vZ3S
-         0gIg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=/alB5h0gQfW9FzGIyLs4BWi7g0xqZIGqbJ3FTO0wCLc=;
+        b=WKiWOkltLruZ0DxT597rFznXg3fPQE9b1IFGL1wQWnbe+VSukFCBGvmqLuTFd2DpSb
+         9aPypaZbBDPRYji95n+kORyIe5TYi/Cf2EEP9m5OHRUGsxXPv/v8c/PUbBlX4Rk5GTIe
+         YPfg9GhNlsl5o/ZyFXegcV5yVU8vgasRLqEwM3U7pB5tbzZjb0aJGTAnv1drvWWj8j+2
+         fypwFZ65MD74yTHLV9nI3ojuAEFy+wvKikyKfazZH6EaR8tPeMXJCV45IpdocGn2vJeJ
+         WEX+bEHbUGQYCHko1EPiqVf2u2n4qR0nU3vG7HoJIZEJhkf4sTuj0To+161TwRQJVo+o
+         pHTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KG5rw8fq9QClpiKXfvagJa/MQ1uYCf2JiD/gsJPzlGY=;
-        b=bt2Cnw2aeonVoxVZCY9RZ0aSflkMHR1GnRdzqM99Gjly1+VhPyBO+Bn/LomjrY5S1b
-         43rr0x4jsNi/+FJlRExLN9Pk2krN9gFzmMIWpijxu2uqYgYPUPNig7ylhxKa08ZmuXf8
-         r95mIkQi4I28OsxDP9LVm5PDq+lviNkfNKyLcoldtrbXDwGIqeYtDAwpUZ5YBvLfxwDt
-         eBmRKl6BHCfGIl4P9xLtHgR+mLNANG/W4mzxyyouHx0r7+utO1MwAGwtlTx6fOot5k7D
-         TAuJHNJP88hQqvY+2Xj854y87Tk8qzMeQu4mdk6TyfiJbsvn2qNx074SEtybHRfo3bzd
-         I5aw==
-X-Gm-Message-State: AOAM530obQtszUaIWMWoZ0Z1L4Z+8my+Mua4EgdlMYS0H4A4LObTu7Wb
-        1omOoVymYyOsAhCzG8ICEXE=
-X-Google-Smtp-Source: ABdhPJxKbgmWixqtmMs4fMYk4ad1KqvahkKC1vk88SrdYpz5tvLB5KnBsl36uAcj+PaqcGZSX0Y7GQ==
-X-Received: by 2002:a65:664f:: with SMTP id z15mr21347363pgv.252.1629562728788;
-        Sat, 21 Aug 2021 09:18:48 -0700 (PDT)
-Received: from xps.yggdrasil ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id y27sm4227011pfa.29.2021.08.21.09.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 09:18:48 -0700 (PDT)
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] staging: r8188eu: incorrect type in assignment
-Date:   Sat, 21 Aug 2021 21:48:32 +0530
-Message-Id: <876b83dad76a6f561879da0db1fbb25b251374d4.1629562355.git.aakashhemadri123@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1629562355.git.aakashhemadri123@gmail.com>
-References: <cover.1629562355.git.aakashhemadri123@gmail.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=/alB5h0gQfW9FzGIyLs4BWi7g0xqZIGqbJ3FTO0wCLc=;
+        b=jTAzUdmngLd53JwQN8/wHHEZQUcjvQdbvzBRqUw4od3WNRmqCzXpxKbIcMJqt+XPMH
+         zkFfQf+Yhe96ChAxqfyXrNJ471b/FSRIVIX2tQjVPR67xoeQsk/Q0IENNjc9Srgm9VnO
+         7Cz2djcK2G8Tr+Wbpwea10u8e7fA6TGUQGbuafXKLmaa7ocg/J4gr79f5HkKxhNJTYw6
+         FTKheiYji8fhpFBPl5j6Bq5DUEyWWeM8ZgozPr+JSKq9atft3E4OIjvi7Cl6LtEvkX+q
+         4hZCxgj5bUxmskvYQOSqjTOp4q05+cZ/mFGaMvDKeXeGkFrz+SXLaCziLZWi5uVbKPIW
+         hg2g==
+X-Gm-Message-State: AOAM5318hFsEsXSToJYZOaUIA8t5hsbX7iBNM6bjl82MX1VIBShN4Ffl
+        2u8taveJTs6QHhBxoGcLbqrI+9qHDbpLWDrVgdM=
+X-Google-Smtp-Source: ABdhPJwSvlrnmCuxuBRwOaiNDC+xEkK4D7SUDFYywdxYyO8hGPigQGanwJNoCusxzHMMEDrgIawTjAGJXnCFSB69MO0=
+X-Received: by 2002:a17:907:217a:: with SMTP id rl26mr27733433ejb.9.1629562793513;
+ Sat, 21 Aug 2021 09:19:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: boyb82397@gmail.com
+Received: by 2002:a55:be01:0:b029:f7:352:6a79 with HTTP; Sat, 21 Aug 2021
+ 09:19:53 -0700 (PDT)
+From:   Anita lawrence lee <combatant441@gmail.com>
+Date:   Sat, 21 Aug 2021 16:19:53 +0000
+X-Google-Sender-Auth: uUtCb6ifcaRQaFPg8iDSpIYnuAc
+Message-ID: <CANJw1guEK203rnyCVxMSSk8n_Mso5GKF80OW7qFcSWM83b2etQ@mail.gmail.com>
+Subject: Re: PLEASE DO NOT IGNORE
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warning:
-> rtw_br_ext.c:516:57: warning: incorrect type in assignment
-    (different base types)
-> rtw_br_ext.c:516:57:    expected unsigned short
-> rtw_br_ext.c:516:57:    got restricted __be16 [usertype]
-
-*pMagic holds __be16 change it's type to __be16
-
-Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index 83a4594a4214..14cf13516d34 100644
---- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -474,7 +474,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 		/*                Handle PPPoE frame                 */
- 		/*---------------------------------------------------*/
- 		struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
--		unsigned short *pMagic;
-+		__be16 *pMagic;
- 
- 		switch (method) {
- 		case NAT25_CHECK:
-@@ -512,7 +512,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 						tag->tag_len = htons(MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN+old_tag_len);
- 
- 						/*  insert the magic_code+client mac in relay tag */
--						pMagic = (unsigned short *)tag->tag_data;
-+						pMagic = (__be16 *)tag->tag_data;
- 						*pMagic = htons(MAGIC_CODE);
- 						memcpy(tag->tag_data+MAGIC_CODE_LEN, skb->data+ETH_ALEN, ETH_ALEN);
- 
 -- 
-2.32.0
-
+Hello
+Please contact me via my email id [ combatant441@gmail.com ]
+ It's very urgent, I have a vital issue to discuss with you.
+Rachel .
