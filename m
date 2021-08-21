@@ -2,135 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8FE3F3AAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CD53F3AB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhHUMqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 08:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229722AbhHUMqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 08:46:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26DB461222;
-        Sat, 21 Aug 2021 12:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629549960;
-        bh=BWRBpnQrNoRcs319+vTr8OUV7hK/02HoruNC5g/r9g8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=fa7ZeHuGl+4XP1WpEyzmi5hufYrREjDgNdRg4U3s/96SFCEqdGYDGUtBnHEuVeQqG
-         15E2/qqommNNVF93RIEDLEQP4hibseJYGAbILdAXC/LwejAZfgBOGT6SdESXBfYcDN
-         cd7+Xd17PsJ2c9mp9buI/usXYtVu6bkO7afSWz4635iAHyaAYKSzDM3WPhavCSsRv0
-         ClTsJRXKpG8hsODsdUHQ/aV4CV1rhOspJM2fWX2hRqBJCYHxYAYyp8at738ytBtNYE
-         0IToQvyCx1mwLtuRTjN4k+vGA4g035zp2YTFthSWuCdKxQhCRB0nph9IOGgywfzekG
-         j3T7MrokxJRCg==
-Message-ID: <18b073b95d692f4c7782c68de1f803681c15a467.camel@kernel.org>
-Subject: Re: Removing Mandatory Locks
-From:   Jeff Layton <jlayton@kernel.org>
-To:     "H. Peter Anvin" <hpa@zytor.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Date:   Sat, 21 Aug 2021 08:45:54 -0400
-In-Reply-To: <8a6737f9fa2dd3b8b9d851064cd28ca57e489a77.camel@kernel.org>
-References: <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
-         <87eeay8pqx.fsf@disp2133>
-         <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
-         <87h7ft2j68.fsf@disp2133>
-         <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
-         <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
-         <YRcyqbpVqwwq3P6n@casper.infradead.org> <87k0kkxbjn.fsf_-_@disp2133>
-         <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
-         <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
-         <202108200905.BE8AF7C@keescook>
-         <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
-         <8a6737f9fa2dd3b8b9d851064cd28ca57e489a77.camel@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S233130AbhHUMu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 08:50:27 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:34844 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhHUMu1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 08:50:27 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id C3B4BD772A;
+        Sat, 21 Aug 2021 20:49:43 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P704T139881080669952S1629550173496538_;
+        Sat, 21 Aug 2021 20:49:34 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <c71ec8a5484971490f56a865178e1d83>
+X-RL-SENDER: jon.lin@rock-chips.com
+X-SENDER: jon.lin@rock-chips.com
+X-LOGIN-NAME: jon.lin@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 7
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Jon Lin <jon.lin@rock-chips.com>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Jon Lin <jon.lin@rock-chips.com>, Mark Brown <broonie@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] spi: rockchip-sfc: Remove redundant IO operations
+Date:   Sat, 21 Aug 2021 20:49:25 +0800
+Message-Id: <20210821124925.6066-1-jon.lin@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-20 at 17:29 -0400, Jeff Layton wrote:
-> No, Windows has deny-mode locking at open time, but the kernel's
-> mandatory locks are enforced during read/write (which is why they are
-> such a pain). Samba will not miss these at all.
-> 
-> If we want something to provide windows-like semantics, we'd probably
-> want to start with something like Pavel Shilovsky's O_DENY_* patches.
-> 
-> -- Jeff
-> 
+Coherent dma buffer is uncached and memcpy is enough.
 
-Doh! It completely slipped my mind about byte-range locks on windows...
+Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
+---
 
-Those are mandatory and they do block read and write activity to the
-ranges locked. They have weird semantics vs. POSIX locks (they stack
-instead of splitting/merging, etc.).
+ drivers/spi/spi-rockchip-sfc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Samba emulates these with (advisory) POSIX locks in most cases. Using
-mandatory locks is probably possible, but I think it would add more
-potential for deadlock and security issues.
+diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
+index 7c4d47fe80c2..81154a8836fc 100644
+--- a/drivers/spi/spi-rockchip-sfc.c
++++ b/drivers/spi/spi-rockchip-sfc.c
+@@ -453,7 +453,7 @@ static int rockchip_sfc_xfer_data_dma(struct rockchip_sfc *sfc,
+ 	dev_dbg(sfc->dev, "sfc xfer_dma len=%x\n", len);
+ 
+ 	if (op->data.dir == SPI_MEM_DATA_OUT)
+-		memcpy_toio(sfc->buffer, op->data.buf.out, len);
++		memcpy(sfc->buffer, op->data.buf.out, len);
+ 
+ 	ret = rockchip_sfc_fifo_transfer_dma(sfc, sfc->dma_buffer, len);
+ 	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
+@@ -462,7 +462,7 @@ static int rockchip_sfc_xfer_data_dma(struct rockchip_sfc *sfc,
+ 	}
+ 	rockchip_sfc_irq_mask(sfc, SFC_IMR_DMA);
+ 	if (op->data.dir == SPI_MEM_DATA_IN)
+-		memcpy_fromio(op->data.buf.in, sfc->buffer, len);
++		memcpy(op->data.buf.in, sfc->buffer, len);
+ 
+ 	return ret;
+ }
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.17.1
+
+
 
