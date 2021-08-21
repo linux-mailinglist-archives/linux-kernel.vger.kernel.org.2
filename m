@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4583F38C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 06:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166E23F38C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 06:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhHUEwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 00:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhHUEwc (ORCPT
+        id S230205AbhHUExg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 00:53:36 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:18269 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhHUExe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 00:52:32 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A825C061575;
-        Fri, 20 Aug 2021 21:51:53 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id m26so10398931pff.3;
-        Fri, 20 Aug 2021 21:51:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k994SCAta50Beg05/fIqKxaoshSEbyIj/0V4L48qJLM=;
-        b=MpeK7YtJKvr2ERoawLZlHNq1018vQOoVqXv5bVNHUiTVv13UjLjtUlcxwLWInQhABj
-         IEhvadytdpmckzA1oRcNrHTiu8W4s2+4bOTP2mi6X2czPw88mhMewaUYc9lUXumQ+5XK
-         i+Ktcb786m3RmQFggH18AT1rmKtivC5P1hlWmK/j8H5DY8AoWA9vX3ZmVJjfWRDgUW/Y
-         b7K0fXtmwLXpsPCAfhl9TTTa6GmGZIWONSOkFNRZU/QWCVEWiSDinn2Hq2iUm99rM0Wv
-         EvB2eODPII4dnM5giacjbD2fu2iXZM9kQV2naQkiaS2RETlWEq8oCU1CDm70qeefnk+2
-         jWzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k994SCAta50Beg05/fIqKxaoshSEbyIj/0V4L48qJLM=;
-        b=pYLVLg00xDC+KPOL4jW2KMYpWmYI0dJE6n2ys82HXK8aCzaFgGPIxirPmIG0FtL0Qy
-         PExlQ1LBgaLlxhmJwA/DigGvGI2g0HBkERUYLlUdNYlwW0hdQFnq5o4uDAhdzUifR23s
-         0gI3UOqD4KqbbIwVKG3d8TDsrL5P0xZxk21edweVL9IEtoIcjLdti2korTon8Qrkzsec
-         x4IZoA1x5NmINj56JpU20fCIK5QzyC4qM1ma/qTkCnjzO3o+frK6eP4lK+5zSd5q3SZ/
-         E6Px6GCNPogV/xxTmuUqrisa1UZjTCU4sh9iLE7FinOLuLjRAeJFghFG12vWHNGTA/pO
-         7Q+Q==
-X-Gm-Message-State: AOAM5323fRwuP385MWYMpTDT1XGUTVI0qYCjwZ7n0Dmr3tT+XQR/Pso2
-        mj29rXzs5a4R2/HYAS3mD0nVaPsm6dTz+7LHkJI=
-X-Google-Smtp-Source: ABdhPJxXHXCisTEWRnATao98fGjGi0aL+0tXZQW/EtquJw0bGPu7xYx4hPn6MdEsgguJrhfd+QVaSRqs6dYbMIFzr78=
-X-Received: by 2002:a63:c0a:: with SMTP id b10mr21769909pgl.447.1629521512878;
- Fri, 20 Aug 2021 21:51:52 -0700 (PDT)
+        Sat, 21 Aug 2021 00:53:34 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d11 with ME
+        id k4so250043riaq2034sp7R; Sat, 21 Aug 2021 06:52:52 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Aug 2021 06:52:52 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH linux-next] drm: drop unneeded assignment in the
+ fx_v6_0_enable_mgcg()
+To:     CGEL <cgel.zte@gmail.com>, Alex Deucher <alexander.deucher@amd.com>
+Cc:     Pan Xinhui <Xinhui.Pan@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210821020844.26864-1-luo.penghao@zte.com.cn>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <0956a2af-d168-92e3-35c3-43966fa75e33@wanadoo.fr>
+Date:   Sat, 21 Aug 2021 06:52:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210706190620.1290391-1-tony.luck@intel.com> <20210818002942.1607544-1-tony.luck@intel.com>
- <20210818002942.1607544-2-tony.luck@intel.com> <YR/m/8PCmCTbogey@zn.tnic>
- <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
- <YSACMCEoU6FxjDNh@zn.tnic> <20210820202346.GA1623796@agluck-desk2.amr.corp.intel.com>
-In-Reply-To: <20210820202346.GA1623796@agluck-desk2.amr.corp.intel.com>
-From:   Tony Luck <tony.luck@intel.com>
-Date:   Fri, 20 Aug 2021 21:51:41 -0700
-Message-ID: <CA+8MBb+M5JoDGONxZuMHZb8VU4DmG=zsv_0JuBhnzn6T=eSKEA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user recovery
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
-        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
-        X86-ML <x86@kernel.org>,
-        Linux Edac Mailing List <linux-edac@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210821020844.26864-1-luo.penghao@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 1:25 PM Luck, Tony <tony.luck@intel.com> wrote:
-> Probably the same for the two different addresses case ... though I'm
-> not 100% confident about that. There could be some ioctl() that peeks
-> at two parts of a passed in structure, and the user might pass in a
-> structure that spans across a page boundary with both pages poisoned.
-> But that would only hit if the driver code ignored the failure of the
-> first get_user() and blindly tried the second. So I'd count that as a
-> critically bad driver bug.
+Hi,
 
-Or maybe driver writers are just evil :-(
+Le 21/08/2021 à 04:08, CGEL a écrit :
+> From: Luo penghao <luo.penghao@zte.com.cn>
+> 
+> The first assignment is not used. In order to keep the code style
+> consistency of the whole file, the first 'data' assignment should be
+> deleted.
+> 
+> The clang_analyzer complains as follows:
+> 
+> drivers/gpu/drm/amd/amdgpu/gfx_v6_0.c:2608:10: warning:
+> Although the value storedto 'offset' is used in the enclosing expression,
+> the value is never actually read from 'offset'.
 
-for (i = 0; i < len; i++) {
-       tx_wait(10);
-       get_user(dsp56k_host_interface.data.b[1], bin++);
-       get_user(dsp56k_host_interface.data.b[2], bin++);
-       get_user(dsp56k_host_interface.data.b[3], bin++);
-}
+Apparently clang only spotted on place, at line 2608.
 
--Tony
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/gfx_v6_0.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v6_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v6_0.c
+> index 6a8dade..84a5f22 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gfx_v6_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v6_0.c
+> @@ -2605,7 +2605,7 @@ static void gfx_v6_0_enable_mgcg(struct amdgpu_device *adev, bool enable)
+>   	u32 data, orig, tmp = 0;
+>   
+>   	if (enable && (adev->cg_flags & AMD_CG_SUPPORT_GFX_MGCG)) {
+> -		orig = data = RREG32(mmCGTS_SM_CTRL_REG);
+> +		orig = RREG32(mmCGTS_SM_CTRL_REG);
+>   		data = 0x96940200;
+>   		if (orig != data)
+>   			WREG32(mmCGTS_SM_CTRL_REG, data);
+> @@ -2617,7 +2617,7 @@ static void gfx_v6_0_enable_mgcg(struct amdgpu_device *adev, bool enable)
+>   				WREG32(mmCP_MEM_SLP_CNTL, data);
+>   		}
+>   
+> -		orig = data = RREG32(mmRLC_CGTT_MGCG_OVERRIDE);
+> +		orig = RREG32(mmRLC_CGTT_MGCG_OVERRIDE);
+>   		data &= 0xffffffc0;
+                      ^^
+but you also change here where it is used.
+
+>   		if (orig != data)
+>   			WREG32(mmRLC_CGTT_MGCG_OVERRIDE, data);
+> 
+
+CJ
