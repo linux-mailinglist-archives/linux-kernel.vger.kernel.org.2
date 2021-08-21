@@ -2,151 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617083F3CBE
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 01:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF193F3CC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 01:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbhHUXZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 19:25:01 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:49327 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhHUXY6 (ORCPT
+        id S230039AbhHUX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 19:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhHUX1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 19:24:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1629588257; x=1661124257;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lBHSnulRC9B4JbrRzUQUZvXAAgq+SXBRzTXzXMvAd24=;
-  b=p6p0Sef6pExy9ZhGcnlfy8UmwhnPMAqQi0f6BCEDCuIVXkxdp/382coR
-   jpIpVDIMAE/dHQG5L0yFJz+Asj8O7gpPmJ9ndeuTnCYMq+IkTLJ7cQkoH
-   WQkj9k1EPmcmqdUCGct5DcqJTEsLTWgX05fah9bEX/W5SwXuMCq3T9XBT
-   s=;
-X-IronPort-AV: E=Sophos;i="5.84,341,1620691200"; 
-   d="scan'208";a="20945902"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 21 Aug 2021 23:24:16 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id C5F0D1A065F;
-        Sat, 21 Aug 2021 23:24:16 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 21 Aug 2021 23:24:15 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.43.160.137) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sat, 21 Aug 2021 23:24:03 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <jiang.wang@bytedance.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <chaiwen.cc@bytedance.com>, <christian.brauner@ubuntu.com>,
-        <cong.wang@bytedance.com>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <digetx@gmail.com>,
-        <duanxiongchun@bytedance.com>, <john.fastabend@gmail.com>,
-        <kafai@fb.com>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <rao.shoaib@oracle.com>,
-        <songliubraving@fb.com>, <viro@zeniv.linux.org.uk>,
-        <xieyongji@bytedance.com>, <yhs@fb.com>
-Subject: [PATCH bpf-next v2] af_unix: fix NULL pointer bug in unix_shutdown
-Date:   Sun, 22 Aug 2021 08:23:25 +0900
-Message-ID: <20210821232325.29727-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210821180738.1151155-1-jiang.wang@bytedance.com>
-References: <20210821180738.1151155-1-jiang.wang@bytedance.com>
+        Sat, 21 Aug 2021 19:27:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5CBC061575;
+        Sat, 21 Aug 2021 16:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Co5Y/EX5ifuICbWnNsfkQFUM3mlOJV+v5gGJyiXYvg0=; b=BZBEcBWop5OVJATFGiVuPVrIYh
+        xQBQRi+IUePF65ReBcVy22F2sNzwlXy1Ei+ekmD32gk0V4kHMwGMyLmbT82wdG4RA7W2mMGJ8QC32
+        hMzvTZyZyNU95YBJTj6z/aQjfrvjCaxWSk6rmAv1ubAu3gba645aQB9Y/Fsp4CmZtPZfYiY2vIQlu
+        C9CJkxKlvpT5wGk5fW58ku+GyG/UjwYClm6MoT6QJ+jrz30MvadTjQFzCwG9Mqmxjrx8H0ZbHGzOH
+        HYrv0pJpIBRu+32spOV8YCvvKUjCWv/ddaEACKRMhB2jU3P7IFxsg9Yb4U3K7Y8c8N1rBurueER5E
+        500dVG/w==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mHaNi-00DJbv-QV; Sat, 21 Aug 2021 23:26:30 +0000
+Subject: Re: [PATCH] Makefile: use -Wno-main in the full kernel tree
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+References: <20210813224131.25803-1-rdunlap@infradead.org>
+ <CAHk-=wj4chmL3TUdXHhAV+eU-YVNj-ZtZBjNJEFBzTnPMP3_bA@mail.gmail.com>
+ <CAHk-=wgnvC=Tyejg_ts1O7yZYRxAgS+mxStCWM+PcyFPnaw1sw@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <3c16596b-8fa1-4f36-7f4c-16a8034c92e1@infradead.org>
+Date:   Sat, 21 Aug 2021 16:26:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.137]
-X-ClientProxiedBy: EX13D24UWA003.ant.amazon.com (10.43.160.195) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <CAHk-=wgnvC=Tyejg_ts1O7yZYRxAgS+mxStCWM+PcyFPnaw1sw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Jiang Wang <jiang.wang@bytedance.com>
-Date:   Sat, 21 Aug 2021 18:07:36 +0000
-> Commit 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap") 
-> introduced a bug for af_unix SEQPACKET type. In unix_shutdown, the
-> unhash function will call prot->unhash(), which is NULL for SEQPACKET.
-> And kernel will panic. On ARM32, it will show following messages: (it 
-> likely affects x86 too).
+On 8/16/21 5:33 PM, Linus Torvalds wrote:
+> On Fri, Aug 13, 2021 at 2:01 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>>  From a quick google, it seems like '-Wmain' means something else for
+>> clang. But it is probably ok.
 > 
-> Fix the bug by checking the prot->unhash is NULL or not first.
+> So the warnings that clang gives with -Wmain seem to be much more reasonable.
 > 
-> Kernel log:
-> <--- cut here ---
->  Unable to handle kernel NULL pointer dereference at virtual address
-> 00000000
->  pgd = 2fba1ffb
->  *pgd=00000000
->  Internal error: Oops: 80000005 [#1] PREEMPT SMP THUMB2
->  Modules linked in:
->  CPU: 1 PID: 1999 Comm: falkon Tainted: G        W
-> 5.14.0-rc5-01175-g94531cfcbe79-dirty #9240
->  Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
->  PC is at 0x0
->  LR is at unix_shutdown+0x81/0x1a8
->  pc : [<00000000>]    lr : [<c08f3311>]    psr: 600f0013
->  sp : e45aff70  ip : e463a3c0  fp : beb54f04
->  r10: 00000125  r9 : e45ae000  r8 : c4a56664
->  r7 : 00000001  r6 : c4a56464  r5 : 00000001  r4 : c4a56400
->  r3 : 00000000  r2 : c5a6b180  r1 : 00000000  r0 : c4a56400
->  Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
->  Control: 50c5387d  Table: 05aa804a  DAC: 00000051
->  Register r0 information: slab PING start c4a56400 pointer offset 0
->  Register r1 information: NULL pointer
->  Register r2 information: slab task_struct start c5a6b180 pointer offset 0
->  Register r3 information: NULL pointer
->  Register r4 information: slab PING start c4a56400 pointer offset 0
->  Register r5 information: non-paged memory
->  Register r6 information: slab PING start c4a56400 pointer offset 100
->  Register r7 information: non-paged memory
->  Register r8 information: slab PING start c4a56400 pointer offset 612
->  Register r9 information: non-slab/vmalloc memory
->  Register r10 information: non-paged memory
->  Register r11 information: non-paged memory
->  Register r12 information: slab filp start e463a3c0 pointer offset 0
->  Process falkon (pid: 1999, stack limit = 0x9ec48895)
->  Stack: (0xe45aff70 to 0xe45b0000)
->  ff60:                                     e45ae000 c5f26a00 00000000 00000125
->  ff80: c0100264 c07f7fa3 beb54f04 fffffff7 00000001 e6f3fc0e b5e5e9ec beb54ec4
->  ffa0: b5da0ccc c010024b b5e5e9ec beb54ec4 0000000f 00000000 00000000 beb54ebc
->  ffc0: b5e5e9ec beb54ec4 b5da0ccc 00000125 beb54f58 00785238 beb5529c beb54f04
->  ffe0: b5da1e24 beb54eac b301385c b62b6ee8 600f0030 0000000f 00000000 00000000
->  [<c08f3311>] (unix_shutdown) from [<c07f7fa3>] (__sys_shutdown+0x2f/0x50)
->  [<c07f7fa3>] (__sys_shutdown) from [<c010024b>]
-> (__sys_trace_return+0x1/0x16)
->  Exception stack(0xe45affa8 to 0xe45afff0)
+> Which makes me think that the '-Wno-main' thing would likely be better
+> as a gcc-only thing.
 > 
-> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> Reported-by: Dmitry Osipenko <digetx@gmail.com>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> Maybe something like this instead?
+> 
+>                Linus
 
-Fixes: 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
-Acked-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-LGTM, thank you.
+Should I resend the full patch?
 
+Thanks.
 
-> ---
-> v1 -> v2: check prot->unhash directly.
-> 
->  net/unix/af_unix.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 443c49081636..15c1e4e4012d 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -2847,7 +2847,8 @@ static int unix_shutdown(struct socket *sock, int mode)
->  		int peer_mode = 0;
->  		const struct proto *prot = READ_ONCE(other->sk_prot);
->  
-> -		prot->unhash(other);
-> +		if (prot->unhash)
-> +			prot->unhash(other);
->  		if (mode&RCV_SHUTDOWN)
->  			peer_mode |= SEND_SHUTDOWN;
->  		if (mode&SEND_SHUTDOWN)
-> -- 
-> 2.20.1
+-- 
+~Randy
+
