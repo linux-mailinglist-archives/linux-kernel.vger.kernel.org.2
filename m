@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ACD3F3972
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 09:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C46D3F3975
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 09:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhHUH44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 03:56:56 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:35482 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233068AbhHUH4w (ORCPT
+        id S233089AbhHUH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 03:59:34 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:49907 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhHUH7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 03:56:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UkdiL.F_1629532533;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UkdiL.F_1629532533)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 21 Aug 2021 15:55:33 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     shy828301@gmail.com, willy@infradead.org,
-        baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] mm: migrate: Change to use bool type for 'page_was_mapped'
-Date:   Sat, 21 Aug 2021 15:54:59 +0800
-Message-Id: <ce1279df18d2c163998c403e0b5ec6d3f6f90f7a.1629447552.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1629447552.git.baolin.wang@linux.alibaba.com>
-References: <cover.1629447552.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1629447552.git.baolin.wang@linux.alibaba.com>
-References: <cover.1629447552.git.baolin.wang@linux.alibaba.com>
+        Sat, 21 Aug 2021 03:59:30 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d09 with ME
+        id k7yn2500M3riaq2037ynGU; Sat, 21 Aug 2021 09:58:50 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Aug 2021 09:58:50 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, lee.jones@linaro.org,
+        segher@kernel.crashing.org, dwmw2@infradead.org
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] mtd: rawnand: cafe: Fix a resource leak in the error handling path of 'cafe_nand_probe()'
+Date:   Sat, 21 Aug 2021 09:58:45 +0200
+Message-Id: <fd313d3fb787458bcc73189e349f481133a2cdc9.1629532640.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change to use bool type for 'page_was_mapped' variable making it
-more readable.
+A successful 'init_rs_non_canonical()' call should be balanced by a
+corresponding 'free_rs()' call in the error handling path of the probe, as
+already done in the remove function.
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
+Update the error handling path accordingly.
+
+Fixes: 8c61b7a7f4d4 ("[MTD] [NAND] Use rslib for CAFÉ ECC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- mm/migrate.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/cafe_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index a9800fa..04a76fc 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -953,7 +953,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- 				int force, enum migrate_mode mode)
- {
- 	int rc = -EAGAIN;
--	int page_was_mapped = 0;
-+	bool page_was_mapped = false;
- 	struct anon_vma *anon_vma = NULL;
- 	bool is_lru = !__PageMovable(page);
- 
-@@ -1056,7 +1056,7 @@ static int __unmap_and_move(struct page *page, struct page *newpage,
- 		VM_BUG_ON_PAGE(PageAnon(page) && !PageKsm(page) && !anon_vma,
- 				page);
- 		try_to_migrate(page, 0);
--		page_was_mapped = 1;
-+		page_was_mapped = true;
+diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+index d0e8ffd55c22..cba2eaddb0fc 100644
+--- a/drivers/mtd/nand/raw/cafe_nand.c
++++ b/drivers/mtd/nand/raw/cafe_nand.c
+@@ -751,7 +751,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 			  "CAFE NAND", mtd);
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
+-		goto out_ior;
++		goto our_free_rs;
  	}
  
- 	if (!page_mapped(page))
+ 	/* Disable master reset, enable NAND clock */
+@@ -795,6 +795,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	/* Disable NAND IRQ in global IRQ mask register */
+ 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
+ 	free_irq(pdev->irq, mtd);
++ our_free_rs:
++	free_rs(cafe->rs);
+  out_ior:
+ 	pci_iounmap(pdev, cafe->mmio);
+  out_free_mtd:
 -- 
-1.8.3.1
+2.30.2
 
