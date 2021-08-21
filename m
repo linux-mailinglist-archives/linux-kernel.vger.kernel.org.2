@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703BC3F3BBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0E83F3BBE
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhHURaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 13:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        id S231625AbhHURao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 13:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbhHURaC (ORCPT
+        with ESMTP id S229803AbhHURan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:30:02 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E292C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:29:22 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id oa17so9340379pjb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:29:22 -0700 (PDT)
+        Sat, 21 Aug 2021 13:30:43 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A1BC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:30:04 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id h1so3471464pjs.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:30:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mbXBY1K+bIvnA7frC2S0y5jy3wcA1bKUpmFcBQ25Dzk=;
-        b=gsJG7hvUkpDh7HD4EmjVP9kdPG/PBNSMtqxEQjtRhtNGQ51sQIFDH09dvZCRrm0ZGe
-         8TBCXzuO8EmNXisaQsSEcKbaMsQDM6rhEgfaCIf+WlbdazIZLOCa6L23gYxOeCSKKL6t
-         UjAzMmoPWxDHbDiPFuaqPVd3bZog257iuf+RkwxvkNg8vkumTB76kzmkUvhxEPRGkZGX
-         1liadzA5DWBQVo2Cvwnnn9qPXGXzv4yqX0uSLwtdbecDZJnG70LOM/NUlCzclFmaxzPz
-         W0IvxluupVJ77xnsSocopNlpxMqjA/WXKxZUjKsy9zN52ehe7T4wfybI2ZDrdxvQQz+/
-         Ygow==
+        bh=6ogRJWET2r0ZEOHnVOELtmeC7ZrMSpFkdcuNji551as=;
+        b=aUYENPN6rgHJHIRtDP5SuOnqohDKnGFcuyLASbIkSAy3azEHLpSODmRch5t/Cq2IfS
+         PvxMEbzkDP7oR66bsaFh5CILC0rew2lj6omiRKv837tANzBXyDDQFHKUsYsfMlgh0Bjf
+         vEm42pmLu6/UOEKcE5DUUuz+2uMtBUt4ljsYBuw8J53FGJcHy1qGgoa2qswkb7r90uiX
+         fY98svuX56unTOCQ8sLc0naH3XYLoV+tmIHQJWNswyqpe+tUuOYvyNBG6Ozq7rwFqAAv
+         c2LyKQ2tzzBdTcIIVlbPEZt/xYebsME/t+0/8pcgMlHvilxbYtpB3OMHopshP3debja0
+         5qGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mbXBY1K+bIvnA7frC2S0y5jy3wcA1bKUpmFcBQ25Dzk=;
-        b=BNaHSilWYgVUBmfagmZuH+AW4esaxcdsJjLKX0IwbVx4/9JGBpLO+qe1dyjgZvQ15t
-         8nlnjM+JV5b9o90L+Q6rdkqrppf7qFRXPAyG6sMnSzPrNd7MkeZh8g/fII4QwhoBDDrR
-         yJQETyi1cQOafrLjHv6nCIGH4WXfxnve11yCU6VDtqCUW/bBaacRlsYgwkCML4taa959
-         pSAkvLOOq43RNg/Ai3ZurCNzd61PShsP6QeXoXTeo1l1NAdivVa/bPKdNu7BY0OpLMAW
-         IBe434iRajluN+lOrXg/ZONLv0prAh/I2HB6UBqH+RRgE4XfV7qaYA2Cvo1TuIYYD+V8
-         0KUw==
-X-Gm-Message-State: AOAM5300uI8pd/WBSKF+JO5GnQ+Jwb39/QzIuWZpkn6h+ROPylJ+Q+B8
-        YaD5UXA/SXwTTY4ng79mak/NbOLs+LIdv8WXDYZlwQ==
-X-Google-Smtp-Source: ABdhPJx1PxpMu3bCnSml7ds1DFejoVvBh/9mDosyuXScV3s3fY4Hx/L75JY8mwkXgGQLkKO0Cg7ytx+JWkInEquHMc4=
-X-Received: by 2002:a17:902:8c81:b029:12c:ee37:3f58 with SMTP id
- t1-20020a1709028c81b029012cee373f58mr21366030plo.45.1629566962001; Sat, 21
- Aug 2021 10:29:22 -0700 (PDT)
+        bh=6ogRJWET2r0ZEOHnVOELtmeC7ZrMSpFkdcuNji551as=;
+        b=VCeC6ZzgnajLYxKaLgTXJdvUZFFThNm1PmTC4koEIh7Cp0WkfcFlQ/ugszU9SmQ2lG
+         niFS3Q0Yz+fBxTE1ZGyOIDbJPBsqV2SBYZFjPyqpqJLyrDzn95KInhf7DN+/6EGqbyF0
+         CXCODELPni7pv6kPY2VZRGc0i6+jEqgRldjfcBXFokGWyY0C0QlX7xD3WZK3JEzJwiNy
+         a1bqK9WQe125aq2uZGUkEC4Ruc70bUPZ7iypQWDPGI1oZaCGg2R8zolLeR+Rn8J+EIeJ
+         t/mEUZ/bBaSsH0s5k5e5CrBxOF4nwRPC878iiqrVDZFgiF4O8hNuYp6h0+axIc99lxvi
+         H1Sg==
+X-Gm-Message-State: AOAM533qXzOCKHVMUM3T5OPtn12MzP6s24ubF3fxWx7LCPJ5v1azIAgW
+        PvDIPh2Y6TrdtQDR/lmeh/jkXIhvNjVSLAWGfgr8Jw==
+X-Google-Smtp-Source: ABdhPJxmh0gJTtCE/GD6VPl0t7VdpfwTluLfuU4t+pukNp5dVZFizZlMmaw6KVYm5WpxKg09hYQoiAWuu6sOZj3lN6E=
+X-Received: by 2002:a17:902:f704:b029:11a:cdee:490 with SMTP id
+ h4-20020a170902f704b029011acdee0490mr21501619plo.37.1629567003980; Sat, 21
+ Aug 2021 10:30:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210821164859.4351-1-martin@kaiser.cx> <20210821164859.4351-5-martin@kaiser.cx>
-In-Reply-To: <20210821164859.4351-5-martin@kaiser.cx>
+References: <20210821164859.4351-1-martin@kaiser.cx> <20210821164859.4351-9-martin@kaiser.cx>
+In-Reply-To: <20210821164859.4351-9-martin@kaiser.cx>
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 21 Aug 2021 18:29:11 +0100
-Message-ID: <CAA=Fs0=BzFpONB+Dtj-xTbk-YieqXvP8qHtLdUiv2MwsPjxq_w@mail.gmail.com>
-Subject: Re: [PATCH 05/10] staging: r8188eu: remove an unused enum
+Date:   Sat, 21 Aug 2021 18:29:53 +0100
+Message-ID: <CAA=Fs0nq2hHCY=kpeYCVX8-D9abnPqi5d0E0fe98kn77bbL1kw@mail.gmail.com>
+Subject: Re: [PATCH 09/10] staging: r8188eu: remove unused members of struct _io_ops
 To:     Martin Kaiser <martin@kaiser.cx>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Larry Finger <Larry.Finger@lwfinger.net>,
@@ -64,30 +64,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Aug 2021 at 17:49, Martin Kaiser <martin@kaiser.cx> wrote:
+On Sat, 21 Aug 2021 at 17:50, Martin Kaiser <martin@kaiser.cx> wrote:
 >
-> The VENDOR_READ and VENDOR_WRITE defines are not used.
+> Remove function pointers which are not used by the r8188eu driver.
 >
 > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 > ---
->  drivers/staging/r8188eu/include/usb_ops.h | 4 ----
->  1 file changed, 4 deletions(-)
+>  drivers/staging/r8188eu/include/rtw_io.h | 3 ---
+>  1 file changed, 3 deletions(-)
 >
-> diff --git a/drivers/staging/r8188eu/include/usb_ops.h b/drivers/staging/r8188eu/include/usb_ops.h
-> index b6a1cd536adf..c53cc54b6b87 100644
-> --- a/drivers/staging/r8188eu/include/usb_ops.h
-> +++ b/drivers/staging/r8188eu/include/usb_ops.h
-> @@ -13,10 +13,6 @@
->  #define REALTEK_USB_VENQT_CMD_REQ      0x05
->  #define REALTEK_USB_VENQT_CMD_IDX      0x00
->
-> -enum {
-> -       VENDOR_WRITE = 0x00,
-> -       VENDOR_READ = 0x01,
-> -};
->  #define ALIGNMENT_UNIT                 16
->  #define MAX_VENDOR_REQ_CMD_SIZE        254     /* 8188cu SIE Support */
->  #define MAX_USB_IO_CTL_SIZE    (MAX_VENDOR_REQ_CMD_SIZE + ALIGNMENT_UNIT)
+> diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
+> index f1b3074fa075..4b41c7b03972 100644
+> --- a/drivers/staging/r8188eu/include/rtw_io.h
+> +++ b/drivers/staging/r8188eu/include/rtw_io.h
+> @@ -100,13 +100,10 @@ struct _io_ops {
+>                           u8 *pmem);
+>         void (*_write_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+>                            u8 *pmem);
+> -       void (*_sync_irp_protocol_rw)(struct io_queue *pio_q);
+> -       u32 (*_read_interrupt)(struct intf_hdl *pintfhdl, u32 addr);
+>         u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+>                           u8 *pmem);
+>         u32 (*_write_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+>                            u8 *pmem);
+> -       u32 (*_write_scsi)(struct intf_hdl *pintfhdl,u32 cnt, u8 *pmem);
+>         void (*_read_port_cancel)(struct intf_hdl *pintfhdl);
+>         void (*_write_port_cancel)(struct intf_hdl *pintfhdl);
+>  };
 > --
 > 2.20.1
 >
