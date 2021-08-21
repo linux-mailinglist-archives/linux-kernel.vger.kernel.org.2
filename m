@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553FF3F3B92
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5833B3F3B94
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhHURDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 13:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        id S229806AbhHURKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 13:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhHURDO (ORCPT
+        with ESMTP id S229600AbhHURKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 13:03:14 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290CEC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:02:35 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id f1so886999plg.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:02:35 -0700 (PDT)
+        Sat, 21 Aug 2021 13:10:53 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B710EC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:10:13 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so4068536pjb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:10:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4HTFLhWisTNLRIx4NTlvnb8zMtfi4Uwgkrquy0wqd74=;
-        b=CL4GyunjSvjkUb3nw9klbGSUZKKv14t780WUflmlEdS7mdCWLDZ0tl5NaGd39USl4Q
-         ++OpD5POBw2IQr2lqQV+uL7wLgpKMMiCmWUQp35TAWm6wcY70KxtKwKFKgmYJZVIq1aO
-         nQwQq1GsWsIkbQkRznKEZO2wWs5gwn4wfRhfoj6jyVZ1WiyOv9710kL070MBPOUZpMhq
-         oon7xSg9Dzq1k8Q++D3u6/QGPEGsQT4q33hDS6uQM/A0MQyMCRHLDK1z+PZGHxgV8BJ3
-         tRSO3a8nRGD1dU9VlNAL+DmufZZCL1BayjomDDTSQyLwjPljWhLNcnLWiVDV6jzyWaP1
-         l1uw==
+        bh=9KMYRhCleUnsrpCQrbXzZrYt+3Cldg63mJQ1Fu61khs=;
+        b=19VJ7fuU92Y/WuP3Z0IlsVsvz8yPtirjrh3a2VbqpuwG0WRZkpa2Hh6JkoQRG8xQWm
+         d1EkMRij8NGlvAeBivqVsn4fbX9PnBNiHJnp//OQr9zechEKo9n0d+MIWh6ygJdMysYT
+         k8ZuL4C4dj1uTD6xneoESWCv9ZQu4dAm8u/pDdpT5ah5XBn13h1RO4M8T3ULUC6m2TDb
+         28zE6AqpVhh+iWq0EaiMCg5W9wObrKeLdKHvRqfIzp5YU5u0v783xA3PIfgUND9NDDap
+         t62OcgJGChS7S5l0t7FA5tHsfHEz6oraDSTaGxTJIUbMt9bzqEdG3Mey7dOXcandbHy0
+         1Zkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4HTFLhWisTNLRIx4NTlvnb8zMtfi4Uwgkrquy0wqd74=;
-        b=afIolm3p0C6WtTLDfO5DSE/4dpXLR5oFj9wYEmOHqWW4woxdzL3PSh3s86F1uTWeDK
-         gU70kGlWI6BaKUuKgWo4hg4+pCTPPPGSxsFRngcr1E6SjPqdi217FJrtKRu1RgHEwsyI
-         U3wvSGDQlfyJcs+nfrnCVJ4AFVDyaIqgIlvsHtMmn34vh6C0p9b3HsNcr2n38sR/T8Os
-         CfXB7jU19jI4da0H2rqaTTKXeqngTyoa+SqXEHXFFNHXATsg/ulRiJLsMZzPQ/dkHP/m
-         kAQxyqjq0hkpXKAsVHiU9pD8pjrOQN9gLfrZ1Hk4QaGqLVhsQeOej2IjawzEWMS/EL6F
-         3uyg==
-X-Gm-Message-State: AOAM530nT09vGEkPtqKd8mFTOXU/XbbpfPxQSfZKJVDtT0eTO1ZH6omm
-        4NlpRDEWkcHFdg9g5x0MHGQ36pNER9R9NODcVeRQ/GDz5lphsw==
-X-Google-Smtp-Source: ABdhPJwQCZj+SdVJpFLkj9iH5Cwtl9rfF9GijnwS91rX8chEmvKxPq8upLIQdclNlup5JI6n5h21D6bbqUKcrxdh6Qo=
+        bh=9KMYRhCleUnsrpCQrbXzZrYt+3Cldg63mJQ1Fu61khs=;
+        b=W5HxD6enGLeG7IVPQjVpALNS04iPI+IJWuEvjRsSH0PRfrcDLltj8bHpaveiQBwzGD
+         zg1fqL3sXigw4MPrDUI86bVuqPnSk7EJR8YRj/DuRp9CO7GcZPGIEpqyOnGvDsg0cwlF
+         tU0dWSq/tIQswELk5NP3iTtk+DWU1kEtlwUDYKmcLxNn4v8RTU1y9JIXhLQVuGD66vev
+         JbzjaMD5Z9EkioNOxmHbobCPpE0vYdIXdE2s9TB+jVP8LMhOtkZ6GMVOCItCspwpY5Dh
+         XMiHhyPYrB+8Fj4Q92MFXAZJ1dbCvmLPqCx3XLyRhaUj74PtaUHDo2DKC12Jp+WBrCK4
+         WQtA==
+X-Gm-Message-State: AOAM530OjZYI+SMRKRvUb51B/JgXYDIHBv20I8g+GKh8SfdHIEKWCSYK
+        71bfNdejl/gFbrMI4LJA7Yi5w78RBl+3SyFx8fCODQ==
+X-Google-Smtp-Source: ABdhPJzdWiuAlZusbfPp3FheBWopH/WF+quCCb7hfvhmldROeM2pifqhnBE95CRo7SY1rVFdVKr0Tf2YzdVbNdT9ST8=
 X-Received: by 2002:a17:902:6ac6:b0:133:230b:e8bc with SMTP id
- i6-20020a1709026ac600b00133230be8bcmr723484plt.22.1629565354706; Sat, 21 Aug
- 2021 10:02:34 -0700 (PDT)
+ i6-20020a1709026ac600b00133230be8bcmr744789plt.22.1629565813018; Sat, 21 Aug
+ 2021 10:10:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210821105615.6307-1-phil@philpotter.co.uk> <2360857.63PHMDANz2@localhost.localdomain>
-In-Reply-To: <2360857.63PHMDANz2@localhost.localdomain>
+References: <20210821000508.79422-1-phil@philpotter.co.uk> <ac672cfe-038d-2fe9-0ac6-904ad7761b54@lwfinger.net>
+In-Reply-To: <ac672cfe-038d-2fe9-0ac6-904ad7761b54@lwfinger.net>
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sat, 21 Aug 2021 18:02:23 +0100
-Message-ID: <CAA=Fs0=KXjYEJqPeuNjEdWEZQ91QC6gJSuSa4y0X9BqfOXEw5g@mail.gmail.com>
-Subject: Re: [PATCH v2] staging: r8188eu: change declaration of Efuse_Read1ByteFromFakeContent
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Date:   Sat, 21 Aug 2021 18:10:02 +0100
+Message-ID: <CAA=Fs0myhWsn147t4pFfFc=QNc0-4jZaAeREqLGMZ-xN+LNVPg@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: remove forward declaration of Efuse_Read1ByteFromFakeContent
+To:     Larry Finger <Larry.Finger@lwfinger.net>
 Cc:     Greg KH <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
+        Michael Straube <straube.linux@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Aug 2021 at 13:17, Fabio M. De Francesco
-<fmdefrancesco@gmail.com> wrote:
+On Sat, 21 Aug 2021 at 15:45, Larry Finger <Larry.Finger@lwfinger.net> wrote:
 >
-> On Saturday, August 21, 2021 12:56:15 PM CEST Phillip Potter wrote:
+> On 8/20/21 7:05 PM, Phillip Potter wrote:
 > > Remove forward declaration of Efuse_Read1ByteFromFakeContent function
 > > from core/rtw_efuse.c, as the function is defined in full directly
 > > after this and therefore this forward declaration is redundant.
 > >
-> > In addition, convert the storage class of the function to static, as the
-> > function is only used with rtw_efuse.c, and tidy up the signature
-> > alignment.
-> >
 > > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 > > ---
+> >   drivers/staging/r8188eu/core/rtw_efuse.c | 6 ------
+> >   1 file changed, 6 deletions(-)
 > >
-> > V1: Removed forward declaration.
-> > V2: Takes account of feedback from Michael Straube and Fabio M. De
-> >     Francesco to make storage class of the function static.
+> > diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
+> > index decccf7622f0..45b757ab64e1 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_efuse.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+> > @@ -29,12 +29,6 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+> >   #define REG_EFUSE_CTRL              0x0030
+> >   #define EFUSE_CTRL                  REG_EFUSE_CTRL          /*  E-Fuse Control. */
+> >   /*  */
+> > -
+> > -bool
+> > -Efuse_Read1ByteFromFakeContent(
+> > -                     struct adapter *pAdapter,
+> > -                     u16 Offset,
+> > -             u8 *Value);
+> >   bool
+> >   Efuse_Read1ByteFromFakeContent(
+> >                       struct adapter *pAdapter,
+> >
 >
-> Thanks!
+> Phil,
 >
-> Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> There a number of such forward references immediately followed by the actual
+> routine. I removed some of these when the driver was in the GitHub repo, but I
+> missed a few.
 >
-> Cheers,
+> Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
 >
-> Fabio
->
+> Larry
 >
 
-Thanks Fabio.
+Dear Larry,
+
+Thanks for this, I ended up doing a V2 that declares the function as
+static as well. No doubt there will be others like this - I just
+picked this one off as I happened to notice it :-)
 
 Regards,
 Phil
