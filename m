@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CD53F3AB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A5A3F3AB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhHUMu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 08:50:27 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:34844 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhHUMu1 (ORCPT
+        id S232496AbhHUMvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 08:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229722AbhHUMvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 08:50:27 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id C3B4BD772A;
-        Sat, 21 Aug 2021 20:49:43 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P704T139881080669952S1629550173496538_;
-        Sat, 21 Aug 2021 20:49:34 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <c71ec8a5484971490f56a865178e1d83>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 7
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Jon Lin <jon.lin@rock-chips.com>, Mark Brown <broonie@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] spi: rockchip-sfc: Remove redundant IO operations
-Date:   Sat, 21 Aug 2021 20:49:25 +0800
-Message-Id: <20210821124925.6066-1-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 21 Aug 2021 08:51:47 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE700C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 05:51:07 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f10so11843707lfv.6
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 05:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=hzZXbpT/9+wDw3N6aqYgduBefhron0LmudcQy0UaXt8=;
+        b=S9z+2Xre36hb08BE6ZFrdwB2Sa8usU7r6ArNAPO29G92mlp42gjAqZUfOg2fDcv9W1
+         zJpxq+1eB+8XODOKE91kmbyluOGaG7ZEgLinUG7VTqbXKKJPXDdl3PsjMGrx85ubhhdV
+         Jgk0XyV4ngBVBSisZ4IC104mm29iWhhIEnET2x0K5oL94qYtIf9pXlCJ9tGsfwk6BIOH
+         5dcDWbPjJo5YExMD1ye2pz5aRdvE3HmBG3UyWapffAxF77D0Txz8uvYcjnvIkWkzPELf
+         QlYNHhmHKDMrztfGvKpb8kRJjTUGsWMLoErePG/qB4fF0xB1SMk+xN5GMcbvKQSdz+1S
+         nE8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=hzZXbpT/9+wDw3N6aqYgduBefhron0LmudcQy0UaXt8=;
+        b=Nw2xBF044blB8RIkLU9A2S3hHk+S4MnpJ/p5RCtKAKWhx9fxRCLbH6VfkPxLTfWP7D
+         3oo0RXYQN8wRHuw9tqMMUKfKkYjOgLq3VglyUFxNTaI+PiZST8syEbdyHl2rIoIaSnqE
+         C8d4gtLlaCTHY7+kIINQSovdDwYhMgcdP92APRDILAttNR6NXglErLPQ6ViTE20I2dBX
+         wixudQiwSnPVXAGU2EgE2l59+n+EVc3xIEL+eF8/3C5fw7JcM5JEAFVw6hB4o5C3Ui3t
+         BrY4i/0xvzOsRYCGUxuTu1/RllZ1nkd4Dm1wsKD56G7QyLBbJQ4vNn/zYnG5ZvcUwHFh
+         +DIg==
+X-Gm-Message-State: AOAM53213Jsez3T4c7ZtcAxz1YsRgNNIoNl0Z7M3nn9Yc+GECekn7ryE
+        tDQ7TDAa2v2HRcEb0nX8rylKng2CKhywW9gSYu4=
+X-Google-Smtp-Source: ABdhPJws/al3NZUWRCdD31Ndb1SOWiAZlbcttChYhSw4CUjKl06d177dz6O+REnJxa8CAnYDq9eW6lBZjl9x4CcXuLE=
+X-Received: by 2002:ac2:4c22:: with SMTP id u2mr17878383lfq.32.1629550266335;
+ Sat, 21 Aug 2021 05:51:06 -0700 (PDT)
+MIME-Version: 1.0
+Sender: brotherpaul637@gmail.com
+Received: by 2002:a2e:bd05:0:0:0:0:0 with HTTP; Sat, 21 Aug 2021 05:51:05
+ -0700 (PDT)
+From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
+Date:   Sat, 21 Aug 2021 13:51:05 +0100
+X-Google-Sender-Auth: sL3MpIku4lFQeJwJgZnK5kyYn1w
+Message-ID: <CAJuXCoCZ3p8SkfeB5j8QuCnsj4UpGghzydp8dJcmGiJxyVMy6Q@mail.gmail.com>
+Subject: My Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coherent dma buffer is uncached and memcpy is enough.
-
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
-
- drivers/spi/spi-rockchip-sfc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-rockchip-sfc.c b/drivers/spi/spi-rockchip-sfc.c
-index 7c4d47fe80c2..81154a8836fc 100644
---- a/drivers/spi/spi-rockchip-sfc.c
-+++ b/drivers/spi/spi-rockchip-sfc.c
-@@ -453,7 +453,7 @@ static int rockchip_sfc_xfer_data_dma(struct rockchip_sfc *sfc,
- 	dev_dbg(sfc->dev, "sfc xfer_dma len=%x\n", len);
- 
- 	if (op->data.dir == SPI_MEM_DATA_OUT)
--		memcpy_toio(sfc->buffer, op->data.buf.out, len);
-+		memcpy(sfc->buffer, op->data.buf.out, len);
- 
- 	ret = rockchip_sfc_fifo_transfer_dma(sfc, sfc->dma_buffer, len);
- 	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
-@@ -462,7 +462,7 @@ static int rockchip_sfc_xfer_data_dma(struct rockchip_sfc *sfc,
- 	}
- 	rockchip_sfc_irq_mask(sfc, SFC_IMR_DMA);
- 	if (op->data.dir == SPI_MEM_DATA_IN)
--		memcpy_fromio(op->data.buf.in, sfc->buffer, len);
-+		memcpy(op->data.buf.in, sfc->buffer, len);
- 
- 	return ret;
- }
--- 
-2.17.1
-
-
-
+Assalamu alaikum,
+I came across your e-mail contact prior to a private search while in
+need of a trusted person. My name is Mrs. Aisha Gaddafi, a single
+Mother and a Widow with three Children. I am the only biological
+Daughter of late Libyan President (Late Colonel Muammar Gaddafi)I have
+a business Proposal for you worth $27.5Million dollars and I need
+mutual respect, trust, honesty, transparency, adequate support and
+assistance, Hope to hear from you for more details.
+Warmest regards
+Mrs Aisha Gaddafi
