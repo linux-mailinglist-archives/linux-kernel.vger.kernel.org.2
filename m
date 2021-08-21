@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F2B3F3A1A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 12:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB283F3A1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 12:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhHUKJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 06:09:36 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:55480 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhHUKJe (ORCPT
+        id S234166AbhHUKLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 06:11:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:55947 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233859AbhHUKLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 06:09:34 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:43170 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1mHNvp-0001aX-2d; Sat, 21 Aug 2021 06:08:53 -0400
-Message-ID: <70526737949ab3ad2d8fc551531d286e0f3d88f4.camel@trillion01.com>
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Tony Battersby <tonyb@cybernetics.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-Date:   Sat, 21 Aug 2021 06:08:51 -0400
-In-Reply-To: <c4578bef-a21a-2435-e75a-d11d13d42923@kernel.dk>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-         <87eeda7nqe.fsf@disp2133>
-         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-         <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
-         <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
-         <87y2bh4jg5.fsf@disp2133>
-         <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
-         <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
-         <87pmwmn5m0.fsf@disp2133>
-         <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
-         <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
-         <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
-         <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
-         <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
-         <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
-         <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
-         <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
-         <84640f18-79ee-d8e4-5204-41a2c2330ed8@kernel.dk>
-         <c4578bef-a21a-2435-e75a-d11d13d42923@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4 
+        Sat, 21 Aug 2021 06:11:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629540634; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=0Jn1p+jiNWNrQR9dfmyf/Iou1gyXyNX1MhpjET/zZuU=; b=n3mAVwfX50W/M8FfTuqsiMaNNFMa32Dn69Uw9E8l/RwYPZbwfi1V7kE441wrdNHJpZeh20Nf
+ +YhYocpRRUdoDYOYIWJBnRdA67U/iuk19pKattaDYJa0Zv6voP0OEgBbJ8y2i2YRR50BX2ex
+ 8FLLLBsVIOL9BQjHwl36H2OqjNw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 6120d1139b8228d0d017f892 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 21 Aug 2021 10:10:27
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C92DC43619; Sat, 21 Aug 2021 10:10:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0D2BFC4338F;
+        Sat, 21 Aug 2021 10:10:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0D2BFC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     jing yangyang <cgel.zte@gmail.com>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] net:wireless:mt76: fix boolreturn.cocci warnings
+References: <20210820024117.11688-1-jing.yangyang@zte.com.cn>
+Date:   Sat, 21 Aug 2021 13:10:20 +0300
+In-Reply-To: <20210820024117.11688-1-jing.yangyang@zte.com.cn> (jing
+        yangyang's message of "Thu, 19 Aug 2021 19:41:17 -0700")
+Message-ID: <87y28vt8fn.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 20:57 -0600, Jens Axboe wrote:
-> 
-> Olivier, I sent a 5.10 version for Nathan, any chance you can test
-> this
-> one for the current kernels? Basically this one should work for
-> 5.11+,
-> and the later 5.10 version is just for 5.10. I'm going to send it out
-> separately for review.
-> 
-> I do think this is the right solution, barring a tweak maybe on
-> testing
-> notify == TWA_SIGNAL first before digging into the task struct. But
-> the
-> principle is sound, and it'll work for other users of TWA_SIGNAL as
-> well. None right now as far as I can tell, but the live patching is
-> switching to TIF_NOTIFY_SIGNAL as well which will also cause issues
-> with
-> coredumps potentially.
-> 
-Ok, I am going to give it a shot. This solution is probably superior to
-the previous attempt as it does not inject io_uring dependency into the
-coredump module.
+jing yangyang <cgel.zte@gmail.com> writes:
 
-The small extra change that I alluded to in my previous reply will
-still be relevant even if we go with your patch...
+> ./drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c:172:8-9:WARNING:
+> return of 0/1 in function 'mt7663_usb_sdio_tx_status_data' with return
+> type bool
+>
+> Return statements in functions returning bool should use true/false
+> instead of 1/0.
+>
+> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> ---
+>  drivers/net/wireless/mediatek/mt76/mt7615/usb_sdio.c | 2 +-
 
-I'll come back soon with your patch testing result and my small extra
-change that I keep teasing about.
+The subject should be:
 
-Greetings,
+mt76: mt7615: fix boolreturn.cocci warnings
 
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
