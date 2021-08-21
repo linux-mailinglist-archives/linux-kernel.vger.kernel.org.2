@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DB23F3B89
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 18:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7C83F3B91
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 19:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhHUQv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 12:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
+        id S229973AbhHURCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 13:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbhHUQvz (ORCPT
+        with ESMTP id S229617AbhHURCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 12:51:55 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF98C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:51:16 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id y18so668206ioc.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 09:51:16 -0700 (PDT)
+        Sat, 21 Aug 2021 13:02:40 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B329EC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:02:00 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id q2so12366206pgt.6
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 10:02:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EEkaJRkk7fbk+mpizy2Vd2alX2yC8T1hkBH60Wl8mj4=;
-        b=qtIIpE8SBufQLuQamnrSS8zuw+V6BaKXuLbwznif/nkW3WYUpN6PQKVvRLSmh4s0hs
-         qOGUBcO1i0eF56zN80pkrvfBfzP4CkmMX6y455hc0xeoL0Yu8v6qZ1B3OSyPlbZTCP7T
-         70q8spNeDQ6sICI9Kku+z0VmJZhBNrvh7cuADuqqGqccuBQxDqic+yuSYwSecm6v/uNj
-         Er/PjAKAelp30OfRd0SwqWiSxYCBoOp+l7NqAt6JRX3KDvB31+8uSB1V1HEf6rFVC/Yc
-         E/5kj9qMM93n4Y5aWcG8P0juniweRu+ftv10itW9au38En+QYjTRFpmASDfAZJ2GQSrw
-         nGCg==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZrX1C2u1Acg0x62CQ0RePaJzn5DDLf3h8Xdu3YCej7k=;
+        b=jXu98Fq7FiwgBZ1hQpkjk+4oYEbE8GpwNM+LUBqYmyvzTYUoRMHqVz1lBUQx1ykoSS
+         x92Y1Ii7PA9x+8Q8zOUslCTmL6ml9NWNO7ofXk9wkELjQIesdo2Duax2omt1j4oyAIp3
+         TRgzqtNX4wUHiXKzEAAW++gU4jg90cmvCgNBPUkIU/vDyEzDAWG0Y9GyEu5R4aiM5FDC
+         zQfcnIpfj8liJeqXuTiGqUPmaWcVyS3w23HLrDZg6mziAhdc3J+ZamiZWlODKOw4iRuh
+         mMyTd52DcIrk/k6ej7MsyER6z6JT5szs9vhBK+lTdT0K1/dt2xse2jogmXakMLFIatYS
+         yKfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EEkaJRkk7fbk+mpizy2Vd2alX2yC8T1hkBH60Wl8mj4=;
-        b=l82L46hd6H1qTVQRcfZWJmQSNq8KbK2C1luRh//ITP3s3+qRNR671OWObV6x5sHgXk
-         EzzfUctu54O0ZcjC18IAUhXpg7UWBap4dd9zl+JQFuStaCK4urNi3IiBpoAt2MVvPjre
-         tZzPIOKsGnkrX2KzThA3UgFLJvFAnoszcEE9LBKvnfZg0Ex61GIyVE3Ye10JMmGZYFvU
-         tNBIxD5fBoyPRNd1Of3ufooz2Be5qxDWVg5g7trtcO2afhwIR+2VxxEZARtwAOmUZ0UR
-         Fx3mUtpVJ52DMVrIDTTvpr0PkymgEPM5mf1fVZvF4iADe9wgJMIGjOXmruQSDTxlgdJf
-         2Prg==
-X-Gm-Message-State: AOAM530Lzv08JbV3mij4ZbXNavwjKLoU3Nvmwu7MKMBLZ2F1+s4f2A18
-        LJ96kkdkfMUziVLNyCs5skxc5Q==
-X-Google-Smtp-Source: ABdhPJzRbjW8cYmHY3WuWUeLxspyHeaVk3QR1ggwwbUYZBJeia1nl/6xm7/dBlV8Y8O7RyrOYd7jwA==
-X-Received: by 2002:a02:2a07:: with SMTP id w7mr22897119jaw.96.1629564675481;
-        Sat, 21 Aug 2021 09:51:15 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id p13sm5305098ils.69.2021.08.21.09.51.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Aug 2021 09:51:15 -0700 (PDT)
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Tony Battersby <tonyb@cybernetics.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
- <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
- <87y2bh4jg5.fsf@disp2133>
- <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
- <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
- <87pmwmn5m0.fsf@disp2133>
- <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
- <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
- <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
- <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
- <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
- <24c795c6-4ec4-518e-bf9b-860207eee8c7@kernel.dk>
- <05c0cadc-029e-78af-795d-e09cf3e80087@cybernetics.com>
- <b5ab8ca0-cef5-c9b7-e47f-21c0d395f82e@kernel.dk>
- <84640f18-79ee-d8e4-5204-41a2c2330ed8@kernel.dk>
- <c4578bef-a21a-2435-e75a-d11d13d42923@kernel.dk>
- <70526737949ab3ad2d8fc551531d286e0f3d88f4.camel@trillion01.com>
- <9dfb14c1a9ab686df0eeea553b39246bc5b51ede.camel@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ff80f66c-c364-fad3-4bab-4d4793538702@kernel.dk>
-Date:   Sat, 21 Aug 2021 10:51:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZrX1C2u1Acg0x62CQ0RePaJzn5DDLf3h8Xdu3YCej7k=;
+        b=XjhxdIvC2TsYdkVYfUog8PHHjTpxSdnD56AA5FIWAcWAnHTAQI8LhGfWTr7J6nRsPm
+         UF4YfDg+q6wfjAxq5PTP3ygfrjSGwk5t/O1/KFmzJQbqXFENA8Bbz6MBKK4nnz2fFvSk
+         zfo1rriUI+JhQpaXHlSRYHuJfwZIvGL1qW9Fvmj3/Edf4uxRVFwZcUKD7CBvTnPJ24sv
+         Rc95NW5g8QukP82x/nAOwzyHITsphx1EBdsyiESdmmNFElC4rQGn/7cEPUrcPg9S/IcP
+         OQAPBjToM7pPHH2m04eEm/GwJes2dBubEMlapUHVJEKcFLt5Wi871GRhRjF7GAXr41yy
+         LTrw==
+X-Gm-Message-State: AOAM533LuQ6ihvJOui4KZk4+dHk2gCcYdR8knWq6xcNd5X75ecbtzuRD
+        PnqmCfgPIDPqakfmEMh+wLjCq/R0b0gXNO+m/8D7kW1TxW5IcQ==
+X-Google-Smtp-Source: ABdhPJx00tsYkPjFkmrEWDDQQvG1u+sHP3Ix62shFwjUjm3gwJyPQN8Wql/QaIy13JiZWc8ir2cIX8QqO2dE20wi7jI=
+X-Received: by 2002:a65:6a0a:: with SMTP id m10mr24348001pgu.82.1629565320118;
+ Sat, 21 Aug 2021 10:02:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9dfb14c1a9ab686df0eeea553b39246bc5b51ede.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210821105615.6307-1-phil@philpotter.co.uk> <f151ef3c-d625-a937-2096-afae4fee20f1@gmail.com>
+In-Reply-To: <f151ef3c-d625-a937-2096-afae4fee20f1@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Sat, 21 Aug 2021 18:01:49 +0100
+Message-ID: <CAA=Fs0mSomgGme9Rfg3vQhtHq6xiFBWis3C4t9zB8rQ7MbZEjA@mail.gmail.com>
+Subject: Re: [PATCH v2] staging: r8188eu: change declaration of Efuse_Read1ByteFromFakeContent
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 10:47 AM, Olivier Langlois wrote:
-> On Sat, 2021-08-21 at 06:08 -0400, Olivier Langlois wrote:
->> On Tue, 2021-08-17 at 20:57 -0600, Jens Axboe wrote:
->>>
->>> Olivier, I sent a 5.10 version for Nathan, any chance you can test
->>> this
->>> one for the current kernels? Basically this one should work for
->>> 5.11+,
->>> and the later 5.10 version is just for 5.10. I'm going to send it
->>> out
->>> separately for review.
->>>
->>> I do think this is the right solution, barring a tweak maybe on
->>> testing
->>> notify == TWA_SIGNAL first before digging into the task struct. But
->>> the
->>> principle is sound, and it'll work for other users of TWA_SIGNAL as
->>> well. None right now as far as I can tell, but the live patching is
->>> switching to TIF_NOTIFY_SIGNAL as well which will also cause issues
->>> with
->>> coredumps potentially.
->>>
->> Ok, I am going to give it a shot. This solution is probably superior
->> to
->> the previous attempt as it does not inject io_uring dependency into
->> the
->> coredump module.
->>
->> The small extra change that I alluded to in my previous reply will
->> still be relevant even if we go with your patch...
->>
->> I'll come back soon with your patch testing result and my small extra
->> change that I keep teasing about.
->>
->> Greetings,
->>
-> Jens,
-> 
-> your patch doesn't compile with 5.12+. AFAIK, the reason is that
-> JOBCTL_TASK_WORK is gone.
-> 
-> Wouldn't just a call to tracehook_notify_signal from do_coredump be
-> enough and backward compatible with every possible stable branches?
+On Sat, 21 Aug 2021 at 12:03, Michael Straube <straube.linux@gmail.com> wrote:
+>
+> On 8/21/21 12:56 PM, Phillip Potter wrote:
+> > Remove forward declaration of Efuse_Read1ByteFromFakeContent function
+> > from core/rtw_efuse.c, as the function is defined in full directly
+> > after this and therefore this forward declaration is redundant.
+> >
+> > In addition, convert the storage class of the function to static, as the
+> > function is only used with rtw_efuse.c, and tidy up the signature
+> > alignment.
+> >
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >
+> > V1: Removed forward declaration.
+> > V2: Takes account of feedback from Michael Straube and Fabio M. De
+> >      Francesco to make storage class of the function static.
+> >
+> > ---
+> >   drivers/staging/r8188eu/core/rtw_efuse.c | 14 +++-----------
+> >   1 file changed, 3 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
+> > index decccf7622f0..c1c70648f5bc 100644
+> > --- a/drivers/staging/r8188eu/core/rtw_efuse.c
+> > +++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+> > @@ -29,17 +29,9 @@ u8 fakeBTEfuseModifiedMap[EFUSE_BT_MAX_MAP_LEN] = {0};
+> >   #define REG_EFUSE_CTRL              0x0030
+> >   #define EFUSE_CTRL                  REG_EFUSE_CTRL          /*  E-Fuse Control. */
+> >   /*  */
+> > -
+> > -bool
+> > -Efuse_Read1ByteFromFakeContent(
+> > -                     struct adapter *pAdapter,
+> > -                     u16 Offset,
+> > -             u8 *Value);
+> > -bool
+> > -Efuse_Read1ByteFromFakeContent(
+> > -                     struct adapter *pAdapter,
+> > -                     u16 Offset,
+> > -             u8 *Value)
+> > +static bool Efuse_Read1ByteFromFakeContent(struct adapter *pAdapter,
+> > +                                        u16 Offset,
+> > +                                        u8 *Value)
+> >   {
+> >       if (Offset >= EFUSE_MAX_HW_SIZE)
+> >               return false;
+> >
+>
+> Looks good to me.
+>
+> Acked-by: Michael Straube<straube.linux@gmail.com>
+>
+>
+> Thanks,
+>
+> Michael
 
-That version is just for 5.10, the first I posted is applicable to
-5.11+
+Thanks Michael.
 
--- 
-Jens Axboe
-
+Regards,
+Phil
