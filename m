@@ -2,81 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5EA3F3A95
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315713F3A9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 14:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbhHUMUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 08:20:23 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:37816 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229968AbhHUMUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 08:20:22 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 17LCJ0Nc000440;
-        Sat, 21 Aug 2021 14:19:00 +0200
-Date:   Sat, 21 Aug 2021 14:19:00 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: Divide error in minstrel_ht_get_tp_avg()
-Message-ID: <20210821121900.GA32713@1wt.eu>
-References: <20210529165728.bskaozwtmwxnvucx@spock.localdomain>
- <20210607145223.tlxo5ge42mef44m5@spock.localdomain>
- <2137329.lhgpPQ2jGW@natalenko.name>
+        id S233472AbhHUMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 08:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230042AbhHUMjN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 08:39:13 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2D7C061575;
+        Sat, 21 Aug 2021 05:38:34 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z2so26647979lft.1;
+        Sat, 21 Aug 2021 05:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CsiDXQX5CqxTRDjYxjqIP5WMHOM40KiYSXEpLVVFU1A=;
+        b=WWMwGIi/b21LZpvv/cS/fjlWSHCpJw3bHeWU/+5/AT4GwzvHKlW9cMNl7Np3tmk0h9
+         uXcKGAJ6rv/rdECycldq5oDMpnrwWB3y5l4vmbnRX43QUImMvKZGEl7p7f5TjHOsHPfY
+         pNhmKczJsLLlShgDh9wkKsTt2U0w+sKezf9S/jdTEhm4N1mNrC2bse+C4oGKS3mFryg+
+         LSHfs6o8utKohNPh6ARmlNv22bq+MEEBgjMBu5qaS99LVEnQ3kIYrIuaLNOtpq4Y8D2R
+         GC6aJ9FnqIB9uDSCWRySMymLhVEEOCHKthAxmvXG+Z42dRKUhNud9moEbdZvJZTuGAAP
+         QcCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CsiDXQX5CqxTRDjYxjqIP5WMHOM40KiYSXEpLVVFU1A=;
+        b=J9IEb21T/5n6L1vPr3A672HYSz5NNg0qT0/3yU+3UGDBqa7sVP1afiyAzgXlDFRhJt
+         crWPsxGOX7ta7e2HNJixNMtoNGv2S0mUfcLsnbdBHR0eejS8hTX0Wr1PvcE1aCUfE3kK
+         TiJw80TEHI/ssuvnujRFiRdpLaVJZz7szf0sOzZ6xh3Dep64TxI8r17LiyZ5Efx8Mjwk
+         bUmcTyyc5A3ZSdJ/YTzlbgIeY3TCImcwyeqiuMmDjmYBmq8F2WmupyrOUObB8df630WS
+         fY4YTFsanbjzy9ei0ZWC5H3TxGGbmeV1N1mFXyfmGTHVSerKEfjSILlpqIe2RX07Cbgi
+         i6vw==
+X-Gm-Message-State: AOAM530ZEYpLIRuxJcNd1X9KE+B4ifGjQstxKqXK1+U92sKru7D/+hqn
+        9m5LqBu4yhhqpaupqKH/8YjpfPe3P5KcfR/u
+X-Google-Smtp-Source: ABdhPJwfEJRPHfXO35VkKUGcyuY5s+ZbtM60QpaKjjPY1rjUCUUDGMYVNAqYSvsDxlhraOX3EFF1SQ==
+X-Received: by 2002:ac2:484a:: with SMTP id 10mr1648015lfy.21.1629549512342;
+        Sat, 21 Aug 2021 05:38:32 -0700 (PDT)
+Received: from [192.168.0.13] (broadband-46-242-116-145.ip.moscow.rt.ru. [46.242.116.145])
+        by smtp.gmail.com with ESMTPSA id w6sm908269lfk.163.2021.08.21.05.38.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Aug 2021 05:38:31 -0700 (PDT)
+Subject: Re: [PATCH v27 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+To:     Theodore Ts'o <tytso@mit.edu>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
+        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
+        joe@perches.com, mark@harmstone.com, nborisov@suse.com,
+        linux-ntfs-dev@lists.sourceforge.net, anton@tuxera.com,
+        dan.carpenter@oracle.com, hch@lst.de, ebiggers@kernel.org,
+        andy.lavr@gmail.com, kari.argillander@gmail.com,
+        oleksandr@natalenko.name
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729162459.GA3601405@magnolia> <YQdlJM6ngxPoeq4U@mit.edu>
+From:   Yan Pashkovsky <yanp.bugz@gmail.com>
+Message-ID: <2399771e-8222-267d-1655-c84a1401f2cd@gmail.com>
+Date:   Sat, 21 Aug 2021 15:38:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2137329.lhgpPQ2jGW@natalenko.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YQdlJM6ngxPoeq4U@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 01:14:34PM +0200, Oleksandr Natalenko wrote:
-> > > So, it seems `minstrel_ht_avg_ampdu_len()` can return 0, which is not
-> > > really legitimate.
-> > > 
-> > > Looking at `minstrel_ht_avg_ampdu_len()`, I see the following:
-> > > 
-> > > ```
-> > > 16:#define MINSTREL_SCALE  12
-> > > ...
-> > > 18:#define MINSTREL_TRUNC(val) ((val) >> MINSTREL_SCALE)
-> > > ```
-> > > 
-> > > ```
-> > > 
-> > >  401 static unsigned int
-> > >  402 minstrel_ht_avg_ampdu_len(struct minstrel_ht_sta *mi)
-> > >  403 {
-> > > 
-> > > ...
-> > > 
-> > >  406     if (mi->avg_ampdu_len)
-> > >  407         return MINSTREL_TRUNC(mi->avg_ampdu_len);
-> > > 
-> > > ```
-> > > 
-> > > So, likely, `mi->avg_ampdu_len` is non-zero, but it's too small, hence
-> > > right bitshift makes it zero.
-(...)
-> I've also found out that this happens exactly at midnight, IOW, at 00:00:00. 
-> Not every midnight, though.
-> 
-> Does it have something to do with timekeeping? This is strange, I wouldn't 
-> expect kernel to act like that. Probably, some client sends malformed frame? 
-> How to find out?
+> Konstantin, I would *strongly* encourage you to try running fstests,
+> about 60 seconds into a run, we discover that generic/013 will trigger
+> locking problems that could lead to deadlocks.
 
-Well, in minstrel_ht_update_stats() at line 1006 avg_ampdu_len is
-explicitly set to zero. And this seems to be called based on timing
-criteria from minstrel_ht_tx_status() so this could confirm your
-experience.  Thus there is some inconsistency there.
+Seems like it's a real issue. I was using new HDD and ntfs3-dkms (v26) 
+in Arch and faced locking while was doing rsync:
 
-Willy
+[ 5529.507567] INFO: task kworker/0:1:18 blocked for more than 1105 seconds.
+[ 5529.507580]       Tainted: P           OE     5.13.4-arch1-1 #1
+[ 5529.507584] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" 
+disables this message.
+[ 5529.507586] task:kworker/0:1     state:D stack:    0 pid:   18 ppid: 
+     2 flags:0x00004000
+[ 5529.507598] Workqueue: usb_hub_wq hub_event
+[ 5529.507612] Call Trace:
+[ 5529.507615]  ? out_of_line_wait_on_bit_lock+0xb0/0xb0
+[ 5529.507631]  __schedule+0x310/0x930
+[ 5529.507641]  ? out_of_line_wait_on_bit_lock+0xb0/0xb0
+[ 5529.507648]  schedule+0x5b/0xc0
+[ 5529.507654]  bit_wait+0xd/0x60
+[ 5529.507661]  __wait_on_bit+0x2a/0x90
+[ 5529.507669]  __inode_wait_for_writeback+0xb0/0xe0
+[ 5529.507680]  ? var_wake_function+0x20/0x20
+[ 5529.507689]  writeback_single_inode+0x64/0x140
+[ 5529.507699]  sync_inode_metadata+0x3d/0x60
+[ 5529.507712]  ntfs_set_state+0x126/0x1a0 [ntfs3]
+[ 5529.507738]  ni_write_inode+0x244/0xef0 [ntfs3]
+[ 5529.507764]  ? pagevec_lookup_range_tag+0x24/0x30
+[ 5529.507772]  ? __filemap_fdatawait_range+0x6f/0xf0
+[ 5529.507785]  __writeback_single_inode+0x260/0x310
+[ 5529.507795]  writeback_single_inode+0xa7/0x140
+[ 5529.507803]  sync_inode_metadata+0x3d/0x60
+[ 5529.507814]  ntfs_set_state+0x126/0x1a0 [ntfs3]
+[ 5529.507834]  ntfs_sync_fs+0xf9/0x100 [ntfs3]
+[ 5529.507857]  sync_filesystem+0x40/0x90
+[ 5529.507868]  fsync_bdev+0x21/0x60
+[ 5529.507874]  delete_partition+0x13/0x80
+[ 5529.507882]  blk_drop_partitions+0x5b/0xa0
+[ 5529.507889]  del_gendisk+0xa5/0x220
+[ 5529.507895]  sd_remove+0x3d/0x80
+[ 5529.507907]  __device_release_driver+0x17a/0x230
+[ 5529.507918]  device_release_driver+0x24/0x30
+[ 5529.507927]  bus_remove_device+0xdb/0x140
+[ 5529.507937]  device_del+0x18b/0x400
+[ 5529.507943]  ? ata_tlink_match+0x30/0x30
+[ 5529.507949]  ? attribute_container_device_trigger+0xc5/0x100
+[ 5529.507959]  __scsi_remove_device+0x118/0x150
+[ 5529.507967]  scsi_forget_host+0x54/0x60
+[ 5529.507978]  scsi_remove_host+0x72/0x110
+[ 5529.507988]  usb_stor_disconnect+0x46/0xb0 [usb_storage]
+[ 5529.508003]  usb_unbind_interface+0x8a/0x270
+[ 5529.508010]  ? kernfs_find_ns+0x35/0xd0
+[ 5529.508017]  __device_release_driver+0x17a/0x230
+[ 5529.508027]  device_release_driver+0x24/0x30
+[ 5529.508036]  bus_remove_device+0xdb/0x140
+[ 5529.508044]  device_del+0x18b/0x400
+[ 5529.508050]  ? kobject_put+0x98/0x1d0
+[ 5529.508062]  usb_disable_device+0xc6/0x1f0
+[ 5529.508073]  usb_disconnect.cold+0x7e/0x250
+[ 5529.508085]  hub_event+0xc7b/0x17f0
+[ 5529.508099]  process_one_work+0x1e3/0x3b0
+[ 5529.508109]  worker_thread+0x50/0x3b0
+[ 5529.508115]  ? process_one_work+0x3b0/0x3b0
+[ 5529.508122]  kthread+0x133/0x160
+[ 5529.508127]  ? set_kthread_struct+0x40/0x40
+[ 5529.508133]  ret_from_fork+0x22/0x30
+
+[ 8440.627659] blk_update_request: I/O error, dev sdd, sector 256017240 
+op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 8440.627667] ntfs3: 165 callbacks suppressed
+[ 8440.627667] ntfs3: sdd1: failed to read volume at offset 0x1e84f6b000
+[ 8440.627673] blk_update_request: I/O error, dev sdd, sector 256017240 
+op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 8440.627676] ntfs3: sdd1: failed to read volume at offset 0x1e84f6b000
+[ 8440.778355] blk_update_request: I/O error, dev sdd, sector 6293496 op 
+0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 8440.778384] ntfs3: sdd1: failed to read volume at offset 0xbffff000
+[ 8440.778412] blk_update_request: I/O error, dev sdd, sector 6353096 op 
+0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 8440.778428] ntfs3: sdd1: failed to read volume at offset 0xc1d19000
+[ 8440.778441] blk_update_request: I/O error, dev sdd, sector 6353096 op 
+0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[ 8440.778452] ntfs3: sdd1: failed to read volume at offset 0xc1d19000
+[ 8440.778459] ntfs3: sdd1: ntfs_evict_inode r=0 failed, -22.
