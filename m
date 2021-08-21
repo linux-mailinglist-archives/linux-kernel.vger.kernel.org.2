@@ -2,76 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F3D3F3858
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5243F3859
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhHUDpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:45:02 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55370 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229610AbhHUDpA (ORCPT
+        id S239021AbhHUDpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhHUDpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:45:00 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17L3hoN2017864
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Aug 2021 23:43:51 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6D62315C3DBB; Fri, 20 Aug 2021 23:43:50 -0400 (EDT)
-Date:   Fri, 20 Aug 2021 23:43:50 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     syzbot <syzbot+13146364637c7363a7de@syzkaller.appspotmail.com>
-Cc:     a@unstable.cc, adilger.kernel@dilger.ca, arnd@arndb.de,
-        b.a.t.m.a.n@lists.open-mesh.org, christian@brauner.io,
-        davem@davemloft.net, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in
- ext4_write_inline_data_end
-Message-ID: <YSB2dsveNTr9G3Mq@mit.edu>
-References: <000000000000e5080305c9e51453@google.com>
+        Fri, 20 Aug 2021 23:45:04 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2245C061575;
+        Fri, 20 Aug 2021 20:44:25 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id 14so13018812qkc.4;
+        Fri, 20 Aug 2021 20:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BMMXZy+vy7iOFMr75/d6RfEe9G09ecTNIemEPKOnyQ4=;
+        b=uB3ZKzVAGIUiX/JzsMbo90IFombokXoAFtUa9QYKAbJDbtDNjvStPDfa4hiMc/lChN
+         HLly3TJEBoQ2/FSnoNvJLRJRXkw57LQaS+zschEauRLYNw4pNiZSX2nSZ5JNJ1ivC7en
+         JeLGNWE+HaDOGcBCrDFZ+wp35ZPPBfCWb2AvHnpXGFTr7r9UcY2a65qZfq02d5gzEaYJ
+         g9FdusvZYwJbUvpPCp34R9/icW0j4zEUFh9pN8cU8FyU7EtJ9k9rRjUk+LsTi50+X8u1
+         eyDNWuw/rzqt1P8B8I4zxIClSDohRLfl41CmvF/zCEsg6NIagk/3qEuZxq99xri8UI6g
+         X7pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BMMXZy+vy7iOFMr75/d6RfEe9G09ecTNIemEPKOnyQ4=;
+        b=IKCgUr78rjADmutfOej4rAOd/MOhme9uN/nx4u4v0SyXO044SQ70u9eCJeApL2EVNl
+         ESXfZ3YhFz63eWmFLqq2kjojdBAznZmI3FecMF5pKigUKCz5YMTMia1zF9uT2KZu6zKD
+         Mw6lXLNz+cQ7AoBjt0LiRUCexK70qJWa2MthHN35pD4tygiBG+IkZS1oiU4EMqx3HDRq
+         SpjOHbNuuzI8Ridsn3Hb8EUIdbZTQJYYveFJj6Ru8yrFNlBWOcVyKxEHTeHVFlMrUSX2
+         bieR4y78sf4RKcnlpxgtBadNfxALSsl4ahsCF8vYvRE++rzfOlpj3A6T16AitHU/B/HI
+         DaXQ==
+X-Gm-Message-State: AOAM532ItJxg9vwlG3AERYWZw6igwkANnWbXV3Tql+uGutag5MgPNRWm
+        HFZtxeCppNEcgMTYsf9/HsBLNTmMraE=
+X-Google-Smtp-Source: ABdhPJwiVW+0gBZNHWW2ihB/2MdPi8clwhIiL+GsRI1tPv6mEKGX7grD92dCoOlIXXZ9qe4LZxeEQQ==
+X-Received: by 2002:a37:749:: with SMTP id 70mr11384907qkh.461.1629517464828;
+        Fri, 20 Aug 2021 20:44:24 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id s20sm2367346qtw.14.2021.08.20.20.44.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Aug 2021 20:44:24 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
+To:     inux-ia64@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] ia64/kernel/iosapic: replace a printk + WARN_ON() to a WARN()
+Date:   Fri, 20 Aug 2021 20:44:16 -0700
+Message-Id: <20210821034416.27992-1-jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000e5080305c9e51453@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 01:10:18AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=130112c5300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=13146364637c7363a7de
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104d7cc5300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1333ce0e300000
-> 
-> The issue was bisected to:
-> 
-> commit a154d5d83d21af6b9ee32adc5dbcea5ac1fb534c
-> Author: Arnd Bergmann <arnd@arndb.de>
-> Date:   Mon Mar 4 20:38:03 2019 +0000
-> 
->     net: ignore sysctl_devconf_inherit_init_net without SYSCTL
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f970b6300000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=100570b6300000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17f970b6300000
+From: jing yangyang <jing.yangyang@zte.com.cn>
 
-In case it wasn't obvious, this is a bogus bisection.  It's a bug
-ext4's inline_data support where there is a race between writing to an
-inline_data file against setting extended attributes on that same
-inline_data file.
+Replace a printk+WARN_ON() by a WARN(); this increases the chance of 
+the string making it into the bugreport
 
-Fix is coming up....
+This issue was detected with the help of Coccinelle.
 
-					- Ted
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+---
+ arch/ia64/kernel/iosapic.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/arch/ia64/kernel/iosapic.c b/arch/ia64/kernel/iosapic.c
+index 35adcf8..cb8ba1c 100644
+--- a/arch/ia64/kernel/iosapic.c
++++ b/arch/ia64/kernel/iosapic.c
+@@ -794,17 +794,13 @@ static inline unsigned char choose_dmode(void)
+ 	 */
+ 	irq = gsi_to_irq(gsi);
+ 	if (irq < 0) {
+-		printk(KERN_ERR "iosapic_unregister_intr(%u) unbalanced\n",
+-		       gsi);
+-		WARN_ON(1);
++		WARN_ON(1, "iosapic_unregister_intr(%u) unbalanced\n", gsi);
+ 		return;
+ 	}
+ 
+ 	spin_lock_irqsave(&iosapic_lock, flags);
+ 	if ((rte = find_rte(irq, gsi)) == NULL) {
+-		printk(KERN_ERR "iosapic_unregister_intr(%u) unbalanced\n",
+-		       gsi);
+-		WARN_ON(1);
++		WARN_ON(1, "iosapic_unregister_intr(%u) unbalanced\n", gsi);
+ 		goto out;
+ 	}
+ 
+-- 
+1.8.3.1
+
+
