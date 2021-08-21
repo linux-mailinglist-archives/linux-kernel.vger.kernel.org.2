@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0679C3F3A06
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129893F3A07
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 11:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbhHUJt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 05:49:27 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:51814 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbhHUJtZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 05:49:25 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:43166 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        id S233859AbhHUJve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 05:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233286AbhHUJvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 05:51:31 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D9A861040;
+        Sat, 21 Aug 2021 09:50:52 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1mHNcJ-0000xo-VU; Sat, 21 Aug 2021 05:48:44 -0400
-Message-ID: <29171eb24018cb1237b3864bce5a2d4d92e16f46.camel@trillion01.com>
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Tony Battersby <tonyb@cybernetics.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-Date:   Sat, 21 Aug 2021 05:48:42 -0400
-In-Reply-To: <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
-         <87eeda7nqe.fsf@disp2133>
-         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-         <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
-         <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
-         <87y2bh4jg5.fsf@disp2133>
-         <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
-         <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
-         <87pmwmn5m0.fsf@disp2133>
-         <4d93d0600e4a9590a48d320c5a7dd4c54d66f095.camel@trillion01.com>
-         <8af373ec-9609-35a4-f185-f9bdc63d39b7@cybernetics.com>
-         <9d194813-ecb1-2fe4-70aa-75faf4e144ad@kernel.dk>
-         <b36eb4a26b6aff564c6ef850a3508c5b40141d46.camel@trillion01.com>
-         <0bc38b13-5a7e-8620-6dce-18731f15467e@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        (envelope-from <maz@kernel.org>)
+        id 1mHNeM-006Lq1-48; Sat, 21 Aug 2021 10:50:50 +0100
+Date:   Sat, 21 Aug 2021 10:50:41 +0100
+Message-ID: <878s0vqg7i.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Subject: Re: [PATCH net] stmmac: Revert "stmmac: align RX buffers"
+In-Reply-To: <20210820144610.7576c36a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210820183002.457226-1-maz@kernel.org>
+        <20210820144610.7576c36a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kuba@kernel.org, netdev@vger.kernel.org, kernel-team@android.com, linux-kernel@vger.kernel.org, mcroce@linux.microsoft.com, davem@davemloft.net, eric.dumazet@gmail.com, peppe.cavallaro@st.com, alexandre.torgue@foss.st.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-17 at 12:15 -0600, Jens Axboe wrote:
+On Fri, 20 Aug 2021 22:46:10 +0100,
+Jakub Kicinski <kuba@kernel.org> wrote:
 > 
-> It does indeed sound like it's TIF_NOTIFY_SIGNAL that will trigger
-> some
-> signal_pending() and cause an interruption of the core dump. Just out
-> of
-> curiosity, what is your /proc/sys/kernel/core_pattern set to? If it's
-> set to some piped process, can you try and set it to 'core' and see
-> if
-> that eliminates the truncation of the core dumps for your case?
+> On Fri, 20 Aug 2021 19:30:02 +0100 Marc Zyngier wrote:
+> > This reverts commit a955318fe67e ("stmmac: align RX buffers"),
+> > which breaks at least one platform (Nvidia Jetson-X1), causing
+> > packet corruption. This is 100% reproducible, and reverting
+> > the patch results in a working system again.
+> > 
+> > Given that it is "only" a performance optimisation, let's
+> > return to a known working configuration until we can have a
+> > good understanding of what is happening here.
 > 
+> Seems reasonable. Hopefully it wont discourage Matteo from revisiting
+> the optimization. Applied, thanks!
 
-/proc/sys/kernel/core_pattern is set to:
-|/home/lano1106/bin/pipe_core.sh %e %p
+That's my hope too. As I pointed out at the end of the towards the end
+of the discussion I linked to, this buys us time to work out exactly
+where is the gap in our understanding of the buffer allocation for
+this particular driver.
 
-It normally points to systemd coredump module. I have pointed to a
-simpler program for debugging purposes.
+Once we clearly understand why it fails on some systems and not some
+others (which on its own could cover a multitude of sins), I'd be glad
+to see this optimisation brought back in, and I'm willing to help with
+it.
 
-when core_pattern points to a local file, core dump files are just
-fine. That was the whole point of 
+Thanks,
 
-commit 06af8679449d ("coredump: Limit what can interrupt coredumps")
+	M.
 
-I have been distracted by other things this week but my last attempt to
-fix this problem appears to be successful. I will send out a small
-patch set shortly...
-
+-- 
+Without deviation from the norm, progress is not possible.
