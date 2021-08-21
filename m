@@ -2,158 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB523F3ABB
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 15:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6ED3F3ABE
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 15:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhHUNQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 09:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S231934AbhHUNSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 09:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhHUNQU (ORCPT
+        with ESMTP id S229793AbhHUNSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 09:16:20 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05080C061575;
-        Sat, 21 Aug 2021 06:15:40 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id e9so7993246vst.6;
-        Sat, 21 Aug 2021 06:15:40 -0700 (PDT)
+        Sat, 21 Aug 2021 09:18:21 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E542C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:17:42 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id t190so13910174qke.7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 06:17:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=vfaQf0lp7sfjKT26+UEo2bDUyBDeG4IA93iti7qV08o=;
-        b=kxE1xJzjdqGi3dN4a2VJcMkFf7K6IyB09P3EnHhhmTgcQg+D+rpk8o78fewBkIGibJ
-         yvnaLTNbtJaP+y0Vf58FTWslBBkLhxM33LMtA3+aT+mTJJBb9L3wrElwOJToFBYzOESW
-         gH7S2k6J5v/ACQrrERr8efbDQNwL7vBZtKIblX2paKnTV4ObiMq/3LYZUXvM6xArmusR
-         Jjp/8uP/3/5v6zRW2lY6IRkQQPZlEhAURgFE+OJjTWgKEb3blXRPK6NoBMJz8B5qmNeL
-         LlVJBt7+POWmEvMLB8mYvv0UwfycLpEvWRs92UcThmGOsapOjoa0Alg4r8Pk9ywtGjPV
-         h2xg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=K535DrghAjwb853CNZK5uVMnOJ365R+n+0RMNrXbSI8=;
+        b=rf+gQZHh5lrrHsu3m/Hi51VME2y6tpjUORsG/IeOdWFlOzs4RJi5LbdhZYDK7h4Sa5
+         rU3+7ubvDUvS0wQaRAMoVJkAfQU3M4BHhek+knAPl5HT53NkzbvUpL88k+tg7w+Uq7EK
+         8LxIM5GJE21/iFkU5Qmh+TuHII/IeO5G0IibW+rnLMCAtU+DS25SJFVlf5HSQdbTyUTn
+         ZGTOyre9R27XP1k7sIMovpG8cunYcMKSg4BXW0RX8SE0KtApGSTYv0L+9qHOj0DmezCx
+         7Mhmh2OomwXQHgr4ZhqzCDqYcdnu7msCpP7ImfAJpmDZynfMaL079xJqzVJz550TOzMH
+         jT7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=vfaQf0lp7sfjKT26+UEo2bDUyBDeG4IA93iti7qV08o=;
-        b=Jk0PEJ/3PLVCyXZJtCqndowAwQbjx7cVuXN2RVcLCuBhTj8jbeZpesGHr3AEo74WX1
-         AccrPkkwNLh6pakAVJFJ+jyKs+0RSOHXozBTsU3mL2IsH0d02nEaRcGPvVaxqTGx1mTS
-         m+2UvnS+sFQRYuufcoTiGpaYi5TFAOoqG1kQ2CNre3bXt5qkBW0cWUoEIWc9OCJR+GNG
-         1V2Ekpz9m1edGxgk6hrwRSmzXLd3btKmC5jZncjy/ztu/YfmxlTDPlgti3IuhTJ39P0r
-         OL/JEG68lIPavOWHwCnKcTDA2oXSk0sTDVjHDk7DvZx5Ft2IOONWXJwyBirlvvYGS18u
-         hQuw==
-X-Gm-Message-State: AOAM530KRa3rVz7OdJOPdn+cDe6sDTxSnkFNx/luQuj0y8JRX+rTo4yM
-        XJjd/ttW3UU/EFBDyAjPel2hE49q7P7G6oUTv5WpUlfC
-X-Google-Smtp-Source: ABdhPJxpBJNyVN57HzS/5gM/y47+boTSsh3DvOVdD/UxGF7W9Np8btK1rZ64ePlvBRrV5iKvZ7sT/oOmdf1umOxRmPw=
-X-Received: by 2002:a05:6102:4af:: with SMTP id r15mr20282978vsa.31.1629551739588;
- Sat, 21 Aug 2021 06:15:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=K535DrghAjwb853CNZK5uVMnOJ365R+n+0RMNrXbSI8=;
+        b=EvgWXB6nYnMnZtCjQzkVRg5yYDnFHsRVM3vhbZzWkGymhl9jyMV73lTImLrYqHIpac
+         9YaJSXBF7+V/s4TacHPhIbqI+moSUkQ6icm8P5XKQAvS3C/orSltIIuJz/uv2MYMJIk9
+         wOEmMdLm+3t9qSkdN8UzQtbBjwzPbtQ+jpqWbOZt+ijhOMwR5ZUfqF1z3RotxgHzNdzR
+         cX4ZkZQQDjYT/7LF0OZUUokqj+0YVafl9k3M7FcoVFO+TPBHmE8XEAPx4kwac+JEctdf
+         x2gRwW02Xff14w+IiEspnoEAJp4aJFj0YjpFg7LoNShQLZIXfdV58BEoHCbiLBobfgDh
+         Nl+g==
+X-Gm-Message-State: AOAM533bW7vwDoIT1BwbL31hCMIeaowMqcxAY7iGQXhXxCsRGUiCaWc7
+        RqzIQahYZwSd6pqCTUNCIko/8wrgIRjuO240O8w=
+X-Google-Smtp-Source: ABdhPJz7aluI/obkz2CteU1JOqgYClcsAgEC+/uAguOQwQkClUd6ye0KpRPFKis+Mnx77P2ITR86+ybzSUU6WvfOflI=
+X-Received: by 2002:a05:620a:79b:: with SMTP id 27mr7065721qka.248.1629551861883;
+ Sat, 21 Aug 2021 06:17:41 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab0:55cf:0:0:0:0:0 with HTTP; Sat, 21 Aug 2021 06:15:38
+Received: by 2002:ac8:4a8b:0:0:0:0:0 with HTTP; Sat, 21 Aug 2021 06:17:41
  -0700 (PDT)
-In-Reply-To: <87zgtbpvgq.fsf@meer.lwn.net>
-References: <20210820222152.971174-1-henrybear327@gmail.com> <87zgtbpvgq.fsf@meer.lwn.net>
-From:   Henry Tseng <henrybear327@gmail.com>
-Date:   Sat, 21 Aug 2021 15:15:38 +0200
-Message-ID: <CAA5xa-=WXZ5QqQ7FwtruOk_7+dPtcQr_FBjZ8VRNFOWfpuVFrQ@mail.gmail.com>
-Subject: Re: [PATCH v3] Documentation: Update details of The Linux Kernel
- Module Programming Guide
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     jmseyas@dit.upm.es, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Reply-To: bensmithparker@gmail.com
+From:   "Mr. Parker Ben Smith" <atmvisacardoffii@gmail.com>
+Date:   Sat, 21 Aug 2021 14:17:41 +0100
+Message-ID: <CAAhSY_G3sFew_s6SCMWWR6mg5md3OM0jwE1yLZh7rRJjUeRHug@mail.gmail.com>
+Subject: Dear Fiend.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21, Jonathan Corbet <corbet@lwn.net> wrote:
-> Chun-Hung Tseng <henrybear327@gmail.com> writes:
->
->> Recently, the content and examples of the book "The Linux Kernel Module
->> Programming Guide" are being actively maintained and added on Github[1].
->> Currently, the book is being regularly built into webpage and pdf
->> file using Github static page[2].
->>
->> [1]: https://github.com/sysprog21/lkmpg
->> [2]: https://sysprog21.github.io/lkmpg/
->>
->> Signed-off-by: Chun-Hung Tseng <henrybear327@gmail.com>
->> ---
->>  Documentation/process/kernel-docs.rst | 14 ++++++++------
->>  1 file changed, 8 insertions(+), 6 deletions(-)
->>
->> diff --git a/Documentation/process/kernel-docs.rst
->> b/Documentation/process/kernel-docs.rst
->> index 22d9ace5df2a..dd911cf09b55 100644
->> --- a/Documentation/process/kernel-docs.rst
->> +++ b/Documentation/process/kernel-docs.rst
->> @@ -126,15 +126,17 @@ On-line docs
->>          describes how to write user-mode utilities for communicating
->> with
->>          Card Services.
->>
->> -    * Title: **Linux Kernel Module Programming Guide**
->> +    * Title: **The Linux Kernel Module Programming Guide**
->>
->> -      :Author: Ori Pomerantz.
->> -      :URL: https://tldp.org/LDP/lkmpg/2.6/html/index.html
->> -      :Date: 2001
->> +      :Author: Peter Jay Salzman, Michael Burian, Ori Pomerantz, Bob
->> Mottram,
->> +      Jim Huang.
->> +      :URL: https://sysprog21.github.io/lkmpg/
->> +      :Date: 2021
->>        :Keywords: modules, GPL book, /proc, ioctls, system calls,
->>          interrupt handlers .
->> -      :Description: Very nice 92 pages GPL book on the topic of modules
->> -        programming. Lots of examples.
->> +      :Description: A very nice GPL book on the topic of modules
->> +        programming. Lots of examples. Currently the new version is
->> being
->> +        actively maintained at https://github.com/sysprog21/lkmpg.
->
-> I have applied this, thanks.
->
-> That said, this change introduced a set of build warnings:
->
->     Documentation/process/kernel-docs.rst:132: WARNING: Field list ends
-> without a blank line; unexpected unindent.
->     Documentation/process/kernel-docs.rst:136: WARNING: Unexpected
-> indentation.
->     Documentation/process/kernel-docs.rst:137: WARNING: Block quote ends
-> without a blank line; unexpected unindent.
->
-> To fix that, I had to do this:
->
-> diff --git a/Documentation/process/kernel-docs.rst
-> b/Documentation/process/kernel-docs.rst
-> index dd911cf09b55..da9527502ef0 100644
-> --- a/Documentation/process/kernel-docs.rst
-> +++ b/Documentation/process/kernel-docs.rst
-> @@ -129,7 +129,7 @@ On-line docs
->      * Title: **The Linux Kernel Module Programming Guide**
->
->        :Author: Peter Jay Salzman, Michael Burian, Ori Pomerantz, Bob
-> Mottram,
-> -      Jim Huang.
-> +        Jim Huang.
->        :URL: https://sysprog21.github.io/lkmpg/
->        :Date: 2021
->        :Keywords: modules, GPL book, /proc, ioctls, system calls,
->
-> Please, be sure to test the docs build before sending patches.
->
-> Thanks,
->
-> jon
->
-
-Hi Jon,
-
-I tried to put Juan-Mariano de Goyeneche (jmseyas@dit.upm.es) in cc,
-as indicated on the kernel-docs file. But the email account is not reachable
-in the last few email exchanges.
-
-Should we probably amend that part of the file, too?
-
-Thank you!
-
 -- 
-Best wishes,
-Henry
+Dear Fiend,
+
+I'm glad to have you here as good business partner. I have a good
+capital and am looking for any lucrative project around you which i
+can invest on that can yield us a good profit in returns.Could you
+please suggest any for me and you will benefit from it too.
+
+Am waiting for your reply for us to have a better discussion there.
+
+Regards!
+
+Mr. Parker Ben Smith.
