@@ -2,89 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208FB3F3B2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0F53F3B35
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 17:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbhHUPjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 11:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbhHUPjP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 11:39:15 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BECC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:38:36 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id t1so12251065pgv.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 08:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=RTMJMW0nE10jtTlMIfTd0xjDXr/ztqWVbOop2zPkMIw=;
-        b=DKif8Co6Mq/DJlrMwu2uroQUZwYZ6i0/rWx/+11A8iih4dM2ucXPel4otpAQg6dOks
-         gPwxkF2N0jtikITGE72bcgVyrL9ZsLrv9XW1oqc3qg1rjY7m/M5OSAzP5BILiGv16dzI
-         ZMG0KJX2Uz585+PFaV07oqpgA09jgeo0GtA30e0Pb2XTxRRwREfCgppr7emKU45/o8Yy
-         i/Sg4m7b9suOWb4sL4Uyy7X8wEdTdGkMDF7Uofjqx8iqjs0aG3uMZoCJnSVeO1K+qtu8
-         LuDOsd4PBGmJF7M06vULXKF7ptfe3vtSgmw9DfAHPw2PCO3HoE1dMzpIu6bgHQ3bk717
-         6bDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=RTMJMW0nE10jtTlMIfTd0xjDXr/ztqWVbOop2zPkMIw=;
-        b=Fc3D1yt/VHfagJVJSdwN3Kwi5Xlx5nT4jIGWS5IHo2Z0f5WQQGJlyDv3CjUBArEgpG
-         vsXbFbfv2IhJwz6ZebZHFSbCqVP2qpVlIfx0J1YBZ+NUPj7dUF41n0GW4+wROaM0WuRf
-         ywNhBMsGyLZhH/4MEccAKasV6UjbBRUJqpr3b14RuraVf+QSOU0EJ1KPvTkMMTfyPY0g
-         EuGq82JumH/CuXI13UDN2UB6dU7ouyhhGRmw0NzfWGMybV7QWcgj9PN2FKJ0FmJIanrY
-         R48bx8fYdsJQB9s6ivV2BgVpfqdWX9M2skVK2JoE6lar9wwMZUOI2gKfV/hzkjX+sV3R
-         9iQQ==
-X-Gm-Message-State: AOAM531a0uSjPW9SNq6TdsiiuwVDg4IL+Bf3cxvw1cSXB7oCvrl7FmKR
-        bm1Cs2rxZNjmJoPRFuTQ2Z1OQQ==
-X-Google-Smtp-Source: ABdhPJwu3TlVxRJa93Y6m+d60OVdtrl1funU4u6Hndsj90YBDfb6327psOtIcsvH54agNq0QqJmrdA==
-X-Received: by 2002:a05:6a00:2ba:b0:3e1:d586:c92a with SMTP id q26-20020a056a0002ba00b003e1d586c92amr25275975pfs.43.1629560315367;
-        Sat, 21 Aug 2021 08:38:35 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id e13sm10816946pfi.210.2021.08.21.08.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 08:38:34 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 08:38:34 -0700 (PDT)
-X-Google-Original-Date: Sat, 21 Aug 2021 08:38:25 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 5.14-rc7
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-182cc50e-78d7-4a85-a5bc-19e7a4648e87@palmerdabbelt-glaptop>
+        id S232509AbhHUPww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 11:52:52 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30429 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231491AbhHUPwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 11:52:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10083"; a="216909885"
+X-IronPort-AV: E=Sophos;i="5.84,340,1620716400"; 
+   d="scan'208";a="216909885"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2021 08:52:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,340,1620716400"; 
+   d="scan'208";a="513345281"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2021 08:52:10 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mHTI1-000Vt8-ER; Sat, 21 Aug 2021 15:52:09 +0000
+Date:   Sat, 21 Aug 2021 23:51:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:tglx-pc.2021.08.19a] BUILD SUCCESS
+ 6c858ccd538fbcfa320819932e8f9fea3f697a82
+Message-ID: <6121210f.+NrP3c06KUGQv0ro%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit fdf3a7a1e0a67a52f631b055975c6ac7e0e49a65:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git tglx-pc.2021.08.19a
+branch HEAD: 6c858ccd538fbcfa320819932e8f9fea3f697a82  preempt: Remove PREEMPT_COUNT from Kconfig
 
-  riscv: Fix comment regarding kernel mapping overlapping with IS_ERR_VALUE (2021-08-12 07:16:58 -0700)
+elapsed time: 2421m
 
-are available in the Git repository at:
+configs tested: 95
+configs skipped: 3
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc7
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-for you to fetch changes up to aa3e1ba32e553e611a58145c2eb349802feaa6eb:
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210820
+i386                 randconfig-a001-20210820
+i386                 randconfig-a002-20210820
+i386                 randconfig-a005-20210820
+i386                 randconfig-a003-20210820
+i386                 randconfig-a004-20210820
+x86_64               randconfig-a004-20210818
+x86_64               randconfig-a006-20210818
+x86_64               randconfig-a003-20210818
+x86_64               randconfig-a005-20210818
+x86_64               randconfig-a002-20210818
+x86_64               randconfig-a001-20210818
+i386                 randconfig-a015-20210819
+i386                 randconfig-a011-20210819
+i386                 randconfig-a014-20210819
+i386                 randconfig-a013-20210819
+i386                 randconfig-a016-20210819
+i386                 randconfig-a012-20210819
+i386                 randconfig-a011-20210821
+i386                 randconfig-a016-20210821
+i386                 randconfig-a012-20210821
+i386                 randconfig-a014-20210821
+i386                 randconfig-a013-20210821
+i386                 randconfig-a015-20210821
+arc                  randconfig-r043-20210821
+riscv                randconfig-r042-20210821
+s390                 randconfig-r044-20210821
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-  riscv: Fix a number of free'd resources in init_resources() (2021-08-20 10:15:51 -0700)
+clang tested configs:
+i386                 randconfig-a006-20210821
+i386                 randconfig-a001-20210821
+i386                 randconfig-a002-20210821
+i386                 randconfig-a005-20210821
+i386                 randconfig-a004-20210821
+i386                 randconfig-a003-20210821
+x86_64               randconfig-a014-20210820
+x86_64               randconfig-a016-20210820
+x86_64               randconfig-a015-20210820
+x86_64               randconfig-a013-20210820
+x86_64               randconfig-a012-20210820
+x86_64               randconfig-a011-20210820
+hexagon              randconfig-r041-20210820
+hexagon              randconfig-r045-20210820
+riscv                randconfig-r042-20210820
+s390                 randconfig-r044-20210820
 
-----------------------------------------------------------------
-RISC-V Fixes for 5.14-rc7
-
-* A fix to the sifive-l2-cache device tree bindings, for json-schema
-  compatibility.  This does not change the intended behavior of the
-  binding.
-* A fix to avoid improperly freeing necessary resources during early
-  boot.
-
-----------------------------------------------------------------
-Petr Pavlu (1):
-      riscv: Fix a number of free'd resources in init_resources()
-
-Rob Herring (1):
-      dt-bindings: sifive-l2-cache: Fix 'select' matching
-
- Documentation/devicetree/bindings/riscv/sifive-l2-cache.yaml | 8 ++++----
- arch/riscv/kernel/setup.c                                    | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
