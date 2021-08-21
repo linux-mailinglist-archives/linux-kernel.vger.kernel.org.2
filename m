@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CB13F38E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 07:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8183F38E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 07:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhHUFto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 01:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
+        id S231888AbhHUFy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 01:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhHUFth (ORCPT
+        with ESMTP id S230375AbhHUFyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 01:49:37 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C84BC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 22:48:59 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id m24-20020a17090a7f98b0290178b1a81700so8688056pjl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 22:48:59 -0700 (PDT)
+        Sat, 21 Aug 2021 01:54:24 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9969C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 22:53:39 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id o2so11365583pgr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 22:53:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NWXh61nIoxEnUM9HmpK2vkre7I4Nt4vNqnfH4nx8Gv0=;
-        b=YmZkRmn9/vVLBlFObf9NnGXVGhH8V3iQtAILZsfzE3JMzuOLEczWRP6sjuVNl38G7s
-         oEL5nu8XVyzSR3Tt9kF41vB00eMPt2jG7/xDp0wnCOAXLvoBPxm3AUXVkiF+6Y3A69LF
-         Pr/il4wuNgDTrV3ZoGR6RLTPNqJzVFd4XR3Vo=
+        bh=n5/Fdihjp+sDSxDi7gnmgBq3lW7NxjDo15wwIp1cvr8=;
+        b=jxnHy9tw+uPx9gLCPBuo2eIbIpbfLs5GKdg+q+UXapZoMdQphbEG7j/tREfxRG73OB
+         SMWtJ0ITPEg4cOqbhT2q65n0qQve0xXezqIsrltEEXfOUnSEA0/gmXbVVP9eYrgf2etD
+         RVl0Q81t1zmKq8SW7wDArG67dNTELuMQoqXrs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NWXh61nIoxEnUM9HmpK2vkre7I4Nt4vNqnfH4nx8Gv0=;
-        b=K+VmFC+D4NKOPu49y9GJC3uzniWnCFnc2ZjLZAExn5bSSGuo6GtQImq4UfGDJsBJHz
-         U9kA9tBZGoMX8rtmlo9/Tq0eiOsgkbIVJRi+7QQcYYvuLqltpGJHa3ZKlAi3Qa743ZWF
-         W+6H6442fezrk0sWtOOWkoIEd7XpOH2XEaTa4wz40ozy0LuJSMO7L/dAkhUBgZ9ryzC6
-         go5DdaPEko9rw9ioAGXGg+sdRvyh+XB1un1kG02r07R+KT7DIXj6XhKgna2dRcQmlOm2
-         ENXRB0DeXgG2SqOUqCBhBthqMtRHTHiQ864vabZFNbV5OvlGZYX3tkdTScW5bBPzW3ds
-         DLyg==
-X-Gm-Message-State: AOAM530x42abKmWzr7yCsfWgDdGBbYDv+vAyYFeLd9bCnmDIRDEWrMoy
-        a3F/CWWM/3nPiAOsghXTsqUCww==
-X-Google-Smtp-Source: ABdhPJzLEWbzpC4HsQYdgNaLHNpSsaZSsNQfLQVyDp5uC59uEnUnO1jM7nkLa7XS75beJmuid15DTw==
-X-Received: by 2002:a17:90a:bd18:: with SMTP id y24mr8500824pjr.83.1629524938555;
-        Fri, 20 Aug 2021 22:48:58 -0700 (PDT)
+        bh=n5/Fdihjp+sDSxDi7gnmgBq3lW7NxjDo15wwIp1cvr8=;
+        b=mIsWrKzcRxKmZLOl9y4EilHqpFZDwxrm3GUsW+Yx5vIeRfgHFqNtDqvjZzqDt+vJPy
+         gWKVWAY6c+ultL6mZuV7563mnHCc+q+gWM85JTGfXZfKuKRJmpgIzzNf4j27x1R4J2wc
+         dsFSJO71s+XNhyCJz6NDaZsBzCMCY4CZLTvX/c4w1hEMQOz1eddnJEU+reuVTYLuLA94
+         CX/2DIFijQevSPwX/wWW9of7QIlX9JKxTf/IcZRZJu7Eel2b/JzJ0diBp0hDH0JNixnP
+         E59EAgbsaQgzdC1Oa6epVHeYhi6KvxiZaL3MEMDTVlTxTbedyDnGNRwVCEbYhAhCy1at
+         dPMw==
+X-Gm-Message-State: AOAM5327uI2PJg0K02z4cMN3H1TI4RuOUBQOX3ztVqRSNdTXjuoKE8F7
+        438uwuattE8ZijlCOMT7rvb+XQ==
+X-Google-Smtp-Source: ABdhPJyskjxZyotgOIKyGsFoHq5YHJFwfaG3QKD/1U0ag0cbf6kv2IpN7RrgEwlMDFLSbey+tudoeA==
+X-Received: by 2002:a65:6701:: with SMTP id u1mr21890145pgf.138.1629525219086;
+        Fri, 20 Aug 2021 22:53:39 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p17sm13227181pjg.54.2021.08.20.22.48.57
+        by smtp.gmail.com with ESMTPSA id d13sm8666004pfn.136.2021.08.20.22.53.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 22:48:57 -0700 (PDT)
-Date:   Fri, 20 Aug 2021 22:48:56 -0700
+        Fri, 20 Aug 2021 22:53:38 -0700 (PDT)
+Date:   Fri, 20 Aug 2021 22:53:37 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
-Message-ID: <202108202248.921E8C66@keescook>
-References: <20210820192615.23e2e617@canb.auug.org.au>
- <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: atomisp: restore missing 'return' statement
+Message-ID: <202108202251.F3033355C@keescook>
+References: <20210802143820.1150099-1-arnd@kernel.org>
+ <202108130937.7848F6B318@keescook>
+ <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+In-Reply-To: <CAHp75VdkAO+fiiCVs=dyc2C83mZuLCQCvqs9C+6PF6JnhKDxCA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 02:54:05PM -0700, Randy Dunlap wrote:
-> On 8/20/21 2:26 AM, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20210819:
-> > 
+On Thu, Aug 19, 2021 at 08:24:11PM +0300, Andy Shevchenko wrote:
+> On Fri, Aug 13, 2021 at 7:39 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Aug 02, 2021 at 04:38:14PM +0200, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > The input_system_configure_channel_sensor() function lost its final
+> > > return code in a previous patch:
+> > >
+> > > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function 'input_system_configure_channel_sensor':
+> > > drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+> > >
+> > > Restore what was there originally.
+> > >
+> > > Fixes: 728a5c64ae5f ("media: atomisp: remove dublicate code")
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >
+> > I hit this too. Thanks!
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
 > 
-> Both linux-next and mmotm have many of these warnings when using
-> gcc (SUSE Linux) 7.5.0:
-> 
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+> Me too,
+> Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Ew. Thanks for letting me know. I thought I'd verified this existed in
-gcc going back to 4.9, but it looks like I did something wrong in that
-test.
-
-I think this should fix it:
-
-diff --git a/Makefile b/Makefile
-index b0fafc41b686..e33ffa05899e 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1097,7 +1097,7 @@ endif
- ifdef CONFIG_CC_IS_GCC
- # The allocators already balk at large sizes, so silence the compiler
- # warnings for bounds checks involving those possible values.
--KBUILD_CFLAGS += -Wno-alloc-size-larger-than
-+KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
- endif
- 
- # disable invalid "can't wrap" optimizations for signed / pointers
+Mauro, are you able to get this into your tree, please? Or Greg? It's in
+staging. :) This is breaking the build.
 
 -- 
 Kees Cook
