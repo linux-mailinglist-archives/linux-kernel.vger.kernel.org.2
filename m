@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEBB3F3855
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F3D3F3858
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Aug 2021 05:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhHUDno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Aug 2021 23:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhHUDnn (ORCPT
+        id S233023AbhHUDpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Aug 2021 23:45:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55370 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229610AbhHUDpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Aug 2021 23:43:43 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C32C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 20:43:04 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id eh1so6625291qvb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Aug 2021 20:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6m4yJM+RPlW4VzYVQJtczboQP1huDBgJlzyxLuLVY6I=;
-        b=rrKEjudncsljrzy+/lvGllzXr4CXoSjxCW4fHeXqgFNOqC/gnGMxAiRTjslEiD8m1f
-         jN2Q30li/26gFREpEN/BPGWN6nq/js8/zvbw8ppT54hEF3Rvsxm1iPLqJwmNrKkVKix5
-         HSJAXslEa/ott2MP8L3ayYo9YnOa8y1eFZ2NsBdf25SjyzDcvq5h1IzVghhTCU2BKj3s
-         AhrKhCj94VHlRAI7yutQlyRJ/jIY9koWC2IclCm2fBg2rgyGClRq2fb1l+H9Cq7+ReXR
-         WyXfDSTq8nLWfU7pCT9OIu8egZmie3L6SspCVC/TKFWQnxsvBR4DfJNRmtUb//FY06AQ
-         quGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6m4yJM+RPlW4VzYVQJtczboQP1huDBgJlzyxLuLVY6I=;
-        b=HYecZefiPnJsLU61uoNK3N0PVvJuFoMAvAKVFWG6XaNWs1Ln2qOTvkY6wzPYwmoM1/
-         0qughUstS7y99w3UkiEpv+TZnRblKm5UXxISzMTfQBPK1CyskQuUf6CucRVlhqsRWLNo
-         zrFWl4LzLdq6HiSxBqTx47NO6Vqr/loRv8v5WE1RxE2WlmBsz1FuyatyT8KhGHQ46NU2
-         shyRGRoGNBVZwm/7KjXhmV+1xJ9I9DvXKNhDCsyyCYjMsMF8uY9gkhtWN95+Wn63t/tp
-         bRRvaDyK4J5OHwvmIfe7y591fiDFkBefPR1xBHcktx/rH+GxP8zk1UGcRHU96gyLikgF
-         YH8g==
-X-Gm-Message-State: AOAM5322kvaUNmZO1fovCr3JzPJJUjT4WOBR0nUeddkMtPxrVtwq5b+N
-        mUxB63BJYJmLSfHFUOL0uUqsi2NwGE8=
-X-Google-Smtp-Source: ABdhPJz/z8xi0plCzhGwuzdOUB09HHv/8JHgKVtKpseECV2wmMxFpOxDXYO2ke9qryFefQvvKzEGqA==
-X-Received: by 2002:ad4:58a6:: with SMTP id ea6mr4358759qvb.41.1629517383942;
-        Fri, 20 Aug 2021 20:43:03 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id u22sm4291952qkj.123.2021.08.20.20.43.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Aug 2021 20:43:03 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Jeremy Kerr <jk@ozlabs.org>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        Alistar Popple <alistair@popple.id.au>,
-        Eddie James <eajames@linux.ibm.com>,
-        linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] fsi:(fsi-master-gpio)Convert sysfs sprintf/snprintf family to sysfs_emit
-Date:   Fri, 20 Aug 2021 20:42:50 -0700
-Message-Id: <20210821034250.27914-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Fri, 20 Aug 2021 23:45:00 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17L3hoN2017864
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Aug 2021 23:43:51 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6D62315C3DBB; Fri, 20 Aug 2021 23:43:50 -0400 (EDT)
+Date:   Fri, 20 Aug 2021 23:43:50 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     syzbot <syzbot+13146364637c7363a7de@syzkaller.appspotmail.com>
+Cc:     a@unstable.cc, adilger.kernel@dilger.ca, arnd@arndb.de,
+        b.a.t.m.a.n@lists.open-mesh.org, christian@brauner.io,
+        davem@davemloft.net, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
+        netdev@vger.kernel.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in
+ ext4_write_inline_data_end
+Message-ID: <YSB2dsveNTr9G3Mq@mit.edu>
+References: <000000000000e5080305c9e51453@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000e5080305c9e51453@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jing yangyang <jing.yangyang@zte.com.cn>
+On Thu, Aug 19, 2021 at 01:10:18AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    614cb2751d31 Merge tag 'trace-v5.14-rc6' of git://git.kern..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=130112c5300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=13146364637c7363a7de
+> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104d7cc5300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1333ce0e300000
+> 
+> The issue was bisected to:
+> 
+> commit a154d5d83d21af6b9ee32adc5dbcea5ac1fb534c
+> Author: Arnd Bergmann <arnd@arndb.de>
+> Date:   Mon Mar 4 20:38:03 2019 +0000
+> 
+>     net: ignore sysctl_devconf_inherit_init_net without SYSCTL
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f970b6300000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=100570b6300000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17f970b6300000
 
-Fix the following coccicheck warning:
-./drivers/fsi/fsi-master-gpio.c:721:8-16:WARNING:use scnprintf or sprintf
+In case it wasn't obvious, this is a bogus bisection.  It's a bug
+ext4's inline_data support where there is a race between writing to an
+inline_data file against setting extended attributes on that same
+inline_data file.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
----
- drivers/fsi/fsi-master-gpio.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Fix is coming up....
 
-diff --git a/drivers/fsi/fsi-master-gpio.c b/drivers/fsi/fsi-master-gpio.c
-index 7d5f29b..865acb3 100644
---- a/drivers/fsi/fsi-master-gpio.c
-+++ b/drivers/fsi/fsi-master-gpio.c
-@@ -718,8 +718,7 @@ static ssize_t external_mode_show(struct device *dev,
- {
- 	struct fsi_master_gpio *master = dev_get_drvdata(dev);
- 
--	return snprintf(buf, PAGE_SIZE - 1, "%u\n",
--			master->external_mode ? 1 : 0);
-+	return sysfs_emit(buf, "%u\n", master->external_mode ? 1 : 0);
- }
- 
- static ssize_t external_mode_store(struct device *dev,
--- 
-1.8.3.1
-
-
+					- Ted
