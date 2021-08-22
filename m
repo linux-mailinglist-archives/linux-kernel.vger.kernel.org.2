@@ -2,329 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3685D3F411A
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEE03F4126
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbhHVTN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 15:13:27 -0400
-Received: from out02.smtpout.orange.fr ([193.252.22.211]:49125 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhHVTNZ (ORCPT
+        id S232517AbhHVTX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 15:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229843AbhHVTX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 15:13:25 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d51 with ME
-        id kjCi250013riaq203jCiV0; Sun, 22 Aug 2021 21:12:42 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 21:12:42 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        saeedm@nvidia.com, leon@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net/mellanox: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 21:12:41 +0200
-Message-Id: <33167c57d1aaec10f130fe7604d6db3a43cfa381.1629659490.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 15:23:27 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A05C061575;
+        Sun, 22 Aug 2021 12:22:46 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id mf2so13673774ejb.9;
+        Sun, 22 Aug 2021 12:22:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AQwwWi8pzZLVtxpYs3mzQhHwoo2kimSDtH2rko5X/pY=;
+        b=e/dSwo3ggUgSdp835W727VNt0R/CB4XXUAtgzc4BQWvJGto8ls5nyh1i81nDf/c7RA
+         z6td3db73V6u70wgfLMLUGE55bZs4+na0y/5Uo7HtqFH83OeQPXDhEEZ8zXBGeH1yRcF
+         /j6WXp4YCrzXG8LLiGS/cnuK56n2hz7bHmPGypuTCuR9IcAmRSbo0/AT+vwwjylN+1R6
+         e3KKGqTJ+Y+x6b6S+HmNj4o5FA7Esaz1iP8vWfcwRWRsNHVUqbVSnkTNIaBpP1EtNb9Q
+         CEi6kyjKCJUbOHecfzwRSn9raOY4MiarvgGk3kgWuJ+xT9t0DLApExrQ0BjIHyVKiVxQ
+         QPpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AQwwWi8pzZLVtxpYs3mzQhHwoo2kimSDtH2rko5X/pY=;
+        b=l2RKvOOjFBmOwqxq05ZefvR8Cc2za0xiWWjnwWoxnMq8wj7asxgNIUWppZutamGPhQ
+         i3mhvozcGwISPZ7V/HfpkoueVElTVEiLS56xvUN239375LfzrE04gWZb1xKc0dotDBsk
+         ZvNbLi2cn46z1RBeA5R1LjA/YUZBrQfSL+kH0x52vQWp+g7BCvXhuaEBHlv4cR1oSZ20
+         Mqua8sMJqgGU2F3EfabrGST6XWdG5zku15Oaoqdz87ay1fuDlpHqrn/d/5YNTycdxTVu
+         8DFQGunIeDPZ63oUyYndlqki9oNiIGZGpcvk+Qo9JgVC6fy8hKyAZ9GbY5RbTkqZJ3Ql
+         t5CQ==
+X-Gm-Message-State: AOAM531AKqqL3KX1q9K3Er1GM95bR8VeZs4rWCq2ab4CnOn5ZU6xoiGe
+        Bgk7NP2p410RovuLdsOQQXw=
+X-Google-Smtp-Source: ABdhPJwIqSsrBmXWJpf5HFqPEH4AwIsJQja5Oce7zwDPRuOT49POjbrbPPV1ATOVMRdJXKxm7Er3qg==
+X-Received: by 2002:a17:906:2a8e:: with SMTP id l14mr31731378eje.321.1629660164613;
+        Sun, 22 Aug 2021 12:22:44 -0700 (PDT)
+Received: from localhost.localdomain ([147.235.73.50])
+        by smtp.googlemail.com with ESMTPSA id o6sm1577950eje.6.2021.08.22.12.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 12:22:44 -0700 (PDT)
+From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
+Cc:     Ariel Marcovitch <arielmarcovitch@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] checkkconfigsymbols.py: Fix various bugs
+Date:   Sun, 22 Aug 2021 22:22:00 +0300
+Message-Id: <20210822192205.43210-1-arielmarcovitch@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Hi!
 
-The patch has been generated with the coccinelle script below.
+This series fixes some issues in the checkkconfigsymbols.py script.
 
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
+The first patch fixes a bug in the --ignore option that makes the
+script check only the files matching the pattern instead of ignoring
+them.
 
-It has been compile tested.
+The second patch fixes a parsing error in the Kconfig files parser
+that makes it ignore 'if' statements after 'help' sections.
+
+The third patch prevents the user from using 'HEAD' refs in the
+ --commit option, because it doesn't really work.
+
+Thanks!
+
+-Ariel
+
+Ariel Marcovitch (3):
+  checkkconfigsymbols.py: Fix the '--ignore' option
+  checkkconfigsymbols.py: Fix Kconfig parsing to find 'if' lines
+  checkkconfigsymbols.py: Forbid passing 'HEAD' to --commit
+
+ scripts/checkkconfigsymbols.py | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/mellanox/mlx4/en_rx.c     |  4 ++--
- drivers/net/ethernet/mellanox/mlx4/en_tx.c     | 14 +++++++-------
- drivers/net/ethernet/mellanox/mlx4/main.c      | 13 ++-----------
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 16 ++--------------
- 4 files changed, 13 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 442991d91c15..7f6d3b82c29b 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -991,7 +991,7 @@ void mlx4_en_calc_rx_buf(struct net_device *dev)
- 		 * expense of more costly truesize accounting
- 		 */
- 		priv->frag_info[0].frag_stride = PAGE_SIZE;
--		priv->dma_dir = PCI_DMA_BIDIRECTIONAL;
-+		priv->dma_dir = DMA_BIDIRECTIONAL;
- 		priv->rx_headroom = XDP_PACKET_HEADROOM;
- 		i = 1;
- 	} else {
-@@ -1021,7 +1021,7 @@ void mlx4_en_calc_rx_buf(struct net_device *dev)
- 			buf_size += frag_size;
- 			i++;
- 		}
--		priv->dma_dir = PCI_DMA_FROMDEVICE;
-+		priv->dma_dir = DMA_FROM_DEVICE;
- 		priv->rx_headroom = 0;
- 	}
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-index 31b74bddb7cd..c56b9dba4c71 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-@@ -297,12 +297,12 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
- 			dma_unmap_single(priv->ddev,
- 					 tx_info->map0_dma,
- 					 tx_info->map0_byte_count,
--					 PCI_DMA_TODEVICE);
-+					 DMA_TO_DEVICE);
- 		else
- 			dma_unmap_page(priv->ddev,
- 				       tx_info->map0_dma,
- 				       tx_info->map0_byte_count,
--				       PCI_DMA_TODEVICE);
-+				       DMA_TO_DEVICE);
- 		/* Optimize the common case when there are no wraparounds */
- 		if (likely((void *)tx_desc +
- 			   (tx_info->nr_txbb << LOG_TXBB_SIZE) <= end)) {
-@@ -311,7 +311,7 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
- 				dma_unmap_page(priv->ddev,
- 					(dma_addr_t)be64_to_cpu(data->addr),
- 					be32_to_cpu(data->byte_count),
--					PCI_DMA_TODEVICE);
-+					DMA_TO_DEVICE);
- 			}
- 		} else {
- 			if ((void *)data >= end)
-@@ -325,7 +325,7 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
- 				dma_unmap_page(priv->ddev,
- 					(dma_addr_t)be64_to_cpu(data->addr),
- 					be32_to_cpu(data->byte_count),
--					PCI_DMA_TODEVICE);
-+					DMA_TO_DEVICE);
- 			}
- 		}
- 	}
-@@ -831,7 +831,7 @@ static bool mlx4_en_build_dma_wqe(struct mlx4_en_priv *priv,
- 
- 		dma = dma_map_single(ddev, skb->data +
- 				     lso_header_size, byte_count,
--				     PCI_DMA_TODEVICE);
-+				     DMA_TO_DEVICE);
- 		if (dma_mapping_error(ddev, dma))
- 			goto tx_drop_unmap;
- 
-@@ -853,7 +853,7 @@ static bool mlx4_en_build_dma_wqe(struct mlx4_en_priv *priv,
- 		++data;
- 		dma_unmap_page(ddev, (dma_addr_t)be64_to_cpu(data->addr),
- 			       be32_to_cpu(data->byte_count),
--			       PCI_DMA_TODEVICE);
-+			       DMA_TO_DEVICE);
- 	}
- 
- 	return false;
-@@ -1170,7 +1170,7 @@ netdev_tx_t mlx4_en_xmit_frame(struct mlx4_en_rx_ring *rx_ring,
- 	tx_info->nr_bytes = max_t(unsigned int, length, ETH_ZLEN);
- 
- 	dma_sync_single_range_for_device(priv->ddev, dma, frame->page_offset,
--					 length, PCI_DMA_TODEVICE);
-+					 length, DMA_TO_DEVICE);
- 
- 	data->addr = cpu_to_be64(dma + frame->page_offset);
- 	dma_wmb();
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index 7267c6c6d2e2..5a6b0fcaf7f8 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -3806,24 +3806,15 @@ static int __mlx4_init_one(struct pci_dev *pdev, int pci_dev_data,
- 
- 	pci_set_master(pdev);
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (err) {
- 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit PCI DMA mask\n");
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (err) {
- 			dev_err(&pdev->dev, "Can't set PCI DMA mask, aborting\n");
- 			goto err_release_regions;
- 		}
- 	}
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (err) {
--		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit consistent PCI DMA mask\n");
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (err) {
--			dev_err(&pdev->dev, "Can't set consistent PCI DMA mask, aborting\n");
--			goto err_release_regions;
--		}
--	}
- 
- 	/* Allow large DMA segments, up to the firmware limit of 1 GB */
- 	dma_set_max_seg_size(&pdev->dev, 1024 * 1024 * 1024);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 80cabf9b1787..79482824c64f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -252,28 +252,16 @@ static int set_dma_caps(struct pci_dev *pdev)
- {
- 	int err;
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (err) {
- 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit PCI DMA mask\n");
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (err) {
- 			dev_err(&pdev->dev, "Can't set PCI DMA mask, aborting\n");
- 			return err;
- 		}
- 	}
- 
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (err) {
--		dev_warn(&pdev->dev,
--			 "Warning: couldn't set 64-bit consistent PCI DMA mask\n");
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (err) {
--			dev_err(&pdev->dev,
--				"Can't set consistent PCI DMA mask, aborting\n");
--			return err;
--		}
--	}
--
- 	dma_set_max_seg_size(&pdev->dev, 2u * 1024 * 1024 * 1024);
- 	return err;
- }
+base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
 -- 
-2.30.2
+2.25.1
 
