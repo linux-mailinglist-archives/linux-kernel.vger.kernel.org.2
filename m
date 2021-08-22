@@ -2,160 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51A13F4271
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216A03F4273
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhHVXx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 19:53:28 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:59848 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhHVXx1 (ORCPT
+        id S234354AbhHVXx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 19:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234290AbhHVXx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 19:53:27 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7F33A4A3;
-        Mon, 23 Aug 2021 01:52:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629676364;
-        bh=uTvF0Z+/xHcqsMHpeCVHC+kzKOuDEi7+FThzLimDamg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EsgQNR/qgCps43XEiZ1Vg+boH2QTwIRvCo/4s3nJAEx8FVRKQJs/8bn85PvB1kL65
-         6n28+ozgVLi9Jt61jsqTnE6o5Auz1nHasOmK/25svDlx+96g9ZZJXbr8gKaaqv8UiJ
-         2fBXWWJv/PWITeZB0jKWkaacih0+ZiM1yYikM8TA=
-Date:   Mon, 23 Aug 2021 02:52:34 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org, Hans Verkuil <hans.verkuil@cisco.com>
-Subject: Re: [PATCH v10 18/21] uvcvideo: improve error handling in
- uvc_query_ctrl()
-Message-ID: <YSLjQqzmR2ZqN6+p@pendragon.ideasonboard.com>
-References: <20210618122923.385938-1-ribalda@chromium.org>
- <20210618122923.385938-19-ribalda@chromium.org>
+        Sun, 22 Aug 2021 19:53:28 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98139C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 16:52:46 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so599181pjt.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 16:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FG/pYWFsSA3T+3BAA+Wi6BNUREpJHMlJfeblR+ZnRZM=;
+        b=zWvc1RTFuWYM96/bFVx2WLla7i/6r7p88rCrraKkRFBBcqIbc5m3jBbOZznEQHX6Ut
+         jWQFMbDrwflZxka36wa3Tq7QkkYrKfDo6LWsyuR/yIMT7whCq9jajlqo6vWPmAGCkHJ+
+         rC1SIrzXeA9GWARGx2wNLhlaKymPAdJquRnbsjFMt01nyR882rcdpO0UXRCXpq7HktNF
+         DXVrkjd6mpC+OWGQ3QWcUJWDYi6GmRKlqIjBnhldB8+S8rvqVCH8YYgwoxaIDVDHB40U
+         qtdRk9vGu7GiCnnNKwsDIsRpFVfEUlUULq6f5naT8AB2qogWTTjA5f+RvD+FvgsIWSJB
+         wlJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FG/pYWFsSA3T+3BAA+Wi6BNUREpJHMlJfeblR+ZnRZM=;
+        b=WDwc90dzu68vGy6hfnsel90aJid9DreSYkI4ex/eTQKuYWULJaYOQ+FVwuwBQ6JkG1
+         wg7jVp3u807zA5r42DQBGfxwLmxfsQopz8uyGptqUu7ETAKLNdl7guaodGBi1dX6FidO
+         4tr7ULRLtVftRVy9nLxp5d5aODm3EsUXRic6u8LXJOQqq77IESOKsHNbnhD7LQjCA4pS
+         2qrGQwRvQcexdVNX2CddEkBt/aNTCoaHVTQhSv6UaCxCTzlV1KohCjwWtLuCswxdNsA/
+         +qvjNgx4U1xk1BBg5xS6OFkt3QoslJhLQDsfc1RyDwHHAvpGx/zkmBWw7w0wcxFgeeIs
+         qsBw==
+X-Gm-Message-State: AOAM531x8JGR+1dAt2A2s/WSzP4wwvefgfmQ4rB+SnWOeGOv61rAaQoJ
+        fHc7d6H1Ksoe4tH+NsPlAnyVWDPnLo8sRMH2nnkOfw==
+X-Google-Smtp-Source: ABdhPJywXbBUt7zvlfpA7+S6NUqcWiiUKoapfd/G7jUZCaCqb3Z4dq5QRQr8npJdhbsD0+MGGfUZzi60eydB81vrk2w=
+X-Received: by 2002:a17:902:6ac6:b0:133:230b:e8bc with SMTP id
+ i6-20020a1709026ac600b00133230be8bcmr5461582plt.22.1629676366155; Sun, 22 Aug
+ 2021 16:52:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210618122923.385938-19-ribalda@chromium.org>
+References: <6182ed46-d79d-7f66-c7c0-096486410b4d@gmail.com>
+ <cover.1629642658.git.paskripkin@gmail.com> <44fc34ec-6bbe-9cd0-0c51-78836bad7e0c@gmail.com>
+ <d479bf75-f031-136c-3967-16127ed26868@gmail.com> <9809a91e-c524-9c6b-67e3-8a9c9b91628e@gmail.com>
+In-Reply-To: <9809a91e-c524-9c6b-67e3-8a9c9b91628e@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Mon, 23 Aug 2021 00:52:35 +0100
+Message-ID: <CAA=Fs0kW3hU_O-fe6qjrWLTUsDFqs6TgWF8zEqZv2t7jPw0DYw@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 0/6] staging: r8188eu: avoid uninit value bugs
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Michael Straube <straube.linux@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo and Hans,
+On Sun, 22 Aug 2021 at 17:26, Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On 8/22/21 7:05 PM, Michael Straube wrote:
+>
+> > Hi Pavel,
+> >
+> > My one is a TP-LINK WN725N (not sure, but I guess v2).
+>
+> Wow! I found this one in my city, thank you!
+>
+> > You could also have a look at the device table in os_dep/usb_intf.c
+> >
+>
+> Yep, but I wanted to hear from driver reviewers/maintainers about what
+> they use to test. I guess, some devices could be broken or not unwieldy
+> to use. Thank you for recommendation, will buy one in few days :)
+>
+>
+>
+> With regards,
+> Pavel Skripkin
 
-Thank you for the patch.
+Dear Pavel,
 
-Please add a "media: " prefix to the subject line. Same for the other
-patches in the series that are missing this.
+Glad you found one :-) Mine is the N10-Nano as that was all I could
+find at the time.
 
-On Fri, Jun 18, 2021 at 02:29:20PM +0200, Ricardo Ribalda wrote:
-> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> 
-> - If __uvc_query_ctrl() failed with a non-EPIPE error, then
->   report that with dev_err. If an error code is obtained, then
->   report that with dev_dbg.
-> 
-> - For error 2 (Wrong state) return -EACCES instead of -EILSEQ.
->   EACCES is a much more appropriate error code. EILSEQ will return
->   "Invalid or incomplete multibyte or wide character." in strerror(),
->   which is a *very* confusing message.
-
-I would still have split the patch in two :-)
-
-> Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 38 ++++++++++++++++++-------------
->  1 file changed, 22 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index daba5fe352ea..00488f15cdbf 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -79,15 +79,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
->  	if (likely(ret == size))
->  		return 0;
->  
-> -	dev_err(&dev->udev->dev,
-> -		"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
-> -		uvc_query_name(query), cs, unit, ret, size);
-> -
-> -	if (ret != -EPIPE)
-> -		return ret;
-> +	if (ret < 0 && ret != -EPIPE)
-
-What if ret >= 0 ? There's a change of behaviour here that isn't
-documented in the commit message. It shouldn't happen, but it would be
-nice to handle it correctly.
-
-> +		goto err;
->  
-> +	/* reuse data[0] to request the error code. */
->  	tmp = *(u8 *)data;
-> -
->  	ret = __uvc_query_ctrl(dev, UVC_GET_CUR, 0, intfnum,
->  			       UVC_VC_REQUEST_ERROR_CODE_CONTROL, data, 1,
->  			       UVC_CTRL_CONTROL_TIMEOUT);
-> @@ -95,19 +91,21 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
->  	error = *(u8 *)data;
->  	*(u8 *)data = tmp;
->  
-> -	if (ret != 1)
-> -		return ret < 0 ? ret : -EPIPE;
-> +	if (ret != 1) {
-> +		ret = ret < 0 ? ret : -EPIPE;
-> +		goto err;
-
-This will print an error message that doesn't match the error.
-
-> +	}
->  
-> -	uvc_dbg(dev, CONTROL, "Control error %u\n", error);
-> +	if (error >=1 && error <=8)
-
-Missing space before 1 and 8.
-
-> +		uvc_dbg(dev, CONTROL,
-> +			"Failed to query (%s) UVC control %u on unit %u: got error %u.\n",
-> +			uvc_query_name(query), cs, unit, error);
->  
->  	switch (error) {
-> -	case 0:
-> -		/* Cannot happen - we received a STALL */
-> -		return -EPIPE;
->  	case 1: /* Not ready */
->  		return -EBUSY;
->  	case 2: /* Wrong state */
-> -		return -EILSEQ;
-> +		return -EACCES;
->  	case 3: /* Power */
->  		return -EREMOTE;
->  	case 4: /* Out of range */
-> @@ -123,10 +121,18 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
->  	case 8: /* Invalid value within range */
->  		return -EINVAL;
->  	default: /* reserved or unknown */
-> -		break;
-> +		dev_err(&dev->udev->dev,
-> +			"Failed to query (%s) UVC control %u on unit %u: got error %u.\n",
-> +			uvc_query_name(query), cs, unit, error);
-> +		return -EPIPE;
->  	}
->  
-> -	return -EPIPE;
-> +err:
-> +	dev_err(&dev->udev->dev,
-> +		"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
-> +		uvc_query_name(query), cs, unit, ret, size);
-> +
-> +	return ret;
->  }
->  
->  static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
-
--- 
 Regards,
-
-Laurent Pinchart
+Phil
