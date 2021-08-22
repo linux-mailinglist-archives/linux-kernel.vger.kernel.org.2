@@ -2,68 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689A73F4179
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 22:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E783F417C
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 22:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhHVU0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 16:26:24 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:46446 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229654AbhHVU0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 16:26:23 -0400
-Received: from p5b036204.dip0.t-ipconnect.de ([91.3.98.4] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mHu2E-0005lA-2D; Sun, 22 Aug 2021 22:25:38 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Alex Bee <knaerzche@gmail.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: Re-add interrupt-names for RK3399's vpu
-Date:   Sun, 22 Aug 2021 22:25:36 +0200
-Message-ID: <24767661.6Emhk5qWAg@phil>
-In-Reply-To: <CAAEAJfDLvctAk3omLgFBBbzvufFKwSW5_cQZ+MjvyN4khGOe_w@mail.gmail.com>
-References: <20210822115755.3171937-1-knaerzche@gmail.com> <CAAEAJfDLvctAk3omLgFBBbzvufFKwSW5_cQZ+MjvyN4khGOe_w@mail.gmail.com>
+        id S232934AbhHVU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 16:29:50 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:52044 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhHVU3s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 16:29:48 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d51 with ME
+        id kkV3250093riaq203kV3ER; Sun, 22 Aug 2021 22:29:06 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 22:29:06 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     James.Bottomley@HansenPartnership.com, deller@gmx.de
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] parisc: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 22:29:01 +0200
+Message-Id: <9a2014dc29d409471fa953a5fa2cee96c9f8d21b.1629664091.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Am Sonntag, 22. August 2021, 16:37:24 CEST schrieb Ezequiel Garcia:
-> Hi Alex, Heiko,
-> 
-> On Sun, 22 Aug 2021 at 08:58, Alex Bee <knaerzche@gmail.com> wrote:
-> >
-> > Commit a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
-> > intended to remove the interrupt-names property for mmu nodes, but it
-> > also removed it for the vpu node in rk3399.dtsi. That makes the driver
-> > fail probing currently.
-> > Fix this by re-adding the property for this node.
-> >
-> > Fixes: a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
-> 
-> AFAICS a728c10dd62a removed lots of interrupt-names properties
-> from devices other than IOMMU.
-> 
-> Maybe it's best to revert it?
+The patch has been generated with the coccinelle script below.
 
-where did you see more mistakes in it?
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-I.e. first of all, at least when grepping through my kernel history, I only see
-  commit 53a05c8f6e8e ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
-with a different hash and at least there I see a lot of iommu interrupt removals
-and this one line removing the vpu irqs in error.
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-So from my glance at it, applying Alex' patch should solve the issue?
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-Heiko
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+
+It is *NOT* been compile tested, but it looks safe enough!
+---
+ drivers/parisc/ccio-dma.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
+index 452e72b7bd01..444dd3d8932a 100644
+--- a/drivers/parisc/ccio-dma.c
++++ b/drivers/parisc/ccio-dma.c
+@@ -518,9 +518,9 @@ typedef unsigned long space_t;
+ ** when it passes in BIDIRECTIONAL flag.
+ */
+ static u32 hint_lookup[] = {
+-	[PCI_DMA_BIDIRECTIONAL]	= HINT_STOP_MOST | HINT_SAFE_DMA | IOPDIR_VALID,
+-	[PCI_DMA_TODEVICE]	= HINT_STOP_MOST | HINT_PREFETCH | IOPDIR_VALID,
+-	[PCI_DMA_FROMDEVICE]	= HINT_STOP_MOST | IOPDIR_VALID,
++	[DMA_BIDIRECTIONAL]	= HINT_STOP_MOST | HINT_SAFE_DMA | IOPDIR_VALID,
++	[DMA_TO_DEVICE]		= HINT_STOP_MOST | HINT_PREFETCH | IOPDIR_VALID,
++	[DMA_FROM_DEVICE]	= HINT_STOP_MOST | IOPDIR_VALID,
+ };
+ 
+ /**
+@@ -860,7 +860,7 @@ ccio_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle, gfp_t flag,
+ 
+ 	if (ret) {
+ 		memset(ret, 0, size);
+-		*dma_handle = ccio_map_single(dev, ret, size, PCI_DMA_BIDIRECTIONAL);
++		*dma_handle = ccio_map_single(dev, ret, size, DMA_BIDIRECTIONAL);
+ 	}
+ 
+ 	return ret;
+-- 
+2.30.2
 
