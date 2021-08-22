@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D322A3F3ECC
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 11:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FC03F3ECF
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 11:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbhHVJFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 05:05:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231147AbhHVJFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 05:05:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59D7B61250;
-        Sun, 22 Aug 2021 09:04:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629623080;
-        bh=DOBqiB1G8c7H0dYwOZIxrp5X2w7QbH40W11gbM9HK6M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fwx267EZCwOvPYaP+8ltW2hSABX64kDuD04Fy/Zyu7fSg7i6D4TDB7ctA0oE9DWXi
-         uL8B6XnrURq83/Dgmn41KMRVeL5VK1DezS7TsL8F6W9yKq+13PVHpBhR1CXwx1hWlo
-         nQypYRHCDnhAB4HmN7wB9cfJlr7FwWIa7sqmxk6O8lJwJB+7rDaPkG8QXNO24lo0dg
-         ah4MfAmHqm6NS5hiEo3GvSkDoUHQAXhv3nCftWNLbMfqpYS4hN7G6I96fiI1374CJ4
-         o3EGcPLa6KH7OwJ1VSSLRrYYV5OQTGgwZw+IPDJCXKMiAxwfg5rcL7cCD44hFpItRq
-         qfZkDMAmbn8Ng==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     farah kassabri <fkassabri@habana.ai>
-Subject: [PATCH] habanalabs: cannot sleep while holding spinlock
-Date:   Sun, 22 Aug 2021 12:04:34 +0300
-Message-Id: <20210822090434.16589-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S232849AbhHVJIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 05:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhHVJIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 05:08:12 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9A2C061575;
+        Sun, 22 Aug 2021 02:07:31 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so8737250wml.3;
+        Sun, 22 Aug 2021 02:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AhPq++c5LnLSV6coaXUp7/7VbDNysWaKtvq47wkdGAs=;
+        b=A6OyULkPkFg7lqEv4VdvuWuRyKWJSL7oT/xAey7fZDYfziA4jTHwCaS266A5M72c9+
+         OSRy6RgxcjP07hpEIx2wvw9MAa5/nK+9bKCw0+xzkyZY+Ia/F9166dFSGUyTChJyvZv5
+         Bwn1ixH51p5bXOI8+Gh1TCNLmB77N27cjXWj2r9LvCbor3p3wHTgZXLIQU6M3s0zNORE
+         /eyBzTfmoaaVQf2u0Gx/8JweaVXjayfDPUfAkHxNYfY7Nfc89t/2S7vnQaNui4dVGu0c
+         5QfGSglb302VBjBPag0KxEz4i/IkRV0oXjmlzzQjkXC1kW+Z/D0iM9JDa/Tzz7BvZKnD
+         WY6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AhPq++c5LnLSV6coaXUp7/7VbDNysWaKtvq47wkdGAs=;
+        b=rfLAyRLClapQeo37r+DW3aMnLpLJXKPn3k9+6o1hsdBDK18hF7ntClkJTed3BNAOg4
+         rKziZEjzbHiz5sQwwcIUQfTAHJWV5r9LKrhsto5IyE1ZPxJNtq9qQt8m5jmnfVJdlRin
+         SLAgJSYGH9oinfDUExKXnDkysXHXSD4bpy/3X/87DzkgWJJ07516U5YuOxNHQJEsctRs
+         FvHptoX92kkQd0BAvQlis8IcAfJGEOb4EPadGbpNdhAbChcGw3yzPLBHkPZWb4nypRyA
+         Cxm4/IvhcoSmDyNiooAUAOBXa2OSN5BTBl6hh6ezV7mrgENQ+7+UaUH8MS42BJPIKoh3
+         grcQ==
+X-Gm-Message-State: AOAM532H9aKxgL52e7EbLt0cCXCPD/reB7XUeNGW8iH7eaYsaVGQL3ck
+        wiJYISpBrXPZnerZw4BLPVbkwRoOs/N1GQ==
+X-Google-Smtp-Source: ABdhPJzxq7lQKTqstwQLycqiGMLlWfb++OLHjx2SRn3+U0yvi6F20Pz9xGZ37U5CoH63qfahXrHvOw==
+X-Received: by 2002:a1c:46:: with SMTP id 67mr11586320wma.29.1629623249777;
+        Sun, 22 Aug 2021 02:07:29 -0700 (PDT)
+Received: from [192.168.1.22] (amarseille-551-1-7-65.w92-145.abo.wanadoo.fr. [92.145.152.65])
+        by smtp.gmail.com with ESMTPSA id k12sm11787655wrd.75.2021.08.22.02.07.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 02:07:29 -0700 (PDT)
+Subject: Re: [PATCH] i2c: Fix return value of bcm_kona_i2c_probe()
+To:     zhaoxiao <zhaoxiao@uniontech.com>, f.fainelli@gmail.com,
+        rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210816083756.22294-1-zhaoxiao@uniontech.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <1d1be6bc-d0bb-7bfa-803f-c220c7492791@gmail.com>
+Date:   Sun, 22 Aug 2021 11:07:29 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210816083756.22294-1-zhaoxiao@uniontech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: farah kassabri <fkassabri@habana.ai>
 
-Fix 2 areas in the code where it's possible the code will
-go to sleep while holding a spinlock.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: farah kassabri <fkassabri@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/command_buffer.c | 2 --
- drivers/misc/habanalabs/common/memory.c         | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+On 8/16/2021 10:37 AM, zhaoxiao wrote:
+> When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+> to check the return value and return PTR_ERR() if failed.
+> 
+> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 
-diff --git a/drivers/misc/habanalabs/common/command_buffer.c b/drivers/misc/habanalabs/common/command_buffer.c
-index 58afefcd74f3..8132a84698d5 100644
---- a/drivers/misc/habanalabs/common/command_buffer.c
-+++ b/drivers/misc/habanalabs/common/command_buffer.c
-@@ -314,8 +314,6 @@ int hl_cb_create(struct hl_device *hdev, struct hl_cb_mgr *mgr,
- 
- 	spin_lock(&mgr->cb_lock);
- 	rc = idr_alloc(&mgr->cb_handles, cb, 1, 0, GFP_ATOMIC);
--	if (rc < 0)
--		rc = idr_alloc(&mgr->cb_handles, cb, 1, 0, GFP_KERNEL);
- 	spin_unlock(&mgr->cb_lock);
- 
- 	if (rc < 0) {
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index 72954abf20fe..8cf5437c0390 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -126,7 +126,7 @@ static int alloc_device_memory(struct hl_ctx *ctx, struct hl_mem_in *args,
- 
- 	spin_lock(&vm->idr_lock);
- 	handle = idr_alloc(&vm->phys_pg_pack_handles, phys_pg_pack, 1, 0,
--				GFP_KERNEL);
-+				GFP_ATOMIC);
- 	spin_unlock(&vm->idr_lock);
- 
- 	if (handle < 0) {
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.17.1
-
+Florian
