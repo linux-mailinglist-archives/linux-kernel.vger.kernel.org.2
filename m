@@ -2,79 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 207903F4043
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 17:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED0E3F4048
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 17:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbhHVPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 11:25:24 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:34435 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhHVPZU (ORCPT
+        id S234185AbhHVPaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 11:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230462AbhHVPay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 11:25:20 -0400
-Received: by mail-wr1-f54.google.com with SMTP id h13so22238759wrp.1;
-        Sun, 22 Aug 2021 08:24:38 -0700 (PDT)
+        Sun, 22 Aug 2021 11:30:54 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6198C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 08:30:12 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id h9so26552153ljq.8
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 08:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UUbd05FldiIoBAm96I7gNRChHATg0GhZfAiC5EXuLrA=;
+        b=TDxe6Pr+2JgQIav8J1lASsQ2sQ5sNJ3gUFRzgjvzbgdD+IR8rEXPHn53p8EkgO99t1
+         eQGS3TE6OaygCfGxNPPaDhQYJZHgHuC17R5eAqNLuSkEVclYS/o2gBYyvqe1yI8QEXkR
+         UKULvCp9s9/sEz4i5BcZ5+s1yF/vfv2W5VCGQaTOKhhXiFWqCcGwWFl4u+LRhtxTt+Yp
+         SWG0qUvbS0qD90RNYl/kNRugcs3hVYNhuJYIp+igABrADYQIwPzXnWaF2/18h1HqyXgq
+         NmMzbC9JkGwHHk2wJVjmWkYAuMbSgp2C6+iCObrVfPPhCf2UdmZTeBhtLDNglKBUsny/
+         P2Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ycR/CJI7goQaNET4z0DNOlWT7fSGq/2jsD35VNFXxwA=;
-        b=CFFkEAuHDyCgWpGKert74P/yQ6fmuPJYGX1KpMtwcMe4ZPNNWiH+6XS+GRcxzKbszS
-         Zo/P9XVLN4EWBob9WXOopVDrPSBs5hX38EPHd/JUVE1kpgUotoXKk/iQrVKvuO2KWcLO
-         N5D6oipuoVJiIoJOKOaHBwyUuK/1mVXoi00Gtfx2LYEOs9JyiPu498qBETnY9oeQXVMk
-         jDQpK9ouJb2OZKP6d9n0IeBnE8uFFDLRwI1KyTUeXufO+s6qi7lc6P2RTgpDeqOhW2GU
-         KFfp2LvmVYv3rea9cbOhvmrdjBtFcs61Si61s3Sl6j8nebbqw4e1jSx321yMVo8KU2Kl
-         NOmQ==
-X-Gm-Message-State: AOAM533nTwC4S89waZ8vL2bTI8Gd4jE8KuJdoonOHBPWIzYYutF3MXBY
-        HxRAVLK25M3BZQJr5FFdxoo=
-X-Google-Smtp-Source: ABdhPJzqmwjmYbmC+4MM8mtBv0ninfKqdadjTLEkZ3HFtdj0A/4QDieaPBeOn5dcAR59y2Za+Ca2BQ==
-X-Received: by 2002:a5d:47a4:: with SMTP id 4mr1612541wrb.329.1629645878418;
-        Sun, 22 Aug 2021 08:24:38 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id n15sm4906580wmq.7.2021.08.22.08.24.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 08:24:37 -0700 (PDT)
-Date:   Sun, 22 Aug 2021 15:24:36 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     David Mozes <david.mozes@silk.us>
-Cc:     David Moses <mosesster@gmail.com>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        =?utf-8?B?16rXldee16gg15DXkdeV15jXkdeV15w=?= 
-        <tomer432100@gmail.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in
- hyperv_flush_tlb_others()
-Message-ID: <20210822152436.mqfwv3xbqfxy33os@liuwe-devbox-debian-v2>
-References: <MWHPR21MB15935468547C25294A253E0AD7F39@MWHPR21MB1593.namprd21.prod.outlook.com>
- <FD8265E6-895E-45CF-9AE3-787FAD669FC8@gmail.com>
- <VI1PR0401MB2415E89B6E3D01B446FD1DACF1FE9@VI1PR0401MB2415.eurprd04.prod.outlook.com>
- <20210817112954.ufjd77ujq5nhmmew@liuwe-devbox-debian-v2>
- <CA+qYZY1U04SkyHo7X+rDeE=nUy_X5nxLfShyuLJFzXnFp2A6uw@mail.gmail.com>
- <VI1PR0401MB24153DEC767B0126B1030E07F1C09@VI1PR0401MB2415.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UUbd05FldiIoBAm96I7gNRChHATg0GhZfAiC5EXuLrA=;
+        b=XNW9BetkOvMPGd1No62eryP84v1e0umqGHk9NUjvxauXsybPe+eLQLdmQmytpa+vow
+         Qpx65M4TGiRi9okdbVNmQ7uQMGv2dcMEvnPy22hpS4RwpWa2rwFm5BufXsyljWthYfzE
+         FopZUyTs+GFC0Z2+GnJvkpnDIg9sDVGg2zL9laIspLjn1UM64dGeau2LJ7g0VmyjnsSO
+         E4AvR6iRsiZyMzkTltqLCJViBxQ/OtiAnTJ7u8gHNhN+FSPkwTFgRurCynyuG251T9vX
+         aNlYJMQkPT6vr29aXyPhVTqVsggJRs/Fe06/SN7PuS+cWYDDLsG/WJqlkTNX3c0lSUj6
+         zT9Q==
+X-Gm-Message-State: AOAM532qNtrnvsNexhhH8kG7Dc2IyKnGIEihM4Il7G1bNnuFsowOPWmC
+        zOCAbZddm6+LgDfqcV7Q1kbFbwWskmNZckeC
+X-Google-Smtp-Source: ABdhPJx8sDEPnIXalJagpmfAMZRPgoYxbLiwPl2oRJ2mNqbBrSnc4p9uSU4JLR9R3Ot4hSsPYkNUeA==
+X-Received: by 2002:a2e:534c:: with SMTP id t12mr23231914ljd.133.1629646210630;
+        Sun, 22 Aug 2021 08:30:10 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id u1sm1219570lfk.96.2021.08.22.08.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 08:30:10 -0700 (PDT)
+Subject: Re: [PATCH RFC v2 0/6] staging: r8188eu: avoid uninit value bugs
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <6182ed46-d79d-7f66-c7c0-096486410b4d@gmail.com>
+ <cover.1629642658.git.paskripkin@gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <44fc34ec-6bbe-9cd0-0c51-78836bad7e0c@gmail.com>
+Date:   Sun, 22 Aug 2021 18:30:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR0401MB24153DEC767B0126B1030E07F1C09@VI1PR0401MB2415.eurprd04.prod.outlook.com>
+In-Reply-To: <cover.1629642658.git.paskripkin@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 07:55:06AM +0000, David Mozes wrote:
-> Hi Wei ,
-> I move the print cpumask to other two places after the treatment on the empty mask see below
-> And I got the folwing:
+On 8/22/21 5:35 PM, Pavel Skripkin wrote:
+> Hi, Greg, Larry and Phillip!
+> 
+> I noticed, that new staging driver was added like 3 weeks ago and I decided
+> to look at the code, because drivers in staging directory are always buggy.
+> 
+> The first thing I noticed is *no one* was checking read operations result, but
+> it can fail and driver may start writing random stack values into registers. It
+> can cause driver misbehavior or device misbehavior.
+> 
+> To avoid this type of bugs, i've changed rtw_read* API. Now all rtw_read
+> funtions return an error, when something went wrong with usb transfer.
+> 
+> It helps callers to break/return earlier and don't write random values to
+> registers or to rely on random values.
+> 
+> Why is this pacth series RFC?
+>    1. I don't have this device and I cannot test these changes.
+>    2. I don't know how to handle errors in each particular case. For now, function
+>       just returns or returns an error. That's all. I hope, driver maintainers will
+>       help with these bits.
+>    3. I guess, I handled not all uninit value bugs here. I hope, I fixed
+>       at least half of them
 > 
 > 
-> Aug 19 02:01:51 c-node05 kernel: [25936.562674] Hyper-V: ERROR_HYPERV2: cpu_last=
-> Aug 19 02:01:51 c-node05 kernel: [25936.562686] WARNING: CPU: 11 PID: 56432 at arch/x86/include/asm/mshyperv.h:301 hyperv_flush_tlb_others+0x23f/0x7b0
+> v1 -> v2:
+>    1. Make rtw_read*() return an error instead of initializing pointer to error
+>    2. Split one huge patch to smaller ones for each rtw_read{8,16,32} function
+>       changes
+>    3. Add new macro for printing register values (It helps to not copy-paste error
+>       handling)
+>    4. Removed {read,write}_macreg (Suggested by Phillip)
+>    5. Rebased on top of staging-next
+>    6. Cleaned checkpatch errors and warnings
 > 
-> So we got empty on different place on the code .
-> Let me know if you need further information from us.
-> How you sagest to handle this situation?
+> Only build-tested, since I don't have device with r8118eu chip
 > 
 
-Please find a way to reproduce this issue with upstream kernels.
+BTW, can you recommend any devices with this chip except for ASUS 
+USB-N10 Nano? I didn't find any of them with delivery/reasonable 
+delivery price to Russia.
 
-Thanks,
-Wei.
+I want to help with testing and moving this driver out of staging 
+directory :)
+
+
+
+With regards,
+Pavel Skripkin
