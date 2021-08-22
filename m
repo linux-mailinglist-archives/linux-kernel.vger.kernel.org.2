@@ -2,320 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01343F418B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 22:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6832F3F418E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 22:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232799AbhHVUnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 16:43:32 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:36597 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhHVUnb (ORCPT
+        id S233217AbhHVUoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 16:44:21 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:59085 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233178AbhHVUoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 16:43:31 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d51 with ME
-        id kkin250043riaq203kins5; Sun, 22 Aug 2021 22:42:48 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 22:42:48 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     shshaikh@marvell.com, manishc@marvell.com,
-        GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] qlcnic: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 22:42:45 +0200
-Message-Id: <31df87ec75de7cdb52941c46f5b08beea603db67.1629664882.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 16:44:20 -0400
+Date:   Sun, 22 Aug 2021 20:42:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail; t=1629664986;
+        bh=Z00a/14XZVAcDNHQN5zQ4VLFtLawh/2LW/bA1LZ9MMw=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=BbbW7SyGll7cSK5KvnapcUyreXsnZWID314XP4VthouLzSR/gV1UskgvzRP0r/syo
+         dFKG0mbRYyOlKn9iGh1DMmDlja2yteCVkw+T4ZoGh6mbOgmF51SvyU/DyrZfaz28XU
+         b2l3EAj0+up0qht8y0hAdZvaIWA6vl+RoO4a1lB6Pqs5qXoj5JNDWhsaBVuDcDN3WF
+         bPchy0BhcuugbhYSU4WCpXpJktFHLOuepwRVyMUHZO4eZaulGtU/fqn3fQShytIXQd
+         gMedJ+4XHrWdkPoUPQcHN4g3brUtubvunFM5MMbiOw2n6uOWM/x5XCYNZI6W4g9j4K
+         +jhIO7y117I+w==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH v2 0/5] staging: rtl8723bs: remove unused functions
+Message-ID: <20210822204212.2832397-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Changes in v2:
+ - Remove build warnings I introduced in the previous version.
 
-The patch has been generated with the coccinelle script below.
+***
 
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
+There is a lot of un-used code and un-needed abstractions leftover
+in this driver from when (I assume) it could be compiled on more than
+one kernel.
 
-It has been compile tested.
+This series removes dead code and is one small step toward
+refactoring how this driver interacts with the SDIO subsystem.
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+Bryan Brattlof (5):
+  staging: rtl8723bs: remove sdio_write_mem()
+  staging: rtl8723bs: remove sdio_writeN()
+  staging: rtl8723bs: remove sdio_read_mem() and sdio_readN()
+  staging: rtl8723bs: remove unused definitions from rtw_io.h
+  staging: rtl8723bs: remove _read_port from _io_ops structure
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
+ drivers/staging/rtl8723bs/hal/sdio_ops.c   | 116 ---------------------
+ drivers/staging/rtl8723bs/include/rtw_io.h |  96 -----------------
+ 2 files changed, 212 deletions(-)
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- .../net/ethernet/qlogic/qlcnic/qlcnic_init.c  | 16 ++++------
- .../net/ethernet/qlogic/qlcnic/qlcnic_io.c    | 32 +++++++++----------
- .../net/ethernet/qlogic/qlcnic/qlcnic_main.c  |  6 ++--
- 3 files changed, 25 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-index e6784023bce4..3d61a767a8a3 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-@@ -94,10 +94,8 @@ void qlcnic_release_rx_buffers(struct qlcnic_adapter *adapter)
- 			if (rx_buf->skb == NULL)
- 				continue;
- 
--			pci_unmap_single(adapter->pdev,
--					rx_buf->dma,
--					rds_ring->dma_size,
--					PCI_DMA_FROMDEVICE);
-+			dma_unmap_single(&adapter->pdev->dev, rx_buf->dma,
-+					 rds_ring->dma_size, DMA_FROM_DEVICE);
- 
- 			dev_kfree_skb_any(rx_buf->skb);
- 		}
-@@ -139,16 +137,16 @@ void qlcnic_release_tx_buffers(struct qlcnic_adapter *adapter,
- 	for (i = 0; i < tx_ring->num_desc; i++) {
- 		buffrag = cmd_buf->frag_array;
- 		if (buffrag->dma) {
--			pci_unmap_single(adapter->pdev, buffrag->dma,
--					 buffrag->length, PCI_DMA_TODEVICE);
-+			dma_unmap_single(&adapter->pdev->dev, buffrag->dma,
-+					 buffrag->length, DMA_TO_DEVICE);
- 			buffrag->dma = 0ULL;
- 		}
- 		for (j = 1; j < cmd_buf->frag_count; j++) {
- 			buffrag++;
- 			if (buffrag->dma) {
--				pci_unmap_page(adapter->pdev, buffrag->dma,
--					       buffrag->length,
--					       PCI_DMA_TODEVICE);
-+				dma_unmap_page(&adapter->pdev->dev,
-+					       buffrag->dma, buffrag->length,
-+					       DMA_TO_DEVICE);
- 				buffrag->dma = 0ULL;
- 			}
- 		}
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-index af4c516a9e7c..29cdcb2285b1 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_io.c
-@@ -587,9 +587,9 @@ static int qlcnic_map_tx_skb(struct pci_dev *pdev, struct sk_buff *skb,
- 	nr_frags = skb_shinfo(skb)->nr_frags;
- 	nf = &pbuf->frag_array[0];
- 
--	map = pci_map_single(pdev, skb->data, skb_headlen(skb),
--			     PCI_DMA_TODEVICE);
--	if (pci_dma_mapping_error(pdev, map))
-+	map = dma_map_single(&pdev->dev, skb->data, skb_headlen(skb),
-+			     DMA_TO_DEVICE);
-+	if (dma_mapping_error(&pdev->dev, map))
- 		goto out_err;
- 
- 	nf->dma = map;
-@@ -612,11 +612,11 @@ static int qlcnic_map_tx_skb(struct pci_dev *pdev, struct sk_buff *skb,
- unwind:
- 	while (--i >= 0) {
- 		nf = &pbuf->frag_array[i+1];
--		pci_unmap_page(pdev, nf->dma, nf->length, PCI_DMA_TODEVICE);
-+		dma_unmap_page(&pdev->dev, nf->dma, nf->length, DMA_TO_DEVICE);
- 	}
- 
- 	nf = &pbuf->frag_array[0];
--	pci_unmap_single(pdev, nf->dma, skb_headlen(skb), PCI_DMA_TODEVICE);
-+	dma_unmap_single(&pdev->dev, nf->dma, skb_headlen(skb), DMA_TO_DEVICE);
- 
- out_err:
- 	return -ENOMEM;
-@@ -630,11 +630,11 @@ static void qlcnic_unmap_buffers(struct pci_dev *pdev, struct sk_buff *skb,
- 
- 	for (i = 0; i < nr_frags; i++) {
- 		nf = &pbuf->frag_array[i+1];
--		pci_unmap_page(pdev, nf->dma, nf->length, PCI_DMA_TODEVICE);
-+		dma_unmap_page(&pdev->dev, nf->dma, nf->length, DMA_TO_DEVICE);
- 	}
- 
- 	nf = &pbuf->frag_array[0];
--	pci_unmap_single(pdev, nf->dma, skb_headlen(skb), PCI_DMA_TODEVICE);
-+	dma_unmap_single(&pdev->dev, nf->dma, skb_headlen(skb), DMA_TO_DEVICE);
- 	pbuf->skb = NULL;
- }
- 
-@@ -825,10 +825,10 @@ static int qlcnic_alloc_rx_skb(struct qlcnic_adapter *adapter,
- 	}
- 
- 	skb_reserve(skb, NET_IP_ALIGN);
--	dma = pci_map_single(pdev, skb->data,
--			     rds_ring->dma_size, PCI_DMA_FROMDEVICE);
-+	dma = dma_map_single(&pdev->dev, skb->data, rds_ring->dma_size,
-+			     DMA_FROM_DEVICE);
- 
--	if (pci_dma_mapping_error(pdev, dma)) {
-+	if (dma_mapping_error(&pdev->dev, dma)) {
- 		adapter->stats.rx_dma_map_error++;
- 		dev_kfree_skb_any(skb);
- 		return -ENOMEM;
-@@ -903,13 +903,13 @@ static int qlcnic_process_cmd_ring(struct qlcnic_adapter *adapter,
- 		buffer = &tx_ring->cmd_buf_arr[sw_consumer];
- 		if (buffer->skb) {
- 			frag = &buffer->frag_array[0];
--			pci_unmap_single(pdev, frag->dma, frag->length,
--					 PCI_DMA_TODEVICE);
-+			dma_unmap_single(&pdev->dev, frag->dma, frag->length,
-+					 DMA_TO_DEVICE);
- 			frag->dma = 0ULL;
- 			for (i = 1; i < buffer->frag_count; i++) {
- 				frag++;
--				pci_unmap_page(pdev, frag->dma, frag->length,
--					       PCI_DMA_TODEVICE);
-+				dma_unmap_page(&pdev->dev, frag->dma,
-+					       frag->length, DMA_TO_DEVICE);
- 				frag->dma = 0ULL;
- 			}
- 			tx_ring->tx_stats.xmit_finished++;
-@@ -1147,8 +1147,8 @@ static struct sk_buff *qlcnic_process_rxbuf(struct qlcnic_adapter *adapter,
- 		return NULL;
- 	}
- 
--	pci_unmap_single(adapter->pdev, buffer->dma, ring->dma_size,
--			 PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&adapter->pdev->dev, buffer->dma, ring->dma_size,
-+			 DMA_FROM_DEVICE);
- 
- 	skb = buffer->skb;
- 	if (likely((adapter->netdev->features & NETIF_F_RXCSUM) &&
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-index a4fa507903ee..75960a29f80e 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -2343,11 +2343,9 @@ qlcnic_setup_netdev(struct qlcnic_adapter *adapter, struct net_device *netdev,
- 
- static int qlcnic_set_dma_mask(struct pci_dev *pdev, int *pci_using_dac)
- {
--	if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) &&
--			!pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)))
-+	if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)))
- 		*pci_using_dac = 1;
--	else if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) &&
--			!pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32)))
-+	else if (!dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)))
- 		*pci_using_dac = 0;
- 	else {
- 		dev_err(&pdev->dev, "Unable to set DMA mask, aborting\n");
--- 
+--
 2.30.2
+
 
