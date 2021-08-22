@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B586E3F3D3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 05:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B340B3F3D3F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 05:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhHVDZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 23:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232183AbhHVDZS (ORCPT
+        id S232381AbhHVD21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 23:28:27 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:7362 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232183AbhHVD2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 23:25:18 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C0DC061575;
-        Sat, 21 Aug 2021 20:24:37 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gsghx6mjgz9sSs;
-        Sun, 22 Aug 2021 13:24:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629602674;
-        bh=uqwGJlbJhsw7jrDys5ETsOpwRgCB9jcd4AWGPgIaf4g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=F1FYoLvyqY1wRzb7zVPEJd8LonwZ8slCSkJuDzqnR9zRXiQW2/ZMF1pD8v833/IBd
-         +ndnvQRAFGsPC8pTuHSoWBlBeF1DUemBf1DZGR5MECuY3oOBCjEYVEAoQKovFJE6ny
-         j4kbUZM5vOz1ykRPECyBvEnkjuBNdDFw/nESQmsWCOz85aK+U48bhpb4vHOPi4+sWM
-         dQHnn2flAADgD51z8FpOu9CUdKXeZalPurzYuEjqMn/NOIrVMf99ZMmlDQZbbydM5P
-         21wuCpnRrUg9Ex0MUGcGbhas/o63kqV7696NGpqWXY/YpgDvymIRVMTv8iAUtsU5ky
-         btYZn8FUQye+A==
-Date:   Sun, 22 Aug 2021 13:24:33 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the block tree
-Message-ID: <20210822132433.4e952ee4@canb.auug.org.au>
+        Sat, 21 Aug 2021 23:28:25 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee26121c42b7db-f2047; Sun, 22 Aug 2021 11:27:41 +0800 (CST)
+X-RM-TRANSID: 2ee26121c42b7db-f2047
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.22.250.151])
+        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36121c429ec8-65203;
+        Sun, 22 Aug 2021 11:27:41 +0800 (CST)
+X-RM-TRANSID: 2ee36121c429ec8-65203
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     gregkh@linuxfoundation.org, paul@crapouillou.net,
+        jirislaby@kernel.org, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux@prisktech.co.nz
+Cc:     linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH 0/3] serial: Use of_device_get_match_data
+Date:   Sun, 22 Aug 2021 11:28:03 +0800
+Message-Id: <20210822032806.3256-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ja.vceWgyMiYhZQ7p/=jjUY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ja.vceWgyMiYhZQ7p/=jjUY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi all:
 
-Hi all,
+This patch series replace 'of_match_device' with
+'of_device_get_match_data', to make code cleaner and better.
 
-In commit
+Thanks
 
-  071e5f53b789 ("block: always initialize bio->bi_pool")
+Tang Bin (3):
+  serial: 8250_ingenic: Use of_device_get_match_data
+  serial: tegra: Use of_device_get_match_data
+  serial: vt8500: Use of_device_get_match_data
 
-Fixes tag
+ drivers/tty/serial/8250/8250_ingenic.c | 6 ++----
+ drivers/tty/serial/serial-tegra.c      | 6 ++----
+ drivers/tty/serial/vt8500_serial.c     | 7 ++-----
+ 3 files changed, 6 insertions(+), 13 deletions(-)
 
-  Fixes: Fixes: a4aa1b0494ea ("bio: optimize initialization of a bio")
+-- 
+2.20.1.windows.1
 
-has these problem(s):
 
-  - Extra "Fixes:" word
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ja.vceWgyMiYhZQ7p/=jjUY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEhw3EACgkQAVBC80lX
-0GyPywf+MR4xGHXGt7rhiGOaap7lnPCZAFJKPbJUiILq2ZjsO+wtiOT4yvcjSMIL
-uwlrazhjXq2idcCMkUzvoifhVQnfl54AODWlGx5WqY7ot36YHE1vA9hHRq+WxI/q
-SyzGzf18r+A24VZS0bC4cYnH6jhw7zz8MKlLsyPCrzzHyWwjYj+6poXnhRwPkx2V
-1HEH/Mh+VCoe1vilA36a0IT70UsDoQ3vuUVT5v8qr6dE91HfhNteyC3uqnmPKTsv
-rvqZ0JQlwOCV9/hz2hJpkLqa4UvdCUbtHhj1FhRGszBflYEwmpe/M+MU40mOgAxb
-32PYVlnlIxMd5jJkGnk2CRZZrGe6fA==
-=ukDX
------END PGP SIGNATURE-----
-
---Sig_/ja.vceWgyMiYhZQ7p/=jjUY--
