@@ -2,174 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501683F4268
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212A43F426C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhHVXl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 19:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        id S234229AbhHVXqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 19:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhHVXl0 (ORCPT
+        with ESMTP id S229969AbhHVXqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 19:41:26 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DF7C061575;
-        Sun, 22 Aug 2021 16:40:45 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A5BBE4A3;
-        Mon, 23 Aug 2021 01:40:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629675643;
-        bh=WV6CUoKtKPNTO37eAv9So3B3tYUu9tZ/uxw3Yf1fpls=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nqbeyIhAzGFeZuafXR1UZEhLv+iihuUOYb3ATs0x6o4zYhz0q6M8r+fPlyjUQHtMC
-         Gyly7cs92MJTsZ+a5U0GqNAMW7SHJ8KOb4BMh7Kg6+xHLF/hajFA9F/LMeKHPttecu
-         VKcuiOmNcRTWmUgaVSPhLgLsTmMePdrio0FEetCg=
-Date:   Mon, 23 Aug 2021 02:40:34 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        Hans Verkuil <hans.verkuil@cisco.com>
-Subject: Re: [PATCH v10 17/21] uvcvideo: uvc_ctrl_is_accessible: check for
- INACTIVE
-Message-ID: <YSLgcmfOuCmnZOf8@pendragon.ideasonboard.com>
-References: <20210618122923.385938-1-ribalda@chromium.org>
- <20210618122923.385938-18-ribalda@chromium.org>
+        Sun, 22 Aug 2021 19:46:01 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB4DC061575;
+        Sun, 22 Aug 2021 16:45:19 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id s3so11166298edd.11;
+        Sun, 22 Aug 2021 16:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qxXGJe1FSn6RtF/WGjSHOTG/s7YAlIaSVZM+cFk7PUU=;
+        b=suhAQUSn0kv8uBzZv2/PXveZc7+AJ1hAPqi2GGlJx7Hc8HX9hxYIqOzLxYj4cXgZEI
+         lbtJ/bYKohIp37YKssxuK8tZ++ZIEdfkfHSX/QwG5z8O9c4W6ZWp7sr9kz0RGRVcJisH
+         sVP2rEp5eO+ZVHgGCrDIaH5kKpsh987lpUryb+WU0wk1NXZuxVw6T5m/zydwiXY3nKzA
+         x5TvnKfFpT3fwPweHozCvPv3M6GA5w/boWSahx9Ds/GZGfT1rg+h6DA+QPapHw5h5wcV
+         Rkif2jkySMaNbBbBq54bwKO800IlARJ/OFLSLhWS1dQujFOdBscsneZvcld8xp6nrmmp
+         937Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qxXGJe1FSn6RtF/WGjSHOTG/s7YAlIaSVZM+cFk7PUU=;
+        b=ZgoKxwx4B4C3IcvxIR/pyuTQGLjGVxVwDW7nIZleqZOWfbBd2UwoxI1DEosLR7kSpA
+         MvocjUcHLNgKKrpwXmibSHzy0VpkLx5hoQoHglZxU/O+oAVVDnMNYcgX6hyC0f2zWQnc
+         KbI+pgWpJMLMRCzasS5FJslNxePmzxU7k9134G7S7ZWAEXM2O86traYx6HnAJ5Kpjn9l
+         ci2fpbmjn7gnbths/pWs7xOtMubzPqbl26aN0ZM3HxlOuJgjOw6PEiGYv2ar5QHPRqTo
+         yUHmUqKt4S7W0hx+xhG6GSHiC1r/3OJZkGsEtnJgG3HC2o3KJ8pgnDvhREdloVNsQPh3
+         9K8w==
+X-Gm-Message-State: AOAM531x7esSPdcJ8OKTmudb6haDV1gk6ay8zpOPAUvao+D10VMYkUMr
+        IaIxCxZLRk2tG0pDs56wVfU=
+X-Google-Smtp-Source: ABdhPJymO9gyO46EfKS5zLML967o8jbsJarH3aSWDveQrhDy8Asy8rZVfEuht1YaQJ6V02pxJAk4Dg==
+X-Received: by 2002:a05:6402:d4f:: with SMTP id ec15mr35095545edb.353.1629675917932;
+        Sun, 22 Aug 2021 16:45:17 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id r19sm8010981edd.49.2021.08.22.16.45.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 16:45:17 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 02:45:16 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 3/5] net: dsa: tag_rtl8_4: add realtek 8
+ byte protocol 4 tag
+Message-ID: <20210822234516.pwlu4wk3s3pfzbmi@skbuf>
+References: <20210822193145.1312668-1-alvin@pqrs.dk>
+ <20210822193145.1312668-4-alvin@pqrs.dk>
+ <20210822221307.mh4bggohdvx2yehy@skbuf>
+ <9d6af614-d9f9-6e7b-b6b5-a5f5f0eb8af2@bang-olufsen.dk>
+ <20210822232538.pkjsbipmddle5bdt@skbuf>
+ <0606e849-5a4e-08c9-fcd1-d4661c10a51c@bang-olufsen.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210618122923.385938-18-ribalda@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0606e849-5a4e-08c9-fcd1-d4661c10a51c@bang-olufsen.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo and Hans,
+On Sun, Aug 22, 2021 at 11:37:28PM +0000, Alvin Šipraga wrote:
+> >>>> +	skb->offload_fwd_mark = 1;
+> >>>
+> >>> At the very least, please use
+> >>>
+> >>> 	dsa_default_offload_fwd_mark(skb);
+> >>>
+> >>> which does the right thing when the port is not offloading the bridge.
+> >>
+> >> Sure. Can you elaborate on what you mean by "at the very least"? Can it
+> >> be improved even further?
+> >
+> > The elaboration is right below. skb->offload_fwd_mark should be set to
+> > zero for packets that have been forwarded only to the host (like packets
+> > that have hit a trapping rule). I guess the switch will denote this
+> > piece of info through the REASON code.
+>
+> Yes, I think it will be communicated in REASON too. I haven't gotten to
+> deciphering the contents of this field since it has not been needed so
+> far: the ports are fully isolated and all bridging is done in software.
 
-Thank you for the patch.
+In that case, setting skb->offload_fwd_mark to true is absolutely wrong,
+since the bridge is told that no software forwarding should be done
+between ports, as it was already done in hardware (see nbp_switchdev_allowed_egress).
 
-On Fri, Jun 18, 2021 at 02:29:19PM +0200, Ricardo Ribalda wrote:
-> From: Hans Verkuil <hverkuil@xs4all.nl>
-> 
-> Check for inactive controls in uvc_ctrl_is_accessible().
-> Use the new value for the master_id controls if present,
-> otherwise use the existing value to determine if it is OK
-> to set the control. Doing this here avoids attempting to
-> set an inactive control, which will return an error from the
-> USB device.
-
-Could you please explain in the commit message why this is better than
-handling the error ?
-
-> Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 28 +++++++++++++++++++++++++++-
->  drivers/media/usb/uvc/uvc_v4l2.c |  4 ++--
->  drivers/media/usb/uvc/uvcvideo.h |  3 ++-
->  3 files changed, 31 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index dd6ebcc7344a..11c25d4b5c20 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1043,10 +1043,18 @@ static int uvc_query_v4l2_class(struct uvc_video_chain *chain, u32 req_id,
->  }
->  
-
-As this function is starting to get large and do many things, a short
-comment here to document it would be useful (it doesn't need to be
-kerneldoc).
-
->  int uvc_ctrl_is_accessible(struct uvc_video_chain *chain, u32 v4l2_id,
-> -			   bool read)
-> +			   const struct v4l2_ext_controls *ctrls,
-> +			   unsigned long ioctl)
->  {
-> +	struct uvc_control_mapping *master_map = NULL;
-> +	struct uvc_control *master_ctrl = NULL;
->  	struct uvc_control_mapping *mapping;
->  	struct uvc_control *ctrl;
-> +	bool read = ioctl == VIDIOC_G_EXT_CTRLS;
-> +	bool try = ioctl == VIDIOC_TRY_EXT_CTRLS;
-> +	s32 val;
-> +	int ret;
-> +	int i;
->  
->  	if (__uvc_query_v4l2_class(chain, v4l2_id, 0) >= 0)
->  		return -EACCES;
-> @@ -1061,6 +1069,24 @@ int uvc_ctrl_is_accessible(struct uvc_video_chain *chain, u32 v4l2_id,
->  	if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR) && !read)
->  		return -EACCES;
->  
-> +	if (read || try || !mapping->master_id)
-> +		return 0;
-> +
-> +	for (i = ctrls->count - 1; i >= 0; i--)
-
-Is there a particular reason to iterate backwards ? If so, please add a
-comment to explain why.
-
-> +		if (ctrls->controls[i].id == mapping->master_id)
-> +			return ctrls->controls[i].value ==
-> +					mapping->master_manual ? 0 : -EACCES;
-
-Curly braces for the for loop would be nice.
-
-If I understand this correctly, this allows setting a manual control if
-the same VIDIOC_S_EXT_CTRLS call sets the master control to manual mode,
-regardless of the current value. Does the driver guarantee that the
-master control will be set in the device before the manual control ?
-Otherwise the device will still return an error.
-
-> +
-> +	__uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
-> +			   &master_ctrl, 0);
-> +
-> +	if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-> +		return 0;
-> +
-> +	ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-> +	if (ret >= 0 && val != mapping->master_manual)
-> +		return -EACCES;
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 8d8b12a4db34..0f4d893eff46 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -1000,8 +1000,8 @@ static int uvc_ctrl_check_access(struct uvc_video_chain *chain,
->  	int ret = 0;
->  
->  	for (i = 0; i < ctrls->count; ++ctrl, ++i) {
-> -		ret = uvc_ctrl_is_accessible(chain, ctrl->id,
-> -					    ioctl == VIDIOC_G_EXT_CTRLS);
-> +		ret = uvc_ctrl_is_accessible(chain, ctrl->id, ctrls,
-> +					    ioctl);
->  		if (ret)
->  			break;
->  	}
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 2e5366143b81..fd4f5ef47dfb 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -900,7 +900,8 @@ static inline int uvc_ctrl_rollback(struct uvc_fh *handle)
->  int uvc_ctrl_get(struct uvc_video_chain *chain, struct v4l2_ext_control *xctrl);
->  int uvc_ctrl_set(struct uvc_fh *handle, struct v4l2_ext_control *xctrl);
->  int uvc_ctrl_is_accessible(struct uvc_video_chain *chain, u32 v4l2_id,
-> -			   bool read);
-> +			   const struct v4l2_ext_controls *ctrls,
-> +			   unsigned long ioctl);
->  
->  int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
->  		      struct uvc_xu_control_query *xqry);
-
--- 
-Regards,
-
-Laurent Pinchart
+I wonder how this has ever worked? Are you completely sure that bridging
+is done in software?
