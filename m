@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E3C3F3FC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D72C3F3FC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233280AbhHVOgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S233508AbhHVOgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhHVOgG (ORCPT
+        with ESMTP id S233100AbhHVOgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:36:06 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5C7C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:35:23 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id k5so32103541lfu.4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:35:23 -0700 (PDT)
+        Sun, 22 Aug 2021 10:36:18 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92114C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:35:37 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g13so32013554lfj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PwGYchbluTL/Rr9Br9K/KBCWqoTo7qNfUvW33GFs/0c=;
-        b=VGvPzdShKdBQiKQY9zD6gpq7KzRdfQ2f5/TaNPZXr3yjeNbwJ45X4P5EoIO5kciMX4
-         vRQYy+h9uWhVXRqanof6Db6c1qkb9j/78RxMkJ60h+4YOSTYT46JLQjsBxWLKcM6VpDo
-         JUWF/O/452ijPzbfxNx2auDMR7ZXXtwGWz/CExryRxzqQYaO/D0afYED1eDamiwlhYG8
-         Hs7LMYjoz0qH/le3MSPGvFBWS37iJJ3cpshIwgNyeha/jBccamh0slOjyRXcZbTclt+l
-         OB2HJNPuvE2T1gdwmhXaCaYGqNTlfwpGsKbq8gsI3OY7VF0LxWg4IMTE2+htsTfKkBQC
-         rM8Q==
+        bh=ssEJXS5mWPr1Oq2NWHBdclycHEgmiyzEVQ1hB54zJfc=;
+        b=pjAn+uBvIPFIFfp0yCINIP8zg+2OhZDpzQMbzAwWNzOelpi0j8ERk1d20oSj2FCZ7p
+         pYtH98cS7JE3IJ+xIetFZPSEAvTazBSGucfLf4UrT5SDEUWV63/czSFidMlnttKVlKg2
+         /hf/u8vxHuvoU1/mFKbwYsI25NX2AIA4YmmnOxW0KN+BUYRqjEfUhAwThIbqfAQOwps/
+         9cE4Y3d8eu63jnSQG3muAv//A1KvqmlImnSjv5jUG3YPtIJ7XwmogVhS0AcTm+ZJ6/9a
+         4baOQB3aKTWoKQqNqFvFnkvQIBJGDCqwvlOpLLQ3WJP0lAnwE9bQaPV6wANq4YUhoEP7
+         nO6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PwGYchbluTL/Rr9Br9K/KBCWqoTo7qNfUvW33GFs/0c=;
-        b=NE5x8IrD1TccR870OvFDJlY7zTmDvSTb/cBuLCoktOmLXke065H4uUeldJgGzLX7eB
-         TDDcjodeYkmZULVh0kmISBXXWsjAf8rDsVfeh//aNa4+cjSfm2Gg3jghQKhol0deNHli
-         HXOf4+rYOmrXfBKkakKzwmUMDZ1TYsOWyV+VfVc7ckhRaNq9YaDD0yLd9qDRiZpniuKE
-         dWssPb8t9GUX6JBAHsxFyyNDfu7XUY1gLi3wDH2ijiBj/2UUbV53ZS4sFi13O0YFRQGW
-         DdOCwaUHEsjfX+YA4POgwva1IFT542yiA7Lv2Lmi0AqWeixmnY5jgp9EDCsi1TvBUV7S
-         uu6A==
-X-Gm-Message-State: AOAM532oYd1FSdHKcd8I4Ewj2eY1kuL2oR1TvzzPgNKDrnsGXA7Zg28m
-        wX+E8MVT0okO6+yrm2Cp0Dk=
-X-Google-Smtp-Source: ABdhPJw3AP3vBo5MFlZTq5EldHh5XUCerXexdGTstNkseXTKontATGYDg212fkAxA89RmWxvCaI9sg==
-X-Received: by 2002:a19:4958:: with SMTP id l24mr21230787lfj.48.1629642921651;
-        Sun, 22 Aug 2021 07:35:21 -0700 (PDT)
+        bh=ssEJXS5mWPr1Oq2NWHBdclycHEgmiyzEVQ1hB54zJfc=;
+        b=Vv3JZIoPEM+U1xfl0eBj0tFVtcGqvEKr1MNcWH5oN7oEVxUs2m2Ue6JRQl12saLRCG
+         5QPQGnNxmWwuCjyxugyd0TVxZqmV6fxINzhNSgLMFlIV2YDPvlFw5jeQ/d3y4C4R7Zdj
+         AVHOu++0E9pdSfw4Vz52gozx6pbSjWsghWH6Ct62XLRXy5K2hwOZY34SrnTdE5atgpwA
+         lhNWyu+6gzZp46rqjz03P/Wp/40hgmVs2EUD3d22cYhcciJrJiLWj2hdEUQIClf5WsHe
+         3xqcTOSWMdb6oErPP+3nErCOisV80uiOQNjPsxQxb3rtZ4em2Kmm27SFIWwuen/7skO1
+         hRCg==
+X-Gm-Message-State: AOAM531O171QZjgf8+aaJ2fDXCWK35wFvohtimc1jYVCyTAHKdHQ2Eu8
+        O3kne05KV05nZ6x9Mh8PHeg=
+X-Google-Smtp-Source: ABdhPJytcLAVyW85XS85pjOeTzUTLzU8DGHCcOLZLHwBA9FDE+CGIMmalAKyDzN4pJ2I83BJdeAI8g==
+X-Received: by 2002:a05:6512:3e11:: with SMTP id i17mr21737643lfv.613.1629642935914;
+        Sun, 22 Aug 2021 07:35:35 -0700 (PDT)
 Received: from localhost.localdomain ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id o28sm1208965lfg.238.2021.08.22.07.35.20
+        by smtp.gmail.com with ESMTPSA id d4sm1204424lfg.178.2021.08.22.07.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 07:35:21 -0700 (PDT)
+        Sun, 22 Aug 2021 07:35:35 -0700 (PDT)
 From:   Pavel Skripkin <paskripkin@gmail.com>
 To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         gregkh@linuxfoundation.org, straube.linux@gmail.com,
         fmdefrancesco@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH RFC v2 0/6] staging: r8188eu: avoid uninit value bugs
-Date:   Sun, 22 Aug 2021 17:35:05 +0300
-Message-Id: <cover.1629642658.git.paskripkin@gmail.com>
+Subject: [PATCH RFC v2 1/6] staging: r8188eu: remove {read,write}_macreg
+Date:   Sun, 22 Aug 2021 17:35:33 +0300
+Message-Id: <d591e29d77da73790c71f7a8e508a8b16fd48f65.1629642658.git.paskripkin@gmail.com>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <6182ed46-d79d-7f66-c7c0-096486410b4d@gmail.com>
-References: <6182ed46-d79d-7f66-c7c0-096486410b4d@gmail.com>
+In-Reply-To: <cover.1629642658.git.paskripkin@gmail.com>
+References: <cover.1629642658.git.paskripkin@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Greg, Larry and Phillip!
+These 2 functions are unused, so they can be simply removed
 
-I noticed, that new staging driver was added like 3 weeks ago and I decided
-to look at the code, because drivers in staging directory are always buggy.
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_mp.c    | 39 ------------------------
+ drivers/staging/r8188eu/include/rtw_mp.h |  2 --
+ 2 files changed, 41 deletions(-)
 
-The first thing I noticed is *no one* was checking read operations result, but
-it can fail and driver may start writing random stack values into registers. It
-can cause driver misbehavior or device misbehavior.
-
-To avoid this type of bugs, i've changed rtw_read* API. Now all rtw_read
-funtions return an error, when something went wrong with usb transfer.
-
-It helps callers to break/return earlier and don't write random values to
-registers or to rely on random values.
-
-Why is this pacth series RFC?
-  1. I don't have this device and I cannot test these changes.
-  2. I don't know how to handle errors in each particular case. For now, function
-     just returns or returns an error. That's all. I hope, driver maintainers will
-     help with these bits.
-  3. I guess, I handled not all uninit value bugs here. I hope, I fixed
-     at least half of them
-
-
-v1 -> v2:
-  1. Make rtw_read*() return an error instead of initializing pointer to error
-  2. Split one huge patch to smaller ones for each rtw_read{8,16,32} function
-     changes
-  3. Add new macro for printing register values (It helps to not copy-paste error
-     handling)
-  4. Removed {read,write}_macreg (Suggested by Phillip)
-  5. Rebased on top of staging-next
-  6. Cleaned checkpatch errors and warnings
-
-Only build-tested, since I don't have device with r8118eu chip
-
-Pavel Skripkin (6):
-  staging: r8188eu: remove {read,write}_macreg
-  staging: r8188eu: add helper macro for printing registers
-  staging: r8188eu: add error handling of rtw_read8
-  staging: r8188eu: add error handling of rtw_read16
-  staging: r8188eu: add error handling of rtw_read32
-  staging: r8188eu: make ReadEFuse return an int
-
- drivers/staging/r8188eu/core/rtw_debug.c      |  79 +++-
- drivers/staging/r8188eu/core/rtw_efuse.c      | 125 +++--
- drivers/staging/r8188eu/core/rtw_io.c         |  27 +-
- drivers/staging/r8188eu/core/rtw_mp.c         |  70 ++-
- drivers/staging/r8188eu/core/rtw_mp_ioctl.c   |  13 +-
- drivers/staging/r8188eu/core/rtw_pwrctrl.c    |   5 +-
- drivers/staging/r8188eu/core/rtw_sreset.c     |   9 +-
- .../r8188eu/hal/Hal8188ERateAdaptive.c        |   8 +-
- drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |  21 +-
- drivers/staging/r8188eu/hal/HalPwrSeqCmd.c    |   9 +-
- drivers/staging/r8188eu/hal/hal_com.c         |  23 +-
- drivers/staging/r8188eu/hal/hal_intf.c        |   6 +-
- drivers/staging/r8188eu/hal/odm_interface.c   |  12 +-
- drivers/staging/r8188eu/hal/rtl8188e_cmd.c    |  33 +-
- drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   6 +-
- .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 285 +++++++++---
- drivers/staging/r8188eu/hal/rtl8188e_phycfg.c |  27 +-
- drivers/staging/r8188eu/hal/rtl8188e_sreset.c |  22 +-
- drivers/staging/r8188eu/hal/rtl8188eu_led.c   |  18 +-
- drivers/staging/r8188eu/hal/usb_halinit.c     | 439 +++++++++++++++---
- drivers/staging/r8188eu/hal/usb_ops_linux.c   |  57 ++-
- drivers/staging/r8188eu/include/hal_intf.h    |   6 +-
- .../staging/r8188eu/include/odm_interface.h   |   6 +-
- .../staging/r8188eu/include/rtl8188e_hal.h    |   2 +-
- drivers/staging/r8188eu/include/rtw_debug.h   |  13 +
- drivers/staging/r8188eu/include/rtw_efuse.h   |   4 +-
- drivers/staging/r8188eu/include/rtw_io.h      |  18 +-
- drivers/staging/r8188eu/include/rtw_mp.h      |   2 -
- drivers/staging/r8188eu/os_dep/ioctl_linux.c  | 179 +++++--
- drivers/staging/r8188eu/os_dep/usb_intf.c     |   3 +-
- 30 files changed, 1138 insertions(+), 389 deletions(-)
-
+diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
+index 93bb683b628f..0a0a24fd37b0 100644
+--- a/drivers/staging/r8188eu/core/rtw_mp.c
++++ b/drivers/staging/r8188eu/core/rtw_mp.c
+@@ -7,45 +7,6 @@
+ #include "../include/odm_precomp.h"
+ #include "../include/rtl8188e_hal.h"
+ 
+-u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz)
+-{
+-	u32 val = 0;
+-
+-	switch (sz) {
+-	case 1:
+-		val = rtw_read8(padapter, addr);
+-		break;
+-	case 2:
+-		val = rtw_read16(padapter, addr);
+-		break;
+-	case 4:
+-		val = rtw_read32(padapter, addr);
+-		break;
+-	default:
+-		val = 0xffffffff;
+-		break;
+-	}
+-
+-	return val;
+-}
+-
+-void write_macreg(struct adapter *padapter, u32 addr, u32 val, u32 sz)
+-{
+-	switch (sz) {
+-	case 1:
+-		rtw_write8(padapter, addr, (u8)val);
+-		break;
+-	case 2:
+-		rtw_write16(padapter, addr, (u16)val);
+-		break;
+-	case 4:
+-		rtw_write32(padapter, addr, val);
+-		break;
+-	default:
+-		break;
+-	}
+-}
+-
+ u32 read_bbreg(struct adapter *padapter, u32 addr, u32 bitmask)
+ {
+ 	return rtw_hal_read_bbreg(padapter, addr, bitmask);
+diff --git a/drivers/staging/r8188eu/include/rtw_mp.h b/drivers/staging/r8188eu/include/rtw_mp.h
+index b64b16554343..3a259d991348 100644
+--- a/drivers/staging/r8188eu/include/rtw_mp.h
++++ b/drivers/staging/r8188eu/include/rtw_mp.h
+@@ -410,8 +410,6 @@ void mp_stop_test(struct adapter *padapter);
+ u32 _read_rfreg(struct adapter *padapter, u8 rfpath, u32 addr, u32 bitmask);
+ void _write_rfreg(struct adapter *padapter, u8 rfpath, u32 addr, u32 bitmask, u32 val);
+ 
+-u32 read_macreg(struct adapter *padapter, u32 addr, u32 sz);
+-void write_macreg(struct adapter *padapter, u32 addr, u32 val, u32 sz);
+ u32 read_bbreg(struct adapter *padapter, u32 addr, u32 bitmask);
+ void write_bbreg(struct adapter *padapter, u32 addr, u32 bitmask, u32 val);
+ u32 read_rfreg(struct adapter *padapter, u8 rfpath, u32 addr);
 -- 
 2.32.0
 
