@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693F83F3CF1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 03:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169403F3CF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 03:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhHVBPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 21:15:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229950AbhHVBPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 21:15:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 017F76128A;
-        Sun, 22 Aug 2021 01:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629594877;
-        bh=zCzuD/gSEAZz6whQU8OxleDxwzLhRBG1uIqnRGpvqP8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o7jAL41cV1Q05ea7fZSRvzv0vZ5APxyLyXwqZQX5/Qab2O1tdaSDk66vm/LNZy8fo
-         U0wrcOc69+Sfa1T/XIcGMMf8oR5/fPHm+Vk+TDsqcrYosh8V+5qdko8InUVg+19TwD
-         zWTmsHpkn+PPv4mbUgW6RZ5P7yUSNikeFdOcZ6DKmhm3k0+s6Janm0YtbJ6PlFG3uR
-         UQM+8zDahpFfnfm0AljOy2ZR4ana+oP+ZWw8HPdRCjHNHZQqFGLXKZfnSYqjRE7osf
-         tzfLxf/C2/NFw/n/U1dSm6059t7bAu6T1APRfPPyg/S4WI0C35xLNLuyxptlp34MHe
-         lbQJxoXBsePkQ==
-Received: by mail-ej1-f43.google.com with SMTP id ia27so6244577ejc.10;
-        Sat, 21 Aug 2021 18:14:36 -0700 (PDT)
-X-Gm-Message-State: AOAM532DSMnfyJmLpdw40m9wqy0mmB+tbWHHlonspaFRNbFzgo1O4i02
-        z1XQDbkozJwx/aJD32R1RH0Gqm1OpZBoEATK/Q==
-X-Google-Smtp-Source: ABdhPJwurie+/j4gMgYRtvN6TgPa5fnIdmGdu2j/ak4r2YT1v1vuwSfGu0NBvpD/c6uzXnaqD7U33HlKS+77I74lBsU=
-X-Received: by 2002:a17:906:b18e:: with SMTP id w14mr28931433ejy.63.1629594875631;
- Sat, 21 Aug 2021 18:14:35 -0700 (PDT)
+        id S231240AbhHVBR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 21:17:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21238 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231167AbhHVBRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 21:17:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629595035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u4xeDb0xiSkHYvpeYqNRRiH9/pK7u1VGqkKmKiQtiX8=;
+        b=N6hn4OM1vNMmXFCuD7DhjzFFWpsnpxJWJW73IFID2c8nFFYJ4o//DJM77WgYynMbs2/S0Q
+        oPCGiYS7B6KIAbj1DnLOfuvjmEipOG5UfXmVzZt5/xSTK1YAvCHPcKOudGxFw7THWtu7x6
+        RjgNUhM5bJtQDscxZvoGV075myvXGJ0=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-21-I6-8psYJMGysJaUpNKaqyA-1; Sat, 21 Aug 2021 21:17:13 -0400
+X-MC-Unique: I6-8psYJMGysJaUpNKaqyA-1
+Received: by mail-qk1-f198.google.com with SMTP id h135-20020a379e8d000000b003f64b0f4865so3610510qke.12
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 18:17:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u4xeDb0xiSkHYvpeYqNRRiH9/pK7u1VGqkKmKiQtiX8=;
+        b=RALXXnA8SOwEPveB6CcK7GqzOCGIwT2DOYzMmHEos4cZ8lBJfjQbvp7UCdKyNRh2ce
+         DNAQhmKCCOOf778DKc02UZKJd1zaSs0XCvwMAbWhL9D9iPY5mjkX7wcetesJj0VVabk/
+         PM1Yy3lugGsd32GEGSiBGDbZQpkq30a7g41V3mdYlT9R+hKObSFFJbnSRFQPMdkZSimX
+         r/M5dD/nXbLsVoeEZxsGCaAMCcJqb/3ntqau6livKfoQspt455EDE6PwQtAWyeW33ETA
+         WoxuwHcgU/SO4WDMBaOKt4M1K/R22v1N/FvEXQEHQNjfSusCuDzTIi1zTaNErU5WMDe8
+         gKtA==
+X-Gm-Message-State: AOAM530PQ+BV9jhA0LXy9tzKxWcXx5VWogwAoGbGxyOXQFFMTBgxcXRR
+        oRNZC+DoOC3FzzVxtAJdbh/ZIBg4ob0X3mI4lucEoY+thKx+gbnxwxmLzorX4W5iA/UgRzGRrRE
+        Tsk6+ZjHMzhOl+IpSSezhwlhd
+X-Received: by 2002:aed:2029:: with SMTP id 38mr24147587qta.71.1629595033212;
+        Sat, 21 Aug 2021 18:17:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxjdMzlEtB04A9H2gWJ3xaTLyZ4fVo0vEX7mXpihQ9WTD/TfwhY8KT897Z8Jn+QTR4LepA7Q==
+X-Received: by 2002:aed:2029:: with SMTP id 38mr24147578qta.71.1629595033023;
+        Sat, 21 Aug 2021 18:17:13 -0700 (PDT)
+Received: from [192.168.1.9] (pool-68-163-101-245.bstnma.fios.verizon.net. [68.163.101.245])
+        by smtp.gmail.com with ESMTPSA id f1sm536386qtb.66.2021.08.21.18.17.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Aug 2021 18:17:12 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] objtool: remove redundant len value from struct
+ section
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+To:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
+        Andy Lavr <andy.lavr@gmail.com>
+References: <20210820194453.395548-1-joe.lawrence@redhat.com>
+ <20210820194453.395548-3-joe.lawrence@redhat.com>
+Message-ID: <7ca86dcb-65f8-006b-0628-a79fb4defe40@redhat.com>
+Date:   Sat, 21 Aug 2021 21:17:11 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210818091847.8060-1-nancy.lin@mediatek.com> <20210818091847.8060-16-nancy.lin@mediatek.com>
-In-Reply-To: <20210818091847.8060-16-nancy.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 22 Aug 2021 09:14:24 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_99QLpRHLei2PzD8vsuoOaZae++NqczPCM+r9YMZ01btw@mail.gmail.com>
-Message-ID: <CAAOTY_99QLpRHLei2PzD8vsuoOaZae++NqczPCM+r9YMZ01btw@mail.gmail.com>
-Subject: Re: [PATCH v3 15/15] drm/mediatek: add mediatek-drm of vdosys1
- support for MT8195
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        singo.chang@mediatek.com,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210820194453.395548-3-joe.lawrence@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Nancy:
+On 8/20/21 3:44 PM, Joe Lawrence wrote:
+> [ ... snip ... ]
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> [ ... snip ... ]
+> @@ -307,8 +307,9 @@ static int decode_instructions(struct objtool_file *file)
+>  			insn->offset = offset;
+>  
+>  			ret = arch_decode_instruction(file->elf, sec, offset,
+> -						      sec->len - offset,
+> -						      &insn->len, &insn->type,
+> +						      sec->sh.sh_size - offset,
+> +						      &insn->sec->sh.sh_size,
+> +						      &insn->type,
+>  						      &insn->immediate,
+>  						      &insn->stack_ops);
+>  			if (ret)
 
-Nancy.Lin <nancy.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=8818=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=885:18=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Add driver data of mt8195 vdosys1 to mediatek-drm and modify drm for
-> multi-mmsys support. The two mmsys (vdosys0 and vdosys1) will bring
-> up two drm drivers, only one drm driver register as the drm device.
-> Each drm driver binds its own component. The first bind drm driver
-> will allocate the drm device, and the last bind drm driver registers
-> the drm device to drm core. Each crtc path is created with the
-> corresponding drm driver data.
->
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
->
->
-> +static const struct mtk_ddp_comp_funcs ddp_ovl_adaptor =3D {
-> +       .clk_enable =3D mtk_ethdr_clk_enable,
-> +       .clk_disable =3D mtk_ethdr_clk_disable,
-> +       .config =3D mtk_ethdr_config,
-> +       .start =3D mtk_ethdr_start,
-> +       .stop =3D mtk_ethdr_stop,
-> +       .layer_nr =3D mtk_ethdr_layer_nr,
-> +       .layer_config =3D mtk_ethdr_layer_config,
-> +       .enable_vblank =3D mtk_ethdr_enable_vblank,
-> +       .disable_vblank =3D mtk_ethdr_disable_vblank,
-> +};
+Nack!  Not sure what I was thinking here.  It was Friday afternoon, so I
+probably wans't.
 
-I think ethdr is inside the group of ovl_adpator. I preter this
-function is implemented by ovl_adaptor, and ovl_adaptor control rdma,
-merge, ethdr.
+Changing insn->len to insn->sec->sh.sh_size is obviously bogus.  I'll
+correct this part of the patch, do better testing and post v3 on Monday.
 
-Regards,
-Chun-Kuang.
+Thanks to Andy for reporting.
+-- 
+Joe
 
-> +
->
