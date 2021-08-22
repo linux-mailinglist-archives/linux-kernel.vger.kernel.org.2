@@ -2,83 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584A23F4114
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D7C3F4116
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhHVTLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 15:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        id S232540AbhHVTMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 15:12:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhHVTLx (ORCPT
+        with ESMTP id S232473AbhHVTMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 15:11:53 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3F5C061575;
-        Sun, 22 Aug 2021 12:11:11 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id 7so13455340pfl.10;
-        Sun, 22 Aug 2021 12:11:11 -0700 (PDT)
+        Sun, 22 Aug 2021 15:12:54 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32FCC061575;
+        Sun, 22 Aug 2021 12:12:12 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so325121pjt.0;
+        Sun, 22 Aug 2021 12:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5WOhtJyCLvDyk28Uv6Zj5si2SYr4yFsA2nofOG2/o1k=;
-        b=Wz0kZ27KKW6Mkr0Ljumz+UEeVmlScKBd3SqmrVBy6KUfr0wF7nyeSOKn17vo71LplZ
-         oZ2FRQhL3WZekO7gvtgQDi99tK5ZmTJFqu8qfP7zzNuQVSAkx0+fxEkR//gcJ5Dh/X1r
-         B6LyfFsNTSZv3XnjF0RInJ0sFom9tDOsnjcaZwD1/sKl7H70ggBXS1n/0xU9jRaJcL/j
-         TzoxI0ObF11ea83IhP7yeEfwZAfd5SDKZ9WqS2w53TTFaqZqUJy2I/1aABEg7lw79ejV
-         y3nfCNPkOcgLdIoeT6EmOETyueHNf5R7e29BP7/Xkw4L6HzEv4dmvvkMDtpbnv98FR4W
-         VJqA==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=HqLZmepQrKc9lx/z79M6Ifhxm7Ymq86aEQN8GvgSv6g=;
+        b=X3yQc6GnrI6r7AnR/mfCNcjXqy+BU5BYcuUxpvM58lspw5iipOWSTgIh5brI8lsusH
+         /xauYGJn9piNjwYgmoa7SL/ztltx+XKI3bi8GIvl0+3ASaVjkB0Tm06Wjox0Dm/fBpC9
+         0uqRHJJwZ2ShJNrR4ERs1kwVdN1jzj/4zie3gpZl6IaIgIne/JYBD/fC7jgnsAb95Fn6
+         kUjs+c7clZUCXYMtsQeZTDGR7y7Ypr7PemHP3hmp1d8VKVOQ5y8HutalhtbuYUOL1x+W
+         sZC+p15f4CloQ4U7R3j2NKKv/5j5PZI7XiWNrckDp86waAlBCYclCxOzIuXfcFPG5jOG
+         HpEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5WOhtJyCLvDyk28Uv6Zj5si2SYr4yFsA2nofOG2/o1k=;
-        b=AQeTLauzBJXzEFPDTcrThoHNIzVG5n4nSh0YP0ez6ml94DSUbVygNWkcsGE+a6IcmR
-         Q1uI13VBWsO1FL5ty8TyBezOq3gGLPnh4WoClMkPdzZ3d/N1jwI5aWqYwrraVis3TI+x
-         GhLU7bTo4+cQRbo/1ZmUxN4DnXNLUtErsMByHT4J//UZB1ohjR4de/Kpj8fmk6ikqOjf
-         mlfktHGxAqCoEa+22dNVpFfm0TX393AGzfoppo5HCfzovAvcOi8U96ZgYmnTwx2EoJ3I
-         BkddMGtC/vS70vldHN8YNAz+PF74GGc2rtOgoPvc3UKVBiT5jNVSvYHl6SmOy04MXoBj
-         lwQw==
-X-Gm-Message-State: AOAM533P01piTcrPfTP6WnF5YkH1qXIE8tj6mZWCZu8JSpwTwK1zu+JR
-        KHwLyRbpVR4LC3Jb6oGFruM=
-X-Google-Smtp-Source: ABdhPJxYC7o83eBX/pP5vI/s2sm27ag7i588rxJM1xgfgu0UDLC/aq3mqIR7U+jtN3rxmI4KNTSelA==
-X-Received: by 2002:a63:dc03:: with SMTP id s3mr28947680pgg.88.1629659470822;
-        Sun, 22 Aug 2021 12:11:10 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u9sm15542103pgp.83.2021.08.22.12.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 12:11:10 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>, Rob Herring <robh@kernel.org>,
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=HqLZmepQrKc9lx/z79M6Ifhxm7Ymq86aEQN8GvgSv6g=;
+        b=QnKQ9s+oSNBdrQmpu6dJhpluBWNNgYfzI0DUxYbHU/C8TSh/feCuHuK9318wxO/nhh
+         uW73ZgcKS1M2GBF07KsLzMMk5gc1iB7Zi7QbK8g48Vnu6sEKff0Rx+ohBkohYcASTOTu
+         l4FJS6ZSMBR1WDU9XiyOEkcR/3NFj7iU7MqWyMxrcS1pnBv53G01h2DO06aMPQmQy68P
+         D5qSDEMWDijnUk8WmwBznHsJ18dcvhyrfM2DgEC125deQwV3EzE37tDNAQnhFvCMFyzN
+         O29p67ldppxyB8Max6i3kYQ2lkZZvxJljHlQG/pxhz9QkgHZ0LECLrEL5tnuBZyruIrH
+         aDNg==
+X-Gm-Message-State: AOAM533A/ZCgz7FW6TaH1aGZbdC9uKRm5HP0oItdiaEqmkf4sFPOGZZ4
+        YLqYDOtUvM9OfALxXmqZMig=
+X-Google-Smtp-Source: ABdhPJwD6IqDxQ/V4tvshJc+8M1kmIbPfg9RNGWammXPYoviFSDArmXwwDAOrgxg30KkyhWwRgWZag==
+X-Received: by 2002:a17:902:aa06:b0:12f:66dc:be7f with SMTP id be6-20020a170902aa0600b0012f66dcbe7fmr6831383plb.9.1629659532350;
+        Sun, 22 Aug 2021 12:12:12 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with UTF8SMTPSA id u25sm13115374pfn.209.2021.08.22.12.12.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 12:12:11 -0700 (PDT)
+Message-ID: <f8510e24-3f1d-47e2-3981-7415f0926a1d@gmail.com>
+Date:   Sun, 22 Aug 2021 21:11:57 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH v5 0/5] ARM: dts: NSP: add Meraki MX64/MX65 series
+Content-Language: en-US
+To:     Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
         soc@kernel.org, Ray Jui <rjui@broadcom.com>,
         Scott Branden <sbranden@broadcom.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sam Ravnborg <sam@ravnborg.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 5/5] dt-bindings: arm: bcm: NSP: add Meraki MX64/MX65
-Date:   Sun, 22 Aug 2021 12:11:00 -0700
-Message-Id: <20210822191100.3714613-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210806204446.2981299-6-mnhagan88@gmail.com>
-References: <20210806204446.2981299-1-mnhagan88@gmail.com> <20210806204446.2981299-6-mnhagan88@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210806204446.2981299-1-mnhagan88@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210806204446.2981299-1-mnhagan88@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  6 Aug 2021 21:44:36 +0100, Matthew Hagan <mnhagan88@gmail.com> wrote:
-> Add bindings for the Meraki MX64/MX65 series.
-> 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
---
+
+On 8/6/2021 10:44 PM, Matthew Hagan wrote:
+> Changes from v2:
+>    - Introduce boards to Makefile in same patch as the board dts is added
+>      (Vladimir Oltean)
+>    - Use alphabetical ordering for labels (Vladimir Oltean)
+>    - Remove address-cells and size-cells in qca8337 switch nodes (Vladimir
+>      Oltean)
+>    - Remove "cpu" labels from switch nodes' CPU ports (Vladimir Oltean)
+>    - Various LED fixes, utilising dt-bindings/leds/common.h and correctly
+>      specifying LEDs in the form "led-N" and with the color/function/
+>      function-enumerator properties.
+>    - Fix PWM LEDs and corresponding pinctrl bindings. (Vladimir Oltean)
+> 
+> The following changes were submitted as a separate series:
+>    - Introduce patches to disable QSPI by default and enable where used
+>      (Vladimir Oltean)
+>    - Move mdio@18032000 node from board related file to SoC (Vladimir
+>      Oltean)
+>    - In addition to above, relocate mdio-mux to bcm-nsp.dtsi and fix
+>      the resulting usb3_phy issues
+> 
+> Changes from v3:
+>    - Sort labels on mx64 a0 dts files into alphabetical order as well
+>    - move include directives for input/input.h and leds/common.h to
+>      bcm958625-mx6x-common.dtsi
+>    - Whitespace fixes in bcm958625-mx6x-common.dtsi
+>    - rename "senao_nvram" partition to "nvram"
+> 
+> Changes from v4:
+>    - Move chosen and memory nodes from bcm958625-mx6x-common.dtsi to
+>      each .dts file (Arnd Bergmann).
+>    - Append [@<unit-address>] to memory nodes.
+>    - Create Ax stepping-specific dtsi for Ax devices (Arnd Bergmann).
+>    - Append read-only property to at24 eeprom node.
+>    - Remove L2 properties which should be defined at platform-level.
+>    - Correct NAND node names.
+
+I applied patch 1 first such that we don't get warnings when we apply 
+patches from there on during bisection builds.
+-- 
 Florian
