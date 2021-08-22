@@ -2,515 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A693F3F41
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F97B3F3F42
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhHVMZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 08:25:31 -0400
-Received: from out02.smtpout.orange.fr ([193.252.22.211]:27092 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbhHVMZa (ORCPT
+        id S231560AbhHVM0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 08:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231130AbhHVM0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 08:25:30 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d04 with ME
-        id kcQm250013riaq203cQmk9; Sun, 22 Aug 2021 14:24:47 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 14:24:47 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, aditr@vmware.com, pv-drivers@vmware.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 14:24:44 +0200
-Message-Id: <259e53b7a00f64bf081d41da8761b171b2ad8f5c.1629634798.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 08:26:42 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B116C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:26:01 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id u16so21730784wrn.5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T7fSKli+UNhh3LDQln8Jkh3y6lz/VRyR8HfJLUjKlNA=;
+        b=FBK1FL8fNHSQq1gCBSj6Ap9Osp+vqwiW2nN/mJ7UHg0KhPNhgMpgOjTADqc8ZjZ5y/
+         aYiyt3HdzP++MSArOyajt5fIKzW3CPOCQOEbqweJB/+FtkmFe1JxZHcvLJsdYxhGr/Lx
+         3FmFIpJZzoTOSvH35pgae4Rrffu85OVgXgMRF7Fcm+O5EYWUrcAQvA4+pGqmeUwPaEnZ
+         iBmsSp3FugzE4PaEt8gylxyClQLcSnHMZSLLOT1clfwYIjpTBZlECEBRCaWcbouo0oJ2
+         /1V/VIh1gkBXLTgCfodAh8KXMLKk1280XBWoNb1ipDEDSNCQLEWLw86zarhw7b1SBNhf
+         ghUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T7fSKli+UNhh3LDQln8Jkh3y6lz/VRyR8HfJLUjKlNA=;
+        b=HJOuFqgndTGJtsnLS0tpLZVEzcJ5n+ZlrmxbznJvwy7ajitwJlJhmvPrhAkgH6GSVw
+         MGZ2Xk6nihgbsgaqrVDFVHqpGmANurAfhV+sIFMlu3367T+34YyLlVhWOfLNT8MV4qC3
+         fhv4mlEQIWLgt57UQBWuy/BDTqYqeJ5RurgiaGlYiFgNw5qVSye9UbG5J1WPIUVG9soj
+         +TT9ukNT4+kn6FZMBbM1ERuojQ6xFFwEQ00b5ms8IFkMv5MDMQGv73MO9BK9eMDBFupV
+         n8kbzWtertftzD5/E61Uncw/+GI95oYhR9PJLuT+GySTKkn218Q4nnlJff/FFMK/W1Hu
+         9XLg==
+X-Gm-Message-State: AOAM531GZSGi6v6XW4wgLzbBv+gB4ak5iMYrz7H9jM9We+u9HcFf6kqT
+        diKb5064XLehNK0ojdmvn/Id82fRJsw=
+X-Google-Smtp-Source: ABdhPJyaUoGaLCl96GnyolGyPnFrfkYmoWgVBeON8SM1TyUuJcwolju3RU7XbBckEzWk4XPWoM9rVA==
+X-Received: by 2002:a5d:49cd:: with SMTP id t13mr8396394wrs.217.1629635160105;
+        Sun, 22 Aug 2021 05:26:00 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
+        by smtp.gmail.com with ESMTPSA id x11sm4386842wro.83.2021.08.22.05.25.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 05:25:59 -0700 (PDT)
+Subject: Re: [PATCH 06/10] staging: r8188eu: clean up the usb_readXY functions
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210821164859.4351-1-martin@kaiser.cx>
+ <20210821164859.4351-6-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+Message-ID: <ada3cb7d-79a2-791e-1744-b6f8ab380486@gmail.com>
+Date:   Sun, 22 Aug 2021 14:25:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210821164859.4351-6-martin@kaiser.cx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On 8/21/21 6:48 PM, Martin Kaiser wrote:
+> Remove unnecessary variables, summarize declarations and assignments.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/hal/usb_ops_linux.c | 30 +++++----------------
+>   1 file changed, 7 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index dccb9fd34777..cb969a200681 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -98,46 +98,30 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>   
+>   static u8 usb_read8(struct intf_hdl *pintfhdl, u32 addr)
+>   {
+> -	u16 wvalue;
+> -	u16 len;
+> -	u8 data = 0;
+> -
+> -
+> -
+> -	wvalue = (u16)(addr & 0x0000ffff);
+> -	len = 1;
+> -
+> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, REALTEK_USB_VENQT_READ);
+> -
+> +	u16 wvalue = (u16)(addr & 0x0000ffff);
+> +	u8 data;
+>   
+> +	usbctrl_vendorreq(pintfhdl, wvalue, &data, 1, REALTEK_USB_VENQT_READ);
+>   
+>   	return data;
+> -
+>   }
+>   
+>   static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
+>   {
+> -	u16 wvalue;
+> -	u16 len;
+> +	u16 wvalue = (u16)(addr & 0x0000ffff);
+>   	__le32 data;
+>   
+> -	wvalue = (u16)(addr & 0x0000ffff);
+> -	len = 2;
+> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, REALTEK_USB_VENQT_READ);
+> +	usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_READ);
+>   
+>   	return (u16)(le32_to_cpu(data) & 0xffff);
+>   }
+>   
+>   static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
+>   {
+> -	u16 wvalue;
+> -	u16 len;
+> +	u16 wvalue = (u16)(addr & 0x0000ffff);
+>   	__le32 data;
+>   
+> -	wvalue = (u16)(addr & 0x0000ffff);
+> -	len = 4;
+> -
+> -	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, REALTEK_USB_VENQT_READ);
+> +	usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, REALTEK_USB_VENQT_READ);
+>   
+>   	return le32_to_cpu(data);
+>   }
+> 
 
-The patch has been generated with the coccinelle script below.
+Looks good to me.
 
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
+Acked-by: Michael Straube <straube.linux@gmail.com>
 
-It has been compile tested.
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-
-This patch is mostly mechanical and compile tested. I hope it is ok to
-update the "drivers/infiniband/hw/" directory all at once.
----
- drivers/infiniband/hw/hfi1/pcie.c             | 11 ++-------
- drivers/infiniband/hw/hfi1/user_exp_rcv.c     | 13 +++++------
- drivers/infiniband/hw/mthca/mthca_eq.c        | 21 +++++++++--------
- drivers/infiniband/hw/mthca/mthca_main.c      | 15 ++----------
- drivers/infiniband/hw/mthca/mthca_memfree.c   | 23 +++++++++++--------
- drivers/infiniband/hw/qib/qib_file_ops.c      | 12 +++++-----
- drivers/infiniband/hw/qib/qib_init.c          |  4 ++--
- drivers/infiniband/hw/qib/qib_user_pages.c    | 12 +++++-----
- .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    | 14 +++--------
- 9 files changed, 51 insertions(+), 74 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
-index 6f06e9920503..b29242abedd1 100644
---- a/drivers/infiniband/hw/hfi1/pcie.c
-+++ b/drivers/infiniband/hw/hfi1/pcie.c
-@@ -92,25 +92,18 @@ int hfi1_pcie_init(struct hfi1_devdata *dd)
- 		goto bail;
- 	}
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (ret) {
- 		/*
- 		 * If the 64 bit setup fails, try 32 bit.  Some systems
- 		 * do not setup 64 bit maps on systems with 2GB or less
- 		 * memory installed.
- 		 */
--		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (ret) {
- 			dd_dev_err(dd, "Unable to set DMA mask: %d\n", ret);
- 			goto bail;
- 		}
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--	} else {
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	}
--	if (ret) {
--		dd_dev_err(dd, "Unable to set DMA consistent mask: %d\n", ret);
--		goto bail;
- 	}
- 
- 	pci_set_master(pdev);
-diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-index 58dcab2679d9..e9e8239397a3 100644
---- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-@@ -177,8 +177,8 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
- 	struct mm_struct *mm;
- 
- 	if (mapped) {
--		pci_unmap_single(dd->pcidev, node->dma_addr,
--				 node->npages * PAGE_SIZE, PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&dd->pcidev->dev, node->dma_addr,
-+				 node->npages * PAGE_SIZE, DMA_FROM_DEVICE);
- 		pages = &node->pages[idx];
- 		mm = mm_from_tid_node(node);
- 	} else {
-@@ -739,9 +739,8 @@ static int set_rcvarray_entry(struct hfi1_filedata *fd,
- 	if (!node)
- 		return -ENOMEM;
- 
--	phys = pci_map_single(dd->pcidev,
--			      __va(page_to_phys(pages[0])),
--			      npages * PAGE_SIZE, PCI_DMA_FROMDEVICE);
-+	phys = dma_map_single(&dd->pcidev->dev, __va(page_to_phys(pages[0])),
-+			      npages * PAGE_SIZE, DMA_FROM_DEVICE);
- 	if (dma_mapping_error(&dd->pcidev->dev, phys)) {
- 		dd_dev_err(dd, "Failed to DMA map Exp Rcv pages 0x%llx\n",
- 			   phys);
-@@ -783,8 +782,8 @@ static int set_rcvarray_entry(struct hfi1_filedata *fd,
- 	hfi1_cdbg(TID, "Failed to insert RB node %u 0x%lx, 0x%lx %d",
- 		  node->rcventry, node->notifier.interval_tree.start,
- 		  node->phys, ret);
--	pci_unmap_single(dd->pcidev, phys, npages * PAGE_SIZE,
--			 PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&dd->pcidev->dev, phys, npages * PAGE_SIZE,
-+			 DMA_FROM_DEVICE);
- 	kfree(node);
- 	return -EFAULT;
- }
-diff --git a/drivers/infiniband/hw/mthca/mthca_eq.c b/drivers/infiniband/hw/mthca/mthca_eq.c
-index 2cdf686203c1..9f311bd22f72 100644
---- a/drivers/infiniband/hw/mthca/mthca_eq.c
-+++ b/drivers/infiniband/hw/mthca/mthca_eq.c
-@@ -617,9 +617,9 @@ static void mthca_free_eq(struct mthca_dev *dev,
- 
- 	mthca_free_mr(dev, &eq->mr);
- 	for (i = 0; i < npages; ++i)
--		pci_free_consistent(dev->pdev, PAGE_SIZE,
--				    eq->page_list[i].buf,
--				    dma_unmap_addr(&eq->page_list[i], mapping));
-+		dma_free_coherent(&dev->pdev->dev, PAGE_SIZE,
-+				  eq->page_list[i].buf,
-+				  dma_unmap_addr(&eq->page_list[i], mapping));
- 
- 	kfree(eq->page_list);
- 	mthca_free_mailbox(dev, mailbox);
-@@ -739,17 +739,18 @@ int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
- 	dev->eq_table.icm_page = alloc_page(GFP_HIGHUSER);
- 	if (!dev->eq_table.icm_page)
- 		return -ENOMEM;
--	dev->eq_table.icm_dma  = pci_map_page(dev->pdev, dev->eq_table.icm_page, 0,
--					      PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
--	if (pci_dma_mapping_error(dev->pdev, dev->eq_table.icm_dma)) {
-+	dev->eq_table.icm_dma  = dma_map_page(&dev->pdev->dev,
-+					      dev->eq_table.icm_page, 0,
-+					      PAGE_SIZE, DMA_BIDIRECTIONAL);
-+	if (dma_mapping_error(&dev->pdev->dev, dev->eq_table.icm_dma)) {
- 		__free_page(dev->eq_table.icm_page);
- 		return -ENOMEM;
- 	}
- 
- 	ret = mthca_MAP_ICM_page(dev, dev->eq_table.icm_dma, icm_virt);
- 	if (ret) {
--		pci_unmap_page(dev->pdev, dev->eq_table.icm_dma, PAGE_SIZE,
--			       PCI_DMA_BIDIRECTIONAL);
-+		dma_unmap_page(&dev->pdev->dev, dev->eq_table.icm_dma,
-+			       PAGE_SIZE, DMA_BIDIRECTIONAL);
- 		__free_page(dev->eq_table.icm_page);
- 	}
- 
-@@ -759,8 +760,8 @@ int mthca_map_eq_icm(struct mthca_dev *dev, u64 icm_virt)
- void mthca_unmap_eq_icm(struct mthca_dev *dev)
- {
- 	mthca_UNMAP_ICM(dev, dev->eq_table.icm_virt, 1);
--	pci_unmap_page(dev->pdev, dev->eq_table.icm_dma, PAGE_SIZE,
--		       PCI_DMA_BIDIRECTIONAL);
-+	dma_unmap_page(&dev->pdev->dev, dev->eq_table.icm_dma, PAGE_SIZE,
-+		       DMA_BIDIRECTIONAL);
- 	__free_page(dev->eq_table.icm_page);
- }
- 
-diff --git a/drivers/infiniband/hw/mthca/mthca_main.c b/drivers/infiniband/hw/mthca/mthca_main.c
-index fe9654a7af71..f507c4cd46d3 100644
---- a/drivers/infiniband/hw/mthca/mthca_main.c
-+++ b/drivers/infiniband/hw/mthca/mthca_main.c
-@@ -937,26 +937,15 @@ static int __mthca_init_one(struct pci_dev *pdev, int hca_type)
- 
- 	pci_set_master(pdev);
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (err) {
- 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit PCI DMA mask.\n");
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (err) {
- 			dev_err(&pdev->dev, "Can't set PCI DMA mask, aborting.\n");
- 			goto err_free_res;
- 		}
- 	}
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (err) {
--		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit "
--			 "consistent PCI DMA mask.\n");
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (err) {
--			dev_err(&pdev->dev, "Can't set consistent PCI DMA mask, "
--				"aborting.\n");
--			goto err_free_res;
--		}
--	}
- 
- 	/* We can handle large RDMA requests, so allow larger segments. */
- 	dma_set_max_seg_size(&pdev->dev, 1024 * 1024 * 1024);
-diff --git a/drivers/infiniband/hw/mthca/mthca_memfree.c b/drivers/infiniband/hw/mthca/mthca_memfree.c
-index fa808582b08b..215a01b24258 100644
---- a/drivers/infiniband/hw/mthca/mthca_memfree.c
-+++ b/drivers/infiniband/hw/mthca/mthca_memfree.c
-@@ -66,8 +66,8 @@ static void mthca_free_icm_pages(struct mthca_dev *dev, struct mthca_icm_chunk *
- 	int i;
- 
- 	if (chunk->nsg > 0)
--		pci_unmap_sg(dev->pdev, chunk->mem, chunk->npages,
--			     PCI_DMA_BIDIRECTIONAL);
-+		dma_unmap_sg(&dev->pdev->dev, chunk->mem, chunk->npages,
-+			     DMA_BIDIRECTIONAL);
- 
- 	for (i = 0; i < chunk->npages; ++i)
- 		__free_pages(sg_page(&chunk->mem[i]),
-@@ -184,9 +184,10 @@ struct mthca_icm *mthca_alloc_icm(struct mthca_dev *dev, int npages,
- 			if (coherent)
- 				++chunk->nsg;
- 			else if (chunk->npages == MTHCA_ICM_CHUNK_LEN) {
--				chunk->nsg = pci_map_sg(dev->pdev, chunk->mem,
-+				chunk->nsg = dma_map_sg(&dev->pdev->dev,
-+							chunk->mem,
- 							chunk->npages,
--							PCI_DMA_BIDIRECTIONAL);
-+							DMA_BIDIRECTIONAL);
- 
- 				if (chunk->nsg <= 0)
- 					goto fail;
-@@ -204,9 +205,8 @@ struct mthca_icm *mthca_alloc_icm(struct mthca_dev *dev, int npages,
- 	}
- 
- 	if (!coherent && chunk) {
--		chunk->nsg = pci_map_sg(dev->pdev, chunk->mem,
--					chunk->npages,
--					PCI_DMA_BIDIRECTIONAL);
-+		chunk->nsg = dma_map_sg(&dev->pdev->dev, chunk->mem,
-+					chunk->npages, DMA_BIDIRECTIONAL);
- 
- 		if (chunk->nsg <= 0)
- 			goto fail;
-@@ -480,7 +480,8 @@ int mthca_map_user_db(struct mthca_dev *dev, struct mthca_uar *uar,
- 	sg_set_page(&db_tab->page[i].mem, pages[0], MTHCA_ICM_PAGE_SIZE,
- 			uaddr & ~PAGE_MASK);
- 
--	ret = pci_map_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
-+	ret = dma_map_sg(&dev->pdev->dev, &db_tab->page[i].mem, 1,
-+			 DMA_TO_DEVICE);
- 	if (ret < 0) {
- 		unpin_user_page(pages[0]);
- 		goto out;
-@@ -489,7 +490,8 @@ int mthca_map_user_db(struct mthca_dev *dev, struct mthca_uar *uar,
- 	ret = mthca_MAP_ICM_page(dev, sg_dma_address(&db_tab->page[i].mem),
- 				 mthca_uarc_virt(dev, uar, i));
- 	if (ret) {
--		pci_unmap_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
-+		dma_unmap_sg(&dev->pdev->dev, &db_tab->page[i].mem, 1,
-+			     DMA_TO_DEVICE);
- 		unpin_user_page(sg_page(&db_tab->page[i].mem));
- 		goto out;
- 	}
-@@ -555,7 +557,8 @@ void mthca_cleanup_user_db_tab(struct mthca_dev *dev, struct mthca_uar *uar,
- 	for (i = 0; i < dev->uar_table.uarc_size / MTHCA_ICM_PAGE_SIZE; ++i) {
- 		if (db_tab->page[i].uvirt) {
- 			mthca_UNMAP_ICM(dev, mthca_uarc_virt(dev, uar, i), 1);
--			pci_unmap_sg(dev->pdev, &db_tab->page[i].mem, 1, PCI_DMA_TODEVICE);
-+			dma_unmap_sg(&dev->pdev->dev, &db_tab->page[i].mem, 1,
-+				     DMA_TO_DEVICE);
- 			unpin_user_page(sg_page(&db_tab->page[i].mem));
- 		}
- 	}
-diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
-index c60e79d214a1..63854f4b6524 100644
---- a/drivers/infiniband/hw/qib/qib_file_ops.c
-+++ b/drivers/infiniband/hw/qib/qib_file_ops.c
-@@ -429,8 +429,8 @@ static int qib_tid_update(struct qib_ctxtdata *rcd, struct file *fp,
- 				dd->f_put_tid(dd, &tidbase[tid],
- 					      RCVHQ_RCV_TYPE_EXPECTED,
- 					      dd->tidinvalid);
--				pci_unmap_page(dd->pcidev, phys, PAGE_SIZE,
--					       PCI_DMA_FROMDEVICE);
-+				dma_unmap_page(&dd->pcidev->dev, phys,
-+					       PAGE_SIZE, DMA_FROM_DEVICE);
- 				dd->pageshadow[ctxttid + tid] = NULL;
- 			}
- 		}
-@@ -544,8 +544,8 @@ static int qib_tid_free(struct qib_ctxtdata *rcd, unsigned subctxt,
- 			 */
- 			dd->f_put_tid(dd, &tidbase[tid],
- 				      RCVHQ_RCV_TYPE_EXPECTED, dd->tidinvalid);
--			pci_unmap_page(dd->pcidev, phys, PAGE_SIZE,
--				       PCI_DMA_FROMDEVICE);
-+			dma_unmap_page(&dd->pcidev->dev, phys, PAGE_SIZE,
-+				       DMA_FROM_DEVICE);
- 			qib_release_user_pages(&p, 1);
- 		}
- 	}
-@@ -1781,8 +1781,8 @@ static void unlock_expected_tids(struct qib_ctxtdata *rcd)
- 		phys = dd->physshadow[i];
- 		dd->physshadow[i] = dd->tidinvalid;
- 		dd->pageshadow[i] = NULL;
--		pci_unmap_page(dd->pcidev, phys, PAGE_SIZE,
--			       PCI_DMA_FROMDEVICE);
-+		dma_unmap_page(&dd->pcidev->dev, phys, PAGE_SIZE,
-+			       DMA_FROM_DEVICE);
- 		qib_release_user_pages(&p, 1);
- 		cnt++;
- 	}
-diff --git a/drivers/infiniband/hw/qib/qib_init.c b/drivers/infiniband/hw/qib/qib_init.c
-index b5a78576c48b..d1a72e89e297 100644
---- a/drivers/infiniband/hw/qib/qib_init.c
-+++ b/drivers/infiniband/hw/qib/qib_init.c
-@@ -1335,8 +1335,8 @@ static void cleanup_device_data(struct qib_devdata *dd)
- 			for (i = ctxt_tidbase; i < maxtid; i++) {
- 				if (!tmpp[i])
- 					continue;
--				pci_unmap_page(dd->pcidev, tmpd[i],
--					       PAGE_SIZE, PCI_DMA_FROMDEVICE);
-+				dma_unmap_page(&dd->pcidev->dev, tmpd[i],
-+					       PAGE_SIZE, DMA_FROM_DEVICE);
- 				qib_release_user_pages(&tmpp[i], 1);
- 				tmpp[i] = NULL;
- 			}
-diff --git a/drivers/infiniband/hw/qib/qib_user_pages.c b/drivers/infiniband/hw/qib/qib_user_pages.c
-index 5d6cf7427431..f4b5f05058e4 100644
---- a/drivers/infiniband/hw/qib/qib_user_pages.c
-+++ b/drivers/infiniband/hw/qib/qib_user_pages.c
-@@ -60,15 +60,15 @@ int qib_map_page(struct pci_dev *hwdev, struct page *page, dma_addr_t *daddr)
- {
- 	dma_addr_t phys;
- 
--	phys = pci_map_page(hwdev, page, 0, PAGE_SIZE, PCI_DMA_FROMDEVICE);
--	if (pci_dma_mapping_error(hwdev, phys))
-+	phys = dma_map_page(&hwdev->dev, page, 0, PAGE_SIZE, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&hwdev->dev, phys))
- 		return -ENOMEM;
- 
- 	if (!phys) {
--		pci_unmap_page(hwdev, phys, PAGE_SIZE, PCI_DMA_FROMDEVICE);
--		phys = pci_map_page(hwdev, page, 0, PAGE_SIZE,
--				    PCI_DMA_FROMDEVICE);
--		if (pci_dma_mapping_error(hwdev, phys))
-+		dma_unmap_page(&hwdev->dev, phys, PAGE_SIZE, DMA_FROM_DEVICE);
-+		phys = dma_map_page(&hwdev->dev, page, 0, PAGE_SIZE,
-+				    DMA_FROM_DEVICE);
-+		if (dma_mapping_error(&hwdev->dev, phys))
- 			return -ENOMEM;
- 		/*
- 		 * FIXME: If we get 0 again, we should keep this page,
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index b39175837d58..105f3a155939 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -811,18 +811,10 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
- 	}
- 
- 	/* Enable 64-Bit DMA */
--	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) == 0) {
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
-+	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) != 0) {
-+		ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 		if (ret != 0) {
--			dev_err(&pdev->dev,
--				"pci_set_consistent_dma_mask failed\n");
--			goto err_free_resource;
--		}
--	} else {
--		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (ret != 0) {
--			dev_err(&pdev->dev,
--				"pci_set_dma_mask failed\n");
-+			dev_err(&pdev->dev, "dma_set_mask failed\n");
- 			goto err_free_resource;
- 		}
- 	}
--- 
-2.30.2
-
+Thanks,
+Michael
