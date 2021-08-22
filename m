@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6E13F3D44
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 05:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEF83F3D55
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 05:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhHVD2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 23:28:42 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7991 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhHVD2k (ORCPT
+        id S232457AbhHVDqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 23:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232192AbhHVDqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 23:28:40 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee56121c433c33-f2661; Sun, 22 Aug 2021 11:27:48 +0800 (CST)
-X-RM-TRANSID: 2ee56121c433c33-f2661
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.22.250.151])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36121c429ec8-65220;
-        Sun, 22 Aug 2021 11:27:48 +0800 (CST)
-X-RM-TRANSID: 2ee36121c429ec8-65220
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     gregkh@linuxfoundation.org, paul@crapouillou.net,
-        jirislaby@kernel.org, ldewangan@nvidia.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        linux@prisktech.co.nz
-Cc:     linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH 3/3] serial: vt8500: Use of_device_get_match_data
-Date:   Sun, 22 Aug 2021 11:28:06 +0800
-Message-Id: <20210822032806.3256-4-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
-In-Reply-To: <20210822032806.3256-1-tangbin@cmss.chinamobile.com>
-References: <20210822032806.3256-1-tangbin@cmss.chinamobile.com>
+        Sat, 21 Aug 2021 23:46:03 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F54EC061575;
+        Sat, 21 Aug 2021 20:45:23 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id u15so8170958plg.13;
+        Sat, 21 Aug 2021 20:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nG/fP2q2RAn5VxaTcM/j9eZOvQ9XxbrcfsGXIrq70lU=;
+        b=VQFWPWkfVlHhwXKazmJ6ooYcAEFkIqzti1VOIFMzyPf47ewVLsi3ExQuclIEtSr40M
+         Doo3IsZUIZKYfWoYdqdjleo3uRBXn5eZoMFsV6/NkDGUoYQJk5a7EpCDmJ6mjpTldv9H
+         HmvO0YCsmrYzMej6fbl9hAhoQI84DzI/IdCcl05eE468Kdy+VG9P4SJXqI7xUxAjjtCx
+         Iwmg8SIQRO45/K3CLwbl1mI4+l95q119CCf4fYE40jfj0ad6T4arliFwAgwaUz7oSVKt
+         pKzbtmNRLEFTX2QgBoYWTX5SOAwly72jjF1lydeNLMYBX9s8jh15DlV2EnAPJhcxwJG8
+         GAVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nG/fP2q2RAn5VxaTcM/j9eZOvQ9XxbrcfsGXIrq70lU=;
+        b=KhflycxC6nahAoqKg3QNVSS4CXikzsLl0GrYNoA9fC5Bw+vQpSANVUU8LLXjom+LjC
+         cUiHEkPWP3AMpGCmyTWs+L7uysllR9HkcKRGo3bCwiHWvaovqg/MmEsOT9eDTdmlzCvw
+         hliO47YLa8NKHfX4qO9Gc+LZSZbILKLomAfQTldXU+N5wqXE8kkvIuxgRGAqhxZxcWi0
+         d64tSElIrz1zJUrFbTHK1AvqZOka1R07SM/hlhCGzND52+rTDADIrl3rwHau1HJ4tNoD
+         as2llAvECSO6OGhOyxEdytzglF6EaJ2A1jJsC8lEnG4k7Pe/lChjbd0Rtot/yJeT9ctv
+         uguw==
+X-Gm-Message-State: AOAM530YFCNo4Mc0wWETCgJlUXV46EEAbuTNbluzg4iQsXVqaLSZOdgB
+        7kBU0OptkzWgd2v40Cqs3eY=
+X-Google-Smtp-Source: ABdhPJzKnkkjIzXgi1tDPo+v2f+wHtm5+3VzFCODnn3N+1zpxycHfhGPuHILK2gEze//H3tV8Ornfw==
+X-Received: by 2002:a17:90a:db44:: with SMTP id u4mr12891626pjx.180.1629603922441;
+        Sat, 21 Aug 2021 20:45:22 -0700 (PDT)
+Received: from fedora.. ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.googlemail.com with ESMTPSA id 136sm13841275pge.77.2021.08.21.20.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 20:45:22 -0700 (PDT)
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, ardb@kernel.org
+Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Subject: [PATCH v2] crypto: xts_crypt() return if walk.nbytes is 0
+Date:   Sun, 22 Aug 2021 09:15:14 +0530
+Message-Id: <20210822034514.926652-1-chouhan.shreyansh630@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210820125315.GB28484@gondor.apana.org.au>
+References: <20210820125315.GB28484@gondor.apana.org.au>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retrieve OF match data, it's better and cleaner to use
-'of_device_get_match_data' over 'of_match_device'.
+xts_crypt() code doesn't call kernel_fpu_end() after calling
+kernel_fpu_begin() if walk.nbytes is 0. The correct behavior should be
+not calling kernel_fpu_begin() if walk.nbytes is 0.
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Reported-by: syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
+Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
 ---
- drivers/tty/serial/vt8500_serial.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/x86/crypto/aesni-intel_glue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/vt8500_serial.c b/drivers/tty/serial/vt8500_serial.c
-index c5edd56ff..e15b2bf69 100644
---- a/drivers/tty/serial/vt8500_serial.c
-+++ b/drivers/tty/serial/vt8500_serial.c
-@@ -623,17 +623,14 @@ static int vt8500_serial_probe(struct platform_device *pdev)
- 	struct vt8500_port *vt8500_port;
- 	struct resource *mmres, *irqres;
- 	struct device_node *np = pdev->dev.of_node;
--	const struct of_device_id *match;
- 	const unsigned int *flags;
- 	int ret;
- 	int port;
- 
--	match = of_match_device(wmt_dt_ids, &pdev->dev);
--	if (!match)
-+	flags = of_device_get_match_data(&pdev->dev);
-+	if (!flags)
+diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
+index 388643ca2177..0fc961bef299 100644
+--- a/arch/x86/crypto/aesni-intel_glue.c
++++ b/arch/x86/crypto/aesni-intel_glue.c
+@@ -849,7 +849,7 @@ static int xts_crypt(struct skcipher_request *req, bool encrypt)
  		return -EINVAL;
  
--	flags = match->data;
--
- 	mmres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	irqres = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (!mmres || !irqres)
+ 	err = skcipher_walk_virt(&walk, req, false);
+-	if (err)
++	if (!walk.nbytes)
+ 		return err;
+ 
+ 	if (unlikely(tail > 0 && walk.nbytes < walk.total)) {
 -- 
-2.20.1.windows.1
-
-
+2.31.1
 
