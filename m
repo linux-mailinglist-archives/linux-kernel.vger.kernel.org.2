@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0A13F3F7B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD9F3F3F7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhHVNac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 09:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhHVNab (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 09:30:31 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EDCC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 06:29:49 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id j12-20020a05600c1c0c00b002e6d80c902dso8974591wms.4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 06:29:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ghFVv5lV5qranQx6DSdZ1UaRirduo1mHlUCU2zO78CY=;
-        b=bAGUSx0Ai/pwtfBG0lRxoK7bMH/28LVbtLfpyEWzCsFvcuQ3kk6z0g2PhDtUTxrl1F
-         kv7W47y88jL4me4x4L773+hv9O6QX+BSNHKh+dJX7et+IkkQwlCOsBIrRWzvxzCh1pMc
-         lIdvypeRL5g+x8lw+pGlNp/ppLjRNrldEzgjEtO9PKbfDiJMfG7GjxMOfcvd6jvLBIYC
-         e4mct3F5M/Ux1hC/XH+Q342cpPkieZgM/f0QArM7xYHlWSc9YAvr2C4NmnerKJcJ22V1
-         rzizX14xjH4EELKuYmNJKxawNAdvmlXbeJOHp3IqFsQyc7EzlgyCQutF1su9EL6ewLp/
-         7Qlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ghFVv5lV5qranQx6DSdZ1UaRirduo1mHlUCU2zO78CY=;
-        b=pR9UyCcj9xxpw1JYKZq5SHsFW3dFy73fhekG5aa9fNmMGlGjRuUT/E7w9o7XBQqNnx
-         kCticlNiI9+5QJdY6L8yq2cUia3Z9mVxBR1mTQD+HH7RiofCU8fN6bEBY1RLKxI1yqgX
-         H+VX0W19zduQh6P8vY8OHqJvaHklxUJADTs93rUS7/JqUqecQy+dQ1VIE9vK1v8Adk7D
-         gVVOLusD4yGTf2C+UJ20BOrerdn5fqIrtJg42Ibpb1eUrIM3YlLbhEXt7KIjPV9+CWqf
-         u/hGYuJvIJaQCDgcRKJU5kqSjzAHa429QXgDc34aM86zCZgcG7Pb9YdQJeVIJar++QHE
-         Oi+g==
-X-Gm-Message-State: AOAM531vqoAwmCMjiGgOETfhsf1lEhB0YZlW3hoZPfgX/uOSD7ApJRcg
-        X/+kDnB362TUQmDQppm5ixMwbTrPq3k=
-X-Google-Smtp-Source: ABdhPJxG9u4Ql7Z4irIJ+7rKnUTwSGszZC7cZov6YVCUiYVfU7xuzR4WjenIdZjA65EfcjxjdCAsVg==
-X-Received: by 2002:a7b:ca45:: with SMTP id m5mr11970115wml.158.1629638988479;
-        Sun, 22 Aug 2021 06:29:48 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id p9sm6800727wmq.40.2021.08.22.06.29.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 06:29:48 -0700 (PDT)
-Subject: Re: [PATCH 09/10] staging: r8188eu: remove unused members of struct
- _io_ops
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210821164859.4351-1-martin@kaiser.cx>
- <20210821164859.4351-9-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <97ed44a4-fe93-fb1c-6ef9-01b2c287ef16@gmail.com>
-Date:   Sun, 22 Aug 2021 15:28:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232398AbhHVNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 09:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230495AbhHVNay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 09:30:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16E306124E;
+        Sun, 22 Aug 2021 13:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629639013;
+        bh=R9YFws1+havCh2xzlF8mD4WZ2n5VX7IcPxztMq5h5X4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=whaSNbTpC6wDfKbyuM6vIGJSlm7n+Fhaj9FYc/KU7vJjRD01mi0UhTdwvVe1Z1kUh
+         Mh3zX0qCyDRtNh1y/eX7BPrCxCrsraC6UpZNK1DaQjbvOsgxIQekUY/rbVEJbNfQlj
+         ifw5+8cdqdphZwrthuChE6iBH3TkXmGxgztcjfAU=
+Date:   Sun, 22 Aug 2021 15:30:09 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH RFC 0/3] staging: r8188eu: avoid uninit value bugs
+Message-ID: <YSJRYRVAP6x0lx2q@kroah.com>
+References: <cover.1629479152.git.paskripkin@gmail.com>
+ <435eea22-da31-1ebc-840c-ee9e42b27265@gmail.com>
+ <YSJFhmTs74PUyo8b@kroah.com>
+ <2244219.zNr1yEsLHP@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210821164859.4351-9-martin@kaiser.cx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2244219.zNr1yEsLHP@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 6:48 PM, Martin Kaiser wrote:
-> Remove function pointers which are not used by the r8188eu driver.
+On Sun, Aug 22, 2021 at 03:21:30PM +0200, Fabio M. De Francesco wrote:
+> On Sunday, August 22, 2021 2:39:34 PM CEST Greg KH wrote:
+> > On Sun, Aug 22, 2021 at 03:10:56PM +0300, Pavel Skripkin wrote:
+> > > On 8/22/21 1:59 PM, Fabio M. De Francesco wrote:
+> > > > On Sunday, August 22, 2021 12:09:29 PM CEST Pavel Skripkin wrote:
+> [...]
+> > > > So, it's up to the callers to test if (!_rtw_read*()) and then act
+> > > > accordingly. If they get 0 they should know how to handle the errors.
+> > > 
+> > > Yes, but _rtw_read*() == 0 indicates 2 states:
+> > > 	1. Error on transfer side
+> > > 	2. Actual register value is 0
+> > 
+> > That's not a good design, it should be fixed.  Note there is the new
+> > usb_control_msg_recv() function which should probably be used instead
+> > here, to prevent this problem from happening.
 > 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/include/rtw_io.h | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
-> index f1b3074fa075..4b41c7b03972 100644
-> --- a/drivers/staging/r8188eu/include/rtw_io.h
-> +++ b/drivers/staging/r8188eu/include/rtw_io.h
-> @@ -100,13 +100,10 @@ struct _io_ops {
->   			  u8 *pmem);
->   	void (*_write_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
->   			   u8 *pmem);
-> -	void (*_sync_irp_protocol_rw)(struct io_queue *pio_q);
-> -	u32 (*_read_interrupt)(struct intf_hdl *pintfhdl, u32 addr);
->   	u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
->   			  u8 *pmem);
->   	u32 (*_write_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
->   			   u8 *pmem);
-> -	u32 (*_write_scsi)(struct intf_hdl *pintfhdl,u32 cnt, u8 *pmem);
->   	void (*_read_port_cancel)(struct intf_hdl *pintfhdl);
->   	void (*_write_port_cancel)(struct intf_hdl *pintfhdl);
->   };
-> 
+> I think that no functions should return 0 for signaling FAILURE. If I'm not 
+> wrong, the kernel quite always prefers to return 0 on SUCCESS and <0 on 
+> FAILURE. Why don't you just fix this?
 
-Looks good to me.
+Fix what specifically here?  The usb_control_msg() call?  If so, that is
+why usb_control_msg_recv() was created, as sometimes you do want to do
+what usb_control_msg() does today (see the users in the USB core today
+for examples of why this is needed.)
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
+In general, yes, 0 is success, negative is error, and positive is the
+number of bytes read/written.
 
-Thanks,
-Michael
+Anyway, let's see the second round of patches here before continuing
+this thread...
+
+thanks,
+
+greg k-h
