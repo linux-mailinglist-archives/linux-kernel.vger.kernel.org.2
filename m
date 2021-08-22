@@ -2,106 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ECA3F412C
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4C43F412E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbhHVTXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 15:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232845AbhHVTXn (ORCPT
+        id S232813AbhHVT1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 15:27:52 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:42208 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230373AbhHVT1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 15:23:43 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7ADC06175F;
-        Sun, 22 Aug 2021 12:23:01 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id q3so22757822edt.5;
-        Sun, 22 Aug 2021 12:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jdnBbcis2LRjQudu7rmiYqSfk0ZwyRk00EIcmbT2dtw=;
-        b=LvvZ9fplj5UTmUNevRsgsFYSQfT5JNWjExroXKrez2z3oolTtazTk8vXwzWzn2CGAg
-         hzO02jn0PQePSvej1UvWpItrJgNDulApXtGRL90xbGqVZb5aw2HstzxlHCDeS/wDTaxg
-         6ZAsN2+isQ9K56gtD8u8ZidJ5DsjyTts15b0vb6BMX09TBvbG6k1SJgsbofD7A0LgLXr
-         5qrBDBb566gYjoFJYmGI2ADEWclmH5aaJUXCwX0Y5+BBT5d12rTzSe3OVNEhOUwrs2cO
-         +dQuhOl594T2ssWJuNaMT2gZ7cjtl1W8OBmbe1N8jdjS4b9+WSgMSdzQPVH12JV9OV9m
-         f0+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jdnBbcis2LRjQudu7rmiYqSfk0ZwyRk00EIcmbT2dtw=;
-        b=CQdZPH0x4W6nzTpFKwGvYAWGUiBaCK+Y2R0A/iQtNtGn2BROkEfGVHOCTXopm72+cj
-         Ku8eUGmmW/oCDVU8/UztUGSV/vdQB1VU14ZbEYSA+DstZ6mhRH0qZmP70qEEyg3IUxP0
-         6EXm0lswxSTqGpqNhrJa6WGnhCZKdE8khXsimZJkvl3ZmtZXi/+7fuKwJaSZHUYwDd0t
-         WB+MSBBsU4H5Gw/PegUnsEfJL5tBaBDpNs2Pwj7ui8/ztpJNL/+I5SDqEx8mdyJWtqjk
-         427GRxbCv9PdSLjOBuh8sVUNLfwhJ0607f/5msLTu5rzfZV2bm/6Gv1I2C63yNBi4NNQ
-         9z9g==
-X-Gm-Message-State: AOAM533EhooNZait4UD2n9B+RXDIM1f7ndtpBblJw8X7FQ7kq1286+yu
-        QW87FoWwYA+VovbAiVsU34M=
-X-Google-Smtp-Source: ABdhPJzw4U8q5rbTZB4+t8IPMaGPN4XsSdfbVfzHaDlRF9s6uGKMK48Tr9YlkcxOHPhdpKwN2NPs3w==
-X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr4945814edb.112.1629660180229;
-        Sun, 22 Aug 2021 12:23:00 -0700 (PDT)
-Received: from localhost.localdomain ([147.235.73.50])
-        by smtp.googlemail.com with ESMTPSA id o6sm1577950eje.6.2021.08.22.12.22.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 12:23:00 -0700 (PDT)
-From:   Ariel Marcovitch <arielmarcovitch@gmail.com>
-Cc:     Ariel Marcovitch <arielmarcovitch@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] checkkconfigsymbols.py: Forbid passing 'HEAD' to --commit
-Date:   Sun, 22 Aug 2021 22:22:03 +0300
-Message-Id: <20210822192205.43210-4-arielmarcovitch@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210822192205.43210-1-arielmarcovitch@gmail.com>
-References: <20210822192205.43210-1-arielmarcovitch@gmail.com>
+        Sun, 22 Aug 2021 15:27:51 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d51 with ME
+        id kjT7250073riaq203jT78r; Sun, 22 Aug 2021 21:27:08 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 21:27:08 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     haver@linux.ibm.com, arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] misc: genwqe: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 21:27:06 +0200
+Message-Id: <a9057c3fff852a043298a2091c7fc3c371306da4.1629660362.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As opposed to the --diff option, --commit can get ref names instead of
-commit hashes.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-When using the --commit option, the script resets the working directory
-to the commit before the given ref, by adding '~' to the end of the ref.
+The patch has been generated with the coccinelle script below.
 
-However, the 'HEAD' ref is relative, and so when the working directory
-is reset to 'HEAD~', 'HEAD' points to what was 'HEAD~'. Then when the
-script resets to 'HEAD' it actually stays in the same commit. In this
-case, the script won't report any cases because there is no diff between
-the cases of the two refs.
+It has been compile tested.
 
-Prevent the user from using HEAD refs.
 
-A better solution might be to resolve the refs before doing the
-reset, but for now just disallow such refs.
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- scripts/checkkconfigsymbols.py | 3 +++
- 1 file changed, 3 insertions(+)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/misc/genwqe/card_utils.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
-index 875e9a2c14b2..6259698e662d 100755
---- a/scripts/checkkconfigsymbols.py
-+++ b/scripts/checkkconfigsymbols.py
-@@ -103,6 +103,9 @@ def parse_options():
-                      "continue.")
+diff --git a/drivers/misc/genwqe/card_utils.c b/drivers/misc/genwqe/card_utils.c
+index 039b923d1d60..1167463f26fb 100644
+--- a/drivers/misc/genwqe/card_utils.c
++++ b/drivers/misc/genwqe/card_utils.c
+@@ -233,8 +233,8 @@ static void genwqe_unmap_pages(struct genwqe_dev *cd, dma_addr_t *dma_list,
+ 	struct pci_dev *pci_dev = cd->pci_dev;
  
-     if args.commit:
-+        if args.commit.startswith('HEAD'):
-+            sys.exit("The --commit option can't get use the HEAD ref")
-+
-         args.find = False
+ 	for (i = 0; (i < num_pages) && (dma_list[i] != 0x0); i++) {
+-		pci_unmap_page(pci_dev, dma_list[i],
+-			       PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
++		dma_unmap_page(&pci_dev->dev, dma_list[i], PAGE_SIZE,
++			       DMA_BIDIRECTIONAL);
+ 		dma_list[i] = 0x0;
+ 	}
+ }
+@@ -251,12 +251,12 @@ static int genwqe_map_pages(struct genwqe_dev *cd,
+ 		dma_addr_t daddr;
  
-     if args.ignore:
+ 		dma_list[i] = 0x0;
+-		daddr = pci_map_page(pci_dev, page_list[i],
++		daddr = dma_map_page(&pci_dev->dev, page_list[i],
+ 				     0,	 /* map_offs */
+ 				     PAGE_SIZE,
+-				     PCI_DMA_BIDIRECTIONAL);  /* FIXME rd/rw */
++				     DMA_BIDIRECTIONAL);  /* FIXME rd/rw */
+ 
+-		if (pci_dma_mapping_error(pci_dev, daddr)) {
++		if (dma_mapping_error(&pci_dev->dev, daddr)) {
+ 			dev_err(&pci_dev->dev,
+ 				"[%s] err: no dma addr daddr=%016llx!\n",
+ 				__func__, (long long)daddr);
 -- 
-2.25.1
+2.30.2
 
