@@ -2,266 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5A53F3FAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2BE3F3FB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhHVOFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:05:02 -0400
-Received: from out07.smtpout.orange.fr ([193.252.22.91]:21784 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230495AbhHVOE7 (ORCPT
+        id S232503AbhHVOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhHVOGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:04:59 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d74 with ME
-        id ke4E250053riaq203e4Edf; Sun, 22 Aug 2021 16:04:16 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 16:04:16 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     sanju.mehta@amd.com, Shyam-sundar.S-k@amd.com, jdmason@kudzu.us,
-        dave.jiang@intel.com, allenbh@gmail.com, fancer.lancer@gmail.com
-Cc:     linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] NTB: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 16:04:12 +0200
-Message-Id: <6a1db73ba4e46958cb40d3766eff771ef5d7a11b.1629640974.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 10:06:44 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6344BC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:06:03 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id z9so21918058wrh.10
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p7ph3WcOBLhIzLLXreA5sxLtbJ/7/kTwoO02MA088Jk=;
+        b=esvH4DB7Y0QbmDJBfJhGYqLk+7oDXzoCRsI/j0NfluAIVS17q9u56DM3wQAysgTQL+
+         5eJYqzEcBbNpvXRTN8lXm2/x9YlrXL0Dx0RZ1U7ezRdGgbdz2qOMz5ViaBThSa4MXy0V
+         56JyuufHqxaTF6KhJbeIhQySqpIaVax6Z4Giv22FrmxpznwHLXV4dTuxLYIFvKMKhwZu
+         ly1icmr2l0DMH7aFYzE82taNHSggZMRHQmbwmQPcOGZzOP1r8mV+LYw/NEBQGS2hQhbP
+         Ec88ezHiYlyi/FBefl4T5VfWFImeis4tu+4EBk8BdSaJWp/9/DtPTdH0OYiY5HKOoZgi
+         ircw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p7ph3WcOBLhIzLLXreA5sxLtbJ/7/kTwoO02MA088Jk=;
+        b=WtGoGuaaC9Csmr/jgIJ5zVFj5bvvomh3GKJ7JZSUVcWpp9ETUa1zUsAllJSYfn242p
+         T+KRRIdFMr2BpqWE7ruVdpmma/9AVytCQEly05u3/9Y/ey46rKHKhLooW76+HxqoVK/M
+         7dBx8rWoN9GVq0G7C+qT4N+gD/ZANtwbTBbNGewUt4W0086aUwZfjg6/PVieiIIMeDnD
+         FkADSuDQePVnP1vlNspwkAyT7yqWVF9osUTajwTyDQsywhigl8bJQgn2PQhdhjqQtBUy
+         m+j9dKOCj3gnMdn2K0KpsxPOMc1EtIs8VUvhcSTkNSkI5zzec2x2uSb3P/PJFbWpWHiB
+         zd7w==
+X-Gm-Message-State: AOAM532Z8w2ElTaoRjOXp3lHUtx++T9FREDpedBN8ut7Er5V5VKbJzNf
+        VUUympyov4PJPmZ0FI1rKxjccT8cxJs=
+X-Google-Smtp-Source: ABdhPJypQdvMGuxBIT1Ij27zwny4+xrymYItqJ+7TKyqWeH5NyozhFwU/5Ou9E0HWtwugVEXWnX7OQ==
+X-Received: by 2002:a5d:456a:: with SMTP id a10mr8726291wrc.339.1629641162075;
+        Sun, 22 Aug 2021 07:06:02 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
+        by smtp.gmail.com with ESMTPSA id b15sm12363863wrq.5.2021.08.22.07.06.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 07:06:01 -0700 (PDT)
+Subject: Re: [PATCH 10/10] staging: r8188eu: set pipe only once
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210821164859.4351-1-martin@kaiser.cx>
+ <20210821164859.4351-10-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+Message-ID: <088d6fbb-b231-e669-1f0d-5adea7ac4685@gmail.com>
+Date:   Sun, 22 Aug 2021 16:05:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210821164859.4351-10-martin@kaiser.cx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On 8/21/21 6:48 PM, Martin Kaiser wrote:
+> Set the pipe for reading or writing in usbctrl_vendorreq only once.
+> There's no need to set it again for every retry.
+> 
+> This patch is an adaptation of commit 889ed8b5e374 ("staging: rtl8188eu:
+> set pipe only once") for the new r8188eu driver.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/hal/usb_ops_linux.c | 15 ++++++++-------
+>   1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index 5408383ccec3..5a55ee38d7b8 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -40,15 +40,16 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>   		goto release_mutex;
+>   	}
+>   
+> -	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
+> -		memset(pIo_buf, 0, len);
+> +	if (requesttype == REALTEK_USB_VENQT_READ)
+> +		pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
+> +	else
+> +		pipe = usb_sndctrlpipe(udev, 0);/* write_out */
+>   
+> -		if (requesttype == REALTEK_USB_VENQT_READ) {
+> -			pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
+> -		} else {
+> -			pipe = usb_sndctrlpipe(udev, 0);/* write_out */
+> +	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
+> +		if (requesttype == REALTEK_USB_VENQT_READ)
+> +			memset(pIo_buf, 0, len);
+> +		else
+>   			memcpy(pIo_buf, pdata, len);
+> -		}
+>   
+>   		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+>   					 requesttype, value, REALTEK_USB_VENQT_CMD_IDX,
+> 
 
-The patch has been generated with the coccinelle script below.
+Looks good to me.
 
-It has been compile tested.
+Acked-by: Michael Straube <straube.linux@gmail.com>
 
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-
-This patch is mostly mechanical and compile tested. I hope it is ok to
-update the "drivers/ntb/hw/" directory all at once.
----
- drivers/ntb/hw/amd/ntb_hw_amd.c    | 12 ++----------
- drivers/ntb/hw/idt/ntb_hw_idt.c    | 15 ++-------------
- drivers/ntb/hw/intel/ntb_hw_gen1.c | 12 ++----------
- 3 files changed, 6 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/ntb/hw/amd/ntb_hw_amd.c b/drivers/ntb/hw/amd/ntb_hw_amd.c
-index 71428d8cbcfc..87847c380051 100644
---- a/drivers/ntb/hw/amd/ntb_hw_amd.c
-+++ b/drivers/ntb/hw/amd/ntb_hw_amd.c
-@@ -1176,22 +1176,14 @@ static int amd_ntb_init_pci(struct amd_ntb_dev *ndev,
- 
- 	pci_set_master(pdev);
- 
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (rc) {
--		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (rc)
- 			goto err_dma_mask;
- 		dev_warn(&pdev->dev, "Cannot DMA highmem\n");
- 	}
- 
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (rc) {
--		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (rc)
--			goto err_dma_mask;
--		dev_warn(&pdev->dev, "Cannot DMA consistent highmem\n");
--	}
--
- 	ndev->self_mmio = pci_iomap(pdev, 0, 0);
- 	if (!ndev->self_mmio) {
- 		rc = -EIO;
-diff --git a/drivers/ntb/hw/idt/ntb_hw_idt.c b/drivers/ntb/hw/idt/ntb_hw_idt.c
-index e7a4c2aa8baa..733557231ed0 100644
---- a/drivers/ntb/hw/idt/ntb_hw_idt.c
-+++ b/drivers/ntb/hw/idt/ntb_hw_idt.c
-@@ -2640,26 +2640,15 @@ static int idt_init_pci(struct idt_ntb_dev *ndev)
- 	int ret;
- 
- 	/* Initialize the bit mask of PCI/NTB DMA */
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (ret != 0) {
--		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (ret != 0) {
- 			dev_err(&pdev->dev, "Failed to set DMA bit mask\n");
- 			return ret;
- 		}
- 		dev_warn(&pdev->dev, "Cannot set DMA highmem bit mask\n");
- 	}
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (ret != 0) {
--		ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (ret != 0) {
--			dev_err(&pdev->dev,
--				"Failed to set consistent DMA bit mask\n");
--			return ret;
--		}
--		dev_warn(&pdev->dev,
--			"Cannot set consistent DMA highmem bit mask\n");
--	}
- 
- 	/*
- 	 * Enable the device advanced error reporting. It's not critical to
-diff --git a/drivers/ntb/hw/intel/ntb_hw_gen1.c b/drivers/ntb/hw/intel/ntb_hw_gen1.c
-index 093dd20057b9..e5f14e20a9ff 100644
---- a/drivers/ntb/hw/intel/ntb_hw_gen1.c
-+++ b/drivers/ntb/hw/intel/ntb_hw_gen1.c
-@@ -1771,22 +1771,14 @@ static int intel_ntb_init_pci(struct intel_ntb_dev *ndev, struct pci_dev *pdev)
- 
- 	pci_set_master(pdev);
- 
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (rc) {
--		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (rc)
- 			goto err_dma_mask;
- 		dev_warn(&pdev->dev, "Cannot DMA highmem\n");
- 	}
- 
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (rc) {
--		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (rc)
--			goto err_dma_mask;
--		dev_warn(&pdev->dev, "Cannot DMA consistent highmem\n");
--	}
--
- 	ndev->self_mmio = pci_iomap(pdev, 0, 0);
- 	if (!ndev->self_mmio) {
- 		rc = -EIO;
--- 
-2.30.2
-
+Thanks,
+Michael
