@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6F23F4099
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3B93F409C
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhHVQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 12:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        id S231259AbhHVRFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 13:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhHVQ7e (ORCPT
+        with ESMTP id S229477AbhHVRFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 12:59:34 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE3C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 09:58:53 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mHqo0-0008Gc-AP; Sun, 22 Aug 2021 18:58:44 +0200
-Date:   Sun, 22 Aug 2021 18:58:44 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/10] staging: r8188eu: clean up the usb_writeN
-Message-ID: <20210822165844.2h6yt42ejshw7tnc@viti.kaiser.cx>
-References: <20210821164859.4351-1-martin@kaiser.cx>
- <20210821164859.4351-8-martin@kaiser.cx>
- <6593f24b-8986-df5f-e2ba-5358360939df@gmail.com>
+        Sun, 22 Aug 2021 13:05:10 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC27EC061575;
+        Sun, 22 Aug 2021 10:04:28 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id s25so9662836edw.0;
+        Sun, 22 Aug 2021 10:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pUhcEqU+ZOQSh1pqtcVaDKol4jZl9qqosLL03IwQCwI=;
+        b=SRURG8Ghxgf5zrl/KaywI4BeZ6O6ZKJ/YWBoWfw95lgv1yIX38ujGtFadm/yWGRWyY
+         pA4q+PMZ6hT/63AyNXzHJaprwRpH9aZm1lVXZSS1Gt3PjfhyONRPF78zB0pLI+yqZoFz
+         3h9J88w6UdMWzKCX0vC53H+ZLfYxiatFuVYIDpgdLhhX8kPi/Vzfz6Uz2zEvuuraokd/
+         wfZacbH06ThR+6r6RltOisIArPam00kaYeBBvzau99L0q7Qnzs363rz3v972bDFn0iUW
+         4d79ghP8VPvnpIJnHMIGPfgS86dlfxc+FPCIwghszS7BdxxmsYeRpRpTre46L7/ljTCF
+         BfLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pUhcEqU+ZOQSh1pqtcVaDKol4jZl9qqosLL03IwQCwI=;
+        b=QcOARvrn+6ix/rlazamaHrz4zIdxg5kOUP8IB2IiESej6HIeaobbxXBZUH3Ao3rG9L
+         ceBgNXtSoWrO1CO9yUKy32h7wdLbM9qkUHHc5EB4cAKMt5rxAU+7a22zzMin3A3xYFUC
+         LR4d48eNSXyrk1r5sTWH0FScNcV8oM9h/v24jJn30pra4X3Z8sM0jJX/CEtfiiJTub6Z
+         aX25K3VHIf1q3ZVUd8K/l1RiRDaOk8oaYPVUdZjBJe9x6oXtETdHUmZvUZ6cwa7jTZRm
+         qLKimDkYCkNllXLmFMbDuuDNKbq4R/j6nd4PluzFdUKdW+j+punE1YfaFCLnJQ5idgAh
+         3RVQ==
+X-Gm-Message-State: AOAM5302LOAZL3KcYctSqjB5lj1yBF0En/ZLWbfhhI+EAAv6zc7u5mZC
+        xNdDJxWJUWfTgB4xwCVDMCv/WKVtA8NF50FCeV0=
+X-Google-Smtp-Source: ABdhPJz+Rhplwjyhy1l+jgu+LHSgx/fM/lmZPSaoqLXETlHorGhUoDm8C4GnJ9XjXSJoeidJAjOsVAEUOZbjqO5Eqpo=
+X-Received: by 2002:aa7:d681:: with SMTP id d1mr33905628edr.186.1629651867490;
+ Sun, 22 Aug 2021 10:04:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6593f24b-8986-df5f-e2ba-5358360939df@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+References: <ccce7edb-54dd-e6bf-1e84-0ec320d8886c@linux.ibm.com>
+ <cover.1628235065.git.vvs@virtuozzo.com> <77f3e358-c75e-b0bf-ca87-6f8297f5593c@virtuozzo.com>
+ <CALMXkpaay1y=0tkbnskr4gf-HTMjJJsVryh4Prnej_ws-hJvBg@mail.gmail.com>
+ <CALMXkpa4RqwssO2QNKMjk=f8pGWDMtj4gpQbAYWbGDRfN4J6DQ@mail.gmail.com> <ff75b068-8165-a45c-0026-8b8f1c745213@virtuozzo.com>
+In-Reply-To: <ff75b068-8165-a45c-0026-8b8f1c745213@virtuozzo.com>
+From:   Christoph Paasch <christoph.paasch@gmail.com>
+Date:   Sun, 22 Aug 2021 10:04:16 -0700
+Message-ID: <CALMXkpZVkqFDKiCa4yHV0yJ7qEESqzcanu4mrWTNvc9jm=gxcw@mail.gmail.com>
+Subject: Re: [PATCH NET v4 3/7] ipv6: use skb_expand_head in ip6_xmit
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
+        Julian Wiedmann <jwi@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hello Vasily,
 
-Thus wrote Michael Straube (straube.linux@gmail.com):
+On Fri, Aug 20, 2021 at 11:21 PM Vasily Averin <vvs@virtuozzo.com> wrote:
+>
+> On 8/21/21 1:44 AM, Christoph Paasch wrote:
+> > (resend without html - thanks gmail web-interface...)
+> > On Fri, Aug 20, 2021 at 3:41 PM Christoph Paasch
+> >> AFAICS, this is because pskb_expand_head (called from
+> >> skb_expand_head) is not adjusting skb->truesize when skb->sk is set
+> >> (which I guess is the case in this particular scenario). I'm not
+> >> sure what the proper fix would be though...
+>
+> Could you please elaborate?
+> it seems to me skb_realloc_headroom used before my patch called pskb_expand_head() too
+> and did not adjusted skb->truesize too. Am I missed something perhaps?
+>
+> The only difference in my patch is that skb_clone can be not called,
+> though I do not understand how this can affect skb->truesize.
 
-> On 8/21/21 6:48 PM, Martin Kaiser wrote:
-> > Remove unnecessary variables, check the length.
+I *believe* that the difference is that after skb_clone() skb->sk is
+NULL and thus truesize will be adjusted.
 
-> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > ---
-> >   drivers/staging/r8188eu/hal/usb_ops_linux.c | 15 +++++----------
-> >   1 file changed, 5 insertions(+), 10 deletions(-)
+I will try to confirm that with some more debugging.
 
-> > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > index e01f1ac19596..5408383ccec3 100644
-> > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > @@ -151,20 +151,15 @@ static int usb_write32(struct intf_hdl *pintfhdl, u32 addr, u32 val)
-> >   static int usb_writeN(struct intf_hdl *pintfhdl, u32 addr, u32 length, u8 *pdata)
-> >   {
-> > -	u16 wvalue;
-> > -	u16 len;
-> > +	u16 wvalue = (u16)(addr & 0x0000ffff);
-> >   	u8 buf[VENDOR_CMD_MAX_DATA_LEN] = {0};
-> > -	int ret;
-> > -
-> > +	if (length > VENDOR_CMD_MAX_DATA_LEN)
-> > +		return -EINVAL;
-> > -	wvalue = (u16)(addr & 0x0000ffff);
-> > -	len = length;
-> > -	memcpy(buf, pdata, len);
-> > +	memcpy(buf, pdata, length);
 
-> Hi Martin, shouldn't this be
+Christoph
 
-> memcpy(buf, pdata, (length & 0xffff));
-
-I don't think this makes any difference. I've already checked that
-length <= VENDOR_CMD_MAX_DATA_LEN, which is 254. memcpy takes a size_t
-parameter for the number of bytes to copy. length will not overflow
-this.
-
-Best regards,
-Martin
+>
+> Thank you,
+>         Vasily Averin
