@@ -2,210 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64FC3F3FC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135A03F3FC6
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbhHVOd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhHVOd0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:33:26 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C16C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:32:44 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id z20so31097880ejf.5
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vg4WCN3mkUp7qTb1jC4H7HoR8bVBq2cRQ0LNC0/9UWg=;
-        b=ARWJ7A13oKc6fIxvw1k6Tm3IRISZ4Wl5pRZGhmInO+/UuRhfXxmF4UlzkQq6B9PNd0
-         3PbIuOwy4cG1+RlEY8Lmu5vYXOV5RWJmfjS7A+kKcKk75gYQ1fDNfHMyWr42KbESHSpy
-         /DCZOECf5bc0aT0KIHganVfoCgkWEq94J9NsBr3eIYkBsRVkfPnb2RpwVgBuuwhCnV4g
-         +NnbEzb83r2TRzwKZk4qSx8gVgeRpH+ZYAqBFZk/hlTuiiK/ir3OtEQ5sZ47+icwDPKc
-         oReth/2/pskOUmmLo5yDUF4GlOpSQTOXgiS+ZPZcT11jisTUj4DV2P+sjWE3mAfcKFX8
-         HaFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vg4WCN3mkUp7qTb1jC4H7HoR8bVBq2cRQ0LNC0/9UWg=;
-        b=JVKZSph0L3vIVfae+IK9sCZs24sRCy3qJP0OFGF1uIwdfyLVv08hqVnc+bbnz8R2Ch
-         HWSBOj4yG2nZshZKJwykS5mUCsmD5AItXYhcWF6UT0HVlZg2WMK9Y9F1rgNjohgEAIX1
-         kV4ynhJymH09OsQ1nYVJKg3JAv4FLgdNIoK5iyx8BRHsZN51wNa+DrjRpdLEwEuFuKkk
-         ttct88th8/IueUUOanZKRzc/+iWsEwazfPwWZ+MlfWnNFY12i/aWgN7lM3GfS6ItyVvx
-         AKLRGKREWaDpQSjfr7WGKg/JY7sJ+GpyPony7F0NDS6sMi0BGc/gQ1hfzcCK+jf7tFDC
-         ep8g==
-X-Gm-Message-State: AOAM5315y/UP5Yx1VLbHm8wQJViMsdp5IJzA2PyTSZ5CIFQ1R/+NR6wd
-        nesQRitKzlhmdCKweYRx/4Abojp/Hs3SP5+7ni+ENQ==
-X-Google-Smtp-Source: ABdhPJw5LCjDQ9tRbHA/p3KiLXSnjc2x8oAhJStrqYw99HufdNCAiPBvAvvFJ1Z/wM2OjbFxyQQwDSve9mRXAa+1qmw=
-X-Received: by 2002:a17:906:2ad5:: with SMTP id m21mr31110981eje.88.1629642763303;
- Sun, 22 Aug 2021 07:32:43 -0700 (PDT)
+        id S233549AbhHVOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233083AbhHVOdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 10:33:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F95C6108F;
+        Sun, 22 Aug 2021 14:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1629642793;
+        bh=/M5M7M3uw6bD5MioVp4OF7lrydKW9ZZEFDacWYufkr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vWAkUtJCQLnIwksGvXDOZap94qbPWwjhfCMpsbJWxz8vW1T3NU7PnzMrtWyyAvjM2
+         Co7o4jjfhRZBCwn4SD444ghrdd0yvNT5XC6kiu31Gn6FwriROgaxD3SgrJTFpFn4Uh
+         rs/hbPk9rABbkfowHUPdpxB0tDoCv9YTHZ4BbrX8=
+Date:   Sun, 22 Aug 2021 16:33:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: TODO list for staging/r8188eu
+Message-ID: <YSJgJFEIGQEo30jB@kroah.com>
+References: <1897566.d8lQ4HMSh1@localhost.localdomain>
+ <YSJE6aoH96kh777R@kroah.com>
+ <2099975.VbY6Rib6K3@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
- <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com>
- <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
- <CAAEAJfCTrKj9AFExN-L-TKww4E=us1VVh8LHtZ8Q0j_eaCD4Eg@mail.gmail.com> <1629446378.18871.27.camel@mhfsdcap03>
-In-Reply-To: <1629446378.18871.27.camel@mhfsdcap03>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Sun, 22 Aug 2021 11:32:32 -0300
-Message-ID: <CAAEAJfCdvj4drV+YSbvyR30b0+50RpJcOYdEoNODTdrAoL6+vA@mail.gmail.com>
-Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
- hardware decode
-To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        George Sun <george.sun@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2099975.VbY6Rib6K3@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 at 04:59, yunfei.dong@mediatek.com
-<yunfei.dong@mediatek.com> wrote:
->
-> Hi Ezequiel,
->
-> Thanks for your detail feedback.
->
-> On Thu, 2021-08-19 at 11:10 -0300, Ezequiel Garcia wrote:
-> > On Thu, 19 Aug 2021 at 04:13, yunfei.dong@mediatek.com
-> > <yunfei.dong@mediatek.com> wrote:
-> > >
-> > > Hi Ezequiel,
-> > >
-> > > Thanks for your suggestion.
-> > >
-> > > On Wed, 2021-08-18 at 11:11 -0300, Ezequiel Garcia wrote:
-> > > > +danvet
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com>
-> > > > wrote:
-> > > > >
-> > > > > This series adds support for multi hardware decode into mtk-vcodec,
-> > > > > by first
-> > > > > adding component framework to manage each hardware information:
-> > > > > interrupt,
-> > > > > clock, register bases and power. Secondly add core thread to deal
-> > > > > with core
-> > > > > hardware message, at the same time, add msg queue for different
-> > > > > hardware
-> > > > > share messages. Lastly, the architecture of different specs are not
-> > > > > the same,
-> > > > > using specs type to separate them.
-> > > > >
-> > > >
-> > > > I don't think it's a good idea to introduce the component API in the
-> > > > media subsystem. It doesn't seem to be maintained, IRC there's not
-> > > > even
-> > > > a maintainer for it, and it has some issues that were never
-> > > > addressed.
-> > > >
-> > > > It would be really important to avoid it. Is it really needed in the
-> > > > first place?
-> > > >
-> > > > Thanks,
-> > > > Ezequiel
-> > >
-> > > For there are many hardware need to use, mt8192 is three and mt8195 is
-> > > five. Maybe need more to be used in the feature.
-> > >
-> > > Each hardware has independent clk/power/iommu port/irq.
-> > > Use component interface in prob to get each component's information.
-> > > Just enable the hardware when need to use it, very convenient and
-> > > simple.
-> > >
-> > > I found that there are many modules use component to manage hardware
-> > > information, such as iommu and drm etc.
-> > >
-> >
-> > Many drivers support multiple hardware variants, where each variant
-> > has a different number of clocks or interrupts, see for instance
-> > struct hantro_variant which allows to expose different codec cores,
-> > some having both decoder/encoder, and some having just a decoder.
-> >
-> > The component API is mostly used by DRM to aggregate independent
-> > subdevices (called components) into an aggregated driver.
-> >
-> > For instance, a DRM driver needs to glue together the HDMI, MIPI,
-> > and plany controller, or any other hardware arrangement where
-> > devices can be described independently.
-> >
-> The usage scenario is very similar with drm and iommu, So decide to use
-> component framework.
-> Decode has three/five or more hardwares, these hardware are independent.
-> For mt8183 just need core hardware to decode, but mt8192 has lat,soc and
-> core hardware to decode. When lat need to use, just enable lat hardware,
-> core is the same.And mt8195 will has two cores, each core can work well
-> independent.
->
-> For each component device just used to open their power/clk/iommu
-> port/irq when master need to enable it. The main logic is in master
-> device.
->
-> > The component API may look simple but has some issues, it's not easy
-> > to debug, and can cause troubles if not used as expected [1].
-> > It's worth making sure you actually need a framework
-> > to glue different devices together.
-> >
-> Each hardware has its index, master can get hardware information
-> according these index, looks not complex. What do you mean about not
-> easy to debug?
->
-> > > Do you have any other suggestion for this architecture?
-> > >
-> >
-> > Looking at the different patchsets that are posted, it's not clear
-> > to me what exactly are the different architectures that you intend
-> > to support, can you some documentation which clarifies that?
-> >
-> Have five hardwares lat,soc,core0,core1 and main. Lat thread can use lat
-> soc and main, core thread can use soc,lat, core0 and core1. Core thread
-> can be used or not for different project.
+On Sun, Aug 22, 2021 at 03:50:14PM +0200, Fabio M. De Francesco wrote:
+> On Sunday, August 22, 2021 2:36:57 PM CEST Greg Kroah-Hartman wrote:
+> > On Sun, Aug 22, 2021 at 09:41:20AM +0200, Fabio M. De Francesco wrote:
+> > > Dear Larry, Philip,
+> > > 
+> > > >From what I understand how the development process works, drivers in 
+> staging
+> > > 
+> > > should have a to-do list in the TODO file. Please read https://
+> www.kernel.org/
+> > > doc/html/latest/process/2.Process.html?highlight=todo#staging-trees.
+> > > 
+> > > Could you (as the maintainers of the r8188eu driver) please compile and
+> > > provide the above mentioned list?
+> > 
+> > Why don't you provide an initial list for people to work off of if you
+> > feel it is needed here?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> Unfortunately I'm not able to tell what is needed to do to have a driver 
+> improved so that it can be moved off staging. This work should be better 
+> addressed by someone who is much more experienced.
+> 
+> For example, I read from other drivers TODO lists that cfg80211 and lib80211 
+> are required but I don't know what they are.
 
-Can you explain what are these lat,soc and core threads for?
+Those are two things that are also required here as well, like all
+in-kernel wifi drivers.
 
-> Also Need to use these
-> hardware dynamic at the same time. So I use component framework, just
-> need to know the used  hardware index according to different
-> project.Need not to do complex logic to manage these hardwares.
->
-
-I am not thrilled to see the component framework introduced to the
-media subsystem. Like I said, it has no clear maintainer, and it's not
-easy to use.
-
-The media subsystem has some support which AFAIK does the same thing,
-see v4l2-async, which is maintained by media people.
-
-Please push a branch based on media/master containing these changes.
-I see there are other patch series for this device, but it's hard to track
-which goes first, etc.
-
-Thanks,
-Ezequiel
