@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBF33F41C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 23:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92023F41C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 23:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhHVVge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 17:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhHVVgd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 17:36:33 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966C6C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 14:35:51 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x12so23160046wrr.11
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 14:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=7sxYqjwVAh2KPTFtTekiApJHGszef2/EHALZLjtNKNY=;
-        b=gASXtj+aLzOh0p5nrZg9kiLYBcSvAjgsSOtr/3pGNdb+wZznwCqkMzr08skM1WeSFM
-         D8ZE8DCav72lgevtRSOYLQt6Fn1avEGmdqg3JkxpaTmecEcWuhKC9YyI8jgzVnMz9Y/a
-         pJ8ds8W4HyZhHOdry1y91z6ZF6bh6qQoe7cm0RPkWY/zH89/2ck5HZgkR9wR1tuA6fi4
-         p1tJTO1uhd+ltLp/T3nSGgb2HkZ/fBjAGypVTZfbB/SpI7xNA661HHQnrMOU4Kkts+/S
-         WQrG/uiOmECTtXlqQwLJ3KUEsnO/DLuETOalmUwU4Avmlcui1smzE/QJQzzBCCPln+zj
-         m7Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=7sxYqjwVAh2KPTFtTekiApJHGszef2/EHALZLjtNKNY=;
-        b=LPqhwWgt+sv4nJRKBfftKVP1pO+RAEhDcEoBBwFPg9JRtVrryjqAWoZilTY3RfAuJk
-         0dTFD7oH+hOtTVL+NlmYIIuukIFo1tWCeqY65VA6/ty23Gee+iVGO2jNnu/l09p8ZUEh
-         IXMTQdB4jJgrFhrzssWXGVIeg1gtYDZx3HqmqgVXMtEjB6fSi5zkmkOvI5ZfUriSPyfu
-         5x8Nu22b8BUJ0qbJsm2nMT/my94M5zgdk1fJnZPmz+YgNVtYtsjHmKizHhCIPuaeB5Rm
-         z2xBMKi8A6xSyP4qjM/Id2rD7n0RXB3nS9HN9Z3uWcBmTXec4R7Zt0pxQ5WUqVa5k3Ud
-         5tUQ==
-X-Gm-Message-State: AOAM530bpJ74H6CyH5E4dPoBN5rN73CfqHsGu8aRiwkxgWjU6E3tEiGr
-        Wk1tDFshDfXmgbd4EQVqtpwUXETVw7QTzQc9Kwc=
-X-Google-Smtp-Source: ABdhPJwT85nu/MaubhbcQtQlALLA215mGdup+DsYYHAHgQsxW+NqUVEOKzFzAWBPzVwuR5d91OANFiZ1xpflVbQGB3k=
-X-Received: by 2002:adf:a408:: with SMTP id d8mr9894133wra.279.1629668149984;
- Sun, 22 Aug 2021 14:35:49 -0700 (PDT)
+        id S233533AbhHVVlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 17:41:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:35508 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhHVVlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 17:41:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=WjHgg2RoVpjMaNdEtPWxt1gfEbjLkGTCJql1tYv9138=; b=k1
+        ouKxQ/NcaV6l2WRqLE/XMZc5syUMG78Jd5K/ifYD7UUvVeBL+hAaMqrhviqwVu6IZZSV/MNJ20dD9
+        eujAxUTrEHmbHBnt88u4LiU9dw4zNmy13iIcMAHj+wTUZYpb/GZ7aZ7q7dC/rvPawEWYx/Mr0x7/M
+        M3FX9ti1u6ZPNjQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mHvD4-003Nb2-78; Sun, 22 Aug 2021 23:40:54 +0200
+Date:   Sun, 22 Aug 2021 23:40:54 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, mir@bang-olufsen.dk,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 1/5] net: dsa: realtek-smi: fix mdio_free
+ bug on module unload
+Message-ID: <YSLEZmuWlD5kUOlx@lunn.ch>
+References: <20210822193145.1312668-1-alvin@pqrs.dk>
+ <20210822193145.1312668-2-alvin@pqrs.dk>
 MIME-Version: 1.0
-Received: by 2002:adf:806a:0:0:0:0:0 with HTTP; Sun, 22 Aug 2021 14:35:49
- -0700 (PDT)
-Reply-To: mrschantelhermans@gmail.com
-From:   Mrs Chantel Hermans <michaelwilliam444a@gmail.com>
-Date:   Sun, 22 Aug 2021 14:35:49 -0700
-Message-ID: <CAKW70Jh5CpUOAN5c64TYF9si+TwLGp0mem9b8kUxVZLXgGj1dQ@mail.gmail.com>
-Subject: ATTENTION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210822193145.1312668-2-alvin@pqrs.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Sun, Aug 22, 2021 at 09:31:39PM +0200, Alvin Šipraga wrote:
+> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+> 
+> realtek-smi-core fails to unregister the slave MII bus on module unload,
+> raising the following BUG warning:
+> 
+>     mdio_bus.c:650: BUG_ON(bus->state != MDIOBUS_UNREGISTERED);
+> 
+>     kernel BUG at drivers/net/phy/mdio_bus.c:650!
+>     Internal error: Oops - BUG: 0 [#1] PREEMPT_RT SMP
+>     Call trace:
+>      mdiobus_free+0x4c/0x50
+>      devm_mdiobus_free+0x18/0x20
+>      release_nodes.isra.0+0x1c0/0x2b0
+>      devres_release_all+0x38/0x58
+>      device_release_driver_internal+0x124/0x1e8
+>      driver_detach+0x54/0xe0
+>      bus_remove_driver+0x60/0xd8
+>      driver_unregister+0x34/0x60
+>      platform_driver_unregister+0x18/0x20
+>      realtek_smi_driver_exit+0x14/0x1c [realtek_smi]
+> 
+> Fix this by duly unregistering the slave MII bus with
+> mdiobus_unregister. We do this in the DSA teardown path, since
+> registration is performed in the DSA setup path.
 
+Looking at the setup code, is there anything undoing what
+rtl8366rb_setup_cascaded_irq() does?
 
-ATTENTION
+This patch however loos O.K.
 
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-
-
-
-You have been compensated with the sum of 6.9 million dollars in this
-United Nation the payment will be issue into ATM Visa Card,
-
-
-
-
-
-and send to you from the Santander Bank of Spain we need your
-Address,Passport and your whatsapp number.
-
-
-
-
-
-THANKS
-
-
-Mrs Chantel Hermans
+    Andrew
