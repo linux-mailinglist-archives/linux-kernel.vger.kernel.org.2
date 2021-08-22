@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3603F40AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D113F40B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhHVRcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 13:32:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:45634 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhHVRcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 13:32:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32E411042;
-        Sun, 22 Aug 2021 10:31:20 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 335B33F5A1;
-        Sun, 22 Aug 2021 10:31:17 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        rcu@vger.kernel.org, linux-rt-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mike Galbraith <efault@gmx.de>
-Subject: Re: [PATCH v3 2/4] sched: Introduce migratable()
-In-Reply-To: <20210817144348.kkgoytuz3766jeoz@linutronix.de>
-References: <20210811201354.1976839-1-valentin.schneider@arm.com> <20210811201354.1976839-3-valentin.schneider@arm.com> <20210817144348.kkgoytuz3766jeoz@linutronix.de>
-Date:   Sun, 22 Aug 2021 18:31:11 +0100
-Message-ID: <87h7fh75eo.mognet@arm.com>
+        id S231319AbhHVRdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 13:33:11 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:44849 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229460AbhHVRdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 13:33:10 -0400
+Received: by mail-wr1-f52.google.com with SMTP id x12so22509007wrr.11;
+        Sun, 22 Aug 2021 10:32:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=U2ZYkA40pDQvD6v7BP8S/vsuoCt3e+GjmDpibd/R/f8=;
+        b=ThgeZafg6mNcqu03QFrCL01Qler5MUTKEMlTpmZbJ3Z97UJlNa0X5bUvJVr00m+hXe
+         nmqrwLSVDlzr8BQ4/hPKHMgnJrg90WrhJ5y93IF+HQ2kPEiNNds6vYQZ9U2QQ8JLCrPV
+         kbx/Y77aMwW7Wikbmv0PI66wpjpppSv2hjbO7zoGkCAt0WER0XP8pxuQDI45I7kHlijg
+         ifFv5rj0aG+mfr05YHX6t3GJk32nJ/+ECCf94gE049PYx6gx4ZygbT6yTIQ/HKbspAqM
+         xC92sUYnizuLJaUPborDwCFS/ZkLPgoNp1yv6QTJq/SbXQsKARffpbOIaXD2hshFL+ws
+         BMHQ==
+X-Gm-Message-State: AOAM531ms/QOHRU75zo0gKQOQd51qlxm9hKK4OvlOhQkNQTcAGxPUvs5
+        zWMAnTqxKry+T0TmOnWi4G4=
+X-Google-Smtp-Source: ABdhPJzlGK6Y3owIPvbStEKoAfSEQVttekbv7KJXierO5W07/bXgh7iA6GkXZ+rRuDftdpDpZKGtiA==
+X-Received: by 2002:adf:cd91:: with SMTP id q17mr9671938wrj.122.1629653548502;
+        Sun, 22 Aug 2021 10:32:28 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n14sm2252576wrx.10.2021.08.22.10.32.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 10:32:28 -0700 (PDT)
+Date:   Sun, 22 Aug 2021 17:32:26 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     David Mozes <david.mozes@silk.us>
+Cc:     Wei Liu <wei.liu@kernel.org>, David Moses <mosesster@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        =?utf-8?B?16rXldee16gg15DXkdeV15jXkdeV15w=?= 
+        <tomer432100@gmail.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in
+ hyperv_flush_tlb_others()
+Message-ID: <20210822173226.ddekpq7jrjwhsguj@liuwe-devbox-debian-v2>
+References: <MWHPR21MB15935468547C25294A253E0AD7F39@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <FD8265E6-895E-45CF-9AE3-787FAD669FC8@gmail.com>
+ <VI1PR0401MB2415E89B6E3D01B446FD1DACF1FE9@VI1PR0401MB2415.eurprd04.prod.outlook.com>
+ <20210817112954.ufjd77ujq5nhmmew@liuwe-devbox-debian-v2>
+ <CA+qYZY1U04SkyHo7X+rDeE=nUy_X5nxLfShyuLJFzXnFp2A6uw@mail.gmail.com>
+ <VI1PR0401MB24153DEC767B0126B1030E07F1C09@VI1PR0401MB2415.eurprd04.prod.outlook.com>
+ <20210822152436.mqfwv3xbqfxy33os@liuwe-devbox-debian-v2>
+ <VI1PR0401MB2415F41E0D6B43411779911AF1C39@VI1PR0401MB2415.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <VI1PR0401MB2415F41E0D6B43411779911AF1C39@VI1PR0401MB2415.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/21 16:43, Sebastian Andrzej Siewior wrote:
-> On 2021-08-11 21:13:52 [+0100], Valentin Schneider wrote:
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index debc960f41e3..8ba7b4a7ee69 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -1715,6 +1715,16 @@ static inline bool is_percpu_thread(void)
->>  #endif
->>  }
->>
->> +/* Is the current task guaranteed to stay on its current CPU? */
->> +static inline bool migratable(void)
->> +{
->> +#ifdef CONFIG_SMP
->> +	return preemptible() && !current->migration_disabled;
->> +#else
->> +	return true;
->
-> shouldn't this be false in the UP case?
->
+On Sun, Aug 22, 2021 at 04:25:19PM +0000, David Mozes wrote:
+> This is not visible since we need a very high load to reproduce. 
+> We have tried a lot but can't achieve the desired load 
+> On our kernel with less load, it is not reproducible as well.
 
-Yes indeed, forgot to flip that one when inverting the logic.
+There isn't much upstream can do if there is no way to reproduce the
+issue with an upstream kernel.
+
+You can check all the code paths which may modify cpumask and analyze
+them. KCSAN may be useful too, but that's only available in 5.8 and
+later.
+
+Thanks,
+Wei.
+
+> 
+> -----Original Message-----
+> From: Wei Liu <wei.liu@kernel.org> 
+> Sent: Sunday, August 22, 2021 6:25 PM
+> To: David Mozes <david.mozes@silk.us>
+> Cc: David Moses <mosesster@gmail.com>; Wei Liu <wei.liu@kernel.org>; Michael Kelley <mikelley@microsoft.com>; תומר אבוטבול <tomer432100@gmail.com>; linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in hyperv_flush_tlb_others()
+> 
+> On Thu, Aug 19, 2021 at 07:55:06AM +0000, David Mozes wrote:
+> > Hi Wei ,
+> > I move the print cpumask to other two places after the treatment on the empty mask see below
+> > And I got the folwing:
+> > 
+> > 
+> > Aug 19 02:01:51 c-node05 kernel: [25936.562674] Hyper-V: ERROR_HYPERV2: cpu_last=
+> > Aug 19 02:01:51 c-node05 kernel: [25936.562686] WARNING: CPU: 11 PID: 56432 at arch/x86/include/asm/mshyperv.h:301 hyperv_flush_tlb_others+0x23f/0x7b0
+> > 
+> > So we got empty on different place on the code .
+> > Let me know if you need further information from us.
+> > How you sagest to handle this situation?
+> > 
+> 
+> Please find a way to reproduce this issue with upstream kernels.
+> 
+> Thanks,
+> Wei.
