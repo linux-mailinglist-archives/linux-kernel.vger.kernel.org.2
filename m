@@ -2,137 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEEC3F4164
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 22:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E25CA3F4166
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 22:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhHVUI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 16:08:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44018 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhHVUI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 16:08:27 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="215147217"
-X-IronPort-AV: E=Sophos;i="5.84,343,1620716400"; 
-   d="scan'208";a="215147217"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2021 13:07:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,343,1620716400"; 
-   d="scan'208";a="684088934"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 22 Aug 2021 13:07:44 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mHtkt-000Wx6-V1; Sun, 22 Aug 2021 20:07:43 +0000
-Date:   Mon, 23 Aug 2021 04:07:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 527f721478bce3f49b513a733bacd19d6f34b08c
-Message-ID: <6122ae7f.68dl3tO23cTraYg4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
+        id S232619AbhHVUKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 16:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhHVUKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 16:10:47 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB452C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 13:10:05 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id g11so12177531qtk.5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 13:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:mime-version:date:message-id;
+        bh=0xXGH7bWWYuv3ONKF+7+Rl/Qg0qZfUB/lDsOTynnxS8=;
+        b=rWPCvG5dp4/QpXGPGvc4fE5lBwBu0Gs5A4VE4sztRp+5nTzTbsv/1nZWMjqWEM0JI+
+         Z4EgWPEpLCKJiR2qlsCJc/KxvbeyWHU2UjWFruAJOZXiSQdzv/2SQvpDDJnXsjturHCC
+         EHoa9B4z2fmwz59dzWPegZBLrKmSBZvtseR00auN10QDRgDR8xZXndbvBLAg98rYzpr/
+         P2dfBlXZPnzLVQTGrRuB+ncArn+jTpTqJ8KwPnyEhUhf756mKXC4vheRMFuNELZfIM13
+         twIzKiAePnuKdKNFcNgUy9wxShuMbCU2e8ILI20+nawX6mfjt/eMpoVIqovSZTWlOkzk
+         a2dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
+         :message-id;
+        bh=0xXGH7bWWYuv3ONKF+7+Rl/Qg0qZfUB/lDsOTynnxS8=;
+        b=Iea6oWecJd6F3JpLIUS7Csrfu3PbzK38TrgUeOZcVUZN1992mtHM/RQkQ0uahGWzWu
+         Dmpv4zIsY5TgeclEX7ihsKS95w3xiuugDNbKjdmCT0fuUiuoz9g6BrDpj3rSHwYwx7tN
+         UtWftRdJkz03gS+BghS7xRzJZ/RDxlgEcHAXQBKrhxOEME8MS3B4HTu0nFG4l/Eclcwz
+         ZUaXxLQk3PYIV3KnZi+rqiN1YSNWf1TWIm9PkbUOPjdIEjOOe1bOn6QGUq3U2Hr1bCL4
+         kcy5kGbhhYR39JudD+klpooETBvflzJG4W4AIfo5LadTUGjMpaBs1tlNDSKsqoFRnGL2
+         md/w==
+X-Gm-Message-State: AOAM531A+Gh9ia5Bb/Aw3Tzw/Xt42OLWw/AJn4RtOQHln611pP2CyFAK
+        VcPX675bjg/eQzjRgZL9vso/PDWz62tgaQ==
+X-Google-Smtp-Source: ABdhPJwANglA9LiKbDMfvUv2PirqDGUqs1l1iHcLRhgqlTzyu/ShcGkHr8GVj4RxOwV8cJ+ZRF1tMQ==
+X-Received: by 2002:ac8:5386:: with SMTP id x6mr1746295qtp.378.1629663004907;
+        Sun, 22 Aug 2021 13:10:04 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id m19sm5358904qtx.84.2021.08.22.13.10.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 13:10:04 -0700 (PDT)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.7+dev
+To:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: qcom-cpufreq-hw: Fix 'make allmodconfig' build
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date:   Sun, 22 Aug 2021 16:10:03 -0400
+Message-ID: <438052.1629663003@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 527f721478bce3f49b513a733bacd19d6f34b08c  x86/resctrl: Fix a maybe-uninitialized build warning treated as error
+Commit 86afc1df661a adds a reference to a symbol that doesn't have an
+EXPORT_SYMBOL, which fails if qcom-cpufreq-hw is built as a module.
 
-elapsed time: 727m
+ERROR: modpost: "topology_set_thermal_pressure" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
 
-configs tested: 79
-configs skipped: 56
+Add the missing EXPORT_SYMBOL.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-m68k                        mvme16x_defconfig
-arm                            xcep_defconfig
-sh                           se7780_defconfig
-arm                          imote2_defconfig
-mips                         tb0287_defconfig
-arm                       imx_v4_v5_defconfig
-i386                             alldefconfig
-nios2                         10m50_defconfig
-arm                        spear6xx_defconfig
-arm                         orion5x_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210822
-x86_64               randconfig-a006-20210822
-x86_64               randconfig-a001-20210822
-x86_64               randconfig-a003-20210822
-x86_64               randconfig-a004-20210822
-x86_64               randconfig-a002-20210822
-i386                 randconfig-a006-20210822
-i386                 randconfig-a001-20210822
-i386                 randconfig-a002-20210822
-i386                 randconfig-a005-20210822
-i386                 randconfig-a003-20210822
-i386                 randconfig-a004-20210822
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-c001-20210822
-s390                 randconfig-c005-20210822
-arm                  randconfig-c002-20210822
-riscv                randconfig-c006-20210822
-powerpc              randconfig-c003-20210822
-x86_64               randconfig-c007-20210822
-mips                 randconfig-c004-20210822
-x86_64               randconfig-a014-20210822
-x86_64               randconfig-a016-20210822
-x86_64               randconfig-a015-20210822
-x86_64               randconfig-a013-20210822
-x86_64               randconfig-a012-20210822
-x86_64               randconfig-a011-20210822
-i386                 randconfig-a011-20210822
-i386                 randconfig-a016-20210822
-i386                 randconfig-a012-20210822
-i386                 randconfig-a014-20210822
-i386                 randconfig-a013-20210822
-i386                 randconfig-a015-20210822
-hexagon              randconfig-r041-20210822
-hexagon              randconfig-r045-20210822
-riscv                randconfig-r042-20210822
-s390                 randconfig-r044-20210822
-
+Fixes: 86afc1df661a ("cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support")
+Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 921312a8d957..fbc39ca67124 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -165,6 +165,7 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
+ 	for_each_cpu(cpu, cpus)
+ 		WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
+ }
++EXPORT_SYMBOL(topology_set_thermal_pressure);
+ 
+ static ssize_t cpu_capacity_show(struct device *dev,
+ 				 struct device_attribute *attr,
+
