@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DC43F3E6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 087003F3E77
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbhHVHwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 03:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        id S232419AbhHVHyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 03:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbhHVHwN (ORCPT
+        with ESMTP id S232455AbhHVHwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 03:52:13 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F303C0613D9
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:51:32 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id t1so13646530pgv.3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:51:32 -0700 (PDT)
+        Sun, 22 Aug 2021 03:52:20 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C77C0613A3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:51:34 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d17so8343138plr.12
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:51:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RZ8BEPPVll/zwqS70BZ2JYx9ju7xEKmdm5VlWqz/VdI=;
-        b=iQnoPnJ40Ay8cygJzetIn2Rk/uaznhqz/TpzugtPRKTM7BbVoNVwvEf+wJCa4DEmXh
-         4wH1AAcWnqHVFfOGO+JkZswqsbAccGr97mNT71/Z3PxMlywTWT98WKcQJHVYWiACaxgS
-         5vvdl0SljDtHKljG6xpzUcVEIts0sPoq5se+8=
+        bh=afK62obEnzmGfYDuKBrYtTnXazqqlkEC1ozPah846UE=;
+        b=i1xyMIsz0UhMBlCsvjT/pELiTurWMqOD2j4e2UXBqBdplCAa1y83+MbpNb56XWzqeO
+         QAKKZ4PCJHX5ENT7tbdD1Qop48xhwXxPWQa18bIZtA+oZulK87Fe4IcH0L/gBSLcywph
+         YlqdrGLikG1ym2Cde+FxLNEIlqmozwLsogw3U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RZ8BEPPVll/zwqS70BZ2JYx9ju7xEKmdm5VlWqz/VdI=;
-        b=d3Hxk2BrFkabLaePhxQR4UbqD8NpV9/UiryU8zwk9/UlSusTfDhVwNtNMpxpJL1pBk
-         o3holsR3ek+RJvpuNLpLQE6zoBbjDog+z46W5wre9pxpdObcQcWRniQjmCnNtNg2qZ42
-         rgnRe8CTVT/toZEbmeuKzJFnhUUQ4YS+BCMzh7SraS+xuHKOfneww+j6HHa/sa2oS4Im
-         091bGZclGjOlTNvNWoekb9BfQspaWeuYiNExpixtC7ikc91Zw+u/s+VyFLdvxc8m5o9N
-         twJ3nnKe5pH2fpJhuMl30BDiADnznoITKTGspWsoql3OYDtLJObOKhj5pHV+nV2zBFeH
-         HOsQ==
-X-Gm-Message-State: AOAM531cIx4mnFXpW5Pnoc7JbO83QIkCpej19z5pfJBAGmaJCWYHXOwO
-        uLziQCny0+gI/5MTuyWpOcRckg==
-X-Google-Smtp-Source: ABdhPJxj+QAwGyr993juNCJvBFdb0ObGsAlJilnIWnp/UGZWNjCNte2p8yIY9KOhLNxBVgJ4H3e48g==
-X-Received: by 2002:a63:cc0e:: with SMTP id x14mr26811805pgf.352.1629618692173;
-        Sun, 22 Aug 2021 00:51:32 -0700 (PDT)
+        bh=afK62obEnzmGfYDuKBrYtTnXazqqlkEC1ozPah846UE=;
+        b=Dlio1m+D3FphH2hmtx0YPMEauXg3kE48ZC/hk+YIXqdFN1TeLKmWHJ8d1m4m9il8Z7
+         uhgORb4wv1NTC24C2W/S2dtEVvkTuyH/lWyGx1+8yU9uk+H9KUOSOEoPUy/BA3q9kYAI
+         hTGVxtgoGAPjfo51KfGhExSemYSjZ3YyRLbhUvrojeNqfoRSwSduXXWJNZJhiclsBrih
+         +K2m6Yuw9ChbiUdLYqb+oH5kxnKGzZ3N6xS9y1mE1F2r81zRmAiReaVZyD81FlCz38Wz
+         3m4lR3HEyIckmro3qv8UnpNAHOYwTFayIUgXLPTgUmGTRCZuaDPHprGNlyyLGrXHr9cr
+         2m3Q==
+X-Gm-Message-State: AOAM5334axT63sfsQdk98wuHqwyp7/OPHzQuQ8LXLfvn6MN4KrNupBa2
+        eOT8Soge/HI+lMldkgusUoHb6A==
+X-Google-Smtp-Source: ABdhPJyt9vTod+UDCk2pGBfXA7Fwnfz9KRZEatSExqgoqwWrNN3mNWIOnTbh1rN4qSEz0XR3SWzWbQ==
+X-Received: by 2002:a17:90a:f0d1:: with SMTP id fa17mr10237309pjb.33.1629618694325;
+        Sun, 22 Aug 2021 00:51:34 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v25sm11904465pfm.202.2021.08.22.00.51.29
+        by smtp.gmail.com with ESMTPSA id i6sm12184446pfa.44.2021.08.22.00.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 00:51:29 -0700 (PDT)
+        Sun, 22 Aug 2021 00:51:33 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+Cc:     Kees Cook <keescook@chromium.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Daniel Micay <danielmicay@gmail.com>,
         Francis Laniel <laniel_francis@privacyrequired.com>,
         Bart Van Assche <bvanassche@acm.org>,
         David Gow <davidgow@google.com>, linux-mm@kvack.org,
         clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Subject: [PATCH for-next 10/25] HID: roccat: Use struct_group() to zero kone_mouse_event
-Date:   Sun, 22 Aug 2021 00:51:07 -0700
-Message-Id: <20210822075122.864511-11-keescook@chromium.org>
+Subject: [PATCH for-next 11/25] can: flexcan: Use struct_group() to zero struct flexcan_regs regions
+Date:   Sun, 22 Aug 2021 00:51:08 -0700
+Message-Id: <20210822075122.864511-12-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210822075122.864511-1-keescook@chromium.org>
 References: <20210822075122.864511-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1858; h=from:subject; bh=9rnBN9pp25qHZzpmSwKIY2SR98/yWw6L4NOQkzURsmI=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhIgH2LkwWtaOSS7Sx/Asb2SpLbNNFUNs3zGDDazyV HncbtwyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSIB9gAKCRCJcvTf3G3AJsM2EA CR/tG8xuXRd6A9sHvtzfnyuKbJ8og8+11J/eZ1XFtBWxwj1ZWtRFM7SK4UsGVDCKbkgmTaWm9L42nz Ykh//OfkNzR8v8LgCX5I4afgYhpr+W2+jd7Vs8OSwt5KL+rh73sPUpznE5xXdoCNQh00RnLs0mgovr ym+zLbmN8A0XXaBmNhADwbonxzCDX3ketGY2WDLcLouoaX60Y2NxAlldabWUypxRLYLHxtOjZ19vR9 IOkqfSzRFVJwesNmzkbstIoEBECpzir6s6uUooa4uvcxTxzqhBDtSI8OkYLHr1mvKeo8cAl9m01ml9 r1hJVcdDio1h1TrNn901c8D1YDuau3G4qKcC3bNRryV/AZppmp9yBYHyXNChFegB12MgSw9yfNrvM1 acs0b5CLpypzUdeByvNdm94UY+Q+2rQ4Mi2imV+7l0rAGdcC+LmY0+zyGGmeYt1cjLP6yDrXqsPCbK TPOzODY5r8mgP7t1mgRy/lpSgH7iLKnv1HelL7GrG4tS/NZSPo2XGfxUF4xR1C13X3s/AImf+Uplnh r8cuoliRDvEXGm0Ly7BS/++cBqIK3M7u1iKh/JS3cPKtsuckyYRiAEQBHUsS+I/Atut8nieCNykJVN PnmWbeC/TjpL+BUjubxZwshG+kHeCYpFTMGXL6y/5csfEcVQbYsml1uPEOGw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4830; h=from:subject; bh=EYs5XTkDgfX0dhdwidOdX6FaFsG9jCZLc3TTzjkErFE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhIgH2bU8gotlTB34YXFJjHIXg8ae98vYx3WpQHASw gnthe4WJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSIB9gAKCRCJcvTf3G3AJgKqD/ 9Z4CfeQm+LlR9u2hdSRoxj0L/MvAvQco3KQnzJCSUqFfGSv8JXgqqrSAqqFi0GQy9HPotUyYNNuBCT 0faohp2vDaFgIpzrq584FH3bri2F3JHPAn6ArIQjeW+Va7NAkCpv54OzJ25AHXUt4gyBUDMWa+rjdK A17OTiRtnJAOb1rR7NpkbTsYlpgOB6eJIdEPgdRI154Qf+WhPj9FHP8w3yVBhkaRSMrErjDt6zAHM0 NpzmCJGZpIx5GxdHzUwljAJlS8voqeDUFrMXx2LAPCCfjSLfTCU2TJn5ATfagAAXRFHGdxfjOY69y6 10zGTtkt62/WKoV9X+uy4U8mKv/VS/snTNtU8OFEzk0oAjncL77p9y+bJDxk+z8YH1jdcyF5l8y8H5 s+aVfwd4c/d6/Rw8bJlFdLhJ8rhNU6gLTiWMt4BFAXufSfOvzLJB4IRI+n5hbEj5gX+Aqu9zP4Djrj 8+T6F6VgD3d2vuqyst82VvN9z95rClAZXQLHXPkBryN/cJj9w+rk0Z2VE99dFpmkfFKHq/Cwr8nIie BiqZ0LnnYj6IHTIvSU2pYNSQMsdxg9plh72HFQJyIMIF8e6eyRQGwnKo5HzvoQdpiuNEHpIcfy5xu4 JRrxjWp0GWNdjaU0q/j4j1I2xX20ilwf13nFMCMf/Bwgvz6D4oXTLmoTW5QQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -72,53 +73,123 @@ In preparation for FORTIFY_SOURCE performing compile-time and run-time
 field bounds checking for memset(), avoid intentionally writing across
 neighboring fields.
 
-Add struct_group() to mark region of struct kone_mouse_event that should
-be initialized to zero.
+Add struct_group() to mark both regions of struct flexcan_regs that get
+initialized to zero. Avoid the future warnings:
 
-Acked-by: Jiri Kosina <jikos@kernel.org>
-Link: https://lore.kernel.org/lkml/nycvar.YFH.7.76.2108201810560.15313@cbobk.fhfr.pm
+In function 'fortify_memset_chk',
+    inlined from 'memset_io' at ./include/asm-generic/io.h:1169:2,
+    inlined from 'flexcan_ram_init' at drivers/net/can/flexcan.c:1403:2:
+./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+  199 |    __write_overflow_field(p_size_field, size);
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function 'fortify_memset_chk',
+    inlined from 'memset_io' at ./include/asm-generic/io.h:1169:2,
+    inlined from 'flexcan_ram_init' at drivers/net/can/flexcan.c:1408:3:
+./include/linux/fortify-string.h:199:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Wattribute-warning]
+  199 |    __write_overflow_field(p_size_field, size);
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/hid/hid-roccat-kone.c |  2 +-
- drivers/hid/hid-roccat-kone.h | 12 +++++++-----
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ drivers/net/can/flexcan.c | 68 +++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/hid/hid-roccat-kone.c b/drivers/hid/hid-roccat-kone.c
-index 1ca64481145e..ea17abc7ad52 100644
---- a/drivers/hid/hid-roccat-kone.c
-+++ b/drivers/hid/hid-roccat-kone.c
-@@ -857,7 +857,7 @@ static int kone_raw_event(struct hid_device *hdev, struct hid_report *report,
- 		memcpy(&kone->last_mouse_event, event,
- 				sizeof(struct kone_mouse_event));
- 	else
--		memset(&event->tilt, 0, 5);
-+		memset(&event->wipe, 0, sizeof(event->wipe));
- 
- 	kone_keep_values_up_to_date(kone, event);
- 
-diff --git a/drivers/hid/hid-roccat-kone.h b/drivers/hid/hid-roccat-kone.h
-index 4a1a9cb76b08..65c800e3addc 100644
---- a/drivers/hid/hid-roccat-kone.h
-+++ b/drivers/hid/hid-roccat-kone.h
-@@ -152,11 +152,13 @@ struct kone_mouse_event {
- 	uint16_t x;
- 	uint16_t y;
- 	uint8_t wheel; /* up = 1, down = -1 */
--	uint8_t tilt; /* right = 1, left = -1 */
--	uint8_t unknown;
--	uint8_t event;
--	uint8_t value; /* press = 0, release = 1 */
--	uint8_t macro_key; /* 0 to 8 */
-+	struct_group(wipe,
-+		uint8_t tilt; /* right = 1, left = -1 */
-+		uint8_t unknown;
-+		uint8_t event;
-+		uint8_t value; /* press = 0, release = 1 */
-+		uint8_t macro_key; /* 0 to 8 */
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 57f3635ad8d7..b1a261622b76 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -284,31 +284,33 @@ struct flexcan_regs {
+ 	u32 dbg1;		/* 0x58 */
+ 	u32 dbg2;		/* 0x5c */
+ 	u32 _reserved3[8];	/* 0x60 */
+-	u8 mb[2][512];		/* 0x80 - Not affected by Soft Reset */
+-	/* FIFO-mode:
+-	 *			MB
+-	 * 0x080...0x08f	0	RX message buffer
+-	 * 0x090...0x0df	1-5	reserved
+-	 * 0x0e0...0x0ff	6-7	8 entry ID table
+-	 *				(mx25, mx28, mx35, mx53)
+-	 * 0x0e0...0x2df	6-7..37	8..128 entry ID table
+-	 *				size conf'ed via ctrl2::RFFN
+-	 *				(mx6, vf610)
+-	 */
+-	u32 _reserved4[256];	/* 0x480 */
+-	u32 rximr[64];		/* 0x880 - Not affected by Soft Reset */
+-	u32 _reserved5[24];	/* 0x980 */
+-	u32 gfwr_mx6;		/* 0x9e0 - MX6 */
+-	u32 _reserved6[39];	/* 0x9e4 */
+-	u32 _rxfir[6];		/* 0xa80 */
+-	u32 _reserved8[2];	/* 0xa98 */
+-	u32 _rxmgmask;		/* 0xaa0 */
+-	u32 _rxfgmask;		/* 0xaa4 */
+-	u32 _rx14mask;		/* 0xaa8 */
+-	u32 _rx15mask;		/* 0xaac */
+-	u32 tx_smb[4];		/* 0xab0 */
+-	u32 rx_smb0[4];		/* 0xac0 */
+-	u32 rx_smb1[4];		/* 0xad0 */
++	struct_group(init,
++		u8 mb[2][512];		/* 0x80 - Not affected by Soft Reset */
++		/* FIFO-mode:
++		 *			MB
++		 * 0x080...0x08f	0	RX message buffer
++		 * 0x090...0x0df	1-5	reserved
++		 * 0x0e0...0x0ff	6-7	8 entry ID table
++		 *				(mx25, mx28, mx35, mx53)
++		 * 0x0e0...0x2df	6-7..37	8..128 entry ID table
++		 *				size conf'ed via ctrl2::RFFN
++		 *				(mx6, vf610)
++		 */
++		u32 _reserved4[256];	/* 0x480 */
++		u32 rximr[64];		/* 0x880 - Not affected by Soft Reset */
++		u32 _reserved5[24];	/* 0x980 */
++		u32 gfwr_mx6;		/* 0x9e0 - MX6 */
++		u32 _reserved6[39];	/* 0x9e4 */
++		u32 _rxfir[6];		/* 0xa80 */
++		u32 _reserved8[2];	/* 0xa98 */
++		u32 _rxmgmask;		/* 0xaa0 */
++		u32 _rxfgmask;		/* 0xaa4 */
++		u32 _rx14mask;		/* 0xaa8 */
++		u32 _rx15mask;		/* 0xaac */
++		u32 tx_smb[4];		/* 0xab0 */
++		u32 rx_smb0[4];		/* 0xac0 */
++		u32 rx_smb1[4];		/* 0xad0 */
 +	);
- } __attribute__ ((__packed__));
+ 	u32 mecr;		/* 0xae0 */
+ 	u32 erriar;		/* 0xae4 */
+ 	u32 erridpr;		/* 0xae8 */
+@@ -322,9 +324,11 @@ struct flexcan_regs {
+ 	u32 fdcbt;		/* 0xc04 - Not affected by Soft Reset */
+ 	u32 fdcrc;		/* 0xc08 */
+ 	u32 _reserved9[199];	/* 0xc0c */
+-	u32 tx_smb_fd[18];	/* 0xf28 */
+-	u32 rx_smb0_fd[18];	/* 0xf70 */
+-	u32 rx_smb1_fd[18];	/* 0xfb8 */
++	struct_group(init_fd,
++		u32 tx_smb_fd[18];	/* 0xf28 */
++		u32 rx_smb0_fd[18];	/* 0xf70 */
++		u32 rx_smb1_fd[18];	/* 0xfb8 */
++	);
+ };
  
- enum kone_mouse_events {
+ static_assert(sizeof(struct flexcan_regs) ==  0x4 * 18 + 0xfb8);
+@@ -1379,14 +1383,10 @@ static void flexcan_ram_init(struct net_device *dev)
+ 	reg_ctrl2 |= FLEXCAN_CTRL2_WRMFRZ;
+ 	priv->write(reg_ctrl2, &regs->ctrl2);
+ 
+-	memset_io(&regs->mb[0][0], 0,
+-		  offsetof(struct flexcan_regs, rx_smb1[3]) -
+-		  offsetof(struct flexcan_regs, mb[0][0]) + 0x4);
++	memset_io(&regs->init, 0, sizeof(regs->init));
+ 
+ 	if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+-		memset_io(&regs->tx_smb_fd[0], 0,
+-			  offsetof(struct flexcan_regs, rx_smb1_fd[17]) -
+-			  offsetof(struct flexcan_regs, tx_smb_fd[0]) + 0x4);
++		memset_io(&regs->init_fd, 0, sizeof(regs->init_fd));
+ 
+ 	reg_ctrl2 &= ~FLEXCAN_CTRL2_WRMFRZ;
+ 	priv->write(reg_ctrl2, &regs->ctrl2);
 -- 
 2.30.2
 
