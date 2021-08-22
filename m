@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1003F3D23
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 04:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB583F3D25
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 04:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhHVC2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 22:28:37 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:38752 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229571AbhHVC2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 22:28:36 -0400
-Received: from BC-Mail-EX04.internal.baidu.com (unknown [172.31.51.44])
-        by Forcepoint Email with ESMTPS id 40749D001CAD80049561;
-        Sun, 22 Aug 2021 10:27:54 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-EX04.internal.baidu.com (172.31.51.44) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sun, 22 Aug 2021 10:27:53 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.13) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sun, 22 Aug 2021 10:27:53 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <steffen.klassert@secunet.com>, <daniel.m.jordan@oracle.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Cai Huoqing" <caihuoqing@baidu.com>
-Subject: [PATCH] padata: Remove repeated verbose license text
-Date:   Sun, 22 Aug 2021 10:27:34 +0800
-Message-ID: <20210822022734.1002-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.32.0.windows.2
+        id S231675AbhHVCbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 22:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhHVCbl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 22:31:41 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4D8C061575;
+        Sat, 21 Aug 2021 19:31:01 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id n18so13228236pgm.12;
+        Sat, 21 Aug 2021 19:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XSTqDa97zOWgSBwGLOjBEzY0W1HCbmfHTpND18fwsyA=;
+        b=PhbRgYaQFfP7M8LtuZ0DJCgRqBc2hijhPP12YvRUKwgoWfGJfWjb4yDuFfii56KLZx
+         UApdP4wFmmp+bk/JkRzpa0RZ0bNMO6dk2YGX3PubQBqiSvbPWBns8puXAyEgDCmG00B7
+         tr1Ug/czFutolnj2Qe36ZPYYZhOAnccfghpigop6gfOoSkm04XMamwXZxuQ23biWfg5r
+         QTc60M6NIaNGgnBLGkI/blXBoEWtl6MR0PEvsYzfewnZge+ORNa8GokVvugIQtnbX9vk
+         Cb5bInAXy/ZIHsL06t2tqvp3KODH+/9slG/it09ZgKWWEofwipch7QXYfXPvXvEqC1LS
+         OC1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XSTqDa97zOWgSBwGLOjBEzY0W1HCbmfHTpND18fwsyA=;
+        b=DmYEp0x/TEUY7LIrjMzWGZHl8a19frlrdAtXv8+nlzjJm4dxexJhs+MZktL1dr/IkC
+         H72o2U2Afo/wpUKiIPBeHcwxkmcusm5PJYdp5piEZDGAqgpZTp+PQ8A+MXmPmEuFR9+C
+         sn/icLB46CZ7D85nnAqT58K609vdvowJlKlIVEHIRhNOouchHCO7733GTwec7H26yizo
+         8m7P05w8uupR6cyP9i4P/nV/gVRl/OqAjgovdx1kHwR/ypc9JFhFOtuhUtymScrL3SGb
+         atXput/w28MJRr3cFhVvq5TRiyx/B+GCc/TV3/Jb1OiJYUyzDhVYV//HaadH8nx6Cmuw
+         zgIw==
+X-Gm-Message-State: AOAM533WLlAqfnXeJ0JmBEq9+f9bgjbkdGE3jCnlsnMspVdlEHfo4tH7
+        iwOBr3Pek7YaLRDluE7NsBY=
+X-Google-Smtp-Source: ABdhPJwWkVfbhs8JZCkYB40Ea1nyaA/y97j+qEa6V5jVVdosZTc+l16NXyb9birWU12gqKpy95GIYQ==
+X-Received: by 2002:a63:2541:: with SMTP id l62mr26438157pgl.183.1629599460655;
+        Sat, 21 Aug 2021 19:31:00 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id mq18sm9743976pjb.45.2021.08.21.19.30.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Aug 2021 19:31:00 -0700 (PDT)
+Date:   Sat, 21 Aug 2021 19:30:57 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     "Machnikowski, Maciej" <maciej.machnikowski@intel.com>
+Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "Bross, Kevin" <kevin.bross@intel.com>,
+        "Stanton, Kevin B" <kevin.b.stanton@intel.com>,
+        Ahmad Byagowi <abyagowi@fb.com>
+Subject: Re: [RFC net-next 1/7] ptp: Add interface for acquiring DPLL state
+Message-ID: <20210822023057.GA6481@hoboy.vegasvil.org>
+References: <20210816160717.31285-1-arkadiusz.kubalewski@intel.com>
+ <20210816160717.31285-2-arkadiusz.kubalewski@intel.com>
+ <20210816235400.GA24680@hoboy.vegasvil.org>
+ <PH0PR11MB4951762ECB04D90D634E905DEAFE9@PH0PR11MB4951.namprd11.prod.outlook.com>
+ <20210818170259.GD9992@hoboy.vegasvil.org>
+ <PH0PR11MB495162EC9116F197D79589F5EAFF9@PH0PR11MB4951.namprd11.prod.outlook.com>
+ <20210819153414.GC26242@hoboy.vegasvil.org>
+ <PH0PR11MB4951F51CBA231DFD65806CDAEAC09@PH0PR11MB4951.namprd11.prod.outlook.com>
+ <20210820155538.GB9604@hoboy.vegasvil.org>
+ <PH0PR11MB49518ED9AAF8B543FD8324B9EAC19@PH0PR11MB4951.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.31.62.13]
-X-ClientProxiedBy: BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH0PR11MB49518ED9AAF8B543FD8324B9EAC19@PH0PR11MB4951.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove it because SPDX-License-Identifier is already used
+On Fri, Aug 20, 2021 at 06:30:02PM +0000, Machnikowski, Maciej wrote:
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- kernel/padata.c | 13 -------------
- 1 file changed, 13 deletions(-)
+> Since the 40.5.2 is not applicable to higher-speed ethernet which
+> don't use auto-negotiation, but rather the link training sequence
+> where the RX side always syncs its clock to the TX side.
 
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 3258ab89c2a3..18d3a5c699d8 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -9,19 +9,6 @@
-  *
-  * Copyright (c) 2020 Oracle and/or its affiliates.
-  * Author: Daniel Jordan <daniel.m.jordan@oracle.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU General Public License,
-- * version 2, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc.,
-- * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
-  */
- 
- #include <linux/completion.h>
--- 
-2.25.1
+By "the RX side always syncs its clock to the TX side" do you mean the
+RX channel synchronizes to the link partner's TX channel?
 
+Wow, that brings back the 100 megabit scheme I guess.  That's cool,
+because the same basic idea applies to the PHYTER then.
+
+Still we are doing to need a way for user space to query the HW
+topology to discover whether a given ports may be syntonized from a
+second port.  I don't think your pin selection thing works unless user
+space can tell what the pins are connected to.
+
+Thanks,
+Richard
