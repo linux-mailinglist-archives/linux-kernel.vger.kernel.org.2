@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADD93F3F22
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 13:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997E73F3F23
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 13:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhHVL55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 07:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S231459AbhHVL6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 07:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhHVL5z (ORCPT
+        with ESMTP id S230071AbhHVL6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 07:57:55 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD685C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 04:57:14 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v10so10404126wrd.4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 04:57:14 -0700 (PDT)
+        Sun, 22 Aug 2021 07:58:45 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C878FC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 04:58:04 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id x12so21595452wrr.11
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 04:58:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BujFUWKPfh9ULOTXul8Joza1GB05OuxtEo0gxSDLVLM=;
-        b=FtmtZedpdgN6q+hPxMXJytaLi1u2Z2CDN4DQrBN3DPuCB9lC3X91gtitUk5ottQHLu
-         RKJiQ2Kw4R1sYMLNqlRJCnBXBZTizpKyrd9jsOiSMjtlkbD18eEQJQ7EQOr7R5gTVcIa
-         0OO2dMWV5HGiK9RI/k2vN/8zqygU0jTBEzwyY0dXsCoZYuZIaA2OTTSoTrFreMNhdiov
-         w9i7Zhv7jWXdhMacZgHUS3FO2iKXv0QshrC4IV1JhVjkHgfFEvcnopcC4TlcPYPdlCgN
-         7fzUOuRyA4ix5/LHiUsC6TFB828Nm5RJSMgOMRjeSQLfx5XCj4G5loVQtdLFSdAZ98B/
-         2d5A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4j6NCEA2JsSzQ2QsfgWgHDpNcyrom07JcEHXpRwvQ14=;
+        b=aojctXTp9BeGs075gGnP60Pb0/CqIhoBf7WWZx1f3Qk4xIvD2dSjNWonXwAVEIfBh/
+         4H76ff14KgN5KLmvPR4Suj8+3ZeAjXM1p5iajIcZ5aGGmTimRAZ5gp31VTyxSJ1utlHH
+         Ht8tu41WQKznENCSRDhJLnsiTGgHoyD0Crp6tEg/TqR/8+bnd1J2CTlIcwHUqi8DLfhG
+         l8he16ClLwmKCYcuVO9ZOxV98bgv7kQA/2GmjMQj1uoR7seRwyF9bHmsuKqdOF3SZBA5
+         W2zmVQ/7Ms0Iz2+eGoiyXo8E8WK8hR5Y2UQpTJA5/e3XrOcAOWanl1AW3gy1k9HdWvdR
+         onXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=BujFUWKPfh9ULOTXul8Joza1GB05OuxtEo0gxSDLVLM=;
-        b=fIFZvb0GRj9aFUJERwqsmPN0OofcpGwjIBeRszkdqfl9CkiJU4quxEEOvVFLDRJ9Pm
-         MMtTfne1h7XF5JkXgD0lPWZ9BCvhtwwtGKhvFcUGnWjRcoF/Ae1NJd9TDbSNGXz1NbIu
-         hcQF6SzRbMdLvlOlOQNgt7VuCz6G6qLjsCRD0vYF6BVG9iB3jGbxrkooQZNEScIhJ26Z
-         p8/dCzvB04bM9rlJBwfePQrPhrg9t7pJSpJi+fVybB3up9mMCoz28wTCcL5ZEMfp/ytK
-         PW66HR23rpXlW2aCDnfL5TpGyzLORqe7ES47ojosTx8MTCi/a8l3wc3NhnNVXHIyzgSc
-         gjnA==
-X-Gm-Message-State: AOAM533o2EMA05V1OVf2rC58KRwyeY8Oe2r+b7eyVNQvpFbhbig3wiZL
-        GjiHpzp9QN4O6rSKjPt9qaZ07tGqzVk=
-X-Google-Smtp-Source: ABdhPJw1g7BaYLAWa8PRyoegeomT+1Axe5l+n1SMivYHtqnFrriE5wU8D32+wGZDebVAk8Oy1S1S1Q==
-X-Received: by 2002:adf:fa82:: with SMTP id h2mr8131900wrr.129.1629633433431;
-        Sun, 22 Aug 2021 04:57:13 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id j17sm11690572wrt.69.2021.08.22.04.57.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 04:57:13 -0700 (PDT)
-Subject: Re: [PATCH 02/10] staging: r8188eu: remove unused define
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210821164859.4351-1-martin@kaiser.cx>
- <20210821164859.4351-2-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <f98161a4-2065-d915-1d1e-04fbcf202e2d@gmail.com>
-Date:   Sun, 22 Aug 2021 13:56:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=4j6NCEA2JsSzQ2QsfgWgHDpNcyrom07JcEHXpRwvQ14=;
+        b=CvUNPYnRXrvfUH7kh/axJLVRBg/+5bixikYlJ5c09bWk+VpVAflu2HiVQcuUi5lJOp
+         jBFXVA0laqJEdL7PQjNaC53MtZ+8ZtGfU13ukYd9I4zIXga4Ly+x4l71t7Loqjoe5GE1
+         Mkr5BIhvM88gaO3KMstUQBwMgcL6GqdB4dUFJxaEVIDfbIoR4F7U82NIe2mdkesYF5uV
+         BF/0ekhaAn8BopQ1r6HYKZDUHfqOx+OrLr1YT+MyHLpxtK7G06aTOmGUmfjIv4o8hUqt
+         wgxaDtyUSMhm014WcklhIxcBcLAtUvJz0sNKvJfrXVP6rZAbYW9pqGSLdjKEMd1R+ivZ
+         APMA==
+X-Gm-Message-State: AOAM530pWyQOzkxW+GcBXx3dgVIa7UUoKJI1t5ryLpy7YbP1JbbXW942
+        ZalXNvXmPAuRVX91HDpxTA==
+X-Google-Smtp-Source: ABdhPJzMnOC33dq2VZnwECdAtqdJtIWt0/HDpXCZlRyZcQAcpER+Z3PxsOIn5IU1WqY6q3wU9q/x6Q==
+X-Received: by 2002:a5d:4bca:: with SMTP id l10mr8251436wrt.187.1629633483471;
+        Sun, 22 Aug 2021 04:58:03 -0700 (PDT)
+Received: from alex-ThinkPad-E480.. ([2a02:810b:f40:4200:97f6:a4b1:c76e:8844])
+        by smtp.googlemail.com with ESMTPSA id k16sm1597965wrx.87.2021.08.22.04.58.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 04:58:03 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH] arm64: dts: rockchip: Re-add interrupt-names for RK3399's vpu
+Date:   Sun, 22 Aug 2021 13:57:55 +0200
+Message-Id: <20210822115755.3171937-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210821164859.4351-2-martin@kaiser.cx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 6:48 PM, Martin Kaiser wrote:
-> _HCI_OPS_OS_C_ is not used in the r8188eu driver. Remove it.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/hal/usb_ops_linux.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> index 953fa05dc30c..a11a0597e515 100644
-> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> @@ -1,8 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright(c) 2007 - 2011 Realtek Corporation. */
->   
-> -#define _HCI_OPS_OS_C_
-> -
->   #include "../include/osdep_service.h"
->   #include "../include/drv_types.h"
->   #include "../include/osdep_intf.h"
-> 
+Commit a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
+intended to remove the interrupt-names property for mmu nodes, but it
+also removed it for the vpu node in rk3399.dtsi. That makes the driver
+fail probing currently.
+Fix this by re-adding the property for this node.
 
-Looks good to me.
+Fixes: a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
+Signed-off-by: Alex Bee <knaerzche@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 9db9484ca38f..44def886b391 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -1240,6 +1240,7 @@ vpu: video-codec@ff650000 {
+ 		reg = <0x0 0xff650000 0x0 0x800>;
+ 		interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH 0>,
+ 			     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH 0>;
++		interrupt-names = "vepu", "vdpu";
+ 		clocks = <&cru ACLK_VCODEC>, <&cru HCLK_VCODEC>;
+ 		clock-names = "aclk", "hclk";
+ 		iommus = <&vpu_mmu>;
 
-Thanks,
-Michael
+base-commit: 5936c9eb785b46fdc5563d1c5c34b5558e3fa156
+-- 
+2.30.2
+
