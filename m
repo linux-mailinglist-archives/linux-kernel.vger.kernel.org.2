@@ -2,193 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F3F3F3FB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7DF3F3FBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbhHVOWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232471AbhHVOWG (ORCPT
+        id S233404AbhHVOYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:24:44 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:50902 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233104AbhHVOYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:22:06 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6580EC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:21:25 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v2so21886065edq.10
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=J4ZN/SXLkaHtgaR5XMNgO5PtUr/lZWOqM0+2vN5G3FE=;
-        b=DKAzZ8Q4mXjXOBqaMdNNISaFGKc9lQXjGeecFK1OFEAGNv2u4kbda/p/vKDS42UX6h
-         KCXnwavPMs6+8oSSt9oJoXkxaP9Q5UkTSr7FiLunnGQmvE+ZnSd68uG/V5VaRYLxKilv
-         sgqkfYGdvvmKvjugUd17wtvv/GWx3EW+MjQU7pkg9mto22HFkW814EuquaKH3vCu+wZO
-         s0wasYNMAQAX6EvNlLuWjb7KZQ2WpdC1Pz0wN8qQ+3SGgtMlZRJSTD9So4RWGK/AIZ+v
-         7xm5ED3BN1nuzyFckLpNfhulcdYXepu3YnnuqDVFjagvD+9mH0T6TEdLq/6Cd8op2Ng7
-         +qmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J4ZN/SXLkaHtgaR5XMNgO5PtUr/lZWOqM0+2vN5G3FE=;
-        b=eDUCk/jSagwhVEx8RxncNILfRxSOWOjStBoj4z+MazLGru/Q5aojbh1Fo4RoRdjDpd
-         FL7eRA4h2MS4HooTt/p2RYpWa/4E0AQsDr/sEXiHaPsargjeBoxfUe32f7IDvJ7wQUsl
-         4yVSi7Up/zQYgm4+lKczzNdyo5dA6HI11u+ITYPebFiT2AimilGbRWAoPg/SROLrg0Vp
-         3U7LP9pVJmOGV74dLWLgxFQ3FC3tendL9tS3J48rRIlCJKE+ajYOT0FSEPGomdwLsCM+
-         aLm8ngWJt03F2dr+aulnhQTyTmTeZqUz44wpenzg8PfE7e/8auo74QM7RprrYnhyQf0Q
-         pj6w==
-X-Gm-Message-State: AOAM533PlHcGGUmmhRFJ/8sRt6uX+LKn3bDPT/awPV1B9LeptwEJijZl
-        d1MTB2iuxRFJrtoB4NVFIIcrFyLqz/888Soe6Rt3Eg==
-X-Google-Smtp-Source: ABdhPJyMJP+G+zDtU3cQrzH4Rz/vW+DE8h+ZLTS8Oh06SyfmGu1gILfLx/I1pNO4KYHoUUGvd0DJPnSytYxVcS+uRfA=
-X-Received: by 2002:aa7:dcd1:: with SMTP id w17mr31920855edu.322.1629642083843;
- Sun, 22 Aug 2021 07:21:23 -0700 (PDT)
+        Sun, 22 Aug 2021 10:24:43 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d74 with ME
+        id kePy2500F3riaq203ePzXA; Sun, 22 Aug 2021 16:24:00 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 16:24:00 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     christopher.lee@cspi.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] myri10ge: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 16:23:57 +0200
+Message-Id: <e5265136abae64c5e763d30ef8ec34607967c7dc.1629642164.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
- <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
- <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
- <CAAEAJfCY+X-G=7Oe9NqrJ4yQZ29DBA78jOFAX44GD0g6=s7qhg@mail.gmail.com>
- <1668790824.35266.1627559144878.JavaMail.zimbra@nod.at> <CAAEAJfDDtGcUquyP7Jn0Urttt4kSfAQbJ_qPQ90ROtWLavW9EA@mail.gmail.com>
- <CAOuPNLj+DSigRY_AgHQnGKCK-Vm4ykQBR8UfnTi2UObORTcBFg@mail.gmail.com> <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com>
-In-Reply-To: <CAOuPNLgfJGzp-RJBjydFDL1ZAvOd7=-MgXhnsb2eb_xFSLC66w@mail.gmail.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Sun, 22 Aug 2021 11:21:12 -0300
-Message-ID: <CAAEAJfBuut7VSbrrz6CxOC+Cke36eGGv8VUvfdbfLwvSBxOAAA@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Sean Nyekjaer <sean@geanix.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pintu,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-On Fri, 20 Aug 2021 at 15:25, Pintu Agarwal <pintu.ping@gmail.com> wrote:
->
-> On Thu, 29 Jul 2021 at 22:41, Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> >
-> > On Thu, 29 Jul 2021 at 17:33, Ezequiel Garcia
-> > <ezequiel@vanguardiasur.com.ar> wrote:
-> > >
-> > > On Thu, 29 Jul 2021 at 08:45, Richard Weinberger <richard@nod.at> wro=
-te:
-> > > >
-> > > > Ezequiel,
-> > > >
-> > > > ----- Urspr=C3=BCngliche Mail -----
-> > > > > [snip]
-> > > > >
-> > > > > Ouch, so surprised that after all these years someone is doing sq=
-uashfs/mtdblock
-> > > > > instead of using ubiblock :-)
-> > > > >
-> > > > > Can we patch either Kconfig or add some warn_once on mtdblock
-> > > > > usage, suggesting to use ubiblock instead?
-> > > >
-> > > > a hint in Kconfig makes IMHO sense. Do you want to send a patch?
-> > > > A warning is too much since on some tiny embedded system with NOR f=
-lash mtdblock is still
-> > > > a good choice.
-> > > > ubiblock is mostly useful for NAND flash.
-> > > >
-> > > > > I remember there was still some use case(s) for mtdblock but I ca=
-n't remember
-> > > > > now what was it, perhaps we should document the expectations?
-> > > > > (Is that for JFFS2 to mount?)
-> > > >
-> > > > a long time ago mount didn't accept character devices, so you had t=
-o pass mtdblockX to mount
-> > > > JFFS2.
-> > > > This limitation is gone.
-> > > >
->
-> Hi,
->
-> Just a further follow-up on this discussion.
-> Whether to use /dev/mtdblock or /dev/ubiblock for rootfs (squashfs)
-> mounting during boot.
->
-> As suggested here:
-> Instead of using this in kernel command line:
-> [    0.000000] Kernel command line: ... rootfstype=3Dsquashfs
-> root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30 ...
->
-> I used this:
-> [    0.000000] Kernel command line: ... rootfstype=3Dsquashfs
-> ubi.mtd=3D40,0,30 ubi.block=3D0,0 root=3D/dev/ubiblock0_0 ...
->
-> The device is booting fine with ubiblock as well.
-> But, per say, I could not find any visible difference.
-> I just observed a slight improvement in boot time, but I need to
-> double-check on this, with few more reboot cycles.
->
+The patch has been generated with the coccinelle script below.
 
-That's a very good thing, it means we offered you a smooth transition :-)
+It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
+'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+This is less verbose.
 
-> Apart from this what are the other visible benefits of using ubiblock
-> which can be explained to be management or internal team ?
-> I could not find any documentation explaining the difference, except this=
- one:
-> http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
->
+A message split on 2 lines has been merged.
 
-I'm not a flash expert here. In any case, you are expected to do your own
-research (just like we all did), design your own setup matching
-your use-case, design tests based on your workload and access patterns, etc=
-.
+It has been compile tested.
 
-There are presentations on YouTube which discuss UBI, UBIFS and
-NAND-based designs on Linux, as well as white papers discussing
-NAND flashes challenges.
 
-Having said that...
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-When you use UBI block, you are accessing the flash via the UBI layer.
-This is IMO the best way to design your system, since UBI addresses
-wear leveling and bad blocks, and offers atomic updates.
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-In other words, IMO it's best to expose the NAND through UBI
-for both read-only and read-write access, using a single UBI device,
-and then creating UBI volumes as needed. This will allow UBI
-to spread wear leveling across the whole device, which is expected
-to increase the flash lifetime.
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-For instance, just as some silly example, you could have something like thi=
-s:
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-                               | RootFS SquashFS  |
-                               | UBI block        | UBIFS User R-W area
-------------------------------------------------------------------------
-Kernel A | Kernel B | RootFS A | RootFS B         | User
-------------------------------------------------------------------------
-                                 UBIX
-------------------------------------------------------------------------
-                                 /dev/mtdX
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-This setup allows safe kernel and rootfs upgrading. The RootFS is read-only
-via SquashFS and there's a read-write user area. UBI is supporting all
-the volumes, handling bad blocks and wear leveling.
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-> Can someone also point me to the respective driver code in case of
-> using /dev/mtdblock and /dev/ubiblock ?
-> Apart from theory I also want to check the impact at the code level..
->
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-You can find all the UBI code in drivers/mtd/ubi of course. The differences
-between mtdblock and ubiblock are huge: one goes directly to the flash,
-and the other uses UBI.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
 
-Good luck!
-Ezequiel
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ .../net/ethernet/myricom/myri10ge/myri10ge.c  | 59 +++++++++----------
+ 1 file changed, 29 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
+index fc99ad8e4a38..7359a8b768e9 100644
+--- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
++++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
+@@ -850,9 +850,9 @@ static int myri10ge_dma_test(struct myri10ge_priv *mgp, int test_type)
+ 	dmatest_page = alloc_page(GFP_KERNEL);
+ 	if (!dmatest_page)
+ 		return -ENOMEM;
+-	dmatest_bus = pci_map_page(mgp->pdev, dmatest_page, 0, PAGE_SIZE,
+-				   DMA_BIDIRECTIONAL);
+-	if (unlikely(pci_dma_mapping_error(mgp->pdev, dmatest_bus))) {
++	dmatest_bus = dma_map_page(&mgp->pdev->dev, dmatest_page, 0,
++				   PAGE_SIZE, DMA_BIDIRECTIONAL);
++	if (unlikely(dma_mapping_error(&mgp->pdev->dev, dmatest_bus))) {
+ 		__free_page(dmatest_page);
+ 		return -ENOMEM;
+ 	}
+@@ -899,7 +899,8 @@ static int myri10ge_dma_test(struct myri10ge_priv *mgp, int test_type)
+ 	    (cmd.data0 & 0xffff);
+ 
+ abort:
+-	pci_unmap_page(mgp->pdev, dmatest_bus, PAGE_SIZE, DMA_BIDIRECTIONAL);
++	dma_unmap_page(&mgp->pdev->dev, dmatest_bus, PAGE_SIZE,
++		       DMA_BIDIRECTIONAL);
+ 	put_page(dmatest_page);
+ 
+ 	if (status != 0 && test_type != MXGEFW_CMD_UNALIGNED_TEST)
+@@ -1205,10 +1206,10 @@ myri10ge_alloc_rx_pages(struct myri10ge_priv *mgp, struct myri10ge_rx_buf *rx,
+ 				return;
+ 			}
+ 
+-			bus = pci_map_page(mgp->pdev, page, 0,
++			bus = dma_map_page(&mgp->pdev->dev, page, 0,
+ 					   MYRI10GE_ALLOC_SIZE,
+-					   PCI_DMA_FROMDEVICE);
+-			if (unlikely(pci_dma_mapping_error(mgp->pdev, bus))) {
++					   DMA_FROM_DEVICE);
++			if (unlikely(dma_mapping_error(&mgp->pdev->dev, bus))) {
+ 				__free_pages(page, MYRI10GE_ALLOC_ORDER);
+ 				if (rx->fill_cnt - rx->cnt < 16)
+ 					rx->watchdog_needed = 1;
+@@ -1256,9 +1257,9 @@ myri10ge_unmap_rx_page(struct pci_dev *pdev,
+ 	/* unmap the recvd page if we're the only or last user of it */
+ 	if (bytes >= MYRI10GE_ALLOC_SIZE / 2 ||
+ 	    (info->page_offset + 2 * bytes) > MYRI10GE_ALLOC_SIZE) {
+-		pci_unmap_page(pdev, (dma_unmap_addr(info, bus)
+-				      & ~(MYRI10GE_ALLOC_SIZE - 1)),
+-			       MYRI10GE_ALLOC_SIZE, PCI_DMA_FROMDEVICE);
++		dma_unmap_page(&pdev->dev, (dma_unmap_addr(info, bus)
++					    & ~(MYRI10GE_ALLOC_SIZE - 1)),
++			       MYRI10GE_ALLOC_SIZE, DMA_FROM_DEVICE);
+ 	}
+ }
+ 
+@@ -1398,16 +1399,16 @@ myri10ge_tx_done(struct myri10ge_slice_state *ss, int mcp_index)
+ 			ss->stats.tx_packets++;
+ 			dev_consume_skb_irq(skb);
+ 			if (len)
+-				pci_unmap_single(pdev,
++				dma_unmap_single(&pdev->dev,
+ 						 dma_unmap_addr(&tx->info[idx],
+ 								bus), len,
+-						 PCI_DMA_TODEVICE);
++						 DMA_TO_DEVICE);
+ 		} else {
+ 			if (len)
+-				pci_unmap_page(pdev,
++				dma_unmap_page(&pdev->dev,
+ 					       dma_unmap_addr(&tx->info[idx],
+ 							      bus), len,
+-					       PCI_DMA_TODEVICE);
++					       DMA_TO_DEVICE);
+ 		}
+ 	}
+ 
+@@ -2110,16 +2111,16 @@ static void myri10ge_free_rings(struct myri10ge_slice_state *ss)
+ 			ss->stats.tx_dropped++;
+ 			dev_kfree_skb_any(skb);
+ 			if (len)
+-				pci_unmap_single(mgp->pdev,
++				dma_unmap_single(&mgp->pdev->dev,
+ 						 dma_unmap_addr(&tx->info[idx],
+ 								bus), len,
+-						 PCI_DMA_TODEVICE);
++						 DMA_TO_DEVICE);
+ 		} else {
+ 			if (len)
+-				pci_unmap_page(mgp->pdev,
++				dma_unmap_page(&mgp->pdev->dev,
+ 					       dma_unmap_addr(&tx->info[idx],
+ 							      bus), len,
+-					       PCI_DMA_TODEVICE);
++					       DMA_TO_DEVICE);
+ 		}
+ 	}
+ 	kfree(ss->rx_big.info);
+@@ -2584,15 +2585,15 @@ static void myri10ge_unmap_tx_dma(struct myri10ge_priv *mgp,
+ 		len = dma_unmap_len(&tx->info[idx], len);
+ 		if (len) {
+ 			if (tx->info[idx].skb != NULL)
+-				pci_unmap_single(mgp->pdev,
++				dma_unmap_single(&mgp->pdev->dev,
+ 						 dma_unmap_addr(&tx->info[idx],
+ 								bus), len,
+-						 PCI_DMA_TODEVICE);
++						 DMA_TO_DEVICE);
+ 			else
+-				pci_unmap_page(mgp->pdev,
++				dma_unmap_page(&mgp->pdev->dev,
+ 					       dma_unmap_addr(&tx->info[idx],
+ 							      bus), len,
+-					       PCI_DMA_TODEVICE);
++					       DMA_TO_DEVICE);
+ 			dma_unmap_len_set(&tx->info[idx], len, 0);
+ 			tx->info[idx].skb = NULL;
+ 		}
+@@ -2715,8 +2716,8 @@ static netdev_tx_t myri10ge_xmit(struct sk_buff *skb,
+ 
+ 	/* map the skb for DMA */
+ 	len = skb_headlen(skb);
+-	bus = pci_map_single(mgp->pdev, skb->data, len, PCI_DMA_TODEVICE);
+-	if (unlikely(pci_dma_mapping_error(mgp->pdev, bus)))
++	bus = dma_map_single(&mgp->pdev->dev, skb->data, len, DMA_TO_DEVICE);
++	if (unlikely(dma_mapping_error(&mgp->pdev->dev, bus)))
+ 		goto drop;
+ 
+ 	idx = tx->req & tx->mask;
+@@ -2824,7 +2825,7 @@ static netdev_tx_t myri10ge_xmit(struct sk_buff *skb,
+ 		len = skb_frag_size(frag);
+ 		bus = skb_frag_dma_map(&mgp->pdev->dev, frag, 0, len,
+ 				       DMA_TO_DEVICE);
+-		if (unlikely(pci_dma_mapping_error(mgp->pdev, bus))) {
++		if (unlikely(dma_mapping_error(&mgp->pdev->dev, bus))) {
+ 			myri10ge_unmap_tx_dma(mgp, tx, idx);
+ 			goto drop;
+ 		}
+@@ -3776,19 +3777,17 @@ static int myri10ge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	myri10ge_mask_surprise_down(pdev);
+ 	pci_set_master(pdev);
+ 	dac_enabled = 1;
+-	status = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	status = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (status != 0) {
+ 		dac_enabled = 0;
+ 		dev_err(&pdev->dev,
+-			"64-bit pci address mask was refused, "
+-			"trying 32-bit\n");
+-		status = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++			"64-bit pci address mask was refused, trying 32-bit\n");
++		status = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	}
+ 	if (status != 0) {
+ 		dev_err(&pdev->dev, "Error %d setting DMA mask\n", status);
+ 		goto abort_with_enabled;
+ 	}
+-	(void)pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+ 	mgp->cmd = dma_alloc_coherent(&pdev->dev, sizeof(*mgp->cmd),
+ 				      &mgp->cmd_bus, GFP_KERNEL);
+ 	if (!mgp->cmd) {
+-- 
+2.30.2
+
