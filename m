@@ -2,137 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1653F40C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81103F40C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhHVR6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 13:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
+        id S232034AbhHVSFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 14:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhHVR6I (ORCPT
+        with ESMTP id S230245AbhHVSFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 13:58:08 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAF7C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 10:57:27 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id v16so14882378ilo.10
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 10:57:27 -0700 (PDT)
+        Sun, 22 Aug 2021 14:05:01 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EEDC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 11:04:19 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id s12so1902267ljg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 11:04:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tO3FpggPumUudO2O7Ir/fs1af6Qf8hcFO9g7I6cp01Q=;
-        b=NDkEoB50cJIffh8DEmD3xfV5OH8ema/PjNX2L8kixdAdzju1+1Q+RfI4dvsWmf6ckV
-         cbsUqLyLFzaRWyrxKHgk9HO+WkFNp66FjMC0xCvO73mpe2AOuKEOT9losiWcUW3PDPNm
-         I0Juj2PjGLAqKt2+Iz9cmX6gBy5MzrvAzxAH8s1TYKJbJaqQKfMgWI5aiYeXRCwwh3kd
-         CJI4TEZHABSCNMA2IhdFQIizIVfW37pxWIzkxkAqqzqK5tmPuWInXDStw52NSqp8XXny
-         pVSXtZOL/inFPT0NN6u8kmBCcSiariw/dIe5ePYIn0HTiy7GwQL7GtGEqlmgztShSjIB
-         r2/w==
+        bh=FdFxYhd+eeTvCDoJF+ykQd/hvB6y5cUN0QY2l3gJKV8=;
+        b=au92NbSisRvXy93M+NrgnvN1ZFxFpdCvErKBfMKVIqPkcLDsmlc4H8IlkBaoDTokon
+         +3bncuuUd0fsd3z1HifoTs0zMQn06fmz518jwP3j+xMbPOi2iWMFEHBiOt1QHwW5pDC9
+         gQ87hYhnRnXoLWW0aQEtDFTGVTYDaIQIFcmIA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tO3FpggPumUudO2O7Ir/fs1af6Qf8hcFO9g7I6cp01Q=;
-        b=dy1CGxTt/0G2Jc4Wp+hirEDNiB0ZFsYbJuf320gxQeaaysiyvXkxRZoX1X97oCrqfv
-         wCBsb+g3ZLJIclR7G851GxRr3vgAs0BFp3UDYRcTymdwLY7uieVBrl8wOVoLsBANbPLa
-         MML3WfZQ3G12becHW0LKqcWw0gU0mCqPGj3GL6YCFXwcLigMXXgPQ3qyVSqgrNEONuvS
-         lR5MHtIR06AP8kwT/sF3QV29bFik9+LkThDBxIhELGWfDpnEWiST3f+hdPSrwc6OyUoA
-         gDJ5h0Bfmc/+s8y87Z/ZcvFNydQdgmqdpcVxAw4Gu4AT6KHNtRTfWabHIWMB11IfvyX+
-         Dt9w==
-X-Gm-Message-State: AOAM530/XDFoRVUc5JIlw1Kl4USaaNQU6rQ39c5k9qQVP7UMSjI8CUkZ
-        P9JDZPvQ12nNwYNKEssIzr93eYriMMAEgiC93l7JtQ==
-X-Google-Smtp-Source: ABdhPJxAy4F4JBrNf2BEXyC2jHsLYTKqTZpEvWl47iBJSnZyLzmCveu6cLApJEwjHW6shDTLnoCxAWArc0HfBTHBbuc=
-X-Received: by 2002:a92:ca89:: with SMTP id t9mr21038515ilo.178.1629655046630;
- Sun, 22 Aug 2021 10:57:26 -0700 (PDT)
+        bh=FdFxYhd+eeTvCDoJF+ykQd/hvB6y5cUN0QY2l3gJKV8=;
+        b=IeevaPoE7WjiXuBuC7/WxS7fb1Q9HsIScY2U1Lr57vB4jQPXPejsAlVBxJqgkBA1uC
+         MAwtRVrqk1EosYG/+YwdNDn4huzVN/XQNS0biud+GBjlUxynFl5MLCn8If8i46Zqrgqn
+         t1jWR9Cuunxq8Pxy7BRckhbpaoghfdbGrraIN3Uw8KhpszXpJOFEsL0gd/t8QfNazaDQ
+         sESBhnOT91YHSlTOKWpa0qQ1bJfovhHlgGnH6aYqnFXWcKr3z0UNdC7Tq5ilMWmPjkSo
+         H8255ssPholzH4fAn7kvlExt3Pxn/TBLPAdDWhDplD1aLOtlDSQGbR/Lcr8a1wpWM4yE
+         sLXg==
+X-Gm-Message-State: AOAM5305gfUg1P1O2RoCHzaKL/cAe2qhlIbuAydSSFThqj7CfoPiTI49
+        v6zbFlR3J1pzaCDxxOANmTjRFFNwnce+4biZ0j4=
+X-Google-Smtp-Source: ABdhPJzGVvI+JL4Gl/vvHQuIio/tiLFpeE8z4w3kJiYvYWNtyUumsCYwlprLK8rQhtCk3ZdmIijc4w==
+X-Received: by 2002:a05:651c:490:: with SMTP id s16mr24274134ljc.214.1629655457699;
+        Sun, 22 Aug 2021 11:04:17 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id b16sm826261lfv.26.2021.08.22.11.04.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 11:04:17 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id x27so32868921lfu.5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 11:04:17 -0700 (PDT)
+X-Received: by 2002:a2e:81c2:: with SMTP id s2mr23439411ljg.48.1629655124814;
+ Sun, 22 Aug 2021 10:58:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
- <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com> <CAKMK7uFW3Z=Up=OCJO4dNR9ffaTdFjHwoND9CrUw6LHmQ4t_AQ@mail.gmail.com>
-In-Reply-To: <CAKMK7uFW3Z=Up=OCJO4dNR9ffaTdFjHwoND9CrUw6LHmQ4t_AQ@mail.gmail.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Sun, 22 Aug 2021 14:57:15 -0300
-Message-ID: <CAAEAJfB3CoTU7bZe08wYEfTTm6=6UPOae9u39AtdbJ9saYknBA@mail.gmail.com>
-Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
- hardware decode
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
+References: <20210816194840.42769-1-david@redhat.com> <20210816194840.42769-3-david@redhat.com>
+ <CAHk-=wgsLtJ7=+NGGSEbTw9XBh7qyf4Py9-jBdajGnPTxU1hZg@mail.gmail.com>
+ <d90a7dfd-11c8-c4e1-1c59-91aad5a7f08e@redhat.com> <87o89srxnn.fsf@disp2133>
+In-Reply-To: <87o89srxnn.fsf@disp2133>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 22 Aug 2021 10:58:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi6XnsUf+WioJ3qRS09QhWqf50-DwCmUCjja5PHqjvsxw@mail.gmail.com>
+Message-ID: <CAHk-=wi6XnsUf+WioJ3qRS09QhWqf50-DwCmUCjja5PHqjvsxw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] kernel/fork: factor out replacing the current MM exe_file
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     David Hildenbrand <david@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        George Sun <george.sun@mediatek.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-unionfs@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 22 Aug 2021 at 13:50, Daniel Vetter <daniel@ffwll.ch> wrote:
+On Fri, Aug 20, 2021 at 7:36 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> On Wed, Aug 18, 2021 at 4:12 PM Ezequiel Garcia
-> <ezequiel@vanguardiasur.com.ar> wrote:
-> >
-> > +danvet
-> >
-> > Hi,
-> >
-> > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com> wrote:
-> > >
-> > > This series adds support for multi hardware decode into mtk-vcodec, by first
-> > > adding component framework to manage each hardware information: interrupt,
-> > > clock, register bases and power. Secondly add core thread to deal with core
-> > > hardware message, at the same time, add msg queue for different hardware
-> > > share messages. Lastly, the architecture of different specs are not the same,
-> > > using specs type to separate them.
-> > >
-> >
-> > I don't think it's a good idea to introduce the component API in the
-> > media subsystem. It doesn't seem to be maintained, IRC there's not even
-> > a maintainer for it, and it has some issues that were never addressed.
->
-> Defacto dri-devel folks are maintainer component.c, but also I'm not
-> aware of anything missing there?
->
+> I think this check is there to keep from changing /proc/self/exe
+> arbitrarily.
 
-A while ago, I tried to fix a crash in the Rockchip DRM driver
-(I was then told there can be similar issues on the IMX driver too,
-but I forgot the details of that).
+Well, you pretty much can already. You just have to jump through a few hoops.
 
-I sent a patchset trying to address it and got total silence back.
-Although you could argue the issue is in how drivers use the component
-API, AFAICR the abuse is spreaded across a few drivers, so it felt
-more reasonable to improve the component API itself, instead of changing
-all the drivers.
+> Maybe it is all completely silly and we should not care about the code
+> that thinks /proc/self/exe is a reliable measure of anything, but short
+> of that I think we should either keep the code or put in some careful
+> thought as to which restrictions make sense when changing
+> /proc/self/exe.
 
-See below:
+I think the important ones are already there: checking that it is (a)
+an executable and (b) that we have execute permission to it.
 
-https://patchwork.kernel.org/project/linux-rockchip/cover/20200120170602.3832-1-ezequiel@collabora.com/
+I also think the code is actually racy - while we are checking "did
+the old mm_exe file have any mappings", there's nothing that keeps
+another thread from changing the exe file to another one that _does_
+have mappings, and then we'll happily replace it with yet another file
+because we checked the old one, not the new one it was replaced by in
+the meantime.
 
-> There has been discussions that in various drm subsystems like
-> drm_bridge or drm_panel a few things are missing, which prevent
-> drivers from moving _away_ from component.c to the more specific
-> solutions for panel/bridges. But nothing that's preventing them from
-> using component.c itself.
->
-> I'm happy to merge a MAINTAINERS patch to clarify the situation if
-> that's needed.
+Of course, that "race" doesn't really matter - exactly because this
+isn't about security, it's just a random "let's test that immaterial
+thing, and we don't actually care about corner cases".
 
-Indeed, that would be good.
+So I'm not saying that race needs to be fixed - I'm just pointing it
+out as an example of how nonsensical the test really is. It's not
+fundamental to anything, it's just a random "let's test this odd
+condition".
 
-Thanks,
-Ezequiel
+That said, I don't care _that_ much. I'm happy with David's series, I
+just think that once we don't do this at a mmap level any more, the
+"go look for mappings" code makes little sense.
+
+So we can leave it, and remove it later if people agree.
+
+                  Linus
