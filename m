@@ -2,74 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0103F3F8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ACF3F3F8F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhHVNsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 09:48:19 -0400
-Received: from mail-4322.protonmail.ch ([185.70.43.22]:60957 "EHLO
-        mail-4322.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbhHVNsS (ORCPT
+        id S232866AbhHVNt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 09:49:26 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:38788 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231659AbhHVNtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 09:48:18 -0400
-Date:   Sun, 22 Aug 2021 13:47:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail; t=1629640056;
-        bh=rC8QqqVgLGHNgSOqRi7D47ap4bOojabP0Kp2f7scnBU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=AeSy77lxSNttZGiBN8ijKitnp5m96t+DfTJsdebI+Uwp8BEMhorUz2NSyzyJ0P7VA
-         kfx9mBPKfgiokXn+kXuwyJESekOJ5//cVdQvH3SkOsc1nk9P2vUGUMkCHxSWpqGYp4
-         5mcQv3BdL/nHEcTExy72aBW9nJaSlggxQ+FLK7gdbBIVymvKwBLOXGQUiARQpYlt/R
-         rbgLRWKE0MAGFbsXdxjoijsT5ViUmg7PfK+ymxQaBJ1ElfYrEsUzLiapSSdFJzQSAf
-         9XypiNo7WG1X15MYddgx1zYdnvTSSvk+9CaznjdhVkHWYBvSnkFgmMdhb/oslDNY2j
-         5xCcurWTM4xdQ==
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH 3/6] staging: rtl8723bs: remove sdio_read_mem()
-Message-ID: <20210822134723.cuzzogvujokqiw3l@h510>
-In-Reply-To: <2537053.yL3VPc0Jk4@localhost.localdomain>
-References: <20210821235456.2502681-3-hello@bryanbrattlof.com> <2537053.yL3VPc0Jk4@localhost.localdomain>
+        Sun, 22 Aug 2021 09:49:25 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d74 with ME
+        id kdoe250033riaq203doewr; Sun, 22 Aug 2021 15:48:42 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 15:48:42 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     oakad@yahoo.com, ulf.hansson@linaro.org, brucechang@via.com.tw,
+        HaraldWelte@viatech.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] mmc: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 15:48:37 +0200
+Message-Id: <b617f284e2ab8b6b48fff150eba1638641646edd.1629640046.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2021 08:25, Fabio M. De Francesco wrote:
-> On Sunday, August 22, 2021 1:55:29 AM CEST Bryan Brattlof wrote:
-> > The sdio_read_mem() function is unused. We can remove it.
-> >
-> > Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
-> > ---
-> >  drivers/staging/rtl8723bs/hal/sdio_ops.c   | 11 -----------
-> >  drivers/staging/rtl8723bs/include/rtw_io.h |  2 --
-> >  2 files changed, 13 deletions(-)
->
-> This change adds a build warning, which is not allowed.
->
-> Please merge this, and the 4/6 patch into a single change, so that it
-> all is removed together, causing no build warnings at any point in time.
->
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Will do.
+The patch has been generated with the coccinelle script below.
 
-Thanks for the review, Fabio!
-~Bryan
+It has been compile tested.
 
->
-> thanks,
->
-> Fabio
->
->
->
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/mmc/host/tifm_sd.c   | 16 ++++++++--------
+ drivers/mmc/host/via-sdmmc.c |  4 ++--
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/mmc/host/tifm_sd.c b/drivers/mmc/host/tifm_sd.c
+index 9fdf7ea06e3f..63917070b1a7 100644
+--- a/drivers/mmc/host/tifm_sd.c
++++ b/drivers/mmc/host/tifm_sd.c
+@@ -669,8 +669,8 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 
+ 			if(1 != tifm_map_sg(sock, &host->bounce_buf, 1,
+ 					    r_data->flags & MMC_DATA_WRITE
+-					    ? PCI_DMA_TODEVICE
+-					    : PCI_DMA_FROMDEVICE)) {
++					    ? DMA_TO_DEVICE
++					    : DMA_FROM_DEVICE)) {
+ 				pr_err("%s : scatterlist map failed\n",
+ 				       dev_name(&sock->dev));
+ 				mrq->cmd->error = -ENOMEM;
+@@ -680,15 +680,15 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 						   r_data->sg_len,
+ 						   r_data->flags
+ 						   & MMC_DATA_WRITE
+-						   ? PCI_DMA_TODEVICE
+-						   : PCI_DMA_FROMDEVICE);
++						   ? DMA_TO_DEVICE
++						   : DMA_FROM_DEVICE);
+ 			if (host->sg_len < 1) {
+ 				pr_err("%s : scatterlist map failed\n",
+ 				       dev_name(&sock->dev));
+ 				tifm_unmap_sg(sock, &host->bounce_buf, 1,
+ 					      r_data->flags & MMC_DATA_WRITE
+-					      ? PCI_DMA_TODEVICE
+-					      : PCI_DMA_FROMDEVICE);
++					      ? DMA_TO_DEVICE
++					      : DMA_FROM_DEVICE);
+ 				mrq->cmd->error = -ENOMEM;
+ 				goto err_out;
+ 			}
+@@ -762,10 +762,10 @@ static void tifm_sd_end_cmd(struct tasklet_struct *t)
+ 		} else {
+ 			tifm_unmap_sg(sock, &host->bounce_buf, 1,
+ 				      (r_data->flags & MMC_DATA_WRITE)
+-				      ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
++				      ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
+ 			tifm_unmap_sg(sock, r_data->sg, r_data->sg_len,
+ 				      (r_data->flags & MMC_DATA_WRITE)
+-				      ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
++				      ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
+ 		}
+ 
+ 		r_data->bytes_xfered = r_data->blocks
+diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
+index c32df5530b94..88662a90ed96 100644
+--- a/drivers/mmc/host/via-sdmmc.c
++++ b/drivers/mmc/host/via-sdmmc.c
+@@ -491,7 +491,7 @@ static void via_sdc_preparedata(struct via_crdr_mmc_host *host,
+ 
+ 	count = dma_map_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
+ 		((data->flags & MMC_DATA_READ) ?
+-		PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE));
++		DMA_FROM_DEVICE : DMA_TO_DEVICE));
+ 	BUG_ON(count != 1);
+ 
+ 	via_set_ddma(host, sg_dma_address(data->sg), sg_dma_len(data->sg),
+@@ -638,7 +638,7 @@ static void via_sdc_finish_data(struct via_crdr_mmc_host *host)
+ 
+ 	dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
+ 		((data->flags & MMC_DATA_READ) ?
+-		PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE));
++		DMA_FROM_DEVICE : DMA_TO_DEVICE));
+ 
+ 	if (data->stop)
+ 		via_sdc_send_command(host, data->stop);
+-- 
+2.30.2
 
