@@ -2,86 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50DF3F409D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E913F409F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbhHVRFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 13:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhHVRFW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 13:05:22 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EEF9C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 10:04:41 -0700 (PDT)
-Received: from martin by viti.kaiser.cx with local (Exim 4.89)
-        (envelope-from <martin@viti.kaiser.cx>)
-        id 1mHqtf-0008Kr-7j; Sun, 22 Aug 2021 19:04:35 +0200
-Date:   Sun, 22 Aug 2021 19:04:35 +0200
-From:   Martin Kaiser <lists@kaiser.cx>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 01/10] staging: r8188eu: remove unnecessary cast
-Message-ID: <20210822170435.ijsi7ep7rbdu4i3k@viti.kaiser.cx>
-References: <20210821164859.4351-1-martin@kaiser.cx>
- <CAA=Fs0mU0bkXPY35fkuudoWfAps2jp1qc3ga53LXgg6d+0bVSg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA=Fs0mU0bkXPY35fkuudoWfAps2jp1qc3ga53LXgg6d+0bVSg@mail.gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-Sender: Martin Kaiser <martin@viti.kaiser.cx>
+        id S230369AbhHVRKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 13:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhHVRKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 13:10:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5BDD461266;
+        Sun, 22 Aug 2021 17:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629652213;
+        bh=gaJ9wHL88SpphYcVif0RN4HGPXwlZsWqDIhFdweDQOw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ErUOWLhlUTQbstBK5fWWmWKm2LXzVdnU1vJ0MebifgvtNUhxuw3BpswBvehjnKiC2
+         mKZnpr2hbDAMSIJswOfAVamvyXRQTEMZyyaPefYNUJdBve48w61eY0XWdbczMaBzEp
+         JLOV48/V4JFZ8JZpL+g+9b7ASpJ59FcapF78hCFNBSyJ4v2/1pYTSLuW61vM+G+ZyA
+         41gLgT/a8Z4mrIreLJrvgo9jJ3NJxNqlj7fWhIpLPiv1oWOpprxX5N6FP0fWnWzoJG
+         +Dlveq9EoGFYj/m43AvZ/IMk53iTIIFTS7pCjwNbnmIcjyp3VWyAEugzA6TQi9Kbfr
+         HYulQoV6QDopw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4745960A02;
+        Sun, 22 Aug 2021 17:10:13 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-6 tag
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87mtpacq35.fsf@mpe.ellerman.id.au>
+References: <87mtpacq35.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87mtpacq35.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-6
+X-PR-Tracked-Commit-Id: 9f7853d7609d59172eecfc5e7ccf503bc1b690bd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1bdc3d5be7e199ff56f39dafb0e5f63a9b8c975d
+Message-Id: <162965221323.3005.13288383826569608839.pr-tracker-bot@kernel.org>
+Date:   Sun, 22 Aug 2021 17:10:13 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, nathan@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Phillip Potter (phil@philpotter.co.uk):
+The pull request you sent on Sun, 22 Aug 2021 09:53:18 +1000:
 
-> On Sat, 21 Aug 2021 at 17:49, Martin Kaiser <martin@kaiser.cx> wrote:
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-6
 
-> > name is a const char * by default. This type should be ok for r8188eu.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1bdc3d5be7e199ff56f39dafb0e5f63a9b8c975d
 
-> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > ---
-> >  drivers/staging/r8188eu/os_dep/usb_intf.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you!
 
-> > diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> > index e002070f7fba..72556ac10d7d 100644
-> > --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> > +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> > @@ -61,7 +61,7 @@ struct rtw_usb_drv {
-> >  };
-
-> >  static struct rtw_usb_drv rtl8188e_usb_drv = {
-> > -       .usbdrv.name = (char *)"r8188eu",
-> > +       .usbdrv.name = "r8188eu",
-> >         .usbdrv.probe = rtw_drv_init,
-> >         .usbdrv.disconnect = rtw_dev_remove,
-> >         .usbdrv.id_table = rtw_usb_id_tbl,
-> > --
-> > 2.20.1
-
-Hi Phil,
-
-> Looks ok to me, thanks. I would consider using a cover letter style
-> [PATCH 00/10] style approach as an addition in future though, just my
-> personal opinion.
-
-> Acked-by: Phillip Potter <phil@philpotter.co.uk>
-
-Thanks.
-
-This series is a mixed bag of things I found while poking around in the
-code. So I didn't think there was anything useful to say in a cover
-letter. Still, I see your point, it makes sense for a patch series to
-have a cover letter, I'll add one for future patch series.
-
-Best regards,
-Martin
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
