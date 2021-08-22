@@ -2,174 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01BE3F3FC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64FC3F3FC4
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbhHVOcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
+        id S233308AbhHVOd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhHVOcT (ORCPT
+        with ESMTP id S232003AbhHVOd0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:32:19 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086ABC061575;
-        Sun, 22 Aug 2021 07:31:38 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id k5so32091172lfu.4;
-        Sun, 22 Aug 2021 07:31:37 -0700 (PDT)
+        Sun, 22 Aug 2021 10:33:26 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C16C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:32:44 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id z20so31097880ejf.5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=43NEJMr0brhfqyLpY3hPgyhFUTczXVAcWbtRqQQyC5A=;
-        b=J9W4isTpQ7OZPErXo2Mo5+7UuchHyNqHkA9qicXQ6SUt28hTjkMSUbdxek7WJNTLH3
-         e/7zXFAS+OKy+QwoeecamSGbZrUmEADanAgWlevCplyFPEz1QFwRxBDM/DLhhKx0Fcgn
-         RR2TEfLnwuw+LWpT8UWve0nXC6fZ4vg2qwiKAICwvuirZK46rCH8yBui3UMdLIRFrCcO
-         PVcYI9gAznpTHpJNLL3DYhLMBaXdsEt8s+6A4Jsf37XVS3G2QuASGYV8FvhVOKSruBvQ
-         x60ifTGzB3okCjtsDVIAXEshTWKOEDzgRoO4N9yG2Nw2i2neINv27pxBMdzMQzdrlwQw
-         nIEA==
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vg4WCN3mkUp7qTb1jC4H7HoR8bVBq2cRQ0LNC0/9UWg=;
+        b=ARWJ7A13oKc6fIxvw1k6Tm3IRISZ4Wl5pRZGhmInO+/UuRhfXxmF4UlzkQq6B9PNd0
+         3PbIuOwy4cG1+RlEY8Lmu5vYXOV5RWJmfjS7A+kKcKk75gYQ1fDNfHMyWr42KbESHSpy
+         /DCZOECf5bc0aT0KIHganVfoCgkWEq94J9NsBr3eIYkBsRVkfPnb2RpwVgBuuwhCnV4g
+         +NnbEzb83r2TRzwKZk4qSx8gVgeRpH+ZYAqBFZk/hlTuiiK/ir3OtEQ5sZ47+icwDPKc
+         oReth/2/pskOUmmLo5yDUF4GlOpSQTOXgiS+ZPZcT11jisTUj4DV2P+sjWE3mAfcKFX8
+         HaFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=43NEJMr0brhfqyLpY3hPgyhFUTczXVAcWbtRqQQyC5A=;
-        b=Lld/hEkKdgH3nvSWOAYsc7ZhSe39HDBjSxm4loMbI3xxwXHrbW2G1XFMlVyTfYymhO
-         S5mqHScd8IdsHrngbinR1NG9yVRw0siXZ8Ha3opjthXJUvBqCmv4WKp1js2ZdLNDbl6+
-         uvn56lHq/bW9U8+QEAtRQ+BljHs1MIpHnhmjbP6G41i2CIrer22NOoqLWHh9dmy19PZ3
-         iOqYhsU0v1HLDcqMdUCRyn/1Tte1VCj1nLssVKZYXUva72MD6NOsyTA2EQRIjyDgnJ5X
-         Qxy1BoZEF3u2Hr2y306nO3GyBBrbYG7JtSqhmJZsC/rX0Wdh4X/7vqBaoxpXHAN41Tdi
-         XJww==
-X-Gm-Message-State: AOAM533ziSF5ENXfRrOo8T84aqVQNWJJAIdA7YrwZHGKu/FriXc0uNn7
-        VvLIuNgmAS3Hk9Hkq9O1TuE=
-X-Google-Smtp-Source: ABdhPJyzVxUfiTwOFDSY/OKNym6ckuZ8IweoE+bquKIj4ImmrkFXBxw2dEjDxAulAE1byO3rREsV2w==
-X-Received: by 2002:a05:6512:3888:: with SMTP id n8mr22711423lft.468.1629642696113;
-        Sun, 22 Aug 2021 07:31:36 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id k23sm1121170ljg.73.2021.08.22.07.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 07:31:35 -0700 (PDT)
-Date:   Sun, 22 Aug 2021 17:31:33 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     viro@zeniv.linux.org.uk,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dsterba@suse.cz, aaptel@suse.com, willy@infradead.org,
-        rdunlap@infradead.org, joe@perches.com, mark@harmstone.com,
-        nborisov@suse.com, linux-ntfs-dev@lists.sourceforge.net,
-        anton@tuxera.com, dan.carpenter@oracle.com, hch@lst.de,
-        ebiggers@kernel.org, andy.lavr@gmail.com, oleksandr@natalenko.name
-Subject: Re: [PATCH v27 04/10] fs/ntfs3: Add file operations and
- implementation
-Message-ID: <20210822143133.4meiisx2tbfgrz5l@kari-VirtualBox>
-References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
- <20210729134943.778917-5-almaz.alexandrovich@paragon-software.com>
- <20210822122003.kb56lexgvv6prf2t@pali>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vg4WCN3mkUp7qTb1jC4H7HoR8bVBq2cRQ0LNC0/9UWg=;
+        b=JVKZSph0L3vIVfae+IK9sCZs24sRCy3qJP0OFGF1uIwdfyLVv08hqVnc+bbnz8R2Ch
+         HWSBOj4yG2nZshZKJwykS5mUCsmD5AItXYhcWF6UT0HVlZg2WMK9Y9F1rgNjohgEAIX1
+         kV4ynhJymH09OsQ1nYVJKg3JAv4FLgdNIoK5iyx8BRHsZN51wNa+DrjRpdLEwEuFuKkk
+         ttct88th8/IueUUOanZKRzc/+iWsEwazfPwWZ+MlfWnNFY12i/aWgN7lM3GfS6ItyVvx
+         AKLRGKREWaDpQSjfr7WGKg/JY7sJ+GpyPony7F0NDS6sMi0BGc/gQ1hfzcCK+jf7tFDC
+         ep8g==
+X-Gm-Message-State: AOAM5315y/UP5Yx1VLbHm8wQJViMsdp5IJzA2PyTSZ5CIFQ1R/+NR6wd
+        nesQRitKzlhmdCKweYRx/4Abojp/Hs3SP5+7ni+ENQ==
+X-Google-Smtp-Source: ABdhPJw5LCjDQ9tRbHA/p3KiLXSnjc2x8oAhJStrqYw99HufdNCAiPBvAvvFJ1Z/wM2OjbFxyQQwDSve9mRXAa+1qmw=
+X-Received: by 2002:a17:906:2ad5:: with SMTP id m21mr31110981eje.88.1629642763303;
+ Sun, 22 Aug 2021 07:32:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210822122003.kb56lexgvv6prf2t@pali>
+References: <20210811025801.21597-1-yunfei.dong@mediatek.com>
+ <CAAEAJfDWOzCJxZFNtxeT7Cvr2pWbYrfz-YnA81sVNs-rM=8n4Q@mail.gmail.com>
+ <1b79a67b703d2c894bc4d9458c760e082fc42958.camel@mediatek.com>
+ <CAAEAJfCTrKj9AFExN-L-TKww4E=us1VVh8LHtZ8Q0j_eaCD4Eg@mail.gmail.com> <1629446378.18871.27.camel@mhfsdcap03>
+In-Reply-To: <1629446378.18871.27.camel@mhfsdcap03>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Sun, 22 Aug 2021 11:32:32 -0300
+Message-ID: <CAAEAJfCdvj4drV+YSbvyR30b0+50RpJcOYdEoNODTdrAoL6+vA@mail.gmail.com>
+Subject: Re: [PATCH v5, 00/15] Using component framework to support multi
+ hardware decode
+To:     "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        George Sun <george.sun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 02:20:03PM +0200, Pali Rohár wrote:
-> On Thursday 29 July 2021 16:49:37 Konstantin Komarov wrote:
-> > diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-> > new file mode 100644
-> > index 000000000..b4369c61a
-> > --- /dev/null
-> > +++ b/fs/ntfs3/file.c
-> > @@ -0,0 +1,1130 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + *
-> > + * Copyright (C) 2019-2021 Paragon Software GmbH, All rights reserved.
-> > + *
-> > + *  regular file handling primitives for ntfs-based filesystems
-> > + */
-> > +#include <linux/backing-dev.h>
-> > +#include <linux/buffer_head.h>
-> > +#include <linux/compat.h>
-> > +#include <linux/falloc.h>
-> > +#include <linux/fiemap.h>
-> > +#include <linux/msdos_fs.h> /* FAT_IOCTL_XXX */
-> > +#include <linux/nls.h>
-> > +
-> > +#include "debug.h"
-> > +#include "ntfs.h"
-> > +#include "ntfs_fs.h"
-> > +
-> > +static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
-> > +{
-> > +	struct fstrim_range __user *user_range;
-> > +	struct fstrim_range range;
-> > +	struct request_queue *q = bdev_get_queue(sbi->sb->s_bdev);
-> > +	int err;
-> > +
-> > +	if (!capable(CAP_SYS_ADMIN))
-> > +		return -EPERM;
-> > +
-> > +	if (!blk_queue_discard(q))
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	user_range = (struct fstrim_range __user *)arg;
-> > +	if (copy_from_user(&range, user_range, sizeof(range)))
-> > +		return -EFAULT;
-> > +
-> > +	range.minlen = max_t(u32, range.minlen, q->limits.discard_granularity);
-> > +
-> > +	err = ntfs_trim_fs(sbi, &range);
-> > +	if (err < 0)
-> > +		return err;
-> > +
-> > +	if (copy_to_user(user_range, &range, sizeof(range)))
-> > +		return -EFAULT;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static long ntfs_ioctl(struct file *filp, u32 cmd, unsigned long arg)
-> > +{
-> > +	struct inode *inode = file_inode(filp);
-> > +	struct ntfs_sb_info *sbi = inode->i_sb->s_fs_info;
-> > +	u32 __user *user_attr = (u32 __user *)arg;
-> > +
-> > +	switch (cmd) {
-> > +	case FAT_IOCTL_GET_ATTRIBUTES:
-> > +		return put_user(le32_to_cpu(ntfs_i(inode)->std_fa), user_attr);
-> > +
-> > +	case FAT_IOCTL_GET_VOLUME_ID:
-> > +		return put_user(sbi->volume.ser_num, user_attr);
-> > +
-> > +	case FITRIM:
-> > +		return ntfs_ioctl_fitrim(sbi, arg);
-> > +	}
-> > +	return -ENOTTY; /* Inappropriate ioctl for device */
-> > +}
-> 
-> Hello! What with these two FAT_* ioctls in NTFS code? Should NTFS driver
-> really implements FAT ioctls? Because they looks like some legacy API
-> which is even not implemented by current ntfs.ko driver.
+On Fri, 20 Aug 2021 at 04:59, yunfei.dong@mediatek.com
+<yunfei.dong@mediatek.com> wrote:
+>
+> Hi Ezequiel,
+>
+> Thanks for your detail feedback.
+>
+> On Thu, 2021-08-19 at 11:10 -0300, Ezequiel Garcia wrote:
+> > On Thu, 19 Aug 2021 at 04:13, yunfei.dong@mediatek.com
+> > <yunfei.dong@mediatek.com> wrote:
+> > >
+> > > Hi Ezequiel,
+> > >
+> > > Thanks for your suggestion.
+> > >
+> > > On Wed, 2021-08-18 at 11:11 -0300, Ezequiel Garcia wrote:
+> > > > +danvet
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Tue, 10 Aug 2021 at 23:58, Yunfei Dong <yunfei.dong@mediatek.com>
+> > > > wrote:
+> > > > >
+> > > > > This series adds support for multi hardware decode into mtk-vcodec,
+> > > > > by first
+> > > > > adding component framework to manage each hardware information:
+> > > > > interrupt,
+> > > > > clock, register bases and power. Secondly add core thread to deal
+> > > > > with core
+> > > > > hardware message, at the same time, add msg queue for different
+> > > > > hardware
+> > > > > share messages. Lastly, the architecture of different specs are not
+> > > > > the same,
+> > > > > using specs type to separate them.
+> > > > >
+> > > >
+> > > > I don't think it's a good idea to introduce the component API in the
+> > > > media subsystem. It doesn't seem to be maintained, IRC there's not
+> > > > even
+> > > > a maintainer for it, and it has some issues that were never
+> > > > addressed.
+> > > >
+> > > > It would be really important to avoid it. Is it really needed in the
+> > > > first place?
+> > > >
+> > > > Thanks,
+> > > > Ezequiel
+> > >
+> > > For there are many hardware need to use, mt8192 is three and mt8195 is
+> > > five. Maybe need more to be used in the feature.
+> > >
+> > > Each hardware has independent clk/power/iommu port/irq.
+> > > Use component interface in prob to get each component's information.
+> > > Just enable the hardware when need to use it, very convenient and
+> > > simple.
+> > >
+> > > I found that there are many modules use component to manage hardware
+> > > information, such as iommu and drm etc.
+> > >
+> >
+> > Many drivers support multiple hardware variants, where each variant
+> > has a different number of clocks or interrupts, see for instance
+> > struct hantro_variant which allows to expose different codec cores,
+> > some having both decoder/encoder, and some having just a decoder.
+> >
+> > The component API is mostly used by DRM to aggregate independent
+> > subdevices (called components) into an aggregated driver.
+> >
+> > For instance, a DRM driver needs to glue together the HDMI, MIPI,
+> > and plany controller, or any other hardware arrangement where
+> > devices can be described independently.
+> >
+> The usage scenario is very similar with drm and iommu, So decide to use
+> component framework.
+> Decode has three/five or more hardwares, these hardware are independent.
+> For mt8183 just need core hardware to decode, but mt8192 has lat,soc and
+> core hardware to decode. When lat need to use, just enable lat hardware,
+> core is the same.And mt8195 will has two cores, each core can work well
+> independent.
+>
+> For each component device just used to open their power/clk/iommu
+> port/irq when master need to enable it. The main logic is in master
+> device.
+>
+> > The component API may look simple but has some issues, it's not easy
+> > to debug, and can cause troubles if not used as expected [1].
+> > It's worth making sure you actually need a framework
+> > to glue different devices together.
+> >
+> Each hardware has its index, master can get hardware information
+> according these index, looks not complex. What do you mean about not
+> easy to debug?
+>
+> > > Do you have any other suggestion for this architecture?
+> > >
+> >
+> > Looking at the different patchsets that are posted, it's not clear
+> > to me what exactly are the different architectures that you intend
+> > to support, can you some documentation which clarifies that?
+> >
+> Have five hardwares lat,soc,core0,core1 and main. Lat thread can use lat
+> soc and main, core thread can use soc,lat, core0 and core1. Core thread
+> can be used or not for different project.
 
-I was looking same thing when doing new ioctl for shutdown. These
-should be dropped completly before this gets upstream. Then we have
-more time to think what ioctl calls should used and which are
-necessarry.
+Can you explain what are these lat,soc and core threads for?
 
-> Specially, should FS driver implements ioctl for get volume id which in
-> this way? Because basically every fs have some kind of uuid / volume id
-> and they can be already retrieved by appropriate userspace tool.
+> Also Need to use these
+> hardware dynamic at the same time. So I use component framework, just
+> need to know the used  hardware index according to different
+> project.Need not to do complex logic to manage these hardwares.
+>
 
-My first impression when looking this code was that this is just copy
-paste work from fat driver. FITRIM is exactly the same. Whoever
-copyed it must have not thinked this very closly. Good thing you
-bringing this up.
+I am not thrilled to see the component framework introduced to the
+media subsystem. Like I said, it has no clear maintainer, and it's not
+easy to use.
 
-I didn't want to just yet because there is quite lot messages and
-things which are in Komarov todo list. Hopefully radio silence will
-end soon. I'm afraid next message will be "Please pull" for Linus
-and then it cannot happend because of radio silence.
+The media subsystem has some support which AFAIK does the same thing,
+see v4l2-async, which is maintained by media people.
 
+Please push a branch based on media/master containing these changes.
+I see there are other patch series for this device, but it's hard to track
+which goes first, etc.
+
+Thanks,
+Ezequiel
