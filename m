@@ -2,134 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E123F3E49
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B1F3F3E4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbhHVH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 03:26:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33328 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbhHVH0e (ORCPT
+        id S231703AbhHVHkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 03:40:33 -0400
+Received: from out02.smtpout.orange.fr ([193.252.22.211]:60562 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhHVHkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 03:26:34 -0400
-Date:   Sun, 22 Aug 2021 07:25:50 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629617152;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BDaJ8gq1y2CCb9HbdovkJsuoTT2Ott+UnFGCWMcbZ1s=;
-        b=j8J2xDUjqMbDZ8tLD4Ns7KzQnGOC6+VfXjaJpfd5g26eM66Cu75J7Wzn5aBzcoRKIr3CZw
-        qHrZrUBI10rNNesoqjvvknfdjL6nh1NxGsFWcO+T2KS676JEH/mtnn/pT3zJtc/zhkVN5H
-        mMEjdQ+BQ3zqfWyIqdB7JWkeFGoctRxRTBYVDsKNf3tLMHNouvIQ5FcjpB18u8najg+jUW
-        utdBJ1mfmBNy2zEoOj0BFALFXKf/MWjotDth4cGZ/UFIeHqaoEMqWPcxwUoDosrXGTQkJg
-        3QKotZ8uGNPCkQ2TwzuUOfm9BCiDBlRn4uY5ftnEcleyx21RbhdDt7+E789LqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629617152;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BDaJ8gq1y2CCb9HbdovkJsuoTT2Ott+UnFGCWMcbZ1s=;
-        b=2mJQQJ9rWYEBE+ORbmghjg6TfLrGLBac0hveQpFvheUL0Pu7xehOS/xacJbwGUSZ+GknMY
-        +xk8xA070kmmhmBg==
-From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/resctrl: Fix a maybe-uninitialized build
- warning treated as error
-Cc:     Terry Bowman <Terry.Bowman@amd.com>,
-        kernel test robot <lkp@intel.com>,
-        Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu>
-References: <162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu>
+        Sun, 22 Aug 2021 03:40:32 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d59 with ME
+        id kXfn2500K3riaq203XfnP5; Sun, 22 Aug 2021 09:39:50 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 09:39:50 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        davem@davemloft.net, kvalo@codeaurora.org, kuba@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] mt76: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 09:39:45 +0200
+Message-Id: <83b2da6ff8a07d576fa3627051daa705aba37a3c.1629617782.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-ID: <162961715100.25758.14486039318102865041.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Commit-ID:     527f721478bce3f49b513a733bacd19d6f34b08c
-Gitweb:        https://git.kernel.org/tip/527f721478bce3f49b513a733bacd19d6f3=
-4b08c
-Author:        Babu Moger <babu.moger@amd.com>
-AuthorDate:    Fri, 20 Aug 2021 16:52:42 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sun, 22 Aug 2021 09:11:29 +02:00
+The patch has been generated with the coccinelle script below.
 
-x86/resctrl: Fix a maybe-uninitialized build warning treated as error
+It has been compile tested.
 
-The recent commit
 
-  064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-caused a RHEL build failure with an uninitialized variable warning
-treated as an error because it removed the default case snippet.
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-The RHEL Makefile uses '-Werror=3Dmaybe-uninitialized' to force possibly
-uninitialized variable warnings to be treated as errors. This is also
-reported by smatch via the 0day robot.
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-The error from the RHEL build is:
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-  arch/x86/kernel/cpu/resctrl/monitor.c: In function =E2=80=98__mon_event_cou=
-nt=E2=80=99:
-  arch/x86/kernel/cpu/resctrl/monitor.c:261:12: error: =E2=80=98m=E2=80=99 ma=
-y be used
-  uninitialized in this function [-Werror=3Dmaybe-uninitialized]
-    m->chunks +=3D chunks;
-              ^~
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-The upstream Makefile does not build using '-Werror=3Dmaybe-uninitialized'.
-So, the problem is not seen there. Fix the problem by putting back the
-default case snippet.
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
- [ bp: note that there's nothing wrong with the code and other compilers
-   do not trigger this warning - this is being done just so the RHEL compiler
-   is happy. ]
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-Fixes: 064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
-Reported-by: Terry Bowman <Terry.Bowman@amd.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/162949631908.23903.17090272726012848523.stgit=
-@bmoger-ubuntu
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- arch/x86/kernel/cpu/resctrl/monitor.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/wireless/mediatek/mt76/mt7603/pci.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7615/pci.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt76x0/pci.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt76x2/pci.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/pci.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7921/pci.c | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resc=
-trl/monitor.c
-index 57e4bb6..8caf871 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -304,6 +304,12 @@ static u64 __mon_event_count(u32 rmid, struct rmid_read =
-*rr)
- 	case QOS_L3_MBM_LOCAL_EVENT_ID:
- 		m =3D &rr->d->mbm_local[rmid];
- 		break;
-+	default:
-+		/*
-+		 * Code would never reach here because an invalid
-+		 * event id would fail the __rmid_read.
-+		 */
-+		return RMID_VAL_ERROR;
- 	}
-=20
- 	if (rr->first) {
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7603/pci.c b/drivers/net/wireless/mediatek/mt76/mt7603/pci.c
+index aa6cb668b012..3d94cdb4314a 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7603/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7603/pci.c
+@@ -28,7 +28,7 @@ mt76pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	pci_set_master(pdev);
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/pci.c b/drivers/net/wireless/mediatek/mt76/mt7615/pci.c
+index 11f169cdd603..7a54ea6a86d0 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/pci.c
+@@ -39,7 +39,7 @@ static int mt7615_pci_probe(struct pci_dev *pdev,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		goto error;
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c b/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c
+index b795e7245c07..92ddb8c68938 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c
+@@ -176,7 +176,7 @@ mt76x0e_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	pci_set_master(pdev);
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c b/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
+index adf288e50e21..fb8de1833937 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
+@@ -47,7 +47,7 @@ mt76x2e_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	pci_set_master(pdev);
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/pci.c b/drivers/net/wireless/mediatek/mt76/mt7915/pci.c
+index 340b364da5f0..c79b526346e7 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/pci.c
+@@ -251,7 +251,7 @@ static int mt7915_pci_probe(struct pci_dev *pdev,
+ 
+ 	pci_set_master(pdev);
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
+index c3905bcab360..7e8cff3a1b94 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
+@@ -128,7 +128,7 @@ static int mt7921_pci_probe(struct pci_dev *pdev,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (ret)
+ 		goto err_free_pci_vec;
+ 
+-- 
+2.30.2
+
