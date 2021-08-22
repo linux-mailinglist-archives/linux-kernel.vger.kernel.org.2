@@ -2,158 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273AC3F3D0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 03:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9073F3D11
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 04:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhHVBvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 21:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        id S231607AbhHVCEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 22:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhHVBvT (ORCPT
+        with ESMTP id S230346AbhHVCEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 21:51:19 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9725C061575;
-        Sat, 21 Aug 2021 18:50:39 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id a5so8136172plh.5;
-        Sat, 21 Aug 2021 18:50:39 -0700 (PDT)
+        Sat, 21 Aug 2021 22:04:22 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E961C061575;
+        Sat, 21 Aug 2021 19:03:42 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id i21so12150324pfd.8;
+        Sat, 21 Aug 2021 19:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oWp1bCl+FkafN8ehqG1SL+8snffxC7uBzDFP9htK1G0=;
-        b=EDsXk0O+yaU/ooYbZDgUp+OQydPSecEWpi1/jVpkgCJW/dnOMhbWGVZ1Ypd8CM9SYM
-         CjSb+2+pJAwZSQO5VeeymUWEChwYjinlhBjrPFVIE3Z1uWHlKj4D2sYChyODlzPJ8PtN
-         mdNxFgPWKIEmqmERV7Wmd4tlCCYPpEjhrpxYICDRnSoCoRE23hnuLXUwFDY/xwemASUD
-         mQ4mfyaBZvWv+SDSDsLsvq3vV6It1okuSMTacA+aH+h8Ykha/V9j3YD54QVvKKgclY4y
-         Ar4D/3hNHk4RSPIPfasFrzf1dYHSpEwOEyqgkvc8FLbNpxABPTchc74w+Xk9PAOb6SyN
-         4vOA==
+        h=to:cc:references:subject:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3cvWZiQJNDhvVotuhqFVoSuEfSpJeFSijwgz7uZHHio=;
+        b=H7I6kIPMHfgoRUgfUG2h6TcSxH98jOHmeiCAkQLoLO4tFFlUJ8Xu2gGcdnu7B34m6E
+         weSYJmrD3i7b5O1bZyGH/dTUbZri0L7VPY13G871+AbBNODvKFOIsHBZjGguCAjq6a8/
+         x3l8ku4sZotj3HCdlHGU5QXc18fy11WpQCw1IW+C+K1Ot3irOAjn3VHGfqYvFyAQQtSJ
+         ICVg1qyGvnqY9Qi7P6xj21NA52LpOPt1ZchQRQKV3gwHmx+zmN1h29c5q7T0WVS+C7YA
+         t5CIrIsQKTXtkd2Y9o8CnXZPfrjA9f8ZnKx3ByreK3RaF1T6QXvUtO5CYuobs9/sTmIn
+         c60g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oWp1bCl+FkafN8ehqG1SL+8snffxC7uBzDFP9htK1G0=;
-        b=riwXW1kcL4mhRmi34A0ncexjgJRcLVjjibZm/8F9hBHZlyUFvr5VBb/H/oIu/3ndvg
-         6CAe+vkGuAKkQLkvWREWOOELZaj+RbNU/4tqfGHDtRYc3fAkcc3MvmTTQH77BD/Q9djk
-         NBkvse9UEEUmLmGQdVFF3/wc/2teWLGfhW7yGdZh+ZQJBnR93cc56AXtieJpeLJXILHI
-         updVFZFHfzStZ0bxrkDevg6yD9ouaLzO6AHWrDY7HrknVf3hdbt4JOIgrJDLi+tOTiOd
-         quiqTVs44N7aQV6efPR/YnhuX3CIMIkhki1IZHFi8C/o8oXY98SXA+iGYFePNysXeBcW
-         xb9A==
-X-Gm-Message-State: AOAM530bguVyCsBZAtBjxs/euMTCgBFsUvR+8phdOViBD9+QJdftQdDJ
-        CeqLoIXdvEc6Uyga2uxzUKY=
-X-Google-Smtp-Source: ABdhPJx/tnhxP6xZoi5T1FkxGUSKU/5c7OQbRfs54tq3YF8VsW0rc//ElWYFLWb2Ibxemaog9uPggw==
-X-Received: by 2002:a17:90a:fa3:: with SMTP id 32mr12633225pjz.68.1629597039169;
-        Sat, 21 Aug 2021 18:50:39 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id o10sm9699171pjg.34.2021.08.21.18.50.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 18:50:38 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 18:50:35 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     "Machnikowski, Maciej" <maciej.machnikowski@intel.com>
-Cc:     "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "colin.king@canonical.com" <colin.king@canonical.com>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "Bross, Kevin" <kevin.bross@intel.com>,
-        "Stanton, Kevin B" <kevin.b.stanton@intel.com>,
-        Ahmad Byagowi <abyagowi@fb.com>
-Subject: Re: [RFC net-next 1/7] ptp: Add interface for acquiring DPLL state
-Message-ID: <20210822015035.GB4545@hoboy.vegasvil.org>
-References: <20210816160717.31285-1-arkadiusz.kubalewski@intel.com>
- <20210816160717.31285-2-arkadiusz.kubalewski@intel.com>
- <20210816235400.GA24680@hoboy.vegasvil.org>
- <PH0PR11MB4951762ECB04D90D634E905DEAFE9@PH0PR11MB4951.namprd11.prod.outlook.com>
- <20210818170259.GD9992@hoboy.vegasvil.org>
- <PH0PR11MB495162EC9116F197D79589F5EAFF9@PH0PR11MB4951.namprd11.prod.outlook.com>
- <20210819153414.GC26242@hoboy.vegasvil.org>
- <PH0PR11MB4951F51CBA231DFD65806CDAEAC09@PH0PR11MB4951.namprd11.prod.outlook.com>
- <20210820155538.GB9604@hoboy.vegasvil.org>
- <PH0PR11MB49518ED9AAF8B543FD8324B9EAC19@PH0PR11MB4951.namprd11.prod.outlook.com>
+        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3cvWZiQJNDhvVotuhqFVoSuEfSpJeFSijwgz7uZHHio=;
+        b=hKlQZqPzct2HHwqOxTYNXPYkbwXaozhLX/HasWxKe/ivYqRFKq/FchE5+GlwDupz/a
+         eT1PTNnahmTVVUEb1nuUwzTowxz4rssLXHw3S1txldr2Cm8n3eD9D1LWkPX+oKkJd8xr
+         P+sYJ2dZts6+D5Em/rG098DYCAB8Vz4EuFW5ZjvJ9iZ9hHdDAMcegTTG0JATYk5ZHtca
+         Ic78tAldqo2tv92uTZr4aruB35w0w01CxN2qbnATswlhrnjMeznX8RH3wZw0nqm8QWgy
+         v+zeWkO4UCEjuYXPpYAplkPzta7FASf4JVUfHpt9v2IpMzasVhXbOWgNtNApIBvtJ6m8
+         fRUA==
+X-Gm-Message-State: AOAM533QH2jKhmaXxqn+G9zyML5Y5ha7WJOfnEVEryOti6uKDp1pvyF7
+        nK7c74fzbh7H+UBk5CpYVeM=
+X-Google-Smtp-Source: ABdhPJxoFivrZ6MnqK7C9Hhz0C1i4p4l1QQDWxCpRA7QFLhQolRgMKVl3h82KyiT37dV85Lv8QGwoA==
+X-Received: by 2002:aa7:8298:0:b029:338:340:a085 with SMTP id s24-20020aa782980000b02903380340a085mr26917000pfm.46.1629597821901;
+        Sat, 21 Aug 2021 19:03:41 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id k6sm13330689pgk.1.2021.08.21.19.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Aug 2021 19:03:41 -0700 (PDT)
+To:     vilhelm.gray@gmail.com
+Cc:     jic23@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Akira Yokosawa <akiyks@gmail.com>
+References: <YSDa667n6pi4O8iT@shinobu>
+Subject: Re: [PATCH v15 07/13] docs: counter: Document character device
+ interface
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <f6930072-c487-a102-931c-53a79515d5fa@gmail.com>
+Date:   Sun, 22 Aug 2021 11:03:38 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH0PR11MB49518ED9AAF8B543FD8324B9EAC19@PH0PR11MB4951.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YSDa667n6pi4O8iT@shinobu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 06:30:02PM +0000, Machnikowski, Maciej wrote:
+(dropped most CCs)
 
-> I did a talk at netDev 0x15 covering SyncE - you can refer to the slides for more detailed info, and hopefully the recording will be available soon as well:
-> https://netdevconf.info/0x15/session.html?Introduction-to-time-synchronization-over-Ethernet
+Hello William,
 
-These slides are very clear and nicely done!
+I spotted a minor error while browsing documentation updates.
 
-( And they also confirm that (ab)using the PHC chardev ioctl for the DPLL
-stuff is the wrong interface ;^)
+On Sat, 21 Aug 2021 19:52:27 +0900, William Breathitt Gray wrote:
+> On Sun, Aug 15, 2021 at 05:51:02PM +0100, Jonathan Cameron wrote:
+>> On Mon,  9 Aug 2021 21:37:32 +0900
+>> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+...
+>> > +
+>> > +Counter events can be configured by users to report various Counter
+>> > +data of interest. This can be conceptualized as a list of Counter
+>> > +component read calls to perform. For example:
+>> > +
+>> > +        +-------------------------------------------------+
 
-> The SyncE capable PHY is a PHY that can recover the physical clock,
-> at which the data symbols are transferred, (usually) divide it and
-> output it to the external PLL. It can also redirect the recovered
-> and divided clock to more than one pin.
+This needs to be:
 
-Right, and as your slides show so clearly, the DPLL is connected to
-the PHY, not to the time stamping unit with the PTP clock.
+              +------------------------+------------------------+
 
-> Since the 40.5.2 is not applicable to higher-speed ethernet which
-> don't use auto-negotiation, but rather the link training sequence
-> where the RX side always syncs its clock to the TX side.
+, so that the table structure can be properly recognized by Sphinx
+(kernel-doc tool).
 
-I really want an interface that will also work with Gigabit and even
-100 Megabit like the PHYTER (which does support SyncE).
- 
-> The external DPLL tunes the frequency generated by a crystal to the frequency recovered by the PHY, and drives the outputs.
-> 
-> On the other end - the SyncE PHY uses the clock generated by the DPLL to transmit the data to the next element.
+        Thanks, Akira
 
-So I guess that this is an implementation detail of the higher speed PHYs.
-
-> That's why the RFC proposes 2 interfaces:
-> - one for enabling redirected clock on a selected pin of the PHY
-> - one for the physical frequency lock of the DPLL
-> 
-> The connection with the PTP subsystem is that in most use cases I
-> heard about SyncE is used as a physical frequency syntonization for
-> PTP clocks.
-
-As your slides correctly show, SyncE is about distributing frequency
-and not about Phase/ToD.  Of course you can combine SyncE with PTP to
-get both, provided that you disable frequency adjustment in the PTP
-software stack (in linuxptp, this is the "nullf" servo).  But SyncE in
-fact predates PTP, and it can and should be configurable even on
-interfaces that lack PHC altogther (or on kernels without PHC
-enabled).
-
-> Let me know if that makes more sense now. We could add a separate
-> SyncE and separate PTP DPLL monitoring interfaces, but in most cases
-> they will point to the same device.
-
-This is just a coincidence of the device you are working with.  The
-kernel really needs an interface that works with all kind of hardware
-setups.  Imagine a computer with discrete MACs with HW time
-stamping/PHC and discrete PHYs with SyncE support.  The PHC driver
-won't have any connection to the PHY+DPLL.
-
-Your API must be on the interface/MAC, with the possibility being
-handled directly by the MAC driver (for integrated devices) or calling
-into the PHY layers (phylib, phylink, and drivers/phy).
-
-If you need a DPLL monitoring interface for your card, it ought to go
-through the network interface to the MAC/PHY driver and then to the
-DPLL itself.  That way, it will work with different types of hardware.
-
-Thanks,
-Richard
+>> > +        | COUNTER_EVENT_OVERFLOW | COUNTER_EVENT_INDEX    |
+>> > +        +========================+========================+
+>> > +        | Channel 0              | Channel 0              |
+>> > +        +------------------------+------------------------+
+>> > +        | * Count 0              | * Signal 0             |
+>> > +        | * Count 1              | * Signal 0 Extension 0 |
+>> > +        | * Signal 3             | * Extension 4          |
+>> > +        | * Count 4 Extension 2  +------------------------+
+>> > +        | * Signal 5 Extension 0 | Channel 1              |
+>> > +        |                        +------------------------+
+>> > +        |                        | * Signal 4             |
+>> > +        |                        | * Signal 4 Extension 0 |
+>> > +        |                        | * Count 7              |
+>> > +        +------------------------+------------------------+
+>> > +
