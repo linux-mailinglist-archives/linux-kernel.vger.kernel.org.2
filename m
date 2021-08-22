@@ -2,241 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ACF3F3F8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACABA3F3F90
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhHVNt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 09:49:26 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:38788 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231659AbhHVNtZ (ORCPT
+        id S232967AbhHVNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 09:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhHVNu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 09:49:25 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d74 with ME
-        id kdoe250033riaq203doewr; Sun, 22 Aug 2021 15:48:42 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 15:48:42 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     oakad@yahoo.com, ulf.hansson@linaro.org, brucechang@via.com.tw,
-        HaraldWelte@viatech.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mmc: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 15:48:37 +0200
-Message-Id: <b617f284e2ab8b6b48fff150eba1638641646edd.1629640046.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 09:50:58 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA65C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 06:50:17 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id h9so31002973ejs.4
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 06:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UQIUFuaVnDeSqO5NxIP0mR+YO1SRXJL+8IshgCg+5aI=;
+        b=TvnjKkmP8IaRHcpgeQ1T1hA7eRiZUfz23jqoMrjw2VX9wHqcdzxPC1V8lMu7onSv/s
+         JN0EoUEGmpDCHPDonPwYROz2zSc7MbeGMl4HtsZpUygEF6cElVBBl65UkrxUd9N6/56V
+         5BFEKi9n1+lhDHNU5DMKckfCGkmzzY2vB6djZUXgBIO6ZMFkjKSw8vwCDnciruiN/3Aq
+         nzPgH30jLWre3KPLW6DY/zZXtsla/XLp+mqieS/sji0oVQWaaWn4XwI3Y9JwIc9bxUVF
+         KTIQvqeW+6MKe6cNUcFZom2N7k0Tot7p7OFUXxD7plUR1pXsKiFDSndRD9ycI71vWx/2
+         74vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UQIUFuaVnDeSqO5NxIP0mR+YO1SRXJL+8IshgCg+5aI=;
+        b=eaeOHA2VhQoAnfABvZ3VuxtaMqiBMJdz1DfPDGLCGbU7iFKUFLGvDGb2rSrFLpgHJv
+         3y+gspbxEC5+7SCeL3vdz+G3aFwczlROoFZBFSDNDd22Cgo5mYd6w1rg5nYo38rHCqmG
+         VcI/TptMwPo2xUdj8lfL11WAWypzjhQDyz0UrU6hqxRM+1mpcSGjooQwBtiV3pvG5nxZ
+         +rb/agD070zAc/v34f0ppKZRlG4QNploTPwjQRY0WL8C+L2ZsjZjBSx98I6aXJCKcF4P
+         ryIqp57mVaL7Qxk9irD7gCkPM7Ojlm+lmF+m67fTPwAy1OKMBSXqKZNOSue8EnDfvXhF
+         8B+w==
+X-Gm-Message-State: AOAM533sutnMJjW8xnV79qx9un3NTQzh5i4FWyqA1WlUBe2Qn6NXrnFp
+        0UbzgrFMKOKvcjsV2/nRLVg=
+X-Google-Smtp-Source: ABdhPJyizlZ8ZfPmcwFhcRXR0KO/lufiQd0oKfblYOYqFB8aFAWm/dbIQsEWRhBFvNgWAwwW4DtsYg==
+X-Received: by 2002:a17:906:70b:: with SMTP id y11mr8123986ejb.274.1629640215918;
+        Sun, 22 Aug 2021 06:50:15 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id n16sm7283360edv.73.2021.08.22.06.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 06:50:15 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: TODO list for staging/r8188eu
+Date:   Sun, 22 Aug 2021 15:50:14 +0200
+Message-ID: <2099975.VbY6Rib6K3@localhost.localdomain>
+In-Reply-To: <YSJE6aoH96kh777R@kroah.com>
+References: <1897566.d8lQ4HMSh1@localhost.localdomain> <YSJE6aoH96kh777R@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Sunday, August 22, 2021 2:36:57 PM CEST Greg Kroah-Hartman wrote:
+> On Sun, Aug 22, 2021 at 09:41:20AM +0200, Fabio M. De Francesco wrote:
+> > Dear Larry, Philip,
+> > 
+> > >From what I understand how the development process works, drivers in 
+staging
+> > 
+> > should have a to-do list in the TODO file. Please read https://
+www.kernel.org/
+> > doc/html/latest/process/2.Process.html?highlight=todo#staging-trees.
+> > 
+> > Could you (as the maintainers of the r8188eu driver) please compile and
+> > provide the above mentioned list?
+> 
+> Why don't you provide an initial list for people to work off of if you
+> feel it is needed here?
+> 
+> thanks,
+> 
+> greg k-h
 
-The patch has been generated with the coccinelle script below.
+Unfortunately I'm not able to tell what is needed to do to have a driver 
+improved so that it can be moved off staging. This work should be better 
+addressed by someone who is much more experienced.
 
-It has been compile tested.
+For example, I read from other drivers TODO lists that cfg80211 and lib80211 
+are required but I don't know what they are.
+
+Regards,
+
+Fabio
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/mmc/host/tifm_sd.c   | 16 ++++++++--------
- drivers/mmc/host/via-sdmmc.c |  4 ++--
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mmc/host/tifm_sd.c b/drivers/mmc/host/tifm_sd.c
-index 9fdf7ea06e3f..63917070b1a7 100644
---- a/drivers/mmc/host/tifm_sd.c
-+++ b/drivers/mmc/host/tifm_sd.c
-@@ -669,8 +669,8 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 
- 			if(1 != tifm_map_sg(sock, &host->bounce_buf, 1,
- 					    r_data->flags & MMC_DATA_WRITE
--					    ? PCI_DMA_TODEVICE
--					    : PCI_DMA_FROMDEVICE)) {
-+					    ? DMA_TO_DEVICE
-+					    : DMA_FROM_DEVICE)) {
- 				pr_err("%s : scatterlist map failed\n",
- 				       dev_name(&sock->dev));
- 				mrq->cmd->error = -ENOMEM;
-@@ -680,15 +680,15 @@ static void tifm_sd_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 						   r_data->sg_len,
- 						   r_data->flags
- 						   & MMC_DATA_WRITE
--						   ? PCI_DMA_TODEVICE
--						   : PCI_DMA_FROMDEVICE);
-+						   ? DMA_TO_DEVICE
-+						   : DMA_FROM_DEVICE);
- 			if (host->sg_len < 1) {
- 				pr_err("%s : scatterlist map failed\n",
- 				       dev_name(&sock->dev));
- 				tifm_unmap_sg(sock, &host->bounce_buf, 1,
- 					      r_data->flags & MMC_DATA_WRITE
--					      ? PCI_DMA_TODEVICE
--					      : PCI_DMA_FROMDEVICE);
-+					      ? DMA_TO_DEVICE
-+					      : DMA_FROM_DEVICE);
- 				mrq->cmd->error = -ENOMEM;
- 				goto err_out;
- 			}
-@@ -762,10 +762,10 @@ static void tifm_sd_end_cmd(struct tasklet_struct *t)
- 		} else {
- 			tifm_unmap_sg(sock, &host->bounce_buf, 1,
- 				      (r_data->flags & MMC_DATA_WRITE)
--				      ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
-+				      ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
- 			tifm_unmap_sg(sock, r_data->sg, r_data->sg_len,
- 				      (r_data->flags & MMC_DATA_WRITE)
--				      ? PCI_DMA_TODEVICE : PCI_DMA_FROMDEVICE);
-+				      ? DMA_TO_DEVICE : DMA_FROM_DEVICE);
- 		}
- 
- 		r_data->bytes_xfered = r_data->blocks
-diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
-index c32df5530b94..88662a90ed96 100644
---- a/drivers/mmc/host/via-sdmmc.c
-+++ b/drivers/mmc/host/via-sdmmc.c
-@@ -491,7 +491,7 @@ static void via_sdc_preparedata(struct via_crdr_mmc_host *host,
- 
- 	count = dma_map_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
- 		((data->flags & MMC_DATA_READ) ?
--		PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE));
-+		DMA_FROM_DEVICE : DMA_TO_DEVICE));
- 	BUG_ON(count != 1);
- 
- 	via_set_ddma(host, sg_dma_address(data->sg), sg_dma_len(data->sg),
-@@ -638,7 +638,7 @@ static void via_sdc_finish_data(struct via_crdr_mmc_host *host)
- 
- 	dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
- 		((data->flags & MMC_DATA_READ) ?
--		PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE));
-+		DMA_FROM_DEVICE : DMA_TO_DEVICE));
- 
- 	if (data->stop)
- 		via_sdc_send_command(host, data->stop);
--- 
-2.30.2
 
