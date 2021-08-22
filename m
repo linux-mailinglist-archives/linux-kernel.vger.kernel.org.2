@@ -2,209 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5013F40D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2769C3F40DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhHVS3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 14:29:25 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:50940 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhHVS3Y (ORCPT
+        id S231837AbhHVSbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 14:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhHVSbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 14:29:24 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 28f884f6;
-        Sun, 22 Aug 2021 20:28:41 +0200 (CEST)
-Date:   Sun, 22 Aug 2021 20:28:41 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
-        lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io,
-        stan@corellium.com, maz@kernel.org, kettenis@openbsd.org,
-        sven@svenpeter.dev, marcan@marcan.st, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210816031621.240268-7-alyssa@rosenzweig.io> (message from
-        Alyssa Rosenzweig on Sun, 15 Aug 2021 23:16:21 -0400)
-Subject: Re: [PATCH v2 6/6] arm64: apple: Add PCIe node
-References: <20210816031621.240268-1-alyssa@rosenzweig.io> <20210816031621.240268-7-alyssa@rosenzweig.io>
-Message-ID: <56140c9183a8d1c2@bloch.sibelius.xs4all.nl>
+        Sun, 22 Aug 2021 14:31:36 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF63AC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 11:30:54 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d2so12038005qto.6
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 11:30:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KcPO54sQpKQV6pgf9mYfE2hSM0yrjlzbf4bAE6KSsmQ=;
+        b=Xl1Uzayhpk5gXWEIwE5ZFMjqtFppGCP1RpS5KlWW0KYp5BT2wJs00xY/rHZbVtMsId
+         veMhx/v6+TPRqRd51Eb7ONUtShO5pBIL0m1iYTNHL/tIL+Wz4hb/Ubw6djkZCxLSkmPX
+         dOokibNjAJ2kbaXM9YwfcKwaf82ictKMowz/m/A/zwhTuSKBYxUSUGbQGLbf0v8097U7
+         8sRi6xIOdYBt3kGTN0mBJI9XEW42F4nqtXJDDMmPnhuU1IyXGzVZpEYWcyVBGrRM54o5
+         egTF0TV15OIu1B1HEsG+z8KH2g7KgN5gbk3LDdbWz3Y4Ry2BpPg8tnS0spzpBDVn39W6
+         FCVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KcPO54sQpKQV6pgf9mYfE2hSM0yrjlzbf4bAE6KSsmQ=;
+        b=KP1zr+uHv5jrXCQXLdQXGOp4mPoguKC3CAGCG0aHnrDiQDkPHS5OorIih11s0iRp2y
+         W+x0GL8+QpUZGhzSDmU6R0al1zKM4EnJlW6pRFONsiixrKNzNJK60ZeW2S9DLSmcOQfq
+         tMFwacNN19V2kE6d3/cTsCtF4n8q40pwi+mbJi0Heb2q59E7AAIlaQUwwmnujeC+dfKI
+         WslIfB9VtuqLFUmkDlYpw7OuJ2QT7EEMJ2RZjebXlkzoioioTjks8qb7QXxz5UqDGKSM
+         o0ni6swZG1NXI+1b6E/psic0ZkBiNJiIzU8O/3E+YdTnRjmEDNQ0xI93FnJayFqpm5Bk
+         /Odw==
+X-Gm-Message-State: AOAM530UtP/NA0cmsHQ4YWNklmQrKl1M6cpkCsFiu1aksY9ogL1Ap0/B
+        jEJvW0ij7b+M3WaW2O7j9tfpAyQnFy8ZHPL/vks=
+X-Google-Smtp-Source: ABdhPJzAQ0SDQ6ZCbqSO+iIXiM0UY1ovQ/Z1a9g+u5/maXTJEIrMp4gHhPt80x6PhsQik0Oz3YnhElmnbaAUplG+6sc=
+X-Received: by 2002:ac8:66d8:: with SMTP id m24mr25941903qtp.39.1629657054032;
+ Sun, 22 Aug 2021 11:30:54 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a05:6214:ccc:0:0:0:0 with HTTP; Sun, 22 Aug 2021 11:30:53
+ -0700 (PDT)
+Reply-To: ms.lisahugh000@gmail.com
+From:   MS LISA HUGH <xavier.gbesse2@gmail.com>
+Date:   Sun, 22 Aug 2021 20:30:53 +0200
+Message-ID: <CALCvb1McdOdYgZSokTbEPK8r7CPi=zyC0xLBDqrbzr4u1u5+nA@mail.gmail.com>
+Subject: YOUR ATTENTION FROM >>MS LISA HUGH.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> Date: Sun, 15 Aug 2021 23:16:21 -0400
-> 
-> From: Mark Kettenis <kettenis@openbsd.org>
-> 
-> Add node corresponding to the apcie,t8103 node in the Apple device tree
-> for the Mac mini (M1, 2020).
-> 
-> Clock references are left out at the moment and will be added once the
-> appropriate bindings have been settled on.
-> 
-> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
-> ---
->  arch/arm64/boot/dts/apple/t8103.dtsi | 124 +++++++++++++++++++++++++++
->  1 file changed, 124 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-> index 342e01c6098e..c0d3b2fb0366 100644
-> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
-> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-> @@ -214,5 +214,129 @@ pinctrl_aop: pinctrl@24a820000 {
->  				     <AIC_IRQ 273 IRQ_TYPE_LEVEL_HIGH>,
->  				     <AIC_IRQ 274 IRQ_TYPE_LEVEL_HIGH>;
->  		};
-> +
-> +		pcie0_dart_0: dart@681008000 {
-> +			compatible = "apple,t8103-dart";
-> +			reg = <0x6 0x81008000 0x0 0x4000>;
-> +			#iommu-cells = <1>;
-> +			interrupt-parent = <&aic>;
-> +			interrupts = <AIC_IRQ 696 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +
-> +		pcie0_dart_1: dart@682008000 {
-> +			compatible = "apple,t8103-dart";
-> +			reg = <0x6 0x82008000 0x0 0x4000>;
-> +			#iommu-cells = <1>;
-> +			interrupt-parent = <&aic>;
-> +			interrupts = <AIC_IRQ 699 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +
-> +		pcie0_dart_2: dart@683008000 {
-> +			compatible = "apple,t8103-dart";
-> +			reg = <0x6 0x83008000 0x0 0x4000>;
-> +			#iommu-cells = <1>;
-> +			interrupt-parent = <&aic>;
-> +			interrupts = <AIC_IRQ 702 IRQ_TYPE_LEVEL_HIGH>;
-> +		};
-> +
-> +		pcie0: pcie@690000000 {
-> +			compatible = "apple,t8103-pcie", "apple,pcie";
-> +			device_type = "pci";
-> +
-> +			reg = <0x6 0x90000000 0x0 0x1000000>,
-> +			      <0x6 0x80000000 0x0 0x100000>,
-> +			      <0x6 0x81000000 0x0 0x4000>,
-> +			      <0x6 0x82000000 0x0 0x4000>,
-> +			      <0x6 0x83000000 0x0 0x4000>;
-> +			reg-names = "config", "rc", "port0", "port1", "port2";
-> +
-> +			interrupt-parent = <&aic>;
-> +			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 704 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 705 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 706 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 707 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 708 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 709 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 710 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 711 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 712 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 713 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 714 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 715 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 716 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 717 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 718 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 719 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 720 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 721 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 722 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 723 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 724 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 725 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 726 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 727 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 728 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 729 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 730 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 731 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 732 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 733 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 734 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <AIC_IRQ 735 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +			msi-controller;
-> +			msi-parent = <&pcie0>;
-> +			msi-ranges = <704 32>;
-> +
-> +			iommu-map = <0x100 &pcie0_dart_0 0 1>,
-> +				    <0x200 &pcie0_dart_1 0 1>,
-> +				    <0x300 &pcie0_dart_2 0 1>;
-> +			iommu-map-mask = <0xff00>;
+Dear Friend,
 
-So this will need a little bit more thought.
+I am Ms Lisa Hugh, work in the department of Audit and accounting
+manager here in the Bank.
 
-The PCIe bridge hardware has logic to map a PCIe Requester ID (RID) to
-an IOMMU Stream ID (SID).  The RID is basically just the PCI
-bus/device/function number of the PCI device that initiates the DMA.
-As far as I can tell if the RID isn't matched by the PCIe bridge
-RID-to-SID mapping hardware it will be mapped to SID 0.  Your driver
-doesn't program the RID-to-SID hardware so using 0 as the SID in your
-device tree makes some sense.
+I need Your help for this transfer($4,500,000,00 ,U.S.DOLLARS)to your
+bank account with your
 
-However, since SID 0 is the default used when there is no match for an
-RID, we should probably avoid it if we can.  That's why in my
-apple,pcie DT binding series I used SID 1.  But this would require
-additional code in the driver to parse the iommu-map property and
-program the RID-to-SID hardware accordingly.
+co-operation
 
-Now until we support the Tunderbolt ports, this isn't all that
-important and we can go with your current driver and DT.  I can adjust
-the U-Boot DT accordingly.
+Please send the follow below,
 
-> +
-> +			bus-range = <0 3>;
-> +			#address-cells = <3>;
-> +			#size-cells = <2>;
-> +			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-> +				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-> +
-> +			pinctrl-0 = <&pcie_pins>;
-> +			pinctrl-names = "default";
-> +
-> +			pci@0,0 {
-> +				device_type = "pci";
-> +				reg = <0x0 0x0 0x0 0x0 0x0>;
-> +				reset-gpios = <&pinctrl_ap 152 0>;
-> +				max-link-speed = <2>;
-> +
-> +				#address-cells = <3>;
-> +				#size-cells = <2>;
-> +				ranges;
-> +			};
-> +
-> +			pci@1,0 {
-> +				device_type = "pci";
-> +				reg = <0x800 0x0 0x0 0x0 0x0>;
-> +				reset-gpios = <&pinctrl_ap 153 0>;
-> +				max-link-speed = <2>;
-> +
-> +				#address-cells = <3>;
-> +				#size-cells = <2>;
-> +				ranges;
-> +			};
-> +
-> +			pci@2,0 {
-> +				device_type = "pci";
-> +				reg = <0x1000 0x0 0x0 0x0 0x0>;
-> +				reset-gpios = <&pinctrl_ap 33 0>;
-> +				max-link-speed = <1>;
-> +
-> +				#address-cells = <3>;
-> +				#size-cells = <2>;
-> +				ranges;
-> +			};
-> +		};
->  	};
->  };
-> -- 
-> 2.30.2
-> 
-> 
+1)AGE....2)TELEPHONE NUMBER,,,,,...,3)COUNTRY.....4)OCCUPATION......
+
+Thanks.
+Ms Lisa Hugh
