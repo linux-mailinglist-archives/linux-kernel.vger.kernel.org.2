@@ -2,240 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0E63F41E5
+	by mail.lfdr.de (Postfix) with ESMTP id 52DB03F41E6
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 00:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhHVWTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 18:19:51 -0400
-Received: from mail-eopbgr130113.outbound.protection.outlook.com ([40.107.13.113]:48127
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229700AbhHVWTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 18:19:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jdmR+8ElyYh+9RX61i2a9RDuWN1hZilsVlStFP3I859/T0EOtQKTz6YxLZeq7QFmbtc09lXKNqPSMMi6/cP00p924adn6Q8ys7Ftw0lUnVRQ3CSfPoU1wK8YTmLVY8HawsiJjghu4md179z3hI27MbnEHI1u+LGVPCv2qhuG0EW9tOqIe5tAc4qtfPs4hOvnQM6WdfvVFPKP3dFksotc9wV2kMQqxM7xuhgCUjCHhmjdh2/mDRHCAOER1uTnyM4Mc42xR0y3CTW4hROt2CP886s3smTZURuEleqPefHm5DBSk1TYC9iCxSlIUARonCT6ueJlNpnNe8BGg0AmZorajA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pjNXu8Z/DgPq6vKU4fEwUtncg5i3ELJYdIRTw0dHdtg=;
- b=gDo+ZZ71dIK8hzY4Bh4i2/ZyokwepvPTd6BhKcs2yg+rqU4sucinFZgtikO1hg1NALY1HFrWH70fsLuvVKMqvhdQ5vtfTI//mUE/Y01YXuOuI6jOvyDRis+M+myB//Qnhu5Zl+gLUUe1JoDuL1Uyuv5b4a4Iks2eun/Lz4eYoj5A9CZDPiN2d5U65RKTK3PSuMcogdC36aRa2a3zwNOaNIZ04/TNQ6lo5oZ9WZ3Bpxwkmdg+q0pZhGO/gWH51FyNyDITlUKOo9IIUZ2/+rQYPxOHa2UTVUF3dR+8brbYXSTAD0+5gtgv8sfDwEn7ZaCMPFdMq4Ae4kqtbBJi3iwjgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pjNXu8Z/DgPq6vKU4fEwUtncg5i3ELJYdIRTw0dHdtg=;
- b=fu2KtqpYOi38jS/QZb3c+mbUvIfoRIMJZpN79R3W7UbgIj8Smo02pfYa7nl685xtaIIkK/8GmFLwCt3dsJClONhOPMdN/D61j6bhpk9Qc9gCoW7f9ezSFBM0yFmkx0Hw8vw6Eje0Tc2dPmKjyM9LpG4a8HRnowh0mKXUQ3RxAmE=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DBAPR02MB6245.eurprd02.prod.outlook.com (2603:10a6:10:19a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Sun, 22 Aug
- 2021 22:18:58 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::35c9:1008:f5af:55a]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::35c9:1008:f5af:55a%4]) with mapi id 15.20.4436.024; Sun, 22 Aug 2021
- 22:18:58 +0000
-Subject: Re: [PATCH v8 09/14] iio: afe: rescale: fix accuracy for small
- fractional scales
-To:     Liam Beguin <liambeguin@gmail.com>, jic23@kernel.org,
-        lars@metafoo.de
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-References: <20210820191714.69898-1-liambeguin@gmail.com>
- <20210820191714.69898-10-liambeguin@gmail.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <2d028a60-d1fe-7fa1-da4a-0d80f8d468ea@axentia.se>
-Date:   Mon, 23 Aug 2021 00:18:55 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <20210820191714.69898-10-liambeguin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1PR0401CA0109.eurprd04.prod.outlook.com
- (2603:10a6:7:54::38) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S233707AbhHVWTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 18:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhHVWTx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 18:19:53 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7CEC061575;
+        Sun, 22 Aug 2021 15:19:11 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so9507277wml.3;
+        Sun, 22 Aug 2021 15:19:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=jJbzfY3J31R5QWngmUYeYdxzeAtmKFvE5F0hxn4JZuI=;
+        b=sonh4OKDkUqZNnBP91jhGurw0kgke3bYqK9Sjul2Wzfk8CpUqPve9bnZ7/+RiZSdbu
+         ZmaMe+NVxKkmgoEzouc38aCj5pncNk2zwLTWpI5P67byViKHD8nws9sBuwUWzbs8R77L
+         9dLHo1lT4p48+DUXX3RKNu9n77//pZAIcAFBQt43+wOexac4XBmF1QBEQBXb984RtCa3
+         +2Prgxm/EokCE68P/QHbeX4fcjUqs0kDYKW2I52GxeHIb6okDYf5eKSjsFSA63vaWwu6
+         h1zaCwRV1KNKb60+5N2ye6U3VLVWMgFYc/uAjc3PcfqgeSiJImoxy5CAUOIqicek0kir
+         AnMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=jJbzfY3J31R5QWngmUYeYdxzeAtmKFvE5F0hxn4JZuI=;
+        b=DRal7leeeyT535fkxnge3juSebx2SkWToemCD65x4soY9GvAmhSyE7ioGtcvY8d7Y5
+         iiMJ8VT+ULtuH7terwVXuqKPz7fvHMxuo1Lqy0baqaop0xFGt7ygjTmgsmoaUS0oKbg2
+         2ZX+ujL6Wa4F3SExD2GCt4KuGNwWs25JNTT1jGmCpevkq8yBV36Czz3Tc2xgXQGHFocq
+         5p4oEyltlCIp4+zLEaEotfABXTJariWGtYB4QxiOxS3f+y8GtqsUS41+F0nMRqQdp4AQ
+         lCqJOzUjxsREUFOikYSecL7KXEAdw8Si3kef1zKcW7x/Z5pcLNc+8KqSkeFiBXORyHl1
+         ph+A==
+X-Gm-Message-State: AOAM530odxThVM0te7L3SbpjQZlz0NfrcuK+DnTGmXv444UML1Xa5yyp
+        FH9D8bJkkEfA9rcXvQYTr5oHIWZMqzUj
+X-Google-Smtp-Source: ABdhPJxcen/OdScVUcs9fnwQHzsoIRW2aHmR54BIsCLT/Rsr70uMcDOnDYMgt9qCNcHfrYeLo+WTwg==
+X-Received: by 2002:a1c:f414:: with SMTP id z20mr13752100wma.94.1629670749888;
+        Sun, 22 Aug 2021 15:19:09 -0700 (PDT)
+Received: from ?IPv6:2a02:810b:f40:4200:f3bc:8bd1:bbc3:e753? ([2a02:810b:f40:4200:f3bc:8bd1:bbc3:e753])
+        by smtp.gmail.com with ESMTPSA id d8sm12881848wrx.12.2021.08.22.15.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 15:19:09 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: rockchip: Fix GPU register width for RK3328
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210623115926.164861-1-knaerzche@gmail.com>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <c586d864-994f-2d24-9b29-2933b567be84@gmail.com>
+Date:   Mon, 23 Aug 2021 00:19:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.233) by HE1PR0401CA0109.eurprd04.prod.outlook.com (2603:10a6:7:54::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Sun, 22 Aug 2021 22:18:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5911fc5e-3004-4818-b904-08d965bad61a
-X-MS-TrafficTypeDiagnostic: DBAPR02MB6245:
-X-Microsoft-Antispam-PRVS: <DBAPR02MB6245A083E1F2A522264757E7BCC39@DBAPR02MB6245.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mJdgRyUX4gzFsYyrJmb7mCPgnnwFbg5/YAoMFfd9X5yxTzD8O0yg424XPkaV5AKcUsoR52Rwwmb5Q6en6PKNVEcnmY5LARESUkTUjlf0xmWQNeytQiu4S3k0Kfc36+YyUhSaOCwm40TRLbEl3UBfiAjbuUIALXxfv9w6PbjfsKZF+kczcjJH32uA62lPvR8k+D0Kbq4sZpVV0KvC594xey0uX+wlRbzEJgIlY8DpDg3jn5cMlRiiGM7kStweHIpU8nwBI2h+UpQOKH5TsFIZsaH45prAQ9gXkPST/wW90wM/o6mpVL3jN5LBzPxji3JQNk8gtIyxTShPE1TdDGYViSDwwTCwpdC7UooY1xIoiqNSgzDg0NTeN80WIlY2uP0Vz8dMoUSTUDwjxEVqgq5OMqH2S9nD3RjIigdAtHcYqHz66giXwEZUaNryWZ6fqt9lz/1ZeQT3JsHqCOm2EtiuF5yv/zxK9imS1O11aWdcE4GtSQGcF6MMvP/4hiAdH7mopdIaauP3dWGie8Za4Hwj4KNMR+STd9yIWvqpQ5IzcJNB92gpClbsbtfh6SggxdKtBW6YxqcE5OKq2wHD26D4qccPkSSQcwKkeXv3pSaIiN+qtDpc6YXBDehGxS0Zly75o+4H5g6y59nc7tN23dxY2EhvEE6ISaNATJ1ga98JCt/XFa7/o+0LAvTEhyLL7at/nMRxwFLdc98E2Ap5mCHa2RE8Y18j9UoFhajMVSn8Vh4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(376002)(396003)(366004)(346002)(136003)(26005)(186003)(6486002)(5660300002)(31686004)(31696002)(2616005)(956004)(8676002)(66946007)(4326008)(16576012)(478600001)(8936002)(316002)(66556008)(36756003)(66476007)(83380400001)(36916002)(53546011)(86362001)(2906002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDBqYXpEY3pBQXR6MXBpYVlRZXdSNVNFMFAxOG1qTWdlb1ZkODVsOUxoWTVz?=
- =?utf-8?B?Qkg0c2NZT0ZCZlVmK3ptRmhkb0k5YWFzRnRaSXdKY29BM3FsNllYbXNMVDJG?=
- =?utf-8?B?WDNYYjNZVGdVbC9Qa2ozbnFFeXV1MDFPK0xPWkl0UmdmMVh5Uld5b01vQVFJ?=
- =?utf-8?B?cng2dXgwazVBYWo0MFg1b1ZDcGxqMjNTbytjODJrdzIzdnJNT0pRZWhETmUz?=
- =?utf-8?B?b2tnaWNkN0FURjc4NTFOSExpclpuVkJNbTlFMmpTdVlGbTN5WmxtUHVkMkw2?=
- =?utf-8?B?RlM4LzhzRnhhVTVTdVlGdWU1THB3Z05kZ1VCOEh0a3hoNHhrbnNFMXMrbi8y?=
- =?utf-8?B?UlF0Z0JqM0JiK1gzdU9MbWVLZkhDaXJpWHZGR25WVzZ5NUlNL2pkWXRVd2Z6?=
- =?utf-8?B?Ym9mYWc2NUozaVBOOTBROGIvMEFOUit0QXpRdVRRSjVRY05PYWpFWm8zelFr?=
- =?utf-8?B?RmJRVWNrQ0xQMGJlVzVLbDBwQlVBYkY2MVJMcjhlQzB2bWtmbzV3QWh5ejBL?=
- =?utf-8?B?MkN3NkZnOHVCQXpaMjFEazN0R0VmaCtKNW1JWFErSlU3d1NnSURnRmEwa1dX?=
- =?utf-8?B?QlE0WjRaUU9qbm5wK09UQmgySDh0ME9lYW9HdzMwNGlZNFEwd1BqMUcySkI4?=
- =?utf-8?B?QWZVNnJNeE4xUk05clUrNC8zMWpRSnBEaW85dVhtSGlRWE5qOUxZV1lTNnBB?=
- =?utf-8?B?cGEyU0lPaHk4SDF6RU1zYWc3ZjF4TUp4VjBBRTNLWk1RT3FpOEtMcXFFbnp6?=
- =?utf-8?B?M3JpZVM3MXFzbnVINW9zZFA1ek9rRklHZytDNVdPZkc2YmU4TURnb0ZhQzBM?=
- =?utf-8?B?N2JBUHVFTVMzbU5LbUVLeVZ1RzB0R1pCTnlKbE84d1lTaHVuMXFPMDNoNXVl?=
- =?utf-8?B?NHdsWGpjMkIrdmNzcmtoVmxRS3RhQmpaOUE4Z1g0Mll2Q3cyb01MRnVpTit5?=
- =?utf-8?B?Y3JVaitFZDRwOGZDUTAyQmJmU0k3QWhYQkRLUG1sbEthWkdMZVEvRlcyaCt1?=
- =?utf-8?B?UGtCUjJNb0ZnTnBhK3NLTVdGRUVCYXEzTUNaN3BaS3hINUo0QVpURi9aMzgy?=
- =?utf-8?B?RHg5ckRYNkl5SzNocjcyOElNUmFDZTBpSVl1eHZHVFZqcTZCdCthUituQWN0?=
- =?utf-8?B?QTVtZmlMQXF5bWcwTnhHcnpBS1NwMkVEdnk1bVA5aVNhdG9HcENST0d1MTlk?=
- =?utf-8?B?SU9BU1FseTdkaCtYbko2UWJCZUprYXJheTVhbHBWVW9HMy93eXdKUC9hUzJB?=
- =?utf-8?B?SGJMSTdDbDg1MFFOY1BLbmhGSGpLbmFCNWNjR0dWbWs0MHZPZ2hjNjJ3ZTZP?=
- =?utf-8?B?VXlJTllkektQNGtEZnhURWhRWVg0UVpoL2h3Y0dpcTFxWXdaVTNLcnBxTzJT?=
- =?utf-8?B?SzdLZDUzNEp6T0ZCbnBVRW1qNE8vWXRxWm9IeGR1OWpHR2lQUUtyV1N1U1RL?=
- =?utf-8?B?UjByZ1gyVXplbGJVR1hNblViZFdRR3pZM1UzNklFZG1uZ01GbHRTQ1dlZm8v?=
- =?utf-8?B?WkVtanBMQnN1RDFnNUlISzQ3dkF4WEJLcVlGeHowdzA1UG13UGtOTDNwTHhW?=
- =?utf-8?B?U1NKODl0enZGVmlCQjE3NkUyUU52TGlMNldReXM1MDhqTmxLeStTbWtwaEFo?=
- =?utf-8?B?UEwzV3NRZmxSVStlK2FqTDIyZ0NEZ3U2ekV6MDhJc1AwaWw4RTF3MnFGdWdO?=
- =?utf-8?B?RGZNdTVyU3RSbEh6M1d4WEs1NGpLZWVBcDc1RWxSQWxITmV3TWpid0Vjcjhz?=
- =?utf-8?Q?Y7S08KfxxCyPNPvMQWeBN1DhkgKZm3POSdWQnfI?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5911fc5e-3004-4818-b904-08d965bad61a
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2021 22:18:58.1792
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CK7RVVy46UcB50nJyVxZWaIwVh2HILZ0mbctsW8UDloVTDH7c7HUhSVCM9c9vks0
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR02MB6245
+In-Reply-To: <20210623115926.164861-1-knaerzche@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[I started to write an answer to your plans in the v7 thread, but didn't
-have time to finish before v8 appeared...]
+Hi Heiko,
 
-On 2021-08-20 21:17, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
-> 
-> The approximation caused by integer divisions can be costly on smaller
-> scale values since the decimal part is significant compared to the
-> integer part. Switch to an IIO_VAL_INT_PLUS_NANO scale type in such
-> cases to maintain accuracy.
+is there anything left to do for this one?
 
-The conversion to int-plus-nano may also carry a cost of accuracy.
+Same for:
 
-90/1373754273 scaled by 261/509 is 3.359e-8, the old code returns 3.348e-8,
-but the new one gets you 3.3e-8 (0.000000033, it simply cannot provide more
-digits). So, in this case you lose precision with the new code.
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210623145918.187018-1-knaerzche@gmail.com/
 
-Similar problem with 100 / 2^30 scaled by 3782/7000. It is 5.032e-8, the old
-code returns 5.029e-8, but the new one gets you the inferior 5.0e-8.
+and
 
-I'm also wondering if it is wise to not always return the same scale type?
-What happens if we want to extend this driver to scale a buffered channel?
-Honest question! I don't know, but I fear that this patch may make that
-step more difficult to take??
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210623150208.187201-1-knaerzche@gmail.com/
 
-Jonathan, do you have any input on that?
+Alex
 
-Some more examples of problematic properties of this patch:
-
-21837/24041 scaled by 427/24727 is 0.01568544672, you get 0.015685446. Ok.
-But if you reduce the input number, gcd(21837, 24041) -> 29, you have:
-753/829 scaled by 427/24727 which still is 0.01568544672 of course, but in
-this case you get 0.01568154403. Which is less precise. It is unfortunate
-that input that should be easier to scale may yield worse results.
-
-760/1373754273 scaled by 427/2727 is 8.662580e-8, and 8.662393e-8 is
-returned. Which is perhaps not great accuracy, but such is life. However.
-761/1373754273 scaled by 427/2727 is 8.673978e-8, which is of course
-greater, but 8.6e-8 is returned. Which is less than what was returned for
-the smaller 760/1373754273 value above.
-
-Some of these objections are related to what I talked about in v7, i.e.:
-
-    Also, changing the calculation so that you get more precision whenever that is
-    possible feels dangerous. I fear linearity breaks and that bigger input cause
-    smaller output due to rounding if the bigger value has to be rounded down, but
-    that this isn't done carefully enough. I.e. attempting to return an exact
-    fraction and only falling back to the old code when that is not possible is
-    still not safe since the old code isn't careful enough about rounding. I think
-    it is really important that bigger input cause bigger (or equal) output.
-    Otherwise you might trigger instability in feedback loops should a rescaler be
-    involved in a some regulator function.
-
-Sadly, I see no elegant solution to your problem.
-
-One way forward may be to somehow provide information on the expected
-input range, and then determine the scaling method based on that
-instead of the individual values. But, as indicated, there's no real
-elegance in that. It can't be automated...
-
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+Am 23.06.21 um 13:59 schrieb Alex Bee:
+> As can be seen in RK3328's TRM the register range for the GPU is
+> 0xff300000 to 0xff330000.
+> It would (and does in vendor kernel) overlap with the registers of
+> the HEVC encoder (node/driver do not exist yet in upstream kernel).
+> See already existing h265e_mmu node.
+>
+> Fixes: 752fbc0c8da7 ("arm64: dts: rockchip: add rk3328 mali gpu node")
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
 > ---
->  drivers/iio/afe/iio-rescale.c | 27 +++++++++++++++++++++++++--
->  1 file changed, 25 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
-> index c408c4057c08..7304306c9806 100644
-> --- a/drivers/iio/afe/iio-rescale.c
-> +++ b/drivers/iio/afe/iio-rescale.c
-> @@ -22,7 +22,7 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
->  			  int *val, int *val2)
->  {
->  	s64 tmp;
-> -	s32 rem;
-> +	s32 rem, rem2;
->  	u32 mult;
->  	u32 neg;
->  
-> @@ -38,8 +38,31 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
->  		tmp = (s64)*val * 1000000000LL;
->  		tmp = div_s64(tmp, rescale->denominator);
->  		tmp *= rescale->numerator;
-> -		tmp = div_s64(tmp, 1000000000LL);
-> +
-> +		tmp = div_s64_rem(tmp, 1000000000LL, &rem);
->  		*val = tmp;
-> +
-> +		/*
-> +		 * For small values, the approximation can be costly,
-> +		 * change scale type to maintain accuracy.
-> +		 *
-> +		 * 100 vs. 10000000 NANO caps the error to about 100 ppm.
-> +		 */
-> +		if (scale_type == IIO_VAL_FRACTIONAL)
-> +			tmp = *val2;
-> +		else
-> +			tmp = 1 << *val2;
-> +
-> +		 if (abs(rem) > 10000000 && abs(*val / tmp) < 100) {
-> +			 *val = div_s64_rem(*val, tmp, &rem2);
-> +
-> +			 *val2 = div_s64(rem, tmp);
-> +			 if (rem2)
-> +				 *val2 += div_s64(rem2 * 1000000000LL, tmp);
-
-rem2 is 32-bit. Might 1000000000LL also be 32-bit on a small machine
-where 64-bit arithmetic is really expensive? In that case, the above
-is broken. The safe route is to do these things as in the existing
-code with a cast to s64. But maybe that's just cargo cult crap?
-
-Cheers,
-Peter
-
-> +
-> +			 return IIO_VAL_INT_PLUS_NANO;
-> +		 }
-> +
->  		return scale_type;
->  	case IIO_VAL_INT_PLUS_NANO:
->  	case IIO_VAL_INT_PLUS_MICRO:
-> 
+>   arch/arm64/boot/dts/rockchip/rk3328.dtsi | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> index 8c821acb21ff..da84be6f4715 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> @@ -599,7 +599,7 @@ saradc: adc@ff280000 {
+>   
+>   	gpu: gpu@ff300000 {
+>   		compatible = "rockchip,rk3328-mali", "arm,mali-450";
+> -		reg = <0x0 0xff300000 0x0 0x40000>;
+> +		reg = <0x0 0xff300000 0x0 0x30000>;
+>   		interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
+>   			     <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>,
+>   			     <GIC_SPI 93 IRQ_TYPE_LEVEL_HIGH>,
