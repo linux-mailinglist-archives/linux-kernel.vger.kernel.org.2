@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6252D3F3E85
+	by mail.lfdr.de (Postfix) with ESMTP id 1970F3F3E84
 	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhHVH5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 03:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S231753AbhHVH5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 03:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhHVH5i (ORCPT
+        with ESMTP id S231156AbhHVH5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 03:57:38 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7575FC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:56:57 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 28-20020a17090a031cb0290178dcd8a4d1so11626636pje.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:56:57 -0700 (PDT)
+        Sun, 22 Aug 2021 03:57:37 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF8AC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:56:56 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so16639843pjb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 00:56:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K15d43mjq6biIgLR18/PG2ST/9ClHTj/frmKzAh8Fgc=;
-        b=B5QY9BABO+ydPAidOIYg9icRT6RA3TJzzpxIxJHzpK3xJCgD1axrJj40bx21SpJ52o
-         Oe5Ig13T7H7S4fGe3oAM2ZRGMUHW8dsOGGTxUY7BlxiT6uLYHZWGjz3MVxpkghKBQxwT
-         RDPH+h5BIqphwABDAmyO2hmme1bxjIJjQRhYc=
+        bh=QvdBkUpptZhXKvwrMm3zs3qjx3Jw+Diy7BkjH6c2x9o=;
+        b=fg7ZhYLvxUugb8iVfWfC92pGeyt+/r98pwZwtJjW7D5m9+btWV+mAQjVNa2DeXw4uZ
+         TBCIVYhAM3WflYWa48L2s/VrNdwxu7CILWfDneyuRYST6Ezk3jJitCQAyBVZW7Ex0udr
+         QdVPoFRKhE/kfvccRSPKXi6X4fAb/9Tcqr5Xk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K15d43mjq6biIgLR18/PG2ST/9ClHTj/frmKzAh8Fgc=;
-        b=kVguGjd9Ft5gF5F/45tdjR+EnSQThf6mGzp9eUSRpy1t6k+nVUIdEGAPBsN538ZBCz
-         TCvE1dKIi+qqqdd12kncQoGlM0lRUDBPKeAdpMGVnbV9fTeE1363ZQZLliRyeNwtppMA
-         uHGKYsOt8s1Efv7vkn/1secjhu8R/rjXnLGCdRGLNCGRv8sSJVjMdhd3xt8AmOs7jz6Q
-         L93Kf9DOt7DyyydIq8rq0n4AkxPWPVWRw3AKzFS8TtHW2DcVQl5JAc/9Dl/LfD7EpIGB
-         erZ2XnDIF0PCKJa4utaDeeLhJ+2rfVtsVoo88cjfnXogjMWGHfxxGYk9QHoKwnr0LIs1
-         KR+Q==
-X-Gm-Message-State: AOAM532wbRF6T/Ya4zguiILJ9fadmpEJa+6tnZHjTsKFNNabxNxAh8Zp
-        RGw/u3uk7dg2BSF/kuV0cY4dYw==
-X-Google-Smtp-Source: ABdhPJzWqLhyoBLtPJm2TcOLdF6MIEB71sJYdvMFFd/ZchUyZ9SRDrN4hHDJyFHLC6S3v2rmybcqiw==
-X-Received: by 2002:a17:902:b709:b0:12d:a7ab:952f with SMTP id d9-20020a170902b70900b0012da7ab952fmr23596616pls.25.1629619017001;
-        Sun, 22 Aug 2021 00:56:57 -0700 (PDT)
+        bh=QvdBkUpptZhXKvwrMm3zs3qjx3Jw+Diy7BkjH6c2x9o=;
+        b=tX4EyzRqxJpg9QP/UJ0z920Ieicq1ijXBzN3ZDDqV7w6n9NZAMNxH89SFPF0n/9TxZ
+         zmMuCdM26tvPDs0MlofMDfw3BiqOiimIp0fxmh0N8cNvvnUwvn/8D6gVAbWfu76hbcvv
+         l8ZgIbuyCRPbVxieopGNoeZcrpiifzLS3k4LC2os/MQcu4qN0Gz4ckkbPdYl53X8eUPo
+         BratJk0Bs0F6dMq8Y3LG6FzEgHRpdJd0kzcc3+OELd+bXY2CGbt+9ZNSh8huSu2z2rH/
+         neogVs6/9Q5JEUWRkkEF2ZY8rqoudjYzIcSFBV866tym+nmKmS1V6r1VWPbs/skmdRb6
+         lxTA==
+X-Gm-Message-State: AOAM533XOFoN8Fe6JJzebWmMcKuW7bFuCpFyh9RslQ9DTg9pq7b7WiSy
+        8o9WyRp14Sa8r10C7Zuzxu3gTg==
+X-Google-Smtp-Source: ABdhPJz1nXhyYemKrw+6kLeSH+jeEvo0I7wavFPKVlcHjoh7EMzwLenW7bCSCiP8kEkvHvQIIQc1kg==
+X-Received: by 2002:a17:902:d2cd:b0:130:a7b7:3c8f with SMTP id n13-20020a170902d2cd00b00130a7b73c8fmr10580004plc.46.1629619016141;
+        Sun, 22 Aug 2021 00:56:56 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 66sm12273644pfu.67.2021.08.22.00.56.54
+        by smtp.gmail.com with ESMTPSA id y62sm11996200pfg.88.2021.08.22.00.56.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 22 Aug 2021 00:56:55 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -54,357 +54,96 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Bart Van Assche <bvanassche@acm.org>,
         David Gow <davidgow@google.com>, linux-mm@kvack.org,
         clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
-Subject: [PATCH for-next 21/25] lib: Introduce CONFIG_TEST_MEMCPY
-Date:   Sun, 22 Aug 2021 00:51:18 -0700
-Message-Id: <20210822075122.864511-22-keescook@chromium.org>
+Subject: [PATCH for-next 22/25] string.h: Introduce memset_after() for wiping trailing members/padding
+Date:   Sun, 22 Aug 2021 00:51:19 -0700
+Message-Id: <20210822075122.864511-23-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210822075122.864511-1-keescook@chromium.org>
 References: <20210822075122.864511-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10296; h=from:subject; bh=SCs0gUiQeBdkXzSIn2KtU6GgHndNNkCfOloouMv/FjA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhIgH5gffUe7V9h9DhEAh8IAruzpJoIjBSw/gQvBpt RsXbH1SJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSIB+QAKCRCJcvTf3G3AJvgHD/ 9EBKdt7wIMwq+pnHce4zVRAo13cVlsThSeQHWDVBiOwrDL15EUv1ydtUf2763IWxp1RRvbBSiU3TIH sEcLlcN6FHepmlOs3mucsMgU0WXa0k2ir8YDGqk9KdM9M4bkm1nt6bnZs1RrXegQoROLyie0bLSOPk 2MITOblSGe7hKwDKQlWnHwznMZcMEMHfSfIgybxwTCW7pS+gCEyOtIbFxwdlaiURwmFIIRyPitA3Od WGHg5KKfu5AyzYSll2aAnAB7TSg6t4tYMjIIcnElsUdxtxkPCMwFSqbR0re6Azd0lGAjXNx+5YG2O+ +0IeGHcUQQEaSFsCTcXSgK3ZsI5ysmJAiW0rUM8Nl+jNjPIuba4wGlwEiYG44THSu5y0CwYPFkiMd4 pQmWrAaNSYVpuN6+8S9y2Z8P0KeWGD8UqG60ferrjCTbqYu5m0Py85/znwzAW5aD1sEpID8yoBz+n+ SRhglq0gpbGa4k+PHFzqL6YnvV4Bnr4lidQEmoChW8kYcDQmuhe0HFnIdOhHzWLhajkoeL3itvOxzr 9WPPI3cSUu7EKvW86ITqzA656hJCq/P0I6/aSfhNvMxKN5BM2tJVFFcEHKPFnCRDuyDN+l4UcJIPwp 2rRvI7Afl2ewBSTyHLdYIEFZ/Oi7qOrO+JBMhN0s9kK96gbLCjTU4l4xKJZg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2741; h=from:subject; bh=E6gFtKPMaqY94NYGTcjgqzMn4Zg8efYnWFddeRIDocU=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhIgH50IyFEulz6vf4MWlQ/Ezu82EvPp7pmwWKKNPw FQi+vpGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYSIB+QAKCRCJcvTf3G3AJh3rEA CrFF/z6kOuE4E1nPr3TROjLRJGQjTLaabDuXR/aIm4UQKeKkoTwGA2+A4SqjMTq/+P5Ys7g2X4LT/W Z2l1Vk9U0SrRQPJl7vZYRJ+9O4qUs3Kf8Ny2bIVgxeZT2N0blFHjxagjdD8vAzrY3b1LssVIU5HLiQ CkTZwHf1BnUGyXWqlHau1Vtb3xdCMueRk/f0+dyoPkbCq9ZiKc0XgtZ5MOlzVE66BQLezYe3VZxDUH aDeSYCo7PVgr9pV36o86mUKSUXJWTQ74tdMd1P2VvIhlNEI+vIzBXIjvq2l/IC+Ia2/oqyD/PBLJJk RoXa16m2Lr5ydwZuU+5qMNSo8Cz5OcHc0iQS5x/zK4L2Y6i84HtrS2Ja/RoBQ4SawOGvwkqQMDWUhM tML3SJfr/6qBoVbM7j7oTKiWGwFiZkpavW0iPpwrFqTjTonEi3vdUzO/ahwHLs5uU8gEPP+nPovcfo wZ9AAvOWdDZeSU8i0x0zCI2Hiu5fGcmVETpSSG/F1WqZuQHz8KRI4ndkMy5COuwjY5DADDoBVXuei2 GDhIxOMqkO2jtycMsYYhPX4LOTHskAA/ikwrRY9YVN753cwclPR1h9ULCg29KZIvJfiQ4oFMPNQ49S SyWtCljmqAu2E43Fu6xl6RJf6H3Wn1D9Ei2FNzhed+0om1vGjS5eu9TtBUHg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before changing anything about memcpy(), memmove(), and memset(), add
-run-time tests to check basic behaviors for any regressions.
+A common idiom in kernel code is to wipe the contents of a structure
+after a given member. This is especially useful in places where there is
+trailing padding. These open-coded cases are usually difficult to read
+and very sensitive to struct layout changes. Introduce a new helper,
+memset_after() that takes the target struct instance, the byte to write,
+and the member name after which the zeroing should start.
+
+Additionally adds memset_startat() for wiping trailing members _starting_
+at a specific member instead of after a member, which is more readable
+in certain circumstances, but doesn't include any preceding padding.
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- MAINTAINERS       |   9 ++
- lib/Kconfig.debug |  11 ++
- lib/Makefile      |   1 +
- lib/test_memcpy.c | 265 ++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 286 insertions(+)
- create mode 100644 lib/test_memcpy.c
+ include/linux/string.h | 17 +++++++++++++++++
+ lib/test_memcpy.c      | 13 +++++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c8be735cc91..e3ffd4bdc24f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7248,6 +7248,15 @@ L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/ethernet/nvidia/*
+diff --git a/include/linux/string.h b/include/linux/string.h
+index 9473f81b9db2..d593de2635ba 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -271,6 +271,23 @@ static inline void memcpy_and_pad(void *dest, size_t dest_len,
+ 		memcpy(dest, src, dest_len);
+ }
  
-+FORTIFY_SOURCE
-+M:	Kees Cook <keescook@chomium.org>
-+L:	linux-hardening@vger.kernel.org
-+S:	Supported
-+F:	include/linux/fortify-string.h
-+F:	lib/test_fortify/*
-+F:	scripts/test_fortify.sh
-+K:	\b__NO_FORTIFY\b
-+
- FPGA DFL DRIVERS
- M:	Wu Hao <hao.wu@intel.com>
- R:	Tom Rix <trix@redhat.com>
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 831212722924..9199be57ba2a 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2467,6 +2467,17 @@ config RATIONAL_KUNIT_TEST
- 
- 	  If unsure, say N.
- 
-+config MEMCPY_KUNIT_TEST
-+	tristate "Test memcpy(), memmove(), and memset() functions at runtime" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Builds unit tests for memcpy(), memmove(), and memset() functions.
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  If unsure, say N.
-+
- config TEST_UDELAY
- 	tristate "udelay test driver"
- 	help
-diff --git a/lib/Makefile b/lib/Makefile
-index bd17c2bf43e1..8a4c8bdb38a2 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -77,6 +77,7 @@ obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
- obj-$(CONFIG_TEST_LKM) += test_module.o
- obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
- obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
-+obj-$(CONFIG_TEST_MEMCPY) += test_memcpy.o
- obj-$(CONFIG_TEST_RHASHTABLE) += test_rhashtable.o
- obj-$(CONFIG_TEST_SORT) += test_sort.o
- obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
-diff --git a/lib/test_memcpy.c b/lib/test_memcpy.c
-new file mode 100644
-index 000000000000..ec546cec883e
---- /dev/null
-+++ b/lib/test_memcpy.c
-@@ -0,0 +1,265 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Test cases for memcpy(), memmove(), and memset().
++/**
++ * memset_after - Set a value after a struct member to the end of a struct
++ *
++ * @obj: Address of target struct instance
++ * @v: Byte value to repeatedly write
++ * @member: after which struct member to start writing bytes
++ *
++ * This is good for clearing padding following the given member.
 + */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++#define memset_after(obj, v, member)					\
++({									\
++	u8 *__ptr = (u8 *)(obj);					\
++	typeof(v) __val = (v);						\
++	memset(__ptr + offsetofend(typeof(*(obj)), member), __val,	\
++	       sizeof(*(obj)) - offsetofend(typeof(*(obj)), member));	\
++})
 +
-+#include <kunit/test.h>
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/mm.h>
-+#include <linux/module.h>
-+#include <linux/overflow.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+#include <linux/vmalloc.h>
-+
-+struct some_bytes {
-+	union {
-+		u8 data[32];
-+		struct {
-+			u32 one;
-+			u16 two;
-+			u8  three;
-+			/* 1 byte hole */
-+			u32 four[4];
-+		};
-+	};
-+};
-+
-+#define check(instance, v) do {	\
-+	int i;	\
-+	BUILD_BUG_ON(sizeof(instance.data) != 32);	\
-+	for (i = 0; i < sizeof(instance.data); i++) {	\
-+		KUNIT_ASSERT_EQ_MSG(test, instance.data[i], v, \
-+			"line %d: '%s' not initialized to 0x%02x @ %d (saw 0x%02x)\n", \
-+			__LINE__, #instance, v, i, instance.data[i]);	\
-+	}	\
-+} while (0)
-+
-+#define compare(name, one, two) do { \
-+	int i; \
-+	BUILD_BUG_ON(sizeof(one) != sizeof(two)); \
-+	for (i = 0; i < sizeof(one); i++) {	\
-+		KUNIT_EXPECT_EQ_MSG(test, one.data[i], two.data[i], \
-+			"line %d: %s.data[%d] (0x%02x) != %s.data[%d] (0x%02x)\n", \
-+			__LINE__, #one, i, one.data[i], #two, i, two.data[i]); \
-+	}	\
-+	kunit_info(test, "ok: " TEST_OP "() " name "\n");	\
-+} while (0)
-+
-+static void memcpy_test(struct kunit *test)
-+{
-+#define TEST_OP "memcpy"
-+	struct some_bytes control = {
-+		.data = { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+ /**
+  * str_has_prefix - Test if a string has a given prefix
+  * @str: The string to test
+diff --git a/lib/test_memcpy.c b/lib/test_memcpy.c
+index ec546cec883e..3b485de8c885 100644
+--- a/lib/test_memcpy.c
++++ b/lib/test_memcpy.c
+@@ -215,6 +215,13 @@ static void memset_test(struct kunit *test)
+ 			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
+ 			},
+ 	};
++	struct some_bytes after = {
++		.data = { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x72,
++			  0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72,
++			  0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72,
++			  0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72, 0x72,
 +			},
 +	};
-+	struct some_bytes zero = { };
-+	struct some_bytes middle = {
-+		.data = { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00, 0x00,
-+			  0x00, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			},
-+	};
-+	struct some_bytes three = {
-+		.data = { 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x00, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			  0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
-+			},
-+	};
-+	struct some_bytes dest = { };
-+	int count;
-+	u8 *ptr;
+ 	struct some_bytes dest = { };
+ 	int count, value;
+ 	u8 *ptr;
+@@ -245,6 +252,12 @@ static void memset_test(struct kunit *test)
+ 	ptr += 8;
+ 	memset(ptr++, value++, count++);
+ 	compare("argument side-effects", dest, three);
 +
-+	/* Verify static initializers. */
-+	check(control, 0x20);
-+	check(zero, 0);
-+	compare("static initializers", dest, zero);
-+
-+	/* Verify assignment. */
++	/* Verify memset_after() */
 +	dest = control;
-+	compare("direct assignment", dest, control);
++	memset_after(&dest, 0x72, three);
++	compare("memset_after()", dest, after);
 +
-+	/* Verify complete overwrite. */
-+	memcpy(dest.data, zero.data, sizeof(dest.data));
-+	compare("complete overwrite", dest, zero);
-+
-+	/* Verify middle overwrite. */
-+	dest = control;
-+	memcpy(dest.data + 12, zero.data, 7);
-+	compare("middle overwrite", dest, middle);
-+
-+	/* Verify argument side-effects aren't repeated. */
-+	dest = control;
-+	ptr = dest.data;
-+	count = 1;
-+	memcpy(ptr++, zero.data, count++);
-+	ptr += 8;
-+	memcpy(ptr++, zero.data, count++);
-+	compare("argument side-effects", dest, three);
-+#undef TEST_OP
-+}
-+
-+static void memmove_test(struct kunit *test)
-+{
-+#define TEST_OP "memmove"
-+	struct some_bytes control = {
-+		.data = { 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			},
-+	};
-+	struct some_bytes zero = { };
-+	struct some_bytes middle = {
-+		.data = { 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x00, 0x00, 0x00, 0x00,
-+			  0x00, 0x00, 0x00, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			},
-+	};
-+	struct some_bytes five = {
-+		.data = { 0x00, 0x00, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x00, 0x00, 0x00, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			},
-+	};
-+	struct some_bytes overlap = {
-+		.data = { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+			  0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			},
-+	};
-+	struct some_bytes overlap_expected = {
-+		.data = { 0x00, 0x01, 0x00, 0x01, 0x02, 0x03, 0x04, 0x07,
-+			  0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			  0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99, 0x99,
-+			},
-+	};
-+	struct some_bytes dest = { };
-+	int count;
-+	u8 *ptr;
-+
-+	/* Verify static initializers. */
-+	check(control, 0x99);
-+	check(zero, 0);
-+	compare("static initializers", zero, dest);
-+
-+	/* Verify assignment. */
-+	dest = control;
-+	compare("direct assignment", dest, control);
-+
-+	/* Verify complete overwrite. */
-+	memmove(dest.data, zero.data, sizeof(dest.data));
-+	compare("complete overwrite", dest, zero);
-+
-+	/* Verify middle overwrite. */
-+	dest = control;
-+	memmove(dest.data + 12, zero.data, 7);
-+	compare("middle overwrite", dest, middle);
-+
-+	/* Verify argument side-effects aren't repeated. */
-+	dest = control;
-+	ptr = dest.data;
-+	count = 2;
-+	memmove(ptr++, zero.data, count++);
-+	ptr += 9;
-+	memmove(ptr++, zero.data, count++);
-+	compare("argument side-effects", dest, five);
-+
-+	/* Verify overlapping overwrite is correct. */
-+	ptr = &overlap.data[2];
-+	memmove(ptr, overlap.data, 5);
-+	compare("overlapping write", overlap, overlap_expected);
-+#undef TEST_OP
-+}
-+
-+static void memset_test(struct kunit *test)
-+{
-+#define TEST_OP "memset"
-+	struct some_bytes control = {
-+		.data = { 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			},
-+	};
-+	struct some_bytes complete = {
-+		.data = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+			  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+			  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+			  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-+			},
-+	};
-+	struct some_bytes middle = {
-+		.data = { 0x30, 0x30, 0x30, 0x30, 0x31, 0x31, 0x31, 0x31,
-+			  0x31, 0x31, 0x31, 0x31, 0x31, 0x31, 0x31, 0x31,
-+			  0x31, 0x31, 0x31, 0x31, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			},
-+	};
-+	struct some_bytes three = {
-+		.data = { 0x60, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x61, 0x61, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			  0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-+			},
-+	};
-+	struct some_bytes dest = { };
-+	int count, value;
-+	u8 *ptr;
-+
-+	/* Verify static initializers. */
-+	check(control, 0x30);
-+	check(dest, 0);
-+
-+	/* Verify assignment. */
-+	dest = control;
-+	compare("direct assignment", dest, control);
-+
-+	/* Verify complete overwrite. */
-+	memset(dest.data, 0xff, sizeof(dest.data));
-+	compare("complete overwrite", dest, complete);
-+
-+	/* Verify middle overwrite. */
-+	dest = control;
-+	memset(dest.data + 4, 0x31, 16);
-+	compare("middle overwrite", dest, middle);
-+
-+	/* Verify argument side-effects aren't repeated. */
-+	dest = control;
-+	ptr = dest.data;
-+	value = 0x60;
-+	count = 1;
-+	memset(ptr++, value++, count++);
-+	ptr += 8;
-+	memset(ptr++, value++, count++);
-+	compare("argument side-effects", dest, three);
-+#undef TEST_OP
-+}
-+
-+static struct kunit_case memcpy_test_cases[] = {
-+	KUNIT_CASE(memset_test),
-+	KUNIT_CASE(memcpy_test),
-+	KUNIT_CASE(memmove_test),
-+	{}
-+};
-+
-+static struct kunit_suite memcpy_test_suite = {
-+	.name = "memcpy-test",
-+	.test_cases = memcpy_test_cases,
-+};
-+
-+kunit_test_suite(memcpy_test_suite);
-+
-+MODULE_LICENSE("GPL");
+ #undef TEST_OP
+ }
+ 
 -- 
 2.30.2
 
