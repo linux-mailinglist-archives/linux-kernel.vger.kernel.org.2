@@ -2,97 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507CA3F40D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5013F40D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhHVS0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 14:26:13 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:37440 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhHVS0M (ORCPT
+        id S232142AbhHVS3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 14:29:25 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:50940 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhHVS3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 14:26:12 -0400
-Received: by mail-ot1-f41.google.com with SMTP id i3-20020a056830210300b0051af5666070so20213475otc.4;
-        Sun, 22 Aug 2021 11:25:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=CohCaViilWEbRBKTkbbu2wctSsE1MZKMrL6dyx4nTdo=;
-        b=PEb32oIz9eGjyCTS16/QdbGrtdHJkRjMBSMg0TrLdZ38457c7nrXkmwVsKVsDho+Zr
-         HaxGOUR/+4Fb2Y6S6hd1sAWGmcvTQoj19ueXaakwiA3CUp8aKDg/hWv1kM1+P2CokY/l
-         CO9O5JiVra2rjqRJ77S+/QbK1QF6XqcrvFRHkNEzzNt7HgcelkNQthBp2j06QB9VCc2e
-         T4icFqtbbrRlNTmTSInfwVC9k6saf1bHKa0D31BR0Y8LCTVUxZilt76m83uLVONVgX8X
-         QAIWuMzX0+uuO6JwCijHKt7d6/uHQ3YpB1JXsfgaiI6je4xzrwzbMfeE2DubeKH6Uo3x
-         LdKQ==
-X-Gm-Message-State: AOAM5329xdWnuGV6ZiCDMs0LMKpSAPmkE5B1ws32MSdA8doYziQr9A7H
-        ye6nswQge0A/YC9go09cBQ==
-X-Google-Smtp-Source: ABdhPJyl0dir0Y3/k3lJLtDRaWvyY4xLRhaXD/vifkRmdY3eUtcy+7CA2SkwNF3yQR3Pg2Ym86TbEA==
-X-Received: by 2002:a54:4093:: with SMTP id i19mr7815683oii.156.1629656730919;
-        Sun, 22 Aug 2021 11:25:30 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 97sm3257444otv.26.2021.08.22.11.25.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 11:25:30 -0700 (PDT)
-Received: (nullmailer pid 131027 invoked by uid 1000);
-        Sun, 22 Aug 2021 18:25:29 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     martin.botka@somainline.org, marijn.suijten@somainline.org,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-kernel@vger.kernel.org, jamipkettunen@somainline.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org
-In-Reply-To: <20210820203751.232645-2-konrad.dybcio@somainline.org>
-References: <20210820203751.232645-1-konrad.dybcio@somainline.org> <20210820203751.232645-2-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SM6350 pinctrl bindings
-Date:   Sun, 22 Aug 2021 13:25:29 -0500
-Message-Id: <1629656729.157497.131026.nullmailer@robh.at.kernel.org>
+        Sun, 22 Aug 2021 14:29:24 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 28f884f6;
+        Sun, 22 Aug 2021 20:28:41 +0200 (CEST)
+Date:   Sun, 22 Aug 2021 20:28:41 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
+        lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io,
+        stan@corellium.com, maz@kernel.org, kettenis@openbsd.org,
+        sven@svenpeter.dev, marcan@marcan.st, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210816031621.240268-7-alyssa@rosenzweig.io> (message from
+        Alyssa Rosenzweig on Sun, 15 Aug 2021 23:16:21 -0400)
+Subject: Re: [PATCH v2 6/6] arm64: apple: Add PCIe node
+References: <20210816031621.240268-1-alyssa@rosenzweig.io> <20210816031621.240268-7-alyssa@rosenzweig.io>
+Message-ID: <56140c9183a8d1c2@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 22:37:50 +0200, Konrad Dybcio wrote:
-> Add device tree binding Documentation details for Qualcomm SM6350
-> pinctrl driver.
+> From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Date: Sun, 15 Aug 2021 23:16:21 -0400
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> From: Mark Kettenis <kettenis@openbsd.org>
+> 
+> Add node corresponding to the apcie,t8103 node in the Apple device tree
+> for the Mac mini (M1, 2020).
+> 
+> Clock references are left out at the moment and will be added once the
+> appropriate bindings have been settled on.
+> 
+> Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
 > ---
->  .../bindings/pinctrl/qcom,sm6350-pinctrl.yaml | 156 ++++++++++++++++++
->  .../bindings/pinctrl/qcom,tlmm-common.yaml    |   2 +-
->  2 files changed, 157 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm6350-pinctrl.yaml
+>  arch/arm64/boot/dts/apple/t8103.dtsi | 124 +++++++++++++++++++++++++++
+>  1 file changed, 124 insertions(+)
 > 
+> diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
+> index 342e01c6098e..c0d3b2fb0366 100644
+> --- a/arch/arm64/boot/dts/apple/t8103.dtsi
+> +++ b/arch/arm64/boot/dts/apple/t8103.dtsi
+> @@ -214,5 +214,129 @@ pinctrl_aop: pinctrl@24a820000 {
+>  				     <AIC_IRQ 273 IRQ_TYPE_LEVEL_HIGH>,
+>  				     <AIC_IRQ 274 IRQ_TYPE_LEVEL_HIGH>;
+>  		};
+> +
+> +		pcie0_dart_0: dart@681008000 {
+> +			compatible = "apple,t8103-dart";
+> +			reg = <0x6 0x81008000 0x0 0x4000>;
+> +			#iommu-cells = <1>;
+> +			interrupt-parent = <&aic>;
+> +			interrupts = <AIC_IRQ 696 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		pcie0_dart_1: dart@682008000 {
+> +			compatible = "apple,t8103-dart";
+> +			reg = <0x6 0x82008000 0x0 0x4000>;
+> +			#iommu-cells = <1>;
+> +			interrupt-parent = <&aic>;
+> +			interrupts = <AIC_IRQ 699 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		pcie0_dart_2: dart@683008000 {
+> +			compatible = "apple,t8103-dart";
+> +			reg = <0x6 0x83008000 0x0 0x4000>;
+> +			#iommu-cells = <1>;
+> +			interrupt-parent = <&aic>;
+> +			interrupts = <AIC_IRQ 702 IRQ_TYPE_LEVEL_HIGH>;
+> +		};
+> +
+> +		pcie0: pcie@690000000 {
+> +			compatible = "apple,t8103-pcie", "apple,pcie";
+> +			device_type = "pci";
+> +
+> +			reg = <0x6 0x90000000 0x0 0x1000000>,
+> +			      <0x6 0x80000000 0x0 0x100000>,
+> +			      <0x6 0x81000000 0x0 0x4000>,
+> +			      <0x6 0x82000000 0x0 0x4000>,
+> +			      <0x6 0x83000000 0x0 0x4000>;
+> +			reg-names = "config", "rc", "port0", "port1", "port2";
+> +
+> +			interrupt-parent = <&aic>;
+> +			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 704 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 705 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 706 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 707 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 708 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 709 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 710 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 711 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 712 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 713 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 714 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 715 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 716 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 717 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 718 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 719 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 720 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 721 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 722 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 723 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 724 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 725 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 726 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 727 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 728 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 729 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 730 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 731 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 732 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 733 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 734 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <AIC_IRQ 735 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			msi-controller;
+> +			msi-parent = <&pcie0>;
+> +			msi-ranges = <704 32>;
+> +
+> +			iommu-map = <0x100 &pcie0_dart_0 0 1>,
+> +				    <0x200 &pcie0_dart_1 0 1>,
+> +				    <0x300 &pcie0_dart_2 0 1>;
+> +			iommu-map-mask = <0xff00>;
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+So this will need a little bit more thought.
 
-yamllint warnings/errors:
+The PCIe bridge hardware has logic to map a PCIe Requester ID (RID) to
+an IOMMU Stream ID (SID).  The RID is basically just the PCI
+bus/device/function number of the PCI device that initiates the DMA.
+As far as I can tell if the RID isn't matched by the PCIe bridge
+RID-to-SID mapping hardware it will be mapped to SID 0.  Your driver
+doesn't program the RID-to-SID hardware so using 0 as the SID in your
+device tree makes some sense.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.example.dt.yaml: pinctrl@f100000: interrupts: [[0, 208, 4]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sc8180x-pinctrl.example.dt.yaml: pinctrl@3100000: interrupts: [[0, 208, 4]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sc8180x-pinctrl.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.example.dt.yaml: pinctrl@500000: interrupts: [[0, 227, 4]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/qcom,sm6125-pinctrl.yaml
+However, since SID 0 is the default used when there is no match for an
+RID, we should probably avoid it if we can.  That's why in my
+apple,pcie DT binding series I used SID 1.  But this would require
+additional code in the driver to parse the iommu-map property and
+program the RID-to-SID hardware accordingly.
 
-doc reference errors (make refcheckdocs):
+Now until we support the Tunderbolt ports, this isn't all that
+important and we can go with your current driver and DT.  I can adjust
+the U-Boot DT accordingly.
 
-See https://patchwork.ozlabs.org/patch/1519185
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> +
+> +			bus-range = <0 3>;
+> +			#address-cells = <3>;
+> +			#size-cells = <2>;
+> +			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
+> +				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
+> +
+> +			pinctrl-0 = <&pcie_pins>;
+> +			pinctrl-names = "default";
+> +
+> +			pci@0,0 {
+> +				device_type = "pci";
+> +				reg = <0x0 0x0 0x0 0x0 0x0>;
+> +				reset-gpios = <&pinctrl_ap 152 0>;
+> +				max-link-speed = <2>;
+> +
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +			};
+> +
+> +			pci@1,0 {
+> +				device_type = "pci";
+> +				reg = <0x800 0x0 0x0 0x0 0x0>;
+> +				reset-gpios = <&pinctrl_ap 153 0>;
+> +				max-link-speed = <2>;
+> +
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +			};
+> +
+> +			pci@2,0 {
+> +				device_type = "pci";
+> +				reg = <0x1000 0x0 0x0 0x0 0x0>;
+> +				reset-gpios = <&pinctrl_ap 33 0>;
+> +				max-link-speed = <1>;
+> +
+> +				#address-cells = <3>;
+> +				#size-cells = <2>;
+> +				ranges;
+> +			};
+> +		};
+>  	};
+>  };
+> -- 
+> 2.30.2
+> 
+> 
