@@ -2,327 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51753F3F4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806973F3F60
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhHVMlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 08:41:11 -0400
-Received: from out02.smtpout.orange.fr ([193.252.22.211]:58415 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbhHVMlK (ORCPT
+        id S231614AbhHVMvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 08:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhHVMvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 08:41:10 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d04 with ME
-        id kcgP2500U3riaq203cgPqH; Sun, 22 Aug 2021 14:40:27 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 14:40:27 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     gustavo.pimentel@synopsys.com, vkoul@kernel.org,
-        vireshk@kernel.org, andriy.shevchenko@linux.intel.com,
-        wangzhou1@hisilicon.com, logang@deltatee.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] dmaengine: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 14:40:22 +0200
-Message-Id: <547fae4abef1ca3bf2198ca68e6c361b4d02f13c.1629635852.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 08:51:20 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DB8C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:50:38 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s12so901516ljg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:50:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rxmlNdlUfU1P9x2yEO9RufRY6ZMTXEHbwKbvIeBfIWg=;
+        b=QOXny0/osgqA6UzlB1dRo/nj4oBlLuQxkEwHkmznxMXNCBaWVuAjtiWRGbn5epQ3q+
+         vjNZ2vV9Ml3MFux+avJmWxIR8aiVl7+jL8K8Xq+YrbVlP40bmydtjikMhemhLa9LmrLm
+         Q+HRmjfJyALVIYzDjEWx4dbB6rT0UT2r9X65jM7gzdN4b74lhmbpPH3WJGhw+VR3aveO
+         C7U63WMcXmzLDIbzIq9UPS85fCd91X3YV3Tarq+nQDuQlPOKoqhHcrb7jOmnQUXjKOli
+         ymMnOWUi4Y5Je/gnpZV3Awb7/29Qbcad71QN3YKuNx4l9J25ANCr7ktOynDWZ7KVU58g
+         SSfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rxmlNdlUfU1P9x2yEO9RufRY6ZMTXEHbwKbvIeBfIWg=;
+        b=jDTlQPYa+znscRybL/VHB2sBYYT2l7UL6xf8jwlCd/MhgErigtLsaHMUPuCU7Ew0zc
+         yTMOhr1rmuO9mMd/LJFVEQ4CgIzkvVHNHIsdLblNThVW9N4WrojH4brleY5sdYLOBPrp
+         4ridn9rwHhNozMHUe9ufPqr3ZTqza7M+8l9xqfFBuYn0IYpR2Gmc1CCoIsqNrM4w/4GW
+         NNaxIhsHOm3mtVJjM8dEgp91GR8e+PJwXPLpnpJMgT9BNOhLX6DI2A/j/Uqzpyiyma+/
+         IJ5rzdPeGiLHQTw1p0Jny4fkYKSIVFa1FOd+Wg4XHnEDGDZ6ZB87sldVGmcuiS7865FO
+         RGJg==
+X-Gm-Message-State: AOAM5308LepxW2Z8ELA8usAv5BZiRhR3N1uU8sk/rvvdYyBUoZriKxaR
+        Bq+ovRaoFCP6zrR86jtvV20=
+X-Google-Smtp-Source: ABdhPJwEMmgrzP4gk9QRJw9/Lxj83pvzB66lS/NYtqpAsAqHbk/OwI0irZYb1eiVs9S4hgqnORV6cQ==
+X-Received: by 2002:a2e:a5c6:: with SMTP id n6mr23634756ljp.204.1629636637250;
+        Sun, 22 Aug 2021 05:50:37 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id l2sm1192534lfk.84.2021.08.22.05.50.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 05:50:36 -0700 (PDT)
+Subject: Re: [PATCH RFC 0/3] staging: r8188eu: avoid uninit value bugs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
+References: <cover.1629479152.git.paskripkin@gmail.com>
+ <10584649.zhyk0TxWeL@localhost.localdomain>
+ <ae27d6a0-dc00-459f-7b36-acf7f4c08d72@gmail.com>
+ <2327383.5TodInGmHT@localhost.localdomain>
+ <435eea22-da31-1ebc-840c-ee9e42b27265@gmail.com> <YSJFhmTs74PUyo8b@kroah.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <e5d189b7-15b2-8cc3-1e84-021dc5ab51af@gmail.com>
+Date:   Sun, 22 Aug 2021 15:50:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSJFhmTs74PUyo8b@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On 8/22/21 3:39 PM, Greg KH wrote:
+>> 
+>> Yes, but _rtw_read*() == 0 indicates 2 states:
+>> 
+>> 	1. Error on transfer side
+>> 	2. Actual register value is 0
+> 
+> That's not a good design, it should be fixed.  Note there is the new
+> usb_control_msg_recv() function which should probably be used instead
+> here, to prevent this problem from happening.
+> 
 
-The patch has been generated with the coccinelle script below.
+Thank you, Greg, for confirmation. That's was the point why I started to 
+write this series :)
 
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
+I think, usb_control_msg_recv() won't help us with this problem, since 
+all rtw_read*() functions return an unsigned value now. In future, when 
+driver code will be fixed (ex: a lot of void function, which can fail 
+and leave passed pointer uninitialized) we can move to new usb API and 
+then move driver out of staging :)
 
-It has been compile tested.
 
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-
-This patch is mostly mechanical and compile tested. I hope it is ok to
-update the "drivers/dma/" directory all at once.
----
- drivers/dma/dw-edma/dw-edma-pcie.c | 18 +++---------------
- drivers/dma/dw/pci.c               |  6 +-----
- drivers/dma/hisi_dma.c             |  6 +-----
- drivers/dma/hsu/pci.c              |  6 +-----
- drivers/dma/ioat/init.c            | 10 ++--------
- drivers/dma/pch_dma.c              |  2 +-
- drivers/dma/plx_dma.c              | 10 ++--------
- 7 files changed, 11 insertions(+), 47 deletions(-)
-
-diff --git a/drivers/dma/dw-edma/dw-edma-pcie.c b/drivers/dma/dw-edma/dw-edma-pcie.c
-index 44f6e09bdb53..1421bc9f3724 100644
---- a/drivers/dma/dw-edma/dw-edma-pcie.c
-+++ b/drivers/dma/dw-edma/dw-edma-pcie.c
-@@ -186,27 +186,15 @@ static int dw_edma_pcie_probe(struct pci_dev *pdev,
- 	pci_set_master(pdev);
- 
- 	/* DMA configuration */
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (!err) {
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--		if (err) {
--			pci_err(pdev, "consistent DMA mask 64 set failed\n");
--			return err;
--		}
--	} else {
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
-+	if (err) {
- 		pci_err(pdev, "DMA mask 64 set failed\n");
- 
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 		if (err) {
- 			pci_err(pdev, "DMA mask 32 set failed\n");
- 			return err;
- 		}
--
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (err) {
--			pci_err(pdev, "consistent DMA mask 32 set failed\n");
--			return err;
--		}
- 	}
- 
- 	/* Data structure allocation */
-diff --git a/drivers/dma/dw/pci.c b/drivers/dma/dw/pci.c
-index 26a3f926da02..ad2d4d012cf7 100644
---- a/drivers/dma/dw/pci.c
-+++ b/drivers/dma/dw/pci.c
-@@ -32,11 +32,7 @@ static int dw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *pid)
- 	pci_set_master(pdev);
- 	pci_try_set_mwi(pdev);
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret)
--		return ret;
--
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/dma/hisi_dma.c b/drivers/dma/hisi_dma.c
-index c855a0e4f9ff..97c87a7cba87 100644
---- a/drivers/dma/hisi_dma.c
-+++ b/drivers/dma/hisi_dma.c
-@@ -519,11 +519,7 @@ static int hisi_dma_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		return ret;
- 	}
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (ret)
--		return ret;
--
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/dma/hsu/pci.c b/drivers/dma/hsu/pci.c
-index 9045a6f7f589..6a2df3dd78d0 100644
---- a/drivers/dma/hsu/pci.c
-+++ b/drivers/dma/hsu/pci.c
-@@ -65,11 +65,7 @@ static int hsu_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	pci_set_master(pdev);
- 	pci_try_set_mwi(pdev);
- 
--	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (ret)
--		return ret;
--
--	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+	ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
-index 191b59279007..373b8dac6c9b 100644
---- a/drivers/dma/ioat/init.c
-+++ b/drivers/dma/ioat/init.c
-@@ -1363,15 +1363,9 @@ static int ioat_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (!iomap)
- 		return -ENOMEM;
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (err)
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (err)
--		return err;
--
--	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
--	if (err)
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/dma/pch_dma.c b/drivers/dma/pch_dma.c
-index 1da04112fcdb..c359decc07a3 100644
---- a/drivers/dma/pch_dma.c
-+++ b/drivers/dma/pch_dma.c
-@@ -835,7 +835,7 @@ static int pch_dma_probe(struct pci_dev *pdev,
- 		goto err_disable_pdev;
- 	}
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	if (err) {
- 		dev_err(&pdev->dev, "Cannot set proper DMA config\n");
- 		goto err_free_res;
-diff --git a/drivers/dma/plx_dma.c b/drivers/dma/plx_dma.c
-index 166934544161..1ffcb5ca9788 100644
---- a/drivers/dma/plx_dma.c
-+++ b/drivers/dma/plx_dma.c
-@@ -563,15 +563,9 @@ static int plx_dma_probe(struct pci_dev *pdev,
- 	if (rc)
- 		return rc;
- 
--	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
-+	rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(48));
- 	if (rc)
--		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--	if (rc)
--		return rc;
--
--	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
--	if (rc)
--		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
-+		rc = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
- 	if (rc)
- 		return rc;
- 
--- 
-2.30.2
-
+With regards,
+Pavel Skripkin
