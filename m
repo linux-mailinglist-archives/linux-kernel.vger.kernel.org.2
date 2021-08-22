@@ -2,357 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5703F40B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2E53F40BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 19:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhHVRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 13:45:07 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:54463 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhHVRpG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 13:45:06 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id a8d0cc6e;
-        Sun, 22 Aug 2021 19:44:22 +0200 (CEST)
-Date:   Sun, 22 Aug 2021 19:44:22 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Rob Herring <robh@kernel.org>
-Cc:     maz@kernel.org, devicetree@vger.kernel.org, robin.murphy@arm.com,
-        sven@svenpeter.dev, kettenis@openbsd.org, marcan@marcan.st,
-        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <CAL_JsqJ-YDNWOoo8TUupDox31YreUNQAPXHnMMtXakQs0S_BDA@mail.gmail.com>
-        (message from Rob Herring on Wed, 18 Aug 2021 15:51:11 -0500)
-Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
-References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
- <20210726083204.93196-2-mark.kettenis@xs4all.nl> <20210726231848.GA1025245@robh.at.kernel.org>
- <87sfzt1pg9.wl-maz@kernel.org> <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
- <8735ra1x8t.wl-maz@kernel.org> <CAL_JsqJ5M3soMT30ntSTbqqdrQP8TT26mHL-0xExsn10MWPofA@mail.gmail.com>
- <56140331bd735d61@bloch.sibelius.xs4all.nl> <CAL_JsqJ-YDNWOoo8TUupDox31YreUNQAPXHnMMtXakQs0S_BDA@mail.gmail.com>
-Message-ID: <56140c26d86f4733@bloch.sibelius.xs4all.nl>
+        id S231308AbhHVRrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 13:47:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229696AbhHVRrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 13:47:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D61B46115A;
+        Sun, 22 Aug 2021 17:47:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629654433;
+        bh=fY25P1admSJNfX6xbRQpLnyRPnhtl4DK96kMn1AqxZU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ax1jRR7wVJzX3oW7+MdHZUiW8JaQcqi3+F+k0fi5+KY9JD57DBsaoHoAOp3ksHM15
+         JOFAITQCKOi6f23nniATpOJpeJDrduNblgrdp+VxkbzWMK+ZXn9Vov4UMGVSmBM7iv
+         yjV7kagHCZxfdUhDT5sV4uhk6bZkhGPU6RI5Oblyx8PKSJbLQmM0bjv/xBGPBO7xh4
+         wiNlRfM4Rlh5TfQZmXlb0VDU/NV7LeXd2hmTHbsxZ6R3ZFMRr3YaHWTbyHG8UN4mGK
+         ncLF01H3xNgjfDNvBJs9NehAERre4LAKIkPlGMpJStstQ+ynH+D7r7MwSuUjGLrxXO
+         wWOK2bYZQru2Q==
+Date:   Sun, 22 Aug 2021 19:47:09 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Soeren Moch <smoch@web.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Regression 5.14] media: dvb userspace api
+Message-ID: <20210822194709.4b9d33d4@coco.lan>
+In-Reply-To: <c56ec571-2278-95e9-2028-990e03159c3f@web.de>
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de>
+        <20210819133128.45ef4353@coco.lan>
+        <c56ec571-2278-95e9-2028-990e03159c3f@web.de>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Rob Herring <robh@kernel.org>
-> Date: Wed, 18 Aug 2021 15:51:11 -0500
+Em Sun, 22 Aug 2021 17:21:41 +0200
+Soeren Moch <smoch@web.de> escreveu:
 
-Hi Rob,
+> > There's no regression: a legacy driver (av7110) for a device that stopp=
+ed
+> > being manufactured 15 years ago and that doesn't work anymore with curr=
+ent
+> > Digital TV transmissions was removed, together with the API that it was
+> > implemented inside such driver's code. =20
+> What you write here is simply not true.
+>=20
+> The "device" (saa7146/av7110-based full-featured DVB card) is working
+> well.=20
 
-> On Wed, Aug 18, 2021 at 2:56 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
-> >
-> > > From: Rob Herring <robh@kernel.org>
-> > > Date: Sun, 15 Aug 2021 14:19:57 -0500
-> > >
-> > > On Sun, Aug 15, 2021 at 11:36 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > Hi Rob,
-> > > >
-> > > > Apologies for the delay, I somehow misplaced this email...
-> > > >
-> > > > On Mon, 02 Aug 2021 17:10:39 +0100,
-> > > > Rob Herring <robh@kernel.org> wrote:
-> > > > >
-> > > > > On Sun, Aug 1, 2021 at 3:31 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > >
-> > > > > > On Tue, 27 Jul 2021 00:18:48 +0100,
-> > > > > > Rob Herring <robh@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
-> > > > > > > > From: Mark Kettenis <kettenis@openbsd.org>
-> > > > > > > >
-> > > > > > > > The Apple PCIe host controller is a PCIe host controller with
-> > > > > > > > multiple root ports present in Apple ARM SoC platforms, including
-> > > > > > > > various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
-> > > > > > > > ---
-> > > > > > > >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
-> > > > > > > >  MAINTAINERS                                   |   1 +
-> > > > > > > >  2 files changed, 167 insertions(+)
-> > > > > > > >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > > > > > >
-> > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > > > > > > new file mode 100644
-> > > > > > > > index 000000000000..bfcbdee79c64
-> > > > > > > > --- /dev/null
-> > > > > > > > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> > > > > > > > @@ -0,0 +1,166 @@
-> > > > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > > > +%YAML 1.2
-> > > > > > > > +---
-> > > > > > > > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
-> > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > > > > +
-> > > > > > > > +title: Apple PCIe host controller
-> > > > > > > > +
-> > > > > > > > +maintainers:
-> > > > > > > > +  - Mark Kettenis <kettenis@openbsd.org>
-> > > > > > > > +
-> > > > > > > > +description: |
-> > > > > > > > +  The Apple PCIe host controller is a PCIe host controller with
-> > > > > > > > +  multiple root ports present in Apple ARM SoC platforms, including
-> > > > > > > > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
-> > > > > > > > +  The controller incorporates Synopsys DesigWare PCIe logic to
-> > > > > > > > +  implements its root ports.  But the ATU found on most DesignWare
-> > > > > > > > +  PCIe host bridges is absent.
-> > > > > > >
-> > > > > > > blank line
-> > > > > > >
-> > > > > > > > +  All root ports share a single ECAM space, but separate GPIOs are
-> > > > > > > > +  used to take the PCI devices on those ports out of reset.  Therefore
-> > > > > > > > +  the standard "reset-gpio" and "max-link-speed" properties appear on
-> > > > > > >
-> > > > > > > reset-gpios
-> > > > > > >
-> > > > > > > > +  the child nodes that represent the PCI bridges that correspond to
-> > > > > > > > +  the individual root ports.
-> > > > > > >
-> > > > > > > blank line
-> > > > > > >
-> > > > > > > > +  MSIs are handled by the PCIe controller and translated into regular
-> > > > > > > > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
-> > > > > > > > +  distributed over the root ports as the OS sees fit by programming
-> > > > > > > > +  the PCIe controller's port registers.
-> > > > > > > > +
-> > > > > > > > +allOf:
-> > > > > > > > +  - $ref: /schemas/pci/pci-bus.yaml#
-> > > > > > > > +
-> > > > > > > > +properties:
-> > > > > > > > +  compatible:
-> > > > > > > > +    items:
-> > > > > > > > +      - const: apple,t8103-pcie
-> > > > > > > > +      - const: apple,pcie
-> > > > > > > > +
-> > > > > > > > +  reg:
-> > > > > > > > +    minItems: 3
-> > > > > > > > +    maxItems: 5
-> > > > > > > > +
-> > > > > > > > +  reg-names:
-> > > > > > > > +    minItems: 3
-> > > > > > > > +    maxItems: 5
-> > > > > > > > +    items:
-> > > > > > > > +      - const: config
-> > > > > > > > +      - const: rc
-> > > > > > > > +      - const: port0
-> > > > > > > > +      - const: port1
-> > > > > > > > +      - const: port2
-> > > > > > > > +
-> > > > > > > > +  ranges:
-> > > > > > > > +    minItems: 2
-> > > > > > > > +    maxItems: 2
-> > > > > > > > +
-> > > > > > > > +  interrupts:
-> > > > > > > > +    description:
-> > > > > > > > +      Interrupt specifiers, one for each root port.
-> > > > > > > > +    minItems: 1
-> > > > > > > > +    maxItems: 3
-> > > > > > > > +
-> > > > > > > > +  msi-controller: true
-> > > > > > > > +  msi-parent: true
-> 
-> BTW, I don't think msi-parent and msi-controller together is valid?
+Probably not true - at least for some av7110-based boards - as there was a=
+=20
+regression that no user ever noticed:
 
-There is an existing example in:
+	https://lore.kernel.org/lkml/20210503115736.2104747-59-gregkh@linuxfoundat=
+ion.org/
 
-arm64/boot/dts/marvell/armada-37xx.dtsi
+This was noticed only too late, due to a review of the offended patch
+caused by "hypocrite commits"[1].
 
-I think it makes sense as the pcie bridge itself serves as the MSI
-controller.
+[1] https://lwn.net/Articles/854645/.
 
-> > > > > > > > +
-> > > > > > > > +  msi-ranges:
-> > > > > > > > +    description:
-> > > > > > > > +      A list of pairs <intid span>, where "intid" is the first
-> > > > > > > > +      interrupt number that can be used as an MSI, and "span" the size
-> > > > > > > > +      of that range.
-> > > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> > > > > > > > +    items:
-> > > > > > > > +      minItems: 2
-> > > > > > > > +      maxItems: 2
-> > > > > > >
-> > > > > > > I still have issues I raised on v1 with this property. It's genericish
-> > > > > > > looking, but not generic. 'intid' as a single cell can't specify any
-> > > > > > > parent interrupt such as a GIC which uses 3 cells. You could put in all
-> > > > > > > the cells, but you'd still be assuming which cell you can increment.
-> > > > > >
-> > > > > > The GIC bindings already use similar abstractions, see what we do for
-> > > > > > both GICv2m and GICv3 MBIs. Other MSI controllers use similar
-> > > > > > properties (alpine and loongson, for example).
-> > > > >
-> > > > > That's the problem. Everyone making up their own crap.
-> > > >
-> > > > And that crap gets approved:
-> > > >
-> > > > https://lore.kernel.org/lkml/20200512205704.GA10412@bogus/
-> > > >
-> > > > I'm not trying to be antagonistic here, but it seems that your
-> > > > position on this very subject has changed recently.
-> > >
-> > > Not really, I think it's not the first time we've discussed this. But
-> > > as I see things over and over, my tolerance for another instance
-> > > without solving the problem for everyone diminishes. And what other
-> > > leverage do I have?
-> > >
-> > > Additionally, how long we have to support something comes into play. I
-> > > have no idea for a Loongson MSI controller. I have a better idea on an
-> > > Apple product...
-> > >
-> > > > > > > I think you should just list all these under 'interrupts' using
-> > > > > > > interrupt-names to make your life easier:
-> > > > > > >
-> > > > > > > interrupt-names:
-> > > > > > >   items:
-> > > > > > >     - const: port0
-> > > > > > >     - const: port1
-> > > > > > >     - const: port2
-> > > > > > >     - const: msi0
-> > > > > > >     - const: msi1
-> > > > > > >     - const: msi2
-> > > > > > >     - const: msi3
-> > > > > > >     ...
-> > > > > > >
-> > > > > > > Yeah, it's kind of verbose, but if the h/w block handles N interrupts,
-> > > > > > > you should list N interrupts. The worst case for the above is N entries
-> > > > > > > too if not contiguous.
-> > > > > >
-> > > > > > And that's where I beg to differ, again.
-> > > > > >
-> > > > > > Specifying interrupts like this gives the false impression that these
-> > > > > > interrupts are generated by the device that owns them (the RC). Which
-> > > > > > for MSIs is not the case.
-> > > > >
-> > > > > It's no different than an interrupt controller node having an
-> > > > > interrupts property. The source is downstream and the interrupt
-> > > > > controller is combining/translating the interrupts.
-> > > > >
-> > > > > The physical interrupt signals are connected to and originating in
-> > > > > this block.
-> > > >
-> > > > Oh, I also object to this, for the same reasons. The only case where
-> > > > it makes sense IMHO is when the interrupt controller is a multiplexer.
-> > >
-> > > So we've had the same kind of property for interrupt multiplexers. I'm
-> > > fine if you think an 'MSI to interrupts mapping property' should be
-> > > named something else.
-> > >
-> > > > > That sounds like perfectly 'describing the h/w' to me.
-> > > >
-> > > > I guess we have a different view of about these things. At the end of
-> > > > the day, I don't care enough as long as we can expose a range of
-> > > > interrupts one way or another.
-> > >
-> > > I don't really either. I just don't want 10 ways AND another...
-> > >
-> > > > > > This is not only verbose, this is
-> > > > > > semantically dubious. And what should we do when the number of
-> > > > > > possible interrupt is ridiculously large, as it is for the GICv3 ITS?
-> > > > >
-> > > > > I don't disagree with the verbose part. But that's not really an issue
-> > > > > in this case.
-> > > > >
-> > > > > > I wish we had a standard way to express these constraints. Until we
-> > > > > > do, I don't think enumerating individual interrupts is a practical
-> > > > > > thing to do, nor that it actually represents the topology of the
-> > > > > > system.
-> > > > >
-> > > > > The only way a standard way will happen is to stop accepting the
-> > > > > custom properties.
-> > > > >
-> > > > > All the custom properties suffer from knowledge of what the parent
-> > > > > interrupt controller is. To fix that, I think we need something like
-> > > > > this:
-> > > > >
-> > > > > msi-ranges = <intspec base>, <intspec step>, <intspec end>;
-> > > > >
-> > > > > 'intspec' is defined by the parent interrupt-controller cells. step is
-> > > > > the value to add. And end is what to match on to stop aka the last
-> > > > > interrupt in the range. For example, if the GIC is the parent, we'd
-> > > > > have something like this:
-> > > > >
-> > > > > <GIC_SPI 123 0>, <0 1 0>, <GIC_SPI 124 0>
-> > > > >
-> > > > > Does this apply to cases other than MSI? I think so as don't we have
-> > > > > the same type of properties with the low power mode shadow interrupt
-> > > > > controllers?  So 'interrupt-ranges'?
-> > > >
-> > > > This would work, though the increment seems a bit over-engineered. You
-> > > > also may need this property to accept multiple ranges.
-> > >
-> > > Yes, certainly. Worst case is a map.
-> > >
-> > > > > It looks to me like there's an assumption in the kernel that an MSI
-> > > > > controller has a linear range of parent interrupts? Is that correct
-> > > > > and something that's guaranteed? That assumption leaks into the
-> > > > > existing bindings.
-> > > >
-> > > > Depends on how the controller works. In general, the range maps to the
-> > > > MultiMSI requirements where the message is an offset from the base of
-> > > > the interrupt range. So you generally end-up with ranges of at least
-> > > > 32 contiguous MSIs. Anything under that is sub-par and probably not
-> > > > worth supporting.
-> > >
-> > > Maybe just this is enough:
-> > > msi-ranges = <intspec base>, <length>, <intspec base>, <length>, ...
-> > >
-> > > While I say 'length' here, that's really up to the interrupt parent to
-> > > interpret the intspec cells.
-> >
-> > So for the Apple PCIe controller we'd have:
-> >
-> >    msi-ranges = <AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
-> >
-> > That would work just fine.
-> >
-> > Should this be documented in the apple,pcie binding, or somewhere more
-> > generic?
-> 
-> It doesn't have an 'apple,' prefix, so somewhere generic. Probably
-> bindings/interrupt-controller/msi.txt. Or start an msi-controller.yaml
-> schema as I'd rather not add things we can't validate, but I don't
-> want to gate this on converting all the MSI bindings. Someone that
-> understands MSI better than me should review too.
+> Also with current Digital TV transmissions (e.g. Astra Satellite
+> TV in Europe). The DVB API never was implemented in driver's code, it is
+> linux userspace API (include/uapi/linux/dvb/).
 
-Yes, I'd like to avoid converting all the MSI bindings, but I could
-add an msi-controller.yaml file and use it in the appropriate
-interrupt controller and pci host bridge bindings that have been
-converted to yaml.
+The DVB API used by all upstream drivers is implemented inside the DVB
+core (at drivers/media/dvb-core/).
 
-> Another thing I thought of is the above is assuming the interrupt
-> parent is the same as any interrupts for the node and that all MSIs go
-> to 1 interrupt controller. Also, given Marc doesn't think using
-> 'interrupts' is right, then using 'interrupt-parent' isn't either
-> (though many of the examples below do just that). So maybe we need the
-> phandle in there:
-> 
-> msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+The "full-featured" API consists on the DVB API + some extra ioctls
+defined at the uAPI headers, plus an av7110 implementation, which
+covered only part of the ioctls that were defined at the headers.
 
-That makes sense.
+> You moved files out of the uapi part of kernel headers, parts of e.g.
+> RedHat userspace stops to build due to this. So it is a userspace
+> regression.
 
-> Other examples of this type of property include:
-> al,msi-base-spi/al,msi-base-spi
-> arm,msi-base-spi/arm,msi-num-spis
-> mbi-ranges
-> loongson,msi-base-vec/loongson,msi-num-vecs
-> marvell,spi-ranges
-> ti,interrupt-ranges?
-> 
-> We should make sure msi-ranges works for all of these cases at least
-> even if we can't change them.
+Again, this is not a Kernel regression. There isn't a single bit of
+code inside the Kernel that it would require the "full-feat" uapi.
 
-I think this scheme would work for all of these although it isn't
-entirely clear to me whether ti,interrupt-ranges is about just MSIs or
-if it also maps some other kind of interrupts.
+If an app implements support to some OOT driver(s), it has to carry on the
+OOT userspace code for such driver(s), together with any needed headers for
+such support. So, you should submit a patch to such app maintainers=20
+directly - and/or to the distro packages that would have packages
+providing support for such OOT driver(s).
 
-marvell,spi-ranges is an interesting one since it typically specifies
-two ranges of 64 MSIs.  But that's something your proposal addresses
-just fine.  I suppose we will provide a phandle for the parent
-interrupt controller for each individual range?
+Btw, as far as I'm aware, Red Hat's Kernels don't come with the
+saa716x OOT driver.
 
-If Marc agrees, I'll get working on implementing the
-msi-controller.yaml schema.
+> > The av7110 production stopped ~15 years ago. =20
+> But the cards work perfectly well. I own two such cards, there is no
+> problem at all with them. Other members of the community even test with
+> -rc3 kernels and file RedHat bugs. So there clearly is interest in them.
+
+Nobody is telling otherwise. If people want to use OOT drivers, that's
+OK. Nobody is preventing people to use it, nor to use the apps developed
+for such devices.
+
+Keeping av7110 in-kernel has been a waste of limited upstream development=20
+resources. A couple of years ago, we needed to fix the av7110 API due to
+year-2038 issues. From time to time, we get bugs affecting it (even security
+ones), as the code has been bit-rotting for a long time. The most recent one
+probably broke the driver without nobody noticing it for a couple of Kernel=
+=20
+reviews, as mentioned above.=20
+
+> > This is a legacy hardware, which supports only the first generation of =
+DVB
+> > standards, and had an integrated MPEG-2 decoder. As most DVB transmissi=
+ons
+> > use MPEG4 or newer encoding schemas that didn't exist back in 1999, it
+> > doesn't make any sense keeping such driver upstream nowadays. =20
+> As I wrote in my previous email: most private TV stations in Germany
+> provide their free-to-air satellite programs MPEG-2 encoded only.
+> Therefore this is very popular and it absolutely makes sense to keep
+> this driver upstream.
+
+It is probably a lot easier to get a modern DVB "budget" card with=20
+supports not only MPEG-2 but all encoding standards than to find an
+old "full-feat" DVB card with av7110 those days.
+
+Who still provides saa71xx chips those days? As far as I'm aware,=20
+Philips semiconductors (who used to produce such chipsets) was split
+into NXP in 2006, and the entire digital TV chipset line moved
+altogether. I can't find any references those days to any saa71xx=20
+at either NXP or Philips websites.
+
+> > The API that got removed was written to control the av7110 MPEG-2 decod=
+er,
+> > and was never integrated at the DVB core: the av7110 had a driver-speci=
+fic
+> > implementation inside its code. =20
+> This is simply not true.
+> The DVB API is linux userspace API, absolutely nothing driver specific
+> inside driver's code.
+
+=46rom upstream PoV, it is an av7110-specific API, as all in-kernel support
+was inside av7110 driver's code.
+
+> > The saa716x driver you're mentioned is an out of tree driver.
+> > We don't keep APIs at the upstream Kernel due to OOT drivers. =20
+> Strong words to distract from the main point:
+> This regression report is about upstream DVB userspace API and the
+> saa7146/av7110 driver, both part of mainline linux for a long time.
+
+Removing a legacy driver is not a regression. See, you're the one
+trying to distract from the main point:
+
+The saa716x driver is OOT. There was never any upstream support
+for it. None of the patches you're mentioning prevents anyone
+to keep building it as an OOT driver.
+
+What it was removed was the av7110, together with the API header
+files that were used only by this single driver.
+
+> you stripped almost everything from my previous email, you did not
+> answer any questions or gave any explanation for your behavior.
+
+I striped the points already discussed with you when I gave you
+feedback about the saa716x patchset [2], as this is a completely
+separate discussion than the removal of av7110 support.
+
+In summary, it makes no sense to claim that saa716x OOT driver
+broke because a different driver was removed upstream.
 
 Thanks,
+Mauro
 
-Mark
+[2] https://lore.kernel.org/linux-media/20180307121438.389f411c@vento.lan/
