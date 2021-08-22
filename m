@@ -2,109 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F973F3F02
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5B63F3F01
 	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 13:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhHVLAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 07:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        id S233083AbhHVLAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 07:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233199AbhHVLAL (ORCPT
+        with ESMTP id S229719AbhHVK77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 07:00:11 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B014AC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 03:59:30 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id w21-20020a7bc1150000b02902e69ba66ce6so8835910wmi.1
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 03:59:30 -0700 (PDT)
+        Sun, 22 Aug 2021 06:59:59 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D54C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 03:59:18 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id u24so2190045edo.2
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 03:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SS1H4Sg5i5wwLYNxXg4bnkUzl9S4j4w3w6dwzkqKszk=;
-        b=g5eycY1dhNrjokKkkf2EWdHw3ybiyWXqQ2s4e0NjzpfTTe8G2TVRnbNTyDJgk2YsFj
-         PeyNckiZLjwpNlahVt5yA5gboAo6Q+hEUyxZu/V4ECEgNAu9oesOOrBr5/X58obO3rs8
-         rfRNRFs7nG/XMhQmD9Zh40R5xfoznOtQjVVzpR0GtfbkE9VZn7K/T054aLThGWiCU0dH
-         9ggnZb/Gr7oiilA6lmPZ9CfmWh5j753Y3g0Dzz4gs3ejlAONI5rv2n15bSyWf4hI35hW
-         eqjeajkuLKRP8GyVhxJkKG4s+2oG0jblT8Qnx3tkFF/SkWMA/jrxs4NfP3crBaEKi/ln
-         Y9yg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=B5El4UeIwytNtHF7+Wl/S50UjWu0HTthP81MaOtEjKg=;
+        b=dfIVHso8nGPuVzo65G6iLskiJb7h5rbbdkh5Vkgq4RC92bzhdPoh4dFggygHPDuMME
+         hW8bBij9RvKDdsT+sjmgcSah826YR+ZGLM77I5V/sPlgQd4NEfGaiK5TQC9o5Br/y2Dc
+         RXIw4H6FjNUgRxWqxdJI9BPRj4+5a/0HgOb/FJjBOPcEm7Gzs+NFWzsxVWvTiSYN/Dkr
+         GpP9vA08PJ/f4RHTNHBHJ81TFWgHXPHZzQXIPBwiqoLKXqaby5C2slSc4prAl95x6SOB
+         Ea5VbLuHP89QQ5IcjUSLtOrbTrPEkfnXFecTbQP+NdaBn7svCEXBMHPwvp8TPuFKnMxx
+         qSDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SS1H4Sg5i5wwLYNxXg4bnkUzl9S4j4w3w6dwzkqKszk=;
-        b=fkDaQBa22fwEfQs0KhddF58MXShGYLlvfcPh82DlJ+1IQZneNd5HC879YwBOx2er/E
-         gwYUncDBg2d77ZmhCiT5uTZvp2OCpeud31iumYyIH7Ljy47YwEf1gPX4BuqqPVHDKiUZ
-         ETSqcEaC7mR/8rvbqWqrLKX+/qc8cQk3Ycx5UTL2KbQGUC91SxzkvZDyKnBi4YkVvKMR
-         exr0U9HGzr4wB0FCO9XxvMLu+jahJeryLl7OxgsMfHFYD4yahLxFcy52fsJh6dZPN4Pi
-         qSp5Vho5a18pJU9dMaWJBwtWX57Zmvq70Ei6y1enWl4drunnvHiOydle/kmfCymnd5kx
-         GHQg==
-X-Gm-Message-State: AOAM533BoS9BYOPiEyTKZfAnL+/j5fNXCk8IGVy7IReiinZD4t93Urlb
-        FzPGMJWBFm33LcsUtiwLNDE=
-X-Google-Smtp-Source: ABdhPJwlsCu/vR1NpQZge59EGn5yPWt14P8YEDeW4maURjaBSaVldCYrhAadvltZe2PTv2hvojBhJA==
-X-Received: by 2002:a1c:f706:: with SMTP id v6mr8227646wmh.167.1629629969315;
-        Sun, 22 Aug 2021 03:59:29 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id a77sm16099579wmd.31.2021.08.22.03.59.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 03:59:29 -0700 (PDT)
-Subject: Re: [PATCH] staging: r8188eu: core: remove condition with no effect
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YSFgrLUfXzgcT6k4@user>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <5d56fa86-854f-4876-be3b-b0adc129da70@gmail.com>
-Date:   Sun, 22 Aug 2021 12:58:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=B5El4UeIwytNtHF7+Wl/S50UjWu0HTthP81MaOtEjKg=;
+        b=Dc/BL8I5pXd7AgtDoy4nG4FJmlmjG2p6ya879z7eviNiaFXmmEXLpCXKN+4CDMUcaD
+         Kdzj3V95c8AdVWiqQuooHV5p+hRlf4N6D52p1RlspukRzQVHi5LdIy6DszyQI+JF+4Rk
+         GwF1ctnC+z8jFbG0wPqL0nU/UfAxuVc1ugIM1RyLcm1op2zR6TpJ90CYqrHkmcybkfmK
+         8QEEPn17M5s9D5txhUmX6FWRl1PUZcgzA757h8JD/3os0PnzxkylBfHgz/stKi+5/B+a
+         Bws+HPuTK1ZWgCPph2Rjyl+E8+DnOax2tObuCPHxxnPOdTBcOdeXiyZvcOJuBk1fEQ9C
+         U/5g==
+X-Gm-Message-State: AOAM531dQhcjC4doTMDXZe+Bnzu1ScQodxOFJrplaMoM+H+IG1ozJXHB
+        YN3UuUkrqWkH4VzwpbRkgHQ=
+X-Google-Smtp-Source: ABdhPJzh3y0IZMIYYDZdqjk1bsxOv5Jg6pkc47CgvHjY2LL9HeCjUPnTQxh+WIKSPVVuMSQDudGy3A==
+X-Received: by 2002:a05:6402:34c7:: with SMTP id w7mr33410774edc.175.1629629956663;
+        Sun, 22 Aug 2021 03:59:16 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id o17sm6864502edc.58.2021.08.22.03.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 03:59:15 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: Re: [PATCH RFC 0/3] staging: r8188eu: avoid uninit value bugs
+Date:   Sun, 22 Aug 2021 12:59:13 +0200
+Message-ID: <2327383.5TodInGmHT@localhost.localdomain>
+In-Reply-To: <ae27d6a0-dc00-459f-7b36-acf7f4c08d72@gmail.com>
+References: <cover.1629479152.git.paskripkin@gmail.com> <10584649.zhyk0TxWeL@localhost.localdomain> <ae27d6a0-dc00-459f-7b36-acf7f4c08d72@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YSFgrLUfXzgcT6k4@user>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 10:23 PM, Saurav Girepunje wrote:
-> Remove the condition with no effect (if == else) in rtw_led.c
-> file.
+On Sunday, August 22, 2021 12:09:29 PM CEST Pavel Skripkin wrote:
+> On 8/22/21 12:53 PM, Fabio M. De Francesco wrote:
+> > On Friday, August 20, 2021 7:07:28 PM CEST Pavel Skripkin wrote:
+> >> Hi, Greg, Larry and Phillip!
+> >> 
+> >> I noticed, that new staging driver was added like 3 weeks ago and I 
+decided
+> >> to look at the code, because drivers in staging directory are always 
+buggy.
+> >> 
+> >> The first thing I noticed is *no one* was checking read operations 
+result,
+> > 
+> > but
+> > 
+> >> it can fail and driver may start writing random stack values into 
+registers.
+> > 
+> > It
+> > 
+> >> can cause driver misbehavior or device misbehavior.
+> > 
+> > After the messages I wrote yesterday, I had some minutes to look deeper at 
+the
+> > code that would be changed by these patches.
+> > 
+> > I think that it does not look like that the driver could return "random 
+stack
+> > values into registers" and I think this entire series in unnecessary.
+> > 
+> > As far as I understand this driver (though I must admit that I really 
+don't
+> > know how to write drivers, and I'm not interested in understanding - at 
+the
+> > moment, at least), all the usb_read*() call usbctrl_vendorreq() and the 
+latter
+> > *does* proper error checking before returning to the callers the read 
+data.
+> > 
+> > Please, look at the code copied from usbctrl_vendorreq() and pasted here 
+(some
+> > comments are mine):
+> > 
+> > /* start of code */
+> > static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void
+> > *pdata, u16 len, u8 requesttype)
+> > {
+> > 
+> > /* test if everything is OK for transfers and setup the necessary 
+variables */
+> > [...]
+> > 
+> > status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> > 
+> >                                           reqtype, value,
+> > 
+> > REALTEK_USB_VENQT_CMD_IDX,
+> > 
+> >                                           pIo_buf, len,
+> > 
+> > RTW_USB_CONTROL_MSG_TIMEOUT);
+> > 
+> >                  if (status == len) {   /*  Success this control transfer. 
+*/
+> >                  
+> >                          rtw_reset_continual_urb_error(dvobjpriv);
+> >                          if (requesttype == 0x01)
+> >                          
+> >                                  memcpy(pdata, pIo_buf,  len); /* pdata
+> > 
+> > receives the read data */
+> > 
+> > 	} else { /*  error cases */
+> > 
+> > [...]
+> > 
+> > }
+> > /* end of code */
+> > 
+> > So, *I cannot ack this RFC*, unless maintainers say I'm missing something.
+> > 
+> > Larry, Philip, since you have much more knowledge than me about r8188eu 
+(and,
+> > more in general, on device drivers) may you please say what you think 
+about my
+> > arguments against this series?
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->   drivers/staging/r8188eu/core/rtw_led.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
+> Hi, Fabio!
 > 
-> diff --git a/drivers/staging/r8188eu/core/rtw_led.c b/drivers/staging/r8188eu/core/rtw_led.c
-> index 22d4df9c92a5..76cbd5f19f90 100644
-> --- a/drivers/staging/r8188eu/core/rtw_led.c
-> +++ b/drivers/staging/r8188eu/core/rtw_led.c
-> @@ -148,10 +148,7 @@ static void SwLedBlink(struct LED_871x *pLed)
->   			_set_timer(&(pLed->BlinkTimer), LED_BLINK_SLOWLY_INTERVAL);
->   			break;
->   		case LED_BLINK_WPS:
-> -			if (pLed->BlinkingLedState == RTW_LED_ON)
-> -				_set_timer(&(pLed->BlinkTimer), LED_BLINK_LONG_INTERVAL);
-> -			else
-> -				_set_timer(&(pLed->BlinkTimer), LED_BLINK_LONG_INTERVAL);
-> +			_set_timer(&(pLed->BlinkTimer), LED_BLINK_LONG_INTERVAL);
->   			break;
->   		default:
->   			_set_timer(&(pLed->BlinkTimer), LED_BLINK_SLOWLY_INTERVAL);
-> --
-> 2.30.2
+> Thank you for looking into this, but I still can see the case when pdata
+> won't be initialized:
 > 
 > 
+> pdata is initialized only in case of successful transfer, i.e len > 0.
+> It means some data was received (maybe not full length, but anyway). In
+> case of usb_control_msg() error (for example -ENOMEM) code only does
+> this code block:
+> 
+> if (status < 0) {
+> 	if (status == (-ESHUTDOWN) || status == -ENODEV) {
+> 		adapt->bSurpriseRemoved = true;
+> 	} else {
+> 		struct hal_data_8188e	*haldata = GET_HAL_DATA(adapt);
+> 		haldata->srestpriv.Wifi_Error_Status = 
+USB_VEN_REQ_CMD_FAIL;
+> 	}
+> }
 
-Hi Saurav,
+It's up to the callers of _rtw_usb*() to check return values and then act 
+accordingly. 
 
-this does not apply to staging-testing. Please rebase against
-staging-testing and send v2.
+It doesn't matter whether or not *pdata is initialized because usb_read*() 
+returns data = 0 if usb_control_msg() has not initialized/changed  its third 
+parameter. Then _rtw_read*() receive 0 or initialized data depending on errors 
+or no errors. Finally _rtw_read*() returns that same value to the callers (via 
+r_val). 
+
+So, it's up to the callers to test if (!_rtw_read*()) and then act 
+accordingly. If they get 0 they should know how to handle the errors.
+
+Furthermore, we have already either adapt->bSurpriseRemoved = true or haldata-
+>srestpriv.Wifi_Error_Status = USB_VEN_REQ_CMD_FAIL. Depending on contexts 
+where _rtw_read*() are called, perhaps they could also check the two variables 
+above.
+
+In summation. if anything should be changed, it is the code of the callers of 
+_rtw_read*() if you find out they they don't properly handle the returning 
+values of this function. You should find every place where _rtw_read*() are 
+called and figure out if the returns are properly checked and handled; if not, 
+make some change only there.
+
+Larry, Philip, where are you? Am I missing something?
 
 Thanks,
 
-Michael
+Fabio
+
+> 
+> And then just loops further. In case of 10 ENOMEM in a row,. passed
+> pdata won't be initialized at all and driver doesn't do anything about
+> it. I believe, it's not good approach to play with random values. We
+> should somehow handle transfer errors all across the driver.
+> 
+> If I am missing something, please, let me know :)
+> 
+> 
+> 
+> With regards,
+> Pavel Skripkin
+
+
+
+
