@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC953F41E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 00:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17773F41EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 00:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhHVWUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 18:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229700AbhHVWUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 18:20:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 892AF61267;
-        Sun, 22 Aug 2021 22:19:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1629670792;
-        bh=9QiEIQNGBi9nfvqgJV5eTtXQ+nYy4w+IVMveVo1QNHI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KC9ACjBAbvdERDZUfnmGTzJOxTRFJU9//f1GKDlopXubbyDOcDgvh6S6vlaqgpw1p
-         KmmoRTO6nNFOlNV7MhikA4K6QoOIshP2cQFp9+YAmuApcP2Idu51qqrCYIK5IBWwQH
-         LKmuFexhzTPa/fzt0YJ0SYVPShbkgpbpwUdnU48U=
-Date:   Sun, 22 Aug 2021 15:19:52 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     yaozhenguo <yaozhenguo1@gmail.com>
-Cc:     mike.kravetz@oracle.com, corbet@lwn.net, yaozhenguo@jd.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] hugetlbfs: add hugepages_node kernel parameter
-Message-Id: <20210822151952.23ca9547316dc34c9f3bd482@linux-foundation.org>
-In-Reply-To: <20210820030536.25737-1-yaozhenguo1@gmail.com>
-References: <20210820030536.25737-1-yaozhenguo1@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233826AbhHVWVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 18:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhHVWVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 18:21:00 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2AEC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 15:20:19 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso19978254ots.5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 15:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vjgj6w+zbgn1146WXU3kPdkHix2wiSW7AS6QZB19vv0=;
+        b=U1RHlD1xBGXU36FLOnv0uEdvjekxmddM94p1l4+8iCvPqWge47JtmbvBWn1D9qthN9
+         ROAV55DeIpXnxg2d6w8rNYH12Gk+2nYASm/wLHpJQW3YThU7HyvkhVCw8TJEV7SlaSQ1
+         Lt1IFjhnsCASv+agnyd8oApkjCOD1XVHVFvktAIkkf8mF+Yxe44bGWQJSajiOYmcmS4f
+         AuVWSmaFDiKjJy0a2YgJokSc+CVT3uapEwtyfWieztoWxAK5tVYxk5rzZrxO2tVBlGsR
+         Jt9cH1NpMfklUdB70zID5PkMUHRgdKanql0papRHm6ZxDMGXoTMIZeYl4sasDNfF0asM
+         ihPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vjgj6w+zbgn1146WXU3kPdkHix2wiSW7AS6QZB19vv0=;
+        b=hq82jaA0dzgQ5ppBUW1SvtN863DgH65iEFDzSMNZui5rwIcRRJo7bIXwHSc2d40Roi
+         HBvVsnrj1JhtmS2VndleMizIobuzQDdG3lagVn5ZW/my93V+pR9QQDq8lZCwV/SIqpFb
+         p6lK7vs6zE9/pl683yujQGu/+3OGEEl/ZHkQeJf6vYom8Y/iiupnwOBqL95KXyahBYz8
+         amBpFk+c2ta77Y1oigvOGku2NZwtoTjjWXQXJw25RwtsUbKD1RdjxpVBrxItpGvTM4Ro
+         0j8CCPGD8H/FovMoMsDoS6Vwhlh9JZrNZSqARe3YJyOf11AFKcEg9IfZOUYpuNvG3YnQ
+         DlvQ==
+X-Gm-Message-State: AOAM5328i3xIYEMrIBCiGyWxeJDx+VeAMOcIWdsPvzICoX9P+Zqryxn3
+        tIdNXfq4hPpJjKJIEoVHjtc=
+X-Google-Smtp-Source: ABdhPJz0eijJJyjUfIl7atjizNUf0pAk5ocAxfrb2CaKZtlQF2ggxgSMrsYBn+jo24OYrKUoUtTtcQ==
+X-Received: by 2002:a9d:5f16:: with SMTP id f22mr24670188oti.322.1629670818575;
+        Sun, 22 Aug 2021 15:20:18 -0700 (PDT)
+Received: from frodo.. (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id x198sm2964122ooa.43.2021.08.22.15.20.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 15:20:18 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        seanpaul@chromium.org, jeyu@kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v6 00/11] use DYNAMIC_DEBUG to implement DRM.debug
+Date:   Sun, 22 Aug 2021 16:19:58 -0600
+Message-Id: <20210822222009.2035788-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 11:05:36 +0800 yaozhenguo <yaozhenguo1@gmail.com> wrote:
+This patchset does 3 main things.
 
-> We can specify the number of hugepages to allocate at boot. But the
-> hugepages is balanced in all nodes at present. In some scenarios,
-> we only need hugepags in one node. For example: DPDK needs hugepages
-> which is in the same node as NIC. if DPDK needs four hugepags of 1G
-> size in node1 and system has 16 numa nodes. We must reserve 64 hugepags
-> in kernel cmdline. But, only four hugepages is used. The others should
-> be free after boot.If the system memory is low(for example: 64G), it will
-> be an impossible task. So, add hugepages_node kernel parameter to specify
-> node number of hugepages to allocate at boot.
-> For example add following parameter:
-> 
-> hugepagesz=1G hugepages_node=1 hugepages=4
-> 
-> It will allocate 4 hugepags in node1 at boot.
+Adds DEFINE_DYNAMIC_DEBUG_CATEGORIES to define bitmap => category
+control of pr_debugs, and to create their sysfs entries.
 
-If were going to do this, shouldn't we permit more than one node?
+Uses it in amdgpu, i915 to control existing pr_debugs according to
+their ad-hoc categorizations.
 
-	hugepages_nodes=1,2,5
+Plugs dyndbg into drm-debug framework, in a configurable manner.
+
+v6: cleans up per v5 feedback, and adds RFC stuff:
+
+- test_dynamic_debug.ko: uses tracer facility added in v5:8/9
+- prototype print-once & rate-limiting
+
+Hopefully adding RFC stuff doesnt distract too much.
+
+Jim Cromie (11):
+  moduleparam: add data member to struct kernel_param
+  dyndbg: add DEFINE_DYNAMIC_DEBUG_CATEGORIES and callbacks
+  i915/gvt: remove spaces in pr_debug "gvt: core:" etc prefixes
+  i915/gvt: use DEFINE_DYNAMIC_DEBUG_CATEGORIES to create "gvt:core:"
+    etc categories
+  amdgpu: use DEFINE_DYNAMIC_DEBUG_CATEGORIES to control categorized
+    pr_debugs
+  drm_print: add choice to use dynamic debug in drm-debug
+  drm_print: instrument drm_debug_enabled
+  amdgpu_ucode: reduce number of pr_debug calls
+  nouveau: fold multiple DRM_DEBUG_DRIVERs together
+  dyndbg: RFC add debug-trace callback, selftest with it. RFC
+  dyndbg: RFC add print-once and print-ratelimited features. RFC.
+
+ drivers/gpu/drm/Kconfig                       |  13 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ucode.c     | 293 ++++++++-------
+ .../gpu/drm/amd/display/dc/core/dc_debug.c    |  44 ++-
+ drivers/gpu/drm/drm_print.c                   |  49 ++-
+ drivers/gpu/drm/i915/gvt/Makefile             |   4 +
+ drivers/gpu/drm/i915/gvt/debug.h              |  18 +-
+ drivers/gpu/drm/i915/i915_params.c            |  35 ++
+ drivers/gpu/drm/nouveau/nouveau_drm.c         |  36 +-
+ include/drm/drm_print.h                       | 148 ++++++--
+ include/linux/dynamic_debug.h                 |  81 ++++-
+ include/linux/moduleparam.h                   |  11 +-
+ lib/Kconfig.debug                             |  11 +
+ lib/Makefile                                  |   1 +
+ lib/dynamic_debug.c                           | 336 ++++++++++++++++--
+ lib/test_dynamic_debug.c                      | 279 +++++++++++++++
+ 15 files changed, 1117 insertions(+), 242 deletions(-)
+ create mode 100644 lib/test_dynamic_debug.c
+
+-- 
+2.31.1
+
