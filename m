@@ -2,32 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6868C3F4100
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E8C3F4105
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhHVSuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 14:50:07 -0400
-Received: from out02.smtpout.orange.fr ([193.252.22.211]:36829 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232253AbhHVSuF (ORCPT
+        id S232246AbhHVSzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 14:55:10 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:59391 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230245AbhHVSzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 14:50:05 -0400
+        Sun, 22 Aug 2021 14:55:09 -0400
 Received: from pop-os.home ([90.126.253.178])
         by mwinf5d51 with ME
-        id kipM250033riaq203ipMMG; Sun, 22 Aug 2021 20:49:23 +0200
+        id kiuR250043riaq203iuRdm; Sun, 22 Aug 2021 20:54:26 +0200
 X-ME-Helo: pop-os.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 20:49:23 +0200
+X-ME-Date: Sun, 22 Aug 2021 20:54:26 +0200
 X-ME-IP: 90.126.253.178
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     bhelgaas@google.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
+To:     oakad@yahoo.com, arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] x86/PCI: sta2x11: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 20:49:20 +0200
-Message-Id: <99656452963ba3c63a6cb12e151279d81da365eb.1629658069.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] tifm: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 20:54:24 +0200
+Message-Id: <fa6cc76718abf0a546e2e9bd9509ea6e495aadd6.1629658403.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,10 +36,6 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 The wrappers in include/linux/pci-dma-compat.h should go away.
 
 The patch has been generated with the coccinelle script below.
-
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
 
 It has been compile tested.
 
@@ -167,23 +161,45 @@ Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 If needed, see post from Christoph Hellwig on the kernel-janitors ML:
    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 ---
- arch/x86/pci/sta2x11-fixup.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/misc/tifm_7xx1.c | 2 +-
+ drivers/misc/tifm_core.c | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
-index 7d2525691854..101081ad64b6 100644
---- a/arch/x86/pci/sta2x11-fixup.c
-+++ b/arch/x86/pci/sta2x11-fixup.c
-@@ -146,8 +146,7 @@ static void sta2x11_map_ep(struct pci_dev *pdev)
- 		dev_err(dev, "sta2x11: could not set DMA offset\n");
+diff --git a/drivers/misc/tifm_7xx1.c b/drivers/misc/tifm_7xx1.c
+index 228f2eb1d476..017c2f7d6287 100644
+--- a/drivers/misc/tifm_7xx1.c
++++ b/drivers/misc/tifm_7xx1.c
+@@ -311,7 +311,7 @@ static int tifm_7xx1_probe(struct pci_dev *dev,
+ 	int pci_dev_busy = 0;
+ 	int rc;
  
- 	dev->bus_dma_limit = max_amba_addr;
--	pci_set_consistent_dma_mask(pdev, max_amba_addr);
--	pci_set_dma_mask(pdev, max_amba_addr);
-+	dma_set_mask_and_coherent(&pdev->dev, max_amba_addr);
+-	rc = pci_set_dma_mask(dev, DMA_BIT_MASK(32));
++	rc = dma_set_mask(&dev->dev, DMA_BIT_MASK(32));
+ 	if (rc)
+ 		return rc;
  
- 	/* Configure AHB mapping */
- 	pci_write_config_dword(pdev, AHB_PEXLBASE(0), 0);
+diff --git a/drivers/misc/tifm_core.c b/drivers/misc/tifm_core.c
+index 52656fc87e99..f5d275cee21f 100644
+--- a/drivers/misc/tifm_core.c
++++ b/drivers/misc/tifm_core.c
+@@ -293,14 +293,15 @@ EXPORT_SYMBOL(tifm_has_ms_pif);
+ int tifm_map_sg(struct tifm_dev *sock, struct scatterlist *sg, int nents,
+ 		int direction)
+ {
+-	return pci_map_sg(to_pci_dev(sock->dev.parent), sg, nents, direction);
++	return dma_map_sg(&to_pci_dev(sock->dev.parent)->dev, sg, nents,
++			  direction);
+ }
+ EXPORT_SYMBOL(tifm_map_sg);
+ 
+ void tifm_unmap_sg(struct tifm_dev *sock, struct scatterlist *sg, int nents,
+ 		   int direction)
+ {
+-	pci_unmap_sg(to_pci_dev(sock->dev.parent), sg, nents, direction);
++	dma_unmap_sg(&to_pci_dev(sock->dev.parent)->dev, sg, nents, direction);
+ }
+ EXPORT_SYMBOL(tifm_unmap_sg);
+ 
 -- 
 2.30.2
 
