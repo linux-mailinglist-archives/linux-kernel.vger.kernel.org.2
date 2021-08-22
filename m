@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C033F3EC3
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 10:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503623F3EC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 10:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhHVI4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 04:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhHVI4e (ORCPT
+        id S232878AbhHVI5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 04:57:49 -0400
+Received: from smtprelay0195.hostedemail.com ([216.40.44.195]:52918 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231147AbhHVI5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 04:56:34 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D05C061575;
-        Sun, 22 Aug 2021 01:55:53 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id x2-20020a1c7c02000000b002e6f1f69a1eso11905806wmc.5;
-        Sun, 22 Aug 2021 01:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pe2cxYTU35zCmd6K7ClNeA3FLV7YkQsHmnGoH/EDgPo=;
-        b=hfo0nWsD5ArA4ektXpXw/T4eXdq71PYcPZh+nrXYeTOoFCZ764v9/0Vf6Pp3Dp7d7g
-         /PpTeDZP3QYwTIzgyGcWICI5ozGMpIJPvbBc5fB8Jg0UuIACU31a4EpB/wZ45EYdZbj9
-         WrgHGptfMjp4AF3PTE58TxP4+rTxUDRM94IdOMEPchtXEONYvhv7d8vmtnU0iglh7cR+
-         RNpRx8bw9j0rViAoE5NzAudPNX6VhjM5zSuwe98dnDs9HZmCrhj1PLkFBKimRjzv18Lf
-         wSr4gByfKJhSwPS02EHMPxkQENY0SBO7qIgvPudVkwCZY9EVPlg5lm/BrjymR1zcQEyR
-         x11A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pe2cxYTU35zCmd6K7ClNeA3FLV7YkQsHmnGoH/EDgPo=;
-        b=FyW0qVLpH+pgvkVnXnopMk2BkT3Ncg32xmV4c6bseN5VYOd2ZVgzG1SFVt7tTZKMnz
-         UUrI7ri/mJxkzl95Y5EYOa5RSuo4WoVWEtXKJ/RpplJ8lWluwIhi6QJgmvHGR+VMmNFr
-         SLP9sTSeNqHM5UF7tKqIJNeEJr89k/H2HGcv8EeiSKFFGcClM2BKbLTEbmmCIeh+urlz
-         EZQ3RG++97XM/0+geSmWnVafTIXHN75j+pWz5iSaA3VwyTLTLTpeOShj6fpByyT8wi2X
-         5P4uB+pDJInYfkVvAAKij5CvFegmuS0cbFucUOuoTatvYfcBtUjWeLZ7VC8Hixd2a65E
-         8Y0Q==
-X-Gm-Message-State: AOAM5336p/qJwzeJ3jO9xaGijNZQL70SxqoSuq5sG9LXY7o1dYLbXN89
-        QbD7FA203djaibXKwvXniHlDfUQdf9AXzw==
-X-Google-Smtp-Source: ABdhPJzRmfoLK53kCyNgYR0q2bXAc9ELX+LjH7O//q8n55Qajfho/rvL7U63cWLHLuipE5plgI05oA==
-X-Received: by 2002:a05:600c:1d06:: with SMTP id l6mr11353079wms.18.1629622552318;
-        Sun, 22 Aug 2021 01:55:52 -0700 (PDT)
-Received: from [192.168.1.22] (amarseille-551-1-7-65.w92-145.abo.wanadoo.fr. [92.145.152.65])
-        by smtp.gmail.com with ESMTPSA id s1sm14814844wmh.46.2021.08.22.01.55.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 01:55:52 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] MAINTAINERS: Widen brcmstb PCIe file scope
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>
-Cc:     linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        nsaenz@kernel.org, bhelgaas@google.com, rjw@rjwysocki.net,
-        lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        sdonthineni@nvidia.com, stefan.wahren@i2se.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210820190917.GA3340819@bjorn-Precision-5520>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <44703985-286c-4f57-c4ef-7b4cbd82a8d7@gmail.com>
-Date:   Sun, 22 Aug 2021 10:55:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 22 Aug 2021 04:57:48 -0400
+Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 179F0837F24A;
+        Sun, 22 Aug 2021 08:57:07 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id B9EDD18A600;
+        Sun, 22 Aug 2021 08:57:05 +0000 (UTC)
+Message-ID: <8afa5f3847a18ab15005614903646da822c1267a.camel@perches.com>
+Subject: Re: [PATCH] vsprintf and docs: Add X to %ph for upper case output
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sun, 22 Aug 2021 01:57:04 -0700
+In-Reply-To: <CAHp75Vdyms1O+GLFDNn+P0CswbCnk8=XR4t2OBex8i-KuuD9Pg@mail.gmail.com>
+References: <6abd83d11f1daa3094f82e92843e8279f302e349.camel@perches.com>
+         <CAHp75Vdh2CP9n0FrU+6nkmzVWKoKD6RN-RGv7Z+UD_KUoFXPfw@mail.gmail.com>
+         <12a41a13f8d03a16c3d5c20710a901c090b7d244.camel@perches.com>
+         <CAHp75Vdyms1O+GLFDNn+P0CswbCnk8=XR4t2OBex8i-KuuD9Pg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <20210820190917.GA3340819@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: B9EDD18A600
+X-Stat-Signature: wgy1553wk4biasi49qfz8yjj6b44wkmz
+X-Spam-Status: No, score=-1.34
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18rAtfRSpKbw6o4poblu2d7KN68o7P98rA=
+X-HE-Tag: 1629622625-21147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/20/2021 9:09 PM, Bjorn Helgaas wrote:
-> On Thu, Aug 19, 2021 at 04:56:55PM -0500, Jeremy Linton wrote:
->> The brcmstb PCI hardware is now split across
->> multiple files. Include them in the maintainers
->> block.
+On Sun, 2021-08-22 at 11:53 +0300, Andy Shevchenko wrote:
+> On Sun, Aug 22, 2021 at 11:45 AM Joe Perches <joe@perches.com> wrote:
+> > On Sun, 2021-08-22 at 11:31 +0300, Andy Shevchenko wrote:
+> > > On Sun, Aug 22, 2021 at 6:00 AM Joe Perches <joe@perches.com> wrote:
+> > > > 
+> > > > Uppercase hex output of small char arrays is moderately frequently used.
+> > > > Add a mechanism to support the %*ph output as uppercase using 'X'.
+> > > 
+> > > Besides the fact of existing hex_asc_upper_*(), what ABI (!) uses
+> > > this? If none, I dunno we need this.
+> > > And show at least a few users where we gain something after conversion.
+> > > 
+> > 
+> > There are at least a few uses that could be converted.
 > 
-> Rewrap to fill 75 columns or so.
+> Provide a series then!
 > 
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> ---
->>   MAINTAINERS | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index fd25e4ecf0b9..605a385cea36 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -3500,7 +3500,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>   S:	Maintained
->>   T:	git git://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git
->>   F:	Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
->> -F:	drivers/pci/controller/pcie-brcmstb.c
->> +F:	drivers/pci/controller/pcie-brcmstb*
+> ...
 > 
-> There are already two entries that mention
-> drivers/pci/controller/pcie-brcmstb.c, and a patch headed for v5.14
-> adds a third.  Do you want to update them all?
+> > +       return snprintf(buf, 16 * 2 + 2, "%16phNX\n", sn);
+> 
+> > +       return scnprintf(buffer, PAGE_SIZE, "%16phNX\n", unique_id);
+> 
+> I think you need to convert to sysfs_emit() in both cases.
 
-That would be a good idea, the patch that Bjorn is referring to is:
+First things first...
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=e647eff57466c8cf7547532d6b26166b9b17f341
-
-With that fixed:
-
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
