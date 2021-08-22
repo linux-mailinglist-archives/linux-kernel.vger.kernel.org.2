@@ -2,334 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7DF3F3FBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F353F3FBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbhHVOYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:24:44 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:50902 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233104AbhHVOYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:24:43 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d74 with ME
-        id kePy2500F3riaq203ePzXA; Sun, 22 Aug 2021 16:24:00 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 16:24:00 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     christopher.lee@cspi.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] myri10ge: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 16:23:57 +0200
-Message-Id: <e5265136abae64c5e763d30ef8ec34607967c7dc.1629642164.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S233487AbhHVO3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:29:48 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45605 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232003AbhHVO3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 10:29:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629642535;
+        bh=OHoPvHMVl7ov+1IrCEJJ//cRmzfbOo3c5AVsORYPEEM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=OSHbHGWWTXRSroVGVp92KlmI/OCkdDPutmcELzdV8ELGo8XkP/ntB6DG34moM7n6h
+         3pQDsmWsIKY5+42K5MLyZiBALYoU/DI6EAGP8g3XDYBYqTSdgijIj5SDmAi0rBVQ0H
+         FbFwWnkRj7eOXzQTFa/yjaV4oS/tuGxdZ0Ml4d3Q=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1N7R1J-1n7rDe097d-017jRD; Sun, 22 Aug 2021 16:28:55 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 0/2] staging/rtl8192u: Prefer kcalloc over open coded arithmetic
+Date:   Sun, 22 Aug 2021 16:28:18 +0200
+Message-Id: <20210822142820.5109-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:p0IOLND2I4j+neza+y2pDeupbRTGH7itS5NwcdIdmzAMgBzpoZa
+ 1L1WAy2w6dsSPIAxpglxWF60/GG34yMGkq46V4S8sW9sAR2jmHXcaECsIjxvC5u61wxyLQD
+ lDfNHACysNucr5Psu9Bl8I0rSwPSWqcc9xeIcnYthZKG6XkDuQpsd/1qZPGQmE2E/Nh4CJZ
+ QnP8LGfBfLSJOZIAFt1Iw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wlSf9zJTD58=:1TdS2kdpC92I63YFDzc43L
+ bP/QUbnw5IJs+BbYDJEPe8Eyk2R6JXOcBiWua+oLCbAxzHJxqn35ux4kiALYo5+JMuJSHZWzT
+ GrtrD6fAclOLsHLWm24iJEUV7GdCeZwMXkY29ktW2lhwbUrj4/oao5kR9yYppUlSnJmQ4Y15y
+ 3OOVogKn6rokoyUJuqvJbyNuQ5L9oFXpg9iTzBhs5834vMhoi2c/u+pH8dVvTcsB+2kvF7fOr
+ /IYYJtREPwJXiBi4hm7jXUOKDQL6w9aAzON4Yp3tGAJ5fReFAzBIOmv9rIDFA3TdT4fNWVwGP
+ Lfiypv1a8mQdgknhvJPcW806uDrZO/AyOY/c4i7Btx77rd6GeTrrXhKapfz+BoP8nX7DF/lpz
+ YAx0CzgljkA45i4qpJ0TdzEa4YKmx2/CvnnGDLt7oOzf/ZIYR6XEbT1Xc17l7ndIHAxt7BQfE
+ IPwK6EerC6Yo4XHKnDQlywOxhSXKdo8ild7Pm9SYw0DldGcDcC12HN7xrYjfVtHjXkG9OqWIF
+ ZlQsrcuZsIMNjy7r5YFx3KEsyAUPKHSg22qVFPmSSdT2cIZbhGZzC0VTs0YTaxXTKl2M2tkB3
+ RJ0TS3m0KawiHJcJE0/gF7RC4NyZ4LCCrerQBwcKZ27RpcUFzhqpuJkT4KWRYD394qcClWfiu
+ VpnD8cEum8YUTyoUPclwxUf7wcD/wjaVvHTwnCLfd2h4PnkkkHUxUAZdh68Ddi94s5TbjX0Xn
+ oXVkB+onZeR6h85hT4HY+jK/vK1AuaQyLi6RC1gUEpDrYCGgtuXhfqCW85hSMkFgsFkHmtWOq
+ MOSW2q7EqZeha49rHlJ/qOtD28/CDmQ/L/x7TMn1BrJaSDGuSlyLPBnoLFP4gQXAT4uttJTGm
+ Qon9tKpRfRGxtvljJWXM/e4sWejZTx7tEVeAeiZzv6YvBup42EFYOzxsq66PxO736rS3YH1R8
+ 21OvqP2EFfp3DBOdodJVII9WDO8odKYHCnYMWLziSIn9B8gaQwfqEIL0mVLoRcqESQ3gx4ChB
+ MmvTlLMFGEm1Old18S45B5SEQMYI2F7gQZ2+CUgxF23YmRY0rAYwjwQ2cm7ldcMk8HmAHZsfF
+ pV3GAFOhAzgeAZI8fQkz+GLbEHzpQc5ZDF4PWojV/UCQrsVJOZuWeENNA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+The main reason of this patch serie is to avoid dynamic size
+calculations (especially multiplication) in memory allocator function
+arguments due to the risk of them overflowing. This could lead to values
+wrapping around and a smaller allocation being made than the caller was
+expecting. Using those allocations could lead to linear overflows of
+heap memory and other misbehaviors.
 
-The patch has been generated with the coccinelle script below.
+However, there is a previous patch to avoid CamelCase in the name of
+variables.
 
-It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-This is less verbose.
+Len Baker (2):
+  staging/rtl8192u: Avoid CamelCase in names of variables
+  staging/rtl8192u: Prefer kcalloc over open coded arithmetic
 
-A message split on 2 lines has been merged.
+ drivers/staging/rtl8192u/r819xU_phy.c | 92 +++++++++++++--------------
+ 1 file changed, 44 insertions(+), 48 deletions(-)
 
-It has been compile tested.
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- .../net/ethernet/myricom/myri10ge/myri10ge.c  | 59 +++++++++----------
- 1 file changed, 29 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index fc99ad8e4a38..7359a8b768e9 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -850,9 +850,9 @@ static int myri10ge_dma_test(struct myri10ge_priv *mgp, int test_type)
- 	dmatest_page = alloc_page(GFP_KERNEL);
- 	if (!dmatest_page)
- 		return -ENOMEM;
--	dmatest_bus = pci_map_page(mgp->pdev, dmatest_page, 0, PAGE_SIZE,
--				   DMA_BIDIRECTIONAL);
--	if (unlikely(pci_dma_mapping_error(mgp->pdev, dmatest_bus))) {
-+	dmatest_bus = dma_map_page(&mgp->pdev->dev, dmatest_page, 0,
-+				   PAGE_SIZE, DMA_BIDIRECTIONAL);
-+	if (unlikely(dma_mapping_error(&mgp->pdev->dev, dmatest_bus))) {
- 		__free_page(dmatest_page);
- 		return -ENOMEM;
- 	}
-@@ -899,7 +899,8 @@ static int myri10ge_dma_test(struct myri10ge_priv *mgp, int test_type)
- 	    (cmd.data0 & 0xffff);
- 
- abort:
--	pci_unmap_page(mgp->pdev, dmatest_bus, PAGE_SIZE, DMA_BIDIRECTIONAL);
-+	dma_unmap_page(&mgp->pdev->dev, dmatest_bus, PAGE_SIZE,
-+		       DMA_BIDIRECTIONAL);
- 	put_page(dmatest_page);
- 
- 	if (status != 0 && test_type != MXGEFW_CMD_UNALIGNED_TEST)
-@@ -1205,10 +1206,10 @@ myri10ge_alloc_rx_pages(struct myri10ge_priv *mgp, struct myri10ge_rx_buf *rx,
- 				return;
- 			}
- 
--			bus = pci_map_page(mgp->pdev, page, 0,
-+			bus = dma_map_page(&mgp->pdev->dev, page, 0,
- 					   MYRI10GE_ALLOC_SIZE,
--					   PCI_DMA_FROMDEVICE);
--			if (unlikely(pci_dma_mapping_error(mgp->pdev, bus))) {
-+					   DMA_FROM_DEVICE);
-+			if (unlikely(dma_mapping_error(&mgp->pdev->dev, bus))) {
- 				__free_pages(page, MYRI10GE_ALLOC_ORDER);
- 				if (rx->fill_cnt - rx->cnt < 16)
- 					rx->watchdog_needed = 1;
-@@ -1256,9 +1257,9 @@ myri10ge_unmap_rx_page(struct pci_dev *pdev,
- 	/* unmap the recvd page if we're the only or last user of it */
- 	if (bytes >= MYRI10GE_ALLOC_SIZE / 2 ||
- 	    (info->page_offset + 2 * bytes) > MYRI10GE_ALLOC_SIZE) {
--		pci_unmap_page(pdev, (dma_unmap_addr(info, bus)
--				      & ~(MYRI10GE_ALLOC_SIZE - 1)),
--			       MYRI10GE_ALLOC_SIZE, PCI_DMA_FROMDEVICE);
-+		dma_unmap_page(&pdev->dev, (dma_unmap_addr(info, bus)
-+					    & ~(MYRI10GE_ALLOC_SIZE - 1)),
-+			       MYRI10GE_ALLOC_SIZE, DMA_FROM_DEVICE);
- 	}
- }
- 
-@@ -1398,16 +1399,16 @@ myri10ge_tx_done(struct myri10ge_slice_state *ss, int mcp_index)
- 			ss->stats.tx_packets++;
- 			dev_consume_skb_irq(skb);
- 			if (len)
--				pci_unmap_single(pdev,
-+				dma_unmap_single(&pdev->dev,
- 						 dma_unmap_addr(&tx->info[idx],
- 								bus), len,
--						 PCI_DMA_TODEVICE);
-+						 DMA_TO_DEVICE);
- 		} else {
- 			if (len)
--				pci_unmap_page(pdev,
-+				dma_unmap_page(&pdev->dev,
- 					       dma_unmap_addr(&tx->info[idx],
- 							      bus), len,
--					       PCI_DMA_TODEVICE);
-+					       DMA_TO_DEVICE);
- 		}
- 	}
- 
-@@ -2110,16 +2111,16 @@ static void myri10ge_free_rings(struct myri10ge_slice_state *ss)
- 			ss->stats.tx_dropped++;
- 			dev_kfree_skb_any(skb);
- 			if (len)
--				pci_unmap_single(mgp->pdev,
-+				dma_unmap_single(&mgp->pdev->dev,
- 						 dma_unmap_addr(&tx->info[idx],
- 								bus), len,
--						 PCI_DMA_TODEVICE);
-+						 DMA_TO_DEVICE);
- 		} else {
- 			if (len)
--				pci_unmap_page(mgp->pdev,
-+				dma_unmap_page(&mgp->pdev->dev,
- 					       dma_unmap_addr(&tx->info[idx],
- 							      bus), len,
--					       PCI_DMA_TODEVICE);
-+					       DMA_TO_DEVICE);
- 		}
- 	}
- 	kfree(ss->rx_big.info);
-@@ -2584,15 +2585,15 @@ static void myri10ge_unmap_tx_dma(struct myri10ge_priv *mgp,
- 		len = dma_unmap_len(&tx->info[idx], len);
- 		if (len) {
- 			if (tx->info[idx].skb != NULL)
--				pci_unmap_single(mgp->pdev,
-+				dma_unmap_single(&mgp->pdev->dev,
- 						 dma_unmap_addr(&tx->info[idx],
- 								bus), len,
--						 PCI_DMA_TODEVICE);
-+						 DMA_TO_DEVICE);
- 			else
--				pci_unmap_page(mgp->pdev,
-+				dma_unmap_page(&mgp->pdev->dev,
- 					       dma_unmap_addr(&tx->info[idx],
- 							      bus), len,
--					       PCI_DMA_TODEVICE);
-+					       DMA_TO_DEVICE);
- 			dma_unmap_len_set(&tx->info[idx], len, 0);
- 			tx->info[idx].skb = NULL;
- 		}
-@@ -2715,8 +2716,8 @@ static netdev_tx_t myri10ge_xmit(struct sk_buff *skb,
- 
- 	/* map the skb for DMA */
- 	len = skb_headlen(skb);
--	bus = pci_map_single(mgp->pdev, skb->data, len, PCI_DMA_TODEVICE);
--	if (unlikely(pci_dma_mapping_error(mgp->pdev, bus)))
-+	bus = dma_map_single(&mgp->pdev->dev, skb->data, len, DMA_TO_DEVICE);
-+	if (unlikely(dma_mapping_error(&mgp->pdev->dev, bus)))
- 		goto drop;
- 
- 	idx = tx->req & tx->mask;
-@@ -2824,7 +2825,7 @@ static netdev_tx_t myri10ge_xmit(struct sk_buff *skb,
- 		len = skb_frag_size(frag);
- 		bus = skb_frag_dma_map(&mgp->pdev->dev, frag, 0, len,
- 				       DMA_TO_DEVICE);
--		if (unlikely(pci_dma_mapping_error(mgp->pdev, bus))) {
-+		if (unlikely(dma_mapping_error(&mgp->pdev->dev, bus))) {
- 			myri10ge_unmap_tx_dma(mgp, tx, idx);
- 			goto drop;
- 		}
-@@ -3776,19 +3777,17 @@ static int myri10ge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	myri10ge_mask_surprise_down(pdev);
- 	pci_set_master(pdev);
- 	dac_enabled = 1;
--	status = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	status = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
- 	if (status != 0) {
- 		dac_enabled = 0;
- 		dev_err(&pdev->dev,
--			"64-bit pci address mask was refused, "
--			"trying 32-bit\n");
--		status = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+			"64-bit pci address mask was refused, trying 32-bit\n");
-+		status = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 	}
- 	if (status != 0) {
- 		dev_err(&pdev->dev, "Error %d setting DMA mask\n", status);
- 		goto abort_with_enabled;
- 	}
--	(void)pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
- 	mgp->cmd = dma_alloc_coherent(&pdev->dev, sizeof(*mgp->cmd),
- 				      &mgp->cmd_bus, GFP_KERNEL);
- 	if (!mgp->cmd) {
--- 
-2.30.2
+=2D-
+2.25.1
 
