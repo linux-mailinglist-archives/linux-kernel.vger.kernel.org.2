@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB863F3FCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398D03F4002
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 16:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhHVOg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 10:36:57 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39498 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234043AbhHVOgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 10:36:54 -0400
-Received: from zn.tnic (p200300ec2f2da100ab464a00f653617a.dip0.t-ipconnect.de [IPv6:2003:ec:2f2d:a100:ab46:4a00:f653:617a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0F2BE1EC04F0;
-        Sun, 22 Aug 2021 16:36:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629642968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=xSosRj+gN6K6/WaqvzcoxmyNJvtEyhrgOWDYMQsCGNo=;
-        b=JMU3sneeIbjx/sVlruL4kgrKGsIdwixSJQb56941V6UwFAyS35rn/iiVoZVPy07EWOiCDB
-        sJYERF9Yt09gmU1/vgn2UEqp2ryQ1S/j6eyetpP9F3giSwZAJX9pRJwwX4fGgHl3f/g6fG
-        glBv9rZOqxxoCg6Ja0zyweOK2wwXs7s=
-Date:   Sun, 22 Aug 2021 16:36:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Jue Wang <juew@google.com>, Ding Hui <dinghui@sangfor.com.cn>,
-        naoya.horiguchi@nec.com, osalvador@suse.de,
-        Youquan Song <youquan.song@intel.com>, huangcun@sangfor.com.cn,
-        x86@kernel.org, linux-edac@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <YSJg/tCG5/YRSZIQ@zn.tnic>
-References: <20210706190620.1290391-1-tony.luck@intel.com>
- <20210818002942.1607544-1-tony.luck@intel.com>
- <20210818002942.1607544-2-tony.luck@intel.com>
- <YR/m/8PCmCTbogey@zn.tnic>
- <20210820185945.GA1623421@agluck-desk2.amr.corp.intel.com>
- <YSACMCEoU6FxjDNh@zn.tnic>
- <20210820202346.GA1623796@agluck-desk2.amr.corp.intel.com>
+        id S234339AbhHVOiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 10:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234338AbhHVOiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 10:38:18 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7966BC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:37:37 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id d6so21969519edt.7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 07:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FfPaT2o9ejPWoclQhHTem2PUE+dQ31fbuBiXbqF2/GI=;
+        b=1lYBBWVF9iTKaRw0g2x7Ef/GnarjXuLUUwBd1DD2lwxJ5n4R03JXaXNlAJWg2gJbdQ
+         RQ7K2vvei3VZdnT1MT3y6RgKLenZcXrWcWKmEdNgBtpNlQlIoUjQTxQ1KVmJa34r+Z9Q
+         Aeq/ZESYm2UbKOLrqHrka6d8w+Pub9K9pWzw0FNwwcK1ywpLWvs3dnpkeuNwZLeuRrp6
+         M7Gw+RXDsiJ95Vjc7+yZei9UEdmgSl2F3daV1VGtK1LiO9F/L8mNWknQmo0G6EnxIJ0P
+         FNyu++YmrcPvepNWLGJvRVMxPZ2MuOpJ2vhnq08Hb8mkFP6nDZgW3qvLLYxfG7SsF0z6
+         ZckQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FfPaT2o9ejPWoclQhHTem2PUE+dQ31fbuBiXbqF2/GI=;
+        b=AmWR/uc0d+FGKvicLH9iWUJLSsgoEOXYSxKtsVuox/3DHMPv6CULF8ckpc29qqE6Na
+         QwZY/aL9CYMnjHgmkZG5BqyKkCrepKPUJuH92Iy/PqHpSUeA+w6avGxc70refRSOoxQ1
+         tOPTyXKo9Zv4kqMYP5FPEjun2pfHapjzVV2TIiZEy0CYU7lcL0WEW0rc34qnZqZ0gO8s
+         NJptxubtHo/jvyPLIxNUOTfI/Drj5cfQYgCrwkxI6oDyziOnFO3NWocw6rooj+V3lexE
+         oq2OIeqhkvczcndUt3ldeSUWJT9lKtr8v0n91WLJ50RWoU6BNqU3/AM6/M+9Vs0V372X
+         t6Lw==
+X-Gm-Message-State: AOAM5304xf/VHJoT/XeELDgwZ6ChUZ38vDHZ963svp0yrYQKPEznjIN9
+        0/9jAafpewEkWWq6w/VptHAyHXe+Kom64YpgOCvBtg==
+X-Google-Smtp-Source: ABdhPJz6igOpeceGcgr1x7CHFqZncopWDgHJVTamT1TtjkqwGes1sDKzPMFHqc3Ugyy3G58z0QA9QnCpuUuzz7/NhmI=
+X-Received: by 2002:a50:a452:: with SMTP id v18mr11615212edb.17.1629643056044;
+ Sun, 22 Aug 2021 07:37:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820202346.GA1623796@agluck-desk2.amr.corp.intel.com>
+References: <20210822115755.3171937-1-knaerzche@gmail.com>
+In-Reply-To: <20210822115755.3171937-1-knaerzche@gmail.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Sun, 22 Aug 2021 11:37:24 -0300
+Message-ID: <CAAEAJfDLvctAk3omLgFBBbzvufFKwSW5_cQZ+MjvyN4khGOe_w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: Re-add interrupt-names for RK3399's vpu
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 01:23:46PM -0700, Luck, Tony wrote:
-> To recover we need to have some other place to jump to (besides the
-> normal extable error return ... which isn't working if we find ourselves
-> in this situation) when we hit a fault covered by an extable entry. And
-> also know how many machine checks is "normal" before taking the other path.
+Hi Alex, Heiko,
 
-Hohumm, we're on the same page here.
+On Sun, 22 Aug 2021 at 08:58, Alex Bee <knaerzche@gmail.com> wrote:
+>
+> Commit a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
+> intended to remove the interrupt-names property for mmu nodes, but it
+> also removed it for the vpu node in rk3399.dtsi. That makes the driver
+> fail probing currently.
+> Fix this by re-adding the property for this node.
+>
+> Fixes: a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
 
-...
+AFAICS a728c10dd62a removed lots of interrupt-names properties
+from devices other than IOMMU.
 
-> Bottom line is that I don't think this panic can actually happen unless
-> there is some buggy kernel code that retries get_user() or copyin()
-> indefinitely.
+Maybe it's best to revert it?
 
-You know how such statements of "well, this should not really happen in
-practice" get disproved by, well, practice. :-)
-
-I guess we'll see anyway what actually happens in practice.
-
-> Probably the same for the two different addresses case ... though I'm
-> not 100% confident about that. There could be some ioctl() that peeks
-> at two parts of a passed in structure, and the user might pass in a
-> structure that spans across a page boundary with both pages poisoned.
-> But that would only hit if the driver code ignored the failure of the
-> first get_user() and blindly tried the second. So I'd count that as a
-> critically bad driver bug.
-
-Right.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Ezequiel
