@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C823F3F3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7634D3F3F3E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhHVMUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 08:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhHVMUl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 08:20:41 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1071C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:20:00 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id k29so21685682wrd.7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qXyUw+WOrtg1/HVyiUZhztfPCLmF+rc/B9S0+PjHvOM=;
-        b=MGDnNxtGPTbUOioghyBnvZfQtKheEArFE04VR1eyseFybLT3+owwgscYb4e2MK6Ghx
-         GUxMpBJIGEnNGn7UIMsKbAF/n60AYy5ezy0zmgcRvqg6Mkg3UQRAfg8xMmPQkr5p1Epr
-         7zBJYjc6uJDhh8mCf34Qf45847NfeoQ5mN0shw4huwJC/n4t0xVXzCbIBhJ2R203jFdM
-         EaO5rWbI5/0T9N+lMmsH7VFXCpHDnb9wfcn/POKs6e9hSTcxlUqkamZOMZb0/loFg22J
-         ThnmnS4XS7mf/QSNy9MsE4cHHn27dwkWzr3qcAOjbdamY6N9Zj0ASOcYkMUvlCVP+3ZJ
-         xP/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qXyUw+WOrtg1/HVyiUZhztfPCLmF+rc/B9S0+PjHvOM=;
-        b=gqk4rQ8/3gC0vsV2LY2aqkD0fTX024SGNgaACzqZcPi7uPci0IBi9tmeGOHWSECeS1
-         fAyCn3DkQVLIALaRT4RjLh6D4O7RBslDokfKDKRUgPZ2G4dBA5d2OCHmfo5XlVo6PTif
-         sCar0eusp5UTq0HI22M61lGv0C58YGOIh0Lhel+SFPM/w97vB2B0cAiKwUNZWUXM2cfv
-         6KYH1jbimV0m7xQ3LQBOIqVIYXf1jftEeIVZiU1e8kwXmDYZsIiwQRGr6U6uggCvCNnJ
-         YkH4n+T+TfYaE3G6UoYYj1X4U5NX5g8EcKMWeYV5hYUpx6xcy1kUZKxV7y55vhQsWyqI
-         zUVQ==
-X-Gm-Message-State: AOAM532oU1c8ohFeRJCSr1HzSoZIiqp4iwAzA/qMV4LS6rbWPuwIwzo0
-        +hYtsSGj+JACRkfSvHQInyv7RJswUJI=
-X-Google-Smtp-Source: ABdhPJzE4skZOJTJsDklZ0zu/iEVifRzIqMJvLxrPbjmLFqu8L0IqtVoEg7jWYMcE/1Z4dM+CePDEw==
-X-Received: by 2002:adf:e509:: with SMTP id j9mr2008857wrm.320.1629634799455;
-        Sun, 22 Aug 2021 05:19:59 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
-        by smtp.gmail.com with ESMTPSA id i8sm11626722wrv.70.2021.08.22.05.19.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 05:19:59 -0700 (PDT)
-Subject: Re: [PATCH 05/10] staging: r8188eu: remove an unused enum
-To:     Martin Kaiser <martin@kaiser.cx>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210821164859.4351-1-martin@kaiser.cx>
- <20210821164859.4351-5-martin@kaiser.cx>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <38b14452-fa19-a550-e4a9-387ceb8ea64b@gmail.com>
-Date:   Sun, 22 Aug 2021 14:19:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231583AbhHVMUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 08:20:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231356AbhHVMUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 08:20:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D91D6126A;
+        Sun, 22 Aug 2021 12:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629634806;
+        bh=fnzZTcKvp2q8oy8pfW79kIB0yHT1Ujv1I88z7SOBbJY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=snUzs/Pgaxs6SPoVblzbomb44FY/Eaz9Ifoc/aZJuP+sYyIyFNIQPrUCv8+5/8qkX
+         P3gOlvie33pV9YYQPoKY/TDNzSqc6OK/7+S6+KMoB5ze3cZyGX7R/2h9W8+Vu8RV73
+         dOB5PUtq0IM7aMy7kumqt8d7owvClL0zdBsYoSAsg/6r3J33ET4H8IbkwRYx+zTNSF
+         5kPwM3ySNoYWLPZY4OPFxQLpqqlt/Ff9LMKxJQvXIl5maxqEOMrH9k7Meh3vlGtm2E
+         aDSyeE33z6JZGvJlMqaX6q5IH0yXiLti7CXVsyODR+9WPhY9b62wQp6R6IPN3YRK+X
+         QZAK8xe+Vlenw==
+Received: by pali.im (Postfix)
+        id 585407C7; Sun, 22 Aug 2021 14:20:03 +0200 (CEST)
+Date:   Sun, 22 Aug 2021 14:20:03 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        viro@zeniv.linux.org.uk
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dsterba@suse.cz, aaptel@suse.com, willy@infradead.org,
+        rdunlap@infradead.org, joe@perches.com, mark@harmstone.com,
+        nborisov@suse.com, linux-ntfs-dev@lists.sourceforge.net,
+        anton@tuxera.com, dan.carpenter@oracle.com, hch@lst.de,
+        ebiggers@kernel.org, andy.lavr@gmail.com, oleksandr@natalenko.name
+Subject: Re: [PATCH v27 04/10] fs/ntfs3: Add file operations and
+ implementation
+Message-ID: <20210822122003.kb56lexgvv6prf2t@pali>
+References: <20210729134943.778917-1-almaz.alexandrovich@paragon-software.com>
+ <20210729134943.778917-5-almaz.alexandrovich@paragon-software.com>
 MIME-Version: 1.0
-In-Reply-To: <20210821164859.4351-5-martin@kaiser.cx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210729134943.778917-5-almaz.alexandrovich@paragon-software.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 6:48 PM, Martin Kaiser wrote:
-> The VENDOR_READ and VENDOR_WRITE defines are not used.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->   drivers/staging/r8188eu/include/usb_ops.h | 4 ----
->   1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/include/usb_ops.h b/drivers/staging/r8188eu/include/usb_ops.h
-> index b6a1cd536adf..c53cc54b6b87 100644
-> --- a/drivers/staging/r8188eu/include/usb_ops.h
-> +++ b/drivers/staging/r8188eu/include/usb_ops.h
-> @@ -13,10 +13,6 @@
->   #define REALTEK_USB_VENQT_CMD_REQ	0x05
->   #define REALTEK_USB_VENQT_CMD_IDX	0x00
->   
-> -enum {
-> -	VENDOR_WRITE = 0x00,
-> -	VENDOR_READ = 0x01,
-> -};
->   #define ALIGNMENT_UNIT			16
->   #define MAX_VENDOR_REQ_CMD_SIZE	254	/* 8188cu SIE Support */
->   #define MAX_USB_IO_CTL_SIZE	(MAX_VENDOR_REQ_CMD_SIZE + ALIGNMENT_UNIT)
-> 
+On Thursday 29 July 2021 16:49:37 Konstantin Komarov wrote:
+> diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+> new file mode 100644
+> index 000000000..b4369c61a
+> --- /dev/null
+> +++ b/fs/ntfs3/file.c
+> @@ -0,0 +1,1130 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + *
+> + * Copyright (C) 2019-2021 Paragon Software GmbH, All rights reserved.
+> + *
+> + *  regular file handling primitives for ntfs-based filesystems
+> + */
+> +#include <linux/backing-dev.h>
+> +#include <linux/buffer_head.h>
+> +#include <linux/compat.h>
+> +#include <linux/falloc.h>
+> +#include <linux/fiemap.h>
+> +#include <linux/msdos_fs.h> /* FAT_IOCTL_XXX */
+> +#include <linux/nls.h>
+> +
+> +#include "debug.h"
+> +#include "ntfs.h"
+> +#include "ntfs_fs.h"
+> +
+> +static int ntfs_ioctl_fitrim(struct ntfs_sb_info *sbi, unsigned long arg)
+> +{
+> +	struct fstrim_range __user *user_range;
+> +	struct fstrim_range range;
+> +	struct request_queue *q = bdev_get_queue(sbi->sb->s_bdev);
+> +	int err;
+> +
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+> +
+> +	if (!blk_queue_discard(q))
+> +		return -EOPNOTSUPP;
+> +
+> +	user_range = (struct fstrim_range __user *)arg;
+> +	if (copy_from_user(&range, user_range, sizeof(range)))
+> +		return -EFAULT;
+> +
+> +	range.minlen = max_t(u32, range.minlen, q->limits.discard_granularity);
+> +
+> +	err = ntfs_trim_fs(sbi, &range);
+> +	if (err < 0)
+> +		return err;
+> +
+> +	if (copy_to_user(user_range, &range, sizeof(range)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
+> +static long ntfs_ioctl(struct file *filp, u32 cmd, unsigned long arg)
+> +{
+> +	struct inode *inode = file_inode(filp);
+> +	struct ntfs_sb_info *sbi = inode->i_sb->s_fs_info;
+> +	u32 __user *user_attr = (u32 __user *)arg;
+> +
+> +	switch (cmd) {
+> +	case FAT_IOCTL_GET_ATTRIBUTES:
+> +		return put_user(le32_to_cpu(ntfs_i(inode)->std_fa), user_attr);
+> +
+> +	case FAT_IOCTL_GET_VOLUME_ID:
+> +		return put_user(sbi->volume.ser_num, user_attr);
+> +
+> +	case FITRIM:
+> +		return ntfs_ioctl_fitrim(sbi, arg);
+> +	}
+> +	return -ENOTTY; /* Inappropriate ioctl for device */
+> +}
 
-Looks good to me.
+Hello! What with these two FAT_* ioctls in NTFS code? Should NTFS driver
+really implements FAT ioctls? Because they looks like some legacy API
+which is even not implemented by current ntfs.ko driver.
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
-
-Thanks,
-Michael
+Specially, should FS driver implements ioctl for get volume id which in
+this way? Because basically every fs have some kind of uuid / volume id
+and they can be already retrieved by appropriate userspace tool.
