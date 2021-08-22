@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBBC3F3D18
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 04:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC543F3D1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 04:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhHVCQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 22:16:54 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:58290 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229571AbhHVCQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 22:16:54 -0400
-Received: from BC-Mail-HQEX01.internal.baidu.com (unknown [172.31.51.57])
-        by Forcepoint Email with ESMTPS id EF249EA66DA391539996;
-        Sun, 22 Aug 2021 10:16:10 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-HQEX01.internal.baidu.com (172.31.51.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sun, 22 Aug 2021 10:16:10 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.62.20) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sun, 22 Aug 2021 10:16:10 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <oberpar@linux.ibm.com>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <clang-built-linux@googlegroups.com>,
-        "Cai Huoqing" <caihuoqing@baidu.com>
-Subject: [PATCH] gcov: clang: Remove repeated verbose license text
-Date:   Sun, 22 Aug 2021 10:15:42 +0800
-Message-ID: <20210822021542.2-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.32.0.windows.2
+        id S231700AbhHVCS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 22:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231658AbhHVCSy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 22:18:54 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C46C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 19:18:14 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id y3so13598647ilm.6
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 19:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3f1402yNnR5XHhynZNjdZxQF7CwaoEz9EzTU8SvpoEI=;
+        b=1ooHuaepzTBUq1/UuK7KBZTJQ3nqI7H2HMnXqTC17jGqlVd8d7q2Bpqylh2DeuaBEd
+         0vLn54AF3cJ9bbb6g7DG1AsrtX899daKSmF5hOqAj7sPdh8zFe1JQHoGa5znTznIEV0P
+         UewesmAzOQiREHh71RUJ6j45nGyidReqz+uW+3rkk7fg6lqjZb+WoBw4MATJvzMKiqFJ
+         HC8K52JpuuUFI0+gKoNcZFBiL8z0e6psdK1czYV8m1sKbUpBFXfFH4yttvisLsgP2HkB
+         ynnush+uj6Uh3dWf4A8DdVT07IlYPwDi1Ll4gMByceiEiCIrZ2+PvWfYmHoMZiU5M4DD
+         5nkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3f1402yNnR5XHhynZNjdZxQF7CwaoEz9EzTU8SvpoEI=;
+        b=Kvg1aJE1Hu+Fn9rk79wu969+zcczaLOxEznjAwvkwJHJ0sOJ5K3nUeo51yaARFnX0V
+         1FX1HPSsIjeLeTBcxQQSf0OH+Payo2Cq4Fnr4vkWM11bAbdlNehhhjRiz7R4GHYpYkya
+         NXwGAZ0LVhz040r2tu2wveiK9LUALHmAeNQFsa0sbST8UnYyJ8Uf+OtslTafPe47fb8Y
+         uTkhdZ096a12cm8ACgMabrEmmUWMRy9DZq7Z/0Ua77Z3ZSbUrs6re/UZKSfnVJQANOGE
+         0So3eRBFUM2uX6OgGBL+2fF020KO+695327q0Bgq3qY9U5/2U6wY4raTsSWYQrz5I/gO
+         chvw==
+X-Gm-Message-State: AOAM531bOLJNOxeJtDCy16IZOaZB9RiAqyurmeXxEK2wbggvY+57r8Pk
+        dHwXGb30Ttw4KrupjQgRVDH2bA==
+X-Google-Smtp-Source: ABdhPJykFZZ6+4oaXXLliFJmzbiSWZ9UKVeN3xoFTI/aTUiVN3h+eTp5d5OMjBHW4b03KO4HzksQEg==
+X-Received: by 2002:a92:6a05:: with SMTP id f5mr11831470ilc.140.1629598693927;
+        Sat, 21 Aug 2021 19:18:13 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id d14sm3988124iod.18.2021.08.21.19.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Aug 2021 19:18:13 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] open/accept directly into io_uring fixed file
+ table
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+References: <cover.1629559905.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <7fa72eec-9222-60eb-9ec6-e4b6efbfc5fb@kernel.dk>
+Date:   Sat, 21 Aug 2021 20:18:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.31.62.20]
-X-ClientProxiedBy: BC-Mail-Ex17.internal.baidu.com (172.31.51.11) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+In-Reply-To: <cover.1629559905.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove it because SPDX-License-Identifier is already used
+On 8/21/21 9:52 AM, Pavel Begunkov wrote:
+> Add an optional feature to open/accept directly into io_uring's fixed
+> file table bypassing the normal file table. Same behaviour if as the
+> snippet below, but in one operation:
+> 
+> sqe = prep_[open,accept](...);
+> cqe = submit_and_wait(sqe);
+> io_uring_register_files_update(uring_idx, (fd = cqe->res));
+> close((fd = cqe->res));
+> 
+> The idea in pretty old, and was brough up and implemented a year ago
+> by Josh Triplett, though haven't sought the light for some reasons.
+> 
+> The behaviour is controlled by setting sqe->file_index, where 0 implies
+> the old behaviour. If non-zero value is specified, then it will behave
+> as described and place the file into a fixed file slot
+> sqe->file_index - 1. A file table should be already created, the slot
+> should be valid and empty, otherwise the operation will fail.
+> 
+> we can't use IOSQE_FIXED_FILE to switch between modes, because accept
+> takes a file, and it already uses the flag with a different meaning.
+> 
+> since RFC:
+>  - added attribution
+>  - updated descriptions
+>  - rebased
+> 
+> since v1:
+>  - EBADF if slot is already used (Josh Triplett)
+>  - alias index with splice_fd_in (Josh Triplett)
+>  - fix a bound check bug
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- kernel/gcov/clang.c | 10 ----------
- 1 file changed, 10 deletions(-)
+With the prep series, this looks good to me now. Josh, what do you
+think?
 
-diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-index cbb0bed958ab..b97a922b36b7 100644
---- a/kernel/gcov/clang.c
-+++ b/kernel/gcov/clang.c
-@@ -3,16 +3,6 @@
-  * Copyright (C) 2019 Google, Inc.
-  * modified from kernel/gcov/gcc_4_7.c
-  *
-- * This software is licensed under the terms of the GNU General Public
-- * License version 2, as published by the Free Software Foundation, and
-- * may be copied, distributed, and modified under those terms.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-- *
-- *
-  * LLVM uses profiling data that's deliberately similar to GCC, but has a
-  * very different way of exporting that data.  LLVM calls llvm_gcov_init() once
-  * per module, and provides a couple of callbacks that we can use to ask for
+And we need the net folks to sign off on the first patch, of course.
+
 -- 
-2.25.1
+Jens Axboe
 
