@@ -2,102 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169403F3CF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 03:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE27A3F3CF5
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 03:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhHVBR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Aug 2021 21:17:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21238 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231167AbhHVBRz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Aug 2021 21:17:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629595035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u4xeDb0xiSkHYvpeYqNRRiH9/pK7u1VGqkKmKiQtiX8=;
-        b=N6hn4OM1vNMmXFCuD7DhjzFFWpsnpxJWJW73IFID2c8nFFYJ4o//DJM77WgYynMbs2/S0Q
-        oPCGiYS7B6KIAbj1DnLOfuvjmEipOG5UfXmVzZt5/xSTK1YAvCHPcKOudGxFw7THWtu7x6
-        RjgNUhM5bJtQDscxZvoGV075myvXGJ0=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-21-I6-8psYJMGysJaUpNKaqyA-1; Sat, 21 Aug 2021 21:17:13 -0400
-X-MC-Unique: I6-8psYJMGysJaUpNKaqyA-1
-Received: by mail-qk1-f198.google.com with SMTP id h135-20020a379e8d000000b003f64b0f4865so3610510qke.12
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Aug 2021 18:17:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u4xeDb0xiSkHYvpeYqNRRiH9/pK7u1VGqkKmKiQtiX8=;
-        b=RALXXnA8SOwEPveB6CcK7GqzOCGIwT2DOYzMmHEos4cZ8lBJfjQbvp7UCdKyNRh2ce
-         DNAQhmKCCOOf778DKc02UZKJd1zaSs0XCvwMAbWhL9D9iPY5mjkX7wcetesJj0VVabk/
-         PM1Yy3lugGsd32GEGSiBGDbZQpkq30a7g41V3mdYlT9R+hKObSFFJbnSRFQPMdkZSimX
-         r/M5dD/nXbLsVoeEZxsGCaAMCcJqb/3ntqau6livKfoQspt455EDE6PwQtAWyeW33ETA
-         WoxuwHcgU/SO4WDMBaOKt4M1K/R22v1N/FvEXQEHQNjfSusCuDzTIi1zTaNErU5WMDe8
-         gKtA==
-X-Gm-Message-State: AOAM530PQ+BV9jhA0LXy9tzKxWcXx5VWogwAoGbGxyOXQFFMTBgxcXRR
-        oRNZC+DoOC3FzzVxtAJdbh/ZIBg4ob0X3mI4lucEoY+thKx+gbnxwxmLzorX4W5iA/UgRzGRrRE
-        Tsk6+ZjHMzhOl+IpSSezhwlhd
-X-Received: by 2002:aed:2029:: with SMTP id 38mr24147587qta.71.1629595033212;
-        Sat, 21 Aug 2021 18:17:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxjdMzlEtB04A9H2gWJ3xaTLyZ4fVo0vEX7mXpihQ9WTD/TfwhY8KT897Z8Jn+QTR4LepA7Q==
-X-Received: by 2002:aed:2029:: with SMTP id 38mr24147578qta.71.1629595033023;
-        Sat, 21 Aug 2021 18:17:13 -0700 (PDT)
-Received: from [192.168.1.9] (pool-68-163-101-245.bstnma.fios.verizon.net. [68.163.101.245])
-        by smtp.gmail.com with ESMTPSA id f1sm536386qtb.66.2021.08.21.18.17.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Aug 2021 18:17:12 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] objtool: remove redundant len value from struct
- section
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-To:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Andy Lavr <andy.lavr@gmail.com>
-References: <20210820194453.395548-1-joe.lawrence@redhat.com>
- <20210820194453.395548-3-joe.lawrence@redhat.com>
-Message-ID: <7ca86dcb-65f8-006b-0628-a79fb4defe40@redhat.com>
-Date:   Sat, 21 Aug 2021 21:17:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231356AbhHVBUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Aug 2021 21:20:04 -0400
+Received: from mga17.intel.com ([192.55.52.151]:39550 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230387AbhHVBUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 21 Aug 2021 21:20:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10083"; a="197188288"
+X-IronPort-AV: E=Sophos;i="5.84,341,1620716400"; 
+   d="scan'208";a="197188288"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2021 18:19:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,341,1620716400"; 
+   d="scan'208";a="513463236"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2021 18:19:21 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mHc8u-000WLK-RO; Sun, 22 Aug 2021 01:19:20 +0000
+Date:   Sun, 22 Aug 2021 09:18:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kai Ye <yekai13@huawei.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: drivers/crypto/hisilicon/qm.c:4077:8: warning: %ld in format string
+ (no. 1) requires 'long *' but the argument type is 'unsigned long *'.
+ [invalidScanfArgType_int]
+Message-ID: <202108220901.8r4gf0hB-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210820194453.395548-3-joe.lawrence@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/21 3:44 PM, Joe Lawrence wrote:
-> [ ... snip ... ]
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> [ ... snip ... ]
-> @@ -307,8 +307,9 @@ static int decode_instructions(struct objtool_file *file)
->  			insn->offset = offset;
->  
->  			ret = arch_decode_instruction(file->elf, sec, offset,
-> -						      sec->len - offset,
-> -						      &insn->len, &insn->type,
-> +						      sec->sh.sh_size - offset,
-> +						      &insn->sec->sh.sh_size,
-> +						      &insn->type,
->  						      &insn->immediate,
->  						      &insn->stack_ops);
->  			if (ret)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
+commit: 3bbf0783636be8fd672907df25904288f14566f2 crypto: hisilicon/qm - supports to inquiry each function's QoS
+date:   9 weeks ago
+compiler: ia64-linux-gcc (GCC) 11.2.0
 
-Nack!  Not sure what I was thinking here.  It was Friday afternoon, so I
-probably wans't.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Changing insn->len to insn->sec->sh.sh_size is obviously bogus.  I'll
-correct this part of the patch, do better testing and post v3 on Monday.
 
-Thanks to Andy for reporting.
--- 
-Joe
+cppcheck warnings: (new ones prefixed by >>)
+>> drivers/crypto/hisilicon/qm.c:4077:8: warning: %ld in format string (no. 1) requires 'long *' but the argument type is 'unsigned long *'. [invalidScanfArgType_int]
+    ret = sscanf(buf, "%ld", val);
+          ^
+>> drivers/crypto/hisilicon/qm.c:4135:8: warning: %x in format string (no. 2) requires 'unsigned int *' but the argument type is 'signed int *'. [invalidScanfArgType_int]
+    ret = sscanf(tbuf_bdf, "%d:%x:%d.%d", &tmp1, &bus, &device, &function);
+          ^
 
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+
+>> drivers/crypto/hisilicon/qm.c:4077:8: warning: %ld in format string (no. 1) requires 'long *' but the argument type is 'unsigned long *'. [invalidScanfArgType_int]
+    ret = sscanf(buf, "%ld", val);
+          ^
+>> drivers/crypto/hisilicon/qm.c:4135:8: warning: %x in format string (no. 2) requires 'unsigned int *' but the argument type is 'signed int *'. [invalidScanfArgType_int]
+    ret = sscanf(tbuf_bdf, "%d:%x:%d.%d", &tmp1, &bus, &device, &function);
+          ^
+>> drivers/crypto/hisilicon/qm.c:4122:8: warning: sscanf() without field width limits can crash with huge input data. [invalidscanf]
+    ret = sscanf(tbuf, "%s %s", tbuf_bdf, val_buf);
+          ^
+>> drivers/crypto/hisilicon/qm.c:4031:9: warning: Uninitialized variable: ret [uninitvar]
+    return ret;
+           ^
+
+vim +4077 drivers/crypto/hisilicon/qm.c
+
+3bbf0783636be8 Kai Ye 2021-06-11  4002  
+3bbf0783636be8 Kai Ye 2021-06-11  4003  static int qm_vf_read_qos(struct hisi_qm *qm)
+3bbf0783636be8 Kai Ye 2021-06-11  4004  {
+3bbf0783636be8 Kai Ye 2021-06-11  4005  	int cnt = 0;
+3bbf0783636be8 Kai Ye 2021-06-11  4006  	int ret;
+3bbf0783636be8 Kai Ye 2021-06-11  4007  
+3bbf0783636be8 Kai Ye 2021-06-11  4008  	/* reset mailbox qos val */
+3bbf0783636be8 Kai Ye 2021-06-11  4009  	qm->mb_qos = 0;
+3bbf0783636be8 Kai Ye 2021-06-11  4010  
+3bbf0783636be8 Kai Ye 2021-06-11  4011  	/* vf ping pf to get function qos */
+3bbf0783636be8 Kai Ye 2021-06-11  4012  	if (qm->ops->ping_pf) {
+3bbf0783636be8 Kai Ye 2021-06-11  4013  		ret = qm->ops->ping_pf(qm, QM_VF_GET_QOS);
+3bbf0783636be8 Kai Ye 2021-06-11  4014  		if (ret) {
+3bbf0783636be8 Kai Ye 2021-06-11  4015  			pci_err(qm->pdev, "failed to send cmd to PF to get qos!\n");
+3bbf0783636be8 Kai Ye 2021-06-11  4016  			return ret;
+3bbf0783636be8 Kai Ye 2021-06-11  4017  		}
+3bbf0783636be8 Kai Ye 2021-06-11  4018  	}
+3bbf0783636be8 Kai Ye 2021-06-11  4019  
+3bbf0783636be8 Kai Ye 2021-06-11  4020  	while (true) {
+3bbf0783636be8 Kai Ye 2021-06-11  4021  		msleep(QM_WAIT_DST_ACK);
+3bbf0783636be8 Kai Ye 2021-06-11  4022  		if (qm->mb_qos)
+3bbf0783636be8 Kai Ye 2021-06-11  4023  			break;
+3bbf0783636be8 Kai Ye 2021-06-11  4024  
+3bbf0783636be8 Kai Ye 2021-06-11  4025  		if (++cnt > QM_MAX_VF_WAIT_COUNT) {
+3bbf0783636be8 Kai Ye 2021-06-11  4026  			pci_err(qm->pdev, "PF ping VF timeout!\n");
+3bbf0783636be8 Kai Ye 2021-06-11  4027  			return  -ETIMEDOUT;
+3bbf0783636be8 Kai Ye 2021-06-11  4028  		}
+3bbf0783636be8 Kai Ye 2021-06-11  4029  	}
+3bbf0783636be8 Kai Ye 2021-06-11  4030  
+3bbf0783636be8 Kai Ye 2021-06-11 @4031  	return ret;
+3bbf0783636be8 Kai Ye 2021-06-11  4032  }
+3bbf0783636be8 Kai Ye 2021-06-11  4033  
+3bbf0783636be8 Kai Ye 2021-06-11  4034  static ssize_t qm_algqos_read(struct file *filp, char __user *buf,
+3bbf0783636be8 Kai Ye 2021-06-11  4035  			       size_t count, loff_t *pos)
+3bbf0783636be8 Kai Ye 2021-06-11  4036  {
+3bbf0783636be8 Kai Ye 2021-06-11  4037  	struct hisi_qm *qm = filp->private_data;
+3bbf0783636be8 Kai Ye 2021-06-11  4038  	char tbuf[QM_DBG_READ_LEN];
+3bbf0783636be8 Kai Ye 2021-06-11  4039  	u32 qos_val, ir;
+3bbf0783636be8 Kai Ye 2021-06-11  4040  	int ret;
+3bbf0783636be8 Kai Ye 2021-06-11  4041  
+3bbf0783636be8 Kai Ye 2021-06-11  4042  	/* Mailbox and reset cannot be operated at the same time */
+3bbf0783636be8 Kai Ye 2021-06-11  4043  	if (test_and_set_bit(QM_RESETTING, &qm->misc_ctl)) {
+3bbf0783636be8 Kai Ye 2021-06-11  4044  		pci_err(qm->pdev, "dev resetting, read alg qos failed!\n");
+3bbf0783636be8 Kai Ye 2021-06-11  4045  		return  -EAGAIN;
+3bbf0783636be8 Kai Ye 2021-06-11  4046  	}
+3bbf0783636be8 Kai Ye 2021-06-11  4047  
+3bbf0783636be8 Kai Ye 2021-06-11  4048  	if (qm->fun_type == QM_HW_PF) {
+3bbf0783636be8 Kai Ye 2021-06-11  4049  		ir = qm_get_shaper_vft_qos(qm, 0);
+3bbf0783636be8 Kai Ye 2021-06-11  4050  	} else {
+3bbf0783636be8 Kai Ye 2021-06-11  4051  		ret = qm_vf_read_qos(qm);
+3bbf0783636be8 Kai Ye 2021-06-11  4052  		if (ret)
+3bbf0783636be8 Kai Ye 2021-06-11  4053  			goto err_get_status;
+3bbf0783636be8 Kai Ye 2021-06-11  4054  		ir = qm->mb_qos;
+3bbf0783636be8 Kai Ye 2021-06-11  4055  	}
+3bbf0783636be8 Kai Ye 2021-06-11  4056  
+3bbf0783636be8 Kai Ye 2021-06-11  4057  	qos_val = ir / QM_QOS_RATE;
+3bbf0783636be8 Kai Ye 2021-06-11  4058  	ret = scnprintf(tbuf, QM_DBG_READ_LEN, "%u\n", qos_val);
+3bbf0783636be8 Kai Ye 2021-06-11  4059  
+3bbf0783636be8 Kai Ye 2021-06-11  4060  	ret =  simple_read_from_buffer(buf, count, pos, tbuf, ret);
+3bbf0783636be8 Kai Ye 2021-06-11  4061  
+3bbf0783636be8 Kai Ye 2021-06-11  4062  err_get_status:
+3bbf0783636be8 Kai Ye 2021-06-11  4063  	clear_bit(QM_RESETTING, &qm->misc_ctl);
+3bbf0783636be8 Kai Ye 2021-06-11  4064  	return ret;
+3bbf0783636be8 Kai Ye 2021-06-11  4065  }
+3bbf0783636be8 Kai Ye 2021-06-11  4066  
+72b010dc33b959 Kai Ye 2021-06-11  4067  static ssize_t qm_qos_value_init(const char *buf, unsigned long *val)
+72b010dc33b959 Kai Ye 2021-06-11  4068  {
+72b010dc33b959 Kai Ye 2021-06-11  4069  	int buflen = strlen(buf);
+72b010dc33b959 Kai Ye 2021-06-11  4070  	int ret, i;
+72b010dc33b959 Kai Ye 2021-06-11  4071  
+72b010dc33b959 Kai Ye 2021-06-11  4072  	for (i = 0; i < buflen; i++) {
+72b010dc33b959 Kai Ye 2021-06-11  4073  		if (!isdigit(buf[i]))
+72b010dc33b959 Kai Ye 2021-06-11  4074  			return -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4075  	}
+72b010dc33b959 Kai Ye 2021-06-11  4076  
+72b010dc33b959 Kai Ye 2021-06-11 @4077  	ret = sscanf(buf, "%ld", val);
+72b010dc33b959 Kai Ye 2021-06-11  4078  	if (ret != QM_QOS_VAL_NUM)
+72b010dc33b959 Kai Ye 2021-06-11  4079  		return -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4080  
+72b010dc33b959 Kai Ye 2021-06-11  4081  	return 0;
+72b010dc33b959 Kai Ye 2021-06-11  4082  }
+72b010dc33b959 Kai Ye 2021-06-11  4083  
+72b010dc33b959 Kai Ye 2021-06-11  4084  static ssize_t qm_algqos_write(struct file *filp, const char __user *buf,
+72b010dc33b959 Kai Ye 2021-06-11  4085  			       size_t count, loff_t *pos)
+72b010dc33b959 Kai Ye 2021-06-11  4086  {
+72b010dc33b959 Kai Ye 2021-06-11  4087  	struct hisi_qm *qm = filp->private_data;
+72b010dc33b959 Kai Ye 2021-06-11  4088  	char tbuf[QM_DBG_READ_LEN];
+72b010dc33b959 Kai Ye 2021-06-11  4089  	int tmp1, bus, device, function;
+72b010dc33b959 Kai Ye 2021-06-11  4090  	char tbuf_bdf[QM_DBG_READ_LEN] = {0};
+72b010dc33b959 Kai Ye 2021-06-11  4091  	char val_buf[QM_QOS_VAL_MAX_LEN] = {0};
+72b010dc33b959 Kai Ye 2021-06-11  4092  	unsigned int fun_index;
+72b010dc33b959 Kai Ye 2021-06-11  4093  	unsigned long val = 0;
+72b010dc33b959 Kai Ye 2021-06-11  4094  	int len, ret;
+72b010dc33b959 Kai Ye 2021-06-11  4095  
+72b010dc33b959 Kai Ye 2021-06-11  4096  	if (qm->fun_type == QM_HW_VF)
+72b010dc33b959 Kai Ye 2021-06-11  4097  		return -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4098  
+72b010dc33b959 Kai Ye 2021-06-11  4099  	/* Mailbox and reset cannot be operated at the same time */
+72b010dc33b959 Kai Ye 2021-06-11  4100  	if (test_and_set_bit(QM_RESETTING, &qm->misc_ctl)) {
+72b010dc33b959 Kai Ye 2021-06-11  4101  		pci_err(qm->pdev, "dev resetting, write alg qos failed!\n");
+72b010dc33b959 Kai Ye 2021-06-11  4102  		return -EAGAIN;
+72b010dc33b959 Kai Ye 2021-06-11  4103  	}
+72b010dc33b959 Kai Ye 2021-06-11  4104  
+72b010dc33b959 Kai Ye 2021-06-11  4105  	if (*pos != 0) {
+72b010dc33b959 Kai Ye 2021-06-11  4106  		ret = 0;
+72b010dc33b959 Kai Ye 2021-06-11  4107  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4108  	}
+72b010dc33b959 Kai Ye 2021-06-11  4109  
+72b010dc33b959 Kai Ye 2021-06-11  4110  	if (count >= QM_DBG_READ_LEN) {
+72b010dc33b959 Kai Ye 2021-06-11  4111  		ret = -ENOSPC;
+72b010dc33b959 Kai Ye 2021-06-11  4112  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4113  	}
+72b010dc33b959 Kai Ye 2021-06-11  4114  
+72b010dc33b959 Kai Ye 2021-06-11  4115  	len = simple_write_to_buffer(tbuf, QM_DBG_READ_LEN - 1, pos, buf, count);
+72b010dc33b959 Kai Ye 2021-06-11  4116  	if (len < 0) {
+72b010dc33b959 Kai Ye 2021-06-11  4117  		ret = len;
+72b010dc33b959 Kai Ye 2021-06-11  4118  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4119  	}
+72b010dc33b959 Kai Ye 2021-06-11  4120  
+72b010dc33b959 Kai Ye 2021-06-11  4121  	tbuf[len] = '\0';
+72b010dc33b959 Kai Ye 2021-06-11 @4122  	ret = sscanf(tbuf, "%s %s", tbuf_bdf, val_buf);
+72b010dc33b959 Kai Ye 2021-06-11  4123  	if (ret != QM_QOS_PARAM_NUM) {
+72b010dc33b959 Kai Ye 2021-06-11  4124  		ret = -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4125  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4126  	}
+72b010dc33b959 Kai Ye 2021-06-11  4127  
+72b010dc33b959 Kai Ye 2021-06-11  4128  	ret = qm_qos_value_init(val_buf, &val);
+72b010dc33b959 Kai Ye 2021-06-11  4129  	if (val == 0 || val > QM_QOS_MAX_VAL || ret) {
+72b010dc33b959 Kai Ye 2021-06-11  4130  		pci_err(qm->pdev, "input qos value is error, please set 1~1000!\n");
+72b010dc33b959 Kai Ye 2021-06-11  4131  		ret = -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4132  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4133  	}
+72b010dc33b959 Kai Ye 2021-06-11  4134  
+72b010dc33b959 Kai Ye 2021-06-11 @4135  	ret = sscanf(tbuf_bdf, "%d:%x:%d.%d", &tmp1, &bus, &device, &function);
+72b010dc33b959 Kai Ye 2021-06-11  4136  	if (ret != QM_QOS_BDF_PARAM_NUM) {
+72b010dc33b959 Kai Ye 2021-06-11  4137  		pci_err(qm->pdev, "input pci bdf value is error!\n");
+72b010dc33b959 Kai Ye 2021-06-11  4138  		ret = -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4139  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4140  	}
+72b010dc33b959 Kai Ye 2021-06-11  4141  
+72b010dc33b959 Kai Ye 2021-06-11  4142  	fun_index = device * 8 + function;
+72b010dc33b959 Kai Ye 2021-06-11  4143  
+72b010dc33b959 Kai Ye 2021-06-11  4144  	ret = qm_func_shaper_enable(qm, fun_index, val);
+72b010dc33b959 Kai Ye 2021-06-11  4145  	if (ret) {
+72b010dc33b959 Kai Ye 2021-06-11  4146  		pci_err(qm->pdev, "failed to enable function shaper!\n");
+72b010dc33b959 Kai Ye 2021-06-11  4147  		ret = -EINVAL;
+72b010dc33b959 Kai Ye 2021-06-11  4148  		goto err_get_status;
+72b010dc33b959 Kai Ye 2021-06-11  4149  	}
+72b010dc33b959 Kai Ye 2021-06-11  4150  
+72b010dc33b959 Kai Ye 2021-06-11  4151  	ret =  count;
+72b010dc33b959 Kai Ye 2021-06-11  4152  
+72b010dc33b959 Kai Ye 2021-06-11  4153  err_get_status:
+72b010dc33b959 Kai Ye 2021-06-11  4154  	clear_bit(QM_RESETTING, &qm->misc_ctl);
+72b010dc33b959 Kai Ye 2021-06-11  4155  	return ret;
+72b010dc33b959 Kai Ye 2021-06-11  4156  }
+72b010dc33b959 Kai Ye 2021-06-11  4157  
+
+:::::: The code at line 4077 was first introduced by commit
+:::::: 72b010dc33b9598883bc84d40b0a9d07c16f5e39 crypto: hisilicon/qm - supports writing QoS int the host
+
+:::::: TO: Kai Ye <yekai13@huawei.com>
+:::::: CC: Herbert Xu <herbert@gondor.apana.org.au>
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
