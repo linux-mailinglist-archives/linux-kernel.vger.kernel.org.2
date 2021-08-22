@@ -2,381 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8423F40E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371273F40EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 20:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhHVSgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 14:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231465AbhHVSgV (ORCPT
+        id S232216AbhHVSnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 14:43:20 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:55420 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhHVSnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 14:36:21 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5207FC061756;
-        Sun, 22 Aug 2021 11:35:40 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x27so32986850lfu.5;
-        Sun, 22 Aug 2021 11:35:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=llXGzOlVfQ1z+fZShplnuKhCoBoaDlqiYpJmC9GU0+A=;
-        b=pUd9pFzrQoz3MNBZyhe492j7Qpwx+o85iQRD6cvmN/8plmaCSQzruh0RLDBLu8kjbl
-         TH2YjBmZbqDFv62c43rrm+RSWCswEPx259Y0lUalUz7YpM8zV3SoOyvmYKqbVGEh6DVy
-         rniJPhXV2GJnOp3rJirXiqPIfyPVSXebHcrNvf4rhd1A6hnKj1F21t4SULzx78RQFoSZ
-         4NCdZ2we55lY8RlkJy5ZNHKATACU0drXFlBD/8zAouMBw5X7N8H5OzPaiNUpTvt7Ps7a
-         dj4vDtsop6JYSgrAGC0sGSlmLTOoLXQ2XsB7rZBKZmLc5jalVGskLtiCPRnUqfBevgil
-         IVLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=llXGzOlVfQ1z+fZShplnuKhCoBoaDlqiYpJmC9GU0+A=;
-        b=nSA2sgzX16KsgCKBdEuj/L8Wa1IkynuUBYZZKRI8AybbHuoqMrC62dJZp385Rx4x6S
-         tLLmCJwje+3Mmvy41d3KYPjZCFU1WoInHVaE6TQqrEdZChseRb2Za7ZE6dzLDj/lALp3
-         1wcLyZHlsEGl6MuYV9pwacEh9S333nd/LQYU24Pp+5RfPabplTVXqynph9UW/kVygh4m
-         nYjA5JsVLBEtdSXWDkC8xbUjiNv6LO3ekzqqr2ex8JQuSEjAaTMfAWvhy+qn4Pcv9zuE
-         3AMIWa0MwVVVmmzvpL1vhdpepdXW5O0VtLlCUYnnw9eDN90VGOPhf2P9p/wDIflyiE77
-         w8BA==
-X-Gm-Message-State: AOAM532EU0S7Ndma4PYUEdssBupO7kD2p6tzSW6JyBesddwHxoiqEqFV
-        Lw6ypHG0rjZXeEpYqS3N2MiWmAu0wWs=
-X-Google-Smtp-Source: ABdhPJxSIOhcKe6yMzphYPwAYvHArYXqPo3XV3R2pB+pvoKJx2vc7UTHUQczHFEp2jjlznO4dsdqvg==
-X-Received: by 2002:ac2:5fa8:: with SMTP id s8mr23353475lfe.514.1629657338302;
-        Sun, 22 Aug 2021 11:35:38 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
-        by smtp.googlemail.com with ESMTPSA id i12sm226942ljm.116.2021.08.22.11.35.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 11:35:37 -0700 (PDT)
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-References: <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7>
- <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7>
- <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7>
- <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <f1314a47-9e8b-58e1-7c3f-0afb1ec8e70a@gmail.com>
- <20210819061617.r4kuqxafjstrv3kt@vireshk-i7>
- <CAPDyKFpg8ixT4AEjzVLTwQR7Nn9CctjnLCDS5GwkOrAERquyxw@mail.gmail.com>
- <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b887de8c-a40b-a62e-8abf-698e67cdb70c@gmail.com>
-Date:   Sun, 22 Aug 2021 21:35:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210820051843.5mueqpnjbqt3zdzc@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Sun, 22 Aug 2021 14:43:15 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id fe39cd67;
+        Sun, 22 Aug 2021 20:42:27 +0200 (CEST)
+Date:   Sun, 22 Aug 2021 20:42:27 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com, robh+dt@kernel.org,
+        lorenzo.pieralisi@arm.com, kw@linux.com, alyssa@rosenzweig.io,
+        stan@corellium.com, maz@kernel.org, kettenis@openbsd.org,
+        sven@svenpeter.dev, marcan@marcan.st, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210816031621.240268-3-alyssa@rosenzweig.io> (message from
+        Alyssa Rosenzweig on Sun, 15 Aug 2021 23:16:17 -0400)
+Subject: Re: [PATCH v2 2/6] PCI: apple: Add initial hardware bring-up
+References: <20210816031621.240268-1-alyssa@rosenzweig.io> <20210816031621.240268-3-alyssa@rosenzweig.io>
+Message-ID: <56140cb7752653a8@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.08.2021 08:18, Viresh Kumar пишет:
-> On 19-08-21, 16:55, Ulf Hansson wrote:
->> Right, that sounds reasonable.
->>
->> We already have pm_genpd_opp_to_performance_state() which translates
->> an OPP to a performance state. This function invokes the
->> ->opp_to_performance_state() for a genpd. Maybe we need to allow a
->> genpd to not have ->opp_to_performance_state() callback assigned
->> though, but continue up in the hierarchy to see if the parent has the
->> callback assigned, to make this work for Tegra?
->>
->> Perhaps we should add an API dev_pm_genpd_opp_to_performance_state(),
->> allowing us to pass the device instead of the genpd. But that's a
->> minor thing.
+> From: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Date: Sun, 15 Aug 2021 23:16:17 -0400
 > 
-> I am not concerned a lot about how it gets implemented, and am not
-> sure as well, as I haven't looked into these details since sometime.
-> Any reasonable thing will be accepted, as simple as that.
+> Add a minimal driver to bring up the PCIe bus on Apple system-on-chips,
+> particularly the Apple M1. This driver exposes the internal bus used for
+> the USB type-A ports, Ethernet, Wi-Fi, and Bluetooth. Bringing up the
+> radios requires additional drivers beyond what's necessary for PCIe
+> itself.
 > 
->> Finally, the precondition to use the above, is to first get a handle
->> to an OPP table. This is where I am struggling to find a generic
->> solution, because I guess that would be platform or even consumer
->> driver specific for how to do this. And at what point should we do
->> this?
-
-GENPD core can't get OPP table handle, setting up OPP table is a platform/driver specific operation.
-
-> Hmm, I am not very clear with the whole picture at this point of time.
+> In this patch, a minimal driver is added that brings up the PCIe bus on
+> probe. This logic is derived from Corellium's driver via Mark Kettenis's
+> U-Boot patches.
 > 
-> Dmitry, can you try to frame a sequence of events/calls/etc that will
-> define what kind of devices we are looking at here, and how this can
-> be made to work ?
+> Co-developed-by: Stan Skowronek <stan@corellium.com>
+> Signed-off-by: Stan Skowronek <stan@corellium.com>
+> Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> ---
+>  MAINTAINERS                         |   6 +
+>  drivers/pci/controller/Kconfig      |  12 ++
+>  drivers/pci/controller/Makefile     |   1 +
+>  drivers/pci/controller/pcie-apple.c | 251 ++++++++++++++++++++++++++++
+>  4 files changed, 270 insertions(+)
+>  create mode 100644 drivers/pci/controller/pcie-apple.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a5687cf6f925..47cb3d320c56 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1269,6 +1269,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/iommu/apple,dart.yaml
+>  F:	drivers/iommu/apple-dart.c
+>  
+> +APPLE PCIE CONTROLLER DRIVER
+> +M:	Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> +L:	linux-pci@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/pci/controller/pcie-apple.c
+> +
+>  APPLE SMC DRIVER
+>  M:	Henrik Rydberg <rydberg@bitmath.org>
+>  L:	linux-hwmon@vger.kernel.org
+> diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+> index 326f7d13024f..814833a8120d 100644
+> --- a/drivers/pci/controller/Kconfig
+> +++ b/drivers/pci/controller/Kconfig
+> @@ -312,6 +312,18 @@ config PCIE_HISI_ERR
+>  	  Say Y here if you want error handling support
+>  	  for the PCIe controller's errors on HiSilicon HIP SoCs
+>  
+> +config PCIE_APPLE
+> +	tristate "Apple PCIe controller"
+> +	depends on ARCH_APPLE || COMPILE_TEST
+> +	depends on OF
+> +	depends on PCI_MSI_IRQ_DOMAIN
+> +	help
+> +	  Say Y here if you want to enable PCIe controller support on Apple
+> +	  system-on-chips, like the Apple M1. This is required for the USB
+> +	  type-A ports, Ethernet, Wi-Fi, and Bluetooth.
+> +
+> +	  If unsure, say Y if you have an Apple Silicon system.
+> +
+>  source "drivers/pci/controller/dwc/Kconfig"
+>  source "drivers/pci/controller/mobiveil/Kconfig"
+>  source "drivers/pci/controller/cadence/Kconfig"
+> diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+> index aaf30b3dcc14..f9d40bad932c 100644
+> --- a/drivers/pci/controller/Makefile
+> +++ b/drivers/pci/controller/Makefile
+> @@ -37,6 +37,7 @@ obj-$(CONFIG_VMD) += vmd.o
+>  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
+>  obj-$(CONFIG_PCI_LOONGSON) += pci-loongson.o
+>  obj-$(CONFIG_PCIE_HISI_ERR) += pcie-hisi-error.o
+> +obj-$(CONFIG_PCIE_APPLE) += pcie-apple.o
+>  # pcie-hisi.o quirks are needed even without CONFIG_PCIE_DW
+>  obj-y				+= dwc/
+>  obj-y				+= mobiveil/
+> diff --git a/drivers/pci/controller/pcie-apple.c b/drivers/pci/controller/pcie-apple.c
+> new file mode 100644
+> index 000000000000..a1efcc3373ea
+> --- /dev/null
+> +++ b/drivers/pci/controller/pcie-apple.c
+> @@ -0,0 +1,251 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * PCIe host bridge driver for Apple system-on-chips.
+> + *
+> + * The HW is ECAM compliant, so once the controller is initialized, the driver
+> + * mostly only needs MSI handling. Initialization requires enabling power and
+> + * clocks, along with a number of register pokes.
+> + *
+> + * Copyright (C) 2021 Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> + * Copyright (C) 2021 Google LLC
+> + * Copyright (C) 2021 Corellium LLC
+> + * Copyright (C) 2021 Mark Kettenis <kettenis@openbsd.org>
+> + *
+> + * Author: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> + * Author: Marc Zyngier <maz@kernel.org>
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/module.h>
+> +#include <linux/msi.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/pci-ecam.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/gpio/consumer.h>
+> +
+> +#define CORE_RC_PHYIF_CTL		0x00024
+> +#define   CORE_RC_PHYIF_CTL_RUN		BIT(0)
+> +#define CORE_RC_PHYIF_STAT		0x00028
+> +#define   CORE_RC_PHYIF_STAT_REFCLK	BIT(4)
+> +#define CORE_RC_CTL			0x00050
+> +#define   CORE_RC_CTL_RUN		BIT(0)
+> +#define CORE_RC_STAT			0x00058
+> +#define   CORE_RC_STAT_READY		BIT(0)
+> +#define CORE_FABRIC_STAT		0x04000
+> +#define   CORE_FABRIC_STAT_MASK		0x001F001F
+> +#define CORE_LANE_CFG(port)		(0x84000 + 0x4000 * (port))
+> +#define   CORE_LANE_CFG_REFCLK0REQ	BIT(0)
+> +#define   CORE_LANE_CFG_REFCLK1		BIT(1)
+> +#define   CORE_LANE_CFG_REFCLK0ACK	BIT(2)
+> +#define   CORE_LANE_CFG_REFCLKEN	(BIT(9) | BIT(10))
+> +#define CORE_LANE_CTL(port)		(0x84004 + 0x4000 * (port))
+> +#define   CORE_LANE_CTL_CFGACC		BIT(15)
+> +
+> +#define PORT_LTSSMCTL			0x00080
+> +#define   PORT_LTSSMCTL_START		BIT(0)
+> +#define PORT_INTSTAT			0x00100
+> +#define   PORT_INT_TUNNEL_ERR		BIT(31)
+> +#define   PORT_INT_CPL_TIMEOUT		BIT(23)
+> +#define   PORT_INT_RID2SID_MAPERR	BIT(22)
+> +#define   PORT_INT_CPL_ABORT		BIT(21)
+> +#define   PORT_INT_MSI_BAD_DATA		BIT(19)
+> +#define   PORT_INT_MSI_ERR		BIT(18)
+> +#define   PORT_INT_REQADDR_GT32		BIT(17)
+> +#define   PORT_INT_AF_TIMEOUT		BIT(15)
+> +#define   PORT_INT_LINK_DOWN		BIT(14)
+> +#define   PORT_INT_LINK_UP		BIT(12)
+> +#define   PORT_INT_LINK_BWMGMT		BIT(11)
+> +#define   PORT_INT_AER_MASK		(15 << 4)
+> +#define   PORT_INT_PORT_ERR		BIT(4)
+> +#define   PORT_INT_INTx(i)		BIT(i)
+> +#define   PORT_INT_INTxALL		15
+> +#define PORT_INTMSK			0x00104
+> +#define PORT_INTMSKSET			0x00108
+> +#define PORT_INTMSKCLR			0x0010c
+> +#define PORT_MSICFG			0x00124
+> +#define   PORT_MSICFG_EN		BIT(0)
+> +#define   PORT_MSICFG_L2MSINUM_SHIFT	4
+> +#define PORT_MSIBASE			0x00128
+> +#define   PORT_MSIBASE_1_SHIFT		16
+> +#define PORT_MSIADDR			0x00168
+> +#define PORT_LINKSTS			0x00208
+> +#define   PORT_LINKSTS_UP		BIT(0)
+> +#define   PORT_LINKSTS_BUSY		BIT(2)
+> +#define PORT_LINKCMDSTS			0x00210
+> +#define PORT_OUTS_NPREQS		0x00284
+> +#define   PORT_OUTS_NPREQS_REQ		BIT(24)
+> +#define   PORT_OUTS_NPREQS_CPL		BIT(16)
+> +#define PORT_RXWR_FIFO			0x00288
+> +#define   PORT_RXWR_FIFO_HDR		GENMASK(15, 10)
+> +#define   PORT_RXWR_FIFO_DATA		GENMASK(9, 0)
+> +#define PORT_RXRD_FIFO			0x0028C
+> +#define   PORT_RXRD_FIFO_REQ		GENMASK(6, 0)
+> +#define PORT_OUTS_CPLS			0x00290
+> +#define   PORT_OUTS_CPLS_SHRD		GENMASK(14, 8)
+> +#define   PORT_OUTS_CPLS_WAIT		GENMASK(6, 0)
+> +#define PORT_APPCLK			0x00800
+> +#define   PORT_APPCLK_EN		BIT(0)
+> +#define   PORT_APPCLK_CGDIS		BIT(8)
+> +#define PORT_STATUS			0x00804
+> +#define   PORT_STATUS_READY		BIT(0)
+> +#define PORT_REFCLK			0x00810
+> +#define   PORT_REFCLK_EN		BIT(0)
+> +#define   PORT_REFCLK_CGDIS		BIT(8)
+> +#define PORT_PERST			0x00814
+> +#define   PORT_PERST_OFF		BIT(0)
+> +#define PORT_RID2SID(i16)		(0x00828 + 4 * (i16))
+> +#define   PORT_RID2SID_VALID		BIT(31)
+> +#define   PORT_RID2SID_SID_SHIFT	16
+> +#define   PORT_RID2SID_BUS_SHIFT	8
+> +#define   PORT_RID2SID_DEV_SHIFT	3
+> +#define   PORT_RID2SID_FUNC_SHIFT	0
+> +#define PORT_OUTS_PREQS_HDR		0x00980
+> +#define   PORT_OUTS_PREQS_HDR_MASK	GENMASK(9, 0)
+> +#define PORT_OUTS_PREQS_DATA		0x00984
+> +#define   PORT_OUTS_PREQS_DATA_MASK	GENMASK(15, 0)
+> +#define PORT_TUNCTRL			0x00988
+> +#define   PORT_TUNCTRL_PERST_ON		BIT(0)
+> +#define   PORT_TUNCTRL_PERST_ACK_REQ	BIT(1)
+> +#define PORT_TUNSTAT			0x0098c
+> +#define   PORT_TUNSTAT_PERST_ON		BIT(0)
+> +#define   PORT_TUNSTAT_PERST_ACK_PEND	BIT(1)
+> +#define PORT_PREFMEM_ENABLE		0x00994
+> +
+> +/* The doorbell address is "well known" */
+> +#define DOORBELL_ADDR			0xfffff000
+> +
+> +struct apple_pcie {
+> +	struct mutex		lock;
+> +	struct device		*dev;
+> +	void __iomem            *rc;
+> +};
+> +
+> +static inline void rmwl(u32 clr, u32 set, void __iomem *addr)
+> +{
+> +	writel_relaxed((readl_relaxed(addr) & ~clr) | set, addr);
+> +}
+> +
+> +static int apple_pcie_setup_port(struct apple_pcie *pcie,
+> +				 struct gpio_desc *reset,
+> +				 unsigned int i)
+> +{
+> +	struct platform_device *platform = to_platform_device(pcie->dev);
+> +	void __iomem *port;
+> +	uint32_t stat;
+> +	int ret;
+> +
+> +	port = devm_platform_ioremap_resource(platform, i + 2);
+> +
+> +	if (IS_ERR(port))
+> +		return -ENODEV;
+> +
+> +	/* Skip setup if the link was already enabled by the bootloader */
+> +	if (readl_relaxed(port + PORT_LINKSTS) & PORT_LINKSTS_UP)
+> +		return 0;
+> +
+> +	rmwl(0, PORT_PERST_OFF, port + PORT_PERST);
+> +	gpiod_set_value(reset, 1);
+> +
+> +	ret = readl_relaxed_poll_timeout(port + PORT_STATUS, stat,
+> +					 stat & PORT_STATUS_READY, 100, 250000);
+> +	if (ret < 0) {
+> +		dev_err(pcie->dev, "port %u ready wait timeout\n", i);
+> +		return ret;
+> +	}
+> +
+> +	/* Configure MSIs */
+> +	writel_relaxed(DOORBELL_ADDR, port + PORT_MSIADDR);
+> +	writel_relaxed(0, port + PORT_MSIBASE);
+> +
+> +	/* Enable 32 MSIs */
+> +	writel_relaxed((5 << PORT_MSICFG_L2MSINUM_SHIFT) | PORT_MSICFG_EN,
+> +		       port + PORT_MSICFG);
 
-Could you please clarify what do you mean by a "kind of devices"?
+The MSI configuration writes should probably be part of patch 4/6.
 
-I made hack based on the recent discussions and it partially works. Getting clock rate involves resuming device which backs the clock and it also may use GENPD, so lockings are becoming complicated. It doesn't work at all if device uses multiple domains because virtual domain device doesn't have OPP table.
+> +
+> +	/* Enable link interrupts */
+> +	writel_relaxed(0xfb512fff, port + PORT_INTMSKSET);
 
-Setting up the performance state from a consumer driver is a cleaner variant so far. 
+So this magic number should probably be the bitwise inverse of the
+value used below:
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index e1c8994ae225..faa0bbe99c98 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -410,11 +410,16 @@ static int genpd_drop_performance_state(struct device *dev)
- 	return 0;
- }
- 
--static void genpd_restore_performance_state(struct device *dev,
--					    unsigned int state)
-+static int genpd_restore_performance_state(struct generic_pm_domain *genpd,
-+					   struct device *dev,
-+					   unsigned int state)
- {
-+	int ret = 0;
-+
- 	if (state)
--		genpd_set_performance_state(dev, state);
-+		ret = genpd_set_performance_state(dev, state);
-+
-+	return ret;
- }
- 
- /**
-@@ -435,7 +440,7 @@ static void genpd_restore_performance_state(struct device *dev,
- int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
- {
- 	struct generic_pm_domain *genpd;
--	int ret;
-+	int ret = 0;
- 
- 	genpd = dev_to_genpd_safe(dev);
- 	if (!genpd)
-@@ -446,7 +451,10 @@ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
- 		return -EINVAL;
- 
- 	genpd_lock(genpd);
--	ret = genpd_set_performance_state(dev, state);
-+	if (pm_runtime_suspended(dev))
-+		dev_gpd_data(dev)->rpm_pstate = state;
-+	else
-+		ret = genpd_set_performance_state(dev, state);
- 	genpd_unlock(genpd);
- 
- 	return ret;
-@@ -959,10 +967,25 @@ static int genpd_runtime_resume(struct device *dev)
- 		goto out;
- 	}
- 
-+	if (genpd->get_performance_state) {
-+		ret = genpd->get_performance_state(genpd, dev);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (ret > 0)
-+			gpd_data->rpm_pstate = ret;
-+	}
-+
- 	genpd_lock(genpd);
- 	ret = genpd_power_on(genpd, 0);
--	if (!ret)
--		genpd_restore_performance_state(dev, gpd_data->rpm_pstate);
-+	if (!ret) {
-+		ret = genpd_restore_performance_state(genpd, dev,
-+						      gpd_data->rpm_pstate);
-+		if (ret)
-+			genpd_power_off(genpd, true, 0);
-+		else
-+			gpd_data->rpm_pstate = 0;
-+	}
- 	genpd_unlock(genpd);
- 
- 	if (ret)
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 18016e49605f..982be2dba21e 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -2967,3 +2967,33 @@ int dev_pm_opp_sync(struct device *dev)
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(dev_pm_opp_sync);
-+
-+/**
-+ * dev_pm_opp_from_clk_rate() - Get OPP from current clock rate
-+ * @dev:	device for which we do this operation
-+ *
-+ * Get OPP which corresponds to the current clock rate of a device.
-+ *
-+ * Return: pointer to 'struct dev_pm_opp' on success and errorno otherwise.
-+ */
-+struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
-+{
-+	struct dev_pm_opp *opp = ERR_PTR(-ENODEV);
-+	struct opp_table *opp_table;
-+	unsigned long freq;
-+
-+	opp_table = _find_opp_table(dev);
-+	if (IS_ERR(opp_table))
-+		return ERR_CAST(opp_table);
-+
-+	if (!IS_ERR(opp_table->clk)) {
-+		freq = clk_get_rate(opp_table->clk);
-+		opp = _find_freq_ceil(opp_table, &freq);
-+	}
-+
-+	/* Drop reference taken by _find_opp_table() */
-+	dev_pm_opp_put_opp_table(opp_table);
-+
-+	return opp;
-+}
-+EXPORT_SYMBOL_GPL(dev_pm_opp_from_clk_rate);
-diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-index 7c9bc93147f1..03bad16e5318 100644
---- a/drivers/soc/tegra/pmc.c
-+++ b/drivers/soc/tegra/pmc.c
-@@ -506,6 +506,63 @@ static void tegra_pmc_scratch_writel(struct tegra_pmc *pmc, u32 value,
- 		writel(value, pmc->scratch + offset);
- }
- 
-+static const char * const tegra_skip_compats[] = {
-+	"nvidia,tegra20-sclk",
-+	"nvidia,tegra30-sclk",
-+	"nvidia,tegra30-pllc",
-+	"nvidia,tegra30-plle",
-+	"nvidia,tegra30-pllm",
-+	"nvidia,tegra20-dc",
-+	"nvidia,tegra30-dc",
-+	"nvidia,tegra20-emc",
-+	"nvidia,tegra30-emc",
-+	NULL,
-+};
-+
-+static int tegra_pmc_pd_get_performance_state(struct generic_pm_domain *genpd,
-+					      struct device *dev)
-+{
-+	struct dev_pm_opp *opp;
-+	int ret;
-+
-+	/*
-+	 * Tegra114+ SocS don't support OPP yet.  But if they will get OPP
-+	 * support, then we want to skip OPP for older kernels to preserve
-+	 * compatibility of newer DTBs with older kernels.
-+	 */
-+	if (!pmc->soc->supports_core_domain)
-+		return 0;
-+
-+	/*
-+	 * The EMC devices are a special case because we have a protection
-+	 * from non-EMC drivers getting clock handle before EMC driver is
-+	 * fully initialized.  The goal of the protection is to prevent
-+	 * devfreq driver from getting failures if it will try to change
-+	 * EMC clock rate until clock is fully initialized.  The EMC drivers
-+	 * will initialize the performance state by themselves.
-+	 *
-+	 * Display controller also is a special case because only controller
-+	 * driver could get the clock rate based on configuration of internal
-+	 * divider.
-+	 *
-+	 * Clock driver uses its own state syncing.
-+	 */
-+	if (of_device_compatible_match(dev->of_node, tegra_skip_compats))
-+		return 0;
-+
-+	opp = dev_pm_opp_from_clk_rate(dev);
-+	if (IS_ERR(opp)) {
-+		dev_err(&genpd->dev, "failed to get current OPP for %s: %pe\n",
-+			dev_name(dev), opp);
-+		ret = PTR_ERR(opp);
-+	} else {
-+		ret = dev_pm_opp_get_required_pstate(opp, 0);
-+		dev_pm_opp_put(opp);
-+	}
-+
-+	return ret;
-+}
-+
- /*
-  * TODO Figure out a way to call this with the struct tegra_pmc * passed in.
-  * This currently doesn't work because readx_poll_timeout() can only operate
-@@ -1238,6 +1295,7 @@ static int tegra_powergate_add(struct tegra_pmc *pmc, struct device_node *np)
- 
- 	pg->id = id;
- 	pg->genpd.name = np->name;
-+	pg->genpd.get_performance_state = tegra_pmc_pd_get_performance_state;
- 	pg->genpd.power_off = tegra_genpd_power_off;
- 	pg->genpd.power_on = tegra_genpd_power_on;
- 	pg->pmc = pmc;
-@@ -1354,6 +1412,7 @@ static int tegra_pmc_core_pd_add(struct tegra_pmc *pmc, struct device_node *np)
- 		return -ENOMEM;
- 
- 	genpd->name = "core";
-+	genpd->get_performance_state = tegra_pmc_pd_get_performance_state;
- 	genpd->set_performance_state = tegra_pmc_core_pd_set_performance_state;
- 	genpd->opp_to_performance_state = tegra_pmc_core_pd_opp_to_performance_state;
- 
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 67017c9390c8..abe33be9828f 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -133,6 +133,8 @@ struct generic_pm_domain {
- 						 struct dev_pm_opp *opp);
- 	int (*set_performance_state)(struct generic_pm_domain *genpd,
- 				     unsigned int state);
-+	int (*get_performance_state)(struct generic_pm_domain *genpd,
-+				     struct device *dev);
- 	struct gpd_dev_ops dev_ops;
- 	s64 max_off_time_ns;	/* Maximum allowed "suspended" time. */
- 	ktime_t next_wakeup;	/* Maintained by the domain governor */
-diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index 686122b59935..e7fd0dd493ca 100644
---- a/include/linux/pm_opp.h
-+++ b/include/linux/pm_opp.h
-@@ -169,6 +169,7 @@ void dev_pm_opp_remove_table(struct device *dev);
- void dev_pm_opp_cpumask_remove_table(const struct cpumask *cpumask);
- int dev_pm_opp_sync_regulators(struct device *dev);
- int dev_pm_opp_sync(struct device *dev);
-+struct dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev);
- #else
- static inline struct opp_table *dev_pm_opp_get_opp_table(struct device *dev)
- {
-@@ -440,6 +441,11 @@ static inline int dev_pm_opp_sync(struct device *dev)
- 	return -EOPNOTSUPP;
- }
- 
-+static struct inline dev_pm_opp *dev_pm_opp_from_clk_rate(struct device *dev)
-+{
-+	return ERR_PTR(-EOPNOTSUPP);
-+}
-+
- #endif		/* CONFIG_PM_OPP */
- 
- #if defined(CONFIG_PM_OPP) && defined(CONFIG_OF)
--- 
+> +
+> +	writel_relaxed(PORT_INT_LINK_UP | PORT_INT_LINK_DOWN |
+> +		       PORT_INT_AF_TIMEOUT | PORT_INT_REQADDR_GT32 |
+> +		       PORT_INT_MSI_ERR | PORT_INT_MSI_BAD_DATA |
+> +		       PORT_INT_CPL_ABORT | PORT_INT_CPL_TIMEOUT | (1 << 26),
+> +		       port + PORT_INTSTAT);
 
+My suggestion would be to introduce a #define PORT_INT_DEFAULT for
+that collection of bits and use ~PORT_INT_DEFAULT in the first write
+and PORT_INT_DEFAULT in the latter.
+
+Wonder if we can figure out what bit 26 means.  Or maybe we don't
+really need to enable that interrupt and can forget about it?  The
+Corellium code doesn't handle that bit in its interrupt handler, so
+unless there is some magic going on we should be able to simply ignore
+it.
+
+> +
+> +	/* Flush writes and enable the link */
+> +	dma_wmb();
+> +	writel_relaxed(PORT_LTSSMCTL_START, port + PORT_LTSSMCTL);
+> +
+> +	return 0;
+> +}
+> +
+> +static int apple_m1_pci_init(struct pci_config_window *cfg)
+> +{
+> +	struct device *dev = cfg->parent;
+> +	struct platform_device *platform = to_platform_device(dev);
+> +
+> +	struct apple_pcie *pcie;
+> +	struct device_node *of_port;
+> +	int ret, i;
+> +
+> +	pcie = devm_kzalloc(dev, sizeof(*pcie), GFP_KERNEL);
+> +	if (!pcie)
+> +		return -ENOMEM;
+> +
+> +	pcie->dev = dev;
+> +
+> +	mutex_init(&pcie->lock);
+> +
+> +	pcie->rc = devm_platform_ioremap_resource(platform, 1);
+> +
+> +	if (IS_ERR(pcie->rc))
+> +		return -ENODEV;
+> +
+> +	i = 0;
+> +
+> +	for_each_child_of_node(dev->of_node, of_port) {
+> +		struct gpio_desc *reset;
+> +
+> +		reset = gpiod_get_from_of_node(of_port, "reset-gpios", 0,
+> +					       GPIOD_OUT_LOW, "#PERST");
+> +		if (IS_ERR(reset))
+> +			return PTR_ERR(reset);
+> +
+> +		ret = apple_pcie_setup_port(pcie, reset, i);
+> +
+> +		if (ret) {
+> +			dev_err(pcie->dev, "Port %u setup fail: %d\n", i, ret);
+> +			return ret;
+> +		}
+> +
+> +		++i;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pci_ecam_ops apple_m1_cfg_ecam_ops = {
+> +	.init		= apple_m1_pci_init,
+> +	.pci_ops	= {
+> +		.map_bus	= pci_ecam_map_bus,
+> +		.read		= pci_generic_config_read,
+> +		.write		= pci_generic_config_write,
+> +	}
+> +};
+> +
+> +static const struct of_device_id apple_pci_of_match[] = {
+> +	{ .compatible = "apple,pcie", .data = &apple_m1_cfg_ecam_ops },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, apple_pci_of_match);
+> +
+> +static struct platform_driver apple_pci_driver = {
+> +	.driver = {
+> +		.name = "pcie-apple",
+> +		.of_match_table = apple_pci_of_match,
+> +	},
+> +	.probe = pci_host_common_probe,
+> +	.remove = pci_host_common_remove,
+> +};
+> +module_platform_driver(apple_pci_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.30.2
+> 
+> 
