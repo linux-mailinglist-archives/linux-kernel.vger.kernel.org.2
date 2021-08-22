@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFA13F3E3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E123F3E49
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 09:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhHVHPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 03:15:37 -0400
-Received: from smtprelay0037.hostedemail.com ([216.40.44.37]:51066 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229934AbhHVHPg (ORCPT
+        id S231282AbhHVH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 03:26:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33328 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhHVH0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 03:15:36 -0400
-Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 3553D18037BD8;
-        Sun, 22 Aug 2021 07:14:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 09A5F1D42F4;
-        Sun, 22 Aug 2021 07:14:52 +0000 (UTC)
-Message-ID: <2e0bea3524268f96a39506b3e5ea9f738c6aab27.camel@perches.com>
-Subject: Re: [PATCH v1 1/1] ray_cs: use %*ph to print small buffer
-From:   Joe Perches <joe@perches.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Date:   Sun, 22 Aug 2021 00:14:51 -0700
-In-Reply-To: <877dgerrqw.fsf@codeaurora.org>
-References: <20210712142943.23981-1-andriy.shevchenko@linux.intel.com>
-         <20210821171432.B996DC4360C@smtp.codeaurora.org>
-         <293b9231af8b36bb9a24a11c689d33c7e89c3c4e.camel@perches.com>
-         <877dgerrqw.fsf@codeaurora.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Sun, 22 Aug 2021 03:26:34 -0400
+Date:   Sun, 22 Aug 2021 07:25:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629617152;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BDaJ8gq1y2CCb9HbdovkJsuoTT2Ott+UnFGCWMcbZ1s=;
+        b=j8J2xDUjqMbDZ8tLD4Ns7KzQnGOC6+VfXjaJpfd5g26eM66Cu75J7Wzn5aBzcoRKIr3CZw
+        qHrZrUBI10rNNesoqjvvknfdjL6nh1NxGsFWcO+T2KS676JEH/mtnn/pT3zJtc/zhkVN5H
+        mMEjdQ+BQ3zqfWyIqdB7JWkeFGoctRxRTBYVDsKNf3tLMHNouvIQ5FcjpB18u8najg+jUW
+        utdBJ1mfmBNy2zEoOj0BFALFXKf/MWjotDth4cGZ/UFIeHqaoEMqWPcxwUoDosrXGTQkJg
+        3QKotZ8uGNPCkQ2TwzuUOfm9BCiDBlRn4uY5ftnEcleyx21RbhdDt7+E789LqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629617152;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BDaJ8gq1y2CCb9HbdovkJsuoTT2Ott+UnFGCWMcbZ1s=;
+        b=2mJQQJ9rWYEBE+ORbmghjg6TfLrGLBac0hveQpFvheUL0Pu7xehOS/xacJbwGUSZ+GknMY
+        +xk8xA070kmmhmBg==
+From:   "tip-bot2 for Babu Moger" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/resctrl: Fix a maybe-uninitialized build
+ warning treated as error
+Cc:     Terry Bowman <Terry.Bowman@amd.com>,
+        kernel test robot <lkp@intel.com>,
+        Babu Moger <babu.moger@amd.com>, Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu>
+References: <162949631908.23903.17090272726012848523.stgit@bmoger-ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 09A5F1D42F4
-X-Stat-Signature: ybkgy97sw4z5qypncs8n4fbpy78rcu97
-X-Spam-Status: No, score=-1.59
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+yJGoCh/tebKAdOx3pd0yDij8KagAZkmo=
-X-HE-Tag: 1629616492-286889
+Message-ID: <162961715100.25758.14486039318102865041.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-08-22 at 08:08 +0300, Kalle Valo wrote:
-> Joe Perches <joe@perches.com> writes:
-> 
-> > On Sat, 2021-08-21 at 17:14 +0000, Kalle Valo wrote:
-> > > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > 
-> > > > Use %*ph format to print small buffer as hex string.
-> > > > 
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > 
-> > > Patch applied to wireless-drivers-next.git, thanks.
-> > > 
-> > > 502213fd8fca ray_cs: use %*ph to print small buffer
-> > > 
-> > 
-> > There's one more of these in the same file but it's in an #ifdef 0 block...
-> 
-> I would rather remove the whole ifdef 0 block, patches welcome.
-> 
+The following commit has been merged into the x86/urgent branch of tip:
 
-It'd probably take you about 20 seconds if you do it yourself.
+Commit-ID:     527f721478bce3f49b513a733bacd19d6f34b08c
+Gitweb:        https://git.kernel.org/tip/527f721478bce3f49b513a733bacd19d6f3=
+4b08c
+Author:        Babu Moger <babu.moger@amd.com>
+AuthorDate:    Fri, 20 Aug 2021 16:52:42 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sun, 22 Aug 2021 09:11:29 +02:00
 
-$ git grep -P -n '^\s*#\s*if\s+0\b' drivers/net/wireless/ray_cs.c
-drivers/net/wireless/ray_cs.c:637:#if 0
-drivers/net/wireless/ray_cs.c:2281:#if 0
-drivers/net/wireless/ray_cs.c:2341:#if 0
+x86/resctrl: Fix a maybe-uninitialized build warning treated as error
 
-Rather a bit more time if you want to do the whole kernel...
+The recent commit
 
-$ git grep -P -n '^\s*#\s*if\s+0\b' | wc -l
-1558
+  064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
 
+caused a RHEL build failure with an uninitialized variable warning
+treated as an error because it removed the default case snippet.
 
+The RHEL Makefile uses '-Werror=3Dmaybe-uninitialized' to force possibly
+uninitialized variable warnings to be treated as errors. This is also
+reported by smatch via the 0day robot.
 
+The error from the RHEL build is:
+
+  arch/x86/kernel/cpu/resctrl/monitor.c: In function =E2=80=98__mon_event_cou=
+nt=E2=80=99:
+  arch/x86/kernel/cpu/resctrl/monitor.c:261:12: error: =E2=80=98m=E2=80=99 ma=
+y be used
+  uninitialized in this function [-Werror=3Dmaybe-uninitialized]
+    m->chunks +=3D chunks;
+              ^~
+
+The upstream Makefile does not build using '-Werror=3Dmaybe-uninitialized'.
+So, the problem is not seen there. Fix the problem by putting back the
+default case snippet.
+
+ [ bp: note that there's nothing wrong with the code and other compilers
+   do not trigger this warning - this is being done just so the RHEL compiler
+   is happy. ]
+
+Fixes: 064855a69003 ("x86/resctrl: Fix default monitoring groups reporting")
+Reported-by: Terry Bowman <Terry.Bowman@amd.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/162949631908.23903.17090272726012848523.stgit=
+@bmoger-ubuntu
+---
+ arch/x86/kernel/cpu/resctrl/monitor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resc=
+trl/monitor.c
+index 57e4bb6..8caf871 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -304,6 +304,12 @@ static u64 __mon_event_count(u32 rmid, struct rmid_read =
+*rr)
+ 	case QOS_L3_MBM_LOCAL_EVENT_ID:
+ 		m =3D &rr->d->mbm_local[rmid];
+ 		break;
++	default:
++		/*
++		 * Code would never reach here because an invalid
++		 * event id would fail the __rmid_read.
++		 */
++		return RMID_VAL_ERROR;
+ 	}
+=20
+ 	if (rr->first) {
