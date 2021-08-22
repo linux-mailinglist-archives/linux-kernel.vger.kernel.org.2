@@ -2,204 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B9A3F41BA
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 23:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0663F41BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 23:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhHVV14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 17:27:56 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:37867 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232539AbhHVV1z (ORCPT
+        id S233232AbhHVVbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 17:31:33 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46413 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232539AbhHVVbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 17:27:55 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d51 with ME
-        id klTC250053riaq203lTCv3; Sun, 22 Aug 2021 23:27:12 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 23:27:12 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] drm/r128: switch from 'pci_' to 'dma_' API
-Date:   Sun, 22 Aug 2021 23:27:10 +0200
-Message-Id: <46ccdd7bffdba1273a1ebb3d6cd2fbe186e0795a.1629667572.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 17:31:32 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-127-MHgroe1XPKuE3JQrTB65_A-1; Sun, 22 Aug 2021 22:30:46 +0100
+X-MC-Unique: MHgroe1XPKuE3JQrTB65_A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Sun, 22 Aug 2021 22:30:45 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Sun, 22 Aug 2021 22:30:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Larry Finger' <Larry.Finger@lwfinger.net>,
+        Aakash Hemadri <aakashhemadri123@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>
+CC:     "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 2/5] staging: r8188eu: cast to restricted __be32
+Thread-Topic: [PATCH v2 2/5] staging: r8188eu: cast to restricted __be32
+Thread-Index: AQHXlgydrPam5lbK9UGqx5Eu5gVI9auADXtg
+Date:   Sun, 22 Aug 2021 21:30:45 +0000
+Message-ID: <05aafb94be1b4e609250313709cd668d@AcuMS.aculab.com>
+References: <cover.1629360917.git.aakashhemadri123@gmail.com>
+ <602aefc30b0d979dc6e402d52da2f096ea5c67cf.1629360917.git.aakashhemadri123@gmail.com>
+ <4be5c5fa-c3fd-8c86-e904-8e2e60173380@lwfinger.net>
+In-Reply-To: <4be5c5fa-c3fd-8c86-e904-8e2e60173380@lwfinger.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
-
-The patch has been generated with the coccinelle script below.
-
-It has been compile tested.
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/gpu/drm/r128/ati_pcigart.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/r128/ati_pcigart.c b/drivers/gpu/drm/r128/ati_pcigart.c
-index 0ecccf25a3c7..26001c2de9e9 100644
---- a/drivers/gpu/drm/r128/ati_pcigart.c
-+++ b/drivers/gpu/drm/r128/ati_pcigart.c
-@@ -99,7 +99,8 @@ int drm_ati_pcigart_cleanup(struct drm_device *dev, struct drm_ati_pcigart_info
- 		for (i = 0; i < pages; i++) {
- 			if (!entry->busaddr[i])
- 				break;
--			pci_unmap_page(pdev, entry->busaddr[i], PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-+			dma_unmap_page(&pdev->dev, entry->busaddr[i],
-+				       PAGE_SIZE, DMA_BIDIRECTIONAL);
- 		}
- 
- 		if (gart_info->gart_table_location == DRM_ATI_GART_MAIN)
-@@ -134,7 +135,7 @@ int drm_ati_pcigart_init(struct drm_device *dev, struct drm_ati_pcigart_info *ga
- 	if (gart_info->gart_table_location == DRM_ATI_GART_MAIN) {
- 		DRM_DEBUG("PCI: no table in VRAM: using normal RAM\n");
- 
--		if (pci_set_dma_mask(pdev, gart_info->table_mask)) {
-+		if (dma_set_mask(&pdev->dev, gart_info->table_mask)) {
- 			DRM_ERROR("fail to set dma mask to 0x%Lx\n",
- 				  (unsigned long long)gart_info->table_mask);
- 			ret = -EFAULT;
-@@ -173,9 +174,9 @@ int drm_ati_pcigart_init(struct drm_device *dev, struct drm_ati_pcigart_info *ga
- 	gart_idx = 0;
- 	for (i = 0; i < pages; i++) {
- 		/* we need to support large memory configurations */
--		entry->busaddr[i] = pci_map_page(pdev, entry->pagelist[i],
--						 0, PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
--		if (pci_dma_mapping_error(pdev, entry->busaddr[i])) {
-+		entry->busaddr[i] = dma_map_page(&pdev->dev, entry->pagelist[i],
-+						 0, PAGE_SIZE, DMA_BIDIRECTIONAL);
-+		if (dma_mapping_error(&pdev->dev, entry->busaddr[i])) {
- 			DRM_ERROR("unable to map PCIGART pages!\n");
- 			drm_ati_pcigart_cleanup(dev, gart_info);
- 			address = NULL;
--- 
-2.30.2
+RnJvbTogTGFycnkgRmluZ2VyDQo+IFNlbnQ6IDIwIEF1Z3VzdCAyMDIxIDIyOjQ1DQo+IA0KPiBP
+biA4LzE5LzIxIDM6MTcgQU0sIEFha2FzaCBIZW1hZHJpIHdyb3RlOg0KPiA+IEZpeCBzcGFyc2Ug
+d2FybmluZzoNCj4gPj4gcnR3X2JyX2V4dC5jOjgzNjo1NDogd2FybmluZzogY2FzdCB0byByZXN0
+cmljdGVkIF9fYmUzMg0KPiA+DQo+ID4gVW5uZWNlc3NhcnkgZG91YmxlIGNhc3QsIHJlbW92ZSB0
+aGVtLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWFrYXNoIEhlbWFkcmkgPGFha2FzaGhlbWFk
+cmkxMjNAZ21haWwuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9zdGFnaW5nL3I4MTg4ZXUv
+Y29yZS9ydHdfYnJfZXh0LmMgfCAyICstDQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3N0YWdp
+bmcvcjgxODhldS9jb3JlL3J0d19icl9leHQuYyBiL2RyaXZlcnMvc3RhZ2luZy9yODE4OGV1L2Nv
+cmUvcnR3X2JyX2V4dC5jDQo+ID4gaW5kZXggNDA0ZmE4OTA0ZTQ3Li42YTA0NjJjZTYyMzAgMTAw
+NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zdGFnaW5nL3I4MTg4ZXUvY29yZS9ydHdfYnJfZXh0LmMN
+Cj4gPiArKysgYi9kcml2ZXJzL3N0YWdpbmcvcjgxODhldS9jb3JlL3J0d19icl9leHQuYw0KPiA+
+IEBAIC02NzEsNyArNjcxLDcgQEAgdm9pZCBkaGNwX2ZsYWdfYmNhc3Qoc3RydWN0IGFkYXB0ZXIg
+KnByaXYsIHN0cnVjdCBza19idWZmICpza2IpDQo+ID4gICAJCQkJICAgICh1ZHBoLT5kZXN0ID09
+IF9fY29uc3RhbnRfaHRvbnMoU0VSVkVSX1BPUlQpKSkgeyAvKiAgREhDUCByZXF1ZXN0ICovDQo+
+ID4gICAJCQkJCXN0cnVjdCBkaGNwTWVzc2FnZSAqZGhjcGggPQ0KPiA+ICAgCQkJCQkJKHN0cnVj
+dCBkaGNwTWVzc2FnZSAqKSgoc2l6ZV90KXVkcGggKyBzaXplb2Yoc3RydWN0IHVkcGhkcikpOw0K
+PiA+IC0JCQkJCXUzMiBjb29raWUgPSBiZTMyX3RvX2NwdSgoX19iZTMyKWRoY3BoLT5jb29raWUp
+Ow0KPiA+ICsJCQkJCXUzMiBjb29raWUgPSBkaGNwaC0+Y29va2llOw0KPiA+DQo+ID4gICAJCQkJ
+CWlmIChjb29raWUgPT0gREhDUF9NQUdJQykgeyAvKiAgbWF0Y2ggbWFnaWMgd29yZCAqLw0KPiA+
+ICAgCQkJCQkJaWYgKCEoZGhjcGgtPmZsYWdzICYgaHRvbnMoQlJPQURDQVNUX0ZMQUcpKSkgew0K
+PiA+DQo+IA0KPiBUaGlzIHBhdGNoIGlzIHdyb25nLiBBbGwgdGhlIGRvY3VtZW50YXRpb24gSSBj
+b3VsZCBmaW5kIHRlbGxzIG1lIHRoYXQgdGhlDQo+IG11bHRpLWJ5dGUgZW50cmllcyBpbiBkaGNw
+aCBhcmUgYmlnLWVuZGlhbiwgdGh1cyB0aGUgbmV3IGxpbmUgc2hvdWxkIHJlYWQ6DQo+IA0KPiAJ
+CQkJCXUzMiBjb29raWUgPSBiZTMyX3RvX2NwdShkaGNwaC0+Y29va2llKTsNCg0KTW9kdWxvIGFu
+eXRoaW5nIHRoYXQgcmVhbGx5IG1lYW5zIGl0IHNob3VsZCBnZXRfdW5hbGlnbmVkX2JlMzIoKS4N
+Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
+LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
+OiAxMzk3Mzg2IChXYWxlcykNCg==
 
