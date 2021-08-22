@@ -2,77 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BD23F3F77
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910593F3F79
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhHVNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 09:24:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230495AbhHVNYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 09:24:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB99A61354;
-        Sun, 22 Aug 2021 13:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629638643;
-        bh=+0KLb9o630gwsAklksMT+OiAbRBsvMLZHD8SBqtnUus=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iTpGkQGBW0QaKllQHFS84RT2heM9sXV/6IKcYuEeJcpP02OJpX/7OlimUA8o/bntn
-         z9xstex+4bb0M0IhMs3sEkvM+NKX9/pW8HtJd3rm8e6/jrY7bHWzoOQsz4vDveyQko
-         W/BYR1/Ii6BM78f1eq2XZeuI/BQIz8URji4HTqViv8nOAzMjuw0FMzBYCXn8Q+UZK+
-         79NvwGYIxGRevspoJ/xRpPP0yegpKafCjsAAv+LFzzRlhLEpoN4UIZE6KEOYQb+ZU5
-         bNTBfyPm51Ndu0dybfJtdkmPqEeepwuqUAL2NwZXXGjhkWy0D8aojo0K7kGSPXivf1
-         /LREEZ8gHGi2A==
-Received: by mail-oo1-f54.google.com with SMTP id t2-20020a4ae9a2000000b0028c7144f106so3447283ood.6;
-        Sun, 22 Aug 2021 06:24:03 -0700 (PDT)
-X-Gm-Message-State: AOAM532DqJNXpOm1HCboIupGBctodFbi8Wv0wGek20Q6sR0V2SOmqmNN
-        xpBViYvUi1R9uETBivnuMD8ZJrxSDOg+6p57oFc=
-X-Google-Smtp-Source: ABdhPJyFgHF/pYD3PAz8sWJVS2fTtBUpAQY87RdiATdCa+OOpC4w2u+fSSW6TcgHyDZxt+I7QmDh7PTmPTldhDarXQ4=
-X-Received: by 2002:a4a:dfac:: with SMTP id k12mr22727674ook.41.1629638643184;
- Sun, 22 Aug 2021 06:24:03 -0700 (PDT)
+        id S232311AbhHVN0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 09:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhHVN0R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 09:26:17 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AE6C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 06:25:36 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id u1so8841281wmm.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 06:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kZw4V2Zva7YZ4ZIBobOrnt2elWvFQ0nGG2fMiXvkreg=;
+        b=e9MHF138iOszSWiu/z/oFHbPB0n6q7aUnWysxNFTpiW0GA0/SR5eQIt5KlXXoiQPhT
+         6KGTYbb6npHFiiMCwjjA2sNzdOBvnrDPEIFQTG+jyH7eKuFUKBUXE2zaBC1sbiOzMJ23
+         UtcrQckzLt0P19mZbYZWm9iMqZ/e/1xp/DhhyifO/nKfeiX0OK5YCcVnMaoxr+fkhtMI
+         LJ9M7a03BVa2wkn0sY9ppjg7HYJNiZCSKzaUpyiZAOVA3HaRiZTHwZ2Ej2Q2TEtWDptZ
+         2lmgarcnDev9X3cuhI+hpBuDIOATfmW101pBYpk59vjwcdbZda0hbRTatIVxczdRwcxk
+         Sq5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kZw4V2Zva7YZ4ZIBobOrnt2elWvFQ0nGG2fMiXvkreg=;
+        b=Px4D8t9rhNJmUyBL/ybbxjdeYAgJY3+gWmPGGE8TgJnZsAyPOJnw43jYmpQZFt/Skq
+         9wvd6Ii65gEH0ZOxgaLmox6Hvl0N8kVGuYaRBo+KfWz872Dg7AAMN8g8ZRW8IpDD4M7P
+         G9iUzOOidD5RQUduvlH660xAnhPNwykndMl8rHiUnsl1TkmYkYxOklztkmqevTIPIjL6
+         duDLg5kurgmKymzw0pAXvLAd+rI7c5E934OMX/MLBr0dc40Wt1VmOi6PWCE8OKrAebAL
+         JfrMZbyu747ce8KONOiXEUl/dMX/X14ADm1W/VXxQedbihmtDxe2OP2CBYy+sh0k61bh
+         uaPw==
+X-Gm-Message-State: AOAM5329MA36KKNm/UtloFF49ETWR6eVnNB6d3HgGh5u9Z3SLkIk/0fN
+        rrX01kja18yeYahEjFuHeAiH9HqOyEw=
+X-Google-Smtp-Source: ABdhPJzJD/D5Vd4j8FYUKzHj6M0sF8kJAvRDQicS2NBxK4KpfLL6TCNaByg7u9S+h/wHX8gE29pLWA==
+X-Received: by 2002:a05:600c:4656:: with SMTP id n22mr8006302wmo.74.1629638734921;
+        Sun, 22 Aug 2021 06:25:34 -0700 (PDT)
+Received: from ?IPv6:2a02:8108:96c0:3b88::687e? ([2a02:8108:96c0:3b88::687e])
+        by smtp.gmail.com with ESMTPSA id q11sm3747298wrx.85.2021.08.22.06.25.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 06:25:34 -0700 (PDT)
+Subject: Re: [PATCH 08/10] staging: r8188eu: clean up the usb_writeN
+To:     Martin Kaiser <martin@kaiser.cx>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210821164859.4351-1-martin@kaiser.cx>
+ <20210821164859.4351-8-martin@kaiser.cx>
+From:   Michael Straube <straube.linux@gmail.com>
+Message-ID: <6593f24b-8986-df5f-e2ba-5358360939df@gmail.com>
+Date:   Sun, 22 Aug 2021 15:24:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <YQ0Qm+Xs1g/7Eant@fedora> <20210809141027.860850-1-chouhan.shreyansh630@gmail.com>
- <20210820083111.GA28484@gondor.apana.org.au> <CAMj1kXGMPimX0_dR_kLuzZjuJK9rM=uCpRDtoJq0UjWq12M10A@mail.gmail.com>
- <20210820125315.GB28484@gondor.apana.org.au>
-In-Reply-To: <20210820125315.GB28484@gondor.apana.org.au>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 22 Aug 2021 15:23:52 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGCtH2V23S+b=dBj_owxjbhpnarOzZxjfjRM38Wt2XFdg@mail.gmail.com>
-Message-ID: <CAMj1kXGCtH2V23S+b=dBj_owxjbhpnarOzZxjfjRM38Wt2XFdg@mail.gmail.com>
-Subject: Re: [PATCH] crypto: xts_crypt() return if walk.nbytes is 0
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzbot+20191dc583eff8602d2d@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210821164859.4351-8-martin@kaiser.cx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 at 14:53, Herbert Xu <herbert@gondor.apana.org.au> wrote:
->
-> On Fri, Aug 20, 2021 at 01:14:52PM +0200, Ard Biesheuvel wrote:
-> >
-> > In spite of that, I have a slight preference for this version, given
-> > that it makes it obvious that we bail on two separate conditions:
-> > - an error has occurred
-> > - no error has occurred but the resulting walk is empty
-> >
-> > Testing walk.nbytes only needlessly obfuscates the code, as we need to
-> > return 'err' in the end anyway.
->
-> I disagree, this is how most skcipher walkers are structured, they
-> never explicitly test on err and only terminate the loop when
-> walk->nbytes hits zero, in which case err is returned as is.
->
-> I don't see why this particular skcipher walker should deviate
-> from that paradigm.  In fact it is exactly that deviation that
-> caused the bug in the first instance.
->
+On 8/21/21 6:48 PM, Martin Kaiser wrote:
+> Remove unnecessary variables, check the length.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>   drivers/staging/r8188eu/hal/usb_ops_linux.c | 15 +++++----------
+>   1 file changed, 5 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index e01f1ac19596..5408383ccec3 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -151,20 +151,15 @@ static int usb_write32(struct intf_hdl *pintfhdl, u32 addr, u32 val)
+>   
+>   static int usb_writeN(struct intf_hdl *pintfhdl, u32 addr, u32 length, u8 *pdata)
+>   {
+> -	u16 wvalue;
+> -	u16 len;
+> +	u16 wvalue = (u16)(addr & 0x0000ffff);
+>   	u8 buf[VENDOR_CMD_MAX_DATA_LEN] = {0};
+> -	int ret;
+> -
+>   
+> +	if (length > VENDOR_CMD_MAX_DATA_LEN)
+> +		return -EINVAL;
+>   
+> -	wvalue = (u16)(addr & 0x0000ffff);
+> -	len = length;
+> -	memcpy(buf, pdata, len);
+> +	memcpy(buf, pdata, length);
 
-Fair enough.
+Hi Martin, shouldn't this be
+
+memcpy(buf, pdata, (length & 0xffff));
+
+>   
+> -	ret = usbctrl_vendorreq(pintfhdl, wvalue, buf, len, REALTEK_USB_VENQT_WRITE);
+> -
+> -	return ret;
+> +	return usbctrl_vendorreq(pintfhdl, wvalue, buf, (length & 0xffff), REALTEK_USB_VENQT_WRITE);
+>   }
+>   
+>   static void interrupt_handler_8188eu(struct adapter *adapt, u16 pkt_len, u8 *pbuf)
+> 
+
+Regards,
+Michael
