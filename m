@@ -2,238 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF913F423C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 00:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA303F423E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbhHVWv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 18:51:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30959 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233288AbhHVWvs (ORCPT
+        id S231841AbhHVXDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 19:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhHVXDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 18:51:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629672666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mp0rc16S4eTAPZsRAu3+MY5WgJS5V75jZ2OSKJ8RDD4=;
-        b=b85gSU3F7K3Lh6waNivp0zEbkFaEipOByphx/fthH3hRJkaSQC7c0IbmitBfCHkrlNtirV
-        q2fsa7kXcx3CSlBDnt7Nmy52Q159Z8PRtDsEXbWM8bUMfMed4TWLnI4KvOw57gwF55Wxj9
-        lYGsfDPZo2G5oQM17M9skeyuA/96uts=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-7-zxS1W5MLmD0kfIbzrUqg-1; Sun, 22 Aug 2021 18:51:02 -0400
-X-MC-Unique: 7-zxS1W5MLmD0kfIbzrUqg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACFA23482F;
-        Sun, 22 Aug 2021 22:51:01 +0000 (UTC)
-Received: from jlaw-desktop.redhat.com (unknown [10.22.32.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B9DAF60C9F;
-        Sun, 22 Aug 2021 22:51:00 +0000 (UTC)
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-To:     x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Andy Lavr <andy.lavr@gmail.com>
-Subject: [PATCH v3 2/2] objtool: remove redundant len value from struct section
-Date:   Sun, 22 Aug 2021 18:50:37 -0400
-Message-Id: <20210822225037.54620-3-joe.lawrence@redhat.com>
-In-Reply-To: <20210822225037.54620-1-joe.lawrence@redhat.com>
-References: <20210822225037.54620-1-joe.lawrence@redhat.com>
+        Sun, 22 Aug 2021 19:03:22 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C02C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 16:02:41 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u3so33025005ejz.1
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 16:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qcmFYHyHdQbe2MpjDtDCFg4l/AD/ofCMkrpwmvBTkbM=;
+        b=c6V8uuGLQIAjUx85tmkbOdNlFWOtz4/nWFX5se86F0QNoOx7l4o9Y6caFbp00/t3FG
+         Z8EI6eTTfBQfVYbfsdUHrrSCIOjOcBAt1FpVWDTgi5ziiOuF2DT1VRbS5RLaat4AO8Tb
+         TwF7k0QOKuIgfmSj1f+m3Yk2KkpAQ9deMjQ73RpZbz5+yC/KXIEoe+aVmYglNouc4AFQ
+         Z7zTWpXA76737ZZa8TSEo1nWbSBUD28Om+g5W+qBxuWzMyrDZwgF2zrsV3kF8M0IF+/O
+         muGsGyMe5BlVTbZdnpIiwOENvGv0w5qnu4WeIGfM/BUmyzkpGoUON43yqASq5fN2eaAV
+         PRlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qcmFYHyHdQbe2MpjDtDCFg4l/AD/ofCMkrpwmvBTkbM=;
+        b=IqlY564xHTtcVT8WhFiq4rHxTdFIhf/ra3msOv4Cxi/0UTF4Kxvy/jER/fOh8VhlLv
+         KL/rrED0o3GeesPS67+fqZImoiIOXNAGdjf5WYgkKuYliYdCPE/sFaZI5RJ69NK4afrx
+         st35TeufFEDks67aC3nS8KJMhzNnbwkszhRYWYViEVIWM+lTk/1sbgEqGz0nW5+NZ59Q
+         VmCW/6s2D+xrNz9SrnaaH1QGK1oj5eI9HdW7BBWeCvApt1iGoVDF2hgzp5RAvwSQM+O2
+         YSMUqNDUUHhy4XnbdDdJYG3T3Bc3yFfW1Txc8lh9Qt1FrW/B3s90JQmETf3pQQytCbBp
+         a6EQ==
+X-Gm-Message-State: AOAM531UhGTqRPfAH8yZBls42t+wiDrUTx1M4jUWpSUrsq2q8dCsYE4z
+        t0UErMEhSP1xfWpqWEuNESQ=
+X-Google-Smtp-Source: ABdhPJywK2uGfORh1Yk871iA1iLoDKfUDx1npShz2yLQVw0CEwV1+SVatwLa/LpiJcUSEtx6ImThxQ==
+X-Received: by 2002:a17:907:9546:: with SMTP id ex6mr11023382ejc.325.1629673359644;
+        Sun, 22 Aug 2021 16:02:39 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id z15sm1684461edr.80.2021.08.22.16.02.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 16:02:39 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev (open list:STAGING SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list),
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH RFC] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+Date:   Mon, 23 Aug 2021 01:02:35 +0200
+Message-Id: <20210822230235.10953-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The section structure already contains sh_size, so just remove the extra
-'len' member that requires extra mirroring and potential confusion.
+Replace usb_control_msg() with the new usb_control_msg_recv() and
+usb_control_msg_send() API of USB Core.
 
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Joe Lawrence <joe.lawrence@redhat.com>
+This patch is an RFC for different reasons:
+
+1) I'm not sure if it is needed: while Greg Kroah-Hartman suggested to 
+use the new API in a message to a thread that was about a series of patches
+submitted by Pavel Skripkin (who decided to not use it), I cannot explain 
+if and why the driver would benefit from this patch.
+2) I have doubts about the sematic of the API I use here, so I'd like to
+know whether or not I'm using them properly.
+3) At the moment I cannot test the driver because I don't have my device
+with me.
+4) This patch could probably lead to a slight change in some lines of
+Pavel's series (for sure in usb_read*()).
+
+I'd like to hear from the Maintainers and other interested people if this
+patch is worth to be considered and, in this case, if there are suggestions
+for the purpose to improve it. 
+
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
- tools/objtool/check.c               | 16 ++++++++--------
- tools/objtool/elf.c                 | 14 ++++++--------
- tools/objtool/include/objtool/elf.h |  1 -
- tools/objtool/orc_gen.c             |  2 +-
- tools/objtool/special.c             |  4 ++--
- 5 files changed, 17 insertions(+), 20 deletions(-)
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e5947fbb9e7a..06b5c164ae93 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -292,7 +292,7 @@ static int decode_instructions(struct objtool_file *file)
- 		    !strcmp(sec->name, ".entry.text"))
- 			sec->noinstr = true;
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 6a0a24acf292..9e290c1cc449 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -15,7 +15,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 	struct adapter	*adapt = pintfhdl->padapter;
+ 	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
+ 	struct usb_device *udev = dvobjpriv->pusbdev;
+-	unsigned int pipe;
++	u8 pipe;
+ 	int status = 0;
+ 	u8 reqtype;
+ 	u8 *pIo_buf;
+@@ -47,19 +47,20 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 		memset(pIo_buf, 0, len);
  
--		for (offset = 0; offset < sec->len; offset += insn->len) {
-+		for (offset = 0; offset < sec->sh.sh_size; offset += insn->len) {
- 			insn = malloc(sizeof(*insn));
- 			if (!insn) {
- 				WARN("malloc failed");
-@@ -307,7 +307,7 @@ static int decode_instructions(struct objtool_file *file)
- 			insn->offset = offset;
- 
- 			ret = arch_decode_instruction(file->elf, sec, offset,
--						      sec->len - offset,
-+						      sec->sh.sh_size - offset,
- 						      &insn->len, &insn->type,
- 						      &insn->immediate,
- 						      &insn->stack_ops);
-@@ -349,9 +349,9 @@ static struct instruction *find_last_insn(struct objtool_file *file,
- {
- 	struct instruction *insn = NULL;
- 	unsigned int offset;
--	unsigned int end = (sec->len > 10) ? sec->len - 10 : 0;
-+	unsigned int end = (sec->sh.sh_size > 10) ? sec->sh.sh_size - 10 : 0;
- 
--	for (offset = sec->len - 1; offset >= end && !insn; offset--)
-+	for (offset = sec->sh.sh_size - 1; offset >= end && !insn; offset--)
- 		insn = find_insn(file, sec, offset);
- 
- 	return insn;
-@@ -389,7 +389,7 @@ static int add_dead_ends(struct objtool_file *file)
- 		insn = find_insn(file, reloc->sym->sec, reloc->addend);
- 		if (insn)
- 			insn = list_prev_entry(insn, list);
--		else if (reloc->addend == reloc->sym->sec->len) {
-+		else if (reloc->addend == reloc->sym->sec->sh.sh_size) {
- 			insn = find_last_insn(file, reloc->sym->sec);
- 			if (!insn) {
- 				WARN("can't find unreachable insn at %s+0x%x",
-@@ -424,7 +424,7 @@ static int add_dead_ends(struct objtool_file *file)
- 		insn = find_insn(file, reloc->sym->sec, reloc->addend);
- 		if (insn)
- 			insn = list_prev_entry(insn, list);
--		else if (reloc->addend == reloc->sym->sec->len) {
-+		else if (reloc->addend == reloc->sym->sec->sh.sh_size) {
- 			insn = find_last_insn(file, reloc->sym->sec);
- 			if (!insn) {
- 				WARN("can't find reachable insn at %s+0x%x",
-@@ -1561,14 +1561,14 @@ static int read_unwind_hints(struct objtool_file *file)
- 		return -1;
- 	}
- 
--	if (sec->len % sizeof(struct unwind_hint)) {
-+	if (sec->sh.sh_size % sizeof(struct unwind_hint)) {
- 		WARN("struct unwind_hint size mismatch");
- 		return -1;
- 	}
- 
- 	file->hints = true;
- 
--	for (i = 0; i < sec->len / sizeof(struct unwind_hint); i++) {
-+	for (i = 0; i < sec->sh.sh_size / sizeof(struct unwind_hint); i++) {
- 		hint = (struct unwind_hint *)sec->data->d_buf + i;
- 
- 		reloc = find_reloc_by_dest(file->elf, sec, i * sizeof(*hint));
-diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
-index 8676c7598728..b18f0055b50b 100644
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -286,10 +286,9 @@ static int read_sections(struct elf *elf)
- 				return -1;
- 			}
- 		}
--		sec->len = sec->sh.sh_size;
- 
- 		if (sec->sh.sh_flags & SHF_EXECINSTR)
--			elf->text_size += sec->len;
-+			elf->text_size += sec->sh.sh_size;
- 
- 		list_add_tail(&sec->list, &elf->sections);
- 		elf_hash_add(section, &sec->hash, sec->idx);
-@@ -734,8 +733,8 @@ static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
- 	data->d_size = strlen(str) + 1;
- 	data->d_align = 1;
- 
--	len = strtab->len;
--	strtab->len += data->d_size;
-+	len = strtab->sh.sh_size;
-+	strtab->sh.sh_size += data->d_size;
- 	strtab->changed = true;
- 
- 	return len;
-@@ -790,9 +789,9 @@ struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
- 	data->d_align = 1;
- 	data->d_type = ELF_T_SYM;
- 
--	sym->idx = symtab->len / sizeof(sym->sym);
-+	sym->idx = symtab->sh.sh_size / sizeof(sym->sym);
- 
--	symtab->len += data->d_size;
-+	symtab->sh.sh_size += data->d_size;
- 	symtab->changed = true;
- 
- 	symtab_shndx = find_section_by_name(elf, ".symtab_shndx");
-@@ -814,7 +813,7 @@ struct symbol *elf_create_undef_symbol(struct elf *elf, const char *name)
- 		data->d_align = 4;
- 		data->d_type = ELF_T_WORD;
- 
--		symtab_shndx->len += 4;
-+		symtab_shndx->sh.sh_size += 4;
- 		symtab_shndx->changed = true;
- 	}
- 
-@@ -855,7 +854,6 @@ struct section *elf_create_section(struct elf *elf, const char *name,
- 	}
- 
- 	sec->idx = elf_ndxscn(s);
--	sec->len = size;
- 	sec->changed = true;
- 
- 	sec->data = elf_newdata(s);
-diff --git a/tools/objtool/include/objtool/elf.h b/tools/objtool/include/objtool/elf.h
-index e34395047530..075d8291b854 100644
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -38,7 +38,6 @@ struct section {
- 	Elf_Data *data;
- 	char *name;
- 	int idx;
--	unsigned int len;
- 	bool changed, text, rodata, noinstr;
- };
- 
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index dc9b7dd314b0..b5865e2450cb 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -204,7 +204,7 @@ int orc_create(struct objtool_file *file)
- 
- 		/* Add a section terminator */
- 		if (!empty) {
--			orc_list_add(&orc_list, &null, sec, sec->len);
-+			orc_list_add(&orc_list, &null, sec, sec->sh.sh_size);
- 			nr++;
- 		}
- 	}
-diff --git a/tools/objtool/special.c b/tools/objtool/special.c
-index bc925cf19e2d..7a0c49421cd8 100644
---- a/tools/objtool/special.c
-+++ b/tools/objtool/special.c
-@@ -159,13 +159,13 @@ int special_get_alts(struct elf *elf, struct list_head *alts)
- 		if (!sec)
- 			continue;
- 
--		if (sec->len % entry->size != 0) {
-+		if (sec->sh.sh_size % entry->size != 0) {
- 			WARN("%s size not a multiple of %d",
- 			     sec->name, entry->size);
- 			return -1;
+ 		if (requesttype == 0x01) {
+-			pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
+ 			reqtype =  REALTEK_USB_VENQT_READ;
++			status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
++						      reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
++						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
++						      GFP_KERNEL);
+ 		} else {
+-			pipe = usb_sndctrlpipe(udev, 0);/* write_out */
+ 			reqtype =  REALTEK_USB_VENQT_WRITE;
+-			memcpy(pIo_buf, pdata, len);
++			status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
++						      reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
++						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
++						      GFP_KERNEL);
  		}
  
--		nr_entries = sec->len / entry->size;
-+		nr_entries = sec->sh.sh_size / entry->size;
- 
- 		for (idx = 0; idx < nr_entries; idx++) {
- 			alt = malloc(sizeof(*alt));
+-		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+-					 reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
+-					 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
+-
+-		if (status == len) {   /*  Success this control transfer. */
++		if (!status) {   /*  Success this control transfer. */
+ 			rtw_reset_continual_urb_error(dvobjpriv);
+ 			if (requesttype == 0x01)
+ 				memcpy(pdata, pIo_buf,  len);
 -- 
-2.26.3
+2.32.0
 
