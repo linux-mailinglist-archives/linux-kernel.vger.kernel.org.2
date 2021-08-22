@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806973F3F60
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 14:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BB73F3F6A
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 15:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhHVMvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 08:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S231723AbhHVNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 09:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbhHVMvU (ORCPT
+        with ESMTP id S230495AbhHVNHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 08:51:20 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DB8C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:50:38 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id s12so901516ljg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 05:50:38 -0700 (PDT)
+        Sun, 22 Aug 2021 09:07:16 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600EEC061575;
+        Sun, 22 Aug 2021 06:06:35 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id e3so5379838qth.9;
+        Sun, 22 Aug 2021 06:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rxmlNdlUfU1P9x2yEO9RufRY6ZMTXEHbwKbvIeBfIWg=;
-        b=QOXny0/osgqA6UzlB1dRo/nj4oBlLuQxkEwHkmznxMXNCBaWVuAjtiWRGbn5epQ3q+
-         vjNZ2vV9Ml3MFux+avJmWxIR8aiVl7+jL8K8Xq+YrbVlP40bmydtjikMhemhLa9LmrLm
-         Q+HRmjfJyALVIYzDjEWx4dbB6rT0UT2r9X65jM7gzdN4b74lhmbpPH3WJGhw+VR3aveO
-         C7U63WMcXmzLDIbzIq9UPS85fCd91X3YV3Tarq+nQDuQlPOKoqhHcrb7jOmnQUXjKOli
-         ymMnOWUi4Y5Je/gnpZV3Awb7/29Qbcad71QN3YKuNx4l9J25ANCr7ktOynDWZ7KVU58g
-         SSfA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AO2vYzEIpFA2ngEOqBjFt3qA4tM8xVi9sIC0rKjgW5Q=;
+        b=t0//sk3C3QSgrB53iNaKT0G4fhoVzKZPu41TosVInwpCL6mohmREGf07eugKZcFbGB
+         4ZUCZHxxokwRcWwpAUy8ic9z10/NbVY/Mfz7kul9QAJZdUBA33faZ7POO12etqta6upD
+         /3Va4EdRGRcyzT1ACFNV4o+oG4LTTKHfBmzfUpJihIXF6WaRJXGRdqjW85xv9VbIDMgA
+         8icU8OXDDjs/gl3MtxH2oB+LleFcx7giGy6OqtsjHwWLmudgHNkahE6lTINM1vvSIrv7
+         yv4lg8SxggHQP+Vy47yK9IRiwA2v1HDzkhpZN91QRkSsOD28KdzwolER1lyRWiUlenn8
+         BOFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rxmlNdlUfU1P9x2yEO9RufRY6ZMTXEHbwKbvIeBfIWg=;
-        b=jDTlQPYa+znscRybL/VHB2sBYYT2l7UL6xf8jwlCd/MhgErigtLsaHMUPuCU7Ew0zc
-         yTMOhr1rmuO9mMd/LJFVEQ4CgIzkvVHNHIsdLblNThVW9N4WrojH4brleY5sdYLOBPrp
-         4ridn9rwHhNozMHUe9ufPqr3ZTqza7M+8l9xqfFBuYn0IYpR2Gmc1CCoIsqNrM4w/4GW
-         NNaxIhsHOm3mtVJjM8dEgp91GR8e+PJwXPLpnpJMgT9BNOhLX6DI2A/j/Uqzpyiyma+/
-         IJ5rzdPeGiLHQTw1p0Jny4fkYKSIVFa1FOd+Wg4XHnEDGDZ6ZB87sldVGmcuiS7865FO
-         RGJg==
-X-Gm-Message-State: AOAM5308LepxW2Z8ELA8usAv5BZiRhR3N1uU8sk/rvvdYyBUoZriKxaR
-        Bq+ovRaoFCP6zrR86jtvV20=
-X-Google-Smtp-Source: ABdhPJwEMmgrzP4gk9QRJw9/Lxj83pvzB66lS/NYtqpAsAqHbk/OwI0irZYb1eiVs9S4hgqnORV6cQ==
-X-Received: by 2002:a2e:a5c6:: with SMTP id n6mr23634756ljp.204.1629636637250;
-        Sun, 22 Aug 2021 05:50:37 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id l2sm1192534lfk.84.2021.08.22.05.50.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 05:50:36 -0700 (PDT)
-Subject: Re: [PATCH RFC 0/3] staging: r8188eu: avoid uninit value bugs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-References: <cover.1629479152.git.paskripkin@gmail.com>
- <10584649.zhyk0TxWeL@localhost.localdomain>
- <ae27d6a0-dc00-459f-7b36-acf7f4c08d72@gmail.com>
- <2327383.5TodInGmHT@localhost.localdomain>
- <435eea22-da31-1ebc-840c-ee9e42b27265@gmail.com> <YSJFhmTs74PUyo8b@kroah.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <e5d189b7-15b2-8cc3-1e84-021dc5ab51af@gmail.com>
-Date:   Sun, 22 Aug 2021 15:50:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AO2vYzEIpFA2ngEOqBjFt3qA4tM8xVi9sIC0rKjgW5Q=;
+        b=tP7xsHWv46XI3JnSbxayKp6LzoXMei5cUcySw03lLGtS+A5L9/aLrXTQVKdpQ/MkQL
+         ZQrIb6d5TLKVDmbFpP+QfUwQrFqu3i/d76T+HSc3NFJAKdno5ZDobPc/uS0YMJM+RQzg
+         ADkYrKXzLe0R0kU5Vty9NXmA4z4Vutr4gBPvEZuXUaOS49nv/ROPy/wAhTZK+Edu+WTK
+         z3oAg/zlCsxgG+Vr9Ek5GpzeZujQiNBnEbkXQyO7TlahSqRrsnmgKf1Dre84yvvbd4u/
+         rwwe+FBq7EZ1oPH4J8A88pchwOFTTpaGEuR6E0eAqu3pU7y2kiNKUV/oYR6az6tr4FQt
+         DXKQ==
+X-Gm-Message-State: AOAM533KFh/fbQeVKW2wFkliTRCxGFm0tJBIk5ANn9/CgTnVeIP3Rk0f
+        ulWA7TGeiszurP51odYF9RlsH0JZYA8=
+X-Google-Smtp-Source: ABdhPJzk/N5szMfprGt82NQeXKqANfdEg2AenBVGEUqhGfhztQaAo+D4SJb/rWfbD+Z2uUUMsiAjSw==
+X-Received: by 2002:ac8:53d8:: with SMTP id c24mr25483905qtq.280.1629637594434;
+        Sun, 22 Aug 2021 06:06:34 -0700 (PDT)
+Received: from localhost ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id l67sm6298675qkd.110.2021.08.22.06.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 06:06:33 -0700 (PDT)
+Date:   Sun, 22 Aug 2021 06:06:30 -0700
+From:   CGEL <cgel.zte@gmail.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     christian.brauner@ubuntu.com, jamorris@linux.microsoft.com,
+        gladkov.alexey@gmail.com, yang.yang29@zte.com.cn, tj@kernel.org,
+        paul.gortmaker@windriver.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] proc: prevent mount proc on same mountpoint in one pid
+ namespace
+Message-ID: <20210822130630.GA39585@www>
+References: <20210821083105.30336-1-yang.yang29@zte.com.cn>
+ <YSEJSKgwNKqGupt/@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <YSJFhmTs74PUyo8b@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSEJSKgwNKqGupt/@zeniv-ca.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/21 3:39 PM, Greg KH wrote:
->> 
->> Yes, but _rtw_read*() == 0 indicates 2 states:
->> 
->> 	1. Error on transfer side
->> 	2. Actual register value is 0
+On Sat, Aug 21, 2021 at 02:10:16PM +0000, Al Viro wrote:
+> On Sat, Aug 21, 2021 at 01:31:05AM -0700, cgel.zte@gmail.com wrote:
+> > From: Yang Yang <yang.yang29@zte.com.cn>
+> > 
+> > Patch "proc: allow to mount many instances of proc in one pid namespace"
+> > aims to mount many instances of proc on different mountpoint, see
+> > tools/testing/selftests/proc/proc-multiple-procfs.c.
+> > 
+> > But there is a side-effects, user can mount many instances of proc on
+> > the same mountpoint in one pid namespace, which is not allowed before.
+> > This duplicate mount makes no sense but wastes memory and CPU, and user
+> > may be confused why kernel allows it.
+> > 
+> > The logic of this patch is: when try to mount proc on /mnt, check if
+> > there is a proc instance mount on /mnt in the same pid namespace. If
+> > answer is yes, return -EBUSY.
+> > 
+> > Since this check can't be done in proc_get_tree(), which call
+> > get_tree_nodev() and will create new super_block unconditionally.
+> > And other nodev fs may faces the same case, so add a new hook in
+> > fs_context_operations.
 > 
-> That's not a good design, it should be fixed.  Note there is the new
-> usb_control_msg_recv() function which should probably be used instead
-> here, to prevent this problem from happening.
-> 
+> NAK.  As attack prevention it's worthless (you can just bind-mount
+> a tmpfs directory between them).  Besides, filesystem does *not*
+> get to decide where it would be mounted.  Especially since it couldn't
+> rely upon that, anyway, what with mount --bind possible *after* it had
+> been initially mounted.
 
-Thank you, Greg, for confirmation. That's was the point why I started to 
-write this series :)
-
-I think, usb_control_msg_recv() won't help us with this problem, since 
-all rtw_read*() functions return an unsigned value now. In future, when 
-driver code will be fixed (ex: a lot of void function, which can fail 
-and leave passed pointer uninitialized) we can move to new usb API and 
-then move driver out of staging :)
-
-
-With regards,
-Pavel Skripkin
+Thanks for your relpy! No doubt anymore.
