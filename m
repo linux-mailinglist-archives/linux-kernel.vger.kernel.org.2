@@ -2,123 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2003F403B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 17:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58F93F4038
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 17:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbhHVPKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 11:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234223AbhHVPKj (ORCPT
+        id S234185AbhHVPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 11:10:34 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:39877 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233009AbhHVPKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 11:10:39 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BD3C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 08:09:58 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id e7so14194992pgk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 08:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YOgOYoU/WJQDwpDThJRPMILCnbZWWqtiYHz7s6Kk7mc=;
-        b=Wpqh136HlhTcg+2T1nVxZ607SGpMeb2Ip34pDKsYx2gHU5C1RA7RUx1n6umM75Wvu+
-         UAWwRWcBfYtarC7wPE8htsYVlFCjC6bsCOkVBDZYl//9kamCfZQcKnI9K2sCvZ4JYW2n
-         A2NhAF3FMHW30uUFWDi24XV4nJWseQR9erNf1Uzsv6U4OWreY41kusi8l3zAwjKwvYCB
-         /tY4sdKmOkHtiQuuMC2wh7g8locaXwC6SJHFfeiy3QjByHuK3NzpwMmH14q7ZMiLRPaE
-         zUnSGBr/nQRNHpdw/AnAW54y8i/AtJCJqxvB4WJI50XmYEbfZNFQ8Kn1WAsDYYtrlmAe
-         7wAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YOgOYoU/WJQDwpDThJRPMILCnbZWWqtiYHz7s6Kk7mc=;
-        b=c6ue068dXVWXBGn8FrhnY/ApIMsKtBlxENIoxcETcqEQfvSUMOtg/2KRBFM5bge3qw
-         PnJqoi8Av954bvDBm7POJeDy0p/qcLX3ENA4z/mawvi35ed78E3TsPWSf9Ju10Jz+Bhs
-         2nAjgZyViLbbj3yUpYo18GzNasVXeqX8YUiZgHJjLL1uPj/rAGevcv+x5MuxGIIVahM8
-         4KVDfS9Iv1aY4NRbPhMp+ueoInJGpFGmfNtK1ynOal4UxQjblMngcx6QiSg/o/9Cuv0P
-         ivEjb3HqLaxyt3VHynDyW+wpbMajRBLjYVHRfHcEJJ9Wt9HdxMz7pgv6yq0Fr78bOWzJ
-         0ZXw==
-X-Gm-Message-State: AOAM530UxfoFA3FAC4JRL1EztM5S3/Xz38pdQIMAruYGocEMVKmVazIq
-        lBNV8Rjb2VNUnTraOQdm6qzoVm9Ec7UBjSn5H/AvnA==
-X-Google-Smtp-Source: ABdhPJx0M1X24GznjRzWwRakyQly5Svp5D4WEOPA7CfMn501vymtkwDC6XGxKiXqI0F+A4Bf3gUCb/vl3pjczQHYSUw=
-X-Received: by 2002:a63:aa43:: with SMTP id x3mr28172377pgo.208.1629644997993;
- Sun, 22 Aug 2021 08:09:57 -0700 (PDT)
+        Sun, 22 Aug 2021 11:10:33 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d74 with ME
+        id kf9q2500B3riaq203f9q96; Sun, 22 Aug 2021 17:09:50 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 17:09:50 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     doshir@vmware.com, pv-drivers@vmware.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] vmxnet3: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 17:09:48 +0200
+Message-Id: <ef30cd7e2d3c14460ff5bc7ba6224d464722e8d9.1629644906.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <1897566.d8lQ4HMSh1@localhost.localdomain> <YSJE6aoH96kh777R@kroah.com>
- <2099975.VbY6Rib6K3@localhost.localdomain>
-In-Reply-To: <2099975.VbY6Rib6K3@localhost.localdomain>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Sun, 22 Aug 2021 16:09:47 +0100
-Message-ID: <CAA=Fs0n9pJSRuC=LQ1WsSziaup8XsSax8cQAySb8jMHBQa4X0A@mail.gmail.com>
-Subject: Re: TODO list for staging/r8188eu
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 22 Aug 2021 at 14:50, Fabio M. De Francesco
-<fmdefrancesco@gmail.com> wrote:
->
-> On Sunday, August 22, 2021 2:36:57 PM CEST Greg Kroah-Hartman wrote:
-> > On Sun, Aug 22, 2021 at 09:41:20AM +0200, Fabio M. De Francesco wrote:
-> > > Dear Larry, Philip,
-> > >
-> > > >From what I understand how the development process works, drivers in
-> staging
-> > >
-> > > should have a to-do list in the TODO file. Please read https://
-> www.kernel.org/
-> > > doc/html/latest/process/2.Process.html?highlight=todo#staging-trees.
-> > >
-> > > Could you (as the maintainers of the r8188eu driver) please compile and
-> > > provide the above mentioned list?
-> >
-> > Why don't you provide an initial list for people to work off of if you
-> > feel it is needed here?
-> >
-> > thanks,
-> >
-> > greg k-h
->
-> Unfortunately I'm not able to tell what is needed to do to have a driver
-> improved so that it can be moved off staging. This work should be better
-> addressed by someone who is much more experienced.
->
-> For example, I read from other drivers TODO lists that cfg80211 and lib80211
-> are required but I don't know what they are.
->
-> Regards,
->
-> Fabio
->
->
->
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Dear Fabio,
+The patch has been generated with the coccinelle script below.
 
-I believe Larry is working on hooking up CFG80211 again (he mentioned
-going quite for a few days to work on it). As for other stuff that
-needs doing, a few things come to mind:
+It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
+'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+This is less verbose.
 
-* Removal of dead code (whether or not this includes the
-debugging/printing macros is a matter of opinion, I would say yes
-personally) such as unusued functions, struct fields, etc.
-* Correction of code styling in the kernel (e.g. there is a lot of camel case).
-* Use of in-kernel functionality and removal of unnecessary wrappers
-where possible.
-* Removal of the HAL layer and migration of its functionality into the
-driver as a whole - this is an important one I would argue.
+The explicit 'err = -EIO;' has been removed because
+'dma_set_mask_and_coherent()' returns 0 or -EIO, so its return code can be
+used directly.
 
-There is likely to be lots of other items not on that list, but that
-would seem to be the basis of a TODO list if we need one?
+It has been compile tested.
 
-Regards,
-Phil
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/vmxnet3/vmxnet3_drv.c | 47 +++++++++++++------------------
+ 1 file changed, 20 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
+index e3c6b7e3bfdd..142f70670f5c 100644
+--- a/drivers/net/vmxnet3/vmxnet3_drv.c
++++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+@@ -314,10 +314,10 @@ vmxnet3_unmap_tx_buf(struct vmxnet3_tx_buf_info *tbi,
+ {
+ 	if (tbi->map_type == VMXNET3_MAP_SINGLE)
+ 		dma_unmap_single(&pdev->dev, tbi->dma_addr, tbi->len,
+-				 PCI_DMA_TODEVICE);
++				 DMA_TO_DEVICE);
+ 	else if (tbi->map_type == VMXNET3_MAP_PAGE)
+ 		dma_unmap_page(&pdev->dev, tbi->dma_addr, tbi->len,
+-			       PCI_DMA_TODEVICE);
++			       DMA_TO_DEVICE);
+ 	else
+ 		BUG_ON(tbi->map_type != VMXNET3_MAP_NONE);
+ 
+@@ -585,7 +585,7 @@ vmxnet3_rq_alloc_rx_buf(struct vmxnet3_rx_queue *rq, u32 ring_idx,
+ 				rbi->dma_addr = dma_map_single(
+ 						&adapter->pdev->dev,
+ 						rbi->skb->data, rbi->len,
+-						PCI_DMA_FROMDEVICE);
++						DMA_FROM_DEVICE);
+ 				if (dma_mapping_error(&adapter->pdev->dev,
+ 						      rbi->dma_addr)) {
+ 					dev_kfree_skb_any(rbi->skb);
+@@ -609,7 +609,7 @@ vmxnet3_rq_alloc_rx_buf(struct vmxnet3_rx_queue *rq, u32 ring_idx,
+ 				rbi->dma_addr = dma_map_page(
+ 						&adapter->pdev->dev,
+ 						rbi->page, 0, PAGE_SIZE,
+-						PCI_DMA_FROMDEVICE);
++						DMA_FROM_DEVICE);
+ 				if (dma_mapping_error(&adapter->pdev->dev,
+ 						      rbi->dma_addr)) {
+ 					put_page(rbi->page);
+@@ -723,7 +723,7 @@ vmxnet3_map_pkt(struct sk_buff *skb, struct vmxnet3_tx_ctx *ctx,
+ 		tbi->map_type = VMXNET3_MAP_SINGLE;
+ 		tbi->dma_addr = dma_map_single(&adapter->pdev->dev,
+ 				skb->data + buf_offset, buf_size,
+-				PCI_DMA_TODEVICE);
++				DMA_TO_DEVICE);
+ 		if (dma_mapping_error(&adapter->pdev->dev, tbi->dma_addr))
+ 			return -EFAULT;
+ 
+@@ -1449,7 +1449,7 @@ vmxnet3_rq_rx_complete(struct vmxnet3_rx_queue *rq,
+ 				new_dma_addr =
+ 					dma_map_single(&adapter->pdev->dev,
+ 						       new_skb->data, rbi->len,
+-						       PCI_DMA_FROMDEVICE);
++						       DMA_FROM_DEVICE);
+ 				if (dma_mapping_error(&adapter->pdev->dev,
+ 						      new_dma_addr)) {
+ 					dev_kfree_skb(new_skb);
+@@ -1467,7 +1467,7 @@ vmxnet3_rq_rx_complete(struct vmxnet3_rx_queue *rq,
+ 				dma_unmap_single(&adapter->pdev->dev,
+ 						 rbi->dma_addr,
+ 						 rbi->len,
+-						 PCI_DMA_FROMDEVICE);
++						 DMA_FROM_DEVICE);
+ 
+ 				/* Immediate refill */
+ 				rbi->skb = new_skb;
+@@ -1546,7 +1546,7 @@ vmxnet3_rq_rx_complete(struct vmxnet3_rx_queue *rq,
+ 				new_dma_addr = dma_map_page(&adapter->pdev->dev,
+ 							    new_page,
+ 							    0, PAGE_SIZE,
+-							    PCI_DMA_FROMDEVICE);
++							    DMA_FROM_DEVICE);
+ 				if (dma_mapping_error(&adapter->pdev->dev,
+ 						      new_dma_addr)) {
+ 					put_page(new_page);
+@@ -1559,7 +1559,7 @@ vmxnet3_rq_rx_complete(struct vmxnet3_rx_queue *rq,
+ 
+ 				dma_unmap_page(&adapter->pdev->dev,
+ 					       rbi->dma_addr, rbi->len,
+-					       PCI_DMA_FROMDEVICE);
++					       DMA_FROM_DEVICE);
+ 
+ 				vmxnet3_append_frag(ctx->skb, rcd, rbi);
+ 
+@@ -1677,13 +1677,13 @@ vmxnet3_rq_cleanup(struct vmxnet3_rx_queue *rq,
+ 			if (rxd->btype == VMXNET3_RXD_BTYPE_HEAD &&
+ 					rq->buf_info[ring_idx][i].skb) {
+ 				dma_unmap_single(&adapter->pdev->dev, rxd->addr,
+-						 rxd->len, PCI_DMA_FROMDEVICE);
++						 rxd->len, DMA_FROM_DEVICE);
+ 				dev_kfree_skb(rq->buf_info[ring_idx][i].skb);
+ 				rq->buf_info[ring_idx][i].skb = NULL;
+ 			} else if (rxd->btype == VMXNET3_RXD_BTYPE_BODY &&
+ 					rq->buf_info[ring_idx][i].page) {
+ 				dma_unmap_page(&adapter->pdev->dev, rxd->addr,
+-					       rxd->len, PCI_DMA_FROMDEVICE);
++					       rxd->len, DMA_FROM_DEVICE);
+ 				put_page(rq->buf_info[ring_idx][i].page);
+ 				rq->buf_info[ring_idx][i].page = NULL;
+ 			}
+@@ -2419,7 +2419,7 @@ vmxnet3_set_mc(struct net_device *netdev)
+ 							&adapter->pdev->dev,
+ 							new_table,
+ 							sz,
+-							PCI_DMA_TODEVICE);
++							DMA_TO_DEVICE);
+ 				if (!dma_mapping_error(&adapter->pdev->dev,
+ 						       new_table_pa)) {
+ 					new_mode |= VMXNET3_RXM_MCAST;
+@@ -2455,7 +2455,7 @@ vmxnet3_set_mc(struct net_device *netdev)
+ 
+ 	if (new_table_pa_valid)
+ 		dma_unmap_single(&adapter->pdev->dev, new_table_pa,
+-				 rxConf->mfTableLen, PCI_DMA_TODEVICE);
++				 rxConf->mfTableLen, DMA_TO_DEVICE);
+ 	kfree(new_table);
+ }
+ 
+@@ -3438,19 +3438,12 @@ vmxnet3_probe_device(struct pci_dev *pdev,
+ 	adapter->rx_ring_size = VMXNET3_DEF_RX_RING_SIZE;
+ 	adapter->rx_ring2_size = VMXNET3_DEF_RX_RING2_SIZE;
+ 
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) == 0) {
+-		if (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) != 0) {
+-			dev_err(&pdev->dev,
+-				"pci_set_consistent_dma_mask failed\n");
+-			err = -EIO;
+-			goto err_set_mask;
+-		}
++	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) == 0) {
+ 		dma64 = true;
+ 	} else {
+-		if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) != 0) {
+-			dev_err(&pdev->dev,
+-				"pci_set_dma_mask failed\n");
+-			err = -EIO;
++		err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
++		if (err) {
++			dev_err(&pdev->dev, "dma_set_mask failed\n");
+ 			goto err_set_mask;
+ 		}
+ 		dma64 = false;
+@@ -3459,7 +3452,7 @@ vmxnet3_probe_device(struct pci_dev *pdev,
+ 	spin_lock_init(&adapter->cmd_lock);
+ 	adapter->adapter_pa = dma_map_single(&adapter->pdev->dev, adapter,
+ 					     sizeof(struct vmxnet3_adapter),
+-					     PCI_DMA_TODEVICE);
++					     DMA_TO_DEVICE);
+ 	if (dma_mapping_error(&adapter->pdev->dev, adapter->adapter_pa)) {
+ 		dev_err(&pdev->dev, "Failed to map dma\n");
+ 		err = -EFAULT;
+@@ -3713,7 +3706,7 @@ vmxnet3_probe_device(struct pci_dev *pdev,
+ 			  adapter->shared, adapter->shared_pa);
+ err_alloc_shared:
+ 	dma_unmap_single(&adapter->pdev->dev, adapter->adapter_pa,
+-			 sizeof(struct vmxnet3_adapter), PCI_DMA_TODEVICE);
++			 sizeof(struct vmxnet3_adapter), DMA_TO_DEVICE);
+ err_set_mask:
+ 	free_netdev(netdev);
+ 	return err;
+@@ -3781,7 +3774,7 @@ vmxnet3_remove_device(struct pci_dev *pdev)
+ 			  sizeof(struct Vmxnet3_DriverShared),
+ 			  adapter->shared, adapter->shared_pa);
+ 	dma_unmap_single(&adapter->pdev->dev, adapter->adapter_pa,
+-			 sizeof(struct vmxnet3_adapter), PCI_DMA_TODEVICE);
++			 sizeof(struct vmxnet3_adapter), DMA_TO_DEVICE);
+ 	free_netdev(netdev);
+ }
+ 
+-- 
+2.30.2
+
