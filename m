@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C7F3F3EB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 10:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C92C3F3EBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 10:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhHVIyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 04:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
+        id S232849AbhHVIzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 04:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhHVIyR (ORCPT
+        with ESMTP id S231147AbhHVIzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 04:54:17 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1455C061575;
-        Sun, 22 Aug 2021 01:53:36 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id d26so824288wrc.0;
-        Sun, 22 Aug 2021 01:53:36 -0700 (PDT)
+        Sun, 22 Aug 2021 04:55:08 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412CEC061575;
+        Sun, 22 Aug 2021 01:54:28 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id t1so13716853pgv.3;
+        Sun, 22 Aug 2021 01:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hWrdUXFFT1hy7MQnE8Mf414YBD13mw+SDcsxULeOOEk=;
-        b=rLgB4VALwSt44QTvaGD+817BpwPkoc8LU+mbN6W3sImV+OQ0RE7v03MbvyvI0qyzAZ
-         5PsS4vEkUI39luGUxGYvw2gWjRelIji6wXOs56I/EZHtVxlhM+wsMFVpeyVKVPvJQO78
-         qT+j6MmOVIzPEBkW4o0xSXVyBVHgHy5Z1kvScY54YyvVOkKndozqD1EBGd//Wtrz2Cyj
-         rV7HkptEjvP1WCPzApY5zLx/jGB6YgnznLJGhBZcIiPXaVxmOR4JibVX3JGzqQkJAO8s
-         q+CFf3WJFdDg0yTDkEFM0Q1CvPtYgf9ZHvcVuFwLQxtswYrPXS3Tf5HgZGI9KVBN6IPd
-         eulg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lvNMyE85L3cDE7yFVWP+Yu8ahoocUDdS5XBLBbQKoCQ=;
+        b=gC1xasEG1/rELLocg8RMv19imcQavXuz2w4Q4dovD6R45I71J/gnu37Jiea+WcOspu
+         zmk1PKFEsOAvHQd1j+Dlrth8IxSrQfsi2ZY2hakNwR3nV6PRptNgHIdhhzyROMV5o+qz
+         IIpS9L/QdcpM+JIZcf2m2O2vE//1D5SA8xWe9bfqGrJYtkGgGriy/vNKXSFWkJWjgMHv
+         0VOFE4lMnGgcUvhW8UvcddRmakEE6vL6Vkrv7BroQ5PQ0sogzETpoAs6Z37AiUvI4vyc
+         g2upKErKYajTg7f4yVElkMq5ZGOfBVvKRruE9r6IGBZG53EiadAqHU9X3jL9O9VRJhO0
+         fhjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hWrdUXFFT1hy7MQnE8Mf414YBD13mw+SDcsxULeOOEk=;
-        b=BNAhnTbB4kM+IpDZAzseiUIkpfALZmBJJAOF6hffsAuEtH+jtwbO6kulYUjPY0YGbV
-         vxXW00/i2F9Rttij8yEQfA3jcDgGkoIcVYqdZC1ON8Hg82zYpVrzH3PmYH+pCfktIZpB
-         mzc/OEraqKmM367/JqgZa9U81o8XcKqsPHm6qUJz9C7IraIK4vmZpdFb8neQoakt/xnr
-         wgPUaJk8qKfWVzQm2BaccCBd4qNiFVM8IegNRcJZQJAjLQJQzyh0KPVGZuEAu89SSYv6
-         CXhemEsmpjxKMdevO1hKoApcHMTJdpP0/yAuKbNZeCyYWqozDDlJePYWLrSM77at2suc
-         RahA==
-X-Gm-Message-State: AOAM5325TNo8SP4xui8BEXyOHANw1DvDyvpVKq5uiKEAZ+aw/AwzVTra
-        RGQ7i+kAMPo7s109K72kUBGRf7sjfauJVw==
-X-Google-Smtp-Source: ABdhPJy+9G/NDjSWeS03fUSf+0DXsM7P8UyIim0rVCaTq5iEuraxkSpc5tou6dJOpdol80OEeomilg==
-X-Received: by 2002:adf:f748:: with SMTP id z8mr7770989wrp.25.1629622414727;
-        Sun, 22 Aug 2021 01:53:34 -0700 (PDT)
-Received: from [192.168.1.22] (amarseille-551-1-7-65.w92-145.abo.wanadoo.fr. [92.145.152.65])
-        by smtp.gmail.com with ESMTPSA id e14sm6620743wrr.6.2021.08.22.01.53.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 01:53:34 -0700 (PDT)
-Subject: Re: [PATCH v2 3/4] PCI/ACPI: Add Broadcom bcm2711 MCFG quirk
-To:     Jeremy Linton <jeremy.linton@arm.com>, linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, nsaenz@kernel.org, bhelgaas@google.com,
-        rjw@rjwysocki.net, lenb@kernel.org, robh@kernel.org, kw@linux.com,
-        sdonthineni@nvidia.com, stefan.wahren@i2se.com,
-        bcm-kernel-feedback-list@broadcom.com, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210819215655.84866-1-jeremy.linton@arm.com>
- <20210819215655.84866-4-jeremy.linton@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <9796674a-5870-135c-2fdc-fb0d5347d7c7@gmail.com>
-Date:   Sun, 22 Aug 2021 10:53:33 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lvNMyE85L3cDE7yFVWP+Yu8ahoocUDdS5XBLBbQKoCQ=;
+        b=M+mKCsZsH7WQEpY2t5hYWTxRloG2ZujPnidNE5Qppkzhb2PTle0fMW0V2UchgYm7ZM
+         ZvsKEVhULQHmHJrwuAbD8/wUrqt2aPxNwsCpf0wz3xwbsZjKZOKDe1dlh0MXsT0+6AGX
+         nYod8hJN5Eh7JpkPN0oovLIbRTDitoZoI+pwEBm4dAVtarzfda7A/y8aWuTW4+S17kjJ
+         eDPOzaoZaOzwRi0mYDXqmGR/YvSArzPl/PgNYhjVb8GDpn33AOlWx/+GzlcpxQpUtylA
+         XJP2OTMlvvUXy7ytGveU/wkVJrhmhu96z0rG49yzrQ4Cl1ig6767tRGDuD6NzYb4jGHo
+         pFug==
+X-Gm-Message-State: AOAM530ceNrN1DmQnSrm6aaJehDm4d9R/OtzZoX2lkJK0wyJOdBgmo3B
+        XVU231Ys/uHub7+GZhnhlE4z9O/W55H7uE0s5B9RO1/N3u9jkA==
+X-Google-Smtp-Source: ABdhPJxXZYaf0MP8eUkEc9RRkDexoXasf59iFPwXlnPExtDeMYXSjG7MvEsyUSTDaduzSB5kjnyLvSXs6honZsxxlUk=
+X-Received: by 2002:a65:63d6:: with SMTP id n22mr24791208pgv.74.1629622462652;
+ Sun, 22 Aug 2021 01:54:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210819215655.84866-4-jeremy.linton@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <6abd83d11f1daa3094f82e92843e8279f302e349.camel@perches.com>
+ <CAHp75Vdh2CP9n0FrU+6nkmzVWKoKD6RN-RGv7Z+UD_KUoFXPfw@mail.gmail.com> <12a41a13f8d03a16c3d5c20710a901c090b7d244.camel@perches.com>
+In-Reply-To: <12a41a13f8d03a16c3d5c20710a901c090b7d244.camel@perches.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 22 Aug 2021 11:53:46 +0300
+Message-ID: <CAHp75Vdyms1O+GLFDNn+P0CswbCnk8=XR4t2OBex8i-KuuD9Pg@mail.gmail.com>
+Subject: Re: [PATCH] vsprintf and docs: Add X to %ph for upper case output
+To:     Joe Perches <joe@perches.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 22, 2021 at 11:45 AM Joe Perches <joe@perches.com> wrote:
+> On Sun, 2021-08-22 at 11:31 +0300, Andy Shevchenko wrote:
+> > On Sun, Aug 22, 2021 at 6:00 AM Joe Perches <joe@perches.com> wrote:
+> > >
+> > > Uppercase hex output of small char arrays is moderately frequently used.
+> > > Add a mechanism to support the %*ph output as uppercase using 'X'.
+> >
+> > Besides the fact of existing hex_asc_upper_*(), what ABI (!) uses
+> > this? If none, I dunno we need this.
+> > And show at least a few users where we gain something after conversion.
+> >
+>
+> There are at least a few uses that could be converted.
 
+Provide a series then!
 
-On 8/19/2021 11:56 PM, Jeremy Linton wrote:
-> Now that there is a bcm2711 quirk, it needs to be enabled when the
-> MCFG is missing. Use an ACPI namespace _DSD property
-> "linux-ecam-quirk-id" as an alternative to the MCFG OEM.
-> 
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> ---
->   drivers/acpi/pci_mcfg.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-> index 53cab975f612..4b991ee5c66c 100644
-> --- a/drivers/acpi/pci_mcfg.c
-> +++ b/drivers/acpi/pci_mcfg.c
-> @@ -169,6 +169,9 @@ static struct mcfg_fixup mcfg_quirks[] = {
->   	ALTRA_ECAM_QUIRK(1, 13),
->   	ALTRA_ECAM_QUIRK(1, 14),
->   	ALTRA_ECAM_QUIRK(1, 15),
-> +
-> +	{ "bcm2711", "", 0, 0, MCFG_BUS_ANY, &bcm2711_pcie_ops,
-> +	  DEFINE_RES_MEM(0xFD500000, 0xA000) },
->   };
->   
->   static char mcfg_oem_id[ACPI_OEM_ID_SIZE];
-> @@ -198,8 +201,18 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
->   	u16 segment = root->segment;
->   	struct resource *bus_range = &root->secondary;
->   	struct mcfg_fixup *f;
-> +	const char *soc;
->   	int i;
->   
-> +	/*
-> +	 * This may be a machine with a PCI/SMC conduit, which means it doesn't
-> +	 * have an MCFG. Use an ACPI namespace definition instead.
-> +	 */
-> +	if (!fwnode_property_read_string(acpi_fwnode_handle(root->device),
-> +					 "linux-ecam-quirk-id", &soc)) {
-> +		memcpy(mcfg_oem_id, soc, ACPI_OEM_ID_SIZE);
+...
 
-Being super paranoid here, can we use one of the "safe" string copy 
-routines here just in case?
+> +       return snprintf(buf, 16 * 2 + 2, "%16phNX\n", sn);
 
-> +	}
-> +
->   	for (i = 0, f = mcfg_quirks; i < ARRAY_SIZE(mcfg_quirks); i++, f++) {
->   		if (pci_mcfg_quirk_matches(f, segment, bus_range)) {
->   			if (f->cfgres.start)
-> 
+> +       return scnprintf(buffer, PAGE_SIZE, "%16phNX\n", unique_id);
+
+I think you need to convert to sysfs_emit() in both cases.
 
 -- 
-Florian
+With Best Regards,
+Andy Shevchenko
