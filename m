@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DD93F3EAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 10:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9F43F3EAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 10:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhHVInH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 04:43:07 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:28347 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbhHVInF (ORCPT
+        id S232417AbhHVIqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 04:46:35 -0400
+Received: from smtprelay0233.hostedemail.com ([216.40.44.233]:43048 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231147AbhHVIqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 04:43:05 -0400
-Received: from pop-os.home ([90.126.253.178])
-        by mwinf5d59 with ME
-        id kYiN2500A3riaq203YiNcX; Sun, 22 Aug 2021 10:42:24 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 22 Aug 2021 10:42:24 +0200
-X-ME-IP: 90.126.253.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     tanghui20@huawei.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: sunhme: Remove unused macros
-Date:   Sun, 22 Aug 2021 10:42:21 +0200
-Message-Id: <2afbd92d52cc58c5b91d95782d144194ce1a5669.1629621681.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 22 Aug 2021 04:46:34 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 554F11803893D;
+        Sun, 22 Aug 2021 08:45:52 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id E0A5120A297;
+        Sun, 22 Aug 2021 08:45:50 +0000 (UTC)
+Message-ID: <12a41a13f8d03a16c3d5c20710a901c090b7d244.camel@perches.com>
+Subject: Re: [PATCH] vsprintf and docs: Add X to %ph for upper case output
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sun, 22 Aug 2021 01:45:49 -0700
+In-Reply-To: <CAHp75Vdh2CP9n0FrU+6nkmzVWKoKD6RN-RGv7Z+UD_KUoFXPfw@mail.gmail.com>
+References: <6abd83d11f1daa3094f82e92843e8279f302e349.camel@perches.com>
+         <CAHp75Vdh2CP9n0FrU+6nkmzVWKoKD6RN-RGv7Z+UD_KUoFXPfw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: E0A5120A297
+X-Stat-Signature: 5xq3nkycjjd5n7oa7haaj1ys1k77u6ud
+X-Spam-Status: No, score=-1.36
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+5/U6GonMEN9W3NGgqoM7MjYGf8g8TEwg=
+X-HE-Tag: 1629621950-549273
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usage of these macros has been removed in commit db1a8611c873
-("sunhme: Convert to pure OF driver."). So they can be removed.
+On Sun, 2021-08-22 at 11:31 +0300, Andy Shevchenko wrote:
+> On Sun, Aug 22, 2021 at 6:00 AM Joe Perches <joe@perches.com> wrote:
+> > 
+> > Uppercase hex output of small char arrays is moderately frequently used.
+> > Add a mechanism to support the %*ph output as uppercase using 'X'.
+> 
+> Besides the fact of existing hex_asc_upper_*(), what ABI (!) uses
+> this? If none, I dunno we need this.
+> And show at least a few users where we gain something after conversion.
+> 
 
-This simplifies code and helps for removing the wrappers in
-include/linux/pci-dma-compat.h.
+There are at least a few uses that could be converted.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/sun/sunhme.c | 24 ------------------------
- 1 file changed, 24 deletions(-)
+For instance:
 
-diff --git a/drivers/net/ethernet/sun/sunhme.c b/drivers/net/ethernet/sun/sunhme.c
-index a2c1a404c52d..62f81b0d14ed 100644
---- a/drivers/net/ethernet/sun/sunhme.c
-+++ b/drivers/net/ethernet/sun/sunhme.c
-@@ -251,14 +251,6 @@ static u32 pci_hme_read_desc32(hme32 *p)
- 	((__hp)->write_txd((__txd), (__flags), (__addr)))
- #define hme_read_desc32(__hp, __p) \
- 	((__hp)->read_desc32(__p))
--#define hme_dma_map(__hp, __ptr, __size, __dir) \
--	((__hp)->dma_map((__hp)->dma_dev, (__ptr), (__size), (__dir)))
--#define hme_dma_unmap(__hp, __addr, __size, __dir) \
--	((__hp)->dma_unmap((__hp)->dma_dev, (__addr), (__size), (__dir)))
--#define hme_dma_sync_for_cpu(__hp, __addr, __size, __dir) \
--	((__hp)->dma_sync_for_cpu((__hp)->dma_dev, (__addr), (__size), (__dir)))
--#define hme_dma_sync_for_device(__hp, __addr, __size, __dir) \
--	((__hp)->dma_sync_for_device((__hp)->dma_dev, (__addr), (__size), (__dir)))
- #else
- #ifdef CONFIG_SBUS
- /* SBUS only compilation */
-@@ -277,14 +269,6 @@ do {	(__txd)->tx_addr = (__force hme32)(u32)(__addr); \
- 	(__txd)->tx_flags = (__force hme32)(u32)(__flags); \
- } while(0)
- #define hme_read_desc32(__hp, __p)	((__force u32)(hme32)*(__p))
--#define hme_dma_map(__hp, __ptr, __size, __dir) \
--	dma_map_single((__hp)->dma_dev, (__ptr), (__size), (__dir))
--#define hme_dma_unmap(__hp, __addr, __size, __dir) \
--	dma_unmap_single((__hp)->dma_dev, (__addr), (__size), (__dir))
--#define hme_dma_sync_for_cpu(__hp, __addr, __size, __dir) \
--	dma_dma_sync_single_for_cpu((__hp)->dma_dev, (__addr), (__size), (__dir))
--#define hme_dma_sync_for_device(__hp, __addr, __size, __dir) \
--	dma_dma_sync_single_for_device((__hp)->dma_dev, (__addr), (__size), (__dir))
- #else
- /* PCI only compilation */
- #define hme_write32(__hp, __reg, __val) \
-@@ -305,14 +289,6 @@ static inline u32 hme_read_desc32(struct happy_meal *hp, hme32 *p)
- {
- 	return le32_to_cpup((__le32 *)p);
+diff --git a/drivers/scsi/hpsa.c b/drivers/scsi/hpsa.c
+index 3faa87fa296a2..c56871e8ce1b7 100644
+--- a/drivers/scsi/hpsa.c
++++ b/drivers/scsi/hpsa.c
+@@ -743,13 +743,7 @@ static ssize_t unique_id_show(struct device *dev,
+ 	}
+ 	memcpy(sn, hdev->device_id, sizeof(sn));
+ 	spin_unlock_irqrestore(&h->lock, flags);
+-	return snprintf(buf, 16 * 2 + 2,
+-			"%02X%02X%02X%02X%02X%02X%02X%02X"
+-			"%02X%02X%02X%02X%02X%02X%02X%02X\n",
+-			sn[0], sn[1], sn[2], sn[3],
+-			sn[4], sn[5], sn[6], sn[7],
+-			sn[8], sn[9], sn[10], sn[11],
+-			sn[12], sn[13], sn[14], sn[15]);
++	return snprintf(buf, 16 * 2 + 2, "%16phNX\n", sn);
  }
--#define hme_dma_map(__hp, __ptr, __size, __dir) \
--	pci_map_single((__hp)->dma_dev, (__ptr), (__size), (__dir))
--#define hme_dma_unmap(__hp, __addr, __size, __dir) \
--	pci_unmap_single((__hp)->dma_dev, (__addr), (__size), (__dir))
--#define hme_dma_sync_for_cpu(__hp, __addr, __size, __dir) \
--	pci_dma_sync_single_for_cpu((__hp)->dma_dev, (__addr), (__size), (__dir))
--#define hme_dma_sync_for_device(__hp, __addr, __size, __dir) \
--	pci_dma_sync_single_for_device((__hp)->dma_dev, (__addr), (__size), (__dir))
- #endif
- #endif
  
--- 
-2.30.2
+ static ssize_t sas_address_show(struct device *dev,
+
+and
+
+diff --git a/drivers/scsi/smartpqi/smartpqi_init.c b/drivers/scsi/smartpqi/smartpqi_init.c
+index ecb2af3f43ca3..eb39490b196cc 100644
+--- a/drivers/scsi/smartpqi/smartpqi_init.c
++++ b/drivers/scsi/smartpqi/smartpqi_init.c
+@@ -6674,13 +6674,7 @@ static ssize_t pqi_unique_id_show(struct device *dev,
+ 
+ 	spin_unlock_irqrestore(&ctrl_info->scsi_device_list_lock, flags);
+ 
+-	return scnprintf(buffer, PAGE_SIZE,
+-		"%02X%02X%02X%02X%02X%02X%02X%02X"
+-		"%02X%02X%02X%02X%02X%02X%02X%02X\n",
+-		unique_id[0], unique_id[1], unique_id[2], unique_id[3],
+-		unique_id[4], unique_id[5], unique_id[6], unique_id[7],
+-		unique_id[8], unique_id[9], unique_id[10], unique_id[11],
+-		unique_id[12], unique_id[13], unique_id[14], unique_id[15]);
++	return scnprintf(buffer, PAGE_SIZE, "%16phNX\n", unique_id);
+ }
+
 
