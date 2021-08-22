@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2773F4137
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470473F4139
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 21:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhHVTd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 15:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
+        id S233059AbhHVTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 15:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbhHVTdZ (ORCPT
+        with ESMTP id S232974AbhHVTd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 15:33:25 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A941CC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 12:32:43 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id n12so22735263edx.8
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 12:32:43 -0700 (PDT)
+        Sun, 22 Aug 2021 15:33:28 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43678C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 12:32:47 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id bt14so32275048ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 12:32:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=pqrs.dk; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t/57/7Ra/e8dihd9Z1Y6uUjnPgEzQmajUXKvHAVuv2o=;
-        b=KskLkgGD8JaNGD7ASOLh1s3nv+GQU/By7BGMuPpogHKd98UmycDTDIp+JL52TOseZj
-         KSonxBFgsSDlnwdUFw/bXEAZ59NcjEBqJoaEqYuTTyfRL1rfM98dcAKuqwUcuCwcgl1J
-         PN4qN2J1RbDUKZofcxhYZEYxXW+OIFtDC5Mkg=
+        bh=fV/T5HnNhSBhhXcySBbbcTxkKppswGm9K3h/snIx9Z0=;
+        b=kFO76eGVYd9WPNeE1lTiO9yiZxPnKWhENPZsb+o6G9fxksSdEfg+N903JrKIIWUOOJ
+         mWd1lP8UBtsTaBgZgvGCpOwwbq7ypzpnb5cm80rWKAUHy6SZeRKCjKrGmxNnzoBcNUQh
+         mmyit038BxR6l8RAEjI1+/V15Av2SCvnfrVgk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t/57/7Ra/e8dihd9Z1Y6uUjnPgEzQmajUXKvHAVuv2o=;
-        b=ZfbiXRDXJleLPvnZH8oy5UFyx0QZGJsukauz4qfSkXb8G/h51Zmv7VWPgxYgeNdSfW
-         QpvFZ2Bx2Nnj9biiDgnF3pigzBo3fg+d3FJdSBp1okMpRhtavkpvjT5yaKnhaf6rWx3d
-         i5YzxdMFYh0jhSnF557pJ2rngfbHOqAKdWaDPfbIuQL+LktNwNYLTWD8IMMf5w2tsQ8B
-         pzymiUBPW65JMZWm4an+V05ILvJf1o3kIyJVKHupmPBFtK1CRRNCmaeGQlVetHnAREUH
-         5K4LQzaJvKvG0Y+VpBHSeUPZZ9N2JtN8S17RJWEri6ohyPRs6tTHAB2zWT29K/X9T3dA
-         mV9A==
-X-Gm-Message-State: AOAM531pbStB2UrZ1FEeNmUe0Oo1dGBZVI4a4akgaAGEchrNgBY0INQl
-        rxSWwhZnPJ8Wyg88lQ9nARglBA==
-X-Google-Smtp-Source: ABdhPJyOalP5cgOvTIbjQBcjni7YYpjDwoLN4S5AIgJBwrMoFXLDQal+RH27EMs/BQI8kdNO20bI5g==
-X-Received: by 2002:a05:6402:4406:: with SMTP id y6mr32848397eda.242.1629660762281;
-        Sun, 22 Aug 2021 12:32:42 -0700 (PDT)
+        bh=fV/T5HnNhSBhhXcySBbbcTxkKppswGm9K3h/snIx9Z0=;
+        b=JmEcJk6GeqoVUTvTAULsHL2aysV5MXc6HBe/jx8ObL/DEC/F3doIA3be4Qhomtnz7Z
+         kjQcvCXpXj4vlPv0gcmgbvWD71m//6c+6K0u89eY/0+xj2waMMo0Cx0i7UhksjuF9NWM
+         0JBhOUJNImPQn5MMn4T5ySXIyQFn5zREGbva/XzoST1GfqRO2Kaoqn42Lz61f7n7TsBK
+         tHjFnDyY/tQnGfXhjGBlrqy8sTLyKZ/n380jp9k4LV4QHHzSb+erxvXOoQixRCRIxhkK
+         PJqlaMquRugh58LqMgnYjbA7xom4Y0qPZdfU+aomhiMM0j/mZal1I5aHelgZVB66zNuC
+         mF2Q==
+X-Gm-Message-State: AOAM533JTdoIgSB0dOmvCfA2a//ulSfThiymILmJsUXy/ukxvkLjDENu
+        kFY3m+HJ/McYKba/PlgzZFvxLQ==
+X-Google-Smtp-Source: ABdhPJzK/1xXINX2sPeplqjfZO2Wrnr7H5f3Vf0x5xtgOZ60AYVxvbHdkHQxIRpnqNjaV6yKj9SchQ==
+X-Received: by 2002:a17:907:1750:: with SMTP id lf16mr32300126ejc.242.1629660765853;
+        Sun, 22 Aug 2021 12:32:45 -0700 (PDT)
 Received: from capella.. (80.71.142.18.ipv4.parknet.dk. [80.71.142.18])
-        by smtp.gmail.com with ESMTPSA id cn16sm7780053edb.9.2021.08.22.12.32.41
+        by smtp.gmail.com with ESMTPSA id cn16sm7780053edb.9.2021.08.22.12.32.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 12:32:41 -0700 (PDT)
+        Sun, 22 Aug 2021 12:32:45 -0700 (PDT)
 From:   =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alvin@pqrs.dk>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -60,9 +60,9 @@ Cc:     mir@bang-olufsen.dk, alvin@pqrs.dk,
         =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH net-next 1/5] net: dsa: realtek-smi: fix mdio_free bug on module unload
-Date:   Sun, 22 Aug 2021 21:31:39 +0200
-Message-Id: <20210822193145.1312668-2-alvin@pqrs.dk>
+Subject: [RFC PATCH net-next 2/5] dt-bindings: net: dsa: realtek-smi: document new compatible rtl8365mb
+Date:   Sun, 22 Aug 2021 21:31:40 +0200
+Message-Id: <20210822193145.1312668-3-alvin@pqrs.dk>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210822193145.1312668-1-alvin@pqrs.dk>
 References: <20210822193145.1312668-1-alvin@pqrs.dk>
@@ -75,93 +75,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-realtek-smi-core fails to unregister the slave MII bus on module unload,
-raising the following BUG warning:
+rtl8365mb is a new realtek-smi subdriver for the RTL8365MB-VC 4+1 port
+10/100/1000M Ethernet switch controller. Its compatible string is
+"realtek,rtl8365mb".
 
-    mdio_bus.c:650: BUG_ON(bus->state != MDIOBUS_UNREGISTERED);
-
-    kernel BUG at drivers/net/phy/mdio_bus.c:650!
-    Internal error: Oops - BUG: 0 [#1] PREEMPT_RT SMP
-    Call trace:
-     mdiobus_free+0x4c/0x50
-     devm_mdiobus_free+0x18/0x20
-     release_nodes.isra.0+0x1c0/0x2b0
-     devres_release_all+0x38/0x58
-     device_release_driver_internal+0x124/0x1e8
-     driver_detach+0x54/0xe0
-     bus_remove_driver+0x60/0xd8
-     driver_unregister+0x34/0x60
-     platform_driver_unregister+0x18/0x20
-     realtek_smi_driver_exit+0x14/0x1c [realtek_smi]
-
-Fix this by duly unregistering the slave MII bus with
-mdiobus_unregister. We do this in the DSA teardown path, since
-registration is performed in the DSA setup path.
-
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
 Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
 ---
- drivers/net/dsa/realtek-smi-core.c | 6 ++++++
- drivers/net/dsa/realtek-smi-core.h | 1 +
- drivers/net/dsa/rtl8366rb.c        | 8 ++++++++
- 3 files changed, 15 insertions(+)
+ Documentation/devicetree/bindings/net/dsa/realtek-smi.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/dsa/realtek-smi-core.c b/drivers/net/dsa/realtek-smi-core.c
-index 8e49d4f85d48..6992b6b31db6 100644
---- a/drivers/net/dsa/realtek-smi-core.c
-+++ b/drivers/net/dsa/realtek-smi-core.c
-@@ -383,6 +383,12 @@ int realtek_smi_setup_mdio(struct realtek_smi *smi)
- 	return ret;
- }
+diff --git a/Documentation/devicetree/bindings/net/dsa/realtek-smi.txt b/Documentation/devicetree/bindings/net/dsa/realtek-smi.txt
+index b6ae8541bd55..ee03eb40a488 100644
+--- a/Documentation/devicetree/bindings/net/dsa/realtek-smi.txt
++++ b/Documentation/devicetree/bindings/net/dsa/realtek-smi.txt
+@@ -9,6 +9,7 @@ SMI-based Realtek devices.
+ Required properties:
  
-+void realtek_smi_teardown_mdio(struct realtek_smi *smi)
-+{
-+	if (smi->slave_mii_bus)
-+		mdiobus_unregister(smi->slave_mii_bus);
-+}
-+
- static int realtek_smi_probe(struct platform_device *pdev)
- {
- 	const struct realtek_smi_variant *var;
-diff --git a/drivers/net/dsa/realtek-smi-core.h b/drivers/net/dsa/realtek-smi-core.h
-index fcf465f7f922..6cfa5f2df7ea 100644
---- a/drivers/net/dsa/realtek-smi-core.h
-+++ b/drivers/net/dsa/realtek-smi-core.h
-@@ -119,6 +119,7 @@ struct realtek_smi_variant {
- int realtek_smi_write_reg_noack(struct realtek_smi *smi, u32 addr,
- 				u32 data);
- int realtek_smi_setup_mdio(struct realtek_smi *smi);
-+void realtek_smi_teardown_mdio(struct realtek_smi *smi);
- 
- /* RTL8366 library helpers */
- int rtl8366_mc_is_used(struct realtek_smi *smi, int mc_index, int *used);
-diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
-index a89093bc6c6a..6537fac7aba4 100644
---- a/drivers/net/dsa/rtl8366rb.c
-+++ b/drivers/net/dsa/rtl8366rb.c
-@@ -982,6 +982,13 @@ static int rtl8366rb_setup(struct dsa_switch *ds)
- 	return 0;
- }
- 
-+static void rtl8366rb_teardown(struct dsa_switch *ds)
-+{
-+	struct realtek_smi *smi = ds->priv;
-+
-+	realtek_smi_teardown_mdio(smi);
-+}
-+
- static enum dsa_tag_protocol rtl8366_get_tag_protocol(struct dsa_switch *ds,
- 						      int port,
- 						      enum dsa_tag_protocol mp)
-@@ -1505,6 +1512,7 @@ static int rtl8366rb_detect(struct realtek_smi *smi)
- static const struct dsa_switch_ops rtl8366rb_switch_ops = {
- 	.get_tag_protocol = rtl8366_get_tag_protocol,
- 	.setup = rtl8366rb_setup,
-+	.teardown = rtl8366rb_teardown,
- 	.phylink_mac_link_up = rtl8366rb_mac_link_up,
- 	.phylink_mac_link_down = rtl8366rb_mac_link_down,
- 	.get_strings = rtl8366_get_strings,
+ - compatible: must be exactly one of:
++      "realtek,rtl8365mb" (4+1 ports)
+       "realtek,rtl8366"
+       "realtek,rtl8366rb" (4+1 ports)
+       "realtek,rtl8366s"  (4+1 ports)
 -- 
 2.32.0
 
