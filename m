@@ -2,112 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212A43F426C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF793F426D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 01:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbhHVXqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 19:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55162 "EHLO
+        id S234314AbhHVXqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 19:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhHVXqB (ORCPT
+        with ESMTP id S229969AbhHVXqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 19:46:01 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB4DC061575;
-        Sun, 22 Aug 2021 16:45:19 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id s3so11166298edd.11;
-        Sun, 22 Aug 2021 16:45:19 -0700 (PDT)
+        Sun, 22 Aug 2021 19:46:31 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76926C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 16:45:49 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id v19so8889432lfo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 16:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qxXGJe1FSn6RtF/WGjSHOTG/s7YAlIaSVZM+cFk7PUU=;
-        b=suhAQUSn0kv8uBzZv2/PXveZc7+AJ1hAPqi2GGlJx7Hc8HX9hxYIqOzLxYj4cXgZEI
-         lbtJ/bYKohIp37YKssxuK8tZ++ZIEdfkfHSX/QwG5z8O9c4W6ZWp7sr9kz0RGRVcJisH
-         sVP2rEp5eO+ZVHgGCrDIaH5kKpsh987lpUryb+WU0wk1NXZuxVw6T5m/zydwiXY3nKzA
-         x5TvnKfFpT3fwPweHozCvPv3M6GA5w/boWSahx9Ds/GZGfT1rg+h6DA+QPapHw5h5wcV
-         Rkif2jkySMaNbBbBq54bwKO800IlARJ/OFLSLhWS1dQujFOdBscsneZvcld8xp6nrmmp
-         937Q==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=M2dKSbxnEoJnNMIpenC5RWmbdUXJBUTJkKDJ+8WIkWU=;
+        b=R8Z620U5EVl8SP4KdoIizTcMGUc+48ENM9XOgCIXvdxWo0+MgL59+zAUjEWDBfDxvE
+         qITdsoCk1o30upqxf6MgcPjs0G21tYgELOus8p2ox+sUa6yAoz8uxYWuASC92949TR9l
+         foB5/Y0fCVa8DigAdvCxL12sD5WOLEwgCKtjdID8KEL/Wtr66CO8nQvl9WNH3UQAsa1y
+         9kY1v6LYokaOA1XrOH8dzporvBbta6tROw+UZfYdTBGpGvDByz6qhDk+DV11/X0CAjMB
+         /BdHwCobrHGzcAV71MpxKnaw1vrgkmIzLYG1a6jVBbV37Q1oES4L0VwQFw7qcqSim4jS
+         HgDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qxXGJe1FSn6RtF/WGjSHOTG/s7YAlIaSVZM+cFk7PUU=;
-        b=ZgoKxwx4B4C3IcvxIR/pyuTQGLjGVxVwDW7nIZleqZOWfbBd2UwoxI1DEosLR7kSpA
-         MvocjUcHLNgKKrpwXmibSHzy0VpkLx5hoQoHglZxU/O+oAVVDnMNYcgX6hyC0f2zWQnc
-         KbI+pgWpJMLMRCzasS5FJslNxePmzxU7k9134G7S7ZWAEXM2O86traYx6HnAJ5Kpjn9l
-         ci2fpbmjn7gnbths/pWs7xOtMubzPqbl26aN0ZM3HxlOuJgjOw6PEiGYv2ar5QHPRqTo
-         yUHmUqKt4S7W0hx+xhG6GSHiC1r/3OJZkGsEtnJgG3HC2o3KJ8pgnDvhREdloVNsQPh3
-         9K8w==
-X-Gm-Message-State: AOAM531x7esSPdcJ8OKTmudb6haDV1gk6ay8zpOPAUvao+D10VMYkUMr
-        IaIxCxZLRk2tG0pDs56wVfU=
-X-Google-Smtp-Source: ABdhPJymO9gyO46EfKS5zLML967o8jbsJarH3aSWDveQrhDy8Asy8rZVfEuht1YaQJ6V02pxJAk4Dg==
-X-Received: by 2002:a05:6402:d4f:: with SMTP id ec15mr35095545edb.353.1629675917932;
-        Sun, 22 Aug 2021 16:45:17 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id r19sm8010981edd.49.2021.08.22.16.45.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 16:45:17 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 02:45:16 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Rasmussen <MIR@bang-olufsen.dk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 3/5] net: dsa: tag_rtl8_4: add realtek 8
- byte protocol 4 tag
-Message-ID: <20210822234516.pwlu4wk3s3pfzbmi@skbuf>
-References: <20210822193145.1312668-1-alvin@pqrs.dk>
- <20210822193145.1312668-4-alvin@pqrs.dk>
- <20210822221307.mh4bggohdvx2yehy@skbuf>
- <9d6af614-d9f9-6e7b-b6b5-a5f5f0eb8af2@bang-olufsen.dk>
- <20210822232538.pkjsbipmddle5bdt@skbuf>
- <0606e849-5a4e-08c9-fcd1-d4661c10a51c@bang-olufsen.dk>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=M2dKSbxnEoJnNMIpenC5RWmbdUXJBUTJkKDJ+8WIkWU=;
+        b=jYnsZfo2NSUJsIah+uv2Jrp/ZtAgFvhFb891zM2qcGHsmaYRdyZnvgPNSIS0jtfAop
+         2jHCz5UHYXhLAxWrDbObye9a6l0RZpMBy7dRnfekUfLuyXcXfNCGEC+KmUBYICZnFLiQ
+         h3THXedi2384qeBMgN0ZzNUDsqbSMV/uk4hjJcV3FSdc+2R6g9ktVAED0r9nHHFQOr+8
+         L/bsuDEM6seWvMmorgRpFAL12wny3d/aLdYuBreYkOS/ZczAKfOZykr/V5IugoSW78Pp
+         9cjgPHWRP3Vgyz75Ed9TFM3kpvX2KFwO+D7q1bPAruS5CrNcpl4AywJOqD7SKhATqDN2
+         FEBg==
+X-Gm-Message-State: AOAM530dyXVytlAAxlVQOozXWZl7Vq7qy1335evDmR2PhDOQ1UvVdj8Q
+        fwHH7erViuXgxj5xXXFb9xb0LRHnLq0T92fUWeA=
+X-Google-Smtp-Source: ABdhPJxkM79kK2mvGTHzslDrv2y/haC0+mhFLS0M7yq9uBMJ7HPBE+b5Cl7xScykhnsK1iKeAIXateEXD/5F5apwGPU=
+X-Received: by 2002:a19:7510:: with SMTP id y16mr22727798lfe.191.1629675947594;
+ Sun, 22 Aug 2021 16:45:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0606e849-5a4e-08c9-fcd1-d4661c10a51c@bang-olufsen.dk>
+Received: by 2002:aa6:cd8a:0:b029:114:9807:2c60 with HTTP; Sun, 22 Aug 2021
+ 16:45:47 -0700 (PDT)
+Reply-To: mr.edwinclark@gmail.com
+From:   Edwin Clark <jerudor6@gmail.com>
+Date:   Sun, 22 Aug 2021 23:45:47 +0000
+Message-ID: <CAMKQyr0HEqEw_N6hnN7DJpKWGdUhFhD28-dTi-qbR5nACvrhHg@mail.gmail.com>
+Subject: Hello, I am Mr. Edwin Clark, Personal attorney to late relative, a
+ national of your country who died as a result of car accident with his entire
+ family here in my country Republic of Togo in West Africa and after all
+ investigation even with the relevant embassy has yielded no results showing
+ that there is no living next of kin and you bear the same last name with my
+ late client that's why i am contacting you. Get back to me for more details. Edwin.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 11:37:28PM +0000, Alvin Šipraga wrote:
-> >>>> +	skb->offload_fwd_mark = 1;
-> >>>
-> >>> At the very least, please use
-> >>>
-> >>> 	dsa_default_offload_fwd_mark(skb);
-> >>>
-> >>> which does the right thing when the port is not offloading the bridge.
-> >>
-> >> Sure. Can you elaborate on what you mean by "at the very least"? Can it
-> >> be improved even further?
-> >
-> > The elaboration is right below. skb->offload_fwd_mark should be set to
-> > zero for packets that have been forwarded only to the host (like packets
-> > that have hit a trapping rule). I guess the switch will denote this
-> > piece of info through the REASON code.
->
-> Yes, I think it will be communicated in REASON too. I haven't gotten to
-> deciphering the contents of this field since it has not been needed so
-> far: the ports are fully isolated and all bridging is done in software.
+Hello,
 
-In that case, setting skb->offload_fwd_mark to true is absolutely wrong,
-since the bridge is told that no software forwarding should be done
-between ports, as it was already done in hardware (see nbp_switchdev_allowed_egress).
+I am Mr. Edwin Clark, Personal attorney to late relative, a national
+of your country who died as a result of car accident with his entire
+family here in my country Republic of Togo in West Africa and after
+all investigation even with the relevant embassy has yielded no
+results showing that there is no living next of kin and you bear the
+same last name with my late client that's why i am contacting you.
 
-I wonder how this has ever worked? Are you completely sure that bridging
-is done in software?
+Get back to me for more details.
+
+Edwin.
