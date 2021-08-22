@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0E93F41AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 23:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5203F41B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Aug 2021 23:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233546AbhHVVIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 17:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
+        id S233119AbhHVVOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 17:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbhHVVIw (ORCPT
+        with ESMTP id S232539AbhHVVOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 17:08:52 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1B2C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 14:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=acsO0vRheXjx61bMjODn3+lNhDfQhnX9ZhEZMEdR7XQ=; b=Y0Vnwwtyg4qyGK7tjUC6rgWU5f
-        7JoHJgn3iVJX5A8f+quINpvHuZtJlJkBeCVMSLzUN2+/942tyDapQIWHH4i0HrXItzjkPOCnWfPtO
-        JUtaFosBAxUpds7I6q5Q9jiXNDdkVEfrxzmVVdA1NecA9DtLOp/t9c7wEG7PtpKk7/RAnjLGQxO5J
-        KnCSLOWCu6FTwT8bAX+hv+K+asj4zdKmuZqI8dnvLuMNY9dD8rmZ7sVP4fgmFClmBa3jeJsCk5Q4p
-        6WbJ4oxCmU52jDssNpfeSuaKNd2/EHLjQ8E3V7ZzBFjQnzsh0RovfVoka9niVFXq4E7GKljiBBACR
-        7wRI+V9g==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mHuhO-00Eksm-Js; Sun, 22 Aug 2021 21:08:10 +0000
+        Sun, 22 Aug 2021 17:14:48 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5ACC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 14:14:06 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id c19so1419985qte.7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 14:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=Iq1SujnG3JH+a2kGNfGJnQqyOoM6aLdw5U+VfLYXJ0Y=;
+        b=PU9nfOiWvv0VN8KS/wODtjOoJjM8MAeLSO6vKpR67sKJz6FQLKk6vIDyz2IF4ZpqSb
+         +kIp1F7oi95SnkE8flNO4VdVDyVw1hx0AXw8fDYd9IsawCMlf0VG30GZuxOUll9NGioE
+         oj2wYPGUpOcKAwkgu1VN7DEAkFSl9ABvlvMM7eIUtnvuFzSWtCqdYWVtOMTzd0Q68mgr
+         t/FtdmAzREo7Zkx7lvmt6bJcb6kPCQzawnk1058qe/xe7gPMjLK9GsA0HbRwluHQz1ts
+         DNYggcfI5nIQWThr6oRUeXfL83Pt8+I33KGbXOimTwWJfDuVn90xnlIhC/lI/nDop5ua
+         YdUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :mime-version:content-transfer-encoding:date:message-id;
+        bh=Iq1SujnG3JH+a2kGNfGJnQqyOoM6aLdw5U+VfLYXJ0Y=;
+        b=IBWDUp5hbigspVjpklPsvZ8NG8gOAfQEHa36tZ8oQwcGQParQHC41nF+s5I2T6SL4Z
+         a/3Ugd9wh2LSCSosGVOQgMiqcTTS8x6+KiudDm7BEAYl3KDGCd+tggCvBztzeySduiW9
+         sxjDMC2zX17jvbV59Mi/nlAQZthkVelMzgR4vyaazqMRaUiWfKtK7rwyQnruBW5xpvb0
+         cavonuLzCjRFIwBjR6+vx9NcF5p2Lcyi1hKCrguKDlvpPeO+FX3tE8Yq9iH2ESIIq8uw
+         t5OCwa7XCuYpQPmxWV3kx8+fKJa1eMyg3ZmddBDHmw2hwA8po9VpfpgSbt9fGDP5fSkJ
+         H7Mw==
+X-Gm-Message-State: AOAM530V4aqygfl6A96lk3HBzMxQjLX6o5ahNRqGOkHNvp7Hfkp+T0ZB
+        vvEtAupYzbF0KnWYspwqgehOmA==
+X-Google-Smtp-Source: ABdhPJzQl13WoFzcgMgvRTzo32fmZyRJeVk15lhsc3tNEWMF6fWpG/OE4YOilz/IVxp44A8cU2PxKg==
+X-Received: by 2002:ac8:4f0c:: with SMTP id b12mr12283552qte.246.1629666845600;
+        Sun, 22 Aug 2021 14:14:05 -0700 (PDT)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id k186sm7464968qkd.47.2021.08.22.14.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 14:14:05 -0700 (PDT)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.10.0-pre 07/05/2021 with nmh-1.7+dev
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] cpufreq: qcom-cpufreq-hw: Fix 'make allmodconfig' build
-To:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <2bf9925a-fad9-ad9a-c878-daa08fae7e07@infradead.org>
 References: <438052.1629663003@turing-police>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2bf9925a-fad9-ad9a-c878-daa08fae7e07@infradead.org>
-Date:   Sun, 22 Aug 2021 14:08:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <438052.1629663003@turing-police>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+ <2bf9925a-fad9-ad9a-c878-daa08fae7e07@infradead.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1629666844_136257P";
+         micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 22 Aug 2021 17:14:04 -0400
+Message-ID: <440653.1629666844@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/21 1:10 PM, Valdis Klētnieks wrote:
-> Commit 86afc1df661a adds a reference to a symbol that doesn't have an
-> EXPORT_SYMBOL, which fails if qcom-cpufreq-hw is built as a module.
-> 
-> ERROR: modpost: "topology_set_thermal_pressure" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
-> 
-> Add the missing EXPORT_SYMBOL.
-> 
-> Fixes: 86afc1df661a ("cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support")
-> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
-> ---
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 921312a8d957..fbc39ca67124 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -165,6 +165,7 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
->   	for_each_cpu(cpu, cpus)
->   		WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
->   }
-> +EXPORT_SYMBOL(topology_set_thermal_pressure);
->   
->   static ssize_t cpu_capacity_show(struct device *dev,
->   				 struct device_attribute *attr,
-> 
+--==_Exmh_1629666844_136257P
+Content-Type: text/plain; charset=us-ascii
 
-Hi Valdis,
+On Sun, 22 Aug 2021 14:08:08 -0700, Randy Dunlap said:
 
-This fixes one build error for me but I am still seeing another one:
+> This fixes one build error for me but I am still seeing another one:
+>
+> ERROR: modpost: "cpu_scale" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
 
-ERROR: modpost: "cpu_scale" [drivers/cpufreq/qcom-cpufreq-hw.ko] undefined!
+That's a different patch, am working on fixing that one now..
 
-thanks.
--- 
-~Randy
+--==_Exmh_1629666844_136257P
+Content-Type: application/pgp-signature
 
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
+
+iQEcBAEBCAAGBQJhIr4bAAoJEI0DS38y7CIcXpcIAJwgblFv8by6ZZjRRf7ciUC0
+ZZ/Ro/5myoI3ENEBjWeQW29AHI56pMh6A2/E6GFGSPMzbH1dPB85DqS3r8B4hPYw
+BWPjE+PpzskbA4UkipvGa+Js3R34kUtxLFZscXjNhArpCFUV6777HUGptgxSXx4b
+UhzEmwCcStJelSr+IsU3MJRv7OlfEkwU5K14tDUvIBtv5RtkQSNXf43qPUfpXnIi
+weT4eg/ThLkQDcoPW4jiUlx2O5XjuOrh2VXgP3+bJSXlQMYc4D7Tqx6ouRp5ANO1
+m9phnqxFtwwQ3pQb8EryaJgHMXA6Tf03PnpuUDyoQru/8u87U/MhZLLkHTCQDB8=
+=lhHr
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1629666844_136257P--
