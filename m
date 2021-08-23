@@ -2,183 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080713F5354
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B293F5355
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhHWWW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        id S233165AbhHWWWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 18:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhHWWWY (ORCPT
+        with ESMTP id S229632AbhHWWWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:22:24 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF14C061575;
-        Mon, 23 Aug 2021 15:21:41 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id m21so20937568qkm.13;
-        Mon, 23 Aug 2021 15:21:41 -0700 (PDT)
+        Mon, 23 Aug 2021 18:22:40 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC67BC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:21:57 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id a5so11044816plh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:21:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HLncdCZm4AaQl837iBmELtagHV4+U9f/suIhohULQ1Y=;
-        b=VEjFZmeoeNXqx8JnC17/FpduiINrAlEL0FnNf0hgWHwqQR52abwWUzDQyD6s507fy9
-         N2EhGo74RNW9It4YmpZyercXf+5KTNJ1xlV9RAhhxAwD8dbDFeBg1Rp4xFj58pDmXX8S
-         y0SiQA8E0WLy1IyH49md9aR8NZQE0m7Bcf1m8d6+PKpsDuWMjuxzZTc7dOz403uQFJDN
-         2mJFKO9ba4mbi4PlLTpKjAYV/seVit+ci1vzi08h3F4YOwYC6udKWJNftqrBORDe1LVw
-         FnZ+wLQvHYHL5u9AVjBCf6OX/73CFiutPOAxVoMCCLXNAq2lc684b/3NbIx1mbkW4pzi
-         LYdQ==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PgbvL7tZGMqN04fDtExmC53uM/OuoTpyNovFpG01h4I=;
+        b=mrfk22hXw3iD2OUWsdXxuk5BJuJLQ1zikfGhw1rbU2nb8fdvWwNpPsf3sF/QHs87iH
+         wm/9XU4v0sV9oZ1SaEiH2iLHsmmLbWdpXuK7SO1kTRwdpJrJcihx8lI5sV2kry9Q/cy2
+         hro2P8TOOdwzdLtUcV/H3NzVbSIx+YfVLMfq8zk6IDTTBANlA1odwcPMucqGJLnf6r+2
+         XKC3l+eOOgjNs7q0T8B1Hbnc5uuh1d7iuSDgNSdcQIq5f0kYF16TRnNjXHDzRc8MtwdQ
+         b59dXUMgD9cp5C06cSmjHDB/uwfa75Ki50MOfuZeJiNJ8fb6C5m8+LTngHvFm7/MxcO7
+         fhfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HLncdCZm4AaQl837iBmELtagHV4+U9f/suIhohULQ1Y=;
-        b=CojenJ4yQZEDXimkpg7tlNY0vsQY7IJhq3MVtFPCdrxYurGTtZbAq1RpoI1/ZriL3b
-         OHhfiIghY6ZV5O6Me7UH+KDZ1hCl+3TfwL140heWWrX1hs7+5ZvDAr9Ucii7orp0MSDA
-         7RUJ3lhFwve31v/ZlFmcSBQ1dDf+/pdHdjv0Emqny33nuTtMZYFo9ujtt6DOnOQI8SnO
-         JBjY+7iYACs1xLTCvRuzfBmYWC2XMpohAVowe4DPWml9IA23Bm2tIlzcmMuPYatxcR1N
-         PO4tOehQC/cattIfu6SxujbpBx2TKf1Qx2yE5sP7Dq/C+Vkv4jsO8AQSEGySSx3HTvIF
-         8mXA==
-X-Gm-Message-State: AOAM533dQW00aSx358Nb9djoSnuKbZGEY9xMgw5ZgQgiBtX9/uF8WJDh
-        Sg0k7V92EaN3H8sWnuIlaDQ=
-X-Google-Smtp-Source: ABdhPJwEodtAaD+p7AhXCVw7kvMQjWSk4ixD7xWKv2gVTMLBxAOIinPiHWq4RHIz6owPMyICGfPdhA==
-X-Received: by 2002:a37:b586:: with SMTP id e128mr23417705qkf.43.1629757300431;
-        Mon, 23 Aug 2021 15:21:40 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id m8sm9268077qkk.130.2021.08.23.15.21.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 15:21:40 -0700 (PDT)
-Subject: Re: [PATCH] of: Don't allow __of_attached_node_sysfs() without
- CONFIG_SYSFS
-To:     Rob Herring <robh@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Android Kernel Team <kernel-team@android.com>
-References: <20210820144722.169226-1-maz@kernel.org>
- <a67743f9-869b-28df-d714-db15da4ebe06@gmail.com>
- <YSPtI//SJh1CpHRP@robh.at.kernel.org>
- <bcb2e89f-9768-8435-35d9-d02140628b9a@gmail.com>
- <CAL_JsqJs2ayHFpOo7kS4K96Sy3xDkxeWYNMTDF9Ssd9D79LKng@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <d7548302-7e70-9a93-750c-a4de359eac0b@gmail.com>
-Date:   Mon, 23 Aug 2021 17:21:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PgbvL7tZGMqN04fDtExmC53uM/OuoTpyNovFpG01h4I=;
+        b=Szq6NhCoRVbo9GktnRg8EEuOS7tOsss4kosoSQjeRCJGNl/9K/d7WmDvPJBpRMH9jJ
+         zz+PcHT2pe1SUWAboau7G9d4tr+5LLouRSTGC2LDs4MBBoFLKV6XAkI8Sje3oFHMwpPp
+         k3cu6Q4vQwKQSj98Jsj74qBCMuflZDMzHWb/9tWpoOpJfCn8LKioS8ad+ou9SlJvzjA6
+         UODsaEtrek/D7o5S43WEIK99WL7rZ45c5IaJTa9fQlhKg8AW3uOZK+4QZP57RfFyr4Q+
+         XJvUwPC7jqskUKbR+WE2kgQm9GnlGnpOcegYQGJYEGOfSxWMsyjdxMO+1YjD+5branZM
+         4/tw==
+X-Gm-Message-State: AOAM533xqp6Swnk1AOM2m181XdmSrUfZ7tqRWuQiJu/pHav1JZxvncME
+        ZWtahXR8VI9G7BKRn7aHJijKcbno0unRBGjjSoR8Gg==
+X-Google-Smtp-Source: ABdhPJwivijEkTPOuWanRWlCqTFVzEGxja92JdtnMNzJTERT+YaM6O8hzAFMzfmiajkwskVaO4vKkUTfnlzux7LP8sk=
+X-Received: by 2002:a17:90b:3748:: with SMTP id ne8mr796003pjb.162.1629757317164;
+ Mon, 23 Aug 2021 15:21:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqJs2ayHFpOo7kS4K96Sy3xDkxeWYNMTDF9Ssd9D79LKng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210823081820.9724-1-straube.linux@gmail.com>
+In-Reply-To: <20210823081820.9724-1-straube.linux@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Mon, 23 Aug 2021 23:21:46 +0100
+Message-ID: <CAA=Fs0=6=ueb53iNhyjSE5B8CdQvrpijgihAaN9YVwdDgNGiFA@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: remove ip.h header file
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Martin Kaiser <martin@kaiser.cx>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 5:14 PM, Rob Herring wrote:
-> On Mon, Aug 23, 2021 at 4:27 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>
->> On 8/23/21 1:46 PM, Rob Herring wrote:
->>> On Sun, Aug 22, 2021 at 11:01:15PM -0500, Frank Rowand wrote:
->>>> Hi Marc,
->>>>
->>>> On 8/20/21 9:47 AM, Marc Zyngier wrote:
->>>>> Trying to boot without SYSFS, but with OF_DYNAMIC quickly
->>>>> results in a crash:
->>>>>
->>>>> [    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
->>>>> [...]
->>>>> [    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
->>>>> [    0.105810] Hardware name: linux,dummy-virt (DT)
->>>>> [  0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
->>>>> [    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
->>>>> [    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
->>>>> [...]
->>>>> [    0.134087] Call trace:
->>>>> [    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
->>>>> [    0.136054]  safe_name+0x4c/0xd0
->>>>> [    0.136994]  __of_attach_node_sysfs+0xf8/0x124
->>>>> [    0.138287]  of_core_init+0x90/0xfc
->>>>> [    0.139296]  driver_init+0x30/0x4c
->>>>> [    0.140283]  kernel_init_freeable+0x160/0x1b8
->>>>> [    0.141543]  kernel_init+0x30/0x140
->>>>> [    0.142561]  ret_from_fork+0x10/0x18
->>>>>
->>>>> While not having sysfs isn't a very common option these days,
->>>>> it is still expected that such configuration would work.
->>>>>
->>>>> Paper over it by bailing out from __of_attach_node_sysfs() if
->>>>> CONFIG_SYSFS isn't enabled.
->>>>
->>>> CONFIG_SYSFS should be automatically selected when CONFIG_OF_DYNAMIC
->>>> is enabled, and it should not be possible to disable CONFIG_SYSFS
->>>> in this case.
->>>
->>> That used to be true, but isn't now.
->>
->> OK.  I agree with you, but when I investigated the original patch
->> email I came to a different conclusion because of the way that I
->> used make menuconfig to debug the situation.
->>
->> It is true when I start with a .config created from 'make qcom_defconfig',
->> then select OF_UNITTEST, which is the only way I can see OF_DYNAMIC.  It
->> is the "if OF_UNITTEST" that means SYSFS can not be disabled.
-> 
-> Not really. Disabling SYSFS has nothing to do with the DT code. It's
-> not super easy though. It required setting EXPERT and disabling
-> CONFIGFS_FS and things selecting it (PCIE endpoint and USB gadget).
-> 
->> If I start with the .config that Marc supplied, then make menuconfig
->> still does not show the OC_DYNAMIC option, but leaves it set since
->> it was already set.  In this case SYSFS remains disabled because
->> OF_UNITTEST is also disabled.
-> 
-> I don't see the relationship between SYSFS and OF_UNITTEST.
+On Mon, 23 Aug 2021 at 09:19, Michael Straube <straube.linux@gmail.com> wrote:
+>
+> The struct ip_options declared in ip.h is only unsed in the optlength
+> macro which is also defined in ip.h. All other definitions/declarations
+> in ip.h are duplicated from <include/uapi/linux/ip.h>. Remove the ip.h
+> header file and its includes.
+>
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_recv.c      |   1 -
+>  drivers/staging/r8188eu/core/rtw_xmit.c      |   1 -
+>  drivers/staging/r8188eu/hal/rtl8188eu_recv.c |   1 -
+>  drivers/staging/r8188eu/include/ip.h         | 109 -------------------
+>  drivers/staging/r8188eu/os_dep/xmit_linux.c  |   1 -
+>  5 files changed, 113 deletions(-)
+>  delete mode 100644 drivers/staging/r8188eu/include/ip.h
+>
+> diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
+> index 52236bae8693..8802f24fec3a 100644
+> --- a/drivers/staging/r8188eu/core/rtw_recv.c
+> +++ b/drivers/staging/r8188eu/core/rtw_recv.c
+> @@ -7,7 +7,6 @@
+>  #include "../include/drv_types.h"
+>  #include "../include/recv_osdep.h"
+>  #include "../include/mlme_osdep.h"
+> -#include "../include/ip.h"
+>  #include "../include/if_ether.h"
+>  #include "../include/ethernet.h"
+>  #include "../include/usb_ops.h"
+> diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
+> index f242f3ffca70..38183fd37b93 100644
+> --- a/drivers/staging/r8188eu/core/rtw_xmit.c
+> +++ b/drivers/staging/r8188eu/core/rtw_xmit.c
+> @@ -7,7 +7,6 @@
+>  #include "../include/drv_types.h"
+>  #include "../include/wifi.h"
+>  #include "../include/osdep_intf.h"
+> -#include "../include/ip.h"
+>  #include "../include/usb_ops.h"
+>  #include "../include/usb_osintf.h"
+>
+> diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
+> index a44c9598186c..216a752e6246 100644
+> --- a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
+> +++ b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
+> @@ -6,7 +6,6 @@
+>  #include "../include/drv_types.h"
+>  #include "../include/recv_osdep.h"
+>  #include "../include/mlme_osdep.h"
+> -#include "../include/ip.h"
+>  #include "../include/if_ether.h"
+>  #include "../include/ethernet.h"
+>
+> diff --git a/drivers/staging/r8188eu/include/ip.h b/drivers/staging/r8188eu/include/ip.h
+> deleted file mode 100644
+> index b7388c8c1b8a..000000000000
+> --- a/drivers/staging/r8188eu/include/ip.h
+> +++ /dev/null
+> @@ -1,109 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+> -/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+> -
+> -#ifndef _LINUX_IP_H
+> -#define _LINUX_IP_H
+> -
+> -/* SOL_IP socket options */
+> -
+> -#define IPTOS_TOS_MASK         0x1E
+> -#define IPTOS_TOS(tos)         ((tos)&IPTOS_TOS_MASK)
+> -#define        IPTOS_LOWDELAY          0x10
+> -#define        IPTOS_THROUGHPUT        0x08
+> -#define        IPTOS_RELIABILITY       0x04
+> -#define        IPTOS_MINCOST           0x02
+> -
+> -#define IPTOS_PREC_MASK                0xE0
+> -#define IPTOS_PREC(tos)                ((tos)&IPTOS_PREC_MASK)
+> -#define IPTOS_PREC_NETCONTROL           0xe0
+> -#define IPTOS_PREC_INTERNETCONTROL      0xc0
+> -#define IPTOS_PREC_CRITIC_ECP           0xa0
+> -#define IPTOS_PREC_FLASHOVERRIDE        0x80
+> -#define IPTOS_PREC_FLASH                0x60
+> -#define IPTOS_PREC_IMMEDIATE            0x40
+> -#define IPTOS_PREC_PRIORITY             0x20
+> -#define IPTOS_PREC_ROUTINE              0x00
+> -
+> -/* IP options */
+> -#define IPOPT_COPY             0x80
+> -#define IPOPT_CLASS_MASK       0x60
+> -#define IPOPT_NUMBER_MASK      0x1f
+> -
+> -#define        IPOPT_COPIED(o)         ((o)&IPOPT_COPY)
+> -#define        IPOPT_CLASS(o)          ((o)&IPOPT_CLASS_MASK)
+> -#define        IPOPT_NUMBER(o)         ((o)&IPOPT_NUMBER_MASK)
+> -
+> -#define        IPOPT_CONTROL           0x00
+> -#define        IPOPT_RESERVED1         0x20
+> -#define        IPOPT_MEASUREMENT       0x40
+> -#define        IPOPT_RESERVED2         0x60
+> -
+> -#define IPOPT_END      (0 | IPOPT_CONTROL)
+> -#define IPOPT_NOOP     (1 | IPOPT_CONTROL)
+> -#define IPOPT_SEC      (2 | IPOPT_CONTROL | IPOPT_COPY)
+> -#define IPOPT_LSRR     (3 | IPOPT_CONTROL | IPOPT_COPY)
+> -#define IPOPT_TIMESTAMP        (4 | IPOPT_MEASUREMENT)
+> -#define IPOPT_RR       (7 | IPOPT_CONTROL)
+> -#define IPOPT_SID      (8 | IPOPT_CONTROL | IPOPT_COPY)
+> -#define IPOPT_SSRR     (9 | IPOPT_CONTROL | IPOPT_COPY)
+> -#define IPOPT_RA       (20 | IPOPT_CONTROL | IPOPT_COPY)
+> -
+> -#define IPVERSION      4
+> -#define MAXTTL         255
+> -#define IPDEFTTL       64
+> -#define IPOPT_OPTVAL 0
+> -#define IPOPT_OLEN   1
+> -#define IPOPT_OFFSET 2
+> -#define IPOPT_MINOFF 4
+> -#define MAX_IPOPTLEN 40
+> -#define IPOPT_NOP IPOPT_NOOP
+> -#define IPOPT_EOL IPOPT_END
+> -#define IPOPT_TS  IPOPT_TIMESTAMP
+> -
+> -#define        IPOPT_TS_TSONLY         0       /* timestamps only */
+> -#define        IPOPT_TS_TSANDADDR      1       /* timestamps and addresses */
+> -#define        IPOPT_TS_PRESPEC        3       /* specified modules only */
+> -
+> -struct ip_options {
+> -       __u32           faddr;                  /* Saved first hop address */
+> -       unsigned char   optlen;
+> -       unsigned char srr;
+> -       unsigned char rr;
+> -       unsigned char ts;
+> -       unsigned char   is_setbyuser:1, /* Set by setsockopt?           */
+> -                       is_data:1,      /* Options in __data, rather than skb*/
+> -                       is_strictroute:1,/* Strict source route         */
+> -                       srr_is_hit:1,   /* Packet destn addr was ours */
+> -                       is_changed:1,   /* IP checksum more not valid   */
+> -                       rr_needaddr:1,  /* Need to record addr of out dev*/
+> -                       ts_needtime:1,  /* Need to record timestamp     */
+> -                       ts_needaddr:1;  /* Need to record addr of out dev  */
+> -       unsigned char router_alert;
+> -       unsigned char __pad1;
+> -       unsigned char __pad2;
+> -       unsigned char __data[0];
+> -};
+> -
+> -#define optlength(opt) (sizeof(struct ip_options) + opt->optlen)
+> -
+> -struct iphdr {
+> -#if defined(__LITTLE_ENDIAN_BITFIELD)
+> -       __u8    ihl:4,
+> -               version:4;
+> -#elif defined(__BIG_ENDIAN_BITFIELD)
+> -       __u8    version:4,
+> -               ihl:4;
+> -#endif
+> -       __u8    tos;
+> -       __u16   tot_len;
+> -       __u16   id;
+> -       __u16   frag_off;
+> -       __u8    ttl;
+> -       __u8    protocol;
+> -       __u16   check;
+> -       __u32   saddr;
+> -       __u32   daddr;
+> -       /*The options start here. */
+> -};
+> -
+> -#endif /* _LINUX_IP_H */
+> diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+> index 60e0eea7ad84..80546a886c0e 100644
+> --- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
+> +++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+> @@ -6,7 +6,6 @@
+>  #include "../include/osdep_service.h"
+>  #include "../include/drv_types.h"
+>  #include "../include/if_ether.h"
+> -#include "../include/ip.h"
+>  #include "../include/wifi.h"
+>  #include "../include/mlme_osdep.h"
+>  #include "../include/xmit_osdep.h"
+> --
+> 2.32.0
+>
 
-I don't either.  Other than the results of experimenting showing
-that if I enable OF_UNITTEST then I can no long disable SYSFS.
+Dear Michael,
 
-> 
->> Using '/OF_DYNAMIC' from within make menuconfig, to get more info
->> about OF_DYNAMIC tells me that the prompt for OF_DYNAMIC is visible
->> if OF && OF_UNITTEST.  This is due to the "if OF_UNITTEST" in line 58
->> of drivers/of/Kconfig in the OF_DYNAMIC specification.
->>
->> Thus I can't figure out how to use make menuconfig to set OF_DYNAMIC
->> without setting OF_UNITTEST.  I tried setting OF_UNITTEST, then setting
->> OF_DYNAMIC, saving the changes, then another make menuconfig to
->> disable OF_UNITTEST, which then has the side effect of unsetting
->> OF_DYNAMIC.
-> 
-> Selecting OF_OVERLAY also.
-> 
->> Would you accept a patch that removes the "if OF_UNITTEST" from
->> the Kconfig entry for OF_DYNAMIC?
-> 
-> I guess. The purpose of making it visible was for compile testing, so
-> maybe make it 'if COMPILE_TEST' instead?
+Thanks for the patch. Sorry, but it seems to conflict with your
+earlier patch titled: "[PATCH] staging: r8188eu: remove if_ether.h
+header file". They apply fine individually, but not together - can you
+confirm this is the case for you as well and not just me?
 
-After thinking a bit, I didn't like my original suggestion.
-I'll think some more, but I think that I will not follow up
-on my original suggestion.
-
-> 
-> 
-> Looking at occurrences of CONFIG_OF_DYNAMIC, there's more than I'd
-> like. This for example is a common pattern:
-> 
-> drivers/spi/spi.c:      if (IS_ENABLED(CONFIG_OF_DYNAMIC))
-> drivers/spi/spi.c-
-> WARN_ON(of_reconfig_notifier_register(&spi_of_notifier));
-> 
-> Really, of_reconfig_notifier_register() should just return 0 if
-> !IS_ENABLED(CONFIG_OF_DYNAMIC).
-
-I'll add researching use of CONFIG_OF_DYNAMIC to my todo list.
-
--Frank
-
-> 
-> Rob
-> 
-
+Regards,
+Phil
