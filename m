@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D163F480F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEDD3F4814
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235921AbhHWJ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:59:42 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:20357 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232850AbhHWJ7l (ORCPT
+        id S235872AbhHWKAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232850AbhHWKAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:59:41 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee9612371520a7-03f0e; Mon, 23 Aug 2021 17:58:42 +0800 (CST)
-X-RM-TRANSID: 2ee9612371520a7-03f0e
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.112.105.130])
-        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56123714e86b-c2292;
-        Mon, 23 Aug 2021 17:58:42 +0800 (CST)
-X-RM-TRANSID: 2ee56123714e86b-c2292
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     jic23@kernel.org, lars@metafoo.de
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] iio: adc: twl6030-gpadc: Use the defined variable to clean code
-Date:   Mon, 23 Aug 2021 17:59:21 +0800
-Message-Id: <20210823095921.16828-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Mon, 23 Aug 2021 06:00:48 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11627C061575;
+        Mon, 23 Aug 2021 03:00:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtSQr0vvpz9sW8;
+        Mon, 23 Aug 2021 20:00:03 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629712804;
+        bh=iOxZucM/jvrqfqLzx0E/nqEw1cs3rrcmHG5ux3LdxYM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lDRGu7rfOu1/+Ihx/1x+0k5KGmLM8v59OW1EcrxJ0I03RwaYcIRobJdL0xxOr/J4b
+         ezUsI09xFmQeRxrMTCiGhXa7t+zJ/1p7yGyQq9Fk9AXZxOhKblVW+nA0BQ/lcLiwxy
+         JgFXogUdwYrNr9x+VPH9rEOViCH7t4R6WAztKlCDXVhdMRWhnStnNGX7ZIfBrKMNd0
+         5GvIWcb7hZv0zo9ouv3i5icHtRxCea/B2aMnprRo+khyfi2RkUJli7wvpY+lgVmLMX
+         7pEf/+0E85LjcS3kdmZsQaeHITQNMAuTHqSG8WkO/N1oRzUs57JT5La8CT4kBtZDJ/
+         +gHJIV+n43pmg==
+Date:   Mon, 23 Aug 2021 20:00:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the sound tree
+Message-ID: <20210823200002.45fbc553@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/hB3/nWWQEpLWGuUaggCaU1T";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the defined variable "dev" to make the code cleaner.
+--Sig_/hB3/nWWQEpLWGuUaggCaU1T
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/iio/adc/twl6030-gpadc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi all,
 
-diff --git a/drivers/iio/adc/twl6030-gpadc.c b/drivers/iio/adc/twl6030-gpadc.c
-index 0859f3f7d..5e4fbb033 100644
---- a/drivers/iio/adc/twl6030-gpadc.c
-+++ b/drivers/iio/adc/twl6030-gpadc.c
-@@ -897,7 +897,7 @@ static int twl6030_gpadc_probe(struct platform_device *pdev)
- 
- 	ret = pdata->calibrate(gpadc);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to read calibration registers\n");
-+		dev_err(dev, "failed to read calibration registers\n");
- 		return ret;
- 	}
- 
-@@ -911,14 +911,14 @@ static int twl6030_gpadc_probe(struct platform_device *pdev)
- 
- 	ret = twl6030_gpadc_enable_irq(TWL6030_GPADC_RT_SW1_EOC_MASK);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to enable GPADC interrupt\n");
-+		dev_err(dev, "failed to enable GPADC interrupt\n");
- 		return ret;
- 	}
- 
- 	ret = twl_i2c_write_u8(TWL6030_MODULE_ID1, TWL6030_GPADCS,
- 					TWL6030_REG_TOGGLE1);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to enable GPADC module\n");
-+		dev_err(dev, "failed to enable GPADC module\n");
- 		return ret;
- 	}
- 
--- 
-2.20.1.windows.1
+After merging the sound tree, today's linux-next build (htmldocs)
+produced this warning:
 
+Documentation/sound/alsa-configuration.rst:2258: WARNING: Unexpected indent=
+ation.
 
+Introduced by commit
 
+  a39978ed6df1 ("ALSA: doc: Add the description of quirk_flags option for s=
+nd-usb-audio")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/hB3/nWWQEpLWGuUaggCaU1T
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjcaIACgkQAVBC80lX
+0Gz3yAf8Cd2mHmmxUlV5EtmBDyvRggKdy5JIbVf7vdEcZX7hfZJvZRMAjJfVBfUI
+m/N3xBu+6mVkADaAlfOKoPLaxk2GcJgKhoipfHa+AzaNBqZ+v8rUh/CbsNRhhKSO
+7hfOV8FtEAk3quZDrXxwAGuTlr+L1q9/R+muOiVTWIA01qZR6XwSbVgYJeHAbC9I
+RO4xs5sohyBpgiz+i8SojSBKfV6PzhS62GvgEQDRVPDRp0KunIqvnmxQ8Enbtr0X
+J6zz2Kx5KGxcSLD6cXZkLALmVFyxYfZsG6OzLUIxpcDdYKadwXILUabHOyNTh2Bq
+2g5YmipT+bpql0qr7TcRuGwEIq4Qrw==
+=pTGQ
+-----END PGP SIGNATURE-----
+
+--Sig_/hB3/nWWQEpLWGuUaggCaU1T--
