@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE253F4EF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E483F4EFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhHWREk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhHWREi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:04:38 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2382C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:03:55 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id dt3so10061899qvb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:03:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=pa5+KWLWH/xTD6y1ZfeTwhABwlgMcIDFHCErhQl8iX4=;
-        b=g94yLNPFSbGZVPDf+2VsyeVlTr5mGfxuA+l4Dp8VdMXnK8M98KWKt7XIS0ecUFXC2J
-         sitK+qckHIVRuL++/i3F2es2mI4tzQayDeX+lN/dUmYzir7VGzir0TbdmUNEJ8JbbCAN
-         v1i7Cd25LeUnsx7XNH3zxVMfJMAc9gz6z2jub3/zoKH1XyqnQfNMgy92x4p06Ptk4lhG
-         hSXMSsLR9ZVqBPA27bK6UCUpK1Xr8LdW4+DJDqp9XSKBV3IBa3PF3M41ft9JjxuN8Wod
-         R+4BceRzK1RbTqYxQd/oxozyRJhKe16PFor5c8KPw1W8l/+URu15vaAmrRCHqqYAAUPA
-         A4qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=pa5+KWLWH/xTD6y1ZfeTwhABwlgMcIDFHCErhQl8iX4=;
-        b=DzGkDUDkstU15GLQz2xmjvYIYM9qbaF067CFhUXncD9gDAqpI76KOMtfyoaVTaq2qi
-         CGLwIMpDt/ENA1DZGehEW39bI3FgJH/1UcMl+TYJI6ZNOFp1OxI4sBf34OQYBe5yU/pX
-         ASQbK05QULzgoSEULEjH89XviUsVHdR2SOEsgS0rTx+xPhnNKuW0xip8HVh/8TmRkUCB
-         DtH7IqIgo5DHUl4JUh07IxSIh8CXPaARb6Hqflqt3ZUfeIkIpZCSuyxosD5tJ4XF+XH9
-         Dvpgg7/SWik0Vb31czu1PLXS7j98Mjb0uJWCJu9KSeCmb+Y+rTxJ9TFcIahLc7+KzIJc
-         +NRg==
-X-Gm-Message-State: AOAM530XZ41VioB3hRyvmAgkosns76CHlGuS51JgJYcvFSWe60kIzgvi
-        extqE+BoT2FmbCt8p4MLd3T/Q1NrdStOxx7Sf7c=
-X-Google-Smtp-Source: ABdhPJyCoc8AK8GD1z6iW6i1DV5TityEhFu2lewHgfz3xbi51BOP8AktcSsYj8AfJg1hLyumFYJ3GOctrCY8a6nT9AE=
-X-Received: by 2002:a0c:ffae:: with SMTP id d14mr33993274qvv.41.1629738234983;
- Mon, 23 Aug 2021 10:03:54 -0700 (PDT)
+        id S230253AbhHWRIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:08:06 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:55711 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230474AbhHWRGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 13:06:33 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Gtdt53jKnz9sTr;
+        Mon, 23 Aug 2021 19:05:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fbdMG_FqIlnR; Mon, 23 Aug 2021 19:05:49 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gtdt52kzjz9sTg;
+        Mon, 23 Aug 2021 19:05:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 268CE8B7AD;
+        Mon, 23 Aug 2021 19:05:49 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 2xoQtNv-6Qji; Mon, 23 Aug 2021 19:05:49 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BABDA8B7BA;
+        Mon, 23 Aug 2021 19:05:48 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/booke: Avoid link stack corruption in several
+ places
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <d7435e616336fd5f07bb19ec61e97d71e5c53568.1629705153.git.christophe.leroy@csgroup.eu>
+ <20210823155837.GX1583@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <67a5be3f-a443-03eb-aa8e-a1fa6c0b3d3f@csgroup.eu>
+Date:   Mon, 23 Aug 2021 19:05:38 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:ad4:5a04:0:0:0:0:0 with HTTP; Mon, 23 Aug 2021 10:03:54
- -0700 (PDT)
-Reply-To: michellegoodman035@gmail.com
-From:   Michelle Goodman <michellegoodman001@gmail.com>
-Date:   Mon, 23 Aug 2021 18:03:54 +0100
-Message-ID: <CA+jr58oHFF_NGhTmvrJX_JMpagqOKk54Gg2oOi=eBrCkP7166g@mail.gmail.com>
-Subject: HALO
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210823155837.GX1583@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, ich hoffe du hast meine Nachricht bekommen.
-Ich brauche schnelle Antworten
 
-Vielen Dank.
-Michelle
+
+Le 23/08/2021 à 17:58, Segher Boessenkool a écrit :
+> On Mon, Aug 23, 2021 at 07:53:01AM +0000, Christophe Leroy wrote:
+>>   /* Be careful, this will clobber the lr register. */
+>>   #define LOAD_REG_ADDR_PIC(reg, name)		\
+>> -	bl	0f;				\
+>> +	bcl	20,31,0f			\
+>>   0:	mflr	reg;				\
+>>   	addis	reg,reg,(name - 0b)@ha;		\
+>>   	addi	reg,reg,(name - 0b)@l;
+> 
+> The code ended each line with a semicolon before, for absolutely no
+> reason that I can see, but still.  Fixing that would be nice, but only
+> doing it on one line isn't good.
+
+Sure, forgetting the semicolon broke the build. That's because the backslash removes the newline.
+
+The cleanest way I found to fix that quite of stuff is by using GAS macro, as I did for 
+LOAD_REG_IMMEDIATE() some time ago.
+
+> 
+> Btw.  Both the 7450 and the modern cores implementing this really need
+> this to be $+4, so it is a lot clearer to write that instead of 1f or
+> a named label.
+
+I like that, removing unneeded labels will make it smoother and clearer. I'll do it.
+
+Christophe
