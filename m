@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B6B3F4EE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA003F4EE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhHWRBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
+        id S231387AbhHWRCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbhHWRBm (ORCPT
+        with ESMTP id S231273AbhHWRB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:01:42 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7419BC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:00:59 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id h9so38432906ejs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:00:59 -0700 (PDT)
+        Mon, 23 Aug 2021 13:01:57 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCACC061575;
+        Mon, 23 Aug 2021 10:01:15 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id q70so19195883ybg.11;
+        Mon, 23 Aug 2021 10:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RKZs89fuLtkQSgv1rIGCp+G5BzMsQVDBKa5KYJGPMQo=;
-        b=K9CflRAQPex0Z7F1fAvEEA2mdF8YNHHmNQQYm29NT45BWXaHVee+6I4k+JHaeFJnCF
-         fOsw2vwSUW6G8KaIRtsNKklVkmnz9yvqAWOcyWK1PC87F72KKwE/8H+Q4f3coCCyNwI1
-         8jMgukxYManP5YW7qO19MEeVYgsD3WoT/T1SK4q39kH7uck3n8Cpt5yPvM53rl2oz8VV
-         OKbrCFSG92e/16eglZRKzh4/uzkrPdTkRBHGnDJ1iU7PplBuJNwS2fCjxo4TCN2FXBfR
-         T/g6AXZ8xkozSvJStYIMb+OQE81eX/829yYB5kN0J9w1RXWdiF6vhID1Nl5hEejTkVgh
-         lFBg==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=9dChikHVgwG7d/711i1s9qvxIpLptusWO5nO6BvhLUo=;
+        b=GNvXr/klOHZL1ZA7nzMMaAdqniR9VRCPwLZbRzG/fEQSpfufYJSJr5lJ24edEMOcE9
+         K0Cx69cjOLgZBMYPX8TRt4nkvTuEPluJop8k4ZWnkYHP92Y6Z3dzFFj0YqMOvO4ZmVTv
+         H3ye+UKtCJNWa6g+c4YWU4C989oXLnU13CF66wkyoiiJj27+rDglFyB2A+DV9G0EhrGp
+         JSAnesh1wkhfCs8ZlRHpSs10N3FyR79whXGx+Xfv/lxq+5qePlGGsgCy65MKUnaxIrSQ
+         IaE/5JzQfRsA7aGhqrpyK3tHWnwCw29BHv8FkuCDV3SJiBaUkRIOeSjqlwFKMjlcdjTr
+         dvKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RKZs89fuLtkQSgv1rIGCp+G5BzMsQVDBKa5KYJGPMQo=;
-        b=B3y/HF7Ld9iErfCVScFBOeQuurdzYwx3fPHjU3s2vH+2CnoZwMdog/raYA0FwnntGM
-         ezro+2zDlV8MJJV3uPw0c3QroPsT6+FVnJm7sIeeGyv+uuL7QahMjkuFy2ioGM91FvMc
-         6/nDO/k6i7Qmlud8LE1F13Llyu0QilwCbTlQ9gIjmIqpGYiA/MXkuM1EekkwJEiNCWyE
-         K+t1e25GqqjxQ4GpJzCCAMGb4K2ttORuRx1hzuUuGuhSEESp013j+Yd/QmC3mYsbiPbS
-         cNpbPDYz82wOzrs3HRYlqiQdS9SsXP8ZyJ4rbDVexNyL1W3MDSaRQBj9lR9QgKVTY0qB
-         LvQg==
-X-Gm-Message-State: AOAM533NBA4DCECAlsZXU5scF36MZUqnTl9A5C2S/Qq++sA8aYo5xU7O
-        FndNJQUtwLzaCX6BnfaykjxNE0B0yeQ=
-X-Google-Smtp-Source: ABdhPJxCgMILpou0Z6NZmL/OByXrMkntRIc3Eqde5F/pUwWMJ1KIf9eBp6Vhk28N5ztcwUrBtwSZAg==
-X-Received: by 2002:a17:906:5408:: with SMTP id q8mr37220563ejo.54.1629738058019;
-        Mon, 23 Aug 2021 10:00:58 -0700 (PDT)
-Received: from xps.yggdrasil ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id b18sm1633188ejl.90.2021.08.23.10.00.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 10:00:57 -0700 (PDT)
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/5] staging: r8188eu: incorrect type in assignment
-Date:   Mon, 23 Aug 2021 22:30:30 +0530
-Message-Id: <876b83dad76a6f561879da0db1fbb25b251374d4.1629563318.git.aakashhemadri123@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1629563318.git.aakashhemadri123@gmail.com>
-References: <cover.1629563318.git.aakashhemadri123@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=9dChikHVgwG7d/711i1s9qvxIpLptusWO5nO6BvhLUo=;
+        b=tadywR2tbaKN4kU4qG9LezqTh3XBlb8F3750atOjwe+S0rINSA3xRAvubOY+zeCtO7
+         tXGxkrIfov+xxVbH7DS/+0hKANipoOXWHjXIyuewdxPjbk5E2Xu9dzbs9oorWAICIPAu
+         g/AELc5XBf1E4nLBDJU6/JjpH4fkkqIbC95iactrv4L8uky4a3Bnu47Qc+SqDsSatPdr
+         MilJ9oOrk/5AnSkAtzsTUFHDCk3qFwQKVdRAM4RoWm9aP42sHFhkCiwOaIpM37fOMW5i
+         DOXVuz48nlWlMkUwxqCVX7OIoXugH7Qq6xzP58abfxTqvXpW8/jhjCYf+MqGOhz2QXzi
+         GSzg==
+X-Gm-Message-State: AOAM5327uLalMa4wosvymmFiMzEwuC0JkR+qAil6A5WPeogg2W1PA5xC
+        biXQ4DBuae8H4cV7SOnGB1mAvwbM5dyBsH6fhw0=
+X-Google-Smtp-Source: ABdhPJyGU4kMfCciHNO8O+6GnbLAOsGM06FQW5NNmI91xMkL9CZsZYi+5EsZKEYgTs/P3ictQHhhNTv4Y/wQPeiTDyc=
+X-Received: by 2002:a25:505:: with SMTP id 5mr45360934ybf.157.1629738074248;
+ Mon, 23 Aug 2021 10:01:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 23 Aug 2021 19:01:14 +0200
+Message-ID: <CAKXUXMzdGdyQg9CXJ2AZStrBk3J10r5r=gyiAuU4WimnoQNyvA@mail.gmail.com>
+Subject: Suspicious pattern for use of function xt_register_template()
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warning:
-> rtw_br_ext.c:516:57: warning: incorrect type in assignment
-    (different base types)
-> rtw_br_ext.c:516:57:    expected unsigned short
-> rtw_br_ext.c:516:57:    got restricted __be16 [usertype]
+Dear Florian, dear netfilter maintainers,
 
-*pMagic holds __be16 change it's type to __be16
+Commit fdacd57c79b ("netfilter: x_tables: never register tables by
+default") on linux-next
+introduces the function xt_register_template() and in all cases but
+one, the calls to that function are followed by:
 
-Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
----
+    if (ret < 0)
+        return ret;
 
-Incorrectly removed htons() to satisfy sparse warning. Instead make
-pMagic use the appropriate bid endian type
+All these checks were also added with the commit above.
 
- drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+In the one case, for iptable_mangle_init() in
+./net/ipv4/netfilter/iptable_mangle.c, this pattern was not followed.
+This makes this ret assignment in this function a Dead Store and
+hence, clang-analyzer warns about that.
 
-diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-index 83a4594a4214..14cf13516d34 100644
---- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-@@ -474,7 +474,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 		/*                Handle PPPoE frame                 */
- 		/*---------------------------------------------------*/
- 		struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
--		unsigned short *pMagic;
-+		__be16 *pMagic;
- 
- 		switch (method) {
- 		case NAT25_CHECK:
-@@ -512,7 +512,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
- 						tag->tag_len = htons(MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN+old_tag_len);
- 
- 						/*  insert the magic_code+client mac in relay tag */
--						pMagic = (unsigned short *)tag->tag_data;
-+						pMagic = (__be16 *)tag->tag_data;
- 						*pMagic = htons(MAGIC_CODE);
- 						memcpy(tag->tag_data+MAGIC_CODE_LEN, skb->data+ETH_ALEN, ETH_ALEN);
- 
--- 
-2.32.0
+Are we missing here an early return for a negative return value as
+well, or is this case for iptable_mangle_init() in
+./net/ipv4/netfilter/iptable_mangle.c special?
 
+
+Best regards,
+
+Lukas
