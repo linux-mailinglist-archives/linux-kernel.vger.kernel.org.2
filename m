@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE973F5249
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801693F521A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhHWUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
+        id S232589AbhHWUa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbhHWUa7 (ORCPT
+        with ESMTP id S232165AbhHWUaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:30:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38582C061757;
-        Mon, 23 Aug 2021 13:30:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=FjHYiJcoMRUSOg8mXjovmoG4YYRib0Dd4tpy9VAVPrM=; b=hkHkWpB6ezJIMqnl+yvYHudFX0
-        KnNgmD/FTenq3X7xrHQXRsABnQKwgg/eDx7kD3RFpSZWUmTtlc+Fdufz8qgOhQQcoL15xaZ7MJieu
-        SUBv8DGDhp/kNOBDFMAUo+LEreTcbXrt5Z9ZqoBuxshCH1XAW1HHsTCrX598/J17imHBONknSSmEJ
-        1WtF9exW246DnTlPbNeHGfRpLBRxHS2H7I2rF9HvM8Zs+ioSxRu3EvDTNC+U5YEDSxQbNxt9zuelk
-        9PGFI2bGRt8zRan8ZuxrL3qSKPrvXiKUbSvCURZRp50A59RcYQabNse/nc9hPEFYLAtESKYmx/4mu
-        rwG28cww==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIGZa-000Zjc-Fg; Mon, 23 Aug 2021 20:29:34 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com
-Cc:     hch@infradead.org, hare@suse.de, bvanassche@acm.org,
-        ming.lei@redhat.com, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 10/10] nbd: add error handling support for add_disk()
-Date:   Mon, 23 Aug 2021 13:29:30 -0700
-Message-Id: <20210823202930.137278-11-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210823202930.137278-1-mcgrof@kernel.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
+        Mon, 23 Aug 2021 16:30:25 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBA3C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:29:42 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id f6so15918938iox.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jrb8MmGaC68emddPwQPjXM1GY7GuBgRkSODpa1XojoA=;
+        b=Jix95rVYPKxFfYL/aPT0sbEErQFG61rQbSUAEgNs/qK+fLsttL42hCyXs3hCp5CV0R
+         rsX0/JQ+9CLBWK5wOGmo8fqZW/0iI/q+zzd1IrZBKMm0G27kGdG5UyrDI7/mtfbYoBCE
+         nWdejcd7DXz4DhU5ADMGa0i1ys42I2y/8956E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jrb8MmGaC68emddPwQPjXM1GY7GuBgRkSODpa1XojoA=;
+        b=gPbY7nHG66VdJmVdPNIBEVpbuifEA3YrMS3y/RYtofGOzmuTW3qIf/8EpUVmgJZsZC
+         m8Bej5PRL6ap+LB8MToUfSzCFfvy6AnaUxmFk9CIiOz8x5sJSucYxMxgeAVV/aFNiPCe
+         BsiEPC7GPTyOMb5/WjUw30X7TI2/CND4CInb0z4kahzVDocP/tmnyBike/u9O5nSQggA
+         QFlcFtNHOMdgpdY0SGh5ZbvO55h7DWOvGg7utygu5e9L5j38f7ZEnQNn32MRXHIAO253
+         TLjQf6w0nJX2jQrDYUsW0jMAqSC7CGzeAd8hx2FciyLCDkNEk5sgKs5afd9EI5dAT93d
+         tYrw==
+X-Gm-Message-State: AOAM533OclvJMsUPnpCbAwU0/UkMgZXDedrWSio73rQwHRKGIssRyOXV
+        kR9hZk+NJ8l7ojrMzU8Eqh+qcQ==
+X-Google-Smtp-Source: ABdhPJxy1IRPOXexnqBhdOFJX0C6Doap9TfWg7EDkycAW0RxoKdX1OxZ1jB+j6JRstZSIPeYJNiV9g==
+X-Received: by 2002:a05:6602:2ac7:: with SMTP id m7mr28422332iov.66.1629750582194;
+        Mon, 23 Aug 2021 13:29:42 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y12sm8635418ilm.81.2021.08.23.13.29.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 13:29:41 -0700 (PDT)
+Subject: Re: [V2][PATCH] selftests/x86: Fix error: variably modified
+ 'altstack_data' at file scope
+To:     Jun Miao <jun.miao@windriver.com>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210823135626.3926364-1-jun.miao@windriver.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <437f8945-cbd9-dccd-2d86-bd6746d1424c@linuxfoundation.org>
+Date:   Mon, 23 Aug 2021 14:29:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20210823135626.3926364-1-jun.miao@windriver.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+On 8/23/21 7:56 AM, Jun Miao wrote:
+> Based on glibc 2.33 -> 2.34, there is one new feature:
+> 
+> NEWS for version 2.34
+> =====================
+> Major new features:
+> * Add _SC_MINSIGSTKSZ and _SC_SIGSTKSZ.  When _DYNAMIC_STACK_SIZE_SOURCE
+>    or _GNU_SOURCE are defined, MINSIGSTKSZ and SIGSTKSZ are no longer
+>    constant on Linux.  MINSIGSTKSZ is redefined to sysconf(_SC_MINSIGSTKSZ)
+>    and SIGSTKSZ is redefined to sysconf (_SC_SIGSTKSZ).  This supports
+>    dynamic sized register sets for modern architectural features like
+>    Arm SVE.
+> 
+> Build error with the GNU C Library 2.34:
+> DEBUG:	| sigreturn.c:150:13: error: variably modified 'altstack_data' at file scope
+> | sigreturn.c:150:13: error: variably modified 'altstack_data' at file scope
+> DEBUG:	|   150 | static char altstack_data[SIGSTKSZ];
+> |   150 | static char altstack_data[SIGSTKSZ];
+> DEBUG:	|       |             ^~~~~~~~~~~~~
+> 
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/nbd.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Please give more context on why this change is needed?
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index c38317979f74..95f84c9b31f2 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1730,10 +1730,14 @@ static int nbd_dev_add(int index)
- 	disk->fops = &nbd_fops;
- 	disk->private_data = nbd;
- 	sprintf(disk->disk_name, "nbd%d", index);
--	add_disk(disk);
-+	err = add_disk(disk);
-+	if (err)
-+		goto out_err_disk;
- 	nbd_total_devices++;
- 	return index;
- 
-+out_err_disk:
-+	blk_cleanup_disk(disk);
- out_free_idr:
- 	idr_remove(&nbd_index_idr, index);
- out_free_tags:
--- 
-2.30.2
+Doesn't look like you tried to compile this patch before
+sending this to me.
 
+> Signed-off-by: Jun Miao <jun.miao@windriver.com>
+
+
+thanks,
+-- Shuah
