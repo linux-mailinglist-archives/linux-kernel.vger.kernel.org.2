@@ -2,314 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1C73F431C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF46C3F4322
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhHWBhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
+        id S234680AbhHWBiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbhHWBhw (ORCPT
+        with ESMTP id S234660AbhHWBiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:37:52 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E13C06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:37:10 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id cn28so23716249edb.6
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nxWio+q29reCoS7GlvNwJGZL+eItWHFeqY81vp5x9Eg=;
-        b=23wPDmux5XY53E+mP4bRFgGciUnIFIhG9fpgmm2SwcuISYFzuqinRLQDynUleKXVQm
-         FBdSuNibkOZJgvNzXM3ckwvVU1FyoA3ML8jovp7zgpEfE3lhFdBHPuavXCYQ6CzQKUPp
-         MxmDDn1ipawshzjuKdsA6Ux8OjktZD53r3O7dfnZNBMfPZa8fodVFhLXXHOU/1Qf0Xu3
-         16JyTJiFJn+rMxXC5k5lr6WZ+h9iyeaPFBOwkamrLjLbGhYs28Dv97PFYI4MUbR2no76
-         gVk4S7SywqBKThyMZLZQBivUBSEdbysrpX7ioa14Anc6s1wPN1ZmIQ4vCuQ3BcKn/1Oq
-         C05g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nxWio+q29reCoS7GlvNwJGZL+eItWHFeqY81vp5x9Eg=;
-        b=HVvDcGPFuGm0gNtKVBoTegLLxydPSz9b5cbUDlMqAlM3BLrA9xRm/uaP+aut9TSjgJ
-         am0rzbcSpVs7KiyIZ8AY94lDBTvtQfTbX3s8h0m5K9iAfGIo9CpZt29DLhyJMZqFwZjt
-         gd7n1CSV/O0Oe1eMxLrngmwLlUHS8NATzmByjyyW/6WrWtT7EagjGFJVU4h0rIphn/Sw
-         ys/6R5kgJs5goK5JcgBoMATXRep6Kyqp2r6sGSpP1H0Zno/+eJ2Ir3a9BaSkiErRLQ9s
-         cVEkkc7yPHgM/2nVa6QM+1RVd6deb5ZqYDNPtTthLMXu//D+NLWenmMGLEO1Ryc4+6pP
-         jhiQ==
-X-Gm-Message-State: AOAM530BCjjVOlXc757J/ChHfExWWLD7t9AaFKmAeIuzgmtU6sM56wJs
-        Uqhc8/iv95MPuWVQSTQO02DRyHzZotrT4zdIKu8M8A==
-X-Google-Smtp-Source: ABdhPJwdmj0S6igpGgeJzgSQL+ZyF8LMkoVE5mn7v3U1UbXMNV18gQn76356S4cAFmnfZHkz7HvmvvFqfaM+OLX0S/0=
-X-Received: by 2002:a05:6402:254b:: with SMTP id l11mr35047588edb.268.1629682628803;
- Sun, 22 Aug 2021 18:37:08 -0700 (PDT)
+        Sun, 22 Aug 2021 21:38:51 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977DBC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:38:09 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E30714A3;
+        Mon, 23 Aug 2021 03:38:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1629682688;
+        bh=PP76d4HJZ4tmnoNU+amuBhKZukMUCE0j2k5zu4kAHFE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VHJx8k6Pi3Y4g2OzlwyoDmw47OSxMXigOs7WedhveJlArpaNpwx0vXukO54+wPXe4
+         tX1kN4FwekJ4G98uos042UObkIKrtyG9i6iaD+blxVFBmisy64zThJTnOJNddtTjU1
+         2JtDILnPNbqu/X3HfxiH0VM+2GaFd3bYjME0/hPo=
+Date:   Mon, 23 Aug 2021 04:37:58 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v4 2/6] phy: cdns-dphy: Add Rx support
+Message-ID: <YSL79vtTGsK+zwTQ@pendragon.ideasonboard.com>
+References: <20210820190346.18550-1-p.yadav@ti.com>
+ <20210820190346.18550-3-p.yadav@ti.com>
 MIME-Version: 1.0
-References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-8-brad@pensando.io>
- <20210330215541.GA729679@robh.at.kernel.org>
-In-Reply-To: <20210330215541.GA729679@robh.at.kernel.org>
-From:   Brad Larson <brad@pensando.io>
-Date:   Sun, 22 Aug 2021 18:36:58 -0700
-Message-ID: <CAK9rFnzxPFm3aJDUh0eZnV5q8EpGwqGkcKM=RbiVdp5C5UhaqQ@mail.gmail.com>
-Subject: Re: [PATCH v2 07/13] arm64: dts: Add Pensando Elba SoC support
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210820190346.18550-3-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi Pratyush,
 
-On Tue, Mar 30, 2021 at 2:55 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Sun, Mar 28, 2021 at 06:59:32PM -0700, Brad Larson wrote:
-> > Add Pensando common and Elba SoC specific device nodes
->
-> Build your dtb with W=1 and 'make dtbs_check' and fix warnings.
+Thank you for the patch.
 
-I'll do that thanks.
+On Sat, Aug 21, 2021 at 12:33:42AM +0530, Pratyush Yadav wrote:
+> The Cadence DPHY can be used to receive image data over the CSI-2
+> protocol. Add support for Rx mode. The programming sequence differs from
+> the Tx mode so it is added as a separate set of hooks to isolate the two
+> paths. The mode in which the DPHY has to be used is selected based on
+> the compatible.
+> 
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> 
+> ---
+> 
+> Changes in v4:
+> - Drop the submode parts. Use a different compatible for the Rx ops.
+> - Make bands and num_bands static.
+> 
+> Changes in v3:
+> - Use a table to select the band.
+> - Use a table to poll the data lane ready bits.
+> - Multiply the DPHY HS clock rate by 2 to get the bit rate since the
+>   clock is DDR.
+> 
+>  drivers/phy/cadence/cdns-dphy.c | 171 ++++++++++++++++++++++++++++++++
+>  1 file changed, 171 insertions(+)
+> 
+> diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
+> index 0a169d649216..149fccdfad38 100644
+> --- a/drivers/phy/cadence/cdns-dphy.c
+> +++ b/drivers/phy/cadence/cdns-dphy.c
+> @@ -1,11 +1,14 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  /*
+>   * Copyright: 2017-2018 Cadence Design Systems, Inc.
+> + * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com/
+>   */
+>  
+>  #include <linux/bitops.h>
+> +#include <linux/bitfield.h>
 
-> > +
-> > +             // CLUSTER 0
-> > +             cpu0: cpu@0 {
-> > +                     device_type = "cpu";
-> > +                     compatible = "arm,cortex-a72", "arm,armv8";
->
-> This should give you a warning.
+Alphabetical order please.
 
-I'll be sure to W=1 and make dtbs_check.  All the C++ comments are C syntax now.
+>  #include <linux/clk.h>
+>  #include <linux/io.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_device.h>
+> @@ -25,10 +28,14 @@
+>  #define DPHY_PMA_RCLK(reg)		(0x600 + (reg))
+>  #define DPHY_PMA_RDATA(lane, reg)	(0x700 + ((lane) * 0x100) + (reg))
+>  #define DPHY_PCS(reg)			(0xb00 + (reg))
+> +#define DPHY_ISO(reg)			(0xc00 + (reg))
+>  
+>  #define DPHY_CMN_SSM			DPHY_PMA_CMN(0x20)
+>  #define DPHY_CMN_SSM_EN			BIT(0)
+> +#define DPHY_CMN_RX_BANDGAP_TIMER_MASK	GENMASK(8, 1)
+>  #define DPHY_CMN_TX_MODE_EN		BIT(9)
+> +#define DPHY_CMN_RX_MODE_EN		BIT(10)
+> +#define DPHY_CMN_RX_BANDGAP_TIMER	0x14
+>  
+>  #define DPHY_CMN_PWM			DPHY_PMA_CMN(0x40)
+>  #define DPHY_CMN_PWM_DIV(x)		((x) << 20)
+> @@ -45,10 +52,27 @@
+>  #define DPHY_CMN_OPDIV_FROM_REG		BIT(6)
+>  #define DPHY_CMN_OPDIV(x)		((x) << 7)
+>  
+> +#define DPHY_BAND_CFG			DPHY_PCS(0x0)
+> +#define DPHY_BAND_CFG_LEFT_BAND		GENMASK(4, 0)
+> +#define DPHY_BAND_CFG_RIGHT_BAND	GENMASK(9, 5)
+> +
+>  #define DPHY_PSM_CFG			DPHY_PCS(0x4)
+>  #define DPHY_PSM_CFG_FROM_REG		BIT(0)
+>  #define DPHY_PSM_CLK_DIV(x)		((x) << 1)
+>  
+> +#define DPHY_POWER_ISLAND_EN_DATA	DPHY_PCS(0x8)
+> +#define DPHY_POWER_ISLAND_EN_DATA_VAL	0xaaaaaaaa
+> +#define DPHY_POWER_ISLAND_EN_CLK	DPHY_PCS(0xc)
+> +#define DPHY_POWER_ISLAND_EN_CLK_VAL	0xaa
+> +
+> +#define DPHY_ISO_CL_CTRL_L		DPHY_ISO(0x10)
+> +#define DPHY_ISO_DL_CTRL_L0		DPHY_ISO(0x14)
+> +#define DPHY_ISO_DL_CTRL_L1		DPHY_ISO(0x20)
+> +#define DPHY_ISO_DL_CTRL_L2		DPHY_ISO(0x30)
+> +#define DPHY_ISO_DL_CTRL_L3		DPHY_ISO(0x3c)
+> +#define DPHY_ISO_LANE_READY_BIT		0
+> +#define DPHY_ISO_LANE_READY_TIMEOUT_MS	100UL
+> +
+>  #define DSI_HBP_FRAME_OVERHEAD		12
+>  #define DSI_HSA_FRAME_OVERHEAD		14
+>  #define DSI_HFP_FRAME_OVERHEAD		6
+> @@ -57,6 +81,9 @@
+>  #define DSI_NULL_FRAME_OVERHEAD		6
+>  #define DSI_EOT_PKT_SIZE		4
+>  
+> +#define DPHY_LANES_MIN			1
+> +#define DPHY_LANES_MAX			4
+> +
+>  struct cdns_dphy_cfg {
+>  	u8 pll_ipdiv;
+>  	u8 pll_opdiv;
+> @@ -98,6 +125,22 @@ struct cdns_dphy {
+>  	struct phy *phy;
+>  };
+>  
+> +struct cdns_dphy_rx_band {
+> +	unsigned int min_rate;
+> +	unsigned int max_rate;
+> +};
+> +
+> +/* Order of bands is important since the index is the band number. */
+> +static struct cdns_dphy_rx_band bands[] = {
 
-> > +&qspi {
-> > +     status = "okay";
-> > +     flash0: mt25q@0 {
->
-> flash@0
+static const
 
-Yes, generic node name should be used.  Changed mt25q to flash.
--       flash0: mt25q@0 {
-+       flash0: flash@0 {
+> +	{80, 100}, {100, 120}, {120, 160}, {160, 200}, {200, 240},
+> +	{240, 280}, {280, 320}, {320, 360}, {360, 400}, {400, 480},
+> +	{480, 560}, {560, 640}, {640, 720}, {720, 800}, {800, 880},
+> +	{880, 1040}, {1040, 1200}, {1200, 1350}, {1350, 1500}, {1500, 1750},
+> +	{1750, 2000}, {2000, 2250}, {2250, 2500}
+> +};
+> +
+> +static int num_bands = ARRAY_SIZE(bands);
 
-> > +             compatible = "jdec,spi-nor";
->
-> jedec,spi-nor
+No need for a variable (which should be const otherwise), you can use
+ARRAY_SIZE(bands) where needed.
 
-Changed jdec to jedec
--               compatible = "jdec,spi-nor";
-+               compatible = "jedec,spi-nor";
+> +
+>  static int cdns_dsi_get_dphy_pll_cfg(struct cdns_dphy *dphy,
+>  				     struct cdns_dphy_cfg *cfg,
+>  				     struct phy_configure_opts_mipi_dphy *opts,
+> @@ -309,6 +352,132 @@ static const struct cdns_dphy_ops tx_ref_dphy_ops = {
+>  	.set_psm_div = cdns_dphy_ref_set_psm_div,
+>  };
+>  
+> +static int cdns_dphy_rx_power_on(struct cdns_dphy *dphy)
+> +{
+> +	/* Start RX state machine. */
+> +	writel(DPHY_CMN_SSM_EN | DPHY_CMN_RX_MODE_EN |
+> +	       FIELD_PREP(DPHY_CMN_RX_BANDGAP_TIMER_MASK,
+> +			  DPHY_CMN_RX_BANDGAP_TIMER),
+> +	       dphy->regs + DPHY_CMN_SSM);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_dphy_rx_power_off(struct cdns_dphy *dphy)
+> +{
+> +	writel(0, dphy->regs + DPHY_CMN_SSM);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_dphy_rx_get_band_ctrl(unsigned long hs_clk_rate)
+> +{
+> +	unsigned int rate;
+> +	int i;
 
-> > +     spi@0 {
->
-> 'spi@' is reserved for SPI controllers.
+i is never negative, you can make it an unsigned int.
 
-Changed the node name to indicate the spi bus number and chip select
+> +
+> +	rate = hs_clk_rate / 1000000UL;
+> +	/* Since CSI-2 clock is DDR, the bit rate is twice the clock rate. */
+> +	rate *= 2;
+> +
+> +	if (rate < bands[0].min_rate || rate >= bands[num_bands - 1].max_rate)
+> +		return -EOPNOTSUPP;
+> +
+> +	for (i = 0; i < num_bands; i++) {
+> +		if (rate >= bands[i].min_rate && rate < bands[i].max_rate)
 
-&spi0 {
-        num-cs = <4>;
-        cs-gpios = <&spics 0 GPIO_ACTIVE_LOW>, <&spics 1 GPIO_ACTIVE_LOW>,
-                   <&porta 1 GPIO_ACTIVE_LOW>, <&porta 7 GPIO_ACTIVE_LOW>;
-        status = "okay";
--       spi@0 {
-+       spi0_cs0@0 {
-                compatible = "pensando,cpld";
-                #address-cells = <1>;
-                #size-cells = <1>;
-                spi-max-frequency = <12000000>;
-                reg = <0>;
-        };
--       spi@1 {
-+       spi0_cs1@1 {
-        ...
+You can replace this with
 
-> > +             compatible = "pensando,cpld";
->
-> Any new compatibles need to be documented with schema.
+		if (rate < bands[i].max_rate)
 
-I'll create the bindings file for the v3 patchset dependent on the
-discussion revolving around adding pensando,cpld to this list in
-spi/spidev.c.
+as the bands are in increasing order.
 
-static const struct of_device_id spidev_dt_ids[] = {
-        { .compatible = "rohm,dh2228fv" },
-        { .compatible = "lineartechnology,ltc2488" },
-        { .compatible = "ge,achc" },
-        { .compatible = "semtech,sx1301" },
-        { .compatible = "lwn,bk4" },
-        { .compatible = "dh,dhcom-board" },
-        { .compatible = "menlo,m53cpld" },
-        { .compatible = "pensando,cpld" },    <===
-        {},
-};
-MODULE_DEVICE_TABLE(of, spidev_dt_ids);
+> +			return i;
+> +	}
+> +
+> +	/* Unreachable. */
+> +	WARN(1, "Reached unreachable code.");
+> +	return -EINVAL;
 
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/pensando/elba-flash-parts.dtsi
-> > @@ -0,0 +1,78 @@
-> > +&flash0 {
-> > +     partitions {
-> > +             compatible = "fixed-partitions";
->
-> This should just be moved into elba-asic-common.dtsi IMO unless you have
-> good reasons to keep it separate.
+That's not very nice.
 
-This file is shared across platforms which have additional flash
-devices and partition schemes.
+As a clock rate higher than the maximum isn't supposed to happen, you
+could drop that initial check (it won't affect performance) and return
+-EOPNOTSUPP here without a WARN().
 
-> You need SPDX license tags at the top of each file. checkpatch.pl should
-> tell you this.
+> +}
+> +
+> +static int cdns_dphy_rx_wait_for_bit(void __iomem *addr, unsigned int bit)
+> +{
+> +	u32 val;
+> +
+> +	return readl_relaxed_poll_timeout(addr, val, val & BIT(bit), 10,
+> +					  DPHY_ISO_LANE_READY_TIMEOUT_MS * 1000);
 
-I don't recall checkpatch.pl reporting that for device tree files.
-I've added to each file now.
+A busy wait for one second is quite long. How long does it typically
+take for the condition to be true ?
 
-> > +/*
-> > + * Copyright (c) 2019, Pensando Systems Inc.
-> > + * This program is free software; you can redistribute it and/or modify
-> > + * it under the terms of the GNU General Public License version 2 as
-> > + * published by the Free Software Foundation.
-> > + */
-> > +
-> > +#include "dt-bindings/interrupt-controller/arm-gic.h"
-> > +
-> > +/ {
-> > +     compatible = "pensando,elba";
->
-> This needs an SoC family schema.
->
-> Generally this and 'model' should be in the same file (the board file).
+> +}
+> +
+> +static int cdns_dphy_rx_wait_lane_ready(struct cdns_dphy *dphy, int lanes)
 
-Will add schema for pensando,elba in the v3 patchset.  The compatible
-and model are now in the board file elba-asic.dts as shown below
+lanes should be an unsigned int.
 
-+/ {
-+       model = "Elba ASIC Board";
-+       compatible = "pensando,elba";
-+
-+       aliases {
-+               serial0 = &uart0;
-+               spi0 = &spi0;
-+               spi1 = &qspi;
-+       };
-+
-+       chosen {
-+               stdout-path = "serial0:115200n8";
-+       };
-+};
+> +{
+> +	void __iomem *reg = dphy->regs;
 
-> > +
-> > +     interrupt-parent = <&gic>;
-> > +     #address-cells = <2>;
-> > +     #size-cells = <2>;
-> > +
-> > +     clocks {
->
-> Drop this container node.
+You can use dphy->regs directly in the code below.
 
-Removed the container node.
+> +	u32 data_lane_ctrl[] = {DPHY_ISO_DL_CTRL_L0, DPHY_ISO_DL_CTRL_L1,
+> +				DPHY_ISO_DL_CTRL_L2, DPHY_ISO_DL_CTRL_L3};
 
-> > +     /* Common UIO device for MSI drivers */
-> > +     uio_penmsi {
-> > +             compatible = "pensando,uio_penmsi";
-> > +             name = "uio_penmsi";
->
-> No. What's UIO?
+static const, and move it first in the function.
 
-UIO nodes are removed, only core SoC support will be included
+> +	int ret, i;
 
-> > +     soc: soc {
-> > +             compatible = "simple-bus";
-> > +             #address-cells = <2>;
-> > +             #size-cells = <2>;
-> > +             ranges;
-> > +
-> > +             gic: interrupt-controller@800000 {
->
-> Order nodes by increasing unit address.
+i is never negative here either.
 
-Yes, I've done this and will be part of the v3 patchset
+> +
+> +	/* Data lanes. Minimum one lane is mandatory. */
+> +	if (lanes < DPHY_LANES_MIN || lanes > DPHY_LANES_MAX)
+> +		return -EINVAL;
+> +
+> +	/* Clock lane */
+> +	ret = cdns_dphy_rx_wait_for_bit(reg + DPHY_ISO_CL_CTRL_L,
+> +					DPHY_ISO_LANE_READY_BIT);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < lanes; i++) {
+> +		ret = cdns_dphy_rx_wait_for_bit(reg + data_lane_ctrl[i],
+> +						DPHY_ISO_LANE_READY_BIT);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_dphy_rx_configure(struct cdns_dphy *dphy,
+> +				  union phy_configure_opts *opts)
+> +{
+> +	unsigned int reg;
+> +	int band_ctrl, ret;
+> +
+> +	band_ctrl = cdns_dphy_rx_get_band_ctrl(opts->mipi_dphy.hs_clk_rate);
+> +	if (band_ctrl < 0)
+> +		return band_ctrl;
+> +
+> +	reg = FIELD_PREP(DPHY_BAND_CFG_LEFT_BAND, band_ctrl) |
+> +	      FIELD_PREP(DPHY_BAND_CFG_RIGHT_BAND, band_ctrl);
+> +	writel(reg, dphy->regs + DPHY_BAND_CFG);
+> +
+> +	/*
+> +	 * Set the required power island phase 2 time. This is mandated by DPHY
+> +	 * specs.
+> +	 */
+> +	reg = DPHY_POWER_ISLAND_EN_DATA_VAL;
+> +	writel(reg, dphy->regs + DPHY_POWER_ISLAND_EN_DATA);
+> +	reg = DPHY_POWER_ISLAND_EN_CLK_VAL;
+> +	writel(reg, dphy->regs + DPHY_POWER_ISLAND_EN_CLK);
+> +
+> +	ret = cdns_dphy_rx_wait_lane_ready(dphy, opts->mipi_dphy.lanes);
+> +	if (ret) {
+> +		dev_err(dphy->dev, "DPHY wait for lane ready timeout\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cdns_dphy_rx_validate(struct cdns_dphy *dphy, enum phy_mode mode,
+> +				 int submode, union phy_configure_opts *opts)
+> +{
+> +	int ret;
+> +
+> +	ret = cdns_dphy_rx_get_band_ctrl(opts->mipi_dphy.hs_clk_rate);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return phy_mipi_dphy_config_validate(&opts->mipi_dphy);
+> +}
+> +
+> +static const struct cdns_dphy_ops rx_ref_dphy_ops = {
+> +	.power_on = cdns_dphy_rx_power_on,
+> +	.power_off = cdns_dphy_rx_power_off,
+> +	.configure = cdns_dphy_rx_configure,
+> +	.validate = cdns_dphy_rx_validate,
+> +};
+> +
+>  static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
+>  			      union phy_configure_opts *opts)
+>  {
+> @@ -421,6 +590,7 @@ static int cdns_dphy_remove(struct platform_device *pdev)
+>  
+>  static const struct of_device_id cdns_dphy_of_match[] = {
+>  	{ .compatible = "cdns,dphy", .data = &tx_ref_dphy_ops },
+> +	{ .compatible = "cdns,dphy-rx", .data = &rx_ref_dphy_ops },
+>  	{ /* sentinel */ },
+>  };
+>  MODULE_DEVICE_TABLE(of, cdns_dphy_of_match);
+> @@ -436,5 +606,6 @@ static struct platform_driver cdns_dphy_platform_driver = {
+>  module_platform_driver(cdns_dphy_platform_driver);
+>  
+>  MODULE_AUTHOR("Maxime Ripard <maxime.ripard@bootlin.com>");
+> +MODULE_AUTHOR("Pratyush Yadav <p.yadav@ti.com>");
+>  MODULE_DESCRIPTION("Cadence MIPI D-PHY Driver");
+>  MODULE_LICENSE("GPL");
 
-> > +             /*
-> > +              * Until we  know the interrupt domain following this, we
-> > +              * are forced to use this is the place where interrupts from
-> > +              * PCI converge. In the ideal case, we use one domain higher,
-> > +              * where the PCI-ness has been shed.
-> > +              */
-> > +             pxc0_intr: intc@20102200 {
->
-> interrupt-controller@...
-
-Changed intc to interrupt-controller
-
-> > +                     compatible = "pensando,soc-ictlr-csrintr";
-> > +                     interrupt-controller;
-> > +                     reg = <0x0 0x20102200 0x0 0x4>;
-> > +                     #interrupt-cells = <3>;
-> > +                     interrupt-parent = <&gic>;
-> > +                     interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
-> > +                     interrupt-names = "pxc0_intr";
-> > +             };
-> > +
-> > +             uart0: serial@4800 {
-> > +                     device_type = "serial";
->
-> Drop 'device_type'. It's deprecated for all but memory and pci.
->
-
-Removed  device_type = "serial";
-
-> > +             gpio0: gpio@4000 {
-> > +                     #address-cells = <1>;
-> > +                     #size-cells = <0>;
-> > +                     compatible = "snps,dw-apb-gpio";
-> > +                     reg = <0x0 0x4000 0x0 0x78>;
-> > +                     status = "disabled";
-> > +
-> > +                     porta: gpio-controller@0 {
->
-> gpio@0
-
-Changed from gpio@0 to gpio-port@0 based on additional reviewer input
-
--                       porta: gpio-controller@0 {
-+                       porta: gpio-port@0 {
-
-> > +
-> > +             /* UIO device using interrupt line PCIEMAC */
->
-> UIO is a kernel thing. It doesn't belong in DT.
-
-UIO nodes are removed for core SoC support patchset
-
-> > +
-> > +             emmc: mmc@30440000 {
-> > +                     compatible = "pensando,elba-emmc", "cdns,sd4hc";
-> > +                     clocks = <&emmc_clk>;
-> > +                     interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> > +                     reg = <0x0 0x30440000 0x0 0x10000
-> > +                            0x0 0x30480044 0x0 0x4>;
->
-> Use <> around each entry.
-
-The system fails to boot if I make that change, mmc probe fails and
-rootfs not found
-
--               reg = <0x0 0x30440000 0x0 0x10000
--                      0x0 0x30480044 0x0 0x4>;
-+               reg = <0x0 0x30440000 0x0 0x10000>,
-+                     <0x0 0x30480044 0x0 0x4>;
-
+-- 
 Regards,
-Brad
+
+Laurent Pinchart
