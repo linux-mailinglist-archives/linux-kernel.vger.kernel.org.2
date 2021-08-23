@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A166F3F4E3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E013F4E45
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhHWQUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:20:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:53177 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhHWQUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:20:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629735574; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=FsdWWS5i8+Mrzr5FVS8GQ0BaF3qwXImZiY/O4K6ZXGw=;
- b=fpQNQ5zbis8uX+aqfNEcg2z5Lr9uJz0BvYh7dUVEmECdeQCK+qaJaLyKCPv3RbI9sHgeIDvW
- QC7Jdv71tZZeIQUUOaNR4G7NxgP4jvmgjoEgB5nGQcsgG5AOiLNohwsMasliWzCFJDeHTxlY
- Af0EVTIQXnisZpXv+pxo/KCEhaY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6123ca7df588e42af1f37ab2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 16:19:09
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EAD8CC43617; Mon, 23 Aug 2021 16:19:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41F01C4338F;
-        Mon, 23 Aug 2021 16:19:08 +0000 (UTC)
+        id S230105AbhHWQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:20:34 -0400
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:46847 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229962AbhHWQUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:20:30 -0400
+Received: by mail-pg1-f181.google.com with SMTP id k14so17123939pga.13;
+        Mon, 23 Aug 2021 09:19:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ff0NJeK+y2XgryMHnZr9ZhdDapgrsJ9pyZMfkH0leUI=;
+        b=LOLnRHGRkX56dSu0fH5xdIssvKJyOlj6MzbGE19dmXWUskj2PV6dBA3FKPxUVXiuH+
+         oSsvog8oN4Zhj/WHHCyuLv9ZPelEPZnT/JMYZa83Z36D2VxeLL3z7eMQFoXRqCeuBMbx
+         BlYPhfssXKr45Xzfc0iu3DGjirIQFqnLEy2hUZ9F+6kWj/yK/zH9mbss0NGY3aYNwpyP
+         hka19ta+n8N96lUr5axT/rOFF13bVLyA8g3YcOAXVFM5kjTiV1mHO8gzGbdr8CS58UMI
+         9I1+FRULMxkQ6cRUpRfpt0kSsWSKaiCmk3E2iSxUo45iyATuRlgJvQHCz9oCbz4qXH2o
+         6F6g==
+X-Gm-Message-State: AOAM532ikO+SfvPb4xr6N5Hh3PGjnvYulfyUNe8AbaokjFXWLWootpMf
+        ygOIgEbITsrVr38uWRH7M4QvC5uy+qQ=
+X-Google-Smtp-Source: ABdhPJwSNP5qocvrIKIrLQ9dD5JPxPYYEpfDnK1kq9BfCtNXVdnjzgU1jxmiUZoTIEDs3nyInn9IYA==
+X-Received: by 2002:a05:6a00:1311:b029:3b2:87fe:a598 with SMTP id j17-20020a056a001311b02903b287fea598mr34914280pfu.74.1629735587160;
+        Mon, 23 Aug 2021 09:19:47 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:e98a:ca44:7012:ad8e])
+        by smtp.gmail.com with ESMTPSA id t20sm19148312pgb.16.2021.08.23.09.19.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 09:19:46 -0700 (PDT)
+Subject: Re: [PATCH v2] scsi: ufs: ufshpb: Fix possible memory leak
+To:     keosung.park@samsung.com, ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <CGME20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74@epcms2p1>
+ <1891546521.01629711601304.JavaMail.epsvc@epcpadp3>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <94a1a03e-7cb8-8815-60de-9c579cac7e8d@acm.org>
+Date:   Mon, 23 Aug 2021 09:19:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <1891546521.01629711601304.JavaMail.epsvc@epcpadp3>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Aug 2021 21:49:08 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
-        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
-        ohad@wizery.com, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rishabhb@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v5 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
- property
-In-Reply-To: <CAE-0n50z=MaEZhXRSQpN6Jo8m7nyQSS6MqikAgT5cfkH1ZvL_g@mail.gmail.com>
-References: <1629342136-3667-1-git-send-email-sibis@codeaurora.org>
- <1629342136-3667-3-git-send-email-sibis@codeaurora.org>
- <CAE-0n531EgLx-gGJswmmNAFmy-P9z=Hh1N=fkLw_uemoeQnYVg@mail.gmail.com>
- <d733d47bc6a86fe28302943e50d02bd5@codeaurora.org>
- <CAE-0n50z=MaEZhXRSQpN6Jo8m7nyQSS6MqikAgT5cfkH1ZvL_g@mail.gmail.com>
-Message-ID: <5848670f513187734d7625f242bbf67b@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-21 23:47, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-08-20 07:24:02)
->> On 2021-08-20 00:25, Stephen Boyd wrote:
->> > Quoting Sibi Sankar (2021-08-18 20:02:05)
->> >> The load state power-domain, used by the co-processors to notify the
->> >> Always on Subsystem (AOSS) that a particular co-processor is up/down,
->> >> suffers from the side-effect of changing states during suspend/resume.
->> >> However the co-processors enter low-power modes independent to that of
->> >> the application processor and their states are expected to remain
->> >> unaltered across system suspend/resume cycles. To achieve this
->> >> behavior
->> >> let's drop the load state power-domain and replace them with the qmp
->> >> property for all SoCs supporting low power mode signalling.
->> >>
->> >
->> > How do we drop the load state property without breaking existing DTBs?
->> > Maybe we need to leave it there and then somehow make it optional? Or
->> > do
->> > we not care about this problem as the driver will start ignoring it?
->> 
->> We can afford to break the bindings
->> because of the following reason:
->> 
->> * Load state in mainline is currently
->>    broken i.e. it doesn't serve its
->>    main purpose of signalling AOP of
->>    the correct state of Q6 during
->>    system suspend/resume. Thus we
->>    can maintain current functionality
->>    even without the load state votes
->>    i.e. when a new kernel with load
->>    state removed is used with an older
->>    dtb the remoteproc functionality
->>    will remain the same.
->> 
-> 
-> Alright. Is that reflected somewhere in the commit text? I must have
-> missed it. Can you please add it?
+On 8/23/21 2:07 AM, Keoseong Park wrote:
+> When HPB pinned region exists and mctx allocation for this region fails,
+> memory leak is possible because memory is not released for the subregion
+> table of the current region.
 
-Commit message throughout the series
-mention that the current load state
-implementation is broken but it is
-never mentioned explicitly that it
-is the reason why bindings can be
-broken. I'll wait for a couple of
-days to see if I get any more
-comments and will re-word it in the
-next re-spin.
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
