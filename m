@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBECD3F5324
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8703F5326
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhHWWCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:02:50 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:37566 "EHLO vps0.lunn.ch"
+        id S233041AbhHWWCz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 18:02:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:57484 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232898AbhHWWCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:02:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=MlJCiy5HfG8+LBY7t6BSnHFgiD/Uog0xgn9jINZ9n+o=; b=VqdGDrznCoCR6TPSXUwHHwEEVY
-        uMe9AAcYiwlTkroL3Z45iSRs7PxAV4SZLMTbDtr1qS7B6+pFb0qGCqRD9Z1encObrMAhnqtjdIdoc
-        ScHoyZsUoYpZttDRNIoE54L/nRModIfTGDepl+q0EJidAHKAiIiGYlTF8jnj6gfA3Aew=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mII0y-003WP2-D8; Tue, 24 Aug 2021 00:01:56 +0200
-Date:   Tue, 24 Aug 2021 00:01:56 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, netdev@vger.kernel.org,
-        kernel-team@android.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for
- "phy-handle" property
-Message-ID: <YSQa1K2J4RG7xgWN@lunn.ch>
-References: <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
- <20210818021717.3268255-1-saravanak@google.com>
- <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
- <CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com>
- <YSP91FfbzUHKiv+L@lunn.ch>
- <CAGETcx8j+bOPL_-qFzHHJkX41Ljzq8HBkbBqtd4E0-2u6a3_Hg@mail.gmail.com>
+        id S233042AbhHWWCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 18:02:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CA611042;
+        Mon, 23 Aug 2021 15:02:10 -0700 (PDT)
+Received: from [127.0.0.1] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D198B3F766;
+        Mon, 23 Aug 2021 15:02:09 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 23:02:05 +0100
+From:   Steven Price <steven.price@arm.com>
+To:     dri-devel@lists.freedesktop.org,
+        Alyssa Rosenzweig <alyssa@collabora.com>
+CC:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 3/3] drm/panfrost: Clamp lock region to Bifrost minimum
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YSQPiQX8IOkJJSoY@maud>
+References: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com> <20210820213117.13050-4-alyssa.rosenzweig@collabora.com> <818b1a15-ddf4-461b-1d6a-cea539deaf76@arm.com> <YSQPiQX8IOkJJSoY@maud>
+Message-ID: <FA069E32-03E1-4193-8918-C750A4ECE5F8@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8j+bOPL_-qFzHHJkX41Ljzq8HBkbBqtd4E0-2u6a3_Hg@mail.gmail.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 01:48:23PM -0700, Saravana Kannan wrote:
-> On Mon, Aug 23, 2021 at 12:58 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > PHY seems to be one of those cases where it's okay to have the
-> > > compatible property but also okay to not have it.
-> >
-> > Correct. They are like PCI or USB devices. You can ask it, what are
-> > you? There are two registers in standard locations which give you a
-> > vendor and product ID. We use that to find the correct driver.
-> 
-> For all the cases of PHYs that currently don't need any compatible
-> string, requiring a compatible string of type "ethernet-phy-standard"
-> would have been nice.
+On 23 August 2021 22:13:45 BST, Alyssa Rosenzweig <alyssa@collabora.com> wrote:
+>> > When locking a region, we currently clamp to a PAGE_SIZE as the minimum
+>> > lock region. While this is valid for Midgard, it is invalid for Bifrost,
+>> 
+>> While the spec does seem to state it's invalid for Bifrost - kbase
+>> didn't bother with a lower clamp for a long time. I actually think this
+>> is in many ways more of a spec bug: i.e. implementation details of the
+>> round-up that the hardware does. But it's much safer following the spec
+>> ;) And it seems like kbase eventually caught up too.
+>
+>Yeah, makes sense. Should I drop the Cc: stable in that case? If the
+>issue is purely theoretical.
 
-How does this help you? You cannot match that against anything?
+I think it might still be worth fixing. Early Bifrost should be fine, but something triggered a bug report that caused kbase to be fixed, so I'm less confident that there's nothing out there that cares. Following both kbase and the spec seems the safest approach.
 
-How do you handle PCI and USB devices? e.g.
-
-arch/arm/boot/dts/imx6qdl-zii-rdu2.dtsi
-
-&pcie {
-        pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_pcie>;
-        reset-gpio = <&gpio7 12 GPIO_ACTIVE_LOW>;
-        status = "okay";
-
-        host@0 {
-                reg = <0 0 0 0 0>;
-
-                #address-cells = <3>;
-                #size-cells = <2>;
-
-                i210: i210@0 {
-                        reg = <0 0 0 0 0>;
-                };
-        };
-};
-
-There is an intel i210 Ethernet control on the PCIe bus. There is no
-compatible string, none is needed. This is no different to a PHY.
-
-	   Andrew
+Thanks,
+Steve
