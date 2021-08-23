@@ -2,122 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362533F4D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF1F3F4D52
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbhHWPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:21:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
+        id S231608AbhHWPV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:21:28 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:34065 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231324AbhHWPVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:21:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9C6061406;
-        Mon, 23 Aug 2021 15:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629732031;
-        bh=qreQnG9EH+SLqs9cxYafKtRpnrXgjkJipzrUHxRm8AI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RGjW/286CluzlorhZhA12uBlEH3uhRoRK1S/j3K064/Shsa1wyggzEKZ+qBLhJnq4
-         gRNV2wTAu/HjHiWh2f8lDroX68ilJ+YROIaiewKam0s1N8A50OJJWefyUImpM5E2eF
-         23BcN2czeN9GNVN/lCJogN+4552M5+pHKvniKKEJEUx8otTEcVGWHyeI3OR3rj1qMi
-         Hi+i0DsYD+9xTYJ7MrtjEFxhLsW1VCy64kf+eN2MBlr4L1PcNpyAXM2UcO+pR7vBQY
-         FLye4cqCOX/Qx8AxadC/oQ1G2/s7ZAxLxG8DqtLBtsk0QFfiMvLtb9egfLJszfwr1w
-         PQAw/Rb0cjfWQ==
-Date:   Mon, 23 Aug 2021 18:20:20 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header
- reservation
-Message-ID: <YSO8tJxbuADEeL7I@kernel.org>
-References: <cover.1628670468.git.geert+renesas@glider.be>
- <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
- <YRn9DHlB/pdNPJyP@kernel.org>
- <CAMuHMdVdqR7gw+2O2v=qv_BB=+X2wEXN9jXV=np=jRayadwj7g@mail.gmail.com>
- <YSOeGzowhV/R9QS/@kernel.org>
- <CAL_JsqLMv4fKebJEOv=7UXvy_qqut0N42psS-PSgRMU-qhiFLQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLMv4fKebJEOv=7UXvy_qqut0N42psS-PSgRMU-qhiFLQ@mail.gmail.com>
+        id S231591AbhHWPV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:21:27 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GtbXq1Y6Nz9sT3;
+        Mon, 23 Aug 2021 17:20:43 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hBju9igGbz3q; Mon, 23 Aug 2021 17:20:43 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GtbXq0Jflz9sT2;
+        Mon, 23 Aug 2021 17:20:43 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DE6B58B7B3;
+        Mon, 23 Aug 2021 17:20:42 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id lnbyMjsGF0x4; Mon, 23 Aug 2021 17:20:42 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B1BBE8B7AF;
+        Mon, 23 Aug 2021 17:20:42 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 812696BC76; Mon, 23 Aug 2021 15:20:42 +0000 (UTC)
+Message-Id: <343d06ab9ea7b8b6358308753ec1e8fa7e3d4f11.1629731144.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 1/2] powerpc/32s: Do kuep_lock() and kuep_unlock() in
+ assembly
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 23 Aug 2021 15:20:42 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 09:44:55AM -0500, Rob Herring wrote:
-> On Mon, Aug 23, 2021 at 8:10 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > On Mon, Aug 23, 2021 at 12:17:50PM +0200, Geert Uytterhoeven wrote:
-> > > Hi Mike,
-> > >
-> > > On Mon, Aug 16, 2021 at 7:52 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > > On Wed, Aug 11, 2021 at 10:50:59AM +0200, Geert Uytterhoeven wrote:
-> > > > > Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
-> > > > > occupied by an elf core header described in the device tree.
-> > > > > As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
-> > > > > mips_reserve_vmcore(), the latter needs to check if the memory has
-> > > > > already been reserved before.
-> > > >
-> > > > Doing memblock_reserve() for the same region is usually fine, did you
-> > > > encounter any issues without this patch?
-> > >
-> > > Does it also work if the same region is part of an earlier larger
-> > > reservation?  I am no memblock expert, so I don't know.
-> > > I didn't run into any issues, as my MIPS platform is non-DT, but I
-> > > assume arch/arm64/mm/init.c:reserve_elfcorehdr() had the check for
-> > > a reason.
-> >
-> > The memory will be reserved regardless of the earlier reservation, the
-> > issue may appear when the reservations are made for different purpose. E.g.
-> > if there was crash kernel allocation before the reservation of elfcorehdr.
-> >
-> > The check in such case will prevent the second reservation, but, at least
-> > in arch/arm64/mm/init.c:reserve_elfcorehdr() it does not seem to prevent
-> > different users of the overlapping regions to step on each others toes.
-> 
-> If the kernel has been passed in overlapping regions, is there
-> anything you can do other than hope to get a message out?
+When interrupt and syscall entries where converted to C, KUEP locking
+and unlocking was also converted. It improved performance by unrolling
+the loop, and allowed easily implementing boot time deactivation of
+KUEP.
 
-Nothing really. I've been thinking about adding flags to memblock.reserved
-to at least distinguish firmware regions from the kernel allocations, but I
-never got to that.
+However, null_syscall selftest shows that KUEP is still heavy
+(361 cycles with KUEP, 212 cycles without).
+
+A way to improve more is to group 'mtsr's together, instead of
+repeating 'addi' + 'mtsr' several times.
+
+In order to do that, more registers need to be available. In C, GCC
+will always be able to provide the requested number of registers, but
+at the cost of saving some data on the stack, which is counter
+performant here.
+
+So let's do it in assembly, when we have full control of which
+register can be used. It also has the advantage of locking earlier
+and unlocking later and it helps GCC generating less tricky code.
+The only drawback is to make boot time deactivation less straight
+forward and require 'hand' instruction patching.
+
+Group 'mtsr's by 4.
+
+With this change, null_syscall selftest reports 336 cycles. Without
+the change it was 361 cycles, that's a 7% reduction.
+
+For the time being, capability to deactive at boot time is disabled.
+It will be re-enabled in following patch.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v3:
+- Add isync after updating segments
+- Only group by 4. Grouping by 6 only saves one more cycle.
+- Implement subfunctions kuep_lock and kuep_unlock.
+
+v2: Fixed build failure for non book3s/32
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/book3s/32/kup.h      | 34 --------
+ arch/powerpc/include/asm/book3s/32/mmu-hash.h | 77 ++++++++++++++++++-
+ arch/powerpc/include/asm/interrupt.h          |  6 +-
+ arch/powerpc/include/asm/kup.h                |  5 --
+ arch/powerpc/kernel/entry_32.S                | 31 ++++++++
+ arch/powerpc/kernel/head_32.h                 |  6 ++
+ arch/powerpc/kernel/interrupt.c               |  3 -
+ arch/powerpc/mm/book3s32/kuep.c               |  7 +-
+ 8 files changed, 121 insertions(+), 48 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index d4b145b279f6..f159efd04ebc 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -24,40 +24,6 @@ static __always_inline bool kuep_is_disabled(void)
+ 	return !IS_ENABLED(CONFIG_PPC_KUEP) || static_branch_unlikely(&disable_kuep_key);
+ }
  
-> > Moreover, arm64::reserve_elfcorehdr() seems buggy to me, because of there
-> > is only a partial overlap of the elfcorehdr with the previous reservation,
-> > the non-overlapping part of elfcorehdr won't get reserved at all.
-> 
-> What do you suggest as the arm64 version is not the common version?
-
-I'm not really familiar with crash dump internals, so I don't know if
-resetting elfcorehdr_addr to ELFCORE_ADDR_ERR is a good idea. I think at
-least arm64::reserve_elfcorehdr() should reserve the entire elfcorehdr area
-regardless of the overlap. Otherwise it might get overwritten by a random
-memblock_alloc().
-
-> Rob
-
+-static inline void kuep_lock(void)
+-{
+-	if (kuep_is_disabled())
+-		return;
+-
+-	update_user_segments(mfsr(0) | SR_NX);
+-	/*
+-	 * This isync() shouldn't be necessary as the kernel is not excepted to
+-	 * run any instruction in userspace soon after the update of segments,
+-	 * but hash based cores (at least G3) seem to exhibit a random
+-	 * behaviour when the 'isync' is not there. 603 cores don't have this
+-	 * behaviour so don't do the 'isync' as it saves several CPU cycles.
+-	 */
+-	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
+-		isync();	/* Context sync required after mtsr() */
+-}
+-
+-static inline void kuep_unlock(void)
+-{
+-	if (kuep_is_disabled())
+-		return;
+-
+-	update_user_segments(mfsr(0) & ~SR_NX);
+-	/*
+-	 * This isync() shouldn't be necessary as a 'rfi' will soon be executed
+-	 * to return to userspace, but hash based cores (at least G3) seem to
+-	 * exhibit a random behaviour when the 'isync' is not there. 603 cores
+-	 * don't have this behaviour so don't do the 'isync' as it saves several
+-	 * CPU cycles.
+-	 */
+-	if (mmu_has_feature(MMU_FTR_HPTE_TABLE))
+-		isync();	/* Context sync required after mtsr() */
+-}
+-
+ #ifdef CONFIG_PPC_KUAP
+ 
+ #include <linux/sched.h>
+diff --git a/arch/powerpc/include/asm/book3s/32/mmu-hash.h b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
+index f5be185cbdf8..e2f7ccc13edb 100644
+--- a/arch/powerpc/include/asm/book3s/32/mmu-hash.h
++++ b/arch/powerpc/include/asm/book3s/32/mmu-hash.h
+@@ -64,7 +64,82 @@ struct ppc_bat {
+ #define SR_KP	0x20000000	/* User key */
+ #define SR_KS	0x40000000	/* Supervisor key */
+ 
+-#ifndef __ASSEMBLY__
++#ifdef __ASSEMBLY__
++
++#include <asm/asm-offsets.h>
++
++.macro uus_addi sr reg1 reg2 imm
++	.if NUM_USER_SEGMENTS > \sr
++	addi	\reg1,\reg2,\imm
++	.endif
++.endm
++
++.macro uus_mtsr sr reg1
++	.if NUM_USER_SEGMENTS > \sr
++	mtsr	\sr, \reg1
++	.endif
++.endm
++
++/*
++ * This isync() shouldn't be necessary as the kernel is not excepted to run
++ * any instruction in userspace soon after the update of segments and 'rfi'
++ * instruction is used to return to userspace, but hash based cores
++ * (at least G3) seem to exhibit a random behaviour when the 'isync' is not
++ * there. 603 cores don't have this behaviour so don't do the 'isync' as it
++ * saves several CPU cycles.
++ */
++.macro uus_isync
++#ifdef CONFIG_PPC_BOOK3S_604
++BEGIN_MMU_FTR_SECTION
++	isync
++END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
++#endif
++.endm
++
++.macro update_user_segments_by_4 tmp1 tmp2 tmp3 tmp4
++	uus_addi	1, \tmp2, \tmp1, 0x111
++	uus_addi	2, \tmp3, \tmp1, 0x222
++	uus_addi	3, \tmp4, \tmp1, 0x333
++
++	uus_mtsr	0, \tmp1
++	uus_mtsr	1, \tmp2
++	uus_mtsr	2, \tmp3
++	uus_mtsr	3, \tmp4
++
++	uus_addi	4, \tmp1, \tmp1, 0x444
++	uus_addi	5, \tmp2, \tmp2, 0x444
++	uus_addi	6, \tmp3, \tmp3, 0x444
++	uus_addi	7, \tmp4, \tmp4, 0x444
++
++	uus_mtsr	4, \tmp1
++	uus_mtsr	5, \tmp2
++	uus_mtsr	6, \tmp3
++	uus_mtsr	7, \tmp4
++
++	uus_addi	8, \tmp1, \tmp1, 0x444
++	uus_addi	9, \tmp2, \tmp2, 0x444
++	uus_addi	10, \tmp3, \tmp3, 0x444
++	uus_addi	11, \tmp4, \tmp4, 0x444
++
++	uus_mtsr	8, \tmp1
++	uus_mtsr	9, \tmp2
++	uus_mtsr	10, \tmp3
++	uus_mtsr	11, \tmp4
++
++	uus_addi	12, \tmp1, \tmp1, 0x444
++	uus_addi	13, \tmp2, \tmp2, 0x444
++	uus_addi	14, \tmp3, \tmp3, 0x444
++	uus_addi	15, \tmp4, \tmp4, 0x444
++
++	uus_mtsr	12, \tmp1
++	uus_mtsr	13, \tmp2
++	uus_mtsr	14, \tmp3
++	uus_mtsr	15, \tmp4
++
++	uus_isync
++.endm
++
++#else
+ 
+ /*
+  * This macro defines the mapping from contexts to VSIDs (virtual
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index 6b800d3e2681..03afc4e7928e 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -139,12 +139,10 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
+ 	if (!arch_irq_disabled_regs(regs))
+ 		trace_hardirqs_off();
+ 
+-	if (user_mode(regs)) {
+-		kuep_lock();
++	if (user_mode(regs))
+ 		account_cpu_user_entry();
+-	} else {
++	else
+ 		kuap_save_and_lock(regs);
+-	}
+ #endif
+ 
+ #ifdef CONFIG_PPC64
+diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
+index 1df763002726..34ff86e3686e 100644
+--- a/arch/powerpc/include/asm/kup.h
++++ b/arch/powerpc/include/asm/kup.h
+@@ -38,11 +38,6 @@ void setup_kuep(bool disabled);
+ static inline void setup_kuep(bool disabled) { }
+ #endif /* CONFIG_PPC_KUEP */
+ 
+-#ifndef CONFIG_PPC_BOOK3S_32
+-static inline void kuep_lock(void) { }
+-static inline void kuep_unlock(void) { }
+-#endif
+-
+ #ifdef CONFIG_PPC_KUAP
+ void setup_kuap(bool disabled);
+ #else
+diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
+index 0273a1349006..14269313d5dd 100644
+--- a/arch/powerpc/kernel/entry_32.S
++++ b/arch/powerpc/kernel/entry_32.S
+@@ -73,6 +73,34 @@ prepare_transfer_to_handler:
+ _ASM_NOKPROBE_SYMBOL(prepare_transfer_to_handler)
+ #endif /* CONFIG_PPC_BOOK3S_32 || CONFIG_E500 */
+ 
++#if defined(CONFIG_PPC_KUEP) && defined(CONFIG_PPC_BOOK3S_32)
++	.globl	__kuep_lock
++__kuep_lock:
++	mfsr    r9,0
++	rlwinm  r9,r9,0,8,3
++	oris    r9,r9,SR_NX@h
++	update_user_segments_by_4 r9, r10, r11, r12
++	blr
++
++__kuep_unlock:
++	mfsr    r9,0
++	rlwinm  r9,r9,0,8,2
++	update_user_segments_by_4 r9, r10, r11, r12
++	blr
++
++.macro	kuep_lock
++	bl	__kuep_lock
++.endm
++.macro	kuep_unlock
++	bl	__kuep_unlock
++.endm
++#else
++.macro	kuep_lock
++.endm
++.macro	kuep_unlock
++.endm
++#endif
++
+ 	.globl	transfer_to_syscall
+ transfer_to_syscall:
+ 	stw	r11, GPR1(r1)
+@@ -94,6 +122,7 @@ transfer_to_syscall:
+ 	SAVE_2GPRS(7, r1)
+ 	addi	r2,r10,-THREAD
+ 	SAVE_NVGPRS(r1)
++	kuep_lock
+ 
+ 	/* Calling convention has r9 = orig r0, r10 = regs */
+ 	addi	r10,r1,STACK_FRAME_OVERHEAD
+@@ -110,6 +139,7 @@ ret_from_syscall:
+ 	cmplwi	cr0,r5,0
+ 	bne-	2f
+ #endif /* CONFIG_PPC_47x */
++	kuep_unlock
+ 	lwz	r4,_LINK(r1)
+ 	lwz	r5,_CCR(r1)
+ 	mtlr	r4
+@@ -273,6 +303,7 @@ interrupt_return:
+ 	beq	.Lkernel_interrupt_return
+ 	bl	interrupt_exit_user_prepare
+ 	cmpwi	r3,0
++	kuep_unlock
+ 	bne-	.Lrestore_nvgprs
+ 
+ .Lfast_user_interrupt_return:
+diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
+index 6b1ec9e3541b..133197039775 100644
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -136,6 +136,12 @@ _ASM_NOKPROBE_SYMBOL(\name\()_virt)
+ 	andi.	r12,r9,MSR_PR
+ 	bne	777f
+ 	bl	prepare_transfer_to_handler
++#ifdef CONFIG_PPC_KUEP
++	b	778f
++777:
++	bl	__kuep_lock
++778:
++#endif
+ 777:
+ #endif
+ .endm
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 21bbd615ca41..cd6139003776 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -81,8 +81,6 @@ notrace long system_call_exception(long r3, long r4, long r5,
+ {
+ 	syscall_fn f;
+ 
+-	kuep_lock();
+-
+ 	regs->orig_gpr3 = r3;
+ 
+ 	if (IS_ENABLED(CONFIG_PPC_IRQ_SOFT_MASK_DEBUG))
+@@ -365,7 +363,6 @@ interrupt_exit_user_prepare_main(unsigned long ret, struct pt_regs *regs)
+ 
+ 	/* Restore user access locks last */
+ 	kuap_user_restore(regs);
+-	kuep_unlock();
+ 
+ 	return ret;
+ }
+diff --git a/arch/powerpc/mm/book3s32/kuep.c b/arch/powerpc/mm/book3s32/kuep.c
+index c20733d6e02c..45c9967f9aef 100644
+--- a/arch/powerpc/mm/book3s32/kuep.c
++++ b/arch/powerpc/mm/book3s32/kuep.c
+@@ -7,8 +7,13 @@ struct static_key_false disable_kuep_key;
+ 
+ void setup_kuep(bool disabled)
+ {
++	if (disabled) {
++		pr_info("KUEP cannot be disabled for the time being\n");
++		disabled = false;
++	}
++
+ 	if (!disabled)
+-		kuep_lock();
++		update_user_segments(mfsr(0) | SR_NX);
+ 
+ 	if (smp_processor_id() != boot_cpuid)
+ 		return;
 -- 
-Sincerely yours,
-Mike.
+2.25.0
+
