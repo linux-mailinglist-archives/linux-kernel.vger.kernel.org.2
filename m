@@ -2,67 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D553F513A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916FD3F5142
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhHWTYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbhHWTYL (ORCPT
+        id S231788AbhHWT0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:26:54 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:19296 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhHWT0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:24:11 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2E0C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id x10-20020a056830408a00b004f26cead745so39253438ott.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=R61EvE5T8P1BLdeG5FoKvlIWFZXYQh2fedYwtenFS5w=;
-        b=Vg2yIG520LIhKpPXUI4mZ2ssujQNL8K4zT9coTZV5k2WN1GdU7pzXW90U6O9Us12z8
-         BYrO98kdP4HiatoAZ+FmTSdB75kZDyY3QhSTUGrRGbHbhAWiiouMFxvdGkc8J0XFaYoU
-         zroTYBKBZyw/rBnU7PmFqFyMVYt5+m5v3f8Ks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=R61EvE5T8P1BLdeG5FoKvlIWFZXYQh2fedYwtenFS5w=;
-        b=jkSANI1qP++r9Io/CK6WTusYdh9MqkdioEP+ZOGldXQm51fmJrlKofVrAx7rM3s84M
-         qDP2tDLyuCurHtUUPQwj4C/VtbU6QglXi94Wrzj/cicSGPfCFN5QI7WKNaSMwQpChixC
-         Qq02K8biEN5AsVIKGU0rAaXyYjtzZ1vgxDa3Zy7JigIfVR2nxw+dRGvik7uSfM8p9Xld
-         A7MW38fyA08tdNE8YVD58POgDtFHTVndWDQVUfrIssvY41LSCwE4BVsS6sdl0BgA7GFz
-         kzSHD/BrTdyMTT9yZp1NzQo1V2s1pR+Wp+4OweJh9LtZzDAG6PniVkXbyWZ4gcmZk9oH
-         GMug==
-X-Gm-Message-State: AOAM532wjejKUHTxqaWmWkUSH3Kuerq5o8hHY9rK9EW4eU8kc/FGafQW
-        BHNqYFCirps3qVTU7BP7fIYL4A==
-X-Google-Smtp-Source: ABdhPJwNuSRfsc4F4tzHz4U6R/cVYWBvbE+fBQ8cEX0tAwdrEbJzg6m0MWx0CR8lkaYUwuB7YwjRPA==
-X-Received: by 2002:a05:6808:20e:: with SMTP id l14mr84473oie.87.1629746608138;
-        Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i27sm4117419ots.12.2021.08.23.12.23.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 12:23:27 -0700 (PDT)
-Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
- flag
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>, shuah@kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        Aleksa Sarai <cyphar@cyphar.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
- <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
- <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <a9dc1616-61b9-c010-950c-521693c74247@linuxfoundation.org>
-Date:   Mon, 23 Aug 2021 13:23:26 -0600
+        Mon, 23 Aug 2021 15:26:53 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d46 with ME
+        id l7S6250083riaq2037S6H5; Mon, 23 Aug 2021 21:26:09 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 23 Aug 2021 21:26:09 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH] dmaengine: switch from 'pci_' to 'dma_' API
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     gustavo.pimentel@synopsys.com, vkoul@kernel.org,
+        vireshk@kernel.org, wangzhou1@hisilicon.com, logang@deltatee.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <547fae4abef1ca3bf2198ca68e6c361b4d02f13c.1629635852.git.christophe.jaillet@wanadoo.fr>
+ <YSNOTX68ltbt2hwf@smile.fi.intel.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <fe9d57ff-bd44-3cee-516e-6815213ef467@wanadoo.fr>
+Date:   Mon, 23 Aug 2021 21:26:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
+In-Reply-To: <YSNOTX68ltbt2hwf@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -70,65 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baolin,
-
-On 8/22/21 8:40 PM, Baolin Wang wrote:
-> Hi Shuah,
-> 
-> On 2021/7/28 20:32, Baolin Wang wrote:
->> Hi,
+Le 23/08/2021 à 09:29, Andy Shevchenko a écrit :
+> On Sun, Aug 22, 2021 at 02:40:22PM +0200, Christophe JAILLET wrote:
+>> The wrappers in include/linux/pci-dma-compat.h should go away.
 >>
->>> When running the openat2 test suite on ARM64 platform, we got below failure,
->>> since the definition of the O_LARGEFILE is different on ARM64. So we can
->>> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
+>> The patch has been generated with the coccinelle script below.
 >>
->> Sorry, I forgot to copy the failure log:
+>> It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
+>> 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+>> This is less verbose.
 >>
-
-Please cc everybody get_maintainers.pl suggests. You are missing
-key reviewers for this change.
-
-Adding Christian Brauner and Aleksa Sarai to the thread.
-
->> # openat2 unexpectedly returned # 3['/lkp/benchmarks/kernel_selftests/tools/testing/selftests/openat2'] with 208000 (!= 208000)
-
-Not sure I understand this. 208000 (!= 208000) look sthe same to me.
-
->> not ok 102 openat2 with incompatible flags (O_PATH | O_LARGEFILE) fails with -22 (Invalid argument)
->>
->>>
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> It has been compile tested.
 > 
-> Could you apply this patch if no objection from your side? Thanks.
+>> @@
+>> expression e1, e2;
+>> @@
+>> -    pci_set_consistent_dma_mask(e1, e2)
+>> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> Can we, please, replace this long noise in the commit message with a link to a
+> script in coccinelle data base?
+
+Hi,
+
+There is no script in the coccinelle data base up to now, and there is 
+no point in adding one now.
+The goal of these patches is to remove a deprecated API, so when the job 
+will be finished, this script would be of no use and would be removed.
+
+However, I agree that the script as-is is noisy.
+
+I'll replace it with a link to a message already available in lore.
+
+> 
+> And the same comment for any future submission that are based on the scripts
+> (esp. coccinelle ones).
+
+I usually don't add my coccinelle scripts in the log, but I've been told 
+times ago that adding them was a good practice (that I have never 
+followed...).
+
+In this particular case, I thought it was helpful for a reviewer to see 
+how the automated part had been processed.
+
+> 
+> ...
+> 
+>> This patch is mostly mechanical and compile tested. I hope it is ok to
+>> update the "drivers/dma/" directory all at once.
+> 
+> There is another discussion with Hellwig [1] about 64-bit DMA mask,
+> i.e. it doesn't fail anymore,
+
+Yes, I'm aware of this thread.
+
+I've not taken it into account for 2 reasons:
+    - it goes beyond the goal of these patches (i.e. the removal of a 
+deprecated API)
+    - I *was* not 100% confident about [1].
+
+I *was* giving credit to comment such as [2]. And the pattern "if 64 
+bits fails, then switch to 32 bits" is really common.
+Maybe it made sense in the past and has remained as-is.
+
+
+However, since then I've looked at all the architecture specific 
+implementation of 'dma_supported()' and [1] looks indeed correct :)
+
+
+I propose to make these changes in another serie which will mention [1] 
+and see the acceptance rate in the different subsystems. (i.e. even if 
+the patch is correct, removing what looks like straightforward code may 
+puzzle a few of us)
+
+I would start it once "pci-dma-compat.h" has been removed.
+
+Do you agree, or do you want it integrated in the WIP?
+
+Anyway, thanks for the review and comments.
+
+CJ
+
+> so you need to rework drivers accordingly.
+> 
+> [1]: https://lkml.org/lkml/2021/6/7/398
 > 
 
-Ideally this define should come from an include file.
-
-Christian, Aleksa,
-
-Can you review this patch and let me know if this approach looks right.
-
->>> ---
->>>   tools/testing/selftests/openat2/openat2_test.c | 4 ++++
->>>   1 file changed, 4 insertions(+)
->>>
->>> diff --git a/tools/testing/selftests/openat2/openat2_test.c b/tools/testing/selftests/openat2/openat2_test.c
->>> index d7ec1e7..1bddbe9 100644
->>> --- a/tools/testing/selftests/openat2/openat2_test.c
->>> +++ b/tools/testing/selftests/openat2/openat2_test.c
->>> @@ -22,7 +22,11 @@
->>>    * XXX: This is wrong on {mips, parisc, powerpc, sparc}.
->>>    */
->>>   #undef    O_LARGEFILE
->>> +#ifdef __aarch64__
->>> +#define    O_LARGEFILE 0x20000
->>> +#else
->>>   #define    O_LARGEFILE 0x8000
->>> +#endif
->>>   struct open_how_ext {
->>>       struct open_how inner;
->>>
-> 
-
-thanks,
--- Shuah
+[2]: 
+https://elixir.bootlin.com/linux/v5.14-rc7/source/drivers/infiniband/hw/hfi1/pcie.c#L98
