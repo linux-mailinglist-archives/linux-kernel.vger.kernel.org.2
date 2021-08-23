@@ -2,113 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B7F3F4C45
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6572E3F4C46
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhHWOWf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 10:22:35 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:45999 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhHWOWe (ORCPT
+        id S230061AbhHWOYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhHWOYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:22:34 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 16FF140007;
-        Mon, 23 Aug 2021 14:21:49 +0000 (UTC)
-Date:   Mon, 23 Aug 2021 16:21:48 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-mtd@lists.infradead.org, richard@nod.at,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G
- parts
-Message-ID: <20210823162148.35a24183@xps13>
-In-Reply-To: <CAFr9PXnna+b3ChVUftT7YbU1kYR=5JDcik3bMNqzKK-LW=GQzw@mail.gmail.com>
-References: <20210811084924.52293-1-daniel@0x0f.com>
-        <20210816101143.2a64d7b9@xps13>
-        <CAFr9PXnna+b3ChVUftT7YbU1kYR=5JDcik3bMNqzKK-LW=GQzw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 23 Aug 2021 10:24:04 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FC2C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:23:21 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id e1so3299668plt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:23:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:user-agent:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=WtsUEsqMTxeu0ASY9ZGldGWSKXK/Bt2mBtS4t1K1jok=;
+        b=Twno2VV6Mfpk9mFt1zef4nXG4k9+uk+hiqK3q7qn6xzeS8fqb9Sd0RsRYk+AW49Sup
+         kwtvnA0rQxXUqxgPFcN5FFmZ1DHdc6mRIoougB08bPum5ctx5mGdYBLMBllI20ZQwywX
+         GsosFTC7bkpcR7C+TuJ+4VIi+eYChTNMCf2uA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=WtsUEsqMTxeu0ASY9ZGldGWSKXK/Bt2mBtS4t1K1jok=;
+        b=j9dA29FElsHTIQJETlxwztUlHdxGaD2mZuwaSYYihucRkFLNFyKKgG5olUNdK9IbQN
+         hCr5EyWYl/xjZUqUXoTlj4YM5xWCjyfRZwtC9D9H1kWh3hKmXbDpoepfGfE1pPMTXU3j
+         LeehIzbh8+c44mIC69dwvgaxabCcmFc7GiqB7vttnagxU1UGdKGkfDxmREBCrekl11ee
+         Z9fX2sXxqVt7EVDDSgYRHHwhizoVRmkDXA5x54qjYhysP0/TZzD0N2VtBXdbzUgW+gqF
+         Ar89oG/lXmKyTLclpNQMKOBoYX1oDMcnJ9Js54qhZ2rPqxJiYUyvrIz807W+lPBVmufL
+         Xj0g==
+X-Gm-Message-State: AOAM532rWoiidMyRTEY/vbspd6HTO5WW5DSP2cQfuouwqmwxHS7pyB5/
+        z/G70ETOF+3dSHi199GEcnnzww==
+X-Google-Smtp-Source: ABdhPJyi22ur2sPI/DYF4luwUXxBY5gmZaV71bLC6h6PGLbA+cDZDfqrOe18jGG3kcfwjHp+QTWrPQ==
+X-Received: by 2002:a17:90b:4b84:: with SMTP id lr4mr20672140pjb.32.1629728601332;
+        Mon, 23 Aug 2021 07:23:21 -0700 (PDT)
+Received: from [127.0.0.1] ([67.219.225.50])
+        by smtp.gmail.com with ESMTPSA id 10sm16158814pjc.41.2021.08.23.07.23.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 07:23:20 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 07:23:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?ISO-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>
+CC:     "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
+        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Dennis Li <Dennis.Li@amd.com>,
+        Sathishkumar S <sathishkumar.sundararaju@amd.com>,
+        Jonathan Kim <jonathan.kim@amd.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        David M Nieto <David.Nieto@amd.com>,
+        Kenneth Feng <kenneth.feng@amd.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        John Clements <John.Clements@amd.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_drm/amd/pm=3A_And_destina?= =?US-ASCII?Q?tion_bounds_checking_to_struct_copy?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <4922d89d-1293-7b32-d684-c731c246e6c1@amd.com>
+References: <20210819201441.3545027-1-keescook@chromium.org> <4922d89d-1293-7b32-d684-c731c246e6c1@amd.com>
+Message-ID: <FB2A077F-78CB-4D84-A8F2-C63C57923496@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-Daniel Palmer <daniel@0x0f.com> wrote on Mon, 23 Aug 2021 23:19:02
-+0900:
 
-> Hi Miquel,
-> 
-> > > +     /*
-> > > +      * The datasheet says *successful* with 4 bits flipped.
-> > > +      * nandbiterrs always complains that the read reported
-> > > +      * successful but the data is incorrect.
-> > > +      */
-> > > +     case FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS:
-> > > +             return 4;  
-> >
-> > This is a real issue. Can you use the nandflipbits tool from the
-> > mtd-utils package (you should take a recent version of the package) and
-> > try to observe what happens when you insert a 4th bitflip in a section?
-> >
-> > I generally believe the tool more than the datasheet :)  
-> 
-> Maybe I'm using it incorrectly but I can't get a 4 bit flipped
-> situation to happen.
-> 
-> I erased the paged so it's all 0xFF:
-> 
-> # flash_erase /dev/mtd0 0x8000000 1
-> Erasing 128 Kibyte @ 8000000 -- 100 % complete
-> # nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0
-> ECC failed: 0
-> ECC corrected: 6234
-> Number of bad blocks: 0
-> Number of bbt blocks: 0
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x08000000 and ending at 0x08000001...
-> ECC: 3 corrected bitflip(s) at offset 0x08000000
-> 0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 
-> Then used nandflipbits to flip a bunch of bits in the first byte and
-> then a few other bytes:
-> 
-> # nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0
-> ECC failed: 0
-> ECC corrected: 6246
-> Number of bad blocks: 0
-> Number of bbt blocks: 0
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x08000000 and ending at 0x08000001...
-> ECC: 3 corrected bitflip(s) at offset 0x08000000
-> 0x08000000: f0 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000010: eb ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000020: ef ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000060: ef ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 
-> Anyhow,
-> I think we should probably return -EBADMSG if the 4 bit flips status
-> appears as nandbiterrs always complains that the data is wrong.
+On August 22, 2021 11:28:54 PM PDT, "Christian K=C3=B6nig" <christian=2Eko=
+enig@amd=2Ecom> wrote:
+>
+>
+>Am 19=2E08=2E21 um 22:14 schrieb Kees Cook:
+>> [=2E=2E=2E]
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu=2Eh b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu=2Eh
+>> index 96e895d6be35=2E=2E4605934a4fb7 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu=2Eh
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu=2Eh
+>> @@ -1446,4 +1446,29 @@ static inline int amdgpu_in_reset(struct amdgpu_=
+device *adev)
+>>   {
+>>   	return atomic_read(&adev->in_gpu_reset);
+>>   }
+>> +
+>> +/**
+>> + * memcpy_trailing - Copy the end of one structure into the middle of =
+another
+>> + *
+>> + * @dst: Pointer to destination struct
+>> + * @first_dst_member: The member name in @dst where the overwrite begi=
+ns
+>> + * @last_dst_member: The member name in @dst where the overwrite ends =
+after
+>> + * @src: Pointer to the source struct
+>> + * @first_src_member: The member name in @src where the copy begins
+>> + *
+>> + */
+>> +#define memcpy_trailing(dst, first_dst_member, last_dst_member,		   \
+>> +		        src, first_src_member)				   \
+>
+>Please don't add a function like this into amdgpu=2Eh, especially when it=
+=20
+>is only used by the SMU code=2E
 
-I am not sure to follow, above the software says "3 corrected bf" while
-I thought the problem was when getting 4 bf, but the dump show many
-more. Can you show me how it behaves:
-* erase (like you did)
-* insert {1, 2, 3, 4, 5} bf and show the dump each time?
+Sure, I'm happy to move it=2E It wasn't clear to me which headers were con=
+sidered "immutable"=2E Which header should I put this in?
 
-Thanks,
-Miquèl
+>And please give it an amdgpu_ prefix so that we are not confusing it=20
+>with a core function=2E
+
+Sure, I will include that=2E
+
+>Apart from that looks good to me=2E
+
+Thanks!
+
+-Kees
