@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 387653F447C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676533F447E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhHWEwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 00:52:55 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35574 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhHWEwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 00:52:53 -0400
-Received: from zn.tnic (p200300ec2f07d90037f6d6bcf935006e.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d900:37f6:d6bc:f935:6e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 457801EC0464;
-        Mon, 23 Aug 2021 06:52:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629694326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=c1G7QTpcEx3Qr+cJbGLD7TPXvN9RsA/K/gThPK83ye0=;
-        b=Ck+qOI9Ub1piyF92cJ1Rj1I8T2Htrehc2lYwvWMzCZOXfnoaTLDafVfQ1j45Mu4VHpGKye
-        9YOX1vzz2FoSzluNSKhf3WLDYIFyz/XZPlgl9BH5wxwphLSM4OYJTzozTKAZ1PgaidjC+I
-        3z99tbaejNJLEA0DdcbbXothdDMBVyE=
-Date:   Mon, 23 Aug 2021 06:52:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, tony.luck@intel.com,
-        brijesh.ksingh@gmail.com
-Subject: Re: [PATCH Part1 RFC v4 24/36] x86/compressed/acpi: move EFI config
- table access to common code
-Message-ID: <YSMpn14wu/5FsRiM@zn.tnic>
-References: <20210707181506.30489-1-brijesh.singh@amd.com>
- <20210707181506.30489-25-brijesh.singh@amd.com>
- <YR42323cUxsbQo5h@zn.tnic>
- <20210819145831.42uszc4lcsffebzu@amd.com>
- <YR6QVh3qZUxqsyI+@zn.tnic>
- <20210819234258.drlyzowk7y3t5wnw@amd.com>
+        id S232830AbhHWE4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 00:56:23 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:52714 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhHWE4V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 00:56:21 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:60598 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1mI1zm-0007f0-2F; Mon, 23 Aug 2021 00:55:38 -0400
+Message-ID: <ccaa583dcd283002e417723ae15769cf3636fe8e.camel@trillion01.com>
+Subject: Re: [PATCH] kernel: make TIF_NOTIFY_SIGNAL and core dumps co-exist
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tony Battersby <tonyb@cybernetics.com>
+Date:   Mon, 23 Aug 2021 00:55:36 -0400
+In-Reply-To: <76d3418c-e9ba-4392-858a-5da8028e3526@kernel.dk>
+References: <76d3418c-e9ba-4392-858a-5da8028e3526@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210819234258.drlyzowk7y3t5wnw@amd.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 06:42:58PM -0500, Michael Roth wrote:
-> In v5, I've simplified things to just call efi_find_vendor_table() once
-> for ACPI_20_TABLE_GUID, then once for ACPI_TABLE_GUID if that's not
-> available. So definitely doesn't sound like what you are suggesting here,
-> but does at least simplify code and gets rid of the efi_foreach* stuff. But
-> happy to rework things if you had something else in mind.
+On Tue, 2021-08-17 at 21:06 -0600, Jens Axboe wrote:
+> task_work being added with notify == TWA_SIGNAL will utilize
+> TIF_NOTIFY_SIGNAL for signaling the targeted task that work is
+> available.
+> If this happens while a task is going through a core dump, it'll
+> potentially disturb and truncate the dump as a signal interruption.
+> 
+> Have task_work_add() with notify == TWA_SIGNAL check if a task has
+> been
+> signaled for a core dump, and refuse to add the work if that is the
+> case.
+> When a core dump is invoked, explicitly check for TIF_NOTIFY_SIGNAL
+> and
+> run any pending task_work if that is set. This is similar to how an
+> exiting task will not get new task_work added, and we return the same
+> error for the core dump case. As we return success or failure from
+> task_work_add(), the caller has to be prepared to handle this case
+> already.
+> 
+> Currently this manifests itself in that io_uring tasks that end up
+> using
+> task_work will experience truncated core dumps.
+> 
+> Reported-by: Tony Battersby <tonyb@cybernetics.com>
+> Reported-by: Olivier Langlois <olivier@trillion01.com>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: stable@vger.kernel.org # 5.10+
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> 
+> ---
+> 
+> diff --git a/fs/coredump.c b/fs/coredump.c
+> index 07afb5ddb1c4..ca7c1ee44ada 100644
+> --- a/fs/coredump.c
+> +++ b/fs/coredump.c
+> @@ -602,6 +602,14 @@ void do_coredump(const kernel_siginfo_t
+> *siginfo)
+>                 .mm_flags = mm->flags,
+>         };
+>  
+> +       /*
+> +        * task_work_add() will refuse to add work after PF_SIGNALED
+> has
+> +        * been set, ensure that we flush any pending
+> TIF_NOTIFY_SIGNAL work
+> +        * if any was queued before that.
+> +        */
+> +       if (test_thread_flag(TIF_NOTIFY_SIGNAL))
+> +               tracehook_notify_signal();
+> +
+>         audit_core_dumps(siginfo->si_signo);
+>  
+>         binfmt = mm->binfmt;
+> diff --git a/kernel/task_work.c b/kernel/task_work.c
+> index 1698fbe6f0e1..1ab28904adc4 100644
+> --- a/kernel/task_work.c
+> +++ b/kernel/task_work.c
+> @@ -41,6 +41,12 @@ int task_work_add(struct task_struct *task, struct
+> callback_head *work,
+>                 head = READ_ONCE(task->task_works);
+>                 if (unlikely(head == &work_exited))
+>                         return -ESRCH;
+> +               /*
+> +                * TIF_NOTIFY_SIGNAL notifications will interfere
+> with
+> +                * a core dump in progress, reject them.
+> +                */
+> +               if (notify == TWA_SIGNAL && (task->flags &
+> PF_SIGNALED))
+> +                       return -ESRCH;
+>                 work->next = head;
+>         } while (cmpxchg(&task->task_works, head, work) != head);
+> 
 
-Ok, thanks. Lemme get to that version and I'll holler if something's
-still bothering me.
+tested successfully on 5.12.19
 
-Thx.
+Tested-by: Olivier Langlois <olivier@trillion01.com>
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
