@@ -2,167 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14C73F4BD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFC53F4BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhHWNql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:46:41 -0400
-Received: from mail-dm3nam07on2060.outbound.protection.outlook.com ([40.107.95.60]:55616
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229477AbhHWNql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:46:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZzXM5b8HL3yYerT6cPLnRLAlhJq7GLlbMqmxBaQ67O54u4D+vavR8MhDmHgBLqgcsH+ud5iUec1Y0U3GKJ6mo63g0ThsaCdSDZDHfUOD3iB98VpasI+Jqg0teJ0edUKUeQgkjcXtVLysUdxjjvpGc9q6ypvv5Txkr+ImYUQv1TEVZqzIQQRihWoF1J5f/D/rGffH30qQIcbVEauefT4wQNvKHwbqwjvVWD6HeN+O9GCtJo0tjq1uY7uMlTwip/dM56WaYRciFak9hJJXcSajT2Ag9uUMjGDlUTa8j5f4rCBcbX5wh+Xv5vGGrZR1hZDlLqGxPg2QZCbF7GZSBhR8FQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85yl4QGuSYORHQfUE63D3OWqQFAmYhFQolIA5iGTp9k=;
- b=Uc3tFjMDMJEEPA95RxDPP9pDX14Z9+TqP7TX2Q0Ly69WsMFREB32E3V7hAd5d89KIg0PSLjFJ5l5T3FsFtpmCkPQcx0tAgUNlTeY8038/2tzjzS9SEdNMvhHgqVesWy9SOEPWRDebJX+9gGxzuWJeYfJvn9QVUAI0vJSEjqNCt4CURFa67uOsZGC2gNMVWQAz0zBF20gHW8GSJQ2ucEKfQyWc1jTjIacKj+1stZ9ccq583t2QNH4ZkBWRhO8H9OXVc5j5xR4hHAdcoo5UJraU3gCpkMIUSp62crSW41bufvORGEnOL/2XMS98ugc+Ma3CqJa0Cw/GomchST3EYwpdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85yl4QGuSYORHQfUE63D3OWqQFAmYhFQolIA5iGTp9k=;
- b=TF13k0UGKJnwN0VF5gcOpfO0Qkn3sjg+NGHMWm5syFGSrMjjOGXF/90qLxvk5cQjgu1sl9tUcGU9sfcuEgS/KGF8rVvapjNGmTsKyDIWGRsXo0JDkcBNUbUO0YvIQcYuMTy9oD8wx/tuStCarJC/Dq8i8YIxi9oSPsJzeP/wE2w0+Z7A8dZpWk3+ijhMNW0SBEITKoKZYg95GZgNbDrnIxd3NGoFBCpbLT2OaZjbZP/oqBM5L0QDAeqR2+VCit2kyLjfAy1qlmJUVkMzucrZAwj/h4OmMDVIC7V8zH0YMSEXSJVDnU1rWaa8ew9kF+6I3LOlv2Ad4S7ee2j/Upvy5w==
-Received: from DM5PR22CA0003.namprd22.prod.outlook.com (2603:10b6:3:101::13)
- by MWHPR12MB1742.namprd12.prod.outlook.com (2603:10b6:300:112::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 13:45:56 +0000
-Received: from DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:101:cafe::56) by DM5PR22CA0003.outlook.office365.com
- (2603:10b6:3:101::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Mon, 23 Aug 2021 13:45:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT032.mail.protection.outlook.com (10.13.173.93) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 13:45:55 +0000
-Received: from [172.27.12.76] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Aug
- 2021 13:45:48 +0000
-Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
- orig_nents
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ariel Elior <aelior@marvell.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        "Jani Nikula" <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        "Roland Scheidegger" <sroland@vmware.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1627551226.git.leonro@nvidia.com>
- <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
- <20210820155425.GA530861@nvidia.com>
- <85542c97-c7e0-3db3-baa8-2413c00f75a4@nvidia.com>
- <20210823124541.GM1721383@nvidia.com>
-From:   Maor Gottlieb <maorg@nvidia.com>
-Message-ID: <2aab4d71-c6d3-d24c-ed81-7ded355a1592@nvidia.com>
-Date:   Mon, 23 Aug 2021 16:45:45 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S229669AbhHWNvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:51:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhHWNvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 09:51:00 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDC2C061575;
+        Mon, 23 Aug 2021 06:50:18 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u1so10622111wmm.0;
+        Mon, 23 Aug 2021 06:50:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=5JF0lritc5Wnxvs3QUU/+T6qW2pQ6R1WLXh8VafXvC4=;
+        b=H0Cll/BM1boUOzeFyc9824QmbIuzGdmzzWullg90hrMst3WaLmD+xkOu/1lel24TjQ
+         Jgkac6DoXZOFaAaIU+qqv70YGtO1b5EdjS8aEUaO/4MG1Fo+hI/3qA59e/VdCQ/MJip6
+         aFlerxiey7/yYdR33LHdD4xTYlTZvGDGxMCHZc6V37EaWJFm4UZkDvwf/otiGGOXffiv
+         H+027AiBI/uKmeaF2wEewZP7GA8gxmvRkZu5ZBVErS2uwpwviXReYAQbxFB7/OBTrDDb
+         xviyfam1MpkLOdiONcZgumlwteWqfxEfGZkzHPwbNNSzSM7ChAleSQuyJRlxiY53fvUn
+         wepA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=5JF0lritc5Wnxvs3QUU/+T6qW2pQ6R1WLXh8VafXvC4=;
+        b=iNcaD4J1ixvOm9xacXF/fTJY782xokZPnsQDdT5SPN+2EnHeXED8TwT/iI+UY2SQTy
+         1+yNR1/nYcmTXXQSTsOaon3PzzMRaFxsE6g4mZ9y9g+X/RJzUUPc8LQqOiFlH0GhV/Ia
+         nlkuJS+KcujLwPps2U/H+QH6TKzJdn1nriaH0A7VeJff0vgnBOf3BVcqFOUZnwB43oAM
+         av7T5eF+UWuYA3jWGitSDfvMpRL8IET9/w0F3wrY3YhS1cTjNZNUjzrv3zxIqSOEcj8D
+         dmTO8AeQZIMXZUV+ezEISFd+LbpkBUJGQxFiUfm1fBNxKJXzKSQ7FP/vBE6AzIL6PQPV
+         awdQ==
+X-Gm-Message-State: AOAM533kXCA0pv/icBNpKD8HTm1P1MLaRvWA4piadkwNxSfacUzXCJZW
+        93WYUJotDbmD7DuI2Rb8EE0=
+X-Google-Smtp-Source: ABdhPJy4UKdgF53uteNC0TxGzCSZnpxSZvDuLjwPANf9ikvliOuWZY5gJSBWPxVeb6q/J56Rl40x+g==
+X-Received: by 2002:a7b:c0c7:: with SMTP id s7mr2177767wmh.66.1629726616620;
+        Mon, 23 Aug 2021 06:50:16 -0700 (PDT)
+Received: from nunojsa-N551JK ([2001:a61:2531:cb01:1061:e4b5:709f:d9ad])
+        by smtp.googlemail.com with ESMTPSA id b4sm4407899wrp.33.2021.08.23.06.50.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 06:50:16 -0700 (PDT)
+Message-ID: <2a67cb8ee77cb96bc899d82348cb0eb0bf44925c.camel@gmail.com>
+Subject: Re: [PATCH v4 1/6] iio: Add output buffer support
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Mihail Chindris <mihail.chindris@analog.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        nuno.sa@analog.com, dragos.bogdan@analog.com,
+        alexandru.ardelean@analog.com
+Date:   Mon, 23 Aug 2021 15:50:14 +0200
+In-Reply-To: <20210820165927.4524-2-mihail.chindris@analog.com>
+References: <20210820165927.4524-1-mihail.chindris@analog.com>
+         <20210820165927.4524-2-mihail.chindris@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <20210823124541.GM1721383@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3cecae26-0fff-47f0-7eec-08d9663c54e9
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1742:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1742AAB0F717166A1D62D391DEC49@MWHPR12MB1742.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D0oEQ0yPwZXf9KN4sZEukM0cGSvnlQ1YfH1RMwaloSIff6T7OXL9ZB5fhceBkbkTgwBcfCL5mz9yPkafkjsvzJNMIBwcp+lSaV6buE+4Ez7FpLXOfUmrc7MCajpKR1UIwN7wCNx6U/4NZXNijQjv4GKnw2xmNQuapOsFyg1hOqksGpdmv/ukr4CuD/8k51A0iPK9NWROxw0Cwm0HCQAkHPPp1v4i1ljr4FnjWpLVABX/72FTG/R68XzRmRPK/4KV+SYs+5Sf0NFBGNpzJnaAbi3CXchgbbDfKmZazSuwZhu2h9QDFfqY2lYvullx9SFwKsjCdi8pg7pEH6Q/1AGqrdvjxp7IWAsTeJAVVIKaKSN3AM4nZ10B5cPjg/Fj8hJbq64Ukb3YFchBF8fl0CCFYiK4YFHmJuED2huZeYc+eYkfIGWDYd/H23kD6wpMhtZ+aZGHroqHAtP/934eIHEYgp6aqiB5l9HngncYLvmBlPGhFT4V4g+6hdwK0CZGZdi/CsVyvGctjhu8eWd9vJCOs8T7QZ3fs3T8zZDbIgAmQawn9PhZQ14VbTUKDMPxajI9leZN1iPsd1UupkerTdZrArd429gp2ajMBzXK1eRC4kz5rH8/ihkj8mhLKdvh56fbViULvCCIZ8c5f/yHfM7RJn7i980/2zGElSZp3JsUqj7EsxwrLpQPGcE24oQYqK4f5MGEQUdr0XVKZkS8W8YbqEmwXNt+oN8vQNF9uPvkjMg=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(36840700001)(46966006)(6636002)(5660300002)(16576012)(336012)(426003)(6862004)(47076005)(36860700001)(36906005)(2906002)(8936002)(53546011)(2616005)(186003)(26005)(37006003)(4326008)(316002)(70586007)(70206006)(31686004)(478600001)(54906003)(16526019)(36756003)(356005)(82310400003)(7636003)(6666004)(82740400003)(86362001)(8676002)(7416002)(31696002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 13:45:55.7245
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cecae26-0fff-47f0-7eec-08d9663c54e9
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1742
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-08-20 at 16:59 +0000, Mihail Chindris wrote:
+> From: Lars-Peter Clausen <lars@metafoo.de>
+> 
+> Currently IIO only supports buffer mode for capture devices like
+> ADCs. Add
+> support for buffered mode for output devices like DACs.
+> 
+> The output buffer implementation is analogous to the input buffer
+> implementation. Instead of using read() to get data from the buffer
+> write()
+> is used to copy data into the buffer.
+> 
+> poll() with POLLOUT will wakeup if there is space available for more
+> or
+> equal to the configured watermark of samples.
+> 
+> Drivers can remove data from a buffer using
+> iio_buffer_remove_sample(), the
+> function can e.g. called from a trigger handler to write the data to
+> hardware.
+> 
+> A buffer can only be either a output buffer or an input, but not
+> both. So,
+> for a device that has an ADC and DAC path, this will mean 2 IIO
+> buffers
+> (one for each direction).
+> 
+> The direction of the buffer is decided by the new direction field of
+> the
+> iio_buffer struct and should be set after allocating and before
+> registering
+> it.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
+> ---
+>  drivers/iio/iio_core.h            |   4 +
+>  drivers/iio/industrialio-buffer.c | 133
+> +++++++++++++++++++++++++++++-
+>  drivers/iio/industrialio-core.c   |   1 +
+>  include/linux/iio/buffer.h        |   7 ++
+>  include/linux/iio/buffer_impl.h   |  11 +++
+>  5 files changed, 154 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+> index 8f4a9b264962..61e318431de9 100644
+> --- a/drivers/iio/iio_core.h
+> +++ b/drivers/iio/iio_core.h
+> @@ -68,12 +68,15 @@ __poll_t iio_buffer_poll_wrapper(struct file
+> *filp,
+>  				 struct poll_table_struct *wait);
+>  ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
+>  				size_t n, loff_t *f_ps);
+> +ssize_t iio_buffer_write_wrapper(struct file *filp, const char
+> __user *buf,
+> +				 size_t n, loff_t *f_ps);
+>  
+>  int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
+>  void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
+>  
+>  #define iio_buffer_poll_addr (&iio_buffer_poll_wrapper)
+>  #define iio_buffer_read_outer_addr (&iio_buffer_read_wrapper)
+> +#define iio_buffer_write_outer_addr (&iio_buffer_write_wrapper)
+>  
+>  void iio_disable_all_buffers(struct iio_dev *indio_dev);
+>  void iio_buffer_wakeup_poll(struct iio_dev *indio_dev);
+> @@ -83,6 +86,7 @@ void iio_device_detach_buffers(struct iio_dev
+> *indio_dev);
+>  
+>  #define iio_buffer_poll_addr NULL
+>  #define iio_buffer_read_outer_addr NULL
+> +#define iio_buffer_write_outer_addr NULL
+>  
+>  static inline int iio_buffers_alloc_sysfs_and_mask(struct iio_dev
+> *indio_dev)
+>  {
+> diff --git a/drivers/iio/industrialio-buffer.c
+> b/drivers/iio/industrialio-buffer.c
+> index a95cc2da56be..73d4451a0572 100644
+> --- a/drivers/iio/industrialio-buffer.c
+> +++ b/drivers/iio/industrialio-buffer.c
+> @@ -161,6 +161,69 @@ static ssize_t iio_buffer_read(struct file
+> *filp, char __user *buf,
+>  	return ret;
+>  }
+>  
+> +static size_t iio_buffer_space_available(struct iio_buffer *buf)
+> +{
+> +	if (buf->access->space_available)
+> +		return buf->access->space_available(buf);
+> +
+> +	return SIZE_MAX;
+> +}
+> +
+> +static ssize_t iio_buffer_write(struct file *filp, const char __user
+> *buf,
+> +				size_t n, loff_t *f_ps)
+> +{
+> +	struct iio_dev_buffer_pair *ib = filp->private_data;
+> +	struct iio_buffer *rb = ib->buffer;
+> +	struct iio_dev *indio_dev = ib->indio_dev;
+> +	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+> +	size_t datum_size;
+> +	size_t to_wait;
+> +	int ret;
+> +
 
-On 8/23/2021 3:45 PM, Jason Gunthorpe wrote:
-> On Mon, Aug 23, 2021 at 02:09:37PM +0300, Maor Gottlieb wrote:
->> On 8/20/2021 6:54 PM, Jason Gunthorpe wrote:
->>> On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
->>>
->>>> +/**
->>>> + * __sg_free_table - Free a previously mapped sg table
->>>> + * @table:	The sg table header to use
->>>> + * @max_ents:	The maximum number of entries per single scatterlist
->>>> + * @total_ents:	The total number of entries in the table
->>>> + * @nents_first_chunk: Number of entries int the (preallocated) first
->>>> + *                     scatterlist chunk, 0 means no such preallocated
->>>> + *                     first chunk
->>>> + * @free_fn:	Free function
->>>> + *
->>>> + *  Description:
->>>> + *    Free an sg table previously allocated and setup with
->>>> + *    __sg_alloc_table().  The @max_ents value must be identical to
->>>> + *    that previously used with __sg_alloc_table().
->>>> + *
->>>> + **/
->>>> +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
->>>> +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
->>>> +{
->>>> +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
->>>> +			      table->orig_nents);
->>>> +}
->>>>    EXPORT_SYMBOL(__sg_free_table);
->>> This is getting a bit indirect, there is only one caller of
->>> __sg_free_table() in sg_pool.c, so may as well just export
->>> sg_free_table_entries have have it use that directly.
->> So I can just extend __sg_free_table to get number of entries. What do you
->> think?
-> Isn't the point here that different paths to __sg_free_table require
-> different entries? What do you mean?
+Even though I do not agree that this is suficient, we should have the
+same check as we have for input buffer:
 
-I mean that  __sg_free_table will get the number of entries. sg_pool 
-will call it with table->orig_nents and sg_free_append_table will call 
-it with with total_nents.
 
-> Jason
+if (!indio_dev->info)
+	return -ENODEV;
+
+> +	if (!rb || !rb->access->write)
+> +		return -EINVAL;
+> +
+> +	datum_size = rb->bytes_per_datum;
+> +
+> +	/*
+> +	 * If datum_size is 0 there will never be anything to read from
+> the
+> +	 * buffer, so signal end of file now.
+> +	 */
+> +	if (!datum_size)
+> +		return 0;
+> +
+> +	if (filp->f_flags & O_NONBLOCK)
+> +		to_wait = 0;
+> +	else
+> +		to_wait = min_t(size_t, n / datum_size, rb->watermark);
+> +
+
+I had a bit of a crazy thought... Typically, output devices do not
+really have a typical trigger as we are used to have in input devices.
+Hence, typically we just use a hrtimer (maybe a pwm-trigger can also be
+added) trigger where we kind of poll the buffer for new data to send to
+the device. So, I was wondering if we could just optionally bypass the
+kbuf path in output devices (via some optional buffer option)? At this
+point, we pretty much already know that we have data to consume :).
+This would be kind of a synchronous interface. One issue I see with
+this is that we cannot really have a deterministic (or close) sampling
+frequency as we have for example with a pwm based trigger.
+
+Anyways, just me throwing some ideas. This is not the most important
+thing for now...
+
+- Nuno Sá 
+> 
+
