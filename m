@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FB63F519F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A343F51A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhHWUBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:01:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34268 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231569AbhHWUBH (ORCPT
+        id S232165AbhHWUC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhHWUC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:01:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629748823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/rpPS8476jT+j14HYEnQugw58KjCjolM6XDTGzrL7Q8=;
-        b=RtAtCY4WeZAPK5qrsqmqwCcXYWXiZt7GmvxHzzJwJSzDsxyO5xj0Le9nhYvUWmtIWQHOo8
-        3iq4ykP+I5QeoNUhaLlHSzzI1KJqizrQH8wwdEDw8uI5XaclwHp/KK6BrxGaoWhpznoE1h
-        qjbjG+vbNy0/zhmsN2yNr9E3PTLJJ1s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-8uGg5a33MiyiAxjiEOwLyA-1; Mon, 23 Aug 2021 16:00:20 -0400
-X-MC-Unique: 8uGg5a33MiyiAxjiEOwLyA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D7C41082923;
-        Mon, 23 Aug 2021 20:00:18 +0000 (UTC)
-Received: from theseus (unknown [10.22.17.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 15FD369CBC;
-        Mon, 23 Aug 2021 20:00:16 +0000 (UTC)
-Date:   Mon, 23 Aug 2021 15:00:15 -0500
-From:   Clark Williams <williams@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        RT <linux-rt-users@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH PREEMPT_RT] i915: fix PREEMPT_RT locking splats
-Message-ID: <20210823150015.61ebc7d6@theseus>
-Organization: Red Hat, Inc
+        Mon, 23 Aug 2021 16:02:28 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D438C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:01:45 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id n12so10844547plf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vN8w33D+Pwcz1VufoHf/1Z3mdZFc7Np4Y5/rGD4A5ps=;
+        b=Foh25uOS7am8WDPHb2hfI560kfJ+aZWfE1MeSy/Jk79DAkK8et8kb/YZtbFSaWqUwP
+         T6AcSz4bL/0z46pkDQ511Yg1llnyXDvangeP3F3quPnno31yMd2MKUNoYlTePh2D6//Z
+         b8eNv1ae2xaKkjwa9u6NS1K7gvlDeRIL9cfJw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vN8w33D+Pwcz1VufoHf/1Z3mdZFc7Np4Y5/rGD4A5ps=;
+        b=XL4SwGIUCcEi+OBlmAHWfFk8v5bIroGafD5R3/1tWM1PpDjDpweKadItSzsKo2R5eB
+         /Orwc1orI7zFfieUqbYEj2O7eFYK+4GAlTp7+dXRleXu2Dxaygkn47L4Mw5qQqWZwhdZ
+         Ac1huw2TbhRj+SG3vI8c3OrvocUvMR3loKWZXST9lyGx9IlbNKoqHOir1RyBM84SQ60Q
+         wu9NhNDXcqSwb2EzXuzI+PZxWbU3BcQO24ydGxZH+hTUXfVbABqzNXH1/GbFdKh9JZ/R
+         WVkU8H3jDRhnlX3BfHFrejBxeDjPpPv1uCtJ1jdDmSgAmwaOxbbSK08vrH9nupT1niPH
+         61rQ==
+X-Gm-Message-State: AOAM533lVF7m2Vfs9btU6K5kybgrFmVs5HFtbol1dj4Hx2F9JbC4LSZg
+        ONvTyBxotX0wXuRiFe/c6OcB5w==
+X-Google-Smtp-Source: ABdhPJzYMl7P1hpCYhtUHxYx7udSXx9Nqo+M1aUCTrIOXBn2Os1ARhc58IvGdVRRphQkGFEFK+ViMA==
+X-Received: by 2002:a17:90b:4b12:: with SMTP id lx18mr255980pjb.121.1629748904956;
+        Mon, 23 Aug 2021 13:01:44 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:6e72:aaf4:2f33:9528])
+        by smtp.gmail.com with UTF8SMTPSA id w11sm4883971pgf.5.2021.08.23.13.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 13:01:44 -0700 (PDT)
+From:   Gwendal Grignou <gwendal@chromium.org>
+To:     bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org
+Cc:     linux-kernel@vger.kernel.org,
+        Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH] platform/chrome: cros_ec_trace: Fix format warnings
+Date:   Mon, 23 Aug 2021 13:01:32 -0700
+Message-Id: <20210823200132.2006257-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Found two separate spots where i915 was throwing "sleeping
-function called from invalid context" when running on a
-PREEMPT_RT kernel. In both cases it was from calling
-local_irq_disable prior to taking a spin_lock. Since spin
-locks are converted to rt_mutex_t on PREEMPT_RT this means
-that we might sleep with interrupts disabled.
+Fix printf format issues in new tracing events.
 
-Since in both cases the calls were in threaded context on RT
-(irq or ksoftirqd) and in no danger of reentrance, change the
-code to only disable interrupts on non-PREEMPT_RT kernels.
+Fixes: 814318242 ("platform/chrome: cros_ec_trace: Add fields to command traces")
 
-Signed-off-by: Clark Williams <williams@redhat.com>
+Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 ---
- drivers/gpu/drm/i915/gt/intel_breadcrumbs.c          | 6 ++++--
- drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 6 ++++--
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ drivers/platform/chrome/cros_ec_trace.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-index 38cc42783dfb..b8bf8d6d3c61 100644
---- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-+++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-@@ -318,9 +318,11 @@ void __intel_breadcrumbs_park(struct intel_breadcrumbs *b)
- 	/* Kick the work once more to drain the signalers, and disarm the irq */
- 	irq_work_sync(&b->irq_work);
- 	while (READ_ONCE(b->irq_armed) && !atomic_read(&b->active)) {
--		local_irq_disable();
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+			local_irq_disable();
- 		signal_irq_work(&b->irq_work);
--		local_irq_enable();
-+		if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+			local_irq_enable();
- 		cond_resched();
- 	}
- }
-diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-index fc77592d88a9..0e918831b69f 100644
---- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-+++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-@@ -1580,9 +1580,11 @@ static void execlists_dequeue(struct intel_engine_cs *engine)
- 
- static void execlists_dequeue_irq(struct intel_engine_cs *engine)
- {
--	local_irq_disable(); /* Suspend interrupts across request submission */
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_disable(); /* Suspend interrupts across request submission */
- 	execlists_dequeue(engine);
--	local_irq_enable(); /* flush irq_work (e.g. breadcrumb enabling) */
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		local_irq_enable(); /* flush irq_work (e.g. breadcrumb enabling) */
- }
- 
- static void clear_ports(struct i915_request **ports, int count)
+diff --git a/drivers/platform/chrome/cros_ec_trace.h b/drivers/platform/chrome/cros_ec_trace.h
+index f50b9f9b8610..a2052db55671 100644
+--- a/drivers/platform/chrome/cros_ec_trace.h
++++ b/drivers/platform/chrome/cros_ec_trace.h
+@@ -92,7 +92,7 @@ TRACE_EVENT(cros_ec_sensorhub_timestamp,
+ 		__entry->current_time = current_time;
+ 		__entry->delta = current_timestamp - current_time;
+ 	),
+-	TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
++	TP_printk("ec_ts: %9d, ec_fifo_ts: %9d, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
+ 		  __entry->ec_sample_timestamp,
+ 		__entry->ec_fifo_timestamp,
+ 		__entry->fifo_timestamp,
+@@ -122,7 +122,7 @@ TRACE_EVENT(cros_ec_sensorhub_data,
+ 		__entry->current_time = current_time;
+ 		__entry->delta = current_timestamp - current_time;
+ 	),
+-	TP_printk("ec_num: %4d, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
++	TP_printk("ec_num: %4d, ec_fifo_ts: %9d, fifo_ts: %12lld, curr_ts: %12lld, curr_time: %12lld, delta %12lld",
+ 		  __entry->ec_sensor_num,
+ 		__entry->ec_fifo_timestamp,
+ 		__entry->fifo_timestamp,
+@@ -153,7 +153,7 @@ TRACE_EVENT(cros_ec_sensorhub_filter,
+ 		__entry->x = state->x_offset;
+ 		__entry->y = state->y_offset;
+ 	),
+-	TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %d x: %12lld y: %12lld",
++	TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %lld x: %12lld y: %12lld",
+ 		  __entry->dx,
+ 		__entry->dy,
+ 		__entry->median_m,
 -- 
-2.31.1
-
--- 
-The United States Coast Guard
-Ruining Natural Selection since 1790
+2.33.0.rc2.250.ged5fa647cd-goog
 
