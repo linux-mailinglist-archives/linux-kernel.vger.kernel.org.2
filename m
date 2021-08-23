@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4709A3F5341
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD523F5345
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhHWWQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S233110AbhHWWQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 18:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhHWWP6 (ORCPT
+        with ESMTP id S233086AbhHWWQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:15:58 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16590C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:15:15 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id x4so17928191pgh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RfdR9T5mZGKV6zTbvG9lN48TBpGfeb0ci4Ov6cLVODE=;
-        b=XLlQyOR1TZ84fqnkKvmA5L1aYwtoI6/yyTnBLXhj0MUkxsRtFTL92CSa2Poa1HpbeW
-         HNfiFyhu5K/uGj/LLOOtX21f98XnGYCB7+eekRvG9REDRbIVULgDFhMfiuzTsyEkg1lU
-         IiV36AtV4FrBr0RUDVI8vQgODPfvq6sxZFf/NiejOayr84ME1Fo1XSj+iAS1DhQr5V2E
-         RKy0cpY6S8FLuuWHO1c3uoOWSCruiLBitdCB7DJOTgKOUUJOYZiKAbOcswPcYLhg4+OG
-         khbEp4vCYkhG6bOdxrgh6zIXbO+FdGmowvTiNKODeo15FdFB1iTm4/unoTpQFansWTg5
-         PDnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RfdR9T5mZGKV6zTbvG9lN48TBpGfeb0ci4Ov6cLVODE=;
-        b=hXRfG9yGGzZjPCrX76XwuRSHqqDNKbvw2rKXu2O46CPB5p2eycguF3mz2f5Q7jxHDi
-         k/b8e9nilDRfmferoXUP6ZXY0fIZwVaUmQQYCKIaKi8PZ4qjpWB83GRBJws//CoiTS3b
-         /wd/wlYyyvpIZvunbXIO8YOboG1fecNW0vjWN6WdzSyNIhO6YFn0MnUEH5ILLcC2pBhq
-         3EplZB/6VnhUFEC2Ls26xaOZf4pW7hsvb3A6hCShIvXqM0c8f7ffD126kmLPbsDI8v3h
-         0+PPEtyolnNCqDwtznyEEkF4om9uTj5tdWc7MVFcsfdbWCVgjteAHcTSXYQBLeQMYA/l
-         zuKA==
-X-Gm-Message-State: AOAM530wJ5mqqPaQ9YgdHP1ZuIBpngvIR0cvqstT0mz9E7M/KEWVCiBu
-        rAaZw3xSFcCArYTBOvSO1J9yHD2vuBRF/4/jO6Gxew==
-X-Google-Smtp-Source: ABdhPJxp9KG95R1Y/hUK17QG53Sp8biAn/VMAUkMHbnmn6dbXi3Ry7luK6mPBChTKa0dR67/WYb+goSaRqISAIva4sY=
-X-Received: by 2002:aa7:90d4:0:b029:3b3:2746:5449 with SMTP id
- k20-20020aa790d40000b02903b327465449mr35970535pfk.81.1629756914544; Mon, 23
- Aug 2021 15:15:14 -0700 (PDT)
+        Mon, 23 Aug 2021 18:16:25 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06381C061757;
+        Mon, 23 Aug 2021 15:15:42 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id E007261D7; Mon, 23 Aug 2021 18:15:40 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org E007261D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1629756940;
+        bh=l2+VDl22MUqiJrQ7yjAxRz1AbDeU5j4i2UbWV/QLqD4=;
+        h=Date:To:Cc:Subject:References:In-Reply-To:From:From;
+        b=McGzShEW/vXjM4IRYOjJ+shVasZozVIid5BDJJ2VYRGy+EHtfNnTNgQ4h+L2TBCHp
+         zQKurWjb279b0w+wQ6w9kGYY+aXZI+AdvWjdHDmNpgibbuiYOmUeStmXMbWp0bLruC
+         pIgBMGTvurkJvdPhEuOmU9KHgkSzQs6oedCvcTyQ=
+Date:   Mon, 23 Aug 2021 18:15:40 -0400
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Michel Lespinasse <walken@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Collin Fijalkovich <cfijalkovich@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: Removing Mandatory Locks
+Message-ID: <20210823221540.GB10881@fieldses.org>
+References: <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
+ <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com>
+ <YRcyqbpVqwwq3P6n@casper.infradead.org>
+ <87k0kkxbjn.fsf_-_@disp2133>
+ <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
+ <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
+ <202108200905.BE8AF7C@keescook>
+ <D2325492-F4DD-4E7A-B4F1-0E595FF2469A@zytor.com>
+ <8a6737f9fa2dd3b8b9d851064cd28ca57e489a77.camel@kernel.org>
+ <18b073b95d692f4c7782c68de1f803681c15a467.camel@kernel.org>
 MIME-Version: 1.0
-References: <20210823120106.9633-1-straube.linux@gmail.com>
-In-Reply-To: <20210823120106.9633-1-straube.linux@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Mon, 23 Aug 2021 23:15:03 +0100
-Message-ID: <CAA=Fs0=Yq9PMEProT4RPTan4K=aL-zkQw=y855vQu+iBTPztHQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] staging: r8188eu: use is_multicast_ether_addr instead
- of IS_MCAST
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18b073b95d692f4c7782c68de1f803681c15a467.camel@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+From:   bfields@fieldses.org (J. Bruce Fields)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 at 13:02, Michael Straube <straube.linux@gmail.com> wrote:
->
-> This series replaces most uses of the custom IS_MCAST macro with
-> is_multicast_ether_addr. The goal is to get rid of IS_MCAST.
-> There is only one usage left in rtw_sta_mgt.c, but that one needs
-> more effort to verify that the buffers are properly aligned, so I
-> left it as is for now.
->
-> Michael Straube (8):
->   staging: r8188eu: ensure proper alignment for eth address buffers
->   staging: r8188eu: use is_multicast_ether_addr in core/rtw_mlme.c
->   staging: r8188eu: use is_multicast_ether_addr in core/rtw_mp.c
->   staging: r8188eu: use is_multicast_ether_addr in core/rtw_recv.c
->   staging: r8188eu: use is_multicast_ether_addr in core/rtw_security.c
->   staging: r8188eu: use is_multicast_ether_addr in core/rtw_xmit.c
->   staging: r8188eu: use is_multicast_ether_addr in hal/rtl8188eu_xmit.c
->   staging: r8188eu: use is_multicast_ether_addr in os_dep/recv_linux.c
->
->  drivers/staging/r8188eu/core/rtw_mlme.c      |  4 ++--
->  drivers/staging/r8188eu/core/rtw_mp.c        |  4 ++--
->  drivers/staging/r8188eu/core/rtw_recv.c      | 20 ++++++++++----------
->  drivers/staging/r8188eu/core/rtw_security.c  |  8 ++++----
->  drivers/staging/r8188eu/core/rtw_xmit.c      | 15 ++++++---------
->  drivers/staging/r8188eu/hal/rtl8188eu_xmit.c |  3 +--
->  drivers/staging/r8188eu/include/rtw_recv.h   | 10 +++++-----
->  drivers/staging/r8188eu/include/rtw_xmit.h   |  8 ++++----
->  drivers/staging/r8188eu/os_dep/recv_linux.c  |  2 +-
->  9 files changed, 35 insertions(+), 39 deletions(-)
->
-> --
-> 2.32.0
->
+On Sat, Aug 21, 2021 at 08:45:54AM -0400, Jeff Layton wrote:
+> On Fri, 2021-08-20 at 17:29 -0400, Jeff Layton wrote:
+> > No, Windows has deny-mode locking at open time, but the kernel's
+> > mandatory locks are enforced during read/write (which is why they are
+> > such a pain). Samba will not miss these at all.
+> > 
+> > If we want something to provide windows-like semantics, we'd probably
+> > want to start with something like Pavel Shilovsky's O_DENY_* patches.
+> > 
+> > -- Jeff
+> > 
+> 
+> Doh! It completely slipped my mind about byte-range locks on windows...
+> 
+> Those are mandatory and they do block read and write activity to the
+> ranges locked. They have weird semantics vs. POSIX locks (they stack
+> instead of splitting/merging, etc.).
+> 
+> Samba emulates these with (advisory) POSIX locks in most cases. Using
+> mandatory locks is probably possible, but I think it would add more
+> potential for deadlock and security issues.
 
-Dear Michael,
+Right, so Windows byte-range locks are different from Windows open deny
+modes.
 
-Based on my limited knowledge, looks good to me. Also I built and
-runtime tested it with my N10-Nano, driver works well still. Many
-thanks.
+But even if somebody wanted to implement them, I doubt they'd start with
+the mandatory locking code you're removing here, so I think they're
+irrelevant to this discussion.
 
-For whole series:
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
-
-Regards,
-Phil
+--b.
