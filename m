@@ -2,116 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD9F3F4A34
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6824C3F4A31
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236509AbhHWMBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 08:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233489AbhHWMBn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:01:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF0EC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SvYyxaR7pbaroKoYkxxVyJBV0ySbQ+OIJjyRsFmYxFo=; b=g3CjWbwjcvDmlrsJarkQJZWQCh
-        Rady3qn1tVuaeZKNowXoQhfdxvMBc950JONW9X7tU6X+9KdEj/bZeNJQvFTy9UMi+YCaQ9FKLDOHH
-        Hz/7e/X3MlPYVEvytw7g0RikKrvGQflHS4RbRkXRrS3hKOJNnlQBQpTUH8n5bQg7UvmK+8Owx/0o0
-        APGJd9nJ+kHMv+e22d6Gdb28i+CTkPWsCtUx/ZcUaMYhoHLCBlsGWvaFWHjO7+aiyQbqf4/0AgsFF
-        lRlEu6OP8HajueuuKTL8d4VCdE75XAaBnhFfON7c3Z6B8ieNiOuJYLgiuvlSFDUVa53A0TfLGoqhd
-        DLcYqsKg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mI8bs-009hP4-5N; Mon, 23 Aug 2021 11:59:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F0BB300332;
-        Mon, 23 Aug 2021 13:59:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 68D2020A5C3C3; Mon, 23 Aug 2021 13:59:23 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 13:59:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH v3 1/2] sched/fair: Add NOHZ balancer flag for
- nohz.next_balance updates
-Message-ID: <YSONmyWL14mqV6zA@hirez.programming.kicks-ass.net>
-References: <20210823111700.2842997-1-valentin.schneider@arm.com>
- <20210823111700.2842997-2-valentin.schneider@arm.com>
+        id S236778AbhHWMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233489AbhHWMAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 08:00:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 17AD56054E;
+        Mon, 23 Aug 2021 12:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629720006;
+        bh=xzyNS611BHZ/fQVGuhTfONHp7Jz8WSfBcviw1QY7gCs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=U9Q4gVjx03MgsuH7rfVsQGhlI/dzIxGDR3UVVZZ69BBs+wxE2HaV7/Pjiky3k42wn
+         AdlMdnvDOeaFdkNDBmee9w1n3YmRRQTLmCk2yGhXgF4xSNDQMQ1nm7Tet5QvAGVHeF
+         //z/avSU6pPscJ6E4fcjACWtSZknSJjlULA8S1/8pIE08jBrcGVevU/jCUnx4c+MBw
+         yrfJkeskD+sigaswGxOauQjEYJif4CC7cAPeLX4uy/gPPzvTBuDsZreB4W6VRq50yx
+         7W1XwVjgH48ACyTvF61aor5X7MTKpBSdNVX79fOdpQutzQxM3mJjwXEHwd4VHwnl93
+         gNT9NyetaT/Og==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 043DE609E6;
+        Mon, 23 Aug 2021 12:00:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823111700.2842997-2-valentin.schneider@arm.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: marvell: fix MVNETA_TX_IN_PRGRS bit number
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162972000601.531.12302229457725752969.git-patchwork-notify@kernel.org>
+Date:   Mon, 23 Aug 2021 12:00:06 +0000
+References: <20210820153951.220125-1-bigunclemax@gmail.com>
+In-Reply-To: <20210820153951.220125-1-bigunclemax@gmail.com>
+To:     Maxim Kiselev <bigunclemax@gmail.com>
+Cc:     thomas.petazzoni@bootlin.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 12:16:59PM +0100, Valentin Schneider wrote:
+Hello:
 
-> Gate NOHZ blocked load
-> update by the presence of NOHZ_STATS_KICK - currently all NOHZ balance
-> kicks will have the NOHZ_STATS_KICK flag set, so no change in behaviour is
-> expected.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-> @@ -10572,7 +10572,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->  	 * setting the flag, we are sure to not clear the state and not
->  	 * check the load of an idle cpu.
->  	 */
-> -	WRITE_ONCE(nohz.has_blocked, 0);
-> +	if (flags & NOHZ_STATS_KICK)
-> +		WRITE_ONCE(nohz.has_blocked, 0);
->  
->  	/*
->  	 * Ensures that if we miss the CPU, we must see the has_blocked
-> @@ -10594,13 +10595,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->  		 * balancing owner will pick it up.
->  		 */
->  		if (need_resched()) {
-> -			has_blocked_load = true;
-> +			if (flags & NOHZ_STATS_KICK)
-> +				has_blocked_load = true;
->  			goto abort;
->  		}
->  
->  		rq = cpu_rq(balance_cpu);
->  
-> -		has_blocked_load |= update_nohz_stats(rq);
-> +		if (flags & NOHZ_STATS_KICK)
-> +			has_blocked_load |= update_nohz_stats(rq);
->  
->  		/*
->  		 * If time for next balance is due,
-> @@ -10631,8 +10634,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
->  	if (likely(update_next_balance))
->  		nohz.next_balance = next_balance;
->  
-> -	WRITE_ONCE(nohz.next_blocked,
-> -		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
-> +	if (flags & NOHZ_STATS_KICK)
-> +		WRITE_ONCE(nohz.next_blocked,
-> +			   now + msecs_to_jiffies(LOAD_AVG_PERIOD));
->  
->  abort:
->  	/* There is still blocked load, enable periodic update */
+On Fri, 20 Aug 2021 18:39:51 +0300 you wrote:
+> According to Armada XP datasheet bit at 0 position is corresponding for
+> TxInProg indication.
+> 
+> Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
+> ---
+>  drivers/net/ethernet/marvell/mvneta.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm a bit puzzled by this; that function has:
+Here is the summary with links:
+  - net: marvell: fix MVNETA_TX_IN_PRGRS bit number
+    https://git.kernel.org/netdev/net/c/359f4cdd7d78
 
-  SCHED_WARN_ON((flags & NOHZ_KICK_MASK) == NOHZ_BALANCE_KICK);
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Which:
 
- - isn't updated
- - implies STATS must be set when BALANCE
-
-the latter gives rise to my confusion; why add that gate on STATS? It
-just doesn't make sense to do a BALANCE and not update STATS.
