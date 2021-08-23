@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704133F4348
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B89C3F434E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbhHWCF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 22:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
+        id S234808AbhHWCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 22:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234692AbhHWCFw (ORCPT
+        with ESMTP id S229466AbhHWCIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 22:05:52 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DDDC061575;
-        Sun, 22 Aug 2021 19:05:10 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id z5so31180507ybj.2;
-        Sun, 22 Aug 2021 19:05:10 -0700 (PDT)
+        Sun, 22 Aug 2021 22:08:47 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87527C061575;
+        Sun, 22 Aug 2021 19:08:05 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id e14so17707794qkg.3;
+        Sun, 22 Aug 2021 19:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=a+lvHaFeJkkkAOQLbRXTzBc/XIrK+hutoY3j14PFZrI=;
-        b=MfNfBTZ2vcGCOpo/Q3VnL1nXtWkssmtLA67FYLhXkbprxOmIcdaa36AnwIWnjLW8D1
-         HLM7wFzyNanE6G8JALSOZVZwO8ZFHnC09STF42HCeoYDAM4zpFJSSDdCg3zCUfMMacFr
-         Db8KAmWZ4jjC3mg4yztVvenudvzmZTy4BlFHUdEt75kQz0bcYJm2FdhLzVcR+UGlxQy2
-         QP5aSBZX6VOC4bDPCoq4+D1Vaz4ZeeFGnlckBf+QM3O5R5cj/dsf0HLTWnLfKmQeC6Vp
-         duEdP6c/qB4BGDGN1APcKqtckive9N3vW1ESJSRQB/jdS00w5p1RHegoBup37/Xcz1+3
-         75sQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t2mLFYPvbRhohmCBCWrqGpAuTb8PU5rBQSIDrq8BWWw=;
+        b=p95B/mf6bUGCvAcp+15LgkVJxo0OfOIVUn0oxzvXEuKsxKcY8X7OYr9ppqBmqC2F5c
+         bHWq0uuDsS3kSXlRjEqw2RDDAiyWm+Y5D7d0b1ZIqlR4cjMx+osa1pRFYslf5j72n6Ep
+         uq7J8FzcE2WVBjtLAS4PC0ZgV+z/lJ1qfEPIqOmONj74zs+lSowpst1aWI9U6Ip2MaaB
+         4oEBo5Lbb139oCylzNxSO5jzxkv3FpQCEihe3m/azH6yNP9Vk8z1OhTXtarl+8cW+HXv
+         q+xYi87kiXpU/lpC8QwX/jbt9LVGOxwnBh28wBghu1aIFU+y6yBqGR1lLXDZPfSjFvA3
+         DryQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=a+lvHaFeJkkkAOQLbRXTzBc/XIrK+hutoY3j14PFZrI=;
-        b=Ojc+FIZVdE9n6Q6f8/EBdA9Y9m530m8X77oJO/Mga9OwBlDhwcahVSO/H74G11GTdE
-         ru8Jdc0V4W/dwacpDv5YL/FffdCjQkfE32TpHNn0+GGpbI0kd7U0DUewbtel03AKNcPa
-         +UOvnDlOt39udZELPob1Gb2ZudSIpXp+wMPLSWEBYtOGL1EFascwBaRUIA4rENPlXW9v
-         TvDgw70PCrU71RRt11i+q0ythWKeeTYf9Tc+lqiYehvcSytI7CUnxz3Cf/0AZcUZv6fK
-         bCm1S4KF/LjNMy5T3bEQHQgzDJthbPWNaiMj1ezQl2+glRCM+Sc258LnJ1p/AXGtLC5x
-         ve8g==
-X-Gm-Message-State: AOAM531sLMHRvTdbh0IbtwJ136UdiwUDlO7Xon1xyG5lUxPNycciUvUi
-        mSqVzK7FDTLdjCq5oVisIIJBTzo7uQRy8FSkPuk=
-X-Google-Smtp-Source: ABdhPJyTFctQxEFbGQTEAfjJ9SfrzImsMKkPY0StuBM9e+G/q6jRwHnf/sBE+LKSoOeNbdsilCTJjhL7/Czd0I9Fd5g=
-X-Received: by 2002:a25:b845:: with SMTP id b5mr40137971ybm.343.1629684309946;
- Sun, 22 Aug 2021 19:05:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t2mLFYPvbRhohmCBCWrqGpAuTb8PU5rBQSIDrq8BWWw=;
+        b=OZwTLdZ2faZTAK6BTFrMX/Ve+ExNmkg6qeIF89TxcrPSHlxJz38IQxnnI4Pa5ZMTHq
+         ERNYq4ylHLrNpq8LmjotPO9BuHnQMeyRMrkefLa5PS0+UAzj7UCYMNB2b+hm/Ufrn3OX
+         CKfM94MHBgv8PBFzhi/CWQbJHQzoV+wO+6HKOjYktryR739o/N6//yuGLbb5/aK2IRJ9
+         07pFMZLAmCbLqHoS+PhgFVv8JKMW6IBd46//5B/cCrNfzLKmq+HzvalaQSlEXdD0rc5F
+         tAcKg1CT0EnP78xDieExkm8Kpov6AtJEr2vanRoKKh9+AWFziamcV0Nuo8ZqgqQBuyfV
+         CjQQ==
+X-Gm-Message-State: AOAM532pUCuAn/5f0xL3Gx8GgrRdXjoJRWzhkxTZPBbmdmb+JbCLUcbv
+        4gjnZKZbveuHZKB97ZLaJ9JMCEwxNJA=
+X-Google-Smtp-Source: ABdhPJy+jjiT5kHXPURgECyBr2q52UJ4tKTQ5JVyztG7RRMijRZREk/L/Gbagv03bJeHDU8gJKs9Vg==
+X-Received: by 2002:ae9:de06:: with SMTP id s6mr7226321qkf.489.1629684484764;
+        Sun, 22 Aug 2021 19:08:04 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id t26sm6688070qkm.0.2021.08.22.19.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 19:08:04 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] arch/sparc/mm/fault_64.c: fix bugon.cocci warnings
+Date:   Sun, 22 Aug 2021 19:07:56 -0700
+Message-Id: <20210823020756.44246-1-jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210820030536.25737-1-yaozhenguo1@gmail.com> <20210822151952.23ca9547316dc34c9f3bd482@linux-foundation.org>
-In-Reply-To: <20210822151952.23ca9547316dc34c9f3bd482@linux-foundation.org>
-From:   zhenguo yao <yaozhenguo1@gmail.com>
-Date:   Mon, 23 Aug 2021 10:04:59 +0800
-Message-ID: <CA+WzARkRYP=n1T+G3ciUYmM+nK3H-FpRMG5Nq8kpujTwpYmnMA@mail.gmail.com>
-Subject: Re: [PATCH] hugetlbfs: add hugepages_node kernel parameter
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     mike.kravetz@oracle.com, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, yaozhenguo@jd.com,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK,  It's better to use a concise way to add this function.  I will
-use a better way in the next version.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Andrew Morton <akpm@linux-foundation.org> =E4=BA=8E2021=E5=B9=B48=E6=9C=882=
-3=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=886:19=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On Fri, 20 Aug 2021 11:05:36 +0800 yaozhenguo <yaozhenguo1@gmail.com> wro=
-te:
->
-> > We can specify the number of hugepages to allocate at boot. But the
-> > hugepages is balanced in all nodes at present. In some scenarios,
-> > we only need hugepags in one node. For example: DPDK needs hugepages
-> > which is in the same node as NIC. if DPDK needs four hugepags of 1G
-> > size in node1 and system has 16 numa nodes. We must reserve 64 hugepags
-> > in kernel cmdline. But, only four hugepages is used. The others should
-> > be free after boot.If the system memory is low(for example: 64G), it wi=
-ll
-> > be an impossible task. So, add hugepages_node kernel parameter to speci=
-fy
-> > node number of hugepages to allocate at boot.
-> > For example add following parameter:
-> >
-> > hugepagesz=3D1G hugepages_node=3D1 hugepages=3D4
-> >
-> > It will allocate 4 hugepags in node1 at boot.
->
-> If were going to do this, shouldn't we permit more than one node?
->
->         hugepages_nodes=3D1,2,5
+Use BUG_ON instead of a if condition followed by BUG.
+
+Generated by: scripts/coccinelle/misc/bugon.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+---
+ arch/sparc/mm/fault_64.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/sparc/mm/fault_64.c b/arch/sparc/mm/fault_64.c
+index 9a9652a..672f11b 100644
+--- a/arch/sparc/mm/fault_64.c
++++ b/arch/sparc/mm/fault_64.c
+@@ -280,9 +280,8 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
+ 	si_code = SEGV_MAPERR;
+ 	address = current_thread_info()->fault_address;
+ 
+-	if ((fault_code & FAULT_CODE_ITLB) &&
+-	    (fault_code & FAULT_CODE_DTLB))
+-		BUG();
++	BUG_ON((fault_code & FAULT_CODE_ITLB) &&
++		(fault_code & FAULT_CODE_DTLB));
+ 
+ 	if (test_thread_flag(TIF_32BIT)) {
+ 		if (!(regs->tstate & TSTATE_PRIV)) {
+-- 
+1.8.3.1
+
+
