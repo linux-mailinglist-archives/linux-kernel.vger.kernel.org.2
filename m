@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B353F450A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296EA3F4514
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhHWGjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 02:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S233820AbhHWGlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 02:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbhHWGju (ORCPT
+        with ESMTP id S231715AbhHWGlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 02:39:50 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F9C061575;
-        Sun, 22 Aug 2021 23:39:07 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id j17-20020a05600c1c1100b002e754875260so150524wms.4;
-        Sun, 22 Aug 2021 23:39:07 -0700 (PDT)
+        Mon, 23 Aug 2021 02:41:20 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CFCC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 23:40:38 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id y7so29631028ljp.3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 23:40:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9Aqx6TrlbZceHPQbmc0/vVBBjQ3l0UdYj3Xf1scJT9g=;
-        b=Zwogo5FVzcC7NwjXJqrHozJwSSJT6SkwkkRaLGmVuXXsEwjPid23+cAr+HYJbZxXcP
-         KlcYdH8AGH1bMMdOb/wxt0SeNbbtTil9jwllHagrbP1q5tXaxzVtjnF678nqODGQLOwA
-         cUOgqaBt6Dg/NmcIu83IFsY3WfJTr5GxoMGcjrCldAZcGf91eKZXpr4fV1axoGsWnEad
-         7FfIp/drEXmvltW6Tb1ci6OyOObW0chzEcKcqJv+Hooz4VLcg9EelG55xiNM3RK+s+YP
-         WF/eySEYI4DeTBveMaQze2s8KrvVPV24+fYTgLCHXjw2ofixBDFiFAp0omSl7xW77OqL
-         5leg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dOSScg11+0lHrDw6MS1CV2sNd8OdE1zWDqg1qjqqW2Y=;
+        b=PYypPGwhJKWIPHwv0PNNxvgnPr8zgWPvGUeVW/uOkbS0Yv1LkNwjUiYPwyaBu+NxwW
+         dYV+82j3pW0jpoHiJeHbehsfiEC8JgTXafrSgSTiLwmlPR+F4eg9qpAJg72XDqbx9Mvc
+         gvHQPEr4y/JXHUQ4fJSKsQdp9nRZWGHp+2Lh0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9Aqx6TrlbZceHPQbmc0/vVBBjQ3l0UdYj3Xf1scJT9g=;
-        b=SZLbz9gRdsXO1rsbW3ZPBUyx3ZItBVwGQzYFlGRApgltP5hc7cTVxZxj1qfXKowDG9
-         ynaNUWnyytbzCidR7m3dYBsGXh+PpyVB8H8T/5FO+T+aFv1549uFXVkVhkd6shlpm86e
-         eTutRk7FofOLt9AVrWlx6Ii8LkTPSZLWRb/6oa6lFEKnxAhOtWPJdFvnrmglmXsr3xdz
-         YunsCJZjOZpTvtDeWdncpoKAJQismYEVNy3Z3eTYrfPv3/3WOlNx5LNMAt/KWjMLMHQR
-         ByUtYYNH7Gn0DGxY+z7rX0y7Eqpa+CLecRUU66bRmPcQCaV5T4on2tjCd671i12mzv2S
-         cVEA==
-X-Gm-Message-State: AOAM531gcm0IyuK99HmE0IBteZoQq6cHx6DGhb4VKHHcJL0dtwsHXfBR
-        2d5nc4coLJhAq4CAdyZZCvg=
-X-Google-Smtp-Source: ABdhPJxMDl5C5Iu83116CuHInV6lPElsLuPvoM9TmHB5RgepZKEne1VQji9BlkhaP8jrwX7mJv97Jw==
-X-Received: by 2002:a1c:f414:: with SMTP id z20mr14939054wma.94.1629700746294;
-        Sun, 22 Aug 2021 23:39:06 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f08:4500:ed43:740c:fec5:7f46? (p200300ea8f084500ed43740cfec57f46.dip0.t-ipconnect.de. [2003:ea:8f08:4500:ed43:740c:fec5:7f46])
-        by smtp.googlemail.com with ESMTPSA id u16sm13947028wmc.41.2021.08.22.23.39.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 23:39:05 -0700 (PDT)
-Subject: Re: [net-next][bisected da41788] modules fails to build
- drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c:12199
-To:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>, davem@davemloft.net,
-        netdev@vger.kernel.org
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Brian King <brking@linux.vnet.ibm.com>, kuba@kernel.org
-References: <16a5465e-2357-3277-e2eb-dc0668e6cb01@linux.vnet.ibm.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <6c87b191-13c3-c52d-34ad-79e23b5d71a6@gmail.com>
-Date:   Mon, 23 Aug 2021 08:38:58 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dOSScg11+0lHrDw6MS1CV2sNd8OdE1zWDqg1qjqqW2Y=;
+        b=FiXZT+rR9IKz7VI71o13hbMB36f5h8ODtmvBk9d/nM60fJCRrlEgasai430UhkDgSe
+         eyy6iazprIL15A5TQtQwPqARKVjUMzVqFYOeRKIMiUac8Jmvy61r9ZLEhSQu6rqnvEgI
+         8WnEv4H393TPfTEMUkek7d/EROYV06hnxhbye/gfqF5OHCucnspf8cuEaGuuYTkl6uMO
+         hVi5wtqOGUYLVj7N4JG5rZNUE2YAiJFT9K7J6O+vDFnSQI7chkZK81aXRhasuKxx+TkK
+         ErpRQO1zRu3pnI6k+g06VlZ2D9axCdsepUZp8Wu/bGB3yHzl8lWYVp/7c36y7q1Lf58Q
+         tiag==
+X-Gm-Message-State: AOAM5334NV2L8s/BgSmVbspCOeI9r8dfC3oHWJm5orMBQcUNP+63Ynwc
+        oHxJTlrEzzMdchw4fJthuxKyLdW9vNAyrMCasxVREg==
+X-Google-Smtp-Source: ABdhPJzCaNaaScS5j8xwc/H16iJK+VtsRDRaMiPRceRnRRAxbyhImqfGwZYwLIHLdB0yA9X834FjhBCHEBgVDLi4C9I=
+X-Received: by 2002:a2e:b0e2:: with SMTP id h2mr25865507ljl.23.1629700837011;
+ Sun, 22 Aug 2021 23:40:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <16a5465e-2357-3277-e2eb-dc0668e6cb01@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210820111504.350-1-chun-jie.chen@mediatek.com> <20210820111504.350-5-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210820111504.350-5-chun-jie.chen@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 23 Aug 2021 14:40:26 +0800
+Message-ID: <CAGXv+5G8WUW5ByA12ELrUvHVshwj2nm2wMLYZeFt82g4C7BXpw@mail.gmail.com>
+Subject: Re: [v2 04/24] clk: mediatek: Add API for clock resource recycle
+To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
+        Devicetree List <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.08.2021 08:00, Abdul Haleem wrote:
-> Greeting's
-> 
-> Todays net-next branch fails to build on my powerpc box with below error
-> 
->   CC [M]  drivers/gpu/drm/virtio/virtgpu_trace_points.o
->   CC [M]  drivers/net/ethernet/atheros/atl1e/atl1e_ethtool.o
-> drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c: In function ‘bnx2x_read_fwinfo’:
-> drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c:12199:13: error: implicit declaration of function ‘pci_vpd_alloc’; did you mean ‘pci_pool_alloc’? [-Werror=implicit-function-declaration]
->   vpd_data = pci_vpd_alloc(bp->pdev, &vpd_len);
->              ^~~~~~~~~~~~~
->              pci_pool_alloc
-> drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c:12199:11: warning: assignment to ‘u8 *’ {aka ‘unsigned char *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
->   vpd_data = pci_vpd_alloc(bp->pdev, &vpd_len);
->            ^
->   CC [M]  drivers/scsi/qla2xxx/qla_nx.o
->   CC [M]  net/netfilter/xt_MASQUERADE.o
->   CC [M]  net/bluetooth/ecdh_helper.o
->   CC [M]  drivers/gpu/drm/amd/amdgpu/uvd_v5_0.o
-> drivers/net/ethernet/broadcom/bnx2x/bnx2x_main.c:12203:9: error: implicit declaration of function ‘pci_vpd_find_ro_info_keyword’; did you mean ‘pci_vpd_find_info_keyword’? [-Werror=implicit-function-declaration]
->   rodi = pci_vpd_find_ro_info_keyword(vpd_data, vpd_len,
->          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->          pci_vpd_find_info_keyword
->   CC [M]  net/netfilter/xt_SECMARK.o
->   CC [M]  net/netfilter/xt_TPROXY.o
->   CC [M]  net/mac80211/driver-ops.o
-> 
-> 
-> The recent changes to the code causing build fail is
-> 
-> commit da417885a99d36036cc7d2778f94b846e6582434
-> Author: Heiner Kallweit <hkallweit1@gmail.com>
-> Date:   Sun Aug 22 15:54:23 2021 +0200
-> 
->     bnx2x: Search VPD with pci_vpd_find_ro_info_keyword()
->         Use pci_vpd_find_ro_info_keyword() to search for keywords in VPD to
->     simplify the code.
->         str_id_reg and str_id_cap hold the same string and are used in the same
->     comparison. This doesn't make sense, use one string str_id instead.
->         Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->     Signed-off-by: David S. Miller <davem@davemloft.net>
-> 
-> @Heiner, Could you please have a look, I am attaching the kernel config
-> 
-This series was supposed to go via the PCI tree because it builds on patches
-that are in the PCI tree but not in linux-next and net-next yet.
+On Fri, Aug 20, 2021 at 7:18 PM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> In order to avoid resource leak when fail clock registartion appears,
+
+Typo. Please fix if you respin a new version.
+
+> so add the common interface to handle it.
+>
+> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
