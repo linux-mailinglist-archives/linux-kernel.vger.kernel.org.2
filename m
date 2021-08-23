@@ -2,251 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8695B3F462D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5133F4634
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhHWH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:56:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19044 "EHLO m43-7.mailgun.net"
+        id S235403AbhHWH5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:57:39 -0400
+Received: from relay.sw.ru ([185.231.240.75]:43240 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235380AbhHWH4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:56:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629705373; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=B1gMTIHDe63Hd6Huni5qoSBnGb8WqgIMHUY1HklXe2M=; b=Sp1U51qYaxmPPzBiyNynTEB9nATQBYFdyapYkrjaQhxh0pEfWmLcvD6IzJ3aeNJplVs7/vXy
- Vt9OXkUhImxaysUXwEvBaequ2P6p+9lTnHznOu2zzf3rB4/htjzrBlFEPA4DbacYe00CQ693
- CPtRdWwBoVWxsbTfUkEEM1rY9Qo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6123549534bfa76979b6f10a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 07:56:05
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 19259C4360D; Mon, 23 Aug 2021 07:56:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.85.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CCAAEC4338F;
-        Mon, 23 Aug 2021 07:56:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CCAAEC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2 3/3] irqchip/qcom-pdc: Start getting rid of the
- GPIO_NO_WAKE_IRQ
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        bjorn.andersson@linaro.org, linus.walleij@linaro.org,
-        tkjos@google.com, lsrao@codeaurora.org
-References: <1629373993-13370-1-git-send-email-mkshah@codeaurora.org>
- <1629373993-13370-4-git-send-email-mkshah@codeaurora.org>
- <87k0kgqg6s.wl-maz@kernel.org>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <92b37bf7-654f-14c0-1f1c-64a1cd12427a@codeaurora.org>
-Date:   Mon, 23 Aug 2021 13:25:58 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S235374AbhHWH5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 03:57:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=gYEdybKbXhCvejIGuZRQDqqEgCGQEYZNt6q+lPijJXQ=; b=zSOldxa2ZHsHtkYYtQS
+        B+p6VObdAf88ETGmdJEyC1AxeKrwmAYpomCtNgYo2EVh8ggpWW+GCQe3J/R/He2rlu4M8iWpsoFgj
+        ZBsfPkHgccH9Pa5IvTdRIIS5ZSRPP7fsJNKBH8GW1KysE1zu80UfFjDWQLVCrqo/340m41wmot8=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mI4p8-008YUo-4J; Mon, 23 Aug 2021 10:56:50 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Christoph Paasch <christoph.paasch@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
+References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
+Message-ID: <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
+Date:   Mon, 23 Aug 2021 10:56:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <87k0kgqg6s.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Christoph Paasch reports [1] about incorrect skb->truesize
+after skb_expand_head() call in ip6_xmit.
+This happen because skb_set_owner_w() for newly clone skb is called
+too early, before pskb_expand_head() where truesize is adjusted for
+(!skb-sk) case.
 
-On 8/20/2021 9:08 PM, Marc Zyngier wrote:
-> On Thu, 19 Aug 2021 12:53:13 +0100,
-> Maulik Shah <mkshah@codeaurora.org> wrote:
->> From: Marc Zyngier <maz@kernel.org>
->>
->> gpio_to_irq() reports error at irq_domain_trim_hierarchy() for non
->> wakeup capable GPIOs that do not have dedicated interrupt at GIC.
->>
->> Since PDC irqchip do not allocate irq at parent GIC domain for such
->> GPIOs indicate same by using irq_domain_disconnect_hierarchy() for
->> PDC and parent GIC domains.
->>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->> [mkshah: Add loop to disconnect for all parents]
->> Tested-by: Maulik Shah <mkshah@codeaurora.org>
->> ---
->>   drivers/irqchip/qcom-pdc.c | 75 +++++++++++-----------------------------------
->>   1 file changed, 18 insertions(+), 57 deletions(-)
->>
->> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
->> index 32d5920..696afca 100644
->> --- a/drivers/irqchip/qcom-pdc.c
->> +++ b/drivers/irqchip/qcom-pdc.c
->> @@ -53,26 +53,6 @@ static u32 pdc_reg_read(int reg, u32 i)
->>   	return readl_relaxed(pdc_base + reg + i * sizeof(u32));
->>   }
->>   
->> -static int qcom_pdc_gic_get_irqchip_state(struct irq_data *d,
->> -					  enum irqchip_irq_state which,
->> -					  bool *state)
->> -{
->> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -		return 0;
->> -
->> -	return irq_chip_get_parent_state(d, which, state);
->> -}
->> -
->> -static int qcom_pdc_gic_set_irqchip_state(struct irq_data *d,
->> -					  enum irqchip_irq_state which,
->> -					  bool value)
->> -{
->> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -		return 0;
->> -
->> -	return irq_chip_set_parent_state(d, which, value);
->> -}
->> -
->>   static void pdc_enable_intr(struct irq_data *d, bool on)
->>   {
->>   	int pin_out = d->hwirq;
->> @@ -91,38 +71,16 @@ static void pdc_enable_intr(struct irq_data *d, bool on)
->>   
->>   static void qcom_pdc_gic_disable(struct irq_data *d)
->>   {
->> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -		return;
->> -
->>   	pdc_enable_intr(d, false);
->>   	irq_chip_disable_parent(d);
->>   }
->>   
->>   static void qcom_pdc_gic_enable(struct irq_data *d)
->>   {
->> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -		return;
->> -
->>   	pdc_enable_intr(d, true);
->>   	irq_chip_enable_parent(d);
->>   }
->>   
->> -static void qcom_pdc_gic_mask(struct irq_data *d)
->> -{
->> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -		return;
->> -
->> -	irq_chip_mask_parent(d);
->> -}
->> -
->> -static void qcom_pdc_gic_unmask(struct irq_data *d)
->> -{
->> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -		return;
->> -
->> -	irq_chip_unmask_parent(d);
->> -}
->> -
->>   /*
->>    * GIC does not handle falling edge or active low. To allow falling edge and
->>    * active low interrupts to be handled at GIC, PDC has an inverter that inverts
->> @@ -159,14 +117,10 @@ enum pdc_irq_config_bits {
->>    */
->>   static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
->>   {
->> -	int pin_out = d->hwirq;
->>   	enum pdc_irq_config_bits pdc_type;
->>   	enum pdc_irq_config_bits old_pdc_type;
->>   	int ret;
->>   
->> -	if (pin_out == GPIO_NO_WAKE_IRQ)
->> -		return 0;
->> -
->>   	switch (type) {
->>   	case IRQ_TYPE_EDGE_RISING:
->>   		pdc_type = PDC_EDGE_RISING;
->> @@ -191,8 +145,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
->>   		return -EINVAL;
->>   	}
->>   
->> -	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
->> -	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
->> +	old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
->> +	pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
->>   
->>   	ret = irq_chip_set_type_parent(d, type);
->>   	if (ret)
->> @@ -216,12 +170,12 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
->>   static struct irq_chip qcom_pdc_gic_chip = {
->>   	.name			= "PDC",
->>   	.irq_eoi		= irq_chip_eoi_parent,
->> -	.irq_mask		= qcom_pdc_gic_mask,
->> -	.irq_unmask		= qcom_pdc_gic_unmask,
->> +	.irq_mask		= irq_chip_mask_parent,
->> +	.irq_unmask		= irq_chip_unmask_parent,
->>   	.irq_disable		= qcom_pdc_gic_disable,
->>   	.irq_enable		= qcom_pdc_gic_enable,
->> -	.irq_get_irqchip_state	= qcom_pdc_gic_get_irqchip_state,
->> -	.irq_set_irqchip_state	= qcom_pdc_gic_set_irqchip_state,
->> +	.irq_get_irqchip_state	= irq_chip_get_parent_state,
->> +	.irq_set_irqchip_state	= irq_chip_set_parent_state,
->>   	.irq_retrigger		= irq_chip_retrigger_hierarchy,
->>   	.irq_set_type		= qcom_pdc_gic_set_type,
->>   	.flags			= IRQCHIP_MASK_ON_SUSPEND |
->> @@ -282,7 +236,7 @@ static int qcom_pdc_alloc(struct irq_domain *domain, unsigned int virq,
->>   
->>   	parent_hwirq = get_parent_hwirq(hwirq);
->>   	if (parent_hwirq == PDC_NO_PARENT_IRQ)
->> -		return 0;
->> +		return irq_domain_disconnect_hierarchy(domain->parent, virq);
->>   
->>   	if (type & IRQ_TYPE_EDGE_BOTH)
->>   		type = IRQ_TYPE_EDGE_RISING;
->> @@ -314,22 +268,29 @@ static int qcom_pdc_gpio_alloc(struct irq_domain *domain, unsigned int virq,
->>   	irq_hw_number_t hwirq, parent_hwirq;
->>   	unsigned int type;
->>   	int ret;
->> +	struct irq_domain *parent;
->>   
->>   	ret = qcom_pdc_translate(domain, fwspec, &hwirq, &type);
->>   	if (ret)
->>   		return ret;
->>   
->> +	if (hwirq == GPIO_NO_WAKE_IRQ) {
->> +		for (parent = domain; parent; parent = parent->parent) {
->> +			ret = irq_domain_disconnect_hierarchy(parent, virq);
->> +			if (ret)
->> +				return ret;
->> +		}
->> +		return 0;
->> +	}
->> +
-> No, this is wrong. Please read the documentation for
-> irq_domain_disconnect_hierarchy(): the disconnect can only take place
-> *once* per interrupt, right at the point where you need to terminate
-> the hierarchy.
->
-> irq_domain_trim_hierarchy() should already do the right thing by
-> iterating over the domains and free the unused irq_data.
->
-> 	M.
-Thanks for the review. Seems we need disconnect only once per interrupt.
-with this i see patch 2 in this series also of no use since it already 
-takes care of removing irq_data for all the parents.
+[1] https://lkml.org/lkml/2021/8/20/1082
 
-Addressed in v3 series.
+Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ net/core/skbuff.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-Thanks,
-Maulik
-
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index f931176..508d5c4 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+ 
+ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+ {
++	struct sk_buff *oskb = skb;
++	struct sk_buff *nskb = NULL;
+ 	int delta = headroom - skb_headroom(skb);
+ 
+ 	if (WARN_ONCE(delta <= 0,
+@@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+ 
+ 	/* pskb_expand_head() might crash, if skb is shared */
+ 	if (skb_shared(skb)) {
+-		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+-
+-		if (likely(nskb)) {
+-			if (skb->sk)
+-				skb_set_owner_w(nskb, skb->sk);
+-			consume_skb(skb);
+-		} else {
+-			kfree_skb(skb);
+-		}
++		nskb = skb_clone(skb, GFP_ATOMIC);
+ 		skb = nskb;
+ 	}
+ 	if (skb &&
+-	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+-		kfree_skb(skb);
++	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
+ 		skb = NULL;
++
++	if (!skb) {
++		kfree_skb(oskb);
++		if (nskb)
++			kfree_skb(nskb);
++	} else if (nskb) {
++		if (oskb->sk)
++			skb_set_owner_w(nskb, oskb->sk);
++		consume_skb(oskb);
+ 	}
+ 	return skb;
+ }
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+1.8.3.1
 
