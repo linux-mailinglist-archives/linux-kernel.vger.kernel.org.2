@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8343B3F4C30
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BED3F4C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhHWORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55554 "EHLO
+        id S230014AbhHWORP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229909AbhHWORF (ORCPT
+        with ESMTP id S229909AbhHWORL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:17:05 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5323C061757;
-        Mon, 23 Aug 2021 07:16:21 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07d900e826476efa1e0ef3.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d900:e826:476e:fa1e:ef3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E7C151EC01DF;
-        Mon, 23 Aug 2021 16:16:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629728176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gKD+/8Qbv6yv6nIGV7iJbsxCYPsTuanF1BGer6VcD3Q=;
-        b=fl2Qa5G0kimY8dlcx57nwjuUVsOyw/YTDGgTJJIaA2N0r2c9wtb47MYkDSQbAUPKdcccji
-        exXZ8QJN7O52aXOlT0T1CVQQE8Da6aBbgEZZ2YOE263xSzLuAcAFM7fQ+bCZmZl9FGXEjh
-        HzbE1JM09KsuZt4AnEG95Z4di2Vt2ws=
-Date:   Mon, 23 Aug 2021 16:16:51 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH Part1 v5 11/38] x86/compressed: Add helper for validating
- pages in the decompression stage
-Message-ID: <YSOt01Qk9KOsTVj/@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-12-brijesh.singh@amd.com>
+        Mon, 23 Aug 2021 10:17:11 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34368C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:16:29 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id f22so9627599qkm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mVV/F1yIspN9pwe7wVu7K1lHM6uOf9PUbo3fvoPR78k=;
+        b=BHe5Uy77OInHLOm4iEIYrErWvk0WVVL/wJnxS2zd9iIxsSnJJ4Ryim0bf0wwqEKv9V
+         OusQI7ap/FQQX7GN4DV6TZtIIXJZUp1wGpr0zjIXt477qquA98U8AzCoDmmdqHyPSSQO
+         D7rXWJDl5RSZc3OnCgag96jN0Nrmf3npWdcRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mVV/F1yIspN9pwe7wVu7K1lHM6uOf9PUbo3fvoPR78k=;
+        b=R7g9vPZTZamLuO+FTwqyrV9f89vYCC2wqg7X+bcrMe5XotZz4uKzUCCIGMzf50T5ND
+         qBVEuAhAQEDVq+kjObRb6+QZ2/+hSYAJrrX9EwWo2eAeXu4JaNlrFbIrq72rs1gtl8o/
+         mq6kQm3LPwU4mM4oFGVEKfQXw951hIQR6oOKLthsU75QI75F7YtLUYeWxQCRb41pPQn3
+         BZ2SlKOMqu18qlzUR/paRbzHV3WI817Tg7l0N4bGQV4QdL/l2eigfVD4guVgzNfo4m6p
+         uzz70TPedVm2eLRDbpr9P+fbU4Umay7MLT97Mm4CHuH8wNdd0FksIGqGx6VlMHUOXDpc
+         7ocA==
+X-Gm-Message-State: AOAM5316l3nAE95pnJWOqPUTx3NKNwAOJpzwWZq/zXshOAHKsbZVQBeJ
+        8QtTjMYcuHYGzT+OyZrOXQh5fxIZvv4Zd46/FSmTs0T9XmfJzQ==
+X-Google-Smtp-Source: ABdhPJyWKRlQQofpj3Dewg6Zpl/82XJA0PNZcT2HQgaPxd1fZmUXKhh9E8s+3qwvLOL/tozROPLQ+SSik6PiTlAkHuE=
+X-Received: by 2002:a05:620a:1210:: with SMTP id u16mr21437885qkj.390.1629728188209;
+ Mon, 23 Aug 2021 07:16:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210820151933.22401-12-brijesh.singh@amd.com>
+References: <20210811084924.52293-1-daniel@0x0f.com> <20210816101143.2a64d7b9@xps13>
+In-Reply-To: <20210816101143.2a64d7b9@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 23 Aug 2021 23:19:02 +0900
+Message-ID: <CAFr9PXnna+b3ChVUftT7YbU1kYR=5JDcik3bMNqzKK-LW=GQzw@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G parts
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org, richard@nod.at,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:19:06AM -0500, Brijesh Singh wrote:
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index d426c30ae7b4..1cd8ce838af8 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -57,6 +57,26 @@
->  #define GHCB_MSR_AP_RESET_HOLD_REQ	0x006
->  #define GHCB_MSR_AP_RESET_HOLD_RESP	0x007
->  
-> +/* SNP Page State Change */
+Hi Miquel,
 
-Let's make it very clear here that those cmd numbers below are actually
-part of the protocol and not randomly chosen:
+> > +     /*
+> > +      * The datasheet says *successful* with 4 bits flipped.
+> > +      * nandbiterrs always complains that the read reported
+> > +      * successful but the data is incorrect.
+> > +      */
+> > +     case FS35ND01G_S1Y2_STATUS_ECC_4_BITFLIPS:
+> > +             return 4;
+>
+> This is a real issue. Can you use the nandflipbits tool from the
+> mtd-utils package (you should take a recent version of the package) and
+> try to observe what happens when you insert a 4th bitflip in a section?
+>
+> I generally believe the tool more than the datasheet :)
 
-/*
- * ...
- *
- * 0x014 – SNP Page State Change Request
- *
- * GHCBData[55:52] – Page operation:
- *   0x0001 – Page assignment, Private
- *   0x0002 – Page assignment, Shared
- */
+Maybe I'm using it incorrectly but I can't get a 4 bit flipped
+situation to happen.
 
-> +enum psc_op {
-> +	SNP_PAGE_STATE_PRIVATE = 1,
-> +	SNP_PAGE_STATE_SHARED,
-> +};
-> +
+I erased the paged so it's all 0xFF:
 
--- 
-Regards/Gruss,
-    Boris.
+# flash_erase /dev/mtd0 0x8000000 1
+Erasing 128 Kibyte @ 8000000 -- 100 % complete
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0
+ECC failed: 0
+ECC corrected: 6234
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Then used nandflipbits to flip a bunch of bits in the first byte and
+then a few other bytes:
+
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0
+ECC failed: 0
+ECC corrected: 6246
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: f0 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: eb ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ef ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ef ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+
+Anyhow,
+I think we should probably return -EBADMSG if the 4 bit flips status
+appears as nandbiterrs always complains that the data is wrong.
+
+Cheers,
+
+Daniel
