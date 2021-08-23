@@ -2,102 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949913F4384
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D123F438F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbhHWDCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 23:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
+        id S233101AbhHWDFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 23:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbhHWDC3 (ORCPT
+        with ESMTP id S230401AbhHWDFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 23:02:29 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B457DC061575;
-        Sun, 22 Aug 2021 20:01:47 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so17719014pjr.1;
-        Sun, 22 Aug 2021 20:01:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VUSCWaHr794uxKbw9ZSl7eYSMxn8eUX4SnaHucm+ud0=;
-        b=hJ2KLDu4n+kQBjkiaj+Yo65M/r88NnH2nM7kiC4/3ilhwd5qqh4rXXHITzQr+4kf/M
-         639/nj28RSaoAcR2Fdyrziin5L/MMxeQJNfN0jOnlYlGOozL6BsUgDnAQgorCqIxEDwy
-         IR71UH43gdxi+tpHFdPyCAWA6RJn8jn0v/R22nXTYHAbFJ4hhObhDG8n36uYWkoEIT3y
-         QGfjVlH0g2Zxk3F1k+A0RWBPykbRJoaSwRjqiFaIwi++F+xr1vXcdojTZCXGDw14T34Z
-         HnM8HwX63d80xs1vhlGvW4bABS0vE/3wS/B4N0jSjY646uriq710UhCF1ETmU5IYDfXI
-         o8Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUSCWaHr794uxKbw9ZSl7eYSMxn8eUX4SnaHucm+ud0=;
-        b=PztiMzCTpYc2DSfu3J+pMKvgThgaeKc+WHrdvuuM85i5t1D7oxKoA8bXlHA3apT81N
-         9zAVcqJD0jr4yeVCzUvSi+HIM1+XIt2d4+605TUrO9YPrkp5WtJ4EXWMOvWo6oGchnV9
-         nFuBKIeJF8AvVRcVSgWEnd7pobqEwBr57wBmCzTQGBu8zHg6NY/kf3+g3aks8H/e17FP
-         7hvDJmBPkmp9xhNEy0LLl4QNgZN2nrRcBjmzo4/D2z4Tf9hgDb+MxB2uMOoUO2sioWB/
-         KCIFL0anEBmAky+KV+IsatYxke0uJctcevL3Rt9nbCyWrZkOKHxGVBWZBzr4w6xasX/c
-         zzmg==
-X-Gm-Message-State: AOAM533uLLu0MxyJWpQhTa5N4Mnq6slwiaOVz6J609MNOhTh0+GNDrGM
-        4UisZ0VnxH8qG8QwZ5BWGj0=
-X-Google-Smtp-Source: ABdhPJyn7EDf07XPgwZJOFJi32fo1jg/MVO7kaTlBY4eMx/tOVZ2oMuX1Z65Qs4NFgK0iQSCHf0JVQ==
-X-Received: by 2002:a17:90a:ec0f:: with SMTP id l15mr1573221pjy.82.1629687707322;
-        Sun, 22 Aug 2021 20:01:47 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.45.42.119])
-        by smtp.googlemail.com with ESMTPSA id a15sm7192486pfn.219.2021.08.22.20.01.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 20:01:46 -0700 (PDT)
-Subject: Re: [PATCH net-next v4] ipv6: add IFLA_INET6_RA_MTU to expose mtu
- value in the RA message
-To:     Rocco Yue <rocco.yue@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, rocco.yue@gmail.com,
-        chao.song@mediatek.com, zhuoliang.zhang@mediatek.com
-References: <ad32c931-3056-cdef-4b9b-aab654c61cb9@gmail.com>
- <20210821061030.26632-1-rocco.yue@mediatek.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <a4a52162-c645-b369-a9f3-120f48115cde@gmail.com>
-Date:   Sun, 22 Aug 2021 20:01:44 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Sun, 22 Aug 2021 23:05:16 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F501C061575;
+        Sun, 22 Aug 2021 20:04:33 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id 419EFAE0DA2;
+        Mon, 23 Aug 2021 11:04:17 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id GYwI0yPOej4K; Mon, 23 Aug 2021 11:03:57 +0800 (CST)
+Received: from [172.30.18.174] (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id 212EBAE0DEE;
+        Mon, 23 Aug 2021 11:03:57 +0800 (CST)
+Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
+ function.
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        THOBY Simon <Simon.THOBY@viveris.fr>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210819101529.28001-1-liqiong@nfschina.com>
+ <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
+ <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
+ <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
+ <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
+From:   =?UTF-8?B?5p2O5Yqb55C8?= <liqiong@nfschina.com>
+Message-ID: <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
+Date:   Mon, 23 Aug 2021 11:04:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-In-Reply-To: <20210821061030.26632-1-rocco.yue@mediatek.com>
+In-Reply-To: <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 12:10 AM, Rocco Yue wrote:
-> In this patch, if an RA no longer carries an MTU or if accept_ra_mtu is reset,
-> in6_dev->ra_mtu will not be reset to 0, its value will remain the previous
-> accept_ra_mtu=1 and the value of the mtu carried in the RA msg. This behavior
-> is same with mtu6. This should be reasonable, it would show that the device
-> had indeed received the ra_mtu before set accept_ra_mtu to 0 or an RA no longer
-> carries an mtu value. I am willing to listen to your suggestions and make
-> changes if needed, maybe it needs to add a new separate proc handler for
-> accept_ra_mtu.
+Hi Mimi :
 
-fair point. Consistency is important.
+The situation is a little different,'list_splice_init_rcu'
+don't change the list head. If "ima_rules" being changed,
+readers may can't reload the new value in time for cpu cache
+or compiler optimization. Defining "ima_rules" as a volatile 
+variable can fix, but It is inefficient.
 
+Maybe using a temporary ima_rules variable for every 
+"list_for_each_entry_rcu(entry, ima_rules, list)" loop is 
+a better solution to fix the "endless loop" bug. 
 
-> 
-> In addition, at your prompt, I find that this patch maybe have a defect for
-> some types of virtual devices, that is, when the state of the virtual device
-> updates the value of ra_mtu during the UP period, when its state is set to
-> DOWN, ra_mtu is not reset to 0, so that its ra_mtu value remains the previous
-> value after the interface is re-UP. I think I need to fix it.
-> 
+Regards,
 
-Please do. Also, that problem should apply to all netdev's not just
-virtual devices if you are referring to admin down (e.g., ip link set
-$DEV down)
+liqiong
+
+在 2021年08月20日 23:48, Mimi Zohar 写道:
+> On Fri, 2021-08-20 at 13:23 +0000, THOBY Simon wrote:
+>> Hi Liqiong,
+>>
+>> On 8/20/21 12:15 PM, 李力琼 wrote:
+>>> Hi, Simon:
+>>>
+>>> This solution is better then rwsem, a temp "ima_rules" variable should 
+>>> can fix. I also have a another idea, with a little trick, default list
+>>> can traverse to the new list, so we don't need care about the read side. 
+>>>
+>>> here is the patch:
+>>>
+>>> @@ -918,8 +918,21 @@ void ima_update_policy(void)
+>>>         list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
+>>>
+>>>         if (ima_rules != policy) {
+>>> +               struct list_head *prev_rules = ima_rules;
+>>> +               struct list_head *first = ima_rules->next;
+>>>                 ima_policy_flag = 0;
+>>> +
+>>> +               /*
+>>> +                * Make the previous list can traverse to new list,
+>>> +                * that is tricky, or there is a deadly loop whithin
+>>> +                * "list_for_each_entry_rcu(entry, ima_rules, list)"
+>>> +                *
+>>> +                * After update "ima_rules", restore the previous list.
+>>> +                */
+>> I think this could be rephrased to be a tad clearer, I am not quite sure
+>> how I must interpret the first sentence of the comment.
+>>
+>>
+>>> +               prev_rules->next = policy->next;
+>>>                 ima_rules = policy;
+>>> +               syncchronize_rcu();
+>> I'm a bit puzzled as you seem to imply in the mail this patch was tested,
+>> but there is no 'syncchronize_rcu' (with two 'c') symbol in the kernel.
+>> Was that a copy/paste error? Or maybe you forgot the 'not' in "This
+>> patch has been tested"? These errors happen, and I am myself quite an
+>> expert in doing them :)
+>>
+>>> +               prev_rules->next = first;
+>>>
+>>>
+>>> The side effect is the "ima_default_rules" will be changed a little while.
+>>> But it make sense, the process should be checked again by the new policy.
+>>>
+>>> This patch has been tested, if will do, I can resubmit this patch.> 
+>>> How about this ?
+>> least
+>>
+>> Correct me if I'm wrong, here is how I think I understand you patch.
+>> We start with a situation like that (step 0):
+>> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
+>>
+>> Then we decide to update the policy for the first time, so
+>> 'ima_rules [&ima_default_rules] != policy [&ima_policy_rules]'.
+>> We enter the condition.
+>> First we copy the current value of ima_rules (&ima_default_rules)
+>> to a temporary variable 'prev_rules'. We also create a pointer dubbed
+>> 'first' to the entry 1 in the default list (step 1):
+>> prev_rules -------------
+>>                        \/
+>> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
+>>                                                                    /\
+>> first --------------------------------------------------------------
+>>
+>>
+>> Then we update prev_rules->next to point to policy->next (step 2):
+>> List entry 1 <-> List entry 2 <-> ... -> List entry 0
+>>  /\
+>> first
+>> 	(notice that list entry 0 no longer points backwards to 'list entry 1',
+>> 	but I don't think there is any reverse iteration in IMA, so it should be
+>> 	safe)
+>>
+>> prev_rules -------------
+>>                        \/
+>> ima_rules --> List entry 0 (head node) = ima_default_rules   
+>>                        |
+>>                        |
+>>                        -------------------------------------------
+>>                                                                  \/
+>> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
+>>
+>>
+>> We then update ima_rules to point to ima_policy_rules (step 3):
+>> List entry 1 <-> List entry 2 <-> ... -> List entry 0
+>>  /\
+>> first
+>>
+>> prev_rules -------------
+>>                        \/
+>> ima_rules     List entry 0 (head node) = ima_default_rules   
+>>      |                 |
+>>      |                 |
+>>      |                 ------------------------------------------
+>>      ---------------                                            |
+>>                    \/                                           \/
+>> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
+>>                                                   synchronize_rcu                 /\
+>> first --------------------------------------------------------------
+>>
+>> Then we run synchronize_rcu() to wait for any RCU reader to exit their loops (step 4).
+>>
+>> Finally we update prev_rules->next to point back to the ima policy and fix the loop (step 5):
+>>
+>> List entry 1 <-> List entry 2 <-> ... -> List entry 0
+>>  /\
+>> first
+>>
+>> prev_rules ---> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
+>>                                                                      /\
+>>                                                                  first (now useless)
+>> ima_rules        
+>>      |
+>>      |
+>>      |
+>>      ---------------
+>>                    \/
+>> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
+>>
+>> The goal is that readers should still be able to loop
+>> (forward, as we saw that backward looping is temporarily broken)
+>> while in steps 0-4.
+>>
+>> I'm not completely sure what would happen to a client that started iterating
+>> over ima_rules right after step 2.
+>>
+>> Wouldn't they be able to start looping through the new policy
+>> as 'List entry 0 (head node) = ima_default_rules' points to ima_policy_rules?
+>> And if they, wouldn't they loop until the write to 'ima_rule' at step 3 (admittedly
+>> very shortly thereafter) completed?
+>> And would the compiler be allowed to optimize the read to 'ima_rules' in the
+>> list_for_each_entry() loop, thereby never reloading the new value for
+>> 'ima_rules', and thus looping forever, just what we are trying to avoid?
+>>
+>> Overall, I'm tempted to say this is perhaps a bit too complex (at least,
+>> my head tells me it is, but that may very well be because I'm terrible
+>> at concurrency issues).
+>>
+>> Honestly, in this case I think awaiting input from more experienced
+>> kernel devs than I is the best path forward :-)
+> I'm far from an expert on RCU locking, but __list_splice_init_rcu()
+> provides an example of how to make sure there aren't any readers
+> traversing the list, before two lists are spliced together.   In our
+> case, after there aren't any readers, instead of splicing two lists
+> together, it should be safe to point to the new list.
+>
+> thanks,
+>
+> Mimi
+>
