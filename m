@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CCC3F4752
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CA33F4754
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhHWJYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:24:16 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:10895 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235833AbhHWJYN (ORCPT
+        id S235808AbhHWJZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:25:00 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44800 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235699AbhHWJY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:24:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629710611; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=MjYmf7oiJyLSzVo8N7rBJa6X/ztbSYljOWQSaoNgkVk=; b=HCClVbroTPliZmZkjIEovCdVVkmhVBmm+uSVC7IS+0aJ8jhzKYtiuCI+GfbbsEgJxvg5gqRj
- P7h9VRfyTm4T1EN90n0S/7D2zirWVHgiKxcRFnh4lumS42luwmtTfrGiBn064abSh2VW44Qm
- yyE9YrhcmHdDneEvC1ExscQmgN8=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 6123691189fbdf3ffe64ebd5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 09:23:29
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1D318C43618; Mon, 23 Aug 2021 09:23:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9E89C4338F;
-        Mon, 23 Aug 2021 09:23:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E9E89C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v2] usb: dwc3: gadget: Stop EP0 transfers during pullup disable
-Date:   Mon, 23 Aug 2021 02:23:24 -0700
-Message-Id: <20210823092324.1949-1-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.33.0
+        Mon, 23 Aug 2021 05:24:56 -0400
+X-UUID: 8be3143b3fe740b5a63841f2196c9ed1-20210823
+X-UUID: 8be3143b3fe740b5a63841f2196c9ed1-20210823
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 363415715; Mon, 23 Aug 2021 17:24:11 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 23 Aug 2021 17:24:10 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 23 Aug 2021 17:24:10 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Subject: [v4 1/5] dt-bindings: power: Add MT8195 power domains
+Date:   Mon, 23 Aug 2021 17:23:49 +0800
+Message-ID: <20210823092353.3502-2-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210823092353.3502-1-chun-jie.chen@mediatek.com>
+References: <20210823092353.3502-1-chun-jie.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a USB cable disconnect, or soft disconnect scenario, a pending
-SETUP transaction may not be completed, leading to the following
-error:
+Add power domains dt-bindings for MT8195.
 
-    dwc3 a600000.dwc3: timed out waiting for SETUP phase
-
-If this occurs, then the entire pullup disable routine is skipped and
-proper cleanup and halting of the controller does not complete.
-Instead of returning an error (which is ignored from the UDC
-perspective), allow the pullup disable to routine to continue, which
-will also handle disabling of EP0/1.  This will end any active
-transfers as well.  Ensure to clear any delayed_status as well, as the
-timeout could happen within the STATUS stage.
-
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
-Changes in v2:
- - Removed calls to dwc3_ep0_end_control_data() and just allow the ep disables
-   on EP0 handle the proper ending of transfers.
- - Ensure that delayed_status is cleared, as ran into enumeration issues if the
-   SETUP transaction fails on a STATUS stage.  Saw delayed_status == TRUE on the
-   next connect, which blocked further SETUP transactions to be handled.
+remove unused power domain like audio_src, nna and hdmi_rx.
+---
+ .../power/mediatek,power-controller.yaml      |  2 +
+ include/dt-bindings/power/mt8195-power.h      | 46 +++++++++++++++++++
+ 2 files changed, 48 insertions(+)
+ create mode 100644 include/dt-bindings/power/mt8195-power.h
 
- drivers/usb/dwc3/gadget.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 5d084542718d..8b6a95c35741 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2430,7 +2430,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
- 		if (ret == 0) {
- 			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
--			return -ETIMEDOUT;
- 		}
- 	}
+diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+index f234a756c193..d6ebd77d28a7 100644
+--- a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
++++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+@@ -27,6 +27,7 @@ properties:
+       - mediatek,mt8173-power-controller
+       - mediatek,mt8183-power-controller
+       - mediatek,mt8192-power-controller
++      - mediatek,mt8195-power-controller
  
-@@ -2643,6 +2642,7 @@ static int __dwc3_gadget_start(struct dwc3 *dwc)
- 	/* begin to receive SETUP packets */
- 	dwc->ep0state = EP0_SETUP_PHASE;
- 	dwc->link_state = DWC3_LINK_STATE_SS_DIS;
-+	dwc->delayed_status = false;
- 	dwc3_ep0_out_start(dwc);
+   '#power-domain-cells':
+     const: 1
+@@ -64,6 +65,7 @@ patternProperties:
+               "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
+               "include/dt-bindings/power/mt8183-power.h" - for MT8183 type power domain.
+               "include/dt-bindings/power/mt8192-power.h" - for MT8192 type power domain.
++              "include/dt-bindings/power/mt8195-power.h" - for MT8195 type power domain.
+         maxItems: 1
  
- 	dwc3_gadget_enable_irq(dwc);
+       clocks:
+diff --git a/include/dt-bindings/power/mt8195-power.h b/include/dt-bindings/power/mt8195-power.h
+new file mode 100644
+index 000000000000..b20ca4b3e3a8
+--- /dev/null
++++ b/include/dt-bindings/power/mt8195-power.h
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
++/*
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
++ */
++
++#ifndef _DT_BINDINGS_POWER_MT8195_POWER_H
++#define _DT_BINDINGS_POWER_MT8195_POWER_H
++
++#define MT8195_POWER_DOMAIN_PCIE_MAC_P0		0
++#define MT8195_POWER_DOMAIN_PCIE_MAC_P1		1
++#define MT8195_POWER_DOMAIN_PCIE_PHY		2
++#define MT8195_POWER_DOMAIN_SSUSB_PCIE_PHY	3
++#define MT8195_POWER_DOMAIN_CSI_RX_TOP		4
++#define MT8195_POWER_DOMAIN_ETHER		5
++#define MT8195_POWER_DOMAIN_ADSP		6
++#define MT8195_POWER_DOMAIN_AUDIO		7
++#define MT8195_POWER_DOMAIN_MFG0		8
++#define MT8195_POWER_DOMAIN_MFG1		9
++#define MT8195_POWER_DOMAIN_MFG2		10
++#define MT8195_POWER_DOMAIN_MFG3		11
++#define MT8195_POWER_DOMAIN_MFG4		12
++#define MT8195_POWER_DOMAIN_MFG5		13
++#define MT8195_POWER_DOMAIN_MFG6		14
++#define MT8195_POWER_DOMAIN_VPPSYS0		15
++#define MT8195_POWER_DOMAIN_VDOSYS0		16
++#define MT8195_POWER_DOMAIN_VPPSYS1		17
++#define MT8195_POWER_DOMAIN_VDOSYS1		18
++#define MT8195_POWER_DOMAIN_DP_TX		19
++#define MT8195_POWER_DOMAIN_EPD_TX		20
++#define MT8195_POWER_DOMAIN_HDMI_TX		21
++#define MT8195_POWER_DOMAIN_WPESYS		22
++#define MT8195_POWER_DOMAIN_VDEC0		23
++#define MT8195_POWER_DOMAIN_VDEC1		24
++#define MT8195_POWER_DOMAIN_VDEC2		25
++#define MT8195_POWER_DOMAIN_VENC		26
++#define MT8195_POWER_DOMAIN_VENC_CORE1		27
++#define MT8195_POWER_DOMAIN_IMG			28
++#define MT8195_POWER_DOMAIN_DIP			29
++#define MT8195_POWER_DOMAIN_IPE			30
++#define MT8195_POWER_DOMAIN_CAM			31
++#define MT8195_POWER_DOMAIN_CAM_RAWA		32
++#define MT8195_POWER_DOMAIN_CAM_RAWB		33
++#define MT8195_POWER_DOMAIN_CAM_MRAW		34
++
++#endif /* _DT_BINDINGS_POWER_MT8195_POWER_H */
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.18.0
 
