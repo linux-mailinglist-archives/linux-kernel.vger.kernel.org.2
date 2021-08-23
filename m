@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADCF3F480D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D163F480F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234619AbhHWJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:58:50 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:59405 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231759AbhHWJ6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:58:48 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtSNY2p2hz9sX2;
-        Mon, 23 Aug 2021 19:58:04 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629712685;
-        bh=tc+MuSjGZBYIM2E3Ckyauunx58Bo/2bzWbamoxVmyNc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fsHV4CVg69i6mxOckI2mJfeIiqlGm910UXWlIGgbRzQ6/5N/04+Z/lgwvXTomWqxY
-         e+1ZFPXzLkbsbBvrseVNNVYB7P4WnJu26p1qh8o6ipjo+ko4MmRZ/AdFJxglbFzpM0
-         1l0DYlq//XTgz3zPjTwsun9BWgcHbSehWltmSzsOtRtUmctQkk9xUJhJGfwbTSF62S
-         ToYh9l6h8VSLXrtkWt7fxsJBMaoikAZf+eylD90rZD4G/Zi8HcH4LnZVMYSAU8Myel
-         eFXCFDXYvzZ3B9y6Kg4BpP49J4YW2EHeuhScEkAnwA2NVmLnYQt+InpNMuUr61LmDz
-         X95jcJr2yc4ZQ==
-Date:   Mon, 23 Aug 2021 19:58:04 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the ftrace tree
-Message-ID: <20210823195804.10c5758a@canb.auug.org.au>
+        id S235921AbhHWJ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:59:42 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:20357 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232850AbhHWJ7l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:59:41 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee9612371520a7-03f0e; Mon, 23 Aug 2021 17:58:42 +0800 (CST)
+X-RM-TRANSID: 2ee9612371520a7-03f0e
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.112.105.130])
+        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56123714e86b-c2292;
+        Mon, 23 Aug 2021 17:58:42 +0800 (CST)
+X-RM-TRANSID: 2ee56123714e86b-c2292
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     jic23@kernel.org, lars@metafoo.de
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] iio: adc: twl6030-gpadc: Use the defined variable to clean code
+Date:   Mon, 23 Aug 2021 17:59:21 +0800
+Message-Id: <20210823095921.16828-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HcsUxNEksk5PPP4IrPYpug1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HcsUxNEksk5PPP4IrPYpug1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Use the defined variable "dev" to make the code cleaner.
 
-Hi all,
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/iio/adc/twl6030-gpadc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-After merging the ftrace tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/drivers/iio/adc/twl6030-gpadc.c b/drivers/iio/adc/twl6030-gpadc.c
+index 0859f3f7d..5e4fbb033 100644
+--- a/drivers/iio/adc/twl6030-gpadc.c
++++ b/drivers/iio/adc/twl6030-gpadc.c
+@@ -897,7 +897,7 @@ static int twl6030_gpadc_probe(struct platform_device *pdev)
+ 
+ 	ret = pdata->calibrate(gpadc);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "failed to read calibration registers\n");
++		dev_err(dev, "failed to read calibration registers\n");
+ 		return ret;
+ 	}
+ 
+@@ -911,14 +911,14 @@ static int twl6030_gpadc_probe(struct platform_device *pdev)
+ 
+ 	ret = twl6030_gpadc_enable_irq(TWL6030_GPADC_RT_SW1_EOC_MASK);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "failed to enable GPADC interrupt\n");
++		dev_err(dev, "failed to enable GPADC interrupt\n");
+ 		return ret;
+ 	}
+ 
+ 	ret = twl_i2c_write_u8(TWL6030_MODULE_ID1, TWL6030_GPADCS,
+ 					TWL6030_REG_TOGGLE1);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "failed to enable GPADC module\n");
++		dev_err(dev, "failed to enable GPADC module\n");
+ 		return ret;
+ 	}
+ 
+-- 
+2.20.1.windows.1
 
-Documentation/trace/histogram.rst:80: WARNING: Malformed table.
-Text in column margin in table line 8.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-.hex        display a number as a hex value
-.sym        display an address as a symbol
-.sym-offset display an address as a symbol and offset
-.syscall    display a syscall id as a system call name
-.execname   display a common_pid as a program name
-.log2       display log2 value rather than raw number
-.buckets=3Dsize  display grouping of values rather than raw number
-.usecs      display a common_timestamp in microseconds
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
 
-Introduced by commit
-
-  370364351926 ("tracing/histogram: Update the documentation for the bucket=
-s modifier")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/HcsUxNEksk5PPP4IrPYpug1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjcSwACgkQAVBC80lX
-0GyP7Qf/UUFSsP+xHhgC/SGhTlSzOdQTmjhzGSKFIg/+PJTFBdDxwevRNpqbq3af
-vRYQjx2H69/R1D7TR/9sTkPhXoU/ve0SoJnp4K3o2O5cVXhFi8kQf0EvlFu9sEof
-acIdSSaDw5Jch1DiRL3z1VT8Ao/hmFTogEEWJS0/koIEtE9qPonHibJvZOfa1ZbJ
-bD/W7DRdsm7cPXC+7uxL42bQpj1XZpf9wnJHtWQw4wjYxcbXkGdrd+oSk2CfbWQj
-1PonimVwi6heC0jSJVMW3zeZn2ua9cJTWTvrR+koJWYZ8KmJkP3cHTZfyoHo3BOL
-bM5MAIwMfPo3V4YbbjeDeF27TH9Lcg==
-=150d
------END PGP SIGNATURE-----
-
---Sig_/HcsUxNEksk5PPP4IrPYpug1--
