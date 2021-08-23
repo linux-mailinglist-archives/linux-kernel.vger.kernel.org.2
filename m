@@ -2,159 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B4D3F4673
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A583F467A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbhHWIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:15:30 -0400
-Received: from mail-eopbgr80109.outbound.protection.outlook.com ([40.107.8.109]:54689
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235316AbhHWIP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:15:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aXV2ryHNnWummhaPN985XudrVluCdV+QlX2FjPAPmmzUmJSrZsxZYio5+Cu8mgEX6V8WPRnGqCGMg6oBm+mZy8WPeJWUGfR732qdit/bC+1gxBWlMKXOxByz7t0nG/rJZEWOmub8OWR0R/ERNWAyCpKxiYkilzRvdlWKjWUCVY02JVwb9HAnQ0PUWihdxRc2kojczgv3N487fRLYhlUQb1zZvKUuWHj8W9fQzlC+Tb/xbleHPkXlWG7F9IHneqOm1UlqxnANQO6Er0pVoTGZLZFCf9gnRae+3+GHfzE4QJEeZ1U7MEF6gVGEpLFpkbwtxBtsU+Ly9VIps6PcEOmF7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tw4kz3LKaDvgvYo2NNwVRob/VNkU4czRxuXkXo9wQhU=;
- b=UMzEKj3DCwddlHnmq8fNGesZ7MCOYwqwJiblow4uASUgq03LAXkeXRqPk04UfPS61RnPHCwdEbeEvsQFNIonZANQjDUpXGchVv88PpiF3z98Ocm2W3R0TPOtBOqf7kGN4hGZJI4i/rWG/Qd4g9eBXzL4upf3DMxPxvCmGjmTQxLiqsyoWkJ8kpvki9V8QnnipKmK9MzaDmilE/FxyJ/21NgAH4jo9Dl7NqypdzR0rJ5UiNgIVxsUzCvl+gt+SeiNmt4SsxC6gv2leR5tduhw++fzmR1G2HSqJYbzAG6Uc1xevVgSAV1/2ehdZ1pIoMRn5NM6Fg3NG0whIaiEMU1Gfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=viveris.fr; dmarc=pass action=none header.from=viveris.fr;
- dkim=pass header.d=viveris.fr; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=viverislicensing.onmicrosoft.com;
- s=selector2-viverislicensing-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tw4kz3LKaDvgvYo2NNwVRob/VNkU4czRxuXkXo9wQhU=;
- b=N5sDW0l8guX68tb0i/ss1R9fuV1rvbhWnehd1mkeY4JgBV/REJnKWKXPQmluEaq1vSmB2fnoZ1oMZ2DtimDqGxIZ/B+bVimztcSUW4iQyMP7O3RxcfFGGvAI9tCQh0ToVy+MUXfFKuTcZkfXs2N9/fdUX0fVjcc5Srwej0m8vK8=
-Received: from AM4PR0902MB1748.eurprd09.prod.outlook.com
- (2603:10a6:200:96::21) by AM9PR09MB4612.eurprd09.prod.outlook.com
- (2603:10a6:20b:2da::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.23; Mon, 23 Aug
- 2021 08:14:44 +0000
-Received: from AM4PR0902MB1748.eurprd09.prod.outlook.com
- ([fe80::84a0:780d:1c5c:4432]) by AM4PR0902MB1748.eurprd09.prod.outlook.com
- ([fe80::84a0:780d:1c5c:4432%9]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 08:14:44 +0000
-From:   THOBY Simon <Simon.THOBY@viveris.fr>
-To:     liqiong <liqiong@nfschina.com>, Mimi Zohar <zohar@linux.ibm.com>
-CC:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-Thread-Topic: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-Thread-Index: AQHXlPnZCsK5CNi7NkWxUIAyoKg2DKt8LpyAgAA0rYCAAChigIAD4XiAgABUhACAAAJBAA==
-Date:   Mon, 23 Aug 2021 08:14:44 +0000
-Message-ID: <cf715a40-b255-c688-578c-7f8bcd004ee3@viveris.fr>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
- <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
- <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
- <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
- <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
- <fee498ec-087c-b52d-102c-d29d98f9b794@nfschina.com>
-In-Reply-To: <fee498ec-087c-b52d-102c-d29d98f9b794@nfschina.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nfschina.com; dkim=none (message not signed)
- header.d=none;nfschina.com; dmarc=none action=none header.from=viveris.fr;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 927ba316-b47b-4c32-d6b7-08d9660e10d6
-x-ms-traffictypediagnostic: AM9PR09MB4612:
-x-microsoft-antispam-prvs: <AM9PR09MB46129E85C98C6FB1E23F43C394C49@AM9PR09MB4612.eurprd09.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gzpAKElwdtB2sLC/yrH8inb6j6pW7LQaA5aG8IEjGATjW0PKo27m81rpex9QY4oNcmYjVRcueakx3NURu98mLmY0J0sIOfamf47BCvXnu0/ucwxw2iKwKYVPHgofH1WmzlDBNSSHXYorLCzUPzDGvwbiKIm635f496wjflic5yRGLaj2gBBMJf/AOcUpbvYm6jQdeCynef4nmCVFyJO7L6hQxG2/n70xvjMt50QZWBhSmi5IUD6vW/l0cIyanczkgoiOZiQKVTomAba9IOjqmmnQj0ZVQOwkNjEJGBuX0EuxSgc3pQtv71ZyIODmbDMlpZz30/oqWSc7cWvHDv8a42UreD00ye4wleR1JXYwCduk7HSGdfae1qwBTFUOLvHoGsdjuPQzDD63ITACe+pvor2XYF7+6nqKsgeu7fji+jBaan3KsEEiN6sXuAUpwrAH6RMN0Kbye0lu9MVHpWCZlDhFRABczg/ZhqVUU5ci/VLx4q066maeF4ugDXHwszVFaVFc6yGAJYpmKP+35dQhdRBdy2wkQ1lUwfJij+ftvY+IeWYc8NBEttnfT8PCMqYhOUiYBXCgUYmDahmOBvbXYNcm+zOtoccFr9Xr7aQaempo0HtnN8vB+m8yyZjTMVyVhf6H0LzBbfe2srJCu1+gLjO3HY7J4Otv3TN8rx8gdi4uLaJIcsFgfgutAM90QAGoYBrcN7NwEvHGl0riwkx8oDO+zP+u+RBsbOnsQJ9CKaQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0902MB1748.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(136003)(346002)(39840400004)(36756003)(66476007)(71200400001)(478600001)(66556008)(6486002)(110136005)(6506007)(64756008)(5660300002)(316002)(66446008)(54906003)(2616005)(4326008)(31686004)(38100700002)(53546011)(8676002)(91956017)(66946007)(76116006)(122000001)(2906002)(86362001)(31696002)(8936002)(6512007)(186003)(26005)(38070700005)(83380400001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RW1FdHc4TE11SUphKy9kdTkvaEZaRnM4eU40ZStuZUgrRUJPOWJHTXhZNWp6?=
- =?utf-8?B?NngzaUcwL2w4WWd6bmk0LzBlSDh2dWwvcmZjZitBdmNhSG5xR2R2aE4xUGFN?=
- =?utf-8?B?Tk1tdDRnR0lVVG5IaHRZRVgzUTVyaU9tajRDeHl1VmdSVzFCckZWanNZSnBZ?=
- =?utf-8?B?QTlneDVJYkIydjZ5eTcxZTNROVlTSUE3UEwvUFVqYytud2xGeEJPTFZLT1hO?=
- =?utf-8?B?a3hjZm1kZUNUNDJPd0grSHQza1ovaGlrR0tYMFZwL2Z2SGxSb1RzMHk3VG85?=
- =?utf-8?B?a3BaZnVlSlhNOTU0RElQbDVkTG50eGU1TmJUVzl3a1V5Z3c3MmJheGhJMVRl?=
- =?utf-8?B?OVlqdm0zYmNUdkVlZVJYSlY4Wmk4aEgxa3Q2T2hvVjhycnM1UWxwZno1aGNM?=
- =?utf-8?B?VzExellUL2s5dHN6THIwTGpRSFhGMDJKb3gzVjBYOWJ1Ry9qWkl6Wkd1Z05E?=
- =?utf-8?B?amNMRWNyWUJwN0hYaTczV3FiNHRtcksyNTlHKzVKejFCL25CblpBZXIrRFBw?=
- =?utf-8?B?S2E0NFBzcHlmQjNyZUVFZTlaYjg4dmgwVlB5R1g4SElib1BONS9DSmpPTGhp?=
- =?utf-8?B?VHhwVnovSEVjeWx1WnBya1NHNUhJaWlhSUUxWFNNTlVPa2NYclJGYlkzR2lS?=
- =?utf-8?B?UDVqZDJic1RTN2svNWVJRE9uSVF6RlVQZWhwQXh6WWI4K0pIUHE2ak1YaEdE?=
- =?utf-8?B?QU5ucEVlVDBjQzdVdHBHK0toZ3NOT25jaWlVU0prK3NTeVdkcHg3VzNxSzZJ?=
- =?utf-8?B?VUJpNndqV3hEZDkrU0Y3aWU4TStSV0VrSDRaMGw3dDlLSCtXTXg4WWQzRm1F?=
- =?utf-8?B?a05rM2h1VmpTcFpvbzNrcXBwTFJKOUtpcVQ0bXM3eDh3b2o0aW40azZQUmd4?=
- =?utf-8?B?OG43K2psQzlCdXNacG9JeTlzRUU4bmhMVnk2NVkyUGNWU0tFY1c5M3FPbWJG?=
- =?utf-8?B?Zk4xK0ZMOGl6WHpDNGxGNDdPQ1FvdS9hM1Q2ZG1KcTRtMXhSSzgrYnZ4R0RO?=
- =?utf-8?B?bWZiRTYzNnN1UUlldHlJeWNDc3hxVVAybWhHdDFEYlF3V2ZFZytOZXZkNEx2?=
- =?utf-8?B?bFJmREM5L3k3RmttWnk5Ykt3NG9PdHFKcUpVZDZVeUVUNDZ4bDZvK3pmSnk0?=
- =?utf-8?B?OUwvYTFUVVcwaFYzZXprdE5SR2dqMFJJeXdJd0hlbmNtS0xiSFV4WUwveENx?=
- =?utf-8?B?YWxNRGhrNGhQb3dpV3NGb1VaSGFtSWRBOC9pREc1aUVCeVdMSGY1MnRnTGhz?=
- =?utf-8?B?N0tBQWUzZWtaS05LTG8za0ZMQzJBd0VpZWRUVzdFSkVOOFVvb1VzeUpNVXFG?=
- =?utf-8?B?MVJJZXlDRG9VNkFLL2RINFNFTXFqUTdjR3NZV1pBdFUxZm1SMjZYZlJGQ1gy?=
- =?utf-8?B?SStZWkgvaExxNS9lM0FNc0ZpdytxSFY1dFBBNkx6QUpRUGNwTWR2aUxWY0U4?=
- =?utf-8?B?NEJuZVZvN0VwVGt0MHI0V2t4TVUrTTR5a0RSQy9wYUs4cDZsUWxUN3haK2RW?=
- =?utf-8?B?eW5qZnNoaDJ0NFpHNkE3Z0FpMWpKVitOYW16TDhkMktWZmxLVm45VUVEM2tG?=
- =?utf-8?B?d2hCVklRaCtSOE5sVktUbFRIRFpUTVJOWlNDa1Z2aXVKRGNWQkNGTTRVNE43?=
- =?utf-8?B?TFE0UWdrQnlxanRkbFZtRFVHbXRrbzhNZjV2aWE4VmdidWdZVzJ5MXRBSWM5?=
- =?utf-8?B?RGZ2OGMwRnBWOEREUXRNdVVTTkVVYitNMzBkYXBxeGdBT0lUM3AzcXU4RHV6?=
- =?utf-8?Q?MY2UpF4F7l3A1soHn4wFK/yXIjj/K2LgBzRS/ql?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <86A2A26ABF74AB40A1B539CE12B859E8@eurprd09.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S235652AbhHWIPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:15:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57029 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235577AbhHWIPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 04:15:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629706494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sAS3UII3BoCLendYghwp+E5/qpLsis2DFPR6GELCxPg=;
+        b=RnAGNa8Y6XFvGjWAbaBJfkItKTTh9aOxzk9WYYcSjv+OQpxMG21ktfBN6TE1kwsuIDsfgZ
+        msBBND6ayBdF8uYhHs0Wq0Cmv1t5GFhy1UOQ7KiodjZM94idFAOwHzgEpWv0mQxv+lRiRf
+        OP4igU/iumDw+iw+F1hgdZ6leJeEak4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-SEZA6p8MNsqw-LEyo3JS2g-1; Mon, 23 Aug 2021 04:14:53 -0400
+X-MC-Unique: SEZA6p8MNsqw-LEyo3JS2g-1
+Received: by mail-wr1-f71.google.com with SMTP id m2-20020a0560000082b0290154f6e2e51fso4859473wrx.12
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:14:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=sAS3UII3BoCLendYghwp+E5/qpLsis2DFPR6GELCxPg=;
+        b=MLcINxaXt9aGHWwYh6Vwwmn1/ySE+6+XvULfurAbxAa6OmIPbG34/K4W/qzEiuQrlj
+         QRTWZoBswRTihHd9Bg+G7sdQ3GwNI2BJfsCzAuBnzZWUiYMdDB+LkNuLTnJB2O5uM3IM
+         PkTuf2QSDYLW1wobsT3uzt2OQhUgNqyMjLGbSZe4mLx6fEHtRqQ1UqJo4Tl+NG5mozqx
+         NmTf6AoE/HgQVpf85lISe7KQSBqh7P/ME+V2f5uTXX5VTXWjcHjXZFH7JJ8atz2aEtJu
+         FhqPl4qa8kjOuo0XIo0HwWMOQAmLd4pPZhBkZLvAG/rGHHa/kY2RNd+key/xRSt1JR6x
+         ulpg==
+X-Gm-Message-State: AOAM530/COLia+a71auYBfl/T7y4HR/zeLUV6lksIDnpmSJ+iut1lV+M
+        kdjVqF7L/WTinihQK/qQ0vN+F2yygZ0esnXMMlLyefgZC0BTjq1ybtTiVYV2BFLsJ5eXPZtY5mo
+        B0R/l/wfddpfkIuEynG8Q6NRR
+X-Received: by 2002:adf:e910:: with SMTP id f16mr6700306wrm.393.1629706491883;
+        Mon, 23 Aug 2021 01:14:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9tWYyiX6YvxpM93MetANrNoX2lZvyAZMJH8SnDUJVD31ZiO7K1OFWJvibdiL9k2vCA5llew==
+X-Received: by 2002:adf:e910:: with SMTP id f16mr6700299wrm.393.1629706491736;
+        Mon, 23 Aug 2021 01:14:51 -0700 (PDT)
+Received: from 0.7.3.c.2.b.0.0.0.3.7.8.9.5.0.2.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa (0.7.3.c.2.b.0.0.0.3.7.8.9.5.0.2.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:ffda:0:2059:8730:b2:c370])
+        by smtp.gmail.com with ESMTPSA id f2sm14085343wru.31.2021.08.23.01.14.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 01:14:51 -0700 (PDT)
+Message-ID: <8e2ab23b93c96248b7c253dc3ea2007f5244adee.camel@redhat.com>
+Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
+ holder auto-demotion
+From:   Steven Whitehouse <swhiteho@redhat.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Date:   Mon, 23 Aug 2021 09:14:50 +0100
+In-Reply-To: <CAHc6FU7EMOEU7C5ryu5pMMx1v+8CTAOMyGdf=wfaw8=TTA_btQ@mail.gmail.com>
+References: <20210819194102.1491495-1-agruenba@redhat.com>
+         <20210819194102.1491495-11-agruenba@redhat.com>
+         <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com>
+         <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
+         <CAHc6FU7EMOEU7C5ryu5pMMx1v+8CTAOMyGdf=wfaw8=TTA_btQ@mail.gmail.com>
+Organization: Red Hat UK Ltd
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-X-OriginatorOrg: viveris.fr
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM4PR0902MB1748.eurprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 927ba316-b47b-4c32-d6b7-08d9660e10d6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2021 08:14:44.7156
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 34bab81c-945c-43f1-ad13-592b97e11b40
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tObkKbGQ8eoToSisWT7XQoRQvoMIdlwSXm3AEScX/QJz/FnDY2ZuJOYUYuSxt8i/n0x18eJ3o7sgn6cgmtbUyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR09MB4612
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGlxaW9uZywNCg0KT24gOC8yMy8yMSAxMDowNiBBTSwgbGlxaW9uZyB3cm90ZToNCj4gSGkg
-U2ltb24gOg0KPiANCj4gVXNpbmcgYSB0ZW1wb3JhcnkgaW1hX3J1bGVzIHZhcmlhYmxlIGlzIG5v
-dCB3b3JraW5nIGZvciAiaW1hX3BvbGljeV9uZXh0Ii4gDQo+IA0KPiAgdm9pZCAqaW1hX3BvbGlj
-eV9uZXh0KHN0cnVjdCBzZXFfZmlsZSAqbSwgdm9pZCAqdiwgbG9mZl90ICpwb3MpDQo+ICB7DQo+
-ICAJc3RydWN0IGltYV9ydWxlX2VudHJ5ICplbnRyeSA9IHY7DQo+IC0NCj4gKwlzdHJ1Y3QgbGlz
-dF9oZWFkICppbWFfcnVsZXNfdG1wID0gcmN1X2RlcmVmZXJlbmNlKGltYV9ydWxlcyk7DQo+ICAJ
-cmN1X3JlYWRfbG9jaygpOw0KPiAgCWVudHJ5ID0gbGlzdF9lbnRyeV9yY3UoZW50cnktPmxpc3Qu
-bmV4dCwgc3RydWN0IGltYV9ydWxlX2VudHJ5LCBsaXN0KTsNCj4gIAlyY3VfcmVhZF91bmxvY2so
-KTsNCj4gIAkoKnBvcykrKzsNCj4gIA0KPiAtCXJldHVybiAoJmVudHJ5LT5saXN0ID09IGltYV9y
-dWxlcykgPyBOVUxMIDogZW50cnk7DQo+ICsJcmV0dXJuICgmZW50cnktPmxpc3QgPT0gaW1hX3J1
-bGVzX3RtcCkgPyBOVUxMIDogZW50cnk7DQo+ICB9DQo+IA0KPiBJdCBzZWVtcyBubyB3YXkgdG8g
-Zml4ICJpbWFfcnVsZXMiIGNoYW5nZSB3aXRoaW4gdGhpcyBmdW5jdGlvbiwgaXQgd2lsbCBhbHdh
-eQ0KPiByZXR1cm4gYSBlbnRyeSBpZiAiaW1hX3J1bGVzIiBiZWluZyBjaGFuZ2VkLg0KDQotIEkg
-dGhpbmsgcmN1X2RlcmVmZXJlbmNlKCkgc2hvdWxkIGJlIGNhbGxlZCBpbnNpZGUgdGhlIFJDVSBy
-ZWFkIGxvY2sNCi0gTWF5YmUgd2UgY291bGQgY2hlYXQgd2l0aDoNCglyZXR1cm4gKCZlbnRyeS0+
-bGlzdCA9PSAmaW1hX3BvbGljeV9ydWxlcyB8fCAmZW50cnktPmxpc3QgPT0gJmltYV9kZWZhdWx0
-X3J1bGVzKSA/IE5VTEwgOiBlbnRyeTsNCiAgYXMgdGhhdCdzIHRoZSBvbmx5IHR3byBydWxlc2V0
-cyBJTUEgZXZlciB1c2U/DQogIEFkbWl0dGVkbHksIHRoaXMgaXMgbm90IGFzIGNsZWFuIGFzIHBy
-ZXZpb3VzbHksIGJ1dCBpdCBzaG91bGQgd29yayB0b28uDQoNClRoZSB3YXkgSSBzZWUgaXQsIHRo
-ZSBzZW1hcGhvcmUgc29sdXRpb24gd291bGQgbm90IHdvcmsgaGVyZSBlaXRoZXIsDQphcyBpbWFf
-cG9saWN5X25leHQoKSBpcyBjYWxsZWQgcmVwZWF0ZWRseSBhcyBhIHNlcV9maWxlDQooaXQgaXMg
-c2V0IHVwIGluIGltYV9mcy5jKSBhbmQgd2UgY2FuJ3QgY29udHJvbCB0aGUgbG9ja2luZyB0aGVy
-ZToNCndlIGNhbm5vdCBsb2NrIGFjcm9zcyB0aGUgc2VxX3JlYWQoKSBjYWxsICh0aGF0IGN1cmUg
-Y291bGQgZW5kIHVwIGJlDQp3b3JzZSB0aGFuIHRoZSBkaXNlYXNlLCBkZWFkbG9jay13aXNlKSwg
-c28gSSBmZWFyIHdlIGNhbm5vdCBwcm90ZWN0DQphZ2FpbnN0IGEgbGlzdCB1cGRhdGUgd2hpbGUg
-YSB1c2VyIGlzIGl0ZXJhdGluZyB3aXRoIGEgbG9jay4NCg0KU28gaW4gYm90aCBjYXNlcyBhIGNo
-ZWF0IGxpa2UgIiZlbnRyeS0+bGlzdCA9PSAmaW1hX3BvbGljeV9ydWxlcyB8fCAmZW50cnktPmxp
-c3QgPT0gJmltYV9kZWZhdWx0X3J1bGVzIg0KbWF5YmUgbmVlZCB0byBiZSBjb25zaWRlcmVkLg0K
-DQpXaGF0IGRvIHlvdSB0aGluaz8NCg0KDQo+IA0KPiBSZWdyYWRzLA0KPiANCj4gbGlxaW9uZw0K
-DQpUaGFua3MsDQpTaW1vbg==
+On Fri, 2021-08-20 at 17:22 +0200, Andreas Gruenbacher wrote:
+> On Fri, Aug 20, 2021 at 3:11 PM Bob Peterson <rpeterso@redhat.com>
+> wrote:
+> > 
+[snip]
+> > 
+> > You can almost think of this as a performance enhancement. This
+> > concept
+> > allows a process to hold a glock for much longer periods of time,
+> > at a
+> > lower priority, for example, when gfs2_file_read_iter needs to hold
+> > the
+> > glock for very long-running iterative reads.
+> 
+> Consider a process that allocates a somewhat large buffer and reads
+> into it in chunks that are not page aligned. The buffer initially
+> won't be faulted in, so we fault in the first chunk and write into
+> it.
+> Then, when reading the second chunk, we find that the first page of
+> the second chunk is already present. We fill it, set the
+> HIF_MAY_DEMOTE flag, fault in more pages, and clear the
+> HIF_MAY_DEMOTE
+> flag. If we then still have the glock (which is very likely), we
+> resume the read. Otherwise, we return a short result.
+> 
+> Thanks,
+> Andreas
+> 
+
+If the goal here is just to allow the glock to be held for a longer
+period of time, but with occasional interruptions to prevent
+starvation, then we have a potential model for this. There is
+cond_resched_lock() which does this for spin locks. So perhaps we might
+do something similar:
+
+/**
+ * gfs2_glock_cond_regain - Conditionally drop and regain glock
+ * @gl: The glock
+ * @gh: A granted holder for the glock
+ *
+ * If there is a pending demote request for this glock, drop and 
+ * requeue a lock request for this glock. If there is no pending
+ * demote request, this is a no-op. In either case the glock is
+ * held on both entry and exit.
+ *
+ * Returns: 0 if no pending demote, 1 if lock dropped and regained
+ */
+int gfs2_glock_cond_regain(struct gfs2_glock *gl, struct gfs2_holder
+*gh);
+
+That seems more easily understood, and clearly documents places where
+the lock may be dropped and regained. I think that the implementation
+should be simpler and cleaner, compared with the current proposed
+patch. There are only two bit flags related to pending demotes, for
+example, so the check should be trivial.
+
+It may need a few changes depending on the exact circumstances, but
+hopefully that illustrates the concept,
+
+Steve.
+
+
+
