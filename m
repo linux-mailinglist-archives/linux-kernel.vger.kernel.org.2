@@ -2,226 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D123F438F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53683F4390
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbhHWDFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 23:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42796 "EHLO
+        id S231565AbhHWDHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 23:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhHWDFQ (ORCPT
+        with ESMTP id S231172AbhHWDHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 23:05:16 -0400
-Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F501C061575;
-        Sun, 22 Aug 2021 20:04:33 -0700 (PDT)
-Received: from localhost (unknown [127.0.0.1])
-        by ha0.nfschina.com (Postfix) with ESMTP id 419EFAE0DA2;
-        Mon, 23 Aug 2021 11:04:17 +0800 (CST)
-X-Virus-Scanned: amavisd-new at test.com
-Received: from ha0.nfschina.com ([127.0.0.1])
-        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id GYwI0yPOej4K; Mon, 23 Aug 2021 11:03:57 +0800 (CST)
-Received: from [172.30.18.174] (unknown [180.167.10.98])
-        (Authenticated sender: liqiong@nfschina.com)
-        by ha0.nfschina.com (Postfix) with ESMTPA id 212EBAE0DEE;
-        Mon, 23 Aug 2021 11:03:57 +0800 (CST)
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        THOBY Simon <Simon.THOBY@viveris.fr>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
- <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
- <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
- <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
-From:   =?UTF-8?B?5p2O5Yqb55C8?= <liqiong@nfschina.com>
-Message-ID: <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
-Date:   Mon, 23 Aug 2021 11:04:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        Sun, 22 Aug 2021 23:07:35 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C880C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 20:06:53 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id f7so8928893qvt.8
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 20:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v5fKUirlI0ToxpLo9nwyWF9xy/b07uS0bu8mkFdXJJ4=;
+        b=erFyBgVd6uxfFcX3HaP8t0NV9C6E9+O9C3zq036nMZmOJeE28l8RhqShZNWLiExlv4
+         B7lhIdJbRlqm88xklXIFutvI1WUZD0MSU9r8uZz2Kujayh5RFGAp/rmXtCylpm50uh5X
+         U8ZqW85w1t4F7Z8OqlPZ6vvgKPEZf68kYvQUl6OAMBViieV2bEsgypEvvIwCEC68ogXW
+         uvdU9oYM5GY9TQIGCtQtqyINJhs0I5yvUcrN19Eymu+yk3ePxFv4mW+dBgMbOQTH7306
+         Apa9LWKvSsCyLrQBz3uFydR99dPBWM4P+6jcIx21kAorYhGLcoLazisNLfnmlfJwMtV+
+         EpQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v5fKUirlI0ToxpLo9nwyWF9xy/b07uS0bu8mkFdXJJ4=;
+        b=AbK58iu9oyxcFiT8GYh8AVCv8n1G6IxA9pJPQBIm3NzEjh0LohrW7Yynnr/iCRMABr
+         Scl6U7G0amudmcgZhejIlbuxcDhM8pkvSjLPHByJ2TyJmm/mak8hASA+Ptnks7fkBCLj
+         g3DwBmQs0gq4lFMvdLn3pvAVKJQJT8I+V437J+sX00nobDJkN/LlK/1lA4LhkTQ1/d6C
+         EI9jIyov4KWnMh4dm330+DYvHfK+dEvtzXZXlr/UnUPbG6367PnB9BJ8O+myIPsDnDaD
+         KxcCILH+2OIGnx7Bks0LHdok2x8BuxOUHwTJMjTyaClueZXDqeGw1oparfy1x8m3VaOs
+         3aIQ==
+X-Gm-Message-State: AOAM5329ObzcdvbSMuy7oQtKyR79WEeb0ijrMbbrG3R2aWzZ4WWF4BnM
+        pRF51fXvHUj82JvcYulix3c=
+X-Google-Smtp-Source: ABdhPJzRsbKxQw9ePN3HS0BDfYjIn+EEf9EgHyOKBXJe/2rwM6YTMtOvUOmTjsPOe8ROkRKup5VqYg==
+X-Received: by 2002:a0c:b216:: with SMTP id x22mr31272965qvd.55.1629688012820;
+        Sun, 22 Aug 2021 20:06:52 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id j18sm7858882qkg.31.2021.08.22.20.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 20:06:52 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: xu.xin16@zte.com.cn
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        xu xin <xu.xin16@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH Linux-next] ioctl_linux: fix a potential NULL pointer dereference bug
+Date:   Sun, 22 Aug 2021 20:06:31 -0700
+Message-Id: <20210823030631.45517-1-xu.xin16@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi :
+From: xu xin <xu.xin16@zte.com.cn>
 
-The situation is a little different,'list_splice_init_rcu'
-don't change the list head. If "ima_rules" being changed,
-readers may can't reload the new value in time for cpu cache
-or compiler optimization. Defining "ima_rules" as a volatile 
-variable can fix, but It is inefficient.
+The pointer might be NULL, but it is dereferenced.
 
-Maybe using a temporary ima_rules variable for every 
-"list_for_each_entry_rcu(entry, ima_rules, list)" loop is 
-a better solution to fix the "endless loop" bug. 
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+---
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Regards,
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index a3e6d761e748..ce4ce9190f5f 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -4389,7 +4389,8 @@ static int rtw_dbg_port(struct net_device *dev,
+ 				pregpriv->rx_stbc = extra_arg;
+ 				DBG_88E("set rx_stbc =%d\n", pregpriv->rx_stbc);
+ 			} else {
+-				DBG_88E("get rx_stbc =%d\n", pregpriv->rx_stbc);
++				if (pregpriv)
++					DBG_88E("get rx_stbc =%d\n", pregpriv->rx_stbc);
+ 			}
+ 		}
+ 			break;
+@@ -4401,7 +4402,8 @@ static int rtw_dbg_port(struct net_device *dev,
+ 				pregpriv->ampdu_enable = extra_arg;
+ 				DBG_88E("set ampdu_enable =%d\n", pregpriv->ampdu_enable);
+ 			} else {
+-				DBG_88E("get ampdu_enable =%d\n", pregpriv->ampdu_enable);
++				if (pregpriv)
++					DBG_88E("get ampdu_enable =%d\n", pregpriv->ampdu_enable);
+ 			}
+ 		}
+ 			break;
+-- 
+2.25.1
 
-liqiong
-
-在 2021年08月20日 23:48, Mimi Zohar 写道:
-> On Fri, 2021-08-20 at 13:23 +0000, THOBY Simon wrote:
->> Hi Liqiong,
->>
->> On 8/20/21 12:15 PM, 李力琼 wrote:
->>> Hi, Simon:
->>>
->>> This solution is better then rwsem, a temp "ima_rules" variable should 
->>> can fix. I also have a another idea, with a little trick, default list
->>> can traverse to the new list, so we don't need care about the read side. 
->>>
->>> here is the patch:
->>>
->>> @@ -918,8 +918,21 @@ void ima_update_policy(void)
->>>         list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
->>>
->>>         if (ima_rules != policy) {
->>> +               struct list_head *prev_rules = ima_rules;
->>> +               struct list_head *first = ima_rules->next;
->>>                 ima_policy_flag = 0;
->>> +
->>> +               /*
->>> +                * Make the previous list can traverse to new list,
->>> +                * that is tricky, or there is a deadly loop whithin
->>> +                * "list_for_each_entry_rcu(entry, ima_rules, list)"
->>> +                *
->>> +                * After update "ima_rules", restore the previous list.
->>> +                */
->> I think this could be rephrased to be a tad clearer, I am not quite sure
->> how I must interpret the first sentence of the comment.
->>
->>
->>> +               prev_rules->next = policy->next;
->>>                 ima_rules = policy;
->>> +               syncchronize_rcu();
->> I'm a bit puzzled as you seem to imply in the mail this patch was tested,
->> but there is no 'syncchronize_rcu' (with two 'c') symbol in the kernel.
->> Was that a copy/paste error? Or maybe you forgot the 'not' in "This
->> patch has been tested"? These errors happen, and I am myself quite an
->> expert in doing them :)
->>
->>> +               prev_rules->next = first;
->>>
->>>
->>> The side effect is the "ima_default_rules" will be changed a little while.
->>> But it make sense, the process should be checked again by the new policy.
->>>
->>> This patch has been tested, if will do, I can resubmit this patch.> 
->>> How about this ?
->> least
->>
->> Correct me if I'm wrong, here is how I think I understand you patch.
->> We start with a situation like that (step 0):
->> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
->>
->> Then we decide to update the policy for the first time, so
->> 'ima_rules [&ima_default_rules] != policy [&ima_policy_rules]'.
->> We enter the condition.
->> First we copy the current value of ima_rules (&ima_default_rules)
->> to a temporary variable 'prev_rules'. We also create a pointer dubbed
->> 'first' to the entry 1 in the default list (step 1):
->> prev_rules -------------
->>                        \/
->> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
->>                                                                    /\
->> first --------------------------------------------------------------
->>
->>
->> Then we update prev_rules->next to point to policy->next (step 2):
->> List entry 1 <-> List entry 2 <-> ... -> List entry 0
->>  /\
->> first
->> 	(notice that list entry 0 no longer points backwards to 'list entry 1',
->> 	but I don't think there is any reverse iteration in IMA, so it should be
->> 	safe)
->>
->> prev_rules -------------
->>                        \/
->> ima_rules --> List entry 0 (head node) = ima_default_rules   
->>                        |
->>                        |
->>                        -------------------------------------------
->>                                                                  \/
->> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
->>
->>
->> We then update ima_rules to point to ima_policy_rules (step 3):
->> List entry 1 <-> List entry 2 <-> ... -> List entry 0
->>  /\
->> first
->>
->> prev_rules -------------
->>                        \/
->> ima_rules     List entry 0 (head node) = ima_default_rules   
->>      |                 |
->>      |                 |
->>      |                 ------------------------------------------
->>      ---------------                                            |
->>                    \/                                           \/
->> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
->>                                                   synchronize_rcu                 /\
->> first --------------------------------------------------------------
->>
->> Then we run synchronize_rcu() to wait for any RCU reader to exit their loops (step 4).
->>
->> Finally we update prev_rules->next to point back to the ima policy and fix the loop (step 5):
->>
->> List entry 1 <-> List entry 2 <-> ... -> List entry 0
->>  /\
->> first
->>
->> prev_rules ---> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
->>                                                                      /\
->>                                                                  first (now useless)
->> ima_rules        
->>      |
->>      |
->>      |
->>      ---------------
->>                    \/
->> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
->>
->> The goal is that readers should still be able to loop
->> (forward, as we saw that backward looping is temporarily broken)
->> while in steps 0-4.
->>
->> I'm not completely sure what would happen to a client that started iterating
->> over ima_rules right after step 2.
->>
->> Wouldn't they be able to start looping through the new policy
->> as 'List entry 0 (head node) = ima_default_rules' points to ima_policy_rules?
->> And if they, wouldn't they loop until the write to 'ima_rule' at step 3 (admittedly
->> very shortly thereafter) completed?
->> And would the compiler be allowed to optimize the read to 'ima_rules' in the
->> list_for_each_entry() loop, thereby never reloading the new value for
->> 'ima_rules', and thus looping forever, just what we are trying to avoid?
->>
->> Overall, I'm tempted to say this is perhaps a bit too complex (at least,
->> my head tells me it is, but that may very well be because I'm terrible
->> at concurrency issues).
->>
->> Honestly, in this case I think awaiting input from more experienced
->> kernel devs than I is the best path forward :-)
-> I'm far from an expert on RCU locking, but __list_splice_init_rcu()
-> provides an example of how to make sure there aren't any readers
-> traversing the list, before two lists are spliced together.   In our
-> case, after there aren't any readers, instead of splicing two lists
-> together, it should be safe to point to the new list.
->
-> thanks,
->
-> Mimi
->
