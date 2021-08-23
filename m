@@ -2,68 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAAE3F4B7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36C03F4B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236857AbhHWNOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:14:07 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36714 "EHLO vps0.lunn.ch"
+        id S237210AbhHWNR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:17:29 -0400
+Received: from verein.lst.de ([213.95.11.211]:47913 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235813AbhHWNOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:14:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=uB0G9ZImc8Pdu1OVro8WDnme5TohgKEu1Eb5sDQCZk4=; b=fbwCpv5jAwZxPBTTS5/T5y1/D0
-        YYF6rBKheBtZTLG+QOh6KsBZtHiR3bKAowxwTmZ+6semZ2tWzSpLeITj9oipZtwosu51Cj5af0OK1
-        L0tqpKNcHZKmRn6PWdmDsmoMtsCPkTTr1SyuPNRVZSoHpc3CpQdpkIrqz3vCgfdDW0O0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mI9lO-003T5Z-6C; Mon, 23 Aug 2021 15:13:18 +0200
-Date:   Mon, 23 Aug 2021 15:13:18 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Rasmussen <MIR@bang-olufsen.dk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 4/5] net: dsa: realtek-smi: add rtl8365mb
- subdriver for RTL8365MB-VC
-Message-ID: <YSOe7nSC9me8dcCf@lunn.ch>
-References: <20210822193145.1312668-1-alvin@pqrs.dk>
- <20210822193145.1312668-5-alvin@pqrs.dk>
- <20210822224805.p4ifpynog2jvx3il@skbuf>
- <dd2947d5-977d-b150-848e-fb9a20c16668@bang-olufsen.dk>
- <20210823001953.rsss4fvnvkcqtebj@skbuf>
- <75d2820b-9429-5145-c02d-9c5ce8ceb78f@bang-olufsen.dk>
- <20210823021213.tqnnjdquxywhaprq@skbuf>
- <4928f92c-ed7d-9474-8b6b-21a4baa3a610@bang-olufsen.dk>
+        id S236163AbhHWNR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 09:17:28 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AABAC67357; Mon, 23 Aug 2021 15:16:42 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 15:16:42 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     djwong@kernel.org, hch@lst.de, linux-xfs@vger.kernel.org,
+        dan.j.williams@intel.com, david@fromorbit.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
+        willy@infradead.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH v7 6/8] fsdax: Dedup file range to use a compare
+ function
+Message-ID: <20210823131642.GD15536@lst.de>
+References: <20210816060359.1442450-1-ruansy.fnst@fujitsu.com> <20210816060359.1442450-7-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4928f92c-ed7d-9474-8b6b-21a4baa3a610@bang-olufsen.dk>
+In-Reply-To: <20210816060359.1442450-7-ruansy.fnst@fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I tested your patch with some small modifications to make it apply (I'm 
-> running 5.14-rc5 right now and it's not so trivial to bump right now - 
-> let me know if you think it's important).
+On Mon, Aug 16, 2021 at 02:03:57PM +0800, Shiyang Ruan wrote:
+> +	id = dax_read_lock();
+> +	while ((ret = iomap_iter2(&it_src, &it_dest, ops)) > 0) {
+> +		it_src.processed = it_dest.processed =
+> +			dax_range_compare_iter(&it_src, &it_dest, same);
+> +	}
+> +	dax_read_unlock(id);
 
-Patches submitted to netdev should be against net-next. Before you
-submit a version which gets merged, you need to update. Please mark
-all submissions until then as RFC in the Subject line.
+I think it would be better to move the DAX locking into
+dax_range_compare_iter to avoid very long hold times.
 
-    Andrew
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_dedupe_file_range_compare);
+
+No need for the export.
+
+> +EXPORT_SYMBOL(dax_remap_file_range_prep);
+
+EXPORT_SYMBOL_GPL, please.
+
+Attached is a totally untested patch that just has two levels of
+iterations instead of the new iter2 helper:
+
+
+diff --git a/fs/dax.c b/fs/dax.c
+index 0e0536765a7efc..2b65471785290d 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -1885,6 +1885,7 @@ static loff_t dax_range_compare_iter(struct iomap_iter *it_src,
+ 	loff_t len = min(smap->length, dmap->length);
+ 	void *saddr, *daddr;
+ 	int ret;
++	int id;
+ 
+ 	if (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE) {
+ 		*same = true;
+@@ -1896,47 +1897,56 @@ static loff_t dax_range_compare_iter(struct iomap_iter *it_src,
+ 		return 0;
+ 	}
+ 
++	id = dax_read_lock();
+ 	ret = dax_iomap_direct_access(smap, pos1, ALIGN(pos1 + len, PAGE_SIZE),
+ 				      &saddr, NULL);
+ 	if (ret < 0)
+-		return -EIO;
++		goto out_unlock;
+ 
+ 	ret = dax_iomap_direct_access(dmap, pos2, ALIGN(pos2 + len, PAGE_SIZE),
+ 				      &daddr, NULL);
+ 	if (ret < 0)
+-		return -EIO;
++		goto out_unlock;
+ 
+ 	*same = !memcmp(saddr, daddr, len);
+ 	if (!*same)
+-		return 0;
++		len = 0;
++	dax_read_unlock(id);
+ 	return len;
++
++out_unlock:
++	dax_read_unlock(id);
++	return -EIO;
+ }
+ 
+ int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
+-		struct inode *dest, loff_t destoff, loff_t len, bool *same,
++		struct inode *dst, loff_t dstoff, loff_t len, bool *same,
+ 		const struct iomap_ops *ops)
+ {
+-	struct iomap_iter it_src = {
++	struct iomap_iter src_iter = {
+ 		.inode		= src,
+ 		.pos		= srcoff,
+ 		.len		= len,
+ 	};
+-	struct iomap_iter it_dest = {
+-		.inode		= dest,
+-		.pos		= destoff,
++	struct iomap_iter dst_iter = {
++		.inode		= dst,
++		.pos		= dstoff,
+ 		.len		= len,
+ 	};
+-	int id, ret;
++	int ret;
+ 
+-	id = dax_read_lock();
+-	while ((ret = iomap_iter2(&it_src, &it_dest, ops)) > 0) {
+-		it_src.processed = it_dest.processed =
+-			dax_range_compare_iter(&it_src, &it_dest, same);
++	while ((ret = iomap_iter(&src_iter, ops)) > 0) {
++		while ((ret = iomap_iter(&dst_iter, ops)) > 0) {
++			dst_iter.processed = dax_range_compare_iter(&src_iter,
++					&dst_iter, same);
++			if (dst_iter.processed > 0)
++				src_iter.processed += dst_iter.processed;
++			else if (!src_iter.processed)
++				src_iter.processed = dst_iter.processed;
++		}
+ 	}
+-	dax_read_unlock(id);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(dax_dedupe_file_range_compare);
+ 
+ int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 			      struct file *file_out, loff_t pos_out,
+@@ -1946,4 +1956,4 @@ int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
+ 	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
+ 					       pos_out, len, remap_flags, ops);
+ }
+-EXPORT_SYMBOL(dax_remap_file_range_prep);
++EXPORT_SYMBOL_GPL(dax_remap_file_range_prep);
