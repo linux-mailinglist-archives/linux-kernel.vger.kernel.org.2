@@ -2,241 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555083F4DF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750F33F4DFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhHWQEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:04:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41610 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231857AbhHWQEw (ORCPT
+        id S229632AbhHWQIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhHWQIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:04:52 -0400
-Date:   Mon, 23 Aug 2021 18:04:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629734648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Y40OIFsS2zjjqBQGHzmlqktrTeUvADgXtYy0PA2r/9o=;
-        b=R5Xt2Qn9/OCy1LAkz1JNmqYMbu/5PS+lcrCEs/YmlBGdUCWEXVh/+hqidzAgUTkzvhBIK0
-        10KQn0IUo84IH5W0iAynOPmQ8NZQ3ygFeJ2KP1Ry+6mT1GsqxqBFmtho3PV1mOmyrrUDQH
-        GVm/vQgDYSa4eKep2+abGDCSDPpJaJdvoSyo7ii2wPu339S+0DeylTRQoxiipLeyzQ2iYi
-        Gmg4F1QmGe8gpL8Rr3IBJb7lPjUXk9iAlJ84ZQ+ALd5Oi43bx+4BJvOo3/z8OCWNnhmPwL
-        Eju61QL99Hp1z0lPCvK+4G/bX1uUpUB20NKfgucGBU0evZHstB8gcXRbFDIezA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629734648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Y40OIFsS2zjjqBQGHzmlqktrTeUvADgXtYy0PA2r/9o=;
-        b=3EK3ZG/oGoLFjdcncqdY9W5XnvJdme+yqGC6MuwQJYDh06t6UnHA2G0M6ykEcMwxcm1iHg
-        2ud/+Lo6P0zwrECg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.14-rc7-rt13
-Message-ID: <20210823160407.5e6xkvnfrz5f3ygw@linutronix.de>
+        Mon, 23 Aug 2021 12:08:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314FBC061575;
+        Mon, 23 Aug 2021 09:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LsLe+48Z44OPP+wxVpkLam4RDFITz1Wr1Njeq/MH3xQ=; b=JIER7PcfVkmzObvzVJKjAthV5J
+        E58VcBuoRhT5QN3utOlLgU0h4dICVnkvP+2sJoeUTmFaxW5EuX1ZeSd5fqAs34wDtct92yhVJNRTZ
+        02+D635L50Gs9s5wVv1M3KuG6Akav4/TqFNyGRbNWE5EmIY7zGB3hRksLg1V9M0iiBzKnUlu62DGo
+        BRzerZi/G2Hay+e9LYV7XY9WrKGmurqghmr8+6TOX9BahA7JKurkZawstXTJLRF2V/GA1R/5txpGt
+        ODYCJevsYllGgbsS5Bh/Edi+NsPIuVy/Ba8ykOPZ6VmqG1VxdO0AhEfh9Ey2Jn8ehaPD2lt8bqq5t
+        o+C5OFyQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mICRz-009vvg-D4; Mon, 23 Aug 2021 16:05:34 +0000
+Date:   Mon, 23 Aug 2021 17:05:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
+ holder auto-demotion
+Message-ID: <YSPHR7EL/ujG0Of7@casper.infradead.org>
+References: <20210819194102.1491495-1-agruenba@redhat.com>
+ <20210819194102.1491495-11-agruenba@redhat.com>
+ <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com>
+ <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com>
+ <CAHc6FU7EMOEU7C5ryu5pMMx1v+8CTAOMyGdf=wfaw8=TTA_btQ@mail.gmail.com>
+ <8e2ab23b93c96248b7c253dc3ea2007f5244adee.camel@redhat.com>
+ <CAHc6FU5uHJSXD+CQk3W9BfZmnBCd+fqHt4Bd+=uVH18rnYCPLg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAHc6FU5uHJSXD+CQk3W9BfZmnBCd+fqHt4Bd+=uVH18rnYCPLg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Mon, Aug 23, 2021 at 05:18:12PM +0200, Andreas Gruenbacher wrote:
+> On Mon, Aug 23, 2021 at 10:14 AM Steven Whitehouse <swhiteho@redhat.com> wrote:
+> > If the goal here is just to allow the glock to be held for a longer
+> > period of time, but with occasional interruptions to prevent
+> > starvation, then we have a potential model for this. There is
+> > cond_resched_lock() which does this for spin locks.
+> 
+> This isn't an appropriate model for what I'm trying to achieve here.
+> In the cond_resched case, we know at the time of the cond_resched call
+> whether or not we want to schedule. If we do, we want to drop the spin
+> lock, schedule, and then re-acquire the spin lock. In the case we're
+> looking at here, we want to fault in user pages. There is no way of
+> knowing beforehand if the glock we're currently holding will have to
+> be dropped to achieve that. In fact, it will almost never have to be
+> dropped. But if it does, we need to drop it straight away to allow the
+> conflicting locking request to succeed.
 
-I'm pleased to announce the v5.14-rc7-rt13 patch set. 
-
-Changes since v5.14-rc7-rt12:
-
-  - A change to ww_mutex code to avoid a crash in non-RT. Reported by
-    Guenter Roeck.
-
-  - The patch for rcu-torture has been updated to address review
-    comments.
-
-Known issues
-     - netconsole triggers WARN.
-
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
-
-     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
-       still not clear if the RCU related change is correct.
-
-     - Clark Williams reported issues in i915 (execlists_dequeue_irq())
-
-     - Clark Williams reported issues with kcov enabled.
-
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://https://lkml.kernel.org/r/.kernel.org/lkml/20210810134127.1394269-1-valentin.schneider@arm.com/
-
-The delta patch against v5.14-rc7-rt12 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rc7-rt12-rt13.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rc7-rt13
-
-The RT patch against v5.14-rc7 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rc7-rt13.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rc7-rt13.tar.xz
-
-Sebastian
-
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index 05b68931622d1..2c70213934cd4 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -614,7 +614,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 
- 	debug_mutex_lock_common(lock, &waiter);
- 	waiter.task = current;
--	if (ww_ctx)
-+	if (use_ww_ctx)
- 		waiter.ww_ctx = ww_ctx;
- 
- 	lock_contended(&lock->dep_map, ip);
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index f01368a05374d..d2ef535530b10 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -61,13 +61,10 @@ MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com> and Josh Triplett <josh@
- #define RCUTORTURE_RDR_RBH	 0x08	/*  ... rcu_read_lock_bh(). */
- #define RCUTORTURE_RDR_SCHED	 0x10	/*  ... rcu_read_lock_sched(). */
- #define RCUTORTURE_RDR_RCU	 0x20	/*  ... entering another RCU reader. */
--#define RCUTORTURE_RDR_ATOM_BH	 0x40	/*  ... disabling bh while atomic */
--#define RCUTORTURE_RDR_ATOM_RBH	 0x80	/*  ... RBH while atomic */
--#define RCUTORTURE_RDR_NBITS	 8	/* Number of bits defined above. */
-+#define RCUTORTURE_RDR_NBITS	 6	/* Number of bits defined above. */
- #define RCUTORTURE_MAX_EXTEND	 \
- 	(RCUTORTURE_RDR_BH | RCUTORTURE_RDR_IRQ | RCUTORTURE_RDR_PREEMPT | \
--	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED | \
--	 RCUTORTURE_RDR_ATOM_BH | RCUTORTURE_RDR_ATOM_RBH)
-+	 RCUTORTURE_RDR_RBH | RCUTORTURE_RDR_SCHED)
- #define RCUTORTURE_RDR_MAX_LOOPS 0x7	/* Maximum reader extensions. */
- 					/* Must be power of two minus one. */
- #define RCUTORTURE_RDR_MAX_SEGS (RCUTORTURE_RDR_MAX_LOOPS + 3)
-@@ -1432,11 +1429,7 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 	WARN_ON_ONCE((idxold >> RCUTORTURE_RDR_SHIFT) > 1);
- 	rtrsp->rt_readstate = newstate;
- 
--	/*
--	 * First, put new protection in place to avoid critical-section gap.
--	 * Disable preemption around the ATOM disables to ensure that
--	 * in_atomic() is true.
--	 */
-+	/* First, put new protection in place to avoid critical-section gap. */
- 	if (statesnew & RCUTORTURE_RDR_BH)
- 		local_bh_disable();
- 	if (statesnew & RCUTORTURE_RDR_RBH)
-@@ -1447,29 +1440,18 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 		preempt_disable();
- 	if (statesnew & RCUTORTURE_RDR_SCHED)
- 		rcu_read_lock_sched();
--	preempt_disable();
--	if (statesnew & RCUTORTURE_RDR_ATOM_BH)
--		local_bh_disable();
--	if (statesnew & RCUTORTURE_RDR_ATOM_RBH)
--		rcu_read_lock_bh();
--	preempt_enable();
- 	if (statesnew & RCUTORTURE_RDR_RCU)
- 		idxnew = cur_ops->readlock() << RCUTORTURE_RDR_SHIFT;
- 
- 	/*
- 	 * Next, remove old protection, in decreasing order of strength
- 	 * to avoid unlock paths that aren't safe in the stronger
--	 * context.  Disable preemption around the ATOM enables in
--	 * case the context was only atomic due to IRQ disabling.
-+	 * context. Namely: BH can not be enabled with disabled interrupts.
-+	 * Additionally PREEMPT_RT requires that BH is enabled in preemptible
-+	 * context.
- 	 */
--	preempt_disable();
- 	if (statesold & RCUTORTURE_RDR_IRQ)
- 		local_irq_enable();
--	if (statesold & RCUTORTURE_RDR_ATOM_BH)
--		local_bh_enable();
--	if (statesold & RCUTORTURE_RDR_ATOM_RBH)
--		rcu_read_unlock_bh();
--	preempt_enable();
- 	if (statesold & RCUTORTURE_RDR_PREEMPT)
- 		preempt_enable();
- 	if (statesold & RCUTORTURE_RDR_SCHED)
-@@ -1478,7 +1460,6 @@ static void rcutorture_one_extend(int *readstate, int newstate,
- 		local_bh_enable();
- 	if (statesold & RCUTORTURE_RDR_RBH)
- 		rcu_read_unlock_bh();
--
- 	if (statesold & RCUTORTURE_RDR_RCU) {
- 		bool lockit = !statesnew && !(torture_random(trsp) & 0xffff);
- 
-@@ -1523,10 +1504,7 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	unsigned long randmask2 = randmask1 >> 3;
- 	unsigned long preempts = RCUTORTURE_RDR_PREEMPT | RCUTORTURE_RDR_SCHED;
- 	unsigned long preempts_irq = preempts | RCUTORTURE_RDR_IRQ;
--	unsigned long nonatomic_bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
--	unsigned long atomic_bhs = RCUTORTURE_RDR_ATOM_BH |
--				   RCUTORTURE_RDR_ATOM_RBH;
--	unsigned long tmp;
-+	unsigned long bhs = RCUTORTURE_RDR_BH | RCUTORTURE_RDR_RBH;
- 
- 	WARN_ON_ONCE(mask >> RCUTORTURE_RDR_SHIFT);
- 	/* Mostly only one bit (need preemption!), sometimes lots of bits. */
-@@ -1538,9 +1516,8 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	/*
- 	 * Can't enable bh w/irq disabled.
- 	 */
--	tmp = atomic_bhs | nonatomic_bhs;
- 	if (mask & RCUTORTURE_RDR_IRQ)
--		mask |= oldmask & tmp;
-+		mask |= oldmask & bhs;
- 
- 	/*
- 	 * Ideally these sequences would be detected in debug builds
-@@ -1548,30 +1525,11 @@ rcutorture_extend_mask(int oldmask, struct torture_random_state *trsp)
- 	 * them on non-RT.
- 	 */
- 	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
--		/*
--		 * Can't disable bh in atomic context if bh was already
--		 * disabled by another task on the same CPU. Instead of
--		 * attempting to track this, just avoid disabling bh in atomic
--		 * context.
--		 */
--		mask &= ~atomic_bhs;
--		/*
--		 * Can't release the outermost rcu lock in an irq disabled
--		 * section without preemption also being disabled, if irqs
--		 * had ever been enabled during this RCU critical section
--		 * (could leak a special flag and delay reporting the qs).
--		 */
--		if ((oldmask & RCUTORTURE_RDR_RCU) &&
--		    (mask & RCUTORTURE_RDR_IRQ) &&
--		    !(mask & preempts))
--			mask |= RCUTORTURE_RDR_RCU;
--
--		/* Can't modify non-atomic bh in atomic context */
--		tmp = nonatomic_bhs;
-+		/* Can't modify BH in atomic context */
- 		if (oldmask & preempts_irq)
--			mask &= ~tmp;
-+			mask &= ~bhs;
- 		if ((oldmask | mask) & preempts_irq)
--			mask |= oldmask & tmp;
-+			mask |= oldmask & bhs;
- 	}
- 
- 	return mask ?: RCUTORTURE_RDR_RCU;
-diff --git a/localversion-rt b/localversion-rt
-index 6e44e540b927b..9f7d0bdbffb18 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt12
-+-rt13
+It occurs to me that this is similar to the wound/wait mutexes
+(include/linux/ww_mutex.h & Documentation/locking/ww-mutex-design.rst).
+You want to mark the glock as woundable before faulting, and then discover
+if it was wounded after faulting.  Maybe sharing this terminology will
+aid in understanding?
