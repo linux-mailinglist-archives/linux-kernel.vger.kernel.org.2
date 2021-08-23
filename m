@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 796B03F463E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945FF3F4641
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235331AbhHWH60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S235443AbhHWH7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbhHWH6Z (ORCPT
+        with ESMTP id S235275AbhHWH7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:58:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82EAC061575;
-        Mon, 23 Aug 2021 00:57:43 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:b93f:9fae:b276:a89a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CAB921F424B6;
-        Mon, 23 Aug 2021 08:57:41 +0100 (BST)
-Date:   Mon, 23 Aug 2021 09:57:38 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Apurva Nandan <a-nandan@ti.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Pratyush Yadav <p.yadav@ti.com>
-Subject: Re: [PATCH 01/13] spi: spi-mem: Add DTR templates for cmd, address,
- dummy and data phase
-Message-ID: <20210823095738.297d33e9@collabora.com>
-In-Reply-To: <20210713130538.646-2-a-nandan@ti.com>
-References: <20210713130538.646-1-a-nandan@ti.com>
-        <20210713130538.646-2-a-nandan@ti.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 23 Aug 2021 03:59:07 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC811C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:58:25 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id j13so11296620ybj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A4LdKTAjdulkWp1Ey9+qLuBWHOHSRlpXXa8uWwlXNjo=;
+        b=GslNxTVCcaBeHsIHdetgMcBsNjshjeP/C6kPGlWqGcT78U70fD6TFPTuGye0Chi+x0
+         IXwyzql5xIXrd/4S1mW8KoLCeV7ZI3oNe7CNNK0eE6qm5CfB+w5xOe7j1SL+47mRaNOe
+         ShhB6r3ngHUOoYI6ZRO+tZ6dF5vniJIKdlrJehAFPO2ehLPLElmTAYxwZd9viBkZaY9O
+         VQaJQmey03oZVBDbxJxm16JJqFbgn48h+gyzdxmQaqKcFBVHcPH9yrlysDmXez99T8JA
+         XUMhjQSV47tT2xXnrEwjvugrx0bqSBcAssa04Gyqq6xqAku9Z3J/Xrya4U4qDd/V0qkp
+         6CWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A4LdKTAjdulkWp1Ey9+qLuBWHOHSRlpXXa8uWwlXNjo=;
+        b=ei1FEYYsAO0VJYW8ATl17RDn2hRjvwjwT/GvGxv4MR1oTaY8ltogDRaMKQvkh/RMg/
+         Erw8X1RLTsVMcS5nO1UWJxZgAad3XvsxvlJv0V3wqKjAz0DMptem+vedboxLrTZ6CqGU
+         rq8Q10ZrwEh+uFj5RL6KDcDhbqBrbW7R/XVw19dOLNuwnAgzKvJZhe5Ixq6QsEqSoCCN
+         8nOgJb+d/8nTGp1vDZt2qOC2K+5AmPfa3uCqMBGFcCRf4w2IcjMPGHdUoK+bRsUHkmKb
+         GZWO/X2EjPg/p1Ip+/zd6gyZy+DDHukjcKqL5OL3OsdAEwNNto6u+RHSunX6XcPrgswE
+         JOaQ==
+X-Gm-Message-State: AOAM531seaT2HLaImvajaovLeLtnTE2XaE4ALhMJJtYEXxxUqDVLiQqP
+        FoGpaSbcJp6WwiewAI7sWy2r6mD1rKiK0VEq3qWMMA==
+X-Google-Smtp-Source: ABdhPJwjNaJ0hN3PHVi5IZ2QI8E+CCiS9LJzKyaG004QjwuuEnEOsH6ar0YZsZ6ezMCs/rcpcY3iHXosrDILyt8vmvA=
+X-Received: by 2002:a25:abf1:: with SMTP id v104mr589768ybi.25.1629705505102;
+ Mon, 23 Aug 2021 00:58:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210817080118.9201-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210817080118.9201-1-lukas.bulwahn@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 23 Aug 2021 09:58:14 +0200
+Message-ID: <CAMpxmJVvz8G4XgE=12HVNgcdgwLgWnDY7M7oifBpNT76O2YWUA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: remove the obsolete MX35 3DS BOARD MC9S08DZ60 GPIO functions
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 13:05:26 +0000
-Apurva Nandan <a-nandan@ti.com> wrote:
+On Tue, Aug 17, 2021 at 10:01 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> Commit e1324ece2af4 ("ARM: imx: Remove i.MX35 board files") removes the
+> config MACH_MX35_3DS in arch/arm/mach-imx/Kconfig.
+>
+> Hence, since then, the MX35 3DS BOARD MC9S08DZ60 GPIO functions are dead
+> code as its config GPIO_MC9S08DZ60 depends on the config MACH_MX35_3DS.
+>
+> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+>
+> MACH_MX35_3DS
+> Referencing files: drivers/gpio/Kconfig
+>
+> Remove the obsolete MX35 3DS BOARD MC9S08DZ60 GPIO functions.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-> Setting dtr field of spi_mem_op is useful when creating templates
-> for DTR ops in spinand.h. Also, 2 bytes cmd phases are required when
-> operating in Octal DTR SPI mode.
-> 
-> Create new templates for dtr mode cmd, address, dummy and data phase
-> in spi_mem_op, which set the dtr field to 1 and also allow passing
-> the nbytes for the cmd phase.
-> 
-> Signed-off-by: Apurva Nandan <a-nandan@ti.com>
-> ---
->  include/linux/spi/spi-mem.h | 87 ++++++++++++++++++++++++++-----------
->  1 file changed, 61 insertions(+), 26 deletions(-)
-> 
-> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-> index 85e2ff7b840d..73e52a3ecf66 100644
-> --- a/include/linux/spi/spi-mem.h
-> +++ b/include/linux/spi/spi-mem.h
-> @@ -13,46 +13,81 @@
->  
->  #include <linux/spi/spi.h>
->  
-> -#define SPI_MEM_OP_CMD(__opcode, __buswidth)			\
-> -	{							\
-> -		.buswidth = __buswidth,				\
-> -		.opcode = __opcode,				\
-> -		.nbytes = 1,					\
-> +#define SPI_MEM_OP_CMD_ALL_ARGS(__nbytes, __opcode, __buswidth, __dtr)	\
-> +	{								\
-> +		.buswidth = __buswidth,					\
-> +		.opcode = __opcode,					\
-> +		.nbytes = __nbytes,					\
-> +		.dtr = __dtr,						\
->  	}
->  
-> -#define SPI_MEM_OP_ADDR(__nbytes, __val, __buswidth)		\
-> -	{							\
-> -		.nbytes = __nbytes,				\
-> -		.val = __val,					\
-> -		.buswidth = __buswidth,				\
-> +#define SPI_MEM_OP_CMD(__opcode, __buswidth)				\
-> +	SPI_MEM_OP_CMD_ALL_ARGS(1, __opcode, __buswidth, 0)
-> +
-> +#define SPI_MEM_OP_CMD_DTR(__nbytes, __opcode, __buswidth)		\
-> +	SPI_MEM_OP_CMD_ALL_ARGS(__nbytes, __opcode, __buswidth, 1)
+Patch applied, thanks!
 
-I don't see the benefit of those ALL_ARGS() macros compared to the
-definition of the _DTR() variants using raw struct initializers, but if
-you think we will add more optional args and really care about saving a
-few lines of code, maybe it'd be better to have something like:
-
-#define SPI_MEM_OP_DTR .dtr = true
-#define SPI_MEM_OP_CMD_BYTES(val) .nbytes = val
-
-#define SPI_MEM_OP_EXT_CMD(__opcode, __buswidth, ...) \
-	{ \
-		.buswidth = __buswidth, \
-		.opcode = __opcode, \
-		__VA_ARGS__, \
-	}
-
-#define SPI_MEM_OP_CMD(__opcode, __buswidth) \
-	SPI_MEM_OP_EXT_CMD(__opcode, __buswidth, \
-			   SPI_MEM_OP_CMD_BYTES(1))
-
-#define SPI_MEM_OP_CMD_DTR(__nbytes, __opcode, __buswidth) \
-	SPI_MEM_OP_EXT_CMD(__opcode, __buswidth, \
-			   SPI_MEM_OP_CMD_BYTES(__nbytes), \
-			   SPI_MEM_OP_DTR)
-
-so you don't have to patch all users every time you add an argument.
+Bart
