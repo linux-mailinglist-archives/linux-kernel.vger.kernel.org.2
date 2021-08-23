@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADB33F4CD0
+	by mail.lfdr.de (Postfix) with ESMTP id 80C6D3F4CCF
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbhHWPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:00:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51748 "EHLO
+        id S231624AbhHWPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:00:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51766 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhHWO7X (ORCPT
+        with ESMTP id S230484AbhHWO7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Aug 2021 10:59:23 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CD06021FE4;
-        Mon, 23 Aug 2021 14:58:39 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1BE6121FE6;
+        Mon, 23 Aug 2021 14:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629730719; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629730720; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lg82srUkTk4tLfdHE57Lzl+DmeGOtGtZsKtZdZRkMAA=;
-        b=JrX3sdnNY9FdRqUxzo7GrH0gu8cDgISz4Wfh7kUhNdFLsklM72dKR3EEVanfFeTTGel2qm
-        USy7/i7OMXFsANBAflEMzm3T1vLpprYKrLpc1KehvizbJgq+PzKx4TmdywfkApFAPFne+/
-        XXxcAbSLI00N5dIY5CjvINUxRhvqevM=
+        bh=QyECwTCvzCUitO+ZNBoSYuyIQpyTGNLpMFm4Xk/n4gQ=;
+        b=kCJ7zk9Q5mg/QDo6HusRYFbITcVG+Cvg+qdhsLhkME1OWY5zlcld+n/JIFRsaq7j//3QuK
+        orQNpcqI17JVtzbN07/Pwg7iUauJIHTSKhG1XMj/RlJMW3l4GvAoKiDkKigyK0ZQHZboZX
+        yBJDL+hdNUBF7uqAjiY0QhIBKQlKWqU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629730719;
+        s=susede2_ed25519; t=1629730720;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lg82srUkTk4tLfdHE57Lzl+DmeGOtGtZsKtZdZRkMAA=;
-        b=W/LnqVgL8kvOYdDA4kDE4C+hXxKEv/M24xV7um4mBllwKVE6NsT/fZ7fcVKS3+QwiC08xG
-        L+3WvTEV4x1cbqCA==
+        bh=QyECwTCvzCUitO+ZNBoSYuyIQpyTGNLpMFm4Xk/n4gQ=;
+        b=I+0oJx5Z9Djzzz5dME4NLkXj8GFAzkz83y14SqSq9iAZIQRQoNCRzK1GW5X86TjEfx4uWv
+        vdc31KPNEUh/x1AA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A36DE13BE0;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CD7EB13BE1;
         Mon, 23 Aug 2021 14:58:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aNRLJ5+3I2EFQQAAMHmgww
+        id YPiiMZ+3I2EFQQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Mon, 23 Aug 2021 14:58:39 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,9 +59,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v5 12/35] mm, slub: move disabling/enabling irqs to ___slab_alloc()
-Date:   Mon, 23 Aug 2021 16:58:03 +0200
-Message-Id: <20210823145826.3857-13-vbabka@suse.cz>
+Subject: [PATCH v5 13/35] mm, slub: do initial checks in ___slab_alloc() with irqs enabled
+Date:   Mon, 23 Aug 2021 16:58:04 +0200
+Message-Id: <20210823145826.3857-14-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210823145826.3857-1-vbabka@suse.cz>
 References: <20210823145826.3857-1-vbabka@suse.cz>
@@ -71,182 +71,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently __slab_alloc() disables irqs around the whole ___slab_alloc().  This
-includes cases where this is not needed, such as when the allocation ends up in
-the page allocator and has to awkwardly enable irqs back based on gfp flags.
-Also the whole kmem_cache_alloc_bulk() is executed with irqs disabled even when
-it hits the __slab_alloc() slow path, and long periods with disabled interrupts
-are undesirable.
+As another step of shortening irq disabled sections in ___slab_alloc(), delay
+disabling irqs until we pass the initial checks if there is a cached percpu
+slab and it's suitable for our allocation.
 
-As a first step towards reducing irq disabled periods, move irq handling into
-___slab_alloc(). Callers will instead prevent the s->cpu_slab percpu pointer
-from becoming invalid via get_cpu_ptr(), thus preempt_disable(). This does not
-protect against modification by an irq handler, which is still done by disabled
-irq for most of ___slab_alloc(). As a small immediate benefit,
-slab_out_of_memory() from ___slab_alloc() is now called with irqs enabled.
+Now we have to recheck c->page after actually disabling irqs as an allocation
+in irq handler might have replaced it.
 
-kmem_cache_alloc_bulk() disables irqs for its fastpath and then re-enables them
-before calling ___slab_alloc(), which then disables them at its discretion. The
-whole kmem_cache_alloc_bulk() operation also disables preemption.
+Because we call pfmemalloc_match() as one of the checks, we might hit
+VM_BUG_ON_PAGE(!PageSlab(page)) in PageSlabPfmemalloc in case we get
+interrupted and the page is freed. Thus introduce a pfmemalloc_match_unsafe()
+variant that lacks the PageSlab check.
 
-When  ___slab_alloc() calls new_slab() to allocate a new page, re-enable
-preemption, because new_slab() will re-enable interrupts in contexts that allow
-blocking (this will be improved by later patches).
-
-The patch itself will thus increase overhead a bit due to disabled preemption
-(on configs where it matters) and increased disabling/enabling irqs in
-kmem_cache_alloc_bulk(), but that will be gradually improved in the following
-patches.
-
-Note in __slab_alloc() we need to change the #ifdef CONFIG_PREEMPT guard to
-CONFIG_PREEMPT_COUNT to make sure preempt disable/enable is properly paired in
-all configurations. On configs without involuntary preemption and debugging
-the re-read of kmem_cache_cpu pointer is still compiled out as it was before.
-
-[ Mike Galbraith <efault@gmx.de>: Fix kmem_cache_alloc_bulk() error path ]
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- mm/slub.c | 36 ++++++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 12 deletions(-)
+ include/linux/page-flags.h |  9 +++++++
+ mm/slub.c                  | 54 +++++++++++++++++++++++++++++++-------
+ 2 files changed, 54 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 5922031ffab6..7fda4fb85bdc 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -815,6 +815,15 @@ static inline int PageSlabPfmemalloc(struct page *page)
+ 	return PageActive(page);
+ }
+ 
++/*
++ * A version of PageSlabPfmemalloc() for opportunistic checks where the page
++ * might have been freed under us and not be a PageSlab anymore.
++ */
++static inline int __PageSlabPfmemalloc(struct page *page)
++{
++	return PageActive(page);
++}
++
+ static inline void SetPageSlabPfmemalloc(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(!PageSlab(page), page);
 diff --git a/mm/slub.c b/mm/slub.c
-index 1f65d75077ce..31f946e03823 100644
+index 31f946e03823..fcc38638c645 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2656,7 +2656,7 @@ static inline void *get_freelist(struct kmem_cache *s, struct page *page)
-  * we need to allocate a new slab. This is the slowest path since it involves
-  * a call to the page allocator and the setup of a new slab.
-  *
-- * Version of __slab_alloc to use when we know that interrupts are
-+ * Version of __slab_alloc to use when we know that preemption is
-  * already disabled (which is the case for bulk allocation).
-  */
- static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
-@@ -2664,9 +2664,11 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- {
- 	void *freelist;
- 	struct page *page;
-+	unsigned long flags;
+@@ -2606,6 +2606,19 @@ static inline bool pfmemalloc_match(struct page *page, gfp_t gfpflags)
+ 	return true;
+ }
+ 
++/*
++ * A variant of pfmemalloc_match() that tests page flags without asserting
++ * PageSlab. Intended for opportunistic checks before taking a lock and
++ * rechecking that nobody else freed the page under us.
++ */
++static inline bool pfmemalloc_match_unsafe(struct page *page, gfp_t gfpflags)
++{
++	if (unlikely(__PageSlabPfmemalloc(page)))
++		return gfp_pfmemalloc_allowed(gfpflags);
++
++	return true;
++}
++
+ /*
+  * Check the page->freelist of a page and either transfer the freelist to the
+  * per cpu freelist or deactivate the page.
+@@ -2668,8 +2681,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
  
  	stat(s, ALLOC_SLOWPATH);
  
-+	local_irq_save(flags);
- 	page = c->page;
+-	local_irq_save(flags);
+-	page = c->page;
++reread_page:
++
++	page = READ_ONCE(c->page);
  	if (!page) {
  		/*
-@@ -2729,6 +2731,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	VM_BUG_ON(!c->page->frozen);
- 	c->freelist = get_freepointer(s, freelist);
- 	c->tid = next_tid(c->tid);
-+	local_irq_restore(flags);
- 	return freelist;
- 
- new_slab:
-@@ -2746,14 +2749,16 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto check_new_page;
+ 		 * if the node is not online or has no normal memory, just
+@@ -2678,6 +2692,11 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		if (unlikely(node != NUMA_NO_NODE &&
+ 			     !node_isset(node, slab_nodes)))
+ 			node = NUMA_NO_NODE;
++		local_irq_save(flags);
++		if (unlikely(c->page)) {
++			local_irq_restore(flags);
++			goto reread_page;
++		}
+ 		goto new_slab;
  	}
- 
-+	put_cpu_ptr(s->cpu_slab);
- 	page = new_slab(s, gfpflags, node);
-+	c = get_cpu_ptr(s->cpu_slab);
- 
- 	if (unlikely(!page)) {
-+		local_irq_restore(flags);
- 		slab_out_of_memory(s, gfpflags, node);
- 		return NULL;
- 	}
- 
--	c = raw_cpu_ptr(s->cpu_slab);
- 	if (c->page)
- 		flush_slab(s, c);
- 
-@@ -2793,31 +2798,33 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- return_single:
- 
- 	deactivate_slab(s, page, get_freepointer(s, freelist), c);
-+	local_irq_restore(flags);
- 	return freelist;
- }
- 
- /*
-- * Another one that disabled interrupt and compensates for possible
-- * cpu changes by refetching the per cpu area pointer.
-+ * A wrapper for ___slab_alloc() for contexts where preemption is not yet
-+ * disabled. Compensates for possible cpu changes by refetching the per cpu area
-+ * pointer.
-  */
- static void *__slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 			  unsigned long addr, struct kmem_cache_cpu *c)
- {
- 	void *p;
--	unsigned long flags;
- 
--	local_irq_save(flags);
--#ifdef CONFIG_PREEMPTION
-+#ifdef CONFIG_PREEMPT_COUNT
- 	/*
- 	 * We may have been preempted and rescheduled on a different
--	 * cpu before disabling interrupts. Need to reload cpu area
-+	 * cpu before disabling preemption. Need to reload cpu area
- 	 * pointer.
- 	 */
--	c = this_cpu_ptr(s->cpu_slab);
-+	c = get_cpu_ptr(s->cpu_slab);
- #endif
- 
- 	p = ___slab_alloc(s, gfpflags, node, addr, c);
--	local_irq_restore(flags);
-+#ifdef CONFIG_PREEMPT_COUNT
-+	put_cpu_ptr(s->cpu_slab);
-+#endif
- 	return p;
- }
- 
-@@ -3345,8 +3352,8 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 	 * IRQs, which protects against PREEMPT and interrupts
- 	 * handlers invoking normal fastpath.
- 	 */
-+	c = get_cpu_ptr(s->cpu_slab);
- 	local_irq_disable();
--	c = this_cpu_ptr(s->cpu_slab);
- 
- 	for (i = 0; i < size; i++) {
- 		void *object = kfence_alloc(s, s->object_size, flags);
-@@ -3367,6 +3374,8 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 			 */
- 			c->tid = next_tid(c->tid);
- 
-+			local_irq_enable();
-+
- 			/*
- 			 * Invoking slow path likely have side-effect
- 			 * of re-populating per CPU c->freelist
-@@ -3379,6 +3388,8 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 			c = this_cpu_ptr(s->cpu_slab);
- 			maybe_wipe_obj_freeptr(s, p[i]);
- 
-+			local_irq_disable();
-+
- 			continue; /* goto for-loop */
+ redo:
+@@ -2692,8 +2711,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 			goto redo;
+ 		} else {
+ 			stat(s, ALLOC_NODE_MISMATCH);
+-			deactivate_slab(s, page, c->freelist, c);
+-			goto new_slab;
++			goto deactivate_slab;
  		}
- 		c->freelist = get_freepointer(s, object);
-@@ -3387,6 +3398,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
  	}
- 	c->tid = next_tid(c->tid);
- 	local_irq_enable();
-+	put_cpu_ptr(s->cpu_slab);
  
+@@ -2702,12 +2720,15 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	 * PFMEMALLOC but right now, we are losing the pfmemalloc
+ 	 * information when the page leaves the per-cpu allocator
+ 	 */
+-	if (unlikely(!pfmemalloc_match(page, gfpflags))) {
+-		deactivate_slab(s, page, c->freelist, c);
+-		goto new_slab;
+-	}
++	if (unlikely(!pfmemalloc_match_unsafe(page, gfpflags)))
++		goto deactivate_slab;
+ 
+-	/* must check again c->freelist in case of cpu migration or IRQ */
++	/* must check again c->page in case IRQ handler changed it */
++	local_irq_save(flags);
++	if (unlikely(page != c->page)) {
++		local_irq_restore(flags);
++		goto reread_page;
++	}
+ 	freelist = c->freelist;
+ 	if (freelist)
+ 		goto load_freelist;
+@@ -2723,6 +2744,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	stat(s, ALLOC_REFILL);
+ 
+ load_freelist:
++
++	lockdep_assert_irqs_disabled();
++
  	/*
- 	 * memcg and kmem_cache debug support and memory initialization.
-@@ -3396,7 +3408,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 				slab_want_init_on_alloc(flags, s));
- 	return i;
- error:
--	local_irq_enable();
-+	put_cpu_ptr(s->cpu_slab);
- 	slab_post_alloc_hook(s, objcg, flags, i, p, false);
- 	__kmem_cache_free_bulk(s, i, p);
- 	return 0;
+ 	 * freelist is pointing to the list of objects to be used.
+ 	 * page is pointing to the page from which the objects are obtained.
+@@ -2734,11 +2758,23 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	local_irq_restore(flags);
+ 	return freelist;
+ 
++deactivate_slab:
++
++	local_irq_save(flags);
++	if (page != c->page) {
++		local_irq_restore(flags);
++		goto reread_page;
++	}
++	deactivate_slab(s, page, c->freelist, c);
++
+ new_slab:
+ 
++	lockdep_assert_irqs_disabled();
++
+ 	if (slub_percpu_partial(c)) {
+ 		page = c->page = slub_percpu_partial(c);
+ 		slub_set_percpu_partial(c, page);
++		local_irq_restore(flags);
+ 		stat(s, CPU_PARTIAL_ALLOC);
+ 		goto redo;
+ 	}
 -- 
 2.32.0
 
