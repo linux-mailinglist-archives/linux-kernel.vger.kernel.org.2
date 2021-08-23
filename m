@@ -2,83 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23D33F49FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B8F3F49FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235694AbhHWLoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:44:54 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56828 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbhHWLow (ORCPT
+        id S236455AbhHWLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:46:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56088 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235508AbhHWLqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:44:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629719049; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=6xSeFmuwaQ9BgUSDnUvEjqhFQzFuafgbxk/M2+LZHKg=;
- b=IjgTa51P159Q8AdzWdozbWdNw+lUui7cAzO0uQsUJP0QDObARJ07BKY1Hb83ZMqI4TpfRE+T
- KnDcTQ+aB4AV/zJBDpE+U3Zcys5Ash0XSOh9ErjGx5xgtFZZV88tafy8DP+6kAaP4QXZkc9q
- nWLAwzLVXQh8Njgq3uEngE0HSPE=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 61238a062b9e91b688271686 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 11:44:06
- GMT
-Sender: rajpat=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E86C0C4360D; Mon, 23 Aug 2021 11:44:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rajpat)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C6EAC4338F;
-        Mon, 23 Aug 2021 11:44:05 +0000 (UTC)
+        Mon, 23 Aug 2021 07:46:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629719153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=14znBkLtAjiyi6UaHmrKrHuYMVExy7PDUZAMCT69QdI=;
+        b=GPjJQRazYQJD5+3FqLO2TKgjLnyKBiYEBCV+8ymdhumxc5L0WJRKi8Cltvv3gBggrEAcaY
+        +ahskoeaCf9DbsbTChnahpSDOf69dtoxm7oKOeT6JzK3elAxDUBdbg9LDUjt50lOWf6Q/r
+        sIFjGwb+W6BD8nxRBNPmBhtSADXUCDE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-vncnSPC5Pp28Foogz4-EaA-1; Mon, 23 Aug 2021 07:45:51 -0400
+X-MC-Unique: vncnSPC5Pp28Foogz4-EaA-1
+Received: by mail-ed1-f70.google.com with SMTP id r12-20020aa7d14c000000b003c1aa118ad1so2656094edo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:45:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=14znBkLtAjiyi6UaHmrKrHuYMVExy7PDUZAMCT69QdI=;
+        b=ckutWduBCVd4IVYnzd4zDRVWcwatlrQlc1g9fvKYECwAbnVLo7P6EnJOBnOagqzafp
+         ep5GK00bXKhGC2SMoT9/Bs/HPXUHvi0hpKRXUsV7wwxZfQPCBLr3dsbxQdb1J/qPsx32
+         S6QiasdVPjYhuv+nuwzUy1+9rTCalskYJnZ6ue+cXO+PeCJKx69ovMP0XJGKII/yzjzX
+         EC2rUHsA1qJz/kHUvYVd7dYbXoxrS5qf0HjLCYhHtw+4iXSa5n2nePNHcioDHI86Mt48
+         EPnfsxaNqBwJ3oQ8C/xsgXlreQTR/bKja9q9aPZCUOwqoalpIaCVIEfKF40u3n5qB7oG
+         iaEA==
+X-Gm-Message-State: AOAM530QsJ6jT6SqpHcI/ZVG68nTxt1OtbrBG3QL6Z6E/bU8kCyYXthJ
+        TgJfna5OT3xLb/6XgzEAyifm7PW0VjHRqjsOkNRikL5IkQhofUjducaymFgfFWl02tiP4Tz6bF9
+        spCMZYnn6Sq5w7aJJwLt20AcY
+X-Received: by 2002:a50:fc8e:: with SMTP id f14mr37126013edq.349.1629719150773;
+        Mon, 23 Aug 2021 04:45:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwhyEZxyMYKl8tc+0N3VjfxSymLLOruRlc0AMYWB54fymq73eFwc5jIvuPYS7NizC/7n4S8Fw==
+X-Received: by 2002:a50:fc8e:: with SMTP id f14mr37125998edq.349.1629719150635;
+        Mon, 23 Aug 2021 04:45:50 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id m15sm9261459eds.92.2021.08.23.04.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 04:45:50 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
+To:     Luke Jones <luke@ljones.dev>, Bastien Nocera <hadess@hadess.net>
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20210820095726.14131-1-luke@ljones.dev>
+ <20210820095726.14131-2-luke@ljones.dev>
+ <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
+ <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
+ <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
+ <c19dfdde11754c234ca8a45c4af2187699498ee8.camel@hadess.net>
+ <U8X4YQ.79I8GZJ1LDW02@ljones.dev>
+ <b20a879dce98f27dfc68b86aaf486be9e623eacf.camel@hadess.net>
+ <1EQ5YQ.6O8MNIPTU6V4@ljones.dev>
+ <7a8a8d56c4e6addfc41b5dd5262968bd169f538f.camel@hadess.net>
+ <GGIAYQ.PS5EB67PH64N@ljones.dev>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <65260602-a1f4-fc8a-a823-ca5a6e4fca60@redhat.com>
+Date:   Mon, 23 Aug 2021 13:45:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Aug 2021 17:14:05 +0530
-From:   rajpat@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, swboyd@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org
-Subject: Re: [PATCH V5 2/7] arm64: dts: sc7280: Configure SPI-NOR FLASH for
- sc7280-idp
-In-Reply-To: <YRUe2qgbGTA18WkH@google.com>
-References: <1628754078-29779-1-git-send-email-rajpat@codeaurora.org>
- <1628754078-29779-3-git-send-email-rajpat@codeaurora.org>
- <YRUe2qgbGTA18WkH@google.com>
-Message-ID: <61d47c82a1e227f3e646f966815e28ac@codeaurora.org>
-X-Sender: rajpat@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <GGIAYQ.PS5EB67PH64N@ljones.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-12 18:45, Matthias Kaehlcke wrote:
-> On Thu, Aug 12, 2021 at 01:11:13PM +0530, Rajesh Patil wrote:
->> Add spi-nor flash node and pinctrl configurations for the same.
-> 
-> nit: better name SC7280 IDP explicitly rather than saying 'the same'.
-> 
+Hi,
 
-ok.I will change it
-
->> 
->> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+On 8/23/21 1:26 PM, Luke Jones wrote:
 > 
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> 
+> On Mon, Aug 23 2021 at 12:28:21 +0200, Bastien Nocera <hadess@hadess.net> wrote:
+>> On Sat, 2021-08-21 at 09:30 +1200, Luke Jones wrote:
+>>>
+>>>
+>>>  On Fri, Aug 20 2021 at 13:39:02 +0200, Bastien Nocera
+>>>  <hadess@hadess.net> wrote:
+>>>  > On Fri, 2021-08-20 at 23:00 +1200, Luke Jones wrote:
+>>>  > >
+>>>  > >
+>>>  > >  On Fri, Aug 20 2021 at 12:51:08 +0200, Bastien Nocera
+>>>  > >  <hadess@hadess.net> wrote:
+>>>  > >  > On Fri, 2021-08-20 at 12:43 +0200, Bastien Nocera wrote:
+>>>  > >  > >  On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
+>>>  > >  > >  > > Am I going to get bug reports from Asus users that will
+>>>  > >  > > complain
+>>>  > >  > >  > > that
+>>>  > >  > >  > > power-profiles-daemon doesn't work correctly, where I
+>>>  > > will
+>>>  > >  > > have
+>>>  > >  > >  > > to
+>>>  > >  > >  > > wearily ask if they're using an Asus Rog laptop?
+>>>  > >  > >  >
+>>>  > >  > >  > No. Definitely not. The changes to fan curves per-profile
+>>>  > > need
+>>>  > >  > > to
+>>>  > >  > >  > be
+>>>  > >  > >  > explicitly enabled and set. So a new user will be unaware
+>>>  > > that
+>>>  > >  > > this
+>>>  > >  > >  > control exists (until they look for it) and their laptop
+>>>  > > will
+>>>  > >  > >  > behave
+>>>  > >  > >  > exactly as default.
+>>>  > >  > >
+>>>  > >  > >  "The user will need to change the fan curves manually so
+>>>  > > will
+>>>  > >  > >  definitely remember to mention it in bug reports" is a very
+>>>  > >  > > different
+>>>  > >  > >  thing to "the user can't change the fan curves to be
+>>>  > > nonsensical
+>>>  > >  > > and
+>>>  > >  > >  mean opposite things".
+>>>  > >  > >
+>>>  > >  > >  I can assure you that I will eventually get bug reports
+>>>  > > from
+>>>  > >  > > "power
+>>>  > >  > >  users" who break their setup and wonder why things don't
+>>>  > > work
+>>>  > >  > >  properly,
+>>>  > >  > >  without ever mentioning the changes they made changes to
+>>>  > > the
+>>>  > > fan
+>>>  > >  > >  curves, or anything else they might have changed.
+>>>  > >  >
+>>>  > >  > A way to taint the settings that power-profiles-daemon could
+>>>  > > catch
+>>>  > >  > would be fine by me. I absolutely don't want to have to
+>>>  > > support
+>>>  > >  > somebody's tweaks until they undo them.
+>>>  > >
+>>>  > >  Definitely understood. Do you have something in mind?
+>>>  >
+>>>  > A sysfs attribute with boolean data that shows whether custom fan
+>>>  > curves are used would be enough.
+>>>
+>>>  The path /sys/devices/platform/asus-nb-wmi/active_fan_curve_profiles
+>>>  should be usable like this? I added this as the method for
+>>>  controlling
+>>>  which fan curves for which profiles are active.
+>>>
+>>>  If empty, then no custom fan curves are active at all. If it contains
+>>>  any combination of strings "quiet, balanced, performance" then those
+>>>  associated (named) platform_profiles have an active fan curve and you
+>>>  can throw up a general warning, maybe add the contents of that file
+>>>  too?
+>>
+>> That works for me, although I would probably have preferred a way that
+>> wasn't specific to the asus-wmi module, I'm sure I can made do with
+>> that.
+> 
+> Oh I see, you were looking to get a more general solution implemented? Maybe something like "/sys/devices/platform/asus-nb-wmi/platform_profile_tainted"? This could be an opportunity to maybe make a standardised naming scheme for it.
+
+That would standardize the name, but not the location (path to the name);
+so I'm not sure how helpful that would be. I think that for now
+going with /sys/devices/platform/asus-nb-wmi/active_fan_curve_profiles is fine
+and if we hit the same situation with a 2nd driver then maybe do
+something under the /sys/firmware/acpi/platform_profile* namespace.
+
+Maybe something like:
+
+/sys/firmware/acpi/platform_profile_flags or something which can
+communicate a bunch of 0 (keyword not present) / 1 values
+by containing a list of space separated keywords like:
+"custom-fan-profiles", where "custom-fan-profiles" would only
+show up when they are activated ?
+
+Regards,
+
+Hans
+
+
 
