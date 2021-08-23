@@ -2,112 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5035F3F47C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E110C3F4720
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhHWJkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:40:47 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:30580 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbhHWJkp (ORCPT
+        id S235697AbhHWJIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:08:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38890 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhHWJIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:40:45 -0400
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210823094002epoutp01c87ac104b313746fe4f7796a71b139e8~d5hFGaMvy0160701607epoutp01c
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:40:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210823094002epoutp01c87ac104b313746fe4f7796a71b139e8~d5hFGaMvy0160701607epoutp01c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629711602;
-        bh=uyE27SkHI3Ns9KOB7Haj/anPPTHAw4hz43j27DE7sto=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=rXNT64UqzUsuW2WUCtsGbc3RD0eVFdOYk8ih1YxuNAf5DFajaSKftWlStmj+QVGdf
-         /jbzxlIQcfU6aPG0EJzRJrzSwkFnJeB7aRAeGKUNKFz8PBCTLnS1q4986QL6j0VGy7
-         ciHTUeczde2bTW/limi0dxJTm5AIktuHPGaev+3g=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
-        20210823094001epcas3p12d76e0c9add42297a67e30a71f76ea91~d5hEdJk_A0763607636epcas3p1H;
-        Mon, 23 Aug 2021 09:40:01 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
-        (Postfix) with ESMTP id 4GtRzj2Gbxz4x9Pw; Mon, 23 Aug 2021 09:40:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v2] scsi: ufs: ufshpb: Fix possible memory leak
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01629711601304.JavaMail.epsvc@epcpadp3>
-Date:   Mon, 23 Aug 2021 18:07:14 +0900
-X-CMS-MailID: 20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74
-Content-Transfer-Encoding: 7bit
+        Mon, 23 Aug 2021 05:08:42 -0400
+Date:   Mon, 23 Aug 2021 09:07:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629709679;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7lDEixzWEt3JjxEqVVb0RvpPyIHo5QmMMJmxpntyGe8=;
+        b=YInjAM4PtYtHan97lMf8IhW0no1vdyHkcX8tMBstlwWPVYyhQtFwYw2EilcBIG+xJMY8Y1
+        pgwgo+4X6ZHFQ3os7DzzGbZlQ5d9nrUhY2BxCACRc2bdK7ryy+owgNKUZd1lcMX0j1F7j5
+        rwDACuv51l6/adeTG6DgBU62Ck37bgAZOXp2+2qQmZwYV4i6bjSQ3zPzosbAP0B5ITF+Ct
+        ZEvuRs/jHQXxWrbyrebGpcNbFpGWXxmK8dc9C9a7KQbUoNyMY1FrFNgqKwKOdjf37ozdkm
+        TWje4uJqH2tVPm0SOSlOKlPiZx78biI+5mRPw4IP7aNhokqLR+RW0n78UaNwTA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629709679;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7lDEixzWEt3JjxEqVVb0RvpPyIHo5QmMMJmxpntyGe8=;
+        b=SjDfCEtUmg36Vkx9bLgiaS9sHMY6Qb4vM1ECH2zDWe5pYLjqaagymFDsoA/3XQ8Z22i0D+
+        pUzY2Ybgr3nG3YAw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched: Fix Core-wide rq->lock for uninitialized CPUs
+Cc:     Eugene Syromiatnikov <esyr@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Don <joshdon@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YR473ZGeKqMs6kw+@hirez.programming.kicks-ass.net>
+References: <YR473ZGeKqMs6kw+@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Message-ID: <162970967846.25758.333277155824309635.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74
-References: <CGME20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74@epcms2p1>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When HPB pinned region exists and mctx allocation for this region fails,
-memory leak is possible because memory is not released for the subregion
-table of the current region.
+The following commit has been merged into the sched/urgent branch of tip:
 
-So, change to free memory for the subregion table of the current region.
+Commit-ID:     3c474b3239f12fe0b00d7e82481f36a1f31e79ab
+Gitweb:        https://git.kernel.org/tip/3c474b3239f12fe0b00d7e82481f36a1f31e79ab
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 19 Aug 2021 13:09:17 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 20 Aug 2021 12:32:53 +02:00
 
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+sched: Fix Core-wide rq->lock for uninitialized CPUs
+
+Eugene tripped over the case where rq_lock(), as called in a
+for_each_possible_cpu() loop came apart because rq->core hadn't been
+setup yet.
+
+This is a somewhat unusual, but valid case.
+
+Rework things such that rq->core is initialized to point at itself. IOW
+initialize each CPU as a single threaded Core. CPU online will then join
+the new CPU (thread) to an existing Core where needed.
+
+For completeness sake, have CPU offline fully undo the state so as to
+not presume the topology will match the next time it comes online.
+
+Fixes: 9edeaea1bc45 ("sched: Core-wide rq->lock")
+Reported-by: Eugene Syromiatnikov <esyr@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Josh Don <joshdon@google.com>
+Tested-by: Eugene Syromiatnikov <esyr@redhat.com>
+Link: https://lkml.kernel.org/r/YR473ZGeKqMs6kw+@hirez.programming.kicks-ass.net
 ---
-v1 -> v2:
-	* Merge new kvfree() statement with the for-loop below it.
-	* Change to assign "hpb->rgn_tbl" when no error occurs.
+ kernel/sched/core.c  | 143 ++++++++++++++++++++++++++++++++++--------
+ kernel/sched/sched.h |   2 +-
+ 2 files changed, 118 insertions(+), 27 deletions(-)
 
- drivers/scsi/ufs/ufshpb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 9acce92a356b..58db9ab8f0ae 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -1904,8 +1904,6 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- 	if (!rgn_table)
- 		return -ENOMEM;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 20ffcc0..f3b27c6 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -237,9 +237,30 @@ static DEFINE_MUTEX(sched_core_mutex);
+ static atomic_t sched_core_count;
+ static struct cpumask sched_core_mask;
  
--	hpb->rgn_tbl = rgn_table;
--
- 	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
- 		int srgn_cnt = hpb->srgns_per_rgn;
- 		bool last_srgn = false;
-@@ -1942,10 +1940,12 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- 		rgn->hpb = hpb;
- 	}
- 
-+	hpb->rgn_tbl = rgn_table;
++static void sched_core_lock(int cpu, unsigned long *flags)
++{
++	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
++	int t, i = 0;
 +
++	local_irq_save(*flags);
++	for_each_cpu(t, smt_mask)
++		raw_spin_lock_nested(&cpu_rq(t)->__lock, i++);
++}
++
++static void sched_core_unlock(int cpu, unsigned long *flags)
++{
++	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
++	int t;
++
++	for_each_cpu(t, smt_mask)
++		raw_spin_unlock(&cpu_rq(t)->__lock);
++	local_irq_restore(*flags);
++}
++
+ static void __sched_core_flip(bool enabled)
+ {
+-	int cpu, t, i;
++	unsigned long flags;
++	int cpu, t;
+ 
+ 	cpus_read_lock();
+ 
+@@ -250,19 +271,12 @@ static void __sched_core_flip(bool enabled)
+ 	for_each_cpu(cpu, &sched_core_mask) {
+ 		const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+ 
+-		i = 0;
+-		local_irq_disable();
+-		for_each_cpu(t, smt_mask) {
+-			/* supports up to SMT8 */
+-			raw_spin_lock_nested(&cpu_rq(t)->__lock, i++);
+-		}
++		sched_core_lock(cpu, &flags);
+ 
+ 		for_each_cpu(t, smt_mask)
+ 			cpu_rq(t)->core_enabled = enabled;
+ 
+-		for_each_cpu(t, smt_mask)
+-			raw_spin_unlock(&cpu_rq(t)->__lock);
+-		local_irq_enable();
++		sched_core_unlock(cpu, &flags);
+ 
+ 		cpumask_andnot(&sched_core_mask, &sched_core_mask, smt_mask);
+ 	}
+@@ -5736,35 +5750,109 @@ void queue_core_balance(struct rq *rq)
+ 	queue_balance_callback(rq, &per_cpu(core_balance_head, rq->cpu), sched_core_balance);
+ }
+ 
+-static inline void sched_core_cpu_starting(unsigned int cpu)
++static void sched_core_cpu_starting(unsigned int cpu)
+ {
+ 	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+-	struct rq *rq, *core_rq = NULL;
+-	int i;
++	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
++	unsigned long flags;
++	int t;
+ 
+-	core_rq = cpu_rq(cpu)->core;
++	sched_core_lock(cpu, &flags);
+ 
+-	if (!core_rq) {
+-		for_each_cpu(i, smt_mask) {
+-			rq = cpu_rq(i);
+-			if (rq->core && rq->core == rq)
+-				core_rq = rq;
++	WARN_ON_ONCE(rq->core != rq);
++
++	/* if we're the first, we'll be our own leader */
++	if (cpumask_weight(smt_mask) == 1)
++		goto unlock;
++
++	/* find the leader */
++	for_each_cpu(t, smt_mask) {
++		if (t == cpu)
++			continue;
++		rq = cpu_rq(t);
++		if (rq->core == rq) {
++			core_rq = rq;
++			break;
+ 		}
++	}
+ 
+-		if (!core_rq)
+-			core_rq = cpu_rq(cpu);
++	if (WARN_ON_ONCE(!core_rq)) /* whoopsie */
++		goto unlock;
+ 
+-		for_each_cpu(i, smt_mask) {
+-			rq = cpu_rq(i);
++	/* install and validate core_rq */
++	for_each_cpu(t, smt_mask) {
++		rq = cpu_rq(t);
+ 
+-			WARN_ON_ONCE(rq->core && rq->core != core_rq);
++		if (t == cpu)
+ 			rq->core = core_rq;
+-		}
++
++		WARN_ON_ONCE(rq->core != core_rq);
+ 	}
++
++unlock:
++	sched_core_unlock(cpu, &flags);
+ }
++
++static void sched_core_cpu_deactivate(unsigned int cpu)
++{
++	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
++	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
++	unsigned long flags;
++	int t;
++
++	sched_core_lock(cpu, &flags);
++
++	/* if we're the last man standing, nothing to do */
++	if (cpumask_weight(smt_mask) == 1) {
++		WARN_ON_ONCE(rq->core != rq);
++		goto unlock;
++	}
++
++	/* if we're not the leader, nothing to do */
++	if (rq->core != rq)
++		goto unlock;
++
++	/* find a new leader */
++	for_each_cpu(t, smt_mask) {
++		if (t == cpu)
++			continue;
++		core_rq = cpu_rq(t);
++		break;
++	}
++
++	if (WARN_ON_ONCE(!core_rq)) /* impossible */
++		goto unlock;
++
++	/* copy the shared state to the new leader */
++	core_rq->core_task_seq      = rq->core_task_seq;
++	core_rq->core_pick_seq      = rq->core_pick_seq;
++	core_rq->core_cookie        = rq->core_cookie;
++	core_rq->core_forceidle     = rq->core_forceidle;
++	core_rq->core_forceidle_seq = rq->core_forceidle_seq;
++
++	/* install new leader */
++	for_each_cpu(t, smt_mask) {
++		rq = cpu_rq(t);
++		rq->core = core_rq;
++	}
++
++unlock:
++	sched_core_unlock(cpu, &flags);
++}
++
++static inline void sched_core_cpu_dying(unsigned int cpu)
++{
++	struct rq *rq = cpu_rq(cpu);
++
++	if (rq->core != rq)
++		rq->core = rq;
++}
++
+ #else /* !CONFIG_SCHED_CORE */
+ 
+ static inline void sched_core_cpu_starting(unsigned int cpu) {}
++static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
++static inline void sched_core_cpu_dying(unsigned int cpu) {}
+ 
+ static struct task_struct *
+ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+@@ -8707,6 +8795,8 @@ int sched_cpu_deactivate(unsigned int cpu)
+ 	 */
+ 	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+ 		static_branch_dec_cpuslocked(&sched_smt_present);
++
++	sched_core_cpu_deactivate(cpu);
+ #endif
+ 
+ 	if (!sched_smp_initialized)
+@@ -8811,6 +8901,7 @@ int sched_cpu_dying(unsigned int cpu)
+ 	calc_load_migrate(rq);
+ 	update_max_interval();
+ 	hrtick_clear(rq);
++	sched_core_cpu_dying(cpu);
  	return 0;
+ }
+ #endif
+@@ -9022,7 +9113,7 @@ void __init sched_init(void)
+ 		atomic_set(&rq->nr_iowait, 0);
  
- release_srgn_table:
--	for (i = 0; i < rgn_idx; i++)
-+	for (i = 0; i <= rgn_idx; i++)
- 		kvfree(rgn_table[i].srgn_tbl);
+ #ifdef CONFIG_SCHED_CORE
+-		rq->core = NULL;
++		rq->core = rq;
+ 		rq->core_pick = NULL;
+ 		rq->core_enabled = 0;
+ 		rq->core_tree = RB_ROOT;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 14a41a2..da4295f 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1093,7 +1093,7 @@ struct rq {
+ 	unsigned int		core_sched_seq;
+ 	struct rb_root		core_tree;
  
- 	kvfree(rgn_table);
--- 
-2.17.1
-
+-	/* shared state */
++	/* shared state -- careful with sched_core_cpu_deactivate() */
+ 	unsigned int		core_task_seq;
+ 	unsigned int		core_pick_seq;
+ 	unsigned long		core_cookie;
