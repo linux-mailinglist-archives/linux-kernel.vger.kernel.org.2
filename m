@@ -2,162 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04263F5268
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A4D3F526C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232712AbhHWUt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:49:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58840 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232486AbhHWUt0 (ORCPT
+        id S232594AbhHWUtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhHWUtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:49:26 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17NKXBs2071394;
-        Mon, 23 Aug 2021 16:48:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=GwgTHTWFp+4KtL2BdI3Wl8DT7iBBWIm4W/wc8D4PTzE=;
- b=INslB6mZOffpznEJNq36CgJn68TFeAnnBAFZqt05nXE4MXnxQTyABaAtoLzY02pFuYje
- ApRMLJHgOZWu+sDMo2gfn3hTrgVIlKgy9xkd9obzFIdSwvP7U6K5csDV+ZgdKc+vzcAk
- gglkmB2ymHb8EErZVWm5oBL/S3oOdIaIWI4Y3k5e06ph1vAcPLEt0pi1Ql9K/vJbcBm2
- RHIWKCTVTlHXstoLLU8AUjO7iXuWH0v9qhFm4v5sL1IrHCBXBRy1KZkFB5ZOaUIp0Ag4
- vZBJ3zCfuXkkHaUm09m8kHpvNU30azqVJjMT6h/vtm8ITBm3ADSlOvqeAwxYecaBxgLH kw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3akejb88s1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 16:48:16 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17NKXGWM071753;
-        Mon, 23 Aug 2021 16:48:16 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3akejb88rr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 16:48:16 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17NKhIeQ029476;
-        Mon, 23 Aug 2021 20:48:15 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 3ajs4bbten-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 20:48:15 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17NKmDo021037374
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 20:48:13 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9700E136051;
-        Mon, 23 Aug 2021 20:48:13 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 227F6136059;
-        Mon, 23 Aug 2021 20:48:12 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.211.127.29])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Aug 2021 20:48:11 +0000 (GMT)
-Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
-        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
-        scott.branden@broadcom.com, weiyongjun1@huawei.com,
-        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        pjones@redhat.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        Patrick Uiterwijk <patrick@puiterwijk.org>
-References: <20210819002109.534600-1-eric.snowberg@oracle.com>
- <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
- <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
- <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
- <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
- <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
-Date:   Mon, 23 Aug 2021 16:48:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 23 Aug 2021 16:49:42 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A37C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:48:59 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id j13so15494150ybj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:48:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c4QWnKvyWpOH8RqtwiwvK1dM7ed/hnT2KBqNw0j6U7A=;
+        b=WbLChwgFihPdWlSC5y/qfShp0sIMtUsZdd/qhdA8yq+uKZnAylNBckILex07AGi/wm
+         rgZ5uYq0OPLEDOjJjQNpJ+Ju8diDdxaDfCQwrnIx6lNmgzG/K2/mjgJLi6O9hgP9CCSf
+         dAr8SWboRRD53wvgWYtAkjNiKwtx3QVlmKpOmrZzZczCSdPUvwPvbZTPXzhzLvAdAErk
+         L9Q1MmJtxS/hNGKqRBqgzPLO1pCbAe5NUB7lFPq7KGs+5AAx41fIbogLHTls71Tlvoad
+         RCv0gxozyF+yls+T9/8vUIxB2JtDhqhZt2c8n/mXIiynaLbj1SkY6RzF6Plg37vpje3f
+         AtGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c4QWnKvyWpOH8RqtwiwvK1dM7ed/hnT2KBqNw0j6U7A=;
+        b=rSXhB1EGZxJx95+2yeqfxVIiE0FOy8455EFuQjm6tcO+OazMWV227AROf75k225Nqy
+         TRenjcANl3L34GaUJ8LBycnj0AqR+pyNtDNYWK7Aol/mZsXHBfTj+1/1Njs3Z1PnTCDI
+         2d5/lTQbLbWOhyUOVrJsdyzaMT2OxQeOjqlqhZcBclGbanCl3mH9aygU8N5oR9ue+LFk
+         gWcCPpuH6H/gQc8103KaUFOupAuYm2X26HbtM5Mv0daGlLdF+vXtgy+tj0e6eqdIKNWD
+         IyZ9GygNukSlmyb1WhFk4th6TY9Rb/iAi+LqXoBLOOnN1E5NZG/m5nR9neO+d9nIYqe5
+         Fd+Q==
+X-Gm-Message-State: AOAM531DzNzfQrYeXOWxKFyE3/u/ylqMeRzEG9iHFBhDlv7fyaRG8YDV
+        oeeZwX5O+TlPgXNKNtNvfoBFRrHFIvF7fdh8T9iKug==
+X-Google-Smtp-Source: ABdhPJwU4w+ipd7j7HdZ0lrNLOvWfCuRfa/YomiIcCCPAc8CHcQ0D0Ea8O7+8nRuOQnuqDlL/BU0zgvC8Y9HniorxT0=
+X-Received: by 2002:a25:8445:: with SMTP id r5mr47936513ybm.20.1629751738986;
+ Mon, 23 Aug 2021 13:48:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9OXXfLd94kr_A6N6E9AMIXxONqEE6Oxv
-X-Proofpoint-ORIG-GUID: 58giprlgX9pWVHV4rPlSGeIWkMiItOtP
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-23_04:2021-08-23,2021-08-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 bulkscore=0 mlxscore=0
- impostorscore=0 clxscore=1011 mlxlogscore=999 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108230140
+References: <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
+ <20210818021717.3268255-1-saravanak@google.com> <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
+ <CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com> <YSP91FfbzUHKiv+L@lunn.ch>
+In-Reply-To: <YSP91FfbzUHKiv+L@lunn.ch>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 23 Aug 2021 13:48:23 -0700
+Message-ID: <CAGETcx8j+bOPL_-qFzHHJkX41Ljzq8HBkbBqtd4E0-2u6a3_Hg@mail.gmail.com>
+Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for "phy-handle" property
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>, netdev@vger.kernel.org,
+        kernel-team@android.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 23, 2021 at 12:58 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > PHY seems to be one of those cases where it's okay to have the
+> > compatible property but also okay to not have it.
+>
+> Correct. They are like PCI or USB devices. You can ask it, what are
+> you? There are two registers in standard locations which give you a
+> vendor and product ID. We use that to find the correct driver.
 
-On 8/23/21 1:51 PM, Jarkko Sakkinen wrote:
-> On Thu, 2021-08-19 at 13:32 -0400, Mimi Zohar wrote:
->> On Thu, 2021-08-19 at 09:23 -0600, Eric Snowberg wrote:
->>>> On Aug 19, 2021, at 7:10 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
->>>>
->>>> On Thu, 2021-08-19 at 14:38 +0300, Jarkko Sakkinen wrote:
->>>>> On Wed, 2021-08-18 at 20:20 -0400, Eric Snowberg wrote:
->>>>>> Downstream Linux distros try to have a single signed kernel for each
->>>>>> architecture.  Each end-user may use this kernel in entirely different
->>>>>> ways.  Some downstream kernels have chosen to always trust platform keys
->>>>>> within the Linux trust boundary for kernel module signing.  These
->>>>>> kernels have no way of using digital signature base IMA appraisal.
->>>>>>
->>>>>> This series introduces a new Linux kernel keyring containing the Machine
->>>>>> Owner Keys (MOK) called .mok. It also adds a new MOK variable to shim.
->>>>> I would name it as ".machine" because it is more "re-usable" name, e.g.
->>>>> could be used for similar things as MOK. ".mok" is a bad name because
->>>>> it binds directly to a single piece of user space software.
->>>> Nayna previously said,
->>>>    "I believe the underlying source from where CA keys are loaded might vary
->>>>    based on the architecture (".mok" is UEFI specific.). The key part is
->>>>    that this new keyring should contain only CA keys which can be later
->>>>    used to vouch for user keys loaded onto IMA or secondary keyring at
->>>>    runtime. It would be good to have a "ca" in the name, like .xxxx-ca,
->>>>    where xxxx can be machine, owner, or system. I prefer .system-ca."
->>>>
->>>> The CA keys on the MOK db is simply the first root of trust being
->>>> defined, but other roots of trust are sure to follow.  For this reason,
->>>> I agree naming the new keyring "mok" should be avoided.
->>> As I said previously, I’m open to renaming, I just would like to have an
->>> agreement on the new name before changing everything.  The current proposed
->>> names I have heard are “.machine" and ".system-ca".  Is there a preference
->>> the maintainers feel is appropriate?  If so, please let me know and I’ll
->>> rename it. Thanks.
->>>
->> Jarkko, I think the emphasis should not be on "machine" from Machine
->> Owner Key (MOK), but on "owner".  Whereas Nayna is focusing more on the
->> "_ca" aspect of the name.   Perhaps consider naming it
->> "system_owner_ca" or something along those lines.
-> What do you gain such overly long identifier? Makes no sense. What
-> is "ca aspect of the name" anyway?
+For all the cases of PHYs that currently don't need any compatible
+string, requiring a compatible string of type "ethernet-phy-standard"
+would have been nice. That would have made PHYs consistent with the
+general DT norm of "you need a compatible string to be matched with
+the device". Anyway, it's too late to do that now. So I'll have to
+deal with this some other way (I have a bunch of ideas, so it's not
+the end of the world).
 
-As I mentioned previously, the main usage of this new keyring is that it 
-should contain only CA keys which can be later used to vouch for user 
-keys loaded onto secondary or IMA keyring at runtime. Having ca in the 
-name like .xxxx_ca, would make the keyring name self-describing. Since 
-you preferred .system, we can call it .system_ca.
+> You only need a compatible when things are not so simple.
+>
+> 1) The IDs are wrong. Some silicon vendors do stupid things
+>
+> 2) Chicken/egg problems, you cannot read the ID registers until you
+>    load the driver and some resource is enabled.
+>
+> 3) It is a C45 devices, e.g. part of clause 45 of 802.3, which
+>    requires a different protocol to be talked over the bus. So the
+>    compatible string tells you to talk C45 to get the IDs.
+>
+> 4) It is not a PHY, but some sort of other MDIO device, and hence
+>    there are no ID registers.
 
-Thanks & Regards,
+Yeah, I was digging through of_mdiobus_child_is_phy() when I was doing
+the mdio-mux fixes and noticed this. But I missed/forgot the mdiobus
+doesn't probe part when I sent out the phy-handle patch.
 
-        - Nayna
-
+-Saravana
