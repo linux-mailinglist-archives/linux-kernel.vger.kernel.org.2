@@ -2,80 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E23F503B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA63A3F504E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhHWSQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:16:33 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:37621 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhHWSQb (ORCPT
+        id S231978AbhHWSXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231270AbhHWSXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:16:31 -0400
-Received: by mail-ot1-f48.google.com with SMTP id i3-20020a056830210300b0051af5666070so28959830otc.4;
-        Mon, 23 Aug 2021 11:15:48 -0700 (PDT)
+        Mon, 23 Aug 2021 14:23:51 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C558FC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 11:23:08 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id k65so35787609yba.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 11:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rukoF0zTAyPgRjsb/qETsAXh6HDn8z2HPuAWUcpMQpw=;
+        b=mrRHQszk4xM/P0iqPOgIvzHk9Gi79/0pgATlZnfPGDvzxyVjOuDAzTGWx2032SoaZN
+         h0ILJaEukh+Jswu65Fn+bOFsV40J9CeZkSjhLr/C96wRAK+7XGkP7ULhInEZcHuj4/q7
+         AQM0+2tatgJ0VZu2EuQR5AcGZn3CIrLSMRq+0Ja4L+8azEnIHTXDNn0kQIWOqJDqQiLI
+         QH66OIKdJicFgCoGAWLnzR6JXD6qMjQLOvG/YjctJOrPpywQqldUASRaXoTC8SQsrqpe
+         0XkMnm7ujPcD7C0mEu35y2JkjBqw5Pc/Xejsaw6mK6iXWiplXQLe7OSUZqgE/gD+HL7E
+         2mAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UV4CCLlx2/3av4QM3ejjnkE261kMA2Hzsf+cSXd+Vsc=;
-        b=KRgofHgNDgYPBpOJfqhgKnLyI0Bek+XazoCtuhzGChYrX3B6kRq23kLoGf7IC9jRWn
-         y3xKgkQSs3oGvubJ+CKUTdKuGSxbUcJgJpLdH1sn5MZN1b/ZIH6ttEF03dnJwHOCL+CV
-         xL88jEDlkd7CH/FM4qOBhcxQD13eK04bRW0iDZRXn2m4iKvIJdeOqJsRBizxRiJRwun7
-         ZdaY7ZqwUFzBBuP6L1gssA79b5i2EW8nEgPsrAtdB+ydaTw119zxv8Yp+PM66Kj/7FI7
-         BSg0rPoJnFmtXt9OG++VLxsyIbNRYJ9x1k2R/XEr4doMrRbD8KZtRwjDbX79jF9AYDrr
-         6lxw==
-X-Gm-Message-State: AOAM531ytS6J3Tcbjo9M3Y0md7fD0ai01afYJhx5R97pDBpWNBgcvXhk
-        FLctk5q8B6zZ5hWN7tDmZA==
-X-Google-Smtp-Source: ABdhPJwQenwSGhA5Zmx7gY6VmlzIQL3TjBa2ECWAw4h4e7faZ2gNyv0SNJ1ZhIpEif0ycyfreKN/Xw==
-X-Received: by 2002:a05:6830:1443:: with SMTP id w3mr28872612otp.49.1629742548090;
-        Mon, 23 Aug 2021 11:15:48 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 45sm4068354otm.43.2021.08.23.11.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 11:15:47 -0700 (PDT)
-Received: (nullmailer pid 2455714 invoked by uid 1000);
-        Mon, 23 Aug 2021 18:15:46 -0000
-Date:   Mon, 23 Aug 2021 13:15:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH v2] dt-bindings: memory: convert H8/300 bus controller to
- dtschema
-Message-ID: <YSPl0priG9zyN3L7@robh.at.kernel.org>
-References: <20210818202953.16862-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rukoF0zTAyPgRjsb/qETsAXh6HDn8z2HPuAWUcpMQpw=;
+        b=D74IoadrnR0svHwgh4ohrQ9wvJTtio1up9N/xilRvGIUqvfcaAxQBG1qeQi0q+hWQ8
+         DkWf3q4V5wRLecj7udwb7Y+O+Ylkd9zE4/rOl4mwdCL/n8aCkVBvREaRUog+3VeZptxI
+         Cn1rMkHVhGRZrmcBQA7EvUWwgs1r8bK0KeO19dQcu+x7X9jrtM33liZzj08F947kVICe
+         Yb+X3iy1SG/8wgYMtp9kVI/QMVRsCDWcKeT3b0ht3WTuDU2VUBhfB0fhqS946Iqr9o5T
+         ZPDUJu+dxX0tM5b1mYgREvmqyNaKyCSuF7io3TRA1gK0664g8rnfOq8IB4g5pgdBSwD/
+         O2rw==
+X-Gm-Message-State: AOAM530ibcUo6L1VPbBlYyL8c7zxCPyzyOSV/jv4zHp4Y77AHu/a/IuP
+        VF/hYkY/+ZkvCcF0cE91IZzRLaf4Rs63P7xgbqIUWw==
+X-Google-Smtp-Source: ABdhPJz/GExcyseR2MWqjTeotuxEd+SktGcaeLmh0s2UAgoTjDdqIDVWpDLD4AKnPaMocG9V7d1xGoW8yzA5XBnFcjg=
+X-Received: by 2002:a25:c64f:: with SMTP id k76mr45962791ybf.412.1629742987747;
+ Mon, 23 Aug 2021 11:23:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818202953.16862-1-krzysztof.kozlowski@canonical.com>
+References: <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
+ <20210818021717.3268255-1-saravanak@google.com> <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
+In-Reply-To: <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 23 Aug 2021 11:22:31 -0700
+Message-ID: <CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com>
+Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for "phy-handle" property
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        kernel-team@android.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 22:29:53 +0200, Krzysztof Kozlowski wrote:
-> Convert H8/300 bus controller bindings to DT schema format using
-> json-schema.
-> 
-> The conversion also extends the bindings to match what is really used in
-> existing devicetree sources (the original file mentions only
-> "renesas,h8300-bsc" but "renesas,h8300h-bsc" and "renesas,h8s-bsc" are
-> used with it).
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. Add renesas,h8s-bsc pointed by Rob.
-> 2. Extend commit log.
-> ---
->  .../memory-controllers/renesas,h8300-bsc.txt  | 12 -------
->  .../memory-controllers/renesas,h8300-bsc.yaml | 35 +++++++++++++++++++
->  2 files changed, 35 insertions(+), 12 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/renesas,h8300-bsc.yaml
-> 
+On Mon, Aug 23, 2021 at 5:08 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi,
+>
+> On 18.08.2021 04:17, Saravana Kannan wrote:
+> > Allows tracking dependencies between Ethernet PHYs and their consumers.
+> >
+> > Cc: Andrew Lunn <andrew@lunn.ch>
+> > Cc: netdev@vger.kernel.org
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+>
+> This patch landed recently in linux-next as commit cf4b94c8530d ("of:
+> property: fw_devlink: Add support for "phy-handle" property"). It breaks
+> ethernet operation on my Amlogic-based ARM64 boards: Odroid C4
+> (arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts) and N2
+> (meson-g12b-odroid-n2.dts) as well as Khadas VIM3/VIM3l
+> (meson-g12b-a311d-khadas-vim3.dts and meson-sm1-khadas-vim3l.dts).
+>
+> In case of OdroidC4 I see the following entries in the
+> /sys/kernel/debug/devices_deferred:
+>
+> ff64c000.mdio-multiplexer
+> ff3f0000.ethernet
+>
+> Let me know if there is anything I can check to help debugging this issue.
 
-Applied, thanks!
+I'm fairly certain you are hitting this issue because the PHY device
+doesn't have a compatible property. And so the device link dependency
+is propagated up to the mdio bus. But busses as suppliers aren't good
+because busses never "probe".
+
+PHY seems to be one of those cases where it's okay to have the
+compatible property but also okay to not have it. You can confirm my
+theory by checking for the list of suppliers under
+ff64c000.mdio-multiplexer. You'd see mdio@0 (ext_mdio) and if you look
+at the "status" file under the folder it should be "dormant". If you
+add a compatible property that fits the formats a PHY node can have,
+that should also fix your issue (not the solution though).
+
+I'll send out a fix this week (once you confirm my analysis). Thanks
+for reporting it.
+
+-Saravana
+
+>
+> > ---
+> > v1 -> v2:
+> > - Fixed patch to address my misunderstanding of how PHYs get
+> >    initialized.
+> >
+> >   drivers/of/property.c | 2 ++
+> >   1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > index 931340329414..0c0dc2e369c0 100644
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -1291,6 +1291,7 @@ DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
+> >   DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
+> >   DEFINE_SIMPLE_PROP(leds, "leds", NULL)
+> >   DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
+> > +DEFINE_SIMPLE_PROP(phy_handle, "phy-handle", NULL)
+> >   DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+> >   DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+> >
+> > @@ -1379,6 +1380,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+> >       { .parse_prop = parse_resets, },
+> >       { .parse_prop = parse_leds, },
+> >       { .parse_prop = parse_backlight, },
+> > +     { .parse_prop = parse_phy_handle, },
+> >       { .parse_prop = parse_gpio_compat, },
+> >       { .parse_prop = parse_interrupts, },
+> >       { .parse_prop = parse_regulators, },
+>
+> Best regards
+> --
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>
