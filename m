@@ -2,135 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EAB3F534E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080713F5354
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhHWWVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        id S233130AbhHWWW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 18:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhHWWVT (ORCPT
+        with ESMTP id S229632AbhHWWWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:21:19 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4E8C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:20:36 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso35498085otp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:20:36 -0700 (PDT)
+        Mon, 23 Aug 2021 18:22:24 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF14C061575;
+        Mon, 23 Aug 2021 15:21:41 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id m21so20937568qkm.13;
+        Mon, 23 Aug 2021 15:21:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XLNuiyO0cubs0wSKnZ64iacT0nPi9HeH2VX3WhJVa9s=;
-        b=f38ETai0cYaZBAw/rO1nnWwVuz1CF2Mw/JxK05NrCh4O2GFc29TLhLU4Ahk+H6bqGS
-         2pluz27ZfIM9HU/aYJ8/j45EAioAumLCfjBVfKGSpBJnibI5ijNqEqbQ0aYTAautEgLv
-         N9gUTf7sKYP0D2tYjQkQJLcem6RIpxONBPnyg=
+        bh=HLncdCZm4AaQl837iBmELtagHV4+U9f/suIhohULQ1Y=;
+        b=VEjFZmeoeNXqx8JnC17/FpduiINrAlEL0FnNf0hgWHwqQR52abwWUzDQyD6s507fy9
+         N2EhGo74RNW9It4YmpZyercXf+5KTNJ1xlV9RAhhxAwD8dbDFeBg1Rp4xFj58pDmXX8S
+         y0SiQA8E0WLy1IyH49md9aR8NZQE0m7Bcf1m8d6+PKpsDuWMjuxzZTc7dOz403uQFJDN
+         2mJFKO9ba4mbi4PlLTpKjAYV/seVit+ci1vzi08h3F4YOwYC6udKWJNftqrBORDe1LVw
+         FnZ+wLQvHYHL5u9AVjBCf6OX/73CFiutPOAxVoMCCLXNAq2lc684b/3NbIx1mbkW4pzi
+         LYdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XLNuiyO0cubs0wSKnZ64iacT0nPi9HeH2VX3WhJVa9s=;
-        b=OPjcTquPZYsqjgrRZdyzO0YcKoScWxBpGncQtLjBExPC0Vh83KB06hnwfWHtdT9Kve
-         fNlc1qUjW6yzICMDUBZgBHsLaVFlJcTPPMvmYO2n6IoSJA37fSr4s0JIlOvxFWKbFm5e
-         dUCHfU2dTPxJzYSuf+Sdzkdg2lVTiSyfnQp7QDNvZCgsuMi4XSdtz5ndVQB+7QgwDZgD
-         T19cqw4IvVbklpalpufBzRpzXAQ76BmIhI2um7hgX6+Wlsv18B2oAzCdmHWYhlU9SFhz
-         TkGRJS41hXpQ2OvAQieAoSe/5Oa7ci9m1ky4dLLoCK7RhBrxWevGsQN/GyhD0ODtw0Hi
-         pixQ==
-X-Gm-Message-State: AOAM530NBKKluLCmRffIxtp80zqOQ7cINtDqOX5XNIIlfwxID1Vr8Pzn
-        Vk8q8Dhf4gDEuXqKxSYJ1sx6lA==
-X-Google-Smtp-Source: ABdhPJwJf/JH/tr1Fw7ldmEMxlsLySn+Dxg0fP7oLl6RJ/A1LoqNzHobZpsRhUS2MTX3LT4GBKdVJw==
-X-Received: by 2002:a05:6808:d53:: with SMTP id w19mr605807oik.135.1629757235777;
-        Mon, 23 Aug 2021 15:20:35 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e11sm1288720oiw.18.2021.08.23.15.20.34
+        bh=HLncdCZm4AaQl837iBmELtagHV4+U9f/suIhohULQ1Y=;
+        b=CojenJ4yQZEDXimkpg7tlNY0vsQY7IJhq3MVtFPCdrxYurGTtZbAq1RpoI1/ZriL3b
+         OHhfiIghY6ZV5O6Me7UH+KDZ1hCl+3TfwL140heWWrX1hs7+5ZvDAr9Ucii7orp0MSDA
+         7RUJ3lhFwve31v/ZlFmcSBQ1dDf+/pdHdjv0Emqny33nuTtMZYFo9ujtt6DOnOQI8SnO
+         JBjY+7iYACs1xLTCvRuzfBmYWC2XMpohAVowe4DPWml9IA23Bm2tIlzcmMuPYatxcR1N
+         PO4tOehQC/cattIfu6SxujbpBx2TKf1Qx2yE5sP7Dq/C+Vkv4jsO8AQSEGySSx3HTvIF
+         8mXA==
+X-Gm-Message-State: AOAM533dQW00aSx358Nb9djoSnuKbZGEY9xMgw5ZgQgiBtX9/uF8WJDh
+        Sg0k7V92EaN3H8sWnuIlaDQ=
+X-Google-Smtp-Source: ABdhPJwEodtAaD+p7AhXCVw7kvMQjWSk4ixD7xWKv2gVTMLBxAOIinPiHWq4RHIz6owPMyICGfPdhA==
+X-Received: by 2002:a37:b586:: with SMTP id e128mr23417705qkf.43.1629757300431;
+        Mon, 23 Aug 2021 15:21:40 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id m8sm9268077qkk.130.2021.08.23.15.21.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 15:20:35 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] usbip: give back URBs for unsent unlink requests
- during cleanup
-To:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        valentina.manea.m@gmail.com, shuah@kernel.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210820190122.16379-1-mail@anirudhrb.com>
- <20210820190122.16379-2-mail@anirudhrb.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <8fe11b13-58b4-e696-1727-6bd8226b67f9@linuxfoundation.org>
-Date:   Mon, 23 Aug 2021 16:20:34 -0600
+        Mon, 23 Aug 2021 15:21:40 -0700 (PDT)
+Subject: Re: [PATCH] of: Don't allow __of_attached_node_sysfs() without
+ CONFIG_SYSFS
+To:     Rob Herring <robh@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Android Kernel Team <kernel-team@android.com>
+References: <20210820144722.169226-1-maz@kernel.org>
+ <a67743f9-869b-28df-d714-db15da4ebe06@gmail.com>
+ <YSPtI//SJh1CpHRP@robh.at.kernel.org>
+ <bcb2e89f-9768-8435-35d9-d02140628b9a@gmail.com>
+ <CAL_JsqJs2ayHFpOo7kS4K96Sy3xDkxeWYNMTDF9Ssd9D79LKng@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <d7548302-7e70-9a93-750c-a4de359eac0b@gmail.com>
+Date:   Mon, 23 Aug 2021 17:21:39 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210820190122.16379-2-mail@anirudhrb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAL_JsqJs2ayHFpOo7kS4K96Sy3xDkxeWYNMTDF9Ssd9D79LKng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/21 1:01 PM, Anirudh Rayabharam wrote:
-> In vhci_device_unlink_cleanup(), the URBs for unsent unlink requests are
-> not given back. This sometimes causes usb_kill_urb to wait indefinitely
-> for that urb to be given back. syzbot has reported a hung task issue [1]
-> for this.
+On 8/23/21 5:14 PM, Rob Herring wrote:
+> On Mon, Aug 23, 2021 at 4:27 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>>
+>> On 8/23/21 1:46 PM, Rob Herring wrote:
+>>> On Sun, Aug 22, 2021 at 11:01:15PM -0500, Frank Rowand wrote:
+>>>> Hi Marc,
+>>>>
+>>>> On 8/20/21 9:47 AM, Marc Zyngier wrote:
+>>>>> Trying to boot without SYSFS, but with OF_DYNAMIC quickly
+>>>>> results in a crash:
+>>>>>
+>>>>> [    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+>>>>> [...]
+>>>>> [    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
+>>>>> [    0.105810] Hardware name: linux,dummy-virt (DT)
+>>>>> [  0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+>>>>> [    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
+>>>>> [    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
+>>>>> [...]
+>>>>> [    0.134087] Call trace:
+>>>>> [    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
+>>>>> [    0.136054]  safe_name+0x4c/0xd0
+>>>>> [    0.136994]  __of_attach_node_sysfs+0xf8/0x124
+>>>>> [    0.138287]  of_core_init+0x90/0xfc
+>>>>> [    0.139296]  driver_init+0x30/0x4c
+>>>>> [    0.140283]  kernel_init_freeable+0x160/0x1b8
+>>>>> [    0.141543]  kernel_init+0x30/0x140
+>>>>> [    0.142561]  ret_from_fork+0x10/0x18
+>>>>>
+>>>>> While not having sysfs isn't a very common option these days,
+>>>>> it is still expected that such configuration would work.
+>>>>>
+>>>>> Paper over it by bailing out from __of_attach_node_sysfs() if
+>>>>> CONFIG_SYSFS isn't enabled.
+>>>>
+>>>> CONFIG_SYSFS should be automatically selected when CONFIG_OF_DYNAMIC
+>>>> is enabled, and it should not be possible to disable CONFIG_SYSFS
+>>>> in this case.
+>>>
+>>> That used to be true, but isn't now.
+>>
+>> OK.  I agree with you, but when I investigated the original patch
+>> email I came to a different conclusion because of the way that I
+>> used make menuconfig to debug the situation.
+>>
+>> It is true when I start with a .config created from 'make qcom_defconfig',
+>> then select OF_UNITTEST, which is the only way I can see OF_DYNAMIC.  It
+>> is the "if OF_UNITTEST" that means SYSFS can not be disabled.
 > 
-> To fix this, give back the urbs corresponding to unsent unlink requests
-> (unlink_tx list) similar to how urbs corresponding to unanswered unlink
-> requests (unlink_rx list) are given back.
+> Not really. Disabling SYSFS has nothing to do with the DT code. It's
+> not super easy though. It required setting EXPERT and disabling
+> CONFIGFS_FS and things selecting it (PCIE endpoint and USB gadget).
 > 
-> [1]: https://syzkaller.appspot.com/bug?id=08f12df95ae7da69814e64eb5515d5a85ed06b76
+>> If I start with the .config that Marc supplied, then make menuconfig
+>> still does not show the OC_DYNAMIC option, but leaves it set since
+>> it was already set.  In this case SYSFS remains disabled because
+>> OF_UNITTEST is also disabled.
 > 
-> Reported-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-> Tested-by: syzbot+74d6ef051d3d2eacf428@syzkaller.appspotmail.com
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->   drivers/usb/usbip/vhci_hcd.c | 24 ++++++++++++++++++++++++
->   1 file changed, 24 insertions(+)
+> I don't see the relationship between SYSFS and OF_UNITTEST.
+
+I don't either.  Other than the results of experimenting showing
+that if I enable OF_UNITTEST then I can no long disable SYSFS.
+
 > 
-> diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-> index 4ba6bcdaa8e9..190bd3d1c1f0 100644
-> --- a/drivers/usb/usbip/vhci_hcd.c
-> +++ b/drivers/usb/usbip/vhci_hcd.c
-> @@ -957,8 +957,32 @@ static void vhci_device_unlink_cleanup(struct vhci_device *vdev)
->   	spin_lock(&vdev->priv_lock);
->   
->   	list_for_each_entry_safe(unlink, tmp, &vdev->unlink_tx, list) {
-> +		struct urb *urb;
-> +
-> +		/* give back urb of unsent unlink request */
->   		pr_info("unlink cleanup tx %lu\n", unlink->unlink_seqnum);
-> +
-> +		urb = pickup_urb_and_free_priv(vdev, unlink->unlink_seqnum);
-> +		if (!urb) {
-> +			list_del(&unlink->list);
-> +			kfree(unlink);
-> +			continue;
-> +		}
-> +
-> +		urb->status = -ENODEV;
-> +
-> +		usb_hcd_unlink_urb_from_ep(hcd, urb);
-> +
->   		list_del(&unlink->list);
-> +
-> +		spin_unlock(&vdev->priv_lock);
-> +		spin_unlock_irqrestore(&vhci->lock, flags);
-> +
-> +		usb_hcd_giveback_urb(hcd, urb, urb->status);
-> +
-> +		spin_lock_irqsave(&vhci->lock, flags);
-> +		spin_lock(&vdev->priv_lock);
-> +
->   		kfree(unlink);
->   	}
->   
+>> Using '/OF_DYNAMIC' from within make menuconfig, to get more info
+>> about OF_DYNAMIC tells me that the prompt for OF_DYNAMIC is visible
+>> if OF && OF_UNITTEST.  This is due to the "if OF_UNITTEST" in line 58
+>> of drivers/of/Kconfig in the OF_DYNAMIC specification.
+>>
+>> Thus I can't figure out how to use make menuconfig to set OF_DYNAMIC
+>> without setting OF_UNITTEST.  I tried setting OF_UNITTEST, then setting
+>> OF_DYNAMIC, saving the changes, then another make menuconfig to
+>> disable OF_UNITTEST, which then has the side effect of unsetting
+>> OF_DYNAMIC.
+> 
+> Selecting OF_OVERLAY also.
+> 
+>> Would you accept a patch that removes the "if OF_UNITTEST" from
+>> the Kconfig entry for OF_DYNAMIC?
+> 
+> I guess. The purpose of making it visible was for compile testing, so
+> maybe make it 'if COMPILE_TEST' instead?
+
+After thinking a bit, I didn't like my original suggestion.
+I'll think some more, but I think that I will not follow up
+on my original suggestion.
+
+> 
+> 
+> Looking at occurrences of CONFIG_OF_DYNAMIC, there's more than I'd
+> like. This for example is a common pattern:
+> 
+> drivers/spi/spi.c:      if (IS_ENABLED(CONFIG_OF_DYNAMIC))
+> drivers/spi/spi.c-
+> WARN_ON(of_reconfig_notifier_register(&spi_of_notifier));
+> 
+> Really, of_reconfig_notifier_register() should just return 0 if
+> !IS_ENABLED(CONFIG_OF_DYNAMIC).
+
+I'll add researching use of CONFIG_OF_DYNAMIC to my todo list.
+
+-Frank
+
+> 
+> Rob
 > 
 
-Looks good.
-
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
