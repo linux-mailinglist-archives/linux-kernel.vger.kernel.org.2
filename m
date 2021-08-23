@@ -2,339 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C423F46BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029AB3F46C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235619AbhHWIlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:41:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:40596 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235594AbhHWIlf (ORCPT
+        id S235583AbhHWIpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235387AbhHWIpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:41:35 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C9C3D1FF86;
-        Mon, 23 Aug 2021 08:40:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629708052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gubIoPPxpIyVQ8h3OB0Y0fmoj4ls2gzechz38BRCTaI=;
-        b=QEqQL15rZ79ALIAb+4dp/xW0mFPmPFQg8NL0nF4tFb+awIkWeiFGEqJXEKV+VzPfKeh7kd
-        wlL8OR0gk2v1Yt6kPJGg1wDD/EA5XuJrhSUTICVha+XEXTEyFSUmfq0etuyIsgpR1B1w1U
-        MnXwUCkO9RQ/ZwjPGKi935K4ngyQLVs=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 55D3113A12;
-        Mon, 23 Aug 2021 08:40:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 9QzaEhRfI2EWZgAAGKfGzw
-        (envelope-from <jgross@suse.com>); Mon, 23 Aug 2021 08:40:52 +0000
-Subject: Re: [PATCH v2 01/24] x86/xen: Mark cpu_bringup_and_idle() as
- dead_end_function
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
-        boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
-        rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-References: <20210624094059.886075998@infradead.org>
- <20210624095147.693801717@infradead.org>
- <20210820192224.ytrr6ybuuwegbeov@treble>
- <20210820193107.omvshmsqbpxufzkc@treble>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <fc90e972-f81f-3706-b13a-988b16264650@suse.com>
-Date:   Mon, 23 Aug 2021 10:40:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 23 Aug 2021 04:45:16 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ABBC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:44:33 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id z19so519567edi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:44:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OUE9OJKkP1QI+2yCSiJZEjjQO84qj2H/zJA5KUoRH1k=;
+        b=JakRxGtZy/y0fP4/Rc73Qh66wozPZY8cqRojRoCax28Q26tDizOEkWQGWP2Paim/if
+         YXkJ0U7XR5bGysagH61PZcWIsAjDUtFJGUxfh2wHdJZDpoAwab6IPRZNA1w8uexpRL8X
+         kJjdL31aIWmhO681NsZX6GC0xsyg/1pH9fPnG9YgQBT4csXMXMMGfq2F0QKJRDvxPcdy
+         3Jv/tPSwWxbTaDodMWurRl6FiQwbpglKvvbQQfZ8RHTx+tL2ql3Ju8aigBR6ticb8s/J
+         Z92e/dOr+feH9nC/GLIarXoQnA2ejC6vYNTVMO2Uw6imWZZLW2PNUuIhJiVqLmv/R2PM
+         ULWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OUE9OJKkP1QI+2yCSiJZEjjQO84qj2H/zJA5KUoRH1k=;
+        b=O10+wfRu1bbZm06nMEbs3t8OxcbMt4IBxctJPKFVBXqdq2zsaWsENDdJFfAO5elj32
+         BbF31bgvLQJrJhV1sfWWUW/SgNG14VRjDUzmkwprbDQwzGt5+ZcutG0lxg2KHX1qmahy
+         EFrOgaSULQKcsA1xUH8m+Koq0Hf1CCmBeJmpAj933BT8a0WA56dXrZlwxFAwVVXF5ebx
+         PuGOiQoF1Y2YctfxG+nk7SRHCzMDPzcH1yromVKlMUQ1PBmGkdPUwhcUNj0bI0s6SJ3r
+         rEk5YBEh7vG337JzcW2yc9Xng7y3o0Yq7b5VW3cv0AuX88rTrb6/QxaR+nOKCCBUBoHH
+         +I9g==
+X-Gm-Message-State: AOAM53130oQRE6lDyDOXkhtj+MNnugh9LZV1SZMkyf5uqlsJ93rorpgI
+        Inkj7Az/9DQ1m9oz93AxMyA=
+X-Google-Smtp-Source: ABdhPJxBKK4cWjt69sE+zbI8RQCEjnmVzTDIEQwFz/b/TTJwzxr3ULHHkeqxXGufz2PMXpW88+UaMQ==
+X-Received: by 2002:a05:6402:384:: with SMTP id o4mr36864790edv.128.1629708271883;
+        Mon, 23 Aug 2021 01:44:31 -0700 (PDT)
+Received: from localhost ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id x13sm7003546ejv.64.2021.08.23.01.44.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 01:44:31 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 14:14:26 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] staging: r8188eu: cast to restricted __be32
+Message-ID: <20210823084426.yo2mhgbyehkwwz3h@xps.yggdrasil>
+References: <cover.1629562355.git.aakashhemadri123@gmail.com>
+ <50439a81aca7ce8c3c97ec1c7247f4cd03f645a5.1629562355.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210820193107.omvshmsqbpxufzkc@treble>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="qsNSH97XrotVcJ8VdwzuG0l96GXoTnoj4"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50439a81aca7ce8c3c97ec1c7247f4cd03f645a5.1629562355.git.aakashhemadri123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qsNSH97XrotVcJ8VdwzuG0l96GXoTnoj4
-Content-Type: multipart/mixed; boundary="v7O9DOxhYbMgJdmmM1ggRcf6MAvWYS29s";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Josh Poimboeuf <jpoimboe@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: tglx@linutronix.de, linux-kernel@vger.kernel.org, joro@8bytes.org,
- boris.ostrovsky@oracle.com, x86@kernel.org, mbenes@suse.com,
- rostedt@goodmis.org, dvyukov@google.com, elver@google.com
-Message-ID: <fc90e972-f81f-3706-b13a-988b16264650@suse.com>
-Subject: Re: [PATCH v2 01/24] x86/xen: Mark cpu_bringup_and_idle() as
- dead_end_function
-References: <20210624094059.886075998@infradead.org>
- <20210624095147.693801717@infradead.org>
- <20210820192224.ytrr6ybuuwegbeov@treble>
- <20210820193107.omvshmsqbpxufzkc@treble>
-In-Reply-To: <20210820193107.omvshmsqbpxufzkc@treble>
-
---v7O9DOxhYbMgJdmmM1ggRcf6MAvWYS29s
-Content-Type: multipart/mixed;
- boundary="------------13BCEB8768998A12ACC48350"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------13BCEB8768998A12ACC48350
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 20.08.21 21:31, Josh Poimboeuf wrote:
-> On Fri, Aug 20, 2021 at 12:22:28PM -0700, Josh Poimboeuf wrote:
->> On Thu, Jun 24, 2021 at 11:41:00AM +0200, Peter Zijlstra wrote:
->>> The asm_cpu_bringup_and_idle() function is required to push the retur=
-n
->>> value on the stack in order to make ORC happy, but the only reason
->>> objtool doesn't complain is because of a happy accident.
->>>
->>> The thing is that asm_cpu_bringup_and_idle() doesn't return, so
->>> validate_branch() never terminates and falls through to the next
->>> function, which in the normal case is the hypercall_page. And that, a=
-s
->>> it happens, is 4095 NOPs and a RET.
->>>
->>> Make asm_cpu_bringup_and_idle() terminate on it's own, by making the
->>> function it calls as a dead-end. This way we no longer rely on what
->>> code happens to come after.
->>>
->>> Fixes: c3881eb58d56 ("x86/xen: Make the secondary CPU idle tasks reli=
-able")
->>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>
->> Looks right.  Only problem is, with my assembler I get this:
->>
->>    arch/x86/kernel/head_64.o: warning: objtool: .text+0x5: unreachable=
- instruction
->>
->> Because gas insists on jumping over the page of nops...
->>
->> 0000000000000000 <asm_cpu_bringup_and_idle>:
->>         0:	e8 00 00 00 00       	callq  5 <asm_cpu_bringup_and_idle+0x=
-5>
->> 			1: R_X86_64_PLT32	cpu_bringup_and_idle-0x4
->>         5:	e9 f6 0f 00 00       	jmpq   1000 <xen_hypercall_set_trap_t=
-able>
->>         a:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
->>        11:	00 00 00 00
->>        15:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
->>        1c:	00 00 00 00
->>        20:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
->>        27:	00 00 00 00
->>        2b:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
->>        32:	00 00 00 00
->>        36:	66 66 2e 0f 1f 84 00 	data16 nopw %cs:0x0(%rax,%rax,1)
->>        3d:	00 00 00 00
->=20
-> Here's a fix:
->=20
-> From: Josh Poimboeuf <jpoimboe@redhat.com>
-> Subject: [PATCH] x86/xen: Move hypercall_page to top of the file
->=20
-> Because hypercall_page is page-aligned, the assembler inexplicably adds=
-
-> an unreachable jump from after the end of the previous code to the
-> beginning of hypercall_page.
->=20
-> That confuses objtool, understandably.  It also creates significant tex=
-t
-> fragmentation.  As a result, much of the object file is wasted text
-> (nops).
->=20
-> Move hypercall_page to the beginning of the file to both prevent the
-> text fragmentation and avoid the dead jump instruction.
->=20
-> $ size /tmp/head_64.before.o /tmp/head_64.after.o
->     text	   data	    bss	    dec	    hex	filename
->    10924	 307252	   4096	 322272	  4eae0	/tmp/head_64.before.o
->     6823	 307252	   4096	 318171	  4dadb	/tmp/head_64.after.o
->=20
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com
-
-Reviewed-by: Juergen Gross <jgross@suse.com>
-
-
-Juergen
-
+On 21/08/21 09:48PM, Aakash Hemadri wrote:
+> Fix sparse warning:
+> > rtw_br_ext.c:836:54: warning: cast to restricted __be32
+> 
+> dhpch->cookie is be32, change it's type.
+> 
+> Suggested-by: Larry Finger <Larry.Finger@lwfinger.net>
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
 > ---
->   arch/x86/xen/xen-head.S | 34 +++++++++++++++++-----------------
->   1 file changed, 17 insertions(+), 17 deletions(-)
->=20
-> diff --git a/arch/x86/xen/xen-head.S b/arch/x86/xen/xen-head.S
-> index cb6538ae2fe0..488944d6d430 100644
-> --- a/arch/x86/xen/xen-head.S
-> +++ b/arch/x86/xen/xen-head.S
-> @@ -20,6 +20,23 @@
->   #include <xen/interface/xen-mca.h>
->   #include <asm/xen/interface.h>
->  =20
-> +.pushsection .text
-> +	.balign PAGE_SIZE
-> +SYM_CODE_START(hypercall_page)
-> +	.rept (PAGE_SIZE / 32)
-> +		UNWIND_HINT_FUNC
-> +		.skip 31, 0x90
-> +		ret
-> +	.endr
-> +
-> +#define HYPERCALL(n) \
-> +	.equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
-> +	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
-> +#include <asm/xen-hypercalls.h>
-> +#undef HYPERCALL
-> +SYM_CODE_END(hypercall_page)
-> +.popsection
-> +
->   #ifdef CONFIG_XEN_PV
->   	__INIT
->   SYM_CODE_START(startup_xen)
-> @@ -64,23 +81,6 @@ SYM_CODE_END(asm_cpu_bringup_and_idle)
->   #endif
->   #endif
->  =20
-> -.pushsection .text
-> -	.balign PAGE_SIZE
-> -SYM_CODE_START(hypercall_page)
-> -	.rept (PAGE_SIZE / 32)
-> -		UNWIND_HINT_FUNC
-> -		.skip 31, 0x90
-> -		ret
-> -	.endr
-> -
-> -#define HYPERCALL(n) \
-> -	.equ xen_hypercall_##n, hypercall_page + __HYPERVISOR_##n * 32; \
-> -	.type xen_hypercall_##n, @function; .size xen_hypercall_##n, 32
-> -#include <asm/xen-hypercalls.h>
-> -#undef HYPERCALL
-> -SYM_CODE_END(hypercall_page)
-> -.popsection
-> -
->   	ELFNOTE(Xen, XEN_ELFNOTE_GUEST_OS,       .asciz "linux")
->   	ELFNOTE(Xen, XEN_ELFNOTE_GUEST_VERSION,  .asciz "2.6")
->   	ELFNOTE(Xen, XEN_ELFNOTE_XEN_VERSION,    .asciz "xen-3.0")
->=20
+>  drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> index f6d1f6029ec3..f65d94bfa286 100644
+> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> @@ -649,7 +649,7 @@ struct dhcpMessage {
+>  	u_int8_t chaddr[16];
+>  	u_int8_t sname[64];
+>  	u_int8_t file[128];
+> -	u_int32_t cookie;
+> +	__be32 cookie;
+>  	u_int8_t options[308]; /* 312 - cookie */
+>  };
+>  
+> @@ -671,7 +671,7 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
+>  				    (udph->dest == __constant_htons(SERVER_PORT))) { /*  DHCP request */
+>  					struct dhcpMessage *dhcph =
+>  						(struct dhcpMessage *)((size_t)udph + sizeof(struct udphdr));
+> -					u32 cookie = be32_to_cpu((__be32)dhcph->cookie);
+> +					u32 cookie = be32_to_cpu(dhcph->cookie);
+>  
+>  					if (cookie == DHCP_MAGIC) { /*  match magic word */
+>  						if (!(dhcph->flags & htons(BROADCAST_FLAG))) {
+> -- 
+> 2.32.0
+> 
 
+David Laight suggested to use get_unaligned_be32, I am not sure if it's
+the right thing to do because as far as I understand get_unaligned_be32
+byteshifts the argument.
 
---------------13BCEB8768998A12ACC48350
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Can someone please confirm if this change is okay?
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------13BCEB8768998A12ACC48350--
-
---v7O9DOxhYbMgJdmmM1ggRcf6MAvWYS29s--
-
---qsNSH97XrotVcJ8VdwzuG0l96GXoTnoj4
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEjXxMFAwAAAAAACgkQsN6d1ii/Ey9k
-wAf+I0EbSbW4XM2z7Anwbon908HxyRo+sWLVMlC37IIwiUW5qn0AScGL+3omLlogBr8Ndl88tapp
-76V6fmGDACvC8i4wYx31yiCqN/pGn5BaCL0Kwo5IBgxMjOQsbgibzVtiDd8gYI9szSCrvXNZWnAz
-UoXhyo1tbzNePv+uN0Qmg7tnyGUvH5SZFoxj5q2tOQPN5EPOBVoKgW+EzDBiaSB/rk/Zq2XVEO1s
-p4ILeTgqtke9LMp2+NqktplIdJRh/aXwqMgkEEOGx5fKzGaeovkLL2LHlvLnhUMomfTBr7tFZhiH
-KepWWtL6/vJDlHYN6RxruLcOOMlhtiHR3h3obFklDA==
-=feKL
------END PGP SIGNATURE-----
-
---qsNSH97XrotVcJ8VdwzuG0l96GXoTnoj4--
+Thanks,
+Aakash Hemadri.
