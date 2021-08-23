@@ -2,178 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD1A3F49E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5EF3F49EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbhHWLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        id S236616AbhHWLhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234997AbhHWLgN (ORCPT
+        with ESMTP id S236623AbhHWLhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:36:13 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E541C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:35:30 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso13836080wmb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:35:30 -0700 (PDT)
+        Mon, 23 Aug 2021 07:37:34 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EAEC0611C2;
+        Mon, 23 Aug 2021 04:36:39 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id g135so1025027wme.5;
+        Mon, 23 Aug 2021 04:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:references:in-reply-to
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Dc7A45rdd8EAHtZ/uscRkJGY6bCmxk+2XNFv95tjVRM=;
-        b=TUwniGW/Xte7lz7XZgquinAMkpiywSnUrpHTnHQcMRkbFVLMbfiNjuA000k7DB4w2f
-         935M0pJyJM6/cRl7wixLeLt5n3Xsm5TaN6hmZaCh0Z4UFQFwENTOqvvNIid+vKXLH3/O
-         WQ67Qb7k/lAGPxSdIzWvueVQhEYAHDeDT+vMWg6MFHC+B3eYiBGX2QDrVrLDfFmhdBT7
-         LTIz0WswO+Gs6XBAwsAILr33fYvR3T8aV1AXhpBkHt5N/0Iokv7KxHjkjDVSDZLlSDxi
-         +Y01uz47CLRazaAOO4O2KRKTj20VenmiLHmHt6lIWI+7JC0RmVT4G5aQ3xes9o+GNMu5
-         4i5Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=q/+BtTfaussj3pnFQMFQKjGG14QLE4MIEje0Y1Rob/g=;
+        b=ZckAnTPI8lekky2wkcRR7yKflDP+H3kUkiq0EYMOVtqdL1Rg5dg+Shymqd6f6/2Ntn
+         2xQYnFPFqwovuYSjPOUPLZLVcx2eELxItovPtcmvYmaCTMazO1TEQLGQReDq6oRTlk90
+         eS3LfOw35mtcXi7iLhc+fstqGwCkhAFefC1DdXsJFt64ZdikkXAP88kPCE7gnyr72qgG
+         lLDY4bzeVl+tJ4/ki2fDCZU6rc9llqiXVecpDL3jeLnZcrjtTeDN5PTQhWVbWBr1iLLh
+         BUjxY7bJoalTReTMnM9sJDSLHM/2yqiN8uZTEBMP4PHmnFH7y9kMl5iPdpgidqpuJCYb
+         yH6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
-         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
-        bh=Dc7A45rdd8EAHtZ/uscRkJGY6bCmxk+2XNFv95tjVRM=;
-        b=bLmdtQbiNSBcpkojpm2BgNjwte5UYR3v6LIutzg5fHUQG13LxJO9TLZgstBy+HaSWG
-         PdKKua+XyimvY6eQuV2/mvMUxaSR8d3o1LNU443ioePAk6Gmvq6KHHcfxtUgQ59vpN44
-         VRr8KcETv04tFWBLMx+rDSBpNqQ/8PnXHW4EiJCWaGXSpRnm9zqEL3oaaeDdhVxXomeK
-         WAk9QYkfVvkhH1IO3D0qcM4XpF3at2S1B3GfzgAKKW8QaXOeiJjA7yKfZm61avQTMJVd
-         zEKjvSjbMQoQbAHMwBJRzc0CDc+5mdM7AE7o/dWyKeORkkK9xnFUVutHFaHZygVtW7pk
-         YWAA==
-X-Gm-Message-State: AOAM532CEFl6UDen//d4/r5NrpQqtijcCOM4cVknPuzqRxZs9yJdJCbh
-        dzrgQi2KUYOEpnkdshY9PWeAJw==
-X-Google-Smtp-Source: ABdhPJxfbLN6S/zmNSodR02DWJULMgKN7V3T4Tq9vwgy9MuQxoZBNiJPauxGJyVegRCVnPY+zfFuNg==
-X-Received: by 2002:a05:600c:21d7:: with SMTP id x23mr15794742wmj.10.1629718529082;
-        Mon, 23 Aug 2021 04:35:29 -0700 (PDT)
-Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
-        by smtp.gmail.com with ESMTPSA id h16sm14978446wre.52.2021.08.23.04.35.28
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 23 Aug 2021 04:35:28 -0700 (PDT)
-From:   John Cox <jc@kynesim.co.uk>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, nicolas@ndufresne.ca,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH] media: hevc: fix pictures lists type
-Date:   Mon, 23 Aug 2021 12:35:28 +0100
-Message-ID: <i917ig582epdnpkmjdtvtnap6u8c032c1r@4ax.com>
-References: <20210823082949.237716-1-benjamin.gaignard@collabora.com> <02r6ig176o0lqc52nm8rhta7cn5bfn04in@4ax.com> <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
-In-Reply-To: <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
-User-Agent: ForteAgent/8.00.32.1272
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q/+BtTfaussj3pnFQMFQKjGG14QLE4MIEje0Y1Rob/g=;
+        b=Q1mofXDxU2v7fYRCgmFowk+8kbov/z+giOVwDmkfQX/w7BqTQAQKylsjrwFHvBYWzz
+         rjLa/IYAYymdAbnSl2YppwYxTVS5N/bQmXEAma3C+Dfge0dbPIFDugotJJ3c6XQF6Dxs
+         roVKUy5MHUKxCjP/73dqPnu7ZKjBwfHWmHOZlGhESt/GdkGKQf3ZdGO83/fQCRRfTBPX
+         jhY18ARwvfaR9wP7JK/e8BC/c2f8HIDx44B2bvhhAwbCibk/g0llx7cBhjef25r4h//L
+         cQuNUpR6YrWCvVz6zPwhn4MCebjtr4YpvzquN9l7e4rMAYlJgVnHBSBFi5+193OqWUJ3
+         kHVQ==
+X-Gm-Message-State: AOAM531z911VRoRfs5DoNV2mJaLfMpfyycuqIvd7+JjodXTE42iMpE3t
+        //SsUCtdhcPLRo5ehSjlrYscJe/dkwo=
+X-Google-Smtp-Source: ABdhPJyE6D5Cqd3vP0lUzvOavUpGm6KuzXuUckHGAnKz9P7lwxzXRaCWDLwG/jS2+1AZ8U+UogKpmQ==
+X-Received: by 2002:a7b:cc0a:: with SMTP id f10mr16037427wmh.32.1629718597644;
+        Mon, 23 Aug 2021 04:36:37 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.233.176])
+        by smtp.gmail.com with ESMTPSA id h6sm14608363wmq.5.2021.08.23.04.36.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 04:36:37 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_try_cancel_userdata
+To:     syzbot <syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000dd79fc05ca367b9d@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <c6ff4faf-bb08-d61a-8054-16b9010545eb@gmail.com>
+Date:   Mon, 23 Aug 2021 12:36:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <000000000000dd79fc05ca367b9d@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On 8/23/21 10:17 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    86ed57fd8c93 Add linux-next specific files for 20210820
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1565bd55300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f64eccb415bd479d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b0c9d1588ae92866515f
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com
 
->Le 23/08/2021 =C3=A0 11:50, John Cox a =C3=A9crit=C2=A0:
->>> The lists embedded Picture Order Count values which are s32 so their =
-type
->>> most be s32 and not u8.
->> I'm not convinced that you can't calculate all of those lists from the
->> info already contained in the DPB array so this is probably redundant
->> info though I grant that having the list pre-calced might make your =
-life
->> easier, and the userland side will have calculated the lists to
->> calculate other required things so it isn't much extra work for it.
->
->Yes the userland have already compute these lists and the number of =
-items
->in each of them.
->Build them in the kernel would means to also compute the values of =
-NumPocStCurrBefore,
->NumPocStCurrAfter, NumPocLtCurr, NumPocStCurrAfter, NumPocStCurrBefore =
-and NumPocLtCurr
->and that requires information (NumNegativePics, NumPositivePics...) not =
-provided to the kernel.
->Since it have to be done in userland anyway, I'm reluctant to modify the=
- API to redo in the kernel.
+false positive, will delete the warning with explanation
 
-Well, fair enough, I'm not going to argue
+p.s. easily reproducible, we'll add a test covering cancel from io-wq 
 
->> Even if you do need the lists wouldn't it be a better idea to have =
-them
->> as indices into the DPB (you can't have a frame in any of those lists
->> that isn't in the DPB) which already contains POCs then it will still
->> fit into u8 and be smaller?
->
->Hantro HW works with indexes but I think it is more simple to send PoC =
-rather than indexes.
+> 
+> WARNING: CPU: 1 PID: 5870 at fs/io_uring.c:5975 io_try_cancel_userdata+0x30f/0x540 fs/io_uring.c:5975
+> Modules linked in:
+> CPU: 0 PID: 5870 Comm: iou-wrk-5860 Not tainted 5.14.0-rc6-next-20210820-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:io_try_cancel_userdata+0x30f/0x540 fs/io_uring.c:5975
+> Code: 07 e8 e5 9d 95 ff 48 8b 7c 24 08 e8 ab 02 58 07 e9 6f fe ff ff e8 d1 9d 95 ff 41 bf 8e ff ff ff e9 5f fe ff ff e8 c1 9d 95 ff <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+> RSP: 0018:ffffc900055f7a88 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: ffff888181aa83c0 RCX: 0000000000000000
+> RDX: ffff88803fb88000 RSI: ffffffff81e0dacf RDI: ffff888181aa8410
+> RBP: ffff88803fb88000 R08: ffffffff899ad660 R09: ffffffff81e23c44
+> R10: 0000000000000027 R11: 000000000000000e R12: 1ffff92000abef53
+> R13: 0000000000000000 R14: ffff8880b34d0000 R15: ffff888181aa8420
+> FS:  00007f7a08d50700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2c72e000 CR3: 0000000168b9b000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+> Call Trace:
+>  io_async_cancel fs/io_uring.c:6014 [inline]
+>  io_issue_sqe+0x22d5/0x65a0 fs/io_uring.c:6407
+>  io_wq_submit_work+0x1dc/0x300 fs/io_uring.c:6511
+>  io_worker_handle_work+0xa45/0x1840 fs/io-wq.c:533
+>  io_wqe_worker+0x2cc/0xbb0 fs/io-wq.c:582
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
 
-I'd disagree but as I don't use the info I'm not concerned. Though I
-think I should point out that when Hantro converts the POCs to indicies
-it compares the now s32 POC in these lists with the u16 POC in the DPB
-so you might need to fix that too; by std (8.3.1) no POC diff can be
-outside s16 so you can mask & compare or use u16 POCs in the lists or
-s32 in the DPB.
-
-Regards
-
-John Cox
-
->Benjamin
->
->>
->> Full disclosure: Pi decode doesn't use this info at all so I'm only
->> arguing from a theoretical point of view - I think it is only relevant
->> if your h/w is parsing the reference list setups.
->>
->> Regards
->>
->> John Cox
->>
->>> Reported-by: John Cox <jc@kynesim.co.uk>
->>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>> ---
->>> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 +++---
->>> include/media/hevc-ctrls.h                                | 6 +++---
->>> 2 files changed, 6 insertions(+), 6 deletions(-)
->>>
->>> diff --git =
-a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
-b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>> index 976d34445a24..db9859ddc8b2 100644
->>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
->>> @@ -3323,15 +3323,15 @@ enum =
-v4l2_mpeg_video_hevc_size_of_length_field -
->>>      * - __u8
->>>        - ``num_poc_lt_curr``
->>>        - The number of reference pictures in the long-term set.
->>> -    * - __u8
->>> +    * - __s32
->>>        - ``poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->>>        - PocStCurrBefore as described in section 8.3.2 "Decoding =
-process for reference
->>>          picture set.
->>> -    * - __u8
->>> +    * - __s32
->>>        - ``poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->>>        - PocStCurrAfter as described in section 8.3.2 "Decoding =
-process for reference
->>>          picture set.
->>> -    * - __u8
->>> +    * - __s32
->>>        - ``poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
->>>        - PocLtCurr as described in section 8.3.2 "Decoding process =
-for reference
->>>          picture set.
->>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->>> index 781371bff2ad..04cd62e77f25 100644
->>> --- a/include/media/hevc-ctrls.h
->>> +++ b/include/media/hevc-ctrls.h
->>> @@ -219,9 +219,9 @@ struct v4l2_ctrl_hevc_decode_params {
->>> 	__u8	num_poc_st_curr_before;
->>> 	__u8	num_poc_st_curr_after;
->>> 	__u8	num_poc_lt_curr;
->>> -	__u8	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>> -	__u8	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>> -	__u8	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>> +	__s32	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>> +	__s32	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>> +	__s32	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>> 	__u64	flags;
->>> };
->>>
+-- 
+Pavel Begunkov
