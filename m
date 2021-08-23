@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821143F4D73
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815793F4D80
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbhHWP1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:27:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55166 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhHWP1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:27:12 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        id S231246AbhHWP3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:29:20 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58419 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230380AbhHWP3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:29:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629732516; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=LT52FNjaUPr3dPS7ArBA3SbxjCRfsPrjN73Mk31zk6k=; b=iqQ3TDyOyg5Iwi0nI/GPSWBePHf24gEW33CMsHOgi4rgBIg+V4cyqPs5V7uxOd2uQ2EaljEN
+ cbW6MQu8DfzupvuC70ezCIlne2ZP4qJUeLtjAvQL6FnfLPZ4P1aljRPyD0xUmayabDvxFyrq
+ pd4Mj21L1M20sSdtAUPwEwHxkYM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6123be8389fbdf3ffe846dc8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 15:28:03
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EA45C43617; Mon, 23 Aug 2021 15:28:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-038.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D341F21FF5;
-        Mon, 23 Aug 2021 15:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629732388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzNXlRcAHsKm6STMJq4mGozzykusNpq+Qf/hEUad6WM=;
-        b=1AXChqteUJFNWbj2o/0GNgcHa4jYElBXHjofi5oyJRId9YO/vq+uxX16e+V/5AsvJEofgy
-        MpuIRdEFNFvitS5T106TQOUKJtj829lmHWPfxbkVTkNHx3dI8wxflbVD98AT6dkNwBDm/K
-        CT/oxPz1VaGDHWLVj1q5hTuLE3VlCQg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629732388;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zzNXlRcAHsKm6STMJq4mGozzykusNpq+Qf/hEUad6WM=;
-        b=GhCN9RpxkL0+j78tQz8IcfuFkaWKQvYFME0ox6+WBeIMTdWpH6b39C4KL+OsUmfcF02hAN
-        U2YV3rynyBIOZSCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3B9613BD1;
-        Mon, 23 Aug 2021 15:26:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id BueULyS+I2FsSAAAMHmgww
-        (envelope-from <dbueso@suse.de>); Mon, 23 Aug 2021 15:26:28 +0000
-MIME-Version: 1.0
-Date:   Mon, 23 Aug 2021 08:26:28 -0700
-From:   Davidlohr Bueso <dbueso@suse.de>
-To:     Ran Xiaokai <cgel.zte@gmail.com>
-Cc:     christian.brauner@ubuntu.com, jamorris@linux.microsoft.com,
-        keescook@chromium.org, ktkhai@virtuozzo.com, legion@kernel.org,
-        linux-kernel@vger.kernel.org, ran.xiaokai@zte.com.cn,
-        varad.gautam@suse.com
-Subject: Re: [PATCH] tests: add mqueue sysctl tests for user namespace
-In-Reply-To: <20210823032909.45736-1-ran.xiaokai@zte.com.cn>
-References: <20210803140133.vksebmgqhlbqipla@wittgenstein>
- <20210823032909.45736-1-ran.xiaokai@zte.com.cn>
-User-Agent: Roundcube Webmail
-Message-ID: <80849d5c6fb87d1404ec8b2a6d9fe78f@suse.de>
-X-Sender: dbueso@suse.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 240A2C4338F;
+        Mon, 23 Aug 2021 15:27:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 240A2C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Prasad Sodagudi <psodagud@codeaurora.org>
+To:     gregkh@linuxfoundation.org, rjw@rjwysocki.net
+Cc:     len.brown@intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, pavel@ucw.cz, psodagud@codeaurora.org
+Subject: [PATCH v4] PM: sleep: core: Avoid setting power.must_resume to false
+Date:   Mon, 23 Aug 2021 08:27:50 -0700
+Message-Id: <1629732470-155444-1-git-send-email-psodagud@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-22 20:29, Ran Xiaokai wrote:
+There are variables(power.may_skip_resume and dev->power.must_resume)
+and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+a system wide suspend transition.
 
->  create mode 100644 tools/testing/selftests/mqueue_sysctl/Makefile
->  create mode 100644 tools/testing/selftests/mqueue_sysctl/config
->  create mode 100644 
-> tools/testing/selftests/mqueue_sysctl/mq_sysctl_test.c
+Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+its "noirq" and "early" resume callbacks to be skipped if the device
+can be left in suspend after a system-wide transition into the working
+state. PM core determines that the driver's "noirq" and "early" resume
+callbacks should be skipped or not with dev_pm_skip_resume() function by
+checking power.may_skip_resume variable.
 
-It would be better to use the already existing mqueue directory, instead 
-of
-creating a new one just for sysctl stuff. Also, while nit, perhaps
-mq_sysctl_tests.c (plural) to go with the other naming of the tests...
+power.must_resume variable is getting set to false in __device_suspend()
+function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
+In problematic scenario, where all the devices in the suspend_late
+stage are successful and some device can fail to suspend in
+suspend_noirq phase. So some devices successfully suspended in suspend_late
+stage are not getting chance to execute __device_suspend_noirq()
+to set dev->power.must_resume variable to true and not getting
+resumed in early_resume phase.
 
-Thanks,
-Davidlohr
+Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+setting power.must_resume variable in __device_suspend function.
+
+Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+---
+ V3 -> V4: Remove dev->power.usage_count variable check
+ V2 -> V3: Format issues patch posting
+ V1 -> V2: Fixed indentation and commit text to include scenario
+ drivers/base/power/main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index d568772..50e8ea3 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1642,7 +1642,10 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+ 	}
+ 
+ 	dev->power.may_skip_resume = true;
+-	dev->power.must_resume = false;
++	if (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME))
++		dev->power.must_resume = false;
++	else
++		dev->power.must_resume = true;
+ 
+ 	dpm_watchdog_set(&wd, dev);
+ 	device_lock(dev);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
