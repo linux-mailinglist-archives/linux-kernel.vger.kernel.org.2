@@ -2,166 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4EF3F474C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CCC3F4752
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235785AbhHWJWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235717AbhHWJWq (ORCPT
+        id S231773AbhHWJYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:24:16 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:10895 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235833AbhHWJYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:22:46 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A06C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:22:03 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id i28so36602214lfl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2+DCF0QhaWRzk8EBok5WHzptu4bm9hyUmXTl5rTjDN4=;
-        b=Gfinkx+aU5xV0QUh6Q8ESgjgDLwMNCjzU7N9LE0J+Q3ockZDdHegqJ4joob2fdYOb2
-         qL76p8LbsKJvVy6Y4LBNHVcVZGu8UcMpKBjsM8yRzCgI2sF2sKWDXuwmf88SSeMLcYDP
-         VscaE3eYGJ/BGm+OefggTSvdLngVgJq6/2IS0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2+DCF0QhaWRzk8EBok5WHzptu4bm9hyUmXTl5rTjDN4=;
-        b=C5MVnTOYjw/Gy+BdZjCJck71PA309ssVVZr8cOXlMK5bbH6yVnc1BsSCm90Cr1axX7
-         WvZb9920KX7YJWvroNxkpbnkzjAQ32JbM8CGSLwM4CnEzhJlhOjkv/PML6i61eyMZ0Ih
-         1StxNUJycAEvE3afO/Nbhrmt2qmG9iO9S2o0WlnwE2LNpqTEJz10rOY1iYK1LSzP3kyt
-         lJORswFFa5fJJ/Sy70ZKGIREl4E1Owftr6MxGAXTKHpKz2FA8IvInMQulDUPgYI/ut6f
-         28ncvuznXVeGZiE2N/38evoO0cObbU6taaYxu50g0c65ZQtRM1ooDuk9okmBLt8bpZnM
-         JZLQ==
-X-Gm-Message-State: AOAM531uB3KUAZw9EPjKB8MAVh1m+vGGTbcq6Ww5v4HaHZqbvtdoZGoi
-        0yDN/ZNSHAvO1c/CZxfEOngeL+aosEHDDqXIYhOzWA==
-X-Google-Smtp-Source: ABdhPJxPsFJw/b7ioRTc/3MTl9OvvjMlHdGDY9j9HIjziEvQfETvT0xku/Ri9Tv+bLyJm99FfIXDXZlidcGyqR5heuc=
-X-Received: by 2002:ac2:4116:: with SMTP id b22mr24879487lfi.587.1629710522138;
- Mon, 23 Aug 2021 02:22:02 -0700 (PDT)
+        Mon, 23 Aug 2021 05:24:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629710611; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=MjYmf7oiJyLSzVo8N7rBJa6X/ztbSYljOWQSaoNgkVk=; b=HCClVbroTPliZmZkjIEovCdVVkmhVBmm+uSVC7IS+0aJ8jhzKYtiuCI+GfbbsEgJxvg5gqRj
+ P7h9VRfyTm4T1EN90n0S/7D2zirWVHgiKxcRFnh4lumS42luwmtTfrGiBn064abSh2VW44Qm
+ yyE9YrhcmHdDneEvC1ExscQmgN8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6123691189fbdf3ffe64ebd5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 09:23:29
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1D318C43618; Mon, 23 Aug 2021 09:23:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9E89C4338F;
+        Mon, 23 Aug 2021 09:23:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E9E89C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v2] usb: dwc3: gadget: Stop EP0 transfers during pullup disable
+Date:   Mon, 23 Aug 2021 02:23:24 -0700
+Message-Id: <20210823092324.1949-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210820111504.350-1-chun-jie.chen@mediatek.com> <20210820111504.350-7-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210820111504.350-7-chun-jie.chen@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 23 Aug 2021 17:21:50 +0800
-Message-ID: <CAGXv+5FVGQkR=OpyBA7rjE0sLLqVoTpgHJuG8YDaCnWFCdDM8A@mail.gmail.com>
-Subject: Re: [v2 06/24] clk: mediatek: Add MT8195 apmixedsys clock support
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:20 PM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> Add MT8195 apmixedsys clock controller which provides Plls
-> generated from SoC 26m and ssusb clock gate control.
->
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> ---
->  drivers/clk/mediatek/Kconfig                 |   8 +
->  drivers/clk/mediatek/Makefile                |   1 +
->  drivers/clk/mediatek/clk-mt8195-apmixedsys.c | 145 +++++++++++++++++++
->  3 files changed, 154 insertions(+)
->  create mode 100644 drivers/clk/mediatek/clk-mt8195-apmixedsys.c
->
-> diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-> index 576babd86f98..7ba1f4118e0d 100644
-> --- a/drivers/clk/mediatek/Kconfig
-> +++ b/drivers/clk/mediatek/Kconfig
-> @@ -580,6 +580,14 @@ config COMMON_CLK_MT8192_VENCSYS
->         help
->           This driver supports MediaTek MT8192 vencsys clocks.
->
-> +config COMMON_CLK_MT8195
-> +        bool "Clock driver for MediaTek MT8195"
-> +        depends on ARM64 || COMPILE_TEST
-> +        select COMMON_CLK_MEDIATEK
-> +        default ARM64
-> +        help
-> +          This driver supports MediaTek MT8195 basic clocks.
+During a USB cable disconnect, or soft disconnect scenario, a pending
+SETUP transaction may not be completed, leading to the following
+error:
 
-Since we will have all clocks under the same Kconfig option, please
-drop the word "basic".
+    dwc3 a600000.dwc3: timed out waiting for SETUP phase
 
-> +
->  config COMMON_CLK_MT8516
->         bool "Clock driver for MediaTek MT8516"
->         depends on ARCH_MEDIATEK || COMPILE_TEST
-> diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-> index 15bc045f0b71..d4157cfca865 100644
-> --- a/drivers/clk/mediatek/Makefile
-> +++ b/drivers/clk/mediatek/Makefile
-> @@ -80,5 +80,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_MSDC) += clk-mt8192-msdc.o
->  obj-$(CONFIG_COMMON_CLK_MT8192_SCP_ADSP) += clk-mt8192-scp_adsp.o
->  obj-$(CONFIG_COMMON_CLK_MT8192_VDECSYS) += clk-mt8192-vdec.o
->  obj-$(CONFIG_COMMON_CLK_MT8192_VENCSYS) += clk-mt8192-venc.o
-> +obj-$(CONFIG_COMMON_CLK_MT8195) += clk-mt8195-apmixedsys.o
->  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
->  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-> diff --git a/drivers/clk/mediatek/clk-mt8195-apmixedsys.c b/drivers/clk/mediatek/clk-mt8195-apmixedsys.c
-> new file mode 100644
-> index 000000000000..253eb30b22d4
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt8195-apmixedsys.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +//
-> +// Copyright (c) 2021 MediaTek Inc.
-> +// Author: Chun-Jie Chen <chun-jie.chen@mediatek.com>
-> +
-> +#include "clk-gate.h"
-> +#include "clk-mtk.h"
-> +
-> +#include <dt-bindings/clock/mt8195-clk.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +
-> +static const struct mtk_gate_regs apmixed_cg_regs = {
-> +       .set_ofs = 0x8,
-> +       .clr_ofs = 0x8,
-> +       .sta_ofs = 0x8,
-> +};
-> +
-> +#define GATE_APMIXED(_id, _name, _parent, _shift)                      \
-> +       GATE_MTK(_id, _name, _parent, &apmixed_cg_regs, _shift, &mtk_clk_gate_ops_no_setclr_inv)
-> +
-> +static const struct mtk_gate apmixed_clks[] = {
-> +       GATE_APMIXED(CLK_APMIXED_PLL_SSUSB26M, "pll_ssusb26m", "clk26m", 1),
-> +};
-> +
-> +#define MT8195_PLL_FMAX                (3800UL * MHZ)
-> +#define MT8195_PLL_FMIN                (1500UL * MHZ)
-> +#define MT8195_INTEGER_BITS    8
-> +
-> +#define PLL(_id, _name, _reg, _pwr_reg, _en_mask, _flags,              \
-> +                       _rst_bar_mask, _pcwbits, _pd_reg, _pd_shift,    \
-> +                       _tuner_reg, _tuner_en_reg, _tuner_en_bit,       \
-> +                       _pcw_reg, _pcw_shift, _pcw_chg_reg,             \
-> +                       _en_reg, _pll_en_bit) {                         \
+If this occurs, then the entire pullup disable routine is skipped and
+proper cleanup and halting of the controller does not complete.
+Instead of returning an error (which is ignored from the UDC
+perspective), allow the pullup disable to routine to continue, which
+will also handle disabling of EP0/1.  This will end any active
+transfers as well.  Ensure to clear any delayed_status as well, as the
+timeout could happen within the STATUS stage.
 
-Nit: Even for macro definitions, you could align the lines to the opening
-parenthesis. That would give you more room. And it would make it slightly
-easier to read.
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+---
+Changes in v2:
+ - Removed calls to dwc3_ep0_end_control_data() and just allow the ep disables
+   on EP0 handle the proper ending of transfers.
+ - Ensure that delayed_status is cleared, as ran into enumeration issues if the
+   SETUP transaction fails on a STATUS stage.  Saw delayed_status == TRUE on the
+   next connect, which blocked further SETUP transactions to be handled.
 
-Otherwise,
+ drivers/usb/dwc3/gadget.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 5d084542718d..8b6a95c35741 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -2430,7 +2430,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+ 				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
+ 		if (ret == 0) {
+ 			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
+-			return -ETIMEDOUT;
+ 		}
+ 	}
+ 
+@@ -2643,6 +2642,7 @@ static int __dwc3_gadget_start(struct dwc3 *dwc)
+ 	/* begin to receive SETUP packets */
+ 	dwc->ep0state = EP0_SETUP_PHASE;
+ 	dwc->link_state = DWC3_LINK_STATE_SS_DIS;
++	dwc->delayed_status = false;
+ 	dwc3_ep0_out_start(dwc);
+ 
+ 	dwc3_gadget_enable_irq(dwc);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-[...]
