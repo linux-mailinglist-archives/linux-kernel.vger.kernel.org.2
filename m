@@ -2,154 +2,547 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7893F4705
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8853F4708
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhHWI7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:59:22 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32887 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhHWI7U (ORCPT
+        id S235747AbhHWJAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:00:50 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:50900
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230137AbhHWJAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:59:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629709118; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=T55Merzr/SXckbGnhzfre8Q+hDjDewsq/TcE4N/rGG0=; b=UfCN9QkAmeh54aD3GznHPR61i96cxKWXUvc6yY9FCIafs1NLEpn9g2f3HvODK3NaSwZvPxHW
- hcYtUMLbn08NIcbXQ94E8M9CrWMG6u3PL1G3BPLD204eR/kV6yKzF9e/PixR/nOiCvnxOcn2
- PESIR1HW3BjN/liM/lKlbWEsrxo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 612363370f9b337f11b6e5e9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 08:58:31
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 63064C4360C; Mon, 23 Aug 2021 08:58:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Mon, 23 Aug 2021 05:00:49 -0400
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9158EC4338F;
-        Mon, 23 Aug 2021 08:58:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 9158EC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v4] Bluetooth: btusb: Add support using different nvm for variant WCN6855 controller
-Date:   Mon, 23 Aug 2021 16:58:20 +0800
-Message-Id: <1629709100-9099-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0384B3F31C
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:59:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629709199;
+        bh=ru7+aEEEvRx3ZgUNn86j+nTGTMSZPU52V7aPZONs4SY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=r4LwcBs+aWEOvZtGAQxl0IF6Qjg94frm8dhK9xLl+NlzmrHwQahZKMWCauPbMUoe1
+         Ngscw8oQ7wIbPL3RMzf+G2AI/dY4wf4F5SZthcM4P6lnrDhbjL5EhbCQE6OTH2a+AS
+         m3rjeWWgRaX2GHPk2+YqnkSO19hc4nFyI2LxRJdyjFox4ZhVE4GMlIs2hgzyuguT9D
+         +ho1QcSmQx8Mal2ljHi/XdIOL6QvoDwBPuFxVqcxteFNzin6wYrLGVqKAABNDP8+Ej
+         7Wd2PPQ7czj+3qKvie7O0cGxI7cRc1l9jnCDxkBQTFGUX2lSvG2LdQZsFH48dSJQj8
+         2sOv5ms3ePhqg==
+Received: by mail-pf1-f198.google.com with SMTP id h10-20020a056a00170a00b003e31c4d9992so6801900pfc.23
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:59:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ru7+aEEEvRx3ZgUNn86j+nTGTMSZPU52V7aPZONs4SY=;
+        b=KsFAbCF5EiI9WPJrphwoMl7ZTQpVUbH1FhtCOFaTLhSFwmATQcuj1vrt/uTVkbOsZk
+         Gm8wgXzZsVJvcUBGBGjxzjUZbeJfwpzDpNSkCcYyXlJMeSYejxi1ihlYWlXe+TDbTq7n
+         7Y21OTY95oKAlfqnGnhtZ1EImhaVJuQr2MUuM/ZrkDLrIb9V2yqCeXS9jW+2i/oG97+3
+         t6cBQf8tVC45iqCXzfH7fPZtE5tvQci03iA06QZaMFvHfbTxlb1C+YBoGUGyyJNxqoxl
+         dP4sO2Yq3FDgE2sEiRACOJX1X7dXi83gzRbiLd+N8DHGNjeWjYYRhVqpNDg5epOmaQfs
+         T9Vw==
+X-Gm-Message-State: AOAM5331d/dKdTyacVt19b8XYMV3b4bMFG47v4YX/cDP+ULLql4u048f
+        gkWN/68uyrG5N1FVdOqw9+hWgPGFePsOLdoGPxedD/CGoW9epAy/hmvZH0VdaPV+uTyGxnTfnjI
+        5pSOR9oUcnPxYa7rOyUJu7AnWHV9d+jwBMptGaANg
+X-Received: by 2002:a17:90b:4d0c:: with SMTP id mw12mr19423499pjb.123.1629709197293;
+        Mon, 23 Aug 2021 01:59:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy0xq/wStXtHElqrzn/yYuMRaCrSVoKVKsipk8I2xsYkLKts10Kyt525I6SJd5yCOzzQp9LNA==
+X-Received: by 2002:a17:90b:4d0c:: with SMTP id mw12mr19423470pjb.123.1629709196929;
+        Mon, 23 Aug 2021 01:59:56 -0700 (PDT)
+Received: from localhost.localdomain (223-137-217-38.emome-ip.hinet.net. [223.137.217.38])
+        by smtp.gmail.com with ESMTPSA id 21sm15010565pfh.103.2021.08.23.01.59.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 01:59:56 -0700 (PDT)
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     po-hsu.lin@canonical.com, davem@davemloft.net, kuba@kernel.org,
+        skhan@linuxfoundation.org, petrm@nvidia.co,
+        oleksandr.mazur@plvision.eu, idosch@nvidia.com, jiri@nvidia.com,
+        nikolay@nvidia.com, gnault@redhat.com, simon.horman@netronome.com,
+        baowen.zheng@corigine.com, danieller@nvidia.com
+Subject: [PATCH] selftests/net: Use kselftest skip code for skipped tests
+Date:   Mon, 23 Aug 2021 16:58:54 +0800
+Message-Id: <20210823085854.40216-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+There are several test cases in the net directory are still using
+exit 0 or exit 1 when they need to be skipped. Use kselftest
+framework skip code instead so it can help us to distinguish the
+return status.
 
-we have variant wcn6855 soc chip from different vendors, so we should
-use different nvm file with suffix to distinguish them.
+Criterion to filter out what should be fixed in net directory:
+  grep -r "exit [01]" -B1 | grep -i skip
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+This change might cause some false-positives if people are running
+these test scripts directly and only checking their return codes,
+which will change from 0 to 4. However I think the impact should be
+small as most of our scripts here are already using this skip code.
+And there will be no such issue if running them with the kselftest
+framework.
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 ---
- drivers/bluetooth/btusb.c | 46 ++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 36 insertions(+), 10 deletions(-)
+ tools/testing/selftests/net/fcnal-test.sh          |  5 +++-
+ tools/testing/selftests/net/fib_rule_tests.sh      |  7 ++++--
+ .../selftests/net/forwarding/devlink_lib.sh        | 15 +++++++-----
+ tools/testing/selftests/net/forwarding/lib.sh      | 27 ++++++++++++----------
+ .../selftests/net/forwarding/router_mpath_nh.sh    |  2 +-
+ .../net/forwarding/router_mpath_nh_res.sh          |  2 +-
+ tools/testing/selftests/net/run_afpackettests      |  5 +++-
+ .../selftests/net/srv6_end_dt46_l3vpn_test.sh      |  9 +++++---
+ .../selftests/net/srv6_end_dt4_l3vpn_test.sh       |  9 +++++---
+ .../selftests/net/srv6_end_dt6_l3vpn_test.sh       |  9 +++++---
+ tools/testing/selftests/net/unicast_extensions.sh  |  5 +++-
+ .../testing/selftests/net/vrf_strict_mode_test.sh  |  9 +++++---
+ 12 files changed, 67 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 60d2fce59a71..9b4408307138 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3141,6 +3141,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
- #define QCA_DFU_TIMEOUT		3000
- #define QCA_FLAG_MULTI_NVM      0x80
+diff --git a/tools/testing/selftests/net/fcnal-test.sh b/tools/testing/selftests/net/fcnal-test.sh
+index a8ad928..9074e25 100755
+--- a/tools/testing/selftests/net/fcnal-test.sh
++++ b/tools/testing/selftests/net/fcnal-test.sh
+@@ -37,6 +37,9 @@
+ #
+ # server / client nomenclature relative to ns-A
  
-+#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-+#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
 +
- struct qca_version {
- 	__le32	rom_version;
- 	__le32	patch_version;
-@@ -3172,6 +3175,7 @@ static const struct qca_device_info qca_devices_table[] = {
- 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
- 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
- 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-+	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
- };
+ VERBOSE=0
  
- static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-@@ -3326,22 +3330,24 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
- 	return err;
+ NSA_DEV=eth1
+@@ -3946,7 +3949,7 @@ fi
+ which nettest >/dev/null
+ if [ $? -ne 0 ]; then
+ 	echo "'nettest' command not found; skipping tests"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ declare -i nfail=0
+diff --git a/tools/testing/selftests/net/fib_rule_tests.sh b/tools/testing/selftests/net/fib_rule_tests.sh
+index a93e6b6..43ea840 100755
+--- a/tools/testing/selftests/net/fib_rule_tests.sh
++++ b/tools/testing/selftests/net/fib_rule_tests.sh
+@@ -3,6 +3,9 @@
+ 
+ # This test is for checking IPv4 and IPv6 FIB rules API
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
+ ret=0
+ 
+ PAUSE_ON_FAIL=${PAUSE_ON_FAIL:=no}
+@@ -238,12 +241,12 @@ run_fibrule_tests()
+ 
+ if [ "$(id -u)" -ne 0 ];then
+ 	echo "SKIP: Need root privileges"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ if [ ! -x "$(command -v ip)" ]; then
+ 	echo "SKIP: Could not run test without ip tool"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ # start clean
+diff --git a/tools/testing/selftests/net/forwarding/devlink_lib.sh b/tools/testing/selftests/net/forwarding/devlink_lib.sh
+index 13d3d44..2c14a86 100644
+--- a/tools/testing/selftests/net/forwarding/devlink_lib.sh
++++ b/tools/testing/selftests/net/forwarding/devlink_lib.sh
+@@ -1,6 +1,9 @@
+ #!/bin/bash
+ # SPDX-License-Identifier: GPL-2.0
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
+ ##############################################################################
+ # Defines
+ 
+@@ -9,11 +12,11 @@ if [[ ! -v DEVLINK_DEV ]]; then
+ 			     | jq -r '.port | keys[]' | cut -d/ -f-2)
+ 	if [ -z "$DEVLINK_DEV" ]; then
+ 		echo "SKIP: ${NETIFS[p1]} has no devlink device registered for it"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ 	if [[ "$(echo $DEVLINK_DEV | grep -c pci)" -eq 0 ]]; then
+ 		echo "SKIP: devlink device's bus is not PCI"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ 
+ 	DEVLINK_VIDDID=$(lspci -s $(echo $DEVLINK_DEV | cut -d"/" -f2) \
+@@ -22,7 +25,7 @@ elif [[ ! -z "$DEVLINK_DEV" ]]; then
+ 	devlink dev show $DEVLINK_DEV &> /dev/null
+ 	if [ $? -ne 0 ]; then
+ 		echo "SKIP: devlink device \"$DEVLINK_DEV\" not found"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ fi
+ 
+@@ -32,19 +35,19 @@ fi
+ devlink help 2>&1 | grep resource &> /dev/null
+ if [ $? -ne 0 ]; then
+ 	echo "SKIP: iproute2 too old, missing devlink resource support"
+-	exit 1
++	exit $ksft_skip
+ fi
+ 
+ devlink help 2>&1 | grep trap &> /dev/null
+ if [ $? -ne 0 ]; then
+ 	echo "SKIP: iproute2 too old, missing devlink trap support"
+-	exit 1
++	exit $ksft_skip
+ fi
+ 
+ devlink dev help 2>&1 | grep info &> /dev/null
+ if [ $? -ne 0 ]; then
+ 	echo "SKIP: iproute2 too old, missing devlink dev info support"
+-	exit 1
++	exit $ksft_skip
+ fi
+ 
+ ##############################################################################
+diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
+index 42e28c9..e7fc5c3 100644
+--- a/tools/testing/selftests/net/forwarding/lib.sh
++++ b/tools/testing/selftests/net/forwarding/lib.sh
+@@ -4,6 +4,9 @@
+ ##############################################################################
+ # Defines
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
+ # Can be overridden by the configuration file.
+ PING=${PING:=ping}
+ PING6=${PING6:=ping6}
+@@ -38,7 +41,7 @@ check_tc_version()
+ 	tc -j &> /dev/null
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc is missing JSON support"
+-		exit 1
++		exit $ksft_skip
+ 	fi
  }
  
--static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
--				    struct qca_version *ver,
--				    const struct qca_device_info *info)
-+static void btusb_generate_qca_nvm_name(char **fwname,
-+					int max_size,
-+					struct qca_version *ver,
-+					char *separator,
-+					char *vendor)
- {
--	const struct firmware *fw;
--	char fwname[64];
--	int err;
--
- 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
- 		/* if boardid equal 0, use default nvm without surfix */
- 		if (le16_to_cpu(ver->board_id) == 0x0) {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--				 le32_to_cpu(ver->rom_version));
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x%s%s.bin",
-+				 le32_to_cpu(ver->rom_version),
-+				 separator,
-+				 vendor);
- 		} else {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x%s%s%04x.bin",
- 				le32_to_cpu(ver->rom_version),
-+				separator,
-+				vendor,
- 				le16_to_cpu(ver->board_id));
- 		}
- 	} else {
-@@ -3349,6 +3355,26 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 			 le32_to_cpu(ver->rom_version));
- 	}
+@@ -51,7 +54,7 @@ check_tc_mpls_support()
+ 		matchall action pipe &> /dev/null
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc is missing MPLS support"
+-		return 1
++		return $ksft_skip
+ 	fi
+ 	tc filter del dev $dev ingress protocol mpls_uc pref 1 handle 1 \
+ 		matchall
+@@ -69,7 +72,7 @@ check_tc_mpls_lse_stats()
  
-+}
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc-flower is missing extended MPLS support"
+-		return 1
++		return $ksft_skip
+ 	fi
+ 
+ 	tc -j filter show dev $dev ingress protocol mpls_uc | jq . &> /dev/null
+@@ -79,7 +82,7 @@ check_tc_mpls_lse_stats()
+ 
+ 	if [[ $ret -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc-flower produces invalid json output for extended MPLS filters"
+-		return 1
++		return $ksft_skip
+ 	fi
+ }
+ 
+@@ -88,7 +91,7 @@ check_tc_shblock_support()
+ 	tc filter help 2>&1 | grep block &> /dev/null
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc is missing shared block support"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ }
+ 
+@@ -97,7 +100,7 @@ check_tc_chain_support()
+ 	tc help 2>&1|grep chain &> /dev/null
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc is missing chain support"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ }
+ 
+@@ -106,7 +109,7 @@ check_tc_action_hw_stats_support()
+ 	tc actions help 2>&1 | grep -q hw_stats
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: iproute2 too old; tc is missing action hw_stats support"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ }
+ 
+@@ -115,13 +118,13 @@ check_ethtool_lanes_support()
+ 	ethtool --help 2>&1| grep lanes &> /dev/null
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: ethtool too old; it is missing lanes support"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ }
+ 
+ if [[ "$(id -u)" -ne 0 ]]; then
+ 	echo "SKIP: need root privileges"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ if [[ "$CHECK_TC" = "yes" ]]; then
+@@ -134,7 +137,7 @@ require_command()
+ 
+ 	if [[ ! -x "$(command -v "$cmd")" ]]; then
+ 		echo "SKIP: $cmd not installed"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ }
+ 
+@@ -143,7 +146,7 @@ require_command $MZ
+ 
+ if [[ ! -v NUM_NETIFS ]]; then
+ 	echo "SKIP: importer does not define \"NUM_NETIFS\""
+-	exit 1
++	exit $ksft_skip
+ fi
+ 
+ ##############################################################################
+@@ -203,7 +206,7 @@ for ((i = 1; i <= NUM_NETIFS; ++i)); do
+ 	ip link show dev ${NETIFS[p$i]} &> /dev/null
+ 	if [[ $? -ne 0 ]]; then
+ 		echo "SKIP: could not find all required interfaces"
+-		exit 1
++		exit $ksft_skip
+ 	fi
+ done
+ 
+diff --git a/tools/testing/selftests/net/forwarding/router_mpath_nh.sh b/tools/testing/selftests/net/forwarding/router_mpath_nh.sh
+index 76efb1f..a0d612e 100755
+--- a/tools/testing/selftests/net/forwarding/router_mpath_nh.sh
++++ b/tools/testing/selftests/net/forwarding/router_mpath_nh.sh
+@@ -411,7 +411,7 @@ ping_ipv6()
+ ip nexthop ls >/dev/null 2>&1
+ if [ $? -ne 0 ]; then
+ 	echo "Nexthop objects not supported; skipping tests"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ trap cleanup EXIT
+diff --git a/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh b/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh
+index 4898dd4..cb08ffe 100755
+--- a/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh
++++ b/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh
+@@ -386,7 +386,7 @@ ping_ipv6()
+ ip nexthop ls >/dev/null 2>&1
+ if [ $? -ne 0 ]; then
+ 	echo "Nexthop objects not supported; skipping tests"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ trap cleanup EXIT
+diff --git a/tools/testing/selftests/net/run_afpackettests b/tools/testing/selftests/net/run_afpackettests
+index 8b42e8b..a59cb6a 100755
+--- a/tools/testing/selftests/net/run_afpackettests
++++ b/tools/testing/selftests/net/run_afpackettests
+@@ -1,9 +1,12 @@
+ #!/bin/sh
+ # SPDX-License-Identifier: GPL-2.0
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
 +
-+static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
-+				    struct qca_version *ver,
-+				    const struct qca_device_info *info)
-+{
-+	const struct firmware *fw;
-+	char fwname[64];
-+	int err;
+ if [ $(id -u) != 0 ]; then
+ 	echo $msg must be run as root >&2
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ ret=0
+diff --git a/tools/testing/selftests/net/srv6_end_dt46_l3vpn_test.sh b/tools/testing/selftests/net/srv6_end_dt46_l3vpn_test.sh
+index 75ada17..aebaab8 100755
+--- a/tools/testing/selftests/net/srv6_end_dt46_l3vpn_test.sh
++++ b/tools/testing/selftests/net/srv6_end_dt46_l3vpn_test.sh
+@@ -193,6 +193,9 @@
+ # +---------------------------------------------------+
+ #
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
 +
-+	switch (ver->ram_version) {
-+	case WCN6855_2_0_RAM_VERSION_GF:
-+	case WCN6855_2_1_RAM_VERSION_GF:
-+			btusb_generate_qca_nvm_name(&fwname, sizeof(fwname), ver, "_", "gf");
-+		break;
-+	default:
-+			btusb_generate_qca_nvm_name(&fwname, sizeof(fwname), ver, NULL, NULL);
-+		break;
-+	}
+ readonly LOCALSID_TABLE_ID=90
+ readonly IPv6_RT_NETWORK=fd00
+ readonly IPv6_HS_NETWORK=cafe
+@@ -543,18 +546,18 @@ host_vpn_isolation_tests()
+ 
+ if [ "$(id -u)" -ne 0 ];then
+ 	echo "SKIP: Need root privileges"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ if [ ! -x "$(command -v ip)" ]; then
+ 	echo "SKIP: Could not run test without ip tool"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ modprobe vrf &>/dev/null
+ if [ ! -e /proc/sys/net/vrf/strict_mode ]; then
+         echo "SKIP: vrf sysctl does not exist"
+-        exit 0
++        exit $ksft_skip
+ fi
+ 
+ cleanup &>/dev/null
+diff --git a/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh b/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
+index ad7a9fc..1003119 100755
+--- a/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
++++ b/tools/testing/selftests/net/srv6_end_dt4_l3vpn_test.sh
+@@ -163,6 +163,9 @@
+ # +---------------------------------------------------+
+ #
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
 +
- 	err = request_firmware(&fw, fwname, &hdev->dev);
- 	if (err) {
- 		bt_dev_err(hdev, "failed to request NVM file: %s (%d)",
+ readonly LOCALSID_TABLE_ID=90
+ readonly IPv6_RT_NETWORK=fd00
+ readonly IPv4_HS_NETWORK=10.0.0
+@@ -464,18 +467,18 @@ host_vpn_isolation_tests()
+ 
+ if [ "$(id -u)" -ne 0 ];then
+ 	echo "SKIP: Need root privileges"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ if [ ! -x "$(command -v ip)" ]; then
+ 	echo "SKIP: Could not run test without ip tool"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ modprobe vrf &>/dev/null
+ if [ ! -e /proc/sys/net/vrf/strict_mode ]; then
+         echo "SKIP: vrf sysctl does not exist"
+-        exit 0
++        exit $ksft_skip
+ fi
+ 
+ cleanup &>/dev/null
+diff --git a/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh b/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh
+index 68708f5..b9b06ef 100755
+--- a/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh
++++ b/tools/testing/selftests/net/srv6_end_dt6_l3vpn_test.sh
+@@ -164,6 +164,9 @@
+ # +---------------------------------------------------+
+ #
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
+ readonly LOCALSID_TABLE_ID=90
+ readonly IPv6_RT_NETWORK=fd00
+ readonly IPv6_HS_NETWORK=cafe
+@@ -472,18 +475,18 @@ host_vpn_isolation_tests()
+ 
+ if [ "$(id -u)" -ne 0 ];then
+ 	echo "SKIP: Need root privileges"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ if [ ! -x "$(command -v ip)" ]; then
+ 	echo "SKIP: Could not run test without ip tool"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ modprobe vrf &>/dev/null
+ if [ ! -e /proc/sys/net/vrf/strict_mode ]; then
+         echo "SKIP: vrf sysctl does not exist"
+-        exit 0
++        exit $ksft_skip
+ fi
+ 
+ cleanup &>/dev/null
+diff --git a/tools/testing/selftests/net/unicast_extensions.sh b/tools/testing/selftests/net/unicast_extensions.sh
+index 66354cd..2d10cca 100755
+--- a/tools/testing/selftests/net/unicast_extensions.sh
++++ b/tools/testing/selftests/net/unicast_extensions.sh
+@@ -28,12 +28,15 @@
+ # These tests provide an easy way to flip the expected result of any
+ # of these behaviors for testing kernel patches that change them.
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
+ # nettest can be run from PATH or from same directory as this selftest
+ if ! which nettest >/dev/null; then
+ 	PATH=$PWD:$PATH
+ 	if ! which nettest >/dev/null; then
+ 		echo "'nettest' command not found; skipping tests"
+-		exit 0
++		exit $ksft_skip
+ 	fi
+ fi
+ 
+diff --git a/tools/testing/selftests/net/vrf_strict_mode_test.sh b/tools/testing/selftests/net/vrf_strict_mode_test.sh
+index 18b982d..865d53c 100755
+--- a/tools/testing/selftests/net/vrf_strict_mode_test.sh
++++ b/tools/testing/selftests/net/vrf_strict_mode_test.sh
+@@ -3,6 +3,9 @@
+ 
+ # This test is designed for testing the new VRF strict_mode functionality.
+ 
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
+ ret=0
+ 
+ # identifies the "init" network namespace which is often called root network
+@@ -371,18 +374,18 @@ vrf_strict_mode_check_support()
+ 
+ if [ "$(id -u)" -ne 0 ];then
+ 	echo "SKIP: Need root privileges"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ if [ ! -x "$(command -v ip)" ]; then
+ 	echo "SKIP: Could not run test without ip tool"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ modprobe vrf &>/dev/null
+ if [ ! -e /proc/sys/net/vrf/strict_mode ]; then
+ 	echo "SKIP: vrf sysctl does not exist"
+-	exit 0
++	exit $ksft_skip
+ fi
+ 
+ cleanup &> /dev/null
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+2.7.4
 
