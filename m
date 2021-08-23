@@ -2,153 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33B43F512D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519883F5130
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhHWTW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhHWTWy (ORCPT
+        id S231906AbhHWTXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:23:45 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:33578 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhHWTXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:22:54 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B520BC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:22:11 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id c14so10325567qvs.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T6iKivFntL9jO7A0bCG8XT9/kFuKhYKYNxAQLHLMCA8=;
-        b=BSRfZn3mjcrNmw8pFTD0zSn1xAXWxcKMU9J2TF+jD2LkWw9I7AhfhljTQwfgv51OLf
-         mE/H3lpQQMB55BLYil6FkPi+0QlqRcAbP2GaIJFgcDsEvfHQE0nlkGDRpvRvr3qSYXp9
-         i0NnD/y0GbccrRSpP11Icq9wQ2gr/o0otdPKnjS8aYOI681yCT0GilYqs4683pADtHDn
-         jM0Ir2gvmWRo7/awhQZYFYC69CaNV02Evw6mk74Tiik+azOAb1lI5u4Chuycy89p0RWO
-         +rG2TqaSvk6TOtF9TPpgsCHa+YPl2YT29z3zUFDSNayYtOk3VdaquRQcmR37SY8L1Agp
-         6q9A==
+        Mon, 23 Aug 2021 15:23:44 -0400
+Received: by mail-ej1-f48.google.com with SMTP id x11so39309460ejv.0;
+        Mon, 23 Aug 2021 12:23:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T6iKivFntL9jO7A0bCG8XT9/kFuKhYKYNxAQLHLMCA8=;
-        b=JiefDSDKvE4uVMsh0uRLRPZw5KP1Y+Kio2t4U+fVVmR3s72Rqam+LXl3dH9U1cSvFN
-         9MClmwNWdm2cBFh0WbJE62/z2C0tc2AoVHDgOc6OTN+jg0Gq07iWPvWB8MzhznAZ9Hgx
-         5P78yETGXalbVBNji86rxlerYzTcisOPtMFbFYvoi/ndZoT0z155cowQHmvd6pz965E9
-         tpCDvgu4OncFxcy2Ma9L5ADiUCg9Ckx1z9Kyqyan8gzSKRM0tlxIRKSnkEFvWaZ3sLo9
-         PaMzfwEU9xc7TZy8CtQ9hCvNunCSyCfug0os5B5KB9usMmSVxmGCGZswZ+XVt2n8iBa4
-         0Ugw==
-X-Gm-Message-State: AOAM533SXr99jx/Hy33S+YQjr5iVTiSm2m5PBeLIC9IdSdFlfCT0J86Q
-        5mKZaaiPtCAFlRC1oXgmdff/yFZQL+Lfb1yIvab1Bg==
-X-Google-Smtp-Source: ABdhPJzSmsDDXrKpnjlCjqU/iSM5pI5Vk9qNwlyj24hp3zzEDN+2wjy9BTW6K99y21o6o3AvyFjVbWNT+e3EGt3wGKw=
-X-Received: by 2002:a05:6214:240b:: with SMTP id fv11mr33382976qvb.28.1629746530676;
- Mon, 23 Aug 2021 12:22:10 -0700 (PDT)
+        bh=LAkUj8eGXa16q3RpMBF+nglw7ejQzo6su3CYaWTKq58=;
+        b=ZSNW2G2r0RR4l6HEKebjsOjqdfGmMgmyTSpqiFBURu8QSDXMXlSKp77HAs20kyFdZu
+         yqfEqapSxbBmK0aEVMGabAdVW3Ietem5o64rYV4VcrF1PJNS3pWJU8P/OqHeQHlszeLg
+         VKc8txe/JvMrwFeOeC9GV28k+2smaYmuHYf5D+nld0Op5HKnZrIx8Y4CRlc8HAuR8Kbb
+         TVtP8wq8eFDEitw2dH3A4fu4KBTnu1LecMH9gZ9/JVwa6AQrxaCslplJtiLTPPRHRxJt
+         2Gzyts2C6gC/5xB5fzQYGZwITzxRcJO5C9FupVNTUSu7Hre5nPnEs439W6bpoIpxj1rh
+         vAPg==
+X-Gm-Message-State: AOAM532K6RlJqeEfoDaY6G8lh1OpUAOgKZDp99zY3kBeRG/VPJ6mjZA/
+        SoKm9kjO70ytJGuYylaVOlAhPmTCrBisQg==
+X-Google-Smtp-Source: ABdhPJyzSArzCICLbcX4VB7Y0hnhLD5F0eF5GFBjkoXdGcXkcQcW1A+u9XnXplC/Jq8Qpv2AqQNC2g==
+X-Received: by 2002:a17:906:9bdc:: with SMTP id de28mr36750594ejc.154.1629746580113;
+        Mon, 23 Aug 2021 12:23:00 -0700 (PDT)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id o26sm2889828eje.24.2021.08.23.12.22.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 12:22:59 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id u1so11257821wmm.0;
+        Mon, 23 Aug 2021 12:22:59 -0700 (PDT)
+X-Received: by 2002:a7b:c318:: with SMTP id k24mr157053wmj.144.1629746579518;
+ Mon, 23 Aug 2021 12:22:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
- <20210809190157.279332-4-dovmurik@linux.ibm.com> <YRZuIIVIzMfgjtEl@google.com>
- <CAMj1kXFC-cizTw2Tv40uZHdLArKtdMNxdQXWoPWSL-8qexdkLQ@mail.gmail.com>
- <CADcWuH0mP+e6GxkUGN3ni_Yu0z8YTn-mo677obH+p-OFCL+wOQ@mail.gmail.com> <b3c65f9d-5fd3-22c5-cd23-481774d92222@linux.ibm.com>
-In-Reply-To: <b3c65f9d-5fd3-22c5-cd23-481774d92222@linux.ibm.com>
-From:   Andrew Scull <ascull@google.com>
-Date:   Mon, 23 Aug 2021 20:21:59 +0100
-Message-ID: <CADcWuH05vbFtJ1WYSs3d+_=TGzh-MitvAXp1__d1kGJJkvkWpQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     Dov Murik <dovmurik@linux.ibm.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210816000542.18711-1-rdunlap@infradead.org>
+In-Reply-To: <20210816000542.18711-1-rdunlap@infradead.org>
+From:   Marc Dionne <marc.dionne@auristor.com>
+Date:   Mon, 23 Aug 2021 16:22:48 -0300
+X-Gmail-Original-Message-ID: <CAB9dFdvoo_JtbqW6s4+DKMraWxMX-Qivdt+nm7_w2Q-dq3WTaQ@mail.gmail.com>
+Message-ID: <CAB9dFdvoo_JtbqW6s4+DKMraWxMX-Qivdt+nm7_w2Q-dq3WTaQ@mail.gmail.com>
+Subject: Re: [PATCH] net: RxRPC: make dependent Kconfig symbols be shown indented
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        linux-afs@lists.infradead.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 at 19:36, Dov Murik <dovmurik@linux.ibm.com> wrote:
+On Sun, Aug 15, 2021 at 9:06 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
+> Make all dependent RxRPC kconfig entries be dependent on AF_RXRPC
+> so that they are presented (indented) after AF_RXRPC instead
+> of being presented at the same level on indentation.
 >
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: Marc Dionne <marc.dionne@auristor.com>
+> Cc: linux-afs@lists.infradead.org
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: netdev@vger.kernel.org
+> ---
+>  net/rxrpc/Kconfig |    7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
-> On 19/08/2021 16:02, Andrew Scull wrote:
-> > On Mon, 16 Aug 2021 at 10:57, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >>
-> >> On Fri, 13 Aug 2021 at 15:05, Andrew Scull <ascull@google.com> wrote:
-> >>>
-> >>> On Mon, Aug 09, 2021 at 07:01:57PM +0000, Dov Murik wrote:
+> --- linux-next-20210813.orig/net/rxrpc/Kconfig
+> +++ linux-next-20210813/net/rxrpc/Kconfig
+> @@ -21,6 +21,8 @@ config AF_RXRPC
 >
-> [...]
+>           See Documentation/networking/rxrpc.rst.
 >
-> >>>
-> >>>> +static int sev_secret_unlink(struct inode *dir, struct dentry *dentry)
-> >>>> +{
-> >>>> +     struct sev_secret *s = sev_secret_get();
-> >>>> +     struct inode *inode = d_inode(dentry);
-> >>>> +     struct secret_entry *e = (struct secret_entry *)inode->i_private;
-> >>>> +     int i;
-> >>>> +
-> >>>> +     if (e) {
-> >>>> +             /* Zero out the secret data */
-> >>>> +             memzero_explicit(e->data, secret_entry_data_len(e));
-> >>>
-> >>> Would there be a benefit in flushing these zeros?
-> >>>
-> >>
-> >> Do you mean cache clean+invalidate? Better to be precise here.
-> >
-> > At least a clean, to have the zeros written back to memory from the
-> > cache, in order to overwrite the secret.
-> >
+> +if AF_RXRPC
+> +
+>  config AF_RXRPC_IPV6
+>         bool "IPv6 support for RxRPC"
+>         depends on (IPV6 = m && AF_RXRPC = m) || (IPV6 = y && AF_RXRPC)
+> @@ -30,7 +32,6 @@ config AF_RXRPC_IPV6
 >
-> I agree, but not sure how to implement this:
+>  config AF_RXRPC_INJECT_LOSS
+>         bool "Inject packet loss into RxRPC packet stream"
+> -       depends on AF_RXRPC
+>         help
+>           Say Y here to inject packet loss by discarding some received and some
+>           transmitted packets.
+> @@ -38,7 +39,6 @@ config AF_RXRPC_INJECT_LOSS
 >
-> I see there's an arch_wb_cache_pmem exported function which internally
-> (in arch/x86/lib/usercopy_64.c) calls clean_cache_range which seems to
-> do what we want (assume the secret can be longer than the cache line).
+>  config AF_RXRPC_DEBUG
+>         bool "RxRPC dynamic debugging"
+> -       depends on AF_RXRPC
+>         help
+>           Say Y here to make runtime controllable debugging messages appear.
 >
-> But arch_wb_cache_pmem is declared in include/linux/libnvdimm.h and
-> guarded with #ifdef CONFIG_ARCH_HAS_PMEM_API -- both seem not related to
-> what I'm trying to do.
+> @@ -47,7 +47,6 @@ config AF_RXRPC_DEBUG
 >
-> I see there's an exported clflush_cache_range for x86 -- but that's a
-> clean+flush if I understand correctly.
+>  config RXKAD
+>         bool "RxRPC Kerberos security"
+> -       depends on AF_RXRPC
+>         select CRYPTO
+>         select CRYPTO_MANAGER
+>         select CRYPTO_SKCIPHER
+> @@ -58,3 +57,5 @@ config RXKAD
+>           through the use of the key retention service.
+>
+>           See Documentation/networking/rxrpc.rst.
+> +
+> +endif
+>
+> _______________________________________________
+> linux-afs mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-afs
 
-This would be perfectly correct, the invalidation is just unnecessary.
 
-> Suggestions on how to approach? I can copy the clean_cache_range
-> implementation into the sev_secret module but hopefully there's a better
-> way to reuse.  Maybe export clean_cache_range in x86?
+Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
 
-Exporting sounds much better than duplicating.
-
-It looks like the clean-only instruction was added to x86 more
-recently and with persistent memory as the intended application.
-
-d9dc64f30 "x86/asm: Add support for the CLWB instruction" says:
-
-"This should be used in favor of clflushopt or clflush in cases where
-you require the cache line to be written to memory but plan to access
-the data cache line to be written to memory but plan to access the
-data"
-
-I don't expect the secret table would be accessed with such frequency
-that it would actually make a difference, but if it's just a quirk of
-history that the clean-only version isn't exported, now seems as good
-a time as any to change that!
-
-> Since this is for SEV the solution can be x86-specific, but if there's a
-> generic way I guess it's better (I think all of sev_secret module
-> doesn't have x86-specific stuff).
-
-arch_wb_cache_pmem is the closest to arch agnostic I've seen, but that
-has it own problems :/
+Marc
