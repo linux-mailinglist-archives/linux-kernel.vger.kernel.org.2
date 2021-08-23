@@ -2,195 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADFF3F46DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4B73F46EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbhHWIsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:48:47 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:50165 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235766AbhHWIsd (ORCPT
+        id S235648AbhHWIxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:53:42 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]:35450 "EHLO
+        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232314AbhHWIxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:48:33 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 67C56580C67;
-        Mon, 23 Aug 2021 04:47:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 23 Aug 2021 04:47:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=QEg7Vp8gCjMDX
-        hvK4uZ6lD3DQNesVKp5J6Tnbairaz8=; b=0vzzcRaawN90SVLYfNwd8T+dAdW2+
-        NR5OWaThZchQK6iPu+4SvBwSv+6f3uVIlVUODHk+TE7s31aRxf5Kf1Q/rhS+yXRC
-        sCjUE9Re1DbA+7K49HmgkSKflElrQBskdFiRU3HMK/+prWoTif6iozvwmamtJIu+
-        bVEMabWrPuSusquuf6pQ6Ag8yHY/+SawUxl8s4zN7i5TQaD4AtrsVGPV5YnMDuR7
-        tNbRjjxnRBU+DuA7otf92PsxthRhmzbPsC73vh2Bx5Nj2FyVwbuSMZoWxJCGKupY
-        qOl0tErhpy9pWNCEcwB/DaofbZeQjRHR7IeV3hxglkUxFxc3c+xHLS46Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=QEg7Vp8gCjMDXhvK4uZ6lD3DQNesVKp5J6Tnbairaz8=; b=ZvLUJ0gN
-        iz5kR7wzYQj9NKD5lfU10T+LEio36Fvk0maroQFGx3+tFSKVvvReb66/1lbIB4Dj
-        i8Q+lK81HhgDtRTZnJDo4eVQ3ReK99kpX5eKI5kAf2yRWxL1y++XZ8YVkIGFsCkL
-        yCcvwF1GU9/g+asunStUqnVBm2Y2ZZ691371hpUGEhDFckcKNpvFEE96qVruvdwL
-        SWDkIp8s+y5zieqlsNjn1I4+J0O+H4USBf2DRUt8hagTe0FjyimByWsbtjkLsMfD
-        gmlV9AW5rj6RsiWLS7emKLTCYK0zOk5TG91S+Qe5R0X4iQtHuy00880g4jK+1lCA
-        U2Qn2SaEepbqMA==
-X-ME-Sender: <xms:tmAjYQCFsNEgNhNARCKt5Bh6-T7bRnAoPgNl8ZgByKYJ40sTzl_PNw>
-    <xme:tmAjYSi9nMPHqU88ig-vdlzYCIMhlfoOONM5YvYipTPi583W_71DsItXzEhBnAGLD
-    vhbn2btIBZOivofygg>
-X-ME-Received: <xmr:tmAjYTnS7iPz-j16-b6VzIAa0GS_UwPReGq8ahCn0dHmO_atcf4xOubhBuEXjzir3cvcQk1cnqOtZokDnHAIaYLSOdsRtYR0irY_>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddthedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:tmAjYWwk_lydBk-_Pbl6sNAFDq6EG79x5opdt-25JG8ErkrW4J9QBg>
-    <xmx:tmAjYVROwmToSt6nrrKTWeR0j2yV_VvxlniagyPuoAmxvQ2Re-7VtQ>
-    <xmx:tmAjYRZucQd6Bc5NIplUGHswyqruRu_LPi24vpaXjWFWZugAf3bVHA>
-    <xmx:tmAjYbDh66Ndxm4S6OkvdVs2RsNwVaxH7ICbaemQ7Ir1VBTyxzuzdg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Aug 2021 04:47:49 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jonas Karlman <jonas@kwiboo.se>, Sam Ravnborg <sam@ravnborg.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 8/8] drm/bridge: sn65dsi83: Register and attach our DSI device at probe
-Date:   Mon, 23 Aug 2021 10:47:23 +0200
-Message-Id: <20210823084723.1493908-9-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210823084723.1493908-1-maxime@cerno.tech>
-References: <20210823084723.1493908-1-maxime@cerno.tech>
+        Mon, 23 Aug 2021 04:53:42 -0400
+Received: by mail-wr1-f45.google.com with SMTP id i6so1365671wrv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:52:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=25CM3PYigxPQza+icuqnWvevvTl5w75e2aMsDUxOTe8=;
+        b=uZcupshHSeuCSwNiy+YfGsqvm1/Y0IkHiMPD0AmCtbGv4YcfQWyspKgUWirmV+0077
+         +m9La3NkU3qxvueUfTih+uI8aA7HZh+Q76WGL+9Fu31tqgiBwb0b3WYPhWZNtCCDDmip
+         sfjPU9PzO6anbzK3ZeXsRk4u1DVXI8jQodvpSq+jkMw41r/hhAUvTpnqX9JB0P90Sxnq
+         l2yD+G7jXghmV9a+6pl6MIOlQfNsbaldll4a2hpDUWUoG2TXfAmyjG/F2u8Pm8QYzRwU
+         3fZeBjQtP8dP1QQLWDN06H8YmszreeBcQ7QXIdp5i8PZpxpGmb0L0UiIoD2W4yFYZrIZ
+         01vw==
+X-Gm-Message-State: AOAM530xoKdMXL/pcqc4UZJo5kfEOL8HJOCLR089379H6OSikskkjLjk
+        0Exl+xLvUn0sM0dPrjEagcA=
+X-Google-Smtp-Source: ABdhPJz/JNxBJNFGQfNN7mlQMnByzx3tC4wIodG5rAU+eLbbPnoGrMDuZSYtPVhg+p4qZ21dgvBMVg==
+X-Received: by 2002:adf:ded1:: with SMTP id i17mr12031370wrn.303.1629708778840;
+        Mon, 23 Aug 2021 01:52:58 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id d8sm15110613wrv.20.2021.08.23.01.52.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 01:52:58 -0700 (PDT)
+Subject: Re: [PATCH v2] tty: Fix data race between tiocsti() and
+ flush_to_ldisc()
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+References: <20210823000641.2082292-1-phind.uet@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <523450c6-488c-b24a-470e-828354ab80e5@kernel.org>
+Date:   Mon, 23 Aug 2021 10:52:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210823000641.2082292-1-phind.uet@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid any probe ordering issue, the best practice is to move
-the secondary MIPI-DSI device registration and attachment to the
-MIPI-DSI host at probe time. Let's do this.
+On 23. 08. 21, 2:06, Nguyen Dinh Phi wrote:
+> The ops->receive_buf() may be accessed concurrently from these two
+> functions.  If the driver flushes data to the line discipline
+> receive_buf() method while tiocsti() is waiting for the
+> ops->receive_buf() to finish its work, the data race will happen.
+> 
+> For example:
+> tty_ioctl			|tty_ldisc_receive_buf
+>   ->tioctsi			| ->tty_port_default_receive_buf
+> 				|  ->tty_ldisc_receive_buf
+>     ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+>      ->h4_recv                   |    ->h4_recv
+> 
+> In this case, the h4 receive buffer will be overwritten by the
+> latecomer, and we will lost the data.
+> 
+> Hence, change tioctsi() function to use the exclusive lock interface
+> from tty_buffer to avoid the data race.
 
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/bridge/ti-sn65dsi83.c | 76 +++++++++++++++------------
- 1 file changed, 42 insertions(+), 34 deletions(-)
+This makes sense. It mimics paste_selection() -- the lock order is 
+preexisting. The normal path processing has the locks inverted, not sure 
+why it doesn't matter :):
+flush_to_ldisc
+   mutex_lock(&buf->lock);    <--------- A (mutex)
+   receive_buf()
+     tty_port_default_receive_buf()
+       disc = tty_ldisc_ref(tty); <----- B (ldsem for READ)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-index db4d39082705..3a75224b7348 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-@@ -245,40 +245,6 @@ static int sn65dsi83_attach(struct drm_bridge *bridge,
- 			    enum drm_bridge_attach_flags flags)
- {
- 	struct sn65dsi83 *ctx = bridge_to_sn65dsi83(bridge);
--	struct device *dev = ctx->dev;
--	struct mipi_dsi_device *dsi;
--	struct mipi_dsi_host *host;
--	int ret = 0;
--
--	const struct mipi_dsi_device_info info = {
--		.type = "sn65dsi83",
--		.channel = 0,
--		.node = NULL,
--	};
--
--	host = of_find_mipi_dsi_host_by_node(ctx->host_node);
--	if (!host) {
--		dev_err(dev, "failed to find dsi host\n");
--		return -EPROBE_DEFER;
--	}
--
--	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
--	if (IS_ERR(dsi)) {
--		return dev_err_probe(dev, PTR_ERR(dsi),
--				     "failed to create dsi device\n");
--	}
--
--	ctx->dsi = dsi;
--
--	dsi->lanes = ctx->dsi_lanes;
--	dsi->format = MIPI_DSI_FMT_RGB888;
--	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST;
--
--	ret = devm_mipi_dsi_attach(dev, dsi);
--	if (ret < 0) {
--		dev_err(dev, "failed to attach dsi to host\n");
--		return ret;
--	}
- 
- 	return drm_bridge_attach(bridge->encoder, ctx->panel_bridge,
- 				 &ctx->bridge, flags);
-@@ -646,6 +612,44 @@ static int sn65dsi83_parse_dt(struct sn65dsi83 *ctx, enum sn65dsi83_model model)
- 	return 0;
- }
- 
-+static int sn65dsi83_host_attach(struct sn65dsi83 *ctx)
-+{
-+	struct device *dev = ctx->dev;
-+	struct mipi_dsi_device *dsi;
-+	struct mipi_dsi_host *host;
-+	const struct mipi_dsi_device_info info = {
-+		.type = "sn65dsi83",
-+		.channel = 0,
-+		.node = NULL,
-+	};
-+	int ret;
-+
-+	host = of_find_mipi_dsi_host_by_node(ctx->host_node);
-+	if (!host) {
-+		dev_err(dev, "failed to find dsi host\n");
-+		return -EPROBE_DEFER;
-+	}
-+
-+	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
-+	if (IS_ERR(dsi))
-+		return dev_err_probe(dev, PTR_ERR(dsi),
-+				     "failed to create dsi device\n");
-+
-+	ctx->dsi = dsi;
-+
-+	dsi->lanes = ctx->dsi_lanes;
-+	dsi->format = MIPI_DSI_FMT_RGB888;
-+	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST;
-+
-+	ret = devm_mipi_dsi_attach(dev, dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to attach dsi to host: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int sn65dsi83_probe(struct i2c_client *client,
- 			   const struct i2c_device_id *id)
- {
-@@ -686,6 +690,10 @@ static int sn65dsi83_probe(struct i2c_client *client,
- 	ctx->bridge.of_node = dev->of_node;
- 	drm_bridge_add(&ctx->bridge);
- 
-+	ret = sn65dsi83_host_attach(ctx);
-+	if (ret)
-+		return ret;
-+
- 	return 0;
- }
- 
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+
+> Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+> Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+> ---
+> V2:
+> 	- Remove FIXME comment.
+> 
+>   drivers/tty/tty_io.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+> index e8532006e960..6616d4a0d41d 100644
+> --- a/drivers/tty/tty_io.c
+> +++ b/drivers/tty/tty_io.c
+> @@ -2290,8 +2290,6 @@ static int tty_fasync(int fd, struct file *filp, int on)
+>    *	Locking:
+>    *		Called functions take tty_ldiscs_lock
+>    *		current->signal->tty check is safe without locks
+> - *
+> - *	FIXME: may race normal receive processing
+>    */
+> 
+>   static int tiocsti(struct tty_struct *tty, char __user *p)
+> @@ -2307,8 +2305,10 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
+>   	ld = tty_ldisc_ref_wait(tty);
+
+Here (and in paste_selection()), it is lock "B (ldsem) for READ".
+
+
+>   	if (!ld)
+>   		return -EIO;
+> +	tty_buffer_lock_exclusive(tty->port);
+
+and "A (mutex)".
+
+>   	if (ld->ops->receive_buf)
+>   		ld->ops->receive_buf(tty, &ch, &mbz, 1);
+> +	tty_buffer_unlock_exclusive(tty->port);
+>   	tty_ldisc_deref(ld);
+>   	return 0;
+>   }
+
+thanks,
 -- 
-2.31.1
-
+js
+suse labs
