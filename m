@@ -2,226 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EAB3F465B
+	by mail.lfdr.de (Postfix) with ESMTP id C512B3F465C
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235476AbhHWIF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:05:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28406 "EHLO m43-7.mailgun.net"
+        id S235503AbhHWIGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:06:15 -0400
+Received: from mga11.intel.com ([192.55.52.93]:2762 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235443AbhHWIFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:05:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629705911; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=liVXi05SB5unm8X7XLacM7I2ln2fD58WOmR6wSA0EJY=; b=DvI98GLnEi279H91ZGyWClGM2o7mkBW1RbchjHhQXtSLmOjtooznO7xxBu/euDj1yUD+aT27
- rQZbYzVq0YDRDHyx76zRkAZvDGQph09vYMvhC7C0yKMP70fbZeXfKrfombKd48KTKl60Vlb1
- sp7t9zduIfdwOupQ2LBcv+GcAyk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 612356aff588e42af10e749d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 08:05:03
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E049C4361A; Mon, 23 Aug 2021 08:05:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45191C43618;
-        Mon, 23 Aug 2021 08:04:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 45191C43618
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     maz@kernel.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, bjorn.andersson@linaro.org,
-        linus.walleij@linaro.org, tkjos@google.com, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v3 2/2] irqchip/qcom-pdc: Start getting rid of the GPIO_NO_WAKE_IRQ
-Date:   Mon, 23 Aug 2021 13:34:40 +0530
-Message-Id: <1629705880-27877-3-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629705880-27877-1-git-send-email-mkshah@codeaurora.org>
-References: <1629705880-27877-1-git-send-email-mkshah@codeaurora.org>
+        id S235353AbhHWIGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 04:06:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="213927037"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="213927037"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 01:05:29 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="535251129"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 01:05:26 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        x86@kernel.org
+Subject: Re: [RFC 20/20] mm/rmap: avoid potential races
+References: <20210131001132.3368247-1-namit@vmware.com>
+        <20210131001132.3368247-21-namit@vmware.com>
+Date:   Mon, 23 Aug 2021 16:05:24 +0800
+In-Reply-To: <20210131001132.3368247-21-namit@vmware.com> (Nadav Amit's
+        message of "Sat, 30 Jan 2021 16:11:32 -0800")
+Message-ID: <87zgt8y4aj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+Hi, Nadav,
 
-gpio_to_irq() reports error at irq_domain_trim_hierarchy() for non
-wakeup capable GPIOs that do not have dedicated interrupt at GIC.
+Nadav Amit <nadav.amit@gmail.com> writes:
 
-Since PDC irqchip do not allocate irq at parent GIC domain for such
-GPIOs indicate same by using irq_domain_disconnect_hierarchy().
+> From: Nadav Amit <namit@vmware.com>
+>
+> flush_tlb_batched_pending() appears to have a theoretical race:
+> tlb_flush_batched is being cleared after the TLB flush, and if in
+> between another core calls set_tlb_ubc_flush_pending() and sets the
+> pending TLB flush indication, this indication might be lost. Holding the
+> page-table lock when SPLIT_LOCK is set cannot eliminate this race.
 
-Replace qcom_pdc_gic_mask/unmask() and qcom_pdc_gic_get/set_irqchip_state()
-with respective parent forward callbacks since all they were doing is to
-check for valid irq and forward to parent.
+Recently, when I read the corresponding code, I find the exact same race
+too.  Do you still think the race is possible at least in theory?  If
+so, why hasn't your fix been merged?
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Tested-by: Maulik Shah <mkshah@codeaurora.org>
----
- drivers/irqchip/qcom-pdc.c | 68 ++++++++--------------------------------------
- 1 file changed, 11 insertions(+), 57 deletions(-)
+> The current batched TLB invalidation scheme therefore does not seem
+> viable or easily repairable.
 
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index 32d5920..173e652 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -53,26 +53,6 @@ static u32 pdc_reg_read(int reg, u32 i)
- 	return readl_relaxed(pdc_base + reg + i * sizeof(u32));
- }
- 
--static int qcom_pdc_gic_get_irqchip_state(struct irq_data *d,
--					  enum irqchip_irq_state which,
--					  bool *state)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return 0;
--
--	return irq_chip_get_parent_state(d, which, state);
--}
--
--static int qcom_pdc_gic_set_irqchip_state(struct irq_data *d,
--					  enum irqchip_irq_state which,
--					  bool value)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return 0;
--
--	return irq_chip_set_parent_state(d, which, value);
--}
--
- static void pdc_enable_intr(struct irq_data *d, bool on)
- {
- 	int pin_out = d->hwirq;
-@@ -91,38 +71,16 @@ static void pdc_enable_intr(struct irq_data *d, bool on)
- 
- static void qcom_pdc_gic_disable(struct irq_data *d)
- {
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
- 	pdc_enable_intr(d, false);
- 	irq_chip_disable_parent(d);
- }
- 
- static void qcom_pdc_gic_enable(struct irq_data *d)
- {
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
- 	pdc_enable_intr(d, true);
- 	irq_chip_enable_parent(d);
- }
- 
--static void qcom_pdc_gic_mask(struct irq_data *d)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
--	irq_chip_mask_parent(d);
--}
--
--static void qcom_pdc_gic_unmask(struct irq_data *d)
--{
--	if (d->hwirq == GPIO_NO_WAKE_IRQ)
--		return;
--
--	irq_chip_unmask_parent(d);
--}
--
- /*
-  * GIC does not handle falling edge or active low. To allow falling edge and
-  * active low interrupts to be handled at GIC, PDC has an inverter that inverts
-@@ -159,14 +117,10 @@ enum pdc_irq_config_bits {
-  */
- static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- {
--	int pin_out = d->hwirq;
- 	enum pdc_irq_config_bits pdc_type;
- 	enum pdc_irq_config_bits old_pdc_type;
- 	int ret;
- 
--	if (pin_out == GPIO_NO_WAKE_IRQ)
--		return 0;
--
- 	switch (type) {
- 	case IRQ_TYPE_EDGE_RISING:
- 		pdc_type = PDC_EDGE_RISING;
-@@ -191,8 +145,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- 		return -EINVAL;
- 	}
- 
--	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
--	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
-+	old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
-+	pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
- 
- 	ret = irq_chip_set_type_parent(d, type);
- 	if (ret)
-@@ -216,12 +170,12 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- static struct irq_chip qcom_pdc_gic_chip = {
- 	.name			= "PDC",
- 	.irq_eoi		= irq_chip_eoi_parent,
--	.irq_mask		= qcom_pdc_gic_mask,
--	.irq_unmask		= qcom_pdc_gic_unmask,
-+	.irq_mask		= irq_chip_mask_parent,
-+	.irq_unmask		= irq_chip_unmask_parent,
- 	.irq_disable		= qcom_pdc_gic_disable,
- 	.irq_enable		= qcom_pdc_gic_enable,
--	.irq_get_irqchip_state	= qcom_pdc_gic_get_irqchip_state,
--	.irq_set_irqchip_state	= qcom_pdc_gic_set_irqchip_state,
-+	.irq_get_irqchip_state	= irq_chip_get_parent_state,
-+	.irq_set_irqchip_state	= irq_chip_set_parent_state,
- 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
- 	.irq_set_type		= qcom_pdc_gic_set_type,
- 	.flags			= IRQCHIP_MASK_ON_SUSPEND |
-@@ -282,7 +236,7 @@ static int qcom_pdc_alloc(struct irq_domain *domain, unsigned int virq,
- 
- 	parent_hwirq = get_parent_hwirq(hwirq);
- 	if (parent_hwirq == PDC_NO_PARENT_IRQ)
--		return 0;
-+		return irq_domain_disconnect_hierarchy(domain->parent, virq);
- 
- 	if (type & IRQ_TYPE_EDGE_BOTH)
- 		type = IRQ_TYPE_EDGE_RISING;
-@@ -319,17 +273,17 @@ static int qcom_pdc_gpio_alloc(struct irq_domain *domain, unsigned int virq,
- 	if (ret)
- 		return ret;
- 
-+	if (hwirq == GPIO_NO_WAKE_IRQ)
-+		return irq_domain_disconnect_hierarchy(domain, virq);
-+
- 	ret = irq_domain_set_hwirq_and_chip(domain, virq, hwirq,
- 					    &qcom_pdc_gic_chip, NULL);
- 	if (ret)
- 		return ret;
- 
--	if (hwirq == GPIO_NO_WAKE_IRQ)
--		return 0;
--
- 	parent_hwirq = get_parent_hwirq(hwirq);
- 	if (parent_hwirq == PDC_NO_PARENT_IRQ)
--		return 0;
-+		return irq_domain_disconnect_hierarchy(domain->parent, virq);
- 
- 	if (type & IRQ_TYPE_EDGE_BOTH)
- 		type = IRQ_TYPE_EDGE_RISING;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+I have some idea to fix this without too much code.  If necessary, I
+will send it out.
 
+Best Regards,
+Huang, Ying
