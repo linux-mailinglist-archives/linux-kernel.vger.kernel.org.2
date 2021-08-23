@@ -2,140 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE20B3F47EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0621A3F47EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhHWJuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:50:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42329 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231759AbhHWJuK (ORCPT
+        id S233389AbhHWJvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230428AbhHWJvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:50:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629712167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rhYJCRMkZEsXkLqbrYbAaQrmVIoehH5NK13qs7XLf9g=;
-        b=CzAKVmC0z1ul2PT6iwHHx8hXlPgYCMLOubtlr7w5Xu5i5KAS8kKjigRUP9abUy7rGF1i9q
-        wThXZM+Hcw3vgI5wU/GW3At/+hirO63XPRzifmR+8oDNE8qS4maWGrfgPjW2J2V0d7ScM1
-        Fj6mgWQEi00vFa00tRlE8GHbvyIUop4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-nDWM83FyPcGyACM6edFw8A-1; Mon, 23 Aug 2021 05:49:25 -0400
-X-MC-Unique: nDWM83FyPcGyACM6edFw8A-1
-Received: by mail-wr1-f72.google.com with SMTP id l1-20020adff481000000b00156e670a09dso4956847wro.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:49:25 -0700 (PDT)
+        Mon, 23 Aug 2021 05:51:36 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6A0C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:50:54 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id m25-20020a7bcb99000000b002e751bcb5dbso753822wmi.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=umWt26Jpv6O7JNFnZ9XdBXmi6YoAcAX7J7kh13vDMO8=;
+        b=gxbcFWXq1Mo+43J85zFDpyZIdtIonE6YS5VzVjPm5Q0HOXmKRze6V2+RbEAthbv+yf
+         Z7cb8P79MjY7UsFjFxVt69iw4/2hqruoh4CeUJJU9ccEzYtDSeA7k//BJ0cUdY/HlOe9
+         HVddWz1IMYs/ufAPT6BMwG0mlwd/TkYmdFxSTXqu2nET6Fj9wxCFasdjpFunn2F8lJMg
+         QjEoEqhZoVZ+s26joNNOZRLDQe/SzfSwxvVakDc2rGnOyCwBJOuC1g+BSHGNYmHTZV54
+         E5ygg7J8sroq4UYZ+Y8cnXaUmiGhn6yRgMTwygmzuJjfWoaNARfYHIRKqNb1opsdbOrD
+         F8zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rhYJCRMkZEsXkLqbrYbAaQrmVIoehH5NK13qs7XLf9g=;
-        b=i/wE2sFehb/q9zZ75r9u9h+VGqSdwbZJHyRW5arcEX+EYEoTCQ3xLBDlz+6GRgVthG
-         YVu4FTc05pXtd2tDukhsoMcOT6WAI6iKZEPbZBOc4lUvfFcMio1LPkBHP0FsBmzNUMt9
-         Ngy7ZsNYklIYWW+Eu9bdi75wvPnOGXs8Bj2zhEf4n/q1trr235m8/hJFDZEhBFiQMeLA
-         yF/kwzcutzLRgE1hcXlcV8Ex4pdhi2D1IBWlnpgF1TozzjwiAuzkDYMagESMoAfqUrxg
-         EBJhA+ox40r/05U1D9mtua6zBpw2vru/+lz+SkFLYm3w3soh8lrP+TN7TiL7ult2glnj
-         CZRw==
-X-Gm-Message-State: AOAM532r0ovNsUanJYtru0NzyailOd0n7Le8u/1wmGRBWxDubJ9/vjeD
-        d3RgQJiWeseL0pc+qR0ixMNPsZRp/sOj04Rix1Oa6zoBbQ01dNfyEQuDFu/2lDXXRn7BKEw9M+U
-        v7f/5ljiLISu02OQPa5D0KTDA
-X-Received: by 2002:a05:600c:2056:: with SMTP id p22mr5321579wmg.8.1629712164735;
-        Mon, 23 Aug 2021 02:49:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwhTR9x1F22AYEzpTQ9mUUJdLOKPaSvVO8Y/ebHKvclnWojMyDhYLL/VNAUhuTXxMd/9VZ8YQ==
-X-Received: by 2002:a05:600c:2056:: with SMTP id p22mr5321565wmg.8.1629712164531;
-        Mon, 23 Aug 2021 02:49:24 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id l15sm3693327wrv.84.2021.08.23.02.49.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 02:49:23 -0700 (PDT)
-Subject: Re: [PATCH v2 11/61] mm: Remove rb tree.
-To:     Liam Howlett <liam.howlett@oracle.com>,
-        "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        David Rientjes <rientjes@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michel Lespinasse <walken.cr@gmail.com>
-References: <20210817154651.1570984-1-Liam.Howlett@oracle.com>
- <20210817154651.1570984-12-Liam.Howlett@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3104a9d0-b8b3-46ed-4f10-1c1f0e5eff92@redhat.com>
-Date:   Mon, 23 Aug 2021 11:49:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=umWt26Jpv6O7JNFnZ9XdBXmi6YoAcAX7J7kh13vDMO8=;
+        b=KosjHl32m0824XfRl6e+bago01cjHglNljVxC/a3l/R9kxgxjKK+bTqzwzs5ibT/59
+         rINZ4eBjJfZJaNi0vg8cmDVSJ/QcmO9auppvZUObQ59h04+RLdx+gby2iE/IT2YXxIMC
+         FSi3hve4gmB3pk0pqbKzPnppi+UOmKatEGtKzuHxMSgzIH99Mdao8i/rsUZru6Unbasg
+         b40AUlMAK8s6EVXSvPwhlCbioMSF5dUDxX0OuaUNK0mR5NTBxrGNezFsvgfWnkjgzq0/
+         aU9tv2ccYq+2EL1jCIwtk5n7DbrOFD3Ha+lKDvy3B8jjhNyuqo8BEGTVtxfG94jMliJZ
+         mG4Q==
+X-Gm-Message-State: AOAM5311C6ynteOCbsmyF2MhUjBBMLg+gnmYTs9eCRX0TYHE2T8azk7J
+        erMwaWIKZtuJMORX2ZHyetcSbQ==
+X-Google-Smtp-Source: ABdhPJxe/p7wsXZv7KHfMzGU24CSMV07/JHo6jYIi4E3QT23/ik3j0iRx9K3bPXrRojiYlHHRVVG4Q==
+X-Received: by 2002:a1c:2086:: with SMTP id g128mr298032wmg.46.1629712252762;
+        Mon, 23 Aug 2021 02:50:52 -0700 (PDT)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id n14sm10268730wrr.28.2021.08.23.02.50.52
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 23 Aug 2021 02:50:52 -0700 (PDT)
+From:   John Cox <jc@kynesim.co.uk>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, nicolas@ndufresne.ca,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: Re: [PATCH] media: hevc: fix pictures lists type
+Date:   Mon, 23 Aug 2021 10:50:51 +0100
+Message-ID: <02r6ig176o0lqc52nm8rhta7cn5bfn04in@4ax.com>
+References: <20210823082949.237716-1-benjamin.gaignard@collabora.com>
+In-Reply-To: <20210823082949.237716-1-benjamin.gaignard@collabora.com>
+User-Agent: ForteAgent/8.00.32.1272
 MIME-Version: 1.0
-In-Reply-To: <20210817154651.1570984-12-Liam.Howlett@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.08.21 17:47, Liam Howlett wrote:
-> From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-> 
-> Remove the RB tree and start using the maple tree for vm_area_struct
-> tracking.
-> 
-> Drop validate_mm() calls in expand_upwards() and expand_downwards() as
-> the lock is not held.
-> 
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+>The lists embedded Picture Order Count values which are s32 so their =
+type
+>most be s32 and not u8.
 
+I'm not convinced that you can't calculate all of those lists from the
+info already contained in the DPB array so this is probably redundant
+info though I grant that having the list pre-calced might make your life
+easier, and the userland side will have calculated the lists to
+calculate other required things so it isn't much extra work for it.
 
-[...]
+Even if you do need the lists wouldn't it be a better idea to have them
+as indices into the DPB (you can't have a frame in any of those lists
+that isn't in the DPB) which already contains POCs then it will still
+fit into u8 and be smaller?
 
+=46ull disclosure: Pi decode doesn't use this info at all so I'm only
+arguing from a theoretical point of view - I think it is only relevant
+if your h/w is parsing the reference list setups.
 
-Why are we reshuffling the code below? This either needs a good 
-justification or should just be dropped as it introduces noise. Maybe I 
-am missing something important.
+Regards
 
->   	/*
-> @@ -427,6 +414,11 @@ struct vm_area_struct {
->   	pgprot_t vm_page_prot;
->   	unsigned long vm_flags;		/* Flags, see mm.h. */
->   
-> +	/* Information about our backing store: */
-> +	unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE
-> +					 * units
-> +					 */
-> +	struct file *vm_file;		/* File we map to (can be NULL). */
->   	/*
->   	 * For areas with an address space and backing store,
->   	 * linkage into the address_space->i_mmap interval tree.
-> @@ -449,12 +441,9 @@ struct vm_area_struct {
->   	/* Function pointers to deal with this struct. */
->   	const struct vm_operations_struct *vm_ops;
->   
-> -	/* Information about our backing store: */
-> -	unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE
-> -					   units */
-> -	struct file * vm_file;		/* File we map to (can be NULL). */
->   	void * vm_private_data;		/* was vm_pte (shared mem) */
->   
-> +
+John Cox
 
-Another unrelated change (there seem to some more in this patch)
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+>Reported-by: John Cox <jc@kynesim.co.uk>
+>Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>---
+> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 +++---
+> include/media/hevc-ctrls.h                                | 6 +++---
+> 2 files changed, 6 insertions(+), 6 deletions(-)
+>
+>diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
+b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>index 976d34445a24..db9859ddc8b2 100644
+>--- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>+++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>@@ -3323,15 +3323,15 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>     * - __u8
+>       - ``num_poc_lt_curr``
+>       - The number of reference pictures in the long-term set.
+>-    * - __u8
+>+    * - __s32
+>       - ``poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>       - PocStCurrBefore as described in section 8.3.2 "Decoding process=
+ for reference
+>         picture set.
+>-    * - __u8
+>+    * - __s32
+>       - ``poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>       - PocStCurrAfter as described in section 8.3.2 "Decoding process =
+for reference
+>         picture set.
+>-    * - __u8
+>+    * - __s32
+>       - ``poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>       - PocLtCurr as described in section 8.3.2 "Decoding process for =
+reference
+>         picture set.
+>diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>index 781371bff2ad..04cd62e77f25 100644
+>--- a/include/media/hevc-ctrls.h
+>+++ b/include/media/hevc-ctrls.h
+>@@ -219,9 +219,9 @@ struct v4l2_ctrl_hevc_decode_params {
+> 	__u8	num_poc_st_curr_before;
+> 	__u8	num_poc_st_curr_after;
+> 	__u8	num_poc_lt_curr;
+>-	__u8	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>-	__u8	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>-	__u8	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>+	__s32	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>+	__s32	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>+	__s32	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+> 	__u64	flags;
+> };
+>=20
