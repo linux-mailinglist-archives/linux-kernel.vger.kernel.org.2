@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0E83F4F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BA63F4F1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbhHWROX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S231128AbhHWRO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhHWROU (ORCPT
+        with ESMTP id S231653AbhHWROU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Aug 2021 13:14:20 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70EDC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:33 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 83-20020a251956000000b0059948f541cbso4137073ybz.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:33 -0700 (PDT)
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157EAC0617AE
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:36 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id j23-20020ac86657000000b0029cb70967ebso3571456qtp.14
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=k0Gm7u8L5tSmKVW+xlotholGa6yE9iw0uF/tHV2p52o=;
-        b=TefnZXsw1ovvynSraGlA1+As/q+9xVcCWyqpliHonvceW0VLYAx3sHV+wdbEQip7lT
-         iM5QchjhV6rqHETKec7PF3/RImK94FljwLXzqSwhmxMMZzWqBgPU3RmtvbGsvFX/kQcs
-         IjWfGPaxtlqqYBA9FY4jYD7leJMhO2e7VEtxJDdEy53fDXTlZwiXZfqufANNMF8Aqn1q
-         HGuqbVqmWADNt5bqD5J7zQZYtnljw7wx2N723QjvftDxWCSDxGmV0j9LaVB+hGANmDIq
-         ylQRAbOgPHhcp4GqoR60aXUyGlMriolzJODHNkhV2QmBQNNJbYvJQSiRBxVckimJGDkz
-         yKDA==
+        bh=OjHgDJUvJmMOnMd0mi83Z9bddC5eVI/HUOS0aA/fCjo=;
+        b=Dna0EQXkdpMIYwRPENTuTtD45Xxz00+bPzyOn6DWxIcwL0q6aW6lkwtVlDnuMZuAEA
+         8sIkWePDkiji5yZon0dVb8HXmOr7mEzoHZ5lQQHdTzgZHGUhTEo6QEZ5jHCtKwjZa60J
+         uNEz1aSczSOjajbuJjU/0lZ4076zCEjFHCzb/GzyleOAAJDdTiLueqUl6x5XGftohdwu
+         U+8rspiV1W6jiMa8ujDzD710tDfqTvVPsz9/JR2Koyb14Kfwnn4SUA3EIPZ4b92ksJBL
+         iYBJb7esO6wqajz4QMQjRtUQg/vPUrnXPvvvgrq2KcZy+42G0jJwrxzNFIPxfUOLIkFT
+         QDMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=k0Gm7u8L5tSmKVW+xlotholGa6yE9iw0uF/tHV2p52o=;
-        b=mnfmnRBjQV1nJm4dgu6CMiaOIvRGbFTme6Pl1KSuGyV0jNbxQpy8SHa4aFwozh5DLc
-         ZyiWxAG6PurMCsCxZzSYHpf798qN3GyU4PF2zmt0xoX11nJuOfBqwVZ7Yuh5i9D07PHZ
-         qK7Gcjt4aMKoqYbrN4Uwhe6OeZg0vn/ky9/unMzOF7NL6Ez1tSVukGZqrt7Ou2oEUZVa
-         FsaeCMKHUBvw3H5GYhFYuR4ugfb7DYe6Mz9HkTJRIypEmLiwH8NTBXaNLRBH3qRvIFMR
-         +iemWyTP4OYGzgqxGTeQQPE2jIPEXx4F06A7w0xS/Q/OVUkRoIR0xFCcGLQLaJDCt8Ta
-         SXYQ==
-X-Gm-Message-State: AOAM530LEWxwZcexu06oNaEYR761n6A6uqKnv86lY+St5mOgZs/39gms
-        MvROfRLD+xLVuAy7EVOw+Qo9wvr8NCTDngidVIs=
-X-Google-Smtp-Source: ABdhPJyx/GQSOWYSoc1Zbdbw/tpxR1dF+HznFS7w34jPMlo0rvu3YqqIMH8KRsr/ZDfW4oKqcK49kJ0r/p8Q4qeFtaM=
+        bh=OjHgDJUvJmMOnMd0mi83Z9bddC5eVI/HUOS0aA/fCjo=;
+        b=Ms7xYEOr1tUAh82HYrwrbvS/p/OsatPlmvOJwrffAcsTMtvKzdodXYo1gb8/GZuH3j
+         RTsc9wW0ooC+j1cV//I1L7foDYLPvT1vgxtbKQ4l4Gup4dLQifgRFl4BlSbPgwfJA2Ny
+         nCtjIgpmTKlEQB2JKmRvpWjFsGwVbNJCSCUq5MZedJ+Lq8OXzkf16053coP4EF61kwyM
+         U8g8XmLPVE3dyNoLtMM41IypouNJ6iwh2nErraQ+Y4pzDJpRmQ5c72xRz1r4Oy9uGCbq
+         ygIM+CKUBAD25XuIbFOhJ3vA1skN+mgmo4OVASWkOkXgRl1hG5leFVr2lvzOA1a43Mzm
+         S9Cg==
+X-Gm-Message-State: AOAM533JaUfAqNjwBd0lPlZyNkPypuubcSAGpcSmK8GbGIK7awqj/rMF
+        GclO1+GTMRdmefElQS/f9FPbD8a+8uBxgh36M8M=
+X-Google-Smtp-Source: ABdhPJzi9cvrwOFBpM3xgvXo+JzAAlmiz1LkJnW74n84Ibws5mGYLA0Os3m+2on4AveQflOlFROtCJbTM/5knrZQjsg=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:cc48:aa6a:f4ec:7d19])
- (user=samitolvanen job=sendgmr) by 2002:a25:2b85:: with SMTP id
- r127mr44980616ybr.232.1629738812933; Mon, 23 Aug 2021 10:13:32 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 10:13:09 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a05:6214:1142:: with SMTP id
+ b2mr34567008qvt.0.1629738815199; Mon, 23 Aug 2021 10:13:35 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 10:13:10 -0700
 In-Reply-To: <20210823171318.2801096-1-samitolvanen@google.com>
-Message-Id: <20210823171318.2801096-6-samitolvanen@google.com>
+Message-Id: <20210823171318.2801096-7-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210823171318.2801096-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH v2 05/14] lkdtm: Disable UNSET_SMEP with CFI
+Subject: [PATCH v2 06/14] lkdtm: Use an opaque type for lkdtm_rodata_do_nothing
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -68,27 +68,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable the UNSET_SMEP test when CONFIG_CFI_CLANG is enabled as
-jumping to a call gadget would always trip CFI instead.
+Use an opaque type for lkdtm_rodata_do_nothing to stop the compiler
+from generating a CFI jump table entry that jumps to .rodata.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- drivers/misc/lkdtm/bugs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/lkdtm/lkdtm.h  | 2 +-
+ drivers/misc/lkdtm/perms.c  | 2 +-
+ drivers/misc/lkdtm/rodata.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 88c218a9f8b3..bc3e54e580ab 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -366,7 +366,7 @@ void lkdtm_STACK_GUARD_PAGE_TRAILING(void)
+diff --git a/drivers/misc/lkdtm/lkdtm.h b/drivers/misc/lkdtm/lkdtm.h
+index 6a30b60519f3..90d92eb92c16 100644
+--- a/drivers/misc/lkdtm/lkdtm.h
++++ b/drivers/misc/lkdtm/lkdtm.h
+@@ -129,7 +129,7 @@ void lkdtm_REFCOUNT_TIMING(void);
+ void lkdtm_ATOMIC_TIMING(void);
  
- void lkdtm_UNSET_SMEP(void)
+ /* rodata.c */
+-void lkdtm_rodata_do_nothing(void);
++DECLARE_ASM_FUNC_SYMBOL(lkdtm_rodata_do_nothing);
+ 
+ /* usercopy.c */
+ void __init lkdtm_usercopy_init(void);
+diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+index 2dede2ef658f..fa2bd90bd8ee 100644
+--- a/drivers/misc/lkdtm/perms.c
++++ b/drivers/misc/lkdtm/perms.c
+@@ -151,7 +151,7 @@ void lkdtm_EXEC_VMALLOC(void)
+ 
+ void lkdtm_EXEC_RODATA(void)
  {
--#if IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_UML)
-+#if IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_UML) && !IS_ENABLED(CONFIG_CFI_CLANG)
- #define MOV_CR4_DEPTH	64
- 	void (*direct_write_cr4)(unsigned long val);
- 	unsigned char *insn;
+-	execute_location(lkdtm_rodata_do_nothing, CODE_AS_IS);
++	execute_location((void *)lkdtm_rodata_do_nothing, CODE_AS_IS);
+ }
+ 
+ void lkdtm_EXEC_USERSPACE(void)
+diff --git a/drivers/misc/lkdtm/rodata.c b/drivers/misc/lkdtm/rodata.c
+index baacb876d1d9..17ed0ad4e6ae 100644
+--- a/drivers/misc/lkdtm/rodata.c
++++ b/drivers/misc/lkdtm/rodata.c
+@@ -3,7 +3,7 @@
+  * This includes functions that are meant to live entirely in .rodata
+  * (via objcopy tricks), to validate the non-executability of .rodata.
+  */
+-#include "lkdtm.h"
++void lkdtm_rodata_do_nothing(void);
+ 
+ void noinstr lkdtm_rodata_do_nothing(void)
+ {
 -- 
 2.33.0.rc2.250.ged5fa647cd-goog
 
