@@ -2,107 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DE43F4BE7
+	by mail.lfdr.de (Postfix) with ESMTP id D81313F4BE8
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhHWNxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:53:06 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:64763 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHWNxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:53:04 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb6123a804ec8-05972; Mon, 23 Aug 2021 21:52:04 +0800 (CST)
-X-RM-TRANSID: 2eeb6123a804ec8-05972
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.26.114] (unknown[10.42.68.12])
-        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56123a803594-cd5d4;
-        Mon, 23 Aug 2021 21:52:04 +0800 (CST)
-X-RM-TRANSID: 2ee56123a803594-cd5d4
-Subject: Re: [PATCH 3/3] can: mscan: mpc5xxx_can: Useof_device_get_match_data
- to simplify code
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     davem@davemloft.net, wg@grandegger.com, kuba@kernel.org,
-        kevinbrace@bracecomputerlab.com, romieu@fr.zoreil.com,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210823113338.3568-1-tangbin@cmss.chinamobile.com>
- <20210823113338.3568-4-tangbin@cmss.chinamobile.com>
- <20210823123715.j4khoyld5mfl6kdv@pengutronix.de>
-From:   tangbin <tangbin@cmss.chinamobile.com>
-Message-ID: <eafd35fd-bf71-167a-b1c8-50e3117e4be4@cmss.chinamobile.com>
-Date:   Mon, 23 Aug 2021 21:52:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S229653AbhHWNyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:54:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:53680 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhHWNyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 09:54:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65E711042;
+        Mon, 23 Aug 2021 06:53:18 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 903253F5A1;
+        Mon, 23 Aug 2021 06:53:17 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] sched/fair: Add NOHZ balancer flag for
+ nohz.next_balance updates
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>
+References: <20210823111700.2842997-1-valentin.schneider@arm.com>
+ <20210823111700.2842997-2-valentin.schneider@arm.com>
+ <YSONmyWL14mqV6zA@hirez.programming.kicks-ass.net>
+ <87fsv02u9h.mognet@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <99b4c9d6-d20c-bc94-58c0-c1f5249b2636@arm.com>
+Date:   Mon, 23 Aug 2021 15:53:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210823123715.j4khoyld5mfl6kdv@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <87fsv02u9h.mognet@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc:
-
-On 2021/8/23 20:37, Marc Kleine-Budde wrote:
-> On 23.08.2021 19:33:38, Tang Bin wrote:
->> Retrieve OF match data, it's better and cleaner to use
->> 'of_device_get_match_data' over 'of_match_device'.
+On 23/08/2021 14:57, Valentin Schneider wrote:
+> On 23/08/21 13:59, Peter Zijlstra wrote:
+>> On Mon, Aug 23, 2021 at 12:16:59PM +0100, Valentin Schneider wrote:
 >>
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> Thanks for the patch!
->
-> LGTM, comment inside.
->
->> ---
->>   drivers/net/can/mscan/mpc5xxx_can.c | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>> Gate NOHZ blocked load
+>>> update by the presence of NOHZ_STATS_KICK - currently all NOHZ balance
+>>> kicks will have the NOHZ_STATS_KICK flag set, so no change in behaviour is
+>>> expected.
 >>
->> diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
->> index e254e04ae..3b7465acd 100644
->> --- a/drivers/net/can/mscan/mpc5xxx_can.c
->> +++ b/drivers/net/can/mscan/mpc5xxx_can.c
->> @@ -279,7 +279,6 @@ static u32 mpc512x_can_get_clock(struct platform_device *ofdev,
->>   static const struct of_device_id mpc5xxx_can_table[];
->>   static int mpc5xxx_can_probe(struct platform_device *ofdev)
->>   {
->> -	const struct of_device_id *match;
->>   	const struct mpc5xxx_can_data *data;
->>   	struct device_node *np = ofdev->dev.of_node;
->>   	struct net_device *dev;
->> @@ -289,10 +288,9 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
->>   	int irq, mscan_clksrc = 0;
->>   	int err = -ENOMEM;
->>   
->> -	match = of_match_device(mpc5xxx_can_table, &ofdev->dev);
->> -	if (!match)
->> +	data = of_device_get_match_data(&ofdev->dev);
->> +	if (!data)
->>   		return -EINVAL;
-> Please remove the "BUG_ON(!data)", which comes later.
-
-For this place, may I send another patch to fix this 'BUG_ON()' by 
-itself, not in this patch series?
-
-Thanks
-
-Tang Bin
-
->
->> -	data = match->data;
->>   
->>   	base = of_iomap(np, 0);
->>   	if (!base) {
->> -- 
->> 2.20.1.windows.1
+>>> @@ -10572,7 +10572,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+>>>       * setting the flag, we are sure to not clear the state and not
+>>>       * check the load of an idle cpu.
+>>>       */
+>>> -	WRITE_ONCE(nohz.has_blocked, 0);
+>>> +	if (flags & NOHZ_STATS_KICK)
+>>> +		WRITE_ONCE(nohz.has_blocked, 0);
+>>>
+>>>      /*
+>>>       * Ensures that if we miss the CPU, we must see the has_blocked
+>>> @@ -10594,13 +10595,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+>>>               * balancing owner will pick it up.
+>>>               */
+>>>              if (need_resched()) {
+>>> -			has_blocked_load = true;
+>>> +			if (flags & NOHZ_STATS_KICK)
+>>> +				has_blocked_load = true;
+>>>                      goto abort;
+>>>              }
+>>>
+>>>              rq = cpu_rq(balance_cpu);
+>>>
+>>> -		has_blocked_load |= update_nohz_stats(rq);
+>>> +		if (flags & NOHZ_STATS_KICK)
+>>> +			has_blocked_load |= update_nohz_stats(rq);
+>>>
+>>>              /*
+>>>               * If time for next balance is due,
+>>> @@ -10631,8 +10634,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+>>>      if (likely(update_next_balance))
+>>>              nohz.next_balance = next_balance;
+>>>
+>>> -	WRITE_ONCE(nohz.next_blocked,
+>>> -		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+>>> +	if (flags & NOHZ_STATS_KICK)
+>>> +		WRITE_ONCE(nohz.next_blocked,
+>>> +			   now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+>>>
+>>>  abort:
+>>>      /* There is still blocked load, enable periodic update */
 >>
+>> I'm a bit puzzled by this; that function has:
 >>
+>>   SCHED_WARN_ON((flags & NOHZ_KICK_MASK) == NOHZ_BALANCE_KICK);
 >>
+>> Which:
 >>
-> regards,
-> Marc
->
+>>  - isn't updated
+>>  - implies STATS must be set when BALANCE
+> 
+> Yup
+> 
+>>
+>> the latter gives rise to my confusion; why add that gate on STATS? It
+>> just doesn't make sense to do a BALANCE and not update STATS.
+> 
+> AFAIA that warning was only there to catch BALANCE && !STATS, so I didn't
+> tweak it.
+> 
+> Now, you could still end up with
+> 
+>   flags == NOHZ_NEXT_KICK
+> 
+> (e.g. nohz.next_balance is in the future, but a new CPU entered NOHZ-idle
+> and needs its own rq.next_balance collated into the nohz struct)
+> 
+> in which case you don't do any blocked load update, hence the
+> gate. In v1 I had that piggyback on NOHZ_STATS_KICK, but Vincent noted
+> that might not be the best given blocked load updates can be time
+> consuming - hence the separate flag.
 
+Maybe the confusion stems from the fact that the NOHZ_NEXT_KICK-set
+changes are only introduced in 2/2?
 
+@@ -10417,6 +10418,9 @@ static void nohz_balancer_kick(struct rq *rq)
+ unlock:
+ 	rcu_read_unlock();
+ out:
++	if (READ_ONCE(nohz.needs_update))
++		flags |= NOHZ_NEXT_KICK;
++
+
+@@ -10513,12 +10517,13 @@ void nohz_balance_enter_idle(int cpu)
+
+...
+
++	WRITE_ONCE(nohz.needs_update, 1);
