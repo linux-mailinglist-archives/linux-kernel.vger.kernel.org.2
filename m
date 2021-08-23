@@ -2,191 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B3C3F48E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A9F3F48E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbhHWKsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234155AbhHWKsb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:48:31 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18791C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:47:49 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id mf2so17539803ejb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:47:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=vDFsfAzgg8pTYEtlapSW0caiBmfQljPcziSOHOjY7/8=;
-        b=l8EiydJYNtcZ5nx6fu/aA4H0DfERCiFxLFNgA/xyQx4LCFPYLRrh3cmB/RJHo/3Ri6
-         w98Ln+WoptdDy2d5YJNdlp3FZ3PR5/D2v0a/rwrpnsUtl2ogcQD7ocqNqBAe0wZum4b5
-         D+R5VNvc7nnN+BWRVoUTtW8KUBXFUTkzUhWByAl5GNvdVpgbIEL692+txN7W7nNxeQFq
-         SuTiN9b4Qj59lFWnbuLhYPRTdAgP2Ui5Nbl8ftogz1+txQrNXJ0IfhFp+wZML2zan0fw
-         +WksNkTob+t4Hs3Xxwf2PS1ipE/4rnRtRfPYSsnLAJn3sWQfL4Vwj0hh/ftzWWH2WQ1Z
-         G87A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vDFsfAzgg8pTYEtlapSW0caiBmfQljPcziSOHOjY7/8=;
-        b=sBPu/gFU5mwsW3y2vRAHn/CWSLrqdi2TUTvklio4HjN59IgyEku8eBz4tZNyHruCbJ
-         xnLsm+E5WUVJ2xWufrgEkrcOjKk7hehcDSfpN/TlYMURiE3YtbINyLEicgVVSbn87ccv
-         3e3bc8SfxTCiYQSwaiQldofWdfAR9jV92FABiF2WigaGHBD9Kespnx1glxYmtakWnihr
-         ovMKqerstDEEYFzttyPtX/nqstAUJKyAr99N0bGhGY3inURo4bXofAGnn2odxRdr19kx
-         UDRsVC07nfQIVVKpS8CGmdXLUFinKQTKu3epTpwncMxmHTn69tU5weoFFicDZmDTyj96
-         46nw==
-X-Gm-Message-State: AOAM530IH6Kux2x0FZGmN/6Woj1l7z18sTEtCSiA83CB9giBNBRJyRKS
-        Jyy+BD4YpGX/hU+vIFvNpSs=
-X-Google-Smtp-Source: ABdhPJzUgAYUMV7ZimkvzfBCbrfAVY8nvXGQlD+IMyLoWuKhnE1jrRfWvrUcGJYbI5TBA/pslJ+lsA==
-X-Received: by 2002:a17:906:ad87:: with SMTP id la7mr8120604ejb.145.1629715667569;
-        Mon, 23 Aug 2021 03:47:47 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id bx14sm4506257edb.93.2021.08.23.03.47.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 03:47:47 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH RFC] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
-Date:   Mon, 23 Aug 2021 12:47:45 +0200
-Message-ID: <8275282.m2tVFbhrJk@localhost.localdomain>
-In-Reply-To: <69bbb80c-2b30-28b9-ad8c-6862a6c3b911@gmail.com>
-References: <20210822230235.10953-1-fmdefrancesco@gmail.com> <69bbb80c-2b30-28b9-ad8c-6862a6c3b911@gmail.com>
+        id S236262AbhHWKst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:48:49 -0400
+Received: from ozlabs.org ([203.11.71.1]:41631 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234155AbhHWKss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:48:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtTVD3CQ5z9sWc;
+        Mon, 23 Aug 2021 20:48:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629715685;
+        bh=ytEvyC+DEnLTTfZkIg3wkrRmLBORVvoxKCJVWjIoJH8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FFy1BuB3h/44cQ8yyheLTod8gxRDOgY3fD4DlBfZI6fru5t0lc2n9QtLOeq+d3DDa
+         xD5etjFiIlQziNsGx+PMbqdI8Q67eaCPdlfMqWpZJi9E10vTHFIMmpWSZPnFHrlRrW
+         ul6z6eDmmubA8/1FpvWbVz6un9R6SZAtOWp0IeatzKQ+N1XM+6EQv7TmIWD/LhoKU4
+         JoK2ghRkWZVki6NA5zAGnGdZlws9Qi2W4gedFCP3op7Z3h3Jsvk1HPfL+WFZWnD3Ns
+         tExLyFsN70uPBfbHQUZeYzr+vx25SqJWKnUvi9CihCiXy6LOFgX6petrVzB8qQ/sYG
+         WsjneOXuzY1XQ==
+Date:   Mon, 23 Aug 2021 20:48:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Daniel Henrique Barboza <danielhb413@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: linux-next: build warning after merge of the powerpc tree
+Message-ID: <20210823204803.7cb76778@canb.auug.org.au>
+In-Reply-To: <20210823195540.4d7363ed@canb.auug.org.au>
+References: <20210823195540.4d7363ed@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; boundary="Sig_/sxdg6gsIpF4HdmJ_XxRwn8Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, August 23, 2021 10:11:52 AM CEST Pavel Skripkin wrote:
-> On 8/23/21 2:02 AM, Fabio M. De Francesco wrote:
-> > Replace usb_control_msg() with the new usb_control_msg_recv() and
-> > usb_control_msg_send() API of USB Core.
-> > 
-> > This patch is an RFC for different reasons:
-> > 
-> > 1) I'm not sure if it is needed: while Greg Kroah-Hartman suggested to
-> > use the new API in a message to a thread that was about a series of patches
-> > submitted by Pavel Skripkin (who decided to not use it), I cannot explain
-> > if and why the driver would benefit from this patch.
-> > 2) I have doubts about the semantic of the API I use here, so I'd like to
-> > know whether or not I'm using them properly.
-> > 3) At the moment I cannot test the driver because I don't have my device
-> > with me.
-> > 4) This patch could probably lead to a slight change in some lines of
-> > Pavel's series (for sure in usb_read*()).
-> > 
-> > I'd like to hear from the Maintainers and other interested people if this
-> > patch is worth to be considered and, in this case, if there are suggestions
-> > for the purpose to improve it.
-> > 
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> >   drivers/staging/r8188eu/hal/usb_ops_linux.c | 19 ++++++++++---------
-> >   1 file changed, 10 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > index 6a0a24acf292..9e290c1cc449 100644
-> > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> > @@ -15,7 +15,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
-> >   	struct adapter	*adapt = pintfhdl->padapter;
-> >   	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
-> >   	struct usb_device *udev = dvobjpriv->pusbdev;
-> > -	unsigned int pipe;
-> > +	u8 pipe;
-> >   	int status = 0;
-> >   	u8 reqtype;
-> 
-> I think, we can pass REALTEK_USB_VENQT_{READ,WRITE} directly as 
-> requesttype argument and get rid of u8 reqtype. + we can define these 
-> macros:
-> 
-> #define
-> usbctrl_vendor_read(...)   usbctrl_vendorreq(...,REALTEK_USB_VENQT_READ)
-> 
-> 
-> #define
-> usbctrl_vendor_write()    usbctrl_vendorreq(...,REALTEK_USB_VENQT_WRITE)
-> 
-> 
-> This will make code more nice, IMO  :)
+--Sig_/sxdg6gsIpF4HdmJ_XxRwn8Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Dear Pavel,
+Hi all,
 
-I agree in full: nicer and cleaner :)
+[cc'ing Jon in case he can fix the sphix hang - or knows anything about it]
 
-I'll do that, but please notice that I will also need to change the code of the three 
-usb_read*() for calling usbctrl_vendor_read(). Furthermore, "else res = 0;" becomes
-unnecessary. Please take these changes into account when you'll send them again
-as "regular" patches.
+On Mon, 23 Aug 2021 19:55:40 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the powerpc tree, today's linux-next build (htmldocs)
+> produced this warning:
+>=20
 
-> (Sorry for this formatting, my email client disabled "paste without 
-> formatting" option)
+I missed a line:
 
-Actually I don't see any oddities in the format of your message :)
+Sphinx parallel build error:
 
-> >   	u8 *pIo_buf;
-> > @@ -47,19 +47,20 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
-> >   		memset(pIo_buf, 0, len);
-> >   
-> >   		if (requesttype == 0x01) {
-> > -			pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
-> >   			reqtype =  REALTEK_USB_VENQT_READ;
-> > +			status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
-> > +						      reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
-> > +						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
-> > +						      GFP_KERNEL);
-> >   		} else {
-> > -			pipe = usb_sndctrlpipe(udev, 0);/* write_out */
-> >   			reqtype =  REALTEK_USB_VENQT_WRITE;
-> > -			memcpy(pIo_buf, pdata, len);
-> 
-> I guess, this memcpy is needed, since we want to send data from pdata
+> docutils.utils.SystemMessage: Documentation/powerpc/associativity.rst:1: =
+(SEVERE/4) Title overline & underline mismatch.
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> NUMA resource associativity
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>=20
+> Introduced by commit
+>=20
+>   1c6b5a7e7405 ("powerpc/pseries: Add support for FORM2 associativity")
+>=20
+> There are other obvious problems with this document (but sphinx seems
+> to have hung before it reported them).
+>=20
+> Like
+>=20
+> Form 0
+> -----
+>=20
+> and
+>=20
+> Form 1
+> -----
+>=20
+> and
+>=20
+> Form 2
+> -------
 
-Oh, dear! How could I have missed that? Two alternatives: either because of working 
-during bedtime, or I'm definitely losing my mind... :(
- 
-> 
-> > +			status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
-> > +						      reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
-> > +						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
-> > +						      GFP_KERNEL);
-> >   		}
-> >   
-> > -		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
-> > -					 reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
-> > -					 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
-> > -
-> > -		if (status == len) {   /*  Success this control transfer. */
-> > +		if (!status) {   /*  Success this control transfer. */
-> >   			rtw_reset_continual_urb_error(dvobjpriv);
-> >   			if (requesttype == 0x01)
-> >   				memcpy(pdata, pIo_buf,  len);
-> > 
-> 
-> 
-> With regards,
-> Pavel Skripkin
+I also get the following warning:
 
-Thanks for you review, I really appreciate it.
+Documentation/powerpc/associativity.rst: WARNING: document isn't included i=
+n any toctree
 
-Regards,
+And applying the following patch is enough to allow sphinx to finish
+(rather than livelocking):
 
-Fabio
+diff --git a/Documentation/powerpc/associativity.rst b/Documentation/powerp=
+c/associativity.rst
+index 07e7dd3d6c87..b77c6ccbd6cb 100644
+--- a/Documentation/powerpc/associativity.rst
++++ b/Documentation/powerpc/associativity.rst
+@@ -1,6 +1,6 @@
+-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+ NUMA resource associativity
+-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+=20
+ Associativity represents the groupings of the various platform resources i=
+nto
+ domains of substantially similar mean performance relative to resources ou=
+tside
+@@ -20,11 +20,11 @@ A value of 1 indicates the usage of Form 1 associativit=
+y. For Form 2 associativi
+ bit 2 of byte 5 in the "ibm,architecture-vec-5" property is used.
+=20
+ Form 0
+------
++------
+ Form 0 associativity supports only two NUMA distances (LOCAL and REMOTE).
+=20
+ Form 1
+------
++------
+ With Form 1 a combination of ibm,associativity-reference-points, and ibm,a=
+ssociativity
+ device tree properties are used to determine the NUMA distance between res=
+ource groups/domains.
+=20
+@@ -45,7 +45,7 @@ level of the resource group, the kernel doubles the NUMA =
+distance between the
+ comparing domains.
+=20
+ Form 2
+--------
++------
+ Form 2 associativity format adds separate device tree properties represent=
+ing NUMA node distance
+ thereby making the node distance computation flexible. Form 2 also allows =
+flexible primary
+ domain numbering. With numa distance computation now detached from the ind=
+ex value in
 
-P.S.: As I wrote, I have not my ASUS N10 Nano with me and I won't have the opportunity
-to test this as well as any other patch until the end of August. I hope to not break anything.
-If somebody has time to test the final patch that I'm going to submit, I'd really appreciate it.
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/sxdg6gsIpF4HdmJ_XxRwn8Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjfOMACgkQAVBC80lX
+0GyLKggAhCMrgdwGxkXle5T2qBzbCLLt9t4orSVuLnnyOdL/bZOW3T4uZoeNrwE3
+ZgvcuzFGHpNjiT84wlMR1Ui6tD/cSF95PEyno26ZoifhPQELvZxBgiYQtCirrgIJ
+Co8qEQPsScICE8fvNNhwbliv/xYTei+Hfj2tED/FugRbaHHqoOOjUVUfO/PI0roZ
+kRD8H5x35d+oYVUwhqmzmYWMYtcdnyXcu3vsx587Nr3O9yk0n+PLwU6OaAgSPtt7
+PMo+QNZsm+E/Uyvvjkc1wPU5x8UGlU0nOGsLFAjycWrhBeTztpZlunjAHKyfqPQX
+GLRByUmgTZmQw9Gs0SfxO+QhZpkYCQ==
+=4JXF
+-----END PGP SIGNATURE-----
+
+--Sig_/sxdg6gsIpF4HdmJ_XxRwn8Z--
