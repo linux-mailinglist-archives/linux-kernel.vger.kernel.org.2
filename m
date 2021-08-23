@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9B93F47A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAEE3F47AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhHWJdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:33:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39208 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235963AbhHWJdd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:33:33 -0400
-Date:   Mon, 23 Aug 2021 09:32:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629711169;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ww4vxget9G6Vzl6PKi1K2aPZYIQ1e0uDlZ5uHoc2P+I=;
-        b=Grzr9LxgOG89MW+tqkM7AWCMvY2dPDipR9TJYfv5q9pP82Vsr5ECpcES1i/kafNfG3YUOE
-        ZtnluP5w3jS/eIXtAXXJW99W4E99pTV9lpx75H1EFCYFE6U60DMI6BJ3lr5GJJLGlFbPCg
-        7/TOlbytNoRbcSnhlDIGaio2pCNpMPpJQFBA1lnB3SU3MzWl7+AjArGfG8XhKGaqReE6PT
-        E1vcKaJlH1YAxED00yM5LZZ3pqiJa6IxCXaIMQy7jTfJdAqfaMJ3w/PbTeoxNwSFHyU5xR
-        z2fmmPYQUDzj3DC0wvTbDYI0nm1MZQlHtkoWquXGqtU7yzdiEsv01yHgzB4qfA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629711169;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ww4vxget9G6Vzl6PKi1K2aPZYIQ1e0uDlZ5uHoc2P+I=;
-        b=ZHIBK2HNeyYiShEyv8qpPAdU3V15mXPQdSo4Ap4sd9uuBg6aT7GpzyCj0PvMl8IQx7Gi86
-        WxM1PjKT+zpb1VCg==
-From:   "tip-bot2 for Kim Phillips" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/amd/ibs: Extend PERF_PMU_CAP_NO_EXCLUDE to IBS Op
-Cc:     Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210817221048.88063-2-kim.phillips@amd.com>
-References: <20210817221048.88063-2-kim.phillips@amd.com>
+        id S232138AbhHWJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:34:30 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6662 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235980AbhHWJeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:34:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="204265295"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="204265295"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 02:33:26 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="443386575"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 02:33:24 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mI6KU-00CjMZ-Se; Mon, 23 Aug 2021 12:33:18 +0300
+Date:   Mon, 23 Aug 2021 12:33:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Eric Piel <eric.piel@tremplin-utc.net>,
+        Mark Gross <mgross@linux.intel.com>
+Subject: Re: [RFT, PATCH v1 1/1] platform/x86: hp_accel: Convert to be a
+ platform driver
+Message-ID: <YSNrXkDpG0k3eTgd@smile.fi.intel.com>
+References: <20210803200820.3259-1-andriy.shevchenko@linux.intel.com>
+ <48332796-1b9a-c897-c695-e66b116386be@redhat.com>
 MIME-Version: 1.0
-Message-ID: <162971116886.25758.9267225679528727844.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48332796-1b9a-c897-c695-e66b116386be@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On Fri, Aug 06, 2021 at 03:42:40PM +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 8/3/21 10:08 PM, Andy Shevchenko wrote:
+> > ACPI core in conjunction with platform driver core provides
+> > an infrastructure to enumerate ACPI devices. Use it in order
+> > to remove a lot of boilerplate code.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> > 
+> > Not sure what buys us to run _INI on PM calls. It's against the spec AFAICT.
+> > In any case ACPICA runs _INI as per specification when devices are
+> > instantiated.
+> 
+> _INI used to also be ran on resume for some reason, but that was recently
+> changed.
+> 
+> You're right that calling it is no longer necessary now that we no longer
+> do that.
+> 
+> But the changes related to this are really separate from the platform
+> driver conversion, please split this into 2 patches.
+> 
+> Also for the next version please Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> and ask him to test, I think he has access to hardware to test this.
 
-Commit-ID:     969d38d62fde952d57720e384fb09f60d9ad08d9
-Gitweb:        https://git.kernel.org/tip/969d38d62fde952d57720e384fb09f60d9ad08d9
-Author:        Kim Phillips <kim.phillips@amd.com>
-AuthorDate:    Tue, 17 Aug 2021 17:10:41 -05:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 20 Aug 2021 12:33:12 +02:00
+v2 has been sent.
 
-perf/amd/ibs: Extend PERF_PMU_CAP_NO_EXCLUDE to IBS Op
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Commit 2ff40250691e ("perf/core, arch/x86: Use PERF_PMU_CAP_NO_EXCLUDE for
-exclusion incapable PMUs") neglected to do so.
 
-Fixes: 2ff40250691e ("perf/core, arch/x86: Use PERF_PMU_CAP_NO_EXCLUDE for exclusion incapable PMUs")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210817221048.88063-2-kim.phillips@amd.com
----
- arch/x86/events/amd/ibs.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-index 40669ea..8c25fbd 100644
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -570,6 +570,7 @@ static struct perf_ibs perf_ibs_op = {
- 		.start		= perf_ibs_start,
- 		.stop		= perf_ibs_stop,
- 		.read		= perf_ibs_read,
-+		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
- 	},
- 	.msr			= MSR_AMD64_IBSOPCTL,
- 	.config_mask		= IBS_OP_CONFIG_MASK,
