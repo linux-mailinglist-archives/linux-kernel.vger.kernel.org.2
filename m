@@ -2,87 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EA23F4995
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6AD3F4994
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhHWLUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:20:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236422AbhHWLUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:20:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E1CA6138F;
-        Mon, 23 Aug 2021 11:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629717604;
-        bh=Wclgrw6m6BxICpicnUto8OUs+4WdnXkyrzgO5hXEq08=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oekp8axDqIoeW5CHA/lnpv36WzCW/r9tpNUkqPHzTLF/4RkKXSBPHKypz90C1GJAq
-         Y0jk36XHrmFMOIALTDpiRY4EwJWSZawxsOxCQcVmuqJ4qKcDXBpknPbyFBXxt+n2C8
-         niInnEj6nL8gFNoItsmNvxaLJP/nVhVhOAVwp//Q25iFQ025NgBvbgqv6YQJflYu3H
-         ET5thGUfqABm/ZuNuPznMUeXXM/1d2gi3DEcR56YleVsqtdc9HCvQ6RXGrR4L4aKRP
-         GesMXaoltgiT4PnmU6MZWHpFX+Au89Y008wOJBFIGZ9Ht/21LU2XIwqBFAkpBF8m2z
-         5zfPe32vgO79w==
-Date:   Mon, 23 Aug 2021 12:19:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] ASoC: rockchip: add support for i2s-tdm controller
-Message-ID: <20210823111938.GC4380@sirena.org.uk>
-References: <20210820182731.29370-1-frattaroli.nicolas@gmail.com>
- <20210820182731.29370-2-frattaroli.nicolas@gmail.com>
- <66d6bd43-ee43-eff4-7a68-333fbb996787@linux.intel.com>
- <3469189.PC3msRC2N5@archbook>
+        id S236413AbhHWLUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235007AbhHWLUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:20:36 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5D8C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:19:54 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id e15so13443818qtx.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:19:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4PbfMieHLNy2oJjY0XJuBOyImh9wvo44rr+tmqHI2Ug=;
+        b=L6DISO0PrFOv7mJZL1glU0wLACXUv/vMMn+QWZA+uKq24fu7BeUXsn/WMb3Ub95vv9
+         kJfmVgvOZAhEeyk6Em0z6muRmB24rwGlC5em0HylG9ywNi7sLzF50mqx33UFs1nBjAQO
+         6m2W9Oo7opSL4CKetgsK6eeh9eskTCsbmjX0VbJFjkubczdhhDijclGJU6WEwhnmuwga
+         hGrMjAqcl5Xk14xeV0U2KyD1EB4W/tS4EgYjkFqCSKk7cLqw80W0WlaMdetSTOyTWfpn
+         q+3ZpagUrW/E4oxsodqkYHPA/7YJMyWjsfKyTWaTF57VR5unswA9yVzFueT/uf36rSpX
+         jwtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4PbfMieHLNy2oJjY0XJuBOyImh9wvo44rr+tmqHI2Ug=;
+        b=eSqVV5Wp7QB09aJADVqCNhFUK1cB4XNUU2Xlj/y/xFLZwsb0wzCG7CYWCl3r7pgyUr
+         2QDhgt/UwttNiLtRkYUrveT3ArjlYm2PTvQFsF4WI0yKGq3dMS8s7AKtzbXuHH1SQ3yD
+         XKyWfVTzUxHJBKZ6zYjSyJ9rx8wS02Zs9d31GSaIwZO4Q56zqJMZQWjpqlHOomso3RA9
+         LutITEmxiooBvvNpi/pNGelp9W4/Rsod2L74yAH5GBE4R+ZK8ZooMfS6vxin4Wyw+tSz
+         4MIH9FIi/PlbigZOB0vNV5slC9FBI3gh0uIYkNcAmUKh9VeWZaLxcpIVKARSXR3KWwPW
+         DdDA==
+X-Gm-Message-State: AOAM533IAw9CxRjZQj5PrgB5sLapwyEU5oAPgVPEypw2td2R5pFIRo6s
+        lTEK4yUfaPXbblz9Sbi+41+nV80wSbcL7Ou8QIVPU5e6dpwD4Q==
+X-Google-Smtp-Source: ABdhPJxNOdiHFNFi2SBTgDO9cbaeKvTB2Al5uJpnNNsuc5Da1tSvh4BtxRuOrUMOaZSEkY2XjzI+nlaFm9emkn2qbRQ=
+X-Received: by 2002:a05:622a:1387:: with SMTP id o7mr29468276qtk.19.1629717593780;
+ Mon, 23 Aug 2021 04:19:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eRtJSFbw+EEWtPj3"
-Content-Disposition: inline
-In-Reply-To: <3469189.PC3msRC2N5@archbook>
-X-Cookie: APL hackers do it in the quad.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210808072643.GA5084@ubuntu> <20210816093126.442f74a1@xps13>
+ <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com> <20210819100334.6af2d86e@xps13>
+In-Reply-To: <20210819100334.6af2d86e@xps13>
+From:   Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Date:   Mon, 23 Aug 2021 13:19:43 +0200
+Message-ID: <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Miqu=C3=A8l,
 
---eRtJSFbw+EEWtPj3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Am Do., 19. Aug. 2021 um 10:03 Uhr schrieb Miquel Raynal
+<miquel.raynal@bootlin.com>:
+>
+> Hello,
+>
+> Kestrel seventyfour <kestrelseventyfour@gmail.com> wrote on Thu, 19 Aug
+> 2021 09:21:42 +0200:
+>
+> > Hi Miqu=C3=A8l
+> >
+> > Am Mo., 16. Aug. 2021 um 09:31 Uhr schrieb Miquel Raynal
+> > <miquel.raynal@bootlin.com>:
+> > >
+> > > Hi Daniel,
+> > >
+> > > Daniel Kestrel <kestrelseventyfour@gmail.com> wrote on Sun, 8 Aug 202=
+1
+> > > 09:26:43 +0200:
+> > >
+> > > > Some devices use Micron NAND chips, which use on-die ECC. The hardc=
+oded
+> > > > setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because t=
+he
+> > > > software ECC on top of the hardware ECC produces errors for every r=
+ead
+> > > > and write access, not to mention that booting does not work, becaus=
+e
+> > > > the boot loader uses the correct ECC when trying to load the kernel
+> > > > and stops loading on severe ECC errors.
+> > > > This patch requires the devices that currently work with the hard c=
+oded
+> > > > setting to set the nand-ecc-mode property to soft in their device
+> > > > tree.
+> > > >
+> > >
+> > > Please add a Fixes: and Cc: stable tags, you will also need to send t=
+o
+> > > stable@vger.kernel.org a different version of the patch for the kerne=
+l
+> > > 5.4 IIUC.
+> > >
+> > > > Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
+> > > > Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Ho=
+me Hub 5A
+> > > > ---
+> > > >  drivers/mtd/nand/raw/xway_nand.c | 2 --
+> > > >  1 file changed, 2 deletions(-)
+> > > >
+> > > > diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/ra=
+w/xway_nand.c
+> > > > index 26751976e502..0a4b0aa7dd4c 100644
+> > > > --- a/drivers/mtd/nand/raw/xway_nand.c
+> > > > +++ b/drivers/mtd/nand/raw/xway_nand.c
+> > > > @@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *ch=
+ip, const u_char *buf, int len)
+> > > >
+> > > >  static int xway_attach_chip(struct nand_chip *chip)
+> > > >  {
+> > > > -     chip->ecc.engine_type =3D NAND_ECC_ENGINE_TYPE_SOFT;
+> > > > -
+> > > >       if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
+> > > >               chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
+> > >
+> > > You also need to only set the Hamming algorithm when engine_type is
+> > > TYPE_SOFT.
+> > >
+> > > Thanks,
+> > > Miqu=C3=A8l
+> >
+> > I am really struggling with what to do. For one of the affected
+> > devices, they created two device
+> > trees, one for Micron and one for all others. Which obviously had no
+> > effect due to the
+> > hardcoded settings, which led me to Patch 2 and I thought, so be it.
+> > But the process to figure
+> > out if ones device has Micron Chips is essentially flashing an image
+> > and if it does not work,
+> > use the stock OEM recovery and try the other image.
+> > However, since Micron is the only chip that is treated differently, I w=
+onder
+> > if your first proposal, even though it is hacky, is the better
+> > approach to solve the issue
+> > for the Micron devices not booting and throwing ECC errors. What do you=
+ think?
+> > Follow up first patch or this one?
+>
+> I am not sure we understood each other, your patch is fine, but you
+> need to do something like:
+>
+> static int xway_attach_chip(struct nand_chip *chip)
+> {
+>     if (chip->ecc.engine_type =3D NAND_ECC_ENGINE_TYPE_SOFT &&
+>         chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
+>          chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
+>
+> In the DT you should not force any ECC engine (drop the nand-ecc-xxx
+> properties) and let the core handle it. It will probably choose the
+> most suitable engines for you.
+>
+> Thanks,
+> Miqu=C3=A8l
 
-On Sat, Aug 21, 2021 at 10:45:52PM +0200, Nicolas Frattaroli wrote:
-> On Freitag, 20. August 2021 21:02:16 CEST Pierre-Louis Bossart wrote:
-> > > +	regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
-> > > +	/* Wait on the clear operation to finish */
-> > > +	while (val) {
+thank you for your response.
+If I remove the nand-ecc-xxx properties in the device tree, the device with
+the Toshiba NAND chip is working. However, the device with the Micron
+NAND fails with NO ECC functions supplied; hardware ECC not possible,
+seems to be at line 5367 or equivalent.
+https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_ba=
+se.c#L5367
 
-> > delay needed here?
+It looks like the micron nand driver supports on die only if its
+specified int the
+Device tree:
+https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_mi=
+cron.c#L511
+The Micron NAND driver probably needs to set the ECC type to ON DIE if the
+variable ondie contains the supported attribute?!
 
-> The rockchip_i2s.c code doesn't have a delay here either, but I can
-> add one of 1 usec for good measure, it seems weird to retry the
-> read as fast as it can.
+Any ideas? Second patch?
 
-You should probably have a cpu_relax() in there at least.
-
---eRtJSFbw+EEWtPj3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEjhEkACgkQJNaLcl1U
-h9DRvwf/eYPzwI/HK4Jzi3lJiLh1vo6ezpgKS2ev6fNjoSB5emwL3rxmM/SHYkhd
-vOoWprclRkygu+R5bIiLPc9Y2h6i34D/mc8aT6D2dqG+fDq5SaHx3FSX91PTLGU0
-MIZLUdFQqJAINWBwgZmtZPj5ssgK6VsZ3Re9bUsaKi+R0q43eWAqSRiZ54fqFIwI
-18takfFGAfqMRNfrzAXHcIqRG3viwccrBxcxIGSbxF+RrT0O++c6q8R4rB4c5nvm
-/m23A2wdczve2z2hmaV6T/48gI4gVQReDFMb/S3T3hslTd4DzghMFSBIzQZx5OEY
-jWofpFXTysAcWf6nQMM48fBkf/RAAQ==
-=E6qU
------END PGP SIGNATURE-----
-
---eRtJSFbw+EEWtPj3--
+Thanks, Daniel.
