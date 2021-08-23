@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EAA3F497B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B453F497F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbhHWLOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:14:12 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:14410 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234865AbhHWLN5 (ORCPT
+        id S235386AbhHWLRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:17:03 -0400
+Received: from mail-vk1-f177.google.com ([209.85.221.177]:34367 "EHLO
+        mail-vk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234865AbhHWLRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:13:57 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GtTyr6zxyzbdQ6;
-        Mon, 23 Aug 2021 19:09:24 +0800 (CST)
-Received: from [10.174.177.35] (10.174.177.35) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 23 Aug 2021 19:13:13 +0800
-Subject: Re: [PATCH 2/3] mm/memory_hotplug: fix potential permanent lru cache
- disable
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
-        <mhocko@suse.com>, <minchan@kernel.org>, <cgoldswo@codeaurora.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210821094246.10149-1-linmiaohe@huawei.com>
- <20210821094246.10149-3-linmiaohe@huawei.com>
- <f42d89e40a604944dbefe0b729c1a685@suse.de>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <3a124653-31de-5eb6-3812-73c4ea20bbbf@huawei.com>
-Date:   Mon, 23 Aug 2021 19:13:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 23 Aug 2021 07:17:02 -0400
+Received: by mail-vk1-f177.google.com with SMTP id 1so4421962vkk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:16:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=faHE5uLzzMMIXxbLQnSAHKHQ7h63WsGlPBA2VsHG9i4=;
+        b=J3JGsVHA+U9CMtYNYeNIW49KM2erVQXQXITrOO2Q8CoMYBI4xkmm799xOXzoSl7cXc
+         8pctAEKGMHiG2wE83oQBKM+PDO9J9mqKfa4FjmG01DasyVXb2WH7FYEVd2qufmDZo5nI
+         gSuW+Kxo+81x2zD8bAbDWDgMZvATiG0L8QxQhhav9aX+u9qNsU0kQtAX6U1EGDiL0XLr
+         XkbAtWqMpmOG3Prlp3xPfq5vol1inPZxX6lprBYKngjWZs++luAZ83Mtcg86WM53nY9u
+         SE35bMhKx0oG1NT6nTPlz1iMsJ9eHgNi1vdPIiD55u8alrhFlC9tcT6jPlIsxalnHoo1
+         aF+Q==
+X-Gm-Message-State: AOAM530RSplnSsOS0hp6YmrGMpjhgjqCH089AML2DdB9iDpgrlFjQeVg
+        +PZ8/HJfPlBRhqNIxG7HZBMby8Vf4hsbH4SigY0ZHTZbKN4=
+X-Google-Smtp-Source: ABdhPJyBujEAKkJwc3CxZYA/34T0Of7QAcEQZSGrCYq/UzE7wCdt75wXS1JesiZ0tErPlgSvAtwypeXQHWbK9MgIjXU=
+X-Received: by 2002:a1f:21cf:: with SMTP id h198mr8200797vkh.2.1629717379832;
+ Mon, 23 Aug 2021 04:16:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f42d89e40a604944dbefe0b729c1a685@suse.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.35]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+References: <20210823104942.1371825-1-geert@linux-m68k.org>
+In-Reply-To: <20210823104942.1371825-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 23 Aug 2021 13:16:08 +0200
+Message-ID: <CAMuHMdVnF6yAf6ffUd7Jy2p03fbTNz6ymVGU5dUSkr18b=fo7Q@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.14-rc6
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linux-um <linux-um@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/23 17:15, Oscar Salvador wrote:
-> On 2021-08-21 11:42, Miaohe Lin wrote:
->> If offline_pages failed after lru_cache_disable(), it forgot to do
->> lru_cache_enable() in error path. So we would have lru cache disabled
->> permanently in this case.
->>
->> Fixes: d479960e44f2 ("mm: disable LRU pagevec during the migration temporarily")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> 
+On Mon, Aug 23, 2021 at 12:52 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.14-rc6[1] to v5.14-rc5[3], the summaries are:
+>   - build errors: +2/-0
 
-Many thanks for your review and reply. :)
+  + /kisskb/src/drivers/dma/idxd/init.c: error: implicit declaration
+of function 'cpu_feature_enabled'
+[-Werror=implicit-function-declaration]:  => 815:7
+  + /kisskb/src/drivers/dma/idxd/perfmon.h: error: 'struct perf_event'
+has no member named 'pmu':  => 35:13, 24:13
 
-> Should this go to stable?
-> In case we fail to enable it again, we will bypass the pvec cache anytime we add a new page to the LRU which might lead to severe performance regression?
-> 
+um-x86_64/um-allmodconfig
 
-Agree with you. I think this should go to stable too.
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7c60610d476766e128cc4284bb6349732cbd6606/ (182 out of 189 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/36a21d51725af2ce0700c6ebcb6b9594aac658a6/ (182 out of 189 configs)
 
->> ---
->>  mm/memory_hotplug.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
->> index d986d3791986..9fd0be32a281 100644
->> --- a/mm/memory_hotplug.c
->> +++ b/mm/memory_hotplug.c
->> @@ -2033,6 +2033,7 @@ int __ref offline_pages(unsigned long start_pfn,
->> unsigned long nr_pages,
->>      undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
->>      memory_notify(MEM_CANCEL_OFFLINE, &arg);
->>  failed_removal_pcplists_disabled:
->> +    lru_cache_enable();
->>      zone_pcp_enable(zone);
->>  failed_removal:
->>      pr_debug("memory offlining [mem %#010llx-%#010llx] failed due to %s\n",
-> 
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
