@@ -2,151 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F24F3F44B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 07:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3D83F44BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 07:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbhHWFpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 01:45:20 -0400
-Received: from relay.sw.ru ([185.231.240.75]:57712 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231267AbhHWFpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 01:45:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=Fl3YLeNPw73kTCd+tayVreDVmY39xWbUXsGFSI8fAJs=; b=BKgjhm6JRLLJVwNPQ
-        M5iIcdxkT+Z2i8RPmYlvvcyCWT4GPLbgZuMaBdHv7yjTkN2pwyEQH50VcdDxSW3lbAVry6Z36zMSY
-        eGjCk8cNWp0T0iiJROU6Kl2ZRWgTdCthMWZu220lZks6UZ9FcVFSf+cRakuoTZUHCRYvCdhqt5hpo
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mI2l4-008Y2I-Hh; Mon, 23 Aug 2021 08:44:30 +0300
-Subject: Re: [PATCH NET v4 3/7] ipv6: use skb_expand_head in ip6_xmit
-To:     Christoph Paasch <christoph.paasch@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <ccce7edb-54dd-e6bf-1e84-0ec320d8886c@linux.ibm.com>
- <cover.1628235065.git.vvs@virtuozzo.com>
- <77f3e358-c75e-b0bf-ca87-6f8297f5593c@virtuozzo.com>
- <CALMXkpaay1y=0tkbnskr4gf-HTMjJJsVryh4Prnej_ws-hJvBg@mail.gmail.com>
- <CALMXkpa4RqwssO2QNKMjk=f8pGWDMtj4gpQbAYWbGDRfN4J6DQ@mail.gmail.com>
- <ff75b068-8165-a45c-0026-8b8f1c745213@virtuozzo.com>
- <CALMXkpZVkqFDKiCa4yHV0yJ7qEESqzcanu4mrWTNvc9jm=gxcw@mail.gmail.com>
- <CALMXkpYeR+DegQJ7Eec2cx=z8i+Z8Y-Aygftjg08Y2+bQXJZ7Q@mail.gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <7d71f2cc-3fff-beff-b82b-d0a81fb60429@virtuozzo.com>
-Date:   Mon, 23 Aug 2021 08:44:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234421AbhHWFzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 01:55:09 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:57293 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233584AbhHWFzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 01:55:07 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d55 with ME
+        id ktuM2500B3riaq203tuMJl; Mon, 23 Aug 2021 07:54:22 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 23 Aug 2021 07:54:22 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] misc: rtsx: switch from 'pci_' to 'dma_' API
+Date:   Mon, 23 Aug 2021 07:54:20 +0200
+Message-Id: <50eeb23378e04ef99859eb37c88ca2bf9a702b4c.1629698008.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CALMXkpYeR+DegQJ7Eec2cx=z8i+Z8Y-Aygftjg08Y2+bQXJZ7Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/21 8:13 PM, Christoph Paasch wrote:
-> On Sun, Aug 22, 2021 at 10:04 AM Christoph Paasch
-> <christoph.paasch@gmail.com> wrote:
->>
->> Hello Vasily,
->>
->> On Fri, Aug 20, 2021 at 11:21 PM Vasily Averin <vvs@virtuozzo.com> wrote:
->>>
->>> On 8/21/21 1:44 AM, Christoph Paasch wrote:
->>>> (resend without html - thanks gmail web-interface...)
->>>> On Fri, Aug 20, 2021 at 3:41 PM Christoph Paasch
->>>>> AFAICS, this is because pskb_expand_head (called from
->>>>> skb_expand_head) is not adjusting skb->truesize when skb->sk is set
->>>>> (which I guess is the case in this particular scenario). I'm not
->>>>> sure what the proper fix would be though...
->>>
->>> Could you please elaborate?
->>> it seems to me skb_realloc_headroom used before my patch called pskb_expand_head() too
->>> and did not adjusted skb->truesize too. Am I missed something perhaps?
->>>
->>> The only difference in my patch is that skb_clone can be not called,
->>> though I do not understand how this can affect skb->truesize.
->>
->> I *believe* that the difference is that after skb_clone() skb->sk is
->> NULL and thus truesize will be adjusted.
->>
->> I will try to confirm that with some more debugging.
-> 
-> Yes indeed.
-> 
-> Before your patch:
-> [   19.154039] ip6_xmit before realloc truesize 4864 sk? 000000002ccd6868
-> [   19.155230] ip6_xmit after realloc truesize 5376 sk? 0000000000000000
-> 
-> skb->sk is not set and thus truesize will be adjusted.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-This looks strange for me. skb should not lost sk reference.
+The patch has been generated with the coccinelle script below.
 
-Could you please clarify where exactly you cheked it?
-sk on newly allocated skb is set on line 291
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-net/ipv6/ip6_output.c::ip6_xmit()
- 282         if (unlikely(skb_headroom(skb) < head_room)) {
- 283                 struct sk_buff *skb2 = skb_realloc_headroom(skb, head_room);
- 284                 if (!skb2) {
- 285                         IP6_INC_STATS(net, ip6_dst_idev(skb_dst(skb)),
- 286                                       IPSTATS_MIB_OUTDISCARDS);
- 287                         kfree_skb(skb);
- 288                         return -ENOBUFS;
- 289                 }
- 290                 if (skb->sk)
- 291                         skb_set_owner_w(skb2, skb->sk); <<<<< here
- 292                 consume_skb(skb);
- 293                 skb = skb2;
- 294         }
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-> With your change:
-> [   15.092933] ip6_xmit before realloc truesize 4864 sk? 00000000072930fd
-> [   15.094131] ip6_xmit after realloc truesize 4864 sk? 00000000072930fd
-> 
-> skb->sk is set and thus truesize is not adjusted.
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
 
-In this case skb_set_owner_w() is called inside skb_expand_head()
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
 
-net/ipv6/ip6_output.c::ip6_xmit()
- 265         if (unlikely(head_room > skb_headroom(skb))) {
- 266                 skb = skb_expand_head(skb, head_room);
- 267                 if (!skb) {
- 268                         IP6_INC_STATS(net, idev, IPSTATS_MIB_OUTDISCARDS);
- 269                         return -ENOBUFS;
- 270                 }
- 271         }
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-net/core/skbuff.c::skb_expand_head()
-1813         if (skb_shared(skb)) {
-1814                 struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-1815 
-1816                 if (likely(nskb)) {
-1817                         if (skb->sk)
-1818                                 skb_set_owner_w(nskb, skb->sk);  <<<< here
-1819                         consume_skb(skb);
-1820                 } else {
-1821                         kfree_skb(skb);
-1822                 }
-1823                 skb = nskb;
-1824         }
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-So I do not understand how this can happen.
-With my patch: 
-a) if skb is not shared -- it should keep original skb->sk
-b) if skb is shared -- new skb should set sk if it was set on original skb.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-Your results can be explained if you looked and skb->sk and truesize right after skb_realloc_headroom() call
-but  before following skb_set_owner_w(). Could you please check it?
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
 
-Thank you,
-	Vasily Averin
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+
+It is *NOT* been compile tested, but it looks safe enough!
+---
+ drivers/misc/cardreader/rtsx_pcr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index baf83594a01d..8c72eb590f79 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -1536,7 +1536,7 @@ static int rtsx_pci_probe(struct pci_dev *pcidev,
+ 		pci_name(pcidev), (int)pcidev->vendor, (int)pcidev->device,
+ 		(int)pcidev->revision);
+ 
+-	ret = pci_set_dma_mask(pcidev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(&pcidev->dev, DMA_BIT_MASK(32));
+ 	if (ret < 0)
+ 		return ret;
+ 
+-- 
+2.30.2
+
