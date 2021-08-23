@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3044E3F42D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CF43F4321
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhHWBJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234383AbhHWBJH (ORCPT
+        id S234639AbhHWBir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:38:47 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:63945 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234572AbhHWBip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:09:07 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302BEC061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:08:25 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id h9so33451988ejs.4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Onm3235BQ8G4xdJbhVwVgJsf95u/nu5c22LJ3fnjjLA=;
-        b=DiTtMR16QYQmfTecipM6RDF834D/bmbcX4DapAdcIcu6Q/wfzgm82DKNdYM7wbsQbA
-         vvag4OT1ymGCwo5x9paI9ijTy8hY+LOKndK6mWagcyFXwUsbZ2OaPJL3M50Ri9E5x1QG
-         h4d0rF6Jl5e5cFOOKryRLH6VqjP+Ec/OLqEYBBTxMStlqdTkbf/aCcZY4vGJwtctx8Wd
-         i9/ig+y9ZUs07AP4e7EeLbPJGs4kIoAqQ7UUGKv4dKfCMn5IcOvM6kXYaSUNVm6nXOyF
-         xf1SyarAYZoGdRvEpQDn+ilx6PZguy1Ci1gwD2eeiZ56IiT0k1VHEpvdnuAggCR2Z+33
-         uOTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Onm3235BQ8G4xdJbhVwVgJsf95u/nu5c22LJ3fnjjLA=;
-        b=DilU+1Z6+yLkxz2ipZtrrxfzeV/JJJCzV8oMIaqIUctrhh5BIc3ODyjZWrW/XEXUDu
-         Q/SxnCQcrEmWMlxS6cEEUZQegbRvsPLrBYpunYDK4xQEb+akU5BD08GH/PE98wASnEnK
-         t9qVTuu7GrJdEXtkpdHVfZ2/DRoELXDNFIIxA2y842ovIUIF7Usr4L+f7/MJhvCLKN/q
-         fMWLA45CnKfFZ4uxqimF2a71/CIKZ1pOwymEqvfU+Yh9mQ2sUlQ03HjPhiA+BKu4Jx0s
-         T5Ka2TgxTuHmXzOltcBMK7RWCDii1zbEeoJU/ipMwtU4Kn2cLzQ/OVz32fn16U9BnMCW
-         0qeQ==
-X-Gm-Message-State: AOAM531aJ9F5lo9J9x3zqvFd+BUcbqDT4LqJl719dzsURpGBlvKTAdHb
-        N1/xhQB5tSLL8y0oBSk3SaY6TSQDc48gDrJr8p0UMA==
-X-Google-Smtp-Source: ABdhPJwUksQwzIHDsLD7LRr+16pz/HRfywN70Z6+uiOne1u+om1H3sBmuAFlzPeVw4ciw87Ev3lfR9WxvyDDmZNA4cw=
-X-Received: by 2002:a17:906:cb11:: with SMTP id lk17mr32433898ejb.271.1629680903812;
- Sun, 22 Aug 2021 18:08:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CAMuHMdUsFb-qpssVXkxv0gV8qpi6mUNx+3o+ZUhc5UMCKppzrQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUsFb-qpssVXkxv0gV8qpi6mUNx+3o+ZUhc5UMCKppzrQ@mail.gmail.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Sun, 22 Aug 2021 18:08:13 -0700
-Message-ID: <CAK9rFnwAiKgb-RJGipVCqSZmeCvKfUA+zQxG9TPDXV6CkTvs6Q@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 22 Aug 2021 21:38:45 -0400
+Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210823013802epoutp010084a834165d6f84d62d911101ea80f3~dy8PxFIRp2728927289epoutp01h
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:38:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210823013802epoutp010084a834165d6f84d62d911101ea80f3~dy8PxFIRp2728927289epoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1629682682;
+        bh=q+J/BDN8g7YL5QAH0PemEbR6v4KIUjl5qmAlnayWP8s=;
+        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
+        b=OVhQJofW8QJifNHqVSHOm1kvML5fy/06ikqN//FqClaaoXkA3+IdY7R5IkHc7xCqi
+         bW7me2OcA1F3H9BP/D42rCJK2x9ZJL94RoBxDBIwP5zZote7pkLwI92ihbc5d/PQhI
+         E2q9v//Ukw7JrjDPRYl4Ceg73NJ0cnOx+SC8WBtU=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20210823013802epcas3p3ad1c51ead38448ce9b637b67d33fcee0~dy8POXfF22802628026epcas3p3I;
+        Mon, 23 Aug 2021 01:38:02 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp3.localdomain
+        (Postfix) with ESMTP id 4GtFHY6zvGz4x9Qb; Mon, 23 Aug 2021 01:38:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH] scsi: ufs: ufshpb: Fix possible memory leak
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Keoseong Park <keosung.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <ca6e8507-743b-005a-faec-375d88d8aaf6@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01629682681949.JavaMail.epsvc@epcpadp4>
+Date:   Mon, 23 Aug 2021 10:09:12 +0900
+X-CMS-MailID: 20210823010912epcms2p38bc3176b6e11f2e9d9494ae668d479fc
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210820014624epcms2p6724e146ca1f93ba6eac5e7cf95d4cfd2
+References: <ca6e8507-743b-005a-faec-375d88d8aaf6@acm.org>
+        <1891546521.01629427801384.JavaMail.epsvc@epcpadp3>
+        <CGME20210820014624epcms2p6724e146ca1f93ba6eac5e7cf95d4cfd2@epcms2p3>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Bart,
 
-On Fri, Mar 5, 2021 at 5:57 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On 8/19/21 6:46 PM, Keoseong Park wrote:
+>> When HPB pinned region exists and mctx allocation for this region fails,
+>> memory leak is possible because memory is not released for the subregion
+>> table of the current region.
+>> 
+>> So, change to free memory for the subregion table of the current region.
+>> 
+>> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+>> ---
+>>   drivers/scsi/ufs/ufshpb.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+>> index 9acce92a356b..052f584c789a 100644
+>> --- a/drivers/scsi/ufs/ufshpb.c
+>> +++ b/drivers/scsi/ufs/ufshpb.c
+>> @@ -1933,7 +1933,7 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+>>   		if (ufshpb_is_pinned_region(hpb, rgn_idx)) {
+>>   			ret = ufshpb_init_pinned_active_region(hba, hpb, rgn);
+>>   			if (ret)
+>> -				goto release_srgn_table;
+>> +				goto release_current_srgn_table;
+>>   		} else {
+>>   			rgn->rgn_state = HPB_RGN_INACTIVE;
+>>   		}
+>> @@ -1944,6 +1944,9 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+>>   
+>>   	return 0;
+>>   
+>> +release_current_srgn_table:
+>> +	kvfree(rgn_table[rgn_idx].srgn_tbl);
+>> +
+>>   release_srgn_table:
+>>   	for (i = 0; i < rgn_idx; i++)
+>>   		kvfree(rgn_table[i].srgn_tbl);
 >
-> Hi Brad,
+>'rgn_table' is allocated with kvcalloc() so please merge the new kvfree() statement
+>with the for-loop below it.
 >
-> On Thu, Mar 4, 2021 at 4:59 AM Brad Larson <brad@pensando.io> wrote:
-> > This GPIO driver is for the Pensando Elba SoC which
-> > provides control of four chip selects on two SPI busses.
-[...]
-> > +config GPIO_ELBA_SPICS
-> > +       bool "Pensando Elba SPI chip-select"
-> > +       depends on ARCH_PENSANDO_ELBA_SOC
+>There is another improvement that can be made in this function: hpb->rgn_tbl
+>is not cleared in the error path. I propose to move the "hpb->rgn_tbl = rgn_table"
+>assignment from the start of the function to just above the "return 0" statement.
 >
-> Any specific reason this can't be "... || COMPILE_TEST"?
+>Thanks,
+>
+>Bart.
+>
 
-Added COMPILE_TEST
+Thank you for your feedback.
+I will fix it.
 
-Regards,
-Brad
+Best Regards,
+Keoseong
+
