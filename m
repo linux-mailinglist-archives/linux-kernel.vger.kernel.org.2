@@ -2,187 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908D53F462B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8695B3F462D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235349AbhHWH4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:56:53 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:40755 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235263AbhHWH4v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:56:51 -0400
-Received: by mail-vs1-f41.google.com with SMTP id h29so8184113vsr.7;
-        Mon, 23 Aug 2021 00:56:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bO20WydNuUjicbzTyFZXQBF0DVpWSwKIJdDjl+VnxdI=;
-        b=FlqhUFLsgf820Fnm207VUxAruP6Em7I3U7iCjyNkX30DAXODEZslEYO17X9auGNjdC
-         Owoy9ZwEsHTO5rttHTyOxiVtxsBgGo6psXXpruKWe6nwWSY9tVW9FngJR3n2RQ9sScnW
-         BX3TMoHG6EY3ulm7cOCAS4I4h+AHM3ANZe2cQUDTRO9p8jsD6EqfICM6UQ5K7wwnE0c/
-         N+DRlR041Drx7DRzTPkggY3KHH1bACK5wTDyPHPDCB+sV/uTLbRo6sp0cJcnm+RO08RU
-         D9XY25TOhTIo66GuPB176tyLayWj5tdUnFO8E0d6epENTUPg6pIsIL9i11pGdfb4JJhl
-         HIqQ==
-X-Gm-Message-State: AOAM5310y4BUrX/1GL8G+gtSmKCz+eQQeI5piT288VDOPRSIC1TQkXRX
-        fE4YjnNfLVS1RUSsb+IZAY9SF4NdOl/OHboWbw8=
-X-Google-Smtp-Source: ABdhPJxMhnJoTSMt1e3XrfAQGUikNOXfRuWG7TZ644Gun+YviYlr+fG1nVKaZQa7BFgcKGc/DC0y/v+xN1ESjGAyAXg=
-X-Received: by 2002:a05:6102:3e92:: with SMTP id m18mr22891652vsv.53.1629705368522;
- Mon, 23 Aug 2021 00:56:08 -0700 (PDT)
+        id S235263AbhHWH47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:56:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19044 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235380AbhHWH4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 03:56:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629705373; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=B1gMTIHDe63Hd6Huni5qoSBnGb8WqgIMHUY1HklXe2M=; b=Sp1U51qYaxmPPzBiyNynTEB9nATQBYFdyapYkrjaQhxh0pEfWmLcvD6IzJ3aeNJplVs7/vXy
+ Vt9OXkUhImxaysUXwEvBaequ2P6p+9lTnHznOu2zzf3rB4/htjzrBlFEPA4DbacYe00CQ693
+ CPtRdWwBoVWxsbTfUkEEM1rY9Qo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6123549534bfa76979b6f10a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 07:56:05
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 19259C4360D; Mon, 23 Aug 2021 07:56:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.85.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CCAAEC4338F;
+        Mon, 23 Aug 2021 07:56:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CCAAEC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2 3/3] irqchip/qcom-pdc: Start getting rid of the
+ GPIO_NO_WAKE_IRQ
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bjorn.andersson@linaro.org, linus.walleij@linaro.org,
+        tkjos@google.com, lsrao@codeaurora.org
+References: <1629373993-13370-1-git-send-email-mkshah@codeaurora.org>
+ <1629373993-13370-4-git-send-email-mkshah@codeaurora.org>
+ <87k0kgqg6s.wl-maz@kernel.org>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <92b37bf7-654f-14c0-1f1c-64a1cd12427a@codeaurora.org>
+Date:   Mon, 23 Aug 2021 13:25:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210812084348.6521-1-david@redhat.com> <87o8a2d0wf.fsf@disp2133>
- <60db2e61-6b00-44fa-b718-e4361fcc238c@www.fastmail.com> <87lf56bllc.fsf@disp2133>
- <CAHk-=wgru1UAm3kAKSOdnbewPXQMOxYkq9PnAsRadAC6pXCCMQ@mail.gmail.com>
- <87eeay8pqx.fsf@disp2133> <5b0d7c1e73ca43ef9ce6665fec6c4d7e@AcuMS.aculab.com>
- <87h7ft2j68.fsf@disp2133> <CAHk-=whmXTiGUzVrTP=mOPQrg-XOi3R-45hC4dQOqW4JmZdFUQ@mail.gmail.com>
- <b629cda1-becd-4725-b16c-13208ff478d3@www.fastmail.com> <YRcyqbpVqwwq3P6n@casper.infradead.org>
- <87k0kkxbjn.fsf_-_@disp2133> <0c2af732e4e9f74c9d20b09fc4b6cbae40351085.camel@kernel.org>
- <CAHk-=wgewmbABDC3_ZNn11C+sm4Uz0L9HZ5Kvx0Joho4vsV4DQ@mail.gmail.com>
- <a1385746582a675c410aca4eb4947320faec4821.camel@kernel.org>
- <CAHk-=wgD-SNxB=2iCurEoP=RjrciRgLtXZ7R_DejK+mXF2etfg@mail.gmail.com>
- <639d90212662cf5cdf80c71bbfec95907c70114a.camel@kernel.org>
- <CAHk-=wgHbYmUZvFkthGJ6zZx+ofTiiTRxPai5mPkmbtE=6JbaQ@mail.gmail.com> <ec075ee5764f4c7f9dd630090fb01f70@AcuMS.aculab.com>
-In-Reply-To: <ec075ee5764f4c7f9dd630090fb01f70@AcuMS.aculab.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Aug 2021 09:55:57 +0200
-Message-ID: <CAMuHMdVWC9=TtFG7=SmN+KQ=phh1MqNqgLFbrWXr9XsDv-Sp5Q@mail.gmail.com>
-Subject: Re: Removing Mandatory Locks
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Michel Lespinasse <walken@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Collin Fijalkovich <cfijalkovich@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "<linux-fsdevel@vger.kernel.org>" <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87k0kgqg6s.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 10:30 AM David Laight <David.Laight@aculab.com> wrote:
-> From: Linus Torvalds
-> > Sent: 19 August 2021 23:33
-> >
-> > On Thu, Aug 19, 2021 at 2:43 PM Jeff Layton <jlayton@kernel.org> wrote:
-> > >
-> > > What sort of big, ugly warning did you have in mind?
-> >
-> > I originally thought WARN_ON_ONCE() just to get the distro automatic
-> > error handling involved, but it would probably be a big problem for
-> > the people who end up having panic-on-warn or something.
+Hi,
+
+On 8/20/2021 9:08 PM, Marc Zyngier wrote:
+> On Thu, 19 Aug 2021 12:53:13 +0100,
+> Maulik Shah <mkshah@codeaurora.org> wrote:
+>> From: Marc Zyngier <maz@kernel.org>
+>>
+>> gpio_to_irq() reports error at irq_domain_trim_hierarchy() for non
+>> wakeup capable GPIOs that do not have dedicated interrupt at GIC.
+>>
+>> Since PDC irqchip do not allocate irq at parent GIC domain for such
+>> GPIOs indicate same by using irq_domain_disconnect_hierarchy() for
+>> PDC and parent GIC domains.
+>>
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+>> [mkshah: Add loop to disconnect for all parents]
+>> Tested-by: Maulik Shah <mkshah@codeaurora.org>
+>> ---
+>>   drivers/irqchip/qcom-pdc.c | 75 +++++++++++-----------------------------------
+>>   1 file changed, 18 insertions(+), 57 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+>> index 32d5920..696afca 100644
+>> --- a/drivers/irqchip/qcom-pdc.c
+>> +++ b/drivers/irqchip/qcom-pdc.c
+>> @@ -53,26 +53,6 @@ static u32 pdc_reg_read(int reg, u32 i)
+>>   	return readl_relaxed(pdc_base + reg + i * sizeof(u32));
+>>   }
+>>   
+>> -static int qcom_pdc_gic_get_irqchip_state(struct irq_data *d,
+>> -					  enum irqchip_irq_state which,
+>> -					  bool *state)
+>> -{
+>> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
+>> -		return 0;
+>> -
+>> -	return irq_chip_get_parent_state(d, which, state);
+>> -}
+>> -
+>> -static int qcom_pdc_gic_set_irqchip_state(struct irq_data *d,
+>> -					  enum irqchip_irq_state which,
+>> -					  bool value)
+>> -{
+>> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
+>> -		return 0;
+>> -
+>> -	return irq_chip_set_parent_state(d, which, value);
+>> -}
+>> -
+>>   static void pdc_enable_intr(struct irq_data *d, bool on)
+>>   {
+>>   	int pin_out = d->hwirq;
+>> @@ -91,38 +71,16 @@ static void pdc_enable_intr(struct irq_data *d, bool on)
+>>   
+>>   static void qcom_pdc_gic_disable(struct irq_data *d)
+>>   {
+>> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
+>> -		return;
+>> -
+>>   	pdc_enable_intr(d, false);
+>>   	irq_chip_disable_parent(d);
+>>   }
+>>   
+>>   static void qcom_pdc_gic_enable(struct irq_data *d)
+>>   {
+>> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
+>> -		return;
+>> -
+>>   	pdc_enable_intr(d, true);
+>>   	irq_chip_enable_parent(d);
+>>   }
+>>   
+>> -static void qcom_pdc_gic_mask(struct irq_data *d)
+>> -{
+>> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
+>> -		return;
+>> -
+>> -	irq_chip_mask_parent(d);
+>> -}
+>> -
+>> -static void qcom_pdc_gic_unmask(struct irq_data *d)
+>> -{
+>> -	if (d->hwirq == GPIO_NO_WAKE_IRQ)
+>> -		return;
+>> -
+>> -	irq_chip_unmask_parent(d);
+>> -}
+>> -
+>>   /*
+>>    * GIC does not handle falling edge or active low. To allow falling edge and
+>>    * active low interrupts to be handled at GIC, PDC has an inverter that inverts
+>> @@ -159,14 +117,10 @@ enum pdc_irq_config_bits {
+>>    */
+>>   static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+>>   {
+>> -	int pin_out = d->hwirq;
+>>   	enum pdc_irq_config_bits pdc_type;
+>>   	enum pdc_irq_config_bits old_pdc_type;
+>>   	int ret;
+>>   
+>> -	if (pin_out == GPIO_NO_WAKE_IRQ)
+>> -		return 0;
+>> -
+>>   	switch (type) {
+>>   	case IRQ_TYPE_EDGE_RISING:
+>>   		pdc_type = PDC_EDGE_RISING;
+>> @@ -191,8 +145,8 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	old_pdc_type = pdc_reg_read(IRQ_i_CFG, pin_out);
+>> -	pdc_reg_write(IRQ_i_CFG, pin_out, pdc_type);
+>> +	old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
+>> +	pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
+>>   
+>>   	ret = irq_chip_set_type_parent(d, type);
+>>   	if (ret)
+>> @@ -216,12 +170,12 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
+>>   static struct irq_chip qcom_pdc_gic_chip = {
+>>   	.name			= "PDC",
+>>   	.irq_eoi		= irq_chip_eoi_parent,
+>> -	.irq_mask		= qcom_pdc_gic_mask,
+>> -	.irq_unmask		= qcom_pdc_gic_unmask,
+>> +	.irq_mask		= irq_chip_mask_parent,
+>> +	.irq_unmask		= irq_chip_unmask_parent,
+>>   	.irq_disable		= qcom_pdc_gic_disable,
+>>   	.irq_enable		= qcom_pdc_gic_enable,
+>> -	.irq_get_irqchip_state	= qcom_pdc_gic_get_irqchip_state,
+>> -	.irq_set_irqchip_state	= qcom_pdc_gic_set_irqchip_state,
+>> +	.irq_get_irqchip_state	= irq_chip_get_parent_state,
+>> +	.irq_set_irqchip_state	= irq_chip_set_parent_state,
+>>   	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+>>   	.irq_set_type		= qcom_pdc_gic_set_type,
+>>   	.flags			= IRQCHIP_MASK_ON_SUSPEND |
+>> @@ -282,7 +236,7 @@ static int qcom_pdc_alloc(struct irq_domain *domain, unsigned int virq,
+>>   
+>>   	parent_hwirq = get_parent_hwirq(hwirq);
+>>   	if (parent_hwirq == PDC_NO_PARENT_IRQ)
+>> -		return 0;
+>> +		return irq_domain_disconnect_hierarchy(domain->parent, virq);
+>>   
+>>   	if (type & IRQ_TYPE_EDGE_BOTH)
+>>   		type = IRQ_TYPE_EDGE_RISING;
+>> @@ -314,22 +268,29 @@ static int qcom_pdc_gpio_alloc(struct irq_domain *domain, unsigned int virq,
+>>   	irq_hw_number_t hwirq, parent_hwirq;
+>>   	unsigned int type;
+>>   	int ret;
+>> +	struct irq_domain *parent;
+>>   
+>>   	ret = qcom_pdc_translate(domain, fwspec, &hwirq, &type);
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> +	if (hwirq == GPIO_NO_WAKE_IRQ) {
+>> +		for (parent = domain; parent; parent = parent->parent) {
+>> +			ret = irq_domain_disconnect_hierarchy(parent, virq);
+>> +			if (ret)
+>> +				return ret;
+>> +		}
+>> +		return 0;
+>> +	}
+>> +
+> No, this is wrong. Please read the documentation for
+> irq_domain_disconnect_hierarchy(): the disconnect can only take place
+> *once* per interrupt, right at the point where you need to terminate
+> the hierarchy.
 >
-> Even panic-on-oops is a PITA.
-> Took us weeks to realise that a customer system that was randomly
-> rebooting was 'just' having a boring NULL pointer access.
+> irq_domain_trim_hierarchy() should already do the right thing by
+> iterating over the domains and free the unused irq_data.
 >
-> > So probably just a "make it a big box" thing that stands out, kind of
-> > what lockdep etc does with
-> >
-> >         pr_warn("======...====\n");
-> >
-> > around the messages..
+> 	M.
+Thanks for the review. Seems we need disconnect only once per interrupt.
+with this i see patch 2 in this series also of no use since it already 
+takes care of removing irq_data for all the parents.
 
-Do we really need more of these?
-They take time to print (especially on serial
-consoles) and increase kernel size.
+Addressed in v3 series.
 
-What's wrong with using an appropriate KERN_*, and letting userspace
-make sure the admin/user will see the message (see below)?
-
-> >
-> > I don't know if distros have some pattern we could use that would end
-> > up being something that gets reported to the user?
->
-> Will users even see it?
-> A lot of recent distro installs try very hard to hide all the kernel
-> messages.
-
-Exactly.  E.g. Ubuntu doesn't show any kernel output during normal
-operation.
-
-On Fri, Aug 20, 2021 at 6:12 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Fri, Aug 20, 2021 at 6:43 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > On Thu, 19 Aug 2021 15:32:31 -0700
-> > Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> > >
-> > > I don't know if distros have some pattern we could use that would end
-> > > up being something that gets reported to the user?
-
-> So what would be more interesting is if there's some distro support
-> for showing kernel notifications..
->
-> I see new notifications for calendar events, for devices that got
-> mounted, for a lot of things - so I'm really wondering if somebody
-> already perhaps had something for specially formatted kernel
-> messages..
-
-Isn't that what the old syslog and the new systemd are supposed to
-handle in userspace?
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Thanks,
+Maulik
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
