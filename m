@@ -2,147 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382393F4A26
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD9F3F4A34
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235990AbhHWL7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:59:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55588 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230289AbhHWL7C (ORCPT
+        id S236509AbhHWMBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhHWMBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:59:02 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17NBer9d074737;
-        Mon, 23 Aug 2021 07:58:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Iz5i4ZAicf4aU0DCS+OudBoa8Tt/wnm5/hH+U4ImtW8=;
- b=kAIhI5nRg3uksu4gcZcAHZB1OS1dr+Qnyn/t9NOYguEqYNkleQwAtAgj0qOi7QLqrLJx
- 5oFIQy1lse+aaCp5M7AE9wAVWbfp0wS3NaA8Zq07UoNKysp/7rv/+lDYYFCozSMEcLaT
- qb6FPF0RLGs8RNbq2sxPi3m1YEIwXG6ELUHu3KUxbUt+NFfu2rqLclGqAP4hcJMamlJ4
- N4EkqE7M2/IC8M1952TdSEtvBcx1ilrbdPoa+0HueOp7Z4kVTqVebUhky3SpVI7e5obi
- SSqfQtqKInwuRjJDDfEZuN1O9dQCb/f4fF54KR4zuRO0NlAhCrshy8dBBezSsKPbv9Sa 7Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aketbn23w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 07:58:07 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17NBg3d5080512;
-        Mon, 23 Aug 2021 07:58:06 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aketbn236-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 07:58:06 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17NBlRqS001122;
-        Mon, 23 Aug 2021 11:58:05 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3ajs48jsf8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 11:58:04 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17NBsNUx19726674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 11:54:23 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB53E42064;
-        Mon, 23 Aug 2021 11:58:01 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D1B442066;
-        Mon, 23 Aug 2021 11:57:59 +0000 (GMT)
-Received: from sig-9-65-215-209.ibm.com (unknown [9.65.215.209])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Aug 2021 11:57:59 +0000 (GMT)
-Message-ID: <c02ff60205fdb343cb5a2ff0e4384fc7b47635a3.camel@linux.ibm.com>
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     THOBY Simon <Simon.THOBY@viveris.fr>,
-        liqiong <liqiong@nfschina.com>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 23 Aug 2021 07:57:58 -0400
-In-Reply-To: <cf715a40-b255-c688-578c-7f8bcd004ee3@viveris.fr>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
-         <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
-         <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
-         <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
-         <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
-         <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
-         <fee498ec-087c-b52d-102c-d29d98f9b794@nfschina.com>
-         <cf715a40-b255-c688-578c-7f8bcd004ee3@viveris.fr>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9QsYbkk7545Yp63gPbE_sSc7eneAplqW
-X-Proofpoint-ORIG-GUID: bPmOxHmBGqHxFt7c_9c3SXKk4WMHQExu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-23_02:2021-08-23,2021-08-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- spamscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999 bulkscore=0
- adultscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108230078
+        Mon, 23 Aug 2021 08:01:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF0EC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SvYyxaR7pbaroKoYkxxVyJBV0ySbQ+OIJjyRsFmYxFo=; b=g3CjWbwjcvDmlrsJarkQJZWQCh
+        Rady3qn1tVuaeZKNowXoQhfdxvMBc950JONW9X7tU6X+9KdEj/bZeNJQvFTy9UMi+YCaQ9FKLDOHH
+        Hz/7e/X3MlPYVEvytw7g0RikKrvGQflHS4RbRkXRrS3hKOJNnlQBQpTUH8n5bQg7UvmK+8Owx/0o0
+        APGJd9nJ+kHMv+e22d6Gdb28i+CTkPWsCtUx/ZcUaMYhoHLCBlsGWvaFWHjO7+aiyQbqf4/0AgsFF
+        lRlEu6OP8HajueuuKTL8d4VCdE75XAaBnhFfON7c3Z6B8ieNiOuJYLgiuvlSFDUVa53A0TfLGoqhd
+        DLcYqsKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mI8bs-009hP4-5N; Mon, 23 Aug 2021 11:59:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F0BB300332;
+        Mon, 23 Aug 2021 13:59:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 68D2020A5C3C3; Mon, 23 Aug 2021 13:59:23 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 13:59:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: Re: [PATCH v3 1/2] sched/fair: Add NOHZ balancer flag for
+ nohz.next_balance updates
+Message-ID: <YSONmyWL14mqV6zA@hirez.programming.kicks-ass.net>
+References: <20210823111700.2842997-1-valentin.schneider@arm.com>
+ <20210823111700.2842997-2-valentin.schneider@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823111700.2842997-2-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-08-23 at 08:14 +0000, THOBY Simon wrote:
-> Hi Liqiong,
-> 
-> On 8/23/21 10:06 AM, liqiong wrote:
-> > Hi Simon :
-> > 
-> > Using a temporary ima_rules variable is not working for "ima_policy_next". 
-> > 
-> >  void *ima_policy_next(struct seq_file *m, void *v, loff_t *pos)
-> >  {
-> >  	struct ima_rule_entry *entry = v;
-> > -
-> > +	struct list_head *ima_rules_tmp = rcu_dereference(ima_rules);
-> >  	rcu_read_lock();
-> >  	entry = list_entry_rcu(entry->list.next, struct ima_rule_entry, list);
-> >  	rcu_read_unlock();
-> >  	(*pos)++;
-> >  
-> > -	return (&entry->list == ima_rules) ? NULL : entry;
-> > +	return (&entry->list == ima_rules_tmp) ? NULL : entry;
-> >  }
-> > 
-> > It seems no way to fix "ima_rules" change within this function, it will alway
-> > return a entry if "ima_rules" being changed.
-> 
-> - I think rcu_dereference() should be called inside the RCU read lock
-> - Maybe we could cheat with:
-> 	return (&entry->list == &ima_policy_rules || &entry->list == &ima_default_rules) ? NULL : entry;
->   as that's the only two rulesets IMA ever use?
->   Admittedly, this is not as clean as previously, but it should work too.
-> 
-> The way I see it, the semaphore solution would not work here either,
-> as ima_policy_next() is called repeatedly as a seq_file
-> (it is set up in ima_fs.c) and we can't control the locking there:
-> we cannot lock across the seq_read() call (that cure could end up be
-> worse than the disease, deadlock-wise), so I fear we cannot protect
-> against a list update while a user is iterating with a lock.
-> 
-> So in both cases a cheat like "&entry->list == &ima_policy_rules || &entry->list == &ima_default_rules"
-> maybe need to be considered.
-> 
-> What do you think?
+On Mon, Aug 23, 2021 at 12:16:59PM +0100, Valentin Schneider wrote:
 
-Is this an overall suggestion or limited to just ima_policy_next()?
+> Gate NOHZ blocked load
+> update by the presence of NOHZ_STATS_KICK - currently all NOHZ balance
+> kicks will have the NOHZ_STATS_KICK flag set, so no change in behaviour is
+> expected.
 
-thanks,
+> @@ -10572,7 +10572,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+>  	 * setting the flag, we are sure to not clear the state and not
+>  	 * check the load of an idle cpu.
+>  	 */
+> -	WRITE_ONCE(nohz.has_blocked, 0);
+> +	if (flags & NOHZ_STATS_KICK)
+> +		WRITE_ONCE(nohz.has_blocked, 0);
+>  
+>  	/*
+>  	 * Ensures that if we miss the CPU, we must see the has_blocked
+> @@ -10594,13 +10595,15 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+>  		 * balancing owner will pick it up.
+>  		 */
+>  		if (need_resched()) {
+> -			has_blocked_load = true;
+> +			if (flags & NOHZ_STATS_KICK)
+> +				has_blocked_load = true;
+>  			goto abort;
+>  		}
+>  
+>  		rq = cpu_rq(balance_cpu);
+>  
+> -		has_blocked_load |= update_nohz_stats(rq);
+> +		if (flags & NOHZ_STATS_KICK)
+> +			has_blocked_load |= update_nohz_stats(rq);
+>  
+>  		/*
+>  		 * If time for next balance is due,
+> @@ -10631,8 +10634,9 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
+>  	if (likely(update_next_balance))
+>  		nohz.next_balance = next_balance;
+>  
+> -	WRITE_ONCE(nohz.next_blocked,
+> -		now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+> +	if (flags & NOHZ_STATS_KICK)
+> +		WRITE_ONCE(nohz.next_blocked,
+> +			   now + msecs_to_jiffies(LOAD_AVG_PERIOD));
+>  
+>  abort:
+>  	/* There is still blocked load, enable periodic update */
 
-Mimi
+I'm a bit puzzled by this; that function has:
 
+  SCHED_WARN_ON((flags & NOHZ_KICK_MASK) == NOHZ_BALANCE_KICK);
 
+Which:
+
+ - isn't updated
+ - implies STATS must be set when BALANCE
+
+the latter gives rise to my confusion; why add that gate on STATS? It
+just doesn't make sense to do a BALANCE and not update STATS.
