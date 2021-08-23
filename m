@@ -2,129 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33A23F4609
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5386F3F4604
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhHWHvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:51:49 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:39760 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbhHWHvS (ORCPT
+        id S235263AbhHWHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235243AbhHWHvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:51:18 -0400
-Received: by mail-vs1-f44.google.com with SMTP id e9so10495974vst.6;
-        Mon, 23 Aug 2021 00:50:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ho3P9pBdgd42CBBqO6PTExhHf40DO+XVUYi0PLvvDcU=;
-        b=Tnr5p0YBYnazRD2Ux+8Z2KBq+evjNl1zJuA/CLqhtId2E1EsGsU53PVzpnbCmJuQ8g
-         G7UmJR4V+rAxpuSPB9HbIKLj00kLPtTgYX0Dldm09OzfxQso8IhZP4wwon19QEgrrEcS
-         IrrkkAskDUNn+ACgpzJBitW0Ln4f2w+XvGyA8ow70mHdRZe1JkiClOI1kN/nTDdkjQcy
-         RPTh/jlT2CSKe/Yfp9SGZ5Lln92NW8H5kIuckj4oVt/1MOSDx3+lazEtLHztSvDtp6c8
-         WBySiYp+1xryhz1DdwyI3OmauFZE1JuthS8J//8XBwFDk67S+biRlgcpkHI/IMCECuu6
-         Pmxg==
-X-Gm-Message-State: AOAM530kFAY5SquwExfPqv87d8vYJlvHiOrUOm7UNGxkoBpAUK/l76Jt
-        DR6KoY5T7w+8+m/rP1w/TUwBjwZQOcTXKlY3WbQ=
-X-Google-Smtp-Source: ABdhPJwnddl0CNzxKVNjXlZCRb2Igz6ludKlJHQ+IsyXtT1SETsb4n8hdAEokGACKnU9D507Yh2RQoDqVqVaLusqNtA=
-X-Received: by 2002:a67:c789:: with SMTP id t9mr23194381vsk.60.1629705028211;
- Mon, 23 Aug 2021 00:50:28 -0700 (PDT)
+        Mon, 23 Aug 2021 03:51:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593ECC061756;
+        Mon, 23 Aug 2021 00:50:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtPYJ73ySz9sWd;
+        Mon, 23 Aug 2021 17:50:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629705032;
+        bh=9dAHDCrMei61o4XJtPqjbdNJts5lkuem+/e8bvOvHNA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Eh1fOSt6Rsa06Kcm6zUhe5LMinVpSwezbm4AvqbDqfoCf8Wx8QP+NfHTf5hwPPM3r
+         seE9Pm8OmZKF0xk29DoKKPZAx8HVFzC8qkHEW0NciYckpNHIxL18k6IgUg0kAsqPB1
+         4kZ6VOhB46EsB/R5gHx65lL4wT2rl8YrfYDcZV5KUcDNVE7LlI0TH2qov6acKnTWKa
+         haVCYou/apmos6kKyAGlW7ST4LnEQMsbdpZIlaCJWw7UjpNPvtxGdtCJWR46mG7/ME
+         fjFSQmdREx4bk93AUY7FjVMOS9j4RKaZvUSalutLmeyUmI1nmJKU1Kn2WoBwE3Ojrh
+         egCMWHuXWU77Q==
+Date:   Mon, 23 Aug 2021 17:50:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@mellanox.com>, Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas =?UTF-8?B?SGVsbHN0?= =?UTF-8?B?csO2bQ==?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the hmm tree
+Message-ID: <20210823175027.3f3fabd7@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CAHp75VcG9KajNpDbewDq7QzotB6t7MfwiGk15FaobX+cmMVSzg@mail.gmail.com>
- <CAK9rFnwrA=W2Vk5yFwG4N_WS=eBXXnhtexA+tqgAYb6xOAO4oQ@mail.gmail.com>
- <CAHp75VdfrJ3JV_gL3xCLHOiw6Tj-5Ep7z5JKWUFKFbUt8gobcw@mail.gmail.com> <CAK9rFnx--z_pr_yR6CqGsH04ddwUtx4rxc7MxNNmy7ZSF86+Mg@mail.gmail.com>
-In-Reply-To: <CAK9rFnx--z_pr_yR6CqGsH04ddwUtx4rxc7MxNNmy7ZSF86+Mg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Aug 2021 09:50:16 +0200
-Message-ID: <CAMuHMdUz4vUQzXBHA9AiT3w6L20yBpgd0emVZJb=v_qw70qiJQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Brad Larson <brad@pensando.io>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_//zQi18i=ahDnMC3+VaHQ0Vw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brad,
+--Sig_//zQi18i=ahDnMC3+VaHQ0Vw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 23, 2021 at 3:14 AM Brad Larson <brad@pensando.io> wrote:
-> On Mon, Mar 29, 2021 at 3:40 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Mon, Mar 29, 2021 at 4:19 AM Brad Larson <brad@pensando.io> wrote:
-> > > On Sun, Mar 7, 2021 at 11:21 AM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Thu, Mar 4, 2021 at 4:40 PM Brad Larson <brad@pensando.io> wrote:
-> >
-> > ...
-> >
-> > > > > +config GPIO_ELBA_SPICS
-> > > > > +       bool "Pensando Elba SPI chip-select"
-> > > >
-> > > > Can't it be a module? Why?
-> > >
-> > > All Elba SoC based platforms require this driver to be built-in to boot and
-> > > removing the module would result in a variety of exceptions/errors.
-> >
-> > Needs to be at least in the commit message.
-> >
-> > > > > +       depends on ARCH_PENSANDO_ELBA_SOC
-> > > > > +       help
-> > > > > +         Say yes here to support the Pensndo Elba SoC SPI chip-select driver
+Hi all,
 
-Pensando
+After merging the hmm tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-> > > >
-> > > > Please give more explanation what it is and why users might need it,
-> > > > and also tell users how the module will be named (if there is no
-> > > > strong argument why it can't be a  module).
-> > > >
-> > > Fixed the typo.
-> >
-> > Yeah, according to the above, you better elaborate what this module is
-> > and why people would need it.
-> > Also can be a good hint to add
-> > default ARCH_MY_COOL_PLATFORM
->
-> Regarding the above module question and Kconfig definition, since I
-> first looked at this and reviewed the comments I realized I should be
-> using builtin.  The file gpio/Kconfig is currently this
->
-> config GPIO_ELBA_SPICS
->         def_bool y
->         depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
+drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_tt_get_st':
+drivers/gpu/drm/i915/gem/i915_gem_ttm.c:396:7: error: implicit declaration =
+of function '__sg_alloc_table_from_pages'; did you mean 'sg_alloc_table_fro=
+m_pages'? [-Werror=3Dimplicit-function-declaration]
+  396 |  sg =3D __sg_alloc_table_from_pages
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |       sg_alloc_table_from_pages
+drivers/gpu/drm/i915/gem/i915_gem_ttm.c:396:5: warning: assignment to 'stru=
+ct scatterlist *' from 'int' makes pointer from integer without a cast [-Wi=
+nt-conversion]
+  396 |  sg =3D __sg_alloc_table_from_pages
+      |     ^
 
-That means the driver will default to yes by merely enabling
-COMPILE_TEST, which is a no-go.
+Caused by commit
 
-    config GPIO_ELBA_SPICS
-            bool "one-line summary"
-            depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
-            default y if ARCH_PENSANDO_ELBA_SOC
+  fcbfe956561b ("lib/scatterlist: Provide a dedicated function to support t=
+able append")
 
-Gr{oetje,eeting}s,
+interacting with commit
 
-                        Geert
+  213d50927763 ("drm/i915/ttm: Introduce a TTM i915 gem object backend")
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+from the drm tree.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I have applied the following merge resolution patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 23 Aug 2021 17:46:27 +1000
+Subject: [PATCH] drm/i915/ttm: fix up for "lib/scatterlist: Provide a
+ dedicated function to support tableappend"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915=
+/gem/i915_gem_ttm.c
+index 771eb2963123..d3d95934a047 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
+@@ -382,7 +382,6 @@ i915_ttm_region(struct ttm_device *bdev, int ttm_mem_ty=
+pe)
+ static struct sg_table *i915_ttm_tt_get_st(struct ttm_tt *ttm)
+ {
+ 	struct i915_ttm_tt *i915_tt =3D container_of(ttm, typeof(*i915_tt), ttm);
+-	struct scatterlist *sg;
+ 	struct sg_table *st;
+ 	int ret;
+=20
+@@ -393,13 +392,13 @@ static struct sg_table *i915_ttm_tt_get_st(struct ttm=
+_tt *ttm)
+ 	if (!st)
+ 		return ERR_PTR(-ENOMEM);
+=20
+-	sg =3D __sg_alloc_table_from_pages
++	ret =3D sg_alloc_table_from_pages_segment
+ 		(st, ttm->pages, ttm->num_pages, 0,
+ 		 (unsigned long)ttm->num_pages << PAGE_SHIFT,
+-		 i915_sg_segment_size(), NULL, 0, GFP_KERNEL);
+-	if (IS_ERR(sg)) {
++		 i915_sg_segment_size(), GFP_KERNEL);
++	if (ret) {
+ 		kfree(st);
+-		return ERR_CAST(sg);
++		return ERR_PTR(ret);
+ 	}
+=20
+ 	ret =3D dma_map_sgtable(i915_tt->dev, st, DMA_BIDIRECTIONAL, 0);
+--=20
+2.32.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_//zQi18i=ahDnMC3+VaHQ0Vw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjU0QACgkQAVBC80lX
+0GwyKAf/djlPvQh5mFxB1HX6H6VwiNvnFMAqdCuLA9ur0ir8JX93LCvE6yDM8MGu
+fNhZdfFoF4ZBogs/VAnCqnHMmRe5onD6HJ7TAOtCt2BllQHoKLT4XMY4R3TYES2X
+gt2lL9kHBBJCJuo40CBr1VIAHsHWH8qPRZZOWrkSa9GsoWaNS2Pz3uWOsiwkC3p7
+prmCs1HACO9LS8V1Q2zhfweMHZXv6VQIceF3XfcOm1hFqeYvHpVTU+rgVFdxbyTG
+FkXMRrxp/hTDM+wltFqyDp5aMgTw9wIGvlrB0taIreHsMVCcW6ycl8hlbmHHQS4c
+3Y57a/W6nW+ExSY+sq+7q1HecMTS/w==
+=rnAY
+-----END PGP SIGNATURE-----
+
+--Sig_//zQi18i=ahDnMC3+VaHQ0Vw--
