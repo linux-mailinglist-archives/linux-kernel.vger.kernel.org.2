@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529B03F42BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052233F42C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhHWBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        id S234513AbhHWBHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbhHWBF6 (ORCPT
+        with ESMTP id S232908AbhHWBHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:05:58 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D753C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:05:17 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id r19so23589052eds.13
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9I+jvIuGkrYC7w12Jy77CUvwauedMrIdRwXtD/swi0U=;
-        b=PJ2lRFHHDJGTdGZgqkx8nm0C86/LsPvaA1plQiLWFsazUABz8Yc1GKrNB1BQebP/Rm
-         PZOTpqcjJA3c63TrlvEaSd9Nl4IAAmXXx22NUFr+a1YUH4v/xU8kJS3YhojZFgciqq6c
-         3pF3A5e3/flNGz5+xe0wFzOD8qTt9bGjHTA5wa1Fvx0NjEcMhjV1lOqg+y5AZpMs8uRO
-         UL8MO/ANO9YNVs/zhJP5dQVnCSFKf/lKw7h+zDwmT/AUdweiArEVhlAbseZHAVwKbAqR
-         Gxm//N0qMKiEZdmqBeDtkOLbvh1vfHMW8t3PCN9jiSrZYrm7JleLO/JDGMNpXYlaCBj2
-         WZ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9I+jvIuGkrYC7w12Jy77CUvwauedMrIdRwXtD/swi0U=;
-        b=mxZh+4BSbshu5DUIG2SQ2pht4xZvlRKLXSKOAsDAnu48w0oL2q/gnDapSbdsnKIkYN
-         Pfw7bXuJ8L7vzNFNY/uapO46NTQNObiPLkxEVZEIvplYxXLQvIS8GqqEV7ywoLG4oW/V
-         8ziIk4ztmqekR4zaPm+hEJJ/4U2LQ47mQdS8pNQtAPniz6JeYZoz/q20YBGkMfcqEvYO
-         QTZLf5WrZf4a/VzSbnpExZ59GcSu2KPfJngSzspD1r51Fr5toOdRkvoMjK2Wj1+gJcwn
-         QdpLqdRyKuDimyQghZLCeSETYA7N7RDlDIFzkE9LnfFDfTxJRIlI5zVL8PwrhN5L0x7+
-         Ieag==
-X-Gm-Message-State: AOAM530rLsWU4L2s6nGll7kRsU+mJVk6z+1OPtnSCzMt772b5clqEw4D
-        o2AXXhNw3XFzRbWdxc3aOqEy7MWm32HfPCXAH2gAVQ==
-X-Google-Smtp-Source: ABdhPJykJY1zWrWHmNv1qhh0XGc9mZHysTgRPPx0BaMujb9Mx9dYhMjPxl8GGwLIWVx58MUoIp0bAc7SpECJwSg9rjk=
-X-Received: by 2002:aa7:c894:: with SMTP id p20mr34410895eds.42.1629680715488;
- Sun, 22 Aug 2021 18:05:15 -0700 (PDT)
+        Sun, 22 Aug 2021 21:07:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564F8C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aspPZtQVW2NXlfWYzMvyvdVJsYawidsXh00ZJfiDIgk=; b=jL04ykE3uh+j5Lc5Hh8LKs7iYO
+        PCr18G7o0uas5a+kZ4dfug8ngc+wrVXJtnqozxE5fZ+i+jVreVre66iq475ebwIQkBfVebvW0n8Wp
+        xdQglzke+8XqfZnaK1Ci8vLMc8YdkyI/YHgzxV7ZGTW5YhUiEyB4WC5D5iZiSPzqDTq+/4jzVvFhw
+        N5WCqNiT2tuWD3RHuECjffZCmhGszhOlW8WjBST6GFuidpcPfOlF31FPRB1nUd96z+S2yDFKxoIhE
+        NnqsXM1QS7Tfeq8speOwfrQfYN8X3aC8gIFiFzqRcqWdkpl6wo7SNyzTt+arRHYOPXQVopInewnEw
+        jy2+6SmQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mHyOp-0096T6-1r; Mon, 23 Aug 2021 01:05:29 +0000
+Date:   Mon, 23 Aug 2021 02:05:15 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yi Wang <wang.yi59@zte.com.cn>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
+        jiang.xuexin@zte.com.cn, zealci@zte.com.cn,
+        Changcheng Deng <deng.changcheng@zte.com.cn>
+Subject: Re: [PATCH linux-next] mm/folio-compat.c: folio should not be NULL
+ when it is referenced
+Message-ID: <YSL0S9SKjmt5gGuW@casper.infradead.org>
+References: <20210823004735.32013-1-wang.yi59@zte.com.cn>
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
-In-Reply-To: <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Sun, 22 Aug 2021 18:05:04 -0700
-Message-ID: <CAK9rFnyf3WLSPe8A=WWCBUqs3htkAmhDQq0ftcEOq_fnenWQPA@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823004735.32013-1-wang.yi59@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Aug 23, 2021 at 08:47:35AM +0800, Yi Wang wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
+> 
+> A bug was found by coccinelle:
+> folio is NULL but dereferenced
+> Therefore,added a check to make sure 'folio' is not NULL.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
 
-On Thu, Mar 4, 2021 at 12:29 AM Linus Walleij <linus.walleij@linaro.org> wrote:
-> On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
->
-> > This GPIO driver is for the Pensando Elba SoC which
-> > provides control of four chip selects on two SPI busses.
-[...]
-> > +#include <linux/gpio.h>
->
-> Use this in new drivers:
-> #include <linux/gpio/driver.h>
+Your robot is overzealous.  This does not dereference folio; rather it
+takes the address of the page element of the folio structure.
 
-The updated patchset will use linux/gpio/driver.h
+By a strict reading of the C spec, it is not allowed.  However, GCC
+(and I assume Clang) does the right thing.
 
-> > + * pin:             3            2        |       1            0
-> > + * bit:         7------6------5------4----|---3------2------1------0
-> > + *     cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0  cs0_ovr
-> > + *                ssi1            |             ssi0
-> > + */
-> > +#define SPICS_PIN_SHIFT(pin)   (2 * (pin))
-> > +#define SPICS_MASK(pin)                (0x3 << SPICS_PIN_SHIFT(pin))
-> > +#define SPICS_SET(pin, val)    ((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
->
-> So 2 bits per GPIO line in one register? (Nice doc!)
->
-> > +struct elba_spics_priv {
-> > +       void __iomem *base;
-> > +       spinlock_t lock;
-> > +       struct gpio_chip chip;
-> > +};
-> > +
-> > +static int elba_spics_get_value(struct gpio_chip *chip, unsigned int pin)
-> > +{
-> > +       return -ENXIO;
-> > +}
->
-> Write a comment that the chip only supports output mode,
-> because it repurposes SPI CS pins as generic GPIO out,
-> maybe at the top of the file?
+>  	folio = __filemap_get_folio(mapping, index, fgp_flags, gfp);
+> -	if ((fgp_flags & FGP_HEAD) || !folio || xa_is_value(folio))
+> -		return &folio->page;
+> +	if ((fgp_flags & FGP_HEAD) || xa_is_value(folio))
+> +		if (folio != NULL)
+> +			return &folio->page;
+>  	return folio_file_page(folio, index);
 
-The top of the file will look like this in the updated patchset.
+This is definitely wrong.  Did you test it?  I bet you get a NULL
+pointer dereference if you try it.
 
- * Pensando Elba ASIC SPI chip select driver.  The SoC supports output
- * direction only as it uses a generic GPIO pin for SPI CS.
+You could potentially make the case for:
 
-> I suppose these systems also actually (ab)use the SPI cs
-> for things that are not really SPI CS? Because otherwise
-> this could just be part of the SPI driver (native chip select).
+	if (!folio)
+		return NULL;
+	if ((fgp_flags & FGP_HEAD) || xa_is_value(folio))
+		return &folio->page;
 
-The SPI cs are not used for any other purpose, we needed four chip
-selects and native DW supports two.
+but you actually have the same problem with the C spec, that unless
+folio is actually a pointer to a folio, then &folio->page is
+_technically_ undefined.  So it would have to be something even
+more complex to be pedantically correct.
 
-> > +static const struct of_device_id ebla_spics_of_match[] = {
-> > +       { .compatible = "pensando,elba-spics" },
->
-> Have you documented this?
+It's just not worth it.  Fix your tool.
 
-Yes as part of patchset v2: [PATCH v2 11/13] dt-bindings: gpio: Add
-Pensando Elba SoC support
-which documents "pensando,elba-spics" in new file
-bindings/gpio/pensando,elba-spics.yaml.
-
-Regards,
-Brad
