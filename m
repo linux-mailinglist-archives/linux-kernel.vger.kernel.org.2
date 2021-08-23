@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39E13F4E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16833F4E1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhHWQOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        id S229969AbhHWQPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHWQOv (ORCPT
+        with ESMTP id S229967AbhHWQP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:14:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2045C061575;
-        Mon, 23 Aug 2021 09:14:07 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 18:14:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629735243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TGqeZzme/VeIRQngMgDyP5V2bB9RF2o4O2Q2EpI5fs=;
-        b=zdxklKf1t3vUeK0iHrIyr2J7Gx4qdLJRu8MhNvYPsZsyWyitSKLMWc6JCXBT2gIYW7mp8t
-        EnEZGaQDUonijqDO4CPMzs425lwfb/+bEH1qQaBoiMyXAsaNz5j7OecF3QOKg9MCdZDqlf
-        KuiLobWJfR3xctTsqlQNB2eJ/LKFSB2jDvsrBsYuyg09dptfWqBYojMh/0NGaPgYfTrLVT
-        RJfnP3HqDv3wxbf9M6+GwwCJVz6xd4GavDlB1LVloyASlVoF9BLHeWGxrBupsmbUmDnbfV
-        tvlTS+F/DajM4XkDF3RSfuSPB8Hj0xRku7qgZY8QotCvRK5ev/2wHE2tWGLKeA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629735243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TGqeZzme/VeIRQngMgDyP5V2bB9RF2o4O2Q2EpI5fs=;
-        b=7FXYXy05/5pwO89Qoo+bjcBlrE2ri8yo+vfEZLh6jWElo/6wBzwMftmx+z5eSLFZ2LWlst
-        0v9qf5YPaw9wGXAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jeaho Hwang <jhhwang@rtst.co.kr>
-Cc:     Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
-        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
-         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <mkbyeon@lselectric.co.kr>,
-        =?utf-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRp?=
-         =?utf-8?B?b24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <khchoib@lselectric.co.kr>
-Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
- hw_ep_prime
-Message-ID: <20210823161401.ix6l33o3sja7sy45@linutronix.de>
-References: <20210817095313.GA671484@ubuntu>
- <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
- <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
- <20210819084759.stnmit32vs2be46m@linutronix.de>
- <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
- <20210821050511.GA14810@Peter>
- <CAJk_X9gqBACA3O=4LdY3XJP5UzJe2p4bE72X_jNEHR1Cn=vDNQ@mail.gmail.com>
+        Mon, 23 Aug 2021 12:15:27 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931EFC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:14:44 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so37795260oti.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y/fJEiw7QUkBCfFPAmE/s89Bl6kM76DPzpSL413KbHQ=;
+        b=IR1MV9tciq9IZtu2+3aShnJFlpmSUOLjDpMdppSoxQlFDt2OcqbPjO0lFgJqdW7fcK
+         EdpGe2xKKgmetth1ELG/iq8D+1VADERxON9kXrUtLfTT+WeVID/Cu9zmuJHou7k3pCW+
+         g/emkwBYgu6r1oYeJAWr+rm+7r8vW6DA8nbkxMWHhGVM9jSmM/CPjH3YUYwnOeyT7/ZW
+         yAVzfBp5au/kl29Vcs0Fj6mqV04mL+JFa1je/6YH6i01aDj+iEh6c3f4Lw+Wi0A/PMqi
+         sl/WnB98d67eNJgJt5tTS1Y9mHzXMtBCOTVO0Rex6POeaI3Z9YGZ4Xu2HveqFl9SbFFE
+         EAaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y/fJEiw7QUkBCfFPAmE/s89Bl6kM76DPzpSL413KbHQ=;
+        b=VknqN036dOJz/aJkizuxQ67x5q43bDSvQRdGSxgXfPpeAVr/vAZ45TzR2TgcnV73Cj
+         uo3HCA1K31y5ItAUqXdlPh+Dzr8d4XCn+ZHbVz99mtVO3jJ4v504pDExRxf/i1+Ov+ZB
+         85jAJAkq3/vD+mMNEWyOgwhULL7keZCU6ri6/haZLBE3vC84s0goQd6E/OmPyNtd3JvV
+         5l29E1yyVY13yg6Yapsa9wD4fP2OZP1iQTLR1uU+7nKK0Ol42fN5r1V5V8a1zXOq8ZsQ
+         TCv5ta+vAJiAi0i85he60Tzj338WjANh519O5GrtdjdPQP1/E80MWiQcmRE5dq1c/wrS
+         R2nQ==
+X-Gm-Message-State: AOAM531XPgTnEDbV2jsfapdA3BburbAG+9gR2P84pzGusn0B6VNbigar
+        ps4NbiOmtkACveGlyZXf4D0Q2cbMe6mD2w==
+X-Google-Smtp-Source: ABdhPJyaIfANEkTwh2OuOQkhwomq1hHuelv90C4jPycrt3AcKsiYkfW5OlCqOrfENiNPwAmn3Dd4kQ==
+X-Received: by 2002:a05:6830:1056:: with SMTP id b22mr27833693otp.325.1629735283951;
+        Mon, 23 Aug 2021 09:14:43 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id b9sm3964472otp.46.2021.08.23.09.14.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 09:14:43 -0700 (PDT)
+Subject: Re: [PATCH v3 0/2] iter revert problems
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc:     Palash Oswal <oswalpalash@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
+References: <cover.1629713020.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2a981061-5420-85dd-d41c-7ed36384465c@kernel.dk>
+Date:   Mon, 23 Aug 2021 10:14:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <cover.1629713020.git.asml.silence@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAJk_X9gqBACA3O=4LdY3XJP5UzJe2p4bE72X_jNEHR1Cn=vDNQ@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-21 16:04:01 [+0900], Jeaho Hwang wrote:
-> 2021=EB=85=84 8=EC=9B=94 21=EC=9D=BC (=ED=86=A0) =EC=98=A4=ED=9B=84 2:05,=
- Peter Chen <peter.chen@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> >
-> HI Peter.
->=20
-> We configured the kernel as "low latency desktop" and added
-> "threadirqs" inside the cmdline parameter.
-> Then udc irq handler runs as a thread and shows no suspicious working.
-> I Hope It will help.
+On 8/23/21 4:18 AM, Pavel Begunkov wrote:
+> iov_iter_revert() doesn't go well with iov_iter_truncate() in all
+> cases, see 2/2 for the bug description. As mentioned there the current
+> problems is because of generic_write_checks(), but there was also a
+> similar case fixed in 5.12, which should have been triggerable by normal
+> write(2)/read(2) and others.
+> 
+> It may be better to enforce reexpands as a long term solution, but for
+> now this patchset is quickier and easier to backport.
 
-May I again point out that since commit
-   81e2073c175b8 ("genirq: Disable interrupts for force threaded handlers")=
-                                                                           =
-             =20
+Al, given the discussion from this weekend, are you fine with the first
+patch? If so, would be great with an ack/review. Or, if you want to
+funnel this for 5.14, you can add:
 
-the threaded handler runs with disabled interrupts. This time more
-verbose. It is available since v5.12-rc4 but it has been also applied
-for stable.
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
-> Thanks.
+-- 
+Jens Axboe
 
-Sebastian
