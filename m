@@ -2,170 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC873F4A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096353F4A5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236807AbhHWMJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 08:09:35 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:26224 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236269AbhHWMJe (ORCPT
+        id S236760AbhHWMKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:10:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17716 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233895AbhHWMKI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:09:34 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210823120850euoutp015fa722d79d3feffd8e35e329edebac42~d7jAiUgkG1284612846euoutp01Z
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:08:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210823120850euoutp015fa722d79d3feffd8e35e329edebac42~d7jAiUgkG1284612846euoutp01Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629720530;
-        bh=pJfmX1Sm9JXU9J42wTwyNLfJJPgLGvYFX3GU9wt5Dg4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=YFkmRmS1y4ZnPWFLpVnJsy72C5lCQBJzLGfNeJVkol6iR6SE6fkp19G6G4o6l4mGs
-         NYu2zMAL2UXATNdoAIXGXa6X7eGYAcTagPEIdjBViseouQupbWMfD5kemx2Ul+CsIf
-         0pWz0lyorb6vRJUJMhoeiCQ1zrPWxvCzhb+zaeCM=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210823120850eucas1p2b3a337e39360696e08827ad1ad02d47e~d7jATp0G62022220222eucas1p29;
-        Mon, 23 Aug 2021 12:08:50 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 77.54.56448.2DF83216; Mon, 23
-        Aug 2021 13:08:50 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210823120849eucas1p11d3919886444358472be3edd1c662755~d7i-vN8cw1232312323eucas1p1e;
-        Mon, 23 Aug 2021 12:08:49 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210823120849eusmtrp1d7348b4da291ef7d77a1f7f7850283be~d7i-uU-SB1534715347eusmtrp1y;
-        Mon, 23 Aug 2021 12:08:49 +0000 (GMT)
-X-AuditID: cbfec7f5-d3bff7000002dc80-ae-61238fd21db6
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 76.75.20981.1DF83216; Mon, 23
-        Aug 2021 13:08:49 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210823120849eusmtip17606a090bec84df892e21773f339aa9d~d7i-Dy6TU2428124281eusmtip1C;
-        Mon, 23 Aug 2021 12:08:49 +0000 (GMT)
-Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for
- "phy-handle" property
-To:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        kernel-team@android.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
-Date:   Mon, 23 Aug 2021 14:08:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210818021717.3268255-1-saravanak@google.com>
+        Mon, 23 Aug 2021 08:10:08 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17NC8CG1133223;
+        Mon, 23 Aug 2021 08:09:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=4Dk65Yt6sajb8+sU2Z+yoP58CJ3466jTOaLy4kRlE2o=;
+ b=GBaX3sDE18/I5B2Hkv959lOvngqghLvLzNfE6cnAik+m7Wla2rT31agLwvKDJc4G9Wk1
+ cuaUsUkitAARen8KQgczPCwmkuKqDesCU69j87irm8l2Yvr/jor4kR6AKwuIWLsAEBc7
+ Ql9gAohhpJ5S65tp6lP1MzQ7KEaHd03yXFAAv4FhYJQsjLVaagn+lfIFfrpLFwsOO1XD
+ Y9e9GvV9cOqJOhFTypxPaJdqxW/AlsoYmzzDgkHX8tAOC4M72PNxl6FSCQsbiOr6xzLi
+ 613NVS2XsGoADMIPK+NyzcxOuCgy3ucSP1y8YmpI5AOQoagOaS+PF2KZq9A3cAhK4UEs wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3am73jy7u5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Aug 2021 08:09:20 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17NC8nGY135927;
+        Mon, 23 Aug 2021 08:09:20 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3am73jy7tb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Aug 2021 08:09:19 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17NC3vfl022193;
+        Mon, 23 Aug 2021 12:09:18 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3ajs48at2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Aug 2021 12:09:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17NC9EFF28705272
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Aug 2021 12:09:14 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 728BB42057;
+        Mon, 23 Aug 2021 12:09:14 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F186B42077;
+        Mon, 23 Aug 2021 12:09:10 +0000 (GMT)
+Received: from sig-9-65-215-209.ibm.com (unknown [9.65.215.209])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 23 Aug 2021 12:09:10 +0000 (GMT)
+Message-ID: <302e499d55f1471a96d503d869f04a3a48652004.camel@linux.ibm.com>
+Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
+ function.
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     THOBY Simon <Simon.THOBY@viveris.fr>,
+        liqiong <liqiong@nfschina.com>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Mon, 23 Aug 2021 08:09:09 -0400
+In-Reply-To: <a4302c76-5865-a8f5-e754-c5dd04030533@viveris.fr>
+References: <20210819101529.28001-1-liqiong@nfschina.com>
+         <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
+         <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
+         <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
+         <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
+         <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
+         <fee498ec-087c-b52d-102c-d29d98f9b794@nfschina.com>
+         <cf715a40-b255-c688-578c-7f8bcd004ee3@viveris.fr>
+         <c02ff60205fdb343cb5a2ff0e4384fc7b47635a3.camel@linux.ibm.com>
+         <a4302c76-5865-a8f5-e754-c5dd04030533@viveris.fr>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOKsWRmVeSWpSXmKPExsWy7djP87qX+pUTDY5eELI4f/cQs8X8I+dY
-        LWa++c9msWO7iMWC2dwWl3fNYbM41BdtcWyBmEXr3iPsFl2H/rI5cHls272N1eP9jVZ2j52z
-        7rJ7LNhU6rFpVSebx+Yl9R47d3xm8vi8SS6AI4rLJiU1J7MstUjfLoEr48PM96wFswQq/mw5
-        ydjAuJW3i5GTQ0LAROLpqmb2LkYuDiGBFYwSey5NZYZwvjBKrFi9lAnC+cwoce5qIwtMy7+2
-        /awQieVAVVsvsEA4Hxkllr3Zyw5SJSwQKXF23142EFtEoFTi2e3DjCBFzAL3GCVm/dvKCpJg
-        EzCU6HrbBVbEK2AnsX3SKjCbRUBV4uqCl8wgtqhAssTEJ5NYIWoEJU7OfAJ2BqeAjURj8x2w
-        OLOAvMT2t3OYIWxxiVtP5oPdLSHQzCmx/PQdoAYOIMdF4mqLNMQLwhKvjm9hh7BlJE5P7mGB
-        qmeUeHhuLTuE08MocblpBiNElbXEnXO/2EAGMQtoSqzfpQ8RdpT43f6YFWI+n8SNt4IQN/BJ
-        TNo2nRkizCvR0SYEUa0mMev4Ori1By9cYp7AqDQLyWezkHwzC8k3sxD2LmBkWcUonlpanJue
-        Wmycl1quV5yYW1yal66XnJ+7iRGYtk7/O/51B+OKVx/1DjEycTAeYpTgYFYS4f3LpJwoxJuS
-        WFmVWpQfX1Sak1p8iFGag0VJnHfX1jXxQgLpiSWp2ampBalFMFkmDk6pBqbAzLPzT1lNfnRj
-        yl8+60OrD2u94Sg+5+xy8ch/zvNy8xWeqARnXl59qmVDgpaI6OXCl/9sWlm/3/WVmLb02sGW
-        583XcqUNhW6u0+yu6H33ptnO09fhX2HtlCsfbD9c2Hywb2qbpYx076nkc8fDj39Y2WLXlP9p
-        cUjQRIbtlbeUlsgxFShntAasYX2ZVysxf52zNneD/6ejfUwP0nZpal570jWrvF/V+u3rL+/n
-        b2ZZ9HbWphp/qcY7vRt2P/bXn3G6Z0LlZvu1p9k3G93Y18JzfMbuQusr31UfqxycsPZ90Euu
-        bfI3yqS0Ko4uO/Di6pVPQg/M5fs9M7Z9V9bv9Z50c3HFrU+fN9xWiv9d/5tJSomlOCPRUIu5
-        qDgRAOIrzXvKAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7oX+5UTDdbf17Y4f/cQs8X8I+dY
-        LWa++c9msWO7iMWC2dwWl3fNYbM41BdtcWyBmEXr3iPsFl2H/rI5cHls272N1eP9jVZ2j52z
-        7rJ7LNhU6rFpVSebx+Yl9R47d3xm8vi8SS6AI0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jE
-        Us/Q2DzWyshUSd/OJiU1J7MstUjfLkEv48PM96wFswQq/mw5ydjAuJW3i5GTQ0LAROJf235W
-        EFtIYCmjxNMV/BBxGYmT0xpYIWxhiT/Xuti6GLmAat4zSizb1skEkhAWiJT4/uwkI4gtIlAq
-        sePAT3aQImaBe4wSp25cYoKYai0xf8ZuFhCbTcBQoustyCRODl4BO4ntk1aB2SwCqhJXF7xk
-        BrFFBZIlPpxeygpRIyhxcuYTsF5OARuJxuY7YHFmATOJeZsfMkPY8hLb386BssUlbj2ZzzSB
-        UWgWkvZZSFpmIWmZhaRlASPLKkaR1NLi3PTcYiO94sTc4tK8dL3k/NxNjMAo3Xbs55YdjCtf
-        fdQ7xMjEwXiIUYKDWUmE9y+TcqIQb0piZVVqUX58UWlOavEhRlOgfyYyS4km5wPTRF5JvKGZ
-        gamhiZmlgamlmbGSOK/JkTXxQgLpiSWp2ampBalFMH1MHJxSDUzxd96FSHzwOnXlOk8nz7Fr
-        pnmzwh7M9p18dkmThjfn/oq+83ziz0TLZu44mZN7d57B1etx652KmN4+/LzqwH5rrhk7Dh7d
-        sOPK283m+dalsk/yAr/NvFtzueNmaO0Ml5I0xmlJFbMPrU2zEfetqd5V4Z7/znJ5uSJDWf1H
-        LWu1LTXCPz49P+LOanXjAqNtRtNXVfMNT72cXtZOiF91aOGlug+b7+0TN/4xz+LNqv2+5q9S
-        ed/POZ4SqqLg8PCp9pW/SpInnr3cWj4p5emBci6OTW/MGGYnPm1OfXtCOvvbjdYLT36Zvn1x
-        TsRzzf8JbX73fxlHa+xZnHe4ddUaB33TWufptiZG7x9Lz3F6ueXlfyWW4oxEQy3mouJEALpD
-        UjtbAwAA
-X-CMS-MailID: 20210823120849eucas1p11d3919886444358472be3edd1c662755
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210823120849eucas1p11d3919886444358472be3edd1c662755
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210823120849eucas1p11d3919886444358472be3edd1c662755
-References: <20210818021717.3268255-1-saravanak@google.com>
-        <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Hi1OejTOxjd1bhp_cyjrQPjErh69oFlk
+X-Proofpoint-GUID: TkuwKmNrcRrhUh0F0PzkFRskBrQP7lFP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-23_02:2021-08-23,2021-08-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 clxscore=1015 malwarescore=0 suspectscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108230082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Simon,
 
-On 18.08.2021 04:17, Saravana Kannan wrote:
-> Allows tracking dependencies between Ethernet PHYs and their consumers.
->
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+On Mon, 2021-08-23 at 12:02 +0000, THOBY Simon wrote:
+> Hi Mimi,
+> 
+> On 8/23/21 1:57 PM, Mimi Zohar wrote:
+> > On Mon, 2021-08-23 at 08:14 +0000, THOBY Simon wrote:
+> >> Hi Liqiong,
+> >>
+> >> On 8/23/21 10:06 AM, liqiong wrote:
+> >>> Hi Simon :
+> >>>
+> >>> Using a temporary ima_rules variable is not working for "ima_policy_next". 
+> >>>
+> >>>  void *ima_policy_next(struct seq_file *m, void *v, loff_t *pos)
+> >>>  {
+> >>>  	struct ima_rule_entry *entry = v;
+> >>> -
+> >>> +	struct list_head *ima_rules_tmp = rcu_dereference(ima_rules);
+> >>>  	rcu_read_lock();
+> >>>  	entry = list_entry_rcu(entry->list.next, struct ima_rule_entry, list);
+> >>>  	rcu_read_unlock();
+> >>>  	(*pos)++;
+> >>>  
+> >>> -	return (&entry->list == ima_rules) ? NULL : entry;
+> >>> +	return (&entry->list == ima_rules_tmp) ? NULL : entry;
+> >>>  }
+> >>>
+> >>> It seems no way to fix "ima_rules" change within this function, it will alway
+> >>> return a entry if "ima_rules" being changed.
+> >>
+> >> - I think rcu_dereference() should be called inside the RCU read lock
+> >> - Maybe we could cheat with:
+> >> 	return (&entry->list == &ima_policy_rules || &entry->list == &ima_default_rules) ? NULL : entry;
+> >>   as that's the only two rulesets IMA ever use?
+> >>   Admittedly, this is not as clean as previously, but it should work too.
+> >>
+> >> The way I see it, the semaphore solution would not work here either,
+> >> as ima_policy_next() is called repeatedly as a seq_file
+> >> (it is set up in ima_fs.c) and we can't control the locking there:
+> >> we cannot lock across the seq_read() call (that cure could end up be
+> >> worse than the disease, deadlock-wise), so I fear we cannot protect
+> >> against a list update while a user is iterating with a lock.
+> >>
+> >> So in both cases a cheat like "&entry->list == &ima_policy_rules || &entry->list == &ima_default_rules"
+> >> maybe need to be considered.
+> >>
+> >> What do you think?
+> > 
+> > Is this an overall suggestion or limited to just ima_policy_next()?
+> 
+> I was thinking only of ima_policy_next(), I don't think (from what I could see in a short glance)
+> that other functions need such a treatment. The ima_rules_tmp dance is probably safe for the
+> other uses of ima_rules.
 
-This patch landed recently in linux-next as commit cf4b94c8530d ("of: 
-property: fw_devlink: Add support for "phy-handle" property"). It breaks 
-ethernet operation on my Amlogic-based ARM64 boards: Odroid C4 
-(arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts) and N2 
-(meson-g12b-odroid-n2.dts) as well as Khadas VIM3/VIM3l 
-(meson-g12b-a311d-khadas-vim3.dts and meson-sm1-khadas-vim3l.dts).
+Thanks, just making sure it is limited to here.
 
-In case of OdroidC4 I see the following entries in the 
-/sys/kernel/debug/devices_deferred:
+Mimi
 
-ff64c000.mdio-multiplexer
-ff3f0000.ethernet
 
-Let me know if there is anything I can check to help debugging this issue.
-
-> ---
-> v1 -> v2:
-> - Fixed patch to address my misunderstanding of how PHYs get
->    initialized.
->
->   drivers/of/property.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 931340329414..0c0dc2e369c0 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1291,6 +1291,7 @@ DEFINE_SIMPLE_PROP(pwms, "pwms", "#pwm-cells")
->   DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
->   DEFINE_SIMPLE_PROP(leds, "leds", NULL)
->   DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
-> +DEFINE_SIMPLE_PROP(phy_handle, "phy-handle", NULL)
->   DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
->   DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
->   
-> @@ -1379,6 +1380,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
->   	{ .parse_prop = parse_resets, },
->   	{ .parse_prop = parse_leds, },
->   	{ .parse_prop = parse_backlight, },
-> +	{ .parse_prop = parse_phy_handle, },
->   	{ .parse_prop = parse_gpio_compat, },
->   	{ .parse_prop = parse_interrupts, },
->   	{ .parse_prop = parse_regulators, },
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
 
