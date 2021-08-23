@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 007E93F4A73
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE663F4A76
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhHWMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 08:15:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31519 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235092AbhHWMPy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:15:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629720911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VuOutErs/3kz1A1Pl67QiGCXKD6+QoIdF+PyPh/HBMQ=;
-        b=h4/jI115ybfTJVxlfEzTCgcbqlTEhjaRBvLztBQk5JhL1/PFMN9K3+PFRbr5Wpwcs4y9To
-        sC8vlXKjofDYcuOz6I+gxx9eDRTQ3b3oLciEVfDqOx0SuK9192Wr55Ad8H8ik7irqV5H0z
-        3yIYdrgniEVHNJaOM9MRzdfg736DAms=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-G_80OA5TMauyF0T70Bs8hA-1; Mon, 23 Aug 2021 08:15:10 -0400
-X-MC-Unique: G_80OA5TMauyF0T70Bs8hA-1
-Received: by mail-wm1-f71.google.com with SMTP id z15-20020a7bc7cf0000b02902e6a68ffd3cso4396061wmk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:15:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=VuOutErs/3kz1A1Pl67QiGCXKD6+QoIdF+PyPh/HBMQ=;
-        b=g3AeqNdliVo45qqIdKIhY4oKiSwT0EV74Gr1tp1RywseiMeo/UJcbELblRaVsi9FRY
-         s7vGcS584K+YU+nmiXty51dlDFr9Kl0X6Z0CbVrm/jaQZQ9Fc63OYlCm9d+lysABEWAQ
-         z0uBNJBQwCPv3jxg/iSgPtjiXWPlKB0tRF16lny1K6LyUq9KKAGHmKOhP3ani0dYv+o8
-         vWNEJT6aruOqun4Spdr36bGWAvIX8iyJSXeBOQ8C037skNTfEwNeIHWNxEQ9RD5EWwOT
-         AXwoOYYDcACgANM91Eg5oDBhh0Zx7qMcrlOcvLL9KFuAGr6E9rlP6K82+Xxw3F/l+92i
-         MF2w==
-X-Gm-Message-State: AOAM530Lk3yFwCxfApHJKgU227c/2mFLRkSUx2FeojSJBbUX2Xh3Iyk/
-        RZ3dxuXeSOzvqio9eAjjB9AX8SspeKBe1nu77fC+gDTOGyZeJFQ2azMrPhQ7JZszrIBJpF2Du7v
-        HZUfrEEBhjP1STo25RI851WyBTVMXZeVL7sNC5cWyNv4wvD6vM2CGfhmobTeNktWzPjRRzz6x
-X-Received: by 2002:a05:600c:198a:: with SMTP id t10mr15935406wmq.181.1629720909068;
-        Mon, 23 Aug 2021 05:15:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybW+zWaolHk2FOUq8+ktueTloCfvGnGzVnfvj/5DjB8RzaLv8qwIpkvrwgPCfE+Yd6cxsUqQ==
-X-Received: by 2002:a05:600c:198a:: with SMTP id t10mr15935376wmq.181.1629720908785;
-        Mon, 23 Aug 2021 05:15:08 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f0a:7f00:fad7:3bc9:69d:31f? (p200300d82f0a7f00fad73bc9069d031f.dip0.t-ipconnect.de. [2003:d8:2f0a:7f00:fad7:3bc9:69d:31f])
-        by smtp.gmail.com with ESMTPSA id d9sm15001473wrw.26.2021.08.23.05.15.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 05:15:08 -0700 (PDT)
-Subject: Re: [PATCH 2/3] mm/memory_hotplug: fix potential permanent lru cache
- disable
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     naoya.horiguchi@nec.com, mhocko@suse.com, minchan@kernel.org,
-        cgoldswo@codeaurora.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210821094246.10149-1-linmiaohe@huawei.com>
- <20210821094246.10149-3-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <985b591a-ef1f-cbbe-c627-a17240dc7bb6@redhat.com>
-Date:   Mon, 23 Aug 2021 14:15:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210821094246.10149-3-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S236886AbhHWMRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:17:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236173AbhHWMRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 08:17:48 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F39546138F;
+        Mon, 23 Aug 2021 12:17:05 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mI8sy-006ene-4D; Mon, 23 Aug 2021 13:17:04 +0100
+Date:   Mon, 23 Aug 2021 13:17:03 +0100
+Message-ID: <874kbgqrsw.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] irqchip/gic: Convert to handle_strict_flow_irq()
+In-Reply-To: <875yvw78e5.mognet@arm.com>
+References: <20210814194737.GA3951530@roeck-us.net>
+        <87sfzb7jeo.mognet@arm.com>
+        <87eeav19mc.wl-maz@kernel.org>
+        <87k0kk7w0c.mognet@arm.com>
+        <87czqasn9u.wl-maz@kernel.org>
+        <878s0t6s7p.mognet@arm.com>
+        <87czq4qzd7.wl-maz@kernel.org>
+        <875yvw78e5.mognet@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: valentin.schneider@arm.com, linux@roeck-us.net, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.08.21 11:42, Miaohe Lin wrote:
-> If offline_pages failed after lru_cache_disable(), it forgot to do
-> lru_cache_enable() in error path. So we would have lru cache disabled
-> permanently in this case.
+On Mon, 23 Aug 2021 11:38:58 +0100,
+Valentin Schneider <valentin.schneider@arm.com> wrote:
 > 
-> Fixes: d479960e44f2 ("mm: disable LRU pagevec during the migration temporarily")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/memory_hotplug.c | 1 +
->   1 file changed, 1 insertion(+)
+> On 23/08/21 10:33, Marc Zyngier wrote:
+> > On Sun, 22 Aug 2021 23:16:10 +0100,
+> > Valentin Schneider <valentin.schneider@arm.com> wrote:
+> >>
+> >> On 18/08/21 17:58, Marc Zyngier wrote:
+> >> > There is the bizarre case of drivers/gpio/gpio-thunderx.c that changes
+> >> > the irqchip flow to use either handle_fasteoi_ack_irq or
+> >> > handle_fasteoi_mask_irq, which won't play very nicely with this.
+> >> > Someone said Cavium?
+> >> >
+> >>
+> >> Humph...
+> >>
+> >> I'm not familiar at all with the gpiolib irqchips, but I was under the
+> >> impression those would involve chained IRQs (it does appear to be the case
+> >> for the pl061 GPIOs on a Juno). For those, the innermost desc would be handled
+> >> via chained_irq_{enter, exit}() [!!!], and the outermost one via whatever
+> >> flow was installed by the relevant driver.
+> >
+> > Not all of them are built like this. There is actually a bunch of
+> > these build as full hierarchies (QC, nvidia and some others).
+> >
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index d986d3791986..9fd0be32a281 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -2033,6 +2033,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
->   	undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
->   	memory_notify(MEM_CANCEL_OFFLINE, &arg);
->   failed_removal_pcplists_disabled:
-> +	lru_cache_enable();
->   	zone_pcp_enable(zone);
->   failed_removal:
->   	pr_debug("memory offlining [mem %#010llx-%#010llx] failed due to %s\n",
+> I see, thanks!
 > 
+> >> I can't easily grok what goes on between that gpio-thunderx.c driver and
+> >> gpiolib, but since that GPIO chip has
+> >>
+> >>         .irq_eoi		= irq_chip_eoi_parent,
+> >>
+> >> and
+> >>
+> >>         girq->parent_domain =
+> >>                 irq_get_irq_data(txgpio->msix_entries[0].vector)->domain;
+> >>
+> >> (GPIOs hooked to MSI-X? Do I want to know?)
+> >
+> > It's good, isn't it? TX1 has all its HW appearing as PCI, even if it
+> > clearly isn't PCI underneath.
+> >
+> >>
+> >> I'm guessing it is *not* chained, which means the irq_set_handler_locked()
+> >> affects the entire stack :/
+> >
+> > It does. We can probably fix that, but I won't be able to test (my TX1
+> > was taken away a few months ago...). I'll accept body donations, for
+> > scientific purposes.
+> >
+> 
+> Looks like there are still some over on s/packet/equinix/, so I should be
+> able to poke at one.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+That's where mine used to live, but the WoA people decided that I
+really didn't need one, and I'm now only allowed to borrow one of the
+old eMAGs. If you can pull strings, let me know! :D
 
-As mentioned, this should be backported to stable.
+	M.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Without deviation from the norm, progress is not possible.
