@@ -2,323 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF0E3F4C7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E883F4C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhHWOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhHWOgb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:36:31 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAF7C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:35:46 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id d11so37411290eja.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A/qpH7CHD7FrWhnDUzTDDpyv/YS2OHRtYJYQQQB8Bp0=;
-        b=G2x4IudVbwj0h29Njt8qBea5uCly45QDU9MDGzl31TzJSEXii6ONJUQ6Nbt7C3ChxQ
-         6pEaEHbsMI0pglxcjgqifB//U0wAdinpI54yIYl8juKBX6iP0nX643S6OS5ndcMd9NeC
-         tpSyyWHm0j1dw+V1thewBfZpWS/ajS1+CpBwkrfdPPTn8NR4gjUe5DSgMWRRCAsVr0Mt
-         lf5r5pqz0vfojJHVevUnO56cFrujMM06WZ0blKYYjTZqnwbg/K5JP3ehtaq8PwIyGFC+
-         rS8l1qiaLn6YV5wVSb9wEHjUz+UzqJfoC9X/t3MBlFOP3XcN5wTOsd7NbnypoCrEgdT5
-         USnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A/qpH7CHD7FrWhnDUzTDDpyv/YS2OHRtYJYQQQB8Bp0=;
-        b=VtAkJvp8DLaKMyuNCQeEEIkilSpNJSgH8/40cSY3gVSW4fF19tBGpEo943pB8t/k7q
-         oXCfDyCdMCfuFwP7ij/89yNc389R1HM4UCPYLznOOrg876PpdghZf0HHUJpkFSyMeeXy
-         SO59EUHdj1b/HHOZUA/rCgfqykZ0F2JfvDWm5/G/d2QH0nvTT8lzqdMI2PSfSctjo3Jv
-         CW6oFz+/IJwfZG7tYwVeGPbC/WsBNLxG4OV+7dgpzyLwpkmEiRYYRaPD00W66Gtgd7/L
-         xfDgVEnzpbPqvpmqolh+CE+uiE2sRhHrrb7lGr8HBQktgzbU+KZ2u1j4ABfL3y0jG0kc
-         /zXA==
-X-Gm-Message-State: AOAM533Fi/RIXL+YVaNS482n+SEDzW/FD6IW7JN/fJEsuLE8Sf1LpNSQ
-        6RKnqBQ8EMA57rnz1K3SZHs=
-X-Google-Smtp-Source: ABdhPJwdnaw/EdMkrg8xWrBajtpxxxxkkGbtYreheU70ZtNV+/K1xEPOqF5L5uIjDWko8VGQeXIr/g==
-X-Received: by 2002:a17:906:444:: with SMTP id e4mr35265682eja.255.1629729344685;
-        Mon, 23 Aug 2021 07:35:44 -0700 (PDT)
-Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id d3sm4901155ejw.18.2021.08.23.07.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 07:35:44 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 1/4] ASoC: rockchip: add support for i2s-tdm controller
-Date:   Mon, 23 Aug 2021 16:35:42 +0200
-Message-ID: <9368735.gdWEK3B62L@archbook>
-In-Reply-To: <6bc6330215980f10853a2dac69f0bdfd9c8fb303.camel@pengutronix.de>
-References: <20210820182731.29370-1-frattaroli.nicolas@gmail.com> <20210820182731.29370-2-frattaroli.nicolas@gmail.com> <6bc6330215980f10853a2dac69f0bdfd9c8fb303.camel@pengutronix.de>
+        id S230362AbhHWOhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:37:10 -0400
+Received: from mail-mw2nam10on2086.outbound.protection.outlook.com ([40.107.94.86]:48992
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230032AbhHWOhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 10:37:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QCVsZ28sC5EuS58plWuZvvXrI3pBJpC5AkV52Mb/fadEtHo5hOvI0awtEhXgC+oA+tRXRlaWOUjOyAQWsIBPW7/rqWYYAW8DJ7nd9wBnOv6D0WEoK/lM3ChJtwZG+gXYHH8SpxlMs/h6B01xA32S0vRrBPHWKApv8ZRgZ0gC/2HyhSnFPHbaPy2ynu8WjCb1LDxKBq28MtBw/YkPTZzt8lCM/Bvh1/4G5Ayw8pmCAMlv71fuzpBh8tCZ7u2acNRNi4bEtwQonoK8OnXuhf55Pm4n69Jo845yyEcuIc1n04qpg+POj5iuh+dL1Z1ZF/jHrbxZZcNH2azewHj2rmR4FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=csZ/6QSEtKzviHKaiDT18m4sYlDubrPQnxm8g+pIHyI=;
+ b=OTRlNnH2B/k/Mh2CvEs2ioz1R33AYFUmNzpB/sVwSLXP+9DFlktT1Q0kWfBxftAa8Gl71ozS2L3WvgqtCDojbUG0lV6ixP17/UNfzxbmPDeXm9L7ug2TmWqS3IsLmwXynj+oJ/qPkAiYknZgoScJpy+sKXP/5g7a+yIn42yfeIJk2JRfixzu0FbV6MN/9enzKEcIp4EKI8N95FodXukT3+9BZH4vB/Sm9aN7GSwGfA7z3x3N7uWZ6zG/f24PuNVcYdY99h1JV3kj/Zz2UjV0ghz6M6ZTlRJd1zMyMzdWXmFqIHt20yxk2FA+muR3mhMjpznnjgc4JJDnPC6fw72IXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=csZ/6QSEtKzviHKaiDT18m4sYlDubrPQnxm8g+pIHyI=;
+ b=IJy4YWMOa73yZJkKNezxEoHtdDMc9So2EtT/XMhJDovZOd7YC2giodnupKqDDkVZG7VYZYPKrPJKYq2xHofYS/ewzaac1ZrRGBrQcC2sbkl02HbgQQnFDCsvZAmS8+s7kWGaSP8MWyJ2AvXgiA2hw8fwvE/KRQK4cUQMFsNsQFU=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4557.namprd12.prod.outlook.com (2603:10b6:806:9d::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
+ 2021 14:36:24 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
+ 14:36:24 +0000
+Cc:     brijesh.singh@amd.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part2 v5 08/45] x86/fault: Add support to handle the RMP
+ fault for user address
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-9-brijesh.singh@amd.com>
+ <f6d778a0-840d-8c9c-392d-5c9ffcc0bdc6@intel.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <19599ede-9fc5-25e1-dcb3-98aafd8b7e87@amd.com>
+Date:   Mon, 23 Aug 2021 09:36:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <f6d778a0-840d-8c9c-392d-5c9ffcc0bdc6@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR01CA0034.prod.exchangelabs.com (2603:10b6:805:b6::47)
+ To SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.31.95] (165.204.77.1) by SN6PR01CA0034.prod.exchangelabs.com (2603:10b6:805:b6::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 14:36:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cebc2e20-9933-486e-b348-08d96643620a
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4557:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4557625081A5DEEA4622CDB7E5C49@SA0PR12MB4557.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PDF6PHpT+wEl/JzUaU/xi8aOM4BLCtQuhtDbyags7azi9xXHbY+Qusuk1uy+4Rynx4XzHcx/XxLB/j5QBT3ir571MQfltYqoUYZQjeNcebx+ZpPJ3JdIuTpyEXdSnZylPbc7F1mZPtm61F04xDBhpLX/j8a8681pNr6E7rh8J+nD8YcwDrcKQziy4TMMsQr1T5g8/eyCLzIHD/fz7plUVir4yZsKWtYjO20u5qBTkysfgJPX/mTuyD2kJGDCFFXz76Ex9fLlzvFrwUDM/HkBRbFU3UX9wGnBtybSuo21rpcflhja4WNZaU8yBUCznJ0pn+uw9CU0OK2XiwyrSvONQm+f35PiKdal53ZFvKYGr7wO7k/o8mNc6cp0r4VlxkOGN1zINg75OUD5p8eL7DO6+PsdMKblpE0rfKb2AQttBYRNwCQpjiJ3LoR3iwRq4AhRxolEstPZlrzb63VLu4NK5lT8hN0fNZxnXaJ5dynNGAEGJnobhtE/GJPG9MaYDWQJg052N0j7OElwSu4jWB/vdZa2A6YZ+PXUOnDWTh7MYFXP8aChTQ6i7qqbNtOW7lnzqhBek1FQQSc4mDuLB8SkcHDqC2fMG9anBtsoW2ewNbkPxrbleji50aNrsgMmkZ0gArL+LsT7IqJZihzlwJf3xfm+SQaafgEgPfeIns1dv7E4cw+qCd18KSSl5wVKwkHc82hC9ar6pH8cT+smG/APwv8IqXmuyitFS2Z8kpaKN8g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(366004)(376002)(478600001)(31686004)(66946007)(66476007)(66556008)(6486002)(86362001)(7406005)(6666004)(7416002)(54906003)(38100700002)(5660300002)(38350700002)(16576012)(316002)(44832011)(8676002)(2616005)(956004)(186003)(8936002)(26005)(53546011)(36756003)(83380400001)(52116002)(2906002)(31696002)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVl2RVZpWjJUUjB2RE9RRGNpVUxKUG5QWlZGK3RYbXgrRHh3ZUw0MzNDNDBs?=
+ =?utf-8?B?TnZuVmFzVWF4ZHpYYlJidlFmSVIyeTllN1BBaUZocldMUTZjRDZETWFndDRt?=
+ =?utf-8?B?MkExd3NEQ1hDRHZ0ZEZvd2c2MFdSckxpNXl0RXZyRkptMnBnK0YxRXg3QXl3?=
+ =?utf-8?B?dCtLT0FBZDgwM2hWR2N1RFY0S2pxZFNzbkVqOWFtM3NrMm1wTkFLc2ptRjhz?=
+ =?utf-8?B?SElsWUtyMkhZM212bXdzdVl4amhwakZRKzBmUldXTVdXTXI0TnZXOGFKSVJF?=
+ =?utf-8?B?cEhkV3VSVHh0SWZlRW14OFJkbFR2UXl5WmdBMTdEaTB2bEE1elRrZ2pLcmxY?=
+ =?utf-8?B?M010MmhubjI5bTdZWmlKdkRFcURvSklzSWNKcDdSK0pTaEpmNTNabkV5akpE?=
+ =?utf-8?B?aFBzbVdHVlVxSmNpcXhnNFpvM3dyUXhYL01mZFJTTVhUUk4rYzNVZndCVkQr?=
+ =?utf-8?B?ZDhNMFhkZk12b2FBN0RGTHNYTlVKc1dwZmxOSFY5cmVpdGVIcTR2OHF1cC9x?=
+ =?utf-8?B?YmpBbFlYdy8wZFVFakU4U0txV056MTZGU3RSazkzYkxzbDNUdkxIQ3Jtdlpp?=
+ =?utf-8?B?dUFhcys1ME1hSnI3VmJQYXM2aVBhWGRveUIzUTkvSHpMcVNSMzViWndBUGUw?=
+ =?utf-8?B?c0dhTHNoeGRlbFBOZFZBY3FLa1F2Z1hxVUVUMkdTcWZReGtndUIzWTluTjBK?=
+ =?utf-8?B?bFpvVWFXcG14Vmd4M2N3TmNvU0ppSDlOZkhDOHRua0JwQUFweTU2L2gvSU14?=
+ =?utf-8?B?VE5tclBhQ0s1M1RYWGFiMHZLM1hiUDZ0RnUwcDF1Y1lqdmIwbWpzSlhLSmJz?=
+ =?utf-8?B?b04yckVPaVJwWnJsOGtMaXlRTnI0RG9yaTU1b090U0dJQjZQTTZWcHQ3YUpM?=
+ =?utf-8?B?Nmo3bEFtVXZjMHNuSjdOYk83MU96WURpUnhKTmhwNWJhQUhNNitqU1V2UURs?=
+ =?utf-8?B?Z3czYzVzMDBFeFdSQXo0VnZlcHJuSjVEZzJIeVU2MlhmVzFPMjlkbmZORkJT?=
+ =?utf-8?B?SDdkcU9CS2ZSNTJvSktQZnIwRUZoMU1aVmhsQ2NjeHU5OGhVdHVBVTF6V2x4?=
+ =?utf-8?B?UEJhRXVkdzRRZ1ovaXVlcnpEZTA4MVU5Umtyc2gydm9mcUNDdENDQXlTamh6?=
+ =?utf-8?B?QXBNd2lINWxGZzV1RzIrSlYwZ2J1MlByajF4MDc4QXArNlc4VmRkaXZMQjBC?=
+ =?utf-8?B?Z3l5bm1BOFIxQWpVcWdkVldCMVFiMXJKR3d3SENHTGRyMDVoVitOdjJ4V0x4?=
+ =?utf-8?B?aHI4bWozZlJobGUrTTVNVXFkRTdaZFdqbi9DbExCSjRnQjFZemxlTmY0dk1s?=
+ =?utf-8?B?VlJFSzBDdmgwVm5KODlVOFh2aVljYlVuK3gxRzcvYWJuVi85c3NhbmNIaUF2?=
+ =?utf-8?B?ZllUZDR1emgwYnQ0MlprdTZDZUw2VXY0VjlVQ2pHR2RjVmI2M1VTV1FIR0hm?=
+ =?utf-8?B?TTUxSGtRcTdlM2NjMzRJZ2lrdHFEbnJDWWpodWdzemd0dmYybEhIRkl5VkRG?=
+ =?utf-8?B?VkxWamxsRzdrWmVwcHhiWUlhSk1wLzgyczlKd2RHenNNZ2E0OFRCR05CdEp2?=
+ =?utf-8?B?RlFzTFZSVzRScHorMERpOXJWb3BWOG93MzJaQmgwL3hGclFRdzNob0NlUVlM?=
+ =?utf-8?B?UDY2bkRSRmFzbWh5bXB5T1g5SzNHVmJHNUVYMHQ4Q0pHdjE0ZitiT0pmajFa?=
+ =?utf-8?B?WW41c0NSTVdPemw0dklId1JBTXZqZU80UE8vajhnbGdFSFpCVWxaWUk5endM?=
+ =?utf-8?Q?YIkRFSAXytJFnYW7Fl0DO1b24IAitv4WXpTcfYX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cebc2e20-9933-486e-b348-08d96643620a
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 14:36:24.6514
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qokHg1Rcn6yONHl0VBUPExCGEeMRgz/w8c+YjcKoXLSE1jLO7g9JNqV7sPanbrFb16N5/xKDlPw3PNEUoxxBTQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4557
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+Hi Dave,
 
-On Montag, 23. August 2021 14:03:25 CEST Philipp Zabel wrote:
-> Hi Nicolas,
+On 8/23/21 9:20 AM, Dave Hansen wrote:
+> On 8/20/21 8:58 AM, Brijesh Singh wrote:
+>> +static int handle_split_page_fault(struct vm_fault *vmf)
+>> +{
+>> +	if (!IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
+>> +		return VM_FAULT_SIGBUS;
+>> +
+>> +	__split_huge_pmd(vmf->vma, vmf->pmd, vmf->address, false, NULL);
+>> +	return 0;
+>> +}
 > 
-> On Fri, 2021-08-20 at 20:27 +0200, Nicolas Frattaroli wrote:
-> [...]
+> We had a whole conversation the last time this was posted about huge
+> page types *other* than THP.  I don't see any comprehension of those
+> types or what would happen if one of those was used with SEV-SNP.
 > 
-> > diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c
-> > b/sound/soc/rockchip/rockchip_i2s_tdm.c new file mode 100644
-> > index 000000000000..c02b66f3c913
-> > --- /dev/null
-> > +++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-> > @@ -0,0 +1,1737 @@
-> 
-> [...]
-> 
-> > +static void rockchip_snd_xfer_reset_assert(struct rk_i2s_tdm_dev
-> > *i2s_tdm,
-> > +					   int tx_bank, int tx_offset,
-> > +					   int rx_bank, int rx_offset)
-> > +{
-> > +	void __iomem *cru_reset;
-> > +	unsigned long flags;
-> > +
-> > +	cru_reset = i2s_tdm->cru_base + i2s_tdm->soc_data->softrst_offset;
-> > +
-> > +	if (tx_bank == rx_bank) {
-> > +		writel(BIT(tx_offset) | BIT(rx_offset) |
-> > +		       (BIT(tx_offset) << 16) | (BIT(rx_offset) << 16),
-> > +		       cru_reset + (tx_bank * 4));
-> > +	} else {
-> > +		local_irq_save(flags);
-> > +		writel(BIT(tx_offset) | (BIT(tx_offset) << 16),
-> > +		       cru_reset + (tx_bank * 4));
-> > +		writel(BIT(rx_offset) | (BIT(rx_offset) << 16),
-> > +		       cru_reset + (rx_bank * 4));
-> > +		local_irq_restore(flags);
-> > +	}
-> > +}
-> > +
-> > +static void rockchip_snd_xfer_reset_deassert(struct rk_i2s_tdm_dev
-> > *i2s_tdm, +					     int tx_bank, int 
-tx_offset,
-> > +					     int rx_bank, int rx_offset)
-> > +{
-> > +	void __iomem *cru_reset;
-> > +	unsigned long flags;
-> > +
-> > +	cru_reset = i2s_tdm->cru_base + i2s_tdm->soc_data->softrst_offset;
-> > +
-> > +	if (tx_bank == rx_bank) {
-> > +		writel((BIT(tx_offset) << 16) | (BIT(rx_offset) << 16),
-> > +		       cru_reset + (tx_bank * 4));
-> > +	} else {
-> > +		local_irq_save(flags);
-> > +		writel((BIT(tx_offset) << 16),
-> > +		       cru_reset + (tx_bank * 4));
-> > +		writel((BIT(rx_offset) << 16),
-> > +		       cru_reset + (rx_bank * 4));
-> > +		local_irq_restore(flags);
-> > +	}
-> > +}
-> > +
-> > +/*
-> > + * Makes sure that both tx and rx are reset at the same time to sync lrck
-> > + * when clk_trcm > 0.
-> > + */
-> > +static void rockchip_snd_xfer_sync_reset(struct rk_i2s_tdm_dev *i2s_tdm)
-> > +{
-> > +	int tx_id, rx_id;
-> > +	int tx_bank, rx_bank, tx_offset, rx_offset;
-> > +
-> > +	if (!i2s_tdm->cru_base || !i2s_tdm->soc_data)
-> > +		return;
-> > +
-> > +	tx_id = i2s_tdm->tx_reset_id;
-> > +	rx_id = i2s_tdm->rx_reset_id;
-> > +	if (tx_id < 0 || rx_id < 0)
-> > +		return;
-> > +
-> > +	tx_bank = tx_id / 16;
-> > +	tx_offset = tx_id % 16;
-> > +	rx_bank = rx_id / 16;
-> > +	rx_offset = rx_id % 16;
-> > +	dev_dbg(i2s_tdm->dev,
-> > +		"tx_bank: %d, rx_bank: %d, tx_offset: %d, rx_offset: %d\n",
-> > +		tx_bank, rx_bank, tx_offset, rx_offset);
-> > +
-> > +	rockchip_snd_xfer_reset_assert(i2s_tdm, tx_bank, tx_offset,
-> > +				       rx_bank, rx_offset);
-> > +
-> > +	udelay(150);
-> > +
-> > +	rockchip_snd_xfer_reset_deassert(i2s_tdm, tx_bank, tx_offset,
-> > +					 rx_bank, rx_offset);
-> > +}
-> 
-> I'm not too fond of reimplementing half a reset controller in here.
-> The reset framework does not support synchronized (de)assertion of
-> multiple reset controls, I wonder if this would be useful to add.
-> Without having thought about this too hard, I could imagine this as an
-> extension to the bulk API, or possibly a call to join multiple reset
-> controls into a reset control array.
-
-I agree, the code required for synchronised reset seems to be a good
-candidate for a generalised solution elsewhere.
-However, I'm not sure if I'm the right candidate to design this API
-as my first kernel contribution when the board I'm currently testing
-this with doesn't even utilise the synchronized reset.
-
-If I come across an opportunity to test synchronised resets, I'll
-definitely look into refactoring this. I'd also be happy to hear of
-any other driver which is currently implementing its own synchronised
-reset.
-
-[...]
- 
-> > +
-> > +	reset_control_assert(rc);
-> > +	udelay(1);
-> 
-> What is the reason for the different delays in
-> rockchip_snd_xfer_sync_reset() and rockchip_snd_reset()?
+> What was the result of those review comments?
 > 
 
-Simply put: I have no idea. This is what downstream does, and it
-appears to work for me. The git history of the downstream kernel
-also doesn't tell me anything about why the sync reset is 150
-and this one is 1.
+Based on previous review comments Sean was not keen on KVM having 
+perform this detection and abort the guest SEV-SNP VM launch. So, I 
+didn't implemented the check and waiting for more discussion before 
+going at it.
 
-I've got no device to test the sync reset with at the moment so
-I'm wary of playing with the delay value.
+SEV-SNP guest requires the VMM to register the guest backing pages 
+before the VM launch. Personally, I would prefer KVM to check the 
+backing page type during the registration and fail to register if its 
+hugetlbfs (and others) to avoid us get into situation where we could not 
+split the hugepage.
 
-> > +	reset_control_deassert(rc);
-> > +}
+thanks
+
+> I'm still worried that hugetlbfs (and others) are not properly handled
+> by this series.
 > 
-> [...]
-> 
-> > +static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device_node *node = pdev->dev.of_node;
-> > +	struct device_node *cru_node;
-> > +	const struct of_device_id *of_id;
-> > +	struct rk_i2s_tdm_dev *i2s_tdm;
-> > +	struct resource *res;
-> > +	void __iomem *regs;
-> > +	int ret;
-> > +	int val;
-> > +
-> > +	i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
-> > +	if (!i2s_tdm)
-> > +		return -ENOMEM;
-> > +
-> > +	i2s_tdm->dev = &pdev->dev;
-> > +
-> > +	of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
-> > +	if (!of_id || !of_id->data)
-> > +		return -EINVAL;
-> > +
-> > +	spin_lock_init(&i2s_tdm->lock);
-> > +	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
-> > +
-> > +	i2s_tdm->frame_width = 64;
-> > +	if (!of_property_read_u32(node, "rockchip,frame-width", &val)) {
-> > +		if (val >= 32 && (val % 2 == 0) && val <= 512) {
-> > +			i2s_tdm->frame_width = val;
-> > +		} else {
-> > +			dev_err(i2s_tdm->dev, "unsupported frame width: 
-'%d'\n",
-> > +				val);
-> > +			return -EINVAL;
-> > +		}
-> > +	}
-> > +
-> > +	i2s_tdm->clk_trcm = TRCM_TXRX;
-> > +	if (of_property_read_bool(node, "rockchip,trcm-sync-tx-only"))
-> > +		i2s_tdm->clk_trcm = TRCM_TX;
-> > +	if (of_property_read_bool(node, "rockchip,trcm-sync-rx-only")) {
-> > +		if (i2s_tdm->clk_trcm) {
-> > +			dev_err(i2s_tdm->dev, "invalid trcm-sync 
-configuration\n");
-> > +			return -EINVAL;
-> > +		}
-> > +		i2s_tdm->clk_trcm = TRCM_RX;
-> > +	}
-> > +	if (i2s_tdm->clk_trcm != TRCM_TXRX)
-> > +		i2s_tdm_dai.symmetric_rate = 1;
-> > +
-> > +	i2s_tdm->tdm_fsync_half_frame =
-> > +		of_property_read_bool(node, "rockchip,tdm-fsync-half-frame");
-> > +
-> > +	i2s_tdm->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
-> > +	if (IS_ERR(i2s_tdm->grf))
-> > +		return dev_err_probe(i2s_tdm->dev, PTR_ERR(i2s_tdm->grf),
-> > +				     "Error in rockchip,grf\n");
-> > +
-> > +	if (i2s_tdm->clk_trcm != TRCM_TXRX) {
-> > +		cru_node = of_parse_phandle(node, "rockchip,cru", 0);
-> > +		i2s_tdm->cru_base = of_iomap(cru_node, 0);
-> 
-> This is a bit ugly if there is another driver sitting on the
-> rockchip,cru compatible node. Which reset controller driver is backing
-> the reset controls below?
-
-I'm not sure if I understand the question (I only just today learned that
-reset controls have drivers) but I think the reset it is using in the
-Quartz64 dts is backed by rk3568-cru. Let me know if I misunderstood you.
-
-[...]
-
-> > +static int rockchip_i2s_tdm_remove(struct platform_device *pdev)
-> > +{
-> > +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(&pdev->dev);
-> > +
-> > +	pm_runtime_disable(&pdev->dev);
-> > +	if (!pm_runtime_status_suspended(&pdev->dev))
-> > +		i2s_tdm_runtime_suspend(&pdev->dev);
-> > +
-> > +	if (!IS_ERR(i2s_tdm->mclk_tx))
-> > +		clk_prepare_enable(i2s_tdm->mclk_tx);
-> > +	if (!IS_ERR(i2s_tdm->mclk_rx))
-> > +		clk_prepare_enable(i2s_tdm->mclk_rx);
-> 
-> Why are we enabling these clocks now?
-> 
-
-I wondered that too while I was looking into the pm_runtime stuff,
-and decided to just throw these two calls out. They don't seem to
-make sense to me, and nothing I tested broke when I removed them.
-
-If left in (and the code works as I hypothesise it works) then
-this would simply re-enable clocks we have just disabled, which
-would make the number of enable and disable calls unbalanced.
-Highly sus, as the kids would say, and completely omits the other
-mclk_tx_src etc. clocks. (Though those are forgotten elsewhere in
-the code as well, which I have since fixed, along with any of the
-review points I don't directly respond to.)
-
-> > +	if (!IS_ERR(i2s_tdm->hclk))
-> > +		clk_disable_unprepare(i2s_tdm->hclk);
-> > +
-> > +	return 0;
-> > +}
-> 
-> regards
-> Philipp
-
-Regards,
-Nicolas Frattaroli
-
-
