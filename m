@@ -2,192 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0D63F4819
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C5D3F4864
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhHWKBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:01:38 -0400
-Received: from mail-dm6nam12on2073.outbound.protection.outlook.com ([40.107.243.73]:20257
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232850AbhHWKBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:01:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JhexweTq5EwDbZDeY4Ts6PWwmgYUOgvDDXn+bZAhi+xvnBpmWIp5tPb/eWyR+00h5Ks5DGykb3Z15piWo7u34cCLO4kd4L9TYDnxolLuMnVphvfBdX3KBSCNYaQ7LIFGRP9bqVJGwSmbPY6IwlaKXnpOe+2kFyb/Cz2zdxN7tDXX9NygFmwwQ59lmQK6bhsIM+5+8TAKzkr/Ju2fk2/bLk+bs/1npCVqq5F2LT9uEET8EMu4rvI/kbfEXO8EN6DvWmH4cIwCTyW3qa+t5ngz/mbqsXpwj0FkcRSUoZB6bW6C9Y9x425t9iUHM0ei5gdvg21FgF1MQfhfkZl7X1qbNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AZx1KcCIKqQAlRdNQ1/QgDdRGixQy54Tpue5wopCAGY=;
- b=UUtIQ8VUJtuN4BNb3Ge+lB72GnrrRgKzb37AZDtFRv7V98vKDLlMFD350gPMw28ZCgoGDlbJgl62obXG4NJxFoySwaTT6QuW5TO+eT1nrfgU0Tz5uDOjndbWpdNU9PRVEp1q4VLfpUfgleRJDZLX0jK+3xIFAHPx4Nzqgg9Tqzzoqm7KM2u1cC44Gi5Lv+YF+BUapSbh8f76mblGO8xrM1hMeuJd9JMahi9taiHbjK+QGhWhSFAAIRTnm8ZPcSIaXCK7CKwZQJfZWfsWujg/1YuoWROfEv//TnODcBkKTtigzF8CsYAepxw/tPEVQnYDKRVh8kewNkyYpJZJGqYWqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AZx1KcCIKqQAlRdNQ1/QgDdRGixQy54Tpue5wopCAGY=;
- b=tICiiC8c7SODty6ZnLfqseYng5Ou785wgAQEaOVNw3TXR/+BssKSgGEiJX0Iu8acj5VDGhEZbfh3q7GzgFqbJhEerx7Mkb8vw9LdAy4MQYPaN7t/Oky+jL3rsJvWPHkrnqvKxiIgIej3Hkd+Y1hciHRzHbUzIxaqvLX0ASqGQpF4bAq+fGTO75Gfo91Mu5yutwQan6qJGDCGiBRJWIwkPSfKGCZ3KP05KfQ/BQ0zcR8PnD5iaxtzZDSDJHRtR+qK9Es6IQj1ePIHGhu0/IR0pYNExG/6R03+65VTHRE17tw0024XWSfcBne10ZETEvy87cOWV87ytEoKrrGuxrPNlw==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17)
- by DM4PR12MB5312.namprd12.prod.outlook.com (2603:10b6:5:39d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 10:00:48 +0000
-Received: from DM4PR12MB5278.namprd12.prod.outlook.com
- ([fe80::c170:83a0:720d:6287]) by DM4PR12MB5278.namprd12.prod.outlook.com
- ([fe80::c170:83a0:720d:6287%6]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 10:00:48 +0000
-Subject: Re: [PATCH v2 net-next] net: bridge: change return type of
- br_handle_ingress_vlan_tunnel
-To:     Kangmin Park <l4stpr0gr4m@gmail.com>,
-        Roopa Prabhu <roopa@nvidia.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210823095634.34752-1-l4stpr0gr4m@gmail.com>
-From:   Nikolay Aleksandrov <nikolay@nvidia.com>
-Message-ID: <d7931059-4841-a39f-4272-0053d6b61bac@nvidia.com>
-Date:   Mon, 23 Aug 2021 13:00:42 +0300
+        id S235975AbhHWKOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:14:53 -0400
+Received: from 8.mo548.mail-out.ovh.net ([46.105.45.231]:57583 "EHLO
+        8.mo548.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236126AbhHWKOs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:14:48 -0400
+X-Greylist: delayed 2399 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 06:14:47 EDT
+Received: from mxplan5.mail.ovh.net (unknown [10.109.138.5])
+        by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 01DE01FED9;
+        Mon, 23 Aug 2021 08:56:19 +0000 (UTC)
+Received: from kaod.org (37.59.142.106) by DAG4EX1.mxp5.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 23 Aug
+ 2021 10:56:19 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-106R0065799e57a-66fe-451c-a3d9-b40df5884a81,
+                    6C3DA580BFD2A03B9CD9C7EDF86CA127720438B1) smtp.auth=clg@kaod.org
+X-OVh-ClientIp: 83.199.102.86
+Subject: Re: [PATCH v2] powerpc/audit: Convert powerpc to
+ AUDIT_ARCH_COMPAT_GENERIC
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+References: <dc14509a28a993738b1325211f412be72a4f9b1e.1629701132.git.christophe.leroy@csgroup.eu>
+From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
+Message-ID: <753e61fc-aab5-7797-d344-b15e9f4d6d5c@kaod.org>
+Date:   Mon, 23 Aug 2021 10:56:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <20210823095634.34752-1-l4stpr0gr4m@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZR0P278CA0066.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:21::17) To DM4PR12MB5278.namprd12.prod.outlook.com
- (2603:10b6:5:39e::17)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.21.240.23] (213.179.129.39) by ZR0P278CA0066.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:21::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 10:00:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 37bb7d1a-e50c-4621-860a-08d9661ce1e6
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5312:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB531264BED826B02EFD41A7E7DFC49@DM4PR12MB5312.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:294;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q8prGnIw1lLqungoqHch9TT5Xc1qZw9BKmYZxzmKrzqUmkLdvrg5bJ8icEiJLtlHlhotzx41UvCX5I+yRJS/MI/yVIwH6QxVOIvZJte9X7otgEkV2O0/p8GoEB0Bk00aoSnXRa+ggtOQcqWfrr18iFl0maI4BlVbOeyKKt3h4x8nASm+79IThz90IyMKDBwF6wHuUp5PN6D/io3MFp/TFFpjlcClLWqL8kWJa6U9sPKNpowdJhbt8rhkO3eIixHiNgGOschDlpDKtoSMxxLvl6nm+KsnEzGEplmgCW+51He+mXLJRVyrY2hsZLDZFO267Zl4G87dE2koLmvvnp23y2bMvOyTtEMDJDp6E56uJdfS1XOZzant6OTUodRTXh6e3IYc1Uel8/hWZ7YKKCD8yBSv8PpXI05aBZRSwu4Gp0VSXs74j9iZ7lMdVbuNWM4fVGRp5+g1EEp2xFhNXCT1LXRxYTf4g3ADSyi5oKXOSWIxwZwtoiuOxpXVLvdLZgGx5Fs3+aB9DfJbyPb1LrZRXfyMlW2Qw9YLoW+jTQjw0BMYBA19V+m+h1jCAqa42Kuk04W1kwwda6vc5hxOSQ53nSvD06ilRrWVfIw1RZ2MgO5xDhyDnva7UawPVxjuirrqcPdWOiG7o1kHOFgirY7KTWHHvX66uYIUYCIbFXjiwsQ1+ok5Q3RRe8mJNhWvyD3AjTKgbZEuBp6O874jeFnyc/5E6EfhmqY5N3r4Vl1mBMs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5278.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(136003)(346002)(376002)(6666004)(4326008)(31696002)(478600001)(86362001)(5660300002)(31686004)(54906003)(36756003)(38100700002)(6486002)(956004)(2616005)(8676002)(8936002)(53546011)(110136005)(16576012)(316002)(186003)(83380400001)(66946007)(66556008)(66476007)(2906002)(6636002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QzRreUtzT1ZYYjQrRThyQ0FtV3EwOHBsRjFrWVNzaC9OdVREd1g0emlRM2lP?=
- =?utf-8?B?WmRGQVpXMisvak1lT1BWV3JZR01vNEQ5S1RJNXZMTi96bFl3Q0JDVk05VUtX?=
- =?utf-8?B?T0FocFh4L254ZmVYU2ZFZFhCcDgvaStiZURCaStqZG5mQnJRVzVkTm04Rmp2?=
- =?utf-8?B?U3pPTUNESitNajNkLzhNWFZkWGxCUXJiZHM4YlZORWc5WVVvZG9yZEFjeEFp?=
- =?utf-8?B?RG4zU0xXNlByY3c1eGxnZHNmazZVWGNFalJXNWFiMnk3dUNiYmU2UVVzdVNt?=
- =?utf-8?B?K3R2emFpVzVOOEwzN3IrNUZBaU9RSXlzN08yZmpIRCtURkRUZzBGR1hHUWVa?=
- =?utf-8?B?S2E0aDZkYUhjRjJ2aEVOdTFHMGR5MlZSaENTZU5hSnBBRmVZcDc4eklmV2Nm?=
- =?utf-8?B?TmU1NlZLMjA4a2pqcFR6UWxHektHOTh1S0Jycm9VaExYemE4eHh3NHBrcEls?=
- =?utf-8?B?TWo2aFRDdUhoY3pEeHVIc1hDUDcxb0s2N1Fkcy9VMWVtdVE0dXI4VVU3ejJo?=
- =?utf-8?B?L2lhWFgzYkVwOVk3L2FXb3lsQlUxdit3cXJPUkhoOXdwTGpuTEQ0djFmeXgr?=
- =?utf-8?B?WnZEWGUwREQ3V3h1WE1jejdYbWFUN2V4R3ZiK0hjQWs5S2EwY3dBQSt6S29L?=
- =?utf-8?B?SDN4WFNuZ1B0VG1PWHFtRkwrNDFzL2J0M29xMWZWSWlqbmh3VDhjaFM3YUdw?=
- =?utf-8?B?T2VOQThmWDFUaUp5UGlmL0dFaUtFOFlFYlhXZWNiRm9JSFB6NnE0MXpROWFm?=
- =?utf-8?B?NDFDVVUwUERBbWI3OVB1c2pkeEhIdThGOXVGYU5kdjFjM0ZCSnZFa0Urd0Fl?=
- =?utf-8?B?bGhlMCtPNTNHMnpXQ3pWM1J0TXU1YlFaQ1cvRktITStTSHA0aUxNQmxEaFpN?=
- =?utf-8?B?eFljdzRRQ3REMURYQ0pjZGFLcnN1a2R6VEw3VGJ6U0hVRzJJcnRnMHJzRVNI?=
- =?utf-8?B?aDNiTlp0TjRzZmYwY3RITEI0Uk5aVHRTM3VlZHQ0OGRZZ2ZTenZEMjVmWDJs?=
- =?utf-8?B?cjhTQ0N3eXMwWXhFb0c5T3daVUxBb09aZXd0emlNYWNOTTRsR1NmOEVuYnl3?=
- =?utf-8?B?Vk5UOW85RGFQSWJob3NRbFoxdHZZUjZxeEdadVVhREgwQkNRZ0JpT2tVWW1J?=
- =?utf-8?B?bDNhRkRhRG8wb1RRM1RjK2ZIaWRRRTFvOHdTeXBkSnErenNXOVlKVUd5bnFI?=
- =?utf-8?B?WmJZUHlLS3czUEVCaUtIbTF4UnhhT2E2ZjhjY3dDbE9PMzhRZkhvQkRKaEZN?=
- =?utf-8?B?QjR0Ylk0NVhCN1NwVWFUQVBLS2JlSDViUjQ2ZmdPNlFWSGpQdWNwaklqbTNK?=
- =?utf-8?B?UXpLN2ZKQkNoZFp6S045SEpwdEhFbkdBZkRBNGl0RU0rY2g0YXFZTzlKbWh4?=
- =?utf-8?B?Ly9pOEpVSVlpY2ZUdnM3bVJFQitIOThUNW00NUxvZVZVMFNmUUx5K2NrVU5D?=
- =?utf-8?B?Ri9vb1JoVXJQeVVSdzlWMzNjZStsc29PQTBzVnRENnFXeUxuSWs1cVp0MVF4?=
- =?utf-8?B?VmJFV3hNdFA5M200THkvNlZ0dGlReFA4NGJoc0RxR0lYNjRkY0VaNnBXUHo4?=
- =?utf-8?B?d3h4OHh1U2dIOFFMYXdnUURjZjJwcjZGSnRrNWMzM01MelQ5a2thVzEreEhR?=
- =?utf-8?B?bFJ2WWxGVC9wRllvaU1DMnpoNEdtYjNPeElaUGRRVm1USThvbjB5dCtUUHZw?=
- =?utf-8?B?YmZsejIrUnlMeUtNLzUrVlpkRlhoSFh3YWI0QkRIb1kxbStEY1pBWG1YYXB3?=
- =?utf-8?Q?LtHZT693bWwoyXY2zlHy9r1lX4twGX3a7lYbWEb?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 37bb7d1a-e50c-4621-860a-08d9661ce1e6
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5278.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 10:00:48.7173
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MUcaoUFkZu+q9jyTEtuOkibXopvsQwjlbHP7b/7/3Bh6TJnka8KORCTbs0CNgoAVMVUGg7DfsShtDL4n2YXp+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5312
+In-Reply-To: <dc14509a28a993738b1325211f412be72a4f9b1e.1629701132.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [37.59.142.106]
+X-ClientProxiedBy: DAG3EX2.mxp5.local (172.16.2.22) To DAG4EX1.mxp5.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 72695990-56d4-485e-b4e1-f8349831bb03
+X-Ovh-Tracer-Id: 7112028239204944678
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddthedguddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeekudeuudevleegudeugeekleffveeludejteffiedvledvgfekueefudehheefnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopegthhhrihhsthhophhhvgdrlhgvrhhohiestghsghhrohhuphdrvghu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/08/2021 12:56, Kangmin Park wrote:
-> br_handle_ingress_vlan_tunnel() is only referenced in
-> br_handle_frame(). If br_handle_ingress_vlan_tunnel() is called and
-> return non-zero value, goto drop in br_handle_frame().
+On 8/23/21 8:49 AM, Christophe Leroy wrote:
+> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
+> targets") added generic support for AUDIT but that didn't include
+> support for bi-arch like powerpc.
 > 
-> But, br_handle_ingress_vlan_tunnel() always return 0. So, the
-> routines that check the return value and goto drop has no meaning.
+> Commit 4b58841149dc ("audit: Add generic compat syscall support")
+> added generic support for bi-arch.
 > 
-> Therefore, change return type of br_handle_ingress_vlan_tunnel() to
-> void and remove if statement of br_handle_frame().
+> Convert powerpc to that bi-arch generic audit support.
 > 
-> Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+Reviewed-by: Cédric Le Goater <clg@kaod.org>
+
+Thanks,
+
+C. 
+
 > ---
 > v2:
->  - cleanup instead of modifying ingress function
->  - change prototype of ingress function
->  - cleanup br_handle_frame function
->  - change commit message accordingly
+> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
+> - Finalised commit description
+> ---
+>  arch/powerpc/Kconfig                |  5 +-
+>  arch/powerpc/include/asm/unistd32.h |  7 +++
+>  arch/powerpc/kernel/Makefile        |  3 --
+>  arch/powerpc/kernel/audit.c         | 84 -----------------------------
+>  arch/powerpc/kernel/compat_audit.c  | 44 ---------------
+>  5 files changed, 8 insertions(+), 135 deletions(-)
+>  create mode 100644 arch/powerpc/include/asm/unistd32.h
+>  delete mode 100644 arch/powerpc/kernel/audit.c
+>  delete mode 100644 arch/powerpc/kernel/compat_audit.c
 > 
->  net/bridge/br_input.c          |  7 ++-----
->  net/bridge/br_private_tunnel.h |  6 +++---
->  net/bridge/br_vlan_tunnel.c    | 14 +++++++-------
->  3 files changed, 12 insertions(+), 15 deletions(-)
-> 
-[snip]
-> diff --git a/net/bridge/br_vlan_tunnel.c b/net/bridge/br_vlan_tunnel.c
-> index 01017448ebde..7d42b2a5be80 100644
-> --- a/net/bridge/br_vlan_tunnel.c
-> +++ b/net/bridge/br_vlan_tunnel.c
-> @@ -158,30 +158,30 @@ void vlan_tunnel_deinit(struct net_bridge_vlan_group *vg)
->  	rhashtable_destroy(&vg->tunnel_hash);
->  }
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 663766fbf505..5472358609d2 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -163,6 +163,7 @@ config PPC
+>  	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+>  	select ARCH_WANT_LD_ORPHAN_WARN
+>  	select ARCH_WEAK_RELEASE_ACQUIRE
+> +	select AUDIT_ARCH_COMPAT_GENERIC
+>  	select BINFMT_ELF
+>  	select BUILDTIME_TABLE_SORT
+>  	select CLONE_BACKWARDS
+> @@ -316,10 +317,6 @@ config GENERIC_TBSYNC
+>  	bool
+>  	default y if PPC32 && SMP
 >  
-> -int br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
-> -				  struct net_bridge_port *p,
-> -				  struct net_bridge_vlan_group *vg)
-> +void br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
-> +				   struct net_bridge_port *p,
-> +				   struct net_bridge_vlan_group *vg)
->  {
->  	struct ip_tunnel_info *tinfo = skb_tunnel_info(skb);
->  	struct net_bridge_vlan *vlan;
+> -config AUDIT_ARCH
+> -	bool
+> -	default y
+> -
+>  config GENERIC_BUG
+>  	bool
+>  	default y
+> diff --git a/arch/powerpc/include/asm/unistd32.h b/arch/powerpc/include/asm/unistd32.h
+> new file mode 100644
+> index 000000000000..07689897d206
+> --- /dev/null
+> +++ b/arch/powerpc/include/asm/unistd32.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> +#ifndef _ASM_POWERPC_UNISTD32_H_
+> +#define _ASM_POWERPC_UNISTD32_H_
+> +
+> +#include <asm/unistd_32.h>
+> +
+> +#endif /* _ASM_POWERPC_UNISTD32_H_ */
+> diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+> index 7be36c1e1db6..825121eba3c2 100644
+> --- a/arch/powerpc/kernel/Makefile
+> +++ b/arch/powerpc/kernel/Makefile
+> @@ -125,9 +125,6 @@ obj-$(CONFIG_PCI)		+= pci_$(BITS).o $(pci64-y) \
+>  				   pci-common.o pci_of_scan.o
+>  obj-$(CONFIG_PCI_MSI)		+= msi.o
 >  
->  	if (!vg || !tinfo)
-> -		return 0;
-> +		return;
+> -obj-$(CONFIG_AUDIT)		+= audit.o
+> -obj64-$(CONFIG_AUDIT)		+= compat_audit.o
+> -
+>  obj-$(CONFIG_PPC_IO_WORKAROUNDS)	+= io-workarounds.o
 >  
->  	/* if already tagged, ignore */
->  	if (skb_vlan_tagged(skb))
-> -		return 0;
-> +		return;
->  
->  	/* lookup vid, given tunnel id */
->  	vlan = br_vlan_tunnel_lookup(&vg->tunnel_hash, tinfo->key.tun_id);
->  	if (!vlan)
-> -		return 0;
-> +		return;
->  
->  	skb_dst_drop(skb);
->  
->  	__vlan_hwaccel_put_tag(skb, p->br->vlan_proto, vlan->vid);
->  
+>  obj-y				+= trace/
+> diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
+> deleted file mode 100644
+> index a2dddd7f3d09..000000000000
+> --- a/arch/powerpc/kernel/audit.c
+> +++ /dev/null
+> @@ -1,84 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#include <linux/init.h>
+> -#include <linux/types.h>
+> -#include <linux/audit.h>
+> -#include <asm/unistd.h>
+> -
+> -static unsigned dir_class[] = {
+> -#include <asm-generic/audit_dir_write.h>
+> -~0U
+> -};
+> -
+> -static unsigned read_class[] = {
+> -#include <asm-generic/audit_read.h>
+> -~0U
+> -};
+> -
+> -static unsigned write_class[] = {
+> -#include <asm-generic/audit_write.h>
+> -~0U
+> -};
+> -
+> -static unsigned chattr_class[] = {
+> -#include <asm-generic/audit_change_attr.h>
+> -~0U
+> -};
+> -
+> -static unsigned signal_class[] = {
+> -#include <asm-generic/audit_signal.h>
+> -~0U
+> -};
+> -
+> -int audit_classify_arch(int arch)
+> -{
+> -#ifdef CONFIG_PPC64
+> -	if (arch == AUDIT_ARCH_PPC)
+> -		return 1;
+> -#endif
 > -	return 0;
-> +	return;
-
-Please drop this unnecessary return statement at the end of the void function.
-
->  }
->  
->  int br_handle_egress_vlan_tunnel(struct sk_buff *skb,
+> -}
+> -
+> -int audit_classify_syscall(int abi, unsigned syscall)
+> -{
+> -#ifdef CONFIG_PPC64
+> -	extern int ppc32_classify_syscall(unsigned);
+> -	if (abi == AUDIT_ARCH_PPC)
+> -		return ppc32_classify_syscall(syscall);
+> -#endif
+> -	switch(syscall) {
+> -	case __NR_open:
+> -		return 2;
+> -	case __NR_openat:
+> -		return 3;
+> -	case __NR_socketcall:
+> -		return 4;
+> -	case __NR_execve:
+> -		return 5;
+> -	default:
+> -		return 0;
+> -	}
+> -}
+> -
+> -static int __init audit_classes_init(void)
+> -{
+> -#ifdef CONFIG_PPC64
+> -	extern __u32 ppc32_dir_class[];
+> -	extern __u32 ppc32_write_class[];
+> -	extern __u32 ppc32_read_class[];
+> -	extern __u32 ppc32_chattr_class[];
+> -	extern __u32 ppc32_signal_class[];
+> -	audit_register_class(AUDIT_CLASS_WRITE_32, ppc32_write_class);
+> -	audit_register_class(AUDIT_CLASS_READ_32, ppc32_read_class);
+> -	audit_register_class(AUDIT_CLASS_DIR_WRITE_32, ppc32_dir_class);
+> -	audit_register_class(AUDIT_CLASS_CHATTR_32, ppc32_chattr_class);
+> -	audit_register_class(AUDIT_CLASS_SIGNAL_32, ppc32_signal_class);
+> -#endif
+> -	audit_register_class(AUDIT_CLASS_WRITE, write_class);
+> -	audit_register_class(AUDIT_CLASS_READ, read_class);
+> -	audit_register_class(AUDIT_CLASS_DIR_WRITE, dir_class);
+> -	audit_register_class(AUDIT_CLASS_CHATTR, chattr_class);
+> -	audit_register_class(AUDIT_CLASS_SIGNAL, signal_class);
+> -	return 0;
+> -}
+> -
+> -__initcall(audit_classes_init);
+> diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
+> deleted file mode 100644
+> index 55c6ccda0a85..000000000000
+> --- a/arch/powerpc/kernel/compat_audit.c
+> +++ /dev/null
+> @@ -1,44 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -#undef __powerpc64__
+> -#include <asm/unistd.h>
+> -
+> -unsigned ppc32_dir_class[] = {
+> -#include <asm-generic/audit_dir_write.h>
+> -~0U
+> -};
+> -
+> -unsigned ppc32_chattr_class[] = {
+> -#include <asm-generic/audit_change_attr.h>
+> -~0U
+> -};
+> -
+> -unsigned ppc32_write_class[] = {
+> -#include <asm-generic/audit_write.h>
+> -~0U
+> -};
+> -
+> -unsigned ppc32_read_class[] = {
+> -#include <asm-generic/audit_read.h>
+> -~0U
+> -};
+> -
+> -unsigned ppc32_signal_class[] = {
+> -#include <asm-generic/audit_signal.h>
+> -~0U
+> -};
+> -
+> -int ppc32_classify_syscall(unsigned syscall)
+> -{
+> -	switch(syscall) {
+> -	case __NR_open:
+> -		return 2;
+> -	case __NR_openat:
+> -		return 3;
+> -	case __NR_socketcall:
+> -		return 4;
+> -	case __NR_execve:
+> -		return 5;
+> -	default:
+> -		return 1;
+> -	}
+> -}
 > 
 
