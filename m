@@ -2,109 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E9B3F51C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 429283F51C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhHWUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbhHWUMr (ORCPT
+        id S232311AbhHWUNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:13:04 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:36718 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232237AbhHWUND (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:12:47 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405EEC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:12:04 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so39585125otf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=POiwHJcH23QK5EMwQWZLBbZ3EMO9rr1bfufNeMb6Dtg=;
-        b=Zwa/jYiq9ajQMhNpRT/4QSrtThvXd2nt92BHoxA5m6czWSb3MotJ8TSzKMo7lWmHjP
-         iz8x0+Ty+Mf4E2VooQpEgfOkpzzMMIF0eQaC4RZ42FsjK3KkpXiGG1xFloZiayXa2/e2
-         YHegKFwlOEBOBi5eARqw1xAHWPN8FURvGpZno=
+        Mon, 23 Aug 2021 16:13:03 -0400
+Received: by mail-ot1-f52.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso18685095otv.3;
+        Mon, 23 Aug 2021 13:12:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=POiwHJcH23QK5EMwQWZLBbZ3EMO9rr1bfufNeMb6Dtg=;
-        b=AE8iNpZ8cpV+8/bSMXF7iEzz3r2pqvf7LDH2DRZvi7Rfbk4OfxKVtI8En9196kB2uD
-         nWLZCtogH3uHKPqq3P1VfBPNWnizVoKimMM1Ljt/AXQVE2JW3AhVTxn7mjFTpKG2xdcB
-         T5N5Z6BnBpUy8yi4Kh6Mge+6oFFSsk/vIs09T9UT7Iaituftrnu91U5yjEjXYqc1pFRN
-         ZRax1qMHj84UUIKEVYrX14gBiZ/zCI9a7RwBT7ggDrS9RUNWyy5cOfzmmGRtp0wqgRbk
-         pUDigROQnYZHoWV5oSgjESLfON3m3IdDQOAw6OrhbxvPQQ1oXdqjzuyKN1NmvTBS3L7v
-         btfg==
-X-Gm-Message-State: AOAM530xRFTMTHpnSbDiAFiv/M3OcJ9aEpqM4Twh19MocSTpxoRBmA5Z
-        zlwkPgeXLOemafSVRls/NDClHksMkvScySar4B6xHA==
-X-Google-Smtp-Source: ABdhPJwex7Sxwx8tVMxehFbfF/8WWkSlhNesrH+dQz9oiKkGffOPqfeYUCY9Hqs1Ac+eg4X+WB0Dtfd+ojZu+YfTLcM=
-X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr258227oib.166.1629749523660;
- Mon, 23 Aug 2021 13:12:03 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 23 Aug 2021 15:12:02 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L179XY5+/AP6kKn6By4MFvJ/DUa+ej7EMi3LsNJUgg8=;
+        b=erHp3HLxbYf/S6WhkPf4Y3Ej1b4GH0+1grqoP2SBYTv3W5NclIQY7B9VBlOKHW+qJS
+         NkmjQ4GTKQZvBkrPyA8OT68Xtqw3Bc2QqKL9bePwPTupt1M/cJfLRIuWazxINu8J8DBt
+         sbMBdHI+n9pCF81EU2HV27p0CqojHK29HeOBAcQucQ/wX9IU76Cnz1L7AxYSeI5f6bJS
+         drICXj0E8IIzZW6xeSwN9xIYKX5QnAvCsYrEfPCO/5lQz1WAS+m9gFXdYIWI8ngcpFtk
+         iWhE6T7f3dXxJW82S4OJmh5cj0QIJa6FlyAKyRHfCh0mJJJ+huJSvIMnTDFamPkRz4oS
+         xIRw==
+X-Gm-Message-State: AOAM533pfGaj0ne3ZfFqgQxhqKA0GOUNcnQL6hmrXqPp7uPTXf3XYg0d
+        /MRQeWnPDdwGgIP8TGWqaA==
+X-Google-Smtp-Source: ABdhPJypZUdl4H1QY/HJlh7aKbMM5b7Qh20n0jvTwPptwLCsuyebV8QC6AAF5p2YxVxyTTLbXBnlRw==
+X-Received: by 2002:aca:b341:: with SMTP id c62mr252257oif.136.1629749540372;
+        Mon, 23 Aug 2021 13:12:20 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id 68sm4040897otj.57.2021.08.23.13.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 13:12:19 -0700 (PDT)
+Received: (nullmailer pid 2638653 invoked by uid 1000);
+        Mon, 23 Aug 2021 20:12:19 -0000
+Date:   Mon, 23 Aug 2021 15:12:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/3] libperf: Add processing to scale the counters
+ obtained during the read() system call when multiplexing
+Message-ID: <YSQBI+FZLBvKr088@robh.at.kernel.org>
+References: <20210820093908.734503-1-nakamura.shun@fujitsu.com>
+ <20210820093908.734503-2-nakamura.shun@fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <1629344185-27368-11-git-send-email-sibis@codeaurora.org>
-References: <1629344185-27368-1-git-send-email-sibis@codeaurora.org> <1629344185-27368-11-git-send-email-sibis@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 23 Aug 2021 15:12:02 -0500
-Message-ID: <CAE-0n50_nRZc+YCYwFdBe+4oMpxovQgiF9e_ciDwAJussUAwmw@mail.gmail.com>
-Subject: Re: [PATCH v3 10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
-To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
-        mka@chromium.org, robh+dt@kernel.org,
-        saiprakash.ranjan@codeaurora.org, will@kernel.org
-Cc:     ohad@wizery.com, agross@kernel.org, mathieu.poirier@linaro.org,
-        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
-        dianders@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820093908.734503-2-nakamura.shun@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sibi Sankar (2021-08-18 20:36:25)
-> Update MSS node to support MSA based modem boot on SC7280 SoCs.
->
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+On Fri, Aug 20, 2021 at 06:39:06PM +0900, Shunsuke Nakamura wrote:
+> perf_evsel__read() scales counters obtained by RDPMC during multiplexing, but
+> does not scale counters obtained by read() system call.
+> 
+> Add processing to perf_evsel__read() to scale the counters obtained during the
+> read() system call when multiplexing.
+
+Which one is right though? Changing what read() returns could break 
+users, right? Or are you implying that the RDPMC path is correct and 
+read() was not. More likely the former case since I wrote the latter.
+
+> 
+> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
 > ---
-
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-
->
-> v3:
->  * Place remoteproc_mpss node in alphabetical order above pinctrl
->    section. [Stephen]
->
->  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi |  7 +++++++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi     | 19 ++++++++++++++++---
->  2 files changed, 23 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> index 103d89c1e1c7..f1c8641b0c26 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> @@ -263,6 +263,13 @@
->         status = "okay";
->  };
->
-> +&remoteproc_mpss {
-> +       status = "okay";
-> +       compatible = "qcom,sc7280-mss-pil";
-> +       iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
-> +       memory-region = <&mba_mem &mpss_mem>;
-
-Nitpick:
-
-	memory-region = <&mba_mem>, <&mpss_mem>;
-
-would be better as it indicates that &mpss_mem isn't being parsed when
-&mba_mem is being parsed, i.e. they're independent phandles.
-
-> +};
+>  tools/lib/perf/evsel.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> index d8886720e83d..005cf64a1ad7 100644
+> --- a/tools/lib/perf/evsel.c
+> +++ b/tools/lib/perf/evsel.c
+> @@ -18,6 +18,7 @@
+>  #include <sys/ioctl.h>
+>  #include <sys/mman.h>
+>  #include <asm/bug.h>
+> +#include <linux/math64.h>
+>  
+>  void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr,
+>  		      int idx)
+> @@ -308,6 +309,9 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+>  	if (readn(FD(evsel, cpu, thread), count->values, size) <= 0)
+>  		return -errno;
+>  
+> +	if (count->ena != count->run)
+> +		count->val = mul_u64_u64_div64(count->val, count->ena, count->run);
 > +
->  &sdhc_1 {
->         status = "okay";
->
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
+> 
