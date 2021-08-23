@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4C13F52D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C514F3F52DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhHWVZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 17:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41776 "EHLO
+        id S232864AbhHWV2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 17:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232760AbhHWVZo (ORCPT
+        with ESMTP id S232503AbhHWV1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:25:44 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634FFC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:25:01 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id 22so20851208qkg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:25:01 -0700 (PDT)
+        Mon, 23 Aug 2021 17:27:54 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34977C061575;
+        Mon, 23 Aug 2021 14:27:10 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id l3so15064803qtk.10;
+        Mon, 23 Aug 2021 14:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rFm1OeTA67q6+Ox7ZeDoPnLQPHqm+qvBnfSJlYS48GI=;
-        b=J9H51Cd9V1SHaSBkCeV3m7v6aK33OllLPSk2HbNQpv8ykecbCEZrLGXXkbN/WJBGwI
-         ZQ/QA4GwGhOsSAruXvfUjmfr2tcYtwyHuyMJwiwdL6c8N3R6t0XdpDFvroCyfIWbSmko
-         iFu3SehppMkpteN9bAcoZOVOiVyrwMln+FH//yUlv8pscvhg4+ui8s28rs7nhiTNYFNO
-         bLg9OUyO3UDXWS6cetEn5B4eIvAaWl7hixyOWrxhix/j1A7oE6tkgLZSig0l3lAqoqax
-         OfEUBW3AyNzbtYnAFlIDq8CJp3HiGeBRP5uA8FZQSMX+U+a6vh52t2kqQDcf5SaTvAU+
-         W8xg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mzao6RuAglEKi/SgknU3aXAdpZlFoN4tyrKHzoyQmS4=;
+        b=iLRFkiHnmBAd+rrKkKPLw23RV2oYx1GpNhi/57J+sVV1+em72NdBjS/g3v7QRRMSo2
+         NZn3wibCfHChZ+7pB/MM4cuBGjVfnyWh/hOsXmBUYnQLCTu4wlkpxUYEOcq1JnG144iD
+         Io27CPUP1OF8i2s+F/NmeegT/e3EivXRHsw4SQ6RTHpbmmwjzF3FqT2VzZ1TqAZcl9aN
+         gQmTCYzxFj4OCTgzh5p6eX7BK6v6wyJtr+1N5BL0Fl7OmDtL1gigtWPVYuFtsLxudUDX
+         LpqQ3lf/73RX4apxodDj7yV9zUFxu1SvbUfhr3EbG+rKthdY/y1EUaE76u2jnyFOntmH
+         PzEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rFm1OeTA67q6+Ox7ZeDoPnLQPHqm+qvBnfSJlYS48GI=;
-        b=AgE9yc1y2G0VhdUcHqXNgvsU2cqka3XpKpHaPDgVYSRaIEpZ+6JACkIb68VW8o7/W5
-         En6k97Dm+ZNZ2nU8R33H0fOw83FKDg9IcGP4HpsTbNw2tcXAgnCsKfyJSuKK2q1Zivj4
-         b5/SGTjFt5ayY37qR8tH87b6EcjAIdxRJvlKoK2MEw9axl0czMrUVsx2XDNVYObWR/Ju
-         +xJ9AEW73A6ckQ9P1Iy/P8SdRdcyqpfsvHJR/UP2CEW2NoR/2/A4IPFD/3/Qq3h8grxp
-         FDJihcvOu8vjYHPVXwK8Dca2pBTeNcYPUcxt02svQAYMglh/hWXhb1jaAmUH3pyvPuwX
-         RJwA==
-X-Gm-Message-State: AOAM530v7vEo1ZvZUbwd752vJbJK005uhQ+vlcrP373yruHNxHYiLcdi
-        QYA+S+sPxJfOmcQrKmWFOz5SOQ==
-X-Google-Smtp-Source: ABdhPJwjpnChjk6PVNru/JPKLrrjhzM0iSABCMfGqqq0BplI/+4JE0INTEKMzLYMVZmdm/mLK09yDA==
-X-Received: by 2002:a37:9d09:: with SMTP id g9mr22917986qke.269.1629753900524;
-        Mon, 23 Aug 2021 14:25:00 -0700 (PDT)
-Received: from localhost (cpe-98-15-154-102.hvc.res.rr.com. [98.15.154.102])
-        by smtp.gmail.com with ESMTPSA id d129sm9382198qkf.136.2021.08.23.14.24.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 14:24:59 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 17:26:41 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSQSkSOWtJCE4g8p@cmpxchg.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mzao6RuAglEKi/SgknU3aXAdpZlFoN4tyrKHzoyQmS4=;
+        b=TofQKWqjB0qmZn+ke8sremdDkWOTdcHYlXeBgGbgf88RwIvFkKcknyHgZs03PEWWzL
+         eWu93PLF+TPSMc6VFLC7oFHYrQsAK5AjnVR7ktQ+VFGPuNTgqTKJ43RxrZTZMAKrc9VX
+         PNP+p/QWdHEgb4OODqzZM0ysFkoYqrGaJYlLabFNQSnGlFjLzwyQbvpMWHxjfvdOmX7f
+         mVEGp4+D5sn8O7MlxTdG/i8zkDopMmZ7n1Kv3O3uw2Yerbltco/ImzZpTClFaKUhhF+U
+         oc+yOqFbFYjvJrrHmHmrG06TG5/MFQvxiTFzGF9boNyaDQSz3WUyNVq1QMxq1wk/9tht
+         kiZw==
+X-Gm-Message-State: AOAM533xg0koWfe8ySnDEd/TuilNiJrcAa92hBYwXTEH7RF0Cj6SnGHf
+        FOywtpJWLmI3sulTKWFlT7Y=
+X-Google-Smtp-Source: ABdhPJx9GHDIH2tI5fYhVEw+ly+vaEjasLOSuEw5umnvQGYuTCqN6pBHgEK/pugTBALYHPCx/j/xkA==
+X-Received: by 2002:ac8:73cb:: with SMTP id v11mr5994903qtp.292.1629754029427;
+        Mon, 23 Aug 2021 14:27:09 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id f2sm7116054qth.11.2021.08.23.14.27.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 14:27:08 -0700 (PDT)
+Subject: Re: [PATCH] of: Don't allow __of_attached_node_sysfs() without
+ CONFIG_SYSFS
+To:     Rob Herring <robh@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel-team@android.com
+References: <20210820144722.169226-1-maz@kernel.org>
+ <a67743f9-869b-28df-d714-db15da4ebe06@gmail.com>
+ <YSPtI//SJh1CpHRP@robh.at.kernel.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <bcb2e89f-9768-8435-35d9-d02140628b9a@gmail.com>
+Date:   Mon, 23 Aug 2021 16:27:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSPwmNNuuQhXNToQ@casper.infradead.org>
+In-Reply-To: <YSPtI//SJh1CpHRP@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:01:44PM +0100, Matthew Wilcox wrote:
-> Hi Linus,
+On 8/23/21 1:46 PM, Rob Herring wrote:
+> On Sun, Aug 22, 2021 at 11:01:15PM -0500, Frank Rowand wrote:
+>> Hi Marc,
+>>
+>> On 8/20/21 9:47 AM, Marc Zyngier wrote:
+>>> Trying to boot without SYSFS, but with OF_DYNAMIC quickly
+>>> results in a crash:
+>>>
+>>> [    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+>>> [...]
+>>> [    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
+>>> [    0.105810] Hardware name: linux,dummy-virt (DT)
+>>> [  0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+>>> [    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
+>>> [    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
+>>> [...]
+>>> [    0.134087] Call trace:
+>>> [    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
+>>> [    0.136054]  safe_name+0x4c/0xd0
+>>> [    0.136994]  __of_attach_node_sysfs+0xf8/0x124
+>>> [    0.138287]  of_core_init+0x90/0xfc
+>>> [    0.139296]  driver_init+0x30/0x4c
+>>> [    0.140283]  kernel_init_freeable+0x160/0x1b8
+>>> [    0.141543]  kernel_init+0x30/0x140
+>>> [    0.142561]  ret_from_fork+0x10/0x18
+>>>
+>>> While not having sysfs isn't a very common option these days,
+>>> it is still expected that such configuration would work.
+>>>
+>>> Paper over it by bailing out from __of_attach_node_sysfs() if
+>>> CONFIG_SYSFS isn't enabled.
+>>
+>> CONFIG_SYSFS should be automatically selected when CONFIG_OF_DYNAMIC
+>> is enabled, and it should not be possible to disable CONFIG_SYSFS
+>> in this case.
 > 
-> I'm sending this pull request a few days before the merge window
-> opens so you have time to think about it.  I don't intend to make any
-> further changes to the branch, so I've created the tag and signed it.
-> It's been in Stephen's next tree for a few weeks with only minor problems
-> (now addressed).
+> That used to be true, but isn't now.
+
+OK.  I agree with you, but when I investigated the original patch
+email I came to a different conclusion because of the way that I
+used make menuconfig to debug the situation.
+
+It is true when I start with a .config created from 'make qcom_defconfig',
+then select OF_UNITTEST, which is the only way I can see OF_DYNAMIC.  It
+is the "if OF_UNITTEST" that means SYSFS can not be disabled.
+
+If I start with the .config that Marc supplied, then make menuconfig
+still does not show the OC_DYNAMIC option, but leaves it set since
+it was already set.  In this case SYSFS remains disabled because
+OF_UNITTEST is also disabled.
+
+Using '/OF_DYNAMIC' from within make menuconfig, to get more info
+about OF_DYNAMIC tells me that the prompt for OF_DYNAMIC is visible
+if OF && OF_UNITTEST.  This is due to the "if OF_UNITTEST" in line 58
+of drivers/of/Kconfig in the OF_DYNAMIC specification.
+
+Thus I can't figure out how to use make menuconfig to set OF_DYNAMIC
+without setting OF_UNITTEST.  I tried setting OF_UNITTEST, then setting
+OF_DYNAMIC, saving the changes, then another make menuconfig to
+disable OF_UNITTEST, which then has the side effect of unsetting
+OF_DYNAMIC.
+
+Would you accept a patch that removes the "if OF_UNITTEST" from
+the Kconfig entry for OF_DYNAMIC?
+
+-Frank
+
 > 
-> The point of all this churn is to allow filesystems and the page cache
-> to manage memory in larger chunks than PAGE_SIZE.  The original plan was
-> to use compound pages like THP does, but I ran into problems with some
-> functions that take a struct page expect only a head page while others
-> expect the precise page containing a particular byte.
+> Rob
 > 
-> This pull request converts just parts of the core MM and the page cache.
-> For 5.16, we intend to convert various filesystems (XFS and AFS are ready;
-> other filesystems may make it) and also convert more of the MM and page
-> cache to folios.  For 5.17, multi-page folios should be ready.
-> 
-> The multi-page folios offer some improvement to some workloads.  The 80%
-> win is real, but appears to be an artificial benchmark (postgres startup,
-> which isn't a serious workload).  Real workloads (eg building the kernel,
-> running postgres in a steady state, etc) seem to benefit between 0-10%.
-> I haven't heard of any performance losses as a result of this series.
-> Nobody has done any serious performance tuning; I imagine that tweaking
-> the readahead algorithm could provide some more interesting wins.
-> There are also other places where we could choose to create large folios
-> and currently do not, such as writes that are larger than PAGE_SIZE.
-> 
-> I'd like to thank all my reviewers who've offered review/ack tags:
-> 
-> Christoph Hellwig <hch@lst.de>
-> David Howells <dhowells@redhat.com>
-> Jan Kara <jack@suse.cz>
-> Jeff Layton <jlayton@kernel.org>
-> Johannes Weiner <hannes@cmpxchg.org>
 
-Just to clarify, I'm only on this list because I acked 3 smaller,
-independent memcg cleanup patches in this series. I have repeatedly
-expressed strong reservations over folios themselves.
-
-The arguments for a better data interface between mm and filesystem in
-light of variable page sizes are plentiful and convincing. But from an
-MM point of view, it's all but clear where the delineation between the
-page and folio is, and what the endgame is supposed to look like.
-
-One one hand, the ambition appears to substitute folio for everything
-that could be a base page or a compound page even inside core MM
-code. Since there are very few places in the MM code that expressly
-deal with tail pages in the first place, this amounts to a conversion
-of most MM code - including the LRU management, reclaim, rmap,
-migrate, swap, page fault code etc. - away from "the page".
-
-However, this far exceeds the goal of a better mm-fs interface. And
-the value proposition of a full MM-internal conversion, including
-e.g. the less exposed anon page handling, is much more nebulous. It's
-been proposed to leave anon pages out, but IMO to keep that direction
-maintainable, the folio would have to be translated to a page quite
-early when entering MM code, rather than propagating it inward, in
-order to avoid huge, massively overlapping page and folio APIs.
-
-It's also not clear to me that using the same abstraction for compound
-pages and the file cache object is future proof. It's evident from
-scalability issues in the allocator, reclaim, compaction, etc. that
-with current memory sizes and IO devices, we're hitting the limits of
-efficiently managing memory in 4k base pages per default. It's also
-clear that we'll continue to have a need for 4k cache granularity for
-quite a few workloads that work with large numbers of small files. I'm
-not sure how this could be resolved other than divorcing the idea of a
-(larger) base page from the idea of cache entries that can correspond,
-if necessary, to memory chunks smaller than a default page.
-
-A longer thread on that can be found here:
-https://lore.kernel.org/linux-fsdevel/YFja%2FLRC1NI6quL6@cmpxchg.org/
-
-As an MM stakeholder, I don't think folios are the answer for MM code.
