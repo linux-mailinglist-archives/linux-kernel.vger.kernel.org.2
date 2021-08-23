@@ -2,107 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E50D3F4A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CB23F4A13
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236561AbhHWLvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        id S236586AbhHWLwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbhHWLvT (ORCPT
+        with ESMTP id S236269AbhHWLwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:51:19 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CE9C061575;
-        Mon, 23 Aug 2021 04:50:36 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id e15so9983832plh.8;
-        Mon, 23 Aug 2021 04:50:36 -0700 (PDT)
+        Mon, 23 Aug 2021 07:52:14 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45289C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:51:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so1613053pjt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=O5DM1sJkMAZ9pupJ/zl5vudKhULLO2p/SdJWZo+B+eo=;
-        b=PJvNXb8mSnm9cemZbK+4j70aWxx4Lee2OayaWVuYrLvVhGvzVf0+35TDcdzhEkKyiC
-         thE3GiTXw8a8tWqL5XAZbWFES6Q7ZfET23jlCT7QrOXtoxXRQJdBaH9Kdr0u4VG9KqV8
-         1z8yyYn+rPrIKImrryJUbeZNy6e9fUeyKcUwisAoAxxBLhD5zdqURfMVxKyyDXqvGBUq
-         j8RVMJoTNRhuzYEWXpb/qVn8/TUhYYUzn+tewG6e+f0/69GTNzkCWEhm9Kd6p+43TXfL
-         uzAtO5RxSlYKjiHKikc9VzfzZk6mddt3QeT+lkAsoJ/lYwvHBD2bF0HsHVP74P5BkFsW
-         lRVQ==
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvKsmbaciKPF6OJQp+Jz6my20ifBtNKlhOi0gn+GEfw=;
+        b=AUkDAh4oH7KblX9b/0RzNTOlSUvYksN0Ajzo1oW7jxcqnUlAeBsdNIU8tpUIerjn8/
+         Bb0WDMBV7A2YhfPM9ixQ9wN/fWIiUoLpW2P+0t4NYKAvoQbK2u1yxPi3Jy3qNj7HYzZC
+         qNIYk/J7VftRBTaTTvMJqPbeFjH6kVq/OFKevqlCV0REc8jqxCbHOTkQ4uGPpRNXky2B
+         OOUV2liBS2W7P6rf5EUjv3hHemzXAHLT0p75BmGDSSkD5alVQxY5ikjxQXzfPje8sSBM
+         6N2rx199++3BwXCamspviyIQkMCBbfePBtyFQwKz2X49Di6qeYJqMLwkYMl4lgiLmSLA
+         o5KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=O5DM1sJkMAZ9pupJ/zl5vudKhULLO2p/SdJWZo+B+eo=;
-        b=oboj3uN+u8qAAxbk+8EqY6IFtE4SHLzQxnl2okJ2wuoWDNwoODZa94O9DDCSWVD5J5
-         JVna4xo+dnD29jWEPPzx/Aqu4Z6rhaQLeFJMtJNpA1bpz+zIToA6Fp7F+jwKdFUxURGX
-         bKS2vIpwzqqEPMw+T3Z8Ea/+0NpcvDERx1KvIbb8fTdTLdELOypjnTxmkX3wWF8pwzL7
-         aUk7NMM0sdOkeU23xeoWn7WW4Ufsuuxw8WfEsFATjAuR8IPNeUjw9YhE7U0OegG/C8jQ
-         Z0Fq9h0vkKT+iwcCVNC6peWA05CkKdDgPDBQIST1330mbFfXVZe9eg90D8sHYT5L5VmN
-         u78g==
-X-Gm-Message-State: AOAM532kz+4RTqlNgkubvhBJbABzFFkO+q/OrvafoNLXuzQgp6IQSOGb
-        cTp+8B8MUZITw5SMVgvNN+ExSwDvXog=
-X-Google-Smtp-Source: ABdhPJyoKd8/N5yLCg/VKSt+JpWXIGEWPIPoRYiqsQg1ld8auxvdPPOsCmXasF0S+D02ad5sc+tvHQ==
-X-Received: by 2002:a17:902:6b47:b0:12f:6c5f:ab4f with SMTP id g7-20020a1709026b4700b0012f6c5fab4fmr20997699plt.17.1629719436043;
-        Mon, 23 Aug 2021 04:50:36 -0700 (PDT)
-Received: from [10.136.0.70] ([45.145.248.194])
-        by smtp.gmail.com with ESMTPSA id n30sm15965384pfv.87.2021.08.23.04.50.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 04:50:35 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] media: platform: qcom: venus: possible ABBA deadlock in
- venus_event_notify() and venus_helper_vb2_buf_queue()
-To:     stanimir.varbanov@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <b5c2a28b-9c67-05d1-0bed-eac8af508d07@gmail.com>
-Date:   Mon, 23 Aug 2021 19:50:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvKsmbaciKPF6OJQp+Jz6my20ifBtNKlhOi0gn+GEfw=;
+        b=mm2/a/6aMLkULka2XFnqufmTEWOgtEUXC3CxUIl05ASfoCGmyyx3AvKrsh+TgRS8Dd
+         xhf8YaoCbT523JAB2iOvFSpha7e6bSRMItSd5Dw+Wdhd8bzKsBo6TPpkpQ0x78zK4H9d
+         bclyMyPwG0lCviGiQE/xwCZ8mrFH/b5T5oj4URqQDIeY/7OIbLxow5CnaEgIMLVx2Zqa
+         W5SCItKu1PTQrWuUUDCPo3Pj+0HxIZJwfoB/fIY3o71w12Lb9Z/wvwes5W1hYTDcbFTe
+         XI8v0QpZ90hqA9+teTygkeUWKK1vMAlmQRGBnmfohepcHZhgFhIUXVU70VO26V3tohAl
+         kikQ==
+X-Gm-Message-State: AOAM530T+ZyO3K2FvdsHWBpIYrmNfnx0uEni34GGz01M50oO9bgQubY7
+        9JP7fPGDFKtkl5G8h2LCQlVBpg==
+X-Google-Smtp-Source: ABdhPJxZDFTnrHgyjazzbqpcPk1WuHlLBOLj87xdIyvkWV3fHn8cWZ7+1lfagT0uFvNFeG74/a2HrA==
+X-Received: by 2002:a17:90b:a48:: with SMTP id gw8mr3269218pjb.145.1629719491839;
+        Mon, 23 Aug 2021 04:51:31 -0700 (PDT)
+Received: from yc.huaqin.com ([101.78.151.213])
+        by smtp.gmail.com with ESMTPSA id z19sm15985426pfn.94.2021.08.23.04.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 04:51:31 -0700 (PDT)
+From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, dianders@google.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        yangcong <yangcong5@huaqin.corp-partner.google.com>
+Subject: [v2 0/2] Add driver for BOE tv110c9m-ll3 panel
+Date:   Mon, 23 Aug 2021 19:51:23 +0800
+Message-Id: <20210823115125.1070257-1-yangcong5@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml:
 
-My static analysis tool reports a possible ABBA deadlock in the venus 
-driver in Linux 5.10:
+Compared with v1, add a space in the required list.
 
-venus_event_notify()
-   mutex_lock(&core->lock); --> line 37 (Lock A)
-   vdec_event_notify() --> via a function pointer 
-"inst->ops->event_notify(...)"
-   vdec_event_change()
-     mutex_lock(&inst->lock); --> line 1301 (Lock B)
+yangcong (2):
+  drm/panel: support for BOE tv1110c9m-ll3 wuxga dsi video mode panel
+  dt-bindngs: display: panel: Add BOE tv110c9m-ll3 panel bindings
 
-venus_helper_vb2_buf_queue()
-   mutex_lock(&inst->lock); --> line 1346 (Lock B)
-   session_process_buf()
-     venus_pm_load_scale()
-       load_scale_v4() via a function pointer 
-"core->pm_ops->load_scale(...)"
-         mutex_lock(&core->lock); --> line 966 (Lock A)
+ .../display/panel/boe,tv110c9m-ll3.yaml       |   83 ++
+ drivers/gpu/drm/panel/Kconfig                 |   10 +
+ drivers/gpu/drm/panel/Makefile                |    1 +
+ drivers/gpu/drm/panel/panel-boe-tv110c9m.c    | 1303 +++++++++++++++++
+ 4 files changed, 1397 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-boe-tv110c9m.c
 
-Besides, if "core->pm_ops->load_scale(...)" is load_scale_v1():
-load_scale_v1()
-   load_per_type()
-     mutex_lock(&core->lock); --> line 150 (Lock A)
+-- 
+2.25.1
 
-When venus_event_notify() and venus_helper_vb2_buf_queue() are 
-concurrently executed, the deadlock can occur.
-
-I am not quite sure whether this possible deadlock is real and how to 
-fix it if it is real.
-Any feedback would be appreciated, thanks
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-
-
-Best wishes,
-Jia-Ju Bai
