@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A693F50A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFCA3F50C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhHWSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:46:33 -0400
-Received: from mga02.intel.com ([134.134.136.20]:7614 "EHLO mga02.intel.com"
+        id S230377AbhHWSxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:53:12 -0400
+Received: from gate.crashing.org ([63.228.1.57]:34788 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231695AbhHWSqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:46:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="204360206"
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="204360206"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 11:45:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="535472897"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 11:45:48 -0700
-Date:   Mon, 23 Aug 2021 11:45:47 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sumanth Kamatala <skamatala@juniper.net>
-Subject: Re: [PATCH] x86/mce/dev-mcelog: Call mce_register_decode_chain()
- much earlier
-Message-ID: <20210823184547.GA1638691@agluck-desk2.amr.corp.intel.com>
-References: <20210819224452.1619400-1-tony.luck@intel.com>
- <YR+f/fdGIxWcLTP2@zn.tnic>
- <20210820144314.GA1622759@agluck-desk2.amr.corp.intel.com>
- <YR/Oxark0bhLlona@zn.tnic>
-MIME-Version: 1.0
+        id S229883AbhHWSxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 14:53:11 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17NIktDE030226;
+        Mon, 23 Aug 2021 13:46:55 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17NIksWh030223;
+        Mon, 23 Aug 2021 13:46:54 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Mon, 23 Aug 2021 13:46:48 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/32: Don't use lmw/stmw for saving/restoring non volatile regs
+Message-ID: <20210823184648.GY1583@gate.crashing.org>
+References: <316c543b8906712c108985c8463eec09c8db577b.1629732542.git.christophe.leroy@csgroup.eu>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YR/Oxark0bhLlona@zn.tnic>
+In-Reply-To: <316c543b8906712c108985c8463eec09c8db577b.1629732542.git.christophe.leroy@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 05:48:21PM +0200, Borislav Petkov wrote:
-> On Fri, Aug 20, 2021 at 07:43:14AM -0700, Luck, Tony wrote:
-> > How can the kernel tell that all consumers have registered? Is there
-> > some new kernel crystal ball functionality that can predict that an
-> > EDAC driver module is going to be loaded at some point in the future
-> > when user space is up and running :-)
-> 
-> The crystal ball is called mcheck_late_init(). There's even:
-> 
->         /*
->          * Flush out everything that has been logged during early boot, now that
->          * everything has been initialized (workqueues, decoders, ...).
->          */
->         mce_schedule_work();
-> 
-> in there. That thing is late_initcall() and by that time mcelog should
-> have been registered. And I wonder why isn't that working as expected...
-> 
-> > I think the best we could do would be to set a timer for some point
-> > far enough out (one minute?, two minutes?) to give a chance for
-> > modules to load.
-> 
-> Forget modules - only the built-in stuff. We cannot be waiting
-> indefinitely until someone loads mcelog for decoding.
+On Mon, Aug 23, 2021 at 03:29:12PM +0000, Christophe Leroy wrote:
+> Instructions lmw/stmw are interesting for functions that are rarely
+> used and not in the cache, because only one instruction is to be
+> copied into the instruction cache instead of 19. However those
+> instruction are less performant than 19x raw lwz/stw as they require
+> synchronisation plus one additional cycle.
 
-I added some traces:
+lmw takes N+2 cycles for loading N words on 603/604/750/7400, and N+3 on
+7450.  stmw takes N+1 cycles for storing N words on 603, N+2 on 604/750/
+7400, and N+3 on 7450 (load latency is 3 instead of 2 on 7450).
 
-$ dmesg | grep mce:
-[    0.033648] mce: mce_register_decode_chain fn=mce_early_notifier+0x0/0x50 pri=6
-[    0.033655] mce: mce_register_decode_chain fn=uc_decode_notifier+0x0/0xd0 pri=5
-[    0.033659] mce: mce_register_decode_chain fn=mce_default_notifier+0x0/0x30 pri=0
-[    4.392631] mce: [Hardware Error]: Machine check events logged
-[    4.393356] mce: [Hardware Error]: CPU 0: Machine Check: 0 Bank 0: a000000000004321
-[    4.395352] mce: [Hardware Error]: TSC 0
-[    4.396352] mce: [Hardware Error]: PROCESSOR 0:406f1 TIME 1629743651 SOCKET 0 APIC 0 microcode b000019
-[   15.172861] mce: mce_register_decode_chain fn=dev_mce_log+0x0/0x110 pri=1
-[   15.192101] mce: mcheck_late_init: calling mce_schedule_work()
-[   31.618245] mce: mce_register_decode_chain fn=sbridge_mce_check_error+0x0/0x92 [sb_edac] pri=2
+There is no synchronisation needed, although there is some serialisation,
+which of course doesn't mean much since there can be only 6 or 8 or so
+insns executing at once anyway.
 
-So you are right that mcheck_late_init() is called after dev_mce_log()
-is registered.  But it seems someone kicks the queue long before that
-happens.  Probably this:
+So, these insns are almost never slower, they can easily win cycles back
+because of the smaller code, too.
 
-void mce_log(struct mce *m)
-{
-        if (!mce_gen_pool_add(m))
-                irq_work_queue(&mce_irq_work);
-}
+What 32-bit core do you see where load/store multiple are more than a
+fraction of a cycle (per memory access) slower?
 
-Could we add a flag:
+> SAVE_NVGPRS / REST_NVGPRS are used in only a few places which are
+> mostly in interrupts entries/exits and in task switch so they are
+> likely already in the cache.
 
-static bool mce_ready_to_rock; // better name needed :-)
+Nothing is likely in the cache on the older cores (except in
+microbenchmarks), the caches are not big enough for that!
 
-Which gets set in mcheck_late_init(). Then mce_log() becomes:
+> Using standard lwz improves null_syscall selftest by:
+> - 10 cycles on mpc832x.
+> - 2 cycles on mpc8xx.
 
-void mce_log(struct mce *m)
-{
-        if (!mce_gen_pool_add(m) && mce_ready_to_rock)
-                irq_work_queue(&mce_irq_work);
-}
+And in real benchmarks?
 
--Tony
+On mpccore both lmw and stmw are only N+1 btw.  But the serialization
+might cost another cycle here?
+
+
+Segher
