@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E883F5189
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6737C3F518B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhHWTsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:48:30 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:31355
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229558AbhHWTs3 (ORCPT
+        id S231891AbhHWTuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhHWTue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:48:29 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3At5RJlKF3m7FQqAzapLqE78eALOsnbusQ8zAX?=
- =?us-ascii?q?PiFKOHhom6Oj/PxG8M5w6fawslcssRIb6LW90cu7IU80nKQdibX5f43SPzUO01?=
- =?us-ascii?q?HHEGgN1+ffKnHbak/D398Y5ONbf69yBMaYNzVHpMzxiTPWL+od?=
-X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
-   d="scan'208";a="390942565"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 21:47:44 +0200
-Date:   Mon, 23 Aug 2021 21:47:44 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        gustavo.pimentel@synopsys.com, vkoul@kernel.org,
-        vireshk@kernel.org, wangzhou1@hisilicon.com, logang@deltatee.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: switch from 'pci_' to 'dma_' API
-In-Reply-To: <fe9d57ff-bd44-3cee-516e-6815213ef467@wanadoo.fr>
-Message-ID: <alpine.DEB.2.22.394.2108232145590.17496@hadrien>
-References: <547fae4abef1ca3bf2198ca68e6c361b4d02f13c.1629635852.git.christophe.jaillet@wanadoo.fr> <YSNOTX68ltbt2hwf@smile.fi.intel.com> <fe9d57ff-bd44-3cee-516e-6815213ef467@wanadoo.fr>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 23 Aug 2021 15:50:34 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1D8C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:49:51 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso582831oon.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9zTRs4BS0zxZLB3LmR+LQQP1mEXdfXgwLSSOmcQuzVM=;
+        b=TKOlOqAtEwSItfC/SYqWQ37BFqbPOoDsulmCCgWgHgxQsR0HiSEu9vYLc504KkwwZF
+         4WttrWCItzSxKu0zYwLopJ9VUrw7baHi3lpfWY2rE3Py53K1prRnh2+yhi4KRwCy56al
+         lmqoD8Yvb10KZeYt+sI7YLl98qplcFklcsdKGXmbCVrUllZKCOnZuSbLwTGpys0YcHG2
+         NNSv34fNQ8tlamnSauPHfp7cJ3FoR3rwbxS4otUpNoPNAsk4xuaCahbAhihPP9PjbWao
+         NBWeEp1orLn0B4WXbON4TnfxqUmHu4hLO1LsVM7FyRvA5krg2NHtBaYms9yjPVYuiz+Q
+         7ZtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9zTRs4BS0zxZLB3LmR+LQQP1mEXdfXgwLSSOmcQuzVM=;
+        b=P12e7Ec+7Gs1IqxNeOlaUdSZl3FZWEVZCYPnX7zhW2BiOOeiUye3JWLNDZWE43ma6L
+         YHmMwXldWXez0rTfxKUaSrPPYR6xT+Ndas1AvzhMwHY6WtuzyPGDERNmERNR1ULDiyoP
+         P7OurEILRXpgHPfiDbUb6xjSmrVagbNF4cRmCPgOKxLe1MoUYKacMyFY+EzBo/rqrtDE
+         rrj6TBRx+qK07iK0mEdwNOYMbPG8U9VljtRaQFr6Tve3ktUAPeKioG2b/YG/6o+noWfS
+         LGXQAoeg9Jgs2cRSezx8fjrRpYKSZm6UuTCabCyAxzRB4LRzud/vEF/wXA7NwmJdMyFA
+         fyWg==
+X-Gm-Message-State: AOAM530q4boAe8mndetzT6nGYPUfk1B3f8EadAnH+RITBqruyOgbcJtC
+        HGhlMM3KNM37Ki47vuZtbhNhhcyglD+wAZ1dF5fxtPKmuW8=
+X-Google-Smtp-Source: ABdhPJwtqT1MYncFYx1ABQOt4lWM7n/Z3lCopKobiq4xA1qo98CVYGAMhhzxlNjsp/B4DmLNC5MG2pfDXNh+XRwLE8I=
+X-Received: by 2002:a4a:4484:: with SMTP id o126mr3720094ooa.90.1629748190992;
+ Mon, 23 Aug 2021 12:49:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1370404212-1629748065=:17496"
+References: <YSP6Lv53QV0cOAsd@zn.tnic>
+In-Reply-To: <YSP6Lv53QV0cOAsd@zn.tnic>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 23 Aug 2021 15:49:39 -0400
+Message-ID: <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
+Subject: Re: ERROR: modpost: "pm_suspend_target_state" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko]
+ undefined!
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Lijo Lazar <Lijo.Lazar@amd.com>,
+        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1370404212-1629748065=:17496
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-
-
-On Mon, 23 Aug 2021, Christophe JAILLET wrote:
-
-> Le 23/08/2021 à 09:29, Andy Shevchenko a écrit :
-> > On Sun, Aug 22, 2021 at 02:40:22PM +0200, Christophe JAILLET wrote:
-> > > The wrappers in include/linux/pci-dma-compat.h should go away.
-> > >
-> > > The patch has been generated with the coccinelle script below.
-> > >
-> > > It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-> > > 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-> > > This is less verbose.
-> > >
-> > > It has been compile tested.
-> >
-> > > @@
-> > > expression e1, e2;
-> > > @@
-> > > -    pci_set_consistent_dma_mask(e1, e2)
-> > > +    dma_set_coherent_mask(&e1->dev, e2)
-> >
-> > Can we, please, replace this long noise in the commit message with a link to
-> > a
-> > script in coccinelle data base?
+On Mon, Aug 23, 2021 at 3:43 PM Borislav Petkov <bp@alien8.de> wrote:
 >
-> Hi,
+> Hi folks,
 >
-> There is no script in the coccinelle data base up to now, and there is no
-> point in adding one now.
-> The goal of these patches is to remove a deprecated API, so when the job will
-> be finished, this script would be of no use and would be removed.
+> I'm seeing this:
 >
-> However, I agree that the script as-is is noisy.
+> ERROR: modpost: "pm_suspend_target_state" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+> make[1]: *** [scripts/Makefile.modpost:150: modules-only.symvers] Error 1
+> make[1]: *** Deleting file 'modules-only.symvers'
+> make: *** [Makefile:1766: modules] Error 2
+> make: *** Waiting for unfinished jobs....
 >
-> I'll replace it with a link to a message already available in lore.
+> with the attached config which has
+>
+> # CONFIG_SUSPEND is not set
+>
+> on latest Linus tree.
+>
+> It probably has been fixed already but lemme report it just in case.
 
-You can perhaps include a script that represents a very typical case or
-the specific case that is relevant to the patch.
+Maybe fixed with this patch?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5706cb3c910cc8283f344bc37a889a8d523a2c6d
 
-julia
-
+Alex
 
 >
-> >
-> > And the same comment for any future submission that are based on the scripts
-> > (esp. coccinelle ones).
+> --
+> Regards/Gruss,
+>     Boris.
 >
-> I usually don't add my coccinelle scripts in the log, but I've been told times
-> ago that adding them was a good practice (that I have never followed...).
->
-> In this particular case, I thought it was helpful for a reviewer to see how
-> the automated part had been processed.
->
-> >
-> > ...
-> >
-> > > This patch is mostly mechanical and compile tested. I hope it is ok to
-> > > update the "drivers/dma/" directory all at once.
-> >
-> > There is another discussion with Hellwig [1] about 64-bit DMA mask,
-> > i.e. it doesn't fail anymore,
->
-> Yes, I'm aware of this thread.
->
-> I've not taken it into account for 2 reasons:
->    - it goes beyond the goal of these patches (i.e. the removal of a
-> deprecated API)
->    - I *was* not 100% confident about [1].
->
-> I *was* giving credit to comment such as [2]. And the pattern "if 64 bits
-> fails, then switch to 32 bits" is really common.
-> Maybe it made sense in the past and has remained as-is.
->
->
-> However, since then I've looked at all the architecture specific
-> implementation of 'dma_supported()' and [1] looks indeed correct :)
->
->
-> I propose to make these changes in another serie which will mention [1] and
-> see the acceptance rate in the different subsystems. (i.e. even if the patch
-> is correct, removing what looks like straightforward code may puzzle a few of
-> us)
->
-> I would start it once "pci-dma-compat.h" has been removed.
->
-> Do you agree, or do you want it integrated in the WIP?
->
-> Anyway, thanks for the review and comments.
->
-> CJ
->
-> > so you need to rework drivers accordingly.
-> >
-> > [1]: https://lkml.org/lkml/2021/6/7/398
-> >
->
-> [2]:
-> https://elixir.bootlin.com/linux/v5.14-rc7/source/drivers/infiniband/hw/hfi1/pcie.c#L98
->
---8323329-1370404212-1629748065=:17496--
+> https://people.kernel.org/tglx/notes-about-netiquette
