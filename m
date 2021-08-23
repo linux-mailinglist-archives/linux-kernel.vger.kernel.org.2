@@ -2,85 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA913F478C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9569B3F4761
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbhHWJa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:30:26 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:49180 "EHLO mail.thorsis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231160AbhHWJaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:30:24 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 05:30:24 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id EFC3C2985;
-        Mon, 23 Aug 2021 11:24:38 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OJWpy4L88Gne; Mon, 23 Aug 2021 11:24:38 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id CE46B29CF; Mon, 23 Aug 2021 11:24:38 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
-        *      blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [URIs: microchip.com]
-        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
-        * -0.0 NO_RECEIVED Informational: message has no Received headers
-From:   Alexander Dahl <ada@thorsis.com>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rca@thorsis.com
-Subject: Enable HSIC Host Port on Atmel/Microchip SAMA5D2
-Date:   Mon, 23 Aug 2021 11:24:35 +0200
-Message-ID: <2869763.XZdSvA6Ref@ada>
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S235921AbhHWJZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:25:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8761 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235885AbhHWJZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:25:49 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GtRdr1jfQzYrNx;
+        Mon, 23 Aug 2021 17:24:32 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 17:25:02 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 23 Aug
+ 2021 17:25:02 +0800
+Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
+ recycling support
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, <linuxarm@openeuler.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        <mcroce@microsoft.com>, Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        <kpsingh@kernel.org>, "Andrii Nakryiko" <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        <chenhao288@hisilicon.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, <memxor@gmail.com>,
+        <linux@rempel-privat.de>, Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        <aahringo@redhat.com>, <ceggers@arri.de>, <yangbo.lu@nxp.com>,
+        "Florian Westphal" <fw@strlen.de>, <xiangxia.m.yue@gmail.com>,
+        linmiaohe <linmiaohe@huawei.com>, <hch@lst.de>
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+ <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com>
+Message-ID: <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+Date:   Mon, 23 Aug 2021 17:25:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
+MIME-Version: 1.0
+In-Reply-To: <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021/8/18 17:36, Yunsheng Lin wrote:
+> On 2021/8/18 16:57, Eric Dumazet wrote:
+>> On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+>>> This patchset adds the socket to netdev page frag recycling
+>>> support based on the busy polling and page pool infrastructure.
+>>
+>> I really do not see how this can scale to thousands of sockets.
+>>
+>> tcp_mem[] defaults to ~ 9 % of physical memory.
+>>
+>> If you now run tests with thousands of sockets, their skbs will
+>> consume Gigabytes
+>> of memory on typical servers, now backed by order-0 pages (instead of
+>> current order-3 pages)
+>> So IOMMU costs will actually be much bigger.
+> 
+> As the page allocator support bulk allocating now, see:
+> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L252
+> 
+> if the DMA also support batch mapping/unmapping, maybe having a
+> small-sized page pool for thousands of sockets may not be a problem?
+> Christoph Hellwig mentioned the batch DMA operation support in below
+> thread:
+> https://www.spinics.net/lists/netdev/msg666715.html
+> 
+> if the batched DMA operation is supported, maybe having the
+> page pool is mainly benefit the case of small number of socket?
+> 
+>>
+>> Are we planning to use Gigabyte sized page pools for NIC ?
+>>
+>> Have you tried instead to make TCP frags twice bigger ?
+> 
+> Not yet.
+> 
+>> This would require less IOMMU mappings.
+>> (Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
+>> is currently 3, not 4)
+> 
+> I am not familiar with mm yet, but I will take a look about that:)
 
-for a new embedded board featuring a Microchip SAMA5D2 SoC (64 MiB SiP variant 
-SAMA5D27C-D5M) we connected the third USB host port (HSIC only) with an 
-USB3503 hub chip. This doesn't work out of the box with the Linux kernel 
-currently, because neither the SoC nor the kernel does enable the HSIC 
-interface by default.
 
-That SoC has three USB host ports, from the SAMA5D2 Series Datasheet [1] I 
-learned there's a flag in an EHCI register, which has to be set to enable the 
-HSIC interface on port C, the third port. (Section "41.7.14 EHCI: REG08 - HSIC 
-Enable/Disable" of the datasheet.) I suppose that register is vendor specific. 
-The register definitions in '/include/linux/usb/ehci_def.h' do not contain 
-that register.
+It seems PAGE_ALLOC_COSTLY_ORDER is mostly related to pcp page, OOM, memory
+compact and memory isolation, as the test system has a lot of memory installed
+(about 500G, only 3-4G is used), so I used the below patch to test the max
+possible performance improvement when making TCP frags twice bigger, and
+the performance improvement went from about 30Gbit to 32Gbit for one thread
+iperf tcp flow in IOMMU strict mode, and using the pfrag pool, the improvement
+went from about 30Gbit to 40Gbit for the same testing configuation:
 
-Where would I add that register definition and set that flag in the kernel 
-then?  I suppose in the vendor specific ehci driver?  
-That would be 'drivers/usb/host/ehci-atmel.c' right?
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index fcb5355..dda20f9 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -37,7 +37,7 @@
+  * coalesce naturally under reasonable reclaim pressure and those which
+  * will not.
+  */
+-#define PAGE_ALLOC_COSTLY_ORDER 3
++#define PAGE_ALLOC_COSTLY_ORDER 4
 
-Since that feature is optional (other boards don't need to turn on hsic on 
-that port), some driver specific new device tree binding would be necessary, 
-right?  I suppose that would have to be documented in 'Documentation/
-devicetree/bindings/usb/atmel-usb.txt' right? (Or that would have to be 
-converted to yaml first?)
+ enum migratetype {
+        MIGRATE_UNMOVABLE,
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 870a3b7..b1e0dfc 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2580,7 +2580,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+        }
+ }
 
-Is this the right track?  If yes, I'm going to develop patches for this. 
-Otherwise any hint into the right direction are highly appreciated.
+-#define SKB_FRAG_PAGE_ORDER    get_order(32768)
++#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+ DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
 
-FWIW, I'm not the first one struggling [2] with this problem. ;-)
+ /**
 
-Greets
-Alex
-
-[1] https://www.microchip.com/en-us/product/ATSAMA5D27C-D5M#document-table
-[2] https://community.atmel.com/forum/sama5d2-using-hsic-under-linux
-
-
-
+> 
+>>
+>> diff --git a/net/core/sock.c b/net/core/sock.c
+>> index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
+>> 100644
+>> --- a/net/core/sock.c
+>> +++ b/net/core/sock.c
+>> @@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+>>         }
+>>  }
+>>
+>> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
+>> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+>>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+>>
+>>  /**
+>>
+>>
+>>
+>>>
+> _______________________________________________
+> Linuxarm mailing list -- linuxarm@openeuler.org
+> To unsubscribe send an email to linuxarm-leave@openeuler.org
+> 
