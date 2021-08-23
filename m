@@ -2,257 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B293F5355
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5493F5357
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhHWWWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:22:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
+        id S233178AbhHWWYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 18:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhHWWWk (ORCPT
+        with ESMTP id S229632AbhHWWYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:22:40 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC67BC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:21:57 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id a5so11044816plh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:21:57 -0700 (PDT)
+        Mon, 23 Aug 2021 18:24:16 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF19C061575;
+        Mon, 23 Aug 2021 15:23:33 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id j2so6619661pll.1;
+        Mon, 23 Aug 2021 15:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PgbvL7tZGMqN04fDtExmC53uM/OuoTpyNovFpG01h4I=;
-        b=mrfk22hXw3iD2OUWsdXxuk5BJuJLQ1zikfGhw1rbU2nb8fdvWwNpPsf3sF/QHs87iH
-         wm/9XU4v0sV9oZ1SaEiH2iLHsmmLbWdpXuK7SO1kTRwdpJrJcihx8lI5sV2kry9Q/cy2
-         hro2P8TOOdwzdLtUcV/H3NzVbSIx+YfVLMfq8zk6IDTTBANlA1odwcPMucqGJLnf6r+2
-         XKC3l+eOOgjNs7q0T8B1Hbnc5uuh1d7iuSDgNSdcQIq5f0kYF16TRnNjXHDzRc8MtwdQ
-         b59dXUMgD9cp5C06cSmjHDB/uwfa75Ki50MOfuZeJiNJ8fb6C5m8+LTngHvFm7/MxcO7
-         fhfA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2p6IxYHjQrK32WGk8qpPNDpZ5O6IjyX0XZXnKdnkjG4=;
+        b=H05d40FOc/rKQBNGb8iMx3vGCtztK3NsVCTvaWXf8/0fJxqBMWd9EH2fNXmxFcOoKm
+         2x5BF3eZmlM5M2q+VAnN7wnT1hX677x6tvoZoAotA8EzVuBVjS6XCjIlz0JLue8XWgsX
+         fRqFJ7/eYJvmik4JXPq2NcN0oj0VF9tIUFzot+CBGnxtwdwvENrpCYaRAAI3+iSWdE0G
+         C9jAgwtOF/Hua+t16qG+Y4spEvJr8WvNmnDKOL0j3eOxeO3Eq7EgHJ9gP7rKPBUX6QbF
+         zNpYttQ9PiNNtI8GeunFSYFeKvAtfWimqZBu3earQFOWWDp1u4fWBJo+vZ2tAW3uYE9A
+         /UDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PgbvL7tZGMqN04fDtExmC53uM/OuoTpyNovFpG01h4I=;
-        b=Szq6NhCoRVbo9GktnRg8EEuOS7tOsss4kosoSQjeRCJGNl/9K/d7WmDvPJBpRMH9jJ
-         zz+PcHT2pe1SUWAboau7G9d4tr+5LLouRSTGC2LDs4MBBoFLKV6XAkI8Sje3oFHMwpPp
-         k3cu6Q4vQwKQSj98Jsj74qBCMuflZDMzHWb/9tWpoOpJfCn8LKioS8ad+ou9SlJvzjA6
-         UODsaEtrek/D7o5S43WEIK99WL7rZ45c5IaJTa9fQlhKg8AW3uOZK+4QZP57RfFyr4Q+
-         XJvUwPC7jqskUKbR+WE2kgQm9GnlGnpOcegYQGJYEGOfSxWMsyjdxMO+1YjD+5branZM
-         4/tw==
-X-Gm-Message-State: AOAM533xqp6Swnk1AOM2m181XdmSrUfZ7tqRWuQiJu/pHav1JZxvncME
-        ZWtahXR8VI9G7BKRn7aHJijKcbno0unRBGjjSoR8Gg==
-X-Google-Smtp-Source: ABdhPJwivijEkTPOuWanRWlCqTFVzEGxja92JdtnMNzJTERT+YaM6O8hzAFMzfmiajkwskVaO4vKkUTfnlzux7LP8sk=
-X-Received: by 2002:a17:90b:3748:: with SMTP id ne8mr796003pjb.162.1629757317164;
- Mon, 23 Aug 2021 15:21:57 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2p6IxYHjQrK32WGk8qpPNDpZ5O6IjyX0XZXnKdnkjG4=;
+        b=B8AYuYUIXsjofSPVtRz9y2wCK/1D1m/jHF+bUufEJYc1C8se2oXP6K08LkCPlS0tvg
+         dQttJux5LT1jJXuGs3GLBviQD+nSweREPeBlyk6YmMF9lHMtrdmY9ysDDn/mV/lOiYC2
+         ZOryI64cbCA6b4gPdNO7/jc9b6j7kjRFbovnI9AUa74g+AjeQ4zEY6E1ROxWLR9u97eu
+         d3yjNokQzxPqZkfffQs0XT5uTg2BBy9VGDcnVH73vJc8HY1xFR4t+qa2WmGIKLszIb8v
+         ovXdNT0yCv/cSUfx7xLYcuRsjCY3BXMIu5aUqF4sM+WefDEIvgQUeoC10xiTAi94aX1Y
+         1T8Q==
+X-Gm-Message-State: AOAM532Es6AxECrU90rBqGvXd2RKbbKljSzxVWiE3DAkm8CBNGdkUfjx
+        y2CMmnDEvwhwr6FDKrgkwac=
+X-Google-Smtp-Source: ABdhPJxYeR3r163BgqBExxC6eUbm7m606m6IUkhNm1PEkPowF12EZ5sHI+P1PO0SLFMvzc4Vb1GqKw==
+X-Received: by 2002:a17:90a:c705:: with SMTP id o5mr795934pjt.55.1629757413049;
+        Mon, 23 Aug 2021 15:23:33 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id w2sm236054pjq.5.2021.08.23.15.23.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 15:23:32 -0700 (PDT)
+Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Christoph Paasch <christoph.paasch@gmail.com>,
+        Vasily Averin <vvs@virtuozzo.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
+ <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
+ <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
+ <1c12b056-79d2-126a-3f78-64629f072345@gmail.com>
+ <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <bd90616e-8e86-016b-0979-c4f4167b8bc2@gmail.com>
+Date:   Mon, 23 Aug 2021 15:23:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210823081820.9724-1-straube.linux@gmail.com>
-In-Reply-To: <20210823081820.9724-1-straube.linux@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Mon, 23 Aug 2021 23:21:46 +0100
-Message-ID: <CAA=Fs0=6=ueb53iNhyjSE5B8CdQvrpijgihAaN9YVwdDgNGiFA@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove ip.h header file
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 at 09:19, Michael Straube <straube.linux@gmail.com> wrote:
->
-> The struct ip_options declared in ip.h is only unsed in the optlength
-> macro which is also defined in ip.h. All other definitions/declarations
-> in ip.h are duplicated from <include/uapi/linux/ip.h>. Remove the ip.h
-> header file and its includes.
->
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_recv.c      |   1 -
->  drivers/staging/r8188eu/core/rtw_xmit.c      |   1 -
->  drivers/staging/r8188eu/hal/rtl8188eu_recv.c |   1 -
->  drivers/staging/r8188eu/include/ip.h         | 109 -------------------
->  drivers/staging/r8188eu/os_dep/xmit_linux.c  |   1 -
->  5 files changed, 113 deletions(-)
->  delete mode 100644 drivers/staging/r8188eu/include/ip.h
->
-> diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-> index 52236bae8693..8802f24fec3a 100644
-> --- a/drivers/staging/r8188eu/core/rtw_recv.c
-> +++ b/drivers/staging/r8188eu/core/rtw_recv.c
-> @@ -7,7 +7,6 @@
->  #include "../include/drv_types.h"
->  #include "../include/recv_osdep.h"
->  #include "../include/mlme_osdep.h"
-> -#include "../include/ip.h"
->  #include "../include/if_ether.h"
->  #include "../include/ethernet.h"
->  #include "../include/usb_ops.h"
-> diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
-> index f242f3ffca70..38183fd37b93 100644
-> --- a/drivers/staging/r8188eu/core/rtw_xmit.c
-> +++ b/drivers/staging/r8188eu/core/rtw_xmit.c
-> @@ -7,7 +7,6 @@
->  #include "../include/drv_types.h"
->  #include "../include/wifi.h"
->  #include "../include/osdep_intf.h"
-> -#include "../include/ip.h"
->  #include "../include/usb_ops.h"
->  #include "../include/usb_osintf.h"
->
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-> index a44c9598186c..216a752e6246 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-> @@ -6,7 +6,6 @@
->  #include "../include/drv_types.h"
->  #include "../include/recv_osdep.h"
->  #include "../include/mlme_osdep.h"
-> -#include "../include/ip.h"
->  #include "../include/if_ether.h"
->  #include "../include/ethernet.h"
->
-> diff --git a/drivers/staging/r8188eu/include/ip.h b/drivers/staging/r8188eu/include/ip.h
-> deleted file mode 100644
-> index b7388c8c1b8a..000000000000
-> --- a/drivers/staging/r8188eu/include/ip.h
-> +++ /dev/null
-> @@ -1,109 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-> -/* Copyright(c) 2007 - 2011 Realtek Corporation. */
-> -
-> -#ifndef _LINUX_IP_H
-> -#define _LINUX_IP_H
-> -
-> -/* SOL_IP socket options */
-> -
-> -#define IPTOS_TOS_MASK         0x1E
-> -#define IPTOS_TOS(tos)         ((tos)&IPTOS_TOS_MASK)
-> -#define        IPTOS_LOWDELAY          0x10
-> -#define        IPTOS_THROUGHPUT        0x08
-> -#define        IPTOS_RELIABILITY       0x04
-> -#define        IPTOS_MINCOST           0x02
-> -
-> -#define IPTOS_PREC_MASK                0xE0
-> -#define IPTOS_PREC(tos)                ((tos)&IPTOS_PREC_MASK)
-> -#define IPTOS_PREC_NETCONTROL           0xe0
-> -#define IPTOS_PREC_INTERNETCONTROL      0xc0
-> -#define IPTOS_PREC_CRITIC_ECP           0xa0
-> -#define IPTOS_PREC_FLASHOVERRIDE        0x80
-> -#define IPTOS_PREC_FLASH                0x60
-> -#define IPTOS_PREC_IMMEDIATE            0x40
-> -#define IPTOS_PREC_PRIORITY             0x20
-> -#define IPTOS_PREC_ROUTINE              0x00
-> -
-> -/* IP options */
-> -#define IPOPT_COPY             0x80
-> -#define IPOPT_CLASS_MASK       0x60
-> -#define IPOPT_NUMBER_MASK      0x1f
-> -
-> -#define        IPOPT_COPIED(o)         ((o)&IPOPT_COPY)
-> -#define        IPOPT_CLASS(o)          ((o)&IPOPT_CLASS_MASK)
-> -#define        IPOPT_NUMBER(o)         ((o)&IPOPT_NUMBER_MASK)
-> -
-> -#define        IPOPT_CONTROL           0x00
-> -#define        IPOPT_RESERVED1         0x20
-> -#define        IPOPT_MEASUREMENT       0x40
-> -#define        IPOPT_RESERVED2         0x60
-> -
-> -#define IPOPT_END      (0 | IPOPT_CONTROL)
-> -#define IPOPT_NOOP     (1 | IPOPT_CONTROL)
-> -#define IPOPT_SEC      (2 | IPOPT_CONTROL | IPOPT_COPY)
-> -#define IPOPT_LSRR     (3 | IPOPT_CONTROL | IPOPT_COPY)
-> -#define IPOPT_TIMESTAMP        (4 | IPOPT_MEASUREMENT)
-> -#define IPOPT_RR       (7 | IPOPT_CONTROL)
-> -#define IPOPT_SID      (8 | IPOPT_CONTROL | IPOPT_COPY)
-> -#define IPOPT_SSRR     (9 | IPOPT_CONTROL | IPOPT_COPY)
-> -#define IPOPT_RA       (20 | IPOPT_CONTROL | IPOPT_COPY)
-> -
-> -#define IPVERSION      4
-> -#define MAXTTL         255
-> -#define IPDEFTTL       64
-> -#define IPOPT_OPTVAL 0
-> -#define IPOPT_OLEN   1
-> -#define IPOPT_OFFSET 2
-> -#define IPOPT_MINOFF 4
-> -#define MAX_IPOPTLEN 40
-> -#define IPOPT_NOP IPOPT_NOOP
-> -#define IPOPT_EOL IPOPT_END
-> -#define IPOPT_TS  IPOPT_TIMESTAMP
-> -
-> -#define        IPOPT_TS_TSONLY         0       /* timestamps only */
-> -#define        IPOPT_TS_TSANDADDR      1       /* timestamps and addresses */
-> -#define        IPOPT_TS_PRESPEC        3       /* specified modules only */
-> -
-> -struct ip_options {
-> -       __u32           faddr;                  /* Saved first hop address */
-> -       unsigned char   optlen;
-> -       unsigned char srr;
-> -       unsigned char rr;
-> -       unsigned char ts;
-> -       unsigned char   is_setbyuser:1, /* Set by setsockopt?           */
-> -                       is_data:1,      /* Options in __data, rather than skb*/
-> -                       is_strictroute:1,/* Strict source route         */
-> -                       srr_is_hit:1,   /* Packet destn addr was ours */
-> -                       is_changed:1,   /* IP checksum more not valid   */
-> -                       rr_needaddr:1,  /* Need to record addr of out dev*/
-> -                       ts_needtime:1,  /* Need to record timestamp     */
-> -                       ts_needaddr:1;  /* Need to record addr of out dev  */
-> -       unsigned char router_alert;
-> -       unsigned char __pad1;
-> -       unsigned char __pad2;
-> -       unsigned char __data[0];
-> -};
-> -
-> -#define optlength(opt) (sizeof(struct ip_options) + opt->optlen)
-> -
-> -struct iphdr {
-> -#if defined(__LITTLE_ENDIAN_BITFIELD)
-> -       __u8    ihl:4,
-> -               version:4;
-> -#elif defined(__BIG_ENDIAN_BITFIELD)
-> -       __u8    version:4,
-> -               ihl:4;
-> -#endif
-> -       __u8    tos;
-> -       __u16   tot_len;
-> -       __u16   id;
-> -       __u16   frag_off;
-> -       __u8    ttl;
-> -       __u8    protocol;
-> -       __u16   check;
-> -       __u32   saddr;
-> -       __u32   daddr;
-> -       /*The options start here. */
-> -};
-> -
-> -#endif /* _LINUX_IP_H */
-> diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> index 60e0eea7ad84..80546a886c0e 100644
-> --- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-> @@ -6,7 +6,6 @@
->  #include "../include/osdep_service.h"
->  #include "../include/drv_types.h"
->  #include "../include/if_ether.h"
-> -#include "../include/ip.h"
->  #include "../include/wifi.h"
->  #include "../include/mlme_osdep.h"
->  #include "../include/xmit_osdep.h"
-> --
-> 2.32.0
->
 
-Dear Michael,
 
-Thanks for the patch. Sorry, but it seems to conflict with your
-earlier patch titled: "[PATCH] staging: r8188eu: remove if_ether.h
-header file". They apply fine individually, but not together - can you
-confirm this is the case for you as well and not just me?
+On 8/23/21 2:51 PM, Eric Dumazet wrote:
+> 
+> 
+> On 8/23/21 2:45 PM, Eric Dumazet wrote:
+>>
+>>
+>> On 8/23/21 10:25 AM, Christoph Paasch wrote:
+>>> Hello,
+>>>
+>>> On Mon, Aug 23, 2021 at 12:56 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>>>>
+>>>> Christoph Paasch reports [1] about incorrect skb->truesize
+>>>> after skb_expand_head() call in ip6_xmit.
+>>>> This happen because skb_set_owner_w() for newly clone skb is called
+>>>> too early, before pskb_expand_head() where truesize is adjusted for
+>>>> (!skb-sk) case.
+>>>>
+>>>> [1] https://lkml.org/lkml/2021/8/20/1082
+>>>>
+>>>> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+>>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>>>> ---
+>>>>  net/core/skbuff.c | 24 +++++++++++++-----------
+>>>>  1 file changed, 13 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>>>> index f931176..508d5c4 100644
+>>>> --- a/net/core/skbuff.c
+>>>> +++ b/net/core/skbuff.c
+>>>> @@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+>>>>
+>>>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>>>>  {
+>>>> +       struct sk_buff *oskb = skb;
+>>>> +       struct sk_buff *nskb = NULL;
+>>>>         int delta = headroom - skb_headroom(skb);
+>>>>
+>>>>         if (WARN_ONCE(delta <= 0,
+>>>> @@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>>>>
+>>>>         /* pskb_expand_head() might crash, if skb is shared */
+>>>>         if (skb_shared(skb)) {
+>>>> -               struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+>>>> -
+>>>> -               if (likely(nskb)) {
+>>>> -                       if (skb->sk)
+>>>> -                               skb_set_owner_w(nskb, skb->sk);
+>>>> -                       consume_skb(skb);
+>>>> -               } else {
+>>>> -                       kfree_skb(skb);
+>>>> -               }
+>>>> +               nskb = skb_clone(skb, GFP_ATOMIC);
+>>>>                 skb = nskb;
+>>>>         }
+>>>>         if (skb &&
+>>>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+>>>> -               kfree_skb(skb);
+>>>> +           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
+>>>>                 skb = NULL;
+>>>> +
+>>>> +       if (!skb) {
+>>>> +               kfree_skb(oskb);
+>>>> +               if (nskb)
+>>>> +                       kfree_skb(nskb);
+>>>> +       } else if (nskb) {
+>>>> +               if (oskb->sk)
+>>>> +                       skb_set_owner_w(nskb, oskb->sk);
+>>>> +               consume_skb(oskb);
+>>>
+>>> sorry, this does not fix the problem. The syzkaller repro still
+>>> triggers the WARN.
+>>>
+>>> When it happens, the skb in ip6_xmit() is not shared as it comes from
+>>> __tcp_transmit_skb, where it is skb_clone()'d.
+>>>
+>>>
+>>
+>> Old code (in skb_realloc_headroom())
+>> was first calling skb2 = skb_clone(skb, GFP_ATOMIC); 
+>>
+>> At this point, skb2->sk was NULL
+>> So pskb_expand_head(skb2, SKB_DATA_ALIGN(delta), 0, ...) was able to tweak skb2->truesize
+>>
+>> I would try :
+>>
+>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>> index f9311762cc475bd38d87c33e988d7c983b902e56..326749a8938637b044a616cc33b6a19ed191ac41 100644
+>> --- a/net/core/skbuff.c
+>> +++ b/net/core/skbuff.c
+>> @@ -1804,6 +1804,7 @@ EXPORT_SYMBOL(skb_realloc_headroom);
+>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>>  {
+>>         int delta = headroom - skb_headroom(skb);
+>> +       struct sk_buff *oskb = NULL;
+>>  
+>>         if (WARN_ONCE(delta <= 0,
+>>                       "%s is expecting an increase in the headroom", __func__))
+>> @@ -1813,19 +1814,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>>         if (skb_shared(skb)) {
+>>                 struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+>>  
+>> -               if (likely(nskb)) {
+>> -                       if (skb->sk)
+>> -                               skb_set_owner_w(nskb, skb->sk);
+>> -                       consume_skb(skb);
+>> -               } else {
+>> +               if (unlikely(!nskb)) {
+>>                         kfree_skb(skb);
+>> +                       return NULL;
+>>                 }
+>> +               oskb = skb;
+>>                 skb = nskb;
+>>         }
+>> -       if (skb &&
+>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+>> +       if (pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+>>                 kfree_skb(skb);
+>> -               skb = NULL;
+>> +               kfree_skb(oskb);
+>> +               return NULL;
+>> +       }
+>> +       if (oskb) {
+>> +               skb_set_owner_w(skb, oskb->sk);
+>> +               consume_skb(oskb);
+>>         }
+>>         return skb;
+>>  }
+> 
+> 
+> Oh well, probably not going to work.
+> 
+> We have to find a way to properly increase skb->truesize, even if skb_clone() is _not_ called.
+> 
 
-Regards,
-Phil
+I also note that current use of skb_set_owner_w(), forcing skb->destructor to sock_wfree()
+is probably breaking TCP Small queues, since original skb->destructor would be tcp_wfree() or __sock_wfree()
+
+
+
+
