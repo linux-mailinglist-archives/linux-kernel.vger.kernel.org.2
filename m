@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519883F5130
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D553F513A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhHWTXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:23:45 -0400
-Received: from mail-ej1-f48.google.com ([209.85.218.48]:33578 "EHLO
-        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhHWTXo (ORCPT
+        id S232138AbhHWTYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232112AbhHWTYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:23:44 -0400
-Received: by mail-ej1-f48.google.com with SMTP id x11so39309460ejv.0;
-        Mon, 23 Aug 2021 12:23:00 -0700 (PDT)
+        Mon, 23 Aug 2021 15:24:11 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2E0C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x10-20020a056830408a00b004f26cead745so39253438ott.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=R61EvE5T8P1BLdeG5FoKvlIWFZXYQh2fedYwtenFS5w=;
+        b=Vg2yIG520LIhKpPXUI4mZ2ssujQNL8K4zT9coTZV5k2WN1GdU7pzXW90U6O9Us12z8
+         BYrO98kdP4HiatoAZ+FmTSdB75kZDyY3QhSTUGrRGbHbhAWiiouMFxvdGkc8J0XFaYoU
+         zroTYBKBZyw/rBnU7PmFqFyMVYt5+m5v3f8Ks=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LAkUj8eGXa16q3RpMBF+nglw7ejQzo6su3CYaWTKq58=;
-        b=ZSNW2G2r0RR4l6HEKebjsOjqdfGmMgmyTSpqiFBURu8QSDXMXlSKp77HAs20kyFdZu
-         yqfEqapSxbBmK0aEVMGabAdVW3Ietem5o64rYV4VcrF1PJNS3pWJU8P/OqHeQHlszeLg
-         VKc8txe/JvMrwFeOeC9GV28k+2smaYmuHYf5D+nld0Op5HKnZrIx8Y4CRlc8HAuR8Kbb
-         TVtP8wq8eFDEitw2dH3A4fu4KBTnu1LecMH9gZ9/JVwa6AQrxaCslplJtiLTPPRHRxJt
-         2Gzyts2C6gC/5xB5fzQYGZwITzxRcJO5C9FupVNTUSu7Hre5nPnEs439W6bpoIpxj1rh
-         vAPg==
-X-Gm-Message-State: AOAM532K6RlJqeEfoDaY6G8lh1OpUAOgKZDp99zY3kBeRG/VPJ6mjZA/
-        SoKm9kjO70ytJGuYylaVOlAhPmTCrBisQg==
-X-Google-Smtp-Source: ABdhPJyzSArzCICLbcX4VB7Y0hnhLD5F0eF5GFBjkoXdGcXkcQcW1A+u9XnXplC/Jq8Qpv2AqQNC2g==
-X-Received: by 2002:a17:906:9bdc:: with SMTP id de28mr36750594ejc.154.1629746580113;
-        Mon, 23 Aug 2021 12:23:00 -0700 (PDT)
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
-        by smtp.gmail.com with ESMTPSA id o26sm2889828eje.24.2021.08.23.12.22.59
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=R61EvE5T8P1BLdeG5FoKvlIWFZXYQh2fedYwtenFS5w=;
+        b=jkSANI1qP++r9Io/CK6WTusYdh9MqkdioEP+ZOGldXQm51fmJrlKofVrAx7rM3s84M
+         qDP2tDLyuCurHtUUPQwj4C/VtbU6QglXi94Wrzj/cicSGPfCFN5QI7WKNaSMwQpChixC
+         Qq02K8biEN5AsVIKGU0rAaXyYjtzZ1vgxDa3Zy7JigIfVR2nxw+dRGvik7uSfM8p9Xld
+         A7MW38fyA08tdNE8YVD58POgDtFHTVndWDQVUfrIssvY41LSCwE4BVsS6sdl0BgA7GFz
+         kzSHD/BrTdyMTT9yZp1NzQo1V2s1pR+Wp+4OweJh9LtZzDAG6PniVkXbyWZ4gcmZk9oH
+         GMug==
+X-Gm-Message-State: AOAM532wjejKUHTxqaWmWkUSH3Kuerq5o8hHY9rK9EW4eU8kc/FGafQW
+        BHNqYFCirps3qVTU7BP7fIYL4A==
+X-Google-Smtp-Source: ABdhPJwNuSRfsc4F4tzHz4U6R/cVYWBvbE+fBQ8cEX0tAwdrEbJzg6m0MWx0CR8lkaYUwuB7YwjRPA==
+X-Received: by 2002:a05:6808:20e:: with SMTP id l14mr84473oie.87.1629746608138;
+        Mon, 23 Aug 2021 12:23:28 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i27sm4117419ots.12.2021.08.23.12.23.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 12:22:59 -0700 (PDT)
-Received: by mail-wm1-f50.google.com with SMTP id u1so11257821wmm.0;
-        Mon, 23 Aug 2021 12:22:59 -0700 (PDT)
-X-Received: by 2002:a7b:c318:: with SMTP id k24mr157053wmj.144.1629746579518;
- Mon, 23 Aug 2021 12:22:59 -0700 (PDT)
+        Mon, 23 Aug 2021 12:23:27 -0700 (PDT)
+Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
+ flag
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, shuah@kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        Aleksa Sarai <cyphar@cyphar.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
+ <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
+ <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <a9dc1616-61b9-c010-950c-521693c74247@linuxfoundation.org>
+Date:   Mon, 23 Aug 2021 13:23:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210816000542.18711-1-rdunlap@infradead.org>
-In-Reply-To: <20210816000542.18711-1-rdunlap@infradead.org>
-From:   Marc Dionne <marc.dionne@auristor.com>
-Date:   Mon, 23 Aug 2021 16:22:48 -0300
-X-Gmail-Original-Message-ID: <CAB9dFdvoo_JtbqW6s4+DKMraWxMX-Qivdt+nm7_w2Q-dq3WTaQ@mail.gmail.com>
-Message-ID: <CAB9dFdvoo_JtbqW6s4+DKMraWxMX-Qivdt+nm7_w2Q-dq3WTaQ@mail.gmail.com>
-Subject: Re: [PATCH] net: RxRPC: make dependent Kconfig symbols be shown indented
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-afs@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 15, 2021 at 9:06 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Make all dependent RxRPC kconfig entries be dependent on AF_RXRPC
-> so that they are presented (indented) after AF_RXRPC instead
-> of being presented at the same level on indentation.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: Marc Dionne <marc.dionne@auristor.com>
-> Cc: linux-afs@lists.infradead.org
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> ---
->  net/rxrpc/Kconfig |    7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> --- linux-next-20210813.orig/net/rxrpc/Kconfig
-> +++ linux-next-20210813/net/rxrpc/Kconfig
-> @@ -21,6 +21,8 @@ config AF_RXRPC
->
->           See Documentation/networking/rxrpc.rst.
->
-> +if AF_RXRPC
-> +
->  config AF_RXRPC_IPV6
->         bool "IPv6 support for RxRPC"
->         depends on (IPV6 = m && AF_RXRPC = m) || (IPV6 = y && AF_RXRPC)
-> @@ -30,7 +32,6 @@ config AF_RXRPC_IPV6
->
->  config AF_RXRPC_INJECT_LOSS
->         bool "Inject packet loss into RxRPC packet stream"
-> -       depends on AF_RXRPC
->         help
->           Say Y here to inject packet loss by discarding some received and some
->           transmitted packets.
-> @@ -38,7 +39,6 @@ config AF_RXRPC_INJECT_LOSS
->
->  config AF_RXRPC_DEBUG
->         bool "RxRPC dynamic debugging"
-> -       depends on AF_RXRPC
->         help
->           Say Y here to make runtime controllable debugging messages appear.
->
-> @@ -47,7 +47,6 @@ config AF_RXRPC_DEBUG
->
->  config RXKAD
->         bool "RxRPC Kerberos security"
-> -       depends on AF_RXRPC
->         select CRYPTO
->         select CRYPTO_MANAGER
->         select CRYPTO_SKCIPHER
-> @@ -58,3 +57,5 @@ config RXKAD
->           through the use of the key retention service.
->
->           See Documentation/networking/rxrpc.rst.
-> +
-> +endif
->
-> _______________________________________________
-> linux-afs mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-afs
+Hi Baolin,
 
+On 8/22/21 8:40 PM, Baolin Wang wrote:
+> Hi Shuah,
+> 
+> On 2021/7/28 20:32, Baolin Wang wrote:
+>> Hi,
+>>
+>>> When running the openat2 test suite on ARM64 platform, we got below failure,
+>>> since the definition of the O_LARGEFILE is different on ARM64. So we can
+>>> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
+>>
+>> Sorry, I forgot to copy the failure log:
+>>
 
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
+Please cc everybody get_maintainers.pl suggests. You are missing
+key reviewers for this change.
 
-Marc
+Adding Christian Brauner and Aleksa Sarai to the thread.
+
+>> # openat2 unexpectedly returned # 3['/lkp/benchmarks/kernel_selftests/tools/testing/selftests/openat2'] with 208000 (!= 208000)
+
+Not sure I understand this. 208000 (!= 208000) look sthe same to me.
+
+>> not ok 102 openat2 with incompatible flags (O_PATH | O_LARGEFILE) fails with -22 (Invalid argument)
+>>
+>>>
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> 
+> Could you apply this patch if no objection from your side? Thanks.
+> 
+
+Ideally this define should come from an include file.
+
+Christian, Aleksa,
+
+Can you review this patch and let me know if this approach looks right.
+
+>>> ---
+>>>   tools/testing/selftests/openat2/openat2_test.c | 4 ++++
+>>>   1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/tools/testing/selftests/openat2/openat2_test.c b/tools/testing/selftests/openat2/openat2_test.c
+>>> index d7ec1e7..1bddbe9 100644
+>>> --- a/tools/testing/selftests/openat2/openat2_test.c
+>>> +++ b/tools/testing/selftests/openat2/openat2_test.c
+>>> @@ -22,7 +22,11 @@
+>>>    * XXX: This is wrong on {mips, parisc, powerpc, sparc}.
+>>>    */
+>>>   #undef    O_LARGEFILE
+>>> +#ifdef __aarch64__
+>>> +#define    O_LARGEFILE 0x20000
+>>> +#else
+>>>   #define    O_LARGEFILE 0x8000
+>>> +#endif
+>>>   struct open_how_ext {
+>>>       struct open_how inner;
+>>>
+> 
+
+thanks,
+-- Shuah
