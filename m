@@ -2,97 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D2F3F42B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 529B03F42BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhHWBC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
+        id S234409AbhHWBGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhHWBCy (ORCPT
+        with ESMTP id S232261AbhHWBF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:02:54 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0D3C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:02:12 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id n12so9199460plf.4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:02:12 -0700 (PDT)
+        Sun, 22 Aug 2021 21:05:58 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D753C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:05:17 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id r19so23589052eds.13
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PQyq0/mVTcHHR3kWPuGNHdEp5dRrFDPoWILopvZPKCY=;
-        b=Aym8TDB5JHD/5Lr6oDIjoO9ZQjzTdmBusHnz8XJAsjfStp8QrIZN96f0J/h7wQzzJM
-         lAvsMqbJ9N1FHpeFAWUurojBGPNsQSvfT50tLjMhnnAnyf/n8AmNtM8MyX00LLPSdmgW
-         LcNAcrUZ103l3fPnkMKfEkJAj/ZXeAUmDJBCPdZHTOn2RvMnPX+Z49UpTQ3/7MMWNHJd
-         H+MRf2HAqusgzeZ9H1Oyqgh2xD+zF3/E5YcLMUsnJnLuOdYJHFrOHUFn05mQMQbx8xKd
-         FE1+9SaIzFjSYmlFyrkb2YUsGpBXuNBrRnOXtXcwb4UhC7Wiwnxx7Y1VxpZN3EJhcgRs
-         kW4A==
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9I+jvIuGkrYC7w12Jy77CUvwauedMrIdRwXtD/swi0U=;
+        b=PJ2lRFHHDJGTdGZgqkx8nm0C86/LsPvaA1plQiLWFsazUABz8Yc1GKrNB1BQebP/Rm
+         PZOTpqcjJA3c63TrlvEaSd9Nl4IAAmXXx22NUFr+a1YUH4v/xU8kJS3YhojZFgciqq6c
+         3pF3A5e3/flNGz5+xe0wFzOD8qTt9bGjHTA5wa1Fvx0NjEcMhjV1lOqg+y5AZpMs8uRO
+         UL8MO/ANO9YNVs/zhJP5dQVnCSFKf/lKw7h+zDwmT/AUdweiArEVhlAbseZHAVwKbAqR
+         Gxm//N0qMKiEZdmqBeDtkOLbvh1vfHMW8t3PCN9jiSrZYrm7JleLO/JDGMNpXYlaCBj2
+         WZ7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PQyq0/mVTcHHR3kWPuGNHdEp5dRrFDPoWILopvZPKCY=;
-        b=uh8+NDjhZoA0QPzbmgCNmVU5P8+XxH/8SFuFhM7XDUSfZrUiHdd8Rzy5MX9WGcAiqe
-         j6EYZagcfBMZVO0+azUOUIdZmNVfbSqGCombS5HjZ9F8UsOQAvXRPM7uueUZn+mZhZ4L
-         7l7X0V+tQ8frHa0ueDI87xdisJatpLVAYl+Y72/xsBSyTbjvX3D1oLKL9PV81zK1GnzE
-         0Y3KOJ/s80PIv/X6gIIohlpmdTpyb5FhtqLi6o4ZlpbhkaJCr1UzSpKJxGhfxlxbkQ3V
-         7jB7fIvwhtWM1HfMhpk6q2dys0TbQk8kpE0MIiEt15BrzxHPNXXp6M9p9v+Knh6JfIBf
-         IxiA==
-X-Gm-Message-State: AOAM53147m0yZ6T41BjiYc4muH/LMFi3LjIJq7XdKwFrLU+2/wTcUafv
-        zjU6W20a5vmBYuP8afbw8FI7Bw==
-X-Google-Smtp-Source: ABdhPJyu/wpLxNB8SEq2XcHDaiK93Ex4V8Kz7PZdRsM6hvEe3guh/ya/2nT2D47T8XqNttkS/NSrNQ==
-X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr4585879pjr.66.1629680532120;
-        Sun, 22 Aug 2021 18:02:12 -0700 (PDT)
-Received: from [10.75.0.6] ([45.135.186.133])
-        by smtp.gmail.com with ESMTPSA id s32sm14239643pfw.84.2021.08.22.18.02.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 18:02:11 -0700 (PDT)
-Subject: Re: [PATCH v5 0/3] PCI: Add a quirk to enable SVA for HiSilicon chip
-From:   Zhangfei Gao <zhangfei.gao@linaro.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, Wangzhou <wangzhou1@hisilicon.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1626144876-11352-1-git-send-email-zhangfei.gao@linaro.org>
- <1796ac2a-b068-467e-804e-163f9e1f3c41@linaro.org>
-Message-ID: <9ab85a0a-80a7-4ccb-0657-a77c8a657089@linaro.org>
-Date:   Mon, 23 Aug 2021 09:02:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9I+jvIuGkrYC7w12Jy77CUvwauedMrIdRwXtD/swi0U=;
+        b=mxZh+4BSbshu5DUIG2SQ2pht4xZvlRKLXSKOAsDAnu48w0oL2q/gnDapSbdsnKIkYN
+         Pfw7bXuJ8L7vzNFNY/uapO46NTQNObiPLkxEVZEIvplYxXLQvIS8GqqEV7ywoLG4oW/V
+         8ziIk4ztmqekR4zaPm+hEJJ/4U2LQ47mQdS8pNQtAPniz6JeYZoz/q20YBGkMfcqEvYO
+         QTZLf5WrZf4a/VzSbnpExZ59GcSu2KPfJngSzspD1r51Fr5toOdRkvoMjK2Wj1+gJcwn
+         QdpLqdRyKuDimyQghZLCeSETYA7N7RDlDIFzkE9LnfFDfTxJRIlI5zVL8PwrhN5L0x7+
+         Ieag==
+X-Gm-Message-State: AOAM530rLsWU4L2s6nGll7kRsU+mJVk6z+1OPtnSCzMt772b5clqEw4D
+        o2AXXhNw3XFzRbWdxc3aOqEy7MWm32HfPCXAH2gAVQ==
+X-Google-Smtp-Source: ABdhPJykJY1zWrWHmNv1qhh0XGc9mZHysTgRPPx0BaMujb9Mx9dYhMjPxl8GGwLIWVx58MUoIp0bAc7SpECJwSg9rjk=
+X-Received: by 2002:aa7:c894:: with SMTP id p20mr34410895eds.42.1629680715488;
+ Sun, 22 Aug 2021 18:05:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1796ac2a-b068-467e-804e-163f9e1f3c41@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
+ <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
+In-Reply-To: <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
+From:   Brad Larson <brad@pensando.io>
+Date:   Sun, 22 Aug 2021 18:05:04 -0700
+Message-ID: <CAK9rFnyf3WLSPe8A=WWCBUqs3htkAmhDQq0ftcEOq_fnenWQPA@mail.gmail.com>
+Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bjorn
+Hi Linus,
 
-On 2021/7/27 下午2:47, Zhangfei Gao wrote:
-> Hi, Bjorn
+On Thu, Mar 4, 2021 at 12:29 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
 >
-> On 2021/7/13 上午10:54, Zhangfei Gao wrote:
->> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
->> actually on the AMBA bus. These fake PCI devices have PASID capability
->> though not supporting TLP.
->>
->> Add a quirk to set pasid_no_tlp and dma-can-stall for these devices.
->>
->> v5:
->> no change, base on 5.14-rc1
+> > This GPIO driver is for the Pensando Elba SoC which
+> > provides control of four chip selects on two SPI busses.
+[...]
+> > +#include <linux/gpio.h>
 >
-> Would you mind take a look at this patchset.
-> We need the quirk to enable sva feature of devices on HiSilicon 
-> KunPeng920 and KunPeng930.
+> Use this in new drivers:
+> #include <linux/gpio/driver.h>
 
-Any comments about this patchset.
-Is it possible to catch up the 5.15?
+The updated patchset will use linux/gpio/driver.h
 
-Thanks
+> > + * pin:             3            2        |       1            0
+> > + * bit:         7------6------5------4----|---3------2------1------0
+> > + *     cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0  cs0_ovr
+> > + *                ssi1            |             ssi0
+> > + */
+> > +#define SPICS_PIN_SHIFT(pin)   (2 * (pin))
+> > +#define SPICS_MASK(pin)                (0x3 << SPICS_PIN_SHIFT(pin))
+> > +#define SPICS_SET(pin, val)    ((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
+>
+> So 2 bits per GPIO line in one register? (Nice doc!)
+>
+> > +struct elba_spics_priv {
+> > +       void __iomem *base;
+> > +       spinlock_t lock;
+> > +       struct gpio_chip chip;
+> > +};
+> > +
+> > +static int elba_spics_get_value(struct gpio_chip *chip, unsigned int pin)
+> > +{
+> > +       return -ENXIO;
+> > +}
+>
+> Write a comment that the chip only supports output mode,
+> because it repurposes SPI CS pins as generic GPIO out,
+> maybe at the top of the file?
+
+The top of the file will look like this in the updated patchset.
+
+ * Pensando Elba ASIC SPI chip select driver.  The SoC supports output
+ * direction only as it uses a generic GPIO pin for SPI CS.
+
+> I suppose these systems also actually (ab)use the SPI cs
+> for things that are not really SPI CS? Because otherwise
+> this could just be part of the SPI driver (native chip select).
+
+The SPI cs are not used for any other purpose, we needed four chip
+selects and native DW supports two.
+
+> > +static const struct of_device_id ebla_spics_of_match[] = {
+> > +       { .compatible = "pensando,elba-spics" },
+>
+> Have you documented this?
+
+Yes as part of patchset v2: [PATCH v2 11/13] dt-bindings: gpio: Add
+Pensando Elba SoC support
+which documents "pensando,elba-spics" in new file
+bindings/gpio/pensando,elba-spics.yaml.
+
+Regards,
+Brad
