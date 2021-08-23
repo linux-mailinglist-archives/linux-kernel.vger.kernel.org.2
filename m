@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA9F3F5155
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6A73F5157
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhHWTiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S231978AbhHWTiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhHWTiG (ORCPT
+        with ESMTP id S231982AbhHWTiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:38:06 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD19CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:37:23 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id o22-20020ac872d60000b029029817302575so9147910qtp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:37:23 -0700 (PDT)
+        Mon, 23 Aug 2021 15:38:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E01C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:37:25 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id z2-20020a5b0b02000000b005982be23a34so10939879ybp.19
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:37:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=A9qASCHnE3CoN+lt64vMYGtlubN7uOyns9qDV0YSdyw=;
-        b=OCM/cYL9yWCgeUA4usPKXZ3QyCU0qetwqgQCcnn9eeKQyWyTvHbBKdRV7wroQyth4d
-         i25U6rwEpbVIUw99sh1XLUFgd3UzP9KIJ6ingfqQrHCcCRHdzgHBeKiov84D3sVh3iBH
-         OvufjGnaT/56jpgALQVEEDkOHjXtALakBzJpHTCMmEWgRnCfV5FkegsPGofJnt6l4O9x
-         6i+NzT2X2Y0ASjWcNUQoSyAjJ2phHeefnmJOs1SjMzKXN+ZoI5EAKIcmWl13xu08ontP
-         W4ZisBwStkYAbOHNfLkPAaeqay+yPHKcHc/e1i69Ez7bc9ilG6gBQ0Md8e37UmFbiaTX
-         n+ew==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=nveAaHVBnxnUKFG18sU+pbtyM6YzqpNesv6ZkGb2ois=;
+        b=FESYWZLplFRiwGN7ZdpF8Zt3Em90s6rELCzxVhSuao3d4FHG4O/BO1naEpOYe382vy
+         DfLssZIIfld5lOwYekPdJ/pzAdsi134TnJIbfzHq30gcAh7KuqhR+MwXbrvLmzulssji
+         jdGpP9DrZr4cvn3CSB0+Su/X0Kh3S9s6xFXVNBOILP5PrrnQrhXqgwNdYErN7TLqBDQw
+         EdQb+z0ssxUFDDrUYAXK6QjjUl6P4u66PcZ8lks5VKF/qoPFqIxskLw24VmFdbfkLHfA
+         IfMOZ6vCVh50YFl9PSBKFuV9Ve2R2iagixzuFnQWdgt+LMknP39ti9+Z+IjlzVBAPyBb
+         2azw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=A9qASCHnE3CoN+lt64vMYGtlubN7uOyns9qDV0YSdyw=;
-        b=kEf9X8N5m8mourwo8owMjqDzWMPdgW0o/fubwPAmhnzRE4DEu0YGLqfKdNgQy6yxvv
-         BGhiWcrFbFfi0DAEfZ9y+2IllHkgSnhPixamCb+FKMHfVkOMnTJ4Pg05yyX09HKZwTcz
-         xH/gI5WHFNglr1+5p62Udig0vgwCt0qysRT3WXzOVvOrqoSjUarECE7mcERVzLVgcwbL
-         doIQz5Zbsoq36NUCaKRy8oXM/2nH7WWMrK0FYyNy+0hFRTRZ4NMBMTBgdm1fscYMGOky
-         A2j1SWPP+V7GseC9Ojjtd8If9cIX5hIMZt0LtLLdZ3kmSmBRUGLPBjxohRcqA3nGJcVz
-         9PbQ==
-X-Gm-Message-State: AOAM532i1UuGggJIBfnTO1Oh6U3bBX9kpFAZBf6ki6u2YnsqChMtOtgp
-        74oD94NZR3jHS+EHvug/LL8m3Q9W+SY=
-X-Google-Smtp-Source: ABdhPJza03bRfv3yplWeM4c1rPxZUsU0bC0mYykhv3ilOJ+8ED1Zt/Prcr/1eTVd3dng7bdlZCT3yGXVTk0=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=nveAaHVBnxnUKFG18sU+pbtyM6YzqpNesv6ZkGb2ois=;
+        b=lU/K1CmXMKREXnIeTJ0LgtYj2b6jUkr2mQAIzbJX0w4HR/hKqA1YieAw8D07gFDLDf
+         4pV8F/MLTa/U/1G4xx1kUPEw95IfHSCPIM5hnIIdKbgmsxhlSvpvRZJ8r5/WYRy86cga
+         CScdTrCXZsc0nNSU1vTCCQLTndaBqhE6p/G4aCgwsdb0kxXEns8HMn/oHL7l23nG8EJ5
+         glfHggnPg9wk8bHt3Wn17c7Q+FcfX6/rJMoFBykzCi1rz5fX1OE7BaGwULMd3pHmunM6
+         LxhHwu5qPwPsIyhPGTkQHyN6Mxmn09HHichuO34UaCPB4FYGySSVvuqh2z5cORqaq1l9
+         pBOA==
+X-Gm-Message-State: AOAM531MTA5JPkpqOIgKeG/BJW4bsoAlBIV/GfyL9SoqBmJur6UEbG/6
+        /jBupLBEb5clFUEybbRCU87aAtH7b1k=
+X-Google-Smtp-Source: ABdhPJxvZl6SBIhaEOMBBZQbGAROAi1buHgHmkkQbX8vm8I8czB32i+RxswGTkU2VMdtvEVQSiWDz8nDpy8=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:109c:7eb8:d5ed:2e59])
- (user=seanjc job=sendgmr) by 2002:a05:6214:9d1:: with SMTP id
- dp17mr22187604qvb.44.1629747442951; Mon, 23 Aug 2021 12:37:22 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:7bc5:: with SMTP id w188mr47700735ybc.285.1629747445204;
+ Mon, 23 Aug 2021 12:37:25 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 23 Aug 2021 12:37:06 -0700
-Message-Id: <20210823193709.55886-1-seanjc@google.com>
+Date:   Mon, 23 Aug 2021 12:37:07 -0700
+In-Reply-To: <20210823193709.55886-1-seanjc@google.com>
+Message-Id: <20210823193709.55886-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210823193709.55886-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH 0/3] perf/x86/intel: KVM: PT intr handler fix and cleanup
+Subject: [PATCH 1/3] KVM: x86: Register perf callbacks after calling vendor's hardware_setup()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -71,29 +74,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patches 1 and 2 fix a bug where PT PMIs in guest are forwarded to KVM's PT
-intr handler even if PT is configured for system mode, i.e. when the host
-is the sole owner of PT.
+Wait to register perf callbacks until after doing vendor hardaware setup.
+VMX's hardware_setup() configures Intel Processor Trace (PT) mode, and a
+future fix to register the Intel PT guest interrupt hook if and only if
+Intel PT is exposed to the guest will consume the configured PT mode.
 
-Patch 3 is a related cleanup/optimization.
+Delaying registration to hardware setup is effectively a nop as KVM's perf
+hooks all pivot on the per-CPU current_vcpu, which is non-NULL only when
+KVM is handling an IRQ/NMI in a VM-Exit path.  I.e. current_vcpu will be
+NULL throughout both kvm_arch_init() and kvm_arch_hardware_setup().
 
-The PT specific stuff is effectively compile-tested only.
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Artem Kashkanov <artem.kashkanov@intel.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/x86.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-Sean Christopherson (3):
-  KVM: x86: Register perf callbacks after calling vendor's
-    hardware_setup()
-  KVM: x86: Register Processor Trace interrupt hook iff PT enabled in
-    guest
-  perf/x86/intel: Fold current_vcpu check into KVM's PT intr handler
-
- arch/x86/events/intel/core.c    |  7 +++----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/pmu.h              |  1 +
- arch/x86/kvm/vmx/vmx.c          |  1 +
- arch/x86/kvm/x86.c              | 17 ++++++++++++-----
- include/linux/perf_event.h      |  2 +-
- 6 files changed, 19 insertions(+), 10 deletions(-)
-
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 86539c1686fa..fb6015f97f9e 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8426,8 +8426,6 @@ int kvm_arch_init(void *opaque)
+ 
+ 	kvm_timer_init();
+ 
+-	perf_register_guest_info_callbacks(&kvm_guest_cbs);
+-
+ 	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+ 		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+ 		supported_xcr0 = host_xcr0 & KVM_SUPPORTED_XCR0;
+@@ -8461,7 +8459,6 @@ void kvm_arch_exit(void)
+ 		clear_hv_tscchange_cb();
+ #endif
+ 	kvm_lapic_exit();
+-	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
+ 		cpufreq_unregister_notifier(&kvmclock_cpufreq_notifier_block,
+@@ -11064,6 +11061,8 @@ int kvm_arch_hardware_setup(void *opaque)
+ 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
+ 	kvm_ops_static_call_update();
+ 
++	perf_register_guest_info_callbacks(&kvm_guest_cbs);
++
+ 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+ 		supported_xss = 0;
+ 
+@@ -11091,6 +11090,8 @@ int kvm_arch_hardware_setup(void *opaque)
+ 
+ void kvm_arch_hardware_unsetup(void)
+ {
++	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
++
+ 	static_call(kvm_x86_hardware_unsetup)();
+ }
+ 
 -- 
 2.33.0.rc2.250.ged5fa647cd-goog
 
