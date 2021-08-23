@@ -2,143 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD473F4851
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240243F4854
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236125AbhHWKKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:10:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:51056 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233390AbhHWKKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:10:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A338811FB;
-        Mon, 23 Aug 2021 03:10:07 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 567103F66F;
-        Mon, 23 Aug 2021 03:10:05 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 11:10:00 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v6 0/8] PCI: hv: Support host bridge probing on ARM64
-Message-ID: <20210823100959.GA3294@lpieralisi>
-References: <20210726180657.142727-1-boqun.feng@gmail.com>
- <20210819141758.GA27305@lpieralisi>
- <YR59KJ+SenbQ58cw@boqun-archlinux>
+        id S236184AbhHWKLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:11:07 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:37830 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236111AbhHWKLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:11:05 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210823101021euoutp01591a26f9b032501de8bd9e2932140242~d57jTaDvA1108011080euoutp01x
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:10:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210823101021euoutp01591a26f9b032501de8bd9e2932140242~d57jTaDvA1108011080euoutp01x
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1629713421;
+        bh=cA0itXHqiYCDgaU8URgOfahdXEJJ9QK6rrh9i/8Z65M=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BJwug3xcqCUoHbI4TxwWa5T1rXHIBVJpEinqcFvlDF7bRNvApZn+Xrh8M0zwsXCCV
+         i4XHpytizrVVHZ8CE0taGEgPSdTzd4NLR5utbEUTFvVWQPf+Lvmh7FtRcqZjCNfrY/
+         rGoNQ6rTRRrLcdf6ee/2ebgqtwQl7/M1aR0d+iSo=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210823101020eucas1p15e8f21c1bb732c41b3337d059f841477~d57i9ZnPM1499014990eucas1p1U;
+        Mon, 23 Aug 2021 10:10:20 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 60.1F.56448.C0473216; Mon, 23
+        Aug 2021 11:10:20 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210823101020eucas1p279a20f312326f22d203054ff8069f1a8~d57iiJKc32542525425eucas1p2d;
+        Mon, 23 Aug 2021 10:10:20 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210823101020eusmtrp10900369d810e949a647d7a587f939f8d~d57ihUMMf3074430744eusmtrp1I;
+        Mon, 23 Aug 2021 10:10:20 +0000 (GMT)
+X-AuditID: cbfec7f5-d3bff7000002dc80-59-6123740cd9f1
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 26.E1.31287.C0473216; Mon, 23
+        Aug 2021 11:10:20 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210823101019eusmtip2c4906cd21be2b84695c5d76c814c28d7~d57hyXQpD1026210262eusmtip2D;
+        Mon, 23 Aug 2021 10:10:19 +0000 (GMT)
+Subject: Re: [PATCH v2] media: camss: vfe: Don't call hw_version() before
+ its dependencies are met
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     Robert Foss <robert.foss@linaro.org>, todor.too@gmail.com,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux Kernel Functional Testing <lkft@linaro.org>
+Message-ID: <e0f79e99-61b1-b98e-e7c5-0fc9c1f0b943@samsung.com>
+Date:   Mon, 23 Aug 2021 12:10:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YR59KJ+SenbQ58cw@boqun-archlinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <4f2e8d19-8c89-53d4-37d3-97dead170065@samsung.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsWy7djP87o8JcqJBvv/a1qce/ybxeL0/ncs
+        Fhdn3mWxmLj/LLvF5V1z2Cx6Nmxltfh6gMti2aY/TBa3PvFbfJr1kNni0JRpbA7cHjtn3WX3
+        2LSqk83jzrU9bB6fN8l5nPr6mT2ANYrLJiU1J7MstUjfLoEr4/rcj4wF73grlp2bx9bA+I67
+        i5GTQ0LARGL2vgb2LkYuDiGBFYwSr6dvYYNwvjBKrNqxjBHC+cwosbRvNRNMy7bPvxhBbCGB
+        5UBVK1whij4ySrTuOgBWJCyQIjGzbQJYEZuAoUTX2y6wsSICK5gkbm/qZQFJMAuYSvzYvJcd
+        xOYVsJP43bqHFcRmEVCVeHK4lxnEFhVIlpj4ZBIrRI2gxMmZT8B6OQXsJWZN2MoKMUdeonnr
+        bGYIW1zi1pP5TCDLJAR+cEgcXPSdHeJsF4nzD+6yQdjCEq+Ob4GKy0icntzDAtHQzCjx8Nxa
+        dginh1HictMMRogqa4k7534BdXMArdCUWL9LHyLsKLFs2jx2kLCEAJ/EjbeCEEfwSUzaNp0Z
+        Iswr0dEmBFGtJjHr+Dq4tQcvXGKewKg0C8lrs5C8MwvJO7MQ9i5gZFnFKJ5aWpybnlpsnJda
+        rlecmFtcmpeul5yfu4kRmKpO/zv+dQfjilcf9Q4xMnEwHmKU4GBWEuH9y6ScKMSbklhZlVqU
+        H19UmpNafIhRmoNFSZx319Y18UIC6YklqdmpqQWpRTBZJg5OqQYmddbFfY2vtm14f7vIU0Y/
+        Z/6X18emsy/ffS89rF3sh8L52T66J4ri/uk1X84oKP3xwVbN01/PfWvEvzPG/+I0NyecWnTh
+        Dh/3O6NOIVe3uf7rJs9r+yt9Y1WdxETmjsczpljxTHu//M+DDo+siQJVbyayttyQrW/wOyNt
+        dHdO1sp7a9nfrzNb8X2G2MlaSU6PVT0re/7onZx2olt4jrHKyVqnC6rHDpp81/Jdx/TM4epZ
+        W+OYHcYdd66bhUzn0ZzHlesisIg5W1OrddaJxFevpxsW382erbnvl1azksfxHK8ui5QjP5au
+        n6KxcU2Y9F7eGoUNPNP+17NsSnM09DjH+e+3Y4azmMzBOuUgpY2pSizFGYmGWsxFxYkAr7b0
+        jMQDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsVy+t/xe7o8JcqJBvf7BCzOPf7NYnF6/zsW
+        i4sz77JYTNx/lt3i8q45bBY9G7ayWnw9wGWxbNMfJotbn/gtPs16yGxxaMo0Ngduj52z7rJ7
+        bFrVyeZx59oeNo/Pm+Q8Tn39zB7AGqVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2RiqWdobB5r
+        ZWSqpG9nk5Kak1mWWqRvl6CXcX3uR8aCd7wVy87NY2tgfMfdxcjJISFgIrHt8y/GLkYuDiGB
+        pYwSZz+dZIJIyEicnNbACmELS/y51sUGYgsJvGeUmN3I28XIwSEskCLx92okSJhNwFCi6y1I
+        CReHiMAKJomtM7+wgySYBUwlfmzeyw7Re5RR4tImsDm8AnYSv1v3gM1nEVCVeHK4lxnEFhVI
+        lvhweikrRI2gxMmZT1hAbE4Be4lZE7ayQsw0k5i3+SEzhC0v0bx1NpQtLnHryXymCYxCs5C0
+        z0LSMgtJyywkLQsYWVYxiqSWFuem5xYb6hUn5haX5qXrJefnbmIExuW2Yz8372Cc9+qj3iFG
+        Jg7GQ4wSHMxKIrx/mZQThXhTEiurUovy44tKc1KLDzGaAv0zkVlKNDkfmBjySuINzQxMDU3M
+        LA1MLc2MlcR5t85dEy8kkJ5YkpqdmlqQWgTTx8TBKdXAFGtq8MIlsObTFQ2b7NypKqufKR36
+        oT5X4af61a3K1zP17y1s3Onrx9d353F7y3+LdIO5m86bTmx3+Xw5PX7a3EwB8XmvFR7mXXoz
+        RX3JIYbvYlHzmS7f+zuPPc56ExvrhSYnD8u527x5NF/riE3kit6pv2buNZPFVp9Mbriom2QK
+        bpsWrhp/l+F+6eTd/7X/5POUfCiecniGzdwlJ42keSZWu1zr5gi7YHDBPPqdR0rHDZsqkbpi
+        P86tG7Q/snonbH+2jFNKUiWyvapEP844wEIjOvHL7H1+3YXCQg1fjoXr1594+kJWPCBT8Yv6
+        wRgt33pDncWXP/7q2GG/jSXM0CuoLmbnh2iPxLmqUe+UWIozEg21mIuKEwHdhozxVAMAAA==
+X-CMS-MailID: 20210823101020eucas1p279a20f312326f22d203054ff8069f1a8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210812092201eucas1p1ba2165a230084f99e3a858827788cf54
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210812092201eucas1p1ba2165a230084f99e3a858827788cf54
+References: <CGME20210812092201eucas1p1ba2165a230084f99e3a858827788cf54@eucas1p1.samsung.com>
+        <20210812092152.726874-1-robert.foss@linaro.org>
+        <4f2e8d19-8c89-53d4-37d3-97dead170065@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 11:47:52PM +0800, Boqun Feng wrote:
-> On Thu, Aug 19, 2021 at 03:17:58PM +0100, Lorenzo Pieralisi wrote:
-> > On Tue, Jul 27, 2021 at 02:06:49AM +0800, Boqun Feng wrote:
-> > > Hi,
-> > > 
-> > > This is the v6 for the preparation of virtual PCI support on Hyper-V
-> > > ARM64, Previous versions:
-> > > 
-> > > v1:	https://lore.kernel.org/lkml/20210319161956.2838291-1-boqun.feng@gmail.com/
-> > > v2:	https://lore.kernel.org/lkml/20210503144635.2297386-1-boqun.feng@gmail.com/
-> > > v3:	https://lore.kernel.org/lkml/20210609163211.3467449-1-boqun.feng@gmail.com/
-> > > v4:	https://lore.kernel.org/lkml/20210714102737.198432-1-boqun.feng@gmail.com/
-> > > v5:	https://lore.kernel.org/lkml/20210720134429.511541-1-boqun.feng@gmail.com/
-> > > 
-> > > Changes since last version:
-> > > 
-> > > *	Rebase to 5.14-rc3
-> > > 
-> > > *	Comment fixes as suggested by Bjorn.
-> > > 
-> > > The basic problem we need to resolve is that ARM64 is an arch with
-> > > PCI_DOMAINS_GENERIC=y, so the bus sysdata is pci_config_window. However,
-> > > Hyper-V PCI provides a paravirtualized PCI interface, so there is no
-> > > actual pci_config_window for a PCI host bridge, so no information can be
-> > > retrieve from the pci_config_window of a Hyper-V virtual PCI bus. Also
-> > > there is no corresponding ACPI device for the Hyper-V PCI root bridge,
-> > > which introduces a special case when trying to find the ACPI device from
-> > > the sysdata (see patch #3).
-> > > 
-> > > With this patchset, we could enable the virtual PCI on Hyper-V ARM64
-> > > guest with other code under development.
-> > > 
-> > > Comments and suggestions are welcome.
-> > > 
-> > > Regards,
-> > > Boqun
-> > > 
-> > > Arnd Bergmann (1):
-> > >   PCI: hv: Generify PCI probing
-> > > 
-> > > Boqun Feng (7):
-> > >   PCI: Introduce domain_nr in pci_host_bridge
-> > >   PCI: Support populating MSI domains of root buses via bridges
-> > >   arm64: PCI: Restructure pcibios_root_bridge_prepare()
-> > >   arm64: PCI: Support root bridge preparation for Hyper-V
-> > >   PCI: hv: Set ->domain_nr of pci_host_bridge at probing time
-> > >   PCI: hv: Set up MSI domain at bridge probing time
-> > >   PCI: hv: Turn on the host bridge probing on ARM64
-> > > 
-> > >  arch/arm64/kernel/pci.c             | 29 +++++++---
-> > >  drivers/pci/controller/pci-hyperv.c | 86 +++++++++++++++++------------
-> > >  drivers/pci/probe.c                 | 12 +++-
-> > >  include/linux/pci.h                 | 11 ++++
-> > >  4 files changed, 93 insertions(+), 45 deletions(-)
-> > 
-> > If we take this series via the PCI tree we'd need Catalin/Will ACKs on
-> > patches 3-4.
-> > 
-> 
-> Got it.
-> 
-> > I need some time to look into [1] (thanks for that).
-> > 
-> > Without [1] patch 8 is ugly, that's no news. The question is whether
-> > it is worth waiting for a kernel cycle to integrate [1] into this series
-> > or not.
-> > 
-> > Is it really a problem if we postpone this series for another kernel
-> > cycle so that we can look into it ?
-> > 
-> 
-> Well, it's definitely better for me that we can have it in 5.15-rc1 ;-),
-> because it's a dependency for Hyper-V virtual PCI support on ARM64 and
-> we plan to send the rest of work in 5.15 cycle. And I can just base on
-> hyperv-next for the rest of the work if this is in 5.15-rc1. But yes,
-> it's not really a problem, since this one still needs to work with other
-> patches to support virtual PCI on ARM64 Hyper-V.
-> 
-> In fact, I personally don't think [1] is better than patch 8 (plus patch
-> 3 & 4): playing with ->private seems dangerous and not very helpful on
-> readiblity, but I agree that we should explore every potential solution,
-> and that's why I send [1].
+On 12.08.2021 12:16, Marek Szyprowski wrote:
+> On 12.08.2021 11:21, Robert Foss wrote:
+>> vfe->ops->hw_version(vfe) is being called before vfe->base has been
+>> assigned, and before the hardware has been powered up.
+>>
+>> Fixes: b10b5334528a9 ("media: camss: vfe: Don't read hardware version 
+>> needlessly")
+>>
+>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Pulled the current series - now let's work together to improve it, I
-will have a look into [1] in the weeks to come and get back to you with
-some feedback.
+This restores old, well tested code path.
 
-Thanks,
-Lorenzo
+Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-> Regards,
-> Boqun
-> 
-> > [1] https://lore.kernel.org/lkml/20210811153619.88922-1-boqun.feng@gmail.com/
+>> ---
+>>   drivers/media/platform/qcom/camss/camss-vfe.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c 
+>> b/drivers/media/platform/qcom/camss/camss-vfe.c
+>> index 6b2f33fc9be2..71f78b40e7f5 100644
+>> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+>> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+>> @@ -604,6 +604,8 @@ static int vfe_get(struct vfe_device *vfe)
+>>           vfe_reset_output_maps(vfe);
+>>             vfe_init_outputs(vfe);
+>> +
+>> +        vfe->ops->hw_version(vfe);
+>>       } else {
+>>           ret = vfe_check_clock_rates(vfe);
+>>           if (ret < 0)
+>> @@ -1299,7 +1301,6 @@ int msm_vfe_subdev_init(struct camss *camss, 
+>> struct vfe_device *vfe,
+>>           return -EINVAL;
+>>       }
+>>       vfe->ops->subdev_init(dev, vfe);
+>> -    vfe->ops->hw_version(vfe);
+>>         /* Memory */
+>
+> Best regards
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
