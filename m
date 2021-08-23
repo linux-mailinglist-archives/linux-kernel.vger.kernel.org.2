@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921683F51BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E9B3F51C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhHWUMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:12:24 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:41889 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhHWUMW (ORCPT
+        id S232276AbhHWUMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232237AbhHWUMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:12:22 -0400
-Received: by mail-ua1-f48.google.com with SMTP id 75so8628582uav.8;
-        Mon, 23 Aug 2021 13:11:39 -0700 (PDT)
+        Mon, 23 Aug 2021 16:12:47 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405EEC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:12:04 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so39585125otf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=POiwHJcH23QK5EMwQWZLBbZ3EMO9rr1bfufNeMb6Dtg=;
+        b=Zwa/jYiq9ajQMhNpRT/4QSrtThvXd2nt92BHoxA5m6czWSb3MotJ8TSzKMo7lWmHjP
+         iz8x0+Ty+Mf4E2VooQpEgfOkpzzMMIF0eQaC4RZ42FsjK3KkpXiGG1xFloZiayXa2/e2
+         YHegKFwlOEBOBi5eARqw1xAHWPN8FURvGpZno=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AUpBckzMvXVbMxlgD0BPIwC+4lv7J+IVl66jvYDUuHo=;
-        b=b/b73x2JZ4KjhsEwbh5qDWlakyitUjKztvAIJ2rAAS4I4bNKH+9KGyptdIZoxFWiDs
-         xQ/JCbD6F/C+01FIMrGXBChGCGpFU8WOaTevRNKmehs/N1R1QuDMmDQvQqtFoAwFSQcS
-         nHwi55DtxdZh7Ti9Vvjqwh4TOGEq2ZccpGCkDiiZkl34QyVdGaOzdAB3dNugpW6ItK2A
-         i8FNJobWm6h2P6tNbJEbh6zdm7bko7rp/n+06ZbOqLaDwOEihCYapfnXO/SnHl4Fo8Yz
-         KxTOcqZkMrBKZWH06K0/wurAt6tuwMu9t36vhdnGK3T8mYFytmwnNVfALqScEc4hMqkC
-         Ydjw==
-X-Gm-Message-State: AOAM530bdWMhqCjhvhTk+pTYI9PsLqsxz4jvhMEzCNeWqOd3888NK55r
-        UarhKBuKCqKEwMvXHvR/MjVBdfIeBkGr1IokwoA=
-X-Google-Smtp-Source: ABdhPJwDCxee7jV2n8a1Svw2CcluiW33jrACAl+tVwINni9XvoTwC+e80Xv1R19D9/bVXLChNcBX2LeY5QOT0/9jxzU=
-X-Received: by 2002:a67:c789:: with SMTP id t9mr25809822vsk.60.1629749499174;
- Mon, 23 Aug 2021 13:11:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=POiwHJcH23QK5EMwQWZLBbZ3EMO9rr1bfufNeMb6Dtg=;
+        b=AE8iNpZ8cpV+8/bSMXF7iEzz3r2pqvf7LDH2DRZvi7Rfbk4OfxKVtI8En9196kB2uD
+         nWLZCtogH3uHKPqq3P1VfBPNWnizVoKimMM1Ljt/AXQVE2JW3AhVTxn7mjFTpKG2xdcB
+         T5N5Z6BnBpUy8yi4Kh6Mge+6oFFSsk/vIs09T9UT7Iaituftrnu91U5yjEjXYqc1pFRN
+         ZRax1qMHj84UUIKEVYrX14gBiZ/zCI9a7RwBT7ggDrS9RUNWyy5cOfzmmGRtp0wqgRbk
+         pUDigROQnYZHoWV5oSgjESLfON3m3IdDQOAw6OrhbxvPQQ1oXdqjzuyKN1NmvTBS3L7v
+         btfg==
+X-Gm-Message-State: AOAM530xRFTMTHpnSbDiAFiv/M3OcJ9aEpqM4Twh19MocSTpxoRBmA5Z
+        zlwkPgeXLOemafSVRls/NDClHksMkvScySar4B6xHA==
+X-Google-Smtp-Source: ABdhPJwex7Sxwx8tVMxehFbfF/8WWkSlhNesrH+dQz9oiKkGffOPqfeYUCY9Hqs1Ac+eg4X+WB0Dtfd+ojZu+YfTLcM=
+X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr258227oib.166.1629749523660;
+ Mon, 23 Aug 2021 13:12:03 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 23 Aug 2021 15:12:02 -0500
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CAHp75VcG9KajNpDbewDq7QzotB6t7MfwiGk15FaobX+cmMVSzg@mail.gmail.com>
- <CAK9rFnwrA=W2Vk5yFwG4N_WS=eBXXnhtexA+tqgAYb6xOAO4oQ@mail.gmail.com>
- <CAHp75VdfrJ3JV_gL3xCLHOiw6Tj-5Ep7z5JKWUFKFbUt8gobcw@mail.gmail.com>
- <CAK9rFnx--z_pr_yR6CqGsH04ddwUtx4rxc7MxNNmy7ZSF86+Mg@mail.gmail.com>
- <CAMuHMdUz4vUQzXBHA9AiT3w6L20yBpgd0emVZJb=v_qw70qiJQ@mail.gmail.com> <CAK9rFnw-j8whcsK-NQ4w4+sCdrumCk7Bb=J+KfsF9ZO2Tf5r5g@mail.gmail.com>
-In-Reply-To: <CAK9rFnw-j8whcsK-NQ4w4+sCdrumCk7Bb=J+KfsF9ZO2Tf5r5g@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Aug 2021 22:11:27 +0200
-Message-ID: <CAMuHMdW0s=x+DBZffeuEcyifDRfy8YM3c_wEAZscO7twR2wj3Q@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Brad Larson <brad@pensando.io>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <1629344185-27368-11-git-send-email-sibis@codeaurora.org>
+References: <1629344185-27368-1-git-send-email-sibis@codeaurora.org> <1629344185-27368-11-git-send-email-sibis@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 23 Aug 2021 15:12:02 -0500
+Message-ID: <CAE-0n50_nRZc+YCYwFdBe+4oMpxovQgiF9e_ciDwAJussUAwmw@mail.gmail.com>
+Subject: Re: [PATCH v3 10/10] arm64: dts: qcom: sc7280: Update Q6V5 MSS node
+To:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        mka@chromium.org, robh+dt@kernel.org,
+        saiprakash.ranjan@codeaurora.org, will@kernel.org
+Cc:     ohad@wizery.com, agross@kernel.org, mathieu.poirier@linaro.org,
+        robin.murphy@arm.com, joro@8bytes.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, evgreen@chromium.org,
+        dianders@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brad,
-
-On Mon, Aug 23, 2021 at 6:31 PM Brad Larson <brad@pensando.io> wrote:
-> On Mon, Aug 23, 2021 at 12:50 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Mon, Aug 23, 2021 at 3:14 AM Brad Larson <brad@pensando.io> wrote:
-> > > On Mon, Mar 29, 2021 at 3:40 AM Andy Shevchenko
-> [...]
-> > > Regarding the above module question and Kconfig definition, since I
-> > > first looked at this and reviewed the comments I realized I should be
-> > > using builtin.  The file gpio/Kconfig is currently this
-> > >
-> > > config GPIO_ELBA_SPICS
-> > >         def_bool y
-> > >         depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
-> >
-> > That means the driver will default to yes by merely enabling
-> > COMPILE_TEST, which is a no-go.
-> >
-> >     config GPIO_ELBA_SPICS
-> >             bool "one-line summary"
-> >             depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
-> >             default y if ARCH_PENSANDO_ELBA_SOC
+Quoting Sibi Sankar (2021-08-18 20:36:25)
+> Update MSS node to support MSA based modem boot on SC7280 SoCs.
 >
-> Thanks Geert, changed to this
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
 >
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -241,8 +241,9 @@ config GPIO_EIC_SPRD
->           Say yes here to support Spreadtrum EIC device.
+> v3:
+>  * Place remoteproc_mpss node in alphabetical order above pinctrl
+>    section. [Stephen]
 >
->  config GPIO_ELBA_SPICS
-> +       bool "Pensando Elba SoC SPI Chip Select as GPIO support"
-> +       depends on ARCH_PENSANDO_ELBA_SOC
->         def_bool y
-> -       depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi |  7 +++++++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi     | 19 ++++++++++++++++---
+>  2 files changed, 23 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> index 103d89c1e1c7..f1c8641b0c26 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+> @@ -263,6 +263,13 @@
+>         status = "okay";
+>  };
+>
+> +&remoteproc_mpss {
+> +       status = "okay";
+> +       compatible = "qcom,sc7280-mss-pil";
+> +       iommus = <&apps_smmu 0x124 0x0>, <&apps_smmu 0x488 0x7>;
+> +       memory-region = <&mba_mem &mpss_mem>;
 
-So we're losing the COMPILE_TEST ability again?
+Nitpick:
 
-Gr{oetje,eeting}s,
+	memory-region = <&mba_mem>, <&mpss_mem>;
 
-                        Geert
+would be better as it indicates that &mpss_mem isn't being parsed when
+&mba_mem is being parsed, i.e. they're independent phandles.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> +};
+> +
+>  &sdhc_1 {
+>         status = "okay";
+>
