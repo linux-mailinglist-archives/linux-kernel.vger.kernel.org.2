@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C003F4BB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F873F4BBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235121AbhHWNaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhHWNa2 (ORCPT
+        id S236874AbhHWNbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:31:02 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:33352 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236749AbhHWNbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:30:28 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B1AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 06:29:46 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id n27so5088075eja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 06:29:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzAS6d5SoNpyFEOG1nN+QHEZYRPRGiJlkEZo4kbWHVc=;
-        b=m9Sqr/u36/VD+Jg7yl6lLtMzyqT1jvN43qYFNLC4a7VwtFk5TN3JC84YhZqogex3uk
-         aVMy+BBAECZePD6wm8ruVnWMgNqJFKxVgKqexq637wqLGF2JO56mWqEYyyMjHoCJzcjR
-         B5nKQ5hwfVo6/fRjLPM+ANZStbB2LZ7Hk7tf+BioeAmQ2MGdUI9WzZ7SMkCjOQp7/d5n
-         6uamUuo6H4usXXoKdmem6haJToJuLR5g0dHTifTnSw27+8A8byrHZdPy2s1A4InTlXs5
-         CAaNJwb5GRXfhzMIQK8pIVbQpLM3EGfGCpezbJ5wl5Bfxd1/wY+2VKAkMsXlwGPYcRYm
-         K6sg==
+        Mon, 23 Aug 2021 09:31:01 -0400
+Received: by mail-ot1-f49.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so36368221oti.0;
+        Mon, 23 Aug 2021 06:30:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzAS6d5SoNpyFEOG1nN+QHEZYRPRGiJlkEZo4kbWHVc=;
-        b=QCu6AXuihSJJUkYPreTk9zpktkTs8DdsW68YnER8XEPvrC/ePeTWoauOl9jlhpjCbn
-         L45bs9sbSAIIWmapCtYRQxPQy2kfzO7pOqWA/pTMoTGooU145W6TM/CBF5P2y5BYThuw
-         jL9fE/lY7jjTzmAgjTNlTqsAtWxb2nX/KoU0F+D2KAoUJ3koHJi55VIQU5wZ0aw2KXA9
-         8znOazv6rruJmnqyivuOgY51MERMONPYGWwJWkmVwSOreKSpnUa4xYN9nBRCjvH1gtCG
-         FTpjpcuxMORnqQSDbBWGoCdGWZlgC6nlhljlAJVJK2eUzzi74Q+HanQ7nXtF7GvYUllt
-         82rQ==
-X-Gm-Message-State: AOAM531m3ox92Aka/tvNmeqobUw6sqC3/jW2ERWFtdeqsrSqJim+Y9C6
-        4kZawu9f5u1k345tUrBhhpRn8t4WmVSkGiNd5b05tw==
-X-Google-Smtp-Source: ABdhPJwO2ELw3p5hZojnTdXaANerTM83mayFHUGmW3GkWzFD6K9zoHjPN0sOUOL94omXdv1oSrta0pkaceOlYnflPk4=
-X-Received: by 2002:a17:906:4149:: with SMTP id l9mr4240515ejk.388.1629725384496;
- Mon, 23 Aug 2021 06:29:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210822115755.3171937-1-knaerzche@gmail.com> <CAAEAJfDLvctAk3omLgFBBbzvufFKwSW5_cQZ+MjvyN4khGOe_w@mail.gmail.com>
- <24767661.6Emhk5qWAg@phil>
-In-Reply-To: <24767661.6Emhk5qWAg@phil>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Mon, 23 Aug 2021 10:29:33 -0300
-Message-ID: <CAAEAJfA0QGcDJLOh=-zZKnd7=UFchDAqkK+OSMgm4yv524OHuA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: Re-add interrupt-names for RK3399's vpu
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Alex Bee <knaerzche@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-        Johan Jonker <jbx6244@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=XGH/N+L2+U1AK/PyLB02W0HR4smVzphBSVo0yrwHj3w=;
+        b=ne5ddfI7YTrJ8T7+64+fxKyyeBfMBc9k69+kKnktMF3xhnafWnj8YDpBjxpiz825CV
+         2WZ7kexCU09EQoo7KMzYVUJI0qZi5Eo8WerAHjXiS9I9miaVQzBLvTHoUCj266F6jP7/
+         wyfAGNwf5vTi02CR+oJ9LSTgsNTbTEq1oCkeqx66JB7PvhteEGlkWiL8EfOf6tOogq6v
+         t65bSYr8ZwsYSQ/cq9uL69XFL9ya1PFGGR3OwSnzwZ+0ssnzLSeXKVYXzGSH+4eQFicu
+         evRTTfLVNJvmzCrXLLBPg+dou3rCoOnCCPIZcZKtQXz4Kwpd811hQvt7jxrtJm01EvNt
+         x8Lw==
+X-Gm-Message-State: AOAM5314h7WTeNqH+CMz0Fj+wpRa5Ng6DlfsLUleS/qkxu9N48XUHrm+
+        ip3qR09oOagM50Xb6H1MyA==
+X-Google-Smtp-Source: ABdhPJx8MpP3QPsG5GX1aNHO4CPWW9ZkwZhCZKv98klIVnxne4wAuE8z6lu9K5L2pzMB/LMgJwCh2Q==
+X-Received: by 2002:a05:6808:21a3:: with SMTP id be35mr11438422oib.31.1629725418110;
+        Mon, 23 Aug 2021 06:30:18 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id u15sm2015752oor.34.2021.08.23.06.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 06:30:17 -0700 (PDT)
+Received: (nullmailer pid 1982770 invoked by uid 1000);
+        Mon, 23 Aug 2021 13:30:13 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     yangcong <yangcong5@huaqin.corp-partner.google.com>
+Cc:     daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, thierry.reding@gmail.com,
+        airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        dianders@google.com, sam@ravnborg.org
+In-Reply-To: <20210823115125.1070257-3-yangcong5@huaqin.corp-partner.google.com>
+References: <20210823115125.1070257-1-yangcong5@huaqin.corp-partner.google.com> <20210823115125.1070257-3-yangcong5@huaqin.corp-partner.google.com>
+Subject: Re: [v2 2/2] dt-bindngs: display: panel: Add BOE tv110c9m-ll3 panel bindings
+Date:   Mon, 23 Aug 2021 08:30:13 -0500
+Message-Id: <1629725413.512809.1982769.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 22 Aug 2021 at 17:25, Heiko Stuebner <heiko@sntech.de> wrote:
->
-> Hi,
->
-> Am Sonntag, 22. August 2021, 16:37:24 CEST schrieb Ezequiel Garcia:
-> > Hi Alex, Heiko,
-> >
-> > On Sun, 22 Aug 2021 at 08:58, Alex Bee <knaerzche@gmail.com> wrote:
-> > >
-> > > Commit a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
-> > > intended to remove the interrupt-names property for mmu nodes, but it
-> > > also removed it for the vpu node in rk3399.dtsi. That makes the driver
-> > > fail probing currently.
-> > > Fix this by re-adding the property for this node.
-> > >
-> > > Fixes: a728c10dd62a ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
-> >
-> > AFAICS a728c10dd62a removed lots of interrupt-names properties
-> > from devices other than IOMMU.
-> >
-> > Maybe it's best to revert it?
->
-> where did you see more mistakes in it?
->
-> I.e. first of all, at least when grepping through my kernel history, I only see
->   commit 53a05c8f6e8e ("arm64: dts: rockchip: remove interrupt-names from iommu nodes")
-> with a different hash and at least there I see a lot of iommu interrupt removals
-> and this one line removing the vpu irqs in error.
->
-> So from my glance at it, applying Alex' patch should solve the issue?
->
+On Mon, 23 Aug 2021 19:51:25 +0800, yangcong wrote:
+> Add documentation for boe tv110c9m-ll3 panel.
+> 
+> Signed-off-by: yangcong <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  .../display/panel/boe,tv110c9m-ll3.yaml       | 83 +++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml
+> 
 
-Ah, seems you are right. Sorry for the noise!
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Thanks,
-Ezequiel
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.example.dts:25.42-43 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1519635
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
