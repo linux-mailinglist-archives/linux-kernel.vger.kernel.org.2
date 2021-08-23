@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687CC3F4928
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922773F492B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236301AbhHWK6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:58:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:51768 "EHLO foss.arm.com"
+        id S236327AbhHWLAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:00:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:14228 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234701AbhHWK6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:58:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C5F8D1042;
-        Mon, 23 Aug 2021 03:57:56 -0700 (PDT)
-Received: from [10.57.43.155] (unknown [10.57.43.155])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A6ADC3F66F;
-        Mon, 23 Aug 2021 03:57:53 -0700 (PDT)
-Subject: Re: [PATCH v1 2/3] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Li Huafei <lihuafei1@huawei.com>, coresight@lists.linaro.org
-References: <20210809112727.596876-1-leo.yan@linaro.org>
- <20210809112727.596876-3-leo.yan@linaro.org>
- <2b4e0c07-a8df-cca6-6a94-328560f4b0c6@arm.com>
- <20210823095155.GC100516@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <319ee11a-06f7-abde-6495-d2175928b9fe@arm.com>
-Date:   Mon, 23 Aug 2021 11:57:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234701AbhHWLAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:00:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629716376; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=MJCv4YecPSOTSMkjIN24O75yrgZxZR9C54D+qxlobsE=; b=CGJ/ZUTJXMq3Vd7UQnODB4xbbB4kKoFl+TGxpwM8YBXJskKPD4DHU5lkCpqaAkbVrKoN+zho
+ 1/gP123lktag4Luy6SQIhUdHQQp5j27iusrRBIPEFbhMISYIb5Fv+hNS0jn0sRpPPXLOyjVK
+ XeQiRSVEsRIg4C4Kuz0t8ALFrq0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 61237f9589fbdf3ffec135a0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 10:59:33
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 94210C4338F; Mon, 23 Aug 2021 10:59:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.9] (cpe-75-80-185-151.san.res.rr.com [75.80.185.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BA675C43460;
+        Mon, 23 Aug 2021 10:59:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org BA675C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Stop EP0 transfers during pullup
+ disable
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org
+References: <20210823092324.1949-1-wcheng@codeaurora.org>
+ <87eeakld0d.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <9e11d0dc-c043-6b55-2c33-fb1a55b18156@codeaurora.org>
+Date:   Mon, 23 Aug 2021 03:59:29 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210823095155.GC100516@leoy-ThinkPad-X240s>
+In-Reply-To: <87eeakld0d.fsf@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -59,138 +64,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Felipe,
 
-
-On 23/08/2021 10:51, Leo Yan wrote:
-> Hi James,
+On 8/23/2021 2:34 AM, Felipe Balbi wrote:
 > 
-> On Fri, Aug 13, 2021 at 05:22:31PM +0100, James Clark wrote:
->> On 09/08/2021 12:27, Leo Yan wrote:
->>> +/*
->>> + * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
->>> + * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
->>> + * the issues caused by the below sequence on multiple CPUs: when perf tool
->>> + * accesses either the load operation or the store operation for 64-bit value,
->>> + * on some architectures the operation is divided into two instructions, one
->>> + * is for accessing the low 32-bit value and another is for the high 32-bit;
->>> + * thus these two user operations can give the kernel chances to access the
->>> + * 64-bit value, and thus leads to the unexpected load values.
->>> + *
->>> + *   kernel (64-bit)                        user (32-bit)
->>> + *
->>> + *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
->>> + *       STORE $aux_data      |       ,--->
->>> + *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
->>> + *       STORE ->aux_head   --|-------`     smp_rmb()
->>> + *   }                        |             LOAD $data
->>> + *                            |             smp_mb()
->>> + *                            |             STORE ->aux_tail_lo
->>> + *                            `----------->
->>> + *                                          STORE ->aux_tail_hi
->>> + *
->>> + * For this reason, it's impossible for the perf tool to work correctly when
->>> + * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
->>> + * can not simply limit the AUX ring buffer to less than 4GB, the reason is
->>> + * the pointers can be increased monotonically, whatever the buffer size it is,
->>> + * at the end the head and tail can be bigger than 4GB and carry out to the
->>> + * high 32-bit.
->>> + *
->>> + * To mitigate the issues and improve the user experience, we can allow the
->>> + * perf tool working in certain conditions and bail out with error if detect
->>> + * any overflow cannot be handled.
->>> + *
->>> + * For reading the AUX head, it reads out the values for three times, and
->>> + * compares the high 4 bytes of the values between the first time and the last
->>> + * time, if there has no change for high 4 bytes injected by the kernel during
->>> + * the user reading sequence, it's safe for use the second value.
->>> + *
->>> + * When update the AUX tail and detects any carrying in the high 32 bits, it
->>> + * means there have two store operations in user space and it cannot promise
->>> + * the atomicity for 64-bit write, so return '-1' in this case to tell the
->>> + * caller an overflow error has happened.
->>> + */
->>> +u64 __weak compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
->>> +{
->>> +	struct perf_event_mmap_page *pc = mm->userpg;
->>> +	u64 first, second, last;
->>> +	u64 mask = (u64)(UINT32_MAX) << 32;
->>> +
->>> +	do {
->>> +		first = READ_ONCE(pc->aux_head);
->>> +		/* Ensure all reads are done after we read the head */
->>> +		smp_rmb();
->>> +		second = READ_ONCE(pc->aux_head);
->>> +		/* Ensure all reads are done after we read the head */
->>> +		smp_rmb();
->>> +		last = READ_ONCE(pc->aux_head);
->>> +	} while ((first & mask) != (last & mask));
->>> +
->>> +	return second;
->>> +}
->>> +
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+> 
+>> During a USB cable disconnect, or soft disconnect scenario, a pending
+>> SETUP transaction may not be completed, leading to the following
+>> error:
 >>
->> Hi Leo,
+>>     dwc3 a600000.dwc3: timed out waiting for SETUP phase
 >>
->> I had a couple of questions about this bit. If we're assuming that the
->> high bytes of 'first' and 'last' are equal, then 'second' is supposed
->> to be somewhere in between or equal to 'first' and 'last'.
+>> If this occurs, then the entire pullup disable routine is skipped and
+>> proper cleanup and halting of the controller does not complete.
+> 
+> nit: might want to add a blank line between paragraphs to aid
+> readability
+> 
+>> Instead of returning an error (which is ignored from the UDC
+>> perspective), allow the pullup disable to routine to continue, which
+>                                          ^^
+>                                          remove this?
+> 
+>> will also handle disabling of EP0/1.  This will end any active
+>> transfers as well.  Ensure to clear any delayed_status as well, as the
+>> timeout could happen within the STATUS stage.
 >>
->> If that's the case, wouldn't it be better to return 'last', because it's
->> closer to the value at the time of reading?
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>> Changes in v2:
+>>  - Removed calls to dwc3_ep0_end_control_data() and just allow the ep disables
+>>    on EP0 handle the proper ending of transfers.
+>>  - Ensure that delayed_status is cleared, as ran into enumeration issues if the
+>>    SETUP transaction fails on a STATUS stage.  Saw delayed_status == TRUE on the
+>>    next connect, which blocked further SETUP transactions to be handled.
+>>
+>>  drivers/usb/dwc3/gadget.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index 5d084542718d..8b6a95c35741 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -2430,7 +2430,6 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>  				msecs_to_jiffies(DWC3_PULL_UP_TIMEOUT));
+>>  		if (ret == 0) {
+>>  			dev_err(dwc->dev, "timed out waiting for SETUP phase\n");
+>> -			return -ETIMEDOUT;
+>>  		}
 > 
->> And then in that case, if last is returned, then why do a read for
->> 'second' at all? Can 'second' be skipped and just read first and last?
+> Since the `if' now has a single statement, you should remove the curly braces.
 > 
-> Simply to say, the logic can be depicted as:
-> 
->   step 1: read 'first'
->   step 2: read 'second' -> There have no any atomicity risk if 'first'
->                            is same with 'last'
->   step 3: read 'last'
-> 
-> The key point is if the 'first' and 'last' have the same value in the
-> high word, there have no any increment for high word in the middle of
-> 'first' and 'last', so we don't worry about the atomicity for 'second'.
-> 
-> But we cannot promise the atomicity for reading 'last', let's see
-> below sequence:
-> 
->              CPU(a)                                 CPU(b)
->   step 1: read 'first' (high word)
->           read 'first' (low word)
->   step 2: read 'second' (high word)
->           read 'second' (low word)
->   step 3: read 'last' (high word)
->                                        --> write 'last' (high word)
->                                        --> write 'last' (low word)
->           read 'last' (low word)
-> 
-> 
-> Even 'first' and 'last' have the same high word, but the 'last' cannot
-> be trusted.
-> 
->> Also maybe it won't make a difference, but is there a missing smp_rmb()
->> between the read of 'last' and 'first'?
-> 
-> Good question, from my understanding, we only need to promise the flow
-> from step 1 to step 3, it's not necessary to add barrier in the middle
-> of the two continuous loops.
-> 
-> Thanks for reviewing!
-> 
+Thanks for the reviews!  Will fix them up and resend.
 
-Ok thanks for the explanation, that makes sense now. I do have one other
-point about the documentation for the function:
+Thanks
+Wesley Cheng
 
-> + * When update the AUX tail and detects any carrying in the high 32 bits, it
-> + * means there have two store operations in user space and it cannot promise
-> + * the atomicity for 64-bit write, so return '-1' in this case to tell the
-> + * caller an overflow error has happened.
-> + */
-
-I couldn't see how it can ever return -1, it seems like it would loop forever
-until it reads the correct value.
-
-
-> Leo
-> 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
