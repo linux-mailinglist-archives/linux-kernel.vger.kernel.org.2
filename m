@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA85D3F5387
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49C63F533F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbhHWW4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:56:19 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.29]:20733 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229632AbhHWW4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:56:18 -0400
-X-Greylist: delayed 1506 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 18:56:18 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 1858E845E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:09:21 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id II88mTIwRMGeEII89mUctQ; Mon, 23 Aug 2021 17:09:21 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Nvz4RJ/c/ELjx3o/GfsmIR+Yc//YtkkK/MQGr5AMep4=; b=zv/w2fImFL6b0Vo0Dxl/s87Kcx
-        hCdga5LHQftIJUkQ5PdSnygHb5Tlff/KB/athbmQIF06S0yY/wVErVf4xeYHo3A5qbR0y7RJKWtwK
-        VPKFWbHCbhDwrUkpdBl2fd41cugSPok7xtuiWUSYfGHZM2hJ+Zou3wLplyXyHgR7GMQDswiKfOZFP
-        IpdB0M0YdxVbE/UTpDuoQsq4N0/ATPSQHcfjCEpLMGefo24xm/b1Zoi63IkHZuXrIMc/6Znqutxr3
-        O90g3stlvYxKEdtDwz2N+/7rtdxCCHWZI7/nx7i5yMQowBeuaTH2PSlBlIvS3nEiNtv/RWlFpM3Yr
-        vG42CHqQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:36712 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1mII88-001CSE-7v; Mon, 23 Aug 2021 17:09:20 -0500
-Subject: Re: [PATCH][next] scsi: smartpqi: Replace one-element array with
- flexible-array member
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Don Brace <don.brace@microchip.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        storagedev@microchip.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210810210741.GA58765@embeddedor>
- <yq1pmucojub.fsf@ca-mkp.ca.oracle.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <d721d67e-1eb1-7d4c-24f5-a22ae7fe347b@embeddedor.com>
-Date:   Mon, 23 Aug 2021 17:12:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233060AbhHWWPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 18:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229467AbhHWWPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 18:15:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E694C61372;
+        Mon, 23 Aug 2021 22:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629756863;
+        bh=JF2HqacLwQICzgIPcy3oKNYo1NieMroVH2xKBOo9jQs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mh7qVhOqfWqgekEWpZYtZIvKDq+9JXoqwF4f8tzK3xYycm/++Rnp5evNbnxxS+z0M
+         gD2bbxiCudwua+g4iDOgrvNIlBRTF2hTIOVrgDyLwqcKf9d1+C/J3QuBbnuQDYvnWo
+         Zhp2lZTSTgkWefgyhoKdcdUujkofK8z3WtpjGWQjgY8r67XkciAQxG3jk+rpHIBlIj
+         fk1uh5KXR02DS23vkhMHgEE7fXTnUEHntro4PepjKxvtVY5Mm2Em+DcRToTLXyrLGL
+         8+V2xPNVs649LHkQwrMmvGXuYrvH81eOnh2O0B/rOP/Y/V62VylERr7gvtyIONrtVc
+         7CUU33t1aA6kw==
+Received: by mail-ej1-f52.google.com with SMTP id bt14so40096101ejb.3;
+        Mon, 23 Aug 2021 15:14:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530wcnLFUO42W9ISN4tQ3XWTJXLMztpyaaemDq8tm2yowIWW+2gR
+        d7oOp61NbfUrK/mjwl8h8aTF+r21RR/Y2W8TOw==
+X-Google-Smtp-Source: ABdhPJyh97aQd1btpsPulS7e70mmsnXpZbONnzuIUhwc6/N7l8tedcjFWMIpqEkIcjy8ExdaYuuixZDgTwslup/dBz4=
+X-Received: by 2002:a17:907:b06:: with SMTP id h6mr5293665ejl.130.1629756862536;
+ Mon, 23 Aug 2021 15:14:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <yq1pmucojub.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1mII88-001CSE-7v
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:36712
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 7
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20210820144722.169226-1-maz@kernel.org> <a67743f9-869b-28df-d714-db15da4ebe06@gmail.com>
+ <YSPtI//SJh1CpHRP@robh.at.kernel.org> <bcb2e89f-9768-8435-35d9-d02140628b9a@gmail.com>
+In-Reply-To: <bcb2e89f-9768-8435-35d9-d02140628b9a@gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 23 Aug 2021 17:14:11 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJs2ayHFpOo7kS4K96Sy3xDkxeWYNMTDF9Ssd9D79LKng@mail.gmail.com>
+Message-ID: <CAL_JsqJs2ayHFpOo7kS4K96Sy3xDkxeWYNMTDF9Ssd9D79LKng@mail.gmail.com>
+Subject: Re: [PATCH] of: Don't allow __of_attached_node_sysfs() without CONFIG_SYSFS
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Mon, Aug 23, 2021 at 4:27 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>
+> On 8/23/21 1:46 PM, Rob Herring wrote:
+> > On Sun, Aug 22, 2021 at 11:01:15PM -0500, Frank Rowand wrote:
+> >> Hi Marc,
+> >>
+> >> On 8/20/21 9:47 AM, Marc Zyngier wrote:
+> >>> Trying to boot without SYSFS, but with OF_DYNAMIC quickly
+> >>> results in a crash:
+> >>>
+> >>> [    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+> >>> [...]
+> >>> [    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
+> >>> [    0.105810] Hardware name: linux,dummy-virt (DT)
+> >>> [  0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+> >>> [    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
+> >>> [    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
+> >>> [...]
+> >>> [    0.134087] Call trace:
+> >>> [    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
+> >>> [    0.136054]  safe_name+0x4c/0xd0
+> >>> [    0.136994]  __of_attach_node_sysfs+0xf8/0x124
+> >>> [    0.138287]  of_core_init+0x90/0xfc
+> >>> [    0.139296]  driver_init+0x30/0x4c
+> >>> [    0.140283]  kernel_init_freeable+0x160/0x1b8
+> >>> [    0.141543]  kernel_init+0x30/0x140
+> >>> [    0.142561]  ret_from_fork+0x10/0x18
+> >>>
+> >>> While not having sysfs isn't a very common option these days,
+> >>> it is still expected that such configuration would work.
+> >>>
+> >>> Paper over it by bailing out from __of_attach_node_sysfs() if
+> >>> CONFIG_SYSFS isn't enabled.
+> >>
+> >> CONFIG_SYSFS should be automatically selected when CONFIG_OF_DYNAMIC
+> >> is enabled, and it should not be possible to disable CONFIG_SYSFS
+> >> in this case.
+> >
+> > That used to be true, but isn't now.
+>
+> OK.  I agree with you, but when I investigated the original patch
+> email I came to a different conclusion because of the way that I
+> used make menuconfig to debug the situation.
+>
+> It is true when I start with a .config created from 'make qcom_defconfig',
+> then select OF_UNITTEST, which is the only way I can see OF_DYNAMIC.  It
+> is the "if OF_UNITTEST" that means SYSFS can not be disabled.
 
-On 8/16/21 22:01, Martin K. Petersen wrote:
-> 
-> Gustavo,
-> 
->> There is a regular need in the kernel to provide a way to declare
->> having a dynamically sized set of trailing elements in a
->> structure. Kernel code should always use “flexible array members”[1]
->> for these cases. The older style of one-element or zero-length arrays
->> should no longer be used[2].
-> 
-> Applied to 5.15/scsi-staging, thanks!
+Not really. Disabling SYSFS has nothing to do with the DT code. It's
+not super easy though. It required setting EXPERT and disabling
+CONFIGFS_FS and things selecting it (PCIE endpoint and USB gadget).
 
-Thanks for this. :)
+> If I start with the .config that Marc supplied, then make menuconfig
+> still does not show the OC_DYNAMIC option, but leaves it set since
+> it was already set.  In this case SYSFS remains disabled because
+> OF_UNITTEST is also disabled.
 
-Could you take this series too, please:
+I don't see the relationship between SYSFS and OF_UNITTEST.
 
-https://lore.kernel.org/linux-hardening/cover.1628136510.git.gustavoars@kernel.org/
+> Using '/OF_DYNAMIC' from within make menuconfig, to get more info
+> about OF_DYNAMIC tells me that the prompt for OF_DYNAMIC is visible
+> if OF && OF_UNITTEST.  This is due to the "if OF_UNITTEST" in line 58
+> of drivers/of/Kconfig in the OF_DYNAMIC specification.
+>
+> Thus I can't figure out how to use make menuconfig to set OF_DYNAMIC
+> without setting OF_UNITTEST.  I tried setting OF_UNITTEST, then setting
+> OF_DYNAMIC, saving the changes, then another make menuconfig to
+> disable OF_UNITTEST, which then has the side effect of unsetting
+> OF_DYNAMIC.
 
-Thanks!
---
-Gustavo
+Selecting OF_OVERLAY also.
+
+> Would you accept a patch that removes the "if OF_UNITTEST" from
+> the Kconfig entry for OF_DYNAMIC?
+
+I guess. The purpose of making it visible was for compile testing, so
+maybe make it 'if COMPILE_TEST' instead?
+
+
+Looking at occurrences of CONFIG_OF_DYNAMIC, there's more than I'd
+like. This for example is a common pattern:
+
+drivers/spi/spi.c:      if (IS_ENABLED(CONFIG_OF_DYNAMIC))
+drivers/spi/spi.c-
+WARN_ON(of_reconfig_notifier_register(&spi_of_notifier));
+
+Really, of_reconfig_notifier_register() should just return 0 if
+!IS_ENABLED(CONFIG_OF_DYNAMIC).
+
+Rob
