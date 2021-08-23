@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D2D3F48A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968423F48A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233399AbhHWK3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:29:12 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:37149 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236096AbhHWK3F (ORCPT
+        id S236171AbhHWK3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236096AbhHWK3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:29:05 -0400
-Received: (Authenticated sender: hadess@hadess.net)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id C5E40240006;
-        Mon, 23 Aug 2021 10:28:21 +0000 (UTC)
-Message-ID: <7a8a8d56c4e6addfc41b5dd5262968bd169f538f.camel@hadess.net>
-Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Luke Jones <luke@ljones.dev>
-Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
-        platform-driver-x86@vger.kernel.org
-Date:   Mon, 23 Aug 2021 12:28:21 +0200
-In-Reply-To: <1EQ5YQ.6O8MNIPTU6V4@ljones.dev>
-References: <20210820095726.14131-1-luke@ljones.dev>
-         <20210820095726.14131-2-luke@ljones.dev>
-         <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
-         <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
-         <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
-         <c19dfdde11754c234ca8a45c4af2187699498ee8.camel@hadess.net>
-         <U8X4YQ.79I8GZJ1LDW02@ljones.dev>
-         <b20a879dce98f27dfc68b86aaf486be9e623eacf.camel@hadess.net>
-         <1EQ5YQ.6O8MNIPTU6V4@ljones.dev>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        Mon, 23 Aug 2021 06:29:36 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251CDC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:28:54 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id mq3so11615589pjb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ilKjy382tEqa7gStpBRz59Gr6MRunEshTjEeiH1h2JA=;
+        b=Nf9y0HaDZZTMBiU3gKfNU1c8lX/eVkGiVZtSy/+Z7QdeLAz8ZEw6+m3aSB2Q70T+8d
+         NWhQv9c94DaK58O13+01OKgVouHiRX8y1aMCYomnvkVYOGtCfRl3cbeWKHxBRE1qp7zB
+         jE23PmQzrvCySaZ62ujHBand3wNsZQzdAJi+8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ilKjy382tEqa7gStpBRz59Gr6MRunEshTjEeiH1h2JA=;
+        b=CFQKmiQjDlaToPQQpEnwgL3TiaCFXgjCZogFhcFEYNG1o7bkCMydhaJIErL9ctt9yX
+         CUYCOCstdz3D4y6lNHM5eHvLvYLhttGhTDE37QWaWe0CNFiMVadx4erUuMYlPpQAKcJN
+         oLj3l5JWNtrSkKHVVoMquvxKOlA7SUShFMn23H6q5HApDZvBKzRNL4WfRO9pe/HtP0B2
+         6peSrO8GltTQcH7V+BhQcazbS+ql36ICMvdDOdqEs5tTS+2UsosdYXXvSrUhF92FEnbG
+         TT4P/bik1IarJjQzhSVMh5LPBAL8DwKHNAjJ+LMYvAcF7cJO5ME9aNKz9dk4dFtQ8lpx
+         UAUA==
+X-Gm-Message-State: AOAM532BIUX15DEjQf10EsocnImHdbHRC6pKjNocF9QTjq0RzDLjXgCH
+        5RhASgu6GtwmaKO82Y8I4XMWrg==
+X-Google-Smtp-Source: ABdhPJzReVtwd7Yt+cXXy5xtZ6aXZ+ZHjspUFa/ZcLYCB9GL/ljwsw0yWGII3+QOh3jIWf0ZciDm4w==
+X-Received: by 2002:a17:90b:2348:: with SMTP id ms8mr19205896pjb.121.1629714533737;
+        Mon, 23 Aug 2021 03:28:53 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:8821:8b2f:2912:f9e4])
+        by smtp.gmail.com with ESMTPSA id m9sm6793814pfk.61.2021.08.23.03.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 03:28:53 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 19:28:48 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv4 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <YSN4YJZwsSo4JwCu@google.com>
+References: <20210727070517.443167-1-senozhatsky@chromium.org>
+ <20210727070517.443167-9-senozhatsky@chromium.org>
+ <7e172194-9519-fd1f-6261-c40108a5d722@xs4all.nl>
+ <9e5b1d16-bfb8-dc89-beda-94a641be793d@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e5b1d16-bfb8-dc89-beda-94a641be793d@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-08-21 at 09:30 +1200, Luke Jones wrote:
+On (21/08/03 10:39), Hans Verkuil wrote:
+> >> +
+> >> +	/*
+> >> +	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
+> >> +	 * bit is cleared) we perform dma_vmap_noncontiguous() in vb2_dc_vadd().
 > 
-> 
-> On Fri, Aug 20 2021 at 13:39:02 +0200, Bastien Nocera 
-> <hadess@hadess.net> wrote:
-> > On Fri, 2021-08-20 at 23:00 +1200, Luke Jones wrote:
-> > > 
-> > > 
-> > >  On Fri, Aug 20 2021 at 12:51:08 +0200, Bastien Nocera
-> > >  <hadess@hadess.net> wrote:
-> > >  > On Fri, 2021-08-20 at 12:43 +0200, Bastien Nocera wrote:
-> > >  > >  On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
-> > >  > >  > > Am I going to get bug reports from Asus users that will
-> > >  > > complain
-> > >  > >  > > that
-> > >  > >  > > power-profiles-daemon doesn't work correctly, where I
-> > > will
-> > >  > > have
-> > >  > >  > > to
-> > >  > >  > > wearily ask if they're using an Asus Rog laptop?
-> > >  > >  >
-> > >  > >  > No. Definitely not. The changes to fan curves per-profile
-> > > need
-> > >  > > to
-> > >  > >  > be
-> > >  > >  > explicitly enabled and set. So a new user will be unaware
-> > > that
-> > >  > > this
-> > >  > >  > control exists (until they look for it) and their laptop
-> > > will
-> > >  > >  > behave
-> > >  > >  > exactly as default.
-> > >  > >
-> > >  > >  "The user will need to change the fan curves manually so
-> > > will
-> > >  > >  definitely remember to mention it in bug reports" is a very
-> > >  > > different
-> > >  > >  thing to "the user can't change the fan curves to be 
-> > > nonsensical
-> > >  > > and
-> > >  > >  mean opposite things".
-> > >  > >
-> > >  > >  I can assure you that I will eventually get bug reports
-> > > from
-> > >  > > "power
-> > >  > >  users" who break their setup and wonder why things don't
-> > > work
-> > >  > >  properly,
-> > >  > >  without ever mentioning the changes they made changes to
-> > > the 
-> > > fan
-> > >  > >  curves, or anything else they might have changed.
-> > >  >
-> > >  > A way to taint the settings that power-profiles-daemon could
-> > > catch
-> > >  > would be fine by me. I absolutely don't want to have to
-> > > support
-> > >  > somebody's tweaks until they undo them.
-> > > 
-> > >  Definitely understood. Do you have something in mind?
-> > 
-> > A sysfs attribute with boolean data that shows whether custom fan
-> > curves are used would be enough.
-> 
-> The path /sys/devices/platform/asus-nb-wmi/active_fan_curve_profiles 
-> should be usable like this? I added this as the method for
-> controlling 
-> which fan curves for which profiles are active.
-> 
-> If empty, then no custom fan curves are active at all. If it contains
-> any combination of strings "quiet, balanced, performance" then those 
-> associated (named) platform_profiles have an active fan curve and you
-> can throw up a general warning, maybe add the contents of that file
-> too?
+> Typo: vb2_dc_vadd -> vb2_dc_vaddr
 
-That works for me, although I would probably have preferred a way that
-wasn't specific to the asus-wmi module, I'm sure I can made do with
-that.
-
-Thanks
-
+Done.
