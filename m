@@ -2,143 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B253F5089
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704433F508F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhHWSoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:44:19 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:62565 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhHWSoR (ORCPT
+        id S231211AbhHWSoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:44:54 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:40495 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229883AbhHWSow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:44:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1629744215; x=1661280215;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=l3BuDyALSNXMVLCHv9r8ynYhlNyHsnWaTDrJJMRqkE0=;
-  b=RWVf9gj1dN7RHb23tFPygRUIeSdJDoseISUrWguX4Pp5OgPmnlUDkDa6
-   W+PFmBLj6tbiSnS2vJlPSgfmKcXV8i4c452EYwjeVvfZBje7JPTkdNDAx
-   6SuOzvv4iOEVEp+TlK8g/TOG1fueOH30dQtP65v9rPekiEPFuu0RTJone
-   g=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 23 Aug 2021 11:43:33 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 11:43:33 -0700
-Received: from [10.226.59.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.922.7; Mon, 23 Aug 2021
- 11:43:31 -0700
-Subject: Re: [PATCH v6 3/4] bus: mhi: core: Process execution environment
- changes serially
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        <manivannan.sadhasivam@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>, <loic.poulain@linaro.org>,
-        <carl.yin@quectel.com>, <naveen.kumar@quectel.com>
-References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org>
- <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-Message-ID: <899da888-321a-c228-8537-b72821700dc7@quicinc.com>
-Date:   Mon, 23 Aug 2021 12:43:31 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 23 Aug 2021 14:44:52 -0400
+Received: by mail-ot1-f47.google.com with SMTP id x9-20020a056830278900b0051b8be1192fso18235385otu.7;
+        Mon, 23 Aug 2021 11:44:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kdAQTBVBdpO3tKzp/N2wLGvECx2POADKDdUfZBY9y4U=;
+        b=eM965Yf6NIYc5SEkC+/+gDAUB0nhOnUDbrNb81A6A+R49acNOVTcmeTfUJDZChRSPF
+         hLY9iaKJaQgyhne1yvOm93FXWkTFiDrN3XN2oWyazzOK7dOw+sik6eswbOovti1gZRVC
+         aLkZdneJ1rtMpU9aSPN5IL88/2U5R5UVeskNg+h9NM+H6/tQWH/uenbbofVkyX1iZDC9
+         3YlGUV3tJNnimw4dpQA0ylnAb5POUkyLHpvRq8EUHW0XeIPPpPqu3fqO97tUa0zTnHN0
+         x6GOPCzcWAUJDomBTg3RuOBjUm2AjlfsfOtqxnVmuVz2Ov2mTsgS8joZyYK9WEHPr+Rl
+         UQtg==
+X-Gm-Message-State: AOAM533/Qw8O0LggqPR6vD4lkZmFoWRBRA2/H7ppZbpv1PXpTv9oihXy
+        9AlleSlUjhckf3xgDINK+w==
+X-Google-Smtp-Source: ABdhPJzZjR+Nj4QG2ogBy2F/h0usSwcnHjOq8GIRulKwQlUZzmGAcvWhHmwS0xgGWgh2ZYyIKkX38g==
+X-Received: by 2002:a05:6808:1522:: with SMTP id u34mr4330332oiw.76.1629744249675;
+        Mon, 23 Aug 2021 11:44:09 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j17sm3976492ots.10.2021.08.23.11.44.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 11:44:09 -0700 (PDT)
+Received: (nullmailer pid 2499843 invoked by uid 1000);
+        Mon, 23 Aug 2021 18:44:08 -0000
+Date:   Mon, 23 Aug 2021 13:44:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: net: Add bindings for LiteETH
+Message-ID: <YSPseMd1nDHnF/Db@robh.at.kernel.org>
+References: <20210820074726.2860425-1-joel@jms.id.au>
+ <20210820074726.2860425-2-joel@jms.id.au>
 MIME-Version: 1.0
-In-Reply-To: <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03f.na.qualcomm.com (10.85.0.47) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820074726.2860425-2-joel@jms.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/2021 4:23 PM, Bhaumik Bhatt wrote:
-> In current design, whenever the BHI interrupt is fired, the
-> execution environment is updated. This can cause race conditions
-> and impede ongoing power up/down processing. For example, if a
-> power down is in progress, MHI host updates to a local "disabled"
-> execution environment. If a BHI interrupt fires later, that value
-> gets replaced with one from the BHI EE register. This impacts the
-> controller as it does not expect multiple RDDM execution
-> environment change status callbacks as an example. Another issue
-> would be that the device can enter mission mode and the execution
-> environment is updated, while device creation for SBL channels is
-> still going on due to slower PM state worker thread run, leading
-> to multiple attempts at opening the same channel.
+On Fri, Aug 20, 2021 at 05:17:25PM +0930, Joel Stanley wrote:
+> LiteETH is a small footprint and configurable Ethernet core for FPGA
+> based system on chips.
 > 
-> Ensure that EE changes are handled only from appropriate places
-> and occur one after another and handle only PBL modes or RDDM EE
-> changes as critical events directly from the interrupt handler.
-> Simplify handling by waiting for SYS ERROR before handling RDDM.
-> This also makes sure that we use the correct execution environment
-> to notify the controller driver when the device resets to one of
-> the PBL execution environments.
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> ---
+> v2:
+>  - Fix dtschema check warning relating to registers
+>  - Add names to the registers to make it easier to distinguish which is
+>    what region
+>  - Add mdio description
+>  - Includ ethernet-controller parent description
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>  .../bindings/net/litex,liteeth.yaml           | 79 +++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/litex,liteeth.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/litex,liteeth.yaml b/Documentation/devicetree/bindings/net/litex,liteeth.yaml
+> new file mode 100644
+> index 000000000000..30f8f8b0b657
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/litex,liteeth.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/litex,liteeth.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LiteX LiteETH ethernet device
+> +
+> +maintainers:
+> +  - Joel Stanley <joel@jms.id.au>
+> +
+> +description: |
+> +  LiteETH is a small footprint and configurable Ethernet core for FPGA based
+> +  system on chips.
+> +
+> +  The hardware source is Open Source and can be found on at
+> +  https://github.com/enjoy-digital/liteeth/.
+> +
+> +allOf:
+> +  - $ref: ethernet-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: litex,liteeth
+> +
+> +  reg:
+> +    minItems: 3
+> +    items:
+> +      - description: MAC registers
+> +      - description: MDIO registers
+> +      - description: Packet buffer
+> +
+> +  reg-names:
+> +    minItems: 3
 
-<snip>
+Need to define the names here.
 
-> @@ -452,27 +451,30 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
->   	}
->   	write_unlock_irq(&mhi_cntrl->pm_lock);
->   
-> -	 /* If device supports RDDM don't bother processing SYS error */
-> -	if (mhi_cntrl->rddm_image) {
-> -		/* host may be performing a device power down already */
-> -		if (!mhi_is_active(mhi_cntrl))
-> -			goto exit_intvec;
-> +	if (pm_state != MHI_PM_SYS_ERR_DETECT || ee == mhi_cntrl->ee)
-> +		goto exit_intvec;
->   
-> -		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
-> +	switch (ee) {
-> +	case MHI_EE_RDDM:
-> +		/* proceed if power down is not already in progress */
-> +		if (mhi_cntrl->rddm_image && mhi_is_active(mhi_cntrl)) {
->   			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
-> +			mhi_cntrl->ee = ee;
->   			wake_up_all(&mhi_cntrl->state_event);
->   		}
-> -		goto exit_intvec;
-> -	}
-> -
-> -	if (pm_state == MHI_PM_SYS_ERR_DETECT) {
-> +		break;
-> +	case MHI_EE_PBL:
-> +	case MHI_EE_EDL:
-> +	case MHI_EE_PTHRU:
-> +		mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
-> +		mhi_cntrl->ee = ee;
->   		wake_up_all(&mhi_cntrl->state_event);
-> -
-> -		/* For fatal errors, we let controller decide next step */
-> -		if (MHI_IN_PBL(ee))
-> -			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
-> -		else
-> -			mhi_pm_sys_err_handler(mhi_cntrl);
-> +		mhi_pm_sys_err_handler(mhi_cntrl);
-> +		break;
-> +	default:
-> +		wake_up_all(&mhi_cntrl->state_event);
-> +		mhi_pm_sys_err_handler(mhi_cntrl);
-> +		break;
->   	}
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
 
-Bhaumik, can you explain the above change?  Before this patch (which is 
-now committed), if there was a fatal error, the controller was notified 
-(MHI_CB_FATAL_ERROR) and it decided all action.  After this patch, the 
-controller is notified, but also the core attempts to handle the syserr.
+> +  rx-fifo-depth: true
+> +  tx-fifo-depth: true
 
-This is a change in behavior, and seems to make a mess of the 
-controller, and possibly the core fighting each other.
+Needs a vendor prefix, type, description and constraints.
 
-Specifically, I'm rebasing the AIC100 driver onto 5.13, which has this 
-change, and I'm seeing a serious regression.  I'm thinking that for the 
-PBL/EDL/PTHRU case, mhi_pm_sys_err_handler() should not be called.
-
-Thoughts?
+> +  mac-address: true
+> +  local-mac-address: true
+> +  phy-handle: true
+> +
+> +  mdio:
+> +    $ref: mdio.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mac: ethernet@8020000 {
+> +        compatible = "litex,liteeth";
+> +        reg = <0x8021000 0x100>,
+> +              <0x8020800 0x100>,
+> +              <0x8030000 0x2000>;
+> +        reg-names = "mac", "mdio", "buffer";
+> +        rx-fifo-depth = <1024>;
+> +        tx-fifo-depth = <1024>;
+> +        interrupts = <0x11 0x1>;
+> +        phy-handle = <&eth_phy>;
+> +
+> +        mdio {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          eth_phy: ethernet-phy@0 {
+> +            reg = <0>;
+> +          };
+> +        };
+> +    };
+> +...
+> +
+> +#  vim: set ts=2 sw=2 sts=2 tw=80 et cc=80 ft=yaml :
+> -- 
+> 2.32.0
+> 
+> 
