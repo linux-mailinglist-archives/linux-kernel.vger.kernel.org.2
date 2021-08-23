@@ -2,100 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87023F4E6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FB53F4E74
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhHWQdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:33:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
+        id S230025AbhHWQgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:36:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229962AbhHWQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3129D6101C;
-        Mon, 23 Aug 2021 16:33:08 +0000 (UTC)
+        id S229632AbhHWQgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:36:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 840A66101C;
+        Mon, 23 Aug 2021 16:35:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629736388;
-        bh=5sOx2aLL6QuASx5rt4q1aJg0cVftu5ctuGF4et88xkw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FxjG1vunvZDj4VqYbLCK2AfkVXJ9x3PeEjDktDLuwS4lUl9zeJcwxLYSA/mpK4w/B
-         LmBwKqTXteYOLedloviZoRGf8d5Uru5rkmi0+ZXxOmQCgIZwuG3lRlsqQwhC17bkik
-         ZdWIWKP3GM2rFjxJYCHHN1uxao9jbJqhSrGMTDnn4IDfQ8CI3F8ULK7BxebWagz+yk
-         F0RQnGNU/ITxCGBYdHKiQnbwplRU7Rc9q8V/YYfGAechzcwUBzLfWje5MdhqKmS1PR
-         50Mfl/184LNDqD5DAwGbU7umfUNLJtzNaaLRc3+gPEPPRuHex5QcvYu5ncwzX1YrRB
-         piWxRG1pboNXA==
-Received: by pali.im (Postfix)
-        id C53CBFC2; Mon, 23 Aug 2021 18:33:05 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 18:33:05 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/7] PCI: aardvark: Check for virq mapping when
- processing INTx IRQ
-Message-ID: <20210823163305.okizte3ejnm6ltra@pali>
-References: <20210625090319.10220-1-pali@kernel.org>
- <20210625090319.10220-3-pali@kernel.org>
- <f38ad6edfb6ee63f273a430154e1038f@kernel.org>
+        s=k20201202; t=1629736555;
+        bh=HBJBKVfBVUOvY/poMB/Dsj5WZ69VPn9lVCfO1CUxGBc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RK3fRxoR8xzAdOD2fU9/etykDOZi7wjr51ntGuEtXiTUsWrEJSO8Qm8YikJGmVtfR
+         dluMQWSAt/O4td6ZT4LHc4ud4wM/yEZOe18Xp9BjcKBufEqFuQ9hcwFKEnqu51FcYC
+         ahnG44wqmM6U5R1+kqcJqc0CLhrtFv3x+qCMTTUYvZ4pGJkg4hhkW3PmFIFAksu/ip
+         +VN3vpBc6+i+8yb7vb26X6pcRXbv2VLuqEkecvTx0vAcleKnZ2fF/eZZU8UtqUiQsr
+         v5tvk/M5Vt2zRnM5RrWe6OhEj64lfNefmuKqNKT7rjVaOXtEmy0Sf0EoS6QUvFI0VN
+         6tIaRIZ2UMZAQ==
+Date:   Mon, 23 Aug 2021 09:35:54 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Stefan Metzmacher <metze@samba.org>
+Subject: Re: [PATCH v3 1/4] net: add accept helper not installing fd
+Message-ID: <20210823093554.30e4c343@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <0c5d77e34ebff09f1f2f6b9bff15b97ec8fbf8ca.1629559905.git.asml.silence@gmail.com>
+References: <cover.1629559905.git.asml.silence@gmail.com>
+        <0c5d77e34ebff09f1f2f6b9bff15b97ec8fbf8ca.1629559905.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f38ad6edfb6ee63f273a430154e1038f@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 06 August 2021 09:29:02 Marc Zyngier wrote:
-> On 2021-06-25 10:03, Pali Rohár wrote:
-> > It is possible that we receive spurious INTx interrupt. So add needed
-> > check
-> > before calling generic_handle_irq() function.
-> > 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Reviewed-by: Marek Behún <kabel@kernel.org>
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  drivers/pci/controller/pci-aardvark.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/controller/pci-aardvark.c
-> > b/drivers/pci/controller/pci-aardvark.c
-> > index 36fcc077ec72..59f91fad2481 100644
-> > --- a/drivers/pci/controller/pci-aardvark.c
-> > +++ b/drivers/pci/controller/pci-aardvark.c
-> > @@ -1226,7 +1226,11 @@ static void advk_pcie_handle_int(struct advk_pcie
-> > *pcie)
-> >  			    PCIE_ISR1_REG);
-> > 
-> >  		virq = irq_find_mapping(pcie->irq_domain, i);
-> > -		generic_handle_irq(virq);
-> > +		if (virq)
-> > +			generic_handle_irq(virq);
-> > +		else
-> > +			dev_err_ratelimited(&pcie->pdev->dev, "unexpected INT%c IRQ\n",
-> > +					    (char)i+'A');
-> >  	}
-> >  }
+On Sat, 21 Aug 2021 16:52:37 +0100 Pavel Begunkov wrote:
+> Introduce and reuse a helper that acts similarly to __sys_accept4_file()
+> but returns struct file instead of installing file descriptor. Will be
+> used by io_uring.
 > 
-> Please use generic_handle_domain_irq() instead of irq_find_mapping()
-> and generic_handle_irq().
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 
-Ok! At the time when I was sending these patches there was no function
-generic_handle_domain_irq().
-
-As all these interrupt related patches are targeting also stable tress
-where is no generic_handle_domain_irq() function too, it would be easier
-for backporting to use irq_find_mapping() + generic_handle_irq(). And
-later after applying all interrupt related patches, include a patch
-which converts all usage to generic_handle_domain_irq().
-
-> Thanks,
-> 
->         M.
-> -- 
-> Jazz is not dead. It just smells funny...
+Acked-by: Jakub Kicinski <kuba@kernel.org>
