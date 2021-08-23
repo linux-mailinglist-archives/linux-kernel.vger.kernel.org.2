@@ -2,80 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4211E3F4372
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B273F4374
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhHWCky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 22:40:54 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:52362 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229958AbhHWCkx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 22:40:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0Ul81QuM_1629686409;
-Received: from 30.21.164.129(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Ul81QuM_1629686409)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 23 Aug 2021 10:40:10 +0800
-Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
- flag
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
- <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
-Message-ID: <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
-Date:   Mon, 23 Aug 2021 10:40:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233672AbhHWCmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 22:42:08 -0400
+Received: from ozlabs.org ([203.11.71.1]:40503 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229958AbhHWCmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 22:42:07 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtGhg08Lxz9sW8;
+        Mon, 23 Aug 2021 12:41:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629686484;
+        bh=p8oByTOGAloztmMhai0zbi98JHCMQvgBGnOUIeW5GlE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=REPKpkgZGF1lAYk7ca2EjMAU4EBNpBTVYgvTg5HkWvjO+5NBAHhdpUgQtIucXomZz
+         BoDm9c+9oPxqev/1ifWcpoco6qILEBZuFbnqln3gg4CYEVw6lCPO8TM5OBazVYNWo3
+         i1QiQK6r81GjQMa+Ww9Fcy4MZ+O5oUnD80EfrgiDyzA7LsT0fDSfpP5JT2b1rnwpk0
+         kbg1yUSSLUrjJW7EGLUh8vqUiGP/vcHVU4vatTd5ehKG2mAih6ycRxo67YxW/uYkDR
+         jhCMWXkoF9CwSj5Mo/t/Il4WjD0XZMNRr1tQ8BVIsrw7g8uRXyZll7xT0dFaWD7ni/
+         6Pm0U2oZ5oLRQ==
+Date:   Mon, 23 Aug 2021 12:41:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Subject: linux-next: manual merge of the drm tree with Linus' tree
+Message-ID: <20210823124122.3d088380@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/bG7XfPthEFmfz/DOLSyhu7w";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shuah,
+--Sig_/bG7XfPthEFmfz/DOLSyhu7w
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/7/28 20:32, Baolin Wang wrote:
-> Hi,
-> 
->> When running the openat2 test suite on ARM64 platform, we got below 
->> failure,
->> since the definition of the O_LARGEFILE is different on ARM64. So we can
->> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
-> 
-> Sorry, I forgot to copy the failure log:
-> 
-> # openat2 unexpectedly returned # 
-> 3['/lkp/benchmarks/kernel_selftests/tools/testing/selftests/openat2'] 
-> with 208000 (!= 208000)
-> not ok 102 openat2 with incompatible flags (O_PATH | O_LARGEFILE) fails 
-> with -22 (Invalid argument)
-> 
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Hi all,
 
-Could you apply this patch if no objection from your side? Thanks.
+Today's linux-next merge of the drm tree got a conflict in:
 
->> ---
->>   tools/testing/selftests/openat2/openat2_test.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/tools/testing/selftests/openat2/openat2_test.c 
->> b/tools/testing/selftests/openat2/openat2_test.c
->> index d7ec1e7..1bddbe9 100644
->> --- a/tools/testing/selftests/openat2/openat2_test.c
->> +++ b/tools/testing/selftests/openat2/openat2_test.c
->> @@ -22,7 +22,11 @@
->>    * XXX: This is wrong on {mips, parisc, powerpc, sparc}.
->>    */
->>   #undef    O_LARGEFILE
->> +#ifdef __aarch64__
->> +#define    O_LARGEFILE 0x20000
->> +#else
->>   #define    O_LARGEFILE 0x8000
->> +#endif
->>   struct open_how_ext {
->>       struct open_how inner;
->>
+  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+
+between commit:
+
+  71ac6f390f6a ("drm/mediatek: Add AAL output size configuration")
+
+from Linus' tree and commit:
+
+  78d1783c3243 ("drm/mediatek: Separate aal sub driver")
+
+from the drm tree.
+
+I fixed it up (I added the following merge resolution patch after
+using the latter version of the above file) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 23 Aug 2021 12:37:29 +1000
+Subject: [PATCH] drm/mediatek: merge fix for "Add AAL output size
+ configuration"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/medi=
+atek/mtk_disp_aal.c
+index 64b45284766a..a6760761088b 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
+@@ -18,7 +18,7 @@
+ #define DISP_AAL_EN				0x0000
+ #define AAL_EN						BIT(0)
+ #define DISP_AAL_SIZE				0x0030
+-
++#define DISP_AAL_OUTPUT_SIZE			0x04d8
+=20
+ struct mtk_disp_aal_data {
+ 	bool has_gamma;
+@@ -57,6 +57,7 @@ void mtk_aal_config(struct device *dev, unsigned int w,
+ 	struct mtk_disp_aal *aal =3D dev_get_drvdata(dev);
+=20
+ 	mtk_ddp_write(cmdq_pkt, w << 16 | h, &aal->cmdq_reg, aal->regs, DISP_AAL_=
+SIZE);
++	mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AA=
+L_OUTPUT_SIZE);
+ }
+=20
+ void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state *state)
+--=20
+2.32.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/bG7XfPthEFmfz/DOLSyhu7w
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjCtIACgkQAVBC80lX
+0GyDuAf+MqP/Zo6dleuzRf78dkVKcymuWgO25c2+tMTN3+2OCCf1a6xLAIqdAW21
+uJ55GbQGRaazlm1go052k/0sSnpZ5w69bwxJRI6WAKurKfhqdh+xmg2OAR+q8REy
+d34opG1QbdL2ZRZfr7bf/499YnRJUdYQGUlXTCYzZSiUd++8UDiEITmQekzl9Kxd
+puJKg6LsojbaCifq/PDf6MX40pu3C/tms7puVNT14TVHPWgRHvigv6yeMLR+QBCF
+IWO2eK5CmDTvDRlQbPHr5Vpr5nIzuDmQzk/WuCZ6X4oUvtB0+6hUrtm3MJ2VZWa9
+CK5sbSfLwZfVR3OsQSe+Ra4AHi+VWg==
+=5vJG
+-----END PGP SIGNATURE-----
+
+--Sig_/bG7XfPthEFmfz/DOLSyhu7w--
