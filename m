@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029AB3F46C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EC13F46D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbhHWIpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235387AbhHWIpQ (ORCPT
+        id S235626AbhHWIsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:48:16 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48025 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235387AbhHWIsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:45:16 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ABBC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:44:33 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id z19so519567edi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OUE9OJKkP1QI+2yCSiJZEjjQO84qj2H/zJA5KUoRH1k=;
-        b=JakRxGtZy/y0fP4/Rc73Qh66wozPZY8cqRojRoCax28Q26tDizOEkWQGWP2Paim/if
-         YXkJ0U7XR5bGysagH61PZcWIsAjDUtFJGUxfh2wHdJZDpoAwab6IPRZNA1w8uexpRL8X
-         kJjdL31aIWmhO681NsZX6GC0xsyg/1pH9fPnG9YgQBT4csXMXMMGfq2F0QKJRDvxPcdy
-         3Jv/tPSwWxbTaDodMWurRl6FiQwbpglKvvbQQfZ8RHTx+tL2ql3Ju8aigBR6ticb8s/J
-         Z92e/dOr+feH9nC/GLIarXoQnA2ejC6vYNTVMO2Uw6imWZZLW2PNUuIhJiVqLmv/R2PM
-         ULWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OUE9OJKkP1QI+2yCSiJZEjjQO84qj2H/zJA5KUoRH1k=;
-        b=O10+wfRu1bbZm06nMEbs3t8OxcbMt4IBxctJPKFVBXqdq2zsaWsENDdJFfAO5elj32
-         BbF31bgvLQJrJhV1sfWWUW/SgNG14VRjDUzmkwprbDQwzGt5+ZcutG0lxg2KHX1qmahy
-         EFrOgaSULQKcsA1xUH8m+Koq0Hf1CCmBeJmpAj933BT8a0WA56dXrZlwxFAwVVXF5ebx
-         PuGOiQoF1Y2YctfxG+nk7SRHCzMDPzcH1yromVKlMUQ1PBmGkdPUwhcUNj0bI0s6SJ3r
-         rEk5YBEh7vG337JzcW2yc9Xng7y3o0Yq7b5VW3cv0AuX88rTrb6/QxaR+nOKCCBUBoHH
-         +I9g==
-X-Gm-Message-State: AOAM53130oQRE6lDyDOXkhtj+MNnugh9LZV1SZMkyf5uqlsJ93rorpgI
-        Inkj7Az/9DQ1m9oz93AxMyA=
-X-Google-Smtp-Source: ABdhPJxBKK4cWjt69sE+zbI8RQCEjnmVzTDIEQwFz/b/TTJwzxr3ULHHkeqxXGufz2PMXpW88+UaMQ==
-X-Received: by 2002:a05:6402:384:: with SMTP id o4mr36864790edv.128.1629708271883;
-        Mon, 23 Aug 2021 01:44:31 -0700 (PDT)
-Received: from localhost ([49.207.137.16])
-        by smtp.gmail.com with ESMTPSA id x13sm7003546ejv.64.2021.08.23.01.44.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 01:44:31 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 14:14:26 +0530
-From:   Aakash Hemadri <aakashhemadri123@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] staging: r8188eu: cast to restricted __be32
-Message-ID: <20210823084426.yo2mhgbyehkwwz3h@xps.yggdrasil>
-References: <cover.1629562355.git.aakashhemadri123@gmail.com>
- <50439a81aca7ce8c3c97ec1c7247f4cd03f645a5.1629562355.git.aakashhemadri123@gmail.com>
+        Mon, 23 Aug 2021 04:48:14 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9F0D6580C63;
+        Mon, 23 Aug 2021 04:47:31 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 23 Aug 2021 04:47:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm3; bh=YtP/mGd/n0beQ9BPe465qCbE6N
+        HfKkagZy8yb8Qg1jY=; b=H28FLAd08NKDFMH9Vaxs8fIkx+hgg4RBFcNoPjd96T
+        bHOK0a0iiq2cE7bS+bZixq4j2QcFfOjLbGt/60m3rfHgvWCFPPdN+rXOQeqznBXp
+        qC6EVu8IR67H2WqcCUX5uGqGuDe1x2G2iQa/h0zjyQuWghAhIeTA69mkhf+e69UB
+        omInCzkfcA7jaeqDaJLVCBWWjb7ODIDw49jJXdiLvOdrsLM8GV/5xidkOanIvSxP
+        9mxMG89FUb0p64XCNmz54JgSddAg0pyM1a/uGn0S7kByaawqiIV8smUSi8kyCHAK
+        1BCi4yURleH+JazV3J6BjpMOZXW/nhJ67ClESVx4EX/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=YtP/mG
+        d/n0beQ9BPe465qCbE6NHfKkagZy8yb8Qg1jY=; b=dDzJTX5qEaYX/2G8L1y+kN
+        nuG+LkilGQAp8IsExwFYWpvLnOwroLjrkKRUhh3WQL9vdEPm+Uda7GgJV/ZELuqU
+        bK13lfsWc9kT9OIDZ9D7lV52gXxy8sdHA4pOkEbneft9rh6tB8GG/kXYvF/eQ0Id
+        l9FnaD/WXbODNRjuYUAL3J+opyaKwcdS7/p4wxf2Sk574ZTlrwseoUYD46n9BJSf
+        P0TtjF5d3IUyo+OdAhvz+ce+zaw7FS0ogJ4ULAs42vqlwiihVcuTr91aBUbKmTp8
+        GonUln8tq5OHoelZMa/MzbZrxg9atunsFEJhlNLAEov8z2gl1XtXn9pYp1wIru8Q
+        ==
+X-ME-Sender: <xms:nmAjYYq1pHpsZLLl_amQPc0vjJ3ry0XUY4Dvv89XcL-qxx4K-yBEWA>
+    <xme:nmAjYepjaYLMU1zNCOGASn7aGy-rYui_PaDWmCgy9Q4uKOsqwRsr9w8szbsW6kI3N
+    3sIXMdW2pRACHm9Frs>
+X-ME-Received: <xmr:nmAjYdMevDW6ia7hvtt4E_BjyAgKhDdlpNGOajk8jfpe1Gu_8LeWGkua_YujrmZQqyXv52VUtcp6QIfA29uW7laYFPObTyPjAcgA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddthedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:nmAjYf4dMo4Ebi9DCHFRB6VF07HsHXpq0ZHGeY7H1GFqRLcdH12Thw>
+    <xmx:nmAjYX69tLiBa0doURMRF-14miTmET8NzvWrGWaT7qqB9VEQTVNCpQ>
+    <xmx:nmAjYfh-QnxsUsqtMKcoUwiCPso2TjHFvqkVnykdva65N5MAZF2Y3A>
+    <xmx:o2AjYeIybqG1DGmHJvpKPuJJySv5ikCZgM-U9bPzwYTV402h8JosEg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 23 Aug 2021 04:47:26 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jonas Karlman <jonas@kwiboo.se>, Sam Ravnborg <sam@ravnborg.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v3 0/8] drm/bridge: Make panel and bridge probe order consistent
+Date:   Mon, 23 Aug 2021 10:47:15 +0200
+Message-Id: <20210823084723.1493908-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <50439a81aca7ce8c3c97ec1c7247f4cd03f645a5.1629562355.git.aakashhemadri123@gmail.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/21 09:48PM, Aakash Hemadri wrote:
-> Fix sparse warning:
-> > rtw_br_ext.c:836:54: warning: cast to restricted __be32
-> 
-> dhpch->cookie is be32, change it's type.
-> 
-> Suggested-by: Larry Finger <Larry.Finger@lwfinger.net>
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> index f6d1f6029ec3..f65d94bfa286 100644
-> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> @@ -649,7 +649,7 @@ struct dhcpMessage {
->  	u_int8_t chaddr[16];
->  	u_int8_t sname[64];
->  	u_int8_t file[128];
-> -	u_int32_t cookie;
-> +	__be32 cookie;
->  	u_int8_t options[308]; /* 312 - cookie */
->  };
->  
-> @@ -671,7 +671,7 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
->  				    (udph->dest == __constant_htons(SERVER_PORT))) { /*  DHCP request */
->  					struct dhcpMessage *dhcph =
->  						(struct dhcpMessage *)((size_t)udph + sizeof(struct udphdr));
-> -					u32 cookie = be32_to_cpu((__be32)dhcph->cookie);
-> +					u32 cookie = be32_to_cpu(dhcph->cookie);
->  
->  					if (cookie == DHCP_MAGIC) { /*  match magic word */
->  						if (!(dhcph->flags & htons(BROADCAST_FLAG))) {
-> -- 
-> 2.32.0
-> 
-
-David Laight suggested to use get_unaligned_be32, I am not sure if it's
-the right thing to do because as far as I understand get_unaligned_be32
-byteshifts the argument.
-
-Can someone please confirm if this change is okay?
-
-Thanks,
-Aakash Hemadri.
+Hi,=0D
+=0D
+We've encountered an issue with the RaspberryPi DSI panel that prevented th=
+e=0D
+whole display driver from probing.=0D
+=0D
+The issue is described in detail in the commit 7213246a803f ("drm/vc4: dsi:=
+=0D
+Only register our component once a DSI device is attached"), but the basic =
+idea=0D
+is that since the panel is probed through i2c, there's no synchronization=0D
+between its probe and the registration of the MIPI-DSI host it's attached t=
+o.=0D
+=0D
+We initially moved the component framework registration to the MIPI-DSI Hos=
+t=0D
+attach hook to make sure we register our component only when we have a DSI=
+=0D
+device attached to our MIPI-DSI host, and then use lookup our DSI device in=
+ our=0D
+bind hook.=0D
+=0D
+However, all the DSI bridges controlled through i2c are only registering th=
+eir=0D
+associated DSI device in their bridge attach hook, meaning with our change=
+=0D
+above, we never got that far, and therefore ended up in the same situation =
+than=0D
+the one we were trying to fix for panels.=0D
+=0D
+The best practice to avoid those issues is to register its functions only a=
+fter=0D
+all its dependencies are live. We also shouldn't wait any longer than we sh=
+ould=0D
+to play nice with the other components that are waiting for us, so in our c=
+ase=0D
+that would mean moving the DSI device registration to the bridge probe.=0D
+=0D
+If the general approach is agreed upon, other bridge drivers will obviously=
+ be=0D
+converted.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+---=0D
+=0D
+Changes from v2:=0D
+  - Changed the approach as suggested by Andrzej, and aligned the bridge on=
+ the=0D
+    panel this time.=0D
+  - Fixed some typos=0D
+=0D
+Changes from v1:=0D
+  - Change the name of drm_of_get_next function to drm_of_get_bridge=0D
+  - Mention the revert of 87154ff86bf6 and squash the two patches that were=
+=0D
+    reverting that commit=0D
+  - Add some documentation=0D
+  - Make drm_panel_attach and _detach succeed when no callback is there=0D
+=0D
+Maxime Ripard (8):=0D
+  drm/bridge: Add documentation sections=0D
+  drm/bridge: Document the probe issue with MIPI-DSI bridges=0D
+  drm/mipi-dsi: Create devm device registration=0D
+  drm/mipi-dsi: Create devm device attachment=0D
+  drm/bridge: ps8640: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: ps8640: Register and attach our DSI device at probe=0D
+  drm/bridge: sn65dsi83: Switch to devm MIPI-DSI helpers=0D
+  drm/bridge: sn65dsi83: Register and attach our DSI device at probe=0D
+=0D
+ Documentation/gpu/drm-kms-helpers.rst  | 12 ++++=0D
+ drivers/gpu/drm/bridge/parade-ps8640.c | 97 ++++++++++++++------------=0D
+ drivers/gpu/drm/bridge/ti-sn65dsi83.c  | 82 +++++++++++-----------=0D
+ drivers/gpu/drm/drm_bridge.c           | 70 +++++++++++++++++--=0D
+ drivers/gpu/drm/drm_mipi_dsi.c         | 81 +++++++++++++++++++++=0D
+ include/drm/drm_mipi_dsi.h             |  4 ++=0D
+ 6 files changed, 256 insertions(+), 90 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
