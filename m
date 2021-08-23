@@ -2,211 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1593F4590
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201733F4596
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhHWHFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:05:23 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:22363 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235136AbhHWHFW (ORCPT
+        id S234939AbhHWHHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234258AbhHWHHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:05:22 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 17N6hHAT051029;
-        Mon, 23 Aug 2021 14:43:19 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Aug
- 2021 15:01:47 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v4 09/15] iio: adc: aspeed: Use devm_add_action_or_reset.
-Date:   Mon, 23 Aug 2021 15:02:34 +0800
-Message-ID: <20210823070240.12600-10-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210823070240.12600-1-billy_tsai@aspeedtech.com>
-References: <20210823070240.12600-1-billy_tsai@aspeedtech.com>
+        Mon, 23 Aug 2021 03:07:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B7CC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:07:04 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1mI42v-0007m7-6A; Mon, 23 Aug 2021 09:07:01 +0200
+Subject: Re: [PATCH v9 05/11] Input: wacom_i2c - Add support for distance and
+ tilt x/y
+To:     Alistair Francis <alistair@alistair23.me>,
+        dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
+        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
+        ping.cheng@wacom.com
+Cc:     alistair23@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210818154935.1154-1-alistair@alistair23.me>
+ <20210818154935.1154-6-alistair@alistair23.me>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <e3d7b9be-cf0e-7074-3e49-45dbff27ce8d@pengutronix.de>
+Date:   Mon, 23 Aug 2021 09:06:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 17N6hHAT051029
+In-Reply-To: <20210818154935.1154-6-alistair@alistair23.me>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch use devm_add_action_or_reset to handle the error in probe
-phase.
+On 18.08.21 17:49, Alistair Francis wrote:
+> Add support for the distance and tilt x/y.
+> 
+> This is based on the out of tree rM2 driver.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  drivers/input/touchscreen/wacom_i2c.c | 35 +++++++++++++++++++++++++--
+>  1 file changed, 33 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> index 28255c77d426..4d0c19fbada4 100644
+> --- a/drivers/input/touchscreen/wacom_i2c.c
+> +++ b/drivers/input/touchscreen/wacom_i2c.c
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 92 +++++++++++++++++++++---------------
- 1 file changed, 55 insertions(+), 37 deletions(-)
+> +	/* Signed */
+> +	tilt_x = le16_to_cpup((__le16 *)&data[11]);
+> +	tilt_y = le16_to_cpup((__le16 *)&data[13]);
+> +
+> +	distance = le16_to_cpup((__le16 *)&data[15]);
 
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index 52db38be9699..1c87e12a0cab 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -187,6 +187,27 @@ static const struct iio_info aspeed_adc_iio_info = {
- 	.debugfs_reg_access = aspeed_adc_reg_access,
- };
- 
-+static void aspeed_adc_unregister_divider(void *data)
-+{
-+	struct clk_hw *clk = data;
-+
-+	clk_hw_unregister_divider(clk);
-+}
-+
-+static void aspeed_adc_reset_assert(void *data)
-+{
-+	struct reset_control *rst = data;
-+
-+	reset_control_assert(rst);
-+}
-+
-+static void aspeed_adc_clk_disable_unprepare(void *data)
-+{
-+	struct clk *clk = data;
-+
-+	clk_disable_unprepare(clk);
-+}
-+
- static int aspeed_adc_vref_config(struct iio_dev *indio_dev)
- {
- 	struct aspeed_adc_data *data = iio_priv(indio_dev);
-@@ -232,6 +253,12 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 			&data->clk_lock);
- 		if (IS_ERR(data->clk_prescaler))
- 			return PTR_ERR(data->clk_prescaler);
-+
-+		ret = devm_add_action_or_reset(data->dev,
-+					       aspeed_adc_unregister_divider,
-+					       data->clk_prescaler);
-+		if (ret)
-+			return ret;
- 		snprintf(clk_parent_name, 32, clk_name);
- 		scaler_flags = CLK_SET_RATE_PARENT;
- 	}
-@@ -244,23 +271,30 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 		&pdev->dev, clk_name, clk_parent_name, scaler_flags,
- 		data->base + ASPEED_REG_CLOCK_CONTROL, 0,
- 		data->model_data->scaler_bit_width, 0, &data->clk_lock);
--	if (IS_ERR(data->clk_scaler)) {
--		ret = PTR_ERR(data->clk_scaler);
--		goto scaler_error;
--	}
-+	if (IS_ERR(data->clk_scaler))
-+		return PTR_ERR(data->clk_scaler);
-+
-+	ret = devm_add_action_or_reset(data->dev, aspeed_adc_unregister_divider,
-+				       data->clk_scaler);
-+	if (ret)
-+		return ret;
- 
- 	data->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 	if (IS_ERR(data->rst)) {
- 		dev_err(&pdev->dev,
- 			"invalid or missing reset controller device tree entry");
--		ret = PTR_ERR(data->rst);
--		goto reset_error;
-+		return PTR_ERR(data->rst);
- 	}
- 	reset_control_deassert(data->rst);
- 
-+	ret = devm_add_action_or_reset(data->dev, aspeed_adc_reset_assert,
-+				       data->rst);
-+	if (ret)
-+		return ret;
-+
- 	ret = aspeed_adc_vref_config(indio_dev);
- 	if (ret)
--		goto vref_config_error;
-+		return ret;
- 
- 	if (data->model_data->wait_init_sequence) {
- 		/* Enable engine in normal mode. */
-@@ -277,13 +311,19 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 					 ASPEED_ADC_INIT_POLLING_TIME,
- 					 ASPEED_ADC_INIT_TIMEOUT);
- 		if (ret)
--			goto poll_timeout_error;
-+			return ret;
- 	}
- 
- 	/* Start all channels in normal mode. */
- 	ret = clk_prepare_enable(data->clk_scaler->clk);
- 	if (ret)
--		goto clk_enable_error;
-+		return ret;
-+
-+	ret = devm_add_action_or_reset(data->dev,
-+				       aspeed_adc_clk_disable_unprepare,
-+				       data->clk_scaler->clk);
-+	if (ret)
-+		return ret;
- 
- 	adc_engine_control_reg_val =
- 		ASPEED_ADC_CTRL_CHANNEL |
-@@ -299,41 +339,19 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	indio_dev->num_channels = data->model_data->num_channels;
- 
- 	ret = iio_device_register(indio_dev);
--	if (ret)
--		goto iio_register_error;
--
-+	if (ret) {
-+		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
-+				  ASPEED_ADC_OP_MODE_PWR_DOWN),
-+		       data->base + ASPEED_REG_ENGINE_CONTROL);
-+		return ret;
-+	}
- 	return 0;
--
--iio_register_error:
--	writel(FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_PWR_DOWN),
--	       data->base + ASPEED_REG_ENGINE_CONTROL);
--	clk_disable_unprepare(data->clk_scaler->clk);
--clk_enable_error:
--poll_timeout_error:
--vref_config_error:
--	reset_control_assert(data->rst);
--reset_error:
--	clk_hw_unregister_divider(data->clk_scaler);
--scaler_error:
--	if (data->model_data->need_prescaler)
--		clk_hw_unregister_divider(data->clk_prescaler);
--	return ret;
- }
- 
- static int aspeed_adc_remove(struct platform_device *pdev)
- {
- 	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
--	struct aspeed_adc_data *data = iio_priv(indio_dev);
--
- 	iio_device_unregister(indio_dev);
--	writel(FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_PWR_DOWN),
--	       data->base + ASPEED_REG_ENGINE_CONTROL);
--	clk_disable_unprepare(data->clk_scaler->clk);
--	reset_control_assert(data->rst);
--	clk_hw_unregister_divider(data->clk_scaler);
--	if (data->model_data->need_prescaler)
--		clk_hw_unregister_divider(data->clk_prescaler);
--
- 	return 0;
- }
- 
+Use get_unaligned_u16 for all three. The existing code doesn't need to do this,
+because with the current struct layout, the array is suitable aligned
+for 2 byte accesses. You are accessing data at odd indices though, so you
+need to use an unaligned accessor.
+
+Cheers,
+Ahmad
+
+> +
+>  	if (!wac_i2c->prox)
+>  		wac_i2c->tool = (data[3] & 0x0c) ?
+>  			BTN_TOOL_RUBBER : BTN_TOOL_PEN;
+> @@ -127,6 +151,9 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
+>  	input_report_abs(input, ABS_X, x);
+>  	input_report_abs(input, ABS_Y, y);
+>  	input_report_abs(input, ABS_PRESSURE, pressure);
+> +	input_report_abs(input, ABS_DISTANCE, distance);
+> +	input_report_abs(input, ABS_TILT_X, tilt_x);
+> +	input_report_abs(input, ABS_TILT_Y, tilt_y);
+>  	input_sync(input);
+>  
+>  out:
+> @@ -202,7 +229,11 @@ static int wacom_i2c_probe(struct i2c_client *client,
+>  	input_set_abs_params(input, ABS_Y, 0, features->y_max, 0, 0);
+>  	input_set_abs_params(input, ABS_PRESSURE,
+>  			     0, features->pressure_max, 0, 0);
+> -
+> +	input_set_abs_params(input, ABS_DISTANCE, 0, features->distance_max, 0, 0);
+> +	input_set_abs_params(input, ABS_TILT_X, -features->tilt_x_max,
+> +			     features->tilt_x_max, 0, 0);
+> +	input_set_abs_params(input, ABS_TILT_Y, -features->tilt_y_max,
+> +			     features->tilt_y_max, 0, 0);
+>  	input_set_drvdata(input, wac_i2c);
+>  
+>  	error = devm_request_threaded_irq(dev, client->irq, NULL, wacom_i2c_irq,
+> 
+
+
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
