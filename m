@@ -2,64 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73943F525F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA2B3F5261
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhHWUqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:46:53 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43482 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232237AbhHWUqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:46:50 -0400
-Received: from zn.tnic (p200300ec2f07d9005f98ffa3f2e7b729.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d900:5f98:ffa3:f2e7:b729])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7B1121EC04D6;
-        Mon, 23 Aug 2021 22:46:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629751562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=PIB4j/WEiXBLu85hP2fKs6OKyZssTGp4ZdswSX0HeSs=;
-        b=CDw6P1KZVOTOyZddT+qu63UmR5fgjwsSwsqKcsxPNWZL4YxN3UucrUP995SXj07WbvXo8H
-        xx/wWHPVHjnkt254Qpd4MwsK2vdWNPwlEfYKiy7kW+0tkWPPZ4nOBl/ldpmhFsIzb8Emo9
-        2s+JV+eWYpo3JWOSQirlJi4uBCvm3uc=
-Date:   Mon, 23 Aug 2021 22:46:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Lijo Lazar <Lijo.Lazar@amd.com>,
-        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: ERROR: modpost: "pm_suspend_target_state"
- [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-Message-ID: <YSQJL0GBzO2ulEpm@zn.tnic>
-References: <YSP6Lv53QV0cOAsd@zn.tnic>
- <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
- <YSQE6fN9uO0CIWeh@zn.tnic>
- <CADnq5_PEOr=bcmLF2x67hx24=EWwH7DAgEsPjYqXgf8i-beEhg@mail.gmail.com>
+        id S232627AbhHWUsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232446AbhHWUsT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 16:48:19 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A602C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:47:36 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id r9so352149pfh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iqqQYPFTiTWzXroeL8WpSJd5c5IZNIpSjhG2loOBzBw=;
+        b=FG6c3nQvIps26rKSmTcaH6Az0LNIhW+K2OGBSOOwoN1HOn84v0raLBdU3r4vaCsd5+
+         R0dDbGiK+J+AOGYsF6ksYuVvdt1QHYLF2JtLwaA4d6BgYQso+LraWV4hqL9nIA5LbIj7
+         blzhix1FGgARpatD1x5G7VlNY0zTsSMpBAh7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iqqQYPFTiTWzXroeL8WpSJd5c5IZNIpSjhG2loOBzBw=;
+        b=PlvqJrSPtlJVvmwCIrSOcAARAwf4bv5neHAQsOhGqHHtecK+TmCTziT73v33QIbFxO
+         7m/XBkp74Ewvjc3YjK9kFMqhUee3neWOBAZ8I/4oSH0WvfkuRN7ZTQrVkkIO2+JqthPA
+         Mnzqf/hdwEZ61qLhk+bz7Rn/qzRPEi8qcZbz59Ov9rV8bXfcp2tj+vFW1uQKzTVq7I4l
+         AuUBS+vPLCKJX2AAjc6/Or4kssKDlNTNRzraGnXgVkSEXpeMIWkAWZ+4f9DLM1qhOSwJ
+         PCJoF/PMFTgihKgCZCDqfw8yXw+Kv0kmobA2RVGkAPVZa6MQWe0xxQSrBnHdctO7h0SD
+         U+Kw==
+X-Gm-Message-State: AOAM5327LecPQHuaQz7FbdeO5jdhFjkCvukkfFs16zwkSNaK32UwAnVD
+        5GA3JHHr26dOpC2QL3HijMX+jQ==
+X-Google-Smtp-Source: ABdhPJwNKgbJA9BPCMqJ6p3GWvSzeBWZnRMWepA/DybWLKOzEyeQZnfgepMqdlvjcJlE1x2oAVmz0g==
+X-Received: by 2002:aa7:8387:0:b029:395:a683:a0e6 with SMTP id u7-20020aa783870000b0290395a683a0e6mr35515262pfm.12.1629751655690;
+        Mon, 23 Aug 2021 13:47:35 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:6b46:820f:610b:67c7])
+        by smtp.gmail.com with UTF8SMTPSA id y25sm15472529pfm.80.2021.08.23.13.47.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 13:47:35 -0700 (PDT)
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-pm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH] thermal: qcom: spmi-adc-tm5: Don't abort probing if a sensor is not used
+Date:   Mon, 23 Aug 2021 13:47:30 -0700
+Message-Id: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CADnq5_PEOr=bcmLF2x67hx24=EWwH7DAgEsPjYqXgf8i-beEhg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 04:31:42PM -0400, Alex Deucher wrote:
-> Thanks. I think that should do the trick. Care to send that as a
-> formal patch?
+adc_tm5_register_tzd() registers the thermal zone sensors for all
+channels of the thermal monitor. If the registration of one channel
+fails the function skips the processing of the remaining channels
+and returns an error, which results in _probe() being aborted.
 
-Sure, but let me run it through the randconfigs tests first to make sure
-nothing else breaks. It is late here so if I don't manage now I'll send
-you a formal version tomorrow morning, CET, the latest.
+One of the reasons the registration could fail is that none of the
+thermal zones is using the channel/sensor, which hardly is a critical
+error (if it is an error at all). If this case is detected emit a
+warning and continue with processing the remaining channels.
 
-Thx.
+Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+---
 
+ drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+index 232fd0b33325..8494cc04aa21 100644
+--- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
++++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+@@ -359,6 +359,12 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
+ 							   &adc_tm->channels[i],
+ 							   &adc_tm5_ops);
+ 		if (IS_ERR(tzd)) {
++			if (PTR_ERR(tzd) == -ENODEV) {
++				dev_warn(adc_tm->dev, "thermal sensor on channel %d is not used\n",
++					 adc_tm->channels[i].channel);
++				continue;
++			}
++
+ 			dev_err(adc_tm->dev, "Error registering TZ zone for channel %d: %ld\n",
+ 				adc_tm->channels[i].channel, PTR_ERR(tzd));
+ 			return PTR_ERR(tzd);
 -- 
-Regards/Gruss,
-    Boris.
+2.33.0.rc2.250.ged5fa647cd-goog
 
-https://people.kernel.org/tglx/notes-about-netiquette
