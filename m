@@ -2,175 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDFF3F48C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ACB3F48C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhHWKia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233899AbhHWKi1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:38:27 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7164EC061575;
-        Mon, 23 Aug 2021 03:37:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtTGH0jB7z9sWc;
-        Mon, 23 Aug 2021 20:37:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629715063;
-        bh=9t3C/iREO5sH++MPba8Laj5fbg4WX2W1szvEXVb10Q8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GnykghnJJCqlTDrqxtukrKZUsUi6AcKTtkD7f23c573Sn3XCwAFeEpq1lSV5xaUJx
-         K57xAEmCyMfWH7cH5j+XZV89JIv1KkXnk65DS4qcoiX4+655mM0srHhPmmWTY8FQGj
-         jRYNvlgoV0hPW/S0pBJwZK/xbaPs8n+wKvF8ZS5Ooq6/mKhngd0RTU3I8WrSlu2OMa
-         BNMDSE3H+6Eib3kC1qy305lPnJK8p7pIG2/RVaBs1iqKvEqEztjz2Jgd8MH58Z8Hlf
-         WvFbgoKwf+hwsbyurcB92KjwJ7oUcymtTvRo4L7ExP8X63jlZ6TU7VQtcQGrmHKwwC
-         oGfCt1W5R1HUA==
-Date:   Mon, 23 Aug 2021 20:37:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
-Message-ID: <20210823203742.5169ad54@canb.auug.org.au>
-In-Reply-To: <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
-References: <20210820192615.23e2e617@canb.auug.org.au>
-        <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
-        <202108202248.921E8C66@keescook>
-        <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
+        id S235104AbhHWKjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:39:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:51506 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233589AbhHWKjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:39:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75BC71042;
+        Mon, 23 Aug 2021 03:39:05 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3F063F66F;
+        Mon, 23 Aug 2021 03:39:04 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] irqchip/gic: Convert to handle_strict_flow_irq()
+In-Reply-To: <87czq4qzd7.wl-maz@kernel.org>
+References: <20210814194737.GA3951530@roeck-us.net> <87sfzb7jeo.mognet@arm.com> <87eeav19mc.wl-maz@kernel.org> <87k0kk7w0c.mognet@arm.com> <87czqasn9u.wl-maz@kernel.org> <878s0t6s7p.mognet@arm.com> <87czq4qzd7.wl-maz@kernel.org>
+Date:   Mon, 23 Aug 2021 11:38:58 +0100
+Message-ID: <875yvw78e5.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/H5_=Jn3oZB3+lLt516dPwFR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/H5_=Jn3oZB3+lLt516dPwFR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Sat, 21 Aug 2021 12:09:48 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
-te:
+On 23/08/21 10:33, Marc Zyngier wrote:
+> On Sun, 22 Aug 2021 23:16:10 +0100,
+> Valentin Schneider <valentin.schneider@arm.com> wrote:
+>>
+>> On 18/08/21 17:58, Marc Zyngier wrote:
+>> > There is the bizarre case of drivers/gpio/gpio-thunderx.c that changes
+>> > the irqchip flow to use either handle_fasteoi_ack_irq or
+>> > handle_fasteoi_mask_irq, which won't play very nicely with this.
+>> > Someone said Cavium?
+>> >
+>>
+>> Humph...
+>>
+>> I'm not familiar at all with the gpiolib irqchips, but I was under the
+>> impression those would involve chained IRQs (it does appear to be the case
+>> for the pl061 GPIOs on a Juno). For those, the innermost desc would be handled
+>> via chained_irq_{enter, exit}() [!!!], and the outermost one via whatever
+>> flow was installed by the relevant driver.
 >
-> On 8/20/21 10:48 PM, Kees Cook wrote:
-> > On Fri, Aug 20, 2021 at 02:54:05PM -0700, Randy Dunlap wrote: =20
-> >> On 8/20/21 2:26 AM, Stephen Rothwell wrote: =20
-> >>> Hi all,
-> >>>
-> >>> Changes since 20210819:
-> >>> =20
-> >>
-> >> Both linux-next and mmotm have many of these warnings when using
-> >> gcc (SUSE Linux) 7.5.0:
-> >>
-> >> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger=
--than' =20
-> >=20
-> > Ew. Thanks for letting me know. I thought I'd verified this existed in
-> > gcc going back to 4.9, but it looks like I did something wrong in that
-> > test.
-> >=20
-> > I think this should fix it:
-> >=20
-> > diff --git a/Makefile b/Makefile
-> > index b0fafc41b686..e33ffa05899e 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1097,7 +1097,7 @@ endif
-> >   ifdef CONFIG_CC_IS_GCC
-> >   # The allocators already balk at large sizes, so silence the compiler
-> >   # warnings for bounds checks involving those possible values.
-> > -KBUILD_CFLAGS +=3D -Wno-alloc-size-larger-than
-> > +KBUILD_CFLAGS +=3D $(call cc-option, -Wno-alloc-size-larger-than)
-> >   endif =20
-> >   >   # disable invalid "can't wrap" optimizations for signed / pointer=
-s =20
-> >  =20
->=20
-> Well. That didn't help. This is very weird.
->=20
-> This -Wno... option works (is accepted, no warning) on most files
-> that are being built, but a few files report an error with it:
->=20
-> ../drivers/gpu/drm/radeon/radeon_object.c: At top level:
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
-> ../drivers/gpu/drm/amd/amdgpu/amdgpu_object.c: At top level:
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
-> ../drivers/hwmon/dell-smm-hwmon.c: At top level:
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
->    CC      arch/x86/kernel/cpu/proc.o
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
-> ../arch/x86/kvm/mmu/mmu.c: At top level:
-> cc1: error: unrecognized command line option '-Wno-alloc-size-larger-than=
-' [-Werror]
->=20
-> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_chardev.c: At top level:
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
-> ../kernel/trace/trace_osnoise.c: At top level:
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
->    CC      kernel/dma/mapping.o
-> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-th=
-an'
->=20
->=20
-> It seems like it might be related to some .config option.
->=20
-> I did a couple of partial builds with V=3D1 but that info didn't help me =
-any.
->=20
->=20
-> If I am the only person seeing (reporting) this build warning, it could
-> just be (another) SUSE GCC-ism. (had one just last week with  -Wmain and
-> kernel/trace/trace_osnoise.c)
+> Not all of them are built like this. There is actually a bunch of
+> these build as full hierarchies (QC, nvidia and some others).
+>
 
-Today, I am also seeing thsese, but only with my sparc{,64} defconfig
-cross builds.  This is with gcc 7.3.1 built from sources.  I also just
-get a few of them.
+I see, thanks!
 
-Also, I have the above "fix" patch applied (Andrew added it to mmots
-today).
+>> I can't easily grok what goes on between that gpio-thunderx.c driver and
+>> gpiolib, but since that GPIO chip has
+>>
+>>         .irq_eoi		= irq_chip_eoi_parent,
+>>
+>> and
+>>
+>>         girq->parent_domain =
+>>                 irq_get_irq_data(txgpio->msix_entries[0].vector)->domain;
+>>
+>> (GPIOs hooked to MSI-X? Do I want to know?)
+>
+> It's good, isn't it? TX1 has all its HW appearing as PCI, even if it
+> clearly isn't PCI underneath.
+>
+>>
+>> I'm guessing it is *not* chained, which means the irq_set_handler_locked()
+>> affects the entire stack :/
+>
+> It does. We can probably fix that, but I won't be able to test (my TX1
+> was taken away a few months ago...). I'll accept body donations, for
+> scientific purposes.
+>
 
-So something weird is happening.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/H5_=Jn3oZB3+lLt516dPwFR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjenYACgkQAVBC80lX
-0GykJwf/QxVBaCpsGAeHrI4VbaB1d79xCF+eidpgQzwwD0tm3bw9lXb+H8IGu65R
-14KGzd2vRuVaSqG/AWeg2/uiffSqho1Tzkouo2Qy0C8p9DYjxDIrDevfPW7XebGw
-bL49NfWTqI1O0DgqgdpekAzrpGeHjP1r+6csc66Z9OSUpWMvfdNcXrBcGe9a2wX3
-wqMtkV0ppvPJnLI1nUUhQ6xnX9KkF+EV99FOPiGm+g3iylEUA2GbQqfHyR/wKEDA
-SXwUbeQ6EJ8k5ePg+MW1OUOUvj4T93AXZezEzbDBVjnqTmelQgyHWPGR9IEqrcuz
-reNUIxcU6+QbZNlrsN6h1is/RL0YdA==
-=ZbXJ
------END PGP SIGNATURE-----
-
---Sig_/H5_=Jn3oZB3+lLt516dPwFR--
+Looks like there are still some over on s/packet/equinix/, so I should be
+able to poke at one.
