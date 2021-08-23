@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681B93F47F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740E93F47F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235912AbhHWJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:53:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27130 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235870AbhHWJxK (ORCPT
+        id S233389AbhHWJ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:56:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhHWJ42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:53:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629712348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Rcf7ZbhkmpU4jxeIC6SCvGLuTy9wJXPCflo+vJTD3XI=;
-        b=PdAokpB7ISAcbN7kgoGuxRS7Jc5NW6CsONisV0RsOPo/vDERMrtrEwU7N2sZN8siw1XH32
-        DneWUPYeLcC1uIQABvzezB5p9BTXzwAbSsNIO+LQFwvkrpp6CNbqwpUVs3mYXlcA5xpb1B
-        ucINEOIhKcR8hViWteSqsUL3N5ddGks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-w-8wv1IyNq-p8_mPHt2Q7g-1; Mon, 23 Aug 2021 05:52:24 -0400
-X-MC-Unique: w-8wv1IyNq-p8_mPHt2Q7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 23 Aug 2021 05:56:28 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCDEC061575;
+        Mon, 23 Aug 2021 02:55:46 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B11FD100E427;
-        Mon, 23 Aug 2021 09:52:23 +0000 (UTC)
-Received: from x1.localdomain.com (unknown [10.39.194.191])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 10DDC60CC9;
-        Mon, 23 Aug 2021 09:52:21 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kate Hsuan <hpa@redhat.com>
-Subject: [PATCH] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
-Date:   Mon, 23 Aug 2021 11:52:20 +0200
-Message-Id: <20210823095220.30157-1-hdegoede@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtSKp4R2pz9sW8;
+        Mon, 23 Aug 2021 19:55:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629712542;
+        bh=zwzpiVdFpUOY3sgpUH9+i47HU7keaNx8ICF/xEg2hKY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ldz2HmwxLh7cUWHIhCxZj5vYjNzl7SWL3bsnjAU6T8556c06n6QdNJRBkwCkGx6R7
+         LW5E4tfDMsVyafrAkVGfF7n9wjnKz4DZ38rvLkndsoOFGvrjibQeKLySV28x4loW7X
+         sfyb4eV4cba+P4/miXxfvsmpLa9xjZLpYo2+hnKIk9LUOFUUDgz0xggolkTbRpUa2U
+         7fStyKn8qcQI3GRiX2wUFrFrMuDk6+2WRuN00kvJUGOH6uFEjkhJEmjGyfoMlhIcxV
+         N/YwuzAnjP8jSuKP3DpS3VSW3fnXKpYhGWSKpjv3eshJjT25xN2hVGu6+dN7VX8cBx
+         lB7Ji5T6Hg06A==
+Date:   Mon, 23 Aug 2021 19:55:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Daniel Henrique Barboza <danielhb413@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the powerpc tree
+Message-ID: <20210823195540.4d7363ed@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; boundary="Sig_/OD3gpQqjzB8vriqSeKQB=VJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
-covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
-and "Samsung SSD 850*" series based on information from Samsung.
+--Sig_/OD3gpQqjzB8vriqSeKQB=VJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But there is a large number of users which is still reporting issues
-with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
-Marvell SATA controllers and all reporters also report these problems
-going away when disabling queued trims.
+Hi all,
 
-Note that with AMD SATA controllers users are reporting even worse
-issues and only completely disabling NCQ helps there, this will be
-addressed in a separate patch.
+After merging the powerpc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
-Cc: stable@vger.kernel.org
-Cc: Kate Hsuan <hpa@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/ata/libata-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+docutils.utils.SystemMessage: Documentation/powerpc/associativity.rst:1: (S=
+EVERE/4) Title overline & underline mismatch.
 
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index 61c762961ca8..3eda3291952b 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -3950,6 +3950,10 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 
--- 
-2.31.1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+NUMA resource associativity
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
 
+Introduced by commit
+
+  1c6b5a7e7405 ("powerpc/pseries: Add support for FORM2 associativity")
+
+There are other obvious problems with this document (but sphinx seems
+to have hung before it reported them).
+
+Like
+
+Form 0
+-----
+
+and
+
+Form 1
+-----
+
+and
+
+Form 2
+-------
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OD3gpQqjzB8vriqSeKQB=VJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjcJwACgkQAVBC80lX
+0Gwknwf/eh5eOVTLm0/phY7/CRqjgQcgkibEQyOqtvv75dvTPGVX/nZtzfRp9n0p
+Xqyk/sWo7FldmiKb3mp8me9CnTaEDayf46TVX8VqxNx5o82CAHbtEymja9SBces5
+trw5sejneOtOWhPF9yIYTXTVy1Q9PDiLbJQCcRfFP5piFGVUDTiTqadPbFDdGWbO
+CASRhJVras/MoOdKEpF7fy6iED0BDTn/gU1Oi0jqPrC6H0euL5TRgDfaTRqsJhol
+BRtytK/oM4n7PBLbyC50pjsoOGGFmZ2xGP2YosqR3bWAaN/h95v0bvoK0IX8bWUI
+iGIu6DbGTceYrOMcXM8CrQ34b9TtzA==
+=UOWd
+-----END PGP SIGNATURE-----
+
+--Sig_/OD3gpQqjzB8vriqSeKQB=VJ--
