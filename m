@@ -2,84 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B59B3F4D86
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1618A3F4D88
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhHWP36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:29:58 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:41771 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230380AbhHWP35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:29:57 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Gtbkd3YCSz9sWm;
-        Mon, 23 Aug 2021 17:29:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qx5fZBqh7l38; Mon, 23 Aug 2021 17:29:13 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Gtbkd2fm1z9sT5;
-        Mon, 23 Aug 2021 17:29:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D4138B7B3;
-        Mon, 23 Aug 2021 17:29:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id DyLsmin7G7es; Mon, 23 Aug 2021 17:29:13 +0200 (CEST)
-Received: from po18078vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 120E98B7AF;
-        Mon, 23 Aug 2021 17:29:13 +0200 (CEST)
-Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id ACAC86BC79; Mon, 23 Aug 2021 15:29:12 +0000 (UTC)
-Message-Id: <316c543b8906712c108985c8463eec09c8db577b.1629732542.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32: Don't use lmw/stmw for saving/restoring non
- volatile regs
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 23 Aug 2021 15:29:12 +0000 (UTC)
+        id S231626AbhHWPaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231574AbhHWPaQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:30:16 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B80C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:29:33 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id 7so15690519pfl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vEaoUziBq3E6zdwPq0ckEpXVtz+BXh6RGLuJML224RM=;
+        b=R1zKGChQimXrdBmVgI9Yg84uCfa/0GDmxaEIaiwyz1EnBS/laU7lveYFQIF/zReUWK
+         9xYFzvI9mL2SgpPDe3K8n2UaUoAjLsUmyJyyx7RgjeievBH3qw7jD5dgZ4wx75bnKY0p
+         ReTmKrg/Z9DAvdfl7ymFeVlu2Pf4A5M9oGEuJRFo5kAnnkTJ6tnPGH6bHd3T+rbg16a5
+         BkCBX4VRt+y15qgq5yIMoguvdYlq1nfYXEaBTgtjU0UVuvIj0a3IRU3/OxwqVevCsy7y
+         ClCO/O0E6c2hTSy7hO4U5D049p/+YUlHBvuzX2agZ57rzp9a+SQHas7Wd/PvQJi25LAg
+         guSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vEaoUziBq3E6zdwPq0ckEpXVtz+BXh6RGLuJML224RM=;
+        b=AxLRkZsN0Pze/NTGAlnPr/4vund+JtHJ5QdEvuQYxlv3X/W13TpbWzr82twvS5+ZkQ
+         wA8QVDVl4PHlPbaW2SYm6KodwdrJothlh45SInN0FrN5Wr+sTuf7mHHHuxCWTTF3037X
+         6Rkgg0cdTQllEPQ73w76sk48yotlIHi0MnRUujKgSg+PE6KDo/2CGVUQvypbVu+jNjjP
+         13uf5AAkn5UxAHsKiIZWIcI+dbjUQUQbWgkWytrJZXopVSUkvac/dP0gRRWFhWfOawU2
+         9+FdEvCP0Hks1resgEeAD+R4JQMe0wq7c6+vwIuR0EAQT7lj+iLYlBTcE7PXibKQ4i31
+         yR4g==
+X-Gm-Message-State: AOAM530lEHduNmbUgY9h/GLS1Y1Zgdle7a5J6rW9h3zbFo7Xp7tZLMw1
+        T7fFY+2lKs1UnpC/ykSZkUNMgA==
+X-Google-Smtp-Source: ABdhPJzQAhNqugUUs6GMowMfc4TjiW/1LoOtbJAtnbpyMIjp7QrKeuxyQDwOXMzT37JWwkO6ncyjsw==
+X-Received: by 2002:a05:6a00:ac6:b029:374:a33b:a74 with SMTP id c6-20020a056a000ac6b0290374a33b0a74mr34979881pfl.51.1629732573011;
+        Mon, 23 Aug 2021 08:29:33 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p10sm15697567pfw.28.2021.08.23.08.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 08:29:32 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 09:29:30 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-remoteproc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, ohad@wizery.com
+Subject: Re: [PATCH v3 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
+ AO ARC remote procesor
+Message-ID: <20210823152930.GA595498@p14s>
+References: <20210717234859.351911-1-martin.blumenstingl@googlemail.com>
+ <20210717234859.351911-3-martin.blumenstingl@googlemail.com>
+ <20210728175823.GA2766167@p14s>
+ <CAFBinCB0-bAa7Y+YhscczarGrGuio37F8vRyfW6U2DiiDAvr-g@mail.gmail.com>
+ <20210805161506.GA3205691@p14s>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210805161506.GA3205691@p14s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instructions lmw/stmw are interesting for functions that are rarely
-used and not in the cache, because only one instruction is to be
-copied into the instruction cache instead of 19. However those
-instruction are less performant than 19x raw lwz/stw as they require
-synchronisation plus one additional cycle.
+On Thu, Aug 05, 2021 at 10:15:06AM -0600, Mathieu Poirier wrote:
+> On Wed, Aug 04, 2021 at 11:03:57PM +0200, Martin Blumenstingl wrote:
+> > Hi Mathieu,
+> > 
+> > thanks for taking the time to look into this!
+> > 
+> > (I will address any of your comments that I am not mentioning in this
+> > email anymore. Thanks a lot for the suggestions!)
+> > 
+> > On Wed, Jul 28, 2021 at 7:58 PM Mathieu Poirier
+> > <mathieu.poirier@linaro.org> wrote:
+> > [...]
+> > > > +     writel(FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+> > > > +                            priv->sram_pa >> 14),
+> > > Indentation problem
+> > The idea here is to align priv->sram_pa with AO_REMAP_REG0... which
+> > are both arguments to FIELD_PREP
+> 
+> Right, this is what I would have expected.  When I applied the patch on my side
+> "priv->sram_pa ..." was aligned wiht the 'M' of "AO_REMAP_ ...".  
+> 
+> > Maybe using something like this will make that easier to read:
+> >     tmp = FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
+> >                                      priv->sram_pa >> 14);
+> >     writel(tmp, priv->remap_base + AO_REMAP_REG0);
+> 
+> I think the main problem is that
+> AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU is simply too long.  I
+> suggest making is shorter and add a comment to describe exactly what it does.
+> 
+> > 
+> > What do you think: leave it as is or use a separate variable?
+> > 
+> > [...]
+> > > > +     usleep_range(10, 100);
+> > >
+> > > I've seen this kind of mysterious timeouts in other patchset based vendor trees.
+> > > You likely don't know why it is needed so I won't ask.
+> > unfortunately this is also the case here
+> > 
+> > [...]
+> > > > +     priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
+> > > > +     if (IS_ERR(priv->arc_reset)) {
+> > >
+> > > Function __reset_control_get() in __devm_reset_control_get() can return NULL so
+> > > this should be IS_ERR_OR_NULL().
+> > The logic in there is: return optional ? NULL : ERR_PTR(-...);
+> 
+> Ok, so you meant to do that.  And I just checked reset_control_reset() and it does
+> account for a NULL parameter.  I'm good with this one but add a comment to
+> make sure future readers don't think you've omitted to properly deal with the
+> NULL return value.
+> 
+> > I am requesting a mandatory reset line here, so reset core will never
+> > return NULL
+> > See also [0]
+> 
+> Indeed, I've read that too.  Nonetheless __reset_control_get() can return NULL
+> by way of __reset_control_get_from_lookup().
+> 
 
-SAVE_NVGPRS / REST_NVGPRS are used in only a few places which are
-mostly in interrupts entries/exits and in task switch so they are
-likely already in the cache.
+You are correct, in your case checking for IS_ERR() is sufficient.
 
-Using standard lwz improves null_syscall selftest by:
-- 10 cycles on mpc832x.
-- 2 cycles on mpc8xx.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/ppc_asm.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/asm/ppc_asm.h
-index ffe712307e11..349fc0ec0dbb 100644
---- a/arch/powerpc/include/asm/ppc_asm.h
-+++ b/arch/powerpc/include/asm/ppc_asm.h
-@@ -28,8 +28,8 @@
- #else
- #define SAVE_GPR(n, base)	stw	n,GPR0+4*(n)(base)
- #define REST_GPR(n, base)	lwz	n,GPR0+4*(n)(base)
--#define SAVE_NVGPRS(base)	stmw	13, GPR0+4*13(base)
--#define REST_NVGPRS(base)	lmw	13, GPR0+4*13(base)
-+#define SAVE_NVGPRS(base)	SAVE_GPR(13, base); SAVE_8GPRS(14, base); SAVE_10GPRS(22, base)
-+#define REST_NVGPRS(base)	REST_GPR(13, base); REST_8GPRS(14, base); REST_10GPRS(22, base)
- #endif
- 
- #define SAVE_2GPRS(n, base)	SAVE_GPR(n, base); SAVE_GPR(n+1, base)
--- 
-2.25.0
-
+> > 
+> > For this reason I am not planning to change this
+> > 
+> > [...]
+> > > This driver is squeaky clean. With the above:
+> > >
+> > > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > awesome, thank you!
+> > 
+> > 
+> > Best regards,
+> > Martin
+> > 
+> > 
+> > [0] https://elixir.bootlin.com/linux/v5.14-rc4/source/include/linux/reset.h#L227
