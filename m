@@ -2,109 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5133F4634
+	by mail.lfdr.de (Postfix) with ESMTP id 968263F4635
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235403AbhHWH5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:57:39 -0400
-Received: from relay.sw.ru ([185.231.240.75]:43240 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235374AbhHWH5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:57:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=gYEdybKbXhCvejIGuZRQDqqEgCGQEYZNt6q+lPijJXQ=; b=zSOldxa2ZHsHtkYYtQS
-        B+p6VObdAf88ETGmdJEyC1AxeKrwmAYpomCtNgYo2EVh8ggpWW+GCQe3J/R/He2rlu4M8iWpsoFgj
-        ZBsfPkHgccH9Pa5IvTdRIIS5ZSRPP7fsJNKBH8GW1KysE1zu80UfFjDWQLVCrqo/340m41wmot8=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mI4p8-008YUo-4J; Mon, 23 Aug 2021 10:56:50 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Christoph Paasch <christoph.paasch@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Julian Wiedmann <jwi@linux.ibm.com>
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
-Message-ID: <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
-Date:   Mon, 23 Aug 2021 10:56:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235473AbhHWH5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:57:45 -0400
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:40500 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235100AbhHWH5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 03:57:42 -0400
+Received: by mail-lj1-f176.google.com with SMTP id i28so29875468ljm.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:57:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3fiQ469i6TN3cLShqb4YTdeeV5eKDu16epu3jZkZfiw=;
+        b=R1tchoAYcuRJ7CZK+p3amFjg6wAhLLM8f32/oPKwgP/6kcShvaof37/kjJUDPhazY8
+         Ch2+RUi0q4B1gn1rEVbzolqtPBJPak5grSqgbLSEDolLMhUauH7Xp7muc+3luTNtaSZ0
+         CB3LwZvRedFSxAP8HWbBGQBf10r5lAsB65bVCtADkH93t88112lc8OKiS6VLrTtPDcwl
+         gITOcq135IiDe/sd+BksJzA4AJlx07SaqmB2sZ2hTvOD8k39UhbScYHIPk+I4/0sAh5Z
+         1TZJ8OYYzqMMiiw7OLA+u3S6EQStLWrGexX5W+5OxA5MMkWPowmDHT6Ox6WWicRCMbrz
+         sLQA==
+X-Gm-Message-State: AOAM533M2Ly10OQ725nY0wCJTrj8iKAAoXbQNRI45HJjctZ3nzBB+McI
+        ezDv0cO4oyz18H8eaeYwJQs=
+X-Google-Smtp-Source: ABdhPJzau7jN/Qw875c5hKAHDDcLS/5CAWVc2/xij5XwTPuC8qYJsqUT2kupWt/Toqy/Pqhq9411tg==
+X-Received: by 2002:a2e:a910:: with SMTP id j16mr26718532ljq.207.1629705419269;
+        Mon, 23 Aug 2021 00:56:59 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyycy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::4])
+        by smtp.gmail.com with ESMTPSA id h19sm1376626lfu.138.2021.08.23.00.56.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 00:56:58 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 10:56:51 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: Documentation fix for regulator error
+ notification helper
+Message-ID: <20210823075651.GA3717293@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="C7zPtVaVf+AK4Oqc"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Paasch reports [1] about incorrect skb->truesize
-after skb_expand_head() call in ip6_xmit.
-This happen because skb_set_owner_w() for newly clone skb is called
-too early, before pskb_expand_head() where truesize is adjusted for
-(!skb-sk) case.
 
-[1] https://lkml.org/lkml/2021/8/20/1082
+--C7zPtVaVf+AK4Oqc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+The helper to send IRQ notification for regulator errors had still
+old description mentioning calling BUG() as a last resort when
+error status reading has kept failing for more times than a given
+threshold.
+
+The impementation calling BUG() did never end-up in-tree but was
+replaced by hopefully more sophisticated handler trying to power-off
+the system.
+
+Fix the documentation to reflect actual behaviour.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 ---
- net/core/skbuff.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ drivers/regulator/irq_helpers.c  | 2 +-
+ include/linux/regulator/driver.h | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f931176..508d5c4 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
- 
- struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- {
-+	struct sk_buff *oskb = skb;
-+	struct sk_buff *nskb = NULL;
- 	int delta = headroom - skb_headroom(skb);
- 
- 	if (WARN_ONCE(delta <= 0,
-@@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- 
- 	/* pskb_expand_head() might crash, if skb is shared */
- 	if (skb_shared(skb)) {
--		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
--
--		if (likely(nskb)) {
--			if (skb->sk)
--				skb_set_owner_w(nskb, skb->sk);
--			consume_skb(skb);
--		} else {
--			kfree_skb(skb);
--		}
-+		nskb = skb_clone(skb, GFP_ATOMIC);
- 		skb = nskb;
- 	}
- 	if (skb &&
--	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
--		kfree_skb(skb);
-+	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
- 		skb = NULL;
-+
-+	if (!skb) {
-+		kfree_skb(oskb);
-+		if (nskb)
-+			kfree_skb(nskb);
-+	} else if (nskb) {
-+		if (oskb->sk)
-+			skb_set_owner_w(nskb, oskb->sk);
-+		consume_skb(oskb);
- 	}
- 	return skb;
- }
--- 
-1.8.3.1
+diff --git a/drivers/regulator/irq_helpers.c b/drivers/regulator/irq_helper=
+s.c
+index fabe2e53093e..522764435575 100644
+--- a/drivers/regulator/irq_helpers.c
++++ b/drivers/regulator/irq_helpers.c
+@@ -184,7 +184,7 @@ static irqreturn_t regulator_notifier_isr(int irq, void=
+ *data)
+ 	 * If retry_count exceeds the given safety limit we call IC specific die
+ 	 * handler which can try disabling regulator(s).
+ 	 *
+-	 * If no die handler is given we will just bug() as a last resort.
++	 * If no die handler is given we will just power-off as a last resort.
+ 	 *
+ 	 * We could try disabling all associated rdevs - but we might shoot
+ 	 * ourselves in the head and leave the problematic regulator enabled. So
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/dri=
+ver.h
+index 92bf7584a2f0..bd7a73db2e66 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -527,8 +527,8 @@ struct regulator_irq_data {
+  *		active events as core does not clean the map data.
+  *		REGULATOR_FAILED_RETRY can be returned to indicate that the
+  *		status reading from IC failed. If this is repeated for
+- *		fatal_cnt times the core will call die() callback or BUG()
+- *		as a last resort to protect the HW.
++ *		fatal_cnt times the core will call die() callback or power-off
++ *		the system as a last resort to protect the HW.
+  * @renable:	Optional callback to check status (if HW supports that) before
+  *		re-enabling IRQ. If implemented this should clear the error
+  *		flags so that errors fetched by regulator_get_error_flags()
+@@ -537,7 +537,8 @@ struct regulator_irq_data {
+  *		REGULATOR_FAILED_RETRY can be returned to
+  *		indicate that the status reading from IC failed. If this is
+  *		repeated for 'fatal_cnt' times the core will call die()
+- *		callback or BUG() as a last resort to protect the HW.
++ *		callback or if die() is not populated then attempt to power-off
++ *		the system as a last resort to protect the HW.
+  *		Returning zero indicates that the problem in HW has been solved
+  *		and IRQ will be re-enabled. Returning REGULATOR_ERROR_ON
+  *		indicates the error condition is still active and keeps IRQ
 
+base-commit: aa9f92097dcc83848ee7e4ea5ddbdd15db5eff64
+--=20
+2.25.4
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--C7zPtVaVf+AK4Oqc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmEjVLIACgkQeFA3/03a
+ocV9oAf/YY4wlG/S5a53C73lsLy+GEZnxUrrORWvq5Sbl1DFq1JqU23jCI+WpQbK
+lnZ6aGrMNnlKtxM7Yo1AyspGqCC0F46VJGr8uElt0mJ5hvJ28WBUBitk1VjczPMO
+t2CAXFF/JVdngMimDNAhmUlGlJgW6XYnIrWDeB5jtS0AMDl1Q+4dDkdILraxKz20
+I2gXGt8K6kUMB4yEBxmaZ+uPvMakNUMHNvPmBiZowHy1qaK0WEiwZwpUpBffQs3K
+prkss8q7MRTXehSZ16nko9D/GBO2N/X5LykJVuyD3TRaqRKUGs+YL2Pa0jlQ9dad
+CGJMk+3klaJ26++KeHgfoQLddXeb/w==
+=Px85
+-----END PGP SIGNATURE-----
+
+--C7zPtVaVf+AK4Oqc--
