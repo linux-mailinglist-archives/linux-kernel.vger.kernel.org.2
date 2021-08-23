@@ -2,132 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B002F3F45D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89DA3F45D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235153AbhHWHfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:35:36 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:47412
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234940AbhHWHff (ORCPT
+        id S235212AbhHWHeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235179AbhHWHeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:35:35 -0400
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 528344075E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629704092;
-        bh=vpW+MmQwHzNcx/1v6dYqOYxABjq4D11QeSkA/JaBIuk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=A+Oc9jNHMg86wkMYTdHM/gFMVeTHhsUr8T+vIjDhtVUMdjcBGzGEinslIoQ+qohVc
-         niKRP9A+nACUHXQhDXaXaBopQzWoXV0byVqvrgof3aCyxoBsYkvpL8QO0QwMGi+ISZ
-         NoGtyBrJnS6QSSFFaf3nUGLSR9Iwvmvjp7utRTf5u0/qCh8IHK53Uc30foLcQ6Ucn3
-         QWX7Ip4FRW7pR3z3SjYdHSmuRJ/Vx8OY8U+zu3S3dloQE1CLkbhSX76EDN9mRbhOyx
-         JCoNP8jkzaub8hUpKls+SHwMIJiU2ART4/v4XA9sleBGN3Sx7llg2tFiivrT8KPbi2
-         AOWxOyJcNxXPQ==
-Received: by mail-pj1-f70.google.com with SMTP id c2-20020a17090a558200b001873dcb7f09so1286402pji.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:34:52 -0700 (PDT)
+        Mon, 23 Aug 2021 03:34:18 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0C1C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:33:36 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so10094690wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=RHvw0YidWVbaAnExu+fX8ZpwVEjv8DNNUe3fCJmOO/Y=;
+        b=cihGqgYS6WTVC320M39f87DIqKTNtWkRIw4ML9YbV/asEWIzDYqjVz/ox3Y1w2IFel
+         MUI76ubdUMuebk9LnrzB1ln/HUq5Qcf9QvFnKy/ZPeqogB/ACo8IU4Eo7BovgpHUJd5J
+         wagW48uI5bMp8hcFT2nDGn3+Ortfy5ckk9l7U0zS4DqgUC8o/pyOaQgF4vcVHScnCaGG
+         NRkudbTdedeMwdT3lXu4YhcbvNnkJxh6tdKxFutvlPEwCYSmkFgPJm9UgUVxe/w8Cgqk
+         /zD2Bhud6rYua4VRYK4COTzrp+65MfOW6xwfV7fFODKYV/mWQnEhGbk3xKbJihnGyQjz
+         4xPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vpW+MmQwHzNcx/1v6dYqOYxABjq4D11QeSkA/JaBIuk=;
-        b=Lv8F22pXsu7UXm5zmy5fwNOfnCSsF9p/BgNJ2H9ZHnHqyaR5IKgY8KJoHvfKkVvjHy
-         HF0IW8/dBrzXUt+CIrPwOBS+F+SvpW+ai9sUvZNr6JpC5qvOapsT2Ux/dCnzWxcZ1TxU
-         yTkjscidw5vzA5t/XSDCUMQvM7Q/rFiC7QY3Ixzdy31kdN6+qQMqKFliZwtypJs4nWIf
-         pwwNXGhtKqO+kJVvNzG4RNDPafVXP42XFKqW7WrBRTCIYKiwiUxOOM56ocIA06Lw7VgS
-         DkA0/8Fph31OhO9Wbb1YOM6UBLG9qmytDblyF1aoaqOMmZWDaIB+tadG3MJwRXRDEEWL
-         R+YA==
-X-Gm-Message-State: AOAM533eJqjMCvkYltasOMEkmkMTjue0sE72flVQMmjiHbhn4XpUK6st
-        ZfSegRHqfI/QGUVbNscn1lJmHA8Kdhxujhicb26qbM/EyOgCBu2QgLl+a8chCAzSerHqx8ez1Gi
-        ueXlBIMX7+x9E/yI+IGVLAa8MxLKxEcNLGQ9pfMWo
-X-Received: by 2002:a63:5d03:: with SMTP id r3mr30374605pgb.144.1629704090871;
-        Mon, 23 Aug 2021 00:34:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLDs6LwEKpxKzmrkT2y3c9FukVNW8yy5ae0WiKKPyJAAGyulZ0vaYJ9HpM7spuQrBULhwB5A==
-X-Received: by 2002:a63:5d03:: with SMTP id r3mr30374590pgb.144.1629704090541;
-        Mon, 23 Aug 2021 00:34:50 -0700 (PDT)
-Received: from localhost.localdomain (223-137-217-38.emome-ip.hinet.net. [223.137.217.38])
-        by smtp.gmail.com with ESMTPSA id r14sm14939447pff.106.2021.08.23.00.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 00:34:50 -0700 (PDT)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     akpm@linux-foundation.org, skhan@linuxfoundation.org,
-        po-hsu.lin@canonical.com
-Subject: [PATCH] selftests/vm: Use kselftest skip code for skipped tests
-Date:   Mon, 23 Aug 2021 15:34:33 +0800
-Message-Id: <20210823073433.37653-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RHvw0YidWVbaAnExu+fX8ZpwVEjv8DNNUe3fCJmOO/Y=;
+        b=IlUwtFnVxo6Douep9Pk5WV48Rk/vSbHmUZEJHIjhAVIunY1obMfHgM23Z0ktwp36r3
+         Ac8Dor19/brxFN3gZVu0eU5fKqA9AQ2is9223KjAnAQCur7M07KrJ7CtwMQrV0RtL7c3
+         Ui0NIQg+H1J4EcfIRmRt1McaZHC/js3MQIQ+e+kANr0loedCPWpJ1afEH9ltVMhfpFWK
+         Mq32dZIp/cw3DxtWdUgHyU7WsNULnPRjNUmVoxK71kU28b54ioCK41VmAJ9/SfsQL1FJ
+         IoxskIEZZD0o2Qkdub+QwRcWhdi9GOW88zDqmqYyd6XJ/h1xKDt2FrfUpX+y+n0ZgEpg
+         Mpdw==
+X-Gm-Message-State: AOAM532veQMf+/T5DITWZKSIvmWehGzix8ANWVdZi1Rm52ZQ3TPPqYpR
+        UbzSpnl0DIev1nqo1hb5MacPwg==
+X-Google-Smtp-Source: ABdhPJy8/C2rTq4ZpumwaDlzx0P0MOcSI3DkY/gFV083ba/u+F86xPsaT6Gf9OBxOOhLG668rajsQw==
+X-Received: by 2002:a05:600c:1991:: with SMTP id t17mr14777091wmq.120.1629704014921;
+        Mon, 23 Aug 2021 00:33:34 -0700 (PDT)
+Received: from alex-xps13.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id h11sm19672439wmc.23.2021.08.23.00.33.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 00:33:34 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/2] Add a generic virtual thermal sensor
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com,
+        amitk@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.tseng@mediatek.com, khilman@baylibre.com
+References: <20210819123215.591593-1-abailon@baylibre.com>
+ <f7d1205b-e859-e059-c835-c09a85c8c480@linaro.org>
+From:   Alexandre Bailon <abailon@baylibre.com>
+Message-ID: <df9ad6a9-4cf9-dd41-8876-d19bef03d6a5@baylibre.com>
+Date:   Mon, 23 Aug 2021 09:35:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f7d1205b-e859-e059-c835-c09a85c8c480@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several test cases in the vm directory are still using
-exit 0 when they need to be skipped. Use kselftest framework skip
-code instead so it can help us to distinguish the return status.
+Hi Daniel,
 
-Criterion to filter out what should be fixed in vm directory:
-  grep -r "exit 0" -B1 | grep -i skip
+On 20/08/2021 13:30, Daniel Lezcano wrote:
+> Hi Alexandre,
+>
+> thanks for the proposal.
+>
+> On 19/08/2021 14:32, Alexandre Bailon wrote:
+>> This series add a virtual thermal sensor that uses the hardware thermal sensors,
+>> aggregate them to return a temperature.
+>>
+>> My first aptempt was to do the aggregation in the thermal zone but it was not
+>> that easy to do, and, there were some case that would have been conflictual
+>> such as setting differents trip for a regular zone and a multisensor zone.
+>>
+>> Instead, I made a virtual thermal sensor that could registered in a thermal
+>> zone, and have its own properties.
+>> It could be added in the device tree, with the list of sensors to aggregate,
+>> and the type of aggregation to be done.
+>>
+>> As example:
+>>    soc_max_sensor: soc_max_sensor {
+>>      compatible = "generic,thermal-aggregator";
+>>      #thermal-sensor-cells = <1>;
+>>      type = "max";
+>>      thermal-sensors = <&lvts 0>, <&lvts 1>, <&lvts 2>, <&lvts 3>,
+>>            <&lvts 4>, <&lvts 5>, <&lvts 6>, <&lvts 7>,
+>>            <&lvts 8>, <&lvts 9>, <&lvts 10>, <&lvts 11>,
+>>            <&lvts 12>, <&lvts 13>, <&lvts 14>, <&lvts 15>,
+>>            <&lvts 16>;
+>>    };
+>>
+>> The current series build and work but it would require to be completed
+>> aswell a lot of cleanup.
+>> Before working on it, I would like to get some feedback and I know if that
+>> would an acceptable solution and continue that way.
+> Yes, I think it is going to the right direction.
+>
+> IMO, we can get rid of the thermal_of changes. From a design PoV, the
+> patch itself should be the virtual thermal driver without any changes in
+> the core code, including thermal_of.
+I made that changes in order to be able to get the hw sensors from the 
+virtual sensor.
+I am not really satisfied of that patch but that the simplest way I 
+found to do it.
+How would you proceed to get the hw sensor from its device tree phandle 
+and id ?
 
-This change might cause some false-positives if people are running
-these test scripts directly and only checking their return codes,
-which will change from 0 to 4. However I think the impact should be
-small as most of our scripts here are already using this skip code.
-And there will be no such issue if running them with the kselftest
-framework.
+Thanks,
+Alexandre
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- tools/testing/selftests/vm/charge_reserved_hugetlb.sh  | 5 ++++-
- tools/testing/selftests/vm/hugetlb_reparenting_test.sh | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-index 18d3368..fe8fcfb 100644
---- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-+++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-@@ -1,11 +1,14 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- 
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
- set -e
- 
- if [[ $(id -u) -ne 0 ]]; then
-   echo "This test must be run as root. Skipping..."
--  exit 0
-+  exit $ksft_skip
- fi
- 
- fault_limit_file=limit_in_bytes
-diff --git a/tools/testing/selftests/vm/hugetlb_reparenting_test.sh b/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
-index d11d1fe..4a9a3af 100644
---- a/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
-+++ b/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
-@@ -1,11 +1,14 @@
- #!/bin/bash
- # SPDX-License-Identifier: GPL-2.0
- 
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
- set -e
- 
- if [[ $(id -u) -ne 0 ]]; then
-   echo "This test must be run as root. Skipping..."
--  exit 0
-+  exit $ksft_skip
- fi
- 
- usage_file=usage_in_bytes
--- 
-2.7.4
-
+>
+> I have some comments on patch 2/2
+>
+>
+>> Follows the following discussion:
+>> https://patchwork.kernel.org/project/linux-mediatek/patch/20210617114707.10618-3-ben.tseng@mediatek.com/
+>>
+>> Alexandre Bailon (2):
+>>    thermal: provide a way to get thermal sensor from a device tree node
+>>    thermal: add a virtual sensor to aggregate temperatures
+>>
+>>   drivers/thermal/Kconfig              |   8 ++
+>>   drivers/thermal/Makefile             |   1 +
+>>   drivers/thermal/thermal_aggregator.c | 134 +++++++++++++++++++++++++++
+>>   drivers/thermal/thermal_of.c         |  43 +++++++++
+>>   include/linux/thermal.h              |  12 +++
+>>   5 files changed, 198 insertions(+)
+>>   create mode 100644 drivers/thermal/thermal_aggregator.c
+>>
+>
