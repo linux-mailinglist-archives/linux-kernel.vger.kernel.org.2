@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EFC3F487D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8653F4880
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236171AbhHWKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:18:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15921 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236147AbhHWKS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:18:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629713895; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=WdDl3Bs62eJOXS4ON5GLmg1zUOk70f0ikhAxZW4zP74=; b=QdiucCXhJDtH01KEkKWQRPdLdXqaD/O3tbxd3v9FRI3eVa6/Q1mWBIvgHsPU5fgiI9sbJ4U+
- ctD/bXUNzzErQDTor4g0Pj13gjS6qEp6edwUD8Sxb+TnTmwBakY2Ffga2+b0a2SzC8CHsU34
- qUbv7UjxKpT2rQ1i/sxgl033rkc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 612375d8e19abc7959be862f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 10:18:00
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6062FC43618; Mon, 23 Aug 2021 10:18:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.102] (unknown [49.204.182.118])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CAC58C4338F;
-        Mon, 23 Aug 2021 10:17:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CAC58C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu
- cpufreq driver flag
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>
-References: <1628777955-7198-1-git-send-email-tdas@codeaurora.org>
- <CAD=FV=UF1MMKg9Y0HD3xpZ36BVZyuzr3xkwXzeSz__T1XD1r=w@mail.gmail.com>
- <77dde5fa-6b12-d970-ac3e-0d3f6c352fbe@codeaurora.org>
- <20210818102644.v2ob46azq47beeqg@vireshk-i7>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <447cb27e-cd67-5d92-1c0e-932b8581fc7b@codeaurora.org>
-Date:   Mon, 23 Aug 2021 15:47:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236111AbhHWKUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232421AbhHWKUG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:20:06 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C36C061575;
+        Mon, 23 Aug 2021 03:19:24 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id h13so25539008wrp.1;
+        Mon, 23 Aug 2021 03:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K6yDnLSIpYXYrIIISakMJ/pbasH+mpQMUOZLV1Lnsw4=;
+        b=lj74Y5KPbqoe4ZwuOwXT8BOYIaKVexQv88j394iBmoyUjC9FRzDDJOuhly4WsEedI+
+         KAWQtKN5wvb7kKJO160V9YfVHt9CTBc/KoBxtDbpHSytBFby5ejcjE0osDWpCyRoWMpc
+         MBHyu9fPRo+XtXWl1dSatYLGZ8RMF62QjgVMHrIStqHUWDrnlX0VvCi1uhNDGAzQyabZ
+         yjok/IUOg51xwAfaCi2MrWPwLgkAW5jHVYBRBiNQDIHmvyKNNrQnPjAicbUGUv9B5Ytl
+         /O6xg3K2WsIFrMfgWFpYgauxc5EAQMiarGGE3539miFGNSJwKi17i+xPrsOePrXteTa9
+         NwjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K6yDnLSIpYXYrIIISakMJ/pbasH+mpQMUOZLV1Lnsw4=;
+        b=qMXaHs2HVM1arWV1NCQ+bxI0VQdz/ileuAXOXJwzfL5OmYIF2iK9vWclwti6scyo2l
+         fODejdTlqwzb7dhomdTUzvCNG5GOlZSHCBdOMF2UqiuAuYiAAPSSxoja9+uWosDqjQXx
+         Ej4zFo6uyB2GjJbtF2LTE7goubJCYH/ITU31+nI66KEL7LZfjcpcP7O2PY2Z2lKgQV+1
+         Hs07jNLePGQaaA45TZnt2aQzoTjFDu0njzgNXBWTx+TxPQ7tN6+927rZoZXz2rbGnzGk
+         GPvHcoFonL6q7R0U4cBzYS/0169+dQGe6WboG3/AnNOPicGaR8KA2Ccv2aEHXI60EZs4
+         o3dw==
+X-Gm-Message-State: AOAM533/es4TR+8GRHg+9fLaHGRX/4PqA32mpbjK/e7Gooy1x2XNF29E
+        5XuOW0PV/gz+dn7PQyWZ1vczHMApDfU=
+X-Google-Smtp-Source: ABdhPJz/L/7oncDFkyPzeeWSFNXLVjyTvyHDF/36ZcCWRetpjq2tVim8ZAvEdEStRXznQl66jA0+NQ==
+X-Received: by 2002:adf:ab0e:: with SMTP id q14mr12875791wrc.171.1629713963063;
+        Mon, 23 Aug 2021 03:19:23 -0700 (PDT)
+Received: from localhost.localdomain ([85.255.233.176])
+        by smtp.gmail.com with ESMTPSA id l18sm20539922wmc.30.2021.08.23.03.19.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 03:19:22 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc:     Palash Oswal <oswalpalash@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com,
+        asml.silence@gmail.com
+Subject: [PATCH v3 0/2] iter revert problems
+Date:   Mon, 23 Aug 2021 11:18:43 +0100
+Message-Id: <cover.1629713020.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210818102644.v2ob46azq47beeqg@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+iov_iter_revert() doesn't go well with iov_iter_truncate() in all
+cases, see 2/2 for the bug description. As mentioned there the current
+problems is because of generic_write_checks(), but there was also a
+similar case fixed in 5.12, which should have been triggerable by normal
+write(2)/read(2) and others.
 
-Thanks for the review.
+It may be better to enforce reexpands as a long term solution, but for
+now this patchset is quickier and easier to backport.
 
-On 8/18/2021 3:56 PM, Viresh Kumar wrote:
-> On 18-08-21, 15:33, Taniya Das wrote:
->> Hi Doug,
->>
->> Thanks for your review.
->>
->> On 8/13/2021 2:03 AM, Doug Anderson wrote:
->>> Hi,
->>>
->>> On Thu, Aug 12, 2021 at 7:19 AM Taniya Das <tdas@codeaurora.org> wrote:
->>>>
->>>> As remote cpufreq updates are supported on QCOM platforms, set
->>>> dvfs_possible_from_any_cpu cpufreq driver flag.
->>>>
->>>> Signed-off-by: Taniya Das <tdas@codeaurora.org>
->>>> ---
->>>>
->>>> [v2]
->>>>     * update the dvfs_possible_from_any_cpu always.
->>>>
->>>>    drivers/cpufreq/qcom-cpufreq-hw.c | 2 ++
->>>>    1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
->>>> index f86859b..53d3898 100644
->>>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
->>>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
->>>> @@ -223,6 +223,8 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
->>>>
->>>>           table[i].frequency = CPUFREQ_TABLE_END;
->>>>           policy->freq_table = table;
->>>> +       policy->dvfs_possible_from_any_cpu = true;
->>>> +
->>>
->>> Why is this in the qcom_cpufreq_hw_read_lut() function? Shouldn't it
->>> be straight in qcom_cpufreq_hw_cpu_init()?
->>>
->> All CPU policy related data is updated here, thus wanted to keep it
->> together.
-> 
-> This function should only be updating freq table, please do it in
-> qcom_cpufreq_hw_cpu_init() itself, around where you set
-> policy->driver_data.
-> 
+v2: don't fail if it was justly fully reverted
+v3: use truncated size + reexapand based approach
 
-Thanks Viresh, updated the same in the next patch.
+Pavel Begunkov (2):
+  iov_iter: track truncated size
+  io_uring: reexpand under-reexpanded iters
+
+ fs/io_uring.c       | 2 ++
+ include/linux/uio.h | 6 +++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+2.32.0
 
---
