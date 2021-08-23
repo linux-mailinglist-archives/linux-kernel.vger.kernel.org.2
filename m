@@ -2,188 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C713F4FE3
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC173F4FE4
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhHWRv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S231982AbhHWRwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbhHWRvy (ORCPT
+        with ESMTP id S231843AbhHWRvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:51:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE56C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:51:12 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so520932pjt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:51:12 -0700 (PDT)
+        Mon, 23 Aug 2021 13:51:55 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B788C061575;
+        Mon, 23 Aug 2021 10:51:12 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so30013348otg.11;
+        Mon, 23 Aug 2021 10:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=plb0F7/zgK9URg+TVDPgTOY+zfqlB9v4coJEI8iSXGQ=;
-        b=sK+PNdpyJ9XMyiKYWAu4TIqV+1vRFwSaoOZRmbF+Skj6cP4PrU4PZdYKf5AajUCIea
-         wGK1OHqe7oUdD/Zo+RKwiNdc9i/UqPMiQ0DT+qEMhAe6APYpLpOTQm8Lk41gSbaZkSaY
-         jTs3jHS5v9nHua9DqauQ65P50OIYqT7C8dd0Fja6L0ZnLdc7rtZvy+qZ/mQr5a3wGIdq
-         ur3WeoHlxl0uzl1F9sxQZm+wUvURGJibgLoRaGwP9bMBHhmI+gzVCmXkZgbIQN0wcWfd
-         2X6edx6I85LU3jXjYoOxRgNIIY/HECn5clRVQ7vzmBUxKCqTZfc0YFZ8TQPAR+DkDg9R
-         DO8g==
+         :cc:content-transfer-encoding;
+        bh=3rREAyPOKdLF6NDEzn+rP2y6ycvNQqshJTP26LTwLYA=;
+        b=AUOWTbDAsF2kSoMy1ltDzWDDka9y3jbqDIiddEymQ6xYDkzCjOrs3Arh+mUPc2ULzX
+         pZ1Xyx4b0a6z4NiVFlfzzt+OYk/qf+uWcy4I1I9eym7owd7esqPvyqFI5M+P/6yZTn3F
+         oiIaHKx3XYPXtNJo9ZfB2mFN0V/lhzcrJhGJuRMblyskmXqnN+f3MpAUsKjLhJZCYIaR
+         Oekero8asdPtUvYhgt67HWgtdK9pzdNpd4nbp6Fad+KR19d//l5Zw2zgGylV3CZ6B4Fx
+         14lQ0Mao5BL3xPVWPNAIXrLsdhNVNySHY68tiW2WXSVA1+QBaEXinzXxCAQHy5mJnVl4
+         nM1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=plb0F7/zgK9URg+TVDPgTOY+zfqlB9v4coJEI8iSXGQ=;
-        b=uZIOIRclC0y1PYlpyVWGJaGT1IxIjdgF7Cl2PSrde5ycVrmsgqjjjhUlmgJ78TuNxC
-         j6rswPr/mUBAenOHPfYx6NWM1hTM+mFfodGBeC14KblE06HYqB4Z9tRu5Mf0vRoOgIHh
-         Qg1sPIOmr1aTKUeufXIcKZ5w1EZWtCqX163WawmMz15nsv6+Tr+U5XfsudYzx/R8JBD5
-         IIhEjCw/qI0dPs01OvMWKY+++xbYUPbhvAJPIqT8jWN3moLpTZF84ufvxsmYb7GdAwbU
-         yAdzfqD/ImLvj57TmWtkK3gnhpwoWb6AuSMWxqqL8L/2VqBLMqhMVUykQufW7yrW7D1R
-         ZhQQ==
-X-Gm-Message-State: AOAM53252Ck4cKqyDLwqYd5xl4lIrj0BPOddnEkBlb3C56iphvTxVggP
-        Iof02X1o0Dax7UzZCq+ZtjJ7CQmuaw990BN0MEIV7Q==
-X-Google-Smtp-Source: ABdhPJz7sU7U/l28dRWAkNWhVh0xc6FGjq0zTlfKwHGl8NngmX721YvytAQQfiLf9gHDJ6KeOeXMvl7FgVGUDYnXKwI=
-X-Received: by 2002:a17:902:a9c7:b029:12b:349:b318 with SMTP id
- b7-20020a170902a9c7b029012b0349b318mr29742335plr.13.1629741071409; Mon, 23
- Aug 2021 10:51:11 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3rREAyPOKdLF6NDEzn+rP2y6ycvNQqshJTP26LTwLYA=;
+        b=B3j0cvCUapeUqStaAs+TTfad9CVOinwmNZAGDpa0U11oZug5B7QeSsI2O8mwc8igjH
+         W5uvu9kuhAWHUCwZCLhF4OdoJB3xN/22MfBX6qKnCLQErAiNys1ng8X4EWeLzBA14bWu
+         BOAibftHHeJt0D/2UeCXbkUKde7qR7Xi4m5KF4xp9q5tdZydPUZtu9+rjhcPVMqf2mLr
+         6+LDcmnyd1bicC15DD6wvwYCvSHbr3cAZmA5+Wj4cMmyA5wz54H4LdK2uC1pDLhC5yqH
+         MR58BXx4driXF63ENySPgSfaTN/ILresiNR3WyyovN7YGhHBH5GzGH8OgAZnjGZyPN9m
+         BcHg==
+X-Gm-Message-State: AOAM533Q6Qg1ApYpdsLzuMu3nOrLooysK0zCTVl5d5t/6ly4Kc/0F89r
+        DXNBrrnuTLSKb7xZoi1WIi+51Ji0FFZxHMbLv7I=
+X-Google-Smtp-Source: ABdhPJyCzesKPtsp+veFGNMoo192/z38L5TnShuXRKh6DQbbg8b3d22M+M90/KZ4CSNKrPdy52aVEtHwkBUmmgc7BFc=
+X-Received: by 2002:a05:6808:483:: with SMTP id z3mr11942026oid.5.1629741071769;
+ Mon, 23 Aug 2021 10:51:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
- <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de> <CAJ+vNU225mgHHg00r67f1L6bEub+_h55hCBAMhCq2rd8kWU-qg@mail.gmail.com>
- <9200d46d-94a2-befd-e9b0-93036e56eb8a@pengutronix.de> <CAJ+vNU19z0syr0oHOrSGxL0cVW+Kjv76kmp6uvGc2akHbtX0Nw@mail.gmail.com>
- <fa530833-2bb9-f8f3-68c6-99423d29e2ca@pengutronix.de>
-In-Reply-To: <fa530833-2bb9-f8f3-68c6-99423d29e2ca@pengutronix.de>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Mon, 23 Aug 2021 10:50:59 -0700
-Message-ID: <CAJ+vNU0iRTagc5_qvsG4jvt=B_wruj=1O2ZRixqWek8JTN=aeg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
- trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     David Gstir <david@sigma-star.at>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        linux-security-module@vger.kernel.org,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        James Morris <jmorris@namei.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        David Howells <dhowells@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        linux-integrity@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
+References: <d959876c2c61827a0607f5de29fdec10c47dcd86.1629667175.git.christophe.jaillet@wanadoo.fr>
+ <4421bb63-3e77-0646-a647-c387a5df060c@amd.com>
+In-Reply-To: <4421bb63-3e77-0646-a647-c387a5df060c@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 23 Aug 2021 13:51:00 -0400
+Message-ID: <CADnq5_Mz1c68XToo4MKy-Xq70ZcLUiM95uqB9Wa_6buM6vkLgA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: switch from 'pci_' to 'dma_' API
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 6:29 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+Applied.  Thanks!
+
+Alex
+
+On Mon, Aug 23, 2021 at 2:16 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> Hello Tim,
->
-> On 20.08.21 23:19, Tim Harvey wrote:
-> > On Fri, Aug 20, 2021 at 1:36 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>
-> >> On 20.08.21 22:20, Tim Harvey wrote:
-> >>> On Fri, Aug 20, 2021 at 9:20 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>>> On 20.08.21 17:39, Tim Harvey wrote:
-> >>>>> Thanks for your work!
-> >>>>>
-> >>>>> I've been asked to integrate the capability of using CAAM to
-> >>>>> blob/deblob data to an older 5.4 kernel such as NXP's downstream
-> >>>>> vendor kernel does [1] and I'm trying to understand how your series
-> >>>>> works. I'm not at all familiar with the Linux Key Management API's or
-> >>>>> trusted keys. Can you provide an example of how this can be used for
-> >>>>> such a thing?
-> >>>>
-> >>>> Here's an example with dm-crypt:
-> >>>>
-> >>>>   https://lore.kernel.org/linux-integrity/5d44e50e-4309-830b-79f6-f5d888b1ef69@pengutronix.de/
-> >>>>
-> >>>> dm-crypt is a bit special at the moment, because it has direct support for
-> >>>> trusted keys. For interfacing with other parts of the kernel like ecryptfs
-> >>>> or EVM, you have to create encrypted keys rooted to the trusted keys and use
-> >>>> those. The kernel documentation has an example:
-> >>>>
-> >>>>   https://www.kernel.org/doc/html/v5.13/security/keys/trusted-encrypted.html
-> >>>>
-> >>>> If you backport this series, you can include the typo fix spotted by David.
-> >>>>
-> >>>> I'll send out a revised series, but given that a regression fix I want to
-> >>>> rebase on hasn't been picked up for 3 weeks now, I am not in a hurry.
-> >>>>
-> >>> Thanks for the reference.
-> >>>
-> >>> I'm still trying to understand the keyctl integration with caam. For
-> >>> the 'data' param to keyctl you are using tings like 'new <len>' and
-> >>> 'load <data>'. Where are these 'commands' identified?
-> >>
-> >> Search for match_table_t in security/keys/trusted-keys/trusted_core.c
-> >>
-> >>> I may still be missing something. I'm using 4.14-rc6 with your series
-> >>> and seeing the following:
-> >>
-> >> That's an odd version to backport stuff to..
-> >>
-> >>> # cat /proc/cmdline
-> >>> trusted.source=caam
-> >>> # keyctl add trusted mykey 'new 32' @s)# create new trusted key named
-> >>> 'mykey' of 32 bytes in the session keyring
-> >>> 480104283
-> >>> # keyctl print 480104283 # dump the key
-> >>> keyctl_read_alloc: Unknown error 126
-> >>> ^^^ not clear what this is
-> >>
-> >> Not sure what returns -ENOKEY for you. I haven't been using trusted
-> >> keys on v4.14, but you can try tracing the keyctl syscall.
+> Am 22.08.21 um 23:21 schrieb Christophe JAILLET:
+> > The wrappers in include/linux/pci-dma-compat.h should go away.
 > >
-> > yikes... that would be painful. I typo'd and meant 5.14-rc6 :)
+> > The patch has been generated with the coccinelle script below.
+> >
+> > It has been compile tested.
+> >
+> > @@
+> > @@
+> > -    PCI_DMA_BIDIRECTIONAL
+> > +    DMA_BIDIRECTIONAL
+> >
+> > @@
+> > @@
+> > -    PCI_DMA_TODEVICE
+> > +    DMA_TO_DEVICE
+> >
+> > @@
+> > @@
+> > -    PCI_DMA_FROMDEVICE
+> > +    DMA_FROM_DEVICE
+> >
+> > @@
+> > @@
+> > -    PCI_DMA_NONE
+> > +    DMA_NONE
+> >
+> > @@
+> > expression e1, e2, e3;
+> > @@
+> > -    pci_alloc_consistent(e1, e2, e3)
+> > +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> >
+> > @@
+> > expression e1, e2, e3;
+> > @@
+> > -    pci_zalloc_consistent(e1, e2, e3)
+> > +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_free_consistent(e1, e2, e3, e4)
+> > +    dma_free_coherent(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_map_single(e1, e2, e3, e4)
+> > +    dma_map_single(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_unmap_single(e1, e2, e3, e4)
+> > +    dma_unmap_single(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4, e5;
+> > @@
+> > -    pci_map_page(e1, e2, e3, e4, e5)
+> > +    dma_map_page(&e1->dev, e2, e3, e4, e5)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_unmap_page(e1, e2, e3, e4)
+> > +    dma_unmap_page(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_map_sg(e1, e2, e3, e4)
+> > +    dma_map_sg(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_unmap_sg(e1, e2, e3, e4)
+> > +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
+> > +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
+> > +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
+> > +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2, e3, e4;
+> > @@
+> > -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
+> > +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+> >
+> > @@
+> > expression e1, e2;
+> > @@
+> > -    pci_dma_mapping_error(e1, e2)
+> > +    dma_mapping_error(&e1->dev, e2)
+> >
+> > @@
+> > expression e1, e2;
+> > @@
+> > -    pci_set_dma_mask(e1, e2)
+> > +    dma_set_mask(&e1->dev, e2)
+> >
+> > @@
+> > expression e1, e2;
+> > @@
+> > -    pci_set_consistent_dma_mask(e1, e2)
+> > +    dma_set_coherent_mask(&e1->dev, e2)
+> >
+> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 >
-> ^^
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 >
-> > I'm working with mainline first to make sure I understand everything. If I
-> > backport this it would be to 5.4 but that looks to be extremely
-> > painful. It looks like there was a lot of activity around trusted keys
-> > in 5.13.
+> > ---
+> > If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+> >     https://marc.info/?l=3Dkernel-janitors&m=3D158745678307186&w=3D4
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c | 6 +++---
+> >   1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_gart.c
+> > index b36405170ff3..76efd5f8950f 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
+> > @@ -76,7 +76,7 @@ static int amdgpu_gart_dummy_page_init(struct amdgpu_=
+device *adev)
+> >       if (adev->dummy_page_addr)
+> >               return 0;
+> >       adev->dummy_page_addr =3D dma_map_page(&adev->pdev->dev, dummy_pa=
+ge, 0,
+> > -                                          PAGE_SIZE, PCI_DMA_BIDIRECTI=
+ONAL);
+> > +                                          PAGE_SIZE, DMA_BIDIRECTIONAL=
+);
+> >       if (dma_mapping_error(&adev->pdev->dev, adev->dummy_page_addr)) {
+> >               dev_err(&adev->pdev->dev, "Failed to DMA MAP the dummy pa=
+ge\n");
+> >               adev->dummy_page_addr =3D 0;
+> > @@ -96,8 +96,8 @@ void amdgpu_gart_dummy_page_fini(struct amdgpu_device=
+ *adev)
+> >   {
+> >       if (!adev->dummy_page_addr)
+> >               return;
+> > -     pci_unmap_page(adev->pdev, adev->dummy_page_addr,
+> > -                    PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
+> > +     dma_unmap_page(&adev->pdev->dev, adev->dummy_page_addr, PAGE_SIZE=
+,
+> > +                    DMA_BIDIRECTIONAL);
+> >       adev->dummy_page_addr =3D 0;
+> >   }
+> >
 >
-> Ye. It used to be limited to TPM before that.
->
-> > It works for a user keyring but not a session keyring... does that
-> > explain anything?
-> > # keyctl add trusted mykey 'new 32' @u
-> > 941210782
-> > # keyctl print 941210782
-> > 83b7845cb45216496aead9ee2c6a406f587d64aad47bddc539d8947a247e618798d9306b36398b5dc2722a4c3f220a3a763ee175f6bd64758fdd49ca4db597e8ce328121b60edbba9b8d8d55056be896
-> > # keyctl add trusted mykey 'new 32' @s
-> > 310571960
-> > # keyctl print 310571960
-> > keyctl_read_alloc: Unknown error 126
->
-> Both sequences work for me.
->
-> My getty is started by systemd. I think systemd allocates a new session
-> keyring for the getty that's inherited by the shell and the commands I run
-> it in. If you don't do that, each command will get its own session key.
->
-> > Sorry, I'm still trying to wrap my head around the differences in
-> > keyrings and trusted vs user keys.
->
-> No problem. HTH.
-
-Ahmad,
-
-Ok that explains it - my testing is using a very basic buildroot
-ramdisk rootfs. If I do a 'keyctl new_session' first I can use the
-system keyring fine as well.
-
-Thanks - hoping to see this merged soon!
-
-Tim
