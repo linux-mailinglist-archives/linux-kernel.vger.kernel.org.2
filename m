@@ -2,178 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7123F47AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D753F4799
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbhHWJdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:33:51 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38854 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236091AbhHWJdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:33:37 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="197317356"
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="197317356"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 02:32:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="642772522"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 23 Aug 2021 02:32:52 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E39E8D1; Mon, 23 Aug 2021 12:32:52 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Cc:     Eric Piel <eric.piel@tremplin-utc.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>
-Subject: [PATCH v2 2/2] platform/x86: hp_accel: Convert to be a platform driver
-Date:   Mon, 23 Aug 2021 12:32:22 +0300
-Message-Id: <20210823093222.19544-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com>
-References: <20210823093222.19544-1-andriy.shevchenko@linux.intel.com>
+        id S235905AbhHWJd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235840AbhHWJd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:33:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11E1C061575;
+        Mon, 23 Aug 2021 02:32:45 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 09:32:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629711164;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6r3EBaV57xO0HubIzPq8QYXAmy77he3O2qGZC4u2NCw=;
+        b=SEslbsqVzBbo5TeOFdZC7eTKEUTHV5j709GvxDzLS3tdiyx4gt3nJY+MRAYf/ExeeFF1Y8
+        j+s6SNaBJLdpukTSMGzDhUf2X61tzErrQdP41rFFH3zi+0cNTFlUwAx+ofyPz6+zYxqw1Z
+        PbTTz1ycRBr5be2zOwqIdSJaYxntvxs2Fz/3FQyZjmfATdZ4m9B7/hCbtH0cBFLNbMnk6+
+        a/FR9I7cPZrjSwwda3ITqHSRAyz6CY/+Z4/a+lMHB0Eze3KoE8iOyVYxmUYK3wZJfuSrnV
+        mumtaOT8+kDz4PE5748D+IbfXclql0vsE0KAVtenEa33hSwFio8/4kFhirbfmQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629711164;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6r3EBaV57xO0HubIzPq8QYXAmy77he3O2qGZC4u2NCw=;
+        b=5n2YtIo8797f1ZNv+1Vv0MdakCCQlcIftB+7X8klKrfjj/jVPDk6wfpjjey/DD8hECZ5AR
+        +vtDz3LaMuWiL5AA==
+From:   "tip-bot2 for Kim Phillips" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/amd/ibs: Add bitfield definitions in new header
+Cc:     Kim Phillips <kim.phillips@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210817221048.88063-9-kim.phillips@amd.com>
+References: <20210817221048.88063-9-kim.phillips@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <162971116333.25758.7472602512061321985.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ACPI core in conjunction with platform driver core provides
-an infrastructure to enumerate ACPI devices. Use it in order
-to remove a lot of boilerplate code.
+The following commit has been merged into the perf/core branch of tip:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Commit-ID:     492f4a3cf54cf39b5c2d682a1e6dd4ea9af2f4f2
+Gitweb:        https://git.kernel.org/tip/492f4a3cf54cf39b5c2d682a1e6dd4ea9af2f4f2
+Author:        Kim Phillips <kim.phillips@amd.com>
+AuthorDate:    Tue, 17 Aug 2021 17:10:48 -05:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 20 Aug 2021 12:33:14 +02:00
+
+perf/x86/amd/ibs: Add bitfield definitions in new header
+
+Add arch/x86/include/asm/amd-ibs.h with bitfield definitions for
+IBS MSRs, and demonstrate usage within the driver.
+
+Also move struct perf_ibs_data where it can be shared with
+the perf tool that will soon be using it.
+
+No functional changes.
+
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210817221048.88063-9-kim.phillips@amd.com
 ---
- drivers/platform/x86/hp_accel.c | 64 ++++++++-------------------------
- 1 file changed, 14 insertions(+), 50 deletions(-)
+ arch/x86/events/amd/ibs.c      |  23 ++----
+ arch/x86/include/asm/amd-ibs.h | 132 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 141 insertions(+), 14 deletions(-)
+ create mode 100644 arch/x86/include/asm/amd-ibs.h
 
-diff --git a/drivers/platform/x86/hp_accel.c b/drivers/platform/x86/hp_accel.c
-index 54a4addc7903..cc53f725c041 100644
---- a/drivers/platform/x86/hp_accel.c
-+++ b/drivers/platform/x86/hp_accel.c
-@@ -28,9 +28,6 @@
- #include <linux/serio.h>
- #include "../../misc/lis3lv02d/lis3lv02d.h"
+diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
+index 222c890..4fc85cd 100644
+--- a/arch/x86/events/amd/ibs.c
++++ b/arch/x86/events/amd/ibs.c
+@@ -26,6 +26,7 @@ static u32 ibs_caps;
+ #include <linux/hardirq.h>
  
--#define DRIVER_NAME     "hp_accel"
--#define ACPI_MDPS_CLASS "accelerometer"
--
- /* Delayed LEDs infrastructure ------------------------------------ */
+ #include <asm/nmi.h>
++#include <asm/amd-ibs.h>
  
- /* Special LED class that can defer work */
-@@ -269,30 +266,6 @@ static struct delayed_led_classdev hpled_led = {
- 	.set_brightness = hpled_set,
+ #define IBS_FETCH_CONFIG_MASK	(IBS_FETCH_RAND_EN | IBS_FETCH_MAX_CNT)
+ #define IBS_OP_CONFIG_MASK	IBS_OP_MAX_CNT
+@@ -100,15 +101,6 @@ struct perf_ibs {
+ 	u64				(*get_count)(u64 config);
  };
  
--static acpi_status
--lis3lv02d_get_resource(struct acpi_resource *resource, void *context)
--{
--	if (resource->type == ACPI_RESOURCE_TYPE_EXTENDED_IRQ) {
--		struct acpi_resource_extended_irq *irq;
--		u32 *device_irq = context;
+-struct perf_ibs_data {
+-	u32		size;
+-	union {
+-		u32	data[0];	/* data buffer starts here */
+-		u32	caps;
+-	};
+-	u64		regs[MSR_AMD64_IBS_REG_COUNT_MAX];
+-};
 -
--		irq = &resource->data.extended_irq;
--		*device_irq = irq->interrupts[0];
--	}
--
--	return AE_OK;
--}
--
--static void lis3lv02d_enum_resources(struct acpi_device *device)
--{
--	acpi_status status;
--
--	status = acpi_walk_resources(device->handle, METHOD_NAME__CRS,
--					lis3lv02d_get_resource, &lis3_dev.irq);
--	if (ACPI_FAILURE(status))
--		printk(KERN_DEBUG DRIVER_NAME ": Error getting resources\n");
--}
--
- static bool hp_accel_i8042_filter(unsigned char data, unsigned char str,
- 				  struct serio *port)
+ static int
+ perf_event_set_period(struct hw_perf_event *hwc, u64 min, u64 max, u64 *hw_period)
  {
-@@ -322,23 +295,19 @@ static bool hp_accel_i8042_filter(unsigned char data, unsigned char str,
- 	return false;
+@@ -329,11 +321,14 @@ static int perf_ibs_set_period(struct perf_ibs *perf_ibs,
+ 
+ static u64 get_ibs_fetch_count(u64 config)
+ {
+-	return (config & IBS_FETCH_CNT) >> 12;
++	union ibs_fetch_ctl fetch_ctl = (union ibs_fetch_ctl)config;
++
++	return fetch_ctl.fetch_cnt << 4;
  }
  
--static int lis3lv02d_add(struct acpi_device *device)
-+static int lis3lv02d_probe(struct platform_device *device)
+ static u64 get_ibs_op_count(u64 config)
  {
- 	int ret;
++	union ibs_op_ctl op_ctl = (union ibs_op_ctl)config;
+ 	u64 count = 0;
  
--	if (!device)
--		return -EINVAL;
--
--	lis3_dev.bus_priv = device;
-+	lis3_dev.bus_priv = ACPI_COMPANION(&device->dev);
- 	lis3_dev.init = lis3lv02d_acpi_init;
- 	lis3_dev.read = lis3lv02d_acpi_read;
- 	lis3_dev.write = lis3lv02d_acpi_write;
--	strcpy(acpi_device_name(device), DRIVER_NAME);
--	strcpy(acpi_device_class(device), ACPI_MDPS_CLASS);
--	device->driver_data = &lis3_dev;
+ 	/*
+@@ -341,12 +336,12 @@ static u64 get_ibs_op_count(u64 config)
+ 	 * and the lower 7 bits of CurCnt are randomized.
+ 	 * Otherwise CurCnt has the full 27-bit current counter value.
+ 	 */
+-	if (config & IBS_OP_VAL) {
+-		count = (config & IBS_OP_MAX_CNT) << 4;
++	if (op_ctl.op_val) {
++		count = op_ctl.opmaxcnt << 4;
+ 		if (ibs_caps & IBS_CAPS_OPCNTEXT)
+-			count += config & IBS_OP_MAX_CNT_EXT_MASK;
++			count += op_ctl.opmaxcnt_ext << 20;
+ 	} else if (ibs_caps & IBS_CAPS_RDWROPCNT) {
+-		count = (config & IBS_OP_CUR_CNT) >> 32;
++		count = op_ctl.opcurcnt;
+ 	}
  
- 	/* obtain IRQ number of our device from ACPI */
--	lis3lv02d_enum_resources(device);
-+	ret = platform_get_irq_optional(device, 0);
-+	if (ret > 0)
-+		lis3_dev.irq = ret;
- 
- 	/* If possible use a "standard" axes order */
- 	if (lis3_dev.ac.x && lis3_dev.ac.y && lis3_dev.ac.z) {
-@@ -371,11 +340,8 @@ static int lis3lv02d_add(struct acpi_device *device)
- 	return ret;
- }
- 
--static int lis3lv02d_remove(struct acpi_device *device)
-+static int lis3lv02d_remove(struct platform_device *device)
- {
--	if (!device)
--		return -EINVAL;
--
- 	i8042_remove_filter(hp_accel_i8042_filter);
- 	lis3lv02d_joystick_disable(&lis3_dev);
- 	lis3lv02d_poweroff(&lis3_dev);
-@@ -386,7 +352,6 @@ static int lis3lv02d_remove(struct acpi_device *device)
- 	return lis3lv02d_remove_fs(&lis3_dev);
- }
- 
--
- #ifdef CONFIG_PM_SLEEP
- static int lis3lv02d_suspend(struct device *dev)
- {
-@@ -422,17 +387,16 @@ static const struct dev_pm_ops hp_accel_pm = {
- #endif
- 
- /* For the HP MDPS aka 3D Driveguard */
--static struct acpi_driver lis3lv02d_driver = {
--	.name  = DRIVER_NAME,
--	.class = ACPI_MDPS_CLASS,
--	.ids   = lis3lv02d_device_ids,
--	.ops = {
--		.add     = lis3lv02d_add,
--		.remove  = lis3lv02d_remove,
-+static struct platform_driver lis3lv02d_driver = {
-+	.probe	= lis3lv02d_probe,
-+	.remove	= lis3lv02d_remove,
-+	.driver	= {
-+		.name	= "hp_accel",
-+		.pm	= HP_ACCEL_PM,
-+		.acpi_match_table = lis3lv02d_device_ids,
- 	},
--	.drv.pm = HP_ACCEL_PM,
- };
--module_acpi_driver(lis3lv02d_driver);
-+module_platform_driver(lis3lv02d_driver);
- 
- MODULE_DESCRIPTION("Glue between LIS3LV02Dx and HP ACPI BIOS and support for disk protection LED.");
- MODULE_AUTHOR("Yan Burman, Eric Piel, Pavel Machek");
--- 
-2.32.0
-
+ 	return count;
+diff --git a/arch/x86/include/asm/amd-ibs.h b/arch/x86/include/asm/amd-ibs.h
+new file mode 100644
+index 0000000..46e1df4
+--- /dev/null
++++ b/arch/x86/include/asm/amd-ibs.h
+@@ -0,0 +1,132 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * From PPR Vol 1 for AMD Family 19h Model 01h B1
++ * 55898 Rev 0.35 - Feb 5, 2021
++ */
++
++#include <asm/msr-index.h>
++
++/*
++ * IBS Hardware MSRs
++ */
++
++/* MSR 0xc0011030: IBS Fetch Control */
++union ibs_fetch_ctl {
++	__u64 val;
++	struct {
++		__u64	fetch_maxcnt:16,/* 0-15: instruction fetch max. count */
++			fetch_cnt:16,	/* 16-31: instruction fetch count */
++			fetch_lat:16,	/* 32-47: instruction fetch latency */
++			fetch_en:1,	/* 48: instruction fetch enable */
++			fetch_val:1,	/* 49: instruction fetch valid */
++			fetch_comp:1,	/* 50: instruction fetch complete */
++			ic_miss:1,	/* 51: i-cache miss */
++			phy_addr_valid:1,/* 52: physical address valid */
++			l1tlb_pgsz:2,	/* 53-54: i-cache L1TLB page size
++					 *	  (needs IbsPhyAddrValid) */
++			l1tlb_miss:1,	/* 55: i-cache fetch missed in L1TLB */
++			l2tlb_miss:1,	/* 56: i-cache fetch missed in L2TLB */
++			rand_en:1,	/* 57: random tagging enable */
++			fetch_l2_miss:1,/* 58: L2 miss for sampled fetch
++					 *      (needs IbsFetchComp) */
++			reserved:5;	/* 59-63: reserved */
++	};
++};
++
++/* MSR 0xc0011033: IBS Execution Control */
++union ibs_op_ctl {
++	__u64 val;
++	struct {
++		__u64	opmaxcnt:16,	/* 0-15: periodic op max. count */
++			reserved0:1,	/* 16: reserved */
++			op_en:1,	/* 17: op sampling enable */
++			op_val:1,	/* 18: op sample valid */
++			cnt_ctl:1,	/* 19: periodic op counter control */
++			opmaxcnt_ext:7,	/* 20-26: upper 7 bits of periodic op maximum count */
++			reserved1:5,	/* 27-31: reserved */
++			opcurcnt:27,	/* 32-58: periodic op counter current count */
++			reserved2:5;	/* 59-63: reserved */
++	};
++};
++
++/* MSR 0xc0011035: IBS Op Data 2 */
++union ibs_op_data {
++	__u64 val;
++	struct {
++		__u64	comp_to_ret_ctr:16,	/* 0-15: op completion to retire count */
++			tag_to_ret_ctr:16,	/* 15-31: op tag to retire count */
++			reserved1:2,		/* 32-33: reserved */
++			op_return:1,		/* 34: return op */
++			op_brn_taken:1,		/* 35: taken branch op */
++			op_brn_misp:1,		/* 36: mispredicted branch op */
++			op_brn_ret:1,		/* 37: branch op retired */
++			op_rip_invalid:1,	/* 38: RIP is invalid */
++			op_brn_fuse:1,		/* 39: fused branch op */
++			op_microcode:1,		/* 40: microcode op */
++			reserved2:23;		/* 41-63: reserved */
++	};
++};
++
++/* MSR 0xc0011036: IBS Op Data 2 */
++union ibs_op_data2 {
++	__u64 val;
++	struct {
++		__u64	data_src:3,	/* 0-2: data source */
++			reserved0:1,	/* 3: reserved */
++			rmt_node:1,	/* 4: destination node */
++			cache_hit_st:1,	/* 5: cache hit state */
++			reserved1:57;	/* 5-63: reserved */
++	};
++};
++
++/* MSR 0xc0011037: IBS Op Data 3 */
++union ibs_op_data3 {
++	__u64 val;
++	struct {
++		__u64	ld_op:1,			/* 0: load op */
++			st_op:1,			/* 1: store op */
++			dc_l1tlb_miss:1,		/* 2: data cache L1TLB miss */
++			dc_l2tlb_miss:1,		/* 3: data cache L2TLB hit in 2M page */
++			dc_l1tlb_hit_2m:1,		/* 4: data cache L1TLB hit in 2M page */
++			dc_l1tlb_hit_1g:1,		/* 5: data cache L1TLB hit in 1G page */
++			dc_l2tlb_hit_2m:1,		/* 6: data cache L2TLB hit in 2M page */
++			dc_miss:1,			/* 7: data cache miss */
++			dc_mis_acc:1,			/* 8: misaligned access */
++			reserved:4,			/* 9-12: reserved */
++			dc_wc_mem_acc:1,		/* 13: write combining memory access */
++			dc_uc_mem_acc:1,		/* 14: uncacheable memory access */
++			dc_locked_op:1,			/* 15: locked operation */
++			dc_miss_no_mab_alloc:1,		/* 16: DC miss with no MAB allocated */
++			dc_lin_addr_valid:1,		/* 17: data cache linear address valid */
++			dc_phy_addr_valid:1,		/* 18: data cache physical address valid */
++			dc_l2_tlb_hit_1g:1,		/* 19: data cache L2 hit in 1GB page */
++			l2_miss:1,			/* 20: L2 cache miss */
++			sw_pf:1,			/* 21: software prefetch */
++			op_mem_width:4,			/* 22-25: load/store size in bytes */
++			op_dc_miss_open_mem_reqs:6,	/* 26-31: outstanding mem reqs on DC fill */
++			dc_miss_lat:16,			/* 32-47: data cache miss latency */
++			tlb_refill_lat:16;		/* 48-63: L1 TLB refill latency */
++	};
++};
++
++/* MSR 0xc001103c: IBS Fetch Control Extended */
++union ic_ibs_extd_ctl {
++	__u64 val;
++	struct {
++		__u64	itlb_refill_lat:16,	/* 0-15: ITLB Refill latency for sampled fetch */
++			reserved:48;		/* 16-63: reserved */
++	};
++};
++
++/*
++ * IBS driver related
++ */
++
++struct perf_ibs_data {
++	u32		size;
++	union {
++		u32	data[0];	/* data buffer starts here */
++		u32	caps;
++	};
++	u64		regs[MSR_AMD64_IBS_REG_COUNT_MAX];
++};
