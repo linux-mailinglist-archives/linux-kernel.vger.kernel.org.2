@@ -2,132 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F2D3F4E9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4683F4EA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhHWQn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:43:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38190 "EHLO mail.kernel.org"
+        id S230192AbhHWQpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:45:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229454AbhHWQnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:43:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBC996124B;
-        Mon, 23 Aug 2021 16:42:41 +0000 (UTC)
+        id S229454AbhHWQpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:45:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55BF6610F8;
+        Mon, 23 Aug 2021 16:44:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629736962;
-        bh=Noz1/fUIuPdZh4oSdO5S2IJ/Q2VuZ8ZcDqLTvICeD3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k1tzJOhD9ePClgY04kcZfgRYmcalXb+k0IQzI/2RdkLde/OpEJRIgXlOvsIPnw0c9
-         mP1kivM/xGcybZkA/Cv/965c52TmW/EYEaXms7FiagnEqNxBhSysfdteDSgH0PD216
-         BeqiGuf/fgLkE8S0B7JNlggg9aI2er0NSPxVUtQW+Hz6XilNXLOeQYYd89yzS6Q7TE
-         SDy0Y6l1sWSz7MO7oXX4QkRa3NHhRMTVI5iM7oL4oj4kDvrf58JQm3H/zO5ojXqd1Z
-         HyICYYcfaxfewGEAk4GiPNtpm7EkkhP5AyRAUwO9vpqBSsRgAdLL7Z4dLbVxTLloxH
-         trgXpWvN6ApQA==
-Received: by pali.im (Postfix)
-        id D8F37FC2; Mon, 23 Aug 2021 18:42:39 +0200 (CEST)
-Date:   Mon, 23 Aug 2021 18:42:39 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] PCI: aardvark: Correctly clear and unmask all MSI
- interrupts
-Message-ID: <20210823164239.beooev5ytrbcsxxr@pali>
-References: <20210625090319.10220-1-pali@kernel.org>
- <20210625090319.10220-7-pali@kernel.org>
- <fb3a7ef15397292692b6d5dd0d2e439e@kernel.org>
- <20210806083522.arnxu7cikgzn73b4@pali>
+        s=k20201202; t=1629737066;
+        bh=7w5FXWeb8P/JBu4RqLDy7fzGAXbval5K4YO4wkz3Tn8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QRPsy8S1buyVDP9dLd+eDgJJ0x7b+mpjd+QiKp17gSoCfIyr9cTC4G+Px9ZSVsWbl
+         OdMipVIHQKzyX4St+fNM8uMsktO3/osoQjVeJb+ijLUj8UaVHBY/dPo+oZdngbIXh0
+         ep3Odv0n41HiNoR6MKshMxFAVDF3GuvV55qj3gaFSjUPLv194qHl5K/prEJ2Jauk+C
+         e7gxbFkoiMd3hTXRZB1zMeM+AORbj1pyS+jfibY7MCqLj9NvEk/Y1qiEDIlMLsUvUO
+         1HifTcI35mpL7oJFxzbg1laOWr4bUQKUdazBHG6sSSPv2vX4rvZJvnGTTJXsBfuyAM
+         O0suswGiISgGQ==
+Date:   Mon, 23 Aug 2021 09:44:25 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Michael Riesch <michael.riesch@wolfvision.net>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Subject: Re: [PATCH] net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable
+ warnings
+Message-ID: <20210823094425.78d7a73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210823143754.14294-1-michael.riesch@wolfvision.net>
+References: <20210823143754.14294-1-michael.riesch@wolfvision.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210806083522.arnxu7cikgzn73b4@pali>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 06 August 2021 10:35:22 Pali Rohár wrote:
-> On Friday 06 August 2021 09:32:24 Marc Zyngier wrote:
-> > On 2021-06-25 10:03, Pali Rohár wrote:
-> > > Define a new macro PCIE_MSI_ALL_MASK and use it for masking, unmasking
-> > > and
-> > > clearing all MSI interrupts.
-> > > 
-> > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > Reviewed-by: Marek Behún <kabel@kernel.org>
-> > > Cc: stable@vger.kernel.org
-> > > ---
-> > >  drivers/pci/controller/pci-aardvark.c | 16 ++++++++++------
-> > >  1 file changed, 10 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/pci-aardvark.c
-> > > b/drivers/pci/controller/pci-aardvark.c
-> > > index 0e81d89f307d..7cad6d989f6c 100644
-> > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > @@ -117,6 +117,7 @@
-> > >  #define PCIE_MSI_ADDR_HIGH_REG			(CONTROL_BASE_ADDR + 0x54)
-> > >  #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
-> > >  #define PCIE_MSI_MASK_REG			(CONTROL_BASE_ADDR + 0x5C)
-> > > +#define     PCIE_MSI_ALL_MASK			GENMASK(31, 0)
-> > >  #define PCIE_MSI_PAYLOAD_REG			(CONTROL_BASE_ADDR + 0x9C)
-> > >  #define     PCIE_MSI_DATA_MASK			GENMASK(15, 0)
-> > > 
-> > > @@ -470,19 +471,22 @@ static void advk_pcie_setup_hw(struct advk_pcie
-> > > *pcie)
-> > >  	advk_writel(pcie, reg, PCIE_CORE_CTRL2_REG);
-> > > 
-> > >  	/* Clear all interrupts */
-> > > +	advk_writel(pcie, PCIE_MSI_ALL_MASK, PCIE_MSI_STATUS_REG);
-> > >  	advk_writel(pcie, PCIE_ISR0_ALL_MASK, PCIE_ISR0_REG);
-> > >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_REG);
-> > >  	advk_writel(pcie, PCIE_IRQ_ALL_MASK, HOST_CTRL_INT_STATUS_REG);
-> > > 
-> > >  	/* Disable All ISR0/1 Sources */
-> > > -	reg = PCIE_ISR0_ALL_MASK;
-> > > -	reg &= ~PCIE_ISR0_MSI_INT_PENDING;
-> > > -	advk_writel(pcie, reg, PCIE_ISR0_MASK_REG);
-> > > -
-> > > +	advk_writel(pcie, PCIE_ISR0_ALL_MASK, PCIE_ISR0_MASK_REG);
-> > >  	advk_writel(pcie, PCIE_ISR1_ALL_MASK, PCIE_ISR1_MASK_REG);
-> > > 
-> > >  	/* Unmask all MSIs */
-> > > -	advk_writel(pcie, 0, PCIE_MSI_MASK_REG);
-> > > +	advk_writel(pcie, ~(u32)PCIE_MSI_ALL_MASK, PCIE_MSI_MASK_REG);
-> > > +
-> > > +	/* Unmask summary MSI interrupt */
-> > > +	reg = advk_readl(pcie, PCIE_ISR0_MASK_REG);
-> > > +	reg &= ~PCIE_ISR0_MSI_INT_PENDING;
-> > > +	advk_writel(pcie, reg, PCIE_ISR0_MASK_REG);
-> > > 
-> > >  	/* Enable summary interrupt for GIC SPI source */
-> > >  	reg = PCIE_IRQ_ALL_MASK & (~PCIE_IRQ_ENABLE_INTS_MASK);
-> > > @@ -1177,7 +1181,7 @@ static void advk_pcie_handle_msi(struct advk_pcie
-> > > *pcie)
-> > > 
-> > >  	msi_mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
-> > >  	msi_val = advk_readl(pcie, PCIE_MSI_STATUS_REG);
-> > > -	msi_status = msi_val & ~msi_mask;
-> > > +	msi_status = msi_val & ((~msi_mask) & PCIE_MSI_ALL_MASK);
-> > > 
-> > >  	for (msi_idx = 0; msi_idx < MSI_IRQ_NUM; msi_idx++) {
-> > >  		if (!(BIT(msi_idx) & msi_status))
-> > 
-> > This still begs the question: why would you ever enable all
-> > MSIs the first place? They should be enabled on request only.
-> 
-> This is going to be fixed in followup patches. Just Lorenzo asked to
-> send smaller patch series, so I have to split that followup fix into
-> the next round.
+On Mon, 23 Aug 2021 16:37:54 +0200 Michael Riesch wrote:
+> In the commit to be reverted, support for power management was
+> introduced to the Rockchip glue code. Later, power management support
+> was introduced to the stmmac core code, resulting in multiple
+> invocations of pm_runtime_{enable,disable,get_sync,put_sync}.
 
-Just for reference, patch series which is handling it:
-https://lore.kernel.org/linux-pci/20210815103624.19528-1-pali@kernel.org/t/#u
+Can we get a Fixes tag? I.e. reference to the earliest commit where 
+the warning can be triggered?
 
-> >         M.
-> > -- 
-> > Jazz is not dead. It just smells funny...
+> The multiple invocations happen in rk_gmac_powerup and
+> stmmac_{dvr_probe, resume} as well as in rk_gmac_powerdown and
+> stmmac_{dvr_remove, suspend}, respectively, which are always called
+> in conjunction.
