@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4583F5340
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4709A3F5341
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 00:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbhHWWPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 18:15:12 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55978 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233045AbhHWWPI (ORCPT
+        id S233072AbhHWWQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 18:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232979AbhHWWP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 18:15:08 -0400
-Received: by mail-io1-f71.google.com with SMTP id f10-20020a6b620a0000b02904e5ab8bdc6cso11013855iog.22
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:14:25 -0700 (PDT)
+        Mon, 23 Aug 2021 18:15:58 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16590C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:15:15 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id x4so17928191pgh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 15:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RfdR9T5mZGKV6zTbvG9lN48TBpGfeb0ci4Ov6cLVODE=;
+        b=XLlQyOR1TZ84fqnkKvmA5L1aYwtoI6/yyTnBLXhj0MUkxsRtFTL92CSa2Poa1HpbeW
+         HNfiFyhu5K/uGj/LLOOtX21f98XnGYCB7+eekRvG9REDRbIVULgDFhMfiuzTsyEkg1lU
+         IiV36AtV4FrBr0RUDVI8vQgODPfvq6sxZFf/NiejOayr84ME1Fo1XSj+iAS1DhQr5V2E
+         RKy0cpY6S8FLuuWHO1c3uoOWSCruiLBitdCB7DJOTgKOUUJOYZiKAbOcswPcYLhg4+OG
+         khbEp4vCYkhG6bOdxrgh6zIXbO+FdGmowvTiNKODeo15FdFB1iTm4/unoTpQFansWTg5
+         PDnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=SijtErviYrCHOwNGj36E6qhULs4xNwl8A7hm7GnvXvE=;
-        b=IJMzTHPuQXllKPRJYdsi7eJZ8jyYyipcHPHKBARFG2p+LL6fS+t/Up4Xblw4pjDsTS
-         mY1EEh9lqsiyZlfFxoizNpYeMDbB/d5SuYfNjCYwMjat1TuH+z7IGoJxsGmkpX+y8I8Z
-         k9ZaKBSROpJ6IlX8z4XGL74qN4fcheGxsAY6caV2uMdSuu3g0B4P+VynQ0OSXO7dpJrI
-         UXdSOlLmJUFujxHGRZ9FhGLVzMohz8YjZE0MecYk0PzrNfdxcVQ4aheJfJht0iDV6mTG
-         CK9jwri/Zmi0I+Vw5xovpBQ6r4oLDJBBKDD7949mgSzCdjtU3hXLtKK5CfYlXR4qPAm7
-         FebA==
-X-Gm-Message-State: AOAM530+i+koVBdCwfQ/4joF3ccPuIBYIfg9HUHe6iMX6PWW+uVfMS91
-        7aRnHurFkuuN8PJb11ezQwSbJzzMhwG8eEOnHEuMPjmjeeuG
-X-Google-Smtp-Source: ABdhPJzgIU95H75Qye1pqMQAP+Qs42AogeQcfFBEzerm+aKBHu7KDlqp8xbCLvNExijDvof70hSQkbOmc+hUY0qJ2uNkXpSLv9b5
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RfdR9T5mZGKV6zTbvG9lN48TBpGfeb0ci4Ov6cLVODE=;
+        b=hXRfG9yGGzZjPCrX76XwuRSHqqDNKbvw2rKXu2O46CPB5p2eycguF3mz2f5Q7jxHDi
+         k/b8e9nilDRfmferoXUP6ZXY0fIZwVaUmQQYCKIaKi8PZ4qjpWB83GRBJws//CoiTS3b
+         /wd/wlYyyvpIZvunbXIO8YOboG1fecNW0vjWN6WdzSyNIhO6YFn0MnUEH5ILLcC2pBhq
+         3EplZB/6VnhUFEC2Ls26xaOZf4pW7hsvb3A6hCShIvXqM0c8f7ffD126kmLPbsDI8v3h
+         0+PPEtyolnNCqDwtznyEEkF4om9uTj5tdWc7MVFcsfdbWCVgjteAHcTSXYQBLeQMYA/l
+         zuKA==
+X-Gm-Message-State: AOAM530wJ5mqqPaQ9YgdHP1ZuIBpngvIR0cvqstT0mz9E7M/KEWVCiBu
+        rAaZw3xSFcCArYTBOvSO1J9yHD2vuBRF/4/jO6Gxew==
+X-Google-Smtp-Source: ABdhPJxp9KG95R1Y/hUK17QG53Sp8biAn/VMAUkMHbnmn6dbXi3Ry7luK6mPBChTKa0dR67/WYb+goSaRqISAIva4sY=
+X-Received: by 2002:aa7:90d4:0:b029:3b3:2746:5449 with SMTP id
+ k20-20020aa790d40000b02903b327465449mr35970535pfk.81.1629756914544; Mon, 23
+ Aug 2021 15:15:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e712:: with SMTP id b18mr28344115ioh.186.1629756865099;
- Mon, 23 Aug 2021 15:14:25 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 15:14:25 -0700
-In-Reply-To: <000000000000dd79fc05ca367b9d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000003bb1805ca4157a5@google.com>
-Subject: Re: [syzbot] WARNING in io_try_cancel_userdata
-From:   syzbot <syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20210823120106.9633-1-straube.linux@gmail.com>
+In-Reply-To: <20210823120106.9633-1-straube.linux@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Mon, 23 Aug 2021 23:15:03 +0100
+Message-ID: <CAA=Fs0=Yq9PMEProT4RPTan4K=aL-zkQw=y855vQu+iBTPztHQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] staging: r8188eu: use is_multicast_ether_addr instead
+ of IS_MCAST
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Martin Kaiser <martin@kaiser.cx>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, 23 Aug 2021 at 13:02, Michael Straube <straube.linux@gmail.com> wrote:
+>
+> This series replaces most uses of the custom IS_MCAST macro with
+> is_multicast_ether_addr. The goal is to get rid of IS_MCAST.
+> There is only one usage left in rtw_sta_mgt.c, but that one needs
+> more effort to verify that the buffers are properly aligned, so I
+> left it as is for now.
+>
+> Michael Straube (8):
+>   staging: r8188eu: ensure proper alignment for eth address buffers
+>   staging: r8188eu: use is_multicast_ether_addr in core/rtw_mlme.c
+>   staging: r8188eu: use is_multicast_ether_addr in core/rtw_mp.c
+>   staging: r8188eu: use is_multicast_ether_addr in core/rtw_recv.c
+>   staging: r8188eu: use is_multicast_ether_addr in core/rtw_security.c
+>   staging: r8188eu: use is_multicast_ether_addr in core/rtw_xmit.c
+>   staging: r8188eu: use is_multicast_ether_addr in hal/rtl8188eu_xmit.c
+>   staging: r8188eu: use is_multicast_ether_addr in os_dep/recv_linux.c
+>
+>  drivers/staging/r8188eu/core/rtw_mlme.c      |  4 ++--
+>  drivers/staging/r8188eu/core/rtw_mp.c        |  4 ++--
+>  drivers/staging/r8188eu/core/rtw_recv.c      | 20 ++++++++++----------
+>  drivers/staging/r8188eu/core/rtw_security.c  |  8 ++++----
+>  drivers/staging/r8188eu/core/rtw_xmit.c      | 15 ++++++---------
+>  drivers/staging/r8188eu/hal/rtl8188eu_xmit.c |  3 +--
+>  drivers/staging/r8188eu/include/rtw_recv.h   | 10 +++++-----
+>  drivers/staging/r8188eu/include/rtw_xmit.h   |  8 ++++----
+>  drivers/staging/r8188eu/os_dep/recv_linux.c  |  2 +-
+>  9 files changed, 35 insertions(+), 39 deletions(-)
+>
+> --
+> 2.32.0
+>
 
-HEAD commit:    46debfec12b4 Add linux-next specific files for 20210823
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f00c39300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=49609005dc034be7
-dashboard link: https://syzkaller.appspot.com/bug?extid=b0c9d1588ae92866515f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15830bee300000
+Dear Michael,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com
+Based on my limited knowledge, looks good to me. Also I built and
+runtime tested it with my N10-Nano, driver works well still. Many
+thanks.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 7008 at fs/io_uring.c:6082 io_try_cancel_userdata+0x30d/0x540 fs/io_uring.c:6082
-Modules linked in:
-CPU: 0 PID: 7008 Comm: iou-wrk-7007 Not tainted 5.14.0-rc7-next-20210823-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_try_cancel_userdata+0x30d/0x540 fs/io_uring.c:6082
-Code: 52 07 e8 66 67 95 ff 48 8b 3c 24 e8 ad 67 52 07 e9 71 fe ff ff e8 53 67 95 ff 41 bf 8e ff ff ff e9 61 fe ff ff e8 43 67 95 ff <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
-RSP: 0018:ffffc90003fefac0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88801d064c80 RCX: 0000000000000000
-RDX: ffff88801ea75580 RSI: ffffffff81e078fd RDI: ffff88801d064cd0
-RBP: ffff88801ea75580 R08: ffffffff899adde0 R09: ffffffff81e1e4e4
-R10: 0000000000000027 R11: 000000000000000e R12: 1ffff920007fdf59
-R13: 0000000000012345 R14: ffff888146628000 R15: ffff88801d064ce0
-FS:  00007f0c5b7d6700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffc3bfd8720 CR3: 0000000070d9c000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_async_cancel fs/io_uring.c:6122 [inline]
- io_issue_sqe+0x22d5/0x67b0 fs/io_uring.c:6515
- io_wq_submit_work+0x1d4/0x300 fs/io_uring.c:6619
- io_worker_handle_work+0x1584/0x1810 fs/io-wq.c:533
- io_wqe_worker+0x9cd/0xbb0 fs/io-wq.c:606
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+For whole series:
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
 
+Regards,
+Phil
