@@ -2,130 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916FD3F5142
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 125273F514C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhHWT0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:26:54 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:19296 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhHWT0x (ORCPT
+        id S232158AbhHWTca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230377AbhHWTc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:26:53 -0400
-Received: from [192.168.1.18] ([90.126.253.178])
-        by mwinf5d46 with ME
-        id l7S6250083riaq2037S6H5; Mon, 23 Aug 2021 21:26:09 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 23 Aug 2021 21:26:09 +0200
-X-ME-IP: 90.126.253.178
-Subject: Re: [PATCH] dmaengine: switch from 'pci_' to 'dma_' API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     gustavo.pimentel@synopsys.com, vkoul@kernel.org,
-        vireshk@kernel.org, wangzhou1@hisilicon.com, logang@deltatee.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <547fae4abef1ca3bf2198ca68e6c361b4d02f13c.1629635852.git.christophe.jaillet@wanadoo.fr>
- <YSNOTX68ltbt2hwf@smile.fi.intel.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <fe9d57ff-bd44-3cee-516e-6815213ef467@wanadoo.fr>
-Date:   Mon, 23 Aug 2021 21:26:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 23 Aug 2021 15:32:29 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA216C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:31:46 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q11so822337wrr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dbeFXa1zC8iknta7RykccKAQcTiUi7bLBPrj54xI+js=;
+        b=RLd6nUQsicylMhgvgT7JCI9mK9Zrc9q/UFb4/HX2orYHbUWcCZts86CiwLQRSBLSyc
+         6cGfIC9nDpNoAxHZaSW0FguylXyXvCeTWsGYlonmABuHMkGns8rwx7eebrOM9E4If+96
+         18znWkgFUNB2+zjZm6rva0vIc6N8daU/F3BTVPjfNktEp6NPfno186zjsn1Au5bc0bNR
+         Vqeu5r1i1axRZh2L+X9+M8xAJAirCZh4ModIiuaMs+l7ew576fraUy5uWYYf11KF3F78
+         ZZDPm1PWofKsA7Vg1FUcDx9Z5WbgsmR3qdQFk7KurhdSl3eSbpAHH+SP7tAQuRTgtMvJ
+         DLFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dbeFXa1zC8iknta7RykccKAQcTiUi7bLBPrj54xI+js=;
+        b=Op6Qh6aaHVMNmATZrMQXdHV5rwyMaLjMX6kbvG54rRwVOSTd+PfaTmk7EQfCgikb97
+         ApJP2uk49LZ3Xc2X5LEv/725UllBIgaE697VtpLJEtFPJNdTzH6LjhoZV0XDT3IAQ9pV
+         p5UZwS9MjIFg9MwddWMLNCQHdUhROM5C0OHfLtoJARDyvCYhXANu0/FYEKDXN+fHiDsN
+         dYWRdKp/Y5Ug3uZ/t++1i493+9TRlQeBn4NCSBMcJkn8Jd4J7COyTKqftVHcNuxoffWC
+         ZXNb+ifbuqCJoY40cWG5XaA3huFIfch6F+S+EKuCuKULb1MuFtpaWtgAqwlbx7LdgG8e
+         hY7A==
+X-Gm-Message-State: AOAM530l0ap755PNyamdIeZiHw+dQVBW3SStSsnddfxxtbgL+6LoiQxl
+        L5CPWy7DPp/nACSBKp3wC1E=
+X-Google-Smtp-Source: ABdhPJwL0UD+0oB61nmDyueLQeXiC0eF7ptd3XKBnIlHEqFZkOTQEX3xQ1S3e/6RoTs1HLSapJImvw==
+X-Received: by 2002:adf:ef05:: with SMTP id e5mr15395215wro.237.1629747105328;
+        Mon, 23 Aug 2021 12:31:45 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::3c39])
+        by smtp.gmail.com with ESMTPSA id q3sm80398wmf.37.2021.08.23.12.31.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 12:31:44 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: r8188eu: remove 5 GHz code
+Date:   Mon, 23 Aug 2021 21:30:28 +0200
+Message-Id: <20210823193028.12391-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <YSNOTX68ltbt2hwf@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 23/08/2021 à 09:29, Andy Shevchenko a écrit :
-> On Sun, Aug 22, 2021 at 02:40:22PM +0200, Christophe JAILLET wrote:
->> The wrappers in include/linux/pci-dma-compat.h should go away.
->>
->> The patch has been generated with the coccinelle script below.
->>
->> It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
->> 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
->> This is less verbose.
->>
->> It has been compile tested.
-> 
->> @@
->> expression e1, e2;
->> @@
->> -    pci_set_consistent_dma_mask(e1, e2)
->> +    dma_set_coherent_mask(&e1->dev, e2)
-> 
-> Can we, please, replace this long noise in the commit message with a link to a
-> script in coccinelle data base?
+The driver is for chips that do not operate in the 5 GHz band.
+Remove some 5 GHz related code.
 
-Hi,
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c | 30 ++++++--------------
+ 1 file changed, 8 insertions(+), 22 deletions(-)
 
-There is no script in the coccinelle data base up to now, and there is 
-no point in adding one now.
-The goal of these patches is to remove a deprecated API, so when the job 
-will be finished, this script would be of no use and would be removed.
+diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+index ab4a9200f079..81d4255d1785 100644
+--- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
++++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+@@ -208,17 +208,10 @@ static char *translate_scan(struct adapter *padapter,
+ 		else
+ 			snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11bg");
+ 	} else {
+-		if (pnetwork->network.Configuration.DSConfig > 14) {
+-			if (ht_cap)
+-				snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11an");
+-			else
+-				snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11a");
+-		} else {
+-			if (ht_cap)
+-				snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11gn");
+-			else
+-				snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11g");
+-		}
++		if (ht_cap)
++			snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11gn");
++		else
++			snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11g");
+ 	}
+ 
+ 	start = iwe_stream_add_event(info, start, stop, &iwe, IW_EV_CHAR_LEN);
+@@ -737,17 +730,10 @@ static int rtw_wx_get_name(struct net_device *dev,
+ 			else
+ 				snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11bg");
+ 		} else {
+-			if (pcur_bss->Configuration.DSConfig > 14) {
+-				if (ht_cap)
+-					snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11an");
+-				else
+-					snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11a");
+-			} else {
+-				if (ht_cap)
+-					snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11gn");
+-				else
+-					snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11g");
+-			}
++			if (ht_cap)
++				snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11gn");
++			else
++				snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11g");
+ 		}
+ 	} else {
+ 		snprintf(wrqu->name, IFNAMSIZ, "unassociated");
+-- 
+2.32.0
 
-However, I agree that the script as-is is noisy.
-
-I'll replace it with a link to a message already available in lore.
-
-> 
-> And the same comment for any future submission that are based on the scripts
-> (esp. coccinelle ones).
-
-I usually don't add my coccinelle scripts in the log, but I've been told 
-times ago that adding them was a good practice (that I have never 
-followed...).
-
-In this particular case, I thought it was helpful for a reviewer to see 
-how the automated part had been processed.
-
-> 
-> ...
-> 
->> This patch is mostly mechanical and compile tested. I hope it is ok to
->> update the "drivers/dma/" directory all at once.
-> 
-> There is another discussion with Hellwig [1] about 64-bit DMA mask,
-> i.e. it doesn't fail anymore,
-
-Yes, I'm aware of this thread.
-
-I've not taken it into account for 2 reasons:
-    - it goes beyond the goal of these patches (i.e. the removal of a 
-deprecated API)
-    - I *was* not 100% confident about [1].
-
-I *was* giving credit to comment such as [2]. And the pattern "if 64 
-bits fails, then switch to 32 bits" is really common.
-Maybe it made sense in the past and has remained as-is.
-
-
-However, since then I've looked at all the architecture specific 
-implementation of 'dma_supported()' and [1] looks indeed correct :)
-
-
-I propose to make these changes in another serie which will mention [1] 
-and see the acceptance rate in the different subsystems. (i.e. even if 
-the patch is correct, removing what looks like straightforward code may 
-puzzle a few of us)
-
-I would start it once "pci-dma-compat.h" has been removed.
-
-Do you agree, or do you want it integrated in the WIP?
-
-Anyway, thanks for the review and comments.
-
-CJ
-
-> so you need to rework drivers accordingly.
-> 
-> [1]: https://lkml.org/lkml/2021/6/7/398
-> 
-
-[2]: 
-https://elixir.bootlin.com/linux/v5.14-rc7/source/drivers/infiniband/hw/hfi1/pcie.c#L98
