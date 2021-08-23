@@ -2,136 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323E33F517F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E883F5189
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhHWTpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhHWTpu (ORCPT
+        id S231829AbhHWTsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:48:30 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:31355
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229558AbhHWTs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:45:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF29BC061575;
-        Mon, 23 Aug 2021 12:45:07 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f07d9004625a010a35f3837.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d900:4625:a010:a35f:3837])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 40FB61EC0464;
-        Mon, 23 Aug 2021 21:45:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629747902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7KwRhm2sTocXwEJarLiY5c63owI3J860DzvYo8UM4I8=;
-        b=ZMOl0Uklc7bTZqwVps5ltCyOrz0+FYqz+dpP/aACFQ5Dos6WO4MgcEOy3r0FBiZjU+kJ+5
-        N0XA+EgVhoccBaK31KeyV4yvoOZ6kurVQy4BmaOX4gvBTG52GczLHUiF4GOTbuMVEr85yf
-        6fDl9R5iUfEDGLSzg2RsxzO59rtBet8=
-Date:   Mon, 23 Aug 2021 21:45:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dov Murik <dovmurik@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: [PATCH] x86/sev: Remove do_early_exception() forward declarations
-Message-ID: <YSP66L7m4J6c5cNL@zn.tnic>
-References: <20210820151933.22401-1-brijesh.singh@amd.com>
- <20210820151933.22401-14-brijesh.singh@amd.com>
- <YSPcck0xAohlWHyd@zn.tnic>
- <815a054a-b0a2-e549-8d1c-086540521979@amd.com>
+        Mon, 23 Aug 2021 15:48:29 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3At5RJlKF3m7FQqAzapLqE78eALOsnbusQ8zAX?=
+ =?us-ascii?q?PiFKOHhom6Oj/PxG8M5w6fawslcssRIb6LW90cu7IU80nKQdibX5f43SPzUO01?=
+ =?us-ascii?q?HHEGgN1+ffKnHbak/D398Y5ONbf69yBMaYNzVHpMzxiTPWL+od?=
+X-IronPort-AV: E=Sophos;i="5.84,326,1620684000"; 
+   d="scan'208";a="390942565"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 21:47:44 +0200
+Date:   Mon, 23 Aug 2021 21:47:44 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        gustavo.pimentel@synopsys.com, vkoul@kernel.org,
+        vireshk@kernel.org, wangzhou1@hisilicon.com, logang@deltatee.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: switch from 'pci_' to 'dma_' API
+In-Reply-To: <fe9d57ff-bd44-3cee-516e-6815213ef467@wanadoo.fr>
+Message-ID: <alpine.DEB.2.22.394.2108232145590.17496@hadrien>
+References: <547fae4abef1ca3bf2198ca68e6c361b4d02f13c.1629635852.git.christophe.jaillet@wanadoo.fr> <YSNOTX68ltbt2hwf@smile.fi.intel.com> <fe9d57ff-bd44-3cee-516e-6815213ef467@wanadoo.fr>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <815a054a-b0a2-e549-8d1c-086540521979@amd.com>
+Content-Type: multipart/mixed; boundary="8323329-1370404212-1629748065=:17496"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 01:56:06PM -0500, Brijesh Singh wrote:
-> thanks, I will merge this in next version.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thx.
+--8323329-1370404212-1629748065=:17496
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-One more thing I stumbled upon while staring at this, see below. Can you
-add it to your set or should I simply apply it now?
 
-Thx.
 
----
-From: Borislav Petkov <bp@suse.de>
-Date: Mon, 23 Aug 2021 20:01:35 +0200
-Subject: [PATCH] x86/sev: Remove do_early_exception() forward declarations
+On Mon, 23 Aug 2021, Christophe JAILLET wrote:
 
-There's a perfectly fine prototype in the asm/setup.h header. Use it.
+> Le 23/08/2021 à 09:29, Andy Shevchenko a écrit :
+> > On Sun, Aug 22, 2021 at 02:40:22PM +0200, Christophe JAILLET wrote:
+> > > The wrappers in include/linux/pci-dma-compat.h should go away.
+> > >
+> > > The patch has been generated with the coccinelle script below.
+> > >
+> > > It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
+> > > 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+> > > This is less verbose.
+> > >
+> > > It has been compile tested.
+> >
+> > > @@
+> > > expression e1, e2;
+> > > @@
+> > > -    pci_set_consistent_dma_mask(e1, e2)
+> > > +    dma_set_coherent_mask(&e1->dev, e2)
+> >
+> > Can we, please, replace this long noise in the commit message with a link to
+> > a
+> > script in coccinelle data base?
+>
+> Hi,
+>
+> There is no script in the coccinelle data base up to now, and there is no
+> point in adding one now.
+> The goal of these patches is to remove a deprecated API, so when the job will
+> be finished, this script would be of no use and would be removed.
+>
+> However, I agree that the script as-is is noisy.
+>
+> I'll replace it with a link to a message already available in lore.
 
-No functional changes.
+You can perhaps include a script that represents a very typical case or
+the specific case that is relevant to the patch.
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/sev.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+julia
 
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index a6895e440bc3..700ef31d32f8 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -26,6 +26,7 @@
- #include <asm/fpu/internal.h>
- #include <asm/processor.h>
- #include <asm/realmode.h>
-+#include <asm/setup.h>
- #include <asm/traps.h>
- #include <asm/svm.h>
- #include <asm/smp.h>
-@@ -96,9 +97,6 @@ struct ghcb_state {
- static DEFINE_PER_CPU(struct sev_es_runtime_data*, runtime_data);
- DEFINE_STATIC_KEY_FALSE(sev_es_enable_key);
- 
--/* Needed in vc_early_forward_exception */
--void do_early_exception(struct pt_regs *regs, int trapnr);
--
- static void __init setup_vc_stacks(int cpu)
- {
- 	struct sev_es_runtime_data *data;
-@@ -240,9 +238,6 @@ static noinstr struct ghcb *__sev_get_ghcb(struct ghcb_state *state)
- 	return ghcb;
- }
- 
--/* Needed in vc_early_forward_exception */
--void do_early_exception(struct pt_regs *regs, int trapnr);
--
- static inline u64 sev_es_rd_ghcb_msr(void)
- {
- 	return __rdmsr(MSR_AMD64_SEV_ES_GHCB);
--- 
-2.29.2
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+> >
+> > And the same comment for any future submission that are based on the scripts
+> > (esp. coccinelle ones).
+>
+> I usually don't add my coccinelle scripts in the log, but I've been told times
+> ago that adding them was a good practice (that I have never followed...).
+>
+> In this particular case, I thought it was helpful for a reviewer to see how
+> the automated part had been processed.
+>
+> >
+> > ...
+> >
+> > > This patch is mostly mechanical and compile tested. I hope it is ok to
+> > > update the "drivers/dma/" directory all at once.
+> >
+> > There is another discussion with Hellwig [1] about 64-bit DMA mask,
+> > i.e. it doesn't fail anymore,
+>
+> Yes, I'm aware of this thread.
+>
+> I've not taken it into account for 2 reasons:
+>    - it goes beyond the goal of these patches (i.e. the removal of a
+> deprecated API)
+>    - I *was* not 100% confident about [1].
+>
+> I *was* giving credit to comment such as [2]. And the pattern "if 64 bits
+> fails, then switch to 32 bits" is really common.
+> Maybe it made sense in the past and has remained as-is.
+>
+>
+> However, since then I've looked at all the architecture specific
+> implementation of 'dma_supported()' and [1] looks indeed correct :)
+>
+>
+> I propose to make these changes in another serie which will mention [1] and
+> see the acceptance rate in the different subsystems. (i.e. even if the patch
+> is correct, removing what looks like straightforward code may puzzle a few of
+> us)
+>
+> I would start it once "pci-dma-compat.h" has been removed.
+>
+> Do you agree, or do you want it integrated in the WIP?
+>
+> Anyway, thanks for the review and comments.
+>
+> CJ
+>
+> > so you need to rework drivers accordingly.
+> >
+> > [1]: https://lkml.org/lkml/2021/6/7/398
+> >
+>
+> [2]:
+> https://elixir.bootlin.com/linux/v5.14-rc7/source/drivers/infiniband/hw/hfi1/pcie.c#L98
+>
+--8323329-1370404212-1629748065=:17496--
