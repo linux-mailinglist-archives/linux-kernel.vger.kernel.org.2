@@ -2,190 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122FE3F468F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2283F4694
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235608AbhHWIZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:25:48 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:58373 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhHWIZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:25:43 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GtQK81v0fz9sXb;
-        Mon, 23 Aug 2021 10:25:00 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OPP2dR354uWs; Mon, 23 Aug 2021 10:25:00 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GtQJR32Q2z9sXh;
-        Mon, 23 Aug 2021 10:24:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3FA368B78C;
-        Mon, 23 Aug 2021 10:24:23 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id OhfLtcBfgmMl; Mon, 23 Aug 2021 10:24:23 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 112D78B780;
-        Mon, 23 Aug 2021 10:24:23 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F04B06BC75; Mon, 23 Aug 2021 08:24:22 +0000 (UTC)
-Message-Id: <627ead32d40c840f9e8a329b60647b649eceb2aa.1629707037.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <385ead49ccb66a259b25fee3eebf0bd4094068f3.1629707037.git.christophe.leroy@csgroup.eu>
-References: <385ead49ccb66a259b25fee3eebf0bd4094068f3.1629707037.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 3/3] powerpc: Define and use MSR_RI only on non booke/40x
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 23 Aug 2021 08:24:22 +0000 (UTC)
+        id S235548AbhHWI1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235442AbhHWI1X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 04:27:23 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517DBC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:26:41 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id d6so25012973edt.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=plkFbsG8fVa9CmkZK2Zfujgljkhb65tfZXNdzCcMUbQ=;
+        b=ONTos8thIS3Rsw3Ml0sVEhTeBFWbxF9pLiCXAgij9nntDCbA5c2hYAOf+2VcLAQevm
+         92rfUmtzpfN8Xuyej/roBMbmkPDisrs7tgIa31/aY9srdE8wGRpxG+lDhlJf5Htx0Qho
+         euRD6Miiao4LP+dh19UgQPL/1dKXDfTzkN7684I7IjvnNEBRINe5SrZswL1nQvlnlRf8
+         fn4RCfWnO8Nm36V/ZwPGH0xLFhWZVuLziHenr+bXwCHXAkbOxFU0LA4sTxs893V/mc4+
+         Juc7FBgMuYE7qggyDbXoqgw2B9K6fm9aIzYfsFM1qEnqwyDv/SmyirDfBcKTO6BUi3M+
+         8uVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=plkFbsG8fVa9CmkZK2Zfujgljkhb65tfZXNdzCcMUbQ=;
+        b=SM/Qst8N3EiiJdQxRHRvtqca+P7k6eMYrtqttYIwL/l+6yGfB793eCWJwRXHRU+LZ9
+         AGjg41EnwY/1ChRPP/+q2EW2PTLBrGLAhDTMqOfEoXCp7XXHUajpSb7eWTDCrU4dIv/Z
+         +XoAHhJW6mr9h78lSyXpGLSt7UGrw8qCY/mThaaYgC57GdJUDvvKWVV5adOB6LjGxJDI
+         Nl91ARh6k7Bq7JkQEb2zr3djIYr8Nsw3cSXCOcc3coBJBTvEHK1tkRIPJD53cRlqfomW
+         pKv4NTbfEojVGj97is3E2bZUz0U6SOxGCSvBD4nrk53lVrxmUKzV3WcHObP1Ltsu1dyd
+         OYNg==
+X-Gm-Message-State: AOAM532IZkWMd2VGmYgsoa6AzHSPeagEVoawdSlyFh7njYG2Z5P9BedX
+        E4Cjon2GYV6shqrToVM4xM4=
+X-Google-Smtp-Source: ABdhPJyDGcDcFSHABBXq0N86Iw0ZJluaX2DN9WQVwXKsSJSnR4pwTNT5RKte6PZ7ZwROV35l0Z/RAA==
+X-Received: by 2002:aa7:c7c2:: with SMTP id o2mr36105122eds.166.1629707199676;
+        Mon, 23 Aug 2021 01:26:39 -0700 (PDT)
+Received: from localhost ([49.207.137.16])
+        by smtp.gmail.com with ESMTPSA id d16sm8773785edu.8.2021.08.23.01.26.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 01:26:39 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 13:56:33 +0530
+From:   Aakash Hemadri <aakashhemadri123@gmail.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Larry Finger' <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/5] staging: r8188eu: cast to restricted __be32
+Message-ID: <20210823082633.5bofcovr7bvtohde@xps.yggdrasil>
+References: <cover.1629360917.git.aakashhemadri123@gmail.com>
+ <602aefc30b0d979dc6e402d52da2f096ea5c67cf.1629360917.git.aakashhemadri123@gmail.com>
+ <4be5c5fa-c3fd-8c86-e904-8e2e60173380@lwfinger.net>
+ <05aafb94be1b4e609250313709cd668d@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05aafb94be1b4e609250313709cd668d@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-40x and BOOKE don't have MSR_RI.
+On 21/08/22 09:30PM, David Laight wrote:
+> Modulo anything that really means it should get_unaligned_be32().
+> 
+> 	David
 
-Define MSR_RI only for platforms where it exists. For the other ones,
-defines it as BUILD_BUG for C and do not define it for ASM.
+Thanks for your reviews David!
+Will make this change!
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v3: Fixes kvm_emul.S and include <linux/bug.h> in <asm/reg.h>
----
- arch/powerpc/include/asm/reg.h       |  5 +++++
- arch/powerpc/include/asm/reg_booke.h |  6 +++---
- arch/powerpc/kernel/head_32.h        |  4 ++++
- arch/powerpc/kernel/kvm_emul.S       | 13 +++++++++++++
- arch/powerpc/kernel/process.c        |  2 +-
- arch/powerpc/lib/sstep.c             |  2 +-
- 6 files changed, 27 insertions(+), 5 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
-index be85cf156a1f..b270b570fb51 100644
---- a/arch/powerpc/include/asm/reg.h
-+++ b/arch/powerpc/include/asm/reg.h
-@@ -109,7 +109,12 @@
- #ifndef MSR_PMM
- #define MSR_PMM		__MASK(MSR_PMM_LG)	/* Performance monitor */
- #endif
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_40x)
- #define MSR_RI		__MASK(MSR_RI_LG)	/* Recoverable Exception */
-+#elif !defined(__ASSEMBLY__)
-+#include <linux/bug.h>
-+#define MSR_RI		({BUILD_BUG(); 0; })
-+#endif
- #define MSR_LE		__MASK(MSR_LE_LG)	/* Little Endian */
- 
- #define MSR_TM		__MASK(MSR_TM_LG)	/* Transactional Mem Available */
-diff --git a/arch/powerpc/include/asm/reg_booke.h b/arch/powerpc/include/asm/reg_booke.h
-index 17b8dcd9a40d..6f40a8420ad0 100644
---- a/arch/powerpc/include/asm/reg_booke.h
-+++ b/arch/powerpc/include/asm/reg_booke.h
-@@ -38,15 +38,15 @@
- #if defined(CONFIG_PPC_BOOK3E_64)
- #define MSR_64BIT	MSR_CM
- 
--#define MSR_		(MSR_ME | MSR_RI | MSR_CE)
-+#define MSR_		(MSR_ME | MSR_CE)
- #define MSR_KERNEL	(MSR_ | MSR_64BIT)
- #define MSR_USER32	(MSR_ | MSR_PR | MSR_EE)
- #define MSR_USER64	(MSR_USER32 | MSR_64BIT)
- #elif defined (CONFIG_40x)
--#define MSR_KERNEL	(MSR_ME|MSR_RI|MSR_IR|MSR_DR|MSR_CE)
-+#define MSR_KERNEL	(MSR_ME|MSR_IR|MSR_DR|MSR_CE)
- #define MSR_USER	(MSR_KERNEL|MSR_PR|MSR_EE)
- #else
--#define MSR_KERNEL	(MSR_ME|MSR_RI|MSR_CE)
-+#define MSR_KERNEL	(MSR_ME|MSR_CE)
- #define MSR_USER	(MSR_KERNEL|MSR_PR|MSR_EE)
- #endif
- 
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 6b1ec9e3541b..6c5f4183dc8e 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -63,7 +63,11 @@
- 	mtspr	SPRN_DAR, r11	/* Tag DAR, to be used in DTLB Error */
- 	.endif
- #endif
-+#ifdef CONFIG_40x
-+	LOAD_REG_IMMEDIATE(r11, MSR_KERNEL) /* re-enable MMU */
-+#else
- 	LOAD_REG_IMMEDIATE(r11, MSR_KERNEL & ~MSR_RI) /* re-enable MMU */
-+#endif
- 	mtspr	SPRN_SRR1, r11
- 	lis	r11, 1f@h
- 	ori	r11, r11, 1f@l
-diff --git a/arch/powerpc/kernel/kvm_emul.S b/arch/powerpc/kernel/kvm_emul.S
-index 7af6f8b50c5d..6a8073c2082b 100644
---- a/arch/powerpc/kernel/kvm_emul.S
-+++ b/arch/powerpc/kernel/kvm_emul.S
-@@ -56,14 +56,23 @@ kvm_emulate_mtmsrd:
- 
- 	/* Put MSR & ~(MSR_EE|MSR_RI) in r31 */
- 	LL64(r31, KVM_MAGIC_PAGE + KVM_MAGIC_MSR, 0)
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_40x)
- 	lis	r30, (~(MSR_EE | MSR_RI))@h
- 	ori	r30, r30, (~(MSR_EE | MSR_RI))@l
-+#else
-+	lis	r30, (~MSR_EE)@h
-+	ori	r30, r30, (~MSR_EE)@l
-+#endif
- 	and	r31, r31, r30
- 
- 	/* OR the register's (MSR_EE|MSR_RI) on MSR */
- kvm_emulate_mtmsrd_reg:
- 	ori	r30, r0, 0
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_40x)
- 	andi.	r30, r30, (MSR_EE|MSR_RI)
-+#else
-+	andi.	r30, r30, (MSR_EE)
-+#endif
- 	or	r31, r31, r30
- 
- 	/* Put MSR back into magic page */
-@@ -112,7 +121,11 @@ kvm_emulate_mtmsrd_len:
- 	.long (kvm_emulate_mtmsrd_end - kvm_emulate_mtmsrd) / 4
- 
- 
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_40x)
- #define MSR_SAFE_BITS (MSR_EE | MSR_RI)
-+#else
-+#define MSR_SAFE_BITS (MSR_EE)
-+#endif
- #define MSR_CRITICAL_BITS ~MSR_SAFE_BITS
- 
- .global kvm_emulate_mtmsr
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 185beb290580..5ba72e31de28 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1420,7 +1420,7 @@ static struct regbit msr_bits[] = {
- 	{MSR_IR,	"IR"},
- 	{MSR_DR,	"DR"},
- 	{MSR_PMM,	"PMM"},
--#ifndef CONFIG_BOOKE
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_40x)
- 	{MSR_RI,	"RI"},
- 	{MSR_LE,	"LE"},
- #endif
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index d8d5f901cee1..357cc1fb4f67 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -3559,7 +3559,7 @@ int emulate_step(struct pt_regs *regs, struct ppc_inst instr)
- 
- 	case MTMSR:
- 		val = regs->gpr[op.reg];
--		if ((val & MSR_RI) == 0)
-+		if (cpu_has_msr_ri() && (val & MSR_RI) == 0)
- 			/* can't step mtmsr[d] that would clear MSR_RI */
- 			return -1;
- 		/* here op.val is the mask of bits to change */
--- 
-2.25.0
-
+Thanks,
+Aakash Hemadri
