@@ -2,192 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52743F4952
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01BA3F499B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236129AbhHWLEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:04:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236338AbhHWLED (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:04:03 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C50C061757;
-        Mon, 23 Aug 2021 04:03:20 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id w5so36149205ejq.2;
-        Mon, 23 Aug 2021 04:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=asdxMwFwjcHBHfBIYaM1rOShhKCYBJkGzPMgQPKI2bg=;
-        b=pJ8xs3Qx7Ld5eQthGtxRvdF8DLPXId27jGSYnBtimFF4Z5bltk55+mk7mYDCF38REp
-         Utf37DOh9T/EcAXt6Vqw94UBATMjRNtE9Zb7fD7SsBQz/7Wyk7Qj0xqG8+M0BE7+RQ+r
-         vhXC4gtm0vXoG9VAjNZ2dC+Vpg+ZR81sdTpFNfIJuEJsbhNdmmjjOcjAMZg3mnMf5vVw
-         k6wKGkL9dcj5Heuu1jkBgt0aiD+XYCEWBnk1W8k8AN2fD4iljKmJhxO4hC4Zm2o9TLc/
-         jpn6guzTbkgJBAtak7JzBJBFfG6IuefhdXTLXELmNTa2ul2mrj+JrNAA7CRhNT22kyVh
-         SvMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=asdxMwFwjcHBHfBIYaM1rOShhKCYBJkGzPMgQPKI2bg=;
-        b=gLLVyrW9HF05BIkJMiH+Lgl9BtbI8NlcMu9ZvtkIgALWTxMTPPU+Fqe+wUeO3URrMP
-         500X/Ujg59+KDio6zLThjm7+sWkkcmbQLD53W/l7nGAMe6hPR4z3H9vdVJesOzpRZsuL
-         6Y62KFyAh5ZBXc8+4rF4uCgGdsPL7i97dHZxLNZaCINV9PWc4cYVjxt6jNHi/izjhuYO
-         1I8yEEVSioobCJWaiYcg6Zdm41+yAL1qAfbeVjkdfU4/Qri/7whm/DgpX5WODIG2sNX7
-         gR1LEArKCkr+y4GSzgxNCWtm0aYXxLFZzGt5zuchx96oLNvCxorCbYC7PcaUtNxECA01
-         cDJQ==
-X-Gm-Message-State: AOAM532BmLya3wlDS6gVGgMVVvgVEsDii3YH9soXHpyymiM1L37CXk6H
-        vepHEPhP80s7Io8TVP8fhHi9eFR3gaIJuVgoL7Q=
-X-Google-Smtp-Source: ABdhPJzOIO2jwR98Ak3NJhGf4Z/BhYbBNwvuwA6CXLt+GNiE6hYMFqlt1hsYph8opKfD9oRKQNxmFia5D5cmuOlvdb0=
-X-Received: by 2002:a17:906:b14d:: with SMTP id bt13mr3275151ejb.39.1629716599555;
- Mon, 23 Aug 2021 04:03:19 -0700 (PDT)
+        id S235525AbhHWLWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:22:20 -0400
+Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:53892
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235077AbhHWLWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:22:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iCC+9npCFy17JTnOhPp+jZULvmKgzo6kUJHFp5VcmDizuSsAhIhRIrI60s1q+W4FmPcydzU+2p4MGSQEpXkEuk7PbgPJIHFvaWX3fcVogPCADf1hsGVy/pKl0qeKCCcp6a+s6dHsIyOeR/sAJtwKspi45Rl0XO1XpuoH/LD/Nyufa4gc5S9lQ4hQ73fhGnrN0yWZm097TWi3rAHTiMOUI/pZPS5bYxVLEKW6ecn5pXs902kxZzdxEEOaCZvf8MGltI5oysaSLiE3NQqE/vns8Ff6Uyi4nPZ/NzzDNro49fgcTPdCPMpnOcMy83do4MMkbEVojoPnR6RysToYTG0Etw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LR9fb/y/SwBDL9xh0ayjptgcvGABEIum6YT1hk1HTD0=;
+ b=I94QSvlt1mUKr8fzUY5+rs3fDLOI8Qaxr9ZX+NwD5+bgaDd7doimigdc09+h7NdKMnELK2QOZBUFvVjwGlE5Spkbn/aTwlAs6n7MPxPlOCn0xrCQ1DxPHn+QYX1CdftTSC8yZf0OukqlHn0U/1eNvhZqlzy5gE8qIM5/QRJlmSSIG5jAI76/Ytka6eEBejbFHHHfNdtVlLiLtqj2tPwgs7sG+Xr6DAN0ISxVmYStSwX5q52EJPHwhTt37PqXGWyIW5dvvTSUl+hBdl3Q2JuQ14+e4/XX30iu/RlhfyAwFTtPEslXEKYAreSGA4JmCmysEJ0CyrtSTvIZ7rUWAwCDkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
+ 91.118.163.37) smtp.rcpttodomain=vger.kernel.org
+ smtp.mailfrom=wvls01.wolfvision.net; dmarc=fail (p=quarantine sp=quarantine
+ pct=100) action=quarantine header.from=wolfvision.net; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LR9fb/y/SwBDL9xh0ayjptgcvGABEIum6YT1hk1HTD0=;
+ b=BOW061vVdvxPXhf3pTtZ4QjArotzTXGs5ze8IDSLEO+v51IimgEHhdLjQ0M3Qb2C+m05Y3mIT7lnYGRppT0+I1ZstXuE/a3HuccoSFwBI4C0kDZz+P5h3qUWoMc9LFfxx6W8Rkt96DhGy73wXxPV/ltHv8t9wXRgi4wSrJ5Qewg=
+Received: from DB9PR02CA0012.eurprd02.prod.outlook.com (2603:10a6:10:1d9::17)
+ by AM6PR08MB3656.eurprd08.prod.outlook.com (2603:10a6:20b:51::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Mon, 23 Aug
+ 2021 11:21:29 +0000
+Received: from DB3EUR04FT021.eop-eur04.prod.protection.outlook.com
+ (2603:10a6:10:1d9:cafe::f) by DB9PR02CA0012.outlook.office365.com
+ (2603:10a6:10:1d9::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
+ Transport; Mon, 23 Aug 2021 11:21:29 +0000
+X-MS-Exchange-Authentication-Results: spf=none (sender IP is 91.118.163.37)
+ smtp.mailfrom=wvls01.wolfvision.net; vger.kernel.org; dkim=none (message not
+ signed) header.d=none;vger.kernel.org; dmarc=fail action=quarantine
+ header.from=wolfvision.net;
+Received-SPF: None (protection.outlook.com: wvls01.wolfvision.net does not
+ designate permitted sender hosts)
+Received: from wvls01.wolfvision.net (91.118.163.37) by
+ DB3EUR04FT021.mail.protection.outlook.com (10.152.25.28) with Microsoft SMTP
+ Server id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 11:21:28
+ +0000
+Received: by wvls01.wolfvision.net (Postfix, from userid 1000)
+        id 057C24A4800; Mon, 23 Aug 2021 13:04:27 +0200 (CEST)
+From:   Michael Riesch <michael.riesch@wolfvision.net>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Liang Chen <cl@rock-chips.com>,
+        Michael Riesch <michael.riesch@wolfvision.net>
+Subject: [PATCH] arm64: dts: rockchip: add saradc to rk3568-evb1-v10
+Date:   Mon, 23 Aug 2021 13:04:24 +0200
+Message-Id: <20210823110424.3592528-1-michael.riesch@wolfvision.net>
+X-Mailer: git-send-email 2.17.1
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-References: <20210820223744.8439-2-21cnbao@gmail.com> <20210820233328.GA3368938@bjorn-Precision-5520>
- <877dgfqdsg.wl-maz@kernel.org> <CAGsJ_4wXqnudVO92qSKLdyJaMNuDE-d0srs=4rgJmOQKcG2P3g@mail.gmail.com>
- <87a6l8qwql.wl-maz@kernel.org>
-In-Reply-To: <87a6l8qwql.wl-maz@kernel.org>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Mon, 23 Aug 2021 23:03:08 +1200
-Message-ID: <CAGsJ_4yBa3EHz8-gR90SXZxju5E+Zh0NwOp8LErqhewgUOAfbg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
-        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
-        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
-        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 6871356a-ae42-48c8-5e5f-08d966282714
+X-MS-TrafficTypeDiagnostic: AM6PR08MB3656:
+X-Microsoft-Antispam-PRVS: <AM6PR08MB3656D9ADBB9F89673ECCB2DCEBC49@AM6PR08MB3656.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DJNN5bKMjfiZQPtfjOUSNSt38M7ajPRSheNpNMoLmc2CPMp1jPx8Klp3IayCYT7/gXXyy5d5upxXmRRfHPpDB+u5lJyEDcWdfAbU87Ez5y+qXR7s5OmmoeSmDUzgwhJLkqXX7flhWQ0SLaF1OeJhDiJWBpagsIbvBjMTIxXKoU51vVV0xdz5iEfp+Ea+vTOctEzoKqeBvZ+Il4Oi+x9pEunEFfvxqyobBXBNyDf9fN6vmVquMnl9vjo3LMvayZe/jOm7c/CnnNyHY1F8tWXWOqy7L+A32JK/N1Cx2hJfc9FDx3rv6K0bM2rWjMJaEvtJjyX0piSt4czYYX7LUSKBbzaG8TV/OTY2jmfaxSq7fSAgH3UaUH9wGGPcOGacCPvImHdi2P6l3fh+KDL5HmR6OGT8MAe7LbS8tZ1qHyT5CVa2xIdaEmcEgskklq7la8UznOYkNmYtOtmhnoVS1yUuHXOAVcDhHJd2nSfkiVnYOe5HjNfvMnyXjjqce/sDk6PfzWK2oKmoYbYuQUq/guLwgwKu/lESg2cQ6JHEUZwytxKBPVWBBwQ6xB0P/PGYovKZ+KdY7Lbltps3oteAH/2ZlQ+f3rnZF5hDFXrl2ywCcTaEcvH6WzccHbBrRlu3QIvfjFEtj3tiGl/SPN6tYa5bvG/3q4NgEcP2wKW0HSSpENYLk+EeruQHIwjG9EUIYcVyU1wl3VzXau5blimPTdNCf9Itb02ksdPVJRPfTokLbRQ=
+X-Forefront-Antispam-Report: CIP:91.118.163.37;CTRY:AT;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wvls01.wolfvision.net;PTR:91-118-163-37.static.upcbusiness.at;CAT:NONE;SFS:(4636009)(46966006)(4326008)(83170400001)(82310400003)(107886003)(35950700001)(450100002)(426003)(54906003)(42186006)(356005)(36756003)(70206006)(70586007)(2616005)(316002)(5660300002)(1076003)(6666004)(508600001)(2906002)(44832011)(47076005)(8676002)(4744005)(6266002)(336012)(26005)(8936002)(81166007)(14776007)(75936004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 11:21:28.8737
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6871356a-ae42-48c8-5e5f-08d966282714
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e94ec9da-9183-471e-83b3-51baa8eb804f;Ip=[91.118.163.37];Helo=[wvls01.wolfvision.net]
+X-MS-Exchange-CrossTenant-AuthSource: DB3EUR04FT021.eop-eur04.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3656
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 10:30 PM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Sat, 21 Aug 2021 23:14:35 +0100,
-> Barry Song <21cnbao@gmail.com> wrote:
-> >
-> > On Sat, Aug 21, 2021 at 10:42 PM Marc Zyngier <maz@kernel.org> wrote:
-> > >
-> > > Hi Bjorn,
-> > >
-> > > On Sat, 21 Aug 2021 00:33:28 +0100,
-> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > >
->
-> [...]
->
-> > > >     In msix_setup_entries(), we get nvecs msi_entry structs, and we
-> > > >     get a saved .default_irq in each one?
-> > >
-> > > That's a key point.
-> > >
-> > > Old-school PCI/MSI is represented by a single interrupt, and you
-> > > *could* somehow make it relatively easy for drivers that only
-> > > understand INTx to migrate to MSI if you replaced whatever is held in
-> > > dev->irq (which should only represent the INTx mapping) with the MSI
-> > > interrupt number. Which I guess is what the MSI code is doing.
-> > >
-> > > This is the 21st century, and nobody should ever rely on such horror,
-> > > but I'm sure we do have such drivers in the tree. Boo.
-> > >
-> > > However, this *cannot* hold true for Multi-MSI, nor MSI-X, because
-> > > there is a plurality of interrupts. Even worse, for MSI-X, there is
-> > > zero guarantee that the allocated interrupts will be in a contiguous
-> > > space.
-> > >
-> > > Given that, what is dev->irq good for? "Absolutely Nothing! (say it
-> > > again!)".
-> > >
-> >
-> > The only thing is that dev->irq is an sysfs ABI to userspace. Due to
-> > the inconsistency between legacy PCI INTx, MSI, MSI-X, this ABI
-> > should have been absolutely broken nowadays.  This is actually what
-> > the patchset was originally aiming at to fix.
->
-> I do not think we should expose more of a broken abstraction to
-> userspace. We will have to carry on exposing the first MSI in this
-> field forever, but it doesn't mean we should have to do it for MSI-X.
->
-> > One more question from me is that does dev->irq actually hold any
-> > valid hardware INTx information while hardware is using MSI-X? At
-> > least in my hardware, sysfs ABI for PCI is all "0".
->
-> That's probably because nothing actually configured the interrupt, or
-> that there is no INTx implementation. I have that on systems with
-> pretty dodgy (or incomplete) firmware.
->
-> > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat irq
-> > 0
-> >
-> > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# ls -l msi_irqs/*
-> > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/499
-> > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/500
-> > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/501
-> > ...
-> > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat msi_irqs/499
-> > msix
-> >
-> > Not quite sure how it is going on different hardware platforms.
->
-> My D05 does that as well, and it doesn't expose any INTx support.
->
-> >
-> > > MSI-X is not something you can "accidentally" use. You have to
-> > > actively embrace it. In all honesty, this patch tries to move in the
-> > > wrong direction. If anything, we should kill this hack altogether and
-> > > fix the (handful of?) drivers that rely on it. That'd actually be a
-> > > good way to find whether they are still worth keeping in the tree. And
-> > > if it breaks too many of them, then at least we'll know where we
-> > > stand.
-> > >
-> > > I'd be tempted to leave the below patch simmer in -next for a few
-> > > weeks and see if how many people shout:
-> >
-> > This looks like a more proper direction to go.
-> > but here i am wondering how sysfs ABI document should follow the below change
-> > doc is patch 2/2:
-> > https://lore.kernel.org/lkml/20210820223744.8439-3-21cnbao@gmail.com/
-> >
-> > On the other hand, my feeling is that nobody should depend on sysfs
-> > irq entry nowadays.
->
-> Too late. It is there, and we need to preserve it. I just don't think
-> feeding it more erroneous information is the right thing to do.
->
-> My patch was only dealing with the kernel side of things, not the
-> userspace ABI. That ABI should be carried on unchanged.
+Add the SARADC to the device tree of the RK3568 EVB1.
 
-it seems this isn't true. your patch is also changing userspace ABI as
-long as you change pci_dev->irq
-which will be shown in sysfs irq entry.
+Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
+---
+ arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-if we don't want to change the behaviour of any existing ABI, it seems
-the only thing we can do here
-to document it well in ABI doc. i actually doubt anyone has really
-understood what the irq entry
-is really showing.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+index 1bc79e95b2fb..184e2aa2416a 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
+@@ -360,6 +360,11 @@
+ 	status = "okay";
+ };
+ 
++&saradc {
++	vref-supply = <&vcca_1v8>;
++	status = "okay";
++};
++
+ &sdhci {
+ 	bus-width = <8>;
+ 	max-frequency = <200000000>;
+-- 
+2.17.1
 
->
->
-> > For example, userspace irqbalance is actually using
-> > /sys/devices/.../msi_irqs/ So probably we should set this ABI
-> > invisible when devices are using MSI or MSI-X?
->
-> Can it actually be made optional? I don't believe we can.
->
-> Thanks,
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
-
-Thanks
-barry
