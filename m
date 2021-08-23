@@ -2,142 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89DA3F45D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0768F3F45D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235212AbhHWHeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235179AbhHWHeS (ORCPT
+        id S235183AbhHWHgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:36:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235110AbhHWHgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:34:18 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0C1C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:33:36 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id c129-20020a1c35870000b02902e6b6135279so10094690wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=RHvw0YidWVbaAnExu+fX8ZpwVEjv8DNNUe3fCJmOO/Y=;
-        b=cihGqgYS6WTVC320M39f87DIqKTNtWkRIw4ML9YbV/asEWIzDYqjVz/ox3Y1w2IFel
-         MUI76ubdUMuebk9LnrzB1ln/HUq5Qcf9QvFnKy/ZPeqogB/ACo8IU4Eo7BovgpHUJd5J
-         wagW48uI5bMp8hcFT2nDGn3+Ortfy5ckk9l7U0zS4DqgUC8o/pyOaQgF4vcVHScnCaGG
-         NRkudbTdedeMwdT3lXu4YhcbvNnkJxh6tdKxFutvlPEwCYSmkFgPJm9UgUVxe/w8Cgqk
-         /zD2Bhud6rYua4VRYK4COTzrp+65MfOW6xwfV7fFODKYV/mWQnEhGbk3xKbJihnGyQjz
-         4xPg==
+        Mon, 23 Aug 2021 03:36:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629704126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6OA8eH4X+/rUwV1XCNtrrURDB+H2MofOHgguQaSqFBQ=;
+        b=FiPk9U9+p44wds9zlFaBMHVuHZoIMuD0PyFi5kInNQGtFJXnowDlvc/lvsOdRssBU34YfQ
+        ALn8e6FEYK4+nSUyC+T7gDjN5NG8R154Ajp2ZVqRijwMxOw3nejd5ByKf6Pm9FUs9gVY+M
+        KBfiKRFALbWb+NRPPCGgLYkmuViVzgk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-94-LmPJ9y7mM1CxfEBUHVtXEw-1; Mon, 23 Aug 2021 03:35:25 -0400
+X-MC-Unique: LmPJ9y7mM1CxfEBUHVtXEw-1
+Received: by mail-ej1-f70.google.com with SMTP id ak17-20020a170906889100b005c5d1e5e707so581890ejc.16
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:35:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RHvw0YidWVbaAnExu+fX8ZpwVEjv8DNNUe3fCJmOO/Y=;
-        b=IlUwtFnVxo6Douep9Pk5WV48Rk/vSbHmUZEJHIjhAVIunY1obMfHgM23Z0ktwp36r3
-         Ac8Dor19/brxFN3gZVu0eU5fKqA9AQ2is9223KjAnAQCur7M07KrJ7CtwMQrV0RtL7c3
-         Ui0NIQg+H1J4EcfIRmRt1McaZHC/js3MQIQ+e+kANr0loedCPWpJ1afEH9ltVMhfpFWK
-         Mq32dZIp/cw3DxtWdUgHyU7WsNULnPRjNUmVoxK71kU28b54ioCK41VmAJ9/SfsQL1FJ
-         IoxskIEZZD0o2Qkdub+QwRcWhdi9GOW88zDqmqYyd6XJ/h1xKDt2FrfUpX+y+n0ZgEpg
-         Mpdw==
-X-Gm-Message-State: AOAM532veQMf+/T5DITWZKSIvmWehGzix8ANWVdZi1Rm52ZQ3TPPqYpR
-        UbzSpnl0DIev1nqo1hb5MacPwg==
-X-Google-Smtp-Source: ABdhPJy8/C2rTq4ZpumwaDlzx0P0MOcSI3DkY/gFV083ba/u+F86xPsaT6Gf9OBxOOhLG668rajsQw==
-X-Received: by 2002:a05:600c:1991:: with SMTP id t17mr14777091wmq.120.1629704014921;
-        Mon, 23 Aug 2021 00:33:34 -0700 (PDT)
-Received: from alex-xps13.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id h11sm19672439wmc.23.2021.08.23.00.33.33
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6OA8eH4X+/rUwV1XCNtrrURDB+H2MofOHgguQaSqFBQ=;
+        b=FmNnx9IyoD0KcKBLyverps6i1E4EOlLC0/46RBzpycn5GdizJeRCPhq2llwrh+Tc4s
+         64xOvGYUO8Z74qIeaupczvKokZDRVIk4Dt+k1A6g27WELKCweu48fKRcOX7wYGNAJ0Uq
+         75NsCQvxhpVMFNGUkLD7AeYL4KUsnb37QRcVftNvkVRlPRLwQEISL7180fT5AKgJzKXZ
+         yGvnYH3NESCbaExL+fkLnofbLIX+AGwAZHSd4Ru8SZAsbh2VCO0Mvu7GKSQnLhms9Jng
+         i1buyVYLla7KpB5KwWSP0+29rFA9k1l80vLMLpA60hlCfPxy9R/12TYSiU/Tewsc6xCf
+         TLpg==
+X-Gm-Message-State: AOAM530+zrqIvt8gig4GeLtHlL+h8mnL5QmpcvCt9DOGV87gqMZr11W2
+        NDsvwc3dXETqw2x8lYpyQWd6iQ3SPgpVNwX+yxv8QcKos6COqTH0NmTBkleG9+ADHqJkBk1vOan
+        4GlQZgVefHBfW/sh7e1o3P1mN
+X-Received: by 2002:a17:907:12d5:: with SMTP id vp21mr11270073ejb.144.1629704124137;
+        Mon, 23 Aug 2021 00:35:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBq9QKj048GdBmdC2ZCRCqLH/ZUbEYowgfxS/omx9bPbu/e87I0uqUwgFEMLs/NTuvVxYNiw==
+X-Received: by 2002:a17:907:12d5:: with SMTP id vp21mr11270062ejb.144.1629704123966;
+        Mon, 23 Aug 2021 00:35:23 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id oy11sm3669357ejb.104.2021.08.23.00.35.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 00:33:34 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/2] Add a generic virtual thermal sensor
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rui.zhang@intel.com,
-        amitk@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.tseng@mediatek.com, khilman@baylibre.com
-References: <20210819123215.591593-1-abailon@baylibre.com>
- <f7d1205b-e859-e059-c835-c09a85c8c480@linaro.org>
-From:   Alexandre Bailon <abailon@baylibre.com>
-Message-ID: <df9ad6a9-4cf9-dd41-8876-d19bef03d6a5@baylibre.com>
-Date:   Mon, 23 Aug 2021 09:35:13 +0200
+        Mon, 23 Aug 2021 00:35:23 -0700 (PDT)
+Subject: Re: [PATCH v5 07/20] platform/x86: pmc_atom: Move to intel
+ sub-directory
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Kate Hsuan <hpa@redhat.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Dell.Client.Kernel@dell.com, Mark Gross <mgross@linux.intel.com>,
+        Alex Hung <alex.hung@canonical.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Zha Qipeng <qipeng.zha@intel.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maurice Ma <maurice.ma@intel.com>
+References: <20210820110458.73018-1-andriy.shevchenko@linux.intel.com>
+ <20210820110458.73018-8-andriy.shevchenko@linux.intel.com>
+ <ccae9fcb-fa2f-5c44-1241-9f107b358103@redhat.com>
+ <YSNPGRt6azqfXFKP@smile.fi.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <6a2c03a2-cb25-5e64-04bd-0e387c2d4cb1@redhat.com>
+Date:   Mon, 23 Aug 2021 09:35:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <f7d1205b-e859-e059-c835-c09a85c8c480@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YSNPGRt6azqfXFKP@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi,
 
-On 20/08/2021 13:30, Daniel Lezcano wrote:
-> Hi Alexandre,
->
-> thanks for the proposal.
->
-> On 19/08/2021 14:32, Alexandre Bailon wrote:
->> This series add a virtual thermal sensor that uses the hardware thermal sensors,
->> aggregate them to return a temperature.
+On 8/23/21 9:32 AM, Andy Shevchenko wrote:
+> On Fri, Aug 20, 2021 at 08:18:17PM +0200, Hans de Goede wrote:
+>> On 8/20/21 1:04 PM, Andy Shevchenko wrote:
+>>> Move Intel Atom PMC driver to intel sub-directory to improve readability.
+>>>
+>>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 >>
->> My first aptempt was to do the aggregation in the thermal zone but it was not
->> that easy to do, and, there were some case that would have been conflictual
->> such as setting differents trip for a regular zone and a multisensor zone.
+>> This means that pmc_atom will now not be build if X86_PLATFORM_DRIVERS_INTEL
+>> is not set (and PCI is enabled). Which will cause missing pmc_atom_read/_write
+>> symbols in drivers/acpi/acpi_lpss.c. So I have dropped this patch from the
+>> set, while applying the rest.
 >>
->> Instead, I made a virtual thermal sensor that could registered in a thermal
->> zone, and have its own properties.
->> It could be added in the device tree, with the list of sensors to aggregate,
->> and the type of aggregation to be done.
+>> Note I'm thinking that we should just remove the whole X86_PLATFORM_DRIVERS_INTEL
+>> Kconfig option and in the drivers/platform/x86/Makefile replace:
 >>
->> As example:
->>    soc_max_sensor: soc_max_sensor {
->>      compatible = "generic,thermal-aggregator";
->>      #thermal-sensor-cells = <1>;
->>      type = "max";
->>      thermal-sensors = <&lvts 0>, <&lvts 1>, <&lvts 2>, <&lvts 3>,
->>            <&lvts 4>, <&lvts 5>, <&lvts 6>, <&lvts 7>,
->>            <&lvts 8>, <&lvts 9>, <&lvts 10>, <&lvts 11>,
->>            <&lvts 12>, <&lvts 13>, <&lvts 14>, <&lvts 15>,
->>            <&lvts 16>;
->>    };
+>> obj-$(CONFIG_X86_PLATFORM_DRIVERS_INTEL)                += intel/
 >>
->> The current series build and work but it would require to be completed
->> aswell a lot of cleanup.
->> Before working on it, I would like to get some feedback and I know if that
->> would an acceptable solution and continue that way.
-> Yes, I think it is going to the right direction.
->
-> IMO, we can get rid of the thermal_of changes. From a design PoV, the
-> patch itself should be the virtual thermal driver without any changes in
-> the core code, including thermal_of.
-I made that changes in order to be able to get the hw sensors from the 
-virtual sensor.
-I am not really satisfied of that patch but that the simplest way I 
-found to do it.
-How would you proceed to get the hw sensor from its device tree phandle 
-and id ?
+>> with:
+>>
+>> obj-y                                                   += intel/
+>>
+>> This will also allows us to fix the scu issue without needing any
+>> changes to drivers/mfd/Kconfig .
+>>
+>> But this can all wait for the 2nd round of renames after 5.15-rc1.
+>>
+>> For now I'm moving forward with this v5 series, except with this
+>> patch dropped.
+> 
+> Indeed. Thanks for the analysis.
+> 
+> Btw, should we convert Dell subdir to something similar in terms of Kconfig?
 
-Thanks,
-Alexandre
+I'm not sure, if someone is trying to build a minimal kernel then being able
+to say 'N' once for all the Dell drivers make sense. OTOH even someone
+building a minimal (x86) config very likely still needs some of the Intel
+drivers.
 
->
-> I have some comments on patch 2/2
->
->
->> Follows the following discussion:
->> https://patchwork.kernel.org/project/linux-mediatek/patch/20210617114707.10618-3-ben.tseng@mediatek.com/
->>
->> Alexandre Bailon (2):
->>    thermal: provide a way to get thermal sensor from a device tree node
->>    thermal: add a virtual sensor to aggregate temperatures
->>
->>   drivers/thermal/Kconfig              |   8 ++
->>   drivers/thermal/Makefile             |   1 +
->>   drivers/thermal/thermal_aggregator.c | 134 +++++++++++++++++++++++++++
->>   drivers/thermal/thermal_of.c         |  43 +++++++++
->>   include/linux/thermal.h              |  12 +++
->>   5 files changed, 198 insertions(+)
->>   create mode 100644 drivers/thermal/thermal_aggregator.c
->>
->
+So I think we should just keep the Dell bits as is.
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+
