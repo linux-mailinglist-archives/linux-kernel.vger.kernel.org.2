@@ -2,134 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6572E3F4C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053763F4C4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhHWOYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
+        id S230083AbhHWOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhHWOYE (ORCPT
+        with ESMTP id S229518AbhHWOZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:24:04 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0FC2C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:23:21 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id e1so3299668plt.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:23:21 -0700 (PDT)
+        Mon, 23 Aug 2021 10:25:03 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3B6C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:24:21 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso36716627ott.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:24:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=WtsUEsqMTxeu0ASY9ZGldGWSKXK/Bt2mBtS4t1K1jok=;
-        b=Twno2VV6Mfpk9mFt1zef4nXG4k9+uk+hiqK3q7qn6xzeS8fqb9Sd0RsRYk+AW49Sup
-         kwtvnA0rQxXUqxgPFcN5FFmZ1DHdc6mRIoougB08bPum5ctx5mGdYBLMBllI20ZQwywX
-         GsosFTC7bkpcR7C+TuJ+4VIi+eYChTNMCf2uA=
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0GkLT6HMfRhAbPekloSJCZfvHcvKIje+CzM5kFXovwo=;
+        b=DTe/HJxE8iZ06wj7tEDBIoJ8IEym1Zk7w+BOrEaOkUxRCVuM34SW25e/RJmeoTrDoe
+         cvv9w+fLx+LBARTzMpiq9U4z3jHciuC1gyJA+STf1qDTVY7leEGbXrH0lmSl6uwFU5HR
+         OUkCQUow3T6U2uqHjYSpA0c+thEf7248GY3dibIU07ZZ2+zB0CD9AazTmmOtJA2WZT+X
+         R5cJJrAJ3Ii6by/IajJj9k3sGoKt5640QJV/OlcMm4q9+gnJu7NpKoBaUmOFQ9v2XdJL
+         KwQWRv07FX7g7y/VRy5KrWeeNaX5E7CW0sEzNPqxaaWfGGcWPM8kMbPwk0i2okBrncNO
+         pL5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=WtsUEsqMTxeu0ASY9ZGldGWSKXK/Bt2mBtS4t1K1jok=;
-        b=j9dA29FElsHTIQJETlxwztUlHdxGaD2mZuwaSYYihucRkFLNFyKKgG5olUNdK9IbQN
-         hCr5EyWYl/xjZUqUXoTlj4YM5xWCjyfRZwtC9D9H1kWh3hKmXbDpoepfGfE1pPMTXU3j
-         LeehIzbh8+c44mIC69dwvgaxabCcmFc7GiqB7vttnagxU1UGdKGkfDxmREBCrekl11ee
-         Z9fX2sXxqVt7EVDDSgYRHHwhizoVRmkDXA5x54qjYhysP0/TZzD0N2VtBXdbzUgW+gqF
-         Ar89oG/lXmKyTLclpNQMKOBoYX1oDMcnJ9Js54qhZ2rPqxJiYUyvrIz807W+lPBVmufL
-         Xj0g==
-X-Gm-Message-State: AOAM532rWoiidMyRTEY/vbspd6HTO5WW5DSP2cQfuouwqmwxHS7pyB5/
-        z/G70ETOF+3dSHi199GEcnnzww==
-X-Google-Smtp-Source: ABdhPJyi22ur2sPI/DYF4luwUXxBY5gmZaV71bLC6h6PGLbA+cDZDfqrOe18jGG3kcfwjHp+QTWrPQ==
-X-Received: by 2002:a17:90b:4b84:: with SMTP id lr4mr20672140pjb.32.1629728601332;
-        Mon, 23 Aug 2021 07:23:21 -0700 (PDT)
-Received: from [127.0.0.1] ([67.219.225.50])
-        by smtp.gmail.com with ESMTPSA id 10sm16158814pjc.41.2021.08.23.07.23.20
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0GkLT6HMfRhAbPekloSJCZfvHcvKIje+CzM5kFXovwo=;
+        b=tLJndkNujElyjGBOMwrkWtXMUw0oVirP55PpPZMWPMtL6n1Qw9MvbZGIKFga4NwbMz
+         av5SO9h3U4FrjQCteDMhLIPPn0YAsPl89fsQb6VLFMj85vV+ylMrPOo87d6VtXNlD9ZU
+         1FZRYGHqI30/LX+0+DmqUOysRcWn918cKZo4kWW5scBCORzpjcc/zM7W+AcETMrh9GIz
+         MHw26OnPHJx6dMjDhkuXUE+CQKYxlMi9+sN/2Ear/LPeZfe+Ez7gGsLu+VrM2EDjuShd
+         +uSAozLV9BRhuMH5vn4MT6G7YLqWlLhEIJUVwB5koB6CC6zobOKBg8H9jQHsXvwDsArk
+         D1Pg==
+X-Gm-Message-State: AOAM533OAXERU5V1iUBBuMSBDicLlvd4qh8pF6bGoDJo1piPwc333YD1
+        BPSjqr9a/PDaJCKOPYgsIgNNldr+DE8=
+X-Google-Smtp-Source: ABdhPJxr+VuWvoULVTLeCGhFeOnYz52ScqC7ZuZCocnNSn1eq9B8v8zavn7AMSesxRcqMCEKvFSqDA==
+X-Received: by 2002:aca:a9c1:: with SMTP id s184mr11191586oie.145.1629728660572;
+        Mon, 23 Aug 2021 07:24:20 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-1023.res6.spectrum.com. [2603:8090:2005:39b3::1023])
+        by smtp.gmail.com with ESMTPSA id l4sm2317016oth.4.2021.08.23.07.24.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 07:23:20 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 07:23:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?ISO-8859-1?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>
-CC:     "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
-        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>,
-        Sathishkumar S <sathishkumar.sundararaju@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        David M Nieto <David.Nieto@amd.com>,
-        Kenneth Feng <kenneth.feng@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        John Clements <John.Clements@amd.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_drm/amd/pm=3A_And_destina?= =?US-ASCII?Q?tion_bounds_checking_to_struct_copy?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <4922d89d-1293-7b32-d684-c731c246e6c1@amd.com>
-References: <20210819201441.3545027-1-keescook@chromium.org> <4922d89d-1293-7b32-d684-c731c246e6c1@amd.com>
-Message-ID: <FB2A077F-78CB-4D84-A8F2-C63C57923496@chromium.org>
+        Mon, 23 Aug 2021 07:24:19 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH v3 2/5] staging: r8188eu: cast to restricted __be32
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1629562355.git.aakashhemadri123@gmail.com>
+ <50439a81aca7ce8c3c97ec1c7247f4cd03f645a5.1629562355.git.aakashhemadri123@gmail.com>
+ <20210823084426.yo2mhgbyehkwwz3h@xps.yggdrasil>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <25d336b5-8008-9b3b-7efe-a82afaea0e98@lwfinger.net>
+Date:   Mon, 23 Aug 2021 09:24:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210823084426.yo2mhgbyehkwwz3h@xps.yggdrasil>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/23/21 3:44 AM, Aakash Hemadri wrote:
+> On 21/08/21 09:48PM, Aakash Hemadri wrote:
+>> Fix sparse warning:
+>>> rtw_br_ext.c:836:54: warning: cast to restricted __be32
+>>
+>> dhpch->cookie is be32, change it's type.
+>>
+>> Suggested-by: Larry Finger <Larry.Finger@lwfinger.net>
+>> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+>> ---
+>>   drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+>> index f6d1f6029ec3..f65d94bfa286 100644
+>> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+>> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+>> @@ -649,7 +649,7 @@ struct dhcpMessage {
+>>   	u_int8_t chaddr[16];
+>>   	u_int8_t sname[64];
+>>   	u_int8_t file[128];
+>> -	u_int32_t cookie;
+>> +	__be32 cookie;
+>>   	u_int8_t options[308]; /* 312 - cookie */
+>>   };
+>>   
+>> @@ -671,7 +671,7 @@ void dhcp_flag_bcast(struct adapter *priv, struct sk_buff *skb)
+>>   				    (udph->dest == __constant_htons(SERVER_PORT))) { /*  DHCP request */
+>>   					struct dhcpMessage *dhcph =
+>>   						(struct dhcpMessage *)((size_t)udph + sizeof(struct udphdr));
+>> -					u32 cookie = be32_to_cpu((__be32)dhcph->cookie);
+>> +					u32 cookie = be32_to_cpu(dhcph->cookie);
+>>   
+>>   					if (cookie == DHCP_MAGIC) { /*  match magic word */
+>>   						if (!(dhcph->flags & htons(BROADCAST_FLAG))) {
+>> -- 
+>> 2.32.0
+>>
+> 
+> David Laight suggested to use get_unaligned_be32, I am not sure if it's
+> the right thing to do because as far as I understand get_unaligned_be32
+> byteshifts the argument.
+> 
+> Can someone please confirm if this change is okay?
+> 
 
+It is not needed. variable dhcph->cookie is 4-byte aligned. Usind the unaligned 
+version would just add cpu cycles and arrivw at the same point!
 
-On August 22, 2021 11:28:54 PM PDT, "Christian K=C3=B6nig" <christian=2Eko=
-enig@amd=2Ecom> wrote:
->
->
->Am 19=2E08=2E21 um 22:14 schrieb Kees Cook:
->> [=2E=2E=2E]
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu=2Eh b/drivers/gpu/drm/am=
-d/amdgpu/amdgpu=2Eh
->> index 96e895d6be35=2E=2E4605934a4fb7 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu=2Eh
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu=2Eh
->> @@ -1446,4 +1446,29 @@ static inline int amdgpu_in_reset(struct amdgpu_=
-device *adev)
->>   {
->>   	return atomic_read(&adev->in_gpu_reset);
->>   }
->> +
->> +/**
->> + * memcpy_trailing - Copy the end of one structure into the middle of =
-another
->> + *
->> + * @dst: Pointer to destination struct
->> + * @first_dst_member: The member name in @dst where the overwrite begi=
-ns
->> + * @last_dst_member: The member name in @dst where the overwrite ends =
-after
->> + * @src: Pointer to the source struct
->> + * @first_src_member: The member name in @src where the copy begins
->> + *
->> + */
->> +#define memcpy_trailing(dst, first_dst_member, last_dst_member,		   \
->> +		        src, first_src_member)				   \
->
->Please don't add a function like this into amdgpu=2Eh, especially when it=
-=20
->is only used by the SMU code=2E
+Larry
 
-Sure, I'm happy to move it=2E It wasn't clear to me which headers were con=
-sidered "immutable"=2E Which header should I put this in?
-
->And please give it an amdgpu_ prefix so that we are not confusing it=20
->with a core function=2E
-
-Sure, I will include that=2E
-
->Apart from that looks good to me=2E
-
-Thanks!
-
--Kees
