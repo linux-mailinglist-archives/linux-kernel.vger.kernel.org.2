@@ -2,84 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E410B3F4FC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176473F4FCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbhHWRra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:47:30 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:47018 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhHWRr3 (ORCPT
+        id S231723AbhHWRsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhHWRr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:47:29 -0400
-Received: by mail-ot1-f45.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso38429324ott.13;
-        Mon, 23 Aug 2021 10:46:46 -0700 (PDT)
+        Mon, 23 Aug 2021 13:47:59 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDB1C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:47:16 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id me10so10329024ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:47:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1XjqUyJNMd2ZLbkK/sFsLTUvba6HdD4u6vq+rnRJ9HM=;
+        b=cuBLsnPOnipeZtybbChKkUxipN5F5gVvQTKjFPxTRITk42+HTedxhtUBpKefoD/0NN
+         M7UKhN2UEEHrzj+/lAWTrBiMOFBYA+FcZW+S4vilsn6507Ah57B6k0PLbKkLpgQ/OPn/
+         pp0LTC7mTU55MvAU1msQhSHyj4zRBrQALAsDrSJcCc4v7nTSq7VqZTqnByI9VzfZBsAC
+         g9To5tNK9IQA21FRlcG6iil2XIoiIuBoH99iZPiTAg/3/oLt7cEP1amZw+F6moh2SbhR
+         l3blaxyv3cbtgpiGpG9hbTVsFyvT9omkJrlKZ8IVYEMWUb49AkEsw2vCDJK70DYKIeX5
+         R6kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XHNF8BxjxXpv6CzNLgilJHOEQR50UikOzfYV8iQxCns=;
-        b=mA/aBGPtX8ptEyFvbNVLVQ1XeViNKUgNByIgsZmsCJXvzDjiVdhuftjtBJMzQ/Vld+
-         zY3mru6pjXWBiVb/oF5tnCImVgEhO5qkqHNRKT9S6eDsPxeTQyw3wb64PBjEiwedARNl
-         7/WXcVCgqA46sDvyMErV9uYPHqmzJLiLuZc8G4hZm3jh4knYKl94QeqdOhDLePERJV4g
-         BJCTGvSZBoZIGonbRZiI8mezz7V6R4qOE3bxb49ckGEOPyQCyqrQBSXdog4BUt5ycwR6
-         U4LzccBYsKIUAHgq3DWFslj6CrXDbk7CZKEL00qcLzgYu7gvFYRu2TroZF2Ft792Wg3E
-         uqtw==
-X-Gm-Message-State: AOAM530RzWLwDADKZFqbeEBNZQ3zP8/sr8sVkTvwpmqFRBGrEw+/Pspo
-        mV9jxTpzV3SPFkS0EKZr/Q==
-X-Google-Smtp-Source: ABdhPJygvaINZvqR7FAI08t3BnM76I+gLS3HOs26kncyFvVhQh0dyUD2ovtmksZvoUF1xQ/OV8lMgg==
-X-Received: by 2002:a9d:5cb:: with SMTP id 69mr29480121otd.90.1629740806543;
-        Mon, 23 Aug 2021 10:46:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id q26sm3904178otf.39.2021.08.23.10.46.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 10:46:44 -0700 (PDT)
-Received: (nullmailer pid 2409335 invoked by uid 1000);
-        Mon, 23 Aug 2021 17:46:43 -0000
-Date:   Mon, 23 Aug 2021 12:46:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering
- msi
-Message-ID: <YSPfA88EOrXn5Ifq@robh.at.kernel.org>
-References: <20210823154958.305677-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1XjqUyJNMd2ZLbkK/sFsLTUvba6HdD4u6vq+rnRJ9HM=;
+        b=XvngKIc4YzVBYBpNN0Dz4jWjVkXOWDCuz0O7w+Y4imfSA4a5m5i4FzHpRdy5hdzEMZ
+         HalGWznYe/aeZzEzrYV2MAI2ZfZj2ZVnUPfUGrPCZN7L1BMRRXAMvxiUYnc35bAXnrYK
+         vJJTNpEOj4HkE1YrULaaMESxz40PtvGdGG72j0fxSMswMqmKwlUV+zFZfYkR8xjsPlwm
+         BF55HhsUBCAvFhcLeJ1lUkccZQvpn2OYnmtojOmRzzZtVsVrHpJM8G89OAoQxw1ay/oz
+         xr0KXfGfLe7es2x2uf4EW6vBX00wGCzgHD+gPFeNW2K32mVFHfT375CvrPOVAE50iXbl
+         kyYg==
+X-Gm-Message-State: AOAM530NaK4WDl42gjuIAo5s5Tw7MX8cqOL6+u4txE9Uxv7TQvQ2e7HH
+        SFy5QwZbWSs+TG2y3atR4MeXGCdjFPlRnnPr04I=
+X-Google-Smtp-Source: ABdhPJx75A+zyMRs9Sa6sfWQuacNo49iPMrd71DX2INrL0DQxC7MhflC2jE+NIfPnezwZlFUBjPjXjQ9Uughu9j2UNI=
+X-Received: by 2002:a17:906:374e:: with SMTP id e14mr15510393ejc.161.1629740834945;
+ Mon, 23 Aug 2021 10:47:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823154958.305677-1-bjorn.andersson@linaro.org>
+References: <20210819054116.266126-1-shy828301@gmail.com> <20210819054116.266126-3-shy828301@gmail.com>
+ <20210820064832.GA63355@hori.linux.bs1.fc.nec.co.jp> <CAHbLzkqnBbqz7rHTQWsBKdq5uSdKDJX=iDz+HDyF2Jo6CX3H1g@mail.gmail.com>
+ <20210823050526.GA1452382@hori.linux.bs1.fc.nec.co.jp>
+In-Reply-To: <20210823050526.GA1452382@hori.linux.bs1.fc.nec.co.jp>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 23 Aug 2021 10:47:03 -0700
+Message-ID: <CAHbLzkoUavFuBSHRunvptAUynehFxfs-aAywmE4MjaLi16nL3A@mail.gmail.com>
+Subject: Re: [v2 PATCH 3/3] mm: hwpoison: dump page for unhandlable page
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Cc:     "osalvador@suse.de" <osalvador@suse.de>,
+        "tdmackey@twitter.com" <tdmackey@twitter.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:49:57AM -0700, Bjorn Andersson wrote:
-> On the Qualcomm sc8180x platform the bootloader does something related
-> to PCI that leaves a pending "msi" interrupt, which with the current
-> ordering often fires before init has a chance to enable the clocks that
-> are necessary for the interrupt handler to access the hardware.
-> 
-> Move the host_init() call before the registration of the "msi" interrupt
-> handler to ensure the host driver has a chance to enable the clocks.
-> 
-> The assignment of the bridge's ops and child_ops is moved along, because
-> at least the TI Keystone driver overwrites these in its host_init
-> callback.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v1:
-> - New patch, instead of enabling resources in the qcom driver before jumping to
->   dw_pcie_host_init(), per Rob Herring's suggestion.
-> 
->  .../pci/controller/dwc/pcie-designware-host.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
+On Sun, Aug 22, 2021 at 10:05 PM HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=80=
+=80=E7=9B=B4=E4=B9=9F)
+<naoya.horiguchi@nec.com> wrote:
+>
+> On Fri, Aug 20, 2021 at 11:40:24AM -0700, Yang Shi wrote:
+> > On Thu, Aug 19, 2021 at 11:48 PM HORIGUCHI NAOYA(=E5=A0=80=E5=8F=A3=E3=
+=80=80=E7=9B=B4=E4=B9=9F)
+> > <naoya.horiguchi@nec.com> wrote:
+> > >
+> > > On Wed, Aug 18, 2021 at 10:41:16PM -0700, Yang Shi wrote:
+> > > > Currently just very simple message is shown for unhandlable page, e=
+.g.
+> > > > non-LRU page, like:
+> > > > soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 (=
+)
+> > > >
+> > > > It is not very helpful for further debug, calling dump_page() could=
+ show
+> > > > more useful information.
+> > > >
+> > > > Calling dump_page() in get_any_page() in order to not duplicate the=
+ call
+> > > > in a couple of different places.  It may be called with pcp disable=
+d and
+> > > > holding memory hotplug lock, it should be not a big deal since hwpo=
+ison
+> > > > handler is not called very often.
+> > > >
+> > > > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > > > Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> > > > Cc: Oscar Salvador <osalvador@suse.de>
+> > > > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > > > ---
+> > > >  mm/memory-failure.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >
+> > > > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> > > > index 7cfa134b1370..60df8fcd0444 100644
+> > > > --- a/mm/memory-failure.c
+> > > > +++ b/mm/memory-failure.c
+> > > > @@ -1228,6 +1228,9 @@ static int get_any_page(struct page *p, unsig=
+ned long flags)
+> > > >               ret =3D -EIO;
+> > > >       }
+> > > >  out:
+> > > > +     if (ret =3D=3D -EIO)
+> > > > +             dump_page(p, "hwpoison: unhandlable page");
+> > > > +
+> > >
+> > > I feel that 4 callers of get_hwpoison_page() are in the different con=
+text,
+> > > so it might be better to consider them separately to add dump_page() =
+or not.
+> > > soft_offline_page() still prints out "%s: %#lx: unknown page type: %l=
+x (%pGp)"
+> >
+> > No strong opinion to keep or remove it.
+>
+> Reading the explanation below, I think that calling dump_page() in the
+> original place is fine.  So let's remove "else if (ret =3D=3D 0)" block i=
+n
+> soft_offline_page().
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The "else if (ret =3D=3D 0)" block is used to handle free page IIUC. I'm
+supposed you mean the "else if (ret =3D=3D -EIO)" block which just calls
+printk.
+
+>
+> >
+> > > message, which might be duplicate so this printk() may be dropped.
+> > > In memory_failure_hugetlb() and memory_failure(), we can call dump_pa=
+ge() after
+> > > action_result().  unpoison_memory() doesn't need dump_page() at all b=
+ecause
+> > > it's related to already hwpoisoned page.
+> >
+> > I don't have a strong opinion either to have the dump_page() called
+> > either before action or after action, it just moves around the dumped
+> > page information around that printk.
+> >
+> > For unpoison_memory(), I think it is harmless to have dump_page()
+> > called, right? If get_hwpoison_page() can't return -EIO, then the
+> > dump_page() won't be called at all, if it is possible then this is
+> > exactly why we call dump_page() to help debug.
+> >
+> > So IMHO calling dump_page() in get_any_page when -EIO is returned
+> > could work for all the cases well and avoid duplicating the call.
+>
+> Fair enough. So could you repost 3/3 with the above change in soft_offlin=
+e_page()?
+>
+> Thanks,
+> Naoya Horiguchi
