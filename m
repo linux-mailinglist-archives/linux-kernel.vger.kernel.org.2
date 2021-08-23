@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575413F441A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7721D3F441B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhHWEVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 00:21:53 -0400
-Received: from mail-m963.mail.126.com ([123.126.96.3]:56370 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhHWEVw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 00:21:52 -0400
-X-Greylist: delayed 1892 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 00:21:51 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=bLhi3x2BRyUWAiafje
-        v5SWx5KYU1bHlvlbbBzV4bLnE=; b=FY7fauIIqcnAlOmbWnbp7Va3q+/qJNzUV3
-        FoVNwe7Rswat5MLYow+aiHGnCkIeFYhqy1vQgN+HCD2RpKMh/Iv2Y6BHXUfgDpXm
-        WUXtEVt6AtN5NX0OgSBJ3DdoBIpd7nHNxTopijQkmvwb0gM7Ds74nZAFQjst4afJ
-        VK2GhoT2k=
-Received: from localhost.localdomain (unknown [222.128.173.92])
-        by smtp8 (Coremail) with SMTP id NORpCgD3zFy9GiNhsulwOg--.5885S4;
-        Mon, 23 Aug 2021 11:49:18 +0800 (CST)
-From:   zhang kai <zhangkaiheb@126.com>
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhang kai <zhangkaiheb@126.com>
-Subject: [PATCH] ipv6: correct comments about fib6_node sernum
-Date:   Mon, 23 Aug 2021 11:49:00 +0800
-Message-Id: <20210823034900.22967-1-zhangkaiheb@126.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: NORpCgD3zFy9GiNhsulwOg--.5885S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur4rtFy3Kr1xCF1DKFy8Xwb_yoW8XFyfpF
-        4qkrs7KrnruFyYkrWkJF18Zr13WanrCFW3Ww4fAayvkw1vqw18XF1kKr1SvF18GFWSvanx
-        JF42qrWfJF45uw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U59N3UUUUU=
-X-Originating-IP: [222.128.173.92]
-X-CM-SenderInfo: x2kd0wxndlxvbe6rjloofrz/1tbi1x73-l53W4+6DgAAsJ
+        id S231590AbhHWEXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 00:23:16 -0400
+Received: from mout.gmx.net ([212.227.15.19]:35097 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229462AbhHWEXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 00:23:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629692523;
+        bh=TB0LjgnrwKKFd7ubtBDLzKvgqXa8fYT5WytKd2r03uI=;
+        h=X-UI-Sender-Class:Subject:From:To:Date:In-Reply-To:References;
+        b=Zn2VC/p7fpjzg37bYZMMsTkj8Vx7Hzz5tik/3QVnya+vZOV2gLDtbnXDF1odVyfaf
+         2j57ZUDb5njy1OMVHx2iURPsEPOd45IWlx+CyeHSiti0L6BrK/1r9MXQGI5vLmfMEp
+         eH2N+PGUELSUhm/xzo+rMfVs32TPxf380Ub/Tqf8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([212.114.172.232]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MOA3P-1mg2de01cX-00ObDK; Mon, 23
+ Aug 2021 06:22:03 +0200
+Message-ID: <b9b55cad5b7ca120ebec2acbbbd0a7fc1a986ec7.camel@gmx.de>
+Subject: Re: [PATCH,RESEND] softirq: Introduce SOFTIRQ_FORCED_THREADING
+From:   Mike Galbraith <efault@gmx.de>
+To:     Wang Qing <wangqing@vivo.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dirk Behme <dirk.behme@de.bosch.com>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 23 Aug 2021 06:22:01 +0200
+In-Reply-To: <1629689583-25324-1-git-send-email-wangqing@vivo.com>
+References: <1629689583-25324-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.3 
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Mn8HQDpm9HxJtN0xT3j/1TTdoRpTra4Tz9py0vPeo5zZ0260Tyq
+ nfbhYlYAbW91qCxxb6A6zwOUQi2Ni7n1lytiSyjx0nAH0JXlNFVyWyil7FSgsjbGTg0UtYX
+ bRQVp0SMxUoRaYBE8Qq/tWUi2dfrUgHdmoE/mq6toutEndYDVfrMrtxVn/YoWlXvzX19j6r
+ UFOYIqVCEzbmwMl9t20Gg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:c1Eld/+yuE4=:O/ySG2NYsalDDdO779+Nj+
+ I8dZkFXP0WsOdkYMGa3MkghPJCY8xppZ1LrZkwUtLiVCxkS6WZ9SqOloFVOB46LF92qXBfnfk
+ lwP7LYi3OnKzAg20VizWJyVsuXsCCandsiL/u82TGahxK26yM/6TQdW5PDE/F+9ZuNhoU8QXt
+ EO52O7fprBogi5pdQ9gm1dxSFvRcY+5FrV9M5aWsM+DUGzERYHqMFj8zcxodJbww4/8NEJZuP
+ RNO2A4l/6NNLktrYWunFuzva4dlJXracNqU+yT35IsCMKXbGwc9HbNYe8K3n8vgp5nQymd4NH
+ JG5+9N9IQP4DVs5zl7xKgiMpMNZouAKsQYhY/fBy7UB8yNnZoNV7Fl507qtC99+dRGCUrhnl0
+ UR50i8PfAYkIGDtuIWR25fSsa+OzgwQOTZJMbeEcsOtTak/M5B7NIFCDo8yuFLSeX9JoPCiWx
+ gm05xRv1FYS7o+ROzozUYWhdfhb8YbQCIwm6awT/oQn0qGZEmDmMOOTfJa+rvBS+5oM0tZKWM
+ v/mTpihl1MBx5iIhuuxB5OxsA+/CrbJ5mw0XxcJ/OztW+d8cqMvoyEwhZulCyQv8Msred2D64
+ 9zJu9fhmlyLQlZ1jHwJfwMqlnmS8Vu3pCKW3jEd2OxQY6m3gSe4+u4HrZblartFzxnh9rSSg1
+ 4iMF/uc22dH0ECaV5Q5Wa9xswVqOvDbpnOBhCPGephM6yLXhr12gtZNmEWletHaKe/zKWg1fP
+ 4K9wO6zYZsa8TSqmMp/NgOYCP24eFphlfREa1d+EENlkpbD2xlB4pq9RfiTxa89sP9CLrJBBi
+ T6opRt0jxtdy2wV4Wu4uF1hGyw+8hlj/ufDj85np6vPRpgaE3DM//onieW7Yot2tNxgHkBDzu
+ 9ymSVcSBSynd2MSMulMHMKgwhjT/x7WcT/ZgQBuRJLf105GSpFtSZVnxYW4xAJrYeqF1yGpmo
+ 97jMr1/9Z/0gXVuTk1BE2cCWZFSBeZs1sMLmIaKVGJWJTYbD5HPrbMItpdPBmScWxNPr+Jpo4
+ poK+hUsNvH0twiMou1jEIvdml0+AmUiCnUBa42ask8Qqh5NyYjJ7iYc3r5fD58oj9svFW2/On
+ 9vC26kdZNk9iN/dNVDZLuNpgnkFZTGdGInW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-correct comments in set and get fn_sernum
+On Mon, 2021-08-23 at 11:33 +0800, Wang Qing wrote:
+> At present, whether the softirq is executed when the interrupt exits
+> is controlled by IRQ_FORCED_THREADING. This is unreasonable. It should
+> be split and allowed to take effect separately.
 
-Signed-off-by: zhang kai <zhangkaiheb@126.com>
----
- include/net/ip6_fib.h | 4 ++--
- net/ipv6/ip6_fib.c    | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Decades long practice suddenly became "unreasonable"?  I think not. =C2=A0
 
-diff --git a/include/net/ip6_fib.h b/include/net/ip6_fib.h
-index 15b7fbe6b..c412dde4d 100644
---- a/include/net/ip6_fib.h
-+++ b/include/net/ip6_fib.h
-@@ -267,7 +267,7 @@ static inline bool fib6_check_expired(const struct fib6_info *f6i)
- 	return false;
- }
- 
--/* Function to safely get fn->sernum for passed in rt
-+/* Function to safely get fn->fn_sernum for passed in rt
-  * and store result in passed in cookie.
-  * Return true if we can get cookie safely
-  * Return false if not
-@@ -282,7 +282,7 @@ static inline bool fib6_get_cookie_safe(const struct fib6_info *f6i,
- 
- 	if (fn) {
- 		*cookie = fn->fn_sernum;
--		/* pairs with smp_wmb() in fib6_update_sernum_upto_root() */
-+		/* pairs with smp_wmb() in __fib6_update_sernum_upto_root() */
- 		smp_rmb();
- 		status = true;
- 	}
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index 679699e95..4d7b93baa 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -1340,7 +1340,7 @@ static void __fib6_update_sernum_upto_root(struct fib6_info *rt,
- 	struct fib6_node *fn = rcu_dereference_protected(rt->fib6_node,
- 				lockdep_is_held(&rt->fib6_table->tb6_lock));
- 
--	/* paired with smp_rmb() in rt6_get_cookie_safe() */
-+	/* paired with smp_rmb() in fib6_get_cookie_safe() */
- 	smp_wmb();
- 	while (fn) {
- 		fn->fn_sernum = sernum;
--- 
-2.17.1
+Trying to carve out bits and pieces of RT to merge immediately isn't
+likely to make the ongoing merge effort go anyfaster or smoother.
+
+	Just my $.02,
+
+	-Mike
+
 
