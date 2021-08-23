@@ -2,244 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E683F484D
+	by mail.lfdr.de (Postfix) with ESMTP id 49B933F484E
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236147AbhHWKKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:10:24 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37434 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235921AbhHWKKW (ORCPT
+        id S236158AbhHWKKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235921AbhHWKK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:10:22 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8EBB92A5;
-        Mon, 23 Aug 2021 12:09:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629713378;
-        bh=fRSoM9J3cNHTNTzilYusa7GtOU7JN0C+adhq7vqVydg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PPuR71FhPRRAAw3lBDJFwmL2iyPMsc3qAFRd4yYVDamMeHicPBVY9pkXMZFoGODoj
-         BUvINVkt54onpyKZIuMhVC/KTFEcGpu2zAFo4UJmukE78ztSeKefD1ttWyVhcNm6UH
-         9AfplSfp9TFc2MAaZoBlMGDEv3BV9d/mr7cIPCMk=
-Date:   Mon, 23 Aug 2021 13:09:29 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
-Message-ID: <YSNz2TY1G6uShovP@pendragon.ideasonboard.com>
-References: <20210818203502.269889-1-ribalda@chromium.org>
- <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
- <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
- <YR4yRfEmMvsAXRfu@pendragon.ideasonboard.com>
- <CANiDSCvStwDkkW7FLwTmogsH45292gugAvZfuoss3aJ9RzOAQw@mail.gmail.com>
- <YR5nhmF3MXdjtCvs@pendragon.ideasonboard.com>
- <CANiDSCtPGCnQNuGUxDbbQPgtj3a_6eOtaABXk=39Y7b-03gQNA@mail.gmail.com>
- <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com>
- <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
+        Mon, 23 Aug 2021 06:10:28 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ABAC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:09:45 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id p38so36916421lfa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:09:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=05AJ+F6GkT8AKoB6zrVwfafs6BSYl8oX/Agcqv8i+MM=;
+        b=xruKDw0o9Cc8GwxChKcJa0h4NpB0c+dUfM768lUIRH/VJqqAX5OTCciPqLXAlLUcpe
+         y4T4Myh0FVZqLXSyFeoAJWb/qoIxJDukw/1ylKwIvxWvsEDL31OGNyblpS6l3sThV/F0
+         bzOLZ+pm/Q2LMeJVxWR1mN/3FB+gUHzpIO/4zKBHzX9AodzpKojmBdNu0F7NYgbjqDoU
+         K45VISRoriUHQOyc0OLmmyMm1bPsODImVCpziKEXm77A45RT33Kv2D9BbsHGIwJA/fDS
+         uODRbqS+oTUhUpGpMiU6FA/gqbIjWJFDYUe5qnpD7SGRF0Yhn0I390G4g4LROOM/qRWl
+         6aXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=05AJ+F6GkT8AKoB6zrVwfafs6BSYl8oX/Agcqv8i+MM=;
+        b=rZl2JAR54oM8umXR0K+y7sC3efZXulTsYmNonRygQ6S3gDDqQl+pj7W2PcdJQN464u
+         CT8q2C1oYjx4th1CYkUsazQ3qLjlRVhn29yI4zJweYaDC9FU+wReMnRzb1KMKWly1I0t
+         +kVsRSZJsOZzZpkM8kUkd9DGvaINeMHpE8NOtZpv6PoENOAuu9RivoIBPl17NQ/Ei6/X
+         l8b/Y7OxjKfEBru/DOpGmbUGHmiQbFkTPr8utsCyrPk+0daWr1eapBONESSUwA4+oAcR
+         KI4SEhKmfhoFyBK2vRLfmnklzkfWgbXdWOEJTK/2e46d0zJ+1hSxV97BClCHfxKD4T0x
+         g2wg==
+X-Gm-Message-State: AOAM530sNdd2q3c22CYi+qrKBOLOtXX9gdaNfHhsY4S8NFSYUucNXowY
+        sQQ7HOKr+aoeE6Mri+UXKTqwhYrqVRoxCU+JMT88YA==
+X-Google-Smtp-Source: ABdhPJwV27iLXbdaB1RtNauLSUOg77V8YBWzHp7vs/k9WLRKvYJLHBpGZWmKqSB/SdqHqStRFh6K2k55TbQg+UQMFVg=
+X-Received: by 2002:ac2:54a4:: with SMTP id w4mr16239680lfk.254.1629713383593;
+ Mon, 23 Aug 2021 03:09:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
+References: <20210820010403.946838-1-joshdon@google.com> <20210820010403.946838-5-joshdon@google.com>
+In-Reply-To: <20210820010403.946838-5-joshdon@google.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 23 Aug 2021 12:09:32 +0200
+Message-ID: <CAKfTPtCmhtPWcFYo+ArNBDGOvmgfLJrNm+QbqGEMsQnpj0TJSA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] sched: adjust sleeper credit for SCHED_IDLE entities
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 11:56:43AM +0200, Ricardo Ribalda wrote:
-> On Mon, 23 Aug 2021 at 03:54, Laurent Pinchart wrote:
-> > On Thu, Aug 19, 2021 at 04:46:38PM +0200, Ricardo Ribalda wrote:
-> > > On Thu, 19 Aug 2021 at 16:15, Laurent Pinchart wrote:
-> > > > On Thu, Aug 19, 2021 at 01:31:32PM +0200, Ricardo Ribalda wrote:
-> > > > > On Thu, 19 Aug 2021 at 12:28, Laurent Pinchart wrote:
-> > > > > > On Thu, Aug 19, 2021 at 08:27:00AM +0200, Ricardo Ribalda wrote:
-> > > > > > > On Thu, 19 Aug 2021 at 00:22, Laurent Pinchart wrote:
-> > > > > > > > On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
-> > > > > > > > > The hardware timestamping code has the assumption than the device_sof
-> > > > > > > > > and the host_sof run at the same frequency (1 KHz).
-> > > > > > > > >
-> > > > > > > > > Unfortunately, this is not the case for all the hardware. Add a quirk to
-> > > > > > > > > support such hardware.
-> > > > > > > > >
-> > > > > > > > > Note on how to identify such hardware:
-> > > > > > > > > When running with "yavta -c /dev/videoX" Look for periodic jumps of the
-> > > > > > > > > fps. Eg:
-> > > > > > > > >
-> > > > > > > > > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
-> > > > > > > > > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
-> > > > > > > > > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
-> > > > > > > > > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
-> > > > > > > > > 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
-> > > > > > > > > 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
-> > > > > > > > > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
-> > > > > > > > > ...
-> > > > > > > > > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
-> > > > > > > > > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
-> > > > > > > > > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
-> > > > > > > > > 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
-> > > > > > > > > 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
-> > > > > > > > > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
-> > > > > > > > >
-> > > > > > > > > They happen because the delta_sof calculated at
-> > > > > > > > > uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
-> > > > > > > >
-> > > > > > > > That looks plain wrong. First of all, the whole purpose of the SOF clock
-> > > > > > > > is to have a shared clock between the host and the device. It makes no
-> > > > > > > > sense for a device to have a free-running "SOF" clock. Given the log
-> > > > > > > > above, the issue occurs so quickly that it doesn't seem to be a mere
-> > > > > > > > drift of a free running clock. Could you investigate this more carefully
-> > > > > > > > ?
-> > > > > > >
-> > > > > > > In my test the dev_sof runs at 887.91Hz and the dev_sof at 1000.35Hz.
-> > > > > > > If I plot the difference of both clocks host_sof - (dev_sof % 2048), I
-> > > > > > > get this nice graph https://imgur.com/a/5fQnKa7
-> > > > > > >
-> > > > > > > I agree that it makes not sense to have a free-running "SOF", but the
-> > > > > > > manufacturer thinks otherwise :)
-> > > > > >
-> > > > > > In that case there's no common clock between the device and the host,
-> > > > > > which means that clock recovery is impossible. The whole timestamp
-> > > > > > computation should be bypassed, and the driver should use the system
-> > > > > > timestamp instead.
-> > > > >
-> > > > > Or said differently. The clock recovery is susceptible to the jitter
-> > > > > in the frame acquisition.
-> > > > >
-> > > > > If you have no jitter, the clock recovered will match the reality, and
-> > > > > if you have bad jitter, it will be as bad as system timestamp.
-> > > >
-> > > > The whole point of the clock recovery code is to convert a precise
-> > > > timestamp, expressed using a device clock that the host has no access
-> > > > to, to a system clock. This can only be done if the relationship between
-> > > > the two clocks can be inferred, and the UVC specifies a mechanism to
-> > > > allow this by using a common clock, in the form of the SOF counter. If
-> > > > we don't have that, we're essentially screwed, and can't use the
-> > > > algorithm implemented in the driver at all. I'd much rather skip is
-> > > > completely in that case, instead of trying to hack the algorithm itself.
-> > >
-> > > Considering T(f) as the time between the usb package (f) is received
-> > > and uvc_video_clock_decode()
-> > > If the jitter between the different T(f)s is under one unit of our
-> > > clock (1 msec) the accuracy of the "hacked" algorithm and the real
-> > > algorithm is exactly the same.
-> > >
-> > > We can agree that 1 msec is a "lot" of time. And if our system has a
-> > > worse latency than that, the hacked algorithm will not be worse than
-> > > system timestamping.
-> > >
-> > > So in most of the situations this patch will produce better timestamps
-> > > than the current code and never worse than now...
-> >
-> > How can it produce better timestamps if it's missing the crucial
-> > information that provides the correlation of timestamps between the
-> > device and host side ?
-> 
-> Because in a system with a latency jitter under 1msec sof_device and
-> sof_host you already know that information: sof_host = sof_device
+On Fri, 20 Aug 2021 at 03:04, Josh Don <joshdon@google.com> wrote:
+>
+> Give reduced sleeper credit to SCHED_IDLE entities. As a result, woken
+> SCHED_IDLE entities will take longer to preempt normal entities.
+>
+> The benefit of this change is to make it less likely that a newly woken
+> SCHED_IDLE entity will preempt a short-running normal entity before it
+> blocks.
+>
+> We still give a small sleeper credit to SCHED_IDLE entities, so that
+> idle<->idle competition retains some fairness.
+>
+> Example: With HZ=1000, spawned four threads affined to one cpu, one of
+> which was set to SCHED_IDLE. Without this patch, wakeup latency for the
+> SCHED_IDLE thread was ~1-2ms, with the patch the wakeup latency was
+> ~5ms.
+>
+> Signed-off-by: Josh Don <joshdon@google.com>
 
-Only (100 - jitter/1ms) % of the time.
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Given that the kernel implementation of the clock recovery is known to
-cause timestamps to jump back in time once in a while (with devices that
-behave properly), and that this should be implemented in userspace, I'd
-rather bypass the kernel-side clock recovery completely when the device
-doesn't behave. Then, we'll discuss whether it shuold be bypassed in
-userspace too for this device, based on mathematical evidence :-)
-
-> It is a special case of the general problem.
-> 
-> > > Anyway, I have tried to ping the vendor to see if there is something
-> > > that I could be doing wrong, lets see what they reply.
-> > >
-> > > > On a side note, I think the whole clock recovery implementation should
-> > > > move from the uvcvideo driver to userspace, where we'll have the ability
-> > > > to perform floating point computation. The kernel implementation is
-> > > > crude, it should be replaced with a linear regression.
-> > >
-> > > Agree, but instead of a linear regression, a resampling algorithm.
-> >
-> > A linear regression is likely a good enough resampling algorithm in this
-> > case, but I'd be curious to see if someone could do better.
-> >
-> > > > > So this patch will still be better than nothing.
-> > > > >
-> > > > > > I still find it hard to believe that a Logitech camera would get this
-> > > > > > wrong.
-> > > > >
-> > > > > I guess I can send you a device, or give you access to mine remotely
-> > > > > if you do not believe me :)
-> > > > >
-> > > > > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > > > > > > ---
-> > > > > > > > > v2: Fix typo in frequency
-> > > > > > > > >
-> > > > > > > > >  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
-> > > > > > > > >  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
-> > > > > > > > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
-> > > > > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > > index 9a791d8ef200..d1e6cba10b15 100644
-> > > > > > > > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > > @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
-> > > > > > > > >         .bInterfaceSubClass   = 1,
-> > > > > > > > >         .bInterfaceProtocol   = 0,
-> > > > > > > > >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-> > > > > > > > > +     /* Logitech HD Pro Webcam C922 */
-> > > > > > > > > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > > > > > > > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > > > > > > > +       .idVendor             = 0x046d,
-> > > > > > > > > +       .idProduct            = 0x085c,
-> > > > > > > > > +       .bInterfaceClass      = USB_CLASS_VIDEO,
-> > > > > > > > > +       .bInterfaceSubClass   = 1,
-> > > > > > > > > +       .bInterfaceProtocol   = 0,
-> > > > > > > > > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
-> > > > > > > > >       /* Chicony CNF7129 (Asus EEE 100HE) */
-> > > > > > > > >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > > > > > > >                               | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > > index 6d0e474671a2..760ab015cf9c 100644
-> > > > > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > > @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> > > > > > > > >       /* To limit the amount of data, drop SCRs with an SOF identical to the
-> > > > > > > > >        * previous one.
-> > > > > > > > >        */
-> > > > > > > > > -     dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > > > > > > > +             dev_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > > +     else
-> > > > > > > > > +             dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > > > > > > > +
-> > > > > > > > >       if (dev_sof == stream->clock.last_sof)
-> > > > > > > > >               return;
-> > > > > > > > >
-> > > > > > > > >       stream->clock.last_sof = dev_sof;
-> > > > > > > > >
-> > > > > > > > > -     host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > > > > > > > +             host_sof = dev_sof;
-> > > > > > > > > +     else
-> > > > > > > > > +             host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > >       time = uvc_video_get_time();
-> > > > > > > > >
-> > > > > > > > >       /* The UVC specification allows device implementations that can't obtain
-> > > > > > > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > > index cce5e38133cd..89d909661915 100644
-> > > > > > > > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > > @@ -209,6 +209,8 @@
-> > > > > > > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
-> > > > > > > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
-> > > > > > > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
-> > > > > > > > > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00002000
-> > > > > > > > > +
-> > > > > > > > >
-> > > > > > > > >  /* Format flags */
-> > > > > > > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
-
--- 
-Regards,
-
-Laurent Pinchart
+> ---
+>  kernel/sched/fair.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 31f40aa005b9..aa9c046d2aab 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4230,7 +4230,12 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int initial)
+>
+>         /* sleeps up to a single latency don't count. */
+>         if (!initial) {
+> -               unsigned long thresh = sysctl_sched_latency;
+> +               unsigned long thresh;
+> +
+> +               if (se_is_idle(se))
+> +                       thresh = sysctl_sched_min_granularity;
+> +               else
+> +                       thresh = sysctl_sched_latency;
+>
+>                 /*
+>                  * Halve their sleep time's effect, to allow
+> --
+> 2.33.0.rc2.250.ged5fa647cd-goog
+>
