@@ -2,129 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459263F4BD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98F73F4BD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhHWNnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:43:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53980 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229477AbhHWNne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:43:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="197353299"
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="197353299"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 06:42:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="492703467"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 23 Aug 2021 06:42:45 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>, kvm@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Artem Kashkanov <artem.kashkanov@intel.com>
-Subject: [PATCH] kvm/x86: Fix PT "host mode"
-Date:   Mon, 23 Aug 2021 16:42:39 +0300
-Message-Id: <20210823134239.45402-1-alexander.shishkin@linux.intel.com>
-X-Mailer: git-send-email 2.32.0
+        id S229610AbhHWNmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:42:52 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:14314 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhHWNmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 09:42:51 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GtYLm6chvz88Dq;
+        Mon, 23 Aug 2021 21:41:52 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 21:42:05 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.174) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 21:42:05 +0800
+From:   Li Huafei <lihuafei1@huawei.com>
+To:     <acme@kernel.org>
+CC:     <hekuang@huawei.com>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <zhangjinhao2@huawei.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] perf unwind: Do not overwrite FEATURE_CHECK_LDFLAGS-libunwind-{x86,aarch64}
+Date:   Mon, 23 Aug 2021 21:43:40 +0800
+Message-ID: <20210823134340.60955-1-lihuafei1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regardless of the "pt_mode", the kvm driver installs its interrupt handler
-for Intel PT, which always overrides the native handler, causing data loss
-inside kvm guests, while we're expecting to trace them.
+When setting LIBUNWIND_DIR, we first set
 
-Fix this by only installing kvm's perf_guest_cbs if pt_mode is set to
-guest tracing.
+ FEATURE_CHECK_LDFLAGS-libunwind-{aarch64,x86} = -L$(LIBUNWIND_DIR)/lib.
 
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Fixes: ff9d07a0e7ce7 ("KVM: Implement perf callbacks for guest sampling")
-Reported-by: Artem Kashkanov <artem.kashkanov@intel.com>
-Tested-by: Artem Kashkanov <artem.kashkanov@intel.com>
+After commit 5c4d7c82c0dc ("perf unwind: Do not put libunwind-{x86,aarch64}
+in FEATURE_TESTS_BASIC"), FEATURE_CHECK_LDFLAGS-libunwind-{x86,aarch64} is
+overwritten. As a result, the remote libunwind libraries cannot be searched
+from $(LIBUNWIND_DIR)/lib directory during feature check tests. Fix it with
+variable appending.
+
+Before this patch:
+
+ perf$ make VF=1 LIBUNWIND_DIR=/opt/libunwind_aarch64
+  BUILD:   Doing 'make -j16' parallel build
+ <SNIP>
+ ...
+ ...                    libopencsd: [ OFF ]
+ ...                 libunwind-x86: [ OFF ]
+ ...              libunwind-x86_64: [ OFF ]
+ ...                 libunwind-arm: [ OFF ]
+ ...             libunwind-aarch64: [ OFF ]
+ ...         libunwind-debug-frame: [ OFF ]
+ ...     libunwind-debug-frame-arm: [ OFF ]
+ ... libunwind-debug-frame-aarch64: [ OFF ]
+ ...                           cxx: [ OFF ]
+ <SNIP>
+
+ perf$ cat ../build/feature/test-libunwind-aarch64.make.output
+ /usr/bin/ld: cannot find -lunwind-aarch64
+ /usr/bin/ld: cannot find -lunwind-aarch64
+ collect2: error: ld returned 1 exit status
+
+After this patch:
+
+ perf$ make VF=1 LIBUNWIND_DIR=/opt/libunwind_aarch64
+  BUILD:   Doing 'make -j16' parallel build
+ <SNIP>
+ ...                    libopencsd: [ OFF ]
+ ...                 libunwind-x86: [ OFF ]
+ ...              libunwind-x86_64: [ OFF ]
+ ...                 libunwind-arm: [ OFF ]
+ ...             libunwind-aarch64: [ on  ]
+ ...         libunwind-debug-frame: [ OFF ]
+ ...     libunwind-debug-frame-arm: [ OFF ]
+ ... libunwind-debug-frame-aarch64: [ OFF ]
+ ...                           cxx: [ OFF ]
+ <SNIP>
+
+ perf$ cat ../build/feature/test-libunwind-aarch64.make.output
+
+ perf$ ldd ./perf
+        linux-vdso.so.1 (0x00007ffdf07da000)
+        libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f30953dc000)
+        librt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x00007f30951d4000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3094e36000)
+        libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f3094c32000)
+        libelf.so.1 => /usr/lib/x86_64-linux-gnu/libelf.so.1 (0x00007f3094a18000)
+        libdw.so.1 => /usr/lib/x86_64-linux-gnu/libdw.so.1 (0x00007f30947cc000)
+        libunwind-x86_64.so.8 => /usr/lib/x86_64-linux-gnu/libunwind-x86_64.so.8 (0x00007f30945ad000)
+        libunwind.so.8 => /usr/lib/x86_64-linux-gnu/libunwind.so.8 (0x00007f3094392000)
+        liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f309416c000)
+        libunwind-aarch64.so.8 => not found
+        libslang.so.2 => /lib/x86_64-linux-gnu/libslang.so.2 (0x00007f3093c8a000)
+        libpython2.7.so.1.0 => /usr/local/lib/libpython2.7.so.1.0 (0x00007f309386b000)
+        libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f309364e000)
+        libnuma.so.1 => /usr/lib/x86_64-linux-gnu/libnuma.so.1 (0x00007f3093443000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3093052000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f3096097000)
+        libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007f3092e42000)
+        libutil.so.1 => /lib/x86_64-linux-gnu/libutil.so.1 (0x00007f3092c3f000)
+
+Fixes: 5c4d7c82c0dc ("perf unwind: Do not put libunwind-{x86,aarch64} in FEATURE_TESTS_BASIC")
+Signed-off-by: Li Huafei <lihuafei1@huawei.com>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/vmx/vmx.c          |  6 ++++++
- arch/x86/kvm/x86.c              | 10 ++++++++--
- 3 files changed, 15 insertions(+), 2 deletions(-)
+ tools/perf/Makefile.config | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 55efbacfc244..84a1ed067f35 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1408,6 +1408,7 @@ struct kvm_x86_init_ops {
- 	int (*disabled_by_bios)(void);
- 	int (*check_processor_compatibility)(void);
- 	int (*hardware_setup)(void);
-+	int (*intel_pt_enabled)(void);
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index eb8e487ef90b..29ffd57f5cd8 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -133,10 +133,10 @@ FEATURE_CHECK_LDFLAGS-libunwind = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
+ FEATURE_CHECK_CFLAGS-libunwind-debug-frame = $(LIBUNWIND_CFLAGS)
+ FEATURE_CHECK_LDFLAGS-libunwind-debug-frame = $(LIBUNWIND_LDFLAGS) $(LIBUNWIND_LIBS)
  
- 	struct kvm_x86_ops *runtime_ops;
- };
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4bceb5ca3a89..0c239aa3532a 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7943,11 +7943,17 @@ static __init int hardware_setup(void)
- 	return r;
- }
+-FEATURE_CHECK_LDFLAGS-libunwind-arm = -lunwind -lunwind-arm
+-FEATURE_CHECK_LDFLAGS-libunwind-aarch64 = -lunwind -lunwind-aarch64
+-FEATURE_CHECK_LDFLAGS-libunwind-x86 = -lunwind -llzma -lunwind-x86
+-FEATURE_CHECK_LDFLAGS-libunwind-x86_64 = -lunwind -llzma -lunwind-x86_64
++FEATURE_CHECK_LDFLAGS-libunwind-arm += -lunwind -lunwind-arm
++FEATURE_CHECK_LDFLAGS-libunwind-aarch64 += -lunwind -lunwind-aarch64
++FEATURE_CHECK_LDFLAGS-libunwind-x86 += -lunwind -llzma -lunwind-x86
++FEATURE_CHECK_LDFLAGS-libunwind-x86_64 += -lunwind -llzma -lunwind-x86_64
  
-+static int vmx_intel_pt_enabled(void)
-+{
-+	return vmx_pt_mode_is_host_guest();
-+}
-+
- static struct kvm_x86_init_ops vmx_init_ops __initdata = {
- 	.cpu_has_kvm_support = cpu_has_kvm_support,
- 	.disabled_by_bios = vmx_disabled_by_bios,
- 	.check_processor_compatibility = vmx_check_processor_compat,
- 	.hardware_setup = hardware_setup,
-+	.intel_pt_enabled = vmx_intel_pt_enabled,
+ FEATURE_CHECK_LDFLAGS-libcrypto = -lcrypto
  
- 	.runtime_ops = &vmx_x86_ops,
- };
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 9b6bca616929..3ba0001e7388 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -268,6 +268,8 @@ static struct kmem_cache *x86_fpu_cache;
- 
- static struct kmem_cache *x86_emulator_cache;
- 
-+static int __read_mostly intel_pt_enabled;
-+
- /*
-  * When called, it means the previous get/set msr reached an invalid msr.
-  * Return true if we want to ignore/silent this failed msr access.
-@@ -8194,7 +8196,10 @@ int kvm_arch_init(void *opaque)
- 
- 	kvm_timer_init();
- 
--	perf_register_guest_info_callbacks(&kvm_guest_cbs);
-+	if (ops->intel_pt_enabled && ops->intel_pt_enabled()) {
-+		perf_register_guest_info_callbacks(&kvm_guest_cbs);
-+		intel_pt_enabled = 1;
-+	}
- 
- 	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
- 		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
-@@ -8229,7 +8234,8 @@ void kvm_arch_exit(void)
- 		clear_hv_tscchange_cb();
- #endif
- 	kvm_lapic_exit();
--	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
-+	if (intel_pt_enabled)
-+		perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
- 
- 	if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
- 		cpufreq_unregister_notifier(&kvmclock_cpufreq_notifier_block,
 -- 
-2.32.0
+2.17.1
 
