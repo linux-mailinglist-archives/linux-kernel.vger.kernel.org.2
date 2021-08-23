@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4733F4528
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D65A3F452B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhHWGni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 02:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34328 "EHLO
+        id S231715AbhHWGoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 02:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234658AbhHWGnh (ORCPT
+        with ESMTP id S231779AbhHWGoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 02:43:37 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A2FC061757
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 23:42:54 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id i28so29563585ljm.7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 23:42:54 -0700 (PDT)
+        Mon, 23 Aug 2021 02:44:01 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD11C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 23:43:19 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id l18so22021046lji.12
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 23:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FFJ5qArshzVHf3q7jRlOWQagxpfLOrv79VSjCdNEbCA=;
-        b=Zf7g29E3w/mMGEQGTHke0IP1vIqXBP/xGjiHyLab7RfdnbLe9ZNKiyevv6kO2oi89n
-         3wsWr3eIiIFkS8ODwd2HPqhiTr/XmNhM2RqeP8M7oo/E8+KI1mkd/dwW5x0YHqVVg7ii
-         Gbc8dt9O4AM7OBaotSD53oVjK7yj0Ezk2OaJg=
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X9FMR7iIGm8hwjI0Az1jlgXDZnDlEXK88Ri4nJkOnvk=;
+        b=Ib8+qMiGcXJO6i+tGA0QmqhxNKex0iZSpxnHBbWhdc8YTalcCTQtXxGESavmAvSMiz
+         LawPT0nO36Y8V8IW5DQHRJG7KMZT/g84kVe462xfXjK16NvgfoTNOwPk9UgMcNkgkw0N
+         hyGP/X5KsS6NSbNy6vLDYdhz2Nz7P8vBB99nw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FFJ5qArshzVHf3q7jRlOWQagxpfLOrv79VSjCdNEbCA=;
-        b=PeQWPTZyullx0GFLvdRC90JAgwTYT3QnmmSzRyjEpXOYg31g0MOFryxjyLedOhjJWK
-         5syFGwiAyUduiKY8UDw3ZP7tKKRByvGcvomtk3e3htCu7PDaRYMJqsI0+PC2Z19jCePM
-         WU34ocSNY15xFSSoxPOQdby15/o6SOBwaEREeuxnOk+/3ktyFKP1HNehCOU2kE/5HFlm
-         4XWtez5Y+HAlFf6lPwGtz3qZXkSQDxtjTXXGJlzkwZ6a80wkfe8ehSwlQBzvdcCDDTmE
-         3dBzB1eu1Z7iOEsz5d827swbnJJ3eGyMWuPtMm8aRyTVo3Wz1/nrgThxvC7bsa5g6pwn
-         l/qA==
-X-Gm-Message-State: AOAM5309izTuVeOsY6AFNZSxt1xJElqK7Pxf5kECjJurXOwPH63DXbWl
-        /EXKLMnzRawVe0zio7/gocoo87aqrwwFlbKOMdJflQ==
-X-Google-Smtp-Source: ABdhPJxTuOEDNkFKHBotXobJuIjH4Z7qG0KV3mS8Xf0E+WOygl2HTPZPkLpJ47L2eJAse8NeczQkwyQsSN8xFb81ERI=
-X-Received: by 2002:a05:651c:211a:: with SMTP id a26mr12902308ljq.305.1629700973307;
- Sun, 22 Aug 2021 23:42:53 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X9FMR7iIGm8hwjI0Az1jlgXDZnDlEXK88Ri4nJkOnvk=;
+        b=q0dykuDnY6FhAKCybXm7Lb/oSc9YkZRPRe3VYkrN++hHVUk1BxhNHLbmHgRj/NlmOP
+         OYhF96GjmzdWBH/6uwHlnezcA06Z1L6cBTjP972zLIGB4QJNHoEEnKreud6chCFZ4+A5
+         0UYxtoQaktaYQoU8pf1agD2TB30GwGzMmC/QM2Ac6gnL2uuaN17j9wLwxdYDx5W4PVRV
+         qQ651S0WUPvr+Wha6FOX0po4OR7NXAqcC+8GkQabhkF3tolk6Ib/m5fwS/VQzPoMnkco
+         eh6cxsGL8NrWRdkFWEXru69RfcM9GFPFoSOxgxoR0+4TmNJMod3KJu14V7+9NNFj4TRk
+         oQkA==
+X-Gm-Message-State: AOAM533hZy6Mytkm7iJ5NtgHmGBBvZBB32UT2iRUkQ0aoXPJ4beYTblD
+        YVivmdRv8tayIMz6Xos0G2bKWw==
+X-Google-Smtp-Source: ABdhPJxLCvVCTMjiT6xh9Cgw7aGYl/Ohc3/GyHUBoc2jnxiqiG5LQ/per7MxAtf+WsIn33ffeeTGNg==
+X-Received: by 2002:a2e:9999:: with SMTP id w25mr26140028lji.359.1629700997604;
+        Sun, 22 Aug 2021 23:43:17 -0700 (PDT)
+Received: from [172.16.11.1] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id r20sm1359329lff.93.2021.08.22.23.43.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 23:43:17 -0700 (PDT)
+Subject: Re: [PATCH for-next 13/25] compiler_types.h: Remove
+ __compiletime_object_size()
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        David Gow <davidgow@google.com>, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com, linux-hardening@vger.kernel.org
+References: <20210822075122.864511-1-keescook@chromium.org>
+ <20210822075122.864511-14-keescook@chromium.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <4fff1f46-ab10-317b-8cf0-05871e4a9d71@rasmusvillemoes.dk>
+Date:   Mon, 23 Aug 2021 08:43:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210820111504.350-1-chun-jie.chen@mediatek.com> <20210820111504.350-6-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210820111504.350-6-chun-jie.chen@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 23 Aug 2021 14:42:42 +0800
-Message-ID: <CAGXv+5EReMTGS02SgVO_yrpChOiw++3rwfc0Jx66CBzuDHOXAQ@mail.gmail.com>
-Subject: Re: [v2 05/24] clk: mediatek: Fix resource leak in mtk_clk_simple_probe
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        Devicetree List <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210822075122.864511-14-keescook@chromium.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 7:19 PM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> Release clock data when clock driver probe fail to fix
-> possible resource leak.
->
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
+On 22/08/2021 09.51, Kees Cook wrote:
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+> -	int sz = __compiletime_object_size(addr);
+> +	int sz = __builtin_object_size(addr, 0);
 
-> ---
->  drivers/clk/mediatek/clk-mtk.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/clk/mediatek/clk-mtk.c b/drivers/clk/mediatek/clk-mtk.c
-> index c3d385c0cfcb..74890759e98c 100644
-> --- a/drivers/clk/mediatek/clk-mtk.c
-> +++ b/drivers/clk/mediatek/clk-mtk.c
-> @@ -314,7 +314,15 @@ int mtk_clk_simple_probe(struct platform_device *pdev)
->
->         r = mtk_clk_register_gates(node, mcd->clks, mcd->num_clks, clk_data);
+Not directly related to this patch, but seeing this I wonder if there
+would be some value in introducing names for those magic 0/1/2/3 that
+are used with __b_o_s. Every time I stumble on code using that I have to
+go to the gcc docs, and even then it takes me a while to grok what
 
-Note for future reference: there is no unregister counterpart for
-mtk_clk_register_*.
+     TYPE is an integer constant from 0 to 3.  If the least significant
+     bit is clear, objects are whole variables, if it is set, a closest
+     surrounding subobject is considered the object a pointer points to.
+     The second bit determines if maximum or minimum of remaining bytes
+     is computed.
 
+means. The names don't need to be too verbose, just having a few
+#defines in-tree with the above quoted above them makes it a lot easier
+to figure out what they mean.
 
->         if (r)
-> -               return r;
-> +               goto free_data;
->
-> -       return of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +       r = of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +       if (r)
-> +               goto free_data;
-> +
-> +       return r;
-> +
-> +free_data:
-> +       mtk_free_clk_data(clk_data);
-> +       return r;
->  }
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Rasmus
