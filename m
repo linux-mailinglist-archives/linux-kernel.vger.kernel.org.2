@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201733F4596
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C573F459B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234939AbhHWHHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        id S235058AbhHWHI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234258AbhHWHHq (ORCPT
+        with ESMTP id S235006AbhHWHI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:07:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B7CC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:07:04 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1mI42v-0007m7-6A; Mon, 23 Aug 2021 09:07:01 +0200
-Subject: Re: [PATCH v9 05/11] Input: wacom_i2c - Add support for distance and
- tilt x/y
-To:     Alistair Francis <alistair@alistair23.me>,
-        dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de, pinglinux@gmail.com,
-        tatsunosuke.tobita@wacom.com, junkpainting@gmail.com,
-        ping.cheng@wacom.com
-Cc:     alistair23@gmail.com, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210818154935.1154-1-alistair@alistair23.me>
- <20210818154935.1154-6-alistair@alistair23.me>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <e3d7b9be-cf0e-7074-3e49-45dbff27ce8d@pengutronix.de>
-Date:   Mon, 23 Aug 2021 09:06:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 23 Aug 2021 03:08:27 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6A4C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:07:45 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id a21so14530260pfh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:07:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vnPnOFH15WpjpkJv0XH5507vJbN9niQmMmw2orYb31I=;
+        b=JhPcxKchFojBd1dibPlBCZz0bpgG91lTP/lRCCVq8bLbMh7akKFv7mrk1t0s/u+rAn
+         LgQ149yDLBDdsP02AaRZ+JcAfIQheWVJTxbJM21rPfiBEmAVj4Di6SY/HsCDiyvLl0LE
+         HCylrstFglc7+aikichH2KVdtSSHLTmJwGoInvr/Cdcu171mtOZb/6moMARF+WPV2tWE
+         PUoL5w/ZdRsotFZ/nCmLK41sDT6rJfg0qIojcisFUGMo6zhN9+Gii7k9TzR8HrWQXpxD
+         XWcKLlZau11VU/L18ui9z2cNidBPNzxM6AZUZAUBwxqEfGYg79k1BMlSwXXBClOBVmGj
+         +pUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vnPnOFH15WpjpkJv0XH5507vJbN9niQmMmw2orYb31I=;
+        b=tQsfYoFQn4OVq/+5UHLhwEXd5ANQMKUsdAaYf2Q0BSFtJpgyFjVCt8rWOihfkKyqTG
+         gbMA63ng4UzJcnZFgfZyEFvLWqh8epVInDCEdgaVXGxFHH0Waja+KsTAlzU+bcIMtQza
+         SKUNSmoqMm/2NWySznsKJrXjul2djrh+eCUcgUECXDwO/nRUlgfEMyQRlE8XW5WE98Au
+         cPSJD89BP3haGQlxcRat2OX7t28p4vhwNntdjjxg0HoEECks1mYZ7RY1QCEb7HEIKsGY
+         kk7Py8Ys8W9eXwzBXUp+c+Exp6k1lzdSX56K6cZ4HvN+7K5ZNh3LIUiNlpa6utkEgwYc
+         v65w==
+X-Gm-Message-State: AOAM53218MrAxDR+vReP1Y/po839K1tsM7v4OCQlhxHvUqJq2stIOMUv
+        NztuKl3BO3ipa799lwPp+VnoBw==
+X-Google-Smtp-Source: ABdhPJxPAei6q6vdBM3KEZMSIC/2N9YtKUNnIkb1B7hCpOxZyA9kBSg3joEAsIFVhl8W8FfXb8KuPQ==
+X-Received: by 2002:a05:6a00:1583:b0:3e2:2ae3:2ba8 with SMTP id u3-20020a056a00158300b003e22ae32ba8mr32120979pfk.58.1629702464717;
+        Mon, 23 Aug 2021 00:07:44 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id h3sm8967833pgm.87.2021.08.23.00.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 00:07:44 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arch_topology: Export cpu_scale and topology_set_thermal_pressure()
+Date:   Mon, 23 Aug 2021 12:37:41 +0530
+Message-Id: <a1053bd0e63ec0d985691b8a37bf7f6d5a1156aa.1629702403.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-In-Reply-To: <20210818154935.1154-6-alistair@alistair23.me>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.08.21 17:49, Alistair Francis wrote:
-> Add support for the distance and tilt x/y.
-> 
-> This is based on the out of tree rM2 driver.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
->  drivers/input/touchscreen/wacom_i2c.c | 35 +++++++++++++++++++++++++--
->  1 file changed, 33 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 28255c77d426..4d0c19fbada4 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
+These are now used from a cpufreq driver which can be built as module,
+export them.
 
-> +	/* Signed */
-> +	tilt_x = le16_to_cpup((__le16 *)&data[11]);
-> +	tilt_y = le16_to_cpup((__le16 *)&data[13]);
-> +
-> +	distance = le16_to_cpup((__le16 *)&data[15]);
+Fixes: 86afc1df661a ("cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+This needs to go via my ARM cpufreq tree. I will probably merge it with the
+concerned commit.
 
-Use get_unaligned_u16 for all three. The existing code doesn't need to do this,
-because with the current struct layout, the array is suitable aligned
-for 2 byte accesses. You are accessing data at odd indices though, so you
-need to use an unaligned accessor.
+ drivers/base/arch_topology.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Cheers,
-Ahmad
-
-> +
->  	if (!wac_i2c->prox)
->  		wac_i2c->tool = (data[3] & 0x0c) ?
->  			BTN_TOOL_RUBBER : BTN_TOOL_PEN;
-> @@ -127,6 +151,9 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
->  	input_report_abs(input, ABS_X, x);
->  	input_report_abs(input, ABS_Y, y);
->  	input_report_abs(input, ABS_PRESSURE, pressure);
-> +	input_report_abs(input, ABS_DISTANCE, distance);
-> +	input_report_abs(input, ABS_TILT_X, tilt_x);
-> +	input_report_abs(input, ABS_TILT_Y, tilt_y);
->  	input_sync(input);
->  
->  out:
-> @@ -202,7 +229,11 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  	input_set_abs_params(input, ABS_Y, 0, features->y_max, 0, 0);
->  	input_set_abs_params(input, ABS_PRESSURE,
->  			     0, features->pressure_max, 0, 0);
-> -
-> +	input_set_abs_params(input, ABS_DISTANCE, 0, features->distance_max, 0, 0);
-> +	input_set_abs_params(input, ABS_TILT_X, -features->tilt_x_max,
-> +			     features->tilt_x_max, 0, 0);
-> +	input_set_abs_params(input, ABS_TILT_Y, -features->tilt_y_max,
-> +			     features->tilt_y_max, 0, 0);
->  	input_set_drvdata(input, wac_i2c);
->  
->  	error = devm_request_threaded_irq(dev, client->irq, NULL, wacom_i2c_irq,
-> 
-
-
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index 921312a8d957..bf9d47a16d30 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -149,6 +149,7 @@ void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
+ }
+ 
+ DEFINE_PER_CPU(unsigned long, cpu_scale) = SCHED_CAPACITY_SCALE;
++EXPORT_SYMBOL_GPL(cpu_scale);
+ 
+ void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity)
+ {
+@@ -165,6 +166,7 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
+ 	for_each_cpu(cpu, cpus)
+ 		WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
+ }
++EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
+ 
+ static ssize_t cpu_capacity_show(struct device *dev,
+ 				 struct device_attribute *attr,
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.31.1.272.g89b43f80a514
+
