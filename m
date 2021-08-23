@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238453F4729
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A533F472A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhHWJNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:13:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:50178 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229726AbhHWJNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:13:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9987C1FB;
-        Mon, 23 Aug 2021 02:12:22 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C95B3F66F;
-        Mon, 23 Aug 2021 02:12:20 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 10:12:14 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH v6 4/8] arm64: PCI: Support root bridge preparation for
- Hyper-V
-Message-ID: <20210823091214.GA1193@lpieralisi>
-References: <20210726180657.142727-1-boqun.feng@gmail.com>
- <20210726180657.142727-5-boqun.feng@gmail.com>
- <YR6DIkdkblL8NUP2@boqun-archlinux>
- <20210820174947.GB23080@arm.com>
+        id S235745AbhHWJN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhHWJN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:13:26 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC5BC061575;
+        Mon, 23 Aug 2021 02:12:44 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id q11so25233619wrr.9;
+        Mon, 23 Aug 2021 02:12:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MaBl3rDtXESKyw3c63bPJNo7dg2UCFCV5le4IG3pXWo=;
+        b=GbfZDaKnoXqjjhUOEGzo6BXu3i1+1SjQifDJV8eWlIzQ9++SCfEWOYg6yN7DqLP1Of
+         NNunFBtWyyeoeiu2RuJa4zJgKCSAi88wl4IdP11bPwrelZfDo9IDr6H6OZxvH75Z1/QY
+         J+9hkFB6rwPKuP9iZcF+rNCzJdW4SOBHQkDA8AOam9zc+qX0L7FHmwOMyR5YVM+uE8/8
+         rDPAt3dXUUs1b2CVohBhOfiaTlDTXq/3xX03BPeStge8+5rNKBIHXQzZHdMoDbqa5GC2
+         WYWzbbeb6KeCFlSR9kTe3l12UpPO5uxuFpqLfzoIanrPs7y5pJLW5PpRRyFb6YzQBcUz
+         nSbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MaBl3rDtXESKyw3c63bPJNo7dg2UCFCV5le4IG3pXWo=;
+        b=CFHjD31zmEyc4+aSwOrS1Z7QhxE8TQW/Dv9klVhNwHLjr/VXUjqfiN1TdoRQItQcvm
+         WCKYdgiFmV1FJyvdhCRxKVWtkZoVi7TqIxlo+bwQEmdDd2ITpUZbuPKk5QMOoHR521iB
+         cUnz9MNmu7ZjuMSgIjondf7siHd2PRcABcd0J7SBR6O1KWOfO4jdPhi0wFqHSY+C45wG
+         IT7hHXBmfKg5dDivY8hy4F3QdosFDqdDVm++r3Qoh2ALxi/2yZdB4nA8jpK4hs91Yi1q
+         5Wm14P7QtC01gFTrWuzObXqRZZZZfRk341IC4YntR/ICBqR9uDH7OPd1nlDBRcfCU0Gn
+         jZZw==
+X-Gm-Message-State: AOAM530nJnzu0O438KHHc3awN+wJuhOWKOo57VRABxhUhFgoC+OWywbY
+        91sxxf+cEJ2Rq3c25MoVJhL8e06zU28B5ffypyA=
+X-Google-Smtp-Source: ABdhPJx/j/DPoXGfrlksrZGOAEgqBhPiJRxaX+EvIkOoQpY8+YhkH/EjBvpnNtDixZC8PEKf4CReE3qWZbywjl3kH70=
+X-Received: by 2002:a05:6000:1043:: with SMTP id c3mr12475463wrx.144.1629709962826;
+ Mon, 23 Aug 2021 02:12:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820174947.GB23080@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210823061938.28240-1-l4stpr0gr4m@gmail.com> <13c1df91-be22-f4e0-cd61-7c99eb4e45f4@nvidia.com>
+In-Reply-To: <13c1df91-be22-f4e0-cd61-7c99eb4e45f4@nvidia.com>
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+Date:   Mon, 23 Aug 2021 18:12:31 +0900
+Message-ID: <CAKW4uUyPdQ9hXeyjnC+5VS7zDaw+3sxy53HwOv2AxEZ7tngT=Q@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: bridge: replace __vlan_hwaccel_put_tag with skb_vlan_push
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+Cc:     Roopa Prabhu <roopa@nvidia.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 06:49:47PM +0100, Catalin Marinas wrote:
-> Hi Boqun,
-> 
-> Sorry, I just got back from holiday and I'm still in the deleting emails
-> mode.
-> 
-> On Fri, Aug 20, 2021 at 12:13:22AM +0800, Boqun Feng wrote:
-> > Appreciate it that you can have a look at this one and patch #4, note
-> > that there exists an alternative solution at[1].
-> > 
-> > The difference is the way used to pass the corresponding ACPI device
-> > pointers for PCI host bridges: currently pci_config_window->parent is
-> > used, and this patch and patch #4 allow the field to be NULL, because
-> > Hyper-V's PCI host bridges don't have ACPI devices, while [1] changes to
-> > use pci_host_bridge->private. And I'm OK with either way, I don't have a
-> > strong opinion here ;-)
-> [...]
-> > [1]: https://lore.kernel.org/lkml/20210811153619.88922-1-boqun.feng@gmail.com/
-> 
-> I'm ok with the arm64 bits in this series and the one you linked above.
-> It's up to Lorenzo if he's happy with how pci-hyperv.c ends up looking,
-> I'm not a PCIe expert. My preference would be for a combined series
-> (this and [1] above).
-> 
-> Happy to ack the arm64 patches in a combined series (if you are going to
-> post one), the changes would look even simpler.
+2021=EB=85=84 8=EC=9B=94 23=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 6:00, N=
+ikolay Aleksandrov <nikolay@nvidia.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
+=B1:
+>
+> On 23/08/2021 09:19, Kangmin Park wrote:
+>
+> This changes behaviour though, I don't like changing code just for the sa=
+ke of it.
+> Perhaps the author had a reason to use hwaccel_put_tag instead. Before we=
+ would
+> just put hwaccel tag, now if there already is hwaccel tag we'll push it i=
+nside
+> the skb and then push the new tag in hwaccel. In fact I think you can eve=
+n trigger
+> the warning inside skb_vlan_push, so:
+>
+> Nacked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+>
+>
 
-I believe [1] above is an experiment - therefore it is best to stick to
-this series as it is for the time being, pending refactoring that
-requires more time, I would not rush it.
+Thanks for the review. I got it.
+Then, how about cleanup by changing return type of
+br_handle_ingress_vlan_tunnel()?
+This function is only referenced in br_handle_frame(), and goto drop
+when it return
+non-zero. But, the ingress function always return 0, there is no
+meaning for now.
+If you think the cleanup is worth it, I'll send you a v2 patch.
 
-If you can ACK the arm64 patches (3,4) please I will pull the series
-into the PCI tree asap.
-
-Thanks,
-Lorenzo
+Regards.
