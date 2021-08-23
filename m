@@ -2,160 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CB13F4D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACEA3F4D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhHWPZB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 11:25:01 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35105 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhHWPZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:25:00 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4D2206000C;
-        Mon, 23 Aug 2021 15:24:14 +0000 (UTC)
-Date:   Mon, 23 Aug 2021 17:24:13 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Kestrel seventyfour <kestrelseventyfour@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-Message-ID: <20210823172413.0bc4ab3a@xps13>
-In-Reply-To: <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
-References: <20210808072643.GA5084@ubuntu>
-        <20210816093126.442f74a1@xps13>
-        <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com>
-        <20210819100334.6af2d86e@xps13>
-        <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231564AbhHWPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:25:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231338AbhHWPZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:25:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6614B61407;
+        Mon, 23 Aug 2021 15:24:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629732280;
+        bh=+tC3LV1UrdSIPc9j2U2GAzIn7LLp+gJB/LXopp7UjkU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=n8Ock/7s8mgNK+ro1JE2tTykNAS4ejaGcYzCUU/30GOc6xG3SOBiT2g/YYntK4v+B
+         iZ5oWmqgjwtqGhfPRIN/SumQaRBVlfsjTzWJmVBLLyesMzXtxkgoBXXrrR64+G+1+d
+         Z/ZL2yoOO1/7T1TlfjM4gBvFKtevr9cceEwjrsj2WStQmqpJuFqki+YDZ/pJRwVkaC
+         uEHp5sZvjiti6UtgMX/2iOE5jyeIUqDWGIr0TWZwMjqn5qnrRZ26Z5QbJ8Bpk5wGed
+         m0+S1te/xnebAD7EfKx/d0d0uSqLpv6w/Pg0I/yXYb21qITVtmYkvWjATTQf8p3kYW
+         pOi4dEfFlKWiQ==
+Received: by mail-ed1-f52.google.com with SMTP id z19so2235666edi.9;
+        Mon, 23 Aug 2021 08:24:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530u174umz9LsKkgvx5mieAw01AvrnqY4MaRGia0NJx/tODvn5dm
+        XahwPyNAaMcXkayvVBzbEUfZ4p9ATQsgYoRLUw==
+X-Google-Smtp-Source: ABdhPJz6Cl4TrOit/7Szj+BAGCpmfttIrVWNUJFOLx7TDyALbToKa7IHuOtbIAHE+XTGna0KL7cRNgeqOHaJdOnZgW8=
+X-Received: by 2002:a05:6402:1215:: with SMTP id c21mr38062854edw.137.1629732278842;
+ Mon, 23 Aug 2021 08:24:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
+ <20210726083204.93196-2-mark.kettenis@xs4all.nl> <20210726231848.GA1025245@robh.at.kernel.org>
+ <87sfzt1pg9.wl-maz@kernel.org> <CAL_JsqLvqWiuib9s4PzX8pOQYJQ0eR7Gxz==J849eVJ5MDq4SA@mail.gmail.com>
+ <8735ra1x8t.wl-maz@kernel.org> <CAL_JsqJ5M3soMT30ntSTbqqdrQP8TT26mHL-0xExsn10MWPofA@mail.gmail.com>
+ <56140331bd735d61@bloch.sibelius.xs4all.nl> <CAL_JsqJ-YDNWOoo8TUupDox31YreUNQAPXHnMMtXakQs0S_BDA@mail.gmail.com>
+ <56140c26d86f4733@bloch.sibelius.xs4all.nl>
+In-Reply-To: <56140c26d86f4733@bloch.sibelius.xs4all.nl>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 23 Aug 2021 10:24:27 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJNs7QskN=jD3dvgxtXU-CBf6To6gSQn0PX1Pk5VkkD+g@mail.gmail.com>
+Message-ID: <CAL_JsqJNs7QskN=jD3dvgxtXU-CBf6To6gSQn0PX1Pk5VkkD+g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
+To:     Mark Kettenis <mark.kettenis@xs4all.nl>
+Cc:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kestrel,
-
-Kestrel seventyfour <kestrelseventyfour@gmail.com> wrote on Mon, 23 Aug
-2021 13:19:43 +0200:
-
-> Hi Miquèl,
-> 
-> Am Do., 19. Aug. 2021 um 10:03 Uhr schrieb Miquel Raynal
-> <miquel.raynal@bootlin.com>:
-> >
-> > Hello,
-> >
-> > Kestrel seventyfour <kestrelseventyfour@gmail.com> wrote on Thu, 19 Aug
-> > 2021 09:21:42 +0200:
-> >  
-> > > Hi Miquèl
+On Sun, Aug 22, 2021 at 12:44 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+>
+> > From: Rob Herring <robh@kernel.org>
+> > Date: Wed, 18 Aug 2021 15:51:11 -0500
+>
+> Hi Rob,
+>
+> > On Wed, Aug 18, 2021 at 2:56 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
 > > >
-> > > Am Mo., 16. Aug. 2021 um 09:31 Uhr schrieb Miquel Raynal
-> > > <miquel.raynal@bootlin.com>:  
+> > > > From: Rob Herring <robh@kernel.org>
+> > > > Date: Sun, 15 Aug 2021 14:19:57 -0500
 > > > >
-> > > > Hi Daniel,
-> > > >
-> > > > Daniel Kestrel <kestrelseventyfour@gmail.com> wrote on Sun, 8 Aug 2021
-> > > > 09:26:43 +0200:
-> > > >  
-> > > > > Some devices use Micron NAND chips, which use on-die ECC. The hardcoded
-> > > > > setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because the
-> > > > > software ECC on top of the hardware ECC produces errors for every read
-> > > > > and write access, not to mention that booting does not work, because
-> > > > > the boot loader uses the correct ECC when trying to load the kernel
-> > > > > and stops loading on severe ECC errors.
-> > > > > This patch requires the devices that currently work with the hard coded
-> > > > > setting to set the nand-ecc-mode property to soft in their device
-> > > > > tree.
-> > > > >  
-> > > >
-> > > > Please add a Fixes: and Cc: stable tags, you will also need to send to
-> > > > stable@vger.kernel.org a different version of the patch for the kernel
-> > > > 5.4 IIUC.
-> > > >  
-> > > > > Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
-> > > > > Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Home Hub 5A
-> > > > > ---
-> > > > >  drivers/mtd/nand/raw/xway_nand.c | 2 --
-> > > > >  1 file changed, 2 deletions(-)
+> > > > On Sun, Aug 15, 2021 at 11:36 AM Marc Zyngier <maz@kernel.org> wrote:
 > > > > >
-> > > > > diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-> > > > > index 26751976e502..0a4b0aa7dd4c 100644
-> > > > > --- a/drivers/mtd/nand/raw/xway_nand.c
-> > > > > +++ b/drivers/mtd/nand/raw/xway_nand.c
-> > > > > @@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *chip, const u_char *buf, int len)
+> > > > > Hi Rob,
 > > > > >
-> > > > >  static int xway_attach_chip(struct nand_chip *chip)
-> > > > >  {
-> > > > > -     chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
-> > > > > -
-> > > > >       if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-> > > > >               chip->ecc.algo = NAND_ECC_ALGO_HAMMING;  
+> > > > > Apologies for the delay, I somehow misplaced this email...
+> > > > >
+> > > > > On Mon, 02 Aug 2021 17:10:39 +0100,
+> > > > > Rob Herring <robh@kernel.org> wrote:
+> > > > > >
+> > > > > > On Sun, Aug 1, 2021 at 3:31 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, 27 Jul 2021 00:18:48 +0100,
+> > > > > > > Rob Herring <robh@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > On Mon, Jul 26, 2021 at 10:32:00AM +0200, Mark Kettenis wrote:
+> > > > > > > > > From: Mark Kettenis <kettenis@openbsd.org>
+> > > > > > > > >
+> > > > > > > > > The Apple PCIe host controller is a PCIe host controller with
+> > > > > > > > > multiple root ports present in Apple ARM SoC platforms, including
+> > > > > > > > > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > > > > > > > > ---
+> > > > > > > > >  .../devicetree/bindings/pci/apple,pcie.yaml   | 166 ++++++++++++++++++
+> > > > > > > > >  MAINTAINERS                                   |   1 +
+> > > > > > > > >  2 files changed, 167 insertions(+)
+> > > > > > > > >  create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > > > > > > >
+> > > > > > > > > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > > > > > > > new file mode 100644
+> > > > > > > > > index 000000000000..bfcbdee79c64
+> > > > > > > > > --- /dev/null
+> > > > > > > > > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > > > > > > > > @@ -0,0 +1,166 @@
+> > > > > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > > > > > +%YAML 1.2
+> > > > > > > > > +---
+> > > > > > > > > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > > > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > > > > +
+> > > > > > > > > +title: Apple PCIe host controller
+> > > > > > > > > +
+> > > > > > > > > +maintainers:
+> > > > > > > > > +  - Mark Kettenis <kettenis@openbsd.org>
+> > > > > > > > > +
+> > > > > > > > > +description: |
+> > > > > > > > > +  The Apple PCIe host controller is a PCIe host controller with
+> > > > > > > > > +  multiple root ports present in Apple ARM SoC platforms, including
+> > > > > > > > > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > > > > > > > > +  The controller incorporates Synopsys DesigWare PCIe logic to
+> > > > > > > > > +  implements its root ports.  But the ATU found on most DesignWare
+> > > > > > > > > +  PCIe host bridges is absent.
+> > > > > > > >
+> > > > > > > > blank line
+> > > > > > > >
+> > > > > > > > > +  All root ports share a single ECAM space, but separate GPIOs are
+> > > > > > > > > +  used to take the PCI devices on those ports out of reset.  Therefore
+> > > > > > > > > +  the standard "reset-gpio" and "max-link-speed" properties appear on
+> > > > > > > >
+> > > > > > > > reset-gpios
+> > > > > > > >
+> > > > > > > > > +  the child nodes that represent the PCI bridges that correspond to
+> > > > > > > > > +  the individual root ports.
+> > > > > > > >
+> > > > > > > > blank line
+> > > > > > > >
+> > > > > > > > > +  MSIs are handled by the PCIe controller and translated into regular
+> > > > > > > > > +  interrupts.  A range of 32 MSIs is provided.  These 32 MSIs can be
+> > > > > > > > > +  distributed over the root ports as the OS sees fit by programming
+> > > > > > > > > +  the PCIe controller's port registers.
+> > > > > > > > > +
+> > > > > > > > > +allOf:
+> > > > > > > > > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > > > > > > > > +
+> > > > > > > > > +properties:
+> > > > > > > > > +  compatible:
+> > > > > > > > > +    items:
+> > > > > > > > > +      - const: apple,t8103-pcie
+> > > > > > > > > +      - const: apple,pcie
+> > > > > > > > > +
+> > > > > > > > > +  reg:
+> > > > > > > > > +    minItems: 3
+> > > > > > > > > +    maxItems: 5
+> > > > > > > > > +
+> > > > > > > > > +  reg-names:
+> > > > > > > > > +    minItems: 3
+> > > > > > > > > +    maxItems: 5
+> > > > > > > > > +    items:
+> > > > > > > > > +      - const: config
+> > > > > > > > > +      - const: rc
+> > > > > > > > > +      - const: port0
+> > > > > > > > > +      - const: port1
+> > > > > > > > > +      - const: port2
+> > > > > > > > > +
+> > > > > > > > > +  ranges:
+> > > > > > > > > +    minItems: 2
+> > > > > > > > > +    maxItems: 2
+> > > > > > > > > +
+> > > > > > > > > +  interrupts:
+> > > > > > > > > +    description:
+> > > > > > > > > +      Interrupt specifiers, one for each root port.
+> > > > > > > > > +    minItems: 1
+> > > > > > > > > +    maxItems: 3
+> > > > > > > > > +
+> > > > > > > > > +  msi-controller: true
+> > > > > > > > > +  msi-parent: true
+> >
+> > BTW, I don't think msi-parent and msi-controller together is valid?
+>
+> There is an existing example in:
+>
+> arm64/boot/dts/marvell/armada-37xx.dtsi
+>
+> I think it makes sense as the pcie bridge itself serves as the MSI
+> controller.
+
+That's pretty common such as all the DWC implementations using the
+built-in MSI controller (in that case 'msi-parent' present means no
+built-in controller). AFAICT, 'msi-parent' is just redundant here
+because the fallback if msi-parent is not found is checking the bus's
+DT node for a domain. See pci_host_bridge_of_msi_domain().
+
+> > > > > > > > > +  msi-ranges:
+> > > > > > > > > +    description:
+> > > > > > > > > +      A list of pairs <intid span>, where "intid" is the first
+> > > > > > > > > +      interrupt number that can be used as an MSI, and "span" the size
+> > > > > > > > > +      of that range.
+> > > > > > > > > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > > > > > > > > +    items:
+> > > > > > > > > +      minItems: 2
+> > > > > > > > > +      maxItems: 2
+> > > > > > > >
+> > > > > > > > I still have issues I raised on v1 with this property. It's genericish
+> > > > > > > > looking, but not generic. 'intid' as a single cell can't specify any
+> > > > > > > > parent interrupt such as a GIC which uses 3 cells. You could put in all
+> > > > > > > > the cells, but you'd still be assuming which cell you can increment.
+> > > > > > >
+> > > > > > > The GIC bindings already use similar abstractions, see what we do for
+> > > > > > > both GICv2m and GICv3 MBIs. Other MSI controllers use similar
+> > > > > > > properties (alpine and loongson, for example).
+> > > > > >
+> > > > > > That's the problem. Everyone making up their own crap.
+> > > > >
+> > > > > And that crap gets approved:
+> > > > >
+> > > > > https://lore.kernel.org/lkml/20200512205704.GA10412@bogus/
+> > > > >
+> > > > > I'm not trying to be antagonistic here, but it seems that your
+> > > > > position on this very subject has changed recently.
 > > > >
-> > > > You also need to only set the Hamming algorithm when engine_type is
-> > > > TYPE_SOFT.
+> > > > Not really, I think it's not the first time we've discussed this. But
+> > > > as I see things over and over, my tolerance for another instance
+> > > > without solving the problem for everyone diminishes. And what other
+> > > > leverage do I have?
 > > > >
-> > > > Thanks,
-> > > > Miquèl  
+> > > > Additionally, how long we have to support something comes into play. I
+> > > > have no idea for a Loongson MSI controller. I have a better idea on an
+> > > > Apple product...
+> > > >
+> > > > > > > > I think you should just list all these under 'interrupts' using
+> > > > > > > > interrupt-names to make your life easier:
+> > > > > > > >
+> > > > > > > > interrupt-names:
+> > > > > > > >   items:
+> > > > > > > >     - const: port0
+> > > > > > > >     - const: port1
+> > > > > > > >     - const: port2
+> > > > > > > >     - const: msi0
+> > > > > > > >     - const: msi1
+> > > > > > > >     - const: msi2
+> > > > > > > >     - const: msi3
+> > > > > > > >     ...
+> > > > > > > >
+> > > > > > > > Yeah, it's kind of verbose, but if the h/w block handles N interrupts,
+> > > > > > > > you should list N interrupts. The worst case for the above is N entries
+> > > > > > > > too if not contiguous.
+> > > > > > >
+> > > > > > > And that's where I beg to differ, again.
+> > > > > > >
+> > > > > > > Specifying interrupts like this gives the false impression that these
+> > > > > > > interrupts are generated by the device that owns them (the RC). Which
+> > > > > > > for MSIs is not the case.
+> > > > > >
+> > > > > > It's no different than an interrupt controller node having an
+> > > > > > interrupts property. The source is downstream and the interrupt
+> > > > > > controller is combining/translating the interrupts.
+> > > > > >
+> > > > > > The physical interrupt signals are connected to and originating in
+> > > > > > this block.
+> > > > >
+> > > > > Oh, I also object to this, for the same reasons. The only case where
+> > > > > it makes sense IMHO is when the interrupt controller is a multiplexer.
+> > > >
+> > > > So we've had the same kind of property for interrupt multiplexers. I'm
+> > > > fine if you think an 'MSI to interrupts mapping property' should be
+> > > > named something else.
+> > > >
+> > > > > > That sounds like perfectly 'describing the h/w' to me.
+> > > > >
+> > > > > I guess we have a different view of about these things. At the end of
+> > > > > the day, I don't care enough as long as we can expose a range of
+> > > > > interrupts one way or another.
+> > > >
+> > > > I don't really either. I just don't want 10 ways AND another...
+> > > >
+> > > > > > > This is not only verbose, this is
+> > > > > > > semantically dubious. And what should we do when the number of
+> > > > > > > possible interrupt is ridiculously large, as it is for the GICv3 ITS?
+> > > > > >
+> > > > > > I don't disagree with the verbose part. But that's not really an issue
+> > > > > > in this case.
+> > > > > >
+> > > > > > > I wish we had a standard way to express these constraints. Until we
+> > > > > > > do, I don't think enumerating individual interrupts is a practical
+> > > > > > > thing to do, nor that it actually represents the topology of the
+> > > > > > > system.
+> > > > > >
+> > > > > > The only way a standard way will happen is to stop accepting the
+> > > > > > custom properties.
+> > > > > >
+> > > > > > All the custom properties suffer from knowledge of what the parent
+> > > > > > interrupt controller is. To fix that, I think we need something like
+> > > > > > this:
+> > > > > >
+> > > > > > msi-ranges = <intspec base>, <intspec step>, <intspec end>;
+> > > > > >
+> > > > > > 'intspec' is defined by the parent interrupt-controller cells. step is
+> > > > > > the value to add. And end is what to match on to stop aka the last
+> > > > > > interrupt in the range. For example, if the GIC is the parent, we'd
+> > > > > > have something like this:
+> > > > > >
+> > > > > > <GIC_SPI 123 0>, <0 1 0>, <GIC_SPI 124 0>
+> > > > > >
+> > > > > > Does this apply to cases other than MSI? I think so as don't we have
+> > > > > > the same type of properties with the low power mode shadow interrupt
+> > > > > > controllers?  So 'interrupt-ranges'?
+> > > > >
+> > > > > This would work, though the increment seems a bit over-engineered. You
+> > > > > also may need this property to accept multiple ranges.
+> > > >
+> > > > Yes, certainly. Worst case is a map.
+> > > >
+> > > > > > It looks to me like there's an assumption in the kernel that an MSI
+> > > > > > controller has a linear range of parent interrupts? Is that correct
+> > > > > > and something that's guaranteed? That assumption leaks into the
+> > > > > > existing bindings.
+> > > > >
+> > > > > Depends on how the controller works. In general, the range maps to the
+> > > > > MultiMSI requirements where the message is an offset from the base of
+> > > > > the interrupt range. So you generally end-up with ranges of at least
+> > > > > 32 contiguous MSIs. Anything under that is sub-par and probably not
+> > > > > worth supporting.
+> > > >
+> > > > Maybe just this is enough:
+> > > > msi-ranges = <intspec base>, <length>, <intspec base>, <length>, ...
+> > > >
+> > > > While I say 'length' here, that's really up to the interrupt parent to
+> > > > interpret the intspec cells.
 > > >
-> > > I am really struggling with what to do. For one of the affected
-> > > devices, they created two device
-> > > trees, one for Micron and one for all others. Which obviously had no
-> > > effect due to the
-> > > hardcoded settings, which led me to Patch 2 and I thought, so be it.
-> > > But the process to figure
-> > > out if ones device has Micron Chips is essentially flashing an image
-> > > and if it does not work,
-> > > use the stock OEM recovery and try the other image.
-> > > However, since Micron is the only chip that is treated differently, I wonder
-> > > if your first proposal, even though it is hacky, is the better
-> > > approach to solve the issue
-> > > for the Micron devices not booting and throwing ECC errors. What do you think?
-> > > Follow up first patch or this one?  
+> > > So for the Apple PCIe controller we'd have:
+> > >
+> > >    msi-ranges = <AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+> > >
+> > > That would work just fine.
+> > >
+> > > Should this be documented in the apple,pcie binding, or somewhere more
+> > > generic?
 > >
-> > I am not sure we understood each other, your patch is fine, but you
-> > need to do something like:
-> >
-> > static int xway_attach_chip(struct nand_chip *chip)
-> > {
-> >     if (chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT &&
-> >         chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
-> >          chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
-> >
-> > In the DT you should not force any ECC engine (drop the nand-ecc-xxx
-> > properties) and let the core handle it. It will probably choose the
-> > most suitable engines for you.
-> >
-> > Thanks,
-> > Miquèl  
-> 
-> thank you for your response.
-> If I remove the nand-ecc-xxx properties in the device tree, the device with
-> the Toshiba NAND chip is working. However, the device with the Micron
-> NAND fails with NO ECC functions supplied; hardware ECC not possible,
-> seems to be at line 5367 or equivalent.
-> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_base.c#L5367
-> 
-> It looks like the micron nand driver supports on die only if its
-> specified int the
-> Device tree:
-> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_micron.c#L511
-> The Micron NAND driver probably needs to set the ECC type to ON DIE if the
-> variable ondie contains the supported attribute?!
+> > It doesn't have an 'apple,' prefix, so somewhere generic. Probably
+> > bindings/interrupt-controller/msi.txt. Or start an msi-controller.yaml
+> > schema as I'd rather not add things we can't validate, but I don't
+> > want to gate this on converting all the MSI bindings. Someone that
+> > understands MSI better than me should review too.
+>
+> Yes, I'd like to avoid converting all the MSI bindings, but I could
+> add an msi-controller.yaml file and use it in the appropriate
+> interrupt controller and pci host bridge bindings that have been
+> converted to yaml.
 
-You're right but I don't see any easy upstream-able solution here.
-Changing the behavior in the Xway driver would certainly break users,
-changing the behavior in the Micron driver would certainly break even
-more users. The root cause being an absence of proper description (the
-integration changed). Honestly I feel stuck, maybe you can try to
-register your device, if it fails, change the integration in the driver
-(to an ondie ecc engine) then retry?
+I didn't mean converting *all* MSI users, just what's in msi.txt and
+maybe the PCI MSI stuff. Just starting a msi-controller.yaml schema
+with the new properties is fine. Not that I wouldn't love for someone
+to do all of msi.txt.
 
-Thanks,
-Miquèl
+> > Another thing I thought of is the above is assuming the interrupt
+> > parent is the same as any interrupts for the node and that all MSIs go
+> > to 1 interrupt controller. Also, given Marc doesn't think using
+> > 'interrupts' is right, then using 'interrupt-parent' isn't either
+> > (though many of the examples below do just that). So maybe we need the
+> > phandle in there:
+> >
+> > msi-ranges = <&aic AIC_IRQ 704 IRQ_TYPE_EDGE_RISING 32>;
+>
+> That makes sense.
+>
+> > Other examples of this type of property include:
+> > al,msi-base-spi/al,msi-base-spi
+> > arm,msi-base-spi/arm,msi-num-spis
+> > mbi-ranges
+> > loongson,msi-base-vec/loongson,msi-num-vecs
+> > marvell,spi-ranges
+> > ti,interrupt-ranges?
+> >
+> > We should make sure msi-ranges works for all of these cases at least
+> > even if we can't change them.
+>
+> I think this scheme would work for all of these although it isn't
+> entirely clear to me whether ti,interrupt-ranges is about just MSIs or
+> if it also maps some other kind of interrupts.
+>
+> marvell,spi-ranges is an interesting one since it typically specifies
+> two ranges of 64 MSIs.  But that's something your proposal addresses
+> just fine.  I suppose we will provide a phandle for the parent
+> interrupt controller for each individual range?
+
+Right.
+
+Rob
