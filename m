@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3B33F4E28
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6708A3F4E25
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhHWQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:17:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229667AbhHWQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:17:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0724613D2;
-        Mon, 23 Aug 2021 16:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629735434;
-        bh=gh23DwG5/x4c4F1O5I7aJHgigmYmMs61WqC4Xp5rDqw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rz/u91l07tl7ws78s8KJN6vglg01dhY2Om1r3cF/WBXW6W+0fYhv2ZY9fYpiEm7ca
-         AyjjdWua8NicjsQ41RbddswSXOQRR+tOz9W0xrMJtpbYB7Tc5VUkOOBYruCbK3LGyl
-         +7G4jMWDXT5KVXBcsYwjKOP1rVxLKTy+2zT270TfL7kl71V7Vsgppk0+Amaf2q7zIs
-         I0PNfYx0NSTAKP0idzOiXfglccTLFK2f+MQiIH4DzfgoYGYvqVgmXfoCN+gOzYq36m
-         dl2kuF2wR3FxQSXGK58kv/VWPsWvQWOVZWIENU1CzYYMxO8QeAYw+7QDw9cB5ksNZm
-         n+pGdBbUW+Q/g==
-From:   Alexey Gladkov <legion@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>
-Cc:     Linux Containers <containers@lists.linux.dev>,
-        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
-Subject: [PATCH v1] ucounts: Increase ucounts reference counter before the security hook
-Date:   Mon, 23 Aug 2021 18:16:33 +0200
-Message-Id: <97433b1742c3331f02ad92de5a4f07d673c90613.1629735352.git.legion@kernel.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <000000000000b1f4d305c9ef72ad@google.com>
-References: <000000000000b1f4d305c9ef72ad@google.com>
+        id S229977AbhHWQRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhHWQRl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:17:41 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420F6C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:16:58 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id c4so10441324plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ryhD7Cthvbr45hQrpnqITGrpB6V3gOLxyGixZ7GwrfQ=;
+        b=Y/VkN+1gxsoSe3hsQkEe6PMVj7mm2IHbg36U1kjpignPshE6jeCwDWaJ2eGVOcy7fo
+         g7HYe8UWQTY8A0vodGIdznQPx5HKdAr+AG1tkba7z+zr6NlXwNJ6puA6ZimMj4O5i72w
+         p55fh+Dh7cRtGdX/l8acD/lrMu4AYKWyTqbG1IRPB2uGF4IFb5KA+coz0LB2DMNzGiq4
+         YQc6WOXOeRmaSygsObdne7yJZmDvXPV7ZZnNUgDcxlvHF4zwoHNUE4bfnQunQQNH3iEM
+         XXBxAwCro3B+wx1+YOs4XTXhOJQQEc4FO1kckqijf+W2SrFQGXSbepi/Zo5z6lM8Ak4I
+         GicQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ryhD7Cthvbr45hQrpnqITGrpB6V3gOLxyGixZ7GwrfQ=;
+        b=O3F138Nc/Hl1OGVgjP3X/s4YWY/ftedozFzlgdmaRslKUelUCnxhskoj2HN0LmC0PI
+         nk7Zj8DWUF5vr7KGangiWpNTpfMttMuq07vkSRpYYraS7G7Yk2tyXnU1TaZmDIkvN3Hy
+         CIOWoY442HgBKV7/3QXSg7dItarUW571ctlUL8ZJYbpP6JvLT5okH+BasA8CMVEFVK6T
+         lTk70vH77qWHg0WknGBk4h+tOpdWcjUXwpuBHfINHpyTtgtHGrHDDnsRoGoVV84BTefQ
+         LlbGRLmbBz5jwzkGkr6K3gYm5sZdar4q/oYMzbZDFSXMLhWBtfWiZygbnNXE64hEniK5
+         SMHA==
+X-Gm-Message-State: AOAM5318n6oo4Jc0p0kM7iioUEsoeXEZCsQztxwY7foNr6Y1Ch+V4Qkw
+        /rzTZJTeXnCT5JW76ovC2sSIVE9SDGWDtQ==
+X-Google-Smtp-Source: ABdhPJzv654+gSOvsBhG6JLFQHFEeDZqCyH0hXgt9M8TwxOdfjcH9xRvORZYmiN8Q7XjIgNcrkTbBw==
+X-Received: by 2002:a17:90a:12ca:: with SMTP id b10mr7399333pjg.180.1629735417434;
+        Mon, 23 Aug 2021 09:16:57 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b14sm16201529pfo.76.2021.08.23.09.16.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 09:16:56 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 16:16:51 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, kvm@vger.kernel.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>
+Subject: Re: [PATCH] kvm/x86: Fix PT "host mode"
+Message-ID: <YSPJ8/PgcFRnp4N9@google.com>
+References: <20210823134239.45402-1-alexander.shishkin@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823134239.45402-1-alexander.shishkin@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to increment the ucounts reference counter befor security_prepare_creds()
-because this function may fail and abort_creds() will try to decrement
-this reference.
+On Mon, Aug 23, 2021, Alexander Shishkin wrote:
+> Regardless of the "pt_mode", the kvm driver installs its interrupt handler
+> for Intel PT, which always overrides the native handler, causing data loss
+> inside kvm guests, while we're expecting to trace them.
+> 
+> Fix this by only installing kvm's perf_guest_cbs if pt_mode is set to
+> guest tracing.
 
-[   96.465056][ T8641] FAULT_INJECTION: forcing a failure.
-[   96.465056][ T8641] name fail_page_alloc, interval 1, probability 0, space 0, times 0
-[   96.478453][ T8641] CPU: 1 PID: 8641 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
-[   96.487215][ T8641] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-[   96.497254][ T8641] Call Trace:
-[   96.500517][ T8641]  dump_stack_lvl+0x1d3/0x29f
-[   96.505758][ T8641]  ? show_regs_print_info+0x12/0x12
-[   96.510944][ T8641]  ? log_buf_vmcoreinfo_setup+0x498/0x498
-[   96.516652][ T8641]  should_fail+0x384/0x4b0
-[   96.521141][ T8641]  prepare_alloc_pages+0x1d1/0x5a0
-[   96.526236][ T8641]  __alloc_pages+0x14d/0x5f0
-[   96.530808][ T8641]  ? __rmqueue_pcplist+0x2030/0x2030
-[   96.536073][ T8641]  ? lockdep_hardirqs_on_prepare+0x3e2/0x750
-[   96.542056][ T8641]  ? alloc_pages+0x3f3/0x500
-[   96.546635][ T8641]  allocate_slab+0xf1/0x540
-[   96.551120][ T8641]  ___slab_alloc+0x1cf/0x350
-[   96.555689][ T8641]  ? kzalloc+0x1d/0x30
-[   96.559740][ T8641]  __kmalloc+0x2e7/0x390
-[   96.563980][ T8641]  ? kzalloc+0x1d/0x30
-[   96.568029][ T8641]  kzalloc+0x1d/0x30
-[   96.571903][ T8641]  security_prepare_creds+0x46/0x220
-[   96.577174][ T8641]  prepare_creds+0x411/0x640
-[   96.581747][ T8641]  __sys_setfsuid+0xe2/0x3a0
-[   96.586333][ T8641]  do_syscall_64+0x3d/0xb0
-[   96.590739][ T8641]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   96.596611][ T8641] RIP: 0033:0x445a69
-[   96.600483][ T8641] Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-[   96.620152][ T8641] RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 000000000000007a
-[   96.628543][ T8641] RAX: ffffffffffffffda RBX: 00000000004ca4c8 RCX: 0000000000445a69
-[   96.636600][ T8641] RDX: 0000000000000010 RSI: 00007f10541732f0 RDI: 0000000000000000
-[   96.644550][ T8641] RBP: 00000000004ca4c0 R08: 0000000000000001 R09: 0000000000000000
-[   96.652500][ T8641] R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca4cc
-[   96.660631][ T8641] R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
+Uh, regardless of the correctness of such a change (spoiler alert), making an
+enormous leap from "one thing is wrong" to "nuke it all!" needs way more
+justfication/explanation.  Or more realistically, such a leap should be a good
+indication that the proposed change is not correct.
 
-Fixes: 905ae01c4ae2 ("Add a reference to ucounts for each cred")
-Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- kernel/cred.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Fixes: ff9d07a0e7ce7 ("KVM: Implement perf callbacks for guest sampling")
 
-diff --git a/kernel/cred.c b/kernel/cred.c
-index e6fd2b3fc31f..f784e08c2fbd 100644
---- a/kernel/cred.c
-+++ b/kernel/cred.c
-@@ -286,13 +286,13 @@ struct cred *prepare_creds(void)
- 	new->security = NULL;
- #endif
- 
--	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
--		goto error;
--
- 	new->ucounts = get_ucounts(new->ucounts);
- 	if (!new->ucounts)
- 		goto error;
- 
-+	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
-+		goto error;
-+
- 	validate_creds(new);
- 	return new;
- 
-@@ -753,13 +753,13 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
- #ifdef CONFIG_SECURITY
- 	new->security = NULL;
- #endif
--	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
--		goto error;
--
- 	new->ucounts = get_ucounts(new->ucounts);
- 	if (!new->ucounts)
- 		goto error;
- 
-+	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
-+		goto error;
-+
- 	put_cred(old);
- 	validate_creds(new);
- 	return new;
--- 
-2.32.0
+This should be another clue that the fix isn't correct.  That patch is from 2010,
+Intel PT was announced in 2013 and merged in 2019.
 
+> Reported-by: Artem Kashkanov <artem.kashkanov@intel.com>
+> Tested-by: Artem Kashkanov <artem.kashkanov@intel.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 +
+>  arch/x86/kvm/vmx/vmx.c          |  6 ++++++
+>  arch/x86/kvm/x86.c              | 10 ++++++++--
+>  3 files changed, 15 insertions(+), 2 deletions(-)
+> 
+
+...
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9b6bca616929..3ba0001e7388 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -268,6 +268,8 @@ static struct kmem_cache *x86_fpu_cache;
+>  
+>  static struct kmem_cache *x86_emulator_cache;
+>  
+> +static int __read_mostly intel_pt_enabled;
+> +
+>  /*
+>   * When called, it means the previous get/set msr reached an invalid msr.
+>   * Return true if we want to ignore/silent this failed msr access.
+> @@ -8194,7 +8196,10 @@ int kvm_arch_init(void *opaque)
+>  
+>  	kvm_timer_init();
+>  
+> -	perf_register_guest_info_callbacks(&kvm_guest_cbs);
+> +	if (ops->intel_pt_enabled && ops->intel_pt_enabled()) r
+
+This is not remotely correct.  vmx.c's "pt_mode", which is queried via this path,
+is modified by hardware_setup(), a.k.a. kvm_x86_ops.hardware_setup(), which runs
+_after_ this code.  And as alluded to above, these are generic perf callbacks,
+installing them if and only if Intel PT is enabled in a specific mode completely
+breaks "regular" perf.
+
+I'll post a small series, there's a bit of code massage needed to fix this
+properly.  The PMI handler can also be optimized to avoid a retpoline when PT is
+not exposed to the guest.
+
+> +		perf_register_guest_info_callbacks(&kvm_guest_cbs);
+> +		intel_pt_enabled = 1;
+> +	}
+>  
+>  	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+>  		host_xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+> @@ -8229,7 +8234,8 @@ void kvm_arch_exit(void)
+>  		clear_hv_tscchange_cb();
+>  #endif
+>  	kvm_lapic_exit();
+> -	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
+> +	if (intel_pt_enabled)
+> +		perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
+>  
+>  	if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC))
+>  		cpufreq_unregister_notifier(&kvmclock_cpufreq_notifier_block,
+> -- 
+> 2.32.0
+> 
