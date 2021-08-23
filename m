@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4D83F4408
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC873F440D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbhHWD5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 23:57:35 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:8920 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232866AbhHWD5e (ORCPT
+        id S229682AbhHWECA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 00:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhHWEB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 23:57:34 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GtJGy4ljtz8t9b;
-        Mon, 23 Aug 2021 11:52:42 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 23 Aug 2021 11:56:49 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 23 Aug
- 2021 11:56:49 +0800
-Subject: Re: [PATCH net-next v2 2/2] page_pool: optimize the cpu sync
- operation when DMA mapping
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hkallweit1@gmail.com>
-References: <1629442611-61547-1-git-send-email-linyunsheng@huawei.com>
- <1629442611-61547-3-git-send-email-linyunsheng@huawei.com>
- <YR94YYRv2qpQtdSZ@Iliass-MBP>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <16468e57-49d8-0a23-0058-c920af99d74a@huawei.com>
-Date:   Mon, 23 Aug 2021 11:56:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 23 Aug 2021 00:01:59 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CB5C061575;
+        Sun, 22 Aug 2021 21:01:17 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d9so12752948qty.12;
+        Sun, 22 Aug 2021 21:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aRgamPKGb4YrEkVwlKVeiTkelYnJ/WUCUxASVTfMczY=;
+        b=WAEAJArmhfElY+V1GA3EbQLLmeW3xGij0Gr7OkgaVxIvoIeenqT4qy2ql7qzg91GDA
+         UQYmpYYvWku2Wde9wHp2iWMUFHKgfVW0iDI2P6siCxxhvQ/k+PKjrp5RU4FOol2rq7Yg
+         ed55tzV+cojz++ugPijAM/qJgYlK24fLI77OQpdLqxwgpLoQD9v0MCr2lsvmbZy9IlCs
+         qR+VHXGZQeLVmiKmnZzgUyvyIrjONqDBwEx0dYdMxFLSJMAVdLrF6XD6SpHGYfACYq81
+         yMb5Zl6bsMPC+dbOvunV2xzj7SU2Ermv4dxmN8OtXZT1o3CBoifn9dPwPFYwuY48SFZi
+         s71Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aRgamPKGb4YrEkVwlKVeiTkelYnJ/WUCUxASVTfMczY=;
+        b=FHa9wqv8fPKbtdFOh4DuVQTrHJ5sw9bogNN9TTotVJuPN9I/Ng2YFgMh6Ha0RagtNu
+         SBrVWTCLcdsp6koSjpfYrpjgfE7OxAFiQkyXCFIzRl+bgU6Yc9NklL8fn3JO7xOJf3iV
+         0p3mzKqOgneZfR+H2HZUB7A5Kk3VvJFvntFnF/vgD8DAVjzvjTlsIjZQ1z3bRdcv0fZr
+         AytzNKqxYesDa9fLf8WBiSsy53QrtVlX0wKryh3kV2YZ7FPr4H0UhDYldhZpghOnphm0
+         P/gEAYD1OtMLCFohIH6s7KW6s+YB2nUt9nipNZrA0iWUYZYh44md7TQxCknzeR/lMNLi
+         vI+w==
+X-Gm-Message-State: AOAM532EuVhFMUvfqTnvW2SgkWUp2tAEvA0PAKD+iewzOziFxwbEP2fG
+        fxcdpZdVYWEAUXFJ5wLdiFU=
+X-Google-Smtp-Source: ABdhPJxfVF9gp7FgIBNpZRCNtTxge23zeA634PIZbfrSAQu15T/A8m+VJbARSW1rEpMXWxu+q71fow==
+X-Received: by 2002:ac8:534c:: with SMTP id d12mr16340333qto.221.1629691276705;
+        Sun, 22 Aug 2021 21:01:16 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id t26sm6842572qkm.0.2021.08.22.21.01.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Aug 2021 21:01:16 -0700 (PDT)
+Subject: Re: [PATCH] of: Don't allow __of_attached_node_sysfs() without
+ CONFIG_SYSFS
+To:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     robh+dt@kernel.org, kernel-team@android.com
+References: <20210820144722.169226-1-maz@kernel.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <a67743f9-869b-28df-d714-db15da4ebe06@gmail.com>
+Date:   Sun, 22 Aug 2021 23:01:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YR94YYRv2qpQtdSZ@Iliass-MBP>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210820144722.169226-1-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/20 17:39, Ilias Apalodimas wrote:
-> On Fri, Aug 20, 2021 at 02:56:51PM +0800, Yunsheng Lin wrote:
->> If the DMA_ATTR_SKIP_CPU_SYNC is not set, cpu syncing is
->> also done in dma_map_page_attrs(), so set the attrs according
->> to pool->p.flags to avoid calling cpu sync function again.
+Hi Marc,
+
+On 8/20/21 9:47 AM, Marc Zyngier wrote:
+> Trying to boot without SYSFS, but with OF_DYNAMIC quickly
+> results in a crash:
 > 
-> Isn't DMA_ATTR_SKIP_CPU_SYNC checked within dma_map_page_attrs() anyway?
+> [    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
+> [...]
+> [    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
+> [    0.105810] Hardware name: linux,dummy-virt (DT)
+> [    0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
+> [    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
+> [    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
+> [...]
+> [    0.134087] Call trace:
+> [    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
+> [    0.136054]  safe_name+0x4c/0xd0
+> [    0.136994]  __of_attach_node_sysfs+0xf8/0x124
+> [    0.138287]  of_core_init+0x90/0xfc
+> [    0.139296]  driver_init+0x30/0x4c
+> [    0.140283]  kernel_init_freeable+0x160/0x1b8
+> [    0.141543]  kernel_init+0x30/0x140
+> [    0.142561]  ret_from_fork+0x10/0x18
+> 
+> While not having sysfs isn't a very common option these days,
+> it is still expected that such configuration would work.
+> 
+> Paper over it by bailing out from __of_attach_node_sysfs() if
+> CONFIG_SYSFS isn't enabled.
 
-Yes, the checking in dma_map_page_attrs() should save us from
-calling dma_sync_single_for_device() again if we set the attrs
-according to "pool->p.flags & PP_FLAG_DMA_SYNC_DEV".
+CONFIG_SYSFS should be automatically selected when CONFIG_OF_DYNAMIC
+is enabled, and it should not be possible to disable CONFIG_SYSFS
+in this case.
 
-As dma_sync_single_for_device() is EXPORT_SYMBOL()'ed, and
-should be a no-op for dma coherent device, so there may be a
-function calling overhead for dma coherent device, letting
-dma_map_page_attrs() handling the sync seems to avoid the stack
-pushing/poping overhead:
+Can you send your .config?
+What ARCH did you build the kernel with?
 
-https://elixir.bootlin.com/linux/latest/source/kernel/dma/direct.h#L104
+Thanks,
 
-The one thing I am not sure about is that the pool->p.offset
-and pool->p.max_len are used to decide the sync range before this
-patch, while the sync range is the same as the map range when doing
-the sync in dma_map_page_attrs().
+Frank
 
-I assumed the above is not a issue? only sync more than we need?
-and it won't hurt the performance?
 
 > 
-> Regards
-> /Ilias
->>
->> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->> ---
->>  net/core/page_pool.c | 9 +++++----
->>  1 file changed, 5 insertions(+), 4 deletions(-)
->>
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 1a69784..3df5554 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
->> @@ -191,8 +191,12 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
->>  
->>  static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>  {
->> +	unsigned long attrs = DMA_ATTR_SKIP_CPU_SYNC;
->>  	dma_addr_t dma;
->>  
->> +	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->> +		attrs = 0;
->> +
->>  	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
->>  	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
->>  	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
->> @@ -200,15 +204,12 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
->>  	 */
->>  	dma = dma_map_page_attrs(pool->p.dev, page, 0,
->>  				 (PAGE_SIZE << pool->p.order),
->> -				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
->> +				 pool->p.dma_dir, attrs);
->>  	if (dma_mapping_error(pool->p.dev, dma))
->>  		return false;
->>  
->>  	page_pool_set_dma_addr(page, dma);
->>  
->> -	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
->> -		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
->> -
->>  	return true;
->>  }
->>  
->> -- 
->> 2.7.4
->>
-> .
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/of/kobj.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
+> index a32e60b024b8..6675b5e56960 100644
+> --- a/drivers/of/kobj.c
+> +++ b/drivers/of/kobj.c
+> @@ -119,7 +119,7 @@ int __of_attach_node_sysfs(struct device_node *np)
+>  	struct property *pp;
+>  	int rc;
+>  
+> -	if (!of_kset)
+> +	if (!IS_ENABLED(CONFIG_SYSFS) || !of_kset)
+>  		return 0;
+>  
+>  	np->kobj.kset = of_kset;
+> 
+
