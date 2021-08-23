@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B89C3F434E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017E33F4352
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbhHWCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 22:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
+        id S234821AbhHWCKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 22:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhHWCIr (ORCPT
+        with ESMTP id S234740AbhHWCKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 22:08:47 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87527C061575;
-        Sun, 22 Aug 2021 19:08:05 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id e14so17707794qkg.3;
-        Sun, 22 Aug 2021 19:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t2mLFYPvbRhohmCBCWrqGpAuTb8PU5rBQSIDrq8BWWw=;
-        b=p95B/mf6bUGCvAcp+15LgkVJxo0OfOIVUn0oxzvXEuKsxKcY8X7OYr9ppqBmqC2F5c
-         bHWq0uuDsS3kSXlRjEqw2RDDAiyWm+Y5D7d0b1ZIqlR4cjMx+osa1pRFYslf5j72n6Ep
-         uq7J8FzcE2WVBjtLAS4PC0ZgV+z/lJ1qfEPIqOmONj74zs+lSowpst1aWI9U6Ip2MaaB
-         4oEBo5Lbb139oCylzNxSO5jzxkv3FpQCEihe3m/azH6yNP9Vk8z1OhTXtarl+8cW+HXv
-         q+xYi87kiXpU/lpC8QwX/jbt9LVGOxwnBh28wBghu1aIFU+y6yBqGR1lLXDZPfSjFvA3
-         DryQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t2mLFYPvbRhohmCBCWrqGpAuTb8PU5rBQSIDrq8BWWw=;
-        b=OZwTLdZ2faZTAK6BTFrMX/Ve+ExNmkg6qeIF89TxcrPSHlxJz38IQxnnI4Pa5ZMTHq
-         ERNYq4ylHLrNpq8LmjotPO9BuHnQMeyRMrkefLa5PS0+UAzj7UCYMNB2b+hm/Ufrn3OX
-         CKfM94MHBgv8PBFzhi/CWQbJHQzoV+wO+6HKOjYktryR739o/N6//yuGLbb5/aK2IRJ9
-         07pFMZLAmCbLqHoS+PhgFVv8JKMW6IBd46//5B/cCrNfzLKmq+HzvalaQSlEXdD0rc5F
-         tAcKg1CT0EnP78xDieExkm8Kpov6AtJEr2vanRoKKh9+AWFziamcV0Nuo8ZqgqQBuyfV
-         CjQQ==
-X-Gm-Message-State: AOAM532pUCuAn/5f0xL3Gx8GgrRdXjoJRWzhkxTZPBbmdmb+JbCLUcbv
-        4gjnZKZbveuHZKB97ZLaJ9JMCEwxNJA=
-X-Google-Smtp-Source: ABdhPJy+jjiT5kHXPURgECyBr2q52UJ4tKTQ5JVyztG7RRMijRZREk/L/Gbagv03bJeHDU8gJKs9Vg==
-X-Received: by 2002:ae9:de06:: with SMTP id s6mr7226321qkf.489.1629684484764;
-        Sun, 22 Aug 2021 19:08:04 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id t26sm6688070qkm.0.2021.08.22.19.08.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 19:08:04 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] arch/sparc/mm/fault_64.c: fix bugon.cocci warnings
-Date:   Sun, 22 Aug 2021 19:07:56 -0700
-Message-Id: <20210823020756.44246-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Sun, 22 Aug 2021 22:10:18 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2851AC061575;
+        Sun, 22 Aug 2021 19:09:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtFzw0bRnz9sWS;
+        Mon, 23 Aug 2021 12:09:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629684572;
+        bh=urcvtOto4Q3/VgDYNB5LTZdJMwfL4QJ4Fqs3AUcgWKw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Gv8GprYdjulnUgV/839nSb3mHVK0bPVBkZ+legtLKQ7doctvcVI0qYim+epkKO3va
+         eeclEvbZ03UkbEbXLwrnxwbKf8VR1NGgff9i4l1S58o82Ri1oAeWFpTRMGQ5mV9IIS
+         PoUIibNWBwwMJpA3VJdid/k9c4o4UmNuxaPZb8UGiSFnOMjhwjFRRPgDtspI0tPaVP
+         udFbYVQLeb30ysTAg7YCWr87/tWNNAqlfq/w67iUW8BiK+vQVybBV/xRdkJkumyZjY
+         FFNa/WjXHj7Ly+azdmB12+GURtKdSRFO90/s5/MgTeNZoMhPsS6shwQAABeU+OzALH
+         xJeub2vx2ynPA==
+Date:   Mon, 23 Aug 2021 12:09:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210823120929.7c6f7a4f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/+ylmqHP=i0YfySSqFQ/x9wl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+--Sig_/+ylmqHP=i0YfySSqFQ/x9wl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Use BUG_ON instead of a if condition followed by BUG.
+Hi all,
 
-Generated by: scripts/coccinelle/misc/bugon.cocci
+After merging the net-next tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- arch/sparc/mm/fault_64.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+drivers/net/ethernet/broadcom/bnx2.c: In function 'bnx2_read_vpd_fw_ver':
+drivers/net/ethernet/broadcom/bnx2.c:8055:6: error: implicit declaration of=
+ function 'pci_vpd_find_ro_info_keyword'; did you mean 'pci_vpd_find_info_k=
+eyword'? [-Werror=3Dimplicit-function-declaration]
+ 8055 |  j =3D pci_vpd_find_ro_info_keyword(data, BNX2_VPD_LEN,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |      pci_vpd_find_info_keyword
 
-diff --git a/arch/sparc/mm/fault_64.c b/arch/sparc/mm/fault_64.c
-index 9a9652a..672f11b 100644
---- a/arch/sparc/mm/fault_64.c
-+++ b/arch/sparc/mm/fault_64.c
-@@ -280,9 +280,8 @@ asmlinkage void __kprobes do_sparc64_fault(struct pt_regs *regs)
- 	si_code = SEGV_MAPERR;
- 	address = current_thread_info()->fault_address;
- 
--	if ((fault_code & FAULT_CODE_ITLB) &&
--	    (fault_code & FAULT_CODE_DTLB))
--		BUG();
-+	BUG_ON((fault_code & FAULT_CODE_ITLB) &&
-+		(fault_code & FAULT_CODE_DTLB));
- 
- 	if (test_thread_flag(TIF_32BIT)) {
- 		if (!(regs->tstate & TSTATE_PRIV)) {
--- 
-1.8.3.1
+Caused by commit
 
+  ddc122aac91f ("bnx2: Search VPD with pci_vpd_find_ro_info_keyword()")
 
+I have used the net-next tree from next-20210820 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+ylmqHP=i0YfySSqFQ/x9wl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjA1kACgkQAVBC80lX
+0GzFYggAh3Kl/lc7SKIOtE6GnkyWKWSvTURaEdcWh5igZdaecflACzwMGNbjXFjE
+e4Z5vgER8VbwjFyD1iR9RwZqQsPysBYmu5bIB4Yes8/TGMQvrMsO1+rdltsuRJU5
+KUv7p7vwKW9EPPnPmvZEao7zzF7DyLs7Yc8Z5wGCgzzDZitcw13RjxuVB2pJuJqe
+saIlSrQWznT4SgzcXvW2AuAfVP+z9wMTqhCvcxY0yyHKMmMNeSH/aTsHFEQlFn5V
+GIo/aa5/xQI5kc2I24k2yKV/9lMZuNtyNdB/bDEMOgVWWs0r4lueCLhRxbeIyiaH
+Nj7ymn9iHfEQ91Ia8pOKkywdqIJy3g==
+=JIN7
+-----END PGP SIGNATURE-----
+
+--Sig_/+ylmqHP=i0YfySSqFQ/x9wl--
