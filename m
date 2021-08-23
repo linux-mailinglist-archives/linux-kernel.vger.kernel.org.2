@@ -2,190 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385FB3F48D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C073F48D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbhHWKq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:46:28 -0400
-Received: from mail-bn8nam11on2076.outbound.protection.outlook.com ([40.107.236.76]:12384
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235104AbhHWKq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:46:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SrxLMcvfryZkgeSBKaWoj2YzU4Dqa66NSyOl9X2z2V24S5nw8gDfCzCe84eQAx5WpAPZznwjzykm9LAn35ci4+dy865TqgeD09Jed0cyFgZD6aXstK5c1pl9+OYL8SwmapXBxMW86R/xQU077xvDhJrEcVWUE/9o+BN/ZYsJLqul+aIbsdSLjggv/G9Snd/ABW44qPy7v3h9g7K3VkIKy2ZGwtmSXPyhPrsoCTWnozrEQfjPz2HqfzhZN1cQH8QnnMq9/rr9a0V+y5yd7m60HP+GXwML7gAQmKVaepBrx/mOB9R5++HlVEMLcKqLj2Mk7BpN4SqbJDr4nx7o8sih+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yp7Kufuo+iubLawDHuwfPE7Z1vQYJwVdF+U09+bB/PE=;
- b=AK04aGUDgBIknMfQ/MLrCCGaDq5Da+fq0qUN/UdFuxQn2XJPdVCUkbWqTqN3WJ0WD+jrUHmWKMqMzjz+V9zs8t+FMbiqvh9MGmSnDqTdpO0hNk/d9b9JqMRvEXvjqlHfELsHgEnn1+G4OF/8jYWCnCM2ueNn5v4lmsfHqFgMFuXEyGrOn2BeYUMZhJCGdyUyTn2T6Y3rCmsh2SHf0bJit+o4eiQZyMiTIQlkLidopW21JTyG9+Gk4KxlOgI2BkpHlyXoqEQhJvM5jWxoI4IFmpefUovYuNYnyx7ODp2rzieECYUqufYk7FgT0TeeYG06zc6zLGs3X4TC16pfBAeLGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yp7Kufuo+iubLawDHuwfPE7Z1vQYJwVdF+U09+bB/PE=;
- b=OlmZM0zINSgbAcf2hDuKLz+tedFo+LLQ7y1Lzw0DCn89C0SDsJoTREFBF95IkfrhBgfU8ETmsL7poACAZPa6D0Ftkdq1IfOZufq0ruqp4uWdNRMxXfxGozwMS1o7The9vOIPTz9yL606yGB+pxosBvwM2wwjeKAsotwUZdlTJvaB0ui8l1kbZ1rSuIRk99Mf8ajouX8H2++/64o1aLndpO/JWpnommVmDaAxFtNAIPWMk5HJIL+QohfDyHiJrgWIcQc3vrjUWqX0Drue4AWjZBsLMvxWIDm2zhPPQcpN9XtxkR6BEr8frkD01a1ogqJ8hYKqjpgA6D2Fv+dTM5efoA==
-Received: from MWHPR21CA0029.namprd21.prod.outlook.com (2603:10b6:300:129::15)
- by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Mon, 23 Aug
- 2021 10:45:36 +0000
-Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:129:cafe::f) by MWHPR21CA0029.outlook.office365.com
- (2603:10b6:300:129::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.1 via Frontend
- Transport; Mon, 23 Aug 2021 10:45:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 10:45:36 +0000
-Received: from [172.27.13.55] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Aug
- 2021 10:45:34 +0000
-Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config
- space
-To:     Yongji Xie <xieyongji@bytedance.com>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210809101609.148-1-xieyongji@bytedance.com>
- <e6ab104e-a18b-3f17-9cd8-6a6b689b56b4@nvidia.com>
- <CACycT3sNRRBrSTJOUr=POc-+BOAgfT7+qgFE2BLBTGJ30cZVsQ@mail.gmail.com>
- <dc8e7f6d-9aa6-58c6-97f7-c30391aeac5d@nvidia.com>
- <CACycT3v83sVvUWxZ-+SDyeXMPiYd0zi5mtmg8AkXYgVLxVpTvA@mail.gmail.com>
- <06af4897-7339-fca7-bdd9-e0f9c2c6195b@nvidia.com>
- <CACycT3usFyVyBuJBz2n5TRPveKKUXTqRDMo76VkGu7NCowNmvg@mail.gmail.com>
- <6d6154d7-7947-68be-4e1e-4c1d0a94b2bc@nvidia.com>
- <CACycT3sxeUQa7+QA0CAx47Y3tVHKigcQEfEHWi04aWA5xbgA9A@mail.gmail.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <7f0181d7-ff5c-0346-66ee-1de3ed23f5dd@nvidia.com>
-Date:   Mon, 23 Aug 2021 13:45:31 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236064AbhHWKrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:47:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:51554 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234155AbhHWKrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:47:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6D1F1042;
+        Mon, 23 Aug 2021 03:46:24 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.42.85])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28A333F66F;
+        Mon, 23 Aug 2021 03:46:23 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: [PATCH RESEND v3] ACPI: Add memory semantics to acpi_os_map_memory()
+Date:   Mon, 23 Aug 2021 11:46:18 +0100
+Message-Id: <20210823104618.14552-1-lorenzo.pieralisi@arm.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
+References: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CACycT3sxeUQa7+QA0CAx47Y3tVHKigcQEfEHWi04aWA5xbgA9A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1833081c-762b-4957-6026-08d966232440
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4041:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB404171BE98128030D638A972DEC49@DM6PR12MB4041.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: htpF3+latoclk+G/sMF0LCfgJxJQIEWB0gh7AWUadsfffLzCTM7l8+Ed/oa8/fF+7NAsa1egW6PoZfM8MoR9SDcBQsaJ22nfCorI2vsxThBLBdJKDOf26oRNyFR4cH/fWYEsXt4yp6aWBNXKU+oWsC1btI3CNP0YEpxSZfo/zc3ewfANiZfas4mJHmCbZPoHz8NTZm5oKq7J2zSmh6oiDTUDYIu6ccO/crezzEi8fSRWNVChZtLTe4i+NfALJVTIGEz9s0hqQULJKT+IDRrvDfrsdmRhMq6n1lOFzFtWpp/qYcExFfD/IG04glLq306FrPaSrspTJCLMUHjhQRJotXD2/+LerfP9KoRbH8x0Vq07+MD2KayaBYCotZrlp1f2gX7/CCAS125j2DRbY8BOjcLewiS6adlq8ztqlXa4NiUMcVTBWesYZzGbfr3FyNHvzEaddwpkm5T5Hodu/wKv5RvkWdDsplk1Z+RFtUSOqqKfMqKT30SG10v8GovmY3jfxiGS/7f9H8xrJ1rOg3QDLnMwXAjXG/BSAQE1bZSLKz0fnA+wbn+rmissPS242tUDVvkaYOoR9Tyw4Z+dleY288Apm04VMwrAsszxxKNYxHZoW8xH5bGE36BOw0cr45J7h/8+H8A07rC5NwANIy+Ey0vm+kZoDiPNg292U7Ud5eAbiXlWjWPZl1CQY9d42OH76CSjaM6ddsH4itgnaktkeoYa82TxDpimSDvsJxCyuNDXESOYKIaJ70D9E/pqGaOfu5Xx+YB3jYg++nrBPGo506EX8EjZvZAj+LQhN2Il/u0pv4dTU8A9jQ378UfevfcI
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(136003)(46966006)(36840700001)(478600001)(966005)(2906002)(83380400001)(336012)(2616005)(5660300002)(36756003)(36860700001)(8676002)(36906005)(316002)(31686004)(8936002)(426003)(7636003)(53546011)(31696002)(54906003)(6666004)(4326008)(82740400003)(47076005)(16576012)(6916009)(70206006)(16526019)(356005)(82310400003)(26005)(70586007)(86362001)(186003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 10:45:36.5044
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1833081c-762b-4957-6026-08d966232440
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4041
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The memory attributes attached to memory regions depend on architecture
+specific mappings.
 
-On 8/23/2021 1:33 PM, Yongji Xie wrote:
-> On Mon, Aug 23, 2021 at 5:38 PM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
->>
->> On 8/23/2021 12:27 PM, Yongji Xie wrote:
->>> On Mon, Aug 23, 2021 at 5:04 PM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
->>>> On 8/23/2021 11:35 AM, Yongji Xie wrote:
->>>>> On Mon, Aug 23, 2021 at 4:07 PM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
->>>>>> On 8/23/2021 7:31 AM, Yongji Xie wrote:
->>>>>>> On Mon, Aug 23, 2021 at 7:17 AM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
->>>>>>>> On 8/9/2021 1:16 PM, Xie Yongji wrote:
->>>>>>>>> An untrusted device might presents an invalid block size
->>>>>>>>> in configuration space. This tries to add validation for it
->>>>>>>>> in the validate callback and clear the VIRTIO_BLK_F_BLK_SIZE
->>>>>>>>> feature bit if the value is out of the supported range.
->>>>>>>> This is not clear to me. What is untrusted device ? is it a buggy device ?
->>>>>>>>
->>>>>>> A buggy device, the devices in an encrypted VM, or a userspace device
->>>>>>> created by VDUSE [1].
->>>>>>>
->>>>>>> [1] https://lore.kernel.org/kvm/20210818120642.165-1-xieyongji@bytedance.com/
->>>>>> if it's a userspace device, why don't you fix its control path code
->>>>>> instead of adding workarounds in the kernel driver ?
->>>>>>
->>>>> VDUSE kernel module would not touch (be aware of) the device specific
->>>>> configuration space. It should be more reasonable to fix it in the
->>>>> device driver. There is also some existing interface (.validate()) for
->>>>> doing that.
->>>> who is emulating the device configuration space ?
->>>>
->>> A userspace daemon will initialize the device configuration space and
->>> pass the contents to the VDUSE kernel module. The VDUSE kernel module
->>> will handle the access of the config space from the virtio device
->>> driver, but it doesn't need to know the contents (although we can know
->>> that).
->> So you add a workaround in the guest kernel drivers instead of checking
->> these quirks in the hypervisor ?
->>
-> I didn't see any problem adding this validation in the device driver.
->
->> VDUSE kernel should enforce the security for the devices it
->> emulates/presents to the VM.
->>
-> I agree that the VDUSE kernel should enforce the security for the
-> emulated devices. But I still think the virtio device driver should
-> handle this case since nobody can make sure the device can always set
-> the correct value. Adding this validation would be helpful.
+For some memory regions, the attributes specified by firmware (eg
+uncached) are not sufficient to determine how a memory region should be
+mapped by an OS (for instance a region that is define as uncached in
+firmware can be mapped as Normal or Device memory on arm64) and
+therefore the OS must be given control on how to map the region to match
+the expected mapping behaviour (eg if a mapping is requested with memory
+semantics, it must allow unaligned accesses).
 
-It helpful if there is a justification for this.
+Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
+them into two separate code paths:
 
-In this case, no such HW device exist and the only device that can cause 
-this trouble today is user space VDUSE device that must be validated by 
-the emulation VDUSE kernel driver.
+acpi_os_memmap() -> memory semantics
+acpi_os_ioremap() -> MMIO semantics
 
-Otherwise, will can create 1000 commit like this in the virtio level 
-(for example for each feature for each virtio device).
+The split allows the architectural implementation back-ends to detect
+the default memory attributes required by the mapping in question
+(ie the mapping API defines the semantics memory vs MMIO) and map the
+memory accordingly.
 
->
->>>>> And regardless of userspace device, we still need to fix it for other cases.
->>>> which cases ? Do you know that there is a buggy HW we need to workaround ?
->>>>
->>> No, there isn't now. But this could be a potential attack surface if
->>> the host doesn't trust the device.
->> If the host doesn't trust a device, why it continues using it ?
->>
-> IIUC this is the case for the encrypted VMs.
+Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
+Tested-by: Hanjun Guo <guohanjun@huawei.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Hanjun Guo <guohanjun@huawei.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+---
+Resending with all lists CC'ed.
 
-what do you mean encrypted VM ?
+Patch series is a v3 of a previous version[2]:
 
-And how this small patch causes a VM to be 100% encryption supported ?
+v2->v3:
+	- Dropped first two-patches following LKML feedback[2]
+v1->v2
+	- Added patch 1 and 2 according to feedback received on[1]
 
->> Do you suggest we do these workarounds in all device drivers in the kernel ?
->>
-> Isn't it the driver's job to validate some unreasonable configuration?
+[1] https://lore.kernel.org/linux-acpi/20210726100026.12538-1-lorenzo.pieralisi@arm.com
+[2] https://lore.kernel.org/linux-acpi/20210802152359.12623-1-lorenzo.pieralisi@arm.com
 
-The check should be in different layer.
+ arch/arm64/include/asm/acpi.h |  3 +++
+ arch/arm64/kernel/acpi.c      | 19 ++++++++++++++++---
+ drivers/acpi/osl.c            | 23 ++++++++++++++++-------
+ include/acpi/acpi_io.h        |  8 ++++++++
+ 4 files changed, 43 insertions(+), 10 deletions(-)
 
-Virtio blk driver should not cover on some strange VDUSE stuff.
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index bd68e1b7f29f..7535dc7cc5aa 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -50,6 +50,9 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
+ #define acpi_os_ioremap acpi_os_ioremap
+ 
++void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
++#define acpi_os_memmap acpi_os_memmap
++
+ typedef u64 phys_cpuid_t;
+ #define PHYS_CPUID_INVALID INVALID_HWID
+ 
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+index f3851724fe35..1c9c2f7a1c04 100644
+--- a/arch/arm64/kernel/acpi.c
++++ b/arch/arm64/kernel/acpi.c
+@@ -273,7 +273,8 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
+ 	return __pgprot(PROT_DEVICE_nGnRnE);
+ }
+ 
+-void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
++static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
++				       acpi_size size, bool memory)
+ {
+ 	efi_memory_desc_t *md, *region = NULL;
+ 	pgprot_t prot;
+@@ -299,9 +300,11 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+ 	 * It is fine for AML to remap regions that are not represented in the
+ 	 * EFI memory map at all, as it only describes normal memory, and MMIO
+ 	 * regions that require a virtual mapping to make them accessible to
+-	 * the EFI runtime services.
++	 * the EFI runtime services. Determine the region default
++	 * attributes by checking the requested memory semantics.
+ 	 */
+-	prot = __pgprot(PROT_DEVICE_nGnRnE);
++	prot = memory ? __pgprot(PROT_NORMAL_NC) :
++			__pgprot(PROT_DEVICE_nGnRnE);
+ 	if (region) {
+ 		switch (region->type) {
+ 		case EFI_LOADER_CODE:
+@@ -361,6 +364,16 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
+ 	return __ioremap(phys, size, prot);
+ }
+ 
++void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
++{
++	return __acpi_os_ioremap(phys, size, false);
++}
++
++void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
++{
++	return __acpi_os_ioremap(phys, size, true);
++}
++
+ /*
+  * Claim Synchronous External Aborts as a firmware first notification.
+  *
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 45c5c0e45e33..a43f1521efe6 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -284,7 +284,8 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+ #define should_use_kmap(pfn)   page_is_ram(pfn)
+ #endif
+ 
+-static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
++static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
++			      bool memory)
+ {
+ 	unsigned long pfn;
+ 
+@@ -294,7 +295,8 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
+ 			return NULL;
+ 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
+ 	} else
+-		return acpi_os_ioremap(pg_off, pg_sz);
++		return memory ? acpi_os_memmap(pg_off, pg_sz) :
++				acpi_os_ioremap(pg_off, pg_sz);
+ }
+ 
+ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+@@ -309,9 +311,10 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+ }
+ 
+ /**
+- * acpi_os_map_iomem - Get a virtual address for a given physical address range.
++ * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
+  * @phys: Start of the physical address range to map.
+  * @size: Size of the physical address range to map.
++ * @memory: true if remapping memory, false if IO
+  *
+  * Look up the given physical address range in the list of existing ACPI memory
+  * mappings.  If found, get a reference to it and return a pointer to it (its
+@@ -321,8 +324,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
+  * During early init (when acpi_permanent_mmap has not been set yet) this
+  * routine simply calls __acpi_map_table() to get the job done.
+  */
+-void __iomem __ref
+-*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
++static void __iomem __ref
++*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
+ {
+ 	struct acpi_ioremap *map;
+ 	void __iomem *virt;
+@@ -353,7 +356,7 @@ void __iomem __ref
+ 
+ 	pg_off = round_down(phys, PAGE_SIZE);
+ 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
+-	virt = acpi_map(phys, size);
++	virt = acpi_map(phys, size, memory);
+ 	if (!virt) {
+ 		mutex_unlock(&acpi_ioremap_lock);
+ 		kfree(map);
+@@ -372,11 +375,17 @@ void __iomem __ref
+ 	mutex_unlock(&acpi_ioremap_lock);
+ 	return map->virt + (phys - map->phys);
+ }
++
++void __iomem *__ref
++acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
++{
++	return __acpi_os_map_iomem(phys, size, false);
++}
+ EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+ 
+ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+ {
+-	return (void *)acpi_os_map_iomem(phys, size);
++	return (void *)__acpi_os_map_iomem(phys, size, true);
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+ 
+diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+index 027faa8883aa..a0212e67d6f4 100644
+--- a/include/acpi/acpi_io.h
++++ b/include/acpi/acpi_io.h
+@@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+ }
+ #endif
+ 
++#ifndef acpi_os_memmap
++static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
++					    acpi_size size)
++{
++	return ioremap_cache(phys, size);
++}
++#endif
++
+ extern bool acpi_permanent_mmap;
+ 
+ void __iomem __ref
+-- 
+2.31.0
 
->
-> Thanks,
-> Yongji
