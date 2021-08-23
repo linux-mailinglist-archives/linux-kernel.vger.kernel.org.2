@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860A03F4F53
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC523F4F52
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhHWRRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbhHWRRI (ORCPT
+        id S232242AbhHWRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:17:21 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:42760 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231789AbhHWRRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:17:08 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EFDC061757;
-        Mon, 23 Aug 2021 10:16:25 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so330307wmh.1;
-        Mon, 23 Aug 2021 10:16:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hxfU4hWH4ciaa87KiutkqT0bdAg+UYy0+Bwkt7eXstw=;
-        b=DQE1rq5GI4duIJUWfHtryvxhKChz+3QryiGactvg2cIKNx15DUwvyFbBDVfkrwRqUw
-         aM3Zyxzsb7VeEiSpxV5RVa0Kh7hrkRV9k0ALfQSv+4IWETaamKl9gwMY6mVC9RKd42Mr
-         KjvN7NXAoZQNV/w8b40pHb9SCpy5zD1IFYguD4rOo2x3Km58NVhDYr7kehpmxeCI7c/O
-         PMzgN+8L3oRSeyTOpyjUZHrHN0Wp3jFqX1oujMQxVquK4uAA/VgL87JkUaewrZbiym1I
-         XZBnOjmDBXHy5B0p3yvv46Q9YuVFdKqNalssNVuXWYgQdzcJ3+84Cv3nkfDIRU7doTf2
-         fmnQ==
+        Mon, 23 Aug 2021 13:17:07 -0400
+Received: by mail-ed1-f52.google.com with SMTP id z19so2766556edi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:16:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hxfU4hWH4ciaa87KiutkqT0bdAg+UYy0+Bwkt7eXstw=;
-        b=lycJgF48YsvixPoR7cQo8lqmqf9HVK0E3MGVjypPPueVxHnzGuv4Fr1Qvme/uRAyfd
-         mq6LrFIbJ9k0p2SMfRQ+cdFMK8n0ahwAb9WyrmMWNbcuGHPpUvQ19tvhUfzenD8OS0P4
-         V23gXofAw/Hnj4LrqT2ePPqOyohDpYb/NR9npVT/8dHVnDhpQni/1J+OP0WHbx2kdkse
-         ZdSpm0ax4jsQM7wSNoXKzIUT6fIBwkDnUsRFWxYN5dzLySCntFeX0Nt/u2U5Kn1WFNDN
-         kkPJVvzzuMtBUrRXI5+VPkS7dk+WSkP2n26PM3/1BymlJI+Gu9yPau5dE0NmVbGJ80H2
-         Ogsg==
-X-Gm-Message-State: AOAM532U8ti67UgHfm3gmFO6GrNwn/vTDeeVbQ4zyHTopghqdYd4MMOz
-        37Ps8ocVTjPbzWHrPqP1iso=
-X-Google-Smtp-Source: ABdhPJyaBw8itjnEkV5Aq7qtJ2SkPIx3F7l1lqtxafvtQhPgSwh3eIDXaSbpzuadoGHj6Xg/HDQa0w==
-X-Received: by 2002:a7b:c442:: with SMTP id l2mr17567600wmi.131.1629738983809;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qUCyu2M+XnnIg56S9qGvy39oPESzj10FdrNHnuAxzuc=;
+        b=ICkv1qwXWCE/+QK5J79Odhh1gaDlTsDLwLwwx+3ZPuNnYgI5bfKrC6QkabPzNPco1a
+         oL9RfhRa2lfmHgMlIZE8jAm2RKXbu0R+SQAqjS1O/CyQSZaEdPNvvxWCFS4VLESEJ02B
+         Mtx7CBM4n4Bx9iruKoose1oCZEHwXEaW2DuPYCPn+pMVVDnMdyWO0OAeZfMuHXO3kYsn
+         bovtpJjgYHaGFAQrYDSFr/vRXSo7aKdyBpK0K6k8DsCAGfOIlkT1bJbTN3vFMBAInN5O
+         VU1edZar4cQFQ/sf2KM8aCd76Y6GXr4T1HBO2ygOKyKzt5B+iDJjEw7myTVILC4NXPCr
+         flpg==
+X-Gm-Message-State: AOAM5307eTgMFPdBzjq46Yy65MrLCuIpcsrkvtXtWO3fnfsCPJGzevcA
+        uOyQyqs3N5SVMOnzyL6auqk=
+X-Google-Smtp-Source: ABdhPJxpOT0fUPynmkj7Rh5qMyesz4W8uSAmXQbwc6w3wKCGF0XA4fj5COiSd9dyemeGW4TdxVP3rw==
+X-Received: by 2002:a05:6402:1c03:: with SMTP id ck3mr38504746edb.312.1629738983576;
         Mon, 23 Aug 2021 10:16:23 -0700 (PDT)
-Received: from debby ([2a01:e0a:a6d:a8d0:7ff4:8f61:5574:9f95])
-        by smtp.gmail.com with ESMTPSA id d4sm15854207wrz.35.2021.08.23.10.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from [10.100.102.14] (109-186-228-184.bb.netvision.net.il. [109.186.228.184])
+        by smtp.gmail.com with ESMTPSA id v12sm9885549ede.16.2021.08.23.10.16.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 23 Aug 2021 10:16:23 -0700 (PDT)
-From:   Romain Perier <romain.perier@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 3/3] ARM: dts: mstar: Add rtc device node
-Date:   Mon, 23 Aug 2021 19:16:13 +0200
-Message-Id: <20210823171613.18941-4-romain.perier@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210823171613.18941-1-romain.perier@gmail.com>
-References: <20210823171613.18941-1-romain.perier@gmail.com>
+Subject: Re: [PATCH v3] nvme: revalidate paths during rescan
+To:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>
+References: <20210811152803.30017-1-dwagner@suse.de>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <93e8d113-55bb-e859-bf3d-54433dd23683@grimberg.me>
+Date:   Mon, 23 Aug 2021 10:16:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210811152803.30017-1-dwagner@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the definition of the rtc device node. The RTC being able to
-work with the oscillator at 12Mhz for now, it shares the same xtal than
-the watchdog.
 
-Signed-off-by: Romain Perier <romain.perier@gmail.com>
----
- arch/arm/boot/dts/mstar-v7.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index 982dba9d28eb..89ebfe4f29da 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -110,12 +110,20 @@ reboot {
- 				mask = <0x79>;
- 			};
- 
-+			rtc@2400 {
-+				compatible = "mstar,msc313-rtc";
-+				reg = <0x2400 0x40>;
-+				clocks = <&xtal_div2>;
-+				interrupts-extended = <&intc_irq GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-+			};
-+
- 			watchdog@6000 {
- 				compatible = "mstar,msc313e-wdt";
- 				reg = <0x6000 0x1f>;
- 				clocks = <&xtal_div2>;
- 			};
- 
-+
- 			intc_fiq: interrupt-controller@201310 {
- 				compatible = "mstar,mst-intc";
- 				reg = <0x201310 0x40>;
--- 
-2.30.2
+On 8/11/21 8:28 AM, Daniel Wagner wrote:
+> From: Hannes Reinecke <hare@suse.de>
+> 
+> When triggering a rescan due to a namespace resize we will be
+> receiving AENs on every controller, triggering a rescan of all
+> attached namespaces. If multipath is active only the current path and
+> the ns_head disk will be updated, the other paths will still refer to
+> the old size until AENs for the remaining controllers are received.
+> 
+> If I/O comes in before that it might be routed to one of the old
+> paths, triggering an I/O failure with 'access beyond end of device'.
+> With this patch the old paths are skipped from multipath path
+> selection until the controller serving these paths has been rescanned.
+> 
+> Signed-off-by: Hannes Reinecke <hare@suse.de>
+> [dwagner: - introduce NVME_NS_READY flag instead of NVME_NS_INVALIDATE
+>            - use 'revalidate' instead of 'invalidate' which
+> 	    follows the zoned device code path.]
+> Tested-by: Daniel Wagner <dwagner@suse.de>
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> v3:
+>    - Renamed nvme_mpath_invalidated_paths to nvme_mpath_revalidate_paths()
+>    - Replaced NVME_NS_INVALIDATE with NVME_NS_READY
+> v2:
+>    - https://lore.kernel.org/linux-nvme/20210730071059.124347-1-dwagner@suse.de/
+>    - removed churn from failed rebase.
+> v1:
+>    - https://lore.kernel.org/linux-nvme/20210729194630.i5mhvvgb73duojqq@beryllium.lan/
+> 
+> drivers/nvme/host/core.c      |  3 +++
+>   drivers/nvme/host/multipath.c | 17 ++++++++++++++++-
+>   drivers/nvme/host/nvme.h      |  5 +++++
+>   3 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index 2f0cbaba12ac..54aafde4f556 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -1878,6 +1878,7 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
+>   			goto out_unfreeze;
+>   	}
+>   
+> +	set_bit(NVME_NS_READY, &ns->flags);
+>   	blk_mq_unfreeze_queue(ns->disk->queue);
+>   
+>   	if (blk_queue_is_zoned(ns->queue)) {
+> @@ -1889,6 +1890,7 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
+>   	if (nvme_ns_head_multipath(ns->head)) {
+>   		blk_mq_freeze_queue(ns->head->disk->queue);
+>   		nvme_update_disk_info(ns->head->disk, ns, id);
+> +		nvme_mpath_revalidate_paths(ns);
+>   		blk_stack_limits(&ns->head->disk->queue->limits,
+>   				 &ns->queue->limits, 0);
+>   		blk_queue_update_readahead(ns->head->disk->queue);
+> @@ -3816,6 +3818,7 @@ static void nvme_ns_remove(struct nvme_ns *ns)
+>   	if (test_and_set_bit(NVME_NS_REMOVING, &ns->flags))
+>   		return;
+>   
+> +	clear_bit(NVME_NS_READY, &ns->flags);
+>   	set_capacity(ns->disk, 0);
+>   	nvme_fault_inject_fini(&ns->fault_inject);
+>   
+> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+> index 3f32c5e86bfc..d390f14b8bb6 100644
+> --- a/drivers/nvme/host/multipath.c
+> +++ b/drivers/nvme/host/multipath.c
+> @@ -147,6 +147,21 @@ void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl)
+>   	mutex_unlock(&ctrl->scan_lock);
+>   }
+>   
+> +void nvme_mpath_revalidate_paths(struct nvme_ns *ns)
+> +{
+> +	struct nvme_ns_head *head = ns->head;
+> +	sector_t capacity = get_capacity(head->disk);
+> +	int node;
+> +
+> +	for_each_node(node)
+> +		rcu_assign_pointer(head->current_path[node], NULL);
+> +
+> +	list_for_each_entry_rcu(ns, &head->list, siblings) {
+> +		if (capacity != get_capacity(ns->disk))
+> +			clear_bit(NVME_NS_READY, &ns->flags);
+> +	}
 
+Shouldn't the null setting to current_path come after
+we clear NVME_NS_READY on the ns? Otherwise we may still
+submit and current_path will be populated with the ns
+again...
