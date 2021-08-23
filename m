@@ -2,49 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F333F4648
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D033F4646
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbhHWIB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbhHWIBt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:01:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A43C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0YHLZvLC/xYlfH0XYhEFmgV1nKxhlxOO7Z/IK6ZmpAI=; b=LwsmtFikbcXbaYBXBdZ3mQcZMl
-        DTnWULW8+ctm9puDTLm96Ubh7pAXsKXZ9n3U4SyScm98QBozTDAU5GyTKDmkaPfY7dxuHcA5omXlA
-        PC0xanTLSBd9dvpUhAEd11qa2XS4HE55nk1tqush/NPKSK1/sTnkfpB/YcvcpN5yfpIWtnQD61xbi
-        UjQLE0XKpdOQ1WAtdg1PS5k1Wm6LrFEQzgCAw6ny3DkVlda+KOwFWVMRt/9dtmhdgzkZZpZ4Lp2ZS
-        i7sS9Q3y/x7ivnfEeChXPM0MVraFjPak+0EA3B/GJFuKVjInRxUvNLLQY+0H5Ur7YigvCqaSTRfzl
-        99qRcLPg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mI4sJ-009SGY-Dj; Mon, 23 Aug 2021 08:00:16 +0000
-Date:   Mon, 23 Aug 2021 09:00:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH v3] nvme: revalidate paths during rescan
-Message-ID: <YSNVh+o3ZCBQaa1G@infradead.org>
-References: <20210811152803.30017-1-dwagner@suse.de>
+        id S235304AbhHWIBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:01:03 -0400
+Received: from mga11.intel.com ([192.55.52.93]:2441 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235226AbhHWIBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 04:01:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="213926185"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="213926185"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 01:00:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="683089408"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 01:00:14 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id C11312051E;
+        Mon, 23 Aug 2021 11:00:12 +0300 (EEST)
+Date:   Mon, 23 Aug 2021 11:00:12 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     hverkuil-cisco@xs4all.nl, mchehab@kernel.org,
+        awalls@md.metrocast.net, yong.zhi@intel.com, bingbu.cao@intel.com,
+        djrscally@gmail.com, tian.shu.qiu@intel.com, serjk@netup.ru,
+        aospan@netup.ru, tskd08@gmail.com, maintainers@bluecherrydvr.com,
+        anton@corp.bluecherry.net, andrey.utkin@corp.bluecherry.net,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] media: switch from 'pci_' to 'dma_' API
+Message-ID: <20210823080012.GD3@paasikivi.fi.intel.com>
+References: <71a7e0029ce28ec748eb045c8381d354011cebe6.1629623093.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210811152803.30017-1-dwagner@suse.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <71a7e0029ce28ec748eb045c8381d354011cebe6.1629623093.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+Thanks, Christophe.
 
-applied to nvme-5.15.
+On Sun, Aug 22, 2021 at 11:30:08AM +0200, Christophe JAILLET wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below.
+> 
+> It has been compile tested.
+
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+-- 
+Sakari Ailus
