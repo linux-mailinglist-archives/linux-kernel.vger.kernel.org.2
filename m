@@ -2,246 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333663F4689
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B794C3F468A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235509AbhHWIUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235316AbhHWIUC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:20:02 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6ADC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:19:20 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so13427662wme.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dzl8IGlEHb28h6YxJTb2RoLDW+vmT5uDlNfIJ4DRN70=;
-        b=ENvNF9RNyMcbeLzqStRm0JWPVnIHQL75cH9/d8QVYLNCv1l5BBGU+VGBZoZjAQDoye
-         DOXRNXVX/kuw4nK74p7ATnWZDcInd0aVJjwxpyY45K3hb06/xHvOAF7ZaFjiA/TIvnJz
-         YIkI6L9EG2ghjYbih51Zs0h+3qs3R6ja1IOByJ3EIG798JDCUAVxHZYBZ+47EZNvr4+Y
-         QiX0El2nev+g3ELYLLSpjWQQ2v28m0D4AOOWax9LPRM0NUW8NOWA6MSzS4wIbVUIuo6i
-         fFePMmYCh17DNgMrYh2ZrO8hG/ttyMU+DqIxZXW7u5C1pHTPxpBa9wCZRhiha0oxEEu6
-         J0kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dzl8IGlEHb28h6YxJTb2RoLDW+vmT5uDlNfIJ4DRN70=;
-        b=XOk7FhaVMsiMEBYmY42h3xCW/LV8ajb0MOdpK2Wj+XqRYkImcljFkacRQcoUFX7XOz
-         ElXLK9GWbUwVLz0ebM8TwDj6jrwL3THBr0UFfzDTmCsQLWIGYT0WAEZD/qeEbe2mBZCm
-         Bxy1wVQuRBug3V562r8cCIdIq095/5Cej8EdLZJ24GQewgnwgA0TrQ1NAuyOEP4N1mJK
-         xBversrWr1DoVtmXb8a75P4D9DtQIW6sJL+Wup1Z7ULbTDj7lnXi9hF3CeIEqFcSA1Gx
-         MxmcKEm3xxphZIh0lNHPesbcofIaSzZ1dIPKrpMkfZnBHw+1ud/DN5TggU3kw1y2PqZF
-         QAxw==
-X-Gm-Message-State: AOAM533aKUBLgkOV+y1xC7cEP4UZ08DIfY2YOdPeKnZORj0m29sJ+FK3
-        ECVWBV/CVzD4vZB+q+oiW2P7QVJsrlQ=
-X-Google-Smtp-Source: ABdhPJxDXDdTnF0sUVfxhKGIn64SFLyf+yzQZlTfS4Z+mWB3Bpm45jhrHAKpT9nR39WwSxq2uu8Wtg==
-X-Received: by 2002:a1c:f30b:: with SMTP id q11mr5312166wmq.91.1629706759196;
-        Mon, 23 Aug 2021 01:19:19 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::3c39])
-        by smtp.gmail.com with ESMTPSA id j16sm14406616wrr.78.2021.08.23.01.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 01:19:18 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove ip.h header file
-Date:   Mon, 23 Aug 2021 10:18:20 +0200
-Message-Id: <20210823081820.9724-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S235442AbhHWIVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:21:45 -0400
+Received: from mail-eopbgr1320080.outbound.protection.outlook.com ([40.107.132.80]:51840
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235316AbhHWIVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 04:21:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kfx52usluhqVe4fMtpiQlhSe/49beZJ3/uIZ7h4N3V5tLUE0oLH/5AR+AepfWb27Zp/9eLyNHBAHOIxzJPVC+503biT1UR+tQcGUjRR7ZAh4RPWBsRsiKsFWwJBnyvrKP9i3NbPGiy9sVmQXrtCxswGfYKPphk5BL2LCIDQvEwnrjtYdM8wzB/SwqUgR9QloISI8eznChHQmTpZ8zdGBsFC0qZhNkM8JrfKuBTT+eVcjrNGquSo/6IuOCR+ZgHIZx0Bs0yRS3iqa5kz+fSSOKu8B0WKOAP4rTnUTCaUa8/lK1MPSoK88bh/d46Pa1QSLIvJoFe+ooY5M/zI0QLiBLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8pTXDFpb1N/Lm8Y1XITHnJShIV/m0CqLN0d5atCTRWo=;
+ b=ntMS2s1roZPf/FtR7cp6adlfAVChNhQPGPg5teWmCJWKWKoQWxsGm56h/A+KdR6aY7wF+XtBzd0fuWfCFzBF9C7kNTot9zAyvsALPESkw15q4WsVhBwUfFKr5sONiuaH9H3r7NtTWM1/4i2uN8yhbE6FV3vzrgxhVZyYZzjBzTJvew+1gk5otJ5CoZEoPDAiKkPGk1uX3UP4d7rW0eTPqQpymcFFCBUKc1AieE03VDDelV05kJ3arlkfg3iJS/Y2zRGpNhdAYlY3cLCZX/4ximt6fZDz6mjb7AFjAqxQnphXlGStuqX1oMPjpdtn0YMTc7Wo6vmLfpXZKlH1S2rWGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8pTXDFpb1N/Lm8Y1XITHnJShIV/m0CqLN0d5atCTRWo=;
+ b=LQeo1YFbqRNDQzG4pGp0Q98OqSaG98Ixir+dVO9TenRK9DARmaMPXXlSXaf/L4YKSfRG1e5G92TcYvdN3wF7HOTL10w14i0/c22mr8vWgp7bP4HdSJQTpxJ9lLXM6+AjcY/pMlYQ9Z5YsxZjo72c9bIZGhI+C0vJUanGNCYcMLI=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TY2PR01MB4091.jpnprd01.prod.outlook.com (2603:1096:404:d8::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Mon, 23 Aug
+ 2021 08:20:59 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::4401:f9e:2afb:ebc0]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::4401:f9e:2afb:ebc0%7]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
+ 08:20:59 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "cgoldswo@codeaurora.org" <cgoldswo@codeaurora.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mm/memory_hotplug: use helper zone_is_zone_device()
+ to simplify the code
+Thread-Topic: [PATCH 1/3] mm/memory_hotplug: use helper zone_is_zone_device()
+ to simplify the code
+Thread-Index: AQHXlnDvTF2Sty6d9UqZSU6Be6HEJ6uAwrcA
+Date:   Mon, 23 Aug 2021 08:20:59 +0000
+Message-ID: <20210823082058.GA1520304@hori.linux.bs1.fc.nec.co.jp>
+References: <20210821094246.10149-1-linmiaohe@huawei.com>
+ <20210821094246.10149-2-linmiaohe@huawei.com>
+In-Reply-To: <20210821094246.10149-2-linmiaohe@huawei.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nec.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 22b56e50-472f-4f2c-8697-08d9660ef003
+x-ms-traffictypediagnostic: TY2PR01MB4091:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TY2PR01MB4091FCF2F5865202D14BB74EE7C49@TY2PR01MB4091.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1775;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: V2SzmlXXUx5KD8rPqYpLJHi3OftV69EO1xj/s6Opf+grQ4UxiUcMDhSl16XageTdSrsaKIe0Vv1IKCMTkwxuRSC8bz/36qVkrGIH179C6sq/Biv7SxQxPfOQ4RA99lxASnDPQh8uAihRp5Cpi4V4Ntq+vxlGp4wpr7GAboK89DYWREyrT369vCcQO4Yh8IeNLl0nIuNg5rIiM58gz60ApnN7+Rh8E1X93p+jkVJ0lqL+zo2lb6QytNn63lWSGSiE2E14+LYZaTXJKsANXHNXAVqW5DtVQrvQZiYwN5u6gkuBt5m5Z7Wwm57/u3Al4G2lskRzAIoRXSLnm8gJsPEtjkuibHywkvgiqQ2W6BDWq3ruKIM1bGc2HI3G/xlfG2Q1S3ZRSbfp4jnUbqmex+mBtfy+NQ8+62yeziHfMR8ZclNmD6H5ueuEljvw2BPLZoP27iD7UF/YcfzD5lGRBj8L2MUU8Aobd+lY2A/izz3h56mS6vIAw/ADuwlHLZqoqSWOOADtommKSrgBBLsc6kTHLnS2rSnhJIeCUvGQkBocBzVArHsWOKPJ/t4v+1EOruoSInIul3Okou4I0AiEVrwbpNmhFl6t0QUK/kGLVdJZD2I51iVdVwTa6LAggxnxtBBwDk8OIz4W4fed/IsvaW0dHqkJHVIOpS7GJ9E0MITYPEJv/CE3W7cJMxJV/Sods6IGrbm1dH1Xo7XlW7DmrKJobw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(38070700005)(1076003)(6486002)(26005)(76116006)(2906002)(8936002)(508600001)(66946007)(85182001)(558084003)(5660300002)(66446008)(6512007)(9686003)(122000001)(55236004)(71200400001)(66476007)(66556008)(64756008)(8676002)(316002)(54906003)(6916009)(38100700002)(4326008)(186003)(33656002)(6506007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZThyNEJLWnVKdklBdHJqeEhjdGxjVmFuUGw2YlN1U1dWNTRYam9pZ005NDg2?=
+ =?utf-8?B?TlZuY2JoeUNQeWVGRUg5NlVRQldlWmsrbXVNdVp6azVWREtURUZ4TlBCdDFH?=
+ =?utf-8?B?Zno1VU5ZcHloaVZrbUdQM2xrU1diNWNZN3o3N29WbEdPQlNWeEx4a1RIR1Ez?=
+ =?utf-8?B?SS9jOENYYVFFN0lZNFNaVDMvamhWeXRWYjVSU0VrL2w1SEd5RXVEWm55c1lv?=
+ =?utf-8?B?VDBYUVFRUWdRYTNWVm9DSU5yZ3p3dWFBUDQveVg0Z3hieDI2RTdyZ2pON2lz?=
+ =?utf-8?B?OVkrTDllNk1iTVBLUlErOXdsS2xrVDE0L0FEQ1RhMk5WVTM5QWQ5OFlFei9n?=
+ =?utf-8?B?anM4Z0ZqNkd4Yi9aWHNYQVZ1NnV5RU5rNkYxKzk0R01IQWxBUmdwdjk2eWNv?=
+ =?utf-8?B?NFlwajhEWWpkaXZDQVJsc3JSa1ViNDVRbUI1V1FKTFU5b1lIYWU3Z0gyRlQr?=
+ =?utf-8?B?ZjRKMXVsOExGL0V5ZUtrUWlQajlUS2xxUm9udkhDQ25KVmxDT0NQdVZHZ0Nq?=
+ =?utf-8?B?eEdjUER4YVRpazNlMVBBdFpVZFptbS8reGxtY3d1TVJjZ1lIekhZN2lRRVNk?=
+ =?utf-8?B?UVZhbVVlc1hzSHRZV0l2TFRhYnBBVkdZMjdYanJHaUhSK3NGYlJ3dW1Gb3dD?=
+ =?utf-8?B?ZitnS3hMaU5SZTFZT0VPeitqeHlQZXhpSDhRT2NkMjFEdkJnMlNaN1N2ODBs?=
+ =?utf-8?B?VjBkOXJuV0M4d3QzeHM2ak1GSEdDdFZlSml5ejBPRzNHRjlaaXIvM3dPUUI1?=
+ =?utf-8?B?WU9qSUdxU1FXbWhvMkNvcjFHWnpvNElycVZJcElaSFF2UlhSc0loMmQ1QUQ3?=
+ =?utf-8?B?WHlXa2tVM0dVMzFXY2pmK3o1NnVnVGxwdk5RTUZlVWkwSmlrZTRTaGhXS2Rw?=
+ =?utf-8?B?VENWZkRKUFpPNkpNbzg2cnVzaFVQUTNsUlRVN3ppRFlQTTFRZmlBVzBiYlZm?=
+ =?utf-8?B?U3Bjemo2WWc5UUxhSnJwdFRyTzVhUTlqLzIxOUU3OFBnS2FnUTBvcFI1YWdF?=
+ =?utf-8?B?cENQcVk5clRZWklJVmZNSlJEOWJnSGZuVHU0RkJCRVh2Y0hBbGRhcHJJekd1?=
+ =?utf-8?B?dXNkQkI5dkdPeU02YmNaVFRpbEJyM0dDeTh3NVQyd2FubzJQM2RtMXRERUkr?=
+ =?utf-8?B?dHZNT3BkNUtOQVF1RU1TRkhUMysxTUF1NUhkM1hlaEIxME1INjFTNHZ3Q05T?=
+ =?utf-8?B?LzJUQUZkYm4zOTZJRm54V2xBQWRzeVgvVmVkQWp2TmdMQ1pwK2dCdW12c2Qy?=
+ =?utf-8?B?Lyt6Y0ltY3BkVGlnd1BZci9lY0Z0NmpNVjc4VVVFR3dOUHdySzJkRElEakRZ?=
+ =?utf-8?B?VVU0UWsxaEQ3ZDRHSVVZbmJ6bHF2MU5WTXRDNzhTSkhSWCtqOGZiVisrYkU3?=
+ =?utf-8?B?aUJnVXVzYXlqbG96NkZkQXlqZnRGQXdDWUw2YXp1T2dNS1hRTUlucnByTUtN?=
+ =?utf-8?B?dm1hVmdHTk56NGFKTll1ZVlJSmd3QkJzZzdYRi93SFRjTnVDeDJ3R3l1UGk4?=
+ =?utf-8?B?YXdFd1Rwekk5cW0zV0laZjRXS0taL0k1QnJBTXhvVkp4d09keWZvTGhzNzdo?=
+ =?utf-8?B?TzBacGhpQ3d6c2Vpd1pvRXFSb3U4bTg4MnVpV29sYnNpaU9GS0hxckNDZCtu?=
+ =?utf-8?B?eDVPMHJUd0hqWEp0dnRWdDhhZXZOUlNNQVJ1RkY0aUZjdU9TdGt2TURPZEtD?=
+ =?utf-8?B?d2owTkY0ZGZiNFVSRnlucVlsTTloRVJpM3RxbTltNWdyWG1Penc0cEVVRU5B?=
+ =?utf-8?B?eXo5ZlEzaEVaanNXOVNTMGtKc0lVVUJZTUh6OFdEeStUWklUdzdhZEI2Wlhy?=
+ =?utf-8?B?WVc1Z2FneGR6OVFNc2g2UT09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FD54014B5D8AF34395E9476D8626E3F5@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22b56e50-472f-4f2c-8697-08d9660ef003
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2021 08:20:59.1204
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3DujFB0IUheeHE2NY0spIXxM6J4lNMraTUnaI4eWj214wcUxqmU4Fm2FPgpYKqyzMHc2BvpMCO/e6OwV7Bx7Ow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct ip_options declared in ip.h is only unsed in the optlength
-macro which is also defined in ip.h. All other definitions/declarations
-in ip.h are duplicated from <include/uapi/linux/ip.h>. Remove the ip.h
-header file and its includes.
-
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_recv.c      |   1 -
- drivers/staging/r8188eu/core/rtw_xmit.c      |   1 -
- drivers/staging/r8188eu/hal/rtl8188eu_recv.c |   1 -
- drivers/staging/r8188eu/include/ip.h         | 109 -------------------
- drivers/staging/r8188eu/os_dep/xmit_linux.c  |   1 -
- 5 files changed, 113 deletions(-)
- delete mode 100644 drivers/staging/r8188eu/include/ip.h
-
-diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
-index 52236bae8693..8802f24fec3a 100644
---- a/drivers/staging/r8188eu/core/rtw_recv.c
-+++ b/drivers/staging/r8188eu/core/rtw_recv.c
-@@ -7,7 +7,6 @@
- #include "../include/drv_types.h"
- #include "../include/recv_osdep.h"
- #include "../include/mlme_osdep.h"
--#include "../include/ip.h"
- #include "../include/if_ether.h"
- #include "../include/ethernet.h"
- #include "../include/usb_ops.h"
-diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
-index f242f3ffca70..38183fd37b93 100644
---- a/drivers/staging/r8188eu/core/rtw_xmit.c
-+++ b/drivers/staging/r8188eu/core/rtw_xmit.c
-@@ -7,7 +7,6 @@
- #include "../include/drv_types.h"
- #include "../include/wifi.h"
- #include "../include/osdep_intf.h"
--#include "../include/ip.h"
- #include "../include/usb_ops.h"
- #include "../include/usb_osintf.h"
- 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-index a44c9598186c..216a752e6246 100644
---- a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
-@@ -6,7 +6,6 @@
- #include "../include/drv_types.h"
- #include "../include/recv_osdep.h"
- #include "../include/mlme_osdep.h"
--#include "../include/ip.h"
- #include "../include/if_ether.h"
- #include "../include/ethernet.h"
- 
-diff --git a/drivers/staging/r8188eu/include/ip.h b/drivers/staging/r8188eu/include/ip.h
-deleted file mode 100644
-index b7388c8c1b8a..000000000000
---- a/drivers/staging/r8188eu/include/ip.h
-+++ /dev/null
-@@ -1,109 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
--/* Copyright(c) 2007 - 2011 Realtek Corporation. */
--
--#ifndef _LINUX_IP_H
--#define _LINUX_IP_H
--
--/* SOL_IP socket options */
--
--#define IPTOS_TOS_MASK		0x1E
--#define IPTOS_TOS(tos)		((tos)&IPTOS_TOS_MASK)
--#define	IPTOS_LOWDELAY		0x10
--#define	IPTOS_THROUGHPUT	0x08
--#define	IPTOS_RELIABILITY	0x04
--#define	IPTOS_MINCOST		0x02
--
--#define IPTOS_PREC_MASK		0xE0
--#define IPTOS_PREC(tos)		((tos)&IPTOS_PREC_MASK)
--#define IPTOS_PREC_NETCONTROL           0xe0
--#define IPTOS_PREC_INTERNETCONTROL      0xc0
--#define IPTOS_PREC_CRITIC_ECP           0xa0
--#define IPTOS_PREC_FLASHOVERRIDE        0x80
--#define IPTOS_PREC_FLASH                0x60
--#define IPTOS_PREC_IMMEDIATE            0x40
--#define IPTOS_PREC_PRIORITY             0x20
--#define IPTOS_PREC_ROUTINE              0x00
--
--/* IP options */
--#define IPOPT_COPY		0x80
--#define IPOPT_CLASS_MASK	0x60
--#define IPOPT_NUMBER_MASK	0x1f
--
--#define	IPOPT_COPIED(o)		((o)&IPOPT_COPY)
--#define	IPOPT_CLASS(o)		((o)&IPOPT_CLASS_MASK)
--#define	IPOPT_NUMBER(o)		((o)&IPOPT_NUMBER_MASK)
--
--#define	IPOPT_CONTROL		0x00
--#define	IPOPT_RESERVED1		0x20
--#define	IPOPT_MEASUREMENT	0x40
--#define	IPOPT_RESERVED2		0x60
--
--#define IPOPT_END	(0 | IPOPT_CONTROL)
--#define IPOPT_NOOP	(1 | IPOPT_CONTROL)
--#define IPOPT_SEC	(2 | IPOPT_CONTROL | IPOPT_COPY)
--#define IPOPT_LSRR	(3 | IPOPT_CONTROL | IPOPT_COPY)
--#define IPOPT_TIMESTAMP	(4 | IPOPT_MEASUREMENT)
--#define IPOPT_RR	(7 | IPOPT_CONTROL)
--#define IPOPT_SID	(8 | IPOPT_CONTROL | IPOPT_COPY)
--#define IPOPT_SSRR	(9 | IPOPT_CONTROL | IPOPT_COPY)
--#define IPOPT_RA	(20 | IPOPT_CONTROL | IPOPT_COPY)
--
--#define IPVERSION	4
--#define MAXTTL		255
--#define IPDEFTTL	64
--#define IPOPT_OPTVAL 0
--#define IPOPT_OLEN   1
--#define IPOPT_OFFSET 2
--#define IPOPT_MINOFF 4
--#define MAX_IPOPTLEN 40
--#define IPOPT_NOP IPOPT_NOOP
--#define IPOPT_EOL IPOPT_END
--#define IPOPT_TS  IPOPT_TIMESTAMP
--
--#define	IPOPT_TS_TSONLY		0	/* timestamps only */
--#define	IPOPT_TS_TSANDADDR	1	/* timestamps and addresses */
--#define	IPOPT_TS_PRESPEC	3	/* specified modules only */
--
--struct ip_options {
--	__u32		faddr;			/* Saved first hop address */
--	unsigned char	optlen;
--	unsigned char srr;
--	unsigned char rr;
--	unsigned char ts;
--	unsigned char	is_setbyuser:1,	/* Set by setsockopt?		*/
--			is_data:1,	/* Options in __data, rather than skb*/
--			is_strictroute:1,/* Strict source route		*/
--			srr_is_hit:1,	/* Packet destn addr was ours */
--			is_changed:1,	/* IP checksum more not valid	*/
--			rr_needaddr:1,	/* Need to record addr of out dev*/
--			ts_needtime:1,	/* Need to record timestamp	*/
--			ts_needaddr:1;	/* Need to record addr of out dev  */
--	unsigned char router_alert;
--	unsigned char __pad1;
--	unsigned char __pad2;
--	unsigned char __data[0];
--};
--
--#define optlength(opt) (sizeof(struct ip_options) + opt->optlen)
--
--struct iphdr {
--#if defined(__LITTLE_ENDIAN_BITFIELD)
--	__u8	ihl:4,
--		version:4;
--#elif defined(__BIG_ENDIAN_BITFIELD)
--	__u8	version:4,
--		ihl:4;
--#endif
--	__u8	tos;
--	__u16	tot_len;
--	__u16	id;
--	__u16	frag_off;
--	__u8	ttl;
--	__u8	protocol;
--	__u16	check;
--	__u32	saddr;
--	__u32	daddr;
--	/*The options start here. */
--};
--
--#endif	/* _LINUX_IP_H */
-diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-index 60e0eea7ad84..80546a886c0e 100644
---- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
-@@ -6,7 +6,6 @@
- #include "../include/osdep_service.h"
- #include "../include/drv_types.h"
- #include "../include/if_ether.h"
--#include "../include/ip.h"
- #include "../include/wifi.h"
- #include "../include/mlme_osdep.h"
- #include "../include/xmit_osdep.h"
--- 
-2.32.0
-
+T24gU2F0LCBBdWcgMjEsIDIwMjEgYXQgMDU6NDI6NDRQTSArMDgwMCwgTWlhb2hlIExpbiB3cm90
+ZToNCj4gVXNlIGhlbHBlciB6b25lX2lzX3pvbmVfZGV2aWNlKCkgdG8gc2ltcGxpZnkgdGhlIGNv
+ZGUgYW5kIHJlbW92ZSBzb21lDQo+IGV4cGxpY2l0IENPTkZJR19aT05FX0RFVklDRSBjb2Rlcy4N
+Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1pYW9oZSBMaW4gPGxpbm1pYW9oZUBodWF3ZWkuY29tPg0K
+DQpSZXZpZXdlZC1ieTogTmFveWEgSG9yaWd1Y2hpIDxuYW95YS5ob3JpZ3VjaGlAbmVjLmNvbT4=
