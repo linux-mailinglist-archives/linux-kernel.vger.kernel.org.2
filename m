@@ -2,232 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989FB3F4615
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647E43F4617
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbhHWHyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:54:00 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:36099 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235316AbhHWHx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:53:58 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GtPcJ3FWXz9sgg;
-        Mon, 23 Aug 2021 09:53:04 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Lgklx3L0M-AX; Mon, 23 Aug 2021 09:53:04 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GtPcG0Tt7z9sgS;
-        Mon, 23 Aug 2021 09:53:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C0AEA8B78F;
-        Mon, 23 Aug 2021 09:53:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id dcPqErAm_yWL; Mon, 23 Aug 2021 09:53:01 +0200 (CEST)
-Received: from po9473vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.100])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 429978B787;
-        Mon, 23 Aug 2021 09:53:01 +0200 (CEST)
-Received: by po9473vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 3151C6BB8C; Mon, 23 Aug 2021 07:53:01 +0000 (UTC)
-Message-Id: <d7435e616336fd5f07bb19ec61e97d71e5c53568.1629705153.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/booke: Avoid link stack corruption in several places
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 23 Aug 2021 07:53:01 +0000 (UTC)
+        id S235297AbhHWHyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235316AbhHWHyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 03:54:04 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC19C061575;
+        Mon, 23 Aug 2021 00:53:21 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id d26so4537078wrc.0;
+        Mon, 23 Aug 2021 00:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=fc41RHpGSLm7yZNljm3ipeJe276/QT9sJLIfnCrAz/8=;
+        b=T5ke9boWANF+x+UIfGqhhEo+T+Z/yAw7CV0N9f9NkXIL72U8yygob0hClxrxw9B2HO
+         JcxsvXwaX4k6uN0FUPJv8Bg9HrSuInm8bU58jSsBYYTsQhlIzgk90PrJt1WepprP9h0R
+         7cLYeEs8EKzk1qtXHZNbRc0o964yAbPuNw5IaYDvEGzOkv3vcO+SlaO2twAyUcHO2isU
+         GikLOA9Uvo+Q8op9kJSoFt2t3s4w3mtTghADf08g5w/0if7j+gIwYAv7zDzpT2KWecaX
+         qX2DPzumWqDWtTw5SGU1ZeoHtVPkWMLMzdiVAvB7EBX7dAF9XZHZ+UUBWETwNMfyP9Eq
+         s/eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=fc41RHpGSLm7yZNljm3ipeJe276/QT9sJLIfnCrAz/8=;
+        b=NlMBeO2+BqNP0R5ANW2H+dDLAhkCv6ZUPwZle9bLIzk3XN9PEFdyD27IAwI/NEBxD2
+         7SlXhIuIDR/hwebmZC7kXx0SzSWshbsmeSj3a2S1D84bmADO/Gqvhk924XzsgdGo1sGA
+         rW6rfPMMtZSUJ4cgMI9nzJw8JrVyiMSpNGzro58S3IsLIyMsZ/gKw5xKu9nh8I2ODm9k
+         t/zaz91yGJgLd+m83eSalmrvFBewKkj8B+KPhob0jMK6W3GSwRscB1yLPyfskTnC59ii
+         X432yHSiwACWnmUWfIZnzOLzthTR4Te1nJnSGtysSFhBDZ5fJv/EgAUu1PTNLXf2oHGQ
+         /4dg==
+X-Gm-Message-State: AOAM531SsIYkVpUcxjkXpMYVlLFQQJQPdb1jD6J7ilPSXXXkqrOxl9Fi
+        Fv58d2ZcanorZFF7uM2G34e0VSOrRlo=
+X-Google-Smtp-Source: ABdhPJy/aZvrCWzb0mgkhM+8dV3YqaZAFm72/ieH7QHNukzNYi5tHbMbvd6/lUizWivDE47PYqYFKQ==
+X-Received: by 2002:a5d:4c4e:: with SMTP id n14mr11756957wrt.226.1629705200488;
+        Mon, 23 Aug 2021 00:53:20 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bec31.dynamic.kabel-deutschland.de. [95.91.236.49])
+        by smtp.googlemail.com with ESMTPSA id t14sm2711270wrw.59.2021.08.23.00.53.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 00:53:20 -0700 (PDT)
+Message-ID: <c2beac013060b64d94664d0ee9bd06dd68138386.camel@gmail.com>
+Subject: Re: [PATCH v1 0/2] two minor changes of eMMC BKOPS
+From:   Bean Huo <huobean@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>
+Date:   Mon, 23 Aug 2021 09:53:19 +0200
+In-Reply-To: <20210817224208.153652-1-huobean@gmail.com>
+References: <20210817224208.153652-1-huobean@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use bcl 20,31,+4 instead of bl in order to preserve link stack.
+Hi Ullf,
+Any thought about this patch?
 
-See commit c974809a26a1 ("powerpc/vdso: Avoid link stack corruption
-in __get_datapage()") for details.
+Thanks
+Bean
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/ppc_asm.h            | 2 +-
- arch/powerpc/kernel/exceptions-64e.S          | 6 +++---
- arch/powerpc/kernel/fsl_booke_entry_mapping.S | 8 ++++----
- arch/powerpc/kernel/head_44x.S                | 6 +++---
- arch/powerpc/kernel/head_fsl_booke.S          | 6 +++---
- arch/powerpc/mm/nohash/tlb_low.S              | 4 ++--
- 6 files changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/ppc_asm.h b/arch/powerpc/include/asm/ppc_asm.h
-index ffe712307e11..2a675ba927ab 100644
---- a/arch/powerpc/include/asm/ppc_asm.h
-+++ b/arch/powerpc/include/asm/ppc_asm.h
-@@ -260,7 +260,7 @@ GLUE(.,name):
- 
- /* Be careful, this will clobber the lr register. */
- #define LOAD_REG_ADDR_PIC(reg, name)		\
--	bl	0f;				\
-+	bcl	20,31,0f			\
- 0:	mflr	reg;				\
- 	addis	reg,reg,(name - 0b)@ha;		\
- 	addi	reg,reg,(name - 0b)@l;
-diff --git a/arch/powerpc/kernel/exceptions-64e.S b/arch/powerpc/kernel/exceptions-64e.S
-index 1401787b0b93..0a1835a0ec12 100644
---- a/arch/powerpc/kernel/exceptions-64e.S
-+++ b/arch/powerpc/kernel/exceptions-64e.S
-@@ -1127,7 +1127,7 @@ found_iprot:
-  * r3 = MAS0_TLBSEL (for the iprot array)
-  * r4 = SPRN_TLBnCFG
-  */
--	bl	invstr				/* Find our address */
-+	bcl	20,31,invstr			/* Find our address */
- invstr:	mflr	r6				/* Make it accessible */
- 	mfmsr	r7
- 	rlwinm	r5,r7,27,31,31			/* extract MSR[IS] */
-@@ -1196,7 +1196,7 @@ skpinv:	addi	r6,r6,1				/* Increment */
- 	mfmsr	r6
- 	xori	r6,r6,MSR_IS
- 	mtspr	SPRN_SRR1,r6
--	bl	1f		/* Find our address */
-+	bcl	20,31,1f	/* Find our address */
- 1:	mflr	r6
- 	addi	r6,r6,(2f - 1b)
- 	mtspr	SPRN_SRR0,r6
-@@ -1256,7 +1256,7 @@ skpinv:	addi	r6,r6,1				/* Increment */
-  * r4 = MAS0 w/TLBSEL & ESEL for the temp mapping
-  */
- 	/* Now we branch the new virtual address mapped by this entry */
--	bl	1f		/* Find our address */
-+	bcl	20,31,1f	/* Find our address */
- 1:	mflr	r6
- 	addi	r6,r6,(2f - 1b)
- 	tovirt(r6,r6)
-diff --git a/arch/powerpc/kernel/fsl_booke_entry_mapping.S b/arch/powerpc/kernel/fsl_booke_entry_mapping.S
-index 8bccce6544b5..a9e2235f6c40 100644
---- a/arch/powerpc/kernel/fsl_booke_entry_mapping.S
-+++ b/arch/powerpc/kernel/fsl_booke_entry_mapping.S
-@@ -1,7 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 
- /* 1. Find the index of the entry we're executing in */
--	bl	invstr				/* Find our address */
-+	bcl	20,31,invstr				/* Find our address */
- invstr:	mflr	r6				/* Make it accessible */
- 	mfmsr	r7
- 	rlwinm	r4,r7,27,31,31			/* extract MSR[IS] */
-@@ -85,7 +85,7 @@ skpinv:	addi	r6,r6,1				/* Increment */
- 	addi	r6,r6,10
- 	slw	r6,r8,r6	/* convert to mask */
- 
--	bl	1f		/* Find our address */
-+	bcl	20,31,1f	/* Find our address */
- 1:	mflr	r7
- 
- 	mfspr	r8,SPRN_MAS3
-@@ -117,7 +117,7 @@ skpinv:	addi	r6,r6,1				/* Increment */
- 
- 	xori	r6,r4,1
- 	slwi	r6,r6,5		/* setup new context with other address space */
--	bl	1f		/* Find our address */
-+	bcl	20,31,1f	/* Find our address */
- 1:	mflr	r9
- 	rlwimi	r7,r9,0,20,31
- 	addi	r7,r7,(2f - 1b)
-@@ -207,7 +207,7 @@ next_tlb_setup:
- 
- 	lis	r7,MSR_KERNEL@h
- 	ori	r7,r7,MSR_KERNEL@l
--	bl	1f			/* Find our address */
-+	bcl	20,31,1f		/* Find our address */
- 1:	mflr	r9
- 	rlwimi	r6,r9,0,20,31
- 	addi	r6,r6,(2f - 1b)
-diff --git a/arch/powerpc/kernel/head_44x.S b/arch/powerpc/kernel/head_44x.S
-index ddc978a2d381..b14efa87d1cf 100644
---- a/arch/powerpc/kernel/head_44x.S
-+++ b/arch/powerpc/kernel/head_44x.S
-@@ -70,7 +70,7 @@ _ENTRY(_start);
-  * address.
-  * r21 will be loaded with the physical runtime address of _stext
-  */
--	bl	0f				/* Get our runtime address */
-+	bcl	20,31,0f			/* Get our runtime address */
- 0:	mflr	r21				/* Make it accessible */
- 	addis	r21,r21,(_stext - 0b)@ha
- 	addi	r21,r21,(_stext - 0b)@l 	/* Get our current runtime base */
-@@ -853,7 +853,7 @@ _GLOBAL(init_cpu_state)
- wmmucr:	mtspr	SPRN_MMUCR,r3			/* Put MMUCR */
- 	sync
- 
--	bl	invstr				/* Find our address */
-+	bcl	20,31,invstr			/* Find our address */
- invstr:	mflr	r5				/* Make it accessible */
- 	tlbsx	r23,0,r5			/* Find entry we are in */
- 	li	r4,0				/* Start at TLB entry 0 */
-@@ -1045,7 +1045,7 @@ head_start_47x:
- 	sync
- 
- 	/* Find the entry we are running from */
--	bl	1f
-+	bcl	20,31,1f
- 1:	mflr	r23
- 	tlbsx	r23,0,r23
- 	tlbre	r24,r23,0
-diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
-index 0f9642f36b49..dd197da2ffcc 100644
---- a/arch/powerpc/kernel/head_fsl_booke.S
-+++ b/arch/powerpc/kernel/head_fsl_booke.S
-@@ -79,7 +79,7 @@ _ENTRY(_start);
- 	mr	r23,r3
- 	mr	r25,r4
- 
--	bl	0f
-+	bcl	20,31,0f
- 0:	mflr	r8
- 	addis	r3,r8,(is_second_reloc - 0b)@ha
- 	lwz	r19,(is_second_reloc - 0b)@l(r3)
-@@ -1132,7 +1132,7 @@ _GLOBAL(switch_to_as1)
- 	bne	1b
- 
- 	/* Get the tlb entry used by the current running code */
--	bl	0f
-+	bcl	20,31,0f
- 0:	mflr	r4
- 	tlbsx	0,r4
- 
-@@ -1166,7 +1166,7 @@ _GLOBAL(switch_to_as1)
- _GLOBAL(restore_to_as0)
- 	mflr	r0
- 
--	bl	0f
-+	bcl	20,31,0f
- 0:	mflr	r9
- 	addi	r9,r9,1f - 0b
- 
-diff --git a/arch/powerpc/mm/nohash/tlb_low.S b/arch/powerpc/mm/nohash/tlb_low.S
-index 4613bf8e9aae..8b225a3df7e3 100644
---- a/arch/powerpc/mm/nohash/tlb_low.S
-+++ b/arch/powerpc/mm/nohash/tlb_low.S
-@@ -199,7 +199,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_476_DD2)
-  * Touch enough instruction cache lines to ensure cache hits
-  */
- 1:	mflr	r9
--	bl	2f
-+	bcl	20,31,2f
- 2:	mflr	r6
- 	li	r7,32
- 	PPC_ICBT(0,R6,R7)		/* touch next cache line */
-@@ -414,7 +414,7 @@ _GLOBAL(loadcam_multi)
- 	 * Set up temporary TLB entry that is the same as what we're
- 	 * running from, but in AS=1.
- 	 */
--	bl	1f
-+	bcl	20,31,1f
- 1:	mflr	r6
- 	tlbsx	0,r8
- 	mfspr	r6,SPRN_MAS1
--- 
-2.25.0
+On Wed, 2021-08-18 at 00:42 +0200, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> 
+> Bean Huo (2):
+>   mmc: core: Issue HPI in case the BKOPS timed out
+>   mmc: core: Let BKOPS timeout readable/writable via sysfs
+> 
+>  drivers/mmc/core/mmc.c     | 32 ++++++++++++++++++++++++++++++++
+>  drivers/mmc/core/mmc_ops.c | 14 ++++++++++----
+>  include/linux/mmc/card.h   |  1 +
+>  3 files changed, 43 insertions(+), 4 deletions(-)
+> 
 
