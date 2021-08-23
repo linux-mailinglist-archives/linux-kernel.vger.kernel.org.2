@@ -2,103 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18E43F5107
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7813F510E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbhHWTJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:09:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230192AbhHWTJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:09:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3728613CF;
-        Mon, 23 Aug 2021 19:08:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629745721;
-        bh=PLG7FBxLuX3/LDs1ORyJPnau1dlijqlSmrYO3kxYDQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UZBMhhNaNnCs4NE6zyqjsZZQxflcfOT+aeFIwthe59yd++NKXgNiiDUNewOphuTcl
-         FRpHqiSUWD3fCHobPQPxMuCt8YX5UyPw1HkOInJbUZ7jQwoWOMB1eEKdzo3LR3PqPU
-         6Zi6xRwAO3tMbQAMGtJFo+wnAisYpNOtZbMkBcZNFCRD1eEpLwxGq71kYRvwRd/jAp
-         POWEVkB21/X2AqkjLwAdpJPNZ/6bJh9lrE6kowljzhbZfkN0GuSxv6VV3FY51zV7uc
-         6e6nGlj10YjA06DZ8O4S360qjcLgVoReT8FKoUGwz9SSiTk1CgjHF2A6zVKZUGhXCi
-         pslslOiTjA18A==
-Date:   Mon, 23 Aug 2021 12:08:37 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     John Harrison <John.C.Harrison@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [Intel-gfx] [PATCH] drm/i915/selftest: Fix use of err in
- igt_reset_{fail, nop}_engine()
-Message-ID: <YSPyNZ3I1LgvDYSw@Ryzen-9-3900X.localdomain>
-References: <20210813171158.2665823-1-nathan@kernel.org>
+        id S231496AbhHWTLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhHWTLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 15:11:21 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1A4C061575;
+        Mon, 23 Aug 2021 12:10:37 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1mIFL7-0004q7-4Q; Mon, 23 Aug 2021 21:10:33 +0200
+Date:   Mon, 23 Aug 2021 21:10:33 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, coreteam@netfilter.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Suspicious pattern for use of function xt_register_template()
+Message-ID: <20210823191033.GA23869@breakpoint.cc>
+References: <CAKXUXMzdGdyQg9CXJ2AZStrBk3J10r5r=gyiAuU4WimnoQNyvA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210813171158.2665823-1-nathan@kernel.org>
+In-Reply-To: <CAKXUXMzdGdyQg9CXJ2AZStrBk3J10r5r=gyiAuU4WimnoQNyvA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping? This is a pretty clear bug and it is not fixed in -next or
-drm-intel at this point.
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> Dear Florian, dear netfilter maintainers,
+> 
+> Commit fdacd57c79b ("netfilter: x_tables: never register tables by
+> default") on linux-next
+> introduces the function xt_register_template() and in all cases but
+> one, the calls to that function are followed by:
+> 
+>     if (ret < 0)
+>         return ret;
+> 
+> All these checks were also added with the commit above.
+> 
+> In the one case, for iptable_mangle_init() in
+> ./net/ipv4/netfilter/iptable_mangle.c, this pattern was not followed.
 
-On Fri, Aug 13, 2021 at 10:11:58AM -0700, Nathan Chancellor wrote:
-> Clang warns:
-> 
-> In file included from drivers/gpu/drm/i915/gt/intel_reset.c:1514:
-> drivers/gpu/drm/i915/gt/selftest_hangcheck.c:465:62: warning: variable
-> 'err' is uninitialized when used here [-Wuninitialized]
->         pr_err("[%s] Create context failed: %d!\n", engine->name, err);
->                                                                   ^~~
-> ...
-> drivers/gpu/drm/i915/gt/selftest_hangcheck.c:580:62: warning: variable
-> 'err' is uninitialized when used here [-Wuninitialized]
->         pr_err("[%s] Create context failed: %d!\n", engine->name, err);
->                                                                   ^~~
-> ...
-> 2 warnings generated.
-> 
-> This appears to be a copy and paste issue. Use ce directly using the %pe
-> specifier to pretty print the error code so that err is not used
-> uninitialized in these functions.
-> 
-> Fixes: 3a7b72665ea5 ("drm/i915/selftest: Bump selftest timeouts for hangcheck")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  drivers/gpu/drm/i915/gt/selftest_hangcheck.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gt/selftest_hangcheck.c b/drivers/gpu/drm/i915/gt/selftest_hangcheck.c
-> index 08f011f893b2..2c1ed32ca5ac 100644
-> --- a/drivers/gpu/drm/i915/gt/selftest_hangcheck.c
-> +++ b/drivers/gpu/drm/i915/gt/selftest_hangcheck.c
-> @@ -462,7 +462,7 @@ static int igt_reset_nop_engine(void *arg)
->  
->  		ce = intel_context_create(engine);
->  		if (IS_ERR(ce)) {
-> -			pr_err("[%s] Create context failed: %d!\n", engine->name, err);
-> +			pr_err("[%s] Create context failed: %pe!\n", engine->name, ce);
->  			return PTR_ERR(ce);
->  		}
->  
-> @@ -577,7 +577,7 @@ static int igt_reset_fail_engine(void *arg)
->  
->  		ce = intel_context_create(engine);
->  		if (IS_ERR(ce)) {
-> -			pr_err("[%s] Create context failed: %d!\n", engine->name, err);
-> +			pr_err("[%s] Create context failed: %pe!\n", engine->name, ce);
->  			return PTR_ERR(ce);
->  		}
->  
-> 
-> base-commit: 927dfdd09d8c03ba100ed0c8c3915f8e1d1f5556
-> -- 
-> 2.33.0.rc2
+Thats a bug, the error test is missing.
