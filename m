@@ -2,140 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1763F4299
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 02:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAF93F42A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 02:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234429AbhHWAcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 20:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbhHWAcR (ORCPT
+        id S232005AbhHWAos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 20:44:48 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:37597 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhHWAop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 20:32:17 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917F8C061575;
-        Sun, 22 Aug 2021 17:31:35 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id lc21so880629ejc.7;
-        Sun, 22 Aug 2021 17:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jowtOTpjNwqucfYjuJgTUiClzxtr7mn0OII0JVTDIs4=;
-        b=sV4cROVbci+qn31l06I0BOL/BjGaS1l9u8CR9wXrVGw9el/mdkBh+WRWUyFI030YuE
-         kse5xB/cxs+MUdVH8uVIVHgkJno+uO9k4hufQfbQR1gEZICJupBHiaEA76BeENv2drBl
-         m7FBq5K0NekFivSccitH49IWI6ZqQ1ey6DIwMgnUSF2mIVsMNgmSA92QrSICKjSVB9VV
-         UigtYNpI7xL+dvQfhAp4gEUQy6uttMDKCpx+A5IqUejlDO/kxC9XHemsDSowrXn4X5oT
-         ycQT4zIJaavZUOJpBxNt/fv16BsWBv0k2Ul2R6/HjAggIX3U4lO9wKZKynpyNnXp/zV4
-         XetA==
+        Sun, 22 Aug 2021 20:44:45 -0400
+Received: by mail-il1-f199.google.com with SMTP id w12-20020a92ad0c000000b00227fc2e6eaeso732219ilh.4
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 17:44:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jowtOTpjNwqucfYjuJgTUiClzxtr7mn0OII0JVTDIs4=;
-        b=GftcEhEj9JayXONrjjhY4lnPBJNc+9LHVLR+Mzm47UY38kIwMnhqs5J9+3IC/mz2Jq
-         8YiqYClRotkUO9ckv+Sytm6Ff9kWl4Mu6Tx2OYJYBn6Ak74ruD2nHjgmO8bgIVVIry1A
-         HmTag9PdZFOqelbtuerM0z/Q6VJgd5JELWnKooT8cZLkIIqQ1dwMvAwivLEKcoYGKmTI
-         zCr2Hzp0fEhDPlemtPUfyxJtW9K18QzpiELSuJUOeUfiYvuCSf0V1ah0sybqP6KZbeRS
-         xS7XGoKzLEIu7F01CT8FxA5ZQ6hGTy74CaNZCbFIZ4CONR9QmU9hLB7FFvhql/rcV8k0
-         IcmA==
-X-Gm-Message-State: AOAM533RlTc32pPuOAGlEDJs9t7eZGI4TuY1cyhCMYv35BNXkv5RpjYi
-        /BZsXvdIYyk6aRkGzQqb6PE=
-X-Google-Smtp-Source: ABdhPJxDGc/GUX1m73NPQNXtTRrERjbgD1KmnZNNVG7t8kgUpusl+RxLu6QqCgpLC4d/ItjQPake/A==
-X-Received: by 2002:a17:907:a043:: with SMTP id gz3mr10487959ejc.366.1629678694239;
-        Sun, 22 Aug 2021 17:31:34 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id cr9sm8090439edb.17.2021.08.22.17.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 17:31:34 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 03:31:32 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Rasmussen <MIR@bang-olufsen.dk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 3/5] net: dsa: tag_rtl8_4: add realtek 8
- byte protocol 4 tag
-Message-ID: <20210823003132.fdafjnci4y56cmnd@skbuf>
-References: <20210822193145.1312668-1-alvin@pqrs.dk>
- <20210822193145.1312668-4-alvin@pqrs.dk>
- <20210822221307.mh4bggohdvx2yehy@skbuf>
- <9d6af614-d9f9-6e7b-b6b5-a5f5f0eb8af2@bang-olufsen.dk>
- <20210822232538.pkjsbipmddle5bdt@skbuf>
- <0606e849-5a4e-08c9-fcd1-d4661c10a51c@bang-olufsen.dk>
- <20210822234516.pwlu4wk3s3pfzbmi@skbuf>
- <e92dd0b2-0720-b848-900d-7f383f133111@bang-olufsen.dk>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Uwxvn5atNhE0NIH/RYoJlbaLRjbzmMnZlC4pPIKHaCg=;
+        b=a1eEUJ7y2Y8nuVIBxNcMeA4goLAP/haPU+niWVLJKe1ooOzwbJ4C1loA9v2bzC0y2B
+         s4YpfeowdOIPSIcuYIdrRDwAl5pSa4wsU5ILv73QDI4jz3m0IAWrmEILAFZbTEPoRKVO
+         OdTNTEZI4IqTq2Pf+PGXAxDk6DcsfDN8xoTX1GmCPY+lGbTv5rI0QhJ+/xaoybplfU/m
+         YIwnCORL6uGSyMRcUov5i/eFhVeeO81FS8WFxBIDXtaw7NX3CLck68C3a6cs5ERlmgkp
+         yVWPPzjdHi0GlZzUFjZBM+fuaekdmP/J5w6R7qSklcl3jYWHCmuuUqBHy9Q+gyJkVPjS
+         kMUg==
+X-Gm-Message-State: AOAM531iWi8s0dexm9hvXd3kaiMUTAng5hqv/y3txXduu1bdLQaonmTS
+        RCkeRCx3sPsJscaqI4xIcLXkca+RoyjvSPkoklmJFvtCaALo
+X-Google-Smtp-Source: ABdhPJzRzRs/Duz0wgM23JTziNfzEd6x9/41lSnGWLMkUw4RlM/yKekx0NVzSt7Y6yEF9dPTYoeP0ODdMtKxgxe5AaTww1CkJUtS
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e92dd0b2-0720-b848-900d-7f383f133111@bang-olufsen.dk>
+X-Received: by 2002:a02:2a88:: with SMTP id w130mr27207095jaw.60.1629679443921;
+ Sun, 22 Aug 2021 17:44:03 -0700 (PDT)
+Date:   Sun, 22 Aug 2021 17:44:03 -0700
+In-Reply-To: <6e5f874d-ac61-9556-8d7e-575ec7d9682a@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005a4e8105ca2f509c@google.com>
+Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in iov_iter_revert
+From:   syzbot <syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 12:28:51AM +0000, Alvin Šipraga wrote:
-> On 8/23/21 1:45 AM, Vladimir Oltean wrote:
-> > On Sun, Aug 22, 2021 at 11:37:28PM +0000, Alvin Šipraga wrote:
-> >>>>>> +	skb->offload_fwd_mark = 1;
-> >>>>>
-> >>>>> At the very least, please use
-> >>>>>
-> >>>>> 	dsa_default_offload_fwd_mark(skb);
-> >>>>>
-> >>>>> which does the right thing when the port is not offloading the bridge.
-> >>>>
-> >>>> Sure. Can you elaborate on what you mean by "at the very least"? Can it
-> >>>> be improved even further?
-> >>>
-> >>> The elaboration is right below. skb->offload_fwd_mark should be set to
-> >>> zero for packets that have been forwarded only to the host (like packets
-> >>> that have hit a trapping rule). I guess the switch will denote this
-> >>> piece of info through the REASON code.
-> >>
-> >> Yes, I think it will be communicated in REASON too. I haven't gotten to
-> >> deciphering the contents of this field since it has not been needed so
-> >> far: the ports are fully isolated and all bridging is done in software.
-> >
-> > In that case, setting skb->offload_fwd_mark to true is absolutely wrong,
-> > since the bridge is told that no software forwarding should be done
-> > between ports, as it was already done in hardware (see nbp_switchdev_allowed_egress).
-> >
-> > I wonder how this has ever worked? Are you completely sure that bridging
-> > is done in software?
->
-> You are absolutely right, and indeed I checked just now and the bridging
-> is not working at all.
->
-> Deleting the line (i.e. skb->offload_fwd_mark = 0) restores the expected
-> bridging behaviour.
->
-> Based on what you have said, do I understand correctly that
-> offload_fwd_mark shouldn't be set until bridge hardware offloading has
-> been implemented?
->
-> Thanks for your detailed review so far.
+Hello,
 
-So back to my initial suggestion:
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-| At the very least, please use
-|
-| 	dsa_default_offload_fwd_mark(skb);
-|
-| which does the right thing when the port is not offloading the bridge.
+Reported-and-tested-by: syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
 
-This way, you won't have to touch this code even after you start
-implementing .port_bridge_join and .port_bridge_leave. It deals with
-both cases.
+Tested on:
+
+commit:         b917c794 io_uring: fix revert truncated vecs
+git tree:       https://github.com/isilence/linux.git syztest_trunc2
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4aa932b5eaeee9ef
+dashboard link: https://syzkaller.appspot.com/bug?extid=9671693590ef5aad8953
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Note: testing is done by a robot and is best-effort only.
