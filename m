@@ -2,189 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AAD3F4F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15E03F4F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231223AbhHWRRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:17:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46153 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231418AbhHWRQ6 (ORCPT
+        id S231825AbhHWRRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231205AbhHWRRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:16:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629738975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xZFFKBLXvmTDOWmqTIb0MtmNKyCMkrWY/MlBcYf3Qag=;
-        b=NBERgHSAFyi8mrSHGu+Eg6WgmEODzEKjOtstxlHzrElsRxRu7xdV4EILNAOm3hNKY+mAUI
-        ESEuc1371QMJmvphLa0Y982uxAMAtoBpuDeMpUytlst9jzFWVdQ22dMg4O4AAz41KWqUJC
-        vKAqMR/Z9bvlhGtiTYkkYb9je09kbA0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-MQSAtfUTNWW7Z3kORHPQvQ-1; Mon, 23 Aug 2021 13:16:13 -0400
-X-MC-Unique: MQSAtfUTNWW7Z3kORHPQvQ-1
-Received: by mail-qv1-f71.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so12828308qvt.20
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:16:13 -0700 (PDT)
+        Mon, 23 Aug 2021 13:17:05 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC08C061757;
+        Mon, 23 Aug 2021 10:16:21 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id m25-20020a7bcb99000000b002e751bcb5dbso482758wmi.5;
+        Mon, 23 Aug 2021 10:16:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5frDiRTsJrV766/ONrUvn6vJsIh8+sTTXit1HYJcI0c=;
+        b=Poq2RSV0QqSo3VxKAvWAFtGGgT4qwaUCWKLcMPfnSk80bWz4jI+Z/lONu2X7P50hGp
+         nRdvxgpVbyaVqs6eECLZhRjIsmCoHczCUt16CZeHRiHNsTRa/8EkCk9htdvlFfPGnpyu
+         7lkUvNNqc1C8/71iWnWSPN/0P8zE4kDwO/cRINWnL3E9JTniVdsftPYzDOpdJZ7Z70wi
+         /8yfrJFRUIBW1T8AP2a3xJYmcVi6tfax4IG860+CZx2WhjfZJvA0B3MS7Ppedt6GejCZ
+         hp6yQcatiEXA8RRYN/SUsilv0ZqLGbSSRn3VcRzGpbMCmC+YiKEbxFRx7F3WpsbFvNgX
+         p8ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=xZFFKBLXvmTDOWmqTIb0MtmNKyCMkrWY/MlBcYf3Qag=;
-        b=DJOecw4tJeHTSCWWoVij6+ky2p3idt8z+CITxZThPQ2+bEkoWew07DM8WCmjLWFbTg
-         g+eOhBC+qalL1bvn3s3Z9zlO12watY2wJP+Ojkno+fUeNVq2sN/y4kuPRdA3u/tQGgtm
-         GZh+9nbPISlHS0YKXCMst4+maimJGTLgU3MrhslvDyYc9fcvmL/wzqCmGXfNQHUfefR7
-         meDrqK4pUJwYr09eWRyHulOjnUo4FUDaraWzUJjHcWHEnYR9Ewc2d4Aumjl9dpI8qK15
-         +FMvhReR8EXyQOPWzVZ0PCSZMi+/wzsQf9SPc32G2eip09092CcpAuk8HlrWAhhqxGRq
-         bkiQ==
-X-Gm-Message-State: AOAM530nhRBfrAiPCdMmjNng+ciJKWXQ6fQDfI3tpKG34GczKWsnWnEK
-        FnrXK6Rt3+biW1upRR5grinGLxDHBV8NVIgY76mgm0f5zB3gzfiq6cwLBu6IYDXmZ0ALmz4UrqE
-        nG5TQb8DbhS8JghQh6zjZeY12
-X-Received: by 2002:ae9:e915:: with SMTP id x21mr22225256qkf.183.1629738973454;
-        Mon, 23 Aug 2021 10:16:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxiBD8uUARCKxXNSzoVbqrFZ+Jfv2SuNIY6/Q2oDsWp89XX08gcbM08qwqr7srUAbBQH3Ojww==
-X-Received: by 2002:ae9:e915:: with SMTP id x21mr22225239qkf.183.1629738973302;
-        Mon, 23 Aug 2021 10:16:13 -0700 (PDT)
-Received: from tstellar.remote.csb (97-120-182-34.ptld.qwest.net. [97.120.182.34])
-        by smtp.gmail.com with ESMTPSA id i67sm8999978qkd.90.2021.08.23.10.16.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 10:16:12 -0700 (PDT)
-Subject: Re: [PATCH v2 00/14] x86: Add support for Clang CFI
-To:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-References: <20210823171318.2801096-1-samitolvanen@google.com>
-From:   Tom Stellard <tstellar@redhat.com>
-Message-ID: <1706ee8e-c21c-f867-c0be-24814a92b853@redhat.com>
-Date:   Mon, 23 Aug 2021 10:16:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        bh=5frDiRTsJrV766/ONrUvn6vJsIh8+sTTXit1HYJcI0c=;
+        b=fJepkRBp8XCaRjZyAQ31R6voWqgH1N0hniJyPbc916PgyXafVnxBeqK/y+isrI+ixo
+         rTBkKb5AUIODbn5oj5/BpNEDKZr/M1t8n5ZF1XU/eHPcrsBsyY3QnSaiKgiaSptcK1JX
+         TT36F02RqjQhCji5aCF2XGF2rKfKIdVHgDDAHGBiyDb/8R++21IX9fpi7WaQf5ypZ/E4
+         gs0DWlyod4f55sdPc3IxzRpzI//rfMEsze8GycBCu7OsdujWnxdKPqDFLdubNX2+RzdN
+         dArZEebxjC1Vo288+Fq7ZRspXDTNwZeL4eX5AxBzVyEm06RB0llL9RcGzKfMOxX4YWmd
+         aapQ==
+X-Gm-Message-State: AOAM531syLPfdPXn689Pa0Yqq3UnOWE9LrHPBjbN+Q30nnrW9bTtFYJz
+        oG7iqjGH1BW+jrr7cTm5op0=
+X-Google-Smtp-Source: ABdhPJx2OZaPIIu7DU5azwW/rCUXxC0gf7IWwdOF2iLGYO7Sc2ZCe8cxkIwuhh3PVu0m+4X25MXUMQ==
+X-Received: by 2002:a1c:98d8:: with SMTP id a207mr8961644wme.16.1629738980218;
+        Mon, 23 Aug 2021 10:16:20 -0700 (PDT)
+Received: from debby ([2a01:e0a:a6d:a8d0:7ff4:8f61:5574:9f95])
+        by smtp.gmail.com with ESMTPSA id z5sm19077020wmp.26.2021.08.23.10.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 10:16:19 -0700 (PDT)
+From:   Romain Perier <romain.perier@gmail.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/3] Add RTC for MStar SoCs
+Date:   Mon, 23 Aug 2021 19:16:10 +0200
+Message-Id: <20210823171613.18941-1-romain.perier@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210823171318.2801096-1-samitolvanen@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 10:13 AM, 'Sami Tolvanen' via Clang Built Linux wrote:
-> This series adds support for Clang's Control-Flow Integrity (CFI)
-> checking to x86_64. With CFI, the compiler injects a runtime
-> check before each indirect function call to ensure the target is
-> a valid function with the correct static type. This restricts
-> possible call targets and makes it more difficult for an attacker
-> to exploit bugs that allow the modification of stored function
-> pointers. For more details, see:
-> 
->    https://clang.llvm.org/docs/ControlFlowIntegrity.html
-> 
-> Version 2 depends on Clang >=14, where we fixed the issue with
-> referencing static functions from inline assembly. Based on the
-> feedback for v1, this version also changes the declaration of
-> functions that are not callable from C to use an opaque type,
-> which stops the compiler from replacing references to them. This
-> avoids the need to sprinkle function_nocfi() macros in the kernel
-> code.
+This patches series adds a new driver for the RTC found in the Mstar
+MSC313e SoCs and newer. It adds a basic rtc driver, the corresponding
+devicetree bindings and its documentation.
 
-How invasive are the changes in clang 14 necessary to make CFI work?
-Would it be possible to backport them to LLVM 13?
+The rtctest (from selftests) has been passed on this driver, with the
+following output:
+$ rtctest 
+TAP version 13
+1..7
+# Starting 7 tests from 2 test cases.
+#  RUN           rtc.date_read ...
+# rtctest.c:47:date_read:Current RTC date/time is 01/01/1970 00:02:03.
+#            OK  rtc.date_read
+ok 1 rtc.date_read
+#  RUN           rtc.uie_read ...
+#            OK  rtc.uie_read
+ok 2 rtc.uie_read
+#  RUN           rtc.uie_select ...
+#            OK  rtc.uie_select
+ok 3 rtc.uie_select
+#  RUN           rtc.alarm_alm_set ...
+# rtctest.c:136:alarm_alm_set:Alarm time now set to 00:02:12.
+# rtctest.c:156:alarm_alm_set:data: 1a0
+#            OK  rtc.alarm_alm_set
+ok 4 rtc.alarm_alm_set
+#  RUN           rtc.alarm_wkalm_set ...
+# rtctest.c:192:alarm_wkalm_set:Alarm time now set to 01/01/1970 00:02:15.
+#            OK  rtc.alarm_wkalm_set
+ok 5 rtc.alarm_wkalm_set
+#  RUN           rtc.alarm_alm_set_minute ...
+# rtctest.c:238:alarm_alm_set_minute:Alarm time now set to 00:03:00.
+# rtctest.c:258:alarm_alm_set_minute:data: 1a0
+#            OK  rtc.alarm_alm_set_minute
+ok 6 [  180.545015] random: fast init done
+rtc.alarm_alm_set_minute
+#  RUN           rtc.alarm_wkalm_set_minute ...
+# rtctest.c:294:alarm_wkalm_set_minute:Alarm time now set to 01/01/1970 00:04:00.
+#            OK  rtc.alarm_wkalm_set_minute
+ok 7 rtc.alarm_wkalm_set_minute
+# PASSED: 7 / 7 tests passed.
+# Totals: pass:7 fail:0 xfail:0 xpass:0 skip:0 error:0
 
--Tom
+Changes since v3:
+- Fixed bad device table in MODULE_DEVICE_TABLE()
+- Use reverse christmas tree ordering for local variables in the probe()
+  function
+- Removed the "clk" field from the msc313_rtc data structure (not
+  required, only used in the probe function)
 
-> 
-> The first two patches contain objtool support for CFI, the
-> remaining patches change function declarations to use opaque
-> types, fix type mismatch issues that confuse the compiler, and
-> disable CFI where it can't be used.
-> 
-> You can also pull this series from
-> 
->    https://github.com/samitolvanen/linux.git x86-cfi-v2
-> 
-> ---
-> Changes in v2:
-> - Dropped the first objtool patch as the warnings were fixed in
->    separate patches.
-> 
-> - Changed fix_cfi_relocs() in objtool to not rely on jump table
->    symbols, and to return an error if it can't find a relocation.
-> 
-> - Fixed a build issue with ASM_STACK_FRAME_NON_STANDARD().
-> 
-> - Dropped workarounds for inline assembly references to
->    address-taken static functions with CFI as this was fixed in
->    the compiler.
-> 
-> - Changed the C declarations of non-callable functions to use
->    opaque types and dropped the function_nocfi() patches.
-> 
-> - Changed ARCH_SUPPORTS_CFI_CLANG to depend on Clang >=14 for
->    the compiler fixes.
-> 
-> Kees Cook (2):
->    x86/extable: Do not mark exception callback as CFI
->    x86, relocs: Ignore __typeid__ relocations
-> 
-> Sami Tolvanen (12):
->    objtool: Add CONFIG_CFI_CLANG support
->    objtool: Add ASM_STACK_FRAME_NON_STANDARD
->    linkage: Add DECLARE_ASM_FUNC_SYMBOL
->    ftrace: Use an opaque type for functions not callable from C
->    lkdtm: Disable UNSET_SMEP with CFI
->    lkdtm: Use an opaque type for lkdtm_rodata_do_nothing
->    x86: Use an opaque type for functions not callable from C
->    x86/purgatory: Disable CFI
->    x86, module: Ignore __typeid__ relocations
->    x86, cpu: Use LTO for cpu.c with CFI
->    x86, kprobes: Fix optprobe_template_func type mismatch
->    x86, build: Allow CONFIG_CFI_CLANG to be selected
-> 
->   arch/x86/Kconfig                      |  1 +
->   arch/x86/include/asm/ftrace.h         |  2 +-
->   arch/x86/include/asm/idtentry.h       | 10 +++---
->   arch/x86/include/asm/page_64.h        |  7 ++--
->   arch/x86/include/asm/paravirt_types.h |  3 +-
->   arch/x86/include/asm/processor.h      |  2 +-
->   arch/x86/include/asm/proto.h          | 25 ++++++-------
->   arch/x86/include/asm/uaccess_64.h     |  9 ++---
->   arch/x86/kernel/alternative.c         |  2 +-
->   arch/x86/kernel/ftrace.c              |  2 +-
->   arch/x86/kernel/kprobes/opt.c         |  4 +--
->   arch/x86/kernel/module.c              |  4 +++
->   arch/x86/kernel/paravirt.c            |  4 +--
->   arch/x86/kvm/emulate.c                |  4 +--
->   arch/x86/kvm/kvm_emulate.h            |  9 ++---
->   arch/x86/mm/extable.c                 |  1 +
->   arch/x86/power/Makefile               |  2 ++
->   arch/x86/purgatory/Makefile           |  2 +-
->   arch/x86/tools/relocs.c               |  7 ++++
->   arch/x86/xen/enlighten_pv.c           |  6 ++--
->   arch/x86/xen/xen-ops.h                | 10 +++---
->   drivers/misc/lkdtm/bugs.c             |  2 +-
->   drivers/misc/lkdtm/lkdtm.h            |  2 +-
->   drivers/misc/lkdtm/perms.c            |  2 +-
->   drivers/misc/lkdtm/rodata.c           |  2 +-
->   include/linux/ftrace.h                |  7 ++--
->   include/linux/linkage.h               | 13 +++++++
->   include/linux/objtool.h               |  6 ++++
->   tools/include/linux/objtool.h         |  6 ++++
->   tools/objtool/arch/x86/decode.c       | 16 +++++++++
->   tools/objtool/elf.c                   | 51 +++++++++++++++++++++++++++
->   tools/objtool/include/objtool/arch.h  |  3 ++
->   tools/objtool/include/objtool/elf.h   |  2 +-
->   33 files changed, 166 insertions(+), 62 deletions(-)
-> 
-> 
-> base-commit: d5ae8d7f85b7f6f6e60f1af8ff4be52b0926fde1
-> 
+Changes since v2:
+- Added dual-license header to the dt-bindings documentation
+- Reordered dts entries, so the rtc device_node is before the watchdog
+  device_node (because it has a lower address)
+- Updated rtc range_max to U32_MAX
+- Leave range_min to 0 (default value when it is not set at all)
+- Fixed the CNT_EN_BIT logic, so .read_time will only read the time when
+  the RTC has been previously set and has a valid state (which is not
+  the case after a POR).
+
+Changes since v1:
+- Fixed the DT bindings documentation and fixed dt_binding_check (an
+  include was missing)
+- Added || COMPILE_TEST to kconfig
+- Removed rtc_valid_tm from msc313_rtc_read_time()
+- Removed the last write of the msc313_rtc_set_time() function (not
+  required) and improved comments
+- Replaced the relaxed io by normal io in msc313_rtc_interrupt()
+- Added checks to be sure that the alarm fired in msc313_rtc_interrupt()
+- Removed msc313_rtc_remove() (replaced by devm_add_action_or_reset)
+- Removed unnecessary software reset of the IP in the probe function
+  (the soft reset is never executed, it is a mistake from the initial
+  refactoring)
+- Switched to devm_rtc_allocate_device() and devm_rtc_register_device(),
+  and dropped the error message related to the rtc device allocation
+- Added an RTC range by setting .range_min and .range_max
+- Added the "start-year" property to the DT bindings documentation
+
+Daniel Palmer (1):
+  rtc: Add support for the MSTAR MSC313 RTC
+
+Romain Perier (2):
+  dt-bindings: rtc: Add Mstar MSC313e RTC devicetree bindings
+    documentation
+  ARM: dts: mstar: Add rtc device node
+
+ .../bindings/rtc/mstar,msc313-rtc.yaml        |  49 ++++
+ MAINTAINERS                                   |   1 +
+ arch/arm/boot/dts/mstar-v7.dtsi               |   8 +
+ drivers/rtc/Kconfig                           |  10 +
+ drivers/rtc/Makefile                          |   1 +
+ drivers/rtc/rtc-msc313.c                      | 258 ++++++++++++++++++
+ 6 files changed, 327 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/mstar,msc313-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-msc313.c
+
+-- 
+2.30.2
 
