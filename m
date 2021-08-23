@@ -2,277 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AB03F52E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ADC3F52ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhHWVg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 17:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        id S232901AbhHWVmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 17:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhHWVgz (ORCPT
+        with ESMTP id S232503AbhHWVmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:36:55 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1980C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:36:12 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id i13so7338182ilm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:36:12 -0700 (PDT)
+        Mon, 23 Aug 2021 17:42:00 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0E2C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:41:17 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id n5so12853366pjt.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:41:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rUyor/8q1SI5iCRnQ5Kwgmmr9Mseym+7axVhkjht0GE=;
-        b=HF6Q8dZ8mP9h8rsXIYySetmtOoT7Vti6I7Ll+WHD710DDgG+MO4/JgQ7av7o010xPl
-         eqXhv1hgxujJL6oyW5WF/CAJSZkd6kPvpbGIbk72bSDIybLKaDrTHHvB97i2Duq9ddC+
-         vxJtxRNJ4Y631BwDnBExMJc/1lKMAb55G79SOPPhSsbbvDbRLSxjJxXq/AokrSCdioVe
-         wUfnbxNCDGEFTF2t6DT4r9/jiX6ag9P52aO19FZkDH0/hpbJ2Su3iiXoGZGZ19RyUFYz
-         KdKosC4n+qkWv8aYSr3bdJX4U/lVc6J+KOa8n1pw6ZnS7onw1pmOAwfFJsDW1xKHfz4z
-         O74Q==
+        bh=ku8EjWfpl64Nxby0uKN1wfJ3BBvZfw/S8z9qY6NZG/U=;
+        b=wdm+jDOnXCqJ48PwMQuU4n7c9CWYIXm2Kebvngg/88WVYGpbiwUbKAlxXkQ0sYXrxP
+         oiLcga02EQ7j3Jr5Rpovsk/tKrYAsZddH8rMrFKgl5zgxapwGhqDKRXdcg279itt4Djj
+         womrQAlggq9Qnz6AKlnSkBNfFSNgRO+LZ9xsAhKpoUQu8KpVcNH5fa7EySYh4OyTot46
+         hhHdoSBPdPv5FuegCQAFez8yJ+Rl3E6O0+YnkI+Un2t2cXXcuE86dg0b7SrgnHnVbMOo
+         pp9Sq3a0vrfsBqxIO90bkwhGV0XrWCwiJb++pWg/544+xyMDTjFR0R/TEDhdUAiTgZv7
+         oVIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rUyor/8q1SI5iCRnQ5Kwgmmr9Mseym+7axVhkjht0GE=;
-        b=M9X2Gf9P1l2WDyvrSLnf9I5qqk9WYHiTJHGytUen5FqJSibsghO181TvyQCktGxhNA
-         pq7ex8GjYT1LmB3oZ4uuUsnD967ruqIlbIC85uu0XLNXbjPd20th62uXVzfdC0t3pCbR
-         MEeS8Gmel0igmZZEi1RB478zofC+Mit8KZR0hXRYzdOfP8nv5VVkCa/oO2OP1jfhaV5z
-         UnQ3Jso5WN/jQiaoHXtjnAwBUKr06dXBPSzRnLto854No+kgc8PVVZOV/afbgaQjnOGR
-         5U2ib/xPoPiFBoP7eLjeo4vaMP+YZ4PUHGeBWSyiiCreh9FRKmXwFmRm8SZ0vXLc2Nj6
-         k7iA==
-X-Gm-Message-State: AOAM5319c6wq59UpvOOigI5FKA4wiEDcL+MKIW0XRND3BiM01vIDSJSa
-        BDNHU9iGO3q9QWHSLY8DADsSr30q6YkOpRadJsZwvg==
-X-Google-Smtp-Source: ABdhPJz64VTbI8K3vCETm17kYUoctYMa5AA//lXav0B8n3XNKE+glANT+1Vcia5FNIt/kvg6pcFF0ujXLIl/TX60xWQ=
-X-Received: by 2002:a05:6e02:524:: with SMTP id h4mr24493282ils.203.1629754572221;
- Mon, 23 Aug 2021 14:36:12 -0700 (PDT)
+        bh=ku8EjWfpl64Nxby0uKN1wfJ3BBvZfw/S8z9qY6NZG/U=;
+        b=BzHfutMRp1klWE4VEHUcfccdivskLwRJuf2TvGaZKxqkNYlBNCyjD51+ALepVDrOWN
+         CU9qbuyBhJpH9HyHCHPJjy4qSi17Z6Np6seu8gRAcqZMVgpv1ZTm4flkl0+CCsF4hfPf
+         RHiY+PzL6c/pM7Wvqp6tVR/nA8IQVNJXjvibWv7xHJ2k7U8YFoec5tdhZNGPIUa2Sen4
+         VPw3MqQFtBmLTB2kDDwwN6hWFbEVWGDNZblB1Mqf6G/7/Mm0IHkB5A7lTmuT64xCv3Up
+         4rj5KDJkFTDAW1VZ1qwQQDnUljv36ekTH3um8RLwbHqliMo6pOrj7RXaDqy6eTOLAr1o
+         kXkg==
+X-Gm-Message-State: AOAM531ffhCAeBKtN5HgtUdd481dizigo2wgpn0gRlH35GMvd8SaWUQH
+        duI4sQXYz5vSFmqaprIZ5qSnjy7lD36TewaW5mpW0g==
+X-Google-Smtp-Source: ABdhPJwruXO4hf39WQC31EbNJk9Fm5Wi2YZelxc3kwHFSVm3b5ZPK1M57xiPcvCoDawGSJ1K4Rcv5c7N/NVQtRZKE0w=
+X-Received: by 2002:a17:902:6ac6:b0:133:230b:e8bc with SMTP id
+ i6-20020a1709026ac600b00133230be8bcmr9605502plt.22.1629754877345; Mon, 23 Aug
+ 2021 14:41:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210823051622.312890-1-mizhang@google.com>
-In-Reply-To: <20210823051622.312890-1-mizhang@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 23 Aug 2021 14:36:01 -0700
-Message-ID: <CANgfPd9RR+a675MgLuyy6g-Ab-4jSHVV+mwxJnwOHCiC6KgAhA@mail.gmail.com>
-Subject: Re: [PATCH] selftests: KVM: use dirty logging to check if page stats
- work correctly
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>, Ben Gardon <bgorden@google.com>
+References: <20210822230235.10953-1-fmdefrancesco@gmail.com>
+ <69bbb80c-2b30-28b9-ad8c-6862a6c3b911@gmail.com> <8275282.m2tVFbhrJk@localhost.localdomain>
+In-Reply-To: <8275282.m2tVFbhrJk@localhost.localdomain>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Mon, 23 Aug 2021 22:41:06 +0100
+Message-ID: <CAA=Fs0n7zX0WrcsrBzPPxoo6GHGaCruwVb+3LEqwQYASsv34cw@mail.gmail.com>
+Subject: Re: [PATCH RFC] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 10:16 PM Mingwei Zhang <mizhang@google.com> wrote:
+On Mon, 23 Aug 2021 at 11:47, Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
 >
-> When dirty logging is enabled, KVM splits the all hugepage mapping in
-> NPT/EPT into the smallest 4K size. This property could be used to check if
-> the page stats metrics work properly in KVM mmu. At the same time, this
-> logic might be used the other way around: using page stats to verify if
-> dirty logging really splits all huge pages.
+> On Monday, August 23, 2021 10:11:52 AM CEST Pavel Skripkin wrote:
+> > On 8/23/21 2:02 AM, Fabio M. De Francesco wrote:
+> > > Replace usb_control_msg() with the new usb_control_msg_recv() and
+> > > usb_control_msg_send() API of USB Core.
+> > >
+> > > This patch is an RFC for different reasons:
+> > >
+> > > 1) I'm not sure if it is needed: while Greg Kroah-Hartman suggested to
+> > > use the new API in a message to a thread that was about a series of patches
+> > > submitted by Pavel Skripkin (who decided to not use it), I cannot explain
+> > > if and why the driver would benefit from this patch.
+> > > 2) I have doubts about the semantic of the API I use here, so I'd like to
+> > > know whether or not I'm using them properly.
+> > > 3) At the moment I cannot test the driver because I don't have my device
+> > > with me.
+> > > 4) This patch could probably lead to a slight change in some lines of
+> > > Pavel's series (for sure in usb_read*()).
+> > >
+> > > I'd like to hear from the Maintainers and other interested people if this
+> > > patch is worth to be considered and, in this case, if there are suggestions
+> > > for the purpose to improve it.
+> > >
+> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > >   drivers/staging/r8188eu/hal/usb_ops_linux.c | 19 ++++++++++---------
+> > >   1 file changed, 10 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> > > index 6a0a24acf292..9e290c1cc449 100644
+> > > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> > > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> > > @@ -15,7 +15,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+> > >     struct adapter  *adapt = pintfhdl->padapter;
+> > >     struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
+> > >     struct usb_device *udev = dvobjpriv->pusbdev;
+> > > -   unsigned int pipe;
+> > > +   u8 pipe;
+> > >     int status = 0;
+> > >     u8 reqtype;
+> >
+> > I think, we can pass REALTEK_USB_VENQT_{READ,WRITE} directly as
+> > requesttype argument and get rid of u8 reqtype. + we can define these
+> > macros:
+> >
+> > #define
+> > usbctrl_vendor_read(...)   usbctrl_vendorreq(...,REALTEK_USB_VENQT_READ)
+> >
+> >
+> > #define
+> > usbctrl_vendor_write()    usbctrl_vendorreq(...,REALTEK_USB_VENQT_WRITE)
+> >
+> >
+> > This will make code more nice, IMO  :)
+>
+> Dear Pavel,
+>
+> I agree in full: nicer and cleaner :)
+>
+> I'll do that, but please notice that I will also need to change the code of the three
+> usb_read*() for calling usbctrl_vendor_read(). Furthermore, "else res = 0;" becomes
+> unnecessary. Please take these changes into account when you'll send them again
+> as "regular" patches.
+>
+> > (Sorry for this formatting, my email client disabled "paste without
+> > formatting" option)
+>
+> Actually I don't see any oddities in the format of your message :)
+>
+> > >     u8 *pIo_buf;
+> > > @@ -47,19 +47,20 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+> > >             memset(pIo_buf, 0, len);
+> > >
+> > >             if (requesttype == 0x01) {
+> > > -                   pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
+> > >                     reqtype =  REALTEK_USB_VENQT_READ;
+> > > +                   status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> > > +                                                 reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
+> > > +                                                 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> > > +                                                 GFP_KERNEL);
+> > >             } else {
+> > > -                   pipe = usb_sndctrlpipe(udev, 0);/* write_out */
+> > >                     reqtype =  REALTEK_USB_VENQT_WRITE;
+> > > -                   memcpy(pIo_buf, pdata, len);
+> >
+> > I guess, this memcpy is needed, since we want to send data from pdata
+>
+> Oh, dear! How could I have missed that? Two alternatives: either because of working
+> during bedtime, or I'm definitely losing my mind... :(
+>
+> >
+> > > +                   status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> > > +                                                 reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
+> > > +                                                 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> > > +                                                 GFP_KERNEL);
+> > >             }
+> > >
+> > > -           status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> > > -                                    reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
+> > > -                                    pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
+> > > -
+> > > -           if (status == len) {   /*  Success this control transfer. */
+> > > +           if (!status) {   /*  Success this control transfer. */
+> > >                     rtw_reset_continual_urb_error(dvobjpriv);
+> > >                     if (requesttype == 0x01)
+> > >                             memcpy(pdata, pIo_buf,  len);
+> > >
+> >
+> >
+> > With regards,
+> > Pavel Skripkin
+>
+> Thanks for you review, I really appreciate it.
+>
+> Regards,
+>
+> Fabio
+>
+> P.S.: As I wrote, I have not my ASUS N10 Nano with me and I won't have the opportunity
+> to test this as well as any other patch until the end of August. I hope to not break anything.
+> If somebody has time to test the final patch that I'm going to submit, I'd really appreciate it.
+>
+>
 
-This isn't quite right for upstream.
-Internally at Google we eagerly split all large page mappings when
-enabling dirty logging, but upstream the large page mappings are just
-write protected and then lazily split in response to vCPU writes.
-This makes it difficult to make assertions about the number of large /
-4k page mappings right after enabling dirty logging, but we can make
-those assertions after the vCPUs have written to each page of memory,
-as you did below.
+Dear Fabio,
 
->
-> So add page stats checking in dirty logging performance selftest. In
-> particular, add checks in three locations:
->  - just after vm is created;
->  - after populating memory into vm but before enabling dirty logging;
->  - after turning off dirty logging.
+Code is looking good - happy to test the final patch here by all means.
 
-I think you mean after turning ON dirty logging here, but I think it
-should be "after turning on dirty logging and waiting for vCPUs to
-write to all their memory"
-I don't think we can make 100% certain assertions about the mapping
-counts after disabling dirty logging. It'd probably be safe to assert
-that the counts are non-zero though. Or wait for a pass after
-disabling dirty logging and check that the counts return to more or
-less what they were before dirty logging was enabled.
-
->
-> Tested using commands:
->  - ./dirty_log_perf_test -s anonymous_hugetlb_1gb
->  - ./dirty_log_perf_test -s anonymous_thp
->
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: David Matlack <dmatlack@google.com>
-> Cc: Jing Zhang <jingzhangos@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
->
-> Suggested-by: Ben Gardon <bgorden@google.com>
-
-Woops :)
-
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  .../selftests/kvm/dirty_log_perf_test.c       | 30 +++++++++++++++++++
->  .../testing/selftests/kvm/include/test_util.h |  1 +
->  .../selftests/kvm/lib/perf_test_util.c        |  3 ++
->  tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++++++++
->  4 files changed, 63 insertions(+)
->
-> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> index 3c30d0045d8d..e190f6860166 100644
-> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-> @@ -19,6 +19,10 @@
->  #include "perf_test_util.h"
->  #include "guest_modes.h"
->
-> +#ifdef __x86_64__
-> +#include "processor.h"
-> +#endif
-> +
->  /* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
->  #define TEST_HOST_LOOP_N               2UL
->
-> @@ -166,6 +170,14 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->         vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
->                                  p->slots, p->backing_src);
->
-
-It might be worth adding a comment explaining these assertions. E.g.
-"No vCPUs have been started yet, so KVM should not have created any
-mappings."
-
-> +#ifdef __x86_64__
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) == 0,
-> +                   "4K page is non zero");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-> +                   "2M page is non zero");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-> +                   "1G page is non zero");
-> +#endif
->         perf_test_args.wr_fract = p->wr_fract;
->
->         guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
-> @@ -211,6 +223,16 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->         pr_info("Populate memory time: %ld.%.9lds\n",
->                 ts_diff.tv_sec, ts_diff.tv_nsec);
->
-> +#ifdef __x86_64__
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-> +                   "4K page is zero");
-> +       if (p->backing_src == VM_MEM_SRC_ANONYMOUS_THP)
-> +               TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) != 0,
-> +                           "2M page is zero");
-> +       if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB)
-> +               TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) != 0,
-> +                           "1G page is zero");
-> +#endif
-
-This check is correct, but it misses some cases. It'd be worth going
-back to ensure that all relevant backing src types are handled here.
-For example, this misses VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB.
-
-We could also be more precise by asserting that the counts are at
-least some value or total to some value. THP introduces some flakiness
-but one way or another the mapping counts at this point should total
-up to account for the expected size of guest memory.
-
->         /* Enable dirty logging */
->         clock_gettime(CLOCK_MONOTONIC, &start);
->         enable_dirty_logging(vm, p->slots);
-> @@ -256,6 +278,14 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->                                 iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
->                 }
->         }
-> +#ifdef __x86_64__
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-> +                   "4K page is zero after dirty logging");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-> +                   "2M page is non-zero after dirty logging");
-> +       TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-> +                   "1G page is non-zero after dirty logging");
-> +#endif
->
->         /* Disable dirty logging */
->         clock_gettime(CLOCK_MONOTONIC, &start);
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-> index d79be15dd3d2..dca5fcf7aa87 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -102,6 +102,7 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
->  size_t get_backing_src_pagesz(uint32_t i);
->  void backing_src_help(void);
->  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
-> +size_t get_page_stats(uint32_t page_level);
->
->  /*
->   * Whether or not the given source type is shared memory (as opposed to
-> diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
-> index 0ef80dbdc116..c2c532990fb0 100644
-> --- a/tools/testing/selftests/kvm/lib/perf_test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
-> @@ -96,6 +96,9 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
->  #ifdef __s390x__
->         /* Align to 1M (segment size) */
->         guest_test_phys_mem &= ~((1 << 20) - 1);
-> +#elif __x86_64__
-> +       /* Align to 1G (segment size) to allow hugepage mapping. */
-> +       guest_test_phys_mem &= ~((1 << 30) - 1);
->  #endif
-
-This should be a separate commit. It could probably also be
-arch-agnostic and just replace the s390 alignment above too.
-
->         pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
->
-> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-> index af1031fed97f..07eb6b5c125e 100644
-> --- a/tools/testing/selftests/kvm/lib/test_util.c
-> +++ b/tools/testing/selftests/kvm/lib/test_util.c
-> @@ -15,6 +15,13 @@
->  #include "linux/kernel.h"
->
->  #include "test_util.h"
-> +#include "processor.h"
-> +
-> +static const char * const pagestat_filepaths[] = {
-> +       "/sys/kernel/debug/kvm/pages_4k",
-> +       "/sys/kernel/debug/kvm/pages_2m",
-> +       "/sys/kernel/debug/kvm/pages_1g",
-> +};
->
->  /*
->   * Parses "[0-9]+[kmgt]?".
-> @@ -141,6 +148,28 @@ size_t get_trans_hugepagesz(void)
->         return size;
->  }
->
-> +#ifdef __x86_64__
-> +size_t get_stats_from_file(const char *path)
-> +{
-> +       size_t value;
-> +       FILE *f;
-> +
-> +       f = fopen(path, "r");
-> +       TEST_ASSERT(f != NULL, "Error in opening file: %s\n", path);
-> +
-> +       fscanf(f, "%ld", &value);
-> +       fclose(f);
-> +
-> +       return value;
-> +}
-> +
-> +size_t get_page_stats(uint32_t page_level)
-> +{
-> +       TEST_ASSERT(page_level <= X86_PAGE_SIZE_1G, "page type error.");
-> +       return get_stats_from_file(pagestat_filepaths[page_level]);
-> +}
-> +#endif
-> +
->  size_t get_def_hugetlb_pagesz(void)
->  {
->         char buf[64];
-> --
-> 2.33.0.rc2.250.ged5fa647cd-goog
->
+Regards,
+Phil
