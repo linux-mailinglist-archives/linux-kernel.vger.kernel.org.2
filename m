@@ -2,334 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863633F437D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095703F438A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhHWCs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 22:48:56 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:22646 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhHWCsz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 22:48:55 -0400
-Received: from tomoyo.flets-east.jp ([114.149.34.46])
-        by mwinf5d20 with ME
-        id kqnw250020zjR6y03qo9EU; Mon, 23 Aug 2021 04:48:11 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 23 Aug 2021 04:48:11 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v2] can: netlink: prevent incoherent can configuration in case of early return
-Date:   Mon, 23 Aug 2021 11:47:50 +0900
-Message-Id: <20210823024750.702542-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.31.1
+        id S232866AbhHWDDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 23:03:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33174 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230474AbhHWDDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 23:03:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="213894864"
+X-IronPort-AV: E=Sophos;i="5.84,343,1620716400"; 
+   d="scan'208";a="213894864"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2021 20:02:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,343,1620716400"; 
+   d="scan'208";a="525740173"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Aug 2021 20:02:47 -0700
+Date:   Mon, 23 Aug 2021 10:56:35 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fpga: dfl: pci: switch from 'pci_' to 'dma_' API
+Message-ID: <20210823025635.GA620145@yilunxu-OptiPlex-7050>
+References: <c23cf1cfa058456da69849de22b957c6c414766d.1629643816.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c23cf1cfa058456da69849de22b957c6c414766d.1629643816.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct can_priv has a set of flags (can_priv::ctrlmode) which are
-correlated with the other fields of the structure. In
-can_changelink(), those flags are set first and copied to can_priv. If
-the function has to return early, for example due to an out of range
-value provided by the user, then the global configuration might become
-incoherent.
+On Sun, Aug 22, 2021 at 04:51:11PM +0200, Christophe JAILLET wrote:
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below.
+> 
+> It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
+> 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+> This is less verbose.
+> 
+> The explicit 'ret = -EIO;' has been removed because
+> 'dma_set_mask_and_coherent()' returns 0 or -EIO, so its return code can be
+> used directly.
+> 
+> It has been compile tested.
+> 
+> 
+> @@
+> @@
+> -    PCI_DMA_BIDIRECTIONAL
+> +    DMA_BIDIRECTIONAL
+> 
+> @@
+> @@
+> -    PCI_DMA_TODEVICE
+> +    DMA_TO_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_FROMDEVICE
+> +    DMA_FROM_DEVICE
+> 
+> @@
+> @@
+> -    PCI_DMA_NONE
+> +    DMA_NONE
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_alloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3;
+> @@
+> -    pci_zalloc_consistent(e1, e2, e3)
+> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_free_consistent(e1, e2, e3, e4)
+> +    dma_free_coherent(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_single(e1, e2, e3, e4)
+> +    dma_map_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_single(e1, e2, e3, e4)
+> +    dma_unmap_single(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4, e5;
+> @@
+> -    pci_map_page(e1, e2, e3, e4, e5)
+> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_page(e1, e2, e3, e4)
+> +    dma_unmap_page(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_map_sg(e1, e2, e3, e4)
+> +    dma_map_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_unmap_sg(e1, e2, e3, e4)
+> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
+> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
+> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2, e3, e4;
+> @@
+> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
+> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_dma_mapping_error(e1, e2)
+> +    dma_mapping_error(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_dma_mask(e1, e2)
+> +    dma_set_mask(&e1->dev, e2)
+> 
+> @@
+> expression e1, e2;
+> @@
+> -    pci_set_consistent_dma_mask(e1, e2)
+> +    dma_set_coherent_mask(&e1->dev, e2)
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+>    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+> ---
+>  drivers/fpga/dfl-pci.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> index 4d68719e608f..96a11084bef4 100644
+> --- a/drivers/fpga/dfl-pci.c
+> +++ b/drivers/fpga/dfl-pci.c
+> @@ -354,16 +354,10 @@ int cci_pci_probe(struct pci_dev *pcidev, const struct pci_device_id *pcidevid)
+>  
+>  	pci_set_master(pcidev);
+>  
+> -	if (!pci_set_dma_mask(pcidev, DMA_BIT_MASK(64))) {
+> -		ret = pci_set_consistent_dma_mask(pcidev, DMA_BIT_MASK(64));
+> -		if (ret)
+> -			goto disable_error_report_exit;
+> -	} else if (!pci_set_dma_mask(pcidev, DMA_BIT_MASK(32))) {
+> -		ret = pci_set_consistent_dma_mask(pcidev, DMA_BIT_MASK(32));
+> -		if (ret)
+> -			goto disable_error_report_exit;
+> -	} else {
+> -		ret = -EIO;
+> +	ret = dma_set_mask_and_coherent(&pcidev->dev, DMA_BIT_MASK(64));
+> +	if (ret)
+> +		ret = dma_set_mask_and_coherent(&pcidev->dev, DMA_BIT_MASK(32));
+> +	if (ret) {
+>  		dev_err(&pcidev->dev, "No suitable DMA support available.\n");
+>  		goto disable_error_report_exit;
+>  	}
 
-Example: the user provides an out of range dbitrate (e.g. 20
-Mbps). The command fails (-EINVAL), however the FD flag was already
-set resulting in a configuration where FD is on but the databittiming
-parameters are empty.
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
 
-* Illustration of above example *
+Thanks,
+Yilun
 
-| $ ip link set can0 type can bitrate 500000 dbitrate 20000000 fd on
-| RTNETLINK answers: Invalid argument
-| $ ip --details link show can0
-| 1: can0: <NOARP,ECHO> mtu 72 qdisc noop state DOWN mode DEFAULT group default qlen 10
-|     link/can  promiscuity 0 minmtu 0 maxmtu 0
-|     can <FD> state STOPPED restart-ms 0
-           ^^ FD flag is set without any of the databittiming parameters...
-| 	  bitrate 500000 sample-point 0.875
-| 	  tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 1
-| 	  ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
-| 	  ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp-inc 1
-| 	  clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
-
-To prevent this from happening, we do a local copy of can_priv, work
-on it, an copy it at the very end of the function (i.e. only if all
-previous checks succeeded).
-
-Once this done, there is no more need to have a temporary variable for
-a specific parameter. As such, the bittiming and data bittiming (bt
-and dbt) are directly written to the temporary priv variable.
-
-Finally, function can_calc_tdco() was retrieving can_priv from the
-net_device and directly modifying it. We changed the prototype so that
-it instead writes its changes into our temporary priv variable.
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
-* Changelog *
-
-v1 -> v2:
-  - Change the prototype of can_calc_tdco() so that the changes are
-    applied to the temporary priv instead of netdev_priv(dev).
----
- drivers/net/can/dev/bittiming.c |  8 +--
- drivers/net/can/dev/netlink.c   | 88 +++++++++++++++++----------------
- include/linux/can/bittiming.h   |  7 ++-
- 3 files changed, 53 insertions(+), 50 deletions(-)
-
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index f49170eadd54..bddd93e2e439 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -175,13 +175,9 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	return 0;
- }
- 
--void can_calc_tdco(struct net_device *dev)
-+void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+		   const struct can_bittiming *dbt)
- {
--	struct can_priv *priv = netdev_priv(dev);
--	const struct can_bittiming *dbt = &priv->data_bittiming;
--	struct can_tdc *tdc = &priv->tdc;
--	const struct can_tdc_const *tdc_const = priv->tdc_const;
--
- 	if (!tdc_const)
- 		return;
- 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 80425636049d..50dfed462711 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -58,14 +58,20 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			  struct nlattr *data[],
- 			  struct netlink_ext_ack *extack)
- {
--	struct can_priv *priv = netdev_priv(dev);
-+	/* Work on a local copy of priv to prevent inconsistent value
-+	 * in case of early return. net/core/rtnetlink.c has a global
-+	 * mutex so using a static declaration is race free
-+	 */
-+	static struct can_priv priv;
- 	int err;
- 
- 	/* We need synchronization with dev->stop() */
- 	ASSERT_RTNL();
- 
-+	memcpy(&priv, netdev_priv(dev), sizeof(priv));
-+
- 	if (data[IFLA_CAN_BITTIMING]) {
--		struct can_bittiming bt;
-+		struct can_bittiming *bt = &priv.bittiming;
- 
- 		/* Do not allow changing bittiming while running */
- 		if (dev->flags & IFF_UP)
-@@ -76,28 +82,26 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		 * directly via do_set_bitrate(). Bail out if neither
- 		 * is given.
- 		 */
--		if (!priv->bittiming_const && !priv->do_set_bittiming)
-+		if (!priv.bittiming_const && !priv.do_set_bittiming)
- 			return -EOPNOTSUPP;
- 
--		memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
--		err = can_get_bittiming(dev, &bt,
--					priv->bittiming_const,
--					priv->bitrate_const,
--					priv->bitrate_const_cnt);
-+		memcpy(bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(*bt));
-+		err = can_get_bittiming(dev, bt,
-+					priv.bittiming_const,
-+					priv.bitrate_const,
-+					priv.bitrate_const_cnt);
- 		if (err)
- 			return err;
- 
--		if (priv->bitrate_max && bt.bitrate > priv->bitrate_max) {
-+		if (priv.bitrate_max && bt->bitrate > priv.bitrate_max) {
- 			netdev_err(dev, "arbitration bitrate surpasses transceiver capabilities of %d bps\n",
--				   priv->bitrate_max);
-+				   priv.bitrate_max);
- 			return -EINVAL;
- 		}
- 
--		memcpy(&priv->bittiming, &bt, sizeof(bt));
--
--		if (priv->do_set_bittiming) {
-+		if (priv.do_set_bittiming) {
- 			/* Finally, set the bit-timing registers */
--			err = priv->do_set_bittiming(dev);
-+			err = priv.do_set_bittiming(dev);
- 			if (err)
- 				return err;
- 		}
-@@ -112,11 +116,11 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
- 		cm = nla_data(data[IFLA_CAN_CTRLMODE]);
--		ctrlstatic = priv->ctrlmode_static;
-+		ctrlstatic = priv.ctrlmode_static;
- 		maskedflags = cm->flags & cm->mask;
- 
- 		/* check whether provided bits are allowed to be passed */
--		if (maskedflags & ~(priv->ctrlmode_supported | ctrlstatic))
-+		if (maskedflags & ~(priv.ctrlmode_supported | ctrlstatic))
- 			return -EOPNOTSUPP;
- 
- 		/* do not check for static fd-non-iso if 'fd' is disabled */
-@@ -128,16 +132,16 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			return -EOPNOTSUPP;
- 
- 		/* clear bits to be modified and copy the flag values */
--		priv->ctrlmode &= ~cm->mask;
--		priv->ctrlmode |= maskedflags;
-+		priv.ctrlmode &= ~cm->mask;
-+		priv.ctrlmode |= maskedflags;
- 
- 		/* CAN_CTRLMODE_FD can only be set when driver supports FD */
--		if (priv->ctrlmode & CAN_CTRLMODE_FD) {
-+		if (priv.ctrlmode & CAN_CTRLMODE_FD) {
- 			dev->mtu = CANFD_MTU;
- 		} else {
- 			dev->mtu = CAN_MTU;
--			memset(&priv->data_bittiming, 0,
--			       sizeof(priv->data_bittiming));
-+			memset(&priv.data_bittiming, 0,
-+			       sizeof(priv.data_bittiming));
- 		}
- 	}
- 
-@@ -145,7 +149,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		/* Do not allow changing restart delay while running */
- 		if (dev->flags & IFF_UP)
- 			return -EBUSY;
--		priv->restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
-+		priv.restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
- 	}
- 
- 	if (data[IFLA_CAN_RESTART]) {
-@@ -158,7 +162,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 	}
- 
- 	if (data[IFLA_CAN_DATA_BITTIMING]) {
--		struct can_bittiming dbt;
-+		struct can_bittiming *dbt = &priv.data_bittiming;
- 
- 		/* Do not allow changing bittiming while running */
- 		if (dev->flags & IFF_UP)
-@@ -169,31 +173,29 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 		 * directly via do_set_bitrate(). Bail out if neither
- 		 * is given.
- 		 */
--		if (!priv->data_bittiming_const && !priv->do_set_data_bittiming)
-+		if (!priv.data_bittiming_const && !priv.do_set_data_bittiming)
- 			return -EOPNOTSUPP;
- 
--		memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
--		       sizeof(dbt));
--		err = can_get_bittiming(dev, &dbt,
--					priv->data_bittiming_const,
--					priv->data_bitrate_const,
--					priv->data_bitrate_const_cnt);
-+		memcpy(dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
-+		       sizeof(*dbt));
-+		err = can_get_bittiming(dev, dbt,
-+					priv.data_bittiming_const,
-+					priv.data_bitrate_const,
-+					priv.data_bitrate_const_cnt);
- 		if (err)
- 			return err;
- 
--		if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
-+		if (priv.bitrate_max && dbt->bitrate > priv.bitrate_max) {
- 			netdev_err(dev, "canfd data bitrate surpasses transceiver capabilities of %d bps\n",
--				   priv->bitrate_max);
-+				   priv.bitrate_max);
- 			return -EINVAL;
- 		}
- 
--		memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
--
--		can_calc_tdco(dev);
-+		can_calc_tdco(&priv.tdc, priv.tdc_const, &priv.data_bittiming);
- 
--		if (priv->do_set_data_bittiming) {
-+		if (priv.do_set_data_bittiming) {
- 			/* Finally, set the bit-timing registers */
--			err = priv->do_set_data_bittiming(dev);
-+			err = priv.do_set_data_bittiming(dev);
- 			if (err)
- 				return err;
- 		}
-@@ -201,28 +203,30 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 
- 	if (data[IFLA_CAN_TERMINATION]) {
- 		const u16 termval = nla_get_u16(data[IFLA_CAN_TERMINATION]);
--		const unsigned int num_term = priv->termination_const_cnt;
-+		const unsigned int num_term = priv.termination_const_cnt;
- 		unsigned int i;
- 
--		if (!priv->do_set_termination)
-+		if (!priv.do_set_termination)
- 			return -EOPNOTSUPP;
- 
- 		/* check whether given value is supported by the interface */
- 		for (i = 0; i < num_term; i++) {
--			if (termval == priv->termination_const[i])
-+			if (termval == priv.termination_const[i])
- 				break;
- 		}
- 		if (i >= num_term)
- 			return -EINVAL;
- 
- 		/* Finally, set the termination value */
--		err = priv->do_set_termination(dev, termval);
-+		err = priv.do_set_termination(dev, termval);
- 		if (err)
- 			return err;
- 
--		priv->termination = termval;
-+		priv.termination = termval;
- 	}
- 
-+	memcpy(netdev_priv(dev), &priv, sizeof(priv));
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 9de6e9053e34..b3c1711ee0f0 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -87,7 +87,8 @@ struct can_tdc_const {
- int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc);
- 
--void can_calc_tdco(struct net_device *dev);
-+void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+		   const struct can_bittiming *dbt);
- #else /* !CONFIG_CAN_CALC_BITTIMING */
- static inline int
- can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-@@ -97,7 +98,9 @@ can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	return -EINVAL;
- }
- 
--static inline void can_calc_tdco(struct net_device *dev)
-+static inline void
-+can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+	      const struct can_bittiming *dbt)
- {
- }
- #endif /* CONFIG_CAN_CALC_BITTIMING */
--- 
-2.31.1
-
+> -- 
+> 2.30.2
