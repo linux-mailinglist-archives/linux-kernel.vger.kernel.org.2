@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E0D3F4EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB713F4EC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhHWQwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhHWQvs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:51:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFA2C061575;
-        Mon, 23 Aug 2021 09:51:05 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 18:51:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629737463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eyRUi1erXIf9vdU9EaE7gDkitJbqBl0J6BSh9JWvOs8=;
-        b=Ze5YMe0eX14wZObuQDmHIMNEdCm6fyJ7bOVqh+kU2LASIB7N4fF0IPemTS6LoL5TSSsGku
-        YvsoU9xRaw8KQv1x17K2G7p8WK4Cebpk5tkyU0Abu0P5pF1xg6tpdonT3vNnDunn1CghiR
-        KWif6bO4XTZEe6gTO1mh8ZgyRaU3MsBSqlipfNWE7cy9C1gxbc4tERbS96xYuOCRhKeZNi
-        cgPVcNKXS4osMpyxJ+FqeRVtcQ8hT0LS4KxC+i2/mYn895oDsaaYk4HMZSuo/+qtTR4tnG
-        ghCjKxLvIjiVhbML2onlQmLhNprOf8/rH1HLGgPev6SFSYZIkOzFYHk12Isozw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629737463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eyRUi1erXIf9vdU9EaE7gDkitJbqBl0J6BSh9JWvOs8=;
-        b=xbCGbipYA9FSFod8hQ26tLdNwIYEZkpOkSopBIRYVrPxbVvL51DP5qypIh5R14XdHEzARx
-        7Paq2owVKsBnXnAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jeaho Hwang <jhhwang@rtst.co.kr>
-Cc:     Peter Chen <peter.chen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, Linux team <team-linux@rtst.co.kr>,
-        =?utf-8?B?67OA66y06rSRKEJ5ZW9uIE1vbyBLd2FuZykv7J6Q64+Z7ZmU7JewKUF1dG9t?=
-         =?utf-8?B?YXRpb24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <mkbyeon@lselectric.co.kr>,
-        =?utf-8?B?7LWc6riw7ZmNKENob2kgS2kgSG9uZykv7J6Q64+Z7ZmU7JewKUF1dG9tYXRp?=
-         =?utf-8?B?b24gUGxhdGZvcm3sl7DqtaztjIA=?= 
-        <khchoib@lselectric.co.kr>
-Subject: Re: [PATCH v2] usb: chipidea: local_irq_save/restore added for
- hw_ep_prime
-Message-ID: <20210823165102.gk5ibzgi6qlgvrxf@linutronix.de>
-References: <20210817095313.GA671484@ubuntu>
- <20210818161752.vu6abfv3e6bfqz23@linutronix.de>
- <CAJk_X9h_GqUyir7oG33pFrLgknj7DZfd6esiKb07w7QWjZqX0g@mail.gmail.com>
- <20210819084759.stnmit32vs2be46m@linutronix.de>
- <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJk_X9gyWch6Z1=hbe2vvqGu61mdavAU62+6dSka0tZoMzxu5Q@mail.gmail.com>
+        id S230149AbhHWQw4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 12:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229883AbhHWQwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:52:55 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47976613BD;
+        Mon, 23 Aug 2021 16:52:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mIDBC-006hgo-DX; Mon, 23 Aug 2021 17:52:10 +0100
+Date:   Mon, 23 Aug 2021 17:52:10 +0100
+Message-ID: <871r6kqf2d.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] PCI: aardvark: Fix reading MSI interrupt number
+In-Reply-To: <20210823164033.27491-2-pali@kernel.org>
+References: <20210815103624.19528-1-pali@kernel.org>
+        <20210823164033.27491-1-pali@kernel.org>
+        <20210823164033.27491-2-pali@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, bhelgaas@google.com, robh@kernel.org, kw@linux.com, kabel@kernel.org, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-20 14:15:55 [+0900], Jeaho Hwang wrote:
-> So we protect irqs inside hw_ep_priming not to make error cases and
-> also add a timeout inside the hw_ep_set_halt loop for a walkaround.
-> The timeout patch is submitted to linux-usb.
-> ( https://marc.info/?l=linux-usb&m=162918269024007&w=2 )
->
-> We withdrew this patch since we don't know if disabling irq is the
-> best solution to solve the problem and udc would work fine with
-> hw_ep_set_halt walkaround even though hw_ep_prime fails.
-> But we are still trying to find out the cause of this symptom so We'd
-> so appreciate it if RT or USB experts share some ideas or ways to
-> report somewhere. Xilinx doesn't provide any support without their
-> official kernel :(
-
-The UDC driver sometimes drops the lock and acquires it again. On UP it
-would not matter but on SMP/RT the other may acquire lock and do
-something with the HW. One thing that you could check if there is any HW
-access in between which would affect the behaviour.
-
-> Thanks for the discussion Sebastian.
+On Mon, 23 Aug 2021 17:40:31 +0100,
+Pali Rohár <pali@kernel.org> wrote:
 > 
-> Jeaho Hwang.
+> Experiments showed that in register PCIE_MSI_PAYLOAD_REG is stored number
+> of the last received MSI interrupt and not number of MSI interrupt which
+> belongs to msi_idx bit. Therefore this implies that aardvark HW can cache
+> only bits [4:0] of received MSI interrupts with effectively means that it
+> supports only MSI interrupts with numbers 0-31.
+> 
+> Do not read PCIE_MSI_PAYLOAD_REG register for determining MSI interrupt
+> number. Instead ensure that pci-aardvark.c configures only MSI numbers in
+> range 0-31 and then msi_idx contains correct received MSI number.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/pci/controller/pci-aardvark.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> index 48fbfa7eb24c..81c4a9ff91a3 100644
+> --- a/drivers/pci/controller/pci-aardvark.c
+> +++ b/drivers/pci/controller/pci-aardvark.c
+> @@ -1232,7 +1232,6 @@ static void advk_pcie_remove_irq_domain(struct advk_pcie *pcie)
+>  static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+>  {
+>  	u32 msi_val, msi_mask, msi_status, msi_idx;
+> -	u16 msi_data;
+>  	int virq;
+>  
+>  	msi_mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
+> @@ -1243,17 +1242,13 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+>  		if (!(BIT(msi_idx) & msi_status))
+>  			continue;
+>  
+> -		/*
+> -		 * msi_idx contains bits [4:0] of the msi_data and msi_data
+> -		 * contains 16bit MSI interrupt number from MSI inner domain
+> -		 */
+>  		advk_writel(pcie, BIT(msi_idx), PCIE_MSI_STATUS_REG);
+> -		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & PCIE_MSI_DATA_MASK;
+> -		virq = irq_find_mapping(pcie->msi_inner_domain, msi_data);
+> +
+> +		virq = irq_find_mapping(pcie->msi_inner_domain, msi_idx);
+>  		if (virq)
+>  			generic_handle_irq(virq);
 
-Sebastian
+NAK.
+
+As I have explained before, I want this API dead, and I don't feel
+like doing another pass at the whole of the kernel tree to remove
+these patterns.
+
+A patch targeting stable is not a mandate for using deprecated
+APIs. You can always send another patch for stable versions before
+5.14.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
