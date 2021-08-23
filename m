@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5979A3F4C88
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D05F3F4C91
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhHWOmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhHWOma (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:42:30 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA1FC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:41:48 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id u7so17287907ilk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JWc9vuQDtmWHvB78xgjXDwiSH/td53Rs3ykrTDLONn0=;
-        b=vuP2UdeH6j0HoKCzODhy5NSYByeMfAfPzCCA6sbDFZ+5xJ0Oc0QYXg49HHv+gJOj6A
-         8OH2dK++anCLl6EITsoJ2AOJWOUuNwHDi9ukq4GOhj5FRNzVFutCcVlbzQZZq1Wd1OzB
-         +xgddckoMSmRQfEqjAf5AKIqp1bhXCyqYai4Yc6RL+LX0k7F/2oJajWXIH2FJPW45XeS
-         TclWxAEUcvvUS1ILnxE2CsNjzs4WZLM0r56mY/nYG9cUMR7KD+RtBcJcpD8cb5bXoQFk
-         b8c7dgS2r7YWOUn7IyaJpaaVaA0knAFM5ZjxSeNV8ZU+5X7lzmRsT4X0x7Wfak0OIF5F
-         k0Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JWc9vuQDtmWHvB78xgjXDwiSH/td53Rs3ykrTDLONn0=;
-        b=UVaJeR82tiYqoIt7VLobdJqZJUgHYrU2lxr3QqA/OtRj0adfCVGFm2mumwbEBrwZvK
-         VkdDMcsgOU5fU0pjcltELbXsUBFW2pJFDMIXoR6WtSGHLOLhkOYXhyd94+a2YqteanRN
-         8Tfgg+EBjeuWq4cBIMY/dAqzM5fXoo+cWbtBjJVmxQaUdMJiWc41rkVVSzeSEqyBNVuw
-         lRPIbdWL6J3GT5Lzduc7WEHoPJ+kqYYPOwJxJlqS2C4hSxbA4zAZqDiLMovjaqDacVDL
-         OALya/wrJTUOCeSNp4zsik2Ti1aBGlgbvbXgqOglR29Bnqsu4/t7a2BllDuXyhV6+rgX
-         zgvQ==
-X-Gm-Message-State: AOAM531IqLOQk7srwrkM/9+lc3fqSDnuiLJ1CD5LwI7DFiTZ41d45Dsf
-        s2H8weKXkL4WDwedJcBVs+SUOzBD478XxqTV9+v85A==
-X-Google-Smtp-Source: ABdhPJzUbp2hzrTBSEuc41f1TIINk8z2ia0qVjX/aYzgXCdBnA9yzb48O8rZYKKecnR8JhfXExXp1ltsbC6tDr2JdLw=
-X-Received: by 2002:a92:c80e:: with SMTP id v14mr24284517iln.57.1629729707428;
- Mon, 23 Aug 2021 07:41:47 -0700 (PDT)
+        id S230332AbhHWOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:45:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230186AbhHWOpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 10:45:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9140F613CF;
+        Mon, 23 Aug 2021 14:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629729908;
+        bh=HS2M+wkDtx/G0MZSg6+SDwYSA3teAsEDvrv+10PPD1A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qPKYxgfB9GVNO/ci0L6xILxIQPPJGBHIQJy4YMnj0Zw7zF7wGjfzynHM07q/hdtFJ
+         fzjZSr+FNFIn8DCHJscN7WHtmTm/qhJneZMJJj08w7k3nJ838qAJNWc+vVoaXF87+1
+         iNcj8INOwKrfvditV+DxlUtQ8DX4lAbEXz/sDy2ACAgKAp+HvHvaZhS0+UZJN4VgMH
+         GPAZlRaNM4E4saszqP0w189j7NDctQFAvm5aZhrYjAQHhd9mTXKAONYbcAz4L1fskn
+         IpHuinmaVCOcnYZwI5rcTj2KMKe0BjZ4hk50UN58HZdjfm9uvmn9CsDQYSUqstrZ9J
+         Jky99juD8VeBQ==
+Received: by mail-ej1-f48.google.com with SMTP id n27so5597739eja.5;
+        Mon, 23 Aug 2021 07:45:08 -0700 (PDT)
+X-Gm-Message-State: AOAM531MEUyxgeIaj9j3I1BTJ5VtAo4c/J7JBjNhCaINJBEdNIN8GKY6
+        xQU8a+/9cjlRVYzvnRkmHTosyJU97M90Mk4fTw==
+X-Google-Smtp-Source: ABdhPJxGMCnkZ6Wg5JPxtvBTf03t6XhofzKZ3GpTAEgQlSG7jl4bDW3CMJL9Gl4hxiY+ePwWhCIra0pqlfZDMAM51Ag=
+X-Received: by 2002:a17:907:b06:: with SMTP id h6mr3650075ejl.130.1629729907110;
+ Mon, 23 Aug 2021 07:45:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <1629365324-5891-1-git-send-email-quic_taozha@quicinc.com>
-In-Reply-To: <1629365324-5891-1-git-send-email-quic_taozha@quicinc.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Mon, 23 Aug 2021 08:41:36 -0600
-Message-ID: <CANLsYkxw9nXb=vsWhf8=Sf6Bnm23doTaYOS7WChxOGhudt23-w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Add Coresight support for RB5 board
-To:     Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
+References: <cover.1628670468.git.geert+renesas@glider.be> <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
+ <YRn9DHlB/pdNPJyP@kernel.org> <CAMuHMdVdqR7gw+2O2v=qv_BB=+X2wEXN9jXV=np=jRayadwj7g@mail.gmail.com>
+ <YSOeGzowhV/R9QS/@kernel.org>
+In-Reply-To: <YSOeGzowhV/R9QS/@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 23 Aug 2021 09:44:55 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLMv4fKebJEOv=7UXvy_qqut0N42psS-PSgRMU-qhiFLQ@mail.gmail.com>
+Message-ID: <CAL_JsqLMv4fKebJEOv=7UXvy_qqut0N42psS-PSgRMU-qhiFLQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header reservation
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+On Mon, Aug 23, 2021 at 8:10 AM Mike Rapoport <rppt@kernel.org> wrote:
+>
+> On Mon, Aug 23, 2021 at 12:17:50PM +0200, Geert Uytterhoeven wrote:
+> > Hi Mike,
+> >
+> > On Mon, Aug 16, 2021 at 7:52 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > > On Wed, Aug 11, 2021 at 10:50:59AM +0200, Geert Uytterhoeven wrote:
+> > > > Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
+> > > > occupied by an elf core header described in the device tree.
+> > > > As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
+> > > > mips_reserve_vmcore(), the latter needs to check if the memory has
+> > > > already been reserved before.
+> > >
+> > > Doing memblock_reserve() for the same region is usually fine, did you
+> > > encounter any issues without this patch?
+> >
+> > Does it also work if the same region is part of an earlier larger
+> > reservation?  I am no memblock expert, so I don't know.
+> > I didn't run into any issues, as my MIPS platform is non-DT, but I
+> > assume arch/arm64/mm/init.c:reserve_elfcorehdr() had the check for
+> > a reason.
+>
+> The memory will be reserved regardless of the earlier reservation, the
+> issue may appear when the reservations are made for different purpose. E.g.
+> if there was crash kernel allocation before the reservation of elfcorehdr.
+>
+> The check in such case will prevent the second reservation, but, at least
+> in arch/arm64/mm/init.c:reserve_elfcorehdr() it does not seem to prevent
+> different users of the overlapping regions to step on each others toes.
 
-On Thu, 19 Aug 2021 at 03:29, Tao Zhang <quic_taozha@quicinc.com> wrote:
->
-> This series adds Coresight support for SM8250 Soc on RB5 board.
-> It is composed of two elements.
-> a) Add ETM PID for Kryo-5XX.
-> b) Add coresight support to DTS for RB5.
->
-> This series applies to coresight/next
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->
-> Tao Zhang (2):
->   coresight: etm4x: Add ETM PID for Kryo-5XX
->   arm64: dts: qcom: sm8250: Add Coresight support
->
->  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      | 442 +++++++++++++++++-
->  .../coresight/coresight-etm4x-core.c          |   1 +
->  2 files changed, 439 insertions(+), 4 deletions(-)
->
+If the kernel has been passed in overlapping regions, is there
+anything you can do other than hope to get a message out?
 
-I have added your work to my patchset queue.  On the other hand I have
-a lot of patches to review these days and as such won't be able to
-look at it for 4 to 5 weeks.
+> Moreover, arm64::reserve_elfcorehdr() seems buggy to me, because of there
+> is only a partial overlap of the elfcorehdr with the previous reservation,
+> the non-overlapping part of elfcorehdr won't get reserved at all.
 
-Thanks,
-Mathieu
+What do you suggest as the arm64 version is not the common version?
 
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+Rob
