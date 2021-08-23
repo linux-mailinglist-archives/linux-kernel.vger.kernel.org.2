@@ -2,244 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B963F48C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C983F48C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhHWKgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:36:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:51474 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234457AbhHWKgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:36:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B97912FC;
-        Mon, 23 Aug 2021 03:36:04 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.42.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13A623F66F;
-        Mon, 23 Aug 2021 03:36:02 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: [PATCH v3] ACPI: Add memory semantics to acpi_os_map_memory()
-Date:   Mon, 23 Aug 2021 11:35:57 +0100
-Message-Id: <20210823103557.9203-1-lorenzo.pieralisi@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
-References: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
+        id S236184AbhHWKg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:36:59 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:43936 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234457AbhHWKg6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:36:58 -0400
+Received: by mail-wm1-f54.google.com with SMTP id o39-20020a05600c512700b002e74638b567so2770009wms.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:36:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kTX+zkKa0alsSXs8qwxcqmN4Mx9+u54mfcfnGWbSmsc=;
+        b=F8LSQVip90LDCWup3Rs1FPjeT9dI37t0ghgE7wzBuB7/wGWegtOa4oa1HWhRQJA9C7
+         l3tyyCba9RczKZNMvhckhWxxY2U6yI74sZH0y58N7YoKaw53HWNnnfmgMJ4OYw+15Chf
+         Zz2JYUflvyv0b6gImgMF2rFn7ejCmYF1CcHmHK0Yb4CetvGA31qTr4WLmHfwCvTtjZMW
+         UYWoCMQ5iW9uLx2pH4QbWv5sF5YMX8BfwsEd5H2XuqH/0ssaW132ciisu1g60a6B5ADC
+         zTlLYCJXo6uQHHUW0gBmH15WYbz71LCyYHfDkGQvWnn/7jNy5wgYArqE2tyy3LvHnmfT
+         lrMA==
+X-Gm-Message-State: AOAM530ZPtgDp9pgb+N9uYvyvuYBA5yr9mQn8RyxS56W5+A6tcY2i88P
+        ploV+o0eWCTfeznqUYrJvwg=
+X-Google-Smtp-Source: ABdhPJx5MKsovyLBQKdDpGovJfQpG77APQ9BDa6K2jJnvFMigOY8OZfrHoZsyWvpwfc+IRp0EuU27g==
+X-Received: by 2002:a05:600c:2283:: with SMTP id 3mr15655264wmf.149.1629714974949;
+        Mon, 23 Aug 2021 03:36:14 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id e3sm14997319wrv.65.2021.08.23.03.36.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 03:36:14 -0700 (PDT)
+Subject: Re: [PATCH linux-next] serial: drop unneeded assignment
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        CGEL <cgel.zte@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Luo penghao <luo.penghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210821021727.27170-1-luo.penghao@zte.com.cn>
+ <dab03cf3-3fdd-8734-485b-469b57caf0e2@wanadoo.fr>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <f48ea2ed-c2a8-da6c-1ce9-20718e7c1f71@kernel.org>
+Date:   Mon, 23 Aug 2021 12:36:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <dab03cf3-3fdd-8734-485b-469b57caf0e2@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory attributes attached to memory regions depend on architecture
-specific mappings.
+On 21. 08. 21, 7:04, Christophe JAILLET wrote:
+> Hi,
+> 
+> Le 21/08/2021 à 04:17, CGEL a écrit :
+>> From: Luo penghao <luo.penghao@zte.com.cn>
+>>
+>> The first assignment is not used. In order to keep the code style
+>> consistency of the whole file, the first 'offset' assignment should be
+>> deleted.
+>>
+>> The clang_analyzer complains as follows:
+>>
+>> drivers/tty/nozomi.c:520:6: warning:
+>> Although the value storedto 'offset' is used in the enclosing expression,
+>> the value is never actually read from 'offset'.
+>>
+>> Reported-by: Zeal Robot <zealci@zte.com.cn>
+>> Signed-off-by: Luo penghao <luo.penghao@zte.com.cn>
+>> ---
+>>   drivers/tty/nozomi.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+>> index 0454c78..210a48f 100644
+>> --- a/drivers/tty/nozomi.c
+>> +++ b/drivers/tty/nozomi.c
+>> @@ -517,7 +517,7 @@ static void nozomi_setup_memory(struct nozomi *dc)
+>>       /* Ctrl dl configuration */
+>>       dc->port[PORT_CTRL].dl_addr[CH_A] =
+>> -                (offset += dc->config_table.dl_app2_len);
+>> +                (offset + dc->config_table.dl_app2_len);
+> 
+> I guess that it has been written that way for consistency reasons with 
+> previous lines.
+> 
+> Should it be changed, you have the same pattern at line 554 that should 
+> be updated the same way.
 
-For some memory regions, the attributes specified by firmware (eg
-uncached) are not sufficient to determine how a memory region should be
-mapped by an OS (for instance a region that is define as uncached in
-firmware can be mapped as Normal or Device memory on arm64) and
-therefore the OS must be given control on how to map the region to match
-the expected mapping behaviour (eg if a mapping is requested with memory
-semantics, it must allow unaligned accesses).
+RIght.
 
-Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
-them into two separate code paths:
+Provided the code is always over two lines already, wouldn't it be more 
+readable to calculate the offset before each line, not inline. Like:
+         /* Modem port dl configuration */
+         dc->port[PORT_MDM].dl_addr[CH_A] = offset;
+	offset += dc->config_table.dl_mdm_len1;
+         dc->port[PORT_MDM].dl_addr[CH_B] = offset;
+... // the last one being:
+         /* Ctrl dl configuration */
+	offset += dc->config_table.dl_app2_len;
+         dc->port[PORT_CTRL].dl_addr[CH_A] = offset;
 
-acpi_os_memmap() -> memory semantics
-acpi_os_ioremap() -> MMIO semantics
+That would 1) remove the warning too, 2) make it less error-prone / more 
+readable.
 
-The split allows the architectural implementation back-ends to detect
-the default memory attributes required by the mapping in question
-(ie the mapping API defines the semantics memory vs MMIO) and map the
-memory accordingly.
-
-Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
-Tested-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
----
-Patch series is a v3 of a previous version[2]:
-
-v2->v3:
-	- Dropped first two-patches following LKML feedback[2]
-v1->v2
-	- Added patch 1 and 2 according to feedback received on[1]
-
-[1] https://lore.kernel.org/linux-acpi/20210726100026.12538-1-lorenzo.pieralisi@arm.com
-[2] https://lore.kernel.org/linux-acpi/20210802152359.12623-1-lorenzo.pieralisi@arm.com
-
- arch/arm64/include/asm/acpi.h |  3 +++
- arch/arm64/kernel/acpi.c      | 19 ++++++++++++++++---
- drivers/acpi/osl.c            | 23 ++++++++++++++++-------
- include/acpi/acpi_io.h        |  8 ++++++++
- 4 files changed, 43 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index bd68e1b7f29f..7535dc7cc5aa 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -50,6 +50,9 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
- void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
- #define acpi_os_ioremap acpi_os_ioremap
- 
-+void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
-+#define acpi_os_memmap acpi_os_memmap
-+
- typedef u64 phys_cpuid_t;
- #define PHYS_CPUID_INVALID INVALID_HWID
- 
-diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-index f3851724fe35..1c9c2f7a1c04 100644
---- a/arch/arm64/kernel/acpi.c
-+++ b/arch/arm64/kernel/acpi.c
-@@ -273,7 +273,8 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
- 	return __pgprot(PROT_DEVICE_nGnRnE);
- }
- 
--void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
-+				       acpi_size size, bool memory)
- {
- 	efi_memory_desc_t *md, *region = NULL;
- 	pgprot_t prot;
-@@ -299,9 +300,11 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- 	 * It is fine for AML to remap regions that are not represented in the
- 	 * EFI memory map at all, as it only describes normal memory, and MMIO
- 	 * regions that require a virtual mapping to make them accessible to
--	 * the EFI runtime services.
-+	 * the EFI runtime services. Determine the region default
-+	 * attributes by checking the requested memory semantics.
- 	 */
--	prot = __pgprot(PROT_DEVICE_nGnRnE);
-+	prot = memory ? __pgprot(PROT_NORMAL_NC) :
-+			__pgprot(PROT_DEVICE_nGnRnE);
- 	if (region) {
- 		switch (region->type) {
- 		case EFI_LOADER_CODE:
-@@ -361,6 +364,16 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- 	return __ioremap(phys, size, prot);
- }
- 
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_ioremap(phys, size, false);
-+}
-+
-+void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_ioremap(phys, size, true);
-+}
-+
- /*
-  * Claim Synchronous External Aborts as a firmware first notification.
-  *
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 45c5c0e45e33..a43f1521efe6 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -284,7 +284,8 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
- #define should_use_kmap(pfn)   page_is_ram(pfn)
- #endif
- 
--static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
-+static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
-+			      bool memory)
- {
- 	unsigned long pfn;
- 
-@@ -294,7 +295,8 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
- 			return NULL;
- 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
- 	} else
--		return acpi_os_ioremap(pg_off, pg_sz);
-+		return memory ? acpi_os_memmap(pg_off, pg_sz) :
-+				acpi_os_ioremap(pg_off, pg_sz);
- }
- 
- static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-@@ -309,9 +311,10 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
- }
- 
- /**
-- * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-+ * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
-  * @phys: Start of the physical address range to map.
-  * @size: Size of the physical address range to map.
-+ * @memory: true if remapping memory, false if IO
-  *
-  * Look up the given physical address range in the list of existing ACPI memory
-  * mappings.  If found, get a reference to it and return a pointer to it (its
-@@ -321,8 +324,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-  * During early init (when acpi_permanent_mmap has not been set yet) this
-  * routine simply calls __acpi_map_table() to get the job done.
-  */
--void __iomem __ref
--*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+static void __iomem __ref
-+*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
- {
- 	struct acpi_ioremap *map;
- 	void __iomem *virt;
-@@ -353,7 +356,7 @@ void __iomem __ref
- 
- 	pg_off = round_down(phys, PAGE_SIZE);
- 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
--	virt = acpi_map(phys, size);
-+	virt = acpi_map(phys, size, memory);
- 	if (!virt) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		kfree(map);
-@@ -372,11 +375,17 @@ void __iomem __ref
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return map->virt + (phys - map->phys);
- }
-+
-+void __iomem *__ref
-+acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_map_iomem(phys, size, false);
-+}
- EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
- 
- void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- {
--	return (void *)acpi_os_map_iomem(phys, size);
-+	return (void *)__acpi_os_map_iomem(phys, size, true);
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
-diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-index 027faa8883aa..a0212e67d6f4 100644
---- a/include/acpi/acpi_io.h
-+++ b/include/acpi/acpi_io.h
-@@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
- }
- #endif
- 
-+#ifndef acpi_os_memmap
-+static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
-+					    acpi_size size)
-+{
-+	return ioremap_cache(phys, size);
-+}
-+#endif
-+
- extern bool acpi_permanent_mmap;
- 
- void __iomem __ref
+thanks,
 -- 
-2.31.0
-
+js
+suse labs
