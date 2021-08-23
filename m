@@ -2,155 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5386F3F4604
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEDC3F460C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbhHWHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        id S235255AbhHWHwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbhHWHvR (ORCPT
+        with ESMTP id S235115AbhHWHwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:51:17 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593ECC061756;
-        Mon, 23 Aug 2021 00:50:35 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtPYJ73ySz9sWd;
-        Mon, 23 Aug 2021 17:50:28 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629705032;
-        bh=9dAHDCrMei61o4XJtPqjbdNJts5lkuem+/e8bvOvHNA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Eh1fOSt6Rsa06Kcm6zUhe5LMinVpSwezbm4AvqbDqfoCf8Wx8QP+NfHTf5hwPPM3r
-         seE9Pm8OmZKF0xk29DoKKPZAx8HVFzC8qkHEW0NciYckpNHIxL18k6IgUg0kAsqPB1
-         4kZ6VOhB46EsB/R5gHx65lL4wT2rl8YrfYDcZV5KUcDNVE7LlI0TH2qov6acKnTWKa
-         haVCYou/apmos6kKyAGlW7ST4LnEQMsbdpZIlaCJWw7UjpNPvtxGdtCJWR46mG7/ME
-         fjFSQmdREx4bk93AUY7FjVMOS9j4RKaZvUSalutLmeyUmI1nmJKU1Kn2WoBwE3Ojrh
-         egCMWHuXWU77Q==
-Date:   Mon, 23 Aug 2021 17:50:27 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@mellanox.com>, Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas =?UTF-8?B?SGVsbHN0?= =?UTF-8?B?csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the hmm tree
-Message-ID: <20210823175027.3f3fabd7@canb.auug.org.au>
+        Mon, 23 Aug 2021 03:52:39 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C45CC061575;
+        Mon, 23 Aug 2021 00:51:57 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id 0D4A5AE0DBF;
+        Mon, 23 Aug 2021 15:51:40 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zhEQyB8ywpuh; Mon, 23 Aug 2021 15:51:20 +0800 (CST)
+Received: from [172.30.18.174] (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id 8AF07AE0DA2;
+        Mon, 23 Aug 2021 15:51:19 +0800 (CST)
+Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
+ function.
+From:   =?UTF-8?B?5p2O5Yqb55C8?= <liqiong@nfschina.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        THOBY Simon <Simon.THOBY@viveris.fr>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210819101529.28001-1-liqiong@nfschina.com>
+ <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
+ <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
+ <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
+ <96037695de6125c701889c168550def278adfd4b.camel@linux.ibm.com>
+ <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
+Message-ID: <0b0ca83f-9c5b-e4b0-f2c2-b389053479c7@nfschina.com>
+Date:   Mon, 23 Aug 2021 15:51:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//zQi18i=ahDnMC3+VaHQ0Vw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <f9798484-7090-0ddf-50a6-7c7c5bf0606c@nfschina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//zQi18i=ahDnMC3+VaHQ0Vw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Simon :
 
-Hi all,
+Using a temporary ima_rules variable is not working for "ima_policy_next". void *ima_policy_next(struct seq_file *m, void *v, loff_t *pos) { struct ima_rule_entry *entry = v; + struct list_head *ima_rules_tmp = rcu_dereference(ima_rules); rcu_read_lock(); entry = list_entry_rcu(entry->list.next, struct ima_rule_entry, list); rcu_read_unlock(); (*pos)++; - return (&entry->list == ima_rules) ? NULL : entry; + return (&entry->list == ima_rules_tmp) ? NULL : entry; }
 
-After merging the hmm tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+It seems no way to fix "ima_rules" change within this function, it will alway
+return a entry if "ima_rules" being changed.
 
-drivers/gpu/drm/i915/gem/i915_gem_ttm.c: In function 'i915_ttm_tt_get_st':
-drivers/gpu/drm/i915/gem/i915_gem_ttm.c:396:7: error: implicit declaration =
-of function '__sg_alloc_table_from_pages'; did you mean 'sg_alloc_table_fro=
-m_pages'? [-Werror=3Dimplicit-function-declaration]
-  396 |  sg =3D __sg_alloc_table_from_pages
-      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |       sg_alloc_table_from_pages
-drivers/gpu/drm/i915/gem/i915_gem_ttm.c:396:5: warning: assignment to 'stru=
-ct scatterlist *' from 'int' makes pointer from integer without a cast [-Wi=
-nt-conversion]
-  396 |  sg =3D __sg_alloc_table_from_pages
-      |     ^
+Regrads,
 
-Caused by commit
+liqiong
 
-  fcbfe956561b ("lib/scatterlist: Provide a dedicated function to support t=
-able append")
+在 2021年08月23日 11:04, 李力琼 写道:
+> Hi Mimi :
+>
+> The situation is a little different,'list_splice_init_rcu'
+> don't change the list head. If "ima_rules" being changed,
+> readers may can't reload the new value in time for cpu cache
+> or compiler optimization. Defining "ima_rules" as a volatile 
+> variable can fix, but It is inefficient.
+>
+> Maybe using a temporary ima_rules variable for every 
+> "list_for_each_entry_rcu(entry, ima_rules, list)" loop is 
+> a better solution to fix the "endless loop" bug. 
+>
+> Regards,
+>
+> liqiong
+>
+> 在 2021年08月20日 23:48, Mimi Zohar 写道:
+>> On Fri, 2021-08-20 at 13:23 +0000, THOBY Simon wrote:
+>>> Hi Liqiong,
+>>>
+>>> On 8/20/21 12:15 PM, 李力琼 wrote:
+>>>> Hi, Simon:
+>>>>
+>>>> This solution is better then rwsem, a temp "ima_rules" variable should 
+>>>> can fix. I also have a another idea, with a little trick, default list
+>>>> can traverse to the new list, so we don't need care about the read side. 
+>>>>
+>>>> here is the patch:
+>>>>
+>>>> @@ -918,8 +918,21 @@ void ima_update_policy(void)
+>>>>         list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
+>>>>
+>>>>         if (ima_rules != policy) {
+>>>> +               struct list_head *prev_rules = ima_rules;
+>>>> +               struct list_head *first = ima_rules->next;
+>>>>                 ima_policy_flag = 0;
+>>>> +
+>>>> +               /*
+>>>> +                * Make the previous list can traverse to new list,
+>>>> +                * that is tricky, or there is a deadly loop whithin
+>>>> +                * "list_for_each_entry_rcu(entry, ima_rules, list)"
+>>>> +                *
+>>>> +                * After update "ima_rules", restore the previous list.
+>>>> +                */
+>>> I think this could be rephrased to be a tad clearer, I am not quite sure
+>>> how I must interpret the first sentence of the comment.
+>>>
+>>>
+>>>> +               prev_rules->next = policy->next;
+>>>>                 ima_rules = policy;
+>>>> +               syncchronize_rcu();
+>>> I'm a bit puzzled as you seem to imply in the mail this patch was tested,
+>>> but there is no 'syncchronize_rcu' (with two 'c') symbol in the kernel.
+>>> Was that a copy/paste error? Or maybe you forgot the 'not' in "This
+>>> patch has been tested"? These errors happen, and I am myself quite an
+>>> expert in doing them :)
+>>>
+>>>> +               prev_rules->next = first;
+>>>>
+>>>>
+>>>> The side effect is the "ima_default_rules" will be changed a little while.
+>>>> But it make sense, the process should be checked again by the new policy.
+>>>>
+>>>> This patch has been tested, if will do, I can resubmit this patch.> 
+>>>> How about this ?
+>>> least
+>>>
+>>> Correct me if I'm wrong, here is how I think I understand you patch.
+>>> We start with a situation like that (step 0):
+>>> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
+>>>
+>>> Then we decide to update the policy for the first time, so
+>>> 'ima_rules [&ima_default_rules] != policy [&ima_policy_rules]'.
+>>> We enter the condition.
+>>> First we copy the current value of ima_rules (&ima_default_rules)
+>>> to a temporary variable 'prev_rules'. We also create a pointer dubbed
+>>> 'first' to the entry 1 in the default list (step 1):
+>>> prev_rules -------------
+>>>                        \/
+>>> ima_rules --> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
+>>>                                                                    /\
+>>> first --------------------------------------------------------------
+>>>
+>>>
+>>> Then we update prev_rules->next to point to policy->next (step 2):
+>>> List entry 1 <-> List entry 2 <-> ... -> List entry 0
+>>>  /\
+>>> first
+>>> 	(notice that list entry 0 no longer points backwards to 'list entry 1',
+>>> 	but I don't think there is any reverse iteration in IMA, so it should be
+>>> 	safe)
+>>>
+>>> prev_rules -------------
+>>>                        \/
+>>> ima_rules --> List entry 0 (head node) = ima_default_rules   
+>>>                        |
+>>>                        |
+>>>                        -------------------------------------------
+>>>                                                                  \/
+>>> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
+>>>
+>>>
+>>> We then update ima_rules to point to ima_policy_rules (step 3):
+>>> List entry 1 <-> List entry 2 <-> ... -> List entry 0
+>>>  /\
+>>> first
+>>>
+>>> prev_rules -------------
+>>>                        \/
+>>> ima_rules     List entry 0 (head node) = ima_default_rules   
+>>>      |                 |
+>>>      |                 |
+>>>      |                 ------------------------------------------
+>>>      ---------------                                            |
+>>>                    \/                                           \/
+>>> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
+>>>                                                   synchronize_rcu                 /\
+>>> first --------------------------------------------------------------
+>>>
+>>> Then we run synchronize_rcu() to wait for any RCU reader to exit their loops (step 4).
+>>>
+>>> Finally we update prev_rules->next to point back to the ima policy and fix the loop (step 5):
+>>>
+>>> List entry 1 <-> List entry 2 <-> ... -> List entry 0
+>>>  /\
+>>> first
+>>>
+>>> prev_rules ---> List entry 0 (head node) = ima_default_rules <-> List entry 1 <-> List entry 2 <-> ... <-> List entry 0
+>>>                                                                      /\
+>>>                                                                  first (now useless)
+>>> ima_rules        
+>>>      |
+>>>      |
+>>>      |
+>>>      ---------------
+>>>                    \/
+>>> policy --> policy entry 0' (head node) = ima_policy_rules <-> policy entry 1' <-> policy entry 2' <-> .... <-> policy entry 0'
+>>>
+>>> The goal is that readers should still be able to loop
+>>> (forward, as we saw that backward looping is temporarily broken)
+>>> while in steps 0-4.
+>>>
+>>> I'm not completely sure what would happen to a client that started iterating
+>>> over ima_rules right after step 2.
+>>>
+>>> Wouldn't they be able to start looping through the new policy
+>>> as 'List entry 0 (head node) = ima_default_rules' points to ima_policy_rules?
+>>> And if they, wouldn't they loop until the write to 'ima_rule' at step 3 (admittedly
+>>> very shortly thereafter) completed?
+>>> And would the compiler be allowed to optimize the read to 'ima_rules' in the
+>>> list_for_each_entry() loop, thereby never reloading the new value for
+>>> 'ima_rules', and thus looping forever, just what we are trying to avoid?
+>>>
+>>> Overall, I'm tempted to say this is perhaps a bit too complex (at least,
+>>> my head tells me it is, but that may very well be because I'm terrible
+>>> at concurrency issues).
+>>>
+>>> Honestly, in this case I think awaiting input from more experienced
+>>> kernel devs than I is the best path forward :-)
+>> I'm far from an expert on RCU locking, but __list_splice_init_rcu()
+>> provides an example of how to make sure there aren't any readers
+>> traversing the list, before two lists are spliced together.   In our
+>> case, after there aren't any readers, instead of splicing two lists
+>> together, it should be safe to point to the new list.
+>>
+>> thanks,
+>>
+>> Mimi
+>>
 
-interacting with commit
-
-  213d50927763 ("drm/i915/ttm: Introduce a TTM i915 gem object backend")
-
-from the drm tree.
-
-I have applied the following merge resolution patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 23 Aug 2021 17:46:27 +1000
-Subject: [PATCH] drm/i915/ttm: fix up for "lib/scatterlist: Provide a
- dedicated function to support tableappend"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/i915/gem/i915_gem_ttm.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c b/drivers/gpu/drm/i915=
-/gem/i915_gem_ttm.c
-index 771eb2963123..d3d95934a047 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_ttm.c
-@@ -382,7 +382,6 @@ i915_ttm_region(struct ttm_device *bdev, int ttm_mem_ty=
-pe)
- static struct sg_table *i915_ttm_tt_get_st(struct ttm_tt *ttm)
- {
- 	struct i915_ttm_tt *i915_tt =3D container_of(ttm, typeof(*i915_tt), ttm);
--	struct scatterlist *sg;
- 	struct sg_table *st;
- 	int ret;
-=20
-@@ -393,13 +392,13 @@ static struct sg_table *i915_ttm_tt_get_st(struct ttm=
-_tt *ttm)
- 	if (!st)
- 		return ERR_PTR(-ENOMEM);
-=20
--	sg =3D __sg_alloc_table_from_pages
-+	ret =3D sg_alloc_table_from_pages_segment
- 		(st, ttm->pages, ttm->num_pages, 0,
- 		 (unsigned long)ttm->num_pages << PAGE_SHIFT,
--		 i915_sg_segment_size(), NULL, 0, GFP_KERNEL);
--	if (IS_ERR(sg)) {
-+		 i915_sg_segment_size(), GFP_KERNEL);
-+	if (ret) {
- 		kfree(st);
--		return ERR_CAST(sg);
-+		return ERR_PTR(ret);
- 	}
-=20
- 	ret =3D dma_map_sgtable(i915_tt->dev, st, DMA_BIDIRECTIONAL, 0);
---=20
-2.32.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//zQi18i=ahDnMC3+VaHQ0Vw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjU0QACgkQAVBC80lX
-0GwyKAf/djlPvQh5mFxB1HX6H6VwiNvnFMAqdCuLA9ur0ir8JX93LCvE6yDM8MGu
-fNhZdfFoF4ZBogs/VAnCqnHMmRe5onD6HJ7TAOtCt2BllQHoKLT4XMY4R3TYES2X
-gt2lL9kHBBJCJuo40CBr1VIAHsHWH8qPRZZOWrkSa9GsoWaNS2Pz3uWOsiwkC3p7
-prmCs1HACO9LS8V1Q2zhfweMHZXv6VQIceF3XfcOm1hFqeYvHpVTU+rgVFdxbyTG
-FkXMRrxp/hTDM+wltFqyDp5aMgTw9wIGvlrB0taIreHsMVCcW6ycl8hlbmHHQS4c
-3Y57a/W6nW+ExSY+sq+7q1HecMTS/w==
-=rnAY
------END PGP SIGNATURE-----
-
---Sig_//zQi18i=ahDnMC3+VaHQ0Vw--
