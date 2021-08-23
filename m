@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE793F4CF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B3E3F4CF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbhHWPCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:02:03 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:52038 "EHLO
+        id S232798AbhHWPB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:01:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:52066 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhHWO70 (ORCPT
+        with ESMTP id S231262AbhHWO71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:59:26 -0400
+        Mon, 23 Aug 2021 10:59:27 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 86DED21FF5;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AF77021FFA;
         Mon, 23 Aug 2021 14:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1629730723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lVuGyybJuWkl73BOgL7ALZyfmCPF9PLgbLwYWFRwmhw=;
-        b=QXwwjGpf31QSzikehSTf5opkDUYfqtA7BQA0U+TwX+Ab+LJTIDR6NdkYR4sygKlp9L6Elw
-        HCRxJGz9AEPipui6+Q3orkV/Jkay8W53vOyKXRKmiOMbNIYdrzpOrzSg6YGnZ928dRCNv7
-        UcJjn5L32gLukB7M7fZcs5tqdq/kTzk=
+        bh=y53X1OR0ou7ONoOuH7610a+3WZLZ1CUD0l8GYtsY+0s=;
+        b=oXulej8NalhCtOkj+Lxh7GxLr8mkgM1LOJOSHUmmn9JYhgppYXQOw5zXuKOKYeawcfeVmB
+        FrlYuk+NV0i/aB7lLf3hL1sI3emVCTqvP3CYuNUW5qpy22qjwjH9dM+sdrh+6WYi6gt9Ai
+        sIx/0lI1qSimaos15DuzPnDBrbI2O9s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1629730723;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lVuGyybJuWkl73BOgL7ALZyfmCPF9PLgbLwYWFRwmhw=;
-        b=bW3UKCyQczUyvh9xhzvbIfpZBk4LnSsxET0kYhFU2BPbpx2I7mUkDVKHQVuI/VHU5L9kaZ
-        wUB+BwZA7KiLJuCA==
+        bh=y53X1OR0ou7ONoOuH7610a+3WZLZ1CUD0l8GYtsY+0s=;
+        b=Lo/LT0DiTZ1tzIDy2t+5hGWl0a6Ln+BgPNA8f+HJyPS/qGGYoWlrDKv0MxdazJ0LPnuHDc
+        fmi9rp4WwPy/rjBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DD5B13BE1;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 878A213BE0;
         Mon, 23 Aug 2021 14:58:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id yNRbFqO3I2EFQQAAMHmgww
+        id 8CeVIKO3I2EFQQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Mon, 23 Aug 2021 14:58:43 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,9 +59,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v5 33/35] mm, slub: protect put_cpu_partial() with disabled irqs instead of cmpxchg
-Date:   Mon, 23 Aug 2021 16:58:24 +0200
-Message-Id: <20210823145826.3857-34-vbabka@suse.cz>
+Subject: [PATCH v5 34/35] mm, slub: use migrate_disable() on PREEMPT_RT
+Date:   Mon, 23 Aug 2021 16:58:25 +0200
+Message-Id: <20210823145826.3857-35-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210823145826.3857-1-vbabka@suse.cz>
 References: <20210823145826.3857-1-vbabka@suse.cz>
@@ -71,169 +71,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jann Horn reported [1] the following theoretically possible race:
+We currently use preempt_disable() (directly or via get_cpu_ptr()) to stabilize
+the pointer to kmem_cache_cpu. On PREEMPT_RT this would be incompatible with
+the list_lock spinlock. We can use migrate_disable() instead, but that
+increases overhead on !PREEMPT_RT as it's an unconditional function call.
 
-  task A: put_cpu_partial() calls preempt_disable()
-  task A: oldpage = this_cpu_read(s->cpu_slab->partial)
-  interrupt: kfree() reaches unfreeze_partials() and discards the page
-  task B (on another CPU): reallocates page as page cache
-  task A: reads page->pages and page->pobjects, which are actually
-  halves of the pointer page->lru.prev
-  task B (on another CPU): frees page
-  interrupt: allocates page as SLUB page and places it on the percpu partial list
-  task A: this_cpu_cmpxchg() succeeds
+In order to get the best available mechanism on both PREEMPT_RT and
+!PREEMPT_RT, introduce private slub_get_cpu_ptr() and slub_put_cpu_ptr()
+wrappers and use them.
 
-  which would cause page->pages and page->pobjects to end up containing
-  halves of pointers that would then influence when put_cpu_partial()
-  happens and show up in root-only sysfs files. Maybe that's acceptable,
-  I don't know. But there should probably at least be a comment for now
-  to point out that we're reading union fields of a page that might be
-  in a completely different state.
-
-Additionally, the this_cpu_cmpxchg() approach in put_cpu_partial() is only safe
-against s->cpu_slab->partial manipulation in ___slab_alloc() if the latter
-disables irqs, otherwise a __slab_free() in an irq handler could call
-put_cpu_partial() in the middle of ___slab_alloc() manipulating ->partial
-and corrupt it. This becomes an issue on RT after a local_lock is introduced
-in later patch. The fix means taking the local_lock also in put_cpu_partial()
-on RT.
-
-After debugging this issue, Mike Galbraith suggested [2] that to avoid
-different locking schemes on RT and !RT, we can just protect put_cpu_partial()
-with disabled irqs (to be converted to local_lock_irqsave() later) everywhere.
-This should be acceptable as it's not a fast path, and moving the actual
-partial unfreezing outside of the irq disabled section makes it short, and with
-the retry loop gone the code can be also simplified. In addition, the race
-reported by Jann should no longer be possible.
-
-[1] https://lore.kernel.org/lkml/CAG48ez1mvUuXwg0YPH5ANzhQLpbphqk-ZS+jbRz+H66fvm4FcA@mail.gmail.com/
-[2] https://lore.kernel.org/linux-rt-users/e3470ab357b48bccfbd1f5133b982178a7d2befb.camel@gmx.de/
-
-Reported-by: Jann Horn <jannh@google.com>
-Suggested-by: Mike Galbraith <efault@gmx.de>
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 81 ++++++++++++++++++++++++++++++-------------------------
- 1 file changed, 44 insertions(+), 37 deletions(-)
+ mm/slub.c | 39 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 30 insertions(+), 9 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 3286defe4857..2362efab53df 100644
+index 2362efab53df..cd78b7844273 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2006,7 +2006,12 @@ static inline void *acquire_slab(struct kmem_cache *s,
- 	return freelist;
- }
- 
-+#ifdef CONFIG_SLUB_CPU_PARTIAL
- static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain);
-+#else
-+static inline void put_cpu_partial(struct kmem_cache *s, struct page *page,
-+				   int drain) { }
-+#endif
- static inline bool pfmemalloc_match(struct page *page, gfp_t gfpflags);
- 
- /*
-@@ -2440,14 +2445,6 @@ static void unfreeze_partials_cpu(struct kmem_cache *s,
- 		__unfreeze_partials(s, partial_page);
- }
- 
--#else	/* CONFIG_SLUB_CPU_PARTIAL */
--
--static inline void unfreeze_partials(struct kmem_cache *s) { }
--static inline void unfreeze_partials_cpu(struct kmem_cache *s,
--				  struct kmem_cache_cpu *c) { }
--
--#endif	/* CONFIG_SLUB_CPU_PARTIAL */
--
- /*
-  * Put a page that was just frozen (in __slab_free|get_partial_node) into a
-  * partial page slot if available.
-@@ -2457,46 +2454,56 @@ static inline void unfreeze_partials_cpu(struct kmem_cache *s,
+@@ -118,6 +118,26 @@
+  * 			the fast path and disables lockless freelists.
   */
- static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- {
--#ifdef CONFIG_SLUB_CPU_PARTIAL
- 	struct page *oldpage;
--	int pages;
--	int pobjects;
-+	struct page *page_to_unfreeze = NULL;
-+	unsigned long flags;
-+	int pages = 0;
-+	int pobjects = 0;
  
--	preempt_disable();
--	do {
--		pages = 0;
--		pobjects = 0;
--		oldpage = this_cpu_read(s->cpu_slab->partial);
-+	local_irq_save(flags);
++/*
++ * We could simply use migrate_disable()/enable() but as long as it's a
++ * function call even on !PREEMPT_RT, use inline preempt_disable() there.
++ */
++#ifndef CONFIG_PREEMPT_RT
++#define slub_get_cpu_ptr(var)	get_cpu_ptr(var)
++#define slub_put_cpu_ptr(var)	put_cpu_ptr(var)
++#else
++#define slub_get_cpu_ptr(var)		\
++({					\
++	migrate_disable();		\
++	this_cpu_ptr(var);		\
++})
++#define slub_put_cpu_ptr(var)		\
++do {					\
++	(void)(var);			\
++	migrate_enable();		\
++} while (0)
++#endif
 +
-+	oldpage = this_cpu_read(s->cpu_slab->partial);
+ #ifdef CONFIG_SLUB_DEBUG
+ #ifdef CONFIG_SLUB_DEBUG_ON
+ DEFINE_STATIC_KEY_TRUE(slub_debug_enabled);
+@@ -2828,7 +2848,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	if (unlikely(!pfmemalloc_match_unsafe(page, gfpflags)))
+ 		goto deactivate_slab;
  
--		if (oldpage) {
-+	if (oldpage) {
-+		if (drain && oldpage->pobjects > slub_cpu_partial(s)) {
-+			/*
-+			 * Partial array is full. Move the existing set to the
-+			 * per node partial list. Postpone the actual unfreezing
-+			 * outside of the critical section.
-+			 */
-+			page_to_unfreeze = oldpage;
-+			oldpage = NULL;
-+		} else {
- 			pobjects = oldpage->pobjects;
- 			pages = oldpage->pages;
--			if (drain && pobjects > slub_cpu_partial(s)) {
--				/*
--				 * partial array is full. Move the existing
--				 * set to the per node partial list.
--				 */
--				unfreeze_partials(s);
--				oldpage = NULL;
--				pobjects = 0;
--				pages = 0;
--				stat(s, CPU_PARTIAL_DRAIN);
--			}
+-	/* must check again c->page in case IRQ handler changed it */
++	/* must check again c->page in case we got preempted and it changed */
+ 	local_irq_save(flags);
+ 	if (unlikely(page != c->page)) {
+ 		local_irq_restore(flags);
+@@ -2887,7 +2907,8 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
  		}
-+	}
+ 		if (unlikely(!slub_percpu_partial(c))) {
+ 			local_irq_restore(flags);
+-			goto new_objects; /* stolen by an IRQ handler */
++			/* we were preempted and partial list got empty */
++			goto new_objects;
+ 		}
  
--		pages++;
--		pobjects += page->objects - page->inuse;
-+	pages++;
-+	pobjects += page->objects - page->inuse;
+ 		page = c->page = slub_percpu_partial(c);
+@@ -2903,9 +2924,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	if (freelist)
+ 		goto check_new_page;
  
--		page->pages = pages;
--		page->pobjects = pobjects;
--		page->next = oldpage;
-+	page->pages = pages;
-+	page->pobjects = pobjects;
-+	page->next = oldpage;
+-	put_cpu_ptr(s->cpu_slab);
++	slub_put_cpu_ptr(s->cpu_slab);
+ 	page = new_slab(s, gfpflags, node);
+-	c = get_cpu_ptr(s->cpu_slab);
++	c = slub_get_cpu_ptr(s->cpu_slab);
  
--	} while (this_cpu_cmpxchg(s->cpu_slab->partial, oldpage, page)
--								!= oldpage);
--	preempt_enable();
--#endif	/* CONFIG_SLUB_CPU_PARTIAL */
-+	this_cpu_write(s->cpu_slab->partial, page);
-+
-+	local_irq_restore(flags);
-+
-+	if (page_to_unfreeze) {
-+		__unfreeze_partials(s, page_to_unfreeze);
-+		stat(s, CPU_PARTIAL_DRAIN);
-+	}
+ 	if (unlikely(!page)) {
+ 		slab_out_of_memory(s, gfpflags, node);
+@@ -2988,12 +3009,12 @@ static void *__slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	 * cpu before disabling preemption. Need to reload cpu area
+ 	 * pointer.
+ 	 */
+-	c = get_cpu_ptr(s->cpu_slab);
++	c = slub_get_cpu_ptr(s->cpu_slab);
+ #endif
+ 
+ 	p = ___slab_alloc(s, gfpflags, node, addr, c);
+ #ifdef CONFIG_PREEMPT_COUNT
+-	put_cpu_ptr(s->cpu_slab);
++	slub_put_cpu_ptr(s->cpu_slab);
+ #endif
+ 	return p;
  }
+@@ -3522,7 +3543,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 	 * IRQs, which protects against PREEMPT and interrupts
+ 	 * handlers invoking normal fastpath.
+ 	 */
+-	c = get_cpu_ptr(s->cpu_slab);
++	c = slub_get_cpu_ptr(s->cpu_slab);
+ 	local_irq_disable();
  
-+#else	/* CONFIG_SLUB_CPU_PARTIAL */
-+
-+static inline void unfreeze_partials(struct kmem_cache *s) { }
-+static inline void unfreeze_partials_cpu(struct kmem_cache *s,
-+				  struct kmem_cache_cpu *c) { }
-+
-+#endif	/* CONFIG_SLUB_CPU_PARTIAL */
-+
- static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c,
- 			      bool lock)
- {
+ 	for (i = 0; i < size; i++) {
+@@ -3568,7 +3589,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 	}
+ 	c->tid = next_tid(c->tid);
+ 	local_irq_enable();
+-	put_cpu_ptr(s->cpu_slab);
++	slub_put_cpu_ptr(s->cpu_slab);
+ 
+ 	/*
+ 	 * memcg and kmem_cache debug support and memory initialization.
+@@ -3578,7 +3599,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 				slab_want_init_on_alloc(flags, s));
+ 	return i;
+ error:
+-	put_cpu_ptr(s->cpu_slab);
++	slub_put_cpu_ptr(s->cpu_slab);
+ 	slab_post_alloc_hook(s, objcg, flags, i, p, false);
+ 	__kmem_cache_free_bulk(s, i, p);
+ 	return 0;
 -- 
 2.32.0
 
