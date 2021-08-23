@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2FC3F52A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5651A3F52AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhHWVOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 17:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbhHWVOl (ORCPT
+        id S232808AbhHWVSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 17:18:39 -0400
+Received: from out07.smtpout.orange.fr ([193.252.22.91]:60259 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232710AbhHWVSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:14:41 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65B7C061575;
-        Mon, 23 Aug 2021 14:13:57 -0700 (PDT)
-Received: from maud (unknown [IPv6:2600:8800:8c06:1000::c8f3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: alyssa)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 957661F42654;
-        Mon, 23 Aug 2021 22:13:52 +0100 (BST)
-Date:   Mon, 23 Aug 2021 17:13:45 -0400
-From:   Alyssa Rosenzweig <alyssa@collabora.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH 3/3] drm/panfrost: Clamp lock region to Bifrost minimum
-Message-ID: <YSQPiQX8IOkJJSoY@maud>
-References: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com>
- <20210820213117.13050-4-alyssa.rosenzweig@collabora.com>
- <818b1a15-ddf4-461b-1d6a-cea539deaf76@arm.com>
+        Mon, 23 Aug 2021 17:18:37 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d73 with ME
+        id l9Hr250043riaq2039HrVh; Mon, 23 Aug 2021 23:17:52 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 23 Aug 2021 23:17:52 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jwi@linux.ibm.com, kgraul@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] s390/ism: switch from 'pci_' to 'dma_' API
+Date:   Mon, 23 Aug 2021 23:17:50 +0200
+Message-Id: <04d96a44cad009f15334876321aa236dc169b24c.1629753393.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <818b1a15-ddf4-461b-1d6a-cea539deaf76@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > When locking a region, we currently clamp to a PAGE_SIZE as the minimum
-> > lock region. While this is valid for Midgard, it is invalid for Bifrost,
-> 
-> While the spec does seem to state it's invalid for Bifrost - kbase
-> didn't bother with a lower clamp for a long time. I actually think this
-> is in many ways more of a spec bug: i.e. implementation details of the
-> round-up that the hardware does. But it's much safer following the spec
-> ;) And it seems like kbase eventually caught up too.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Yeah, makes sense. Should I drop the Cc: stable in that case? If the
-issue is purely theoretical.
+The patch has been generated with the coccinelle script below.
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+
+This has *NOT* been compile tested because I don't have the needed
+configuration.
+---
+ drivers/s390/net/ism_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/s390/net/ism_drv.c b/drivers/s390/net/ism_drv.c
+index 26cc943d2034..5f7e28de8b15 100644
+--- a/drivers/s390/net/ism_drv.c
++++ b/drivers/s390/net/ism_drv.c
+@@ -555,7 +555,7 @@ static int ism_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		goto err_disable;
+ 
+-	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (ret)
+ 		goto err_resource;
+ 
+-- 
+2.30.2
+
