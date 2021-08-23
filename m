@@ -2,135 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3533F4C5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961483F4C61
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhHWObh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:31:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57466 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230212AbhHWObf (ORCPT
+        id S230259AbhHWOca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229979AbhHWOc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:31:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629729052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gAk+4KSA7ARdoYI0TMZIFG727Vb77x9IC9rj5AiT9Dc=;
-        b=W6bD25Ygc5UyK38mWfJ2orFblNj21NendQSpPfnEQcSnR8RHb+4pVD/O0y5LP3w9E7wqrq
-        Ck8YLY/uOn3IFf7s5HTOkyIl1g5p2LCG0oVIPN8x3fN+2sgtEt6tE/mITi6EvhbDTjeTja
-        nd5RnuLtHpBUO0wusqmVQBlRQprhrxU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-47-o4UY9sSgMpG0XHeU6jl7BQ-1; Mon, 23 Aug 2021 10:30:51 -0400
-X-MC-Unique: o4UY9sSgMpG0XHeU6jl7BQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 23 Aug 2021 10:32:26 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB311C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:31:43 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1E021082922;
-        Mon, 23 Aug 2021 14:30:46 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC7352719D;
-        Mon, 23 Aug 2021 14:30:44 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access from ioapic_write_indirect()
-Date:   Mon, 23 Aug 2021 16:30:28 +0200
-Message-Id: <20210823143028.649818-5-vkuznets@redhat.com>
-In-Reply-To: <20210823143028.649818-1-vkuznets@redhat.com>
-References: <20210823143028.649818-1-vkuznets@redhat.com>
+        (Authenticated sender: hector@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5E9BB41E96;
+        Mon, 23 Aug 2021 14:31:38 +0000 (UTC)
+From:   Hector Martin <marcan@marcan.st>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>
+Subject: [PATCH] mfd/syscon: Use of_iomap() instead of ioremap()
+Date:   Mon, 23 Aug 2021 23:31:22 +0900
+Message-Id: <20210823143122.253094-1-marcan@marcan.st>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN reports the following issue:
+This automatically selects between ioremap() and ioremap_np() on
+platforms that require it, such as Apple SoCs.
 
- BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
- Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
-
- CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
- Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
- Call Trace:
-  dump_stack+0xa5/0xe6
-  print_address_description.constprop.0+0x18/0x130
-  ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  __kasan_report.cold+0x7f/0x114
-  ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  kasan_report+0x38/0x50
-  kasan_check_range+0xf5/0x1d0
-  kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
-  kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
-  ? kvm_arch_exit+0x110/0x110 [kvm]
-  ? sched_clock+0x5/0x10
-  ioapic_write_indirect+0x59f/0x9e0 [kvm]
-  ? static_obj+0xc0/0xc0
-  ? __lock_acquired+0x1d2/0x8c0
-  ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
-
-The problem appears to be that 'vcpu_bitmap' is allocated as a single long
-on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
-the lower 16 bits of it with bitmap_zero() for no particular reason (my
-guess would be that 'bitmap' and 'vcpu_bitmap' variables in
-kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
-16-bit long, the later should accommodate all possible vCPUs).
-
-Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
-Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
-Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Hector Martin <marcan@marcan.st>
 ---
- arch/x86/kvm/ioapic.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mfd/syscon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
-index ff005fe738a4..92cd4b02e9ba 100644
---- a/arch/x86/kvm/ioapic.c
-+++ b/arch/x86/kvm/ioapic.c
-@@ -319,7 +319,7 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
- 	unsigned index;
- 	bool mask_before, mask_after;
- 	union kvm_ioapic_redirect_entry *e;
--	unsigned long vcpu_bitmap;
-+	unsigned long vcpu_bitmap[BITS_TO_LONGS(KVM_MAX_VCPUS)];
- 	int old_remote_irr, old_delivery_status, old_dest_id, old_dest_mode;
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index 765c0210cb52..191fdb87c424 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -60,7 +60,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+ 		goto err_map;
+ 	}
  
- 	switch (ioapic->ioregsel) {
-@@ -384,9 +384,9 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
- 			irq.shorthand = APIC_DEST_NOSHORT;
- 			irq.dest_id = e->fields.dest_id;
- 			irq.msi_redir_hint = false;
--			bitmap_zero(&vcpu_bitmap, 16);
-+			bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
- 			kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
--						 &vcpu_bitmap);
-+						 vcpu_bitmap);
- 			if (old_dest_mode != e->fields.dest_mode ||
- 			    old_dest_id != e->fields.dest_id) {
- 				/*
-@@ -399,10 +399,10 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
- 				    kvm_lapic_irq_dest_mode(
- 					!!e->fields.dest_mode);
- 				kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
--							 &vcpu_bitmap);
-+							 vcpu_bitmap);
- 			}
- 			kvm_make_scan_ioapic_request_mask(ioapic->kvm,
--							  &vcpu_bitmap);
-+							  vcpu_bitmap);
- 		} else {
- 			kvm_make_scan_ioapic_request(ioapic->kvm);
- 		}
+-	base = ioremap(res.start, resource_size(&res));
++	base = of_iomap(np, 0);
+ 	if (!base) {
+ 		ret = -ENOMEM;
+ 		goto err_map;
 -- 
-2.31.1
+2.32.0
 
