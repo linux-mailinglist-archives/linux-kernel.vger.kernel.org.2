@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04FD3F4739
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BBB3F473E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235864AbhHWJQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:16:56 -0400
-Received: from mga12.intel.com ([192.55.52.136]:47130 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235828AbhHWJQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:16:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="196640763"
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="196640763"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 02:16:09 -0700
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="525863669"
-Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.255.29.47]) ([10.255.29.47])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 02:16:07 -0700
-Subject: Re: [kbuild-all] Re: [peterz-queue:sched/core 8/11]
- include/linux/sched.h:1722:57: warning: unused parameter 'dst'
-To:     Peter Zijlstra <peterz@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     Will Deacon <will@kernel.org>, clang-built-linux@googlegroups.com,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Valentin Schneider <Valentin.Schneider@arm.com>
-References: <202108210940.aD3d42zA-lkp@intel.com>
- <YSNkCAyMU0tJoedT@hirez.programming.kicks-ass.net>
-From:   "Chen, Rong A" <rong.a.chen@intel.com>
-Message-ID: <428f3e9a-a8d3-51ca-5e2e-caa50b8da3eb@intel.com>
-Date:   Mon, 23 Aug 2021 17:16:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S235753AbhHWJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:17:54 -0400
+Received: from mail-ua1-f45.google.com ([209.85.222.45]:39666 "EHLO
+        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235681AbhHWJRv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:17:51 -0400
+Received: by mail-ua1-f45.google.com with SMTP id a4so7606455uae.6;
+        Mon, 23 Aug 2021 02:17:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9QLjRZu+Qt7qgSvBEQ/53pbQu1xoAU50oF0hD2z0Qgk=;
+        b=dXNDm2dOIspLVSKshmZAcZWzK76K1wAR0YK+SGgew2NlyOUUeIRlVr5tb9noV3ZO6W
+         GEfxgzaksOIGC7dtjNpW5uFuCEiGCPBQdhSNPsOZMbA9S58sB2bhQ/K5UTXbsf/WU8l1
+         bCuFYV7jLTwBd6qmVlgYS08wk9a1JpPAm6r8WJ7NUiwaa6as7MulnpbH0S5j3yOAee4n
+         AONWKS5m5OAaC8ReC99TjOieqH9Dp7yMDO45tVK3nHKkI99MJYZsPOf5QdF71E/SaQdV
+         XTLUBayFdnWoCnY1poOrk4+86bWV1WUsvgzld7K8GHJHGuieLesgx5sClvPcmG40SHmE
+         2B7w==
+X-Gm-Message-State: AOAM5320adD/AhkCHQBKpGh4az9GMUWGcKtKdhq6TQCzEbomie/C+Wqz
+        Ysisaj5uyaOuy32mS5ARVAnk2FtvSZkkuHE9tlQLUcDD
+X-Google-Smtp-Source: ABdhPJzpNaAdaSSJdpn6BAK/7CLSD19FVvFR1f0/X4YuiaF49K46oNfMaKRHGNKHoksTYDNTArhskhCJmDpP/82y20A=
+X-Received: by 2002:ab0:545:: with SMTP id 63mr21148288uax.122.1629710228796;
+ Mon, 23 Aug 2021 02:17:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YSNkCAyMU0tJoedT@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210816162201.28801-1-uli+renesas@fpond.eu>
+In-Reply-To: <20210816162201.28801-1-uli+renesas@fpond.eu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 23 Aug 2021 11:16:57 +0200
+Message-ID: <CAMuHMdVw-mZKcPuZ9ZtqMPqCTp9bcjHm0Yy8Zb9KtfoM5me_Cg@mail.gmail.com>
+Subject: Re: [PATCH] serial: sh-sci: fix break handling for sysrq
+To:     Ulrich Hecht <uli+renesas@fpond.eu>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 16, 2021 at 6:22 PM Ulrich Hecht <uli+renesas@fpond.eu> wrote:
+> This fixes two issues that cause the sysrq sequence to be inadvertently
+> aborted on SCIF serial consoles:
+>
+> - a NUL character remains in the RX queue after a break has been detected,
+>   which is then passed on to uart_handle_sysrq_char()
+> - the break interrupt is handled twice on controllers with multiplexed ERI
+>   and BRI interrupts
+>
+> Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
 
+FTR:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 8/23/2021 5:02 PM, Peter Zijlstra wrote:
-> On Sat, Aug 21, 2021 at 09:20:50AM +0800, kernel test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
->> head:   234b8ab6476c5edd5262e2ff563de9498d60044a
->> commit: b90ca8badbd11488e5f762346b028666808164e7 [8/11] sched: Introduce task_struct::user_cpus_ptr to track requested affinity
->> config: i386-randconfig-a016-20210820 (attached as .config)
->> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project d9c5613e856cf2addfbf892fc4c1ce9ef9feceaa)
->> reproduce (this is a W=1 build):
-> 
-> Dear 0day folks; could you please blacklist me for all W=1 build output?
-> I'm 100% not interested in random compiler generated garbage.
+Gr{oetje,eeting}s,
 
-Hi Peterz,
+                        Geert
 
-Got it, we'll do that for you asap.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Best Regards,
-Rong Chen
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
