@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664583F53CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 01:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9233F53D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 01:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhHWXv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 19:51:28 -0400
-Received: from mga06.intel.com ([134.134.136.31]:35824 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233330AbhHWXvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:51:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="278212042"
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="278212042"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 16:50:13 -0700
-X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="526362646"
-Received: from snrahman-mobl3.amr.corp.intel.com (HELO [10.212.238.112]) ([10.212.238.112])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 16:50:12 -0700
-Subject: Re: [RFC PATCH 4/4] x86/mm: write protect (most) page tables
-To:     Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210823132513.15836-1-rppt@kernel.org>
- <20210823132513.15836-5-rppt@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <1cccc2b6-8b5b-4aee-483d-f10e64a248a5@intel.com>
-Date:   Mon, 23 Aug 2021 16:50:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233294AbhHWXwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 19:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233433AbhHWXwG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:52:06 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00025C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 16:51:22 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id oa17so13060729pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 16:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qP9Pyq6spTLX2ZdL8bYbTvq8hc7AHiozjvavSsllrAo=;
+        b=F3tqRJJHZnRMhQgjkRoOgfFLcjx3oIDMv1a1W++h1Yoh2cfrWpCsucfcmjlbVamBT8
+         hjtmOYEMet7dHIvlPdxa7vrtyJhyTnwk8j0y6DkPINWRDoHuTzlPJUdZkrrzdqAS4Z1N
+         wj3cC2Ph1Fr4TM1YKEIepU/foKCshexlcRRF8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qP9Pyq6spTLX2ZdL8bYbTvq8hc7AHiozjvavSsllrAo=;
+        b=PT9QM76wSWnuYO8lueTRYGVstCSXpMfUBf+TbfUQkw9IIyN4lkmifHBY0lVNxh2kSU
+         9JCnkhgfrzGlXKtv3j42IjI3KF/eqVsT240cZtXmScE7WbVHkqBrQcZe4Xyug9ncZnhg
+         y/oF1HNjAH/hCpsREZXC7VbmNulvDirVnp9ph16hbwmfZ0Wia8lZJfTMisLxvhyA/SWu
+         0yGv2kVAjv3MjkBBZv/FbrcF71X5G/rBrrFI8LAaB7/4q110ixVgVzW7+mgoKjihIiDr
+         4GG0h7wh4lpmCcvTxe5kF12h75u8E1BCNwHHgUIYB9RINWyrdIrLH917Tc8qql8kC2ag
+         LxMQ==
+X-Gm-Message-State: AOAM5310kRDOetny/Cf449RNSCEdHdVXF0DZfoGPaHT88o7PWxJdFpeH
+        mmR7T46gtEpdhXDwq6IlDQtqdA==
+X-Google-Smtp-Source: ABdhPJzIG/7d35YPbe2fIJVHKCJ6NuWUFE4zsXPv3awoTTePAiL+yylLYE3st+O7LQHJSaif0gADKw==
+X-Received: by 2002:a17:902:d2c3:b0:136:3916:c936 with SMTP id n3-20020a170902d2c300b001363916c936mr566998plc.85.1629762682512;
+        Mon, 23 Aug 2021 16:51:22 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:d459:dfd5:c7a0:283c])
+        by smtp.gmail.com with ESMTPSA id t14sm20074660pga.62.2021.08.23.16.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 16:51:22 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH 1/2] remoteproc: qcom: wcnss: Drop unused smd include
+Date:   Mon, 23 Aug 2021 16:51:19 -0700
+Message-Id: <20210823235120.1203512-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
 MIME-Version: 1.0
-In-Reply-To: <20210823132513.15836-5-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 6:25 AM, Mike Rapoport wrote:
->  void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
->  {
-> +	enable_pgtable_write(page_address(pte));
->  	pgtable_pte_page_dtor(pte);
->  	paravirt_release_pte(page_to_pfn(pte));
->  	paravirt_tlb_remove_table(tlb, pte);
-> @@ -69,6 +73,7 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
->  #ifdef CONFIG_X86_PAE
->  	tlb->need_flush_all = 1;
->  #endif
-> +	enable_pgtable_write(pmd);
->  	pgtable_pmd_page_dtor(page);
->  	paravirt_tlb_remove_table(tlb, page);
->  }
+This include isn't used anymore because the smd functions have been
+moved to the qcom_common.c file.
 
-I would expected this to have leveraged the pte_offset_map/unmap() code
-to enable/disable write access.  Granted, it would enable write access
-even when only a read is needed, but that could be trivially fixed with
-having a variant like:
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/remoteproc/qcom_wcnss.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-	pte_offset_map_write()
-	pte_offset_unmap_write()
+diff --git a/drivers/remoteproc/qcom_wcnss.c b/drivers/remoteproc/qcom_wcnss.c
+index f1cbc6b2edbb..33d786b93775 100644
+--- a/drivers/remoteproc/qcom_wcnss.c
++++ b/drivers/remoteproc/qcom_wcnss.c
+@@ -25,7 +25,6 @@
+ #include <linux/soc/qcom/mdt_loader.h>
+ #include <linux/soc/qcom/smem.h>
+ #include <linux/soc/qcom/smem_state.h>
+-#include <linux/rpmsg/qcom_smd.h>
+ 
+ #include "qcom_common.h"
+ #include "remoteproc_internal.h"
 
-in addition to the existing (presumably read-only) versions:
+base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
+-- 
+https://chromeos.dev
 
-	pte_offset_map()
-	pte_offset_unmap()
-
-Although those only work for the leaf levels, it seems a shame not to to
-use them.
-
-I'm also cringing a bit at hacking this into the page allocator.   A
-*lot* of what you're trying to do with getting large allocations out and
-splitting them up is done very well today by the slab allocators.  It
-might take some rearrangement of 'struct page' metadata to be more slab
-friendly, but it does seem like a close enough fit to warrant investigating.
