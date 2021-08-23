@@ -2,310 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2634A3F4A46
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669FA3F4A51
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237070AbhHWMEW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 08:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236769AbhHWMEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:04:15 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69071C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:03:33 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mI8fm-0002zi-Gm; Mon, 23 Aug 2021 14:03:26 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mI8fl-0007z7-8e; Mon, 23 Aug 2021 14:03:25 +0200
-Message-ID: <6bc6330215980f10853a2dac69f0bdfd9c8fb303.camel@pengutronix.de>
-Subject: Re: [PATCH v2 1/4] ASoC: rockchip: add support for i2s-tdm
- controller
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Date:   Mon, 23 Aug 2021 14:03:25 +0200
-In-Reply-To: <20210820182731.29370-2-frattaroli.nicolas@gmail.com>
-References: <20210820182731.29370-1-frattaroli.nicolas@gmail.com>
-         <20210820182731.29370-2-frattaroli.nicolas@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S236663AbhHWMIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:08:05 -0400
+Received: from mail-dm6nam12on2051.outbound.protection.outlook.com ([40.107.243.51]:63073
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233895AbhHWMIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 08:08:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ve1rBnjoPWIL3ANGW3+y/dEpBoU7w+ngbdOPnh6g6FDRfvdm3fYOPe973g4HAAOXs2NoYwUdneSeCFtAAR2IbOFBw4AOguPDgCd88SLPj7TkFYHtYiDlWzyddZRpPjJE2gorl/h3eOISJ5KqJ61yFjmQsDST5YZixPr2HsiVT+551WzAWLOyHF4OVBguVcC5RdvCucU5qEeHddOE9mgaZb1hK2YpNzs+GV5IWl38DUHh5EGWpVZGGlDT4ZYW0ev6QLKBpqvaYxTrs4TzFY9Hx72Y0a2QbNZL/COKWjdWXIuhAVxuaQ9Tt/+GLhfaVv/G6J7+wwOCIaV6DqhiP0Vrqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bEeuq4XvSh8qExXe+LVM0XZg1YqD9oL5YTVuwW9O3t4=;
+ b=LNy18NSCSVSZev+wH3QQv0a8S0Y7MfKMwWKoQWwcx8nbDq+JInJJyymS6Rr08NgBgK7VKPJUgMi3n6DpZQ4yoHo2dhs/gGgF7aPSkBQtYO4Jj4bUBHRKKdmmVIPlJoVnHQKlcnaJXOXIDr7bVFi7ni/HzI4pCrEgG6Ac4v6/fosezvuj4nxXSzbApDYGvBBh1AZW8lZkprjFFHsOS/slftuiHdlNUwMsO62EI6d6mRomAoY2AwNHvLz4rMZGtjTf8lNm/qx2jXR+2DffJTpE4S7+327VjLYdidSpgFZiPvh6ZJ+Nb9JrikT3uSKQpnwITvVEI02wSQZGs5pQxlfmJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=baylibre.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bEeuq4XvSh8qExXe+LVM0XZg1YqD9oL5YTVuwW9O3t4=;
+ b=DD+J3LAE8WIoTY33iZZ7iFUOjB9+D9Rd8vVVf4kYY1QQooCrUJtl0bTLsvQNHbAVxEhVl2Llk2NpSPhrVQMvD+rsAzvrUfjf/k4WL/HZMaodEPUOtPOeDZBHPesiL6RFkuOrq8oV+z1tKx3uAMbRLecqZGA5lWBDPzqvy6W1LcU=
+Received: from DM6PR04CA0026.namprd04.prod.outlook.com (2603:10b6:5:334::31)
+ by DM6PR02MB5804.namprd02.prod.outlook.com (2603:10b6:5:153::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
+ 2021 12:07:19 +0000
+Received: from DM3NAM02FT042.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:5:334:cafe::e5) by DM6PR04CA0026.outlook.office365.com
+ (2603:10b6:5:334::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend
+ Transport; Mon, 23 Aug 2021 12:07:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; baylibre.com; dkim=none (message not signed)
+ header.d=none;baylibre.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ DM3NAM02FT042.mail.protection.outlook.com (10.13.4.213) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 12:07:19 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 23 Aug 2021 05:07:18 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 23 Aug 2021 05:07:18 -0700
+Envelope-to: mturquette@baylibre.com,
+ sboyd@kernel.org,
+ linux-clk@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Received: from [172.19.2.243] (port=36904 helo=xsjwillw50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <rajan.vaja@xilinx.com>)
+        id 1mI8jW-0008CE-MC; Mon, 23 Aug 2021 05:07:18 -0700
+From:   Rajan Vaja <rajan.vaja@xilinx.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <michal.simek@xilinx.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Rajan Vaja <rajan.vaja@xilinx.com>
+Subject: [PATCH v3] clk: zynqmp: fix kernel doc
+Date:   Mon, 23 Aug 2021 05:07:13 -0700
+Message-ID: <1629720433-19019-1-git-send-email-rajan.vaja@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1629446294-1056-1-git-send-email-rajan.vaja@xilinx.com>
+References: <1629446294-1056-1-git-send-email-rajan.vaja@xilinx.com>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fa1ffb86-42f1-4cac-9cd9-08d9662e8e7e
+X-MS-TrafficTypeDiagnostic: DM6PR02MB5804:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB580455D7A04B1E304E3FA1E3B7C49@DM6PR02MB5804.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: onmxo4OH1jQcLS7s3IEre6/a/d1WUIGOWCO3d7mIC5E5Rj3w2PoP12devQEOLhWhsiIIvjOa6Dk4Xw+cLP0vOk79Y9wpmacKasxYEUYCnB2lzK7ATHN11ym0q2gfWS7K4jxJoDkuOUzD+bqXOT3EJhBqDNa4UPgAjyq0jMsjU+xY++XHUL9++MHXSLTEDqVpPKRa6w9CLcB3LXqwBD0ctOxUnXEGNrwYwjwW9Iyktqf7Vsgp1CdsIy8an+SCz+EuCuCt2bGVxfJ7SZBnhOIZYbNjT6lbPP27AIP9JYHqk6hJmfAgMMp/ImfBBrHyov/v2Psmkg1MO+m4TUp1WzCGcvvpVzq3YgX0a+xZ4db6RY82du6T5JGVagK8QsOCaGqvTbPmw8zJZqH1QaeSg9pdTaRndfqDQTjB+FMA1CrROe/90UR1SFSDkQj+Jm8FbRpL4jmxOqAt9uiUnXOcM78uN3YY+t+A20AfVNLkotGxRuHHa2YZ/85uLxPMJM8e37fwr/NrzccO+5PVQm+DNNvpszR6ZAmNKDoaLK9wAbaAtORyeNQSjc1tEJBiAIGmch6HuLjb8cvDt5IbhwcEtbhZ0tsevJeoYX36teFjjTnXeHvQ5qPsG5u3RwFssnMySyd0Uv7d1jIITnMd17K2oxonlhrAvS8ufGI+fMiSMO92nbXBXb1oQ4cbqjvIKltfCkE4ERhym9DYU2jhUM4czC3fBDco28ZxlLRXgVUnNoNuwgk=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(7696005)(2906002)(9786002)(26005)(6636002)(70586007)(508600001)(70206006)(44832011)(2616005)(110136005)(54906003)(36906005)(107886003)(4326008)(316002)(5660300002)(8676002)(8936002)(47076005)(426003)(336012)(36756003)(7636003)(356005)(4744005)(186003)(83380400001)(6666004)(82310400003)(36860700001)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 12:07:19.3927
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa1ffb86-42f1-4cac-9cd9-08d9662e8e7e
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT042.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB5804
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Add missing description of 'custom_type_flag' structure member.
 
-On Fri, 2021-08-20 at 20:27 +0200, Nicolas Frattaroli wrote:
-[...]
-> diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-> new file mode 100644
-> index 000000000000..c02b66f3c913
-> --- /dev/null
-> +++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-> @@ -0,0 +1,1737 @@
-[...]
-> +static void rockchip_snd_xfer_reset_assert(struct rk_i2s_tdm_dev *i2s_tdm,
-> +					   int tx_bank, int tx_offset,
-> +					   int rx_bank, int rx_offset)
-> +{
-> +	void __iomem *cru_reset;
-> +	unsigned long flags;
-> +
-> +	cru_reset = i2s_tdm->cru_base + i2s_tdm->soc_data->softrst_offset;
-> +
-> +	if (tx_bank == rx_bank) {
-> +		writel(BIT(tx_offset) | BIT(rx_offset) |
-> +		       (BIT(tx_offset) << 16) | (BIT(rx_offset) << 16),
-> +		       cru_reset + (tx_bank * 4));
-> +	} else {
-> +		local_irq_save(flags);
-> +		writel(BIT(tx_offset) | (BIT(tx_offset) << 16),
-> +		       cru_reset + (tx_bank * 4));
-> +		writel(BIT(rx_offset) | (BIT(rx_offset) << 16),
-> +		       cru_reset + (rx_bank * 4));
-> +		local_irq_restore(flags);
-> +	}
-> +}
-> +
-> +static void rockchip_snd_xfer_reset_deassert(struct rk_i2s_tdm_dev *i2s_tdm,
-> +					     int tx_bank, int tx_offset,
-> +					     int rx_bank, int rx_offset)
-> +{
-> +	void __iomem *cru_reset;
-> +	unsigned long flags;
-> +
-> +	cru_reset = i2s_tdm->cru_base + i2s_tdm->soc_data->softrst_offset;
-> +
-> +	if (tx_bank == rx_bank) {
-> +		writel((BIT(tx_offset) << 16) | (BIT(rx_offset) << 16),
-> +		       cru_reset + (tx_bank * 4));
-> +	} else {
-> +		local_irq_save(flags);
-> +		writel((BIT(tx_offset) << 16),
-> +		       cru_reset + (tx_bank * 4));
-> +		writel((BIT(rx_offset) << 16),
-> +		       cru_reset + (rx_bank * 4));
-> +		local_irq_restore(flags);
-> +	}
-> +}
-> +
-> +/*
-> + * Makes sure that both tx and rx are reset at the same time to sync lrck
-> + * when clk_trcm > 0.
-> + */
-> +static void rockchip_snd_xfer_sync_reset(struct rk_i2s_tdm_dev *i2s_tdm)
-> +{
-> +	int tx_id, rx_id;
-> +	int tx_bank, rx_bank, tx_offset, rx_offset;
-> +
-> +	if (!i2s_tdm->cru_base || !i2s_tdm->soc_data)
-> +		return;
-> +
-> +	tx_id = i2s_tdm->tx_reset_id;
-> +	rx_id = i2s_tdm->rx_reset_id;
-> +	if (tx_id < 0 || rx_id < 0)
-> +		return;
-> +
-> +	tx_bank = tx_id / 16;
-> +	tx_offset = tx_id % 16;
-> +	rx_bank = rx_id / 16;
-> +	rx_offset = rx_id % 16;
-> +	dev_dbg(i2s_tdm->dev,
-> +		"tx_bank: %d, rx_bank: %d, tx_offset: %d, rx_offset: %d\n",
-> +		tx_bank, rx_bank, tx_offset, rx_offset);
-> +
-> +	rockchip_snd_xfer_reset_assert(i2s_tdm, tx_bank, tx_offset,
-> +				       rx_bank, rx_offset);
-> +
-> +	udelay(150);
-> +
-> +	rockchip_snd_xfer_reset_deassert(i2s_tdm, tx_bank, tx_offset,
-> +					 rx_bank, rx_offset);
-> +}
+Fixes: e605fa9c4a0c ("clk: zynqmp: Add support for custom type flags")
 
-I'm not too fond of reimplementing half a reset controller in here.
-The reset framework does not support synchronized (de)assertion of
-multiple reset controls, I wonder if this would be useful to add.
-Without having thought about this too hard, I could imagine this as an
-extension to the bulk API, or possibly a call to join multiple reset
-controls into a reset control array.
+Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+---
+Changes in v3:
+ - Fixed typo in description of 'custom_type_flag' structure member.
+Changes in v2:
+ - Updated Fixes tag.
+---
+ drivers/clk/zynqmp/clk-zynqmp.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +static void rockchip_snd_reset(struct reset_control *rc)
-> +{
-> +	if (IS_ERR(rc))
-> +		return;
+diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqmp.h
+index 84fa80a..60cbc06 100644
+--- a/drivers/clk/zynqmp/clk-zynqmp.h
++++ b/drivers/clk/zynqmp/clk-zynqmp.h
+@@ -56,6 +56,7 @@ enum topology_type {
+  * @type:	Type of topology
+  * @flag:	Topology flags
+  * @type_flag:	Topology type specific flag
++ * @custom_type_flag: Topology type specific custom flag
+  */
+ struct clock_topology {
+ 	u32 type;
+-- 
+2.7.4
 
-This shouldn't be called with an error code, see the comment about
-optional reset controls below.
-
-> +
-> +	reset_control_assert(rc);
-> +	udelay(1);
-
-What is the reason for the different delays in
-rockchip_snd_xfer_sync_reset() and rockchip_snd_reset()?
-
-> +	reset_control_deassert(rc);
-> +}
-[...]
-> +static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *node = pdev->dev.of_node;
-> +	struct device_node *cru_node;
-> +	const struct of_device_id *of_id;
-> +	struct rk_i2s_tdm_dev *i2s_tdm;
-> +	struct resource *res;
-> +	void __iomem *regs;
-> +	int ret;
-> +	int val;
-> +
-> +	i2s_tdm = devm_kzalloc(&pdev->dev, sizeof(*i2s_tdm), GFP_KERNEL);
-> +	if (!i2s_tdm)
-> +		return -ENOMEM;
-> +
-> +	i2s_tdm->dev = &pdev->dev;
-> +
-> +	of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
-> +	if (!of_id || !of_id->data)
-> +		return -EINVAL;
-> +
-> +	spin_lock_init(&i2s_tdm->lock);
-> +	i2s_tdm->soc_data = (struct rk_i2s_soc_data *)of_id->data;
-> +
-> +	i2s_tdm->frame_width = 64;
-> +	if (!of_property_read_u32(node, "rockchip,frame-width", &val)) {
-> +		if (val >= 32 && (val % 2 == 0) && val <= 512) {
-> +			i2s_tdm->frame_width = val;
-> +		} else {
-> +			dev_err(i2s_tdm->dev, "unsupported frame width: '%d'\n",
-> +				val);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	i2s_tdm->clk_trcm = TRCM_TXRX;
-> +	if (of_property_read_bool(node, "rockchip,trcm-sync-tx-only"))
-> +		i2s_tdm->clk_trcm = TRCM_TX;
-> +	if (of_property_read_bool(node, "rockchip,trcm-sync-rx-only")) {
-> +		if (i2s_tdm->clk_trcm) {
-> +			dev_err(i2s_tdm->dev, "invalid trcm-sync configuration\n");
-> +			return -EINVAL;
-> +		}
-> +		i2s_tdm->clk_trcm = TRCM_RX;
-> +	}
-> +	if (i2s_tdm->clk_trcm != TRCM_TXRX)
-> +		i2s_tdm_dai.symmetric_rate = 1;
-> +
-> +	i2s_tdm->tdm_fsync_half_frame =
-> +		of_property_read_bool(node, "rockchip,tdm-fsync-half-frame");
-> +
-> +	i2s_tdm->grf = syscon_regmap_lookup_by_phandle(node, "rockchip,grf");
-> +	if (IS_ERR(i2s_tdm->grf))
-> +		return dev_err_probe(i2s_tdm->dev, PTR_ERR(i2s_tdm->grf),
-> +				     "Error in rockchip,grf\n");
-> +
-> +	if (i2s_tdm->clk_trcm != TRCM_TXRX) {
-> +		cru_node = of_parse_phandle(node, "rockchip,cru", 0);
-> +		i2s_tdm->cru_base = of_iomap(cru_node, 0);
-
-This is a bit ugly if there is another driver sitting on the
-rockchip,cru compatible node. Which reset controller driver is backing
-the reset controls below?
-
-> +		of_node_put(cru_node);
-> +		if (!i2s_tdm->cru_base) {
-> +			dev_err(i2s_tdm->dev,
-> +				"Missing or unsupported rockchip,cru node\n");
-> +			return -ENOENT;
-> +		}
-> +
-> +		i2s_tdm->tx_reset_id = of_i2s_resetid_get(node, "tx-m");
-> +		i2s_tdm->rx_reset_id = of_i2s_resetid_get(node, "rx-m");
-> +	}
-> +
-> +	i2s_tdm->tx_reset = devm_reset_control_get(&pdev->dev, "tx-m");
-
-Please use devm_reset_control_get_exclusive() instead.
-
-> +	if (IS_ERR(i2s_tdm->tx_reset)) {
-> +		ret = PTR_ERR(i2s_tdm->tx_reset);
-> +		if (ret != -ENOENT)
-> +			return dev_err_probe(i2s_tdm->dev, ret,
-> +					     "Error in tx-m reset control\n");
-> +	}
-> +
-> +	i2s_tdm->rx_reset = devm_reset_control_get(&pdev->dev, "rx-m");
-> +	if (IS_ERR(i2s_tdm->rx_reset)) {
-> +		ret = PTR_ERR(i2s_tdm->rx_reset);
-> +		if (ret != -ENOENT)
-
-Why is -ENOENT acceptable? If you want these to be optional, use
-devm_reset_control_get_optional_exclusive() [1] instead. That will
-return NULL if the reset is not specified in the device tree, which will
-be ignored by reset_control_(de)assert().
-
-[1] https://www.kernel.org/doc/html/latest/driver-api/reset.html#c.devm_reset_control_get_optional_exclusive
-
-> +			return dev_err_probe(i2s_tdm->dev, ret,
-> +					     "Error in rx-m reset control\n");
-> +	}
-> +
-> +	i2s_tdm->hclk = devm_clk_get(&pdev->dev, "hclk");
-> +	if (IS_ERR(i2s_tdm->hclk)) {
-> +		return dev_err_probe(i2s_tdm->dev, PTR_ERR(i2s_tdm->hclk),
-> +				     "Failed to get clock hclk\n");
-> +	}
-> +
-> +	ret = clk_prepare_enable(i2s_tdm->hclk);
-> +	if (ret) {
-> +		return dev_err_probe(i2s_tdm->dev, ret,
-> +				     "Failed to enable clock hclk\n");
-> +	}
-
-This clock is left enabled in all the error paths below. You could
-install a cleanup action with devm_add_action_or_reset(), or better
-start enabling the hardware only after acquisition of all required
-resources has succeeded.
-
-[...]
-> +static int rockchip_i2s_tdm_remove(struct platform_device *pdev)
-> +{
-> +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(&pdev->dev);
-> +
-> +	pm_runtime_disable(&pdev->dev);
-> +	if (!pm_runtime_status_suspended(&pdev->dev))
-> +		i2s_tdm_runtime_suspend(&pdev->dev);
-> +
-> +	if (!IS_ERR(i2s_tdm->mclk_tx))
-> +		clk_prepare_enable(i2s_tdm->mclk_tx);
-> +	if (!IS_ERR(i2s_tdm->mclk_rx))
-> +		clk_prepare_enable(i2s_tdm->mclk_rx);
-
-Why are we enabling these clocks now?
-
-> +	if (!IS_ERR(i2s_tdm->hclk))
-> +		clk_disable_unprepare(i2s_tdm->hclk);
-> +
-> +	return 0;
-> +}
-
-regards
-Philipp
