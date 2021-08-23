@@ -2,141 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCE93F4F83
+	by mail.lfdr.de (Postfix) with ESMTP id AC2583F4F85
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhHWRbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhHWRbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:31:42 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3744AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:30:59 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id t42so13404428pfg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xmm91rkjJlab8b0Klygz61qOGG30GBcTtu1l2IdR8Do=;
-        b=Jf0Z5DAQz2sRFu9Jdki6NxKB54qaYV8H2Rx/d8GjGOzfF2fTEME1cngl9KSuzgH77c
-         2px8n9CBlFIjN8BY5W/gbuXmEUcSdKv1dHigrcdxqbQfrABSahOvuW1U6XROl2mRJ5Se
-         8NsK42VM8tsm6Z7oBWCCXis7Th04nI7ccRuTUivdvJWjjvb1oQkQ2jXmfF4EXpweR4YC
-         QEDprERqNeRZXxNXG3mno2N1goelHTOU9ZsDxBLwVSs+e0jQvSKOeKq+cNIwca3TAC/6
-         bYnMfE0jh/Pv5CbZx8KzOwFuyID1KdGb4j4h5g0c98eOP4Zys6HdfqUGUIB0q2XUOxna
-         2AEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xmm91rkjJlab8b0Klygz61qOGG30GBcTtu1l2IdR8Do=;
-        b=Bv5Y2u4T8hv+pd/PunS20SnzAJ2IVaPYTZICTLSS3lx5K7HCZQtqpLW8NOvNRNjjSV
-         NJ7UyPmoL/IWLsbZPs0h2FFaKWMsZzGS7E0wgbvLXMqWJmYi2cn0+uJeCYvTwnX8qKtn
-         g7gSoocySXZci0RiT+5HCSIi0J+jN1nDeUD7FeWrlaLTMOrmnCVwHDE/nODzaF8Rvuj/
-         1+9gtrz5JZsslFsEObfmjsWf/ZpEwHBWhijyV8x8zISVULwb1M5jOiLS+PCppzgHIaHH
-         4XXRpwBkHL0CgqnGugQKAYo3ucXbiWr3BbswWoQl/piEsxjVq1PqTX9NEufTquHIYZoP
-         5OUw==
-X-Gm-Message-State: AOAM5312U5Lj1ZrBTxHGiJQDyQNcDwleBTOf4nrnG4aNJDipAibsj9wc
-        IerMlJ8oRlxbywRhATSIXqUXy6fe68xzbw==
-X-Google-Smtp-Source: ABdhPJzV/SodcEFANxJO5+bV04KTefAp5puc9270wPDPBVJcGatDODoJdJJ9f98Ri13/nyfYgd6VeA==
-X-Received: by 2002:a63:5f14:: with SMTP id t20mr30047026pgb.433.1629739858324;
-        Mon, 23 Aug 2021 10:30:58 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:7e3a:73e9:2510:18d6])
-        by smtp.gmail.com with ESMTPSA id b10sm16609267pfi.122.2021.08.23.10.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 10:30:56 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 10:30:51 -0700
-From:   Benson Leung <bleung@google.com>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_proto: Update feature check
-Message-ID: <YSPbS6By2DWbpZy+@google.com>
-References: <20210802184711.3872372-1-pmalani@chromium.org>
+        id S231344AbhHWRcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:32:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229471AbhHWRcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 13:32:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE9076126A;
+        Mon, 23 Aug 2021 17:31:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629739888;
+        bh=e7y6Lc8now9lIlFwy4u3fzEvUv+8+HIBcAsN2wcm8cQ=;
+        h=Subject:From:To:Cc:Date:From;
+        b=i1+5RDbbSJm1r34Fjnm9F2V5JjGOpUyQfmF8ILJGk1R0DTyM7Ix6A41Nx6RKuAoMp
+         Iz/JHignpYc7a2C4C9V5QP7ADSjcCEwtdWK0d8Z6CFZpKpYJISbvEF2+CckPtbdPQP
+         i0MkYB1sTitKy4Ad1lCQigw16OPfnkRL1kV+bD+HmWz2UoNNuB1SkdSrwWEnV6SX7V
+         gRD8Rs6Dlnjo6rMCKhv8f79Bbp+5CisPhPJauXSoKxXRzrwtjvThhiJtw4BwE3ZmMk
+         vfa3Y1KFmNBmP+sxLLC9ypdLSivROTksAZ4a4t9Bxz1FrRTJ37IjuIhK9C9EPdrTIq
+         ZSLq37F1i/1Bw==
+Message-ID: <dbb37ec13b79573e1223161383c222a6ab7ac15e.camel@kernel.org>
+Subject: [GIT PULL] TPM DEVICE DRIVER changes for v5.15
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
+Date:   Mon, 23 Aug 2021 20:31:25 +0300
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HNBq682VbNMSbrU5"
-Content-Disposition: inline
-In-Reply-To: <20210802184711.3872372-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---HNBq682VbNMSbrU5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+These are the highlights of this PR:
 
-Hi Prashant,
+- Support for signing LKM's with ECDSA keys.
+- An integer overflow bug fix in pkey.
 
-On Mon, Aug 02, 2021 at 11:47:10AM -0700, Prashant Malani wrote:
-> EC feature flags now require more than 32 bits to be represented. In
-> order to make cros_ec_check_features() usable for more recent features,
-> update it to account for the extra 32 bits of features.
->=20
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+/Jarkko
 
-FYI, as discussed, this patch was dropped from the series.
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93=
+:
 
-> ---
->  drivers/platform/chrome/cros_ec_proto.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/c=
-hrome/cros_ec_proto.c
-> index a7404d69b2d3..772edad80593 100644
-> --- a/drivers/platform/chrome/cros_ec_proto.c
-> +++ b/drivers/platform/chrome/cros_ec_proto.c
-> @@ -813,6 +813,7 @@ EXPORT_SYMBOL(cros_ec_get_host_event);
->  int cros_ec_check_features(struct cros_ec_dev *ec, int feature)
->  {
->  	struct cros_ec_command *msg;
-> +	u32 mask;
->  	int ret;
-> =20
->  	if (ec->features[0] =3D=3D -1U && ec->features[1] =3D=3D -1U) {
-> @@ -839,7 +840,12 @@ int cros_ec_check_features(struct cros_ec_dev *ec, i=
-nt feature)
->  		kfree(msg);
->  	}
-> =20
-> -	return ec->features[feature / 32] & EC_FEATURE_MASK_0(feature);
-> +	if (feature >=3D 32)
-> +		mask =3D EC_FEATURE_MASK_1(feature);
-> +	else
-> +		mask =3D EC_FEATURE_MASK_0(feature);
-> +
-> +	return ec->features[feature / 32] & mask;
->  }
->  EXPORT_SYMBOL_GPL(cros_ec_check_features);
-> =20
-> --=20
-> 2.32.0.554.ge1b32706d8-goog
->=20
+  Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
 
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
+are available in the Git repository at:
 
---HNBq682VbNMSbrU5
-Content-Type: application/pgp-signature; name="signature.asc"
+  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tag=
+s/tpmdd-next-v5.15
 
------BEGIN PGP SIGNATURE-----
+for you to fetch changes up to f985911b7bc75d5c98ed24d8aaa8b94c590f7c6a:
 
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYSPbSwAKCRBzbaomhzOw
-wl2bAQCH3tFVlx/twk8FkUFBugzU6S2gzWbwlpPTaB8a3Jt7vgEAqFW4sxcgNPgz
-TdPDdTAqB3iFEPpbYX2lH6zgXo/5dwU=
-=rMxV
------END PGP SIGNATURE-----
+  crypto: public_key: fix overflow during implicit conversion (2021-08-23 2=
+0:25:24 +0300)
 
---HNBq682VbNMSbrU5--
+----------------------------------------------------------------
+tpmdd updates for Linux v5.15
+
+----------------------------------------------------------------
+Adrian Ratiu (2):
+      char: tpm: Kconfig: remove bad i2c cr50 select
+      char: tpm: cr50_i2c: convert to new probe interface
+
+Stefan Berger (3):
+      certs: Trigger creation of RSA module signing key if it's not an RSA =
+key
+      certs: Add support for using elliptic curve keys for signing modules
+      tpm: ibmvtpm: Avoid error message when process gets signal while wait=
+ing
+
+zhenwei pi (1):
+      crypto: public_key: fix overflow during implicit conversion
+
+ certs/Kconfig                         | 26 ++++++++++++++++++++++++++
+ certs/Makefile                        | 21 +++++++++++++++++++++
+ crypto/asymmetric_keys/pkcs7_parser.c |  8 ++++++++
+ drivers/char/tpm/Kconfig              |  1 -
+ drivers/char/tpm/tpm_ibmvtpm.c        | 26 +++++++++++++++-----------
+ drivers/char/tpm/tpm_ibmvtpm.h        |  2 +-
+ drivers/char/tpm/tpm_tis_i2c_cr50.c   | 12 ++----------
+ include/crypto/public_key.h           |  4 ++--
+ 8 files changed, 75 insertions(+), 25 deletions(-)
