@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353343F5116
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BDE3F5118
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhHWTOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:14:34 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:54073 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231747AbhHWTOd (ORCPT
+        id S231747AbhHWTPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:15:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37155 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230332AbhHWTPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:14:33 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 785645C01EB;
-        Mon, 23 Aug 2021 15:13:49 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 23 Aug 2021 15:13:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        joshtriplett.org; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=fm1; bh=C4Y
-        iITZLwd1FjTu1OcR03tOrxxe1bILHAoD/r95KPyA=; b=bowK4U65RhRyDD0/6nz
-        kkN88O9v7TSy2myiNzHU11aMTem0HyXom+u0ipoGEusFSLlBimTIbDGU69oKL9tN
-        Ro1E+tnbkAPiGy5Hw3yh5ZfZf4qRqxTvcT2AzzUlL2BBNn4t6twIRd3sYz5RYD/4
-        7+UJe3fz4s66SDBWrKWg1E3mPQDljiswMRO+zkVzJq8IYtcfpO9wvdqOfvblUKK4
-        rlf9+Wl+NUS+MxDhATWfExbhHrOEmIWyEBQ60astJhobGiLqf2XmjzbkOHcnf+mi
-        FMM45gqNwJmn5eVR3SNMsreGCxSnOZGjWvFuh8bFIQkk30Gn4KfnaDSTiwEqhc1n
-        WoA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=C4YiIT
-        ZLwd1FjTu1OcR03tOrxxe1bILHAoD/r95KPyA=; b=RpNw4RGCsz9BUChMAYN8IO
-        FKq4cX04tbcC9Ua/JM3uZ/7TxGRRAxC7/QyuXJY5jdDsIAh6t36IudXAHYlhVxBs
-        Xq2UZD2xkt5BHFAqSFIvygdyNGUVTJaETKRjMC4eKsemRuG71o3tpT83hgeNiTw0
-        4fWsDcrEMPpMHzt8oc+J0D7AO+ojHTsndmNNLLVIImYgSkHo9FbFJl+bjtkSlO/j
-        o/5fMDfP1F377RiWO7fwpwSCH8D/llZwTfxTND9UDVkRvWNxCZjh+TyG6C5jMnhS
-        DOmaVmFqx/qebxJ2YlQXJF+MHFY5j2QGWwJ3xrcCjCJ705UPAfT0U/hn0SrTLRdA
-        ==
-X-ME-Sender: <xms:bPMjYY4bVl6P0wsvXduso8KnC-dFL9AEXrJZIUE395UDIcAK39WdhQ>
-    <xme:bPMjYZ5rSVp-GTbH9U19kSMvjM6DCUJ06skfXHDeBIect_1rbgCIVTkLhlDXwHgXI
-    cMVxO5Rt7JUKcOidC0>
-X-ME-Received: <xmr:bPMjYXce-5goCi7B3_sp9_D5ZiEpjlPR4Ba2lf6JaQ5StCp8UeOXN_2AvNNjg6WTDV29ZUA-SFJ2JpI7GZJbJsCYTS8bHw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddthedgudefiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheplfhoshhh
-    ucfvrhhiphhlvghtthcuoehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeegtdfgfeeghfevgeelgfefieegudeuheekkedtueeutefgheff
-    veegueeiteehteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjohhshhesjhhoshhhthhrihhplhgvthhtrdhorhhg
-X-ME-Proxy: <xmx:bPMjYdJO4kzITS3RZjhQfWmabWZgXSbdMARIluHthVkNVOMJ-uuy6w>
-    <xmx:bPMjYcL_BxF87dO7Mdclh0ebkaCSfOllC9Am8jcBgfT8d7H5JXp7tg>
-    <xmx:bPMjYezN7vPeUcFdwE8w0pmNGa0XSj2thWcVPjBppMDFWCQtumRxcA>
-    <xmx:bfMjYU-A2Qe3arxoxcfSX0zoKYEXPyorKhAVMTxv5PpZgica6Wwoxg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Aug 2021 15:13:46 -0400 (EDT)
-Date:   Mon, 23 Aug 2021 12:13:45 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH v3 0/4] open/accept directly into io_uring fixed file
- table
-Message-ID: <YSPzab+g8ee84bX7@localhost>
-References: <cover.1629559905.git.asml.silence@gmail.com>
- <7fa72eec-9222-60eb-9ec6-e4b6efbfc5fb@kernel.dk>
+        Mon, 23 Aug 2021 15:15:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629746103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FbCwTw6xOu3Ht//mhhr4QVYkX1dUGLm9ed7G3TO0npw=;
+        b=C46zSB/y7ktDD5z/zzffYItonpqvIUDzj38Rla6xjte2Bst8+LRLn/zvO5x3bDGlKBkLOm
+        cxoFaEjtsHiUbAZydakZsbkIM63BzgdTmHB1mYAtepzLoMpAQXqCWkaQ6qAT3W2N2AjWBd
+        lQhnMXXwYbxztzw3CSLf8r9zlnLnRb4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-560-e2SI2gcONv6TkaeVNCG8kw-1; Mon, 23 Aug 2021 15:15:02 -0400
+X-MC-Unique: e2SI2gcONv6TkaeVNCG8kw-1
+Received: by mail-wr1-f71.google.com with SMTP id n10-20020a5d660a0000b02901551ef5616eso5241902wru.20
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:15:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=FbCwTw6xOu3Ht//mhhr4QVYkX1dUGLm9ed7G3TO0npw=;
+        b=RApSLWXq7UXpsbgIIW8/MMLnjZjXqFONda5dbI0mbU1Fgsm9F01lUjRN6VcNtaIo7L
+         nZM4WnSwGgbPw8o7sdzgr5dYSaehrdU+S8HhASOcI9bDJipX3cC4JFkxJeAMEyDCFGiY
+         Ej7pMno/9FMkoy5jKJftECIqcZtPKJ0OoupuU1u0DR2bA1NlhH6dibroNk5zfjJtdkcn
+         Mj3dKDotxJBdjTyObJKTJaEES/l5waGa9fvZG9qVH+vXB6qV1IZjAK0CsIrmRY9BvYsL
+         6djWOJMg6Clu2tmTI3yULQGtSbAFNtzpbw6S9Cd5eDCdz77eSdd3mE6NWPqZGOyNPalO
+         0Upw==
+X-Gm-Message-State: AOAM5311SXvPf9esLdmcSmV13LweY7OIsnGIu1w14uSkbQQb3AgUEpEY
+        iFJX9386MnjUK8ZI2WUVsI+dSKDvBU5KCiPAZdlKUAHklK+V6AQe5m61uEcxBiqtxuHKL+uI+HS
+        conGJ4h1LCTHPh68g/UoQyHSc
+X-Received: by 2002:a1c:f206:: with SMTP id s6mr123202wmc.102.1629746100816;
+        Mon, 23 Aug 2021 12:15:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwmHLZ/yRcGZNEKd6Wx/oxzCAOwoEzlfech47KHL+wKEm8l9PACfZJA4BN1gYFB0YEVFyNQig==
+X-Received: by 2002:a1c:f206:: with SMTP id s6mr123185wmc.102.1629746100627;
+        Mon, 23 Aug 2021 12:15:00 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c60c6.dip0.t-ipconnect.de. [91.12.96.198])
+        by smtp.gmail.com with ESMTPSA id y15sm2342827wrw.64.2021.08.23.12.14.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 12:15:00 -0700 (PDT)
+Subject: Re: [PATCH v2 0/3] virtio-mem: disallow mapping virtio-mem memory via
+ /dev/mem
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
+References: <20210816142505.28359-1-david@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <aa136104-153c-1c85-54df-f55b953ff36d@redhat.com>
+Date:   Mon, 23 Aug 2021 21:14:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7fa72eec-9222-60eb-9ec6-e4b6efbfc5fb@kernel.dk>
+In-Reply-To: <20210816142505.28359-1-david@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 08:18:12PM -0600, Jens Axboe wrote:
-> On 8/21/21 9:52 AM, Pavel Begunkov wrote:
-> > Add an optional feature to open/accept directly into io_uring's fixed
-> > file table bypassing the normal file table. Same behaviour if as the
-> > snippet below, but in one operation:
-> > 
-> > sqe = prep_[open,accept](...);
-> > cqe = submit_and_wait(sqe);
-> > io_uring_register_files_update(uring_idx, (fd = cqe->res));
-> > close((fd = cqe->res));
-> > 
-> > The idea in pretty old, and was brough up and implemented a year ago
-> > by Josh Triplett, though haven't sought the light for some reasons.
-> > 
-> > The behaviour is controlled by setting sqe->file_index, where 0 implies
-> > the old behaviour. If non-zero value is specified, then it will behave
-> > as described and place the file into a fixed file slot
-> > sqe->file_index - 1. A file table should be already created, the slot
-> > should be valid and empty, otherwise the operation will fail.
-> > 
-> > we can't use IOSQE_FIXED_FILE to switch between modes, because accept
-> > takes a file, and it already uses the flag with a different meaning.
-> > 
-> > since RFC:
-> >  - added attribution
-> >  - updated descriptions
-> >  - rebased
-> > 
-> > since v1:
-> >  - EBADF if slot is already used (Josh Triplett)
-> >  - alias index with splice_fd_in (Josh Triplett)
-> >  - fix a bound check bug
+On 16.08.21 16:25, David Hildenbrand wrote:
+> Let's add the basic infrastructure to exclude some physical memory
+> regions completely from /dev/mem access, on any architecture and under
+> any system configuration (independent of CONFIG_STRICT_DEVMEM and
+> independent of "iomem=").
 > 
-> With the prep series, this looks good to me now. Josh, what do you
-> think?
+> Use it for virtio-mem, to disallow mapping any virtio-mem memory via
+> /dev/mem to user space after the virtio-mem driver was loaded: there is
+> no sane use case to access the device-managed memory region via /dev/mem
+> once the driver is actively (un)plugging memory within that region and
+> we want to make sure that nobody will accidentially access unplugged
+> memory in a sane environment.
+> 
+> Details can be found in patch #1.
+> 
+> v1 -> v2:
+> - "/dev/mem: disallow access to explicitly excluded system RAM regions"
+> -- Introduce and use for_each_resource() and next_resource_skip_children()
+> -- s/iomem_range_contains_excluded/iomem_range_contains_excluded_devmem/
+> - "kernel/resource: cleanup and optimize iomem_is_exclusive()"
+> -- Use for_each_resource()
+> 
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Hanjun Guo <guohanjun@huawei.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: virtualization@lists.linux-foundation.org
+> Cc: linux-mm@kvack.org
+> 
+> David Hildenbrand (3):
+>    /dev/mem: disallow access to explicitly excluded system RAM regions
+>    virtio-mem: disallow mapping virtio-mem memory via /dev/mem
+>    kernel/resource: cleanup and optimize iomem_is_exclusive()
+> 
+>   drivers/char/mem.c          | 22 ++++++--------
+>   drivers/virtio/virtio_mem.c |  4 ++-
+>   include/linux/ioport.h      |  1 +
+>   kernel/resource.c           | 60 +++++++++++++++++++++++++++++++++----
+>   lib/Kconfig.debug           |  4 ++-
+>   5 files changed, 71 insertions(+), 20 deletions(-)
+> 
+> 
+> base-commit: 7c60610d476766e128cc4284bb6349732cbd6606
+> 
 
-I would still like to see this using a union with the `nofile` field in
-io_open and io_accept, rather than overloading the 16-bit buf_index
-field. That would avoid truncating to 16 bits, and make less work for
-expansion to more than 16 bits of fixed file indexes.
+More review welcome; I'd suggest this should go via the -mm tree, and 
+not via the vhost tree.
 
-(I'd also like that to actually use a union, rather than overloading the
-meaning of buf_index/nofile.)
+-- 
+Thanks,
 
-I personally still feel that using non-zero to signify index-plus-one is
-both error-prone and not as future-compatible. I think we could do
-better with no additional overhead. But I think the final call on that
-interface is up to you, Jens. Do you think it'd be worth spending a flag
-bit or using a different opcode, to get a cleaner interface? If you
-don't, then I'd be fine with seeing this go in with just the io_open and
-io_accept change.
+David / dhildenb
 
-- Josh Triplett
