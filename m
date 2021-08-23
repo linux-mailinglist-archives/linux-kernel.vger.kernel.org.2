@@ -2,243 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDFC3F509A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A693F50A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhHWSqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhHWSqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:46:01 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C54C061575;
-        Mon, 23 Aug 2021 11:45:19 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id x9-20020a056830278900b0051b8be1192fso18244305otu.7;
-        Mon, 23 Aug 2021 11:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Su7i+pg4CPOi3J6AfRlZUAB8GpQBJfAZDJfBcoAOY+M=;
-        b=jsUrk1I+wnzAAh78tQ5ihhocBHkO57rZtmLB4NGq5XmKybU9l8ioe9/c3zQq5np/uZ
-         Q4DELa29H/ApiacvJwa01oSDtLYJyT8IMsY2PRZbSayIkk9/N/LkXvWWldP/TTtaenlG
-         hFQidzAlG0Wnirycltmh9EghyyCnh2ylwtYFxWC+QN6keHMRqSx1F+R1I5kyV74PnLYz
-         m02nMA5V/px0SSmd60r9ywydxDRBH3qpfyN0TEsU8xVbpjS1r2nHftA2O/xpq54rOTW4
-         rRP68S9TSpFtSKVZJG9z+FNPeITiF4du+/i98l27ld/jlfHj0EEw3T8Q9qleA6CVL/S3
-         VsDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Su7i+pg4CPOi3J6AfRlZUAB8GpQBJfAZDJfBcoAOY+M=;
-        b=X5h9u0zj4vCp2rgSidQWNAlUJwOYEoyc7lzNdmaz6Z3N6/8ONdwiBL1SCcIYePl0cI
-         uqNxUoBBKA6+mdb5XSdvMFTqpLLrRU6l4o0FiIMHFAa8pZi2arH4T6RhArIxZxuFRqql
-         no6FQq1frTMia4APbP1HkcMxr3Y0HWIV/etC6WhEsr6D6tAZXTD+bBzDNv/hkX1o+Y1p
-         bXuL+PNxcHQgg/pBAAQP0IGCGfVgOzSHWev+95gKWYf1dysbL0HPE5wvrX1Ti0DqksK7
-         ztBT/keG+J0IAUZvwSSdJYuJPyOLvkEImv733uGUb6/0w8eruiwqM6WsYl6aNM0EjfdN
-         Fy2A==
-X-Gm-Message-State: AOAM533UeR61ML4UWYOIimt+170TZMTJLKqKbBI3PZoGGTF0t5jh3QC0
-        OEfATKTVhozcYMVO/qSDUwkvrcq1Ptly6+3w/9o=
-X-Google-Smtp-Source: ABdhPJyIfwWabERUH9VE9kASFzrWv4Ku92yHtP9ybXRUU1SltP+Y0MOsN7DlKDJpXhNOiiSBsPN05O0dn3FqYjJbp3g=
-X-Received: by 2002:a9d:4c15:: with SMTP id l21mr15752808otf.311.1629744318478;
- Mon, 23 Aug 2021 11:45:18 -0700 (PDT)
+        id S231612AbhHWSqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:46:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:7614 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231695AbhHWSqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 14:46:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="204360206"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="204360206"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 11:45:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="535472897"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 11:45:48 -0700
+Date:   Mon, 23 Aug 2021 11:45:47 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sumanth Kamatala <skamatala@juniper.net>
+Subject: Re: [PATCH] x86/mce/dev-mcelog: Call mce_register_decode_chain()
+ much earlier
+Message-ID: <20210823184547.GA1638691@agluck-desk2.amr.corp.intel.com>
+References: <20210819224452.1619400-1-tony.luck@intel.com>
+ <YR+f/fdGIxWcLTP2@zn.tnic>
+ <20210820144314.GA1622759@agluck-desk2.amr.corp.intel.com>
+ <YR/Oxark0bhLlona@zn.tnic>
 MIME-Version: 1.0
-References: <46ccdd7bffdba1273a1ebb3d6cd2fbe186e0795a.1629667572.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <46ccdd7bffdba1273a1ebb3d6cd2fbe186e0795a.1629667572.git.christophe.jaillet@wanadoo.fr>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 23 Aug 2021 14:45:07 -0400
-Message-ID: <CADnq5_PYZpwoneV=JvEiTp53U2vT0+Vk=ggKt=srYPSU5PE0SQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/r128: switch from 'pci_' to 'dma_' API
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YR/Oxark0bhLlona@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 5:34 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> The wrappers in include/linux/pci-dma-compat.h should go away.
->
-> The patch has been generated with the coccinelle script below.
->
-> It has been compile tested.
->
-> @@
-> @@
-> -    PCI_DMA_BIDIRECTIONAL
-> +    DMA_BIDIRECTIONAL
->
-> @@
-> @@
-> -    PCI_DMA_TODEVICE
-> +    DMA_TO_DEVICE
->
-> @@
-> @@
-> -    PCI_DMA_FROMDEVICE
-> +    DMA_FROM_DEVICE
->
-> @@
-> @@
-> -    PCI_DMA_NONE
-> +    DMA_NONE
->
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_zalloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_free_consistent(e1, e2, e3, e4)
-> +    dma_free_coherent(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_single(e1, e2, e3, e4)
-> +    dma_map_single(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_single(e1, e2, e3, e4)
-> +    dma_unmap_single(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4, e5;
-> @@
-> -    pci_map_page(e1, e2, e3, e4, e5)
-> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_page(e1, e2, e3, e4)
-> +    dma_unmap_page(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_sg(e1, e2, e3, e4)
-> +    dma_map_sg(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_sg(e1, e2, e3, e4)
-> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_dma_mapping_error(e1, e2)
-> +    dma_mapping_error(&e1->dev, e2)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_dma_mask(e1, e2)
-> +    dma_set_mask(&e1->dev, e2)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_consistent_dma_mask(e1, e2)
-> +    dma_set_coherent_mask(&e1->dev, e2)
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Fri, Aug 20, 2021 at 05:48:21PM +0200, Borislav Petkov wrote:
+> On Fri, Aug 20, 2021 at 07:43:14AM -0700, Luck, Tony wrote:
+> > How can the kernel tell that all consumers have registered? Is there
+> > some new kernel crystal ball functionality that can predict that an
+> > EDAC driver module is going to be loaded at some point in the future
+> > when user space is up and running :-)
+> 
+> The crystal ball is called mcheck_late_init(). There's even:
+> 
+>         /*
+>          * Flush out everything that has been logged during early boot, now that
+>          * everything has been initialized (workqueues, decoders, ...).
+>          */
+>         mce_schedule_work();
+> 
+> in there. That thing is late_initcall() and by that time mcelog should
+> have been registered. And I wonder why isn't that working as expected...
+> 
+> > I think the best we could do would be to set a timer for some point
+> > far enough out (one minute?, two minutes?) to give a chance for
+> > modules to load.
+> 
+> Forget modules - only the built-in stuff. We cannot be waiting
+> indefinitely until someone loads mcelog for decoding.
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+I added some traces:
 
-And applied to drm-misc-next.
+$ dmesg | grep mce:
+[    0.033648] mce: mce_register_decode_chain fn=mce_early_notifier+0x0/0x50 pri=6
+[    0.033655] mce: mce_register_decode_chain fn=uc_decode_notifier+0x0/0xd0 pri=5
+[    0.033659] mce: mce_register_decode_chain fn=mce_default_notifier+0x0/0x30 pri=0
+[    4.392631] mce: [Hardware Error]: Machine check events logged
+[    4.393356] mce: [Hardware Error]: CPU 0: Machine Check: 0 Bank 0: a000000000004321
+[    4.395352] mce: [Hardware Error]: TSC 0
+[    4.396352] mce: [Hardware Error]: PROCESSOR 0:406f1 TIME 1629743651 SOCKET 0 APIC 0 microcode b000019
+[   15.172861] mce: mce_register_decode_chain fn=dev_mce_log+0x0/0x110 pri=1
+[   15.192101] mce: mcheck_late_init: calling mce_schedule_work()
+[   31.618245] mce: mce_register_decode_chain fn=sbridge_mce_check_error+0x0/0x92 [sb_edac] pri=2
 
-Alex
+So you are right that mcheck_late_init() is called after dev_mce_log()
+is registered.  But it seems someone kicks the queue long before that
+happens.  Probably this:
 
+void mce_log(struct mce *m)
+{
+        if (!mce_gen_pool_add(m))
+                irq_work_queue(&mce_irq_work);
+}
 
-> ---
-> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
->    https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-> ---
->  drivers/gpu/drm/r128/ati_pcigart.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/r128/ati_pcigart.c b/drivers/gpu/drm/r128/ati_pcigart.c
-> index 0ecccf25a3c7..26001c2de9e9 100644
-> --- a/drivers/gpu/drm/r128/ati_pcigart.c
-> +++ b/drivers/gpu/drm/r128/ati_pcigart.c
-> @@ -99,7 +99,8 @@ int drm_ati_pcigart_cleanup(struct drm_device *dev, struct drm_ati_pcigart_info
->                 for (i = 0; i < pages; i++) {
->                         if (!entry->busaddr[i])
->                                 break;
-> -                       pci_unmap_page(pdev, entry->busaddr[i], PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-> +                       dma_unmap_page(&pdev->dev, entry->busaddr[i],
-> +                                      PAGE_SIZE, DMA_BIDIRECTIONAL);
->                 }
->
->                 if (gart_info->gart_table_location == DRM_ATI_GART_MAIN)
-> @@ -134,7 +135,7 @@ int drm_ati_pcigart_init(struct drm_device *dev, struct drm_ati_pcigart_info *ga
->         if (gart_info->gart_table_location == DRM_ATI_GART_MAIN) {
->                 DRM_DEBUG("PCI: no table in VRAM: using normal RAM\n");
->
-> -               if (pci_set_dma_mask(pdev, gart_info->table_mask)) {
-> +               if (dma_set_mask(&pdev->dev, gart_info->table_mask)) {
->                         DRM_ERROR("fail to set dma mask to 0x%Lx\n",
->                                   (unsigned long long)gart_info->table_mask);
->                         ret = -EFAULT;
-> @@ -173,9 +174,9 @@ int drm_ati_pcigart_init(struct drm_device *dev, struct drm_ati_pcigart_info *ga
->         gart_idx = 0;
->         for (i = 0; i < pages; i++) {
->                 /* we need to support large memory configurations */
-> -               entry->busaddr[i] = pci_map_page(pdev, entry->pagelist[i],
-> -                                                0, PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-> -               if (pci_dma_mapping_error(pdev, entry->busaddr[i])) {
-> +               entry->busaddr[i] = dma_map_page(&pdev->dev, entry->pagelist[i],
-> +                                                0, PAGE_SIZE, DMA_BIDIRECTIONAL);
-> +               if (dma_mapping_error(&pdev->dev, entry->busaddr[i])) {
->                         DRM_ERROR("unable to map PCIGART pages!\n");
->                         drm_ati_pcigart_cleanup(dev, gart_info);
->                         address = NULL;
-> --
-> 2.30.2
->
+Could we add a flag:
+
+static bool mce_ready_to_rock; // better name needed :-)
+
+Which gets set in mcheck_late_init(). Then mce_log() becomes:
+
+void mce_log(struct mce *m)
+{
+        if (!mce_gen_pool_add(m) && mce_ready_to_rock)
+                irq_work_queue(&mce_irq_work);
+}
+
+-Tony
