@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912193F4CC9
+	by mail.lfdr.de (Postfix) with ESMTP id DB01A3F4CCA
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhHWO7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:59:48 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51654 "EHLO
+        id S231615AbhHWO7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:59:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51682 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbhHWO7W (ORCPT
+        with ESMTP id S230470AbhHWO7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Aug 2021 10:59:22 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C0DAD21FDD;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EDF7321FDE;
         Mon, 23 Aug 2021 14:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1629730718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2nN2T/V3zUIbnghA57kedbOnA9ySW3XWYu+UKizZX9k=;
-        b=QOeKfhHvX0ZYf53c1THOpRPiCCsp0QA8h3O5t+6HOjByGYgsNQHFqjye2OLzWF2Gx46LHz
-        zY8N0hS5w31X3Vf25rNt00AKZQH6cPcK5qVK6krkpSd0ZWa1S1IQYEzNbsHzMzRLrpXsiK
-        K7UfO+KRMkkvAcHAbCRN1ujTaiLWQv0=
+        bh=vQaDUrMvPfbP3X+9prZPxrXkP2DXsvWs0xe20fGRb84=;
+        b=a4loRP2rcuCVlCzdxwdAHALwBVLcURRLxevLsfaNIqFfRjH6/6krY/uwU6+F+cVVQYbbQe
+        fGXN7Uqc3U3RbFbfvV07pM2wd3HU6PmaFM+Efp1PFSd9kGf5XcRdp39i+qOa8qypawHXjq
+        Ib5nt4JV2ABuAnbZfPDLWK44MeFDfjg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1629730718;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2nN2T/V3zUIbnghA57kedbOnA9ySW3XWYu+UKizZX9k=;
-        b=JpChCY5qn0KXHLZ7sYFJYwaIcr8s507wz44m81fxlO3bPgOL8iAmSxYGhQWU+1ULnB9FH0
-        h/EhqjRTU/mRJ4CA==
+        bh=vQaDUrMvPfbP3X+9prZPxrXkP2DXsvWs0xe20fGRb84=;
+        b=CVgV/ubv0mcE1Gsgnj7PCt2+tlO8UqT/yE1KRtIP127NOjhx+WTyLSPdN7iHn2sm4km/XE
+        QucVgefhJXvpmEDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 962BF13BE0;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C29A113BE1;
         Mon, 23 Aug 2021 14:58:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6G8QJJ63I2EFQQAAMHmgww
+        id eDnoLp63I2EFQQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Mon, 23 Aug 2021 14:58:38 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,9 +59,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v5 06/35] mm, slub: unify cmpxchg_double_slab() and __cmpxchg_double_slab()
-Date:   Mon, 23 Aug 2021 16:57:57 +0200
-Message-Id: <20210823145826.3857-7-vbabka@suse.cz>
+Subject: [PATCH v5 07/35] mm, slub: extract get_partial() from new_slab_objects()
+Date:   Mon, 23 Aug 2021 16:57:58 +0200
+Message-Id: <20210823145826.3857-8-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210823145826.3857-1-vbabka@suse.cz>
 References: <20210823145826.3857-1-vbabka@suse.cz>
@@ -71,124 +71,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These functions differ only in irq disabling in the slow path. We can create a
-common function with an extra bool parameter to control the irq disabling.
-As the functions are inline and the parameter compile-time constant, there
-will be no runtime overhead due to this change.
+The later patches will need more fine grained control over individual actions
+in ___slab_alloc(), the only caller of new_slab_objects(), so this is a first
+preparatory step with no functional change.
 
-Also change the DEBUG_VM based irqs disable assert to the more standard
-lockdep_assert based one.
+This adds a goto label that appears unnecessary at this point, but will be
+useful for later changes.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 Acked-by: Christoph Lameter <cl@linux.com>
 ---
- mm/slub.c | 62 +++++++++++++++++++++----------------------------------
- 1 file changed, 24 insertions(+), 38 deletions(-)
+ mm/slub.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 79e53303844c..e1c4e934c620 100644
+index e1c4e934c620..75c532307897 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -371,13 +371,13 @@ static __always_inline void slab_unlock(struct page *page)
- 	__bit_spin_unlock(PG_locked, &page->flags);
- }
- 
--/* Interrupts must be disabled (for the fallback code to work right) */
--static inline bool __cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
-+static inline bool ___cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
- 		void *freelist_old, unsigned long counters_old,
- 		void *freelist_new, unsigned long counters_new,
--		const char *n)
-+		const char *n, bool disable_irqs)
+@@ -2599,17 +2599,12 @@ slab_out_of_memory(struct kmem_cache *s, gfp_t gfpflags, int nid)
+ static inline void *new_slab_objects(struct kmem_cache *s, gfp_t flags,
+ 			int node, struct kmem_cache_cpu **pc)
  {
--	VM_BUG_ON(!irqs_disabled());
-+	if (!disable_irqs)
-+		lockdep_assert_irqs_disabled();
- #if defined(CONFIG_HAVE_CMPXCHG_DOUBLE) && \
-     defined(CONFIG_HAVE_ALIGNED_STRUCT_PAGE)
- 	if (s->flags & __CMPXCHG_DOUBLE) {
-@@ -388,15 +388,23 @@ static inline bool __cmpxchg_double_slab(struct kmem_cache *s, struct page *page
- 	} else
- #endif
- 	{
-+		unsigned long flags;
-+
-+		if (disable_irqs)
-+			local_irq_save(flags);
- 		slab_lock(page);
- 		if (page->freelist == freelist_old &&
- 					page->counters == counters_old) {
- 			page->freelist = freelist_new;
- 			page->counters = counters_new;
- 			slab_unlock(page);
-+			if (disable_irqs)
-+				local_irq_restore(flags);
- 			return true;
- 		}
- 		slab_unlock(page);
-+		if (disable_irqs)
-+			local_irq_restore(flags);
+-	void *freelist;
++	void *freelist = NULL;
+ 	struct kmem_cache_cpu *c = *pc;
+ 	struct page *page;
+ 
+ 	WARN_ON_ONCE(s->ctor && (flags & __GFP_ZERO));
+ 
+-	freelist = get_partial(s, flags, node, c);
+-
+-	if (freelist)
+-		return freelist;
+-
+ 	page = new_slab(s, flags, node);
+ 	if (page) {
+ 		c = raw_cpu_ptr(s->cpu_slab);
+@@ -2773,6 +2768,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		goto redo;
  	}
  
- 	cpu_relax();
-@@ -409,45 +417,23 @@ static inline bool __cmpxchg_double_slab(struct kmem_cache *s, struct page *page
- 	return false;
- }
++	freelist = get_partial(s, gfpflags, node, c);
++	if (freelist)
++		goto check_new_page;
++
+ 	freelist = new_slab_objects(s, gfpflags, node, &c);
  
--static inline bool cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
-+/* Interrupts must be disabled (for the fallback code to work right) */
-+static inline bool __cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
- 		void *freelist_old, unsigned long counters_old,
- 		void *freelist_new, unsigned long counters_new,
- 		const char *n)
- {
--#if defined(CONFIG_HAVE_CMPXCHG_DOUBLE) && \
--    defined(CONFIG_HAVE_ALIGNED_STRUCT_PAGE)
--	if (s->flags & __CMPXCHG_DOUBLE) {
--		if (cmpxchg_double(&page->freelist, &page->counters,
--				   freelist_old, counters_old,
--				   freelist_new, counters_new))
--			return true;
--	} else
--#endif
--	{
--		unsigned long flags;
--
--		local_irq_save(flags);
--		slab_lock(page);
--		if (page->freelist == freelist_old &&
--					page->counters == counters_old) {
--			page->freelist = freelist_new;
--			page->counters = counters_new;
--			slab_unlock(page);
--			local_irq_restore(flags);
--			return true;
--		}
--		slab_unlock(page);
--		local_irq_restore(flags);
--	}
--
--	cpu_relax();
--	stat(s, CMPXCHG_DOUBLE_FAIL);
--
--#ifdef SLUB_DEBUG_CMPXCHG
--	pr_info("%s %s: cmpxchg double redo ", n, s->name);
--#endif
-+	return ___cmpxchg_double_slab(s, page, freelist_old, counters_old,
-+				      freelist_new, counters_new, n, false);
-+}
+ 	if (unlikely(!freelist)) {
+@@ -2780,6 +2779,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		return NULL;
+ 	}
  
--	return false;
-+static inline bool cmpxchg_double_slab(struct kmem_cache *s, struct page *page,
-+		void *freelist_old, unsigned long counters_old,
-+		void *freelist_new, unsigned long counters_new,
-+		const char *n)
-+{
-+	return ___cmpxchg_double_slab(s, page, freelist_old, counters_old,
-+				      freelist_new, counters_new, n, true);
- }
- 
- #ifdef CONFIG_SLUB_DEBUG
++check_new_page:
+ 	page = c->page;
+ 	if (likely(!kmem_cache_debug(s) && pfmemalloc_match(page, gfpflags)))
+ 		goto load_freelist;
 -- 
 2.32.0
 
