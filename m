@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604FE3F4979
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EAA3F497B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236647AbhHWLLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:11:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236322AbhHWLK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:10:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7C269613A8;
-        Mon, 23 Aug 2021 11:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629717015;
-        bh=wWJ93gQaLSEhT/UQhrXBCpBAbGOFf6rz+8BYoB2f5bc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=EXv6NOZd1JeknyLfoKXZsJXfT4SyeLng26gVQqLYB92fCDzCxlzVoqVBPQl5RySX6
-         2HhYFF7YacEr1iCr+hEEpe3aG3eZvch4HuT21aWATBdGXwJFlrV6Bj5BjvlLwp7wpi
-         tLvUPYJJzzEwb9OhYp3uOnjbb+neg/ibkKWwOw0hxfrOrYhkEhM1LXz/hSz6Fis3Ni
-         0FQWn8xRx35Em0OOxd4ly0T45Yu62Sw5k8DIdy+mAKWrcURwr9xXmXRs6r0C0Yy/PY
-         t2EvSx8rdw2XYfhHEv8syFcuvDnwi02rEUo+DU9L7+prX0T0iOsAsuAFYS/XfZ6XFX
-         3LMlvOlJDKyHA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7402360A14;
-        Mon, 23 Aug 2021 11:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236361AbhHWLOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:14:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14410 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234865AbhHWLN5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:13:57 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GtTyr6zxyzbdQ6;
+        Mon, 23 Aug 2021 19:09:24 +0800 (CST)
+Received: from [10.174.177.35] (10.174.177.35) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 23 Aug 2021 19:13:13 +0800
+Subject: Re: [PATCH 2/3] mm/memory_hotplug: fix potential permanent lru cache
+ disable
+To:     Oscar Salvador <osalvador@suse.de>
+CC:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
+        <mhocko@suse.com>, <minchan@kernel.org>, <cgoldswo@codeaurora.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210821094246.10149-1-linmiaohe@huawei.com>
+ <20210821094246.10149-3-linmiaohe@huawei.com>
+ <f42d89e40a604944dbefe0b729c1a685@suse.de>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <3a124653-31de-5eb6-3812-73c4ea20bbbf@huawei.com>
+Date:   Mon, 23 Aug 2021 19:13:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <f42d89e40a604944dbefe0b729c1a685@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: sunhme: Remove unused macros
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162971701547.8269.3612332439322831949.git-patchwork-notify@kernel.org>
-Date:   Mon, 23 Aug 2021 11:10:15 +0000
-References: <2afbd92d52cc58c5b91d95782d144194ce1a5669.1629621681.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <2afbd92d52cc58c5b91d95782d144194ce1a5669.1629621681.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     tanghui20@huawei.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
+X-Originating-IP: [10.174.177.35]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Sun, 22 Aug 2021 10:42:21 +0200 you wrote:
-> The usage of these macros has been removed in commit db1a8611c873
-> ("sunhme: Convert to pure OF driver."). So they can be removed.
+On 2021/8/23 17:15, Oscar Salvador wrote:
+> On 2021-08-21 11:42, Miaohe Lin wrote:
+>> If offline_pages failed after lru_cache_disable(), it forgot to do
+>> lru_cache_enable() in error path. So we would have lru cache disabled
+>> permanently in this case.
+>>
+>> Fixes: d479960e44f2 ("mm: disable LRU pagevec during the migration temporarily")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > 
-> This simplifies code and helps for removing the wrappers in
-> include/linux/pci-dma-compat.h.
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+Many thanks for your review and reply. :)
+
+> Should this go to stable?
+> In case we fail to enable it again, we will bypass the pvec cache anytime we add a new page to the LRU which might lead to severe performance regression?
 > 
-> [...]
 
-Here is the summary with links:
-  - net: sunhme: Remove unused macros
-    https://git.kernel.org/netdev/net-next/c/056b29ae071b
+Agree with you. I think this should go to stable too.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>> ---
+>>  mm/memory_hotplug.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>> index d986d3791986..9fd0be32a281 100644
+>> --- a/mm/memory_hotplug.c
+>> +++ b/mm/memory_hotplug.c
+>> @@ -2033,6 +2033,7 @@ int __ref offline_pages(unsigned long start_pfn,
+>> unsigned long nr_pages,
+>>      undo_isolate_page_range(start_pfn, end_pfn, MIGRATE_MOVABLE);
+>>      memory_notify(MEM_CANCEL_OFFLINE, &arg);
+>>  failed_removal_pcplists_disabled:
+>> +    lru_cache_enable();
+>>      zone_pcp_enable(zone);
+>>  failed_removal:
+>>      pr_debug("memory offlining [mem %#010llx-%#010llx] failed due to %s\n",
+> 
 
