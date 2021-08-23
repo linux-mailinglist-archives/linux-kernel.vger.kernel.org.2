@@ -2,135 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1E23F52DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDAA3F52E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbhHWVbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 17:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhHWVbD (ORCPT
+        id S232910AbhHWVba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 17:31:30 -0400
+Received: from out07.smtpout.orange.fr ([193.252.22.91]:22507 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232898AbhHWVb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:31:03 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6397EC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:30:20 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso368193pjh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 14:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uqxaMQ6hTk2eBZ0XEramsobAfczd0TIkACQ4/0xgpLk=;
-        b=sg1X1qtmouHjUB8SY1oHPGs/wqCbmL00lD3orURrqv05AIpnOfADfOkWO59A+LqGhx
-         pfjDn2sWAneGyX2Rt5NpZqKx8QQRyMphc1n9GcWeLFPJ5sZTFOvAoeKRzeB2+1TDd742
-         zAvY8MKAQXeoqwEqeVRrDxketszarxECmWm/eEiONQgSbAx4UUujKEzqW65RRRuvc+P9
-         71jaReWnWZMNxzFc8Y8poxtMMA5BGN125xMc4Pihe2TNIdXGvCdj/InHs514d4eedh2p
-         RwivuDLLcVP2Ab6F3uBOyV5jxQfsK5kHEmQEQQM6IypG8OmM4r9bhQbPkrZ0GklXSE4i
-         oUDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uqxaMQ6hTk2eBZ0XEramsobAfczd0TIkACQ4/0xgpLk=;
-        b=O7gLzgUixKDFnYAbbOI68brXE0mDXEvRISsSGCIkdgBBDQqd3JKOJRG1L0cjLIxaQK
-         D/pYSW+ht0skyHP7SCbCyZE8mdg/E4OKbVQSV059xmtdfHMScAgP1/OflXvqXnQlyyxA
-         hPSPPOPc05VZfgiGEXx5lVs36UegY5kvFNecjXZYXoiHrzPlooKDc2De/7J28Jfsprvm
-         IaVAOXEwfoK2eqridLJ0fEOTPUN+AOYN9uVnz70sol2U4/agw+TqB37feHO/kdzilPzG
-         iqX323unDLZEMs/mBVKZKXmclrxHucj9WxJhykm0mAIBfpykq/C06KX7AFYx0TSgDqbC
-         AWWw==
-X-Gm-Message-State: AOAM532H/dakrFB6GvAlnHli57u84g8iiYrTrxRjO33m+AGyv9niEbNN
-        2BXu2U7ThPAveGJz9EOusKwbx1W7BoDAxV/2l5FS1Q==
-X-Google-Smtp-Source: ABdhPJzbEbz3dB1by0wFx3BMPUCjNSqfbI4dFG2cNBNtKY8QLC+XKwo5p/40mBQa24i9NBG31cf66IltTlJ92AkhGKo=
-X-Received: by 2002:a17:902:f704:b029:11a:cdee:490 with SMTP id
- h4-20020a170902f704b029011acdee0490mr30374463plo.37.1629754219920; Mon, 23
- Aug 2021 14:30:19 -0700 (PDT)
+        Mon, 23 Aug 2021 17:31:28 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d73 with ME
+        id l9Wh250043riaq2039WhxJ; Mon, 23 Aug 2021 23:30:43 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 23 Aug 2021 23:30:43 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        sudipm.mukherjee@gmail.com, sumit.semwal@linaro.org,
+        christian.koenig@amd.com
+Cc:     linux-parisc@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] parisc/parport_gsc: switch from 'pci_' to 'dma_' API
+Date:   Mon, 23 Aug 2021 23:30:39 +0200
+Message-Id: <93b21629db55629ec3d384e8184c4a9dd0270c11.1629754126.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210823193028.12391-1-straube.linux@gmail.com>
-In-Reply-To: <20210823193028.12391-1-straube.linux@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Mon, 23 Aug 2021 22:30:09 +0100
-Message-ID: <CAA=Fs0ks04VYJ56znpX2BjZX_7GCa=hkK+8TwifB_LwCry+y7g@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove 5 GHz code
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 at 20:31, Michael Straube <straube.linux@gmail.com> wrote:
->
-> The driver is for chips that do not operate in the 5 GHz band.
-> Remove some 5 GHz related code.
->
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 30 ++++++--------------
->  1 file changed, 8 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> index ab4a9200f079..81d4255d1785 100644
-> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> @@ -208,17 +208,10 @@ static char *translate_scan(struct adapter *padapter,
->                 else
->                         snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11bg");
->         } else {
-> -               if (pnetwork->network.Configuration.DSConfig > 14) {
-> -                       if (ht_cap)
-> -                               snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11an");
-> -                       else
-> -                               snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11a");
-> -               } else {
-> -                       if (ht_cap)
-> -                               snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11gn");
-> -                       else
-> -                               snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11g");
-> -               }
-> +               if (ht_cap)
-> +                       snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11gn");
-> +               else
-> +                       snprintf(iwe.u.name, IFNAMSIZ, "IEEE 802.11g");
->         }
->
->         start = iwe_stream_add_event(info, start, stop, &iwe, IW_EV_CHAR_LEN);
-> @@ -737,17 +730,10 @@ static int rtw_wx_get_name(struct net_device *dev,
->                         else
->                                 snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11bg");
->                 } else {
-> -                       if (pcur_bss->Configuration.DSConfig > 14) {
-> -                               if (ht_cap)
-> -                                       snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11an");
-> -                               else
-> -                                       snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11a");
-> -                       } else {
-> -                               if (ht_cap)
-> -                                       snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11gn");
-> -                               else
-> -                                       snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11g");
-> -                       }
-> +                       if (ht_cap)
-> +                               snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11gn");
-> +                       else
-> +                               snprintf(wrqu->name, IFNAMSIZ, "IEEE 802.11g");
->                 }
->         } else {
->                 snprintf(wrqu->name, IFNAMSIZ, "unassociated");
-> --
-> 2.32.0
->
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Dear Michael,
+The patch has been generated with the coccinelle script below.
 
-Looks good to me. Thanks.
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 
-Regards,
-Phil
+This has *NOT* been compile tested because I don't have the needed
+configuration.
+ssdfs
+---
+ drivers/parport/parport_gsc.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
+index 1e43b3f399a8..db912fa6b6df 100644
+--- a/drivers/parport/parport_gsc.c
++++ b/drivers/parport/parport_gsc.c
+@@ -390,9 +390,8 @@ static int __exit parport_remove_chip(struct parisc_device *dev)
+ 		if (p->irq != PARPORT_IRQ_NONE)
+ 			free_irq(p->irq, p);
+ 		if (priv->dma_buf)
+-			pci_free_consistent(priv->dev, PAGE_SIZE,
+-					    priv->dma_buf,
+-					    priv->dma_handle);
++			dma_free_coherent(&priv->dev->dev, PAGE_SIZE,
++					  priv->dma_buf, priv->dma_handle);
+ 		kfree (p->private_data);
+ 		parport_put_port(p);
+ 		kfree (ops); /* hope no-one cached it */
+-- 
+2.30.2
+
