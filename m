@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8993F461B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B2A3F461F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhHWHyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235288AbhHWHyl (ORCPT
+        id S235448AbhHWHzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:55:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235168AbhHWHzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:54:41 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8940AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:53:59 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1mI4mJ-00059D-8d; Mon, 23 Aug 2021 09:53:55 +0200
-Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1mI4mH-00061E-6Z; Mon, 23 Aug 2021 09:53:53 +0200
-Date:   Mon, 23 Aug 2021 09:53:53 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Nadezda Lutovinova <lutovinova@ispras.ru>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: Re: [PATCH] media: allegro: request irq after initializing
- mbox_status
-Message-ID: <20210823075353.GC28846@pengutronix.de>
-Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
-        Nadezda Lutovinova <lutovinova@ispras.ru>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-References: <20210819154935.19826-1-lutovinova@ispras.ru>
+        Mon, 23 Aug 2021 03:55:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629705261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LNQHzhBU61w8aySVKkAPo9NSfHYRJWrZd0ke9vwfjJk=;
+        b=ElEXmOCgua7ofb/Z5PlVt0TfFfzkunHRx48CfI7+B2gFgRvaXAcXkidOdNRCRTrVZopEos
+        pUzelNBOX8TjA1q8QhexYOgQXE6Kw8asyrJzyx6yZdLo3JYI2YNT0/U7llGt4Wb6zFYmdh
+        X2F5URR5Nc8BmFsWYJRP01GPWOUHttc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-vol2L9BuP8WwvGRfRSsp6w-1; Mon, 23 Aug 2021 03:54:19 -0400
+X-MC-Unique: vol2L9BuP8WwvGRfRSsp6w-1
+Received: by mail-wm1-f69.google.com with SMTP id y23-20020a7bcd97000000b002e6e4a2a332so2717204wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:54:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=LNQHzhBU61w8aySVKkAPo9NSfHYRJWrZd0ke9vwfjJk=;
+        b=pCLnqnHACv58qhudK8LEiZafTxYOTTW6W+J2h0W5W+5CD6E4pcbSlvH4qXm6qIYB6w
+         zHtvj99LUFmrxXNI+764gnL5DGFjc8cAQDiu0442FCw/xAlYFKw2iM1VbJzrl9phsm75
+         Wy1JwVkm+77q0GHQUShL7fEpgSSWP/CkzDCBoxOtG9aUHBErqm2QyjRZEb+4ewVIXA5x
+         hSnVAbb8z4L6SRtHRH5zgwrYRiwsoHj9VERD5uPWtYVriAm1vI9qRxys1uJyrONZz4VN
+         dJ51oAvTMSikxSzXUhdhMLX2ANqm2+MVsuPFZHXAzM5lA4KxHMCdGvh7qD8TxUZcjNIR
+         kpxQ==
+X-Gm-Message-State: AOAM533eLo+Hl0LQ00hi87/mHOyRV8SJXxKbFFk7/b+fgXuU3XYQoVa2
+        gQE/EDCeDOoMQtmelBFhYKwi+N5GWn0OKlo3Okpl2c5rFPSeX5fBhddQ4iQT9ThDh+iZYjt5r8a
+        XQmrt9n79bChG5D5VCxo8+KSD
+X-Received: by 2002:a7b:cf05:: with SMTP id l5mr14936193wmg.138.1629705258656;
+        Mon, 23 Aug 2021 00:54:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzND033zGe/eugLPehvBvzHmQ600rjQM2jZoXTXeTOGRVMQhD5X4o8/yaxNE5yMWDNWZwjh7w==
+X-Received: by 2002:a7b:cf05:: with SMTP id l5mr14936177wmg.138.1629705258455;
+        Mon, 23 Aug 2021 00:54:18 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id s16sm7245700wrw.44.2021.08.23.00.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 00:54:17 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Venkatesh Srinivas <venkateshs@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH 2/2] KVM: Guard cpusmask NULL check with
+ CONFIG_CPUMASK_OFFSTACK
+In-Reply-To: <20210821000501.375978-3-seanjc@google.com>
+References: <20210821000501.375978-1-seanjc@google.com>
+ <20210821000501.375978-3-seanjc@google.com>
+Date:   Mon, 23 Aug 2021 09:54:16 +0200
+Message-ID: <871r6klhp3.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210819154935.19826-1-lutovinova@ispras.ru>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:41:07 up 186 days, 11:04, 82 users,  load average: 0.24, 0.33,
- 0.29
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadezda,
+Sean Christopherson <seanjc@google.com> writes:
 
-On Thu, 19 Aug 2021 18:49:35 +0300, Nadezda Lutovinova wrote:
-> If IRQ occurs between calling  devm_request_threaded_irq() and
-> allegro_firmware_request_nowait(), then null pointer dereference
-> occurs since dev->mbox_status wasn't initialized yet but used
-> in allegro_mbox_notify(). 
-
-Thanks for the patch. As explained in [0], this is not an issue.
-
-> 
-> The patch puts registration of the interrupt handler after
-> initializing of neccesery data.
-
-The interrupt handler must be registered during the execution of
-allegro_fw_callback(), because the driver exchanges messages with the firmware
-during the bring up. With this patch this is not guaranteed anymore.
-
-Michael
-
-[0] https://lore.kernel.org/linux-media/20210511072834.GC17882@pengutronix.de/
-
-> 
-> Found by Linux Driver Verification project (linuxtesting.org).
-> 
-> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+> Check for a NULL cpumask_var_t when kicking multiple vCPUs if and only if
+> cpumasks are configured to be allocated off-stack.  This is a meaningless
+> optimization, e.g. avoids a TEST+Jcc and TEST+CMOV on x86, but more
+> importantly helps document that the NULL check is necessary even though
+> all callers pass in a local variable.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  .../media/platform/allegro-dvt/allegro-core.c | 24 +++++++++----------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/platform/allegro-dvt/allegro-core.c b/drivers/media/platform/allegro-dvt/allegro-core.c
-> index 887b492e4ad1..9c1997ff74e8 100644
-> --- a/drivers/media/platform/allegro-dvt/allegro-core.c
-> +++ b/drivers/media/platform/allegro-dvt/allegro-core.c
-> @@ -3707,18 +3707,6 @@ static int allegro_probe(struct platform_device *pdev)
->  		return PTR_ERR(dev->sram);
->  	}
+>  virt/kvm/kvm_main.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 786b914db98f..82c5280dd5ce 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -247,7 +247,7 @@ static void ack_flush(void *_completed)
 >  
-> -	irq = platform_get_irq(pdev, 0);
-> -	if (irq < 0)
-> -		return irq;
-> -	ret = devm_request_threaded_irq(&pdev->dev, irq,
-> -					allegro_hardirq,
-> -					allegro_irq_thread,
-> -					IRQF_SHARED, dev_name(&pdev->dev), dev);
-> -	if (ret < 0) {
-> -		dev_err(&pdev->dev, "failed to request irq: %d\n", ret);
-> -		return ret;
-> -	}
-> -
->  	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
->  	if (ret)
->  		return ret;
-> @@ -3732,6 +3720,18 @@ static int allegro_probe(struct platform_device *pdev)
->  		return ret;
->  	}
+>  static inline bool kvm_kick_many_cpus(const struct cpumask *cpus, bool wait)
+>  {
+> -	if (unlikely(!cpus))
+> +	if (IS_ENABLED(CONFIG_CPUMASK_OFFSTACK) && unlikely(!cpus))
+>  		cpus = cpu_online_mask;
 >  
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return irq;
-> +	ret = devm_request_threaded_irq(&pdev->dev, irq,
-> +					allegro_hardirq,
-> +					allegro_irq_thread,
-> +					IRQF_SHARED, dev_name(&pdev->dev), dev);
-> +	if (ret < 0) {
-> +		dev_err(&pdev->dev, "failed to request irq: %d\n", ret);
-> +		return ret;
-> +	}
+>  	if (cpumask_empty(cpus))
+> @@ -277,6 +277,14 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+>  		if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+>  			continue;
+>  
+> +		/*
+> +		 * tmp can be NULL if cpumasks are allocated off stack, as
+> +		 * allocation of the mask is deliberately not fatal and is
+> +		 * handled by falling back to kicking all online CPUs.
+> +		 */
+> +		if (IS_ENABLED(CONFIG_CPUMASK_OFFSTACK) && !tmp)
+> +			continue;
 > +
->  	return 0;
->  }
->  
-> -- 
-> 2.17.1
-> 
-> 
+>  		/*
+>  		 * Note, the vCPU could get migrated to a different pCPU at any
+>  		 * point after kvm_request_needs_ipi(), which could result in
+> @@ -288,7 +296,7 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+>  		 * were reading SPTEs _before_ any changes were finalized.  See
+>  		 * kvm_vcpu_kick() for more details on handling requests.
+>  		 */
+> -		if (tmp != NULL && kvm_request_needs_ipi(vcpu, req)) {
+> +		if (kvm_request_needs_ipi(vcpu, req)) {
+>  			cpu = READ_ONCE(vcpu->cpu);
+>  			if (cpu != -1 && cpu != me)
+>  				__cpumask_set_cpu(cpu, tmp);
+
+In case MM people don't like us poking into CONFIG_CPUMASK_OFFSTACK
+details we can probably get away with a comment. Otherwise
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
