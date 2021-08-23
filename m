@@ -2,92 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16833F4E1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8153F4E21
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhHWQPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhHWQP1 (ORCPT
+        id S230083AbhHWQQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:16:21 -0400
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:45594 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhHWQQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:15:27 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931EFC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:14:44 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so37795260oti.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y/fJEiw7QUkBCfFPAmE/s89Bl6kM76DPzpSL413KbHQ=;
-        b=IR1MV9tciq9IZtu2+3aShnJFlpmSUOLjDpMdppSoxQlFDt2OcqbPjO0lFgJqdW7fcK
-         EdpGe2xKKgmetth1ELG/iq8D+1VADERxON9kXrUtLfTT+WeVID/Cu9zmuJHou7k3pCW+
-         g/emkwBYgu6r1oYeJAWr+rm+7r8vW6DA8nbkxMWHhGVM9jSmM/CPjH3YUYwnOeyT7/ZW
-         yAVzfBp5au/kl29Vcs0Fj6mqV04mL+JFa1je/6YH6i01aDj+iEh6c3f4Lw+Wi0A/PMqi
-         sl/WnB98d67eNJgJt5tTS1Y9mHzXMtBCOTVO0Rex6POeaI3Z9YGZ4Xu2HveqFl9SbFFE
-         EAaQ==
+        Mon, 23 Aug 2021 12:16:19 -0400
+Received: by mail-pf1-f174.google.com with SMTP id t42so13227568pfg.12;
+        Mon, 23 Aug 2021 09:15:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Y/fJEiw7QUkBCfFPAmE/s89Bl6kM76DPzpSL413KbHQ=;
-        b=VknqN036dOJz/aJkizuxQ67x5q43bDSvQRdGSxgXfPpeAVr/vAZ45TzR2TgcnV73Cj
-         uo3HCA1K31y5ItAUqXdlPh+Dzr8d4XCn+ZHbVz99mtVO3jJ4v504pDExRxf/i1+Ov+ZB
-         85jAJAkq3/vD+mMNEWyOgwhULL7keZCU6ri6/haZLBE3vC84s0goQd6E/OmPyNtd3JvV
-         5l29E1yyVY13yg6Yapsa9wD4fP2OZP1iQTLR1uU+7nKK0Ol42fN5r1V5V8a1zXOq8ZsQ
-         TCv5ta+vAJiAi0i85he60Tzj338WjANh519O5GrtdjdPQP1/E80MWiQcmRE5dq1c/wrS
-         R2nQ==
-X-Gm-Message-State: AOAM531XPgTnEDbV2jsfapdA3BburbAG+9gR2P84pzGusn0B6VNbigar
-        ps4NbiOmtkACveGlyZXf4D0Q2cbMe6mD2w==
-X-Google-Smtp-Source: ABdhPJyaIfANEkTwh2OuOQkhwomq1hHuelv90C4jPycrt3AcKsiYkfW5OlCqOrfENiNPwAmn3Dd4kQ==
-X-Received: by 2002:a05:6830:1056:: with SMTP id b22mr27833693otp.325.1629735283951;
-        Mon, 23 Aug 2021 09:14:43 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id b9sm3964472otp.46.2021.08.23.09.14.43
+        bh=J3xy8ugS4gYXz5Du83QXFFrIFwR5k1kzlrOz6o7VFs0=;
+        b=QnctFPjOTpUpzNzrUjykI3iF9NDyXGGcpI8ILyHi9FMQvFmlML1vSNtTC2G0ZZuQM0
+         G+LF5f3iSM9OGoExrlhsahlExFpEnYzUhrNDCkaWWzNbis0gViFo0j1PmCsT+ZgUFGAG
+         DH32isHnyWE0X5tVR/HMO/mq3M9py0XABiDdyRGLx+TZOgZLseHYZnZdatFvnz0WsOMK
+         SB0iVL+o4bEPVgzJ8bnzNg0NQkYxYTAx9ReDT88rpxY8IcDGcF4QA3AS8UI9L6r2OK6F
+         HY7o5zQBOJRTwJlKD53i66BeoSVwiiRM+EqFm+gtNzSVMPoX8Ymr+6n3oCDp8Hwn3J8v
+         t5bQ==
+X-Gm-Message-State: AOAM531/E0IsRZ9DoTgYWi/zYqJ0s5cg6tfKPuqYeBm51ShncwGMIDpE
+        sLkknTitx2O0WGoOtnu4KGk=
+X-Google-Smtp-Source: ABdhPJwPI9KQa34651t/EihprPOCWjOxeLDtuB7jLYdxgEMoHuXXw6mSqEu1t1DnoSQNOyC0kYHnqg==
+X-Received: by 2002:a63:4b5a:: with SMTP id k26mr32526405pgl.241.1629735336860;
+        Mon, 23 Aug 2021 09:15:36 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:e98a:ca44:7012:ad8e])
+        by smtp.gmail.com with ESMTPSA id z3sm14397744pjn.43.2021.08.23.09.15.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 09:14:43 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] iter revert problems
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Palash Oswal <oswalpalash@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-References: <cover.1629713020.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2a981061-5420-85dd-d41c-7ed36384465c@kernel.dk>
-Date:   Mon, 23 Aug 2021 10:14:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 23 Aug 2021 09:15:35 -0700 (PDT)
+Subject: Re: [PATCH v2] scsi: core: Fix hang of freezing queue between
+ blocking and running device
+To:     lijinlin3@huawei.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     john.garry@huawei.com, qiulaibin@huawei.com, linfeilong@huawei.com,
+        wubo40@huawei.com
+References: <20210809141308.3700854-1-lijinlin3@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <08c4bb7e-830e-c9e6-2537-18131c7e0fc6@acm.org>
+Date:   Mon, 23 Aug 2021 09:15:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1629713020.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210809141308.3700854-1-lijinlin3@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 4:18 AM, Pavel Begunkov wrote:
-> iov_iter_revert() doesn't go well with iov_iter_truncate() in all
-> cases, see 2/2 for the bug description. As mentioned there the current
-> problems is because of generic_write_checks(), but there was also a
-> similar case fixed in 5.12, which should have been triggerable by normal
-> write(2)/read(2) and others.
+On 8/9/21 7:13 AM, lijinlin3@huawei.com wrote:
+> From: Li Jinlin <lijinlin3@huawei.com>
 > 
-> It may be better to enforce reexpands as a long term solution, but for
-> now this patchset is quickier and easier to backport.
+> We found a hang issue, the test steps are as follows:
+>    1. blocking device via scsi_device_set_state()
+>    2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
+>    3. echo none > /sys/block/sda/queue/scheduler
+>    4. echo "running" >/sys/block/sda/device/state
+> 
+> Step 3 and 4 should finish this work after step 4, but they hangs.
+> 
+>    CPU#0               CPU#1                CPU#2
+>    ---------------     ----------------     ----------------
+>                                             Step 1: blocking device
+> 
+>                                             Step 2: dd xxxx
+>                                                    ^^^^^^ get request
+>                                                           q_usage_counter++
+> 
+>                        Step 3: switching scheculer
+>                        elv_iosched_store
+>                          elevator_switch
+>                            blk_mq_freeze_queue
+>                              blk_freeze_queue
+>                                > blk_freeze_queue_start
+>                                  ^^^^^^ mq_freeze_depth++
+> 
+>                                > blk_mq_run_hw_queues
+>                                  ^^^^^^ can't run queue when dev blocked
+> 
+>                                > blk_mq_freeze_queue_wait
+>                                  ^^^^^^ Hang here!!!
+>                                         wait q_usage_counter==0
+> 
+>    Step 4: running device
+>    store_state_field
+>      scsi_rescan_device
+>        scsi_attach_vpd
+>          scsi_vpd_inquiry
+>            __scsi_execute
+>              blk_get_request
+>                blk_mq_alloc_request
+>                  blk_queue_enter
+>                  ^^^^^^ Hang here!!!
+>                         wait mq_freeze_depth==0
+> 
+>      blk_mq_run_hw_queues
+>      ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+> 
+>                              blk_mq_unfreeze_queue
+>                              ^^^^^ mq_freeze_depth--
+> 
+> Step 3 and 4 wait for each other.
+> 
+> To fix this, we need to run queue before rescanning device when the device
+> state changes to SDEV_RUNNING.
+> 
+> Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+> Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+> Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
+> ---
+> changes since v1 send with Message-ID:
+> 20210805143231.1713299-1-lijinlin3@huawei.com
+> 
+>   - Modify the subject to make it distinct
+>   - Modify the message to fix typo and make it distinct
+>   - Reduce the number of SOB
+> 
+>   drivers/scsi/scsi_sysfs.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+> index c3a710bceba0..aa701582c950 100644
+> --- a/drivers/scsi/scsi_sysfs.c
+> +++ b/drivers/scsi/scsi_sysfs.c
+> @@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+>   	ret = scsi_device_set_state(sdev, state);
+>   	/*
+>   	 * If the device state changes to SDEV_RUNNING, we need to
+> -	 * rescan the device to revalidate it, and run the queue to
+> -	 * avoid I/O hang.
+> +	 * run the queue to avoid I/O hang, and rescan the device
+> +	 * to revalidate it.
+>   	 */
+>   	if (ret == 0 && state == SDEV_RUNNING) {
+> -		scsi_rescan_device(dev);
+>   		blk_mq_run_hw_queues(sdev->request_queue, true);
+> +		scsi_rescan_device(dev);
+>   	}
+>   	mutex_unlock(&sdev->state_mutex);
 
-Al, given the discussion from this weekend, are you fine with the first
-patch? If so, would be great with an ack/review. Or, if you want to
-funnel this for 5.14, you can add:
+The patch looks fine to me but I think the comment in 
+store_state_field() should be expanded. Although the description in the 
+commit message makes it clear how I/O may hang, that is not clear from 
+the source code comment. Please mention in the comment that running the 
+queue first is necessary because another thread may be waiting inside 
+blk_mq_freeze_queue_wait() and because that call may be waiting for 
+pending I/O to finish.
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Thanks,
 
--- 
-Jens Axboe
+Bart.
 
