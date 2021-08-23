@@ -2,279 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C5D3F4864
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDA33F481E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235975AbhHWKOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:14:53 -0400
-Received: from 8.mo548.mail-out.ovh.net ([46.105.45.231]:57583 "EHLO
-        8.mo548.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236126AbhHWKOs (ORCPT
+        id S235975AbhHWKCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233281AbhHWKC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:14:48 -0400
-X-Greylist: delayed 2399 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 06:14:47 EDT
-Received: from mxplan5.mail.ovh.net (unknown [10.109.138.5])
-        by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 01DE01FED9;
-        Mon, 23 Aug 2021 08:56:19 +0000 (UTC)
-Received: from kaod.org (37.59.142.106) by DAG4EX1.mxp5.local (172.16.2.31)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.14; Mon, 23 Aug
- 2021 10:56:19 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-106R0065799e57a-66fe-451c-a3d9-b40df5884a81,
-                    6C3DA580BFD2A03B9CD9C7EDF86CA127720438B1) smtp.auth=clg@kaod.org
-X-OVh-ClientIp: 83.199.102.86
-Subject: Re: [PATCH v2] powerpc/audit: Convert powerpc to
- AUDIT_ARCH_COMPAT_GENERIC
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-References: <dc14509a28a993738b1325211f412be72a4f9b1e.1629701132.git.christophe.leroy@csgroup.eu>
-From:   =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <753e61fc-aab5-7797-d344-b15e9f4d6d5c@kaod.org>
-Date:   Mon, 23 Aug 2021 10:56:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 23 Aug 2021 06:02:29 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7EEC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:01:46 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id h1so5755883pjs.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a83R/B9Lm/qgVoAlx8qnij+Ld74e3iDN4AlBrXWn3Xk=;
+        b=YZAtljkGqZOJTdpRv6gq3v0m2WWXbAf3uPSSoPDrKNT7qchBAg69QpaFsao25+MF+w
+         HtHHW7Xa3yHKhgbPyYjKcjpcuIY67qgVoPIzkF+0JqcXxgMhml9BkAsrUVsEi3Hvr/Yw
+         ghdLNA3EoSYqVEhybvndDhd3KlSRoZ9Ctz7bZQJa4arwFKkUbcwzvwto9nAuG4oNm9sb
+         U8Ln9GL1z6ZUsb3QdhRRTO5kqRTyf9FVQg/n+4XuaLKkZYzDbGN50oWhWdoDDT+5QYXG
+         K2qKN2aKdOwgp6ik/5WSHkHQsbvQSBjSfbAXPs4dbrsrD2J+gdq+fzTXW9ESrBIurWGT
+         Uu3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a83R/B9Lm/qgVoAlx8qnij+Ld74e3iDN4AlBrXWn3Xk=;
+        b=MW59ztXe6iM0gxl/NFyQRsJbfizxL4ogWRiOXcJuNYP4Xs8djgjfpQfTHm4n55qZXA
+         tQaw2r6CKfkEoikBARUQLMCZ4iUUAsppNKQvVNj2RM8LSW+3rQYyxllVQM5xvYVqYXeo
+         9LcpUwxd47POM9L38u8ao/A0wB/aZserNV6wwuDO/j4o9HkqXONAGT8VVJlCbA+QBlEF
+         Uw7tjlEMGdMK5iuFrKDxQ0I8Y6q+ZRG5s9D9v7G4/KBuOfnW/D9NWbA2+uKl9zBzAFH2
+         i/QzmNDycxnBwlV8wtxpkdwHcbIvLdQJBrFfE8qUkKSvWHGqfesrIp3nB7SKrBGsmW2k
+         vM9Q==
+X-Gm-Message-State: AOAM531xcS7YxcasqdEYipBRVwF5JtuejNmJc7lRBqESeJozfk3u+DTK
+        yHzdafVoHoS+TItrQzUin/uQCw==
+X-Google-Smtp-Source: ABdhPJz+hz17o/gcGS8iJUfbpeh537f4BVJ+xiYeyWgkJMD344jXhdt++YyEDBEi6/n1J0b8QZSPZQ==
+X-Received: by 2002:a17:90a:4584:: with SMTP id v4mr19165244pjg.169.1629712906127;
+        Mon, 23 Aug 2021 03:01:46 -0700 (PDT)
+Received: from google.com ([2401:fa00:1:10:bc5a:af6a:3f08:a084])
+        by smtp.gmail.com with ESMTPSA id g13sm15458871pfo.53.2021.08.23.03.01.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 03:01:45 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 18:01:40 +0800
+From:   Tzung-Bi Shih <tzungbi@google.com>
+To:     Irui Wang <irui.wang@mediatek.com>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>, Yong Wu <yong.wu@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH 2/9] media: mtk-vcodec: Use component framework to manage
+ encoder hardware
+Message-ID: <YSNyBE4yF6VDt3cC@google.com>
+References: <20210816105934.28265-1-irui.wang@mediatek.com>
+ <20210816105934.28265-3-irui.wang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <dc14509a28a993738b1325211f412be72a4f9b1e.1629701132.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [37.59.142.106]
-X-ClientProxiedBy: DAG3EX2.mxp5.local (172.16.2.22) To DAG4EX1.mxp5.local
- (172.16.2.31)
-X-Ovh-Tracer-GUID: 72695990-56d4-485e-b4e1-f8349831bb03
-X-Ovh-Tracer-Id: 7112028239204944678
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddthedguddtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfhisehtkeertddtfeejnecuhfhrohhmpeevrogurhhitggpnfgvpgfiohgrthgvrhcuoegtlhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepjeekudeuudevleegudeugeekleffveeludejteffiedvledvgfekueefudehheefnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpegtlhhgsehkrghougdrohhrghdprhgtphhtthhopegthhhrihhsthhophhhvgdrlhgvrhhohiestghsghhrohhuphdrvghu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816105934.28265-3-irui.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 8:49 AM, Christophe Leroy wrote:
-> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
-> targets") added generic support for AUDIT but that didn't include
-> support for bi-arch like powerpc.
-> 
-> Commit 4b58841149dc ("audit: Add generic compat syscall support")
-> added generic support for bi-arch.
-> 
-> Convert powerpc to that bi-arch generic audit support.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Mon, Aug 16, 2021 at 06:59:27PM +0800, Irui Wang wrote:
+> +static struct component_match *mtk_venc_match_add(struct mtk_vcodec_dev *dev)
+> +{
+> +	struct platform_device *pdev = dev->plat_dev;
+> +	struct component_match *match = NULL;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(mtk_venc_comp_ids); i++) {
+> +		enum mtk_venc_hw_id comp_idx;
+> +		struct device_node *comp_node;
+> +		const struct of_device_id *of_id;
+To be neat, prefer to define the variables outside of the loop (i.e. at the beginning of the function).
 
-Reviewed-by: Cédric Le Goater <clg@kaod.org>
+> +
+> +		comp_node = of_find_compatible_node(NULL, NULL,
+> +			mtk_venc_comp_ids[i].compatible);
+> +		if (!comp_node)
+> +			continue;
+> +
+> +		of_id = of_match_node(mtk_venc_comp_ids, comp_node);
+> +		if (!of_id) {
+> +			dev_err(&pdev->dev, "Failed to get match node\n");
+Need to call of_node_put() actually, but see comment below.
 
-Thanks,
+> +			return ERR_PTR(-EINVAL);
+> +		}
+> +
+> +		comp_idx = (enum mtk_venc_hw_id)of_id->data;
+For getting the comp_idx, mtk_venc_comp_ids[i].data should be sufficient.  If so, of_match_node() can be removed so that the error handling path won't need to call of_node_put().
 
-C. 
+> @@ -239,6 +314,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+>  	phandle rproc_phandle;
+>  	enum mtk_vcodec_fw_type fw_type;
+>  	int ret;
+> +	struct component_match *match = NULL;
+It doesn't need to be initialized.
 
-> ---
-> v2:
-> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
-> - Finalised commit description
-> ---
->  arch/powerpc/Kconfig                |  5 +-
->  arch/powerpc/include/asm/unistd32.h |  7 +++
->  arch/powerpc/kernel/Makefile        |  3 --
->  arch/powerpc/kernel/audit.c         | 84 -----------------------------
->  arch/powerpc/kernel/compat_audit.c  | 44 ---------------
->  5 files changed, 8 insertions(+), 135 deletions(-)
->  create mode 100644 arch/powerpc/include/asm/unistd32.h
->  delete mode 100644 arch/powerpc/kernel/audit.c
->  delete mode 100644 arch/powerpc/kernel/compat_audit.c
-> 
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 663766fbf505..5472358609d2 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -163,6 +163,7 @@ config PPC
->  	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
->  	select ARCH_WANT_LD_ORPHAN_WARN
->  	select ARCH_WEAK_RELEASE_ACQUIRE
-> +	select AUDIT_ARCH_COMPAT_GENERIC
->  	select BINFMT_ELF
->  	select BUILDTIME_TABLE_SORT
->  	select CLONE_BACKWARDS
-> @@ -316,10 +317,6 @@ config GENERIC_TBSYNC
->  	bool
->  	default y if PPC32 && SMP
->  
-> -config AUDIT_ARCH
-> -	bool
-> -	default y
-> -
->  config GENERIC_BUG
->  	bool
->  	default y
-> diff --git a/arch/powerpc/include/asm/unistd32.h b/arch/powerpc/include/asm/unistd32.h
+> -	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> -	if (res == NULL) {
+> -		dev_err(&pdev->dev, "failed to get irq resource");
+> -		ret = -ENOENT;
+> -		goto err_res;
+> -	}
+> +		res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> +		if (!res) {
+> +			dev_err(&pdev->dev, "failed to get irq resource");
+> +			ret = -ENOENT;
+> +			goto err_res;
+> +		}
+res is not used.  Can be removed in next version or in another patch.
+
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_hw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_hw.c
 > new file mode 100644
-> index 000000000000..07689897d206
+> index 000000000000..4e6a8a81ff67
 > --- /dev/null
-> +++ b/arch/powerpc/include/asm/unistd32.h
-> @@ -0,0 +1,7 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +#ifndef _ASM_POWERPC_UNISTD32_H_
-> +#define _ASM_POWERPC_UNISTD32_H_
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_hw.c
+> @@ -0,0 +1,179 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
 > +
-> +#include <asm/unistd_32.h>
-> +
-> +#endif /* _ASM_POWERPC_UNISTD32_H_ */
-> diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-> index 7be36c1e1db6..825121eba3c2 100644
-> --- a/arch/powerpc/kernel/Makefile
-> +++ b/arch/powerpc/kernel/Makefile
-> @@ -125,9 +125,6 @@ obj-$(CONFIG_PCI)		+= pci_$(BITS).o $(pci64-y) \
->  				   pci-common.o pci_of_scan.o
->  obj-$(CONFIG_PCI_MSI)		+= msi.o
->  
-> -obj-$(CONFIG_AUDIT)		+= audit.o
-> -obj64-$(CONFIG_AUDIT)		+= compat_audit.o
-> -
->  obj-$(CONFIG_PPC_IO_WORKAROUNDS)	+= io-workarounds.o
->  
->  obj-y				+= trace/
-> diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
-> deleted file mode 100644
-> index a2dddd7f3d09..000000000000
-> --- a/arch/powerpc/kernel/audit.c
-> +++ /dev/null
-> @@ -1,84 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#include <linux/init.h>
-> -#include <linux/types.h>
-> -#include <linux/audit.h>
-> -#include <asm/unistd.h>
-> -
-> -static unsigned dir_class[] = {
-> -#include <asm-generic/audit_dir_write.h>
-> -~0U
-> -};
-> -
-> -static unsigned read_class[] = {
-> -#include <asm-generic/audit_read.h>
-> -~0U
-> -};
-> -
-> -static unsigned write_class[] = {
-> -#include <asm-generic/audit_write.h>
-> -~0U
-> -};
-> -
-> -static unsigned chattr_class[] = {
-> -#include <asm-generic/audit_change_attr.h>
-> -~0U
-> -};
-> -
-> -static unsigned signal_class[] = {
-> -#include <asm-generic/audit_signal.h>
-> -~0U
-> -};
-> -
-> -int audit_classify_arch(int arch)
-> -{
-> -#ifdef CONFIG_PPC64
-> -	if (arch == AUDIT_ARCH_PPC)
-> -		return 1;
-> -#endif
-> -	return 0;
-> -}
-> -
-> -int audit_classify_syscall(int abi, unsigned syscall)
-> -{
-> -#ifdef CONFIG_PPC64
-> -	extern int ppc32_classify_syscall(unsigned);
-> -	if (abi == AUDIT_ARCH_PPC)
-> -		return ppc32_classify_syscall(syscall);
-> -#endif
-> -	switch(syscall) {
-> -	case __NR_open:
-> -		return 2;
-> -	case __NR_openat:
-> -		return 3;
-> -	case __NR_socketcall:
-> -		return 4;
-> -	case __NR_execve:
-> -		return 5;
-> -	default:
-> -		return 0;
-> -	}
-> -}
-> -
-> -static int __init audit_classes_init(void)
-> -{
-> -#ifdef CONFIG_PPC64
-> -	extern __u32 ppc32_dir_class[];
-> -	extern __u32 ppc32_write_class[];
-> -	extern __u32 ppc32_read_class[];
-> -	extern __u32 ppc32_chattr_class[];
-> -	extern __u32 ppc32_signal_class[];
-> -	audit_register_class(AUDIT_CLASS_WRITE_32, ppc32_write_class);
-> -	audit_register_class(AUDIT_CLASS_READ_32, ppc32_read_class);
-> -	audit_register_class(AUDIT_CLASS_DIR_WRITE_32, ppc32_dir_class);
-> -	audit_register_class(AUDIT_CLASS_CHATTR_32, ppc32_chattr_class);
-> -	audit_register_class(AUDIT_CLASS_SIGNAL_32, ppc32_signal_class);
-> -#endif
-> -	audit_register_class(AUDIT_CLASS_WRITE, write_class);
-> -	audit_register_class(AUDIT_CLASS_READ, read_class);
-> -	audit_register_class(AUDIT_CLASS_DIR_WRITE, dir_class);
-> -	audit_register_class(AUDIT_CLASS_CHATTR, chattr_class);
-> -	audit_register_class(AUDIT_CLASS_SIGNAL, signal_class);
-> -	return 0;
-> -}
-> -
-> -__initcall(audit_classes_init);
-> diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
-> deleted file mode 100644
-> index 55c6ccda0a85..000000000000
-> --- a/arch/powerpc/kernel/compat_audit.c
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> -#undef __powerpc64__
-> -#include <asm/unistd.h>
-> -
-> -unsigned ppc32_dir_class[] = {
-> -#include <asm-generic/audit_dir_write.h>
-> -~0U
-> -};
-> -
-> -unsigned ppc32_chattr_class[] = {
-> -#include <asm-generic/audit_change_attr.h>
-> -~0U
-> -};
-> -
-> -unsigned ppc32_write_class[] = {
-> -#include <asm-generic/audit_write.h>
-> -~0U
-> -};
-> -
-> -unsigned ppc32_read_class[] = {
-> -#include <asm-generic/audit_read.h>
-> -~0U
-> -};
-> -
-> -unsigned ppc32_signal_class[] = {
-> -#include <asm-generic/audit_signal.h>
-> -~0U
-> -};
-> -
-> -int ppc32_classify_syscall(unsigned syscall)
-> -{
-> -	switch(syscall) {
-> -	case __NR_open:
-> -		return 2;
-> -	case __NR_openat:
-> -		return 3;
-> -	case __NR_socketcall:
-> -		return 4;
-> -	case __NR_execve:
-> -		return 5;
-> -	default:
-> -		return 1;
-> -	}
-> -}
-> 
+> +#include <linux/pm_runtime.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/module.h>
+Would be better to maintain an order.
 
+> +#include "mtk_vcodec_enc_hw.h"
+> +#include "mtk_vcodec_enc.h"
+Would be better to maintain an order.
+
+> +static irqreturn_t mtk_enc_comp_irq_handler(int irq, void *priv)
+> +{
+> +	struct mtk_venc_comp_dev *dev = priv;
+> +	struct mtk_vcodec_ctx *ctx;
+> +	unsigned long flags;
+> +	void __iomem *addr;
+> +
+> +	spin_lock_irqsave(&dev->master_dev->irqlock, flags);
+> +	ctx = dev->curr_ctx;
+> +	spin_unlock_irqrestore(&dev->master_dev->irqlock, flags);
+> +	if (!ctx)
+> +		return IRQ_HANDLED;
+Here is a read lock for the curr_ctx.  The patch doesn't contain the write lock part.
+
+I am not sure if the following situation would be happened:
+1. curr_ctx is not NULL.
+2. mtk_enc_comp_irq_handler() gets the curr_ctx.
+3. The curr_ctx has been destroyed somewhere.
+4. mtk_enc_comp_irq_handler() finds the ctx is not NULL so that it continues to execute.
+5. Something wrong in latter mtk_enc_comp_irq_handler() because the ctx has been destroyed.
+
+Does it make more sense to set curr_ctx to NULL to indicate the ownership has been transferred to mtk_enc_comp_irq_handler()?  For example:
+
+spin_lock_irqsave(...);
+ctx = dev->curr_ctx;
+dev->curr_ctx = NULL;
+spin_unlock_irqrestore(...);
+
+> +static int mtk_venc_comp_bind(struct device *dev,
+> +			      struct device *master, void *data)
+> +{
+> +	struct mtk_venc_comp_dev *comp_dev = dev_get_drvdata(dev);
+> +	struct mtk_vcodec_dev *master_dev = data;
+> +	int i;
+> +
+> +	for (i = 0; i < MTK_VENC_HW_MAX; i++) {
+> +		if (dev->of_node != master_dev->enc_comp_node[i])
+> +			continue;
+> +
+> +		/*add component device by order*/
+> +		if (comp_dev->core_id == MTK_VENC_CORE0)
+> +			master_dev->enc_comp_dev[MTK_VENC_CORE0] = comp_dev;
+> +		else if (comp_dev->core_id == MTK_VENC_CORE1)
+> +			master_dev->enc_comp_dev[MTK_VENC_CORE1] = comp_dev;
+> +		else
+> +			return -EINVAL;
+if (comp_dev->core_id < 0 || comp_dev->core_id >= MTK_VENC_HW_MAX)
+    return -EINVAL;
+
+master_dev->enc_comp_dev[comp_dev->core_id] = comp_dev;
