@@ -2,249 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C073F48D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EA03F48E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236064AbhHWKrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:47:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:51554 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234155AbhHWKrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:47:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6D1F1042;
-        Mon, 23 Aug 2021 03:46:24 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.42.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28A333F66F;
-        Mon, 23 Aug 2021 03:46:23 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: [PATCH RESEND v3] ACPI: Add memory semantics to acpi_os_map_memory()
-Date:   Mon, 23 Aug 2021 11:46:18 +0100
-Message-Id: <20210823104618.14552-1-lorenzo.pieralisi@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
-References: <20210802152359.12623-1-lorenzo.pieralisi@arm.com>
+        id S236157AbhHWKro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236192AbhHWKrl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:47:41 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B2CC061796
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:46:57 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id h1so2446685ljl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:46:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UmkfXGaYCdqSsvCrogHGEUgWw+TJ4SlfmjU5MN/PEBE=;
+        b=cjqU7CIQQYnl3N9VSH9OdTpbfhx84HH/grPgOc+tCGAo2Yn2hAV0cMn3z8HTaVOuhA
+         8Brg4z73NnaY2Z/CE8IaG11T82l0gL1ZP2mAHcCMwXtNviOz1cwQ7atSvkRP33js82FC
+         tL3OJS+qxvVYzF3TYhi7jJG99T8jOBJM8RSwrLmSS6vtDNlXueNOFv50Q4BmfSf/V2kW
+         jpK8t4qSsEu0v76ajcR4UzKY9YBd/hRYx4cCU6l6AsBCSBWNe3JTai52Wv7UVRmBdbxJ
+         Pg+Ik2kyI7qbtIeypuO3uLwLKp7JZuw0yQNYCSOl6O3FaQojbcATlzG1xxwJABfP9fIQ
+         rH8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UmkfXGaYCdqSsvCrogHGEUgWw+TJ4SlfmjU5MN/PEBE=;
+        b=i7FSkDBnSE6qHbf5t2KYwnIeYLsLieRWNjSHL7EX9zYRi9F1i3Zgdck30xwL+Xin19
+         FLjeQ0D5T8DMdoIxIiv6Q6s+IZ2NAcCH54mF520n3ny9WPaiQfyg4qTCpZn4sSmBBp5M
+         N21aNbHLahfD+sIFOdR3c61JlUrc50A0ZjQgAHPQvCt8UscBGjdV8/8zYPXrI3yOz/m5
+         D30xlfEk19TxAnOfo4SS20rGCT2rrlKxFi1sdVnjdoMh2ZB5Bw19CvVUbXxF9sPcKQtp
+         TGl5aYHOXQpXq5iYcW+pjln9TJmogvFSsjSjKFZS+wBpNCkVhzV49xiz3z1OYo+8ilHW
+         1uqg==
+X-Gm-Message-State: AOAM533kaEem8C9rY2R3C+ceFNIJvX1hvXnK4ciITMFGrXfFNqySljav
+        fhAWPd7NsUPWMY6rwxYVpswA0rmZk84J5nqdntLmrQ==
+X-Google-Smtp-Source: ABdhPJwROTbhLIghdJiFv3Mpx4km5TKucbukHEV5v0NDix1jHpH6ITt9xOVwuMgiEW0EE35GC/hK1ms310RYHiQipIA=
+X-Received: by 2002:a2e:a410:: with SMTP id p16mr25247179ljn.364.1629715615237;
+ Mon, 23 Aug 2021 03:46:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210818043131.7klajx6drvvkftoc@vireshk-i7> <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
+ <20210818045307.4brb6cafkh3adjth@vireshk-i7> <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
+ <20210818055849.ybfajzu75ecpdrbn@vireshk-i7> <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
+ <20210818062723.dqamssfkf7lf7cf7@vireshk-i7> <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
+ <20210818091417.dvlnsxlgybdsn76x@vireshk-i7> <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
+ <20210818095044.e2ntsm45h5cddk7s@vireshk-i7> <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
+ <0354acbe-d856-4040-f453-8e8164102045@gmail.com> <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
+ <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com> <CAPDyKFqSsAk8a5CTNpRT2z4Wvf8BehJKDbVhUKfHc2Jzj7aTNA@mail.gmail.com>
+ <9129a9f0-8c9b-d8e0-ddf5-c8820871fb7f@gmail.com>
+In-Reply-To: <9129a9f0-8c9b-d8e0-ddf5-c8820871fb7f@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 23 Aug 2021 12:46:19 +0200
+Message-ID: <CAPDyKFrWeQVNgxzmiLBXJ2gQW=iFf4aG16xvZ+ag1MkhXs9-BQ@mail.gmail.com>
+Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory attributes attached to memory regions depend on architecture
-specific mappings.
+[...]
 
-For some memory regions, the attributes specified by firmware (eg
-uncached) are not sufficient to determine how a memory region should be
-mapped by an OS (for instance a region that is define as uncached in
-firmware can be mapped as Normal or Device memory on arm64) and
-therefore the OS must be given control on how to map the region to match
-the expected mapping behaviour (eg if a mapping is requested with memory
-semantics, it must allow unaligned accesses).
+> >>>> We have three components comprising PM on Tegra:
+> >>>>
+> >>>> 1. Power gate
+> >>>> 2. Clock state
+> >>>> 3. Voltage state
+> >>>>
+> >>>> GENPD on/off represents the 'power gate'.
+> >>>>
+> >>>> Clock and reset are controlled by device drivers using clk and rst APIs.
+> >>>>
+> >>>> Voltage state is represented by GENPD's performance level.
+> >>>>
+> >>>> GENPD core assumes that at a first rpm-resume of a consumer device, its
+> >>>> genpd_performance=0. Not true for Tegra because h/w of the device is
+> >>>> preconfigured to a non-zero perf level initially, h/w may not support
+> >>>> zero level at all.
+> >>>
+> >>> I think you may be misunderstanding genpd's behaviour around this, but
+> >>> let me elaborate.
+> >>>
+> >>> In genpd_runtime_resume(), we try to restore the performance state for
+> >>> the device that genpd_runtime_suspend() *may* have dropped earlier.
+> >>> That means, if genpd_runtime_resume() is called prior
+> >>> genpd_runtime_suspend() for the first time, it means that
+> >>> genpd_runtime_resume() will *not* restore a performance state, but
+> >>> instead just leave the performance state as is for the device (see
+> >>> genpd_restore_performance_state()).
+> >>>
+> >>> In other words, a consumer driver may use the following sequence to
+> >>> set an initial performance state for the device during ->probe():
+> >>>
+> >>> ...
+> >>> rate = clk_get_rate()
+> >>> dev_pm_opp_set_rate(rate)
+> >>>
+> >>> pm_runtime_enable()
+> >>> pm_runtime_resume_and_get()
+> >>> ...
+> >>>
+> >>> Note that, it's the consumer driver's responsibility to manage device
+> >>> specific resources, in its ->runtime_suspend|resume() callbacks.
+> >>> Typically that means dealing with clock gating/ungating, for example.
+> >>>
+> >>> In the other scenario where a consumer driver prefers to *not* call
+> >>> pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
+> >>> to power on the device to complete probing, then we don't want to vote
+> >>> for an OPP at all - and we also want the performance state for the
+> >>> device in genpd to be set to zero. Correct?
+> >>
+> >> Yes
+> >>
+> >>> Is this the main problem you are trying to solve, because I think this
+> >>> doesn't work out of the box as of today?
+> >>
+> >> The main problem is that the restored performance state is zero for the
+> >> first genpd_runtime_resume(), while it's not zero from the h/w perspective.
+> >
+> > This should not be a problem, but can be handled by the consumer driver.
+> >
+> > genpd_runtime_resume() calls genpd_restore_performance_state() to
+> > restore a performance state for the device. However, in the scenario
+> > you describe, "gpd_data->rpm_pstate" is zero, which makes
+> > genpd_restore_performance_state() to just leave the device's
+> > performance state as is - it will *not* restore the performance state
+> > to zero.
+> >
+> > To make the consumer driver deal with this, it would need to call
+> > dev_pm_opp_set_rate() from within its ->runtime_resume() callback.
+> >
+> >>
+> >>> There is another concern though, but perhaps it's not a problem after
+> >>> all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
+> >>> like clock/regulators. That could certainly be problematic, in
+> >>> particular if the device and its genpd have OPP tables associated with
+> >>> it and the consumer driver wants to follow the above sequence in
+> >>> probe.
+> >>
+> >> dev_pm_opp_set_rate() won't enable clocks and regulators, but it may
+> >> change the clock rate and voltage. This is also platform/driver specific
+> >> because it's up to OPP user how to configure OPP table. On Tegra we only
+> >> assign clock to OPP table, regulators are unused.
+> >>
+> >>> Viresh, can you please chime in here and elaborate on some of the
+> >>> magic happening behind dev_pm_opp_set_rate() API - is there a problem
+> >>> here or not?
+> >>>
+> >>>>
+> >>>> GENPD core assumes that consumer devices can work at any performance
+> >>>> level. Not true for Tegra because voltage needs to be set in accordance
+> >>>> to the clock rate before clock is enabled, otherwise h/w won't work
+> >>>> properly, perhaps clock may be unstable or h/w won't be latching.
+> >>>
+> >>> Correct. Genpd relies on the callers to use the OPP framework if there
+> >>> are constraints like you describe above.
+> >>>
+> >>> That said, it's not forbidden for a consumer driver to call
+> >>> dev_pm_genpd_set_performance_state() directly, but then it better
+> >>> knows exactly what it's doing.
+> >>>
+> >>>>
+> >>>> Performance level should be set to 0 while device is suspended.
+> >>>
+> >>> Do you mean system suspend or runtime suspend? Or both?
+> >>
+> >> Runtime suspend.
+> >
+> > Alright. So that's already taken care of for us in genpd_runtime_suspend().
+> >
+> > Or perhaps you have discovered some problem with this?
+> >
+> >>
+> >>>> Performance level needs to be bumped on rpm-resume of a device in
+> >>>> accordance to h/w state before hardware is enabled.
+> >>>
+> >>> Assuming there was a performance state set for the device when
+> >>> genpd_runtime_suspend() was called, genpd_runtime_resume() will
+> >>> restore that state according to the sequence you described.
+> >>
+> >> What do you think about adding API that will allow drivers to explicitly
+> >> set the restored performance state of a power domain?
+> >>
+> >> Another option could be to change the GENPD core, making it to set the
+> >> rpm_pstate when dev_pm_genpd_set_performance_state(dev) is invoked and
+> >> device is rpm-suspended, instead of calling the
+> >> genpd->set_performance_state callback.
+> >>
+> >> Then drivers will be able to sync the perf state at a probe time.
+> >>
+> >> What do you think?
+> >
+> > I don't think it's needed, see my reply earlier above. However your
+> > change touches another problem though, see below.
+> >
+> >>
+> >> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> >> index a934c679e6ce..cc15ab9eacc9 100644
+> >> --- a/drivers/base/power/domain.c
+> >> +++ b/drivers/base/power/domain.c
+> >> @@ -435,7 +435,7 @@ static void genpd_restore_performance_state(struct
+> >> device *dev,
+> >>  int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int
+> >> state)
+> >>  {
+> >>         struct generic_pm_domain *genpd;
+> >> -       int ret;
+> >> +       int ret = 0;
+> >>
+> >>         genpd = dev_to_genpd_safe(dev);
+> >>         if (!genpd)
+> >> @@ -446,7 +446,10 @@ int dev_pm_genpd_set_performance_state(struct
+> >> device *dev, unsigned int state)
+> >>                 return -EINVAL;
+> >>
+> >>         genpd_lock(genpd);
+> >> -       ret = genpd_set_performance_state(dev, state);
+> >> +       if (pm_runtime_suspended(dev))
+> >> +               dev_gpd_data(dev)->rpm_pstate = state;
+> >> +       else
+> >> +               ret = genpd_set_performance_state(dev, state);
+> >>         genpd_unlock(genpd);
+> >
+> > This doesn't work for all cases. For example, when a consumer driver
+> > deploys runtime PM support in its ->probe() according to the below
+> > sequence:
+> >
+> > ...
+> > dev_pm_opp_set_rate(rate)
+> > pm_runtime_get_noresume()
+> > pm_runtime_set_active()
+> > pm_runtime_enable()
+> > ...
+> > pm_runtime_put()
+> > ...
+> >
+> > We need to call genpd_set_performance_state() independently of whether
+> > the device is runtime suspended or not.
+>
+> I don't see where is the problem in yours example.
+>
+> pm_runtime_suspended() = false while RPM is disabled. When device is
+> resumed, the rpm_pstate=0, so it won't change the pstate on resume.
 
-Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
-them into two separate code paths:
+Yes, you are certainly correct, my bad! I mixed it up with
+pm_runtime_status_suspended(), which only cares about the status.
 
-acpi_os_memmap() -> memory semantics
-acpi_os_ioremap() -> MMIO semantics
+So, after a second thought, your suggestion sounds very much
+reasonable to me! I have also tried to consider all different
+scenarios, including the system suspend/resume path, but I think it
+should be fine.
 
-The split allows the architectural implementation back-ends to detect
-the default memory attributes required by the mapping in question
-(ie the mapping API defines the semantics memory vs MMIO) and map the
-memory accordingly.
+I also think that a patch like the above should be considered as a
+fix, because it actually fixes a problem, according to what I said in
+my earlier reply, below.
 
-Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
-Tested-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
----
-Resending with all lists CC'ed.
+Fixes : 5937c3ce2122 ("PM: domains: Drop/restore performance state
+votes for devices at runtime PM").
 
-Patch series is a v3 of a previous version[2]:
+>
+> > Although, it actually seems like good idea to update
+> > dev_gpd_data(dev)->rpm_pstate = state here, as to make sure
+> > genpd_runtime_resume() doesn't restore an old/invalid value that was
+> > saved while dropping the performance state vote for the device in
+> > genpd_runtime_suspend() earlier.
+> >
+> > Let me send a patch for this shortly, to close this window of a possible error.
+>
+> It will also remove the need to resume device just to change the clock
+> rate, like I needed to do it in the PWM patch of this series.
 
-v2->v3:
-	- Dropped first two-patches following LKML feedback[2]
-v1->v2
-	- Added patch 1 and 2 according to feedback received on[1]
+Do you want to send the patch formally? Or do you prefer it if I do it?
 
-[1] https://lore.kernel.org/linux-acpi/20210726100026.12538-1-lorenzo.pieralisi@arm.com
-[2] https://lore.kernel.org/linux-acpi/20210802152359.12623-1-lorenzo.pieralisi@arm.com
-
- arch/arm64/include/asm/acpi.h |  3 +++
- arch/arm64/kernel/acpi.c      | 19 ++++++++++++++++---
- drivers/acpi/osl.c            | 23 ++++++++++++++++-------
- include/acpi/acpi_io.h        |  8 ++++++++
- 4 files changed, 43 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index bd68e1b7f29f..7535dc7cc5aa 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -50,6 +50,9 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
- void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
- #define acpi_os_ioremap acpi_os_ioremap
- 
-+void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
-+#define acpi_os_memmap acpi_os_memmap
-+
- typedef u64 phys_cpuid_t;
- #define PHYS_CPUID_INVALID INVALID_HWID
- 
-diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-index f3851724fe35..1c9c2f7a1c04 100644
---- a/arch/arm64/kernel/acpi.c
-+++ b/arch/arm64/kernel/acpi.c
-@@ -273,7 +273,8 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
- 	return __pgprot(PROT_DEVICE_nGnRnE);
- }
- 
--void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
-+				       acpi_size size, bool memory)
- {
- 	efi_memory_desc_t *md, *region = NULL;
- 	pgprot_t prot;
-@@ -299,9 +300,11 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- 	 * It is fine for AML to remap regions that are not represented in the
- 	 * EFI memory map at all, as it only describes normal memory, and MMIO
- 	 * regions that require a virtual mapping to make them accessible to
--	 * the EFI runtime services.
-+	 * the EFI runtime services. Determine the region default
-+	 * attributes by checking the requested memory semantics.
- 	 */
--	prot = __pgprot(PROT_DEVICE_nGnRnE);
-+	prot = memory ? __pgprot(PROT_NORMAL_NC) :
-+			__pgprot(PROT_DEVICE_nGnRnE);
- 	if (region) {
- 		switch (region->type) {
- 		case EFI_LOADER_CODE:
-@@ -361,6 +364,16 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
- 	return __ioremap(phys, size, prot);
- }
- 
-+void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_ioremap(phys, size, false);
-+}
-+
-+void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_ioremap(phys, size, true);
-+}
-+
- /*
-  * Claim Synchronous External Aborts as a firmware first notification.
-  *
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 45c5c0e45e33..a43f1521efe6 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -284,7 +284,8 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
- #define should_use_kmap(pfn)   page_is_ram(pfn)
- #endif
- 
--static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
-+static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
-+			      bool memory)
- {
- 	unsigned long pfn;
- 
-@@ -294,7 +295,8 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
- 			return NULL;
- 		return (void __iomem __force *)kmap(pfn_to_page(pfn));
- 	} else
--		return acpi_os_ioremap(pg_off, pg_sz);
-+		return memory ? acpi_os_memmap(pg_off, pg_sz) :
-+				acpi_os_ioremap(pg_off, pg_sz);
- }
- 
- static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-@@ -309,9 +311,10 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
- }
- 
- /**
-- * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-+ * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
-  * @phys: Start of the physical address range to map.
-  * @size: Size of the physical address range to map.
-+ * @memory: true if remapping memory, false if IO
-  *
-  * Look up the given physical address range in the list of existing ACPI memory
-  * mappings.  If found, get a reference to it and return a pointer to it (its
-@@ -321,8 +324,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-  * During early init (when acpi_permanent_mmap has not been set yet) this
-  * routine simply calls __acpi_map_table() to get the job done.
-  */
--void __iomem __ref
--*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+static void __iomem __ref
-+*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
- {
- 	struct acpi_ioremap *map;
- 	void __iomem *virt;
-@@ -353,7 +356,7 @@ void __iomem __ref
- 
- 	pg_off = round_down(phys, PAGE_SIZE);
- 	pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
--	virt = acpi_map(phys, size);
-+	virt = acpi_map(phys, size, memory);
- 	if (!virt) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		kfree(map);
-@@ -372,11 +375,17 @@ void __iomem __ref
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return map->virt + (phys - map->phys);
- }
-+
-+void __iomem *__ref
-+acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-+{
-+	return __acpi_os_map_iomem(phys, size, false);
-+}
- EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
- 
- void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- {
--	return (void *)acpi_os_map_iomem(phys, size);
-+	return (void *)__acpi_os_map_iomem(phys, size, true);
- }
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
-diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-index 027faa8883aa..a0212e67d6f4 100644
---- a/include/acpi/acpi_io.h
-+++ b/include/acpi/acpi_io.h
-@@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
- }
- #endif
- 
-+#ifndef acpi_os_memmap
-+static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
-+					    acpi_size size)
-+{
-+	return ioremap_cache(phys, size);
-+}
-+#endif
-+
- extern bool acpi_permanent_mmap;
- 
- void __iomem __ref
--- 
-2.31.0
-
+Kind regards
+Uffe
