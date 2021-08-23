@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BB83F4DB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24F43F4DB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhHWPm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhHWPmy (ORCPT
+        id S231469AbhHWPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:48:56 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34654 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230314AbhHWPsz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:42:54 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ABDC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:42:11 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso18875195pjh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wba/Vd7Mr+gKjN+T6LlO1n9InijBDgXzejrbqJFDnsY=;
-        b=VcdGY4x1yOJjbob50PA33J2QzUqQB1sc/JpAszkZplYAd1QSNGrENkm+Jh8ndk58O6
-         6HPHsG1qZJnvXcfGRZ5TEueMo9Jrz5lOKQ/ltzJP4vlsUHX96829cRdCpW/O6uS1uWXA
-         YEKxToiBgtOPbny5BT6cUU7xtrrHsG99UywVb5UFNYDq71gj8F3NinPZSa209f+mHZZl
-         OuELy/qxkl1uXh/sQbo83yRoBpgmQ5U5uEsyWCG49okd4bG9C6ZLYeXhjsWE7tv/jv7p
-         guhdsEG4Am7skl0x8EWOTyxSt+Ve/aozCazygrnIJxgcrzgZk1/+yCVxNdGeuHB452am
-         WVAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wba/Vd7Mr+gKjN+T6LlO1n9InijBDgXzejrbqJFDnsY=;
-        b=LVFK552nEO3zzrSKgZUjTEG9h39jt/2pdwoW/zqT4FR8jQa0dItOMRbmZS20r6FQw0
-         R2OzTUfIfb9W4FY8s9/OEdstXWWi4dkA3FY7WtzYGtmKYvxpjoOjpVLKlNNmoFpRbxMH
-         lKDgb0NPBbzOYy9ZMn6ZqZfTjovg5PIGjG67DCeK/yhgqx8BHOgPPB4Z2MQPpP2SbtzY
-         UPDouhncaIDAaoDz37PDH89UiKIf29Q8Jh3SNOFAAwqQeYizMdHOPuG6BxAEjZWTzWmm
-         3hMfd3YrxIRJZu5GLCCLMlOwke0nrFdJ+atxyAzuJzziofuTHPrb6MrYx91LKXvQyw9g
-         Kftw==
-X-Gm-Message-State: AOAM531rP1lP9AvgS7xV6PR26wX+7PHOmAW+R2dwjthOE4kVK3ARQb6l
-        NooCHT3mXI4dmIb7b04s9at5Zg==
-X-Google-Smtp-Source: ABdhPJxvJV/9sUu0fkCkTpOEHKfq67WatqlTsHOLVBCZsRX95rrTO58yIEVFPdqmqxts7j0+sawrOA==
-X-Received: by 2002:a17:90a:f2d2:: with SMTP id gt18mr19064612pjb.187.1629733330679;
-        Mon, 23 Aug 2021 08:42:10 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:bc5a:af6a:3f08:a084])
-        by smtp.gmail.com with ESMTPSA id x2sm19608025pjq.35.2021.08.23.08.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 08:42:10 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 23:42:07 +0800
-From:   Tzung-Bi Shih <tzungbi@google.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: sound/soc/codecs/rt1015.c:724:2: warning: Value stored to
- 'bclk_ms' is never read [clang-analyzer-deadcode.DeadStores]
-Message-ID: <YSPBz0CzuAvVcHJy@google.com>
-References: <202108231809.NOi9qOEj-lkp@intel.com>
+        Mon, 23 Aug 2021 11:48:55 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mICBA-0006tY-Ed; Mon, 23 Aug 2021 17:48:04 +0200
+Received: from [85.5.47.65] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mICB9-000Jg5-UB; Mon, 23 Aug 2021 17:48:04 +0200
+Subject: Re: [PATCH bpf-next] bpf: test_bpf: Print total time of test in the
+ summary
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4226eb32-7755-5a32-5c58-7e64c129727c@iogearbox.net>
+Date:   Mon, 23 Aug 2021 17:48:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202108231809.NOi9qOEj-lkp@intel.com>
+In-Reply-To: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26272/Mon Aug 23 10:21:13 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 06:39:13PM +0800, kernel test robot wrote:
-> >> sound/soc/codecs/rt1015.c:724:2: warning: Value stored to 'bclk_ms' is never read [clang-analyzer-deadcode.DeadStores]
->            bclk_ms = frame_size > 32;
->            ^         ~~~~~~~~~~~~~~~
->    sound/soc/codecs/rt1015.c:724:2: note: Value stored to 'bclk_ms' is never read
->            bclk_ms = frame_size > 32;
->            ^         ~~~~~~~~~~~~~~~
-Proposed a fix (https://patchwork.kernel.org/project/alsa-devel/list/?series=535979) for the warning.
+On 8/21/21 2:13 PM, Tiezhu Yang wrote:
+> The total time of test is useful to compare the performance
+> when bpf_jit_enable is 0 or 1, so print it in the summary.
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>   lib/test_bpf.c | 27 +++++++++++++++++++++------
+>   1 file changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index 830a18e..b1b17ba 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -8920,6 +8920,9 @@ static __init int test_skb_segment_single(const struct skb_segment_test *test)
+>   static __init int test_skb_segment(void)
+>   {
+>   	int i, err_cnt = 0, pass_cnt = 0;
+> +	u64 start, finish;
+> +
+> +	start = ktime_get_ns();
+>   
+>   	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+>   		const struct skb_segment_test *test = &skb_segment_tests[i];
+> @@ -8935,8 +8938,10 @@ static __init int test_skb_segment(void)
+>   		}
+>   	}
+>   
+> -	pr_info("%s: Summary: %d PASSED, %d FAILED\n", __func__,
+> -		pass_cnt, err_cnt);
+> +	finish = ktime_get_ns();
+> +
+> +	pr_info("%s: Summary: %d PASSED, %d FAILED in %llu nsec\n",
+> +		__func__, pass_cnt, err_cnt, finish - start);
+>   	return err_cnt ? -EINVAL : 0;
+>   }
+
+I don't think this gives you any accurate results (e.g. what if this gets migrated
+or preempted?); maybe rather use the duration from __run_one() ..
+
+Thanks,
+Daniel
