@@ -2,118 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E55A3F4E62
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D825A3F4E68
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhHWQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhHWQbn (ORCPT
+        id S229912AbhHWQc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:32:59 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:57855 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229454AbhHWQc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:31:43 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B622C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:31:00 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id r19so27038074eds.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3UJqarI9sJh/SEzyJatryVnyGRWftRgbiqbTe8APv5I=;
-        b=FsrV/vjP9FwD6+gGUwE7brUSey8SYKVwpEPyJQ0ZE91a3dyKjLFv4giwo7QDacAyFw
-         egWdkhxhj9NUwi0HHZgK6yGJwJqJ9HDb4qRQTaVMnHGO8gG3ZeKZZnYYlrfNm693Fy0Y
-         oQ7hh6DOM1oB/BYhyFoBA7veyoZ+c37euu8VuV+OZ6P//3RXOx3M7EEGpEYyTjgd2uYE
-         MuUNLxBrhnc9SLBdXN+ef9CFeC33EpLfc4dt8uuN0PDzFbh3LbEJ8k/+9p+0HmJfgQdQ
-         CnTT/UROf8/CFKl03Gou5JKZcVBU8MPgFGcCZmh4qpB9Vjhu1UYXY1utX6FUrmozWZgV
-         tXbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3UJqarI9sJh/SEzyJatryVnyGRWftRgbiqbTe8APv5I=;
-        b=amv0TU0iQqFxEaRHjnGCuDcLl2VUjyt1Nd9cc9XsWmSvlGCgNAmn8u5YdjG0Zb/BGk
-         lQoi/bpyWW44y2qbCIeeVdmiB8SixDZPCdVpUZzuyNlfooEn96h81BYewtxMVBdbzria
-         LEQuZ1L6KqX4/BntK+n51MJ5RyfjyIBWX19LrH1XXsgkgmlKwuSQJ5PA88fSn5YpZ3sD
-         VUNgOLqVuHmdDZcdxxy5n3/PhzpwyEL78sxfIkqLcRi6hqOhABOccj/Ds6Oe43JyEFc+
-         g2vVNUauLAs1kzTO8hgeBacnnszcTSjg9mymvYMfGznFn3r4sq5uVJOr7Kf8Z8bXWntg
-         v3jw==
-X-Gm-Message-State: AOAM532SlgZijmtEzDxeX06FO7AM6HP5R/Ivx/Zr5lfADldxXgE8e3GI
-        JEaaBJcDFzDCw6X/cezFmitwxp16l0HUfTNA+GuoZw==
-X-Google-Smtp-Source: ABdhPJwCkyepKnYLjaro8KpvCFMhXySyvI2odnfjv7k323shjYJULMJoXC1kqfT5uu34xj4dmG7LvzhRZ/0V8efQvKs=
-X-Received: by 2002:a05:6402:5208:: with SMTP id s8mr38656411edd.222.1629736258724;
- Mon, 23 Aug 2021 09:30:58 -0700 (PDT)
+        Mon, 23 Aug 2021 12:32:58 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210823163214euoutp01150756ba3a44ef391ffa02595afceb60~d-I_ohJeW0881808818euoutp012
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 16:32:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210823163214euoutp01150756ba3a44ef391ffa02595afceb60~d-I_ohJeW0881808818euoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1629736334;
+        bh=O9U6BQsouLSVjO3boLuxdxwJiLra8Cy9p2rlTaTzXCw=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=HkAOHnAF90ShRqjDOnQcqqf5exrGSW9xgdISqHlluTz7cv1D6CRkZOGAci1WoebRt
+         IMPpBKi+0E6wSqqnjHU2Lwu6X+KdOXsscpU/lxDmyi6vkvAsNUuxx55J1aTp3EW45e
+         cAIKdFPx9FEEAweuPev6/nLX3MCnVHUdTc7fspL0=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210823163213eucas1p282dee5100ff2aa68a9a1886665c59455~d-I_BmU8C1521015210eucas1p2t;
+        Mon, 23 Aug 2021 16:32:13 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 2C.7E.56448.D8DC3216; Mon, 23
+        Aug 2021 17:32:13 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210823163212eucas1p295cdf32fe45316e308b77c1d799f3eab~d-I9dqwgs2157321573eucas1p2M;
+        Mon, 23 Aug 2021 16:32:12 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210823163212eusmtrp2248bab501e8dffb7542e32d22b55a151~d-I9c3qPW1398113981eusmtrp2X;
+        Mon, 23 Aug 2021 16:32:12 +0000 (GMT)
+X-AuditID: cbfec7f5-d3bff7000002dc80-25-6123cd8de024
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id E4.98.31287.C8DC3216; Mon, 23
+        Aug 2021 17:32:12 +0100 (BST)
+Received: from [106.210.131.79] (unknown [106.210.131.79]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210823163212eusmtip2ba17251034bc64c16bf66eca3058e658~d-I8tnMzC1550515505eusmtip2R;
+        Mon, 23 Aug 2021 16:32:12 +0000 (GMT)
+Message-ID: <792b1a4b-7a82-e633-0266-787205ae279a@samsung.com>
+Date:   Mon, 23 Aug 2021 18:32:11 +0200
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
- <CAHp75VcG9KajNpDbewDq7QzotB6t7MfwiGk15FaobX+cmMVSzg@mail.gmail.com>
- <CAK9rFnwrA=W2Vk5yFwG4N_WS=eBXXnhtexA+tqgAYb6xOAO4oQ@mail.gmail.com>
- <CAHp75VdfrJ3JV_gL3xCLHOiw6Tj-5Ep7z5JKWUFKFbUt8gobcw@mail.gmail.com>
- <CAK9rFnx--z_pr_yR6CqGsH04ddwUtx4rxc7MxNNmy7ZSF86+Mg@mail.gmail.com> <CAMuHMdUz4vUQzXBHA9AiT3w6L20yBpgd0emVZJb=v_qw70qiJQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUz4vUQzXBHA9AiT3w6L20yBpgd0emVZJb=v_qw70qiJQ@mail.gmail.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Mon, 23 Aug 2021 09:30:47 -0700
-Message-ID: <CAK9rFnw-j8whcsK-NQ4w4+sCdrumCk7Bb=J+KfsF9ZO2Tf5r5g@mail.gmail.com>
-Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
+        Gecko/20100101 Thunderbird/91.0
+Subject: Re: [PATCH v3 2/8] drm/bridge: Document the probe issue with
+ MIPI-DSI bridges
+Content-Language: en-GB
+To:     Maxime Ripard <maxime@cerno.tech>, Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Robert Foss <robert.foss@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+From:   Andrzej Hajda <a.hajda@samsung.com>
+In-Reply-To: <20210823084723.1493908-3-maxime@cerno.tech>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUwTZxzPc9der2StZ8X1P51zHDGKW2GkLDmmMWD2cn6AzGwZi1sCN7kg
+        UgppgYHG4ejAAmFDMkSqkxlwFHGI2AItRBIypAykjI5NJ6x0kXSaCqvQDXDAoIcZ335v/7cn
+        D4krvOJtZLo2h9dpOQ1NhIjaby84VRV3wrnX/C3PMxXDAxjTONSCMz8HZgjGW9eCmAHfmIgp
+        PdsgYVz2iwRz2W8VMefnlxHT++VHzBOTB2fMC1bELNgviRiL76w4Ts7O3C2WsOPDToK1mSYk
+        7AVjrZit736IsY7KUYwd/6WbYDv+nhSzlwYOs+7yfoxtODdGsDcHT7KzbS+9KzsSsj+V16Tn
+        8bqoAykhx8qNfSj7h6j8Cs998Wn03a4yJCWBioHiYqukDIWQCsqMYGLqX7FA5hBM+h1IILMI
+        upp96FlJY9fQutGIwNcZIAQyg+CP8YfitZSMOgCeqTNBLKJ2QVGZVyTom2Gg9kEQb6VSoNLV
+        F+y6hfoQGkqnghinlFA01xTcI5R6ioPF4CQEIx7uVd8ONiWoCFi6eS+oS6lYcLQ9EAuZndDx
+        +CK+VgxUjxRuVTeJhb3fhD8N9nW8BR71WyQCfhFWbHWYgAvBbf5ivdiIwNpqwwVjH4wPL65O
+        I1cnRMB1e5Qgx8PK7Ai2JgMlh7uPNws7yKGqvQYXZBkYSxRCOgzcd6zrDZVwZSRAVCLatOFZ
+        TBvON224xvT/3G+R6CpS8rn6zDRer9byn0bquUx9rjYt8mhWZhta/YuDy/2BTmR+5I/sRRiJ
+        ehGQOB0qW8LCOYUslSs4weuyknW5Gl7fi7aTIlops1uvJSuoNC6Hz+D5bF73zMVI6bbTmJR9
+        W1k/8kZ462x7wnV3SXToHkpSEzeZ0lGvkhqdLoujaW7ovKMqa8nbV2v8Z5NzcGr33onn/AkF
+        CXkn2hbjHNR88wcvqJRqQ3f5mR3KbzS/etWeREPscn/n4ZXlpLyDf92gpy9f2A2pyRrNIjQP
+        1f0+rfKMHv1R+cnXYy5t4Ss7LDu320+VVIcnJSVmTBT0yG3qyZ9yCl+N3wPRvuMZ+deefjWY
+        VxibkO3OLxp1kZuwj80Bg+3ge/IezWetT/LPbe1IVF05hYeFXf3cpaNL7/dVnTw0ndl8Aze8
+        rv+NdsRk73+nS1tzKCJm38u1nN1C3HorPqX1/ePzlnT3Efp79TQt0h/jovfiOj33H2vA4Yz6
+        AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsVy+t/xe7o9Z5UTDRaf1LHoPXeSyWL5mXXM
+        Fle+vmezeD5/HaPFyTdXWSw6Jy5ht7i8aw6bxcKPW1ksZvz4x2hxqC/a4tOsh8wWK35uZbT4
+        uWsei8WWNxNZHfg83t9oZfe4c+48m8fOWXfZPWZ3zGT1WLznJZPHiQmXmDzuXNvD5rH92wNW
+        j3knAz3udx9n8lgy7Sqbx+bT1R6fN8kF8Ebp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZ
+        GpvHWhmZKunb2aSk5mSWpRbp2yXoZXR3HGUsOKJf0fvwNmsD4zLVLkZODgkBE4nlu88wdjFy
+        cQgJLGWUmHdjAyNEQlxi9/y3zBC2sMSfa11sEEVvGSU2NlxjBUnwCthJPHzaDmazCKhKNHU9
+        Z4GIC0qcnPkEzBYVSJA4cH0PmC0sECFxb9EvJhCbGWhB05eVYL0iAn+ZJb4sioWIO0rcnHqM
+        FWLZbkaJ70/ugTWzCWhK/N18kw3E5hSwlDix6QkrRIOZRNfWLkYIW15i+9s5zBMYhWYhuWMW
+        kn2zkLTMQtKygJFlFaNIamlxbnpusaFecWJucWleul5yfu4mRmAa2Hbs5+YdjPNefdQ7xMjE
+        wXiIUYKDWUmE9y+TcqIQb0piZVVqUX58UWlOavEhRlNgYExklhJNzgcmorySeEMzA1NDEzNL
+        A1NLM2Mlcd6tc9fECwmkJ5akZqemFqQWwfQxcXBKNTBZbQ/es5rnusdzgclPe/eVvLOQ5/Ge
+        WixjYHD2q3GvpNVs9Y0lHlJOZW4zCx1feQYuC/6rvkvAJ7G5kueP/mk+BY72dZGKHdceaSUE
+        eWZ6sLX5+lRc8ckxnjODf4XHvnlLs+8b1lTF5eVf2yj4/++LyMW6k75xLmp5M1lMgz9h4cTO
+        OT4CDNct0zpea973eOFjVGV8ZRP/U6PshTbmLB3PuxgNVz2d6PxTv7Gt0ZxltdJVA/mFcw6Z
+        qHBvj7x/at6bc5fMPR2ZeDr/n9P8cEYscLLs479HmHRC7qiKCd5XPxua/7igweBLUEWw1pcv
+        LkLpMsGdU759Mt9eeuNDw6OTPkqlk1J7CjguX2bdqsRSnJFoqMVcVJwIAM8dKNiMAwAA
+X-CMS-MailID: 20210823163212eucas1p295cdf32fe45316e308b77c1d799f3eab
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210823084750eucas1p24cd5dd54a967f63fda4184773b98c135
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210823084750eucas1p24cd5dd54a967f63fda4184773b98c135
+References: <20210823084723.1493908-1-maxime@cerno.tech>
+        <CGME20210823084750eucas1p24cd5dd54a967f63fda4184773b98c135@eucas1p2.samsung.com>
+        <20210823084723.1493908-3-maxime@cerno.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Maxime,
 
-On Mon, Aug 23, 2021 at 12:50 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
+On 23.08.2021 10:47, Maxime Ripard wrote:
+
+> Interactions between bridges, panels, MIPI-DSI host and the component
+> framework are not trivial and can lead to probing issues when
+> implementing a display driver. Let's document the various cases we need
+> too consider, and the solution to support all the cases.
 >
-> Hi Brad,
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>   Documentation/gpu/drm-kms-helpers.rst |  6 +++
+>   drivers/gpu/drm/drm_bridge.c          | 58 +++++++++++++++++++++++++++
+>   2 files changed, 64 insertions(+)
 >
-> On Mon, Aug 23, 2021 at 3:14 AM Brad Larson <brad@pensando.io> wrote:
-> > On Mon, Mar 29, 2021 at 3:40 AM Andy Shevchenko
-[...]
-> > Regarding the above module question and Kconfig definition, since I
-> > first looked at this and reviewed the comments I realized I should be
-> > using builtin.  The file gpio/Kconfig is currently this
-> >
-> > config GPIO_ELBA_SPICS
-> >         def_bool y
-> >         depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
->
-> That means the driver will default to yes by merely enabling
-> COMPILE_TEST, which is a no-go.
->
->     config GPIO_ELBA_SPICS
->             bool "one-line summary"
->             depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
->             default y if ARCH_PENSANDO_ELBA_SOC
+> diff --git a/Documentation/gpu/drm-kms-helpers.rst b/Documentation/gpu/drm-kms-helpers.rst
+> index 10f8df7aecc0..ec2f65b31930 100644
+> --- a/Documentation/gpu/drm-kms-helpers.rst
+> +++ b/Documentation/gpu/drm-kms-helpers.rst
+> @@ -157,6 +157,12 @@ Display Driver Integration
+>   .. kernel-doc:: drivers/gpu/drm/drm_bridge.c
+>      :doc: display driver integration
+>   
+> +Special Care with MIPI-DSI bridges
+> +----------------------------------
+> +
+> +.. kernel-doc:: drivers/gpu/drm/drm_bridge.c
+> +   :doc: special care dsi
+> +
+>   Bridge Operations
+>   -----------------
+>   
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index baff74ea4a33..794654233cf5 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -96,6 +96,64 @@
+>    * documentation of bridge operations for more details).
+>    */
+>   
+> +/**
+> + * DOC: special care dsi
+> + *
+> + * The interaction between the bridges and other frameworks involved in
+> + * the probing of the display driver and the bridge driver can be
+> + * challenging. Indeed, there's multiple cases that needs to be
+> + * considered:
+> + *
+> + * - The display driver doesn't use the component framework and isn't a
+> + *   MIPI-DSI host. In this case, the bridge driver will probe at some
+> + *   point and the display driver should try to probe again by returning
+> + *   EPROBE_DEFER as long as the bridge driver hasn't probed.
+> + *
+> + * - The display driver doesn't use the component framework, but is a
+> + *   MIPI-DSI host. The bridge device uses the MIPI-DCS commands to be
+> + *   controlled. In this case, the bridge device is a child of the
+> + *   display device and when it will probe it's assured that the display
+> + *   device (and MIPI-DSI host) is present. The display driver will be
+> + *   assured that the bridge driver is connected between the
+> + *   &mipi_dsi_host_ops.attach and &mipi_dsi_host_ops.detach operations.
+> + *   Therefore, it must run mipi_dsi_host_register() in its probe
+> + *   function, and then run drm_bridge_attach() in its
+> + *   &mipi_dsi_host_ops.attach hook.
+> + *
+> + * - The display driver uses the component framework and is a MIPI-DSI
+> + *   host. The bridge device uses the MIPI-DCS commands to be
+> + *   controlled. This is the same situation than above, and can run
+> + *   mipi_dsi_host_register() in either its probe or bind hooks.
+> + *
+> + * - The display driver uses the component framework and is a MIPI-DSI
+> + *   host. The bridge device uses a separate bus (such as I2C) to be
+> + *   controlled. In this case, there's no correlation between the probe
+> + *   of the bridge and display drivers, so care must be taken to avoid
+> + *   an endless EPROBE_DEFER loop, with each driver waiting for the
+> + *   other to probe.
+> + *
+> + * The ideal pattern to cover the last item (and all the others in the
+> + * display driver case) is to split the operations like this:
+> + *
+> + * - In the display driver must run mipi_dsi_host_register() and
+> + *   component_add in its probe hook. It will make sure that the
+> + *   MIPI-DSI host sticks around, and that the driver's bind can be
+> + *   called.
 
-Thanks Geert, changed to this
 
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -241,8 +241,9 @@ config GPIO_EIC_SPRD
-          Say yes here to support Spreadtrum EIC device.
+I guess component_add is leftover from previous iteration (as you wrote 
+few lines below) component_add should be called from dsi host attach 
+callback.
 
- config GPIO_ELBA_SPICS
-+       bool "Pensando Elba SoC SPI Chip Select as GPIO support"
-+       depends on ARCH_PENSANDO_ELBA_SOC
-        def_bool y
--       depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
 
-Regards,
-Brad
+> + *
+> + * - In its probe hook, the bridge driver must try to find its MIPI-DSI
+> + *   host, register as a MIPI-DSI device and attach the MIPI-DSI device
+> + *   to its host. The bridge driver is now functional.
+> + *
+> + * - In its &struct mipi_dsi_host_ops.attach hook, the display driver
+> + *   can now add its component. Its bind hook will now be called and
+> + *   since the bridge driver is attached and registered, we can now look
+> + *   for and attach it.
+> + *
+> + * At this point, we're now certain that both the display driver and the
+> + * bridge driver are functional and we can't have a deadlock-like
+> + * situation when probing.
+> + */
+> +
+
+
+Beside small mistake the whole patch looks OK for me. Maybe it would be 
+worth to mention what is the real cause of this "special DSI case" - 
+there is mutual dependency between two following entities in display chain:
+
+1. display driver - it provides DSI bus, and requires drm_bridge or 
+drm_panel provided by child device.
+
+2. bridge or panel with DSI transport - it requires DSI bus provided by 
+display driver, and provides drm_bridge or drm_panel interface required 
+by display driver.
+
+I guess similar issues can appear with other data/control bus-es, 
+apparently DSI case is the most common.
+
+
+And one more thing - you use "display driver" term but this is also case 
+of any bridge providing DSI bus - there are already 3 such bridges in 
+kernel - cdns, nwl, synopsys, tc358768, maybe "DSI host" would be better 
+term.
+
+And another thing - downstream device can be bridge or *panel*, it would 
+be good to mention that panels also should follow this pattern.
+
+Btw this is another place where word bridge can be 1:1 replaced by word 
+panel - it clearly suggest that DRM subsystem waits for brave men who 
+proposes patches unifying them, we would save lot of words, and lines of 
+code if we could use drm_sink instead of "if (sink is bridge) do sth 
+else do sth-similar-but-with-drm_panel-interface".
+
+
+Regards
+
+Andrzej
+
+
+>   static DEFINE_MUTEX(bridge_lock);
+>   static LIST_HEAD(bridge_list);
+>   
