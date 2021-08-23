@@ -2,94 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502CA3F4E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A166F3F4E3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhHWQPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHWQPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:15:07 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F23AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:14:25 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id t190so19773551qke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MQYAWXyVXeAmMCmsXp8rKcBE+h+Z0WB7Z2sV5nVbunQ=;
-        b=OXZRLQaaHAFk9vl2c5Iqw6BB0HgA9JNnvlQB2uveNK8aIYWLQDdFgYgl1Zyxy9cmuJ
-         3ijfSGqkCjlPOmCv0trXq+Ahxl5CbKuBWvVZvPsFzTjtttQu4xWAbtlnRhcU/LhXBz80
-         fv71f5h+F1HHKmU/MnV+XvU69eKa3euEbLE5o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MQYAWXyVXeAmMCmsXp8rKcBE+h+Z0WB7Z2sV5nVbunQ=;
-        b=kHciZDy9N+m1FEulkV6wLSt28rP31o5BCQD0d0DbvYXpuMxTpOydzR9ZLdVLsy99I/
-         OKX5nhkfRJwF5VBskAJPXVT08cSKcSHIEsqiIydwLL0QC/Q9YWA4dYlGF45yGmwmGqJb
-         ByEbIWxkdNwuaCMj0Xyqsoerq5WS2+oH3xoqJAGQ0YpqJlCF07zr8tz3XnTvTypWowt8
-         9INCJt5x2QQwnJXs/MlyHCB3eN3xMxCt3b874scmOCcU3pDu/58tTb1+RIZtKMIKnGOJ
-         VQHm3EkwBopQDldx48boZrxIfsaXx0xGbDYRAGEx0EnMYDvkWodWXEHZTL6YoGAbYPUc
-         0GLg==
-X-Gm-Message-State: AOAM531BWbiEoOm9aq8Sy1aYPaFNcYC1KX/MkPDOuxgx4ndMgr8W2wG8
-        YEtfcaCWJqyHKb2N+emKKYORiDHXEduq3Xxrc7pIFg==
-X-Google-Smtp-Source: ABdhPJzG5V1/DgWRHqVfKGJ7gv7zrPwRk9I3szNGp50DeenIGzSdxip4c7soAwDux0nyH+51Tp9A8GRiT4++fkx3fyQ=
-X-Received: by 2002:ae9:e84a:: with SMTP id a71mr22043868qkg.159.1629735264120;
- Mon, 23 Aug 2021 09:14:24 -0700 (PDT)
+        id S229819AbhHWQUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:20:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53177 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhHWQUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:20:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629735574; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=FsdWWS5i8+Mrzr5FVS8GQ0BaF3qwXImZiY/O4K6ZXGw=;
+ b=fpQNQ5zbis8uX+aqfNEcg2z5Lr9uJz0BvYh7dUVEmECdeQCK+qaJaLyKCPv3RbI9sHgeIDvW
+ QC7Jdv71tZZeIQUUOaNR4G7NxgP4jvmgjoEgB5nGQcsgG5AOiLNohwsMasliWzCFJDeHTxlY
+ Af0EVTIQXnisZpXv+pxo/KCEhaY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6123ca7df588e42af1f37ab2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 16:19:09
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EAD8CC43617; Mon, 23 Aug 2021 16:19:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41F01C4338F;
+        Mon, 23 Aug 2021 16:19:08 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210811084924.52293-1-daniel@0x0f.com> <20210816101143.2a64d7b9@xps13>
- <CAFr9PXnna+b3ChVUftT7YbU1kYR=5JDcik3bMNqzKK-LW=GQzw@mail.gmail.com>
- <20210823162148.35a24183@xps13> <CAFr9PXkSeeHNn-KVyrVxp6RRdLYExTgWpheWKLLSZqEo_EHvRg@mail.gmail.com>
- <20210823170354.2dccabd5@xps13>
-In-Reply-To: <20210823170354.2dccabd5@xps13>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 24 Aug 2021 01:16:58 +0900
-Message-ID: <CAFr9PXk3bUU+7gu2DJL_OrW3AwiG2YaTUot4Q-_9BJ0cKQ_pQQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G parts
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org, richard@nod.at,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Aug 2021 21:49:08 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     bjorn.andersson@linaro.org, mka@chromium.org, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, rjw@rjwysocki.net, agross@kernel.org,
+        ohad@wizery.com, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v5 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
+ property
+In-Reply-To: <CAE-0n50z=MaEZhXRSQpN6Jo8m7nyQSS6MqikAgT5cfkH1ZvL_g@mail.gmail.com>
+References: <1629342136-3667-1-git-send-email-sibis@codeaurora.org>
+ <1629342136-3667-3-git-send-email-sibis@codeaurora.org>
+ <CAE-0n531EgLx-gGJswmmNAFmy-P9z=Hh1N=fkLw_uemoeQnYVg@mail.gmail.com>
+ <d733d47bc6a86fe28302943e50d02bd5@codeaurora.org>
+ <CAE-0n50z=MaEZhXRSQpN6Jo8m7nyQSS6MqikAgT5cfkH1ZvL_g@mail.gmail.com>
+Message-ID: <5848670f513187734d7625f242bbf67b@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On 2021-08-21 23:47, Stephen Boyd wrote:
+> Quoting Sibi Sankar (2021-08-20 07:24:02)
+>> On 2021-08-20 00:25, Stephen Boyd wrote:
+>> > Quoting Sibi Sankar (2021-08-18 20:02:05)
+>> >> The load state power-domain, used by the co-processors to notify the
+>> >> Always on Subsystem (AOSS) that a particular co-processor is up/down,
+>> >> suffers from the side-effect of changing states during suspend/resume.
+>> >> However the co-processors enter low-power modes independent to that of
+>> >> the application processor and their states are expected to remain
+>> >> unaltered across system suspend/resume cycles. To achieve this
+>> >> behavior
+>> >> let's drop the load state power-domain and replace them with the qmp
+>> >> property for all SoCs supporting low power mode signalling.
+>> >>
+>> >
+>> > How do we drop the load state property without breaking existing DTBs?
+>> > Maybe we need to leave it there and then somehow make it optional? Or
+>> > do
+>> > we not care about this problem as the driver will start ignoring it?
+>> 
+>> We can afford to break the bindings
+>> because of the following reason:
+>> 
+>> * Load state in mainline is currently
+>>    broken i.e. it doesn't serve its
+>>    main purpose of signalling AOP of
+>>    the correct state of Q6 during
+>>    system suspend/resume. Thus we
+>>    can maintain current functionality
+>>    even without the load state votes
+>>    i.e. when a new kernel with load
+>>    state removed is used with an older
+>>    dtb the remoteproc functionality
+>>    will remain the same.
+>> 
+> 
+> Alright. Is that reflected somewhere in the commit text? I must have
+> missed it. Can you please add it?
 
-Thank you for your patience on this..
+Commit message throughout the series
+mention that the current load state
+implementation is broken but it is
+never mentioned explicitly that it
+is the reason why bindings can be
+broken. I'll wait for a couple of
+days to see if I get any more
+comments and will re-word it in the
+next re-spin.
 
-On Tue, 24 Aug 2021 at 00:03, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > ECC: 3 corrected bitflip(s) at offset 0x08000000
-> > 0x08000000: fe ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
->
-> How is this result possible? You are dumping with the ECC engine
-> enabled, it reports 3 bf (meaning that it is actually running, at least
-> the software really thinks there is an on-die engine enabled) but the
-> data has not been corrected. I expect the first byte to be 0xFF after
-> correction. Only with -n (raw dump) we should see this.
-
-I did a bit of searching to see if a newer/more detailed datasheet has
-come about and found some vendor code I hadn't seen before:
-
-https://github.com/100askTeam/NezaD1_u-boot-2018/blob/1f8b282626f0b9f29f96c57d6b1a5d728e523893/drivers/mtd/awnand/spinand/physic/core.c#L46
-
-This says the ECC enable bit is non-standard and in a register that
-isn't documented at all in the datasheet.
-
-I guess the spi nand core isn't able to actually control the ECC on
-these chips at the moment and flipping the bits is updating the ECC
-too.
-Or the ECC isn't enabled at all.
-
-I couldn't see an easy way of overriding which register gets updated
-so I haven't tried it yet.
-
-Cheers,
-
-Daniel
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
