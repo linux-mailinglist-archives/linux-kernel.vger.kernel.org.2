@@ -2,163 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF09C3F4C9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6CE3F4CA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhHWOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:47:05 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:61468 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230246AbhHWOrD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:47:03 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17NEbY1F006594;
-        Mon, 23 Aug 2021 14:46:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=DkkyZaihbyiLy4WR0Le4Y+0/zzST54wKvw7fCWRB1cI=;
- b=Pzis4/nFlYGiztwPKh4f1ohrsFl1f+biHp6vi60avtMyoH0eBNLOE3A156+HACc8YHGL
- q+EwmcAXiXjpMJMNhWxuXBI/NGMyfNqEhMnceuac6HmUrCSnQg9jTHNp4kzO5kD+mjut
- YrSPoLzRpdTj+v63hUPiE5X2iBMLlS86RBVP1gIf4risF2KOklpKEU9kjF0HNQSUYpvv
- R67Wnruo+VOhBI1PVt58giKHyWXg+bYEYvyn4r0r/YwhGlJpui9lTiHFSKqjt4OP1u5F
- eUZGYzTV28x6BVpWziIExlQfr0yDisCY5OuDdpPj641f2Y92s9T+BR/Wwe0q7BHwl4jT XA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=DkkyZaihbyiLy4WR0Le4Y+0/zzST54wKvw7fCWRB1cI=;
- b=h9t5Iw8c7CDx6d3s56gdKT2oxrh7a8FjQ7xik/1ThCIkNMeHd4TGRU06dSLL3kIWkkgT
- BNHC3HI3CqS1//ce2FUkRkVHrBHfBSe5Y7XeLObeLk1TmdebM0/lIr/6ZQrqLXe6Tfpo
- OsKjkx1Tl2mPC5H9AXXbVNsYkH+EwcwvSol9PSUJrbXhco5mkIo6GkxEZg+Gx+Ph+dFi
- as7vHOr9MwkOOooLosMPrsW1Wbd3y0z6VU2eAaXkH1VXznH6GJehEN0h5OEqg4OTEt/C
- P9GJRjq2riad+jxLjhlVZup4RyGLKrNao2bohUnKOAL0xFmK51A5sTFdXJ+TQd6LSPGc JA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3aktrtsuka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 14:46:17 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17NEjBR8077675;
-        Mon, 23 Aug 2021 14:46:16 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
-        by aserp3020.oracle.com with ESMTP id 3ajsa3ffdd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 14:46:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AIO7C/2xbc2gwD3HzO6r/POaldMZl7zyEe56pY8+nmYc9C+vpcMAgJIcGrqNkJQ9WWsXujjgYhJyGqktKsdzl2BizfI0956xvrpXhsPtR0csFgtmNagFzEmL6I8SNVLdVuFRe0KPftgjCwOxOu9eL7+l7toqfUlA0KTcept67/OiI4pUybfm2NWvfZdsoUtPshuSuM1rT3mGwSgtj8oWaKYh0a0rcEtPOzVaQx/bpDxbsCIKmYe70mF5s8whZrEmjV9sUNEJLJPqWds/9otkBt9a0KP1NpmnTcLjNlZmQxXnSoRppPFSG6voLvTtelezviEXrf6m6tFO3O0pymqR9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DkkyZaihbyiLy4WR0Le4Y+0/zzST54wKvw7fCWRB1cI=;
- b=oaMC6c1hYMR2dsAslrYv/3hVRdtg6uExnOUOwNiAASzjfoi9Iv5yOLgZUWHC4ZTfVdb6M0Rab0QQD+jls4+L5VNIMMwCOHnCE340RdKsrjzNzBiDrQhPOfl7yd2zpGFgZXdCF4jiLKIPE82d3XCl0Br//eSfR7GR0V/9X0oVJZrQVxrSuENRkV6k/4a2jZxGzAZzlPcPu4uqhm6xgGmqcFDkQ4dAhlxX3xS6rn9zyoxpJjRtFkWuDWHJOXG6++AUVlikGkCn76cYfyX/EkB3W24wptUUQliAsYo22JiVfb3duiQBKDWVrmdTEmZq8gzNIa8DoTVMgpoJ2u0+2JqZgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DkkyZaihbyiLy4WR0Le4Y+0/zzST54wKvw7fCWRB1cI=;
- b=dBJl+EqAFjXsigURp7e1DCb4OHlHC4CqV9mOxDc3xjdtbX4Cbsx5T8BZ9EhCPJf9gZdUfAp9jSDqWE+jKfl/PoGfjrfOdqxzgoYuMQEuzKqL+07aS4Qnvv92bIE+j2SVlmpB7D5WT8CV5DaXsklHHhfhwB4LjjwPj+i5wNi8G0c=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5484.namprd10.prod.outlook.com (2603:10b6:510:e1::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 14:46:14 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 14:46:14 +0000
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kate Hsuan <hpa@redhat.com>
-Subject: Re: [PATCH] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and
- 870 SSDs
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1pmu4gr11.fsf@ca-mkp.ca.oracle.com>
-References: <20210823095220.30157-1-hdegoede@redhat.com>
-Date:   Mon, 23 Aug 2021 10:46:10 -0400
-In-Reply-To: <20210823095220.30157-1-hdegoede@redhat.com> (Hans de Goede's
-        message of "Mon, 23 Aug 2021 11:52:20 +0200")
-Content-Type: text/plain
-X-ClientProxiedBy: SN4PR0501CA0070.namprd05.prod.outlook.com
- (2603:10b6:803:41::47) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S230364AbhHWOvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:51:18 -0400
+Received: from mga06.intel.com ([134.134.136.31]:27952 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229726AbhHWOvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 10:51:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="278128960"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="278128960"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 07:50:31 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="535391613"
+Received: from mashaikh-mobl1.amr.corp.intel.com (HELO [10.209.115.125]) ([10.209.115.125])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 07:50:26 -0700
+Subject: Re: [PATCH Part2 v5 08/45] x86/fault: Add support to handle the RMP
+ fault for user address
+To:     Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+References: <20210820155918.7518-1-brijesh.singh@amd.com>
+ <20210820155918.7518-9-brijesh.singh@amd.com>
+ <f6d778a0-840d-8c9c-392d-5c9ffcc0bdc6@intel.com>
+ <19599ede-9fc5-25e1-dcb3-98aafd8b7e87@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3f426ef8-060e-ccc9-71b9-2448f2582a30@intel.com>
+Date:   Mon, 23 Aug 2021 07:50:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN4PR0501CA0070.namprd05.prod.outlook.com (2603:10b6:803:41::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.6 via Frontend Transport; Mon, 23 Aug 2021 14:46:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a69722c9-82cc-4949-26b7-08d96644c1a8
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5484:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB548423CFE0164F7892BAD7BF8EC49@PH0PR10MB5484.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k7Tf1490IUwxcF+NWT4p7JeqPR2NSpa7PyCXHZHrjIw5BjgqFrfIIWSdnpf4mLjJIS+iI3m5CAd4lSYRMgjTWDQm8nQhUk1a2OwG1USp3/y/oIAKZ2SmlKxaTGbsbHd+B4uvbIfbcvaI82in1pSBr0wzuH7yuXbZCNRGUbDLb8qo3uS8h083te7XJGBIXvwFEUmIVrRuHplo1W3zZimo6hVdG7R/AITeqSM/2MfdcN05ORVkr+le82Ib0GZJM1Vj4zQ/mENmEq7ijGsj+mIxi33+Kv7lCi2cC1mVffH4PptJ1Pb4/BBZeBNIzNu5j2bmAbUue5x2zVM/cZynprQJZmL7tbriNMQtL3qkM15ikIwO1I458DIO+K3OZrJOREMPORmh0jjt0x1hWtfmYo+xUQwPdYfmvutsIhP0tbaNkiNr0G6kxsaWam0tHk65/YG47Zbs2K6rKK3t0uSYG3fz6uLhqgyxH/6G7zUrTmRUCyWkMCiJEPH5bypJIqwjdSIlAzZGRFs4mH6leds+66IkGLc+HnmB8kyffAY63RHmVvME3A+GVKdRTbrOCcLZPyMMT88yd9XNUwT9DDIa6RyV/d0C5FfeBtY4n56ifUuFOf7dSI3cNxnbfzAuo6SJtP58UyGhVd76Fp5+fr1fMmLFwWbkfyVIv6r/Fh0hbDmNj3kZrQSk6IInnAWbF6Uq00Q/DuZ3cNF7qd4BK3KJwyFvlA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(376002)(346002)(136003)(66476007)(66556008)(66946007)(6916009)(4326008)(38350700002)(38100700002)(54906003)(478600001)(8936002)(55016002)(86362001)(52116002)(7696005)(2906002)(36916002)(8676002)(26005)(956004)(186003)(316002)(4744005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FUD+pLhnLIXBq+hRY3dJ8e7jmrGm5nl8eUxboTEE5avcDfeetutPqt47ZriB?=
- =?us-ascii?Q?uHfu39Iv8SyGLf/odUjFApaVOBxcW1ZrakbygFHhmABQW+Bj0jWY8x12j5aa?=
- =?us-ascii?Q?4WK9ueYbUVwbOlTHJ6ZgV8DDGsG+4s5ILvNTdtK3WDJjXuHweQGUH1E5/gbF?=
- =?us-ascii?Q?6Ga1RzMrSE3xDemWvnwZfvLcwREWnOrUe5UmIs5qfAws33PjAadXADevACzg?=
- =?us-ascii?Q?APcyhwT5s2ccL2qLsuNu5bzVTmjGFhlvHjT7xhBHraDprvKj5HvXJm4rt/ow?=
- =?us-ascii?Q?4jrXWamyJVtldWDjpjT8e4OLcVTrTsPidplmwFf9zBvX68mP67FMull9Pf4c?=
- =?us-ascii?Q?kuMF4qKz275fHFTxRn5bNSD1YQhT30ImbH+jCbZ03ZXxQir09RIhmVtJwVGX?=
- =?us-ascii?Q?og7jRfTl4yQKkpLV/cJxsFtZGg3n1QMGWskrIu+T3nAedZ/xR20biKmhVsBb?=
- =?us-ascii?Q?JddHdt0OW5WX0w1/ULBC9aROyQSxELiMhbc67olvLlIan7O386tConhzfM6g?=
- =?us-ascii?Q?N+8iCmZMFDfFSFVg7r82bsqWIwuH49si/DHL0gE1xZOxiXln86L8KHBCCClE?=
- =?us-ascii?Q?JC8EbMdWgBiUf/GqiCFbUDEchPAXbP/5IkEEmTeWsvA5/zkukVxL0cwDR8FH?=
- =?us-ascii?Q?PWS1TXLup6cczrbZoIxQFjN4ynGvX8h1f3u9Vpr3xYIwFm22sj862K6Dj8kg?=
- =?us-ascii?Q?1Yk6PmRFAndZ+2hZbFjmAVVhlxglHHmUIQ1bczvJIyBe/GXaTBGedV8zZ66Z?=
- =?us-ascii?Q?6+x8CcpBZ1u16cayg47+VOrxMKiaPctSEUi32pxr9kqSn6IdlwCnSQkxv+7C?=
- =?us-ascii?Q?GOp3uByYreKQMPTIeQwywMIHs8ZbzlVAVeuAo5FiAYRPccoIn6ffx/gjyXdi?=
- =?us-ascii?Q?pDmZHRXWtMYfmZV5tGKd7/qSy88i9XJwzLNQtmpuoRfw9OPK775ZJ6SMsiUZ?=
- =?us-ascii?Q?Y7vFuZoSEpzD+59uD0oxbYKlEuCiBFdSmQhWH6hUwgfc17+0bNgkxyG2YNX8?=
- =?us-ascii?Q?8+eRhPNAVXHqOQkR+KL22AY4fw7dNix4wYS290FiFyf+Y9xeXDfXXo7EWWQ1?=
- =?us-ascii?Q?TeFrUPVUqF8G8zLpfdbae3C/ZByMpK/sUIzvsZQGQNpRqPfY8opnB0rgdoSM?=
- =?us-ascii?Q?p+qDMzcr5Z0Z6jpG9NQIt+qKDk6NoPJdutF2Uc8YSOPKFooZZaS8hIZHGunp?=
- =?us-ascii?Q?gFVGKjO4p0rNAtbbZxQblViNBY8w+4/6NSCr9zf7h33RMC6MIzHxKlrFRvxX?=
- =?us-ascii?Q?NmgRKZVcC7jvCrGydSBaebLPkePKfKNvskU87ztwLVpxQNvEYkDeyoMIncXR?=
- =?us-ascii?Q?maBcsyYngsLKe8xgLeqFVw/d?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a69722c9-82cc-4949-26b7-08d96644c1a8
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 14:46:14.3552
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KdRwCPpm/clXknyR1ZXSIDBYox1CR2u6fgjSXtxjS+bZD7qJIz9xubN/1QP3xagWB+wzVx/c6AtrGYUePldzOwTqJHTEXO8nQskv+zOwSUo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5484
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10085 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108230102
-X-Proofpoint-GUID: JE5ErvknJgGH58QpVIzV3K8fbvy5_0d-
-X-Proofpoint-ORIG-GUID: JE5ErvknJgGH58QpVIzV3K8fbvy5_0d-
+In-Reply-To: <19599ede-9fc5-25e1-dcb3-98aafd8b7e87@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/23/21 7:36 AM, Brijesh Singh wrote:
+> On 8/23/21 9:20 AM, Dave Hansen wrote:
+>> On 8/20/21 8:58 AM, Brijesh Singh wrote:
+>>> +static int handle_split_page_fault(struct vm_fault *vmf)
+>>> +{
+>>> +    if (!IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT))
+>>> +        return VM_FAULT_SIGBUS;
+>>> +
+>>> +    __split_huge_pmd(vmf->vma, vmf->pmd, vmf->address, false, NULL);
+>>> +    return 0;
+>>> +}
+>>
+>> We had a whole conversation the last time this was posted about huge
+>> page types *other* than THP.  I don't see any comprehension of those
+>> types or what would happen if one of those was used with SEV-SNP.
+>>
+>> What was the result of those review comments?
+> 
+> Based on previous review comments Sean was not keen on KVM having
+> perform this detection and abort the guest SEV-SNP VM launch. So, I
+> didn't implemented the check and waiting for more discussion before
+> going at it.
 
-Hans,
+OK.  But, you need to *acknowledge* the situation somewhere.  Maybe the
+cover letter of the series, maybe in this changelog.
 
-> But there is a large number of users which is still reporting issues
-> with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
-> Marvell SATA controllers and all reporters also report these problems
-> going away when disabling queued trims.
+As it stands, it looks like you're simply ignoring _some_ reviewer feedback.
 
-I originally tested queued trim with 860 drives and never had an issue
-on my systems. But no objections wrt. turning it off.
+> SEV-SNP guest requires the VMM to register the guest backing pages
+> before the VM launch. Personally, I would prefer KVM to check the
+> backing page type during the registration and fail to register if its
+> hugetlbfs (and others) to avoid us get into situation where we could not
+> split the hugepage.
 
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+It *has* to be done in KVM, IMNHO.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+The core kernel really doesn't know much about SEV.  It *really* doesn't
+know when its memory is being exposed to a virtualization architecture
+that doesn't know how to split TLBs like every single one before it.
+
+This essentially *must* be done at the time that the KVM code realizes
+that it's being asked to shove a non-splittable page mapping into the
+SEV hardware structures.
+
+The only other alternative is raising a signal from the fault handler
+when the page can't be split.  That's a *LOT* nastier because it's so
+much later in the process.
+
+It's either that, or figure out a way to split hugetlbfs (and DAX)
+mappings in a failsafe way.
