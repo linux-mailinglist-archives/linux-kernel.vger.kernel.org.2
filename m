@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BD93F4B45
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74723F4B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237247AbhHWNBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:01:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36672 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235731AbhHWNBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:01:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=9/tBCOrNN6HOH/HQzSZBbpwJBymsGtxfOYgu9nxvJp4=; b=BqMsOxowNDy/kNDClNSwwh6eO+
-        Ijd7pC8aw3e2B+T264CWAdIrmTWbGkkRPCljTglOLTGYqbe9FXsc0doHboeo040GSTeQK07mJ2Vtc
-        al2P5HlUh1X4khdI0Vg+QcAEwB1whh7HfOR4ldbw519VQHtuvGNNUG0WzT5SDNRHAwqo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mI9Ye-003T0A-B8; Mon, 23 Aug 2021 15:00:08 +0200
-Date:   Mon, 23 Aug 2021 15:00:08 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:ETHERNET PHY LIBRARY" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH net] net: phy: mediatek: add the missing suspend/resume
- callbacks
-Message-ID: <YSOb2P43svWca9IJ@lunn.ch>
-References: <20210823044422.164184-1-dqfext@gmail.com>
+        id S236511AbhHWMzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:55:48 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15204 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232574AbhHWMzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 08:55:47 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GtXJ71z6jz1CZrk;
+        Mon, 23 Aug 2021 20:54:31 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 20:55:01 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 23 Aug
+ 2021 20:55:01 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <linux-aspeed@lists.ozlabs.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>
+Subject: [PATCH -next] soc: aspeed-lpc-ctrl: Fix missing clk_disable_unprepare() on error in aspeed_lpc_ctrl_probe()
+Date:   Mon, 23 Aug 2021 21:00:43 +0800
+Message-ID: <20210823130043.1087204-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823044422.164184-1-dqfext@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 12:44:21PM +0800, DENG Qingfang wrote:
-> Without suspend/resume callbacks, the PHY cannot be powered down/up
-> administratively.
-> 
-> Fixes: e40d2cca0189 ("net: phy: add MediaTek Gigabit Ethernet PHY driver")
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Fix the missing clk_disable_unprepare() before return
+from aspeed_lpc_ctrl_probe() in the error handling case.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 2f9b25fa6682 ("soc: aspeed: Re-enable FWH2AHB on AST2600")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/soc/aspeed/aspeed-lpc-ctrl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-    Andrew
+diff --git a/drivers/soc/aspeed/aspeed-lpc-ctrl.c b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
+index 6893c5ec3259..f4c989584d6b 100644
+--- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
++++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
+@@ -312,7 +312,8 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
+ 		lpc_ctrl->scu = syscon_regmap_lookup_by_compatible("aspeed,ast2600-scu");
+ 		if (IS_ERR(lpc_ctrl->scu)) {
+ 			dev_err(dev, "couldn't find scu\n");
+-			return PTR_ERR(lpc_ctrl->scu);
++			rc = PTR_ERR(lpc_ctrl->scu);
++			goto err;
+ 		}
+ 	}
+ 
+-- 
+2.25.1
+
