@@ -2,189 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910F03F477E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093DE3F477F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhHWJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:27:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39046 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235991AbhHWJ1L (ORCPT
+        id S236158AbhHWJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236178AbhHWJ1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:27:11 -0400
-Date:   Mon, 23 Aug 2021 09:26:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629710788;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pfNvv/FSwhy2fEtI7oMQOcQbhjR/vrfjkmR6WQL0RIk=;
-        b=l4f2V0I+b06xsXp99QEhUOxOIGXx4lIDGyj2Ymw8A3COfx7lb9iJvEwKK7CFfefJfjTPAW
-        Vf4DvFxxckHKyK82w66fHAjFsqHh/YUbJnTmNkTHJqiiVc/qq88nCUNtFIB0vVrg99B5eJ
-        QjtXmSLNV5eDxxovvThV/CaMMnYIL5VL3z2k5N0GvLTZdFrg9Q0FZXx8ppgP2rvoueGaN6
-        3z5+sIhpWKJ3CSAuD84XDiwyP56MCAGVVIj35W4/jldwS12kcexHJsY7k5BXIwx/wPIQ26
-        EmOR7TRi4byTykvv9ITkZvIsZ/AdNzDle7x9LcKUpuL2nf9v3s4NmM4s5fBw0w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629710788;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pfNvv/FSwhy2fEtI7oMQOcQbhjR/vrfjkmR6WQL0RIk=;
-        b=HCQWvDLrZOSqSldrigjipyeAH5Srws7kzApQMKdNPDISXQyPKCzD++En56+4wQFIgBCtb1
-        fiOzxC1pUGFzrxAg==
-From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/topology: Skip updating masks for non-online nodes
-Cc:     Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210818074333.48645-1-srikar@linux.vnet.ibm.com>
-References: <20210818074333.48645-1-srikar@linux.vnet.ibm.com>
+        Mon, 23 Aug 2021 05:27:35 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF78C06129D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0LSCilB8QW6YMaDFbuEe9k2cmYs+dPI96xsb699qNXU=; b=cZX8HM+DqqOgElb2vVJYPHr/Lm
+        KYbR9fAidMvUefKDbaNhiWRjZ7UoPACf2YCgF5IYogomoM9CTeua8TajoMaX44CYqXVZs/2tWQGge
+        o81HXgcl+V2ityV7xFA4WsX91xTH0Ue8b+HubhakFAyvPSRBeBg6v/apt8L7t+fGINBma4plyYEOo
+        X9uBrri4JCm0YzZSgBwQ5IkfOxpFlnA5sSZkOrmcqoFq1hkPBRRvI1noogX6LdedDFXcwZubTkbi6
+        BSMcBrEy/nYhC+gfIqWfSXFpCH2tFOx7XwPkxOUCWERmVbLlHxvhU6ZzVuRwMbKA+st6ScgT6tsSt
+        rIGrCJnw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mI6Dz-00CGtZ-9e; Mon, 23 Aug 2021 09:26:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 845CA300399;
+        Mon, 23 Aug 2021 11:26:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 415C7202294AF; Mon, 23 Aug 2021 11:26:34 +0200 (CEST)
+Date:   Mon, 23 Aug 2021 11:26:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Chen, Rong A" <rong.a.chen@intel.com>
+Cc:     kernel test robot <lkp@intel.com>, Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <Valentin.Schneider@arm.com>
+Subject: Re: [kbuild-all] Re: [peterz-queue:sched/core 8/11]
+ include/linux/sched.h:1722:57: warning: unused parameter 'dst'
+Message-ID: <YSNpysosZE/m3Q8o@hirez.programming.kicks-ass.net>
+References: <202108210940.aD3d42zA-lkp@intel.com>
+ <YSNkCAyMU0tJoedT@hirez.programming.kicks-ass.net>
+ <428f3e9a-a8d3-51ca-5e2e-caa50b8da3eb@intel.com>
 MIME-Version: 1.0
-Message-ID: <162971078760.25758.2264364831988841488.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <428f3e9a-a8d3-51ca-5e2e-caa50b8da3eb@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Mon, Aug 23, 2021 at 05:16:05PM +0800, Chen, Rong A wrote:
+> 
+> 
+> On 8/23/2021 5:02 PM, Peter Zijlstra wrote:
+> > On Sat, Aug 21, 2021 at 09:20:50AM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
+> > > head:   234b8ab6476c5edd5262e2ff563de9498d60044a
+> > > commit: b90ca8badbd11488e5f762346b028666808164e7 [8/11] sched: Introduce task_struct::user_cpus_ptr to track requested affinity
+> > > config: i386-randconfig-a016-20210820 (attached as .config)
+> > > compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project d9c5613e856cf2addfbf892fc4c1ce9ef9feceaa)
+> > > reproduce (this is a W=1 build):
+> > 
+> > Dear 0day folks; could you please blacklist me for all W=1 build output?
+> > I'm 100% not interested in random compiler generated garbage.
+> 
+> Hi Peterz,
+> 
+> Got it, we'll do that for you asap.
 
-Commit-ID:     0083242c93759dde353a963a90cb351c5c283379
-Gitweb:        https://git.kernel.org/tip/0083242c93759dde353a963a90cb351c5c283379
-Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Wed, 18 Aug 2021 13:13:33 +05:30
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 20 Aug 2021 12:32:57 +02:00
-
-sched/topology: Skip updating masks for non-online nodes
-
-The scheduler currently expects NUMA node distances to be stable from
-init onwards, and as a consequence builds the related data structures
-once-and-for-all at init (see sched_init_numa()).
-
-Unfortunately, on some architectures node distance is unreliable for
-offline nodes and may very well change upon onlining.
-
-Skip over offline nodes during sched_init_numa(). Track nodes that have
-been onlined at least once, and trigger a build of a node's NUMA masks
-when it is first onlined post-init.
-
-Reported-by: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210818074333.48645-1-srikar@linux.vnet.ibm.com
----
- kernel/sched/topology.c | 65 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index b77ad49..4e8698e 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1482,6 +1482,8 @@ int				sched_max_numa_distance;
- static int			*sched_domains_numa_distance;
- static struct cpumask		***sched_domains_numa_masks;
- int __read_mostly		node_reclaim_distance = RECLAIM_DISTANCE;
-+
-+static unsigned long __read_mostly *sched_numa_onlined_nodes;
- #endif
- 
- /*
-@@ -1833,6 +1835,16 @@ void sched_init_numa(void)
- 			sched_domains_numa_masks[i][j] = mask;
- 
- 			for_each_node(k) {
-+				/*
-+				 * Distance information can be unreliable for
-+				 * offline nodes, defer building the node
-+				 * masks to its bringup.
-+				 * This relies on all unique distance values
-+				 * still being visible at init time.
-+				 */
-+				if (!node_online(j))
-+					continue;
-+
- 				if (sched_debug() && (node_distance(j, k) != node_distance(k, j)))
- 					sched_numa_warn("Node-distance not symmetric");
- 
-@@ -1886,6 +1898,53 @@ void sched_init_numa(void)
- 	sched_max_numa_distance = sched_domains_numa_distance[nr_levels - 1];
- 
- 	init_numa_topology_type();
-+
-+	sched_numa_onlined_nodes = bitmap_alloc(nr_node_ids, GFP_KERNEL);
-+	if (!sched_numa_onlined_nodes)
-+		return;
-+
-+	bitmap_zero(sched_numa_onlined_nodes, nr_node_ids);
-+	for_each_online_node(i)
-+		bitmap_set(sched_numa_onlined_nodes, i, 1);
-+}
-+
-+static void __sched_domains_numa_masks_set(unsigned int node)
-+{
-+	int i, j;
-+
-+	/*
-+	 * NUMA masks are not built for offline nodes in sched_init_numa().
-+	 * Thus, when a CPU of a never-onlined-before node gets plugged in,
-+	 * adding that new CPU to the right NUMA masks is not sufficient: the
-+	 * masks of that CPU's node must also be updated.
-+	 */
-+	if (test_bit(node, sched_numa_onlined_nodes))
-+		return;
-+
-+	bitmap_set(sched_numa_onlined_nodes, node, 1);
-+
-+	for (i = 0; i < sched_domains_numa_levels; i++) {
-+		for (j = 0; j < nr_node_ids; j++) {
-+			if (!node_online(j) || node == j)
-+				continue;
-+
-+			if (node_distance(j, node) > sched_domains_numa_distance[i])
-+				continue;
-+
-+			/* Add remote nodes in our masks */
-+			cpumask_or(sched_domains_numa_masks[i][node],
-+				   sched_domains_numa_masks[i][node],
-+				   sched_domains_numa_masks[0][j]);
-+		}
-+	}
-+
-+	/*
-+	 * A new node has been brought up, potentially changing the topology
-+	 * classification.
-+	 *
-+	 * Note that this is racy vs any use of sched_numa_topology_type :/
-+	 */
-+	init_numa_topology_type();
- }
- 
- void sched_domains_numa_masks_set(unsigned int cpu)
-@@ -1893,8 +1952,14 @@ void sched_domains_numa_masks_set(unsigned int cpu)
- 	int node = cpu_to_node(cpu);
- 	int i, j;
- 
-+	__sched_domains_numa_masks_set(node);
-+
- 	for (i = 0; i < sched_domains_numa_levels; i++) {
- 		for (j = 0; j < nr_node_ids; j++) {
-+			if (!node_online(j))
-+				continue;
-+
-+			/* Set ourselves in the remote node's masks */
- 			if (node_distance(j, node) <= sched_domains_numa_distance[i])
- 				cpumask_set_cpu(cpu, sched_domains_numa_masks[i][j]);
- 		}
+Thanks!!
