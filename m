@@ -2,84 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EB23F4D51
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CB13F4D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhHWPVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhHWPVX (ORCPT
+        id S231246AbhHWPZB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 11:25:01 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35105 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhHWPZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:21:23 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60586C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:20:40 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id x10-20020a056830408a00b004f26cead745so37247661ott.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/10eRL1Sn5Q/kiR0lZw/WfodeHufHGcym//9jpWnt7w=;
-        b=IOpYRG+MY07J9tvduvwWQjK6ciueu0aiQHNpGbTXZAionjonsrpTcsRTR9f2yQO+8n
-         gE32lxBCkN36ROv/dd1zIlll/DK5/2ITgNOQhNKyO4RMrC6UDUB4JSlqFPDpTDGQMDFv
-         6l81LlJyXFsE7+FfVRc7gqSfNJY1DQMCGx0AY0ao9wrAvUg9cp8/63Vqiwv9tZLkaLM1
-         nO+5BuamWe9wY0hdRdlu7epZwleC102Dzxxs6wb2YVzl5wY23tDIEdykcCftaCAWdeu6
-         rQ5AJY8gL0IRSRizcRa9/mz3xh/WrhaKuOm+2K6D+2EWjEPQyi8JhHLOfpm6DSCqa9qp
-         WdFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/10eRL1Sn5Q/kiR0lZw/WfodeHufHGcym//9jpWnt7w=;
-        b=SXNlLFmr6VHXIOkyyeKmPbVeLwRmd+kbwteP1dUpQFnAWSRFnLHuIDlCiwE1WTXWnp
-         XOIf1P7r4A2pNByuf+YDIGRt9G1XaZf4CKAeB6Zx8I9GSn8mvoX/xiY/1LiYyzsuILzt
-         Guct9ClDFPsamALNHwHqCPRxWOCh44zNJiSsrfeVl0AIvV3dxPIdp34/kEMVD2PKxX8o
-         SFkul9P4c1EX+OIIVfEdwqJM9sodR4M/B6ghxqcmK0IZ/AU3t3GvCaHzJilAbuNb7idp
-         TkD+92W422pWf6ZgxtFiP7M84M/vcrM3s0WPu0ozGTCcHz0eOe2rEstshSg91cKJHp/+
-         mpuw==
-X-Gm-Message-State: AOAM5326Y0BSaFEj+2W0glaNUhH19KcrH1iL3pzfeR6FZL0lfPpAHY7I
-        7PejTBwxG5rXapRD77US/9tEjw==
-X-Google-Smtp-Source: ABdhPJx7gegT7h10qCb7hfq5MrNH+w3ak10ThqbkgcsHOtsoUm5ZDCSNPTbAVaVDuiXd44aHBTu8vg==
-X-Received: by 2002:a05:6808:2ca:: with SMTP id a10mr12381296oid.44.1629732039575;
-        Mon, 23 Aug 2021 08:20:39 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g10sm3424852oof.37.2021.08.23.08.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 08:20:39 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 08:21:57 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH 2/2] pinctrl: qcom: Add SM6350 pinctrl driver
-Message-ID: <YSO9FeM371J8PKsO@ripper>
-References: <20210820203751.232645-1-konrad.dybcio@somainline.org>
- <20210820203751.232645-3-konrad.dybcio@somainline.org>
+        Mon, 23 Aug 2021 11:25:00 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 4D2206000C;
+        Mon, 23 Aug 2021 15:24:14 +0000 (UTC)
+Date:   Mon, 23 Aug 2021 17:24:13 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Kestrel seventyfour <kestrelseventyfour@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
+ device tree setting
+Message-ID: <20210823172413.0bc4ab3a@xps13>
+In-Reply-To: <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
+References: <20210808072643.GA5084@ubuntu>
+        <20210816093126.442f74a1@xps13>
+        <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com>
+        <20210819100334.6af2d86e@xps13>
+        <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820203751.232645-3-konrad.dybcio@somainline.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 20 Aug 13:37 PDT 2021, Konrad Dybcio wrote:
+Hi Kestrel,
 
-> This adds pincontrol driver for tlmm block found in SM6350 SoC
+Kestrel seventyfour <kestrelseventyfour@gmail.com> wrote on Mon, 23 Aug
+2021 13:19:43 +0200:
+
+> Hi Miquèl,
 > 
-> This patch is based on downstream copyleft code.
+> Am Do., 19. Aug. 2021 um 10:03 Uhr schrieb Miquel Raynal
+> <miquel.raynal@bootlin.com>:
+> >
+> > Hello,
+> >
+> > Kestrel seventyfour <kestrelseventyfour@gmail.com> wrote on Thu, 19 Aug
+> > 2021 09:21:42 +0200:
+> >  
+> > > Hi Miquèl
+> > >
+> > > Am Mo., 16. Aug. 2021 um 09:31 Uhr schrieb Miquel Raynal
+> > > <miquel.raynal@bootlin.com>:  
+> > > >
+> > > > Hi Daniel,
+> > > >
+> > > > Daniel Kestrel <kestrelseventyfour@gmail.com> wrote on Sun, 8 Aug 2021
+> > > > 09:26:43 +0200:
+> > > >  
+> > > > > Some devices use Micron NAND chips, which use on-die ECC. The hardcoded
+> > > > > setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because the
+> > > > > software ECC on top of the hardware ECC produces errors for every read
+> > > > > and write access, not to mention that booting does not work, because
+> > > > > the boot loader uses the correct ECC when trying to load the kernel
+> > > > > and stops loading on severe ECC errors.
+> > > > > This patch requires the devices that currently work with the hard coded
+> > > > > setting to set the nand-ecc-mode property to soft in their device
+> > > > > tree.
+> > > > >  
+> > > >
+> > > > Please add a Fixes: and Cc: stable tags, you will also need to send to
+> > > > stable@vger.kernel.org a different version of the patch for the kernel
+> > > > 5.4 IIUC.
+> > > >  
+> > > > > Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
+> > > > > Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Home Hub 5A
+> > > > > ---
+> > > > >  drivers/mtd/nand/raw/xway_nand.c | 2 --
+> > > > >  1 file changed, 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
+> > > > > index 26751976e502..0a4b0aa7dd4c 100644
+> > > > > --- a/drivers/mtd/nand/raw/xway_nand.c
+> > > > > +++ b/drivers/mtd/nand/raw/xway_nand.c
+> > > > > @@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *chip, const u_char *buf, int len)
+> > > > >
+> > > > >  static int xway_attach_chip(struct nand_chip *chip)
+> > > > >  {
+> > > > > -     chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT;
+> > > > > -
+> > > > >       if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+> > > > >               chip->ecc.algo = NAND_ECC_ALGO_HAMMING;  
+> > > >
+> > > > You also need to only set the Hamming algorithm when engine_type is
+> > > > TYPE_SOFT.
+> > > >
+> > > > Thanks,
+> > > > Miquèl  
+> > >
+> > > I am really struggling with what to do. For one of the affected
+> > > devices, they created two device
+> > > trees, one for Micron and one for all others. Which obviously had no
+> > > effect due to the
+> > > hardcoded settings, which led me to Patch 2 and I thought, so be it.
+> > > But the process to figure
+> > > out if ones device has Micron Chips is essentially flashing an image
+> > > and if it does not work,
+> > > use the stock OEM recovery and try the other image.
+> > > However, since Micron is the only chip that is treated differently, I wonder
+> > > if your first proposal, even though it is hacky, is the better
+> > > approach to solve the issue
+> > > for the Micron devices not booting and throwing ECC errors. What do you think?
+> > > Follow up first patch or this one?  
+> >
+> > I am not sure we understood each other, your patch is fine, but you
+> > need to do something like:
+> >
+> > static int xway_attach_chip(struct nand_chip *chip)
+> > {
+> >     if (chip->ecc.engine_type = NAND_ECC_ENGINE_TYPE_SOFT &&
+> >         chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+> >          chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+> >
+> > In the DT you should not force any ECC engine (drop the nand-ecc-xxx
+> > properties) and let the core handle it. It will probably choose the
+> > most suitable engines for you.
+> >
+> > Thanks,
+> > Miquèl  
 > 
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> thank you for your response.
+> If I remove the nand-ecc-xxx properties in the device tree, the device with
+> the Toshiba NAND chip is working. However, the device with the Micron
+> NAND fails with NO ECC functions supplied; hardware ECC not possible,
+> seems to be at line 5367 or equivalent.
+> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_base.c#L5367
+> 
+> It looks like the micron nand driver supports on die only if its
+> specified int the
+> Device tree:
+> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_micron.c#L511
+> The Micron NAND driver probably needs to set the ECC type to ON DIE if the
+> variable ondie contains the supported attribute?!
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+You're right but I don't see any easy upstream-able solution here.
+Changing the behavior in the Xway driver would certainly break users,
+changing the behavior in the Micron driver would certainly break even
+more users. The root cause being an absence of proper description (the
+integration changed). Honestly I feel stuck, maybe you can try to
+register your device, if it fails, change the integration in the driver
+(to an ondie ecc engine) then retry?
 
-Regards,
-Bjorn
+Thanks,
+Miquèl
