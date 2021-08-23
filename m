@@ -2,106 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEF53F49E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD1A3F49E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhHWLeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
+        id S236269AbhHWLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236524AbhHWLeg (ORCPT
+        with ESMTP id S234997AbhHWLgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:34:36 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC4DC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:33:53 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id q3so25737544edt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:33:53 -0700 (PDT)
+        Mon, 23 Aug 2021 07:36:13 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E541C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:35:30 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id c8-20020a7bc008000000b002e6e462e95fso13836080wmb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C2okYUf1AtblKbXwagU9YAK3CN+7qGUOMB9Z5HBBHko=;
-        b=A+Ladic4SYAhhQwxbEd6g9Zl+UDI2GpD0djH9z3bsHqLihU08PgqEj53L22qkk1595
-         2hNEFm6lUpTJmjcRd+lNu9KJ3eAWga8UwRTxhSeq/4R8WoR/WOiHE7JAtIXCClQvHulY
-         xODStzP/LuWGcIhIR+GCljJ1FFt+bOYqntEQe41zo9PapW+aIBupXaShv0TJIJ0FqExs
-         nhz+nL8HrLoXwabDSTiXxF84X3HluqH627NjG2APmcylAs/jLxT5H2P+EbMJR/Mmz7SZ
-         BVzCxg1j655HKbiR/7RgTDdGclBlZg7uMw1OFITgM7jC+j1ssffILbANKyOQZ2NSmooZ
-         A6xQ==
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Dc7A45rdd8EAHtZ/uscRkJGY6bCmxk+2XNFv95tjVRM=;
+        b=TUwniGW/Xte7lz7XZgquinAMkpiywSnUrpHTnHQcMRkbFVLMbfiNjuA000k7DB4w2f
+         935M0pJyJM6/cRl7wixLeLt5n3Xsm5TaN6hmZaCh0Z4UFQFwENTOqvvNIid+vKXLH3/O
+         WQ67Qb7k/lAGPxSdIzWvueVQhEYAHDeDT+vMWg6MFHC+B3eYiBGX2QDrVrLDfFmhdBT7
+         LTIz0WswO+Gs6XBAwsAILr33fYvR3T8aV1AXhpBkHt5N/0Iokv7KxHjkjDVSDZLlSDxi
+         +Y01uz47CLRazaAOO4O2KRKTj20VenmiLHmHt6lIWI+7JC0RmVT4G5aQ3xes9o+GNMu5
+         4i5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=C2okYUf1AtblKbXwagU9YAK3CN+7qGUOMB9Z5HBBHko=;
-        b=Z3Sc66kLVtiR8VVT0TXubbJ1GDW0uZmLhhNLJF7Nqloke/YU9QIbOAPcWhj/S9WClr
-         8ySWhnjlYHZOuMU78fFN1T08gwqyqDdExExjA2Cf33o6MfDwkxuTjLvp143JsD+fT8kq
-         PAZxWChnlQ5RjelT3joe3w2qNTVOJXOIIcjgW3q4o4pcCxcMBWAh9ew8oR8lHcEMymG4
-         sa54HQut0qVnhT3+8VuwiP4scca4eC9Ok9QgicWvgKxXTSWbyG9vEeTwsVo5YNI9OWRl
-         bUiXv6jQBMFfZ7H7k8kmQMzuYd3OQl8WNZTpjF+eDgt7tU7hWAXRuKShalaFORIEdWIw
-         Tc0Q==
-X-Gm-Message-State: AOAM532wzh7e2FdROqwqnnCeHU3QxOSBdVgDd2Du1CjmlStvjN+J2qzL
-        Qde4uMFC4ZzmayJFLyJAJwYkp2iJDracRbFO
-X-Google-Smtp-Source: ABdhPJyPqe+s/qFujaqzUWX1M4ldSixz6qi10KOX3mjL3/Q1Xe70hxlcXOID7+5ApG++uzAz9Tx0rA==
-X-Received: by 2002:a05:6402:190f:: with SMTP id e15mr8536169edz.171.1629718432382;
-        Mon, 23 Aug 2021 04:33:52 -0700 (PDT)
-Received: from localhost ([2a02:768:2307:40d6:f666:9af6:3fed:e53b])
-        by smtp.gmail.com with ESMTPSA id v23sm9014840edy.21.2021.08.23.04.33.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 23 Aug 2021 04:33:52 -0700 (PDT)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com, sboyd@kernel.org
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Rajan Vaja <rajan.vaja@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
-Subject: [PATCH] clk: zynqmp: Fix kernel-doc format
-Date:   Mon, 23 Aug 2021 13:33:47 +0200
-Message-Id: <26526e144296373b2c75e75865dd023158f9bfc7.1629718424.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=Dc7A45rdd8EAHtZ/uscRkJGY6bCmxk+2XNFv95tjVRM=;
+        b=bLmdtQbiNSBcpkojpm2BgNjwte5UYR3v6LIutzg5fHUQG13LxJO9TLZgstBy+HaSWG
+         PdKKua+XyimvY6eQuV2/mvMUxaSR8d3o1LNU443ioePAk6Gmvq6KHHcfxtUgQ59vpN44
+         VRr8KcETv04tFWBLMx+rDSBpNqQ/8PnXHW4EiJCWaGXSpRnm9zqEL3oaaeDdhVxXomeK
+         WAk9QYkfVvkhH1IO3D0qcM4XpF3at2S1B3GfzgAKKW8QaXOeiJjA7yKfZm61avQTMJVd
+         zEKjvSjbMQoQbAHMwBJRzc0CDc+5mdM7AE7o/dWyKeORkkK9xnFUVutHFaHZygVtW7pk
+         YWAA==
+X-Gm-Message-State: AOAM532CEFl6UDen//d4/r5NrpQqtijcCOM4cVknPuzqRxZs9yJdJCbh
+        dzrgQi2KUYOEpnkdshY9PWeAJw==
+X-Google-Smtp-Source: ABdhPJxfbLN6S/zmNSodR02DWJULMgKN7V3T4Tq9vwgy9MuQxoZBNiJPauxGJyVegRCVnPY+zfFuNg==
+X-Received: by 2002:a05:600c:21d7:: with SMTP id x23mr15794742wmj.10.1629718529082;
+        Mon, 23 Aug 2021 04:35:29 -0700 (PDT)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id h16sm14978446wre.52.2021.08.23.04.35.28
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 23 Aug 2021 04:35:28 -0700 (PDT)
+From:   John Cox <jc@kynesim.co.uk>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl, nicolas@ndufresne.ca,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH] media: hevc: fix pictures lists type
+Date:   Mon, 23 Aug 2021 12:35:28 +0100
+Message-ID: <i917ig582epdnpkmjdtvtnap6u8c032c1r@4ax.com>
+References: <20210823082949.237716-1-benjamin.gaignard@collabora.com> <02r6ig176o0lqc52nm8rhta7cn5bfn04in@4ax.com> <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
+In-Reply-To: <e1df8e77-b4d1-481c-0f4b-4a20f42d5c9e@collabora.com>
+User-Agent: ForteAgent/8.00.32.1272
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align structure and function names with definitions.
+Hi
 
-Issues are reported by kernel-doc script as:
-drivers/clk/zynqmp/clk-gate-zynqmp.c:24: warning: expecting prototype for
-struct clk_gate. Prototype was for struct zynqmp_clk_gate instead
-drivers/clk/zynqmp/clk-gate-zynqmp.c:75: warning: expecting prototype for
-zynqmp_clk_gate_is_enable(). Prototype was for zynqmp_clk_gate_is_enabled()
-instead
+>Le 23/08/2021 =C3=A0 11:50, John Cox a =C3=A9crit=C2=A0:
+>>> The lists embedded Picture Order Count values which are s32 so their =
+type
+>>> most be s32 and not u8.
+>> I'm not convinced that you can't calculate all of those lists from the
+>> info already contained in the DPB array so this is probably redundant
+>> info though I grant that having the list pre-calced might make your =
+life
+>> easier, and the userland side will have calculated the lists to
+>> calculate other required things so it isn't much extra work for it.
+>
+>Yes the userland have already compute these lists and the number of =
+items
+>in each of them.
+>Build them in the kernel would means to also compute the values of =
+NumPocStCurrBefore,
+>NumPocStCurrAfter, NumPocLtCurr, NumPocStCurrAfter, NumPocStCurrBefore =
+and NumPocLtCurr
+>and that requires information (NumNegativePics, NumPositivePics...) not =
+provided to the kernel.
+>Since it have to be done in userland anyway, I'm reluctant to modify the=
+ API to redo in the kernel.
 
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Well, fair enough, I'm not going to argue
 
- drivers/clk/zynqmp/clk-gate-zynqmp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>> Even if you do need the lists wouldn't it be a better idea to have =
+them
+>> as indices into the DPB (you can't have a frame in any of those lists
+>> that isn't in the DPB) which already contains POCs then it will still
+>> fit into u8 and be smaller?
+>
+>Hantro HW works with indexes but I think it is more simple to send PoC =
+rather than indexes.
 
-diff --git a/drivers/clk/zynqmp/clk-gate-zynqmp.c b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-index 695feaa82da5..565ed67a0430 100644
---- a/drivers/clk/zynqmp/clk-gate-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-gate-zynqmp.c
-@@ -12,7 +12,7 @@
- #include "clk-zynqmp.h"
- 
- /**
-- * struct clk_gate - gating clock
-+ * struct zynqmp_clk_gate - gating clock
-  * @hw:		handle between common and hardware-specific interfaces
-  * @flags:	hardware-specific flags
-  * @clk_id:	Id of clock
-@@ -66,7 +66,7 @@ static void zynqmp_clk_gate_disable(struct clk_hw *hw)
- }
- 
- /**
-- * zynqmp_clk_gate_is_enable() - Check clock state
-+ * zynqmp_clk_gate_is_enabled() - Check clock state
-  * @hw:		handle between common and hardware-specific interfaces
-  *
-  * Return: 1 if enabled, 0 if disabled else error code
--- 
-2.33.0
+I'd disagree but as I don't use the info I'm not concerned. Though I
+think I should point out that when Hantro converts the POCs to indicies
+it compares the now s32 POC in these lists with the u16 POC in the DPB
+so you might need to fix that too; by std (8.3.1) no POC diff can be
+outside s16 so you can mask & compare or use u16 POCs in the lists or
+s32 in the DPB.
 
+Regards
+
+John Cox
+
+>Benjamin
+>
+>>
+>> Full disclosure: Pi decode doesn't use this info at all so I'm only
+>> arguing from a theoretical point of view - I think it is only relevant
+>> if your h/w is parsing the reference list setups.
+>>
+>> Regards
+>>
+>> John Cox
+>>
+>>> Reported-by: John Cox <jc@kynesim.co.uk>
+>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>> ---
+>>> Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 +++---
+>>> include/media/hevc-ctrls.h                                | 6 +++---
+>>> 2 files changed, 6 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git =
+a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst =
+b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> index 976d34445a24..db9859ddc8b2 100644
+>>> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+>>> @@ -3323,15 +3323,15 @@ enum =
+v4l2_mpeg_video_hevc_size_of_length_field -
+>>>      * - __u8
+>>>        - ``num_poc_lt_curr``
+>>>        - The number of reference pictures in the long-term set.
+>>> -    * - __u8
+>>> +    * - __s32
+>>>        - ``poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>>>        - PocStCurrBefore as described in section 8.3.2 "Decoding =
+process for reference
+>>>          picture set.
+>>> -    * - __u8
+>>> +    * - __s32
+>>>        - ``poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>>>        - PocStCurrAfter as described in section 8.3.2 "Decoding =
+process for reference
+>>>          picture set.
+>>> -    * - __u8
+>>> +    * - __s32
+>>>        - ``poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX]``
+>>>        - PocLtCurr as described in section 8.3.2 "Decoding process =
+for reference
+>>>          picture set.
+>>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+>>> index 781371bff2ad..04cd62e77f25 100644
+>>> --- a/include/media/hevc-ctrls.h
+>>> +++ b/include/media/hevc-ctrls.h
+>>> @@ -219,9 +219,9 @@ struct v4l2_ctrl_hevc_decode_params {
+>>> 	__u8	num_poc_st_curr_before;
+>>> 	__u8	num_poc_st_curr_after;
+>>> 	__u8	num_poc_lt_curr;
+>>> -	__u8	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>>> -	__u8	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>>> -	__u8	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>>> +	__s32	poc_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>>> +	__s32	poc_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>>> +	__s32	poc_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>>> 	__u64	flags;
+>>> };
+>>>
