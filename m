@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF143F4F22
+	by mail.lfdr.de (Postfix) with ESMTP id E18A93F4F24
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbhHWROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S232143AbhHWROy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbhHWROb (ORCPT
+        with ESMTP id S231880AbhHWROd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:14:31 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DADC061796
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:48 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id g73-20020a379d4c000000b003d3ed03ca28so12291966qke.23
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:48 -0700 (PDT)
+        Mon, 23 Aug 2021 13:14:33 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58F7C0613A4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:50 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id gw9-20020a0562140f0900b0035decb1dfecso12906039qvb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=waqY876EwA/wk10n7+SSCq5/Bx3gIEi3wIv2LvfyQCY=;
-        b=Jp/LpTkJvrx/sDMDUbafviqe/BIpw0Q0Iw9S012k1J5qr5lLEsQ7CcLwEjilPsyAK/
-         t4JdvEUg8hjrAfWV3ou7LKIZ1Bv6g5i7L9aToNYYK9I/X4GdNTEHdvsww5MnFcga8Flb
-         GXsy2CaLfwKBUYk9Mkcv8gwiGNcu8EE1uaeHIHYyWmMlHkeKv4SaJ245C/ZY0JN8Xhxo
-         /fY9AkfD7Lc5YoLVMwJLOIBXyvE9nIjdduEp+vp0N/wbmyo4dkF1XR868WBU3LModhZL
-         HCS41r0u5bDPK5jET/CSXmWxTkQnn8Yaiy/66VJrExxs9JRmHD3Ow3y6VPYeVvQmQc7/
-         xAPw==
+        bh=QdQnBYBrTtlb7EbgqCKiS4RqSCRV3iiUzEvkTpjIQRc=;
+        b=UKMKXPgsxPVJpHWknSOnrvq5i4Af2vp7VUEDXYmudNQxKlaDg5IP44KGL2ICHIaAUP
+         uS4jHYeVyLSsAjIfQZ6EyFjp1JJmN+baPDYfljZpOZIJauKPyphJMpHd+iMjbDn0AyIi
+         IOCvKaGjnwYwuw58SENKcTnoZzIxwQCy24omsw2lavoQvMTxZQwK5XjaKvA5YK/he5uC
+         oTrVJHC/225xqnIgTFAaIcMjFMx3zZH6Mf/bV2SU868O0sfnMpoWHIz5WoOJkPCtIBkJ
+         0khvTREPZ/R+rWMzOEpZc9+m/YzzAa92daDnajT24DMe18qRfuptLrte1KBXnV2z0Ic2
+         s4uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=waqY876EwA/wk10n7+SSCq5/Bx3gIEi3wIv2LvfyQCY=;
-        b=ifGmC3HAfdJcqWIsUxnDdcYMa7nN0qdgueKd+BayQTp+PHKu15xpkLMoQUSO4nJVVi
-         PlvrBtngvwF5XLJHfbJv5vnmmKdSibcsXGEgIb7CnSFn54OthuouK2TmQjCipGHLqpcR
-         MyNExfkzQOOv0MxJk8lXC2A/6QzEBuWP1S8dRtDU2L9U75cFfDKhS6QyFAgDRNOqUnWW
-         2btFvkWyib7Y+rXRe8Tx7e/Ezq6Ck/zvoqikcSyflYxVblKn0ceBDlxU1TcwavH1QE0Y
-         Quvzbd7m56EAkYTQZc44wivjSXcoXdCr4Fj5esEcUNjBuEa+8xS8FKtM1q+VehsGMaAy
-         eQuw==
-X-Gm-Message-State: AOAM533TKZ80OTQE2ZporEjuSwtgCNrMIXhtOsaGTFoBcvW7c/sgDZs/
-        1MZXv5KJVdmZ8IFXtLYvmPtDMZAJoGbqNmRbRJU=
-X-Google-Smtp-Source: ABdhPJyAAT4G2P2y3Rd6p+yDNiiZk1Dv35k6zoSb0dk6V1YPkj0AB+++cFdUOBDwyyE04+wwAPby9ZbuWKPzKqQgrRI=
+        bh=QdQnBYBrTtlb7EbgqCKiS4RqSCRV3iiUzEvkTpjIQRc=;
+        b=YQw6u5fW09EFykAKl7c158Eg5H9DCx/sPy9GT50NKYGds+4VBBDjiE7pmdN9xXQs0B
+         tZvgM4HCTSYOWGGyPSiijOwffiDbevMxR8wl3uPnSA/Lf7HnoLnbl3TdazdBpSNYcmAQ
+         1vpxMBhBpWzsrex9RTGz2tA4k0MvEzQx/lQw1NWHEcmZpk9qMkLpmHWoUINtuvQ/F+u7
+         Xnf+QpcnwPUADE9lHmwHlYH/8QCR3J1aVnHMIFftDtbbq+FaPv9MCMFnWbjar5KU+0+O
+         9QPi/2KLbyq7jQ7YtI7uSC+5uVV/NPfIjR8abPklt5iX2fHD6UYs2T0qZyv0S3IEpM6m
+         fmrw==
+X-Gm-Message-State: AOAM530mR3ANkMAZAh3oNUr1XQGB6Otu0rWy/o9N8qAUvVJCSoccUzFH
+        v1js9ypDT7rWpPC2ZtSjWq570+Q5AyvRcy1W+DY=
+X-Google-Smtp-Source: ABdhPJyChryW6mdCOPUw4wQMlYeq6A1vhaSzSiaqRF+46DFpRFp/LiLDnrxItx+PUGIwLHFNJFOXEVyp54xFmj4C5DU=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:cc48:aa6a:f4ec:7d19])
- (user=samitolvanen job=sendgmr) by 2002:a0c:e887:: with SMTP id
- b7mr14559706qvo.54.1629738827298; Mon, 23 Aug 2021 10:13:47 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 10:13:15 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a0c:e883:: with SMTP id
+ b3mr34406392qvo.23.1629738829630; Mon, 23 Aug 2021 10:13:49 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 10:13:16 -0700
 In-Reply-To: <20210823171318.2801096-1-samitolvanen@google.com>
-Message-Id: <20210823171318.2801096-12-samitolvanen@google.com>
+Message-Id: <20210823171318.2801096-13-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210823171318.2801096-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH v2 11/14] x86, module: Ignore __typeid__ relocations
+Subject: [PATCH v2 12/14] x86, cpu: Use LTO for cpu.c with CFI
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -68,29 +68,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore the __typeid__ relocations generated with CONFIG_CFI_CLANG
-when loading modules.
+Allow LTO to be used for cpu.c when CONFIG_CFI_CLANG is enabled to avoid
+indirect call failures. CFI requires Clang >= 12, which doesn't have the
+stack protector inlining bug.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- arch/x86/kernel/module.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/power/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index 5e9a34b5bd74..c4aeba237eef 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -197,6 +197,10 @@ static int __apply_relocate_add(Elf64_Shdr *sechdrs,
- 			val -= (u64)loc;
- 			write(loc, &val, 8);
- 			break;
-+		case R_X86_64_8:
-+			if (!strncmp(strtab + sym->st_name, "__typeid__", 10))
-+				break;
-+			fallthrough;
- 		default:
- 			pr_err("%s: Unknown rela relocation: %llu\n",
- 			       me->name, ELF64_R_TYPE(rel[i].r_info));
+diff --git a/arch/x86/power/Makefile b/arch/x86/power/Makefile
+index 379777572bc9..a0532851fed7 100644
+--- a/arch/x86/power/Makefile
++++ b/arch/x86/power/Makefile
+@@ -4,9 +4,11 @@
+ # itself be stack-protected
+ CFLAGS_cpu.o	:= -fno-stack-protector
+ 
++ifndef CONFIG_CFI_CLANG
+ # Clang may incorrectly inline functions with stack protector enabled into
+ # __restore_processor_state(): https://bugs.llvm.org/show_bug.cgi?id=47479
+ CFLAGS_REMOVE_cpu.o := $(CC_FLAGS_LTO)
++endif
+ 
+ obj-$(CONFIG_PM_SLEEP)		+= cpu.o
+ obj-$(CONFIG_HIBERNATION)	+= hibernate_$(BITS).o hibernate_asm_$(BITS).o hibernate.o
 -- 
 2.33.0.rc2.250.ged5fa647cd-goog
 
