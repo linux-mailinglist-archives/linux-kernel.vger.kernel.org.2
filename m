@@ -2,100 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B4E3F501F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A033F5022
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhHWSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:10:17 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:37378 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhHWSKP (ORCPT
+        id S231686AbhHWSMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:12:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51144 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229705AbhHWSMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:10:15 -0400
-Received: by mail-ot1-f45.google.com with SMTP id i3-20020a056830210300b0051af5666070so28910865otc.4;
-        Mon, 23 Aug 2021 11:09:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g+CqhkyW2c8CXWLjQLbAdHrQQUJ+lxu98gFxCWPW9UY=;
-        b=gaFFH1TtGaesnUM3luk4145124LurLFLPoERf4NTgkgXARY/wRm3BtcJzOgNbpW3qz
-         GqpdO7vxKluoGrUSDnBQc15RifEYLx3ujNHAIPcwMkvCEEcHZH6BQ4e0h4hUV5AA9npz
-         bV5JHXlds8ZVl6En7HHAeCTeEZKP6DlKofQbmPRQYkHu0lq/eZ4LzWnXeOg4kXhnYhar
-         2uP97US1bK4l8itIe2CTClGX9rEaEcl7plAHt3xTCu55/2U60WUN2ah7MHpw9sjVoTgR
-         XDR4J+y8Ba7UPddZc1Q5gwSatusGXYSYsPfAa+i1QWddnsqCSpVOgagKwWO0QNpp4xbr
-         mNXg==
-X-Gm-Message-State: AOAM530j5rLDzPlUFG652ViDaJtt808XveSpCFU0FNBSWVxQTUpV8moY
-        cGqmGsm8OdMVG3ynS0M7QQ==
-X-Google-Smtp-Source: ABdhPJy808XGMxfgtJt2olJn0b2kz8EiXE3TMOiTOMuQ2t08pHFJLizMoZJWfluz+DhSee7b56XMgg==
-X-Received: by 2002:a05:6830:2809:: with SMTP id w9mr10268776otu.114.1629742172567;
-        Mon, 23 Aug 2021 11:09:32 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id s63sm3875103oia.52.2021.08.23.11.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 11:09:31 -0700 (PDT)
-Received: (nullmailer pid 2445747 invoked by uid 1000);
-        Mon, 23 Aug 2021 18:09:29 -0000
-Date:   Mon, 23 Aug 2021 13:09:29 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Piyush Mehta <piyush.mehta@xilinx.com>
-Cc:     sgoud@xilinx.com, git@xilinx.com, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org, zou_wei@huawei.com, arnd@arndb.de,
-        michal.simek@xilinx.com, robh+dt@kernel.org, iwamatsu@nigauri.org,
-        wendy.liang@xilinx.com, bgolaszewski@baylibre.com,
-        linux-gpio@vger.kernel.org, gregkh@linuxfoundation.org,
-        linux-arm-kernel@lists.infradead.org, rajan.vaja@xilinx.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH V3 2/3] dt-bindings: gpio: zynqmp: Add binding
- documentation for modepin
-Message-ID: <YSPkWUs0Y2zDiHQU@robh.at.kernel.org>
-References: <20210818081018.2620544-1-piyush.mehta@xilinx.com>
- <20210818081018.2620544-3-piyush.mehta@xilinx.com>
+        Mon, 23 Aug 2021 14:12:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629742278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kv9YiknVEko7VMAZHkVAmLtEQonqFOw4c0vjxRiulTE=;
+        b=c4SGxcitVVaTiBQ8pbGiyIBwQwjcCO5njCaZwsbC0taT8WdbM36kDURPQDFbUYT/IxrcJH
+        e1Ra2yo/+atNOX44uJCh5pD7lywOK+/KBodlcH1eRenI6KS5A8CyOqLoDpwqV6lLdm3ZIC
+        mcq4eSGK4avJ+BcipaQgq8UZZh/mVCE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-g2UOMuQRO1KSwSohP4RoNw-1; Mon, 23 Aug 2021 14:11:15 -0400
+X-MC-Unique: g2UOMuQRO1KSwSohP4RoNw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 002168CC5D1;
+        Mon, 23 Aug 2021 18:10:52 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F30E660854;
+        Mon, 23 Aug 2021 18:10:47 +0000 (UTC)
+Message-ID: <e5b8b03e1079b6f7f36edb7695a48021b9a0a936.camel@redhat.com>
+Subject: Re: [PATCH v3 0/3] SVM 5-level page table support
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Wei Huang <wei.huang2@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com
+Date:   Mon, 23 Aug 2021 21:10:46 +0300
+In-Reply-To: <YSPIgBNiMZkwAOSG@google.com>
+References: <20210818165549.3771014-1-wei.huang2@amd.com>
+         <46a54a13-b934-263a-9539-6c922ceb70d3@redhat.com>
+         <c10faf24c11fc86074945ca535572a8c5926dcf9.camel@redhat.com>
+         <20210823151549.rkkrktvtpu6yapmd@weiserver.amd.com>
+         <YSPIgBNiMZkwAOSG@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818081018.2620544-3-piyush.mehta@xilinx.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 13:40:17 +0530, Piyush Mehta wrote:
-> This patch adds DT binding document for zynqmp modepin GPIO controller.
-> Modepin GPIO controller has four GPIO pins which can be configurable
-> as input or output.
+On Mon, 2021-08-23 at 16:10 +0000, Sean Christopherson wrote:
+> On Mon, Aug 23, 2021, Wei Huang wrote:
+> > On 08/23 12:20, Maxim Levitsky wrote:
+> > > This hack makes it work again for me (I don't yet use TDP mmu).
+> > > 
+> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > index caa3f9aee7d1..c25e0d40a620 100644
+> > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > @@ -3562,7 +3562,7 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+> > >             mmu->shadow_root_level < PT64_ROOT_4LEVEL)
+> > >                 return 0;
+> > >  
+> > > -       if (mmu->pae_root && mmu->pml4_root && mmu->pml5_root)
 > 
-> Modepin driver is a bridge between the peripheral driver and GPIO pins.
-> It has set and get APIs for accessing GPIO pins, based on the device-tree
-> entry of reset-gpio property in the peripheral driver, every pin can be
-> configured as input/output and trigger GPIO pin.
+> Maxim, I assume you hit this WARN and bail?
+Yep.
 > 
-> For more information please refer zynqMp TRM link:
-> Link: https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf
-> Chapter 2: Signals, Interfaces, and Pins
-> Table 2-2: Clock, Reset, and Configuration Pins - PS_MODE
+>         if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->pml4_root ||
+>                          mmu->pml5_root))
+> 		return -EIO;
 > 
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
-> Acked-by: Michal Simek <michal.simek@xilinx.com>
-> ---
-> Changes in v2:
-> - Addressed review comments: Update commit message
+> Because as the comment states, KVM expects all the special roots to be allocated
+> together.  The 5-level paging supported breaks that assumption because pml5_root
+> will be allocated iff the host is using 5-level paging.
 > 
-> Review Comments:
-> https://lore.kernel.org/linux-arm-kernel/20210615080553.2021061-2-piyush.mehta@xilinx.com/T/#mbd1fbda813e33b19397b350bde75747c92a0d7e1
-> https://lore.kernel.org/linux-arm-kernel/20210615080553.2021061-2-piyush.mehta@xilinx.com/T/#me82b1444ab3776162cdb0077dfc9256365c7e736
+>         if (mmu->shadow_root_level > PT64_ROOT_4LEVEL) {
+>                 pml5_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+>                 if (!pml5_root)
+>                         goto err_pml5;
+>         }
 > 
-> Changes in v3:
-> - Addressed Rob and Michal review comments:
->   - Update DT example.
+> I think this is the least awful fix, I'll test and send a proper patch later today.
 > 
-> Review Comments:
-> https://lore.kernel.org/linux-arm-kernel/YRbBnRS0VosXcZWz@robh.at.kernel.org/
-> https://lore.kernel.org/linux-arm-kernel/d71ad7f9-6972-8cc0-6dfb-b5306c9900d0@xilinx.com/
-> ---
->  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 41 ++++++++++++++++++++++
->  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 43 ++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 4853c033e6ce..93b2ed422b48 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3548,6 +3548,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>  {
+>         struct kvm_mmu *mmu = vcpu->arch.mmu;
+> +       bool need_pml5 = mmu->shadow_root_level > PT64_ROOT_4LEVEL;
+>         u64 *pml5_root = NULL;
+>         u64 *pml4_root = NULL;
+>         u64 *pae_root;
+> @@ -3562,7 +3563,14 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>             mmu->shadow_root_level < PT64_ROOT_4LEVEL)
+>                 return 0;
 > 
+> -       if (mmu->pae_root && mmu->pml4_root && mmu->pml5_root)
+> +       /*
+> +        * NPT, the only paging mode that uses this horror, uses a fixed number
+> +        * of levels for the shadow page tables, e.g. all MMUs are 4-level or
+> +        * all MMus are 5-level.  Thus, this can safely require that pml5_root
+> +        * is allocated if the other roots are valid and pml5 is needed, as any
+> +        * prior MMU would also have required pml5.
+> +        */
+> +       if (mmu->pae_root && mmu->pml4_root && (!need_pml5 || mmu->pml5_root))
+>                 return 0;
+> 
+>         /*
+> @@ -3570,7 +3578,7 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>          * bail if KVM ends up in a state where only one of the roots is valid.
+>          */
+>         if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->pml4_root ||
+> -                        mmu->pml5_root))
+> +                        (need_pml5 && mmu->pml5_root)))
+>                 return -EIO;
+> 
+>         /*
+> 
+> > > +       if (mmu->pae_root && mmu->pml4_root)
+> > >                 return 0;
+> > >  
+> > >         /*
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Makes sense, works, and without digging too much into this
+I expected this to be fixed by something like that, so:
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Thanks,
+Best regards,
+	Maxim Levitsky
+
+
+
+> > > 
+> > > 
+> > > 
+> > > Best regards,
+> > > 	Maxim Levitsky
+> > > 
+
+
