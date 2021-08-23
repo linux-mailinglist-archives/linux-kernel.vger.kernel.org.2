@@ -2,196 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379A23F4499
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 07:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3467D3F449B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 07:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhHWFNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 01:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
+        id S233088AbhHWFRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 01:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbhHWFNI (ORCPT
+        with ESMTP id S231267AbhHWFRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 01:13:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520B5C061575;
-        Sun, 22 Aug 2021 22:12:26 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 05:12:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629695542;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c7kO42+nZL9e9p1MTgZCRoeLci+c9EeHs3/LG4KjRws=;
-        b=2I1w9mr2hnXY1F3G0EFGkDPA+VLIKvsCUauEhO5HdIEjAaO38NsfpOzWplwpXodlQrcOm9
-        CGX0nzAGqSBKfCYHy2onnVQF448JQkiuq3GvPnC8sEPaSORT4z/dgusUy1e47Hu80bG/Lb
-        kGeYKftI8aqcFUePnNGa2MKtkdpxqkT98SpwXhgrwbddRYbL9Kivt5cfq4XwuFB+YTGzzl
-        KIPLQt5Q9iFTxbaE7BG/0yWPfkoA5rfaCzjybk7VGMyvQTw2lyCAlaOh9HvpjWIzKoWvsh
-        M7S039U5Wc0jPXjz/afd/t4034IQxOqqAlm/wkzUMHT3AhMgObRdn1B5Dryy8A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629695542;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c7kO42+nZL9e9p1MTgZCRoeLci+c9EeHs3/LG4KjRws=;
-        b=kVuD+6QbMPkeU9OL96PPpgbBpM7VYISmnZoXpezifvbRBwZCQLEVc7yP4BDizeqUlc38zL
-        +/NFRQkUYZ0AyhCA==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/build] x86/tools/relocs: Mark die() with the printf
- function attr format
-Cc:     Borislav Petkov <bp@suse.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YNnb6Q4QHtNYC049@zn.tnic>
-References: <YNnb6Q4QHtNYC049@zn.tnic>
-MIME-Version: 1.0
-Message-ID: <162969554111.25758.6281531919074323037.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 23 Aug 2021 01:17:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3133C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 22:16:30 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a62-20020a254d410000b0290592f360b0ccso15442760ybb.14
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 22:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=SZp9jopn6L2gGcjaBST5d963oFablXCgT4VwmaYX6c8=;
+        b=BWDOf9o4rquaek14MDqqotPhxfN7ahfaqMx6tz5jr8+1ICDTokXwzaWj9OiWvGGlCY
+         xhpf17kFVXBYtpSAPmuHEzf8x0lpZylcyF/q96KBfzZOdcd+rnm+AnGXTqFvzCNdv1nx
+         lcQRiwvQrD9I1j42OQo3g2Wfc7/jWA8TPQzhZFgtDg3tNEpOtdgao/VPZ4Q7US7woJvr
+         JIXVPexNEV9hSe9N3zGuTM4TbsYWIrafPJnq/+dbaafxrjVxhSOsn3O1KNpXRTQ7X+zz
+         s1VBxLXXdRvPBRGp1nfHT3OSPatiwwllLizCMmrMv6a/yhg+hSnhUldaNCHO5KFLQXj0
+         tm5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=SZp9jopn6L2gGcjaBST5d963oFablXCgT4VwmaYX6c8=;
+        b=ufxHC9u7KBS4PayBj0cE+aRYBjQ2PsWwLubP4pXHhIh3EhuiMbHkev26rKstzTDIqZ
+         4EnlNVVe5hvyHWzHdaojU4kZhgA7MDKP/E+y8ZTE0kpnH/LoskGVnrEzB/BufHiQnGa0
+         DxdAAlT/Oa6cS0LRV8fu0raja6MHtzdhzBBniVZYEcTVGjxD5dX0INxme+P1bcmM2hCg
+         ez+dF9nOn++BvuKDGgp5Zd/jjc9xy/I5CdqJIuUk0ffAADBVBSiNs/B9xzm00ID2eDzd
+         4VDWVXuc7lPcH049fPg5+QUIXjRBNqwCXXPM24b3n2fE+neN1GQiA2fsLfWswlGaggj+
+         WalA==
+X-Gm-Message-State: AOAM532c5JAjdZ9bZzowrRCgdYljelNSCHVrXIrsgG3uyS3VrAlT57rJ
+        qleAOIgT4Ok8GefAiEGTUNMYdthco+Xk
+X-Google-Smtp-Source: ABdhPJw3+CP6MbRvTm7KTzVWXTtryJM4LQ+VtZvRUcmHJyEdIEagZ7K+YREB0AIgRqanEJCzlZAlPTiij5mT
+X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
+ (user=mizhang job=sendgmr) by 2002:a25:da89:: with SMTP id
+ n131mr41861469ybf.255.1629695789605; Sun, 22 Aug 2021 22:16:29 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 23 Aug 2021 05:16:22 +0000
+Message-Id: <20210823051622.312890-1-mizhang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+Subject: [PATCH] selftests: KVM: use dirty logging to check if page stats work correctly
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Peter Xu <peterx@redhat.com>, Ben Gardon <bgorden@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/build branch of tip:
+When dirty logging is enabled, KVM splits the all hugepage mapping in
+NPT/EPT into the smallest 4K size. This property could be used to check if
+the page stats metrics work properly in KVM mmu. At the same time, this
+logic might be used the other way around: using page stats to verify if
+dirty logging really splits all huge pages.
 
-Commit-ID:     03dca99e200f4d268f70079cf54e3b1200c9eb9d
-Gitweb:        https://git.kernel.org/tip/03dca99e200f4d268f70079cf54e3b1200c9eb9d
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Fri, 25 Jun 2021 17:10:16 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 23 Aug 2021 05:58:02 +02:00
+So add page stats checking in dirty logging performance selftest. In
+particular, add checks in three locations:
+ - just after vm is created;
+ - after populating memory into vm but before enabling dirty logging;
+ - after turning off dirty logging.
 
-x86/tools/relocs: Mark die() with the printf function attr format
+Tested using commands:
+ - ./dirty_log_perf_test -s anonymous_hugetlb_1gb
+ - ./dirty_log_perf_test -s anonymous_thp
 
-Mark die() as a function which accepts printf-style arguments so that
-the compiler can typecheck them against the supplied format string.
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Matlack <dmatlack@google.com>
+Cc: Jing Zhang <jingzhangos@google.com>
+Cc: Peter Xu <peterx@redhat.com>
 
-Use the C99 inttypes.h format specifiers as relocs.c gets built for both
-32- and 64-bit.
-
-Original version of the patch by Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: http://lkml.kernel.org/r/YNnb6Q4QHtNYC049@zn.tnic
+Suggested-by: Ben Gardon <bgorden@google.com>
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
 ---
- arch/x86/tools/relocs.c | 37 ++++++++++++++++++++-----------------
- arch/x86/tools/relocs.h |  1 +
- 2 files changed, 21 insertions(+), 17 deletions(-)
+ .../selftests/kvm/dirty_log_perf_test.c       | 30 +++++++++++++++++++
+ .../testing/selftests/kvm/include/test_util.h |  1 +
+ .../selftests/kvm/lib/perf_test_util.c        |  3 ++
+ tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++++++++
+ 4 files changed, 63 insertions(+)
 
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index 9ba700d..27c8220 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -26,6 +26,9 @@ static struct relocs relocs32;
- #if ELF_BITS == 64
- static struct relocs relocs32neg;
- static struct relocs relocs64;
-+#define FMT PRIu64
-+#else
-+#define FMT PRIu32
+diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+index 3c30d0045d8d..e190f6860166 100644
+--- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+@@ -19,6 +19,10 @@
+ #include "perf_test_util.h"
+ #include "guest_modes.h"
+ 
++#ifdef __x86_64__
++#include "processor.h"
++#endif
++
+ /* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
+ #define TEST_HOST_LOOP_N		2UL
+ 
+@@ -166,6 +170,14 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 	vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
+ 				 p->slots, p->backing_src);
+ 
++#ifdef __x86_64__
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) == 0,
++		    "4K page is non zero");
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
++		    "2M page is non zero");
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
++		    "1G page is non zero");
++#endif
+ 	perf_test_args.wr_fract = p->wr_fract;
+ 
+ 	guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
+@@ -211,6 +223,16 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 	pr_info("Populate memory time: %ld.%.9lds\n",
+ 		ts_diff.tv_sec, ts_diff.tv_nsec);
+ 
++#ifdef __x86_64__
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
++		    "4K page is zero");
++	if (p->backing_src == VM_MEM_SRC_ANONYMOUS_THP)
++		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) != 0,
++			    "2M page is zero");
++	if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB)
++		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) != 0,
++			    "1G page is zero");
++#endif
+ 	/* Enable dirty logging */
+ 	clock_gettime(CLOCK_MONOTONIC, &start);
+ 	enable_dirty_logging(vm, p->slots);
+@@ -256,6 +278,14 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 				iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
+ 		}
+ 	}
++#ifdef __x86_64__
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
++		    "4K page is zero after dirty logging");
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
++		    "2M page is non-zero after dirty logging");
++	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
++		    "1G page is non-zero after dirty logging");
++#endif
+ 
+ 	/* Disable dirty logging */
+ 	clock_gettime(CLOCK_MONOTONIC, &start);
+diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+index d79be15dd3d2..dca5fcf7aa87 100644
+--- a/tools/testing/selftests/kvm/include/test_util.h
++++ b/tools/testing/selftests/kvm/include/test_util.h
+@@ -102,6 +102,7 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
+ size_t get_backing_src_pagesz(uint32_t i);
+ void backing_src_help(void);
+ enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
++size_t get_page_stats(uint32_t page_level);
+ 
+ /*
+  * Whether or not the given source type is shared memory (as opposed to
+diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
+index 0ef80dbdc116..c2c532990fb0 100644
+--- a/tools/testing/selftests/kvm/lib/perf_test_util.c
++++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
+@@ -96,6 +96,9 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
+ #ifdef __s390x__
+ 	/* Align to 1M (segment size) */
+ 	guest_test_phys_mem &= ~((1 << 20) - 1);
++#elif __x86_64__
++	/* Align to 1G (segment size) to allow hugepage mapping. */
++	guest_test_phys_mem &= ~((1 << 30) - 1);
  #endif
+ 	pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
  
- struct section {
-@@ -389,7 +392,7 @@ static void read_ehdr(FILE *fp)
- 		Elf_Shdr shdr;
+diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+index af1031fed97f..07eb6b5c125e 100644
+--- a/tools/testing/selftests/kvm/lib/test_util.c
++++ b/tools/testing/selftests/kvm/lib/test_util.c
+@@ -15,6 +15,13 @@
+ #include "linux/kernel.h"
  
- 		if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0)
--			die("Seek to %d failed: %s\n", ehdr.e_shoff, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n", ehdr.e_shoff, strerror(errno));
+ #include "test_util.h"
++#include "processor.h"
++
++static const char * const pagestat_filepaths[] = {
++	"/sys/kernel/debug/kvm/pages_4k",
++	"/sys/kernel/debug/kvm/pages_2m",
++	"/sys/kernel/debug/kvm/pages_1g",
++};
  
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
- 			die("Cannot read initial ELF section header: %s\n", strerror(errno));
-@@ -412,17 +415,17 @@ static void read_shdrs(FILE *fp)
+ /*
+  * Parses "[0-9]+[kmgt]?".
+@@ -141,6 +148,28 @@ size_t get_trans_hugepagesz(void)
+ 	return size;
+ }
  
- 	secs = calloc(shnum, sizeof(struct section));
- 	if (!secs) {
--		die("Unable to allocate %d section headers\n",
-+		die("Unable to allocate %ld section headers\n",
- 		    shnum);
- 	}
- 	if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0) {
--		die("Seek to %d failed: %s\n",
--			ehdr.e_shoff, strerror(errno));
-+		die("Seek to %" FMT " failed: %s\n",
-+		    ehdr.e_shoff, strerror(errno));
- 	}
- 	for (i = 0; i < shnum; i++) {
- 		struct section *sec = &secs[i];
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
--			die("Cannot read ELF section headers %d/%d: %s\n",
-+			die("Cannot read ELF section headers %d/%ld: %s\n",
- 			    i, shnum, strerror(errno));
- 		sec->shdr.sh_name      = elf_word_to_cpu(shdr.sh_name);
- 		sec->shdr.sh_type      = elf_word_to_cpu(shdr.sh_type);
-@@ -450,12 +453,12 @@ static void read_strtabs(FILE *fp)
- 		}
- 		sec->strtab = malloc(sec->shdr.sh_size);
- 		if (!sec->strtab) {
--			die("malloc of %d bytes for strtab failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %" FMT " bytes for strtab failed\n",
-+			    sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n",
-+			    sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->strtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -475,12 +478,12 @@ static void read_symtabs(FILE *fp)
- 		}
- 		sec->symtab = malloc(sec->shdr.sh_size);
- 		if (!sec->symtab) {
--			die("malloc of %d bytes for symtab failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %" FMT " bytes for symtab failed\n",
-+			    sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n",
-+			    sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->symtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -508,12 +511,12 @@ static void read_relocs(FILE *fp)
- 		}
- 		sec->reltab = malloc(sec->shdr.sh_size);
- 		if (!sec->reltab) {
--			die("malloc of %d bytes for relocs failed\n",
--				sec->shdr.sh_size);
-+			die("malloc of %" FMT " bytes for relocs failed\n",
-+			    sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
--			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+			die("Seek to %" FMT " failed: %s\n",
-+			    sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->reltab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-diff --git a/arch/x86/tools/relocs.h b/arch/x86/tools/relocs.h
-index 43c83c0..4c49c82 100644
---- a/arch/x86/tools/relocs.h
-+++ b/arch/x86/tools/relocs.h
-@@ -17,6 +17,7 @@
- #include <regex.h>
- #include <tools/le_byteshift.h>
- 
-+__attribute__((__format__(printf, 1, 2)))
- void die(char *fmt, ...) __attribute__((noreturn));
- 
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++#ifdef __x86_64__
++size_t get_stats_from_file(const char *path)
++{
++	size_t value;
++	FILE *f;
++
++	f = fopen(path, "r");
++	TEST_ASSERT(f != NULL, "Error in opening file: %s\n", path);
++
++	fscanf(f, "%ld", &value);
++	fclose(f);
++
++	return value;
++}
++
++size_t get_page_stats(uint32_t page_level)
++{
++	TEST_ASSERT(page_level <= X86_PAGE_SIZE_1G, "page type error.");
++	return get_stats_from_file(pagestat_filepaths[page_level]);
++}
++#endif
++
+ size_t get_def_hugetlb_pagesz(void)
+ {
+ 	char buf[64];
+-- 
+2.33.0.rc2.250.ged5fa647cd-goog
+
