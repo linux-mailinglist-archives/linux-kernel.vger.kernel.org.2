@@ -2,187 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0B43F50F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F38D3F50FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhHWTC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:02:28 -0400
-Received: from mail-dm6nam11on2053.outbound.protection.outlook.com ([40.107.223.53]:38528
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229622AbhHWTC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:02:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O3toI6lgyJfvN94Rz0pItpk4K5Kfu3sv1lypZVOuWMvukQiJ+8ry3ufdaTEBKX8vXZ2FoK8PTPXgc/kBq0nWBMC6ENgstVLvAfbG+Ds4eHqAYG8jF2Xq4zGuLCK4owb2FFEd6OOba9lHXvoct6c/LNkrQ7+OZhabnYQ336s9fyG4m7n7xiKOC7WGRKoOH3ifMz73Cu4AuqZX2eycpHLWT0tDBYrYvLpJQ+HWqtBTEmLfXCg54Tznt5ZRx9FC2Rp1wlSpuqb6K9JhQdP7zYZXrdWRV6+VfOqPMd7sVMLvP7QXGzcXG6ITSJe2D78xCGk4YrJOIjjRZ46tfo2ixMRxQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wIVcik9WXTkRujmEkyU0dHyklU390RjK4sBgCWHusa8=;
- b=LMwxhOZ8+g2AYxRuU7TGx2kTPTlB8/dwhrL8/G5tw+iRcR4dtOEgMYUykfH7zBWIITDF1GyTA87QglLA/9ljOVUbWBzIBzybsO7qB14qwVqBZGkPuIGTcu+l3mWoJafyjkJ3n6ktKDXW19Q2hNlDoxqrxVglwc82BMaG/TkcHhGL3irH78IKqsP0j7UQKL4bdPAP4QuzsqB0vxFRAgghIv0t3TJ7/GdNEsZ811prN0Sgc5WwztOgSTqQTbWW4z9AumOIMBvdiH1pnG8ZaIxcTQvmSNV3u1GsvSh9fB8XspeyUQAlWZZb9Fv8CXnM0i6jLA7Lp9TkexED/pSCS6WS4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wIVcik9WXTkRujmEkyU0dHyklU390RjK4sBgCWHusa8=;
- b=Q6W+ZLkf3UTl/SnvUAtfHAD20VQS3KZe2t5Mq48bq95BjP3VzOYHm8g4hhuBjYlQW4TZmip3rybu4jVTH06ZMNVbiD4xSYzjZtLoo9JO6l+11AZPJF3YKw8GirZt6zKQ3jZePPI205ykiLDJpiVe8ldM6Kv/oWbqJZlNfNY/aog=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4781.namprd12.prod.outlook.com (2603:10b6:208:38::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Mon, 23 Aug
- 2021 19:01:39 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 19:01:39 +0000
-Subject: Re: [PATCH] drm/amd/pm: And destination bounds checking to struct
- copy
-To:     Kees Cook <keescook@chromium.org>, Lijo Lazar <lijo.lazar@amd.com>
-Cc:     "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Feifei Xu <Feifei.Xu@amd.com>, Likun Gao <Likun.Gao@amd.com>,
-        Jiawei Gu <Jiawei.Gu@amd.com>, Evan Quan <evan.quan@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Dennis Li <Dennis.Li@amd.com>,
-        Sathishkumar S <sathishkumar.sundararaju@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        David M Nieto <David.Nieto@amd.com>,
-        Kenneth Feng <kenneth.feng@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        John Clements <John.Clements@amd.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210819201441.3545027-1-keescook@chromium.org>
- <4922d89d-1293-7b32-d684-c731c246e6c1@amd.com>
- <FB2A077F-78CB-4D84-A8F2-C63C57923496@chromium.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <07a77a6c-f754-c676-5063-72ad418351d5@amd.com>
-Date:   Mon, 23 Aug 2021 21:01:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <FB2A077F-78CB-4D84-A8F2-C63C57923496@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: PR1PR01CA0011.eurprd01.prod.exchangelabs.com
- (2603:10a6:102::24) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S231569AbhHWTDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231565AbhHWTDu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 15:03:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992E6C061575;
+        Mon, 23 Aug 2021 12:03:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=XhDmWa6F4Xx0STmIyrtTBr52OUNX0b+RNLThlWnwpjY=; b=VWqzrBsay2jlFAl/3wjPHQ8FFT
+        PaYMuG9XGsVBJMokiBitdeXcFP4WdaBnlF0nKPLVYDAQjxDgI7pOh14J+hiL+cReF0HlOCqJc/qIQ
+        RnBmt78utyE9UfSKVBLh2lr9yus/cMgBM0QI4fzTlT8lxX+VVwHqmawrfToMojpwWgT2NDttnkDX6
+        bo8c+tl2hmWfFiuI08X0+FLqzudAzZCPOf9VPZYIXRJRCbrGHA0cOlMGQO/nkfb0Gf2K1jn0YrGeK
+        WpWKTVc2HFp8k02xpi2SqT7vwXh4Wz7OCFjs31l3s6igAOTPWQSRBaVzKi603zVErKvi9ydT9Ri/Y
+        b1xXojaQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIFCa-00A6ib-E5; Mon, 23 Aug 2021 19:01:57 +0000
+Date:   Mon, 23 Aug 2021 20:01:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSPwmNNuuQhXNToQ@casper.infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:7fec:37fc:e924:4b3] (2a02:908:1252:fb60:7fec:37fc:e924:4b3) by PR1PR01CA0011.eurprd01.prod.exchangelabs.com (2603:10a6:102::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 19:01:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5df959a4-0f7f-4949-8c2f-08d966686fbd
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4781:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4781BB092CC9FA11B720C89083C49@MN2PR12MB4781.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PDzlX9ka+3uodRQuMGQSG3Gr7PBhhWoURxGJBe+kg/Yh+dKl7G3q5nzOgM6BP5LBaAMU0TGftdbHNdBiv+Jq4VpSYcvV9jhF2uC1S08T5Z3gPWETxWLRmfeeEmdqaK9Er/jYrfc8SoYtE0UPrGgByfFw/E8/QYNwshRH04LUtfqK5UW02R/G3B5zTpHZ3tP6aeYKFDHZyG6viAvPhVcNIhUqqko+IQy63C0y5NkUjUjvGjIzeZf7M2Z3cAM/kBJQvWAfBxuyCVYeepMG8PZGQsddUlp+5/MZ5EZQBXoUJAL4dD5yYVXxdkyl72xhleizbLEg3Bsfv9/pw1YkpvUDZmbORzsPBRBpLZ5+mPXDctYyw4L3/qBGQ4Olww6MkE80KwxzUUS30Kv875en9gvUMl/KL+jgG0BDsOLKwFn4JRIf6GIuR1cVH5NyXdYsclXDNAwRbGDSLF5S1QMQiel1Gtok35ibPR0LKJgcgrmK1uMB1PKMLxAUJ1c1ne4sAlIQkNYKAJZYbbax+2bG0Uq9xmRwCn3bd8Ft/6kFYXyxIvQx0Lp76f+HKGQ4pFrMdmDLWwgNqyudHHTD/fyvoka2BDtDppSoJHKaWG2n2jCrjC91ltgqb9cbe0E/MrGtoWmCU/ZayzLs5uCy2H3K9nqvwKF3vvcI0H/cHox1ZKfO38+gn7Kkbru4c0kITqR+ceCjHRdzUEfzK7G/LrMKMRm3sA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(316002)(5660300002)(6666004)(478600001)(6636002)(83380400001)(66946007)(66556008)(54906003)(110136005)(36756003)(186003)(31686004)(86362001)(2906002)(8676002)(4326008)(8936002)(6486002)(38100700002)(2616005)(66476007)(31696002)(66574015)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N04waEZZZCs0cWlneWJReTZOQ1lqZDQ2VjdSYm1HQ1F0TEZ2UXAyMndiUUU0?=
- =?utf-8?B?TXZsRUZUOWxCcFM4aGliZjdzV1Ziay95YjZzdzdQMXVqZVYvWjNsaTg2eXFu?=
- =?utf-8?B?blNxTEk5czhGQXYwQXdQdW0ySWxKNHFPcGlCanVDTEhGUUxVZVFXOTRqM1pu?=
- =?utf-8?B?N01pM2lCZDJ2ZWh0Um9tRHJ4MWRZd1JQWTZjQnVmcTFELzJWVDFkZjlPanUx?=
- =?utf-8?B?d2pjeWMxOWNEUmFITzgrcEFMNXBBR3hQTk9NK3hJa2JRRWd1bHQxV1VDU0N0?=
- =?utf-8?B?WXF6VDVXUm1rUWUxK3VVWHp1VVR4cVhoRng2NHpzYUs4eElRWml2aEo1TnVJ?=
- =?utf-8?B?QVovYVI2ak9YWC81SjNjSEpucy9hWEE3bFRqTXdGL1dGTnd4SERsUkZhVjBS?=
- =?utf-8?B?cXBJNjgxQjcwZ0NTakNjN1lTazRFVGw1Rk1jRUY1NkFBWFhQZWJSLys3M2Vl?=
- =?utf-8?B?UGVLRFl6cFV5Rnk2UE81RFVzMW1jM0xJZzZVdWJrbDFMaE84N1ljYkVPdDdo?=
- =?utf-8?B?b2RKTFprRXlWUm1iMEZHTnhCckF5TDNERTBpSDBXOHRmR3VhdU5nVHdzL1Nr?=
- =?utf-8?B?QUp5cWhvT3pjcFprRG5QR3V2UmNvZ3V6V0VUVWlEM3MzQ2YrOFZLMitYMHlk?=
- =?utf-8?B?dmM4OE1ZaWpJQjN2K3NDcjY5WnE0MWZHelNRK0hMOHlsV3hSUVkrU2kyOEI4?=
- =?utf-8?B?OVh2MkFCQW5UYU5UYU9UQ2JYUFFYKzRLc2t6K3R0SWRPa1NZdzY2U2pybGpl?=
- =?utf-8?B?YXU0OTlTL2hpZ3NyZXhVSmlxS1dFOFordlRqTlM0S2RuTHlLeWxLdUsxUElE?=
- =?utf-8?B?djk0STFBbWxaV2JRYTFHMHNMWjNNS0ZtNC9FNUlPU2VhYUxXZkJ1dHl4eGFh?=
- =?utf-8?B?VHVTLzBZcmRpNmNqbndVb21YS3hqbXllTU1uQ2s4UUxYajZTQ1ZidjNmVm5s?=
- =?utf-8?B?VWsycCtDYXcvRXRsZ3FsK3E5S1I5NUZuMmQzU0R3M1dJQ0hVZmlmanRNQW8w?=
- =?utf-8?B?UEFPL3RMMnJKeFJOVFF5UUNnREhRNGhyek5MNkRtYzAyNjNPTVNkaWRxT0lm?=
- =?utf-8?B?S2s3MTB1cjMyMXUvUVVINGE3bjFYdXRXeFdWYlNCaFJ3aFgrOHFxbVJHa1pK?=
- =?utf-8?B?aFhDTDNEcGNEL1BidzhUd3pGdDlzNjN0WDZySE5yRmsxS0ZBWnRzRVBGS3Vy?=
- =?utf-8?B?Z1hkUkl1KzEvOTRrNFJpQ2FNYW5nQlh3M05oa1o1bCtoZHlYV1gvbDRDak1Z?=
- =?utf-8?B?b3NtVzVhTTZlZEtDY0FWb0IweXErelVleGtqRzhNK1MreElkaEZiOGV3WFVZ?=
- =?utf-8?B?NURmcXNHV1FnbU9xL25jUDU3Qnd5VFQvVlZTMnlHZ0xvVDZsaWxWUTR2S1Yz?=
- =?utf-8?B?U0Z6dElnRmpNVzdkRE9jenozOHh1cnE2NHN1SmFzZDEwMi9BTW9XS1k5dnRH?=
- =?utf-8?B?aWJkdVh6dE1qRUR1MEtKTUwyaFJ5QWtqUE1rVFcxTnR6QTRiWFRxaktGZjFD?=
- =?utf-8?B?dE5BM2VsTlF2ZEE0eGVyRkIwUHlqNzUxc2VPbml5NE5ndGoxcUNYcjBObk11?=
- =?utf-8?B?YnNwb3g1Q2liVnZ5UG9uMWZUWWo5YzlUZ01FL1p6NDR1N3ZBOVYxTXMvM2Fo?=
- =?utf-8?B?dzQ1L1pEMXNNaUx2a29EdUZYRENtcUtqY2k3cFhNWGp2WmxJcWZkOFhJbmdJ?=
- =?utf-8?B?M1JlZENHZ0NYU3A5dnlFZ20xcmt0M05MajdwSWdqN0NPTjc3M0tOeVdqMUZh?=
- =?utf-8?B?RjU1ZkNZSGxHZi90c3MrTWQwaHF3d2YzNnpWL0pEeEZNcVNKS0lOQXozaEdN?=
- =?utf-8?B?dWRYczJ3SjhPMkd5blMyc09tc0thUzZDZFZuQnlPaFA2UkdoZ0VrSERqMXpJ?=
- =?utf-8?Q?kbSlbqK0yHza3?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5df959a4-0f7f-4949-8c2f-08d966686fbd
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 19:01:39.0738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: islwvfUYs+xWSQnCz2DlpkY3j28/7gDlpzFPRT/T+rFdrKSlbkCN/JT+W+SWMlL6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4781
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 23.08.21 um 16:23 schrieb Kees Cook:
->
-> On August 22, 2021 11:28:54 PM PDT, "Christian König" <christian.koenig@amd.com> wrote:
->>
->> Am 19.08.21 um 22:14 schrieb Kees Cook:
->>> [...]
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>> index 96e895d6be35..4605934a4fb7 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>> @@ -1446,4 +1446,29 @@ static inline int amdgpu_in_reset(struct amdgpu_device *adev)
->>>    {
->>>    	return atomic_read(&adev->in_gpu_reset);
->>>    }
->>> +
->>> +/**
->>> + * memcpy_trailing - Copy the end of one structure into the middle of another
->>> + *
->>> + * @dst: Pointer to destination struct
->>> + * @first_dst_member: The member name in @dst where the overwrite begins
->>> + * @last_dst_member: The member name in @dst where the overwrite ends after
->>> + * @src: Pointer to the source struct
->>> + * @first_src_member: The member name in @src where the copy begins
->>> + *
->>> + */
->>> +#define memcpy_trailing(dst, first_dst_member, last_dst_member,		   \
->>> +		        src, first_src_member)				   \
->> Please don't add a function like this into amdgpu.h, especially when it
->> is only used by the SMU code.
-> Sure, I'm happy to move it. It wasn't clear to me which headers were considered "immutable". Which header should I put this in?
+Hi Linus,
 
-I think amdgpu_smuio.h, but I'm not 100% sure. Alex do you have a better 
-idea?
+I'm sending this pull request a few days before the merge window
+opens so you have time to think about it.  I don't intend to make any
+further changes to the branch, so I've created the tag and signed it.
+It's been in Stephen's next tree for a few weeks with only minor problems
+(now addressed).
 
-We don't want to put anything new into amdgpu.h any more since this is 
-basically only a legacy leftover.
+The point of all this churn is to allow filesystems and the page cache
+to manage memory in larger chunks than PAGE_SIZE.  The original plan was
+to use compound pages like THP does, but I ran into problems with some
+functions that take a struct page expect only a head page while others
+expect the precise page containing a particular byte.
 
-Thanks,
-Christian.
+This pull request converts just parts of the core MM and the page cache.
+For 5.16, we intend to convert various filesystems (XFS and AFS are ready;
+other filesystems may make it) and also convert more of the MM and page
+cache to folios.  For 5.17, multi-page folios should be ready.
 
->
->> And please give it an amdgpu_ prefix so that we are not confusing it
->> with a core function.
-> Sure, I will include that.
->
->> Apart from that looks good to me.
-> Thanks!
->
-> -Kees
+The multi-page folios offer some improvement to some workloads.  The 80%
+win is real, but appears to be an artificial benchmark (postgres startup,
+which isn't a serious workload).  Real workloads (eg building the kernel,
+running postgres in a steady state, etc) seem to benefit between 0-10%.
+I haven't heard of any performance losses as a result of this series.
+Nobody has done any serious performance tuning; I imagine that tweaking
+the readahead algorithm could provide some more interesting wins.
+There are also other places where we could choose to create large folios
+and currently do not, such as writes that are larger than PAGE_SIZE.
+
+I'd like to thank all my reviewers who've offered review/ack tags:
+
+Christoph Hellwig <hch@lst.de>
+David Howells <dhowells@redhat.com>
+Jan Kara <jack@suse.cz>
+Jeff Layton <jlayton@kernel.org>
+Johannes Weiner <hannes@cmpxchg.org>
+Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Michal Hocko <mhocko@suse.com>
+Mike Rapoport <rppt@linux.ibm.com>
+Vlastimil Babka <vbabka@suse.cz>
+William Kucharski <william.kucharski@oracle.com>
+Yu Zhao <yuzhao@google.com>
+Zi Yan <ziy@nvidia.com>
+
+As well as those who gave feedback I incorporated but haven't offered up
+review tags for this part of the series: Nick Piggin, Mel Gorman, Ming
+Lei, Darrick Wong, Ted Ts'o, John Hubbard, Hugh Dickins, and probably
+a few others who I forget.
+
+The following changes since commit f0eb870a84224c9bfde0dc547927e8df1be4267c:
+
+  Merge tag 'xfs-5.14-fixes-1' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2021-07-18 11:27:25 -0700)
+
+are available in the Git repository at:
+
+  git://git.infradead.org/users/willy/pagecache.git tags/folio-5.15
+
+for you to fetch changes up to 1a90e9dae32ce26de43c1c5eddb3ecce27f2a640:
+
+  mm/writeback: Add folio_write_one (2021-08-15 23:04:07 -0400)
+
+----------------------------------------------------------------
+Memory folios
+
+Add memory folios, a new type to represent either order-0 pages or
+the head page of a compoud page.  This should be enough infrastructure
+to support filesystems converting from pages to folios.
+
+----------------------------------------------------------------
+Matthew Wilcox (Oracle) (90):
+      mm: Convert get_page_unless_zero() to return bool
+      mm: Introduce struct folio
+      mm: Add folio_pgdat(), folio_zone() and folio_zonenum()
+      mm/vmstat: Add functions to account folio statistics
+      mm/debug: Add VM_BUG_ON_FOLIO() and VM_WARN_ON_ONCE_FOLIO()
+      mm: Add folio reference count functions
+      mm: Add folio_put()
+      mm: Add folio_get()
+      mm: Add folio_try_get_rcu()
+      mm: Add folio flag manipulation functions
+      mm/lru: Add folio LRU functions
+      mm: Handle per-folio private data
+      mm/filemap: Add folio_index(), folio_file_page() and folio_contains()
+      mm/filemap: Add folio_next_index()
+      mm/filemap: Add folio_pos() and folio_file_pos()
+      mm/util: Add folio_mapping() and folio_file_mapping()
+      mm/filemap: Add folio_unlock()
+      mm/filemap: Add folio_lock()
+      mm/filemap: Add folio_lock_killable()
+      mm/filemap: Add __folio_lock_async()
+      mm/filemap: Add folio_wait_locked()
+      mm/filemap: Add __folio_lock_or_retry()
+      mm/swap: Add folio_rotate_reclaimable()
+      mm/filemap: Add folio_end_writeback()
+      mm/writeback: Add folio_wait_writeback()
+      mm/writeback: Add folio_wait_stable()
+      mm/filemap: Add folio_wait_bit()
+      mm/filemap: Add folio_wake_bit()
+      mm/filemap: Convert page wait queues to be folios
+      mm/filemap: Add folio private_2 functions
+      fs/netfs: Add folio fscache functions
+      mm: Add folio_mapped()
+      mm: Add folio_nid()
+      mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
+      mm/memcg: Use the node id in mem_cgroup_update_tree()
+      mm/memcg: Remove soft_limit_tree_node()
+      mm/memcg: Convert memcg_check_events to take a node ID
+      mm/memcg: Add folio_memcg() and related functions
+      mm/memcg: Convert commit_charge() to take a folio
+      mm/memcg: Convert mem_cgroup_charge() to take a folio
+      mm/memcg: Convert uncharge_page() to uncharge_folio()
+      mm/memcg: Convert mem_cgroup_uncharge() to take a folio
+      mm/memcg: Convert mem_cgroup_migrate() to take folios
+      mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to folio
+      mm/memcg: Add folio_memcg_lock() and folio_memcg_unlock()
+      mm/memcg: Convert mem_cgroup_move_account() to use a folio
+      mm/memcg: Add folio_lruvec()
+      mm/memcg: Add folio_lruvec_lock() and similar functions
+      mm/memcg: Add folio_lruvec_relock_irq() and folio_lruvec_relock_irqsave()
+      mm/workingset: Convert workingset_activation to take a folio
+      mm: Add folio_pfn()
+      mm: Add folio_raw_mapping()
+      mm: Add flush_dcache_folio()
+      mm: Add kmap_local_folio()
+      mm: Add arch_make_folio_accessible()
+      mm: Add folio_young and folio_idle
+      mm/swap: Add folio_activate()
+      mm/swap: Add folio_mark_accessed()
+      mm/rmap: Add folio_mkclean()
+      mm/migrate: Add folio_migrate_mapping()
+      mm/migrate: Add folio_migrate_flags()
+      mm/migrate: Add folio_migrate_copy()
+      mm/writeback: Rename __add_wb_stat() to wb_stat_mod()
+      flex_proportions: Allow N events instead of 1
+      mm/writeback: Change __wb_writeout_inc() to __wb_writeout_add()
+      mm/writeback: Add __folio_end_writeback()
+      mm/writeback: Add folio_start_writeback()
+      mm/writeback: Add folio_mark_dirty()
+      mm/writeback: Add __folio_mark_dirty()
+      mm/writeback: Convert tracing writeback_page_template to folios
+      mm/writeback: Add filemap_dirty_folio()
+      mm/writeback: Add folio_account_cleaned()
+      mm/writeback: Add folio_cancel_dirty()
+      mm/writeback: Add folio_clear_dirty_for_io()
+      mm/writeback: Add folio_account_redirty()
+      mm/writeback: Add folio_redirty_for_writepage()
+      mm/filemap: Add i_blocks_per_folio()
+      mm/filemap: Add folio_mkwrite_check_truncate()
+      mm/filemap: Add readahead_folio()
+      mm/workingset: Convert workingset_refault() to take a folio
+      mm: Add folio_evictable()
+      mm/lru: Convert __pagevec_lru_add_fn to take a folio
+      mm/lru: Add folio_add_lru()
+      mm/page_alloc: Add folio allocation functions
+      mm/filemap: Add filemap_alloc_folio
+      mm/filemap: Add filemap_add_folio()
+      mm/filemap: Convert mapping_get_entry to return a folio
+      mm/filemap: Add filemap_get_folio
+      mm/filemap: Add FGP_STABLE
+      mm/writeback: Add folio_write_one
+
+ Documentation/core-api/cachetlb.rst         |   6 +
+ Documentation/core-api/mm-api.rst           |   5 +
+ Documentation/filesystems/netfs_library.rst |   2 +
+ arch/arc/include/asm/cacheflush.h           |   1 +
+ arch/arm/include/asm/cacheflush.h           |   1 +
+ arch/mips/include/asm/cacheflush.h          |   2 +
+ arch/nds32/include/asm/cacheflush.h         |   1 +
+ arch/nios2/include/asm/cacheflush.h         |   3 +-
+ arch/parisc/include/asm/cacheflush.h        |   3 +-
+ arch/sh/include/asm/cacheflush.h            |   3 +-
+ arch/xtensa/include/asm/cacheflush.h        |   3 +-
+ fs/afs/write.c                              |   9 +-
+ fs/cachefiles/rdwr.c                        |  16 +-
+ fs/io_uring.c                               |   2 +-
+ fs/jfs/jfs_metapage.c                       |   1 +
+ include/asm-generic/cacheflush.h            |   6 +
+ include/linux/backing-dev.h                 |   6 +-
+ include/linux/flex_proportions.h            |   9 +-
+ include/linux/gfp.h                         |  22 +-
+ include/linux/highmem-internal.h            |  11 +
+ include/linux/highmem.h                     |  37 ++
+ include/linux/huge_mm.h                     |  15 -
+ include/linux/ksm.h                         |   4 +-
+ include/linux/memcontrol.h                  | 231 ++++++-----
+ include/linux/migrate.h                     |   4 +
+ include/linux/mm.h                          | 239 +++++++++---
+ include/linux/mm_inline.h                   | 103 +++--
+ include/linux/mm_types.h                    |  77 ++++
+ include/linux/mmdebug.h                     |  20 +
+ include/linux/netfs.h                       |  77 ++--
+ include/linux/page-flags.h                  | 267 +++++++++----
+ include/linux/page_idle.h                   |  99 +++--
+ include/linux/page_owner.h                  |   8 +-
+ include/linux/page_ref.h                    | 158 +++++++-
+ include/linux/pagemap.h                     | 585 ++++++++++++++++++----------
+ include/linux/rmap.h                        |  10 +-
+ include/linux/swap.h                        |  17 +-
+ include/linux/vmstat.h                      | 113 +++++-
+ include/linux/writeback.h                   |   9 +-
+ include/trace/events/pagemap.h              |  46 ++-
+ include/trace/events/writeback.h            |  28 +-
+ kernel/bpf/verifier.c                       |   2 +-
+ kernel/events/uprobes.c                     |   3 +-
+ lib/flex_proportions.c                      |  28 +-
+ mm/Makefile                                 |   2 +-
+ mm/compaction.c                             |   4 +-
+ mm/filemap.c                                | 575 +++++++++++++--------------
+ mm/folio-compat.c                           | 142 +++++++
+ mm/huge_memory.c                            |   7 +-
+ mm/hugetlb.c                                |   2 +-
+ mm/internal.h                               |  36 +-
+ mm/khugepaged.c                             |   8 +-
+ mm/ksm.c                                    |  34 +-
+ mm/memcontrol.c                             | 358 +++++++++--------
+ mm/memory-failure.c                         |   2 +-
+ mm/memory.c                                 |  20 +-
+ mm/mempolicy.c                              |  10 +
+ mm/memremap.c                               |   2 +-
+ mm/migrate.c                                | 189 +++++----
+ mm/mlock.c                                  |   3 +-
+ mm/page-writeback.c                         | 477 +++++++++++++----------
+ mm/page_alloc.c                             |  14 +-
+ mm/page_io.c                                |   4 +-
+ mm/page_owner.c                             |  10 +-
+ mm/rmap.c                                   |  14 +-
+ mm/shmem.c                                  |   7 +-
+ mm/swap.c                                   | 197 +++++-----
+ mm/swap_state.c                             |   2 +-
+ mm/swapfile.c                               |   8 +-
+ mm/userfaultfd.c                            |   2 +-
+ mm/util.c                                   | 111 +++---
+ mm/vmscan.c                                 |   8 +-
+ mm/workingset.c                             |  52 +--
+ 73 files changed, 2900 insertions(+), 1692 deletions(-)
+ create mode 100644 mm/folio-compat.c
 
