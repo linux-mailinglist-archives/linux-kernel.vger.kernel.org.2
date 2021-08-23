@@ -2,100 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6ED3F5122
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144D13F5126
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhHWTSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:18:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50255 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230377AbhHWTSH (ORCPT
+        id S231779AbhHWTUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:20:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61161 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhHWTTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:18:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629746243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hfa5vNFo38/k45EAS0ocbtPh3eTQnzy51Lm4DUgg6zo=;
-        b=HlL4pxQMbi67rgNJmLejbMFnK0Pvz2ZVsWrNA0+x3WyBAzZMKRBHgZrcwiRkupkNHgPbfz
-        AVI+HVyRuh6mbdqE2oBtk9Vn4B92SrtVLIPydvloxyeb0wtIzku9v6QVBjpaODAIzKBJMd
-        58i6/Xa6ANkpPszuifySne/Bx+pVDGw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-sva_QisuMzycRUGAYAwfKw-1; Mon, 23 Aug 2021 15:17:22 -0400
-X-MC-Unique: sva_QisuMzycRUGAYAwfKw-1
-Received: by mail-wr1-f70.google.com with SMTP id r11-20020a5d4e4b000000b001575c5ed4b4so455022wrt.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:17:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hfa5vNFo38/k45EAS0ocbtPh3eTQnzy51Lm4DUgg6zo=;
-        b=KgZ+bqJEXpxrYKDtGxFZuidPbADsuT46+VVzlnCScErVqWayR987wuC+aOjYYWCIrR
-         i+T8xvguuIOTFWqYJHFLi4DcROK3KE4Cc8SP9apuEZ/Z4Og/0FsjjNffE8+usMbf7Es7
-         7orbxkb8F29JBpM9HICuv70CA9y+Iv5Vhdwqw/guCk+j3Jd8sypg0KazDaVdv66NDOzf
-         eSezRAse1cLjclclYJ3yRffj3t7MTM+Spj19Q9BwEPMQ0SGv9veipOIyPRrK8AS4uDW8
-         GyXEeAwwmSD6Wh/hTAjt21F2CyDaHhxdWVHthql+J1UeQ3JoUMJOe9ADXG1s+zP2eDr9
-         Z8iA==
-X-Gm-Message-State: AOAM532W5oP3z2cwRFAhdIp/lxIQZdyPKJ3XVnrbOWFrze3qzy0d7G44
-        w5rcLPYKC17E/8Ux42eN8VgR4e6h8FAq8KohqYat3/tKqKUUeM39IWPKC0SfaijNjs6aOxmlMq5
-        R99pp1dl0n+aeU/kY0LBLvj+g
-X-Received: by 2002:a5d:4b01:: with SMTP id v1mr14808691wrq.377.1629746241194;
-        Mon, 23 Aug 2021 12:17:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCCa98KM7/EeqgBJubHh9aDYEDS2dcPiXFmf/SLIfXyxzg0Qtn0czsk3yMiJSWGjR9BG9PAg==
-X-Received: by 2002:a5d:4b01:: with SMTP id v1mr14808679wrq.377.1629746241045;
-        Mon, 23 Aug 2021 12:17:21 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c60c6.dip0.t-ipconnect.de. [91.12.96.198])
-        by smtp.gmail.com with ESMTPSA id q22sm58557wmj.32.2021.08.23.12.17.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 12:17:20 -0700 (PDT)
-Subject: Re: [PATCH V1] hugetlbfs: Extend the definition of hugepages
- parameter to support node allocation
-To:     yaozhenguo <yaozhenguo1@gmail.com>, mike.kravetz@oracle.com,
-        corbet@lwn.net, akpm@linux-foundation.org
-Cc:     yaozhenguo@jd.com, willy@infradead.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210823130154.75070-1-yaozhenguo1@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <be7017ea-0728-b342-0c78-f88256024dfb@redhat.com>
-Date:   Mon, 23 Aug 2021 21:17:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 23 Aug 2021 15:19:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629746352; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Xu22I1siZ+uMMg5BUtcnE4glpvItoPhLcNyFpMXvNmw=;
+ b=KrxOoo8B/kxCfZrpwyrf9Ap4i0BAfBJrcnVbEtPchwzggwc2ldAd1PE8opMPlf7h538+Npz0
+ 3Jy8XUcUd/d4gsKo7Yc55gisyQk4CRAlGelXrpkusrv6YE3QHkntOpuigUJji1GmMMzpd5Gy
+ Jc4NIMYTxyTTsM/5Jk1ClAuU6kQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6123f4a62b9e91b688274110 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 19:19:02
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A1E2C43617; Mon, 23 Aug 2021 19:19:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EAEA0C4338F;
+        Mon, 23 Aug 2021 19:19:00 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210823130154.75070-1-yaozhenguo1@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Aug 2021 12:19:00 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com
+Subject: Re: [PATCH v6 3/4] bus: mhi: core: Process execution environment
+ changes serially
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <899da888-321a-c228-8537-b72821700dc7@quicinc.com>
+References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org>
+ <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
+ <899da888-321a-c228-8537-b72821700dc7@quicinc.com>
+Message-ID: <62c4f4130f74e3731cd3886049684d23@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.08.21 15:01, yaozhenguo wrote:
-> We can specify the number of hugepages to allocate at boot. But the
-> hugepages is balanced in all nodes at present. In some scenarios,
-> we only need hugepags in one node. For example: DPDK needs hugepages
-> which is in the same node as NIC. if DPDK needs four hugepags of 1G
-> size in node1 and system has 16 numa nodes. We must reserve 64 hugepags
-> in kernel cmdline. But, only four hugepages is used. The others should
-> be free after boot.If the system memory is low(for example: 64G), it will
-> be an impossible task. So, extend hugepages kernel parameter to specify
-> node number of hugepages to allocate at boot.
-> For example add following parameter:
+On 2021-08-23 11:43 AM, Jeffrey Hugo wrote:
+> On 2/24/2021 4:23 PM, Bhaumik Bhatt wrote:
+>> In current design, whenever the BHI interrupt is fired, the
+>> execution environment is updated. This can cause race conditions
+>> and impede ongoing power up/down processing. For example, if a
+>> power down is in progress, MHI host updates to a local "disabled"
+>> execution environment. If a BHI interrupt fires later, that value
+>> gets replaced with one from the BHI EE register. This impacts the
+>> controller as it does not expect multiple RDDM execution
+>> environment change status callbacks as an example. Another issue
+>> would be that the device can enter mission mode and the execution
+>> environment is updated, while device creation for SBL channels is
+>> still going on due to slower PM state worker thread run, leading
+>> to multiple attempts at opening the same channel.
+>> 
+>> Ensure that EE changes are handled only from appropriate places
+>> and occur one after another and handle only PBL modes or RDDM EE
+>> changes as critical events directly from the interrupt handler.
+>> Simplify handling by waiting for SYS ERROR before handling RDDM.
+>> This also makes sure that we use the correct execution environment
+>> to notify the controller driver when the device resets to one of
+>> the PBL execution environments.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 > 
-> hugepagesz=1G hugepages=0:1,1:3
+> <snip>
 > 
-> It will allocate 1 hugepags in node0 and 3 hugepages in node1.
+>> @@ -452,27 +451,30 @@ irqreturn_t mhi_intvec_threaded_handler(int 
+>> irq_number, void *priv)
+>>   	}
+>>   	write_unlock_irq(&mhi_cntrl->pm_lock);
+>>   -	 /* If device supports RDDM don't bother processing SYS error */
+>> -	if (mhi_cntrl->rddm_image) {
+>> -		/* host may be performing a device power down already */
+>> -		if (!mhi_is_active(mhi_cntrl))
+>> -			goto exit_intvec;
+>> +	if (pm_state != MHI_PM_SYS_ERR_DETECT || ee == mhi_cntrl->ee)
+>> +		goto exit_intvec;
+>>   -		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
+>> +	switch (ee) {
+>> +	case MHI_EE_RDDM:
+>> +		/* proceed if power down is not already in progress */
+>> +		if (mhi_cntrl->rddm_image && mhi_is_active(mhi_cntrl)) {
+>>   			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
+>> +			mhi_cntrl->ee = ee;
+>>   			wake_up_all(&mhi_cntrl->state_event);
+>>   		}
+>> -		goto exit_intvec;
+>> -	}
+>> -
+>> -	if (pm_state == MHI_PM_SYS_ERR_DETECT) {
+>> +		break;
+>> +	case MHI_EE_PBL:
+>> +	case MHI_EE_EDL:
+>> +	case MHI_EE_PTHRU:
+>> +		mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
+>> +		mhi_cntrl->ee = ee;
+>>   		wake_up_all(&mhi_cntrl->state_event);
+>> -
+>> -		/* For fatal errors, we let controller decide next step */
+>> -		if (MHI_IN_PBL(ee))
+>> -			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
+>> -		else
+>> -			mhi_pm_sys_err_handler(mhi_cntrl);
+>> +		mhi_pm_sys_err_handler(mhi_cntrl);
+>> +		break;
+>> +	default:
+>> +		wake_up_all(&mhi_cntrl->state_event);
+>> +		mhi_pm_sys_err_handler(mhi_cntrl);
+>> +		break;
+>>   	}
+> 
+> Bhaumik, can you explain the above change?  Before this patch (which
+> is now committed), if there was a fatal error, the controller was
+> notified (MHI_CB_FATAL_ERROR) and it decided all action.  After this
+> patch, the controller is notified, but also the core attempts to
+> handle the syserr.
+> 
+> This is a change in behavior, and seems to make a mess of the
+> controller, and possibly the core fighting each other.
+> 
+> Specifically, I'm rebasing the AIC100 driver onto 5.13, which has this
+> change, and I'm seeing a serious regression.  I'm thinking that for
+> the PBL/EDL/PTHRU case, mhi_pm_sys_err_handler() should not be called.
+> 
+> Thoughts?
 
-I like this format.
+I see. We use this heavily for entry to EDL use-cases.
 
+We do require the mhi_pm_sys_err_handler() to be called in those cases
+as any entry to PBL/EDL means there is need to clean-up MHI host and 
+notify all
+its clients.
 
--- 
+We include PTHRU in here because its a SYS ERROR in PBL modes.
+
+Premise being the controller should not be in that business of doing any 
+of
+the clean-up that is responsibility of the core driver. We're using this 
+feature
+set to ensure controller is only notified.
+
+What does AIC100 do on fatal error that you run in to issues? I don't 
+think
+any of the other controllers do anything other than disabling runtime PM 
+since
+device is down. Maybe there's some room for improvement.
+
 Thanks,
-
-David / dhildenb
-
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
