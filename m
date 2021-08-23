@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC873F440D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575413F441A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 06:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhHWECA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 00:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhHWEB7 (ORCPT
+        id S230439AbhHWEVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 00:21:53 -0400
+Received: from mail-m963.mail.126.com ([123.126.96.3]:56370 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhHWEVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 00:01:59 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CB5C061575;
-        Sun, 22 Aug 2021 21:01:17 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d9so12752948qty.12;
-        Sun, 22 Aug 2021 21:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aRgamPKGb4YrEkVwlKVeiTkelYnJ/WUCUxASVTfMczY=;
-        b=WAEAJArmhfElY+V1GA3EbQLLmeW3xGij0Gr7OkgaVxIvoIeenqT4qy2ql7qzg91GDA
-         UQYmpYYvWku2Wde9wHp2iWMUFHKgfVW0iDI2P6siCxxhvQ/k+PKjrp5RU4FOol2rq7Yg
-         ed55tzV+cojz++ugPijAM/qJgYlK24fLI77OQpdLqxwgpLoQD9v0MCr2lsvmbZy9IlCs
-         qR+VHXGZQeLVmiKmnZzgUyvyIrjONqDBwEx0dYdMxFLSJMAVdLrF6XD6SpHGYfACYq81
-         yMb5Zl6bsMPC+dbOvunV2xzj7SU2Ermv4dxmN8OtXZT1o3CBoifn9dPwPFYwuY48SFZi
-         s71Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aRgamPKGb4YrEkVwlKVeiTkelYnJ/WUCUxASVTfMczY=;
-        b=FHa9wqv8fPKbtdFOh4DuVQTrHJ5sw9bogNN9TTotVJuPN9I/Ng2YFgMh6Ha0RagtNu
-         SBrVWTCLcdsp6koSjpfYrpjgfE7OxAFiQkyXCFIzRl+bgU6Yc9NklL8fn3JO7xOJf3iV
-         0p3mzKqOgneZfR+H2HZUB7A5Kk3VvJFvntFnF/vgD8DAVjzvjTlsIjZQ1z3bRdcv0fZr
-         AytzNKqxYesDa9fLf8WBiSsy53QrtVlX0wKryh3kV2YZ7FPr4H0UhDYldhZpghOnphm0
-         P/gEAYD1OtMLCFohIH6s7KW6s+YB2nUt9nipNZrA0iWUYZYh44md7TQxCknzeR/lMNLi
-         vI+w==
-X-Gm-Message-State: AOAM532EuVhFMUvfqTnvW2SgkWUp2tAEvA0PAKD+iewzOziFxwbEP2fG
-        fxcdpZdVYWEAUXFJ5wLdiFU=
-X-Google-Smtp-Source: ABdhPJxfVF9gp7FgIBNpZRCNtTxge23zeA634PIZbfrSAQu15T/A8m+VJbARSW1rEpMXWxu+q71fow==
-X-Received: by 2002:ac8:534c:: with SMTP id d12mr16340333qto.221.1629691276705;
-        Sun, 22 Aug 2021 21:01:16 -0700 (PDT)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id t26sm6842572qkm.0.2021.08.22.21.01.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Aug 2021 21:01:16 -0700 (PDT)
-Subject: Re: [PATCH] of: Don't allow __of_attached_node_sysfs() without
- CONFIG_SYSFS
-To:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     robh+dt@kernel.org, kernel-team@android.com
-References: <20210820144722.169226-1-maz@kernel.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <a67743f9-869b-28df-d714-db15da4ebe06@gmail.com>
-Date:   Sun, 22 Aug 2021 23:01:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210820144722.169226-1-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 23 Aug 2021 00:21:52 -0400
+X-Greylist: delayed 1892 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 00:21:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=bLhi3x2BRyUWAiafje
+        v5SWx5KYU1bHlvlbbBzV4bLnE=; b=FY7fauIIqcnAlOmbWnbp7Va3q+/qJNzUV3
+        FoVNwe7Rswat5MLYow+aiHGnCkIeFYhqy1vQgN+HCD2RpKMh/Iv2Y6BHXUfgDpXm
+        WUXtEVt6AtN5NX0OgSBJ3DdoBIpd7nHNxTopijQkmvwb0gM7Ds74nZAFQjst4afJ
+        VK2GhoT2k=
+Received: from localhost.localdomain (unknown [222.128.173.92])
+        by smtp8 (Coremail) with SMTP id NORpCgD3zFy9GiNhsulwOg--.5885S4;
+        Mon, 23 Aug 2021 11:49:18 +0800 (CST)
+From:   zhang kai <zhangkaiheb@126.com>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhang kai <zhangkaiheb@126.com>
+Subject: [PATCH] ipv6: correct comments about fib6_node sernum
+Date:   Mon, 23 Aug 2021 11:49:00 +0800
+Message-Id: <20210823034900.22967-1-zhangkaiheb@126.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: NORpCgD3zFy9GiNhsulwOg--.5885S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ur4rtFy3Kr1xCF1DKFy8Xwb_yoW8XFyfpF
+        4qkrs7KrnruFyYkrWkJF18Zr13WanrCFW3Ww4fAayvkw1vqw18XF1kKr1SvF18GFWSvanx
+        JF42qrWfJF45uw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U59N3UUUUU=
+X-Originating-IP: [222.128.173.92]
+X-CM-SenderInfo: x2kd0wxndlxvbe6rjloofrz/1tbi1x73-l53W4+6DgAAsJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+correct comments in set and get fn_sernum
 
-On 8/20/21 9:47 AM, Marc Zyngier wrote:
-> Trying to boot without SYSFS, but with OF_DYNAMIC quickly
-> results in a crash:
-> 
-> [    0.088460] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000070
-> [...]
-> [    0.103927] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.14.0-rc3 #4179
-> [    0.105810] Hardware name: linux,dummy-virt (DT)
-> [    0.107147] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> [    0.108876] pc : kernfs_find_and_get_ns+0x3c/0x7c
-> [    0.110244] lr : kernfs_find_and_get_ns+0x3c/0x7c
-> [...]
-> [    0.134087] Call trace:
-> [    0.134800]  kernfs_find_and_get_ns+0x3c/0x7c
-> [    0.136054]  safe_name+0x4c/0xd0
-> [    0.136994]  __of_attach_node_sysfs+0xf8/0x124
-> [    0.138287]  of_core_init+0x90/0xfc
-> [    0.139296]  driver_init+0x30/0x4c
-> [    0.140283]  kernel_init_freeable+0x160/0x1b8
-> [    0.141543]  kernel_init+0x30/0x140
-> [    0.142561]  ret_from_fork+0x10/0x18
-> 
-> While not having sysfs isn't a very common option these days,
-> it is still expected that such configuration would work.
-> 
-> Paper over it by bailing out from __of_attach_node_sysfs() if
-> CONFIG_SYSFS isn't enabled.
+Signed-off-by: zhang kai <zhangkaiheb@126.com>
+---
+ include/net/ip6_fib.h | 4 ++--
+ net/ipv6/ip6_fib.c    | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-CONFIG_SYSFS should be automatically selected when CONFIG_OF_DYNAMIC
-is enabled, and it should not be possible to disable CONFIG_SYSFS
-in this case.
-
-Can you send your .config?
-What ARCH did you build the kernel with?
-
-Thanks,
-
-Frank
-
-
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/of/kobj.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
-> index a32e60b024b8..6675b5e56960 100644
-> --- a/drivers/of/kobj.c
-> +++ b/drivers/of/kobj.c
-> @@ -119,7 +119,7 @@ int __of_attach_node_sysfs(struct device_node *np)
->  	struct property *pp;
->  	int rc;
->  
-> -	if (!of_kset)
-> +	if (!IS_ENABLED(CONFIG_SYSFS) || !of_kset)
->  		return 0;
->  
->  	np->kobj.kset = of_kset;
-> 
+diff --git a/include/net/ip6_fib.h b/include/net/ip6_fib.h
+index 15b7fbe6b..c412dde4d 100644
+--- a/include/net/ip6_fib.h
++++ b/include/net/ip6_fib.h
+@@ -267,7 +267,7 @@ static inline bool fib6_check_expired(const struct fib6_info *f6i)
+ 	return false;
+ }
+ 
+-/* Function to safely get fn->sernum for passed in rt
++/* Function to safely get fn->fn_sernum for passed in rt
+  * and store result in passed in cookie.
+  * Return true if we can get cookie safely
+  * Return false if not
+@@ -282,7 +282,7 @@ static inline bool fib6_get_cookie_safe(const struct fib6_info *f6i,
+ 
+ 	if (fn) {
+ 		*cookie = fn->fn_sernum;
+-		/* pairs with smp_wmb() in fib6_update_sernum_upto_root() */
++		/* pairs with smp_wmb() in __fib6_update_sernum_upto_root() */
+ 		smp_rmb();
+ 		status = true;
+ 	}
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index 679699e95..4d7b93baa 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -1340,7 +1340,7 @@ static void __fib6_update_sernum_upto_root(struct fib6_info *rt,
+ 	struct fib6_node *fn = rcu_dereference_protected(rt->fib6_node,
+ 				lockdep_is_held(&rt->fib6_table->tb6_lock));
+ 
+-	/* paired with smp_rmb() in rt6_get_cookie_safe() */
++	/* paired with smp_rmb() in fib6_get_cookie_safe() */
+ 	smp_wmb();
+ 	while (fn) {
+ 		fn->fn_sernum = sernum;
+-- 
+2.17.1
 
