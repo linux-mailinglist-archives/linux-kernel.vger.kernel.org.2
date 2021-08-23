@@ -2,128 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6791B3F4D3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 568DF3F4D42
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhHWPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:19:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43184 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231401AbhHWPTK (ORCPT
+        id S231516AbhHWPTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:19:45 -0400
+Received: from mail.efficios.com ([167.114.26.124]:40164 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231447AbhHWPTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:19:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629731907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8UQPHdxCvb0Ewfa1Oz5Y/LDOGEQHYeTGsDvKMf5nPfA=;
-        b=chuTmSGFF+WiTnjZ8/mDZM7eOFL6S9CSHvXDcoLgXnOdpYA9Ire+joPbV3Oj9QeezDf1Ij
-        LpCrU0YTBMHdwWXRn2UivHFcNQEnqrq8SKvQXWf55UXdlADl9l5q8ySNR59Khe4uxQpBu6
-        FiDJz7yvKce3MV3JEUaQ8rN2Hb5BTXo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-LpOUaa7rOkOU2Rhlht9fXw-1; Mon, 23 Aug 2021 11:18:25 -0400
-X-MC-Unique: LpOUaa7rOkOU2Rhlht9fXw-1
-Received: by mail-wr1-f71.google.com with SMTP id h15-20020adff18f000000b001574654fbc2so1722716wro.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:18:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8UQPHdxCvb0Ewfa1Oz5Y/LDOGEQHYeTGsDvKMf5nPfA=;
-        b=ocYOfhuiYnhLaIZpV0S5apjUolhRtPRslM7wEZA41nLkBc+u7QqHykRJB3+UpCUPLt
-         qWZIcEzTfO9KuBaqq1CQbMfqKe6brkXk3ZPx+oIESaq3g/kbSFXe0YbatXMQPxLCmILZ
-         GsImNjCpdbO0En0f51VjYA3gmpN0eW+gUVfm6COGlccliIohAIeYvgwOaEZXc3Qmi+kd
-         32+lucBijOGgEUaQNRWBZ5x0amn62mdGPPiLPSUsZHQrdELCbQCpforgI5AkbzuaYIcw
-         yvijrODGeRGEGuW+Y7fHM4pyJqRs79vZ1nO1+zyN8TSKk3vHhg7h+afTo9cvlWdUsV/I
-         CqoQ==
-X-Gm-Message-State: AOAM532svEyLA6y9tXHo5k/TMCiImQNnYRF/pJfFRMKgQcL/yd7PuPKr
-        WB+YJZs1Xq7+2zWGXoyPecLo1xwfdRa1yVLtsFqm9f1hpy5MTJk6FVtFJk4xeuhFpsSPlU/Awzf
-        oDwZvAEAe1nJj3GptkyOkK9jKJvOhW5AnonNv8wWe
-X-Received: by 2002:a5d:47a4:: with SMTP id 4mr6615039wrb.329.1629731904222;
-        Mon, 23 Aug 2021 08:18:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyP18KupeQocqPi7pOs/GkS6DYQwd2BMjtkeQW4SttZsY2aCuhDw4kt4ORRQF7kvquqp7Y+qyQBLWafEIaQ/7o=
-X-Received: by 2002:a5d:47a4:: with SMTP id 4mr6615019wrb.329.1629731904039;
- Mon, 23 Aug 2021 08:18:24 -0700 (PDT)
+        Mon, 23 Aug 2021 11:19:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D3C4C33517E;
+        Mon, 23 Aug 2021 11:18:58 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id nmtOY9Ei1y27; Mon, 23 Aug 2021 11:18:54 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 54EB4334FEE;
+        Mon, 23 Aug 2021 11:18:54 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 54EB4334FEE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1629731934;
+        bh=2ZrSQOBO8bFOj55pwjt/9awIJm+JC/tsi3zqC/kFRO0=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=jRQcKOzs5v3QJnUvnsKlue7ycCzhzQHAmMQi7MRz0p0iknI4p+fXV+7jnPexhdsWT
+         vvX2GnY4QFbZwOMc2xP+jrEhJMrh75uA/7zvTC/Xi34yQHZ6vNkLKoHfQFJIqPkCFT
+         JzPLax2kDSWgxFU0liHytyoTw2Kf2Wu0pJB9fhut7JTgObKuxq+DbYstR3ZSXcXWeJ
+         CuOGXr7C83Fq/TLHuVSNDmjlbCCbbekGItXqWI8+IHUTNIbOrZOORDROiIgXKZmgqA
+         loNI5CAaFpbVsdx0+GILWY6fAl1GfFEa5dliKewU05O5hEMUWMeGHZYZIFT4XL463H
+         o2yPiOSDA7ltQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hExHD00CioXs; Mon, 23 Aug 2021 11:18:54 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 307BC335424;
+        Mon, 23 Aug 2021 11:18:54 -0400 (EDT)
+Date:   Mon, 23 Aug 2021 11:18:54 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Darren Hart <dvhart@linux.intel.com>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Message-ID: <766990430.21713.1629731934069.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210820225002.310652-5-seanjc@google.com>
+References: <20210820225002.310652-1-seanjc@google.com> <20210820225002.310652-5-seanjc@google.com>
+Subject: Re: [PATCH v2 4/5] KVM: selftests: Add a test for KVM_RUN+rseq to
+ detect task migration bugs
 MIME-Version: 1.0
-References: <20210819194102.1491495-1-agruenba@redhat.com> <20210819194102.1491495-11-agruenba@redhat.com>
- <5e8a20a8d45043e88013c6004636eae5dadc9be3.camel@redhat.com>
- <cf284633-a9db-9f88-6b60-4377bc33e473@redhat.com> <CAHc6FU7EMOEU7C5ryu5pMMx1v+8CTAOMyGdf=wfaw8=TTA_btQ@mail.gmail.com>
- <8e2ab23b93c96248b7c253dc3ea2007f5244adee.camel@redhat.com>
-In-Reply-To: <8e2ab23b93c96248b7c253dc3ea2007f5244adee.camel@redhat.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 23 Aug 2021 17:18:12 +0200
-Message-ID: <CAHc6FU5uHJSXD+CQk3W9BfZmnBCd+fqHt4Bd+=uVH18rnYCPLg@mail.gmail.com>
-Subject: Re: [Cluster-devel] [PATCH v6 10/19] gfs2: Introduce flag for glock
- holder auto-demotion
-To:     Steven Whitehouse <swhiteho@redhat.com>
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: selftests: Add a test for KVM_RUN+rseq to detect task migration bugs
+Thread-Index: 9INcR4B9tvRD6E6sZQ8uPmTSeu5zxA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 10:14 AM Steven Whitehouse <swhiteho@redhat.com> wrote:
-> On Fri, 2021-08-20 at 17:22 +0200, Andreas Gruenbacher wrote:
-> > On Fri, Aug 20, 2021 at 3:11 PM Bob Peterson <rpeterso@redhat.com>
-> > wrote:
-> > >
-> [snip]
-> > >
-> > > You can almost think of this as a performance enhancement. This
-> > > concept
-> > > allows a process to hold a glock for much longer periods of time,
-> > > at a
-> > > lower priority, for example, when gfs2_file_read_iter needs to hold
-> > > the
-> > > glock for very long-running iterative reads.
-> >
-> > Consider a process that allocates a somewhat large buffer and reads
-> > into it in chunks that are not page aligned. The buffer initially
-> > won't be faulted in, so we fault in the first chunk and write into
-> > it.
-> > Then, when reading the second chunk, we find that the first page of
-> > the second chunk is already present. We fill it, set the
-> > HIF_MAY_DEMOTE flag, fault in more pages, and clear the
-> > HIF_MAY_DEMOTE
-> > flag. If we then still have the glock (which is very likely), we
-> > resume the read. Otherwise, we return a short result.
-> >
-> > Thanks,
-> > Andreas
-> >
->
-> If the goal here is just to allow the glock to be held for a longer
-> period of time, but with occasional interruptions to prevent
-> starvation, then we have a potential model for this. There is
-> cond_resched_lock() which does this for spin locks.
+----- On Aug 20, 2021, at 6:50 PM, Sean Christopherson seanjc@google.com wrote:
 
-This isn't an appropriate model for what I'm trying to achieve here.
-In the cond_resched case, we know at the time of the cond_resched call
-whether or not we want to schedule. If we do, we want to drop the spin
-lock, schedule, and then re-acquire the spin lock. In the case we're
-looking at here, we want to fault in user pages. There is no way of
-knowing beforehand if the glock we're currently holding will have to
-be dropped to achieve that. In fact, it will almost never have to be
-dropped. But if it does, we need to drop it straight away to allow the
-conflicting locking request to succeed.
+> Add a test to verify an rseq's CPU ID is updated correctly if the task is
+> migrated while the kernel is handling KVM_RUN.  This is a regression test
+> for a bug introduced by commit 72c3c0fe54a3 ("x86/kvm: Use generic xfer
+> to guest work function"), where TIF_NOTIFY_RESUME would be cleared by KVM
+> without updating rseq, leading to a stale CPU ID and other badness.
+> 
 
-Have a look at how the patch queue uses gfs2_holder_allow_demote() and
-gfs2_holder_disallow_demote():
+[...]
 
-https://listman.redhat.com/archives/cluster-devel/2021-August/msg00128.html
-https://listman.redhat.com/archives/cluster-devel/2021-August/msg00134.html
++#define RSEQ_SIG 0xdeadbeef
 
-Thanks,
-Andreas
+Is there any reason for defining a custom signature rather than including
+tools/testing/selftests/rseq/rseq.h ? This should take care of including
+the proper architecture header which will define the appropriate signature.
 
+Arguably you don't define rseq critical sections in this test per se, but
+I'm wondering why the custom signature here.
+
+[...]
+
+> +
+> +static void *migration_worker(void *ign)
+> +{
+> +	cpu_set_t allowed_mask;
+> +	int r, i, nr_cpus, cpu;
+> +
+> +	CPU_ZERO(&allowed_mask);
+> +
+> +	nr_cpus = CPU_COUNT(&possible_mask);
+> +
+> +	for (i = 0; i < 20000; i++) {
+> +		cpu = i % nr_cpus;
+> +		if (!CPU_ISSET(cpu, &possible_mask))
+> +			continue;
+> +
+> +		CPU_SET(cpu, &allowed_mask);
+> +
+> +		/*
+> +		 * Bump the sequence count twice to allow the reader to detect
+> +		 * that a migration may have occurred in between rseq and sched
+> +		 * CPU ID reads.  An odd sequence count indicates a migration
+> +		 * is in-progress, while a completely different count indicates
+> +		 * a migration occurred since the count was last read.
+> +		 */
+> +		atomic_inc(&seq_cnt);
+
+So technically this atomic_inc contains the required barriers because the selftests
+implementation uses "__sync_add_and_fetch(&addr->val, 1)". But it's rather odd that
+the semantic differs from the kernel implementation in terms of memory barriers: the
+kernel implementation of atomic_inc guarantees no memory barriers, but this one
+happens to provide full barriers pretty much by accident (selftests
+futex/include/atomic.h documents no such guarantee).
+
+If this full barrier guarantee is indeed provided by the selftests atomic.h header,
+I would really like a comment stating that in the atomic.h header so the carpet is
+not pulled from under our feet by a future optimization.
+
+
+> +		r = sched_setaffinity(0, sizeof(allowed_mask), &allowed_mask);
+> +		TEST_ASSERT(!r, "sched_setaffinity failed, errno = %d (%s)",
+> +			    errno, strerror(errno));
+> +		atomic_inc(&seq_cnt);
+> +
+> +		CPU_CLR(cpu, &allowed_mask);
+> +
+> +		/*
+> +		 * Let the read-side get back into KVM_RUN to improve the odds
+> +		 * of task migration coinciding with KVM's run loop.
+
+This comment should be about increasing the odds of letting the seqlock read-side
+complete. Otherwise, the delay between the two back-to-back atomic_inc is so small
+that the seqlock read-side may never have time to complete the reading the rseq
+cpu id and the sched_getcpu() call, and can retry forever.
+
+I'm wondering if 1 microsecond is sufficient on other architectures as well. One
+alternative way to make this depend less on the architecture's implementation of
+sched_getcpu (whether it's a vDSO, or goes through a syscall) would be to read
+the rseq cpu id and call sched_getcpu a few times (e.g. 3 times) in the migration
+thread rather than use usleep, and throw away the value read. This would ensure
+the delay is appropriate on all architectures.
+
+Thanks!
+
+Mathieu
+
+> +		 */
+> +		usleep(1);
+> +	}
+> +	done = true;
+> +	return NULL;
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	struct kvm_vm *vm;
+> +	u32 cpu, rseq_cpu;
+> +	int r, snapshot;
+> +
+> +	/* Tell stdout not to buffer its content */
+> +	setbuf(stdout, NULL);
+> +
+> +	r = sched_getaffinity(0, sizeof(possible_mask), &possible_mask);
+> +	TEST_ASSERT(!r, "sched_getaffinity failed, errno = %d (%s)", errno,
+> +		    strerror(errno));
+> +
+> +	if (CPU_COUNT(&possible_mask) < 2) {
+> +		print_skip("Only one CPU, task migration not possible\n");
+> +		exit(KSFT_SKIP);
+> +	}
+> +
+> +	sys_rseq(0);
+> +
+> +	/*
+> +	 * Create and run a dummy VM that immediately exits to userspace via
+> +	 * GUEST_SYNC, while concurrently migrating the process by setting its
+> +	 * CPU affinity.
+> +	 */
+> +	vm = vm_create_default(VCPU_ID, 0, guest_code);
+> +
+> +	pthread_create(&migration_thread, NULL, migration_worker, 0);
+> +
+> +	while (!done) {
+> +		vcpu_run(vm, VCPU_ID);
+> +		TEST_ASSERT(get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC,
+> +			    "Guest failed?");
+> +
+> +		/*
+> +		 * Verify rseq's CPU matches sched's CPU.  Ensure migration
+> +		 * doesn't occur between sched_getcpu() and reading the rseq
+> +		 * cpu_id by rereading both if the sequence count changes, or
+> +		 * if the count is odd (migration in-progress).
+> +		 */
+> +		do {
+> +			/*
+> +			 * Drop bit 0 to force a mismatch if the count is odd,
+> +			 * i.e. if a migration is in-progress.
+> +			 */
+> +			snapshot = atomic_read(&seq_cnt) & ~1;
+> +			smp_rmb();
+> +			cpu = sched_getcpu();
+> +			rseq_cpu = READ_ONCE(__rseq.cpu_id);
+> +			smp_rmb();
+> +		} while (snapshot != atomic_read(&seq_cnt));
+> +
+> +		TEST_ASSERT(rseq_cpu == cpu,
+> +			    "rseq CPU = %d, sched CPU = %d\n", rseq_cpu, cpu);
+> +	}
+> +
+> +	pthread_join(migration_thread, NULL);
+> +
+> +	kvm_vm_free(vm);
+> +
+> +	sys_rseq(RSEQ_FLAG_UNREGISTER);
+> +
+> +	return 0;
+> +}
+> --
+> 2.33.0.rc2.250.ged5fa647cd-goog
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
