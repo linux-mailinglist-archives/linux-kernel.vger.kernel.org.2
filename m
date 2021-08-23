@@ -2,204 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603DF3F47F2
+	by mail.lfdr.de (Postfix) with ESMTP id 681B93F47F3
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235843AbhHWJwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235802AbhHWJws (ORCPT
+        id S235912AbhHWJxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:53:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235870AbhHWJxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:52:48 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83947C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:52:06 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id k14so16179108pga.13
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bLe7NOAAmoI2YjW7rqz+AC0n9Z70JhMqaIsz3ds/O8M=;
-        b=xGZWhF3BetTDV9A5WeXYEQxVznwO1zKCfX1/hgrgCaSrJkODXQ79SS/WHMOg1MzYSe
-         yDjP8q2xoYpY71Lxy/tCG3y5t0D+A0zwy/Ti+KklaAyHYSzhVPdKdjUC3ZiSo4Dwi/ho
-         VRWd0nh/qvrkqnn/ewIB3uolZbnTU52e/6iLLHN7arbWKcB7RF2bg3IoYPa50LpJSQ9e
-         IaokcIhIq2RJ90AMnagijBSmNsqvsuFzQvv6HDfYGIMXP4Ps28cRerDENVZr27FNKsY6
-         fFeYlVVtETa4eyznONmCzP0Xu2Qv374L7maj1P1k72C/Wx8G+gBjFRuLHc1WifBzEoRl
-         aaZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bLe7NOAAmoI2YjW7rqz+AC0n9Z70JhMqaIsz3ds/O8M=;
-        b=d4mwQKN+o3VlCsWABvvtyPHBUcMQSuBQulbIwmbSTGJ2QjYfT3gtxqr8c5AJlqgP6P
-         62piO4ivVIUJICwTmdsGZHc3uH7GhHCYjCdpQs3ug6bmKOqOYqVKs524zgQsgzQwE+El
-         FItvs8Qe3IK004jSXrLYZPk9m8TLSP8lOpm47kcw8YhwSXp4EHi7A3WnSjzCM2/f/n6G
-         0DNrTI6DL5SIRrY2GgySM0gQmEcXWReq86NGYQWnrW0kbJxr8uWDv3wkx3Iq1sYPv3IQ
-         JLQMS6pD12QiHYf77RdE0wKWHI+AjeIppMuD2H77WkwDVtAO2gq2SjVB8VsU+UG8Yfoo
-         3hjw==
-X-Gm-Message-State: AOAM531upVGSwcumOsTGYUpJl8zo0vNgxoHhEI232kiEJ2fEXmbI0JI/
-        w8Qx/yzcla3FGc3EOl/2CwZngA==
-X-Google-Smtp-Source: ABdhPJxTTddUn0DnLXRasDTBmDVUCAQRuJRI4FWSHbJZoCJ4bTy3wMccBDU5czsBhXqMGfjXTmYz6A==
-X-Received: by 2002:a62:a117:0:b029:394:dddf:6b00 with SMTP id b23-20020a62a1170000b0290394dddf6b00mr32502415pff.50.1629712325250;
-        Mon, 23 Aug 2021 02:52:05 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id nk17sm1719286pjb.18.2021.08.23.02.51.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 02:52:04 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 17:51:55 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Li Huafei <lihuafei1@huawei.com>, coresight@lists.linaro.org
-Subject: Re: [PATCH v1 2/3] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-Message-ID: <20210823095155.GC100516@leoy-ThinkPad-X240s>
-References: <20210809112727.596876-1-leo.yan@linaro.org>
- <20210809112727.596876-3-leo.yan@linaro.org>
- <2b4e0c07-a8df-cca6-6a94-328560f4b0c6@arm.com>
+        Mon, 23 Aug 2021 05:53:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629712348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Rcf7ZbhkmpU4jxeIC6SCvGLuTy9wJXPCflo+vJTD3XI=;
+        b=PdAokpB7ISAcbN7kgoGuxRS7Jc5NW6CsONisV0RsOPo/vDERMrtrEwU7N2sZN8siw1XH32
+        DneWUPYeLcC1uIQABvzezB5p9BTXzwAbSsNIO+LQFwvkrpp6CNbqwpUVs3mYXlcA5xpb1B
+        ucINEOIhKcR8hViWteSqsUL3N5ddGks=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-w-8wv1IyNq-p8_mPHt2Q7g-1; Mon, 23 Aug 2021 05:52:24 -0400
+X-MC-Unique: w-8wv1IyNq-p8_mPHt2Q7g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B11FD100E427;
+        Mon, 23 Aug 2021 09:52:23 +0000 (UTC)
+Received: from x1.localdomain.com (unknown [10.39.194.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10DDC60CC9;
+        Mon, 23 Aug 2021 09:52:21 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kate Hsuan <hpa@redhat.com>
+Subject: [PATCH] libata: add ATA_HORKAGE_NO_NCQ_TRIM for Samsung 860 and 870 SSDs
+Date:   Mon, 23 Aug 2021 11:52:20 +0200
+Message-Id: <20210823095220.30157-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b4e0c07-a8df-cca6-6a94-328560f4b0c6@arm.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Commit ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+limited the existing ATA_HORKAGE_NO_NCQ_TRIM quirk from "Samsung SSD 8*",
+covering all Samsung 800 series SSDs, to only apply to "Samsung SSD 840*"
+and "Samsung SSD 850*" series based on information from Samsung.
 
-On Fri, Aug 13, 2021 at 05:22:31PM +0100, James Clark wrote:
-> On 09/08/2021 12:27, Leo Yan wrote:
-> > +/*
-> > + * In the compat mode kernel runs in 64-bit and perf tool runs in 32-bit mode,
-> > + * 32-bit perf tool cannot access 64-bit value atomically, which might lead to
-> > + * the issues caused by the below sequence on multiple CPUs: when perf tool
-> > + * accesses either the load operation or the store operation for 64-bit value,
-> > + * on some architectures the operation is divided into two instructions, one
-> > + * is for accessing the low 32-bit value and another is for the high 32-bit;
-> > + * thus these two user operations can give the kernel chances to access the
-> > + * 64-bit value, and thus leads to the unexpected load values.
-> > + *
-> > + *   kernel (64-bit)                        user (32-bit)
-> > + *
-> > + *   if (LOAD ->aux_tail) { --,             LOAD ->aux_head_lo
-> > + *       STORE $aux_data      |       ,--->
-> > + *       FLUSH $aux_data      |       |     LOAD ->aux_head_hi
-> > + *       STORE ->aux_head   --|-------`     smp_rmb()
-> > + *   }                        |             LOAD $data
-> > + *                            |             smp_mb()
-> > + *                            |             STORE ->aux_tail_lo
-> > + *                            `----------->
-> > + *                                          STORE ->aux_tail_hi
-> > + *
-> > + * For this reason, it's impossible for the perf tool to work correctly when
-> > + * the AUX head or tail is bigger than 4GB (more than 32 bits length); and we
-> > + * can not simply limit the AUX ring buffer to less than 4GB, the reason is
-> > + * the pointers can be increased monotonically, whatever the buffer size it is,
-> > + * at the end the head and tail can be bigger than 4GB and carry out to the
-> > + * high 32-bit.
-> > + *
-> > + * To mitigate the issues and improve the user experience, we can allow the
-> > + * perf tool working in certain conditions and bail out with error if detect
-> > + * any overflow cannot be handled.
-> > + *
-> > + * For reading the AUX head, it reads out the values for three times, and
-> > + * compares the high 4 bytes of the values between the first time and the last
-> > + * time, if there has no change for high 4 bytes injected by the kernel during
-> > + * the user reading sequence, it's safe for use the second value.
-> > + *
-> > + * When update the AUX tail and detects any carrying in the high 32 bits, it
-> > + * means there have two store operations in user space and it cannot promise
-> > + * the atomicity for 64-bit write, so return '-1' in this case to tell the
-> > + * caller an overflow error has happened.
-> > + */
-> > +u64 __weak compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
-> > +{
-> > +	struct perf_event_mmap_page *pc = mm->userpg;
-> > +	u64 first, second, last;
-> > +	u64 mask = (u64)(UINT32_MAX) << 32;
-> > +
-> > +	do {
-> > +		first = READ_ONCE(pc->aux_head);
-> > +		/* Ensure all reads are done after we read the head */
-> > +		smp_rmb();
-> > +		second = READ_ONCE(pc->aux_head);
-> > +		/* Ensure all reads are done after we read the head */
-> > +		smp_rmb();
-> > +		last = READ_ONCE(pc->aux_head);
-> > +	} while ((first & mask) != (last & mask));
-> > +
-> > +	return second;
-> > +}
-> > +
-> 
-> Hi Leo,
-> 
-> I had a couple of questions about this bit. If we're assuming that the
-> high bytes of 'first' and 'last' are equal, then 'second' is supposed
-> to be somewhere in between or equal to 'first' and 'last'.
-> 
-> If that's the case, wouldn't it be better to return 'last', because it's
-> closer to the value at the time of reading?
+But there is a large number of users which is still reporting issues
+with the Samsung 860 and 870 SSDs combined with Intel, ASmedia or
+Marvell SATA controllers and all reporters also report these problems
+going away when disabling queued trims.
 
-> And then in that case, if last is returned, then why do a read for
-> 'second' at all? Can 'second' be skipped and just read first and last?
+Note that with AMD SATA controllers users are reporting even worse
+issues and only completely disabling NCQ helps there, this will be
+addressed in a separate patch.
 
-Simply to say, the logic can be depicted as:
+Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=203475
+Cc: stable@vger.kernel.org
+Cc: Kate Hsuan <hpa@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/ata/libata-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-  step 1: read 'first'
-  step 2: read 'second' -> There have no any atomicity risk if 'first'
-                           is same with 'last'
-  step 3: read 'last'
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index 61c762961ca8..3eda3291952b 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -3950,6 +3950,10 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 
+-- 
+2.31.1
 
-The key point is if the 'first' and 'last' have the same value in the
-high word, there have no any increment for high word in the middle of
-'first' and 'last', so we don't worry about the atomicity for 'second'.
-
-But we cannot promise the atomicity for reading 'last', let's see
-below sequence:
-
-             CPU(a)                                 CPU(b)
-  step 1: read 'first' (high word)
-          read 'first' (low word)
-  step 2: read 'second' (high word)
-          read 'second' (low word)
-  step 3: read 'last' (high word)
-                                       --> write 'last' (high word)
-                                       --> write 'last' (low word)
-          read 'last' (low word)
-
-
-Even 'first' and 'last' have the same high word, but the 'last' cannot
-be trusted.
-
-> Also maybe it won't make a difference, but is there a missing smp_rmb()
-> between the read of 'last' and 'first'?
-
-Good question, from my understanding, we only need to promise the flow
-from step 1 to step 3, it's not necessary to add barrier in the middle
-of the two continuous loops.
-
-Thanks for reviewing!
-
-Leo
