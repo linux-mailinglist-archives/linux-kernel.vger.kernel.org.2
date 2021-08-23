@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C573F459B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B083F45A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235058AbhHWHI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        id S235082AbhHWHKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235006AbhHWHI1 (ORCPT
+        with ESMTP id S234861AbhHWHKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:08:27 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6A4C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:07:45 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id a21so14530260pfh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:07:45 -0700 (PDT)
+        Mon, 23 Aug 2021 03:10:21 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73C7C061575;
+        Mon, 23 Aug 2021 00:09:39 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so6170522pjb.0;
+        Mon, 23 Aug 2021 00:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vnPnOFH15WpjpkJv0XH5507vJbN9niQmMmw2orYb31I=;
-        b=JhPcxKchFojBd1dibPlBCZz0bpgG91lTP/lRCCVq8bLbMh7akKFv7mrk1t0s/u+rAn
-         LgQ149yDLBDdsP02AaRZ+JcAfIQheWVJTxbJM21rPfiBEmAVj4Di6SY/HsCDiyvLl0LE
-         HCylrstFglc7+aikichH2KVdtSSHLTmJwGoInvr/Cdcu171mtOZb/6moMARF+WPV2tWE
-         PUoL5w/ZdRsotFZ/nCmLK41sDT6rJfg0qIojcisFUGMo6zhN9+Gii7k9TzR8HrWQXpxD
-         XWcKLlZau11VU/L18ui9z2cNidBPNzxM6AZUZAUBwxqEfGYg79k1BMlSwXXBClOBVmGj
-         +pUA==
+        bh=9Nh9cOJMrafoLUQICBnICXP4da42X3TBMHLOJtv6el0=;
+        b=AxZoV944kTBLUgukjShmgDe0FvhulDu6B3x2ddsY7WplXZl2E8qswgBIl0W+0BOkUV
+         c0BspHSChAKwTslLkKvro5VlK5+U1n1QMF9gW3KhfYX4QeiNw4g/zHmyqWEWBYzqcQtG
+         1vLJ5x+8GRk8xZ8oOFtReEPhb64xk4ZmtPuQVx48lCNlJHFHp5RF5yCjOhlE9PjPXsx3
+         3VKJ9GrXLF/ju2O2QHv0uQRg4KCd/6/uJGtJXVXqp6M1CGTB7GsFn7AHIP/jL0NZwRJZ
+         w6qECMP6h94h7oji/Byl/Dp8y4ZQNdZf89TEfUf1A6mJ8eBNCNsadlbCg2sH9rCcP/DA
+         /Stg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vnPnOFH15WpjpkJv0XH5507vJbN9niQmMmw2orYb31I=;
-        b=tQsfYoFQn4OVq/+5UHLhwEXd5ANQMKUsdAaYf2Q0BSFtJpgyFjVCt8rWOihfkKyqTG
-         gbMA63ng4UzJcnZFgfZyEFvLWqh8epVInDCEdgaVXGxFHH0Waja+KsTAlzU+bcIMtQza
-         SKUNSmoqMm/2NWySznsKJrXjul2djrh+eCUcgUECXDwO/nRUlgfEMyQRlE8XW5WE98Au
-         cPSJD89BP3haGQlxcRat2OX7t28p4vhwNntdjjxg0HoEECks1mYZ7RY1QCEb7HEIKsGY
-         kk7Py8Ys8W9eXwzBXUp+c+Exp6k1lzdSX56K6cZ4HvN+7K5ZNh3LIUiNlpa6utkEgwYc
-         v65w==
-X-Gm-Message-State: AOAM53218MrAxDR+vReP1Y/po839K1tsM7v4OCQlhxHvUqJq2stIOMUv
-        NztuKl3BO3ipa799lwPp+VnoBw==
-X-Google-Smtp-Source: ABdhPJxPAei6q6vdBM3KEZMSIC/2N9YtKUNnIkb1B7hCpOxZyA9kBSg3joEAsIFVhl8W8FfXb8KuPQ==
-X-Received: by 2002:a05:6a00:1583:b0:3e2:2ae3:2ba8 with SMTP id u3-20020a056a00158300b003e22ae32ba8mr32120979pfk.58.1629702464717;
-        Mon, 23 Aug 2021 00:07:44 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id h3sm8967833pgm.87.2021.08.23.00.07.43
+        bh=9Nh9cOJMrafoLUQICBnICXP4da42X3TBMHLOJtv6el0=;
+        b=JY8soQ2wpbDUU678zHuPmPtFhSqCgBzagK5otZ3brgJBbPwW2SbJvBEFtO02uuEwmI
+         PeyT6LoURCkIhqx/y+a8NM0LzCbpW5RaU+AIp1KUaF6JqoTBH8B3jaY7HuHinTOuuiHu
+         jVCCnurcX1jaSfiWT3QFHxW2MtmD+TyITkdbqQH8q1aNQ26SYkXeKmWrcqcvOKxJoA5R
+         fwQDYy0A9SHc5liWDfeYxsBpwSR0sRa4E9L5ELTM4EyIpoe+bqstNVkmhEnxUHDdzFQb
+         wU2iisB5+CUNXm76Z599Id0fRbfOT31KaXEqnfmwIY8MctVgXpX9LJq+KD8U8t+D/ZdU
+         48tw==
+X-Gm-Message-State: AOAM530gF+WtUmm+UiAV6Fs4siDby2sPLOfiaM2MWXBmYV17Ii1xj3lk
+        3c9PHSK5//e1bs1tWKFne4DL/N2tPVqnbY+X
+X-Google-Smtp-Source: ABdhPJxoTn09yTVb41VGVSMz5hnPE0hHo+zxZ05BNRUzTGPTrnjYb7hN/zvxg3fQU2bDmXHeLLkRmg==
+X-Received: by 2002:a17:90b:370d:: with SMTP id mg13mr18518621pjb.117.1629702578826;
+        Mon, 23 Aug 2021 00:09:38 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id j6sm16215974pgh.17.2021.08.23.00.09.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 00:07:44 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arch_topology: Export cpu_scale and topology_set_thermal_pressure()
-Date:   Mon, 23 Aug 2021 12:37:41 +0530
-Message-Id: <a1053bd0e63ec0d985691b8a37bf7f6d5a1156aa.1629702403.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+        Mon, 23 Aug 2021 00:09:38 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     stable@vger.kernel.org
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org (open list:MEDIATEK SWITCH DRIVER),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 5.4.y] net: dsa: mt7530: fix VLAN traffic leaks again
+Date:   Mon, 23 Aug 2021 15:09:27 +0800
+Message-Id: <20210823070928.166082-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are now used from a cpufreq driver which can be built as module,
-export them.
+[ Upstream commit 7428022b50d0fbb4846dd0f00639ea09d36dff02 ]
 
-Fixes: 86afc1df661a ("cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+When a port leaves a VLAN-aware bridge, the current code does not clear
+other ports' matrix field bit. If the bridge is later set to VLAN-unaware
+mode, traffic in the bridge may leak to that port.
+
+Remove the VLAN filtering check in mt7530_port_bridge_leave.
+
+Fixes: 4fe4e1f48ba1 ("net: dsa: mt7530: fix VLAN traffic leaks")
+Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 ---
-This needs to go via my ARM cpufreq tree. I will probably merge it with the
-concerned commit.
+ drivers/net/dsa/mt7530.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
- drivers/base/arch_topology.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 921312a8d957..bf9d47a16d30 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -149,6 +149,7 @@ void topology_set_freq_scale(const struct cpumask *cpus, unsigned long cur_freq,
- }
- 
- DEFINE_PER_CPU(unsigned long, cpu_scale) = SCHED_CAPACITY_SCALE;
-+EXPORT_SYMBOL_GPL(cpu_scale);
- 
- void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity)
- {
-@@ -165,6 +166,7 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
- 	for_each_cpu(cpu, cpus)
- 		WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
- }
-+EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
- 
- static ssize_t cpu_capacity_show(struct device *dev,
- 				 struct device_attribute *attr,
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index aec606058d98..fc45af12612f 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -840,11 +840,8 @@ mt7530_port_bridge_leave(struct dsa_switch *ds, int port,
+ 		/* Remove this port from the port matrix of the other ports
+ 		 * in the same bridge. If the port is disabled, port matrix
+ 		 * is kept and not being setup until the port becomes enabled.
+-		 * And the other port's port matrix cannot be broken when the
+-		 * other port is still a VLAN-aware port.
+ 		 */
+-		if (dsa_is_user_port(ds, i) && i != port &&
+-		   !dsa_port_is_vlan_filtering(&ds->ports[i])) {
++		if (dsa_is_user_port(ds, i) && i != port) {
+ 			if (dsa_to_port(ds, i)->bridge_dev != bridge)
+ 				continue;
+ 			if (priv->ports[i].enable)
 -- 
-2.31.1.272.g89b43f80a514
+2.25.1
 
