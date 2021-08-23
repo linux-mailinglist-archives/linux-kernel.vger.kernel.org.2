@@ -2,191 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E689E3F515D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752DE3F5165
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbhHWTjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:39:18 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:5398 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232123AbhHWTjQ (ORCPT
+        id S232060AbhHWTlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231299AbhHWTlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:39:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1629747513; x=1661283513;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=wrPzydFoiv4W4g3o7TPP95c8VMQT8cOQnN+LkHUAijc=;
-  b=cWsLt4Jj1x54xxjiPObUyXwRzSiZ5aqPDnLNH6XH9PPQ6sYobRKdf+Z+
-   VkWSGid8pK3tShZ3Onj7L0EEos2KHMMFbi7BJ/T28JXngnIpBRUqeN1kn
-   +ayHxgP1Pu5NW8jAIxoFVsZa/PvU8sUuPEtU2UyDuYUrmZThQykoo9Zx1
-   M=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 23 Aug 2021 12:38:33 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 12:38:32 -0700
-Received: from [10.226.59.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.922.7; Mon, 23 Aug 2021
- 12:38:31 -0700
-Subject: Re: [PATCH v6 3/4] bus: mhi: core: Process execution environment
- changes serially
-To:     <bbhatt@codeaurora.org>
-CC:     <manivannan.sadhasivam@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>, <loic.poulain@linaro.org>,
-        <carl.yin@quectel.com>, <naveen.kumar@quectel.com>
-References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org>
- <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
- <899da888-321a-c228-8537-b72821700dc7@quicinc.com>
- <62c4f4130f74e3731cd3886049684d23@codeaurora.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-Message-ID: <6a4899dd-e690-81f9-2dc1-17a0e5eb1828@quicinc.com>
-Date:   Mon, 23 Aug 2021 13:38:30 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 23 Aug 2021 15:41:08 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EDAC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:40:25 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id b10so11225538ioq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G2SVrRZIMROI4YKSe8URoaTR5hujeuHBAdNdertfjAY=;
+        b=jUZSALcG3mLl6AOLb1PW9RpHd2KcfwHBVgIbXUjskJnzFkLhE9BKrSkqvNfpmQa2BR
+         ZwjzjfkQVesicqYFrQuMSoU4kfRqh1r0gACPUQ8Mb6aOTDXbLPAGefDSEtgLuLsQNw8b
+         FbCAOZM8P7jdyq2QuUu+fJ2ZA2nNr9kX0V/7f+0u+n+Z3JMqrqi0HJ0PbshmR6ba4IP8
+         in9WBcZgbZ2ZQELA6ARDJyPsYEYt2mjt7afKHtCWwDWUHqs1uT16i5F0VHvGhgzf9xdY
+         V7GRWCN9rPlTzxST5KWKTa6QfEe4zYycJs1BlwrTCAGsrrRsRcz6m4jco72sy6vhXWgr
+         /VVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G2SVrRZIMROI4YKSe8URoaTR5hujeuHBAdNdertfjAY=;
+        b=DxZcDKFjDYYCNtVqpPJoAHcRElisXD4LnvRdUOqa85F2drzuFmDNd9AdgSJQgr4zEr
+         7CufiWuq1bd5t6XFm8VW2L/xx1JhaNP+oUpJGC8os8Pv3iXwGaLQnRNOx36CZyh9Y6WO
+         liGKr3sUi9hHJXqNzcCQS9oCDPPr0Tqs/hOJTROJ+WGQNG3e7W2ETHPTExavvH903dZ+
+         EC2CNjjP9miDzYubZWfBb7ayuObl8S3lU/ewzoPVgmOuMl0AhRbMrtGRp1925O1RYsr3
+         Jxmh96bIV06w+w6NofI7mt/rcZb4gE8lwtSL9kTubBIRQ+SGVFJyPPO/udNsjF3XXS7n
+         i5mg==
+X-Gm-Message-State: AOAM5319tmiJ/1XIY3w0v5zU9cXUU7nwoMdGjQ18DGc2z0Ge2M9IDUq6
+        KBNf4mmlHNJ8yj1vUU9/wEiYOQ==
+X-Google-Smtp-Source: ABdhPJwFFXxnZV6gOaCl5BdXkE0E7H1K58ErMFvT604/1u73jAT0AGDgnDM8d8OVs2fI5djeTS9rYA==
+X-Received: by 2002:a6b:6603:: with SMTP id a3mr28813047ioc.68.1629747624592;
+        Mon, 23 Aug 2021 12:40:24 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id p7sm8627226iln.70.2021.08.23.12.40.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 12:40:24 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] open/accept directly into io_uring fixed file
+ table
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Stefan Metzmacher <metze@samba.org>
+References: <cover.1629559905.git.asml.silence@gmail.com>
+ <7fa72eec-9222-60eb-9ec6-e4b6efbfc5fb@kernel.dk> <YSPzab+g8ee84bX7@localhost>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <59494bda-f804-4185-dd7d-4827b14bae61@kernel.dk>
+Date:   Mon, 23 Aug 2021 13:40:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <62c4f4130f74e3731cd3886049684d23@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <YSPzab+g8ee84bX7@localhost>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03a.na.qualcomm.com (10.85.0.103) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/2021 1:19 PM, Bhaumik Bhatt wrote:
-> On 2021-08-23 11:43 AM, Jeffrey Hugo wrote:
->> On 2/24/2021 4:23 PM, Bhaumik Bhatt wrote:
->>> In current design, whenever the BHI interrupt is fired, the
->>> execution environment is updated. This can cause race conditions
->>> and impede ongoing power up/down processing. For example, if a
->>> power down is in progress, MHI host updates to a local "disabled"
->>> execution environment. If a BHI interrupt fires later, that value
->>> gets replaced with one from the BHI EE register. This impacts the
->>> controller as it does not expect multiple RDDM execution
->>> environment change status callbacks as an example. Another issue
->>> would be that the device can enter mission mode and the execution
->>> environment is updated, while device creation for SBL channels is
->>> still going on due to slower PM state worker thread run, leading
->>> to multiple attempts at opening the same channel.
+On 8/23/21 1:13 PM, Josh Triplett wrote:
+> On Sat, Aug 21, 2021 at 08:18:12PM -0600, Jens Axboe wrote:
+>> On 8/21/21 9:52 AM, Pavel Begunkov wrote:
+>>> Add an optional feature to open/accept directly into io_uring's fixed
+>>> file table bypassing the normal file table. Same behaviour if as the
+>>> snippet below, but in one operation:
 >>>
->>> Ensure that EE changes are handled only from appropriate places
->>> and occur one after another and handle only PBL modes or RDDM EE
->>> changes as critical events directly from the interrupt handler.
->>> Simplify handling by waiting for SYS ERROR before handling RDDM.
->>> This also makes sure that we use the correct execution environment
->>> to notify the controller driver when the device resets to one of
->>> the PBL execution environments.
+>>> sqe = prep_[open,accept](...);
+>>> cqe = submit_and_wait(sqe);
+>>> io_uring_register_files_update(uring_idx, (fd = cqe->res));
+>>> close((fd = cqe->res));
 >>>
->>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>> The idea in pretty old, and was brough up and implemented a year ago
+>>> by Josh Triplett, though haven't sought the light for some reasons.
+>>>
+>>> The behaviour is controlled by setting sqe->file_index, where 0 implies
+>>> the old behaviour. If non-zero value is specified, then it will behave
+>>> as described and place the file into a fixed file slot
+>>> sqe->file_index - 1. A file table should be already created, the slot
+>>> should be valid and empty, otherwise the operation will fail.
+>>>
+>>> we can't use IOSQE_FIXED_FILE to switch between modes, because accept
+>>> takes a file, and it already uses the flag with a different meaning.
+>>>
+>>> since RFC:
+>>>  - added attribution
+>>>  - updated descriptions
+>>>  - rebased
+>>>
+>>> since v1:
+>>>  - EBADF if slot is already used (Josh Triplett)
+>>>  - alias index with splice_fd_in (Josh Triplett)
+>>>  - fix a bound check bug
 >>
->> <snip>
->>
->>> @@ -452,27 +451,30 @@ irqreturn_t mhi_intvec_threaded_handler(int 
->>> irq_number, void *priv)
->>>       }
->>>       write_unlock_irq(&mhi_cntrl->pm_lock);
->>>   -     /* If device supports RDDM don't bother processing SYS error */
->>> -    if (mhi_cntrl->rddm_image) {
->>> -        /* host may be performing a device power down already */
->>> -        if (!mhi_is_active(mhi_cntrl))
->>> -            goto exit_intvec;
->>> +    if (pm_state != MHI_PM_SYS_ERR_DETECT || ee == mhi_cntrl->ee)
->>> +        goto exit_intvec;
->>>   -        if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
->>> +    switch (ee) {
->>> +    case MHI_EE_RDDM:
->>> +        /* proceed if power down is not already in progress */
->>> +        if (mhi_cntrl->rddm_image && mhi_is_active(mhi_cntrl)) {
->>>               mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
->>> +            mhi_cntrl->ee = ee;
->>>               wake_up_all(&mhi_cntrl->state_event);
->>>           }
->>> -        goto exit_intvec;
->>> -    }
->>> -
->>> -    if (pm_state == MHI_PM_SYS_ERR_DETECT) {
->>> +        break;
->>> +    case MHI_EE_PBL:
->>> +    case MHI_EE_EDL:
->>> +    case MHI_EE_PTHRU:
->>> +        mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
->>> +        mhi_cntrl->ee = ee;
->>>           wake_up_all(&mhi_cntrl->state_event);
->>> -
->>> -        /* For fatal errors, we let controller decide next step */
->>> -        if (MHI_IN_PBL(ee))
->>> -            mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
->>> -        else
->>> -            mhi_pm_sys_err_handler(mhi_cntrl);
->>> +        mhi_pm_sys_err_handler(mhi_cntrl);
->>> +        break;
->>> +    default:
->>> +        wake_up_all(&mhi_cntrl->state_event);
->>> +        mhi_pm_sys_err_handler(mhi_cntrl);
->>> +        break;
->>>       }
->>
->> Bhaumik, can you explain the above change?  Before this patch (which
->> is now committed), if there was a fatal error, the controller was
->> notified (MHI_CB_FATAL_ERROR) and it decided all action.  After this
->> patch, the controller is notified, but also the core attempts to
->> handle the syserr.
->>
->> This is a change in behavior, and seems to make a mess of the
->> controller, and possibly the core fighting each other.
->>
->> Specifically, I'm rebasing the AIC100 driver onto 5.13, which has this
->> change, and I'm seeing a serious regression.  I'm thinking that for
->> the PBL/EDL/PTHRU case, mhi_pm_sys_err_handler() should not be called.
->>
->> Thoughts?
+>> With the prep series, this looks good to me now. Josh, what do you
+>> think?
 > 
-> I see. We use this heavily for entry to EDL use-cases.
+> I would still like to see this using a union with the `nofile` field in
+> io_open and io_accept, rather than overloading the 16-bit buf_index
+> field. That would avoid truncating to 16 bits, and make less work for
+> expansion to more than 16 bits of fixed file indexes.
 > 
-> We do require the mhi_pm_sys_err_handler() to be called in those cases
-> as any entry to PBL/EDL means there is need to clean-up MHI host and 
-> notify all
-> its clients.
-> 
-> We include PTHRU in here because its a SYS ERROR in PBL modes.
-> 
-> Premise being the controller should not be in that business of doing any of
-> the clean-up that is responsibility of the core driver. We're using this 
-> feature
-> set to ensure controller is only notified.
-> 
-> What does AIC100 do on fatal error that you run in to issues? I don't think
-> any of the other controllers do anything other than disabling runtime PM 
-> since
-> device is down. Maybe there's some room for improvement.
+> (I'd also like that to actually use a union, rather than overloading the
+> meaning of buf_index/nofile.)
 
-Our usecase is PBL as a result of a full device crash.  AIC100 doesn't 
-exercise the EDL/PTHRU usecases.  (Just giving you some context, not 
-trying to imply EDL is not valuable to others for example).
+Agree, and in fact there's room in the open and accept command parts, so
+we can just make it a separate entry there instead of using ->buf_index.
+Then just pass in the index to io_install_fixed_file() instead of having
+it pull it from req->buf_index.
 
-In that case (FATAL_ERROR), our controller schedules a work item, and 
-then returnsas we assume FATAL_ERROR is notified in atomic context.  We 
-need to do non-mhi cleanup first.  Then we powerdown the MHI to cleanup 
-the MHI core, and kick off all the clients (its been a long while, but 
-initially, we were seeing the syserr handling in the core not 
-sufficiently kicking off the clients).  Then we power up MHI.  MHI will 
-init in PBL, still in syserr, and handle it.
+> I personally still feel that using non-zero to signify index-plus-one is
+> both error-prone and not as future-compatible. I think we could do
+> better with no additional overhead. But I think the final call on that
+> interface is up to you, Jens. Do you think it'd be worth spending a flag
+> bit or using a different opcode, to get a cleaner interface? If you
+> don't, then I'd be fine with seeing this go in with just the io_open and
+> io_accept change.
 
-I haven't fully traced everything, but we were getting into some really 
-bad states with the core triggering mhi_pm_sys_err_handler() per this patch.
+I'd be inclined to go the extra opcode route instead, as the flag only
+really would make sense to requests that instantiate file descriptors.
+For this particular case, we'd need 3 new opcodes for
+openat/openat2/accept, which is probably a worthwhile expenditure.
 
-Its important that we have control over the ordering of our cleanup, vs 
-the MHI cleanup.  Sadly, non-atomic context (sleeping) is a requirement 
-of our cleanup.
+Pavel, what do you think? Switch to using a different opcode for the new
+requests, and just grab some space in io_open and io_accept for the fd
+and pass it in to install.
 
-Seems like we have differing requirements here.  Hmm.  What about an API 
-the controller can call, that does mhi_pm_sys_err_handler() (or 
-equivalent) so that the controller can control when the MHI core cleanup 
-is done, but doesn't need to be concerned with the details?  Or, do you 
-have a suggestion?
+I do think that'd end up being less hackish and easier to grok for a
+user.
+
+-- 
+Jens Axboe
+
