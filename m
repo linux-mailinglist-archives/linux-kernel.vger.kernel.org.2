@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882593F43FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C963F4406
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbhHWDsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 23:48:47 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:47545 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230401AbhHWDsq (ORCPT
+        id S233791AbhHWD5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 23:57:22 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15202 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232866AbhHWD5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 23:48:46 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ARUfdh6oZMmtvY/uczIYD050aV5oXeYIsimQD?=
- =?us-ascii?q?101hICG9E/bo8/xG+c536faaslgssQ4b8+xoVJPgfZq+z+8R3WByB8bAYOCOgg?=
- =?us-ascii?q?LBQ72KhrGSoQEIdRefysdtkY9kc4VbTOb7FEVGi6/BizWQIpINx8am/cmT6dvj?=
- =?us-ascii?q?8w=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,343,1620662400"; 
-   d="scan'208";a="113304277"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 23 Aug 2021 11:48:01 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 1AD584D0D489;
-        Mon, 23 Aug 2021 11:48:00 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Mon, 23 Aug 2021 11:47:54 +0800
-Received: from localhost.localdomain (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Mon, 23 Aug 2021 11:47:53 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <dledford@redhat.com>, <jgg@ziepe.ca>, <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <yishaih@nvidia.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>
-Subject: [PATCH] IB/core: Remove deprecated current_seq comments
-Date:   Mon, 23 Aug 2021 11:52:46 +0800
-Message-ID: <20210823035246.3506-1-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 22 Aug 2021 23:57:21 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GtJLt6YFzz1CZdD;
+        Mon, 23 Aug 2021 11:56:06 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 11:56:35 +0800
+Received: from [10.174.185.179] (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 11:56:34 +0800
+Subject: Re: [PATCH 1/2] bcma: Fix memory leak for internally-handled cores
+To:     Kalle Valo <kvalo@codeaurora.org>
+CC:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zajec5@gmail.com>, <hauke@hauke-m.de>, <linville@tuxdriver.com>,
+        <wanghaibin.wang@huawei.com>
+References: <20210727025232.663-1-yuzenghui@huawei.com>
+ <20210727025232.663-2-yuzenghui@huawei.com>
+ <8943a493-aee8-3fe5-e63a-f3b61eaead14@huawei.com>
+ <877dgfun7t.fsf@codeaurora.org>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <2b218922-45b2-38cc-2a80-4d339949deed@huawei.com>
+Date:   Mon, 23 Aug 2021 11:56:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 1AD584D0D489.AD5F8
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <877dgfun7t.fsf@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-current_seq was removed since 36f30e486d ("IB/core: Improve ODP to use hmm_range_fault()")
+On 2021/8/21 18:05, Kalle Valo wrote:
+> Zenghui Yu <yuzenghui@huawei.com> writes:
+> 
+>> On 2021/7/27 10:52, Zenghui Yu wrote:
+>>> kmemleak reported that dev_name() of internally-handled cores were leaked
+>>> on driver unbinding. Let's use device_initialize() to take refcounts for
+>>> them and put_device() to properly free the related stuff.
+>>
+>> Could this be picked as a fix for v5.14 (_if_ it does fix something)?
+> 
+> Why should this go to v5.14? Most probably it's too late for v5.14
+> anyway.
 
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
----
- drivers/infiniband/core/umem_odp.c | 3 ---
- 1 file changed, 3 deletions(-)
+No worries. It's not urgent and just that I didn't realize we're
+already at rc7 now.
 
-diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
-index 9462dbe66014..7a47343d11f9 100644
---- a/drivers/infiniband/core/umem_odp.c
-+++ b/drivers/infiniband/core/umem_odp.c
-@@ -292,9 +292,6 @@ EXPORT_SYMBOL(ib_umem_odp_release);
-  * @dma_index: index in the umem to add the dma to.
-  * @page: the page struct to map and add.
-  * @access_mask: access permissions needed for this page.
-- * @current_seq: sequence number for synchronization with invalidations.
-- *               the sequence number is taken from
-- *               umem_odp->notifiers_seq.
-  *
-  * The function returns -EFAULT if the DMA mapping operation fails.
-  *
--- 
-2.31.1
+The patch has been on the list for about 4 weeks and I'd appreciate
+any review comments from maintainers.
 
-
-
+Zenghui
