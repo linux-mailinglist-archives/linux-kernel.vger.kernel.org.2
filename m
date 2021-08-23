@@ -2,281 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998123F44D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAC83F44DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhHWGST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 02:18:19 -0400
-Received: from mail-bn8nam12on2072.outbound.protection.outlook.com ([40.107.237.72]:13280
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231267AbhHWGSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 02:18:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DHgWkN9MXLcAURBDkYFb/I4I1XthGmS9aG09kMAXE23XpJxSu2nBGcMvEHXxcTL1sgjMzFk4mFTtSiPafgDhfsxSBjlULCHd+6VbwW/b1COZri3tWeAAEIkiAqSv8gao26cOLKMhYayxyDHtlWso3FNZEUgTMd1MazSPvhH1zX3Jjo9WjcluDTC7gQCNWMiRsVzi/oJTPkiOwXH8Sw+MTvP2kGdqMwe2vWjaEsoDaQchpG7MZ6RRgEtxhQ5RaUrbzJnsISEWIG0EwPdYQY6R7idCFULAujHjfo6YoZy2PSL/l9M1fSOOLNd/1oI8VXVPAUwXQY1FtfQJXq2w4EXWQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8VQgYHl390qqAgGIT96LLWcaCg53KiWGlF3AQgInWG4=;
- b=ihRk5TPSf4Z+Goxb/mzScqJat59BwjWerQeqbt0tB2oApdBE5x/I8o4S+pNJxiXGPma+HRHo5tQxMbB9R3AQrD6BaKT9ZjOqIslNoOJSabdrgAs4dVT3dbUwc8YOqrv4eX0ESbPivy1W73UtUuR5fTAZ4p2lruNRFaoMGTD6eZUO7d0PSnTFIrLbNigCoLvvM38rYNfrt1GTQLAOSqtTuHn72KOoWDhtjNVr5w1obLTMBTSvmi+X8UhhmIZbWLsViDpubIyo+XOR8AaAUxzeZwVJe/QMstKpf7XnRm5m9E5nsQNO07ffrKbuuw0pqan9pzV583V1IzFUBFD7wjasgg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8VQgYHl390qqAgGIT96LLWcaCg53KiWGlF3AQgInWG4=;
- b=KZWXuREZs0y8NLEqTX38ktnG0udAZOsTT/tvq0fd36i8T4eC4hPJ2cyuoH+3elNwMkG4fUsWifnKGzB4R6J68QFsaneZv5vah94UeUGKG9oUUmsM+qfckwttjwA3zifl+2mUnPojvzg5rpVKW2J65ZoDuktcLOIIK6x269A9oEg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4224.namprd12.prod.outlook.com (2603:10b6:208:1dd::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 06:17:34 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 06:17:34 +0000
-Subject: Re: [PATCH] drm/radeon: switch from 'pci_' to 'dma_' API
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <1187ca1dbaa74ca4a87db9496061243e9a810faa.1629667363.git.christophe.jaillet@wanadoo.fr>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <cd7b5eb2-24c1-d54d-d6dd-c529d3eb140f@amd.com>
-Date:   Mon, 23 Aug 2021 08:17:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <1187ca1dbaa74ca4a87db9496061243e9a810faa.1629667363.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR02CA0028.eurprd02.prod.outlook.com
- (2603:10a6:208:3e::41) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S234917AbhHWGU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 02:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231267AbhHWGUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 02:20:25 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F786C061575;
+        Sun, 22 Aug 2021 23:19:43 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id u15so9489709plg.13;
+        Sun, 22 Aug 2021 23:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ZeKKxsi+JTCjIObZ4eE1fvYuLFReuH5GCzKzRZkgdE=;
+        b=UCLzYMyaq7Rrmnp8ZFnPp4omrv77mq+4A6TSSxWbqeZmgcMawouGrIXO7wQEGX4ndh
+         PYKaWptz3y5dYVq9LZjG7cqYZhlKesoDrBTXeVAHAlctv2iHKr1OPNQOOoqinC5hWa9x
+         JV56yWZEL5kcLSl3Y9cNT872JEpREwb9UGmuHtZhNFyEXBQa4QZ4Xz/3Ms79Da8IgVcH
+         e83V4rEDO67aDK3PMsP3dPDTrtC6D0B1IOk61uYp1euwsX2rXIwHoVRvewY6bDVWYW2i
+         97DlNEAOs76P6GTtvaaHpyT73waBlhphm7jkMXPg/4v1swexZIXlhQ5bCnFwV6Bhuz+A
+         PMPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ZeKKxsi+JTCjIObZ4eE1fvYuLFReuH5GCzKzRZkgdE=;
+        b=aco7RvL5I8bojrZ/gJB7VTkwzSCChsS5G5DbXrm1MTGKAI+bSQanBQID3Ej2+5m7rQ
+         aMfjGr3VylwXx+w7dRyfP6DdHugmvjr7uBSaT/Bab1TSGhAUm2s3cZ4cL00IwrTcOcSO
+         1V3KCgqMPRv3XSYmeT8iMm87IzKsuSbEDo3FWCZFixnvDUDkYA5OwHU6yRY18Z0iNY7R
+         Gy4lCVl3n1vVpCKmlPHcpBe6N6S9illYcTGowFEjsF+dxNCRpK/vtUXim4CrTdeZw1iz
+         f3fiVTdljbDiCzwnfihmn6LvJRHPpCQlVh0Fmtv/5IlSL6I/EJx8GvTSdsCcJLWOx6pU
+         PL3w==
+X-Gm-Message-State: AOAM530Msepoz/7lRFyUKEFM8fgNdNxwkRKqZy4PXMGYXj2kI3yPaVDi
+        Ebov4M6Xyi82w2vlh2/UPb4=
+X-Google-Smtp-Source: ABdhPJw1tycfU8q3I7bG+LeG8Jkrs1BieOAdB8wva7RxHhdPGryWtEvwwDegHVxrcH9xXWjEa6cwfg==
+X-Received: by 2002:a17:90a:6782:: with SMTP id o2mr18231339pjj.165.1629699583082;
+        Sun, 22 Aug 2021 23:19:43 -0700 (PDT)
+Received: from localhost.localdomain ([1.240.193.107])
+        by smtp.googlemail.com with ESMTPSA id l12sm17273425pgc.41.2021.08.22.23.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 23:19:42 -0700 (PDT)
+From:   Kangmin Park <l4stpr0gr4m@gmail.com>
+To:     Roopa Prabhu <roopa@nvidia.com>
+Cc:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] net: bridge: replace __vlan_hwaccel_put_tag with skb_vlan_push
+Date:   Mon, 23 Aug 2021 15:19:38 +0900
+Message-Id: <20210823061938.28240-1-l4stpr0gr4m@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.178.21] (91.14.161.181) by AM0PR02CA0028.eurprd02.prod.outlook.com (2603:10a6:208:3e::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 06:17:32 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d230a880-5c0e-43d1-33d6-08d965fdb214
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4224:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB422410FC73AF814B73A20D1C83C49@MN2PR12MB4224.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dazxLpm2WRpGZcvLOkrF5mvYzSVDl+mV7B1IJFNN1yVkjF5dWdThN0i94qpNtxnD0oegX60dt96vdc5A/h6Lpl9Zov4HZ14V+i7eEsOhut6Kyr/rFcIJqyVEAaIDf0qqLPkxDQuA/AJzKr568iMuaAMZV1n3AIsIKuOQ/73ENUWAhgApGJXialHlvIIGU4kPlCadI1s3XhWWglU6AIc64yNiWrpEJ8GkXhIPhLTSQz/DM7/fnwpOsPRAEKGumkxe4wM7fepeul0dRRS2cISES4qrB7AV0EcxGLWhZNUgVdojUfk1pHVehAj13RK5vCEZK5QcoDhoGlrDSTzNKutygKaz+Po/mF7+xpIl3J3TSDRnFLsTAMkO+4ieQRPmaK/mN5FJ/S5fOWSROSZoyA6VVGVS8hDEFn1Ei4Sf8cDlP4VCcBXp63I1Gf23Rh4sI9nD6lSMeI3SejLFCcYiS1BGzjeMpEcjCkS5P+VTnBV8eHSLBQ05N06KRB16TsUASFxVORqbGIo9oo4OwpwxlrGfDDb+3ZXjknckTEB0PFWkTLcDc7ETsvokvjEvB8DbHbxPep1y8c4z4TCHXQmfkj08Mn/2tvS/6eF5BTPyaO8HgfYU1wynklcNrlWZuE+TaqWbPPBVN1K7rji0d6RPDJVqJMIRdM0qNd/o1IjgHvHo5SpyJfq/UV0seNQh/vC48p/j6oj6jXd9D64Dug3fgliMPL7o9yabYwaE+LJIZlWJNPKAXdm8qlS4/gfXS0dF1dnsDp2biOvriKB0RYFmNQYHcImMF92C4uIcMx9JcKg0ALiUFALMpUN+zxZ+wnmalA7B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(376002)(39860400002)(16576012)(66556008)(316002)(38100700002)(2906002)(66476007)(2616005)(4326008)(36756003)(8676002)(966005)(86362001)(6666004)(31686004)(5660300002)(8936002)(186003)(26005)(66946007)(31696002)(478600001)(956004)(6486002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VE02cHR3Sm9lMkZDaTFheW1WYWZYcjBrN1M2MmtDRGZPOGE0ZWxOLzFtaXVL?=
- =?utf-8?B?MDhmTmNyUmVtNWdQMzFBN01ITGMwMXYvaUhvSkptODJabkcwdW9oczBMaE0y?=
- =?utf-8?B?eERUVWhMQ0kwdkpUWG5LTjVpa1VwVTk4UDhkLzg5YVljN09oekM2OHJoQTBZ?=
- =?utf-8?B?cWZSaTE0SUc3bmtROEVJQWwyZHFTMzhjSEhxZ1YycW9kK3U1Z3dqSS9XbDlx?=
- =?utf-8?B?Z0VEL0I0bEFXcWtsYmVvRGdXZUcybkNJRm5LTkY3RUZYT2RSRFBtZmFnc21L?=
- =?utf-8?B?WnhTNEF3b0JpdGF6aG1tVU1ZTVdEU3I4TzZwOHlPUTF5OUhlTUN3T0VxbUhl?=
- =?utf-8?B?ZlIwQTNkUnh6UGh1ejAxeExlV3RKOFAwWlAwWVR5SERkQmZVaVM2cXN0UlNv?=
- =?utf-8?B?RGhhbnFxQU55eHg4V21vMFpiSGUvVm4rSnFlYWpuWW9uRDhKQ1RZNFdxL0dQ?=
- =?utf-8?B?S0d3MjY0aE93SU9wdk9SV0dubjAyTXQ5ekI1eDFEOVBqdTkzK09oSENXUnJL?=
- =?utf-8?B?WWFRb3BESFhMVVZvSFFMWVUzM2ZHNjV4S3JUTHFIbWZMZXdtVlNZWnEzakJj?=
- =?utf-8?B?VW1JbGVwOGxkMm42RzVKK2RlVEFIcHg4ZVdZSHNOZXdRZ1FOWUtTQ0xDcjZh?=
- =?utf-8?B?aU0vcWdXSy9CKzNMNXRhNXBBSmxBcjZobHdUY1QxOFh3bGgrM3RVaHMzQ1J6?=
- =?utf-8?B?SWpBSVVjNkZGdmFuMDV0SUJYeFNVL3Rhd0RkY2lsOFhaWWpTQU9uS1UzSWRB?=
- =?utf-8?B?N3pUWFhwbjZhNitqdzVjOUNEUXA4SzNBUmJua3laRVRkQnAzY3BUYk15djR0?=
- =?utf-8?B?NHRxODhSWkVpT2NTQTJqQkZqYTJmUndKMENZaFpaS1h0MDdjWkdQSDlTUlVJ?=
- =?utf-8?B?aTZrNlFPbk40QzdjcjN0L1NIWEJ6UTVabXczOGZDb2FBU0RDcUxyaFo1NG5r?=
- =?utf-8?B?U3ZLU3ZJUHd5Z01Fc0E1SHNuSGNxblJIUW82MDJIZ3Q3OHV0VnNVYVVhWDkx?=
- =?utf-8?B?R215YjgrME8rUWtTTTQwSHFOTUQ5SURFek0wRi9EUThIMFJ2RzFGRXh0REhT?=
- =?utf-8?B?c290NjdZN0M0dWVpcXJFZ1V3NHd6OUM3MlhaSGs1b202bkJtcWJiRUhoY0FE?=
- =?utf-8?B?SFRPRVhNcmd5eXIrcW9WaDdoR0J2c2c5d2E2OUV1RU5SWExxT0NkbitZTnZq?=
- =?utf-8?B?ekZYTGlzRXZ6STU4ak9ITDZRWEl5aVZCR3VJSjRLSE5uUzRUTkRXUFhldSt4?=
- =?utf-8?B?V1M5bmNtbVJxcVJ1YURCM1IwQjkvVHlESFhBUWRZUjVjZDAvdlJlUi8vVG01?=
- =?utf-8?B?RnhFRURvZkFoR1Q2aElFaFdqTU5NbE9qTmIyYU9EbjdDU1c0T1hSM1FySDJa?=
- =?utf-8?B?ZHFVTlRibHg2ZGNzVkRoR05jclcxU0pMNHpIYlgvRThMRjBjK202YllIVlVL?=
- =?utf-8?B?ZTdZN2dkQmtXcUNrQWJFWXYzT3g1Y0d1bll3V2p2eDNWVHpWRDFEUGczNGtX?=
- =?utf-8?B?eTc5SGFVVGkya2c3NUQwRWVIamZuS2NlcVJTa1VNSXZQR3RteXU0MzFmclU2?=
- =?utf-8?B?NERuclVUZVZRVk9wWFQ2cTQwTlVDRjRTVUFhWDVQWXhoVTRNa3ZQalp6dlB5?=
- =?utf-8?B?YU4wanY1SXNJcExoYVl4a000WTd5cXI0MHdpQVJxRG1UVlRXdUwrRkFjbTFH?=
- =?utf-8?B?Rk9jUW5FTnZYMTlUZi80TXZZb0xBZ1JjcjJ3SjBCOXJnNHhtaHY2UlA4b0U1?=
- =?utf-8?Q?DrfY85oduxkJpM8sSE0DDVusSOYM3fIyWLSUaJ9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d230a880-5c0e-43d1-33d6-08d965fdb214
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 06:17:34.0504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FxNhoWrYWq0o32Yivb8k5so5+RCKPHFIJZl2oH2C+eLEdv+lX/tB9CJhkxNFYFpG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4224
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 22.08.21 um 23:23 schrieb Christophe JAILLET:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
->
-> The patch has been generated with the coccinelle script below.
->
-> It has been compile tested.
->
-> @@
-> @@
-> -    PCI_DMA_BIDIRECTIONAL
-> +    DMA_BIDIRECTIONAL
->
-> @@
-> @@
-> -    PCI_DMA_TODEVICE
-> +    DMA_TO_DEVICE
->
-> @@
-> @@
-> -    PCI_DMA_FROMDEVICE
-> +    DMA_FROM_DEVICE
->
-> @@
-> @@
-> -    PCI_DMA_NONE
-> +    DMA_NONE
->
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_zalloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_free_consistent(e1, e2, e3, e4)
-> +    dma_free_coherent(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_single(e1, e2, e3, e4)
-> +    dma_map_single(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_single(e1, e2, e3, e4)
-> +    dma_unmap_single(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4, e5;
-> @@
-> -    pci_map_page(e1, e2, e3, e4, e5)
-> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_page(e1, e2, e3, e4)
-> +    dma_unmap_page(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_sg(e1, e2, e3, e4)
-> +    dma_map_sg(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_sg(e1, e2, e3, e4)
-> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_dma_mapping_error(e1, e2)
-> +    dma_mapping_error(&e1->dev, e2)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_dma_mask(e1, e2)
-> +    dma_set_mask(&e1->dev, e2)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_consistent_dma_mask(e1, e2)
-> +    dma_set_coherent_mask(&e1->dev, e2)
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+br_handle_ingress_vlan_tunnel() is called in br_handle_frame() and
+goto drop when br_handle_ingress_vlan_tunnel() return non-zero.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+But, br_handle_ingress_vlan_tunnel() always return 0. So, the goto
+routine is currently meaningless.
 
-Should we pick them up or do you want to push them upstream?
+However, paired function br_handle_egress_vlan_tunnel() call
+skb_vlan_pop(). So, change br_handle_ingress_vlan_tunnel() to call
+skb_vlan_push() instead of __vlan_hwaccel_put_tag(). And return
+the return value of skb_vlan_push().
 
-Regards,
-Christian.
+Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
+---
+ net/bridge/br_vlan_tunnel.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> ---
-> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
->     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-> ---
->   drivers/gpu/drm/radeon/radeon_device.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
-> index ac8c3251b616..4f0fbf667431 100644
-> --- a/drivers/gpu/drm/radeon/radeon_device.c
-> +++ b/drivers/gpu/drm/radeon/radeon_device.c
-> @@ -785,7 +785,7 @@ int radeon_dummy_page_init(struct radeon_device *rdev)
->   	if (rdev->dummy_page.page == NULL)
->   		return -ENOMEM;
->   	rdev->dummy_page.addr = dma_map_page(&rdev->pdev->dev, rdev->dummy_page.page,
-> -					0, PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-> +					0, PAGE_SIZE, DMA_BIDIRECTIONAL);
->   	if (dma_mapping_error(&rdev->pdev->dev, rdev->dummy_page.addr)) {
->   		dev_err(&rdev->pdev->dev, "Failed to DMA MAP the dummy page\n");
->   		__free_page(rdev->dummy_page.page);
-> @@ -808,8 +808,8 @@ void radeon_dummy_page_fini(struct radeon_device *rdev)
->   {
->   	if (rdev->dummy_page.page == NULL)
->   		return;
-> -	pci_unmap_page(rdev->pdev, rdev->dummy_page.addr,
-> -			PAGE_SIZE, PCI_DMA_BIDIRECTIONAL);
-> +	dma_unmap_page(&rdev->pdev->dev, rdev->dummy_page.addr, PAGE_SIZE,
-> +		       DMA_BIDIRECTIONAL);
->   	__free_page(rdev->dummy_page.page);
->   	rdev->dummy_page.page = NULL;
->   }
+diff --git a/net/bridge/br_vlan_tunnel.c b/net/bridge/br_vlan_tunnel.c
+index 01017448ebde..7b5a33dc9d4d 100644
+--- a/net/bridge/br_vlan_tunnel.c
++++ b/net/bridge/br_vlan_tunnel.c
+@@ -179,9 +179,7 @@ int br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
+ 
+ 	skb_dst_drop(skb);
+ 
+-	__vlan_hwaccel_put_tag(skb, p->br->vlan_proto, vlan->vid);
+-
+-	return 0;
++	return skb_vlan_push(skb, p->br->vlan_proto, vlan->vid);
+ }
+ 
+ int br_handle_egress_vlan_tunnel(struct sk_buff *skb,
+-- 
+2.26.2
 
