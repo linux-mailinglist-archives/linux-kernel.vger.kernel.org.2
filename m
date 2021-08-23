@@ -2,94 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266833F507F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68CA3F507E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhHWSmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhHWSmh (ORCPT
+        id S230383AbhHWSmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:42:17 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:42060 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229883AbhHWSmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:42:37 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4E7C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 11:41:53 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id j4so4980935lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 11:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r9aUcxb9sNUdrx8ObfHnrP051md775OcOXsd+ENGkHk=;
-        b=Mu3u/9Ov+Flku44gHb4rLgMJ2q6sDKk3rmdIWWm2QBC0K/o5vYEZlJ1Iq5g/YsvQ9v
-         Cb41OfkYvYtMZBBAd+OGE7oqJRGUzYC8yIn25Qv+vVpn3KYEnXFa8HW0TsLC3/7bp28E
-         OA6tnyq00Q9F0EqdU+pGSUohNcJNCz2ttykmCuiX0cpKzV3llHFJ2wSQ/sqHTBD2i2gp
-         08nyWRYlifmN88//RRTjBWUoXGZQY0YKVcFBsyPPyHYqHRKF9/1EjxOxTGj3HTFuEjw3
-         leXlAont6Mfw7u32C0aCKckIi+wmysP0ynWR7eTyx8/zmVz9GPilDek2zOIKWIazjcW/
-         Uq0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r9aUcxb9sNUdrx8ObfHnrP051md775OcOXsd+ENGkHk=;
-        b=AQFNttRcKHAuv3v1usUb+b3g9RdbuM2uIqAlXb27MaDY3sNwNzM0uFR/F/nTHnDTST
-         +M2SHj/6sR2+rjTj2ajm6/PvpsDv0otYWBJDwKn+mWv4hNm6gVoX2sWRHlshF6TUXk5v
-         x42qD6GwecRUfi4MnC8tTeZok5g2FuKBqGBow5IT8dkosfkUBY3Pf7C6z7hlGTJ6Kq1G
-         L91TeRmN9VSTgB9CnI6ZcebCrDLmv/sN0gBd7qaeddSx0It1o/x5WuI21WmgJDmLfnyE
-         /QXNOH+woZiilmhjZK1jn/d3mm/Yalo1gs6NzjeTpQRuLZdJiSAOQykt17MXCkcwwwDP
-         UpVA==
-X-Gm-Message-State: AOAM533Su97UUgxyJioNSLPQ4pWjEaoabTDisJPUeWp6W2U3bbAw7+ou
-        Jk3nFbOwdgRZg1Ry8JyPVtsUOIXnmW1IFw==
-X-Google-Smtp-Source: ABdhPJwk/o1nmEMAaon+9nddQadyZNbpw1E+JJZKImDdePnm9POzqopPyILRfKn8jFmUhxxhDha//w==
-X-Received: by 2002:a19:5503:: with SMTP id n3mr25582947lfe.195.1629744112271;
-        Mon, 23 Aug 2021 11:41:52 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id w3sm230469ljm.13.2021.08.23.11.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 11:41:51 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] staging: r8188eu: make rtw_deinit_intf_priv return void
-Date:   Mon, 23 Aug 2021 21:40:59 +0300
-Message-Id: <20210823184059.19742-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 23 Aug 2021 14:42:08 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id D2EE25213E7;
+        Mon, 23 Aug 2021 21:41:22 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1629744082;
+        bh=E2ieoYqcBgWyY9M739h6cFNmiGdTmJ9xBON1T6ZnMOo=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=y9NFQnNbDlOLJ05tc/Lb6B6svo3LQLSsyHoVVtMlq3sgNjNglelYWTHc5Hwf5fljy
+         1NO0x8dLFq9ldKfWAox7SwJUoieLKGUrZno6YFW98AeGM6D08EBasKaC+R+RxY+vP1
+         5L6nITrj73DlBPREb+oV5GUTpXvRMmtjdSUqfCtMJo/pnULvkG4ex3Owa9dODep78J
+         kuZWida/c56RAvy1imTU2iYmU9Z5km3s8jUxgcFANTNy9AiIvDAUQy7tOHGoJVPMrP
+         f6UOaiAGxJqze3Mjo7Uo11LLiHAqy+4qwbpm+gsf19WA6VRJvK8FBd0lR4vpGUdjNF
+         Eu28uAAVnnKIw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 096985213F9;
+        Mon, 23 Aug 2021 21:41:22 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 23
+ Aug 2021 21:41:21 +0300
+Subject: Re: [RFC PATCH v3 0/6] virtio/vsock: introduce MSG_EOR flag for
+ SEQPACKET
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+References: <20210816085036.4173627-1-arseny.krasnov@kaspersky.com>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <3f3fc268-10fc-1917-32c2-dc0e7737dc48@kaspersky.com>
+Date:   Mon, 23 Aug 2021 21:41:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210816085036.4173627-1-arseny.krasnov@kaspersky.com>
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 08/23/2021 18:28:24
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165743 [Aug 23 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 454 454 39c6e442fd417993330528e7f9d13ac1bf7fdf8c
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 08/23/2021 18:31:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 23.08.2021 16:49:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/08/23 16:16:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/08/23 16:49:00 #17087690
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rtw_deinit_intf_priv() always return success, so there is no need in
-return value
+Hello, please ping :)
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/staging/r8188eu/os_dep/usb_intf.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index e002070f7fba..37694aa96d13 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -129,13 +129,10 @@ static u8 rtw_init_intf_priv(struct dvobj_priv *dvobj)
- 	return rst;
- }
- 
--static u8 rtw_deinit_intf_priv(struct dvobj_priv *dvobj)
-+static void rtw_deinit_intf_priv(struct dvobj_priv *dvobj)
- {
--	u8 rst = _SUCCESS;
--
- 	kfree(dvobj->usb_alloc_vendor_req_buf);
- 	_rtw_mutex_free(&dvobj->usb_vendor_req_mutex);
--	return rst;
- }
- 
- static struct dvobj_priv *usb_dvobj_init(struct usb_interface *usb_intf)
--- 
-2.32.0
-
+On 16.08.2021 11:50, Arseny Krasnov wrote:
+> 	This patchset implements support of MSG_EOR bit for SEQPACKET
+> AF_VSOCK sockets over virtio transport.
+> 	First we need to define 'messages' and 'records' like this:
+> Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
+> etc. It has fixed maximum length, and it bounds are visible using
+> return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
+> Current implementation based on message definition above.
+> 	Record has unlimited length, it consists of multiple message,
+> and bounds of record are visible via MSG_EOR flag returned from
+> 'recvmsg()' call. Sender passes MSG_EOR to sending system call and
+> receiver will see MSG_EOR when corresponding message will be processed.
+> 	Idea of patchset comes from POSIX: it says that SEQPACKET
+> supports record boundaries which are visible for receiver using
+> MSG_EOR bit. So, it looks like MSG_EOR is enough thing for SEQPACKET
+> and we don't need to maintain boundaries of corresponding send -
+> receive system calls. But, for 'sendXXX()' and 'recXXX()' POSIX says,
+> that all these calls operates with messages, e.g. 'sendXXX()' sends
+> message, while 'recXXX()' reads messages and for SEQPACKET, 'recXXX()'
+> must read one entire message from socket, dropping all out of size
+> bytes. Thus, both message boundaries and MSG_EOR bit must be supported
+> to follow POSIX rules.
+> 	To support MSG_EOR new bit was added along with existing
+> 'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
+> works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
+> is used to mark 'MSG_EOR' bit passed from userspace.
+> 	This patchset includes simple test for MSG_EOR.
+>
+>  Arseny Krasnov(6):
+>   virtio/vsock: rename 'EOR' to 'EOM' bit.
+>   virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR' bit.
+>   vhost/vsock: support MSG_EOR bit processing
+>   virtio/vsock: support MSG_EOR bit processing
+>   af_vsock: rename variables in receive loop
+>   vsock_test: update message bounds test for MSG_EOR
+>
+>  drivers/vhost/vsock.c                   | 22 +++++++++++++---------
+>  include/uapi/linux/virtio_vsock.h       |  3 ++-
+>  net/vmw_vsock/af_vsock.c                | 10 +++++-----
+>  net/vmw_vsock/virtio_transport_common.c | 23 +++++++++++++++--------
+>  tools/testing/vsock/vsock_test.c        |  8 +++++++-
+>  5 files changed, 42 insertions(+), 24 deletions(-)
+>
+>  v2 -> v3:
+>  - 'virtio/vsock: rename 'EOR' to 'EOM' bit.' - commit message updated.
+>  - 'VIRTIO_VSOCK_SEQ_EOR' bit add moved to separate patch.
+>  - 'vhost/vsock: support MSG_EOR bit processing' - commit message
+>    updated.
+>  - 'vhost/vsock: support MSG_EOR bit processing' - removed unneeded
+>    'le32_to_cpu()', because input argument was already in CPU
+>    endianness.
+>
+>  v1 -> v2:
+>  - 'VIRTIO_VSOCK_SEQ_EOR' is renamed to 'VIRTIO_VSOCK_SEQ_EOM', to
+>    support backward compatibility.
+>  - use bitmask of flags to restore in vhost.c, instead of separated
+>    bool variable for each flag.
+>  - test for EAGAIN removed, as logically it is not part of this
+>    patchset(will be sent separately).
+>  - cover letter updated(added part with POSIX description).
+>
+> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>
