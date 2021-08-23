@@ -2,143 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6E83F4B52
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4783F4B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237242AbhHWNGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:06:19 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:51678 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237055AbhHWNGS (ORCPT
+        id S237309AbhHWNGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:06:34 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:53740 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235649AbhHWNGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:06:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629723936; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=E/fEWaEX6Seb48cm6rL3CGJPlVqJg5lWlfTNvs0q/oI=;
- b=rnhsFzsCu/vy5WSZldSHNiiEuDq5iFuXyVtx28EY+iL4sDY45+lmxujGod59QpoI6VqjsXA5
- 71m1iNIVc2LapsIOZlpyXwF2k9FUzoxoNQhpa/fovS9cZJwgVYhK9HQUyJcAQHLFnX0vrCUT
- 1vm3vy6nvPeSAWGgFQWdRHSRhzM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 61239cb00f9b337f11b9693b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 13:03:44
- GMT
-Sender: psodagud=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D93AC43460; Mon, 23 Aug 2021 13:03:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: psodagud)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7520EC4338F;
-        Mon, 23 Aug 2021 13:03:41 +0000 (UTC)
+        Mon, 23 Aug 2021 09:06:32 -0400
+X-UUID: 0802132c3032473ba51729c45abcab01-20210823
+X-UUID: 0802132c3032473ba51729c45abcab01-20210823
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 392248089; Mon, 23 Aug 2021 21:05:42 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 23 Aug 2021 21:05:40 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 23 Aug 2021 21:05:39 +0800
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
+        <caiyu.chen@mediatek.com>, <ot_daolong.zhu@mediatek.com>,
+        <yuhan.wei@mediatek.com>, <kewei.xu@mediatek.com>
+Subject: [PATCH v5 0/7] Introducing an attribute to select the time setting
+Date:   Mon, 23 Aug 2021 21:05:30 +0800
+Message-ID: <1629723937-10839-1-git-send-email-kewei.xu@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 23 Aug 2021 06:03:41 -0700
-From:   psodagud@codeaurora.org
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rjw@rjwysocki.net, len.brown@intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        pavel@ucw.cz
-Subject: Re: [PATCH v3] PM: sleep: core: Avoid setting power.must_resume to
- false
-In-Reply-To: <YRYd+dSdWa7Mr+n9@kroah.com>
-References: <1628625938-149376-1-git-send-email-psodagud@codeaurora.org>
- <YRYd+dSdWa7Mr+n9@kroah.com>
-Message-ID: <6cc2d5677d246352e13b766d4fbef6af@codeaurora.org>
-X-Sender: psodagud@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-13 00:23, Greg KH wrote:
-> On Tue, Aug 10, 2021 at 01:05:38PM -0700, Prasad Sodagudi wrote:
->> There are variables(power.may_skip_resume and dev->power.must_resume)
->> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices 
->> after
->> a system wide suspend transition.
->> 
->> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
->> its "noirq" and "early" resume callbacks to be skipped if the device
->> can be left in suspend after a system-wide transition into the working
->> state. PM core determines that the driver's "noirq" and "early" resume
->> callbacks should be skipped or not with dev_pm_skip_resume() function 
->> by
->> checking power.may_skip_resume variable.
->> 
->> power.must_resume variable is getting set to false in 
->> __device_suspend()
->> function without checking device's DPM_FLAG_MAY_SKIP_RESUME and
->> dev->power.usage_count variables. In problematic scenario, where
->> all the devices in the suspend_late stage are successful and some
->> device can fail to suspend in suspend_noirq phase. So some devices
->> successfully suspended in suspend_late stage are not getting chance
->> to execute __device_suspend_noirq() to set dev->power.must_resume
->> variable to true and not getting resumed in early_resume phase.
->> 
->> Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
->> setting power.must_resume variable in __device_suspend function.
->> 
->> Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the 
->> resume phase")
->> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
->> ---
->>  V2 -> V3: Format issues patch posting
->>  V1 -> V2: Fixed indentation and commit text to include scenario
->>  drivers/base/power/main.c | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
->> index d568772..9ee6987 100644
->> --- a/drivers/base/power/main.c
->> +++ b/drivers/base/power/main.c
->> @@ -1642,7 +1642,11 @@ static int __device_suspend(struct device *dev, 
->> pm_message_t state, bool async)
->>  	}
->> 
->>  	dev->power.may_skip_resume = true;
->> -	dev->power.must_resume = false;
->> +	if ((atomic_read(&dev->power.usage_count) <= 1) &&
->> +	     (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME)))
->> +		dev->power.must_resume = false;
->> +	else
->> +		dev->power.must_resume = true;
-> 
-> Again, what happens if the usage_count changes right after reading the
-> value?  What protects that from happening?
+v5:
+1. Replace the previous variable name "default_timing_adjust" with "use-default-timing"
+2. Added waiting for dma reset mechanism
+3. Remove received patch(dt-bindings: i2c: update bindings for MT8195 SOC)
 
-Hi Gregh KH,
-Yes. you are right.  I think, relying on  the usage_count at the  
-__device_suspend stage may not be correct.
-Devices IRQs are still enabled and usage_count can be changed even after 
-reading.
-I will send next patchset without power.usage_count check.
+v4:
+1. Remove the repeated assignment of the inter_clk_div parameter
+2. Modify the wrong assignment of OFFSET_MULTI_DMA
+3. Unify the log print format of the i2c_dump_register() and drop the extra outer parentheses
+4. Place the fixes at the very least
+5. Add fixed tags 25708278f810 ("i2c: mediatek: Add i2c support for MediaTek MT8183")
+6. Add "i2c: mediatek: modify bus speed calculation formula"
+7. Fix single line characters exceeding 80 characters
+8. Combine two different series of patches.
 
-@@ -1649,7 +1651,10 @@ static int __device_suspend(struct device *dev, 
-pm_message_t state, bool async)
-         }
+v3:
+1. Fix code errors caused by v2 modification
 
-         dev->power.may_skip_resume = true;
--       dev->power.must_resume = false;
-+       if (dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME))
-+               dev->power.must_resume = false;
-+       else
-+               dev->power.must_resume = true;
+v2:
+1. Add "dt-bindings: i2c: add attribute default-timing-adjust"
+2. Split the fix into sepatate patch.
 
+Kewei Xu (7):
+  i2c: mediatek: fixing the incorrect register offset
+  i2c: mediatek: Reset the handshake signal between i2c and dma
+  i2c: mediatek: Dump i2c/dma register when a timeout occurs
+  dt-bindings: i2c: add attribute use-default-timing
+  i2c: mediatek: Add OFFSET_EXT_CONF setting back
+  i2c: mediatek: Isolate speed setting via dts for special devices
+  i2c: mediatek: modify bus speed calculation formula
 
-> 
-> thanks,
-> 
-> greg k-h
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |   2 +
+ drivers/i2c/busses/i2c-mt65xx.c               | 207 ++++++++++++++++--
+ 2 files changed, 192 insertions(+), 17 deletions(-)
+
+-- 
+2.18.0
