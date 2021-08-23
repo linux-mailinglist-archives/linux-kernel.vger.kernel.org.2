@@ -2,150 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1618A3F4D88
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A833F4D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhHWPaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhHWPaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:30:16 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B80C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:29:33 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id 7so15690519pfl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:29:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vEaoUziBq3E6zdwPq0ckEpXVtz+BXh6RGLuJML224RM=;
-        b=R1zKGChQimXrdBmVgI9Yg84uCfa/0GDmxaEIaiwyz1EnBS/laU7lveYFQIF/zReUWK
-         9xYFzvI9mL2SgpPDe3K8n2UaUoAjLsUmyJyyx7RgjeievBH3qw7jD5dgZ4wx75bnKY0p
-         ReTmKrg/Z9DAvdfl7ymFeVlu2Pf4A5M9oGEuJRFo5kAnnkTJ6tnPGH6bHd3T+rbg16a5
-         BkCBX4VRt+y15qgq5yIMoguvdYlq1nfYXEaBTgtjU0UVuvIj0a3IRU3/OxwqVevCsy7y
-         ClCO/O0E6c2hTSy7hO4U5D049p/+YUlHBvuzX2agZ57rzp9a+SQHas7Wd/PvQJi25LAg
-         guSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vEaoUziBq3E6zdwPq0ckEpXVtz+BXh6RGLuJML224RM=;
-        b=AxLRkZsN0Pze/NTGAlnPr/4vund+JtHJ5QdEvuQYxlv3X/W13TpbWzr82twvS5+ZkQ
-         wA8QVDVl4PHlPbaW2SYm6KodwdrJothlh45SInN0FrN5Wr+sTuf7mHHHuxCWTTF3037X
-         6Rkgg0cdTQllEPQ73w76sk48yotlIHi0MnRUujKgSg+PE6KDo/2CGVUQvypbVu+jNjjP
-         13uf5AAkn5UxAHsKiIZWIcI+dbjUQUQbWgkWytrJZXopVSUkvac/dP0gRRWFhWfOawU2
-         9+FdEvCP0Hks1resgEeAD+R4JQMe0wq7c6+vwIuR0EAQT7lj+iLYlBTcE7PXibKQ4i31
-         yR4g==
-X-Gm-Message-State: AOAM530lEHduNmbUgY9h/GLS1Y1Zgdle7a5J6rW9h3zbFo7Xp7tZLMw1
-        T7fFY+2lKs1UnpC/ykSZkUNMgA==
-X-Google-Smtp-Source: ABdhPJzQAhNqugUUs6GMowMfc4TjiW/1LoOtbJAtnbpyMIjp7QrKeuxyQDwOXMzT37JWwkO6ncyjsw==
-X-Received: by 2002:a05:6a00:ac6:b029:374:a33b:a74 with SMTP id c6-20020a056a000ac6b0290374a33b0a74mr34979881pfl.51.1629732573011;
-        Mon, 23 Aug 2021 08:29:33 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p10sm15697567pfw.28.2021.08.23.08.29.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 08:29:32 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 09:29:30 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-remoteproc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, ohad@wizery.com
-Subject: Re: [PATCH v3 2/2] remoteproc: meson-mx-ao-arc: Add a driver for the
- AO ARC remote procesor
-Message-ID: <20210823152930.GA595498@p14s>
-References: <20210717234859.351911-1-martin.blumenstingl@googlemail.com>
- <20210717234859.351911-3-martin.blumenstingl@googlemail.com>
- <20210728175823.GA2766167@p14s>
- <CAFBinCB0-bAa7Y+YhscczarGrGuio37F8vRyfW6U2DiiDAvr-g@mail.gmail.com>
- <20210805161506.GA3205691@p14s>
+        id S231214AbhHWPdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhHWPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:33:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D18886103D;
+        Mon, 23 Aug 2021 15:32:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629732745;
+        bh=ngUR+MM/ilv8/jLT7nHf2++cpL+J4qBSF8Vka7YyoY0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RtXIJemwdhAtD2pzbMPF7rZgDfQ+mu71sEusgpCLzJAfRJFMmO1jeuhKTrIXLj5jh
+         aeXbcX5JmRQY6Icf3pq/97tPvCWz0+16iHxctGd96oxw1RC1yYRJJ4jnXVxOvoak2i
+         hC4K1B5EHLqkP3+TMLqnG32hGwP9xmaYyUkq1WsmpGPJ7asHwHql+a+EQgmnMVdbVv
+         Mz/yNXNjoPeQ7uZI2bse7Qi5nmB1T7YF2/O/1I2pxJJXvKm2ykDS7KXIvp3OSwFqei
+         lwmJfamM42T5AXuX71NK7gexmueQ8Rp2EGFUwn4NeQsUDtZ9YQl470ZOLi1epADSnh
+         3N73OGBoPBJ6g==
+From:   Georgi Djakov <djakov@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        djakov@kernel.org
+Subject: [GIT PULL] interconnect changes for 5.15
+Date:   Mon, 23 Aug 2021 18:32:22 +0300
+Message-Id: <20210823153222.9638-1-djakov@kernel.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805161506.GA3205691@p14s>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 10:15:06AM -0600, Mathieu Poirier wrote:
-> On Wed, Aug 04, 2021 at 11:03:57PM +0200, Martin Blumenstingl wrote:
-> > Hi Mathieu,
-> > 
-> > thanks for taking the time to look into this!
-> > 
-> > (I will address any of your comments that I am not mentioning in this
-> > email anymore. Thanks a lot for the suggestions!)
-> > 
-> > On Wed, Jul 28, 2021 at 7:58 PM Mathieu Poirier
-> > <mathieu.poirier@linaro.org> wrote:
-> > [...]
-> > > > +     writel(FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
-> > > > +                            priv->sram_pa >> 14),
-> > > Indentation problem
-> > The idea here is to align priv->sram_pa with AO_REMAP_REG0... which
-> > are both arguments to FIELD_PREP
-> 
-> Right, this is what I would have expected.  When I applied the patch on my side
-> "priv->sram_pa ..." was aligned wiht the 'M' of "AO_REMAP_ ...".  
-> 
-> > Maybe using something like this will make that easier to read:
-> >     tmp = FIELD_PREP(AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU,
-> >                                      priv->sram_pa >> 14);
-> >     writel(tmp, priv->remap_base + AO_REMAP_REG0);
-> 
-> I think the main problem is that
-> AO_REMAP_REG0_REMAP_AHB_SRAM_BITS_17_14_FOR_ARM_CPU is simply too long.  I
-> suggest making is shorter and add a comment to describe exactly what it does.
-> 
-> > 
-> > What do you think: leave it as is or use a separate variable?
-> > 
-> > [...]
-> > > > +     usleep_range(10, 100);
-> > >
-> > > I've seen this kind of mysterious timeouts in other patchset based vendor trees.
-> > > You likely don't know why it is needed so I won't ask.
-> > unfortunately this is also the case here
-> > 
-> > [...]
-> > > > +     priv->arc_reset = devm_reset_control_get_exclusive(dev, NULL);
-> > > > +     if (IS_ERR(priv->arc_reset)) {
-> > >
-> > > Function __reset_control_get() in __devm_reset_control_get() can return NULL so
-> > > this should be IS_ERR_OR_NULL().
-> > The logic in there is: return optional ? NULL : ERR_PTR(-...);
-> 
-> Ok, so you meant to do that.  And I just checked reset_control_reset() and it does
-> account for a NULL parameter.  I'm good with this one but add a comment to
-> make sure future readers don't think you've omitted to properly deal with the
-> NULL return value.
-> 
-> > I am requesting a mandatory reset line here, so reset core will never
-> > return NULL
-> > See also [0]
-> 
-> Indeed, I've read that too.  Nonetheless __reset_control_get() can return NULL
-> by way of __reset_control_get_from_lookup().
-> 
+Hello Greg,
 
-You are correct, in your case checking for IS_ERR() is sufficient.
+This is the pull request with the interconnect changes for the 5.15-rc1
+merge window containing framework and driver changes. Details are available
+in the signed tag.
 
-> > 
-> > For this reason I am not planning to change this
-> > 
-> > [...]
-> > > This driver is squeaky clean. With the above:
-> > >
-> > > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > awesome, thank you!
-> > 
-> > 
-> > Best regards,
-> > Martin
-> > 
-> > 
-> > [0] https://elixir.bootlin.com/linux/v5.14-rc4/source/include/linux/reset.h#L227
+Patches have been in linux-next for two weeks and without any reported
+issues. Please pull into char-misc-next.
+
+Thanks,
+Georgi
+
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.15-rc1
+
+for you to fetch changes up to 8bf5d31c4f06d806ae24a3ba998a2f4eaccfa7c1:
+
+  interconnect: qcom: osm-l3: Use driver-specific naming (2021-08-09 20:10:19 +0300)
+
+----------------------------------------------------------------
+interconnect changes for 5.15
+
+Here are changes for the 5.15-rc1 merge window consisting of interconnect
+core and driver updates.
+
+Framework change:
+- Add sanity check to detect if node is already added to provider.
+
+Driver changes:
+- RPMh drivers probe function consolidation
+- Add driver for SC8180x platforms
+- Add support for SC8180x OSM L3
+- Use driver-specific naming in OSM L3
+
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
+
+----------------------------------------------------------------
+Bjorn Andersson (4):
+      interconnect: Sanity check that node isn't already on list
+      dt-bindings: interconnect: Add SC8180x to OSM L3 DT binding
+      interconnect: qcom: osm-l3: Add sc8180x support
+      interconnect: qcom: osm-l3: Use driver-specific naming
+
+Georgi Djakov (2):
+      dt-bindings: interconnect: Add Qualcomm SC8180x DT bindings
+      interconnect: qcom: Add SC8180x providers
+
+Mike Tipton (1):
+      interconnect: qcom: icc-rpmh: Consolidate probe functions
+
+ Documentation/devicetree/bindings/interconnect/qcom,osm-l3.yaml |   1 +
+ Documentation/devicetree/bindings/interconnect/qcom,rpmh.yaml   |  11 +
+ drivers/interconnect/core.c                                     |   3 +
+ drivers/interconnect/qcom/Kconfig                               |   9 +
+ drivers/interconnect/qcom/Makefile                              |   2 +
+ drivers/interconnect/qcom/icc-rpmh.c                            |  93 ++
+ drivers/interconnect/qcom/icc-rpmh.h                            |   2 +
+ drivers/interconnect/qcom/osm-l3.c                              |  60 +-
+ drivers/interconnect/qcom/sc7180.c                              |  96 +-
+ drivers/interconnect/qcom/sc7280.c                              |  96 +-
+ drivers/interconnect/qcom/sc8180x.c                             | 626 ++++++++
+ drivers/interconnect/qcom/sc8180x.h                             | 174 ++
+ drivers/interconnect/qcom/sdm845.c                              |  99 +-
+ drivers/interconnect/qcom/sdx55.c                               |  96 +-
+ drivers/interconnect/qcom/sm8150.c                              |  96 +-
+ drivers/interconnect/qcom/sm8250.c                              |  96 +-
+ drivers/interconnect/qcom/sm8350.c                              |  97 +-
+ include/dt-bindings/interconnect/qcom,sc8180x.h                 | 185 +++
+ 18 files changed, 1159 insertions(+), 683 deletions(-)
+ create mode 100644 drivers/interconnect/qcom/sc8180x.c
+ create mode 100644 drivers/interconnect/qcom/sc8180x.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sc8180x.h
