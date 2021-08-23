@@ -2,86 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647E43F4617
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8993F461B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235297AbhHWHyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50436 "EHLO
+        id S235437AbhHWHyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235316AbhHWHyE (ORCPT
+        with ESMTP id S235288AbhHWHyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:54:04 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC19C061575;
-        Mon, 23 Aug 2021 00:53:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id d26so4537078wrc.0;
-        Mon, 23 Aug 2021 00:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=fc41RHpGSLm7yZNljm3ipeJe276/QT9sJLIfnCrAz/8=;
-        b=T5ke9boWANF+x+UIfGqhhEo+T+Z/yAw7CV0N9f9NkXIL72U8yygob0hClxrxw9B2HO
-         JcxsvXwaX4k6uN0FUPJv8Bg9HrSuInm8bU58jSsBYYTsQhlIzgk90PrJt1WepprP9h0R
-         7cLYeEs8EKzk1qtXHZNbRc0o964yAbPuNw5IaYDvEGzOkv3vcO+SlaO2twAyUcHO2isU
-         GikLOA9Uvo+Q8op9kJSoFt2t3s4w3mtTghADf08g5w/0if7j+gIwYAv7zDzpT2KWecaX
-         qX2DPzumWqDWtTw5SGU1ZeoHtVPkWMLMzdiVAvB7EBX7dAF9XZHZ+UUBWETwNMfyP9Eq
-         s/eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=fc41RHpGSLm7yZNljm3ipeJe276/QT9sJLIfnCrAz/8=;
-        b=NlMBeO2+BqNP0R5ANW2H+dDLAhkCv6ZUPwZle9bLIzk3XN9PEFdyD27IAwI/NEBxD2
-         7SlXhIuIDR/hwebmZC7kXx0SzSWshbsmeSj3a2S1D84bmADO/Gqvhk924XzsgdGo1sGA
-         rW6rfPMMtZSUJ4cgMI9nzJw8JrVyiMSpNGzro58S3IsLIyMsZ/gKw5xKu9nh8I2ODm9k
-         t/zaz91yGJgLd+m83eSalmrvFBewKkj8B+KPhob0jMK6W3GSwRscB1yLPyfskTnC59ii
-         X432yHSiwACWnmUWfIZnzOLzthTR4Te1nJnSGtysSFhBDZ5fJv/EgAUu1PTNLXf2oHGQ
-         /4dg==
-X-Gm-Message-State: AOAM531SsIYkVpUcxjkXpMYVlLFQQJQPdb1jD6J7ilPSXXXkqrOxl9Fi
-        Fv58d2ZcanorZFF7uM2G34e0VSOrRlo=
-X-Google-Smtp-Source: ABdhPJy/aZvrCWzb0mgkhM+8dV3YqaZAFm72/ieH7QHNukzNYi5tHbMbvd6/lUizWivDE47PYqYFKQ==
-X-Received: by 2002:a5d:4c4e:: with SMTP id n14mr11756957wrt.226.1629705200488;
-        Mon, 23 Aug 2021 00:53:20 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec31.dynamic.kabel-deutschland.de. [95.91.236.49])
-        by smtp.googlemail.com with ESMTPSA id t14sm2711270wrw.59.2021.08.23.00.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 00:53:20 -0700 (PDT)
-Message-ID: <c2beac013060b64d94664d0ee9bd06dd68138386.camel@gmail.com>
-Subject: Re: [PATCH v1 0/2] two minor changes of eMMC BKOPS
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>
-Date:   Mon, 23 Aug 2021 09:53:19 +0200
-In-Reply-To: <20210817224208.153652-1-huobean@gmail.com>
-References: <20210817224208.153652-1-huobean@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Mon, 23 Aug 2021 03:54:41 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8940AC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:53:59 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mI4mJ-00059D-8d; Mon, 23 Aug 2021 09:53:55 +0200
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1mI4mH-00061E-6Z; Mon, 23 Aug 2021 09:53:53 +0200
+Date:   Mon, 23 Aug 2021 09:53:53 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Nadezda Lutovinova <lutovinova@ispras.ru>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] media: allegro: request irq after initializing
+ mbox_status
+Message-ID: <20210823075353.GC28846@pengutronix.de>
+Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
+        Nadezda Lutovinova <lutovinova@ispras.ru>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+References: <20210819154935.19826-1-lutovinova@ispras.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210819154935.19826-1-lutovinova@ispras.ru>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 09:41:07 up 186 days, 11:04, 82 users,  load average: 0.24, 0.33,
+ 0.29
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ullf,
-Any thought about this patch?
+Hi Nadezda,
 
-Thanks
-Bean
+On Thu, 19 Aug 2021 18:49:35 +0300, Nadezda Lutovinova wrote:
+> If IRQ occurs between calling  devm_request_threaded_irq() and
+> allegro_firmware_request_nowait(), then null pointer dereference
+> occurs since dev->mbox_status wasn't initialized yet but used
+> in allegro_mbox_notify(). 
 
-On Wed, 2021-08-18 at 00:42 +0200, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> 
-> Bean Huo (2):
->   mmc: core: Issue HPI in case the BKOPS timed out
->   mmc: core: Let BKOPS timeout readable/writable via sysfs
-> 
->  drivers/mmc/core/mmc.c     | 32 ++++++++++++++++++++++++++++++++
->  drivers/mmc/core/mmc_ops.c | 14 ++++++++++----
->  include/linux/mmc/card.h   |  1 +
->  3 files changed, 43 insertions(+), 4 deletions(-)
-> 
+Thanks for the patch. As explained in [0], this is not an issue.
 
+> 
+> The patch puts registration of the interrupt handler after
+> initializing of neccesery data.
+
+The interrupt handler must be registered during the execution of
+allegro_fw_callback(), because the driver exchanges messages with the firmware
+during the bring up. With this patch this is not guaranteed anymore.
+
+Michael
+
+[0] https://lore.kernel.org/linux-media/20210511072834.GC17882@pengutronix.de/
+
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Nadezda Lutovinova <lutovinova@ispras.ru>
+> ---
+>  .../media/platform/allegro-dvt/allegro-core.c | 24 +++++++++----------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/media/platform/allegro-dvt/allegro-core.c b/drivers/media/platform/allegro-dvt/allegro-core.c
+> index 887b492e4ad1..9c1997ff74e8 100644
+> --- a/drivers/media/platform/allegro-dvt/allegro-core.c
+> +++ b/drivers/media/platform/allegro-dvt/allegro-core.c
+> @@ -3707,18 +3707,6 @@ static int allegro_probe(struct platform_device *pdev)
+>  		return PTR_ERR(dev->sram);
+>  	}
+>  
+> -	irq = platform_get_irq(pdev, 0);
+> -	if (irq < 0)
+> -		return irq;
+> -	ret = devm_request_threaded_irq(&pdev->dev, irq,
+> -					allegro_hardirq,
+> -					allegro_irq_thread,
+> -					IRQF_SHARED, dev_name(&pdev->dev), dev);
+> -	if (ret < 0) {
+> -		dev_err(&pdev->dev, "failed to request irq: %d\n", ret);
+> -		return ret;
+> -	}
+> -
+>  	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
+>  	if (ret)
+>  		return ret;
+> @@ -3732,6 +3720,18 @@ static int allegro_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return irq;
+> +	ret = devm_request_threaded_irq(&pdev->dev, irq,
+> +					allegro_hardirq,
+> +					allegro_irq_thread,
+> +					IRQF_SHARED, dev_name(&pdev->dev), dev);
+> +	if (ret < 0) {
+> +		dev_err(&pdev->dev, "failed to request irq: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.17.1
+> 
+> 
