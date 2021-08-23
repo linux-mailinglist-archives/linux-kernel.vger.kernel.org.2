@@ -2,161 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7B43F4CBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C583F4CA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhHWOzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        id S230402AbhHWOwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhHWOzI (ORCPT
+        with ESMTP id S229726AbhHWOw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:55:08 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776CBC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:54:26 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so8938181pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:54:26 -0700 (PDT)
+        Mon, 23 Aug 2021 10:52:29 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358F3C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:51:47 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id jv8so9809891qvb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:51:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=obYIRXgSO0GwMLAUweSJ4HRzBn9VIUKmHS4nKha0Yl8=;
-        b=bbk4GWgPPVzX1+EljNQUw3WHDke4VhXX2zo97ZY03BtE/zkP0CaBqFvFUOeYKzSIW/
-         vQ9ix5lmk1Y0xmm1P/eoFo+W4Ry2krg9+Zapl5yEOz9bex/fOD+m4RGcb+9s+xlvEM90
-         UcHhbCXBSA18pCEpoOO5K7/DONrpzmZM5ISRpR04WMhZkpYjzrgmnddot6zKIW9xtNgB
-         9U/5sT41az4VB2on6ufMHwVTr4MUxU5iF53QXJNhvRvfiptl5KmNgM50gGKzGESeM1Qs
-         laQbCGGLbdQfoKCZsoxmtaG5j4NQCbl0q8MH+fMC8OlPGD18g+311U/PlVs1FD7hSkRk
-         7GLg==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QRsqCUdecIQyDUmdzjm00knX5936yTUE08R3WGJ50zU=;
+        b=gE3OLw/FMkFXWrFW7TDrZ+BRstLICt7d2B7vDHSSmf1v59iAIPWcMq7tOS2CcLZhPr
+         BFaKRhzxHcs7Jl101MQY2WAl2h3kOQJmk+mMy3Deo9q32iPKhswhomaeGnPg3ChDozKq
+         F+ktlwZn8TpcpnGLdFwxcrUCLGiNuDmsKwOZY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=obYIRXgSO0GwMLAUweSJ4HRzBn9VIUKmHS4nKha0Yl8=;
-        b=Tjop5QvriUBMj/H06Bcp93A8tUZJ/W5oQeLuZStQec+qOXSbJZUoyai6judvYSqwxB
-         mrQx70mmQxgkHjh2jWJT37i+nAuoSR0wDCJfG4SI7sRISbASGEb74M7MG+zaNxvscTQR
-         XneeTOFe3EENZCK76jViIreBFib1GiiCUorhNt5MzN9zB9QamHBc6tDhrwFK4g1UO8Za
-         05gx5r7PoCedVmKVDDU4fq4/pw8YG+QC4PBeYczAl9IO0dxzBVnqLfeyZmwJ6Q0vVz3a
-         QBiu6p2h8hpkobzRs8RThL5V7f3iFitDI6J5xIxIHzdHc3mEYlz9FjTB9EB3Pdw0/0fH
-         7UVw==
-X-Gm-Message-State: AOAM531OGRkeg05swm1M5zkjCHseAM3OFeb1byexvlUDqJIl7vIbWIm2
-        Mn+zJwYpDUzJiMPBws023dlLFPOj/OUapA==
-X-Google-Smtp-Source: ABdhPJz2e1DUUo1+QF/L15glM7FbjSy1ZU1B0V9RzZITuE0z8r6iPe0A5tl8hUYutzDTDoxWz1v00A==
-X-Received: by 2002:a17:902:b612:b029:12c:e9e5:b1bf with SMTP id b18-20020a170902b612b029012ce9e5b1bfmr29278818pls.54.1629730465884;
-        Mon, 23 Aug 2021 07:54:25 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id pc11sm19519859pjb.17.2021.08.23.07.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 07:54:25 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 22:54:17 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Li Huafei <lihuafei1@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Garry <john.garry@huawei.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] perf auxtrace arm: Support
- compat_auxtrace_mmap__{read_head|write_tail}
-Message-ID: <20210823145417.GA169379@leoy-ThinkPad-X240s>
-References: <20210809112727.596876-1-leo.yan@linaro.org>
- <20210809112727.596876-4-leo.yan@linaro.org>
- <6ce4057a-57cf-501d-6449-2069cd00ba57@arm.com>
- <20210823133043.GF100516@leoy-ThinkPad-X240s>
- <20210823133918.GP22278@shell.armlinux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QRsqCUdecIQyDUmdzjm00knX5936yTUE08R3WGJ50zU=;
+        b=a03XFfO78vkJLbqmd7kSs9IxCGlsIsaUYPCP4K/tfug45dbGuT0C0Z/b/rgSdD2KUq
+         KEhHks8wNoApdYOTLMZFvWIl+2GqKpKGuHcUmJoCrkRIpePVACFFDM/0WXPaZ850ex5j
+         RI6YYRxj2P4B5hJUM8o22UKCq0/Gd2GqAkmN+YJQYGH3OIlIsfDXptHsb7NmUIszI0E2
+         2cPJZOcFDtdAeyLhFtD0sev3H8HfaiAFlVOq/yauoFWbw78JZlNqvhhITLdYGsN9yjyv
+         hFOx0w0RufsY9NDNIgcYkHukZya6l7Bv8l/ComRC5D9esoVRi4G9NR3fpC1teZlzR2M2
+         Wnzg==
+X-Gm-Message-State: AOAM530x+F5coTvFr803sjNfIWcXcXobkJzagqdkHnJAChXGXdLuGJmF
+        LOcMgB41R+ZkfGciqCQns18H32+Yx/Vo3VXp6wZLuA==
+X-Google-Smtp-Source: ABdhPJxlM0VZ2mC4VVh00cv0DNfEU3OMam7snlCLcUNb96LkMW8rxChlx6xv5sNnsnZdUonPKtqaPTjeHYyYBmFa8QU=
+X-Received: by 2002:ad4:4533:: with SMTP id l19mr14988168qvu.55.1629730306163;
+ Mon, 23 Aug 2021 07:51:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823133918.GP22278@shell.armlinux.org.uk>
+References: <20210811084924.52293-1-daniel@0x0f.com> <20210816101143.2a64d7b9@xps13>
+ <CAFr9PXnna+b3ChVUftT7YbU1kYR=5JDcik3bMNqzKK-LW=GQzw@mail.gmail.com> <20210823162148.35a24183@xps13>
+In-Reply-To: <20210823162148.35a24183@xps13>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 23 Aug 2021 23:54:20 +0900
+Message-ID: <CAFr9PXkSeeHNn-KVyrVxp6RRdLYExTgWpheWKLLSZqEo_EHvRg@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G parts
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org, richard@nod.at,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+Hi Miquel,
 
-On Mon, Aug 23, 2021 at 02:39:18PM +0100, Russell King (Oracle) wrote:
-> On Mon, Aug 23, 2021 at 09:30:43PM +0800, Leo Yan wrote:
-> > On Mon, Aug 23, 2021 at 01:23:42PM +0100, James Clark wrote:
+On Mon, 23 Aug 2021 at 23:21, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> I am not sure to follow, above the software says "3 corrected bf" while
 
-[...]
+Due to the status being "between 0 and 3 bitflips" I think it'll
+basically report 3 most of the time.
+As a refresher we seem to have a status for 0 - 3 flips but ok, 4 bit
+flips but ok, and >4 flips no go.
+In most cases (0 - 3) the driver is reporting 3.
 
-> > > For x86, it's possible to include tools/include/asm/atomic.h, but that doesn't
-> > > include arch/arm/include/asm/atomic.h and there are some other #ifdefs that might
-> > > make it not so easy for Arm. Just wondering if you considered trying to include the
-> > > existing one? Or decided that it was easier to duplicate it?
-> > 
-> > Good finding!
-> > 
-> > With you reminding, I recognized that the atomic operations for
-> > arm/arm64 should be improved for user space program.  So far, perf tool
-> > simply uses the compiler's atomic implementations (from
-> > asm-generic/atomic-gcc.h) for arm/arm64; but for a more reliable
-> > implementation, I think we should improve the user space program with
-> > architecture's atomic instructions.
-> 
-> No we should not. Sometimes, what's in the kernel is for the kernel's
-> use only, and not for userspace's use. That may be because what works
-> in kernel space does not work in userspace.
-> 
-> For example, the ARMv6+ atomic operations can be executed in userspace
-> _provided_ they are only used on memory which has an exclusive monitor.
-> They can't be used on anything that is not "normal memory".
+> I thought the problem was when getting 4 bf, but the dump show many
+> more. Can you show me how it behaves:
+> * erase (like you did)
+> * insert {1, 2, 3, 4, 5} bf and show the dump each time?
 
-Okay, IIUC, the requirement for "normal memory" and exclusive monitor
-should also apply on aarch64 for ldrex/strex, Load-Acquire and
-Store-Release instructions, etc.  Otherwise, it's heavily dependent on
-the exclusive monitors outside the cache coherency domain (but this is
-out of the scopes for CPU).
+Here's a complete log of erasing the page then flipping all the bits
+in the first byte.
 
-perf tool is very likely to map memory with "normal memory" but we
-cannot say it's always true.
+# flash_erase /dev/mtd0 0x8000000 1
+Erasing 128 Kibyte @ 8000000 -- 100 % complete
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6249
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 0@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6252
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: fe ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 1@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6255
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: fc ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 2@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6258
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: f8 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 3@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6261
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: f0 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 4@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6264
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: e0 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 5@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6267
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: c0 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 6@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6270
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: 80 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandflipbits /dev/mtd0 7@0x8000000
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6273
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: 00 ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+#
 
-So I agree there have risk for exporting the aarch32/aarch64 atomic
-headers to user space.
+For completeness logs of what nandbiterrs does:
 
-> Prior to
-> ARMv6, the atomic operations rely on disabling interrupts. That
-> facility is simply not available to userspace, so these must not be
-> made available to userspace.
-> 
-> The same applies to bitops.
-> 
-> We've been here before in the past, when the kernel headers were not
-> separated from the user ABI headers, and people would write programs
-> that included e.g. bitops.h on x86 because they had optimised bitops
-> code. This made the userspace programs very non-portable - without
-> re-implementing userspace versions of this stuff in every userspace
-> program that did this stuff.
-> 
-> So no, having experienced the effects of this kind of thing in the
-> past, the kernel should _not_ export architecture specific code in
-> header files to userspace.
-> 
-> Also, it should be pointed out that by doing so, you create a licensing
-> issue. If the code is GPLv2, and you build your program such that it
-> incorporates GPLv2 code, then if the userspace program is not GPLv2
-> compliant, you have a licensing problem, and in effect the program
-> can be distributed.
-> 
-> Please do not go down this route.
+# flash_erase /dev/mtd0 0x8000000 1
+Erasing 128 Kibyte @ 8000000 -- 100 % complete
+# nandbiterrs -i ^C 1024 /dev/mtd0
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6478
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandbiterrs -i -b 1024 /dev/mtd0
+incremental biterrors test
+Read reported 3 corrected bit errors
+Successfully corrected 0 bit errors per subpage
+Inserted biterror @ 0/5
+Read reported 4 corrected bit errors
+ECC failure, invalid data despite read success
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6488
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 4 corrected bitflip(s) at offset 0x08000000
+0x08000000: 05 a5 65 e5 05 85 45 c5 b5 35 f5 75 95 15 d5 55  |..e...E..5.u...U|
+0x08000010: 6d ed 2d ad 4d cd 0d 8d fd 7d bd 3d dd 5d 9d 1d  |m.-.M....}.=.]..|
+0x08000020: 81 01 c1 41 a1 21 e1 61 11 91 51 d1 31 b1 71 f1  |...A.!.a..Q.1.q.|
+0x08000030: c9 49 89 09 e9 69 a9 29 59 d9 19 99 79 f9 39 b9  |.I...i.)Y...y.9.|
+0x08000040: 77 d7 37 b7 57 d7 17 97 e7 67 a7 27 c7 47 87 07  |w.7.W....g.'.G..|
+0x08000050: 3f bf 7f ff 1f 9f 5f df af 2f ef 6f 8f 0f cf 4f  |?....._../.o...O|
+0x08000060: d3 53 93 13 f3 73 b3 33 43 c3 03 83 63 e3 23 a3  |.S...s.3C...c.#.|
+0x08000070: 9b 1b db 5b bb 3b fb 7b 0b 8b 4b cb 2b ab 6b eb  |...[.;.{..K.+.k.|
+0x08000080: 0c 8c 4c cc 2c ac 6c ec 9c 1c dc 5c bc 3c fc 7c  |..L.,.l....\.<.||
+0x08000090: 44 c4 04 84 64 e4 24 a4 d4 54 94 14 f4 74 b4 34  |D...d.$..T...t.4|
+#
 
-Thanks a lot for the suggestion and quick response.
+# flash_erase /dev/mtd0 0x8000000 1
+Erasing 128 Kibyte @ 8000000 -- 100 % complete
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 0
+ECC corrected: 6492
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+# nandbiterrs -o -b 1024 /dev/mtd0
+overwrite biterrors test
+Read reported 3 corrected bit errors
+Read reported 4 corrected bit errors
+Failed to recover 1 bitflips
+Bit error histogram (873 operations total):
+Page reads with   0 corrected bit errors: 0
+Page reads with   1 corrected bit errors: 0
+Page reads with   2 corrected bit errors: 0
+Page reads with   3 corrected bit errors: 785
+# nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
+ECC failed: 1
+ECC corrected: 9202
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x08000000 and ending at 0x08000001...
+ECC: 3 corrected bitflip(s) at offset 0x08000000
+0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
 
-Leo
+Cheers,
+
+Daniel
