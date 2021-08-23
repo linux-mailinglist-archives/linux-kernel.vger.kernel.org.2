@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDAB3F44FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541BD3F4500
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 08:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbhHWGd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 02:33:58 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:44430
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhHWGd5 (ORCPT
+        id S232428AbhHWGeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 02:34:46 -0400
+Received: from mail-m176231.qiye.163.com ([59.111.176.231]:10294 "EHLO
+        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230260AbhHWGep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 02:33:57 -0400
-Received: from localhost.localdomain (unknown [222.129.32.23])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 3D0F13F047;
-        Mon, 23 Aug 2021 06:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629700394;
-        bh=h+Lqrx8H7LFmJq35FTa1ano+uoUiw14tzRykgsn21aY=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=Pf3gWNoLWK9ZMYRbMud+Fp0XQcZFJf6Bg/N6xYN8pNVgXMQb/9YZtpYel5QJbdFrN
-         3LdFDkzXx6CZ722tsWyYyjb8uF02uusjuvKMmAuZOHsHfl9rGb3s1PGKSRtT3Xp+BF
-         DkVO5uwMbY81nvY8N4QhjZFb8DoTeAGZ1/3XtgZvYPqxy8kjrB7cpVnJtGz+D2aIuY
-         mdISgHsA9dqWO3avZM602szwpTscLYa6fs0ETxE0BYHNjJcR84GYHlERUgd+wF49/7
-         DJ+QMVmVAOkxQE0bhCkNhPkmgT1wqKBBEL37huCmrTIYB8UGO3lSZB8N6+z308GBL2
-         SYPSrJKEbryCQ==
-From:   Aaron Ma <aaron.ma@canonical.com>
-To:     aaron.ma@canonical.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Mon, 23 Aug 2021 02:34:45 -0400
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176231.qiye.163.com (Hmail) with ESMTP id 44F786C01FA;
+        Mon, 23 Aug 2021 14:33:59 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AJEACAC1D27qN9TVG8Nujqqw.3.1629700439268.Hmail.wangqing@vivo.com>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Dirk Behme <dirk.behme@de.bosch.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ath11k: qmi: avoid error messages when dma allocation fails
-Date:   Mon, 23 Aug 2021 14:32:58 +0800
-Message-Id: <20210823063258.37747-1-aaron.ma@canonical.com>
-X-Mailer: git-send-email 2.32.0
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCxSRVNFTkRdIHNvZnRpcnE6IEludHJvZHVjZSBTT0ZUSVJRX0ZPUkNFRF9USFJFQURJTkc=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.213.83.158
+In-Reply-To: <b9b55cad5b7ca120ebec2acbbbd0a7fc1a986ec7.camel@gmx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from wangqing@vivo.com( [58.213.83.158) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 23 Aug 2021 14:33:59 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Mon, 23 Aug 2021 14:33:59 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
+        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRkYQk9WHhoZGhpLS0xLTh
+        1DVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1NSUpPQ09NSUhNN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6MT46ODo4Sj9JTAo1Qi8tPEM1DhEKCgxVSFVKTUlCTEtLT09LSU9LVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZTkNVSUpIVUNIVUpOQ1lXWQgBWUFPS0xINwY+
+X-HM-Tid: 0a7b71b73cf9d9a9kuws44f786c01fa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qmi tries to allocate a large contiguous dma memory at first,
-on the AMD Ryzen platform it fails, then retries with small slices.
-So set flag GFP_NOWARN to avoid flooding dmesg.
-
-Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
----
- drivers/net/wireless/ath/ath11k/qmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
-index b5e34d670715..d6270e96d46c 100644
---- a/drivers/net/wireless/ath/ath11k/qmi.c
-+++ b/drivers/net/wireless/ath/ath11k/qmi.c
-@@ -1770,7 +1770,7 @@ static int ath11k_qmi_alloc_target_mem_chunk(struct ath11k_base *ab)
- 		chunk->vaddr = dma_alloc_coherent(ab->dev,
- 						  chunk->size,
- 						  &chunk->paddr,
--						  GFP_KERNEL);
-+						  GFP_KERNEL | __GFP_NOWARN);
- 		if (!chunk->vaddr) {
- 			if (ab->qmi.mem_seg_count <= ATH11K_QMI_FW_MEM_REQ_SEGMENT_CNT) {
- 				ath11k_dbg(ab, ATH11K_DBG_QMI,
--- 
-2.30.2
-
+Cj5PbiBNb24sIDIwMjEtMDgtMjMgYXQgMTE6MzMgKzA4MDAsIFdhbmcgUWluZyB3cm90ZToKPj4g
+QXQgcHJlc2VudCwgd2hldGhlciB0aGUgc29mdGlycSBpcyBleGVjdXRlZCB3aGVuIHRoZSBpbnRl
+cnJ1cHQgZXhpdHMKPj4gaXMgY29udHJvbGxlZCBieSBJUlFfRk9SQ0VEX1RIUkVBRElORy4gVGhp
+cyBpcyB1bnJlYXNvbmFibGUuIEl0IHNob3VsZAo+PiBiZSBzcGxpdCBhbmQgYWxsb3dlZCB0byB0
+YWtlIGVmZmVjdCBzZXBhcmF0ZWx5Lgo+Cj5EZWNhZGVzIGxvbmcgcHJhY3RpY2Ugc3VkZGVubHkg
+YmVjYW1lICJ1bnJlYXNvbmFibGUiPyAgSSB0aGluayBub3QuIMKgCgoidW5yZWFzb25hYmxlIiBt
+YXkgYmUgbXkgbWlzbm9tZXIsIGJ1dCBpdCBpcyByZWFsbHkgbmVjZXNzYXJ5IHRvIHNlcGFyYXRl
+CnNvZnRpcnEgZnJvbSBJUlFfRk9SQ0VEX1RIUkVBRElORywgd2hpY2ggY2FuIGJlIGVmZmVjdGl2
+ZSBzZXBhcmF0ZWx5LgoKPgo+VHJ5aW5nIHRvIGNhcnZlIG91dCBiaXRzIGFuZCBwaWVjZXMgb2Yg
+UlQgdG8gbWVyZ2UgaW1tZWRpYXRlbHkgaXNuJ3QKPmxpa2VseSB0byBtYWtlIHRoZSBvbmdvaW5n
+IG1lcmdlIGVmZm9ydCBnbyBhbnlmYXN0ZXIgb3Igc21vb3RoZXIuCgpJIGFtIG5vdCB0cnlpbmcg
+dG8gY2FydmUgb3V0IGJpdHMgYW5kIHBpZWNlcyBvZiBSVCwgYnV0IEkgZW5jb3VudGVyZWQgYWN0
+dWFsCnByb2JsZW1zIGluIG15IHByb2plY3QuIEZvciBleGFtcGxlLCBpbiBBbmRyb2lkLCB3ZSB3
+aWxsIG5vdCBlbmFibGUgCklSUV9GT1JDRURfVEhSRUFESU5HLCBBbmRyb2lkIGlzIG5vdCBhIGhp
+Z2ggcmVhbC10aW1lIHJlcXVpcmVtZW50cywgCmJ1dCBpbiBzb21lIHNjZW5hcmlvc3NvbWUsIFJU
+IHByb2Nlc3NlcyBjYW5ub3QgYmUgc2NoZWR1bGVkIGluIHRpbWUKYW5kIHRoZSBmcmFtZSBpcyBk
+cm9wcGVkIGR1ZSB0byB0aGUgZXhlY3V0aW9uIHRpbWUgb2Ygc29mdGlycSBpcyB0b28gbG9uZywK
+YWxzbyBzb21lIHNvZnRpcnEgY2Fubm90IGJlIGV4ZWN1dGVkIGluIHRpbWUgaW4ga3NvZnRpcnFz
+LCBhbmQgZGVsYXlzIG9jY3VyLCAKc3VjaCBhcyBJTy4KClRoZXJlZm9yZSwgd2h5IG5vdCBnaXZl
+IHRoZSB1c2VyIGEgY2hvaWNlIHRvIGJhbGFuY2UgdGhlIGV4ZWN1dGlvbiBvZiBzb2Z0aXJxCndo
+aWxlIG5vdCBlbmFibGUgSVJRX0ZPUkNFRF9USFJFQURJTkcsIHNvIGFzIHRvIG1lZXQgdGhlIGlu
+Y29uc2lzdGVudCAKc2NlbmVzIGFuZCBuZWVkcwoKVGhhbmtzLgpRaW5nCj4KPglKdXN0IG15ICQu
+MDIsCj4KPgktTWlrZQo+Cj4KDQoNCg==
