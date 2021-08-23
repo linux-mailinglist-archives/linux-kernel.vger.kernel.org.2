@@ -2,115 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01BA3F499B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA8F3F4956
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhHWLWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:22:20 -0400
-Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:53892
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235077AbhHWLWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:22:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iCC+9npCFy17JTnOhPp+jZULvmKgzo6kUJHFp5VcmDizuSsAhIhRIrI60s1q+W4FmPcydzU+2p4MGSQEpXkEuk7PbgPJIHFvaWX3fcVogPCADf1hsGVy/pKl0qeKCCcp6a+s6dHsIyOeR/sAJtwKspi45Rl0XO1XpuoH/LD/Nyufa4gc5S9lQ4hQ73fhGnrN0yWZm097TWi3rAHTiMOUI/pZPS5bYxVLEKW6ecn5pXs902kxZzdxEEOaCZvf8MGltI5oysaSLiE3NQqE/vns8Ff6Uyi4nPZ/NzzDNro49fgcTPdCPMpnOcMy83do4MMkbEVojoPnR6RysToYTG0Etw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LR9fb/y/SwBDL9xh0ayjptgcvGABEIum6YT1hk1HTD0=;
- b=I94QSvlt1mUKr8fzUY5+rs3fDLOI8Qaxr9ZX+NwD5+bgaDd7doimigdc09+h7NdKMnELK2QOZBUFvVjwGlE5Spkbn/aTwlAs6n7MPxPlOCn0xrCQ1DxPHn+QYX1CdftTSC8yZf0OukqlHn0U/1eNvhZqlzy5gE8qIM5/QRJlmSSIG5jAI76/Ytka6eEBejbFHHHfNdtVlLiLtqj2tPwgs7sG+Xr6DAN0ISxVmYStSwX5q52EJPHwhTt37PqXGWyIW5dvvTSUl+hBdl3Q2JuQ14+e4/XX30iu/RlhfyAwFTtPEslXEKYAreSGA4JmCmysEJ0CyrtSTvIZ7rUWAwCDkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 91.118.163.37) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=wvls01.wolfvision.net; dmarc=fail (p=quarantine sp=quarantine
- pct=100) action=quarantine header.from=wolfvision.net; dkim=none (message not
- signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LR9fb/y/SwBDL9xh0ayjptgcvGABEIum6YT1hk1HTD0=;
- b=BOW061vVdvxPXhf3pTtZ4QjArotzTXGs5ze8IDSLEO+v51IimgEHhdLjQ0M3Qb2C+m05Y3mIT7lnYGRppT0+I1ZstXuE/a3HuccoSFwBI4C0kDZz+P5h3qUWoMc9LFfxx6W8Rkt96DhGy73wXxPV/ltHv8t9wXRgi4wSrJ5Qewg=
-Received: from DB9PR02CA0012.eurprd02.prod.outlook.com (2603:10a6:10:1d9::17)
- by AM6PR08MB3656.eurprd08.prod.outlook.com (2603:10a6:20b:51::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Mon, 23 Aug
- 2021 11:21:29 +0000
-Received: from DB3EUR04FT021.eop-eur04.prod.protection.outlook.com
- (2603:10a6:10:1d9:cafe::f) by DB9PR02CA0012.outlook.office365.com
- (2603:10a6:10:1d9::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Mon, 23 Aug 2021 11:21:29 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 91.118.163.37)
- smtp.mailfrom=wvls01.wolfvision.net; vger.kernel.org; dkim=none (message not
- signed) header.d=none;vger.kernel.org; dmarc=fail action=quarantine
- header.from=wolfvision.net;
-Received-SPF: None (protection.outlook.com: wvls01.wolfvision.net does not
- designate permitted sender hosts)
-Received: from wvls01.wolfvision.net (91.118.163.37) by
- DB3EUR04FT021.mail.protection.outlook.com (10.152.25.28) with Microsoft SMTP
- Server id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 11:21:28
- +0000
-Received: by wvls01.wolfvision.net (Postfix, from userid 1000)
-        id 057C24A4800; Mon, 23 Aug 2021 13:04:27 +0200 (CEST)
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Liang Chen <cl@rock-chips.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>
-Subject: [PATCH] arm64: dts: rockchip: add saradc to rk3568-evb1-v10
-Date:   Mon, 23 Aug 2021 13:04:24 +0200
-Message-Id: <20210823110424.3592528-1-michael.riesch@wolfvision.net>
-X-Mailer: git-send-email 2.17.1
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
+        id S235011AbhHWLGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233170AbhHWLGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:06:04 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E8DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:05:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id l18so23231923lji.12
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:05:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=62CG5FAwbYbHLuK7wsjeor0Z+AOZ5C4DhMlnKDlbXtw=;
+        b=TOM//u8UUBYIc4mSeepYO3t1NmwooE12nusPUzvOgQ+yLNjP8WlVLNjyHNR2omONFs
+         XHW+X+M9yKWeLndqwrYO5UQaEJPBJbKVMlV0GKOvULUaqa5+c/U9PjQfJrHn+9xIbYZF
+         uTzZe++0zhW6fTLiRyXNRtUiEPfj9eh7ZIrjBSQW/uhTbtWtQ2fsT4++OV9WYouCbe1U
+         qOA4IiSDrwCIttRhOkfa6Mf730izslJ45O2M0qANWsrjVBttoSF0MVjvLtm68FudpJm3
+         t5jhDQjDjhxBK4ymTevFk7wkdDLHz/8qOPFTUj7/9Qm7ywt4KiCLtdbBq3a4TO3kf9wk
+         wNQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=62CG5FAwbYbHLuK7wsjeor0Z+AOZ5C4DhMlnKDlbXtw=;
+        b=XDAf8d8WLk+/itetKq95QwC1VaTJ6HeCBT5eTJcTW3nHavd77Hy0JiDVIPFph32E/k
+         YKf2n5mS1B0gXxz/YUPXXougQ3r4QmBV/EAcNMOLyB8plk/UlFzZjXDewHQiXjs2HMSV
+         Gb4r6rGtZX3+O22qlWOWE0U53VKJEh5S+tZy+9DN4aMn/HuwqCnY2UaeadiIqOQYg6y9
+         oooGp3CxMgDfvELGiGM7XddTp6aJM7uYztV14iXHvxyDQpAHpZn5cRa8SP9Ill5uw0XR
+         3HFrb1zkSCAS3TbXctpNUPCuUn+CngbVm/gc40DEyJbyrapAjHrOqVG9GBK5tbQfDCv5
+         Qlnw==
+X-Gm-Message-State: AOAM533KCMZrwg0FP1CNdFNLDR5JbgqyXhzmHSNIvgQtvYbv9KLBSYO0
+        5nGRCy9I9zBJ4tlAY/Qwdsu5u4Plb8B3hQ==
+X-Google-Smtp-Source: ABdhPJzzVp2aBbfYX6ian7zNSn+RPbW1PFFcBr2bb/oTwSJjuNqPU1zqJc6ei1oG/83tFGEtxXJmZg==
+X-Received: by 2002:a2e:98d0:: with SMTP id s16mr27000876ljj.115.1629716719951;
+        Mon, 23 Aug 2021 04:05:19 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id d20sm1419269lfs.155.2021.08.23.04.05.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 04:05:19 -0700 (PDT)
+Subject: Re: [PATCH RFC] staging: r8188eu: Use usb_control_msg_recv/send() in
+ usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210822230235.10953-1-fmdefrancesco@gmail.com>
+ <69bbb80c-2b30-28b9-ad8c-6862a6c3b911@gmail.com>
+ <8275282.m2tVFbhrJk@localhost.localdomain>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <7ce23fb2-3c8b-352e-1f2e-421ac7c64200@gmail.com>
+Date:   Mon, 23 Aug 2021 14:05:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 6871356a-ae42-48c8-5e5f-08d966282714
-X-MS-TrafficTypeDiagnostic: AM6PR08MB3656:
-X-Microsoft-Antispam-PRVS: <AM6PR08MB3656D9ADBB9F89673ECCB2DCEBC49@AM6PR08MB3656.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DJNN5bKMjfiZQPtfjOUSNSt38M7ajPRSheNpNMoLmc2CPMp1jPx8Klp3IayCYT7/gXXyy5d5upxXmRRfHPpDB+u5lJyEDcWdfAbU87Ez5y+qXR7s5OmmoeSmDUzgwhJLkqXX7flhWQ0SLaF1OeJhDiJWBpagsIbvBjMTIxXKoU51vVV0xdz5iEfp+Ea+vTOctEzoKqeBvZ+Il4Oi+x9pEunEFfvxqyobBXBNyDf9fN6vmVquMnl9vjo3LMvayZe/jOm7c/CnnNyHY1F8tWXWOqy7L+A32JK/N1Cx2hJfc9FDx3rv6K0bM2rWjMJaEvtJjyX0piSt4czYYX7LUSKBbzaG8TV/OTY2jmfaxSq7fSAgH3UaUH9wGGPcOGacCPvImHdi2P6l3fh+KDL5HmR6OGT8MAe7LbS8tZ1qHyT5CVa2xIdaEmcEgskklq7la8UznOYkNmYtOtmhnoVS1yUuHXOAVcDhHJd2nSfkiVnYOe5HjNfvMnyXjjqce/sDk6PfzWK2oKmoYbYuQUq/guLwgwKu/lESg2cQ6JHEUZwytxKBPVWBBwQ6xB0P/PGYovKZ+KdY7Lbltps3oteAH/2ZlQ+f3rnZF5hDFXrl2ywCcTaEcvH6WzccHbBrRlu3QIvfjFEtj3tiGl/SPN6tYa5bvG/3q4NgEcP2wKW0HSSpENYLk+EeruQHIwjG9EUIYcVyU1wl3VzXau5blimPTdNCf9Itb02ksdPVJRPfTokLbRQ=
-X-Forefront-Antispam-Report: CIP:91.118.163.37;CTRY:AT;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wvls01.wolfvision.net;PTR:91-118-163-37.static.upcbusiness.at;CAT:NONE;SFS:(4636009)(46966006)(4326008)(83170400001)(82310400003)(107886003)(35950700001)(450100002)(426003)(54906003)(42186006)(356005)(36756003)(70206006)(70586007)(2616005)(316002)(5660300002)(1076003)(6666004)(508600001)(2906002)(44832011)(47076005)(8676002)(4744005)(6266002)(336012)(26005)(8936002)(81166007)(14776007)(75936004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 11:21:28.8737
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6871356a-ae42-48c8-5e5f-08d966282714
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e94ec9da-9183-471e-83b3-51baa8eb804f;Ip=[91.118.163.37];Helo=[wvls01.wolfvision.net]
-X-MS-Exchange-CrossTenant-AuthSource: DB3EUR04FT021.eop-eur04.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3656
+In-Reply-To: <8275282.m2tVFbhrJk@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SARADC to the device tree of the RK3568 EVB1.
+On 8/23/21 1:47 PM, Fabio M. De Francesco wrote:
+> On Monday, August 23, 2021 10:11:52 AM CEST Pavel Skripkin wrote:
+>> On 8/23/21 2:02 AM, Fabio M. De Francesco wrote:
+>> > Replace usb_control_msg() with the new usb_control_msg_recv() and
+>> > usb_control_msg_send() API of USB Core.
+>> > 
+>> > This patch is an RFC for different reasons:
+>> > 
+>> > 1) I'm not sure if it is needed: while Greg Kroah-Hartman suggested to
+>> > use the new API in a message to a thread that was about a series of patches
+>> > submitted by Pavel Skripkin (who decided to not use it), I cannot explain
+>> > if and why the driver would benefit from this patch.
+>> > 2) I have doubts about the semantic of the API I use here, so I'd like to
+>> > know whether or not I'm using them properly.
+>> > 3) At the moment I cannot test the driver because I don't have my device
+>> > with me.
+>> > 4) This patch could probably lead to a slight change in some lines of
+>> > Pavel's series (for sure in usb_read*()).
+>> > 
+>> > I'd like to hear from the Maintainers and other interested people if this
+>> > patch is worth to be considered and, in this case, if there are suggestions
+>> > for the purpose to improve it.
+>> > 
+>> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+>> > ---
+>> >   drivers/staging/r8188eu/hal/usb_ops_linux.c | 19 ++++++++++---------
+>> >   1 file changed, 10 insertions(+), 9 deletions(-)
+>> > 
+>> > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+>> > index 6a0a24acf292..9e290c1cc449 100644
+>> > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+>> > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+>> > @@ -15,7 +15,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>> >   	struct adapter	*adapt = pintfhdl->padapter;
+>> >   	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
+>> >   	struct usb_device *udev = dvobjpriv->pusbdev;
+>> > -	unsigned int pipe;
+>> > +	u8 pipe;
+>> >   	int status = 0;
+>> >   	u8 reqtype;
+>> 
+>> I think, we can pass REALTEK_USB_VENQT_{READ,WRITE} directly as 
+>> requesttype argument and get rid of u8 reqtype. + we can define these 
+>> macros:
+>> 
+>> #define
+>> usbctrl_vendor_read(...)   usbctrl_vendorreq(...,REALTEK_USB_VENQT_READ)
+>> 
+>> 
+>> #define
+>> usbctrl_vendor_write()    usbctrl_vendorreq(...,REALTEK_USB_VENQT_WRITE)
+>> 
+>> 
+>> This will make code more nice, IMO  :)
+> 
+> Dear Pavel,
+> 
+> I agree in full: nicer and cleaner :)
+> 
+> I'll do that, but please notice that I will also need to change the code of the three
+> usb_read*() for calling usbctrl_vendor_read(). Furthermore, "else res = 0;" becomes
+> unnecessary. Please take these changes into account when you'll send them again
+> as "regular" patches.
+> 
 
-Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
----
- arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+It depends on which patch will go in first.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-index 1bc79e95b2fb..184e2aa2416a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3568-evb1-v10.dts
-@@ -360,6 +360,11 @@
- 	status = "okay";
- };
- 
-+&saradc {
-+	vref-supply = <&vcca_1v8>;
-+	status = "okay";
-+};
-+
- &sdhci {
- 	bus-width = <8>;
- 	max-frequency = <200000000>;
--- 
-2.17.1
+There are a lot of upcoming clean ups, so I am waiting for merging my 
+series with random clean ups :) A lot of fun...
 
+I biggest hope is that my series will go in before camel-case clean ups, 
+because rewriting this for the 3rd time will kill my mind...
+
+
+
+With regards,
+Pavel Skripkin
