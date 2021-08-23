@@ -2,312 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EA03F48E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3088E3F48E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236157AbhHWKro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbhHWKrl (ORCPT
+        id S236196AbhHWKsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:48:20 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:11888 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236171AbhHWKsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:47:41 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B2CC061796
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:46:57 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id h1so2446685ljl.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:46:56 -0700 (PDT)
+        Mon, 23 Aug 2021 06:48:16 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17N8TLpW021813;
+        Mon, 23 Aug 2021 10:47:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=jAWyKnStuSZVwMQ0rpMNgYdTk0O9QO6RQ3WQsvQNriw=;
+ b=Ff1PGOk0viaTacyzvJIawxK+IzEWdhwX8KK+M1urxVmYVU62UuS9DZeLIDsR0n/FaEKn
+ DE41WSfiRmdBkSANEGEEneE5YTrcVISDO3SM+Epkb9bvZA2n3Fj1FJiLMbZK7pYqsBSt
+ 4cD55pcp0E6+5GF9rdzyoBn1nY10hRZSCSmKkzzdrno+MUQfPM2Ek728Zfn9qFF4xX8f
+ P9wCtMyC9slqHM4jhusjwURZfMdFFzXXrrcvFW48PoVnlDBVkx39r6ZXPOmMoN1qAR+2
+ ml/V1GZhxKCekhXaGnEq+yXDvkeqErbSNcTyXoAwSMLTH9b7+aUGMS5dZ4D5mvPTRoF0 Xw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=jAWyKnStuSZVwMQ0rpMNgYdTk0O9QO6RQ3WQsvQNriw=;
+ b=nwheN9fjyBiHhLv2tN8RMOlcL4223le/hUsTrVFK8Ehs6OzT+wOigtzSX7wEYuPLAlE6
+ HtilE6vTTtptEtXK7dUF3VtJn6/1Rcn972swoTfrwDscSUTRkSwEfGP7wGYNvDgnI/Co
+ joF62BHJ1SEdywcDB4Y0HEXFovB/Jf14JCl9FjWsx6GbNDzExpFOKdyWXE2PRTwd6Emv
+ TODVLenAmGGttT9HHg/lBt9B0zdUC+jaqSBugiEyh3vKtv3tED+Hau/vnrVSDxI4r1el
+ UqSlUKxLZyv247rnGdgxZdb4pCuvNfHMVFw41KYrlAPjIY2b2o+P+iNmcwSLXy1ULhA5 lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3akwcf93jb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Aug 2021 10:47:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17NAjLQ7074130;
+        Mon, 23 Aug 2021 10:47:25 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by userp3020.oracle.com with ESMTP id 3akb8sfabs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Aug 2021 10:47:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ijx+aHHaxJ/fP4TljTLkKq2zbeLuwRqvVO7E4xQQDGyrLeU243w9IgUuSkLfRr/TRYDGTDvo9G9cO0w0yMj3DH0qROJFO/ATBYlUe4K+YJM/AGZM2999q4sqWNF63ZkHY02V5yJgxCxKebHC04Fx/1pMPdOrBOMK7tJ0DAN/lnJiHn5lmYmwXV/psJmpflsWPQDA4nMYFzR+MxOGW9PUoZ0BbgwVCUYM/UWBbPYRS0YYK4mE5WRTEJ2F2G+QO8Pvn0BBRzKAJ8QOqB7cuDnMFUM7kJ0gNpYERYwvDRPF3zCkxYu6fPp9aA942cvIjBNUQPfx1YWdB5OWxwItiLTT9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jAWyKnStuSZVwMQ0rpMNgYdTk0O9QO6RQ3WQsvQNriw=;
+ b=jTzU5SOY9DJDP+7gMKbQ+htuv7VZ6PNCSQTLLkiekzzIinIZpy6nHJmUrMZ97ghW7TgC7HU/54kMO2H5PdEx6+69wqynkH9RzSWipnySu/aGvlJ6OQDdSu9o3h0CHDXCwns06pAPQQ0bYbWv5qp0C3X+ZzCeJGlQI22ZqDrx9AMiptVuSIDh+UlKLYZKLQi53oASezGwfzU4Wxp9HsmQV8JCIBvX2f4XrxICwwRXO/a0n5on5EyvNWqRucbwUpkE2eU4E8B72fhyXhthh27fKVhH8I5cH12XYPXLTuwwa7ZCIgKuvMmINuzvwhr8rwyiuTCVbEJi/tP2cZZNMGM5rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UmkfXGaYCdqSsvCrogHGEUgWw+TJ4SlfmjU5MN/PEBE=;
-        b=cjqU7CIQQYnl3N9VSH9OdTpbfhx84HH/grPgOc+tCGAo2Yn2hAV0cMn3z8HTaVOuhA
-         8Brg4z73NnaY2Z/CE8IaG11T82l0gL1ZP2mAHcCMwXtNviOz1cwQ7atSvkRP33js82FC
-         tL3OJS+qxvVYzF3TYhi7jJG99T8jOBJM8RSwrLmSS6vtDNlXueNOFv50Q4BmfSf/V2kW
-         jpK8t4qSsEu0v76ajcR4UzKY9YBd/hRYx4cCU6l6AsBCSBWNe3JTai52Wv7UVRmBdbxJ
-         Pg+Ik2kyI7qbtIeypuO3uLwLKp7JZuw0yQNYCSOl6O3FaQojbcATlzG1xxwJABfP9fIQ
-         rH8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UmkfXGaYCdqSsvCrogHGEUgWw+TJ4SlfmjU5MN/PEBE=;
-        b=i7FSkDBnSE6qHbf5t2KYwnIeYLsLieRWNjSHL7EX9zYRi9F1i3Zgdck30xwL+Xin19
-         FLjeQ0D5T8DMdoIxIiv6Q6s+IZ2NAcCH54mF520n3ny9WPaiQfyg4qTCpZn4sSmBBp5M
-         N21aNbHLahfD+sIFOdR3c61JlUrc50A0ZjQgAHPQvCt8UscBGjdV8/8zYPXrI3yOz/m5
-         D30xlfEk19TxAnOfo4SS20rGCT2rrlKxFi1sdVnjdoMh2ZB5Bw19CvVUbXxF9sPcKQtp
-         TGl5aYHOXQpXq5iYcW+pjln9TJmogvFSsjSjKFZS+wBpNCkVhzV49xiz3z1OYo+8ilHW
-         1uqg==
-X-Gm-Message-State: AOAM533kaEem8C9rY2R3C+ceFNIJvX1hvXnK4ciITMFGrXfFNqySljav
-        fhAWPd7NsUPWMY6rwxYVpswA0rmZk84J5nqdntLmrQ==
-X-Google-Smtp-Source: ABdhPJwROTbhLIghdJiFv3Mpx4km5TKucbukHEV5v0NDix1jHpH6ITt9xOVwuMgiEW0EE35GC/hK1ms310RYHiQipIA=
-X-Received: by 2002:a2e:a410:: with SMTP id p16mr25247179ljn.364.1629715615237;
- Mon, 23 Aug 2021 03:46:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210818043131.7klajx6drvvkftoc@vireshk-i7> <a2a3c41f-c5e4-ee7e-7d48-03af8bac8863@gmail.com>
- <20210818045307.4brb6cafkh3adjth@vireshk-i7> <080469b3-612b-3a34-86e5-7037a64de2fe@gmail.com>
- <20210818055849.ybfajzu75ecpdrbn@vireshk-i7> <f1c76f23-086d-ef36-54ea-0511b0ebe0e1@gmail.com>
- <20210818062723.dqamssfkf7lf7cf7@vireshk-i7> <CAPDyKFrZqWtZOp4MwDN6fShoLLbw5NM039bpE3-shB+fCEZOog@mail.gmail.com>
- <20210818091417.dvlnsxlgybdsn76x@vireshk-i7> <CAPDyKFrVxhrWGr2pKduehshpLFd_db2NTPGuD7fSqvuHeyzT4w@mail.gmail.com>
- <20210818095044.e2ntsm45h5cddk7s@vireshk-i7> <CAPDyKFrFF00xGDWPCQnPwF0_QkG4TB2UqggpuBpp8LY_CMKP-A@mail.gmail.com>
- <0354acbe-d856-4040-f453-8e8164102045@gmail.com> <CAPDyKFoQdn1rm91iFNJwZwpSYcKJBjDLqtJB4KZAkhgY1Grm-Q@mail.gmail.com>
- <87073fc2-d7b3-98f4-0067-29430ea2adef@gmail.com> <CAPDyKFqSsAk8a5CTNpRT2z4Wvf8BehJKDbVhUKfHc2Jzj7aTNA@mail.gmail.com>
- <9129a9f0-8c9b-d8e0-ddf5-c8820871fb7f@gmail.com>
-In-Reply-To: <9129a9f0-8c9b-d8e0-ddf5-c8820871fb7f@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 23 Aug 2021 12:46:19 +0200
-Message-ID: <CAPDyKFrWeQVNgxzmiLBXJ2gQW=iFf4aG16xvZ+ag1MkhXs9-BQ@mail.gmail.com>
-Subject: Re: [PATCH v8 01/34] opp: Add dev_pm_opp_sync() helper
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jAWyKnStuSZVwMQ0rpMNgYdTk0O9QO6RQ3WQsvQNriw=;
+ b=crZ2vob1uOAEgWG+pD6MU9hHk/qTq0mSr/qKDD8HlbnD6SQRWNtywT3q7hkoSIkUvvBp1kk17++AAqIcgq/YYSnVkEdgOuYpzo+Y8tC68UjSCRjb9wcslVsLShRq6viy8MLfoyxrHi/odrLMYvBiRGlxZbqWqm+kKvmbqxT5Sx4=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BY5PR10MB4356.namprd10.prod.outlook.com (2603:10b6:a03:210::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Mon, 23 Aug
+ 2021 10:47:23 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::cdbb:4673:98bd:7f2c]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::cdbb:4673:98bd:7f2c%5]) with mapi id 15.20.4415.023; Mon, 23 Aug 2021
+ 10:47:23 +0000
+Date:   Mon, 23 Aug 2021 06:47:19 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v2 0/2] Don't fail device probing due to
+ of_dma_set_restricted_buffer()
+Message-ID: <YSN8tz6zb65V9+an@localhost.localdomain>
+References: <20210816132618.11707-1-will@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816132618.11707-1-will@kernel.org>
+X-ClientProxiedBy: BL1PR13CA0163.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::18) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (130.44.160.152) by BL1PR13CA0163.namprd13.prod.outlook.com (2603:10b6:208:2bd::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.6 via Frontend Transport; Mon, 23 Aug 2021 10:47:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 14330f43-1219-4cf0-1c49-08d9662363ad
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4356:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB4356E58045461331691A064289C49@BY5PR10MB4356.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:962;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AlLtrbgEyZa13jbUMESbBX0x8V+x4B4lGyWWR7dQRvw70gBnAyT3aB9KSin27Ydb7yfwa9QPfrNWaqQUB0X0D5nrwX1TfeBnK0FZsTMw9HteMznmVsXnVS9fnCbCQa7HkDzYWRk8qFgtj8I/GHYVrS92+1kvMyAq+Jz1KNaW169CaSLwConBHcEA0IDo6hvVNwWzhHfhC2hFJLnr4VBvRbLc7ELTMPqGatHAmRB7cbuau9xqeuhbfMTRZHifitB3cfYy3qq6kijbWxLSbUuzpP4MKvCzE2/j9watIT1BjskwBp26/+LvuP7orh5Ze2zEt3D4lNz6o/KGBK75O0u2/fHAZVzO3whVz8wDERsLyJgelvwKwM7eAjoWcmaTy+T88aFqI4mhsoGYdgcnL4TI1fDRDFgiWdYSaDsVebT9raLZUSjkHNZxCRQeSC8dNgVGSvZdfi6dWe9TEoTXr20cEL5ExDrHgB636olp/DV5/FaExLSCWP4Qh7VlWTaHO7hnaPcndjzWwCsXj/+kgVO/E5euKRswKBspX8k0DNnKc2jYXWR+HqlLic7FSCqEnHyovUYfsyUEO5F3ugNZ4V+3LjBCvQxGnJE5ULP/wPJLBP/8yOEuRD2yaJI/uf69dd+aNynTBofntPCfI9NKN5hMgsPQc3iKIq/tXAKM+MhvwFk9On0pVyeCY55OMpmJImgvs4e3vflp3XCksoIWG/6nsoXBi7jcb9cewVgi8s8S9JxwIQ0ojRHtQwF64Iyy7SNzIiAocTz6fXkhq2KXzGFwKgQ+ij7+fkn+9hhnEd6pyQHMT6qxGjgOtMT87lvsPnyI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(346002)(376002)(396003)(4326008)(186003)(55016002)(26005)(9686003)(54906003)(38350700002)(38100700002)(2906002)(8676002)(5660300002)(6666004)(8936002)(66556008)(66946007)(6916009)(66476007)(956004)(6506007)(7696005)(52116002)(86362001)(478600001)(966005)(316002)(83380400001)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7aYVAahHMUdMOL5tFXYGegLa9WSwFkNtmo1Ry3+ayrlyoSHhXpHZfmHdZIyy?=
+ =?us-ascii?Q?p+nsWQ+tQDvwJndhseAbV9szoQjoOiBdWpSV5sJoLAKPW4/e2XMM2Dl8KtHk?=
+ =?us-ascii?Q?CDO3c5qF9V1nHvzAx64gObhkHX/4VTwBWpNsGac1Xmw6BzWaxgT0xky8P2wZ?=
+ =?us-ascii?Q?E2BH4t6hisn3zxSCyaNEHSazD31SB4xgZ2I7JOHjvK0OFXfHnZd7y8C0p9u6?=
+ =?us-ascii?Q?P7NM5Xvc4zoeLM8uXutPitTtYN/g5+FVHALTEqhfjTFWviP18MHBpXGYPA54?=
+ =?us-ascii?Q?K6PR6EZHsd6HK8ANrYwuNIPxOqeg4f7O+RsyA2h8Z7ClA9hGo+fHnPIx0XxN?=
+ =?us-ascii?Q?rLg3SEiwVswECHbEePuFiqgfwUvZ3SIRt3RWoukNhdhRt7DjUhauGTNZ6ipE?=
+ =?us-ascii?Q?8axBvU5D1NWhHpaZipUAUj9r951uTusYDnAFloWR0oVTq1eFtayggxHL/5mR?=
+ =?us-ascii?Q?WLMuPSY1wte6hWENkteLicqKYfl3qebPxRtfGM0ByS14VblMRx0CRY0jYWy/?=
+ =?us-ascii?Q?n8SE17FLB4PfAuUBHzA+ngQr94pzaapMYZBm/pKdhaN4bdAE6HOOjOKzgRq1?=
+ =?us-ascii?Q?MnmFcg8IBJkAW/mtnpFAZLqN9WjpK3UOCvyGBNuTJmBnzJvDFd7zqYRH5ACS?=
+ =?us-ascii?Q?lqxdMu6GCN9wHPkb/Mn5fOuNs4yPOHI9eNfWZkaEBQet4lCjXmhN6YGExZig?=
+ =?us-ascii?Q?Psy1q93MyfRIL5NNRqiooMVkjEMtYhXGNCN16z1ny7LxYeaARNrkKntX7Txb?=
+ =?us-ascii?Q?cKw/eEcw3YYBI3hg4JyXaGVGgZhGglR3fnTJ/rQifHvqaEYUCLWAJLfMj+mQ?=
+ =?us-ascii?Q?dWzcIVl5u6wpq6NMEgmJHAwZV8eEvoUIvRzT2iIx5p97g/Uca797r2WZW4bW?=
+ =?us-ascii?Q?J021m6HUvzP9W6nJWemoi6Rpdbyo0PXaRxzu/lnKZBvKvzeNydcjcBRek+Gm?=
+ =?us-ascii?Q?r8rGXrVrJyXLsptiLTxms8iG/eCqVZhQxjXFzZQkVFuPRVTjRlGTG7Hp5pHS?=
+ =?us-ascii?Q?FijAAYVJWXnknXbcNxuxhrEOIxIFrMNSI+WoY05oC15JnKBAE2/8tNZUOiAc?=
+ =?us-ascii?Q?sah1n9vI5oywntw8zTt/WEA/AU7YLDrEW3j6g72xeQIP9flFq0ubmzdtrSY3?=
+ =?us-ascii?Q?GqyrcyHonDf/LOdhNrr27NVSobgprMIIbxP9jytmW5SmvQb4jyr36ZrSZYwf?=
+ =?us-ascii?Q?3Ab1WxLouMP87ZKzUhcCoFPr+NOpv63KuWl+TFGZlnqMAi7GAJrnaHwxfuoS?=
+ =?us-ascii?Q?lDVyrHvaS32VU5ZkMJke977OZJtwBB6hGxRrv7LVbWkaJKjT8QHRNvI58iYj?=
+ =?us-ascii?Q?NAdcWQGVGRfqvMLe4/FS+hBD?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14330f43-1219-4cf0-1c49-08d9662363ad
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 10:47:23.2983
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XU3oH0KW12Jx8/1zIMPCS+8P5YpbBGCmTlb6cdx4GP8ENdxTlfTNhAFQxvlSNpVRV3/KyrU6Rn09r/Iq/CSBXQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4356
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10084 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108230071
+X-Proofpoint-GUID: 8FcG56PY2XdXcLFpiKhYNGe2zjq73Xl-
+X-Proofpoint-ORIG-GUID: 8FcG56PY2XdXcLFpiKhYNGe2zjq73Xl-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
+On Mon, Aug 16, 2021 at 02:26:15PM +0100, Will Deacon wrote:
+> Hi all,
+> 
+> This is v2 of the patch I previously posted here:
+> 
+>   https://lore.kernel.org/r/20210805094736.902-1-will@kernel.org
+> 
+> Changes since v1 are:
+> 
+>   * Move of_dma_set_restricted_buffer() into of/device.c (Rob)
+>   * Use IS_ENABLED() instead of 'static inline' stub (Rob)
+> 
+> This applies on Konrad's devel/for-linus-5.15 branch in swiotlb.git
 
-> >>>> We have three components comprising PM on Tegra:
-> >>>>
-> >>>> 1. Power gate
-> >>>> 2. Clock state
-> >>>> 3. Voltage state
-> >>>>
-> >>>> GENPD on/off represents the 'power gate'.
-> >>>>
-> >>>> Clock and reset are controlled by device drivers using clk and rst APIs.
-> >>>>
-> >>>> Voltage state is represented by GENPD's performance level.
-> >>>>
-> >>>> GENPD core assumes that at a first rpm-resume of a consumer device, its
-> >>>> genpd_performance=0. Not true for Tegra because h/w of the device is
-> >>>> preconfigured to a non-zero perf level initially, h/w may not support
-> >>>> zero level at all.
-> >>>
-> >>> I think you may be misunderstanding genpd's behaviour around this, but
-> >>> let me elaborate.
-> >>>
-> >>> In genpd_runtime_resume(), we try to restore the performance state for
-> >>> the device that genpd_runtime_suspend() *may* have dropped earlier.
-> >>> That means, if genpd_runtime_resume() is called prior
-> >>> genpd_runtime_suspend() for the first time, it means that
-> >>> genpd_runtime_resume() will *not* restore a performance state, but
-> >>> instead just leave the performance state as is for the device (see
-> >>> genpd_restore_performance_state()).
-> >>>
-> >>> In other words, a consumer driver may use the following sequence to
-> >>> set an initial performance state for the device during ->probe():
-> >>>
-> >>> ...
-> >>> rate = clk_get_rate()
-> >>> dev_pm_opp_set_rate(rate)
-> >>>
-> >>> pm_runtime_enable()
-> >>> pm_runtime_resume_and_get()
-> >>> ...
-> >>>
-> >>> Note that, it's the consumer driver's responsibility to manage device
-> >>> specific resources, in its ->runtime_suspend|resume() callbacks.
-> >>> Typically that means dealing with clock gating/ungating, for example.
-> >>>
-> >>> In the other scenario where a consumer driver prefers to *not* call
-> >>> pm_runtime_resume_and_get() in its ->probe(), because it doesn't need
-> >>> to power on the device to complete probing, then we don't want to vote
-> >>> for an OPP at all - and we also want the performance state for the
-> >>> device in genpd to be set to zero. Correct?
-> >>
-> >> Yes
-> >>
-> >>> Is this the main problem you are trying to solve, because I think this
-> >>> doesn't work out of the box as of today?
-> >>
-> >> The main problem is that the restored performance state is zero for the
-> >> first genpd_runtime_resume(), while it's not zero from the h/w perspective.
-> >
-> > This should not be a problem, but can be handled by the consumer driver.
-> >
-> > genpd_runtime_resume() calls genpd_restore_performance_state() to
-> > restore a performance state for the device. However, in the scenario
-> > you describe, "gpd_data->rpm_pstate" is zero, which makes
-> > genpd_restore_performance_state() to just leave the device's
-> > performance state as is - it will *not* restore the performance state
-> > to zero.
-> >
-> > To make the consumer driver deal with this, it would need to call
-> > dev_pm_opp_set_rate() from within its ->runtime_resume() callback.
-> >
-> >>
-> >>> There is another concern though, but perhaps it's not a problem after
-> >>> all. Viresh told us that dev_pm_opp_set_rate() may turn on resources
-> >>> like clock/regulators. That could certainly be problematic, in
-> >>> particular if the device and its genpd have OPP tables associated with
-> >>> it and the consumer driver wants to follow the above sequence in
-> >>> probe.
-> >>
-> >> dev_pm_opp_set_rate() won't enable clocks and regulators, but it may
-> >> change the clock rate and voltage. This is also platform/driver specific
-> >> because it's up to OPP user how to configure OPP table. On Tegra we only
-> >> assign clock to OPP table, regulators are unused.
-> >>
-> >>> Viresh, can you please chime in here and elaborate on some of the
-> >>> magic happening behind dev_pm_opp_set_rate() API - is there a problem
-> >>> here or not?
-> >>>
-> >>>>
-> >>>> GENPD core assumes that consumer devices can work at any performance
-> >>>> level. Not true for Tegra because voltage needs to be set in accordance
-> >>>> to the clock rate before clock is enabled, otherwise h/w won't work
-> >>>> properly, perhaps clock may be unstable or h/w won't be latching.
-> >>>
-> >>> Correct. Genpd relies on the callers to use the OPP framework if there
-> >>> are constraints like you describe above.
-> >>>
-> >>> That said, it's not forbidden for a consumer driver to call
-> >>> dev_pm_genpd_set_performance_state() directly, but then it better
-> >>> knows exactly what it's doing.
-> >>>
-> >>>>
-> >>>> Performance level should be set to 0 while device is suspended.
-> >>>
-> >>> Do you mean system suspend or runtime suspend? Or both?
-> >>
-> >> Runtime suspend.
-> >
-> > Alright. So that's already taken care of for us in genpd_runtime_suspend().
-> >
-> > Or perhaps you have discovered some problem with this?
-> >
-> >>
-> >>>> Performance level needs to be bumped on rpm-resume of a device in
-> >>>> accordance to h/w state before hardware is enabled.
-> >>>
-> >>> Assuming there was a performance state set for the device when
-> >>> genpd_runtime_suspend() was called, genpd_runtime_resume() will
-> >>> restore that state according to the sequence you described.
-> >>
-> >> What do you think about adding API that will allow drivers to explicitly
-> >> set the restored performance state of a power domain?
-> >>
-> >> Another option could be to change the GENPD core, making it to set the
-> >> rpm_pstate when dev_pm_genpd_set_performance_state(dev) is invoked and
-> >> device is rpm-suspended, instead of calling the
-> >> genpd->set_performance_state callback.
-> >>
-> >> Then drivers will be able to sync the perf state at a probe time.
-> >>
-> >> What do you think?
-> >
-> > I don't think it's needed, see my reply earlier above. However your
-> > change touches another problem though, see below.
-> >
-> >>
-> >> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> >> index a934c679e6ce..cc15ab9eacc9 100644
-> >> --- a/drivers/base/power/domain.c
-> >> +++ b/drivers/base/power/domain.c
-> >> @@ -435,7 +435,7 @@ static void genpd_restore_performance_state(struct
-> >> device *dev,
-> >>  int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int
-> >> state)
-> >>  {
-> >>         struct generic_pm_domain *genpd;
-> >> -       int ret;
-> >> +       int ret = 0;
-> >>
-> >>         genpd = dev_to_genpd_safe(dev);
-> >>         if (!genpd)
-> >> @@ -446,7 +446,10 @@ int dev_pm_genpd_set_performance_state(struct
-> >> device *dev, unsigned int state)
-> >>                 return -EINVAL;
-> >>
-> >>         genpd_lock(genpd);
-> >> -       ret = genpd_set_performance_state(dev, state);
-> >> +       if (pm_runtime_suspended(dev))
-> >> +               dev_gpd_data(dev)->rpm_pstate = state;
-> >> +       else
-> >> +               ret = genpd_set_performance_state(dev, state);
-> >>         genpd_unlock(genpd);
-> >
-> > This doesn't work for all cases. For example, when a consumer driver
-> > deploys runtime PM support in its ->probe() according to the below
-> > sequence:
-> >
-> > ...
-> > dev_pm_opp_set_rate(rate)
-> > pm_runtime_get_noresume()
-> > pm_runtime_set_active()
-> > pm_runtime_enable()
-> > ...
-> > pm_runtime_put()
-> > ...
-> >
-> > We need to call genpd_set_performance_state() independently of whether
-> > the device is runtime suspended or not.
->
-> I don't see where is the problem in yours example.
->
-> pm_runtime_suspended() = false while RPM is disabled. When device is
-> resumed, the rpm_pstate=0, so it won't change the pstate on resume.
+It should show up later today.
 
-Yes, you are certainly correct, my bad! I mixed it up with
-pm_runtime_status_suspended(), which only cares about the status.
-
-So, after a second thought, your suggestion sounds very much
-reasonable to me! I have also tried to consider all different
-scenarios, including the system suspend/resume path, but I think it
-should be fine.
-
-I also think that a patch like the above should be considered as a
-fix, because it actually fixes a problem, according to what I said in
-my earlier reply, below.
-
-Fixes : 5937c3ce2122 ("PM: domains: Drop/restore performance state
-votes for devices at runtime PM").
-
->
-> > Although, it actually seems like good idea to update
-> > dev_gpd_data(dev)->rpm_pstate = state here, as to make sure
-> > genpd_runtime_resume() doesn't restore an old/invalid value that was
-> > saved while dropping the performance state vote for the device in
-> > genpd_runtime_suspend() earlier.
-> >
-> > Let me send a patch for this shortly, to close this window of a possible error.
->
-> It will also remove the need to resume device just to change the clock
-> rate, like I needed to do it in the PWM patch of this series.
-
-Do you want to send the patch formally? Or do you prefer it if I do it?
-
-Kind regards
-Uffe
+Thanks!
+> 
+> Cheers,
+> 
+> Will
+> 
+> Cc: Claire Chang <tientzu@chromium.org>
+> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> 
+> --->8
+> 
+> Will Deacon (2):
+>   of: Move of_dma_set_restricted_buffer() into device.c
+>   of: restricted dma: Don't fail device probe on rmem init failure
+> 
+>  drivers/of/address.c    | 33 ---------------------------------
+>  drivers/of/device.c     | 39 ++++++++++++++++++++++++++++++++++++++-
+>  drivers/of/of_private.h |  7 -------
+>  3 files changed, 38 insertions(+), 41 deletions(-)
+> 
+> -- 
+> 2.33.0.rc1.237.g0d66db33f3-goog
+> 
