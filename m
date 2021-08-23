@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0323F5307
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3814F3F5313
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhHWVwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 17:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
+        id S232995AbhHWVz0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 17:55:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:57400 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233008AbhHWVwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:52:33 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51466611CB;
-        Mon, 23 Aug 2021 21:51:50 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mIHrA-006lhN-7D; Mon, 23 Aug 2021 22:51:48 +0100
+        id S232898AbhHWVzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 17:55:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF9D41042;
+        Mon, 23 Aug 2021 14:54:40 -0700 (PDT)
+Received: from [127.0.0.1] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FB0B3F766;
+        Mon, 23 Aug 2021 14:54:40 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 22:54:35 +0100
+From:   Steven Price <steven.price@arm.com>
+To:     dri-devel@lists.freedesktop.org,
+        Alyssa Rosenzweig <alyssa@collabora.com>
+CC:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] drm/panfrost: Simplify lock_region calculation
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YSQOdDyLqiUccBq8@maud>
+References: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com> <20210820213117.13050-2-alyssa.rosenzweig@collabora.com> <192e5a1b-2caf-11a8-f090-ec5649ea16b5@arm.com> <YSQOdDyLqiUccBq8@maud>
+Message-ID: <7076BF0A-C40E-4E5A-9185-FDB3882EC539@arm.com>
 MIME-Version: 1.0
-Date:   Mon, 23 Aug 2021 22:51:48 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Ratelimit error log during guest debug
- exception
-In-Reply-To: <CAJHc60wLPFZ5XFwWVyex5GXr=qm7QWc2yOmkECxLh=L2QnvgWg@mail.gmail.com>
-References: <20210819223406.1132426-1-rananta@google.com>
- <87sfz4qx9r.wl-maz@kernel.org>
- <CAJHc60wn7PP1zQ5EKOGQDFbZsf=d9codWTuWbtMT5AHegfbVHw@mail.gmail.com>
- <875yvzqd5d.wl-maz@kernel.org>
- <CAJHc60wLPFZ5XFwWVyex5GXr=qm7QWc2yOmkECxLh=L2QnvgWg@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <1a0dfd2bc950cb84e7344973657c6b23@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: rananta@google.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, pshier@google.com, ricarkol@google.com, oupton@google.com, reijiw@google.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-23 19:13, Raghavendra Rao Ananta wrote:
-> On Sat, Aug 21, 2021 at 3:56 AM Marc Zyngier <maz@kernel.org> wrote:
+On 23 August 2021 22:09:08 BST, Alyssa Rosenzweig <alyssa@collabora.com> wrote:
+>> > In lock_region, simplify the calculation of the region_width parameter.
+>> > This field is the size, but encoded as log2(ceil(size)) - 1.
+>> > log2(ceil(size)) may be computed directly as fls(size - 1). However, we
+>> > want to use the 64-bit versions as the amount to lock can exceed
+>> > 32-bits.
+>> > 
+>> > This avoids undefined behaviour when locking all memory (size ~0),
+>> > caught by UBSAN.
 >> 
->> On Sat, 21 Aug 2021 00:01:24 +0100,
->> Raghavendra Rao Ananta <rananta@google.com> wrote:
->> >
->> > [1  <text/plain; UTF-8 (7bit)>]
->> > On Fri, Aug 20, 2021 at 2:29 AM Marc Zyngier <maz@kernel.org> wrote:
->> > >
->> > > On Thu, 19 Aug 2021 23:34:06 +0100,
->> > > Raghavendra Rao Ananta <rananta@google.com> wrote:
->> > > >
->> > > > Potentially, the guests could trigger a debug exception that's
->> > > > outside the exception class range.
->> > >
->> > > How? All the exception classes that lead to this functions are already
->> > > handled in the switch/case statement.
->> > >
->> > I guess I didn't think this through. Landing into kvm_handle_guest_debug()
->> > itself is not possible :)
+>> It might have been useful to mention what it is that UBSAN specifically
+>> picked up (it took me a while to spot) - but anyway I think there's a
+>> bigger issue with it being completely wrong when size == ~0 (see below).
+>
+>Indeed. I've updated the commit message in v2 to explain what goes
+>wrong (your analysis was spot on, but a mailing list message is more
+>ephermal than a commit message). I'll send out v2 tomorrow assuming
+>nobody objects to v1 in the mean time.
+>
+>Thanks for the review.
+>
+>> There is potentially a third bug which kbase only recently attempted to
+>> fix. The lock address is effectively rounded down by the hardware (the
+>> bottom bits are ignored). So if you have mask=(1<<region_width)-1 but
+>> (iova & mask) != ((iova + size) & mask) then you are potentially failing
+>> to lock the end of the intended region. kbase has added some code to
+>> handle this:
 >> 
->> Exactly.
+>> > 	/* Round up if some memory pages spill into the next region. */
+>> > 	region_frame_number_start = pfn >> (lockaddr_size_log2 - PAGE_SHIFT);
+>> > 	region_frame_number_end =
+>> > 	    (pfn + num_pages - 1) >> (lockaddr_size_log2 - PAGE_SHIFT);
+>> > 
+>> > 	if (region_frame_number_start < region_frame_number_end)
+>> > 		lockaddr_size_log2 += 1;
 >> 
->> > > My take on this is that this code isn't reachable, and that it could
->> > > be better rewritten as:
->> > >
->> > > diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
->> > > index 6f48336b1d86..ae7ec086827b 100644
->> > > --- a/arch/arm64/kvm/handle_exit.c
->> > > +++ b/arch/arm64/kvm/handle_exit.c
->> > > @@ -119,28 +119,14 @@ static int kvm_handle_guest_debug(struct kvm_vcpu
->> > *vcpu)
->> > >  {
->> > >         struct kvm_run *run = vcpu->run;
->> > >         u32 esr = kvm_vcpu_get_esr(vcpu);
->> > > -       int ret = 0;
->> > >
->> > >         run->exit_reason = KVM_EXIT_DEBUG;
->> > >         run->debug.arch.hsr = esr;
->> > >
->> > > -       switch (ESR_ELx_EC(esr)) {
->> > > -       case ESR_ELx_EC_WATCHPT_LOW:
->> > > +       if (ESR_ELx_EC(esr) ==  ESR_ELx_EC_WATCHPT_LOW)
->> > >                 run->debug.arch.far = vcpu->arch.fault.far_el2;
->> > > -               fallthrough;
->> > > -       case ESR_ELx_EC_SOFTSTP_LOW:
->> > > -       case ESR_ELx_EC_BREAKPT_LOW:
->> > > -       case ESR_ELx_EC_BKPT32:
->> > > -       case ESR_ELx_EC_BRK64:
->> > > -               break;
->> > > -       default:
->> > > -               kvm_err("%s: un-handled case esr: %#08x\n",
->> > > -                       __func__, (unsigned int) esr);
->> > > -               ret = -1;
->> > > -               break;
->> > > -       }
->> > >
->> > > -       return ret;
->> > > +       return 0;
->> > >  }
->> > >
->> > This looks better, but do you think we would be compromising on readability?
->> 
->> I don't think so. The exit handler table is, on its own, pretty
->> explicit about what we route to this handler, and the comment above
->> the function clearly states that we exit to userspace for all the
->> debug ECs.
-> 
-> Sounds great. I'm happy to send out a patch with you as 'Suggested-by' 
-> , if you
-> are okay with it.
+>> I guess we should too?
+>
+>Oh, I missed this one. Guess we have 4 bugs with this code instead of
+>just 3, yikes. How could such a short function be so deeply and horribly
+>broken? ����
+>
+>Should I add a fourth patch to the series to fix this?
 
-Fire away!
+Yes please!
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Thanks,
+Steve
