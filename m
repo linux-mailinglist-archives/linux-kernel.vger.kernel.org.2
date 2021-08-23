@@ -2,88 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3EB93F49B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E603F49B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235495AbhHWL1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:27:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234997AbhHWL1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:27:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B692D6120C;
-        Mon, 23 Aug 2021 11:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629718001;
-        bh=SNXPezX13mfcuVusqi9++jw0PbkmIdb33Xu6aIl7Cps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k52MX7bckBei8Fe5kTMVB2Guq+tsMgybPciSKFS/WOBJSWPdQSQrHefK1uwzWYhl9
-         9MHzvxwm3QJ/h81UhyWihlSQxx0Opcwd54kc5LFohHqbwrfNAo7/Pjcv7rCwqFrczB
-         BnfIDgjJItd6fL0AwMnRidpCgR8qrQy3pY/yUbFLr+Yom3DSo3ppOh8wBPBTVgdUlj
-         1R6D/QwQP9KdRt31sdoj/pzvA+HBsi+mn4gmQaXFoEP2jrVND/1YTgNtKzxq3FeWGj
-         unVZIblEwxr2bsw8iPpEXlPk7PBQ34MZkkAX0ZIFpIIthS+1K6VUIDXnr6E4juUisX
-         VcGfexLSrwDsg==
-Date:   Mon, 23 Aug 2021 12:26:15 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Dillon Min <dillon.minfei@gmail.com>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/2] dt-bindings: sound: rt1015p: correct indentation
-Message-ID: <20210823112615.GD4380@sirena.org.uk>
-References: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com>
- <20210819101020.26368-2-krzysztof.kozlowski@canonical.com>
+        id S236237AbhHWL1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:27:46 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:50557 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234997AbhHWL1p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:27:45 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id ADA563200922;
+        Mon, 23 Aug 2021 07:27:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 23 Aug 2021 07:27:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=t1veiu
+        KjOsnBwnABF/fE0dElfCh4AAyj7JifPOqt5cM=; b=llC1UQ6PIUA57O5DmEdXyS
+        1DDESElQ9d4iLmD47z02fv2hq2uEDK0X/LtwF6krtWOq+1ZLCtNTb30asv/zJMoP
+        H7qck0wrM0Xyjdgv6kKxhV+cKgR0DzX1yI2oMv/JOEpeFIRFkzX08/xfR+m+diPE
+        0OHIGUWMHcDGlM7mp8lIYC4b3IJbHMn6Hju+PEa4FXRVB0+nj7RA7gLmateEwp/2
+        V9AxOFo6qiPfmy1yp5+beAPM/mwtJBAme9H2iJfQcbPIQbzkvVpKCBGsfnlmunvZ
+        CFfoLfCD3I4RRI3ZWysL2IYYP08ajv2pXgr326qgZ4ggC6EAOXikOythTbp0BxHQ
+        ==
+X-ME-Sender: <xms:BYYjYacOAG-ExEKJEAjYsrOfKrY0-Uoi1CRHAaYgtRzo7Itw6uW29g>
+    <xme:BYYjYUNjGuzxvghgt5MnsEBCNSqeZawgWrH9rewM0sW8rhpUcO1Ootfi5ybiWQI2r
+    yBd5lxJQq9jKvNGnSM>
+X-ME-Received: <xmr:BYYjYbjNjs_Lia0aF4ZgF16P5r9u8BiryvHaFEl4DA3r-cqUXsxctsdJZK3O8-zsQNSbbQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddthedggedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffuvffkjghfofggtgesthdtre
+    dtredtvdenucfhrhhomhepnfhukhgvucflohhnvghsuceolhhukhgvsehljhhonhgvshdr
+    uggvvheqnecuggftrfgrthhtvghrnhepgfeffedufffhgfeuheegffffgeegveeifeeute
+    fhieejffetudfgueevteehtdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:BYYjYX9TJCfEXvoArnu5Sso20eNms8Ajg-Mw3xMp9X5KSLWYprXbdA>
+    <xmx:BYYjYWtr06Rpve3GbVVeXNlpon5depx8QNLOYbU7EvTWWZaTwf-eWw>
+    <xmx:BYYjYeF6EXLpAY_hmK8IwCErBjAniLUa55UwBTaQN-NIP5Zlc0KxFg>
+    <xmx:BoYjYbWvPKnAekwixs8ZPU0Qcg6ZcwgY3CJfeE00sjMyWAgtnCWqng>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 23 Aug 2021 07:26:56 -0400 (EDT)
+Date:   Mon, 23 Aug 2021 23:26:40 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH v4 1/1] asus-wmi: Add support for custom fan curves
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+        platform-driver-x86@vger.kernel.org
+Message-Id: <GGIAYQ.PS5EB67PH64N@ljones.dev>
+In-Reply-To: <7a8a8d56c4e6addfc41b5dd5262968bd169f538f.camel@hadess.net>
+References: <20210820095726.14131-1-luke@ljones.dev>
+        <20210820095726.14131-2-luke@ljones.dev>
+        <321afe1a293be3a623a9be53feea3a008e044b31.camel@hadess.net>
+        <L0W4YQ.ZVWQDLFJE8NR2@ljones.dev>
+        <e7fbcf85f61b5c727a93df07b3bfe1624547067f.camel@hadess.net>
+        <c19dfdde11754c234ca8a45c4af2187699498ee8.camel@hadess.net>
+        <U8X4YQ.79I8GZJ1LDW02@ljones.dev>
+        <b20a879dce98f27dfc68b86aaf486be9e623eacf.camel@hadess.net>
+        <1EQ5YQ.6O8MNIPTU6V4@ljones.dev>
+        <7a8a8d56c4e6addfc41b5dd5262968bd169f538f.camel@hadess.net>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="d01dLTUuW90fS44H"
-Content-Disposition: inline
-In-Reply-To: <20210819101020.26368-2-krzysztof.kozlowski@canonical.com>
-X-Cookie: APL hackers do it in the quad.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---d01dLTUuW90fS44H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Aug 19, 2021 at 12:10:20PM +0200, Krzysztof Kozlowski wrote:
-> Use common enum instead of oneOf and correct indentation warning:
->   realtek,rt1015p.yaml:18:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
+On Mon, Aug 23 2021 at 12:28:21 +0200, Bastien Nocera 
+<hadess@hadess.net> wrote:
+> On Sat, 2021-08-21 at 09:30 +1200, Luke Jones wrote:
+>> 
+>> 
+>>  On Fri, Aug 20 2021 at 13:39:02 +0200, Bastien Nocera
+>>  <hadess@hadess.net> wrote:
+>>  > On Fri, 2021-08-20 at 23:00 +1200, Luke Jones wrote:
+>>  > >
+>>  > >
+>>  > >  On Fri, Aug 20 2021 at 12:51:08 +0200, Bastien Nocera
+>>  > >  <hadess@hadess.net> wrote:
+>>  > >  > On Fri, 2021-08-20 at 12:43 +0200, Bastien Nocera wrote:
+>>  > >  > >  On Fri, 2021-08-20 at 22:33 +1200, Luke Jones wrote:
+>>  > >  > >  > > Am I going to get bug reports from Asus users that 
+>> will
+>>  > >  > > complain
+>>  > >  > >  > > that
+>>  > >  > >  > > power-profiles-daemon doesn't work correctly, where I
+>>  > > will
+>>  > >  > > have
+>>  > >  > >  > > to
+>>  > >  > >  > > wearily ask if they're using an Asus Rog laptop?
+>>  > >  > >  >
+>>  > >  > >  > No. Definitely not. The changes to fan curves 
+>> per-profile
+>>  > > need
+>>  > >  > > to
+>>  > >  > >  > be
+>>  > >  > >  > explicitly enabled and set. So a new user will be 
+>> unaware
+>>  > > that
+>>  > >  > > this
+>>  > >  > >  > control exists (until they look for it) and their laptop
+>>  > > will
+>>  > >  > >  > behave
+>>  > >  > >  > exactly as default.
+>>  > >  > >
+>>  > >  > >  "The user will need to change the fan curves manually so
+>>  > > will
+>>  > >  > >  definitely remember to mention it in bug reports" is a 
+>> very
+>>  > >  > > different
+>>  > >  > >  thing to "the user can't change the fan curves to be
+>>  > > nonsensical
+>>  > >  > > and
+>>  > >  > >  mean opposite things".
+>>  > >  > >
+>>  > >  > >  I can assure you that I will eventually get bug reports
+>>  > > from
+>>  > >  > > "power
+>>  > >  > >  users" who break their setup and wonder why things don't
+>>  > > work
+>>  > >  > >  properly,
+>>  > >  > >  without ever mentioning the changes they made changes to
+>>  > > the
+>>  > > fan
+>>  > >  > >  curves, or anything else they might have changed.
+>>  > >  >
+>>  > >  > A way to taint the settings that power-profiles-daemon could
+>>  > > catch
+>>  > >  > would be fine by me. I absolutely don't want to have to
+>>  > > support
+>>  > >  > somebody's tweaks until they undo them.
+>>  > >
+>>  > >  Definitely understood. Do you have something in mind?
+>>  >
+>>  > A sysfs attribute with boolean data that shows whether custom fan
+>>  > curves are used would be enough.
+>> 
+>>  The path /sys/devices/platform/asus-nb-wmi/active_fan_curve_profiles
+>>  should be usable like this? I added this as the method for
+>>  controlling
+>>  which fan curves for which profiles are active.
+>> 
+>>  If empty, then no custom fan curves are active at all. If it 
+>> contains
+>>  any combination of strings "quiet, balanced, performance" then those
+>>  associated (named) platform_profiles have an active fan curve and 
+>> you
+>>  can throw up a general warning, maybe add the contents of that file
+>>  too?
+> 
+> That works for me, although I would probably have preferred a way that
+> wasn't specific to the asus-wmi module, I'm sure I can made do with
+> that.
 
-For stuff like this where there's no relationship between the things
-being patched it's probably better to just send a bunch of individual
-patches rather than a series, it works better with tooling and makes it
-clear there's no interdependencies or anything.
+Oh I see, you were looking to get a more general solution implemented? 
+Maybe something like 
+"/sys/devices/platform/asus-nb-wmi/platform_profile_tainted"? This 
+could be an opportunity to maybe make a standardised naming scheme for 
+it.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+If you want something like that I'll get it done for asus-wmi.
 
---d01dLTUuW90fS44H
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Thanks
+> 
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEjhdYACgkQJNaLcl1U
-h9Ah2wf/WfM7XjJE/ztslTnuMDDI4tC7FvozpC17wxbK3oNxPlzluBz+r0Bu664m
-GEFc1PpVWxMEzRcVVa3axO+jTlNcRqWNpUHPxtINqUdZ1s1JSEsHdvyfdXKAytx3
-N9T7OWRHi4LQagC+FRKlVsDY3UkyzL83pCC3gdZXxs3icKhr/zpFePWa9r04yAVl
-l3qrndJpATla6IPu9OQuxyPpyyxkChYMkS0KDvAWNscIU1XCkDQgUXnBS0VRUOKP
-heIksdtyfDK/93XpGyWRB8PqSba6QMljBLbvRBpGV3v4gQbON/Lvyde4MCmXnoLA
-wXaLGSkpbItq31bZJcipEPb0dBZXNQ==
-=65Xc
------END PGP SIGNATURE-----
-
---d01dLTUuW90fS44H--
