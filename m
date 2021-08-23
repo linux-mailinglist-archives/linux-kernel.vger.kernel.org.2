@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBA53F477A
+	by mail.lfdr.de (Postfix) with ESMTP id CE6003F477C
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236096AbhHWJ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235961AbhHWJ1I (ORCPT
+        id S236151AbhHWJ11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:27:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39046 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235926AbhHWJ1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:27:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8661DC061575;
-        Mon, 23 Aug 2021 02:26:26 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 09:26:24 -0000
+        Mon, 23 Aug 2021 05:27:09 -0400
+Date:   Mon, 23 Aug 2021 09:26:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629710785;
+        s=2020; t=1629710786;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=emgugvQ6NDo24O6txtfBIb+5Ga4ZjBPXiH+tAw0MtkA=;
-        b=2cXJlqDOLz25ssTsay7g3+wh2Rca5wl7qaW8ZMGpUxmQmS0lM+5csK8r1e1CHOYwhm7NeI
-        lR96SAoOFT450CyhbCeBs3iZV7kjF9tLd6HAKw2nhNOI6wK3Dixo34hyZ6MRmqFmXk7A15
-        kl/bqII5w4TrvDybHXikHB7MO0rp/L7r+3Dq80CtbN90s4hSxGZwqUMiKlJK7jybOU/QBt
-        pQxlV4RHyQKwq4jr7swUrsLm5m4NOKXj0kiKNNNuu0II7zSnSDFJtQ1OchKpCmUra9F3jC
-        mGWDmKlV26atfjEMjSe6reQqiIT1n/iSReCOLvpftw1O7SqKLs8f7+muzIeMuQ==
+        bh=D+4lxUsAuteV08ZJ0b4ldjv7PpetS37XL4TkF+yKsw0=;
+        b=YLHJSQY+ynXEQuy/ZYodOlXfUD8mMdI/XAA/DX9sQqw010XFUCE6TFG793Qty8MoL45mum
+        a1aDB4rgylQlVhX46sOlKI/+eFg38XK4WKbpeRqKhfmDA1ga/7bjcvawJ+dYdADfZMEzzk
+        C7hg3Cyi0M4ke+uD1rwJawldja1Zlp3eKVjmNWAJMRA8OJ8kkM4BJTahNjPbqB+mvdWc/Q
+        exWXzi8ISp1cDefNBsdsEk7zLYNYkXofrVCOHXhvUcqZCwPXlNeWkMCfql7EAYajz+on4b
+        ecsC/Hktj0XoJ9gMKXpylY/Q1J/vIWdN9MIc6WHkXOy96EGx8lB/RnlSdCX2Bg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629710785;
+        s=2020e; t=1629710786;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=emgugvQ6NDo24O6txtfBIb+5Ga4ZjBPXiH+tAw0MtkA=;
-        b=qiGDWBOLlLdYuoGTQDWyG/5SFGbN4GaYLWBJtUIKsP93V+PrUBwlCDuiJIgLNwRuEHbDnd
-        G3T/zSPKZMCo7vBw==
+        bh=D+4lxUsAuteV08ZJ0b4ldjv7PpetS37XL4TkF+yKsw0=;
+        b=MUims1xPhl/dXTW8ziEz3Mdyod0clP5wJzjUlGDFpyUJpRWGs4y4ASMcRttoXVd+tAs+dy
+        OjxmXkf4uPb6HIAg==
 From:   "tip-bot2 for Will Deacon" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] cpuset: Honour task_cpu_possible_mask() in
- guarantee_online_cpus()
+Subject: [tip: sched/core] sched: Introduce task_cpu_possible_mask() to limit
+ fallback rq selection
 Cc:     Will Deacon <will@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <Valentin.Schneider@arm.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210730112443.23245-4-will@kernel.org>
-References: <20210730112443.23245-4-will@kernel.org>
+        Quentin Perret <qperret@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210730112443.23245-2-will@kernel.org>
+References: <20210730112443.23245-2-will@kernel.org>
 MIME-Version: 1.0
-Message-ID: <162971078439.25758.9786344164798338385.tip-bot2@tip-bot2>
+Message-ID: <162971078589.25758.8977089326499284001.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,133 +61,98 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     431c69fac05baa7477d61a44f2708e069f2bed6c
-Gitweb:        https://git.kernel.org/tip/431c69fac05baa7477d61a44f2708e069f2bed6c
+Commit-ID:     9ae606bc74dd0e58d4de894e3c5cbb9d45599267
+Gitweb:        https://git.kernel.org/tip/9ae606bc74dd0e58d4de894e3c5cbb9d45599267
 Author:        Will Deacon <will@kernel.org>
-AuthorDate:    Fri, 30 Jul 2021 12:24:30 +01:00
+AuthorDate:    Fri, 30 Jul 2021 12:24:28 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 20 Aug 2021 12:32:59 +02:00
+CommitterDate: Fri, 20 Aug 2021 12:32:58 +02:00
 
-cpuset: Honour task_cpu_possible_mask() in guarantee_online_cpus()
+sched: Introduce task_cpu_possible_mask() to limit fallback rq selection
 
 Asymmetric systems may not offer the same level of userspace ISA support
 across all CPUs, meaning that some applications cannot be executed by
 some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
 not feature support for 32-bit applications on both clusters.
 
-Modify guarantee_online_cpus() to take task_cpu_possible_mask() into
-account when trying to find a suitable set of online CPUs for a given
-task. This will avoid passing an invalid mask to set_cpus_allowed_ptr()
-during ->attach() and will subsequently allow the cpuset hierarchy to be
-taken into account when forcefully overriding the affinity mask for a
-task which requires migration to a compatible CPU.
+On such a system, we must take care not to migrate a task to an
+unsupported CPU when forcefully moving tasks in select_fallback_rq()
+in response to a CPU hot-unplug operation.
+
+Introduce a task_cpu_possible_mask() hook which, given a task argument,
+allows an architecture to return a cpumask of CPUs that are capable of
+executing that task. The default implementation returns the
+cpu_possible_mask, since sane machines do not suffer from per-cpu ISA
+limitations that affect scheduling. The new mask is used when selecting
+the fallback runqueue as a last resort before forcing a migration to the
+first active CPU.
 
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Valentin Schneider <Valentin.Schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210730112443.23245-4-will@kernel.org
+Reviewed-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20210730112443.23245-2-will@kernel.org
 ---
- include/linux/cpuset.h |  2 +-
- kernel/cgroup/cpuset.c | 43 ++++++++++++++++++++++++-----------------
- 2 files changed, 27 insertions(+), 18 deletions(-)
+ include/linux/mmu_context.h | 14 ++++++++++++++
+ kernel/sched/core.c         |  9 +++------
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index ed6ec67..414a8e6 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -185,7 +185,7 @@ static inline void cpuset_read_unlock(void) { }
- static inline void cpuset_cpus_allowed(struct task_struct *p,
- 				       struct cpumask *mask)
- {
--	cpumask_copy(mask, cpu_possible_mask);
-+	cpumask_copy(mask, task_cpu_possible_mask(p));
- }
+diff --git a/include/linux/mmu_context.h b/include/linux/mmu_context.h
+index 03dee12..b9b970f 100644
+--- a/include/linux/mmu_context.h
++++ b/include/linux/mmu_context.h
+@@ -14,4 +14,18 @@
+ static inline void leave_mm(int cpu) { }
+ #endif
  
- static inline void cpuset_cpus_allowed_fallback(struct task_struct *p)
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index a869378..3918132 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -372,18 +372,29 @@ static inline bool is_in_v2_mode(void)
- }
++/*
++ * CPUs that are capable of running user task @p. Must contain at least one
++ * active CPU. It is assumed that the kernel can run on all CPUs, so calling
++ * this for a kernel thread is pointless.
++ *
++ * By default, we assume a sane, homogeneous system.
++ */
++#ifndef task_cpu_possible_mask
++# define task_cpu_possible_mask(p)	cpu_possible_mask
++# define task_cpu_possible(cpu, p)	true
++#else
++# define task_cpu_possible(cpu, p)	cpumask_test_cpu((cpu), task_cpu_possible_mask(p))
++#endif
++
+ #endif
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7fa6ce7..6f31267 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2173,7 +2173,7 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
  
- /*
-- * Return in pmask the portion of a cpusets's cpus_allowed that
-- * are online.  If none are online, walk up the cpuset hierarchy
-- * until we find one that does have some online cpus.
-+ * Return in pmask the portion of a task's cpusets's cpus_allowed that
-+ * are online and are capable of running the task.  If none are found,
-+ * walk up the cpuset hierarchy until we find one that does have some
-+ * appropriate cpus.
-  *
-  * One way or another, we guarantee to return some non-empty subset
-  * of cpu_online_mask.
-  *
-  * Call with callback_lock or cpuset_mutex held.
-  */
--static void guarantee_online_cpus(struct cpuset *cs, struct cpumask *pmask)
-+static void guarantee_online_cpus(struct task_struct *tsk,
-+				  struct cpumask *pmask)
- {
--	while (!cpumask_intersects(cs->effective_cpus, cpu_online_mask)) {
-+	const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
-+	struct cpuset *cs;
-+
-+	if (WARN_ON(!cpumask_and(pmask, possible_mask, cpu_online_mask)))
-+		cpumask_copy(pmask, cpu_online_mask);
-+
-+	rcu_read_lock();
-+	cs = task_cs(tsk);
-+
-+	while (!cpumask_intersects(cs->effective_cpus, pmask)) {
- 		cs = parent_cs(cs);
- 		if (unlikely(!cs)) {
- 			/*
-@@ -393,11 +404,13 @@ static void guarantee_online_cpus(struct cpuset *cs, struct cpumask *pmask)
- 			 * cpuset's effective_cpus is on its way to be
- 			 * identical to cpu_online_mask.
- 			 */
--			cpumask_copy(pmask, cpu_online_mask);
--			return;
-+			goto out_unlock;
+ 	/* Non kernel threads are not allowed during either online or offline. */
+ 	if (!(p->flags & PF_KTHREAD))
+-		return cpu_active(cpu);
++		return cpu_active(cpu) && task_cpu_possible(cpu, p);
+ 
+ 	/* KTHREAD_IS_PER_CPU is always allowed. */
+ 	if (kthread_is_per_cpu(p))
+@@ -3124,9 +3124,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+ 
+ 		/* Look for allowed, online CPU in same node. */
+ 		for_each_cpu(dest_cpu, nodemask) {
+-			if (!cpu_active(dest_cpu))
+-				continue;
+-			if (cpumask_test_cpu(dest_cpu, p->cpus_ptr))
++			if (is_cpu_allowed(p, dest_cpu))
+ 				return dest_cpu;
  		}
  	}
--	cpumask_and(pmask, cs->effective_cpus, cpu_online_mask);
-+	cpumask_and(pmask, pmask, cs->effective_cpus);
-+
-+out_unlock:
-+	rcu_read_unlock();
- }
- 
- /*
-@@ -2199,15 +2212,13 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 
- 	percpu_down_write(&cpuset_rwsem);
- 
--	/* prepare for attach */
--	if (cs == &top_cpuset)
--		cpumask_copy(cpus_attach, cpu_possible_mask);
--	else
--		guarantee_online_cpus(cs, cpus_attach);
+@@ -3156,10 +3154,9 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+ 			 *
+ 			 * More yuck to audit.
+ 			 */
+-			do_set_cpus_allowed(p, cpu_possible_mask);
++			do_set_cpus_allowed(p, task_cpu_possible_mask(p));
+ 			state = fail;
+ 			break;
 -
- 	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
- 
- 	cgroup_taskset_for_each(task, css, tset) {
-+		if (cs != &top_cpuset)
-+			guarantee_online_cpus(task, cpus_attach);
-+		else
-+			cpumask_copy(cpus_attach, task_cpu_possible_mask(task));
- 		/*
- 		 * can_attach beforehand should guarantee that this doesn't
- 		 * fail.  TODO: have a better way to handle failure here
-@@ -3302,9 +3313,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&callback_lock, flags);
--	rcu_read_lock();
--	guarantee_online_cpus(task_cs(tsk), pmask);
--	rcu_read_unlock();
-+	guarantee_online_cpus(tsk, pmask);
- 	spin_unlock_irqrestore(&callback_lock, flags);
- }
- 
+ 		case fail:
+ 			BUG();
+ 			break;
