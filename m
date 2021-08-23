@@ -2,132 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B273F4374
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2CC3F437B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbhHWCmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 22:42:08 -0400
-Received: from ozlabs.org ([203.11.71.1]:40503 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229958AbhHWCmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 22:42:07 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtGhg08Lxz9sW8;
-        Mon, 23 Aug 2021 12:41:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629686484;
-        bh=p8oByTOGAloztmMhai0zbi98JHCMQvgBGnOUIeW5GlE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=REPKpkgZGF1lAYk7ca2EjMAU4EBNpBTVYgvTg5HkWvjO+5NBAHhdpUgQtIucXomZz
-         BoDm9c+9oPxqev/1ifWcpoco6qILEBZuFbnqln3gg4CYEVw6lCPO8TM5OBazVYNWo3
-         i1QiQK6r81GjQMa+Ww9Fcy4MZ+O5oUnD80EfrgiDyzA7LsT0fDSfpP5JT2b1rnwpk0
-         kbg1yUSSLUrjJW7EGLUh8vqUiGP/vcHVU4vatTd5ehKG2mAih6ycRxo67YxW/uYkDR
-         jhCMWXkoF9CwSj5Mo/t/Il4WjD0XZMNRr1tQ8BVIsrw7g8uRXyZll7xT0dFaWD7ni/
-         6Pm0U2oZ5oLRQ==
-Date:   Mon, 23 Aug 2021 12:41:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Subject: linux-next: manual merge of the drm tree with Linus' tree
-Message-ID: <20210823124122.3d088380@canb.auug.org.au>
+        id S231565AbhHWCpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 22:45:50 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:44827 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhHWCpt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 22:45:49 -0400
+Received: by mail-lf1-f43.google.com with SMTP id o10so34766646lfr.11;
+        Sun, 22 Aug 2021 19:45:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mbK/UgdvWlB0r8wPRNh0W1omuBWpyVkGhL441rjE87Q=;
+        b=BBSXQR/pcKmAssFMas4tWrQq1blEV1l3FL9uhKxY8rrwcfD6HkpQxCKlc8rQH71Qn5
+         87VZCN0QSy0rTixRRmTWi7WA3HXRFV+bSKcsxA1nhkwtTJnI7kdJAjp0JY5Zg+j0IjOb
+         Uc2Tf58KMJzgEaCzPvxMw14ePzvvBzkcgrPE6Nh2b7bqpOhyn/KLH6nmf96XNCoUchvs
+         XY+TTNd5emcJ3bCKW67Gb1SKIOrHs/NlT0j6rXc9qhXadymjjVs/hmYxcsQBsJZX5Joc
+         MEqEMkEzvuBZJgh4U2FBnuegO37ndnq3rBZjOqQhmoKbba2RscDhzXBqzXnifTYuQ5c5
+         9d3A==
+X-Gm-Message-State: AOAM530QpUIZ9z+RgqxaCfB01/Jq8YeKJyv9N6J3VDuJJHmBuzh2Hatn
+        SRH+RXFfQ17tEnTExbHYDoGo008FgjVwga9aCPA=
+X-Google-Smtp-Source: ABdhPJzGhViTxU0zJAHS0NwR9ucCqmvHx/OvqAj8cNKzR0mUvSrTKmgV2ZpmjudEi0B9REQ2pIyVlnyFJ3oB62yUUDk=
+X-Received: by 2002:ac2:5ec7:: with SMTP id d7mr23091487lfq.234.1629686706217;
+ Sun, 22 Aug 2021 19:45:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bG7XfPthEFmfz/DOLSyhu7w";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210820090313.299483-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20210820090313.299483-1-mailhol.vincent@wanadoo.fr>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 23 Aug 2021 11:44:54 +0900
+Message-ID: <CAMZ6RqKHKEf0CqvyzsK9awNEpBV7azn_EjEC=NOC_=8TBWr8NQ@mail.gmail.com>
+Subject: Re: [PATCH] can: netlink: prevent incoherent can configuration in
+ case of early return
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bG7XfPthEFmfz/DOLSyhu7w
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Replying to myself...
 
-Hi all,
+On Fri. 20 Aug 2021 at 18:03, Vincent Mailhol
+<mailhol.vincent@wanadoo.fr> wrote:
+> struct can_priv has a set of flags (can_priv::ctrlmode) which are
+> correlated with the other field of the structure. In can_changelink(),
+> those flags are set first and copied to can_priv. If the function has
+> to return early, for example due to an out of range value provided by
+> the user, then the global configuration might become incoherent.
+>
+> Example: the user provides an out of range dbitrate (e.g. 20
+> Mbps). The command fails (-EINVAL), however the FD flag was already
+> set resulting in a configuration where FD is on but the databittiming
+> parameters are empty.
+>
+> Illustration of above example:
+>
+> | $ ip link set can0 type can bitrate 500000 dbitrate 20000000 fd on
+> | RTNETLINK answers: Invalid argument
+> | $ ip --details link show can0
+> | 1: can0: <NOARP,ECHO> mtu 72 qdisc noop state DOWN mode DEFAULT group default qlen 10
+> |     link/can  promiscuity 0 minmtu 0 maxmtu 0
+> |     can <FD> state STOPPED restart-ms 0
+>            ^^ FD flag is set without any of the databittiming parameters...
+> |         bitrate 500000 sample-point 0.875
+> |         tq 12 prop-seg 69 phase-seg1 70 phase-seg2 20 sjw 1
+> |         ES582.1/ES584.1: tseg1 2..256 tseg2 2..128 sjw 1..128 brp 1..512 brp-inc 1
+> |         ES582.1/ES584.1: dtseg1 2..32 dtseg2 1..16 dsjw 1..8 dbrp 1..32 dbrp-inc 1
+> |         clock 80000000 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535
+>
+> To prevent this from happening, we do a local copy of can_priv, work
+> on it, an copy it at the very end of the function (i.e. only if all
+> previous checks succeeded).
+>
+> Once this done, there is no more need to have a temporary variable for
+> a specific parameter. As such, the bittiming and data bittiming (bt
+> and dbt) are directly written to the temporary priv variable.
+>
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+> Hi Marc,
+>
+> Do you think this need a "Fixes" tag?
+> If yes, feel free to add this line to the patch:
+>
+> Fixes: 9859ccd2c8be ("can: introduce the data bitrate configuration for CAN FD")
+> ---
+>  drivers/net/can/dev/netlink.c | 86 ++++++++++++++++++-----------------
+>  1 file changed, 45 insertions(+), 41 deletions(-)
+>
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index 80425636049d..6a14c51a058b 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
+> @@ -58,14 +58,20 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                           struct nlattr *data[],
+>                           struct netlink_ext_ack *extack)
+>  {
+> -       struct can_priv *priv = netdev_priv(dev);
+> +       /* Work on a local copy of priv to prevent inconsistent value
+> +        * in case of early return. net/core/rtnetlink.c has a global
+> +        * mutex so static declaration is OK
+> +        */
+> +       static struct can_priv priv;
+>         int err;
+>
+>         /* We need synchronization with dev->stop() */
+>         ASSERT_RTNL();
+>
+> +       memcpy(&priv, netdev_priv(dev), sizeof(priv));
+> +
+>         if (data[IFLA_CAN_BITTIMING]) {
+> -               struct can_bittiming bt;
+> +               struct can_bittiming *bt = &priv.bittiming;
+>
+>                 /* Do not allow changing bittiming while running */
+>                 if (dev->flags & IFF_UP)
+> @@ -76,28 +82,26 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                  * directly via do_set_bitrate(). Bail out if neither
+>                  * is given.
+>                  */
+> -               if (!priv->bittiming_const && !priv->do_set_bittiming)
+> +               if (!priv.bittiming_const && !priv.do_set_bittiming)
+>                         return -EOPNOTSUPP;
+>
+> -               memcpy(&bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(bt));
+> -               err = can_get_bittiming(dev, &bt,
+> -                                       priv->bittiming_const,
+> -                                       priv->bitrate_const,
+> -                                       priv->bitrate_const_cnt);
+> +               memcpy(bt, nla_data(data[IFLA_CAN_BITTIMING]), sizeof(*bt));
+> +               err = can_get_bittiming(dev, bt,
+> +                                       priv.bittiming_const,
+> +                                       priv.bitrate_const,
+> +                                       priv.bitrate_const_cnt);
+>                 if (err)
+>                         return err;
+>
+> -               if (priv->bitrate_max && bt.bitrate > priv->bitrate_max) {
+> +               if (priv.bitrate_max && bt->bitrate > priv.bitrate_max) {
+>                         netdev_err(dev, "arbitration bitrate surpasses transceiver capabilities of %d bps\n",
+> -                                  priv->bitrate_max);
+> +                                  priv.bitrate_max);
+>                         return -EINVAL;
+>                 }
+>
+> -               memcpy(&priv->bittiming, &bt, sizeof(bt));
+> -
+> -               if (priv->do_set_bittiming) {
+> +               if (priv.do_set_bittiming) {
+>                         /* Finally, set the bit-timing registers */
+> -                       err = priv->do_set_bittiming(dev);
+> +                       err = priv.do_set_bittiming(dev);
+>                         if (err)
+>                                 return err;
+>                 }
+> @@ -112,11 +116,11 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                 if (dev->flags & IFF_UP)
+>                         return -EBUSY;
+>                 cm = nla_data(data[IFLA_CAN_CTRLMODE]);
+> -               ctrlstatic = priv->ctrlmode_static;
+> +               ctrlstatic = priv.ctrlmode_static;
+>                 maskedflags = cm->flags & cm->mask;
+>
+>                 /* check whether provided bits are allowed to be passed */
+> -               if (maskedflags & ~(priv->ctrlmode_supported | ctrlstatic))
+> +               if (maskedflags & ~(priv.ctrlmode_supported | ctrlstatic))
+>                         return -EOPNOTSUPP;
+>
+>                 /* do not check for static fd-non-iso if 'fd' is disabled */
+> @@ -128,16 +132,16 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                         return -EOPNOTSUPP;
+>
+>                 /* clear bits to be modified and copy the flag values */
+> -               priv->ctrlmode &= ~cm->mask;
+> -               priv->ctrlmode |= maskedflags;
+> +               priv.ctrlmode &= ~cm->mask;
+> +               priv.ctrlmode |= maskedflags;
+>
+>                 /* CAN_CTRLMODE_FD can only be set when driver supports FD */
+> -               if (priv->ctrlmode & CAN_CTRLMODE_FD) {
+> +               if (priv.ctrlmode & CAN_CTRLMODE_FD) {
+>                         dev->mtu = CANFD_MTU;
+>                 } else {
+>                         dev->mtu = CAN_MTU;
+> -                       memset(&priv->data_bittiming, 0,
+> -                              sizeof(priv->data_bittiming));
+> +                       memset(&priv.data_bittiming, 0,
+> +                              sizeof(priv.data_bittiming));
+>                 }
+>         }
+>
+> @@ -145,7 +149,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                 /* Do not allow changing restart delay while running */
+>                 if (dev->flags & IFF_UP)
+>                         return -EBUSY;
+> -               priv->restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
+> +               priv.restart_ms = nla_get_u32(data[IFLA_CAN_RESTART_MS]);
+>         }
+>
+>         if (data[IFLA_CAN_RESTART]) {
+> @@ -158,7 +162,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>         }
+>
+>         if (data[IFLA_CAN_DATA_BITTIMING]) {
+> -               struct can_bittiming dbt;
+> +               struct can_bittiming *dbt = &priv.data_bittiming;
+>
+>                 /* Do not allow changing bittiming while running */
+>                 if (dev->flags & IFF_UP)
+> @@ -169,31 +173,29 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>                  * directly via do_set_bitrate(). Bail out if neither
+>                  * is given.
+>                  */
+> -               if (!priv->data_bittiming_const && !priv->do_set_data_bittiming)
+> +               if (!priv.data_bittiming_const && !priv.do_set_data_bittiming)
+>                         return -EOPNOTSUPP;
+>
+> -               memcpy(&dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
+> -                      sizeof(dbt));
+> -               err = can_get_bittiming(dev, &dbt,
+> -                                       priv->data_bittiming_const,
+> -                                       priv->data_bitrate_const,
+> -                                       priv->data_bitrate_const_cnt);
+> +               memcpy(dbt, nla_data(data[IFLA_CAN_DATA_BITTIMING]),
+> +                      sizeof(*dbt));
+> +               err = can_get_bittiming(dev, dbt,
+> +                                       priv.data_bittiming_const,
+> +                                       priv.data_bitrate_const,
+> +                                       priv.data_bitrate_const_cnt);
+>                 if (err)
+>                         return err;
+>
+> -               if (priv->bitrate_max && dbt.bitrate > priv->bitrate_max) {
+> +               if (priv.bitrate_max && dbt->bitrate > priv.bitrate_max) {
+>                         netdev_err(dev, "canfd data bitrate surpasses transceiver capabilities of %d bps\n",
+> -                                  priv->bitrate_max);
+> +                                  priv.bitrate_max);
+>                         return -EINVAL;
+>                 }
+>
+> -               memcpy(&priv->data_bittiming, &dbt, sizeof(dbt));
+> -
+>                 can_calc_tdco(dev);
 
-Today's linux-next merge of the drm tree got a conflict in:
+can_calc_tdco() retrieves can_priv from the network device and
+directly writes its changes to it. I will send a v2 in which I
+will change the prototype of can_calc_tdco() so that the changes
+are written to the temporary priv instead.
 
-  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> -               if (priv->do_set_data_bittiming) {
+> +               if (priv.do_set_data_bittiming) {
+>                         /* Finally, set the bit-timing registers */
+> -                       err = priv->do_set_data_bittiming(dev);
+> +                       err = priv.do_set_data_bittiming(dev);
+>                         if (err)
+>                                 return err;
+>                 }
+> @@ -201,28 +203,30 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>
+>         if (data[IFLA_CAN_TERMINATION]) {
+>                 const u16 termval = nla_get_u16(data[IFLA_CAN_TERMINATION]);
+> -               const unsigned int num_term = priv->termination_const_cnt;
+> +               const unsigned int num_term = priv.termination_const_cnt;
+>                 unsigned int i;
+>
+> -               if (!priv->do_set_termination)
+> +               if (!priv.do_set_termination)
+>                         return -EOPNOTSUPP;
+>
+>                 /* check whether given value is supported by the interface */
+>                 for (i = 0; i < num_term; i++) {
+> -                       if (termval == priv->termination_const[i])
+> +                       if (termval == priv.termination_const[i])
+>                                 break;
+>                 }
+>                 if (i >= num_term)
+>                         return -EINVAL;
+>
+>                 /* Finally, set the termination value */
+> -               err = priv->do_set_termination(dev, termval);
+> +               err = priv.do_set_termination(dev, termval);
+>                 if (err)
+>                         return err;
+>
+> -               priv->termination = termval;
+> +               priv.termination = termval;
+>         }
+>
+> +       memcpy(netdev_priv(dev), &priv, sizeof(priv));
+> +
+>         return 0;
+>  }
 
-between commit:
-
-  71ac6f390f6a ("drm/mediatek: Add AAL output size configuration")
-
-from Linus' tree and commit:
-
-  78d1783c3243 ("drm/mediatek: Separate aal sub driver")
-
-from the drm tree.
-
-I fixed it up (I added the following merge resolution patch after
-using the latter version of the above file) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 23 Aug 2021 12:37:29 +1000
-Subject: [PATCH] drm/mediatek: merge fix for "Add AAL output size
- configuration"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/mediatek/mtk_disp_aal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/medi=
-atek/mtk_disp_aal.c
-index 64b45284766a..a6760761088b 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-@@ -18,7 +18,7 @@
- #define DISP_AAL_EN				0x0000
- #define AAL_EN						BIT(0)
- #define DISP_AAL_SIZE				0x0030
--
-+#define DISP_AAL_OUTPUT_SIZE			0x04d8
-=20
- struct mtk_disp_aal_data {
- 	bool has_gamma;
-@@ -57,6 +57,7 @@ void mtk_aal_config(struct device *dev, unsigned int w,
- 	struct mtk_disp_aal *aal =3D dev_get_drvdata(dev);
-=20
- 	mtk_ddp_write(cmdq_pkt, w << 16 | h, &aal->cmdq_reg, aal->regs, DISP_AAL_=
-SIZE);
-+	mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AA=
-L_OUTPUT_SIZE);
- }
-=20
- void mtk_aal_gamma_set(struct device *dev, struct drm_crtc_state *state)
---=20
-2.32.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bG7XfPthEFmfz/DOLSyhu7w
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjCtIACgkQAVBC80lX
-0GyDuAf+MqP/Zo6dleuzRf78dkVKcymuWgO25c2+tMTN3+2OCCf1a6xLAIqdAW21
-uJ55GbQGRaazlm1go052k/0sSnpZ5w69bwxJRI6WAKurKfhqdh+xmg2OAR+q8REy
-d34opG1QbdL2ZRZfr7bf/499YnRJUdYQGUlXTCYzZSiUd++8UDiEITmQekzl9Kxd
-puJKg6LsojbaCifq/PDf6MX40pu3C/tms7puVNT14TVHPWgRHvigv6yeMLR+QBCF
-IWO2eK5CmDTvDRlQbPHr5Vpr5nIzuDmQzk/WuCZ6X4oUvtB0+6hUrtm3MJ2VZWa9
-CK5sbSfLwZfVR3OsQSe+Ra4AHi+VWg==
-=5vJG
------END PGP SIGNATURE-----
-
---Sig_/bG7XfPthEFmfz/DOLSyhu7w--
+Yours sincerely,
+Vincent Mailhol
