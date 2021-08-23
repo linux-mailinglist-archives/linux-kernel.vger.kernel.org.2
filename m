@@ -2,237 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4F53F4D07
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767413F4D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhHWPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        id S231146AbhHWPEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhHWPFM (ORCPT
+        with ESMTP id S231130AbhHWPEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:05:12 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CA2C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:04:29 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id q70so18502682ybg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:04:29 -0700 (PDT)
+        Mon, 23 Aug 2021 11:04:52 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4DFC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:04:09 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso311408oon.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=brllRPBO8PdBfH3Jzs8CaAHdDlba7cjyGUD8zEZHXyY=;
-        b=Vc94pMZYpc3ZyvKJNLJR7EvkvNVw9GhNOAOpAliq6KWt3zPz4+eWlN7s8oacbHvPfG
-         T1ZWXFUTqWUQtDMntCHNe0df98oepr+UqMcrx2l794bCcdeL/YKATj+g0ZWPKkKXiR8l
-         LlZJD4r4V7HVVKltZj68itYQapxgFlrJZnFruvhzqzbhkJu8+kn8Guu/TfuVUOv5Ama5
-         xrVG+YDIkOLNVTDTNWfu6bvxYhRpKndPVxk3EYlxYDq5r4VCQ1rpU8gBNoeTdimT40wO
-         El539AasUnjmndFEkMIO2V90KHJBrz7CizfpLVCNaZfqxfSWbyZ2zA8ziexXSACy7EVZ
-         cvUw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ip/4LbBs/1HoCQARW328yB7yn/rYclwp3boeKaNlIC4=;
+        b=YDeEblHiOTBuUGSNpCa2+SmAOfskh6GOubPwYbiZ47wroo9Rx+3H3xMn5UYvHx2iEb
+         rZ+qfQR3I27AfkbZA2flGAaqwnPnGBd10eOe653B8GQ2dOD4aUnbnKjZTPrmAbzRVItw
+         9K5up0C0cYDhP7lJx4FT90S2p8dx8kZiSyqa5uGZAf0apRWNkHRfFcQNgcaQQV8XEolQ
+         3OBT73R0b0iGDJKleEn1rdJAa4IUlg0Y4RXVEFN88roMTR4xVM9F2/s95ajo2G3+wSMb
+         2HWs72Tdli67zSMLy8PSbeJG6Dp8dzDKih6r16OjUOTLwE38zE7yCIY18hULuiJZkKSR
+         ZLMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=brllRPBO8PdBfH3Jzs8CaAHdDlba7cjyGUD8zEZHXyY=;
-        b=BaBo7486yYImeVkFLrCfIWFxoQ16yDi6x3YLS4ULBNBWMzLs7OBZhGrL3H/EhuHeTM
-         TaOw3t3oZI8/dcWevfhizczRk2tdUqhayvxJkbFfqnmtaX3DGNJEkfFYqGyP59X3WkMF
-         tRT1FdwY+S79LVcbA9Gq96qE3YK01XAZP5v6L+AXeE1axk40pVJ9bJJx0iBmmT68zGiq
-         nIepgnxnAtpfOFGC7dyR2ckx9scaNUP7j9QxJKEKF0PlRQGJaoFj3xJOb34k4ptI6xcw
-         lrTacvqfrzJjQDlcyZgS/gQe1E1rdoTyzHyfptUawFvEbqAlmjNkOpz1IcD7s+XFQjw2
-         S0Cg==
-X-Gm-Message-State: AOAM532QgR4reYb2f5oC9BqeVk+KGLGd0BZFZBxhMbYylYCHf0VBqj1M
-        hnYXu6D3mIw1bNsdyW9/5B7MBhFD/PoHWUuecsp5Mw==
-X-Google-Smtp-Source: ABdhPJzACN5iW03c/RkSTXbYC3XXHzI70EbUZdt3h+laFXezA37uunrWvdyn9XuQcY7UyBk5h7i/rsROdE5kjXMoX3o=
-X-Received: by 2002:a25:afcd:: with SMTP id d13mr42895820ybj.504.1629731067656;
- Mon, 23 Aug 2021 08:04:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ip/4LbBs/1HoCQARW328yB7yn/rYclwp3boeKaNlIC4=;
+        b=l700rd72CFMSmnhiKqZTE4snPeHNFxAawuQ6KT1yxQQfND/NnWYR3W/4K4YViPZrr4
+         j0BvUmTtWAnE1Ui7n8eumj9Wsps+ng9xJ9cN7enAvsj5Hjz78YK49UN2MOHixB/gBqg7
+         zAxqZXIj0kJ1aQkjKUbIFl9DiN0Z+s0Qv7bwDxpsIcRl6q265fzZI/vDMyAZTsBAZ+Vn
+         7gpEwqxX6ftYMr3ofn7dPNcXI8Ua/kapolPAgxXy9iQ2VmFb36sYE7lMchdbXpFhn6IE
+         f1P3iPezs+sbseKEtAvdq6tDt3Sd8aqwVz8v7TIp36vjiNy/VsTsWUzxEWs9bCyoTlp8
+         EUIQ==
+X-Gm-Message-State: AOAM53091uEbep4/sfb5mCFfihYlM3opnKGFrA8nTALjHzYckGK7lzf1
+        JOiiFP2LaJNP45Hyg/9XG+bj1w==
+X-Google-Smtp-Source: ABdhPJx+m+0i/JlKrLcOXLHs5low4JbJMuqvqHB6O9LBZ1Cxo0bw8C4IV54FR674UmAIwhUstNt7nw==
+X-Received: by 2002:a4a:754b:: with SMTP id g11mr26343741oof.10.1629731048424;
+        Mon, 23 Aug 2021 08:04:08 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id bg9sm3786336oib.26.2021.08.23.08.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 08:04:07 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 08:05:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>, agross@kernel.org,
+        rui.zhang@intel.com, viresh.kumar@linaro.org, rjw@rjwysocki.net,
+        robh+dt@kernel.org, steev@kali.org, tdas@codeaurora.org,
+        mka@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [Patch v5 2/6] thermal: qcom: Add support for LMh driver
+Message-ID: <YSO5Njg3DXo64InF@ripper>
+References: <20210809191605.3742979-1-thara.gopinath@linaro.org>
+ <20210809191605.3742979-3-thara.gopinath@linaro.org>
+ <fcbb6d64-7e39-7f03-e76c-512946124777@linaro.org>
 MIME-Version: 1.0
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
- <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
- <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com> <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
-In-Reply-To: <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 23 Aug 2021 08:04:16 -0700
-Message-ID: <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
-Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
- recycling support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
-        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        mcroce@microsoft.com, Hugh Dickins <hughd@google.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Willem de Bruijn <willemb@google.com>,
-        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        chenhao288@hisilicon.com,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>, memxor@gmail.com,
-        linux@rempel-privat.de, Antoine Tenart <atenart@kernel.org>,
-        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
-        Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
-        linmiaohe <linmiaohe@huawei.com>, Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fcbb6d64-7e39-7f03-e76c-512946124777@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/8/18 17:36, Yunsheng Lin wrote:
-> > On 2021/8/18 16:57, Eric Dumazet wrote:
-> >> On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >>>
-> >>> This patchset adds the socket to netdev page frag recycling
-> >>> support based on the busy polling and page pool infrastructure.
-> >>
-> >> I really do not see how this can scale to thousands of sockets.
-> >>
-> >> tcp_mem[] defaults to ~ 9 % of physical memory.
-> >>
-> >> If you now run tests with thousands of sockets, their skbs will
-> >> consume Gigabytes
-> >> of memory on typical servers, now backed by order-0 pages (instead of
-> >> current order-3 pages)
-> >> So IOMMU costs will actually be much bigger.
-> >
-> > As the page allocator support bulk allocating now, see:
-> > https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L252
-> >
-> > if the DMA also support batch mapping/unmapping, maybe having a
-> > small-sized page pool for thousands of sockets may not be a problem?
-> > Christoph Hellwig mentioned the batch DMA operation support in below
-> > thread:
-> > https://www.spinics.net/lists/netdev/msg666715.html
-> >
-> > if the batched DMA operation is supported, maybe having the
-> > page pool is mainly benefit the case of small number of socket?
-> >
-> >>
-> >> Are we planning to use Gigabyte sized page pools for NIC ?
-> >>
-> >> Have you tried instead to make TCP frags twice bigger ?
-> >
-> > Not yet.
-> >
-> >> This would require less IOMMU mappings.
-> >> (Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
-> >> is currently 3, not 4)
-> >
-> > I am not familiar with mm yet, but I will take a look about that:)
->
->
-> It seems PAGE_ALLOC_COSTLY_ORDER is mostly related to pcp page, OOM, memory
-> compact and memory isolation, as the test system has a lot of memory installed
-> (about 500G, only 3-4G is used), so I used the below patch to test the max
-> possible performance improvement when making TCP frags twice bigger, and
-> the performance improvement went from about 30Gbit to 32Gbit for one thread
-> iperf tcp flow in IOMMU strict mode,
+On Sat 21 Aug 02:41 PDT 2021, Daniel Lezcano wrote:
 
-This is encouraging, and means we can do much better.
+> 
+> Hi Thara,
+> 
+> On 09/08/2021 21:16, Thara Gopinath wrote:
+> > Driver enabling various pieces of Limits Management Hardware(LMh) for cpu
+> > cluster0 and cpu cluster1 namely kick starting monitoring of temperature,
+> > current, battery current violations, enabling reliability algorithm and
+> > setting up various temperature limits.
+> > 
+> > The following has been explained in the cover letter. I am including this
+> > here so that this remains in the commit message as well.
+> > 
+> > LMh is a hardware infrastructure on some Qualcomm SoCs that can enforce
+> > temperature and current limits as programmed by software for certain IPs
+> > like CPU. On many newer LMh is configured by firmware/TZ and no programming
+> > is needed from the kernel side. But on certain SoCs like sdm845 the
+> > firmware does not do a complete programming of the h/w. On such soc's
+> > kernel software has to explicitly set up the temperature limits and turn on
+> > various monitoring and enforcing algorithms on the hardware.
+> > 
+> > Tested-by: Steev Klimaszewski <steev@kali.org> # Lenovo Yoga C630
+> > Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> 
+> Is it possible to have an option to disable/enable the LMh driver at
+> runtime, for instance with a module parameter ?
+> 
 
-Even with SKB_FRAG_PAGE_ORDER  set to 4, typical skbs will need 3 mappings
+Are you referring to being able to disable the hardware throttling, or
+the driver's changes to thermal pressure?
 
-1) One for the headers (in skb->head)
-2) Two page frags, because one TSO packet payload is not a nice power-of-two.
-
-The first issue can be addressed using a piece of coherent memory (128
-or 256 bytes per entry in TX ring).
-Copying the headers can avoid one IOMMU mapping, and improve IOTLB
-hits, because all
-slots of the TX ring buffer will use one single IOTLB slot.
-
-The second issue can be solved by tweaking a bit
-skb_page_frag_refill() to accept an additional parameter
-so that the whole skb payload fits in a single order-4 page.
+I'm not aware of any way to disable the hardware. I do remember that
+there was some experiments done (with a hacked up boot chain) early on
+and iirc it was concluded that it's not a good idea.
 
 
- and using the pfrag pool, the improvement
-> went from about 30Gbit to 40Gbit for the same testing configuation:
+Either way, if there is a way and there is a use for it, we can always
+add such parameter incrementally. So I suggest that we merge this as is.
 
-Yes, but you have not provided performance number when 200 (or 1000+)
-concurrent flows are running.
+Regards,
+Bjorn
 
-Optimizing singe flow TCP performance while killing performance for
-the more common case is not an option.
-
-
->
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index fcb5355..dda20f9 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -37,7 +37,7 @@
->   * coalesce naturally under reasonable reclaim pressure and those which
->   * will not.
->   */
-> -#define PAGE_ALLOC_COSTLY_ORDER 3
-> +#define PAGE_ALLOC_COSTLY_ORDER 4
->
->  enum migratetype {
->         MIGRATE_UNMOVABLE,
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 870a3b7..b1e0dfc 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2580,7 +2580,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
->         }
->  }
->
-> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
-> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
->  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
->
->  /**
->
-> >
-> >>
-> >> diff --git a/net/core/sock.c b/net/core/sock.c
-> >> index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
-> >> 100644
-> >> --- a/net/core/sock.c
-> >> +++ b/net/core/sock.c
-> >> @@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
-> >>         }
-> >>  }
-> >>
-> >> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
-> >> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
-> >>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
-> >>
-> >>  /**
-> >>
-> >>
-> >>
-> >>>
-> > _______________________________________________
-> > Linuxarm mailing list -- linuxarm@openeuler.org
-> > To unsubscribe send an email to linuxarm-leave@openeuler.org
-> >
+> > ---
+> > 
+> > v4->v5:
+> > 	- Minor change related to renaming of dt binding property qcom,lmh-cpu
+> > 	  to cpus as per Rob Herring's review comments.
+> > 
+> > v3->v4:
+> > 	- Minor code re-arrangement and removal of redundant code as per Bjorn's
+> > 	  review comments
+> > 	- Added suppress_bind_attrs to driver as per Bjorn's review comments.
+> > 	- Changes to support changes in LMh dt node properties naming and types.
+> > 
+> > v2->v3:
+> > 	- Rearranged enabling of various LMh subfunction and removed returning
+> > 	  on error in enabling any one subfunction as the different pieces can
+> > 	  operate and thus be enabled independently.
+> > 	- Other minor cosmetic fixes.
+> > 
+> > v1->v2:
+> > 	- Cosmetic and spelling fixes from review comments from Randy Dunlap
+> > 	- Added irq_disable to lmh_irq_ops and removed disabling of irq from
+> > 	  lmh_handle_irq. Now cpufreq explicitly disables irq prior to
+> > 	  handling it as per Bjorn's suggestion.
+> > 	- Rebased to new version of qcom_scm_lmh_dcvsh as changed in patch 1.
+> > 	- Removed generic dt compatible string and introduced platform specific one
+> > 	  as per Bjorn's suggestion.
+> > 	- Take arm, low and high temp thresholds for LMh from dt properties instead of
+> > 	  #defines in the driver as per Daniel's suggestion.
+> > 	- Other minor fixes.
+> > 
+> >  drivers/thermal/qcom/Kconfig  |  10 ++
+> >  drivers/thermal/qcom/Makefile |   1 +
+> >  drivers/thermal/qcom/lmh.c    | 232 ++++++++++++++++++++++++++++++++++
+> >  3 files changed, 243 insertions(+)
+> >  create mode 100644 drivers/thermal/qcom/lmh.c
+> > 
+> > diff --git a/drivers/thermal/qcom/Kconfig b/drivers/thermal/qcom/Kconfig
+> > index 8d5ac2df26dc..7d942f71e532 100644
+> > --- a/drivers/thermal/qcom/Kconfig
+> > +++ b/drivers/thermal/qcom/Kconfig
+> > @@ -31,3 +31,13 @@ config QCOM_SPMI_TEMP_ALARM
+> >  	  trip points. The temperature reported by the thermal sensor reflects the
+> >  	  real time die temperature if an ADC is present or an estimate of the
+> >  	  temperature based upon the over temperature stage value.
+> > +
+> > +config QCOM_LMH
+> > +	tristate "Qualcomm Limits Management Hardware"
+> > +	depends on ARCH_QCOM
+> > +	help
+> > +	  This enables initialization of Qualcomm limits management
+> > +	  hardware(LMh). LMh allows for hardware-enforced mitigation for cpus based on
+> > +	  input from temperature and current sensors.  On many newer Qualcomm SoCs
+> > +	  LMh is configured in the firmware and this feature need not be enabled.
+> > +	  However, on certain SoCs like sdm845 LMh has to be configured from kernel.
+> > diff --git a/drivers/thermal/qcom/Makefile b/drivers/thermal/qcom/Makefile
+> > index 252ea7d9da0b..0fa2512042e7 100644
+> > --- a/drivers/thermal/qcom/Makefile
+> > +++ b/drivers/thermal/qcom/Makefile
+> > @@ -5,3 +5,4 @@ qcom_tsens-y			+= tsens.o tsens-v2.o tsens-v1.o tsens-v0_1.o \
+> >  				   tsens-8960.o
+> >  obj-$(CONFIG_QCOM_SPMI_ADC_TM5)	+= qcom-spmi-adc-tm5.o
+> >  obj-$(CONFIG_QCOM_SPMI_TEMP_ALARM)	+= qcom-spmi-temp-alarm.o
+> > +obj-$(CONFIG_QCOM_LMH)		+= lmh.o
+> > diff --git a/drivers/thermal/qcom/lmh.c b/drivers/thermal/qcom/lmh.c
+> > new file mode 100644
+> > index 000000000000..eafa7526eb8b
+> > --- /dev/null
+> > +++ b/drivers/thermal/qcom/lmh.c
+> > @@ -0,0 +1,232 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +/*
+> > + * Copyright (C) 2021, Linaro Limited. All rights reserved.
+> > + */
+> > +#include <linux/module.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/irqdomain.h>
+> > +#include <linux/err.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/of_platform.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/qcom_scm.h>
+> > +
+> > +#define LMH_NODE_DCVS			0x44435653
+> > +#define LMH_CLUSTER0_NODE_ID		0x6370302D
+> > +#define LMH_CLUSTER1_NODE_ID		0x6370312D
+> > +
+> > +#define LMH_SUB_FN_THERMAL		0x54484D4C
+> > +#define LMH_SUB_FN_CRNT			0x43524E54
+> > +#define LMH_SUB_FN_REL			0x52454C00
+> > +#define LMH_SUB_FN_BCL			0x42434C00
+> > +
+> > +#define LMH_ALGO_MODE_ENABLE		0x454E424C
+> > +#define LMH_TH_HI_THRESHOLD		0x48494748
+> > +#define LMH_TH_LOW_THRESHOLD		0x4C4F5700
+> > +#define LMH_TH_ARM_THRESHOLD		0x41524D00
+> > +
+> > +#define LMH_REG_DCVS_INTR_CLR		0x8
+> > +
+> > +struct lmh_hw_data {
+> > +	void __iomem *base;
+> > +	struct irq_domain *domain;
+> > +	int irq;
+> > +};
+> > +
+> > +static irqreturn_t lmh_handle_irq(int hw_irq, void *data)
+> > +{
+> > +	struct lmh_hw_data *lmh_data = data;
+> > +	int irq = irq_find_mapping(lmh_data->domain, 0);
+> > +
+> > +	/* Call the cpufreq driver to handle the interrupt */
+> > +	if (irq)
+> > +		generic_handle_irq(irq);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void lmh_enable_interrupt(struct irq_data *d)
+> > +{
+> > +	struct lmh_hw_data *lmh_data = irq_data_get_irq_chip_data(d);
+> > +
+> > +	/* Clear the existing interrupt */
+> > +	writel(0xff, lmh_data->base + LMH_REG_DCVS_INTR_CLR);
+> > +	enable_irq(lmh_data->irq);
+> > +}
+> > +
+> > +static void lmh_disable_interrupt(struct irq_data *d)
+> > +{
+> > +	struct lmh_hw_data *lmh_data = irq_data_get_irq_chip_data(d);
+> > +
+> > +	disable_irq_nosync(lmh_data->irq);
+> > +}
+> > +
+> > +static struct irq_chip lmh_irq_chip = {
+> > +	.name           = "lmh",
+> > +	.irq_enable	= lmh_enable_interrupt,
+> > +	.irq_disable	= lmh_disable_interrupt
+> > +};
+> > +
+> > +static int lmh_irq_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
+> > +{
+> > +	struct lmh_hw_data *lmh_data = d->host_data;
+> > +
+> > +	irq_set_chip_and_handler(irq, &lmh_irq_chip, handle_simple_irq);
+> > +	irq_set_chip_data(irq, lmh_data);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct irq_domain_ops lmh_irq_ops = {
+> > +	.map = lmh_irq_map,
+> > +	.xlate = irq_domain_xlate_onecell,
+> > +};
+> > +
+> > +static int lmh_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct device_node *np = dev->of_node;
+> > +	struct device_node *cpu_node;
+> > +	struct lmh_hw_data *lmh_data;
+> > +	int temp_low, temp_high, temp_arm, cpu_id, ret;
+> > +	u32 node_id;
+> > +
+> > +	lmh_data = devm_kzalloc(dev, sizeof(*lmh_data), GFP_KERNEL);
+> > +	if (!lmh_data)
+> > +		return -ENOMEM;
+> > +
+> > +	lmh_data->base = devm_platform_ioremap_resource(pdev, 0);
+> > +	if (IS_ERR(lmh_data->base))
+> > +		return PTR_ERR(lmh_data->base);
+> > +
+> > +	cpu_node = of_parse_phandle(np, "cpus", 0);
+> > +	if (!cpu_node)
+> > +		return -EINVAL;
+> > +	cpu_id = of_cpu_node_to_id(cpu_node);
+> > +	of_node_put(cpu_node);
+> > +
+> > +	ret = of_property_read_u32(np, "qcom,lmh-temp-high-millicelsius", &temp_high);
+> > +	if (ret) {
+> > +		dev_err(dev, "missing qcom,lmh-temp-high-millicelsius property\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = of_property_read_u32(np, "qcom,lmh-temp-low-millicelsius", &temp_low);
+> > +	if (ret) {
+> > +		dev_err(dev, "missing qcom,lmh-temp-low-millicelsius property\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = of_property_read_u32(np, "qcom,lmh-temp-arm-millicelsius", &temp_arm);
+> > +	if (ret) {
+> > +		dev_err(dev, "missing qcom,lmh-temp-arm-millicelsius property\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Only sdm845 has lmh hardware currently enabled from hlos. If this is needed
+> > +	 * for other platforms, revisit this to check if the <cpu-id, node-id> should be part
+> > +	 * of a dt match table.
+> > +	 */
+> > +	if (cpu_id == 0) {
+> > +		node_id = LMH_CLUSTER0_NODE_ID;
+> > +	} else if (cpu_id == 4) {
+> > +		node_id = LMH_CLUSTER1_NODE_ID;
+> > +	} else {
+> > +		dev_err(dev, "Wrong CPU id associated with LMh node\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (!qcom_scm_lmh_dcvsh_available())
+> > +		return -EINVAL;
+> > +
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_CRNT, LMH_ALGO_MODE_ENABLE, 1,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret)
+> > +		dev_err(dev, "Error %d enabling current subfunction\n", ret);
+> > +
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_REL, LMH_ALGO_MODE_ENABLE, 1,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret)
+> > +		dev_err(dev, "Error %d enabling reliability subfunction\n", ret);
+> > +
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_BCL, LMH_ALGO_MODE_ENABLE, 1,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret)
+> > +		dev_err(dev, "Error %d enabling BCL subfunction\n", ret);
+> > +
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_ALGO_MODE_ENABLE, 1,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret) {
+> > +		dev_err(dev, "Error %d enabling thermal subfunction\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = qcom_scm_lmh_profile_change(0x1);
+> > +	if (ret) {
+> > +		dev_err(dev, "Error %d changing profile\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* Set default thermal trips */
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_TH_ARM_THRESHOLD, temp_arm,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret) {
+> > +		dev_err(dev, "Error setting thermal ARM threshold%d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_TH_HI_THRESHOLD, temp_high,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret) {
+> > +		dev_err(dev, "Error setting thermal HI threshold%d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = qcom_scm_lmh_dcvsh(LMH_SUB_FN_THERMAL, LMH_TH_LOW_THRESHOLD, temp_low,
+> > +				 LMH_NODE_DCVS, node_id, 0);
+> > +	if (ret) {
+> > +		dev_err(dev, "Error setting thermal ARM threshold%d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	lmh_data->irq = platform_get_irq(pdev, 0);
+> > +	lmh_data->domain = irq_domain_add_linear(np, 1, &lmh_irq_ops, lmh_data);
+> > +	if (!lmh_data->domain) {
+> > +		dev_err(dev, "Error adding irq_domain\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* Disable the irq and let cpufreq enable it when ready to handle the interrupt */
+> > +	irq_set_status_flags(lmh_data->irq, IRQ_NOAUTOEN);
+> > +	ret = devm_request_irq(dev, lmh_data->irq, lmh_handle_irq,
+> > +			       IRQF_ONESHOT | IRQF_NO_SUSPEND,
+> > +			       "lmh-irq", lmh_data);
+> > +	if (ret) {
+> > +		dev_err(dev, "Error %d registering irq %x\n", ret, lmh_data->irq);
+> > +		irq_domain_remove(lmh_data->domain);
+> > +		return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct of_device_id lmh_table[] = {
+> > +	{ .compatible = "qcom,sdm845-lmh", },
+> > +	{}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, lmh_table);
+> > +
+> > +static struct platform_driver lmh_driver = {
+> > +	.probe = lmh_probe,
+> > +	.driver = {
+> > +		.name = "qcom-lmh",
+> > +		.of_match_table = lmh_table,
+> > +		.suppress_bind_attrs = true,
+> > +	},
+> > +};
+> > +module_platform_driver(lmh_driver);
+> > +
+> > +MODULE_LICENSE("GPL v2");
+> > +MODULE_DESCRIPTION("QCOM LMh driver");
+> > 
+> 
+> 
+> -- 
+> <http://www.linaro.org/> Linaro.org ??? Open source software for ARM SoCs
+> 
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
