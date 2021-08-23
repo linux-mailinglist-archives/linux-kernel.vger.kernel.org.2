@@ -2,125 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0069F3F4879
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EFC3F487D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhHWKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:18:46 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:38752 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbhHWKSo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:18:44 -0400
-Received: by mail-vs1-f53.google.com with SMTP id t4so7850349vsm.5;
-        Mon, 23 Aug 2021 03:18:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fn6frUv3RQ/aTjcmQj/o89ICwJB87FoHT5MS19YzVHM=;
-        b=fiqr3sG6gy0h+XgQeywAVSA2hkFj3Keio8jHmi9liC06PECDccy0t2kCjr3lZ1+Jjr
-         VeMeBGqv734n/BPWiHEdqzxQy13rOC9dPmlOcpoCN/ahGne26TERbyw1Lm8NNx9Fafcp
-         0P+6+f3VGS5/msLEWIBufYGwhUAxXX/WUo6b0wGUwTK7RbzAgMq4VTaUoBdZSwlvy4n6
-         fEBw3Pi+YGh+5Tsbkj5om2PmS8alhh0oU9n9rDihUiAWmQCU2SUWT6ETHlAm3lKKED+7
-         QXqzwfknIEs8jCDKIpvmxp2CdAux+SDrZ1n6iDSDlQG1I7rx1PT3wRRnBz9Ugs8ZJqGd
-         rbtg==
-X-Gm-Message-State: AOAM533rQMK/YfsC71vQzxLAS8LEDvRJlGBgWPalPanRQIxciD6ICkMV
-        nCYrVPacVSCr17MP3u8bdJtcybBAvYw6qddKm7s=
-X-Google-Smtp-Source: ABdhPJwlCanF14EHYCKCFLIhNlaGYU+ggYsOisyFUA/DqJkwdSAMQnOyL5VqX+D7DhPY+/mopUoKoyjACSnbySpEy0c=
-X-Received: by 2002:a67:c789:: with SMTP id t9mr23378055vsk.60.1629713881619;
- Mon, 23 Aug 2021 03:18:01 -0700 (PDT)
+        id S236171AbhHWKS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:18:59 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15921 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236147AbhHWKS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:18:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629713895; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=WdDl3Bs62eJOXS4ON5GLmg1zUOk70f0ikhAxZW4zP74=; b=QdiucCXhJDtH01KEkKWQRPdLdXqaD/O3tbxd3v9FRI3eVa6/Q1mWBIvgHsPU5fgiI9sbJ4U+
+ ctD/bXUNzzErQDTor4g0Pj13gjS6qEp6edwUD8Sxb+TnTmwBakY2Ffga2+b0a2SzC8CHsU34
+ qUbv7UjxKpT2rQ1i/sxgl033rkc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 612375d8e19abc7959be862f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 23 Aug 2021 10:18:00
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6062FC43618; Mon, 23 Aug 2021 10:18:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.102] (unknown [49.204.182.118])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CAC58C4338F;
+        Mon, 23 Aug 2021 10:17:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org CAC58C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v2] cpufreq: qcom-hw: Set dvfs_possible_from_any_cpu
+ cpufreq driver flag
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>
+References: <1628777955-7198-1-git-send-email-tdas@codeaurora.org>
+ <CAD=FV=UF1MMKg9Y0HD3xpZ36BVZyuzr3xkwXzeSz__T1XD1r=w@mail.gmail.com>
+ <77dde5fa-6b12-d970-ac3e-0d3f6c352fbe@codeaurora.org>
+ <20210818102644.v2ob46azq47beeqg@vireshk-i7>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <447cb27e-cd67-5d92-1c0e-932b8581fc7b@codeaurora.org>
+Date:   Mon, 23 Aug 2021 15:47:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <cover.1628670468.git.geert+renesas@glider.be> <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
- <YRn9DHlB/pdNPJyP@kernel.org>
-In-Reply-To: <YRn9DHlB/pdNPJyP@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Aug 2021 12:17:50 +0200
-Message-ID: <CAMuHMdVdqR7gw+2O2v=qv_BB=+X2wEXN9jXV=np=jRayadwj7g@mail.gmail.com>
-Subject: Re: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header reservation
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210818102644.v2ob46azq47beeqg@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+Hi Viresh,
 
-On Mon, Aug 16, 2021 at 7:52 AM Mike Rapoport <rppt@kernel.org> wrote:
-> On Wed, Aug 11, 2021 at 10:50:59AM +0200, Geert Uytterhoeven wrote:
-> > Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
-> > occupied by an elf core header described in the device tree.
-> > As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
-> > mips_reserve_vmcore(), the latter needs to check if the memory has
-> > already been reserved before.
->
-> Doing memblock_reserve() for the same region is usually fine, did you
-> encounter any issues without this patch?
+Thanks for the review.
 
-Does it also work if the same region is part of an earlier larger
-reservation?  I am no memblock expert, so I don't know.
-I didn't run into any issues, as my MIPS platform is non-DT, but I
-assume arch/arm64/mm/init.c:reserve_elfcorehdr() had the check for
-a reason.
+On 8/18/2021 3:56 PM, Viresh Kumar wrote:
+> On 18-08-21, 15:33, Taniya Das wrote:
+>> Hi Doug,
+>>
+>> Thanks for your review.
+>>
+>> On 8/13/2021 2:03 AM, Doug Anderson wrote:
+>>> Hi,
+>>>
+>>> On Thu, Aug 12, 2021 at 7:19 AM Taniya Das <tdas@codeaurora.org> wrote:
+>>>>
+>>>> As remote cpufreq updates are supported on QCOM platforms, set
+>>>> dvfs_possible_from_any_cpu cpufreq driver flag.
+>>>>
+>>>> Signed-off-by: Taniya Das <tdas@codeaurora.org>
+>>>> ---
+>>>>
+>>>> [v2]
+>>>>     * update the dvfs_possible_from_any_cpu always.
+>>>>
+>>>>    drivers/cpufreq/qcom-cpufreq-hw.c | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+>>>> index f86859b..53d3898 100644
+>>>> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+>>>> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+>>>> @@ -223,6 +223,8 @@ static int qcom_cpufreq_hw_read_lut(struct device *cpu_dev,
+>>>>
+>>>>           table[i].frequency = CPUFREQ_TABLE_END;
+>>>>           policy->freq_table = table;
+>>>> +       policy->dvfs_possible_from_any_cpu = true;
+>>>> +
+>>>
+>>> Why is this in the qcom_cpufreq_hw_read_lut() function? Shouldn't it
+>>> be straight in qcom_cpufreq_hw_cpu_init()?
+>>>
+>> All CPU policy related data is updated here, thus wanted to keep it
+>> together.
+> 
+> This function should only be updating freq table, please do it in
+> qcom_cpufreq_hw_cpu_init() itself, around where you set
+> policy->driver_data.
+> 
 
-Thanks!
-
->
-> > Note that mips_reserve_vmcore() cannot just be removed, as not all MIPS
-> > systems use DT.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> > v5:
-> >   - New.
-> > ---
-> >  arch/mips/kernel/setup.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> > index 23a140327a0bac1b..4693add05743d78b 100644
-> > --- a/arch/mips/kernel/setup.c
-> > +++ b/arch/mips/kernel/setup.c
-> > @@ -429,7 +429,8 @@ static void __init mips_reserve_vmcore(void)
-> >       pr_info("Reserving %ldKB of memory at %ldKB for kdump\n",
-> >               (unsigned long)elfcorehdr_size >> 10, (unsigned long)elfcorehdr_addr >> 10);
-> >
-> > -     memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
-> > +     if (!memblock_is_region_reserved(elfcorehdr_addr, elfcorehdr_size)
-> > +             memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
-> >  #endif
-> >  }
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Thanks Viresh, updated the same in the next patch.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
