@@ -2,104 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDBC3F42DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1DC3F42E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhHWBNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:13:31 -0400
-Received: from ozlabs.org ([203.11.71.1]:42813 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231452AbhHWBNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:13:30 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtDkP4KgRz9sVw;
-        Mon, 23 Aug 2021 11:12:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ozlabs.org;
-        s=201707; t=1629681167;
-        bh=3617d1wzXnjSlPLePamFOKaTTSsHAU2Hht3MegCG/fY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=s2kUtebBLqozNQypZrHVlFYCIKF+v3fOv1IWEJ7sKUi6zPxdPd4xsAojiuo/RS7Fq
-         heRwCeZlJGpGtAQ/qfPzw2vBOJLBkIeLyZjL6dJUtzYuqvbb8id6qtwlc80Od6euKo
-         O51B86WDGQKDjbHFxc4iYSInjLUfQwINJvB7VeXpJgHDs/gz96lX6h2nPNCdO42sYV
-         ptUuLWjotXQhv82OGNqFPPDBHQwo6wZy+lveICPSDNKBK4YkeA3J74/uN3bWtSbM8N
-         +DJzjUfoVz06JWnG0HJEgZD/r1bMyQWckEnT5wlw2PJbCwL9y8LZgk+DFVq+mTzKFO
-         3wUA52+1jYmLA==
-Message-ID: <b43d2cf8dd0e2721a5b834a660bd35633bc82436.camel@ozlabs.org>
-Subject: Re: [PATCH linux-next] fsi:(fsi-master-gpio)Convert sysfs
- sprintf/snprintf family to sysfs_emit
-From:   Jeremy Kerr <jk@ozlabs.org>
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        Alistar Popple <alistair@popple.id.au>,
-        Eddie James <eajames@linux.ibm.com>,
-        linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Date:   Mon, 23 Aug 2021 09:12:44 +0800
-In-Reply-To: <20210821034250.27914-1-jing.yangyang@zte.com.cn>
-References: <20210821034250.27914-1-jing.yangyang@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S234471AbhHWBOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234399AbhHWBOo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 21:14:44 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE4EC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:14:02 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id me10so5081574ejb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:14:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L2x6wvetmC+m3UtkL6g+zeogyV7VcFydZqaTYT0Kj0E=;
+        b=f6WZ0aMYqLMnLSFNcuxgKdLhyI7/W0P27ao7SR9Kc+qqodcoakQ85WKGOafWNzUXMd
+         h2WG+KWDZ0UHdOmJAhErULZrM5xIKaRGgqGDeEuAF+40+yVN7wbf84SQzPf+zgjoV/k+
+         bkTvLJD2KnYD7sGZmfRxYe+iiq93N0cL8DFnhLLjWpmfslVf0Mhae59Dwnanex0R2wiv
+         EbkGZ9pgt5zl8JjmkCLuJEVGLU1eb9VsjwXg1vwTIxZkZsX6ZBolUVi+bT3jUYAupleK
+         ur5PBioCl8pOrWnNJ8cRo3cHYOcxgj6ytr8C2kVuxdkAR0gxsQyV9X7H3KnBYVcsRvbN
+         wpNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L2x6wvetmC+m3UtkL6g+zeogyV7VcFydZqaTYT0Kj0E=;
+        b=omDApcqEgJnGpvbL67bEQj/DiDFJiqhM+A6ywKwdpC1tE5sNocTku5D7cNsgFeB+n+
+         FOQYoZrZH4j93AOG4Mt+4vqdzr5XkW00ivrAS3Xe75c9IZE1Oabba/orINBpVFIBAI6B
+         MsfOKnTg00Qp3vE1qim2G4nySj6yXaSkzdg1qPKwIBxJDcbJMt3v4kj5/I2sO2LvA1ni
+         QJc5elPouaTg5W3QlKWk2NlYtHhSehvTDXhEjfAVCXFMtDFETmWGc/DPaSvMZlDnvo3g
+         q9tma3jBdRIZV3+1vxrhbUVWw/s7vQfqUXETca/84j0J6YW9oSahT9ST/hm/9eJfSqj6
+         lx/w==
+X-Gm-Message-State: AOAM531vgQhPX9AlLFLKu+tXn5tcuE9IejiVQv21xN+Sfm/4i+4zXYAX
+        K9mP1as7Ae1gafGQa2HQy6fEx83eJVROShUvhUM4zg==
+X-Google-Smtp-Source: ABdhPJx/ilGFoEBONN+wOqzr/Rs2Jbpamch8GsxeU1GPLtfMrCOMPkXfFgX7Vkr74BvouHL25Sh1oxDmLMtRialHZx4=
+X-Received: by 2002:a17:906:38c8:: with SMTP id r8mr33459917ejd.172.1629681240780;
+ Sun, 22 Aug 2021 18:14:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
+ <CAHp75VcG9KajNpDbewDq7QzotB6t7MfwiGk15FaobX+cmMVSzg@mail.gmail.com>
+ <CAK9rFnwrA=W2Vk5yFwG4N_WS=eBXXnhtexA+tqgAYb6xOAO4oQ@mail.gmail.com> <CAHp75VdfrJ3JV_gL3xCLHOiw6Tj-5Ep7z5JKWUFKFbUt8gobcw@mail.gmail.com>
+In-Reply-To: <CAHp75VdfrJ3JV_gL3xCLHOiw6Tj-5Ep7z5JKWUFKFbUt8gobcw@mail.gmail.com>
+From:   Brad Larson <brad@pensando.io>
+Date:   Sun, 22 Aug 2021 18:13:50 -0700
+Message-ID: <CAK9rFnx--z_pr_yR6CqGsH04ddwUtx4rxc7MxNNmy7ZSF86+Mg@mail.gmail.com>
+Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Andy,
 
-> Fix the following coccicheck warning:
-> ./drivers/fsi/fsi-master-gpio.c:721:8-16:WARNING:use scnprintf or
-> sprintf
+On Mon, Mar 29, 2021 at 3:40 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Mar 29, 2021 at 4:19 AM Brad Larson <brad@pensando.io> wrote:
+> > On Sun, Mar 7, 2021 at 11:21 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Thu, Mar 4, 2021 at 4:40 PM Brad Larson <brad@pensando.io> wrote:
+>
+> ...
+>
+> > > > +config GPIO_ELBA_SPICS
+> > > > +       bool "Pensando Elba SPI chip-select"
+> > >
+> > > Can't it be a module? Why?
+> >
+> > All Elba SoC based platforms require this driver to be built-in to boot and
+> > removing the module would result in a variety of exceptions/errors.
+>
+> Needs to be at least in the commit message.
+>
+>
+>
+> > > > +       depends on ARCH_PENSANDO_ELBA_SOC
+> > > > +       help
+> > > > +         Say yes here to support the Pensndo Elba SoC SPI chip-select driver
+> > >
+> > > Please give more explanation what it is and why users might need it,
+> > > and also tell users how the module will be named (if there is no
+> > > strong argument why it can't be a  module).
+> > >
+> > Fixed the typo.
+>
+> Yeah, according to the above, you better elaborate what this module is
+> and why people would need it.
+> Also can be a good hint to add
+> default ARCH_MY_COOL_PLATFORM
 
-Looks good, but we may as well do the other cases (in fsi-core) at the
-same time.
+Regarding the above module question and Kconfig definition, since I
+first looked at this and reviewed the comments I realized I should be
+using builtin.  The file gpio/Kconfig is currently this
 
-There's a cocci script in the initial sysfs_emit series:
+config GPIO_ELBA_SPICS
+        def_bool y
+        depends on ARCH_PENSANDO_ELBA_SOC || COMPILE_TEST
 
-  https://lore.kernel.org/lkml/c22b7006813b1776467a72e716a5970e9277b4b7.camel@perches.com/
+> ...
+>
+> > > > +#include <linux/of.h>
+> > >
+> > > It's not used here, but you missed mod_devicetable.h.
+> >
+> > Removed <linux/of.h>.  There is no dependency on mod_devicetable.h.
+>
+> What do you mean? You don't use data structures from that?
+> of_device_id or other ID structures are defined there. Your module
+> works without them?
+>
+I typed the wrong filename.  I do still have <linux/of.h>
 
-Which gives me these additional changes:
+> > > > +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > > +       p->base = devm_ioremap_resource(&pdev->dev, res);
+> > >
+> > > p->base = devm_platform_ioremap_resource(pdev, 0);
+> >
+> > Implementation follows devm_ioremap_resource() example in lib/devres.c.
+>
+> So? How does this make it impossible to address my comment?
 
-diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
-index 59ddc9fd5bca..159db87a043d 100644
---- a/drivers/fsi/fsi-core.c
-+++ b/drivers/fsi/fsi-core.c
-@@ -818,7 +818,7 @@ static ssize_t slave_send_echo_show(struct device *dev,
- {
- 	struct fsi_slave *slave = to_fsi_slave(dev);
- 
--	return sprintf(buf, "%u\n", slave->t_send_delay);
-+	return sysfs_emit(buf, "%u\n", slave->t_send_delay);
- }
- 
- static ssize_t slave_send_echo_store(struct device *dev,
-@@ -862,7 +862,7 @@ static ssize_t chip_id_show(struct device *dev,
- {
- 	struct fsi_slave *slave = to_fsi_slave(dev);
- 
--	return sprintf(buf, "%d\n", slave->chip_id);
-+	return sysfs_emit(buf, "%d\n", slave->chip_id);
- }
- 
- static DEVICE_ATTR_RO(chip_id);
-@@ -873,7 +873,7 @@ static ssize_t cfam_id_show(struct device *dev,
- {
- 	struct fsi_slave *slave = to_fsi_slave(dev);
- 
--	return sprintf(buf, "0x%x\n", slave->cfam_id);
-+	return sysfs_emit(buf, "0x%x\n", slave->cfam_id);
- }
- 
- static DEVICE_ATTR_RO(cfam_id);
+I was simply stating that I followed the recommended API per the
+source code although I don't recall if I was looking at 4.14, 5.10 or
+linux-next at the time.  Changed to using
+devm_platform_ioremap_resource().
 
-Do you want to include these in your patch too?
+> > > > +       if (IS_ERR(p->base)) {
+> > >
+> > > > +               dev_err(&pdev->dev, "failed to remap I/O memory\n");
+> > >
+> > > Duplicate noisy message.
+> > >
+> > > > +               return PTR_ERR(p->base);
+> > > > +       }
 
-Cheers,
+Yep, I've removed the extraneous log message.
 
-
-Jeremy
-
+Regards,
+Brad
