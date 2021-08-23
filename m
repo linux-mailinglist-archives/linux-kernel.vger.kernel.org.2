@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6253F433E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B853F4342
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbhHWB6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        id S234802AbhHWB6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234539AbhHWB6X (ORCPT
+        with ESMTP id S233258AbhHWB6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:58:23 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D08C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:57:41 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id n27so1632228eja.5
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:57:41 -0700 (PDT)
+        Sun, 22 Aug 2021 21:58:46 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAF0C061575;
+        Sun, 22 Aug 2021 18:58:05 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id n126so17810237ybf.6;
+        Sun, 22 Aug 2021 18:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cFpzmqFB9yMMD1KfuKMeohgeAz7Z+gUa98V8V3Wvc2Y=;
-        b=4JYF2YdgvMXnbxOW/yTllPVtM0MKS0UMGwBXWi0PyRdh4nlSyYuag8ahq42HkkpBuA
-         ELMXNVKWeRW3ZZEk/TTWjQy0YVs+FbkeSu59pB4loOfQT5M9x/PclLiX3fZI+EUFr6Xe
-         hGP0ja0rWDuTR6cRRRZdhXYTWLerTWM1rcOLtWJrmORQiIzKlhvh6X7ZZgSCslZjRvCB
-         ZmCaSeHxl3E/3Vm6qn1Kl0yt77BZQNQwac3GN25lQJETB9GrFJK88dXNTe6z4ySuSvVg
-         jAuDr+40lzVSYOAEUs5WZYxU1YE211PBySjGcngMIY/PCcEw0wjAmG4s5NLuAb25gMbL
-         87UQ==
+         :cc:content-transfer-encoding;
+        bh=wLsr+R0Fve9ivW+7qc/jUuotRZ00tnDPLOXaKuMzzD4=;
+        b=RkT7Ab1TdRuLb9JbE9JxGn14hi9GH2rFmC4TG7zt/+6Ai+lnjwwfRqKVWumQIP1NHz
+         TSwE5cSAXmTimpu03Q5vD3ve+pA3rlI0ZWUKLOq7Mh1//0bcuJ3PP6ZZEC5/jnZIjImj
+         ZXKKvbwiPLSwLLv4pQneuFAMoiDrgjDFCzvM6XPhBAddFaszBV/NNQzXsCgVEWGlMQt4
+         53/NFAqgHiNJiVdCcDYIugaFG0paytp0T3hs6jBMsSzH64WkXPL88QKUK32ycBqo70xp
+         dKtKHYYFqUXTwqOPO9emQvjbxRor4yx4e4pl/EScwhZE0tNjYn5bLTgmGhyG0Pf7FjWQ
+         0PFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cFpzmqFB9yMMD1KfuKMeohgeAz7Z+gUa98V8V3Wvc2Y=;
-        b=rJDi5mJ050LMwzPIy5KTY+oscgekozYSX7omwiglb5z0MwkJ1EyYaqbb/p3z7A6K9f
-         UvfTi/DzDwuVqTYiR6/8Nh18qgI2OcWr9Jj50ZYKsnKvp2ItTfBlwJ2yKHrHx58pFCBU
-         +Kgo5JYp5/aMdUoWHfu8xyWG5XRUAJEeKjhUuflZpXTg3GOfeZkIqYJ5LN0uDG7tLa1E
-         vVZK8easnv9qXrubxvfxz/bMgpqAGV0jk1rE2U/eVf7Jz/j70nwrAw8SLfZMmQIgoWep
-         YecTQpd7B6ev955GYkyS+/Gf9SozHwltgQoZ+Ko8M2xyfRD/DJ2tQcRqLB01KyUOAcuT
-         IPrw==
-X-Gm-Message-State: AOAM530n2hmbbRUKYDLRzsZrLpEoO0ZRMoMz45dumgK8J15DpCsI21U7
-        uF/9alzmi/77k3AEpgvja4Od1UUHIeWu7JHkX1fuMg==
-X-Google-Smtp-Source: ABdhPJwJo6/NtT/bvfJ0FK7tHlKmovEqXfs9HK+XjaGlz7pp1sb1VNlXre/DPKVqRMPmnmsgNC7snExXw1W5oieFGM4=
-X-Received: by 2002:a17:906:cb11:: with SMTP id lk17mr32572506ejb.271.1629683860510;
- Sun, 22 Aug 2021 18:57:40 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wLsr+R0Fve9ivW+7qc/jUuotRZ00tnDPLOXaKuMzzD4=;
+        b=l/uJULeYcIuWQt1blH82AruYe1lVAd52sW9lSbMI1LqzK3+eWyZXeBkpLfCF/GfoJH
+         1pKFr7LsmkuvRZtux2wR+CP99F2LGvCngeJnUJvCuRHPKpcVuYZEqWDlfIR2Fk8jGNV+
+         rUnyaXbC29Ctw7z8CTrNAC4/3Vt6OCoXvET5Wk/FmbtFHZAMpdCeCM3QoCUaKc+VVGn+
+         9vqL7OjwfCXI9qDLGSkjzpJlcCLH2fSw7JYscFqAT06L/ShTF7473hclx6oPz13q4pMv
+         rLZddrroAsjY0RxeoxfadTmAnvsqpTVTAtATjJq/xUQhjZLZRMBCN5MTxPgPJujRf68o
+         balA==
+X-Gm-Message-State: AOAM5323sJdh0PpDEfH9/+GiLqDqVJQyfx1vuWWKYGYYZZzRiFYviUUQ
+        WKFRCYDBFqszTJlzom3TbfotV6hF8YqqCq+tPgE86CNyBQ1DKQJ/+Rk=
+X-Google-Smtp-Source: ABdhPJxRvdQG0Ud1bze67w4fbPLedynZ27gerJNJTzB4xfNCcMWZBJ9gwk33CZztFXNBYImwJ9ALQOhaC6ZoSpzAyJk=
+X-Received: by 2002:a25:b7c8:: with SMTP id u8mr39872181ybj.268.1629683884334;
+ Sun, 22 Aug 2021 18:58:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-11-brad@pensando.io>
- <20210330111243.ne23j7ycsvy634rw@ti.com>
-In-Reply-To: <20210330111243.ne23j7ycsvy634rw@ti.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Sun, 22 Aug 2021 18:57:29 -0700
-Message-ID: <CAK9rFnx4jBAEMYVcVW+D5bRRzJA22wzYzyaCT9Q+y2Xw638bfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/13] dt-bindings: spi: cadence-qspi: Add support for
- Pensando Elba SoC
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210820030536.25737-1-yaozhenguo1@gmail.com> <20210822151952.23ca9547316dc34c9f3bd482@linux-foundation.org>
+ <YSLPWybBCyE/6x7s@casper.infradead.org>
+In-Reply-To: <YSLPWybBCyE/6x7s@casper.infradead.org>
+From:   zhenguo yao <yaozhenguo1@gmail.com>
+Date:   Mon, 23 Aug 2021 09:57:53 +0800
+Message-ID: <CA+WzARmb+KVLo=isfU7T2bi=9O=UFFG57CBk6w-+haKp_OqbMg@mail.gmail.com>
+Subject: Re: [PATCH] hugetlbfs: add hugepages_node kernel parameter
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     mike.kravetz@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+Yes, the expanding of hugepages is more elegant. I  will change it in
+the next version.
 
-On Tue, Mar 30, 2021 at 4:12 AM Pratyush Yadav <p.yadav@ti.com> wrote:
+Matthew Wilcox <willy@infradead.org> =E4=BA=8E2021=E5=B9=B48=E6=9C=8823=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=886:28=E5=86=99=E9=81=93=EF=BC=9A
 >
-> Hi Brad,
->
-> On 28/03/21 06:59PM, Brad Larson wrote:
-> > Add new vendor Pensando Systems Elba SoC compatible
-> > string and convert to json-schema.
+> On Sun, Aug 22, 2021 at 03:19:52PM -0700, Andrew Morton wrote:
+> > On Fri, 20 Aug 2021 11:05:36 +0800 yaozhenguo <yaozhenguo1@gmail.com> w=
+rote:
 > >
-> > Signed-off-by: Brad Larson <brad@pensando.io>
-> > ---
-> >  .../bindings/spi/cadence-quadspi.txt          |  68 --------
-> >  .../bindings/spi/cadence-quadspi.yaml         | 153 ++++++++++++++++++
-(...)
-> > +properties:
-> > +  compatible:
-> > +    contains:
-> > +      enum:
-> > +        - cdns,qspi-nor       # Generic default
-> > +        - ti,k2g-qspi         # TI 66AK2G SoC
-> > +        - ti,am654-ospi       # TI AM654 SoC
-> > +        - intel,lgm-qspi      # Intel LGM SoC
-> > +        - pensando,cdns-qspi  # Pensando Elba SoC
+> > > We can specify the number of hugepages to allocate at boot. But the
+> > > hugepages is balanced in all nodes at present. In some scenarios,
+> > > we only need hugepags in one node. For example: DPDK needs hugepages
+> > > which is in the same node as NIC. if DPDK needs four hugepags of 1G
+> > > size in node1 and system has 16 numa nodes. We must reserve 64 hugepa=
+gs
+> > > in kernel cmdline. But, only four hugepages is used. The others shoul=
+d
+> > > be free after boot.If the system memory is low(for example: 64G), it =
+will
+> > > be an impossible task. So, add hugepages_node kernel parameter to spe=
+cify
+> > > node number of hugepages to allocate at boot.
+> > > For example add following parameter:
+> > >
+> > > hugepagesz=3D1G hugepages_node=3D1 hugepages=3D4
+> > >
+> > > It will allocate 4 hugepags in node1 at boot.
+> >
+> > If were going to do this, shouldn't we permit more than one node?
+> >
+> >       hugepages_nodes=3D1,2,5
 >
-> Wouldn't this allow any combination of all 5 strings? So for example
-> this would allow "ti,am654-ospi", "pensando,cdns-qspi" which is
-> obviously not correct.
+> I'd think we'd be better off expanding the definition of hugepages.
+> eg:
 >
-> I sent a patch recently [0] that does this correctly and it has gotten
-> Rob's blessing. So I suggest you build your patch on top of that.
-
-Thanks for the pointer to the patch that creates yaml binding
-spi/cdns,qspi-nor.yaml.  All I will need to do now for the updated
-patchset is this
-
---- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-+++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-@@ -20,6 +20,7 @@ properties:
-               - ti,k2g-qspi
-               - ti,am654-ospi
-               - intel,lgm-qspi
-+              - pensando,elba-qspi
-           - const: cdns,qspi-nor
-       - const: cdns,qspi-nor
-
-Regards,
-Brad
+> hugepagesz=3D1G hugepages=3D1:4,3:8,5:2
+>
+> would say to allocate 4 pages from node 1, 8 pages from node 3 and 2
+> pages from node 5.
