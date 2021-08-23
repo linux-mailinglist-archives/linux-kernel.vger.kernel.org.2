@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B0E3F47D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326413F47D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235934AbhHWJly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:41:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:50576 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235872AbhHWJlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:41:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D0A06D;
-        Mon, 23 Aug 2021 02:41:02 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 06D0E3F66F;
-        Mon, 23 Aug 2021 02:41:00 -0700 (PDT)
-Subject: Re: [PATCH 3/3] drm/panfrost: Clamp lock region to Bifrost minimum
-To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Chris Morgan <macromorgan@hotmail.com>, stable@vger.kernel.org
-References: <20210820213117.13050-1-alyssa.rosenzweig@collabora.com>
- <20210820213117.13050-4-alyssa.rosenzweig@collabora.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <818b1a15-ddf4-461b-1d6a-cea539deaf76@arm.com>
-Date:   Mon, 23 Aug 2021 10:40:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235872AbhHWJmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235955AbhHWJl6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:41:58 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E04C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:41:09 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id e1so2861413plt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t8fVVskRMUhZBLLXNsTNJMFPY/9N8+jsrpYM+Bj152I=;
+        b=Yamp3JjiDMsrBiCcbd5uH78fnp6QJHpzL5r1YvzpVkp1U5+z9MY//NjvwcuZzosktT
+         JzcqYmKkkdDqDkZCrRnL3/UenDW/QBpo1m4Pm0DC5NLfbTv43DZbWmTKJA9wKixqCaH4
+         mnLu5lynTXlkIz0eIBy5p6o8movMll4F7havg028GKA5Kx9v3XKTvofidV3TG/+0WVu6
+         +FzwYTWaFgOhdMGajwdCqHRy9YM6H76AW8DY9JaNBUzVF3Gsy7z2Caz5lY1gUbqe4UfX
+         NQB/IdktE+BCVoZsFsmSmbdcC3RKD3TR4iTLfhuPL0TTVIjAY/76vM7243mcXtJjMnwQ
+         4fkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t8fVVskRMUhZBLLXNsTNJMFPY/9N8+jsrpYM+Bj152I=;
+        b=Zbzc0bNGYmMVP7+zaKn7ExTVuTVHMEza8B0vHdQOljqbferTAZXmlWOX/R4aQHKmUu
+         xbPxCaVk1/gFrKbrRUQhVXbtLDkgSs+tc3xBltA16ztvvr8McDnDW7I5izjv/E5tzDCT
+         Qq7jJSNCd3VmZpLiFR2kVVa6riHATldT6/SWHKDq6EIxCAhpcWTjr24ORtzKyy9loCVk
+         WV/Vc3j05bcun4T1CcRjGvlds0HUWnk1XnAlNsRMijdk35V7ziFh/ZIVv61+6sMgZQCQ
+         mktLlEm74XhUXRTpyevnMukDB1qNvuWaMI5xqpUUF3wmI2IXYgW+6Ts/drxmUTXu/6J2
+         nqSw==
+X-Gm-Message-State: AOAM530emDAguYAW2oJ0Go9IB4H5U/tT34bmp6Sdn6uv65z1644a4Nk6
+        jJG6SkEdn3KCcBCEYZX9ULJrFw==
+X-Google-Smtp-Source: ABdhPJz5BeZvHsIft7mQyjRWW23AxE9aMSf7VF/1zB/zBjm6pSu1V6ki6w1l3SueCXj/dXyZbG/BaQ==
+X-Received: by 2002:a17:903:41c3:b0:132:2a3f:5897 with SMTP id u3-20020a17090341c300b001322a3f5897mr10180186ple.19.1629711668847;
+        Mon, 23 Aug 2021 02:41:08 -0700 (PDT)
+Received: from yc.huaqin.com ([101.78.151.213])
+        by smtp.gmail.com with ESMTPSA id p10sm14453192pjv.39.2021.08.23.02.41.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 02:41:08 -0700 (PDT)
+From:   yangcong <yangcong5@huaqin.corp-partner.google.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch, dianders@google.com
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        yangcong <yangcong5@huaqin.corp-partner.google.com>
+Subject: [v1 0/2] Add driver for BOE tv110c9m-ll3 panel
+Date:   Mon, 23 Aug 2021 17:41:00 +0800
+Message-Id: <20210823094102.1064716-1-yangcong5@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210820213117.13050-4-alyssa.rosenzweig@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/2021 22:31, Alyssa Rosenzweig wrote:
-> When locking a region, we currently clamp to a PAGE_SIZE as the minimum
-> lock region. While this is valid for Midgard, it is invalid for Bifrost,
+Add driver for BOE tv110c9m-ll3 panel is a 10.95" 1200x2000 panel.
 
-While the spec does seem to state it's invalid for Bifrost - kbase
-didn't bother with a lower clamp for a long time. I actually think this
-is in many ways more of a spec bug: i.e. implementation details of the
-round-up that the hardware does. But it's much safer following the spec
-;) And it seems like kbase eventually caught up too.
+yangcong (2):
+  drm/panel: support for BOE tv1110c9m-ll3 wuxga dsi video mode panel
+  dt-bindngs: display: panel: Add BOE tv110c9m-ll3 panel bindings
 
-> where the minimum locking size is 8x larger than the 4k page size. Add a
-> hardware definition for the minimum lock region size (corresponding to
-> KBASE_LOCK_REGION_MIN_SIZE_LOG2 in kbase) and respect it.
-> 
-> Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-> Tested-by: Chris Morgan <macromorgan@hotmail.com>
-> Cc: <stable@vger.kernel.org>
+ .../display/panel/boe,tv110c9m-ll3.yaml       |   83 ++
+ drivers/gpu/drm/panel/Kconfig                 |   10 +
+ drivers/gpu/drm/panel/Makefile                |    1 +
+ drivers/gpu/drm/panel/panel-boe-tv110c9m.c    | 1303 +++++++++++++++++
+ 4 files changed, 1397 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/boe,tv110c9m-ll3.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-boe-tv110c9m.c
 
-Reviewed-by: Steven Price <steven.price@arm.com>
-
-> ---
->  drivers/gpu/drm/panfrost/panfrost_mmu.c  | 2 +-
->  drivers/gpu/drm/panfrost/panfrost_regs.h | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index 3a795273e505..dfe5f1d29763 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -66,7 +66,7 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
->  	/* The size is encoded as ceil(log2) minus(1), which may be calculated
->  	 * with fls. The size must be clamped to hardware bounds.
->  	 */
-> -	size = max_t(u64, size, PAGE_SIZE);
-> +	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
->  	region_width = fls64(size - 1) - 1;
->  	region |= region_width;
->  
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
-> index 1940ff86e49a..6c5a11ef1ee8 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_regs.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
-> @@ -316,6 +316,8 @@
->  #define AS_FAULTSTATUS_ACCESS_TYPE_READ		(0x2 << 8)
->  #define AS_FAULTSTATUS_ACCESS_TYPE_WRITE	(0x3 << 8)
->  
-> +#define AS_LOCK_REGION_MIN_SIZE                 (1ULL << 15)
-> +
->  #define gpu_write(dev, reg, data) writel(data, dev->iomem + reg)
->  #define gpu_read(dev, reg) readl(dev->iomem + reg)
->  
-> 
+-- 
+2.25.1
 
