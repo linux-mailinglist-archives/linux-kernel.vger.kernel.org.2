@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D3E3F4EE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE253F4EF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhHWRCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:02:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230360AbhHWRCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:02:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43C9861371;
-        Mon, 23 Aug 2021 17:01:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629738113;
-        bh=l1QzhnmDx6j5Mo9ionHtqp1z0YofUbL+bbew5Dj9YYo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jwyEKZa2USyHYPNvzjfM3aZudsMZ7aBP8c5ive48y1YkK/4Pc8R/0BHplqrNiOrVM
-         BVhnYPAmRZkxaOep6YKhh67gkszdDpwIe8LrRZCTUvJAY8SidJlBEWNO4U3EaSWqjS
-         tbPwsvI2Hrm8N66gj48BaZth7Mn9OnGXqzROfQu1jYFJ3g503bd804avPg2+YGMiyI
-         ouVVl3BIyViT/kNkFiAOlmGya5G+Ke5KHFMkIL5BXGyyhgYGcTlHeLQpYCVu3aAoHb
-         CeHXRLojCWJA3DvmW0/WFjV+66LOQSCtLNtIAiztUWvxaTbq2UpiiUJlygeflYH6fM
-         vEjaH5BrcrXJQ==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: don't ignore writing pages on fsync during checkpoint=disable
-Date:   Mon, 23 Aug 2021 10:01:51 -0700
-Message-Id: <20210823170151.1434772-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+        id S230419AbhHWREk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhHWREi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 13:04:38 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2382C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:03:55 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id dt3so10061899qvb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=pa5+KWLWH/xTD6y1ZfeTwhABwlgMcIDFHCErhQl8iX4=;
+        b=g94yLNPFSbGZVPDf+2VsyeVlTr5mGfxuA+l4Dp8VdMXnK8M98KWKt7XIS0ecUFXC2J
+         sitK+qckHIVRuL++/i3F2es2mI4tzQayDeX+lN/dUmYzir7VGzir0TbdmUNEJ8JbbCAN
+         v1i7Cd25LeUnsx7XNH3zxVMfJMAc9gz6z2jub3/zoKH1XyqnQfNMgy92x4p06Ptk4lhG
+         hSXMSsLR9ZVqBPA27bK6UCUpK1Xr8LdW4+DJDqp9XSKBV3IBa3PF3M41ft9JjxuN8Wod
+         R+4BceRzK1RbTqYxQd/oxozyRJhKe16PFor5c8KPw1W8l/+URu15vaAmrRCHqqYAAUPA
+         A4qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=pa5+KWLWH/xTD6y1ZfeTwhABwlgMcIDFHCErhQl8iX4=;
+        b=DzGkDUDkstU15GLQz2xmjvYIYM9qbaF067CFhUXncD9gDAqpI76KOMtfyoaVTaq2qi
+         CGLwIMpDt/ENA1DZGehEW39bI3FgJH/1UcMl+TYJI6ZNOFp1OxI4sBf34OQYBe5yU/pX
+         ASQbK05QULzgoSEULEjH89XviUsVHdR2SOEsgS0rTx+xPhnNKuW0xip8HVh/8TmRkUCB
+         DtH7IqIgo5DHUl4JUh07IxSIh8CXPaARb6Hqflqt3ZUfeIkIpZCSuyxosD5tJ4XF+XH9
+         Dvpgg7/SWik0Vb31czu1PLXS7j98Mjb0uJWCJu9KSeCmb+Y+rTxJ9TFcIahLc7+KzIJc
+         +NRg==
+X-Gm-Message-State: AOAM530XZ41VioB3hRyvmAgkosns76CHlGuS51JgJYcvFSWe60kIzgvi
+        extqE+BoT2FmbCt8p4MLd3T/Q1NrdStOxx7Sf7c=
+X-Google-Smtp-Source: ABdhPJyCoc8AK8GD1z6iW6i1DV5TityEhFu2lewHgfz3xbi51BOP8AktcSsYj8AfJg1hLyumFYJ3GOctrCY8a6nT9AE=
+X-Received: by 2002:a0c:ffae:: with SMTP id d14mr33993274qvv.41.1629738234983;
+ Mon, 23 Aug 2021 10:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ad4:5a04:0:0:0:0:0 with HTTP; Mon, 23 Aug 2021 10:03:54
+ -0700 (PDT)
+Reply-To: michellegoodman035@gmail.com
+From:   Michelle Goodman <michellegoodman001@gmail.com>
+Date:   Mon, 23 Aug 2021 18:03:54 +0100
+Message-ID: <CA+jr58oHFF_NGhTmvrJX_JMpagqOKk54Gg2oOi=eBrCkP7166g@mail.gmail.com>
+Subject: HALO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We must flush dirty pages when calling fsync() during checkpoint=disable.
-Returning zero makes inode being clear, which fails to flush them when
-enabling checkpoint back even by sync_inodes_sb().
+Hallo, ich hoffe du hast meine Nachricht bekommen.
+Ich brauche schnelle Antworten
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/file.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index d4fc5e0d2ffe..45c54332358b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -262,8 +262,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
- 	};
- 	unsigned int seq_id = 0;
- 
--	if (unlikely(f2fs_readonly(inode->i_sb) ||
--				is_sbi_flag_set(sbi, SBI_CP_DISABLED)))
-+	if (unlikely(f2fs_readonly(inode->i_sb)))
- 		return 0;
- 
- 	trace_f2fs_sync_file_enter(inode);
-@@ -277,7 +276,7 @@ static int f2fs_do_sync_file(struct file *file, loff_t start, loff_t end,
- 	ret = file_write_and_wait_range(file, start, end);
- 	clear_inode_flag(inode, FI_NEED_IPU);
- 
--	if (ret) {
-+	if (ret || is_sbi_flag_set(sbi, SBI_CP_DISABLED)) {
- 		trace_f2fs_sync_file_exit(inode, cp_reason, datasync, ret);
- 		return ret;
- 	}
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
-
+Vielen Dank.
+Michelle
