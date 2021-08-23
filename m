@@ -2,139 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A842F3F435E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3AE3F4364
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 04:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234847AbhHWCOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 22:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234802AbhHWCOw (ORCPT
+        id S234808AbhHWCUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 22:20:16 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15201 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234692AbhHWCUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 22:14:52 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80A7C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 19:14:10 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id eh1so8882465qvb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 19:14:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0c9W4KFzvkxaiLSuIZiuuGcjam2e7naE89uHIwtQELE=;
-        b=mxa9y2T3jwlzAXL1NUtH+yeIKKyyjAPm/UA29J2QlNW4w/UC1hCCt3X+b57hTVMVeH
-         iOGtBdIGeFOXJ9tgvnYQfFw4Iw2a0Ngq8MwMmk6EBKTRZHjlO0iBTwg0et8PKKMUG6HJ
-         7om7LG1oOtgOOqLTNyHBmmu7dRa9cnu9XskR4pYNAA/57zkkIn4UCM/y/VqWHzrWhKbs
-         EYSVN68AK3oiOPiFHCQoKruQ8OEirw9v2AeWOdYShwj5ksNYkh9eJ+5WB7enN5upSzje
-         62KSQ0STMSTG6ocM7zuGGgDqiDhRpRtY9GX/EXW5tT879oP+qPq0kmTArb3G1bBMqmr3
-         yfJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0c9W4KFzvkxaiLSuIZiuuGcjam2e7naE89uHIwtQELE=;
-        b=EYecIogFVpgaWEMgYWl8CDc67tfxIagQmIJXlxIZQ+RgjHsLB3gnObdOIQ0bKblCR5
-         D2qYksLZ1Zgaldvp5pR8gaY0VnhWFjgPMgHJke2/HGwD0iJo6MlUOUDf8C01mrQL6rNm
-         y2Vf/zzTHynFaZOpqFcs4ylqgf73K+pFmSmQ+CHW/7Y6v85zNOBM1S31pfp4mZ6FMl99
-         rFrODb4XaP49+bna1Oe0sXKuhfcdSSR/XJ5n9XVS5//tlVpFs0OyRmyjkRHPhddMUrsh
-         5lAkToZcfnmq1dlJgTYWqNfKhveM72c9xVSYBTw3v8SqkhKYepZYZn5X5b5F1KLwgWNb
-         GEIw==
-X-Gm-Message-State: AOAM533pdxym7dU6PhFICFEm/ZzvqoAl5c58dtc/0pgDifXSAZmhkXfs
-        i7vNpBcyCOiRD4GICr98H40=
-X-Google-Smtp-Source: ABdhPJznK5ysUfTJ15bQvLes/OQoG9at49ANSShnH6MsgWQpw086j7Vgeh3Q62J5hKzvn2kcT0VbGQ==
-X-Received: by 2002:a0c:e885:: with SMTP id b5mr31250706qvo.48.1629684850072;
-        Sun, 22 Aug 2021 19:14:10 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id q184sm7802318qkd.35.2021.08.22.19.14.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Aug 2021 19:14:09 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <jing.yangyang@zte.com.cn>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] arch/x86/xen/time.c: fix bugon.cocci warnings
-Date:   Sun, 22 Aug 2021 19:13:53 -0700
-Message-Id: <20210823021353.44391-1-jing.yangyang@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Sun, 22 Aug 2021 22:20:15 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GtGBq1dnXz1CZbh;
+        Mon, 23 Aug 2021 10:18:59 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 10:19:24 +0800
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 23 Aug 2021 10:19:24 +0800
+Subject: Re: [PATCH 0/3] amba: Properly handle device probe without IRQ domain
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        <devicetree@vger.kernel.org>, Russell King <linux@armlinux.org.uk>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
+ <YRw32YE4cnNnWSvl@robh.at.kernel.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <b5ccbf00-b686-d35b-c81a-0ec69f4677a0@huawei.com>
+Date:   Mon, 23 Aug 2021 10:19:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YRw32YE4cnNnWSvl@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Use BUG_ON instead of a if condition followed by BUG.
+On 2021/8/18 6:27, Rob Herring wrote:
+> On Mon, Aug 16, 2021 at 03:46:16PM +0800, Kefeng Wang wrote:
+>> Patch 1 and 2 make some cleanup, and patch 3 use of_irq_get() instead of
+>> irq_of_parse_and_map() to get irq number, return -EPROBE_DEFER if the irq
+>> domain is not yet created, amba_device_add() will properly to handle the
+>> no IRQ domain issue via deferred probe.
+>>
+>> Kefeng Wang (3):
+>>    amba: Drop unused functions about APB/AHB devices add
+>>    Revert "ARM: amba: make use of -1 IRQs warn"
+>>    amba: Properly handle device probe without IRQ domain
+>>
+>>   drivers/amba/bus.c       | 100 ++++++++++-----------------------------
+>>   drivers/of/platform.c    |   6 +--
+>>   include/linux/amba/bus.h |  18 -------
+>>   3 files changed, 27 insertions(+), 97 deletions(-)
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Generated by: scripts/coccinelle/misc/bugon.cocci
+Thanks Rob.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- arch/x86/xen/time.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+Hi Russell, should I send the patches to the ARM patch system?
 
-diff --git a/arch/x86/xen/time.c b/arch/x86/xen/time.c
-index d9c945e..6e29b69 100644
---- a/arch/x86/xen/time.c
-+++ b/arch/x86/xen/time.c
-@@ -210,8 +210,7 @@ static int xen_timerop_set_next_event(unsigned long delta,
- {
- 	WARN_ON(!clockevent_state_oneshot(evt));
- 
--	if (HYPERVISOR_set_timer_op(get_abs_timeout(delta)) < 0)
--		BUG();
-+	BUG_ON(HYPERVISOR_set_timer_op(get_abs_timeout(delta)) < 0);
- 
- 	/* We may have missed the deadline, but there's no real way of
- 	   knowing for sure.  If the event was in the past, then we'll
-@@ -241,11 +240,10 @@ static int xen_vcpuop_shutdown(struct clock_event_device *evt)
- {
- 	int cpu = smp_processor_id();
- 
--	if (HYPERVISOR_vcpu_op(VCPUOP_stop_singleshot_timer, xen_vcpu_nr(cpu),
-+	BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_stop_singleshot_timer, xen_vcpu_nr(cpu),
- 			       NULL) ||
--	    HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
--			       NULL))
--		BUG();
-+		HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
-+			       NULL));
- 
- 	return 0;
- }
-@@ -254,9 +252,8 @@ static int xen_vcpuop_set_oneshot(struct clock_event_device *evt)
- {
- 	int cpu = smp_processor_id();
- 
--	if (HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
--			       NULL))
--		BUG();
-+	BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
-+			       NULL));
- 
- 	return 0;
- }
-@@ -373,9 +370,8 @@ void xen_timer_resume(void)
- 		return;
- 
- 	for_each_online_cpu(cpu) {
--		if (HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer,
--				       xen_vcpu_nr(cpu), NULL))
--			BUG();
-+		BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer,
-+				       xen_vcpu_nr(cpu), NULL));
- 	}
- }
- 
--- 
-1.8.3.1
-
-
+> .
+>
