@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA2B3F5261
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CEE3F5263
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhHWUsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        id S232683AbhHWUst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232446AbhHWUsT (ORCPT
+        with ESMTP id S232580AbhHWUsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:48:19 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A602C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:47:36 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id r9so352149pfh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:47:36 -0700 (PDT)
+        Mon, 23 Aug 2021 16:48:47 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30422C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:48:04 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id v16so18379738ilo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:48:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iqqQYPFTiTWzXroeL8WpSJd5c5IZNIpSjhG2loOBzBw=;
-        b=FG6c3nQvIps26rKSmTcaH6Az0LNIhW+K2OGBSOOwoN1HOn84v0raLBdU3r4vaCsd5+
-         R0dDbGiK+J+AOGYsF6ksYuVvdt1QHYLF2JtLwaA4d6BgYQso+LraWV4hqL9nIA5LbIj7
-         blzhix1FGgARpatD1x5G7VlNY0zTsSMpBAh7o=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zLS9jHLALutIbPfMAvQtZQNv8NmxuoeFKVJ4owche3c=;
+        b=f0ff9e+cHuwlsz40CDVdhMwu+Y1P6KZ++e/fMChA2myIbIbgH/kvMI6BEnTrOpCHfc
+         K7oblfLqQK3cAuZ/7F3JHQsF2TycbT0fED4oVX9+/wJy6JoEKSrc6h+SAKGzGS8wFOWB
+         bEpt7puw5M8gWwhH6oKVysMdn3WsmnkWwWoyVjBC0BliqqD/96WB0mssmDg2mFs3VjPx
+         N2QUp0s2Q3u1LIsLk2zeUXmYPtPboyUOULtSV70e4NjC/fs2oNC5q+5iEfKwT7XHmJr6
+         WbZ+1CdwO1MrwJeRcLg4yzVm1KGiLxg8YQztuK7n9umR4j94Da4ZLS5XyW8QD7uOefzo
+         ezbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iqqQYPFTiTWzXroeL8WpSJd5c5IZNIpSjhG2loOBzBw=;
-        b=PlvqJrSPtlJVvmwCIrSOcAARAwf4bv5neHAQsOhGqHHtecK+TmCTziT73v33QIbFxO
-         7m/XBkp74Ewvjc3YjK9kFMqhUee3neWOBAZ8I/4oSH0WvfkuRN7ZTQrVkkIO2+JqthPA
-         Mnzqf/hdwEZ61qLhk+bz7Rn/qzRPEi8qcZbz59Ov9rV8bXfcp2tj+vFW1uQKzTVq7I4l
-         AuUBS+vPLCKJX2AAjc6/Or4kssKDlNTNRzraGnXgVkSEXpeMIWkAWZ+4f9DLM1qhOSwJ
-         PCJoF/PMFTgihKgCZCDqfw8yXw+Kv0kmobA2RVGkAPVZa6MQWe0xxQSrBnHdctO7h0SD
-         U+Kw==
-X-Gm-Message-State: AOAM5327LecPQHuaQz7FbdeO5jdhFjkCvukkfFs16zwkSNaK32UwAnVD
-        5GA3JHHr26dOpC2QL3HijMX+jQ==
-X-Google-Smtp-Source: ABdhPJwNKgbJA9BPCMqJ6p3GWvSzeBWZnRMWepA/DybWLKOzEyeQZnfgepMqdlvjcJlE1x2oAVmz0g==
-X-Received: by 2002:aa7:8387:0:b029:395:a683:a0e6 with SMTP id u7-20020aa783870000b0290395a683a0e6mr35515262pfm.12.1629751655690;
-        Mon, 23 Aug 2021 13:47:35 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:6b46:820f:610b:67c7])
-        by smtp.gmail.com with UTF8SMTPSA id y25sm15472529pfm.80.2021.08.23.13.47.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 13:47:35 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-pm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH] thermal: qcom: spmi-adc-tm5: Don't abort probing if a sensor is not used
-Date:   Mon, 23 Aug 2021 13:47:30 -0700
-Message-Id: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zLS9jHLALutIbPfMAvQtZQNv8NmxuoeFKVJ4owche3c=;
+        b=fhB532ouJV2aBJSTWpSrrswe+aMmmsZ1V3BoN2hTbaSRZnSwDbD9XImjoxe818c/Ws
+         voTd20mE6ntiPTnSuFMTkzFcCcFrT6Tprx9q8VXNQU4+w3HYRVlcEp9m9fRk7OzLh6g8
+         Rxi0bxfmRPFSH0/b3tbM6v4pRVhMKYoUT6OcIkfGWCmrBUMJuaa7i5PJt2UDBmFIPAtY
+         RRbO5qtEKZFDAPXR4KNqSReouvd+pxeselqlchNwlpfbjRrRCdUbpyy1jWO6WyoQUFit
+         W2m7YIYapRBxG51YeNx1BAGPAiJXG31aFJ1nShW9I+hrpw4mDf9andceFqXRHr3kY9Nn
+         u1eQ==
+X-Gm-Message-State: AOAM532bwqozbmPQDmjaqkjhqvH301BNqpeebjlpacmaZXJ5T2ccIyw9
+        sOY8c10+wgbjSQ/hJZs5RI/39m38m04MXJSbDjtHdw==
+X-Google-Smtp-Source: ABdhPJy0zo5sFtM+bsrybcGrHH2jHSecxZcgo9HEld36xXs4sjsjP+Z1GS5ekQBwoR/zOcNvBBTNmfmOd/8LaKw5ytw=
+X-Received: by 2002:a92:c68a:: with SMTP id o10mr23957128ilg.163.1629751683450;
+ Mon, 23 Aug 2021 13:48:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <3c4f8dd64d07373d876990ceb16e469b4029363f.camel@gmail.com> <b7a9f309-9765-2a64-026e-efa835989add@linux.intel.com>
+In-Reply-To: <b7a9f309-9765-2a64-026e-efa835989add@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 23 Aug 2021 13:47:51 -0700
+Message-ID: <CAP-5=fV1+WKKWVYVivDt1uE8P9koKre-=Boh0-P1vTD6uiw2=A@mail.gmail.com>
+Subject: Re: [GSoC] Multi-threading in perf: Final Report
+To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adc_tm5_register_tzd() registers the thermal zone sensors for all
-channels of the thermal monitor. If the registration of one channel
-fails the function skips the processing of the remaining channels
-and returns an error, which results in _probe() being aborted.
+On Mon, Aug 23, 2021 at 4:40 AM Bayduraev, Alexey V
+<alexey.v.bayduraev@linux.intel.com> wrote:
+>
+> On 21.08.2021 12:41, Riccardo Mancini wrote:
+> > Hi,
+> >
+> > this is the final report of my project "Multi-threading in perf",
+> > developed as part of the Google Summer of Code with the Linux Foundation.
+> > https://summerofcode.withgoogle.com/projects/#4670070929752064
+> <SNIP>
+> >
+> > Review activity:
+> > PATCHSET Introduce threaded trace streaming for basic perf record operation
+> >   Link: https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
+> >   Contribution: helped in fixing some bugs, performed extensive testing
+>
+> Hi Riccardo,
+>
+> Thank you very much for the deep review and extensive testing of
+> this patchset, it was very helpful and allowed us to improve
+> the quality of the feature used in our product.
+>
+> Good luck,
+> Alexey
 
-One of the reasons the registration could fail is that none of the
-thermal zones is using the channel/sensor, which hardly is a critical
-error (if it is an error at all). If this case is detected emit a
-warning and continue with processing the remaining channels.
+Likewise, thank you Riccardo! It is always implied but not said often
+enough, thank you Arnaldo! I'm hoping the success of Riccardo's work
+will be an example for next year and we can also get more mentor
+volunteers.
 
-Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+Thanks!
+Ian
 
- drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-index 232fd0b33325..8494cc04aa21 100644
---- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-+++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-@@ -359,6 +359,12 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
- 							   &adc_tm->channels[i],
- 							   &adc_tm5_ops);
- 		if (IS_ERR(tzd)) {
-+			if (PTR_ERR(tzd) == -ENODEV) {
-+				dev_warn(adc_tm->dev, "thermal sensor on channel %d is not used\n",
-+					 adc_tm->channels[i].channel);
-+				continue;
-+			}
-+
- 			dev_err(adc_tm->dev, "Error registering TZ zone for channel %d: %ld\n",
- 				adc_tm->channels[i].channel, PTR_ERR(tzd));
- 			return PTR_ERR(tzd);
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
-
+> > PATCHSET perf tools: Add PMU alias support
+> >   Link: https://lore.kernel.org/lkml/20210729070619.20726-1-yao.jin@linux.intel.com/
+> >   Link: https://lore.kernel.org/lkml/20210729070619.20726-1-yao.jin@linux.intel.com/
+> >   Contribution: helped in fixing some memory bugs
+> >
+> >
