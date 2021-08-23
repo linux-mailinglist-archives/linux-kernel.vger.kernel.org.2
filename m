@@ -2,307 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8291D3F4303
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDF63F4308
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbhHWB0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49056 "EHLO
+        id S234784AbhHWB0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234631AbhHWBZ7 (ORCPT
+        with ESMTP id S234768AbhHWB03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:25:59 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2300C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:25:17 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7E0262A5;
-        Mon, 23 Aug 2021 03:25:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1629681914;
-        bh=bF2eM1CLvpsJGygBy58TLBZiUmvSjAow9dAwMvxRQJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PLIjcQmRAXuB8GHRI1aEPQK5Cu88VUiWcO0j1ZwQw3aV1RFy9Ca3IyQdPMH18DQpz
-         6NulzCNcXb7ymG4AT415Klfr+Qg6bUfXIr5CPKNrG4pdqluJY9KeaiR+Gb+VPfYuRO
-         VXLeTxethNbxdBwcj0sRMq/M+o90qMl3uOlbnVRY=
-Date:   Mon, 23 Aug 2021 04:25:05 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v4 1/6] phy: cdns-dphy: Prepare for Rx support
-Message-ID: <YSL48RA2ksldoCyX@pendragon.ideasonboard.com>
-References: <20210820190346.18550-1-p.yadav@ti.com>
- <20210820190346.18550-2-p.yadav@ti.com>
+        Sun, 22 Aug 2021 21:26:29 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E87C06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:25:47 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id d11so33400851eja.8
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QqpWK2NpNMam+FVrnd5Qq4UQdG4vZMylCROkJYXdu6w=;
+        b=mtHYLDxx+doZhDcK8JqpU0r2bgFOmLiQYIGB6kkMOuslrKGLPdnXfhACq0msmAHHqV
+         wUSGl/V1rpTV5MzKxsKUzcrWv90OZg2d6Aq43ZEbaM8j9WbxaUhk5Cg/HfMf0OjgUaTk
+         RPcOo7irbUFOg9p/PFpYoxcXZI2xfBc0qYsU+Rs8jtG6wsktBqgyfJFiKtstXvDcXvGl
+         6BryYhWCifc74SPcD/Xrl5U0CwwvfWaze1TRdwesoE2CjUli9pDLPvhrD03LgyIrobpk
+         myi2pB7Bv5gkYlxhrXSia6dWyqf/PfYY76vmH16/gcxECjrohJ+cUinGWq4XUNZbUs87
+         oquA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QqpWK2NpNMam+FVrnd5Qq4UQdG4vZMylCROkJYXdu6w=;
+        b=JnfWkO7w3Zyg5dpX8hhaAs5DF3bFmbvrG1JABrraKWi7+MZomSEbB/zW5fFQkF0UNC
+         EoWErWGK6NUQjttRWVlwSbd79lRLF5C3gYe9EeHFIOHzJ9K0ldC3fI3gOPYMKhbQ/yDM
+         g4RP7ryxWdS8j+RxrSkJcRx5tFfr/c8OKPDAaNQEA4mA9JIDbRiyMbLF3EEWSJVjZudZ
+         9IvVkj6T5uD1qImVZi0ln+DdOnuAQifa71xO/Zbgm7I6rG/jqktR88f99hXz3AeFTX3t
+         lhgFNWDz22xWNH0lzQ0b1qpngnqcMkNlWoe6nn3ZzIInC0+4BOqHiEsh2qU4tB4FaOl+
+         hIsw==
+X-Gm-Message-State: AOAM532Hq9rloS5xPfCZCzDd3er6/Tg5RiIaNCW1X8HR1P13JS9enBMb
+        7UdKXaM9M8XEgoEiuKRWGvDsAbytSKZcaRs2CWy50Q==
+X-Google-Smtp-Source: ABdhPJy/0sXtHHmKiUqDX9OM8jGFwko/lR4cRRRmI4r2eEOY/cer4itLJuSzsZZTroiumuKovs5s5IlI725zYJ9AWMo=
+X-Received: by 2002:a17:906:b25a:: with SMTP id ce26mr1436524ejb.174.1629681946141;
+ Sun, 22 Aug 2021 18:25:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210820190346.18550-2-p.yadav@ti.com>
+References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-4-brad@pensando.io>
+ <CAHp75VfmSKVRB+Rm+sWDjZaJwdX4qt56Qj6aehe4YnA5d6+a6Q@mail.gmail.com>
+In-Reply-To: <CAHp75VfmSKVRB+Rm+sWDjZaJwdX4qt56Qj6aehe4YnA5d6+a6Q@mail.gmail.com>
+From:   Brad Larson <brad@pensando.io>
+Date:   Sun, 22 Aug 2021 18:25:35 -0700
+Message-ID: <CAK9rFnzdPpVBZu8uxHU04pak9OxPMjFqAt_qnPQY2qK2WK4rTQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/13] spi: dw: Add support for Pensando Elba SoC SPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
+Hi Andy,
 
-Thank you for the patch.
+On Mon, Mar 29, 2021 at 3:43 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Mar 29, 2021 at 5:01 AM Brad Larson <brad@pensando.io> wrote:
+> >
+> > The Pensando Elba SoC uses a GPIO based chip select
+> > for two DW SPI busses with each bus having two
+> > chip selects.
+...
+> > +static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
+> > +{
+> > +       struct dw_spi *dws = spi_master_get_devdata(spi->master);
+> > +
+> > +       if (!enable) {
+>
+> Can you use positive conditional?
 
-On Sat, Aug 21, 2021 at 12:33:41AM +0530, Pratyush Yadav wrote:
-> The Rx programming sequence differs from the Tx programming sequence.
-> Currently only Tx mode is supported. For example, the power on and off,
-> validation, and configuration procedures are all different between Rx
-> and Tx DPHYs. Currently they are only written from a Tx point of view
-> and they won't work with an Rx DPHY. Move them to cdns_dphy_ops so they
-> can be defined by the implementation, accommodating both Rx and Tx mode
-> DPHYs.
-> 
-> The clocks "psm" and "pll_ref" are not used by the Rx path so make them
-> optional in the probe and then check if they exist in the Tx power_on()
-> hook.
+This function has been re-written to use the existing dw_spi_set_cs().
+This is what I currently plan for the v3 patchset.
 
-I think it would be better to check them at probe time.
+static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
+{
+        spi->chip_select = 0;
+        dw_spi_set_cs(spi, enable);
+}
 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> 
-> ---
-> 
-> Changes in v4:
-> - Instead of having both Rx and Tx modes in the same driver data, keep
->   them separate since the op selection is based on compatible now. For
->   that reason, the cdns_dphy_driver_data struct is no longer needed.
-> - Rename ref_dphy_ops to tx_ref_dphy_ops to clarify their purpose.
-> - Drop submode checks in validate() hook.
-> 
->  drivers/phy/cadence/cdns-dphy.c | 123 ++++++++++++++++++++++----------
->  1 file changed, 87 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/phy/cadence/cdns-dphy.c b/drivers/phy/cadence/cdns-dphy.c
-> index ba042e39cfaf..0a169d649216 100644
-> --- a/drivers/phy/cadence/cdns-dphy.c
-> +++ b/drivers/phy/cadence/cdns-dphy.c
-> @@ -75,6 +75,11 @@ struct cdns_dphy;
->  struct cdns_dphy_ops {
->  	int (*probe)(struct cdns_dphy *dphy);
->  	void (*remove)(struct cdns_dphy *dphy);
-> +	int (*power_on)(struct cdns_dphy *dphy);
-> +	int (*power_off)(struct cdns_dphy *dphy);
-> +	int (*validate)(struct cdns_dphy *dphy, enum phy_mode mode, int submode,
-> +			union phy_configure_opts *opts);
-> +	int (*configure)(struct cdns_dphy *dphy, union phy_configure_opts *opts);
->  	void (*set_psm_div)(struct cdns_dphy *dphy, u8 div);
->  	void (*set_clk_lane_cfg)(struct cdns_dphy *dphy,
->  				 enum cdns_dphy_clk_lane_cfg cfg);
-> @@ -86,6 +91,7 @@ struct cdns_dphy_ops {
->  struct cdns_dphy {
->  	struct cdns_dphy_cfg cfg;
->  	void __iomem *regs;
-> +	struct device *dev;
->  	struct clk *psm_clk;
->  	struct clk *pll_ref_clk;
->  	const struct cdns_dphy_ops *ops;
-> @@ -199,20 +205,9 @@ static void cdns_dphy_ref_set_psm_div(struct cdns_dphy *dphy, u8 div)
->  	       dphy->regs + DPHY_PSM_CFG);
->  }
->  
-> -/*
-> - * This is the reference implementation of DPHY hooks. Specific integration of
-> - * this IP may have to re-implement some of them depending on how they decided
-> - * to wire things in the SoC.
-> - */
-> -static const struct cdns_dphy_ops ref_dphy_ops = {
-> -	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
-> -	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
-> -	.set_psm_div = cdns_dphy_ref_set_psm_div,
-> -};
-> -
-> -static int cdns_dphy_config_from_opts(struct phy *phy,
-> -				      struct phy_configure_opts_mipi_dphy *opts,
-> -				      struct cdns_dphy_cfg *cfg)
-> +static int cdns_dphy_tx_config_from_opts(struct phy *phy,
-> +					 struct phy_configure_opts_mipi_dphy *opts,
-> +					 struct cdns_dphy_cfg *cfg)
->  {
->  	struct cdns_dphy *dphy = phy_get_drvdata(phy);
->  	unsigned int dsi_hfp_ext = 0;
-> @@ -232,24 +227,13 @@ static int cdns_dphy_config_from_opts(struct phy *phy,
->  	return 0;
->  }
->  
-> -static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
-> -			      union phy_configure_opts *opts)
-> +static int cdns_dphy_tx_configure(struct cdns_dphy *dphy,
-> +				  union phy_configure_opts *opts)
->  {
->  	struct cdns_dphy_cfg cfg = { 0 };
-> -
-> -	if (mode != PHY_MODE_MIPI_DPHY)
-> -		return -EINVAL;
-> -
-> -	return cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
-> -}
-> -
-> -static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
-> -{
-> -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> -	struct cdns_dphy_cfg cfg = { 0 };
->  	int ret;
->  
-> -	ret = cdns_dphy_config_from_opts(phy, &opts->mipi_dphy, &cfg);
-> +	ret = cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
->  	if (ret)
->  		return ret;
->  
-> @@ -279,9 +263,18 @@ static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
->  	return 0;
->  }
->  
-> -static int cdns_dphy_power_on(struct phy *phy)
-> +static int cdns_dphy_tx_validate(struct cdns_dphy *dphy, enum phy_mode mode,
-> +				 int submode, union phy_configure_opts *opts)
->  {
-> -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> +	struct cdns_dphy_cfg cfg = { 0 };
-> +
-> +	return cdns_dphy_tx_config_from_opts(dphy->phy, &opts->mipi_dphy, &cfg);
-> +}
-> +
-> +static int cdns_dphy_tx_power_on(struct cdns_dphy *dphy)
-> +{
-> +	if (!dphy->psm_clk || !dphy->pll_ref_clk)
-> +		return -EINVAL;
->  
->  	clk_prepare_enable(dphy->psm_clk);
->  	clk_prepare_enable(dphy->pll_ref_clk);
-> @@ -293,16 +286,73 @@ static int cdns_dphy_power_on(struct phy *phy)
->  	return 0;
->  }
->  
-> -static int cdns_dphy_power_off(struct phy *phy)
-> +static int cdns_dphy_tx_power_off(struct cdns_dphy *dphy)
->  {
-> -	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> -
->  	clk_disable_unprepare(dphy->pll_ref_clk);
->  	clk_disable_unprepare(dphy->psm_clk);
->  
->  	return 0;
->  }
->  
-> +/*
-> + * This is the reference implementation of DPHY hooks. Specific integration of
-> + * this IP may have to re-implement some of them depending on how they decided
-> + * to wire things in the SoC.
-> + */
-> +static const struct cdns_dphy_ops tx_ref_dphy_ops = {
-> +	.power_on = cdns_dphy_tx_power_on,
-> +	.power_off = cdns_dphy_tx_power_off,
-> +	.validate = cdns_dphy_tx_validate,
-> +	.configure = cdns_dphy_tx_configure,
-> +	.get_wakeup_time_ns = cdns_dphy_ref_get_wakeup_time_ns,
-> +	.set_pll_cfg = cdns_dphy_ref_set_pll_cfg,
-> +	.set_psm_div = cdns_dphy_ref_set_psm_div,
-> +};
-> +
-> +static int cdns_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
-> +			      union phy_configure_opts *opts)
-> +{
-> +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> +
-> +	if (mode != PHY_MODE_MIPI_DPHY)
-> +		return -EINVAL;
-> +
-> +	if (dphy->ops->validate)
-> +		return dphy->ops->validate(dphy, mode, submode, opts);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cdns_dphy_power_on(struct phy *phy)
-> +{
-> +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> +
-> +	if (dphy->ops->power_on)
-> +		return dphy->ops->power_on(dphy);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cdns_dphy_power_off(struct phy *phy)
-> +{
-> +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> +
-> +	if (dphy->ops->power_off)
-> +		return dphy->ops->power_off(dphy);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cdns_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
-> +{
-> +	struct cdns_dphy *dphy = phy_get_drvdata(phy);
-> +
-> +	if (dphy->ops->configure)
-> +		return dphy->ops->configure(dphy, opts);
-> +
-> +	return 0;
-> +}
-> +
-
-Given that all of these are essentially pass-through operations, how
-about getting rid of the indirection ? I would create a new structure:
-
-struct cdns_dphy_info {
-	const struct phy_ops *phy_ops;
-	const struct cdns_dphy_ops *dphy_ops;
-};
-
-and reference it in cdns_dphy_of_match. The cdns_dphy structure would
-then store a pointer to cdns_dphy_info. That way you won't have to
-extend cdns_dphy_ops, which could possibly be renamed to
-cdns_dphy_tx_ops as you don't use those operations for rx.
-
->  static const struct phy_ops cdns_dphy_ops = {
->  	.configure	= cdns_dphy_configure,
->  	.validate	= cdns_dphy_validate,
-> @@ -320,6 +370,7 @@ static int cdns_dphy_probe(struct platform_device *pdev)
->  	if (!dphy)
->  		return -ENOMEM;
->  	dev_set_drvdata(&pdev->dev, dphy);
-> +	dphy->dev = &pdev->dev;
->  
->  	dphy->ops = of_device_get_match_data(&pdev->dev);
->  	if (!dphy->ops)
-> @@ -329,11 +380,11 @@ static int cdns_dphy_probe(struct platform_device *pdev)
->  	if (IS_ERR(dphy->regs))
->  		return PTR_ERR(dphy->regs);
->  
-> -	dphy->psm_clk = devm_clk_get(&pdev->dev, "psm");
-> +	dphy->psm_clk = devm_clk_get_optional(dphy->dev, "psm");
->  	if (IS_ERR(dphy->psm_clk))
->  		return PTR_ERR(dphy->psm_clk);
->  
-> -	dphy->pll_ref_clk = devm_clk_get(&pdev->dev, "pll_ref");
-> +	dphy->pll_ref_clk = devm_clk_get_optional(dphy->dev, "pll_ref");
->  	if (IS_ERR(dphy->pll_ref_clk))
->  		return PTR_ERR(dphy->pll_ref_clk);
->  
-> @@ -369,7 +420,7 @@ static int cdns_dphy_remove(struct platform_device *pdev)
->  }
->  
->  static const struct of_device_id cdns_dphy_of_match[] = {
-> -	{ .compatible = "cdns,dphy", .data = &ref_dphy_ops },
-> +	{ .compatible = "cdns,dphy", .data = &tx_ref_dphy_ops },
->  	{ /* sentinel */ },
->  };
->  MODULE_DEVICE_TABLE(of, cdns_dphy_of_match);
-
--- 
 Regards,
-
-Laurent Pinchart
+Brad
