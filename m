@@ -2,154 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF2B3F4A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E50D3F4A12
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236626AbhHWLrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:47:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47594 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236668AbhHWLr0 (ORCPT
+        id S236561AbhHWLvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235337AbhHWLvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:47:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629719202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L+pQjb1/mMjT1TIEssLrWNAUqmp09RD1K/ELCisV2Aw=;
-        b=XDqZLh0vJd4QHIsDtxiuy+8Jxg/IpKuPl1wTiS821n+gFm2g+OUmYLm+Q0ZMYmuH5u5N2O
-        MjPs7aKhgHKRG26C79tJpyxlMQjr5puy3Utp4RPJ7OskdYZqhc3UHXZgUQyDZv58Deo9Er
-        /poKGvUEGLoOHRepH9low38luyfEvqw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-F0BIXbT7PTq3C4FbDLBYLA-1; Mon, 23 Aug 2021 07:46:39 -0400
-X-MC-Unique: F0BIXbT7PTq3C4FbDLBYLA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D14D1008067;
-        Mon, 23 Aug 2021 11:46:38 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18B0B5F707;
-        Mon, 23 Aug 2021 11:46:32 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jim Mattson <jmattson@google.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)), Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <seanjc@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: [PATCH v2 3/3] KVM: nSVM: call KVM_REQ_GET_NESTED_STATE_PAGES on exit from SMM mode
-Date:   Mon, 23 Aug 2021 14:46:18 +0300
-Message-Id: <20210823114618.1184209-4-mlevitsk@redhat.com>
-In-Reply-To: <20210823114618.1184209-1-mlevitsk@redhat.com>
-References: <20210823114618.1184209-1-mlevitsk@redhat.com>
+        Mon, 23 Aug 2021 07:51:19 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CE9C061575;
+        Mon, 23 Aug 2021 04:50:36 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id e15so9983832plh.8;
+        Mon, 23 Aug 2021 04:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=O5DM1sJkMAZ9pupJ/zl5vudKhULLO2p/SdJWZo+B+eo=;
+        b=PJvNXb8mSnm9cemZbK+4j70aWxx4Lee2OayaWVuYrLvVhGvzVf0+35TDcdzhEkKyiC
+         thE3GiTXw8a8tWqL5XAZbWFES6Q7ZfET23jlCT7QrOXtoxXRQJdBaH9Kdr0u4VG9KqV8
+         1z8yyYn+rPrIKImrryJUbeZNy6e9fUeyKcUwisAoAxxBLhD5zdqURfMVxKyyDXqvGBUq
+         j8RVMJoTNRhuzYEWXpb/qVn8/TUhYYUzn+tewG6e+f0/69GTNzkCWEhm9Kd6p+43TXfL
+         uzAtO5RxSlYKjiHKikc9VzfzZk6mddt3QeT+lkAsoJ/lYwvHBD2bF0HsHVP74P5BkFsW
+         lRVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=O5DM1sJkMAZ9pupJ/zl5vudKhULLO2p/SdJWZo+B+eo=;
+        b=oboj3uN+u8qAAxbk+8EqY6IFtE4SHLzQxnl2okJ2wuoWDNwoODZa94O9DDCSWVD5J5
+         JVna4xo+dnD29jWEPPzx/Aqu4Z6rhaQLeFJMtJNpA1bpz+zIToA6Fp7F+jwKdFUxURGX
+         bKS2vIpwzqqEPMw+T3Z8Ea/+0NpcvDERx1KvIbb8fTdTLdELOypjnTxmkX3wWF8pwzL7
+         aUk7NMM0sdOkeU23xeoWn7WW4Ufsuuxw8WfEsFATjAuR8IPNeUjw9YhE7U0OegG/C8jQ
+         Z0Fq9h0vkKT+iwcCVNC6peWA05CkKdDgPDBQIST1330mbFfXVZe9eg90D8sHYT5L5VmN
+         u78g==
+X-Gm-Message-State: AOAM532kz+4RTqlNgkubvhBJbABzFFkO+q/OrvafoNLXuzQgp6IQSOGb
+        cTp+8B8MUZITw5SMVgvNN+ExSwDvXog=
+X-Google-Smtp-Source: ABdhPJyoKd8/N5yLCg/VKSt+JpWXIGEWPIPoRYiqsQg1ld8auxvdPPOsCmXasF0S+D02ad5sc+tvHQ==
+X-Received: by 2002:a17:902:6b47:b0:12f:6c5f:ab4f with SMTP id g7-20020a1709026b4700b0012f6c5fab4fmr20997699plt.17.1629719436043;
+        Mon, 23 Aug 2021 04:50:36 -0700 (PDT)
+Received: from [10.136.0.70] ([45.145.248.194])
+        by smtp.gmail.com with ESMTPSA id n30sm15965384pfv.87.2021.08.23.04.50.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 04:50:35 -0700 (PDT)
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Subject: [BUG] media: platform: qcom: venus: possible ABBA deadlock in
+ venus_event_notify() and venus_helper_vb2_buf_queue()
+To:     stanimir.varbanov@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <b5c2a28b-9c67-05d1-0bed-eac8af508d07@gmail.com>
+Date:   Mon, 23 Aug 2021 19:50:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows nested SVM code to be more similar to nested VMX code.
+Hello,
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 9 ++++++---
- arch/x86/kvm/svm/svm.c    | 8 +++++++-
- arch/x86/kvm/svm/svm.h    | 3 ++-
- 3 files changed, 15 insertions(+), 5 deletions(-)
+My static analysis tool reports a possible ABBA deadlock in the venus 
+driver in Linux 5.10:
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 5e13357da21e..678fd21f6077 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -572,7 +572,7 @@ static void nested_svm_copy_common_state(struct vmcb *from_vmcb, struct vmcb *to
- }
- 
- int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
--			 struct vmcb *vmcb12)
-+			 struct vmcb *vmcb12, bool from_entry)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	int ret;
-@@ -602,13 +602,16 @@ int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb12_gpa,
- 	nested_vmcb02_prepare_save(svm, vmcb12);
- 
- 	ret = nested_svm_load_cr3(&svm->vcpu, vmcb12->save.cr3,
--				  nested_npt_enabled(svm), true);
-+				  nested_npt_enabled(svm), from_entry);
- 	if (ret)
- 		return ret;
- 
- 	if (!npt_enabled)
- 		vcpu->arch.mmu->inject_page_fault = svm_inject_page_fault_nested;
- 
-+	if (!from_entry)
-+		kvm_make_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
-+
- 	svm_set_gif(svm, true);
- 
- 	return 0;
-@@ -674,7 +677,7 @@ int nested_svm_vmrun(struct kvm_vcpu *vcpu)
- 
- 	svm->nested.nested_run_pending = 1;
- 
--	if (enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12))
-+	if (enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12, true))
- 		goto out_exit_err;
- 
- 	if (nested_svm_vmrun_msrpm(svm))
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index ea7a4dacd42f..76ee15af8c48 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4354,6 +4354,12 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- 			if (svm_allocate_nested(svm))
- 				return 1;
- 
-+			/* Exit from the SMM to the non root mode also uses
-+			 * the KVM_REQ_GET_NESTED_STATE_PAGES request,
-+			 * but in this case the pdptrs must be always reloaded
-+			 */
-+			vcpu->arch.pdptrs_from_userspace = false;
-+
- 			/*
- 			 * Restore L1 host state from L1 HSAVE area as VMCB01 was
- 			 * used during SMM (see svm_enter_smm())
-@@ -4368,7 +4374,7 @@ static int svm_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
- 
- 			vmcb12 = map.hva;
- 			nested_load_control_from_vmcb12(svm, &vmcb12->control);
--			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12);
-+			ret = enter_svm_guest_mode(vcpu, vmcb12_gpa, vmcb12, false);
- 
- 			kvm_vcpu_unmap(vcpu, &map, true);
- 			kvm_vcpu_unmap(vcpu, &map_save, true);
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 524d943f3efc..51ffa46ab257 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -459,7 +459,8 @@ static inline bool nested_exit_on_nmi(struct vcpu_svm *svm)
- 	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_NMI);
- }
- 
--int enter_svm_guest_mode(struct kvm_vcpu *vcpu, u64 vmcb_gpa, struct vmcb *vmcb12);
-+int enter_svm_guest_mode(struct kvm_vcpu *vcpu,
-+		u64 vmcb_gpa, struct vmcb *vmcb12, bool from_entry);
- void svm_leave_nested(struct vcpu_svm *svm);
- void svm_free_nested(struct vcpu_svm *svm);
- int svm_allocate_nested(struct vcpu_svm *svm);
--- 
-2.26.3
+venus_event_notify()
+   mutex_lock(&core->lock); --> line 37 (Lock A)
+   vdec_event_notify() --> via a function pointer 
+"inst->ops->event_notify(...)"
+   vdec_event_change()
+     mutex_lock(&inst->lock); --> line 1301 (Lock B)
 
+venus_helper_vb2_buf_queue()
+   mutex_lock(&inst->lock); --> line 1346 (Lock B)
+   session_process_buf()
+     venus_pm_load_scale()
+       load_scale_v4() via a function pointer 
+"core->pm_ops->load_scale(...)"
+         mutex_lock(&core->lock); --> line 966 (Lock A)
+
+Besides, if "core->pm_ops->load_scale(...)" is load_scale_v1():
+load_scale_v1()
+   load_per_type()
+     mutex_lock(&core->lock); --> line 150 (Lock A)
+
+When venus_event_notify() and venus_helper_vb2_buf_queue() are 
+concurrently executed, the deadlock can occur.
+
+I am not quite sure whether this possible deadlock is real and how to 
+fix it if it is real.
+Any feedback would be appreciated, thanks
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+
+Best wishes,
+Jia-Ju Bai
