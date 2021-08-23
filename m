@@ -2,115 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5F43F5208
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D923F5209
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhHWU0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
+        id S232516AbhHWU00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbhHWU0L (ORCPT
+        with ESMTP id S231569AbhHWU0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:26:11 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA33CC061575;
-        Mon, 23 Aug 2021 13:25:27 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id q21so33609913ljj.6;
-        Mon, 23 Aug 2021 13:25:27 -0700 (PDT)
+        Mon, 23 Aug 2021 16:26:23 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F15C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:25:40 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id e5so11416460wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 13:25:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TS6xlglVLGeDbAGeYFqIJEG7imj091QkptCAvdSg7xQ=;
-        b=dAvZ/CN92uZ8xeZ1GLlT9gNaX466/UBvXIY2XO7OginCHKsgjtBSQIpxgSzO2OdlqM
-         L2WAHyVJHhPUIuzCbTSiaG3YoWx+ZSDjKtcA4WNAhqiMbQI9WXi+IYcegQsZ3Cw4DqQV
-         Xex5dwdD0svHyZPkK7P/NfhEQHlPZtuKryf4H9umvFTQlVTIEG3QtC774aN+AXyl8HbC
-         DQi2sGbP7Wq99kFuHmPYYkkmqfkKJWFsdXLtC7dFiLrbvg8NKY2psEY3NNY4TpfqTN+h
-         vVcvjK0SkZvDpqtEfq1jVJGZ4F1xjW1Qs4fKQ6ib37YqJFN81B8NKa8EfKgrZ986FQll
-         S9dQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XA/U7CbvSIHKK66o3nJxmSeGYBaHonHFImu9Oh5UX2A=;
+        b=Savy0dtjx7o4Aqu7CBxxzc8ewmDn9EunBQaxTV4NbqlxfqCJeRB2lscks5obwevqWE
+         Oa84PwV1s+eZtxZcICaa7Vk/6pLdFvoA2IQNJZPj9pcRZ70RTs7eLEvYo8S7F0TfjwQv
+         9Uv/bHtyyeRkEasrUlf9aP0aI5fGlPJWwe8aBbdyplJoCnG6h41PoOoZ58Ea6HHLdN+n
+         7k3cpIlO13/VaXzx2vW/MW8i6hVtcMgobFmPSueVrJObXb0mZZinwI7HtFvYBTU8svHc
+         U+sQcWsdv8efpqYh2VS8zDHfZZo9GAOomihCEjrVO7pw9vA4wZBrrXhbyY1spwtE195S
+         xkQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TS6xlglVLGeDbAGeYFqIJEG7imj091QkptCAvdSg7xQ=;
-        b=jcFWiFsb8ejQ6//i/trzzaB332q+J0NHKpgU397Ym8GQVSrdDnqRUH3ArqnVaL2GDn
-         mk4kxajWANfLKv3eQkN1eiSA0asBiCS1H6FEjMja7mOBbsVNnlVdAxRw6ES5nGsAYHD2
-         2V2q4+f6KNJvWPSScHNP/nmH9Ai0fHuFc+nwFBasSmotn04MKLfjHvk6vKNcj4rzBkly
-         ZrEdOxeT7DN5j93CGi5pMTNmeDTVP+m+iwAogOVknUWET264cmt2WnwlBKTuSngLHnxL
-         GrPuqNvRbGhNG2EfKA6PK9hQ419QjC0XmEq0tapQEbEgQCmB5DB5OWQBTHXIJ+5oQ2Ui
-         XmRQ==
-X-Gm-Message-State: AOAM532te9ig3rUpFwPTGPwTHbDgTr34QTcYEv20MJ+MlMCFghC/OuY2
-        26ZuHvWHHBKoeR25spjo07k=
-X-Google-Smtp-Source: ABdhPJwHJn5Md+n7t8CBGRdqpzKgIhKI5zMB3Js+h+J6VWNt2ClxwJm2bz1AIwFvJajfTU2dDZ9VGg==
-X-Received: by 2002:a2e:86d1:: with SMTP id n17mr22927187ljj.237.1629750326405;
-        Mon, 23 Aug 2021 13:25:26 -0700 (PDT)
-Received: from localhost.localdomain (46-138-120-72.dynamic.spd-mgts.ru. [46.138.120.72])
-        by smtp.gmail.com with ESMTPSA id q25sm1542626lfr.235.2021.08.23.13.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 13:25:26 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH v1] PM: domains: Improve runtime PM performance state handling
-Date:   Mon, 23 Aug 2021 23:24:12 +0300
-Message-Id: <20210823202412.25716-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XA/U7CbvSIHKK66o3nJxmSeGYBaHonHFImu9Oh5UX2A=;
+        b=s6f+4lLU1+T9rzE+zAXpLVH8H0g7dOiwCAnDS/XZ3eAvZPCHBxSCBiVL2A0DUjiY0W
+         9EdcTvD1pLP/tBI7ed03tYoCduio3domMmDi82h94YE6vSUlYyr0sAqFo4crZbRnmHow
+         Ah7089d0Ci4OOQkd2g8BaIqhae8wasaUVL+cnfVNUU3NUlZ6c8uFsEFj4B6tsDhqMeic
+         UDepcXxB13UWPXkxF8Yoxdii2DO5BU5w65/L2zi3UnvROc6J5MnHQGecczQ2/Vft9qaF
+         JeTeBcftDEoGjR4xdwgui1ctcNbZ4Y6RLQqg/V//Z6lucK+tsHnaWrfE+tdl48ufmZsO
+         9Iag==
+X-Gm-Message-State: AOAM532DWnqDDqtnrw04WDts2epk6V7GFNqT/iqUYsNmEF8kSevE6wag
+        iboYb1jHjhMH6NGYdP/NImHPOozg407vM/n8HGA=
+X-Google-Smtp-Source: ABdhPJyNa4Lhm1KPbXEFf/bFRJxZKAu46GiYfOhGAEuvv8PN5HHbO365Vb1nUqKVFQ4BuYLk/jroKtWvh7NyYYQuoBQ=
+X-Received: by 2002:a5d:4d03:: with SMTP id z3mr15596912wrt.229.1629750339391;
+ Mon, 23 Aug 2021 13:25:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210818005615.138527-1-joshdon@google.com> <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
+In-Reply-To: <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
+From:   Vineeth Pillai <vineethrp@gmail.com>
+Date:   Mon, 23 Aug 2021 16:25:28 -0400
+Message-ID: <CAOBnfPjH=y3Lk7AukLeG4mNcJnf5cgV260=PZCbF9u69-T+Q6Q@mail.gmail.com>
+Subject: Re: [PATCH] sched/core: fix pick_next_task 'max' tracking
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, tao.zhou@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GENPD core doesn't support handling performance state changes while
-consumer device is runtime-suspended or when runtime PM is disabled.
-GENPD core may override performance state that was configured by device
-driver while RPM of the device was disabled or device was RPM-suspended.
-Let's close that gap by allowing drivers to control performance state
-while RPM of a consumer device is disabled and to set up performance
-state of RPM-suspended device that will be applied by GENPD core on
-RPM-resume of the device.
+Hi Peter,
 
-Fixes: 5937c3ce2122 ("PM: domains: Drop/restore performance state votes for devices at runtime PM")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/base/power/domain.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index e1c8994ae225..3a13a942d012 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -435,7 +435,7 @@ static void genpd_restore_performance_state(struct device *dev,
- int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
- {
- 	struct generic_pm_domain *genpd;
--	int ret;
-+	int ret = 0;
- 
- 	genpd = dev_to_genpd_safe(dev);
- 	if (!genpd)
-@@ -446,7 +446,13 @@ int dev_pm_genpd_set_performance_state(struct device *dev, unsigned int state)
- 		return -EINVAL;
- 
- 	genpd_lock(genpd);
--	ret = genpd_set_performance_state(dev, state);
-+	if (pm_runtime_suspended(dev)) {
-+		dev_gpd_data(dev)->rpm_pstate = state;
-+	} else {
-+		ret = genpd_set_performance_state(dev, state);
-+		if (!ret)
-+			dev_gpd_data(dev)->rpm_pstate = 0;
-+	}
- 	genpd_unlock(genpd);
- 
- 	return ret;
--- 
-2.32.0
+> > Here, we should have instead updated 'max' when picking for SMT-1. Note
+> > that this code would eventually have righted itself, since the retry
+> > loop would re-pick p2, and update 'max' accordingly. However, this patch
+> > avoids the extra round-trip.
+>
+> Going with the observation Tao made; how about we rewrite the whole lot
+> to not be mind-bending complicated :-)
+>
+> How's this? It seems to build and pass the core-sched selftest thingy
+> (so it must be perfect, right? :-)
+>
+Nice, the code is much simpler now :-). A minor suggestion down..
 
+> -       for_each_cpu(i, smt_mask) {
+> -               struct rq *rq_i = cpu_rq(i);
+> -
+> +       /*
+> +        * For each thread: do the regular task pick and find the max prio task
+> +        * amongst them.
+> +        *
+> +        * Tie-break prio towards the current CPU
+> +        */
+> +       for_each_cpu_wrap(i, smt_mask, cpu) {
+> +               rq_i = cpu_rq(i);
+>                 rq_i->core_pick = NULL;
+>
+>                 if (i != cpu)
+>                         update_rq_clock(rq_i);
+> +
+> +               for_each_class(class) {
+> +                       p = rq_i->core_temp = class->pick_task(rq_i);
+I think we can use core_pick to store the pick here and core_temp
+might not be required. What do you feel?
+
+> +                       if (p)
+> +                               break;
+> +               }
+> +
+> +               if (!max || prio_less(max, p, fi_before))
+> +                       max = p;
+
+
+Thanks,
+Vineeth
