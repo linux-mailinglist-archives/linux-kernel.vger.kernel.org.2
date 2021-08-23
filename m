@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD72E3F46FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A833F4701
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhHWI4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhHWI4n (ORCPT
+        id S235759AbhHWI6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:58:12 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58996 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhHWI6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:56:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF535C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:56:00 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 08:55:58 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1629708959;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+DFi5B+89yL7qeiCrqdeU/3axcweDbD7pjzeKguYjk=;
-        b=eFH3ED7qKUG+AMKWl7Y+rIsu2AedbiLzoadcZrpPPT77PjFSTwYHL1Qhl3DZ6Uop7Eu5uR
-        4neXLbMHtffpC38+i6VZdGF2tEdVNbUD1AyQjtR9eroUkif8jWKvMvK54WeZ0Fij/4tRDB
-        1f05k7bvFVn4/AVzfdhw09GbSFYKVhHh5UbSZ963Wq4IYl2k3CYPNHlr1+HsqRj3GmXPFF
-        /tPpsV/tZVVgDQHkZCPinI997+O76IWQVyCUEqFubEvm4R6Pnasy+RWcBurXPWX64yA/lt
-        +n7m5n+SVAC5tT1J+3H22PDTPm1FT69x7Lg0K3lM/rr51O0DtNroUB5E4Ct3pw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1629708959;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v+DFi5B+89yL7qeiCrqdeU/3axcweDbD7pjzeKguYjk=;
-        b=4NGi64oVRDYZGEAQvNoFTjRgvMKkh0g7Tf3ClZ4bMGnlnPO1ieBXVwaDD/Bp2AGKVO0Xrf
-        cwCWNAlhImX8ErAw==
-From:   "irqchip-bot for Maulik Shah" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqdomain: Export
- irq_domain_disconnect_hierarchy()
-Cc:     Maulik Shah <mkshah@codeaurora.org>, Marc Zyngier <maz@kernel.org>,
-        tglx@linutronix.de
-In-Reply-To: <1629705880-27877-2-git-send-email-mkshah@codeaurora.org>
-References: <1629705880-27877-2-git-send-email-mkshah@codeaurora.org>
+        Mon, 23 Aug 2021 04:58:10 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17N8vDGO002694;
+        Mon, 23 Aug 2021 03:57:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1629709033;
+        bh=WloqbnoEgD5ql7FAIG/QNvP+kEgv6SzH3rX8/cmaMwM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=oJ3vKalrlrkfmdFJtoMkV/PpPiKQfUFgvp2hauydg3fQ5dg+YFYTReTUAC5pSKpwF
+         QmQzcYmzV82yn6jJl90ZE7+YH240pooT/EV+70dpaGso/v3V4+i9CXX5Po9naQw2k3
+         5kcW6hVIGp1oEjCqzPsQSoXRJJewOTnNqZjOeLTs=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17N8vDHH021842
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 23 Aug 2021 03:57:13 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 23
+ Aug 2021 03:57:13 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 23 Aug 2021 03:57:13 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17N8vCp7095969;
+        Mon, 23 Aug 2021 03:57:13 -0500
+Date:   Mon, 23 Aug 2021 14:27:12 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
+Subject: Re: [PATCH v4 4/6] phy: dt-bindings: cdns,dphy: make clocks optional
+Message-ID: <20210823085710.mr4iz3fop62efcyj@ti.com>
+References: <20210820190346.18550-1-p.yadav@ti.com>
+ <20210820190346.18550-5-p.yadav@ti.com>
+ <YSL8mH8hd/PzyRRo@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Message-ID: <162970895865.25758.16015911717536063973.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YSL8mH8hd/PzyRRo@pendragon.ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On 23/08/21 04:40AM, Laurent Pinchart wrote:
+> Hi Pratyush,
+> 
+> Thank you for the patch.
+> 
+> On Sat, Aug 21, 2021 at 12:33:44AM +0530, Pratyush Yadav wrote:
+> > The clocks are not used by the DPHY when used in Rx mode so make them
+> > optional.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > 
+> > ---
+> > 
+> > (no changes since v3)
+> > 
+> > Changes in v3:
+> > - Add Rob's Ack.
+> > 
+> > Changes in v2:
+> > - Re-order subject prefixes.
+> > 
+> >  Documentation/devicetree/bindings/phy/cdns,dphy.yaml | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> > index b90a58773bf2..3bb5be05e825 100644
+> > --- a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> > +++ b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+> > @@ -33,8 +33,6 @@ properties:
+> >  required:
+> >    - compatible
+> >    - reg
+> > -  - clocks
+> > -  - clock-names
+> 
+> Could you turn this into a conditional requirement based on the compat
+> string, as the clocks are needed in the TX case ?
 
-Commit-ID:     131d326ba969847daa43d708ac11c27978d78566
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/131d326ba969847daa43d708ac11c27978d78566
-Author:        Maulik Shah <mkshah@codeaurora.org>
-AuthorDate:    Mon, 23 Aug 2021 13:34:39 +05:30
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Mon, 23 Aug 2021 09:24:57 +01:00
+Ok, will do.
 
-irqdomain: Export irq_domain_disconnect_hierarchy()
+> 
+> >    - "#phy-cells"
+> >  
+> >  additionalProperties: false
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
 
-Export irq_domain_disconnect_hierarchy() so irqchip module drivers
-can use it.
-
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/1629705880-27877-2-git-send-email-mkshah@codeaurora.org
----
- kernel/irq/irqdomain.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 51c483c..62be161 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -1215,6 +1215,7 @@ int irq_domain_disconnect_hierarchy(struct irq_domain *domain,
- 	irqd->chip = ERR_PTR(-ENOTCONN);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(irq_domain_disconnect_hierarchy);
- 
- static int irq_domain_trim_hierarchy(unsigned int virq)
- {
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
