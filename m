@@ -2,476 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4E63F4CF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8CC3F4CF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhHWPBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:01:52 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60748 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbhHWO7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:59:50 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D9FCC2000B;
-        Mon, 23 Aug 2021 14:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629730723; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=40OlDS96E0xAR0Js+O/0m0OcrWMUhzP/X/CeoFbDsb4=;
-        b=IytmT1eN2o2HuHB4ABVWtHCeDEV3dVl5b8qll5SN1VyJKtHohfBT/sdsVe3JPpHARLOo3u
-        E9hJIPJJWhQBZCETP7+s1+etP/jXu0AniD/yknUiLYa0Zy3a30xL1X39PTwLzFjgQ4xaDF
-        c/oUd05jlUStNLaTWwC9/WV6UJPeg2g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629730723;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=40OlDS96E0xAR0Js+O/0m0OcrWMUhzP/X/CeoFbDsb4=;
-        b=Djhh6f65M7fRVHtdHqhDJs1cXWms8co8NFCO+5kOjMoIcXx8QjoNlBzaRyUr9mxgD7jGlo
-        UBsv2C17EKDeJBAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B022D13BE1;
-        Mon, 23 Aug 2021 14:58:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id iLp0KqO3I2EFQQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 23 Aug 2021 14:58:43 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Galbraith <efault@gmx.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v5 35/35] mm, slub: convert kmem_cpu_slab protection to local_lock
-Date:   Mon, 23 Aug 2021 16:58:26 +0200
-Message-Id: <20210823145826.3857-36-vbabka@suse.cz>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210823145826.3857-1-vbabka@suse.cz>
-References: <20210823145826.3857-1-vbabka@suse.cz>
+        id S231344AbhHWPCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:02:09 -0400
+Received: from mout.web.de ([212.227.17.12]:39387 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231983AbhHWPA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:00:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1629730774;
+        bh=a4WhaPT6gv63nVGt/HCEYTkVq5Nbwpq09UjVi6R6Rko=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=nfWPxcXtXSwRK+DRdoe6KxHqDvnQ826L6G0Geo+T15kvl488JnVb26qegAlV1jlTo
+         nNNTuiLcRc6xI+m3zayXazNPskdbZqaMIjGH1+6IeuIUpQBleTAtcxjuH1HQLmAgGN
+         iYXA31K7wWz8im5yC3EyUed+EYJSdZdA155siNeI=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.27] ([78.55.218.194]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MIc7b-1mEYG83bmP-00EhnP; Mon, 23
+ Aug 2021 16:59:34 +0200
+Subject: Re: [Regression 5.14] media: dvb userspace api
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de>
+ <20210819133128.45ef4353@coco.lan>
+ <c56ec571-2278-95e9-2028-990e03159c3f@web.de>
+ <20210822194709.4b9d33d4@coco.lan>
+From:   Soeren Moch <smoch@web.de>
+Message-ID: <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de>
+Date:   Mon, 23 Aug 2021 16:59:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210822194709.4b9d33d4@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Provags-ID: V03:K1:OZ1j3746lwf4K/MJbCkfQ7YyOEGaSPBJFZMQ1Tb1rsPZckluR9y
+ q1GLqkbCTO1LfpEIpDaJ8KqDTlz1R0N4Crb38CvqxP8CmwjuoV2JFsNaC9K4y0iiFjEYoGC
+ I+vGhvnX9Hmaifm2PMfUi32ei9T/rnw/XM0JDIsYlBN79twQUSfc44Gwh5cNwF1nz58xbB+
+ ebhwHdZ6XH/zyGElIW+6Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:E5kDviQ3xkY=:AG92lOO2Uljb8DJA2ylU9L
+ ngdpE5EjJRMp4Pr77m5T0J/W8FN/J4jG3VLFYPivJrXegAqvVE+HudJ5WpLrX+bQ6LXXgHtpe
+ 2F7BDkzNv6eImd8buVRvP0PwUHgoZNCe7G/ej6JM1tWk+PYYAFG5NCxReZq8ypaL/mNXRud7P
+ SzBHB0TEz55+ZG/W/Wug1kSfNuR0eWuCTglP5sITFGqRRG8CRL+LOyJYzF8HNRBMeZca3bGxt
+ YnPwiTds861YsSCFBCSZ/pJUM8lAi0gHZ1oMJGMHbBg7lLaDcD/7A2XPQCqv4a63edt9yq+3O
+ V9CT6DCSTrQmWZ7K2eGH4FgjSZVl/spk6xN5N2/JIeNUBavLcxf9KiPx/VnObDiyByAlwGqfu
+ xr+//rSHAm5fuqbbFdltCQBcWzrRFPGPQZk5pCvwvBu7gQAwbBAupjb8r8bbAbRsEbeQQNxsi
+ x6G4SyuV8VRkyEAgJ7n2P4mXRPNQOV5IvBCS7R+/4YexEqEcTNnstSWZNMQYHXRkhwClyst7t
+ B5mvg/LNPcwX9lzXHeawyRqRx4vb6NyMiz5KCqxcj3t8VSlz/i73pERETSkIWE4UZhhhelqKO
+ rxGgKAU/WdTi9tOUJbGnFSJATfGZ4+vCebmvdM1cjFNZCGvJ9y4oRg0+9j+FMPohxAd8XnF+R
+ TF8cuDeNmnkWeC7acJtc3YaszgDtkEQjKJasAsbllpNmyJ8CzBw7NLkKzmDH0hq9TGXPBBHUc
+ i+zVaQuXFg0PFjaORhIPvZZgfdWd9IZFJJctW8wRD/IKKNLfmKnKR/MHJFmTUhabT7HTYi+th
+ sFwZ1j8tXZdOCyh3kbRaVlntKALAyBtPJr+Dw+Q6QupmZcwnKRPBQkPrdcTG1YxyVHAeZMjBD
+ bBe+fPL4UvXBEdEHYeW0eE3cjjSZcOlSI4sxECXFhxBsIk1MYP7TsIE1ndVcW0eBt69hl6i4g
+ +J0IMlgU+dP+qXo0HvtkOEVHEm2HRjNsvFUsCdW1y3J90X+/B0HJ9HOHUMhsSFCA0jNNMiw7A
+ zipfV8WM8BvDe8K/i/AOP/2ksMmhlyzZG60U8FXt2PHGzO2hewXxgeD4kvRLNxtWsrEz4ksPi
+ J6N4VfHqZzag392k4/lvSacG7RREQIJn+6Y
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Embed local_lock into struct kmem_cpu_slab and use the irq-safe versions of
-local_lock instead of plain local_irq_save/restore. On !PREEMPT_RT that's
-equivalent, with better lockdep visibility. On PREEMPT_RT that means better
-preemption.
 
-However, the cost on PREEMPT_RT is the loss of lockless fast paths which only
-work with cpu freelist. Those are designed to detect and recover from being
-preempted by other conflicting operations (both fast or slow path), but the
-slow path operations assume they cannot be preempted by a fast path operation,
-which is guaranteed naturally with disabled irqs. With local locks on
-PREEMPT_RT, the fast paths now also need to take the local lock to avoid races.
 
-In the allocation fastpath slab_alloc_node() we can just defer to the slowpath
-__slab_alloc() which also works with cpu freelist, but under the local lock.
-In the free fastpath do_slab_free() we have to add a new local lock protected
-version of freeing to the cpu freelist, as the existing slowpath only works
-with the page freelist.
+On 22.08.21 19:47, Mauro Carvalho Chehab wrote:
+> Em Sun, 22 Aug 2021 17:21:41 +0200
+> Soeren Moch <smoch@web.de> escreveu:
+>
+>>> There's no regression: a legacy driver (av7110) for a device that stop=
+ped
+>>> being manufactured 15 years ago and that doesn't work anymore with cur=
+rent
+>>> Digital TV transmissions was removed, together with the API that it wa=
+s
+>>> implemented inside such driver's code.
+>> What you write here is simply not true.
+>>
+>> The "device" (saa7146/av7110-based full-featured DVB card) is working
+>> well.
+> Probably not true - at least for some av7110-based boards - as there was=
+ a
+> regression that no user ever noticed:
+>
+> 	https://lore.kernel.org/lkml/20210503115736.2104747-59-gregkh@linuxfoun=
+dation.org/
+Did you read the patch? Ignoring errors may be wrong, but this causes no
+regression for any user because i2c transfers to the frontend simply
+just succeed always in normal operation.
 
-Also update the comment about locking scheme in SLUB to reflect changes done
-by this series.
+BTW, for me this is another mess you created here. Why did you move the
+frontend driver out of the dvb-frontends directory into the av7110
+driver, that as such is totally independent from the sp8870 frontend?
+>
+> This was noticed only too late, due to a review of the offended patch
+> caused by "hypocrite commits"[1].
+>
+> [1] https://lwn.net/Articles/854645/.
+All this is totally unrelated to this regression report on the DVB
+userspace API.
+>
+>> Also with current Digital TV transmissions (e.g. Astra Satellite
+>> TV in Europe). The DVB API never was implemented in driver's code, it i=
+s
+>> linux userspace API (include/uapi/linux/dvb/).
+> The DVB API used by all upstream drivers is implemented inside the DVB
+> core (at drivers/media/dvb-core/).
+Simply not true.
+The headers in include/uapi/linux/dvb/ define the DVB userspace API.
+Parts of this API have only one in-tree user: the saa7146/av7110
+driver.=C2=A0 Other parts are used from many drivers for tens, probably
+hundreds, of different hardware devices, so common helper functions in
+dvb-core make sense.
+>
+> The "full-featured" API consists on the DVB API + some extra ioctls
+> defined at the uAPI headers, plus an av7110 implementation, which
+> covered only part of the ioctls that were defined at the headers.
+The DVB API is a well-designed API, in contrast to what you repeatedly
+claim designed independently from special hardware requirements.
+There are several parts of the API (frontend, dmx, ca, net, audio,
+video, osd). Hardware devices implementing all related functionality are
+called "full-featured cards" (in contrast to budget cards or e.g. all
+types of DVB sticks that usually implement input functionality related
+to the frontend and dmx part of the API, there is no "full-featured API").
+All defined API calls are integral part of the API, there are no "extra
+ioctls" just because you personally like some API calls more than others.
 
-[ Mike Galbraith <efault@gmx.de>: use local_lock() without irq in PREEMPT_RT
-  scope; debugging of RT crashes resulting in put_cpu_partial() locking changes ]
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- include/linux/slub_def.h |   6 ++
- mm/slub.c                | 142 ++++++++++++++++++++++++++++++---------
- 2 files changed, 115 insertions(+), 33 deletions(-)
+Yes, not all defined API calls had been used by in-tree drivers. You
+already removed these API call definitions some time ago, what causes
+real pain for the users of the out-of-tree saa716x driver with no
+advantage for in-tree linux-media. But at least this did not cause
+regressions for in-tree drivers and the related userspace applications.
 
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index dcde82a4434c..85499f0586b0 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -10,6 +10,7 @@
- #include <linux/kfence.h>
- #include <linux/kobject.h>
- #include <linux/reciprocal_div.h>
-+#include <linux/local_lock.h>
- 
- enum stat_item {
- 	ALLOC_FASTPATH,		/* Allocation from cpu slab */
-@@ -40,6 +41,10 @@ enum stat_item {
- 	CPU_PARTIAL_DRAIN,	/* Drain cpu partial to node partial */
- 	NR_SLUB_STAT_ITEMS };
- 
-+/*
-+ * When changing the layout, make sure freelist and tid are still compatible
-+ * with this_cpu_cmpxchg_double() alignment requirements.
-+ */
- struct kmem_cache_cpu {
- 	void **freelist;	/* Pointer to next available object */
- 	unsigned long tid;	/* Globally unique transaction id */
-@@ -47,6 +52,7 @@ struct kmem_cache_cpu {
- #ifdef CONFIG_SLUB_CPU_PARTIAL
- 	struct page *partial;	/* Partially allocated frozen slabs */
- #endif
-+	local_lock_t lock;	/* Protects the fields above */
- #ifdef CONFIG_SLUB_STATS
- 	unsigned stat[NR_SLUB_STAT_ITEMS];
- #endif
-diff --git a/mm/slub.c b/mm/slub.c
-index cd78b7844273..df1ac8aff86f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -46,13 +46,21 @@
- /*
-  * Lock order:
-  *   1. slab_mutex (Global Mutex)
-- *   2. node->list_lock
-- *   3. slab_lock(page) (Only on some arches and for debugging)
-+ *   2. node->list_lock (Spinlock)
-+ *   3. kmem_cache->cpu_slab->lock (Local lock)
-+ *   4. slab_lock(page) (Only on some arches or for debugging)
-+ *   5. object_map_lock (Only for debugging)
-  *
-  *   slab_mutex
-  *
-  *   The role of the slab_mutex is to protect the list of all the slabs
-  *   and to synchronize major metadata changes to slab cache structures.
-+ *   Also synchronizes memory hotplug callbacks.
-+ *
-+ *   slab_lock
-+ *
-+ *   The slab_lock is a wrapper around the page lock, thus it is a bit
-+ *   spinlock.
-  *
-  *   The slab_lock is only used for debugging and on arches that do not
-  *   have the ability to do a cmpxchg_double. It only protects:
-@@ -61,6 +69,8 @@
-  *	C. page->objects	-> Number of objects in page
-  *	D. page->frozen		-> frozen state
-  *
-+ *   Frozen slabs
-+ *
-  *   If a slab is frozen then it is exempt from list management. It is not
-  *   on any list except per cpu partial list. The processor that froze the
-  *   slab is the one who can perform list operations on the page. Other
-@@ -68,6 +78,8 @@
-  *   froze the slab is the only one that can retrieve the objects from the
-  *   page's freelist.
-  *
-+ *   list_lock
-+ *
-  *   The list_lock protects the partial and full list on each node and
-  *   the partial slab counter. If taken then no new slabs may be added or
-  *   removed from the lists nor make the number of partial slabs be modified.
-@@ -79,10 +91,36 @@
-  *   slabs, operations can continue without any centralized lock. F.e.
-  *   allocating a long series of objects that fill up slabs does not require
-  *   the list lock.
-- *   Interrupts are disabled during allocation and deallocation in order to
-- *   make the slab allocator safe to use in the context of an irq. In addition
-- *   interrupts are disabled to ensure that the processor does not change
-- *   while handling per_cpu slabs, due to kernel preemption.
-+ *
-+ *   cpu_slab->lock local lock
-+ *
-+ *   This locks protect slowpath manipulation of all kmem_cache_cpu fields
-+ *   except the stat counters. This is a percpu structure manipulated only by
-+ *   the local cpu, so the lock protects against being preempted or interrupted
-+ *   by an irq. Fast path operations rely on lockless operations instead.
-+ *   On PREEMPT_RT, the local lock does not actually disable irqs (and thus
-+ *   prevent the lockless operations), so fastpath operations also need to take
-+ *   the lock and are no longer lockless.
-+ *
-+ *   lockless fastpaths
-+ *
-+ *   The fast path allocation (slab_alloc_node()) and freeing (do_slab_free())
-+ *   are fully lockless when satisfied from the percpu slab (and when
-+ *   cmpxchg_double is possible to use, otherwise slab_lock is taken).
-+ *   They also don't disable preemption or migration or irqs. They rely on
-+ *   the transaction id (tid) field to detect being preempted or moved to
-+ *   another cpu.
-+ *
-+ *   irq, preemption, migration considerations
-+ *
-+ *   Interrupts are disabled as part of list_lock or local_lock operations, or
-+ *   around the slab_lock operation, in order to make the slab allocator safe
-+ *   to use in the context of an irq.
-+ *
-+ *   In addition, preemption (or migration on PREEMPT_RT) is disabled in the
-+ *   allocation slowpath, bulk allocation, and put_cpu_partial(), so that the
-+ *   local cpu doesn't change in the process and e.g. the kmem_cache_cpu pointer
-+ *   doesn't have to be revalidated in each section protected by the local lock.
-  *
-  * SLUB assigns one slab for allocation to each processor.
-  * Allocations only occur from these slabs called cpu slabs.
-@@ -2231,9 +2269,13 @@ static inline void note_cmpxchg_failure(const char *n,
- static void init_kmem_cache_cpus(struct kmem_cache *s)
- {
- 	int cpu;
-+	struct kmem_cache_cpu *c;
- 
--	for_each_possible_cpu(cpu)
--		per_cpu_ptr(s->cpu_slab, cpu)->tid = init_tid(cpu);
-+	for_each_possible_cpu(cpu) {
-+		c = per_cpu_ptr(s->cpu_slab, cpu);
-+		local_lock_init(&c->lock);
-+		c->tid = init_tid(cpu);
-+	}
- }
- 
- /*
-@@ -2444,10 +2486,10 @@ static void unfreeze_partials(struct kmem_cache *s)
- 	struct page *partial_page;
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	partial_page = this_cpu_read(s->cpu_slab->partial);
- 	this_cpu_write(s->cpu_slab->partial, NULL);
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (partial_page)
- 		__unfreeze_partials(s, partial_page);
-@@ -2480,7 +2522,7 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 	int pages = 0;
- 	int pobjects = 0;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 
- 	oldpage = this_cpu_read(s->cpu_slab->partial);
- 
-@@ -2508,7 +2550,7 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
- 
- 	this_cpu_write(s->cpu_slab->partial, page);
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (page_to_unfreeze) {
- 		__unfreeze_partials(s, page_to_unfreeze);
-@@ -2532,7 +2574,7 @@ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c,
- 	struct page *page;
- 
- 	if (lock)
--		local_irq_save(flags);
-+		local_lock_irqsave(&s->cpu_slab->lock, flags);
- 
- 	freelist = c->freelist;
- 	page = c->page;
-@@ -2542,7 +2584,7 @@ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c,
- 	c->tid = next_tid(c->tid);
- 
- 	if (lock)
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 	if (page)
- 		deactivate_slab(s, page, freelist);
-@@ -2849,9 +2891,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto deactivate_slab;
- 
- 	/* must check again c->page in case we got preempted and it changed */
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	if (unlikely(page != c->page)) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_page;
- 	}
- 	freelist = c->freelist;
-@@ -2862,7 +2904,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- 	if (!freelist) {
- 		c->page = NULL;
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		stat(s, DEACTIVATE_BYPASS);
- 		goto new_slab;
- 	}
-@@ -2871,7 +2913,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- load_freelist:
- 
--	lockdep_assert_irqs_disabled();
-+	lockdep_assert_held(this_cpu_ptr(&s->cpu_slab->lock));
- 
- 	/*
- 	 * freelist is pointing to the list of objects to be used.
-@@ -2881,39 +2923,39 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	VM_BUG_ON(!c->page->frozen);
- 	c->freelist = get_freepointer(s, freelist);
- 	c->tid = next_tid(c->tid);
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 	return freelist;
- 
- deactivate_slab:
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	if (page != c->page) {
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		goto reread_page;
- 	}
- 	freelist = c->freelist;
- 	c->page = NULL;
- 	c->freelist = NULL;
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 	deactivate_slab(s, page, freelist);
- 
- new_slab:
- 
- 	if (slub_percpu_partial(c)) {
--		local_irq_save(flags);
-+		local_lock_irqsave(&s->cpu_slab->lock, flags);
- 		if (unlikely(c->page)) {
--			local_irq_restore(flags);
-+			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 			goto reread_page;
- 		}
- 		if (unlikely(!slub_percpu_partial(c))) {
--			local_irq_restore(flags);
-+			local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 			/* we were preempted and partial list got empty */
- 			goto new_objects;
- 		}
- 
- 		page = c->page = slub_percpu_partial(c);
- 		slub_set_percpu_partial(c, page);
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 		stat(s, CPU_PARTIAL_ALLOC);
- 		goto redo;
- 	}
-@@ -2966,7 +3008,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- retry_load_page:
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&s->cpu_slab->lock, flags);
- 	if (unlikely(c->page)) {
- 		void *flush_freelist = c->freelist;
- 		struct page *flush_page = c->page;
-@@ -2975,7 +3017,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		c->freelist = NULL;
- 		c->tid = next_tid(c->tid);
- 
--		local_irq_restore(flags);
-+		local_unlock_irqrestore(&s->cpu_slab->lock, flags);
- 
- 		deactivate_slab(s, flush_page, flush_freelist);
- 
-@@ -3094,7 +3136,15 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
- 
- 	object = c->freelist;
- 	page = c->page;
--	if (unlikely(!object || !page || !node_match(page, node))) {
-+	/*
-+	 * We cannot use the lockless fastpath on PREEMPT_RT because if a
-+	 * slowpath has taken the local_lock_irqsave(), it is not protected
-+	 * against a fast path operation in an irq handler. So we need to take
-+	 * the slow path which uses local_lock. It is still relatively fast if
-+	 * there is a suitable cpu freelist.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT) ||
-+	    unlikely(!object || !page || !node_match(page, node))) {
- 		object = __slab_alloc(s, gfpflags, node, addr, c);
- 	} else {
- 		void *next_object = get_freepointer_safe(s, object);
-@@ -3354,6 +3404,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
- 	barrier();
- 
- 	if (likely(page == c->page)) {
-+#ifndef CONFIG_PREEMPT_RT
- 		void **freelist = READ_ONCE(c->freelist);
- 
- 		set_freepointer(s, tail_obj, freelist);
-@@ -3366,6 +3417,31 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
- 			note_cmpxchg_failure("slab_free", s, tid);
- 			goto redo;
- 		}
-+#else /* CONFIG_PREEMPT_RT */
-+		/*
-+		 * We cannot use the lockless fastpath on PREEMPT_RT because if
-+		 * a slowpath has taken the local_lock_irqsave(), it is not
-+		 * protected against a fast path operation in an irq handler. So
-+		 * we need to take the local_lock. We shouldn't simply defer to
-+		 * __slab_free() as that wouldn't use the cpu freelist at all.
-+		 */
-+		void **freelist;
-+
-+		local_lock(&s->cpu_slab->lock);
-+		c = this_cpu_ptr(s->cpu_slab);
-+		if (unlikely(page != c->page)) {
-+			local_unlock(&s->cpu_slab->lock);
-+			goto redo;
-+		}
-+		tid = c->tid;
-+		freelist = c->freelist;
-+
-+		set_freepointer(s, tail_obj, freelist);
-+		c->freelist = head;
-+		c->tid = next_tid(tid);
-+
-+		local_unlock(&s->cpu_slab->lock);
-+#endif
- 		stat(s, FREE_FASTPATH);
- 	} else
- 		__slab_free(s, page, head, tail_obj, cnt, addr);
-@@ -3544,7 +3620,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 	 * handlers invoking normal fastpath.
- 	 */
- 	c = slub_get_cpu_ptr(s->cpu_slab);
--	local_irq_disable();
-+	local_lock_irq(&s->cpu_slab->lock);
- 
- 	for (i = 0; i < size; i++) {
- 		void *object = kfence_alloc(s, s->object_size, flags);
-@@ -3565,7 +3641,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 			 */
- 			c->tid = next_tid(c->tid);
- 
--			local_irq_enable();
-+			local_unlock_irq(&s->cpu_slab->lock);
- 
- 			/*
- 			 * Invoking slow path likely have side-effect
-@@ -3579,7 +3655,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 			c = this_cpu_ptr(s->cpu_slab);
- 			maybe_wipe_obj_freeptr(s, p[i]);
- 
--			local_irq_disable();
-+			local_lock_irq(&s->cpu_slab->lock);
- 
- 			continue; /* goto for-loop */
- 		}
-@@ -3588,7 +3664,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 		maybe_wipe_obj_freeptr(s, p[i]);
- 	}
- 	c->tid = next_tid(c->tid);
--	local_irq_enable();
-+	local_unlock_irq(&s->cpu_slab->lock);
- 	slub_put_cpu_ptr(s->cpu_slab);
- 
- 	/*
--- 
-2.32.0
+This time you removed API call definitions that are used by the in-tree
+saa7146/av7110 driver. This causes regressions for the users of this
+in-tree driver, because the related userspace-application stops to
+build. This exactly is what this regression report is about.
+>
+>> You moved files out of the uapi part of kernel headers, parts of e.g.
+>> RedHat userspace stops to build due to this. So it is a userspace
+>> regression.
+> Again, this is not a Kernel regression.
+Yes, it is a userspace regression caused by your changes of the linux
+DVB userspace API.
+> There isn't a single bit of
+> code inside the Kernel that it would require the "full-feat" uapi.
+This is obviously wrong, since the in-tree saa7146/av7110 driver
+implements the removed API call definitions.
+>
+> If an app implements support to some OOT driver(s), it has to carry on t=
+he
+> OOT userspace code for such driver(s), together with any needed headers =
+for
+> such support. So, you should submit a patch to such app maintainers
+> directly - and/or to the distro packages that would have packages
+> providing support for such OOT driver(s).
+>
+> Btw, as far as I'm aware, Red Hat's Kernels don't come with the
+> saa716x OOT driver.
+Mauro, please stop spreading FUD.
+This regression report is about the part of the DVB API that is
+implemented by the in-tree saa7146/av7110 driver and it's related userspac=
+e.
+Both are part of the RedHat linux distribution.
+>
+>>> The av7110 production stopped ~15 years ago.
+>> But the cards work perfectly well. I own two such cards, there is no
+>> problem at all with them. Other members of the community even test with
+>> -rc3 kernels and file RedHat bugs. So there clearly is interest in them=
+.
+> Nobody is telling otherwise. If people want to use OOT drivers, that's
+> OK. Nobody is preventing people to use it, nor to use the apps developed
+> for such devices.
+This discussion here is about av7110, see the 3rd-level citation "The
+av7110 production stopped ~15 years ago." above.
+And the saa7146/av7110 driver is in-tree, and the related userspace
+experences regressions that I report here.
+>
+> Keeping av7110 in-kernel has been a waste of limited upstream developmen=
+t
+> resources.
+Simply not true.
+The driver is used, therefore it is not wasted time to maintain it.
+And for years I repeatedly offered to do this maintenance, transfer
+maintainer-ship and you immediately git rid of this "overwhelming
+burden" to maintain this driver.
+As additional advantage I understand the driver and related API, do the
+required maintenance for the similar saa716x driver (out-of-tree)
+anyway, and have hardware to test (for both drivers).
+> A couple of years ago, we needed to fix the av7110 API due to
+> year-2038 issues.
+Simply not true.
+Nothing in this driver or the DVB API is related to wall-clock time.
+Only DVB timestamps are used. So there is no year-2038 issue.
+> From time to time, we get bugs affecting it (even security
+> ones), as the code has been bit-rotting for a long time.
+Simply not true.
+Oliver Endriss did a great job in maintaining this driver, and it still
+works perfectly fine.
+> The most recent one
+> probably broke the driver without nobody noticing it for a couple of Ker=
+nel
+> reviews, as mentioned above.
+No, see above. The linked patch caused a bug, but no user-visible
+regression.
+And this DVB-T frontend is optional anyway and not very popular.
+>
+>>> This is a legacy hardware, which supports only the first generation of=
+ DVB
+>>> standards, and had an integrated MPEG-2 decoder. As most DVB transmiss=
+ions
+>>> use MPEG4 or newer encoding schemas that didn't exist back in 1999, it
+>>> doesn't make any sense keeping such driver upstream nowadays.
+>> As I wrote in my previous email: most private TV stations in Germany
+>> provide their free-to-air satellite programs MPEG-2 encoded only.
+>> Therefore this is very popular and it absolutely makes sense to keep
+>> this driver upstream.
+> It is probably a lot easier to get a modern DVB "budget" card with
+> supports not only MPEG-2 but all encoding standards than to find an
+> old "full-feat" DVB card with av7110 those days.
+Maybe. But when the most popular satellite TV provider broadcasts MPEG-2
+encoded video and people are happy with their working cards, why throw
+away a running system? Besides that, people usually use full-featured
+cards together with additional modern budget cards/sticks to be able to
+record different DVB programs while seeing a different program as liveview=
+.
+>
+> Who still provides saa71xx chips those days? As far as I'm aware,
+> Philips semiconductors (who used to produce such chipsets) was split
+> into NXP in 2006, and the entire digital TV chipset line moved
+> altogether. I can't find any references those days to any saa71xx
+> at either NXP or Philips websites.
+This documentation is only provided with non-disclosure agreement.
+Luckily I received such documentation under NDA together with firmware
+code and schematics. So I am in a very good position to maintain this.
+>>> The API that got removed was written to control the av7110 MPEG-2 deco=
+der,
+>>> and was never integrated at the DVB core: the av7110 had a driver-spec=
+ific
+>>> implementation inside its code.
+>> This is simply not true.
+>> The DVB API is linux userspace API, absolutely nothing driver specific
+>> inside driver's code.
+> From upstream PoV, it is an av7110-specific API, as all in-kernel suppor=
+t
+> was inside av7110 driver's code.
+And from userspace point-of-view ist is linux userspace API.
+>
+>>> The saa716x driver you're mentioned is an out of tree driver.
+>>> We don't keep APIs at the upstream Kernel due to OOT drivers.
+>> Strong words to distract from the main point:
+>> This regression report is about upstream DVB userspace API and the
+>> saa7146/av7110 driver, both part of mainline linux for a long time.
+> Removing a legacy driver is not a regression.
+This in-tree driver is actively used by a whole community and works
+perfectly fine. The corresponding userspace applications are in many
+major linux distributions. Why are you fighting so hard to remove this
+driver and kill the community and the userspace behind it?
+
+If linux would only contain drivers for hardware that is personally used
+by subsystem maintainers, then I think this would be a very poor user
+experience.
+> See, you're the one
+> trying to distract from the main point:
+>
+> The saa716x driver is OOT. There was never any upstream support
+> for it. None of the patches you're mentioning prevents anyone
+> to keep building it as an OOT driver.
+>
+> What it was removed was the av7110, together with the API header
+> files that were used only by this single driver.
+And the userspace. And this causes regressions, e.g. in RedHat. And this
+is what this regression report is about.
+>
+>> you stripped almost everything from my previous email, you did not
+>> answer any questions or gave any explanation for your behavior.
+> I striped the points already discussed with you when I gave you
+> feedback about the saa716x patchset [2], as this is a completely
+> separate discussion than the removal of av7110 support.
+It's indeed a separate discussion. But you brought up this topic here.
+If someone wants to learn how something works and why it is implemented
+the way it is, I'm happy to explain. Unfortunately you always
+immediately shoot down this discussion with: implement something else,
+no explanation why, no technical discussion about pros and cons of
+alternative implementations.
+>
+> In summary, it makes no sense to claim that saa716x OOT driver
+> broke because a different driver was removed upstream.
+I nowhere claimed that. It's not me who is bending truth and twisting
+words all the time.
+>
+> Thanks,
+> Mauro
+>
+> [2] https://lore.kernel.org/linux-media/20180307121438.389f411c@vento.la=
+n/
+Mauro, please explain why you act as you do, especially as this is so
+totally different from what I know from other linux subsystems.
+
+There is a great DVB API and lots of drivers implementing it upstream
+for decades. There is a community behind it and related userspace in
+many major linux distributions. Working hardware also in newer generations=
+.
+
+You do not understand this API (as you wrote yourself), but you kill all
+technical discussions immediately when I explain details.
+
+You write maintaining this DVB API and drivers is "waste of limited
+upstream development resources", but you completely ignore my offer to
+take over maintainer-ship and kill every reference to this offer
+immediately in your answers. On the other side there is apparently
+plenty of time for whitespace cleanup, comment cleanup, character
+encoding cleanup, documentation reference fixes. There is nothing wrong
+with this, but I think it's a bad excuse for not having time to maintain
+DVB drivers (for what you are paid according to the MAINTAINERS entry).
+
+You recommend to maintain drivers out-of-tree, just because you don't
+like the API the driver implements, although this API is part of linux
+media for decades. No technical discussions, no idea how to support the
+community.
+
+Now you try to kill working in-tree drivers, you cause regressions for
+existing userspace applications. No explanation of any reasons, no idea
+how to solve this issue. No effort to work with the community.
+No progress here in all the emails in this thread. For me every answer
+sounds like: I do what I want anyway, shut up! Or which point I missed her=
+e?
+
+
+Linus,
+
+Is what I described directly above the new linux maintenance policy?=C2=A0=
+ Or
+is linux media a private kingdom where the community should keep away?
+Is this a place where the subsystem maintainer is on a mission to
+destroy everything instead of maintaining and improving it? Please tell
+me what I understood wrong here.
+
+Thanks,
+Soeren
 
