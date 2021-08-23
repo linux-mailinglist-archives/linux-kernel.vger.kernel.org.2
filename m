@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0D13F4CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9173F4CE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhHWPBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:01:19 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51884 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhHWO7Y (ORCPT
+        id S231967AbhHWPBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:01:17 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:60454 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231148AbhHWO7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Aug 2021 10:59:24 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E764221FEE;
-        Mon, 23 Aug 2021 14:58:40 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1CCBB2000C;
+        Mon, 23 Aug 2021 14:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629730720; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1629730721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=k0odKUmTDp4jnV9gVcM99hi+9wGCfXcszuryrWYLaTQ=;
-        b=i5T1fRBfnv8iBkJDAtlE07UbZNcIUdjlB/V14pMZWLwNj6UeJV9eOJPA9Lct561MqRG6bz
-        ksMvTqTM2O+zWFm5iHPlAp2YJtd4sfew4O3rVQl2hqstCBALJxpZ7StytSOvkrhIkv/ydj
-        WGPIm8vQJ3vbmG9MXn7GB3awdgazhec=
+        bh=vrtE2HucLxSOYjsQdGKegLbZEvI7SFTw8W15rOdcGSI=;
+        b=F49VEMgYVXc/FcjRoOICDD7kiC9ZPxkwM4CvNed6+en9xrQvV7p/p2NyDdoQrNxl5wz93H
+        SFDJsknyfyp90zgdf7QYhIdGHzj8qqfDKs4hT9QtuLSyKpr1Ay3a6BYxsz+PyJ6Rc88u52
+        j/BXdCpUNxm2B/5SZUJtWVGK++RWNTE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629730720;
+        s=susede2_ed25519; t=1629730721;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=k0odKUmTDp4jnV9gVcM99hi+9wGCfXcszuryrWYLaTQ=;
-        b=D8bcYtMUoyOyweFw45ne+nwI6N9661pj6qq2shxzpx3djxj0zOVuDUfddaoZ6MfeTRT/dh
-        8Y86LXOyest+pUAQ==
+        bh=vrtE2HucLxSOYjsQdGKegLbZEvI7SFTw8W15rOdcGSI=;
+        b=KYw96IjVS/8kl0iVsVreQeyJ4S9/SAcmdqmtkN7Qgt6brgb2gE5jLvVGWMk+fuiIaZ3TDg
+        hQSTREcR7j0F/MCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BFB8413BE0;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E6E3B13BE1;
         Mon, 23 Aug 2021 14:58:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id mABDLqC3I2EFQQAAMHmgww
+        id GOjWN6C3I2EFQQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Mon, 23 Aug 2021 14:58:40 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,9 +59,9 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v5 18/35] mm, slub: stop disabling irqs around get_partial()
-Date:   Mon, 23 Aug 2021 16:58:09 +0200
-Message-Id: <20210823145826.3857-19-vbabka@suse.cz>
+Subject: [PATCH v5 19/35] mm, slub: move reset of c->page and freelist out of deactivate_slab()
+Date:   Mon, 23 Aug 2021 16:58:10 +0200
+Message-Id: <20210823145826.3857-20-vbabka@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210823145826.3857-1-vbabka@suse.cz>
 References: <20210823145826.3857-1-vbabka@suse.cz>
@@ -71,90 +71,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function get_partial() does not need to have irqs disabled as a whole. It's
-sufficient to convert spin_lock operations to their irq saving/restoring
-versions.
+deactivate_slab() removes the cpu slab by merging the cpu freelist with slab's
+freelist and putting the slab on the proper node's list. It also sets the
+respective kmem_cache_cpu pointers to NULL.
 
-As a result, it's now possible to reach the page allocator from the slab
-allocator without disabling and re-enabling interrupts on the way.
+By extracting the kmem_cache_cpu operations from the function, we can make it
+not dependent on disabled irqs.
+
+Also if we return a single free pointer from ___slab_alloc, we no longer have
+to assign kmem_cache_cpu.page before deactivation or care if somebody preempted
+us and assigned a different page to our kmem_cache_cpu in the process.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ mm/slub.c | 31 ++++++++++++++++++-------------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index d5ac278084cf..ad2c58a31af5 100644
+index ad2c58a31af5..ef36c94f27e2 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -1996,11 +1996,12 @@ static inline bool pfmemalloc_match(struct page *page, gfp_t gfpflags);
-  * Try to allocate a partial slab from a specific node.
-  */
- static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
--			      struct page **ret_page, gfp_t flags)
-+			      struct page **ret_page, gfp_t gfpflags)
- {
- 	struct page *page, *page2;
- 	void *object = NULL;
- 	unsigned int available = 0;
-+	unsigned long flags;
- 	int objects;
- 
- 	/*
-@@ -2012,11 +2013,11 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 	if (!n || !n->nr_partial)
- 		return NULL;
- 
--	spin_lock(&n->list_lock);
-+	spin_lock_irqsave(&n->list_lock, flags);
- 	list_for_each_entry_safe(page, page2, &n->partial, slab_list) {
- 		void *t;
- 
--		if (!pfmemalloc_match(page, flags))
-+		if (!pfmemalloc_match(page, gfpflags))
- 			continue;
- 
- 		t = acquire_slab(s, n, page, object == NULL, &objects);
-@@ -2037,7 +2038,7 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
- 			break;
- 
- 	}
--	spin_unlock(&n->list_lock);
-+	spin_unlock_irqrestore(&n->list_lock, flags);
- 	return object;
+@@ -2195,10 +2195,13 @@ static void init_kmem_cache_cpus(struct kmem_cache *s)
  }
  
-@@ -2765,8 +2766,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 			local_irq_restore(flags);
- 			goto reread_page;
- 		}
--		if (unlikely(!slub_percpu_partial(c)))
-+		if (unlikely(!slub_percpu_partial(c))) {
-+			local_irq_restore(flags);
- 			goto new_objects; /* stolen by an IRQ handler */
-+		}
- 
- 		page = c->page = slub_percpu_partial(c);
- 		slub_set_percpu_partial(c, page);
-@@ -2775,18 +2778,9 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		goto redo;
+ /*
+- * Remove the cpu slab
++ * Finishes removing the cpu slab. Merges cpu's freelist with page's freelist,
++ * unfreezes the slabs and puts it on the proper list.
++ * Assumes the slab has been already safely taken away from kmem_cache_cpu
++ * by the caller.
+  */
+ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+-				void *freelist, struct kmem_cache_cpu *c)
++			    void *freelist)
+ {
+ 	enum slab_modes { M_NONE, M_PARTIAL, M_FULL, M_FREE };
+ 	struct kmem_cache_node *n = get_node(s, page_to_nid(page));
+@@ -2327,9 +2330,6 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ 		discard_slab(s, page);
+ 		stat(s, FREE_SLAB);
  	}
- 
--	local_irq_save(flags);
--	if (unlikely(c->page)) {
--		local_irq_restore(flags);
--		goto reread_page;
--	}
 -
- new_objects:
+-	c->page = NULL;
+-	c->freelist = NULL;
+ }
  
--	lockdep_assert_irqs_disabled();
+ /*
+@@ -2454,10 +2454,16 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ 
+ static inline void flush_slab(struct kmem_cache *s, struct kmem_cache_cpu *c)
+ {
+-	stat(s, CPUSLAB_FLUSH);
+-	deactivate_slab(s, c->page, c->freelist, c);
++	void *freelist = c->freelist;
++	struct page *page = c->page;
+ 
++	c->page = NULL;
++	c->freelist = NULL;
+ 	c->tid = next_tid(c->tid);
++
++	deactivate_slab(s, page, freelist);
++
++	stat(s, CPUSLAB_FLUSH);
+ }
+ 
+ /*
+@@ -2755,7 +2761,10 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 		local_irq_restore(flags);
+ 		goto reread_page;
+ 	}
+-	deactivate_slab(s, page, c->freelist, c);
++	freelist = c->freelist;
++	c->page = NULL;
++	c->freelist = NULL;
++	deactivate_slab(s, page, freelist);
+ 	local_irq_restore(flags);
+ 
+ new_slab:
+@@ -2834,11 +2843,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ return_single:
+ 
+ 	local_irq_save(flags);
+-	if (unlikely(c->page))
+-		flush_slab(s, c);
+-	c->page = page;
 -
- 	freelist = get_partial(s, gfpflags, node, &page);
--	local_irq_restore(flags);
- 	if (freelist)
- 		goto check_new_page;
- 
+-	deactivate_slab(s, page, get_freepointer(s, freelist), c);
++	deactivate_slab(s, page, get_freepointer(s, freelist));
+ 	local_irq_restore(flags);
+ 	return freelist;
+ }
 -- 
 2.32.0
 
