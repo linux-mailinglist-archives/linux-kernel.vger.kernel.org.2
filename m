@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052233F42C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFCD3F42C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhHWBHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S234476AbhHWBGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232908AbhHWBHX (ORCPT
+        with ESMTP id S233963AbhHWBGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:07:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564F8C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aspPZtQVW2NXlfWYzMvyvdVJsYawidsXh00ZJfiDIgk=; b=jL04ykE3uh+j5Lc5Hh8LKs7iYO
-        PCr18G7o0uas5a+kZ4dfug8ngc+wrVXJtnqozxE5fZ+i+jVreVre66iq475ebwIQkBfVebvW0n8Wp
-        xdQglzke+8XqfZnaK1Ci8vLMc8YdkyI/YHgzxV7ZGTW5YhUiEyB4WC5D5iZiSPzqDTq+/4jzVvFhw
-        N5WCqNiT2tuWD3RHuECjffZCmhGszhOlW8WjBST6GFuidpcPfOlF31FPRB1nUd96z+S2yDFKxoIhE
-        NnqsXM1QS7Tfeq8speOwfrQfYN8X3aC8gIFiFzqRcqWdkpl6wo7SNyzTt+arRHYOPXQVopInewnEw
-        jy2+6SmQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mHyOp-0096T6-1r; Mon, 23 Aug 2021 01:05:29 +0000
-Date:   Mon, 23 Aug 2021 02:05:15 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yi Wang <wang.yi59@zte.com.cn>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
-        jiang.xuexin@zte.com.cn, zealci@zte.com.cn,
-        Changcheng Deng <deng.changcheng@zte.com.cn>
-Subject: Re: [PATCH linux-next] mm/folio-compat.c: folio should not be NULL
- when it is referenced
-Message-ID: <YSL0S9SKjmt5gGuW@casper.infradead.org>
-References: <20210823004735.32013-1-wang.yi59@zte.com.cn>
+        Sun, 22 Aug 2021 21:06:46 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1366FC061760
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:06:05 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id me10so5051451ejb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DiGtvvH8NkIVd4hqCUiszMleyUhfYfWw1b6ZDZbLUkE=;
+        b=uhWvv9wnJvdEuINozK+RdVuTibj+UvYVWqnvk3DidpO+D6vtOAXbizZtIoU+1RzTmr
+         neD6qgJ86ggq3V1tinDW/48juLqA91oBDkn/NB65JOJLHe8ghFOwkQ1zgaxlQMH9WODi
+         rt9SNazJrbwjf3VFwt6U5hKEGhpmSs7w4dXX8sSJt472vdiwC3vAF5s/p3iinYjxtwBl
+         a9cj3j653TZKo2jXSHjebMJ7KoKkwr3MDOz9cwalouCmaCPDQmETbtb4GGf4v7OOCExP
+         B2zmwqQPZYp77TN2JzvGf7JzCIuJYxdNvTcTfjBdZOlLi5LS1YiO9oc0f/v1VUpM86FM
+         Bj+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DiGtvvH8NkIVd4hqCUiszMleyUhfYfWw1b6ZDZbLUkE=;
+        b=JbIPfZzGjXw/3fAupnWq+lKQqg4P3180JKW7q1rt4+CP8RuC3evwZndHYFQAaM4+PO
+         3d1l/zIKSGBVuas8ay54MMpBNzeen1JydXu79Y44Fyazve4PC6Yu+We5P024dvkkvMpq
+         w3UAJkpyUwTPpx+unHm+Y4aJE0ofnBWeWZT43hkE/vu1GzzzVej5ppvtfWN7rDdmeIz2
+         YRscHcu+lG18fYWhb1wdRLcv8lurxpyzg229dd0LIHzMOEyVMwAW1/Y2/sCyNBtv7lKB
+         5m3h9QzU2jSW4zYLm7+YkSrN6Rz5iLaM1KTqRWF4KgJdDoC2xNUtMS8Dj+XS4eJ18WzV
+         Eyiw==
+X-Gm-Message-State: AOAM530Jm2qBdQzKyv3QAdtGewyTxFUXQqBw681OGXjoR2lKeyqSIpKn
+        PUmPOHBv1po+gph81OxEMiUpXjrFv8OTw7oagAFc8A==
+X-Google-Smtp-Source: ABdhPJw9eEJEPtVIYbe2803vRNA11NSXlz157yzpl7w09FqgV8tkGsFwFNzMcmgt5u7Zt114aJklS9Z5BHq/3A2TpJA=
+X-Received: by 2002:a17:906:2f15:: with SMTP id v21mr21088372eji.444.1629680763004;
+ Sun, 22 Aug 2021 18:06:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823004735.32013-1-wang.yi59@zte.com.cn>
+References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-2-brad@pensando.io>
+ <CACRpkdbQD6p7fbGtuu1c92uXfSFDCTwqjqsXHpgnD5Lg4v0Okw@mail.gmail.com>
+ <20210304091025.ny52qjm7wbfvmjgl@mobilestation> <CACRpkdZroi+_oHqipS71MAGif190y7jWU5Myf55vz=_um4w5cQ@mail.gmail.com>
+In-Reply-To: <CACRpkdZroi+_oHqipS71MAGif190y7jWU5Myf55vz=_um4w5cQ@mail.gmail.com>
+From:   Brad Larson <brad@pensando.io>
+Date:   Sun, 22 Aug 2021 18:05:52 -0700
+Message-ID: <CAK9rFnzDZ4MNm68AJ75g7zegLD-7UMHyoVR-4ssitYTTEeQm5g@mail.gmail.com>
+Subject: Re: [PATCH 1/8] gpio: Add Elba SoC gpio driver for spi cs control
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:47:35AM +0800, Yi Wang wrote:
-> From: Changcheng Deng <deng.changcheng@zte.com.cn>
-> 
-> A bug was found by coccinelle:
-> folio is NULL but dereferenced
-> Therefore,added a check to make sure 'folio' is not NULL.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
+Hi Linus,
 
-Your robot is overzealous.  This does not dereference folio; rather it
-takes the address of the page element of the folio structure.
+On Thu, Mar 4, 2021 at 5:38 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Thu, Mar 4, 2021 at 10:10 AM Serge Semin <fancer.lancer@gmail.com> wrote:
+> > On Thu, Mar 04, 2021 at 09:29:33AM +0100, Linus Walleij wrote:
+>
+> > > > + * pin:             3            2        |       1            0
+> > > > + * bit:         7------6------5------4----|---3------2------1------0
+> > > > + *             cs1  cs1_ovr  cs0  cs0_ovr |  cs1  cs1_ovr  cs0  cs0_ovr
+> > > > + *                        ssi1            |             ssi0
+> > > > + */
+> > > > +#define SPICS_PIN_SHIFT(pin)   (2 * (pin))
+> > > > +#define SPICS_MASK(pin)                (0x3 << SPICS_PIN_SHIFT(pin))
+> > > > +#define SPICS_SET(pin, val)    ((((val) << 1) | 0x1) << SPICS_PIN_SHIFT(pin))
+> > >
+> >
+> > > So 2 bits per GPIO line in one register? (Nice doc!)
+> >
+> > I suppose the first bit is the CS-pin-override flag. So when it's set
+> > the output is directly driven by the second bit, otherwise the
+> > corresponding DW APB SPI controller drives it. That's how the
+> > multiplexing is implemented here.
+>
+> If these output lines are so tightly coupled to the SPI block
+> and will not be used for any other GPO (general purpose output)
+> I think it makes more sense to bundle the handling into the
+> DW SPI driver, and activate it based on the Elba compatible
+> string (if of_is_compatible(...)).
+>
+> I am a bit cautious because it has happened in the past that
+> people repurpose CS lines who were originally for SPI CS
+> to all kind of other purposes, such as a power-on LED and
+> in that case it needs to be a separate GPIO driver. So the
+> author needs to have a good idea about what is a realistic
+> use case here.
 
-By a strict reading of the C spec, it is not allowed.  However, GCC
-(and I assume Clang) does the right thing.
+The gpio pins being used for the Elba SoC SPI CS are dedicated to this
+function.  Are you recommending that the code in
+drivers/gpio/gpio-elba-spics.c be integrated into
+drivers/spi/spi-dw-mmio.c?
 
->  	folio = __filemap_get_folio(mapping, index, fgp_flags, gfp);
-> -	if ((fgp_flags & FGP_HEAD) || !folio || xa_is_value(folio))
-> -		return &folio->page;
-> +	if ((fgp_flags & FGP_HEAD) || xa_is_value(folio))
-> +		if (folio != NULL)
-> +			return &folio->page;
->  	return folio_file_page(folio, index);
-
-This is definitely wrong.  Did you test it?  I bet you get a NULL
-pointer dereference if you try it.
-
-You could potentially make the case for:
-
-	if (!folio)
-		return NULL;
-	if ((fgp_flags & FGP_HEAD) || xa_is_value(folio))
-		return &folio->page;
-
-but you actually have the same problem with the C spec, that unless
-folio is actually a pointer to a folio, then &folio->page is
-_technically_ undefined.  So it would have to be something even
-more complex to be pedantically correct.
-
-It's just not worth it.  Fix your tool.
-
+Regards,
+Brad
