@@ -2,173 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5AD3F48D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385FB3F48D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234750AbhHWKoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:44:02 -0400
-Received: from mail-bn7nam10on2077.outbound.protection.outlook.com ([40.107.92.77]:13761
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S235535AbhHWKq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:46:28 -0400
+Received: from mail-bn8nam11on2076.outbound.protection.outlook.com ([40.107.236.76]:12384
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233589AbhHWKoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:44:01 -0400
+        id S235104AbhHWKq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:46:26 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cqgFNr/bZX4SiKes6zbGB7/THYKNmNkCNaAMM+r6saZA5QpcXMayvfN910mXldoAx8uNWZBiMuQWDoP9TQHgZm/Ea4Xj5JuMnr2KpxXmjbJQVjhrpuhOFIvxpGTDjmDmNzyEbVvZNjTMsABiDYtsNtNs1A3AxfPUVSJoYN4jLdVoNtSYrfERkmTbXEjbss7NBri0P0pjfN2xYChzlGo/S5RnJi9TQ65Fe3ESr+Ztt0HXhi4BzpbR/tAsBx+5zyPpr49uBbSvHR6jcq6xN38Z8QEmRsm7wD+2eeUdnhO6XXZr8WeqKf4eo1YpoRPv2pVfb1whkhyJRfR9i1UYbQxZZQ==
+ b=SrxLMcvfryZkgeSBKaWoj2YzU4Dqa66NSyOl9X2z2V24S5nw8gDfCzCe84eQAx5WpAPZznwjzykm9LAn35ci4+dy865TqgeD09Jed0cyFgZD6aXstK5c1pl9+OYL8SwmapXBxMW86R/xQU077xvDhJrEcVWUE/9o+BN/ZYsJLqul+aIbsdSLjggv/G9Snd/ABW44qPy7v3h9g7K3VkIKy2ZGwtmSXPyhPrsoCTWnozrEQfjPz2HqfzhZN1cQH8QnnMq9/rr9a0V+y5yd7m60HP+GXwML7gAQmKVaepBrx/mOB9R5++HlVEMLcKqLj2Mk7BpN4SqbJDr4nx7o8sih+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l9S4l15mVr5rUvsKt+b+6yxc9h8iYJDpmesZTkVI7B8=;
- b=M+newe5oKanAWVhcpD22DHhPsxippLqzGn/hHibPfO0lf4nKxbZGf8xXnG+ovx+b1aXymkNp3ZPJaIOayHrnWYndWaN/WlUwfLfMrQYDupoA0r/CSdVada3QfthphGLsr+Z6d5SPyN6vkPryhcfau/Ue+YSXhO4yjfJS6YKyvBMARaU3eysYFlthNbePGYb8HImocl67pO2zDrBGbQMzHGw0aH7Qc1y/+zma2DPLVGgEwkewj97xJPJBbjCVC9xCDNbBYfr9q5gq0oVqtXWa7TSxaqNmdyy+rV8fsWAmu7w7wdlUWVoNQ4cDsJJFTO/ZpfleUp0F3fTWxz6KQbu22w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=Yp7Kufuo+iubLawDHuwfPE7Z1vQYJwVdF+U09+bB/PE=;
+ b=AK04aGUDgBIknMfQ/MLrCCGaDq5Da+fq0qUN/UdFuxQn2XJPdVCUkbWqTqN3WJ0WD+jrUHmWKMqMzjz+V9zs8t+FMbiqvh9MGmSnDqTdpO0hNk/d9b9JqMRvEXvjqlHfELsHgEnn1+G4OF/8jYWCnCM2ueNn5v4lmsfHqFgMFuXEyGrOn2BeYUMZhJCGdyUyTn2T6Y3rCmsh2SHf0bJit+o4eiQZyMiTIQlkLidopW21JTyG9+Gk4KxlOgI2BkpHlyXoqEQhJvM5jWxoI4IFmpefUovYuNYnyx7ODp2rzieECYUqufYk7FgT0TeeYG06zc6zLGs3X4TC16pfBAeLGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l9S4l15mVr5rUvsKt+b+6yxc9h8iYJDpmesZTkVI7B8=;
- b=FzA0J5IOo5DXnTaw4EPhPacIb2NOcd1Fr1m/iXI6t92L4hKoCSPCFilVhsBh2Y0x88gkap0JmcSUJny6witfmmOHMmv1fhfm/HsITyWGBUYch0RjcPKcmHy/6WaWxASnpWfwvMkY3miiAnnpqWEavindFro8DuGdCrbaJxs1r1c=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4239.namprd12.prod.outlook.com (2603:10b6:208:1d2::11) with
+ bh=Yp7Kufuo+iubLawDHuwfPE7Z1vQYJwVdF+U09+bB/PE=;
+ b=OlmZM0zINSgbAcf2hDuKLz+tedFo+LLQ7y1Lzw0DCn89C0SDsJoTREFBF95IkfrhBgfU8ETmsL7poACAZPa6D0Ftkdq1IfOZufq0ruqp4uWdNRMxXfxGozwMS1o7The9vOIPTz9yL606yGB+pxosBvwM2wwjeKAsotwUZdlTJvaB0ui8l1kbZ1rSuIRk99Mf8ajouX8H2++/64o1aLndpO/JWpnommVmDaAxFtNAIPWMk5HJIL+QohfDyHiJrgWIcQc3vrjUWqX0Drue4AWjZBsLMvxWIDm2zhPPQcpN9XtxkR6BEr8frkD01a1ogqJ8hYKqjpgA6D2Fv+dTM5efoA==
+Received: from MWHPR21CA0029.namprd21.prod.outlook.com (2603:10b6:300:129::15)
+ by DM6PR12MB4041.namprd12.prod.outlook.com (2603:10b6:5:210::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 10:43:17 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 10:43:16 +0000
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-To:     Gal Pressman <galpress@amazon.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>
-References: <20210818074352.29950-1-galpress@amazon.com>
- <CAKMK7uGZ_eX+XfYJU6EkKEOVrHz3q6QMxaEbyyD3_1iqj9YSjw@mail.gmail.com>
- <20210819230602.GU543798@ziepe.ca>
- <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
- <20210820123316.GV543798@ziepe.ca>
- <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
- <20210820143248.GX543798@ziepe.ca>
- <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <fa124990-ee0c-7401-019e-08109e338042@amd.com>
-Date:   Mon, 23 Aug 2021 12:43:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Mon, 23 Aug
+ 2021 10:45:36 +0000
+Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:129:cafe::f) by MWHPR21CA0029.outlook.office365.com
+ (2603:10b6:300:129::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.1 via Frontend
+ Transport; Mon, 23 Aug 2021 10:45:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 10:45:36 +0000
+Received: from [172.27.13.55] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Aug
+ 2021 10:45:34 +0000
+Subject: Re: [PATCH v5] virtio-blk: Add validation for block size in config
+ space
+To:     Yongji Xie <xieyongji@bytedance.com>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210809101609.148-1-xieyongji@bytedance.com>
+ <e6ab104e-a18b-3f17-9cd8-6a6b689b56b4@nvidia.com>
+ <CACycT3sNRRBrSTJOUr=POc-+BOAgfT7+qgFE2BLBTGJ30cZVsQ@mail.gmail.com>
+ <dc8e7f6d-9aa6-58c6-97f7-c30391aeac5d@nvidia.com>
+ <CACycT3v83sVvUWxZ-+SDyeXMPiYd0zi5mtmg8AkXYgVLxVpTvA@mail.gmail.com>
+ <06af4897-7339-fca7-bdd9-e0f9c2c6195b@nvidia.com>
+ <CACycT3usFyVyBuJBz2n5TRPveKKUXTqRDMo76VkGu7NCowNmvg@mail.gmail.com>
+ <6d6154d7-7947-68be-4e1e-4c1d0a94b2bc@nvidia.com>
+ <CACycT3sxeUQa7+QA0CAx47Y3tVHKigcQEfEHWi04aWA5xbgA9A@mail.gmail.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <7f0181d7-ff5c-0346-66ee-1de3ed23f5dd@nvidia.com>
+Date:   Mon, 23 Aug 2021 13:45:31 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CACycT3sxeUQa7+QA0CAx47Y3tVHKigcQEfEHWi04aWA5xbgA9A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-ClientProxiedBy: AM0PR04CA0017.eurprd04.prod.outlook.com
- (2603:10a6:208:122::30) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.178.21] (91.14.161.181) by AM0PR04CA0017.eurprd04.prod.outlook.com (2603:10a6:208:122::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 10:43:14 +0000
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ffbc018c-619b-4572-2441-08d96622d0b3
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4239:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4239D4E00E5BF89B42E176CB83C49@MN2PR12MB4239.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 1833081c-762b-4957-6026-08d966232440
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4041:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB404171BE98128030D638A972DEC49@DM6PR12MB4041.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YVC+pNkg7VJxv6v4k01z12k9Naq8qgBfG64JEVQFtko4+rdt8eLZ4RHShtmE5bggSNjp2E2dblBvqj3cinrhgAp4tprdwYoUzLgK8ASVHsvJHwmzgJ/rqh+2i/tdt9KhkVEuE59/djcIvcZof6gaoRU8Tqg6gkIgCRbT2gP5PT4pCr9J2yjuEVUTGxXWiRNsiNGpecxludEYbYKAyYXFOi6qelhoDyT3rDj05LyQDpI2GsJj21vVVBosKm88KEixmMhSExz2jEgFx7BQD6IDtaOCppPcTN6f1vzuSS+MBjWNKGvUP9BAe9aT5MJUZTRgK5iROQCLOcVFybTrxhW+Q8ncfYGgGTPvpYr7WFa2Ozv28b+HyMoCuYIMugx9x+jDLdvsVHLmlDpx53ZSXgVWiaK2wqAXm4aEQxlE3e1qyqqkkbWRerJchRTvvF/2owpZ37c7DPWX6xy3wNm+tm/Y5bYMN2iFtS3i9sahGtzU4f65sv3drObi+TCk8cx5ni0dWwA07WHBiIRKI8jwYEp3g1fglK47GWdl1fpQvENSa5BQsExppX6XF5+eCgXJqUkv3BIvGG0xy1Skv94/0/k//qi2AnpOW48EwIRYKP1cIrtYYBrtqrYPg83QB72syjX3uzIuVSIn/HYbMJCzw54Hq/UTvvwkHd0MD7+CKn8ZBitvaM60twjJIm3hRRrvHZSVFebL75E0Dz9BrpVYva++xPdHp668lgV35uYcIrxili4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(8936002)(478600001)(36756003)(26005)(53546011)(6486002)(110136005)(86362001)(186003)(83380400001)(6666004)(316002)(956004)(16576012)(31686004)(2616005)(2906002)(38100700002)(8676002)(4326008)(66476007)(66946007)(66556008)(7416002)(5660300002)(54906003)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVczUEd3ejZ3a3o3Y1hsNzVxeHBQSk9idzNkcm5FMkd1VHZ6ZkhvMjZ2dllI?=
- =?utf-8?B?VElHUG1Kb1Nxd2ZjQ1FUNjVOQzlpbklDRHlRWXdPSWtHb0dxbjBhZ0U0eldR?=
- =?utf-8?B?NXpuZjI3T2o4WnNSbVFIdXd0VEtrcHpCeTk0NWJnR0gzTWJMaTU2UzVmVTN1?=
- =?utf-8?B?d203WjVZbHdLSDRUUndqUjdqWWlBOW9MaVM4eTJpN3AxR1RxV2xDQWJpanVq?=
- =?utf-8?B?S01NRUhXU0RpVzNuK05DeVI5b2FKQUVXMHhHNFY4WG5ZdFRWNW9zNCt6MVVK?=
- =?utf-8?B?ajNpOEdWK1M0NXFvRkg3elFTbXp1WUR3dFZhRkNoQ3FWRmoxcGMwaERydW5M?=
- =?utf-8?B?YW4rZk5ONnYrbFpSUDFyMjJpOGtXOEYzeDMvWWpHTDgyTThaLzFQTm8rVU5X?=
- =?utf-8?B?cGNDMENrNDdJV2NabzJOOFE3RnZORThWaVUzMEZzYTErSEdZbndDdzFPblVZ?=
- =?utf-8?B?NDNOTnRTT3ZPOGtZNFVHNmhoY1J1NTFQV0doTXBxSG1OSWhHQ1ltRHVBazdl?=
- =?utf-8?B?NWY2RnF0WUJJTnp5TzN6Z3U1MENscWtwTzM2cXd5OHlyRDcrN01UUlNOdmVN?=
- =?utf-8?B?MS9TVjdZcy94TXVpWjhhNVEwZW9GdDVta2hWRzBNcUx4eEs0bEcrWm91eXJ1?=
- =?utf-8?B?UE40dW1ob3dIMEp6MUN4RkpKQ2JkUmUxelo5dWFDd29acGhETUFvYXRINWZZ?=
- =?utf-8?B?bkxYdE1EWUk2TVZQQSsreTdHRnBYVnFQVlUrUVBob2dlM2JEcFU3cVlHTDVt?=
- =?utf-8?B?cnZtSzEwTlZGMkxGblFYME84Nm50NHRWNGtDd0M3Y0JpUnRqVUZiQkVzVEdP?=
- =?utf-8?B?VnJZczFBME91ZXh3S2dsVnZNVSt4RjBOb0NTWjd2MkVCWGR2T0ZRTXlpUXdx?=
- =?utf-8?B?c201MmNyQ1U0MFNlTmV1Q2szZEVvN2JiMDVPbDBnWlhqcHhqalZ3WFRzWElk?=
- =?utf-8?B?RFAzT3NPQ291Z0RuVndCM1ZDZEwyU3BtL28vWUtrUGRQYzNzd2ZMNFh5Qmxr?=
- =?utf-8?B?VnBpaFhFYUVaWTcrenh3UWliTTZ3S1Q1VXBQcS9JRGZHNGpIdmFnZFlRRU1x?=
- =?utf-8?B?M1JFeS93ZzdscFVCN280RTk1SWhSTVRPKzY3NWFOaGR5b2hBK0NlSTJaZlBh?=
- =?utf-8?B?Z09rbU1iQ1JkeVRFd3VLeHRzY282SmpwSGUzb3c5eXRlcmczYnUxWGV4MDBq?=
- =?utf-8?B?UEwyUWMyNzkzMFl0MlBSUmx3SVl2ZkJ0ZDZpVm1Id0VHaklrNFJ5ZnhLcDIv?=
- =?utf-8?B?MVlwREJtU05uMEI4em91VFBRalVpQnJOZHIvcGRVV0lQSU83SWNXUnZGSmxY?=
- =?utf-8?B?dTNQVjhLZkEwN3lDUm10cGdGMFlYSzRSMkk5bnR2SHIvRjdTbVZrcXJQNEdL?=
- =?utf-8?B?c3VzV0JuNW5vK3JqVnFrTUFDajN3NnFKZm1oUTRmVEVKQTQwOFhDaWV6MWVE?=
- =?utf-8?B?ejY4REZaVkpxV1Z2bkU3THFwUzVUZ2l0UVc5d29rZnJqRCt2YUNRZTA3QnJn?=
- =?utf-8?B?RTEwZGN5RUd1dkw3Zm5NUnNFVzVicHl1WmYrNlZMekNRZEtlWE9HYkczT1Uy?=
- =?utf-8?B?T2k5WjQxalVsRDgrcmZyLzF6Vm1HazdSVzQ0dzF0ZDBWZGhpL1hROVQ3SFJz?=
- =?utf-8?B?UHJCNXJxc2d1YzgwZXNnMDIrRk9YKzk4cnFyaE5BQkpNenFxaXg5K3QvWVZJ?=
- =?utf-8?B?a1k4SFhibUZLc2F6R2NjZExhaDVjenJ0Ym1sMUZydnNIcXk5UmVNZmFwM0lO?=
- =?utf-8?Q?GSEaQuvkj7ZG3lrj7bT899stx0g9RX5vsx+rf5y?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffbc018c-619b-4572-2441-08d96622d0b3
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 10:43:16.8706
+X-Microsoft-Antispam-Message-Info: htpF3+latoclk+G/sMF0LCfgJxJQIEWB0gh7AWUadsfffLzCTM7l8+Ed/oa8/fF+7NAsa1egW6PoZfM8MoR9SDcBQsaJ22nfCorI2vsxThBLBdJKDOf26oRNyFR4cH/fWYEsXt4yp6aWBNXKU+oWsC1btI3CNP0YEpxSZfo/zc3ewfANiZfas4mJHmCbZPoHz8NTZm5oKq7J2zSmh6oiDTUDYIu6ccO/crezzEi8fSRWNVChZtLTe4i+NfALJVTIGEz9s0hqQULJKT+IDRrvDfrsdmRhMq6n1lOFzFtWpp/qYcExFfD/IG04glLq306FrPaSrspTJCLMUHjhQRJotXD2/+LerfP9KoRbH8x0Vq07+MD2KayaBYCotZrlp1f2gX7/CCAS125j2DRbY8BOjcLewiS6adlq8ztqlXa4NiUMcVTBWesYZzGbfr3FyNHvzEaddwpkm5T5Hodu/wKv5RvkWdDsplk1Z+RFtUSOqqKfMqKT30SG10v8GovmY3jfxiGS/7f9H8xrJ1rOg3QDLnMwXAjXG/BSAQE1bZSLKz0fnA+wbn+rmissPS242tUDVvkaYOoR9Tyw4Z+dleY288Apm04VMwrAsszxxKNYxHZoW8xH5bGE36BOw0cr45J7h/8+H8A07rC5NwANIy+Ey0vm+kZoDiPNg292U7Ud5eAbiXlWjWPZl1CQY9d42OH76CSjaM6ddsH4itgnaktkeoYa82TxDpimSDvsJxCyuNDXESOYKIaJ70D9E/pqGaOfu5Xx+YB3jYg++nrBPGo506EX8EjZvZAj+LQhN2Il/u0pv4dTU8A9jQ378UfevfcI
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(376002)(136003)(46966006)(36840700001)(478600001)(966005)(2906002)(83380400001)(336012)(2616005)(5660300002)(36756003)(36860700001)(8676002)(36906005)(316002)(31686004)(8936002)(426003)(7636003)(53546011)(31696002)(54906003)(6666004)(4326008)(82740400003)(47076005)(16576012)(6916009)(70206006)(16526019)(356005)(82310400003)(26005)(70586007)(86362001)(186003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 10:45:36.5044
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bk0iPlq5mXEdhxGPktLItuIIgVFg4/5SL0IHHT2yP+7j/TSbIQ+SOf+HT2fSEhC/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4239
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1833081c-762b-4957-6026-08d966232440
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 21.08.21 um 11:16 schrieb Gal Pressman:
-> On 20/08/2021 17:32, Jason Gunthorpe wrote:
->> On Fri, Aug 20, 2021 at 03:58:33PM +0300, Gal Pressman wrote:
+
+On 8/23/2021 1:33 PM, Yongji Xie wrote:
+> On Mon, Aug 23, 2021 at 5:38 PM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
 >>
->>> Though it would've been nicer if we could agree on a solution that could work
->>> for more than 1-2 RDMA devices, using the existing tools the RDMA subsystem has.
->> I don't think it can really be done, revoke is necessary, and isn't a
->> primitive we have today.
+>> On 8/23/2021 12:27 PM, Yongji Xie wrote:
+>>> On Mon, Aug 23, 2021 at 5:04 PM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+>>>> On 8/23/2021 11:35 AM, Yongji Xie wrote:
+>>>>> On Mon, Aug 23, 2021 at 4:07 PM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+>>>>>> On 8/23/2021 7:31 AM, Yongji Xie wrote:
+>>>>>>> On Mon, Aug 23, 2021 at 7:17 AM Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+>>>>>>>> On 8/9/2021 1:16 PM, Xie Yongji wrote:
+>>>>>>>>> An untrusted device might presents an invalid block size
+>>>>>>>>> in configuration space. This tries to add validation for it
+>>>>>>>>> in the validate callback and clear the VIRTIO_BLK_F_BLK_SIZE
+>>>>>>>>> feature bit if the value is out of the supported range.
+>>>>>>>> This is not clear to me. What is untrusted device ? is it a buggy device ?
+>>>>>>>>
+>>>>>>> A buggy device, the devices in an encrypted VM, or a userspace device
+>>>>>>> created by VDUSE [1].
+>>>>>>>
+>>>>>>> [1] https://lore.kernel.org/kvm/20210818120642.165-1-xieyongji@bytedance.com/
+>>>>>> if it's a userspace device, why don't you fix its control path code
+>>>>>> instead of adding workarounds in the kernel driver ?
+>>>>>>
+>>>>> VDUSE kernel module would not touch (be aware of) the device specific
+>>>>> configuration space. It should be more reasonable to fix it in the
+>>>>> device driver. There is also some existing interface (.validate()) for
+>>>>> doing that.
+>>>> who is emulating the device configuration space ?
+>>>>
+>>> A userspace daemon will initialize the device configuration space and
+>>> pass the contents to the VDUSE kernel module. The VDUSE kernel module
+>>> will handle the access of the config space from the virtio device
+>>> driver, but it doesn't need to know the contents (although we can know
+>>> that).
+>> So you add a workaround in the guest kernel drivers instead of checking
+>> these quirks in the hypervisor ?
 >>
->> Revoke is sort of like rereg MR, but with a guaranteed no-change to
->> the lkey/rkey
->>
->> Then there is the locking complexity of linking the mr creation and
->> destruction to the lifecycle of the pages, which is messy and maybe
->> not general. For instance mlx5 would call its revoke_mr, disconnect
->> the dmabuf then destroy the mkey - but this is only safe because mlx5
->> HW can handle concurrent revokes.
-> Thanks, that makes sense.
+> I didn't see any problem adding this validation in the device driver.
 >
->>> That's why I tried to approach this by denying such attachments for non-ODP
->>> importers instead of exposing a "limited" dynamic importer.
->> That is fine if there is no revoke - once revoke exists we must have
->> driver and HW support.
-> Agree.
-> IIUC, we're talking about three different exporter "types":
-> - Dynamic with move_notify (requires ODP)
-> - Dynamic with revoke_notify
-> - Static
+>> VDUSE kernel should enforce the security for the devices it
+>> emulates/presents to the VM.
+>>
+> I agree that the VDUSE kernel should enforce the security for the
+> emulated devices. But I still think the virtio device driver should
+> handle this case since nobody can make sure the device can always set
+> the correct value. Adding this validation would be helpful.
+
+It helpful if there is a justification for this.
+
+In this case, no such HW device exist and the only device that can cause 
+this trouble today is user space VDUSE device that must be validated by 
+the emulation VDUSE kernel driver.
+
+Otherwise, will can create 1000 commit like this in the virtio level 
+(for example for each feature for each virtio device).
+
 >
-> Which changes do we need to make the third one work?
+>>>>> And regardless of userspace device, we still need to fix it for other cases.
+>>>> which cases ? Do you know that there is a buggy HW we need to workaround ?
+>>>>
+>>> No, there isn't now. But this could be a potential attack surface if
+>>> the host doesn't trust the device.
+>> If the host doesn't trust a device, why it continues using it ?
+>>
+> IIUC this is the case for the encrypted VMs.
 
-Basically none at all in the framework.
+what do you mean encrypted VM ?
 
-You just need to properly use the dma_buf_pin() function when you start 
-using a buffer (e.g. before you create an attachment) and the 
-dma_buf_unpin() function after you are done with the DMA-buf.
+And how this small patch causes a VM to be 100% encryption supported ?
 
-Regards,
-Christian.
+>> Do you suggest we do these workarounds in all device drivers in the kernel ?
+>>
+> Isn't it the driver's job to validate some unreasonable configuration?
+
+The check should be in different layer.
+
+Virtio blk driver should not cover on some strange VDUSE stuff.
+
+>
+> Thanks,
+> Yongji
