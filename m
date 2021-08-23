@@ -2,214 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CAD3F5305
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0323F5307
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232979AbhHWVwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 17:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhHWVw1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 17:52:27 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BDBC061575;
-        Mon, 23 Aug 2021 14:51:44 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s11so17894957pgr.11;
-        Mon, 23 Aug 2021 14:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/4sa3hRKHYJGIpFu2RJ99Np1mz1P713WKUCXGQ7iJ/Q=;
-        b=CIWhz7kp8gl/zgbtxNFGtTMSZ+gnaR8xvtCnRG2sa/p2P+PzAwJMYt9KYytxMKb23e
-         8NP3/T3i2fxZ03EKpg/nLweR6mAjDJ4hK21jgLUuvWq1GbdkIyWz6VoqyD70JNq5V11q
-         +SVZxiz+uTRd5TxYkK5rC+BpKhuvyJzOM2ReFqibVzUTxYGDc2wrL07FYtnQE3fxT1oF
-         PY4jYk8um+69/UG8IM6Pnk0R1KNUM3/k3tw4AGrdzoghiI5KOcITlzcVB7cvXZoa2Q2M
-         /YW0+8ipJT+NaCvRcPsY0MS7N+WGQ3aeEEIppSbPzhtt12N+zyfHbG2y7bOTUmapHeer
-         ++tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/4sa3hRKHYJGIpFu2RJ99Np1mz1P713WKUCXGQ7iJ/Q=;
-        b=Q5bQwiQeV8cXUAzbiKA5PnfUbpeVb1dAkeEMbSEzIO1B1aO1UrBHV7Z2Lv8siZ2eqF
-         pZjos3bwhBfMvGnemgdtza3m6hZnhjsbuhF1bGQI3n0qdf2+3JDH1YeyBqNuGGKTCoad
-         fqdUhsRRA3BjX+RO8aIBVIE0nPTMId7RHH2d91CCOgps9Y3SwI9g82JB5o9YhX3hueO/
-         Y2ZIYgYeOfYMwyvQ942vNaWVLTycNW75hD1E/4RoYqAF05VYcnfIbndRK1yV48veztJl
-         Fur6OUIUypxLXw9hBWBvb5vIWBkfhxmqA9gmnvOhDgBufsdkIn//jwZZF1cEqd42BdE4
-         BypA==
-X-Gm-Message-State: AOAM532qmiCIE/OiAZTk1l2D5ZxZ6O4RzUOYNUm6tdoJuLZODYs4w2JA
-        usrBJUoL0wXXh4oMfSz9n+w=
-X-Google-Smtp-Source: ABdhPJz7ykDAk2ewsdsErG1eLUx8tkDakwd9PXhQh5tnA9bj4a6ZNxrmlkLQ+KwOukGYcdHV7J3N5w==
-X-Received: by 2002:a62:3301:0:b0:3eb:2fee:87cc with SMTP id z1-20020a623301000000b003eb2fee87ccmr7194794pfz.62.1629755504454;
-        Mon, 23 Aug 2021 14:51:44 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id j4sm19534603pgi.6.2021.08.23.14.51.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 14:51:43 -0700 (PDT)
-Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        Vasily Averin <vvs@virtuozzo.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
- <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
- <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
- <1c12b056-79d2-126a-3f78-64629f072345@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
-Date:   Mon, 23 Aug 2021 14:51:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232989AbhHWVwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 17:52:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233008AbhHWVwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 17:52:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 51466611CB;
+        Mon, 23 Aug 2021 21:51:50 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mIHrA-006lhN-7D; Mon, 23 Aug 2021 22:51:48 +0100
 MIME-Version: 1.0
-In-Reply-To: <1c12b056-79d2-126a-3f78-64629f072345@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Date:   Mon, 23 Aug 2021 22:51:48 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Ratelimit error log during guest debug
+ exception
+In-Reply-To: <CAJHc60wLPFZ5XFwWVyex5GXr=qm7QWc2yOmkECxLh=L2QnvgWg@mail.gmail.com>
+References: <20210819223406.1132426-1-rananta@google.com>
+ <87sfz4qx9r.wl-maz@kernel.org>
+ <CAJHc60wn7PP1zQ5EKOGQDFbZsf=d9codWTuWbtMT5AHegfbVHw@mail.gmail.com>
+ <875yvzqd5d.wl-maz@kernel.org>
+ <CAJHc60wLPFZ5XFwWVyex5GXr=qm7QWc2yOmkECxLh=L2QnvgWg@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <1a0dfd2bc950cb84e7344973657c6b23@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: rananta@google.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, pshier@google.com, ricarkol@google.com, oupton@google.com, reijiw@google.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/23/21 2:45 PM, Eric Dumazet wrote:
+On 2021-08-23 19:13, Raghavendra Rao Ananta wrote:
+> On Sat, Aug 21, 2021 at 3:56 AM Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On Sat, 21 Aug 2021 00:01:24 +0100,
+>> Raghavendra Rao Ananta <rananta@google.com> wrote:
+>> >
+>> > [1  <text/plain; UTF-8 (7bit)>]
+>> > On Fri, Aug 20, 2021 at 2:29 AM Marc Zyngier <maz@kernel.org> wrote:
+>> > >
+>> > > On Thu, 19 Aug 2021 23:34:06 +0100,
+>> > > Raghavendra Rao Ananta <rananta@google.com> wrote:
+>> > > >
+>> > > > Potentially, the guests could trigger a debug exception that's
+>> > > > outside the exception class range.
+>> > >
+>> > > How? All the exception classes that lead to this functions are already
+>> > > handled in the switch/case statement.
+>> > >
+>> > I guess I didn't think this through. Landing into kvm_handle_guest_debug()
+>> > itself is not possible :)
+>> 
+>> Exactly.
+>> 
+>> > > My take on this is that this code isn't reachable, and that it could
+>> > > be better rewritten as:
+>> > >
+>> > > diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
+>> > > index 6f48336b1d86..ae7ec086827b 100644
+>> > > --- a/arch/arm64/kvm/handle_exit.c
+>> > > +++ b/arch/arm64/kvm/handle_exit.c
+>> > > @@ -119,28 +119,14 @@ static int kvm_handle_guest_debug(struct kvm_vcpu
+>> > *vcpu)
+>> > >  {
+>> > >         struct kvm_run *run = vcpu->run;
+>> > >         u32 esr = kvm_vcpu_get_esr(vcpu);
+>> > > -       int ret = 0;
+>> > >
+>> > >         run->exit_reason = KVM_EXIT_DEBUG;
+>> > >         run->debug.arch.hsr = esr;
+>> > >
+>> > > -       switch (ESR_ELx_EC(esr)) {
+>> > > -       case ESR_ELx_EC_WATCHPT_LOW:
+>> > > +       if (ESR_ELx_EC(esr) ==  ESR_ELx_EC_WATCHPT_LOW)
+>> > >                 run->debug.arch.far = vcpu->arch.fault.far_el2;
+>> > > -               fallthrough;
+>> > > -       case ESR_ELx_EC_SOFTSTP_LOW:
+>> > > -       case ESR_ELx_EC_BREAKPT_LOW:
+>> > > -       case ESR_ELx_EC_BKPT32:
+>> > > -       case ESR_ELx_EC_BRK64:
+>> > > -               break;
+>> > > -       default:
+>> > > -               kvm_err("%s: un-handled case esr: %#08x\n",
+>> > > -                       __func__, (unsigned int) esr);
+>> > > -               ret = -1;
+>> > > -               break;
+>> > > -       }
+>> > >
+>> > > -       return ret;
+>> > > +       return 0;
+>> > >  }
+>> > >
+>> > This looks better, but do you think we would be compromising on readability?
+>> 
+>> I don't think so. The exit handler table is, on its own, pretty
+>> explicit about what we route to this handler, and the comment above
+>> the function clearly states that we exit to userspace for all the
+>> debug ECs.
 > 
-> 
-> On 8/23/21 10:25 AM, Christoph Paasch wrote:
->> Hello,
->>
->> On Mon, Aug 23, 2021 at 12:56 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->>>
->>> Christoph Paasch reports [1] about incorrect skb->truesize
->>> after skb_expand_head() call in ip6_xmit.
->>> This happen because skb_set_owner_w() for newly clone skb is called
->>> too early, before pskb_expand_head() where truesize is adjusted for
->>> (!skb-sk) case.
->>>
->>> [1] https://lkml.org/lkml/2021/8/20/1082
->>>
->>> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
->>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->>> ---
->>>  net/core/skbuff.c | 24 +++++++++++++-----------
->>>  1 file changed, 13 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>> index f931176..508d5c4 100644
->>> --- a/net/core/skbuff.c
->>> +++ b/net/core/skbuff.c
->>> @@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
->>>
->>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>>  {
->>> +       struct sk_buff *oskb = skb;
->>> +       struct sk_buff *nskb = NULL;
->>>         int delta = headroom - skb_headroom(skb);
->>>
->>>         if (WARN_ONCE(delta <= 0,
->>> @@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>>
->>>         /* pskb_expand_head() might crash, if skb is shared */
->>>         if (skb_shared(skb)) {
->>> -               struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->>> -
->>> -               if (likely(nskb)) {
->>> -                       if (skb->sk)
->>> -                               skb_set_owner_w(nskb, skb->sk);
->>> -                       consume_skb(skb);
->>> -               } else {
->>> -                       kfree_skb(skb);
->>> -               }
->>> +               nskb = skb_clone(skb, GFP_ATOMIC);
->>>                 skb = nskb;
->>>         }
->>>         if (skb &&
->>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
->>> -               kfree_skb(skb);
->>> +           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
->>>                 skb = NULL;
->>> +
->>> +       if (!skb) {
->>> +               kfree_skb(oskb);
->>> +               if (nskb)
->>> +                       kfree_skb(nskb);
->>> +       } else if (nskb) {
->>> +               if (oskb->sk)
->>> +                       skb_set_owner_w(nskb, oskb->sk);
->>> +               consume_skb(oskb);
->>
->> sorry, this does not fix the problem. The syzkaller repro still
->> triggers the WARN.
->>
->> When it happens, the skb in ip6_xmit() is not shared as it comes from
->> __tcp_transmit_skb, where it is skb_clone()'d.
->>
->>
-> 
-> Old code (in skb_realloc_headroom())
-> was first calling skb2 = skb_clone(skb, GFP_ATOMIC); 
-> 
-> At this point, skb2->sk was NULL
-> So pskb_expand_head(skb2, SKB_DATA_ALIGN(delta), 0, ...) was able to tweak skb2->truesize
-> 
-> I would try :
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f9311762cc475bd38d87c33e988d7c983b902e56..326749a8938637b044a616cc33b6a19ed191ac41 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1804,6 +1804,7 @@ EXPORT_SYMBOL(skb_realloc_headroom);
->  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->  {
->         int delta = headroom - skb_headroom(skb);
-> +       struct sk_buff *oskb = NULL;
->  
->         if (WARN_ONCE(delta <= 0,
->                       "%s is expecting an increase in the headroom", __func__))
-> @@ -1813,19 +1814,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->         if (skb_shared(skb)) {
->                 struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->  
-> -               if (likely(nskb)) {
-> -                       if (skb->sk)
-> -                               skb_set_owner_w(nskb, skb->sk);
-> -                       consume_skb(skb);
-> -               } else {
-> +               if (unlikely(!nskb)) {
->                         kfree_skb(skb);
-> +                       return NULL;
->                 }
-> +               oskb = skb;
->                 skb = nskb;
->         }
-> -       if (skb &&
-> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> +       if (pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
->                 kfree_skb(skb);
-> -               skb = NULL;
-> +               kfree_skb(oskb);
-> +               return NULL;
-> +       }
-> +       if (oskb) {
-> +               skb_set_owner_w(skb, oskb->sk);
-> +               consume_skb(oskb);
->         }
->         return skb;
->  }
+> Sounds great. I'm happy to send out a patch with you as 'Suggested-by' 
+> , if you
+> are okay with it.
 
+Fire away!
 
-Oh well, probably not going to work.
-
-We have to find a way to properly increase skb->truesize, even if skb_clone() is _not_ called.
-
-
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
