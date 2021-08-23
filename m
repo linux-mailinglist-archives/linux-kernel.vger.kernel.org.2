@@ -2,113 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2575D3F4D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4F53F4D07
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhHWPEm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 11:04:42 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:47821 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhHWPEl (ORCPT
+        id S231192AbhHWPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231176AbhHWPFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:04:41 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 2D1E01BF203;
-        Mon, 23 Aug 2021 15:03:55 +0000 (UTC)
-Date:   Mon, 23 Aug 2021 17:03:54 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-mtd@lists.infradead.org, richard@nod.at,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3] mtd: spinand: add support for Foresee FS35ND0*G
- parts
-Message-ID: <20210823170354.2dccabd5@xps13>
-In-Reply-To: <CAFr9PXkSeeHNn-KVyrVxp6RRdLYExTgWpheWKLLSZqEo_EHvRg@mail.gmail.com>
-References: <20210811084924.52293-1-daniel@0x0f.com>
-        <20210816101143.2a64d7b9@xps13>
-        <CAFr9PXnna+b3ChVUftT7YbU1kYR=5JDcik3bMNqzKK-LW=GQzw@mail.gmail.com>
-        <20210823162148.35a24183@xps13>
-        <CAFr9PXkSeeHNn-KVyrVxp6RRdLYExTgWpheWKLLSZqEo_EHvRg@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 23 Aug 2021 11:05:12 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CA2C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:04:29 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id q70so18502682ybg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=brllRPBO8PdBfH3Jzs8CaAHdDlba7cjyGUD8zEZHXyY=;
+        b=Vc94pMZYpc3ZyvKJNLJR7EvkvNVw9GhNOAOpAliq6KWt3zPz4+eWlN7s8oacbHvPfG
+         T1ZWXFUTqWUQtDMntCHNe0df98oepr+UqMcrx2l794bCcdeL/YKATj+g0ZWPKkKXiR8l
+         LlZJD4r4V7HVVKltZj68itYQapxgFlrJZnFruvhzqzbhkJu8+kn8Guu/TfuVUOv5Ama5
+         xrVG+YDIkOLNVTDTNWfu6bvxYhRpKndPVxk3EYlxYDq5r4VCQ1rpU8gBNoeTdimT40wO
+         El539AasUnjmndFEkMIO2V90KHJBrz7CizfpLVCNaZfqxfSWbyZ2zA8ziexXSACy7EVZ
+         cvUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=brllRPBO8PdBfH3Jzs8CaAHdDlba7cjyGUD8zEZHXyY=;
+        b=BaBo7486yYImeVkFLrCfIWFxoQ16yDi6x3YLS4ULBNBWMzLs7OBZhGrL3H/EhuHeTM
+         TaOw3t3oZI8/dcWevfhizczRk2tdUqhayvxJkbFfqnmtaX3DGNJEkfFYqGyP59X3WkMF
+         tRT1FdwY+S79LVcbA9Gq96qE3YK01XAZP5v6L+AXeE1axk40pVJ9bJJx0iBmmT68zGiq
+         nIepgnxnAtpfOFGC7dyR2ckx9scaNUP7j9QxJKEKF0PlRQGJaoFj3xJOb34k4ptI6xcw
+         lrTacvqfrzJjQDlcyZgS/gQe1E1rdoTyzHyfptUawFvEbqAlmjNkOpz1IcD7s+XFQjw2
+         S0Cg==
+X-Gm-Message-State: AOAM532QgR4reYb2f5oC9BqeVk+KGLGd0BZFZBxhMbYylYCHf0VBqj1M
+        hnYXu6D3mIw1bNsdyW9/5B7MBhFD/PoHWUuecsp5Mw==
+X-Google-Smtp-Source: ABdhPJzACN5iW03c/RkSTXbYC3XXHzI70EbUZdt3h+laFXezA37uunrWvdyn9XuQcY7UyBk5h7i/rsROdE5kjXMoX3o=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr42895820ybj.504.1629731067656;
+ Mon, 23 Aug 2021 08:04:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
+ <CANn89iJDf9uzSdqLEBeTeGB1uAxvmruKfK5HbeZWp+Cdc+qggQ@mail.gmail.com>
+ <2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com> <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+In-Reply-To: <4b2ad6d4-8e3f-fea9-766e-2e7330750f84@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 23 Aug 2021 08:04:16 -0700
+Message-ID: <CANn89iK0nMG3qq226aL-urrtPF5jBN6UQCV=ckTmAFqWgy5kiA@mail.gmail.com>
+Subject: Re: [Linuxarm] Re: [PATCH RFC 0/7] add socket to netdev page frag
+ recycling support
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Peter Xu <peterx@redhat.com>,
+        "Tang, Feng" <feng.tang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        mcroce@microsoft.com, Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>,
+        wenxu <wenxu@ucloud.cn>, Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        chenhao288@hisilicon.com,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, memxor@gmail.com,
+        linux@rempel-privat.de, Antoine Tenart <atenart@kernel.org>,
+        Wei Wang <weiwan@google.com>, Taehee Yoo <ap420073@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        aahringo@redhat.com, ceggers@arri.de, yangbo.lu@nxp.com,
+        Florian Westphal <fw@strlen.de>, xiangxia.m.yue@gmail.com,
+        linmiaohe <linmiaohe@huawei.com>, Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, Aug 23, 2021 at 2:25 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2021/8/18 17:36, Yunsheng Lin wrote:
+> > On 2021/8/18 16:57, Eric Dumazet wrote:
+> >> On Wed, Aug 18, 2021 at 5:33 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>>
+> >>> This patchset adds the socket to netdev page frag recycling
+> >>> support based on the busy polling and page pool infrastructure.
+> >>
+> >> I really do not see how this can scale to thousands of sockets.
+> >>
+> >> tcp_mem[] defaults to ~ 9 % of physical memory.
+> >>
+> >> If you now run tests with thousands of sockets, their skbs will
+> >> consume Gigabytes
+> >> of memory on typical servers, now backed by order-0 pages (instead of
+> >> current order-3 pages)
+> >> So IOMMU costs will actually be much bigger.
+> >
+> > As the page allocator support bulk allocating now, see:
+> > https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L252
+> >
+> > if the DMA also support batch mapping/unmapping, maybe having a
+> > small-sized page pool for thousands of sockets may not be a problem?
+> > Christoph Hellwig mentioned the batch DMA operation support in below
+> > thread:
+> > https://www.spinics.net/lists/netdev/msg666715.html
+> >
+> > if the batched DMA operation is supported, maybe having the
+> > page pool is mainly benefit the case of small number of socket?
+> >
+> >>
+> >> Are we planning to use Gigabyte sized page pools for NIC ?
+> >>
+> >> Have you tried instead to make TCP frags twice bigger ?
+> >
+> > Not yet.
+> >
+> >> This would require less IOMMU mappings.
+> >> (Note: This could require some mm help, since PAGE_ALLOC_COSTLY_ORDER
+> >> is currently 3, not 4)
+> >
+> > I am not familiar with mm yet, but I will take a look about that:)
+>
+>
+> It seems PAGE_ALLOC_COSTLY_ORDER is mostly related to pcp page, OOM, memory
+> compact and memory isolation, as the test system has a lot of memory installed
+> (about 500G, only 3-4G is used), so I used the below patch to test the max
+> possible performance improvement when making TCP frags twice bigger, and
+> the performance improvement went from about 30Gbit to 32Gbit for one thread
+> iperf tcp flow in IOMMU strict mode,
 
-Daniel Palmer <daniel@0x0f.com> wrote on Mon, 23 Aug 2021 23:54:20
-+0900:
+This is encouraging, and means we can do much better.
 
-> Hi Miquel,
-> 
-> On Mon, 23 Aug 2021 at 23:21, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > I am not sure to follow, above the software says "3 corrected bf" while  
-> 
-> Due to the status being "between 0 and 3 bitflips" I think it'll
-> basically report 3 most of the time.
-> As a refresher we seem to have a status for 0 - 3 flips but ok, 4 bit
-> flips but ok, and >4 flips no go.
-> In most cases (0 - 3) the driver is reporting 3.
-> 
-> > I thought the problem was when getting 4 bf, but the dump show many
-> > more. Can you show me how it behaves:
-> > * erase (like you did)
-> > * insert {1, 2, 3, 4, 5} bf and show the dump each time?  
-> 
-> Here's a complete log of erasing the page then flipping all the bits
-> in the first byte.
-> 
-> # flash_erase /dev/mtd0 0x8000000 1
-> Erasing 128 Kibyte @ 8000000 -- 100 % complete
-> # nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
-> ECC failed: 0
-> ECC corrected: 6249
-> Number of bad blocks: 0
-> Number of bbt blocks: 0
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x08000000 and ending at 0x08000001...
-> ECC: 3 corrected bitflip(s) at offset 0x08000000
-> 0x08000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> # nandflipbits /dev/mtd0 0@0x8000000
-> # nanddump --bb=dumpbad -s 0x8000000 -l 1 -c -p /dev/mtd0 | head -n 10
-> ECC failed: 0
-> ECC corrected: 6252
-> Number of bad blocks: 0
-> Number of bbt blocks: 0
-> Block size 131072, page size 2048, OOB size 64
-> Dumping data starting at 0x08000000 and ending at 0x08000001...
-> ECC: 3 corrected bitflip(s) at offset 0x08000000
-> 0x08000000: fe ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+Even with SKB_FRAG_PAGE_ORDER  set to 4, typical skbs will need 3 mappings
 
-How is this result possible? You are dumping with the ECC engine
-enabled, it reports 3 bf (meaning that it is actually running, at least
-the software really thinks there is an on-die engine enabled) but the
-data has not been corrected. I expect the first byte to be 0xFF after
-correction. Only with -n (raw dump) we should see this.
+1) One for the headers (in skb->head)
+2) Two page frags, because one TSO packet payload is not a nice power-of-two.
 
-> 0x08000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000050: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000060: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
-> 0x08000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  |................|
+The first issue can be addressed using a piece of coherent memory (128
+or 256 bytes per entry in TX ring).
+Copying the headers can avoid one IOMMU mapping, and improve IOTLB
+hits, because all
+slots of the TX ring buffer will use one single IOTLB slot.
 
-Thanks,
-Miquèl
+The second issue can be solved by tweaking a bit
+skb_page_frag_refill() to accept an additional parameter
+so that the whole skb payload fits in a single order-4 page.
+
+
+ and using the pfrag pool, the improvement
+> went from about 30Gbit to 40Gbit for the same testing configuation:
+
+Yes, but you have not provided performance number when 200 (or 1000+)
+concurrent flows are running.
+
+Optimizing singe flow TCP performance while killing performance for
+the more common case is not an option.
+
+
+>
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index fcb5355..dda20f9 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -37,7 +37,7 @@
+>   * coalesce naturally under reasonable reclaim pressure and those which
+>   * will not.
+>   */
+> -#define PAGE_ALLOC_COSTLY_ORDER 3
+> +#define PAGE_ALLOC_COSTLY_ORDER 4
+>
+>  enum migratetype {
+>         MIGRATE_UNMOVABLE,
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 870a3b7..b1e0dfc 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2580,7 +2580,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+>         }
+>  }
+>
+> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
+> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+>
+>  /**
+>
+> >
+> >>
+> >> diff --git a/net/core/sock.c b/net/core/sock.c
+> >> index a3eea6e0b30a7d43793f567ffa526092c03e3546..6b66b51b61be9f198f6f1c4a3d81b57fa327986a
+> >> 100644
+> >> --- a/net/core/sock.c
+> >> +++ b/net/core/sock.c
+> >> @@ -2560,7 +2560,7 @@ static void sk_leave_memory_pressure(struct sock *sk)
+> >>         }
+> >>  }
+> >>
+> >> -#define SKB_FRAG_PAGE_ORDER    get_order(32768)
+> >> +#define SKB_FRAG_PAGE_ORDER    get_order(65536)
+> >>  DEFINE_STATIC_KEY_FALSE(net_high_order_alloc_disable_key);
+> >>
+> >>  /**
+> >>
+> >>
+> >>
+> >>>
+> > _______________________________________________
+> > Linuxarm mailing list -- linuxarm@openeuler.org
+> > To unsubscribe send an email to linuxarm-leave@openeuler.org
+> >
