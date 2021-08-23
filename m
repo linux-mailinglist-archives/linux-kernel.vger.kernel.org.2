@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681AA3F4FAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EB83F4FAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhHWRjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:39:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47796 "EHLO mail.kernel.org"
+        id S231827AbhHWRjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231724AbhHWRjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:39:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C65BB61378;
-        Mon, 23 Aug 2021 17:38:24 +0000 (UTC)
+        id S231544AbhHWRjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 13:39:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2CF61378;
+        Mon, 23 Aug 2021 17:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629740305;
-        bh=ugd2XJQ8HC698Lo5FzAAM8u1s8A3IJx0MWF/1OqrKIs=;
+        s=k20201202; t=1629740315;
+        bh=/EBUUWEDni1MyQopat5em0GN1R1LMCsO+1c/XNA3TjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iNkcNxjQZiq2NevldjYN9wHhKP3ebqdUG0iSjAdQt6Sc95AA73baqcuH5dazzdh5M
-         1+W3RSf0cCaqS/U9vWtgp5xLqmZprDKl1IqJ1NK8jg8LGPDU/ov5cHWaVHLYXDaJUg
-         xhV+Vl3A8piyvoK6rtl1XdWYh2YkhcdjO0sU5Jucz2XARITkL1kOCAdnFndupiv2mA
-         nFAn47ebtS+3fLrCQgUa1bwOL47bFoj7VhWeEQS3kgKVBCVgNF/T2XfEsKLt+zyOU+
-         5I8daYiSjfeh3/6X81s6jo4vptRzwMuIALDEHc7Tm54SE2XmtRo9ng3Gh/u9HF3Jv2
-         4TIzDlsYTAgWw==
+        b=Zdt5llRQc2dcj8DuNexw5Yx32BfI0PH5l9IJkAjDmu1vA0hw+M8hkSCJd76gjo1f+
+         h05QtzgIzceLgzDBx5HOY0LoBzjY52PQMTjiiiLwgnKv1sO6KWO7aAur+hj8E6P3MU
+         KynJZMkKjyU/ybwM8UjMy255t5vEMlR/1D5fkgwlIFqVqS1CYzBJH9GRp7cKFNq0Gj
+         zRnhixl0BOrXpQtAP51iUfgj41Xkdr3jFRfR/DSqSRmyWRxwEEwEWQoUtVGr5/c7Rg
+         Zi3hg3bAbw7GTTX8/6RypyoSLzrNxnHdiudYcONEE08YXIDBKKimPLZQZ6Aix6ephf
+         rXf+qB+eOrwTA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Heiko Stuebner <heiko@sntech.de>, Jon Lin <jon.lin@rock-chips.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-rockchip@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: rockchip-sfc: Remove redundant IO operations
-Date:   Mon, 23 Aug 2021 18:37:51 +0100
-Message-Id: <162974017517.3286.666459658265810667.b4-ty@kernel.org>
+To:     devicetree@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        dri-devel@lists.freedesktop.org, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dillon Min <dillon.minfei@gmail.com>,
+        alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: (subset) [PATCH 1/2] dt-bindings: panel: ili9341: correct indentation
+Date:   Mon, 23 Aug 2021 18:37:55 +0100
+Message-Id: <162973996481.3102.17751483171907199985.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210821124925.6066-1-jon.lin@rock-chips.com>
-References: <20210821124925.6066-1-jon.lin@rock-chips.com>
+In-Reply-To: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com>
+References: <20210819101020.26368-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,21 +48,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Aug 2021 20:49:25 +0800, Jon Lin wrote:
-> Coherent dma buffer is uncached and memcpy is enough.
-> 
-> 
+On Thu, 19 Aug 2021 12:10:19 +0200, Krzysztof Kozlowski wrote:
+> Correct indentation warning:
+>   ilitek,ili9341.yaml:25:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] spi: rockchip-sfc: Remove redundant IO operations
-      commit: 8d00f9819458b95301e274c6df705df2963ba34f
+[2/2] dt-bindings: sound: rt1015p: correct indentation
+      commit: 0aeb17d1728257f29131a290f0cc8e281cc7274c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
