@@ -2,163 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454863F4AF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FF43F4B0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237162AbhHWMne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 08:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237093AbhHWMn2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:43:28 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D373C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:42:45 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id g135so1157773wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:42:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q/UWlBClyKQs23UTI9wEd50PA0Zjsj8+FD2ie2aZnWk=;
-        b=izr7VN0ZFPKezUdn8aUGowQ4Q242LM4pMy2XACDgXfAew5+RlSUT9KEvDFzdmXQMHd
-         Kg5D+nU2YLhRgtprrF//cRuTBFyc/gmwgJZ17rPitSClO6iMPfF5euXz2wSJWW8qITZV
-         CuEA49Mnt6NPUu0XP2RFt6YF+wKFAGI//pY1Tbyfh3Ry48miYoKiASupghlE9ecUlhx+
-         /d9EzPN5XsR1fUX1tqyH9FnYQzmULmIgAkKAR+wiP7H7uifzLy2RuNHxfWnBVmZUKr3p
-         tsT2kydUdpbXWQN1+ZF4rxZNZCL1bKLKtl/8+IWCENp5U3kVUfH1R/Yqx9NJTPmi1e55
-         1WuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q/UWlBClyKQs23UTI9wEd50PA0Zjsj8+FD2ie2aZnWk=;
-        b=tnUI9/cqqGnLBXl24S282BOtYOd/EprGjkHsbBHIiO+NoFx6DFNiqynpwoCL33wDMr
-         jxA3DjuCnpOvh5GwB5gaFGm7srIjiL5BQTt1ES80Uk2dCoEiqzwxfvBpS6r/6/jAXZmG
-         RB6/nRRR5a01wlMSxKCxMLWrpV5Fd8suw982WSjU3PCB0shZaPwhMNVbw2bqIEgUy93/
-         kdaLNGR96nwtn5ySKvLL+pmoclAQ1y//xJPRWKbZLWVO5mqB1XiYYW6RJehjfs9i+HIX
-         64PcgvYjHgZRwxDyabayudhM+o09Aq4wsRvrCtvXMMc6G3DIwLHFIvvKX2F6oF45bJzS
-         DDAg==
-X-Gm-Message-State: AOAM531OFZaIPnd3X7Ezbj2GVStnzmmqrsK8Hi6uHiSxIaq6+qpDMWIH
-        IS3laHXGkh/+625pZf8RrCTGBda4Q3fiNg==
-X-Google-Smtp-Source: ABdhPJybNkRqoQMot6QOKvfOY6tyfLAaZ0/9ilyLDU4PaaQwrHb7MAHQtd0vTpZlyynMUf3HYg1Z/w==
-X-Received: by 2002:a1c:7d06:: with SMTP id y6mr16113076wmc.7.1629722564040;
-        Mon, 23 Aug 2021 05:42:44 -0700 (PDT)
-Received: from enceladus (ppp-94-66-247-68.home.otenet.gr. [94.66.247.68])
-        by smtp.gmail.com with ESMTPSA id y15sm1488413wrw.64.2021.08.23.05.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 05:42:43 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 15:42:41 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hkallweit1@gmail.com
-Subject: Re: [PATCH net-next v2 2/2] page_pool: optimize the cpu sync
- operation when DMA mapping
-Message-ID: <YSOXwdLgeY1ti8ZO@enceladus>
-References: <1629442611-61547-1-git-send-email-linyunsheng@huawei.com>
- <1629442611-61547-3-git-send-email-linyunsheng@huawei.com>
- <YR94YYRv2qpQtdSZ@Iliass-MBP>
- <16468e57-49d8-0a23-0058-c920af99d74a@huawei.com>
-MIME-Version: 1.0
+        id S236742AbhHWMqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:46:30 -0400
+Received: from mail-dm6nam12on2063.outbound.protection.outlook.com ([40.107.243.63]:39265
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235954AbhHWMq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 08:46:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PyK1KsLM6qzF2ITk6gI9sSwzogfLwXDHi66GVxnuU9udMMTuPQX8VrLX6YrqCQAPbZhKCJtgV3mHRYgLp18MxBlxd1CIKN09qvPccxvna+DRfK5Aiyx4va4SCZj8GXlHyw/+iO2a2YyXVQTQNagn6kQaMpOEv11EBN+CTutmJ0fx+k3tQTnsCzFDieG47vhE6GlftBjSfdy8M4D2RXm+WWJBB0Rx38zki1HCgKNxQBKJenpzYSsA7JTEGUon6PcrT9wGEzpXiVFqpnlEVBhGPsxrnu/ftvQe9FXDMJQpfDj+BH8azo4rVKkvSyNn4n9dUGyfXekxuCTQnEL8Ph+4KA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BVwzn8Qcpc0vuGrgA1qW/gP3vhZqdejICKXVwPf2N5I=;
+ b=BVyp3J84NEKs3Qk3LZJUS8sIIzHsFpPU+BqBd3s77dePR4UeKD0r1F8Vg7VApKOvuFCGC4lebh3a1ULgOTKy7OQamC5C/6h4KaePilhMXWPegje+kNP7WWumunegxZi5My14vH0QF1wPc2em9QFM26q0//ZNybLi2sUKZtQuGJ7iRU0PkFcovG0uMfh7wy3ZfLPT6XyDMgx0tcm1XkfFW3SkGFYuisQezzgYmVTp0SStZlroyb94pKd97TBsB5ltF9Roak608/pDueMHSvTlBsFYppaQBktSol5j/K1t3kAH9lexGOTZWr1s+g67oLrwWTDmGJz3kSlN4RC0ElABLA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BVwzn8Qcpc0vuGrgA1qW/gP3vhZqdejICKXVwPf2N5I=;
+ b=LMyoJscTZmyIOruvdUC1g3TbYDKpvNVbNSMXf4mWuMI9TFCdFLPRkfR9Vdf17vZwjlMFMRMSmChkMFAqWQkxSnXoz/yij7+vylL9GM0Nr7UnDFZvbqJ1o/uPSP5E503VGrTCCUjmHjIGq5DyFXgU6dcOxPos2VWCqhU0MVMo6rlZ+iRDslh+tww0a/E1dsjrCe34Xe0D77boSfgvfqvsdlO7RWyROu4s+8021eB0PAJ/x37Ehd3FBw+av0o09G9kLIwXY5F2wNkmTqrPAzPCIC1lzgG8K8gUUGSvCF0jwa6JNVi9mJzeZmjzDlz8sz+7fx3BLNQqsDk5dLX+QvcEVg==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5112.namprd12.prod.outlook.com (2603:10b6:208:316::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
+ 2021 12:45:43 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
+ 12:45:43 +0000
+Date:   Mon, 23 Aug 2021 09:45:41 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Maor Gottlieb <maorg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ariel Elior <aelior@marvell.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
+ orig_nents
+Message-ID: <20210823124541.GM1721383@nvidia.com>
+References: <cover.1627551226.git.leonro@nvidia.com>
+ <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
+ <20210820155425.GA530861@nvidia.com>
+ <85542c97-c7e0-3db3-baa8-2413c00f75a4@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16468e57-49d8-0a23-0058-c920af99d74a@huawei.com>
+In-Reply-To: <85542c97-c7e0-3db3-baa8-2413c00f75a4@nvidia.com>
+X-ClientProxiedBy: BL0PR1501CA0025.namprd15.prod.outlook.com
+ (2603:10b6:207:17::38) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR1501CA0025.namprd15.prod.outlook.com (2603:10b6:207:17::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 12:45:42 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mI9Kf-003Fxc-TX; Mon, 23 Aug 2021 09:45:41 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5b510070-c456-418c-316e-08d96633eb78
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5112:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51121944CBEF7C29D82C55A1C2C49@BL1PR12MB5112.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +kWCAL4uJpS/mx/glilhlYookhPPGda3/rlIWHPiMVnLEoKDvqGsIzBY5OWa2hT1top5A3DGeFhPsyoQgYZLrkKTZ68BX2J8Hd9UaeVtLXnGTKHeEZoN34q85ghNsIRw+idggXvO50UTlfYb3gP4LRY05JHz9LFMfVxVzs9Z7w0Medoo/cuR8QoPej8PZjoZ0F50lkBKmTW5iEZGmPZQXM7SDpkE4+Nt1X8CGDaGrjtGA1v1Q51gM01SCAY7fbVMKPe18xl0KlJKPCTOdFCWInYSfhGtL6DzalwHL1xt2eVjVsy0x16RGTR9/VGuRB15Kw7PNi50Y7M98UEnoRTsFTMLb/BHwI3fyNPoK8H56xQtALg5XdH7ZBNOHJwhDZDKthhYGEkvA9yB51XGmKCSkU26aZgYdMZ+cA+K87OTRvEb8OZAlG2zz5h5fsSwTOI8N58NdvBXVHVJ7Arm6pPKyvlgrJsNMtEZLBLXVO4fj/DJz6qhY0NcxaABlRfH7tYX7Rxgnfk+x0nLP//XAlfyNfqSb+UkvB+l2fhYc9VsBxhL30reFVF8jEN9Rnb/4TA33KyO35YCmB7ObwvW0N1nxZVNftRXlXV5A4nrWhC/CDOW94vpmXInv2YzqAwWucWlu/uCWNrDfjsTzDO+9WK3dQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(508600001)(36756003)(316002)(66476007)(9746002)(426003)(9786002)(26005)(8676002)(8936002)(53546011)(33656002)(2616005)(86362001)(1076003)(6862004)(6636002)(186003)(5660300002)(66946007)(54906003)(7416002)(2906002)(4326008)(66556008)(37006003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t4mQSwyUKDc7j9WVHekJxghYyR44ujhEHjgh8o1jpyVz2m7xX6Ua3Qi3G8bA?=
+ =?us-ascii?Q?pPHQFM35woVUFaCV6kVZjz08JOrrXhsck5bTEmTYs41rW/QD7RCBieLY535k?=
+ =?us-ascii?Q?6dIapmrNCQ55Dr6eCNp/v6CAqHtF+eOvJl4qt8ZRtwWpr+bNBDoV/Kgc5vtj?=
+ =?us-ascii?Q?NNx8vfOaagUjxVDoF7DQ7g/kl+OyzFpJW9s+Pf1Vu65iWfYG17kGUla8TJn5?=
+ =?us-ascii?Q?pUB/n4DBx28t/ku8ZM8SLVGa7QVTx+z3yox4ke9/kFwjTBAG05c8kF0iOAqa?=
+ =?us-ascii?Q?+fbEle8le8GpAh/eoJCrIhYGceqKoDovHooHj4rSRLp3juSt+RJHqfs9eoup?=
+ =?us-ascii?Q?6prZqHGZE/yHAGnHxdBVZGznhUdYkAk4/rBexL7m53NcrS9juDOIOWQbeUOP?=
+ =?us-ascii?Q?Jaq3nOkJS8yoiYQVVKios0Xr7OuKU7xdvnPStFqRvj6AE8fASu0gTAptZUMM?=
+ =?us-ascii?Q?hpBp2aYAGR8FIVMBYULkaaXzc9cpLkA14XhbGoYGyJbDkxSvJbkGfoILXO1i?=
+ =?us-ascii?Q?6cpmMZJygxOJQMOUTPvKP20ySGChbahRX1yX/iZLU2crx3mxdXXrT746RYnU?=
+ =?us-ascii?Q?6K0ciCFWJstbEncDVGSU6M8su2Yo8BQGhL28fed4Y3ZEXKT9l2vBljWiAeBh?=
+ =?us-ascii?Q?VwD1nWOwY07MtLZCVTc8tRYXdRPJPfltefDsaXlSi3lptgZ2tzrSgZqSAf9N?=
+ =?us-ascii?Q?M1gHKl9MCPf8Wsgz9NBt3d6sdfs6AUc5EyJSe2vuDjDjaFQyw8S5bhQdHfCB?=
+ =?us-ascii?Q?NUkTXNPQctGkAqwg9Tv390foaEZOtJHlO0C18XPVXh4b530O7Bv2ox8L13Go?=
+ =?us-ascii?Q?vIu26LWdLT+OLotUivrOwM/kRhXQsry2wlinuG6l0nuhAXV6MXSf9DIJttRG?=
+ =?us-ascii?Q?QvJGQc8qb8yH/IDMZYpqoZjFx4RBhfsL1/ZSMuX+cenXGkeQ1Krv/ICTdu+T?=
+ =?us-ascii?Q?cTBCH3lvrK1qkqmvmRHPN3Td/u3Grf2PNc6dn5FMLs0PvYKar6NG2aGiEWic?=
+ =?us-ascii?Q?1m8YQd5ghoKOavbWINSWBMTXfobbmlTwJgiR+jMyYNDIkRWTrPyufaonwga9?=
+ =?us-ascii?Q?rg1ruMAZpOYQF4ysTFkvN5cP7kL+bL9nibSArfkj/3FAZK9Mjq3xg23VnLgE?=
+ =?us-ascii?Q?nvTPT9Ye1xP/PcuPv8zuOh0dk5IEgFwfM7jCJkYa98vf3TINK9Akjp1xp6F5?=
+ =?us-ascii?Q?ouWJOFG6NlPFfyJmgJX/KPFsGwncYKUZoZQ9y4Jd/D4D8cj5S5+C1P7wgAza?=
+ =?us-ascii?Q?BCKqFXuD0sPuNuyg59icS2E1YY9g+yhUdKuZlxFJro7QGKmIpx5Q+tVWu0XB?=
+ =?us-ascii?Q?/UiePkibXSVjryH4JQzZ5GzH?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b510070-c456-418c-316e-08d96633eb78
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 12:45:43.1893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NQ3rA7XOZwwcI8NrLIYc5aIuHdCKGJb9WB+Hh6eG1B/aeet1MCBN5lZ59zzFcDyg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 11:56:48AM +0800, Yunsheng Lin wrote:
-> On 2021/8/20 17:39, Ilias Apalodimas wrote:
-> > On Fri, Aug 20, 2021 at 02:56:51PM +0800, Yunsheng Lin wrote:
-> >> If the DMA_ATTR_SKIP_CPU_SYNC is not set, cpu syncing is
-> >> also done in dma_map_page_attrs(), so set the attrs according
-> >> to pool->p.flags to avoid calling cpu sync function again.
+On Mon, Aug 23, 2021 at 02:09:37PM +0300, Maor Gottlieb wrote:
+> 
+> On 8/20/2021 6:54 PM, Jason Gunthorpe wrote:
+> > On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
 > > 
-> > Isn't DMA_ATTR_SKIP_CPU_SYNC checked within dma_map_page_attrs() anyway?
+> > > +/**
+> > > + * __sg_free_table - Free a previously mapped sg table
+> > > + * @table:	The sg table header to use
+> > > + * @max_ents:	The maximum number of entries per single scatterlist
+> > > + * @total_ents:	The total number of entries in the table
+> > > + * @nents_first_chunk: Number of entries int the (preallocated) first
+> > > + *                     scatterlist chunk, 0 means no such preallocated
+> > > + *                     first chunk
+> > > + * @free_fn:	Free function
+> > > + *
+> > > + *  Description:
+> > > + *    Free an sg table previously allocated and setup with
+> > > + *    __sg_alloc_table().  The @max_ents value must be identical to
+> > > + *    that previously used with __sg_alloc_table().
+> > > + *
+> > > + **/
+> > > +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
+> > > +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
+> > > +{
+> > > +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
+> > > +			      table->orig_nents);
+> > > +}
+> > >   EXPORT_SYMBOL(__sg_free_table);
+> > This is getting a bit indirect, there is only one caller of
+> > __sg_free_table() in sg_pool.c, so may as well just export
+> > sg_free_table_entries have have it use that directly.
 > 
-> Yes, the checking in dma_map_page_attrs() should save us from
-> calling dma_sync_single_for_device() again if we set the attrs
-> according to "pool->p.flags & PP_FLAG_DMA_SYNC_DEV".
+> So I can just extend __sg_free_table to get number of entries. What do you
+> think?
 
-But we aren't syncing anything right now when we allocate the pages since
-this is called with DMA_ATTR_SKIP_CPU_SYNC. We are syncing the allocated
-range on the end of the function, if the pool was created and was requested
-to take care of the mappings for us.
+Isn't the point here that different paths to __sg_free_table require
+different entries? What do you mean?
 
-> 
-> As dma_sync_single_for_device() is EXPORT_SYMBOL()'ed, and
-> should be a no-op for dma coherent device, so there may be a
-> function calling overhead for dma coherent device, letting
-> dma_map_page_attrs() handling the sync seems to avoid the stack
-> pushing/poping overhead:
-> 
-> https://elixir.bootlin.com/linux/latest/source/kernel/dma/direct.h#L104
-> 
-> The one thing I am not sure about is that the pool->p.offset
-> and pool->p.max_len are used to decide the sync range before this
-> patch, while the sync range is the same as the map range when doing
-> the sync in dma_map_page_attrs().
-
-I am not sure I am following here. We always sync the entire range as well
-in the current code as the mapping function is called with max_len.
-
-> 
-> I assumed the above is not a issue? only sync more than we need?
-> and it won't hurt the performance?
-
-We can sync more than we need, but if it's a non-coherent architecture,
-there's a performance penalty. 
-
-Regards
-/Ilias
-> 
-> > 
-> > Regards
-> > /Ilias
-> >>
-> >> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> >> ---
-> >>  net/core/page_pool.c | 9 +++++----
-> >>  1 file changed, 5 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> >> index 1a69784..3df5554 100644
-> >> --- a/net/core/page_pool.c
-> >> +++ b/net/core/page_pool.c
-> >> @@ -191,8 +191,12 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
-> >>  
-> >>  static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-> >>  {
-> >> +	unsigned long attrs = DMA_ATTR_SKIP_CPU_SYNC;
-> >>  	dma_addr_t dma;
-> >>  
-> >> +	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> >> +		attrs = 0;
-> >> +
-> >>  	/* Setup DMA mapping: use 'struct page' area for storing DMA-addr
-> >>  	 * since dma_addr_t can be either 32 or 64 bits and does not always fit
-> >>  	 * into page private data (i.e 32bit cpu with 64bit DMA caps)
-> >> @@ -200,15 +204,12 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-> >>  	 */
-> >>  	dma = dma_map_page_attrs(pool->p.dev, page, 0,
-> >>  				 (PAGE_SIZE << pool->p.order),
-> >> -				 pool->p.dma_dir, DMA_ATTR_SKIP_CPU_SYNC);
-> >> +				 pool->p.dma_dir, attrs);
-> >>  	if (dma_mapping_error(pool->p.dev, dma))
-> >>  		return false;
-> >>  
-> >>  	page_pool_set_dma_addr(page, dma);
-> >>  
-> >> -	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> >> -		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-> >> -
-> >>  	return true;
-> >>  }
-> >>  
-> >> -- 
-> >> 2.7.4
-> >>
-> > .
-> > 
+Jason
