@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A25BB3F4BAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1633F4BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbhHWN0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:26:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44362 "EHLO mail.kernel.org"
+        id S237376AbhHWN00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:26:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237432AbhHWN0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:26:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 482C160F92;
-        Mon, 23 Aug 2021 13:25:29 +0000 (UTC)
+        id S237417AbhHWN0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 09:26:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32E69613A8;
+        Mon, 23 Aug 2021 13:25:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629725132;
-        bh=R3X8HkItH3+N8iKPEsdpdaWvVVC+BHaWBQTAjMphu68=;
+        s=k20201202; t=1629725136;
+        bh=wHY5asjBvC6i81jr0kWM8yyaRjwrHmkLuVMc5AO0gWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r6qYRBiAWvooxPFis1nz0VKfN+Fp5cAxTp/CHgiyDAbtp5+lGMy/y5fAdJdtYbtAZ
-         a+8IQea9wKZCzTpNFxK+/QP5NVAN9gY9GjV3tg87WvMdLOr1hO367foEuUVjj8XTzB
-         26kKqm52EiLqU7hc3uAt2zrRLujiRxNtMUljnNFAddEjkGsORzRv96pTKDoNE3p67L
-         bqypbD5isjPihqdGiZDS/74xx8bDzfnhYp5VpOXZSky7gOPEAUnuj8pYGAE+hFgLoF
-         s45T2klRFD0OdOW5Kc1gCsANL0N4cvZX6qDzudQKvzMNWWM3TS7BQGTqSqVhIA8/mw
-         h1YQr63EYJn7Q==
+        b=cNGcPddjPG6InnmHiJA0s6eIT5EoD/qa7rkp+qXX8rTWg5oWeIfHZW3rfrDtp06X8
+         grNG8saBbacxU3gSjmIiBbkiiLcWSOPZaRtwLxVn71RHgGWTqULQ+HVItvSg5tRtq8
+         hHXsJvqCpZ4S7nvl3cdF75iABB5+21MrzYGzss4m5i6zMgs2w589/pTTe6ZiUWdrPJ
+         OVRkOtYSZJabd2ae+dvH+NpZGf/yAkQRRtHcg4C1HopCqd1+hX2SvgfewuvmIrq/6K
+         5wZ4h+/ZtLGySNVHUcDJm2UhX+s2nNt4SCom6n9R2aPH0PoqtXx7+iEF4evqugE+dr
+         +gpiRjuH57o6A==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -36,9 +36,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Vlastimil Babka <vbabka@suse.cz>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/4] mm/page_alloc: introduce __GFP_PTE_MAPPED flag to allocate pte-mapped pages
-Date:   Mon, 23 Aug 2021 16:25:12 +0300
-Message-Id: <20210823132513.15836-4-rppt@kernel.org>
+Subject: [RFC PATCH 4/4] x86/mm: write protect (most) page tables
+Date:   Mon, 23 Aug 2021 16:25:13 +0300
+Message-Id: <20210823132513.15836-5-rppt@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210823132513.15836-1-rppt@kernel.org>
 References: <20210823132513.15836-1-rppt@kernel.org>
@@ -50,514 +50,433 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mike Rapoport <rppt@linux.ibm.com>
 
-When __GFP_PTE_MAPPED flag is passed to an allocation request of order 0,
-the allocated page will be mapped at PTE level in the direct map.
+Allocate page table using __GFP_PTE_MAPPED so that they will have 4K PTEs
+in the direct map. This allows to switch _PAGE_RW bit each time a page
+table page needs to be made writable or read-only.
 
-To reduce the direct map fragmentation, maintain a cache of 4K pages that
-are already mapped at PTE level in the direct map. Whenever the cache
-should be replenished, try to allocate 2M page and split it to 4K pages
-to localize shutter of the direct map. If the allocation of 2M page fails,
-fallback to a single page allocation at expense of the direct map
-fragmentation.
+The writability of the page tables is toggled only in the lowest level page
+table modifiction functions and immediately switched off.
 
-The cache registers a shrinker that releases free pages from the cache to
-the page allocator.
+The page tables created early in the boot (including the direct map page
+table) are not write protected.
 
-The __GFP_PTE_MAPPED and caching of 4K pages are enabled only if an
-architecture selects ARCH_WANTS_PTE_MAPPED_CACHE in its Kconfig.
-
-[
-cache management are mostly copied from 
-https://lore.kernel.org/lkml/20210505003032.489164-4-rick.p.edgecombe@intel.com/
-]
-
+Co-developed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 ---
- arch/Kconfig                    |   8 +
- arch/x86/Kconfig                |   1 +
- include/linux/gfp.h             |  11 +-
- include/linux/mm.h              |   2 +
- include/linux/pageblock-flags.h |  26 ++++
- init/main.c                     |   1 +
- mm/internal.h                   |   3 +-
- mm/page_alloc.c                 | 261 +++++++++++++++++++++++++++++++-
- 8 files changed, 309 insertions(+), 4 deletions(-)
+ arch/x86/boot/compressed/ident_map_64.c |  3 ++
+ arch/x86/include/asm/pgalloc.h          |  2 +
+ arch/x86/include/asm/pgtable.h          | 21 +++++++-
+ arch/x86/include/asm/pgtable_64.h       | 33 ++++++++++--
+ arch/x86/mm/init.c                      |  2 +-
+ arch/x86/mm/pgtable.c                   | 72 +++++++++++++++++++++++--
+ include/asm-generic/pgalloc.h           |  2 +-
+ 7 files changed, 125 insertions(+), 10 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 129df498a8e1..2db95331201b 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -243,6 +243,14 @@ config ARCH_HAS_SET_MEMORY
- config ARCH_HAS_SET_DIRECT_MAP
- 	bool
- 
-+#
-+# Select if the architecture wants to minimize fragmentation of its
-+# direct/linear map cauesd by set_memory and set_direct_map operations
-+#
-+config ARCH_WANTS_PTE_MAPPED_CACHE
-+	bool
-+	depends on ARCH_HAS_SET_MEMORY || ARCH_HAS_SET_DIRECT_MAP
+diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
+index f7213d0943b8..4f7d17970688 100644
+--- a/arch/x86/boot/compressed/ident_map_64.c
++++ b/arch/x86/boot/compressed/ident_map_64.c
+@@ -349,3 +349,6 @@ void do_boot_page_fault(struct pt_regs *regs, unsigned long error_code)
+ 	 */
+ 	add_identity_map(address, end);
+ }
 +
- #
- # Select if the architecture provides the arch_dma_set_uncached symbol to
- # either provide an uncached segment alias for a DMA allocation, or
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 88fb922c23a0..9b4e6cf4a6aa 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -118,6 +118,7 @@ config X86
- 	select ARCH_WANTS_NO_INSTR
- 	select ARCH_WANT_HUGE_PMD_SHARE
- 	select ARCH_WANT_LD_ORPHAN_WARN
-+	select ARCH_WANTS_PTE_MAPPED_CACHE
- 	select ARCH_WANTS_THP_SWAP		if X86_64
- 	select BUILDTIME_TABLE_SORT
- 	select CLKEVT_I8253
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 55b2ec1f965a..c9006e3c67ad 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -55,8 +55,9 @@ struct vm_area_struct;
- #define ___GFP_ACCOUNT		0x400000u
- #define ___GFP_ZEROTAGS		0x800000u
- #define ___GFP_SKIP_KASAN_POISON	0x1000000u
-+#define ___GFP_PTE_MAPPED	0x2000000u
- #ifdef CONFIG_LOCKDEP
--#define ___GFP_NOLOCKDEP	0x2000000u
-+#define ___GFP_NOLOCKDEP	0x4000000u
- #else
- #define ___GFP_NOLOCKDEP	0
++void enable_pgtable_write(void *p) {}
++void disable_pgtable_write(void *p) {}
+diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
+index c7ec5bb88334..a9e2d77697a7 100644
+--- a/arch/x86/include/asm/pgalloc.h
++++ b/arch/x86/include/asm/pgalloc.h
+@@ -6,6 +6,8 @@
+ #include <linux/mm.h>		/* for struct page */
+ #include <linux/pagemap.h>
+ 
++#define STATIC_TABLE_KEY	1
++
+ #define __HAVE_ARCH_PTE_ALLOC_ONE
+ #define __HAVE_ARCH_PGD_FREE
+ #include <asm-generic/pgalloc.h>
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 448cd01eb3ec..0cc5753983ab 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -117,6 +117,9 @@ extern pmdval_t early_pmd_flags;
+ #define arch_end_context_switch(prev)	do {} while(0)
+ #endif	/* CONFIG_PARAVIRT_XXL */
+ 
++void enable_pgtable_write(void *pg_table);
++void disable_pgtable_write(void *pg_table);
++
+ /*
+  * The following only work if pte_present() is true.
+  * Undefined behaviour if not..
+@@ -1073,7 +1076,9 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+ static inline void ptep_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long addr, pte_t *ptep)
+ {
++	enable_pgtable_write(ptep);
+ 	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
++	disable_pgtable_write(ptep);
+ }
+ 
+ #define flush_tlb_fix_spurious_fault(vma, address) do { } while (0)
+@@ -1123,7 +1128,9 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
+ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long addr, pmd_t *pmdp)
+ {
++	enable_pgtable_write(pmdp);
+ 	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
++	disable_pgtable_write(pmdp);
+ }
+ 
+ #define pud_write pud_write
+@@ -1138,10 +1145,18 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+ 		unsigned long address, pmd_t *pmdp, pmd_t pmd)
+ {
+ 	if (IS_ENABLED(CONFIG_SMP)) {
+-		return xchg(pmdp, pmd);
++		pmd_t ret;
++
++		enable_pgtable_write(pmdp);
++		ret = xchg(pmdp, pmd);
++		disable_pgtable_write(pmdp);
++
++		return ret;
+ 	} else {
+ 		pmd_t old = *pmdp;
++		enable_pgtable_write(pmdp);
+ 		WRITE_ONCE(*pmdp, pmd);
++		disable_pgtable_write(pmdp);
+ 		return old;
+ 	}
+ }
+@@ -1224,13 +1239,17 @@ static inline p4d_t *user_to_kernel_p4dp(p4d_t *p4dp)
+  */
+ static inline void clone_pgd_range(pgd_t *dst, pgd_t *src, int count)
+ {
++	enable_pgtable_write(dst);
+ 	memcpy(dst, src, count * sizeof(pgd_t));
++	disable_pgtable_write(dst);
+ #ifdef CONFIG_PAGE_TABLE_ISOLATION
+ 	if (!static_cpu_has(X86_FEATURE_PTI))
+ 		return;
+ 	/* Clone the user space pgd as well */
++	enable_pgtable_write(kernel_to_user_pgdp(dst));
+ 	memcpy(kernel_to_user_pgdp(dst), kernel_to_user_pgdp(src),
+ 	       count * sizeof(pgd_t));
++	disable_pgtable_write(kernel_to_user_pgdp(dst));
  #endif
-@@ -101,12 +102,18 @@ struct vm_area_struct;
-  * node with no fallbacks or placement policy enforcements.
-  *
-  * %__GFP_ACCOUNT causes the allocation to be accounted to kmemcg.
-+ *
-+ * %__GFP_PTE_MAPPED returns a page that is mapped with PTE in the
-+ * direct map. On architectures that use higher page table levels to map
-+ * physical memory, this flag will casue split of large pages in the direct
-+ * mapping. Has effect only if CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE is set.
-  */
- #define __GFP_RECLAIMABLE ((__force gfp_t)___GFP_RECLAIMABLE)
- #define __GFP_WRITE	((__force gfp_t)___GFP_WRITE)
- #define __GFP_HARDWALL   ((__force gfp_t)___GFP_HARDWALL)
- #define __GFP_THISNODE	((__force gfp_t)___GFP_THISNODE)
- #define __GFP_ACCOUNT	((__force gfp_t)___GFP_ACCOUNT)
-+#define __GFP_PTE_MAPPED ((__force gfp_t)___GFP_PTE_MAPPED)
- 
- /**
-  * DOC: Watermark modifiers
-@@ -249,7 +256,7 @@ struct vm_area_struct;
- #define __GFP_NOLOCKDEP ((__force gfp_t)___GFP_NOLOCKDEP)
- 
- /* Room for N __GFP_FOO bits */
--#define __GFP_BITS_SHIFT (25 + IS_ENABLED(CONFIG_LOCKDEP))
-+#define __GFP_BITS_SHIFT (26 + IS_ENABLED(CONFIG_LOCKDEP))
- #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
- 
- /**
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 7ca22e6e694a..350ec98b82d2 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3283,5 +3283,7 @@ static inline int seal_check_future_write(int seals, struct vm_area_struct *vma)
- 	return 0;
  }
  
-+void pte_mapped_cache_init(void);
-+
- #endif /* __KERNEL__ */
- #endif /* _LINUX_MM_H */
-diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
-index 973fd731a520..4faf8c542b00 100644
---- a/include/linux/pageblock-flags.h
-+++ b/include/linux/pageblock-flags.h
-@@ -21,6 +21,8 @@ enum pageblock_bits {
- 			/* 3 bits required for migrate types */
- 	PB_migrate_skip,/* If set the block is skipped by compaction */
+diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
+index 56d0399a0cd1..5dfcf7dbe6ac 100644
+--- a/arch/x86/include/asm/pgtable_64.h
++++ b/arch/x86/include/asm/pgtable_64.h
+@@ -64,7 +64,9 @@ void set_pte_vaddr_pud(pud_t *pud_page, unsigned long vaddr, pte_t new_pte);
  
-+	PB_pte_mapped, /* If set the block is mapped with PTEs in direct map */
-+
- 	/*
- 	 * Assume the bits will always align on a word. If this assumption
- 	 * changes then get/set pageblock needs updating.
-@@ -88,4 +90,28 @@ static inline void set_pageblock_skip(struct page *page)
- }
- #endif /* CONFIG_COMPACTION */
- 
-+#ifdef CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE
-+#define get_pageblock_pte_mapped(page)				\
-+	get_pfnblock_flags_mask(page, page_to_pfn(page),	\
-+			(1 << (PB_pte_mapped)))
-+#define clear_pageblock_pte_mapped(page) \
-+	set_pfnblock_flags_mask(page, 0, page_to_pfn(page),	\
-+			(1 << PB_pte_mapped))
-+#define set_pageblock_pte_mapped(page) \
-+	set_pfnblock_flags_mask(page, (1 << PB_pte_mapped),	\
-+			page_to_pfn(page),			\
-+			(1 << PB_pte_mapped))
-+#else /* CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE */
-+static inline bool get_pageblock_pte_mapped(struct page *page)
-+{
-+	return false;
-+}
-+static inline void clear_pageblock_pte_mapped(struct page *page)
-+{
-+}
-+static inline void set_pageblock_pte_mapped(struct page *page)
-+{
-+}
-+#endif /* CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE */
-+
- #endif	/* PAGEBLOCK_FLAGS_H */
-diff --git a/init/main.c b/init/main.c
-index f5b8246e8aa1..c0d59a183a39 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -828,6 +828,7 @@ static void __init mm_init(void)
- 	page_ext_init_flatmem_late();
- 	kmem_cache_init();
- 	kmemleak_init();
-+	pte_mapped_cache_init();
- 	pgtable_init();
- 	debug_objects_mem_init();
- 	vmalloc_init();
-diff --git a/mm/internal.h b/mm/internal.h
-index 31ff935b2547..0557ece6ebf4 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -24,7 +24,8 @@
- 			__GFP_ATOMIC)
- 
- /* The GFP flags allowed during early boot */
--#define GFP_BOOT_MASK (__GFP_BITS_MASK & ~(__GFP_RECLAIM|__GFP_IO|__GFP_FS))
-+#define GFP_BOOT_MASK (__GFP_BITS_MASK & ~(__GFP_RECLAIM|__GFP_IO|__GFP_FS|\
-+					   __GFP_PTE_MAPPED))
- 
- /* Control allocation cpuset and node placement constraints */
- #define GFP_CONSTRAINT_MASK (__GFP_HARDWALL|__GFP_THISNODE)
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 856b175c15a4..7936d8dcb80b 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -72,6 +72,7 @@
- #include <linux/padata.h>
- #include <linux/khugepaged.h>
- #include <linux/buffer_head.h>
-+#include <linux/set_memory.h>
- #include <asm/sections.h>
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
-@@ -107,6 +108,14 @@ typedef int __bitwise fpi_t;
-  */
- #define FPI_TO_TAIL		((__force fpi_t)BIT(1))
- 
-+/*
-+ * Free page directly to the page allocator rather than check if it should
-+ * be placed into the cache of pte_mapped pages.
-+ * Used by the pte_mapped cache shrinker.
-+ * Has effect only when pte-mapped cache is enabled
-+ */
-+#define FPI_NO_PTE_MAP		((__force fpi_t)BIT(2))
-+
- /*
-  * Don't poison memory with KASAN (only for the tag-based modes).
-  * During boot, all non-reserved memblock memory is exposed to page_alloc.
-@@ -225,6 +234,19 @@ static inline void set_pcppage_migratetype(struct page *page, int migratetype)
- 	page->index = migratetype;
+ static inline void native_set_pte(pte_t *ptep, pte_t pte)
+ {
++	enable_pgtable_write(ptep);
+ 	WRITE_ONCE(*ptep, pte);
++	disable_pgtable_write(ptep);
  }
  
-+#ifdef CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE
-+static struct page *alloc_page_pte_mapped(gfp_t gfp);
-+static void free_page_pte_mapped(struct page *page);
-+#else
-+static inline struct page *alloc_page_pte_mapped(gfp_t gfp)
-+{
-+	return NULL;
-+}
-+static void free_page_pte_mapped(struct page *page)
-+{
-+}
-+#endif
+ static inline void native_pte_clear(struct mm_struct *mm, unsigned long addr,
+@@ -80,7 +82,9 @@ static inline void native_set_pte_atomic(pte_t *ptep, pte_t pte)
+ 
+ static inline void native_set_pmd(pmd_t *pmdp, pmd_t pmd)
+ {
++	enable_pgtable_write(pmdp);
+ 	WRITE_ONCE(*pmdp, pmd);
++	disable_pgtable_write(pmdp);
+ }
+ 
+ static inline void native_pmd_clear(pmd_t *pmd)
+@@ -91,7 +95,12 @@ static inline void native_pmd_clear(pmd_t *pmd)
+ static inline pte_t native_ptep_get_and_clear(pte_t *xp)
+ {
+ #ifdef CONFIG_SMP
+-	return native_make_pte(xchg(&xp->pte, 0));
++	pteval_t pte_val;
 +
- #ifdef CONFIG_PM_SLEEP
- /*
-  * The following functions are used by the suspend/hibernate code to temporarily
-@@ -536,7 +558,7 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
- 	unsigned long bitidx, word_bitidx;
- 	unsigned long old_word, word;
++	enable_pgtable_write(xp);
++	pte_val = xchg(&xp->pte, 0);
++	disable_pgtable_write(xp);
++	return native_make_pte(pte_val);
+ #else
+ 	/* native_local_ptep_get_and_clear,
+ 	   but duplicated because of cyclic dependency */
+@@ -104,7 +113,12 @@ static inline pte_t native_ptep_get_and_clear(pte_t *xp)
+ static inline pmd_t native_pmdp_get_and_clear(pmd_t *xp)
+ {
+ #ifdef CONFIG_SMP
+-	return native_make_pmd(xchg(&xp->pmd, 0));
++	pteval_t pte_val;
++
++	enable_pgtable_write(xp);
++	pte_val = xchg(&xp->pmd, 0);
++	disable_pgtable_write(xp);
++	return native_make_pmd(pte_val);
+ #else
+ 	/* native_local_pmdp_get_and_clear,
+ 	   but duplicated because of cyclic dependency */
+@@ -116,7 +130,9 @@ static inline pmd_t native_pmdp_get_and_clear(pmd_t *xp)
  
--	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != 4);
-+	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != 5);
- 	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
+ static inline void native_set_pud(pud_t *pudp, pud_t pud)
+ {
++	enable_pgtable_write(pudp);
+ 	WRITE_ONCE(*pudp, pud);
++	disable_pgtable_write(pudp);
+ }
  
- 	bitmap = get_pageblock_bitmap(page, pfn);
-@@ -1352,6 +1374,16 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 					   PAGE_SIZE << order);
+ static inline void native_pud_clear(pud_t *pud)
+@@ -127,7 +143,12 @@ static inline void native_pud_clear(pud_t *pud)
+ static inline pud_t native_pudp_get_and_clear(pud_t *xp)
+ {
+ #ifdef CONFIG_SMP
+-	return native_make_pud(xchg(&xp->pud, 0));
++	pteval_t pte_val;
++
++	enable_pgtable_write(xp);
++	pte_val = xchg(&xp->pud, 0);
++	disable_pgtable_write(xp);
++	return native_make_pud(pte_val);
+ #else
+ 	/* native_local_pudp_get_and_clear,
+ 	 * but duplicated because of cyclic dependency
+@@ -144,13 +165,17 @@ static inline void native_set_p4d(p4d_t *p4dp, p4d_t p4d)
+ 	pgd_t pgd;
+ 
+ 	if (pgtable_l5_enabled() || !IS_ENABLED(CONFIG_PAGE_TABLE_ISOLATION)) {
++		enable_pgtable_write(p4dp);
+ 		WRITE_ONCE(*p4dp, p4d);
++		disable_pgtable_write(p4dp);
+ 		return;
  	}
  
-+	/*
-+	 * Unless are we shrinking pte_mapped cache return a page from
-+	 * a pageblock mapped with PTEs to that cache.
-+	 */
-+	if (!order && !(fpi_flags & FPI_NO_PTE_MAP) &&
-+	    get_pageblock_pte_mapped(page)) {
-+		free_page_pte_mapped(page);
-+		return false;
-+	}
-+
- 	kernel_poison_pages(page, 1 << order);
- 
- 	/*
-@@ -3445,6 +3477,13 @@ void free_unref_page_list(struct list_head *list)
- 	/* Prepare pages for freeing */
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		pfn = page_to_pfn(page);
-+
-+		if (get_pageblock_pte_mapped(page)) {
-+			list_del(&page->lru);
-+			free_page_pte_mapped(page);
-+			continue;
-+		}
-+
- 		if (!free_unref_page_prepare(page, pfn, 0))
- 			list_del(&page->lru);
- 
-@@ -5381,6 +5420,12 @@ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 			&alloc_gfp, &alloc_flags))
- 		return NULL;
- 
-+	if ((alloc_gfp & __GFP_PTE_MAPPED) && order == 0) {
-+		page = alloc_page_pte_mapped(alloc_gfp);
-+		if (page)
-+			goto out;
-+	}
-+
- 	/*
- 	 * Forbid the first pass from falling back to types that fragment
- 	 * memory until all local zones are considered.
-@@ -5681,6 +5726,220 @@ void free_pages_exact(void *virt, size_t size)
+ 	pgd = native_make_pgd(native_p4d_val(p4d));
+ 	pgd = pti_set_user_pgtbl((pgd_t *)p4dp, pgd);
++	enable_pgtable_write(p4dp);
+ 	WRITE_ONCE(*p4dp, native_make_p4d(native_pgd_val(pgd)));
++	disable_pgtable_write(p4dp);
  }
- EXPORT_SYMBOL(free_pages_exact);
  
-+#ifdef CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE
-+
-+struct pte_mapped_cache {
-+	struct shrinker shrinker;
-+	struct list_lru lru;
-+	atomic_t nid_round_robin;
-+	unsigned long free_cnt;
-+};
-+
-+static struct pte_mapped_cache pte_mapped_cache;
-+
-+static struct page *pte_mapped_cache_get(struct pte_mapped_cache *cache)
-+{
-+	unsigned long start_nid, i;
-+	struct list_head *head;
-+	struct page *page = NULL;
-+
-+	start_nid = atomic_fetch_inc(&cache->nid_round_robin) % nr_node_ids;
-+	for (i = 0; i < nr_node_ids; i++) {
-+		int cur_nid = (start_nid + i) % nr_node_ids;
-+
-+		head = list_lru_get_mru(&cache->lru, cur_nid);
-+		if (head) {
-+			page = list_entry(head, struct page, lru);
-+			break;
-+		}
+ static inline void native_p4d_clear(p4d_t *p4d)
+@@ -160,7 +185,9 @@ static inline void native_p4d_clear(p4d_t *p4d)
+ 
+ static inline void native_set_pgd(pgd_t *pgdp, pgd_t pgd)
+ {
++	enable_pgtable_write(pgdp);
+ 	WRITE_ONCE(*pgdp, pti_set_user_pgtbl(pgdp, pgd));
++	disable_pgtable_write(pgdp);
+ }
+ 
+ static inline void native_pgd_clear(pgd_t *pgd)
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index 75ef19aa8903..5c7e70e15199 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -120,7 +120,7 @@ __ref void *alloc_low_pages(unsigned int num)
+ 		unsigned int order;
+ 
+ 		order = get_order((unsigned long)num << PAGE_SHIFT);
+-		return (void *)__get_free_pages(GFP_ATOMIC | __GFP_ZERO, order);
++		return (void *)__get_free_pages(GFP_ATOMIC | __GFP_ZERO | __GFP_PTE_MAPPED, order);
+ 	}
+ 
+ 	if ((pgt_buf_end + num) > pgt_buf_top || !can_use_brk_pgt) {
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 3481b35cb4ec..fd6bfa361865 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -2,10 +2,13 @@
+ #include <linux/mm.h>
+ #include <linux/gfp.h>
+ #include <linux/hugetlb.h>
++#include <linux/printk.h>
+ #include <asm/pgalloc.h>
+ #include <asm/tlb.h>
+ #include <asm/fixmap.h>
+ #include <asm/mtrr.h>
++#include <asm/set_memory.h>
++#include "mm_internal.h"
+ 
+ #ifdef CONFIG_DYNAMIC_PHYSICAL_MASK
+ phys_addr_t physical_mask __ro_after_init = (1ULL << __PHYSICAL_MASK_SHIFT) - 1;
+@@ -52,6 +55,7 @@ early_param("userpte", setup_userpte);
+ 
+ void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
+ {
++	enable_pgtable_write(page_address(pte));
+ 	pgtable_pte_page_dtor(pte);
+ 	paravirt_release_pte(page_to_pfn(pte));
+ 	paravirt_tlb_remove_table(tlb, pte);
+@@ -69,6 +73,7 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+ #ifdef CONFIG_X86_PAE
+ 	tlb->need_flush_all = 1;
+ #endif
++	enable_pgtable_write(pmd);
+ 	pgtable_pmd_page_dtor(page);
+ 	paravirt_tlb_remove_table(tlb, page);
+ }
+@@ -76,6 +81,7 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+ #if CONFIG_PGTABLE_LEVELS > 3
+ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
+ {
++	enable_pgtable_write(pud);
+ 	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
+ 	paravirt_tlb_remove_table(tlb, virt_to_page(pud));
+ }
+@@ -83,6 +89,7 @@ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
+ #if CONFIG_PGTABLE_LEVELS > 4
+ void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d)
+ {
++	enable_pgtable_write(p4d);
+ 	paravirt_release_p4d(__pa(p4d) >> PAGE_SHIFT);
+ 	paravirt_tlb_remove_table(tlb, virt_to_page(p4d));
+ }
+@@ -145,6 +152,7 @@ static void pgd_dtor(pgd_t *pgd)
+ 	if (SHARED_KERNEL_PMD)
+ 		return;
+ 
++	enable_pgtable_write(pgd);
+ 	spin_lock(&pgd_lock);
+ 	pgd_list_del(pgd);
+ 	spin_unlock(&pgd_lock);
+@@ -543,9 +551,12 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
+ {
+ 	int ret = 0;
+ 
+-	if (pte_young(*ptep))
++	if (pte_young(*ptep)) {
++		enable_pgtable_write(ptep);
+ 		ret = test_and_clear_bit(_PAGE_BIT_ACCESSED,
+ 					 (unsigned long *) &ptep->pte);
++		disable_pgtable_write(ptep);
 +	}
-+
-+	return page;
-+}
-+
-+static void pte_mapped_cache_add(struct pte_mapped_cache *cache,
-+				 struct page *page)
+ 
+ 	return ret;
+ }
+@@ -556,9 +567,12 @@ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ {
+ 	int ret = 0;
+ 
+-	if (pmd_young(*pmdp))
++	if (pmd_young(*pmdp)) {
++		enable_pgtable_write(pmdp);
+ 		ret = test_and_clear_bit(_PAGE_BIT_ACCESSED,
+ 					 (unsigned long *)pmdp);
++		disable_pgtable_write(pmdp);
++	}
+ 
+ 	return ret;
+ }
+@@ -567,9 +581,12 @@ int pudp_test_and_clear_young(struct vm_area_struct *vma,
+ {
+ 	int ret = 0;
+ 
+-	if (pud_young(*pudp))
++	if (pud_young(*pudp)) {
++		enable_pgtable_write(pudp);
+ 		ret = test_and_clear_bit(_PAGE_BIT_ACCESSED,
+ 					 (unsigned long *)pudp);
++		disable_pgtable_write(pudp);
++	}
+ 
+ 	return ret;
+ }
+@@ -578,6 +595,7 @@ int pudp_test_and_clear_young(struct vm_area_struct *vma,
+ int ptep_clear_flush_young(struct vm_area_struct *vma,
+ 			   unsigned long address, pte_t *ptep)
+ {
++	int ret;
+ 	/*
+ 	 * On x86 CPUs, clearing the accessed bit without a TLB flush
+ 	 * doesn't cause data corruption. [ It could cause incorrect
+@@ -591,7 +609,10 @@ int ptep_clear_flush_young(struct vm_area_struct *vma,
+ 	 * shouldn't really matter because there's no real memory
+ 	 * pressure for swapout to react to. ]
+ 	 */
+-	return ptep_test_and_clear_young(vma, address, ptep);
++	enable_pgtable_write(ptep);
++	ret = ptep_test_and_clear_young(vma, address, ptep);
++	disable_pgtable_write(ptep);
++	return ret;
+ }
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+@@ -602,7 +623,9 @@ int pmdp_clear_flush_young(struct vm_area_struct *vma,
+ 
+ 	VM_BUG_ON(address & ~HPAGE_PMD_MASK);
+ 
++	enable_pgtable_write(pmdp);
+ 	young = pmdp_test_and_clear_young(vma, address, pmdp);
++	disable_pgtable_write(pmdp);
+ 	if (young)
+ 		flush_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
+ 
+@@ -851,6 +874,47 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+ 	return 1;
+ }
+ 
++static void pgtable_write_set(void *pg_table, bool set)
 +{
-+	INIT_LIST_HEAD(&page->lru);
-+	list_lru_add_node(&cache->lru, &page->lru, page_to_nid(page));
-+	set_page_count(page, 0);
-+}
++	int level = 0;
++	pte_t *pte;
 +
-+static void pte_mapped_cache_add_neighbour_pages(struct page *page)
-+{
-+#if 0
 +	/*
-+	 * TODO: if pte_mapped_cache_replenish() had to fallback to order-0
-+	 * allocation, the large page in the direct map will be split
-+	 * anyway and if there are free pages in the same pageblock they
-+	 * can be added to pte_mapped cache.
++	 * Skip the page tables allocated from pgt_buf break area and from
++	 * memblock
 +	 */
-+	unsigned int order = (1 << HUGETLB_PAGE_ORDER);
-+	unsigned int nr_pages = (1 << order);
-+	unsigned long pfn = page_to_pfn(page);
-+	struct page *page_head = page - (pfn & (order - 1));
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		page = page_head + i;
-+		if (is_free_buddy_page(page)) {
-+			take_page_off_buddy(page);
-+			pte_mapped_cache_add(&pte_mapped_cache, page);
-+		}
-+	}
-+#endif
-+}
-+
-+static struct page *pte_mapped_cache_replenish(struct pte_mapped_cache *cache,
-+					       gfp_t gfp)
-+{
-+	unsigned int order = HUGETLB_PAGE_ORDER;
-+	unsigned int nr_pages;
-+	struct page *page;
-+	int i, err;
-+
-+	gfp &= ~__GFP_PTE_MAPPED;
-+
-+	page = alloc_pages(gfp, order);
-+	if (!page) {
-+		order = 0;
-+		page = alloc_pages(gfp, order);
-+		if (!page)
-+			return NULL;
-+	}
-+
-+	nr_pages = (1 << order);
-+	err = set_memory_4k((unsigned long)page_address(page), nr_pages);
-+	if (err)
-+		goto err_free_pages;
-+
-+	if (order)
-+		split_page(page, order);
-+	else
-+		pte_mapped_cache_add_neighbour_pages(page);
-+
-+	for (i = 1; i < nr_pages; i++)
-+		pte_mapped_cache_add(cache, page + i);
-+
-+	set_pageblock_pte_mapped(page);
-+
-+	return page;
-+
-+err_free_pages:
-+	__free_pages(page, order);
-+	return NULL;
-+}
-+
-+static struct page *alloc_page_pte_mapped(gfp_t gfp)
-+{
-+	struct pte_mapped_cache *cache = &pte_mapped_cache;
-+	struct page *page;
-+
-+	page = pte_mapped_cache_get(cache);
-+	if (page) {
-+		prep_new_page(page, 0, gfp, 0);
-+		goto out;
-+	}
-+
-+	page = pte_mapped_cache_replenish(cache, gfp);
-+
-+out:
-+	return page;
-+}
-+
-+static void free_page_pte_mapped(struct page *page)
-+{
-+	pte_mapped_cache_add(&pte_mapped_cache, page);
-+}
-+
-+static struct pte_mapped_cache *pte_mapped_cache_from_sc(struct shrinker *sh)
-+{
-+	return container_of(sh, struct pte_mapped_cache, shrinker);
-+}
-+
-+static unsigned long pte_mapped_cache_shrink_count(struct shrinker *shrinker,
-+						   struct shrink_control *sc)
-+{
-+	struct pte_mapped_cache *cache = pte_mapped_cache_from_sc(shrinker);
-+	unsigned long count = list_lru_shrink_count(&cache->lru, sc);
-+
-+	return count ? count : SHRINK_EMPTY;
-+}
-+
-+static enum lru_status pte_mapped_cache_shrink_isolate(struct list_head *item,
-+						       struct list_lru_one *lst,
-+						       spinlock_t *lock,
-+						       void *cb_arg)
-+{
-+	struct list_head *freeable = cb_arg;
-+
-+	list_lru_isolate_move(lst, item, freeable);
-+
-+	return LRU_REMOVED;
-+}
-+
-+static unsigned long pte_mapped_cache_shrink_scan(struct shrinker *shrinker,
-+						  struct shrink_control *sc)
-+{
-+	struct pte_mapped_cache *cache = pte_mapped_cache_from_sc(shrinker);
-+	struct list_head *cur, *next;
-+	unsigned long isolated;
-+	LIST_HEAD(freeable);
-+
-+	isolated = list_lru_shrink_walk(&cache->lru, sc,
-+					pte_mapped_cache_shrink_isolate,
-+					&freeable);
-+
-+	list_for_each_safe(cur, next, &freeable) {
-+		struct page *page = list_entry(cur, struct page, lru);
-+
-+		list_del(cur);
-+		__free_pages_ok(page, 0, FPI_NO_PTE_MAP);
-+	}
-+
-+	/* Every item walked gets isolated */
-+	sc->nr_scanned += isolated;
-+
-+	return isolated;
-+}
-+
-+static int __pte_mapped_cache_init(struct pte_mapped_cache *cache)
-+{
-+	int err;
-+
-+	err = list_lru_init(&cache->lru);
-+	if (err)
-+		return err;
-+
-+	cache->shrinker.count_objects = pte_mapped_cache_shrink_count;
-+	cache->shrinker.scan_objects = pte_mapped_cache_shrink_scan;
-+	cache->shrinker.seeks = DEFAULT_SEEKS;
-+	cache->shrinker.flags = SHRINKER_NUMA_AWARE;
-+
-+	err = register_shrinker(&cache->shrinker);
-+	if (err)
-+		goto err_list_lru_destroy;
-+
-+	return 0;
-+
-+err_list_lru_destroy:
-+	list_lru_destroy(&cache->lru);
-+	return err;
-+}
-+
-+void __init pte_mapped_cache_init(void)
-+{
-+	if (gfp_allowed_mask & __GFP_PTE_MAPPED)
++	if (!after_bootmem)
++		return;
++	if (!PageTable(virt_to_page(pg_table)))
 +		return;
 +
-+	if (!__pte_mapped_cache_init(&pte_mapped_cache))
-+		gfp_allowed_mask |= __GFP_PTE_MAPPED;
-+}
-+#else
-+void __init pte_mapped_cache_init(void)
-+{
-+}
-+#endif /* CONFIG_ARCH_WANTS_PTE_MAPPED_CACHE */
++	pte = lookup_address((unsigned long)pg_table, &level);
++	if (!pte || level != PG_LEVEL_4K)
++		return;
 +
++	if (set) {
++		if (pte_write(*pte))
++			return;
++
++		WRITE_ONCE(*pte, pte_mkwrite(*pte));
++	} else {
++		if (!pte_write(*pte))
++			return;
++
++		WRITE_ONCE(*pte, pte_wrprotect(*pte));
++	}
++}
++
++void enable_pgtable_write(void *pg_table)
++{
++	pgtable_write_set(pg_table, true);
++}
++
++void disable_pgtable_write(void *pg_table)
++{
++	pgtable_write_set(pg_table, false);
++}
++
+ #else /* !CONFIG_X86_64 */
+ 
+ /*
+diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
+index 02932efad3ab..bc71d529552e 100644
+--- a/include/asm-generic/pgalloc.h
++++ b/include/asm-generic/pgalloc.h
+@@ -4,7 +4,7 @@
+ 
+ #ifdef CONFIG_MMU
+ 
+-#define GFP_PGTABLE_KERNEL	(GFP_KERNEL | __GFP_ZERO)
++#define GFP_PGTABLE_KERNEL	(GFP_KERNEL | __GFP_ZERO | __GFP_PTE_MAPPED)
+ #define GFP_PGTABLE_USER	(GFP_PGTABLE_KERNEL | __GFP_ACCOUNT)
+ 
  /**
-  * nr_free_zone_pages - count number of pages beyond high watermark
-  * @offset: The zone index of the highest zone
 -- 
 2.28.0
 
