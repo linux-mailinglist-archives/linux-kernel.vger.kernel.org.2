@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ACD3F4BE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DE43F4BE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 15:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhHWNw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 09:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhHWNwZ (ORCPT
+        id S229667AbhHWNxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 09:53:06 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:64763 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhHWNxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:52:25 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6375FC061575;
-        Mon, 23 Aug 2021 06:51:42 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u15so10595485wmj.1;
-        Mon, 23 Aug 2021 06:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=grHlTpaRkCmdCSG4Kz5PeLTfu9q+9hdgMA5QHBIPirk=;
-        b=EF0NgJ7BZ7KozqQXBSjLRguH5ie4StFr9uqNXoMD+xfy211ySKHJ+KFF+tFlhYSYVj
-         CbG2DD3vZOeE0AO6CpTQkdm/JyE16PUDJTg3Q8muWqYH3C932Y7ebmf4z1vB/NttnZY0
-         5ney5OYr4bUTirp5fmzVZfGWlCcCrNZV+50pOK5pIZho7VC/cnOeNxjFUQ7fcLhIVUdl
-         6+8AQFN/wdIYy/rLcVTJpBFgljtjgJ9oiDri6oB4E93zStJKGEJvkAyKFSdGrvUu1Fmj
-         M8RIHtWUIaMBOGPBSB+GBkt7SGJDqIKySIEam66ilqOUKb6w33feFqS0LN/GW7RuQD9W
-         Mk4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=grHlTpaRkCmdCSG4Kz5PeLTfu9q+9hdgMA5QHBIPirk=;
-        b=c2YaUebjTgyvREvWzJKnMbh7CiyMdgqcDzMGZ6CNg9E7b9YeQ4I1htsUzqPQno/fvc
-         Mm4J12UnXiIXUc+SAjjYBRYXVPvrmBk46axwwoMuVwQxAuPwmqVdptxYz0OEJJROHQuB
-         XPKeKJvF4tKlISHZzJUleWzB1hHe5MGf6tSauyoFWIfigHXc00qmCuP2j+vD5+xyLlhb
-         ScEyfV0O2AZ09GGoFwhYiO/1KMnBtieQk08okNbp/wZMA/L4lOEAitnN9b+R0VgXkhPi
-         AlNwDP71aoq1U9snitV+rKWI7XVQvpauhs8rsS6DHHDQc/rlyqYF7OKqvROt4aFsublN
-         AHBg==
-X-Gm-Message-State: AOAM531q5yjvfVcLf7+O4SA4e5INOXo/hl/md5QbaZmXvMyCIaaYkYVw
-        r1QNEMoq6tWUg2apPi2EtDE=
-X-Google-Smtp-Source: ABdhPJzSKuJDkGBav4aEO8tyZv1+fgDy6QOqLEnyX8LyIDohUuKibZPlXjuFsAjsrj8gjAGwchQrfw==
-X-Received: by 2002:a1c:7e8a:: with SMTP id z132mr16322219wmc.75.1629726700959;
-        Mon, 23 Aug 2021 06:51:40 -0700 (PDT)
-Received: from nunojsa-N551JK ([2001:a61:2531:cb01:1061:e4b5:709f:d9ad])
-        by smtp.googlemail.com with ESMTPSA id m39sm20959410wms.36.2021.08.23.06.51.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 06:51:40 -0700 (PDT)
-Message-ID: <0d872fd789603a2d4dd74594f841d4bea7de38d3.camel@gmail.com>
-Subject: Re: [PATCH v4 2/6] iio: kfifo-buffer: Add output buffer support
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Mihail Chindris <mihail.chindris@analog.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        nuno.sa@analog.com, dragos.bogdan@analog.com,
-        alexandru.ardelean@analog.com
-Date:   Mon, 23 Aug 2021 15:51:39 +0200
-In-Reply-To: <20210820165927.4524-3-mihail.chindris@analog.com>
-References: <20210820165927.4524-1-mihail.chindris@analog.com>
-         <20210820165927.4524-3-mihail.chindris@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Mon, 23 Aug 2021 09:53:04 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb6123a804ec8-05972; Mon, 23 Aug 2021 21:52:04 +0800 (CST)
+X-RM-TRANSID: 2eeb6123a804ec8-05972
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.26.114] (unknown[10.42.68.12])
+        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee56123a803594-cd5d4;
+        Mon, 23 Aug 2021 21:52:04 +0800 (CST)
+X-RM-TRANSID: 2ee56123a803594-cd5d4
+Subject: Re: [PATCH 3/3] can: mscan: mpc5xxx_can: Useof_device_get_match_data
+ to simplify code
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     davem@davemloft.net, wg@grandegger.com, kuba@kernel.org,
+        kevinbrace@bracecomputerlab.com, romieu@fr.zoreil.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210823113338.3568-1-tangbin@cmss.chinamobile.com>
+ <20210823113338.3568-4-tangbin@cmss.chinamobile.com>
+ <20210823123715.j4khoyld5mfl6kdv@pengutronix.de>
+From:   tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <eafd35fd-bf71-167a-b1c8-50e3117e4be4@cmss.chinamobile.com>
+Date:   Mon, 23 Aug 2021 21:52:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210823123715.j4khoyld5mfl6kdv@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-08-20 at 16:59 +0000, Mihail Chindris wrote:
-> From: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> Add output buffer support to the kfifo buffer implementation.
-> 
-> The implementation is straight forward and mostly just wraps the
-> kfifo
-> API to provide the required operations.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
-> ---
->  drivers/iio/buffer/kfifo_buf.c | 50
-> ++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-> diff --git a/drivers/iio/buffer/kfifo_buf.c
-> b/drivers/iio/buffer/kfifo_buf.c
-> index 516eb3465de1..7368db2d5c32 100644
-> --- a/drivers/iio/buffer/kfifo_buf.c
-> +++ b/drivers/iio/buffer/kfifo_buf.c
-> @@ -138,10 +138,60 @@ static void iio_kfifo_buffer_release(struct
-> iio_buffer *buffer)
->  	kfree(kf);
->  }
->  
-> +static size_t iio_kfifo_buf_space_available(struct iio_buffer *r)
-> +{
-> +	struct iio_kfifo *kf = iio_to_kfifo(r);
-> +	size_t avail;
-> +
-> +	mutex_lock(&kf->user_lock);
-> +	avail = kfifo_avail(&kf->kf);
-> +	mutex_unlock(&kf->user_lock);
-> +
-> +	return avail;
-> +}
-> +
-> +static int iio_kfifo_remove_from(struct iio_buffer *r, void *data)
-> +{
-> +	int ret;
-> +	struct iio_kfifo *kf = iio_to_kfifo(r);
-> +
-> +	if (kfifo_size(&kf->kf) < 1)
-> +		return -EBUSY;
-> +
-> +	ret = kfifo_out(&kf->kf, data, 1);
-> +	if (ret != 1)
-> +		return -EBUSY;
-> +
-> +	wake_up_interruptible_poll(&r->pollq, POLLOUT | POLLWRNORM);
-> +
-> +	return 0;
-> +}
-> +
-> +static int iio_kfifo_write(struct iio_buffer *r, size_t n,
-> +	const char __user *buf)
-> +{
+Hi Marc:
 
-nit: I would align this with the open parenthesis...
+On 2021/8/23 20:37, Marc Kleine-Budde wrote:
+> On 23.08.2021 19:33:38, Tang Bin wrote:
+>> Retrieve OF match data, it's better and cleaner to use
+>> 'of_device_get_match_data' over 'of_match_device'.
+>>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> Thanks for the patch!
+>
+> LGTM, comment inside.
+>
+>> ---
+>>   drivers/net/can/mscan/mpc5xxx_can.c | 6 ++----
+>>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
+>> index e254e04ae..3b7465acd 100644
+>> --- a/drivers/net/can/mscan/mpc5xxx_can.c
+>> +++ b/drivers/net/can/mscan/mpc5xxx_can.c
+>> @@ -279,7 +279,6 @@ static u32 mpc512x_can_get_clock(struct platform_device *ofdev,
+>>   static const struct of_device_id mpc5xxx_can_table[];
+>>   static int mpc5xxx_can_probe(struct platform_device *ofdev)
+>>   {
+>> -	const struct of_device_id *match;
+>>   	const struct mpc5xxx_can_data *data;
+>>   	struct device_node *np = ofdev->dev.of_node;
+>>   	struct net_device *dev;
+>> @@ -289,10 +288,9 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
+>>   	int irq, mscan_clksrc = 0;
+>>   	int err = -ENOMEM;
+>>   
+>> -	match = of_match_device(mpc5xxx_can_table, &ofdev->dev);
+>> -	if (!match)
+>> +	data = of_device_get_match_data(&ofdev->dev);
+>> +	if (!data)
+>>   		return -EINVAL;
+> Please remove the "BUG_ON(!data)", which comes later.
 
-- Nuno Sá
+For this place, may I send another patch to fix this 'BUG_ON()' by 
+itself, not in this patch series?
+
+Thanks
+
+Tang Bin
+
+>
+>> -	data = match->data;
+>>   
+>>   	base = of_iomap(np, 0);
+>>   	if (!base) {
+>> -- 
+>> 2.20.1.windows.1
+>>
+>>
+>>
+>>
+> regards,
+> Marc
+>
 
 
