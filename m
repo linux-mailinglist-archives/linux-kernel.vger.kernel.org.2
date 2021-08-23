@@ -2,165 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656AE3F4CF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054163F4CF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhHWPCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:02:11 -0400
-Received: from mail.efficios.com ([167.114.26.124]:33538 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbhHWPAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:00:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A0106334FC6;
-        Mon, 23 Aug 2021 11:00:08 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id uKFyB1M3jATS; Mon, 23 Aug 2021 11:00:04 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0D4FB334EEB;
-        Mon, 23 Aug 2021 11:00:04 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 0D4FB334EEB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1629730804;
-        bh=EGJSeB1m+KUlEGsOyCQNymBM03QrlJxesVoB9WRZFHo=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ejPco84GHAXhi1/6wOVyAMnfI8z5LTzjRsTcS73jAocDos/Jg612nxN47CZzMjd1v
-         j0dkSxvMADrUUQ6+2XaVpzg41uUfS876bws5Dc9KVmY3TbvU8bfG/GzZtSaU6MD/Br
-         qd+yqE3E2LAVx+Wr4bAeKieW105tnSA1qBUEcAIFATAGYjySau7Gt6WOjEkKspWh2B
-         avdwWhlGU945C6b8YvfAvk1ZdqEc2nt46fnvC2+SAOAbasQIeDIf96bdMWUzu3FQjr
-         7/tGcKmANl6xucIecfrF1a7WCI/NBUZnrQLCXvN+xT53buigZa/MX4DkWxF0/t6oL9
-         xwMUBg49cEiGg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3fgpCu_WLZGT; Mon, 23 Aug 2021 11:00:03 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id BD2C1335202;
-        Mon, 23 Aug 2021 11:00:03 -0400 (EDT)
-Date:   Mon, 23 Aug 2021 11:00:03 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Message-ID: <733947967.21669.1629730803567.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210820225002.310652-2-seanjc@google.com>
-References: <20210820225002.310652-1-seanjc@google.com> <20210820225002.310652-2-seanjc@google.com>
-Subject: Re: [PATCH v2 1/5] KVM: rseq: Update rseq when processing
- NOTIFY_RESUME on xfer to KVM guest
+        id S232696AbhHWPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:03:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:28930 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232169AbhHWPDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 11:03:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10084"; a="278131483"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="278131483"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 08:02:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="492732236"
+Received: from ikuon-mobl.amr.corp.intel.com (HELO [10.212.74.116]) ([10.212.74.116])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 08:02:21 -0700
+Subject: Re: [PATCH v2 1/4] ASoC: rockchip: add support for i2s-tdm controller
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210820182731.29370-1-frattaroli.nicolas@gmail.com>
+ <20210820182731.29370-2-frattaroli.nicolas@gmail.com>
+ <66d6bd43-ee43-eff4-7a68-333fbb996787@linux.intel.com>
+ <3469189.PC3msRC2N5@archbook>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <a2aa0525-326e-9364-1907-c1d53bca39cf@linux.intel.com>
+Date:   Mon, 23 Aug 2021 10:02:18 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <3469189.PC3msRC2N5@archbook>
 Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4101 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: rseq: Update rseq when processing NOTIFY_RESUME on xfer to KVM guest
-Thread-Index: CeEx/cQL9qhzvrS0pzwTWVh97FgvJA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Aug 20, 2021, at 6:49 PM, Sean Christopherson seanjc@google.com wrote:
 
-> Invoke rseq's NOTIFY_RESUME handler when processing the flag prior to
-> transferring to a KVM guest, which is roughly equivalent to an exit to
-> userspace and processes many of the same pending actions.  While the task
-> cannot be in an rseq critical section as the KVM path is reachable only
-> by via ioctl(KVM_RUN), the side effects that apply to rseq outside of a
-> critical section still apply, e.g. the current CPU needs to be updated if
-> the task is migrated.
-> 
-> Clearing TIF_NOTIFY_RESUME without informing rseq can lead to segfaults
-> and other badness in userspace VMMs that use rseq in combination with KVM,
-> e.g. due to the CPU ID being stale after task migration.
 
-Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+On 8/21/21 3:45 PM, Nicolas Frattaroli wrote:
+> On Freitag, 20. August 2021 21:02:16 CEST Pierre-Louis Bossart wrote:
+>>> +	regmap_read(i2s_tdm->regmap, I2S_CLR, &val);
+>>> +	/* Wait on the clear operation to finish */
+>>> +	while (val) {
+>>
+>> delay needed here?
+>>
+> 
+> The rockchip_i2s.c code doesn't have a delay here either, but I can
+> add one of 1 usec for good measure, it seems weird to retry the
+> read as fast as it can.
+
+yep.
+
+>>> +static int rockchip_i2s_tdm_clk_set_rate(struct rk_i2s_tdm_dev *i2s_tdm,
+>>> +					 struct clk *clk, unsigned long rate,
+>>> +					 int ppm)
+>>> +{
+>>> +	unsigned long rate_target;
+>>> +	int delta, ret;
+>>> +
+>>> +	if (ppm == i2s_tdm->clk_ppm)
+>>> +		return 0;
+>>> +
+>>> +	delta = (ppm < 0) ? -1 : 1;
+>>> +	delta *= (int)div64_u64((u64)rate * (u64)abs(ppm) + 500000,
+>>> +				1000000);
+>>
+>> formula looks odd? looks like you are implementing a round to nearest
+>> operation, but that shouldn't require this multiplication?
+>>
+> 
+> I believe the multiplication is there to compensate for clock drift.
+> ppm is a value between -1000 and 1000 that specifies the clock drift
+> in presumably parts per million, going by the variable name.
+
+I meant using a signed division with lsb round-to-nearest, something like:
+
+delta = (int)div64_u64((u64)rate * (u64)(ppm) + 500000,
+			1000000);
 
 > 
-> Fixes: 72c3c0fe54a3 ("x86/kvm: Use generic xfer to guest work function")
-> Reported-by: Peter Foley <pefoley@google.com>
-> Bisected-by: Doug Evans <dje@google.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
-> kernel/entry/kvm.c |  4 +++-
-> kernel/rseq.c      | 14 +++++++++++---
-> 2 files changed, 14 insertions(+), 4 deletions(-)
+>>> +	pm_runtime_enable(&pdev->dev);
+>>> +	if (!pm_runtime_enabled(&pdev->dev)) {
+>>> +		ret = i2s_tdm_runtime_resume(&pdev->dev);
+>>
+>> that looks like dead code? you've just enabled pm_runtime, why would
+>> this fail?
+>>
 > 
-> diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
-> index 49972ee99aff..049fd06b4c3d 100644
-> --- a/kernel/entry/kvm.c
-> +++ b/kernel/entry/kvm.c
-> @@ -19,8 +19,10 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu,
-> unsigned long ti_work)
-> 		if (ti_work & _TIF_NEED_RESCHED)
-> 			schedule();
+> I've had a look at the upstream rockchip_i2s.c code which does the
+> same thing, and I believe the idea here is that we need to manually
+> prepare and enable the master clocks (mclk_rx/mclk_tx) if pm_runtime
+> is not available. Otherwise, pm_runtime will presumably call our
+> resume callback at some point.
 > 
-> -		if (ti_work & _TIF_NOTIFY_RESUME)
-> +		if (ti_work & _TIF_NOTIFY_RESUME) {
-> 			tracehook_notify_resume(NULL);
-> +			rseq_handle_notify_resume(NULL, NULL);
-> +		}
-> 
-> 		ret = arch_xfer_to_guest_mode_handle_work(vcpu, ti_work);
-> 		if (ret)
-> diff --git a/kernel/rseq.c b/kernel/rseq.c
-> index 35f7bd0fced0..6d45ac3dae7f 100644
-> --- a/kernel/rseq.c
-> +++ b/kernel/rseq.c
-> @@ -282,9 +282,17 @@ void __rseq_handle_notify_resume(struct ksignal *ksig,
-> struct pt_regs *regs)
-> 
-> 	if (unlikely(t->flags & PF_EXITING))
-> 		return;
-> -	ret = rseq_ip_fixup(regs);
-> -	if (unlikely(ret < 0))
-> -		goto error;
-> +
-> +	/*
-> +	 * regs is NULL if and only if the caller is in a syscall path.  Skip
-> +	 * fixup and leave rseq_cs as is so that rseq_sycall() will detect and
-> +	 * kill a misbehaving userspace on debug kernels.
-> +	 */
-> +	if (regs) {
-> +		ret = rseq_ip_fixup(regs);
-> +		if (unlikely(ret < 0))
-> +			goto error;
-> +	}
-> 	if (unlikely(rseq_update_cpu_id(t)))
-> 		goto error;
-> 	return;
-> --
-> 2.33.0.rc2.250.ged5fa647cd-goog
+> If runtime power management is disabled in the kernel config then 
+> pm_runtime_enabled is always going to return false.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+that seems very odd. why not enable the clocks by default and let them
+stop in suspend.
+
+>>> +err_suspend:
+>>> +	if (!pm_runtime_status_suspended(&pdev->dev))
+>>> +		i2s_tdm_runtime_suspend(&pdev->dev);
+>>
+>> why is this necessary?
+> 
+> I believe this is the same kind of situation as before, and the
+> other driver does this too: if pm_runtime is not available, we
+> need to stop our clocks manually on probe failure.
+
+then use pm_runtime_disable() and manually stop the clocks...
+
+>>> +err_pm_disable:
+>>> +	pm_runtime_disable(&pdev->dev);>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int rockchip_i2s_tdm_remove(struct platform_device *pdev)
+>>> +{
+>>> +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(&pdev->dev);
+>>> +
+>>> +	pm_runtime_disable(&pdev->dev);
+>>> +	if (!pm_runtime_status_suspended(&pdev->dev))
+>>> +		i2s_tdm_runtime_suspend(&pdev->dev);
+>>
+>> this looks backwards, if you disable pm_runtime first what is the
+>> expectation for the rest.
+> 
+> I'm not well versed in the PM code but if my theory of this being
+> related to unavailable PM is correct, then my best guess is that
+> pm_runtime_disable does suspend the device, so if it's not
+> suspended then we don't have pm_runtime and therefore need to call
+> it manually.
+
+I think this is really doing things backwards. You want to
+unconditionally enable all resources on probe, and let them go to idle
+when no one needs them - or if pm_runtime is disabled.
+
+>>> +
+>>> +	if (!IS_ERR(i2s_tdm->mclk_tx))
+>>> +		clk_prepare_enable(i2s_tdm->mclk_tx);
+>>> +	if (!IS_ERR(i2s_tdm->mclk_rx))
+>>> +		clk_prepare_enable(i2s_tdm->mclk_rx);
+>>> +	if (!IS_ERR(i2s_tdm->hclk))
+>>> +		clk_disable_unprepare(i2s_tdm->hclk);
+>>> +
+>>> +	return 0;>>> +}
+>>> +
+>>> +#ifdef CONFIG_PM_SLEEP
+>>
+>> use __maybe_unused
+> 
+> You mean instead of the ifdef stuff to just add this attribute to
+> the following functions like this?
+> 
+> static int rockchip_i2s_tdm_suspend(struct device *dev) __maybe_unused
+
+yes
+
+> 
+>>
+>>> +static int rockchip_i2s_tdm_suspend(struct device *dev)
+>>> +{
+>>> +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
+>>> +
+>>> +	regcache_mark_dirty(i2s_tdm->regmap);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int rockchip_i2s_tdm_resume(struct device *dev)
+>>> +{
+>>> +	struct rk_i2s_tdm_dev *i2s_tdm = dev_get_drvdata(dev);
+>>> +	int ret;
+>>> +
+>>> +	ret = pm_runtime_get_sync(dev);
+>>> +	if (ret < 0)
+>>> +		return ret;
+>>> +	ret = regcache_sync(i2s_tdm->regmap);
+>>> +	pm_runtime_put(dev);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +#endif
+> 
+> Thank you for your review!
+> 
+> Regards,
+> Nicolas Frattaroli
+> 
+> 
+> 
