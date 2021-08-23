@@ -2,187 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6AD3F4994
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5617A3F499D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236413AbhHWLUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
+        id S236118AbhHWLXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235007AbhHWLUg (ORCPT
+        with ESMTP id S235077AbhHWLXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:20:36 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5D8C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:19:54 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id e15so13443818qtx.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:19:54 -0700 (PDT)
+        Mon, 23 Aug 2021 07:23:18 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3D7C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:22:35 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w5so36259431ejq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:22:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4PbfMieHLNy2oJjY0XJuBOyImh9wvo44rr+tmqHI2Ug=;
-        b=L6DISO0PrFOv7mJZL1glU0wLACXUv/vMMn+QWZA+uKq24fu7BeUXsn/WMb3Ub95vv9
-         kJfmVgvOZAhEeyk6Em0z6muRmB24rwGlC5em0HylG9ywNi7sLzF50mqx33UFs1nBjAQO
-         6m2W9Oo7opSL4CKetgsK6eeh9eskTCsbmjX0VbJFjkubczdhhDijclGJU6WEwhnmuwga
-         hGrMjAqcl5Xk14xeV0U2KyD1EB4W/tS4EgYjkFqCSKk7cLqw80W0WlaMdetSTOyTWfpn
-         q+3ZpagUrW/E4oxsodqkYHPA/7YJMyWjsfKyTWaTF57VR5unswA9yVzFueT/uf36rSpX
-         jwtw==
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8ogj0NVywnjlLLKG1/1qOFRC5dRW1kNgnUReqK85wfg=;
+        b=iN0rYLlArwbPjzfMxoJzqhhxJb5WIc8HpucPW+PCKIm/ysh8CnZmDuqWVafdl2GQzc
+         gY/i47lP+Z2pdm16aC07i3R2mzGX+FVVKM1YMZpn6oy+YH03w3CofbEsCyIvjuhtbIaG
+         Xj2xrWZNjRe5kxYwqsE6AYl9WXT/8ji5jn234l81NAOhkWuqekFywzs2humjVpg9Hrvm
+         rJhKyrrEH349JiqjXnLRp5QILd2lfR0ges9PmAY7O7Qr+gz9jzziIcepYz/8FgXRkrlS
+         LHXKPEs3ST1Qy0VUuMHYsTuJKCOPUuw5YFcWAOc3QeQynYssq11ftdpvUNXbizG7iXyn
+         lWTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4PbfMieHLNy2oJjY0XJuBOyImh9wvo44rr+tmqHI2Ug=;
-        b=eSqVV5Wp7QB09aJADVqCNhFUK1cB4XNUU2Xlj/y/xFLZwsb0wzCG7CYWCl3r7pgyUr
-         2QDhgt/UwttNiLtRkYUrveT3ArjlYm2PTvQFsF4WI0yKGq3dMS8s7AKtzbXuHH1SQ3yD
-         XKyWfVTzUxHJBKZ6zYjSyJ9rx8wS02Zs9d31GSaIwZO4Q56zqJMZQWjpqlHOomso3RA9
-         LutITEmxiooBvvNpi/pNGelp9W4/Rsod2L74yAH5GBE4R+ZK8ZooMfS6vxin4Wyw+tSz
-         4MIH9FIi/PlbigZOB0vNV5slC9FBI3gh0uIYkNcAmUKh9VeWZaLxcpIVKARSXR3KWwPW
-         DdDA==
-X-Gm-Message-State: AOAM533IAw9CxRjZQj5PrgB5sLapwyEU5oAPgVPEypw2td2R5pFIRo6s
-        lTEK4yUfaPXbblz9Sbi+41+nV80wSbcL7Ou8QIVPU5e6dpwD4Q==
-X-Google-Smtp-Source: ABdhPJxNOdiHFNFi2SBTgDO9cbaeKvTB2Al5uJpnNNsuc5Da1tSvh4BtxRuOrUMOaZSEkY2XjzI+nlaFm9emkn2qbRQ=
-X-Received: by 2002:a05:622a:1387:: with SMTP id o7mr29468276qtk.19.1629717593780;
- Mon, 23 Aug 2021 04:19:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8ogj0NVywnjlLLKG1/1qOFRC5dRW1kNgnUReqK85wfg=;
+        b=M54q5bDmNKXY0sEBHG00zJEjqSb+/EM/BPv9RQ5NMQL9FvPHNZYNJZLXpuSyFFYe4E
+         KnIQx7HsHaaYy9NrHXm03U/sEz1MvJMRhGkKlC+balBMH6hOoJFuq93MpdMISt2wN+99
+         FwsjN30b2f9unYNf2XnyEjhevRrs06OVCpX25m1lSwhDudFh6RAxOA1tT9gy9Ywpbrom
+         97faCvJJyZU7nCm1XHbetsnj6yIrcDlKEJt+LDUKLWhIBFZLc/HwBFoRPQRQUC0mSmsg
+         zpfFjCTgHsUDHrcfVTvAUudyro47BzxyEIQBfEMZepCT4llZvb47Z0KCcl1wOgr5Xdwz
+         PQuQ==
+X-Gm-Message-State: AOAM531l4FiphBUae2D4eOGU+ki25NzfVfnCeniJrzNmGfhpQDSiyNQt
+        pQlDROPmGKk2w9KZGhWR8vOisg==
+X-Google-Smtp-Source: ABdhPJyf3hmgp/3IdXQcOWkgrYROTHTyqyg6zR8AFEwtPs3o/RxQPCnhzpW0kFZXtklr4XhmErjf1g==
+X-Received: by 2002:a17:906:7847:: with SMTP id p7mr27314091ejm.335.1629717754090;
+        Mon, 23 Aug 2021 04:22:34 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id d22sm7382212ejj.47.2021.08.23.04.22.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 04:22:33 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     denis.ciocca@st.com, jic23@kernel.org, linus.walleij@linaro.org,
+        lee.jones@linaro.org, andy.shevchenko@gmail.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH v3 0/5] iio: st_sensors: convert probe functions to full devm 
+Date:   Mon, 23 Aug 2021 14:21:59 +0300
+Message-Id: <20210823112204.243255-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210808072643.GA5084@ubuntu> <20210816093126.442f74a1@xps13>
- <CAE9cyGQ+Bb3rQxiF4My9zXwg_+QYifaCckE=C6spAtN9_4dBFQ@mail.gmail.com> <20210819100334.6af2d86e@xps13>
-In-Reply-To: <20210819100334.6af2d86e@xps13>
-From:   Kestrel seventyfour <kestrelseventyfour@gmail.com>
-Date:   Mon, 23 Aug 2021 13:19:43 +0200
-Message-ID: <CAE9cyGSF2vTCptSZd3uMFaZPD=as=PwZY14S+zDhzjWCmsfmpQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: rawnand: xway: No hardcoded ECC engine, use
- device tree setting
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miqu=C3=A8l,
+Changelog v2 - v3:
+* https://lore.kernel.org/linux-iio/20210816082836.67511-1-aardelean@deviqon.com/
+* Fixed a build warning
+  - When debugging is disabled dev_dbg() ops become a noop and this causes 
+    a warning
+  - Reported-by: kernel test robot <lkp@intel.com>
+  - https://lore.kernel.org/linux-iio/202108180707.05EmDSHt-lkp@intel.com/
+* added tag 'Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>' to
+  series
+* added tag 'Reviewed-by: Linus Walleij <linus.walleij@linaro.org>' to
+  patch 'iio: st_sensors: disable regulators after device unregistration'
 
-Am Do., 19. Aug. 2021 um 10:03 Uhr schrieb Miquel Raynal
-<miquel.raynal@bootlin.com>:
->
-> Hello,
->
-> Kestrel seventyfour <kestrelseventyfour@gmail.com> wrote on Thu, 19 Aug
-> 2021 09:21:42 +0200:
->
-> > Hi Miqu=C3=A8l
-> >
-> > Am Mo., 16. Aug. 2021 um 09:31 Uhr schrieb Miquel Raynal
-> > <miquel.raynal@bootlin.com>:
-> > >
-> > > Hi Daniel,
-> > >
-> > > Daniel Kestrel <kestrelseventyfour@gmail.com> wrote on Sun, 8 Aug 202=
-1
-> > > 09:26:43 +0200:
-> > >
-> > > > Some devices use Micron NAND chips, which use on-die ECC. The hardc=
-oded
-> > > > setting of NAND_ECC_ENGINE_TYPE_SOFT makes them unusable, because t=
-he
-> > > > software ECC on top of the hardware ECC produces errors for every r=
-ead
-> > > > and write access, not to mention that booting does not work, becaus=
-e
-> > > > the boot loader uses the correct ECC when trying to load the kernel
-> > > > and stops loading on severe ECC errors.
-> > > > This patch requires the devices that currently work with the hard c=
-oded
-> > > > setting to set the nand-ecc-mode property to soft in their device
-> > > > tree.
-> > > >
-> > >
-> > > Please add a Fixes: and Cc: stable tags, you will also need to send t=
-o
-> > > stable@vger.kernel.org a different version of the patch for the kerne=
-l
-> > > 5.4 IIUC.
-> > >
-> > > > Signed-off-by: Daniel Kestrel <kestrelseventyfour@gmail.com>
-> > > > Tested-by: Aleksander Jan Bajkowski <olek2@wp.pl> # tested on BT Ho=
-me Hub 5A
-> > > > ---
-> > > >  drivers/mtd/nand/raw/xway_nand.c | 2 --
-> > > >  1 file changed, 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/ra=
-w/xway_nand.c
-> > > > index 26751976e502..0a4b0aa7dd4c 100644
-> > > > --- a/drivers/mtd/nand/raw/xway_nand.c
-> > > > +++ b/drivers/mtd/nand/raw/xway_nand.c
-> > > > @@ -148,8 +148,6 @@ static void xway_write_buf(struct nand_chip *ch=
-ip, const u_char *buf, int len)
-> > > >
-> > > >  static int xway_attach_chip(struct nand_chip *chip)
-> > > >  {
-> > > > -     chip->ecc.engine_type =3D NAND_ECC_ENGINE_TYPE_SOFT;
-> > > > -
-> > > >       if (chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
-> > > >               chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
-> > >
-> > > You also need to only set the Hamming algorithm when engine_type is
-> > > TYPE_SOFT.
-> > >
-> > > Thanks,
-> > > Miqu=C3=A8l
-> >
-> > I am really struggling with what to do. For one of the affected
-> > devices, they created two device
-> > trees, one for Micron and one for all others. Which obviously had no
-> > effect due to the
-> > hardcoded settings, which led me to Patch 2 and I thought, so be it.
-> > But the process to figure
-> > out if ones device has Micron Chips is essentially flashing an image
-> > and if it does not work,
-> > use the stock OEM recovery and try the other image.
-> > However, since Micron is the only chip that is treated differently, I w=
-onder
-> > if your first proposal, even though it is hacky, is the better
-> > approach to solve the issue
-> > for the Micron devices not booting and throwing ECC errors. What do you=
- think?
-> > Follow up first patch or this one?
->
-> I am not sure we understood each other, your patch is fine, but you
-> need to do something like:
->
-> static int xway_attach_chip(struct nand_chip *chip)
-> {
->     if (chip->ecc.engine_type =3D NAND_ECC_ENGINE_TYPE_SOFT &&
->         chip->ecc.algo =3D=3D NAND_ECC_ALGO_UNKNOWN)
->          chip->ecc.algo =3D NAND_ECC_ALGO_HAMMING;
->
-> In the DT you should not force any ECC engine (drop the nand-ecc-xxx
-> properties) and let the core handle it. It will probably choose the
-> most suitable engines for you.
->
-> Thanks,
-> Miqu=C3=A8l
+Changelog v1 - v2:
+* https://lore.kernel.org/linux-iio/20210726071404.14529-1-aardelean@deviqon.com/
+* added patch 'iio: st_sensors: disable regulators after device unregistration'
+  - splits the regulator disable fix in a separate patch
 
-thank you for your response.
-If I remove the nand-ecc-xxx properties in the device tree, the device with
-the Toshiba NAND chip is working. However, the device with the Micron
-NAND fails with NO ECC functions supplied; hardware ECC not possible,
-seems to be at line 5367 or equivalent.
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_ba=
-se.c#L5367
 
-It looks like the micron nand driver supports on die only if its
-specified int the
-Device tree:
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/raw/nand_mi=
-cron.c#L511
-The Micron NAND driver probably needs to set the ECC type to ON DIE if the
-variable ondie contains the supported attribute?!
+Alexandru Ardelean (5):
+  iio: st_sensors: disable regulators after device unregistration
+  iio: st_sensors: remove st_sensors_deallocate_trigger() function
+  iio: st_sensors: remove st_sensors_power_disable() function
+  iio: st_sensors: remove all driver remove functions
+  iio: st_sensors: remove reference to parent device object on
+    st_sensor_data
 
-Any ideas? Second patch?
+ drivers/iio/accel/st_accel_core.c             | 31 ++---------
+ drivers/iio/accel/st_accel_i2c.c              | 23 +-------
+ drivers/iio/accel/st_accel_spi.c              | 23 +-------
+ .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++------
+ .../iio/common/st_sensors/st_sensors_i2c.c    |  1 -
+ .../iio/common/st_sensors/st_sensors_spi.c    |  1 -
+ .../common/st_sensors/st_sensors_trigger.c    | 53 +++++++------------
+ drivers/iio/gyro/st_gyro_core.c               | 27 ++--------
+ drivers/iio/gyro/st_gyro_i2c.c                | 23 +-------
+ drivers/iio/gyro/st_gyro_spi.c                | 23 +-------
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0.h       |  1 -
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c  | 17 +-----
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_i2c.c   |  6 ---
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_spi.c   |  6 ---
+ drivers/iio/magnetometer/st_magn_core.c       | 29 ++--------
+ drivers/iio/magnetometer/st_magn_i2c.c        | 23 +-------
+ drivers/iio/magnetometer/st_magn_spi.c        | 23 +-------
+ drivers/iio/pressure/st_pressure_core.c       | 27 ++--------
+ drivers/iio/pressure/st_pressure_i2c.c        | 23 +-------
+ drivers/iio/pressure/st_pressure_spi.c        | 23 +-------
+ include/linux/iio/common/st_sensors.h         | 13 -----
+ 21 files changed, 59 insertions(+), 371 deletions(-)
 
-Thanks, Daniel.
+-- 
+2.31.1
+
