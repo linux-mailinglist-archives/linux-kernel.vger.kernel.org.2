@@ -2,356 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA653F4A94
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC433F4A96
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237251AbhHWMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 08:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237229AbhHWMYD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:24:03 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4BEC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:23:21 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id t13so15212028pfl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=K9y+4HvNNlNepJAviWbi2S3T+ez1PJPDzy7v093kzas=;
-        b=AJIhfNXVbOWFyvd0XK3xL8P8aeBYOuu1cOCMFZii20yv1myxI0ApA236ChV7Yq/IWD
-         MDEFOmWWj3/hIkN5PjAH/JIN1+IGxivAwAYKKABdwr/fJaspcY2+7EEwnPo+jbM4miF7
-         9m0Kv6PmUarwICLaBZIsxiiigxrMJsCnbW9Q8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=K9y+4HvNNlNepJAviWbi2S3T+ez1PJPDzy7v093kzas=;
-        b=V3EMoEl8b2b8fO/IsdjwXBfPta8LbNsGF+aoQSgpQnoouWs+xCo/vrpD/dI4XrqFHd
-         9tChFdUz6I8iwKZ7ksS/z47rg2H+kauM6zkKIWa6xFgL06R+/KvagafK17gtDAtVfS00
-         H70wI/B3CthkejCUeGPpeltLtjWluagpK8BeXnul6121vMj2kSYJkZw4+ZZD4awMONi0
-         ulLGIbSuPVCjo0hBQsArmu0pwe9zQ2SBfOyyCWBJsKTfq6XBL61CnR33NpDfDI8ljtYY
-         rrVMjf/+0qplsm9s4Wip6+eulWj5ZWaVdUbYTZQbM/dKwXGtYsGSoDp9C4VJIahpH4I+
-         IRFg==
-X-Gm-Message-State: AOAM531Y1zLTbIM+5GnWCxx3h98gb0bDZrTbElmvoVyZGlzYRo+x7ahm
-        LtRTtdEsZbI9WJW3uYIpIEIx5g==
-X-Google-Smtp-Source: ABdhPJwpx/5Z7SDttCuzkAAr50pJHJ0uTNG0p/G47YQKVCOo+PgiJqVrqWVr+uFSv6HXHqQ/x0lPVg==
-X-Received: by 2002:a05:6a00:213c:b0:3e1:c3af:134 with SMTP id n28-20020a056a00213c00b003e1c3af0134mr33634071pfj.5.1629721400579;
-        Mon, 23 Aug 2021 05:23:20 -0700 (PDT)
-Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:8821:8b2f:2912:f9e4])
-        by smtp.gmail.com with ESMTPSA id a15sm9035576pfn.219.2021.08.23.05.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 05:23:19 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCHv5 8/8] videobuf2: handle non-contiguous DMA allocations
-Date:   Mon, 23 Aug 2021 21:22:35 +0900
-Message-Id: <20210823122235.116189-9-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-In-Reply-To: <20210823122235.116189-1-senozhatsky@chromium.org>
-References: <20210823122235.116189-1-senozhatsky@chromium.org>
+        id S237227AbhHWMYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:24:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:52734 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236754AbhHWMYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 08:24:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D044101E;
+        Mon, 23 Aug 2021 05:23:47 -0700 (PDT)
+Received: from [10.57.43.155] (unknown [10.57.43.155])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F3863F766;
+        Mon, 23 Aug 2021 05:23:44 -0700 (PDT)
+Subject: Re: [PATCH v1 3/3] perf auxtrace arm: Support
+ compat_auxtrace_mmap__{read_head|write_tail}
+To:     Leo Yan <leo.yan@linaro.org>
+References: <20210809112727.596876-1-leo.yan@linaro.org>
+ <20210809112727.596876-4-leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Li Huafei <lihuafei1@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        John Garry <john.garry@huawei.com>, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+Message-ID: <6ce4057a-57cf-501d-6449-2069cd00ba57@arm.com>
+Date:   Mon, 23 Aug 2021 13:23:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210809112727.596876-4-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support for the new noncontiguous DMA API, which
-requires allocators to have two execution branches: one
-for the current API, and one for the new one.
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Acked-by: Christoph Hellwig <hch@lst.de>
----
- .../common/videobuf2/videobuf2-dma-contig.c   | 164 +++++++++++++++---
- 1 file changed, 138 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-index 1e218bc440c6..f1ad36b04e3a 100644
---- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-+++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
-@@ -17,6 +17,7 @@
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/dma-mapping.h>
-+#include <linux/highmem.h>
- 
- #include <media/videobuf2-v4l2.h>
- #include <media/videobuf2-dma-contig.h>
-@@ -42,6 +43,7 @@ struct vb2_dc_buf {
- 	struct dma_buf_attachment	*db_attach;
- 
- 	struct vb2_buffer		*vb;
-+	bool				non_coherent_mem;
- };
- 
- /*********************************************/
-@@ -75,17 +77,39 @@ static void *vb2_dc_cookie(struct vb2_buffer *vb, void *buf_priv)
- 	return &buf->dma_addr;
- }
- 
-+/*
-+ * This function may fail if:
-+ *
-+ * - dma_buf_vmap() fails
-+ *   E.g. due to lack of virtual mapping address space, or due to
-+ *   dmabuf->ops misconfiguration.
-+ *
-+ * - dma_vmap_noncontiguous() fails
-+ *   For instance, when requested buffer size is larger than totalram_pages().
-+ *   Relevant for buffers that use non-coherent memory.
-+ *
-+ * - Queue DMA attrs have DMA_ATTR_NO_KERNEL_MAPPING set
-+ *   Relevant for buffers that use coherent memory.
-+ */
- static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
- {
- 	struct vb2_dc_buf *buf = buf_priv;
--	struct dma_buf_map map;
--	int ret;
- 
--	if (!buf->vaddr && buf->db_attach) {
--		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
--		buf->vaddr = ret ? NULL : map.vaddr;
-+	if (buf->vaddr)
-+		return buf->vaddr;
-+
-+	if (buf->db_attach) {
-+		struct dma_buf_map map;
-+
-+		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-+			buf->vaddr = map.vaddr;
-+
-+		return buf->vaddr;
- 	}
- 
-+	if (buf->non_coherent_mem)
-+		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-+						    buf->dma_sgt);
- 	return buf->vaddr;
- }
- 
-@@ -101,13 +125,26 @@ static void vb2_dc_prepare(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	/* This takes care of DMABUF and user-enforced cache sync hint */
- 	if (buf->vb->skip_cache_sync_on_prepare)
- 		return;
- 
-+	/*
-+	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-+	 * and non-coherent MMAP buffers.
-+	 */
-+	if (buf->vb->memory == V4L2_MEMORY_MMAP && !buf->non_coherent_mem)
-+		return;
-+
- 	if (!sgt)
- 		return;
- 
-+	/* For both USERPTR and non-coherent MMAP */
- 	dma_sync_sgtable_for_device(buf->dev, sgt, buf->dma_dir);
-+
-+	/* Non-coherent MMAP only */
-+	if (buf->non_coherent_mem && buf->vaddr)
-+		flush_kernel_vmap_range(buf->vaddr, buf->size);
- }
- 
- static void vb2_dc_finish(void *buf_priv)
-@@ -115,13 +152,26 @@ static void vb2_dc_finish(void *buf_priv)
- 	struct vb2_dc_buf *buf = buf_priv;
- 	struct sg_table *sgt = buf->dma_sgt;
- 
-+	/* This takes care of DMABUF and user-enforced cache sync hint */
- 	if (buf->vb->skip_cache_sync_on_finish)
- 		return;
- 
-+	/*
-+	 * Coherent MMAP buffers do not need to be synced, unlike USERPTR
-+	 * and non-coherent MMAP buffers.
-+	 */
-+	if (buf->vb->memory == V4L2_MEMORY_MMAP && !buf->non_coherent_mem)
-+		return;
-+
- 	if (!sgt)
- 		return;
- 
-+	/* For both USERPTR and non-coherent MMAP */
- 	dma_sync_sgtable_for_cpu(buf->dev, sgt, buf->dma_dir);
-+
-+	/* Non-coherent MMAP only */
-+	if (buf->non_coherent_mem && buf->vaddr)
-+		invalidate_kernel_vmap_range(buf->vaddr, buf->size);
- }
- 
- /*********************************************/
-@@ -139,17 +189,66 @@ static void vb2_dc_put(void *buf_priv)
- 		sg_free_table(buf->sgt_base);
- 		kfree(buf->sgt_base);
- 	}
--	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
--		       buf->attrs);
-+
-+	if (buf->non_coherent_mem) {
-+		if (buf->vaddr)
-+			dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
-+		dma_free_noncontiguous(buf->dev, buf->size,
-+				       buf->dma_sgt, buf->dma_dir);
-+	} else {
-+		dma_free_attrs(buf->dev, buf->size, buf->cookie,
-+			       buf->dma_addr, buf->attrs);
-+	}
- 	put_device(buf->dev);
- 	kfree(buf);
- }
- 
-+static int vb2_dc_alloc_coherent(struct vb2_dc_buf *buf)
-+{
-+	struct vb2_queue *q = buf->vb->vb2_queue;
-+
-+	buf->cookie = dma_alloc_attrs(buf->dev,
-+				      buf->size,
-+				      &buf->dma_addr,
-+				      GFP_KERNEL | q->gfp_flags,
-+				      buf->attrs);
-+	if (!buf->cookie)
-+		return -ENOMEM;
-+
-+	if (q->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING)
-+		return 0;
-+
-+	buf->vaddr = buf->cookie;
-+	return 0;
-+}
-+
-+static int vb2_dc_alloc_non_coherent(struct vb2_dc_buf *buf)
-+{
-+	struct vb2_queue *q = buf->vb->vb2_queue;
-+
-+	buf->dma_sgt = dma_alloc_noncontiguous(buf->dev,
-+					       buf->size,
-+					       buf->dma_dir,
-+					       GFP_KERNEL | q->gfp_flags,
-+					       buf->attrs);
-+	if (!buf->dma_sgt)
-+		return -ENOMEM;
-+
-+	buf->dma_addr = sg_dma_address(buf->dma_sgt->sgl);
-+
-+	/*
-+	 * For requests that need kernel mapping (DMA_ATTR_NO_KERNEL_MAPPING
-+	 * bit is cleared) we perform dma_vmap_noncontiguous() in vb2_dc_vaddr()
-+	 */
-+	return 0;
-+}
-+
- static void *vb2_dc_alloc(struct vb2_buffer *vb,
- 			  struct device *dev,
- 			  unsigned long size)
- {
- 	struct vb2_dc_buf *buf;
-+	int ret;
- 
- 	if (WARN_ON(!dev))
- 		return ERR_PTR(-EINVAL);
-@@ -159,27 +258,28 @@ static void *vb2_dc_alloc(struct vb2_buffer *vb,
- 		return ERR_PTR(-ENOMEM);
- 
- 	buf->attrs = vb->vb2_queue->dma_attrs;
--	buf->cookie = dma_alloc_attrs(dev, size, &buf->dma_addr,
--				      GFP_KERNEL | vb->vb2_queue->gfp_flags,
--				      buf->attrs);
--	if (!buf->cookie) {
--		dev_err(dev, "dma_alloc_coherent of size %ld failed\n", size);
--		kfree(buf);
--		return ERR_PTR(-ENOMEM);
--	}
--
--	if ((buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) == 0)
--		buf->vaddr = buf->cookie;
-+	buf->dma_dir = vb->vb2_queue->dma_dir;
-+	buf->vb = vb;
-+	buf->non_coherent_mem = vb->vb2_queue->non_coherent_mem;
- 
-+	buf->size = size;
- 	/* Prevent the device from being released while the buffer is used */
- 	buf->dev = get_device(dev);
--	buf->size = size;
--	buf->dma_dir = vb->vb2_queue->dma_dir;
-+
-+	if (buf->non_coherent_mem)
-+		ret = vb2_dc_alloc_non_coherent(buf);
-+	else
-+		ret = vb2_dc_alloc_coherent(buf);
-+
-+	if (ret) {
-+		dev_err(dev, "dma alloc of size %ld failed\n", size);
-+		kfree(buf);
-+		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	buf->handler.refcount = &buf->refcount;
- 	buf->handler.put = vb2_dc_put;
- 	buf->handler.arg = buf;
--	buf->vb = vb;
- 
- 	refcount_set(&buf->refcount, 1);
- 
-@@ -196,9 +296,12 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
- 		return -EINVAL;
- 	}
- 
--	ret = dma_mmap_attrs(buf->dev, vma, buf->cookie,
--		buf->dma_addr, buf->size, buf->attrs);
--
-+	if (buf->non_coherent_mem)
-+		ret = dma_mmap_noncontiguous(buf->dev, vma, buf->size,
-+					     buf->dma_sgt);
-+	else
-+		ret = dma_mmap_attrs(buf->dev, vma, buf->cookie, buf->dma_addr,
-+				     buf->size, buf->attrs);
- 	if (ret) {
- 		pr_err("Remapping memory failed, error: %d\n", ret);
- 		return ret;
-@@ -360,9 +463,15 @@ vb2_dc_dmabuf_ops_end_cpu_access(struct dma_buf *dbuf,
- 
- static int vb2_dc_dmabuf_ops_vmap(struct dma_buf *dbuf, struct dma_buf_map *map)
- {
--	struct vb2_dc_buf *buf = dbuf->priv;
-+	struct vb2_dc_buf *buf;
-+	void *vaddr;
-+
-+	buf = dbuf->priv;
-+	vaddr = vb2_dc_vaddr(buf->vb, buf);
-+	if (!vaddr)
-+		return -EINVAL;
- 
--	dma_buf_map_set_vaddr(map, buf->vaddr);
-+	dma_buf_map_set_vaddr(map, vaddr);
- 
- 	return 0;
- }
-@@ -390,6 +499,9 @@ static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
- 	int ret;
- 	struct sg_table *sgt;
- 
-+	if (buf->non_coherent_mem)
-+		return buf->dma_sgt;
-+
- 	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
- 	if (!sgt) {
- 		dev_err(buf->dev, "failed to alloc sg table\n");
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+On 09/08/2021 12:27, Leo Yan wrote:
+> When the tool runs with compat mode on Arm platform, the kernel is in
+> 64-bit mode and user space is in 32-bit mode; the user space can use
+> instructions "ldrd" and "strd" for 64-bit value atomicity.
+> 
+> This patch adds compat_auxtrace_mmap__{read_head|write_tail} for arm
+> building, it uses "ldrd" and "strd" instructions to ensure accessing
+> atomicity for aux head and tail.  The file arch/arm/util/auxtrace.c is
+> built for arm and arm64 building, these two functions are not needed for
+> arm64, so check the compiler macro "__arm__" to only include them for
+> arm building.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/arch/arm/util/auxtrace.c | 32 +++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
+> index b187bddbd01a..c7c7ec0812d5 100644
+> --- a/tools/perf/arch/arm/util/auxtrace.c
+> +++ b/tools/perf/arch/arm/util/auxtrace.c
+> @@ -107,3 +107,35 @@ struct auxtrace_record
+>  	*err = 0;
+>  	return NULL;
+>  }
+> +
+> +#if defined(__arm__)
+> +u64 compat_auxtrace_mmap__read_head(struct auxtrace_mmap *mm)
+> +{
+> +	struct perf_event_mmap_page *pc = mm->userpg;
+> +	u64 result;
+> +
+> +	__asm__ __volatile__(
+> +"	ldrd    %0, %H0, [%1]"
+> +	: "=&r" (result)
+> +	: "r" (&pc->aux_head), "Qo" (pc->aux_head)
+> +	);
+> +
+> +	return result;
+> +}
 
+Hi Leo,
+
+I see that this is a duplicate of the atomic read in arch/arm/include/asm/atomic.h
+
+For x86, it's possible to include tools/include/asm/atomic.h, but that doesn't
+include arch/arm/include/asm/atomic.h and there are some other #ifdefs that might
+make it not so easy for Arm. Just wondering if you considered trying to include the
+existing one? Or decided that it was easier to duplicate it?
+
+Other than that, I have tested that the change works with a 32bit build with snapshot
+and normal mode.
+
+Reviewed by: James Clark <james.clark@arm.com>
+Tested by: James Clark <james.clark@arm.com>
+ 
+> +
+> +int compat_auxtrace_mmap__write_tail(struct auxtrace_mmap *mm, u64 tail)
+> +{
+> +	struct perf_event_mmap_page *pc = mm->userpg;
+> +
+> +	/* Ensure all reads are done before we write the tail out */
+> +	smp_mb();
+> +
+> +	__asm__ __volatile__(
+> +"	strd    %2, %H2, [%1]"
+> +	: "=Qo" (pc->aux_tail)
+> +	: "r" (&pc->aux_tail), "r" (tail)
+> +	);
+> +
+> +	return 0;
+> +}
+> +#endif
+> 
