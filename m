@@ -2,297 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FB53F45A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEFF3F45AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 09:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbhHWHOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 03:14:02 -0400
-Received: from mail-vi1eur05on2106.outbound.protection.outlook.com ([40.107.21.106]:17280
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234861AbhHWHN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 03:13:58 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wp7TlfqJLXSAFLRWpCpYBedK4PScctEO1lHRKGLI0/rbTVvkjvlkoMA0XG5GvKzFCURVGyZTl1pYp4HoV+fr/oMKaFtp76rnKPcAt3PVAeWVQ/g57YXagYZh3PHeN9nLFjwamcghyI5TU4RtzyaNOo5TrKg090SXayd2vEXpk7feN6n4q1ElbKcvUcqxrGb8jFgIRLxJfjVdtcmat9GGcjE2WJwA24aEzcsmKVcXID9r/kvzRZHdllY80DlixTeWQLJIiU2Ar7yV0UvR4KhvH576m6smeYacO/2sZ/wmiC4cUWzjkki/UkR3wvAL0nTXhPpBoTGkiseT9qaEQGfz2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eZZJ2jcReuFGJ30y6VSn05ofJ/tOIH3vg8Csic6m3+A=;
- b=E8NaVRrBzUL1cGj8sblunhh9gjOYjrMEVcOl741zzXmsGU1ABTiKo6C4q4Fx5cYo8mCX2C88VsaaLd4uAvwvHy7sLI00qVB7zHGYVvR67Vyr+aVRruA2NN/iZ4YnPejVdHOpuZxHo4jnOi9CplyQTwMDfK0WRV3x7xKuk8ld926reFszF5BTXUkqgSJNz34+VvOjkK1OeJbvJ1TvUPDSAyu+km73Havd/j2DG5riBIhr0NdndKL5ZQklESUTPAZd5kZpK51La6j1IRmQ04D0xOLTI64IBN4+ZWbBx/4nyIGmhFPetvsRyj4cu6lyqseOTIrQcc2inVM0OaWQAVx/mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=viveris.fr; dmarc=pass action=none header.from=viveris.fr;
- dkim=pass header.d=viveris.fr; arc=none
+        id S235100AbhHWHPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 03:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234999AbhHWHPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 03:15:54 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCEFC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:15:12 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id x5so16169015ill.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 00:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=viverislicensing.onmicrosoft.com;
- s=selector2-viverislicensing-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eZZJ2jcReuFGJ30y6VSn05ofJ/tOIH3vg8Csic6m3+A=;
- b=Hrq5D56MCgV5O+2rg4cgiebWelBv/z8l/Vna05hwFsnT7eM23G2hhLeZSV2g3udsdFD4noV5SNEkiBDgbCRuCR009k0DrzWGBgXfxcKlm1XzUpWW0lijhNAF7gNnxSdrJS5zhK3L1+l+uF9EV/nj9jpomJLlqcR0wtx936dTG7s=
-Received: from AM4PR0902MB1748.eurprd09.prod.outlook.com
- (2603:10a6:200:96::21) by AM9PR09MB4978.eurprd09.prod.outlook.com
- (2603:10a6:20b:2fe::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.23; Mon, 23 Aug
- 2021 07:13:12 +0000
-Received: from AM4PR0902MB1748.eurprd09.prod.outlook.com
- ([fe80::84a0:780d:1c5c:4432]) by AM4PR0902MB1748.eurprd09.prod.outlook.com
- ([fe80::84a0:780d:1c5c:4432%9]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 07:13:12 +0000
-From:   THOBY Simon <Simon.THOBY@viveris.fr>
-To:     liqiong <liqiong@nfschina.com>,
-        "zohar@linux.ibm.com" <zohar@linux.ibm.com>
-CC:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-Thread-Topic: [PATCH] ima: fix infinite loop within "ima_match_policy"
- function.
-Thread-Index: AQHXlPnZCsK5CNi7NkWxUIAyoKg2DKt8LpyAgAA0rYCAAEtjAIAEBAmA
-Date:   Mon, 23 Aug 2021 07:13:12 +0000
-Message-ID: <f64b2b3b-c92a-c452-3a7f-7f5e44270b32@viveris.fr>
-References: <20210819101529.28001-1-liqiong@nfschina.com>
- <8d17f252-4a93-f430-3f25-e75556ab01e8@viveris.fr>
- <d385686b-ffa5-5794-2cf2-b87f2a471e78@nfschina.com>
- <1f631c3d-5dce-e477-bfb3-05aa38836442@viveris.fr>
- <6d60893c-63dc-394f-d43c-9ecab7b6d06e@nfschina.com>
-In-Reply-To: <6d60893c-63dc-394f-d43c-9ecab7b6d06e@nfschina.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nfschina.com; dkim=none (message not signed)
- header.d=none;nfschina.com; dmarc=none action=none header.from=viveris.fr;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 28047e6f-50c3-4dc8-3634-08d96605782a
-x-ms-traffictypediagnostic: AM9PR09MB4978:
-x-microsoft-antispam-prvs: <AM9PR09MB4978808314477D9D9C24A88794C49@AM9PR09MB4978.eurprd09.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TJUNbNJIIk9hes0XBBMoXegE8M79aUuo2ePtjv7QuPardE1vFjiifWPiiBQPEE/KZ6O086dsVsJIOz67LuqllNiKkldxyJMu3b2w6MLSYRv+d6s1i8x3Q58TTx5gjAXb+PKY5OP09ieo4JDlYEhRbz71aYWrmXs0u1W9ct4YXaH/S10KDNKstFByx6jCQAaonmsLd6kZwoAimwoB4Oua4bHWYyEo/SNUryIAExJJWlDGPCFRyXpPZ7reofAFwVPmvdJcWnX+3OMAm+aCfXOblCFB4aiYXl52dst/czGWe7yeEbpBisPVd+0SJ3mAsUl+mZttuambp79vVhyMTZIdfCX1ZriDiwhDBAhmFghDC1FbZ6xaHmj4MNhoh3DXs/pmNDnKQ3Hglkqz8tWjNynhRIfCyZTIvMC0P9qxCwuaNt5rjaHQPYuISVcIHMs70XcXXDJ7edXj7XzVYgqy9c1psdBNKvMws/EiTZj6qaIp4cs3/zANTvhorqJJHIo7N4WMjGVDHC8TTgfqpMn7eSWfx75zUZl1xkmfhluTkhHG2XgyGz4jAudzPnEftvGDny/PIkVJAQ09cH4DRozmjzAMbN6Fx4XPBV9zDPpeCsFl2mV8kRtCKgzqf80f7/EcUIlMB1KgPfZISm2McGN3x/DUwvadLOf2wRuxhQwDnMbz815MOik2Wi1vkyT6/00GX3HUWtCK/5ieb48wa39vrFDf0UjYwocU4l0T6aiCstsam/c=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM4PR0902MB1748.eurprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39830400003)(376002)(396003)(346002)(366004)(136003)(38100700002)(54906003)(122000001)(76116006)(36756003)(91956017)(6512007)(31696002)(66946007)(110136005)(86362001)(53546011)(2906002)(66446008)(66476007)(31686004)(71200400001)(316002)(6506007)(38070700005)(6486002)(8936002)(8676002)(186003)(5660300002)(26005)(478600001)(66556008)(83380400001)(2616005)(4326008)(64756008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Tlg0MFBBeG12VGxmYkNXeUNmZExGNHFNbmFKS2hmc1cyMm9sRFJuT1hiVHls?=
- =?utf-8?B?bUI1VlNjeUhNSVRRYXlVbVMwRVJuMU92R1h1QjVtemNRNEdrRkZ0OUFkMmJU?=
- =?utf-8?B?WFFCMXVGUkw5V3dXSWhkM09VVkF3WTY2SVF0SHNFSnFreVZpOFBVc2U1T1li?=
- =?utf-8?B?dlBGZlJUaUpUV0JkTFVOT2Z3QWVWQ3NROVhBVGRHYmd1SDZodzVhZkp6cUp5?=
- =?utf-8?B?ZHZ1NnowcCtwSFE3Tzl4UWxDZlRKOENJQk1xSjhrTE9ZRmh5RFh3VVU0cEkx?=
- =?utf-8?B?eXo1RDNGdVFYdXVBa0RGbHduVEF0SHJDa0ZrMURoZ0VlL0RmWFdZeXlXdzRK?=
- =?utf-8?B?bngrOHdvNlFlVUd2VTZyQThESktIUCtwQmR3SDRMMEVMK1JYWSsybGNsbzA3?=
- =?utf-8?B?NmQ4czRxbTdsc3ZQWEJ2MnpUOHVqZXN5eTgxQVVINGNWT0I3OVhBbElMdlRU?=
- =?utf-8?B?dFBZL3ZOZjJVNndETGFVc1BoU1pldlVUL1ZxVDF6Z0lKditpZGc5a0l2Vy9I?=
- =?utf-8?B?eUJGMmtUeDRLc0phd1Z0ZHVXaU92cmQySVlzZUk5bkxUYXk4VWhWSm50STlY?=
- =?utf-8?B?UE5WeTQ0aStkNlpGY051YnJCQ0FWZENmSkNPeWVCbWhGTHJRUW1Ca0RUL29F?=
- =?utf-8?B?MElvM1RXT3hMcWo5aUJpUmh0aXJzREExVWNaUEpUUUZ6MUNFeHpuaWp4LzFM?=
- =?utf-8?B?T2xPSGVYaGJSQms2ZFVUQ2dSbUF1UXdvUXEra3F3a3Nsc0pWYUk2cTRwdlJN?=
- =?utf-8?B?S1VvajY3S2ppOE1hQm5uM1Y1V003UmRVTW5UUElyL3k1RmRoZTBtYmQ2Tkl6?=
- =?utf-8?B?N3NJb0dUMmlNWmwzaVdXbjdvTU5rOXdyUmRtMk9tV2tlNE9ISDRqS0xqS1BV?=
- =?utf-8?B?Szd6eFdoZ3BvM1FsTktoa3ZuTWNMVjFFb0d3Y2QzeFJ4RnE1ZWhKSUpwUStO?=
- =?utf-8?B?TUFUZ01ydWFiTDlvNnBCMytIYXNyUG9tWXBUMHh6NXR0aU1uWWpncHhkOHpF?=
- =?utf-8?B?N21vYUNObjJEWlp1SkIwdmpLQjQvNzNza2c3UjdyS0xIOW1PY0VCVC9LZ0Rv?=
- =?utf-8?B?eWFhWlJra2pRNzh1NTVnRkRjcG0zSGg3NnlSSThza29pQ3F6ZlR5TGxHVTJL?=
- =?utf-8?B?RzZPQTBBd05YRGNQQWVwUVlYTzBLTkc1anpYcDBpRmY0QlBQdjJIdHVxM01j?=
- =?utf-8?B?YU1KTkI1LzlGNnpwc0FpSHc3d0ZyYTdmVzRmNnZpaWNnSGZ0cnRwa08ybEgv?=
- =?utf-8?B?cVJ1NVlza09oMUUzSXVxWGxSZDRQUENURlFkU3kvSGYxSnM2RFhpVjBQK0w3?=
- =?utf-8?B?V2VKOUxsR3JZb0loL0hOUWY1SFA2QzFQWDFISTdrWnZmTjVHbHkwY0l1Mmxz?=
- =?utf-8?B?OTI4UGpISUxsdWhBc3ZXckhBYUZuWC9qYkpGR0NoQkFPTkxSc1JtQzBxSjdM?=
- =?utf-8?B?eXRyNVVyaHNQU1RtRlZmNHlhbGt1d1NtRTBlNGttZjNKNFo1N2FBMi9YbnIv?=
- =?utf-8?B?OXJZVzA1RTZ1TXVtSnV5K1JFZFNXZDIwalEzZTFYczFkYVFFNTNGK3Bpa1N3?=
- =?utf-8?B?RHdydG42WkZGZ3QzNGNkcElqOTkyYS9RRWptd01Pa1V0M2xLUW1BZk5Yb0NZ?=
- =?utf-8?B?MnUzTjg1MXNYZjBPUGRlMWNOdlBRMkRUVk82c1pVZGQ5UlJIaXRTbDlGNFl3?=
- =?utf-8?B?R0hUUnd0QzBhRHFoNU5ua3E5bkFITFJLSlN4V2UvQlZ3VjdtWkg4NXZDNkMz?=
- =?utf-8?Q?Wclu7fb0BGVjgWp32QuMKg1H9CEx6cVs+jhfNS/?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <143F6196B904C140A22D1F4F1581F6CE@eurprd09.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SQ2Uwhj6FDqhZFG4Jra0608BEmKaZpqCAcRucXb8YWg=;
+        b=ETLmekkWV6Pon4W4wBtnJMeVdWXIVCU1y/9bdRkJA1igZeahWh2OrXa1SQxWUmlPje
+         TIuW3ZUM19S+jrBNC3DNGNCJ7kR2hwYBBTmGpnexHVPr6GLllMAajvrK//fe48fJNl6G
+         qKV8JKS+evmZ45f6duL4Qzvw/shZg0hwhtmx+RTuEFdW/QP3tzFEwD6kD7CiNV/PSNyD
+         hAfh9TfHZkdbEu+bxVxQZL3YXYyKdz366t+CO17h9PkCb+03BT1eLX7OrOZeb7KofZ4q
+         8jph3QZap6aR/QUugEtJknXccRBqKcNgnLmSY3iRnARa5xPlmJVAdLMXR0BKU55ej2ft
+         B/+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SQ2Uwhj6FDqhZFG4Jra0608BEmKaZpqCAcRucXb8YWg=;
+        b=g+QdZcvLRVFW81qJBCsYWAGLyYlSC3Jhr0/cD5hMdB8+0DptcdLRjGQbz2+sn2OAoT
+         WvIjLWlDvxscUeQkbda+tST/xdq1al7JzHqcslDWspMpFzAID2mjORz1sH3u0V+piQK2
+         JYuGCBagyTOEvszfCMeR/kt+YJEzFIjZaW/tynM+zynIT4NcIVBL34zogN7eshYA23JA
+         dEN61+drA/M5bk5y5VLdpEXBjNztbYCea5ZUR/7fPlf3YwJ1xIQjWjAC2kUr6BqpTPKh
+         YAiR0Yx+/ykVSECJVKyJskyznolvwo9GZwjgXU1e80qi71/wepkO1Y1wY1rWA+E1WbWE
+         X7Bw==
+X-Gm-Message-State: AOAM533tzYKa+YJZ4PmVjwHY/h8/fE9xsJDQg9Rr7fc3fhqv3fsr7E+5
+        DNrh7gL/Cmsp0mywFPBTtl6KvGOt4fy21uRIEbD5cQ==
+X-Google-Smtp-Source: ABdhPJwF3KEbUND0vBJu6PjaBVMYCTAXB5wrKTM/Vs5g9Sqw2xCE+VAP1/H2QMLEqWBlPUv4wBdmv1hd038+ZQVNx6g=
+X-Received: by 2002:a92:cb0f:: with SMTP id s15mr21046449ilo.59.1629702911172;
+ Mon, 23 Aug 2021 00:15:11 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: viveris.fr
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM4PR0902MB1748.eurprd09.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28047e6f-50c3-4dc8-3634-08d96605782a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2021 07:13:12.5278
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 34bab81c-945c-43f1-ad13-592b97e11b40
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UJdG0gCYiTULQzaK/C1Nwi+ZstvFrjK14qroPPpp2pe3mBHd9zw6ugAlRLsvg/60q810EqhO1ZKzr8vdX/RdkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR09MB4978
+References: <20210816075449.2236547-1-kyletso@google.com> <05b01a2e-b1ee-4111-2e3c-897990544c0a@roeck-us.net>
+In-Reply-To: <05b01a2e-b1ee-4111-2e3c-897990544c0a@roeck-us.net>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Mon, 23 Aug 2021 15:14:55 +0800
+Message-ID: <CAGZ6i=0+-Ga2gz2iXOaNv9fCTKJgG=jFXZ7B=i=6wChGqMubbw@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Raise vdm_sm_running flag only when VDM
+ SM is running
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGlxaW9uZywNCg0KT24gOC8yMC8yMSA3OjUzIFBNLCBsaXFpb25nIHdyb3RlOg0KPiBIaSBT
-aW1vbiwNCj4gDQo+IE9uIDIwMjEvOC8yMCAyMToyMywgVEhPQlkgU2ltb24gd3JvdGU6DQo+PiBI
-aSBMaXFpb25nLA0KPj4NCj4+IE9uIDgvMjAvMjEgMTI6MTUgUE0sIOadjuWKm+eQvCB3cm90ZToN
-Cj4+PiBIaSwgU2ltb246DQo+Pj4NCj4+PiBUaGlzIHNvbHV0aW9uIGlzIGJldHRlciB0aGVuIHJ3
-c2VtLCBhIHRlbXAgImltYV9ydWxlcyIgdmFyaWFibGUgc2hvdWxkDQo+Pj4gY2FuIGZpeC4gSSBh
-bHNvIGhhdmUgYSBhbm90aGVyIGlkZWEsIHdpdGggYSBsaXR0bGUgdHJpY2ssIGRlZmF1bHQgbGlz
-dA0KPj4+IGNhbiB0cmF2ZXJzZSB0byB0aGUgbmV3IGxpc3QsIHNvIHdlIGRvbid0IG5lZWQgY2Fy
-ZSBhYm91dCB0aGUgcmVhZCBzaWRlLg0KPj4+DQo+Pj4gaGVyZSBpcyB0aGUgcGF0Y2g6DQo+Pj4N
-Cj4+PiBAQCAtOTE4LDggKzkxOCwyMSBAQCB2b2lkIGltYV91cGRhdGVfcG9saWN5KHZvaWQpDQo+
-Pj4gwqDCoMKgwqDCoMKgwqDCoCBsaXN0X3NwbGljZV90YWlsX2luaXRfcmN1KCZpbWFfdGVtcF9y
-dWxlcywgcG9saWN5LCBzeW5jaHJvbml6ZV9yY3UpOw0KPj4+DQo+Pj4gwqDCoMKgwqDCoMKgwqDC
-oCBpZiAoaW1hX3J1bGVzICE9IHBvbGljeSkgew0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHN0cnVjdCBsaXN0X2hlYWQgKnByZXZfcnVsZXMgPSBpbWFfcnVsZXM7DQo+Pj4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IGxpc3RfaGVhZCAqZmlyc3QgPSBpbWFf
-cnVsZXMtPm5leHQ7DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW1hX3Bv
-bGljeV9mbGFnID0gMDsNCj4+PiArDQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-LyoNCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogTWFrZSB0aGUgcHJldmlv
-dXMgbGlzdCBjYW4gdHJhdmVyc2UgdG8gbmV3IGxpc3QsDQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAqIHRoYXQgaXMgdHJpY2t5LCBvciB0aGVyZSBpcyBhIGRlYWRseSBsb29w
-IHdoaXRoaW4NCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogImxpc3RfZm9y
-X2VhY2hfZW50cnlfcmN1KGVudHJ5LCBpbWFfcnVsZXMsIGxpc3QpIg0KPj4+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgKg0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgKiBBZnRlciB1cGRhdGUgImltYV9ydWxlcyIsIHJlc3RvcmUgdGhlIHByZXZpb3VzIGxpc3Qu
-DQo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLw0KPj4gSSB0aGluayB0aGlz
-IGNvdWxkIGJlIHJlcGhyYXNlZCB0byBiZSBhIHRhZCBjbGVhcmVyLCBJIGFtIG5vdCBxdWl0ZSBz
-dXJlDQo+PiBob3cgSSBtdXN0IGludGVycHJldCB0aGUgZmlyc3Qgc2VudGVuY2Ugb2YgdGhlIGNv
-bW1lbnQuDQo+IEkgZ290IGl0LMKgIGhvdyBhYm91dCB0aGlzOg0KPiDCoC8qDQo+IMKgICogVGhl
-IHByZXZpb3VzIGxpc3QgaGFzIHRvIHRyYXZlcnNlIHRvIG5ldyBsaXN0LA0KPiDCoCAqIE9yIHRo
-ZXJlIG1heSBiZSBhIGRlYWRseSBsb29wIHdpdGhpbg0KDQpNYXliZSAnZGVhZGxvY2snIHdvdWxk
-IGJlIGNsZWFyZXIgdGhhbiAnZGVhZGx5IGxvb3AnPw0KDQo+IMKgICogImxpc3RfZm9yX2VhY2hf
-ZW50cnlfcmN1KGVudHJ5LCBpbWFfcnVsZXMsIGxpc3QpIg0KPiDCoCAqDQo+IMKgICogVGhhdCBp
-cyB0cmlja3ksIGFmdGVyIHVwZGF0ZWQgImltYV9ydWxlcyIsIHJlc3RvcmUgdGhlIHByZXZpb3Vz
-IGxpc3QuDQoNCk1heWJlIHNvbWV0aGluZyBsaWtlICJUaGlzIGlzIHRyaWNreSwgc28gd2UgcmVz
-dG9yZSB0aGUgcHJldmlvdXMgbGlzdCAoaW1hX2RlZmF1bHRfcnVsZXMpDQpvbmNlICdpbWFfcnVs
-ZXMnIGlzIHVwZGF0ZWQiID8NCg0KPiDCoCAqLz4+DQo+Pg0KPj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHByZXZfcnVsZXMtPm5leHQgPSBwb2xpY3ktPm5leHQ7DQo+Pj4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW1hX3J1bGVzID0gcG9saWN5Ow0KPj4+ICvCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN5bmNjaHJvbml6ZV9yY3UoKTsNCj4+IEknbSBhIGJp
-dCBwdXp6bGVkIGFzIHlvdSBzZWVtIHRvIGltcGx5IGluIHRoZSBtYWlsIHRoaXMgcGF0Y2ggd2Fz
-IHRlc3RlZCwNCj4+IGJ1dCB0aGVyZSBpcyBubyAnc3luY2Nocm9uaXplX3JjdScgKHdpdGggdHdv
-ICdjJykgc3ltYm9sIGluIHRoZSBrZXJuZWwuDQo+PiBXYXMgdGhhdCBhIGNvcHkvcGFzdGUgZXJy
-b3I/IE9yIG1heWJlIHlvdSBmb3Jnb3QgdGhlICdub3QnIGluICJUaGlzDQo+PiBwYXRjaCBoYXMg
-YmVlbiB0ZXN0ZWQiPyBUaGVzZSBlcnJvcnMgaGFwcGVuLCBhbmQgSSBhbSBteXNlbGYgcXVpdGUg
-YW4NCj4+IGV4cGVydCBpbiBkb2luZyB0aGVtIDopDQo+IA0KPiANCj4gU29ycnkgZm9yIHRoZSBt
-aXN0YWtlLCBJIGNvcHkvcGFzdGUgdGhlIHBhdGNoIGFuZCBkZWxldGUvZWRpdCBzb21lIGxpbmVz
-LA0KPiBoYXZlIHJldmlld2VkIGJlZm9yZSBzZW5kaW5nLCBidXQgbm90IGZvdW5kLiBJIGhhdmUg
-bWFkZSBhIGNhc2UgdG8gcmVwcm9kdWNlDQo+IHRoZSBlcnJvciwgZHVtcGluZyAiaW1hX3J1bGVz
-IiBhbmQgZXZlcnkgaXRlbSBhZGRyZXNzIG9mIGxpc3QgaW4gdGhlIGVycm9yDQo+IHNpdHVhaXRv
-biwgSSBjYW4gd2F0Y2h0aGUgImltYV9ydWxlcyIgY2hhbmdlLCBvbGQgbGlzdCB0cmF2ZXJzaW5n
-IHRvIHRoZSBuZXcgbGlzdC4NCj4gQW5kIEkgaGF2ZSBiZWVuIGRvaW5nIGEgcmVib290IHRlc3Qg
-d2hpY2ggZm91bmQgdGhpcyBidWcuIFRoaXMgcGF0Y2ggc2VlbXMgdG8gd29yayBmaW5lLg0KPiAN
-Cg0KTm8gd29ycmllcywgaSBqdXN0IHdhbnRlZCB0byBtYWtlIHN1cmUgSSB1bmRlcnN0b29kIHlv
-dSBjb3JyZWN0bHkuDQoNCj4gDQo+Pg0KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHByZXZfcnVsZXMtPm5leHQgPSBmaXJzdDsNCj4+Pg0KPj4+DQo+Pj4gVGhlIHNpZGUgZWZmZWN0
-IGlzIHRoZSAiaW1hX2RlZmF1bHRfcnVsZXMiIHdpbGwgYmUgY2hhbmdlZCBhIGxpdHRsZSB3aGls
-ZS4NCj4+PiBCdXQgaXQgbWFrZSBzZW5zZSwgdGhlIHByb2Nlc3Mgc2hvdWxkIGJlIGNoZWNrZWQg
-YWdhaW4gYnkgdGhlIG5ldyBwb2xpY3kuDQo+Pj4NCj4+PiBUaGlzIHBhdGNoIGhhcyBiZWVuIHRl
-c3RlZCwgaWYgd2lsbCBkbywgSSBjYW4gcmVzdWJtaXQgdGhpcyBwYXRjaC4+DQo+Pj4gSG93IGFi
-b3V0IHRoaXMgPw0KPj4NCj4+IENvcnJlY3QgbWUgaWYgSSdtIHdyb25nLCBoZXJlIGlzIGhvdyBJ
-IHRoaW5rIEkgdW5kZXJzdGFuZCB5b3UgcGF0Y2guDQo+PiBXZSBzdGFydCB3aXRoIGEgc2l0dWF0
-aW9uIGxpa2UgdGhhdCAoc3RlcCAwKToNCj4+IGltYV9ydWxlcyAtLT4gTGlzdCBlbnRyeSAwICho
-ZWFkIG5vZGUpID0gaW1hX2RlZmF1bHRfcnVsZXMgPC0+IExpc3QgZW50cnkgMSA8LT4gTGlzdCBl
-bnRyeSAyIDwtPiAuLi4gPC0+IExpc3QgZW50cnkgMA0KPj4NCj4+IFRoZW4gd2UgZGVjaWRlIHRv
-IHVwZGF0ZSB0aGUgcG9saWN5IGZvciB0aGUgZmlyc3QgdGltZSwgc28NCj4+ICdpbWFfcnVsZXMg
-WyZpbWFfZGVmYXVsdF9ydWxlc10gIT0gcG9saWN5IFsmaW1hX3BvbGljeV9ydWxlc10nLg0KPj4g
-V2UgZW50ZXIgdGhlIGNvbmRpdGlvbi4NCj4+IEZpcnN0IHdlIGNvcHkgdGhlIGN1cnJlbnQgdmFs
-dWUgb2YgaW1hX3J1bGVzICgmaW1hX2RlZmF1bHRfcnVsZXMpDQo+PiB0byBhIHRlbXBvcmFyeSB2
-YXJpYWJsZSAncHJldl9ydWxlcycuIFdlIGFsc28gY3JlYXRlIGEgcG9pbnRlciBkdWJiZWQNCj4+
-ICdmaXJzdCcgdG8gdGhlIGVudHJ5IDEgaW4gdGhlIGRlZmF1bHQgbGlzdCAoc3RlcCAxKToNCj4+
-IHByZXZfcnVsZXMgLS0tLS0tLS0tLS0tLQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBcLw0KPj4gaW1hX3J1bGVzIC0tPiBMaXN0IGVudHJ5IDAgKGhl
-YWQgbm9kZSkgPSBpbWFfZGVmYXVsdF9ydWxlcyA8LT4gTGlzdCBlbnRyeSAxIDwtPiBMaXN0IGVu
-dHJ5IDIgPC0+IC4uLiA8LT4gTGlzdCBlbnRyeSAwDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAv
-XA0KPj4gZmlyc3QgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0NCj4+DQo+Pg0KPj4gVGhlbiB3ZSB1cGRhdGUgcHJldl9ydWxlcy0+
-bmV4dCB0byBwb2ludCB0byBwb2xpY3ktPm5leHQgKHN0ZXAgMik6DQo+PiBMaXN0IGVudHJ5IDEg
-PC0+IExpc3QgZW50cnkgMiA8LT4gLi4uIC0+IExpc3QgZW50cnkgMA0KPj4gwqAgL1wNCj4+IGZp
-cnN0DQo+PiDCoMKgwqDCoChub3RpY2UgdGhhdCBsaXN0IGVudHJ5IDAgbm8gbG9uZ2VyIHBvaW50
-cyBiYWNrd2FyZHMgdG8gJ2xpc3QgZW50cnkgMScsDQo+PiDCoMKgwqDCoGJ1dCBJIGRvbid0IHRo
-aW5rIHRoZXJlIGlzIGFueSByZXZlcnNlIGl0ZXJhdGlvbiBpbiBJTUEsIHNvIGl0IHNob3VsZCBi
-ZQ0KPj4gwqDCoMKgwqBzYWZlKQ0KPj4NCj4+IHByZXZfcnVsZXMgLS0tLS0tLS0tLS0tLQ0KPj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcLw0KPj4gaW1h
-X3J1bGVzIC0tPiBMaXN0IGVudHJ5IDAgKGhlYWQgbm9kZSkgPSBpbWFfZGVmYXVsdF9ydWxlcw0K
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8DQo+PiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwNCj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcLw0KPj4g
-cG9saWN5IC0tPiBwb2xpY3kgZW50cnkgMCcgKGhlYWQgbm9kZSkgPSBpbWFfcG9saWN5X3J1bGVz
-IDwtPiBwb2xpY3kgZW50cnkgMScgPC0+IHBvbGljeSBlbnRyeSAyJyA8LT4gLi4uLiA8LT4gcG9s
-aWN5IGVudHJ5IDAnDQo+Pg0KPj4NCj4+IFdlIHRoZW4gdXBkYXRlIGltYV9ydWxlcyB0byBwb2lu
-dCB0byBpbWFfcG9saWN5X3J1bGVzIChzdGVwIDMpOg0KPj4gTGlzdCBlbnRyeSAxIDwtPiBMaXN0
-IGVudHJ5IDIgPC0+IC4uLiAtPiBMaXN0IGVudHJ5IDANCj4+IMKgIC9cDQo+PiBmaXJzdA0KPj4N
-Cj4+IHByZXZfcnVsZXMgLS0tLS0tLS0tLS0tLQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcLw0KPj4gaW1hX3J1bGVzwqDCoMKgwqAgTGlzdCBlbnRy
-eSAwIChoZWFkIG5vZGUpID0gaW1hX2RlZmF1bHRfcnVsZXMNCj4+IMKgwqDCoMKgwqAgfMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwNCj4+IMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwNCj4+IMKgwqDCoMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQ0KPj4gwqDCoMKgwqDCoCAtLS0tLS0tLS0tLS0tLS3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCB8DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcL8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcLw0KPj4gcG9saWN5IC0tPiBwb2xpY3kgZW50cnkgMCcg
-KGhlYWQgbm9kZSkgPSBpbWFfcG9saWN5X3J1bGVzIDwtPiBwb2xpY3kgZW50cnkgMScgPC0+IHBv
-bGljeSBlbnRyeSAyJyA8LT4gLi4uLiA8LT4gcG9saWN5IGVudHJ5IDAnDQo+PiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAvXA0KPj4gZmlyc3QgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4+DQo+PiBUaGVuIHdlIHJ1biBzeW5jaHJv
-bml6ZV9yY3UoKSB0byB3YWl0IGZvciBhbnkgUkNVIHJlYWRlciB0byBleGl0IHRoZWlyIGxvb3Bz
-IChzdGVwIDQpLg0KPj4NCj4+IEZpbmFsbHkgd2UgdXBkYXRlIHByZXZfcnVsZXMtPm5leHQgdG8g
-cG9pbnQgYmFjayB0byB0aGUgaW1hIHBvbGljeSBhbmQgZml4IHRoZSBsb29wIChzdGVwIDUpOg0K
-Pj4NCj4+IExpc3QgZW50cnkgMSA8LT4gTGlzdCBlbnRyeSAyIDwtPiAuLi4gLT4gTGlzdCBlbnRy
-eSAwDQo+PiDCoCAvXA0KPj4gZmlyc3QNCj4+DQo+PiBwcmV2X3J1bGVzIC0tLT4gTGlzdCBlbnRy
-eSAwIChoZWFkIG5vZGUpID0gaW1hX2RlZmF1bHRfcnVsZXMgPC0+IExpc3QgZW50cnkgMSA8LT4g
-TGlzdCBlbnRyeSAyIDwtPiAuLi4gPC0+IExpc3QgZW50cnkgMA0KPj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIC9cDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGZpcnN0IChub3cgdXNlbGVzcykNCj4+
-IGltYV9ydWxlcw0KPj4gwqDCoMKgwqDCoCB8DQo+PiDCoMKgwqDCoMKgIHwNCj4+IMKgwqDCoMKg
-wqAgfA0KPj4gwqDCoMKgwqDCoCAtLS0tLS0tLS0tLS0tLS0NCj4+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwvDQo+PiBwb2xpY3kgLS0+IHBvbGljeSBlbnRyeSAwJyAo
-aGVhZCBub2RlKSA9IGltYV9wb2xpY3lfcnVsZXMgPC0+IHBvbGljeSBlbnRyeSAxJyA8LT4gcG9s
-aWN5IGVudHJ5IDInIDwtPiAuLi4uIDwtPiBwb2xpY3kgZW50cnkgMCcNCj4+DQo+PiBUaGUgZ29h
-bCBpcyB0aGF0IHJlYWRlcnMgc2hvdWxkIHN0aWxsIGJlIGFibGUgdG8gbG9vcA0KPj4gKGZvcndh
-cmQsIGFzIHdlIHNhdyB0aGF0IGJhY2t3YXJkIGxvb3BpbmcgaXMgdGVtcG9yYXJpbHkgYnJva2Vu
-KQ0KPj4gd2hpbGUgaW4gc3RlcHMgMC00Lg0KPiANCj4gDQo+IFllcywgSXQncyB0aGUgd29ya2Zs
-b3cuDQo+IA0KPiANCj4+IEknbSBub3QgY29tcGxldGVseSBzdXJlIHdoYXQgd291bGQgaGFwcGVu
-IHRvIGEgY2xpZW50IHRoYXQgc3RhcnRlZCBpdGVyYXRpbmcNCj4+IG92ZXIgaW1hX3J1bGVzIHJp
-Z2h0IGFmdGVyIHN0ZXAgMi4NCj4+DQo+PiBXb3VsZG4ndCB0aGV5IGJlIGFibGUgdG8gc3RhcnQg
-bG9vcGluZyB0aHJvdWdoIHRoZSBuZXcgcG9saWN5DQo+PiBhcyAnTGlzdCBlbnRyeSAwIChoZWFk
-IG5vZGUpID0gaW1hX2RlZmF1bHRfcnVsZXMnIHBvaW50cyB0byBpbWFfcG9saWN5X3J1bGVzPw0K
-Pj4gQW5kIGlmIHRoZXksIHdvdWxkbid0IHRoZXkgbG9vcCB1bnRpbCB0aGUgd3JpdGUgdG8gJ2lt
-YV9ydWxlJyBhdCBzdGVwIDMgKGFkbWl0dGVkbHkNCj4+IHZlcnkgc2hvcnRseSB0aGVyZWFmdGVy
-KSBjb21wbGV0ZWQ/DQo+PiBBbmQgd291bGQgdGhlIGNvbXBpbGVyIGJlIGFsbG93ZWQgdG8gb3B0
-aW1pemUgdGhlIHJlYWQgdG8gJ2ltYV9ydWxlcycgaW4gdGhlDQo+PiBsaXN0X2Zvcl9lYWNoX2Vu
-dHJ5KCkgbG9vcCwgdGhlcmVieSBuZXZlciByZWxvYWRpbmcgdGhlIG5ldyB2YWx1ZSBmb3INCj4+
-ICdpbWFfcnVsZXMnLCBhbmQgdGh1cyBsb29waW5nIGZvcmV2ZXIsIGp1c3Qgd2hhdCB3ZSBhcmUg
-dHJ5aW5nIHRvIGF2b2lkPw0KPiANCj4gDQo+IFllcyzCoCAiaW1hX3J1bGVzIiBjYWNoZSBub3Qg
-dXBkYXRlIGluIHRpbWUsIEl0J3MgYSByaXNrLiBJIGFtIG5vdCBzdXJlIGlmICJXUklURV9PTkNF
-Ig0KPiBjYW4gZG8gdGhpcyB0cmljay4gSG93IGFib3V0Og0KPiDCoMKgwqAgV1JJVEVfT05DRShw
-cmV2X3J1bGVzLT5uZXh0LCBwb2xpY3ktPm5leHQpOw0KPiDCoMKgwqAgV1JJVEVfT05DRShpbWFf
-cnVsZXMsIHBvbGljeSk7DQoNClF1aXRlIGZyYW5rbHksIEkgZG9uJ3Qga25vdy4gQXMgSSBzYWlk
-IGVhcmxpZXIsIHRoaXMgaXMgcmVhbGx5IHdheSBhYm92ZSBteSBsZXZlbC4NCkknbSBmaW5lIHdh
-aXRpbmcgZm9yIG1vcmUgZXhwZXJpZW5jZWQgb3BpbmlvbnMgb24gdGhpcyBvbmUuDQoNCk9uIHRo
-ZSBhc3BlY3Qgb2YgbWFpbnRhaW5hYmlsaXR5LCBJIGRvIHRoaW5rIHRoaXMgc29sdXRpb24gaXMg
-cGVyaGFwcyB0b28gY29tcGxleA0Kd2hlbiBjb21wYXJlZCB0byBvdGhlciBzb2x1dGlvbnMgbGlr
-ZSB0aGUgc2VtYXBob3JlIHlvdSBmaXJzdCBwcm9wb3NlZC4NCkEgc29sdXRpb24gb2Ygc2ltaWxh
-ciBjb21wbGV4aXR5IHdpdGggUkNVIHdvdWxkIGJlIGlkZWFsIHRvIHByZXZlbnQgYWRkaW5nIGEN
-CnNlbWFwaG9yZSBvbiBhIHJlYWQtbW9zdGx5IHNjZW5hcmlvLCBidXQgSSdtIHN0aWxsIG1vcmUg
-Y29uZmlkZW50IGluIHRoZSBzZW1hcGhvcmUNCnRoYW4gaW4gdGhlIHNvbHV0aW9uIGFib3ZlLCBi
-ZWNhdXNlIGl0IGlzIGVhc3kgdG8gaGF2ZSBjb25maWRlbmNlIGluIHRoZSBzZW1hcGhvcmUsDQp3
-aGlsZSB0aGlzIHBhdGNoIGlzIG5vdCBhdCBhbGwgb2J2aW91cyB0byBtZSwgYW5kIG1heWJlIHRo
-ZSBuZXh0IHBlcnNvbiB3aG8gd2lsbA0KaGF2ZSB0byBlZGl0IHRoYXQgcGllY2Ugb2YgY29kZS4N
-Cg0KPiANCj4gSWYgY2FuJ3QgZml4IHRoZSBjYWNoZSBpc3N1ZSwgbWF5YmUgdGhlICJpbWFfcnVs
-ZXNfdG1wIiBzb2x1dGlvbiBpcyB0aGUgYmVzdCB3YXkuDQo+IEkgd2lsbCB0ZXN0IGl0Lg0KPiAN
-Cj4gDQo+PiBPdmVyYWxsLCBJJ20gdGVtcHRlZCB0byBzYXkgdGhpcyBpcyBwZXJoYXBzIGEgYml0
-IHRvbyBjb21wbGV4IChhdCBsZWFzdCwNCj4+IG15IGhlYWQgdGVsbHMgbWUgaXQgaXMsIGJ1dCB0
-aGF0IG1heSB2ZXJ5IHdlbGwgYmUgYmVjYXVzZSBJJ20gdGVycmlibGUNCj4+IGF0IGNvbmN1cnJl
-bmN5IGlzc3VlcykuDQo+Pg0KPj4gSG9uZXN0bHksIGluIHRoaXMgY2FzZSBJIHRoaW5rIGF3YWl0
-aW5nIGlucHV0IGZyb20gbW9yZSBleHBlcmllbmNlZA0KPj4ga2VybmVsIGRldnMgdGhhbiBJIGlz
-IHRoZSBiZXN0IHBhdGggZm9yd2FyZCA6LSkNCj4+DQo+Pj4gLS0tLS0tLS0tLQ0KPj4+IFJlZ2Fy
-ZHMsDQo+Pj4gbGlxaW9uZw0KDQpUaGFua3MsDQpTaW1vbg==
+On Wed, Aug 18, 2021 at 10:17 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 8/16/21 12:54 AM, Kyle Tso wrote:
+> > If the port is going to send Discover_Identity Message, vdm_sm_running
+> > flag was intentionally set before entering Ready States in order to
+> > avoid the conflict because the port and the port partner might start
+> > AMS at almost the same time after entering Ready States.
+> >
+> > However, the original design has a problem. When the port is doing
+> > DR_SWAP from Device to Host, it raises the flag. Later in the
+> > tcpm_send_discover_work, the flag blocks the procedure of sending the
+> > Discover_Identity and it might never be cleared until disconnection.
+> >
+> > Since there exists another flag send_discover representing that the port
+> > is going to send Discover_Identity or not, it is enough to use that flag
+> > to prevent the conflict. Also change the timing of the set/clear of
+> > vdm_sm_running to indicate whether the VDM SM is actually running or
+> > not.
+> >
+> > Fixes: c34e85fa69b9 ("usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work")
+> > Cc: Badhri Jagan Sridharan <badhri@google.com>
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
+>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>
+
+Hi Greg,
+
+Do I need to modify something for this patch?
+
+thanks,
+Kyle
+
+> > ---
+> >   drivers/usb/typec/tcpm/tcpm.c | 81 ++++++++++++++++-------------------
+> >   1 file changed, 38 insertions(+), 43 deletions(-)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index 5b22a1c931a9..c05ddfbaff08 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -341,6 +341,7 @@ struct tcpm_port {
+> >       bool vbus_source;
+> >       bool vbus_charge;
+> >
+> > +     /* Set to true when Discover_Identity Command is expected to be sent in Ready states. */
+> >       bool send_discover;
+> >       bool op_vsafe5v;
+> >
+> > @@ -370,6 +371,7 @@ struct tcpm_port {
+> >       struct hrtimer send_discover_timer;
+> >       struct kthread_work send_discover_work;
+> >       bool state_machine_running;
+> > +     /* Set to true when VDM State Machine has following actions. */
+> >       bool vdm_sm_running;
+> >
+> >       struct completion tx_complete;
+> > @@ -1431,6 +1433,7 @@ static void tcpm_queue_vdm(struct tcpm_port *port, const u32 header,
+> >       /* Set ready, vdm state machine will actually send */
+> >       port->vdm_retries = 0;
+> >       port->vdm_state = VDM_STATE_READY;
+> > +     port->vdm_sm_running = true;
+> >
+> >       mod_vdm_delayed_work(port, 0);
+> >   }
+> > @@ -1673,7 +1676,6 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                               rlen = 1;
+> >                       } else {
+> >                               tcpm_register_partner_altmodes(port);
+> > -                             port->vdm_sm_running = false;
+> >                       }
+> >                       break;
+> >               case CMD_ENTER_MODE:
+> > @@ -1721,14 +1723,12 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+> >                                     (VDO_SVDM_VERS(svdm_version));
+> >                       break;
+> >               }
+> > -             port->vdm_sm_running = false;
+> >               break;
+> >       default:
+> >               response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+> >               rlen = 1;
+> >               response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
+> >                             (VDO_SVDM_VERS(svdm_version));
+> > -             port->vdm_sm_running = false;
+> >               break;
+> >       }
+> >
+> > @@ -1765,6 +1765,20 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+> >       }
+> >
+> >       if (PD_VDO_SVDM(p[0])) {
+> > +             /*
+> > +              * Here a SVDM is received (INIT or RSP or unknown). Set the vdm_sm_running in
+> > +              * advance because we are dropping the lock but may send VDMs soon.
+> > +              * For the cases of INIT received:
+> > +              *  - If no response to send, it will be cleared later in this function.
+> > +              *  - If there are responses to send, it will be cleared in the state machine.
+> > +              * For the cases of RSP received:
+> > +              *  - If no further INIT to send, it will be cleared later in this function.
+> > +              *  - Otherwise, it will be cleared in the state machine if timeout or it will go
+> > +              *    back here until no further INIT to send.
+> > +              * For the cases of unknown type received:
+> > +              *  - We will send NAK and the flag will be cleared in the state machine.
+> > +              */
+> > +             port->vdm_sm_running = true;
+> >               rlen = tcpm_pd_svdm(port, adev, p, cnt, response, &adev_action);
+> >       } else {
+> >               if (port->negotiated_rev >= PD_REV30)
+> > @@ -1833,6 +1847,8 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+> >
+> >       if (rlen > 0)
+> >               tcpm_queue_vdm(port, response[0], &response[1], rlen - 1);
+> > +     else
+> > +             port->vdm_sm_running = false;
+> >   }
+> >
+> >   static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
+> > @@ -1898,8 +1914,10 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+> >                * if there's traffic or we're not in PDO ready state don't send
+> >                * a VDM.
+> >                */
+> > -             if (port->state != SRC_READY && port->state != SNK_READY)
+> > +             if (port->state != SRC_READY && port->state != SNK_READY) {
+> > +                     port->vdm_sm_running = false;
+> >                       break;
+> > +             }
+> >
+> >               /* TODO: AMS operation for Unstructured VDM */
+> >               if (PD_VDO_SVDM(vdo_hdr) && PD_VDO_CMDT(vdo_hdr) == CMDT_INIT) {
+> > @@ -2555,10 +2573,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                                                                      TYPEC_PWR_MODE_PD,
+> >                                                                      port->pps_data.active,
+> >                                                                      port->supply_voltage);
+> > -                             /* Set VDM running flag ASAP */
+> > -                             if (port->data_role == TYPEC_HOST &&
+> > -                                 port->send_discover)
+> > -                                     port->vdm_sm_running = true;
+> >                               tcpm_set_state(port, SNK_READY, 0);
+> >                       } else {
+> >                               /*
+> > @@ -2596,14 +2610,10 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >               switch (port->state) {
+> >               case SNK_NEGOTIATE_CAPABILITIES:
+> >                       /* USB PD specification, Figure 8-43 */
+> > -                     if (port->explicit_contract) {
+> > +                     if (port->explicit_contract)
+> >                               next_state = SNK_READY;
+> > -                             if (port->data_role == TYPEC_HOST &&
+> > -                                 port->send_discover)
+> > -                                     port->vdm_sm_running = true;
+> > -                     } else {
+> > +                     else
+> >                               next_state = SNK_WAIT_CAPABILITIES;
+> > -                     }
+> >
+> >                       /* Threshold was relaxed before sending Request. Restore it back. */
+> >                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
+> > @@ -2618,10 +2628,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                       port->pps_status = (type == PD_CTRL_WAIT ?
+> >                                           -EAGAIN : -EOPNOTSUPP);
+> >
+> > -                     if (port->data_role == TYPEC_HOST &&
+> > -                         port->send_discover)
+> > -                             port->vdm_sm_running = true;
+> > -
+> >                       /* Threshold was relaxed before sending Request. Restore it back. */
+> >                       tcpm_set_auto_vbus_discharge_threshold(port, TYPEC_PWR_MODE_PD,
+> >                                                              port->pps_data.active,
+> > @@ -2697,10 +2703,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                       }
+> >                       break;
+> >               case DR_SWAP_SEND:
+> > -                     if (port->data_role == TYPEC_DEVICE &&
+> > -                         port->send_discover)
+> > -                             port->vdm_sm_running = true;
+> > -
+> >                       tcpm_set_state(port, DR_SWAP_CHANGE_DR, 0);
+> >                       break;
+> >               case PR_SWAP_SEND:
+> > @@ -2738,7 +2740,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                                          PD_MSG_CTRL_NOT_SUPP,
+> >                                          NONE_AMS);
+> >               } else {
+> > -                     if (port->vdm_sm_running) {
+> > +                     if (port->send_discover) {
+> >                               tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
+> >                               break;
+> >                       }
+> > @@ -2754,7 +2756,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >                                          PD_MSG_CTRL_NOT_SUPP,
+> >                                          NONE_AMS);
+> >               } else {
+> > -                     if (port->vdm_sm_running) {
+> > +                     if (port->send_discover) {
+> >                               tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
+> >                               break;
+> >                       }
+> > @@ -2763,7 +2765,7 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+> >               }
+> >               break;
+> >       case PD_CTRL_VCONN_SWAP:
+> > -             if (port->vdm_sm_running) {
+> > +             if (port->send_discover) {
+> >                       tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
+> >                       break;
+> >               }
+> > @@ -4479,18 +4481,20 @@ static void run_state_machine(struct tcpm_port *port)
+> >       /* DR_Swap states */
+> >       case DR_SWAP_SEND:
+> >               tcpm_pd_send_control(port, PD_CTRL_DR_SWAP);
+> > +             if (port->data_role == TYPEC_DEVICE || port->negotiated_rev > PD_REV20)
+> > +                     port->send_discover = true;
+> >               tcpm_set_state_cond(port, DR_SWAP_SEND_TIMEOUT,
+> >                                   PD_T_SENDER_RESPONSE);
+> >               break;
+> >       case DR_SWAP_ACCEPT:
+> >               tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
+> > -             /* Set VDM state machine running flag ASAP */
+> > -             if (port->data_role == TYPEC_DEVICE && port->send_discover)
+> > -                     port->vdm_sm_running = true;
+> > +             if (port->data_role == TYPEC_DEVICE || port->negotiated_rev > PD_REV20)
+> > +                     port->send_discover = true;
+> >               tcpm_set_state_cond(port, DR_SWAP_CHANGE_DR, 0);
+> >               break;
+> >       case DR_SWAP_SEND_TIMEOUT:
+> >               tcpm_swap_complete(port, -ETIMEDOUT);
+> > +             port->send_discover = false;
+> >               tcpm_ams_finish(port);
+> >               tcpm_set_state(port, ready_state(port), 0);
+> >               break;
+> > @@ -4502,7 +4506,6 @@ static void run_state_machine(struct tcpm_port *port)
+> >               } else {
+> >                       tcpm_set_roles(port, true, port->pwr_role,
+> >                                      TYPEC_HOST);
+> > -                     port->send_discover = true;
+> >               }
+> >               tcpm_ams_finish(port);
+> >               tcpm_set_state(port, ready_state(port), 0);
+> > @@ -4645,8 +4648,6 @@ static void run_state_machine(struct tcpm_port *port)
+> >               break;
+> >       case VCONN_SWAP_SEND_TIMEOUT:
+> >               tcpm_swap_complete(port, -ETIMEDOUT);
+> > -             if (port->data_role == TYPEC_HOST && port->send_discover)
+> > -                     port->vdm_sm_running = true;
+> >               tcpm_set_state(port, ready_state(port), 0);
+> >               break;
+> >       case VCONN_SWAP_START:
+> > @@ -4662,14 +4663,10 @@ static void run_state_machine(struct tcpm_port *port)
+> >       case VCONN_SWAP_TURN_ON_VCONN:
+> >               tcpm_set_vconn(port, true);
+> >               tcpm_pd_send_control(port, PD_CTRL_PS_RDY);
+> > -             if (port->data_role == TYPEC_HOST && port->send_discover)
+> > -                     port->vdm_sm_running = true;
+> >               tcpm_set_state(port, ready_state(port), 0);
+> >               break;
+> >       case VCONN_SWAP_TURN_OFF_VCONN:
+> >               tcpm_set_vconn(port, false);
+> > -             if (port->data_role == TYPEC_HOST && port->send_discover)
+> > -                     port->vdm_sm_running = true;
+> >               tcpm_set_state(port, ready_state(port), 0);
+> >               break;
+> >
+> > @@ -4677,8 +4674,6 @@ static void run_state_machine(struct tcpm_port *port)
+> >       case PR_SWAP_CANCEL:
+> >       case VCONN_SWAP_CANCEL:
+> >               tcpm_swap_complete(port, port->swap_status);
+> > -             if (port->data_role == TYPEC_HOST && port->send_discover)
+> > -                     port->vdm_sm_running = true;
+> >               if (port->pwr_role == TYPEC_SOURCE)
+> >                       tcpm_set_state(port, SRC_READY, 0);
+> >               else
+> > @@ -5028,9 +5023,6 @@ static void _tcpm_pd_vbus_on(struct tcpm_port *port)
+> >       switch (port->state) {
+> >       case SNK_TRANSITION_SINK_VBUS:
+> >               port->explicit_contract = true;
+> > -             /* Set the VDM flag ASAP */
+> > -             if (port->data_role == TYPEC_HOST && port->send_discover)
+> > -                     port->vdm_sm_running = true;
+> >               tcpm_set_state(port, SNK_READY, 0);
+> >               break;
+> >       case SNK_DISCOVERY:
+> > @@ -5425,15 +5417,18 @@ static void tcpm_send_discover_work(struct kthread_work *work)
+> >       if (!port->send_discover)
+> >               goto unlock;
+> >
+> > +     if (port->data_role == TYPEC_DEVICE && port->negotiated_rev < PD_REV30) {
+> > +             port->send_discover = false;
+> > +             goto unlock;
+> > +     }
+> > +
+> >       /* Retry if the port is not idle */
+> >       if ((port->state != SRC_READY && port->state != SNK_READY) || port->vdm_sm_running) {
+> >               mod_send_discover_delayed_work(port, SEND_DISCOVER_RETRY_MS);
+> >               goto unlock;
+> >       }
+> >
+> > -     /* Only send the Message if the port is host for PD rev2.0 */
+> > -     if (port->data_role == TYPEC_HOST || port->negotiated_rev > PD_REV20)
+> > -             tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
+> > +     tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
+> >
+> >   unlock:
+> >       mutex_unlock(&port->lock);
+> >
+>
