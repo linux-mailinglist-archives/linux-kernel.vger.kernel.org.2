@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9593F5214
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FA13F5212
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhHWU3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:29:15 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:65301 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbhHWU3N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:29:13 -0400
-IronPort-SDR: 9cRy6OFuvZ5FXzTmZ7VdxAG3mOTtRCYNKUCZJL1VPEjH7a62b6TiZxJyZGXh6x/HeCHCWrZHBp
- 39pm1RvfCre3tGT/J0CVN4zi2DQDqrNPOrxW4COxa/Ec4lFhIHi7jD/rffd7J08pBpKBzPEnG5
- 7zxhi9C36jHUo3x+JZhjOdP6LlzFH5z+cFIUudfcpBHkJysBvb3N7SB/mMSay3vONL0XCw4L4F
- QG2nolbT0Z7BhJRoIgGkh6yRtwVCY65TBfoMoEbJ1SycMBWZk0wSuaEEu2ClFDTbRPlSo+Bk47
- pz5kFb6pyx6Y80jgq3AGYXo6
-X-IronPort-AV: E=Sophos;i="5.84,344,1620720000"; 
-   d="scan'208";a="67519956"
-Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
-  by esa1.mentor.iphmx.com with ESMTP; 23 Aug 2021 12:28:31 -0800
-IronPort-SDR: hrR8joVliJ/3UiwFWxKGvZJCCoSmSm0nOTK4WmW6uF67ZWb7BQYmvrHGsP5ZXuQt3hs4d3WrYu
- gi919jbFtmRT+gcoIcomRmKQMNvGVlrpD5rRCd+OcTf4jrp9DblskPDFy33aZLWOhWyV0ePNPY
- hcQZ/67JzhGJEwEVnjnDpGC8rsz9OWd3MCQwrghnydeYzkqoN1nudbMKDNtRJaXEY+nhRfZUb3
- 08nR4bziQJBeUFjEsf9WGrciGwzMaMRezbbFoLssJmfTq1R4LOJeeV7lUphpW1nOlY42Tgd2s4
- D2I=
-From:   "George G. Davis" <george_davis@mentor.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <george_davis@mentor.com>, Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "George G. Davis" <davis.george@siemens.com>
-Subject: [RFC][PATCH] mm/page_isolation: tracing: trace all test_pages_isolated failures
-Date:   Mon, 23 Aug 2021 16:28:23 -0400
-Message-ID: <20210823202823.13765-1-george_davis@mentor.com>
-X-Mailer: git-send-email 2.17.1
+        id S231569AbhHWU2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:28:39 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:40826 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232464AbhHWU2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 16:28:36 -0400
+Received: from zn.tnic (p200300ec2f07d9005f98ffa3f2e7b729.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:d900:5f98:ffa3:f2e7:b729])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2ED421EC01FC;
+        Mon, 23 Aug 2021 22:27:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1629750468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=NlwMdfb8DUPYPogP/i1uarjs2jWow9N6Di29V/9QCZo=;
+        b=l5maMkyP2FIiTGcBehL2/EUNKYFWpWAc6DY5XFJuc7HGYb6XDNv+99EcJX+brt/5JAsn3f
+        i4P+MmdgR74W8b/BevrgFT8UWlu4Iivgpn2YR+MmBaM1Kc7Qp6uXomD612eZ55ITjwOy1u
+        2czFO5CF4B3DYSXZb8Sx8zoKTWkJuq8=
+Date:   Mon, 23 Aug 2021 22:28:25 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Lijo Lazar <Lijo.Lazar@amd.com>,
+        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: ERROR: modpost: "pm_suspend_target_state"
+ [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+Message-ID: <YSQE6fN9uO0CIWeh@zn.tnic>
+References: <YSP6Lv53QV0cOAsd@zn.tnic>
+ <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SVR-ORW-MBX-06.mgc.mentorg.com (147.34.90.206) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "George G. Davis" <davis.george@siemens.com>
+On Mon, Aug 23, 2021 at 03:49:39PM -0400, Alex Deucher wrote:
+> Maybe fixed with this patch?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5706cb3c910cc8283f344bc37a889a8d523a2c6d
 
-Some test_pages_isolated failure conditions don't include trace points.
-For debugging issues caused by "pinned" pages, make sure to trace all
-calls whether they succeed or fail. In this case, a failure case did not
-result in a trace point. So add the missing failure case in
-test_pages_isolated traces.
+Nope, this one is already in:
 
-Signed-off-by: George G. Davis <davis.george@siemens.com>
----
- mm/page_isolation.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+$ git tag --contains 5706cb3c910cc8283f344bc37a889a8d523a2c6d
+v5.14-rc5
+v5.14-rc6
+v5.14-rc7
 
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index bddf788f45bf..fff55bb830f9 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -287,6 +287,7 @@ int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn,
- 	unsigned long pfn, flags;
- 	struct page *page;
- 	struct zone *zone;
-+	int ret;
- 
- 	/*
- 	 * Note: pageblock_nr_pages != MAX_ORDER. Then, chunks of free pages
-@@ -299,15 +300,21 @@ int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn,
- 			break;
- 	}
- 	page = __first_valid_page(start_pfn, end_pfn - start_pfn);
--	if ((pfn < end_pfn) || !page)
--		return -EBUSY;
-+	if ((pfn < end_pfn) || !page) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
- 	/* Check all pages are free or marked as ISOLATED */
- 	zone = page_zone(page);
- 	spin_lock_irqsave(&zone->lock, flags);
- 	pfn = __test_page_isolated_in_pageblock(start_pfn, end_pfn, isol_flags);
- 	spin_unlock_irqrestore(&zone->lock, flags);
- 
-+	ret = pfn < end_pfn ? -EBUSY : 0;
-+
-+out:
- 	trace_test_pages_isolated(start_pfn, end_pfn, pfn);
- 
--	return pfn < end_pfn ? -EBUSY : 0;
-+	return ret;
- }
+also, from only a quick poke so IMHO, the error says:
+
+ERROR: modpost: "pm_suspend_target_state" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+
+which means you need the
+
+EXPORT_SYMBOL_GPL(pm_suspend_target_state);
+
+which is in kernel/power/suspend.c which gets enabled with
+
+obj-$(CONFIG_SUSPEND)           += suspend.o
+
+and if you look at PM_SLEEP:
+
+config PM_SLEEP
+        def_bool y
+        depends on SUSPEND || HIBERNATE_CALLBACKS
+
+(notice the ||)
+
+and my randconfig has:
+
+$ grep -E "(HIBERNATE_CALLBACKS|SUSPEND)" .config
+# CONFIG_SUSPEND is not set
+CONFIG_HIBERNATE_CALLBACKS=y
+
+which means, you need:
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+index 4137e848f6a2..a9ce3b20d371 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+@@ -1040,7 +1040,7 @@ void amdgpu_acpi_detect(void)
+  */
+ bool amdgpu_acpi_is_s0ix_supported(struct amdgpu_device *adev)
+ {
+-#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_PM_SLEEP)
++#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_SUSPEND)
+        if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
+                if (adev->flags & AMD_IS_APU)
+                        return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
+
+
+but whether that gives you what you want for amdgpu, you probably need
+to ponder on a bit.
+
+I sincerely hope that helps a little.
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
