@@ -2,143 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678C43F4F77
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836893F4F7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 19:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhHWR0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 13:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        id S231147AbhHWRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 13:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbhHWR0j (ORCPT
+        with ESMTP id S230154AbhHWRas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 13:26:39 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EA0C061575;
-        Mon, 23 Aug 2021 10:25:56 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id n12so27318898edx.8;
-        Mon, 23 Aug 2021 10:25:56 -0700 (PDT)
+        Mon, 23 Aug 2021 13:30:48 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21436C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:30:05 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id x140so1257370ybe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 10:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Tn0lc6r/k3tCfWO6f7rPJPlrsVx45yPIfTd+tcFrbJo=;
-        b=AG/Zg8l9PaDXmc4D/DOzzON5OglkFRojuTDyHl1iOkFSZMpGTmo9Dy4bxNJsiIbp/Y
-         KsUvgMcqUsNFY0zyrqoSLJUHvJhfIJAvalDs/y5ZOObj3yBjsklZE0xDyxeM6AfYfHaf
-         sxn8X2T++0A+8doFpXX977UuUf7M6g8ej5fLwiJ5dt4JDW9UUINV1iBeLy/7q4EwhJhn
-         FXxCm60B3MWqB2I5pobH2d3u41IA7ItOpDEB3TKJ7nmY8kylLj8pKrkAVF0L4CF2o93W
-         LAbYxQ73FU/OYUapYu7vN+sBHomDcouL5YsnTnGNcSgqahZ9C73Jx1TQrexII6Hp+jyp
-         NxLg==
+        bh=uoiTwtytui/FJ2TGPLyBq32QZhYO+XcWNyEuhRLGPF0=;
+        b=tHl92LPnnyvg6NPzbusts/Zntk95o41DRtCGxo9qBxGsUsuq0rP+pdVd+aSeKtSEbI
+         vZJLicHrdOeExwr0DwvrQcGIGhAZYEcoLao0NcVjN5FiIZpdOw1M0Ri4G58S5E3wehaI
+         gGMrWdozzCICmlUrIuFft1GF9mYLkxmROuqq1r24oSwk25N3mCf7s0W7HmLUa+6hDp/u
+         IFPU+sFHwisBPfo49v+Aa+Vnap+awgDd2sUkGFhKs67PH6uNg05tU4zzeRuEWZH9HFvT
+         WTFkOcouZG6cb+QQeCsBC+4uxmr2Mtur6YI609poEdXc5qfRk966k6kB2ejFDhmo5uxb
+         L0Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Tn0lc6r/k3tCfWO6f7rPJPlrsVx45yPIfTd+tcFrbJo=;
-        b=ca9wPfG/73vAXlGKLqQNgsy4XgrWmXSRgwqTkAbU3fCrD9pigJ2h2iWvZ2yJHQWhRt
-         GAwvJjkZDzAF1j4/4UXOXifPQTiekkP2o3VRmXJwnQMvipPVcR/DnFQfxyZkxo1eQpzS
-         n6ZLxwCFV27ALFDRrPthzW4wpClvXyWfPjNmx0KYdm1AtlOMJabhJEPTjSF+V9BSrSQr
-         5cbvvc5JdTlv19cj+uHvHODa3s2FWfhjlo8WGOUeFLEM5KBpIMbK2zH8aN6r8hGQpc0T
-         LMXkjqCzmmA0uhSztcKPOwsSjXqe3jz1U+wsLObZGldsX8zC0A5fZonj5VO8lwAygooN
-         LM2Q==
-X-Gm-Message-State: AOAM533xlQwSs5QD2fGpqG+QgizcUr4Xkh/K5Rc+wuYbRgp/fjK+qr1S
-        57GQDFNO8jMBqp1LEJPtwDJ5xTmtNv8+5iLI6TFVr43it6gPuw==
-X-Google-Smtp-Source: ABdhPJwNkSiTV+ioCeqvpes518/x3+nsxexUHnGPIn3O5peCtfvMEUDfm3JualhXrZUgXsFnFnyRGKhuy2XchOWT3XY=
-X-Received: by 2002:aa7:d681:: with SMTP id d1mr39260570edr.186.1629739554952;
- Mon, 23 Aug 2021 10:25:54 -0700 (PDT)
+        bh=uoiTwtytui/FJ2TGPLyBq32QZhYO+XcWNyEuhRLGPF0=;
+        b=Fa7o7AIF1QUluJ8ZH4zP5MNeA5hatrDkBerKrudse5sRNKgyMr11kKXA5uiGVRl7F5
+         Ue6+XyFfkL629WVBzJLIIOLyJ/YlC39576Rq/YeS3DKDK372JpOjHVKNXSiYSF1Pu6Cd
+         1jaDR9vxBUiDmE96sglEHKuTmMx4NDEFsuy1RuD8WgqZhzRTlFvO8d97Ix84pCeWHDib
+         Fv+B8Scvzdc68IdAj+BQJigxJ90Bn1xWPWjM+VdUaqTvssxmlLNpqYrFvdwAyDIyYWB5
+         47p297GCqyk4cqBQSTIN7M53PJvoHghzHqFXWs0aYgJ21M0RzGFabCdx3A9DN9MdQM9m
+         EeXQ==
+X-Gm-Message-State: AOAM532KRSYz2IkQCFiVNd/nRcV7fJF2NhzgUiey/LL2YrJzFqt/GlsD
+        733yJ2ary3qGQMaW1AIDUtI9eoSbA8xTN2JytDY3mg==
+X-Google-Smtp-Source: ABdhPJzJ4pvm36jJpBjRmsbw9gQMHOgYZpWO3KtAfNOYOf2gH0ieMLOZV3wpPHsseIKiKbsD4erQ74rN+P17gmi6MkA=
+X-Received: by 2002:a25:1506:: with SMTP id 6mr44253225ybv.153.1629739803889;
+ Mon, 23 Aug 2021 10:30:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com> <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
-In-Reply-To: <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
-From:   Christoph Paasch <christoph.paasch@gmail.com>
-Date:   Mon, 23 Aug 2021 10:25:43 -0700
-Message-ID: <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
-Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize incorrectly
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>
+References: <20210820010403.946838-1-joshdon@google.com> <20210820010403.946838-2-joshdon@google.com>
+ <YR9qRta78uYXSva6@geo.homenetwork>
+In-Reply-To: <YR9qRta78uYXSva6@geo.homenetwork>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 23 Aug 2021 10:29:53 -0700
+Message-ID: <CABk29NvH6_JoLydcrJf+yiaasGUbNEjzKdPjZxnWdrAFboJdsg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] sched: cgroup SCHED_IDLE support
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Tao,
 
-On Mon, Aug 23, 2021 at 12:56 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+On Fri, Aug 20, 2021 at 1:38 AM Tao Zhou <tao.zhou@linux.dev> wrote:
+[snip]
+> >  #ifdef CONFIG_SMP
+> >  extern void set_task_rq_fair(struct sched_entity *se,
+> >                            struct cfs_rq *prev, struct cfs_rq *next);
+> > @@ -601,6 +606,9 @@ struct cfs_rq {
+> >       struct list_head        leaf_cfs_rq_list;
+> >       struct task_group       *tg;    /* group that "owns" this runqueue */
+> >
+> > +     /* Locally cached copy of our task_group's idle value */
+> > +     int                     idle;
+> > +
+> >  #ifdef CONFIG_CFS_BANDWIDTH
+> >       int                     runtime_enabled;
+> >       s64                     runtime_remaining;
+> > --
+> > 2.33.0.rc2.250.ged5fa647cd-goog
+> >
 >
-> Christoph Paasch reports [1] about incorrect skb->truesize
-> after skb_expand_head() call in ip6_xmit.
-> This happen because skb_set_owner_w() for newly clone skb is called
-> too early, before pskb_expand_head() where truesize is adjusted for
-> (!skb-sk) case.
+> Cfs_rq and tg define @idle with int type.
+> In sched_group_set_idle(..., long idle), @idle is long type.
+> Use int instead.
 >
-> [1] https://lkml.org/lkml/2021/8/20/1082
+> But, you filter idle value:
 >
-> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  net/core/skbuff.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
+>     if (idle < 0 || idle > 1)
+>         return -EINVAL;
 >
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f931176..508d5c4 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+> So, no effect here.. Just @idle can use 4 bytes.
 >
->  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->  {
-> +       struct sk_buff *oskb = skb;
-> +       struct sk_buff *nskb = NULL;
->         int delta = headroom - skb_headroom(skb);
 >
->         if (WARN_ONCE(delta <= 0,
-> @@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
 >
->         /* pskb_expand_head() might crash, if skb is shared */
->         if (skb_shared(skb)) {
-> -               struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-> -
-> -               if (likely(nskb)) {
-> -                       if (skb->sk)
-> -                               skb_set_owner_w(nskb, skb->sk);
-> -                       consume_skb(skb);
-> -               } else {
-> -                       kfree_skb(skb);
-> -               }
-> +               nskb = skb_clone(skb, GFP_ATOMIC);
->                 skb = nskb;
->         }
->         if (skb &&
-> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> -               kfree_skb(skb);
-> +           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
->                 skb = NULL;
-> +
-> +       if (!skb) {
-> +               kfree_skb(oskb);
-> +               if (nskb)
-> +                       kfree_skb(nskb);
-> +       } else if (nskb) {
-> +               if (oskb->sk)
-> +                       skb_set_owner_w(nskb, oskb->sk);
-> +               consume_skb(oskb);
+> Thanks,
+> Tao
 
-sorry, this does not fix the problem. The syzkaller repro still
-triggers the WARN.
+The use of 'long'  there is because the input from the cgroup
+interface is a 64 bit value.
 
-When it happens, the skb in ip6_xmit() is not shared as it comes from
-__tcp_transmit_skb, where it is skb_clone()'d.
-
-
-Christoph
-
->         }
->         return skb;
->  }
-> --
-> 1.8.3.1
->
+- Josh
