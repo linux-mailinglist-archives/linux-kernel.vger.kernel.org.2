@@ -2,156 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1681A3F4687
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333663F4689
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbhHWITm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:19:42 -0400
-Received: from mail-eopbgr70044.outbound.protection.outlook.com ([40.107.7.44]:60555
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235316AbhHWITj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:19:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VO4IQrpZIFuUgISq8jllbh/4T4oyPT52jNtGeuH+wVCZj3QHspirxvXRTUhbfElWeR+MA9ODUyahAo0uMAzuABp0iKrN5oWg2DRjKqbIyN7WZshdMFGyF7a4FmIkGiqU0utELHe1gtEcyWZv6710IS5z6KKqSC9UgCRJHskMpXl2DIhjcV0GV4eUL34mxAnTJqBM8orFDuB3PJ2wGKVYnGA1EXNR1w5YC/dMJKfRG/xbMWwf/i2TOSmR+ViTo0lllIEP/ALR1JrLA185c4jCLIkoA6+FGoeQpkorg7+gRERBczeFqFUYKyb4HbPu5rMmWLxs3BV68aLoOiGtK0OHyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O373SYE6fdpq04V86WchJ7I8CmnyhAo2ndeZGg6ohL0=;
- b=l9DC78aPMK9JBmX9yxKuDFf8bnA96g7ZDQBZrHcp1NrLwIub/NHiBWD+OMxSJUe0o4YsgNQtNgRRn1OjgYwUHgUifkorJ7kyyarWkt/v4hAwtYVM4E87sCB224ClYtkTuJrdLpYNSP62Xdo5+dCKWVgj9OYVZyeT6NwNn+XpSYLQegzz4SXjjq6pAMYcjoQJwD3mWQwQzLVSQpAiqEsSymACXq9RsRaHbeOYv4CxAWb5bhrpOGdZA+fEoOBWEkic8BfTUP5lSKmlnPX9RRMvfW21MKZO3fODYofIyYziy2EIuF7AN2YM50RDYmdYereyGKR8dKwWZ+96Eu8odybfsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O373SYE6fdpq04V86WchJ7I8CmnyhAo2ndeZGg6ohL0=;
- b=LMcoj8E+uFLdFjJRMh112UnyMdDew4fS29f4ygspNOMzGFGo8+tXyYud4JvrHRR+x2qnNRsbzNbH/w7At/EoX3C6kqdkO28KjaVbHtjvi8CkK57J0c5AnXd9QEJGsu/gQQI0U24iF4xq5aXfSau5X+20pq6PL8SPd9NzXjLtiGg=
-Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
- by AM5PR04MB3172.eurprd04.prod.outlook.com (2603:10a6:206:c::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 08:18:54 +0000
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::3425:96f2:c80b:1e03]) by AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::3425:96f2:c80b:1e03%8]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 08:18:54 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: [PATCH] tty: serial: fsl_lpuart: enable two stop bits for lpuart32
-Date:   Mon, 23 Aug 2021 16:17:33 +0800
-Message-Id: <20210823081733.31941-1-sherry.sun@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR0302CA0016.apcprd03.prod.outlook.com
- (2603:1096:3:2::26) To AS8PR04MB8404.eurprd04.prod.outlook.com
- (2603:10a6:20b:3f8::7)
+        id S235509AbhHWIUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235316AbhHWIUC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 04:20:02 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6ADC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:19:20 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so13427662wme.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dzl8IGlEHb28h6YxJTb2RoLDW+vmT5uDlNfIJ4DRN70=;
+        b=ENvNF9RNyMcbeLzqStRm0JWPVnIHQL75cH9/d8QVYLNCv1l5BBGU+VGBZoZjAQDoye
+         DOXRNXVX/kuw4nK74p7ATnWZDcInd0aVJjwxpyY45K3hb06/xHvOAF7ZaFjiA/TIvnJz
+         YIkI6L9EG2ghjYbih51Zs0h+3qs3R6ja1IOByJ3EIG798JDCUAVxHZYBZ+47EZNvr4+Y
+         QiX0El2nev+g3ELYLLSpjWQQ2v28m0D4AOOWax9LPRM0NUW8NOWA6MSzS4wIbVUIuo6i
+         fFePMmYCh17DNgMrYh2ZrO8hG/ttyMU+DqIxZXW7u5C1pHTPxpBa9wCZRhiha0oxEEu6
+         J0kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dzl8IGlEHb28h6YxJTb2RoLDW+vmT5uDlNfIJ4DRN70=;
+        b=XOk7FhaVMsiMEBYmY42h3xCW/LV8ajb0MOdpK2Wj+XqRYkImcljFkacRQcoUFX7XOz
+         ElXLK9GWbUwVLz0ebM8TwDj6jrwL3THBr0UFfzDTmCsQLWIGYT0WAEZD/qeEbe2mBZCm
+         Bxy1wVQuRBug3V562r8cCIdIq095/5Cej8EdLZJ24GQewgnwgA0TrQ1NAuyOEP4N1mJK
+         xBversrWr1DoVtmXb8a75P4D9DtQIW6sJL+Wup1Z7ULbTDj7lnXi9hF3CeIEqFcSA1Gx
+         MxmcKEm3xxphZIh0lNHPesbcofIaSzZ1dIPKrpMkfZnBHw+1ud/DN5TggU3kw1y2PqZF
+         QAxw==
+X-Gm-Message-State: AOAM533aKUBLgkOV+y1xC7cEP4UZ08DIfY2YOdPeKnZORj0m29sJ+FK3
+        ECVWBV/CVzD4vZB+q+oiW2P7QVJsrlQ=
+X-Google-Smtp-Source: ABdhPJxDXDdTnF0sUVfxhKGIn64SFLyf+yzQZlTfS4Z+mWB3Bpm45jhrHAKpT9nR39WwSxq2uu8Wtg==
+X-Received: by 2002:a1c:f30b:: with SMTP id q11mr5312166wmq.91.1629706759196;
+        Mon, 23 Aug 2021 01:19:19 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::3c39])
+        by smtp.gmail.com with ESMTPSA id j16sm14406616wrr.78.2021.08.23.01.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 01:19:18 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: r8188eu: remove ip.h header file
+Date:   Mon, 23 Aug 2021 10:18:20 +0200
+Message-Id: <20210823081820.9724-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR0302CA0016.apcprd03.prod.outlook.com (2603:1096:3:2::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.8 via Frontend Transport; Mon, 23 Aug 2021 08:18:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 45d91367-28b4-4a54-bdac-08d9660ea5a8
-X-MS-TrafficTypeDiagnostic: AM5PR04MB3172:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM5PR04MB317277392675DA94B84F8BCF92C49@AM5PR04MB3172.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iUpgD1fvAdPOBie5ef+AtAucMatFCBSoAaW905W5vpzARCot+6G3d71bNYkLBSaVtGsCPVs/b43LO3fYjrWr7PQuYv4rECFUhnsKfqUdM8YdklpJbUEC/XJW84MDseP5R9qBQwsU+l99Sajn2tiZuYwUHRyaA+5NFQmwVRCxIS9o5X/swIfHvWHI2zbid37F1ruXR4iHOycdrLFE91M9cTYPlQU9+OsgC7ul/nKM/xbRGfAKR9kP4CGEPHeEOGGZGDd2UvzNR00o+VLrltz29iznOQl671OeYfOLyv0OwqFZktVA0/7zLBVn2kEq//hPqYkdAe7D2mi3YGZeoPH8yB3xOiXo9xTT9xUiqYE9WPIMCm/ZEyTK68HdlRRD850Pgp2U7SOkWzSXyPlJp+a94tweCsDndXGe9ON/1eVBP7DV2QiFkkdIRsOlyOHULQkhLe7PkAowlibS0kkGtTZHBiTHSOK8sU+lje1DRV9et/DpOqOI40+81bW/RaeASdH7+KSqhsW8hJsC8v3JJ4Y/Q9CieQuEcCqAofiZc+XVOijVYzKEg/bAJaWGzw13kRpcz8StpBAwdH7KYJAqoDrq8Z4exwJuQXVzwUVbjjJX89Rn4tjIM31ZMA7xdcDYLBv/nNFn3lk+sWloZnFxW4w57v838gbLCqHlVyoEERP6pVLcTgrOCO0A52gYhMw0Ybs/Fly09uVJ4ZKA/I8UVVw+Lw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(6512007)(83380400001)(38350700002)(38100700002)(5660300002)(6506007)(52116002)(6666004)(186003)(8936002)(1076003)(66556008)(956004)(8676002)(86362001)(44832011)(66946007)(66476007)(6486002)(2906002)(26005)(508600001)(36756003)(4326008)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YXKKibpKRz7uSJBIiRPqgrpVbkyIzgsrH3ReDh2v85fpQIT7xjAfDEGCZo7t?=
- =?us-ascii?Q?2dUIBKwxl/t5CX2xOkm/m/zDE5+AvojxwqmPwyGgBm/ihHg3uKr/lS4L3X9w?=
- =?us-ascii?Q?F+02yv9OViMpxj63QeufJYkZ9AK2IMwPTMSZOOna0dMecbfhbC0vSPKoZ2Rl?=
- =?us-ascii?Q?XwkFFrAkZ6LejhIdB4Zn4KqnQpQMb7isTrCZrNLjmvWZxJWWW6pTgGgHuTqh?=
- =?us-ascii?Q?LPL+glAazUXnLeVkNqxHhRVqVad4W5xpnwriaq7p32Yickaxep9uLLLvCO6G?=
- =?us-ascii?Q?uhcuzmq+OG/rCugQZhPIPIv5vHHJDuAJNFZKGUsHsLuy/+bKcIYfGTmj+QcW?=
- =?us-ascii?Q?s2Biq6cOkYmSjhAjAiuHaua2br6XsEZFofQOQgiuLhJOcInd0yLghR4CJjHd?=
- =?us-ascii?Q?kvynQPmsUN4Ybqqp2ot4jiwUMzNLS9CCE5QCCgV3/c74DRHF6EtJm1qjyPOU?=
- =?us-ascii?Q?DQzpyQM6VQ0kQqeV4ezBziLlX0pn44C5xzOw8gPURdgX+hC8HI/NPDvO7nRw?=
- =?us-ascii?Q?64vE1BHTzKajCDUup2Cw3a03MrhbrSUakCZvnJV0SW9XMx17Y2E96M6ZRT+Y?=
- =?us-ascii?Q?VeLaYzGpvW1ozou7AhM+DxR0a86KLbIjolaF8X+fcl/rIoqRASLtalnJHKVz?=
- =?us-ascii?Q?1vYIWgENjrjKNYEKLzP0bwu3YfRknMZji/noLJGkeKtHQW6ZBc1zwOu+MwfB?=
- =?us-ascii?Q?7nIvcWYRL3UbCOctQzbRoltDPPBvI2HT2a9Sk+llRH/kS6Y7IKqeSf2818pt?=
- =?us-ascii?Q?oLfvC1U5ILHjnsQEWNgDWcDaM/FjuWs/gBDtS1pxE01Jj+zPIOmMeG4DHBV7?=
- =?us-ascii?Q?7Jg6WVekg9Hs9s3v/oxoxfSOm3gFq6cY0CEZK7R5T062fgYjhGq2MddFc/Wa?=
- =?us-ascii?Q?WGBq3sLMlPkUZSjiDbldPehg2aBcnbE1Q0ADcq0SKi5N8nmx0HHHcKKuRu26?=
- =?us-ascii?Q?RfKvNcNHCnzDWmwNLOyLSd0IRV3x/2Qy4w1Pt9W1IW6ZeUYQfvDATYuzWXFL?=
- =?us-ascii?Q?2+KE82G5FaVhAa9KUxIGPcrB2fQhWrAq/t00xDcoghHuipkgCNJ3XSBT6ZJK?=
- =?us-ascii?Q?FCLbhH6VUwfd7752G6DoBXRXzFyOLGV4LByEUiVPHvRUSnxasCji6ePJbkoj?=
- =?us-ascii?Q?qB8YytocnQakvj3rAwsHAKGv4d5iWA7d4a43bh4OirEOhviMk7HfYPlREm4G?=
- =?us-ascii?Q?X8Fd0LgZEIS7llikUvWcFHBmSK6tjnINlT+0xhupWEPkUPTK+tVC0a+qpfrO?=
- =?us-ascii?Q?bOIcTWefrJO+OHpf21jLEqw9Og6U7gvRxBZbsPq6w5knGPScC/CDh+EOwcFK?=
- =?us-ascii?Q?MU6p78l/GT2FxOJ8WuYUv6M6?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45d91367-28b4-4a54-bdac-08d9660ea5a8
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 08:18:54.7417
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Be8I1xhE5J2xsra4mym6F6nsu6gD4D7jjloAxfOIKKwFpgyLAwAKvZ/0zCR4Z7F80AhYj+xpLojTyKmDIT6n1w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3172
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+The struct ip_options declared in ip.h is only unsed in the optlength
+macro which is also defined in ip.h. All other definitions/declarations
+in ip.h are duplicated from <include/uapi/linux/ip.h>. Remove the ip.h
+header file and its includes.
 
-Add two stop bits support.
-User can run the command to enable two stop bits for test:
-stty  cstopb  -F /dev/ttyLPx
-
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/tty/serial/fsl_lpuart.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/staging/r8188eu/core/rtw_recv.c      |   1 -
+ drivers/staging/r8188eu/core/rtw_xmit.c      |   1 -
+ drivers/staging/r8188eu/hal/rtl8188eu_recv.c |   1 -
+ drivers/staging/r8188eu/include/ip.h         | 109 -------------------
+ drivers/staging/r8188eu/os_dep/xmit_linux.c  |   1 -
+ 5 files changed, 113 deletions(-)
+ delete mode 100644 drivers/staging/r8188eu/include/ip.h
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 117e011aff5f..55097e068908 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -2049,11 +2049,12 @@ lpuart32_set_termios(struct uart_port *port, struct ktermios *termios,
- {
- 	struct lpuart_port *sport = container_of(port, struct lpuart_port, port);
- 	unsigned long flags;
--	unsigned long ctrl, old_ctrl, modem;
-+	unsigned long ctrl, old_ctrl, bd, modem;
- 	unsigned int  baud;
- 	unsigned int old_csize = old ? old->c_cflag & CSIZE : CS8;
+diff --git a/drivers/staging/r8188eu/core/rtw_recv.c b/drivers/staging/r8188eu/core/rtw_recv.c
+index 52236bae8693..8802f24fec3a 100644
+--- a/drivers/staging/r8188eu/core/rtw_recv.c
++++ b/drivers/staging/r8188eu/core/rtw_recv.c
+@@ -7,7 +7,6 @@
+ #include "../include/drv_types.h"
+ #include "../include/recv_osdep.h"
+ #include "../include/mlme_osdep.h"
+-#include "../include/ip.h"
+ #include "../include/if_ether.h"
+ #include "../include/ethernet.h"
+ #include "../include/usb_ops.h"
+diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
+index f242f3ffca70..38183fd37b93 100644
+--- a/drivers/staging/r8188eu/core/rtw_xmit.c
++++ b/drivers/staging/r8188eu/core/rtw_xmit.c
+@@ -7,7 +7,6 @@
+ #include "../include/drv_types.h"
+ #include "../include/wifi.h"
+ #include "../include/osdep_intf.h"
+-#include "../include/ip.h"
+ #include "../include/usb_ops.h"
+ #include "../include/usb_osintf.h"
  
- 	ctrl = old_ctrl = lpuart32_read(&sport->port, UARTCTRL);
-+	bd = lpuart32_read(&sport->port, UARTBAUD);
- 	modem = lpuart32_read(&sport->port, UARTMODIR);
- 	/*
- 	 * only support CS8 and CS7, and for CS7 must enable PE.
-@@ -2097,7 +2098,9 @@ lpuart32_set_termios(struct uart_port *port, struct ktermios *termios,
- 	}
+diff --git a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
+index a44c9598186c..216a752e6246 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
++++ b/drivers/staging/r8188eu/hal/rtl8188eu_recv.c
+@@ -6,7 +6,6 @@
+ #include "../include/drv_types.h"
+ #include "../include/recv_osdep.h"
+ #include "../include/mlme_osdep.h"
+-#include "../include/ip.h"
+ #include "../include/if_ether.h"
+ #include "../include/ethernet.h"
  
- 	if (termios->c_cflag & CSTOPB)
--		termios->c_cflag &= ~CSTOPB;
-+		bd |= UARTBAUD_SBNS;
-+	else
-+		bd &= ~UARTBAUD_SBNS;
- 
- 	/* parity must be enabled when CS7 to match 8-bits format */
- 	if ((termios->c_cflag & CSIZE) == CS7)
-@@ -2167,6 +2170,7 @@ lpuart32_set_termios(struct uart_port *port, struct ktermios *termios,
- 	lpuart32_write(&sport->port, old_ctrl & ~(UARTCTRL_TE | UARTCTRL_RE),
- 		       UARTCTRL);
- 
-+	lpuart32_write(&sport->port, bd, UARTBAUD);
- 	lpuart32_serial_setbrg(sport, baud);
- 	lpuart32_write(&sport->port, modem, UARTMODIR);
- 	lpuart32_write(&sport->port, ctrl, UARTCTRL);
+diff --git a/drivers/staging/r8188eu/include/ip.h b/drivers/staging/r8188eu/include/ip.h
+deleted file mode 100644
+index b7388c8c1b8a..000000000000
+--- a/drivers/staging/r8188eu/include/ip.h
++++ /dev/null
+@@ -1,109 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+-/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+-
+-#ifndef _LINUX_IP_H
+-#define _LINUX_IP_H
+-
+-/* SOL_IP socket options */
+-
+-#define IPTOS_TOS_MASK		0x1E
+-#define IPTOS_TOS(tos)		((tos)&IPTOS_TOS_MASK)
+-#define	IPTOS_LOWDELAY		0x10
+-#define	IPTOS_THROUGHPUT	0x08
+-#define	IPTOS_RELIABILITY	0x04
+-#define	IPTOS_MINCOST		0x02
+-
+-#define IPTOS_PREC_MASK		0xE0
+-#define IPTOS_PREC(tos)		((tos)&IPTOS_PREC_MASK)
+-#define IPTOS_PREC_NETCONTROL           0xe0
+-#define IPTOS_PREC_INTERNETCONTROL      0xc0
+-#define IPTOS_PREC_CRITIC_ECP           0xa0
+-#define IPTOS_PREC_FLASHOVERRIDE        0x80
+-#define IPTOS_PREC_FLASH                0x60
+-#define IPTOS_PREC_IMMEDIATE            0x40
+-#define IPTOS_PREC_PRIORITY             0x20
+-#define IPTOS_PREC_ROUTINE              0x00
+-
+-/* IP options */
+-#define IPOPT_COPY		0x80
+-#define IPOPT_CLASS_MASK	0x60
+-#define IPOPT_NUMBER_MASK	0x1f
+-
+-#define	IPOPT_COPIED(o)		((o)&IPOPT_COPY)
+-#define	IPOPT_CLASS(o)		((o)&IPOPT_CLASS_MASK)
+-#define	IPOPT_NUMBER(o)		((o)&IPOPT_NUMBER_MASK)
+-
+-#define	IPOPT_CONTROL		0x00
+-#define	IPOPT_RESERVED1		0x20
+-#define	IPOPT_MEASUREMENT	0x40
+-#define	IPOPT_RESERVED2		0x60
+-
+-#define IPOPT_END	(0 | IPOPT_CONTROL)
+-#define IPOPT_NOOP	(1 | IPOPT_CONTROL)
+-#define IPOPT_SEC	(2 | IPOPT_CONTROL | IPOPT_COPY)
+-#define IPOPT_LSRR	(3 | IPOPT_CONTROL | IPOPT_COPY)
+-#define IPOPT_TIMESTAMP	(4 | IPOPT_MEASUREMENT)
+-#define IPOPT_RR	(7 | IPOPT_CONTROL)
+-#define IPOPT_SID	(8 | IPOPT_CONTROL | IPOPT_COPY)
+-#define IPOPT_SSRR	(9 | IPOPT_CONTROL | IPOPT_COPY)
+-#define IPOPT_RA	(20 | IPOPT_CONTROL | IPOPT_COPY)
+-
+-#define IPVERSION	4
+-#define MAXTTL		255
+-#define IPDEFTTL	64
+-#define IPOPT_OPTVAL 0
+-#define IPOPT_OLEN   1
+-#define IPOPT_OFFSET 2
+-#define IPOPT_MINOFF 4
+-#define MAX_IPOPTLEN 40
+-#define IPOPT_NOP IPOPT_NOOP
+-#define IPOPT_EOL IPOPT_END
+-#define IPOPT_TS  IPOPT_TIMESTAMP
+-
+-#define	IPOPT_TS_TSONLY		0	/* timestamps only */
+-#define	IPOPT_TS_TSANDADDR	1	/* timestamps and addresses */
+-#define	IPOPT_TS_PRESPEC	3	/* specified modules only */
+-
+-struct ip_options {
+-	__u32		faddr;			/* Saved first hop address */
+-	unsigned char	optlen;
+-	unsigned char srr;
+-	unsigned char rr;
+-	unsigned char ts;
+-	unsigned char	is_setbyuser:1,	/* Set by setsockopt?		*/
+-			is_data:1,	/* Options in __data, rather than skb*/
+-			is_strictroute:1,/* Strict source route		*/
+-			srr_is_hit:1,	/* Packet destn addr was ours */
+-			is_changed:1,	/* IP checksum more not valid	*/
+-			rr_needaddr:1,	/* Need to record addr of out dev*/
+-			ts_needtime:1,	/* Need to record timestamp	*/
+-			ts_needaddr:1;	/* Need to record addr of out dev  */
+-	unsigned char router_alert;
+-	unsigned char __pad1;
+-	unsigned char __pad2;
+-	unsigned char __data[0];
+-};
+-
+-#define optlength(opt) (sizeof(struct ip_options) + opt->optlen)
+-
+-struct iphdr {
+-#if defined(__LITTLE_ENDIAN_BITFIELD)
+-	__u8	ihl:4,
+-		version:4;
+-#elif defined(__BIG_ENDIAN_BITFIELD)
+-	__u8	version:4,
+-		ihl:4;
+-#endif
+-	__u8	tos;
+-	__u16	tot_len;
+-	__u16	id;
+-	__u16	frag_off;
+-	__u8	ttl;
+-	__u8	protocol;
+-	__u16	check;
+-	__u32	saddr;
+-	__u32	daddr;
+-	/*The options start here. */
+-};
+-
+-#endif	/* _LINUX_IP_H */
+diff --git a/drivers/staging/r8188eu/os_dep/xmit_linux.c b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+index 60e0eea7ad84..80546a886c0e 100644
+--- a/drivers/staging/r8188eu/os_dep/xmit_linux.c
++++ b/drivers/staging/r8188eu/os_dep/xmit_linux.c
+@@ -6,7 +6,6 @@
+ #include "../include/osdep_service.h"
+ #include "../include/drv_types.h"
+ #include "../include/if_ether.h"
+-#include "../include/ip.h"
+ #include "../include/wifi.h"
+ #include "../include/mlme_osdep.h"
+ #include "../include/xmit_osdep.h"
 -- 
-2.17.1
+2.32.0
 
