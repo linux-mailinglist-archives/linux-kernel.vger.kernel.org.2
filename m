@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A623F485E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B013F4861
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhHWKOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:14:25 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:39455 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232890AbhHWKOY (ORCPT
+        id S236089AbhHWKOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233399AbhHWKOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:14:24 -0400
-Received: by mail-vs1-f50.google.com with SMTP id e9so10719571vst.6;
-        Mon, 23 Aug 2021 03:13:41 -0700 (PDT)
+        Mon, 23 Aug 2021 06:14:37 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E2FC061575;
+        Mon, 23 Aug 2021 03:13:55 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so10344085wml.3;
+        Mon, 23 Aug 2021 03:13:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=OAxK2KdBzNvaNwZfXA57e6cEAoY65yX8S0S6MTAgEjc=;
+        b=b8CiuKj3QsBJFUsLglvvBWdf3ayT6erQTvKIsAuBPBOxFs2BE+N1iz7BRsXz8E7jXV
+         FG5ADsopmgXoobJa3ohB/OMijsxMT2SgtfMvHvvOibHB1e3ICGEdel6J4KiQ86SHlg3Z
+         yqqAGC11bIaF8QPVS9ZARj90VH6KtqsRDUvyHMxT5MGqdKcEfQ8a44VmJ2ZLKQc4ZqdY
+         y7PglP1615+bVljliehmWpKeYhkrBHDQnvBBGBzRBeTJPcaT3PO40D/V85QvgBFredY5
+         mT4ucw4T6GkBvtAOVbHSIIvurZj0MSgpqEhZhQ6eXIYSjmtDHiX+DDcmdO16xzACWYt1
+         Xj2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QGWlxXbqp4C9V0pOALutj8L5f0IIEa5u3E7vAfklyGo=;
-        b=SIi2V6dyjKIL/fg+PPR92B32IH5ZqM6GbyIP1iquL64x6g9uMeLmGR3icsh4ME06dz
-         WL4kmPrRm4OgnqIi6UCv5lwetbC9ByeOgijrE8Odt0jH06lou5V0NrVrSFK4ZtHYSdAc
-         dDzZ+Uh2Owj9Fp2bQWuBPgIGjmV9IgPhrlEtF9Ia8YWVejqoTngHZlSUQ5xcUXmjXNS+
-         qyVR6yMAaJWvqCE7a79kgin3vWfvWE3noz8ZBN+IQlJTciFWBqoNvyME5EsIxqxSpeSZ
-         haMQbgPJdbuGLyLDkVTIqIZefdAYKHdrkx+PwrQsxHeTQaBz/QMnF+iorsFTQRJHcJsp
-         qLyg==
-X-Gm-Message-State: AOAM530Y6/PLy3pogCZt663u6PjFJelhQX+s5KS0Xn6uuuz143EATOjs
-        T4v/FB2UkNfsQXpINWtD5DvWfrHbVDi7P0yBjao=
-X-Google-Smtp-Source: ABdhPJyH0E1pyhC89wWPYYQoaEHA/nfpaJPSksxoQnbMkworBUBLdcC7hq0D2zToet9d4s7ykx8MrywnipUtR++lG+Q=
-X-Received: by 2002:a67:6e86:: with SMTP id j128mr22666984vsc.26.1629713621125;
- Mon, 23 Aug 2021 03:13:41 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=OAxK2KdBzNvaNwZfXA57e6cEAoY65yX8S0S6MTAgEjc=;
+        b=YbQbvwm3vU3LFWDbLHrzIbFrrPkWu/hE2G15Yl9218iOCw2b3rLeIR1z21tlBsmjSk
+         eupdZlVj/4WLB98hIfGhZ4eEI0/qopEd970aTPqdEsLg68oF/ACiem65O5AKAaMNMe1l
+         2Qn42wr52st2TOoaqfR/9Hy8LoovhO3WsSrn2sPKtQ5yE65nJi95v/6iEoqq8qrRAn1a
+         KDeWKZvj7FMwV9h+MUiFXi/lLsqs6OlUwetmksguB8rWe0PpS4NLTc6nvTY2MuZ4Hufi
+         kCqpUwZ9YqnHKV8AlCC3te0zP/kM6i8lnfJEiNHPmUVU8jn88XVebFSHkWFbEAEhGgXE
+         eJsA==
+X-Gm-Message-State: AOAM531ckpikfikPHUU2ehF1BOsgvYbXpz+seaUAcVOeEOVp2DKZ3zkg
+        JzDOSTpVkAKnb2a6sxqklu0=
+X-Google-Smtp-Source: ABdhPJzHmNOwxOGgKhQIpsA8MM5feiclzYV7bQCw7wBADKZ0n/vfRiezLFD5PEPlUTPKPlyI8yT0yQ==
+X-Received: by 2002:a05:600c:22d2:: with SMTP id 18mr15266087wmg.117.1629713633917;
+        Mon, 23 Aug 2021 03:13:53 -0700 (PDT)
+Received: from ?IPV6:2a01:cb05:8192:e700:d8d0:123c:2bc1:6888? (2a01cb058192e700d8d0123c2bc16888.ipv6.abo.wanadoo.fr. [2a01:cb05:8192:e700:d8d0:123c:2bc1:6888])
+        by smtp.gmail.com with UTF8SMTPSA id h6sm14334522wmq.5.2021.08.23.03.13.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 03:13:53 -0700 (PDT)
+Message-ID: <21f8b516-8b85-e65f-1f11-bebd7bdf3b96@gmail.com>
+Date:   Mon, 23 Aug 2021 12:13:52 +0200
 MIME-Version: 1.0
-References: <cover.1628670468.git.geert+renesas@glider.be> <YRkxzx/1XM3r64Ee@robh.at.kernel.org>
-In-Reply-To: <YRkxzx/1XM3r64Ee@robh.at.kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Aug 2021 12:13:29 +0200
-Message-ID: <CAMuHMdXs0+7K4N0mg6qX6X1cr_8dBr_HdTahdfORMk76wCJcEA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/9] Add generic support for kdump DT properties
-To:     Rob Herring <robh@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.2
+Subject: Re: [RFC PATCH net-next 5/5] net: phy: realtek: add support for
+ RTL8365MB-VC internal PHYs
+Content-Language: en-US
+To:     =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alvin@pqrs.dk>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     mir@bang-olufsen.dk,
+        =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210822193145.1312668-1-alvin@pqrs.dk>
+ <20210822193145.1312668-6-alvin@pqrs.dk>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210822193145.1312668-6-alvin@pqrs.dk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On Sun, Aug 15, 2021 at 5:25 PM Rob Herring <robh@kernel.org> wrote:
-> On Wed, Aug 11, 2021 at 10:50:58AM +0200, Geert Uytterhoeven wrote:
-> > This patch series adds generic support for parsing DT properties related
-> > to crash dump kernels ("linux,elfcorehdr" and "linux,elfcorehdr" under
-> > the "/chosen" node), makes use of it on arm32, and performs a few
-> > cleanups.  It is an evolution of the combination of [1] and [2].
->
-> The DT bits look fine to me. How do you expect this to be merged? I'm
-> happy to take it if arch maintainers can ack it.
 
-I had hoped you could take the series...
+On 8/22/2021 9:31 PM, Alvin Šipraga wrote:
+> From: Alvin Šipraga <alsi@bang-olufsen.dk>
+> 
+> The RTL8365MB-VC ethernet switch controller has 4 internal PHYs for its
+> user-facing ports. All that is needed is to let the PHY driver core
+> pick up the IRQ made available by the switch driver.
+> 
+> Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-> > The series consists of 6 parts:
-> >   1. Patch 1 prepares architecture-specific code (needed for MIPS only)
-> >      to avoid duplicating elf core header reservation later.
-> >   2. Patch 2 prepares the visibility of variables used to hold
-> >      information retrieved from the DT properties.
-> >   3. Patches 3-5 add support to the FDT core for handling the
-> >      properties.
-> >      This can co-exist safely with architecture-specific handling, until
-> >      the latter has been removed.
->
-> Looks like patch 5 doesn't have any dependencies with the series?
-
-Indeed. So you can take it independently.
-
-> >   4. Patch 6 removes the non-standard handling of "linux,elfcorehdr" on
-> >      riscv.
->
-> I thought this should be applied for 5.14?
-
-Me too, but unfortunately that hasn't happened yet...
-
-> >   5. Patches 7-8 convert arm64 to use the generic handling instead of
-> >      its own implementation.
-> >   6. Patch 9 adds support for kdump properties to arm32.
-> >      The corresponding patch for kexec-tools is "[PATCH] arm: kdump: Add
-> >      DT properties to crash dump kernel's DTB"[3], which is still valid.
->
-> This one can be applied on its own, right?
-
-While that wouldn't break anything (i.e. no regression), it still
-wouldn't work if the DT properties are present, and the now-legacy
-"mem=" kernel command line parameter is not.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Florian
