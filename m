@@ -2,75 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BBB3F473E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7F73F4742
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhHWJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:17:54 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:39666 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235681AbhHWJRv (ORCPT
+        id S235791AbhHWJSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:18:02 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41978 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235789AbhHWJSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:17:51 -0400
-Received: by mail-ua1-f45.google.com with SMTP id a4so7606455uae.6;
-        Mon, 23 Aug 2021 02:17:09 -0700 (PDT)
+        Mon, 23 Aug 2021 05:18:01 -0400
+Received: by mail-il1-f199.google.com with SMTP id l4-20020a92d8c40000b02902242b6ea4b3so9404799ilo.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:17:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9QLjRZu+Qt7qgSvBEQ/53pbQu1xoAU50oF0hD2z0Qgk=;
-        b=dXNDm2dOIspLVSKshmZAcZWzK76K1wAR0YK+SGgew2NlyOUUeIRlVr5tb9noV3ZO6W
-         GEfxgzaksOIGC7dtjNpW5uFuCEiGCPBQdhSNPsOZMbA9S58sB2bhQ/K5UTXbsf/WU8l1
-         bCuFYV7jLTwBd6qmVlgYS08wk9a1JpPAm6r8WJ7NUiwaa6as7MulnpbH0S5j3yOAee4n
-         AONWKS5m5OAaC8ReC99TjOieqH9Dp7yMDO45tVK3nHKkI99MJYZsPOf5QdF71E/SaQdV
-         XTLUBayFdnWoCnY1poOrk4+86bWV1WUsvgzld7K8GHJHGuieLesgx5sClvPcmG40SHmE
-         2B7w==
-X-Gm-Message-State: AOAM5320adD/AhkCHQBKpGh4az9GMUWGcKtKdhq6TQCzEbomie/C+Wqz
-        Ysisaj5uyaOuy32mS5ARVAnk2FtvSZkkuHE9tlQLUcDD
-X-Google-Smtp-Source: ABdhPJzpNaAdaSSJdpn6BAK/7CLSD19FVvFR1f0/X4YuiaF49K46oNfMaKRHGNKHoksTYDNTArhskhCJmDpP/82y20A=
-X-Received: by 2002:ab0:545:: with SMTP id 63mr21148288uax.122.1629710228796;
- Mon, 23 Aug 2021 02:17:08 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=sYOMm1BeExwLMpG9wV0sSmPzlu1bC8ry9xId7Ih8E+k=;
+        b=fM/CwDBvxnhAdu598zT212dhVeCmj2lNXQU3Gb/+DRubYzebqLgO8TmqusNh5AaekV
+         qTZqJmmDrkYGmmzUJpqFcZuT+Cq4YZAXplkWn9IjqQGZ5p2TDPeHus96b1laZ+eiOPAn
+         VIRuNOKs9HRL2RJ6Y62kwvzJRbDefTx5dCmOi6z7gMhCj7//LBeZ4KQcuRWPYrR8gqcH
+         0eQolDxov4/n3Ft5TPgjm2XGpfo/ixyHadY/H4t2KhMttWlfrAG65B+IfY8Ov9tMU8gR
+         OGngG+hgZPO9WC88r23I36G5TpNHVd172P356fQPr+ilHUoAAbrSJpUQTs9mLK8Q176R
+         sjLw==
+X-Gm-Message-State: AOAM5336SdK2HdtCvVyUt+fM9J12V0BPCnTO3T8JJOWxnikuidiCKxkp
+        qKsJU7mWmmuLbY6ShQQuPJzX3MSTViU8gBRCcavWrWbnXfHL
+X-Google-Smtp-Source: ABdhPJxRzhgfJEVGs4FC30PGotc+vZiWb1ZStPH9YMIv6v5ow+fBugiaVuOY2Ytv6rOLvdqFkZjj4zuQSMdJ8FYVyPMU8Eo7SAVR
 MIME-Version: 1.0
-References: <20210816162201.28801-1-uli+renesas@fpond.eu>
-In-Reply-To: <20210816162201.28801-1-uli+renesas@fpond.eu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 23 Aug 2021 11:16:57 +0200
-Message-ID: <CAMuHMdVw-mZKcPuZ9ZtqMPqCTp9bcjHm0Yy8Zb9KtfoM5me_Cg@mail.gmail.com>
-Subject: Re: [PATCH] serial: sh-sci: fix break handling for sysrq
-To:     Ulrich Hecht <uli+renesas@fpond.eu>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a02:a490:: with SMTP id d16mr29818895jam.42.1629710238709;
+ Mon, 23 Aug 2021 02:17:18 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 02:17:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dd79fc05ca367b9d@google.com>
+Subject: [syzbot] WARNING in io_try_cancel_userdata
+From:   syzbot <syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 6:22 PM Ulrich Hecht <uli+renesas@fpond.eu> wrote:
-> This fixes two issues that cause the sysrq sequence to be inadvertently
-> aborted on SCIF serial consoles:
->
-> - a NUL character remains in the RX queue after a break has been detected,
->   which is then passed on to uart_handle_sysrq_char()
-> - the break interrupt is handled twice on controllers with multiplexed ERI
->   and BRI interrupts
->
-> Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
+Hello,
 
-FTR:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+syzbot found the following issue on:
 
-Gr{oetje,eeting}s,
+HEAD commit:    86ed57fd8c93 Add linux-next specific files for 20210820
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1565bd55300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f64eccb415bd479d
+dashboard link: https://syzkaller.appspot.com/bug?extid=b0c9d1588ae92866515f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-                        Geert
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b0c9d1588ae92866515f@syzkaller.appspotmail.com
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+WARNING: CPU: 1 PID: 5870 at fs/io_uring.c:5975 io_try_cancel_userdata+0x30f/0x540 fs/io_uring.c:5975
+Modules linked in:
+CPU: 0 PID: 5870 Comm: iou-wrk-5860 Not tainted 5.14.0-rc6-next-20210820-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_try_cancel_userdata+0x30f/0x540 fs/io_uring.c:5975
+Code: 07 e8 e5 9d 95 ff 48 8b 7c 24 08 e8 ab 02 58 07 e9 6f fe ff ff e8 d1 9d 95 ff 41 bf 8e ff ff ff e9 5f fe ff ff e8 c1 9d 95 ff <0f> 0b 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 80 3c 02
+RSP: 0018:ffffc900055f7a88 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888181aa83c0 RCX: 0000000000000000
+RDX: ffff88803fb88000 RSI: ffffffff81e0dacf RDI: ffff888181aa8410
+RBP: ffff88803fb88000 R08: ffffffff899ad660 R09: ffffffff81e23c44
+R10: 0000000000000027 R11: 000000000000000e R12: 1ffff92000abef53
+R13: 0000000000000000 R14: ffff8880b34d0000 R15: ffff888181aa8420
+FS:  00007f7a08d50700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2c72e000 CR3: 0000000168b9b000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ io_async_cancel fs/io_uring.c:6014 [inline]
+ io_issue_sqe+0x22d5/0x65a0 fs/io_uring.c:6407
+ io_wq_submit_work+0x1dc/0x300 fs/io_uring.c:6511
+ io_worker_handle_work+0xa45/0x1840 fs/io-wq.c:533
+ io_wqe_worker+0x2cc/0xbb0 fs/io-wq.c:582
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
