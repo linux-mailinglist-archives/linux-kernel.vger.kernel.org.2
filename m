@@ -2,135 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A41D3F4984
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F06F3F498A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbhHWLRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:17:53 -0400
-Received: from foss.arm.com ([217.140.110.172]:51998 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236347AbhHWLRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:17:50 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4F02143D;
-        Mon, 23 Aug 2021 04:17:07 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F036A3F66F;
-        Mon, 23 Aug 2021 04:17:06 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: [PATCH v3 2/2] sched/fair: Trigger nohz.next_balance updates when a CPU goes NOHZ-idle
-Date:   Mon, 23 Aug 2021 12:17:00 +0100
-Message-Id: <20210823111700.2842997-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210823111700.2842997-1-valentin.schneider@arm.com>
-References: <20210823111700.2842997-1-valentin.schneider@arm.com>
+        id S236438AbhHWLSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:18:33 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:42794 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235077AbhHWLSc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:18:32 -0400
+Received: by mail-ua1-f52.google.com with SMTP id m39so7755640uad.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 04:17:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=8CSXfTepPRgRZg2J50KQ2d2v3LnVmjti3wvZR4CQ84E=;
+        b=Hrw4jWoI1XF5AY1YcHs4yloDQnbsk/ecdTwnhElvdju6DNt2Yn68LVDVZTKCjyQ/Zi
+         g/tj3boega4DZNPYSGf2oLlE8VXgtH/GSZhKLyOhxO9jW5xmkxG0KCZnAEN44MWot+xI
+         pjNoVqlSwxl5ZMJvPwsSwgsQ5uEcOhYQvZmo5+MLxzDH3YdQD3H1dN2CoMUlPfYOTdKv
+         a3bcnmZmsAlWlG7v3EnltmvrorYK4dur3EhYN93TwzVFzNfAW8Qsm7aGHwkxj23Qld2z
+         GdNlGpqafTHtRRQojn7FoIimU/WTXrL8PGMUikpmu8ICbyhFfVO7pbLFr1ZA9hSLllr2
+         ry5A==
+X-Gm-Message-State: AOAM530+t78mfW8UsQqP4HhfqxWn3bx/ibfBDKBJVTTcUGP3oBKZr0gt
+        eMs4hBNPVuDvd57BdZNK68I41GXqcyz6ZFwe2StN0S9dRAg=
+X-Google-Smtp-Source: ABdhPJzOKXGfLJDL/tl3wRpw5a27W3Iaf1T4A9FSb6h0cpR3EE5FebxWUaIzqdrhDp3CN+3HhiDCPPWlIyn7d/cJtQQ=
+X-Received: by 2002:ab0:209a:: with SMTP id r26mr721351uak.14.1629717469186;
+ Mon, 23 Aug 2021 04:17:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210823104945.1373324-1-geert@linux-m68k.org>
+In-Reply-To: <20210823104945.1373324-1-geert@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 23 Aug 2021 13:17:37 +0200
+Message-ID: <CAMuHMdXQ9HwsXpZCpyJodkxwPwtKcZwPLBoxD7V++WM6VW-XCQ@mail.gmail.com>
+Subject: Re: Build regressions/improvements in v5.14-rc7
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider a system with some NOHZ-idle CPUs, such that
+On Mon, Aug 23, 2021 at 12:53 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> JFYI, when comparing v5.14-rc7[1] to v5.14-rc6[3], the summaries are:
+>   - build errors: +2/-2
 
-  nohz.idle_cpus_mask = S
-  nohz.next_balance = T
+Just two __compiletime_assert_N line number changes not yet caught
+by my scripts.
 
-When a new CPU k goes NOHZ idle (nohz_balance_enter_idle()), we end up
-with:
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93/ (182 out of 189 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7c60610d476766e128cc4284bb6349732cbd6606/ (182 out of 189 configs)
 
-  nohz.idle_cpus_mask = S \U {k}
-  nohz.next_balance = T
+Gr{oetje,eeting}s,
 
-Note that the nohz.next_balance hasn't changed - it won't be updated until
-a NOHZ balance is triggered. This is problematic if the newly NOHZ idle CPU
-has an earlier rq.next_balance than the other NOHZ idle CPUs, IOW if:
+                        Geert
 
-  cpu_rq(k).next_balance < nohz.next_balance
-
-In such scenarios, the existing nohz.next_balance will prevent any NOHZ
-balance from happening, which itself will prevent nohz.next_balance from
-being updated to this new cpu_rq(k).next_balance. Unnecessary load balance
-delays of over 12ms caused by this were observed on an arm64 RB5 board.
-
-Use the new nohz.needs_update flag to mark the presence of newly-idle CPUs
-that need their rq->next_balance to be collated into
-nohz.next_balance. Trigger a NOHZ_NEXT_KICK when the flag is set.
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/fair.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 4a91f3027c92..081a9e54058a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5754,6 +5754,7 @@ static struct {
- 	cpumask_var_t idle_cpus_mask;
- 	atomic_t nr_cpus;
- 	int has_blocked;		/* Idle CPUS has blocked load */
-+	int needs_update;		/* Newly idle CPUs need their next_balance collated */
- 	unsigned long next_balance;     /* in jiffy units */
- 	unsigned long next_blocked;	/* Next update of blocked load in jiffies */
- } nohz ____cacheline_aligned;
-@@ -10417,6 +10418,9 @@ static void nohz_balancer_kick(struct rq *rq)
- unlock:
- 	rcu_read_unlock();
- out:
-+	if (READ_ONCE(nohz.needs_update))
-+		flags |= NOHZ_NEXT_KICK;
-+
- 	if (flags)
- 		kick_ilb(flags);
- }
-@@ -10513,12 +10517,13 @@ void nohz_balance_enter_idle(int cpu)
- 	/*
- 	 * Ensures that if nohz_idle_balance() fails to observe our
- 	 * @idle_cpus_mask store, it must observe the @has_blocked
--	 * store.
-+	 * and @needs_update stores.
- 	 */
- 	smp_mb__after_atomic();
- 
- 	set_cpu_sd_state_idle(cpu);
- 
-+	WRITE_ONCE(nohz.needs_update, 1);
- out:
- 	/*
- 	 * Each time a cpu enter idle, we assume that it has blocked load and
-@@ -10567,13 +10572,17 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 	/*
- 	 * We assume there will be no idle load after this update and clear
- 	 * the has_blocked flag. If a cpu enters idle in the mean time, it will
--	 * set the has_blocked flag and trig another update of idle load.
-+	 * set the has_blocked flag and trigger another update of idle load.
- 	 * Because a cpu that becomes idle, is added to idle_cpus_mask before
- 	 * setting the flag, we are sure to not clear the state and not
- 	 * check the load of an idle cpu.
-+	 *
-+	 * Same applies to idle_cpus_mask vs needs_update.
- 	 */
- 	if (flags & NOHZ_STATS_KICK)
- 		WRITE_ONCE(nohz.has_blocked, 0);
-+	if (flags & NOHZ_NEXT_KICK)
-+		WRITE_ONCE(nohz.needs_update, 0);
- 
- 	/*
- 	 * Ensures that if we miss the CPU, we must see the has_blocked
-@@ -10597,6 +10606,8 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
- 		if (need_resched()) {
- 			if (flags & NOHZ_STATS_KICK)
- 				has_blocked_load = true;
-+			if (flags & NOHZ_NEXT_KICK)
-+				WRITE_ONCE(nohz.needs_update, 1);
- 			goto abort;
- 		}
- 
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
