@@ -2,232 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3467D3F449B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 07:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336E63F449F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 07:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhHWFRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 01:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        id S233088AbhHWFWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 01:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhHWFRM (ORCPT
+        with ESMTP id S231267AbhHWFWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 01:17:12 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3133C061575
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 22:16:30 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a62-20020a254d410000b0290592f360b0ccso15442760ybb.14
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 22:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=SZp9jopn6L2gGcjaBST5d963oFablXCgT4VwmaYX6c8=;
-        b=BWDOf9o4rquaek14MDqqotPhxfN7ahfaqMx6tz5jr8+1ICDTokXwzaWj9OiWvGGlCY
-         xhpf17kFVXBYtpSAPmuHEzf8x0lpZylcyF/q96KBfzZOdcd+rnm+AnGXTqFvzCNdv1nx
-         lcQRiwvQrD9I1j42OQo3g2Wfc7/jWA8TPQzhZFgtDg3tNEpOtdgao/VPZ4Q7US7woJvr
-         JIXVPexNEV9hSe9N3zGuTM4TbsYWIrafPJnq/+dbaafxrjVxhSOsn3O1KNpXRTQ7X+zz
-         s1VBxLXXdRvPBRGp1nfHT3OSPatiwwllLizCMmrMv6a/yhg+hSnhUldaNCHO5KFLQXj0
-         tm5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=SZp9jopn6L2gGcjaBST5d963oFablXCgT4VwmaYX6c8=;
-        b=ufxHC9u7KBS4PayBj0cE+aRYBjQ2PsWwLubP4pXHhIh3EhuiMbHkev26rKstzTDIqZ
-         4EnlNVVe5hvyHWzHdaojU4kZhgA7MDKP/E+y8ZTE0kpnH/LoskGVnrEzB/BufHiQnGa0
-         DxdAAlT/Oa6cS0LRV8fu0raja6MHtzdhzBBniVZYEcTVGjxD5dX0INxme+P1bcmM2hCg
-         ez+dF9nOn++BvuKDGgp5Zd/jjc9xy/I5CdqJIuUk0ffAADBVBSiNs/B9xzm00ID2eDzd
-         4VDWVXuc7lPcH049fPg5+QUIXjRBNqwCXXPM24b3n2fE+neN1GQiA2fsLfWswlGaggj+
-         WalA==
-X-Gm-Message-State: AOAM532c5JAjdZ9bZzowrRCgdYljelNSCHVrXIrsgG3uyS3VrAlT57rJ
-        qleAOIgT4Ok8GefAiEGTUNMYdthco+Xk
-X-Google-Smtp-Source: ABdhPJw3+CP6MbRvTm7KTzVWXTtryJM4LQ+VtZvRUcmHJyEdIEagZ7K+YREB0AIgRqanEJCzlZAlPTiij5mT
-X-Received: from mizhang-super.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1071])
- (user=mizhang job=sendgmr) by 2002:a25:da89:: with SMTP id
- n131mr41861469ybf.255.1629695789605; Sun, 22 Aug 2021 22:16:29 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 23 Aug 2021 05:16:22 +0000
-Message-Id: <20210823051622.312890-1-mizhang@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH] selftests: KVM: use dirty logging to check if page stats work correctly
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>, Ben Gardon <bgorden@google.com>,
-        Mingwei Zhang <mizhang@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 23 Aug 2021 01:22:21 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D103EC061575;
+        Sun, 22 Aug 2021 22:21:37 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtLFW1y7hz9sSs;
+        Mon, 23 Aug 2021 15:21:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629696095;
+        bh=ZoH2SanBe2x53hm2+4yhICui8LqzceUj7/q40Q5aveo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DzmRbS6n1RaQsI2Jputegq1Oe+cIERqNMgL+FmMKDVL+xvBaAmmzbn3st+rZgTU/y
+         OyxT23cWoQqFzadGXRkxEqba0vUkMiXc7jY00i44Ofuhni6ghGt3bci5zztSvBC3uc
+         W+fiq2rRpigYlSWdWl3FK9qa1lwzkoxkloacMguPm+owcOBuel7BsYGZCCNSclvtmW
+         XuwNMcW5mqPN3tJcnPN2Fg/poOdZMbdoZHS6GsGpIH3DJSteaGGUX9hf8mk75o5yQq
+         GATpW0vmqnsoRFOqMmuDpFPTn3A0uj9XdUqXlRRxPfKDjSFBpD8QX/bcCg6khL267K
+         aea/8DzFBN1sg==
+Date:   Mon, 23 Aug 2021 15:21:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Benson Leung <bleung@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Gwendal Grignou <gwendal@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the chrome-platform tree
+Message-ID: <20210823152134.00d95cb4@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/a5u1jN6JldO845TR5XQ+Vef";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When dirty logging is enabled, KVM splits the all hugepage mapping in
-NPT/EPT into the smallest 4K size. This property could be used to check if
-the page stats metrics work properly in KVM mmu. At the same time, this
-logic might be used the other way around: using page stats to verify if
-dirty logging really splits all huge pages.
+--Sig_/a5u1jN6JldO845TR5XQ+Vef
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So add page stats checking in dirty logging performance selftest. In
-particular, add checks in three locations:
- - just after vm is created;
- - after populating memory into vm but before enabling dirty logging;
- - after turning off dirty logging.
+Hi all,
 
-Tested using commands:
- - ./dirty_log_perf_test -s anonymous_hugetlb_1gb
- - ./dirty_log_perf_test -s anonymous_thp
+After merging the chrome-platform tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: David Matlack <dmatlack@google.com>
-Cc: Jing Zhang <jingzhangos@google.com>
-Cc: Peter Xu <peterx@redhat.com>
+In file included from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h: In function 'trace_raw_output_cr=
+os_ec_sensorhub_timestamp':
+drivers/platform/chrome/./cros_ec_trace.h:95:12: warning: format '%lld' exp=
+ects argument of type 'long long int', but argument 3 has type 'u32' {aka '=
+unsigned int'} [-Wformat=3D]
+   95 |  TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, cur=
+r_ts: %12lld, curr_time: %12lld, delta %12lld",
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/trace/trace_events.h:399:27: note: in definition of macro 'DECLARE_=
+EVENT_CLASS'
+  399 |  trace_event_printf(iter, print);    \
+      |                           ^~~~~
+include/trace/trace_events.h:80:9: note: in expansion of macro 'PARAMS'
+   80 |         PARAMS(print));         \
+      |         ^~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:74:1: note: in expansion of macro=
+ 'TRACE_EVENT'
+   74 | TRACE_EVENT(cros_ec_sensorhub_timestamp,
+      | ^~~~~~~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:95:2: note: in expansion of macro=
+ 'TP_printk'
+   95 |  TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, cur=
+r_ts: %12lld, curr_time: %12lld, delta %12lld",
+      |  ^~~~~~~~~
+In file included from include/trace/trace_events.h:433,
+                 from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h:95:25: note: format string is def=
+ined here
+   95 |  TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, cur=
+r_ts: %12lld, curr_time: %12lld, delta %12lld",
+      |                    ~~~~~^
+      |                         |
+      |                         long long int
+      |                    %12d
+In file included from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h:95:12: warning: format '%lld' exp=
+ects argument of type 'long long int', but argument 4 has type 'u32' {aka '=
+unsigned int'} [-Wformat=3D]
+   95 |  TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, cur=
+r_ts: %12lld, curr_time: %12lld, delta %12lld",
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/trace/trace_events.h:399:27: note: in definition of macro 'DECLARE_=
+EVENT_CLASS'
+  399 |  trace_event_printf(iter, print);    \
+      |                           ^~~~~
+include/trace/trace_events.h:80:9: note: in expansion of macro 'PARAMS'
+   80 |         PARAMS(print));         \
+      |         ^~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:74:1: note: in expansion of macro=
+ 'TRACE_EVENT'
+   74 | TRACE_EVENT(cros_ec_sensorhub_timestamp,
+      | ^~~~~~~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:95:2: note: in expansion of macro=
+ 'TP_printk'
+   95 |  TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, cur=
+r_ts: %12lld, curr_time: %12lld, delta %12lld",
+      |  ^~~~~~~~~
+In file included from include/trace/trace_events.h:433,
+                 from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h:95:45: note: format string is def=
+ined here
+   95 |  TP_printk("ec_ts: %12lld, ec_fifo_ts: %12lld, fifo_ts: %12lld, cur=
+r_ts: %12lld, curr_time: %12lld, delta %12lld",
+      |                                        ~~~~~^
+      |                                             |
+      |                                             long long int
+      |                                        %12d
+In file included from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h: In function 'trace_raw_output_cr=
+os_ec_sensorhub_data':
+drivers/platform/chrome/./cros_ec_trace.h:125:12: warning: format '%lld' ex=
+pects argument of type 'long long int', but argument 4 has type 'u32' {aka =
+'unsigned int'} [-Wformat=3D]
+  125 |  TP_printk("ec_num: %4d, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_=
+ts: %12lld, curr_time: %12lld, delta %12lld",
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/trace/trace_events.h:399:27: note: in definition of macro 'DECLARE_=
+EVENT_CLASS'
+  399 |  trace_event_printf(iter, print);    \
+      |                           ^~~~~
+include/trace/trace_events.h:80:9: note: in expansion of macro 'PARAMS'
+   80 |         PARAMS(print));         \
+      |         ^~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:105:1: note: in expansion of macr=
+o 'TRACE_EVENT'
+  105 | TRACE_EVENT(cros_ec_sensorhub_data,
+      | ^~~~~~~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:125:2: note: in expansion of macr=
+o 'TP_printk'
+  125 |  TP_printk("ec_num: %4d, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_=
+ts: %12lld, curr_time: %12lld, delta %12lld",
+      |  ^~~~~~~~~
+In file included from include/trace/trace_events.h:433,
+                 from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h:125:43: note: format string is de=
+fined here
+  125 |  TP_printk("ec_num: %4d, ec_fifo_ts: %12lld, fifo_ts: %12lld, curr_=
+ts: %12lld, curr_time: %12lld, delta %12lld",
+      |                                      ~~~~~^
+      |                                           |
+      |                                           long long int
+      |                                      %12d
+In file included from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h: In function 'trace_raw_output_cr=
+os_ec_sensorhub_filter':
+drivers/platform/chrome/./cros_ec_trace.h:156:12: warning: format '%d' expe=
+cts argument of type 'int', but argument 7 has type 's64' {aka 'long long i=
+nt'} [-Wformat=3D]
+  156 |  TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %=
+12lld len: %d x: %12lld y: %12lld",
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/trace/trace_events.h:399:27: note: in definition of macro 'DECLARE_=
+EVENT_CLASS'
+  399 |  trace_event_printf(iter, print);    \
+      |                           ^~~~~
+include/trace/trace_events.h:80:9: note: in expansion of macro 'PARAMS'
+   80 |         PARAMS(print));         \
+      |         ^~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:135:1: note: in expansion of macr=
+o 'TRACE_EVENT'
+  135 | TRACE_EVENT(cros_ec_sensorhub_filter,
+      | ^~~~~~~~~~~
+drivers/platform/chrome/./cros_ec_trace.h:156:2: note: in expansion of macr=
+o 'TP_printk'
+  156 |  TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %=
+12lld len: %d x: %12lld y: %12lld",
+      |  ^~~~~~~~~
+In file included from include/trace/trace_events.h:433,
+                 from include/trace/define_trace.h:102,
+                 from drivers/platform/chrome/cros_ec_trace.h:178,
+                 from drivers/platform/chrome/cros_ec_trace.c:215:
+drivers/platform/chrome/./cros_ec_trace.h:156:80: note: format string is de=
+fined here
+  156 |  TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %=
+12lld len: %d x: %12lld y: %12lld",
+      |                                                                    =
+           ~^
+      |                                                                    =
+            |
+      |                                                                    =
+            int
+      |                                                                    =
+           %lld
 
-Suggested-by: Ben Gardon <bgorden@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- .../selftests/kvm/dirty_log_perf_test.c       | 30 +++++++++++++++++++
- .../testing/selftests/kvm/include/test_util.h |  1 +
- .../selftests/kvm/lib/perf_test_util.c        |  3 ++
- tools/testing/selftests/kvm/lib/test_util.c   | 29 ++++++++++++++++++
- 4 files changed, 63 insertions(+)
+Introduced by commit
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-index 3c30d0045d8d..e190f6860166 100644
---- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -19,6 +19,10 @@
- #include "perf_test_util.h"
- #include "guest_modes.h"
- 
-+#ifdef __x86_64__
-+#include "processor.h"
-+#endif
-+
- /* How many host loops to run by default (one KVM_GET_DIRTY_LOG for each loop)*/
- #define TEST_HOST_LOOP_N		2UL
- 
-@@ -166,6 +170,14 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	vm = perf_test_create_vm(mode, nr_vcpus, guest_percpu_mem_size,
- 				 p->slots, p->backing_src);
- 
-+#ifdef __x86_64__
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) == 0,
-+		    "4K page is non zero");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-+		    "2M page is non zero");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-+		    "1G page is non zero");
-+#endif
- 	perf_test_args.wr_fract = p->wr_fract;
- 
- 	guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
-@@ -211,6 +223,16 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	pr_info("Populate memory time: %ld.%.9lds\n",
- 		ts_diff.tv_sec, ts_diff.tv_nsec);
- 
-+#ifdef __x86_64__
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-+		    "4K page is zero");
-+	if (p->backing_src == VM_MEM_SRC_ANONYMOUS_THP)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) != 0,
-+			    "2M page is zero");
-+	if (p->backing_src == VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB)
-+		TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) != 0,
-+			    "1G page is zero");
-+#endif
- 	/* Enable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
- 	enable_dirty_logging(vm, p->slots);
-@@ -256,6 +278,14 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 				iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
- 		}
- 	}
-+#ifdef __x86_64__
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_4K) != 0,
-+		    "4K page is zero after dirty logging");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_2M) == 0,
-+		    "2M page is non-zero after dirty logging");
-+	TEST_ASSERT(get_page_stats(X86_PAGE_SIZE_1G) == 0,
-+		    "1G page is non-zero after dirty logging");
-+#endif
- 
- 	/* Disable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index d79be15dd3d2..dca5fcf7aa87 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -102,6 +102,7 @@ const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
- size_t get_backing_src_pagesz(uint32_t i);
- void backing_src_help(void);
- enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
-+size_t get_page_stats(uint32_t page_level);
- 
- /*
-  * Whether or not the given source type is shared memory (as opposed to
-diff --git a/tools/testing/selftests/kvm/lib/perf_test_util.c b/tools/testing/selftests/kvm/lib/perf_test_util.c
-index 0ef80dbdc116..c2c532990fb0 100644
---- a/tools/testing/selftests/kvm/lib/perf_test_util.c
-+++ b/tools/testing/selftests/kvm/lib/perf_test_util.c
-@@ -96,6 +96,9 @@ struct kvm_vm *perf_test_create_vm(enum vm_guest_mode mode, int vcpus,
- #ifdef __s390x__
- 	/* Align to 1M (segment size) */
- 	guest_test_phys_mem &= ~((1 << 20) - 1);
-+#elif __x86_64__
-+	/* Align to 1G (segment size) to allow hugepage mapping. */
-+	guest_test_phys_mem &= ~((1 << 30) - 1);
- #endif
- 	pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
- 
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index af1031fed97f..07eb6b5c125e 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -15,6 +15,13 @@
- #include "linux/kernel.h"
- 
- #include "test_util.h"
-+#include "processor.h"
-+
-+static const char * const pagestat_filepaths[] = {
-+	"/sys/kernel/debug/kvm/pages_4k",
-+	"/sys/kernel/debug/kvm/pages_2m",
-+	"/sys/kernel/debug/kvm/pages_1g",
-+};
- 
- /*
-  * Parses "[0-9]+[kmgt]?".
-@@ -141,6 +148,28 @@ size_t get_trans_hugepagesz(void)
- 	return size;
- }
- 
-+#ifdef __x86_64__
-+size_t get_stats_from_file(const char *path)
-+{
-+	size_t value;
-+	FILE *f;
-+
-+	f = fopen(path, "r");
-+	TEST_ASSERT(f != NULL, "Error in opening file: %s\n", path);
-+
-+	fscanf(f, "%ld", &value);
-+	fclose(f);
-+
-+	return value;
-+}
-+
-+size_t get_page_stats(uint32_t page_level)
-+{
-+	TEST_ASSERT(page_level <= X86_PAGE_SIZE_1G, "page type error.");
-+	return get_stats_from_file(pagestat_filepaths[page_level]);
-+}
-+#endif
-+
- size_t get_def_hugetlb_pagesz(void)
- {
- 	char buf[64];
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+  d453ceb6549a ("platform/chrome: sensorhub: Add trace events for sample")
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/a5u1jN6JldO845TR5XQ+Vef
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjMF4ACgkQAVBC80lX
+0GztVgf/Z9SqFDTj+rMXtiKvihK/cy7dFkooXHAfux/+F02qh9Eg6bX/KqpCethv
+03EcFTn9qj25wPHmy4VB3oUo2xrLqjNHTA0/lCwuFzN+fvTxdkLb7a4ju18Kzh4h
+M0JVsDWAbq8hNir8XZ0CbeJfTdeyCDMSLkbbmu5Cu29o5aXlDs3BwPDiyEBQ44pq
+ovFjGBndZ4PMJ42gEWTodctVsm3Bp0qbA7DEto8IK/D+219MOQIIkWF62eIcQxV2
+Wt22thXsRQFFGDSe3X64qST9Z+nRl0jbsD2HID/LM0ySmDfOXD5/X3L9f/aO84og
+5HV8b3TLAh8Kg+cBMkJvdgcqagxYiQ==
+=Ak0B
+-----END PGP SIGNATURE-----
+
+--Sig_/a5u1jN6JldO845TR5XQ+Vef--
