@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBC33F4A3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9AF3F4A38
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 14:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236902AbhHWMD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 08:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        id S236742AbhHWMDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 08:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236701AbhHWMDI (ORCPT
+        with ESMTP id S236626AbhHWMDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:03:08 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C4CC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:02:25 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso13911798wmj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:02:25 -0700 (PDT)
+        Mon, 23 Aug 2021 08:03:04 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C202C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:02:22 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id j17-20020a05600c1c1100b002e754875260so743488wms.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 05:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jNvlRovpXI4/yiNj+yBTSjAklyY67wlpFcUrW0vobjc=;
-        b=Vh06A6X5BK6nsBWLgxiHTpAsx9IoANP2InVt0EtRgxnp+ye2/2tx31hVUBLqkRiiVS
-         SWvCjHVzEa9XVe/yrnFAI0SM9f35F0RPo8AKjHsWfo3WnixOvg0d3kE273ATkDc0xCDq
-         vxRCE06728IztBn72xkjOWX+L8Qw3J9NWPo00pqqkGvVntQeKdbGJvKlGSFvmcn2L4k9
-         hK7p/DZVZ6pvXfLXKedq60hugd/oBccJ0v3msLfdWZTde8vsieN3DjrVKP4+jDVbZst9
-         tBof1h1/C1qGu83n4j6vv15cJMEOR3UrZCwFCHOisNZw1Jh7ebzyv3xpAFPxWuuRGB0z
-         yUWg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=hCQNOMNyM55BALmAbQOnxmGoDHPEw3FntTC8rnetrBc=;
+        b=JMmmGDnOo3PY1Ix16BVcnJO8EwRXCPXX5sP54wcBNSKOh/vdQL3sK+sk98g+wiEQup
+         ez3RcbHrhQ/tzeWwXrZs3q60PYo38SLegYLTsgwaDnXbhh73IKI7yxebHmHMMUbmTKKE
+         p0LSZYgfKVRUXdc3KfRaBXYYgY0ZajCYh5WmoIaF2b3Fjv5GZOFfrBj/p1i2mIPp5TKk
+         1bFFwT/QR/RLNJu2lMNgO1ZEgRfDEgzZUb+YCuAp8crf03P+Cb/2MQLYRr6KWpX+OAtM
+         AHYWpQn3CoWBNEFKGh3vibi671p8RWM7bTSrMxlnp8EMg7OotRqrdgLqVjPKwJlkJvoL
+         7HCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jNvlRovpXI4/yiNj+yBTSjAklyY67wlpFcUrW0vobjc=;
-        b=LFmwi74x2BBhvxRyaRCyPmblvme64dbv8uNtU2w0l5Czkhq5PSLPTgdKSHZIEHbBVH
-         atdAB5LTcO70E//gtO+JE3iveY2lLVioJTK62GyBPJfsoUKLkBZLrH609J+JmCzoGkg/
-         0A/MPMzCnLGQfAP6e+6H76xnqcUz0kJx2tQ7aYk4ikj+TfBQ8orRLGrIC7UJWmPfPwPw
-         8cVHz/s5i1nr3vY1CnXb5r4BwcvCZF+JSvy8coW4qD0mp5t0DrABjBoNn3E8XcdzLk1m
-         APZKN+5QWXGi5HYFaFk60tHzuyfXATdQ4DJ/40Jq3TPPBi2d6xkI8K32zTOFZP5URPEa
-         zccA==
-X-Gm-Message-State: AOAM532tARqjKlxyucxNU22TwtO6rM2EbxUYyHMI+vHUycI+MkRtFuZt
-        bCEWAD/DktqNYJbV8mMmM/U=
-X-Google-Smtp-Source: ABdhPJw1U3bhnDR4DGHufWdD9asrsVTC+iE0x9DW5K9NvXGKRdk1n131old9+dXDhMOh83w7OK9eRQ==
-X-Received: by 2002:a1c:f706:: with SMTP id v6mr12328443wmh.167.1629720139764;
-        Mon, 23 Aug 2021 05:02:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=hCQNOMNyM55BALmAbQOnxmGoDHPEw3FntTC8rnetrBc=;
+        b=XqdMSGMNGITO/34u4W62x6x+gDw0ag6hLH/lvYNq2Vnp5nnf7fMqci3kK1JJvdsHvN
+         biBcpwP1cHq5ibxpNWmll4T3BLbzuaHM8KYEP6/TDGOq8LHV46PK4zJdXQejZQqQIysY
+         XPaWvfJVZnLpGc3LnpZAHggLmdFbGFjt3mmVpJCtgXgBgwcyq4n1BLYvI3O7J9hzO5Gw
+         OpoMJgXOgYxKbVE2oilfxUW4Ruj8mxLJ+xVDF8PZtxaxfRM2h+JsAbXYmY9nmb3tU6E3
+         d+7CPCOOu1QscSnDMhlIcXFQVIV0vUW+KK36V+27x4HXtqmPtDdQPVO3JHMYlMTVmzIC
+         qtfw==
+X-Gm-Message-State: AOAM532w8H5XK8fJ8MMx4kDBKBVWNK5wHFNhD7s8VMWQF8xWoDh+8+TX
+        29v4zaahjMY6i5kRIhWrHGk=
+X-Google-Smtp-Source: ABdhPJzaVd7Im4aDpIuteTlfOL/2uidMM2lEf0wS2u53VUGzEIM7YpNuzG7PdC/8d9JSHFHX3A3kVw==
+X-Received: by 2002:a7b:c318:: with SMTP id k24mr16177352wmj.144.1629720140916;
+        Mon, 23 Aug 2021 05:02:20 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::3c39])
-        by smtp.gmail.com with ESMTPSA id g5sm901332wrq.80.2021.08.23.05.02.18
+        by smtp.gmail.com with ESMTPSA id g5sm901332wrq.80.2021.08.23.05.02.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 05:02:19 -0700 (PDT)
+        Mon, 23 Aug 2021 05:02:20 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 0/8] staging: r8188eu: use is_multicast_ether_addr instead of IS_MCAST
-Date:   Mon, 23 Aug 2021 14:00:58 +0200
-Message-Id: <20210823120106.9633-1-straube.linux@gmail.com>
+Subject: [PATCH 1/8] staging: r8188eu: ensure proper alignment for eth address buffers
+Date:   Mon, 23 Aug 2021 14:00:59 +0200
+Message-Id: <20210823120106.9633-2-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210823120106.9633-1-straube.linux@gmail.com>
+References: <20210823120106.9633-1-straube.linux@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series replaces most uses of the custom IS_MCAST macro with
-is_multicast_ether_addr. The goal is to get rid of IS_MCAST.
-There is only one usage left in rtw_sta_mgt.c, but that one needs
-more effort to verify that the buffers are properly aligned, so I
-left it as is for now.
+Add __aligned(2) to eth address buffers in structs rx_pkt_attrib and
+pkt_attrib to ensure proper alignment for usage with functions from
+<linux/etherdevice.h>
 
-Michael Straube (8):
-  staging: r8188eu: ensure proper alignment for eth address buffers
-  staging: r8188eu: use is_multicast_ether_addr in core/rtw_mlme.c
-  staging: r8188eu: use is_multicast_ether_addr in core/rtw_mp.c
-  staging: r8188eu: use is_multicast_ether_addr in core/rtw_recv.c
-  staging: r8188eu: use is_multicast_ether_addr in core/rtw_security.c
-  staging: r8188eu: use is_multicast_ether_addr in core/rtw_xmit.c
-  staging: r8188eu: use is_multicast_ether_addr in hal/rtl8188eu_xmit.c
-  staging: r8188eu: use is_multicast_ether_addr in os_dep/recv_linux.c
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/r8188eu/include/rtw_recv.h | 10 +++++-----
+ drivers/staging/r8188eu/include/rtw_xmit.h |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
- drivers/staging/r8188eu/core/rtw_mlme.c      |  4 ++--
- drivers/staging/r8188eu/core/rtw_mp.c        |  4 ++--
- drivers/staging/r8188eu/core/rtw_recv.c      | 20 ++++++++++----------
- drivers/staging/r8188eu/core/rtw_security.c  |  8 ++++----
- drivers/staging/r8188eu/core/rtw_xmit.c      | 15 ++++++---------
- drivers/staging/r8188eu/hal/rtl8188eu_xmit.c |  3 +--
- drivers/staging/r8188eu/include/rtw_recv.h   | 10 +++++-----
- drivers/staging/r8188eu/include/rtw_xmit.h   |  8 ++++----
- drivers/staging/r8188eu/os_dep/recv_linux.c  |  2 +-
- 9 files changed, 35 insertions(+), 39 deletions(-)
-
+diff --git a/drivers/staging/r8188eu/include/rtw_recv.h b/drivers/staging/r8188eu/include/rtw_recv.h
+index 81594e7aed51..1b41f8d7d079 100644
+--- a/drivers/staging/r8188eu/include/rtw_recv.h
++++ b/drivers/staging/r8188eu/include/rtw_recv.h
+@@ -109,11 +109,11 @@ struct rx_pkt_attrib {
+ 
+ 	u16 eth_type;
+ 
+-	u8	dst[ETH_ALEN];
+-	u8	src[ETH_ALEN];
+-	u8	ta[ETH_ALEN];
+-	u8	ra[ETH_ALEN];
+-	u8	bssid[ETH_ALEN];
++	u8	dst[ETH_ALEN] __aligned(2);
++	u8	src[ETH_ALEN] __aligned(2);
++	u8	ta[ETH_ALEN] __aligned(2);
++	u8	ra[ETH_ALEN] __aligned(2);
++	u8	bssid[ETH_ALEN] __aligned(2);
+ 
+ 	u8 ack_policy;
+ 
+diff --git a/drivers/staging/r8188eu/include/rtw_xmit.h b/drivers/staging/r8188eu/include/rtw_xmit.h
+index e1418a3f7ed1..5f6e2402e5c4 100644
+--- a/drivers/staging/r8188eu/include/rtw_xmit.h
++++ b/drivers/staging/r8188eu/include/rtw_xmit.h
+@@ -122,10 +122,10 @@ struct pkt_attrib {
+ 	u8	ack_policy;
+ 	u8	mac_id;
+ 	u8	vcs_mode;	/* virtual carrier sense method */
+-	u8	dst[ETH_ALEN];
+-	u8	src[ETH_ALEN];
+-	u8	ta[ETH_ALEN];
+-	u8	ra[ETH_ALEN];
++	u8	dst[ETH_ALEN] __aligned(2);
++	u8	src[ETH_ALEN] __aligned(2);
++	u8	ta[ETH_ALEN] __aligned(2);
++	u8	ra[ETH_ALEN] __aligned(2);
+ 	u8	key_idx;
+ 	u8	qos_en;
+ 	u8	ht_en;
 -- 
 2.32.0
 
