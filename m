@@ -2,114 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96873F49AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3759A3F49BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 13:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236557AbhHWLY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 07:24:29 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3679 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236559AbhHWLY2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:24:28 -0400
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GtVFz1mGPz67kFq;
-        Mon, 23 Aug 2021 19:22:31 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 23 Aug 2021 13:23:43 +0200
-Received: from [10.47.87.96] (10.47.87.96) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 23 Aug
- 2021 12:23:42 +0100
-From:   John Garry <john.garry@huawei.com>
-Subject: [Question] perf tools: lex parsing issue
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "irogers@google.com" <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Message-ID: <2e52bc21-8e60-f1fc-804b-d8993ca7c482@huawei.com>
-Date:   Mon, 23 Aug 2021 12:27:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.87.96]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        id S236302AbhHWL3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 07:29:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234997AbhHWL26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:28:58 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A72461391;
+        Mon, 23 Aug 2021 11:28:16 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mI87i-006eI9-HB; Mon, 23 Aug 2021 12:28:14 +0100
+Date:   Mon, 23 Aug 2021 12:28:14 +0100
+Message-ID: <877dgcqu29.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
+        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
+        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
+        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
+In-Reply-To: <CAGsJ_4yBa3EHz8-gR90SXZxju5E+Zh0NwOp8LErqhewgUOAfbg@mail.gmail.com>
+References: <20210820223744.8439-2-21cnbao@gmail.com>
+        <20210820233328.GA3368938@bjorn-Precision-5520>
+        <877dgfqdsg.wl-maz@kernel.org>
+        <CAGsJ_4wXqnudVO92qSKLdyJaMNuDE-d0srs=4rgJmOQKcG2P3g@mail.gmail.com>
+        <87a6l8qwql.wl-maz@kernel.org>
+        <CAGsJ_4yBa3EHz8-gR90SXZxju5E+Zh0NwOp8LErqhewgUOAfbg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: 21cnbao@gmail.com, helgaas@kernel.org, bhelgaas@google.com, corbet@lwn.net, Jonathan.Cameron@huawei.com, bilbao@vt.edu, gregkh@linuxfoundation.org, leon@kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linuxarm@huawei.com, luzmaximilian@gmail.com, mchehab+huawei@kernel.org, schnelle@linux.ibm.com, song.bao.hua@hisilicon.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi jirka,
+On Mon, 23 Aug 2021 12:03:08 +0100,
+Barry Song <21cnbao@gmail.com> wrote:
+> 
+> On Mon, Aug 23, 2021 at 10:30 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Sat, 21 Aug 2021 23:14:35 +0100,
+> > Barry Song <21cnbao@gmail.com> wrote:
+> > >
+> > > On Sat, Aug 21, 2021 at 10:42 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > >
+> > > > Hi Bjorn,
+> > > >
+> > > > On Sat, 21 Aug 2021 00:33:28 +0100,
+> > > > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > >
+> >
+> > [...]
+> >
+> > > > >     In msix_setup_entries(), we get nvecs msi_entry structs, and we
+> > > > >     get a saved .default_irq in each one?
+> > > >
+> > > > That's a key point.
+> > > >
+> > > > Old-school PCI/MSI is represented by a single interrupt, and you
+> > > > *could* somehow make it relatively easy for drivers that only
+> > > > understand INTx to migrate to MSI if you replaced whatever is held in
+> > > > dev->irq (which should only represent the INTx mapping) with the MSI
+> > > > interrupt number. Which I guess is what the MSI code is doing.
+> > > >
+> > > > This is the 21st century, and nobody should ever rely on such horror,
+> > > > but I'm sure we do have such drivers in the tree. Boo.
+> > > >
+> > > > However, this *cannot* hold true for Multi-MSI, nor MSI-X, because
+> > > > there is a plurality of interrupts. Even worse, for MSI-X, there is
+> > > > zero guarantee that the allocated interrupts will be in a contiguous
+> > > > space.
+> > > >
+> > > > Given that, what is dev->irq good for? "Absolutely Nothing! (say it
+> > > > again!)".
+> > > >
+> > >
+> > > The only thing is that dev->irq is an sysfs ABI to userspace. Due to
+> > > the inconsistency between legacy PCI INTx, MSI, MSI-X, this ABI
+> > > should have been absolutely broken nowadays.  This is actually what
+> > > the patchset was originally aiming at to fix.
+> >
+> > I do not think we should expose more of a broken abstraction to
+> > userspace. We will have to carry on exposing the first MSI in this
+> > field forever, but it doesn't mean we should have to do it for MSI-X.
+> >
+> > > One more question from me is that does dev->irq actually hold any
+> > > valid hardware INTx information while hardware is using MSI-X? At
+> > > least in my hardware, sysfs ABI for PCI is all "0".
+> >
+> > That's probably because nothing actually configured the interrupt, or
+> > that there is no INTx implementation. I have that on systems with
+> > pretty dodgy (or incomplete) firmware.
+> >
+> > > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat irq
+> > > 0
+> > >
+> > > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# ls -l msi_irqs/*
+> > > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/499
+> > > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/500
+> > > -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/501
+> > > ...
+> > > root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat msi_irqs/499
+> > > msix
+> > >
+> > > Not quite sure how it is going on different hardware platforms.
+> >
+> > My D05 does that as well, and it doesn't expose any INTx support.
+> >
+> > >
+> > > > MSI-X is not something you can "accidentally" use. You have to
+> > > > actively embrace it. In all honesty, this patch tries to move in the
+> > > > wrong direction. If anything, we should kill this hack altogether and
+> > > > fix the (handful of?) drivers that rely on it. That'd actually be a
+> > > > good way to find whether they are still worth keeping in the tree. And
+> > > > if it breaks too many of them, then at least we'll know where we
+> > > > stand.
+> > > >
+> > > > I'd be tempted to leave the below patch simmer in -next for a few
+> > > > weeks and see if how many people shout:
+> > >
+> > > This looks like a more proper direction to go.
+> > > but here i am wondering how sysfs ABI document should follow the below change
+> > > doc is patch 2/2:
+> > > https://lore.kernel.org/lkml/20210820223744.8439-3-21cnbao@gmail.com/
+> > >
+> > > On the other hand, my feeling is that nobody should depend on sysfs
+> > > irq entry nowadays.
+> >
+> > Too late. It is there, and we need to preserve it. I just don't think
+> > feeding it more erroneous information is the right thing to do.
+> >
+> > My patch was only dealing with the kernel side of things, not the
+> > userspace ABI. That ABI should be carried on unchanged.
+> 
+> it seems this isn't true. your patch is also changing userspace ABI
+> as long as you change pci_dev->irq which will be shown in sysfs irq
+> entry.
 
-If you remember from some time ago we discussed how the lex parsing 
-creates strange aliases:
+I guess I wasn't clear enough above. Let me rephrase this:
 
-https://lore.kernel.org/lkml/20200320093006.GA1343171@krava/
+My patch was only dealing with the kernel side of things, not the
+userspace ABI. That ABI should be carried on unchanged, which requires
+additional changes in the sysfs code.
 
-I am no expert on l+y, but it seems that we simply don't set the term 
-config field for known term types. Well, not for 
-PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD type anyway.
+> if we don't want to change the behaviour of any existing ABI, it
+> seems the only thing we can do here to document it well in ABI
+> doc. i actually doubt anyone has really understood what the irq
+> entry is really showing.
 
-This super hack resolves that issue:
-
---->8----
-
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -765,7 +765,12 @@ event_config ',' event_term
-struct list_head *head = $1;
-struct parse_events_term *term = $3
-
-+ if (term->type_term == PARSE_EVENTS__TERM_TYPE_SAMPLE_PERIOD) {
-+ 	term->config = strdup("period");
-+ }
-+
-if (!head) {
-	parse_events_term__delete(term);
-	YYABORT;
--- 
-
-----8-----
-
-So we get "umask=0x80,period=0x30d40,event=0x6" now, rather than 
-"umask=0x80,(null)=0x30d40,event=0x6", for the perf_pmu_alias.str, as an 
-example.
-
-Did you ever get a chance to look into this issue? Do you know how could 
-or should this field be set properly?
-
-Some more background:
-The reason I was looking at this is because I think it causes a problem 
-for pmu-events (JSONs) aliasing for some PMUs. Specifically it's PMU 
-which use "config=xxx" in sysfs files in 
-/sys/bus/event_source/devices/PMUx/events/, rather than "event=xxx". The 
-actual problem is that I trigger this warn in pmu.c:
-
-static void perf_pmu_assign_str(char *name, const char *field, char 
-**old_str,
-char **new_str)
-{
-
-if (*new_str) { /* Have new string, check with old */
-	if (strcasecmp(*old_str, *new_str))
-		pr_debug("alias %s differs i ... <---
-
-As I get "config=event=0xXXX" vs "config=(null)=0xXXX"
-
-As I am not sure how to solve that yet, but, since we have 
-config=(null), I thought it best to solve the first issue first.
+Given that we can't prove that it is actually the case, I believe this
+is the only option.
 
 Thanks,
-John
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
