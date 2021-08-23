@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C86D3F501B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B4E3F501F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbhHWSIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:08:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7418 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229837AbhHWSIs (ORCPT
+        id S231776AbhHWSKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:10:17 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:37378 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhHWSKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:08:48 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17NI2eYA000916;
-        Mon, 23 Aug 2021 14:08:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=BsmQ/QtYydbGgRYekxdtssjs1AP9/Jwu8/43joObmqI=;
- b=jcgi4upEDmFs4IcT0FY8k6QLRi5bMBERfY5L0/6hXiZf7APP/oLxNoVtsbYuTZl7FqOY
- jGFnmvDoNsaGe8JFmLwCxF5Mkcdks97aCt1ymmTkIL965ussqUB0u1NGno/YGN2dP0dZ
- nn6MZPKyFsnzzQ6B+uN71rrV87b1Ptq0vN/p5pLJbdYOUpy7fmEx5pPhrO9G0RurFU17
- KMnXwOyhKUT8/WluFL3CSfublTzwGoqQ6W6IeAamK7GfSBDVAsIjR+WnZuMuSEZS9fv2
- HtY46wGmpDXi4xvwkESlB6kTuJJXD7wlNOG4piIp3QVo2Fy49xyoXw1JCUEkScgSSMXA 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3amg8e0phg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 14:08:05 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17NI554D008743;
-        Mon, 23 Aug 2021 14:08:05 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3amg8e0pgv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 14:08:04 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17NI7YS3025467;
-        Mon, 23 Aug 2021 18:08:03 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ajs48bpd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 18:08:03 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17NI7x9654133228
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 18:07:59 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A35F1A4051;
-        Mon, 23 Aug 2021 18:07:59 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F9FEA4040;
-        Mon, 23 Aug 2021 18:07:59 +0000 (GMT)
-Received: from osiris (unknown [9.145.169.88])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 23 Aug 2021 18:07:59 +0000 (GMT)
-Date:   Mon, 23 Aug 2021 20:07:57 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     jing yangyang <cgel.zte@gmail.com>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jing yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: Re: [PATCH linux-next] s390:fix Coccinelle warnings
-Message-ID: <YSPj/YRDlGqoVu26@osiris>
-References: <20210820025159.11914-1-jing.yangyang@zte.com.cn>
+        Mon, 23 Aug 2021 14:10:15 -0400
+Received: by mail-ot1-f45.google.com with SMTP id i3-20020a056830210300b0051af5666070so28910865otc.4;
+        Mon, 23 Aug 2021 11:09:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g+CqhkyW2c8CXWLjQLbAdHrQQUJ+lxu98gFxCWPW9UY=;
+        b=gaFFH1TtGaesnUM3luk4145124LurLFLPoERf4NTgkgXARY/wRm3BtcJzOgNbpW3qz
+         GqpdO7vxKluoGrUSDnBQc15RifEYLx3ujNHAIPcwMkvCEEcHZH6BQ4e0h4hUV5AA9npz
+         bV5JHXlds8ZVl6En7HHAeCTeEZKP6DlKofQbmPRQYkHu0lq/eZ4LzWnXeOg4kXhnYhar
+         2uP97US1bK4l8itIe2CTClGX9rEaEcl7plAHt3xTCu55/2U60WUN2ah7MHpw9sjVoTgR
+         XDR4J+y8Ba7UPddZc1Q5gwSatusGXYSYsPfAa+i1QWddnsqCSpVOgagKwWO0QNpp4xbr
+         mNXg==
+X-Gm-Message-State: AOAM530j5rLDzPlUFG652ViDaJtt808XveSpCFU0FNBSWVxQTUpV8moY
+        cGqmGsm8OdMVG3ynS0M7QQ==
+X-Google-Smtp-Source: ABdhPJy808XGMxfgtJt2olJn0b2kz8EiXE3TMOiTOMuQ2t08pHFJLizMoZJWfluz+DhSee7b56XMgg==
+X-Received: by 2002:a05:6830:2809:: with SMTP id w9mr10268776otu.114.1629742172567;
+        Mon, 23 Aug 2021 11:09:32 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id s63sm3875103oia.52.2021.08.23.11.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 11:09:31 -0700 (PDT)
+Received: (nullmailer pid 2445747 invoked by uid 1000);
+        Mon, 23 Aug 2021 18:09:29 -0000
+Date:   Mon, 23 Aug 2021 13:09:29 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Piyush Mehta <piyush.mehta@xilinx.com>
+Cc:     sgoud@xilinx.com, git@xilinx.com, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, zou_wei@huawei.com, arnd@arndb.de,
+        michal.simek@xilinx.com, robh+dt@kernel.org, iwamatsu@nigauri.org,
+        wendy.liang@xilinx.com, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org, gregkh@linuxfoundation.org,
+        linux-arm-kernel@lists.infradead.org, rajan.vaja@xilinx.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH V3 2/3] dt-bindings: gpio: zynqmp: Add binding
+ documentation for modepin
+Message-ID: <YSPkWUs0Y2zDiHQU@robh.at.kernel.org>
+References: <20210818081018.2620544-1-piyush.mehta@xilinx.com>
+ <20210818081018.2620544-3-piyush.mehta@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210820025159.11914-1-jing.yangyang@zte.com.cn>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AreCwmGScj-BfeIvgViOUTCC6Q1XLpD3
-X-Proofpoint-GUID: gg_ePrLtXLkHXFJ_54k7Cu1QFe9Rtby5
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-23_04:2021-08-23,2021-08-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=843 phishscore=0
- impostorscore=0 spamscore=0 mlxscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108230124
+In-Reply-To: <20210818081018.2620544-3-piyush.mehta@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 07:51:59PM -0700, jing yangyang wrote:
-> WARNING !A || A && B is equivalent to !A || B
+On Wed, 18 Aug 2021 13:40:17 +0530, Piyush Mehta wrote:
+> This patch adds DT binding document for zynqmp modepin GPIO controller.
+> Modepin GPIO controller has four GPIO pins which can be configurable
+> as input or output.
 > 
-> This issue was detected with the help of Coccinelle.
+> Modepin driver is a bridge between the peripheral driver and GPIO pins.
+> It has set and get APIs for accessing GPIO pins, based on the device-tree
+> entry of reset-gpio property in the peripheral driver, every pin can be
+> configured as input/output and trigger GPIO pin.
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+> For more information please refer zynqMp TRM link:
+> Link: https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf
+> Chapter 2: Signals, Interfaces, and Pins
+> Table 2-2: Clock, Reset, and Configuration Pins - PS_MODE
+> 
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+> Acked-by: Michal Simek <michal.simek@xilinx.com>
 > ---
->  arch/s390/include/asm/scsw.h | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Changes in v2:
+> - Addressed review comments: Update commit message
 > 
-> diff --git a/arch/s390/include/asm/scsw.h b/arch/s390/include/asm/scsw.h
-> index a7c3ccf..754122d 100644
-> --- a/arch/s390/include/asm/scsw.h
-> +++ b/arch/s390/include/asm/scsw.h
-> @@ -691,9 +691,8 @@ static inline int scsw_tm_is_valid_pno(union scsw *scsw)
->  {
->  	return (scsw->tm.fctl != 0) &&
->  	       (scsw->tm.stctl & SCSW_STCTL_STATUS_PEND) &&
-> -	       (!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) ||
-> -		 ((scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) &&
-> -		  (scsw->tm.actl & SCSW_ACTL_SUSPENDED)));
-> +		(!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS) ||
-> +		(scsw->tm.actl & SCSW_ACTL_SUSPENDED));
+> Review Comments:
+> https://lore.kernel.org/linux-arm-kernel/20210615080553.2021061-2-piyush.mehta@xilinx.com/T/#mbd1fbda813e33b19397b350bde75747c92a0d7e1
+> https://lore.kernel.org/linux-arm-kernel/20210615080553.2021061-2-piyush.mehta@xilinx.com/T/#me82b1444ab3776162cdb0077dfc9256365c7e736
+> 
+> Changes in v3:
+> - Addressed Rob and Michal review comments:
+>   - Update DT example.
+> 
+> Review Comments:
+> https://lore.kernel.org/linux-arm-kernel/YRbBnRS0VosXcZWz@robh.at.kernel.org/
+> https://lore.kernel.org/linux-arm-kernel/d71ad7f9-6972-8cc0-6dfb-b5306c9900d0@xilinx.com/
+> ---
+>  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 41 ++++++++++++++++++++++
+>  .../bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml    | 43 ++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+> 
 
-This turns something unreadable into something else which is
-unreadable. It's up to Vineeth to decide what to do with this.
-
-However I'd prefer if this would be changed into something readable,
-maybe as addon patch, like e.g.:
-
-static inline bool scsw_tm_is_valid_pno(union scsw *scsw)
-{
-	if (scsw->tm.fctl == 0)
-		return false;
-	if (!(scsw->tm.stctl & SCSW_STCTL_STATUS_PEND))
-		return false;
-	if (!(scsw->tm.stctl & SCSW_STCTL_INTER_STATUS))
-		return false;
-	if (scsw->tm.actl & SCSW_ACTL_SUSPENDED)
-		return false;
-	return true;
-}
-
-Chances are that the above is wrong... it's just to illustrate ;)
+Reviewed-by: Rob Herring <robh@kernel.org>
