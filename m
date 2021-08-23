@@ -2,189 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F8F3F5066
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3FD3F5069
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 20:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhHWSeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 14:34:07 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:10910 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230160AbhHWSeG (ORCPT
+        id S231138AbhHWSey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 14:34:54 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:43714 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhHWSex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:34:06 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17NH3s7i005548;
-        Mon, 23 Aug 2021 18:32:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=E3fhKwv9fV34Db6BiM3uSfrnVg3F+HQBc8aHxFNv8GY=;
- b=eUS1fKxPAIEkVs4saQ7JXU3SNRaaNm6DHy4PeS0OfdhzBKtBuaZCiqrc/ApB+NQwEqlM
- OtU06ngB5M/kaWiqX61IBWrqi13oQ1ywVJ2prAvvTYfKhpaLJqYFuW6uzvr17an4I0LT
- omDQXkuZH0i0ilHD3UK3QtVWAtd6zrq6R4dnS7GE6SH5hKer/dSXeoD04WpZU7C2m6ji
- 1vIHjdX7SlV7emmSku1VG/yGQId8CB/3Yu42DzdIztO5zsz8rO/ukyKlhbDnTS6PrtDV
- p2vVgBeGVMAke8zBEnv4cQeu2j2wbJaTst21w/9JyBN+NQZ9njCwkyFGfMP2Rc5LLIGc 8g== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=E3fhKwv9fV34Db6BiM3uSfrnVg3F+HQBc8aHxFNv8GY=;
- b=HxBgBkTmmQf4gO/oZNtpwDigelVNF1RxmZwx2miKgtWY33vUXI+6TOh58oxmroO+tYPI
- YboE4MlTFqsiTWIn2V9OJe/0V82ehKHDBjMyYidrxd0lhxFerdFcJ5cB2gGzW0qC12fO
- ZG5aTYIMot1dN0DWmIUzmOB7ZayPeJmo8HnK9c+A8k8mA0xpodh+gszloT579W23ZEJ7
- EG/JGH+WxX6qP5W2ynnRzFJQ0OdObwEN0033g3eTql4FyzNDz4zkZs/ilkCp/TkkSD4s
- Zw6uJVp7aBViPsc2ga8BDii9AeBcQJdtKJJWXhkAjBdseGorRmilQZk3VA+jsrzqYsOi Tg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3akuswjcvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 18:32:21 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17NIPHIt027500;
-        Mon, 23 Aug 2021 18:32:20 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
-        by aserp3030.oracle.com with ESMTP id 3ajqhd4y7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 18:32:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X1zUdLNNyIhGCkMFdH74agQNsre4QuyfmzlZAjaBTbVMh3L9mD31PbIKUVNe2DyWHzg8bxa9NtIMsfsdAAZREXU5+2DBuCDbFavWVMKpKO7aY85ZSWzNK8H/Ea/Hd4cSazSrloxPveSxjZzjCkbmDBNWCYO/maMalvYKFuWxMjWywABAyO5Ziw3wkOZjMKBr51Eo8rddrekwxNB1m+9SOYxKS45Z+u2p0EpG8geAksb+/XHVBix17e6uVp23Y2YrwjDXZ2NHIRrQbLR2kaIq38JJs+FhFgqrdfdnJClFUnhd381w0465lUKYywEBr4ujSG2k+x5/nef7Qse50e2jUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E3fhKwv9fV34Db6BiM3uSfrnVg3F+HQBc8aHxFNv8GY=;
- b=boKM2rPFOsS+3Cw+fgsEIwMv6APfPIStIkrQ7v2IjE4ET4FS5upQBrfKtZzULfTtRakUd4inioe96WNMBZjepS0t2PLdC3AOqdTWKCgUQob4l/Hb/lRHKTazbqWSdegCbpMQPadbTgn4Kqo6jRIai2wt/OI8Y/Tq4jWp00vF9itNNE9PTBcOvuLC2mq0PIecZjsD+TYTETlPI5AOk+3/RdoubFbjGi+aZA84UJQ7LSgHdaym+pHB6d6ihRqjh5yRmJRMdPr+s0xd7JSh0gfjgrW7DmHREc8yxlQ6CaJFIonLyCXHINZ9g1ksTwYwLd5D+sf7Pp/qvVpwFuXhmawuDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E3fhKwv9fV34Db6BiM3uSfrnVg3F+HQBc8aHxFNv8GY=;
- b=fgdZCh+iVdvVzBK9XOmycv5faG5xH6uistR5LVr0cT15XOlKsvF9qX2iXE+BrY11YsKgi4UiTbJtAjTJQy8zn4oKx11d7O7f7m6Zo4ZXyvrj3u/WbBiwX6eXAOToc0O/5qtoX2hEj+VFpdiS9k990vfTOThPvxCQ8UZUqBcf3H4=
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=oracle.com;
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
- by BYAPR10MB3030.namprd10.prod.outlook.com (2603:10b6:a03:92::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.15; Mon, 23 Aug
- 2021 18:32:16 +0000
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::203c:7f44:c562:b991]) by BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::203c:7f44:c562:b991%3]) with mapi id 15.20.4436.022; Mon, 23 Aug 2021
- 18:32:15 +0000
-Date:   Mon, 23 Aug 2021 14:32:10 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        anderson@cs.unc.edu, baruah@wustl.edu, bsegall@google.com,
-        dietmar.eggemann@arm.com, dtcccc@linux.alibaba.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        luca.abeni@santannapisa.it, mgorman@suse.de, mingo@redhat.com,
-        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
-        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
-        xiyou.wangcong@gmail.com
-Subject: Re: [PATCH 1/2] sched/fair: Add cfs bandwidth burst statistics
-Message-ID: <20210823183210.bih6p77fh3gwdfic@oracle.com>
-References: <20210816070849.3153-1-changhuaixin@linux.alibaba.com>
- <20210816070849.3153-2-changhuaixin@linux.alibaba.com>
+        Mon, 23 Aug 2021 14:34:53 -0400
+Received: by mail-ot1-f53.google.com with SMTP id x10-20020a056830408a00b004f26cead745so38854426ott.10;
+        Mon, 23 Aug 2021 11:34:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4TvCS5H1FNAkng8/8YjZRJGiz+UGB+5faejIY947HJ8=;
+        b=FjcbCVP4Iunkl6YriPRrE6bDMB0daFjWIEBPFpaqDfRiM6us2ZR4rGnCZ6NCvhs3YA
+         YzRsoksOezLss59PvPQ4MMuK56+tikHTbeUm0LtRF4rCxTsWbMmq/v4uTHcwcBejTmQX
+         biTDFYGylOq1qHlrDnvSaHMU7NMtmjZ6ifaaY/FMnh/ivTeQTOTIKp3gn48pkbpr2IYU
+         c9pjC9EaDhnpmqXgYzDFyyDG9Ow+BhHuJFW3cgy6I6OSK7IYMf3+fqRLy52WjjBz2iRy
+         TDD5ldqLqBADAj6GVuy3OmNuyhirLMXhMp4EOWIoVg93JiMWgWNIJ0Ll50Yt0ffvvCw8
+         xXJg==
+X-Gm-Message-State: AOAM532SATo7fqx7VKbQyIOz0EF4AvDBWHnWq8rgotvCQNLQraKOuo2C
+        PYeuIr3w6QoShbUTcqFIXQ==
+X-Google-Smtp-Source: ABdhPJyPtYvsoO4wTHmI2AUT6N2HHnpM6odnregWKtg+VtkHAr5DFTYh7FaAPZ2E27tuY8eW7NsF6g==
+X-Received: by 2002:a54:438a:: with SMTP id u10mr13002592oiv.131.1629743649755;
+        Mon, 23 Aug 2021 11:34:09 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p64sm3921067oib.4.2021.08.23.11.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 11:34:09 -0700 (PDT)
+Received: (nullmailer pid 2484159 invoked by uid 1000);
+        Mon, 23 Aug 2021 18:34:08 -0000
+Date:   Mon, 23 Aug 2021 13:34:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     l.stach@pengutronix.de, galak@kernel.crashing.org,
+        shawnguo@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de
+Subject: Re: [PATCH v1 1/3] dt-bindings: PCI: imx6: convert the imx pcie
+ controller to dtschema
+Message-ID: <YSPqIEmngxjCCn+v@robh.at.kernel.org>
+References: <20210819071408.3856475-1-hongxing.zhu@nxp.com>
+ <20210819071408.3856475-2-hongxing.zhu@nxp.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816070849.3153-2-changhuaixin@linux.alibaba.com>
-X-ClientProxiedBy: MN2PR04CA0034.namprd04.prod.outlook.com
- (2603:10b6:208:d4::47) To BYAPR10MB2966.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from oracle.com (98.229.125.203) by MN2PR04CA0034.namprd04.prod.outlook.com (2603:10b6:208:d4::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Mon, 23 Aug 2021 18:32:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b496a69e-aa4f-4795-c477-08d966645494
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3030:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB3030486CDB8DF4419D63ECE0D9C49@BYAPR10MB3030.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E3OOiVppZraiAszDvV/F5tdEo9rd5BPZrEZNPMVNP/xyZGMQ77T6kEDDZxItfIB/Nfg2uaMYxSaXE0yfvG+XIEQ+1Pwc9wCgPa0XfYBp3JE1AfMvhYaMJYckvfmRydve85IACmMp2caHhQ0i7xEeU4YekSQSxFBxv7Jl4ZyHSTH+/PGP5YBwON0v0GWEHuXMg8A3wsvnpAs9MveOihBNuA8YvBxlvENATg5hiw48H1vCI27Fnyb7h4picMQ0TYNGaD6pv/Gp3tlvfzWV8oAhTdrj0RJOJiq2ip+wVt7Sc/QxLaI4redC8+bitw7CstO9UnUyl6IT55iJPzqAS6ziTAP8Dzbn4cZRilz2MXtuekX+YTY4CzHQ3K3yqD2JviXI8b77L0Tc0kQ493Hu7/hQbVh8ajVjOOvSWqorTmYwjflhpg1tyPg1vQFiufsLUWDwMuZ8j4ROx4HCup/wKM3FRjbp7NdwSC/1A/yLvv0pglCuln2qXxGTcXBsigbSguU2pz3jkmSD5CI3RBNVmDcZooWjHYuA8QHkJNoUSIZ7KMmD8AkOmZgmxfipFmVDkRytTxAN4VBqDsDe47VYnTuz6Q8J6vrA/nGJDfJoXeLTRqJPG3GY+ErAPpnbPPtGiBzJIRjefTjh9fKJYZK1/P9f5iDWenK9TNzXzuVLSaG6fkL1T51IZQl/tPYtLNcD6Einq+iyGOid8iXUncp5KP2Xrg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(346002)(39860400002)(376002)(55016002)(52116002)(4326008)(2616005)(66476007)(2906002)(8676002)(86362001)(8936002)(83380400001)(66556008)(186003)(7416002)(38100700002)(8886007)(5660300002)(38350700002)(66946007)(1076003)(316002)(956004)(7696005)(478600001)(36756003)(6916009)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1tlKKx/3pXaSe3BHXbs45Z/CzxtoYD1+7A2D1iCnNcU95td16hzI1cUxG86x?=
- =?us-ascii?Q?I+tIUofGHI5Rliz++XQPk38f6JNARke9/EBkDZdAf/mY63Dj8ub0hW1aFJoP?=
- =?us-ascii?Q?0JmTp0YWQsjv/pLT8BlpksvTXk4QgB0Nvm9UMaRbuVzMZ8gTNYBtTw7RwtKR?=
- =?us-ascii?Q?7kADGy7Dux83dT+z9EFQOYNyf6Z2lrOjl1EJB3isJhe6EmsIPsU6N/qQ9OR+?=
- =?us-ascii?Q?ImrCepTNwF37C1ZOXl989cbBHuh51q+Apeie8UzzvWBJukmcm4DAoNTNRsNm?=
- =?us-ascii?Q?tH8qAGNweJbEMTGtfdQJesdbKsZuQI7XCRFzpvTaDerAaMUTotLIB+pEc2cw?=
- =?us-ascii?Q?tiMZPmLxi7qqQZGwl/mPL6amz3AQWFFi6ExIartTkgy1MQaSjdfPXOFdYirS?=
- =?us-ascii?Q?DwSpQ9oLXgtyH8+pOjJ3OPc4pPgLQfoRH/k4J4Aciqg2Gg5xvKJiYIosdJMz?=
- =?us-ascii?Q?pxl+peoLt+Os1qECP/h8oNY3EgJjZ4E95Ju3vZVars18cVl4W1jnbSf9ZucE?=
- =?us-ascii?Q?2LxGyYbzxMzXaeWysG54fa/G5KoNKZ7K8mExi1lsdVxU3XEDAE2qnE03Bgaw?=
- =?us-ascii?Q?H11BNZ9b5JukIKwWut4gaS1rvDtWLPkF5VjAN/b4Z6qA4GjuQ00OCzeAJrfr?=
- =?us-ascii?Q?+DZTuaqz51jF7ThoHwOAsaw5FBONnINwkIJaXZkohrhVK6RteSK13ph6dyAE?=
- =?us-ascii?Q?nROsLPJfI2OwsbqERE4rmmzNXLok37DzR3kSBt3YtLzQ442puz/QnU1Clz+2?=
- =?us-ascii?Q?GLgBv9oPtfhdpBpAjKq9+Jk0STt/PJ0tB/aghrlHAiIQCT94uVXk/2n1E5kX?=
- =?us-ascii?Q?llwQLWRdHYVyAbRKkFRV8qd2RYOu7ninz2DqUcimURfcjLILMg5Nm9MuX7V4?=
- =?us-ascii?Q?U91Zjn7z1xnuQo/91gT5YmWiGXVBMSom4QifJKxbC6yUiuYG/4GHYKyXG2yV?=
- =?us-ascii?Q?jJRBToyyQKx686KONhdRYu8YJAXv6q6wI63ibuhTP4+1DvC+idx8nu7onSc2?=
- =?us-ascii?Q?LCdSY0Ecmr9Qgd9mLqKtBGfxjk2HexaWgYN8hxfwPC8jqLAe51ddl7MCQqoP?=
- =?us-ascii?Q?kuR++q87eSUjhOS+tfiry5V5XwrkIPlTuIikMB7ukrOYvjk2qFq2xWeB81N7?=
- =?us-ascii?Q?IzANhLVzovuYEnaoMHdUTxOyc8Xe7VLUFm2xHS0LIevMU5QdN0ngPtnd04t5?=
- =?us-ascii?Q?r2D4Dv3SDUAu6lKK4yqHA/d/6+dNowiN5IsiAr/MVxod7SOQleWuSaC+UHGE?=
- =?us-ascii?Q?PP3/apmC2YRbzvubPisz+BfSlduLJub+bc7+hkrTvY7CNWLp6aXrNsGNAinL?=
- =?us-ascii?Q?b6Me2qcLGFzgAkvBr8uxZjTB?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b496a69e-aa4f-4795-c477-08d966645494
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 18:32:15.7181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dd1wMwUTqT4GTUFgxquF/7d2B9yB/wH5uy5hh4dcM0BWHCRfQJDLyZmGxHfJ3vmBH1xGk57Hd1curMJu/crBALy40SzO4oYNRbXGWKO1T9s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3030
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10085 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108230126
-X-Proofpoint-ORIG-GUID: LiS70GS7DAfgWAi4-WXS9UBnoPoRr6pT
-X-Proofpoint-GUID: LiS70GS7DAfgWAi4-WXS9UBnoPoRr6pT
+In-Reply-To: <20210819071408.3856475-2-hongxing.zhu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:08:48PM +0800, Huaixin Chang wrote:
-> Two new statistics are introduced to show the internal of burst feature
-> and explain why burst helps or not.
+On Thu, Aug 19, 2021 at 03:14:06PM +0800, Richard Zhu wrote:
+> Convert the fsl,imx6q-pcie.txt into a schema.
+> - the ranges should be aligned to $ref: /schemas/pci/pci-bus.yaml#
+> - only one propert is allowed in the compatible string, remove
+>   "snps,dw-pcie".
+
+Didn't I already see a v1?
+
 > 
-> nr_bursts:  number of periods bandwidth burst occurs
-> burst_usec: cumulative wall-time that any cpus has
-> 	    used above quota in respective periods
-> 
-> Co-developed-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-> Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
-> Co-developed-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-> Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 > ---
->  kernel/sched/core.c  | 13 ++++++++++---
->  kernel/sched/fair.c  |  9 +++++++++
->  kernel/sched/sched.h |  3 +++
->  3 files changed, 22 insertions(+), 3 deletions(-)
+>  .../bindings/pci/fsl,imx6q-pcie.txt           | 100 ---------
+>  .../bindings/pci/fsl,imx6q-pcie.yaml          | 207 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 208 insertions(+), 101 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
 > 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2d9ff40f4661..9a286c8a1354 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -10088,6 +10088,9 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
->  		seq_printf(sf, "wait_sum %llu\n", ws);
->  	}
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+> deleted file mode 100644
+> index d8971ab99274..000000000000
+> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+> +++ /dev/null
+> @@ -1,100 +0,0 @@
+> -* Freescale i.MX6 PCIe interface
+> -
+> -This PCIe host controller is based on the Synopsys DesignWare PCIe IP
+> -and thus inherits all the common properties defined in designware-pcie.txt.
+> -
+> -Required properties:
+> -- compatible:
+> -	- "fsl,imx6q-pcie"
+> -	- "fsl,imx6sx-pcie",
+> -	- "fsl,imx6qp-pcie"
+> -	- "fsl,imx7d-pcie"
+> -	- "fsl,imx8mq-pcie"
+> -- reg: base address and length of the PCIe controller
+> -- interrupts: A list of interrupt outputs of the controller. Must contain an
+> -  entry for each entry in the interrupt-names property.
+> -- interrupt-names: Must include the following entries:
+> -	- "msi": The interrupt that is asserted when an MSI is received
+> -- clock-names: Must include the following additional entries:
+> -	- "pcie_phy"
+> -
+> -Optional properties:
+> -- fsl,tx-deemph-gen1: Gen1 De-emphasis value. Default: 0
+> -- fsl,tx-deemph-gen2-3p5db: Gen2 (3.5db) De-emphasis value. Default: 0
+> -- fsl,tx-deemph-gen2-6db: Gen2 (6db) De-emphasis value. Default: 20
+> -- fsl,tx-swing-full: Gen2 TX SWING FULL value. Default: 127
+> -- fsl,tx-swing-low: TX launch amplitude swing_low value. Default: 127
+> -- fsl,max-link-speed: Specify PCI gen for link capability. Must be '2' for
+> -  gen2, otherwise will default to gen1. Note that the IMX6 LVDS clock outputs
+> -  do not meet gen2 jitter requirements and thus for gen2 capability a gen2
+> -  compliant clock generator should be used and configured.
+> -- reset-gpio: Should specify the GPIO for controlling the PCI bus device reset
+> -  signal. It's not polarity aware and defaults to active-low reset sequence
+> -  (L=reset state, H=operation state).
+> -- reset-gpio-active-high: If present then the reset sequence using the GPIO
+> -  specified in the "reset-gpio" property is reversed (H=reset state,
+> -  L=operation state).
+> -- vpcie-supply: Should specify the regulator in charge of PCIe port power.
+> -  The regulator will be enabled when initializing the PCIe host and
+> -  disabled either as part of the init process or when shutting down the
+> -  host.
+> -- vph-supply: Should specify the regulator in charge of VPH one of the three
+> -  PCIe PHY powers. This regulator can be supplied by both 1.8v and 3.3v voltage
+> -  supplies.
+> -
+> -Additional required properties for imx6sx-pcie:
+> -- clock names: Must include the following additional entries:
+> -	- "pcie_inbound_axi"
+> -- power-domains: Must be set to phandles pointing to the DISPLAY and
+> -  PCIE_PHY power domains
+> -- power-domain-names: Must be "pcie", "pcie_phy"
+> -
+> -Additional required properties for imx7d-pcie and imx8mq-pcie:
+> -- power-domains: Must be set to a phandle pointing to PCIE_PHY power domain
+> -- resets: Must contain phandles to PCIe-related reset lines exposed by SRC
+> -  IP block
+> -- reset-names: Must contain the following entries:
+> -	       - "pciephy"
+> -	       - "apps"
+> -	       - "turnoff"
+> -- fsl,imx7d-pcie-phy: A phandle to an fsl,imx7d-pcie-phy node.
+> -
+> -Additional required properties for imx8mq-pcie:
+> -- clock-names: Must include the following additional entries:
+> -	- "pcie_aux"
+> -
+> -Example:
+> -
+> -	pcie@01000000 {
+> -		compatible = "fsl,imx6q-pcie", "snps,dw-pcie";
+> -		reg = <0x01ffc000 0x04000>,
+> -		      <0x01f00000 0x80000>;
+> -		reg-names = "dbi", "config";
+> -		#address-cells = <3>;
+> -		#size-cells = <2>;
+> -		device_type = "pci";
+> -		ranges = <0x00000800 0 0x01f00000 0x01f00000 0 0x00080000
+> -			  0x81000000 0 0          0x01f80000 0 0x00010000
+> -			  0x82000000 0 0x01000000 0x01000000 0 0x00f00000>;
+> -		num-lanes = <1>;
+> -		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+> -		interrupt-names = "msi";
+> -		#interrupt-cells = <1>;
+> -		interrupt-map-mask = <0 0 0 0x7>;
+> -		interrupt-map = <0 0 0 1 &intc GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
+> -		                <0 0 0 2 &intc GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
+> -		                <0 0 0 3 &intc GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
+> -		                <0 0 0 4 &intc GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+> -		clocks = <&clks 144>, <&clks 206>, <&clks 189>;
+> -		clock-names = "pcie", "pcie_bus", "pcie_phy";
+> -	};
+> -
+> -* Freescale i.MX7d PCIe PHY
+> -
+> -This is the PHY associated with the IMX7d PCIe controller.  It's used by the
+> -PCI-e controller via the fsl,imx7d-pcie-phy phandle.
+> -
+> -Required properties:
+> -- compatible:
+> -	- "fsl,imx7d-pcie-phy"
+> -- reg: base address and length of the PCIe PHY controller
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> new file mode 100644
+> index 000000000000..3503ce3de05d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+> @@ -0,0 +1,207 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/fsl,imx6q-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX6 PCIe host controller
+> +
+> +maintainers:
+> +  - Lucas Stach <l.stach@pengutronix.de>
+> +  - Richard Zhu <hongxing.zhu@nxp.com>
+> +
+> +description: |+
+> +  This PCIe host controller is based on the Synopsys DesignWare PCIe IP
+> +  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
+
+Don't need a freeform text reference, but...
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+
+...this needs to reference the snps,dw-pcie.yaml DWC schema.
+
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx6q-pcie
+> +      - fsl,imx6sx-pcie
+> +      - fsl,imx6qp-pcie
+> +      - fsl,imx7d-pcie
+> +      - fsl,imx8mq-pcie
+> +
+> +  reg:
+> +    items:
+> +      - description: Data Bus Interface (DBI) registers.
+> +      - description: PCIe configuration space region.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi
+> +      - const: config
+> +
+> +  interrupts:
+> +    minItems: 1
+
+Don't need 'minItems: 1' when there's only 1 possible item:
+
+> +    items:
+> +      - description: builtin MSI controller.
+> +
+> +  interrupt-names:
+> +    minItems: 1
+> +    items:
+> +      - const: msi
+> +
+> +  clocks:
+> +    minItems: 3
+> +    maxItems: 4
+
+Don't need maxItems here.
+
+> +    items:
+> +      - description: PCIe bridge clock.
+> +      - description: PCIe bus clock.
+> +      - description: PCIe PHY clock.
+> +      - description: Additional required clock entry for imx6sx-pcie,
+> +          imx8mq-pcie.
+> +
+> +  clock-names:
+> +    minItems: 3
+> +    maxItems: 4
+
+And here.
+
+> +    items:
+> +      - const: pcie
+> +      - const: pcie_bus
+> +      - const: pcie_phy
+> +      - const: pcie_inbound_axi for imx6sx-pcie, pcie_aux for imx8mq-pcie
+> +
+> +  num-lanes:
+> +    const: 1
+> +
+> +  num-viewport:
+> +    const: 4
+
+This is deprecated. The driver detects this now.
+
+> +
+> +  fsl,imx7d-pcie-phy:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: A phandle to an fsl,imx7d-pcie-phy node. Additional
+> +      required properties for imx7d-pcie and imx8mq-pcie.
+> +
+> +  power-domains:
+> +    maxItems: 2
+> +    description: The first phandle pointing to the DISPLAY domain for
+> +      imx6sx-pcie, to PCIE_PHY power domain for imx7d-pcie and imx8mq-pcie.
+> +      The second phandle pointing to the PCIE_PHY power domains for imx6sx-pcie.
+
+Split the description:
+
+items:
+  - description: ...
+  - description: ...
+
+> +
+> +  power-domain-names:
+> +    maxItems: 2
+
+You have to define the names.
+
+> +
+> +  resets:
+> +    maxItems: 3
+> +    description: Phandles to PCIe-related reset lines exposed by SRC
+> +      IP block. Additional required by imx7d-pcie and imx8mq-pcie.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: pciephy
+> +      - const: apps
+> +      - const: turnoff
+> +
+> +  fsl,tx-deemph-gen1:
+> +    description: Gen1 De-emphasis value (optional required).
+
+optional or required? 
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0
+> +
+> +  fsl,tx-deemph-gen2-3p5db:
+> +    description: Gen2 (3.5db) De-emphasis value (optional required).
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 0
+> +
+> +  fsl,tx-deemph-gen2-6db:
+> +    description: Gen2 (6db) De-emphasis value (optional required).
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 20
+> +
+> +  fsl,tx-swing-full:
+> +    description: Gen2 TX SWING FULL value (optional required).
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 127
+> +
+> +  fsl,tx-swing-low:
+> +    description: TX launch amplitude swing_low value (optional required).
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 127
+> +
+> +  fsl,max-link-speed:
+> +    description: Specify PCI Gen for link capability (optional required).
+> +      Note that the IMX6 LVDS clock outputs do not meet gen2 jitter
+> +      requirements and thus for gen2 capability a gen2 compliant clock
+> +      generator should be used and configured.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2, 3, 4]
+> +    default: 1
+> +
+> +  reset-gpio:
+
+Deprecated.
+
+> +    description: Should specify the GPIO for controlling the PCI bus device
+> +      reset signal. It's not polarity aware and defaults to active-low reset
+> +      sequence (L=reset state, H=operation state) (optional required).
+> +
+> +  reset-gpio-active-high:
+
+Deprecated. This should only be used on older compatibles I hope...
+
+> +    description: If present then the reset sequence using the GPIO
+> +      specified in the "reset-gpio" property is reversed (H=reset state,
+> +      L=operation state) (optional required).
+> +
+> +  vpcie-supply:
+> +    description: Should specify the regulator in charge of PCIe port power.
+> +      The regulator will be enabled when initializing the PCIe host and
+> +      disabled either as part of the init process or when shutting down
+> +      the host (optional required).
+> +
+> +  vph-supply:
+> +    description: Should specify the regulator in charge of VPH one of
+> +      the three PCIe PHY powers. This regulator can be supplied by both
+> +      1.8v and 3.3v voltage supplies (optional required).
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - device_type
+> +  - bus-range
+> +  - ranges
+> +  - num-lanes
+> +  - num-viewport
+> +  - interrupts
+> +  - interrupt-names
+> +  - "#interrupt-cells"
+> +  - interrupt-map-mask
+> +  - interrupt-map
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx6qdl-clock.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    pcie: pcie@1ffc000 {
+> +        compatible = "fsl,imx6q-pcie";
+> +        reg = <0x01ffc000 0x04000>,
+> +              <0x01f00000 0x80000>;
+> +        reg-names = "dbi", "config";
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        device_type = "pci";
+> +        bus-range = <0x00 0xff>;
+> +        ranges = <0x81000000 0 0          0x01f80000 0 0x00010000>,
+> +                 <0x82000000 0 0x01000000 0x01000000 0 0x00f00000>;
+> +        num-lanes = <1>;
+> +        num-viewport = <4>;
+> +        interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+> +        interrupt-names = "msi";
+> +        #interrupt-cells = <1>;
+> +        interrupt-map-mask = <0 0 0 0x7>;
+> +        interrupt-map = <0 0 0 1 &gpc GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0 0 0 2 &gpc GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0 0 0 3 &gpc GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0 0 0 4 &gpc GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&clks IMX6QDL_CLK_PCIE_AXI>,
+> +                <&clks IMX6QDL_CLK_LVDS1_GATE>,
+> +                <&clks IMX6QDL_CLK_PCIE_REF_125M>;
+> +        clock-names = "pcie", "pcie_bus", "pcie_phy";
+> +        status = "disabled";
+
+Why are you disabling your example? 
+
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f73fef615702..a1e2cc0be9e8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14187,7 +14187,7 @@ M:	Lucas Stach <l.stach@pengutronix.de>
+>  L:	linux-pci@vger.kernel.org
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+> -F:	Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+> +F:	Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.yaml
+>  F:	drivers/pci/controller/dwc/*imx6*
 >  
-> +	seq_printf(sf, "nr_bursts %d\n", cfs_b->nr_burst);
-> +	seq_printf(sf, "burst_usec %llu\n", cfs_b->burst_time);
-
-burst_time is nsec, not usec.
-
-Just "burst_time" seems the way to go for consistency with
-throttled_time in the same file, though "burst_usec" nicely has units
-and would have the same name between cgroup1 and 2.
+>  PCI DRIVER FOR FU740
+> -- 
+> 2.25.1
+> 
+> 
