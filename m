@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98E63F471B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5035F3F47C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhHWJGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbhHWJGK (ORCPT
+        id S235753AbhHWJkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:40:47 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:30580 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229845AbhHWJkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:06:10 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0B1C061575;
-        Mon, 23 Aug 2021 02:05:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=WcTJBjwaEsJ+F2xRMsqTK6KuhzP/brFupnhyKBOJUh4=; b=Fg2jR0IZASEiN/LscUdJ1EnOu
-        YV2pWnPZWM0IrJO+sU3QNgtNXixzfO7lSNrCCbYE0KxTxs5TeSPKMoMy1L+eceDYPeqxg5nGJt7nz
-        DSQKDj5OYaGrRHG+k8V8o1PLp8GwPVptwoliBep1bT1nxvWUF+Ukq7dYHpiAFxTgAe1Q6/uY78Gvx
-        NL9XWyiVHx05J1xrRME/C5EBX3NfKYYchQ/2cW3jn9jI8tFpQvC1OtqwyvSIil5ysInLs2gbg0Gy9
-        Kkgz+a8vQ+ALEVip1PJhsXtVTQnYzCEEQ2eXxSa9ySMKKMsXy1r6RkEAbn6e9fPimbpty/lrF61PD
-        MgdWuQu0w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47574)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mI5tJ-0002d7-3X; Mon, 23 Aug 2021 10:05:13 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mI5tF-00062g-2a; Mon, 23 Aug 2021 10:05:09 +0100
-Date:   Mon, 23 Aug 2021 10:05:09 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/3] amba: Properly handle device probe without IRQ domain
-Message-ID: <20210823090508.GO22278@shell.armlinux.org.uk>
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <YRw32YE4cnNnWSvl@robh.at.kernel.org>
- <b5ccbf00-b686-d35b-c81a-0ec69f4677a0@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5ccbf00-b686-d35b-c81a-0ec69f4677a0@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Mon, 23 Aug 2021 05:40:45 -0400
+Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210823094002epoutp01c87ac104b313746fe4f7796a71b139e8~d5hFGaMvy0160701607epoutp01c
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 09:40:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210823094002epoutp01c87ac104b313746fe4f7796a71b139e8~d5hFGaMvy0160701607epoutp01c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1629711602;
+        bh=uyE27SkHI3Ns9KOB7Haj/anPPTHAw4hz43j27DE7sto=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=rXNT64UqzUsuW2WUCtsGbc3RD0eVFdOYk8ih1YxuNAf5DFajaSKftWlStmj+QVGdf
+         /jbzxlIQcfU6aPG0EJzRJrzSwkFnJeB7aRAeGKUNKFz8PBCTLnS1q4986QL6j0VGy7
+         ciHTUeczde2bTW/limi0dxJTm5AIktuHPGaev+3g=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
+        20210823094001epcas3p12d76e0c9add42297a67e30a71f76ea91~d5hEdJk_A0763607636epcas3p1H;
+        Mon, 23 Aug 2021 09:40:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4GtRzj2Gbxz4x9Pw; Mon, 23 Aug 2021 09:40:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v2] scsi: ufs: ufshpb: Fix possible memory leak
+Reply-To: keosung.park@samsung.com
+Sender: Keoseong Park <keosung.park@samsung.com>
+From:   Keoseong Park <keosung.park@samsung.com>
+To:     ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01629711601304.JavaMail.epsvc@epcpadp3>
+Date:   Mon, 23 Aug 2021 18:07:14 +0900
+X-CMS-MailID: 20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74
+References: <CGME20210823090714epcms2p1e414fdd91582bdbf8170b4cefb8a0f74@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 10:19:23AM +0800, Kefeng Wang wrote:
-> 
-> On 2021/8/18 6:27, Rob Herring wrote:
-> > On Mon, Aug 16, 2021 at 03:46:16PM +0800, Kefeng Wang wrote:
-> > > Patch 1 and 2 make some cleanup, and patch 3 use of_irq_get() instead of
-> > > irq_of_parse_and_map() to get irq number, return -EPROBE_DEFER if the irq
-> > > domain is not yet created, amba_device_add() will properly to handle the
-> > > no IRQ domain issue via deferred probe.
-> > > 
-> > > Kefeng Wang (3):
-> > >    amba: Drop unused functions about APB/AHB devices add
-> > >    Revert "ARM: amba: make use of -1 IRQs warn"
-> > >    amba: Properly handle device probe without IRQ domain
-> > > 
-> > >   drivers/amba/bus.c       | 100 ++++++++++-----------------------------
-> > >   drivers/of/platform.c    |   6 +--
-> > >   include/linux/amba/bus.h |  18 -------
-> > >   3 files changed, 27 insertions(+), 97 deletions(-)
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> 
-> Thanks Rob.
-> 
-> Hi Russell, should I send the patches to the ARM patch system?
+When HPB pinned region exists and mctx allocation for this region fails,
+memory leak is possible because memory is not released for the subregion
+table of the current region.
 
-Yes please - I'll try to squeeze it in for this cycle but it's getting
-a tad late for that. Thanks.
+So, change to free memory for the subregion table of the current region.
 
+Signed-off-by: Keoseong Park <keosung.park@samsung.com>
+---
+v1 -> v2:
+	* Merge new kvfree() statement with the for-loop below it.
+	* Change to assign "hpb->rgn_tbl" when no error occurs.
+
+ drivers/scsi/ufs/ufshpb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 9acce92a356b..58db9ab8f0ae 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -1904,8 +1904,6 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 	if (!rgn_table)
+ 		return -ENOMEM;
+ 
+-	hpb->rgn_tbl = rgn_table;
+-
+ 	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
+ 		int srgn_cnt = hpb->srgns_per_rgn;
+ 		bool last_srgn = false;
+@@ -1942,10 +1940,12 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 		rgn->hpb = hpb;
+ 	}
+ 
++	hpb->rgn_tbl = rgn_table;
++
+ 	return 0;
+ 
+ release_srgn_table:
+-	for (i = 0; i < rgn_idx; i++)
++	for (i = 0; i <= rgn_idx; i++)
+ 		kvfree(rgn_table[i].srgn_tbl);
+ 
+ 	kvfree(rgn_table);
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
