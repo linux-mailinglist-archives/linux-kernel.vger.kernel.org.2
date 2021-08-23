@@ -2,78 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486463F4288
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 02:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5243F427C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 02:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhHWAVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 20:21:38 -0400
-Received: from sunrise.hk.edu.tw ([192.192.241.2]:44993 "EHLO
-        sunrise-ms2.hk.edu.tw" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233168AbhHWAVh (ORCPT
+        id S234217AbhHWAHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 20:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233168AbhHWAHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 20:21:37 -0400
-X-Greylist: delayed 1099 seconds by postgrey-1.27 at vger.kernel.org; Sun, 22 Aug 2021 20:21:35 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by sunrise-ms2.hk.edu.tw (Postfix) with ESMTP id BC7F41A10D7;
-        Mon, 23 Aug 2021 08:01:59 +0800 (CST)
-Received: from User (60-251-122-153.HINET-IP.hinet.net [60.251.122.153])
-        (Authenticated sender: 805153)
-        by sunrise-ms2.hk.edu.tw (Postfix) with ESMTPA id 1F0C41A1BDC;
-        Mon, 23 Aug 2021 08:01:29 +0800 (CST)
-Reply-To: <www.tm.point@outlook.my>
-From:   "Telekom Malaysia Berhad" <805153@sunrise.hk.edu.tw>
-Subject: TM HADIAH
-Date:   Mon, 23 Aug 2021 08:01:56 +0800
+        Sun, 22 Aug 2021 20:07:30 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770C6C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 17:06:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id x1so6568770plg.10
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 17:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MACcnjEV3XfzLLGrs9YK33EN0PE/psaIlWJd2jzwxSU=;
+        b=EKI/7FX1mTDvEBFaBdLEPJx6k7BSEGx0ZAktrsBRQjEOYXa/iZKeNnj/JxlYosrdUz
+         5G5BKFjETXu+MCNwmMyuVDnLhvsnviCucwA7DKte6c1wRJwTpHUU55guBMpsLn6Qt0SW
+         +M5T6ZTBHb/KBonCrJeho/M9aIir85mmW2gPgz81F5aYHF7mmrxa3pHf1mSpAq6bkvR3
+         IfmNoet+vbJdcYYo+wasPQefBB2K8CN0Ca0kkXhxtE14P/cZ1DG1liXn5YXOc0znV1TD
+         EmazPeoBxlEH8oQVqq+Zse2EY0zsmOF+kuFJanbIVNHqjkyAeZsa7+crvYetXlwWEuUU
+         insA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MACcnjEV3XfzLLGrs9YK33EN0PE/psaIlWJd2jzwxSU=;
+        b=XddeOvEKKBmLB5r27OXIhiHtbdQm2DkvAvGfk9Kfxf7ePPMsBkTnZSV+w8rEa5n7hh
+         BRtc5NcoweifrqWUpu5vqrfXunttujnQ1Xa2lHDJFOBuw4KSGMus0kBhl8k+shasnN8a
+         kQZMStrhVzQcqb7yoYocyOCy4RBV282KwHQHVanj36/vK6x5Mu7Bss29HaQeeX/foyfH
+         GEFqEA5Nzrdar9RwEFTBMwo9cThy2zZpsjHDDKxbY5Z57AJT/WnrlVotOBJoizrGbxR+
+         8kFKpxDjY3eOgx2H99POrrNOIPoJ6Acf1yOPwS7uwx9sbnrvV9OV7x7RkaTHc/u3LUuQ
+         sDSQ==
+X-Gm-Message-State: AOAM5322Xa2478/r7L4CmqUnVhefrODq072A88z9DHGXUE9UyJgMKufw
+        PFarjP+06+69HNUIf1ZKunzOBHAB4nKtNg==
+X-Google-Smtp-Source: ABdhPJyfnJ/2FrbLL41XFfGAjFZHY579ZnQ88qWqrJZlc3aqXXoFUvz4BjpaQdEErlJfZFEAqGJkoQ==
+X-Received: by 2002:a17:902:d709:b0:130:6b05:be3e with SMTP id w9-20020a170902d70900b001306b05be3emr14368901ply.21.1629677208015;
+        Sun, 22 Aug 2021 17:06:48 -0700 (PDT)
+Received: from localhost.localdomain (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
+        by smtp.gmail.com with ESMTPSA id y14sm13408002pfi.82.2021.08.22.17.06.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 17:06:47 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+Subject: [PATCH v2] tty: Fix data race between tiocsti() and flush_to_ldisc()
+Date:   Mon, 23 Aug 2021 08:06:41 +0800
+Message-Id: <20210823000641.2082292-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20210823000130.1F0C41A1BDC@sunrise-ms2.hk.edu.tw>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Telekom Malaysia Berhad
-Level 51, North Wing, Menara TM,
-Jalan Pantai Baru, 50672,
-Kuala Lumpur,
-WP Kuala Lumpur,
-Malaysia.
+The ops->receive_buf() may be accessed concurrently from these two
+functions.  If the driver flushes data to the line discipline
+receive_buf() method while tiocsti() is waiting for the
+ops->receive_buf() to finish its work, the data race will happen.
 
-TM HADIAH.
+For example:
+tty_ioctl			|tty_ldisc_receive_buf
+ ->tioctsi			| ->tty_port_default_receive_buf
+				|  ->tty_ldisc_receive_buf
+   ->hci_uart_tty_receive	|   ->hci_uart_tty_receive
+    ->h4_recv                   |    ->h4_recv
 
-Pihak Telekom Malaysia @Program Kemenangan yang telah diadakan pada 02 Ogos di mana alamat email anda yang disertakan beraama Tiket Kemenangan nombor 2 - 4 - 16 - 37 - 89 - 40 -85 dengan siri nombor 2268/02 telah memenangi loteri kategori hadiah kedua khas keluarga Telekom Malaysia.Untuk menuntut hadiah kemenangan ini anda dikehendaki menghubungi melalui email Bahagian Tuntutan untuk tujuan pemerosesan dan pembayaran hadiah wang tunai kepada anda.
+In this case, the h4 receive buffer will be overwritten by the
+latecomer, and we will lost the data.
 
-Di sepanjang program Khas Keluarga Telekom yang telah diadakan di Ibupejabat di Kuala Lumpur sejumlah Rm 270,000.00 (Ringgit Malaysia : Dua Ratus Tujoh Puloh Ribu) telah dianugerahkan kepada anda oleh Telekom Malaysia Berhad kepada anda dan keluarga anda sempena sambutsn 2021 ini.
+Hence, change tioctsi() function to use the exclusive lock interface
+from tty_buffer to avoid the data race.
 
-Program ini turut dibiayai bersama oleh Toyota Malaysia dan Tenaga Nasional sebagai pakej istimewa Telekom 2021 dan anda perlu memahami bahawa e mail ini adalah 100% sah dan diiktiraf kerana program ini kebiasaannya diadakan sekali dalam masa lima tahun.
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+97388eb9d31b997fe1d0@syzkaller.appspotmail.com
+---
+V2:
+	- Remove FIXME comment.
 
-Sila hubungi agen kami untuk menuntut hadiah ini :
+ drivers/tty/tty_io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-ENCIK SHAARI BIN SAMSUDIN
-Pengarah Bahagian Tuntutan
-E-mail:www.tm.point@outlook.my
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index e8532006e960..6616d4a0d41d 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -2290,8 +2290,6 @@ static int tty_fasync(int fd, struct file *filp, int on)
+  *	Locking:
+  *		Called functions take tty_ldiscs_lock
+  *		current->signal->tty check is safe without locks
+- *
+- *	FIXME: may race normal receive processing
+  */
 
-Untuk tujuan pemerosesan sila hubungi agen kami dengan maklumat-maklumat
-berikut :
-
-1). Nama Penuh
-2). Umur
-3). Pekerjaan
-4). Telefon
-5). Negeri / Bandar
-
-Perlu diingatkan bahawa hadiah akhir tahun Telekom Malaysia Berhad 2021 ini adalah diberikan khas kepada anda dan keluarga anda dan anda hendaklah membuat tunttan ini sebelum 18 Oktober 2021.
-
-Terima kasih.
-
-Pn Siti Fatimah Binti Khalid
-Pengurus Eksekutif
-Anugerah Telekom Malaysia
-Ibupejabat telekom Malaysia
+ static int tiocsti(struct tty_struct *tty, char __user *p)
+@@ -2307,8 +2305,10 @@ static int tiocsti(struct tty_struct *tty, char __user *p)
+ 	ld = tty_ldisc_ref_wait(tty);
+ 	if (!ld)
+ 		return -EIO;
++	tty_buffer_lock_exclusive(tty->port);
+ 	if (ld->ops->receive_buf)
+ 		ld->ops->receive_buf(tty, &ch, &mbz, 1);
++	tty_buffer_unlock_exclusive(tty->port);
+ 	tty_ldisc_deref(ld);
+ 	return 0;
+ }
+--
+2.25.1
 
