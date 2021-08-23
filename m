@@ -2,170 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70ABB3F5278
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855E73F528E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 23:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbhHWUzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:55:11 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:18344 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232237AbhHWUzK (ORCPT
+        id S232732AbhHWVIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 17:08:38 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:44824 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232503AbhHWVIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:55:10 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17NHjgt9010655;
-        Mon, 23 Aug 2021 20:53:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=oVKpWPiQz2bniAgVrj4h8zbJgFS00aZujx90pIJtBTQ=;
- b=xNdqqeXcSjxPOFYAhgFLHW/STn+bCumOmeWCXNx0KNF3R8k1xF82gmlhyKzd/+gHdl/v
- 4N49RQisPtzAaoup4/UgGfz3yIkShCa1w+rVZso4SgDv2fosn3roHPs2p8CAzV8NNdRW
- h36TIqjcaKux7RX7ae2V7bIMb0boXq5NDdP3oXRCfehETo6prSNq636WaX8620qbCwf/
- zo3hAD9wAa5Af5OrWWAR6PIXnCaoRxSJueNjRmHuN7rBF2B27YGEFogARsIMNnI3tp92
- Ea0p3zOe4VfzL9Rwy3UyMFJEp89swUuWYnJEVZWB1k/FzvhI6PmV/+wTrM3OUq6ZRDAu pw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=oVKpWPiQz2bniAgVrj4h8zbJgFS00aZujx90pIJtBTQ=;
- b=m5ay3i3hePk8n/yvomUvZmdGb2N1fWGcVPFkQrlQNCq8rxNooy+BcD23MlGnks3PSE4j
- nSEz36/QUAu71AVMcETKHdtGLnnr0X8d9m91sNJscJ36GZ8iCKs71mqyVKor+VYIlmza
- opl+c1SO7p5mD/P+3MtD2vh8fquAvTbZBWXOzwDPuBhqGKyFo2B7rFkDae+nT5mkqO3N
- +Gu9b698msaiD/zl/YPmNleWN3jc7pRcJGJyjW8LF6iYPv/F9fNHa7JuJp9bAp+TYlDe
- IoDEHTnjphUboMQc5Kv/PMTMmqfj9QXKjFk16/oQZTm49NKF+knDVJ8uqCcF7FxQTbz8 DA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3akxreahgk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 20:53:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17NKpXSP023915;
-        Mon, 23 Aug 2021 20:53:29 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-        by userp3030.oracle.com with ESMTP id 3ajpkvx06g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 20:53:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LdaFygNq+pLJOZPzcumoAqu6XVwF1JpufhwCLA8K80AB7Q4tTiGyVCBw3JdOSLWRJCIegaX4WUb8xkCe23ejuc4qGq3oo7Tgrb2vESIa++6ovjeRjf6iPQerBZFQwSCRUo0CkvrpEvyK7N6Ka1LwzYY/KbLfbNPxh+g7ZB1yud4quzlG+HvAaTGYJ7BttfJcxofKUBekrAvZMZCN0ujjhzdG9PYyZ7mlb0iU6cf9HaiXLudNkv8z/ILC51yLfKjc2yhBQvk//zJ5ClqcywmaIlY+1GHNiQRp2fvbUnQ85ElixhddH6FyO1zgWi/7DhXh7pIWPB3bbJ8hcM871NO+pQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oVKpWPiQz2bniAgVrj4h8zbJgFS00aZujx90pIJtBTQ=;
- b=cqiX2zH6dyu3idFOOzue1uXsOjO8yxAwLdZoCvA1iUTPg254KHJyFAHZJP57O5r7K0HTk9u6un51PZwjv5YKYfi/CfHZ1R8JQtYxA7XmJeuVd9ggkcI30hYTSquGywqfw1Z87IBq/yNmBvClxOL/uLLTizgcEYAEB2VVJiAUChA6vCzOJF72iyq0fzXE4Eu8F8jgMYFUgL2O1R6+bWBfGyR8KTnBIHzXXo+a2qz5sLWjkpMUGYRPexhA8AjZhj7Lr6bt6OgM9ajcC+YviwLm5uhNIjn2SvOQK+kZyIFN7VqX+KwnaIA1OQoJqeElC1NSfH+FROpfCl5BI/M5a+s6xQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oVKpWPiQz2bniAgVrj4h8zbJgFS00aZujx90pIJtBTQ=;
- b=A2rq5TV1xsqS/W1eZnkRrgzTFnFFLL5ycSrGbVy0MkHcccdsdQRjA8zsUO9MeunxHUK/+HlIB0p9TPPST+0O56OW+/AwG+ViqGJZcIViPah+Wvt9QxhYs++yEbciZyMyEIcbbqUoqCToRXSn1g31bbGbKiZTygYems7CPu1dito=
-Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none
- header.from=oracle.com;
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com (2603:10b6:a03:8c::27)
- by BYAPR10MB3557.namprd10.prod.outlook.com (2603:10b6:a03:125::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.22; Mon, 23 Aug
- 2021 20:53:26 +0000
-Received: from BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::203c:7f44:c562:b991]) by BYAPR10MB2966.namprd10.prod.outlook.com
- ([fe80::203c:7f44:c562:b991%3]) with mapi id 15.20.4436.022; Mon, 23 Aug 2021
- 20:53:26 +0000
-Date:   Mon, 23 Aug 2021 16:53:21 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        anderson@cs.unc.edu, baruah@wustl.edu, bsegall@google.com,
-        dietmar.eggemann@arm.com, dtcccc@linux.alibaba.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        luca.abeni@santannapisa.it, mgorman@suse.de, mingo@redhat.com,
-        odin@uged.al, odin@ugedal.com, pauld@redhead.com, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
-        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
-        xiyou.wangcong@gmail.com
-Subject: Re: [PATCH 2/2] sched/fair: Add document for burstable CFS bandwidth
-Message-ID: <20210823205321.vpr67zysxzf2uhoh@oracle.com>
-References: <20210816070849.3153-1-changhuaixin@linux.alibaba.com>
- <20210816070849.3153-3-changhuaixin@linux.alibaba.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210816070849.3153-3-changhuaixin@linux.alibaba.com>
-X-ClientProxiedBy: MN2PR04CA0026.namprd04.prod.outlook.com
- (2603:10b6:208:d4::39) To BYAPR10MB2966.namprd10.prod.outlook.com
- (2603:10b6:a03:8c::27)
+        Mon, 23 Aug 2021 17:08:36 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:37246)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mIHAd-007Ra7-7u; Mon, 23 Aug 2021 15:07:51 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:36560 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mIHAb-003Zot-KN; Mon, 23 Aug 2021 15:07:50 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     "Ma\, XinjianX" <xinjianx.ma@intel.com>,
+        "linux-kselftest\@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        lkp <lkp@intel.com>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
+        "axboe\@kernel.dk" <axboe@kernel.dk>,
+        "christian.brauner\@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "containers\@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "jannh\@google.com" <jannh@google.com>,
+        "keescook\@chromium.org" <keescook@chromium.org>,
+        "kernel-hardening\@lists.openwall.com" 
+        <kernel-hardening@lists.openwall.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm\@kvack.org" <linux-mm@kvack.org>,
+        "oleg\@redhat.com" <oleg@redhat.com>,
+        "torvalds\@linux-foundation.org" <torvalds@linux-foundation.org>
+References: <d650b7794e264d5f8aa107644cc9784f@intel.com>
+        <87a6lgysxp.fsf@disp2133>
+        <20210818131117.x7omzb2wkjq7le3s@example.org>
+        <87o89ttqql.fsf@disp2133>
+        <20210819172618.qwrrw4m7wt33wfmz@example.org>
+Date:   Mon, 23 Aug 2021 16:06:31 -0500
+In-Reply-To: <20210819172618.qwrrw4m7wt33wfmz@example.org> (Alexey Gladkov's
+        message of "Thu, 19 Aug 2021 19:26:18 +0200")
+Message-ID: <87eeajswfc.fsf_-_@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from oracle.com (98.229.125.203) by MN2PR04CA0026.namprd04.prod.outlook.com (2603:10b6:208:d4::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 20:53:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9fe6ffd8-76f4-46e4-f308-08d966780dc1
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3557:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB35574C8BB31B5F6F924CE5EDD9C49@BYAPR10MB3557.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Bv7mGN4ZqeFCUPZz6R5JZpiDno3L0/To0ZxzaqQCDsPTRJ7XMA884r64xCMyHuyYsSm+tqxyCMrBF4uDdCdy+ZVZDsoo7xkT5JI2K20yKBuksQ4jYhIOi+SrcmCnQNbBkY5TZ4+2aLEE1NUiE2nqXy/naC0gr+6V6Zm3keCaAP0bE36+QtzAO5suHIuIAdRht1KhnW7VFzD3Itomo5zJwo9Xv2b8WruT14BTj5fJwSwus6stdUfOwCR+0Iaj+XFUuj8af3OmiyWoxEwTQI4EskcNBVvP5oufEZJpP2xrkSpQgy4w2t81CUD5pujEE1kNOHjiPwzgVnpSum/kZfk0Tqacs2r+3TfoHReyrIe6dP+akHCVcIO6N4mrNVBbCDsgVbChalodyIW3bq/uGiTX3c/uGVIKTCyHOKvtOdbLnhl1p6zrsRlPBoIwya91WNptvFmnUeMKKkn53YcCq9Ddpm5qK9e0V7D+LcZBHUZdJ9q+GwnVUKdeXhc12R4kkZRTmEWcRctVIJIHu3YKcK6ymFlcWiXVK21/VugGJQv8sLi/bzURzmP0zx9khuzZSYmsmxB5sXQNSPslKLPI31cBx6lfnEDHrGCk7249Hu0TsfETZeBpvNNGDyP02nh4cm9tQ9tJSyGIZPA81+a1rI3r9+GSdRwPBTGx4vSsf4K3pERSTVKFiFdPxy/xmCiKd68U19UWCsgrPnFa+Nn7w9+0Ag==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2966.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(136003)(346002)(396003)(4326008)(5660300002)(36756003)(38100700002)(55016002)(956004)(66476007)(66946007)(2616005)(66556008)(316002)(38350700002)(1076003)(6666004)(2906002)(7416002)(6916009)(8886007)(186003)(8676002)(4744005)(26005)(86362001)(7696005)(478600001)(52116002)(83380400001)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8EcBjr7dSXhq8KvYSOl+R6PvtBHLVlet0e3v/tT2LoBfeCURL79kUAkkvIAk?=
- =?us-ascii?Q?UQhMjKPAY9IoQVLZtcOaEX1YOm9uKpXLYQCFKeoxY6RlC6yqkgjkdJlXFu39?=
- =?us-ascii?Q?L1n/PyLdBEfD7NtuBkCCaYv5IYOfCotaY3fC2nIVVQk6cXhUP3PVFJ7rkk0D?=
- =?us-ascii?Q?jPi38NMHjntg+sQwlKG2IYVXnS5r+FAwt0+sFtlsGi8QxKZboKp/cylZkFER?=
- =?us-ascii?Q?A2LthzzbjQb07W2XOfdMDPnQxoVR8rjHL+hg66jBj9nub2hpnCkwqIYXgehQ?=
- =?us-ascii?Q?1FIzKiSXmeY0VYVKK5IKpL4ar5WbIP2gPX2m0TMiHqzQgCI8rbnsTNbW0lfJ?=
- =?us-ascii?Q?UYFOyV2rEvYiv0+VWrfSYwXorgnkUWAcRZRHqAiGfxSBN7Kh+n/vY4mb6QCj?=
- =?us-ascii?Q?dmJxdFSVF5j9sPLAGQGFCkAAgwk3e3tVW6KZ4KQ8+ngqB+t2T474ELIjCjMg?=
- =?us-ascii?Q?thztMma928bGA36JwEih+/gIsL9q0zi340o5Dqd3rt97zP/P753uXpF2Ux1H?=
- =?us-ascii?Q?zZ4LPabYRPChbt1mtx0hA5EQBXZLkoLBcxTtDD9Ow+eH2TKBctZfMPPCA7WZ?=
- =?us-ascii?Q?gbQT2FwGVpg53AvbgVxHKCHOCgpTG7XvA9LjI65Ua1jGJv57xIAUBvSiwKoh?=
- =?us-ascii?Q?denmFzBSl6ir8Cc6mag+zCW1vkzbmtMfdktNyb3/5krgNiHhZieQPDG7blnd?=
- =?us-ascii?Q?1wE5OG5iQGaIqs+HKLl4XAax7YzOa46P6fNjp/sHps7gBbIGlxcrrTtV1Qha?=
- =?us-ascii?Q?m0jo9eFbk79joxGvgs/7h5ge0r7mJMmY8hzXgW5KYsDQKnUzw2sWQcL7xm42?=
- =?us-ascii?Q?M8YXaKGbmARkfcT/kD7ksQ/2DF7r2MJc5qnTI4Isd7WLnZrZ982B6qZZH2va?=
- =?us-ascii?Q?osshcfiILEjFUFjZVYT6OVQcL2VDWUuuntJTaNug3b+zjAAS+YTdatyODfFI?=
- =?us-ascii?Q?jYSfcPrrNqAeExvaoLW2GqU0extyj4KcFIal4c62JpwcQY/3Fovxe2JzY97T?=
- =?us-ascii?Q?CAqx2W9pRtDVYt+wQNyzjYW6qQZqgenrYnVoR1Mwu09FgusYIfzv+cQ+6z5l?=
- =?us-ascii?Q?rxCeztLiYcgGCPOnmdVZAk/I/Ma12pFrOx2L1CpqINJ/q97pVUt6KwkorA06?=
- =?us-ascii?Q?pjCl2+pEdF+kwUb/5cz7lFFxtAEAXuUjU5BUtTRI2M+3b4fMyZjk14bFZo8g?=
- =?us-ascii?Q?5K7dCTNn5F6Ktlt2onM8ucDNgjF8wjaM85oE7hdSHeOIWkQ3U1Hr29Hbqdx5?=
- =?us-ascii?Q?3m3vh8AkEmakPAgBF9dfYOp+Fcq9bT2zGOpeFHckZoqQQs9FUg+LXCh3Wiln?=
- =?us-ascii?Q?V5gX3I3xxcE4jovxPjxi+Nqm?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9fe6ffd8-76f4-46e4-f308-08d966780dc1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2966.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 20:53:26.8145
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g8C/do6foy9CelCug2hPJqVRcqHR8dY8oCy8cwzhX7k/7KP0d7K2MKBBhiT7vs7K/NVnbtYBHw0PZhl7aNXwIa0PnPWNQWyFvzum88EK3XQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3557
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10085 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
- definitions=main-2108230142
-X-Proofpoint-ORIG-GUID: AvGoIqbCiliDqqtvtpi_er-rO3a3-7h1
-X-Proofpoint-GUID: AvGoIqbCiliDqqtvtpi_er-rO3a3-7h1
+Content-Type: text/plain
+X-XM-SPF: eid=1mIHAb-003Zot-KN;;;mid=<87eeajswfc.fsf_-_@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19pToonl64FWbIbj8aFLkyc+Dgo1JmkbVU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4960]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <legion@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1026 ms - load_scoreonly_sql: 0.14 (0.0%),
+        signal_user_changed: 14 (1.3%), b_tie_ro: 11 (1.1%), parse: 2.3 (0.2%),
+         extract_message_metadata: 28 (2.7%), get_uri_detail_list: 5 (0.5%),
+        tests_pri_-1000: 36 (3.5%), tests_pri_-950: 1.72 (0.2%),
+        tests_pri_-900: 1.30 (0.1%), tests_pri_-90: 369 (36.0%), check_bayes:
+        367 (35.7%), b_tokenize: 16 (1.5%), b_tok_get_all: 13 (1.2%),
+        b_comp_prob: 4.3 (0.4%), b_tok_touch_all: 330 (32.1%), b_finish: 1.24
+        (0.1%), tests_pri_0: 553 (53.9%), check_dkim_signature: 1.06 (0.1%),
+        check_dkim_adsp: 3.5 (0.3%), poll_dns_idle: 0.88 (0.1%), tests_pri_10:
+        2.2 (0.2%), tests_pri_500: 13 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH] ucounts: Fix regression preventing increasing of rlimits in init_user_ns
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 03:08:49PM +0800, Huaixin Chang wrote:
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 5c7377b5bd3e..c79477089c53 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1047,6 +1049,12 @@ All time durations are in microseconds.
->  	$PERIOD duration.  "max" for $MAX indicates no limit.  If only
->  	one number is written, $MAX is updated.
->  
-> +  cpu.max.burst
-> +	A read-write single value file which exists on non-root
-> +	cgroups.  The default is "0".
-> +
-> +	The burst in the range [0, $QUOTA].
 
-FWIW, max/$MAX are used in this file instead of quota, so it seems
-clearer to stick to that.
+"Ma, XinjianX" <xinjianx.ma@intel.com> reported:
+
+> When lkp team run kernel selftests, we found after these series of patches, testcase mqueue: mq_perf_tests
+> in kselftest failed with following message.
+>
+> # selftests: mqueue: mq_perf_tests
+> #
+> # Initial system state:
+> #       Using queue path:                       /mq_perf_tests
+> #       RLIMIT_MSGQUEUE(soft):                  819200
+> #       RLIMIT_MSGQUEUE(hard):                  819200
+> #       Maximum Message Size:                   8192
+> #       Maximum Queue Size:                     10
+> #       Nice value:                             0
+> #
+> # Adjusted system state for testing:
+> #       RLIMIT_MSGQUEUE(soft):                  (unlimited)
+> #       RLIMIT_MSGQUEUE(hard):                  (unlimited)
+> #       Maximum Message Size:                   16777216
+> #       Maximum Queue Size:                     65530
+> #       Nice value:                             -20
+> #       Continuous mode:                        (disabled)
+> #       CPUs to pin:                            3
+> # ./mq_perf_tests: mq_open() at 296: Too many open files
+> not ok 2 selftests: mqueue: mq_perf_tests # exit=1
+> ```
+>
+> Test env:
+> rootfs: debian-10
+> gcc version: 9
+
+After investigation the problem turned out to be that ucount_max for
+the rlimits in init_user_ns was being set to the initial rlimit value.
+The practical problem is that ucount_max provides a limit that
+applications inside the user namespace can not exceed.  Which means in
+practice that rlimits that have been converted to use the ucount
+infrastructure were not able to exceend their initial rlimits.
+
+Solve this by setting the relevant values of ucount_max to
+RLIM_INIFINITY.  A limit in init_user_ns is pointless so the code
+should allow the values to grow as large as possible without riscking
+an underflow or an overflow.
+
+As the ltp test case was a bit of a pain I have reproduced the rlimit failure
+and tested the fix with the following little C program:
+> #include <stdio.h>
+> #include <fcntl.h>
+> #include <sys/stat.h>
+> #include <mqueue.h>
+> #include <sys/time.h>
+> #include <sys/resource.h>
+> #include <errno.h>
+> #include <string.h>
+> #include <stdlib.h>
+> #include <limits.h>
+> #include <unistd.h>
+>
+> int main(int argc, char **argv)
+> {
+> 	struct mq_attr mq_attr;
+> 	struct rlimit rlim;
+> 	mqd_t mqd;
+> 	int ret;
+>
+> 	ret = getrlimit(RLIMIT_MSGQUEUE, &rlim);
+> 	if (ret != 0) {
+> 		fprintf(stderr, "getrlimit(RLIMIT_MSGQUEUE) failed: %s\n", strerror(errno));
+> 		exit(EXIT_FAILURE);
+> 	}
+> 	printf("RLIMIT_MSGQUEUE %lu %lu\n",
+> 	       rlim.rlim_cur, rlim.rlim_max);
+> 	rlim.rlim_cur = RLIM_INFINITY;
+> 	rlim.rlim_max = RLIM_INFINITY;
+> 	ret = setrlimit(RLIMIT_MSGQUEUE, &rlim);
+> 	if (ret != 0) {
+> 		fprintf(stderr, "setrlimit(RLIMIT_MSGQUEUE, RLIM_INFINITY) failed: %s\n", strerror(errno));
+> 		exit(EXIT_FAILURE);
+> 	}
+>
+> 	memset(&mq_attr, 0, sizeof(struct mq_attr));
+> 	mq_attr.mq_maxmsg = 65536 - 1;
+> 	mq_attr.mq_msgsize = 16*1024*1024 - 1;
+>
+> 	mqd = mq_open("/mq_rlimit_test", O_RDONLY|O_CREAT, 0600, &mq_attr);
+> 	if (mqd == (mqd_t)-1) {
+> 		fprintf(stderr, "mq_open failed: %s\n", strerror(errno));
+> 		exit(EXIT_FAILURE);
+> 	}
+> 	ret = mq_close(mqd);
+> 	if (ret) {
+> 		fprintf(stderr, "mq_close failed; %s\n", strerror(errno));
+> 		exit(EXIT_FAILURE);
+> 	}
+>
+> 	return EXIT_SUCCESS;
+> }
+
+Fixes: 6e52a9f0532f ("Reimplement RLIMIT_MSGQUEUE on top of ucounts")
+Fixes: d7c9e99aee48 ("Reimplement RLIMIT_MEMLOCK on top of ucounts")
+Fixes: d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
+Fixes: 21d1c5e386bc ("Reimplement RLIMIT_NPROC on top of ucounts")
+Reported-by: kernel test robot lkp@intel.com
+Acked-by: Alexey Gladkov <legion@kernel.org>
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+
+This is a simplified version of my previous change that I have tested
+and will push out to linux-next and then to Linus shortly.
+
+ kernel/fork.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index bc94b2cc5995..44f4c2d83763 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -828,10 +828,10 @@ void __init fork_init(void)
+ 	for (i = 0; i < MAX_PER_NAMESPACE_UCOUNTS; i++)
+ 		init_user_ns.ucount_max[i] = max_threads/2;
+ 
+-	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_NPROC, task_rlimit(&init_task, RLIMIT_NPROC));
+-	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE, task_rlimit(&init_task, RLIMIT_MSGQUEUE));
+-	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_SIGPENDING, task_rlimit(&init_task, RLIMIT_SIGPENDING));
+-	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MEMLOCK, task_rlimit(&init_task, RLIMIT_MEMLOCK));
++	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_NPROC,      RLIM_INFINITY);
++	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE,   RLIM_INFINITY);
++	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_SIGPENDING, RLIM_INFINITY);
++	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MEMLOCK,    RLIM_INFINITY);
+ 
+ #ifdef CONFIG_VMAP_STACK
+ 	cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "fork:vm_stack_cache",
+-- 
+2.20.1
+
