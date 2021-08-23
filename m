@@ -2,161 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8153F4E21
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3B33F4E28
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 18:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhHWQQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 12:16:21 -0400
-Received: from mail-pf1-f174.google.com ([209.85.210.174]:45594 "EHLO
-        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhHWQQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:16:19 -0400
-Received: by mail-pf1-f174.google.com with SMTP id t42so13227568pfg.12;
-        Mon, 23 Aug 2021 09:15:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J3xy8ugS4gYXz5Du83QXFFrIFwR5k1kzlrOz6o7VFs0=;
-        b=QnctFPjOTpUpzNzrUjykI3iF9NDyXGGcpI8ILyHi9FMQvFmlML1vSNtTC2G0ZZuQM0
-         G+LF5f3iSM9OGoExrlhsahlExFpEnYzUhrNDCkaWWzNbis0gViFo0j1PmCsT+ZgUFGAG
-         DH32isHnyWE0X5tVR/HMO/mq3M9py0XABiDdyRGLx+TZOgZLseHYZnZdatFvnz0WsOMK
-         SB0iVL+o4bEPVgzJ8bnzNg0NQkYxYTAx9ReDT88rpxY8IcDGcF4QA3AS8UI9L6r2OK6F
-         HY7o5zQBOJRTwJlKD53i66BeoSVwiiRM+EqFm+gtNzSVMPoX8Ymr+6n3oCDp8Hwn3J8v
-         t5bQ==
-X-Gm-Message-State: AOAM531/E0IsRZ9DoTgYWi/zYqJ0s5cg6tfKPuqYeBm51ShncwGMIDpE
-        sLkknTitx2O0WGoOtnu4KGk=
-X-Google-Smtp-Source: ABdhPJwPI9KQa34651t/EihprPOCWjOxeLDtuB7jLYdxgEMoHuXXw6mSqEu1t1DnoSQNOyC0kYHnqg==
-X-Received: by 2002:a63:4b5a:: with SMTP id k26mr32526405pgl.241.1629735336860;
-        Mon, 23 Aug 2021 09:15:36 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:e98a:ca44:7012:ad8e])
-        by smtp.gmail.com with ESMTPSA id z3sm14397744pjn.43.2021.08.23.09.15.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 09:15:35 -0700 (PDT)
-Subject: Re: [PATCH v2] scsi: core: Fix hang of freezing queue between
- blocking and running device
-To:     lijinlin3@huawei.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     john.garry@huawei.com, qiulaibin@huawei.com, linfeilong@huawei.com,
-        wubo40@huawei.com
-References: <20210809141308.3700854-1-lijinlin3@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <08c4bb7e-830e-c9e6-2537-18131c7e0fc6@acm.org>
-Date:   Mon, 23 Aug 2021 09:15:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230164AbhHWQR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 12:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229667AbhHWQR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:17:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0724613D2;
+        Mon, 23 Aug 2021 16:17:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629735434;
+        bh=gh23DwG5/x4c4F1O5I7aJHgigmYmMs61WqC4Xp5rDqw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Rz/u91l07tl7ws78s8KJN6vglg01dhY2Om1r3cF/WBXW6W+0fYhv2ZY9fYpiEm7ca
+         AyjjdWua8NicjsQ41RbddswSXOQRR+tOz9W0xrMJtpbYB7Tc5VUkOOBYruCbK3LGyl
+         +7G4jMWDXT5KVXBcsYwjKOP1rVxLKTy+2zT270TfL7kl71V7Vsgppk0+Amaf2q7zIs
+         I0PNfYx0NSTAKP0idzOiXfglccTLFK2f+MQiIH4DzfgoYGYvqVgmXfoCN+gOzYq36m
+         dl2kuF2wR3FxQSXGK58kv/VWPsWvQWOVZWIENU1CzYYMxO8QeAYw+7QDw9cB5ksNZm
+         n+pGdBbUW+Q/g==
+From:   Alexey Gladkov <legion@kernel.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>
+Cc:     Linux Containers <containers@lists.linux.dev>,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
+Subject: [PATCH v1] ucounts: Increase ucounts reference counter before the security hook
+Date:   Mon, 23 Aug 2021 18:16:33 +0200
+Message-Id: <97433b1742c3331f02ad92de5a4f07d673c90613.1629735352.git.legion@kernel.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <000000000000b1f4d305c9ef72ad@google.com>
+References: <000000000000b1f4d305c9ef72ad@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210809141308.3700854-1-lijinlin3@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/9/21 7:13 AM, lijinlin3@huawei.com wrote:
-> From: Li Jinlin <lijinlin3@huawei.com>
-> 
-> We found a hang issue, the test steps are as follows:
->    1. blocking device via scsi_device_set_state()
->    2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
->    3. echo none > /sys/block/sda/queue/scheduler
->    4. echo "running" >/sys/block/sda/device/state
-> 
-> Step 3 and 4 should finish this work after step 4, but they hangs.
-> 
->    CPU#0               CPU#1                CPU#2
->    ---------------     ----------------     ----------------
->                                             Step 1: blocking device
-> 
->                                             Step 2: dd xxxx
->                                                    ^^^^^^ get request
->                                                           q_usage_counter++
-> 
->                        Step 3: switching scheculer
->                        elv_iosched_store
->                          elevator_switch
->                            blk_mq_freeze_queue
->                              blk_freeze_queue
->                                > blk_freeze_queue_start
->                                  ^^^^^^ mq_freeze_depth++
-> 
->                                > blk_mq_run_hw_queues
->                                  ^^^^^^ can't run queue when dev blocked
-> 
->                                > blk_mq_freeze_queue_wait
->                                  ^^^^^^ Hang here!!!
->                                         wait q_usage_counter==0
-> 
->    Step 4: running device
->    store_state_field
->      scsi_rescan_device
->        scsi_attach_vpd
->          scsi_vpd_inquiry
->            __scsi_execute
->              blk_get_request
->                blk_mq_alloc_request
->                  blk_queue_enter
->                  ^^^^^^ Hang here!!!
->                         wait mq_freeze_depth==0
-> 
->      blk_mq_run_hw_queues
->      ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
-> 
->                              blk_mq_unfreeze_queue
->                              ^^^^^ mq_freeze_depth--
-> 
-> Step 3 and 4 wait for each other.
-> 
-> To fix this, we need to run queue before rescanning device when the device
-> state changes to SDEV_RUNNING.
-> 
-> Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
-> Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-> Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
-> ---
-> changes since v1 send with Message-ID:
-> 20210805143231.1713299-1-lijinlin3@huawei.com
-> 
->   - Modify the subject to make it distinct
->   - Modify the message to fix typo and make it distinct
->   - Reduce the number of SOB
-> 
->   drivers/scsi/scsi_sysfs.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-> index c3a710bceba0..aa701582c950 100644
-> --- a/drivers/scsi/scsi_sysfs.c
-> +++ b/drivers/scsi/scsi_sysfs.c
-> @@ -809,12 +809,12 @@ store_state_field(struct device *dev, struct device_attribute *attr,
->   	ret = scsi_device_set_state(sdev, state);
->   	/*
->   	 * If the device state changes to SDEV_RUNNING, we need to
-> -	 * rescan the device to revalidate it, and run the queue to
-> -	 * avoid I/O hang.
-> +	 * run the queue to avoid I/O hang, and rescan the device
-> +	 * to revalidate it.
->   	 */
->   	if (ret == 0 && state == SDEV_RUNNING) {
-> -		scsi_rescan_device(dev);
->   		blk_mq_run_hw_queues(sdev->request_queue, true);
-> +		scsi_rescan_device(dev);
->   	}
->   	mutex_unlock(&sdev->state_mutex);
+We need to increment the ucounts reference counter befor security_prepare_creds()
+because this function may fail and abort_creds() will try to decrement
+this reference.
 
-The patch looks fine to me but I think the comment in 
-store_state_field() should be expanded. Although the description in the 
-commit message makes it clear how I/O may hang, that is not clear from 
-the source code comment. Please mention in the comment that running the 
-queue first is necessary because another thread may be waiting inside 
-blk_mq_freeze_queue_wait() and because that call may be waiting for 
-pending I/O to finish.
+[   96.465056][ T8641] FAULT_INJECTION: forcing a failure.
+[   96.465056][ T8641] name fail_page_alloc, interval 1, probability 0, space 0, times 0
+[   96.478453][ T8641] CPU: 1 PID: 8641 Comm: syz-executor668 Not tainted 5.14.0-rc6-syzkaller #0
+[   96.487215][ T8641] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+[   96.497254][ T8641] Call Trace:
+[   96.500517][ T8641]  dump_stack_lvl+0x1d3/0x29f
+[   96.505758][ T8641]  ? show_regs_print_info+0x12/0x12
+[   96.510944][ T8641]  ? log_buf_vmcoreinfo_setup+0x498/0x498
+[   96.516652][ T8641]  should_fail+0x384/0x4b0
+[   96.521141][ T8641]  prepare_alloc_pages+0x1d1/0x5a0
+[   96.526236][ T8641]  __alloc_pages+0x14d/0x5f0
+[   96.530808][ T8641]  ? __rmqueue_pcplist+0x2030/0x2030
+[   96.536073][ T8641]  ? lockdep_hardirqs_on_prepare+0x3e2/0x750
+[   96.542056][ T8641]  ? alloc_pages+0x3f3/0x500
+[   96.546635][ T8641]  allocate_slab+0xf1/0x540
+[   96.551120][ T8641]  ___slab_alloc+0x1cf/0x350
+[   96.555689][ T8641]  ? kzalloc+0x1d/0x30
+[   96.559740][ T8641]  __kmalloc+0x2e7/0x390
+[   96.563980][ T8641]  ? kzalloc+0x1d/0x30
+[   96.568029][ T8641]  kzalloc+0x1d/0x30
+[   96.571903][ T8641]  security_prepare_creds+0x46/0x220
+[   96.577174][ T8641]  prepare_creds+0x411/0x640
+[   96.581747][ T8641]  __sys_setfsuid+0xe2/0x3a0
+[   96.586333][ T8641]  do_syscall_64+0x3d/0xb0
+[   96.590739][ T8641]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   96.596611][ T8641] RIP: 0033:0x445a69
+[   96.600483][ T8641] Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+[   96.620152][ T8641] RSP: 002b:00007f1054173318 EFLAGS: 00000246 ORIG_RAX: 000000000000007a
+[   96.628543][ T8641] RAX: ffffffffffffffda RBX: 00000000004ca4c8 RCX: 0000000000445a69
+[   96.636600][ T8641] RDX: 0000000000000010 RSI: 00007f10541732f0 RDI: 0000000000000000
+[   96.644550][ T8641] RBP: 00000000004ca4c0 R08: 0000000000000001 R09: 0000000000000000
+[   96.652500][ T8641] R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004ca4cc
+[   96.660631][ T8641] R13: 00007fffffe0b62f R14: 00007f1054173400 R15: 0000000000022000
 
-Thanks,
+Fixes: 905ae01c4ae2 ("Add a reference to ucounts for each cred")
+Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
+Signed-off-by: Alexey Gladkov <legion@kernel.org>
+---
+ kernel/cred.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Bart.
+diff --git a/kernel/cred.c b/kernel/cred.c
+index e6fd2b3fc31f..f784e08c2fbd 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -286,13 +286,13 @@ struct cred *prepare_creds(void)
+ 	new->security = NULL;
+ #endif
+ 
+-	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+-		goto error;
+-
+ 	new->ucounts = get_ucounts(new->ucounts);
+ 	if (!new->ucounts)
+ 		goto error;
+ 
++	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
++		goto error;
++
+ 	validate_creds(new);
+ 	return new;
+ 
+@@ -753,13 +753,13 @@ struct cred *prepare_kernel_cred(struct task_struct *daemon)
+ #ifdef CONFIG_SECURITY
+ 	new->security = NULL;
+ #endif
+-	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
+-		goto error;
+-
+ 	new->ucounts = get_ucounts(new->ucounts);
+ 	if (!new->ucounts)
+ 		goto error;
+ 
++	if (security_prepare_creds(new, old, GFP_KERNEL_ACCOUNT) < 0)
++		goto error;
++
+ 	put_cred(old);
+ 	validate_creds(new);
+ 	return new;
+-- 
+2.32.0
 
