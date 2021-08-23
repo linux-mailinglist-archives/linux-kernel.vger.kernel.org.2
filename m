@@ -2,120 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6BF3F42E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8783F42E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 03:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbhHWBPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 21:15:00 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:35850 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234399AbhHWBO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 21:14:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=wbnAYhyJCCQuqsnRX8KSLXK76ZWOG7IY6CLRzf1Po2Q=; b=tiPUNZsMUQZ4OP0ZbMfGArMxe1
-        gchNctkkyBaMZwvNDnNZZWxzQk39DUdfnuQ2IECyNi4kOJT2T2bTGXWimrgt55WcFpEJayDhnhDZV
-        +sZ1Oz73FocHoMk0qJwIAhKbjtyqC300H15jxG0eX/MZZCC4sbTpInXyIW+duu6XNeio=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mHyXN-003OwD-5x; Mon, 23 Aug 2021 03:14:05 +0200
-Date:   Mon, 23 Aug 2021 03:14:05 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Rasmussen <MIR@bang-olufsen.dk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 4/5] net: dsa: realtek-smi: add rtl8365mb
- subdriver for RTL8365MB-VC
-Message-ID: <YSL2XcUmb7PO5H0y@lunn.ch>
-References: <20210822193145.1312668-1-alvin@pqrs.dk>
- <20210822193145.1312668-5-alvin@pqrs.dk>
- <YSLX7qhyZ4YGec83@lunn.ch>
- <283675c4-90cf-6e5c-8178-5e3eba7592ba@bang-olufsen.dk>
+        id S234497AbhHWBSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 21:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232261AbhHWBR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 21:17:59 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E891C06175F
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:17:17 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id mf2so14930933ejb.9
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Aug 2021 18:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z58f0xxvO1Pfo9/llvNA4Dw8WM6p4HqmKCC8GfOFT/M=;
+        b=m57Ig7lGhtDyazhBZdX4GJ4aBOQYyQruJ4RB8qUQ5CnSoFOxCsJy5mPDclspcjCyfN
+         8OUXaefFyYn6gPrs19RmW4lpdGuAlvCS6LclgnKZbrfAh9fp7QY6TzBJ2j45VGjJnKy+
+         kMo0HSjXf+HkqAFzG0SRozVLJK2b0+opaG8d9fR1+tE+XadcunKRD//rdOxCHBahL9Dn
+         kH8KHoGJ7PdO2/VSCNyvvFQ6nGBo+ptzsPU9kO5sVR8/p8sKjlKtEsVSdV20L4Z7wBTI
+         Rhm2yqsS4yV/XfFNbWPXBhKudy1azZui+cjfCocFjXhALRCuwlsSodv7S15G8r5VSrSL
+         jQOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z58f0xxvO1Pfo9/llvNA4Dw8WM6p4HqmKCC8GfOFT/M=;
+        b=DKMdQ0fepRpzQ+20GxLQLeDVFhS0I80YV2FuzJPvA9uDhVWtKpS+3AaIY9dViXrnQk
+         Htw1suubOBbQzJF07IOjGTSqbIUIdXjgltWNLyDVMW2LOFsp3biUYt05r3k+lF7hZ6bt
+         p6utupcStXLZAhkCVW0caDpGPqbo+49H8TqCWZ48QahIsOb4IuUMcqZ1z5HwEdo2SMv4
+         iOFfiVWO+Wq6Mzo6dyIr9qf+ZKnNuu6WPqQDr+t5BQS6XHm5wmIEnnaWViZhoPUme26o
+         Hx6zV0i3jw1gnNQr3dWpz+9XkFNr+IrHQOJlh2q8fDas3n6LMdXkNv72e5rao8CbNotQ
+         2j2w==
+X-Gm-Message-State: AOAM530bcnsklI3FYQT0oreMQT5lvI81Hp6yT0Xgu2/zqdl5XTsGUZr0
+        cCepDxpXlW+LJffm2/RZWDnJhdFzS7kLI+bNFVtvOg==
+X-Google-Smtp-Source: ABdhPJwGXQDHCIGSv1vSbsDcO+GKBOiAyoIJAys43KI2ddwJjURCNVz7GDU5oAD5XHCyg8K863gI3BJDeu1ARrmXiOA=
+X-Received: by 2002:a17:906:2305:: with SMTP id l5mr33432324eja.72.1629681435742;
+ Sun, 22 Aug 2021 18:17:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <283675c4-90cf-6e5c-8178-5e3eba7592ba@bang-olufsen.dk>
+References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-4-brad@pensando.io>
+ <20210304064433.vqyqg3byedvc4quz@mobilestation>
+In-Reply-To: <20210304064433.vqyqg3byedvc4quz@mobilestation>
+From:   Brad Larson <brad@pensando.io>
+Date:   Sun, 22 Aug 2021 18:17:05 -0700
+Message-ID: <CAK9rFnzwtxhg9DBW7=s9FaOwWNCstfRW5T_MjQiM51GxiM6ZyA@mail.gmail.com>
+Subject: Re: [PATCH 3/8] spi: dw: Add support for Pensando Elba SoC SPI
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Olof Johansson <olof@lixom.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Just to clarify, this means I should set the physical port number in the 
-> reg field of the device tree? i.e.:
-> 
-> 	port@4 {
-> 		reg = <6>; /* <--- instead of <4>? */
-> 		label = "cpu";
-> 		ethernet = <&fec1>;
-> 		phy-mode = "rgmii-id";
-> 		fixed-link {
-> 			speed = <1000>;
-> 			full-duplex;
-> 			pause;
-> 		};
-> 	};
+Hi Sergey,
 
-Yes, this is fine.
+Thanks again for the reviews.  I've been able to work on this recently
+and test the changes using 5.10.28 on a production server.  I'm going
+back to the beginning to reply to each comment and work towards
+closure of open issues before preparing patchset v3 which will need to
+be re-done against the latest linux-next.
 
-> >> +static int rtl8365mb_port_enable(struct dsa_switch *ds, int port,
-> >> +				 struct phy_device *phy)
-> >> +{
-> >> +	struct realtek_smi *smi = ds->priv;
-> >> +	int val;
-> >> +
-> >> +	if (dsa_is_user_port(ds, port)) {
-> >> +		/* Power up the internal PHY and restart autonegotiation */
-> >> +		val = rtl8365mb_phy_read(smi, port, MII_BMCR);
-> >> +		if (val < 0)
-> >> +			return val;
-> >> +
-> >> +		val &= ~BMCR_PDOWN;
-> >> +		val |= BMCR_ANRESTART;
-> >> +
-> >> +		return rtl8365mb_phy_write(smi, port, MII_BMCR, val);
-> >> +	}
-> > 
-> > There should not be any need to do this. phylib should do it. In
-> > generally, you should not need to touch any PHY registers, you just
-> > need to allow access to the PHY registers.
-> 
-> Will phylib also the opposite when the interface is administratively put 
-> down (e.g. ip link set dev swp2 down)? The switch doesn't seem to have 
-> any other handle for stopping the flow of packets from a port except to 
-> power down the internal PHY, hence why I put this in for port_disable. 
-> For port_enable I just did the opposite but I can see why it's not 
-> necessary.
+On Wed, Mar 3, 2021 at 10:44 PM Serge Semin <fancer.lancer@gmail.com> wrote:
+>
+> Hello Brad.
+> Thanks for the patch. See my comments below.
+>
+> On Wed, Mar 03, 2021 at 07:41:36PM -0800, Brad Larson wrote:
+> > The Pensando Elba SoC uses a GPIO based chip select
+> > for two DW SPI busses with each bus having two
+> > chip selects.
+>
+> I see a contradiction here. Normally GPIO-based chip-select is a
+> property of a platform, but not a SoC/CPU/MCU/etc. Most of the time
+> SoC SPI interfaces still get to have native CS pins, while at some
+> platform configurations (like in case of DW APB SPI, which doesn't
+> provide a way to directly toggle its native CSs) it's easier or even
+> safer to use GPIOs as CS signals. Of course theoretically a SoC could
+> be synthesized so it doesn't have native CS output pins, but only some
+> virtual internal CS flags, but I've never seen such. Anyway according
+> to the custom CS method below it's not your case because you still
+> provide support for SPI-devices handled by native CS (else branch in
+> the if (spi->cs_gpiod) {} else {} statement).
 
-When the MAC and PHY are attached phy_attach_direct() gets called,
-which calls phy_resume(phydev); The generic implementation clears the
-BMCR_PDOWN bit.
+The native DW CS is not supported, that code is removed which caused
+the confusion.  The existing dw_spi_set_cs() works fine with the
+updated version of this function being
 
-phy_detach() will suspend the PHY, which sets the BMCR_PDOWN bit.
+/*
+ * Using a GPIO-based chip-select, the DW SPI controller still needs
+ * its own CS bit selected to start the serial engine.  On Elba the
+ * specific CS doesn't matter, so use CS0.
+ */
+static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
+{
+        spi->chip_select = 0;
+        dw_spi_set_cs(spi, enable);
+}
 
-But there are two different schemes for doing this.  Some MAC drivers
-connect the PHY during probe. Others do it at open. DSA does it at
-probe. So this is generic feature is not going to work for you. You
-might want to put some printk() in phy_suspend and phy_resume to check
-that.
+which is much better than the original version shown below
 
-So, setting/clearing the PDOWN bit does seems reasonable. But please
-document in the functions why you are doing this. Also, don't restart
-autoneg. That really should be up to phylib, and it should be
-triggered by phylink_start() which should be called directly after
-port_enable().
+> > +static void dw_spi_elba_set_cs(struct spi_device *spi, bool enable)
+> > +{
+> > +     struct dw_spi *dws = spi_master_get_devdata(spi->master);
+> > +
+> > +     if (!enable) {
+> > +             if (spi->cs_gpiod) {
+> > +                     /*
+> > +                      * Using a GPIO-based chip-select, the DW SPI
+> > +                      * controller still needs its own CS bit selected
+> > +                      * to start the serial engine.  On Elba the specific
+> > +                      * CS doesn't matter, so use CS0.
+> > +                      */
+> > +                     dw_writel(dws, DW_SPI_SER, BIT(0));
+> > +             } else {
+> > +                     /*
+> > +                      * Using the intrinsic DW chip-select; set the
+> > +                      * appropriate CS.
+> > +                      */
+> > +                     dw_writel(dws, DW_SPI_SER, BIT(spi->chip_select));
+> > +             }
+> > -     } else
+>   +     } else {
+> > +             dw_writel(dws, DW_SPI_SER, 0);
+>   +     } /* See [1] */
+> > +}
+>
+> The custom CS-method above doesn't look much different from the
+> dw_spi_set_cs() method defined in the spi-dw-core.o driver, except
+> having at least two problems:
+> 1) It assumes that "enable" argument means the CS-enabling flag, while
+> in fact it's the CS-level which depending on the SPI_CS_HIGH flag
+> set/cleared will be 1/0 respectively if CS is supposed to be enabled.
+> That aspect has already been fixed in the dw_spi_set_cs() method.
+> 2) The method enables CS[0] if GPIO-CS is used for a particular SPI
+> device. That will cause problems for a GPIO/native CS intermixed case
+> of having for instance one SPI-device connected to native CS[0] and
+> another one - to a GPIO. So trying to communicate with the second SPI
+> device you'll end up having the native CS[0] activated too thus
+> having an SPI transfer sent to two SPI-device at the same time.
+> Of course that's not what you'd want.
+>
+> Anyway I don't really see why you even need a custom CS method here. A
+> generic method dw_spi_set_cs() shall work for your SPI interface.
+> If I am wrong, please explain why. Did you try the generic CS method
+> on your platform?
+>
+> [1] Placing Braces and Spaces. Chapter 3). Documentation/process/coding-style.rst
 
-	Andrew
+Yes, exactly.  The generic method dw_spi_set_cs() works ok and
+correctly handles active high/low.
+
+> > +static int dw_spi_elba_init(struct platform_device *pdev,
+> > +                         struct dw_spi_mmio *dwsmmio)
+> > +{
+> > +     dwsmmio->dws.set_cs = dw_spi_elba_set_cs;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int dw_spi_mmio_probe(struct platform_device *pdev)
+> >  {
+> >       int (*init_func)(struct platform_device *pdev,
+> > @@ -351,6 +383,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
+> >       { .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
+> >       { .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
+> >       { .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
+>
+> > +     { .compatible = "pensando,elba-spi", .data = dw_spi_elba_init },
+>
+> If you agree with me and remove the custom CS-method defined above in
+> this patch, then all you'll need is just to add "pensando,elba-spi" here
+> with generic init-callback set - dw_spi_dw_apb_init.
+
+The existing dw_spi_set_cs() is now being used.  Using
+dw_spi_dw_apb_init results in every spi transfer failing which is why
+dw_spi_elba_init() is still proposed which results in set_cs calling
+dw_spi_elba_set_cs().
+
+> Finally defining new compatible string requires the bindings update.
+> In the framework of DW APB SPI interface they are defined in:
+> Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> So you need to have that DT-schema accordingly altered.
+>
+> The bindings note concerns the rest of the updates in your patchset too.
+>
+> -Sergey
+
+Patchset v2 separated out the bindings updates.  There will be more
+bindings needed for v3 of the patchset.  I won't be sending v3 until
+all discussions are resolved.
+
+Regards,
+Brad
