@@ -2,162 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBAC23F515B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E689E3F515D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 21:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhHWTiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 15:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbhHWTiN (ORCPT
+        id S232201AbhHWTjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 15:39:18 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:5398 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232123AbhHWTjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 15:38:13 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628F4C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:37:30 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id bo13-20020a05621414adb029035561c68664so13194926qvb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 12:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=rmYIpDdU3QK7p6S3HsrzN12lySY7VGfi8e7ewdZ2wvA=;
-        b=wJL7Xz9VU1rOK6hlGPydrdtHKr/VbFayeoZuxgI/pClqesV+XUtE4QUu6XbrrGKUZV
-         ITPHTHT20kry0avyUfIqLBA5JQIDxHabRE0taMXo5NdR5kv+wryPWEN84fvWo+bgfMCk
-         gsHovFqh4jAGff4gsw+zhuTuVahcourpbCDWAlPWtNjHNgrYonayLLqtPlPy7tWmSIYj
-         SV2v2u/HMZREXghd0Hpq/8lks5BDnj089jgrDv/KYMCPEauxiUC5forh8V9GGgO1yjGr
-         oWDhGoeu9Dc2hqnIrJJb0hakosarXIXsCuDxJGiDyZkJO4UhCloFjVRUdM2sYTUdJq/C
-         CGng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=rmYIpDdU3QK7p6S3HsrzN12lySY7VGfi8e7ewdZ2wvA=;
-        b=I/vA1bpgYMKldXpfHoE/6SWmUuqWi6ea4YxTppKSiFmrzUbejPo2R/cbpgq5xmgFSX
-         OqVcA6Z+EYN4uBWcHt14/aKcMBQSpxsNfyzFMdLIOda0wkBReFHRYA3nWiSOEtFOZS6J
-         UEtWe1jGC13008waHCAl7hnG1fdBufAfwhY/+x1PYdEW+huBzRH/kxPr6IpqJCKB/gXp
-         ELFSc2K2G2R53L3H7RLMFlXb8ntByBfKZXt91HZ7++fBXbzSs1A9IePQVc+k37DLG3h8
-         YHUNpDjxX3k8KmP9x2HJCq/IRRKZZ5FWP4O+q/s/ATHEzrnZgyL8mAUnNkLsw50LPRXT
-         CYCA==
-X-Gm-Message-State: AOAM531kvv7kQkEXTj/stVe+ltTIJKuvo7Eu4/V9HgNe66Z6sJ/6gOqt
-        wenrIo00ju5p/JacFTPfQSiWbXjT2/Y=
-X-Google-Smtp-Source: ABdhPJxMughRTeNGSfkS7sQ5RCx/BDaAhNO0JOHhWF1MAuK3EB9WU/08l/gP2MCeN22B+W0LyWkDmS1X6TU=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:109c:7eb8:d5ed:2e59])
- (user=seanjc job=sendgmr) by 2002:a05:6214:312:: with SMTP id
- i18mr2221144qvu.48.1629747449581; Mon, 23 Aug 2021 12:37:29 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 23 Aug 2021 12:37:09 -0700
-In-Reply-To: <20210823193709.55886-1-seanjc@google.com>
-Message-Id: <20210823193709.55886-4-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210823193709.55886-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH 3/3] perf/x86/intel: Fold current_vcpu check into KVM's PT
- intr handler
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Artem Kashkanov <artem.kashkanov@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 23 Aug 2021 15:39:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1629747513; x=1661283513;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=wrPzydFoiv4W4g3o7TPP95c8VMQT8cOQnN+LkHUAijc=;
+  b=cWsLt4Jj1x54xxjiPObUyXwRzSiZ5aqPDnLNH6XH9PPQ6sYobRKdf+Z+
+   VkWSGid8pK3tShZ3Onj7L0EEos2KHMMFbi7BJ/T28JXngnIpBRUqeN1kn
+   +ayHxgP1Pu5NW8jAIxoFVsZa/PvU8sUuPEtU2UyDuYUrmZThQykoo9Zx1
+   M=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 23 Aug 2021 12:38:33 -0700
+X-QCInternal: smtphost
+Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 12:38:32 -0700
+Received: from [10.226.59.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.922.7; Mon, 23 Aug 2021
+ 12:38:31 -0700
+Subject: Re: [PATCH v6 3/4] bus: mhi: core: Process execution environment
+ changes serially
+To:     <bbhatt@codeaurora.org>
+CC:     <manivannan.sadhasivam@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
+        <linux-kernel@vger.kernel.org>, <loic.poulain@linaro.org>,
+        <carl.yin@quectel.com>, <naveen.kumar@quectel.com>
+References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org>
+ <1614208985-20851-4-git-send-email-bbhatt@codeaurora.org>
+ <899da888-321a-c228-8537-b72821700dc7@quicinc.com>
+ <62c4f4130f74e3731cd3886049684d23@codeaurora.org>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+Message-ID: <6a4899dd-e690-81f9-2dc1-17a0e5eb1828@quicinc.com>
+Date:   Mon, 23 Aug 2021 13:38:30 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <62c4f4130f74e3731cd3886049684d23@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03a.na.qualcomm.com (10.85.0.103) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the check for a non-NULL current_vcpu into KVM's PT intr handler
-instead of relying on the caller to perform the check.  In addition to
-ensuring KVM's handler won't dereference a NULL pointer (and making it
-obvious that it can't), this avoids a reptoline when KVM is configured to
-run PT in "system mode", in which case handle_intel_pt_intr will be NULL.
+On 8/23/2021 1:19 PM, Bhaumik Bhatt wrote:
+> On 2021-08-23 11:43 AM, Jeffrey Hugo wrote:
+>> On 2/24/2021 4:23 PM, Bhaumik Bhatt wrote:
+>>> In current design, whenever the BHI interrupt is fired, the
+>>> execution environment is updated. This can cause race conditions
+>>> and impede ongoing power up/down processing. For example, if a
+>>> power down is in progress, MHI host updates to a local "disabled"
+>>> execution environment. If a BHI interrupt fires later, that value
+>>> gets replaced with one from the BHI EE register. This impacts the
+>>> controller as it does not expect multiple RDDM execution
+>>> environment change status callbacks as an example. Another issue
+>>> would be that the device can enter mission mode and the execution
+>>> environment is updated, while device creation for SBL channels is
+>>> still going on due to slower PM state worker thread run, leading
+>>> to multiple attempts at opening the same channel.
+>>>
+>>> Ensure that EE changes are handled only from appropriate places
+>>> and occur one after another and handle only PBL modes or RDDM EE
+>>> changes as critical events directly from the interrupt handler.
+>>> Simplify handling by waiting for SYS ERROR before handling RDDM.
+>>> This also makes sure that we use the correct execution environment
+>>> to notify the controller driver when the device resets to one of
+>>> the PBL execution environments.
+>>>
+>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>
+>> <snip>
+>>
+>>> @@ -452,27 +451,30 @@ irqreturn_t mhi_intvec_threaded_handler(int 
+>>> irq_number, void *priv)
+>>>       }
+>>>       write_unlock_irq(&mhi_cntrl->pm_lock);
+>>>   -     /* If device supports RDDM don't bother processing SYS error */
+>>> -    if (mhi_cntrl->rddm_image) {
+>>> -        /* host may be performing a device power down already */
+>>> -        if (!mhi_is_active(mhi_cntrl))
+>>> -            goto exit_intvec;
+>>> +    if (pm_state != MHI_PM_SYS_ERR_DETECT || ee == mhi_cntrl->ee)
+>>> +        goto exit_intvec;
+>>>   -        if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
+>>> +    switch (ee) {
+>>> +    case MHI_EE_RDDM:
+>>> +        /* proceed if power down is not already in progress */
+>>> +        if (mhi_cntrl->rddm_image && mhi_is_active(mhi_cntrl)) {
+>>>               mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
+>>> +            mhi_cntrl->ee = ee;
+>>>               wake_up_all(&mhi_cntrl->state_event);
+>>>           }
+>>> -        goto exit_intvec;
+>>> -    }
+>>> -
+>>> -    if (pm_state == MHI_PM_SYS_ERR_DETECT) {
+>>> +        break;
+>>> +    case MHI_EE_PBL:
+>>> +    case MHI_EE_EDL:
+>>> +    case MHI_EE_PTHRU:
+>>> +        mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
+>>> +        mhi_cntrl->ee = ee;
+>>>           wake_up_all(&mhi_cntrl->state_event);
+>>> -
+>>> -        /* For fatal errors, we let controller decide next step */
+>>> -        if (MHI_IN_PBL(ee))
+>>> -            mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
+>>> -        else
+>>> -            mhi_pm_sys_err_handler(mhi_cntrl);
+>>> +        mhi_pm_sys_err_handler(mhi_cntrl);
+>>> +        break;
+>>> +    default:
+>>> +        wake_up_all(&mhi_cntrl->state_event);
+>>> +        mhi_pm_sys_err_handler(mhi_cntrl);
+>>> +        break;
+>>>       }
+>>
+>> Bhaumik, can you explain the above change?  Before this patch (which
+>> is now committed), if there was a fatal error, the controller was
+>> notified (MHI_CB_FATAL_ERROR) and it decided all action.  After this
+>> patch, the controller is notified, but also the core attempts to
+>> handle the syserr.
+>>
+>> This is a change in behavior, and seems to make a mess of the
+>> controller, and possibly the core fighting each other.
+>>
+>> Specifically, I'm rebasing the AIC100 driver onto 5.13, which has this
+>> change, and I'm seeing a serious regression.  I'm thinking that for
+>> the PBL/EDL/PTHRU case, mhi_pm_sys_err_handler() should not be called.
+>>
+>> Thoughts?
+> 
+> I see. We use this heavily for entry to EDL use-cases.
+> 
+> We do require the mhi_pm_sys_err_handler() to be called in those cases
+> as any entry to PBL/EDL means there is need to clean-up MHI host and 
+> notify all
+> its clients.
+> 
+> We include PTHRU in here because its a SYS ERROR in PBL modes.
+> 
+> Premise being the controller should not be in that business of doing any of
+> the clean-up that is responsibility of the core driver. We're using this 
+> feature
+> set to ensure controller is only notified.
+> 
+> What does AIC100 do on fatal error that you run in to issues? I don't think
+> any of the other controllers do anything other than disabling runtime PM 
+> since
+> device is down. Maybe there's some room for improvement.
 
-No functional change intended.
+Our usecase is PBL as a result of a full device crash.  AIC100 doesn't 
+exercise the EDL/PTHRU usecases.  (Just giving you some context, not 
+trying to imply EDL is not valuable to others for example).
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/events/intel/core.c | 7 +++----
- arch/x86/kvm/pmu.h           | 2 +-
- arch/x86/kvm/x86.c           | 6 +++++-
- include/linux/perf_event.h   | 2 +-
- 4 files changed, 10 insertions(+), 7 deletions(-)
+In that case (FATAL_ERROR), our controller schedules a work item, and 
+then returnsas we assume FATAL_ERROR is notified in atomic context.  We 
+need to do non-mhi cleanup first.  Then we powerdown the MHI to cleanup 
+the MHI core, and kick off all the clients (its been a long while, but 
+initially, we were seeing the syserr handling in the core not 
+sufficiently kicking off the clients).  Then we power up MHI.  MHI will 
+init in PBL, still in syserr, and handle it.
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index fca7a6e2242f..060f1f1ebe15 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2852,10 +2852,9 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
- 	 */
- 	if (__test_and_clear_bit(GLOBAL_STATUS_TRACE_TOPAPMI_BIT, (unsigned long *)&status)) {
- 		handled++;
--		if (unlikely(perf_guest_cbs && perf_guest_cbs->is_in_guest() &&
--			perf_guest_cbs->handle_intel_pt_intr))
--			perf_guest_cbs->handle_intel_pt_intr();
--		else
-+		if (likely(!perf_guest_cbs ||
-+			   !perf_guest_cbs->handle_intel_pt_intr ||
-+			   perf_guest_cbs->handle_intel_pt_intr()))
- 			intel_pt_interrupt();
- 	}
- 
-diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-index b06dbbd7eeeb..4e8a38eca72b 100644
---- a/arch/x86/kvm/pmu.h
-+++ b/arch/x86/kvm/pmu.h
-@@ -41,7 +41,7 @@ struct kvm_pmu_ops {
- 	void (*reset)(struct kvm_vcpu *vcpu);
- 	void (*deliver_pmi)(struct kvm_vcpu *vcpu);
- 	void (*cleanup)(struct kvm_vcpu *vcpu);
--	void (*handle_intel_pt_intr)(void);
-+	int (*handle_intel_pt_intr)(void);
- };
- 
- static inline u64 pmc_bitmask(struct kvm_pmc *pmc)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b5ade47dad9c..3f289192f25f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8292,13 +8292,17 @@ static unsigned long kvm_get_guest_ip(void)
- 	return ip;
- }
- 
--static void kvm_handle_intel_pt_intr(void)
-+static int kvm_handle_intel_pt_intr(void)
- {
- 	struct kvm_vcpu *vcpu = __this_cpu_read(current_vcpu);
- 
-+	if (!vcpu)
-+		return -ENXIO;
-+
- 	kvm_make_request(KVM_REQ_PMI, vcpu);
- 	__set_bit(MSR_CORE_PERF_GLOBAL_OVF_CTRL_TRACE_TOPA_PMI_BIT,
- 			(unsigned long *)&vcpu->arch.pmu.global_status);
-+	return 0;
- }
- 
- static struct perf_guest_info_callbacks kvm_guest_cbs = {
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 2d510ad750ed..f812c2570285 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -30,7 +30,7 @@ struct perf_guest_info_callbacks {
- 	int				(*is_in_guest)(void);
- 	int				(*is_user_mode)(void);
- 	unsigned long			(*get_guest_ip)(void);
--	void				(*handle_intel_pt_intr)(void);
-+	int				(*handle_intel_pt_intr)(void);
- };
- 
- #ifdef CONFIG_HAVE_HW_BREAKPOINT
--- 
-2.33.0.rc2.250.ged5fa647cd-goog
+I haven't fully traced everything, but we were getting into some really 
+bad states with the core triggering mhi_pm_sys_err_handler() per this patch.
 
+Its important that we have control over the ordering of our cleanup, vs 
+the MHI cleanup.  Sadly, non-atomic context (sleeping) is a requirement 
+of our cleanup.
+
+Seems like we have differing requirements here.  Hmm.  What about an API 
+the controller can call, that does mhi_pm_sys_err_handler() (or 
+equivalent) so that the controller can control when the MHI core cleanup 
+is done, but doesn't need to be concerned with the details?  Or, do you 
+have a suggestion?
