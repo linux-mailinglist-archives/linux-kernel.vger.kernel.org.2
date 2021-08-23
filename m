@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F15D3F4828
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 606333F482A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbhHWKEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:04:48 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:52246 "EHLO
+        id S236094AbhHWKEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:04:51 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:30109 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235930AbhHWKEr (ORCPT
+        with ESMTP id S236064AbhHWKEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:04:47 -0400
+        Mon, 23 Aug 2021 06:04:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1629713045; x=1661249045;
+  t=1629713046; x=1661249046;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=o9754bOu5EEwH9LqToOgBeWqVOuHjveY+/qscjKYto8=;
-  b=Nhqw217QWSsqT6nr/AGzbW8vSvUGl5xmiAUubHLVDkvtaqw7IDGuvr//
-   v2vmY2/OiN8mBes8wC3ndQYCy0P3X3J0pcSYtbCpGoL/VoTmGeMt8gWhs
-   V+/G4p6Yq3MPL9LVvzh29n7BxpdD3xNdm56v4B3pQKy8artinE6oNIfMQ
-   7hLwwVbFCszCoywN3pOUSLeM195sZWpUqnL0LKI2+grm9NZBavy7uxLGl
-   D72JruApICtQocYkYZ5qa1GutEWRBOP66FXNZGQ9yRoqlXdhVgz4nyIfU
-   Mhh0QdGal+MFaf3qAB0rydd309QcUUL0Dcz66XSBDjcCUrk/f11fTmPQ4
+  bh=px1vevLryi7Cd6OhTXHpe7HUqqTHehG8sW5dVfE4Qxo=;
+  b=IwNySF4Jr7iSgGfIhcPQP+J+N8T2o0ZBWsHxvtQ4HpU3bUNjxGCgb68q
+   o0U1IxB80PNgRF420hu8dzQlPV7G6Ggh0/yU8VBdQRH/A4/uTJc05kfDi
+   g43Sp4iGjW1hL9wufqu/4WuvSG3Fm+h/cPK3FuQlNcFBw9IbldEfNU/3r
+   gYi9sQVoU5YbkCU9Kua7xNJexGlCNWu1N2Ruoz200ZkQJt2zZLEEg7pnk
+   HOd5IOddCN4ynHXUFWw/9eRhFDLEofZy+zaGbc3bNzwNYOWU7NdBwthqX
+   w4J2KqAJLWXKiWsPcXwoj9mXzptkpTpMjVVl7u+LUm6/JT12pDzIFDaa0
    w==;
-IronPort-SDR: grdg3NIz2Q7+LkCWSTD2ljJluCM71KSPrkMUNLJ55pNJeTpL035SO1MDnAAgRCKYTVTx14nGqJ
- nO+KGccVIc7M/BzBjgetaVN2Io8kF1ObShCxOPBaBoFd+5YLxA5RschzbBfnRv3axO2LZHPdd3
- u02vXLEDbQFTmJszmTwWUO4Fk8KEBy2w5F91zo3oKf+oCXnxFJ/LwtoEeVGWXHi5anF6DBvZ0J
- +7UDpmn3nWuHUbFC+bNVnt80CTyMzxMIoqC0HRya8/T8BlvJVS1BkL2sO+b//XA5wGootLUllc
- Tl4K+7XcCgjEh89ZkydMpDtF
+IronPort-SDR: mQ/LvNEh74tJsHzLd+LBnXvoxkxugfA9sufIERaJ/xZMG6OkKdjnCuE5L7yNRaz1+C5Cy5o5Cw
+ TdEJBohmWkeNqsjBTnbAQNZkJP0CF1qOyH63mu8mn6KhHHu6GMFo1xlMPwxGQxgqHIrhBIoEXI
+ kE9jgii0diJym8I4GWwUQ+Okc98daBZzYGJxI6lyfLWJ/f3Kpd+S2xfF++34OcWrPa1GVIlinl
+ LpJo2vrkiEO8PZH08md5ADGuA8mk8q7owNiyt21vWYOPQDCjjRmqrS5+bMVTJx79AfEvPZxKSD
+ 86jWpyDqhlO1fTmcoidyF+AR
 X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
-   d="scan'208";a="66761167"
+   d="scan'208";a="141175764"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Aug 2021 03:04:04 -0700
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Aug 2021 03:04:06 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 23 Aug 2021 03:04:04 -0700
+ 15.1.2176.14; Mon, 23 Aug 2021 03:04:06 -0700
 Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 23 Aug 2021 03:04:02 -0700
+ 15.1.2176.14 via Frontend Transport; Mon, 23 Aug 2021 03:04:04 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
         <ludovic.desroches@microchip.com>, <robh+dt@kernel.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 1/3] ARM: dts: at91: add ram bindings
-Date:   Mon, 23 Aug 2021 13:03:54 +0300
-Message-ID: <20210823100356.22206-2-claudiu.beznea@microchip.com>
+Subject: [PATCH 2/3] ARM: dts: at91: add bindins for securam
+Date:   Mon, 23 Aug 2021 13:03:55 +0300
+Message-ID: <20210823100356.22206-3-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20210823100356.22206-1-claudiu.beznea@microchip.com>
 References: <20210823100356.22206-1-claudiu.beznea@microchip.com>
@@ -60,37 +60,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for RAM (controller and PHY). These are necessary
-for platform specific power management code.
+Add bindings for securam.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- arch/arm/boot/dts/sama7g5.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm/boot/dts/sama7g5.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sama7g5.dtsi b/arch/arm/boot/dts/sama7g5.dtsi
-index cc6be6db7b80..ecabab4343b6 100644
+index ecabab4343b6..3a4315ac0eb0 100644
 --- a/arch/arm/boot/dts/sama7g5.dtsi
 +++ b/arch/arm/boot/dts/sama7g5.dtsi
-@@ -515,6 +515,18 @@ spi11: spi@400 {
- 			};
- 		};
+@@ -75,6 +75,17 @@ soc {
+ 		#size-cells = <1>;
+ 		ranges;
  
-+		uddrc: uddrc@e3800000 {
-+			compatible = "microchip,sama7g5-uddrc";
-+			reg = <0xe3800000 0x4000>;
++		securam: securam@e0000000 {
++			compatible = "microchip,sama7g5-securam", "atmel,sama5d2-securam", "mmio-sram";
++			reg = <0xe0000000 0x4000>;
++			clocks = <&pmc PMC_TYPE_PERIPHERAL 18>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0xe0000000 0x4000>;
++			no-memory-wc;
 +			status = "okay";
 +		};
 +
-+		ddr3phy: ddr3phy@e3804000 {
-+			compatible = "microchip,sama7g5-ddr3phy";
-+			reg = <0xe3804000 0x1000>;
-+			status = "okay";
-+		};
-+
- 		gic: interrupt-controller@e8c11000 {
- 			compatible = "arm,cortex-a7-gic";
- 			#interrupt-cells = <3>;
+ 		secumod: secumod@e0004000 {
+ 			compatible = "microchip,sama7g5-secumod", "atmel,sama5d2-secumod", "syscon";
+ 			reg = <0xe0004000 0x4000>;
 -- 
 2.25.1
 
