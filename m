@@ -2,107 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136FC3F48AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9781E3F48AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 12:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236197AbhHWKai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 06:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236129AbhHWKae (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 06:30:34 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D6DC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:29:52 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j4-20020a17090a734400b0018f6dd1ec97so1015174pjs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 03:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TOLTokCzMJhrS4yVrsvWA7I6iBUF0+poQl+b02sEUsU=;
-        b=d9NEFEsJvNYuoSyxsZify90/61cU0ZWsqGqoaLu3c/SUinZZoaJcAChNdiUafs14Nv
-         N3KqQ1KblO+pmVxCokfC7ZdftZMq7xlJGPht149Gw9/q+RpW+bM9wjB87l8ayQVeFADe
-         BFKdmTC2z4eDlJw0XWNRyVZ1bTu3DpAHkrhwg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TOLTokCzMJhrS4yVrsvWA7I6iBUF0+poQl+b02sEUsU=;
-        b=sJgK4Nb5N2oSHJhF3oJt+CpxLpZGhGMFmaHQt9m00tTgS2Mlf5jXVhsJ32c7TmS7aO
-         yc0jyFh0pPdLiIE3aKM19QGbD3urp60yQvt7VYB+wm2TNaf7qF6UZLpPYFl03XV3+6RW
-         ehr5UBX9+vHiQwMPnKLXIWfEQt8A/FMbN05SNrgpSBIiuOfaHRkftwUwCevUJ2DjKNWm
-         0XHGaeTywxzXWtdlXWrkVsxYP2rAlbBOFv+jE3i+Qyo/VV0LK+TjiolKxqK/Dlv3YUff
-         Lf6A8ddsTMVwRDOPpxymAeUFg8yKPV6whQIBt/bV7pdtVMk0HhJ1wVryhPCyBpp+EDzq
-         Vq7Q==
-X-Gm-Message-State: AOAM531b0RzwpnHLohbCGXJHW08oLJDtcnYGXn6I+M6+miUfFh/h+EXZ
-        +QSPqFBIzlq+rzmy4O5iZqus9g==
-X-Google-Smtp-Source: ABdhPJwinUyVdRudwqM9L+o/iJXQT+DwNhl+fEJx9YyCPD1iQFkfLjFX8pEzBY8SNHQBcPV/LthnDA==
-X-Received: by 2002:a17:90a:cc8:: with SMTP id 8mr19829798pjt.194.1629714591769;
-        Mon, 23 Aug 2021 03:29:51 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:8821:8b2f:2912:f9e4])
-        by smtp.gmail.com with ESMTPSA id z11sm15397918pfn.69.2021.08.23.03.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 03:29:51 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 19:29:46 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv4 8/8] videobuf2: handle non-contiguous DMA allocations
-Message-ID: <YSN4ms1VoJO2CWNp@google.com>
-References: <20210727070517.443167-1-senozhatsky@chromium.org>
- <20210727070517.443167-9-senozhatsky@chromium.org>
- <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fd1e8bbe-4cbe-9586-7c8f-0896af043d4a@xs4all.nl>
+        id S236198AbhHWKbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 06:31:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235997AbhHWKbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 06:31:11 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CA116137D;
+        Mon, 23 Aug 2021 10:30:29 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mI7Dn-006dWB-BN; Mon, 23 Aug 2021 11:30:27 +0100
+Date:   Mon, 23 Aug 2021 11:30:26 +0100
+Message-ID: <87a6l8qwql.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
+        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
+        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
+        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
+In-Reply-To: <CAGsJ_4wXqnudVO92qSKLdyJaMNuDE-d0srs=4rgJmOQKcG2P3g@mail.gmail.com>
+References: <20210820223744.8439-2-21cnbao@gmail.com>
+        <20210820233328.GA3368938@bjorn-Precision-5520>
+        <877dgfqdsg.wl-maz@kernel.org>
+        <CAGsJ_4wXqnudVO92qSKLdyJaMNuDE-d0srs=4rgJmOQKcG2P3g@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: 21cnbao@gmail.com, helgaas@kernel.org, bhelgaas@google.com, corbet@lwn.net, Jonathan.Cameron@huawei.com, bilbao@vt.edu, gregkh@linuxfoundation.org, leon@kernel.org, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, linuxarm@huawei.com, luzmaximilian@gmail.com, mchehab+huawei@kernel.org, schnelle@linux.ibm.com, song.bao.hua@hisilicon.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/08/03 12:15), Hans Verkuil wrote:
-> >  static void *vb2_dc_vaddr(struct vb2_buffer *vb, void *buf_priv)
-> >  {
-> >  	struct vb2_dc_buf *buf = buf_priv;
-> > -	struct dma_buf_map map;
-> > -	int ret;
-> >  
-> > -	if (!buf->vaddr && buf->db_attach) {
-> > -		ret = dma_buf_vmap(buf->db_attach->dmabuf, &map);
-> > -		buf->vaddr = ret ? NULL : map.vaddr;
-> > +	if (buf->vaddr)
-> > +		return buf->vaddr;
-> > +
-> > +	if (buf->db_attach) {
-> > +		struct dma_buf_map map;
-> > +
-> > +		if (!dma_buf_vmap(buf->db_attach->dmabuf, &map))
-> > +			buf->vaddr = map.vaddr;
-> > +
-> > +		return buf->vaddr;
-> >  	}
-> >  
-> > +	if (!buf->coherent_mem)
-> > +		buf->vaddr = dma_vmap_noncontiguous(buf->dev, buf->size,
-> > +						    buf->dma_sgt);
-> >  	return buf->vaddr;
-> >  }
+On Sat, 21 Aug 2021 23:14:35 +0100,
+Barry Song <21cnbao@gmail.com> wrote:
 > 
-> This function really needs a bunch of comments.
-> 
-> What I want to see here specifically is under which circumstances this function
-> can return NULL.
-> 
-> - dma_buf_vmap returns an error
-> - for non-coherent memory dma_vmap_noncontiguous returns an error
-> - coherent memory with DMA_ATTR_NO_KERNEL_MAPPING set.
+> On Sat, Aug 21, 2021 at 10:42 PM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > Hi Bjorn,
+> >
+> > On Sat, 21 Aug 2021 00:33:28 +0100,
+> > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > >
 
-Done.
+[...]
+
+> > >     In msix_setup_entries(), we get nvecs msi_entry structs, and we
+> > >     get a saved .default_irq in each one?
+> >
+> > That's a key point.
+> >
+> > Old-school PCI/MSI is represented by a single interrupt, and you
+> > *could* somehow make it relatively easy for drivers that only
+> > understand INTx to migrate to MSI if you replaced whatever is held in
+> > dev->irq (which should only represent the INTx mapping) with the MSI
+> > interrupt number. Which I guess is what the MSI code is doing.
+> >
+> > This is the 21st century, and nobody should ever rely on such horror,
+> > but I'm sure we do have such drivers in the tree. Boo.
+> >
+> > However, this *cannot* hold true for Multi-MSI, nor MSI-X, because
+> > there is a plurality of interrupts. Even worse, for MSI-X, there is
+> > zero guarantee that the allocated interrupts will be in a contiguous
+> > space.
+> >
+> > Given that, what is dev->irq good for? "Absolutely Nothing! (say it
+> > again!)".
+> >
+> 
+> The only thing is that dev->irq is an sysfs ABI to userspace. Due to
+> the inconsistency between legacy PCI INTx, MSI, MSI-X, this ABI
+> should have been absolutely broken nowadays.  This is actually what
+> the patchset was originally aiming at to fix.
+
+I do not think we should expose more of a broken abstraction to
+userspace. We will have to carry on exposing the first MSI in this
+field forever, but it doesn't mean we should have to do it for MSI-X.
+
+> One more question from me is that does dev->irq actually hold any
+> valid hardware INTx information while hardware is using MSI-X? At
+> least in my hardware, sysfs ABI for PCI is all "0".
+
+That's probably because nothing actually configured the interrupt, or
+that there is no INTx implementation. I have that on systems with
+pretty dodgy (or incomplete) firmware.
+
+> root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat irq
+> 0
+> 
+> root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# ls -l msi_irqs/*
+> -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/499
+> -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/500
+> -r--r--r-- 1 root root 4096 Aug 21 22:04 msi_irqs/501
+> ...
+> root@ubuntu:/sys/devices/pci0000:7c/0000:7c:00.0/0000:7d:00.3# cat msi_irqs/499
+> msix
+> 
+> Not quite sure how it is going on different hardware platforms.
+
+My D05 does that as well, and it doesn't expose any INTx support.
+
+> 
+> > MSI-X is not something you can "accidentally" use. You have to
+> > actively embrace it. In all honesty, this patch tries to move in the
+> > wrong direction. If anything, we should kill this hack altogether and
+> > fix the (handful of?) drivers that rely on it. That'd actually be a
+> > good way to find whether they are still worth keeping in the tree. And
+> > if it breaks too many of them, then at least we'll know where we
+> > stand.
+> >
+> > I'd be tempted to leave the below patch simmer in -next for a few
+> > weeks and see if how many people shout:
+> 
+> This looks like a more proper direction to go.
+> but here i am wondering how sysfs ABI document should follow the below change
+> doc is patch 2/2:
+> https://lore.kernel.org/lkml/20210820223744.8439-3-21cnbao@gmail.com/
+> 
+> On the other hand, my feeling is that nobody should depend on sysfs
+> irq entry nowadays.
+
+Too late. It is there, and we need to preserve it. I just don't think
+feeding it more erroneous information is the right thing to do.
+
+My patch was only dealing with the kernel side of things, not the
+userspace ABI. That ABI should be carried on unchanged.
+
+
+> For example, userspace irqbalance is actually using
+> /sys/devices/.../msi_irqs/ So probably we should set this ABI
+> invisible when devices are using MSI or MSI-X?
+
+Can it actually be made optional? I don't believe we can.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
