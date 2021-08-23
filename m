@@ -2,458 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F003F5258
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799A63F525E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 22:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbhHWUna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 16:43:30 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36862 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232331AbhHWUn1 (ORCPT
+        id S232657AbhHWUpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 16:45:15 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:41530 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232237AbhHWUpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 16:43:27 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17NKWjeH024204;
-        Mon, 23 Aug 2021 16:42:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=s9kvZZ7tv1nuCof3fQNvFxMRX7gaaweRp5I/H3IIBSI=;
- b=qgzwtkA9BVHu76lMz6EHtmEHqAIO1VNTFQ4sMUDEjsyvtjzLkF5jCT8mcpz4cnhfnF4s
- uJJbTvj+fcrGyW7PDIjT/sze5lHOl884UhTrFa9hfm8qe9/Zuj/Xma8xe4PomAF7uFg+
- YI+zLYU2/ga7z/YnGNk5hJ1ueUPA7bNifl3QQrh3ENx25F6uwjJ+Pm988kZMz+otqM6O
- lVg6xsJN7juB3jizFb+UK3f9CIphc44G0oQVu1/algQWMZAiSNuybJFd4VOzke1hvN1K
- 6gT+lusdB/IEuqLon//+iFeWdBHXQajqRoi1Z9TXL74BglzFtoVKUMsflI9Kxx3ELOlO Og== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ameuypww8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 16:42:40 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17NKXMfE009437;
-        Mon, 23 Aug 2021 20:42:38 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrhbux0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Aug 2021 20:42:38 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17NKgYUh23265746
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Aug 2021 20:42:34 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA3034C050;
-        Mon, 23 Aug 2021 20:42:34 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D2974C04A;
-        Mon, 23 Aug 2021 20:42:34 +0000 (GMT)
-Received: from localhost (unknown [9.102.2.197])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Aug 2021 20:42:34 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCHv2 2/2] lib/percpu_test: Add extra tests in percpu_test
-Date:   Tue, 24 Aug 2021 02:12:30 +0530
-Message-Id: <e29d6768053d4e05be3cd831f4fec540fb8f77c3.1629751104.git.riteshh@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <5afc2a0c4da65e71ccf24fe65396710d34fc662e.1629751104.git.riteshh@linux.ibm.com>
-References: <5afc2a0c4da65e71ccf24fe65396710d34fc662e.1629751104.git.riteshh@linux.ibm.com>
+        Mon, 23 Aug 2021 16:45:13 -0400
+Received: by mail-ot1-f43.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso25039590ota.8;
+        Mon, 23 Aug 2021 13:44:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pnr2xBK6f14eA69KuSvKgWmz6GZszF17FwIvkm7oDPQ=;
+        b=TgVKODDU201gj8GFMShejoxGML2gktiRIaYEkEJVYQF5k3erIE8wRqZ+H52kfTqiqZ
+         dYPOjs5vN8Gjj30bOqWhwMrWjA0Dgw43qh4lDgmplucCjZAHzzgQ/kp5Cu3K5NKJwIRN
+         OylBWQmspH54ZZZABAcI61yYpRY4rRebsJPJTrp+kl9Ff4/SxrfmLmPwHYA0HRL3w0y7
+         E0dMV7cvH8BpBCauEpVUDmrj/VIVTmMdbx6ubKTIx7JJuIanmLjsYqJtExcEM3fC9xqa
+         9/IYbxV01cC6s9vJf6LQuu0uZfWYmc4v6gYEwkeZXt0gzroOuNZiHN0SdQEHEMyQnXih
+         S0qg==
+X-Gm-Message-State: AOAM533KsTaxOxbWBxZgY1PdPRaBRdJFCnbPtWeaVx9SA6QEcmKkV9IJ
+        5jKw5iOvYr4cyRz6Xq7j/Q==
+X-Google-Smtp-Source: ABdhPJymyma9K8zi/fJwYE1whIW0bn8y6+qCPO73H/lWchveQw3/xnjL7fxLXL0v8fKNbN7U/MLrUw==
+X-Received: by 2002:a9d:6490:: with SMTP id g16mr29309183otl.184.1629751470513;
+        Mon, 23 Aug 2021 13:44:30 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id b2sm3072327ook.46.2021.08.23.13.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 13:44:28 -0700 (PDT)
+Received: (nullmailer pid 2691639 invoked by uid 1000);
+        Mon, 23 Aug 2021 20:44:27 -0000
+Date:   Mon, 23 Aug 2021 15:44:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Odelu Kukatla <okukatla@codeaurora.org>
+Cc:     elder@linaro.org, linux-kernel@vger.kernel.org, evgreen@google.com,
+        linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>, mdtipton@codeaurora.org,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-msm-owner@vger.kernel.org, devicetree@vger.kernel.org,
+        seansw@qti.qualcomm.com, saravanak@google.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
+        Sibi Sankar <sibis@codeaurora.org>, georgi.djakov@linaro.org
+Subject: Re: [v7 1/3] dt-bindings: interconnect: Add EPSS L3 DT binding on
+ SC7280
+Message-ID: <YSQIq3jNK0eRCOaD@robh.at.kernel.org>
+References: <1629458622-4915-1-git-send-email-okukatla@codeaurora.org>
+ <1629458622-4915-2-git-send-email-okukatla@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: viGg41THcIx1L8Pgp-1rBB4DXGsv4o6L
-X-Proofpoint-ORIG-GUID: viGg41THcIx1L8Pgp-1rBB4DXGsv4o6L
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-08-23_04:2021-08-23,2021-08-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- spamscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108230140
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1629458622-4915-2-git-send-email-okukatla@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While debugging a issue, we needed to stress test the percpu alloc/free
-path. Hence added some tests in lib/percpu_test to stress test
-percpu subsystem for allocation with different sizes.
+On Fri, 20 Aug 2021 16:53:39 +0530, Odelu Kukatla wrote:
+> Add Epoch Subsystem (EPSS) L3 interconnect provider binding on SC7280
+> SoCs.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+> ---
+>  .../devicetree/bindings/interconnect/qcom,osm-l3.yaml          |  9 ++++++++-
+>  include/dt-bindings/interconnect/qcom,osm-l3.h                 | 10 +++++++++-
+>  2 files changed, 17 insertions(+), 2 deletions(-)
+> 
 
-This patch keeps the default behavior of insmod module same for default
-test. But when given insmod with different option, it can run a
-percpu_stressd daemon (percpu_test_num=2) which does a stress test
-evey 10secs unless the module is unloaded.
-
-We found this to be helpful in our testing, since with this we could
-easily excercise percpu allo/free path. Hence cleaned this up for
-inclusion in percpu_test module.
-
-Logs
-======
-qemu-> sudo insmod /mnt/percpu_test.ko percpu_test_num=0
-[  334.362973] percpu_test: INIT, interval: 1000, max_shift: 13, run_tests: percpu_verify
-[  334.364946] TEST Starts: percpu_verify
-[  334.365601] TEST Completed: percpu_verify
-insmod: ERROR: could not insert module /mnt/percpu_test.ko: Resource temporarily unavailable
-
-qemu-> sudo insmod /mnt/percpu_test.ko percpu_test_num=1
-[  336.556464] percpu_test: INIT, interval: 1000, max_shift: 13, run_tests: percpu_stress
-[  336.558388] TEST Starts: percpu_stress
-[  336.560611] TEST Completed: percpu_stress
-insmod: ERROR: could not insert module /mnt/percpu_test.ko: Resource temporarily unavailable
-
-qemu-> sudo insmod /mnt/percpu_test.ko percpu_test_num=2
-[  339.164406] percpu_test: INIT, interval: 1000, max_shift: 13, run_tests: percpu_stressd
-[  339.165935] TEST Starts: percpu_stressd
-[  339.167033] TEST Completed: percpu_stressd
-[  339.167082] DAEMON: starts percpu_stressd
-[  339.168498] TEST Starts: percpu_stressd: iter (1)
-[  339.182530] TEST Completed: percpu_stressd: iter (1)
-[  349.341109] TEST Starts: percpu_stressd: iter (2)
-[  349.344447] TEST Completed: percpu_stressd: iter (2)
-[  359.580829] TEST Starts: percpu_stressd: iter (3)
-[  359.584315] TEST Completed: percpu_stressd: iter (3)
-[  369.820471] TEST Starts: percpu_stressd: iter (4)
-[  369.844402] TEST Completed: percpu_stressd: iter (4)
-
-qemu-> sudo rmmod percpu_test
-[  375.001098] percpu_test: EXIT
-[qemu][~]
-
-Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Cc: Vaibhav Jain <vaibhav@linux.ibm.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
-[v1 -> v2]: Fix warnings from kernel test robot
-
- lib/percpu_test.c | 240 ++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 191 insertions(+), 49 deletions(-)
-
-diff --git a/lib/percpu_test.c b/lib/percpu_test.c
-index 4a3d70bbc1a0..68c57c288dc6 100644
---- a/lib/percpu_test.c
-+++ b/lib/percpu_test.c
-@@ -1,4 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/workqueue.h>
-+#include <linux/kthread.h>
-+#include <linux/cpu.h>
- #include <linux/module.h>
-
- /* validate @native and @pcp counter values match @expected */
-@@ -14,10 +17,25 @@
- 		     (long long)(expected), (long long)(expected));	\
- 	} while (0)
-
--static DEFINE_PER_CPU(long, long_counter);
--static DEFINE_PER_CPU(unsigned long, ulong_counter);
-+/* upto max alloc size tests for percpu var */
-+static char __percpu *counters[1 << PAGE_SHIFT];
-+static struct task_struct *percpu_stressd_thread;
-
--static int __init percpu_test_init(void)
-+/* let's not trigger OOM */
-+int percpu_alloc_max_size_shift = PAGE_SHIFT - 3;
-+module_param(percpu_alloc_max_size_shift, int, 0644);
-+MODULE_PARM_DESC(percpu_alloc_max_size_shift, "max size of allocation in stress test will be upto 1 << percpu_alloc_max_size_shift");
-+
-+static long percpu_stressd_interval = 1 * 10 * HZ;
-+module_param(percpu_stressd_interval, long, 0644);
-+MODULE_PARM_DESC(percpu_stressd_interval, "percpu_stressd internal");
-+
-+/* keep the default test same */
-+static int percpu_test_num;
-+module_param(percpu_test_num, int, 0644);
-+MODULE_PARM_DESC(percpu_test_num, "Test number percpu_test_num");
-+
-+static int percpu_test_verify(void)
- {
- 	/*
- 	 * volatile prevents compiler from optimizing it uses, otherwise the
-@@ -26,109 +44,233 @@ static int __init percpu_test_init(void)
- 	volatile unsigned int ui_one = 1;
- 	long l = 0;
- 	unsigned long ul = 0;
-+	long __percpu *long_counter = alloc_percpu(long);
-+	unsigned long __percpu *ulong_counter = alloc_percpu(unsigned long);
-
--	pr_info("percpu test start\n");
-+	if (!long_counter || !ulong_counter)
-+		goto out;
-+
-+	pr_debug("percpu_test: %s start cpu: %d\n", __func__, smp_processor_id());
-
- 	preempt_disable();
-
- 	l += -1;
--	__this_cpu_add(long_counter, -1);
--	CHECK(l, long_counter, -1);
-+	__this_cpu_add(*long_counter, -1);
-+	CHECK(l, *long_counter, -1);
-
- 	l += 1;
--	__this_cpu_add(long_counter, 1);
--	CHECK(l, long_counter, 0);
-+	__this_cpu_add(*long_counter, 1);
-+	CHECK(l, *long_counter, 0);
-
- 	ul = 0;
--	__this_cpu_write(ulong_counter, 0);
-+	__this_cpu_write(*ulong_counter, 0);
-
- 	ul += 1UL;
--	__this_cpu_add(ulong_counter, 1UL);
--	CHECK(ul, ulong_counter, 1);
-+	__this_cpu_add(*ulong_counter, 1UL);
-+	CHECK(ul, *ulong_counter, 1);
-
- 	ul += -1UL;
--	__this_cpu_add(ulong_counter, -1UL);
--	CHECK(ul, ulong_counter, 0);
-+	__this_cpu_add(*ulong_counter, -1UL);
-+	CHECK(ul, *ulong_counter, 0);
-
- 	ul += -(unsigned long)1;
--	__this_cpu_add(ulong_counter, -(unsigned long)1);
--	CHECK(ul, ulong_counter, -1);
-+	__this_cpu_add(*ulong_counter, -(unsigned long)1);
-+	CHECK(ul, *ulong_counter, -1);
-
- 	ul = 0;
--	__this_cpu_write(ulong_counter, 0);
-+	__this_cpu_write(*ulong_counter, 0);
-
- 	ul -= 1;
--	__this_cpu_dec(ulong_counter);
--	CHECK(ul, ulong_counter, -1);
--	CHECK(ul, ulong_counter, ULONG_MAX);
-+	__this_cpu_dec(*ulong_counter);
-+	CHECK(ul, *ulong_counter, -1);
-+	CHECK(ul, *ulong_counter, ULONG_MAX);
-
- 	l += -ui_one;
--	__this_cpu_add(long_counter, -ui_one);
--	CHECK(l, long_counter, 0xffffffff);
-+	__this_cpu_add(*long_counter, -ui_one);
-+	CHECK(l, *long_counter, 0xffffffff);
-
- 	l += ui_one;
--	__this_cpu_add(long_counter, ui_one);
--	CHECK(l, long_counter, (long)0x100000000LL);
-+	__this_cpu_add(*long_counter, ui_one);
-+	CHECK(l, *long_counter, (long)0x100000000LL);
-
-
- 	l = 0;
--	__this_cpu_write(long_counter, 0);
-+	__this_cpu_write(*long_counter, 0);
-
- 	l -= ui_one;
--	__this_cpu_sub(long_counter, ui_one);
--	CHECK(l, long_counter, -1);
-+	__this_cpu_sub(*long_counter, ui_one);
-+	CHECK(l, *long_counter, -1);
-
- 	l = 0;
--	__this_cpu_write(long_counter, 0);
-+	__this_cpu_write(*long_counter, 0);
-
- 	l += ui_one;
--	__this_cpu_add(long_counter, ui_one);
--	CHECK(l, long_counter, 1);
-+	__this_cpu_add(*long_counter, ui_one);
-+	CHECK(l, *long_counter, 1);
-
- 	l += -ui_one;
--	__this_cpu_add(long_counter, -ui_one);
--	CHECK(l, long_counter, (long)0x100000000LL);
-+	__this_cpu_add(*long_counter, -ui_one);
-+	CHECK(l, *long_counter, (long)0x100000000LL);
-
- 	l = 0;
--	__this_cpu_write(long_counter, 0);
-+	__this_cpu_write(*long_counter, 0);
-
- 	l -= ui_one;
--	this_cpu_sub(long_counter, ui_one);
--	CHECK(l, long_counter, -1);
--	CHECK(l, long_counter, ULONG_MAX);
-+	this_cpu_sub(*long_counter, ui_one);
-+	CHECK(l, *long_counter, -1);
-+	CHECK(l, *long_counter, ULONG_MAX);
-
- 	ul = 0;
--	__this_cpu_write(ulong_counter, 0);
-+	__this_cpu_write(*ulong_counter, 0);
-
- 	ul += ui_one;
--	__this_cpu_add(ulong_counter, ui_one);
--	CHECK(ul, ulong_counter, 1);
-+	__this_cpu_add(*ulong_counter, ui_one);
-+	CHECK(ul, *ulong_counter, 1);
-
- 	ul = 0;
--	__this_cpu_write(ulong_counter, 0);
-+	__this_cpu_write(*ulong_counter, 0);
-
- 	ul -= ui_one;
--	__this_cpu_sub(ulong_counter, ui_one);
--	CHECK(ul, ulong_counter, -1);
--	CHECK(ul, ulong_counter, ULONG_MAX);
-+	__this_cpu_sub(*ulong_counter, ui_one);
-+	CHECK(ul, *ulong_counter, -1);
-+	CHECK(ul, *ulong_counter, ULONG_MAX);
-
- 	ul = 3;
--	__this_cpu_write(ulong_counter, 3);
-+	__this_cpu_write(*ulong_counter, 3);
-
--	ul = this_cpu_sub_return(ulong_counter, ui_one);
--	CHECK(ul, ulong_counter, 2);
-+	ul = this_cpu_sub_return(*ulong_counter, ui_one);
-+	CHECK(ul, *ulong_counter, 2);
-
--	ul = __this_cpu_sub_return(ulong_counter, ui_one);
--	CHECK(ul, ulong_counter, 1);
-+	ul = __this_cpu_sub_return(*ulong_counter, ui_one);
-+	CHECK(ul, *ulong_counter, 1);
-
- 	preempt_enable();
-
--	pr_info("percpu test done\n");
--	return -EAGAIN;  /* Fail will directly unload the module */
-+out:
-+	free_percpu(long_counter);
-+	free_percpu(ulong_counter);
-+	pr_debug("percpu_test: %s done cpu: %d\n", __func__, smp_processor_id());
-+
-+	/*
-+	 * Keep the default functionality same.
-+	 * Fail will directly unload this module.
-+	 */
-+	return -EAGAIN;
-+}
-+
-+static void percpu_test_verify_work(struct work_struct *work)
-+{
-+	percpu_test_verify();
-+}
-+
-+static int percpu_test_stress(void)
-+{
-+	int i;
-+
-+	for (i = 1; i < (1 << percpu_alloc_max_size_shift); i++) {
-+		size_t size = i;
-+
-+		if (size > PCPU_MIN_ALLOC_SIZE)
-+			break;
-+		counters[i] = (char __percpu *)__alloc_percpu(size, __alignof__(char));
-+		if (!counters[i])
-+			break;
-+		cond_resched();
-+	}
-+
-+	schedule_on_each_cpu(percpu_test_verify_work);
-+
-+	for (i = 0; i < (1 << percpu_alloc_max_size_shift); i++) {
-+		free_percpu(counters[i]);
-+		cond_resched();
-+	}
-+	return -EAGAIN;
-+}
-+
-+static int percpu_stressd(void *v)
-+{
-+	int iter = 0;
-+
-+	pr_info("DAEMON: starts %s\n", __func__);
-+	do {
-+		if (kthread_should_stop())
-+			break;
-+		iter++;
-+		pr_info("TEST Starts: %s: iter (%d)\n", __func__, iter);
-+		percpu_test_stress();
-+		pr_info("TEST Completed: %s: iter (%d)\n", __func__, iter);
-+
-+		set_current_state(TASK_INTERRUPTIBLE);
-+		schedule_timeout(percpu_stressd_interval);
-+	} while (1);
-+
-+	return 0;
-+}
-+
-+static int percpu_test_stressd(void)
-+{
-+	percpu_stressd_thread = kthread_run(percpu_stressd, NULL, "percpu_stressd");
-+	if (IS_ERR(percpu_stressd_thread))
-+		percpu_stressd_thread = NULL;
-+	return 0;
-+}
-+
-+enum test_type {
-+	PERCPU_VERIFY,
-+	PERCPU_STRESS,
-+	PERCPU_STRESSD,
-+	NR_TESTS,
-+};
-+
-+const char *test_names[NR_TESTS] = {
-+	[PERCPU_VERIFY] = "percpu_verify",
-+	[PERCPU_STRESS] = "percpu_stress",
-+	[PERCPU_STRESSD] = "percpu_stressd",
-+};
-+
-+static int __init percpu_test_init(void)
-+{
-+	int i, ret = 0;
-+	typedef int (*percpu_tests)(void);
-+	const percpu_tests test_funcs[NR_TESTS] = {
-+		[PERCPU_VERIFY] = percpu_test_verify,
-+		[PERCPU_STRESS] = percpu_test_stress,
-+		[PERCPU_STRESSD] = percpu_test_stressd,
-+	};
-+
-+	/* sanity checks */
-+	if (percpu_alloc_max_size_shift > PAGE_SHIFT)
-+		percpu_alloc_max_size_shift = PAGE_SHIFT;
-+	if (percpu_test_num > NR_TESTS)
-+		percpu_test_num = NR_TESTS;
-+
-+	pr_info("percpu_test: INIT, interval: %ld, max_shift: %d, run_tests: %s\n",
-+			percpu_stressd_interval, percpu_alloc_max_size_shift,
-+			percpu_test_num == NR_TESTS ? "run all tests" :
-+			test_names[percpu_test_num]);
-+
-+	/* run a given test */
-+	if (percpu_test_num < NR_TESTS) {
-+		pr_info("TEST Starts: %s\n", test_names[percpu_test_num]);
-+		ret = test_funcs[percpu_test_num]();
-+		pr_info("TEST Completed: %s\n", test_names[percpu_test_num]);
-+		goto out;
-+	}
-+
-+	for (i = 0; i < NR_TESTS; i++) {
-+		pr_info("TEST Starts: %s\n", test_names[i]);
-+		test_funcs[i]();
-+		pr_info("TEST Completed: %s\n", test_names[i]);
-+	}
-+out:
-+	return ret;
- }
-
- static void __exit percpu_test_exit(void)
- {
-+	if (percpu_stressd_thread)
-+		kthread_stop(percpu_stressd_thread);
-+	pr_info("percpu_test: EXIT\n");
- }
-
- module_init(percpu_test_init)
---
-2.31.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
