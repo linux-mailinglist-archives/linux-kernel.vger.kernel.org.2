@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EA83F53CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 01:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664583F53CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 01:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhHWXvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 19:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233327AbhHWXut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:50:49 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED511C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 16:50:05 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso26259781ota.8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 16:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=WoDDjdzbvPyEs19Npp+KsDh7LDnbNT5MIojU8+tk5Fw=;
-        b=lxV+LoLa6AmzEui46cKIIlmIVceP1kYM8VWwX7911dwfuaalkODC+0x8OScWBEMuc+
-         R5+iNiCXJR/9dZKmqhyjGONtNUjng1Uh4paCMbcZbPTX1zbc9gwrOZeeQJ6c9R9p97ut
-         8sh+04l2eksB3ZaemEeRRbtxSvyMcIGshrD+s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=WoDDjdzbvPyEs19Npp+KsDh7LDnbNT5MIojU8+tk5Fw=;
-        b=mRKQa2SrYI6rhtaU9qEs+ibZ+Gh96s+RH/a5okbtq4gjhZwZsRrcMsNjcud4AVp4v+
-         XiCZKdqqBoTwCe9fBr+++cDjsINY5JdSrl6kYtHAezQRxGFp9AF9tOcIUNFNv2TwoZfo
-         FuswDu64ipm76YivmayiOObgZmU+LLxeJ72Hoy7bPFJnlwVFDhQeDf0P4knndXZjScd2
-         ec6HsjNj0VUmeA6lyxLvQ9uviW63oD2pTrLkXYfV3We3JZHghnllz6RmRLsWM0vgKAxa
-         Cr2GaiAz/GUKjaKwfYYVQDiyVolYCKNqPQFWDfhhkpx04btmE0uXJA6PK36GFhjr8rPy
-         1jXw==
-X-Gm-Message-State: AOAM532pk8WSdhis30OlUlf1tg2/53VXweuJKPdYR/bX8PwblGNtVa1+
-        Co1acttUxRTmbeRYePBDptCzVdX1bp5dUhzSonDRZA==
-X-Google-Smtp-Source: ABdhPJyplZFiLcT/PUaK7ZB+YTOaFz++lRFqFYou4I57i80IsaoaIZAZ18qqb81QRva1zUDu1wKPZC4CXzo1GJhyYpY=
-X-Received: by 2002:a05:6830:2473:: with SMTP id x51mr22956792otr.34.1629762605326;
- Mon, 23 Aug 2021 16:50:05 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 23 Aug 2021 18:50:04 -0500
+        id S233413AbhHWXv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 19:51:28 -0400
+Received: from mga06.intel.com ([134.134.136.31]:35824 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233330AbhHWXvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 19:51:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="278212042"
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="278212042"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 16:50:13 -0700
+X-IronPort-AV: E=Sophos;i="5.84,344,1620716400"; 
+   d="scan'208";a="526362646"
+Received: from snrahman-mobl3.amr.corp.intel.com (HELO [10.212.238.112]) ([10.212.238.112])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 16:50:12 -0700
+Subject: Re: [RFC PATCH 4/4] x86/mm: write protect (most) page tables
+To:     Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210823132513.15836-1-rppt@kernel.org>
+ <20210823132513.15836-5-rppt@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <1cccc2b6-8b5b-4aee-483d-f10e64a248a5@intel.com>
+Date:   Mon, 23 Aug 2021 16:50:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
-References: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 23 Aug 2021 18:50:04 -0500
-Message-ID: <CAE-0n52Rp9QGUYeP==YdXEJAwbtHtZX=5b3gaR-smLMFybsf6A@mail.gmail.com>
-Subject: Re: [PATCH] thermal: qcom: spmi-adc-tm5: Don't abort probing if a
- sensor is not used
-To:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     linux-pm@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210823132513.15836-5-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-08-23 13:47:30)
-> adc_tm5_register_tzd() registers the thermal zone sensors for all
-> channels of the thermal monitor. If the registration of one channel
-> fails the function skips the processing of the remaining channels
-> and returns an error, which results in _probe() being aborted.
->
-> One of the reasons the registration could fail is that none of the
-> thermal zones is using the channel/sensor, which hardly is a critical
-> error (if it is an error at all). If this case is detected emit a
-> warning and continue with processing the remaining channels.
->
-> Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+On 8/23/21 6:25 AM, Mike Rapoport wrote:
+>  void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
+>  {
+> +	enable_pgtable_write(page_address(pte));
+>  	pgtable_pte_page_dtor(pte);
+>  	paravirt_release_pte(page_to_pfn(pte));
+>  	paravirt_tlb_remove_table(tlb, pte);
+> @@ -69,6 +73,7 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+>  #ifdef CONFIG_X86_PAE
+>  	tlb->need_flush_all = 1;
+>  #endif
+> +	enable_pgtable_write(pmd);
+>  	pgtable_pmd_page_dtor(page);
+>  	paravirt_tlb_remove_table(tlb, page);
+>  }
 
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+I would expected this to have leveraged the pte_offset_map/unmap() code
+to enable/disable write access.  Granted, it would enable write access
+even when only a read is needed, but that could be trivially fixed with
+having a variant like:
 
-Should we also disable the 'charger-thermistor@0' node in
-sc7180-trogdor.dtsi on lazor boards, instead of the thermal zone, or in
-addition to the thermal zone? It isn't used so there's not much value in
-exposing it.
+	pte_offset_map_write()
+	pte_offset_unmap_write()
+
+in addition to the existing (presumably read-only) versions:
+
+	pte_offset_map()
+	pte_offset_unmap()
+
+Although those only work for the leaf levels, it seems a shame not to to
+use them.
+
+I'm also cringing a bit at hacking this into the page allocator.   A
+*lot* of what you're trying to do with getting large allocations out and
+splitting them up is done very well today by the slab allocators.  It
+might take some rearrangement of 'struct page' metadata to be more slab
+friendly, but it does seem like a close enough fit to warrant investigating.
