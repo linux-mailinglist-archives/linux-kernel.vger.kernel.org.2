@@ -2,268 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173EF3F480B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADCF3F480D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236047AbhHWJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235841AbhHWJ5i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:57:38 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E9FC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:55 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id s16so16488317ilo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y7qpHpDcmlssC+BWCGansOtr3RWREEfeLz55ok9vf5I=;
-        b=ljrQuWngrN8qnDeDj+bxoCw9EfvW6Juvc6XKshtI5AejrC2id/FR5pNthhyRoZLhNM
-         gs9XCFvYU3q3yUACGjE3xxEEKZJAJe96Ctz5K4GI7RcJmoK2uh2j+X81d06py9pwt4Bb
-         sykXGAinrpMCwS9bsiOyBDGniUV55QQGPvIfc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y7qpHpDcmlssC+BWCGansOtr3RWREEfeLz55ok9vf5I=;
-        b=KedSjDMyX9zN504cvGdL5BXfhT45tHM7fOuquEctmJJHk9sZxlFRrKUrOYjpyVBJzX
-         KncrrrGZRQCoT47LAmI/sWmeiuufvRcKzCqrp3E7384ex2tDbVAK+cDd/6+qnZ92hPzf
-         P7+LoiyMxQkiB05fuaPf+hL+QaDJ+R26u4nwoMASovPG7DSTh+1damLY4xGhSXD11ria
-         c16UCbxVWkVfYzTE+D4R9kODmIsnmejjMzAvy2NN/0aOWXyq4mwB7mZHPdi89I1TEkVi
-         5ugtEBxO+9Q1GpzLVrjloGKZOVgBBP2adf56PUpjbpMjoLFvjXQH7y85zsXw50TqqzB5
-         NOWw==
-X-Gm-Message-State: AOAM531Q+ldsqE743riYZJfFYIh2rfNr4obWmDr1v0obH6zv9TDpEcT6
-        2d7JvvdesXNOWo6D/bj0YEWVRq0jAoeScg==
-X-Google-Smtp-Source: ABdhPJw0OMiy64HnD1VQ/QuygrGoOC+I48FuXABLpGi/HEQNPHx7LLGF9ELzCw87lu6kh/62633H1A==
-X-Received: by 2002:a92:190f:: with SMTP id 15mr21592537ilz.45.1629712615019;
-        Mon, 23 Aug 2021 02:56:55 -0700 (PDT)
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
-        by smtp.gmail.com with ESMTPSA id a2sm8050853ili.40.2021.08.23.02.56.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 02:56:54 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id b4so6962701ilr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:54 -0700 (PDT)
-X-Received: by 2002:a92:da4c:: with SMTP id p12mr21550457ilq.89.1629712613838;
- Mon, 23 Aug 2021 02:56:53 -0700 (PDT)
+        id S234619AbhHWJ6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:58:50 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:59405 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231759AbhHWJ6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 05:58:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtSNY2p2hz9sX2;
+        Mon, 23 Aug 2021 19:58:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629712685;
+        bh=tc+MuSjGZBYIM2E3Ckyauunx58Bo/2bzWbamoxVmyNc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fsHV4CVg69i6mxOckI2mJfeIiqlGm910UXWlIGgbRzQ6/5N/04+Z/lgwvXTomWqxY
+         e+1ZFPXzLkbsbBvrseVNNVYB7P4WnJu26p1qh8o6ipjo+ko4MmRZ/AdFJxglbFzpM0
+         1l0DYlq//XTgz3zPjTwsun9BWgcHbSehWltmSzsOtRtUmctQkk9xUJhJGfwbTSF62S
+         ToYh9l6h8VSLXrtkWt7fxsJBMaoikAZf+eylD90rZD4G/Zi8HcH4LnZVMYSAU8Myel
+         eFXCFDXYvzZ3B9y6Kg4BpP49J4YW2EHeuhScEkAnwA2NVmLnYQt+InpNMuUr61LmDz
+         X95jcJr2yc4ZQ==
+Date:   Mon, 23 Aug 2021 19:58:04 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the ftrace tree
+Message-ID: <20210823195804.10c5758a@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210818203502.269889-1-ribalda@chromium.org> <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
- <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
- <YR4yRfEmMvsAXRfu@pendragon.ideasonboard.com> <CANiDSCvStwDkkW7FLwTmogsH45292gugAvZfuoss3aJ9RzOAQw@mail.gmail.com>
- <YR5nhmF3MXdjtCvs@pendragon.ideasonboard.com> <CANiDSCtPGCnQNuGUxDbbQPgtj3a_6eOtaABXk=39Y7b-03gQNA@mail.gmail.com>
- <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com>
-In-Reply-To: <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Mon, 23 Aug 2021 11:56:43 +0200
-X-Gmail-Original-Message-ID: <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
-Message-ID: <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/HcsUxNEksk5PPP4IrPYpug1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 at 03:54, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> On Thu, Aug 19, 2021 at 04:46:38PM +0200, Ricardo Ribalda wrote:
-> > On Thu, 19 Aug 2021 at 16:15, Laurent Pinchart wrote:
-> > > On Thu, Aug 19, 2021 at 01:31:32PM +0200, Ricardo Ribalda wrote:
-> > > > On Thu, 19 Aug 2021 at 12:28, Laurent Pinchart wrote:
-> > > > > On Thu, Aug 19, 2021 at 08:27:00AM +0200, Ricardo Ribalda wrote:
-> > > > > > On Thu, 19 Aug 2021 at 00:22, Laurent Pinchart wrote:
-> > > > > > > On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
-> > > > > > > > The hardware timestamping code has the assumption than the device_sof
-> > > > > > > > and the host_sof run at the same frequency (1 KHz).
-> > > > > > > >
-> > > > > > > > Unfortunately, this is not the case for all the hardware. Add a quirk to
-> > > > > > > > support such hardware.
-> > > > > > > >
-> > > > > > > > Note on how to identify such hardware:
-> > > > > > > > When running with "yavta -c /dev/videoX" Look for periodic jumps of the
-> > > > > > > > fps. Eg:
-> > > > > > > >
-> > > > > > > > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
-> > > > > > > > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
-> > > > > > > > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
-> > > > > > > > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
-> > > > > > > > 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
-> > > > > > > > 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
-> > > > > > > > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
-> > > > > > > > ...
-> > > > > > > > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
-> > > > > > > > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
-> > > > > > > > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
-> > > > > > > > 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
-> > > > > > > > 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
-> > > > > > > > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
-> > > > > > > >
-> > > > > > > > They happen because the delta_sof calculated at
-> > > > > > > > uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
-> > > > > > >
-> > > > > > > That looks plain wrong. First of all, the whole purpose of the SOF clock
-> > > > > > > is to have a shared clock between the host and the device. It makes no
-> > > > > > > sense for a device to have a free-running "SOF" clock. Given the log
-> > > > > > > above, the issue occurs so quickly that it doesn't seem to be a mere
-> > > > > > > drift of a free running clock. Could you investigate this more carefully
-> > > > > > > ?
-> > > > > >
-> > > > > > In my test the dev_sof runs at 887.91Hz and the dev_sof at 1000.35Hz.
-> > > > > > If I plot the difference of both clocks host_sof - (dev_sof % 2048), I
-> > > > > > get this nice graph https://imgur.com/a/5fQnKa7
-> > > > > >
-> > > > > > I agree that it makes not sense to have a free-running "SOF", but the
-> > > > > > manufacturer thinks otherwise :)
-> > > > >
-> > > > > In that case there's no common clock between the device and the host,
-> > > > > which means that clock recovery is impossible. The whole timestamp
-> > > > > computation should be bypassed, and the driver should use the system
-> > > > > timestamp instead.
-> > > >
-> > > > Or said differently. The clock recovery is susceptible to the jitter
-> > > > in the frame acquisition.
-> > > >
-> > > > If you have no jitter, the clock recovered will match the reality, and
-> > > > if you have bad jitter, it will be as bad as system timestamp.
-> > >
-> > > The whole point of the clock recovery code is to convert a precise
-> > > timestamp, expressed using a device clock that the host has no access
-> > > to, to a system clock. This can only be done if the relationship between
-> > > the two clocks can be inferred, and the UVC specifies a mechanism to
-> > > allow this by using a common clock, in the form of the SOF counter. If
-> > > we don't have that, we're essentially screwed, and can't use the
-> > > algorithm implemented in the driver at all. I'd much rather skip is
-> > > completely in that case, instead of trying to hack the algorithm itself.
-> >
-> > Considering T(f) as the time between the usb package (f) is received
-> > and uvc_video_clock_decode()
-> > If the jitter between the different T(f)s is under one unit of our
-> > clock (1 msec) the accuracy of the "hacked" algorithm and the real
-> > algorithm is exactly the same.
-> >
-> > We can agree that 1 msec is a "lot" of time. And if our system has a
-> > worse latency than that, the hacked algorithm will not be worse than
-> > system timestamping.
-> >
-> > So in most of the situations this patch will produce better timestamps
-> > than the current code and never worse than now...
->
-> How can it produce better timestamps if it's missing the crucial
-> information that provides the correlation of timestamps between the
-> device and host side ?
+--Sig_/HcsUxNEksk5PPP4IrPYpug1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Because in a system with a latency jitter under 1msec sof_device and
-sof_host you already know that information: sof_host = sof_device
+Hi all,
 
-It is a special case of the general problem.
+After merging the ftrace tree, today's linux-next build (htmldocs)
+produced this warning:
 
->
-> > Anyway, I have tried to ping the vendor to see if there is something
-> > that I could be doing wrong, lets see what they reply.
-> >
-> > > On a side note, I think the whole clock recovery implementation should
-> > > move from the uvcvideo driver to userspace, where we'll have the ability
-> > > to perform floating point computation. The kernel implementation is
-> > > crude, it should be replaced with a linear regression.
-> >
-> > Agree, but instead of a linear regression, a resampling algorithm.
->
-> A linear regression is likely a good enough resampling algorithm in this
-> case, but I'd be curious to see if someone could do better.
->
-> > > > So this patch will still be better than nothing.
-> > > >
-> > > > > I still find it hard to believe that a Logitech camera would get this
-> > > > > wrong.
-> > > >
-> > > > I guess I can send you a device, or give you access to mine remotely
-> > > > if you do not believe me :)
-> > > >
-> > > > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > > > > > ---
-> > > > > > > > v2: Fix typo in frequency
-> > > > > > > >
-> > > > > > > >  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
-> > > > > > > >  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
-> > > > > > > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
-> > > > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > index 9a791d8ef200..d1e6cba10b15 100644
-> > > > > > > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > > > @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
-> > > > > > > >         .bInterfaceSubClass   = 1,
-> > > > > > > >         .bInterfaceProtocol   = 0,
-> > > > > > > >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-> > > > > > > > +     /* Logitech HD Pro Webcam C922 */
-> > > > > > > > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > > > > > > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > > > > > > +       .idVendor             = 0x046d,
-> > > > > > > > +       .idProduct            = 0x085c,
-> > > > > > > > +       .bInterfaceClass      = USB_CLASS_VIDEO,
-> > > > > > > > +       .bInterfaceSubClass   = 1,
-> > > > > > > > +       .bInterfaceProtocol   = 0,
-> > > > > > > > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
-> > > > > > > >       /* Chicony CNF7129 (Asus EEE 100HE) */
-> > > > > > > >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
-> > > > > > > >                               | USB_DEVICE_ID_MATCH_INT_INFO,
-> > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > index 6d0e474671a2..760ab015cf9c 100644
-> > > > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > > > > > > > @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
-> > > > > > > >       /* To limit the amount of data, drop SCRs with an SOF identical to the
-> > > > > > > >        * previous one.
-> > > > > > > >        */
-> > > > > > > > -     dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > > > > > > +             dev_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > +     else
-> > > > > > > > +             dev_sof = get_unaligned_le16(&data[header_size - 2]);
-> > > > > > > > +
-> > > > > > > >       if (dev_sof == stream->clock.last_sof)
-> > > > > > > >               return;
-> > > > > > > >
-> > > > > > > >       stream->clock.last_sof = dev_sof;
-> > > > > > > >
-> > > > > > > > -     host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
-> > > > > > > > +             host_sof = dev_sof;
-> > > > > > > > +     else
-> > > > > > > > +             host_sof = usb_get_current_frame_number(stream->dev->udev);
-> > > > > > > >       time = uvc_video_get_time();
-> > > > > > > >
-> > > > > > > >       /* The UVC specification allows device implementations that can't obtain
-> > > > > > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > index cce5e38133cd..89d909661915 100644
-> > > > > > > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > > > @@ -209,6 +209,8 @@
-> > > > > > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
-> > > > > > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
-> > > > > > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
-> > > > > > > > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00002000
-> > > > > > > > +
-> > > > > > > >
-> > > > > > > >  /* Format flags */
-> > > > > > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
->
-> --
-> Regards,
->
-> Laurent Pinchart
+Documentation/trace/histogram.rst:80: WARNING: Malformed table.
+Text in column margin in table line 8.
 
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+.hex        display a number as a hex value
+.sym        display an address as a symbol
+.sym-offset display an address as a symbol and offset
+.syscall    display a syscall id as a system call name
+.execname   display a common_pid as a program name
+.log2       display log2 value rather than raw number
+.buckets=3Dsize  display grouping of values rather than raw number
+.usecs      display a common_timestamp in microseconds
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
 
+Introduced by commit
 
--- 
-Ricardo Ribalda
+  370364351926 ("tracing/histogram: Update the documentation for the bucket=
+s modifier")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HcsUxNEksk5PPP4IrPYpug1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEjcSwACgkQAVBC80lX
+0GyP7Qf/UUFSsP+xHhgC/SGhTlSzOdQTmjhzGSKFIg/+PJTFBdDxwevRNpqbq3af
+vRYQjx2H69/R1D7TR/9sTkPhXoU/ve0SoJnp4K3o2O5cVXhFi8kQf0EvlFu9sEof
+acIdSSaDw5Jch1DiRL3z1VT8Ao/hmFTogEEWJS0/koIEtE9qPonHibJvZOfa1ZbJ
+bD/W7DRdsm7cPXC+7uxL42bQpj1XZpf9wnJHtWQw4wjYxcbXkGdrd+oSk2CfbWQj
+1PonimVwi6heC0jSJVMW3zeZn2ua9cJTWTvrR+koJWYZ8KmJkP3cHTZfyoHo3BOL
+bM5MAIwMfPo3V4YbbjeDeF27TH9Lcg==
+=150d
+-----END PGP SIGNATURE-----
+
+--Sig_/HcsUxNEksk5PPP4IrPYpug1--
