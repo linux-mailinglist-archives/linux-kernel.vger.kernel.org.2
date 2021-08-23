@@ -2,167 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5443F43F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3206A3F4403
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 05:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbhHWDeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 23:34:05 -0400
-Received: from mail-m17664.qiye.163.com ([59.111.176.64]:50328 "EHLO
-        mail-m17664.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhHWDeE (ORCPT
+        id S234054AbhHWDwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 23:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233206AbhHWDwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 23:34:04 -0400
-X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Sun, 22 Aug 2021 23:34:03 EDT
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [116.31.82.26])
-        by mail-m17664.qiye.163.com (Hmail) with ESMTPA id 805501400E9;
-        Mon, 23 Aug 2021 11:33:18 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wang Qing <wangqing@vivo.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dirk Behme <dirk.behme@de.bosch.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH,RESEND] softirq: Introduce SOFTIRQ_FORCED_THREADING
-Date:   Mon, 23 Aug 2021 11:33:01 +0800
-Message-Id: <1629689583-25324-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRoaHkhWTk5DGB0fGUtPSk
-        0eVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PCo6NBw5NT8CFwpCITUXPAoP
-        CBJPFD1VSlVKTUlCTUNCTkJCTEJKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZSkpN
-        VUhKVUNJVUlNWVdZCAFZQU5KS0w3Bg++
-X-HM-Tid: 0a7b7111d36fda2fkuws805501400e9
+        Sun, 22 Aug 2021 23:52:37 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA49EC061575;
+        Sun, 22 Aug 2021 20:51:54 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id w4so27472722ljh.13;
+        Sun, 22 Aug 2021 20:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YXggvvJGU/2niaUKbO0v/QADh07U6yAQkyzAsFT18iI=;
+        b=pZP32dTVrxV6d9QTUL+O9qckLk62N9IB+Val0/rPOQR1n1iYwfJAB+oL5QQa+x7yia
+         8sudterClxPPFYXYbjKVOiYQBJODWiEdMuEsZMG/95XGDieLJnC4GjUOPwnP2CUNQvni
+         Mn3rX1lneiCluNph40bxp13w/LdlrFvtWKFORgR+V527c9LGpGI59VL7PuivrwP2wZI6
+         Yklk3W7p+MFAyFXWlOLJaD4OpiD6zm/i7aWuDvuh+gSMXAu1yTHRnDv0IRwKyNm9CZKi
+         SX9iNiLzvyRPZBFhsAcVz2VkypwASBts7PVFUB0OqezRk0mXX9a6sp8pIjfU4yNJLUFz
+         v9nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YXggvvJGU/2niaUKbO0v/QADh07U6yAQkyzAsFT18iI=;
+        b=TioeOmnubIs32qgzF+IpBO2qWhPSNdr7zgk+UhJVSjCE1w+KRi8dTbS3qsfva7giJC
+         nTEhpjLICB1bRgVq5P+sQ48BCsy+t7rhllG0y5HIn/L8zL44fIViHie3HRCqf/vX3sYi
+         1cuLjxL9faorHTbYlMItGgaTAk2Ojp9DSlgXLfGvjgdpOMpRvo0fO3cEBkGcjO/ysRa7
+         6vc670xdc9mq633lBbZg5YbtFNMyrs5Fha8ecoeysedl0wUR1S3xp41Rm1/uX2wRphFj
+         HiHAAhsO9OcPdqkY1uQZK7fGctxrB8JYKZTnwg8xQNLwTAs+nXFuLhFgUvOqPtZZOenR
+         /f0g==
+X-Gm-Message-State: AOAM530OVK+1loqp2wMmr+WvvQG05IiUFi7UgKUSFguaDumkv5d561WS
+        hLCczc1ZWdEULIT6kSH0vt4=
+X-Google-Smtp-Source: ABdhPJxQkUy2TQf5bz8oPZZ/nk5Fv18rLXSwVovzoQWSVZCQ8h0Lla97sc/Sn/YkZYvNkwf86SIemQ==
+X-Received: by 2002:a2e:85c4:: with SMTP id h4mr26341146ljj.321.1629690713320;
+        Sun, 22 Aug 2021 20:51:53 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id n18sm1313191ljg.40.2021.08.22.20.51.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 20:51:52 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 06:51:50 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC PATCH 01/20] fat: Fix iocharset=utf8 mount option
+Message-ID: <20210823035150.h3dor7hanhzua7lh@kari-VirtualBox>
+References: <20210808162453.1653-1-pali@kernel.org>
+ <20210808162453.1653-2-pali@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210808162453.1653-2-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At present, whether the softirq is executed when the interrupt exits 
-is controlled by IRQ_FORCED_THREADING. This is unreasonable. It should 
-be split and allowed to take effect separately.
+On Sun, Aug 08, 2021 at 06:24:34PM +0200, Pali Rohár wrote:
+> Currently iocharset=utf8 mount option is broken and error is printed to
+> dmesg when it is used. To use UTF-8 as iocharset, it is required to use
+> utf8=1 mount option.
+> 
+> Fix iocharset=utf8 mount option to use be equivalent to the utf8=1 mount
+> option and remove printing error from dmesg.
+> 
+> FAT by definition is case-insensitive but current Linux implementation is
+> case-sensitive for non-ASCII characters when UTF-8 is used. This patch does
+> not change this UTF-8 behavior. Only more comments in fat_utf8_strnicmp()
+> function are added about it.
+> 
+> After this patch iocharset=utf8 starts working, so there is no need to have
+> separate config option FAT_DEFAULT_UTF8 as FAT_DEFAULT_IOCHARSET for utf8
+> also starts working. So remove redundant config option FAT_DEFAULT_UTF8.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+>  fs/fat/Kconfig      | 15 ---------------
+>  fs/fat/dir.c        | 17 +++++++----------
+>  fs/fat/fat.h        | 22 ++++++++++++++++++++++
+>  fs/fat/inode.c      | 28 +++++++++++-----------------
+>  fs/fat/namei_vfat.c | 26 +++++++++++++++++++-------
+>  5 files changed, 59 insertions(+), 49 deletions(-)
+> 
+> diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
+> index 66532a71e8fd..a31594137d5e 100644
+> --- a/fs/fat/Kconfig
+> +++ b/fs/fat/Kconfig
+> @@ -100,18 +100,3 @@ config FAT_DEFAULT_IOCHARSET
+>  
+>  	  Enable any character sets you need in File Systems/Native Language
+>  	  Support.
+> -
+> -config FAT_DEFAULT_UTF8
+> -	bool "Enable FAT UTF-8 option by default"
+> -	depends on VFAT_FS
+> -	default n
+> -	help
+> -	  Set this if you would like to have "utf8" mount option set
+> -	  by default when mounting FAT filesystems.
+> -
+> -	  Even if you say Y here can always disable UTF-8 for
+> -	  particular mount by adding "utf8=0" to mount options.
+> -
+> -	  Say Y if you use UTF-8 encoding for file names, N otherwise.
+> -
+> -	  See <file:Documentation/filesystems/vfat.rst> for more information.
+> diff --git a/fs/fat/dir.c b/fs/fat/dir.c
+> index c4a274285858..49fe8dc6e5f0 100644
+> --- a/fs/fat/dir.c
+> +++ b/fs/fat/dir.c
+> @@ -33,11 +33,6 @@
+>  #define FAT_MAX_UNI_CHARS	((MSDOS_SLOTS - 1) * 13 + 1)
+>  #define FAT_MAX_UNI_SIZE	(FAT_MAX_UNI_CHARS * sizeof(wchar_t))
+>  
+> -static inline unsigned char fat_tolower(unsigned char c)
+> -{
+> -	return ((c >= 'A') && (c <= 'Z')) ? c+32 : c;
+> -}
+> -
+>  static inline loff_t fat_make_i_pos(struct super_block *sb,
+>  				    struct buffer_head *bh,
+>  				    struct msdos_dir_entry *de)
+> @@ -258,10 +253,12 @@ static inline int fat_name_match(struct msdos_sb_info *sbi,
+>  	if (a_len != b_len)
+>  		return 0;
+>  
+> -	if (sbi->options.name_check != 's')
+> -		return !nls_strnicmp(sbi->nls_io, a, b, a_len);
+> -	else
+> +	if (sbi->options.name_check == 's')
+>  		return !memcmp(a, b, a_len);
+> +	else if (sbi->options.utf8)
+> +		return !fat_utf8_strnicmp(a, b, a_len);
+> +	else
+> +		return !nls_strnicmp(sbi->nls_io, a, b, a_len);
+>  }
+>  
+>  enum { PARSE_INVALID = 1, PARSE_NOT_LONGNAME, PARSE_EOF, };
+> @@ -384,7 +381,7 @@ static int fat_parse_short(struct super_block *sb,
+>  					de->lcase & CASE_LOWER_BASE);
+>  		if (chl <= 1) {
+>  			if (!isvfat)
+> -				ptname[i] = nocase ? c : fat_tolower(c);
+> +				ptname[i] = nocase ? c : fat_ascii_to_lower(c);
+>  			i++;
+>  			if (c != ' ') {
+>  				name_len = i;
+> @@ -421,7 +418,7 @@ static int fat_parse_short(struct super_block *sb,
+>  		if (chl <= 1) {
+>  			k++;
+>  			if (!isvfat)
+> -				ptname[i] = nocase ? c : fat_tolower(c);
+> +				ptname[i] = nocase ? c : fat_ascii_to_lower(c);
+>  			i++;
+>  			if (c != ' ') {
+>  				name_len = i;
+> diff --git a/fs/fat/fat.h b/fs/fat/fat.h
+> index 02d4d4234956..0cd15fb3b042 100644
+> --- a/fs/fat/fat.h
+> +++ b/fs/fat/fat.h
+> @@ -310,6 +310,28 @@ static inline void fatwchar_to16(__u8 *dst, const wchar_t *src, size_t len)
+>  #endif
+>  }
+>  
+> +static inline unsigned char fat_ascii_to_lower(unsigned char c)
+> +{
+> +	return ((c >= 'A') && (c <= 'Z')) ? c+32 : c;
+> +}
+> +
+> +static inline int fat_utf8_strnicmp(const unsigned char *a,
+> +				    const unsigned char *b,
+> +				    int len)
+> +{
+> +	int i;
+> +
+> +	/*
+> +	 * FIXME: UTF-8 doesn't provide FAT semantics
+> +	 * Case-insensitive support is only for 7-bit ASCII characters
+> +	 */
+> +	for (i = 0; i < len; i++) {
+> +		if (fat_ascii_to_lower(a[i]) != fat_ascii_to_lower(b[i]))
+> +			return 1;
+> +	}
+> +	return 0;
+> +}
+> +
+>  /* fat/cache.c */
+>  extern void fat_cache_inval_inode(struct inode *inode);
+>  extern int fat_get_cluster(struct inode *inode, int cluster,
+> diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+> index de0c9b013a85..f8c8a739f8f0 100644
+> --- a/fs/fat/inode.c
+> +++ b/fs/fat/inode.c
+> @@ -957,7 +957,9 @@ static int fat_show_options(struct seq_file *m, struct dentry *root)
+>  		/* strip "cp" prefix from displayed option */
+>  		seq_printf(m, ",codepage=%s", &sbi->nls_disk->charset[2]);
+>  	if (isvfat) {
+> -		if (sbi->nls_io)
+> +		if (opts->utf8)
+> +			seq_printf(m, ",iocharset=utf8");
 
-At the same time, we should increase the priority of ksoftirqd when
-forbidden to execute in interrupt exits. I refer to the implementation 
-of PREEMPT_RT and think it is reasonable.
+checkpatch will probably warn you about this.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/Kconfig.preempt | 10 ++++++++++
- kernel/irq/Kconfig     |  3 ++-
- kernel/softirq.c       | 21 ++++++++++++++++++++-
- 3 files changed, 32 insertions(+), 2 deletions(-)
+WARNING: Prefer seq_puts to seq_printf
 
-diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index 5876e30..42d60e7
---- a/kernel/Kconfig.preempt
-+++ b/kernel/Kconfig.preempt
-@@ -60,6 +60,7 @@ config PREEMPT_RT
- 	bool "Fully Preemptible Kernel (Real-Time)"
- 	depends on EXPERT && ARCH_SUPPORTS_RT
- 	select PREEMPTION
-+	select SOFTIRQ_FORCED_THREADING
- 	help
- 	  This option turns the kernel into a real-time kernel by replacing
- 	  various locking primitives (spinlocks, rwlocks, etc.) with
-@@ -118,4 +119,13 @@ config SCHED_CORE
- 	  which is the likely usage by Linux distributions, there should
- 	  be no measurable impact on performance.
- 
-+config SOFTIRQ_FORCED_THREADING
-+	bool "Balance softirq execute"
-+	help
-+	 This option will force the softirq to be executed in ksoftirqd,
-+	 cancel its execution timing when the interrupt exits, and change
-+	 ksoftirqd to a real-time process.
-
-+	 In this way, the execution of softirq can be executed more balanced,
-+	 and the maximum scheduling delay caused by the execution of softirq
-+	 in the RT process can be reduced.
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index fbc54c2..ecd3236
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -111,7 +111,8 @@ config GENERIC_IRQ_RESERVATION_MODE
- 
- # Support forced irq threading
- config IRQ_FORCED_THREADING
--       bool
-+    bool
-+	select SOFTIRQ_FORCED_THREADING
- 
- config SPARSE_IRQ
- 	bool "Support sparse irq numbering" if MAY_HAVE_SPARSE_IRQ
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index f3a0121..f02f0d9
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -29,6 +29,7 @@
- #include <linux/wait_bit.h>
- 
- #include <asm/softirq_stack.h>
-+#include <uapi/linux/sched/types.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/irq.h>
-@@ -417,12 +418,18 @@ static inline bool should_wake_ksoftirqd(void)
- 	return true;
- }
- 
-+#ifdef CONFIG_SOFTIRQ_FORCED_THREADING
-+static inline void invoke_softirq(void)
-+{
-+	wakeup_softirqd();
-+}
-+#else
- static inline void invoke_softirq(void)
- {
- 	if (ksoftirqd_running(local_softirq_pending()))
- 		return;
- 
--	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
-+	if (!__this_cpu_read(ksoftirqd)) {
- #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
- 		/*
- 		 * We can safely execute softirq on the current stack if
-@@ -442,6 +449,7 @@ static inline void invoke_softirq(void)
- 		wakeup_softirqd();
- 	}
- }
-+#endif
- 
- asmlinkage __visible void do_softirq(void)
- {
-@@ -909,6 +917,14 @@ static int ksoftirqd_should_run(unsigned int cpu)
- 	return local_softirq_pending();
- }
- 
-+#ifdef CONFIG_SOFTIRQ_FORCED_THREADING
-+static void ksoftirqd_set_sched_params(unsigned int cpu)
-+{
-+	struct sched_param param = { .sched_priority = 1 };
-+	sched_setscheduler(current, SCHED_FIFO, &param);
-+}
-+#endif
-+
- static void run_ksoftirqd(unsigned int cpu)
- {
- 	ksoftirqd_run_begin();
-@@ -957,6 +973,9 @@ static int takeover_tasklets(unsigned int cpu)
- 
- static struct smp_hotplug_thread softirq_threads = {
- 	.store			= &ksoftirqd,
-+#ifdef CONFIG_SOFTIRQ_FORCED_THREADING
-+	.setup			= ksoftirqd_set_sched_params,
-+#endif
- 	.thread_should_run	= ksoftirqd_should_run,
- 	.thread_fn		= run_ksoftirqd,
- 	.thread_comm		= "ksoftirqd/%u",
--- 
-2.7.4
-
+> +		else if (sbi->nls_io)
+>  			seq_printf(m, ",iocharset=%s", sbi->nls_io->charset);
+>  
+>  		switch (opts->shortname) {
+> @@ -994,8 +996,6 @@ static int fat_show_options(struct seq_file *m, struct dentry *root)
+>  		if (opts->nocase)
+>  			seq_puts(m, ",nocase");
+>  	} else {
+> -		if (opts->utf8)
+> -			seq_puts(m, ",utf8");
+>  		if (opts->unicode_xlate)
+>  			seq_puts(m, ",uni_xlate");
+>  		if (!opts->numtail)
+> @@ -1157,8 +1157,6 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
+>  	opts->errors = FAT_ERRORS_RO;
+>  	*debug = 0;
+>  
+> -	opts->utf8 = IS_ENABLED(CONFIG_FAT_DEFAULT_UTF8) && is_vfat;
+> -
+>  	if (!options)
+>  		goto out;
+>  
+> @@ -1319,10 +1317,14 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
+>  					| VFAT_SFN_CREATE_WIN95;
+>  			break;
+>  		case Opt_utf8_no:		/* 0 or no or false */
+> -			opts->utf8 = 0;
+> +			fat_reset_iocharset(opts);
+>  			break;
+>  		case Opt_utf8_yes:		/* empty or 1 or yes or true */
+> -			opts->utf8 = 1;
+> +			fat_reset_iocharset(opts);
+> +			iocharset = kstrdup("utf8", GFP_KERNEL);
+> +			if (!iocharset)
+> +				return -ENOMEM;
+> +			opts->iocharset = iocharset;
+>  			break;
+>  		case Opt_uni_xl_no:		/* 0 or no or false */
+>  			opts->unicode_xlate = 0;
+> @@ -1360,18 +1362,11 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
+>  	}
+>  
+>  out:
+> -	/* UTF-8 doesn't provide FAT semantics */
+> -	if (!strcmp(opts->iocharset, "utf8")) {
+> -		fat_msg(sb, KERN_WARNING, "utf8 is not a recommended IO charset"
+> -		       " for FAT filesystems, filesystem will be "
+> -		       "case sensitive!");
+> -	}
+> +	opts->utf8 = !strcmp(opts->iocharset, "utf8") && is_vfat;
+>  
+>  	/* If user doesn't specify allow_utime, it's initialized from dmask. */
+>  	if (opts->allow_utime == (unsigned short)-1)
+>  		opts->allow_utime = ~opts->fs_dmask & (S_IWGRP | S_IWOTH);
+> -	if (opts->unicode_xlate)
+> -		opts->utf8 = 0;
+>  	if (opts->nfs == FAT_NFS_NOSTALE_RO) {
+>  		sb->s_flags |= SB_RDONLY;
+>  		sb->s_export_op = &fat_export_ops_nostale;
+> @@ -1832,8 +1827,7 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
+>  		goto out_fail;
+>  	}
+>  
+> -	/* FIXME: utf8 is using iocharset for upper/lower conversion */
+> -	if (sbi->options.isvfat) {
+> +	if (sbi->options.isvfat && !sbi->options.utf8) {
+>  		sbi->nls_io = load_nls(sbi->options.iocharset);
+>  		if (!sbi->nls_io) {
+>  			fat_msg(sb, KERN_ERR, "IO charset %s not found",
+> diff --git a/fs/fat/namei_vfat.c b/fs/fat/namei_vfat.c
+> index 5369d82e0bfb..efb3cb9ea8a8 100644
+> --- a/fs/fat/namei_vfat.c
+> +++ b/fs/fat/namei_vfat.c
+> @@ -134,6 +134,7 @@ static int vfat_hash(const struct dentry *dentry, struct qstr *qstr)
+>  static int vfat_hashi(const struct dentry *dentry, struct qstr *qstr)
+>  {
+>  	struct nls_table *t = MSDOS_SB(dentry->d_sb)->nls_io;
+> +	int utf8 = MSDOS_SB(dentry->d_sb)->options.utf8;
+>  	const unsigned char *name;
+>  	unsigned int len;
+>  	unsigned long hash;
+> @@ -142,8 +143,17 @@ static int vfat_hashi(const struct dentry *dentry, struct qstr *qstr)
+>  	len = vfat_striptail_len(qstr);
+>  
+>  	hash = init_name_hash(dentry);
+> -	while (len--)
+> -		hash = partial_name_hash(nls_tolower(t, *name++), hash);
+> +	if (utf8) {
+> +		/*
+> +		 * FIXME: UTF-8 doesn't provide FAT semantics
+> +		 * Case-insensitive support is only for 7-bit ASCII characters
+> +		 */
+> +		while (len--)
+> +			hash = partial_name_hash(fat_ascii_to_lower(*name++), hash);
+> +	} else {
+> +		while (len--)
+> +			hash = partial_name_hash(nls_tolower(t, *name++), hash);
+> +	}
+>  	qstr->hash = end_name_hash(hash);
+>  
+>  	return 0;
+> @@ -156,16 +166,18 @@ static int vfat_cmpi(const struct dentry *dentry,
+>  		unsigned int len, const char *str, const struct qstr *name)
+>  {
+>  	struct nls_table *t = MSDOS_SB(dentry->d_sb)->nls_io;
+> +	int utf8 = MSDOS_SB(dentry->d_sb)->options.utf8;
+>  	unsigned int alen, blen;
+>  
+>  	/* A filename cannot end in '.' or we treat it like it has none */
+>  	alen = vfat_striptail_len(name);
+>  	blen = __vfat_striptail_len(len, str);
+> -	if (alen == blen) {
+> -		if (nls_strnicmp(t, name->name, str, alen) == 0)
+> -			return 0;
+> -	}
+> -	return 1;
+> +	if (alen != blen)
+> +		return 1;
+> +	else if (utf8)
+> +		return fat_utf8_strnicmp(name->name, str, alen);
+> +	else
+> +		return nls_strnicmp(t, name->name, str, alen);
+>  }
+>  
+>  /*
+> -- 
+> 2.20.1
+> 
