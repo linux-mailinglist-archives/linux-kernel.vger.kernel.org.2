@@ -2,169 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BF03F4809
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173EF3F480B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhHWJ51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
+        id S236047AbhHWJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235951AbhHWJ5W (ORCPT
+        with ESMTP id S235841AbhHWJ5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:57:22 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23047C061575;
-        Mon, 23 Aug 2021 02:56:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id m17so2778813plc.6;
-        Mon, 23 Aug 2021 02:56:40 -0700 (PDT)
+        Mon, 23 Aug 2021 05:57:38 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E9FC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:55 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id s16so16488317ilo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yne3gbAEgfLvuzl4ISOkMOkCXwKPNJ/FBTXv1EJmNsU=;
-        b=YHDP74AbShnhW5meoBsQ1QYdIjc1c4tgZ6mqQmAVTFy848TGQQqIyv+LQ/0DbIvJIe
-         4OEbNb6G4iCxHpmT7nK4EXbTum5BulylgPIakzGd2yr0czxgI7yOyVKBgrmTnf0mdaRn
-         GfqfXyh2xAzSv3Sg2D7hNz5sMLwA9Dn8t9HnNKHrKhtBydgAdfL42vZMeYtcajYTTDd+
-         3suCdMlFcSgZjpdYOJkUGIg1wcdnvEWHYKSOBm7r0MG6PPNIjERYe3/BwmZhLVZPiTHO
-         7uc3wRgttdbRuookpJ/WH/xRCOrGUxAqmll3Kx32OJyVK+ca77M9PGDHWcUXOc8PplwD
-         9X5g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y7qpHpDcmlssC+BWCGansOtr3RWREEfeLz55ok9vf5I=;
+        b=ljrQuWngrN8qnDeDj+bxoCw9EfvW6Juvc6XKshtI5AejrC2id/FR5pNthhyRoZLhNM
+         gs9XCFvYU3q3yUACGjE3xxEEKZJAJe96Ctz5K4GI7RcJmoK2uh2j+X81d06py9pwt4Bb
+         sykXGAinrpMCwS9bsiOyBDGniUV55QQGPvIfc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yne3gbAEgfLvuzl4ISOkMOkCXwKPNJ/FBTXv1EJmNsU=;
-        b=oivT2aD62iyt0S1E7b9tAuT7BCV7eo9T6238W6nJ5s2PwVEZTb1P8gRK4ZgOBjja+6
-         aTXXd6FtfaDkoH3UhMvjSTYm6rV1nGXRIwyJ0KuxBzeR9JmNEiznbV3TS16yhTG0MtNf
-         O1Q1aw1lEccb/myQHkaMD0YwC3LcSyGQAdts3VhsX9j68wvBmsvaZJigV6/2Gl+xF+HE
-         XlPzX/625L5OfLuxKQCt08W8nWqZScRD4XQv1KPc9N8mM0SvIg+bDxi0I3/l3ZkX0aud
-         eu3SmIeaiN5s4i3REQl6de2me2iveBikQoStxPP7IK52Vrp5Gy9IykV/YUZDQ++5npnr
-         SjEg==
-X-Gm-Message-State: AOAM530+tgX/cpVpy8mMGXXGVtsRIdJH31bXPonVCY4f+ou0oWbvwhus
-        hzAlH74Sp9LtiJcTRt0NJpE=
-X-Google-Smtp-Source: ABdhPJwHG81pJecGw4CS54n5Ehnl98Eu8SCdM4WnNI/BGKDETYkhSMI6JGhVUIgtobCjFBNKTBNBRA==
-X-Received: by 2002:a17:902:8348:b029:12b:b2a0:941b with SMTP id z8-20020a1709028348b029012bb2a0941bmr28027041pln.62.1629712599680;
-        Mon, 23 Aug 2021 02:56:39 -0700 (PDT)
-Received: from localhost.localdomain ([1.240.193.107])
-        by smtp.googlemail.com with ESMTPSA id i5sm18538486pjk.47.2021.08.23.02.56.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 02:56:39 -0700 (PDT)
-From:   Kangmin Park <l4stpr0gr4m@gmail.com>
-To:     Roopa Prabhu <roopa@nvidia.com>
-Cc:     Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next] net: bridge: change return type of br_handle_ingress_vlan_tunnel
-Date:   Mon, 23 Aug 2021 18:56:34 +0900
-Message-Id: <20210823095634.34752-1-l4stpr0gr4m@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y7qpHpDcmlssC+BWCGansOtr3RWREEfeLz55ok9vf5I=;
+        b=KedSjDMyX9zN504cvGdL5BXfhT45tHM7fOuquEctmJJHk9sZxlFRrKUrOYjpyVBJzX
+         KncrrrGZRQCoT47LAmI/sWmeiuufvRcKzCqrp3E7384ex2tDbVAK+cDd/6+qnZ92hPzf
+         P7+LoiyMxQkiB05fuaPf+hL+QaDJ+R26u4nwoMASovPG7DSTh+1damLY4xGhSXD11ria
+         c16UCbxVWkVfYzTE+D4R9kODmIsnmejjMzAvy2NN/0aOWXyq4mwB7mZHPdi89I1TEkVi
+         5ugtEBxO+9Q1GpzLVrjloGKZOVgBBP2adf56PUpjbpMjoLFvjXQH7y85zsXw50TqqzB5
+         NOWw==
+X-Gm-Message-State: AOAM531Q+ldsqE743riYZJfFYIh2rfNr4obWmDr1v0obH6zv9TDpEcT6
+        2d7JvvdesXNOWo6D/bj0YEWVRq0jAoeScg==
+X-Google-Smtp-Source: ABdhPJw0OMiy64HnD1VQ/QuygrGoOC+I48FuXABLpGi/HEQNPHx7LLGF9ELzCw87lu6kh/62633H1A==
+X-Received: by 2002:a92:190f:: with SMTP id 15mr21592537ilz.45.1629712615019;
+        Mon, 23 Aug 2021 02:56:55 -0700 (PDT)
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com. [209.85.166.177])
+        by smtp.gmail.com with ESMTPSA id a2sm8050853ili.40.2021.08.23.02.56.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 02:56:54 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id b4so6962701ilr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 02:56:54 -0700 (PDT)
+X-Received: by 2002:a92:da4c:: with SMTP id p12mr21550457ilq.89.1629712613838;
+ Mon, 23 Aug 2021 02:56:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210818203502.269889-1-ribalda@chromium.org> <YR2INUYJSZCnBiC0@pendragon.ideasonboard.com>
+ <CANiDSCuP3OS7Z9UmHApPMmt0X3yrAoKVShEZgZ1oCvPgYshUSA@mail.gmail.com>
+ <YR4yRfEmMvsAXRfu@pendragon.ideasonboard.com> <CANiDSCvStwDkkW7FLwTmogsH45292gugAvZfuoss3aJ9RzOAQw@mail.gmail.com>
+ <YR5nhmF3MXdjtCvs@pendragon.ideasonboard.com> <CANiDSCtPGCnQNuGUxDbbQPgtj3a_6eOtaABXk=39Y7b-03gQNA@mail.gmail.com>
+ <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com>
+In-Reply-To: <YSL/q9A5F7W9r92E@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Mon, 23 Aug 2021 11:56:43 +0200
+X-Gmail-Original-Message-ID: <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
+Message-ID: <CANiDSCtYFRNzUio8vujd_Pppz=WUZTj4sYrJwwXwRuewWEMasw@mail.gmail.com>
+Subject: Re: [PATCH v2] media: uvcvideo: Quirk for hardware with invalid sof
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-br_handle_ingress_vlan_tunnel() is only referenced in
-br_handle_frame(). If br_handle_ingress_vlan_tunnel() is called and
-return non-zero value, goto drop in br_handle_frame().
+On Mon, 23 Aug 2021 at 03:54, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> On Thu, Aug 19, 2021 at 04:46:38PM +0200, Ricardo Ribalda wrote:
+> > On Thu, 19 Aug 2021 at 16:15, Laurent Pinchart wrote:
+> > > On Thu, Aug 19, 2021 at 01:31:32PM +0200, Ricardo Ribalda wrote:
+> > > > On Thu, 19 Aug 2021 at 12:28, Laurent Pinchart wrote:
+> > > > > On Thu, Aug 19, 2021 at 08:27:00AM +0200, Ricardo Ribalda wrote:
+> > > > > > On Thu, 19 Aug 2021 at 00:22, Laurent Pinchart wrote:
+> > > > > > > On Wed, Aug 18, 2021 at 10:35:02PM +0200, Ricardo Ribalda wrote:
+> > > > > > > > The hardware timestamping code has the assumption than the device_sof
+> > > > > > > > and the host_sof run at the same frequency (1 KHz).
+> > > > > > > >
+> > > > > > > > Unfortunately, this is not the case for all the hardware. Add a quirk to
+> > > > > > > > support such hardware.
+> > > > > > > >
+> > > > > > > > Note on how to identify such hardware:
+> > > > > > > > When running with "yavta -c /dev/videoX" Look for periodic jumps of the
+> > > > > > > > fps. Eg:
+> > > > > > > >
+> > > > > > > > 30 (6) [-] none 30 614400 B 21.245557 21.395214 34.133 fps ts mono/SoE
+> > > > > > > > 31 (7) [-] none 31 614400 B 21.275327 21.427246 33.591 fps ts mono/SoE
+> > > > > > > > 32 (0) [-] none 32 614400 B 21.304739 21.459256 34.000 fps ts mono/SoE
+> > > > > > > > 33 (1) [-] none 33 614400 B 21.334324 21.495274 33.801 fps ts mono/SoE
+> > > > > > > > 34 (2) [-] none 34 614400 B 21.529237 21.527297 5.130 fps ts mono/SoE
+> > > > > > > > 35 (3) [-] none 35 614400 B 21.649416 21.559306 8.321 fps ts mono/SoE
+> > > > > > > > 36 (4) [-] none 36 614400 B 21.678789 21.595320 34.045 fps ts mono/SoE
+> > > > > > > > ...
+> > > > > > > > 99 (3) [-] none 99 614400 B 23.542226 23.696352 33.541 fps ts mono/SoE
+> > > > > > > > 100 (4) [-] none 100 614400 B 23.571578 23.728404 34.069 fps ts mono/SoE
+> > > > > > > > 101 (5) [-] none 101 614400 B 23.601425 23.760420 33.504 fps ts mono/SoE
+> > > > > > > > 102 (6) [-] none 102 614400 B 23.798324 23.796428 5.079 fps ts mono/SoE
+> > > > > > > > 103 (7) [-] none 103 614400 B 23.916271 23.828450 8.478 fps ts mono/SoE
+> > > > > > > > 104 (0) [-] none 104 614400 B 23.945720 23.860479 33.957 fps ts mono/SoE
+> > > > > > > >
+> > > > > > > > They happen because the delta_sof calculated at
+> > > > > > > > uvc_video_clock_host_sof(), wraps periodically, as both clocks drift.
+> > > > > > >
+> > > > > > > That looks plain wrong. First of all, the whole purpose of the SOF clock
+> > > > > > > is to have a shared clock between the host and the device. It makes no
+> > > > > > > sense for a device to have a free-running "SOF" clock. Given the log
+> > > > > > > above, the issue occurs so quickly that it doesn't seem to be a mere
+> > > > > > > drift of a free running clock. Could you investigate this more carefully
+> > > > > > > ?
+> > > > > >
+> > > > > > In my test the dev_sof runs at 887.91Hz and the dev_sof at 1000.35Hz.
+> > > > > > If I plot the difference of both clocks host_sof - (dev_sof % 2048), I
+> > > > > > get this nice graph https://imgur.com/a/5fQnKa7
+> > > > > >
+> > > > > > I agree that it makes not sense to have a free-running "SOF", but the
+> > > > > > manufacturer thinks otherwise :)
+> > > > >
+> > > > > In that case there's no common clock between the device and the host,
+> > > > > which means that clock recovery is impossible. The whole timestamp
+> > > > > computation should be bypassed, and the driver should use the system
+> > > > > timestamp instead.
+> > > >
+> > > > Or said differently. The clock recovery is susceptible to the jitter
+> > > > in the frame acquisition.
+> > > >
+> > > > If you have no jitter, the clock recovered will match the reality, and
+> > > > if you have bad jitter, it will be as bad as system timestamp.
+> > >
+> > > The whole point of the clock recovery code is to convert a precise
+> > > timestamp, expressed using a device clock that the host has no access
+> > > to, to a system clock. This can only be done if the relationship between
+> > > the two clocks can be inferred, and the UVC specifies a mechanism to
+> > > allow this by using a common clock, in the form of the SOF counter. If
+> > > we don't have that, we're essentially screwed, and can't use the
+> > > algorithm implemented in the driver at all. I'd much rather skip is
+> > > completely in that case, instead of trying to hack the algorithm itself.
+> >
+> > Considering T(f) as the time between the usb package (f) is received
+> > and uvc_video_clock_decode()
+> > If the jitter between the different T(f)s is under one unit of our
+> > clock (1 msec) the accuracy of the "hacked" algorithm and the real
+> > algorithm is exactly the same.
+> >
+> > We can agree that 1 msec is a "lot" of time. And if our system has a
+> > worse latency than that, the hacked algorithm will not be worse than
+> > system timestamping.
+> >
+> > So in most of the situations this patch will produce better timestamps
+> > than the current code and never worse than now...
+>
+> How can it produce better timestamps if it's missing the crucial
+> information that provides the correlation of timestamps between the
+> device and host side ?
 
-But, br_handle_ingress_vlan_tunnel() always return 0. So, the
-routines that check the return value and goto drop has no meaning.
+Because in a system with a latency jitter under 1msec sof_device and
+sof_host you already know that information: sof_host = sof_device
 
-Therefore, change return type of br_handle_ingress_vlan_tunnel() to
-void and remove if statement of br_handle_frame().
+It is a special case of the general problem.
 
-Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
----
-v2:
- - cleanup instead of modifying ingress function
- - change prototype of ingress function
- - cleanup br_handle_frame function
- - change commit message accordingly
+>
+> > Anyway, I have tried to ping the vendor to see if there is something
+> > that I could be doing wrong, lets see what they reply.
+> >
+> > > On a side note, I think the whole clock recovery implementation should
+> > > move from the uvcvideo driver to userspace, where we'll have the ability
+> > > to perform floating point computation. The kernel implementation is
+> > > crude, it should be replaced with a linear regression.
+> >
+> > Agree, but instead of a linear regression, a resampling algorithm.
+>
+> A linear regression is likely a good enough resampling algorithm in this
+> case, but I'd be curious to see if someone could do better.
+>
+> > > > So this patch will still be better than nothing.
+> > > >
+> > > > > I still find it hard to believe that a Logitech camera would get this
+> > > > > wrong.
+> > > >
+> > > > I guess I can send you a device, or give you access to mine remotely
+> > > > if you do not believe me :)
+> > > >
+> > > > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > > > > > ---
+> > > > > > > > v2: Fix typo in frequency
+> > > > > > > >
+> > > > > > > >  drivers/media/usb/uvc/uvc_driver.c |  9 +++++++++
+> > > > > > > >  drivers/media/usb/uvc/uvc_video.c  | 11 +++++++++--
+> > > > > > > >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+> > > > > > > >  3 files changed, 20 insertions(+), 2 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > > > > > > > index 9a791d8ef200..d1e6cba10b15 100644
+> > > > > > > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > > > > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > > > > > > @@ -2771,6 +2771,15 @@ static const struct usb_device_id uvc_ids[] = {
+> > > > > > > >         .bInterfaceSubClass   = 1,
+> > > > > > > >         .bInterfaceProtocol   = 0,
+> > > > > > > >         .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
+> > > > > > > > +     /* Logitech HD Pro Webcam C922 */
+> > > > > > > > +     { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> > > > > > > > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
+> > > > > > > > +       .idVendor             = 0x046d,
+> > > > > > > > +       .idProduct            = 0x085c,
+> > > > > > > > +       .bInterfaceClass      = USB_CLASS_VIDEO,
+> > > > > > > > +       .bInterfaceSubClass   = 1,
+> > > > > > > > +       .bInterfaceProtocol   = 0,
+> > > > > > > > +       .driver_info          = UVC_INFO_QUIRK(UVC_QUIRK_INVALID_DEVICE_SOF) },
+> > > > > > > >       /* Chicony CNF7129 (Asus EEE 100HE) */
+> > > > > > > >       { .match_flags          = USB_DEVICE_ID_MATCH_DEVICE
+> > > > > > > >                               | USB_DEVICE_ID_MATCH_INT_INFO,
+> > > > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > > index 6d0e474671a2..760ab015cf9c 100644
+> > > > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > > @@ -518,13 +518,20 @@ uvc_video_clock_decode(struct uvc_streaming *stream, struct uvc_buffer *buf,
+> > > > > > > >       /* To limit the amount of data, drop SCRs with an SOF identical to the
+> > > > > > > >        * previous one.
+> > > > > > > >        */
+> > > > > > > > -     dev_sof = get_unaligned_le16(&data[header_size - 2]);
+> > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> > > > > > > > +             dev_sof = usb_get_current_frame_number(stream->dev->udev);
+> > > > > > > > +     else
+> > > > > > > > +             dev_sof = get_unaligned_le16(&data[header_size - 2]);
+> > > > > > > > +
+> > > > > > > >       if (dev_sof == stream->clock.last_sof)
+> > > > > > > >               return;
+> > > > > > > >
+> > > > > > > >       stream->clock.last_sof = dev_sof;
+> > > > > > > >
+> > > > > > > > -     host_sof = usb_get_current_frame_number(stream->dev->udev);
+> > > > > > > > +     if (stream->dev->quirks & UVC_QUIRK_INVALID_DEVICE_SOF)
+> > > > > > > > +             host_sof = dev_sof;
+> > > > > > > > +     else
+> > > > > > > > +             host_sof = usb_get_current_frame_number(stream->dev->udev);
+> > > > > > > >       time = uvc_video_get_time();
+> > > > > > > >
+> > > > > > > >       /* The UVC specification allows device implementations that can't obtain
+> > > > > > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> > > > > > > > index cce5e38133cd..89d909661915 100644
+> > > > > > > > --- a/drivers/media/usb/uvc/uvcvideo.h
+> > > > > > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
+> > > > > > > > @@ -209,6 +209,8 @@
+> > > > > > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
+> > > > > > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
+> > > > > > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
+> > > > > > > > +#define UVC_QUIRK_INVALID_DEVICE_SOF 0x00002000
+> > > > > > > > +
+> > > > > > > >
+> > > > > > > >  /* Format flags */
+> > > > > > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
- net/bridge/br_input.c          |  7 ++-----
- net/bridge/br_private_tunnel.h |  6 +++---
- net/bridge/br_vlan_tunnel.c    | 14 +++++++-------
- 3 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
-index 8a0c0cc55cb4..b50382f957c1 100644
---- a/net/bridge/br_input.c
-+++ b/net/bridge/br_input.c
-@@ -294,11 +294,8 @@ static rx_handler_result_t br_handle_frame(struct sk_buff **pskb)
- 	memset(skb->cb, 0, sizeof(struct br_input_skb_cb));
- 
- 	p = br_port_get_rcu(skb->dev);
--	if (p->flags & BR_VLAN_TUNNEL) {
--		if (br_handle_ingress_vlan_tunnel(skb, p,
--						  nbp_vlan_group_rcu(p)))
--			goto drop;
--	}
-+	if (p->flags & BR_VLAN_TUNNEL)
-+		br_handle_ingress_vlan_tunnel(skb, p, nbp_vlan_group_rcu(p));
- 
- 	if (unlikely(is_link_local_ether_addr(dest))) {
- 		u16 fwd_mask = p->br->group_fwd_mask_required;
-diff --git a/net/bridge/br_private_tunnel.h b/net/bridge/br_private_tunnel.h
-index c54cc26211d7..2b053289f016 100644
---- a/net/bridge/br_private_tunnel.h
-+++ b/net/bridge/br_private_tunnel.h
-@@ -38,9 +38,9 @@ int nbp_vlan_tunnel_info_add(const struct net_bridge_port *port, u16 vid,
- void nbp_vlan_tunnel_info_flush(struct net_bridge_port *port);
- void vlan_tunnel_info_del(struct net_bridge_vlan_group *vg,
- 			  struct net_bridge_vlan *vlan);
--int br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
--				  struct net_bridge_port *p,
--				  struct net_bridge_vlan_group *vg);
-+void br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
-+				   struct net_bridge_port *p,
-+				   struct net_bridge_vlan_group *vg);
- int br_handle_egress_vlan_tunnel(struct sk_buff *skb,
- 				 struct net_bridge_vlan *vlan);
- bool vlan_tunid_inrange(const struct net_bridge_vlan *v_curr,
-diff --git a/net/bridge/br_vlan_tunnel.c b/net/bridge/br_vlan_tunnel.c
-index 01017448ebde..7d42b2a5be80 100644
---- a/net/bridge/br_vlan_tunnel.c
-+++ b/net/bridge/br_vlan_tunnel.c
-@@ -158,30 +158,30 @@ void vlan_tunnel_deinit(struct net_bridge_vlan_group *vg)
- 	rhashtable_destroy(&vg->tunnel_hash);
- }
- 
--int br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
--				  struct net_bridge_port *p,
--				  struct net_bridge_vlan_group *vg)
-+void br_handle_ingress_vlan_tunnel(struct sk_buff *skb,
-+				   struct net_bridge_port *p,
-+				   struct net_bridge_vlan_group *vg)
- {
- 	struct ip_tunnel_info *tinfo = skb_tunnel_info(skb);
- 	struct net_bridge_vlan *vlan;
- 
- 	if (!vg || !tinfo)
--		return 0;
-+		return;
- 
- 	/* if already tagged, ignore */
- 	if (skb_vlan_tagged(skb))
--		return 0;
-+		return;
- 
- 	/* lookup vid, given tunnel id */
- 	vlan = br_vlan_tunnel_lookup(&vg->tunnel_hash, tinfo->key.tun_id);
- 	if (!vlan)
--		return 0;
-+		return;
- 
- 	skb_dst_drop(skb);
- 
- 	__vlan_hwaccel_put_tag(skb, p->br->vlan_proto, vlan->vid);
- 
--	return 0;
-+	return;
- }
- 
- int br_handle_egress_vlan_tunnel(struct sk_buff *skb,
+
 -- 
-2.26.2
-
+Ricardo Ribalda
