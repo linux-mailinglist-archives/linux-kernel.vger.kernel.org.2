@@ -2,179 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503073F46A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F09C3F46A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 10:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhHWIbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 04:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235442AbhHWIbk (ORCPT
+        id S235548AbhHWIeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 04:34:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39556 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235442AbhHWIeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 04:31:40 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B11C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:30:58 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id s12so4855577ljg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 01:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=o8bRgpXLwrExM1LA3b3XAfafPz1Ks2zqsEsUrezojIA=;
-        b=gXIJ+EPXq6WquhFmcHLrHI5PtTC8hU3RxwDtgbMruOWE1uFSRg+ROFMgiG+L26sms1
-         u6BedvqKOr8mkZIBV3qgRaWfPMymLKM6TVBjmlzjcOthUv3WjVlwiZuADts8U6hUT/x0
-         EOVl1tmAWS+xpJQFaTt0bbPZI4ZLpo6QwrJrDaHp8fWaqGJRI31Gh/3tBQ35hke1qhgh
-         yf0cIsGSb1p019A4CIPzZ2uesg/S7JfziB2qzRoxK0PSZaZMyX4PTzeNFOTk6xiBkzOF
-         l2derMbvPHxfuybSogODoUtfFHfvhZAPOux7WDPhOab53WoIWMJFvV8YxaNaSeYLgOXA
-         njYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o8bRgpXLwrExM1LA3b3XAfafPz1Ks2zqsEsUrezojIA=;
-        b=FErlDDvhevxSO6sH26zN7fGhZfjejpgrTYc9bF/YgN87k9B5lJTURW+Wwe3YIyY7lJ
-         Wxx4pobdevO575kn48tKwry/q8koO4XK5Zss2PaFvHBPVk036v01MumyrxTucvq1WwBZ
-         y821XC0WrwWT+eYiJArrJvRUVDspZLlXsYwsla3Q9OxnvdYOv0fTz3p8Bx0zVx2cMyMX
-         DrOqa7MDWboWsZjjTlQ7xaZz7GYBTCE4YukOzsQoXyHaqf3ysBNaHRNHwyMEPAASoEbJ
-         lb1ehpy286WKJfSCLeYj5ndv+DIfqDN9tm00aIRW72GGOr9crYQUGqejPFbO1MuFn5yw
-         T4gg==
-X-Gm-Message-State: AOAM532Wlr1oTejPf1q3ZDheinEXcTWA0XW2tcpPO9KO2lK2EXuTSYnl
-        Skzjl66TvfYeQ5QTCd6srptDc765iHAj/A==
-X-Google-Smtp-Source: ABdhPJyK7vZ/p4uOhfEmj1AMw4UKN0GqBn9sjtjKLLGqZcDs5K0m7+oNOvrn2jpqEylmbqyB21P5og==
-X-Received: by 2002:a2e:a801:: with SMTP id l1mr19349361ljq.41.1629707455366;
-        Mon, 23 Aug 2021 01:30:55 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id g7sm1384551ljk.130.2021.08.23.01.30.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Aug 2021 01:30:54 -0700 (PDT)
-Subject: Re: [PATCH RFC] staging: r8188eu: Use usb_control_msg_recv/send() in
- usbctrl_vendorreq()
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210822230235.10953-1-fmdefrancesco@gmail.com>
- <69bbb80c-2b30-28b9-ad8c-6862a6c3b911@gmail.com>
-Message-ID: <8d37d8e5-7ba5-d49b-f2c5-f7e8844ae8e1@gmail.com>
-Date:   Mon, 23 Aug 2021 11:30:53 +0300
+        Mon, 23 Aug 2021 04:34:03 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2A7181FD90;
+        Mon, 23 Aug 2021 08:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1629707600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nVMmg5e/QybRQpHPqYsBXcYu4l9nPxKjI4xTD9R0cRk=;
+        b=Ef2PSIlCeGvAodf6grsZpKsvFTUeAJ1E5vTZFZds5xEGAhzH1PYjLeHl8d88/2G9uFbURz
+        K3st55j+5RGFUOyOEmsTTk1VboiikUY/Y2cc5mCFL+PUk/TmWe0TpWtnbre7b8365CvvVx
+        36fz2TGTIZm7ZUKj1BWYKiVXBKA5jUo=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C13FA13A12;
+        Mon, 23 Aug 2021 08:33:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id tFkaLU9dI2FjZAAAGKfGzw
+        (envelope-from <jgross@suse.com>); Mon, 23 Aug 2021 08:33:19 +0000
+To:     CGEL <cgel.zte@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210823021353.44391-1-jing.yangyang@zte.com.cn>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH linux-next] arch/x86/xen/time.c: fix bugon.cocci warnings
+Message-ID: <b7bd47d4-c83d-7f2c-ef6c-a309bf101745@suse.com>
+Date:   Mon, 23 Aug 2021 10:33:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <69bbb80c-2b30-28b9-ad8c-6862a6c3b911@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210823021353.44391-1-jing.yangyang@zte.com.cn>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="s6tNo8rdvM0JfkAmHNrGgrKFkwgMIWJ1v"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 11:11 AM, Pavel Skripkin wrote:
-> On 8/23/21 2:02 AM, Fabio M. De Francesco wrote:
->> Replace usb_control_msg() with the new usb_control_msg_recv() and
->> usb_control_msg_send() API of USB Core.
->> 
->> This patch is an RFC for different reasons:
->> 
->> 1) I'm not sure if it is needed: while Greg Kroah-Hartman suggested to
->> use the new API in a message to a thread that was about a series of patches
->> submitted by Pavel Skripkin (who decided to not use it), I cannot explain
->> if and why the driver would benefit from this patch.
->> 2) I have doubts about the sematic of the API I use here, so I'd like to
->> know whether or not I'm using them properly.
->> 3) At the moment I cannot test the driver because I don't have my device
->> with me.
->> 4) This patch could probably lead to a slight change in some lines of
->> Pavel's series (for sure in usb_read*()).
->> 
->> I'd like to hear from the Maintainers and other interested people if this
->> patch is worth to be considered and, in this case, if there are suggestions
->> for the purpose to improve it.
->> 
->> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->> ---
->>   drivers/staging/r8188eu/hal/usb_ops_linux.c | 19 ++++++++++---------
->>   1 file changed, 10 insertions(+), 9 deletions(-)
->> 
->> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
->> index 6a0a24acf292..9e290c1cc449 100644
->> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
->> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
->> @@ -15,7 +15,7 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
->>   	struct adapter	*adapt = pintfhdl->padapter;
->>   	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
->>   	struct usb_device *udev = dvobjpriv->pusbdev;
->> -	unsigned int pipe;
->> +	u8 pipe;
->>   	int status = 0;
->>   	u8 reqtype;
-> 
-> I think, we can pass REALTEK_USB_VENQT_{READ,WRITE} directly as
-> requesttype argument and get rid of u8 reqtype. + we can define these
-> macros:
-> 
-> #define
-> usbctrl_vendor_read(...)   usbctrl_vendorreq(...,REALTEK_USB_VENQT_READ)
-> 
-> 
-> #define
-> usbctrl_vendor_write()    usbctrl_vendorreq(...,REALTEK_USB_VENQT_WRITE)
-> 
-> 
-> This will make code more nice, IMO  :)
-> 
-> 
-> (Sorry for this formatting, my email client disabled "paste without
-> formatting" option)
-> 
->>   	u8 *pIo_buf;
->> @@ -47,19 +47,20 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
->>   		memset(pIo_buf, 0, len);
->>   
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--s6tNo8rdvM0JfkAmHNrGgrKFkwgMIWJ1v
+Content-Type: multipart/mixed; boundary="ya1C52Jif3LNEhUlrq2WyMKUkHDhK5PUz";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: CGEL <cgel.zte@gmail.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+ "H . Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org, Jing Yangyang <jing.yangyang@zte.com.cn>,
+ Zeal Robot <zealci@zte.com.cn>
+Message-ID: <b7bd47d4-c83d-7f2c-ef6c-a309bf101745@suse.com>
+Subject: Re: [PATCH linux-next] arch/x86/xen/time.c: fix bugon.cocci warnings
+References: <20210823021353.44391-1-jing.yangyang@zte.com.cn>
+In-Reply-To: <20210823021353.44391-1-jing.yangyang@zte.com.cn>
 
-		^^^^^^^^^^^^^^^^^^^^^^^
+--ya1C52Jif3LNEhUlrq2WyMKUkHDhK5PUz
+Content-Type: multipart/mixed;
+ boundary="------------248CE5AC1254D59E682F13F6"
+Content-Language: en-US
 
-And this memset becomes useless, since usb_control_msg_recv cannot 
-receive only part of the message
+This is a multi-part message in MIME format.
+--------------248CE5AC1254D59E682F13F6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
->>   		if (requesttype == 0x01) {
->> -			pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
->>   			reqtype =  REALTEK_USB_VENQT_READ;
->> +			status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
->> +						      reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
->> +						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
->> +						      GFP_KERNEL);
->>   		} else {
->> -			pipe = usb_sndctrlpipe(udev, 0);/* write_out */
->>   			reqtype =  REALTEK_USB_VENQT_WRITE;
->> -			memcpy(pIo_buf, pdata, len);
-> 
-> I guess, this memcpy is needed, since we want to send data from pdata
-> 
-> 
->> +			status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
->> +						      reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
->> +						      pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
->> +						      GFP_KERNEL);
->>   		}
->>   
->> -		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
->> -					 reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
->> -					 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
->> -
->> -		if (status == len) {   /*  Success this control transfer. */
->> +		if (!status) {   /*  Success this control transfer. */
->>   			rtw_reset_continual_urb_error(dvobjpriv);
->>   			if (requesttype == 0x01)
->>   				memcpy(pdata, pIo_buf,  len);
->> 
-> 
+On 23.08.21 04:13, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+>=20
+> Use BUG_ON instead of a if condition followed by BUG.
+>=20
+> Generated by: scripts/coccinelle/misc/bugon.cocci
+>=20
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+> ---
+>   arch/x86/xen/time.c | 20 ++++++++------------
+>   1 file changed, 8 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/arch/x86/xen/time.c b/arch/x86/xen/time.c
+> index d9c945e..6e29b69 100644
+> --- a/arch/x86/xen/time.c
+> +++ b/arch/x86/xen/time.c
+> @@ -210,8 +210,7 @@ static int xen_timerop_set_next_event(unsigned long=
+ delta,
+>   {
+>   	WARN_ON(!clockevent_state_oneshot(evt));
+>  =20
+> -	if (HYPERVISOR_set_timer_op(get_abs_timeout(delta)) < 0)
+> -		BUG();
+> +	BUG_ON(HYPERVISOR_set_timer_op(get_abs_timeout(delta)) < 0);
+>  =20
+>   	/* We may have missed the deadline, but there's no real way of
+>   	   knowing for sure.  If the event was in the past, then we'll
+> @@ -241,11 +240,10 @@ static int xen_vcpuop_shutdown(struct clock_event=
+_device *evt)
+>   {
+>   	int cpu =3D smp_processor_id();
+>  =20
+> -	if (HYPERVISOR_vcpu_op(VCPUOP_stop_singleshot_timer, xen_vcpu_nr(cpu)=
+,
+> +	BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_stop_singleshot_timer, xen_vcpu_nr(c=
+pu),
+>   			       NULL) ||
+
+Please adjust the alignment of the continuation line (i.e. insert 2
+blanks). Same below.
+
+Even better would be to avoid the repeated "xen_vcpu_nr(cpu)" by
+using "int vcpu =3D xen_vcpu_nr(smp_processor_id());" leading to the
+possibility to not need the continuation lines at all.
+
+> -	    HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
+> -			       NULL))
+> -		BUG();
+> +		HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
+> +			       NULL));
+>  =20
+>   	return 0;
+>   }
+> @@ -254,9 +252,8 @@ static int xen_vcpuop_set_oneshot(struct clock_even=
+t_device *evt)
+>   {
+>   	int cpu =3D smp_processor_id();
+>  =20
+> -	if (HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu),
+> -			       NULL))
+> -		BUG();
+> +	BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer, xen_vcpu_nr(cpu=
+),
+> +			       NULL));
+
+See above.
+
+>  =20
+>   	return 0;
+>   }
+> @@ -373,9 +370,8 @@ void xen_timer_resume(void)
+>   		return;
+>  =20
+>   	for_each_online_cpu(cpu) {
+> -		if (HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer,
+> -				       xen_vcpu_nr(cpu), NULL))
+> -			BUG();
+> +		BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_stop_periodic_timer,
+> +				       xen_vcpu_nr(cpu), NULL));
+
+See above.
 
 
-With regards,
-Pavel Skripkin
+Juergen
+
+--------------248CE5AC1254D59E682F13F6
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------248CE5AC1254D59E682F13F6--
+
+--ya1C52Jif3LNEhUlrq2WyMKUkHDhK5PUz--
+
+--s6tNo8rdvM0JfkAmHNrGgrKFkwgMIWJ1v
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmEjXU8FAwAAAAAACgkQsN6d1ii/Ey8f
+Dwf8D84OgGeNV0bi06jFlOyMYbS7AGSU05dH/UGTMEB60geoI5dcI7ZDmiPQF/JRkiXPBTdO8auh
+v1EI6TvOhBc09P6Sq9cMQz+DiWZgarxibaxXoP9XyPh8lNll69GlKk+briE6wanmaCcVROLnuOoU
+GsGH8KslsfjqylqqJGIbvKNVY2yvh8qCYPNUbN0TW2vYTySKlCcl6NsGU3l0QNyBwkfPSZW5Uovp
+Fze7bXXGOTzH/S4zP9+Agvzf6bBmfwPHJ2BTDdadKLlMnvIPmpOKdMHXs3AFG8E4FXIIFHDxco5j
+TwO/dVB1D58hzGmfGeR8xsI2ao/SUDvtlb5JwyyP2w==
+=fZCz
+-----END PGP SIGNATURE-----
+
+--s6tNo8rdvM0JfkAmHNrGgrKFkwgMIWJ1v--
