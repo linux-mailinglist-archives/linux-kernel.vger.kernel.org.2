@@ -2,180 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594333F4C6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5030F3F4C78
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 16:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhHWOdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 10:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S230186AbhHWOfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 10:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhHWOdt (ORCPT
+        with ESMTP id S229726AbhHWOfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 10:33:49 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79958C061575;
-        Mon, 23 Aug 2021 07:33:06 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id q11-20020a7bce8b0000b02902e6880d0accso14275161wmj.0;
-        Mon, 23 Aug 2021 07:33:06 -0700 (PDT)
+        Mon, 23 Aug 2021 10:35:47 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B802C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:35:04 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso22031230ota.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 07:35:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kKNTgN3mFZPjHxMm9PJkyaGLg0UeM0w5/suyeTcMCds=;
-        b=Ez/HiDH3tFmVC4uKBvHgtFzVhf5NyUU42y+5Lk7iQk7CbnDkPYMGOlaMnc0A7HLBJw
-         eWugtLu8U4/9o5aEJf48iw+G6cKxrmqxzYQvyXaTFxF/VLYSaCfpeh/+AGmp8SBxu1lB
-         qm3zidvf28w2SRNDLu8OhnQzo5muVjjRhaIGvozxNPOQrjNBvXf8nq85yo6HQzlBKLmU
-         nzja6sHIhvGl2u+EqnRtgSQJl/7h2YONt5JGKSF2dBwOkwinufFPGqE+7KXbsWH7nTD8
-         XY3kngutJ1H7lJa8xJhpA6dHcDU3twBm/CLhiMZ/5aYAACW7FswYmospyPXglG3MHnPd
-         fAnw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XgOXv9hBmtE5f7y6QsBO8K1XJAJ8y+cvtkl7Fv+4L6Q=;
+        b=eoAs6ywolFNJ1+ayQ9E5Zf8t9YpcloyJtBG7I3KV556wk1qKb5NqzH1GyQMo+mlV3g
+         4kSwBvR87oZbF/Lusto9T+PNUgLqTAzr0Po4C70VWruNfembRzBuSH0rBjCXgxzZ0Vfo
+         Tb6FMe9U5hRELjGmC2bUajciCyZF13rLbV6r0IjIs6Dnh0cvBNW0qVT+xunyf/+nU9D6
+         hF2wI6HJmJQf83TGGyLx82XQr0bHqjlGxTQEtKN4r0G+6fYPc8J7H3GV9ICgkIsID7xB
+         2f0RXGzM4egqJzLPPLsKNDFqnrtTRfRkm1tpK1wNNNSYr+RJnttOErhzJsco9ayXKILp
+         BUvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kKNTgN3mFZPjHxMm9PJkyaGLg0UeM0w5/suyeTcMCds=;
-        b=rDtbzYDFMVsFnjXCieQ4cdWvmM7zUm7mAEtu7ImVM7zmvTv67kriqvSr5O/0zWV8d2
-         jAalhv/L1snUONg+A2zewcAeD4PVcJYTqYVG+bI+SH666caSWi0K961y4wT/RMQRnuTi
-         wh53F7lJ/AAleyMAjP9+gITzLAK49B4D+uvhvvqD+I7LQWtkPscycSsZcWZEYacOweqX
-         fItgMygJnPyXf/d9b9yuWHO4lCXtEj4EvJkysMdj+aGnk4a52obsGhrfHRm/+wnTi6MZ
-         A5qsJmhCHgeT8qhdjZAFiYDx/5tggPEDI7BclB/Up5cZYawz395JjGtr0PbIC1y6Twvd
-         rOrA==
-X-Gm-Message-State: AOAM531PRWTDcpOsE5f4gZFA3JUKvlXU7GvZRKKb6GQ6W/QfidFssnMV
-        58iuJAMB3+7CX3GUviVGCyk=
-X-Google-Smtp-Source: ABdhPJxBq4Nvsa0gnzzH4WFHk2SbkxyCPoHtvepGuqxwqRXVQN0QX9rC0+5h+ZD3D695iv58bgjotw==
-X-Received: by 2002:a05:600c:2189:: with SMTP id e9mr16739221wme.125.1629729185109;
-        Mon, 23 Aug 2021 07:33:05 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id w18sm16192391wrg.68.2021.08.23.07.33.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 07:33:03 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 16:33:02 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-spi@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Subject: Re: [PATCH v8 07/34] clk: tegra: Support runtime PM and power domain
-Message-ID: <YSOxnqiia+FqfOX6@orome.fritz.box>
-References: <20210817012754.8710-8-digetx@gmail.com>
- <YR0UBi/ejy+oF4Hm@orome.fritz.box>
- <da7356cb-05ee-ba84-8a7c-6e69d853a805@gmail.com>
- <YR04YHGEluqLIZeo@orome.fritz.box>
- <ad99db08-4696-1636-5829-5260f93dc681@gmail.com>
- <YR6Mvips3HAntDy0@orome.fritz.box>
- <e17bbe8d-7c0f-fc3d-03c7-d75c54c24a43@gmail.com>
- <YR+VDZzTihmpENp6@orome.fritz.box>
- <CAPDyKFpJ+TK0w1GZEA7G=rtAjq5ipmVR4P0wy7uHiEGVWRk5yA@mail.gmail.com>
- <89ea1694-be9e-7654-abeb-22de0ca5255a@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XgOXv9hBmtE5f7y6QsBO8K1XJAJ8y+cvtkl7Fv+4L6Q=;
+        b=rKcAwipfjxOT4FGSPvH8E4A/4CfMYco8210bN/DJ2ZE4mhA8c9x/spaO2P8CTSNCtZ
+         mY0kChdSYzfT0bOc+kD2buXrgmusE1ipVgAQJLqbYMiJYjPxaY0iqNvDWzDW6rzBvryX
+         BoOHgxFNIR9QfLUYAzJj9zYqcczDSVw9czhUYRPKHCJ1R1rzy/iyFOLBD7cpBLbChxfY
+         WPdvn70l6SHEQPrywpe1eZHHIy4RcNKlh5yEQuyCejxMCfVPkixMySQVmcOV2d2/kZOj
+         50Z4hIrwE9WuJy6oTEHwz0JPH2SbPBWECJiwNEfciHfBK3+v/wDH1wGnevpEBX94+l2P
+         dz/g==
+X-Gm-Message-State: AOAM533iid+SSBWjEbexOQNRiduY8S6FOR8Hrxd2dXqjNXq54fX3ZvIp
+        MTWGF3/vb/gnVuiPicueESyWTsO+ZFKIKs+1wbE=
+X-Google-Smtp-Source: ABdhPJxsIAjPqPk9Sp6v4AwVB8tD+eTvHkyD8t4hVwHOVcuZooIZjbwrqRsGKT1xWeEpsHiTWT9aIRcFNFPY9CWFt7I=
+X-Received: by 2002:a05:6830:4:: with SMTP id c4mr27849060otp.23.1629729303838;
+ Mon, 23 Aug 2021 07:35:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PvC9h3QplaOMl/PL"
-Content-Disposition: inline
-In-Reply-To: <89ea1694-be9e-7654-abeb-22de0ca5255a@gmail.com>
-User-Agent: Mutt/2.1.1 (e2a89abc) (2021-07-12)
+References: <20210821082141.8608-1-liviu.cheru@gmail.com>
+In-Reply-To: <20210821082141.8608-1-liviu.cheru@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 23 Aug 2021 10:34:52 -0400
+Message-ID: <CADnq5_PSKvmgfsO3DrNsyWqhgVnU312ijZ_BA92K3MDQU23JMA@mail.gmail.com>
+Subject: Re: [PATCH] gpu: drm: amd: amdgpu: Fixed a few warnings
+To:     Liviu Cheru <liviucheru@gmail.com>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, liviu.cheru@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 21, 2021 at 4:46 AM Liviu Cheru <liviucheru@gmail.com> wrote:
+>
+> Fixed warnings regarding SPDX license, using "unsigned" instead
+> of "unsigned int", wrong function parameter name for the
+> documentation and a space between the function name and "(".
+>
 
---PvC9h3QplaOMl/PL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In general, please split these up by the type of change.
 
-On Sat, Aug 21, 2021 at 08:45:54PM +0300, Dmitry Osipenko wrote:
-> 20.08.2021 16:08, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> ...
-> >> I suppose if there's really no good way of doing this other than
-> >> providing a struct device, then so be it. I think the cleaned up sysfs
-> >> shown in the summary above looks much better than what the original
-> >> would've looked like.
-> >>
-> >> Perhaps an additional tweak to that would be to not create platform
-> >> devices. Instead, just create struct device. Those really have
-> >> everything you need (.of_node, and can be used with RPM and GENPD). As=
- I
-> >> mentioned earlier, platform device implies a CPU-memory-mapped bus,
-> >> which this clearly isn't. It's kind of a separate "bus" if you want, so
-> >> just using struct device directly seems more appropriate.
-> >=20
-> > Just a heads up. If you don't use a platform device or have a driver
-> > associated with it for probing, you need to manage the attachment to
-> > genpd yourself. That means calling one of the dev_pm_domain_attach*()
-> > APIs, but that's perfectly fine, ofcourse.
-> >=20
-> >>
-> >> We did something similar for XUSB pads, see drivers/phy/tegra/xusb.[ch]
-> >> for an example of how that was done. I think you can do something
-> >> similar here.
->=20
-> We need a platform device because we have a platform device driver that
-> must be bound to the device, otherwise PMC driver state won't be synced
-> since it it's synced after all drivers of devices that reference PMC
-> node in DT are probed.
+> Signed-off-by: Liviu Cheru <liviu.cheru@gmail.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_object.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> index 795fa7445abe..af1abb281c6d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 
-I think the causality is the wrong way around. It's more likely that you
-added the platform driver because you have a platform device that you
-want to bind against.
+The license is MIT not GPL.  See the actual license on the file.
 
-You can have drivers bind to other types of devices, although it's a bit
-more work than abusing platform devices for it.
+>  /*
+>   * Copyright 2009 Jerome Glisse.
+>   * All Rights Reserved.
+> @@ -129,7 +130,7 @@ void amdgpu_bo_placement_from_domain(struct amdgpu_bo *abo, u32 domain)
+>         u32 c = 0;
+>
+>         if (domain & AMDGPU_GEM_DOMAIN_VRAM) {
+> -               unsigned visible_pfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
+> +               unsigned int visible_pfn = adev->gmc.visible_vram_size >> PAGE_SHIFT;
+>
+>                 places[c].fpfn = 0;
+>                 places[c].lpfn = 0;
+> @@ -731,7 +732,7 @@ int amdgpu_bo_validate(struct amdgpu_bo *bo)
+>  /**
+>   * amdgpu_bo_add_to_shadow_list - add a BO to the shadow list
+>   *
+> - * @bo: BO that will be inserted into the shadow list
+> + * @vmbo: BO that will be inserted into the shadow list
+>   *
+>   * Insert a BO to the shadow list.
+>   */
 
-There's the "auxiliary" bus that seems like it would be a somewhat
-better fit (see Documentation/driver-api/auxiliary_bus.rst), though it
-doesn't look like this fits the purpose exactly. I think a custom bus
-(or perhaps something that could be deployed more broadly across CCF)
-would be more appropriate.
+This code has already been fixed.
 
-Looking around, it seems like clk/imx and clk/samsung abuse the platform
-bus in a similar way, so they would benefit from a "clk" bus as well.
-
-Thierry
-
---PvC9h3QplaOMl/PL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmEjsZsACgkQ3SOs138+
-s6HWKw//TNblAAi6ou9PE5WJAlqkp8eN3KFkESiKa0yzPJmK4PheTbR+7TxztdtD
-v78kTE37Wr/vLdqlIV3gfL9ZjFiYhBJinwopw7zGhYIru1NVclli3In+/nQdUoGe
-vqQOmq0yycyituaGXERlH9HrODsY9IG3DP4XqTd9bBz1JfexxnEVxHvXdzWmoQ/i
-pHg7547O5QhpmEMurZ+anNAFCw9J9QhltISWXBSZdl1HDXBF7u7yABLXLggp6RFm
-xJN7I3DdVVYkB091DX8wfW19TXaDcZ4eOtNQ1PdpfL1FgeRhLm48VYhB1CQhSWcs
-+uyGzqS2dROvSyoUCXqUxYr4NdijJX17VOpO8BVWcpJMQo97EDNxa6Ga92TmXAV4
-o+NEivB2893mE0b268rDZ128qhimB7qfM9UT8XFuOWTHiwtGanWBQ/OQ0VYBDVvn
-qArreV+6jLdYLjqAiq6DYDoT3s9gVp/xvWfp9F+PW6YlUPldiEUx0eTDK31T4nx2
-xRnoASYIbUDfcHvOQWTmwFm1YLxDad/c+oNuCuFjNtG1P8EzRmmkwz4FU0J4uLGd
-kTxIyxpRrHp1A2gFthkPvtvrucMlVXW/pTMMCSZtPafWNdhQgCohiy0wnW6pI9sg
-v4qJ6n+ieKZRQw1RlSLliu81UJk/CcANuJDeI3CknDm79oVZQDA=
-=YrRu
------END PGP SIGNATURE-----
-
---PvC9h3QplaOMl/PL--
+> @@ -957,7 +958,7 @@ int amdgpu_bo_pin_restricted(struct amdgpu_bo *bo, u32 domain,
+>                 bo->flags |= AMDGPU_GEM_CREATE_CPU_ACCESS_REQUIRED;
+>         amdgpu_bo_placement_from_domain(bo, domain);
+>         for (i = 0; i < bo->placement.num_placement; i++) {
+> -               unsigned fpfn, lpfn;
+> +               unsigned int fpfn, lpfn;
+>
+>                 fpfn = min_offset >> PAGE_SHIFT;
+>                 lpfn = max_offset >> PAGE_SHIFT;
+> @@ -1175,7 +1176,7 @@ void amdgpu_bo_get_tiling_flags(struct amdgpu_bo *bo, u64 *tiling_flags)
+>   * Returns:
+>   * 0 for success or a negative error code on failure.
+>   */
+> -int amdgpu_bo_set_metadata (struct amdgpu_bo *bo, void *metadata,
+> +int amdgpu_bo_set_metadata(struct amdgpu_bo *bo, void *metadata,
+>                             uint32_t metadata_size, uint64_t flags)
+>  {
+>         struct amdgpu_bo_user *ubo;
+> --
+> 2.30.2
+>
