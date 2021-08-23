@@ -2,91 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24F43F4DB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617B33F4DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 17:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhHWPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 11:48:56 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34654 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhHWPsz (ORCPT
+        id S231696AbhHWPt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 11:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231533AbhHWPtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:48:55 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mICBA-0006tY-Ed; Mon, 23 Aug 2021 17:48:04 +0200
-Received: from [85.5.47.65] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mICB9-000Jg5-UB; Mon, 23 Aug 2021 17:48:04 +0200
-Subject: Re: [PATCH bpf-next] bpf: test_bpf: Print total time of test in the
- summary
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4226eb32-7755-5a32-5c58-7e64c129727c@iogearbox.net>
-Date:   Mon, 23 Aug 2021 17:48:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 23 Aug 2021 11:49:25 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B76C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:48:42 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id z1-20020a4a2241000000b0028e8dfb83b4so2740023ooe.13
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 08:48:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O0glvYqSibU40VAMSp5zjWVJ43TCEbbX6uJzxWnHUtQ=;
+        b=GAgnkM0wwEJjlEIz5GfHoZT4iw/5ADhWhs1ldWYEliZNeEWZE1eYVuqFOv+bwbP0+h
+         dNMV4z480Oy9vrzGqF3v9bzBc5kpjq4OMOSCK3lcxA8Q79RN8WFwym2AvuLZIJt4cG3s
+         pg6+Tk/1wlY5XnSXIjqJrVruTDz+R719TUOAM1aSq5mYGvsuT6AZIAqdkfK3V+eVflfv
+         RvaZ+78Lhp6CzJ0gzVSk0wFIHz1lYpDPBwpJKKwJsfmAk46qqjCqaIeKcE3G0P+uC/+W
+         B5rsbMe0jDEtc9arRbYs+EsTh/RPmUS3oF9iK4VwQqjNKore2ToKIjeDZdhnpXBQYaGT
+         1k9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O0glvYqSibU40VAMSp5zjWVJ43TCEbbX6uJzxWnHUtQ=;
+        b=NhmTbxx2a3D742wNWgUBCeKGWBaCWYvaaUAjIFfJHPiXwRtz7ZeCUGHuISou8dvcKR
+         l1U70pSdoa2s9X5Mroj0U+5p0KWPTKlHaCV4SClh8hGIKNoRssBMscjXo4c+bZVo15wW
+         grX08hOANJxwZuQCQAzUbsxHmxomYu+8QwQo1bx03d8MXYbPWsOVunTjWia4unhGv6CU
+         XcUoGwivsNrWMJw0YUbkLpLzTqFtrmTIHfGv83cMJ7qJz3yqPy7ifS5jlg5IeOkBNNr5
+         uNJIWdAU5c0vyRgjFGZiDBw9kzXo2NMAVwP2STLHlGQYLfdABn4i1eggtcwFkTOQ/HA0
+         o/CQ==
+X-Gm-Message-State: AOAM532uUfTwI6PTSOcyl8rcFAJFsQcfd77mB0OI0YlwZ7NTGE1z0+yV
+        89tOs0akaUA3M+g4K5N6PckUGQ==
+X-Google-Smtp-Source: ABdhPJx6xlpMMcZaKdGUdFtmFiSaPC9Z8sINfr3GWqNyEX+Yf77J/bef2VBPMuvy4y1nsGj8mfxheg==
+X-Received: by 2002:a4a:9211:: with SMTP id f17mr14188311ooh.25.1629733721930;
+        Mon, 23 Aug 2021 08:48:41 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 4sm3704379oil.38.2021.08.23.08.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 08:48:41 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering msi
+Date:   Mon, 23 Aug 2021 08:49:57 -0700
+Message-Id: <20210823154958.305677-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <1629548039-3747-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26272/Mon Aug 23 10:21:13 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/21 2:13 PM, Tiezhu Yang wrote:
-> The total time of test is useful to compare the performance
-> when bpf_jit_enable is 0 or 1, so print it in the summary.
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   lib/test_bpf.c | 27 +++++++++++++++++++++------
->   1 file changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 830a18e..b1b17ba 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -8920,6 +8920,9 @@ static __init int test_skb_segment_single(const struct skb_segment_test *test)
->   static __init int test_skb_segment(void)
->   {
->   	int i, err_cnt = 0, pass_cnt = 0;
-> +	u64 start, finish;
-> +
-> +	start = ktime_get_ns();
->   
->   	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
->   		const struct skb_segment_test *test = &skb_segment_tests[i];
-> @@ -8935,8 +8938,10 @@ static __init int test_skb_segment(void)
->   		}
->   	}
->   
-> -	pr_info("%s: Summary: %d PASSED, %d FAILED\n", __func__,
-> -		pass_cnt, err_cnt);
-> +	finish = ktime_get_ns();
-> +
-> +	pr_info("%s: Summary: %d PASSED, %d FAILED in %llu nsec\n",
-> +		__func__, pass_cnt, err_cnt, finish - start);
->   	return err_cnt ? -EINVAL : 0;
->   }
+On the Qualcomm sc8180x platform the bootloader does something related
+to PCI that leaves a pending "msi" interrupt, which with the current
+ordering often fires before init has a chance to enable the clocks that
+are necessary for the interrupt handler to access the hardware.
 
-I don't think this gives you any accurate results (e.g. what if this gets migrated
-or preempted?); maybe rather use the duration from __run_one() ..
+Move the host_init() call before the registration of the "msi" interrupt
+handler to ensure the host driver has a chance to enable the clocks.
 
-Thanks,
-Daniel
+The assignment of the bridge's ops and child_ops is moved along, because
+at least the TI Keystone driver overwrites these in its host_init
+callback.
+
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+
+Changes since v1:
+- New patch, instead of enabling resources in the qcom driver before jumping to
+  dw_pcie_host_init(), per Rob Herring's suggestion.
+
+ .../pci/controller/dwc/pcie-designware-host.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index d1d9b8344ec9..f4755f3a03be 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -335,6 +335,16 @@ int dw_pcie_host_init(struct pcie_port *pp)
+ 	if (pci->link_gen < 1)
+ 		pci->link_gen = of_pci_get_max_link_speed(np);
+ 
++	/* Set default bus ops */
++	bridge->ops = &dw_pcie_ops;
++	bridge->child_ops = &dw_child_pcie_ops;
++
++	if (pp->ops->host_init) {
++		ret = pp->ops->host_init(pp);
++		if (ret)
++			return ret;
++	}
++
+ 	if (pci_msi_enabled()) {
+ 		pp->has_msi_ctrl = !(pp->ops->msi_host_init ||
+ 				     of_property_read_bool(np, "msi-parent") ||
+@@ -388,15 +398,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
+ 		}
+ 	}
+ 
+-	/* Set default bus ops */
+-	bridge->ops = &dw_pcie_ops;
+-	bridge->child_ops = &dw_child_pcie_ops;
+-
+-	if (pp->ops->host_init) {
+-		ret = pp->ops->host_init(pp);
+-		if (ret)
+-			goto err_free_msi;
+-	}
+ 	dw_pcie_iatu_detect(pci);
+ 
+ 	dw_pcie_setup_rc(pp);
+-- 
+2.29.2
+
