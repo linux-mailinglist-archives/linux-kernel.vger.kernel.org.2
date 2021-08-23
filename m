@@ -2,97 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD8E3F4282
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 02:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7F53F4284
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 02:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhHWAU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Aug 2021 20:20:26 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39841 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233168AbhHWAUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Aug 2021 20:20:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtCYB02lYz9sPf;
-        Mon, 23 Aug 2021 10:19:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629677982;
-        bh=Znd04vRQhYwSBPri6CGqyHLt6wX44eDiWVuNCfUz8AI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=A4L4wDGV5n5P37Bk4VE+Nc4pHt90+yXcTsO+D6lOWuF4iQhz5OqmiQmaYFJdKpqAj
-         sOKz1iiKdaNOpM6G4bjjQaKjyFboseJooraj1MvyzFQou6FI2VC/BoL2QXvQl82spa
-         +bjSMFDPLVUxZIiRZHdwSyje2f30KCnjyQG0dC+clVPfD1kHKpphn4Qfx9ia6xDrWO
-         JEhtipgJJlYxjWhNsGsgAFANDTETRnCzvvbeAsFrhWsxx7ka6+ko5CuMarB/jV/4iS
-         uiDtf7rbEl2ECyawbUy/5gsTAtACShs21HxwdXQSQ0GGN9EjzfO7IPxNY7Okm3dDVs
-         uxGlkNpv9kDZw==
-Date:   Mon, 23 Aug 2021 10:19:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the file-locks tree
-Message-ID: <20210823101941.20ba89c3@canb.auug.org.au>
+        id S234429AbhHWAUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Aug 2021 20:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233168AbhHWAUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 22 Aug 2021 20:20:38 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33902C061575;
+        Sun, 22 Aug 2021 17:19:56 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id n12so23490743edx.8;
+        Sun, 22 Aug 2021 17:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Zvyi8qDXA1aeE7s7jV5FzFTbtIh5vYTdFv2oFGAnm0k=;
+        b=EwlOqtP5XMiGNgrrRJ9diTOojvM1TPvZlDhyBVaG8lsRyWbKfeu9npzkMtisTKfS50
+         vXk8QTd4KbvuJZvATHGJAaulo4LgT4rUbl2QBu1vXVHXJ7ZRS3MoGBaJhO0Dj1FChJsb
+         GAz9t7mhU1d88aDnO9belAyWaz9nnfqotaW58N4xwEOoJsB3eYwdA6e22YrnwQaseQh6
+         b12LS6DTB5RmIKwsDFudEkG4UU2Xvv3XhAe311cs74MaerK/aMXBs9rrO+EkVDQdAkZl
+         5vvlIdTyx1kGAc7J2ttvnPHjI5uCU2khUPiXuR5wqyA/fo0KVSc5hWUvR2szOwQYcgwG
+         7L2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Zvyi8qDXA1aeE7s7jV5FzFTbtIh5vYTdFv2oFGAnm0k=;
+        b=k41OrMyNro2VijPw9i/B31j1UMlYw36BLDHE5fzE8VTZpXSMShdhzH2s/LtUVarIiz
+         VqcqOiwD4FSzMG/mWpRDctjh3u1AEG8CFG00w1C8lsOK6qJfNXqSp/fvWYyAhjV4BCPV
+         /d/Rv5/oKQmrWUObTN88Qx3dsouZe8JyDou3S+eeByImPH1n2cjLlNCVOwROn3EVt9be
+         uOQHdyD4U6MQVum+X/OV4Atz+nn9cKwEIbT7zOxvvlCaaGQWaBZFLzQNzoSt4sl9E08e
+         Vusc5zYkD35d0GQrCOZV6HcrLWBR+W34R61azxXdv43IEUBh1y7akZQynnZZV/s8nFoM
+         eEKg==
+X-Gm-Message-State: AOAM531B+w1XmU06OwzWxT86t3YX1WXdKeXRb9fmAgZ1P9B+2jNdEmFO
+        MjIJbMJteCKo+8TWxm0Ndu4=
+X-Google-Smtp-Source: ABdhPJx1suXJ7fE+r+qAGn06ZxAi36jqOmisLKVqlGwbDQwgSGdLN+DPjm+B+3wubR2ytuWr+XXoFw==
+X-Received: by 2002:a05:6402:70c:: with SMTP id w12mr33555097edx.288.1629677994763;
+        Sun, 22 Aug 2021 17:19:54 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id g11sm8153740edt.85.2021.08.22.17.19.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Aug 2021 17:19:54 -0700 (PDT)
+Date:   Mon, 23 Aug 2021 03:19:53 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
+Cc:     Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Rasmussen <MIR@bang-olufsen.dk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 4/5] net: dsa: realtek-smi: add rtl8365mb
+ subdriver for RTL8365MB-VC
+Message-ID: <20210823001953.rsss4fvnvkcqtebj@skbuf>
+References: <20210822193145.1312668-1-alvin@pqrs.dk>
+ <20210822193145.1312668-5-alvin@pqrs.dk>
+ <20210822224805.p4ifpynog2jvx3il@skbuf>
+ <dd2947d5-977d-b150-848e-fb9a20c16668@bang-olufsen.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mp5L+Cc7nwMA.7lRipq.Sf4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dd2947d5-977d-b150-848e-fb9a20c16668@bang-olufsen.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mp5L+Cc7nwMA.7lRipq.Sf4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Aug 22, 2021 at 11:56:04PM +0000, Alvin Šipraga wrote:
+> > I'm not going to lie, the realtek_smi_ops VLAN methods seem highly
+> > cryptic to me. Why do you do the same thing from .enable_vlan4k as from
+> > .enable_vlan? What are these supposed to do in the first place?
+> > Or to quote from rtl8366_vlan_add: "what's with this 4k business?"
+>
+> I think realtek-smi was written with rtl8366rb.c in mind, which appears
+> to have different control registers for VLAN and VLAN4k modes, whatever
+> that's supposed to mean. Since the RTL8365MB doesn't distinguish between
+> the two, I just route one to the other. The approach is one of caution,
+> since I don't want to break the other driver (I don't have hardware to
+> test for regressions). Maybe Linus can chime in?
 
-Hi all,
+You don't _have_ to use the rtl8366 ops for VLAN, especially if they
+don't make sense, do you?
 
-After merging the file-locks tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+> > Also, stupid question: what do you need the VLAN ops for if you haven't
+> > implemented .port_bridge_join and .port_bridge_leave? How have you
+> > tested them?
+>
+> I have to admit that I am also in some doubt about that. To illustrate,
+> this is a typical configuration I have been testing:
+>
+>                                br0
+>                                 +
+>                                 |
+>                +----------+-----+-----+----------+
+>                |          |           |          |
+> (DHCP)         +          +           +          +      (static IP)
+>   wan0      brwan0       swp2        swp3     brpriv0      priv0
+>    |           + 1 P u    + 1 P u     + 1 P u    +           +
+>    |           |          |           | 2        | 2 P u     |
+>    |           |          |           |          |           |
+>    +-----------+          +           +          +-----------+
+>                          LAN         PRIV
+>
+>           n P u
+>           ^ ^ ^
+>           | | |
+>           | | `--- Egress Untagged
+>           | `----- Port VLAN ID (PVID)
+>           `------- VLAN ID n
 
-fs/remap_range.c: In function 'remap_verify_area':
-fs/remap_range.c:102:16: warning: unused variable 'inode' [-Wunused-variabl=
-e]
-  102 |  struct inode *inode =3D file_inode(file);
-      |                ^~~~~
+What are priv0 and wan0? Are they local interfaces of your board, put in
+loopback with switch ports? Are they external devices?
 
-Also from the arm multi_v7_defconfig build:
+What does DHCP mean? Is there a server there, or does it mean that the
+wan0 interface gets IP over DHCP? Where is the DHCP server? Why is "DHCP"
+relevant?
 
-fs/locks.c: In function 'fcntl_setlk64':
-fs/locks.c:2509:16: warning: unused variable 'inode' [-Wunused-variable]
- 2509 |  struct inode *inode =3D locks_inode(filp);
-      |                ^~~~~
+>
+> In this configuration, priv0 is used to communicate directly with the
+> PRIV device over VLAN2. PRIV can also access the wider LAN by
+> transmitting untagged frames. My understanding was that the VLAN
+> configuration is necessary for e.g. packets to be untagged properly on
+> swp2 egress.
 
-And from the x86_64 allmodconfig build:
+swp2 egresses packets only in VLAN 1. In your example, how would any
+packet become tagged in VLAN 1? VLAN 1 is a pvid on all ports which are
+members of it.
 
-fs/9p/vfs_file.c: In function 'v9fs_file_lock_dotl':
-fs/9p/vfs_file.c:322:1: warning: label 'out_err' defined but not used [-Wun=
-used-label]
-  322 | out_err:
-      | ^~~~~~~
+> But are you suggesting that this is being done in software
+> already? I.e. we are sending untagged frames from CPU->switch without
+> any VLAN tag?
 
-Introduced by commit
+With the exception of ports with the TX_FWD_OFFLOAD feature where the
+VLAN is always left in the packet, the bridge will pop the VLAN ID on
+transmission if that VLAN is configured as egress-untagged in the
+software VLAN database corresponding to the destination bridge port.
+See br_handle_vlan:
 
-  3efee0567b4a ("fs: remove mandatory file locking support")
+	/* If the skb will be sent using forwarding offload, the assumption is
+	 * that the switchdev will inject the packet into hardware together
+	 * with the bridge VLAN, so that it can be forwarded according to that
+	 * VLAN. The switchdev should deal with popping the VLAN header in
+	 * hardware on each egress port as appropriate. So only strip the VLAN
+	 * header if forwarding offload is not being used.
+	 */
+	if (v->flags & BRIDGE_VLAN_INFO_UNTAGGED &&
+	    !br_switchdev_frame_uses_tx_fwd_offload(skb))
+		__vlan_hwaccel_clear_tag(skb);
 
---=20
-Cheers,
-Stephen Rothwell
+>
+> In case you think the VLAN ops are unnecessary given that
+> .port_bridge_{join,leave} aren't implemented, do you think they should
+> be removed in their entirety from the current patch?
 
---Sig_/mp5L+Cc7nwMA.7lRipq.Sf4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I don't think it's a matter of whether _I_ think that they are
+unnecessary. Are they necessary? Are these code paths really exercised?
+What happens if you delete them? These are unanswered questions.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEi6Z0ACgkQAVBC80lX
-0GyrQgf/auGTfsi/pkhfdsLN9T2FWqHaCNL+gv9mNo86ihUiVZp1x+z0v/f7WM9b
-td/zEHIAn+4RoeS0ZHOWdmD6TOBpAxku9w5hqYOPY89m2uG8nNG8nld7PfO/EQD4
-djerQ/NJJZsR+qfqazqiMojgsYD4srAGBHjzL12jJxF5DH5zlchZ9cblLzqdWKFn
-rEPrzqWa0CjVypbFsEbVZFPng2tb/X4bLPen/7kGs+/A4AeCJkCO+o2s2tuObUWS
-Xfwwz6gEJFVGVmR03XXHXL/BXKgq5WQOzNe1yIFnqvYMJM23dnVLy4WyFN3ce7Tz
-HbWqMHm3R8vaTPA9Xdsi2BryUYqj7Q==
-=ESJ9
------END PGP SIGNATURE-----
-
---Sig_/mp5L+Cc7nwMA.7lRipq.Sf4--
+My best guess is: you have a problem with transmitting VLAN-tagged
+packets on a port, even if that port doesn't offload the bridge
+forwarding process. You keep transmitting the packet to the switch as
+VLAN-tagged and the switch keeps stripping the tag. You need the VLAN
+ops to configure the VLAN 2 as egress-tagged on the port, so the switch
+will leave it alone.
+It all has to do with the KEEP bit from the xmit DSA header. The switch
+has VLAN ingress filtering disabled but is not VLAN-unaware. A standalone
+port (one which does not offload a Linux bridge) is expected to be
+completely VLAN-unaware and not inject or strip any VLAN header from any
+packet, at least not in any user-visible manner. It should behave just
+like any other network interface. Packet in, packet out, and the skb
+that the network stack sees, after stripping the DSA tag, should look
+like the packet that was on the wire (and similarly in the reverse direction).
