@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168093F472C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFF63F4730
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Aug 2021 11:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbhHWJOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 05:14:50 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35644 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhHWJOt (ORCPT
+        id S235798AbhHWJPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 05:15:19 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:14409 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235769AbhHWJPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 05:14:49 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 28EFC21F3D;
-        Mon, 23 Aug 2021 09:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629710046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jf4RvD/mw/nbQWr8Y9Fj9qty0PSRsJZCDwZff4vyIj4=;
-        b=e5X2ULVlQDy65O/CjPGxNBz/QjcZsHpbBKeGbk8jRdn28yHdab/k6Td5kP61d5/IgeDqqv
-        42FRngk97eHUjHxqGBWtZPB27pJyClm3rXYHJwh/9T5AimnMbWFCqcC1fYCRh2wFZg1sgQ
-        AUyCq3FuPmuUOJuKAeONyui0jD2eOAw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629710046;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jf4RvD/mw/nbQWr8Y9Fj9qty0PSRsJZCDwZff4vyIj4=;
-        b=9bgUG/61TFYHpAaTjyONrAWKS/pIPZ/dvmgjy2+ewwQT6ss4s2K5sBUDJ7F1U4/26uMfV8
-        dd8w0NzSJ+f6l4Cw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1233613A92;
-        Mon, 23 Aug 2021 09:14:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id O/0EBN5mI2EKbQAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Mon, 23 Aug 2021 09:14:06 +0000
-Date:   Mon, 23 Aug 2021 11:14:05 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>,
-        Wen Xiong <wenxiong@us.ibm.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>
-Subject: Re: [PATCH v5 0/3] Handle update hardware queues and queue freeze
- more carefully
-Message-ID: <20210823091405.pmmkubzgxodwgjij@carbon.lan>
-References: <20210818120530.130501-1-dwagner@suse.de>
- <YSNV6vpaEnzc0Yv4@infradead.org>
+        Mon, 23 Aug 2021 05:15:17 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GtRKt1P9bzbdRw;
+        Mon, 23 Aug 2021 17:10:42 +0800 (CST)
+Received: from [10.174.177.35] (10.174.177.35) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 23 Aug 2021 17:14:30 +0800
+Subject: Re: [PATCH 3/3] mm/memory_hotplug: make HWPoisoned dirty swapcache
+ pages unmovable
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mhocko@suse.com" <mhocko@suse.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "cgoldswo@codeaurora.org" <cgoldswo@codeaurora.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210821094246.10149-1-linmiaohe@huawei.com>
+ <20210821094246.10149-4-linmiaohe@huawei.com>
+ <20210823082646.GB1452382@hori.linux.bs1.fc.nec.co.jp>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <de9e587e-fcc4-11e0-19a0-22a1bbafa4b6@huawei.com>
+Date:   Mon, 23 Aug 2021 17:14:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSNV6vpaEnzc0Yv4@infradead.org>
+In-Reply-To: <20210823082646.GB1452382@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.35]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On 2021/8/23 16:26, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Sat, Aug 21, 2021 at 05:42:46PM +0800, Miaohe Lin wrote:
+>> HWPoisoned dirty swapcache pages are kept for killing owner processes.
+>> We should not offline these pages or do_swap_page() would access the
+>> offline pages and lead to bad ending.
+>>
+> 
+> Thank you for the report.  I'm not yet sure of the whole picture of this
+> issue.  do_swap_page() is expected to return with fault VM_FAULT_HWPOISON
+> when called via the access to the error page, so I wonder why this doesn't
+> work for your situation.  And what is the "bad ending" in the description?
+> 
 
-On Mon, Aug 23, 2021 at 09:01:46AM +0100, Christoph Hellwig wrote:
-> applied to nvme-5.15.
+IMO we might hotremove the page while SwapCache still have ref to it. Thus the page
+struct would be accessed after offlined. The page struct should be invalid in this case
+and this would make do_swap_page fragile. Or am I miss something?
 
-Could you drop these patches again? James just sent me a new version of
-the series which addresses the points we discussed in this thread. They
-look good to me but I'd like to give them a spin and will post them
-shortly. Also James is giving them a test run.
+> I feel that aborting memory hotremove due to a hwpoisoned dirty swapcache
+> might be too hard, so I'd like to find another solution if we have.
 
-Daniel
+If there is a better way, we can just drop this one.
+
+Many thanks for your review and reply! :)
+
+> # You may separate this patch from former two to make them merged to
+> # mainline soon.
+> 
+> Thanks,
+> Naoya Horiguchi
+> 
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/memory_hotplug.c | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+>> index 9fd0be32a281..0488eed3327c 100644
+>> --- a/mm/memory_hotplug.c
+>> +++ b/mm/memory_hotplug.c
+>> @@ -1664,6 +1664,12 @@ static int scan_movable_pages(unsigned long start, unsigned long end,
+>>  		 */
+>>  		if (PageOffline(page) && page_count(page))
+>>  			return -EBUSY;
+>> +		/*
+>> +		 * HWPoisoned dirty swapcache pages are definitely unmovable
+>> +		 * because they are kept for killing owner processes.
+>> +		 */
+>> +		if (PageHWPoison(page) && PageSwapCache(page))
+>> +			return -EBUSY;
+
