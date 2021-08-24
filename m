@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41EA3F540C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FF13F540D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233360AbhHXASj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 20:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        id S233396AbhHXAVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 20:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232529AbhHXASi (ORCPT
+        with ESMTP id S233260AbhHXAVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:18:38 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7208C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:17:54 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id fz10so1678028pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:17:54 -0700 (PDT)
+        Mon, 23 Aug 2021 20:21:15 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EB7C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:20:32 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id s25so16172021edw.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7yibjZJUpbZ4+P8Zg5i3r1lSVJYnEnK9gSjxsDfYQ5Q=;
-        b=AJtytBIeQqFlDapbL33j5fzOVo/pO9w5Tpb/y/OSsmkJ2iSk0z46mwp/PcEPIGrWOm
-         aU2W7Adw64NicX6OTFgf8cnezXRb9ggRgxwWczKVpxMATQdtD6wgN4B0hqN4euAH/PrG
-         IDpHB7uzmOGEk1OHok5hifIUUjlDSh5c1ptaiK26KLu9Sxef0kzsjCvOSVB1Ij1E2IXW
-         Oigk3kE0ymAFRL+qOMjmLqwMJxoQFczQFokKxW5oRj9HkjWx4gPp3uphmaCk6QuTEsqS
-         SAi1GIOfKV2zNSTilppo67bbxOLtXPFb6VunNMZ30gaASys/v1KJMiH1plu5xfgk28Qx
-         XUlA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=QKdBZxDFHndwOQG1Un1Lk4xYZnYyIdDtym0pAYP0928=;
+        b=K/LBXXmvkKXexztWTE3wz9eJvBMeLh8/L0naG1NpnJC2CdcbfDAaTfFl6uNf6VKtfl
+         VKilNQa4EFp3TrvSScnX2NNwJ52zJiqL9gd12ZZ26/fzeG2Oyweylx+JQB4SPdvmxodl
+         PhLXGAtolSmny6upEWqno2H/JeTtMv397OpIubI+2ui+fIlY2FwqhQikr2CXRzObegNR
+         ZaiiidXK2DMmpc243PgT33Haz5OHGSI3EC0STMWQHTheupQ4aFotCl+x461bQNIgLyjd
+         FDl9xUwWMlKJ6dNQ8UCxXg7TTZwb+L8BBnAaEogj+FszMuoWZwub0VtMGeTTLtOw7xPf
+         mMdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7yibjZJUpbZ4+P8Zg5i3r1lSVJYnEnK9gSjxsDfYQ5Q=;
-        b=f5uz7wOC0z9MwS6+9UDaGLzwwsrla6VdjuygruFjcdMRof6b3gml0Qi4XIZnOdf/pZ
-         0D/0Fvty7XsOrBziGoM49V7vm7W7T163x5MjOUwGb+0NMJW5ePwnDIHzLHfc7o5x1RS/
-         64ufqdsx5POw9+/6vVFT00QDVKnV7jh9FMkZ/J3kdjBtdsC5VmlMgi+mQRRQm9imgCGy
-         DdJNDotVG05aWyRu7Lhyi4Hm5jr0deJBU0WgM5It1R5oIedIcJ0n7Oxo0GtRJmoL4+8b
-         qOQR4UJ6HEGQRq3WQPDIhIWrb7xgyFIjf8VJISvf7ueeD0E+hcCmvn2d2cbPCKR5OqbX
-         NlRQ==
-X-Gm-Message-State: AOAM5310B0V53Aeu9PsPG+7+KC1+MJm8/3HW8oJIUz2tblCVlkU3hBzY
-        0CdsJ9pOq3ow2YgLFEXI3RjOaUsQdl9bz81YxsrRvw==
-X-Google-Smtp-Source: ABdhPJwGGQFuHpqJSpswfjuCKkLgTaxj95DS+ddmgfEC5xoHhnOn72dJd6L3b8+sJvVpRyECZTObkKequJKSuxMCyQg=
-X-Received: by 2002:a17:90a:1f49:: with SMTP id y9mr1215786pjy.225.1629764274425;
- Mon, 23 Aug 2021 17:17:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210823234858.2633-1-straube.linux@gmail.com>
-In-Reply-To: <20210823234858.2633-1-straube.linux@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 24 Aug 2021 01:17:43 +0100
-Message-ID: <CAA=Fs0=SiVhTrHNqwrXBA2PFkm1LpWTOkv9b2c7KdijaO1iRsQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] staging: r8188eu: remove unneeded header files
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QKdBZxDFHndwOQG1Un1Lk4xYZnYyIdDtym0pAYP0928=;
+        b=O4+IFz82rdd+L2wrI86hgp6jBCHSJTwkz+oc/eeDlg6BLEgqLEcJz1rKQiqevct9YO
+         rbMhh8jPtRdJw+3bl5ISVrQCVppcn2VsKBeJIA7vZNiSP7Uqok1qkoADWeSCS5FFH9rH
+         mbXWoYu57D3sKhCCra/rxR5FZtihbOuNv18hARIKdogHqmaZcdgopRCIe2inTPPgeyfW
+         2QloxhWK9tdqQlw4Z2jqp3OfVTMlkpXyIWfZjzGLerIFzG67nVxC3jR6aI8EAO9CfDjk
+         AHamHkPTHP5gluOUegl8BXieQO0uuTT8VSTWtzh5iF9R6sMoTKHiS+exTk8OSSfNlQhx
+         hjtA==
+X-Gm-Message-State: AOAM532+hucWYQtQR9WNQAJsgx7o9KYJo/QA4HYES2VqiDN2MaiSiQzc
+        byvtvqnEsLJzxHI1UDTsrrI=
+X-Google-Smtp-Source: ABdhPJz01PB6DdPLd7d/mkqNO2gsfep56Mq8yBVumeVZDPPPQY/KUosqJYvMEeihpBzZDQv7TNr+JA==
+X-Received: by 2002:a05:6402:318c:: with SMTP id di12mr8068153edb.55.1629764431113;
+        Mon, 23 Aug 2021 17:20:31 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id o3sm8175697eju.123.2021.08.23.17.20.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 17:20:30 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        open list <linux-kernel@vger.kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: Re: [PATCH RFC] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+Date:   Tue, 24 Aug 2021 02:20:29 +0200
+Message-ID: <1935919.xT9xXRIY7p@localhost.localdomain>
+In-Reply-To: <7ce23fb2-3c8b-352e-1f2e-421ac7c64200@gmail.com>
+References: <20210822230235.10953-1-fmdefrancesco@gmail.com> <8275282.m2tVFbhrJk@localhost.localdomain> <7ce23fb2-3c8b-352e-1f2e-421ac7c64200@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 at 00:50, Michael Straube <straube.linux@gmail.com> wrote:
->
-> This series removes the header files if_ether.h and ip.h as both just
-> duplicate in-kernel definitions.
->
-> Both patches were already sent as single patches but only the one or
-> the other can be applied due to conflicts, so I resend them in this
-> series.
->
-> Michael Straube (2):
->   staging: r8188eu: remove if_ether.h header file
->   staging: r8188eu: remove ip.h header file
->
->  drivers/staging/r8188eu/core/rtw_recv.c      |   2 -
->  drivers/staging/r8188eu/core/rtw_xmit.c      |   1 -
->  drivers/staging/r8188eu/hal/rtl8188eu_recv.c |   2 -
->  drivers/staging/r8188eu/include/if_ether.h   |  94 ----------------
->  drivers/staging/r8188eu/include/ip.h         | 109 -------------------
->  drivers/staging/r8188eu/os_dep/xmit_linux.c  |   2 -
->  6 files changed, 210 deletions(-)
->  delete mode 100644 drivers/staging/r8188eu/include/if_ether.h
->  delete mode 100644 drivers/staging/r8188eu/include/ip.h
->
-> --
-> 2.32.0
->
+On Monday, August 23, 2021 1:05:17 PM CEST Pavel Skripkin wrote:
+> On 8/23/21 1:47 PM, Fabio M. De Francesco wrote:
+> >
+> > [...]
+> >
+> >> I think, we can pass REALTEK_USB_VENQT_{READ,WRITE} directly as 
+> >> requesttype argument and get rid of u8 reqtype. + we can define these 
+> >> macros:
+> >> 
+> >> #define
+> >> usbctrl_vendor_read(...)   usbctrl_vendorreq(...,REALTEK_USB_VENQT_READ)
+> >> 
+> >> #define
+> >> usbctrl_vendor_write()    usbctrl_vendorreq(...,REALTEK_USB_VENQT_WRITE)
+> >> 
+> >> This will make code more nice, IMO  :)
+> > 
+> > Dear Pavel,
+> > 
+> > I agree in full: nicer and cleaner :)
+> > 
+> > I'll do that, but please notice that I will also need to change the code of the three
+> > usb_read*() for calling usbctrl_vendor_read(). Furthermore, "else res = 0;" becomes
+> > unnecessary. Please take these changes into account when you'll send them again
+> > as "regular" patches.
 
-Dear Michael,
+I have reconsidered the tip above and, while I appreciate your suggestion, I think it's 
+not so necessary to use the macros only to get rid of "u8 reqtype".  I finally got rid of 
+that variable by passing the request types explicitly to usb_control_msg_recv/send().
 
-Many thanks, applied/built/ran with both patches applied, looks good
-and works fine so far.
+> It depends on which patch will go in first.
+> 
+> There are a lot of upcoming clean ups, so I am waiting for merging my 
+> series with random clean ups :) A lot of fun...
 
-For both:
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+A lot of fun... Sure? :)
+ 
+> I biggest hope is that my series will go in before camel-case clean ups, 
+> because rewriting this for the 3rd time will kill my mind...
 
-Regards,
-Phil
+ In this case, I wouldn't want to be in your place :)
+> 
+> With regards,
+> Pavel Skripkin
+
+Thanks again very much for your review,
+
+Fabio
+
+
+
+
