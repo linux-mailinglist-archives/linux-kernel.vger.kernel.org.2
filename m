@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495403F5916
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2B13F5919
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbhHXHgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
+        id S235027AbhHXHhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235010AbhHXHgP (ORCPT
+        with ESMTP id S234997AbhHXHhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:36:15 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5705C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:35:31 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id a13so25118441iol.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:35:31 -0700 (PDT)
+        Tue, 24 Aug 2021 03:37:22 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D1BC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:36:38 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id bt14so42392042ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kdn/xtZAvZYiwKwxxhtoDSWZxutSGdv9Zf0EjwepvWk=;
-        b=dFmqKGM4M8xwkez/7hO/m5icTM2376t5o0aNOCOsIxs5i4hiT5sr79kQdXWQq4TEDQ
-         J/MeqGYzCjKUF5OToXwp6ZB4LNLWm37WAs1DA2MsvaACyMGlWLQz+RR81Uv9YdjMjoG2
-         JqhbsZ+4S6XyrncPUOCD08O7+s+aOQbEB5RHU=
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ohQP/1UpMRPWfOIH909jZeqhXx82KjuL1nCKK9Lczqs=;
+        b=ScIf9fPFFbRhexoClHs4VFnCx1ReIkjSsslA5dqpARKNb9Bvx6NPJHAG3IQ3iHHBkk
+         g+xLJWQWBZ2q/KxmLc3zV7tQnwK9wCpM6e2/CAA0f9DMlka7YGekua8AX/HwypywrLFJ
+         wIs8rJML38TA2btLMJWXCw9buJ9I6loVZntwUHFpW9ObNnZS3pFh81RHSrGSTioZsynD
+         89v0IH/KI2rMd/ErkUAS/QQ02lZVD6tBEiAYdWGDKm6kKvdFdm2H6+t+GNjcKiIcMwTy
+         VieSQzRqhjDzO8ojaYX4Ar4GFvm80aF+aGoh+87ktxOk2/fuOw7WD9JOaUdjhjJxCvUk
+         E1SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kdn/xtZAvZYiwKwxxhtoDSWZxutSGdv9Zf0EjwepvWk=;
-        b=DKESHth+7rbqSI0/gT5GiEKm8RSAdKAgfHxXwJ5o9aIC6QDKhl8TrZMSHc+Fj3PqaD
-         uO2abq4P2lGUcKMkrs9IBreX8jT5PrBZYa0s9/5G2AnKQSH5vNoC4MLcqg8ngrsu8qUb
-         I3NMcjp98qrYwhdFKKBoyDaN43JzAHmaRJlpCKYL79MOSBLVwdzKDL2tTIU4kgIw13AR
-         T621Hyfii+Fpcu220ty4Ucpe6PUv5l7frjs6PSnDwrwPs8ee1CNIMtk10BgWfak2YYpe
-         0oSMGqXfufNP17IH+fHmaOiSgBo081JtcGpkNNyhVqUo0P/1P//Rln3dlpr9ticvtHqA
-         Qcgw==
-X-Gm-Message-State: AOAM53296A4qqukhHLcT/xNMdGPj8yjc2NYvLpeOPqP6Ikl8kXQT9NIS
-        Phodbbjli1UlmZVUKZHQV0O4LSDv4sSSHYvyCvD4fg==
-X-Google-Smtp-Source: ABdhPJzCaKQQqFiKu2GYGl51DjDrCHWW0khxqU+TJuIKD2Qiaa6IC9r0Xva1qe+ermS6tmqpaGovvcP+MP7vZ5pGN64=
-X-Received: by 2002:a6b:6319:: with SMTP id p25mr30729776iog.100.1629790531099;
- Tue, 24 Aug 2021 00:35:31 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ohQP/1UpMRPWfOIH909jZeqhXx82KjuL1nCKK9Lczqs=;
+        b=T8fd585kV75wQDUxkCylAUPF4GAd7BuBgqh1gN2gDZFeXdrbayiiZYUgF/8lYX7R0J
+         wbHxYyNdQfqj1QKN4Ka2Isx+RmCZGTOhGG3FJV0KcruQWz7sh5r6W4Z2YF+vVt1CL4Cj
+         8/1JSF7tdGdeOT61aISM5KuexMquV37SQleeIdFaGpC4mi9pMqtvNvBKD6FnNL82WZZh
+         mauJPro2mTr21j5GV/vHG50FbIdzwpgJlcUeWU6fkGT1iXiGcKYHz89+Rm0f56NPrWIi
+         YIKYHOd1u6FKYfYESrfUZwlKbCkQXv4xXDqVnITYDjrw6AN/ywVmbh4UVdik/wjM/xoy
+         EqUw==
+X-Gm-Message-State: AOAM530oFxpa0Bt2uaHaJytmALzJkGmiOiWaUi8k2ND4/iamv4KaZ8Q9
+        tunjFbQSMFAg0KPWR9U92pjlhw==
+X-Google-Smtp-Source: ABdhPJyKKboCkA1UwhTOouJjkqZjzqafar68hOnaLrflOftkHOt3FPI2uvaCwaaO+K8OjSNol3CJxg==
+X-Received: by 2002:a17:907:2492:: with SMTP id zg18mr7398248ejb.233.1629790597326;
+        Tue, 24 Aug 2021 00:36:37 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net (94.105.103.227.dyn.edpnet.net. [94.105.103.227])
+        by smtp.gmail.com with ESMTPSA id p3sm9032454ejy.20.2021.08.24.00.36.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 00:36:37 -0700 (PDT)
+To:     Jiang Biao <benbjiang@gmail.com>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-kernel@vger.kernel.org, benbjiang@tencent.com,
+        Jiang Biao <tcs_robot@tencent.com>
+References: <20210824071926.68019-1-benbjiang@gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: Re: [PATCH] ipv4/mptcp: fix divide error
+Message-ID: <fe512c8b-6f5a-0210-3f23-2c1fc75cd6e5@tessares.net>
+Date:   Tue, 24 Aug 2021 09:36:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210813065324.29220-1-yong.wu@mediatek.com> <20210813065324.29220-17-yong.wu@mediatek.com>
-In-Reply-To: <20210813065324.29220-17-yong.wu@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 24 Aug 2021 15:35:05 +0800
-Message-ID: <CAJMQK-ir-wLy4OHkWEWZf=CZcURMhRvHnOjBLWXaezhukJh2JA@mail.gmail.com>
-Subject: Re: [PATCH v2 16/29] iommu/mediatek: Adjust device link when it is sub-common
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, srv_heupstream@mediatek.com,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210824071926.68019-1-benbjiang@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 3:03 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> For MM IOMMU, We always add device link between smi-common and IOMMU HW.
-> In mt8195, we add smi-sub-common. Thus, if the node is sub-common, we still
-> need find again to get smi-common, then do device link.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/iommu/mtk_iommu.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index a4479916ad33..a72241724adb 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -845,6 +845,17 @@ static int mtk_iommu_mm_dts_parse(struct device *dev,
->         if (!smicomm_node)
->                 return -EINVAL;
->
-> +       /* Find smi-common again if this is smi-sub-common */
-> +       if (of_property_read_bool(smicomm_node, "mediatek,smi_sub_common")) {
-> +               of_node_put(smicomm_node); /* put the sub common */
-> +
-> +               smicomm_node = of_parse_phandle(smicomm_node, "mediatek,smi", 0);
+Hi Jiang,
 
-This only checks 1 level here, and does not check if the mediatek,smi
-of a sub-common node is not another sub-common node.
-So maybe add a check that the updated node here doesn't have
-mediatek,smi_sub_common property.
+On 24/08/2021 09:19, Jiang Biao wrote:
 
-> +               if (!smicomm_node) {
-> +                       dev_err(dev, "sub-comm has no common.\n");
-> +                       return -EINVAL;
-> +               }
-> +       }
-> +
->         plarbdev = of_find_device_by_node(smicomm_node);
->         of_node_put(smicomm_node);
->         data->smicomm_dev = &plarbdev->dev;
-> --
-> 2.18.0
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+(...)
+
+> There is a fix divide error reported,
+> divide error: 0000 [#1] PREEMPT SMP KASAN
+> RIP: 0010:tcp_tso_autosize build/../net/ipv4/tcp_output.c:1975 [inline]
+> RIP: 0010:tcp_tso_segs+0x14f/0x250 build/../net/ipv4/tcp_output.c:1992
+
+Thank you for this patch and validating MPTCP on your side!
+
+This issue is actively tracked on our Github project [1] and a patch is
+already in our tree [2] but still under validation.
+> It's introduced by non-initialized info->mss_now in __mptcp_push_pending.
+> Fix it by adding protection in mptcp_push_release.
+
+Indeed, you are right, info->mss_now can be set to 0 in some cases but
+that's not normal.
+
+Instead of adding a protection here, we preferred fixing the root cause,
+see [2]. Do not hesitate to have a look at the other patch and comment
+there if you don't agree with this version.
+Except if [2] is difficult to backport, I think we don't need your extra
+protection. WDYT?
+
+Cheers,
+Matt
+
+[1] https://github.com/multipath-tcp/mptcp_net-next/issues/219
+[2]
+https://patchwork.kernel.org/project/mptcp/patch/286de8f451b32f60e75d3b8bcc4df515e186b930.1629481305.git.pabeni@redhat.com/
+-- 
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
