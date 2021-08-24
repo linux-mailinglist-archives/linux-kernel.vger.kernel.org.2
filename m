@@ -2,160 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623EB3F59D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163CB3F59DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbhHXI3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:29:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31784 "EHLO m43-7.mailgun.net"
+        id S235375AbhHXIaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233920AbhHXI3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:29:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1629793696; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=WuylCgi/4XPRgUijyBbcjv2AT4kx6jzyKw0PfJfAgfc=; b=RtmqUNSHJYwPc9czy48nfnqoLt3IcS7dhfA+HsyoYmbnxfjLwMpz0HIzWz0jELQ4B0uU5K1b
- LVmxY9NhMyOOs4j2Jo7ADmIz7sHBcWf5PMZCc2/DhTzbum9sPFFNTdEMi4RbnOXQjzhbgCps
- 6wx5HwBqeiuSdbaB2Tca7EUNqLk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6124ada01567234b8c83463c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Aug 2021 08:28:16
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 52D8AC43617; Tue, 24 Aug 2021 08:28:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9609C4338F;
-        Tue, 24 Aug 2021 08:28:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A9609C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v5] Bluetooth: btusb: Add support using different nvm for variant WCN6855 controller
-Date:   Tue, 24 Aug 2021 16:28:03 +0800
-Message-Id: <1629793683-28770-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S235291AbhHXIat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 04:30:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AD4A761357;
+        Tue, 24 Aug 2021 08:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629793805;
+        bh=TbW3QSnNi2sp0jQXid4PLEQhDVLuhgdOwqmQtWh6cIw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=HdeFvVYVf5HVJYaFI/00J+nQH+O6UnFaIIWvxPY5lH4Sxtth25V3X6Bly2XkH9LuH
+         MFcF/ETM9+TRAynDER/xD0eSjF1xoddsyysnrcIOQBuExn9Uz7Rmnh/aLuVyPOfK6A
+         IHFeeMdBqThLbuRzwlWniOw2CVBoQqvklWkGrnOHbmd+JWsXrXUF2p3FBg3R4/IAWR
+         k7xS9ZHXxwlQ0l7lw9eRP7Ou9vHJTZ56BmlLzaxXQoFPeMbMv1GZw/rs1vOEshYUvQ
+         CmtgrWR/QrTe3/2IFCHth1oHdDF/3oAQ25KqfhY3nrgn7pb/v1vPUgjFN31rnl5ADA
+         tprZexviWMUbQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A61AF60978;
+        Tue, 24 Aug 2021 08:30:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: ipv4: Move ip_options_fragment() out of loop
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162979380567.25178.619199845135518553.git-patchwork-notify@kernel.org>
+Date:   Tue, 24 Aug 2021 08:30:05 +0000
+References: <20210823031759.25395-1-yajun.deng@linux.dev>
+In-Reply-To: <20210823031759.25395-1-yajun.deng@linux.dev>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+Hello:
 
-we have variant wcn6855 soc chip from different foundries, so we should
-use different nvm file with suffix to distinguish them.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 57 +++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 45 insertions(+), 12 deletions(-)
+On Mon, 23 Aug 2021 11:17:59 +0800 you wrote:
+> The ip_options_fragment() only called when iter->offset is equal to zero,
+> so move it out of loop, and inline 'Copy the flags to each fragment.'
+> As also, remove the unused parameter in ip_frag_ipcb().
+> 
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>  net/ipv4/ip_output.c | 19 ++++---------------
+>  1 file changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 60d2fce59a71..ad7734f8917c 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3141,6 +3141,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
- #define QCA_DFU_TIMEOUT		3000
- #define QCA_FLAG_MULTI_NVM      0x80
- 
-+#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-+#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-+
- struct qca_version {
- 	__le32	rom_version;
- 	__le32	patch_version;
-@@ -3172,6 +3175,7 @@ static const struct qca_device_info qca_devices_table[] = {
- 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
- 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
- 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-+	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
- };
- 
- static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-@@ -3326,27 +3330,56 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
- 	return err;
- }
- 
--static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
--				    struct qca_version *ver,
--				    const struct qca_device_info *info)
-+static void btusb_generate_qca_nvm_name(char **fwname,
-+					int max_size,
-+					struct qca_version *ver,
-+					char *foundry)
- {
--	const struct firmware *fw;
--	char fwname[64];
--	int err;
-+	char *separator;
-+	u16 board_id;
-+	u32 rom_version;
-+
-+	separator = (foundry == NULL) ? "" : "_";
-+	board_id = le16_to_cpu(ver->board_id);
-+	rom_version = le32_to_cpu(ver->rom_version);
- 
- 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
- 		/* if boardid equal 0, use default nvm without surfix */
- 		if (le16_to_cpu(ver->board_id) == 0x0) {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--				 le32_to_cpu(ver->rom_version));
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x%s%s.bin",
-+				 rom_version,
-+				 separator,
-+				 foundry);
- 		} else {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
--				le32_to_cpu(ver->rom_version),
--				le16_to_cpu(ver->board_id));
-+			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x%s%s%04x.bin",
-+				rom_version,
-+				separator,
-+				foundry,
-+				board_id);
- 		}
- 	} else {
- 		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--			 le32_to_cpu(ver->rom_version));
-+			 rom_version);
-+	}
-+
-+}
-+
-+static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
-+				    struct qca_version *ver,
-+				    const struct qca_device_info *info)
-+{
-+	const struct firmware *fw;
-+	char fwname[64];
-+	int err;
-+
-+	switch (ver->ram_version) {
-+	case WCN6855_2_0_RAM_VERSION_GF:
-+	case WCN6855_2_1_RAM_VERSION_GF:
-+			btusb_generate_qca_nvm_name(&fwname, sizeof(fwname), ver, "gf");
-+		break;
-+	default:
-+			btusb_generate_qca_nvm_name(&fwname, sizeof(fwname), ver, NULL);
-+		break;
- 	}
- 
- 	err = request_firmware(&fw, fwname, &hdev->dev);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+Here is the summary with links:
+  - [net-next] net: ipv4: Move ip_options_fragment() out of loop
+    https://git.kernel.org/netdev/net-next/c/faf482ca196a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
