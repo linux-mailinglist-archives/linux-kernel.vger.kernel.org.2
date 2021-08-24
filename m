@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1BC3F6869
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65073F684C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241649AbhHXRwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241577AbhHXRwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:52:38 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DB0C05A52D;
-        Tue, 24 Aug 2021 10:16:53 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id u3so45877026ejz.1;
-        Tue, 24 Aug 2021 10:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZrICEbmTTI5X+hclm7WK+PbQzG8reRJWlDrlnWqe5QM=;
-        b=V7GFYricmNupzBQJITddKiJ5ku1Lqevd9U9bxpSrk0jzLvBuYGDIYibumqRNN0x5vp
-         pSb64XnQkxG4tDTrNORxvVC6r/yjy64p4Gcem3ESHcB5ZNYGrW9cl6YZfdTXqGRCiVe7
-         eq1VENoEhmH7DmNn4kapGxS5qi7KlF/N9RlD8Lx/C+kZGtyG1RHWVREmLQsDYZbq6lYK
-         tpn2eyaAgXC2EaIIEnLDW7kcIpM7qUcG94JDw+jLRXbvxpbKffMn3jD8swoBhVDcj8Ww
-         Ac9UtFbl535gK/3LeP2yd3dSnBDXYhh61E8eFOiNrBs561D7YgygGR4UvbDe91vcLyzB
-         8uUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZrICEbmTTI5X+hclm7WK+PbQzG8reRJWlDrlnWqe5QM=;
-        b=UBrtYsbN74rxMoQy7S0jC1MQSQ8CDx38+JEJNkcyNn9xA8DUUKiZ3UAIIy2mpL5xq2
-         Azf6mUp7etVhNNwHS1UsID2GZ1OdH6jTEjXc0qZ+mu+z9PEe88B4FwG3d5GWnfSz3R/Y
-         HO6bJEo7iVUSx6LdGYHCTv8V5mWpuHsiOY1gL6SMIgbrKZurpCHLXHADjgLlgS3fPDIx
-         WvlaGpq5znY/BuRZ0xrG3l3DLe+/pox7/rcRn2Gwa4LDdIjLHjATvL/ZSLG5nmfN+ErJ
-         s7STi19AKcxjEnAfs+ViNvkuD81MHDDloxvITRghrvjGRqmVu4AWn/AffBbLx0Ikw2dx
-         k/Kw==
-X-Gm-Message-State: AOAM532P40Zmch2kUz4Bym2NGyMLg+Ml0MKA3PeGW2r+EpgAzGb9NPHx
-        0ZYzjepNuICGwTV4rUu+YYU=
-X-Google-Smtp-Source: ABdhPJwdGCzqk1Ny2qU9cmtS61qz1uXqMNjNnjfRHaaaWhcZMJ32Yp6OFCb0QywNgpvRbXpje3KbyQ==
-X-Received: by 2002:a17:906:401:: with SMTP id d1mr1200691eja.242.1629825411500;
-        Tue, 24 Aug 2021 10:16:51 -0700 (PDT)
-Received: from skbuf ([188.25.144.60])
-        by smtp.gmail.com with ESMTPSA id v1sm9951266ejd.31.2021.08.24.10.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 10:16:51 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 20:16:49 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: dsa: mt7530: manually set up VLAN ID 0
-Message-ID: <20210824171649.ebcolsbsqczomiee@skbuf>
-References: <20210824165253.1691315-1-dqfext@gmail.com>
- <20210824165742.xvkb3ke7boryfoj4@skbuf>
+        id S242474AbhHXRmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:42:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242670AbhHXRjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:39:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB6AF610FD;
+        Tue, 24 Aug 2021 17:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629825555;
+        bh=4KgpOFk8+xW0LI5R4I/UNoqugzdwXJKeGalMmTpyq5o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hk2AgL7J8LCBDFU49/BzpJK0kywOJ6Y9R5Cm6d8XbcPHqgO6RIZO1yLPbqsCD1MKr
+         Dp+mxg7tQ4dXqZJ8hQrtZQhuRA1LMK/Ze5e45YM5bIPBRUsfuk/XcIhJfdA+9hN5Fp
+         K0x+hwE9gTt2cyqlgltTiislhBURdDbFPQR/d+GMhhHx/TErtii2DGvERE74ngv8VW
+         BOab3HBA6wwAf/v0Cn16yJ3bHZf2L5PHC+owRFRbUL/lGof5RUUCdtu1up80QTg6Sf
+         ABhKhN0HrBkDaYMu0GWaizIHHNXrrc4sHpFceQXt9XCsO4NOZolB+s0kU1ntFk2bWv
+         F/mJ7RsVXq4nA==
+Date:   Tue, 24 Aug 2021 18:18:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lucas Tanure <tanureal@opensource.cirrus.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 8/9] spi: amd: Refactor to overcome 70 bytes per CS
+ limitation
+Message-ID: <20210824171848.GA21804@sirena.org.uk>
+References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
+ <20210824104041.708945-9-tanureal@opensource.cirrus.com>
+ <20210824171619.GK4393@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
 Content-Disposition: inline
-In-Reply-To: <20210824165742.xvkb3ke7boryfoj4@skbuf>
+In-Reply-To: <20210824171619.GK4393@sirena.org.uk>
+X-Cookie: You will contract a rare disease.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 07:57:42PM +0300, Vladimir Oltean wrote:
-> > +static int
-> > +mt7530_setup_vlan0(struct mt7530_priv *priv)
-> > +{
-> > +	u32 val;
-> > +
-> > +	/* Validate the entry with independent learning, keep the original
-> > +	 * ingress tag attribute.
-> > +	 */
-> > +	val = IVL_MAC | EG_CON | PORT_MEM(MT7530_ALL_MEMBERS) | FID(FID_BRIDGED) |
-> 
-> FID_BRIDGED?
 
-yes, FID_BRIDGED.
+--OgqxwSJOaUobr8KG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Please confirm that the Fixes: tag is the one you intend. The patch appears fine otherwise.
+On Tue, Aug 24, 2021 at 06:16:19PM +0100, Mark Brown wrote:
+
+> It also looks like the code is adding support for a new revision of the
+> hardware which isn't mentioned anywhere in the commit message at all and
+> really should be, it should most likely be a separate commit.
+
+Sorry, I managed to move on to the next message while writing the reply
+without noticing - this is actually a separate commit so that bit is
+fine (modulo the confusion with the version field).
+
+--OgqxwSJOaUobr8KG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElKfcACgkQJNaLcl1U
+h9C11wf+N2I2mvjPYHNdQAEZzaRKX1sV1kW1dzcr2KzTBCUqOmRMlYC2rxJ+ccBZ
+V2OGg9GS1QVDrS5Vx3qpPmE9z3sd2qyhQloZeerDQ9t35On6pEw1Wl3sL6oGpfiW
+ISaVIvv8jr0nsGe68kXo4g8exnuV5qg5mzKwDhYPRfX70XGr3WRYw3Kh4PRYlJYg
+MQqgZdSX1u1r/2BrQcvK34NkvBbPO8OxyDkTEM2MroNT7RR3UF/B57uoSQtnSYEU
+sjF1pLR8kx/vsKzudcElVlFHxoOHiFENKl1+kbKMmaRbBmbXNxsdnAv472xNLSHr
+A+JIL06WWh9t3lSo24yowxc+e5Xbvg==
+=ssj+
+-----END PGP SIGNATURE-----
+
+--OgqxwSJOaUobr8KG--
