@@ -2,83 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96513F586E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75CC3F587D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbhHXGqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230497AbhHXGqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:46:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D87F61101;
-        Tue, 24 Aug 2021 06:45:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1629787529;
-        bh=Kubh2nvvp1Q6uolaYfDooSop8qoFrJBPwS451q3QqQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xGWMER6q+ZDV6Hm4DxrGKvKsHkFDy8BDt6PNPXTysOZDKEdnwernVRLzn7TS/3Evl
-         GUhFInVIHNNsVxBZSDZ0VmXBTNgiiT2TJiC2djbzXkYTqJoXGLDf2G57b6ZSyxLmK9
-         P+TCRogG1zFDExrBgJV1rbTjS3lR406ezv9jq510=
-Date:   Tue, 24 Aug 2021 08:45:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alexander Dahl <ada@thorsis.com>
-Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] USB: host: ehci-atmel: Allow enabling HSIC on SAMA5D2
-Message-ID: <YSSVhblgt/45TvzF@kroah.com>
-References: <20210823140052.GA120849@rowland.harvard.edu>
- <20210824063702.24586-1-ada@thorsis.com>
+        id S231404AbhHXGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230192AbhHXGwX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 02:52:23 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93F2C061575;
+        Mon, 23 Aug 2021 23:51:39 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id f22so12362397qkm.5;
+        Mon, 23 Aug 2021 23:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9bXzP9AccmLjICuepUxLURd1sxphELP7cg9OUJmQk8k=;
+        b=sgRuXm8UcU+ymjyMMug5mWWNeHnEmI2GY2HvWTxnsUZUtcUl9yu6z9jLR5pLEWiiZX
+         KKHS9SUwx+VKyoinjAXa4DCKaf1ciipyJkntHav5RgPfizFm21CtjVJmYpDC3GHJKnlK
+         e5L5NDIQQTENjWy772S5s475kLsPiDZbjJvTQ6EV15SFtaXcFqZSKlZ4Ls8fmZJ0c4dB
+         5PgC8VAHcVnx4P/ci080R1AWZQufg16j+gT88Mv5GYnBXKGS5Sf7H2pYrBBcaTZOwn50
+         aNq8KL8ALAn3/N4MraCFtaqtiaQsvEsyG5EVKHm7PcbGI8+VuV+zv/YamKMCqJ2jUJst
+         +uPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9bXzP9AccmLjICuepUxLURd1sxphELP7cg9OUJmQk8k=;
+        b=KZhv3sMozjUbT8R3irFaDloRAwCK86HC1Sc0C7R8OPM3RRIEFDRXg55mkwgXQfEn2K
+         Qght5bFuGZWfDxcdbTWxnbMiYrS0NFZCEcynVNEz9zBV55nTdExR7c2P5Z3FFam09MHc
+         tAo3k7T42MR/R4IYxHugVOPb5K7FP9gPvHKVpAcW7PWsei8WB3XfROQY/rXAhuRaSlbn
+         Pir1ItpDEDgAwDUlHtAhb+l/spXhsErMGf+/CKQZl98HPV9Vk18u6yxrTXVUGQF6rOwc
+         xgWswThZG5RIFjkTNS/L6miOV8pmktb96/KY9PGqhZtB9pAEse1Y36YUOhR8CHjMF2Lf
+         waMA==
+X-Gm-Message-State: AOAM532yLtVdIoHGzhJ7LHq7kaDIYniYTDX629FehuT3S0xvjbSK1PAk
+        9Iim6ke4z0lAVntH88iiTII=
+X-Google-Smtp-Source: ABdhPJw9WUKIgMexvVMGueH0cdrv8901NgCsdWwQtFs5+rk565HIc85Yif8E7x1MRHC1GJw3cgb0iA==
+X-Received: by 2002:a05:620a:2a0f:: with SMTP id o15mr25600738qkp.404.1629787898991;
+        Mon, 23 Aug 2021 23:51:38 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id g13sm1856934qkk.110.2021.08.23.23.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 23:51:38 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] tools:signal: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 23:51:31 -0700
+Message-Id: <20210824065131.60346-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824063702.24586-1-ada@thorsis.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 08:37:02AM +0200, Alexander Dahl wrote:
-> Unlike other SoC series featuring the 'atmel,at91sam9g45-ehci' USB EHCI
-> controller, which have embedded USB high-speed transceivers for each
-> port, the third port on the SAMA5D2 series is HSIC only.  That HSIC
-> interface is not enabled after a power-on reset, but can be enabled by
-> setting a flag in a vendor specific EHCI register.
-> 
-> The register offsets added to the new header file were compared with
-> those for the SAM9G45, SAM9X25, SAMA5D3, SAMA5D4, and SAM9X60 series and
-> there are no differences in the offsets or contents of those registers.
-> Which of those additional vendor specific registers are supported,
-> differs by SoC family.  So while the HSIC enable feature is currently
-> only present for SAMA5D2, it probably does not hurt to set it on the
-> other families, hence no additional check for SoC family here.
-> 
-> Tested on a custom board featuring a SAMA5D27C-D5M SiP connected to an
-> USB3503 hub with an upstream HSIC interface.
-> 
-> Link: https://community.atmel.com/forum/sama5d2-using-hsic-under-linux
-> Signed-off-by: Alexander Dahl <ada@thorsis.com>
-> ---
-> 
-> Notes:
->     - for introducing new dt binding, would be nice to convert old one
->       first, probably needs split up and multiple iteration review?
->     - name of that new dt property?
->     - register definitions put to a separate file, like
->       'drivers/usb/host/ehci-fsl.h'
->     - unsure where exactly in the probe process that register write should
->       happen, datasheet gives no hint
->     - should suspend/resume be considered?
-> 
->  drivers/usb/host/ehci-atmel.c | 17 +++++++++++++++++
->  drivers/usb/host/ehci-atmel.h | 19 +++++++++++++++++++
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-No need for a new .h file that is only used in a single .c file.  Just
-put those few lines in the .c file please.
+./tools/testing/selftests/arm64/signal/test_signals_utils.h:112:9-10
+WARNING: return of 0/1 in function 'get_current_context' with
+return type bool
 
-thanks,
+Return statements in functions returning bool should use true/false
+instead of 1/0.
 
-greg k-h
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+---
+ tools/testing/selftests/arm64/signal/test_signals_utils.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/arm64/signal/test_signals_utils.h b/tools/testing/selftests/arm64/signal/test_signals_utils.h
+index 6772b5c..66122e6 100644
+--- a/tools/testing/selftests/arm64/signal/test_signals_utils.h
++++ b/tools/testing/selftests/arm64/signal/test_signals_utils.h
+@@ -109,7 +109,7 @@ static __always_inline bool get_current_context(struct tdescr *td,
+ 	if (seen_already) {
+ 		fprintf(stdout,
+ 			"Unexpected successful sigreturn detected: live_uc is stale !\n");
+-		return 0;
++		return false;
+ 	}
+ 	seen_already = 1;
+ 
+-- 
+1.8.3.1
+
+
