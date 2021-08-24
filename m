@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5062B3F58B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC2D3F58B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhHXHLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S233288AbhHXHLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhHXHLX (ORCPT
+        with ESMTP id S231868AbhHXHLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:11:23 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A04BC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:10:39 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id f6so17542393iox.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:10:39 -0700 (PDT)
+        Tue, 24 Aug 2021 03:11:45 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA48FC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:11:01 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id y144so22099241qkb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:11:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LgRucL3K4cUFafkmcwegDWstDciTynvkAhKij7AEIBk=;
-        b=XjwCcBqTjO8zbpgRAvkXX4cEK21t+nleXjTkL4VzdxxdLsNvjwNcndFWSg6JlrSwJq
-         bpSdGFO+BrTrAT8Vmftfwj9hkT+k9VzKKyZauDR/U1vyuv5aWPiz/wR4BLCxKVgR0+Ar
-         HAtZRuWjONau0qmolRjDQ0es97dtHpDqC2jDM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OpraUE6OjS/NJ/z50MHh+f2NGNERi+IEpqTCSRLY4pc=;
+        b=FruyfbAp4H9l3XwGtBZWrEDGSSIsOKy9c7ksDH8yzLXpxKAO2Zjg+b1yNIWd+qOvfj
+         U/CJiobIkkL/Kuhn3PpVYckhnjfyFuYTNklRpqIABJ2jzNiPLEUNgoduEL7NfOrUGy2H
+         CATKVefPyD240eEHYYdIGSKjzan8FMEx8rsLOxq8GYVIZHoWX/PtOzhyYrbNX+TbTmBJ
+         uiVpTahuzjfYMoVem66Gz9Su8uzeo765iZxLJs44ifYm6exserwN6Jkvc+l9XKpPcBPN
+         cFV7Xz9XOFcDt9ZJVd3i/FdHfqZHxkAn1MDGvYsvvnJSQcMjJw+v0sxy4DlqsEzpsqJj
+         0r1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LgRucL3K4cUFafkmcwegDWstDciTynvkAhKij7AEIBk=;
-        b=t6w3p9zA1H9gEF1BYCDKeJvYhlJGfVUbirLWLj+zgeSu9t9USvpBCSVY5pU68r3oZ3
-         8yE+osUsyPpTBjiNTlPhmIPdx4kyTlMpRb8+mrEcN8iOLGmNMRC8lh3HDtEgcvjWQvlz
-         xLruV+ZHj+tPEId6qOXca6QE2DQV6piWAGqq9LtZJz80XYyJa5mVDbLNZk0SfGzHKxUE
-         uPDdJoPd2qhgYCvDf0YWb+1BBHRCwOj8rREO8IRatI+FwWZHXz+GQ5F5Vt7TiwTOFABC
-         7F7AQIiNfY5ThBoeOt+d50XgRnwC7GZMMMD9GPfJISaoFqATemwW4VPz37fNgQM2xKg0
-         GfLg==
-X-Gm-Message-State: AOAM53185ro6fYiyqys395GR/jrI/Tv+MLzLaVXZN6G4Xxu+64SuCiUC
-        VOnWQFb0cTZAKezGgHvBO4WHaC6HemXhj+645Ri5RA==
-X-Google-Smtp-Source: ABdhPJxa8cXPwlwxMitmLNqhhcUpAXaFNNqqlX3QkiCbaPVcTW2lKOWSXVoLKeh/GHZwtAyAQE/miho2FRPpMMPkaXY=
-X-Received: by 2002:a05:6602:341:: with SMTP id w1mr29896459iou.40.1629789038867;
- Tue, 24 Aug 2021 00:10:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OpraUE6OjS/NJ/z50MHh+f2NGNERi+IEpqTCSRLY4pc=;
+        b=bewzm3u3WzSv/8Yqxu6zP/7B2WiDBdKVP+TA11gidtRzywhczw0uHcoMmued4eHssX
+         rpiVehNJ1991kDAeWjXV3DmcOc0ehd+LLVtTb9aMTnohV2JFkDjxJlAqFp6njuVuyCDX
+         pMrDMFvC9acuoSpK8k0JRKlXRbAsn8e1Fyp8yLsE81fjoMU81EFPhuEUzE4SbiH/K0Bh
+         GBw03F+eexEtqaryZbC/ORfHo0HIG1Q1yXiSboQoWzhPkMrYfK5NqNwnlGwHWBKg41XY
+         wEZz4F1UdEcSxoz7MfL8HQEHLwecntNU2L7So38W/sxJc6BhppW84Mo09gCBTqsa7fjL
+         9nyw==
+X-Gm-Message-State: AOAM530rdYgKurL1YNPPZFu+fsqvdn7uEP6VN9VsHNeBu/6XPZzOnS4q
+        7m51tG3M/wAPWuG1RkWinxA=
+X-Google-Smtp-Source: ABdhPJw3YZ2HVqLBLwJx0ElFNCIJj6ncg9xNFUDZ/kdgraELjvx7JSnz6x7YGSz0RK9UWF65zVwrcQ==
+X-Received: by 2002:a37:2e81:: with SMTP id u123mr24926827qkh.156.1629789061214;
+        Tue, 24 Aug 2021 00:11:01 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id w20sm9599665qkj.116.2021.08.24.00.10.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 00:11:00 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] x86:mmu: fix boolreturn.cocci warnings
+Date:   Tue, 24 Aug 2021 00:10:52 -0700
+Message-Id: <20210824071052.61304-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210813065324.29220-1-yong.wu@mediatek.com> <20210813065324.29220-12-yong.wu@mediatek.com>
-In-Reply-To: <20210813065324.29220-12-yong.wu@mediatek.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 24 Aug 2021 15:10:12 +0800
-Message-ID: <CAJMQK-hkufqh2vaEKcuO+k0v2SzpCHcyZuEqrvJ__rrAek2P0A@mail.gmail.com>
-Subject: Re: [PATCH v2 11/29] iommu/mediatek: Always pm_runtime_get while tlb flush
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, srv_heupstream@mediatek.com,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 13, 2021 at 2:57 PM Yong Wu <yong.wu@mediatek.com> wrote:
->
-> Prepare for 2 HWs that sharing pgtable in different power-domains.
->
-> The previous SoC don't have PM. Only mt8192 has power-domain,
-> and it is display's power-domain which nearly always is enabled.
->
-> When there are 2 M4U HWs, it may has problem.
-> In this function, we get the pm_status via the m4u dev, but it don't
-> reflect the real power-domain status of the HW since there may be other
-> HW also use that power-domain.
->
-> Currently we could not get the real power-domain status, thus always
-> pm_runtime_get here.
->
-> Prepare for mt8195, thus, no need fix tags here.
->
-> This patch may drop the performance, we expect the user could
-> pm_runtime_get_sync before dma_alloc_attrs which need tlb ops.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Can you check if there are existing users that need to add this change?
+./arch/x86/kvm/mmu/mmu.c:1501: 9-10:WARNING:return of 0/1 in
+function 'kvm_set_pte_rmapp' with return type bool
+./arch/x86/kvm/mmu/mmu.c:1642:10-11:WARNING:return of 0/1 in
+function 'kvm_test_age_rmapp' with return type bool
+
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+---
+ arch/x86/kvm/mmu/mmu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index c5232a0..78025e0 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1498,7 +1498,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 
+ 	if (need_flush && kvm_available_flush_tlb_with_range()) {
+ 		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
+-		return 0;
++		return false;
+ 	}
+ 
+ 	return need_flush;
+@@ -1639,8 +1639,8 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 
+ 	for_each_rmap_spte(rmap_head, &iter, sptep)
+ 		if (is_accessed_spte(*sptep))
+-			return 1;
+-	return 0;
++			return true;
++	return false;
+ }
+ 
+ #define RMAP_RECYCLE_THRESHOLD 1000
+-- 
+1.8.3.1
 
 
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
-<snip>
