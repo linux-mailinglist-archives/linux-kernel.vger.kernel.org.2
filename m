@@ -2,226 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C843F6197
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE35A3F6199
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238297AbhHXP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:27:25 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:55449 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238005AbhHXP1X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:27:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1629818799; x=1661354799;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=x8L1RlmpPTImQ3BlyOwQ5fPjpuvun/n+Dk3NsRzPgSI=;
-  b=Svjz+6xZ989qFHEm6Ndeb6FcA2Lh/tGZjHkbyFNzB2dB0/ZSILpgItLX
-   14EFx03bwWsniwZTyFJyMO4QrN3LrHYxgcPZx7etNLvPcL2B4Ud6K8vwz
-   UOweZT4E399iomw0ZkSF3mdjx2qaeGeZWMf7rzgu/4jS1CqaLVUhrxDrN
-   2sqFirDl41R4pGDWtqmN9bxJTbyXvSAUHqWcl2j0+aCvGGFCfV3CKuZ/U
-   IBTDMJemgm0bkcPcW0QkM6Kgquuxp7xi9mx5EgFeV9Uvx84yn91kArGV8
-   eQualnP0pcziW/MH4llEn4548i2Wm0Z/uSOB1bsfDD74F6rYCscTe4jyO
-   Q==;
-IronPort-SDR: tofQu/kug+M3QHK/RfDwzS52C88BStETSajG+TbZMKeyjIMxFYgmrLl7P1s1phBR5mUASNf8Ot
- sWB6Jdm8wwfOXKoQGzNcwmk3qX6Xx49i7Bh1+GRCRXMRH4boo7JXEVx8CaE37+aKTLbBibnJXo
- BVfy2BeAduVCcFOfVTjRv+E69KYPcMgBVkKutpmpysSxsBNcbwuZAEuPL+5FY1ZO9aEpDQF+09
- BRZ0glp4UnqDiGjLpLxNfiSteGr6ek7ah22cI8v25s46fGkcpKEVe6b8Tm4T3m5m9ZaPdTbles
- OD9r7t9DycdMdgkO3iQzU5nx
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="129393872"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Aug 2021 08:26:38 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 24 Aug 2021 08:26:38 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14 via Frontend Transport; Tue, 24 Aug 2021 08:26:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SZ6lRhhs6kTqd3VNo3NRMJAYt5wFVZJpBYTldQ7D8jxF7RQA3wPGf2gNFqgW01Q52y9wsAe2sn8yEEnhhbXrEH73Su8s/qbYgE/NYk7+02uTOBv1WhnwuhoKAbCCz/LP6K9/BtzMVpoihjiDuVmPRcWUK9dB9s11R8bwQQZUX5ZwfH3G3ZGN5uKLfCa6XY4XRKuMrQm01eu0/Gz/+2ge2WEX4XA8D83YeUeFo0070eZ/m5qWtZTrVcLxYvgxYYGFpXIozdQj4xIfQKeRl+7NehLtR4DQKiZpe4a0Zld01Nu4D4d1dc5p8z2okz805tf0+lx0On3RTg7nzAkgWNkGOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x8L1RlmpPTImQ3BlyOwQ5fPjpuvun/n+Dk3NsRzPgSI=;
- b=NYUXLXj6pFM5Xu86AZ6dbrUR1/842a8NZu7Ly1k+SIMBtrqQjWEoCB/D5yEotRbmDdaOlGLigBN+AUxM+evxWQGxuDxTB4WiHQrF3AO2o+bs+SOlxbPH2nu1HtblRgZAfEZPpSHj9p2vfgi8bcEPD60SHUPkqX4IcPWpe9RyzsNqpxxKxFtL8ozp3r9nd7m4z16XCmVgARkiGF80sYcEASPXDYjYu/VdHQHUdTrX5g68lXOjrSzGJqAH9PVsnmC4pisnH9w9/9DfvD/Lp3bR9jKkmntjKCe61aDhs+JnoeiOhWgSm425wXoyRE1ghjaJQF0f+6HTsjlzjy7Nss05+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x8L1RlmpPTImQ3BlyOwQ5fPjpuvun/n+Dk3NsRzPgSI=;
- b=FWHdUIeEJPbBitPB4yD+GKUX/RoLcXdhImAAC+AwjXy40raOsypXgQt6WhmgBJ1tpKbeyAqRbUFXlMOnv2r4S57/DrFFLt7Moe1ABDrhkFQiknv56StDbCyIyOgYGWbFw2O3Qc+8JGPkagmzkpeQ2sn4p3Q5LkFB19zPDPH2vUk=
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com (2603:10b6:5:69::31) by
- DM4PR11MB5280.namprd11.prod.outlook.com (2603:10b6:5:38b::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.19; Tue, 24 Aug 2021 15:26:35 +0000
-Received: from DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::e155:7e54:f51f:ff5c]) by DM6PR11MB3420.namprd11.prod.outlook.com
- ([fe80::e155:7e54:f51f:ff5c%7]) with mapi id 15.20.4436.025; Tue, 24 Aug 2021
- 15:26:35 +0000
-From:   <Claudiu.Beznea@microchip.com>
-To:     <robh@kernel.org>
-CC:     <ulf.hansson@linaro.org>, <Nicolas.Ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <Ludovic.Desroches@microchip.com>,
-        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Eugen.Hristev@microchip.com>
-Subject: Re: [PATCH v3 4/4] ARM: dts: at91: sama5d27_wlsom1: add wifi device
-Thread-Topic: [PATCH v3 4/4] ARM: dts: at91: sama5d27_wlsom1: add wifi device
-Thread-Index: AQHXmPxszl5tL8IUMEmMTiX1/0qwAg==
-Date:   Tue, 24 Aug 2021 15:26:35 +0000
-Message-ID: <2ccefcb4-cf6a-a675-4ff3-b7a2d314333a@microchip.com>
-References: <20210820092803.78523-1-claudiu.beznea@microchip.com>
- <20210820092803.78523-5-claudiu.beznea@microchip.com>
- <YSTk1pUTAUJLBJQl@robh.at.kernel.org>
-In-Reply-To: <YSTk1pUTAUJLBJQl@robh.at.kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2de28813-fd5a-4831-29e5-08d967138f2b
-x-ms-traffictypediagnostic: DM4PR11MB5280:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR11MB5280CA795373DB3DC897C1D687C59@DM4PR11MB5280.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0/jxjxmm+fdEMjtwFdVZhR6tjWBUZfVyj3UtjE+R6c1WuqPzzpWcn9zeSlyhqcm8jnTu/gI150F6hjYvVuAU78dLPFFBfYjQ0trrDqpDO5rMDUrJyIl0dnLlWAObReOIQ/MdCx0Iz7YJuBerI/CNeWrko3HqHgrDf/a2bLZPPEizIERAjOhYZmv3RtxF83JhfwS1ixqy9uBrE0Qx5I74ZkS50ng4duaZQhzPgcvqqQHdA0Az2z5I2mWm5tWYsII5RlxSwqPu9NFJoSiScm+U26yhj3v/E/zTlAQiJL3oCjHYJNoMVXwpeN0+zQB74/YDPmU5LnXxMaH1B9DXjrRBTQpSMBbdgCZ0TGZQSVEVY/KNjJyVMIIWRGlUheBqBGif2l8at1Qxh8S8aNupw5jUfbTLUSNA0zgbue1mLXjKdG8CZiMAa3VpYiBPbsniSCeF1oi7u/GQ+KXqhIqk1HJS5qexlicIr256zxrLJ3zFJYhJ5mlrat1RNNt0YFsbfQ6uWryE8eMn4FyBdxFXvoBu4Kv74xWAg88SNJ/X9JQskEZZJovCU/2oA+P5QFL8cDzEm9Dy/wHc6EznIUncV6LpBEVDSPYJZMs1sHeSOeD0Lt+MrfBPh82Iveh3ite4asmqku3QB+OFGOgh/zA5FSEql3dK8WYWdIPVbe+wSgjRoB7a4f9a04RWPsKNQ/fcuMGdQ5N3kvoRjzMb9bT7D3bM/5rkU26A0r595I19qrhFbp1IUpTFsuhBW7TEOJeM0TnHkrmZWzezV87Q5PuB9GtUwA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3420.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(366004)(376002)(396003)(6486002)(186003)(31696002)(54906003)(31686004)(6506007)(38100700002)(36756003)(478600001)(83380400001)(2616005)(122000001)(71200400001)(38070700005)(316002)(6512007)(8936002)(76116006)(107886003)(66476007)(66446008)(66556008)(64756008)(66946007)(6916009)(8676002)(91956017)(86362001)(4326008)(26005)(5660300002)(53546011)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cjZ6a3pDRkllZDJLZFhDajl6czBoYUdlOXVmSFFHa2ZVd0k4aGlYYWx4TnRh?=
- =?utf-8?B?K2VRVG41YXp0N0dwT1U2MTdIMjg2aXpMS1ZDWnVlempBQ2MrdWRJVXFGYVlK?=
- =?utf-8?B?YW0vd2xCN1VIcy9Wd2M1Q1NqTUxUYkVVY21rVHZlOTlqUXhxWGE2OTJ4Y1Rw?=
- =?utf-8?B?NldTMjgwVXhWdVBTZU9yNTFYWHNrUU92ZzdlNGFpR2tacldzSVdNbmVraXph?=
- =?utf-8?B?Sy9GdTF0Ynd1SFk4eHVhZWIrbTBqb1ZLVHNTZ3ZLcnFpck5NanNtMmg3dzBa?=
- =?utf-8?B?TzUvUG0ybnpOOXlkMnR2YnV5ZzBrWHdFOVJWd0p4TGV5d085ZnJBUGRsVDQw?=
- =?utf-8?B?THQxaFZkZ2k1bXFtS3h2akNDblVCcXJWaWJsV3d5MExvVDdzT0k5NmZMa09M?=
- =?utf-8?B?UEJ0ZWNXMFRxekVhejJ2cmZKL3p4K3dsOFk2R3JtU1pVdnZkaWNEZlZ2bytT?=
- =?utf-8?B?bXpGNUVKV2RhRlZJRUFlUEpEYi9WZVVZZkdKSG95dWdRMEl5Lzh5VmlTZ29i?=
- =?utf-8?B?UndmYzNFbThRYlZUVitqNVZXYmoxWldjWkhzZStBMjhGbHJkbjBSbnV6c0Iz?=
- =?utf-8?B?MTNPMU1JVlJBMlZrTXNmZ0dHQllDQXBXT1Axc1Rsc0kxemUrWWFPUlFkaFhx?=
- =?utf-8?B?MW5YTzl5UGJEd1lUL2JIVHhmZzdNYjR4dGtvUmh1a2pqdHptaEF2RHdZZkxE?=
- =?utf-8?B?RHNzdVBXUEZ6akV3Rll2SlMxd2ovSzN1ZHlPekRHWWZaMlZsUzkvcXZmVTVN?=
- =?utf-8?B?dVZCdUsvVEdqZGRXNU9VWkxLVVM5RkY1TEVxWHB6ejdRSVBJVmNNd0t4YTBv?=
- =?utf-8?B?ZVhmZm52YnpkYW1KejZxclE0Q2h4R09OSlc3bExZREpxV1VsQ1I5S1BHWHcw?=
- =?utf-8?B?NW83TXBZT0h5alJmb2hsdU5LdWQ1V0ZaT202SXU5V3ZmbDhSNFBCUGcxSWwv?=
- =?utf-8?B?U0RINkhaVVVGUHJla3FDNm9reGpWMUllMzEyY3dzNWUwUEw1eE9oTXJZZEZX?=
- =?utf-8?B?M2JKbXVwQlpYN0RRL1NhV3Z6UDRKZnJKZWhyTmRla0FVQ24rN0kxbE9ZNWsx?=
- =?utf-8?B?cmFiWDYrNzFBQ1BWaEhIWk1lVlIvbTVsVzRsU2VuYitNdW9vOWo5UElkNUxD?=
- =?utf-8?B?cGZJbTBRVlJCM09kV01qK09WWEtONG1yRkE4c1NScEJhdEJxV1IxN1JweXlV?=
- =?utf-8?B?dGRkL2pHQ09INCtRSE45OWk0bDlFU3Y1cmZOek8yYWJ2NTVXWUFPVFBPZjRk?=
- =?utf-8?B?MGFDTG5VRU95VHljTFdKdWtac3o3TUpkUHRqWnV4ZFQxNXM2eFB1UnRqMkY3?=
- =?utf-8?B?ei8xQWhUZVZoK3UyZW9EWGZtcDVScDRuSHNoMEc0RWRIU2dyZEZFTXNuS2NI?=
- =?utf-8?B?bEhEZ3V4elY0N0RZVUt6S1htZHZHSDI0dStkc1YwSFkrSFlxVTV6ZUw4MGw0?=
- =?utf-8?B?RVNVN2NlTFBwekNzM2FjYW1OZVhwVy9WWlUvY3RyQzcvMGhLY2NqalhYZkkz?=
- =?utf-8?B?ekF6MW8rRnZ5dmJydTdNbHFHQnZ4cWM2YURYdENVbG1WRlI4YVQydTdMeTh1?=
- =?utf-8?B?NVVqenJJU1J1N1FKMGlkeHFpcFIrNHg1NHZteHRJVHd2amJ0b0dLdUphVll1?=
- =?utf-8?B?K2NSQ0tYWGtnTERDbGJFa293bTBoejNrbkk5Q1lOZUhOTmxCNm5GK2FYd0xC?=
- =?utf-8?B?NVQ1ZFRTOEJYN2UrQzFBdVFlV1R6NlNCdFZqZGFidFJNNXZmMVVrSGlRWmxs?=
- =?utf-8?Q?yQGM7FmQcnGH/CyTPo=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2E5A952863162B4C9E456A52E15BD396@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S238315AbhHXP2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:28:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238301AbhHXP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D66E61165;
+        Tue, 24 Aug 2021 15:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629818847;
+        bh=1n1oZ6x6E/HqJk/pfS2Bj3U4hWUQd5sw2NMVpoXktWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k9zqq1We/uEYT55khKyfpPQuL7eCqdt+UbDjgjw5MFm4dIlCOMWI9q+zD1z1RScex
+         zAAfLPhP35hFTu62NvBQKELt1ZVqfW4kedFu9F/n0uGKmUTFDtFwCkHP0mMZA97d5B
+         GRdrhbEEbodz/LuMkkhbpKJGX1zl6oLOlI+ZxOuwFwEG/m1MSmoAyz7693jPRiORNt
+         Yb0Wryr7oXOTMqALWWonwsbAxFwJd7Poecn5MxK4XFJxm/9W1E0j0kMGbtCFdBF3Uh
+         LPb+6p2M8GqbwpVrifcTpptTcgNdv3XbZzbQ9EY0tLWcUF6rLD8Zs1NubopFzLaqAU
+         jAbyX55Pu3gAQ==
+Date:   Tue, 24 Aug 2021 16:27:20 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v9 2/3] arm64: perf: Enable PMU counter userspace access
+ for perf event
+Message-ID: <20210824152720.GC23146@willie-the-truck>
+References: <20210806225123.1958497-1-robh@kernel.org>
+ <20210806225123.1958497-3-robh@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3420.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2de28813-fd5a-4831-29e5-08d967138f2b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2021 15:26:35.2116
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DZcXyY09DMHavYBq8wS+9VKv51Qx73WjEmB8RTllg6rWMO9PbUxIJJitHb/83bXRW5zxcZ5TfuB9qEeKY7/90d4xHvRguAC5n8cvA0ITB4g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5280
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806225123.1958497-3-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjQuMDguMjAyMSAxNToyMywgUm9iIEhlcnJpbmcgd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlM
-OiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cg
-dGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gT24gRnJpLCBBdWcgMjAsIDIwMjEgYXQgMTI6Mjg6
-MDNQTSArMDMwMCwgQ2xhdWRpdSBCZXpuZWEgd3JvdGU6DQo+PiBGcm9tOiBFdWdlbiBIcmlzdGV2
-IDxldWdlbi5ocmlzdGV2QG1pY3JvY2hpcC5jb20+DQo+Pg0KPj4gU0FNQTVEMjcgV0xTT00xIGJv
-YXJkcyBoYXMgYSBXSUxDMzAwMCBkZXZpY2Ugc29sZGVyZWQuIEFkZCBwcm9wZXINCj4+IGRldmlj
-ZSB0cmVlIG5vZGVzIGZvciB0aGlzLg0KPj4NCj4+IFtldWdlbi5ocmlzdGV2OiBvcmlnaW5hbCBh
-dXRob3Igb2YgdGhpcyBjb2RlXQ0KPj4gU2lnbmVkLW9mZi1ieTogRXVnZW4gSHJpc3RldiA8ZXVn
-ZW4uaHJpc3RldkBtaWNyb2NoaXAuY29tPg0KPj4gW25pY29sYXMuZmVycmU6IG9yaWdpbmFsIGF1
-dGhvciBvZiB0aGlzIGNvZGVdDQo+PiBTaWduZWQtb2ZmLWJ5OiBOaWNvbGFzIEZlcnJlIDxuaWNv
-bGFzLmZlcnJlQG1pY3JvY2hpcC5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDbGF1ZGl1IEJlem5l
-YSA8Y2xhdWRpdS5iZXpuZWFAbWljcm9jaGlwLmNvbT4NCj4+IC0tLQ0KPj4gIGFyY2gvYXJtL2Jv
-b3QvZHRzL2F0OTEtc2FtYTVkMjdfd2xzb20xLmR0c2kgfCA3MSArKysrKysrKysrKysrKysrKysr
-KysNCj4+ICAxIGZpbGUgY2hhbmdlZCwgNzEgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1n
-aXQgYS9hcmNoL2FybS9ib290L2R0cy9hdDkxLXNhbWE1ZDI3X3dsc29tMS5kdHNpIGIvYXJjaC9h
-cm0vYm9vdC9kdHMvYXQ5MS1zYW1hNWQyN193bHNvbTEuZHRzaQ0KPj4gaW5kZXggMDI1YTc4MzEw
-ZTNhLi5jN2JjZmQzY2U5MWQgMTAwNjQ0DQo+PiAtLS0gYS9hcmNoL2FybS9ib290L2R0cy9hdDkx
-LXNhbWE1ZDI3X3dsc29tMS5kdHNpDQo+PiArKysgYi9hcmNoL2FybS9ib290L2R0cy9hdDkxLXNh
-bWE1ZDI3X3dsc29tMS5kdHNpDQo+PiBAQCAtMzAsNiArMzAsMTUgQEAgbWFpbl94dGFsIHsNCj4+
-ICAgICAgICAgICAgICAgICAgICAgICBjbG9jay1mcmVxdWVuY3kgPSA8MjQwMDAwMDA+Ow0KPj4g
-ICAgICAgICAgICAgICB9Ow0KPj4gICAgICAgfTsNCj4+ICsNCj4+ICsgICAgIHdpZmlfcHdyc2Vx
-OiB3aWZpX3B3cnNlcSB7DQo+PiArICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibW1jLXB3cnNl
-cS13aWxjMTAwMCI7DQo+PiArICAgICAgICAgICAgIHJlc2V0LWdwaW9zID0gPCZwaW9BIFBJTl9Q
-QTI3IEdQSU9fQUNUSVZFX0hJR0g+Ow0KPj4gKyAgICAgICAgICAgICBwb3dlcmRvd24tZ3Bpb3Mg
-PSA8JnBpb0EgUElOX1BBMjkgR1BJT19BQ1RJVkVfSElHSD47DQo+PiArICAgICAgICAgICAgIHBp
-bmN0cmwtMCA9IDwmcGluY3RybF93aWxjX3B3cnNlcT47DQo+PiArICAgICAgICAgICAgIHBpbmN0
-cmwtbmFtZXMgPSAiZGVmYXVsdCI7DQo+PiArICAgICAgICAgICAgIHN0YXR1cyA9ICJva2F5IjsN
-Cj4gDQo+ICdva2F5JyBpcyB0aGUgZGVmYXVsdCwgc28geW91IGNhbiBkcm9wIHRoaXMuDQo+IA0K
-Pj4gKyAgICAgfTsNCj4+ICB9Ow0KPj4NCj4+ICAmZmx4MSB7DQo+PiBAQCAtMzEwLDUgKzMxOSw2
-NyBAQCBwaW5jdHJsX3FzcGkxX2RlZmF1bHQ6IHFzcGkxX2RlZmF1bHQgew0KPj4gICAgICAgICAg
-ICAgICAgICAgICAgICA8UElOX1BCMTBfX1FTUEkxX0lPMz47DQo+PiAgICAgICAgICAgICAgIGJp
-YXMtcHVsbC11cDsNCj4+ICAgICAgIH07DQo+PiArDQo+PiArICAgICBwaW5jdHJsX3NkbW1jMV9k
-ZWZhdWx0OiBzZG1tYzFfZGVmYXVsdCB7DQo+PiArICAgICAgICAgICAgIGNtZC1kYXRhIHsNCj4+
-ICsgICAgICAgICAgICAgICAgICAgICBwaW5tdXggPSA8UElOX1BBMjhfX1NETU1DMV9DTUQ+LA0K
-Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxQSU5fUEExOF9fU0RNTUMxX0RBVDA+
-LA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxQSU5fUEExOV9fU0RNTUMxX0RB
-VDE+LA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxQSU5fUEEyMF9fU0RNTUMx
-X0RBVDI+LA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxQSU5fUEEyMV9fU0RN
-TUMxX0RBVDM+Ow0KPj4gKyAgICAgICAgICAgICAgICAgICAgIGJpYXMtZGlzYWJsZTsNCj4+ICsg
-ICAgICAgICAgICAgfTsNCj4+ICsNCj4+ICsgICAgICAgICAgICAgY29uZi1jayB7DQo+PiArICAg
-ICAgICAgICAgICAgICAgICAgcGlubXV4ID0gPFBJTl9QQTIyX19TRE1NQzFfQ0s+Ow0KPj4gKyAg
-ICAgICAgICAgICAgICAgICAgIGJpYXMtZGlzYWJsZTsNCj4+ICsgICAgICAgICAgICAgfTsNCj4+
-ICsgICAgIH07DQo+PiArDQo+PiArICAgICBwaW5jdHJsX3dpbGNfZGVmYXVsdDogd2lsY19kZWZh
-dWx0IHsNCj4+ICsgICAgICAgICAgICAgY29uZi1pcnEgew0KPj4gKyAgICAgICAgICAgICAgICAg
-ICAgIHBpbm11eCA9IDxQSU5fUEIyNV9fR1BJTz47DQo+PiArICAgICAgICAgICAgICAgICAgICAg
-Ymlhcy1kaXNhYmxlOw0KPj4gKyAgICAgICAgICAgICB9Ow0KPj4gKyAgICAgfTsNCj4+ICsNCj4+
-ICsgICAgIHBpbmN0cmxfd2lsY19wd3JzZXE6IHdpbGNfcHdyc2VxIHsNCj4+ICsgICAgICAgICAg
-ICAgY29uZi1jZS1ucnN0IHsNCj4+ICsgICAgICAgICAgICAgICAgICAgICBwaW5tdXggPSA8UElO
-X1BBMjdfX0dQSU8+LA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxQSU5fUEEy
-OV9fR1BJTz47DQo+PiArICAgICAgICAgICAgICAgICAgICAgYmlhcy1kaXNhYmxlOw0KPj4gKyAg
-ICAgICAgICAgICB9Ow0KPj4gKw0KPj4gKyAgICAgICAgICAgICBjb25mLXJ0Y2NsayB7DQo+PiAr
-ICAgICAgICAgICAgICAgICAgICAgcGlubXV4ID0gPFBJTl9QQjEzX19QQ0sxPjsNCj4+ICsgICAg
-ICAgICAgICAgICAgICAgICBiaWFzLWRpc2FibGU7DQo+PiArICAgICAgICAgICAgIH07DQo+PiAr
-ICAgICB9Ow0KPj4gK307DQo+PiArDQo+PiArJnNkbW1jMSB7DQo+PiArICAgICAjYWRkcmVzcy1j
-ZWxscyA9IDwxPjsNCj4+ICsgICAgICNzaXplLWNlbGxzID0gPDA+Ow0KPj4gKyAgICAgYnVzLXdp
-ZHRoID0gPDQ+Ow0KPj4gKyAgICAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4+ICsgICAg
-IHBpbmN0cmwtMCA9IDwmcGluY3RybF9zZG1tYzFfZGVmYXVsdD47DQo+PiArICAgICBtbWMtcHdy
-c2VxID0gPCZ3aWZpX3B3cnNlcT47DQo+PiArICAgICBuby0xLTgtdjsNCj4+ICsgICAgIG5vbi1y
-ZW1vdmFibGU7DQo+PiArICAgICBzdGF0dXMgPSAib2theSI7DQo+PiArDQo+PiArICAgICB3aWxj
-OiB3aWxjQDAgew0KPiANCj4gd2lmaUAwDQo+IA0KPj4gKyAgICAgICAgICAgICByZWcgPSA8MD47
-DQo+PiArICAgICAgICAgICAgIGJ1cy13aWR0aCA9IDw0PjsNCj4+ICsgICAgICAgICAgICAgY29t
-cGF0aWJsZSA9ICJtaWNyb2NoaXAsd2lsYzMwMDAiLCAibWljcm9jaGlwLHdpbGMxMDAwIjsNCj4+
-ICsgICAgICAgICAgICAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4+ICsgICAgICAgICAg
-ICAgcGluY3RybC0wID0gPCZwaW5jdHJsX3dpbGNfZGVmYXVsdD47DQo+PiArICAgICAgICAgICAg
-IGlycS1ncGlvcyA9IDwmcGlvQSBQSU5fUEIyNSBHUElPX0FDVElWRV9MT1c+Ow0KPj4gKyAgICAg
-ICAgICAgICBjbG9ja3MgPSA8JnBtYyBQTUNfVFlQRV9TWVNURU0gOT47DQo+PiArICAgICAgICAg
-ICAgIGNsb2NrLW5hbWVzID0gInJ0YyI7DQo+PiArICAgICAgICAgICAgIGFzc2lnbmVkLWNsb2Nr
-cyA9IDwmcG1jIFBNQ19UWVBFX1NZU1RFTSA5PjsNCj4+ICsgICAgICAgICAgICAgYXNzaWduZWQt
-Y2xvY2stcmF0ZXMgPSA8MzI3Njg+Ow0KPj4gKyAgICAgICAgICAgICBzdGF0dXMgPSAib2theSI7
-DQo+IA0KPiBBZ2FpbiwgdGhhdCdzIHRoZSBkZWZhdWx0IHNvIGRyb3AuDQo+IA0KPiBEaWQgeW91
-IHJ1biB2YWxpZGF0aW9uIChtYWtlIGR0YnNfY2hlY2spIG9uIHlvdXIgY2hhbmdlcyBiZWNhdXNl
-IEkgc2VlDQo+IG11bHRpcGxlIHByb2JsZW1zLg0KDQpObywgSSBoYXZlbid0LiBBcG9sb2dpZXMh
-IEknbGwgZG8gdGhlIHByb3BlciBhZGp1c3RtZW50cyBpbiB2My4NCg0KVGhhbmsgeW91IGZvciB5
-b3VyIHJldmlldywNCkNsYXVkaXUgQmV6bmVhDQoNCj4gDQo+IFJvYg0KPiANCg0K
+On Fri, Aug 06, 2021 at 04:51:22PM -0600, Rob Herring wrote:
+> Arm PMUs can support direct userspace access of counters which allows for
+> low overhead (i.e. no syscall) self-monitoring of tasks. The same feature
+> exists on x86 called 'rdpmc'. Unlike x86, userspace access will only be
+> enabled for thread bound events. This could be extended if needed, but
+> simplifies the implementation and reduces the chances for any
+> information leaks (which the x86 implementation suffers from).
+> 
+> When an event is capable of userspace access and has been mmapped, userspace
+> access is enabled when the event is scheduled on a CPU's PMU. There's some
+> additional overhead clearing counters when disabled in order to prevent
+> leaking disabled counter data from other tasks.
+> 
+> Unlike x86, enabling of userspace access must be requested with a new
+> attr bit: config1:1. If the user requests userspace access and 64-bit
+> counters, then chaining will be disabled and the user will get the
+> maximum size counter the underlying h/w can support. The modes for
+> config1 are as follows:
+> 
+> config1 = 0 : user access disabled and always 32-bit
+> config1 = 1 : user access disabled and always 64-bit (using chaining if needed)
+> config1 = 2 : user access enabled and always 32-bit
+> config1 = 3 : user access enabled and counter size matches underlying counter.
+> 
+> Based on work by Raphael Gault <raphael.gault@arm.com>, but has been
+> completely re-written.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-perf-users@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> 
+> ---
+> v9:
+>  - Enabling/disabling of user access is now controlled in .start() and
+>    mmap hooks which are now called on CPUs that the event is on.
+>    Depends on rework of perf core and x86 RDPMC code posted here:
+>    https://lore.kernel.org/lkml/20210728230230.1911468-1-robh@kernel.org/
+> 
+> v8:
+>  - Rework user access tracking and enabling to be done on task
+>    context changes using sched_task() hook. This avoids the need for any
+>    IPIs, mm_switch hooks or undef instr handler.
+>  - Only support user access when explicitly requested on open and
+>    only for a thread bound events. This avoids some of the information
+>    leaks x86 has and simplifies the implementation.
+> 
+> v7:
+>  - Clear disabled counters when user access is enabled for a task to
+>    avoid leaking other tasks counter data.
+>  - Rework context switch handling utilizing sched_task callback
+>  - Add armv8pmu_event_can_chain() helper
+>  - Rework config1 flags handling structure
+>  - Use ARMV8_IDX_CYCLE_COUNTER_USER define for remapped user cycle
+>    counter index
+> 
+> v6:
+>  - Add new attr.config1 rdpmc bit for userspace to hint it wants
+>    userspace access when also requesting 64-bit counters.
+> 
+> v5:
+>  - Only set cap_user_rdpmc if event is on current cpu
+>  - Limit enabling/disabling access to CPUs associated with the PMU
+>    (supported_cpus) and with the mm_struct matching current->active_mm.
+> 
+> v2:
+>  - Move mapped/unmapped into arm64 code. Fixes arm32.
+>  - Rebase on cap_user_time_short changes
+> 
+> Changes from Raphael's v4:
+>   - Drop homogeneous check
+>   - Disable access for chained counters
+>   - Set pmc_width in user page
+> ---
+>  arch/arm64/kernel/perf_event.c | 137 +++++++++++++++++++++++++++++++--
+>  include/linux/perf/arm_pmu.h   |   6 ++
+>  2 files changed, 135 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+> index 74f77b68f5f0..66d8bf62e99c 100644
+> --- a/arch/arm64/kernel/perf_event.c
+> +++ b/arch/arm64/kernel/perf_event.c
+> @@ -285,6 +285,7 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
+>  
+>  PMU_FORMAT_ATTR(event, "config:0-15");
+>  PMU_FORMAT_ATTR(long, "config1:0");
+> +PMU_FORMAT_ATTR(rdpmc, "config1:1");
+>  
+>  static int sysctl_perf_user_access __read_mostly;
+>  
+> @@ -306,9 +307,15 @@ static inline bool armv8pmu_event_is_64bit(struct perf_event *event)
+>  	return event->attr.config1 & 0x1;
+>  }
+>  
+> +static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
+> +{
+> +	return event->attr.config1 & 0x2;
+> +}
+> +
+>  static struct attribute *armv8_pmuv3_format_attrs[] = {
+>  	&format_attr_event.attr,
+>  	&format_attr_long.attr,
+> +	&format_attr_rdpmc.attr,
+>  	NULL,
+>  };
+>  
+> @@ -377,7 +384,7 @@ static const struct attribute_group armv8_pmuv3_caps_attr_group = {
+>   */
+>  #define	ARMV8_IDX_CYCLE_COUNTER	0
+>  #define	ARMV8_IDX_COUNTER0	1
+> -
+> +#define	ARMV8_IDX_CYCLE_COUNTER_USER	32
+>  
+>  /*
+>   * We unconditionally enable ARMv8.5-PMU long event counter support
+> @@ -389,6 +396,15 @@ static bool armv8pmu_has_long_event(struct arm_pmu *cpu_pmu)
+>  	return (cpu_pmu->pmuver >= ID_AA64DFR0_PMUVER_8_5);
+>  }
+>  
+> +static inline bool armv8pmu_event_can_chain(struct perf_event *event)
+> +{
+> +	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +
+> +	return !(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT) &&
+> +	       armv8pmu_event_is_64bit(event) &&
+> +	       !armv8pmu_has_long_event(cpu_pmu);
+
+Could check against ARMV8_IDX_CYCLE_COUNTER here...
+
+> +}
+> +
+>  /*
+>   * We must chain two programmable counters for 64 bit events,
+>   * except when we have allocated the 64bit cycle counter (for CPU
+> @@ -398,11 +414,9 @@ static bool armv8pmu_has_long_event(struct arm_pmu *cpu_pmu)
+>  static inline bool armv8pmu_event_is_chained(struct perf_event *event)
+>  {
+>  	int idx = event->hw.idx;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+>  
+>  	return !WARN_ON(idx < 0) &&
+> -	       armv8pmu_event_is_64bit(event) &&
+> -	       !armv8pmu_has_long_event(cpu_pmu) &&
+> +	       armv8pmu_event_can_chain(event) &&
+>  	       (idx != ARMV8_IDX_CYCLE_COUNTER);
+
+... then we wouldn't need to here.
+
+>  }
+>  
+> @@ -733,6 +747,35 @@ static inline u32 armv8pmu_getreset_flags(void)
+>  	return value;
+>  }
+>  
+> +static void armv8pmu_disable_user_access(void)
+> +{
+> +	write_sysreg(0, pmuserenr_el0);
+> +}
+> +
+> +static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
+> +{
+> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> +
+> +	if (!sysctl_perf_user_access)
+> +		return;
+> +
+> +	if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
+> +		int i;
+> +		/* Don't need to clear assigned counters. */
+> +		bitmap_xor(cpuc->dirty_mask, cpuc->dirty_mask, cpuc->used_mask, ARMPMU_MAX_HWEVENTS);
+> +
+> +		for_each_set_bit(i, cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS) {
+> +			if (i == ARMV8_IDX_CYCLE_COUNTER)
+> +				write_sysreg(0, pmccntr_el0);
+> +			else
+> +				armv8pmu_write_evcntr(i, 0);
+> +		}
+
+Given that we can't expose individual counters, why isn't this just:
+
+	for_each_clear_bit(i, cpuc->used_mask, ARMPMU_MAX_HWEVENTS)
+		...
+
+and we could get rid of the dirty_mask altogether? i.e. just zero everything
+that isn't assigned.
+
+> +		bitmap_zero(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS);
+> +	}
+> +
+> +	write_sysreg(ARMV8_PMU_USERENR_ER | ARMV8_PMU_USERENR_CR, pmuserenr_el0);
+> +}
+> +
+>  static void armv8pmu_enable_event(struct perf_event *event)
+>  {
+>  	/*
+> @@ -776,6 +819,16 @@ static void armv8pmu_disable_event(struct perf_event *event)
+>  
+>  static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+>  {
+> +	if (sysctl_perf_user_access) {
+
+armv8pmu_enable_user_access() already checks this.
+
+> +		struct perf_cpu_context *cpuctx = this_cpu_ptr(cpu_pmu->pmu.pmu_cpu_context);
+> +		struct perf_event_context *task_ctx = cpuctx->task_ctx;
+> +		if (atomic_read(&cpuctx->ctx.nr_user) ||
+
+I thought we only enabled this for per-task events, so not sure why we need
+this check. But actually, I don't get why we need any extra logic in this
+function at all; why aren't the ->mapped/->unmapped functions sufficient?
+
+Will
