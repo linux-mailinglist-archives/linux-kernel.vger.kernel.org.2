@@ -2,198 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC963F53E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 01:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585193F53F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbhHWX46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 19:56:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50531 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233260AbhHWX45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 19:56:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629762973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RF+d9qpVprIgoIZ0mXGZUwRPD3HGuqO+bXOLg0En698=;
-        b=TjrQUVXiJRnZm5zdmiMSgNJM8Mz4QUaHHG/Z62UymjbI9HNCRXB352A6+ylM01kehZPLga
-        fgigsL7HPBFhN0gZspn969usecXH5HSrik36Km+PHQI4BB3usiez5X4n5XiC6jSG50ncdU
-        IiWUJTngOLA0p4IKybgaISdO8LX6qxw=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-vFM40aZLN_2eZT2lWOxusA-1; Mon, 23 Aug 2021 19:56:11 -0400
-X-MC-Unique: vFM40aZLN_2eZT2lWOxusA-1
-Received: by mail-ej1-f70.google.com with SMTP id ak17-20020a170906889100b005c5d1e5e707so1574647ejc.16
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 16:56:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RF+d9qpVprIgoIZ0mXGZUwRPD3HGuqO+bXOLg0En698=;
-        b=N0DWQe2ysbLoLA2IdnwTwaILKR7qdyDf6sob0TIGBRM/BWuGtg5A8hXE6qM9kG8oBI
-         QafzJnKL60rbGK/SKlAzkh4y+gbBktjjy46LS3U3TDJ2zSfW/fW1uMKFrqwTfjvW9JLz
-         N01RrH7tKtdE3F8tigJA9NAu/hvRsM2Kt67EzTh3w52F6MuA4npu4LTJ8YoRP75IjUey
-         zwTook+/14C9/WcrI0+QZX9YgJb2yRrY6GWHmZlFTvNr3dB2I3/z5P5fi5L98gitX4vS
-         rf4rujZWB2dUYtzljT0I0KkFfExP2NLmp3go1tL4F2wgkTxrrqUIfiXBvE/lJ8aQEdQO
-         XGZQ==
-X-Gm-Message-State: AOAM533XbWpsZBNK28esuCRmJlikjHMJ+KCVUK9mWRcHfnaPzuwg7nds
-        snXb+2qbr2gnOfgK9+6IAGOTX/50Id2zWAIQeUWnkm64vMM107mgYlI7CDNw3F74xqj53S++0/i
-        NVAzBlwZ1GJP0R7FUQXXet0+5
-X-Received: by 2002:a17:907:2cf1:: with SMTP id hz17mr32841067ejc.438.1629762970800;
-        Mon, 23 Aug 2021 16:56:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlg8FJcUqFiderk/GNwJI39sbQlYErPR6APlNK/zjSzsj+DjKP0nKP8p+wjD6AR325FzPuGA==
-X-Received: by 2002:a17:907:2cf1:: with SMTP id hz17mr32841039ejc.438.1629762970610;
-        Mon, 23 Aug 2021 16:56:10 -0700 (PDT)
-Received: from redhat.com ([2.55.137.225])
-        by smtp.gmail.com with ESMTPSA id m17sm4928372ejr.27.2021.08.23.16.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 16:56:09 -0700 (PDT)
-Date:   Mon, 23 Aug 2021 19:56:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-Message-ID: <20210823195409-mutt-send-email-mst@kernel.org>
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S233362AbhHXAIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 20:08:25 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58785 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233260AbhHXAIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 20:08:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GtqDp62THz9sXV;
+        Tue, 24 Aug 2021 10:07:38 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629763659;
+        bh=gBHbL1jLvzywBmlq970c89meGcxBD6vc6e4gIiN0SAg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mwqM9vbzE6UDsPqTeM5badgJfLBaXiLvIJF8S0W4La5AVztQvZ48QKwH/+nkqqB8a
+         8q3huCNj7QKMhQfY9AyyoykLlK4ksFvpI6kvKovlEUYWc5EQk8x3trY9yNJUUyKk+9
+         Ekm9DAYpXkS8NO3UkXR+A04P0hcmvk6/LA6HY7zxdG89nceMfl77Cu41/0neGhsjdx
+         9JAeBfn0TysahNTdaXbLRgX5K4VTnKnIJYEYBz0AZhWkDuNoY5knjMuF/PVpg9wYFi
+         c1AoQDzZmR+au2l470skcKkoh9y4Jlyr8jzXXxQ5IofLtvQFwF+qgAKgx/tGmD9+yM
+         Jm2VrdpQwhf5A==
+Date:   Tue, 24 Aug 2021 10:07:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     "J. Bruce Fields" <bfields@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the file-locks tree with the cel tree
+Message-ID: <20210824100737.4bd6d815@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/8/NlOoMWk5HiqmmcC9Xr98g";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 05:52:14PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> From: Andi Kleen <ak@linux.intel.com>
-> 
-> Add a new variant of pci_iomap for mapping all PCI resources
-> of a devices as shared memory with a hypervisor in a confidential
-> guest.
-> 
-> Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+--Sig_/8/NlOoMWk5HiqmmcC9Xr98g
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm a bit puzzled by this part. So why should the guest *not* map
-pci memory as shared? And if the answer is never (as it seems to be)
-then why not just make regular pci_iomap DTRT?
+Hi all,
 
-Thanks!
+Today's linux-next merge of the file-locks tree got a conflict in:
 
-> ---
->  include/asm-generic/pci_iomap.h |  6 +++++
->  lib/pci_iomap.c                 | 46 +++++++++++++++++++++++++++++++++
->  2 files changed, 52 insertions(+)
-> 
-> diff --git a/include/asm-generic/pci_iomap.h b/include/asm-generic/pci_iomap.h
-> index d4f16dcc2ed7..0178ddd7ad88 100644
-> --- a/include/asm-generic/pci_iomap.h
-> +++ b/include/asm-generic/pci_iomap.h
-> @@ -18,6 +18,12 @@ extern void __iomem *pci_iomap_range(struct pci_dev *dev, int bar,
->  extern void __iomem *pci_iomap_wc_range(struct pci_dev *dev, int bar,
->  					unsigned long offset,
->  					unsigned long maxlen);
-> +extern void __iomem *pci_iomap_shared(struct pci_dev *dev, int bar,
-> +				      unsigned long max);
-> +extern void __iomem *pci_iomap_shared_range(struct pci_dev *dev, int bar,
-> +					    unsigned long offset,
-> +					    unsigned long maxlen);
-> +
->  /* Create a virtual mapping cookie for a port on a given PCI device.
->   * Do not call this directly, it exists to make it easier for architectures
->   * to override */
-> diff --git a/lib/pci_iomap.c b/lib/pci_iomap.c
-> index 6251c3f651c6..b04e8689eab3 100644
-> --- a/lib/pci_iomap.c
-> +++ b/lib/pci_iomap.c
-> @@ -25,6 +25,11 @@ static void __iomem *map_ioremap_wc(phys_addr_t addr, size_t size)
->  	return ioremap_wc(addr, size);
->  }
->  
-> +static void __iomem *map_ioremap_shared(phys_addr_t addr, size_t size)
-> +{
-> +	return ioremap_shared(addr, size);
-> +}
-> +
->  static void __iomem *pci_iomap_range_map(struct pci_dev *dev,
->  					 int bar,
->  					 unsigned long offset,
-> @@ -101,6 +106,47 @@ void __iomem *pci_iomap_wc_range(struct pci_dev *dev,
->  }
->  EXPORT_SYMBOL_GPL(pci_iomap_wc_range);
->  
-> +/**
-> + * pci_iomap_shared_range - create a virtual shared mapping cookie for a
-> + *                          PCI BAR
-> + * @dev: PCI device that owns the BAR
-> + * @bar: BAR number
-> + * @offset: map memory at the given offset in BAR
-> + * @maxlen: max length of the memory to map
-> + *
-> + * Remap a pci device's resources shared in a confidential guest.
-> + * For more details see pci_iomap_range's documentation.
-> + *
-> + * @maxlen specifies the maximum length to map. To get access to
-> + * the complete BAR from offset to the end, pass %0 here.
-> + */
-> +void __iomem *pci_iomap_shared_range(struct pci_dev *dev, int bar,
-> +				     unsigned long offset, unsigned long maxlen)
-> +{
-> +	return pci_iomap_range_map(dev, bar, offset, maxlen,
-> +				   map_ioremap_shared);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_iomap_shared_range);
-> +
-> +/**
-> + * pci_iomap_shared - create a virtual shared mapping cookie for a PCI BAR
-> + * @dev: PCI device that owns the BAR
-> + * @bar: BAR number
-> + * @maxlen: length of the memory to map
-> + *
-> + * See pci_iomap for details. This function creates a shared mapping
-> + * with the host for confidential hosts.
-> + *
-> + * @maxlen specifies the maximum length to map. To get access to the
-> + * complete BAR without checking for its length first, pass %0 here.
-> + */
-> +void __iomem *pci_iomap_shared(struct pci_dev *dev, int bar,
-> +			       unsigned long maxlen)
-> +{
-> +	return pci_iomap_shared_range(dev, bar, 0, maxlen);
-> +}
-> +EXPORT_SYMBOL_GPL(pci_iomap_shared);
-> +
->  /**
->   * pci_iomap - create a virtual mapping cookie for a PCI BAR
->   * @dev: PCI device that owns the BAR
-> -- 
-> 2.25.1
+  fs/nfs/file.c
 
+between commit:
+
+  c045f1c40a48 ("nfs: don't allow reexport reclaims")
+
+from the cel tree and commit:
+
+  f7e33bdbd6d1 ("fs: remove mandatory file locking support")
+
+from the file-locks tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/nfs/file.c
+index 7411658f8b05,514be5d28d70..000000000000
+--- a/fs/nfs/file.c
++++ b/fs/nfs/file.c
+@@@ -806,13 -806,6 +806,9 @@@ int nfs_lock(struct file *filp, int cmd
+ =20
+  	nfs_inc_stats(inode, NFSIOS_VFSLOCK);
+ =20
+ +	if (fl->fl_flags & FL_RECLAIM)
+ +		return -ENOGRACE;
+ +
+- 	/* No mandatory locks over NFS */
+- 	if (__mandatory_lock(inode) && fl->fl_type !=3D F_UNLCK)
+- 		goto out_err;
+-=20
+  	if (NFS_SERVER(inode)->flags & NFS_MOUNT_LOCAL_FCNTL)
+  		is_local =3D 1;
+ =20
+
+--Sig_/8/NlOoMWk5HiqmmcC9Xr98g
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkOEoACgkQAVBC80lX
+0GwAEwf/evAG/xXRXo59g1drpfK9QzvRF/IIMdnjB+TPJfA78KmPJAhEjTB7DOAM
+m7sw1GJqYS1Zv+t/Aw+Oi7maJaZ/oJxbp0Txl0uoFxQMpUmBQXaVZeqsbJOMbNi9
+xHPDWyEkRabf/wV3rW42ROt2yXjC7Kin85+E3J9Z/fTwvy5EHQgsZ3haNOU1CJ0q
+rKvo3RJLqnesCWJcrALN6VXztCMPqloAkuw1Ptl9ad7eZlPAAK2PbHeNvR44JmPi
+a9q6GKiPL01HdXcHn5cKquIppJAcXbAVrux7VvSZFwgMq8QXJYpldnkvL8+OwYiv
+ZnCY5wfJIy+Aw9BOBC2nNpRntMYT5Q==
+=MQMC
+-----END PGP SIGNATURE-----
+
+--Sig_/8/NlOoMWk5HiqmmcC9Xr98g--
