@@ -2,258 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECB23F60C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CA23F60C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237988AbhHXOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237926AbhHXOnB (ORCPT
+        id S238002AbhHXOnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:43:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237926AbhHXOnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:43:01 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91385C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:42:17 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id j18so26583577ioj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FwbKzIHfOUcOHLQOCoMjPPJ39zypjy/jBf8c4OAsOC4=;
-        b=IMBvfBTGP0rgkTV9Ly4yXPRhv6n82+4zUKI4dUNOn5l7JSdlu5Ljw+GLWItYfTglfj
-         hl9dRhTpuDUMR8Ggc1PYWqnqrDDt0+Rt+u9ooWFILBODRXZnAf5XvPNUDwh44ego36Ti
-         EkTCNd09fluwejVub3lNVkdjRYdbezUO3A0/M=
+        Tue, 24 Aug 2021 10:43:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629816150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uPIwnz8JPNR4S2lMPdo6ynnsvRqH2A3Uk8ZKCRmBBjo=;
+        b=SGklq2ezStKEjsatJXv8ZBFB/DSEInxJn62RztktC4k1YXlDogINIIohaZVzLzBIOvU3OA
+        QliquqiD2zGlu9lEbFrbq2tJB8ukz8gxBgLw6DwXktnM0VGe1O51GEdKM5zeU9hSyiLYok
+        wy+uM85ibDQk5dCSmaR2ISB1GvVnlWc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-McTxevTAPDaHYI5RV8wf2Q-1; Tue, 24 Aug 2021 10:42:29 -0400
+X-MC-Unique: McTxevTAPDaHYI5RV8wf2Q-1
+Received: by mail-wr1-f70.google.com with SMTP id a9-20020a0560000509b029015485b95d0cso5830338wrf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:42:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FwbKzIHfOUcOHLQOCoMjPPJ39zypjy/jBf8c4OAsOC4=;
-        b=NBDzqQB+Dj4BEjrmTbLCGqaLy9ShdrEXy627ed0ig9EmH/UjmEc+uCIMME0oh74Zp4
-         UZHXd0x2HZGXICkISZE7CNELotne5a8Jn1jaa2V0ch+mIb6YcxkSv+kDkwZ4gT/0haOA
-         D2x4IRqCSWA6031jUQOv/omMbLjSqrBOXQdu2llHrbxb3kfGJlLh31MFZLP3G4OHGyeD
-         J9UuGKO4gfKCTWPjYeCg6lU/PGT6m9f8XvuaGnbcxPRsHROi4h4CB9uqdWmcK+DasBVE
-         6RiRy68ail2T/Uxnh69Yu5jv2DiTLeHh8EhhWggGIq4QT/ElNPeSv63o5jUEGCJsKnF1
-         a75g==
-X-Gm-Message-State: AOAM533uWID/GhLmY5ZALtsCGu33qP1i8erpnWE6sqHeSjVzPecTlhqG
-        7l42sGXIVxZAh1uMctjYf8c+uQ==
-X-Google-Smtp-Source: ABdhPJxQqu8mETyqzXRwMvnGEqy/vUzqQMc7CKp8pg0AuUJ9ABYvX7tg4YhSapD5b3Uqbgkex9hkBw==
-X-Received: by 2002:a6b:5a04:: with SMTP id o4mr1540398iob.44.1629816136793;
-        Tue, 24 Aug 2021 07:42:16 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id q10sm10318395ion.3.2021.08.24.07.42.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 07:42:16 -0700 (PDT)
-Subject: Re: [PATCH linux-next] tools:test_xdp_noinline: fix boolreturn.cocci
- warnings
-To:     CGEL <cgel.zte@gmail.com>, Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210824065526.60416-1-deng.changcheng@zte.com.cn>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2d701f13-8996-ed7d-3d41-794aa8a6e96c@linuxfoundation.org>
-Date:   Tue, 24 Aug 2021 08:42:15 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=uPIwnz8JPNR4S2lMPdo6ynnsvRqH2A3Uk8ZKCRmBBjo=;
+        b=rQrM/Gs1Ucd7zDDlrVVS7ZT7ZNVXX5Q2WvrayyarLY7xa1HRU1QjVEzoUNUQ/MjhTd
+         +qs1RMyxyrjYPbGdRRPXLz33U22rX2j33wcMdhaWw8HOSpqx7w4/UE3eEjOKfZ/lIjif
+         o6Imz+5TAFtTVZe5XKQ9do+Oj9wikqrsAeQSSjllLZUw2ZHQmnpn63tJBt8L0sznTl3a
+         qoBi+TjOx/B4zYO7F3Sp0CfPBbXdaMJq3atPG+OwMKg4AHQCezwKXp/1mUk1ISMWeAE3
+         eDw56g5O/iwIC9JXXoLQnoNyMHaLUlAg5PudrUpF3xPuPxSHWdOH1npcs9DC6sBD73QW
+         lSWQ==
+X-Gm-Message-State: AOAM531TNGkLCDXteX5uLSDhBA273+inGH90DkFZbR/Ffq8zZIoFgISb
+        LV+Vb+h64M6OWDHthIExTqjCEsedrS0ZUMCL5KpsmmHeRJIItSLI08UNYXIu2Hv+JHd+0pUw/T1
+        XxybUexf0VkZIWEpqjT1k7ulfwwjOi+DTgFysXXXxSWN5V4fSa+3Ukxl+CZ8UvPhaiaK1GiXiAJ
+        H2
+X-Received: by 2002:a5d:54c3:: with SMTP id x3mr19422720wrv.208.1629816148495;
+        Tue, 24 Aug 2021 07:42:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxm7wSePFmqdsVRd8VaF2Vv+lpCKCcnjzpl+MOcS4fG6LUqTlTRXaSPUaQbB7m6m88V1bPCoQ==
+X-Received: by 2002:a5d:54c3:: with SMTP id x3mr19422693wrv.208.1629816148269;
+        Tue, 24 Aug 2021 07:42:28 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id l18sm2849042wmc.30.2021.08.24.07.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:42:27 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Eduardo Habkost <ehabkost@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+In-Reply-To: <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+References: <20210823143028.649818-1-vkuznets@redhat.com>
+ <20210823143028.649818-5-vkuznets@redhat.com>
+ <20210823185841.ov7ejn2thwebcwqk@habkost.net>
+ <87mtp7jowv.fsf@vitty.brq.redhat.com>
+ <CAOpTY_ot8teH5x5vVS2HvuMx5LSKLPtyen_ZUM1p7ncci4LFbA@mail.gmail.com>
+Date:   Tue, 24 Aug 2021 16:42:26 +0200
+Message-ID: <87k0kakip9.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210824065526.60416-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 12:55 AM, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> 
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-> ---
->   .../selftests/bpf/progs/test_xdp_noinline.c        | 42 +++++++++++-----------
->   1 file changed, 21 insertions(+), 21 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> index 3a67921..37075f8 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> @@ -239,7 +239,7 @@ bool parse_udp(void *data, void *data_end,
->   	udp = data + off;
->   
->   	if (udp + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	if (!is_icmp) {
->   		pckt->flow.port16[0] = udp->source;
->   		pckt->flow.port16[1] = udp->dest;
-> @@ -247,7 +247,7 @@ bool parse_udp(void *data, void *data_end,
->   		pckt->flow.port16[0] = udp->dest;
->   		pckt->flow.port16[1] = udp->source;
->   	}
-> -	return 1;
-> +	return true;
->   }
->   
->   static __attribute__ ((noinline))
-> @@ -261,7 +261,7 @@ bool parse_tcp(void *data, void *data_end,
->   
->   	tcp = data + off;
->   	if (tcp + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	if (tcp->syn)
->   		pckt->flags |= (1 << 1);
->   	if (!is_icmp) {
-> @@ -271,7 +271,7 @@ bool parse_tcp(void *data, void *data_end,
->   		pckt->flow.port16[0] = tcp->dest;
->   		pckt->flow.port16[1] = tcp->source;
->   	}
-> -	return 1;
-> +	return true;
->   }
->   
->   static __attribute__ ((noinline))
-> @@ -287,7 +287,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
->   	void *data;
->   
->   	if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(struct ipv6hdr)))
-> -		return 0;
-> +		return false;
->   	data = (void *)(long)xdp->data;
->   	data_end = (void *)(long)xdp->data_end;
->   	new_eth = data;
-> @@ -295,7 +295,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
->   	old_eth = data + sizeof(struct ipv6hdr);
->   	if (new_eth + 1 > data_end ||
->   	    old_eth + 1 > data_end || ip6h + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	memcpy(new_eth->eth_dest, cval->mac, 6);
->   	memcpy(new_eth->eth_source, old_eth->eth_dest, 6);
->   	new_eth->eth_proto = 56710;
-> @@ -314,7 +314,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
->   	ip6h->saddr.in6_u.u6_addr32[2] = 3;
->   	ip6h->saddr.in6_u.u6_addr32[3] = ip_suffix;
->   	memcpy(ip6h->daddr.in6_u.u6_addr32, dst->dstv6, 16);
-> -	return 1;
-> +	return true;
->   }
->   
->   static __attribute__ ((noinline))
-> @@ -335,7 +335,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->   	ip_suffix <<= 15;
->   	ip_suffix ^= pckt->flow.src;
->   	if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(struct iphdr)))
-> -		return 0;
-> +		return false;
->   	data = (void *)(long)xdp->data;
->   	data_end = (void *)(long)xdp->data_end;
->   	new_eth = data;
-> @@ -343,7 +343,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->   	old_eth = data + sizeof(struct iphdr);
->   	if (new_eth + 1 > data_end ||
->   	    old_eth + 1 > data_end || iph + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	memcpy(new_eth->eth_dest, cval->mac, 6);
->   	memcpy(new_eth->eth_source, old_eth->eth_dest, 6);
->   	new_eth->eth_proto = 8;
-> @@ -367,8 +367,8 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->   		csum += *next_iph_u16++;
->   	iph->check = ~((csum & 0xffff) + (csum >> 16));
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> -		return 0;
-> -	return 1;
-> +		return false;
-> +	return true;
->   }
->   
->   static __attribute__ ((noinline))
-> @@ -386,10 +386,10 @@ bool decap_v6(struct xdp_md *xdp, void **data, void **data_end, bool inner_v4)
->   	else
->   		new_eth->eth_proto = 56710;
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct ipv6hdr)))
-> -		return 0;
-> +		return false;
->   	*data = (void *)(long)xdp->data;
->   	*data_end = (void *)(long)xdp->data_end;
-> -	return 1;
-> +	return true;
->   }
->   
->   static __attribute__ ((noinline))
-> @@ -404,10 +404,10 @@ bool decap_v4(struct xdp_md *xdp, void **data, void **data_end)
->   	memcpy(new_eth->eth_dest, old_eth->eth_dest, 6);
->   	new_eth->eth_proto = 8;
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> -		return 0;
-> +		return false;
->   	*data = (void *)(long)xdp->data;
->   	*data_end = (void *)(long)xdp->data_end;
-> -	return 1;
-> +	return true;
->   }
->   
->   static __attribute__ ((noinline))
-> @@ -564,22 +564,22 @@ static bool get_packet_dst(struct real_definition **real,
->   	hash = get_packet_hash(pckt, hash_16bytes);
->   	if (hash != 0x358459b7 /* jhash of ipv4 packet */  &&
->   	    hash != 0x2f4bc6bb /* jhash of ipv6 packet */)
-> -		return 0;
-> +		return false;
->   	key = 2 * vip_info->vip_num + hash % 2;
->   	real_pos = bpf_map_lookup_elem(&ch_rings, &key);
->   	if (!real_pos)
-> -		return 0;
-> +		return false;
->   	key = *real_pos;
->   	*real = bpf_map_lookup_elem(&reals, &key);
->   	if (!(*real))
-> -		return 0;
-> +		return false;
->   	if (!(vip_info->flags & (1 << 1))) {
->   		__u32 conn_rate_key = 512 + 2;
->   		struct lb_stats *conn_rate_stats =
->   		    bpf_map_lookup_elem(&stats, &conn_rate_key);
->   
->   		if (!conn_rate_stats)
-> -			return 1;
-> +			return true;
->   		cur_time = bpf_ktime_get_ns();
->   		if ((cur_time - conn_rate_stats->v2) >> 32 > 0xffFFFF) {
->   			conn_rate_stats->v1 = 1;
-> @@ -587,14 +587,14 @@ static bool get_packet_dst(struct real_definition **real,
->   		} else {
->   			conn_rate_stats->v1 += 1;
->   			if (conn_rate_stats->v1 >= 1)
-> -				return 1;
-> +				return true;
->   		}
->   		if (pckt->flow.proto == IPPROTO_UDP)
->   			new_dst_lru.atime = cur_time;
->   		new_dst_lru.pos = key;
->   		bpf_map_update_elem(lru_map, &pckt->flow, &new_dst_lru, 0);
->   	}
-> -	return 1;
-> +	return true;
->   }
->   
->   __attribute__ ((noinline))
-> 
+Eduardo Habkost <ehabkost@redhat.com> writes:
 
-We can't accept this patch. The from and Signed-off-by don't match.
+> On Tue, Aug 24, 2021 at 3:13 AM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>>
+>> Eduardo Habkost <ehabkost@redhat.com> writes:
+>>
+>> > On Mon, Aug 23, 2021 at 04:30:28PM +0200, Vitaly Kuznetsov wrote:
+>> >> KASAN reports the following issue:
+>> >>
+>> >>  BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>> >>  Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
+>> >>
+>> >>  CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
+>> >>  Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
+>> >>  Call Trace:
+>> >>   dump_stack+0xa5/0xe6
+>> >>   print_address_description.constprop.0+0x18/0x130
+>> >>   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>> >>   __kasan_report.cold+0x7f/0x114
+>> >>   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>> >>   kasan_report+0x38/0x50
+>> >>   kasan_check_range+0xf5/0x1d0
+>> >>   kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>> >>   kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
+>> >>   ? kvm_arch_exit+0x110/0x110 [kvm]
+>> >>   ? sched_clock+0x5/0x10
+>> >>   ioapic_write_indirect+0x59f/0x9e0 [kvm]
+>> >>   ? static_obj+0xc0/0xc0
+>> >>   ? __lock_acquired+0x1d2/0x8c0
+>> >>   ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
+>> >>
+>> >> The problem appears to be that 'vcpu_bitmap' is allocated as a single long
+>> >> on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
+>> >> the lower 16 bits of it with bitmap_zero() for no particular reason (my
+>> >> guess would be that 'bitmap' and 'vcpu_bitmap' variables in
+>> >> kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
+>> >> 16-bit long, the later should accommodate all possible vCPUs).
+>> >>
+>> >> Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
+>> >> Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
+>> >> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+>> >> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> >> ---
+>> >>  arch/x86/kvm/ioapic.c | 10 +++++-----
+>> >>  1 file changed, 5 insertions(+), 5 deletions(-)
+>> >>
+>> >> diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+>> >> index ff005fe738a4..92cd4b02e9ba 100644
+>> >> --- a/arch/x86/kvm/ioapic.c
+>> >> +++ b/arch/x86/kvm/ioapic.c
+>> >> @@ -319,7 +319,7 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
+>> >>      unsigned index;
+>> >>      bool mask_before, mask_after;
+>> >>      union kvm_ioapic_redirect_entry *e;
+>> >> -    unsigned long vcpu_bitmap;
+>> >> +    unsigned long vcpu_bitmap[BITS_TO_LONGS(KVM_MAX_VCPUS)];
+>> >
+>> > Is there a way to avoid this KVM_MAX_VCPUS-sized variable on the
+>> > stack?  This might hit us back when we increase KVM_MAX_VCPUS to
+>> > a few thousand VCPUs (I was planning to submit a patch for that
+>> > soon).
+>>
+>> What's the short- or mid-term target?
+>
+> Short term target is 2048 (which was already tested). Mid-term target
+> (not tested yet) is 4096, maybe 8192.
+>
+>>
+>> Note, we're allocating KVM_MAX_VCPUS bits (not bytes!) here, this means
+>> that for e.g. 2048 vCPUs we need 256 bytes of the stack only. In case
+>> the target much higher than that, we will need to either switch to
+>> dynamic allocation or e.g. use pre-allocated per-CPU variables and make
+>> this a preempt-disabled region. I, however, would like to understand if
+>> the problem with allocating this from stack is real or not first.
+>
+> Is 256 bytes too much here, or would that be OK?
+>
 
-thanks,
--- Shuah
+AFAIR, on x86_64 stack size (both reqular and irq) is 16k, eating 256
+bytes of it is probably OK. I'd start worrying when we go to 1024 (8k
+vCPUs) and above (but this is subjective of course).
+
+-- 
+Vitaly
+
