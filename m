@@ -2,184 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978513F6A39
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004BF3F6A3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhHXUJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhHXUJl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:09:41 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86522C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:08:56 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id z128so43313820ybc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 13:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F5e1UqcNeXqqqIbmlY1mNsIR9q95Ez+3wFDl23ZZGpQ=;
-        b=fv/JThfp9GEwMkn3x96ddxImdAStoVrVpBe3DWTUXk6sFz4QCo0OUFahDIkOLE3RPP
-         gkpoUWwEXKelZvoGpnr7YHFnxdbGst9bePhlAJzGfkajcC3jfXw5XWDIdeej8K8U/erm
-         DFiXWSOb0/0WX9msgvIdxU9V5mnkmCkO3fsDcmEpDgpyErWxMbE/XA92ibk4NuPrgN7b
-         eaHCb7jGiQjmw/w2xWw01p6sAypRclXZS62q2oF4xPGCaykvZae3j9Sqb5OdfXH+PqAm
-         q6gu/6FFjLG6FBkgmyzx6TO/kefEIEJ13zgmifhEqEt0DGJ2/+JDISYZ3L39g/wdFOaV
-         YlJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F5e1UqcNeXqqqIbmlY1mNsIR9q95Ez+3wFDl23ZZGpQ=;
-        b=Z1F1kVeWeWSNDuenQr//gW8FU7nvc7CRALcm1v5v1G+D0OJ0W9IHsOcVlGfKbJXiRA
-         x0aE+iEYideRa94RgLwGCKjE8Ahr+QG2/tueSzXH4iZVPv11W6YwDEeRo+9hO74lVkkb
-         qpdw4P0Gk3k5MKplJBnqQElJWIwGct38A6EvSIosdV3eMa6mYAqJt/v8LFhxlT6P3cXK
-         97pv545C9axYszEyNipZfsiRHrpY7T+hzuWCe0VppYyQFwE9uS04btCROzOa5SQpnfvY
-         xf8J8UCvx1GaKcAzArxB2/mtI4KyFZtorcHlKgBDmjnKSa00E172eqKVJsb4wzdweYfq
-         8U8w==
-X-Gm-Message-State: AOAM5303+1P3KxGrPrk0Fr1jZcX5Ewi+1up04Lx02CAjbZ0a4sBriLUw
-        YlzokkhEiDY6twUsatgTJcTUAtZtYeOOavt+Xb7sqg==
-X-Google-Smtp-Source: ABdhPJwAmvFlzL4gm2+wLFJNEj2whFnulqk+m/QHIiUlkmaKbJTK9+lzObJYqW8RHttpf1rQDlni1pTfhEm/Ax+BeC0=
-X-Received: by 2002:a25:d2c8:: with SMTP id j191mr7322236ybg.412.1629835735586;
- Tue, 24 Aug 2021 13:08:55 -0700 (PDT)
+        id S234875AbhHXUJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234818AbhHXUJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 16:09:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA50B61357;
+        Tue, 24 Aug 2021 20:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629835741;
+        bh=uUxS3w4NOSn9JSUG4eMqaNfVV/q8mARt5VKtS0HjAJY=;
+        h=To:Cc:From:Subject:Date:From;
+        b=VSa+FJEW1fAO9sC2RDHgJXnRm4cep9Jr8x9LNqqVZtQF4m2Y/XogiDGoga9/EO7ZI
+         sX4fBWXmTFJoZevWtijrx4i/dYx7RpZaU+SlQAYTLavRKpWjJ9uaTIWvtRYf0AfkuS
+         q009nb+cnd5G93COlmYLj0jZ87/UR80e3XnuFIyOTUBxPANK7PiHGG52QXsZyQ7JQp
+         Q4XNaYkQYLBLP+wZhioJn66cD/TbpQUUuPlfWK0BbRMi/qATZ98CW2TnZ3tbcpLHG9
+         s891+4NZiVkG2fz2uipkI8bJ2wsOOObUU1vSq9+qhHaPhPsvvJCJGfR7wKYaFBLojk
+         ls1ba2BbiQt/g==
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+From:   Nathan Chancellor <nathan@kernel.org>
+Subject: objtool warning in cfg80211_edmg_chandef_valid() with ThinLTO
+Message-ID: <5913cdf4-9c8e-38f8-8914-d3b8a3565d73@kernel.org>
+Date:   Tue, 24 Aug 2021 13:08:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210816074619.177383-1-wangkefeng.wang@huawei.com>
- <20210816074619.177383-4-wangkefeng.wang@huawei.com> <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
-In-Reply-To: <CAL_JsqLBddXVeP-t++wqPNp=xYF7tvEcnCbjFnK9CUBLK2+9JA@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 24 Aug 2021 13:08:19 -0700
-Message-ID: <CAGETcx8SY14rcd7g=Gdwmw7sUMb=jdEV+ffuNpg6btDoL1jmWw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] amba: Properly handle device probe without IRQ domain
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Ruizhe Lin <linruizhe@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 1:05 PM Rob Herring <robh+dt@kernel.org> wrote:
->
-> +Saravana
->
-> Saravana mentioned to me there may be some issues with this one...
->
->
-> On Mon, Aug 16, 2021 at 2:43 AM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
-> >
-> > of_amba_device_create() uses irq_of_parse_and_map() to translate
-> > a DT interrupt specification into a Linux virtual interrupt number.
-> >
-> > But it doesn't properly handle the case where the interrupt controller
-> > is not yet available, eg, when pl011 interrupt is connected to MBIGEN
-> > interrupt controller, because the mbigen initialization is too late,
-> > which will lead to no IRQ due to no IRQ domain found, log is shown below,
-> >   "irq: no irq domain found for uart0 !"
-> >
-> > use of_irq_get() to return -EPROBE_DEFER as above, and in the function
-> > amba_device_try_add()/amba_device_add(), it will properly handle in such
-> > case, also return 0 in other fail cases to be consistent as before.
-> >
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: Frank Rowand <frowand.list@gmail.com>
-> > Reported-by: Ruizhe Lin <linruizhe@huawei.com>
-> > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> > ---
-> >  drivers/amba/bus.c    | 27 +++++++++++++++++++++++++++
-> >  drivers/of/platform.c |  6 +-----
-> >  2 files changed, 28 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
-> > index 36f2f42c8014..720aa6cdd402 100644
-> > --- a/drivers/amba/bus.c
-> > +++ b/drivers/amba/bus.c
-> > @@ -19,6 +19,7 @@
-> >  #include <linux/clk/clk-conf.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/reset.h>
-> > +#include <linux/of_irq.h>
-> >
-> >  #include <asm/irq.h>
-> >
-> > @@ -371,12 +372,38 @@ static void amba_device_release(struct device *dev)
-> >         kfree(d);
-> >  }
-> >
-> > +static int of_amba_device_decode_irq(struct amba_device *dev)
-> > +{
-> > +       struct device_node *node = dev->dev.of_node;
-> > +       int i, irq = 0;
-> > +
-> > +       if (IS_ENABLED(CONFIG_OF_IRQ) && node) {
-> > +               /* Decode the IRQs and address ranges */
-> > +               for (i = 0; i < AMBA_NR_IRQS; i++) {
-> > +                       irq = of_irq_get(node, i);
-> > +                       if (irq < 0) {
-> > +                               if (irq == -EPROBE_DEFER)
-> > +                                       return irq;
-> > +                               irq = 0;
-> > +                       }
-> > +
-> > +                       dev->irq[i] = irq;
-> > +               }
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static int amba_device_try_add(struct amba_device *dev, struct resource *parent)
-> >  {
-> >         u32 size;
-> >         void __iomem *tmp;
-> >         int i, ret;
-> >
-> > +       ret = of_amba_device_decode_irq(dev);
-> > +       if (ret)
-> > +               goto err_out;
-> > +
+Hi Josh and Peter,
 
-Similar to other resources the AMBA bus "gets" for the device, I think
-this should be moved into amba_probe() and not here. There's no reason
-to delay the addition of the device (and loading its module) because
-the IRQ isn't ready yet.
+An in-review LLVM patch [1] introduces an optimization around switch 
+cases, marking the default case unreachable when all known values are 
+covered. This ended up introducing a boot regression when building a 
+kernel with ThinLTO, which Sami reported initially [2] and I reported it 
+upstream, generating some discussion starting from [3].
 
--Saravana
+There is an objtool warning about the function that the author of the 
+patch tracked down to be problematic:
 
-> >         ret = request_resource(parent, &dev->res);
-> >         if (ret)
-> >                 goto err_out;
-> > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > index 74afbb7a4f5e..32d5ff8df747 100644
-> > --- a/drivers/of/platform.c
-> > +++ b/drivers/of/platform.c
-> > @@ -222,7 +222,7 @@ static struct amba_device *of_amba_device_create(struct device_node *node,
-> >  {
-> >         struct amba_device *dev;
-> >         const void *prop;
-> > -       int i, ret;
-> > +       int ret;
-> >
-> >         pr_debug("Creating amba device %pOF\n", node);
-> >
-> > @@ -253,10 +253,6 @@ static struct amba_device *of_amba_device_create(struct device_node *node,
-> >         if (prop)
-> >                 dev->periphid = of_read_ulong(prop, 1);
-> >
-> > -       /* Decode the IRQs and address ranges */
-> > -       for (i = 0; i < AMBA_NR_IRQS; i++)
-> > -               dev->irq[i] = irq_of_parse_and_map(node, i);
-> > -
-> >         ret = of_address_to_resource(node, 0, &dev->res);
-> >         if (ret) {
-> >                 pr_err("amba: of_address_to_resource() failed (%d) for %pOF\n",
-> > --
-> > 2.26.2
-> >
+vmlinux.o: warning: objtool: cfg80211_edmg_chandef_valid()+0x169: can't 
+find jump dest instruction at .text.cfg80211_edmg_chandef_valid+0x17b
+
+The LLVM developers are under the impression that this is an issue with 
+objtool; specifically quoting Eli Friedman:
+
+"The backend can, in general, create basic blocks that don't contain any 
+instructions, and don't fall through to another block. A jump table 
+entry can refer to such a block. I guess certain tools could be confused 
+by this.
+
+If that's the issue, it should be possible to work around it using 
+'-mllvm -trap-unreachable'."
+
+I can confirm that adding '-mllvm -trap-unreachable' to 
+KBUILD_{C,LD}FLAGS does resolve the issue but I am curious if that is an 
+adequate solution (as Nick has frowned upon the presence of '-mllvm' 
+flags) or if there is something that could be done on the objtool side. 
+I do have a small reproducer on Phabricator [4] and I can provide any 
+binary files that would be helpful for seeing what is going on here.
+
+[1] https://reviews.llvm.org/D106056
+[2] https://github.com/ClangBuiltLinux/linux/issues/1440
+[3] https://reviews.llvm.org/D106056#2953104
+[4] https://reviews.llvm.org/D106056#2961136
+
+Cheers,
+Nathan
