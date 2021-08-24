@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD673F69E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612303F69E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhHXTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:35:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229913AbhHXTfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:35:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3B1E60F91;
-        Tue, 24 Aug 2021 19:34:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629833680;
-        bh=FolpW8ndZBvgISlyt3ab7Myhj7YVQF/oTlf48uWsx28=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VstM5jxAZlXmsXVDpR/R44L49vZC+QVsKWs7DzwzufCueSjpP8Ue2k1bC7OIpe5+D
-         IF59qR+D865Fz2roOQDdRhn2TFWjkuaq+hoSOk3R8IQzPBx0qWQnaTjDjkcQg9czaI
-         pqRk05OwisgUDwXD0ma0tkjedIsDQtGHfb8WM/JA1mfmQ8xxUDWsGqLRMChKMPIMeX
-         SoKJS2rqlQ7FQFClxj1DRRwn6IgFwrQrNNBATbLKFTQ1CFMC2Zp51tU+y4Jy0ZleS4
-         pZqku68ODvdo+ItwRGjtzY7zFt8VIK4ww19hAQLCUQB/3Owfbz5OPSF0OhB9tMmcx+
-         FnaaUovlQdhPg==
-Date:   Tue, 24 Aug 2021 14:34:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
-        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
-        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
-        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
-Message-ID: <20210824193438.GA3486820@bjorn-Precision-5520>
+        id S234681AbhHXTfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:35:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45587 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229913AbhHXTfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 15:35:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629833693;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3eO6G7+YJ7Jp/30Gl5nPllvM3hPlAEb03gNdxU0GZQ=;
+        b=UolENfb+xzxqSyzdpK6MMqOZF4QxAtO8+gk93S5DghOrKjFAfUDzDQx2HhqlPg9HIWNXvZ
+        2FHrCPCE0kQsur1wnem5Agr25B2kDHxqDgM/HjUy6rvrWakH+M/x9ep3aOy+HqpEhZjoEG
+        EjDaHmLgFOGK7LGz/y5+7N21ByyJUcw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-HxX9zXBTNfuhcabkqKYAuQ-1; Tue, 24 Aug 2021 15:34:52 -0400
+X-MC-Unique: HxX9zXBTNfuhcabkqKYAuQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7218D875057;
+        Tue, 24 Aug 2021 19:34:50 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8EBA660657;
+        Tue, 24 Aug 2021 19:34:48 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YSVH6k5plj9lrTFe@mit.edu>
+References: <YSVH6k5plj9lrTFe@mit.edu> <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com> <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org> <1957060.1629820467@warthog.procyon.org.uk> <YSUy2WwO9cuokkW0@casper.infradead.org> <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com> <CAHk-=wgRdqtpsbHkKeqpRWUsuJwsfewCL4SZN2udXVgExFZOWw@mail.gmail.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     dhowells@redhat.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4zceLLBk1K_9Bmiju54CvGYySoEN4Kgy4yATst_E9c68A@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1967089.1629833687.1@warthog.procyon.org.uk>
+Date:   Tue, 24 Aug 2021 20:34:47 +0100
+Message-ID: <1967090.1629833687@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:46:59AM +1200, Barry Song wrote:
-> On Mon, Aug 23, 2021 at 11:28 PM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Mon, 23 Aug 2021 12:03:08 +0100,
-> > Barry Song <21cnbao@gmail.com> wrote:
+Theodore Ts'o <tytso@mit.edu> wrote:
 
-> +static ssize_t irq_show(struct device *dev,
-> +                                        struct device_attribute *attr,
-> +                                        char *buf)
-> +{
-> +       struct pci_dev *pdev = to_pci_dev(dev);
-> +#ifdef CONFIG_PCI_MSI
-> +       struct msi_desc *desc = first_pci_msi_entry(pdev);
-> +
-> +       /* for MSI, return the 1st IRQ in IRQ vector */
-> +       if (desc && !desc->msi_attrib.is_msix)
-> +               return sysfs_emit(buf, "%u\n", desc->irq);
-> +#endif
-> +
-> +       return sysfs_emit(buf, "%u\n", pdev->irq);
-> +}
-> +static DEVICE_ATTR_RO(irq);
+> How about "struct mempages"?
 
-Makes sense to me.  And with Marc's patch maybe we could get rid of
-default_irq, which also seems nice.
+Kind of redundant in this case?
 
-> > > if we don't want to change the behaviour of any existing ABI, it
-> > > seems the only thing we can do here to document it well in ABI
-> > > doc. i actually doubt anyone has really understood what the irq
-> > > entry is really showing.
-> >
-> > Given that we can't prove that it is actually the case, I believe this
-> > is the only option.
-> 
-> we have to document the ABI like below though it seems quite annoying.
-> 
-> 1. for devices which don't support MSI and MSI-X, show legacy INTx
-> 2. for devices which support MSI
->     a. if CONFIG_PCI_MSI is not enabled,  show legacy INTx
->     b. if CONFIG_PCI_MSI is enabled and devices are using MSI at this
-> moment, show 1st IRQ in the vector
->     c. if CONFIG_PCI_MSI is enabled, but we shutdown its MSI before
-> the users call sysfs entry,
->         so at this moment, devices are not using MSI,  show legacy INTx
-> 3. for devices which support MSI-X, no matter if it is using MSI-X,
->     show legacy INTx
-> 4. In Addition, INTx might be broken due to incomplete firmware or
-> hardware design for MSI and MSI-X cases
-> 
-> To be honest, it sounds like a disaster :-) but if this is what we
-> have to do, I'd like to try it in v3.
+David
 
-It doesn't seem necessary to me to get into the gory details of
-CONFIG_PCI_MSI -- if that's not enabled, drivers can't use MSI anyway.
-
-I don't understand 3.  If a device supports both MSI and MSI-X and a
-driver enables MSI, msi_capability_init() writes dev->irq, so it looks
-like "irq" should contain the first MSI vector.
-
-I don't understand 4, either.  Is the possibility of broken hardware
-or firmware something we need to document?  
-
-What about something like this?
-
-  If a driver has enabled MSI (not MSI-X), "irq" contains the IRQ of
-  the first MSI vector.  Otherwise "irq" contains the IRQ of the
-  legacy INTx interrupt.
