@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0283F685B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C113F6882
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241160AbhHXRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:47:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:20403 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241797AbhHXRrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:47:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="197609881"
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="197609881"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:36:38 -0700
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="526710770"
-Received: from fadelgax-mobl.amr.corp.intel.com (HELO [10.212.141.67]) ([10.212.141.67])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:36:36 -0700
-Subject: Re: [PATCH v5 07/12] x86/traps: Add #VE support for TDX guest
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-8-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YSTHMAUA1LjjOQPe@zn.tnic>
- <99c5f6e9-a747-1a4a-d0f4-95b8b28e0d02@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0f346274-e45e-1701-2b74-4438e4db4276@intel.com>
-Date:   Tue, 24 Aug 2021 10:36:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S240365AbhHXR7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235557AbhHXR7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:59:00 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB6CC061151;
+        Tue, 24 Aug 2021 10:37:18 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id dm15so7853499edb.10;
+        Tue, 24 Aug 2021 10:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=96yzP4yz3JLzphy1QSUobmPAufme29yUUfQ0C0CWToI=;
+        b=NG9DD7VYMrDSJ8MYlV0FkIB2v8q1mKFjZfj05Nnk5ESWT8HhHTyUVAsYFevs9IkNyL
+         JXo9XP59AbbNqAIxp//KozFSIgv51nkiWoumTWAAW6RPwtS07R6ZZSyAgoKNQJCDQT8Y
+         j4esFUzW0qFGXQOFh0Lk5hsP/Hw03KRWV9bgSUve1FL44AQXGAWJaHecZ7XLI1lv6DdL
+         qpoECFR709R1Gcr6tsSeFWDqZ27mJOnxSKYf6jSJ2QYoWQ+E5Aa20lb1wU8hk/GU0XFV
+         Wo7TjZpNxBx/5kFTSkZtLF66PTUz9W80O5SXRZg3HeXw6mEQXXe1deskGa2qb6/gz5+J
+         Mh0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=96yzP4yz3JLzphy1QSUobmPAufme29yUUfQ0C0CWToI=;
+        b=UknWO3hY0DE/wgwhpJq6EwJolokFHPR5w9x7+GtAD8g5qgij/evVv64VkJ+cKDvzdy
+         UYA3Oj+iJ4bxgNCWCcZ6TQeSBsr7+k7AeLoSgQqZAXD+RTw3BotSdhngFh1ayuq6MO/G
+         i6Olcx2xlFDNmR9yZEeD7ADQzGUmPqWM0pk/MaHQdb2GhaLysqCrTl/U0JVIt2+h0dzb
+         T33KEZm7rx0B6SVl1eoagx6De4AaDh4tw8pxajEX+Z/PHSvdkoc3cr+rpr848Xa6h8WZ
+         f8/JFBe+NTLXPYno9+Lt9eEACTMb24l5UYjmvhI7FQb1/fM2lJHrubYFwJ+0IaaQBAln
+         oU/Q==
+X-Gm-Message-State: AOAM532DYl5G+TFylX/yzWcxLzlStxSGvUztjGH9aQfiymQ9byMKKHza
+        mvrXZJCIRtoW48V+WKkUtNg=
+X-Google-Smtp-Source: ABdhPJzA9v8OaCPg4dfXbckH5OLHW+S0cfVd3W/bRRrUZfgwkih0AjV5JuTsER9E1AEn0bGG9WU7dg==
+X-Received: by 2002:aa7:c94c:: with SMTP id h12mr25211234edt.378.1629826636863;
+        Tue, 24 Aug 2021 10:37:16 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id p5sm9549629ejl.73.2021.08.24.10.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:37:16 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 20:37:14 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: manually set up VLAN ID 0
+Message-ID: <20210824173714.cgpt2addxyjzlbyy@skbuf>
+References: <20210824165253.1691315-1-dqfext@gmail.com>
+ <20210824165742.xvkb3ke7boryfoj4@skbuf>
+ <20210824173237.1691654-1-dqfext@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <99c5f6e9-a747-1a4a-d0f4-95b8b28e0d02@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824173237.1691654-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 10:32 AM, Kuppuswamy, Sathyanarayanan wrote:
->>> +    if (fixup_exception(regs, X86_TRAP_VE, error_code, 0))
->>
->> There are exception table entries which can trigger a #VE?
-> 
-> It is required to handle #VE exceptions raised by unhandled MSR
-> read/writes.
+On Wed, Aug 25, 2021 at 01:32:37AM +0800, DENG Qingfang wrote:
+> On Tue, Aug 24, 2021 at 07:57:42PM +0300, Vladimir Oltean wrote:
+> > I understand that this is how you noticed the issue, but please remember
+> > that one can always compile a kernel with CONFIG_VLAN_8021Q=n. So the
+> > issue predates my patch by much longer. You might reconsider the Fixes:
+> > tag in light of this, maybe the patch needs to be sent to stable.
+>
+> Okay. So the Fixes tag should be 6087175b7991, which initially adds the
+> software fallback support for mt7530.
 
-Is that really the *complete* set of reasons that a #VE can be triggered
-from the kernel?
+Ok. Did the old code not need VLAN 0 for VLAN-unaware ports, or are you
+saying that since the VLAN table lookup was bypassed completely in the
+old code, 'no VLAN 0' was an inconsequential error?
 
-Just off the top of my head, I could imagine the kernel doing a
-copy_{to,from}_user() which touched user-mapped MMIO causing a #VE.
+I think it's the latter. Just wanted to make sure. So that means, either
+this Fixes: tag or the other, the patch still belongs to net-next. From
+my side you shouldn't need to resend.
+
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+
+> > > +static int
+> > > +mt7530_setup_vlan0(struct mt7530_priv *priv)
+> > > +{
+> > > +	u32 val;
+> > > +
+> > > +	/* Validate the entry with independent learning, keep the original
+> > > +	 * ingress tag attribute.
+> > > +	 */
+> > > +	val = IVL_MAC | EG_CON | PORT_MEM(MT7530_ALL_MEMBERS) | FID(FID_BRIDGED) |
+> >
+> > FID_BRIDGED?
+>
+> What's wrong with that?
+
+Nothing, I had a senior moment and I forgot how mt7530 sets up things.
