@@ -2,285 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AD33F5C57
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A833B3F5C5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhHXKsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235905AbhHXKst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:48:49 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4046EC061757;
-        Tue, 24 Aug 2021 03:48:05 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id l18so29274772lji.12;
-        Tue, 24 Aug 2021 03:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=sV9A6fCxSXqAn2G6YZJUCvQ/NbClowiNlaU/ZXl6cdw=;
-        b=cwqn3tTO58j2oxSneW3/nHs0QUqI2GdSo7nF+zt8shu76HADZ5838L09lrM8voeuvs
-         +JcoIlKU3DX3S1LUDxfzb9RoB98pNuMzAia+FCEwCIHAooLOx1ee8CreAbW27McSDMCC
-         9ElMHb5+dLFU5HSlhw+3VWofoNpe8OWqT4WhiaUV760O6f0SSwrf4vMBaXktvs53bdyr
-         CHufYmbtg0yZ4W0FlJK0R7OGQm828Paacg/5s1Efh7qt1UXt/GaKBltnxcKZGzxMp3gf
-         cVQ/ZSWfY0S6wymNAT7PW/8lwj8WKLrbvypuR+88zO4OctSHEfWLKVbxsTwbFuyEyPQP
-         08fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sV9A6fCxSXqAn2G6YZJUCvQ/NbClowiNlaU/ZXl6cdw=;
-        b=r9ALSmgZ+ar/Fcm1SLGVqZom0TU8Vv2nJDYzbfJE7d/rbyljMIfdzFZopXdXBN2yre
-         z9Q//2/prASQWSG9m6QMHbHopza7zxQIRfO07MF0x6wwwL6hu6AOyhae/E6/06HB985/
-         IhOICY0KGXmUK8ynYkecTLDFrddmC5Mr6z40/AtKd0hNOv4BR87irEo6an8KrRoxNbTq
-         FPCEiiRCndn6uV2HQGS5TzQ1sxCAHKWi84/vmuFXNVGp7znUUSUUCTnFjit2j8YQMz99
-         hob48SI7PuimDKnhVC9L5pyPxqEy4Jg8ikA9psPS2sXXbtfKHtiHpvXjUKjONHMHsdsV
-         U1pg==
-X-Gm-Message-State: AOAM533ZEJk5NjP0n/ii3XQ4b/ACDBkJXCRH0lpWdl38bsWDDSwYRlTG
-        qpX0YDqUkdG1oGQTaUUUU/c=
-X-Google-Smtp-Source: ABdhPJy/YdVmMQWjBZLo6tvpjTgGsqyZDG4dnUOk6nmXTg7B/o3mQubKaw0pAlHlrD7CVi5HQJDpDg==
-X-Received: by 2002:a2e:bd06:: with SMTP id n6mr26558332ljq.52.1629802083468;
-        Tue, 24 Aug 2021 03:48:03 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id y10sm1881615lfh.40.2021.08.24.03.48.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 03:48:02 -0700 (PDT)
-Subject: Re: [syzbot] KASAN: use-after-free Write in null_skcipher_crypt
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     syzbot <syzbot+d2c5e6980bfc84513464@syzkaller.appspotmail.com>,
-        calvin.johnson@oss.nxp.com, davem@davemloft.net,
-        grant.likely@arm.com, herbert@gondor.apana.org.au,
-        ioana.ciornei@nxp.com, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, dkadashev@gmail.com,
-        viro@zeniv.linux.org.uk
-References: <000000000000c910c305c9c4962e@google.com>
- <7f4eed54-4e40-2e85-eaaa-95b1864c6649@gmail.com>
-Message-ID: <2e7d8a38-da4b-a79b-2482-f5d05a4dbbfd@gmail.com>
-Date:   Tue, 24 Aug 2021 13:48:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235905AbhHXKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:49:16 -0400
+Received: from mga12.intel.com ([192.55.52.136]:5085 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236416AbhHXKtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:49:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="196860693"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="196860693"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 03:48:30 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="526582378"
+Received: from yizhanli-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.172.236])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 03:48:21 -0700
+Date:   Tue, 24 Aug 2021 18:48:21 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210824104821.gwbxdvu43lhviuwl@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
 MIME-Version: 1.0
-In-Reply-To: <7f4eed54-4e40-2e85-eaaa-95b1864c6649@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824005248.200037-1-seanjc@google.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/21 10:04 PM, Pavel Skripkin wrote:
-> On 8/17/21 8:24 PM, syzbot wrote:
->> Hello,
->> 
->> syzbot found the following issue on:
->> 
->> HEAD commit:    a9a507013a6f Merge tag 'ieee802154-for-davem-2021-08-12' o..
->> git tree:       net
->> console output: https://syzkaller.appspot.com/x/log.txt?x=16647ca1300000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=343fd21f6f4da2d6
->> dashboard link: https://syzkaller.appspot.com/bug?extid=d2c5e6980bfc84513464
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14989fe9300000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b1a779300000
->> 
->> The issue was bisected to:
->> 
->> commit 8d2cb3ad31181f050af4d46d6854cf332d1207a9
->> Author: Calvin Johnson <calvin.johnson@oss.nxp.com>
->> Date:   Fri Jun 11 10:53:55 2021 +0000
->> 
->>      of: mdio: Refactor of_mdiobus_register_phy()
->> 
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106b97d6300000
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=126b97d6300000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=146b97d6300000
->> 
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+d2c5e6980bfc84513464@syzkaller.appspotmail.com
->> Fixes: 8d2cb3ad3118 ("of: mdio: Refactor of_mdiobus_register_phy()")
->> 
->> ==================================================================
->> BUG: KASAN: use-after-free in memcpy include/linux/fortify-string.h:191 [inline]
->> BUG: KASAN: use-after-free in null_skcipher_crypt+0xa8/0x120 crypto/crypto_null.c:85
->> Write of size 4096 at addr ffff88801c040000 by task syz-executor554/8455
->> 
->> CPU: 0 PID: 8455 Comm: syz-executor554 Not tainted 5.14.0-rc4-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:88 [inline]
->>   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
->>   print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
->>   __kasan_report mm/kasan/report.c:419 [inline]
->>   kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
->>   check_region_inline mm/kasan/generic.c:183 [inline]
->>   kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
->>   memcpy+0x39/0x60 mm/kasan/shadow.c:66
->>   memcpy include/linux/fortify-string.h:191 [inline]
->>   null_skcipher_crypt+0xa8/0x120 crypto/crypto_null.c:85
->>   crypto_skcipher_encrypt+0xaa/0xf0 crypto/skcipher.c:630
->>   crypto_authenc_encrypt+0x3b4/0x510 crypto/authenc.c:222
->>   crypto_aead_encrypt+0xaa/0xf0 crypto/aead.c:94
->>   esp6_output_tail+0x777/0x1a90 net/ipv6/esp6.c:659
->>   esp6_output+0x4af/0x8a0 net/ipv6/esp6.c:735
->>   xfrm_output_one net/xfrm/xfrm_output.c:552 [inline]
->>   xfrm_output_resume+0x2997/0x5ae0 net/xfrm/xfrm_output.c:587
->>   xfrm_output2 net/xfrm/xfrm_output.c:614 [inline]
->>   xfrm_output+0x2e7/0xff0 net/xfrm/xfrm_output.c:744
->>   __xfrm6_output+0x4c3/0x1260 net/ipv6/xfrm6_output.c:87
->>   NF_HOOK_COND include/linux/netfilter.h:296 [inline]
->>   xfrm6_output+0x117/0x550 net/ipv6/xfrm6_output.c:92
->>   dst_output include/net/dst.h:448 [inline]
->>   ip6_local_out+0xaf/0x1a0 net/ipv6/output_core.c:161
->>   ip6_send_skb+0xb7/0x340 net/ipv6/ip6_output.c:1935
->>   ip6_push_pending_frames+0xdd/0x100 net/ipv6/ip6_output.c:1955
->>   rawv6_push_pending_frames net/ipv6/raw.c:613 [inline]
->>   rawv6_sendmsg+0x2a87/0x3990 net/ipv6/raw.c:956
->>   inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
->>   sock_sendmsg_nosec net/socket.c:703 [inline]
->>   sock_sendmsg+0xcf/0x120 net/socket.c:723
->>   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2392
->>   ___sys_sendmsg+0xf3/0x170 net/socket.c:2446
->>   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2475
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x43f4b9
->> Code: 1d 01 00 85 c0 b8 00 00 00 00 48 0f 44 c3 5b c3 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
->> RSP: 002b:00007ffc1e9cfff8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
->> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f4b9
->> RDX: 0000000000000000 RSI: 0000000020000500 RDI: 0000000000000004
->> RBP: 0000000000000005 R08: 6c616b7a79732f2e R09: 6c616b7a79732f2e
->> R10: 00000000000000e8 R11: 0000000000000246 R12: 00000000004034b0
->> R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
->> 
->> Allocated by task 1:
->>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->>   kasan_set_track mm/kasan/common.c:46 [inline]
->>   set_alloc_info mm/kasan/common.c:434 [inline]
->>   __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:467
->>   kasan_slab_alloc include/linux/kasan.h:254 [inline]
->>   slab_post_alloc_hook mm/slab.h:519 [inline]
->>   slab_alloc_node mm/slub.c:2956 [inline]
->>   slab_alloc mm/slub.c:2964 [inline]
->>   kmem_cache_alloc+0x285/0x4a0 mm/slub.c:2969
->>   getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
->>   getname_flags fs/namei.c:2747 [inline]
->>   user_path_at_empty+0xa1/0x100 fs/namei.c:2747
->>   user_path_at include/linux/namei.h:57 [inline]
->>   vfs_statx+0x142/0x390 fs/stat.c:203
->>   vfs_fstatat fs/stat.c:225 [inline]
->>   vfs_lstat include/linux/fs.h:3386 [inline]
->>   __do_sys_newlstat+0x91/0x110 fs/stat.c:380
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> 
->> Freed by task 1:
->>   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->>   kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->>   kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
->>   ____kasan_slab_free mm/kasan/common.c:366 [inline]
->>   ____kasan_slab_free mm/kasan/common.c:328 [inline]
->>   __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
->>   kasan_slab_free include/linux/kasan.h:230 [inline]
->>   slab_free_hook mm/slub.c:1625 [inline]
->>   slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1650
->>   slab_free mm/slub.c:3210 [inline]
->>   kmem_cache_free+0x8a/0x5b0 mm/slub.c:3226
->>   putname+0xe1/0x120 fs/namei.c:259
-> 
-> (*)
-> 
->>   filename_lookup+0x3df/0x5b0 fs/namei.c:2477
->>   user_path_at include/linux/namei.h:57 [inline]
->>   vfs_statx+0x142/0x390 fs/stat.c:203
->>   vfs_fstatat fs/stat.c:225 [inline]
->>   vfs_lstat include/linux/fs.h:3386 [inline]
->>   __do_sys_newlstat+0x91/0x110 fs/stat.c:380
->>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> 
-> 
-> +CC Dmitry
-> 
-> 
-> 
-> I think, it was caused by 9d96ea38873f ("namei: change
-> filename_parentat() calling conventions").
-> 
-> Now what looks strange to me
-> 
-> Upstream version:
-> 
-> static struct filename *filename_parentat(...)
-> {
-> ...
-> 	retval = path_parentat(&nd, flags | LOOKUP_RCU, parent);
-> ...
-> 	if (likely(!retval)) {
-> 		*last = nd.last;
-> 		*type = nd.last_type;
-> 		audit_inode(name, parent->dentry, AUDIT_INODE_PARENT);
-> 	} else {
-> 		putname(name);  <-- putting name if retval if not-zero
-> 		name = ERR_PTR(retval);
-> 	}
-> 
-> }
-> 
-> 
-> Linux-next version:
-> 
-> static int __filename_parentat(...)
-> {
-> 
-> 	retval = path_parentat(&nd, flags | LOOKUP_RCU, parent);
-> ...
-> 	if (likely(!retval)) {
-> 		*last = nd.last;
-> 		*type = nd.last_type;
-> 		audit_inode(name, parent->dentry, AUDIT_INODE_PARENT);
-> 	}
-> 	restore_nameidata();
-> 	return retval;
-> }
-> 
-> static int filename_parentat(...)
-> {
-> 	int retval = __filename_parentat(...);
-> 
-> 	putname(name);   <-- always putting the name
-> 	return retval;
-> }
-> 
-> And bug report says, that name was freed by this put (*)
-> 
-> I guess, we should do smth like:
-> 
-> if (retval)
-> 	putname(name);
-> 
-> I didn't dig into details, because Dmitry's patch series was really
-> huge, so it's just for thoughts ;)
-> 
-> 
-> 
+On Mon, Aug 23, 2021 at 05:52:48PM -0700, Sean Christopherson wrote:
 
-+CC Alexander,
+Thanks a lot for sharing these ideas. Lots of questions are inlined below. :)
 
-since people start getting this error while testing patches on top of 
-linux-next
+> The goal of this RFC is to try and align KVM, mm, and anyone else with skin in the
+> game, on an acceptable direction for supporting guest private memory, e.g. for
+> Intel's TDX.  The TDX architectural effectively allows KVM guests to crash the
+> host if guest private memory is accessible to host userspace, and thus does not
+
+What about incorrect/malicious accesses from host kernel? Should the direct mapping
+also be removed for guest private memory?
+
+> play nice with KVM's existing approach of pulling the pfn and mapping level from
+> the host page tables.
+> 
+> This is by no means a complete patch; it's a rough sketch of the KVM changes that
+> would be needed.  The kernel side of things is completely omitted from the patch;
+> the design concept is below.
+> 
+> There's also fair bit of hand waving on implementation details that shouldn't
+> fundamentally change the overall ABI, e.g. how the backing store will ensure
+> there are no mappings when "converting" to guest private.
+> 
+> Background
+> ==========
+> 
+> This is a loose continuation of Kirill's RFC[*] to support TDX guest private
+> memory by tracking guest memory at the 'struct page' level.  This proposal is the
+> result of several offline discussions that were prompted by Andy Lutomirksi's
+> concerns with tracking via 'struct page':
+> 
+>   1. The kernel wouldn't easily be able to enforce a 1:1 page:guest association,
+>      let alone a 1:1 pfn:gfn mapping.
+
+May I ask why? Doesn't FOLL_GUEST in Kirill's earlier patch work? Or just
+because traversing the host PT to get a PFN(for a PageGuest(page)) is too
+heavy?
+
+> 
+>   2. Does not work for memory that isn't backed by 'struct page', e.g. if devices
+>      gain support for exposing encrypted memory regions to guests.
+
+Do you mean that a page not backed by 'struct page' might be mapped to other
+user space? I thought the VM_GUEST flags for the VMA could prevent that(though
+I may possiblely be wrong). Could you explain more? Thanks!
+
+> 
+>   3. Does not help march toward page migration or swap support (though it doesn't
+>      hurt either).
+> 
+> [*] https://lkml.kernel.org/r/20210416154106.23721-1-kirill.shutemov@linux.intel.com
+> 
+> Concept
+> =======
+> 
+> Guest private memory must be backed by an "enlightened" file descriptor, where
+> "enlightened" means the implementing subsystem supports a one-way "conversion" to
+> guest private memory and provides bi-directional hooks to communicate directly
+> with KVM.  Creating a private fd doesn't necessarily have to be a conversion, e.g. it
+> could also be a flag provided at file creation, a property of the file system itself,
+> etc...
+> 
+> Before a private fd can be mapped into a KVM guest, it must be paired 1:1 with a
+> KVM guest, i.e. multiple guests cannot share a fd.  At pairing, KVM and the fd's
+> subsystem exchange a set of function pointers to allow KVM to call into the subsystem,
+> e.g. to translate gfn->pfn, and vice versa to allow the subsystem to call into KVM,
+> e.g. to invalidate/move/swap a gfn range.
+
+So the gfn->pfn translation is done by the fd's subsystem? Again, could you
+please elaborate how?
+
+And each private memory region would need a seperate group of callbacks? 
+
+> 
+> Mapping a private fd in host userspace is disallowed, i.e. there is never a host
+> virtual address associated with the fd and thus no userspace page tables pointing
+> at the private memory.
+> 
+> Pinning _from KVM_ is not required.  If the backing store supports page migration
+> and/or swap, it can query the KVM-provided function pointers to see if KVM supports
+> the operation.  If the operation is not supported (this will be the case initially
+> in KVM), the backing store is responsible for ensuring correct functionality.
+> 
+> Unmapping guest memory, e.g. to prevent use-after-free, is handled via a callback
+> from the backing store to KVM.  KVM will employ techniques similar to those it uses
+> for mmu_notifiers to ensure the guest cannot access freed memory.
+> 
+> A key point is that, unlike similar failed proposals of the past, e.g. /dev/mktme,
+> existing backing stores can be englightened, a from-scratch implementations is not
+> required (though would obviously be possible as well).
+> 
+> One idea for extending existing backing stores, e.g. HugeTLBFS and tmpfs, is
+> to add F_SEAL_GUEST, which would convert the entire file to guest private memory
+> and either fail if the current size is non-zero or truncate the size to zero.
+
+Have you discussed memfd_secret(if host direct mapping is also to be removed)? 
+
+And how does this F_SEAL_GUEST work?
+
+> 
+> KVM
+> ===
+> 
+> Guest private memory is managed as a new address space, i.e. as a different set of
+> memslots, similar to how KVM has a separate memory view for when a guest vCPU is
+> executing in virtual SMM.  SMM is mutually exclusive with guest private memory.
+> 
+> The fd (the actual integer) is provided to KVM when a private memslot is added
+> via KVM_SET_USER_MEMORY_REGION.  This is when the aforementioned pairing occurs.
+
+My understanding of KVM_SET_USER_MEMORY_REGION is that, this ioctl is to
+facilitate the binding of HVA and GPA ranges. But if there's no HVAs for
+a private region at all, why do we need a memslot for it? Besides to keep
+track of the private GFN ranges, and provide the callbacks, is there any
+other reason?
+
+Another question is: why do we need a whole new address space, instead of
+one address space accommodating memslot types?
+
+> 
+> By default, KVM memslot lookups will be "shared", only specific touchpoints will
+> be modified to work with private memslots, e.g. guest page faults.  All host
+> accesses to guest memory, e.g. for emulation, will thus look for shared memory
+> and naturally fail without attempting copy_to/from_user() if the guest attempts
+
+Becasue gfn_to_hva() will fail first?
+
+> to coerce KVM into access private memory.  Note, avoiding copy_to/from_user() and
+> friends isn't strictly necessary, it's more of a happy side effect.
+> 
+> A new KVM exit reason, e.g. KVM_EXIT_MEMORY_ERROR, and data struct in vcpu->run
+> is added to propagate illegal accesses (see above) and implicit conversions
+
+Sorry, illegal accesses from VM?
+
+Do you actually mean a KVM page fault caused by private access from VM, which
+implicitly notifies KVM to mark it as private(e.g. by bouncing to Qemu, which
+then creates a private memory region and ioctls into KVM)?
+
+If the answer is yes, how about naming the exit reason as KVM_EXIT_MEMORY_PRIVATE?
+Meanwhile, is Qemu also supposed to invoke some system call into host kernel
+before ioctls into KVM? I'm still confused where the kernel callbacks like
+the gfn_to_pfn() come from(and how they function)... :)
+
+> to userspace (see below).  Note, the new exit reason + struct can also be to
+> support several other feature requests in KVM[1][2].
+> 
+> The guest may explicitly or implicity request KVM to map a shared/private variant
+> of a GFN.  An explicit map request is done via hypercall (out of scope for this
+> proposal as both TDX and SNP ABIs define such a hypercall).  An implicit map request
+> is triggered simply by the guest accessing the shared/private variant, which KVM
+> sees as a guest page fault (EPT violation or #NPF).  Ideally only explicit requests
+> would be supported, but neither TDX nor SNP require this in their guest<->host ABIs.
+
+Well, I am wondering, should we assume all guest pages as shared or private by
+default? I mean, if all guest pages are private when the VM is created, maybe
+the private memslots can be initialized in VM creation time, and be deleted/splited
+later(e.g. in response to guest sharing  hypercalls)?
+
+It may simplify the logic, but may also restrict the VM type(e.g. to be TD guest).
+
+> 
+> For implicit or explicit mappings, if a memslot is found that fully covers the
+> requested range (which is a single gfn for implicit mappings), KVM's normal guest
+> page fault handling works with minimal modification.
+> 
+> If a memslot is not found, for explicit mappings, KVM will exit to userspace with
+> the aforementioned dedicated exit reason.  For implict _private_ mappings, KVM will
+> also immediately exit with the same dedicated reason.  For implicit shared mappings,
+> an additional check is required to differentiate between emulated MMIO and an
+> implicit private->shared conversion[*].  If there is an existing private memslot
+> for the gfn, KVM will exit to userspace, otherwise KVM will treat the access as an
+> emulated MMIO access and handle the page fault accordingly.
+> 
+> [1] https://lkml.kernel.org/r/YKxJLcg/WomPE422@google.com
+> [2] https://lkml.kernel.org/r/20200617230052.GB27751@linux.intel.com
+> 
+> Punching Holes
+> ==============
+> 
+> The expected userspace memory model is that mapping requests will be handled as
+> conversions, e.g. on a shared mapping request, first unmap the private gfn range,
+> then map the shared gfn range.  A new KVM ioctl() will likely be needed to allow
+> userspace to punch a hole in a memslot, as expressing such an operation isn't
+> possible with KVM_SET_USER_MEMORY_REGION.  While userspace could delete the
+> memslot, then recreate three new memslots, doing so would be destructive to guest
+> data as unmapping guest private memory (from the EPT/NPT tables) is destructive
+> to the data for both TDX and SEV-SNP guests.
+
+May I ask why? Thanks!
+
+> 
+> Pros (vs. struct page)
+> ======================
+> 
+> Easy to enforce 1:1 fd:guest pairing, as well as 1:1 gfn:pfn mapping.
+> 
+> Userspace page tables are not populated, e.g. reduced memory footprint, lower
+> probability of making private memory accessible to userspace.
+> 
+> Provides line of sight to supporting page migration and swap.
+> 
+> Provides line of sight to mapping MMIO pages into guest private memory.
+> 
+> Cons (vs. struct page)
+> ======================
+> 
+> Significantly more churn in KVM, e.g. to plumb 'private' through where needed,
+> support memslot hole punching, etc...
+> 
+> KVM's MMU gets another method of retrieving host pfn and page size.
+
+And the method is provided by host kernel? How does this method work?
+
+[...]
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index a272ccbddfa1..771080235b2d 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2896,6 +2896,9 @@ int kvm_mmu_max_mapping_level(struct kvm *kvm,
+>  	if (max_level == PG_LEVEL_4K)
+>  		return PG_LEVEL_4K;
+>  
+> +	if (memslot_is_private(slot))
+> +		return slot->private_ops->pfn_mapping_level(...);
+> +
+
+Oh, any suggestion how host kernel decides the mapping level here?
+
+>  	host_level = host_pfn_mapping_level(kvm, gfn, pfn, slot);
+>  	return min(host_level, max_level);
+>  }
+> @@ -3835,9 +3838,11 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  
+>  static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault, int *r)
+>  {
+> -	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, fault->gfn);
+> +	struct kvm_memory_slot *slot;
+>  	bool async;
+>  
+> +	slot = __kvm_vcpu_gfn_to_memslot(vcpu, fault->gfn, fault->private);
+> +
+>  	/*
+>  	 * Retry the page fault if the gfn hit a memslot that is being deleted
+>  	 * or moved.  This ensures any existing SPTEs for the old memslot will
+> @@ -3846,8 +3851,19 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+>  	if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
+>  		goto out_retry;
+>  
+> +	/*
+> +	 * Exit to userspace to map the requested private/shared memory region
+> +	 * if there is no memslot and (a) the access is private or (b) there is
+> +	 * an existing private memslot.  Emulated MMIO must be accessed through
+> +	 * shared GPAs, thus a memslot miss on a private GPA is always handled
+> +	 * as an implicit conversion "request".
+> +	 */
+
+For (b), do you mean this fault is for a GFN which marked as private, but now
+converted to a shared? If true, could we just disallow it if no explict sharing
+hypercall is triggered?
+
+> +	if (!slot &&
+> +	    (fault->private || __kvm_vcpu_gfn_to_memslot(vcpu, fault->gfn, true)))
+> +		goto out_convert;
+> +
+>  	if (!kvm_is_visible_memslot(slot)) {
+> -		/* Don't expose private memslots to L2. */
+> +		/* Don't expose KVM's internal memslots to L2. */
+>  		if (is_guest_mode(vcpu)) {
+>  			fault->pfn = KVM_PFN_NOSLOT;
+>  			fault->map_writable = false;
+> @@ -3890,6 +3906,12 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+>  out_retry:
+>  	*r = RET_PF_RETRY;
+>  	return true;
+> +
+> +out_convert:
+> +	vcpu->run->exit_reason = KVM_EXIT_MAP_MEMORY;
+> +	/* TODO: fill vcpu->run with more info. */
+> +	*r = 0;
+> +	return true;
+>  }
 
 
+B.R.
+Yu
 
-
-With regards,
-Pavel Skripkin
