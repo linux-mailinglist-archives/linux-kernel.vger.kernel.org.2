@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2E03F5EE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299153F5EE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbhHXNZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:25:21 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:30738 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhHXNZU (ORCPT
+        id S237511AbhHXNZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:25:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59402 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237497AbhHXNZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:25:20 -0400
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 17ODOJNu031939;
-        Tue, 24 Aug 2021 22:24:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 17ODOJNu031939
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629811459;
-        bh=grKpIDVVa0DXNbUFm+HWcdf7lg+ce89Ce2iOZxfIe0o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q4f6jMRyugZkTS9VD7Ln1WK43K6EqEnA92mzveTQWy2JIlxC3iaXysWRsURBH+PgT
-         ihCNc3eSDfMcOFMgV9ISd42xLBCJqh9G5oCDqUgqvLnCDaS7KX4u2DV/F/upihgMA5
-         Qs0AL9LKLQ3UOul7NxwcteG+dBd4NkI/m/+KzwSj7h4TDZFf8Bma3X/AHEiVR9Syna
-         U8OAsP/aNPnS300kSpQYm1vhml2hkofAD6GQUhT1BgX7m/DbgeoCXW0c1SmNa/L998
-         jcl9W78gC+8EVqg81D9InALwb1nqIqjjxLSldQuG2ScdQbX4YyfTSeHHOGO1ooQDbS
-         6bSS1sOwaR7xQ==
-X-Nifty-SrcIP: [209.85.214.173]
-Received: by mail-pl1-f173.google.com with SMTP id w6so12223457plg.9;
-        Tue, 24 Aug 2021 06:24:19 -0700 (PDT)
-X-Gm-Message-State: AOAM530y3In98bGxK3HcOBDzn/3YRodR2smbxt9BJOtmO5a4JyLWOy3X
-        8u6aLSh1ccDVhpGnN9nDmw5ik0A2OQuKJ5qmvJM=
-X-Google-Smtp-Source: ABdhPJwoBOr8gzIw4uOJ60nLKBBLgv0JYwiUBwoPXLEvhi/Ks/X6dLtDh5lcqznBXWybHcdzFbifZj2KFZcpjRLt6MU=
-X-Received: by 2002:a17:902:a5c5:b029:12c:a867:a839 with SMTP id
- t5-20020a170902a5c5b029012ca867a839mr33424460plq.71.1629811458815; Tue, 24
- Aug 2021 06:24:18 -0700 (PDT)
+        Tue, 24 Aug 2021 09:25:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629811487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=UJrfd86tR0Yk7ZIVAdwqtRJBEFVA/ho7C/JF2A2SL3I=;
+        b=IMddWUQJv+GHo0K+1WGugOwVjxGHbpn6AvZ4hPEAXJcxk47G/BMyzZ1RXGYRouuI840K6m
+        dejIPLkEKu7oZvLA4z28SAMDLC1i9uL+1pI5ndLaOwpQFaSmTzOYPGhkOvi8dN93AXa/Lk
+        94+MUdO+O5TaZVa3CqN4q0N8LmQWF/A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-6xbBUESKNQCq4Y_eoBj7LA-1; Tue, 24 Aug 2021 09:24:44 -0400
+X-MC-Unique: 6xbBUESKNQCq4Y_eoBj7LA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A0DD801A92;
+        Tue, 24 Aug 2021 13:24:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C0C583AA2;
+        Tue, 24 Aug 2021 13:24:35 +0000 (UTC)
+Subject: [PATCH 0/6] netfs, afs, ceph: Support folios, at least partially
+From:   David Howells <dhowells@redhat.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Marc Dionne <marc.dionne@auristor.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-afs@lists.infradead.org, Ilya Dryomov <idryomov@gmail.com>,
+        Jeffrey Altman <jaltman@auristor.com>,
+        linux-cachefs@redhat.com, ceph-devel@vger.kernel.org,
+        Jeff Layton <jlayton@redhat.com>, dhowells@redhat.com,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Tue, 24 Aug 2021 14:24:34 +0100
+Message-ID: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <20210822192205.43210-1-arielmarcovitch@gmail.com>
-In-Reply-To: <20210822192205.43210-1-arielmarcovitch@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 24 Aug 2021 22:23:41 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ6G11a-4_UZUtorBmmU6RzKeEkNjEzAWTpVv+LZR_=7A@mail.gmail.com>
-Message-ID: <CAK7LNAQ6G11a-4_UZUtorBmmU6RzKeEkNjEzAWTpVv+LZR_=7A@mail.gmail.com>
-Subject: Re: [PATCH 0/3] checkkconfigsymbols.py: Fix various bugs
-To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Valentin Rothberg <valentinrothberg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 4:22 AM Ariel Marcovitch
-<arielmarcovitch@gmail.com> wrote:
->
-> Hi!
->
-> This series fixes some issues in the checkkconfigsymbols.py script.
->
-> The first patch fixes a bug in the --ignore option that makes the
-> script check only the files matching the pattern instead of ignoring
-> them.
->
-> The second patch fixes a parsing error in the Kconfig files parser
-> that makes it ignore 'if' statements after 'help' sections.
->
-> The third patch prevents the user from using 'HEAD' refs in the
->  --commit option, because it doesn't really work.
 
-Honestly, I didn't even know this script.
+Here's a set of patches to convert netfs and afs to use folios and to
+provide sufficient conversion for ceph that it can continue to use the
+netfs library.  Jeff Layton is working on fully converting ceph.
 
-I added Valentin Rothberg, the main contributor
-to this script.
+This based on top of part of Matthew Wilcox's folio changes[1]
+
+David
+
+Link: https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/for-next [1]
+Link: https://lore.kernel.org/r/2408234.1628687271@warthog.procyon.org.uk/ # v0
+---
+David Howells (6):
+      afs: Fix afs_launder_page() to set correct start file position
+      folio: Add a function to change the private data attached to a folio
+      folio: Add a function to get the host inode for a folio
+      afs: Sort out symlink reading
+      netfs, afs, ceph: Use folios
+      afs: Use folios in directory handling
 
 
+ fs/afs/dir.c               | 229 +++++++++++--------------
+ fs/afs/dir_edit.c          | 154 ++++++++---------
+ fs/afs/file.c              |  82 +++++----
+ fs/afs/inode.c             |   6 +-
+ fs/afs/internal.h          |  49 +++---
+ fs/afs/write.c             | 333 ++++++++++++++++++-------------------
+ fs/ceph/addr.c             |  80 ++++-----
+ fs/netfs/read_helper.c     | 165 +++++++++---------
+ include/linux/netfs.h      |  12 +-
+ include/linux/pagemap.h    |  33 ++++
+ include/trace/events/afs.h |  21 +--
+ mm/page-writeback.c        |   2 +-
+ 12 files changed, 584 insertions(+), 582 deletions(-)
 
 
-> Thanks!
->
-> -Ariel
->
-> Ariel Marcovitch (3):
->   checkkconfigsymbols.py: Fix the '--ignore' option
->   checkkconfigsymbols.py: Fix Kconfig parsing to find 'if' lines
->   checkkconfigsymbols.py: Forbid passing 'HEAD' to --commit
->
->  scripts/checkkconfigsymbols.py | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
->
-> base-commit: 36a21d51725af2ce0700c6ebcb6b9594aac658a6
-> --
-> 2.25.1
->
-
-
--- 
-Best Regards
-Masahiro Yamada
