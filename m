@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121923F5FAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BA33F5FAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237744AbhHXOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:01:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:36216 "EHLO foss.arm.com"
+        id S237769AbhHXOBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:01:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:36230 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237686AbhHXOBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:01:04 -0400
+        id S237702AbhHXOBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:01:06 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC01A13A1;
-        Tue, 24 Aug 2021 07:00:20 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 640EA1435;
+        Tue, 24 Aug 2021 07:00:22 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32E633F766;
-        Tue, 24 Aug 2021 07:00:19 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2ECB3F766;
+        Tue, 24 Aug 2021 07:00:20 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
         etienne.carriere@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v4 05/12] firmware: arm_scmi: Use new trace event scmi_xfer_response_wait
-Date:   Tue, 24 Aug 2021 14:59:34 +0100
-Message-Id: <20210824135941.38656-6-cristian.marussi@arm.com>
+Subject: [PATCH v4 06/12] firmware: arm_scmi: Add is_transport_atomic() handle method
+Date:   Tue, 24 Aug 2021 14:59:35 +0100
+Message-Id: <20210824135941.38656-7-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210824135941.38656-1-cristian.marussi@arm.com>
 References: <20210824135941.38656-1-cristian.marussi@arm.com>
@@ -33,29 +33,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new trace event to mark start of waiting for response section.
+Add a method to check if the underlying transport configured for an SCMI
+instance is configured to support atomic transaction of SCMI commands.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/driver.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/firmware/arm_scmi/driver.c | 16 ++++++++++++++++
+ include/linux/scmi_protocol.h      |  8 ++++++++
+ 2 files changed, 24 insertions(+)
 
 diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index 2ca1602afd80..1320a00a6339 100644
+index 1320a00a6339..852baac0e614 100644
 --- a/drivers/firmware/arm_scmi/driver.c
 +++ b/drivers/firmware/arm_scmi/driver.c
-@@ -786,6 +786,11 @@ static int scmi_wait_for_message_response(struct scmi_chan_info *cinfo,
- 	struct device *dev = info->dev;
- 	int ret = 0, timeout_ms = info->desc->max_rx_timeout_ms;
+@@ -1416,6 +1416,21 @@ static void scmi_devm_protocol_put(struct scmi_device *sdev, u8 protocol_id)
+ 	WARN_ON(ret);
+ }
  
-+	trace_scmi_xfer_response_wait(xfer->transfer_id, xfer->hdr.id,
-+				      xfer->hdr.protocol_id, xfer->hdr.seq,
-+				      xfer->hdr.poll_completion,
-+				      info->desc->atomic_capable);
++/**
++ * scmi_is_transport_atomic  - Method to check if underlying transport for an
++ * SCMI instance is configured as atomic.
++ *
++ * @handle: A reference to the SCMI platform instance.
++ *
++ * Return: True if transport is configured as atomic
++ */
++static bool scmi_is_transport_atomic(const struct scmi_handle *handle)
++{
++	struct scmi_info *info = handle_to_scmi_info(handle);
 +
- 	if (!xfer->hdr.poll_completion) {
- 		if (!info->desc->atomic_capable) {
- 			if (!wait_for_completion_timeout(&xfer->done,
++	return info->desc->atomic_capable;
++}
++
+ static inline
+ struct scmi_handle *scmi_handle_get_from_info_unlocked(struct scmi_info *info)
+ {
+@@ -1948,6 +1963,7 @@ static int scmi_probe(struct platform_device *pdev)
+ 	handle->version = &info->version;
+ 	handle->devm_protocol_get = scmi_devm_protocol_get;
+ 	handle->devm_protocol_put = scmi_devm_protocol_put;
++	handle->is_transport_atomic = scmi_is_transport_atomic;
+ 
+ 	if (desc->ops->link_supplier) {
+ 		ret = desc->ops->link_supplier(dev);
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 80e781c51ddc..9f895cb81818 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -612,6 +612,13 @@ struct scmi_notify_ops {
+  * @devm_protocol_get: devres managed method to acquire a protocol and get specific
+  *		       operations and a dedicated protocol handler
+  * @devm_protocol_put: devres managed method to release a protocol
++ * @is_transport_atomic: method to check if the underlying transport for this
++ *			 instance handle is configured to support atomic
++ *			 transactions for commands.
++ *			 Some users of the SCMI stack in the upper layers could
++ *			 be interested to know if they can assume SCMI
++ *			 command transactions associated to this handle will
++ *			 never sleep and act accordingly.
+  * @notify_ops: pointer to set of notifications related operations
+  */
+ struct scmi_handle {
+@@ -622,6 +629,7 @@ struct scmi_handle {
+ 		(*devm_protocol_get)(struct scmi_device *sdev, u8 proto,
+ 				     struct scmi_protocol_handle **ph);
+ 	void (*devm_protocol_put)(struct scmi_device *sdev, u8 proto);
++	bool (*is_transport_atomic)(const struct scmi_handle *handle);
+ 
+ 	const struct scmi_notify_ops *notify_ops;
+ };
 -- 
 2.17.1
 
