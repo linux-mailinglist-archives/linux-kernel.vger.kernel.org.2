@@ -2,67 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B783F5813
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEAE3F580A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhHXGT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S230429AbhHXGRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhHXGTZ (ORCPT
+        with ESMTP id S230130AbhHXGRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:19:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52F5C061575;
-        Mon, 23 Aug 2021 23:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qF6BRVtzKVgghor1P9ZGHoGt4E7dX5k+ejpk+dyk/2g=; b=SBO38hzeQXv6m2c52dS8JXGVs0
-        CxCHfl7Uyo197fvhgSiBCfNAb+8ml7tpeDWepn8if7abJN3Fu8BBpAjED2K5ZcSwhPThhtP3LORGe
-        wAXFWpFxhNpKy84ntO/swQ22soAzcrKeg3lku4px5saf8HWWKrYgkVA8TR20l1GwoFVz6FnXQ1FPY
-        H4ErhpE+DE6BtAqmTzXMJKP/znR2ostjLz9ZpgI7zCw3p/w0JAQEr146TSDoLBhByEmlKLwGH9Mdr
-        lXV3u4dsVxXkWBQ9EEY4bLuFxNENVUCx4inNzbv66prbDoe82t8fwJM8zXqkloz67CtosayTNkc1t
-        FBsyLieg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIPj2-00AdnG-1X; Tue, 24 Aug 2021 06:16:10 +0000
-Date:   Tue, 24 Aug 2021 07:15:56 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
-        bvanassche@acm.org, ming.lei@redhat.com,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
-        nbd@other.debian.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/10] md: add error handling support for add_disk()
-Message-ID: <YSSOnEiPvCHZXVpb@infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-8-mcgrof@kernel.org>
+        Tue, 24 Aug 2021 02:17:37 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994C6C061575;
+        Mon, 23 Aug 2021 23:16:53 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id bk29so16243345qkb.8;
+        Mon, 23 Aug 2021 23:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rhGctr00MDH5AefJ5cazxvCpO3NXQOU2Z+d0KTndb6o=;
+        b=Dpcdrq/lu9oS/ukuh2/Sr7BUiU0CvGAHfBFJU7OVJZkwzMVdbfPIQB6DjfM6Pbl8nw
+         bsZSvNZ4VEocYJBncIUzmAGUM54BlqbRrt0XXffl9B5u/90qTI3OT6iG1p/1uPziaE5w
+         O+tUC/Z0mWi8vaAGAGjgEA3ao235XzOORTGE3Q59w4kf94vy7kPFoWbuWc5FVF2p0tiM
+         defcn6nIZGN6aXbaxYO/ucOSYda/GxcCZCPUElsE+76RCMGbjZqernQmcq5CeVjh/WUG
+         uGzzll3vvDf00z1SaqXyd1x+IIn6+7io+FSamt9dUP+X7I0F8Jr34U3G+zVsCOLR3/ed
+         CVFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rhGctr00MDH5AefJ5cazxvCpO3NXQOU2Z+d0KTndb6o=;
+        b=f52XevGCa2M0V71vHd/JmE1ptIAmyDNESnSsC8maagLTxi/6PThRfUsi7KujXEhkTz
+         db2Dvrd1BDmlpGANSYLYTHzzfIJ36BeUUMQ5+r/mrheSyQcOTmtQdDhcXs5MrWO5ZYaE
+         hOia45QPmRyUsRszFK37T4mDHkZGz5AxEKdXwhpD0BUTU3BTuhmSCcXOvNyMc9My4wjs
+         23FD7mQ6alqIWXkQR/SjLOd2GBgsbYAfaQQlVE3na3fBB8u4b1+lubSu/2xHlv0X2IrY
+         khmC8Iky+PWgojEysVVdfoMVuYQYVMDslQJQ6/+1cSU6dMEcOEVeXEU9QJkzvXoxT7zI
+         7Iaw==
+X-Gm-Message-State: AOAM532PYcqwlAWpsvIR3Ehz4+6y6zlBedPdkaA8wkIBRdRUYhWB5TH7
+        d/OyseZCwzbwEO63J6p2N9zkMJoa31o=
+X-Google-Smtp-Source: ABdhPJymIsLCVH7QSFYUy4MyOmDMrxDtHCs3R9ndTKy2pTkMto3D00cFUN4mXsH/EdxRPQ2IIY72Kg==
+X-Received: by 2002:a37:e14:: with SMTP id 20mr25135483qko.229.1629785812862;
+        Mon, 23 Aug 2021 23:16:52 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id y185sm10234818qkb.36.2021.08.23.23.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 23:16:52 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] irqchip: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 23:16:46 -0700
+Message-Id: <20210824061646.59320-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823202930.137278-8-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 01:29:27PM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> We just do the unwinding of what was not done before, and are
-> sure to unlock prior to bailing.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Looks good,
+./drivers/irqchip/irq-csky-apb-intc.c:139:9-10:WARNING:return of 0/1 in
+function 'handle_irq_perbit' with return type bool
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+---
+ drivers/irqchip/irq-csky-apb-intc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/irqchip/irq-csky-apb-intc.c b/drivers/irqchip/irq-csky-apb-intc.c
+index ab91afa..5d044ad 100644
+--- a/drivers/irqchip/irq-csky-apb-intc.c
++++ b/drivers/irqchip/irq-csky-apb-intc.c
+@@ -136,11 +136,11 @@ static inline bool handle_irq_perbit(struct pt_regs *regs, u32 hwirq,
+ 				     u32 irq_base)
+ {
+ 	if (hwirq == 0)
+-		return 0;
++		return false;
+ 
+ 	handle_domain_irq(root_domain, irq_base + __fls(hwirq), regs);
+ 
+-	return 1;
++	return true;
+ }
+ 
+ /* gx6605s 64 irqs interrupt controller */
+-- 
+1.8.3.1
+
+
