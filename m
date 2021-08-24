@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F050A3F61E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979FA3F61ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238559AbhHXPoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238647AbhHXPoO (ORCPT
+        id S238435AbhHXPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:45:53 -0400
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:35922 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238294AbhHXPpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:44:14 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D119FC0617AF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:43:29 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id m28so170018lfj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=822Hg/zQKXlZynQ1+LBiGkBeYND5KDukoOwmd2Fca1M=;
-        b=gR9zHjSevUTGeVgjWogjvaVGn9pr2qT4Vc6+Yt3OuBJ/I68hKvsCnqrIAlreoyOJPz
-         gA6Jo+cKG3ncQb7whxm0NNw9Yi8nWwZFZJWY9Y58AzFSMt8HKtd13EE6ad+FugIzpHD+
-         qP1FFcxKNlfQOS6KsosGt6rEyKmWxzx6GQU2nQsF2R9jV+4xEHV1cclinLOecSykHStr
-         Rg1qG9o0RCI0chY7/69PskPKVKrv3IBHUSGX1jsnHsijSi/q7yS9cCMXND0Gj18o/PII
-         rU2r+UlSQ5gMlw3W6c70MyYboZtn6XgBKr/Z3AOzjr7Mx8X8l1m5vAl+DcLggaNE9iwr
-         ahbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=822Hg/zQKXlZynQ1+LBiGkBeYND5KDukoOwmd2Fca1M=;
-        b=OR55I5KNMawHO+MyNmJoIR6zeSwaE3u7yw0ltw7nUoSfSJr65zTb3CWWbiwn3bSVZT
-         4y4iOTDqs+XSXH89cS/eQPKTXRQn1g5X4MCl1YuXhv76iu6NogDjZd2eoyN+oRxPLYiB
-         UrCOL6ZuDdH14gKTSqctmeRvJDHi1ADKx9QS7e+PGi+PAlMNPu+KyRWm0NUgNqaQ7fmt
-         jrmnILvllVuy1ZFCwUbjL/c4dgWwG24XylQeklNFM45b1skUCFXD/mJ31wUD0OlgKRra
-         SfWOSX9Jb9Nff1rhX5wNOKx4KPAzCtHEi4ElZSAiLOWMlCxIavQeEucqlSjz1WnDruzI
-         hjDA==
-X-Gm-Message-State: AOAM532i9rPxLIZYDfDETmNFhNvrvftCkhGQ8JN0C6xjnswCZZ64fCyR
-        rPm7QBmkyXYJ9h1EXSJYg4k=
-X-Google-Smtp-Source: ABdhPJw5teytKpr2hE7vg6p4e1EaFdts3r8hfFLR4GzPioV4ATVxFy9juwmdgMWumLP03pT3KsJQRA==
-X-Received: by 2002:a05:6512:368c:: with SMTP id d12mr27391742lfs.64.1629819808212;
-        Tue, 24 Aug 2021 08:43:28 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id l28sm764654lfj.202.2021.08.24.08.43.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 08:43:27 -0700 (PDT)
-Subject: Re: [PATCH 2/2] staging: r8188eu: Make some clean-ups in
- usbctrl_vendorreq()
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-References: <20210824142823.16845-1-fmdefrancesco@gmail.com>
- <3740714.KPokl01s95@localhost.localdomain>
- <17234f07-debc-5b6c-244d-472a3f33bc3f@gmail.com>
- <2327592.S5L5zkRU50@localhost.localdomain>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <a5bfab84-16cc-52ad-5cdb-038765bf0b36@gmail.com>
-Date:   Tue, 24 Aug 2021 18:43:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 24 Aug 2021 11:45:52 -0400
+Received: from pps.filterd (m0134420.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17OFhX63017455;
+        Tue, 24 Aug 2021 15:44:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=YC5E+Rgqy1RaaUGwDGDqAmOcYoteQikJCT6dUHG4aBA=;
+ b=AcQqSJOsmEIP6D08L+KatGQufIo5SK8wiIILhZJPoCXDsv6r2tBHUMqROU+rCCb/8u4p
+ VjFpee8AQNStTZHRNCx6cQYTdVT6+3/5gz8SqCYOCqRQ68tJ4OsYBj+03dsdvoo6+DeA
+ /xueRu7zjmV3O3PAo0986HaQfRIhcHESreWVPi0Xp/up9pWy8/nGTeaNMiliKQNvdrRE
+ gStQD4GpcXBFZL+f5+ijNxX/zbc4zUwOMjkt+hwh9dKgZjfnReP6IiKU1vsPN9L+lf6R
+ 9gX+iYDjcTwHZZp0XOWY+L79gxz1bt8u9JrffjIMSgOozcmXyABGeKDJkxg5x2ZGje+P jw== 
+Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
+        by mx0b-002e3701.pphosted.com with ESMTP id 3amw5p3p39-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 15:44:55 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g4t3425.houston.hpe.com (Postfix) with ESMTP id 61DEC92;
+        Tue, 24 Aug 2021 15:44:54 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.99.161.236])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 68F3F4F;
+        Tue, 24 Aug 2021 15:44:53 +0000 (UTC)
+Date:   Tue, 24 Aug 2021 10:44:53 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     CGEL <cgel.zte@gmail.com>
+Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linux-next] x86:uv: fix boolreturn.cocci warnings
+Message-ID: <YSUT9S+uD8KyaqgR@swahl-home.5wahls.com>
+References: <20210824072124.61750-1-deng.changcheng@zte.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <2327592.S5L5zkRU50@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824072124.61750-1-deng.changcheng@zte.com.cn>
+X-Proofpoint-GUID: GvpNFgRbvWuxSvYKH33KvGqfH6pLghqV
+X-Proofpoint-ORIG-GUID: GvpNFgRbvWuxSvYKH33KvGqfH6pLghqV
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_05:2021-08-24,2021-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 clxscore=1011 lowpriorityscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 6:39 PM, Fabio M. De Francesco wrote:
-> On Tuesday, August 24, 2021 5:26:23 PM CEST Pavel Skripkin wrote:
->> I found the problem:
->> 
->> >  	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
->> >  
->> >  	/*  Acquire IO memory for vendorreq */
->> > -	pIo_buf = dvobjpriv->usb_vendor_req_buf;
->> > +	io_buf = dvobjpriv->usb_vendor_req_buf;
->> 
->> 
->> I don't know from where mutex_lock() comes from. In staging-next I have
->> 
->> _enter_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
->> 
->> instead of
->> 
->> mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
->> 
-> Oh, I know where it comes from... :)
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+
+On Tue, Aug 24, 2021 at 12:21:24AM -0700, CGEL wrote:
+> From: Jing Yangyang <jing.yangyang@zte.com.cn>
 > 
-> It's a patch of mine that is in the queue, waiting to be reviewed and applied.
-> Please see: https://lore.kernel.org/lkml/20210819221241.31987-1-fmdefrancesco@gmail.com/
+> ./arch/x86/include/asm/uv/uv.h:36:53-54:WARNING:return of 0/1 in
+> function 'is_early_uv_system' with return type bool
+> 
+> Return statements in functions returning bool should use true/false
+> instead of 1/0.
+> 
+> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+> ---
+>  arch/x86/include/asm/uv/uv.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/uv/uv.h b/arch/x86/include/asm/uv/uv.h
+> index 648eb23..9395925 100644
+> --- a/arch/x86/include/asm/uv/uv.h
+> +++ b/arch/x86/include/asm/uv/uv.h
+> @@ -33,7 +33,7 @@ static inline bool is_early_uv_system(void)
+>  #else	/* !X86_UV */
+>  
+>  static inline enum uv_system_type get_uv_system_type(void) { return UV_NONE; }
+> -static inline bool is_early_uv_system(void)	{ return 0; }
+> +static inline bool is_early_uv_system(void)	{ return false; }
+>  static inline int is_uv_system(void)	{ return 0; }
+>  static inline int is_uv_hubbed(int uv)	{ return 0; }
+>  static inline void uv_cpu_init(void)	{ }
+> -- 
+> 1.8.3.1
+> 
 > 
 
-
-oh.... there are _a lot_ of pending changes :)
-
-I guess, we need smth like public-mirror with already reviewed and 
-working changes
-
-
-
-
-With regards,
-Pavel Skripkin
+-- 
+Steve Wahl, Hewlett Packard Enterprise
