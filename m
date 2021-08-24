@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5D43F69A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357E83F69A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234618AbhHXTQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
+        id S234487AbhHXTQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234048AbhHXTQw (ORCPT
+        with ESMTP id S234048AbhHXTQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:16:52 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986A7C061757;
-        Tue, 24 Aug 2021 12:16:07 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id r2so20720938pgl.10;
-        Tue, 24 Aug 2021 12:16:07 -0700 (PDT)
+        Tue, 24 Aug 2021 15:16:50 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11219C0613C1;
+        Tue, 24 Aug 2021 12:16:06 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id u14so21631692ejf.13;
+        Tue, 24 Aug 2021 12:16:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YHLmpisvPPmsqfFKbNTM3t6hjYciHmUpxzHILT2Qr6M=;
-        b=gU7Q1xMS9bXpASw00SR/sNuxtUq3cxwtagSusbZwZ7w0pnTQbMyw9wez96UdAhSYRF
-         MxQHZUIiRniZIlUcgYG2OYqmi44v7sW7Ae9dUMfHQpIzmQenxnaJaC4zbj9oSHxmfZSw
-         6pwXPAYTeqflPdmH5qCkC89j2Fqbx2Tq7Ot1URjWEnSwO+1SncOypH/VG9RYRbxUkPTy
-         gF3sR6j9BQcc8SdP9E5OprwUE0nV+rzzX67Yc9mOtrJeX0m7hwWB4c6BslJk+sDmdSMp
-         q9xjsGDrPwx43GLj4RNvCHJlMcPg4IR6HQOLZ8xRlWAZ6V9vbs87GTpdbqWA9qTcEjrN
-         awoA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nHaCO738eRY3VKzEPuj4xZFKwDtJiNbUNiFDzNRpKZo=;
+        b=t8gf/7kUasiYGAIsMopT1DNWVh0UN1WeILXUmcb00QRCv4VYb7O99j1XNuqUs5PBB4
+         kqnEUmFesIW4WOu2Des5gq1Bx5D6cjXkFwBQbi5yqzcfglKnOGDntcE5FNBZr1p8D5Fm
+         gZd2G3nIztk1j+RuIuZVDqeOBLKNb60iq0U97P45JDjg4UeM+J4AnL5rZqrMWYa6ubvs
+         nVCVkhg2sxQjZTnQ2EVL1n4Vp2XiwCTfuaxcYNVObU1r9qpDGD3q7zgQS7AWqZslWk/o
+         O1rHLo14ryyLILgPSnW/9C64wVGtiNmdeg73Iug5PIj5pHU93cT8OMNEnGMlmlLEQcXQ
+         yI2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YHLmpisvPPmsqfFKbNTM3t6hjYciHmUpxzHILT2Qr6M=;
-        b=Q6PmRtMqbrMevGyOtTrfFLiiOWyASU041zJw1lffJ0Zx+Q1xCqZ8NB2uHamOdbt5Za
-         J2RbGS3LEjgmUxbggux1i3sLJ59NwWagU/+tO1k4/EDMHJyzeieqeFB6AFX+3jZkUoSV
-         FqV4L1/LKXeciEbW30k70Lda7wgsXksDxpTrkV7eDuf9shDAJV6bh0Aq3/TqXdeIiNMd
-         i+xUXq+aq1THkM1qJSdH7B662O9f4oOflz1mA3HnSyTmoCq53cnysUe11oACU5GwZ8N2
-         YxKjlzCm1ziL3ks63Zm6kk284BlJtii4gAhR2oFnwX+/nLUV+1yzYhnrRPSJ5ef6ohDL
-         N/ug==
-X-Gm-Message-State: AOAM533KCCLPir/hYDJH4+wQt4dfpzCZ7CzqI34ReFWHyEkccbWWWp5/
-        U3Ig9iW2aTSgFNhr7o3CFX0=
-X-Google-Smtp-Source: ABdhPJw0fkPKuavJ0rp3BV4R0Ekn+rotepq9ObkbKQuExSuhqwnmPZxk2096J9EciWyi6XQg8+DEAA==
-X-Received: by 2002:a62:7c4a:0:b029:3dd:a141:c932 with SMTP id x71-20020a627c4a0000b02903dda141c932mr32208662pfc.68.1629832566863;
-        Tue, 24 Aug 2021 12:16:06 -0700 (PDT)
-Received: from uver-laptop ([2405:201:6006:a148:428:a9ec:7b61:f80f])
-        by smtp.gmail.com with ESMTPSA id u7sm3294327pju.13.2021.08.24.12.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 12:16:06 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 00:45:37 +0530
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH] USB: serial: iuu_phoenix: Replace symbolic permissions
- by octal permissions
-Message-ID: <20210824191537.GA6181@uver-laptop>
-References: <20210820190306.18149-1-utkarshverma294@gmail.com>
- <YST6XZ/XJkTDm6rV@hovoldconsulting.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nHaCO738eRY3VKzEPuj4xZFKwDtJiNbUNiFDzNRpKZo=;
+        b=pHQ7a8WZYjFvSxSOkUIZ6xDyOJ1Upq6rDbm+NCEsGAbPsKM3IsvcyuRxHaobFIKx0E
+         xrNZgLATMFAgGmB0QnxbrPQPz/4rNk6KSJ5O6sb/ey4GdnJSsnqsCOaE0Z2rxxbE7dTx
+         wXzT0u2nffcubvcZ2Oel7MXiFbsPqDWmjcivjppeSXeBLRdnL5ZQBm8Cr+CFE0eKAdpt
+         E8Ebnj0/d6qV3xYqTBPRcoonP2BlO5XSkOQZ6qce6j+Nj13TsDwOnlZr+zLGlaS5wSR2
+         NMTAChsbzfMThyv73F9HYsTvzQ9fhpf0+5t6NdQ3UaxkAmHaucP8+uygqz5YJvoMqw1R
+         XJ7Q==
+X-Gm-Message-State: AOAM532bb/dp6b82chS//qB7ZXAedB6/lHVxMd2ItnRrbaNQKO2rH2CP
+        GvZ7HVRgu82MzpCLj3hOIStttZJuNfRUJtDQJl8=
+X-Google-Smtp-Source: ABdhPJyCNShBNLWvuFOzEmpzfFUdPdq/6RvkIsKtioRscMIq8wMIfZWLko3uoEdih/EWNcLLnGVJytmbs2oosRQInrw=
+X-Received: by 2002:a17:907:35d0:: with SMTP id ap16mr41990765ejc.456.1629832564485;
+ Tue, 24 Aug 2021 12:16:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YST6XZ/XJkTDm6rV@hovoldconsulting.com>
+References: <20210819230602.GU543798@ziepe.ca> <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+ <20210820123316.GV543798@ziepe.ca> <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca> <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+ <fa124990-ee0c-7401-019e-08109e338042@amd.com> <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
+ <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com> <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
+ <20210824173228.GE543798@ziepe.ca> <1d1bd2d0-f467-4808-632b-1cca1174cfd9@nvidia.com>
+In-Reply-To: <1d1bd2d0-f467-4808-632b-1cca1174cfd9@nvidia.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Wed, 25 Aug 2021 05:15:52 +1000
+Message-ID: <CAPM=9txd71fisvZ1Es5Fv2mwR2vWfHJarya7oeKOm2aq6tH0HQ@mail.gmail.com>
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 03:55:41PM +0200, Johan Hovold wrote:
-> On Sat, Aug 21, 2021 at 12:33:06AM +0530, Utkarsh Verma wrote:
-> > This fixed the below checkpatch issue:
-> > WARNING: Symbolic permissions 'S_IRUGO | S_IWUSR' are not preferred.
-> > Consider using octal permissions '0644'.
-> 
-> Please do not run checkpatch.pl on code that's already in the tree. Use
-> it for your own patches before submitting them and always use your own
-> judgement when considering its suggestions.
-> 
+On Wed, 25 Aug 2021 at 03:36, John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> On 8/24/21 10:32 AM, Jason Gunthorpe wrote:
+> ...
+> >>> And yes at least for the amdgpu driver we migrate the memory to host
+> >>> memory as soon as it is pinned and I would expect that other GPU drivers
+> >>> do something similar.
+> >>
+> >> Well...for many topologies, migrating to host memory will result in a
+> >> dramatically slower p2p setup. For that reason, some GPU drivers may
+> >> want to allow pinning of video memory in some situations.
+> >>
+> >> Ideally, you've got modern ODP devices and you don't even need to pin.
+> >> But if not, and you still hope to do high performance p2p between a GPU
+> >> and a non-ODP Infiniband device, then you would need to leave the pinned
+> >> memory in vidmem.
+> >>
+> >> So I think we don't want to rule out that behavior, right? Or is the
+> >> thinking more like, "you're lucky that this old non-ODP setup works at
+> >> all, and we'll make it work by routing through host/cpu memory, but it
+> >> will be slow"?
+> >
+> > I think it depends on the user, if the user creates memory which is
+> > permanently located on the GPU then it should be pinnable in this way
+> > without force migration. But if the memory is inherently migratable
+> > then it just cannot be pinned in the GPU at all as we can't
+> > indefinately block migration from happening eg if the CPU touches it
+> > later or something.
+> >
+>
+> OK. I just want to avoid creating any API-level assumptions that dma_buf_pin()
+> necessarily implies or requires migrating to host memory.
 
-Okay, I will not run checkpatch on the code that's already in the tree.
+I'm not sure we should be allowing dma_buf_pin at all on
+non-migratable memory, what's to stop someone just pinning all the
+VRAM and making the GPU unuseable?
 
-> This code does not need to be changed.
-> 
+I understand not considering more than a single user in these
+situations is enterprise thinking, but I do worry about pinning is
+always fine type of thinking when things are shared or multi-user.
 
-But using the octal permission bits makes the code more readable. So I
-made the change.
-But if you don't want such changes, I will refrain from doing it in the
-future.
-Anyway thanks for the review.
+My impression from this is we've designed hardware that didn't
+consider the problem, and now to let us use that hardware in horrible
+ways we should just allow it to pin all the things.
 
-
-Regards,
-Utkarsh Verma
+Dave.
