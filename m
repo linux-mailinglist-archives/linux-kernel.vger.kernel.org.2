@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528913F5DF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F3E3F5DFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237211AbhHXM2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:28:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbhHXM2g (ORCPT
+        id S237279AbhHXM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:29:23 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:38829 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhHXM3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:28:36 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994A6C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:27:51 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:fd1d:ce2:c16e:185a])
-        by albert.telenet-ops.be with bizsmtp
-        id lQTk250094wgRL106QTkyV; Tue, 24 Aug 2021 14:27:48 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mIVWq-005Q6P-5H; Tue, 24 Aug 2021 14:27:44 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mIVWp-009Dq7-5E; Tue, 24 Aug 2021 14:27:43 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        He Ying <heying24@huawei.com>
-Cc:     Will Deacon <will@kernel.org>, Kalle Valo <kvalo@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] firmware: qcom_scm: QCOM_SCM should depend on ARCH_QCOM
-Date:   Tue, 24 Aug 2021 14:27:41 +0200
-Message-Id: <5cda77085c07dc2e8d2195507b287457cb2f09e9.1629807831.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 08:29:22 -0400
+Received: by mail-ot1-f54.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso34245752ots.5;
+        Tue, 24 Aug 2021 05:28:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cdwtS2+itIfFHyhhEYB6WadzvAnlM7aA3DO6pUVcIwk=;
+        b=SDOAF4Fq3HfvHO8Mki6OyUFoKjFbdJFD785MQEant5k7jpwqCM5f715i0r8oG13Pyy
+         +9I1WP3pa9RlvOMekWYjWZ+FN64rK2T0g3z+fjD0uKERKGGMCo7nNnUzJ5A/dbVzJftz
+         tKK7YL7y0gsLitp9Hj3HWtGmOogO4Fra4GlORSx4ZtLmJzhHLE2kpyAkzFLHXitFDUXK
+         TpIGxCMTUn2yI50mmaVW9voVsolRJ1wAnIbA3u3jegv4O/LOpvnwkDPfm8mlbYRxZHie
+         klcfbbdp/sPxpmfhlqEtsOGwbT9jKpJ0S3t12fF5B+ertgHDfFSRBWtVx9T9f0K+01tv
+         4PSg==
+X-Gm-Message-State: AOAM5311yizcTE0iQvl88Tcuur6TQbb+F+F2pMQmwKg7CQtGA1axn1Lo
+        eTt5tE4dAoujk8Nx1D1ENA==
+X-Google-Smtp-Source: ABdhPJwBlJ/557XHToZbkG4RiHHSizrDlfCrQtKLOX4/13hERWlkFtAoMj7gZtJzpw45/W9f6ePgIg==
+X-Received: by 2002:a05:6808:220e:: with SMTP id bd14mr2542275oib.41.1629808118045;
+        Tue, 24 Aug 2021 05:28:38 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id q10sm4615114otn.47.2021.08.24.05.28.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 05:28:37 -0700 (PDT)
+Received: (nullmailer pid 59517 invoked by uid 1000);
+        Tue, 24 Aug 2021 12:28:36 -0000
+Date:   Tue, 24 Aug 2021 07:28:36 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bharat Bhushan <bbhushan2@marvell.com>
+Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, will@kernel.org,
+        devicetree@vger.kernel.org, mark.rutland@arm.com
+Subject: Re: [PATCH v3 1/4] dt-bindings: perf: marvell: cn10k ddr performance
+ monitor
+Message-ID: <YSTl9PQpwP9OiCbY@robh.at.kernel.org>
+References: <20210823065121.19494-1-bbhushan2@marvell.com>
+ <20210823065121.19494-2-bbhushan2@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823065121.19494-2-bbhushan2@marvell.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm Secure Channel Manager (SCM) is only present on Qualcomm
-SoCs.  All drivers using it select QCOM_SCM, and depend on ARCH_QCOM.
-Until recently, QCOM_SCM was an invisible symbol, but this was changed
-by adding loadable module support, exposing it to all ARM and ARM64
-users.  Hence add a dependency on ARCH_QCOM, to prevent asking the user
-about this driver when configuring a kernel without Qualcomm SoC
-support.
+On Mon, 23 Aug 2021 12:21:18 +0530, Bharat Bhushan wrote:
+> Add binding documentation for the Marvell CN10k DDR
+> performance monitor unit.
+> 
+> Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
+> ---
+> v2->v3:
+>  - dt-binding, ddrcpmu@1 -> pmu@87e1c0000000
+> 
+> v1->v2:
+>  - DT binding changed to new DT Schema
+> 
+>  .../bindings/perf/marvell-cn10k-ddr.yaml      | 37 +++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/perf/marvell-cn10k-ddr.yaml
+> 
 
-While at it, drop the dependency on ARM || ARM64, as that is implied by
-HAVE_ARM_SMCCC.
-
-Fixes: b42000e4b8741bf6 ("firmware: qcom_scm: Allow qcom_scm driver to be loadable as a permenent module")
-Fixes: 2954a6f12f250890 ("firmware: qcom-scm: Fix QCOM_SCM configuration")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/firmware/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 220a58cf0a441ca2..0bebd5a62a9f4d66 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -204,7 +204,7 @@ config INTEL_STRATIX10_RSU
- 
- config QCOM_SCM
- 	tristate "Qcom SCM driver"
--	depends on ARM || ARM64
-+	depends on ARCH_QCOM || COMPILE_TEST
- 	depends on HAVE_ARM_SMCCC
- 	select RESET_CONTROLLER
- 
--- 
-2.25.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
