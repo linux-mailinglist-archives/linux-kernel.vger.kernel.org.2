@@ -2,205 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509AE3F5955
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E8E3F5959
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbhHXHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234705AbhHXHre (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:47:34 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582CAC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:46:50 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id h9so42427069ejs.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=VsqAfZyJN9OD0IHKahj/HoL7bz40akh7jyRwrbfEuro=;
-        b=sYIl27axHaB+KXgccTTOy8Qba71m+Sa9jlXykBz++PO0nNjkG8wWEE3xuRhGlQrvt9
-         a+ohGsHPJr6zRAsi3BIRyW3sUNSkgh8NhllNXtp3JyY6G4Zz3EO1ZhMnfZr/sUcivssh
-         AXwbez1OHsikoUQSjOUhUcCPswF0hx6/JbsMLdkGbX+AKVcF9wIESmhc3hBQainRQmKa
-         N+lwjoY8v1wdFBfvv0xjQdl6wphqmczUqkyoCN4dkZmJVrWLRsJ8m4D5zR+0SaBP+90A
-         BukrkrvJe2xJK2Tp6XRcZkQ1KLy6ntQ2txeIjB3v/MRkaFRlWLLN4vKiT7Ov9DapqY+i
-         3RYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=VsqAfZyJN9OD0IHKahj/HoL7bz40akh7jyRwrbfEuro=;
-        b=WTyRvQ12TfyKYCOXhjZEHSKlQVbGcD7xnxn+YEJ5dWA6TeJOF0NXlfruZmKXkVEq4z
-         66EY1DAdXtF1Z9ImHuWZBQdmtIoGeGPnFA+u+lCG/ULfqfoGx/wS8J6YNgG2YwMJ4xX7
-         lroemUu6g26070I8ZR6ofWVsjIizbBhmLOZRWBXx2tlohq3xcgFEgrtwtab6BJupvCOp
-         8/uN/Gpmc5dLU99A4Z1uhkGN6ZD70PFyQvIfkzUQ7XvzDJrMJKEwG0DFf5YSCixGJy3y
-         x1hxCqB2d4d+i1hkiyuWK9YHU9qgQyhgEMSojspbYtUk0aWlmcbpHT5ArXXNUUQc8c47
-         Hvtw==
-X-Gm-Message-State: AOAM533pKsGSbpQSk3o6++eKgmkg3gOqlMpuJc3L/g3++pvFrxs48PXo
-        i0WRZRi4xUmCaD63lN/mJYQ=
-X-Google-Smtp-Source: ABdhPJxythtgfsRHsaQp3r6YiC/KoRrK4F8Sl2mh9Coz7edIEsHiRlIpTEGQe2OGXQoFhIDTZMERVQ==
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr38802644ejb.108.1629791208425;
-        Tue, 24 Aug 2021 00:46:48 -0700 (PDT)
-Received: from agape.jhs ([5.171.73.5])
-        by smtp.gmail.com with ESMTPSA id s2sm1524732ejx.23.2021.08.24.00.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:46:48 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 09:46:44 +0200
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     iLifetruth <yixiaonn@gmail.com>
-Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, insafonov@gmail.com,
-        linux-kernel@vger.kernel.org, Qiang Liu <cyruscyliu@gmail.com>,
-        yajin@vm-kernel.org, hdegoede@redhat.com,
-        Larry.Finger@lwfinger.net, Martin Kaiser <martin@kaiser.cx>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        paskripkin@gmail.com
-Subject: Re: staging: possible buffer overflow in rtw_wx_set_scan function in
- driver/staging/rtl8723bs
-Message-ID: <20210824074643.GA1731@agape.jhs>
-References: <CABv53a_q4jzsXib7ovRs=eOwqcQ-oKb8c7DA7uUSPf+0tt6aog@mail.gmail.com>
- <20210823170624.GA1420@agape.jhs>
- <CABv53a9aR8mXE_quxRX06aX3WAKGSOyMqrG8AmqrsvftjH7xyg@mail.gmail.com>
- <CABv53a_9GstHzLbbbghFxU_YDxC0ckh3+bGu4RqAmGL39BHMMg@mail.gmail.com>
+        id S234874AbhHXHsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234618AbhHXHst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:48:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E0D061183;
+        Tue, 24 Aug 2021 07:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629791285;
+        bh=KgbcpAcVlKxkKPGLwIaqYxCZnA9LBhYWX45e1GRD3p8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oUMAgzI/pFM9ctDnnM6eYGOcKD/LYVTiF/AmevfMdxjhpISQ5uWEOMEkfZWdlgD/i
+         HVXX50N4XuR5IpDAmWUpgpn/TQ0Lgj6sz/PjM3tXiD3cGi/16nRO4iUrBLWt+ciiHS
+         +wjv3MKh7lAbAuwlnCWCJ7ggEuiw36ZcvYP77dg+drS7W6NPWVmJn8nEnOiXQl+nHg
+         zzjrmUlDzFuFHwezgRJ45ubvaJtAuSeawQt17XBK79lNndbVlhsShyipacDn8uyaju
+         I5ecsdcECw8OKpvjN9YTvoiwqqPkkJRLjP1XWB436M9zdDf24dt4qOklvMEhVq5YWv
+         iRqJ5k/knR7oA==
+Date:   Tue, 24 Aug 2021 09:47:54 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Soeren Moch <smoch@web.de>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Regression 5.14] media: dvb userspace api
+Message-ID: <20210824094754.32ad5eab@coco.lan>
+In-Reply-To: <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
+References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de>
+        <20210819133128.45ef4353@coco.lan>
+        <c56ec571-2278-95e9-2028-990e03159c3f@web.de>
+        <20210822194709.4b9d33d4@coco.lan>
+        <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de>
+        <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABv53a_9GstHzLbbbghFxU_YDxC0ckh3+bGu4RqAmGL39BHMMg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Em Mon, 23 Aug 2021 09:58:00 -0700
+Linus Torvalds <torvalds@linux-foundation.org> escreveu:
 
-[sorry for resend, I updated the CC field]
-
-On Tue, Aug 24, 2021 at 03:04:04PM +0800, iLifetruth wrote:
-> Here are the fixes and the contents of the patch file we suggest.
-> 
-> [PATCH]staging: rtl8723bs: prevent ->ssid overflow in rtw_wx_set_scan()
-> 
-> This fixing patch is ported from the upstream commit
-> 74b6b20df8cf(staging: rtl8188eu: prevent ->ssid overflow in
-> rtw_wx_set_scan()) which fixes on another driver numbered rtl8188eu.
-> This code has a check to prevent read overflow but it needs another
-> check to prevent writing beyond the end of the ->ssid[] array in
-> driver rtl8723bs.
-> 
-> ---
->  drivers/staging/rtl8723bs/os_dep/ioctl_linux.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> index f95000df8942..3b859b71bf43 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
-> @@ -1222,9 +1222,9 @@ static int rtw_wx_set_scan(struct net_device
-> *dev, struct iw_request_info *a,
-> 
->                                 sec_len = *(pos++); len -= 1;
-> 
-> -                               if (sec_len > 0 && sec_len <= len) {
-> +                               if (sec_len > 0 && sec_len <= len &&
-> sec_len<= 32) {
->                                         ssid[ssid_index].SsidLength = sec_len;
-> -                                       memcpy(ssid[ssid_index].Ssid,
-> pos, ssid[ssid_index].SsidLength);
-> +                                       memcpy(ssid[ssid_index].Ssid,
-> pos, sec_len);
->                                         ssid_index++;
->                                 }
-> 
-> --
-> 
-> Thanks for your confirmation,
-> - iLifetruth
-> 
-
-the patch looks fine. Just some points:
-
-- If the patch related to wext support removal will
-  be accepted, the patch isn't necessary. So I will wait
-  until I know the community-maintainer decision.
-
-
-> 
-> On Tue, Aug 24, 2021 at 10:07 AM iLifetruth <yixiaonn@gmail.com> wrote:
+> On Mon, Aug 23, 2021 at 7:59 AM Soeren Moch <smoch@web.de> wrote:
 > >
-> > I haven't committed the patch yet since the Linux staging tree may
-> > seem special. It's not clear to me where to submit the patch. So could
-> > you please fix it?
+> > Linus,
 > >
-> > Regards and thanks for your confirmation,
-> > - iLifetruth
-> >
-> >
-> > On Tue, Aug 24, 2021 at 1:08 AM Fabio Aiuto <fabioaiuto83@gmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > On Mon, Aug 23, 2021 at 11:19:09PM +0800, iLifetruth wrote:
-> > > > Hi, in the latest version of Linux staging tree, we may have found an
-> > > > unfixed security bug in the staging/driver/rtl8723bs related to the
-> > > > CVE-2021-28660. Now, we would like to contact you to confirm this
-> > > > problem.
-> > > >
-> > > > ===========
-> > > > Here is the description of CVE-2021-28660:
-> > > >
-> > > > "It was discovered that the rtl8188eu WiFi driver did not correctly
-> > > > limit the length of SSIDs copied into scan results. An attacker within
-> > > > WiFi range could use this to cause a denial of service (crash or
-> > > > memory corruption) or possibly to execute code on a vulnerable
-> > > > system."
-> > > >
-> > > > ===========
-> > > > The staging driver "rtl8188eu" was fixed by commit
-> > > > 74b6b20df8cfe90ada777d621b54c32e69e27cd7 on 2021-03-10.
+> > Is what I described directly above the new linux maintenance policy?  Or
+> > is linux media a private kingdom where the community should keep away?
+> > Is this a place where the subsystem maintainer is on a mission to
+> > destroy everything instead of maintaining and improving it? Please tell
+> > me what I understood wrong here.  
+> 
+> So technically, the regression policy for the kernel is purely about
+> the ABI - the _binary_ interface. That seems to not have broken - old
+> programs continue to work.
+> 
+> We very much try to discourage user space applications from using the
+> kernel header files directly - even projects like glibc etc are
+> supposed to _copy_ them, not include the kernel headers.
 
-- The driver rtl8188eu is deprecated. Now exists r8188eu which has
-  the same security bug, so it needs to be fixed. Again feel free
-  to submit your own patch.
+Unfortunately, media APIs aren't part of projects like glibc. Almost all
+open source media apps keep their own copies of the uAPI header files.
 
-- If you decide to submit your own patch I suggest to put
-  your full name in the email address as you submitted a legal
-  document.
-  
-  vim 409+ Documentation/process/submitting-patches.rst
+As far as I'm aware, the "full-feat" API is implemented only by some
+modules of VDR. I don't know any other open source application using
+such headers.
 
-> > > >
-> > > > However, in another similar staging driver numbered "rtl8723bs", a
-> > > > function named “rtw_wx_set_scan” remains the same problem unfixed. And
-> > > > it is detected in the
-> > > > “drivers/staging/rtl8723bs/os_dep/ioctl_linux.c#Line1354" without
-> > > > checking to prevent writing beyond the end of the ->ssid[] array.
-> > > >
-> > > > Therefore, shall we port the same fix from RTL8188EU to RTL8723BS?
-> > >
-> > > I think it's a good idea, moreover I've just sent a patch series
-> > > aimed at removing that piece of code for it belongs to very
-> > > old wext implementation.
-> > >
-> > > But until it's not accepted by the maintainer that security bug
-> > > is present and harmful. If you fix it thank you, if you don't
-> > > thank you for reporting this, I will fix as soon as possible.
-> > >
-> > > >
-> > > > Thank you!
-> > >
-> > > thank you,
-> > >
-> > > fabio
+> Exactly because re-organization and changes to the kernel tree
+> shouldn't be something that then causes random problems elsewhere that
+> are so hard to test - and synchronize - from the kernel standpoint (or
+> from the standpoint of the other end).
+> 
+> That clearly doesn't seem to be the case in this situation. Which is
+> annoying as heck.
+> 
+> Mauro: there clearly _are_ users of those header files, and even
+> apparently that one old driver out there. And those headers were in
+> the 'uapi' directory, so while it is annoying how user space programs
+> used them this way, I think it's also not entirely unreasonable.
+> 
+> I have reverted the header file move. But I would also heartily
+> recommend that whatever user program includes those headers (VDR -
+> anything else?) should take snapshots of these specific kernel
+> headers.
+> 
+> I'm not convinced that it makes sense to move the av7110 driver back
+> from staging - it may continue to work, but it _is_ old and there is
+> no maintenance - and I would certainly suggest that any other
+> out-of-tree driver that uses these old interfaces that nothing else
+> implements shouldn't do so, considering that nothing else implements
+> them.
+> 
+> So the only thing I did was move the header files back, and mark that
+> move to be backported to 5.13 stable.
 
-thank you for your report,
+Ok.
 
-fabio
+Thanks,
+Mauro
