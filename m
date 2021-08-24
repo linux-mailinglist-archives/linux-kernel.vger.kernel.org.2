@@ -2,152 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397FC3F579E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8C83F57A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbhHXFfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhHXFf3 (ORCPT
+        id S231296AbhHXFg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 01:36:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229885AbhHXFgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:35:29 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03262C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:34:46 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id b9so7169410plx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UfCl+JVoy2R6wx1DytMRudnKiR+tf7eTN7VTJ9Bq3Do=;
-        b=iJ6vYi02LKmh06hrXbT039cxyLX8yY1I6/pHi1hIhvNnlB0iJjISto9DzYva66j7F6
-         e5Mldrh5f4E3u8683DUqv4l9i2zgRgStG7aR0Xan7+diGdFbEpeR2KikG19BcoOModaz
-         6dCD1OxXO3VzkgBPs2r/9aepDrXthlGSKhJHZaIfoKGiJMPiDyMs+UKG1aFu2tpftFel
-         XjvQcDpDvgCqczHc07qT7wz7fqyAnBWJFvZHwb2odJeB/7DfxGIhk3U8e/E+HSMDr765
-         wY8L554qfVDe3lsjmRZKaznT4yulCMOcvTBb7oN4Q0Myn93Gq994EmOTDjhRjfIyxgUF
-         uiqA==
+        Tue, 24 Aug 2021 01:36:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629783341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hMA9he3KzhIpa9VL4u2RVLcuo/UfXEbjSwWCQUOA21E=;
+        b=WgDL5RAr5yB0fi43/gnecn6/MeMX5arENvJof06wKM4PD/1EcrVq2wZqOlPjS1Rjlk6qCc
+        jtTwFuD9MACpZEWG6ABs2SQNVmTJThJM6c2Tw4I4MrpmnqmOdgzkk6UnGRD8FP1o/h9VnJ
+        u64z7AsJKfm6MUmj7NcC0oLQr3mwv9k=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-74-R08ZocZKNWKLjHcVqpvPoQ-1; Tue, 24 Aug 2021 01:35:40 -0400
+X-MC-Unique: R08ZocZKNWKLjHcVqpvPoQ-1
+Received: by mail-qv1-f70.google.com with SMTP id gg8-20020a056214252800b00363a9ba9f52so12718172qvb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:35:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UfCl+JVoy2R6wx1DytMRudnKiR+tf7eTN7VTJ9Bq3Do=;
-        b=GhPbvOzZ4HbxPulQmKInZCqQR4nUEHubPlEXeBWymiSFs1isNDlgWOz93TFru4/xkf
-         LDGpEUgbWfjxmt7zssoI0NtYsceRNWsL4VVIqR6LYp9oCTiQI1OulYHBznp87dLGMd/0
-         aPdMweicABxHlUPpUD0PNH7woNDszEsQrYfOHO0ZoSK7xI5s/lDS2Eup63ey40VZwO/+
-         NnhhEx6GF3xdzisqHB9wprXFwD7c3x0TNvvE2ZNggKrDVXim5nzeCPEAG3f21MITA0HW
-         k/L4cJ0tImpPbOX5nYL3rhEY6AWGHmlZsjVdbUImSAHMJWtI3CQhdFmWghBmB46Mrg48
-         1Oxg==
-X-Gm-Message-State: AOAM533s+RkosnxNLbULGtNDAKU4BNKDB0gO5Adjpx5v95r1x/ANEmKi
-        F3OqBVpaZZqRBPG4/XvVjNA=
-X-Google-Smtp-Source: ABdhPJzmDxN8J6jzAIHSTWlXsMIUhb55IAwJ2U+T9H0uYoYb59CioKQX+cD2G9gTb1ASI5d1+4YscA==
-X-Received: by 2002:a17:90a:ba93:: with SMTP id t19mr2610287pjr.4.1629783285412;
-        Mon, 23 Aug 2021 22:34:45 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id p24sm2546774pfh.136.2021.08.23.22.34.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 23 Aug 2021 22:34:44 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [RFC PATCH 4/4] x86/mm: write protect (most) page tables
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <FB6C09CD-9CEA-4FE8-B179-98DB63EBDD68@gmail.com>
-Date:   Mon, 23 Aug 2021 22:34:42 -0700
-Cc:     Linux-MM <linux-mm@kvack.org>,
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hMA9he3KzhIpa9VL4u2RVLcuo/UfXEbjSwWCQUOA21E=;
+        b=mGYlI3mfW0g6HhgFSdHV2PwFYkdcrH3DtsqyOwzmaARxGp7cYoU2DPlizsNtY6SzuU
+         +Vyi19RcqBzjweJdies1Qj3MnzB5snhLA+E7UQTX1KrcQ4oP5XMrtcwcXoye1yzXPriW
+         M6tYLvin/pnEiqFjKer3/DuKBcB/KLcZYUOub+pKkl8aWabehf2dH78c24Gxy29LYDhG
+         za9F7PywqTsunUCrF7EeMxyWZIfXUADklSP+LckuRiJ5z4oyBovqMnEH8vXefmTRlqmg
+         bTgZNZwV02o7J9f5KG9jLOnMlG2h8RLe1J84FU3uNDlYZUxNBpNqYv23ozv+6akLzy8T
+         X20w==
+X-Gm-Message-State: AOAM531Nq3F8NlMnJ+jkGBfQOEaEgBTNZ609VH5JXLiStFA4e7JnOgn2
+        LOQ0oP9ZbJTWHn7tNs9+/6D83bXXtxve67D3Hh7mn+5p+UHtDMEvtmFfjp0L19kRmBP76v0fMCe
+        eL/A5O8d+l5I5j2wRl91+h6TR
+X-Received: by 2002:a05:6214:e4e:: with SMTP id o14mr36773984qvc.46.1629783339520;
+        Mon, 23 Aug 2021 22:35:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQ9TFAqJK2UKypiZesdV4PFhcJDxgpVfPI6c6pKAqWdkuSgCxObkN174DkWv55S9WMaRJNvQ==
+X-Received: by 2002:a05:6214:e4e:: with SMTP id o14mr36773974qvc.46.1629783339316;
+        Mon, 23 Aug 2021 22:35:39 -0700 (PDT)
+Received: from llong.remote.csb ([50.238.61.194])
+        by smtp.gmail.com with ESMTPSA id i67sm10155762qkd.90.2021.08.23.22.35.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 22:35:38 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v6 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210814205743.3039-1-longman@redhat.com>
+ <20210814205743.3039-6-longman@redhat.com> <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
+Message-ID: <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
+Date:   Tue, 24 Aug 2021 01:35:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <05242256-4B5F-4AD6-B7DA-46A583335E5C@gmail.com>
-References: <20210823132513.15836-1-rppt@kernel.org>
- <20210823132513.15836-5-rppt@kernel.org>
- <FB6C09CD-9CEA-4FE8-B179-98DB63EBDD68@gmail.com>
-To:     Mike Rapoport <rppt@kernel.org>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for sending twice. The mail app decided to use HTML for some
-reason.
+On 8/16/21 1:08 PM, Tejun Heo wrote:
+> On Sat, Aug 14, 2021 at 04:57:42PM -0400, Waiman Long wrote:
+>> +	A parent partition may distribute all its CPUs to its child
+>> +	partitions as long as it is not the root cgroup and there is no
+>> +	task directly associated with that parent partition.  Otherwise,
+> "there is not task directly associated with the parent partition" isn't
+> necessary, right? That's already enforced by the cgroup hierarchy itself.
 
-On Aug 23, 2021, at 10:32 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
+Sorry for the late reply as I was on vacation last week.
 
-> 
-> On Aug 23, 2021, at 6:25 AM, Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Allocate page table using __GFP_PTE_MAPPED so that they will have 4K PTEs
-> in the direct map. This allows to switch _PAGE_RW bit each time a page
-> table page needs to be made writable or read-only.
-> 
-> The writability of the page tables is toggled only in the lowest level page
-> table modifiction functions and immediately switched off.
-> 
-> The page tables created early in the boot (including the direct map page
-> table) are not write protected.
-> 
-> 
+Yes, that is true. I should have de-emphasized that the fact that parent 
+partition must have no task.
 
-[ snip ]
+>
+>> +	there must be at least one cpu left in the parent partition.
+>> +	A new task cannot be moved to a partition root with no effective
+>> +	cpu.
+>> +
+>> +	Once becoming a partition root, changes to "cpuset.cpus"
+>> +	is generally allowed as long as the first condition above
+>> +	(cpu exclusivity rule) is true.
+> All the above ultimately says is that "a new task cannot be moved to a
+> partition root with no effective cpu", but I don't understand why this would
+> be a separate rule. Shouldn't the partition just stop being a partition when
+> it doesn't have any exclusive cpu? What's the benefit of having multiple its
+> own failure mode?
+A partition with 0 cpu can be considered as a special partition type for 
+spawning child partitions. This can be temporary as the cpus will be 
+given back when a child partition is destroyed.
+>
+>> +	Sometimes, changes to "cpuset.cpus" or cpu hotplug may cause
+>> +	the state of the partition root to become invalid when the
+>> +	other constraints of partition root are violated.  Therefore,
+>> +	it is recommended that users should always set "cpuset.cpus"
+>> +	to the proper value first before enabling partition.  In case
+>> +	"cpuset.cpus" has to be modified after partition is enabled,
+>> +	users should check the state of "cpuset.cpus.partition" after
+>> +	making change to it to make sure that the partition is still
+>> +	valid.
+> So, idk why the this doesn't cover the one above it. Also, this really
+> should be worded a lot stronger. It's not just recommended - confirming and
+> monitoring the transitions is an integral and essential part of using
+> cpuset.
+Sure, I will reword it to remove any mention of recommendation
+> ...
+>> +	An invalid partition is not a real partition even though the
+>> +	restriction of the cpu exclusivity rule will still apply.
+> Is there a reason we can't bring this in line with other failure behaviors?
+The internal flags are kept so that we can easily recover and become a 
+valid partition again when the cpus become available. Otherwise, we can 
+guarantee that the partition status can be restored even when the cpus 
+become available.
+>
+>> +	In the special case of a parent partition competing with a child
+>> +	partition for the only CPU left, the parent partition wins and
+>> +	the child partition becomes invalid.
+> Given that parent partitions are *always* empty, this rule doesn't seem to
+> make sense.
+You are right. I will update the wording.
+>
+> So, I think this definitely is a step in the right direction but still seems
+> to be neither here or there. Before, we pretended that we could police the
+> input when we couldn't. Now, we're changing the interface so that it
+> includes configuration failures as an integral part; however, we're still
+> policing some particular inputs while letting other inputs pass through and
+> trigger failures and why one is handled one way while the other differently
+> seems rather arbitrary.
+>
+The cpu_exclusive and load_balance flags are attributes associated 
+directly with the partition type. They are not affected by cpu 
+availability or changing of cpu list. That is why they are kept even 
+when the partition become invalid. If we have to remove them, it will be 
+equivalent to changing partition back to member and we may not need an 
+invalid partition type at all. Also, we will not be able to revert back 
+to partition again when the cpus becomes available.
 
-> +static void pgtable_write_set(void *pg_table, bool set)
-> +{
-> +	int level = 0;
-> +	pte_t *pte;
-> +
-> +	/*
-> +	 * Skip the page tables allocated from pgt_buf break area and from
-> +	 * memblock
-> +	 */
-> +	if (!after_bootmem)
-> +		return;
-> +	if (!PageTable(virt_to_page(pg_table)))
-> +		return;
-> +
-> +	pte = lookup_address((unsigned long)pg_table, &level);
-> +	if (!pte || level != PG_LEVEL_4K)
-> +		return;
-> +
-> +	if (set) {
-> +		if (pte_write(*pte))
-> +			return;
-> +
-> +		WRITE_ONCE(*pte, pte_mkwrite(*pte));
-
-I think that the pte_write() test (and the following one) might hide
-latent bugs. Either you know whether the PTE is write-protected or you
-need to protect against nested/concurrent calls to pgtable_write_set()
-by disabling preemption/IRQs.
-
-Otherwise, you risk in having someone else write-protecting the PTE
-after it is write-unprotected and before it is written - causing a crash,
-or write-unprotecting it after it is protected - which circumvents the
-protection.
-
-Therefore, I would think that instead you should have:
-
-	VM_BUG_ON(pte_write(*pte));  // (or WARN_ON_ONCE())
-
-In addition, if there are assumptions on the preemptability of the code,
-it would be nice to have some assertions. I think that the code assumes
-that all calls to pgtable_write_set() are done while holding the
-page-table lock. If that is the case, perhaps adding some lockdep
-assertion would also help to confirm the correctness.
-
-[ I put aside the lack of TLB flushes, which make the whole matter of
-delivered protection questionable. I presume that once PKS is used, 
-this is not an issue. ]
-
-
+Cheers,
+Longman
 
