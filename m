@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730F53F5C7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CC63F5C7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236561AbhHXKyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:54:14 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59784 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236595AbhHXKyI (ORCPT
+        id S236616AbhHXKye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236692AbhHXKyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:54:08 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17OArK2d066459;
-        Tue, 24 Aug 2021 05:53:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629802400;
-        bh=JyBRZzPMPceCiPja5vAcH+yb/sDFtlnhdvvXkZdKMEo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=akzbfYVRe3KX5A8KI5FYRh0Rre9pHTUHmjm1Th71MmzbCVJ0Hy2N+fU0kTqYmIKe8
-         QY7jUIGtZ4IvCBou4O+HOsjZb4nauRR9uCbyICtY+0jv9v2l5gYMfwEZjcthfcCfKb
-         GUW9jOa+APNbj+DygCtr1rUaGiBIbWhL+yGmq8zY=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17OArK8Z072615
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Aug 2021 05:53:20 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 24
- Aug 2021 05:53:20 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 24 Aug 2021 05:53:20 -0500
-Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17OAr3Dh129176;
-        Tue, 24 Aug 2021 05:53:18 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chris.chiu@canonical.com>
-Subject: [RFC PATCH 5/5] xhci-pci: Use flag to not register roothub while adding primary HCD
-Date:   Tue, 24 Aug 2021 16:23:02 +0530
-Message-ID: <20210824105302.25382-6-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210824105302.25382-1-kishon@ti.com>
-References: <20210824105302.25382-1-kishon@ti.com>
+        Tue, 24 Aug 2021 06:54:24 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8838EC0613D9;
+        Tue, 24 Aug 2021 03:53:33 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gv5Z20XCwz9ssD;
+        Tue, 24 Aug 2021 20:53:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629802410;
+        bh=HzOeN2jtvJOg0n3UQlLmjR7tG+1+HISt/x/U03rZakg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c0wa/FccQm+VcARa+ABE+9UqnMPo0VAAzUfnTSFL2i+KEHaSw0muKejNIdCSRSDun
+         7uhvPH/f3epgc+ooAeP4wgfRSamMhjEl+/AjRL/kht0Gf3LWKemCKK/pvF48gwcJ73
+         YvsOr4wHWXXVXPDcshZbWpND9WxZLDeoDMUmc7rpWQjll+y0J86wZ78iemEVBhw3xQ
+         jkMJlQJZGFoGsGE3xKLab0Z8jsWlNabqrjtNq/qIalLMbKXvloAXKkGSpHx3w4hqWR
+         DD7u+X31U3jlN3DCffRBJxZg4czyx3X5G39bN7pOu2mjAMEfSjamy30dYWtvgjMRaj
+         1BEFDdtG1rpzw==
+Date:   Tue, 24 Aug 2021 20:53:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the ftrace tree
+Message-ID: <20210824205328.12ddf116@canb.auug.org.au>
+In-Reply-To: <20210823100007.71ce2ba9@oasis.local.home>
+References: <20210823195804.10c5758a@canb.auug.org.au>
+        <20210823100007.71ce2ba9@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/EqMYDG=NHMtaYbWtGksljEH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Invoke __usb_hcd_pci_probe() without setting "register_hub" so that
-primary roothub is not registered here. Instead it will be registered
-along with secondary roothub. This is required for cold plugged USB
-devices to be detected in certain PCIe USB cards (like Inateck USB
-card).
+--Sig_/EqMYDG=NHMtaYbWtGksljEH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- drivers/usb/host/xhci-pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Steven,
 
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index 1c9a7957c45c..7734ff13aea9 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -397,7 +397,7 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	 * to say USB 2.0, but I'm not sure what the implications would be in
- 	 * the other parts of the HCD code.
- 	 */
--	retval = usb_hcd_pci_probe(dev, id, &xhci_pci_hc_driver);
-+	retval = __usb_hcd_pci_probe(dev, id, &xhci_pci_hc_driver, 0);
- 
- 	if (retval)
- 		goto put_runtime_pm;
--- 
-2.17.1
+On Mon, 23 Aug 2021 10:00:07 -0400 Steven Rostedt <rostedt@goodmis.org> wro=
+te:
+>
+> Does the below fix it?
 
+Fixed it for me, thanks.
+
+Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/EqMYDG=NHMtaYbWtGksljEH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkz6gACgkQAVBC80lX
+0Gxi4gf/abOq2grkQeAJQFvCaJOCc7RPiTJ+AB2nsGpd+ILJuI+dYETIRCeY7o4k
+gtMTiGPdBrvUB0wCdGYfC0DBMuL1k0KzRYQimKArWqXh3s2XHoAgjf0oKAICTLPc
+GdCUTrrGl7LR0qooXynOW9UJxwa5MfFX4sEvLYee1t+UQ3Jb/LKGOBzyVprPLcO1
+MVMsNCYAySdfaVg14KPb6Sh/pjP4OWPfQSAaqlVRgUe2Ob51iOPnos/s3SjLhHvA
+wRps8P18N8DlBZR5rQkAOA7/7MfU8Yxcf/uiI0Ado8sik4IHiTNVqg16ELMfqwIy
+1/jgli7WONM19c3XCqwOYWdtaiaLHA==
+=75Yx
+-----END PGP SIGNATURE-----
+
+--Sig_/EqMYDG=NHMtaYbWtGksljEH--
