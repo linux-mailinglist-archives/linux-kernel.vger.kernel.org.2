@@ -2,162 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832C83F604E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8912F3F6062
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237507AbhHXO0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S237618AbhHXO3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235997AbhHXO0s (ORCPT
+        with ESMTP id S237310AbhHXO3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:26:48 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD80EC061757;
-        Tue, 24 Aug 2021 07:26:03 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so46603102oti.0;
-        Tue, 24 Aug 2021 07:26:03 -0700 (PDT)
+        Tue, 24 Aug 2021 10:29:13 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBA4C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:28:29 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u3so44826165ejz.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:28:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cLmu7zgJaXKzK4Rf3xZy8rbXQ8G9iiiCS2AqbbVSdr4=;
-        b=W/vnTArXnkUTeAWPhVsCsNx9G1AaqqjMh7JGGCeKMkNnaOWP3sAbf+15/nLoCNmR3g
-         q5YdGS8A1cXpAtJlYg19EzxhKY4ftiJkULVtdpcPrc3JdAsQuBkyHELZ+nm35chlenyd
-         B1EUk7sT/qRPK4Ufw9SGcQJoAGqm8fBuCmyUjLn+ofRgVfuPflWOJHcCCZEENzbQUeyQ
-         VmavwAVWpqeeI9XEBe9u66mgOWxsXHJm3RTYGIcz6konO25IcoN22AqYojFn8mbqHxKg
-         qRzCfRvKs4A+5DaC8fRnZWJa7UOCRmoYWPgWVuJeEHetkAAVaEkEKj7Ut9tMesrOQeKz
-         uFVg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yMcyNN7HiHMTjPn985fqINOzKmFYb659Kz/R21GSs+Y=;
+        b=jpFaHM/b38XWLVP7EUSG0aHR0u2g52qR/KJ4/xj19QvUI/BGh/8Pd1l0/ndBcWHLHd
+         Pw/kukD6RuvDS6AfxeiwbAnKUrf7MDErSwzDPifFKcAyorhTUPXn8e9p3LfMrb3NR1OI
+         R/eZua7JFZesoen32e6QrqOt9IlC+7BrvFzgFTTSIWMavvb0u4nIG/koviTCgjNyXF4b
+         5MITFtxi5EgWZ4j/aurQxZxZBzJuCEu/cD/lu5r5riX/kP9BMwaFfwiNgxiZJivf6hB0
+         znQiNmJYISyE9wkArsG9e2THfCwF/InIWRCGgjWzsv95139uFZHL3bp8ZgbyPULMZ21f
+         ObEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=cLmu7zgJaXKzK4Rf3xZy8rbXQ8G9iiiCS2AqbbVSdr4=;
-        b=hw63h3ARUUBYommE/qzioPu6SJGj8BoEoRfp96rMxuHgPhqJixtTdKfIC5xHFIZdZm
-         WugrFMcrjgX/IT2yNRqDQYjjYQn9G8lZW5W1jj7C/xtfBKL0UkuvBaZrC+/bpMmgrFG7
-         Z+bVjaAy4q6xrdEg5r8LuS8BdOYAgrS4Pv/Rf4D4DivMHfHFFeFMT+n00yWdBuN0YUWC
-         ISlPkg6Yo6Zb6jARKU6C/8KIqq4tzEPaLsxs+/rrxbAPBFPPcj6f5AL2g9mRttC7tV/v
-         FXstbS2d4+QD7Oc391M1of45xS2eOLhpU5CG6aIXgOocF9268Bt20ne/wMIYxBAQybYV
-         w4Vw==
-X-Gm-Message-State: AOAM533ngQOaJHUrcm09VA5Y+HjWSqLsE1cDU5OdydcfYytA3lipdp6K
-        rKmxHFWFHWYbiNMsToQve0g=
-X-Google-Smtp-Source: ABdhPJwwcoIM6BcsOG2f+J3p/MRlA0Dk0tp13V1qbyu4iB7WMMjh+hei/xpqfoPCtwiA6Z7Inf6E6w==
-X-Received: by 2002:a54:4513:: with SMTP id l19mr3045512oil.143.1629815163193;
-        Tue, 24 Aug 2021 07:26:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w23sm4515362otk.56.2021.08.24.07.26.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yMcyNN7HiHMTjPn985fqINOzKmFYb659Kz/R21GSs+Y=;
+        b=YP65qzm7+qbX4uijcd6JAiiBZNj3YKH9dxZ0feivGPyJAH67f+Geg8O1bGBievIpyy
+         5M7ruinJfJwcc+lZ6gBf+/LhinzyA5IVPTVdNNsK1UUOWlrFNZrCTaWkWRzx8OATQI3D
+         ULshPr/p/E/9D4NzBeV9HI56hP0MiC4cKwd/Mk3Sl1gEzxGEpii4Zgh2eJWWIjXSKr8v
+         Yb0BvkzrtTuQYZp/muI+vN2us5kbgrW9H5AJZzykmBitGynixBbAQCt5r8mAd4wh26Ex
+         12afT4pzSENo0eXGsTjqlG/3GjqZ0+QfYZeJbXPs/6o5TBY0NGbMJDIR6NgYtscTJrgi
+         5rjA==
+X-Gm-Message-State: AOAM530zOYLlJsz2BMXKDjas0WNdrsSzDNIHZKXJF78JC+vknhRdAxk9
+        JYKHXnNLFftBiPg3LB6mlZM=
+X-Google-Smtp-Source: ABdhPJwxQtG/9GIA0HUWnyfmiW0egIEqfupR1GQYDenzMr3t9XHObXhM0gtMgYI0i9ZQ4/KKAFmInA==
+X-Received: by 2002:a17:906:2cd5:: with SMTP id r21mr40650069ejr.435.1629815307688;
+        Tue, 24 Aug 2021 07:28:27 -0700 (PDT)
+Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
+        by smtp.gmail.com with ESMTPSA id r2sm11873480edv.78.2021.08.24.07.28.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 07:26:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 24 Aug 2021 07:26:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
-        jxgao@google.com, joonas.lahtinen@linux.intel.com,
-        linux-pci@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        matthew.auld@intel.com, rodrigo.vivi@intel.com,
-        thomas.hellstrom@linux.intel.com, thomas.lendacky@amd.com,
-        quic_qiancai@quicinc.com
-Subject: Re: [PATCH v15 10/12] swiotlb: Add restricted DMA pool initialization
-Message-ID: <20210824142601.GA3393158@roeck-us.net>
-References: <20210624155526.2775863-1-tientzu@chromium.org>
- <20210624155526.2775863-11-tientzu@chromium.org>
+        Tue, 24 Aug 2021 07:28:27 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2 0/2] staging: r8188eu: Use new usb_control_msg_recv/send()
+Date:   Tue, 24 Aug 2021 16:28:21 +0200
+Message-Id: <20210824142823.16845-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210624155526.2775863-11-tientzu@chromium.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claire,
+Replace usb_control_msg() with the new usb_control_msg_recv() and
+usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
 
-On Thu, Jun 24, 2021 at 11:55:24PM +0800, Claire Chang wrote:
-> Add the initialization function to create restricted DMA pools from
-> matching reserved-memory nodes.
-> 
-> Regardless of swiotlb setting, the restricted DMA pool is preferred if
-> available.
-> 
-> The restricted DMA pools provide a basic level of protection against the
-> DMA overwriting buffer contents at unexpected times. However, to protect
-> against general data leakage and system memory corruption, the system
-> needs to provide a way to lock down the memory access, e.g., MPU.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-> Tested-by: Will Deacon <will@kernel.org>
-> ---
->  include/linux/swiotlb.h |  3 +-
->  kernel/dma/Kconfig      | 14 ++++++++
->  kernel/dma/swiotlb.c    | 76 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 92 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 3b9454d1e498..39284ff2a6cd 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -73,7 +73,8 @@ extern enum swiotlb_force swiotlb_force;
->   *		range check to see if the memory was in fact allocated by this
->   *		API.
->   * @nslabs:	The number of IO TLB blocks (in groups of 64) between @start and
-> - *		@end. This is command line adjustable via setup_io_tlb_npages.
-> + *		@end. For default swiotlb, this is command line adjustable via
-> + *		setup_io_tlb_npages.
->   * @used:	The number of used IO TLB block.
->   * @list:	The free list describing the number of free entries available
->   *		from each index.
-> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
-> index 77b405508743..3e961dc39634 100644
-> --- a/kernel/dma/Kconfig
-> +++ b/kernel/dma/Kconfig
-> @@ -80,6 +80,20 @@ config SWIOTLB
->  	bool
->  	select NEED_DMA_MAP_STATE
->  
-> +config DMA_RESTRICTED_POOL
-> +	bool "DMA Restricted Pool"
-> +	depends on OF && OF_RESERVED_MEM
-> +	select SWIOTLB
+After replacing usb_control_msg() with the new usb_control_msg_recv() and
+usb_control_msg_send() API of USB Core, remove camelcase from the pIo_buf
+variable that is passed as argument to the new API and remove the initial
+'p' (that probably stands for "pointer") from the same pIo_buf and from
+the pintfhdl and pdata arguments of usbctrl_vendorreq().
 
-This makes SWIOTLB user configurable, which in turn results in
+Fabio M. De Francesco (2):
+  staging: r8188eu: Use usb_control_msg_recv/send() in
+    usbctrl_vendorreq()
+  staging: r8188eu: Make some clean-ups in usbctrl_vendorreq()
 
-mips64-linux-ld: arch/mips/kernel/setup.o: in function `arch_mem_init':
-setup.c:(.init.text+0x19c8): undefined reference to `plat_swiotlb_setup'
-make[1]: *** [Makefile:1280: vmlinux] Error 1
+ drivers/staging/r8188eu/hal/usb_ops_linux.c | 65 +++++++++------------
+ 1 file changed, 27 insertions(+), 38 deletions(-)
 
-when building mips:allmodconfig.
+-- 
+2.32.0
 
-Should this possibly be "depends on SWIOTLB" ?
-
-Thanks,
-Guenter
