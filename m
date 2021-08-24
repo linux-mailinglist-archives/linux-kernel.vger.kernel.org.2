@@ -2,154 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7F03F5CD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB773F5CE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236618AbhHXLIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236562AbhHXLIe (ORCPT
+        id S236878AbhHXLKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:10:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36387 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236531AbhHXLKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:08:34 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2644C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 04:07:49 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id j12so22501597ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 04:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=FpTK3hvE23pECqh9p0EL04iD+tphMlpsn6IwOnys+Yw=;
-        b=MKAHNRe1lcS55l+C6nT7NY2946DeihoetzLsrM65H8RTbpH8YccKELXIddw5tqFebr
-         RyxTc0FViBBli8GOFiht696B2DcQ7ieWqJPLL2UQRmJcMp181SlELCgypd4uLRj7MtSa
-         gHbC3gcOYtCh1F1Jnm6wAt8nk7/ZCs7bmbpCjjKgVXQEdPExjj6uZLK2XFWKxOqaLq1F
-         PRnLKkMgK2AxD6xJ+ecjNOGVhiHIsL2AIDhLj44gOqrfAe5opggNwHachKaFAnMpT3HX
-         2HzBCNmW7iNWQANzQvfkpkrZ51chZCwgWyg+JipNhDZ9S/B/44ZgEdYDTn4SmRwX2pTv
-         0zeA==
+        Tue, 24 Aug 2021 07:10:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629803403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6MzIVYD6Rkcf1avefY9xlULEY3kI1KocMJ7+mbhVSUk=;
+        b=J9zoicPacGc8JCVXDTJ1GPTrxpOvQpo1Q/257vWmOFjmtp5Agg0IF8Dg9Q/xwcx1Ik7eRK
+        BWYjpB6K7Aqy5VmftBmDWsYkhPbASYgWnqYorRktJDMywF5vTY/k8HvGljgnemD44ew/Nv
+        OpbAykFaiQPxE3CZdd2bEWOOJrxEAyM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-VWlYptDnNvS2AGmK7jZFUw-1; Tue, 24 Aug 2021 07:10:02 -0400
+X-MC-Unique: VWlYptDnNvS2AGmK7jZFUw-1
+Received: by mail-ed1-f69.google.com with SMTP id x4-20020a50d9c4000000b003bed5199871so10330122edj.14
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 04:10:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FpTK3hvE23pECqh9p0EL04iD+tphMlpsn6IwOnys+Yw=;
-        b=XqGSEEz8r8TAxTwWIuL6TcTbbj4rATfNTqGlPwdUq+WYOrQJTtMaQHNwQAEkHLT1q/
-         NynPbEcF9+zMc+sE5+uFcpfWlTui0h1vXlEiZ+N0AO5hUfjX3uZwV446+guOoGJ7LzSz
-         s/kIxzQAid6S6+jKuhmlA5GEwoi/Ek46pryv/rAXzigedj4nq5uOE6ha3RLv0958Xr6e
-         DLaYB+j290j5PTMyWJfG4TVBvpCw9boD5qb8yzQFCVjzZMYWjmdbL/EIVLY+q2qPMIjq
-         iygnnMtZAWTpOf3BaTMdMnJFQc7RGVQLhWOHfGFX2S1T9iQbuiBOTuFHHm+YdDAmIBUb
-         urQg==
-X-Gm-Message-State: AOAM531Tr/0pIvhNvJD9Ecky7Cs+FCqAgU1hH0qHIK+DhViJXNXVCl1C
-        Eh4dwcOJzuJHqAHye944H9xQwzTWPX6plQ==
-X-Google-Smtp-Source: ABdhPJzdeNtzFvmqVLRRORGLdHk7PoStaT2GgTR2xPoO/JFcfaiD+G7i7CNDEvBfQVJCY4nbmowEjQ==
-X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr24744472ljk.121.1629803268016;
-        Tue, 24 Aug 2021 04:07:48 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id p1sm763760lfs.10.2021.08.24.04.07.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 04:07:47 -0700 (PDT)
-Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in
- usbctrl_vendorreq()
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210823223751.25104-1-fmdefrancesco@gmail.com>
- <20210823223751.25104-2-fmdefrancesco@gmail.com>
- <68eebfaf-50a3-a7ec-12ba-cde33c74c9ce@gmail.com>
- <3198276.4iybWabFxt@localhost.localdomain>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <d5ac7cd8-dc81-732d-b583-628cd2a273cb@gmail.com>
-Date:   Tue, 24 Aug 2021 14:07:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6MzIVYD6Rkcf1avefY9xlULEY3kI1KocMJ7+mbhVSUk=;
+        b=s196ylXTNgP3mNhHWofKhGN73zCmh+iwYOVUYt068BffFpi8eQTKKi7y7uNG3L14dP
+         f3pYzYQBrVQQnyJXOvkveEgvgcHjig0ozKvvq3/LBOWHBYfKiGDMvs3dQREdV8+s6xNB
+         9f3108OKDe3xALQ+z5oHXFBn3trrEQLgyL2EplCNxeNO8vFRjmQkExScb3PLF1AkCKWW
+         4lTEYt/QDfg/fGeaubV3SXkQrqeSjCX+4TR2p04r/fvwbgX89gOL+kQYVmGyMUypjWex
+         HLZ+0XYQA3cijtJ2C90iJTQ0+OVQHKXBf44v/NQO1Ogd9ucyj/cwEY2h07usdo0/BkXC
+         ZReA==
+X-Gm-Message-State: AOAM532ToJ+KbVGsthV27tFzvAQ1vDet5WukWg98pE3uOVNausBD4lBC
+        n4frhFFEzjXm51ucr/1eZCse0NpS/HAbpX9w2X8lVbVtMwW2XRieTtfId0NIhOrpLaTFXq4z7PL
+        B7so5hdG2tLClOaZMwqlqSST3
+X-Received: by 2002:a17:906:9bdc:: with SMTP id de28mr40030309ejc.154.1629803401151;
+        Tue, 24 Aug 2021 04:10:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJym2zZCfOfkB6aYg6hvpM9EYCUNutnmi5ZkMGiE/H3YmE4qf/VSJ5+nHLjDGlfYfIZpl2VYMg==
+X-Received: by 2002:a17:906:9bdc:: with SMTP id de28mr40030281ejc.154.1629803400969;
+        Tue, 24 Aug 2021 04:10:00 -0700 (PDT)
+Received: from steredhat (host-79-45-8-152.retail.telecomitalia.it. [79.45.8.152])
+        by smtp.gmail.com with ESMTPSA id u2sm9003772ejc.61.2021.08.24.04.09.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 04:10:00 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 13:09:56 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
+        parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
+        songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v11 03/12] vdpa: Fix some coding style issues
+Message-ID: <20210824110956.gtajf34s2xpm66gx@steredhat>
+References: <20210818120642.165-1-xieyongji@bytedance.com>
+ <20210818120642.165-4-xieyongji@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <3198276.4iybWabFxt@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210818120642.165-4-xieyongji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 11:53 AM, Fabio M. De Francesco wrote:
-> On Tuesday, August 24, 2021 10:13:46 AM CEST Pavel Skripkin wrote:
->> On 8/24/21 1:37 AM, Fabio M. De Francesco wrote:
->> > Replace usb_control_msg() with the new usb_control_msg_recv() and
->> > usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
->> > 
->> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->> > ---
->> > 
->> > Thanks to Pavel Skripkin <paskripkin@gmail.com> for his review of the
->> > RFC patch.
->> >   
->> > drivers/staging/r8188eu/hal/usb_ops_linux.c | 25 ++++++++++-----------
->> > 1 file changed, 12 insertions(+), 13 deletions(-)
->> > 
->> > [...]
->> >
->> Hi, Fabio!
->> 
->> Christophe is right about semantic part. 
-> 
-> Hi Pavel,
-> 
-> I haven't yet read Christophe's message (but I'm going to do it ASAP).
-> I hope he found out what is wrong with the code, what made Phil's tests
-> fail.
-> 
->> Also,
->> 
->> if (!status) {
->> 
->> } else {
->> 	if (status < 0) {		<-
->> 					  |
->> 	} else {			  |
->> 					  |
->> 	}				<-
->> }					
->> 
->> Extra if-else is not needed, since status can be 0 and < 0, there is no 
->> 3rd state, like it was before.
-> 
-> Correct, thanks!
-> 
-> Now I read the following from the documentation of the new API...
-> 
-> "Return: If successful, 0 is returned, Otherwise, a negative error number."
-> 
-> I'll remove that status < 0 check and whatever else is no more necessary.
-> Thanks, again :)
-> 
-> Regards,
-> 
+On Wed, Aug 18, 2021 at 08:06:33PM +0800, Xie Yongji wrote:
+>Fix some code indent issues and following checkpatch warning:
+>
+>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+>371: FILE: include/linux/vdpa.h:371:
+>+static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
+>
+>Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+>---
+> include/linux/vdpa.h | 34 +++++++++++++++++-----------------
+> 1 file changed, 17 insertions(+), 17 deletions(-)
 
-Btw, not related to your patch, but I start think, that this check:
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
+>
+>diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+>index 954b340f6c2f..8a645f8f4476 100644
+>--- a/include/linux/vdpa.h
+>+++ b/include/linux/vdpa.h
+>@@ -43,17 +43,17 @@ struct vdpa_vq_state_split {
+>  * @last_used_idx: used index
+>  */
+> struct vdpa_vq_state_packed {
+>-        u16	last_avail_counter:1;
+>-        u16	last_avail_idx:15;
+>-        u16	last_used_counter:1;
+>-        u16	last_used_idx:15;
+>+	u16	last_avail_counter:1;
+>+	u16	last_avail_idx:15;
+>+	u16	last_used_counter:1;
+>+	u16	last_used_idx:15;
+> };
+>
+> struct vdpa_vq_state {
+>-     union {
+>-          struct vdpa_vq_state_split split;
+>-          struct vdpa_vq_state_packed packed;
+>-     };
+>+	union {
+>+		struct vdpa_vq_state_split split;
+>+		struct vdpa_vq_state_packed packed;
+>+	};
+> };
+>
+> struct vdpa_mgmt_dev;
+>@@ -131,7 +131,7 @@ struct vdpa_iova_range {
+>  *				@vdev: vdpa device
+>  *				@idx: virtqueue index
+>  *				@state: pointer to returned state (last_avail_idx)
+>- * @get_vq_notification: 	Get the notification area for a virtqueue
+>+ * @get_vq_notification:	Get the notification area for a virtqueue
+>  *				@vdev: vdpa device
+>  *				@idx: virtqueue index
+>  *				Returns the notifcation area
+>@@ -353,25 +353,25 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+>
+> static inline void vdpa_reset(struct vdpa_device *vdev)
+> {
+>-        const struct vdpa_config_ops *ops = vdev->config;
+>+	const struct vdpa_config_ops *ops = vdev->config;
+>
+> 	vdev->features_valid = false;
+>-        ops->set_status(vdev, 0);
+>+	ops->set_status(vdev, 0);
+> }
+>
+> static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> {
+>-        const struct vdpa_config_ops *ops = vdev->config;
+>+	const struct vdpa_config_ops *ops = vdev->config;
+>
+> 	vdev->features_valid = true;
+>-        return ops->set_features(vdev, features);
+>+	return ops->set_features(vdev, features);
+> }
+>
+>-
+>-static inline void vdpa_get_config(struct vdpa_device *vdev, unsigned offset,
+>-				   void *buf, unsigned int len)
+>+static inline void vdpa_get_config(struct vdpa_device *vdev,
+>+				   unsigned int offset, void *buf,
+>+				   unsigned int len)
+> {
+>-        const struct vdpa_config_ops *ops = vdev->config;
+>+	const struct vdpa_config_ops *ops = vdev->config;
+>
+> 	/*
+> 	 * Config accesses aren't supposed to trigger before features are set.
+>-- 
+>2.11.0
+>
 
-	if (!pIo_buf) {
-		DBG_88E("[%s] pIo_buf == NULL\n", __func__);
-		status = -ENOMEM;
-		goto release_mutex;
-	}
-
-Should be wrapped as
-
-	if (WARN_ON(unlikely(!pIo_buf)) {
-		...
-	}
-
-Since usb_vendor_req_buf is initialized in ->probe() and I can't see 
-possible calltrace, which can cause zeroing this pointer.
-
-Something _completely_ wrong is going on if usb_vendor_req_buf is NULL, 
-and we should complain loud about it. What do you think?
-
-
-With regards,
-Pavel Skripkin
