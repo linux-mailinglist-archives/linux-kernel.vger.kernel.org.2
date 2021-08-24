@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7128C3F6898
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184263F6238
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239465AbhHXSAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239356AbhHXSAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:00:32 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C014C081B1F;
-        Tue, 24 Aug 2021 10:41:10 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id a5so12682025plh.5;
-        Tue, 24 Aug 2021 10:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=U4DiJbbRSL9RJ86g/a4Cg/6UN5ORuG4SS/e84gNuqa0=;
-        b=D0VMCcGPGgq4s04g076Ys1ZIM7vBNXlJHQc30ROohgaMz4oo0qq0UQjd6/FJ4SAH6h
-         z641GNTGpqKTba1ZosjCqPpOUvvBzRTEEV4AnwGkd2FrvtoPQdjvGGtJaa6SQwdIQOPr
-         EBMbYand+QAFQDoOKFwqPq2IdCpT8mh+4/f1He10ZBL/8bAlJlwazhXKWzeydKgmz2VS
-         RiMqAWvO+wk/8zjKLA577kW8VkowIg+bdDKbENhmAqCP3dvtuJVpMHEctJnxlq3ujJ47
-         BVcLPplzxtr21znWEigtB/BT6I6IYaLcxNWazP+p35TvmXSq8pAq7DYmc0SIiJ5hTOzc
-         WgvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U4DiJbbRSL9RJ86g/a4Cg/6UN5ORuG4SS/e84gNuqa0=;
-        b=sNBF8IMpNcEQc3a6NjjFePoVQVyobrtSLMoyG0ex1jufgn94sxdQxRoWa2RNCJChxP
-         WEvwRTv/i4yi0lGU22V0kkD2rTvXQCU1zB8ngH9vYU+0yAaMFxYzAUdTeYbxe20owEGs
-         YN/lLtfcuYSDW21xmJqfHNOFHaZfV38a5LMwCIhaAif7977Z5pcs0yOrxRcpHbbLP/l9
-         6dMPKa0Je5s035rivaml/oGWxbBm7i+WGQhzezcSKoLMmdJ5gZduRyBpOAc1JSpqrBb8
-         Fu5I6hsCG2TnRImuDBXhc2BNXaH/QzEkNhaJYFA8kvyLXiXA/cs3CXwVA/+RqgcOIM0/
-         KJdA==
-X-Gm-Message-State: AOAM53144V3zaWua/N8GW4MnWsK9qBgtYFvmSvqt2yAe3y/vEPUTikrx
-        hM2+kuoDDic/SCJglX+do4CwiOssBOE=
-X-Google-Smtp-Source: ABdhPJym2F8WG9gPjxCYxVWnI0py9MZspka9xpAneeOayM1EFSfXUk2goHILbw1AfjsNsqTtykB4wQ==
-X-Received: by 2002:a17:902:e84f:b0:12d:c616:a402 with SMTP id t15-20020a170902e84f00b0012dc616a402mr33651656plg.77.1629826869877;
-        Tue, 24 Aug 2021 10:41:09 -0700 (PDT)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id 15sm2987674pfu.192.2021.08.24.10.41.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Aug 2021 10:41:09 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH 7/7] KVM: X86: Also prefetch the last range in __direct_pte_prefetch().
-Date:   Tue, 24 Aug 2021 15:55:23 +0800
-Message-Id: <20210824075524.3354-8-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210824075524.3354-1-jiangshanlai@gmail.com>
-References: <20210824075524.3354-1-jiangshanlai@gmail.com>
+        id S232344AbhHXQHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:07:18 -0400
+Received: from mga07.intel.com ([134.134.136.100]:13426 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232037AbhHXQHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:07:16 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="281059309"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="281059309"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 09:03:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="493592392"
+Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Aug 2021 09:03:06 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: fix kernel panic due to NULL pointer dereference of xsk_pool
+Date:   Tue, 24 Aug 2021 23:56:12 +0800
+Message-Id: <20210824155612.978529-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+After free xsk_pool, there is possibility that napi polling is still
+running in the middle, thus causes a kernel crash due to kernel NULL
+pointer dereference of rx_q->xsk_pool and tx_q->xsk_pool.
 
-__direct_pte_prefetch() skips prefetching the last range.
+Fix this by changing the XDP pool setup sequence to:
+ 1. disable napi before free xsk_pool
+ 2. enable napi after init xsk_pool
 
-The last range are often the whole range after the faulted spte when
-guest is touching huge-page-mapped(in guest view) memory forwardly
-which means prefetching them can reduce pagefault.
+The following kernel panic is observed without this patch:
 
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+RIP: 0010:xsk_uses_need_wakeup+0x5/0x10
+Call Trace:
+stmmac_napi_poll_rxtx+0x3a9/0xae0 [stmmac]
+__napi_poll+0x27/0x130
+net_rx_action+0x233/0x280
+__do_softirq+0xe2/0x2b6
+run_ksoftirqd+0x1a/0x20
+smpboot_thread_fn+0xac/0x140
+? sort_range+0x20/0x20
+kthread+0x124/0x150
+? set_kthread_struct+0x40/0x40
+ret_from_fork+0x1f/0x30
+---[ end trace a77c8956b79ac107 ]---
+
+Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index e5932af6f11c..ac260e01e9d8 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2847,8 +2847,9 @@ static void __direct_pte_prefetch(struct kvm_vcpu *vcpu,
- 	i = (sptep - sp->spt) & ~(PTE_PREFETCH_NUM - 1);
- 	spte = sp->spt + i;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
+index 105821b53020..2a616c6f7cd0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_xdp.c
+@@ -34,18 +34,18 @@ static int stmmac_xdp_enable_pool(struct stmmac_priv *priv,
+ 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
  
--	for (i = 0; i < PTE_PREFETCH_NUM; i++, spte++) {
--		if (is_shadow_present_pte(*spte) || spte == sptep) {
-+	for (i = 0; i <= PTE_PREFETCH_NUM; i++, spte++) {
-+		if (i == PTE_PREFETCH_NUM ||
-+		    is_shadow_present_pte(*spte) || spte == sptep) {
- 			if (!start)
- 				continue;
- 			if (direct_pte_prefetch_many(vcpu, sp, start, spte) < 0)
+ 	if (need_update) {
+-		stmmac_disable_rx_queue(priv, queue);
+-		stmmac_disable_tx_queue(priv, queue);
+ 		napi_disable(&ch->rx_napi);
+ 		napi_disable(&ch->tx_napi);
++		stmmac_disable_rx_queue(priv, queue);
++		stmmac_disable_tx_queue(priv, queue);
+ 	}
+ 
+ 	set_bit(queue, priv->af_xdp_zc_qps);
+ 
+ 	if (need_update) {
+-		napi_enable(&ch->rxtx_napi);
+ 		stmmac_enable_rx_queue(priv, queue);
+ 		stmmac_enable_tx_queue(priv, queue);
++		napi_enable(&ch->rxtx_napi);
+ 
+ 		err = stmmac_xsk_wakeup(priv->dev, queue, XDP_WAKEUP_RX);
+ 		if (err)
+@@ -72,10 +72,10 @@ static int stmmac_xdp_disable_pool(struct stmmac_priv *priv, u16 queue)
+ 	need_update = netif_running(priv->dev) && stmmac_xdp_is_enabled(priv);
+ 
+ 	if (need_update) {
++		napi_disable(&ch->rxtx_napi);
+ 		stmmac_disable_rx_queue(priv, queue);
+ 		stmmac_disable_tx_queue(priv, queue);
+ 		synchronize_rcu();
+-		napi_disable(&ch->rxtx_napi);
+ 	}
+ 
+ 	xsk_pool_dma_unmap(pool, STMMAC_RX_DMA_ATTR);
+@@ -83,10 +83,10 @@ static int stmmac_xdp_disable_pool(struct stmmac_priv *priv, u16 queue)
+ 	clear_bit(queue, priv->af_xdp_zc_qps);
+ 
+ 	if (need_update) {
+-		napi_enable(&ch->rx_napi);
+-		napi_enable(&ch->tx_napi);
+ 		stmmac_enable_rx_queue(priv, queue);
+ 		stmmac_enable_tx_queue(priv, queue);
++		napi_enable(&ch->rx_napi);
++		napi_enable(&ch->tx_napi);
+ 	}
+ 
+ 	return 0;
 -- 
-2.19.1.6.gb485710b
+2.25.1
 
