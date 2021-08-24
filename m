@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CC63F5C7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F513F5C80
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhHXKye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236692AbhHXKyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:54:24 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8838EC0613D9;
-        Tue, 24 Aug 2021 03:53:33 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gv5Z20XCwz9ssD;
-        Tue, 24 Aug 2021 20:53:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1629802410;
-        bh=HzOeN2jtvJOg0n3UQlLmjR7tG+1+HISt/x/U03rZakg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c0wa/FccQm+VcARa+ABE+9UqnMPo0VAAzUfnTSFL2i+KEHaSw0muKejNIdCSRSDun
-         7uhvPH/f3epgc+ooAeP4wgfRSamMhjEl+/AjRL/kht0Gf3LWKemCKK/pvF48gwcJ73
-         YvsOr4wHWXXVXPDcshZbWpND9WxZLDeoDMUmc7rpWQjll+y0J86wZ78iemEVBhw3xQ
-         jkMJlQJZGFoGsGE3xKLab0Z8jsWlNabqrjtNq/qIalLMbKXvloAXKkGSpHx3w4hqWR
-         DD7u+X31U3jlN3DCffRBJxZg4czyx3X5G39bN7pOu2mjAMEfSjamy30dYWtvgjMRaj
-         1BEFDdtG1rpzw==
-Date:   Tue, 24 Aug 2021 20:53:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the ftrace tree
-Message-ID: <20210824205328.12ddf116@canb.auug.org.au>
-In-Reply-To: <20210823100007.71ce2ba9@oasis.local.home>
-References: <20210823195804.10c5758a@canb.auug.org.au>
-        <20210823100007.71ce2ba9@oasis.local.home>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EqMYDG=NHMtaYbWtGksljEH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S236410AbhHXK4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:56:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236320AbhHXK4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:56:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4487361163;
+        Tue, 24 Aug 2021 10:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629802518;
+        bh=NsgaVcjwqPVDQvxpxv1KlOmUMb96K7W1aN79AbgQurQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eFG1rBLaoSsSNEEGcCNos4mgcK48yTXWELBhHC8qEjuppOLF5ZAKsHbk2TC5nCf4G
+         lfHj9+2wPQq/4fkJ4DEJQX9DniW1B+2cjWyFFrCZ1zkSaodpFz/FX+/aYmMaiftUkT
+         d7XWD7QCMiiQvZ0IbuwRe/UcipyRE7EMengwhq1QQE9yptUzKDcqwUol5/J5taM3Z6
+         +f/ByQCwTzDCzxE3Q2EJYl5QWQAswUtuJUGGW0hj1RKKsm1sE1LYMyTL9wI6iTuzaK
+         JdthOJ5m6smxkqAeCDNZotZMm/X4kxBt0XvomqXdKpGSbnwSQRu7pn/300h9RFvRKz
+         bM/ywsTSOdm0A==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     nsekhar@ti.com
+Cc:     bgolaszewski@baylibre.com, nm@ti.com, lokeshvutla@ti.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v2] ARM: dts: da850-evm: Change aemif node status from "ok" to "okay"
+Date:   Tue, 24 Aug 2021 13:55:12 +0300
+Message-Id: <20210824105512.19242-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EqMYDG=NHMtaYbWtGksljEH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+As per Device Tree Specification [1], the status parameter of nodes can
+be "okay", "disabled", etc. "ok" is not a valid parameter.
 
-Hi Steven,
+U-boot Driver Model does not recognize status="ok" either and treats
+the node as disabled.
 
-On Mon, 23 Aug 2021 10:00:07 -0400 Steven Rostedt <rostedt@goodmis.org> wro=
-te:
->
-> Does the below fix it?
+[1] https://github.com/devicetree-org/devicetree-specification/releases/tag/v0.3
 
-Fixed it for me, thanks.
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+Changelog:
+v2
+-refer to DT spec instead of schema in commit log.
 
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au>
+ arch/arm/boot/dts/da850-evm.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/arch/arm/boot/dts/da850-evm.dts b/arch/arm/boot/dts/da850-evm.dts
+index 87c517d65f62..9dc79b5977bf 100644
+--- a/arch/arm/boot/dts/da850-evm.dts
++++ b/arch/arm/boot/dts/da850-evm.dts
+@@ -415,7 +415,7 @@
+ &aemif {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&nand_pins>;
+-	status = "ok";
++	status = "okay";
+ 	cs3 {
+ 		#address-cells = <2>;
+ 		#size-cells = <1>;
+-- 
+2.17.1
 
---Sig_/EqMYDG=NHMtaYbWtGksljEH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkz6gACgkQAVBC80lX
-0Gxi4gf/abOq2grkQeAJQFvCaJOCc7RPiTJ+AB2nsGpd+ILJuI+dYETIRCeY7o4k
-gtMTiGPdBrvUB0wCdGYfC0DBMuL1k0KzRYQimKArWqXh3s2XHoAgjf0oKAICTLPc
-GdCUTrrGl7LR0qooXynOW9UJxwa5MfFX4sEvLYee1t+UQ3Jb/LKGOBzyVprPLcO1
-MVMsNCYAySdfaVg14KPb6Sh/pjP4OWPfQSAaqlVRgUe2Ob51iOPnos/s3SjLhHvA
-wRps8P18N8DlBZR5rQkAOA7/7MfU8Yxcf/uiI0Ado8sik4IHiTNVqg16ELMfqwIy
-1/jgli7WONM19c3XCqwOYWdtaiaLHA==
-=75Yx
------END PGP SIGNATURE-----
-
---Sig_/EqMYDG=NHMtaYbWtGksljEH--
