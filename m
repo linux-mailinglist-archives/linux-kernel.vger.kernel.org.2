@@ -2,122 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115433F5832
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8A03F5846
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbhHXG25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
+        id S232173AbhHXGc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbhHXG2t (ORCPT
+        with ESMTP id S233241AbhHXGcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:28:49 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325CAC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:28:04 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d2so15933785qto.6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y6XPBNO/FjkntP73oDhopAIjrRJdicZGIZbcxURZOD0=;
-        b=Mnj9uBsNwwF2i/yxIuuPt2hD9TLiyKuHCyR41j2+Grk+HltMdDLIJtuS1gdAvnjiXu
-         vYUr8pVNEbfRcFPDT6fi32j3LFzxPD5/8idpCTh5hRR81B8rQ+0zfkyMPaS4YEM86UnF
-         Zr2PihIO/E9RZKBPY58OqayIA5Gutj3/3VsLW2gW6FrtXKCQ9th1fkfQ/WYF4V0DY112
-         orSFLTZnmGJa/77h75HMefFkmPqVrID/T1v2ivs5jr7zUgm9fYdDEudAzBVJubgwUzFf
-         bWmxSyxQMPXWWscoojgRdt1GXqeaxgVusCMLS3aK6oRrjPmVyDhPZ7+ra5gq+dhzD6Ic
-         bUSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y6XPBNO/FjkntP73oDhopAIjrRJdicZGIZbcxURZOD0=;
-        b=Gi3xsQV8K9+mEY/f0DsxcJ+Aa2PYSzKr1Oo6ocNOyFr/VWq6JY2xggm7UgIAm1h+vv
-         s8FEWl1aVWyXLtLVU8vT7wiohRha/zSRVehko9X47221uhM/JuWUuVmi+c1MUpA84sUh
-         dyA9F3RXjSi2II1kZUY6JWUSNPbMsT7HBO+j7p4AffZaL0XvCb5ps8XT4wiEis1q+Orw
-         vAnApbAoxdwrXu3Eagsrj+Dg8+D20q9+fGbTADHJr2mUJhZ8EFkyGaP3pGHo0ZnYyvD1
-         hoaWN18D89o/WUArm6W0klfgKpiMXwfFSbM+1ZTwLGWmKAC3A6Se72JLJvkugxnvuH2R
-         Gm7w==
-X-Gm-Message-State: AOAM531WlLu8J/LAt6mLQZwH3zov5pUco4tUxUVJ2WJ+OG7sZofum2PW
-        E8z38f/3lPXf30vKvMAHP9g=
-X-Google-Smtp-Source: ABdhPJyXoIjJGF6325fp6PLh3oNQxqSqioEHOoGZBqeULAfxng5g0O6SFz8pJ+q7Fo8rFbavjlZgQQ==
-X-Received: by 2002:a05:622a:3c6:: with SMTP id k6mr33334119qtx.29.1629786483411;
-        Mon, 23 Aug 2021 23:28:03 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id f20sm3552057qka.64.2021.08.23.23.28.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:28:03 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] kernel:rtmutex: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:27:56 -0700
-Message-Id: <20210824062756.59532-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 02:32:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DA0C061757;
+        Mon, 23 Aug 2021 23:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fpCMtam2gKIzBTolBqecDl4JpjyLRptp+zxp+vbCDhI=; b=NV6N/CHHnQ2E0k0OiikK0MWh/O
+        C+TSVd5x+pCjvSCOrrPupapIaUU2ZVaJ5lVzq6yFpXpxeAMczrYQW15jFj7xakrRTA1QWEg95gZOZ
+        Q4C8ueXxwle4uS8R2hW7Tq0zCdg6rSeqCmsKCd9+wIqw40dioZFCvvDRz1ENNOMKZ7hCgeB/Jdmga
+        vE7VLNgdIZ32hyjzV9AN5lJ9mklsgSU60tnMRQu8/dAqJJx4kdWxgrbsRDV9UfKHAiIgx0vUr/FFe
+        zHDc0FsuKI2GXKSQuNPzqzxTfhuMPSLylLdtqmGY05hdJc+26JMSRWUUSrK91WgQW2uBpJGW4jd1F
+        siQC3SYA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIPuf-00AeYz-BN; Tue, 24 Aug 2021 06:28:17 +0000
+Date:   Tue, 24 Aug 2021 07:27:57 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, ming.lei@redhat.com,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
+        nbd@other.debian.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 10/10] nbd: add error handling support for add_disk()
+Message-ID: <YSSRbRNHXkuA+90K@infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-11-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823202930.137278-11-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 01:29:30PM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-./kernel/locking/rtmutex.c:375:9-10:WARNING:return of 0/1 in
-function '__waiter_less' with return type bool
+Looks good:
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- kernel/locking/rtmutex.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-index 8aaa352..f904f25 100644
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -372,24 +372,24 @@ static __always_inline bool __waiter_less(struct rb_node *a, const struct rb_nod
- 	struct rt_mutex_waiter *bw = __node_2_waiter(b);
- 
- 	if (rt_mutex_waiter_less(aw, bw))
--		return 1;
-+		return true;
- 
- 	if (!build_ww_mutex())
--		return 0;
-+		return false;
- 
- 	if (rt_mutex_waiter_less(bw, aw))
--		return 0;
-+		return false;
- 
- 	/* NOTE: relies on waiter->ww_ctx being set before insertion */
- 	if (aw->ww_ctx) {
- 		if (!bw->ww_ctx)
--			return 1;
-+			return true;
- 
- 		return (signed long)(aw->ww_ctx->stamp -
- 				     bw->ww_ctx->stamp) < 0;
- 	}
- 
--	return 0;
-+	return false;
- }
- 
- static __always_inline void
--- 
-1.8.3.1
-
-
+Same comment on the signoff as for the previous one.
