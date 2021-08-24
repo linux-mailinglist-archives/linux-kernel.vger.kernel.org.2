@@ -2,118 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442BC3F6541
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87D73F6745
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbhHXRK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:10:57 -0400
-Received: from mga12.intel.com ([192.55.52.136]:34909 "EHLO mga12.intel.com"
+        id S240545AbhHXRcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:32:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238870AbhHXRIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:08:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="196931983"
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="196931983"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:04:29 -0700
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="526698792"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.119.65]) ([10.209.119.65])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:04:27 -0700
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210823195409-mutt-send-email-mst@kernel.org>
- <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
- <YSSay4zGjLaNMOh1@infradead.org>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <2747d96f-5063-7c63-5a47-16ea299fa195@linux.intel.com>
-Date:   Tue, 24 Aug 2021 10:04:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S241464AbhHXR3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:29:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F40CA61B43;
+        Tue, 24 Aug 2021 17:05:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629824730;
+        bh=36eifsAOxTF4eQnSGTYznbnPJqSlDlev0XVPOLvtT0E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dV/Wex0z2mku+CBYJw9xnjxP5ELaFzgYBfJRf159TT63D97TcDFCf8qfmvdL/gbfN
+         +MteTS9Pf94EQF0XjdWUDG98crk2Mf7kz4rGE1yAkTISHnucWpiY6a5ByQweNSKGaP
+         L4zylc49cwJQIWN5+H32Wn05ai+DJ0ITQag2Wk3zDMv2HEt+yF8I9fSrQRunQ6YaDX
+         26g1OGUhtcDWj1S12sleziKJHwxH8Ynas7l+9Ts8KwXqk0kcAZz2VRf2lfZbKADkPw
+         rH7bMxnm14i0/6/fQbGtsQkEJqy3Wm7oio7wPinGL6iUDh8057vvImtn6BSHH5upAd
+         u+UD2r6CsimjQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.14 33/64] x86/fpu: Make init_fpstate correct with optimized XSAVE
+Date:   Tue, 24 Aug 2021 13:04:26 -0400
+Message-Id: <20210824170457.710623-34-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210824170457.710623-1-sashal@kernel.org>
+References: <20210824170457.710623-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YSSay4zGjLaNMOh1@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.245-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.245-rc1
+X-KernelTest-Deadline: 2021-08-26T17:04+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Thomas Gleixner <tglx@linutronix.de>
 
-On 8/24/2021 12:07 AM, Christoph Hellwig wrote:
-> On Mon, Aug 23, 2021 at 05:30:54PM -0700, Kuppuswamy, Sathyanarayanan wrote:
->>
->> On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
->>>> Add a new variant of pci_iomap for mapping all PCI resources
->>>> of a devices as shared memory with a hypervisor in a confidential
->>>> guest.
->>>>
->>>> Signed-off-by: Andi Kleen<ak@linux.intel.com>
->>>> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
->>> I'm a bit puzzled by this part. So why should the guest*not*  map
->>> pci memory as shared? And if the answer is never (as it seems to be)
->>> then why not just make regular pci_iomap DTRT?
->> It is in the context of confidential guest (where VMM is un-trusted). So
->> we don't want to make all PCI resource as shared. It should be allowed
->> only for hardened drivers/devices.
-> Well, assuming the host can do any damage when mapped shared that also
-> means not mapping it shared will completely break the drivers.
+commit f9dfb5e390fab2df9f7944bb91e7705aba14cd26 upstream.
 
-There are several cases:
+The XSAVE init code initializes all enabled and supported components with
+XRSTOR(S) to init state. Then it XSAVEs the state of the components back
+into init_fpstate which is used in several places to fill in the init state
+of components.
 
-- We have driver filtering active to protect you against attacks from 
-the host against unhardened drivers.
+This works correctly with XSAVE, but not with XSAVEOPT and XSAVES because
+those use the init optimization and skip writing state of components which
+are in init state. So init_fpstate.xsave still contains all zeroes after
+this operation.
 
-In this case the drivers not working is the intended behavior.
+There are two ways to solve that:
 
-- There is an command allow list override for some new driver, but the 
-driver is hardened and shared
+   1) Use XSAVE unconditionally, but that requires to reshuffle the buffer when
+      XSAVES is enabled because XSAVES uses compacted format.
 
-The other drivers will still not work, but that's also the intended behavior
+   2) Save the components which are known to have a non-zero init state by other
+      means.
 
-- Driver filtering is disabled or the allow list override is used to 
-enable some non hardened/enabled driver
+Looking deeper, #2 is the right thing to do because all components the
+kernel supports have all-zeroes init state except the legacy features (FP,
+SSE). Those cannot be hard coded because the states are not identical on all
+CPUs, but they can be saved with FXSAVE which avoids all conditionals.
 
-There is a command line option to override the ioremap sharing default, 
-it will allow all drivers to do ioremap. We would really prefer to make 
-it more finegrained, but it's not possible in this case. Other drivers 
-are likely attackable.
+Use FXSAVE to save the legacy FP/SSE components in init_fpstate along with
+a BUILD_BUG_ON() which reminds developers to validate that a newly added
+component has all zeroes init state. As a bonus remove the now unused
+copy_xregs_to_kernel_booting() crutch.
 
-- Driver filtering is disabled (allowing attacks on the drivers) and the 
-command line option for forced sharing is set.
+The XSAVE and reshuffle method can still be implemented in the unlikely
+case that components are added which have a non-zero init state and no
+other means to save them. For now, FXSAVE is just simple and good enough.
 
-All drivers initialize and can talk to the host through MMIO. Lots of 
-unhardened drivers are likely attackable.
+  [ bp: Fix a typo or two in the text. ]
 
--Andi
+Fixes: 6bad06b76892 ("x86, xsave: Use xsaveopt in context-switch path when supported")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210618143444.587311343@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/x86/include/asm/fpu/internal.h | 30 ++++++-----------------
+ arch/x86/kernel/fpu/xstate.c        | 38 ++++++++++++++++++++++++++---
+ 2 files changed, 43 insertions(+), 25 deletions(-)
+
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index b8c935033d21..4f274d851986 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -215,6 +215,14 @@ static inline void copy_fxregs_to_kernel(struct fpu *fpu)
+ 	}
+ }
+ 
++static inline void fxsave(struct fxregs_state *fx)
++{
++	if (IS_ENABLED(CONFIG_X86_32))
++		asm volatile( "fxsave %[fx]" : [fx] "=m" (*fx));
++	else
++		asm volatile("fxsaveq %[fx]" : [fx] "=m" (*fx));
++}
++
+ /* These macros all use (%edi)/(%rdi) as the single memory argument. */
+ #define XSAVE		".byte " REX_PREFIX "0x0f,0xae,0x27"
+ #define XSAVEOPT	".byte " REX_PREFIX "0x0f,0xae,0x37"
+@@ -283,28 +291,6 @@ static inline void copy_fxregs_to_kernel(struct fpu *fpu)
+ 		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
+ 		     : "memory")
+ 
+-/*
+- * This function is called only during boot time when x86 caps are not set
+- * up and alternative can not be used yet.
+- */
+-static inline void copy_xregs_to_kernel_booting(struct xregs_state *xstate)
+-{
+-	u64 mask = -1;
+-	u32 lmask = mask;
+-	u32 hmask = mask >> 32;
+-	int err;
+-
+-	WARN_ON(system_state != SYSTEM_BOOTING);
+-
+-	if (static_cpu_has(X86_FEATURE_XSAVES))
+-		XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
+-	else
+-		XSTATE_OP(XSAVE, xstate, lmask, hmask, err);
+-
+-	/* We should never fault when copying to a kernel buffer: */
+-	WARN_ON_FPU(err);
+-}
+-
+ /*
+  * This function is called only during boot time when x86 caps are not set
+  * up and alternative can not be used yet.
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 601a5da1d196..7d372db8bee1 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -404,6 +404,24 @@ static void __init print_xstate_offset_size(void)
+ 	}
+ }
+ 
++/*
++ * All supported features have either init state all zeros or are
++ * handled in setup_init_fpu() individually. This is an explicit
++ * feature list and does not use XFEATURE_MASK*SUPPORTED to catch
++ * newly added supported features at build time and make people
++ * actually look at the init state for the new feature.
++ */
++#define XFEATURES_INIT_FPSTATE_HANDLED		\
++	(XFEATURE_MASK_FP |			\
++	 XFEATURE_MASK_SSE |			\
++	 XFEATURE_MASK_YMM |			\
++	 XFEATURE_MASK_OPMASK |			\
++	 XFEATURE_MASK_ZMM_Hi256 |		\
++	 XFEATURE_MASK_Hi16_ZMM	 |		\
++	 XFEATURE_MASK_PKRU |			\
++	 XFEATURE_MASK_BNDREGS |		\
++	 XFEATURE_MASK_BNDCSR)
++
+ /*
+  * setup the xstate image representing the init state
+  */
+@@ -411,6 +429,8 @@ static void __init setup_init_fpu_buf(void)
+ {
+ 	static int on_boot_cpu __initdata = 1;
+ 
++	BUILD_BUG_ON(XCNTXT_MASK != XFEATURES_INIT_FPSTATE_HANDLED);
++
+ 	WARN_ON_FPU(!on_boot_cpu);
+ 	on_boot_cpu = 0;
+ 
+@@ -429,10 +449,22 @@ static void __init setup_init_fpu_buf(void)
+ 	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
+ 
+ 	/*
+-	 * Dump the init state again. This is to identify the init state
+-	 * of any feature which is not represented by all zero's.
++	 * All components are now in init state. Read the state back so
++	 * that init_fpstate contains all non-zero init state. This only
++	 * works with XSAVE, but not with XSAVEOPT and XSAVES because
++	 * those use the init optimization which skips writing data for
++	 * components in init state.
++	 *
++	 * XSAVE could be used, but that would require to reshuffle the
++	 * data when XSAVES is available because XSAVES uses xstate
++	 * compaction. But doing so is a pointless exercise because most
++	 * components have an all zeros init state except for the legacy
++	 * ones (FP and SSE). Those can be saved with FXSAVE into the
++	 * legacy area. Adding new features requires to ensure that init
++	 * state is all zeroes or if not to add the necessary handling
++	 * here.
+ 	 */
+-	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
++	fxsave(&init_fpstate.fxsave);
+ }
+ 
+ static int xfeature_uncompacted_offset(int xfeature_nr)
+-- 
+2.30.2
 
