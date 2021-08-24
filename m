@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15163F58AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286DA3F58AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhHXHG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:06:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231332AbhHXHGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:06:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD6361165;
-        Tue, 24 Aug 2021 07:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629788771;
-        bh=AUmPzVyVIdkBzP1TcX09gdv462g7bmFGWS7nBwof6EY=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=IGQJPw85gSh+CTYT8Iq/6WmQqE8as8nu9AgNDV442kPh9mlyisOw/vqetiGHFthbs
-         1BqgqC/svEvMBXLM/o+i0hvNssDGmHrbKyitSuiGPXJDVjjIv2cFiiJiYEy0vCh6EW
-         sRHuufcMwF+Zkio1l/wc7ywKj5/pBhUXi/TJPbK4CXymrROPhLA/ebFduhzsbnZ9XX
-         nE9REMyuvVLiWI6fIyAqkq68fFw2eAO1MOLLkrNE3YjUQnphmZ8xJSRL9NPj06qJLD
-         eBk2VxRzUU6ZMg4UOqCQYz6v1nCKCFr577uM9FPaDwoRDbnfQxRPWZiGcyduvjcwmD
-         udePIG6JXBm0g==
-References: <20210821134004.363217-1-mdevaev@gmail.com>
-User-agent: mu4e 1.6.4; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Maxim Devaev <mdevaev@gmail.com>
-Cc:     gregkh@linuxfoundation.org, ruslan.bilovol@gmail.com,
-        mika.westerberg@linux.intel.com, jj251510319013@gmail.com,
-        maze@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usb: gadget: f_hid: optional SETUP/SET_REPORT mode
-Date:   Tue, 24 Aug 2021 10:05:52 +0300
-In-reply-to: <20210821134004.363217-1-mdevaev@gmail.com>
-Message-ID: <877dgb8gps.fsf@kernel.org>
+        id S232008AbhHXHIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231332AbhHXHIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:08:06 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C70C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:07:23 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id g184so424367pgc.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YpxgUDpNqJwNmcekPJDyqgCHxebh+qy9G6z5R23ieyo=;
+        b=AjBPUi8FvoSXrRAICxvmHBXlIrdTts7KJdW7pUIFWKL00cNSIwU1RLIKQoIxWINdSD
+         zqFeoajvhy0mSapSKU0gWuLoNlrPgIGnVFjxHaRKPhVDLODYMd5CzFD1XA6yRUzzzPZh
+         4A8GuuJS07vrGPCrE7RR2yUkqL6LgS2+pjJ3TyDECyJdD28E+//BrufWSZXcHNfF4s2L
+         dx+wasMZWHk1MxY3sXdgmHBTycwQfmtb9kXwko8hkQxs7mEKZ9oFLNluglvJzV8Aqrul
+         YOkerFzo2r3Cqr2Ouy2whPKcaaJQa9Mr3+1lZCWYXHETTIzzI1do/OuSLRv9cSbRmQdn
+         FB+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YpxgUDpNqJwNmcekPJDyqgCHxebh+qy9G6z5R23ieyo=;
+        b=C31u5MVy0dYpmbWEWgay02tiXHZmTD8LXTdLWxUZpo0Dql2ytYMOk5dyt0nF0jPVe4
+         Z6L021Mcp46jwhxJW25bNslf2600Mt61A63eH0vT1iDsy0wefB+0bBb1ls8tH533lLn4
+         n4kSSMi+kriWEb/6rzyO8xOlLZJc68kVj7rOeX2Jd/HqfGTaWTtiD1fzwhGMWpKuI766
+         od9zxpoLeYLLtqzLsgniZnGJQrnk27FonnC34Tgv4jP6ZgF1a4tFNlJC7BVwdgnTMpI/
+         RvoIAgZNJtcn7GuVOxnlH5xNQqW74wIjxPfUlJMVq8OsTTXA9w3P/WDuOTH/gacD4c+j
+         K1cg==
+X-Gm-Message-State: AOAM53062N56lqtiOiUB8HsE30ka117H6xRsY+XOH4AxWbJBLfsozD8Z
+        1gbEUwQKRV2aVtiqVDqHFc7qWGhB6Q==
+X-Google-Smtp-Source: ABdhPJwZ4an/IStOF6BmHckyHgaJwuSbzZQSzr6OsUdiAzpovvVnN8hMq+Px/BQZYc+pTB1DKZ8FYA==
+X-Received: by 2002:a65:67c9:: with SMTP id b9mr35365561pgs.430.1629788842465;
+        Tue, 24 Aug 2021 00:07:22 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z12sm7466943pfe.79.2021.08.24.00.07.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 00:07:22 -0700 (PDT)
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+Subject: [PATCH] kernel/cpu: fix spelling mistake of cpuhp_thread_run()
+Date:   Tue, 24 Aug 2021 15:07:07 +0800
+Message-Id: <20210824070707.5731-1-kernelfans@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+According to the name of cpuhp_should_run(), cpuhp_thread_fun() should
+be a spelling mistake.
 
-Maxim Devaev <mdevaev@gmail.com> writes:
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vincent Donnefort <vincent.donnefort@arm.com>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
+To: linux-kernel@vger.kernel.org
+---
+ kernel/cpu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> f_hid provides the OUT Endpoint as only way for receiving reports
-> from the host. SETUP/SET_REPORT method is not supported, and this causes
-> a number of compatibility problems with various host drivers, especially
-> in the case of keyboard emulation using f_hid.
->
->   - Some hosts do not support the OUT Endpoint and ignore it,
->     so it becomes impossible for the gadget to receive a report
->     from the host. In the case of a keyboard, the gadget loses
->     the ability to receive the status of the LEDs.
->
->   - Some BIOSes/UEFIs can't work with HID devices with the OUT Endpoint
->     at all. This may be due to their bugs or incomplete implementation
->     of the HID standard.
->     For example, absolutely all Apple UEFIs can't handle the OUT Endpoint
->     if it goes after IN Endpoint in the descriptor and require the reverse
->     order (OUT, IN) which is a violation of the standard.
->     Other hosts either do not initialize gadgets with a descriptor
->     containing the OUT Endpoint completely (like some HP and DELL BIOSes
->     and embedded firmwares like on KVM switches), or initialize them,
->     but will not poll the IN Endpoint.
->
-> This patch adds configfs option no_out_endpoint=1 to disable
-> the OUT Endpoint and allows f_hid to receive reports from the host
-> via SETUP/SET_REPORT.
->
-> Previously, there was such a feature in f_hid, but it was replaced
-> by the OUT Endpoint [1] in the commit 99c515005857 ("usb: gadget: hidg:
-> register OUT INT endpoint for SET_REPORT"). So this patch actually
-> returns the removed functionality while making it optional.
-> For backward compatibility reasons, the OUT Endpoint mode remains
-> the default behaviour.
->
->   - The OUT Endpoint mode provides the report queue and reduces
->     USB overhead (eliminating SETUP routine) on transmitting a report
->     from the host.
->
->   - If the SETUP/SET_REPORT mode is used, there is no report queue,
->     so the userspace will only read last report. For classic HID devices
->     like keyboards this is not a problem, since it's intended to transmit
->     the status of the LEDs and only the last report is important.
->     This mode provides better compatibility with strange and buggy
->     host drivers.
->
-> Both modes passed USBCV tests. Checking with the USB protocol analyzer
-> also confirmed that everything is working as it should and the new mode
-> ensures operability in all of the described cases.
->
-> Signed-off-by: Maxim Devaev <mdevaev@gmail.com>
-> Link: https://www.spinics.net/lists/linux-usb/msg65494.html [1]
-
-Acked-by: Felipe Balbi <balbi@kernel.org>
-
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 804b847912dc..581d08c0efb6 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -521,7 +521,7 @@ static void __cpuhp_kick_ap(struct cpuhp_cpu_state *st)
+ 	st->result = 0;
+ 	/*
+ 	 * Make sure the above stores are visible before should_run becomes
+-	 * true. Paired with the mb() above in cpuhp_thread_fun()
++	 * true. Paired with the mb() above in cpuhp_thread_run()
+ 	 */
+ 	smp_mb();
+ 	st->should_run = true;
+@@ -723,7 +723,7 @@ static int cpuhp_should_run(unsigned int cpu)
+  *
+  * When complete or on error, should_run is cleared and the completion is fired.
+  */
+-static void cpuhp_thread_fun(unsigned int cpu)
++static void cpuhp_thread_run(unsigned int cpu)
+ {
+ 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+ 	bool bringup = st->bringup;
+@@ -863,7 +863,7 @@ static struct smp_hotplug_thread cpuhp_threads = {
+ 	.store			= &cpuhp_state.thread,
+ 	.create			= &cpuhp_create,
+ 	.thread_should_run	= cpuhp_should_run,
+-	.thread_fn		= cpuhp_thread_fun,
++	.thread_fn		= cpuhp_thread_run,
+ 	.thread_comm		= "cpuhp/%u",
+ 	.selfparking		= true,
+ };
 -- 
-balbi
+2.29.2
+
