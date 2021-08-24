@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57273F69EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD673F69E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhHXTgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhHXTfy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:35:54 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C4CC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:35:09 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id z5so43220189ybj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UXS7VP7AkViDruDTXAZRot09Ok43DQntHPmae+YHPMY=;
-        b=u5meDRqKoVQI/Smrqh0VhvImdpYWFmvqhg3aMd2H6gDvdJ/gOpaeXSZi8GgqBJwwfn
-         IVi4IDRhQa80mAr4laLytJvn5s5tC59chlNdz4e69tI6TNmMpM8f9yxXLsdUoMwo6FCE
-         m5h1t1fLUJPI9uV9WaDlwbFNwC/ORDxYN68EQPEBeRT7AERK2Izo06GXoWAEZblyPpu5
-         RjDwQCZ7e/niMw5mNVP59BhkUE2WhqWtNiHbZvDHXKaD763AKy3kdumY0ztIzD3ZKnuE
-         zPaYicBxNewuELju8JSBNTRK3tqXyPK1ldheCPnJjDRYoalOZbFNNk1/4L/C+Y6JgInV
-         E1lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UXS7VP7AkViDruDTXAZRot09Ok43DQntHPmae+YHPMY=;
-        b=ewpVI6Kot+M+Hoe7JkYfgNLgxe/15vsvYB681ldCwmbl54pmjpvhcqyaYz7q1/e803
-         OjVRN+sbDZICsVHBg3SZhWC2uXSojCEoj9M1egrVku827Ojrn4EcB8cfoQ3c0aD4DbZU
-         KMYBSZqjesLmRFI6j9O1gF3GdduxPfa3/Dosn/cq9jinLJm2eWo8RZ9i+jw09Z3fETwT
-         /0aApDHDWaSOcNgEzvXGzcIlnwOkUV5diKmZI+BcyuVPJvWnM8UGSJ3VyV3ulGF2cTI/
-         Gd1u2QbkImLL0AfcH77d+g+rUMLrASQOumVvHZ6AbeXaVgA4JDN2YcoskAAmIBCVf/Mj
-         Z7zA==
-X-Gm-Message-State: AOAM533hAEXo2i90UbmezAdBbOyDn4Z/egKs6lByqaOUTEQjiqzb8aeQ
-        3yw3whoM+Pc1REKMClRuma4K7FpWMY8LzlZN4HuYJw==
-X-Google-Smtp-Source: ABdhPJzRaloDZXC7PxhsHlzQAHKnhsSqU9nIbgHnNk9uw2oykTOqyF63IEGyqA8bkc7iRmt7jI/R+P9TTw71GHC4qHY=
-X-Received: by 2002:a5b:50b:: with SMTP id o11mr26994008ybp.466.1629833709050;
- Tue, 24 Aug 2021 12:35:09 -0700 (PDT)
+        id S234542AbhHXTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229913AbhHXTfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 15:35:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3B1E60F91;
+        Tue, 24 Aug 2021 19:34:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629833680;
+        bh=FolpW8ndZBvgISlyt3ab7Myhj7YVQF/oTlf48uWsx28=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VstM5jxAZlXmsXVDpR/R44L49vZC+QVsKWs7DzwzufCueSjpP8Ue2k1bC7OIpe5+D
+         IF59qR+D865Fz2roOQDdRhn2TFWjkuaq+hoSOk3R8IQzPBx0qWQnaTjDjkcQg9czaI
+         pqRk05OwisgUDwXD0ma0tkjedIsDQtGHfb8WM/JA1mfmQ8xxUDWsGqLRMChKMPIMeX
+         SoKJS2rqlQ7FQFClxj1DRRwn6IgFwrQrNNBATbLKFTQ1CFMC2Zp51tU+y4Jy0ZleS4
+         pZqku68ODvdo+ItwRGjtzY7zFt8VIK4ww19hAQLCUQB/3Owfbz5OPSF0OhB9tMmcx+
+         FnaaUovlQdhPg==
+Date:   Tue, 24 Aug 2021 14:34:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jonathan.Cameron@huawei.com,
+        bilbao@vt.edu, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        leon@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, Linuxarm <linuxarm@huawei.com>,
+        luzmaximilian@gmail.com, mchehab+huawei@kernel.org,
+        schnelle@linux.ibm.com, Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 1/2] PCI/MSI: Fix the confusing IRQ sysfs ABI for MSI-X
+Message-ID: <20210824193438.GA3486820@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210824165908.709932-1-sashal@kernel.org> <20210824165908.709932-65-sashal@kernel.org>
- <20210824190009.GA16752@duo.ucw.cz>
-In-Reply-To: <20210824190009.GA16752@duo.ucw.cz>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 24 Aug 2021 12:34:33 -0700
-Message-ID: <CAGETcx93J_gpTLhANbjfiBrZ=PCN4bUabfHGG-jv0KdfOUMyjg@mail.gmail.com>
-Subject: Re: [PATCH 5.10 64/98] net: mdio-mux: Handle -EPROBE_DEFER correctly
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4zceLLBk1K_9Bmiju54CvGYySoEN4Kgy4yATst_E9c68A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:00 PM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi1
->
-> > When registering mdiobus children, if we get an -EPROBE_DEFER, we shouldn't
-> > ignore it and continue registering the rest of the mdiobus children. This
-> > would permanently prevent the deferring child mdiobus from working instead
-> > of reattempting it in the future. So, if a child mdiobus needs to be
-> > reattempted in the future, defer the entire mdio-mux initialization.
+On Tue, Aug 24, 2021 at 10:46:59AM +1200, Barry Song wrote:
+> On Mon, Aug 23, 2021 at 11:28 PM Marc Zyngier <maz@kernel.org> wrote:
 > >
-> > This fixes the issue where PHYs sitting under the mdio-mux aren't
-> > initialized correctly if the PHY's interrupt controller is not yet ready
-> > when the mdio-mux is being probed. Additional context in the link
-> > below.
->
-> I don't believe this is quite right. AFAICT it leaks memory in the
-> EPROBE_DEFER case. Could someone double-check? Suggested fix is below.
+> > On Mon, 23 Aug 2021 12:03:08 +0100,
+> > Barry Song <21cnbao@gmail.com> wrote:
 
-devm_ APIs would take care of releasing the resource (memory)
-automatically because the probe didn't succeed. So I'm not sure
-there's a leak. Does that make sense?
+> +static ssize_t irq_show(struct device *dev,
+> +                                        struct device_attribute *attr,
+> +                                        char *buf)
+> +{
+> +       struct pci_dev *pdev = to_pci_dev(dev);
+> +#ifdef CONFIG_PCI_MSI
+> +       struct msi_desc *desc = first_pci_msi_entry(pdev);
+> +
+> +       /* for MSI, return the 1st IRQ in IRQ vector */
+> +       if (desc && !desc->msi_attrib.is_msix)
+> +               return sysfs_emit(buf, "%u\n", desc->irq);
+> +#endif
+> +
+> +       return sysfs_emit(buf, "%u\n", pdev->irq);
+> +}
+> +static DEVICE_ATTR_RO(irq);
 
--Saravana
+Makes sense to me.  And with Marc's patch maybe we could get rid of
+default_irq, which also seems nice.
 
->
-> > +++ b/drivers/net/mdio/mdio-mux.c
-> > @@ -175,11 +175,15 @@ int mdio_mux_init(struct device *dev,
-> >               cb->mii_bus->write = mdio_mux_write;
-> >               r = of_mdiobus_register(cb->mii_bus, child_bus_node);
-> >               if (r) {
-> > +                     mdiobus_free(cb->mii_bus);
-> > +                     if (r == -EPROBE_DEFER) {
-> > +                             ret_val = r;
-> > +                             goto err_loop;
-> > +                     }
-> > +                     devm_kfree(dev, cb);
-> >                       dev_err(dev,
-> >                               "Error: Failed to register MDIO bus for child %pOF\n",
-> >                               child_bus_node);
-> > -                     mdiobus_free(cb->mii_bus);
-> > -                     devm_kfree(dev, cb);
-> >               } else {
-> >                       cb->next = pb->children;
-> >                       pb->children = cb;
->
->
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
->
-> diff --git a/drivers/net/mdio/mdio-mux.c b/drivers/net/mdio/mdio-mux.c
-> index ccb3ee704eb1..6d0e505343c5 100644
-> --- a/drivers/net/mdio/mdio-mux.c
-> +++ b/drivers/net/mdio/mdio-mux.c
-> @@ -163,6 +163,7 @@ int mdio_mux_init(struct device *dev,
->                 cb->mii_bus = mdiobus_alloc();
->                 if (!cb->mii_bus) {
->                         ret_val = -ENOMEM;
-> +                       devm_kfree(dev, cb);
->                         goto err_loop;
->                 }
->                 cb->mii_bus->priv = cb;
-> @@ -176,11 +177,11 @@ int mdio_mux_init(struct device *dev,
->                 r = of_mdiobus_register(cb->mii_bus, child_bus_node);
->                 if (r) {
->                         mdiobus_free(cb->mii_bus);
-> +                       devm_kfree(dev, cb);
->                         if (r == -EPROBE_DEFER) {
->                                 ret_val = r;
->                                 goto err_loop;
->                         }
-> -                       devm_kfree(dev, cb);
->                         dev_err(dev,
->                                 "Error: Failed to register MDIO bus for child %pOF\n",
->                                 child_bus_node);
->
->
-> --
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> > > if we don't want to change the behaviour of any existing ABI, it
+> > > seems the only thing we can do here to document it well in ABI
+> > > doc. i actually doubt anyone has really understood what the irq
+> > > entry is really showing.
+> >
+> > Given that we can't prove that it is actually the case, I believe this
+> > is the only option.
+> 
+> we have to document the ABI like below though it seems quite annoying.
+> 
+> 1. for devices which don't support MSI and MSI-X, show legacy INTx
+> 2. for devices which support MSI
+>     a. if CONFIG_PCI_MSI is not enabled,  show legacy INTx
+>     b. if CONFIG_PCI_MSI is enabled and devices are using MSI at this
+> moment, show 1st IRQ in the vector
+>     c. if CONFIG_PCI_MSI is enabled, but we shutdown its MSI before
+> the users call sysfs entry,
+>         so at this moment, devices are not using MSI,  show legacy INTx
+> 3. for devices which support MSI-X, no matter if it is using MSI-X,
+>     show legacy INTx
+> 4. In Addition, INTx might be broken due to incomplete firmware or
+> hardware design for MSI and MSI-X cases
+> 
+> To be honest, it sounds like a disaster :-) but if this is what we
+> have to do, I'd like to try it in v3.
+
+It doesn't seem necessary to me to get into the gory details of
+CONFIG_PCI_MSI -- if that's not enabled, drivers can't use MSI anyway.
+
+I don't understand 3.  If a device supports both MSI and MSI-X and a
+driver enables MSI, msi_capability_init() writes dev->irq, so it looks
+like "irq" should contain the first MSI vector.
+
+I don't understand 4, either.  Is the possibility of broken hardware
+or firmware something we need to document?  
+
+What about something like this?
+
+  If a driver has enabled MSI (not MSI-X), "irq" contains the IRQ of
+  the first MSI vector.  Otherwise "irq" contains the IRQ of the
+  legacy INTx interrupt.
