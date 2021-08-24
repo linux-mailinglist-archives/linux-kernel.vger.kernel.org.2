@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D83F60A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1103F60A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbhHXOk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237871AbhHXOky (ORCPT
+        id S237951AbhHXOlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:41:07 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:35498 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237852AbhHXOlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:40:54 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8A8C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:40:10 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id b10so14576253ioq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8Sjiy26CpBt8YuiYVMsbC/6C1ttKggpAZsGtO/Y7dTM=;
-        b=QdITDJKKzLnLEgGNUpyc8qIVl5RC2CVLRJIilNbOCedIliv6pM1+t96GwfSynFYr9M
-         feq+v4sYMYnzR1xgC5dRG4FKSvqf63D/h223SnkArKADKP673agJTp5XkgLS4TfvS2yx
-         9UCamWHzbkE3xmP1SLZQxzFAOREDqmo+r8Vsk=
+        Tue, 24 Aug 2021 10:41:05 -0400
+Received: by mail-ot1-f52.google.com with SMTP id y14-20020a0568302a0e00b0051acbdb2869so39852265otu.2;
+        Tue, 24 Aug 2021 07:40:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8Sjiy26CpBt8YuiYVMsbC/6C1ttKggpAZsGtO/Y7dTM=;
-        b=O1CzzOpWJxS+U6lQ3EqMTUHXZkWjYTB4qkmqAaM7MuG7G+rk33bGm6+qYqneThLVcA
-         1fo9fqm/vS3wMq0jiFhVOdjJhioBbt/mY1aXXkkjzTa7JEEoKybs5NF0/+Rgg+LUWtrE
-         WjYM2H4T6o623yCCQiKeYdtJ0yDv2ZqSsbQI51OEQzNzGX16wdT+j8FPolY49Zo1bpUq
-         raTDlFjroriz/PXRleHyEAHmNtVlv8pRywFkh+xJJKj8OJnSvtjUUAft1Oggr+PWAixG
-         Lv3i5FcMuvezyHW4/Dp3TOAwwqictvClb0REXn3b7s4grPTIIqbCEBAP6WXeh4Snz/vP
-         3goA==
-X-Gm-Message-State: AOAM533gZ21Cl9Mammxp2mNQrJO7+7QG97WNyZ+kHJQfZNxKROPZnLNF
-        iiBSwVxJigh+mQfAZHNoJdMiGw==
-X-Google-Smtp-Source: ABdhPJz68nWSK976dC6m/+R0f4pjTuRpyBmdTA2yrkPRnt92orEEEQWgyreotN9WAPQKNKD43IUvKQ==
-X-Received: by 2002:a02:7a14:: with SMTP id a20mr34734496jac.27.1629816010094;
-        Tue, 24 Aug 2021 07:40:10 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z26sm10264558iol.6.2021.08.24.07.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 07:40:09 -0700 (PDT)
-Subject: Re: [PATCH linux-next] kselftest: remove duplicate include in
- cs_prctl_test.c
-To:     cgel.zte@gmail.com, chris.hyser@oracle.com
-Cc:     shuah@kernel.org, yong.yiran@zte.com.cn,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeal Robot <zealci@zte.com.cn>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210805061919.627607-1-yong.yiran@zte.com.cn>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2f864600-76ca-6d05-64d4-990fd915c509@linuxfoundation.org>
-Date:   Tue, 24 Aug 2021 08:40:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Db5yqDC7zDMI6lAlEXopDZgJg3DaWYgaFCxZGGAfV98=;
+        b=FrdzVQJx2bdk5jkjThMv/sxcm1Kack6hn/oxroe1dkTbmpvnLzXBbtLx80ce9s4DnZ
+         l8R6WNVfhqOUvsMK4HRGlEVvfYjPYl2bxBU26ucwWdqNln4oLqwmwar4orlYiuYobyd0
+         BX62FJboMIN77ToCj5j0Cbq8WybyWEGSAd2hCMPFRhQNkqz+jPw0p7qRH7MqRMO7/3o0
+         APmgl6N0xmJeL+cYRuI2EAvXbhRfNPbRhoAd6OBsMj7X77RCPxFHmI12BCLGEvtrl2W0
+         v80EzdQF1Tcq0vzdwdEk3fo9OMzXAJWwp67PcEMFJ2lDev5IMvGc8bqRXUkxU6SxmG/a
+         qNsA==
+X-Gm-Message-State: AOAM530Qc/nuRxXIotTvGs7tGaTM8n5NCqoxTUwRf3bIKemVEdorzYIA
+        uhZgWNTzTTgE4ZXPNhypZw==
+X-Google-Smtp-Source: ABdhPJxL8lFhvCs4+YAUBK3GXu3cNTYj1yhOTdCkzQWFU8HyHnTwBYORe7LWGVm8SsTIOZPAj9OoXg==
+X-Received: by 2002:a54:4789:: with SMTP id o9mr2986623oic.50.1629816021257;
+        Tue, 24 Aug 2021 07:40:21 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l8sm4147035oom.19.2021.08.24.07.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:40:20 -0700 (PDT)
+Received: (nullmailer pid 409340 invoked by uid 1000);
+        Tue, 24 Aug 2021 14:40:19 -0000
+Date:   Tue, 24 Aug 2021 09:40:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Rex-BC.Chen@mediatek.com, TingHan.Shen@mediatek.com
+Subject: Re: [PATCH] dt-bindings: PCI: mediatek-gen3: Add support for MT8195
+Message-ID: <YSUE08dgiGhFsjwH@robh.at.kernel.org>
+References: <20210820023521.30716-1-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210805061919.627607-1-yong.yiran@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820023521.30716-1-jianjun.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/5/21 12:19 AM, cgel.zte@gmail.com wrote:
-> From: yong yiran <yong.yiran@zte.com.cn>
+On Fri, Aug 20, 2021 at 10:35:21AM +0800, Jianjun Wang wrote:
+> MT8195 is an ARM platform SoC which has the same PCIe IP with MT8192.
+
+If it is the same, then 8192 should be a fallback compatible. 'The same' 
+means the current driver for 8192 will work unchanged.
+
 > 
-> 'sys/types.h' included in 'cs_prctl_test.c' is duplicated.
-> Remove all but the first include of sys/types.h from cs_prctl_test.c.
-> 
-> 'sys/wait.h' include in 'cs_prctl_test.c' is duplicated.
-> Remove all but the first include of sys/wait.h from cs_prctl_test.c.
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
 > ---
->   tools/testing/selftests/sched/cs_prctl_test.c | 2 --
->   1 file changed, 2 deletions(-)
+>  Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-> index 63fe6521c56d..7db9cf822dc7 100644
-> --- a/tools/testing/selftests/sched/cs_prctl_test.c
-> +++ b/tools/testing/selftests/sched/cs_prctl_test.c
-> @@ -25,8 +25,6 @@
->   #include <sys/types.h>
->   #include <sched.h>
->   #include <sys/prctl.h>
-> -#include <sys/types.h>
-> -#include <sys/wait.h>
->   #include <unistd.h>
->   #include <time.h>
->   #include <stdio.h>
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> index 742206dbd965..dcebb1036207 100644
+> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> @@ -48,7 +48,9 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    const: mediatek,mt8192-pcie
+> +    oneOf:
+> +      - const: mediatek,mt8192-pcie
+> +      - const: mediatek,mt8195-pcie
+>  
+>    reg:
+>      maxItems: 1
+> -- 
+> 2.18.0
 > 
-
-We can't accept this patch. The from and Signed-off-by don't match.
-
-thanks,
--- Shuah
+> 
