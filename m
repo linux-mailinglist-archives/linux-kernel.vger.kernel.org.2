@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35783F6A0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0474E3F6A12
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbhHXTpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:45:45 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37950 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229907AbhHXTpm (ORCPT
+        id S235037AbhHXTqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:46:25 -0400
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:44083 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234352AbhHXTqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:45:42 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 17OJimCa011074
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 15:44:49 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 333F915C3DBB; Tue, 24 Aug 2021 15:44:48 -0400 (EDT)
-Date:   Tue, 24 Aug 2021 15:44:48 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSVMMMrzqxyFjHlw@mit.edu>
-References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
- <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <1957060.1629820467@warthog.procyon.org.uk>
- <YSUy2WwO9cuokkW0@casper.infradead.org>
- <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
- <YSVCAJDYShQke6Sy@casper.infradead.org>
- <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
- <YSVHI9iaamxTGmI7@casper.infradead.org>
+        Tue, 24 Aug 2021 15:46:24 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d35 with ME
+        id lXle250083riaq203XleLH; Tue, 24 Aug 2021 21:45:38 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 24 Aug 2021 21:45:38 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH] iio: adc128s052: Fix the error handling path of
+ 'adc128_probe()'
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        angelo.compagnucci@gmail.com,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+References: <85189f1cfcf6f5f7b42d8730966f2a074b07b5f5.1629542160.git.christophe.jaillet@wanadoo.fr>
+ <CA+U=DsoTdb3b+LJEtUagKr=LmK8E2M_2yhtNDENKsczqGaUPYA@mail.gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr>
+Date:   Tue, 24 Aug 2021 21:45:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSVHI9iaamxTGmI7@casper.infradead.org>
+In-Reply-To: <CA+U=DsoTdb3b+LJEtUagKr=LmK8E2M_2yhtNDENKsczqGaUPYA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 08:23:15PM +0100, Matthew Wilcox wrote:
-> > So when you mention "slab" as a name example, that's not the argument
-> > you think it is. That's a real honest-to-goodness operating system
-> > convention name that doesn't exactly predate Linux, but is most
-> > certainly not new.
+Le 23/08/2021 à 08:42, Alexandru Ardelean a écrit :
+> On Sat, Aug 21, 2021 at 1:43 PM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+>>
+>> A successful 'regulator_enable()' call should be balanced by a
+>> corresponding 'regulator_disable()' call in the error handling path of the
+>> probe, as already done in the remove function.
+>>
+>> Update the error handling path accordingly.
 > 
-> Sure, but at the time Jeff Bonwick chose it, it had no meaning in
-> computer science or operating system design.
+> Good catch.
+> For the fix:
+> 
+> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+> 
+> If you want, you can also send a conversion to
+> devm_iio_device_register() for this driver.
+> And also move the regulator_disable() on a devm_add_action_or_reset() callback.
+> Maybe, that's already part of your plan. If so, apologies for the noise :)
+> 
 
-I think the big difference is that "slab" is mostly used as an
-internal name.  In Linux it doesn't even leak out to the users, since
-we use kmem_cache_{create,alloc,free,destroy}().  So the "slab"
-doesn't even show up in the API.
+Hi,
 
-The problem is whether we use struct head_page, or folio, or mempages,
-we're going to be subsystem users' faces.  And people who are using it
-every day will eventually get used to anything, whether it's "folio"
-or "xmoqax", we sould give a thought to newcomers to Linux file system
-code.  If they see things like "read_folio()", they are going to be
-far more confused than "read_pages()" or "read_mempages()".
+I hadn't planned another step but I can send a follow-up patch for that.
 
-Sure, one impenetrable code word isn't that bad.  But this is a case
-of a death by a thousand cuts.  At $WORK, one time we had welcomed an
-intern to our group, I had to stop everyone each time that they used
-an acronym, or a codeword, and asked them to define the term.
-
-It was really illuminating what an insider takes for granted, but when
-it's one cutsy codeword after another, with three or more such
-codewords in a sentence, it's *really* a less-than-great initial
-experience for a newcomer.
-
-So if someone sees "kmem_cache_alloc()", they can probably make a
-guess what it means, and it's memorable once they learn it.
-Similarly, something like "head_page", or "mempages" is going to a bit
-more obvious to a kernel newbie.  So if we can make a tiny gesture
-towards comprehensibility, it would be good to do so while it's still
-easier to change the name.
-
-Cheers,
-
-					- Ted
+CJ
