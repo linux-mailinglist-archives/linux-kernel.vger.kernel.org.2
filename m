@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB3A3F5C79
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730F53F5C7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236576AbhHXKyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:54:10 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:59772 "EHLO
+        id S236561AbhHXKyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:54:14 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59784 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236552AbhHXKyG (ORCPT
+        with ESMTP id S236595AbhHXKyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:54:06 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17OArIAI066452;
-        Tue, 24 Aug 2021 05:53:18 -0500
+        Tue, 24 Aug 2021 06:54:08 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 17OArK2d066459;
+        Tue, 24 Aug 2021 05:53:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1629802398;
-        bh=3rJTEfJn/oAUbfpfHmC7ElWuOC9zGfOzG9ekrqMw+ac=;
+        s=ti-com-17Q1; t=1629802400;
+        bh=JyBRZzPMPceCiPja5vAcH+yb/sDFtlnhdvvXkZdKMEo=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=oHVgNdzPEHtl128Xqs6hsj3PAAVYXxdKqfvEUuAuGXSWTPtP9+rHQ+7bbkVRa5A5b
-         vl4TLSsQkKTJDmcjkzDgAPY1O+C4cHQL0of2nJZRkUDGkYC9Uac74DUbnx8KcKZSUt
-         x1jdO17xeYfgoJDeZNPgnNesPTvNvbUWao8qMSjE=
+        b=akzbfYVRe3KX5A8KI5FYRh0Rre9pHTUHmjm1Th71MmzbCVJ0Hy2N+fU0kTqYmIKe8
+         QY7jUIGtZ4IvCBou4O+HOsjZb4nauRR9uCbyICtY+0jv9v2l5gYMfwEZjcthfcCfKb
+         GUW9jOa+APNbj+DygCtr1rUaGiBIbWhL+yGmq8zY=
 Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17OArH1f016349
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 17OArK8Z072615
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Aug 2021 05:53:17 -0500
+        Tue, 24 Aug 2021 05:53:20 -0500
 Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
  (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 24
- Aug 2021 05:53:17 -0500
+ Aug 2021 05:53:20 -0500
 Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
  (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 24 Aug 2021 05:53:17 -0500
+ Frontend Transport; Tue, 24 Aug 2021 05:53:20 -0500
 Received: from a0393678-lt.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17OAr3Dg129176;
-        Tue, 24 Aug 2021 05:53:15 -0500
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 17OAr3Dh129176;
+        Tue, 24 Aug 2021 05:53:18 -0500
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mathias Nyman <mathias.nyman@intel.com>,
         Alan Stern <stern@rowland.harvard.edu>
 CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <chris.chiu@canonical.com>
-Subject: [RFC PATCH 4/5] usb: core: hcd-pci: Let usb_hcd_pci_probe() indicate if RH has to be registered
-Date:   Tue, 24 Aug 2021 16:23:01 +0530
-Message-ID: <20210824105302.25382-5-kishon@ti.com>
+Subject: [RFC PATCH 5/5] xhci-pci: Use flag to not register roothub while adding primary HCD
+Date:   Tue, 24 Aug 2021 16:23:02 +0530
+Message-ID: <20210824105302.25382-6-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210824105302.25382-1-kishon@ti.com>
 References: <20210824105302.25382-1-kishon@ti.com>
@@ -56,92 +56,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional change. Add __usb_hcd_pci_probe() which takes "register_hub"
-flag that indicates if roothub (RH) has to be registered or not. This is in
-preparation for allowing xhci-pci to register roothub after the shared hcd
-is created. The interface for usb_hcd_pci_probe() is not modified to make
-sure there are minimal code changes.
+Invoke __usb_hcd_pci_probe() without setting "register_hub" so that
+primary roothub is not registered here. Instead it will be registered
+along with secondary roothub. This is required for cold plugged USB
+devices to be detected in certain PCIe USB cards (like Inateck USB
+card).
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- drivers/usb/core/hcd-pci.c | 11 ++++++-----
- include/linux/usb/hcd.h    |  8 +++++---
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ drivers/usb/host/xhci-pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
-index d630cccd2e6e..65c1f9aee4d1 100644
---- a/drivers/usb/core/hcd-pci.c
-+++ b/drivers/usb/core/hcd-pci.c
-@@ -160,6 +160,7 @@ static void ehci_wait_for_companions(struct pci_dev *pdev, struct usb_hcd *hcd,
-  * @dev: USB Host Controller being probed
-  * @id: pci hotplug id connecting controller to HCD framework
-  * @driver: USB HC driver handle
-+ * @register_hub: Flag to indicate of roothub has to be registered or not
-  *
-  * Context: task context, might sleep
-  *
-@@ -171,8 +172,8 @@ static void ehci_wait_for_companions(struct pci_dev *pdev, struct usb_hcd *hcd,
-  *
-  * Return: 0 if successful.
-  */
--int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id,
--		      const struct hc_driver *driver)
-+int __usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id,
-+			const struct hc_driver *driver, bool register_hub)
- {
- 	struct usb_hcd		*hcd;
- 	int			retval;
-@@ -262,7 +263,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id,
- 		down_write(&companions_rwsem);
- 		dev_set_drvdata(&dev->dev, hcd);
- 		for_each_companion(dev, hcd, ehci_pre_add);
--		retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
-+		retval = __usb_add_hcd(hcd, hcd_irq, IRQF_SHARED, register_hub);
- 		if (retval != 0)
- 			dev_set_drvdata(&dev->dev, NULL);
- 		for_each_companion(dev, hcd, ehci_post_add);
-@@ -270,7 +271,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id,
- 	} else {
- 		down_read(&companions_rwsem);
- 		dev_set_drvdata(&dev->dev, hcd);
--		retval = usb_add_hcd(hcd, hcd_irq, IRQF_SHARED);
-+		retval = __usb_add_hcd(hcd, hcd_irq, IRQF_SHARED, register_hub);
- 		if (retval != 0)
- 			dev_set_drvdata(&dev->dev, NULL);
- 		else
-@@ -296,7 +297,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id,
- 	dev_err(&dev->dev, "init %s fail, %d\n", pci_name(dev), retval);
- 	return retval;
- }
--EXPORT_SYMBOL_GPL(usb_hcd_pci_probe);
-+EXPORT_SYMBOL_GPL(__usb_hcd_pci_probe);
+diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+index 1c9a7957c45c..7734ff13aea9 100644
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -397,7 +397,7 @@ static int xhci_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	 * to say USB 2.0, but I'm not sure what the implications would be in
+ 	 * the other parts of the HCD code.
+ 	 */
+-	retval = usb_hcd_pci_probe(dev, id, &xhci_pci_hc_driver);
++	retval = __usb_hcd_pci_probe(dev, id, &xhci_pci_hc_driver, 0);
  
- 
- /* may be called without controller electrically present */
-diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-index 2c99cfe20531..49c1a8d56b2c 100644
---- a/include/linux/usb/hcd.h
-+++ b/include/linux/usb/hcd.h
-@@ -493,14 +493,16 @@ static inline int ehset_single_step_set_feature(struct usb_hcd *hcd, int port)
- #ifdef CONFIG_USB_PCI
- struct pci_dev;
- struct pci_device_id;
--extern int usb_hcd_pci_probe(struct pci_dev *dev,
--			     const struct pci_device_id *id,
--			     const struct hc_driver *driver);
-+extern int __usb_hcd_pci_probe(struct pci_dev *dev, const struct pci_device_id *id,
-+			       const struct hc_driver *driver, bool register_hub);
- extern void usb_hcd_pci_remove(struct pci_dev *dev);
- extern void usb_hcd_pci_shutdown(struct pci_dev *dev);
- 
- extern int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *dev);
- 
-+#define usb_hcd_pci_probe(dev, id, driver) \
-+	__usb_hcd_pci_probe(dev, id, driver, true)
-+
- #ifdef CONFIG_PM
- extern const struct dev_pm_ops usb_hcd_pci_pm_ops;
- #endif
+ 	if (retval)
+ 		goto put_runtime_pm;
 -- 
 2.17.1
 
