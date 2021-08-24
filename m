@@ -2,81 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72823F59D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623EB3F59D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235292AbhHXI0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:26:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:60716 "EHLO foss.arm.com"
+        id S235307AbhHXI3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:29:03 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31784 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233920AbhHXI0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:26:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FBDF101E;
-        Tue, 24 Aug 2021 01:25:35 -0700 (PDT)
-Received: from [10.57.17.43] (unknown [10.57.17.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 125F33F766;
-        Tue, 24 Aug 2021 01:25:33 -0700 (PDT)
-Subject: Re: [PATCH linux-next] arm:nommu: fix boolreturn.cocci warnings
-To:     CGEL <cgel.zte@gmail.com>, Russell King <linux@armlinux.org.uk>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>, denghuilong@cdjrlc.com
-References: <20210824041112.57915-1-deng.changcheng@zte.com.cn>
-From:   Vladimir Murzin <vladimir.murzin@arm.com>
-Message-ID: <328bbb63-f8a6-2c50-2264-1fd404ff1f9d@arm.com>
-Date:   Tue, 24 Aug 2021 09:25:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210824041112.57915-1-deng.changcheng@zte.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S233920AbhHXI3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 04:29:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629793696; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=WuylCgi/4XPRgUijyBbcjv2AT4kx6jzyKw0PfJfAgfc=; b=RtmqUNSHJYwPc9czy48nfnqoLt3IcS7dhfA+HsyoYmbnxfjLwMpz0HIzWz0jELQ4B0uU5K1b
+ LVmxY9NhMyOOs4j2Jo7ADmIz7sHBcWf5PMZCc2/DhTzbum9sPFFNTdEMi4RbnOXQjzhbgCps
+ 6wx5HwBqeiuSdbaB2Tca7EUNqLk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6124ada01567234b8c83463c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Aug 2021 08:28:16
+ GMT
+Sender: zijuhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 52D8AC43617; Tue, 24 Aug 2021 08:28:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: zijuhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9609C4338F;
+        Tue, 24 Aug 2021 08:28:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org A9609C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Zijun Hu <zijuhu@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
+Subject: [PATCH v5] Bluetooth: btusb: Add support using different nvm for variant WCN6855 controller
+Date:   Tue, 24 Aug 2021 16:28:03 +0800
+Message-Id: <1629793683-28770-1-git-send-email-zijuhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 5:11 AM, CGEL wrote:
-> From: Jing Yangyang <jing.yangyang@zte.com.cn>
-> 
-> ./arch/arm/mm/nommu.c:59:8-9:WARNING:return of 0/1 in function
-> 'security_extensions_enabled' with return type bool
-> 
-> Return statements in functions returning bool should use true/false
-> instead of 1/0.
-> 
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
-> ---
->  arch/arm/mm/nommu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
-> index 2658f52..7256ac1 100644
-> --- a/arch/arm/mm/nommu.c
-> +++ b/arch/arm/mm/nommu.c
-> @@ -56,7 +56,7 @@ static inline bool security_extensions_enabled(void)
->  	if ((read_cpuid_id() & 0x000f0000) == 0x000f0000)
->  		return cpuid_feature_extract(CPUID_EXT_PFR1, 4) ||
->  			cpuid_feature_extract(CPUID_EXT_PFR1, 20);
-> -	return 0;
-> +	return false;
->  }
->  
->  unsigned long setup_vectors_base(void)
-> 
+From: Tim Jiang <tjiang@codeaurora.org>
 
-The same patch was sent before [1] by Huilong Deng. It was reviewed
-and author was advised to submit it into RMK's Patch system.  
+we have variant wcn6855 soc chip from different foundries, so we should
+use different nvm file with suffix to distinguish them.
 
+Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
+---
+ drivers/bluetooth/btusb.c | 57 +++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 45 insertions(+), 12 deletions(-)
 
-[1] https://lore.kernel.org/linux-arm-kernel/1e30b659-a91a-58f6-f9aa-d0f0259eb9e8@arm.com/T/#t
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 60d2fce59a71..ad7734f8917c 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3141,6 +3141,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+ #define QCA_DFU_TIMEOUT		3000
+ #define QCA_FLAG_MULTI_NVM      0x80
+ 
++#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
++#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
++
+ struct qca_version {
+ 	__le32	rom_version;
+ 	__le32	patch_version;
+@@ -3172,6 +3175,7 @@ static const struct qca_device_info qca_devices_table[] = {
+ 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+ 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+ 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
++	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
+ };
+ 
+ static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+@@ -3326,27 +3330,56 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+ 	return err;
+ }
+ 
+-static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
+-				    struct qca_version *ver,
+-				    const struct qca_device_info *info)
++static void btusb_generate_qca_nvm_name(char **fwname,
++					int max_size,
++					struct qca_version *ver,
++					char *foundry)
+ {
+-	const struct firmware *fw;
+-	char fwname[64];
+-	int err;
++	char *separator;
++	u16 board_id;
++	u32 rom_version;
++
++	separator = (foundry == NULL) ? "" : "_";
++	board_id = le16_to_cpu(ver->board_id);
++	rom_version = le32_to_cpu(ver->rom_version);
+ 
+ 	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
+ 		/* if boardid equal 0, use default nvm without surfix */
+ 		if (le16_to_cpu(ver->board_id) == 0x0) {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-				 le32_to_cpu(ver->rom_version));
++			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x%s%s.bin",
++				 rom_version,
++				 separator,
++				 foundry);
+ 		} else {
+-			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
+-				le32_to_cpu(ver->rom_version),
+-				le16_to_cpu(ver->board_id));
++			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x%s%s%04x.bin",
++				rom_version,
++				separator,
++				foundry,
++				board_id);
+ 		}
+ 	} else {
+ 		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
+-			 le32_to_cpu(ver->rom_version));
++			 rom_version);
++	}
++
++}
++
++static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
++				    struct qca_version *ver,
++				    const struct qca_device_info *info)
++{
++	const struct firmware *fw;
++	char fwname[64];
++	int err;
++
++	switch (ver->ram_version) {
++	case WCN6855_2_0_RAM_VERSION_GF:
++	case WCN6855_2_1_RAM_VERSION_GF:
++			btusb_generate_qca_nvm_name(&fwname, sizeof(fwname), ver, "gf");
++		break;
++	default:
++			btusb_generate_qca_nvm_name(&fwname, sizeof(fwname), ver, NULL);
++		break;
+ 	}
+ 
+ 	err = request_firmware(&fw, fwname, &hdev->dev);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-Cheers
-Vladimir
