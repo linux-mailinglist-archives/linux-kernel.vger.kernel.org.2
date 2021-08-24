@@ -2,185 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057E93F5DA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BB53F5DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236992AbhHXMJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:09:27 -0400
-Received: from xppmailspam11.itap.purdue.edu ([128.210.1.215]:55091 "EHLO
-        xppmailspam11.itap.purdue.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234787AbhHXMJ0 (ORCPT
+        id S237081AbhHXMKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234787AbhHXMJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:09:26 -0400
-IronPort-SDR: 1i1dpT9vEFyzdz6fIL12GMU099GJ/eyxFWfF7J+yOjuITtaaC8u5co2y6dBg193BAntu874aGH
- dzFhs6Gfhq2lhEkUUoqd4uhjupYwGrdF0=
-X-Ironport-AuthID: sishuai@purdue.edu
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AlRkF06FkCna9MtnMpLqEhseALOsnbusQ8z?=
- =?us-ascii?q?AXPo5KJCC9Hfb2qynDpp8mPGHP5gr5MUtI8exoU5PtfZqzz/RICPEqXIufYA?=
- =?us-ascii?q?=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.84,347,1620705600"; 
-   d="scan'208";a="375848449"
-Received: from switch-lwsn2133-z1r11.cs.purdue.edu (HELO rssys-server.cs.purdue.edu) ([128.10.127.250])
-  by xppmailspam11.itap.purdue.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Aug 2021 08:08:41 -0400
-From:   sishuaigong <sishuai@purdue.edu>
-To:     jlbec@evilplan.org, hch@lst.de
-Cc:     linux-kernel@vger.kernel.org, sishuaigong <sishuai@purdue.edu>
-Subject: [PATCH v3] configfs: fix a race in configfs_lookup()
-Date:   Tue, 24 Aug 2021 08:08:28 -0400
-Message-Id: <20210824120828.14799-1-sishuai@purdue.edu>
-X-Mailer: git-send-email 2.17.1
+        Tue, 24 Aug 2021 08:09:59 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99A8C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:09:15 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id r9so45094798lfn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 05:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=7PcdMnGwD/TVBDMI0hdvsoYsiNHwhw3N+WJOyBZilh4=;
+        b=NFwLL1O0h2SMOf5CPHyCc52ibh3534uLa/004eAEb3oAeOBTqQ9cKa4gDk9qYGlXxg
+         Z72YxwrEp7gCvXky5oxDBrH2dUgqbAf5MLk/vBPER9p/fPpqXgZV1+2OFCOLd7s4m7Cd
+         ZOxFJ0pbVpEmrdurSG3xLVtd4km5YrBWyYQEvOsO0jHFGAMGvkEWHFpkuPVSjkrloQvH
+         tizxFyE9Ftttk2lycn/N2/ozS2fKrt0nQZKf+quc33jYO2hbeQYqAQ++h9rdOV+ieqda
+         7Quj3KWlSlNhOYl6frhzvLlV45YMnLrAG316i4cIFwzsPOXH8fu9c99PiSF4ITm5WqHu
+         Nkdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7PcdMnGwD/TVBDMI0hdvsoYsiNHwhw3N+WJOyBZilh4=;
+        b=iJ+k1S53VkTdI+bJ6FZQMy+wuVVTcpEGQBazHPTp4ZLU3kD48OXmyk5Xm2binrZfma
+         kmFUvJTcEMpYx0jLSzI7AR5CWMk6tc9QS17Cbxrm2cidv3gcXnqfCaCjbmF5QuJ/DpyL
+         Hz8kYeNiOyODhJFRgvN7RafBsY/Pn8E3EgTD2k65s5zwal7m/odRJLPPDYdHmVDaj5nw
+         rTvYp3Mr8l2KsKYR+q9lDC3mxjkl7XUpjMF0zNk0dPdfFofiFcQXmSHoJsSWz4sHgnBF
+         UiIqxN8Ji64BlOvsaBi0h//AAOSv1k14nNzsl+2VSouIGz2/yVcnvpqofaMjY91VNeiA
+         5PCQ==
+X-Gm-Message-State: AOAM53369VbJzUkw1VY1sV9GSC0rJaFkkgVKDsLMRD42p+lqeQ89zLf1
+        Is9bRjgTesdKmUjRX7Q1bqb2mmm9EPjMog==
+X-Google-Smtp-Source: ABdhPJyY345P53Z28nzO2jWCu6n4NOM7PhVobj4nHXVuC8nw9Jbxxqd1zL4sDPM2n6G0NB8Avquzeg==
+X-Received: by 2002:a19:740d:: with SMTP id v13mr12925642lfe.655.1629806953845;
+        Tue, 24 Aug 2021 05:09:13 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id e8sm1780825ljj.132.2021.08.24.05.09.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 05:09:10 -0700 (PDT)
+Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in
+ usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210823223751.25104-1-fmdefrancesco@gmail.com>
+ <3198276.4iybWabFxt@localhost.localdomain>
+ <d5ac7cd8-dc81-732d-b583-628cd2a273cb@gmail.com>
+ <6601006.JhxPbakEoc@localhost.localdomain>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <99d69811-deff-d346-634e-20e9fdead7c8@gmail.com>
+Date:   Tue, 24 Aug 2021 15:09:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <6601006.JhxPbakEoc@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When configfs_lookup() is executing list_for_each_entry(),
-it is possible that configfs_dir_lseek() is calling list_del().
-Some unfortunate interleavings of them can cause a kernel NULL
-pointer dereference error
+On 8/24/21 3:01 PM, Fabio M. De Francesco wrote:
+> On Tuesday, August 24, 2021 1:07:46 PM CEST Pavel Skripkin wrote:
+>> 
+>> Btw, not related to your patch, but I start think, that this check:
+>> 
+>> 
+>> 	if (!pIo_buf) {
+>> 		DBG_88E("[%s] pIo_buf == NULL\n", __func__);
+>> 		status = -ENOMEM;
+>> 		goto release_mutex;
+>> 	}
+>> 
+>> Should be wrapped as
+>> 
+>> 	if (WARN_ON(unlikely(!pIo_buf)) {
+>> 		...
+>> 	}
+>> 
+>> Since usb_vendor_req_buf is initialized in ->probe() and I can't see 
+>> possible calltrace, which can cause zeroing this pointer.
+> 
+> I see that usb_vendor_req_buf is initialized in rtw_init_intf_priv(). It depends on a
+> kzalloc() success on allocating memory. Obviously it could fail to allocate. If it fails,
+> rtw_init_intf_priv() returns _FAIL to its caller(s) (whichever they are - I didn't go too
+> deep in understanding the possible calls chains).
+> 
 
-Thread 1                  Thread 2
-//configfs_dir_lseek()    //configfs_lookup()
-list_del(&cursor->s_sibling);
-                         list_for_each_entry(sd, ...)
+Call chain is the most interesting part here :)
 
-Fix this bug by grabbing configfs_dirent_lock in configfs_lookup().
+     rtw_drv_init()		<-- probe()
+       usb_dvobj_init()
+	rtw_init_intf_priv()
 
-In addtion, the third version patch silences certain compiler warnings.
-Reported-by: kernel test robot <lkp@intel.com>
+If kzalloc fails, then whole ->probe() routine fails, i.e device will be 
+disconnected. There is no read() calls before rtw_init_intf_priv(), so 
+if kzalloc() call was successful, there is no way how usb_vendor_req_buf 
+can be NULL, since read() can happen only in case of successfully 
+connected device.
 
-Reported-by: Sishuai Gong <sishuai@purdue.edu>
-Signed-off-by: sishuaigong <sishuai@purdue.edu>
----
- fs/configfs/dir.c | 93 +++++++++++++++++++----------------------------
- 1 file changed, 38 insertions(+), 55 deletions(-)
 
-diff --git a/fs/configfs/dir.c b/fs/configfs/dir.c
-index ac5e0c0e9181..b59e978e8c15 100644
---- a/fs/configfs/dir.c
-+++ b/fs/configfs/dir.c
-@@ -417,44 +417,13 @@ static void configfs_remove_dir(struct config_item * item)
- 	dput(dentry);
- }
- 
--
--/* attaches attribute's configfs_dirent to the dentry corresponding to the
-- * attribute file
-- */
--static int configfs_attach_attr(struct configfs_dirent * sd, struct dentry * dentry)
--{
--	struct configfs_attribute * attr = sd->s_element;
--	struct inode *inode;
--
--	spin_lock(&configfs_dirent_lock);
--	dentry->d_fsdata = configfs_get(sd);
--	sd->s_dentry = dentry;
--	spin_unlock(&configfs_dirent_lock);
--
--	inode = configfs_create(dentry, (attr->ca_mode & S_IALLUGO) | S_IFREG);
--	if (IS_ERR(inode)) {
--		configfs_put(sd);
--		return PTR_ERR(inode);
--	}
--	if (sd->s_type & CONFIGFS_ITEM_BIN_ATTR) {
--		inode->i_size = 0;
--		inode->i_fop = &configfs_bin_file_operations;
--	} else {
--		inode->i_size = PAGE_SIZE;
--		inode->i_fop = &configfs_file_operations;
--	}
--	d_add(dentry, inode);
--	return 0;
--}
--
- static struct dentry * configfs_lookup(struct inode *dir,
- 				       struct dentry *dentry,
- 				       unsigned int flags)
- {
--	struct configfs_dirent * parent_sd = dentry->d_parent->d_fsdata;
--	struct configfs_dirent * sd;
--	int found = 0;
--	int err;
-+	struct configfs_dirent *parent_sd = dentry->d_parent->d_fsdata;
-+	struct configfs_dirent *sd;
-+	struct inode *inode = NULL;
- 
- 	/*
- 	 * Fake invisibility if dir belongs to a group/default groups hierarchy
-@@ -464,38 +433,52 @@ static struct dentry * configfs_lookup(struct inode *dir,
- 	 * not complete their initialization, since the dentries of the
- 	 * attributes won't be instantiated.
- 	 */
--	err = -ENOENT;
- 	if (!configfs_dirent_is_ready(parent_sd))
--		goto out;
-+		return ERR_PTR(-ENOENT);
- 
-+	spin_lock(&configfs_dirent_lock);
- 	list_for_each_entry(sd, &parent_sd->s_children, s_sibling) {
--		if (sd->s_type & CONFIGFS_NOT_PINNED) {
--			const unsigned char * name = configfs_get_name(sd);
-+		if ((sd->s_type & CONFIGFS_NOT_PINNED) &&
-+			!strcmp(configfs_get_name(sd), dentry->d_name.name)) {
-+			struct configfs_attribute *attr;
-+			umode_t mode;
- 
--			if (strcmp(name, dentry->d_name.name))
--				continue;
-+			attr = sd->s_element;
-+			mode = (attr->ca_mode & S_IALLUGO) | S_IFREG;
-+			dentry->d_fsdata = configfs_get(sd);
-+			sd->s_dentry = dentry;
- 
--			found = 1;
--			err = configfs_attach_attr(sd, dentry);
--			break;
--		}
--	}
-+			spin_unlock(&configfs_dirent_lock);
- 
--	if (!found) {
--		/*
--		 * If it doesn't exist and it isn't a NOT_PINNED item,
--		 * it must be negative.
--		 */
--		if (dentry->d_name.len > NAME_MAX)
--			return ERR_PTR(-ENAMETOOLONG);
--		d_add(dentry, NULL);
--		return NULL;
-+			inode = configfs_create(dentry, mode);
-+			if (IS_ERR(inode)) {
-+				configfs_put(sd);
-+				return ERR_CAST(inode);
-+			}
-+			if (sd->s_type & CONFIGFS_ITEM_BIN_ATTR) {
-+				inode->i_size = 0;
-+				inode->i_fop = &configfs_bin_file_operations;
-+			} else {
-+				inode->i_size = PAGE_SIZE;
-+				inode->i_fop = &configfs_file_operations;
-+			}
-+			goto out;
-+		}
- 	}
-+	spin_unlock(&configfs_dirent_lock);
- 
-+	/*
-+	 * If it doesn't exist and it isn't a NOT_PINNED item,
-+	 * it must be negative.
-+	 */
-+	if (dentry->d_name.len > NAME_MAX)
-+		return ERR_PTR(-ENAMETOOLONG);
- out:
--	return ERR_PTR(err);
-+	d_add(dentry, inode);
-+	return NULL;
- }
- 
-+
- /*
-  * Only subdirectories count here.  Files (CONFIGFS_NOT_PINNED) are
-  * attributes and are removed by rmdir().  We recurse, setting
--- 
-2.17.1
+Anyway, it can be NULL in case of out-of-bound write or smth else, but 
+there is no explicit usb_alloc_vendor_req_buf = NULL in this driver.
+We should complain about completely wrong driver behavior, IMO :)
 
+
+Does it make sense?
+
+
+
+With regards,
+Pavel Skripkin
