@@ -2,118 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A393F53FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B513F53FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbhHXAJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 20:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        id S233439AbhHXAJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 20:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhHXAJ3 (ORCPT
+        with ESMTP id S233373AbhHXAJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:09:29 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230BBC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:08:46 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id c14so10746779qvs.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:08:46 -0700 (PDT)
+        Mon, 23 Aug 2021 20:09:44 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E878FC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:09:00 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id n18so18169372pgm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qXHgg8bh4V9/RfLoZDOv21AHCTmNqs2XAaQ2Uix6BLU=;
-        b=WRlLLaLWLWRVsmSdu/QDc1Rh7jw0BbtL7yBuVloYbQAOhCFewPibup7cK+gPbEhBXa
-         NvhXpKkSuYpoe7tO7OCFtjVcf5gMTzW5+6MOMrhkBoAHRX/SXTwZzL/zbzb5+UmjZ+F+
-         QgtBIjydKYagFMU2hZ7f9t71p2OkzysjGAzQ2gaJPMHtTu7V2jZBM1PNMPYxKWmEPGXc
-         cHhTbGo2L673WHmtQMVJoV7Nsx9T0hQSKH3yfhTIjQfh4TKIfPISlVfyUu1KS5WIIrDO
-         CeZvI3TKTahZ8iLpRLwjda7zcyyOsxj9D2WhHLu7f0QuoHAcZRG5Klb5xSeabXkzP53D
-         14nw==
+        bh=8x3/UqQR8bd8C1qjUbEbZOd8gxC4pFu+vpKcAnvRE5w=;
+        b=VesUANvK36el3h6wmJIezyhO4FnEsqkNYKFTws6PZkkPtk1G8++WNn7OUXDrQyYNLg
+         rJqdwSUv3BgSIK+kzlmK28i7DyrRn7RKvmterBq/eDBkF7VUNsZgCmMAYwt5c9AsdbAj
+         tzpOAWVdaPKOXlfG8cjMzs70rQBOTSmei/2w0lkBKkXFcAH0HGT9Wb5STG2YlLt3AZPE
+         6dTl/PhE0e6AolaK0s65duAqLVEOhIF9y7DdmCRp/ygm4wo8nUjilY8kjCkaS9ae866j
+         kE4UpRrd3h5jVwtm9Uy/BmjTAwhazVNWQpilNisRFa791YtK9exlyJfET5+mGZIxUnBB
+         HMwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qXHgg8bh4V9/RfLoZDOv21AHCTmNqs2XAaQ2Uix6BLU=;
-        b=WC4QUvfYkySWDlj0j5wtOuPJ9ma41qQOmL5fGXUtBuE0PD5qSG/3/ZcqxQoRFwq3pN
-         33QMtee+riDsEFWnDpiQ4yxG5BNwDb2b7GTyxtqH4e98/SPgjqhIJ54bPaS+M1LAcLMD
-         DvySQSZzsmNNwOFsE9ZhoHX8Jiud/ROLY94c3Pq3jrD9/aR7ObMcD1ophAVBdahaUyVt
-         tAlhb1/eJ2e9g/VfCoCnHSLra7eL3aqNEm9d7KiVgnohoYnVoaN+drIf3CFu7aMnW/I2
-         5DLVmtthQfEsfx09VQAwtBUK1BJUy0OMB9WTqVc6bw3oVdOqIkPpJKw68vVojpzk1WnM
-         LBwQ==
-X-Gm-Message-State: AOAM53058/8no3o9ZqWch2fBWt8Rs1fYyZjs/6OehF2KJ5nrQbR3bOGA
-        irtJOpq1gld/uCdFJ6U6TDg6aI4bysOrXtApKvd+lA==
-X-Google-Smtp-Source: ABdhPJyWbfNm8Z/jZ9f9qujiZJUDa0z4Oqk0Nanie5mU4W3bucnaFpllzzx45zlKucYLuf8LltVPw4Pd+0AOn0rb0Qg=
-X-Received: by 2002:ad4:54e9:: with SMTP id k9mr4461953qvx.4.1629763725350;
- Mon, 23 Aug 2021 17:08:45 -0700 (PDT)
+        bh=8x3/UqQR8bd8C1qjUbEbZOd8gxC4pFu+vpKcAnvRE5w=;
+        b=uQqFwBdVZbhGaLevJyrGVB+xfrnTYTNnkWAR6rNl4/RYuUEzeIqQA5QmPQURCkYPqp
+         mIWXdDpMSg7D4ge4+EJ/XJhy+rzEfJzLlTNZAkCfxBLbwtyGdcYUPbE+/9jhHDI093V+
+         3bwJHIvo3KL+3nxC1hx4JbTTOTVQjuf6/e0DfN3/H7RvWizA82pPwi7XO4OfHQ5d07Lc
+         fxFgGCfM8/oL+VEw+m28DXDwtoHrfCfpKoY8K8ytvNPixxWxVaRq9NHVxcdYI78wnmYe
+         jEmgKQrBDb3O1PJz7qhHu0N71bCk3uP4osZh0W4r38QBarpIM3iv/t56bFXc1fFsqe67
+         +tvg==
+X-Gm-Message-State: AOAM53139bUc1gXyUmM0AhyvYrCafpbpiK8xwaGnGnH8bUTlbsMzWVS9
+        e2U61Ypt9sMH5NLz/u0hQLJI9p6pnhGK7BmFQXbRQRO5VtU=
+X-Google-Smtp-Source: ABdhPJz4A8FpV6mxFhCg2sNgTcbZImvVPl0UNcUCu4Wv2YZyB6yhgFRUvkH/IRicjeI8egBSQHCY0yUtpyhTmWAfsjE=
+X-Received: by 2002:a63:aa43:: with SMTP id x3mr34608690pgo.208.1629763740430;
+ Mon, 23 Aug 2021 17:09:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
-In-Reply-To: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 24 Aug 2021 03:08:34 +0300
-Message-ID: <CAA8EJpqtuPam2b-87FC=pJidZ=df5KROxcBi8811aZm_WBwqFg@mail.gmail.com>
-Subject: Re: [PATCH] thermal: qcom: spmi-adc-tm5: Don't abort probing if a
- sensor is not used
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <20210823223751.25104-2-fmdefrancesco@gmail.com>
+In-Reply-To: <20210823223751.25104-2-fmdefrancesco@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Tue, 24 Aug 2021 01:08:49 +0100
+Message-ID: <CAA=Fs0ki91VvBOd2Wd59KqeCN+BmF-eWv+r0sH+e3fUG61Zxsg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Aug 2021 at 23:47, Matthias Kaehlcke <mka@chromium.org> wrote:
+On Mon, 23 Aug 2021 at 23:38, Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
 >
-> adc_tm5_register_tzd() registers the thermal zone sensors for all
-> channels of the thermal monitor. If the registration of one channel
-> fails the function skips the processing of the remaining channels
-> and returns an error, which results in _probe() being aborted.
+> Replace usb_control_msg() with the new usb_control_msg_recv() and
+> usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
 >
-> One of the reasons the registration could fail is that none of the
-> thermal zones is using the channel/sensor, which hardly is a critical
-> error (if it is an error at all). If this case is detected emit a
-> warning and continue with processing the remaining channels.
->
-> Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
 >
->  drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Thanks to Pavel Skripkin <paskripkin@gmail.com> for his review of the
+> RFC patch.
 >
-> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> index 232fd0b33325..8494cc04aa21 100644
-> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
-> @@ -359,6 +359,12 @@ static int adc_tm5_register_tzd(struct adc_tm5_chip *adc_tm)
->                                                            &adc_tm->channels[i],
->                                                            &adc_tm5_ops);
->                 if (IS_ERR(tzd)) {
-> +                       if (PTR_ERR(tzd) == -ENODEV) {
-> +                               dev_warn(adc_tm->dev, "thermal sensor on channel %d is not used\n",
-> +                                        adc_tm->channels[i].channel);
-> +                               continue;
-> +                       }
-> +
->                         dev_err(adc_tm->dev, "Error registering TZ zone for channel %d: %ld\n",
->                                 adc_tm->channels[i].channel, PTR_ERR(tzd));
->                         return PTR_ERR(tzd);
+> drivers/staging/r8188eu/hal/usb_ops_linux.c | 25 ++++++++++-----------
+> 1 file changed, 12 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> index a93d5cfe4635..6f51660b967a 100644
+> --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+> @@ -15,9 +15,8 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>         struct adapter  *adapt = pintfhdl->padapter;
+>         struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
+>         struct usb_device *udev = dvobjpriv->pusbdev;
+> -       unsigned int pipe;
+> +       u8 pipe;
+>         int status = 0;
+> -       u8 reqtype;
+>         u8 *pIo_buf;
+>         int vendorreq_times = 0;
+>
+> @@ -44,22 +43,22 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>         }
+>
+>         while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
+> -               memset(pIo_buf, 0, len);
+> -
+>                 if (requesttype == 0x01) {
+> -                       pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
+> -                       reqtype =  REALTEK_USB_VENQT_READ;
+> +                       status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> +                                                     REALTEK_USB_VENQT_READ, value,
+> +                                                     REALTEK_USB_VENQT_CMD_IDX,
+> +                                                     pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +                                                     GFP_KERNEL);
+>                 } else {
+> -                       pipe = usb_sndctrlpipe(udev, 0);/* write_out */
+> -                       reqtype =  REALTEK_USB_VENQT_WRITE;
+>                         memcpy(pIo_buf, pdata, len);
+> +                       status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> +                                                     REALTEK_USB_VENQT_WRITE, value,
+> +                                                     REALTEK_USB_VENQT_CMD_IDX,
+> +                                                     pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +                                                     GFP_KERNEL);
+>                 }
+>
+> -               status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+> -                                        reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
+> -                                        pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
+> -
+> -               if (status == len) {   /*  Success this control transfer. */
+> +               if (!status) {   /*  Success this control transfer. */
+>                         rtw_reset_continual_urb_error(dvobjpriv);
+>                         if (requesttype == 0x01)
+>                                 memcpy(pdata, pIo_buf,  len);
 > --
-> 2.33.0.rc2.250.ged5fa647cd-goog
+> 2.32.0
 >
 
+Dear Fabio,
 
--- 
-With best wishes
-Dmitry
+Thanks for the patch. Sorry, but for some reason with my N10-Nano I
+can't get a connection at all with this patch applied - it just won't
+associate with my network. Interface shows up and no OOPS in log, but
+just disassociates/no IP address/interface down etc. so perhaps
+semantics differ slightly here somehow? Tried two separate
+rollbacks/builds/runs just to make sure I wasn't losing my mind :-)
+
+Regards,
+Phil
