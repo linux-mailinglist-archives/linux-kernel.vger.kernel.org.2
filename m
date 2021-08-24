@@ -2,130 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0223F606F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9D13F6073
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237731AbhHXOc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237507AbhHXOc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADCE161206;
-        Tue, 24 Aug 2021 14:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629815503;
-        bh=bMXxWdJ++UOk1cdyFyrdXhzKNE28DWjaOyjbGlm5oZo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c6nQxqPcrAa/bhgupvz6wzhg3WjP5uexcxcNnExiZn1s97EfGIb+u6ormYS4LFc1w
-         L9AYGW//Tebs/AAi5+6/gVddHsuwo99eIHf7AbNYXLcUFRx8grtDWeWz+zKJ3+PBpY
-         5XdAZfBJJdcHy6MZ/+zfn16ZQt769IO8wY7oEKcBitx4YU3Dx2dqucjIm3yTmr/bWr
-         +7jKHAfNMFaraoIuWyg4dtj/w3LvndMOByfFgQDlWgAQhzKoEW8+fFhqWjgqls7t4W
-         LePnrgJIqJ5VLayIw7SLidjZ5lww7JIj10s9UI+iE9bNuxTQgbz8zuYXV9m2wzC8sn
-         Lq9QHJPj5ywwg==
-Date:   Tue, 24 Aug 2021 15:31:38 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     mark.rutland@arm.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        zhangshaokun@hisilicon.com
-Subject: Re: [PATCH v9 2/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
- PMU
-Message-ID: <20210824143137.GA23146@willie-the-truck>
-References: <20210818051246.29545-1-liuqi115@huawei.com>
- <20210818051246.29545-3-liuqi115@huawei.com>
+        id S237759AbhHXOdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237442AbhHXOdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:33:46 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB39C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:33:02 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id l10so6974198ilh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WAOiuATXevPHNBvPplmlBHr/FxqYY3GsxpXENpilWKY=;
+        b=WOyt9t0ZSbCOg6SIqTfFuAaqsoP+napnQatblZNXOZv389nl83Ysmds3o/R/BCG8CR
+         Ggl2Kqha7WNRG8f7ytT0aW2T0c8GwgW6Tz/kJo1FvpLknhg6m4T7xd6dVPsZQaUzP5Fj
+         iD48EZsk/WB8RA54gj1+CIxY+j2fscClna/mY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WAOiuATXevPHNBvPplmlBHr/FxqYY3GsxpXENpilWKY=;
+        b=drfoKtGvp1j+N6UI5R8xtUdEk7Wl+Eqpot5B2jLG2GGSocG5KLdRrtcwBFAHcYTYS5
+         waZRYhL9UwXA/5+6ioiaBK68iyl0oAj6NBlXUiH0yGXBIdsHQOw7JmsqEOibSStj1FA1
+         fuCn2ERkmLogTOEmCL1pqKcMcNB4f2UeIyHnotIDetFQay6ZCrndsb4Pa1COtRKv/bAj
+         qpYKm1QaI//mIlhV8o55T1hlkUPDNUXkf0nnzL2eNB8h/SHFT31OKjiNNsjhGMz34vaT
+         ffMkT+2ilbsO4hRd9rprgMBs3JheM/Xd6a+7mitZlL9KIB8xTg6UOs3t/ORHV/mTy8pO
+         oUiQ==
+X-Gm-Message-State: AOAM530QMCUML7ujFIgqxlJXnk/3SpbEzcKLavQM0u6Hrmtjso9QJzSO
+        c+khPQVks1xzOaUNUasgdo0wWQ==
+X-Google-Smtp-Source: ABdhPJy7xWOsKHq9uY1p9tQB3YbrrULbZDI49VHGJeQAUgzbZygTm0Qysf9Xuy5NdXX5HfB9vL0Qgw==
+X-Received: by 2002:a92:c94e:: with SMTP id i14mr26842749ilq.143.1629815581534;
+        Tue, 24 Aug 2021 07:33:01 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 12sm6128492ilq.37.2021.08.24.07.33.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 07:33:01 -0700 (PDT)
+Subject: Re: [PATCH] selftests: openat2: Fix testing failure for O_LARGEFILE
+ flag
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>, shuah@kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <1627475340-128057-1-git-send-email-baolin.wang@linux.alibaba.com>
+ <01184d9e-477d-cbe4-c936-62b92e915911@linux.alibaba.com>
+ <9411d418-567b-78f0-0e4d-30f08371c55a@linux.alibaba.com>
+ <a9dc1616-61b9-c010-950c-521693c74247@linuxfoundation.org>
+ <20210824112129.2t6lzqyf2dxllw4a@senku>
+ <20210824113619.a3gyxlerst7tumzn@wittgenstein>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <11702c81-8b7c-bbe6-705a-f0fed5f10ba5@linuxfoundation.org>
+Date:   Tue, 24 Aug 2021 08:33:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818051246.29545-3-liuqi115@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210824113619.a3gyxlerst7tumzn@wittgenstein>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Aug 18, 2021 at 01:12:46PM +0800, Qi Liu wrote:
-> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
-> to sample bandwidth, latency, buffer occupation etc.
+On 8/24/21 5:36 AM, Christian Brauner wrote:
+> On Tue, Aug 24, 2021 at 09:21:29PM +1000, Aleksa Sarai wrote:
+>> On 2021-08-23, Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>> Hi Baolin,
+>>>
+>>> On 8/22/21 8:40 PM, Baolin Wang wrote:
+>>>> Hi Shuah,
+>>>>
+>>>> On 2021/7/28 20:32, Baolin Wang wrote:
+>>>>> Hi,
+>>>>>
+>>>>>> When running the openat2 test suite on ARM64 platform, we got below failure,
+>>>>>> since the definition of the O_LARGEFILE is different on ARM64. So we can
+>>>>>> set the correct O_LARGEFILE definition on ARM64 to fix this issue.
+>>>>>
+>>>>> Sorry, I forgot to copy the failure log:
+>>>>>
+>>>
+>>> Please cc everybody get_maintainers.pl suggests. You are missing
+>>> key reviewers for this change.
+>>>
+>>> Adding Christian Brauner and Aleksa Sarai to the thread.
+>>>
+>>>>> # openat2 unexpectedly returned # 3['/lkp/benchmarks/kernel_selftests/tools/testing/selftests/openat2'] with 208000 (!= 208000)
+>>>
+>>> Not sure I understand this. 208000 (!= 208000) look sthe same to me.
+>>>
+>>>>> not ok 102 openat2 with incompatible flags (O_PATH | O_LARGEFILE) fails with -22 (Invalid argument)
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>>>
+>>>> Could you apply this patch if no objection from your side? Thanks.
+>>>>
+>>>
+>>> Ideally this define should come from an include file.
+>>
+>> The issue is that O_LARGEFILE is set to 0 by glibc because glibc appears
+>> to hide the nuts and bolts of largefile support from userspace. I
+>> couldn't find a nice way of doing a architecture-dependent includes of
+>> include/uapi from kselftests, so I just went with this instead -- but I
+>> agree that a proper include would be better if someone can figure out
+>> how to do it.
 > 
-> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
-> registered as a PMU in /sys/bus/event_source/devices, so users can
-> select target PMU, and use filter to do further sets.
+
+ From a quick look, it will take sone work to consolidate multiple
+O_LARGEFILE defines.
+
+> I'd just add arch-dependent defines for now and call it good. So seems
+> good enough for me:
 > 
-> Filtering options contains:
-> event     - select the event.
-> port      - select target Root Ports. Information of Root Ports are
->             shown under sysfs.
-> bdf       - select requester_id of target EP device.
-> trig_len  - set trigger condition for starting event statistics.
-> trig_mode - set trigger mode. 0 means starting to statistic when bigger
->             than trigger condition, and 1 means smaller.
-> thr_len   - set threshold for statistics.
-> thr_mode  - set threshold mode. 0 means count when bigger than threshold,
->             and 1 means smaller.
+> Thanks!
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> 
+>>
+>>> Christian, Aleksa,
+>>>
+>>> Can you review this patch and let me know if this approach looks right.
+>>
+>> Reviewed-by: Aleksa Sarai <cyphar@cyphar.com>
 
-I think this is getting there now, thanks for sticking with it. Just a
-couple of comments below..
+Thank you for the patch and the reviews. I will apply this for 5.15-rc1
 
-> +static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
-> +{
-> +	struct perf_event *sibling, *leader = event->group_leader;
-> +	int counters = 1;
-> +
-> +	if (!is_software_event(leader)) {
-> +		if (leader->pmu != event->pmu)
-> +			return false;
-> +
-> +		if (leader != event)
-> +			counters++;
-> +	}
-> +
-> +	for_each_sibling_event(sibling, event->group_leader) {
-> +		if (is_software_event(sibling))
-> +			continue;
-> +
-> +		if (sibling->pmu != event->pmu)
-> +			return false;
-> +
-> +		counters++;
-> +	}
-> +
-> +	return counters <= HISI_PCIE_MAX_COUNTERS;
-> +}
-
-Given that this function doesn't look at the event numbers, doesn't this
-over-provision the counter registers? For example, if I create a group
-containing 4 of the same event, then we'll allocate four counters but only
-use one. Similarly, if I create a group containing two events, one for the
-normal counter and one for the extended counter, then we'll again allocate
-two counters instead of one.
-
-Have I misunderstood?
-
-> +static int hisi_pcie_pmu_event_init(struct perf_event *event)
-> +{
-> +	struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	event->cpu = pcie_pmu->on_cpu;
-> +
-> +	if (EXT_COUNTER_IS_USED(hisi_pcie_get_event(event)))
-> +		hwc->event_base = HISI_PCIE_EXT_CNT;
-> +	else
-> +		hwc->event_base = HISI_PCIE_CNT;
-> +
-> +	if (event->attr.type != event->pmu->type)
-> +		return -ENOENT;
-> +
-> +	/* Sampling is not supported. */
-> +	if (is_sampling_event(event) || event->attach_state & PERF_ATTACH_TASK)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu)) {
-> +		pci_err(pcie_pmu->pdev, "Invalid filter!\n");
-
-Please remove this message, as it's triggerable from userspace.
-
-Will
+thanks,
+-- Shuah
