@@ -2,266 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEB03F64EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8AE3F67B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238950AbhHXRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:08:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43210 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239170AbhHXRGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:06:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629824735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=olgu31rPJpOTjKmA0XuNHPckB19mLh5v5zVaEM4u+Ik=;
-        b=iOPEAfmysP4mpjJIOxuglfjHqZwzjJ2ig/xNGuJ6NJ4JUsPa74cZPCaujXYFIGNY3AaloN
-        e9Mh+r94hS/fcKs4ZAS1iSZnrLeVNyNJUBlX3pxVBDaExP2ucaeBcWnYZ0zA7EzVTmllc3
-        2l6IW7D2iFuGia/FC7vA4+x52C2K5r8=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-rnISR8SoMgK_d7xvucSrTQ-1; Tue, 24 Aug 2021 13:05:34 -0400
-X-MC-Unique: rnISR8SoMgK_d7xvucSrTQ-1
-Received: by mail-qk1-f199.google.com with SMTP id s206-20020a3745d70000b02903b9207abc7bso14750444qka.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:05:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=olgu31rPJpOTjKmA0XuNHPckB19mLh5v5zVaEM4u+Ik=;
-        b=VxG7aRZRAC0vCXD7cRHrXa7gXwr10MlkKNDxbUU5KZeTm1twK8aKsGRfQAmhpJS3mj
-         C4pJNYtgCG1f1teilRaC6KfxV92eNSJMMO/H8OBGFGkC33DdgPaDB8h00ISFwuYSWk55
-         0gFlmWeTV+595AkHwV+9yJwFNp7JapIfONKHVhXi3ZMFvRl4hrO8EaaRYWjJjWs0mzBW
-         H13D8W5yU779cv12EhhU4P6HGbFLYhEjzo0VJinvHM5gg1M8KmmTfZv5SBvONxXXOUsH
-         T2AZbGg6lAMtIIcH4JzRCijYYBzmtUZEu4reBXSDOSAkbn7ZfOaYqkFKF3yGeDB2FEDK
-         Kx+A==
-X-Gm-Message-State: AOAM532UknD39CdxIwZFBSvJPrPZrFSMqqa1cIW8nnHEHgG7ww0bmShM
-        brghsolJ37nf4Lo2ZjljJnMnrZ8MUUjrA9lFuqnadAFQQ9yP0UlD10zvmML2BunlpdvsgtgYWsE
-        j6X2Grmk6d9iD4LtYNGQdF/P8
-X-Received: by 2002:a05:620a:4092:: with SMTP id f18mr8019842qko.91.1629824734238;
-        Tue, 24 Aug 2021 10:05:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxajLXqKsquojFZCdfXxxcf5UjL2aIS6hN3ktbx8HCAz+n/TGk51Sc0c7p6Ra/u9YDvfBY57w==
-X-Received: by 2002:a05:620a:4092:: with SMTP id f18mr8019822qko.91.1629824734045;
-        Tue, 24 Aug 2021 10:05:34 -0700 (PDT)
-Received: from [192.168.8.104] (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id y67sm11309477qkd.58.2021.08.24.10.05.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 10:05:33 -0700 (PDT)
-Message-ID: <75ccbdea6e8871856002edb75dff1a32822a5a89.camel@redhat.com>
-Subject: Re: [PATCH AUTOSEL 4.14 6/7] drm/nouveau: block a bunch of classes
- from userspace
-From:   Lyude Paul <lyude@redhat.com>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org
-Date:   Tue, 24 Aug 2021 13:05:32 -0400
-In-Reply-To: <20210824005528.631702-6-sashal@kernel.org>
-References: <20210824005528.631702-1-sashal@kernel.org>
-         <20210824005528.631702-6-sashal@kernel.org>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S241671AbhHXRgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241550AbhHXRdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:33:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AA6617E6;
+        Tue, 24 Aug 2021 17:06:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629824778;
+        bh=0wt2/bJt7y1q3MqYQhZwfusAFLFPDCe3IIccScGZUhE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YrRKgC6Fgg31/QP2m+fl+d+jjH3AcB34ypmMmevls4DmiutmxRLgzUHBemxfr3/Ot
+         03E06kENarcikMA8gqAsla94oj2ol820qU2m+f2HKrbWtvbFUu5Gee6cnEkjAhHNfj
+         ge5xBIKl5s7w0Y7KebyAtkI9aIV/5hX790F7jWuXzPMeOdVWnka+xF78jQFXJt+Lzz
+         IeQovcXfzKgm5zf8oG+KXoyNMkTAbogEL7p6hp21dbbpOsF4KqLdEuIeTWXol6j5Dh
+         UrJeltw9UqD+1wIViCA7JoT2uh9vDHdixT5XKjUyLgIVZ7ZqIeEzs/zDjUjliDIKY3
+         2WkUt/TfgLmZA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.9 02/43] ASoC: intel: atom: Fix reference to PCM buffer address
+Date:   Tue, 24 Aug 2021 13:05:33 -0400
+Message-Id: <20210824170614.710813-3-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210824170614.710813-1-sashal@kernel.org>
+References: <20210824170614.710813-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.281-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.281-rc1
+X-KernelTest-Deadline: 2021-08-26T17:06+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This isn't at all intended to be a fix to be backported, so I don't think this
-should be included. I don't know about 5/7, but I'll let Benjamin comment on
-that one
+From: Takashi Iwai <tiwai@suse.de>
 
-On Mon, 2021-08-23 at 20:55 -0400, Sasha Levin wrote:
-> From: Ben Skeggs <bskeggs@redhat.com>
-> 
-> [ Upstream commit 148a8653789c01f159764ffcc3f370008966b42f ]
-> 
-> Long ago, there had been plans for making use of a bunch of these APIs
-> from userspace and there's various checks in place to stop misbehaving.
-> 
-> Countless other projects have occurred in the meantime, and the pieces
-> didn't finish falling into place for that to happen.
-> 
-> They will (hopefully) in the not-too-distant future, but it won't look
-> quite as insane.  The super checks are causing problems right now, and
-> are going to be removed.
-> 
-> Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-> Reviewed-by: Lyude Paul <lyude@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/gpu/drm/nouveau/include/nvif/cl0080.h |  3 +-
->  drivers/gpu/drm/nouveau/nouveau_drm.c         |  1 +
->  drivers/gpu/drm/nouveau/nouveau_usif.c        | 57 ++++++++++++++-----
->  .../gpu/drm/nouveau/nvkm/engine/device/user.c |  2 +-
->  4 files changed, 48 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/include/nvif/cl0080.h
-> b/drivers/gpu/drm/nouveau/include/nvif/cl0080.h
-> index 2740278d226b..61c17acd507c 100644
-> --- a/drivers/gpu/drm/nouveau/include/nvif/cl0080.h
-> +++ b/drivers/gpu/drm/nouveau/include/nvif/cl0080.h
-> @@ -4,7 +4,8 @@
->  
->  struct nv_device_v0 {
->         __u8  version;
-> -       __u8  pad01[7];
-> +       __u8  priv;
-> +       __u8  pad02[6];
->         __u64 device;   /* device identifier, ~0 for client default */
->  };
->  
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_drm.c
-> b/drivers/gpu/drm/nouveau/nouveau_drm.c
-> index fb6b1d0f7fef..fc54a26598cc 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_drm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_drm.c
-> @@ -151,6 +151,7 @@ nouveau_cli_init(struct nouveau_drm *drm, const char
-> *sname,
->         ret = nvif_device_init(&cli->base.object, 0, NV_DEVICE,
->                                &(struct nv_device_v0) {
->                                         .device = ~0,
-> +                                       .priv = true,
->                                }, sizeof(struct nv_device_v0),
->                                &cli->device);
->         if (ret) {
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_usif.c
-> b/drivers/gpu/drm/nouveau/nouveau_usif.c
-> index 9dc10b17ad34..5da1f4d223d7 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_usif.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_usif.c
-> @@ -32,6 +32,9 @@
->  #include <nvif/event.h>
->  #include <nvif/ioctl.h>
->  
-> +#include <nvif/class.h>
-> +#include <nvif/cl0080.h>
-> +
->  struct usif_notify_p {
->         struct drm_pending_event base;
->         struct {
-> @@ -261,7 +264,7 @@ usif_object_dtor(struct usif_object *object)
->  }
->  
->  static int
-> -usif_object_new(struct drm_file *f, void *data, u32 size, void *argv, u32
-> argc)
-> +usif_object_new(struct drm_file *f, void *data, u32 size, void *argv, u32
-> argc, bool parent_abi16)
->  {
->         struct nouveau_cli *cli = nouveau_cli(f);
->         struct nvif_client *client = &cli->base;
-> @@ -271,23 +274,48 @@ usif_object_new(struct drm_file *f, void *data, u32
-> size, void *argv, u32 argc)
->         struct usif_object *object;
->         int ret = -ENOSYS;
->  
-> +       if ((ret = nvif_unpack(ret, &data, &size, args->v0, 0, 0, true)))
-> +               return ret;
-> +
-> +       switch (args->v0.oclass) {
-> +       case NV_DMA_FROM_MEMORY:
-> +       case NV_DMA_TO_MEMORY:
-> +       case NV_DMA_IN_MEMORY:
-> +               return -EINVAL;
-> +       case NV_DEVICE: {
-> +               union {
-> +                       struct nv_device_v0 v0;
-> +               } *args = data;
-> +
-> +               if ((ret = nvif_unpack(ret, &data, &size, args->v0, 0, 0,
-> false)))
-> +                       return ret;
-> +
-> +               args->v0.priv = false;
-> +               break;
-> +       }
-> +       default:
-> +               if (!parent_abi16)
-> +                       return -EINVAL;
-> +               break;
-> +       }
-> +
->         if (!(object = kmalloc(sizeof(*object), GFP_KERNEL)))
->                 return -ENOMEM;
->         list_add(&object->head, &cli->objects);
->  
-> -       if (!(ret = nvif_unpack(ret, &data, &size, args->v0, 0, 0, true))) {
-> -               object->route = args->v0.route;
-> -               object->token = args->v0.token;
-> -               args->v0.route = NVDRM_OBJECT_USIF;
-> -               args->v0.token = (unsigned long)(void *)object;
-> -               ret = nvif_client_ioctl(client, argv, argc);
-> -               args->v0.token = object->token;
-> -               args->v0.route = object->route;
-> +       object->route = args->v0.route;
-> +       object->token = args->v0.token;
-> +       args->v0.route = NVDRM_OBJECT_USIF;
-> +       args->v0.token = (unsigned long)(void *)object;
-> +       ret = nvif_client_ioctl(client, argv, argc);
-> +       if (ret) {
-> +               usif_object_dtor(object);
-> +               return ret;
->         }
->  
-> -       if (ret)
-> -               usif_object_dtor(object);
-> -       return ret;
-> +       args->v0.token = object->token;
-> +       args->v0.route = object->route;
-> +       return 0;
->  }
->  
->  int
-> @@ -301,6 +329,7 @@ usif_ioctl(struct drm_file *filp, void __user *user, u32
-> argc)
->                 struct nvif_ioctl_v0 v0;
->         } *argv = data;
->         struct usif_object *object;
-> +       bool abi16 = false;
->         u8 owner;
->         int ret;
->  
-> @@ -331,11 +360,13 @@ usif_ioctl(struct drm_file *filp, void __user *user,
-> u32 argc)
->                         mutex_unlock(&cli->mutex);
->                         goto done;
->                 }
-> +
-> +               abi16 = true;
->         }
->  
->         switch (argv->v0.type) {
->         case NVIF_IOCTL_V0_NEW:
-> -               ret = usif_object_new(filp, data, size, argv, argc);
-> +               ret = usif_object_new(filp, data, size, argv, argc, abi16);
->                 break;
->         case NVIF_IOCTL_V0_NTFY_NEW:
->                 ret = usif_notify_new(filp, data, size, argv, argc);
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-> b/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-> index 513ee6b79553..08100eed9584 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/user.c
-> @@ -347,7 +347,7 @@ nvkm_udevice_new(const struct nvkm_oclass *oclass, void
-> *data, u32 size,
->                 return ret;
->  
->         /* give priviledged clients register access */
-> -       if (client->super)
-> +       if (args->v0.priv)
->                 func = &nvkm_udevice_super;
->         else
->                 func = &nvkm_udevice;
+commit 2e6b836312a477d647a7920b56810a5a25f6c856 upstream.
 
+PCM buffers might be allocated dynamically when the buffer
+preallocation failed or a larger buffer is requested, and it's not
+guaranteed that substream->dma_buffer points to the actually used
+buffer.  The address should be retrieved from runtime->dma_addr,
+instead of substream->dma_buffer (and shouldn't use virt_to_phys).
+
+Also, remove the line overriding runtime->dma_area superfluously,
+which was already set up at the PCM buffer allocation.
+
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210728112353.6675-3-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index d812cbf41b94..6303b2d3982d 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -135,7 +135,7 @@ static void sst_fill_alloc_params(struct snd_pcm_substream *substream,
+ 	snd_pcm_uframes_t period_size;
+ 	ssize_t periodbytes;
+ 	ssize_t buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+-	u32 buffer_addr = virt_to_phys(substream->dma_buffer.area);
++	u32 buffer_addr = substream->runtime->dma_addr;
+ 
+ 	channels = substream->runtime->channels;
+ 	period_size = substream->runtime->period_size;
+@@ -241,7 +241,6 @@ static int sst_platform_alloc_stream(struct snd_pcm_substream *substream,
+ 	/* set codec params and inform SST driver the same */
+ 	sst_fill_pcm_params(substream, &param);
+ 	sst_fill_alloc_params(substream, &alloc_params);
+-	substream->runtime->dma_area = substream->dma_buffer.area;
+ 	str_params.sparams = param;
+ 	str_params.aparams = alloc_params;
+ 	str_params.codec = SST_CODEC_TYPE_PCM;
 -- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+2.30.2
 
