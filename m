@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC54A3F5F65
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3A93F5F6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237640AbhHXNpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:45:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55732 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhHXNpn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:45:43 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 749F92209E;
-        Tue, 24 Aug 2021 13:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629812698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQT1R0eSRQSRF+rzGFAmoytGRsJKhqfXEc1Tzckzx/8=;
-        b=QO6Onyd99Thl/apaIzjmQn/MNLhZL4OBuYG1DvbASn1odsCNXJ7A5WNVVyWu9pcKolAJQo
-        Wql0VdVYNceEQaIpkt9Q7/dedkE/ST50vB+vEnwsxTFK6EguAkZNqGQ0yQSjgJmzAtyG9S
-        HFvytrQ0goihl4KQvXXpMcQB27yzcQk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629812698;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQT1R0eSRQSRF+rzGFAmoytGRsJKhqfXEc1Tzckzx/8=;
-        b=vpOGwQaLbAxn9Qpo7vy/AzUZUgjZZe1MOodHAwiqhxtzTu1MZo2Cn2N7UIUtb0UF4XD4Pc
-        tBbUFZxFJ1sSNpCA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 5C66B13A50;
-        Tue, 24 Aug 2021 13:44:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id akkTFtr3JGGuNwAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Tue, 24 Aug 2021 13:44:58 +0000
-Date:   Tue, 24 Aug 2021 15:44:57 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3] nvme: revalidate paths during rescan
-Message-ID: <20210824134457.x33n7ihoe23jhyfx@carbon.lan>
-References: <20210811152803.30017-1-dwagner@suse.de>
- <93e8d113-55bb-e859-bf3d-54433dd23683@grimberg.me>
+        id S237690AbhHXNqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237403AbhHXNqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:46:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA1996103B;
+        Tue, 24 Aug 2021 13:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629812758;
+        bh=Jed18KPEaR+Zuz6QaoXkrJ1/iRgkKIy/q8FOpLXPpfo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=If+MJbyHhxgeinHlWa6kCcSoshW7bC+68r1YXAYgextZ8Ec4YFXDRHkqzikXFX333
+         37dU7UIExz2LEEi2fDhUusfQB1oNlPCtsTDn0QOc1r8dVCjcbmR1iioLx7K3OoQ/0s
+         qXbJsjXXOKlgzNj5tfQZpXveEX9L1nnvvwFXAePDvKMwWgg7h4D0VF17KzTwp8lsCq
+         cWJr7EkWQfcSsNlPdf0SsE0GtSfoCFafNV9J2BArfujl2SloLhFbOYArP92Fqri+M4
+         5rYei7At2rahLxe5mfdvbi5keddu9pt+7/rK5xgl6jfLSrxUXTeU8LjOoTwt7PzUku
+         8bAVfjF/sihQA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mIWkU-0007M8-GL; Tue, 24 Aug 2021 15:45:54 +0200
+Date:   Tue, 24 Aug 2021 15:45:54 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Zhengjun Zhang <zhangzhengjun@aicrobo.com>
+Cc:     larsm17@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2] USB: serial: option: add new VID/PID to support
+ Fibocom FG150
+Message-ID: <YST4Eq2zS8+7B5TL@hovoldconsulting.com>
+References: <b3285ae0-8b1f-fc9c-3662-634264d704d5@gmail.com>
+ <20210809133553.71158-1-zhangzhengjun@aicrobo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <93e8d113-55bb-e859-bf3d-54433dd23683@grimberg.me>
+In-Reply-To: <20210809133553.71158-1-zhangzhengjun@aicrobo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 10:16:23AM -0700, Sagi Grimberg wrote:
-> > +void nvme_mpath_revalidate_paths(struct nvme_ns *ns)
-> > +{
-> > +	struct nvme_ns_head *head = ns->head;
-> > +	sector_t capacity = get_capacity(head->disk);
-> > +	int node;
-> > +
-> > +	for_each_node(node)
-> > +		rcu_assign_pointer(head->current_path[node], NULL);
-> > +
-> > +	list_for_each_entry_rcu(ns, &head->list, siblings) {
-> > +		if (capacity != get_capacity(ns->disk))
-> > +			clear_bit(NVME_NS_READY, &ns->flags);
-> > +	}
+On Mon, Aug 09, 2021 at 09:35:53PM +0800, Zhengjun Zhang wrote:
+> Fibocom FG150 is a 5G module based on Qualcomm SDX55 platform,
+> support Sub-6G band.
 > 
-> Shouldn't the null setting to current_path come after
-> we clear NVME_NS_READY on the ns? Otherwise we may still
-> submit and current_path will be populated with the ns
-> again...
+> Compared with the first patch, I removed the defines of Fibocom 
+> VID and PID by following Lars' suggestion.
 
-Ahh, I got it this time! Yes, you are right. I think Christoph has
-dropped this patch from the nvme-5.15 queue anyway. I'll resend a new
-version with the order changed.
+When revising patches please put such comments below the '---' line so
+that it doesn't end up in the commit message.
 
-Daniel
+> Here are the outputs of lsusb -v and usb-devices:
+> 
+> > T:  Bus=02 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
+> > D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
+> > P:  Vendor=2cb7 ProdID=010b Rev=04.14
+> > S:  Manufacturer=Fibocom
+> > S:  Product=Fibocom Modem_SN:XXXXXXXX
+> > S:  SerialNumber=XXXXXXXX
+> > C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
+> > I:  If#=0x0 Alt= 0 #EPs= 1 Cls=ef(misc ) Sub=04 Prot=01 Driver=rndis_host
+> > I:  If#=0x1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
+> > I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> > I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
+> > I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
+> 
+> > Bus 002 Device 002: ID 2cb7:010b Fibocom Fibocom Modem_SN:XXXXXXXX
+
+> Signed-off-by: Zhengjun Zhang <zhangzhengjun@aicrobo.com>
+> ---
+> V1 -> V2: Remove the defines of Fibocom VID and PID
+> 
+>  drivers/usb/serial/option.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+> index 0fbe253dc..4fcf859e9 100644
+> --- a/drivers/usb/serial/option.c
+> +++ b/drivers/usb/serial/option.c
+> @@ -2073,6 +2073,8 @@ static const struct usb_device_id option_ids[] = {
+>  	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
+>  	  .driver_info = RSVD(6) },
+>  	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a0, 0xff) },			/* Fibocom NL668-AM/NL652-EU (laptop MBIM) */
+> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x010b, 0xff, 0xff, 0x30) },	/* Fibocom FG150 Diag */
+> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x010b, 0xff, 0, 0) },	/* Fibocom FG150 AT */
+
+And try to keep the entries sorted by VID/PID where possible.
+
+>  	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff) },			/* LongSung M5710 */
+>  	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
+>  	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
+
+I fixed up the above before applying. Thanks.
+
+Johan
