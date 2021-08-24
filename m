@@ -2,285 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AA23F58F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7A53F58F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhHXH1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:27:21 -0400
-Received: from mout.gmx.net ([212.227.17.22]:41267 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhHXH1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:27:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1629789988;
-        bh=v17RKsvGJ+zoaPgm4NV0ZimaezNoWpAZALPNlLCZSKA=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=M2pm69Cr9L9PRTmJyL0p8lc0yrNYulbJh27A8uDA7stNhjjebOhABc0MZRp7sjypo
-         15mz32lJsKPsUgRRi2LNB2+Qcr6aQaMcfpk2cJvZvBH23h7+VelibBUhsLlqaFceRT
-         OqmjF1rHCIetyRJgbV4Ra8giamZAWzLihdLWSY3U=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N6sn1-1n6gd22uHH-018HgK; Tue, 24 Aug 2021 09:26:27 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2 1/3] staging/rtl8192u: Avoid CamelCase in names of variables
-Date:   Tue, 24 Aug 2021 09:25:43 +0200
-Message-Id: <20210824072545.7321-2-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210824072545.7321-1-len.baker@gmx.com>
-References: <20210824072545.7321-1-len.baker@gmx.com>
+        id S234782AbhHXH17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234765AbhHXH1s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:27:48 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2398EC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:27:04 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id y7so35989140ljp.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:27:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mDTHPcAeze7GuqTFf7iUzU0Ra0uK6CJMs05qWwtQgPQ=;
+        b=XCsV+xe2VKeCxurdqvIahXVQVzBjDwZzUZjzAvtSXPXz7i1J0LJdV28tcFZQbU0T/Q
+         wd4wTigTfYyKSMnqYRNKkuMtVBBgcES70UmxHDBafzxgZYfq4j4qUn4emDbIwGhUPB4h
+         8rv6mlG9WaUHjRklgTi++rJ0SM1GOUwzouHaxhSfgI3euN1oG7Ri9hn5i1ahIrx4Hsrs
+         2UWd2O/00oTTUsOAhP/L0Y9aQv9k6PREhqWDC8wA18ar4kjLycc3WkFMlI8vkMy1Iu4B
+         mU+VkmgBhzr0yVGnXKRjeI/EegAg0ilUh6mD/EzyZgtO/UgBN1m+GvhZmN3rYDlt1wDp
+         XnWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mDTHPcAeze7GuqTFf7iUzU0Ra0uK6CJMs05qWwtQgPQ=;
+        b=rDyz3PFGTK4t8vr5EFhnhegB5aAD92PNQwbEsmTQo2hIAg6xzsJyvkFQa5ezsRyRqz
+         lPCsKGgeS5+9s3kR6xAeq/aWNoJD1P/3L8s+PeJij3uKwiJY8GOUoUs8/KRSzEhUqBrG
+         u5T8v83h3n2/BQqS9II4Q7JZAgit/9Y2px7MyqANOnFdVe48HW+UjJ56yMffNvsDZysq
+         bkJIXuamQZ9wX9iD+DKWHhf3OciGaGvk0O1vEfigmKZ/OUSlsuu7YXfA/ldBPm0LOPfq
+         LSR3bmEq2o/rAGjGQPSJQXNuQw/uAed8RlAuj1o1z2mz3yDotsZrZYbyCfpPd+s05ywU
+         2weA==
+X-Gm-Message-State: AOAM531jio+LdES9bljJg/W4oUZ4eWmtazo7zIXPqMVua2UEUIPIXYqV
+        MmRWeyi9QxaetDSsfb2QKLE=
+X-Google-Smtp-Source: ABdhPJw0wywnOmt+5s6vZqNaK/gf21or5oyvVf0BWEzgFYeV3kI70ispgn5uWDgvEmMKUMPq7xsx8w==
+X-Received: by 2002:a2e:8457:: with SMTP id u23mr23578950ljh.3.1629790022108;
+        Tue, 24 Aug 2021 00:27:02 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id z4sm1666203lfb.284.2021.08.24.00.27.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 00:27:01 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH v3 0/6] staging: r8188eu: avoid uninit value bugs
+Date:   Tue, 24 Aug 2021 10:25:45 +0300
+Message-Id: <cover.1629789580.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <CAA=Fs0=gX66TW3qoHYWcoSsvai6YZn=U81a34V45oij7NrMJrQ@mail.gmail.com>
+References: <CAA=Fs0=gX66TW3qoHYWcoSsvai6YZn=U81a34V45oij7NrMJrQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jULEbUMt/rThvxH2t+pF9WN49skqlHlsle5kt8EjnHFFj88p5qN
- R/OBFzDK1CVLWKP7AYQMrdZ7CJUxGgHSfTY6RmpFi8Fi3k+aL6sVBgoFvqR1fZL4Rrnf7x8
- L+41ma5qKeygxpcZMzxVBXcu2nzYNJ2XI/iA+dul0dF/8uHlMiK5sXN0AiGCMHt9Kx0FPfq
- 5UPPjElNn2w5C8TpHDtWw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ZBF2KGwooXY=:GmjcWq6bGCWuL0GgLs9OYI
- m/mtNb0I7Xvc6S9JgRliIPtO8xs9Y5z9HoObJlEmnVF98IuFxrAP3ACAgDADKlndbS67QSemI
- CRrtXulPyWqML12W/Amn8D9GHnRoV8qCRJosO/qz0hubch+EV9Jlk5obgby5PnKE8rOQC3deM
- jAbdiMGPJB1kYNdmolOJtQlx+Vk50gswbq5z+rExY0rilLPkJLWGTS3sXsX/j3qcBDQ1LOF+1
- H745phnyf4uynj35WvKmQK1QgrC4m8c/nSSOEnSUvD+kHK5ZJ6Hr7NE5t7SU0gZ2sNWd7TJW3
- 6UwNxsbbZzBdpSSBdy2fjvi78u5X6aa2SqK4aT+N3xYYSUQ+pePUH43juxekIWrVQNwRvzGLZ
- tVF802qZ0Zrjwrug0VBq7Qzd6I8Pg/uYnM33e9WATnkSqJbYL9fBuujKWW2ZS6CNhEvS9/5ad
- yWt8rp04gHxVyYBIcLtlq14IempusLSrkSVs4WueqdiHssLe57cN8IaQRnPn/E3o9lM/Hi3E9
- k74QrEzE/P/JO+pZDaY4zyYh7OivPey48wFSOWU0w4grY3c8SNu8ZXznLUuuKh4ppfOM2IFcB
- rY4y5eBvhW+gA4yQsOVhMXMqXxoJfWgtEZgmgKGu5prg4jtL9at7ZCmbQKtZCyO8OgjGWmZu7
- vNm54AJRmuLuiliyUaDqI8hgMlE3bTTYD/HyDNNCSWohoBE9IFp0ElcBg37AoWLqESju3CZZ+
- dkIwQpWs7KroPqXRWNjoUhVJmc+MPwEMwN9slSuuACGefnsdNpmvJwdM7aQiaZYuEP0PEjhT9
- YHBfisoEcmavpbT3mFiDJywk6qjyt+n1a3bnU+r/+39dAaB67m5g2hvaHs/ia6wh/uRmxm99v
- qAMhxH5pZ5v1Q0T22kTmP0+AfCI9zRUU6XgpzqvN1SMoXlPTkeWDQfkJXPAA/JBDcQ+yKmOuI
- TWcHT0vhTonIU2n63m3ZS9A9RzStPFdLQmNBzP+cEho9qgtdsOfkN3LpORe8cUwo7aeriqS7i
- LReA8m8sv6xEJ2NWA/kukwILjsK4Oh24ZmhFr11cdIM4oSdsq4hhpUJnsh4gS4cFpH2I1+ihU
- vmerTfZSHLtH8FeQHXl0R+K0zvZf6ShL0gtL7tcYfAksEFFNtVL5s7mlg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid CameCase in the names of all local variables inside the function
-rtl8192_phy_SwChnlStepByStep().
+Hi, Greg, Larry and Phillip!
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/rtl8192u/r819xU_phy.c | 95 +++++++++++++--------------
- 1 file changed, 47 insertions(+), 48 deletions(-)
+I noticed, that new staging driver was added like 3 weeks ago and I decided
+to look at the code, because drivers in staging directory are always buggy.
 
-diff --git a/drivers/staging/rtl8192u/r819xU_phy.c b/drivers/staging/rtl81=
-92u/r819xU_phy.c
-index 37b82553412e..6a67708cdd89 100644
-=2D-- a/drivers/staging/rtl8192u/r819xU_phy.c
-+++ b/drivers/staging/rtl8192u/r819xU_phy.c
-@@ -1185,30 +1185,30 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 				       u8 *stage, u8 *step, u32 *delay)
- {
- 	struct r8192_priv *priv =3D ieee80211_priv(dev);
--	struct sw_chnl_cmd   *PreCommonCmd;
--	u32		   PreCommonCmdCnt;
--	struct sw_chnl_cmd   *PostCommonCmd;
--	u32		   PostCommonCmdCnt;
--	struct sw_chnl_cmd   *RfDependCmd;
--	u32		   RfDependCmdCnt;
--	struct sw_chnl_cmd  *CurrentCmd =3D NULL;
--	u8		   e_rfpath;
--	bool		   ret;
--
--	PreCommonCmd =3D kzalloc(sizeof(*PreCommonCmd) * MAX_PRECMD_CNT, GFP_KER=
-NEL);
--	if (!PreCommonCmd)
-+	struct sw_chnl_cmd *pre_cmd;
-+	u32 pre_cmd_cnt;
-+	struct sw_chnl_cmd *post_cmd;
-+	u32 post_cmd_cnt;
-+	struct sw_chnl_cmd *rf_cmd;
-+	u32 rf_cmd_cnt;
-+	struct sw_chnl_cmd *current_cmd =3D NULL;
-+	u8 e_rfpath;
-+	bool ret;
-+
-+	pre_cmd =3D kzalloc(sizeof(*pre_cmd) * MAX_PRECMD_CNT, GFP_KERNEL);
-+	if (!pre_cmd)
- 		return false;
+The first thing I noticed is *no one* was checking read operations result, but
+it can fail and driver may start writing random stack values into registers. It
+can cause driver misbehavior or device misbehavior.
 
--	PostCommonCmd =3D kzalloc(sizeof(*PostCommonCmd) * MAX_POSTCMD_CNT, GFP_=
-KERNEL);
--	if (!PostCommonCmd) {
--		kfree(PreCommonCmd);
-+	post_cmd =3D kzalloc(sizeof(*post_cmd) * MAX_POSTCMD_CNT, GFP_KERNEL);
-+	if (!post_cmd) {
-+		kfree(pre_cmd);
- 		return false;
- 	}
+To avoid this type of bugs, i've changed rtw_read* API. Now all rtw_read
+funtions return an error, when something went wrong with usb transfer.
 
--	RfDependCmd =3D kzalloc(sizeof(*RfDependCmd) * MAX_RFDEPENDCMD_CNT, GFP_=
-KERNEL);
--	if (!RfDependCmd) {
--		kfree(PreCommonCmd);
--		kfree(PostCommonCmd);
-+	rf_cmd =3D kzalloc(sizeof(*rf_cmd) * MAX_RFDEPENDCMD_CNT, GFP_KERNEL);
-+	if (!rf_cmd) {
-+		kfree(pre_cmd);
-+		kfree(post_cmd);
- 		return false;
- 	}
+It helps callers to break/return earlier and don't write random values to
+registers or to rely on random values.
 
-@@ -1225,21 +1225,20 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 	/* FIXME: need to check whether channel is legal or not here */
 
- 	/* <1> Fill up pre common command. */
--	PreCommonCmdCnt =3D 0;
--	rtl8192_phy_SetSwChnlCmdArray(PreCommonCmd, PreCommonCmdCnt++,
-+	pre_cmd_cnt =3D 0;
-+	rtl8192_phy_SetSwChnlCmdArray(pre_cmd, pre_cmd_cnt++,
- 				      MAX_PRECMD_CNT, CMD_ID_SET_TX_PWR_LEVEL,
- 				      0, 0, 0);
--	rtl8192_phy_SetSwChnlCmdArray(PreCommonCmd, PreCommonCmdCnt++,
-+	rtl8192_phy_SetSwChnlCmdArray(pre_cmd, pre_cmd_cnt++,
- 				      MAX_PRECMD_CNT, CMD_ID_END, 0, 0, 0);
+v2 -> v3:
+  1. Fixed OOPS in usb_read32(), caused by writing to u32 **
+  2. Fixed style in rtw_read32, rtw_read16 and rtw_read8 (Suggested by Dan)
+  3. Added error hanling when usb_control_msg() returns ret != len
+     NOTE: Dan suggested to add this to usbctrl_vendorreq(), but there is
+     pending series, which will get rid of usb_control_msg(), so (res != len)
+     check can be removed, when Fabio's series will go in
+  4. Removed RFC tag
 
- 	/* <2> Fill up post common command. */
--	PostCommonCmdCnt =3D 0;
--
--	rtl8192_phy_SetSwChnlCmdArray(PostCommonCmd, PostCommonCmdCnt++,
-+	post_cmd_cnt =3D 0;
-+	rtl8192_phy_SetSwChnlCmdArray(post_cmd, post_cmd_cnt++,
- 				      MAX_POSTCMD_CNT, CMD_ID_END, 0, 0, 0);
+v1 -> v2:
+  1. Make rtw_read*() return an error instead of initializing pointer to error
+  2. Split one huge patch to smaller ones for each rtw_read{8,16,32} function
+     changes
+  3. Add new macro for printing register values (It helps to not copy-paste error
+     handling)
+  4. Removed {read,write}_macreg (Suggested by Phillip)
+  5. Rebased on top of staging-next
+  6. Cleaned checkpatch errors and warnings
 
- 	/* <3> Fill up RF dependent command. */
--	RfDependCmdCnt =3D 0;
-+	rf_cmd_cnt =3D 0;
- 	switch (priv->rf_chip) {
- 	case RF_8225:
- 		if (!(channel >=3D 1 && channel <=3D 14)) {
-@@ -1249,13 +1248,13 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 			ret =3D true;
- 			goto out;
- 		}
--		rtl8192_phy_SetSwChnlCmdArray(RfDependCmd, RfDependCmdCnt++,
-+		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
- 					      MAX_RFDEPENDCMD_CNT,
- 					      CMD_ID_RF_WRITE_REG,
- 					      rZebra1_Channel,
- 					      RF_CHANNEL_TABLE_ZEBRA[channel],
- 					      10);
--		rtl8192_phy_SetSwChnlCmdArray(RfDependCmd, RfDependCmdCnt++,
-+		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
- 					      MAX_RFDEPENDCMD_CNT,
- 					      CMD_ID_END, 0, 0, 0);
- 		break;
-@@ -1269,11 +1268,11 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 			ret =3D true;
- 			goto out;
- 		}
--		rtl8192_phy_SetSwChnlCmdArray(RfDependCmd, RfDependCmdCnt++,
-+		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
- 					      MAX_RFDEPENDCMD_CNT,
- 					      CMD_ID_RF_WRITE_REG,
- 					      rZebra1_Channel, channel, 10);
--		rtl8192_phy_SetSwChnlCmdArray(RfDependCmd, RfDependCmdCnt++,
-+		rtl8192_phy_SetSwChnlCmdArray(rf_cmd, rf_cmd_cnt++,
- 					      MAX_RFDEPENDCMD_CNT,
- 					      CMD_ID_END, 0, 0, 0);
- 		break;
-@@ -1290,19 +1289,19 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 	do {
- 		switch (*stage) {
- 		case 0:
--			CurrentCmd =3D &PreCommonCmd[*step];
-+			current_cmd =3D &pre_cmd[*step];
- 			break;
- 		case 1:
--			CurrentCmd =3D &RfDependCmd[*step];
-+			current_cmd =3D &rf_cmd[*step];
- 			break;
- 		case 2:
--			CurrentCmd =3D &PostCommonCmd[*step];
-+			current_cmd =3D &post_cmd[*step];
- 			break;
- 		}
 
--		if (CurrentCmd->cmd_id =3D=3D CMD_ID_END) {
-+		if (current_cmd->cmd_id =3D=3D CMD_ID_END) {
- 			if ((*stage) =3D=3D 2) {
--				(*delay) =3D CurrentCmd->ms_delay;
-+				*delay =3D current_cmd->ms_delay;
- 				ret =3D true;
- 				goto out;
- 			}
-@@ -1311,31 +1310,31 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 			continue;
- 		}
+Phillip has tested fixed v2 version, AFAIU
 
--		switch (CurrentCmd->cmd_id) {
-+		switch (current_cmd->cmd_id) {
- 		case CMD_ID_SET_TX_PWR_LEVEL:
- 			if (priv->card_8192_version =3D=3D VERSION_819XU_A)
- 				/* consider it later! */
- 				rtl8192_SetTxPowerLevel(dev, channel);
- 			break;
- 		case CMD_ID_WRITE_PORT_ULONG:
--			write_nic_dword(dev, CurrentCmd->para_1,
--					CurrentCmd->para_2);
-+			write_nic_dword(dev, current_cmd->para_1,
-+					current_cmd->para_2);
- 			break;
- 		case CMD_ID_WRITE_PORT_USHORT:
--			write_nic_word(dev, CurrentCmd->para_1,
--				       (u16)CurrentCmd->para_2);
-+			write_nic_word(dev, current_cmd->para_1,
-+				       (u16)current_cmd->para_2);
- 			break;
- 		case CMD_ID_WRITE_PORT_UCHAR:
--			write_nic_byte(dev, CurrentCmd->para_1,
--				       (u8)CurrentCmd->para_2);
-+			write_nic_byte(dev, current_cmd->para_1,
-+				       (u8)current_cmd->para_2);
- 			break;
- 		case CMD_ID_RF_WRITE_REG:
- 			for (e_rfpath =3D 0; e_rfpath < RF90_PATH_MAX; e_rfpath++) {
- 				rtl8192_phy_SetRFReg(dev,
- 						     (enum rf90_radio_path_e)e_rfpath,
--						     CurrentCmd->para_1,
-+						     current_cmd->para_1,
- 						     bZebra1_ChannelNum,
--						     CurrentCmd->para_2);
-+						     current_cmd->para_2);
- 			}
- 			break;
- 		default:
-@@ -1345,14 +1344,14 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
-device *dev, u8 channel,
- 		break;
- 	} while (true);
+Pavel Skripkin (6):
+  staging: r8188eu: remove {read,write}_macreg
+  staging: r8188eu: add helper macro for printing registers
+  staging: r8188eu: add error handling of rtw_read8
+  staging: r8188eu: add error handling of rtw_read16
+  staging: r8188eu: add error handling of rtw_read32
+  staging: r8188eu: make ReadEFuse return an int
 
--	(*delay) =3D CurrentCmd->ms_delay;
-+	*delay =3D current_cmd->ms_delay;
- 	(*step)++;
- 	ret =3D false;
+ drivers/staging/r8188eu/core/rtw_debug.c      |  79 +++-
+ drivers/staging/r8188eu/core/rtw_efuse.c      | 125 +++--
+ drivers/staging/r8188eu/core/rtw_io.c         |  27 +-
+ drivers/staging/r8188eu/core/rtw_mp.c         |  70 ++-
+ drivers/staging/r8188eu/core/rtw_mp_ioctl.c   |  13 +-
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c    |   5 +-
+ drivers/staging/r8188eu/core/rtw_sreset.c     |   9 +-
+ .../r8188eu/hal/Hal8188ERateAdaptive.c        |   8 +-
+ drivers/staging/r8188eu/hal/HalPhyRf_8188e.c  |  21 +-
+ drivers/staging/r8188eu/hal/HalPwrSeqCmd.c    |   9 +-
+ drivers/staging/r8188eu/hal/hal_com.c         |  23 +-
+ drivers/staging/r8188eu/hal/hal_intf.c        |   6 +-
+ drivers/staging/r8188eu/hal/odm_interface.c   |  12 +-
+ drivers/staging/r8188eu/hal/rtl8188e_cmd.c    |  33 +-
+ drivers/staging/r8188eu/hal/rtl8188e_dm.c     |   6 +-
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 285 +++++++++---
+ drivers/staging/r8188eu/hal/rtl8188e_phycfg.c |  27 +-
+ drivers/staging/r8188eu/hal/rtl8188e_sreset.c |  22 +-
+ drivers/staging/r8188eu/hal/rtl8188eu_led.c   |  18 +-
+ drivers/staging/r8188eu/hal/usb_halinit.c     | 439 +++++++++++++++---
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   |  62 ++-
+ drivers/staging/r8188eu/include/hal_intf.h    |   6 +-
+ .../staging/r8188eu/include/odm_interface.h   |   6 +-
+ .../staging/r8188eu/include/rtl8188e_hal.h    |   2 +-
+ drivers/staging/r8188eu/include/rtw_debug.h   |  13 +
+ drivers/staging/r8188eu/include/rtw_efuse.h   |   4 +-
+ drivers/staging/r8188eu/include/rtw_io.h      |  18 +-
+ drivers/staging/r8188eu/include/rtw_mp.h      |   2 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  | 179 +++++--
+ drivers/staging/r8188eu/os_dep/usb_intf.c     |   3 +-
+ 30 files changed, 1143 insertions(+), 389 deletions(-)
 
- out:
--	kfree(PreCommonCmd);
--	kfree(PostCommonCmd);
--	kfree(RfDependCmd);
-+	kfree(pre_cmd);
-+	kfree(post_cmd);
-+	kfree(rf_cmd);
-
- 	return ret;
- }
-=2D-
-2.25.1
+-- 
+2.32.0
 
