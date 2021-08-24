@@ -2,163 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC933F6B5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E133D3F6B69
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237149AbhHXVx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:53:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237016AbhHXVxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:53:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDFA06127B;
-        Tue, 24 Aug 2021 21:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629841984;
-        bh=HIeUUjdpdOE3EExH+2foqRMzjAiDKgARCIUjBxzZVk8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=buJw1smEq5TmuXHkLVOI0m08XNuAaEpcFRKYl2LWggsTAq4/qVwt5BcxeErCcjJAz
-         W+9UKBjDg7BU2M7IxskuIXiJyx30tcyZGeVin7sGoRPlDUV4wJWt6XNOypodd8WxQs
-         4G7uwCijbfr4jWurcOEdOuxAZ1e+LP9BpgFj5LnrEdR9psDqR7LOgmIN79Zk2Mdxy1
-         WMLmp+7CAWKRb8IO3tV8rfLEvdOb50Er3JHM2a6e+nyGoYhVlkrc/u/UJA9IzCsRn3
-         a199osU0re6l7XHsV1iR6HvEm8wU1J+86kDCfBH0hP7SSV7khi36CoxE68UGkKNE0V
-         AnbnaaGu0FMBw==
-Date:   Tue, 24 Aug 2021 14:53:00 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/2] x86: Do not add -falign flags unconditionally for
- clang
-Message-ID: <YSVqPNPOewbFS7U8@Ryzen-9-3900X.localdomain>
-References: <20210824022640.2170859-1-nathan@kernel.org>
- <20210824022640.2170859-2-nathan@kernel.org>
- <20210824025647.tssnp7qtccbgvdq7@google.com>
+        id S238605AbhHXV4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238479AbhHXV4q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 17:56:46 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49E7C0617A8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:56:01 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id x4so21097353pgh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:56:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0skVvO4SGPlA/J6kwOdnD9awH4QB9ReOisx8edtYBMQ=;
+        b=td+p5L6oApTGIECN+ygfdkt+RZDjHSiqYQ90d7SsipgbdzrvwzlwsX9gKbnz170ozc
+         VLmcKWqYLFsRiZ7d5lBcMcpU05xsqBHaj5BtzBQd6H4St7YTyOWoz9iIlfb8AvbkLeCW
+         1gNnuQo+3BcAU7zndpjjl8/92FDO8rVrHrULQuLDgjx0eMAf0jAvAForvOSFch4Jx0ak
+         hdhEbuiQ57z3GbDl3KVmKKey9WFa0Mcfc61kOn7X5qhr1Kva3yrI14ChRzCIySRXwT4R
+         DXSVDt4eG6CgSvmr3BHGYl+RUUV3FKAKOldIU9DmcNVJDs4+Jpxct0sg1vOLOvpMICcR
+         J3WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0skVvO4SGPlA/J6kwOdnD9awH4QB9ReOisx8edtYBMQ=;
+        b=cfjp8iQqOU7EefmcONG99St6vMWt75rfFpU+zcBqkfCBT8+ZRYvayoYG1C7r85GhxR
+         AxF3X86VC2BFDtzG5sid6DXnAmFNdKYp6B9MiL55WhlOxFgvlMlvfYIKbGhk3CCE0rHc
+         HYpLEDC0ESrCF6Qrbtb+q67yBcn5BfWoK1UZ1cHCWY/tQu7RWKKF4ZI+SYceHcOoWQLq
+         zY+zsSkwQ1OP56UI5RVFXM6BVp0z/5AQ9O683bi5t2a5zmaGiI4T4AjQqJ0R6tbBV9Ww
+         Jo4jkdUCbrUprQin8TDKAG6D005z9EhzgmhrBIM70DdqnvgJFaHISEW7ferCHgQg1qEZ
+         H+9g==
+X-Gm-Message-State: AOAM532JxyHJTMtdCFFI6Xb6fOiotDhFO7doQL+XIyrb3O63llrBgkli
+        jlRYHZFYzpduakOz1t7zTFN1qNsnrnN20dBt1Beimg==
+X-Google-Smtp-Source: ABdhPJy53qjYKOgleV9wHJ9ler14y20UTDnQwlr+oeS3RBFiHGiYWJ5VH+8aEVcyHLXvsrveMN4GeeU+tR1NWVcXvTU=
+X-Received: by 2002:a05:6a00:150d:b0:3e2:13fc:dd2b with SMTP id
+ q13-20020a056a00150d00b003e213fcdd2bmr40939043pfu.71.1629842160839; Tue, 24
+ Aug 2021 14:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824025647.tssnp7qtccbgvdq7@google.com>
+References: <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com> <20210824185541.GA3485816@bjorn-Precision-5520>
+In-Reply-To: <20210824185541.GA3485816@bjorn-Precision-5520>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Tue, 24 Aug 2021 14:55:24 -0700
+Message-ID: <CACK8Z6GaKb58OWu-hxabweFKX8MBPngmWQa6vhDgFJy9pWp_vQ@mail.gmail.com>
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 07:56:47PM -0700, Fangrui Song wrote:
-> On 2021-08-23, Nathan Chancellor wrote:
-> > clang does not support -falign-jumps and only recently gained support
-> > for -falign-loops. When one of the configuration options that adds these
-> > flags is enabled, clang warns and all cc-{disable-warning,option} that
-> > follow fail because -Werror gets added to test for the presence of this
-> > warning:
-> 
-> [I implemented clang -falign-loops :) It doesn't affect LTO, though.
-> LTO ld.lld may use -Wl,-mllvm,-align-loops=32 for now.  ]
-> 
-> > clang-14: warning: optimization flag '-falign-jumps=0' is not supported
-> > [-Wignored-optimization-argument]
-> 
-> grub made a similar mistake:) It thought the availability of -falign-X
-> implies the availability of other -falign-*
-> https://lists.gnu.org/archive/html/grub-devel/2021-08/msg00076.html
-> 
-> > To resolve this, add a couple of cc-option calls when building with
-> > clang; gcc has supported these options since 3.2 so there is no point in
-> > testing for their support. -falign-functions was implemented in clang-7,
-> > -falign-loops was implemented in clang-14, and -falign-jumps has not
-> > been implemented yet.
-> > 
-> > Link: https://lore.kernel.org/r/YSQE2f5teuvKLkON@Ryzen-9-3900X.localdomain/
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> > arch/x86/Makefile_32.cpu | 12 +++++++++---
-> > 1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/Makefile_32.cpu b/arch/x86/Makefile_32.cpu
-> > index cd3056759880..e8c65f990afd 100644
-> > --- a/arch/x86/Makefile_32.cpu
-> > +++ b/arch/x86/Makefile_32.cpu
-> > @@ -10,6 +10,12 @@ else
-> > tune		= $(call cc-option,-mcpu=$(1),$(2))
-> > endif
-> > 
-> > +ifdef CONFIG_CC_IS_CLANG
-> > +align		:= -falign-functions=0 $(call cc-option,-falign-jumps=0) $(call cc-option,-falign-loops=0)
-> > +else
-> > +align		:= -falign-functions=0 -falign-jumps=0 -falign-loops=0
-> > +endif
-> > +
-> > cflags-$(CONFIG_M486SX)		+= -march=i486
-> > cflags-$(CONFIG_M486)		+= -march=i486
-> > cflags-$(CONFIG_M586)		+= -march=i586
-> > @@ -25,11 +31,11 @@ cflags-$(CONFIG_MK6)		+= -march=k6
-> > # They make zero difference whatsosever to performance at this time.
-> > cflags-$(CONFIG_MK7)		+= -march=athlon
-> > cflags-$(CONFIG_MK8)		+= $(call cc-option,-march=k8,-march=athlon)
-> > -cflags-$(CONFIG_MCRUSOE)	+= -march=i686 -falign-functions=0 -falign-jumps=0 -falign-loops=0
-> > -cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) -falign-functions=0 -falign-jumps=0 -falign-loops=0
-> > +cflags-$(CONFIG_MCRUSOE)	+= -march=i686 $(align)
-> > +cflags-$(CONFIG_MEFFICEON)	+= -march=i686 $(call tune,pentium3) $(align)
-> > cflags-$(CONFIG_MWINCHIPC6)	+= $(call cc-option,-march=winchip-c6,-march=i586)
-> > cflags-$(CONFIG_MWINCHIP3D)	+= $(call cc-option,-march=winchip2,-march=i586)
-> > -cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) -falign-functions=0 -falign-jumps=0 -falign-loops=0
-> > +cflags-$(CONFIG_MCYRIXIII)	+= $(call cc-option,-march=c3,-march=i486) $(align)
-> > cflags-$(CONFIG_MVIAC3_2)	+= $(call cc-option,-march=c3-2,-march=i686)
-> > cflags-$(CONFIG_MVIAC7)		+= -march=i686
-> > cflags-$(CONFIG_MCORE2)		+= -march=i686 $(call tune,core2)
-> > -- 
-> > 2.33.0
-> 
-> https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html says
-> "If n is not specified or is zero, use a machine-dependent default."
-> 
-> Unless some other files specify -falign-loops=N and expect 0 to reset to
-> the machine default, -falign-jumps=0 -falign-loops=0 -falign-functions=0 should just be dropped.
+Thanks a lot Bjorn for adding me!
 
-Grepping the tree, I see:
 
-rg "align-(functions|jumps|loops)"
-Makefile
-977:KBUILD_CFLAGS += -falign-functions=64
+On Tue, Aug 24, 2021 at 11:55 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Rajat; I still don't know what "shared memory with a hypervisor
+> in a confidential guest" means, but now we're talking about hardened
+> drivers and allow lists, which Rajat is interested in]
+>
+> On Tue, Aug 24, 2021 at 10:20:44AM -0700, Andi Kleen wrote:
+> >
+> > > I see. Hmm. It's a bit of a random thing to do it at the map time
+> > > though. E.g. DMA is all handled transparently behind the DMA API.
+> > > Hardening is much more than just replacing map with map_shared
+> > > and I suspect what you will end up with is basically
+> > > vendors replacing map with map shared to make things work
+> > > for their users and washing their hands.
+> >
+> > That concept exists too. There is a separate allow list for the drivers. So
+> > just adding shared to a driver is not enough, until it's also added to the
+> > allowlist
+> >
+> > Users can of course chose to disable the allowlist, but they need to
+> > understand the security implications.
 
-arch/x86/Makefile
-101:        KBUILD_CFLAGS += $(call cc-option,-falign-jumps=1)
-104:        KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
+This is great. I'd be interested in looking at this allowlist
+mechanism. Is this something in-kernel or in userspace? Is this
+available upstream or are you maintaining this allowlist elsewhere?
+(Background: https://lore.kernel.org/linux-pci/CACK8Z6E8pjVeC934oFgr=VB3pULx_GyT2NkzAogdRQJ9TKSX9A@mail.gmail.com/)
 
-arch/x86/Makefile_32.cpu
-28:cflags-$(CONFIG_MCRUSOE)     += -march=i686 -falign-functions=0 -falign-jumps=0 -falign-loops=0
-29:cflags-$(CONFIG_MEFFICEON)   += -march=i686 $(call tune,pentium3) -falign-functions=0 -falign-jumps=0 -falign-loops=0
-32:cflags-$(CONFIG_MCYRIXIII)   += $(call cc-option,-march=c3,-march=i486) -falign-functions=0 -falign-jumps=0 -falign-loops=0
+Short Summary: we also have our security team that audits drivers, and
+we'd like to enable only audited drivers for the untrusted devices.
+Currently, we're carrying this allowlist mechanism on our own since
+the idea was Nack'ed by upstream. So if there is something available,
+we'd like to use it too.
 
-arch/ia64/Makefile
-26:                -falign-functions=32 -frename-registers -fno-optimize-sibling-calls
+Thanks,
 
-The two cc-options calls in arch/x86/Makefile are for x86_64 only and
-the Makefile use of -falign-functions=64 is for
-DEBUG_FORCE_FUNCTION_ALIGN_64B, which is a debug option so it does not
-seem like the flags are going to get overridden in a normal case.
+Rajat
 
-However, I read the GCC docs as if functions are not aligned by default
-and -falign-functions / -falign-functions=0 aligns them to a machine
-specific default, so I am not sure if these flags can just be dropped?
-These flags have been in the tree for 19 years though and there is very
-little history that I can find around why they are there.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/tree/arch/i386/Makefile?id=7a2deb32924142696b8174cdf9b38cd72a11fc96
-
--O2 turns on -falign-{functions,jumps,loops} by default but the kernel
-can use -Os, which omits those, so it is possible that is why they are
-there? Some input from the x86 folks might be helpful around this :)
-
-> BTW: I believe GCC 8 (likely when fixing another issue with a large refactor
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=84100) introduced a bug
-> that -falign-X=0 was essentially -falign-X=1.
-> GCC 11.0 (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96247) fixed the bug.
-
-Cheers,
-Nathan
+> >
+> > > I would say an explicit flag in the driver that says "hardened"
+> > > and refusing to init a non hardened one would be better.
+> >
+> > We have that too (that's the device filtering)
+> >
+> > But the problem is that device filtering just stops the probe functions, not
+> > the initcalls, and lot of legacy drivers do MMIO interactions before going
+> > into probe. In some cases it's unavoidable because of the device doesn't
+> > have a separate enumeration mechanism it needs some kind of probing to even
+> > check for its existence And since we don't want to change all of them it's
+> > far safer to make the ioremap opt-in.
+> >
+> >
+> > -Andi
+> >
