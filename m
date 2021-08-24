@@ -2,256 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E14F3F6944
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5CF3F694B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhHXSzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233882AbhHXSzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:55:44 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13C5C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:54:59 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id r9so3119338pfh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ejbmRhsl8eEDMqOR7QsW6DWjxRhBPlTC6UD85b2Pd5Q=;
-        b=kNsugfaWB0H/9sPnfoLhZ9nefDvQnoBFWQuUmPR4LiwAcXn1pIl0qkofQVNOXvPMB+
-         kCgEniCrmIVdYtN1JwtMGOxMgerr/LA+FfrCAAsCmO7vLcYY7/F2tKGWorVgzQLWXa3z
-         pAFhAFub+AMG/T5C54Wim81sLTRYtleoU2FRwpFJb67XTrBPUpbTzxWpKGQ/q2Rljoy4
-         SyZWHqHMs0jl743Bo4Vpt+ifIxfC/B+xQhdQfKLkbMNsiY2aZWNw7w2g1gtCmDeqb8+5
-         P0Mz8G/9zcMUuTT0RgBeWyiAIakQnfWpHop8hyjmIP0D3AgOkjoXjBFhSXNBzCES38tM
-         iUMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ejbmRhsl8eEDMqOR7QsW6DWjxRhBPlTC6UD85b2Pd5Q=;
-        b=He+I1kSfsx1A9OrbjShBcV4cftmQCFVSSLmBbTqJtBqxCuWZzc+btRP/9I/R8cbzOF
-         9rfR6X60lPMIbm34FH++3X9dn9EHoaJVKFUCbj69P6u1oMQI75RWCPomMGirGm9KHgl5
-         gWl1x5kIEX55p+ItNyeimPw1vKUYW3FkuaXpjnHm9kZWYR0x5V9BAtpjx4FtjQDV/Nrk
-         CYSpl24S5ljSJ0Bs/lBwd5W3kLOjZIQH2N2Yp3KNayXJHdTo+3VeXRHK3vXcd3ACrK2a
-         NOCikxu1LvGCCy36eC9Kvhd24/od1Isv+zRVysCjtOBfpGQzbhjBYFGOA2uzwTo2qvHR
-         OjAQ==
-X-Gm-Message-State: AOAM531pfNlxFhkWVsCCp9xzJJ6qW/l8CM/YbfVN0j4GkgK+RX+SyPPM
-        g5Hzz+PJDWNMGKGCHDJG8wqIKw==
-X-Google-Smtp-Source: ABdhPJzluksJ5TfJKXl7vWcFB/DM2Kcv0sl121p0v3FHEV7C+1JBJSeJc28kJ4/SuoYwwAVqlQOtnw==
-X-Received: by 2002:a62:5c6:0:b029:341:e0b1:a72c with SMTP id 189-20020a6205c60000b0290341e0b1a72cmr40745680pff.71.1629831298934;
-        Tue, 24 Aug 2021 11:54:58 -0700 (PDT)
-Received: from google.com ([2401:fa00:1:10:4a93:46f4:da9a:4371])
-        by smtp.gmail.com with ESMTPSA id 21sm19775743pfh.103.2021.08.24.11.54.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 11:54:58 -0700 (PDT)
-Date:   Wed, 25 Aug 2021 02:54:53 +0800
-From:   Tzung-Bi Shih <tzungbi@google.com>
-To:     Irui Wang <irui.wang@mediatek.com>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>, Yong Wu <yong.wu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH 6/9] media: mtk-vcodec: Add new venc drv interface for
- frame_racing mode
-Message-ID: <YSVAfbC93/PzPuuZ@google.com>
-References: <20210816105934.28265-1-irui.wang@mediatek.com>
- <20210816105934.28265-7-irui.wang@mediatek.com>
+        id S234012AbhHXS4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:56:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230500AbhHXS41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 14:56:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC45C61178;
+        Tue, 24 Aug 2021 18:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629831343;
+        bh=d/Fr0mBMXraTW+Ew01Yil+DCXSSjTvd5q9qem138RPE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=t5cnqJZj36He9/zjegb9+V9+U3YiQamVwwKvzU1WrQq1Qaa+otNQjIpOiBqlsMEdM
+         /Hqh3iR5wCXL+mGe6LqhWoGFpktgZ9b12IewTtcxFDv1maXi/yfljyIhDOnl/z5XMt
+         kqtFzOpSSbjXME95XQ70DtnBwGzFO7+zGwLjQy9HFrGMtxqHJNh2QDgWLglZ5C35GH
+         hnCcNOL4lw0MsGxbMWF0J/SLHbKZSnrBA1q8ych11j+zeKHwRGuUnfE1N3/f5XMPXs
+         oyQMr/mk68NjLI3llarex6W2QR/Y9G8ODdkhohBntXV7QiObuNljxc6qSrgPHYc8ep
+         rrO89m1YOIQlQ==
+Date:   Tue, 24 Aug 2021 13:55:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Rajat Jain <rajatja@google.com>
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+Message-ID: <20210824185541.GA3485816@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210816105934.28265-7-irui.wang@mediatek.com>
+In-Reply-To: <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 16, 2021 at 06:59:31PM +0800, Irui Wang wrote:
-> Frame-racing mode encoding need more venc working buffers, it
-> will break the compatibility if we just add venc_vsi in AP-Kernel
-> but not in firmware, so add a new venc driver interface to
-> distinguish the sigle_core_mode and frame_racing mode.
+[+cc Rajat; I still don't know what "shared memory with a hypervisor
+in a confidential guest" means, but now we're talking about hardened
+drivers and allow lists, which Rajat is interested in]
+
+On Tue, Aug 24, 2021 at 10:20:44AM -0700, Andi Kleen wrote:
 > 
-> The new driver interface can be used for different codecs in
-> the future.
-The patch contains more code than the commit message explains that I couldn't understand.  Only find some nits.
-
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_util.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_util.c
-> @@ -9,6 +9,7 @@
->  
->  #include "mtk_vcodec_drv.h"
->  #include "mtk_vcodec_util.h"
-> +#include "mtk_vcodec_enc_hw.h"
-Please try to maintain the order.
-
-> +void __iomem *mtk_get_venc_comp_reg_addr(struct mtk_vcodec_ctx *data,
-> +					 unsigned int hw_id)
-> +{
-> +	struct mtk_vcodec_ctx *ctx = (struct mtk_vcodec_ctx *)data;
-typeof(ctx) == typeof(data), rename the function argument 'data' to 'ctx'.
-
-> +static int venc_alloc_work_buf(struct venc_common_inst *inst)
-> +{
-> +	int i;
-> +	int ret = 0;
-It doesn't need to be initialized.  See comment below.
-
-> +	mtk_vcodec_debug_leave(inst);
-> +
-> +	return ret;
-It is more clear if just return 0 here.  In the meantime, ret doesn't need to be initialized.
-
-> +static unsigned int venc_wait_comp_done(struct venc_common_inst *inst,
-> +					unsigned int hw_id)
-> +{
-> +	unsigned int irq_status = 0;
-> +	struct mtk_vcodec_ctx *ctx = (struct mtk_vcodec_ctx *)inst->ctx;
-No need to cast.
-
-> +static int venc_encode_sps(struct venc_common_inst *inst,
-> +			   struct mtk_vcodec_mem *bs_buf,
-> +			   unsigned int *bs_size)
-> +{
-> +	int ret = 0;
-Same.
-
-> +	*bs_size = venc_read_reg(inst, VENC_PIC_BITSTREAM_BYTE_CNT,
-> +				 MTK_VENC_CORE0);
-> +	mtk_vcodec_debug(inst, "bs size %d <-", *bs_size);
-> +
-> +	return ret;
-Same.
-
-> +static int venc_encode_pps(struct venc_common_inst *inst,
-> +			   struct mtk_vcodec_mem *bs_buf,
-> +			   unsigned int *bs_size)
-> +{
-> +	int ret = 0;
-Same.
-
-> +	*bs_size = venc_read_reg(inst, VENC_PIC_BITSTREAM_BYTE_CNT,
-> +				 MTK_VENC_CORE0);
-> +	mtk_vcodec_debug(inst, "bs size %d <-", *bs_size);
-> +
-> +	return ret;
-Same.
-
-> +static int venc_encode_header(struct venc_common_inst *inst,
-> +			      struct mtk_vcodec_mem *bs_buf,
-> +			      unsigned int *bs_size)
-> +{
-> +	int ret = 0;
-Same.
-
-> +	memcpy(bs_buf->va + bs_size_sps, inst->pps_buf.va, bs_size_pps);
-> +	*bs_size = bs_size_sps + bs_size_pps;
-> +
-> +	return ret;
-Same.
-
-> +static int venc_encode_frame(struct venc_common_inst *inst,
-> +			     struct venc_frm_buf *frm_buf,
-> +			     struct mtk_vcodec_mem *bs_buf,
-> +			     unsigned int *bs_size,
-> +			     int hw_id)
-> +{
-> +	int ret = 0;
-Same.
-
-> +	++inst->frm_cnt;
-> +	mtk_vcodec_debug(inst, "frm %d bs_size %d key_frm %d <-",
-> +			 inst->frm_cnt, *bs_size, inst->vpu_inst.is_key_frm);
-> +
-> +	return ret;
-Same.
-
-> +static void h264_encode_filler(struct venc_common_inst *inst, void *buf,
-> +			       int size)
-> +{
-> +	unsigned char *p = buf;
-> +
-> +	if (size < H264_FILLER_MARKER_SIZE) {
-> +		mtk_vcodec_err(inst, "filler size too small %d", size);
-> +		return;
-> +	}
-> +
-> +	memcpy(p, h264_filler_marker, ARRAY_SIZE(h264_filler_marker));
-Replace ARRAY_SIZE(h264_filler_marker) to H264_FILLER_MARKER_SIZE.
-
-> +static int venc_init(struct mtk_vcodec_ctx *ctx)
-> +{
-> +	int i;
-> +	int ret = 0;
-> +	struct venc_common_inst *inst;
-> +
-> +	inst = kzalloc(sizeof(*inst), GFP_KERNEL);
-> +	if (!inst)
-> +		return -ENOMEM;
-> +
-> +	inst->ctx = ctx;
-> +	inst->vpu_inst.ctx = ctx;
-> +	inst->vpu_inst.id = SCP_IPI_VENC_H264;
-> +
-> +	mtk_vcodec_debug_enter(inst);
-> +
-> +	ret = vpu_enc_init(&inst->vpu_inst);
-> +
-> +	inst->vsi = (struct venc_vsi *)inst->vpu_inst.vsi;
-No need to cast.
-
-> +static int venc_encode(void *handle,
-> +		       enum venc_start_opt opt,
-> +		       struct venc_frm_buf *frm_buf,
-> +		       struct mtk_vcodec_mem *bs_buf,
-> +		       struct venc_done_result *result)
-> +{
-> +	int ret;
-> +	struct venc_common_inst *inst = (struct venc_common_inst *)handle;
-No need to cast.
-
-> +	default:
-> +		mtk_vcodec_err(inst, "venc_start_opt %d not supported", opt);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return ret;
-It is more clear if just return 0 here.
-
-> +static int venc_set_param(void *handle,
-> +			  enum venc_set_param_type type,
-> +			  struct venc_enc_param *enc_prm)
-> +{
-> +	int ret = 0;
-> +	struct venc_common_inst *inst = (struct venc_common_inst *)handle;
-No need to cast.
-
-> +static int venc_deinit(void *handle)
-> +{
-> +	int ret = 0;
-Same.
-
-> +	struct venc_common_inst *inst = (struct venc_common_inst *)handle;
-No need to cast.
-
-> +	mtk_vcodec_debug_leave(inst);
-> +	kfree(inst);
-> +
-> +	return ret;
-Same.
+> > I see. Hmm. It's a bit of a random thing to do it at the map time
+> > though. E.g. DMA is all handled transparently behind the DMA API.
+> > Hardening is much more than just replacing map with map_shared
+> > and I suspect what you will end up with is basically
+> > vendors replacing map with map shared to make things work
+> > for their users and washing their hands.
+> 
+> That concept exists too. There is a separate allow list for the drivers. So
+> just adding shared to a driver is not enough, until it's also added to the
+> allowlist
+> 
+> Users can of course chose to disable the allowlist, but they need to
+> understand the security implications.
+> 
+> > I would say an explicit flag in the driver that says "hardened"
+> > and refusing to init a non hardened one would be better.
+> 
+> We have that too (that's the device filtering)
+> 
+> But the problem is that device filtering just stops the probe functions, not
+> the initcalls, and lot of legacy drivers do MMIO interactions before going
+> into probe. In some cases it's unavoidable because of the device doesn't
+> have a separate enumeration mechanism it needs some kind of probing to even
+> check for its existence And since we don't want to change all of them it's
+> far safer to make the ioremap opt-in.
+> 
+> 
+> -Andi
+> 
