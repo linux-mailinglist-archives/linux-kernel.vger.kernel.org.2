@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4EE3F5DCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD413F5DCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237197AbhHXMU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236676AbhHXMUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:20:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B40361265;
-        Tue, 24 Aug 2021 12:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629807609;
-        bh=8oQhuq/DGjyESiByy7PbgYQ4KR5PoguBI5CPoD3IxB0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QQlKZSpGKshJiJAAPzp3Puebaq5BpAp4b7N57nJKY0RuiaOKb6I8p25CUH5dsmDsf
-         wdDgQySDQzQa3g8jGBf8o11CZoXdZkl3sRHrsvQ00Bs8YPczh++aD9hlO6mtuPdmqM
-         3mFIk/ipQVke/GjmIA0sqvbv9LP65svCAn9X0S1ez2X7HEv1ikLOi5NRGeS69vUcB8
-         Fgllq3G0leQ52guX1/LHZR8NxGPGp3rzz7N6jhuCs3oYgb72p9Yz265EAg/zpu8VGL
-         5BedoxckC0uOxn1Z5pU7MTWpXytQdzDQWnBtzf62wZ3zP8nUcUopudZu0ZgDp6DVFh
-         flvltNaJr0lsw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mIVPQ-00052G-Dp; Tue, 24 Aug 2021 14:20:05 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Paul=20Gr=C3=B6=C3=9Fel?= <pb.g@gmx.de>,
-        stable@vger.kernel.org, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH] Revert "USB: serial: ch341: fix character loss at high transfer rates"
-Date:   Tue, 24 Aug 2021 14:19:26 +0200
-Message-Id: <20210824121926.19311-1-johan@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S237158AbhHXMUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:20:39 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:57860 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236676AbhHXMUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 08:20:38 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B35BD20B85E0;
+        Tue, 24 Aug 2021 05:19:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B35BD20B85E0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629807594;
+        bh=2E2BthqVOdbe3t0YwvDr36tRv3x3At3+Zrr/r40y7RI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mR9DYLTNg0m86G7ZUVWEjSBEaT74uQ6YJ1vdiQ515TrjZfPVisZI2DnrylKPs15Zh
+         EwYxTrM1e/V8gSsMdp9oyPgX205r5zm9fzlC6y1NBiiHmKsAT9Z3KUVNvYlPs+KePY
+         5AY08rQN8w5gYih+LZNJGU8NAcnDLh925So09CHE=
+Subject: Re: [RFC PATCH v8 3/4] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     "nobuta.keiya@fujitsu.com" <nobuta.keiya@fujitsu.com>
+Cc:     "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "sjitindarsingh@gmail.com" <sjitindarsingh@gmail.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        "jthierry@redhat.com" <jthierry@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
+ <20210812190603.25326-1-madvenka@linux.microsoft.com>
+ <20210812190603.25326-4-madvenka@linux.microsoft.com>
+ <TY2PR01MB5257EA835C6F28ABF457EB0B85C59@TY2PR01MB5257.jpnprd01.prod.outlook.com>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <62d8969d-8ba1-4554-16b4-1c0bd4f8d9e7@linux.microsoft.com>
+Date:   Tue, 24 Aug 2021 07:19:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <TY2PR01MB5257EA835C6F28ABF457EB0B85C59@TY2PR01MB5257.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 3c18e9baee0ef97510dcda78c82285f52626764b.
 
-These devices do not appear to send a zero-length packet when the
-transfer size is a multiple of the bulk-endpoint max-packet size. This
-means that incoming data may not be processed by the driver until a
-short packet is received or the receive buffer is full.
 
-Revert back to using endpoint-sized receive buffers to avoid stalled
-reads.
+On 8/24/21 12:55 AM, nobuta.keiya@fujitsu.com wrote:
+> Hi Madhavan,
+> 
+>> @@ -245,7 +271,36 @@ noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
+>>  		fp = thread_saved_fp(task);
+>>  		pc = thread_saved_pc(task);
+>>  	}
+>> -	unwind(consume_entry, cookie, task, fp, pc);
+>> +	unwind(consume_entry, cookie, task, fp, pc, false);
+>> +}
+>> +
+>> +/*
+>> + * arch_stack_walk_reliable() may not be used for livepatch until all of
+>> + * the reliability checks are in place in unwind_consume(). However,
+>> + * debug and test code can choose to use it even if all the checks are not
+>> + * in place.
+>> + */
+> 
+> I'm glad to see the long-awaited function :)
+> 
+> Does the above comment mean that this comment will be removed by
+> another patch series that about live patch enablement, instead of [PATCH 4/4]?
+> 
+> It seems to take time... But I start thinking about test code.
+> 
 
-Reported-by: Paul Größel <pb.g@gmx.de>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=214131
-Fixes: 3c18e9baee0e ("USB: serial: ch341: fix character loss at high transfer rates")
-Cc: stable@vger.kernel.org
-Cc: Willy Tarreau <w@1wt.eu>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/ch341.c | 1 -
- 1 file changed, 1 deletion(-)
+Yes. This comment will be removed when livepatch will be enabled eventually.
+So, AFAICT, there are 4 pieces that are needed:
 
-diff --git a/drivers/usb/serial/ch341.c b/drivers/usb/serial/ch341.c
-index 8a521b5ea769..2db917eab799 100644
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -851,7 +851,6 @@ static struct usb_serial_driver ch341_device = {
- 		.owner	= THIS_MODULE,
- 		.name	= "ch341-uart",
- 	},
--	.bulk_in_size      = 512,
- 	.id_table          = id_table,
- 	.num_ports         = 1,
- 	.open              = ch341_open,
--- 
-2.31.1
+- Reliable stack trace in the kernel. I am trying to address that with my patch
+  series.
 
+- Mark Rutland's work for making patching safe on ARM64.
+
+- Objtool (or alternative method) for stack validation.
+
+- Suraj Jitindar Singh's patch for miscellaneous things needed to enable live patch.
+
+Once all of these pieces are in place, livepatch can be enabled.
+
+That said, arch_stack_walk_reliable() can be used for test and debug purposes anytime
+once this patch series gets accepted.
+
+Thanks.
+
+Madhavan
