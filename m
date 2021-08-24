@@ -2,111 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233BB3F6C20
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049AC3F6C26
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbhHXXSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 19:18:47 -0400
-Received: from mail-ed1-f54.google.com ([209.85.208.54]:41972 "EHLO
-        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhHXXSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:18:46 -0400
-Received: by mail-ed1-f54.google.com with SMTP id y5so3281608edp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:18:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9MCUfys+HO1lzcqQvWGW3v8nowXsfjP4JrD4Jo2HAiQ=;
-        b=FhOYGcvPgjv8/xpMjxlk/IH74AEkwk6V/qcZsDTAQ5eb5qFpWME2SFHNbt7q/MUbQ3
-         vgEeU/LwTcetNcRqq7dT62xlG2cpip+aLKmQbJs0MOo2GOoV801kcJ1hUS2KrAlsed4C
-         k+Z6gUcNY6Wq0ZfBAEcy5MEvrVdhHAwWWL6sMYBYS2AbmncEJOKslps28Srwc+WR9RD5
-         rfYQKVAlw68j1EpbXrNIlYGhqVlilo/CS9Do64UnhIj0tnBLOyqLalgUt5YO67Y8YRn3
-         c27KUbOwtSqwUZW4OfXiVqfOiSr9SMki2iD20wILjELv8UqPFniB6HlY3jkCrtPFzXlM
-         L3Dg==
-X-Gm-Message-State: AOAM5337SpyIkpcBwC+b2I30QerWgxLQx/3Z3PXNpLP9fDEkRhZ2vco9
-        RINx+gYW6/bwvfaIKBBZvH5gWe9fjF9URwmD2Ow=
-X-Google-Smtp-Source: ABdhPJzZIXTjnkN/p4riUQbp+YECqPvy50kFJavOmDfRaVY9dmh/esMcW/+MxfKuRZT716MryDAwYXxkYXZMNBmE334=
-X-Received: by 2002:a05:6402:445:: with SMTP id p5mr46149106edw.208.1629847080783;
- Tue, 24 Aug 2021 16:18:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210730145957.7927-1-chang.seok.bae@intel.com>
- <20210730145957.7927-13-chang.seok.bae@intel.com> <YR00U19168BGoRB9@zn.tnic>
-In-Reply-To: <YR00U19168BGoRB9@zn.tnic>
-From:   Len Brown <lenb@kernel.org>
-Date:   Tue, 24 Aug 2021 19:17:49 -0400
-Message-ID: <CAJvTdKn09GiAOgdsOR-+ooEO=bmj8VDL9e9sSAsu2UPx73a-Mw@mail.gmail.com>
-Subject: Re: [PATCH v9 12/26] x86/fpu/xstate: Use feature disable (XFD) to
- protect dynamic user state
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, thiago.macieira@intel.com,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233713AbhHXXV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 19:21:28 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:34457 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231842AbhHXXVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 19:21:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629847241; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=+hqb204QRL2EPxKMGNmO/oBWGOBKdNFKw5QUoXVhKro=; b=QxgFigLlpwPHhkv3JUYkV0ALtbFRhlNT0Wz2ZCWzWO4KoiaBdbKxqMzh/kkvX+pIJNzVtp9y
+ UXSQn77nL3LGMVDtB8DcJKtQB/PwF59MkElDOinhMvLFaueao8hjpwGW5qUoJ31ZcCBPteH7
+ ZuGilc5OBddcQjeOPgFNkqCw3nQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 61257ec44cd9015037b8d94f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Aug 2021 23:20:36
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 746B0C43619; Tue, 24 Aug 2021 23:20:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 40E07C4338F;
+        Tue, 24 Aug 2021 23:20:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 40E07C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, mkrishn@codeaurora.org,
+        kalyan_t@codeaurora.org, rajeevny@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sc7280: Add Display Port node
+Date:   Tue, 24 Aug 2021 16:20:26 -0700
+Message-Id: <1629847226-10112-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 12:24 PM Borislav Petkov <bp@alien8.de> wrote:
+Add display port supported node for sc7280. Also correct dp-phy node
+tx/rx/pcs/tx2/rx2 base reg address to fix aux channel read/write
+failure issue.
 
-> Why isn't the buffer pre-allocated for the process after latter having
-> done prctl() so that when an #NM happens, no allocation happens at all?
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7280-idp2.dts |  9 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi     | 98 +++++++++++++++++++++++++++++---
+ 2 files changed, 100 insertions(+), 7 deletions(-)
 
-The problem with a system call to pre-allocate an AMX context switch buffer
-is that it doesn't actually deliver on the goal of guaranteeing no subsequent
-run-time failures due to OOM.
-
-Even if your AMX thread pool threads were to invoke this system call
-as soon as possible...
-What is to say that the thread pool is created only at a time when memory
-is available?  A thread could be created 24 hours into program execution
-under OOM conditions and this system call will return ENOMEM, and your program
-will in all likelihood throw up its arms and exit at the exact same place
-it would exit for transparently allocated buffers.
-
-What if you don't care about 24-hours in, and you do care about
-allocating at program start?
-The program can equally cause the kernel to allocate an AMX context switch
-buffer by simply touching a TMM register -- and this can be done at exactly the
-same place in the program that calling a pre-allocate system call.
-
-The difference in these two methods is that the system call returns a synchronus
-ENOMEM, while the touching of a TMM register sends you a signal at
-that location.
-In theory, a program may have a thoughtfully implemented and thoroughly tested
-*else* clause for ENOMEM -- but you and I know that is a fantasy --
-they will exit anyway.
-
-The advantage of the #NM over the syscall is that  the programmer doesn't
-actually have to do anything.  Also, transparently allocated buffers offer
-a theoretical benefit that a program may have many threads, but only a few
-may actually touch AMX, and so there is savings to be had by allocating buffers
-only for the threads that actually use the buffers.
-
-Finally, the XFD/NM mechanism opens the door in the future for the
-kernel to actually
-harvest allocated, but unused buffers -- though we didn't bother
-implementing that for AMX.
-
-> And with those buffers preallocated, all that XFD muck is not needed either.
-
-Independent of context switch buffer allocation...
-
-XFD is used to *enforce* that AMX is not used without permission.
-Were we to not use the XFD feature, users would be able to stash
-data in TMM registers and even use TMUL without the kernel
-being able to prevent them from doing so.  Then when they
-context switch or take a signal, the data in their TMM registers
-would mysteriously vanish...
-
-Much better to be able to tell them immediately that they are doing it wrong...
-
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+index b1cf70e..4aea369 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp2.dts
+@@ -202,3 +202,12 @@ ap_h1_spi: &spi14 {};
+ 		backlight = <&backlight>;
+ 	};
+ };
++
++&msm_dp {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dp_hot_plug_det>;
++	data-lanes = <0 1>;
++	vdda-1p2-supply = <&vreg_l6b_1p2>;
++	vdda-0p9-supply = <&vreg_l1b_0p8>;
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index c29226b..a350d84 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -2918,15 +2918,11 @@
+ 			dp_phy: dp-phy@88ea200 {
+ 				reg = <0 0x088ea200 0 0x200>,
+ 				      <0 0x088ea400 0 0x200>,
+-				      <0 0x088eac00 0 0x400>,
++				      <0 0x088eaa00 0 0x200>,
+ 				      <0 0x088ea600 0 0x200>,
+-				      <0 0x088ea800 0 0x200>,
+-				      <0 0x088eaa00 0 0x100>;
++				      <0 0x088ea800 0 0x200>;
+ 				#phy-cells = <0>;
+ 				#clock-cells = <1>;
+-				clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
+-				clock-names = "pipe0";
+-				clock-output-names = "usb3_phy_pipe_clk_src";
+ 			};
+ 		};
+ 
+@@ -3202,6 +3198,13 @@
+ 							remote-endpoint = <&edp_in>;
+ 						};
+ 					};
++
++					port@2 {
++                                                reg = <2>;
++                                                dpu_intf0_out: endpoint {
++                                                        remote-endpoint = <&dp_in>;
++                                                };
++                                        };
+ 				};
+ 
+ 				mdp_opp_table: mdp-opp-table {
+@@ -3389,6 +3392,74 @@
+ 					};
+ 				};
+ 			};
++
++			msm_dp: displayport-controller@ae90000 {
++				status = "disabled";
++				compatible = "qcom,sc7180-dp";
++
++				reg = <0 0x0ae90000 0 0x1400>;
++
++				interrupt-parent = <&mdss>;
++				interrupts = <12 IRQ_TYPE_NONE>;
++
++				clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_AUX_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_LINK_INTF_CLK>,
++					 <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK>;
++				clock-names = "core_iface", "core_aux", "ctrl_link",
++					      "ctrl_link_iface", "stream_pixel";
++				#clock-cells = <1>;
++				assigned-clocks = <&dispcc DISP_CC_MDSS_DP_LINK_CLK_SRC>,
++						  <&dispcc DISP_CC_MDSS_DP_PIXEL_CLK_SRC>;
++				assigned-clock-parents = <&dp_phy 0>, <&dp_phy 1>;
++				phys = <&dp_phy>;
++				phy-names = "dp";
++
++				operating-points-v2 = <&dp_opp_table>;
++				power-domains = <&rpmhpd SC7180_CX>;
++
++				#sound-dai-cells = <0>;
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					port@0 {
++						reg = <0>;
++						dp_in: endpoint {
++							remote-endpoint = <&dpu_intf0_out>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						dp_out: endpoint { };
++					};
++				};
++
++				dp_opp_table: dp-opp-table {
++					compatible = "operating-points-v2";
++
++					opp-160000000 {
++						opp-hz = /bits/ 64 <160000000>;
++						required-opps = <&rpmhpd_opp_low_svs>;
++					};
++
++					opp-270000000 {
++						opp-hz = /bits/ 64 <270000000>;
++						required-opps = <&rpmhpd_opp_svs>;
++					};
++
++					opp-540000000 {
++						opp-hz = /bits/ 64 <540000000>;
++						required-opps = <&rpmhpd_opp_svs_l1>;
++					};
++
++					opp-810000000 {
++						opp-hz = /bits/ 64 <810000000>;
++						required-opps = <&rpmhpd_opp_nom>;
++					};
++				};
++			};
+ 		};
+ 
+ 		dispcc: clock-controller@af00000 {
+@@ -3398,7 +3469,8 @@
+ 				 <&gcc GCC_DISP_GPLL0_CLK_SRC>,
+ 				 <&dsi_phy 0>,
+ 				 <&dsi_phy 1>,
+-				 <0>, <0>,
++			  	 <&dp_phy 0>,
++			  	 <&dp_phy 1>,
+ 				 <&msm_edp 0>,
+ 				 <&msm_edp 1>;
+ 			clock-names = "bi_tcxo", "gcc_disp_gpll0_clk",
+@@ -3525,6 +3597,18 @@
+                                 };
+                         };
+ 
++			dp_hot_plug_det: dp-hot-plug-det {
++                                pinmux {
++                                        pins = "gpio47";
++                                        function = "dp_hot";
++                                };
++
++				pinconf {
++			                pins = "gpio47";
++			                bias-disable;
++			        };
++                        };
++
+ 			qspi_clk: qspi-clk {
+ 				pins = "gpio14";
+ 				function = "qspi_clk";
 -- 
-Len Brown, Intel Open Source Technology Center
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
