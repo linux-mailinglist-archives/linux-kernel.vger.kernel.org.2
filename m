@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7503F5B9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A8E3F5BA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235941AbhHXKF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:05:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:33312 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235905AbhHXKFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:05:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4A5C0101E;
-        Tue, 24 Aug 2021 03:04:33 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66B393F66F;
-        Tue, 24 Aug 2021 03:04:31 -0700 (PDT)
-Subject: Re: [PATCH] drm/i915: switch from 'pci_' to 'dma_' API
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        zhenyuw@linux.intel.com, zhi.a.wang@intel.com
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <dbf1018fb773785e0b3b40e601246ed6438e645e.1629666258.git.christophe.jaillet@wanadoo.fr>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <0cd61d5b-ac88-31e8-99ad-143af480416f@arm.com>
-Date:   Tue, 24 Aug 2021 11:04:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235905AbhHXKGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:06:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53360 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235935AbhHXKGM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:06:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629799528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=acXZTsv+ZGRCIMsgyzotp4JqHaREWpj8Vd1U498dQK8=;
+        b=WjwNCwr8K1nqqWbWHHfhLtIeigItP/QyG3TKHyE30g8rkYtAsT7TA4Pz1EjX0fu5hD7gVU
+        9DxL3zj+8FiH/fU56jx6UCJnQ5sajvGAk18Nw1aqRmbYOJ9ZEsTmCSG4mnVbWQB1yOOdcI
+        7ODbpDYzyiYu9hJnsRx/FC+TuYQQN+Q=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-rE7HSiR9PQ6sSA3vlDmG9g-1; Tue, 24 Aug 2021 06:05:27 -0400
+X-MC-Unique: rE7HSiR9PQ6sSA3vlDmG9g-1
+Received: by mail-ej1-f69.google.com with SMTP id bi9-20020a170906a24900b005c74b30ff24so132447ejb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 03:05:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=acXZTsv+ZGRCIMsgyzotp4JqHaREWpj8Vd1U498dQK8=;
+        b=XhWmC+haG+udtyEWMZCaZ7LA8VZQ2AxOnBPDPErpcTkUooevsvxnSVJ31pYDyeoSke
+         LcTeNQGKAWSwRXIDaiF10WlT2W8UslLaSAkrxkhpNh0p6i8KEgh2cevgo2sAV/yLgWtn
+         3wrEMyy+XYHxcDGN0g6OJuZ6YO7RbgnYDHucEIoClvjLkvAlno7RQLYoaafvXMrq/os/
+         qj433o6q+U0PqmvqfAav80bju9bAenrd4SqiJhm74FWqVYzdF1MwbJN4FNjZ1joVJSsC
+         98vyFs1TYURzXd4GVBiXPKwyo43s7pnSDKOUJG19PaV71dGPRS9lPqHr+n3abjCESXm4
+         VMFA==
+X-Gm-Message-State: AOAM531FQJZLrEJi6tBbkBJWeZy6Sfqk2fNTbbnER8+Yi3I3rXEKDUXN
+        JilnQSib4kQiF+P/D1Pi1EFQjS0UxK+bzVur785Yt7AWVNNigxa8CfpT2qgyn1MrMOZJs4qv4hg
+        MLQC3CtlW65+MkcaboRxo2B/X
+X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr42111211edd.151.1629799526280;
+        Tue, 24 Aug 2021 03:05:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzI44Z4judGCzN7R2zpOlFSwZBSbEmkd/UBfNZmHvvZCXJIff7B6uB+tsb4YfaMzeFQo6RVNA==
+X-Received: by 2002:a05:6402:5206:: with SMTP id s6mr42111185edd.151.1629799526106;
+        Tue, 24 Aug 2021 03:05:26 -0700 (PDT)
+Received: from steredhat (host-79-45-8-152.retail.telecomitalia.it. [79.45.8.152])
+        by smtp.gmail.com with ESMTPSA id k21sm8853122ejj.55.2021.08.24.03.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 03:05:25 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 12:05:23 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v3 0/6] virtio/vsock: introduce MSG_EOR flag for
+ SEQPACKET
+Message-ID: <20210824100523.yn5hgiycz2ysdnvm@steredhat>
+References: <20210816085036.4173627-1-arseny.krasnov@kaspersky.com>
+ <3f3fc268-10fc-1917-32c2-dc0e7737dc48@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <dbf1018fb773785e0b3b40e601246ed6438e645e.1629666258.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <3f3fc268-10fc-1917-32c2-dc0e7737dc48@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Arseny,
 
-FWIW this patch itself looks fine, but it does highlight some things 
-which could be further cleaned up if anyone's interested...
+On Mon, Aug 23, 2021 at 09:41:16PM +0300, Arseny Krasnov wrote:
+>Hello, please ping :)
+>
 
-On 2021-08-22 22:06, Christophe JAILLET wrote:
-[...]
-> diff --git a/drivers/gpu/drm/i915/gt/intel_region_lmem.c b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-> index a74b72f50cc9..afb35d2e5c73 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_region_lmem.c
-> @@ -32,7 +32,7 @@ static int init_fake_lmem_bar(struct intel_memory_region *mem)
->   	mem->remap_addr = dma_map_resource(i915->drm.dev,
->   					   mem->region.start,
->   					   mem->fake_mappable.size,
-> -					   PCI_DMA_BIDIRECTIONAL,
-> +					   DMA_BIDIRECTIONAL,
->   					   DMA_ATTR_FORCE_CONTIGUOUS);
+Sorry, I was off last week.
+I left some minor comments in the patches.
 
-DMA_ATTR_FORCE_CONTIGUOUS is nonsensical here (and below) as it is only 
-meaningful for coherent buffers allocated by dma_alloc_attrs().
-
->   	if (dma_mapping_error(i915->drm.dev, mem->remap_addr)) {
->   		drm_mm_remove_node(&mem->fake_mappable);
-> @@ -62,7 +62,7 @@ static void release_fake_lmem_bar(struct intel_memory_region *mem)
->   	dma_unmap_resource(mem->i915->drm.dev,
->   			   mem->remap_addr,
->   			   mem->fake_mappable.size,
-> -			   PCI_DMA_BIDIRECTIONAL,
-> +			   DMA_BIDIRECTIONAL,
->   			   DMA_ATTR_FORCE_CONTIGUOUS);
->   }
->   
-[...]
-> diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> index 36489be4896b..cd5f2348a187 100644
-> --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-> +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> @@ -30,7 +30,7 @@ int i915_gem_gtt_prepare_pages(struct drm_i915_gem_object *obj,
->   	do {
->   		if (dma_map_sg_attrs(obj->base.dev->dev,
->   				     pages->sgl, pages->nents,
-> -				     PCI_DMA_BIDIRECTIONAL,
-> +				     DMA_BIDIRECTIONAL,
->   				     DMA_ATTR_SKIP_CPU_SYNC |
->   				     DMA_ATTR_NO_KERNEL_MAPPING |
->   				     DMA_ATTR_NO_WARN))
-
-Similarly DMA_ATTR_NO_KERNEL_MAPPING and DMA_ATTR_NO_WARN are also for 
-coherent allocations rather than streaming mappings.
-
-I'll see if I can whip up a patch to make the API documentation clearer...
+Let's wait a bit for other comments before next version, also on the 
+spec, then I think you can send the next version without RFC tag.
+The target should be the net-next tree, since this is a new feature.
 
 Thanks,
-Robin.
+Stefano
 
-> @@ -64,7 +64,7 @@ void i915_gem_gtt_finish_pages(struct drm_i915_gem_object *obj,
->   		usleep_range(100, 250);
->   
->   	dma_unmap_sg(i915->drm.dev, pages->sgl, pages->nents,
-> -		     PCI_DMA_BIDIRECTIONAL);
-> +		     DMA_BIDIRECTIONAL);
->   }
->   
->   /**
-> 
