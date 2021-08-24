@@ -2,98 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520473F6C37
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535E73F6C3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbhHXX2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 19:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbhHXX2D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:28:03 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444FDC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:27:18 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id bq28so500745lfb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=RXUZYCE1kvj+2FOlsOE/g0PbS8+86ANN+fDn4eZ6uVM=;
-        b=hvLw8Sq36xbrN7Xu0b22CBRdjw9qfSqhVGfamUDSw8+EAHAzAuzqg14044etAizESO
-         SqPqC9ZzDCzRwtXPBdUcLo6IwLV/dLYx8DUXjq5BzPfIf3895qdVQfBkbI2rpW9sp7p7
-         gHkZzbL3ly5UuRCofrW2M4kiob6sjdVSqvhVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=RXUZYCE1kvj+2FOlsOE/g0PbS8+86ANN+fDn4eZ6uVM=;
-        b=rgnf72M51+4Ig9PxvGVzTQWSDZQ2XKdVeUl6NdlvxkJBX+FZEwpPHmYSOCpo4nfwyj
-         nEG76KFTM5VW4h5pc0RK0/++U7D9CrGNa4MPFO3PA2FPt8uZkECBmMHOqDBgPoV7YVgk
-         9xNWgjFIS/xAc9xo2Rn0UsqnvzX+yef1WwBgGvuqRXI4QzYYFMz977HmtapAgEsibbEW
-         Z/vkf6xyOhHOAYf5xGivXxHcJL9FT30Fl5n9ndoEu3yiwJ21k90GavfqPGzEPHyn/rHf
-         2EEDn8XkQuWNy+ijLMZKschzkHrhyFWj/elOtMMNE2ZyZJXTnBxWJM2814HNRqiWMQVK
-         M4IQ==
-X-Gm-Message-State: AOAM530SOQmSoWBjNS4df0oSbmnaMbej1UYNDCvNYbvOwB/jXhxOXLyO
-        b3Ps49bMPOe/hQDj0Tx8ui8y2AV30zY3Pr9C
-X-Google-Smtp-Source: ABdhPJxddyaZcBDFtccix+7ygxFwb4b6PnHMLrxdwSdoMK4xlRyLOYS4GFrrqWhPw4lUCPrnd3FDqw==
-X-Received: by 2002:a05:6512:1042:: with SMTP id c2mr30800099lfb.283.1629847636483;
-        Tue, 24 Aug 2021 16:27:16 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id t70sm1882217lff.91.2021.08.24.16.27.15
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 16:27:15 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id y6so40444700lje.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 16:27:15 -0700 (PDT)
-X-Received: by 2002:a2e:81c2:: with SMTP id s2mr32547167ljg.48.1629847635304;
- Tue, 24 Aug 2021 16:27:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210824031648.GA2725@codemonkey.org.uk> <YSSuVO47ieWDfWMQ@hirez.programming.kicks-ass.net>
- <20210824151943.GA386@codemonkey.org.uk> <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
- <20210824213342.GA1708@codemonkey.org.uk>
-In-Reply-To: <20210824213342.GA1708@codemonkey.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Aug 2021 16:26:59 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg8XonsSN1SXjpSh3pO3-+EMZvdkb1xwJbLpZxCT2=thQ@mail.gmail.com>
-Message-ID: <CAHk-=wg8XonsSN1SXjpSh3pO3-+EMZvdkb1xwJbLpZxCT2=thQ@mail.gmail.com>
-Subject: Re: 5.14-rc breaks iotop swap io monitoring.
-To:     Dave Jones <davej@codemonkey.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233791AbhHXXab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 19:30:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43150 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233050AbhHXXa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 19:30:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1629847784; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=MpajW2p+32NRK+oUpwg2nsXF4TJtxexKEkFdJTl7JZA=; b=ViqoHP9aZJeVcHzq5GJ7AeTs0Omy+hf9XJm+fwwfpL1yJl4TSS9tNwuPir3vhWotW1vFJb/o
+ /nHuNuCfk+1dbfyBgdlG3zNkPb6bPvhptDnwRHqUerujGRHDHU4zI+14v7MdTJ8v2Wksxx9s
+ 9kDtUP6g1LO23qgMXWc7vmt3uZQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 612580e840d2129ac1adf522 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 24 Aug 2021 23:29:44
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED2D9C4338F; Tue, 24 Aug 2021 23:29:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E796AC4338F;
+        Tue, 24 Aug 2021 23:29:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org E796AC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kishon@ti.com, p.zabel@pengutronix.de
+Subject: [PATCH] phy: qcom-qmp: add support for voltage and pre emphesis swing
+Date:   Tue, 24 Aug 2021 16:29:35 -0700
+Message-Id: <1629847775-16767-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 2:41 PM Dave Jones <davej@codemonkey.org.uk> wrote:
->
-> On Tue, Aug 24, 2021 at 09:34:02AM -0700, Linus Torvalds wrote:
->  >
->  > What happens if you boot with the 'delayacct' kernel parameter.
->  >
->  > Even if you enable it at run-time, processes that have been started
->  > before it was enabled won't actually have the 'tsk->delays'
->  > allocation. So I'm not sure how effective the run-time thing is.
->
-> Yeah that boot option does make iotop work again.
+Add voltage and pre emphesis swing tables so that voltage and
+pre emphsis swing level can be configured base on link rate.
 
-Ok, so it's that delay allocation thing is it.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 95 ++++++++++++++++++++++++++++++++-----
+ 1 file changed, 82 insertions(+), 13 deletions(-)
 
-I'm inclined to let it be and see if somebody else notices, and how
-big of a deal it is.
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index 31036aa..52bab6e 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -1916,7 +1916,7 @@ static const struct qmp_phy_init_tbl qmp_v4_dp_tx_tbl[] = {
+ 	QMP_PHY_INIT_CFG(QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX, 0x11),
+ 	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_BAND, 0x4),
+ 	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_POL_INV, 0x0a),
+-	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x2a),
++	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_DRV_LVL, 0x22),
+ 	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TX_EMP_POST1_LVL, 0x20),
+ };
+ 
+@@ -3727,6 +3727,81 @@ static int qcom_qmp_v3_dp_phy_calibrate(struct qmp_phy *qphy)
+ 
+ 	return 0;
+ }
++/*
++ * 0x20 deducted from tables
++ *
++ * swing_value |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
++ * pre_emphasis_value |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
++*/
++static const u8 qmp_dp_v4_pre_emphasis_hbr3_hbr2[4][4] = {
++	/* p0    p1    p2    p3 */
++	{ 0x00, 0x0c, 0x15, 0x1b },	/* s0 */
++	{ 0x02, 0x0e, 0x16, 0xff },	/* s1 */
++	{ 0x02, 0x11, 0xff, 0xff },	/* s2 */
++	{ 0x04, 0xff, 0xff, 0xff }	/* s3 */
++};
++
++static const u8 qmp_dp_v4_voltage_swing_hbr3_hbr2[4][4] = {
++	/* p0    p1    p2    p3 */
++	{ 0x02, 0x12, 0x16, 0x1a },	/* s0 */
++	{ 0x09, 0x19, 0x1f, 0xff },	/* s1 */
++	{ 0x10, 0x1f, 0xff, 0xff },	/* s2 */
++	{ 0x1f, 0xff, 0xff, 0xff }	/* s3 */
++};
++
++static const u8 qmp_dp_v4_pre_emphasis_hbr_rbr[4][4] = {
++	/* p0    p1    p2    p3 */
++	{ 0x00, 0x0e, 0x15, 0x1b },	/* s0 */
++	{ 0x00, 0x0e, 0x15, 0xff },	/* s1 */
++	{ 0x00, 0x0e, 0xff, 0xff },	/* s2 */
++	{ 0x04, 0xff, 0xff, 0xff }	/* s3 */
++};
++
++static const u8 qmp_dp_v4_voltage_swing_hbr_rbr[4][4] = {
++	/* p0    p1    p2    p3 */
++	{ 0x08, 0x0f, 0x16, 0x1f },	/* s0 */
++	{ 0x11, 0x1e, 0x1f, 0xff },	/* s1 */
++	{ 0x16, 0x1f, 0xff, 0xff },	/* s2 */
++	{ 0x1f, 0xff, 0xff, 0xff }	/* s3 */
++};
++
++static int qcom_qmp_v4_phy_configure_dp_swing(struct qmp_phy *qphy,
++		unsigned int drv_lvl_reg, unsigned int emp_post_reg)
++{
++	const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
++	unsigned int v_level = 0, p_level = 0;
++	u8 voltage_swing_cfg, pre_emphasis_cfg;
++	int i;
++
++	for (i = 0; i < dp_opts->lanes; i++) {
++		v_level = max(v_level, dp_opts->voltage[i]);
++		p_level = max(p_level, dp_opts->pre[i]);
++	}
++
++
++	if (dp_opts->link_rate <= 2700) {
++		voltage_swing_cfg = qmp_dp_v4_voltage_swing_hbr_rbr[v_level][p_level];
++		pre_emphasis_cfg = qmp_dp_v4_pre_emphasis_hbr_rbr[v_level][p_level];
++	} else {
++		voltage_swing_cfg = qmp_dp_v4_voltage_swing_hbr3_hbr2[v_level][p_level];
++		pre_emphasis_cfg = qmp_dp_v4_pre_emphasis_hbr3_hbr2[v_level][p_level];
++	}
++
++	/* TODO: Move check to config check */
++	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
++		return -EINVAL;
++
++	/* Enable MUX to use Cursor values from these registers */
++	voltage_swing_cfg |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
++	pre_emphasis_cfg |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
++
++	writel(voltage_swing_cfg, qphy->tx + drv_lvl_reg);
++	writel(pre_emphasis_cfg, qphy->tx + emp_post_reg);
++	writel(voltage_swing_cfg, qphy->tx2 + drv_lvl_reg);
++	writel(pre_emphasis_cfg, qphy->tx2 + emp_post_reg);
++
++	return 0;
++}
+ 
+ static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+ {
+@@ -3757,14 +3832,7 @@ static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+ 
+ static void qcom_qmp_v4_phy_configure_dp_tx(struct qmp_phy *qphy)
+ {
+-	/* Program default values before writing proper values */
+-	writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+-	writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+-
+-	writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+-	writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+-
+-	qcom_qmp_phy_configure_dp_swing(qphy,
++	qcom_qmp_v4_phy_configure_dp_swing(qphy,
+ 			QSERDES_V4_TX_TX_DRV_LVL,
+ 			QSERDES_V4_TX_TX_EMP_POST1_LVL);
+ }
+@@ -3885,6 +3953,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+ 	writel(drvr1_en, qphy->tx2 + QSERDES_V4_TX_HIGHZ_DRVR_EN);
+ 	writel(bias1_en, qphy->tx2 + QSERDES_V4_TX_TRANSCEIVER_BIAS_EN);
+ 
++	writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
++	writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
++
+ 	writel(0x18, qphy->pcs + QSERDES_DP_PHY_CFG);
+ 	udelay(2000);
+ 	writel(0x19, qphy->pcs + QSERDES_DP_PHY_CFG);
+@@ -3896,11 +3967,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+ 			10000))
+ 		return -ETIMEDOUT;
+ 
+-	writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+-	writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+ 
+-	writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+-	writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
++	writel(0x22, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
++	writel(0x22, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+ 
+ 	writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+ 	writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-The 'delayacct' kernel command line is an acceptable workaround if
-this is something only a few people will even notice or care about.
-
-I wonder how much people care about some statistics and iotop these days.
-
-I also assume the swap stats still show up in "vmstat" etc, and that
-it's just that iotop ended up using fancier interfaces?
-
-Or do I assume wrongly?
-
-           Linus
