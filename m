@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42A23F5F07
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569D53F5F22
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237616AbhHXN0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:26:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28001 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237591AbhHXN0G (ORCPT
+        id S237506AbhHXN1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:27:14 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:24724 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhHXN1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629811521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cNZW0ivzSdTIMqYZ/P56bn4MgYgT0PqC66BpRe9VjPw=;
-        b=LJdp9Dp124wsucoKyekVT6KLG4FeyvdijqQxqaezL+eU5SBfWQKM7sRgcyPJSpplvU+ay1
-        PtOdIECbFm7poADuAtwect+Hx65juTUfGALgVWmoOO7mjzE6UbwWYSdnlmcTezeocqVd4i
-        5jE0//8sRpGEZEilo+BGX4/mMofEM1A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-407-fN-5zsEQP-GDHncAoP0bIg-1; Tue, 24 Aug 2021 09:25:19 -0400
-X-MC-Unique: fN-5zsEQP-GDHncAoP0bIg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DFEF8799E0;
-        Tue, 24 Aug 2021 13:25:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A5495DA61;
-        Tue, 24 Aug 2021 13:25:12 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 3/6] folio: Add a function to get the host inode for a folio
-From:   David Howells <dhowells@redhat.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Tue, 24 Aug 2021 14:25:11 +0100
-Message-ID: <162981151155.1901565.7010079316994382707.stgit@warthog.procyon.org.uk>
-In-Reply-To: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
-References: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 24 Aug 2021 09:27:11 -0400
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 17ODPpiK025487;
+        Tue, 24 Aug 2021 22:25:52 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 17ODPpiK025487
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1629811552;
+        bh=+41Zxm2FsAgrjPQ3e1GsD+XrDE0aYWFGzJ6F++bMS28=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P7HcYpM9h14HNuFw4i4FvcoQ9qOGmyJw39IU01QGI8hpP80D/ccbARkRpA9ivH0Th
+         rjay7EmsSaZdrR2DLxey1URes5WOY3gIQfE8b6sTRqB7Ir1WYu5K770/BZRTzKgiiQ
+         Q4Na5ANvzuY7HH5XX+s3q92sIXZ9tQ8iBjrCWgoCQuXr+KencatxcVH5D4GkRTa6wX
+         Ec2bCG+pL8oPng6BAjJ+OHDp9RP4RSCR9Ld2XI8rmaLMNdMTssd3h/7sgrWPDIkwew
+         QDee0cTLTnZ9njLV3KdecN95Jj04Khwz/B2qUVZ34NbN5t6u3GaoYnf91zqMYHttwv
+         8HY8BALQ0USSg==
+X-Nifty-SrcIP: [209.85.216.50]
+Received: by mail-pj1-f50.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so1791620pjw.2;
+        Tue, 24 Aug 2021 06:25:52 -0700 (PDT)
+X-Gm-Message-State: AOAM531jVWOwrfGyrxD4jGQC+uXojEUR9KnzWTDdUdOUkRuI0j/YyA5X
+        KXoemaRRU0EuQjgWCj/7hfop89WgfajMvuQtWXc=
+X-Google-Smtp-Source: ABdhPJzOH8og1gJqsSjiudYLR2AeLqtdW+Fz1Q/zdpuBSl9JwIxVz3okV6p02LFD9dfsoorF0W6DxT31qPnbVKEC55w=
+X-Received: by 2002:a17:90b:3545:: with SMTP id lt5mr4462196pjb.198.1629811551463;
+ Tue, 24 Aug 2021 06:25:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210822192205.43210-1-arielmarcovitch@gmail.com> <20210822192205.43210-2-arielmarcovitch@gmail.com>
+In-Reply-To: <20210822192205.43210-2-arielmarcovitch@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 24 Aug 2021 22:25:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASw7pX9ROtOq5FKQuoOqxi4opwef-jB_348TkCsfhoeDQ@mail.gmail.com>
+Message-ID: <CAK7LNASw7pX9ROtOq5FKQuoOqxi4opwef-jB_348TkCsfhoeDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] checkkconfigsymbols.py: Fix the '--ignore' option
+To:     Ariel Marcovitch <arielmarcovitch@gmail.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Rothberg <valentinrothberg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a convenience function, folio_inode() that will get the host inode from
-a folio's mapping.
+On Mon, Aug 23, 2021 at 4:22 AM Ariel Marcovitch
+<arielmarcovitch@gmail.com> wrote:
+>
+> It seems like the implementation of the --ignore option is broken.
+>
+> In check_symbols_helper, when going through the list of files, a file is
+> added to the list of source files to check if it matches the ignore
+> pattern. Instead, as stated in the comment below this condition, the
+> file should be added if it doesn't match the pattern.
+>
+> This means that when providing an ignore pattern, the only files that
+> will be checked will be the ones we want the ignore, in addition to the
+> Kconfig files that don't match the pattern (the check in
+> parse_kconfig_files is done right)
+>
+> Signed-off-by: Ariel Marcovitch <arielmarcovitch@gmail.com>
+> ---
+>  scripts/checkkconfigsymbols.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/checkkconfigsymbols.py b/scripts/checkkconfigsymbols.py
+> index 1548f9ce4682..b9b0f15e5880 100755
+> --- a/scripts/checkkconfigsymbols.py
+> +++ b/scripts/checkkconfigsymbols.py
+> @@ -329,7 +329,7 @@ def check_symbols_helper(pool, ignore):
+>          if REGEX_FILE_KCONFIG.match(gitfile):
+>              kconfig_files.append(gitfile)
+>          else:
+> -            if ignore and not re.match(ignore, gitfile):
+> +            if ignore and re.match(ignore, gitfile):
+>                  continue
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- include/linux/pagemap.h |   14 ++++++++++++++
- mm/page-writeback.c     |    2 +-
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index c8d336e62177..115b4f831e7d 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -203,6 +203,20 @@ static inline struct address_space *page_mapping_file(struct page *page)
- 	return folio_mapping(folio);
- }
- 
-+/**
-+ * folio_inode - Get the host inode for this folio.
-+ * @folio: The folio.
-+ *
-+ * For folios which are in the page cache, return the inode that is hosting
-+ * this folio belongs to.
-+ *
-+ * Do not call this for folios which aren't in the page cache.
-+ */
-+static inline struct inode *folio_inode(struct folio *folio)
-+{
-+	return folio_file_mapping(folio)->host;
-+}
-+
- static inline bool page_cache_add_speculative(struct page *page, int count)
- {
- 	VM_BUG_ON_PAGE(PageTail(page), page);
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 86b90173baf8..f750946d11f7 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -2918,7 +2918,7 @@ EXPORT_SYMBOL_GPL(folio_wait_writeback_killable);
-  */
- void folio_wait_stable(struct folio *folio)
- {
--	if (folio->mapping->host->i_sb->s_iflags & SB_I_STABLE_WRITES)
-+	if (folio_inode(folio)->i_sb->s_iflags & SB_I_STABLE_WRITES)
- 		folio_wait_writeback(folio);
- }
- EXPORT_SYMBOL_GPL(folio_wait_stable);
+This fix seems correct.
+Applied to linux-kbuild.
 
 
+
+>              # add source files that do not match the ignore pattern
+>              source_files.append(gitfile)
+> --
+> 2.25.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
