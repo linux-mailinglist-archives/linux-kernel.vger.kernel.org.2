@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9323F5883
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2823F5884
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhHXGyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        id S231540AbhHXGy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhHXGyM (ORCPT
+        with ESMTP id S233436AbhHXGyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:54:12 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA5CC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:53:26 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id w8so18902231pgf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:53:26 -0700 (PDT)
+        Tue, 24 Aug 2021 02:54:24 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8554C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:53:40 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id f10so28451950lfv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:53:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0jQVnHCLqBk2LRj/gOBDVJ368OV7bEid1vgTCabVIn4=;
-        b=CObson2ozZr4tFYUquzE8I/b2cX2xxA/qYHDKIKqUeYkUozPkgJOn3tWUnbATZsIwT
-         m9kFTKTS+nNahFBiAbviB7ffx524dlvod8STM/admTnWeaXzB+eoxKEtrCR1KggmJTcT
-         Wk8ndfRjY1o9TLR6HO7Q2yC38+c77r71diVIc9puxfe9d+58beY6SeUjvuwb81eRqMF/
-         YmHXo26h1esXoChffKqbCSl2M4vPpEi7J1hiOkbb9JT56tV4AttGUlWgp0l8anXBgHcu
-         OcJsJa04T9X2p7gpi8OwmlXBxsWWuGrWw+ESoWKDS9JAF4HPwBRghT1MfVfVYWNjSPg2
-         0xRw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uSYmQad0KIz3lhdbLMiYxSPPWZAwa1aOgDUep2rDmQo=;
+        b=tfz/fUaMlzguKO8c64aHNO1shEVpmAv654uob8Vxg0tFfagu32mjSOS7mBWn4RZlCq
+         M1vwGnOQeWe1CPwm2O4Mob/qAZKPWayikD+mcChtgmYnN5WdDqlwROhGCwZUP6UdIHfA
+         r+uN99nPgU6F6BsC5oxePpx0rPA1jzOV87Rz9fEa46u1tlyGry6pmW2M27/khlPFks8l
+         R2Cqiuv6RdJVWYtGA+xceFr4/XwZfXoO8/SXffCAmP6uU0QJ6KzF3x09141mT2jUp7cd
+         4jhsZJxn4WK/dB6aNU7c7ZFsN6zYtk8Ilws66dDQa7LIgWrTPCyYGSbTH5soqGr+3G9N
+         4Dkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0jQVnHCLqBk2LRj/gOBDVJ368OV7bEid1vgTCabVIn4=;
-        b=Gq2DvtF1N5YBkLt4bpTUelbCjcDk9IRYFVLeTvl+PjFya5pPG6MjgCMmriLLraYp+Z
-         Y/KWs/Quh8LSwi3FUDdEfAQ+I0e+bLxW3Y8aorjZ+I5r5AaY0J+np+Q6SoKKyNQKYo7+
-         SgTuCoK9K17g+TVwXTZYxt5vlPdlXt4PYPJaYjZh5sfkUkpHejAL1mfYLGhzJItIhKWn
-         ftU/1/q1Kmt4ph9Sfi5B1foIs/OVo28WCX34/gD/t7XO37ZcxZ9shLRizeQ9r9OWG7b1
-         w73UJygrowxjlR1s9zEJjB6zDdF8HGB3KiAG5KjjSbkYAgjEU+slIfQT8t3Jqheo2maz
-         r0Uw==
-X-Gm-Message-State: AOAM532Go737K4VJJlQFUb3el7M/24pQy57je9lQlMz+wIMwMTqUXrzp
-        +uRAolYJdOXMgIEzrt5ygDS2iA==
-X-Google-Smtp-Source: ABdhPJyQT1auFFvuxiRbl7EfawGmVwn+TYKdQI0bC+VKpLIPB1Nx34GRHbITbh/CG0k9x3TVMW1frw==
-X-Received: by 2002:aa7:8c41:0:b0:3e3:1279:105 with SMTP id e1-20020aa78c41000000b003e312790105mr28189996pfd.80.1629788006083;
-        Mon, 23 Aug 2021 23:53:26 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id i6sm18053841pfa.44.2021.08.23.23.53.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:53:25 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 14:53:19 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
-        acme@kernel.org, suzuki.poulose@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/9] perf cs-etm: Initialise architecture based on
- TRCIDR1
-Message-ID: <20210824065319.GA204566@leoy-ThinkPad-X240s>
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-3-james.clark@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uSYmQad0KIz3lhdbLMiYxSPPWZAwa1aOgDUep2rDmQo=;
+        b=TdLbfSf+iaN/fUmZqwyDFc2oSRxmmhCcMzyX+7F1hldRQsV5imZe8+QwMPImEL/Kwi
+         8xssAVmrVDZLqFhYir4XkXTrQZXLrKQf4tBBDmF1V3n6zyGUdl6OjouNJ+Ka7hpnCopj
+         THXpsSNaVNMS6TIpbpH05yqSMjiqcS9z3j1L0HrQBBUKERLuHdYhDPbZjNiepta+o2g8
+         +oKOTGzruYPMLcxmruprqd7UVzvneBO537C0xef/SDzZ0w1LpUuzwNtJHlDGJEXPhi+f
+         m+q9GreZgM63suF/h+nSFBxySEUwbgL1FderOIQPfJ/8mqOeCvdMKor6IkW9uoN2vqiw
+         u3Nw==
+X-Gm-Message-State: AOAM531YdSGxlkzm/EDE+8/6zwwQz5eEWMJbsSiMzJz2pyeD/YP6nWCc
+        +4xTKfsZEJNyy3IIoLpG6gOFfJELjGdq/A==
+X-Google-Smtp-Source: ABdhPJwAKzbddw6vtb4DlhYVUPhEWp+JDK0E1hxi94gv6isKsyS5SQ2Iu/6awrfIjhL0yQsccxuwYQ==
+X-Received: by 2002:ac2:4c2a:: with SMTP id u10mr28138257lfq.631.1629788018887;
+        Mon, 23 Aug 2021 23:53:38 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.66.127])
+        by smtp.gmail.com with ESMTPSA id y10sm1821430lfh.40.2021.08.23.23.53.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Aug 2021 23:53:38 -0700 (PDT)
+Subject: Re: [PATCH RFC v2 5/6] staging: r8188eu: add error handling of
+ rtw_read32
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1629642658.git.paskripkin@gmail.com>
+ <9004eb2972780455db4cba9694244a2c572abba8.1629642658.git.paskripkin@gmail.com>
+ <CAA=Fs0=gX66TW3qoHYWcoSsvai6YZn=U81a34V45oij7NrMJrQ@mail.gmail.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+Message-ID: <ba9e0634-6cc6-161f-f4f9-3538f44448f8@gmail.com>
+Date:   Tue, 24 Aug 2021 09:53:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806134109.1182235-3-james.clark@arm.com>
+In-Reply-To: <CAA=Fs0=gX66TW3qoHYWcoSsvai6YZn=U81a34V45oij7NrMJrQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 02:41:02PM +0100, James Clark wrote:
-> Currently the architecture is hard coded as ARCH_V8, but from ETMv4.4
-> onwards this should be ARCH_AA64.
+On 8/24/21 2:33 AM, Phillip Potter wrote:
+> On Sun, 22 Aug 2021 at 15:36, Pavel Skripkin <paskripkin@gmail.com> wrote:
+>> -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
+>> +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32 *data)
+>>  {
+>>         u8 requesttype;
+>>         u16 wvalue;
+>>         u16 len;
+>> -       __le32 data;
+>> +       int res;
+>> +       __le32 tmp;
+>> +
+>> +       if (WARN_ON(unlikely(!data)))
+>> +               return -EINVAL;
+>>
+>>         requesttype = 0x01;/* read_in */
+>>
+>>         wvalue = (u16)(addr & 0x0000ffff);
+>>         len = 4;
+>>
+>> -       usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+>> +       res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+>> +       if (res < 0) {
+>> +               dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 32 bytes: %d\n", res);
+>> +       } else {
+>> +               /* Noone cares about positive return value */
+>> +               *data = le32_to_cpu(tmp);
+>> +               res = 0;
+>> +       }
+>>
+>> -       return le32_to_cpu(data);
+>> +       return res;
+>>  }
 > 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
+> Dear Pavel,
 > 
-> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> index 187c038caa19..787b19642e78 100644
-> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> @@ -126,6 +126,20 @@ static int cs_etm_decoder__gen_etmv3_config(struct cs_etm_trace_params *params,
->  	return 0;
->  }
->  
-> +#define TRCIDR1_TRCARCHMIN_SHIFT 4
-> +#define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
-> +#define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
-> +static enum _ocsd_arch_version cs_etm_decoder__get_etmv4_arch_ver(u32 reg_idr1)
-> +{
-> +	/*
-> +	 * For ETMv4 if the trace minor version is 4 or more then we can assume
-> +	 * the architecture is ARCH_AA64 rather than just V8.
-> +	 * ARCH_V8 = V8 architecture
-> +	 * ARCH_AA64 = Min v8r3 plus additional AA64 PE features
-> +	 */
-> +	return TRCIDR1_TRCARCHMIN(reg_idr1) >= 4 ? ARCH_AA64 : ARCH_V8;
-> +}
-> +
->  static void cs_etm_decoder__gen_etmv4_config(struct cs_etm_trace_params *params,
->  					     ocsd_etmv4_cfg *config)
->  {
-> @@ -140,7 +154,7 @@ static void cs_etm_decoder__gen_etmv4_config(struct cs_etm_trace_params *params,
->  	config->reg_idr11 = 0;
->  	config->reg_idr12 = 0;
->  	config->reg_idr13 = 0;
-> -	config->arch_ver = ARCH_V8;
-> +	config->arch_ver = cs_etm_decoder__get_etmv4_arch_ver(params->etmv4.reg_idr1);
->  	config->core_prof = profile_CortexA;
->  }
+> OK, found the issue with decoded stack trace after reviewing this
+> usb_read32 function. Your line:
+> res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
+> 
+> should read:
+> res = usbctrl_vendorreq(pintfhdl, wvalue, &tmp, len, requesttype);
+> 
+> With this change, the driver runs fine with no crashes/oopses. I will
+> explain the issue but you can probably see already, so I hope I'm not
+> coming across as patronising, just trying to be helpful :-)
+> 
+> Essentially, you are taking the address of the data function parameter
+> on this line with &data, a pointer to u32, which is giving you a
+> pointer to a pointer to u32 (u32 **) for this function parameter
+> variable. When passed to usbctrl_vendorreq, it is being passed to
+> memcpy inside this function as a void *, meaning that memcpy
+> subsequently overwrites the value of the memory address inside data to
+> point to a different location, which is problem when it is later
+> deferenced at:
+> *data = le32_to_cpu(tmp);
+> causing the OOPS
+> 
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+The most strange thing is why gcc didn't complain about different 
+pointer types... I think, that gcc must complain about this type of not 
+explicit casts, because 99% it's a bug.
 
->  
-> -- 
-> 2.28.0
-> 
+
+Again big thanks for analysis :)
+
+
+
+With regards,
+Pavel Skripkin
