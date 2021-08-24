@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989353F61FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4133F61B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238442AbhHXPs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:48:59 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27746 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238287AbhHXPs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:48:58 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="196914374"
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="196914374"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:48:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="455619246"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga007.fm.intel.com with ESMTP; 24 Aug 2021 08:48:06 -0700
-Date:   Tue, 24 Aug 2021 17:32:25 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jason Xing <kerneljasonxing@gmail.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        brouer@redhat.com, intel-wired-lan@lists.osuosl.org,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>,
-        =?iso-8859-1?B?zfFpZ28=?= Huguet <ihuguet@redhat.com>
-Subject: Re: [PATCH] ixgbe: let the xdpdrv work with more than 64 cpus
-Message-ID: <20210824153225.GA16546@ranger.igk.intel.com>
-References: <20210824104918.7930-1-kerneljasonxing@gmail.com>
- <59dff551-2d52-5ecc-14ac-4a6ada5b1275@redhat.com>
- <CAL+tcoDERDZqtjK1BCc0vYYwYtvgRtb8H6z2FTVbGqr+N7bVmA@mail.gmail.com>
+        id S238346AbhHXPdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:33:50 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:42994 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238217AbhHXPds (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:33:48 -0400
+Received: by mail-ua1-f41.google.com with SMTP id m39so11833491uad.9;
+        Tue, 24 Aug 2021 08:33:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=44Y8+N+SnYtYOywdEreCzeQ16Qc35iaWv8K0CtlpfOM=;
+        b=nJM5kY31leDkyGK4MtNkeOYv4MTyXvXLv9YjjKo9vf43Mwn/CMelztbpOzXok3kWaA
+         8AtdMaZ6dEqg5+N5f4w83WsJy+MY1baERjIodoOdFsNFbYRWxI7uCO3KCRmE0FPj8R5m
+         2oMtDJK9JbIj4/6bmJ74A1Lr3Gl80uonYmRtZXXZRU5+o0zok5jwA4g1eb1DQM5zUgMw
+         +8HEqXVU/OyrJ8TLuKvL2GB2oBaMUTxaZ/6erQu+Dg66/oRzT8YiScBgAyJtb6nrm3T2
+         2Y5MXjb4NTZp6Dcaw1cqenHT7S2DXDTjSd97PtWEccaj3e5GelncpqAQt53FBoYpzLGq
+         ShJQ==
+X-Gm-Message-State: AOAM532RlX4uWAqm7N/kY6RwXVxbLRoC7dnkSuh+FPvNBPOYpYbsZmNq
+        eiVmn7lxK+O25gq+DSQUCdxWJ9UietWWKly87t8=
+X-Google-Smtp-Source: ABdhPJx43ZwCwMlUtl1S7uSysr1dAaJDUFsrHb1A75ES/kPsKLv6OsWvOzGC+YT4ae4ieTdk/o5Bbk59uGjg6cLvkLI=
+X-Received: by 2002:ab0:4d5b:: with SMTP id k27mr13478215uag.78.1629819183896;
+ Tue, 24 Aug 2021 08:33:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL+tcoDERDZqtjK1BCc0vYYwYtvgRtb8H6z2FTVbGqr+N7bVmA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+ <20210819154436.117798-3-krzysztof.kozlowski@canonical.com> <4d0d6290-8341-56d8-7902-5a8c36bc7bb5@canonical.com>
+In-Reply-To: <4d0d6290-8341-56d8-7902-5a8c36bc7bb5@canonical.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 24 Aug 2021 17:32:52 +0200
+Message-ID: <CAMuHMdWA3_c13dCVUm7o2QzBmDN4G4fA6B+xSftx9FtEyYtT7w@mail.gmail.com>
+Subject: Re: [PATCH 3/6] riscv: microchip: mpfs: drop duplicated nodes
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Atish Patra <atish.patra@wdc.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:23:29PM +0800, Jason Xing wrote:
-> On Tue, Aug 24, 2021 at 9:32 PM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
-> >
-> >
-> >
-> > On 24/08/2021 12.49, kerneljasonxing@gmail.com wrote:
-> > > From: Jason Xing <xingwanli@kuaishou.com>
-> > >
-> > > Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
-> > > server is equipped with more than 64 cpus online. So it turns out that
-> > > the loading of xdpdrv causes the "NOMEM" failure.
-> > >
-> > > Actually, we can adjust the algorithm and then make it work, which has
-> > > no harm at all, only if we set the maxmium number of xdp queues.
-> >
-> > This is not true, it can cause harm, because XDP transmission queues are
-> > used without locking. See drivers ndo_xdp_xmit function ixgbe_xdp_xmit().
-> > As driver assumption is that each CPU have its own XDP TX-queue.
+Hi Krzysztof,
 
-Thanks Jesper for chiming in.
+On Thu, Aug 19, 2021 at 6:22 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+> On 19/08/2021 17:44, Krzysztof Kozlowski wrote:
+> > The DTSI file defines soc node and address/size cells, so there is no
+> > point in duplicating it in DTS file.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > ---
+> >  arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 5 -----
+> >  1 file changed, 5 deletions(-)
+> >
+>
+> Now I wonder whether the subject prefix should be "riscv: dts:
+> microchip:" instead?
 
-> >
-> 
-> Point taken. I indeed miss that part which would cause bad behavior if it
-> happens.
-> 
-> At this point, I think I should find all the allocation and use of XDP
-> related, say,
-> queues and rings, then adjust them all?
-> 
-> Let's say if the server is shipped with 128 cpus, we could map 128 cpus to 64
-> rings in the function ixgbe_xdp_xmit(). However, it sounds a little bit odd.
-> 
-> Do you think that it makes any sense?
+Agreed.
 
-We need a fallback path for ixgbe. I did the following for ice:
-https://x-lore.kernel.org/bpf/20210819120004.34392-9-maciej.fijalkowski@intel.com/T/#u
+For the actual patch contents:
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-> 
-> Thanks,
-> Jason
-> 
-> > This patch is not a proper fix.
-> >
-> > I do think we need a proper fix for this issue on ixgbe.
-> >
-> >
-> > > Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
-> > > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> > > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> > > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> > > ---
-> > >   drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 2 +-
-> > >   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ---
-> > >   2 files changed, 1 insertion(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > > index 0218f6c..5953996 100644
-> > > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-> > > @@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
-> > >
-> > >   static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
-> > >   {
-> > > -     return adapter->xdp_prog ? nr_cpu_ids : 0;
-> > > +     return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
-> > >   }
-> > >
-> > >   #define IXGBE_RSS_64Q_MASK  0x3F
-> > > diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > > index 14aea40..b36d16b 100644
-> > > --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > > +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> > > @@ -10130,9 +10130,6 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
-> > >                       return -EINVAL;
-> > >       }
-> > >
-> > > -     if (nr_cpu_ids > MAX_XDP_QUEUES)
-> > > -             return -ENOMEM;
-> > > -
-> > >       old_prog = xchg(&adapter->xdp_prog, prog);
-> > >       need_reset = (!!prog != !!old_prog);
-> > >
-> > >
-> >
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
