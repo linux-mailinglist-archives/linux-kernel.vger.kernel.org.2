@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F843F5785
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67273F5790
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhHXFNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhHXFNB (ORCPT
+        id S231600AbhHXFTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 01:19:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3428 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229736AbhHXFTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:13:01 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE96EC061575;
-        Mon, 23 Aug 2021 22:12:17 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id k65so38517124yba.13;
-        Mon, 23 Aug 2021 22:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FrYRhpX8V2RxHliFgyoGiQz1nrfS1cZ96W8NbTEFTXA=;
-        b=O3Hy0rGn0D/+9OlMmdod9ck0A1fu6zAHqpaf2Nq4mpXt5TvHelm3OyKSrv989Z4bnq
-         42MuPy7uN8aC1+Hvl/WFPT/MQvGusaeD12r1dDCFhhwzzBaOEQAmCF43lviPDBxNKbKf
-         c18komufG6iRNJrHxv90dhY88N8lxAuvPLac5745qw0GNFOTAQ6T0Wq0McL0zmySg1fD
-         A93O3b28P+eeycy7SsaBHu+LdtmJmib8geFUXxDceXv/dmNvohsR8In/F7jRE+Djov4p
-         xqTzLCzVYGqKgt4MU/ISJyzjETCCOWQwE4jMLVzoLcFvH3CkOd8ABVJTUOjqHMie1Gvq
-         oetQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FrYRhpX8V2RxHliFgyoGiQz1nrfS1cZ96W8NbTEFTXA=;
-        b=iQgtfv/VVMhu/bTdPeg6EWoWNyVyhVgTi9RCOG0v5FFT7cdl7u7BU/iT4+CE0rmTi9
-         7bBUHznnn93czKxyIFOXsajsxZjd5xYKEJBAWkWAOP2FWuTNZWm9c3/0LeCI2PFcX9+z
-         ywQhnZInnqegD0dfFFWq4Hp+XoMgzhH+I9vKn87oqo1IcaJE+BCgy/6KXtY1EnhBvRKY
-         fqKjmwVRtKBeciSaA866WGxmrykV9QhEiPbOlchHRlfsPllkVsCFc012EG54U0LOlr+6
-         ZBcRpmWIP/tSw+5pek6zH/zQ3T7nUASCIG+orZjdHydVeQJKfmIJbeXWIDK53rKMB8sS
-         ZAkw==
-X-Gm-Message-State: AOAM532jTNwpyrZhdr4bkDj9XWh1xPCHIvRpoYrhf7r4ApamqnKDi68U
-        Q8sxXJOoXQoEfYxhZon9UbXIqysAiEop09pYoJE=
-X-Google-Smtp-Source: ABdhPJy0Wx5/xOSiDxelaPuOpL34/4i2trBSGWHIlo/Heur7Lhrot/4g6kCCOg/uyGjN/ZNFBC433k5lcnHBXBE0A+s=
-X-Received: by 2002:a25:bb13:: with SMTP id z19mr50337899ybg.347.1629781937178;
- Mon, 23 Aug 2021 22:12:17 -0700 (PDT)
+        Tue, 24 Aug 2021 01:19:53 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17O5CeBk174333;
+        Tue, 24 Aug 2021 01:18:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=PE/TzKz3X9Hz3XOzUeUYInAIDGmI+H9B+ly6TDLjfD4=;
+ b=PG2mi5lHmfKSLIPp7PBzEVPvOP4i8j/BTkMpO+bMNNNnnnT07VagYxtZCs7gFM/7M2hQ
+ wbpV1r+aZU6J79W/TeQM/tvYVsz0L+g36VM4IJXL//desOFLH7EhKWS5b0Y4OrGhNCLa
+ L8m7a3yyUYih3jJdicUERAUDXUJKWsNSj6EL69srjFn00+7R6c3eqRNqdx+6NF5iQzGx
+ 5XpXK4BnFVjbXkOhUtFT+0wffJOopsKvfDI0B7XUF0cTl6Gb9G20KgjF2fQx2TI4EsUk
+ XKtRO9kDMLQOsVJ2pgk3CEzXcb2KJjQqYXZkHFqyCVf9OMM37NYSxqeQQQzVeBhzueF5 Ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amrx0t0qp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 01:18:55 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17O54Gd1146266;
+        Tue, 24 Aug 2021 01:18:55 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amrx0t0qg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 01:18:55 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17O5HJLE030281;
+        Tue, 24 Aug 2021 05:18:54 GMT
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
+        by ppma03dal.us.ibm.com with ESMTP id 3ajs4ch0sm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 05:18:54 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17O5Iroa41877868
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 05:18:53 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BDADEB206A;
+        Tue, 24 Aug 2021 05:18:53 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29977B2068;
+        Tue, 24 Aug 2021 05:18:51 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.43.125.5])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Aug 2021 05:18:50 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Daniel Henrique Barboza <danielhb413@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: linux-next: build warning after merge of the powerpc tree
+In-Reply-To: <20210823204803.7cb76778@canb.auug.org.au>
+References: <20210823195540.4d7363ed@canb.auug.org.au>
+ <20210823204803.7cb76778@canb.auug.org.au>
+Date:   Tue, 24 Aug 2021 10:48:47 +0530
+Message-ID: <87v93ve7yg.fsf@linux.ibm.com>
 MIME-Version: 1.0
-References: <162756755600.301564.4957591913842010341.stgit@devnote2> <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
-In-Reply-To: <20210730083549.4e36df1cba88e408dc60b031@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Aug 2021 22:12:06 -0700
-Message-ID: <CAEf4Bzb2i4Z9kUWU+L-HF3k+XQ0V3hLH1Er7U2_oCdv1BTvaBw@mail.gmail.com>
-Subject: Re: [PATCH -tip v10 00/16] kprobes: Fix stacktrace with kretprobes on x86
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: hZjYXa38_KuuHplE-WO4QycR3zD1t4JA
+X-Proofpoint-ORIG-GUID: sH7ZjWYYbu6t_LnU8jBcOlx4rrpIfd-f
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_01:2021-08-23,2021-08-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 4:35 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> On Thu, 29 Jul 2021 23:05:56 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> > Hello,
-> >
-> > This is the 10th version of the series to fix the stacktrace with kretprobe on x86.
-> >
-> > The previous version is here;
-> >
-> >  https://lore.kernel.org/bpf/162601048053.1318837.1550594515476777588.stgit@devnote2/
-> >
-> > This version is rebased on top of new kprobes cleanup series(*1) and merging
-> > Josh's objtool update series (*2)(*3) as [6/16] and [7/16].
-> >
-> > (*1) https://lore.kernel.org/bpf/162748615977.59465.13262421617578791515.stgit@devnote2/
-> > (*2) https://lore.kernel.org/bpf/20210710192433.x5cgjsq2ksvaqnss@treble/
-> > (*3) https://lore.kernel.org/bpf/20210710192514.ghvksi3ozhez4lvb@treble/
-> >
-> > Changes from v9:
-> >  - Add Josh's objtool update patches with a build error fix as [6/16] and [7/16].
-> >  - Add a API document for kretprobe_find_ret_addr() and check cur != NULL in [5/16].
-> >
-> > With this series, unwinder can unwind stack correctly from ftrace as below;
-> >
-> >   # cd /sys/kernel/debug/tracing
-> >   # echo > trace
-> >   # echo 1 > options/sym-offset
-> >   # echo r vfs_read >> kprobe_events
-> >   # echo r full_proxy_read >> kprobe_events
-> >   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
-> >   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
-> >   # echo 1 > events/kprobes/enable
-> >   # cat /sys/kernel/debug/kprobes/list
-> > ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-> > ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
-> >   # echo 0 > events/kprobes/enable
-> >   # cat trace
-> > # tracer: nop
-> > #
-> > # entries-in-buffer/entries-written: 3/3   #P:8
-> > #
-> > #                                _-----=> irqs-off
-> > #                               / _----=> need-resched
-> > #                              | / _---=> hardirq/softirq
-> > #                              || / _--=> preempt-depth
-> > #                              ||| /     delay
-> > #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> > #              | |         |   ||||      |         |
-> >            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
-> >            <...>-134     [007] ...1    16.185901: <stack trace>
-> >  => kretprobe_trace_func+0x209/0x300
-> >  => kretprobe_dispatcher+0x4a/0x70
-> >  => __kretprobe_trampoline_handler+0xd4/0x170
-> >  => trampoline_handler+0x43/0x60
-> >  => kretprobe_trampoline+0x2a/0x50
-> >  => vfs_read+0x98/0x180
-> >  => ksys_read+0x5f/0xe0
-> >  => do_syscall_64+0x37/0x90
-> >  => entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
-> >
-> > This shows the double return probes (vfs_read() and full_proxy_read()) on the stack
-> > correctly unwinded. (vfs_read() returns to 'ksys_read+0x5f' and full_proxy_read()
-> > returns to 'vfs_read+0x98')
-> >
-> > This also changes the kretprobe behavisor a bit, now the instraction pointer in
-> > the 'pt_regs' passed to kretprobe user handler is correctly set the real return
-> > address. So user handlers can get it via instruction_pointer() API, and can use
-> > stack_trace_save_regs().
-> >
-> > You can also get this series from
-> >  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v9
->
-> Oops, this is of course 'kprobes/kretprobe-stackfix-v10'. And this branch includes above (*1) series.
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-Hi Masami,
-
-Was this ever merged/applied? This is a very important functionality
-for BPF kretprobes, so I hope this won't slip through the cracks.
-Thanks!
-
+> Hi all,
 >
-> Thank you,
+> [cc'ing Jon in case he can fix the sphix hang - or knows anything about it]
 >
-> --
-> Masami Hiramatsu <mhiramat@kernel.org>
+> On Mon, 23 Aug 2021 19:55:40 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> After merging the powerpc tree, today's linux-next build (htmldocs)
+>> produced this warning:
+>> 
+>
+> I missed a line:
+>
+> Sphinx parallel build error:
+>
+>> docutils.utils.SystemMessage: Documentation/powerpc/associativity.rst:1: (SEVERE/4) Title overline & underline mismatch.
+>> 
+>> ============================
+>> NUMA resource associativity
+>> =============================
+>> 
+>> Introduced by commit
+>> 
+>>   1c6b5a7e7405 ("powerpc/pseries: Add support for FORM2 associativity")
+>> 
+>> There are other obvious problems with this document (but sphinx seems
+>> to have hung before it reported them).
+>> 
+>> Like
+>> 
+>> Form 0
+>> -----
+>> 
+>> and
+>> 
+>> Form 1
+>> -----
+>> 
+>> and
+>> 
+>> Form 2
+>> -------
+>
+> I also get the following warning:
+>
+> Documentation/powerpc/associativity.rst: WARNING: document isn't included in any toctree
+>
+> And applying the following patch is enough to allow sphinx to finish
+> (rather than livelocking):
+>
+> diff --git a/Documentation/powerpc/associativity.rst b/Documentation/powerpc/associativity.rst
+> index 07e7dd3d6c87..b77c6ccbd6cb 100644
+> --- a/Documentation/powerpc/associativity.rst
+> +++ b/Documentation/powerpc/associativity.rst
+> @@ -1,6 +1,6 @@
+> -============================
+> +===========================
+>  NUMA resource associativity
+> -=============================
+> +===========================
+>  
+>  Associativity represents the groupings of the various platform resources into
+>  domains of substantially similar mean performance relative to resources outside
+> @@ -20,11 +20,11 @@ A value of 1 indicates the usage of Form 1 associativity. For Form 2 associativi
+>  bit 2 of byte 5 in the "ibm,architecture-vec-5" property is used.
+>  
+>  Form 0
+> ------
+> +------
+>  Form 0 associativity supports only two NUMA distances (LOCAL and REMOTE).
+>  
+>  Form 1
+> ------
+> +------
+>  With Form 1 a combination of ibm,associativity-reference-points, and ibm,associativity
+>  device tree properties are used to determine the NUMA distance between resource groups/domains.
+>  
+> @@ -45,7 +45,7 @@ level of the resource group, the kernel doubles the NUMA distance between the
+>  comparing domains.
+>  
+>  Form 2
+> --------
+> +------
+>  Form 2 associativity format adds separate device tree properties representing NUMA node distance
+>  thereby making the node distance computation flexible. Form 2 also allows flexible primary
+>  domain numbering. With numa distance computation now detached from the index value in
+
+Thanks for looking into this. I guess we also need to format the below table?
+
+  | 0    8   40
+--|------------
+  |
+0 | 10   20  80
+  |
+8 | 20   10  160
+  |
+40| 80   160  10
+
+
+I don't know how to represent that in the documentation file. A table is
+probably not the right one?
+
+-aneesh
