@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483FD3F55A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E9B3F55A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhHXCIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S233782AbhHXCJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhHXCIk (ORCPT
+        with ESMTP id S229742AbhHXCJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:08:40 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D273CC061575;
-        Mon, 23 Aug 2021 19:07:56 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e21so25073873ejz.12;
-        Mon, 23 Aug 2021 19:07:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hQf5FJwAquDrQzpM6Ew8XOzGWvvn5Sn7hw5RC22dqYk=;
-        b=dnttTSHKVZA/IaRhO2YBn0LLiyhEUOYoKcGxouyQP9am0PoMZyRXiesSbrJCCFn+EB
-         NW49Dyi3dSvqXMX+6wL/KKVWXnrGd374XVPCoYKEOxnFnSitAsHEwNiVKtIU+TimU0CE
-         VzU4LlHgs3qlw+7z54dkbqTk0rtYAoRy+jYcetlAkTuff9ao4Jy56jM/A6mBO/rn55Sf
-         roEorV1T5OOIlzhrbge+SOyKQ/5FvHSsHhStlWCkyzrEqIbjM6+NQdgLB4hrLcASKfrm
-         R/8mpc0D2F+OrFzN/j6GVmq7KMG09NQlMyYXl/Tyaigp1jmk7hBYyLrUyl0Yc9SscsGP
-         0wZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hQf5FJwAquDrQzpM6Ew8XOzGWvvn5Sn7hw5RC22dqYk=;
-        b=GWkdrGgqALS13znuJ95Zsejg5ak6Q0H3otOIW0JQG5kM1hwrbsqusCdMiwrcEPB25s
-         megre459dj8dJgbfFixUnbwQ0wFJnrybsvejKIyEWzdpKjxrepSK0fDBVxqgu8QwjzNG
-         /TFUPaD0T132a4lUVJQGpaNiA7dsO8IbkA46oNWCTBduCc5vZ7N+/iMNiN2uQm87jKUV
-         pkrUFjF7E0KQh5ueboaJpnufsbTjxWZcYg3j8tETO69u4+tyB+Gyy/ilbmV6hKc+5RrT
-         VZPNgX+TBlqBVrVMGo5s1fs/D1R/S9ELfxlKwbhWS1/l8cz7BMUidvf1vFZNy+u7lme0
-         PdIw==
-X-Gm-Message-State: AOAM531S/PlHJd/J6u6qgwbnpxa9jhyzd8LsD9PfyZGty6+fmTAQCUk2
-        Aqh5Iv2+/oL5lrbjJUBduBzn+vdiWoueVpfZGQ4=
-X-Google-Smtp-Source: ABdhPJxxAwCa1ZFrfCTVfktnUsk6PXTaQrkyBxs6Wcz5sPdNjPE7Uz0YO6kTBTHr0Bjz8eSRH0J/8q3CzTi0mf7QJXg=
-X-Received: by 2002:a17:907:a06c:: with SMTP id ia12mr38214669ejc.377.1629770875535;
- Mon, 23 Aug 2021 19:07:55 -0700 (PDT)
+        Mon, 23 Aug 2021 22:09:51 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D488C061575;
+        Mon, 23 Aug 2021 19:09:07 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Gtsww2w1Cz9sXM;
+        Tue, 24 Aug 2021 12:09:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629770945;
+        bh=t8udJ6b3N0UaUSZ3BGOlaMN6Co2sK8BZqj+NJF3I+No=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NUK4v+qATIBq7WL0xY5pFWbcWzJhIsPWunQrvEldw0AzCjDoJL80cuEIE2UnIZ5R7
+         jJvUFQHrORnU9RG4ewhauBjcv2e3QKP2EyTuTOXZYGXdHdBkDFQxUFbvtt1fPLBffp
+         f2STgCkY/2cVa3oy/6P5MNNeD2klSUIS/7mAEnbsF3LXHmv6G1gm5sJ8XHdkdNLNLu
+         aZO04G6/7yZORLIZf6hR0u0ejK34KUpMkrN7O7TpI8ovxHZU5PCxC2UCaTrxWVkyQr
+         /21/1ep7IoGWuM5bPzAebDrJ/Ij8uJj74Qx/MQxYbSxpHqkAuZKqMvEMbUaX/cefOn
+         nKL44yCbpSwMQ==
+Date:   Tue, 24 Aug 2021 12:09:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Petr Mladek <pmladek@suse.com>, David Miller <davem@davemloft.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        Wireless <linux-wireless@vger.kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the wireless-drivers-next tree with
+ the printk tree
+Message-ID: <20210824120903.0c427fb9@canb.auug.org.au>
+In-Reply-To: <20210824120714.421e734d@canb.auug.org.au>
+References: <20210809131813.3989f9e8@canb.auug.org.au>
+        <20210824120714.421e734d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CABv53a_q4jzsXib7ovRs=eOwqcQ-oKb8c7DA7uUSPf+0tt6aog@mail.gmail.com>
- <20210823170624.GA1420@agape.jhs>
-In-Reply-To: <20210823170624.GA1420@agape.jhs>
-From:   iLifetruth <yixiaonn@gmail.com>
-Date:   Tue, 24 Aug 2021 10:07:18 +0800
-Message-ID: <CABv53a9aR8mXE_quxRX06aX3WAKGSOyMqrG8AmqrsvftjH7xyg@mail.gmail.com>
-Subject: Re: staging: possible buffer overflow in rtw_wx_set_scan function in driver/staging/rtl8723bs
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, insafonov@gmail.com,
-        linux-staging@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qiang Liu <cyruscyliu@gmail.com>, yajin@vm-kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/5n6IoWL2IMYIcg8e2lGgRWN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I haven't committed the patch yet since the Linux staging tree may
-seem special. It's not clear to me where to submit the patch. So could
-you please fix it?
+--Sig_/5n6IoWL2IMYIcg8e2lGgRWN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Regards and thanks for your confirmation,
-- iLifetruth
+Hi all,
 
+[Just cc'ing Dave]
 
-On Tue, Aug 24, 2021 at 1:08 AM Fabio Aiuto <fabioaiuto83@gmail.com> wrote:
+On Tue, 24 Aug 2021 12:07:14 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> Hello,
->
-> On Mon, Aug 23, 2021 at 11:19:09PM +0800, iLifetruth wrote:
-> > Hi, in the latest version of Linux staging tree, we may have found an
-> > unfixed security bug in the staging/driver/rtl8723bs related to the
-> > CVE-2021-28660. Now, we would like to contact you to confirm this
-> > problem.
+> On Mon, 9 Aug 2021 13:18:13 +1000 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
 > >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Here is the description of CVE-2021-28660:
-> >
-> > "It was discovered that the rtl8188eu WiFi driver did not correctly
-> > limit the length of SSIDs copied into scan results. An attacker within
-> > WiFi range could use this to cause a denial of service (crash or
-> > memory corruption) or possibly to execute code on a vulnerable
-> > system."
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > The staging driver "rtl8188eu" was fixed by commit
-> > 74b6b20df8cfe90ada777d621b54c32e69e27cd7 on 2021-03-10.
-> >
-> > However, in another similar staging driver numbered "rtl8723bs", a
-> > function named =E2=80=9Crtw_wx_set_scan=E2=80=9D remains the same probl=
-em unfixed. And
-> > it is detected in the
-> > =E2=80=9Cdrivers/staging/rtl8723bs/os_dep/ioctl_linux.c#Line1354" witho=
-ut
-> > checking to prevent writing beyond the end of the ->ssid[] array.
-> >
-> > Therefore, shall we port the same fix from RTL8188EU to RTL8723BS?
->
-> I think it's a good idea, moreover I've just sent a patch series
-> aimed at removing that piece of code for it belongs to very
-> old wext implementation.
->
-> But until it's not accepted by the maintainer that security bug
-> is present and harmful. If you fix it thank you, if you don't
-> thank you for reporting this, I will fix as soon as possible.
->
-> >
-> > Thank you!
->
-> thank you,
->
-> fabio
+> > Today's linux-next merge of the wireless-drivers-next tree got a
+> > conflict in:
+> >=20
+> >   MAINTAINERS
+> >=20
+> > between commit:
+> >=20
+> >   337015573718 ("printk: Userspace format indexing support")
+> >=20
+> > from the printk tree and commit:
+> >=20
+> >   d249ff28b1d8 ("intersil: remove obsolete prism54 wireless driver")
+> >=20
+> > from the wireless-drivers-next tree.
+> >=20
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >=20
+> > --=20
+> > Cheers,
+> > Stephen Rothwell
+> >=20
+> > diff --cc MAINTAINERS
+> > index 5cf181197a50,492bc169c3bd..000000000000
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@@ -14974,18 -14927,6 +14974,11 @@@ S:	Maintaine
+> >   F:	include/linux/printk.h
+> >   F:	kernel/printk/
+> >  =20
+> >  +PRINTK INDEXING
+> >  +R:	Chris Down <chris@chrisdown.name>
+> >  +S:	Maintained
+> >  +F:	kernel/printk/index.c
+> >  +
+> > - PRISM54 WIRELESS DRIVER
+> > - M:	Luis Chamberlain <mcgrof@kernel.org>
+> > - L:	linux-wireless@vger.kernel.org
+> > - S:	Obsolete
+> > - W:	https://wireless.wiki.kernel.org/en/users/Drivers/p54
+> > - F:	drivers/net/wireless/intersil/prism54/
+> > -=20
+> >   PROC FILESYSTEM
+> >   L:	linux-kernel@vger.kernel.org
+> >   L:	linux-fsdevel@vger.kernel.org =20
+>=20
+> This is now a conflict between the net-next tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5n6IoWL2IMYIcg8e2lGgRWN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkVL8ACgkQAVBC80lX
+0GxQCwgAnH1FfJYTJWR2GqxEGsRtXxtdsIj1W68C2NndtyhzZpUezGfBWr6CG5nm
+rG+dH3Cl6U72Xw6+XoDyHfhBRlwZbi+UL9QZk1JOD5OXdTz1G0ACRQYhA0rQDuJs
+/ANU9eC3m/PXxvX5L7/5ay12135kOa78NrGldQMDt1tEALXfWbckvTu7Q5yAbpaT
+E92+aOYjHyp7dChDpv4Wx0woEYHTX74+pLl5gq4hc9MAFsWGo70YG0LkUVu+R34V
+2OeDIiqzcPSMlgShGTIg2Z0ZyOJgr9XmMDkYskakYtE63OTWickZjiVewsnmIqqT
+t24tYt7ZnPlaHNDYjAsEg1qbuJZkPQ==
+=W40K
+-----END PGP SIGNATURE-----
+
+--Sig_/5n6IoWL2IMYIcg8e2lGgRWN--
