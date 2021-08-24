@@ -2,145 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333823F5C3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8523F5C3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236305AbhHXKj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236297AbhHXKjN (ORCPT
+        id S236321AbhHXKlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:41:40 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:63968 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235905AbhHXKlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:39:13 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0078AC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 03:38:24 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a25so16639578ejv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 03:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4gBKr5Su/PnxnA+c35DCA2AuEwsy9cp9ieoty+J7/6s=;
-        b=DaY6aP24jNeATcWLxb+or3diikBL03eyvWM/iHHlYFs4m0McOE0qqYCP5jQu7WM5py
-         nBVwJozod0A7RekJU9IvSpEpTSfw9BD7qv6l1UlhTPATEEkTPssE+RiMmmnXoBepufE1
-         6zCxl9ym9oXXP33YRCvCIVhSsul2A2QuiQSkehfw5pnAker5IFjLTVb65LjtNkEdiVDW
-         cNlM1VDGrA+t8SHz0X7D1+xS+FuGIe3NWPy2WzyUE2/LbKSlfcBS/XKPs57TMLolpTrc
-         8AuUOSoOMQnP0j+rncC9Ix8o9xzRQfJizlvvZCt13R36T6cUIcdCWJ1ohxxSszmUo1zu
-         G8RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4gBKr5Su/PnxnA+c35DCA2AuEwsy9cp9ieoty+J7/6s=;
-        b=L0RlRG4h67zAz/7TBhfgZIhHHXKst+33dROsvKKTPFB06PgniXiWV6SVWrfLMdiS/a
-         syQxsbsvqdSzCK/ZqdPmFl8KKNq2aPuIJgECGgAT9NzCbmd4xEEv1ztKmlGwCAaLLPwx
-         Tzlrt4XtIO6QRYBkodAMYkCQmiG/ueDrZF0tmv1yF4zS2o+pPTditKJtg4OhFuIVMipO
-         wlCCJ5fNmPCYcpq3MToYy2NRYgr33q3vaZvPzql81EV5dO6GoXDVtUp8jJVSp2hOJdKY
-         kr5N7bZpnn+sAYCf/w90WtvoT6/7FaQ167uvOsdvKcE7Na8NX8RL0xFoncpD6Ag9oPYn
-         r5ZQ==
-X-Gm-Message-State: AOAM530vZuXDfcXpNBlJysVL8/aYEIs36MtNZDrxQbqZnh7U2cikaGR6
-        U61DOq8WG9QACkrPlzAXEYI=
-X-Google-Smtp-Source: ABdhPJw17RHEaoyxTh+tq24OrhzheFzjMC6oLeNnpWbSA8Za9XqDentosi6gdBCxz4Vrv4wqNGLzHA==
-X-Received: by 2002:a17:906:1bb1:: with SMTP id r17mr40469127ejg.533.1629801502341;
-        Tue, 24 Aug 2021 03:38:22 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id v8sm10576027edc.2.2021.08.24.03.38.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 03:38:21 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Tue, 24 Aug 2021 06:41:39 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 17O9oMhR012561;
+        Tue, 24 Aug 2021 05:40:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=BfS160OI38z4jswnyylLQykHq99+mYt7GfNcU6u9SNc=;
+ b=GVNcNH4YWI9nXgYD3oWfym+bvVxEyRgTGreb8IUz6En7wZmBzla2488n29Xbp5vP1KuC
+ f/nw6twoUz7oWulds+vP6clWGUjxrQET6m0iRIvCvG24kPPnaETlqPiIrZ+LFPp2kyfw
+ L3v9TUQ+4LhToScbpaoKVgRPqH2eFVXJAtj8tyoQKmHfTp4bU4BS6lI9kggCpqVKEta3
+ rcKlSaQfIG+O6VhkvupILXojyZ77z9Twen5DwyHurdUvxgsnaJrMAICAgb4f1ShR6Fpq
+ /SXzsqR5FfdMDmY/R700PGKwzuPZIwge/2zZE28CZcsinJsj1/2moLhSVUeC5DUZSMBO Nw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3amxg601jv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 24 Aug 2021 05:40:50 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Tue, 24 Aug
+ 2021 11:40:49 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
+ Transport; Tue, 24 Aug 2021 11:40:49 +0100
+Received: from aryzen.ad.cirrus.com (unknown [198.61.65.58])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D5F1D2A9;
+        Tue, 24 Aug 2021 10:40:42 +0000 (UTC)
+From:   Lucas Tanure <tanureal@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
-Date:   Tue, 24 Aug 2021 12:38:20 +0200
-Message-ID: <1751314.Y7PUP2lcel@localhost.localdomain>
-In-Reply-To: <50d40020-5b0e-4bb9-357b-3640a0f9e8c6@wanadoo.fr>
-References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <4118209.ZeClQeRtK1@localhost.localdomain> <50d40020-5b0e-4bb9-357b-3640a0f9e8c6@wanadoo.fr>
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Lucas Tanure <tanureal@opensource.cirrus.com>
+Subject: [PATCH 0/9] Improve support for AMD SPI controllers
+Date:   Tue, 24 Aug 2021 11:40:32 +0100
+Message-ID: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: Jm3Wm_Pl_qTV3Mbor8FfJxdVlwzGRpJD
+X-Proofpoint-ORIG-GUID: Jm3Wm_Pl_qTV3Mbor8FfJxdVlwzGRpJD
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 7:44:40 AM CEST Christophe JAILLET wrote:
-> Le 24/08/2021 =C3=A0 04:01, Fabio M. De Francesco a =C3=A9crit :
-> > On Tuesday, August 24, 2021 3:38:03 AM CEST Fabio M. De Francesco wrote:
-> >> I think that I've inadvertently switched the order by which usb_contro=
-l_msg_send()
-> >> and memcpy() are called. I'm very sorry for not doing my tests, but (a=
-s I had said
-> >> before) at the moment I don't have my device with me.
-> >=20
-> > No, I did not switch them. There must be something else...
-> > Sorry for the noise.
-> >=20
-> > Fabio
-> >=20
->=20
-> Hi,
->=20
-> 'usb_control_msg_recv()' looks like:
->=20
-> int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, ...)
-> {
-> 	unsigned int pipe =3D usb_rcvctrlpipe(dev, endpoint);
-> 	...
-> 	ret =3D usb_control_msg(dev, pipe, ...);
->=20
->=20
-> 'usb_control_msg()' looks like:
-> int usb_control_msg(struct usb_device *dev, unsigned int pipe, ...)
-> {
->=20
-> The difference is that one expect an 'endpoint' (and compute the pipe=20
-> from it), and the other expect a 'pipe'.
+Add support for AMDI0062 and overcome the fact that the
+controller can't hold the chip select activated between
+transfers.
 
-Hi Christophe,
+AMD SPI controller starts the SPI transfer by copying a
+special byte called opcode into the bus, followed by the
+TX register bytes from the FIFO into the bus.
+If the RX register is not zero, it will copy RX bytes
+from the bus to the FIFO.
 
-Yes, correct. That's why I changed the type of 'pipe' from "unsigned int"
-to "u8". I also saw that usb_control_msg_recv/send take care of calling=20
-usb_rcvctrpipe() and usb_sndctrlpipe(); so, in my patch I deleted=20
-those calls.
+Rules:
+ - It must have an opcode set, which can be the first
+byte from the writing part
+ - The writing part of the FIFO always goes first
+ - It's not full duplex, it writes TX bytes and then
+reads RX bytes into the FIFO
+ - Write and Read share the same FIFO. If the transfer
+needs to write N bytes, it will only be able to read
+(70 - N) bytes.
+ - The chip select can only be activated during that
+transaction. If a second transfer rely on the address
+written during a previous transfer, it needs to write
+an updated address, or it will fail, as the device in
+the SPI bus will not understand a read without an
+address as the chip select was not held between transfers.
 
-Not related to my patch... why Linux has u8 and __u8? What are the =20
-different use cases they are meant for?=20
+So, when the regmap splits a write to an address or read from
+an address into 2 separated transfers inside one message the
+AMD SPI driver needs to merge them back into a single one.
+Also it needs to be sure that the of bytes to read|write is
+a little less so the address can fit into the FIFO.
 
-> Also, in your code, 'pipe' looks un-initialized.
+Lucas Tanure (9):
+  regmap: spi: Set regmap max raw r/w from max_transfer_size
+  spi: core: Add flag for controllers that can't hold cs between
+    transfers
+  regmap: spi: SPI_CONTROLLER_CS_PER_TRANSFER affects max read/write
+  spi: amd: Refactor code to use less spi_master_get_devdata
+  spi: amd: Refactor amd_spi_busy_wait to use readl_poll_timeout
+  spi: amd: Remove uneeded variable
+  spi: amd: Check for idle bus before execute opcode
+  spi: amd: Refactor to overcome 70 bytes per CS limitation
+  spi: amd: Add support for latest platform
 
-Oh yes, good catch.  Thanks!
+ drivers/base/regmap/regmap-spi.c |  44 +++-
+ drivers/base/regmap/regmap.c     |   9 +
+ drivers/spi/spi-amd.c            | 415 ++++++++++++++++++++-----------
+ include/linux/regmap.h           |   2 +
+ include/linux/spi/spi.h          |   1 +
+ 5 files changed, 315 insertions(+), 156 deletions(-)
 
-> So, my guess is that you should rename 'pipe' into 'endpoint' (to keep=20
-> the semantic),
-> have "endpoint =3D 0;" somewhere and pass it to=20
-> usb_control_msg_{recv|send}.
-> Or just remove 'pipe' and pass an explicit 0 directly.
-
-I've just seen that in other drivers the code passes an explicit 0.
-So, also according to your suggestion, I'll remove "pipe/endpoint".
-
-> Not sure it is enough, but it looks like a difference between before and=
-=20
-> after your patch.
-
-Since I cannot see other issues, I'm about to fix the code as said above and
-then submit a v2 series.
-
-Your 2c are worth much more than how much you think :)
-
-Thanks very much,
-
-=46abio
-
-> just my 2c,
-> CJ
->=20
-
-
-
+-- 
+2.33.0
 
