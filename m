@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8CE3F55AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7303F55AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233942AbhHXCKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48636 "EHLO
+        id S233664AbhHXCNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233758AbhHXCKi (ORCPT
+        with ESMTP id S229742AbhHXCNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:10:38 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C886C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:09:55 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so778420pjq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:09:55 -0700 (PDT)
+        Mon, 23 Aug 2021 22:13:20 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D3AC061575;
+        Mon, 23 Aug 2021 19:12:37 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id m4so274553pll.0;
+        Mon, 23 Aug 2021 19:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=08aO+jCRMsaJzTjrGQzurk0ey1pwgskCgL+V9erG5PI=;
-        b=HacAj8LOl7rXmKqFsrgFe+j6OYcCwSQZdP2HTYoXSmWLDyG9Aame1o/kUZm1FFOJKC
-         zjn0prjj4mbXFpbVrfgUhbZmo8owsR3RCcCYliysA5DZqi3ShKOsxriOCjCMvmxpw+GU
-         qHSoj3azCT9cmRDoiZclndv7vDxFCTptKkN6oAep3+XvlH8LArGjt3R9bFKzRuGnMMDh
-         O7yiV97xpJlIj88kx/nP10V3LHJxZmgJDfRHdSNReVlUBCLrIRlBMmy2ezz9jdd751vS
-         coM+Ic+EDMjcSnl8QJere9pKGU7Yx4qFKsFLXy0SMd66LuK6Gmpt5xPQg6HAJjC5nEwT
-         Rh/w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9hhYYTbT3GW5pW1R3ZHq9iZjz0TiEaoLKl1yLWy2+Xo=;
+        b=nMmeTwoGo3pqgObwhkDwgmjDN1ubvxGMFdAfndxMHvETp9ThIcSEXtLsrP+elAA61F
+         j7aGq3mONeZqtmdRTy6qLOZYcmv7MJj7ji+66Vm7JO4xxo9J84cfIoTyTQReZIwBHUH9
+         +AehdWx1792OVACEn0p+asO3od6JV36tZD4Mi7JGGib4a/jp66eelnwiqU7sxmcahAnt
+         w39WEczHu+A28DkMPk9aF8fUNcBleo/u16a+kUezGvvsZnwF5rFM5pQmCD2tW6CFXh9X
+         db2ZzPj6A0l2nxxECdXsjDAh2gdFFWFcATQWgUvqpYAyRqENGTANtRhvEfaL6+zRB2Bm
+         N0GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=08aO+jCRMsaJzTjrGQzurk0ey1pwgskCgL+V9erG5PI=;
-        b=GaqZtznKuX+K+eVhqq39z72dknnQ4kA9m/XKjpjMpJ5sBz4PujLxFO8BPsb0sOZWPz
-         Tkqjs6IqXcGwwci+1kpuj1HbW46lmZ59wGGUdFSlUAQoVt79jMEMO4v7I+I8bBUUmjxT
-         usI7zdmS8pMzO6GOTdUWQYA7ggnE+Ex9i/Vamh8GLpJon7bLLch0uyTvFtaN4jxURbbz
-         8yfSqMRZr7BJbGdQuYLJMUGvkfOymzrYOwv3swg6MaUigAoY+0Ebx0muwaIBePgkkw2n
-         63RDlhvMc5IK9BOW04gg4Cj8yRWT+us1jJTA4XRQ0jM4kK25p7qDZr7S78srxYI/TBbO
-         xwIQ==
-X-Gm-Message-State: AOAM532r1dnjKcWdBi2fXdVoXTwGAD0d2dKNLGLck5bqV0t4prwaYeEW
-        Own+Eon887nSvX17HIc88yw=
-X-Google-Smtp-Source: ABdhPJyGNV5HuEEKZxUHIsJX1mAeS/d7mg3XfPJq06DFfWLjzyKS6QJXiQyVdDwyEyX7QAHYbiNw7A==
-X-Received: by 2002:a17:902:9b90:b029:12d:5ce1:4d99 with SMTP id y16-20020a1709029b90b029012d5ce14d99mr30701209plp.37.1629770994784;
-        Mon, 23 Aug 2021 19:09:54 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id h16sm16830958pfn.215.2021.08.23.19.09.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9hhYYTbT3GW5pW1R3ZHq9iZjz0TiEaoLKl1yLWy2+Xo=;
+        b=M1Oa5D/pyMeEo8+jjmuiHdSvDYfqmKuPbIvzWJpeUaCWn2jNPG/c/rpC9ubpHgKcvr
+         IWmpeZRfO9zoXFMgPyqq/0gmf5tVH/EpXt4dNFr+nSrQ8m9oIynVwCwEIVdrDh/+5FlY
+         QqkiTLfF3ikdgwbvVCaNaB1fgNkzHqOvo3AcfldaqC4leZa0UE9nH2aX1VzzvsDUnEgf
+         XBjOnSj/WNU2rtmkjv1NAO3iqmzmMIfJdL0S9Th8fK+TO0h/0R7NnNGqYp6QmqYSeoZS
+         LEyd/ZY2mZM9sLsCKqLVlYbUBv2gUc1XkV0C+vJ2kpL4BBRzFhGDq0Sac9JIEAzMekwJ
+         3wPw==
+X-Gm-Message-State: AOAM531Da6EKI8ZE4xt9vwU1YrFZFEwFPge6hIlY2hmOJ+8PjysPCNPG
+        SwLzlclQt+51Zn8UyJet2QhDv05TKCbpTw==
+X-Google-Smtp-Source: ABdhPJyB8X+vGD0I6XUHw7EF94swmrHyvX6Ml45fe88LuLNMuaA/BWGdAaorE2myBndfywPuYFFYpg==
+X-Received: by 2002:a17:902:7282:b029:12c:75a0:faa5 with SMTP id d2-20020a1709027282b029012c75a0faa5mr31400496pll.35.1629771156465;
+        Mon, 23 Aug 2021 19:12:36 -0700 (PDT)
+Received: from fedora ([2405:201:6008:6ce2:9fb0:9db:90a4:39e2])
+        by smtp.gmail.com with ESMTPSA id g13sm17255529pfo.53.2021.08.23.19.12.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 19:09:53 -0700 (PDT)
-From:   Yang Shi <shy828301@gmail.com>
-To:     naoya.horiguchi@nec.com, osalvador@suse.de, tdmackey@twitter.com,
-        david@redhat.com, willy@infradead.org, akpm@linux-foundation.org,
-        corbet@lwn.net
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [v3 PATCH 3/3] mm: hwpoison: dump page for unhandlable page
-Date:   Mon, 23 Aug 2021 19:09:46 -0700
-Message-Id: <20210824020946.195257-3-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210824020946.195257-1-shy828301@gmail.com>
-References: <20210824020946.195257-1-shy828301@gmail.com>
+        Mon, 23 Aug 2021 19:12:35 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 07:42:31 +0530
+From:   Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <YSRVj0gwlp91UAiF@fedora>
+References: <20210823075432.2069fb0b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823075432.2069fb0b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently just very simple message is shown for unhandlable page, e.g.
-non-LRU page, like:
-soft_offline: 0x1469f2: unknown non LRU page type 5ffff0000000000 ()
+Hi Stephen,
 
-It is not very helpful for further debug, calling dump_page() could show
-more useful information.
+Apologies for the wrong fixes tag.
 
-Calling dump_page() in get_any_page() in order to not duplicate the call
-in a couple of different places.  It may be called with pcp disabled and
-holding memory hotplug lock, it should be not a big deal since hwpoison
-handler is not called very often.
+Since the patch is already in the tree, (and since this is the first
+time I am facing this,) I wanted to ask if I should resend the patch
+with the correct fixes tag to fix this.
 
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
-v3: * Remove redundant pr_info per Noaya Horiguchi
+Thank you for your review.
 
- mm/memory-failure.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Regards,
+Shreyansh Chouhan
 
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 7cfa134b1370..5f8249e4d7dc 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1228,6 +1228,9 @@ static int get_any_page(struct page *p, unsigned long flags)
- 		ret = -EIO;
- 	}
- out:
-+	if (ret == -EIO)
-+		dump_page(p, "hwpoison: unhandlable page");
-+
- 	return ret;
- }
- 
-@@ -2205,9 +2208,6 @@ int soft_offline_page(unsigned long pfn, int flags)
- 			try_again = false;
- 			goto retry;
- 		}
--	} else if (ret == -EIO) {
--		pr_info("%s: %#lx: unknown page type: %lx (%pGp)\n",
--			 __func__, pfn, page->flags, &page->flags);
- 	}
- 
- 	return ret;
--- 
-2.26.2
-
+On Mon, Aug 23, 2021 at 07:54:32AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   9cf448c200ba ("ip6_gre: add validation for csum_start")
+> 
+> Fixes tag
+> 
+>   Fixes: Fixes: b05229f44228 ("gre6: Cleanup GREv6 transmit path, call common
+> 
+> has these problem(s):
+> 
+>   - Extra word "Fixes:"
+> 
+> Also, please do not split Fixes tags over more than one line.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
