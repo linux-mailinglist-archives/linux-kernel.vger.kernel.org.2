@@ -2,180 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1870D3F666F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AFF3F67FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhHXRXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:23:40 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:34782 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbhHXRUo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:20:44 -0400
-Received: by mail-ot1-f53.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso42972036otp.1;
-        Tue, 24 Aug 2021 10:19:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VNcuv0HqBUSJ/AboskcrVII1u6Cg/7GBIg74AqxzSDA=;
-        b=aRmgP13Ez3dvZYjywPm0BjMtAe6nvyWW2IL64UqSgMBb/QEF+phgXkVEX5m3LvQVBA
-         KjhcytmxUo5iGjhLy03HFKAtOsJ2CCF9sy3u6ZA7EzbYIL3NOEtkOeeHR3c8IhhII3Ci
-         /wTCuXL+TqkqWsZSyRK/G7+L1MBWi+XZFTtA1qOiQ8QDV3nIuOXV/cKPBHlBf1VviOhD
-         9U099VFge3ggOfR1TPX8zWgiabr0df6IDJiKe+jTQZFwxO9LDd7HPfmqtRAHp1r2Wgcv
-         n/HX6CNnOSbTksJcCvIzl5VmBhC02DBXVV4PkvHTLpHvfweoeNOfzhe0uIDi0PG+yggc
-         UJ3g==
-X-Gm-Message-State: AOAM5301h0HUTS+MWjOTCFbsuI0l8hInPbw8XFRDQatqC5oSB7cao6pP
-        CfFG2/O/VpmWpi7N4iC0Ehvz05oTRw==
-X-Google-Smtp-Source: ABdhPJzBkwBpMgX9rEjwIv9ZCvRgSwnxW0Hor7k/ODRN4iOCh25hDZc6L+2YbhxQefHk7yWhzuNHKA==
-X-Received: by 2002:aca:33d7:: with SMTP id z206mr3588120oiz.82.1629825599271;
-        Tue, 24 Aug 2021 10:19:59 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x3sm4087999ooe.32.2021.08.24.10.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 10:19:58 -0700 (PDT)
-Received: (nullmailer pid 659131 invoked by uid 1000);
-        Tue, 24 Aug 2021 17:19:57 -0000
-Date:   Tue, 24 Aug 2021 12:19:57 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Luting Guo <luting.guo@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] dt-bindings: spi: Convert sprd ADI bindings to yaml
-Message-ID: <YSUqPTr+aNLpjsj+@robh.at.kernel.org>
-References: <20210824092745.2093640-1-zhang.lyra@gmail.com>
- <20210824092745.2093640-3-zhang.lyra@gmail.com>
+        id S242515AbhHXRjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:39:24 -0400
+Received: from mga14.intel.com ([192.55.52.115]:6871 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241623AbhHXRgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:36:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217083349"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="217083349"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:20:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="526704367"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.119.65]) ([10.209.119.65])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:20:46 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
+ <20210824053830-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
+Date:   Tue, 24 Aug 2021 10:20:44 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824092745.2093640-3-zhang.lyra@gmail.com>
+In-Reply-To: <20210824053830-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 05:27:44PM +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> 
-> Convert spi-sprd-adi.txt to yaml.
-> 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> ---
->  .../devicetree/bindings/spi/spi-sprd-adi.txt  | 63 ------------
->  .../devicetree/bindings/spi/sprd,spi-adi.yaml | 99 +++++++++++++++++++
->  2 files changed, 99 insertions(+), 63 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-sprd-adi.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
 
-[...]
+> I see. Hmm. It's a bit of a random thing to do it at the map time
+> though. E.g. DMA is all handled transparently behind the DMA API.
+> Hardening is much more than just replacing map with map_shared
+> and I suspect what you will end up with is basically
+> vendors replacing map with map shared to make things work
+> for their users and washing their hands.
 
-> diff --git a/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml b/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
-> new file mode 100644
-> index 000000000000..f464fb6033f9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/sprd,spi-adi.yaml
-> @@ -0,0 +1,99 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/spi/sprd,spi-adi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Spreadtrum ADI controller
-> +
-> +maintainers:
-> +  - Orson Zhai <orsonzhai@gmail.com>
-> +  - Baolin Wang <baolin.wang7@gmail.com>
-> +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> +
-> +description: |
-> +  ADI is the abbreviation of Anolog-Digital interface, which is used to access
-> +  analog chip (such as PMIC) from digital chip. ADI controller follows the SPI
-> +  framework for its hardware implementation is alike to SPI bus and its timing
-> +  is compatile to SPI timing.
-> +
-> +  ADI controller has 50 channels including 2 software read/write channels and
-> +  48 hardware channels to access analog chip. For 2 software read/write channels,
-> +  users should set ADI registers to access analog chip. For hardware channels,
-> +  we can configure them to allow other hardware components to use it independently,
-> +  which means we can just link one analog chip address to one hardware channel,
-> +  then users can access the mapped analog chip address by this hardware channel
-> +  triggered by hardware components instead of ADI software channels.
-> +
-> +  Thus we introduce one property named "sprd,hw-channels" to configure hardware
-> +  channels, the first value specifies the hardware channel id which is used to
-> +  transfer data triggered by hardware automatically, and the second value specifies
-> +  the analog chip address where user want to access by hardware components.
-> +
-> +  Since we have multi-subsystems will use unique ADI to access analog chip, when
-> +  one system is reading/writing data by ADI software channels, that should be under
-> +  one hardware spinlock protection to prevent other systems from reading/writing
-> +  data by ADI software channels at the same time, or two parallel routine of setting
-> +  ADI registers will make ADI controller registers chaos to lead incorrect results.
-> +  Then we need one hardware spinlock to synchronize between the multiple subsystems.
-> +
-> +  The new version ADI controller supplies multiple master channels for different
-> +  subsystem accessing, that means no need to add hardware spinlock to synchronize,
-> +  thus change the hardware spinlock support to be optional to keep backward
-> +  compatibility.
-> +
-> +allOf:
-> +  - $ref: /spi/spi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sprd,sc9860-adi
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  hwlocks:
-> +    description: Reference to a phandle of a hwlock provider node.
+That concept exists too. There is a separate allow list for the drivers. 
+So just adding shared to a driver is not enough, until it's also added 
+to the allowlist
 
-Drop, and add 'maxItems: 1'.
+Users can of course chose to disable the allowlist, but they need to 
+understand the security implications.
 
-> +
-> +  hwlock-names:
-> +    description: |
-> +      Reference to hwlock name strings defined in the same order
-> +      as the hwlocks, should be "adi".
 
-Should be a schema. So drop and add:
+>
+> I would say an explicit flag in the driver that says "hardened"
+> and refusing to init a non hardened one would be better.
 
-const: adi
 
-> +
-> +  sprd,hw-channels:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    maxItems: 1
+We have that too (that's the device filtering)
 
-This means 1 uint32.
+But the problem is that device filtering just stops the probe functions, 
+not the initcalls, and lot of legacy drivers do MMIO interactions before 
+going into probe. In some cases it's unavoidable because of the device 
+doesn't have a separate enumeration mechanism it needs some kind of 
+probing to even check for its existence And since we don't want to 
+change all of them it's far safer to make the ioremap opt-in.
 
-> +    description: |
-> +      This is an array of channel values up to 49 channels.
 
-But this implies 49 entries.
+-Andi
 
-> +      The first value specifies the hardware channel id which is used to
-> +      transfer data triggered by hardware automatically, and the second
-> +      value specifies the analog chip address where user want to access
-> +      by hardware components.
-
-Or 49x2 and that's a uint32-matrix given it's pairs of values. That 
-should look something like this:
-
-minItems: 1
-maxItems: 49
-items:
-  items:
-    - description: the hardware channel id...
-      minimum: ??
-      maximum: ?? (range of channel ids?)
-    - description: the analog chip address where user want to access...
-
-Rob
