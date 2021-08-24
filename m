@@ -2,242 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD213F5576
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 03:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D4C3F557D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 03:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbhHXBUw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Aug 2021 21:20:52 -0400
-Received: from mga02.intel.com ([134.134.136.20]:32082 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233487AbhHXBUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 21:20:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="204408296"
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="204408296"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 18:19:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="443630247"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga002.jf.intel.com with ESMTP; 23 Aug 2021 18:19:55 -0700
-Received: from shsmsx602.ccr.corp.intel.com (10.109.6.142) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Mon, 23 Aug 2021 18:19:54 -0700
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- SHSMSX602.ccr.corp.intel.com (10.109.6.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.10; Tue, 24 Aug 2021 09:19:53 +0800
-Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
- SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2242.010;
- Tue, 24 Aug 2021 09:19:53 +0800
-From:   "Ma, XinjianX" <xinjianx.ma@intel.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Alexey Gladkov <legion@kernel.org>
-CC:     "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        lkp <lkp@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-Subject: RE: [PATCH] ucounts: Fix regression preventing increasing of rlimits
- in init_user_ns
-Thread-Topic: [PATCH] ucounts: Fix regression preventing increasing of rlimits
- in init_user_ns
-Thread-Index: AQHXmGLx+8SQcsWA7kykjkjhccpFyquB2fCQ
-Date:   Tue, 24 Aug 2021 01:19:52 +0000
-Message-ID: <06bb27f1d79243febf9ddc4633c4e084@intel.com>
-References: <d650b7794e264d5f8aa107644cc9784f@intel.com>
-        <87a6lgysxp.fsf@disp2133>       <20210818131117.x7omzb2wkjq7le3s@example.org>
-        <87o89ttqql.fsf@disp2133>       <20210819172618.qwrrw4m7wt33wfmz@example.org>
- <87eeajswfc.fsf_-_@disp2133>
-In-Reply-To: <87eeajswfc.fsf_-_@disp2133>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-x-originating-ip: [10.108.32.68]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S233582AbhHXBZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 21:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233487AbhHXBZb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 21:25:31 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB23C061575;
+        Mon, 23 Aug 2021 18:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=hGpkKZDiwD3BmHE8QKgFdvjl3+ISDkWTfd1HK+eqDq0=; b=1Q2snXAJqPpTgI6S4nbW1A5XDj
+        luDNcNivs9KfSD3dWnoDoAyeS2f/jhufeP1z9yN+VLy/9Te7+Bcr148XGjBZBz5CmLJYJTwDmgnOE
+        ixYVAxCJTorNC3nUXTHLsfvGhLytoLy6vsz5PcbG1/gwPkNiOdGmFmbsf65bB6QxooAOboLXzu7qb
+        YRU1ohQfxwnNtUjBW9+B3oS1XKkTVIw317CuZS9Npzfvsj1r/XlhHCPLt3bPnFiIsngN5sMxpnQCd
+        ffqDbCRZTdpEq5ckbZCIJqZhDyvzFc04+wHuUIAq6mMmevLl9b+fxDGQDrReNQm6x2rVwmh0WaDZJ
+        zJhTf0rg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mILBF-0019od-9e; Tue, 24 Aug 2021 01:24:45 +0000
+Subject: Re: linux-next: Tree for Aug 20 (Wno-alloc-size-larger-than)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+References: <20210820192615.23e2e617@canb.auug.org.au>
+ <2706a406-9f72-7df1-03f6-f8e852897eb2@infradead.org>
+ <202108202248.921E8C66@keescook>
+ <8b9cb816-9d8a-2633-1afa-f5c4597a8314@infradead.org>
+ <20210823203742.5169ad54@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <66615de5-4acb-8d85-6d69-ddd0b9609348@infradead.org>
+Date:   Mon, 23 Aug 2021 18:24:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <20210823203742.5169ad54@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/23/21 3:37 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Sat, 21 Aug 2021 12:09:48 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 8/20/21 10:48 PM, Kees Cook wrote:
+>>> On Fri, Aug 20, 2021 at 02:54:05PM -0700, Randy Dunlap wrote:
+>>>> On 8/20/21 2:26 AM, Stephen Rothwell wrote:
+>>>>> Hi all,
+>>>>>
+>>>>> Changes since 20210819:
+>>>>>   
+>>>>
+>>>> Both linux-next and mmotm have many of these warnings when using
+>>>> gcc (SUSE Linux) 7.5.0:
+>>>>
+>>>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>>
+>>> Ew. Thanks for letting me know. I thought I'd verified this existed in
+>>> gcc going back to 4.9, but it looks like I did something wrong in that
+>>> test.
+>>>
+>>> I think this should fix it:
+>>>
+>>> diff --git a/Makefile b/Makefile
+>>> index b0fafc41b686..e33ffa05899e 100644
+>>> --- a/Makefile
+>>> +++ b/Makefile
+>>> @@ -1097,7 +1097,7 @@ endif
+>>>    ifdef CONFIG_CC_IS_GCC
+>>>    # The allocators already balk at large sizes, so silence the compiler
+>>>    # warnings for bounds checks involving those possible values.
+>>> -KBUILD_CFLAGS += -Wno-alloc-size-larger-than
+>>> +KBUILD_CFLAGS += $(call cc-option, -Wno-alloc-size-larger-than)
+>>>    endif
+>>>    >   # disable invalid "can't wrap" optimizations for signed / pointers
+>>>    
+>>
+>> Well. That didn't help. This is very weird.
+>>
+>> This -Wno... option works (is accepted, no warning) on most files
+>> that are being built, but a few files report an error with it:
+>>
+>> ../drivers/gpu/drm/radeon/radeon_object.c: At top level:
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>> ../drivers/gpu/drm/amd/amdgpu/amdgpu_object.c: At top level:
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>> ../drivers/hwmon/dell-smm-hwmon.c: At top level:
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>>     CC      arch/x86/kernel/cpu/proc.o
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>> ../arch/x86/kvm/mmu/mmu.c: At top level:
+>> cc1: error: unrecognized command line option '-Wno-alloc-size-larger-than' [-Werror]
+>>
+>> ../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_chardev.c: At top level:
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>> ../kernel/trace/trace_osnoise.c: At top level:
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>>     CC      kernel/dma/mapping.o
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
+>>
+>>
+>> It seems like it might be related to some .config option.
+>>
+>> I did a couple of partial builds with V=1 but that info didn't help me any.
+>>
+>>
+>> If I am the only person seeing (reporting) this build warning, it could
+>> just be (another) SUSE GCC-ism. (had one just last week with  -Wmain and
+>> kernel/trace/trace_osnoise.c)
+> 
+> Today, I am also seeing thsese, but only with my sparc{,64} defconfig
+> cross builds.  This is with gcc 7.3.1 built from sources.  I also just
+> get a few of them.
+> 
+> Also, I have the above "fix" patch applied (Andrew added it to mmots
+> today).
+> 
+> So something weird is happening.
 
+This is just weird. What I am seeing is that for every source file
+where gcc emits a warning: it then follows that up with this
+>> cc1: warning: unrecognized command line option '-Wno-alloc-size-larger-than'
 
-> -----Original Message-----
-> From: Eric W. Biederman <ebiederm@xmission.com>
-> Sent: Tuesday, August 24, 2021 5:07 AM
-> To: Alexey Gladkov <legion@kernel.org>
-> Cc: Ma, XinjianX <xinjianx.ma@intel.com>; linux-kselftest@vger.kernel.org;
-> lkp <lkp@intel.com>; akpm@linux-foundation.org; axboe@kernel.dk;
-> christian.brauner@ubuntu.com; containers@lists.linux-foundation.org;
-> jannh@google.com; keescook@chromium.org; kernel-
-> hardening@lists.openwall.com; linux-kernel@vger.kernel.org; linux-
-> mm@kvack.org; oleg@redhat.com; torvalds@linux-foundation.org
-> Subject: [PATCH] ucounts: Fix regression preventing increasing of rlimits in
-> init_user_ns
-> 
-> 
-> "Ma, XinjianX" <xinjianx.ma@intel.com> reported:
-> 
-> > When lkp team run kernel selftests, we found after these series of
-> > patches, testcase mqueue: mq_perf_tests in kselftest failed with following
-> message.
-> >
-> > # selftests: mqueue: mq_perf_tests
-> > #
-> > # Initial system state:
-> > #       Using queue path:                       /mq_perf_tests
-> > #       RLIMIT_MSGQUEUE(soft):                  819200
-> > #       RLIMIT_MSGQUEUE(hard):                  819200
-> > #       Maximum Message Size:                   8192
-> > #       Maximum Queue Size:                     10
-> > #       Nice value:                             0
-> > #
-> > # Adjusted system state for testing:
-> > #       RLIMIT_MSGQUEUE(soft):                  (unlimited)
-> > #       RLIMIT_MSGQUEUE(hard):                  (unlimited)
-> > #       Maximum Message Size:                   16777216
-> > #       Maximum Queue Size:                     65530
-> > #       Nice value:                             -20
-> > #       Continuous mode:                        (disabled)
-> > #       CPUs to pin:                            3
-> > # ./mq_perf_tests: mq_open() at 296: Too many open files not ok 2
-> > selftests: mqueue: mq_perf_tests # exit=1 ```
-> >
-> > Test env:
-> > rootfs: debian-10
-> > gcc version: 9
-> 
-> After investigation the problem turned out to be that ucount_max for the
-> rlimits in init_user_ns was being set to the initial rlimit value.
-> The practical problem is that ucount_max provides a limit that applications
-> inside the user namespace can not exceed.  Which means in practice that
-> rlimits that have been converted to use the ucount infrastructure were not
-> able to exceend their initial rlimits.
-> 
-> Solve this by setting the relevant values of ucount_max to RLIM_INIFINITY.  A
-> limit in init_user_ns is pointless so the code should allow the values to grow
-> as large as possible without riscking an underflow or an overflow.
-> 
-> As the ltp test case was a bit of a pain I have reproduced the rlimit failure and
-> tested the fix with the following little C program:
-> > #include <stdio.h>
-> > #include <fcntl.h>
-> > #include <sys/stat.h>
-> > #include <mqueue.h>
-> > #include <sys/time.h>
-> > #include <sys/resource.h>
-> > #include <errno.h>
-> > #include <string.h>
-> > #include <stdlib.h>
-> > #include <limits.h>
-> > #include <unistd.h>
-> >
-> > int main(int argc, char **argv)
-> > {
-> > 	struct mq_attr mq_attr;
-> > 	struct rlimit rlim;
-> > 	mqd_t mqd;
-> > 	int ret;
-> >
-> > 	ret = getrlimit(RLIMIT_MSGQUEUE, &rlim);
-> > 	if (ret != 0) {
-> > 		fprintf(stderr, "getrlimit(RLIMIT_MSGQUEUE) failed: %s\n",
-> strerror(errno));
-> > 		exit(EXIT_FAILURE);
-> > 	}
-> > 	printf("RLIMIT_MSGQUEUE %lu %lu\n",
-> > 	       rlim.rlim_cur, rlim.rlim_max);
-> > 	rlim.rlim_cur = RLIM_INFINITY;
-> > 	rlim.rlim_max = RLIM_INFINITY;
-> > 	ret = setrlimit(RLIMIT_MSGQUEUE, &rlim);
-> > 	if (ret != 0) {
-> > 		fprintf(stderr, "setrlimit(RLIMIT_MSGQUEUE, RLIM_INFINITY)
-> failed: %s\n", strerror(errno));
-> > 		exit(EXIT_FAILURE);
-> > 	}
-> >
-> > 	memset(&mq_attr, 0, sizeof(struct mq_attr));
-> > 	mq_attr.mq_maxmsg = 65536 - 1;
-> > 	mq_attr.mq_msgsize = 16*1024*1024 - 1;
-> >
-> > 	mqd = mq_open("/mq_rlimit_test", O_RDONLY|O_CREAT, 0600,
-> &mq_attr);
-> > 	if (mqd == (mqd_t)-1) {
-> > 		fprintf(stderr, "mq_open failed: %s\n", strerror(errno));
-> > 		exit(EXIT_FAILURE);
-> > 	}
-> > 	ret = mq_close(mqd);
-> > 	if (ret) {
-> > 		fprintf(stderr, "mq_close failed; %s\n", strerror(errno));
-> > 		exit(EXIT_FAILURE);
-> > 	}
-> >
-> > 	return EXIT_SUCCESS;
-> > }
-> 
-> Fixes: 6e52a9f0532f ("Reimplement RLIMIT_MSGQUEUE on top of ucounts")
-> Fixes: d7c9e99aee48 ("Reimplement RLIMIT_MEMLOCK on top of ucounts")
-> Fixes: d64696905554 ("Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> Fixes: 21d1c5e386bc ("Reimplement RLIMIT_NPROC on top of ucounts")
-> Reported-by: kernel test robot lkp@intel.com
-Sorry, but <> around email address is needed 
-Reported-by: kernel test robot <lkp@intel.com>
+E.g.:
 
-> Acked-by: Alexey Gladkov <legion@kernel.org>
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
-> 
-> This is a simplified version of my previous change that I have tested and will
-> push out to linux-next and then to Linus shortly.
-> 
->  kernel/fork.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/fork.c b/kernel/fork.c index bc94b2cc5995..44f4c2d83763
-> 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -828,10 +828,10 @@ void __init fork_init(void)
->  	for (i = 0; i < MAX_PER_NAMESPACE_UCOUNTS; i++)
->  		init_user_ns.ucount_max[i] = max_threads/2;
-> 
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_NPROC,
-> task_rlimit(&init_task, RLIMIT_NPROC));
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE,
-> task_rlimit(&init_task, RLIMIT_MSGQUEUE));
-> -	set_rlimit_ucount_max(&init_user_ns,
-> UCOUNT_RLIMIT_SIGPENDING, task_rlimit(&init_task, RLIMIT_SIGPENDING));
-> -	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MEMLOCK,
-> task_rlimit(&init_task, RLIMIT_MEMLOCK));
-> +	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_NPROC,
-> RLIM_INFINITY);
-> +	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MSGQUEUE,
-> RLIM_INFINITY);
-> +	set_rlimit_ucount_max(&init_user_ns,
-> UCOUNT_RLIMIT_SIGPENDING, RLIM_INFINITY);
-> +	set_rlimit_ucount_max(&init_user_ns, UCOUNT_RLIMIT_MEMLOCK,
-> RLIM_INFINITY);
-> 
->  #ifdef CONFIG_VMAP_STACK
->  	cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
-> "fork:vm_stack_cache",
-> --
-> 2.20.1
+../kernel/printk/index.c:146:13: warning: ‘pi_remove_file’ defined but not used [-Wunused-function]
+  static void pi_remove_file(struct module *mod)
+              ^~~~~~~~~~~~~~
+cc1: warning: unrecognized command line option ‘-Wno-alloc-size-larger-than’
+
+../fs/remap_range.c: In function ‘remap_verify_area’:
+../fs/remap_range.c:102:16: warning: unused variable ‘inode’ [-Wunused-variable]
+   struct inode *inode = file_inode(file);
+                 ^~~~~
+../fs/remap_range.c: At top level:
+cc1: warning: unrecognized command line option ‘-Wno-alloc-size-larger-than’
+
+../fs/locks.c: In function ‘fcntl_setlk64’:
+../fs/locks.c:2509:16: warning: unused variable ‘inode’ [-Wunused-variable]
+   struct inode *inode = locks_inode(filp);
+                 ^~~~~
+../fs/locks.c: At top level:
+cc1: warning: unrecognized command line option ‘-Wno-alloc-size-larger-than’
+
+../drivers/platform/chrome/./cros_ec_trace.h: In function ‘trace_raw_output_cros_ec_sensorhub_filter’:
+../drivers/platform/chrome/./cros_ec_trace.h:156:12: warning: format ‘%d’ expects argument of type ‘int’, but argument 7 has type ‘s64 {aka long long int}’ [-Wformat=]
+   TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %d x: %12lld y: %12lld",
+             ^
+../include/trace/trace_events.h:399:27: note: in definition of macro ‘DECLARE_EVENT_CLASS’
+   trace_event_printf(iter, print);    \
+                            ^~~~~
+../include/trace/trace_events.h:80:9: note: in expansion of macro ‘PARAMS’
+          PARAMS(print));         \
+          ^~~~~~
+../drivers/platform/chrome/./cros_ec_trace.h:135:1: note: in expansion of macro ‘TRACE_EVENT’
+  TRACE_EVENT(cros_ec_sensorhub_filter,
+  ^~~~~~~~~~~
+../drivers/platform/chrome/./cros_ec_trace.h:156:2: note: in expansion of macro ‘TP_printk’
+   TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %d x: %12lld y: %12lld",
+   ^~~~~~~~~
+In file included from ../include/trace/trace_events.h:433:0,
+                  from ../include/trace/define_trace.h:102,
+                  from ../drivers/platform/chrome/cros_ec_trace.h:178,
+                  from ../drivers/platform/chrome/cros_ec_trace.c:215:
+../drivers/platform/chrome/./cros_ec_trace.h:156:80: note: format string is defined here
+   TP_printk("dx: %12lld. dy: %12lld median_m: %12lld median_error: %12lld len: %d x: %12lld y: %12lld",
+                                                                                ~^
+                                                                                %lld
+../drivers/platform/chrome/cros_ec_trace.c: At top level:
+cc1: warning: unrecognized command line option ‘-Wno-alloc-size-larger-than’
+
+warning: unsafe strscpy() usage lacked '__write_overflow' warning in ../lib/test_fortify/write_overflow-strscpy.c
+   CC      drivers/base/driver.o
+In file included from ../include/linux/string.h:253:0,
+                  from ../arch/x86/include/asm/page_32.h:35,
+                  from ../arch/x86/include/asm/page.h:14,
+                  from ../arch/x86/include/asm/thread_info.h:12,
+                  from ../include/linux/thread_info.h:60,
+                  from ../arch/x86/include/asm/preempt.h:7,
+                  from ../include/linux/preempt.h:78,
+                  from ../include/linux/spinlock.h:55,
+                  from ../include/linux/mmzone.h:8,
+                  from ../include/linux/gfp.h:6,
+                  from ../include/linux/slab.h:15,
+                  from ../lib/test_fortify/test_fortify.h:4,
+                  from ../lib/test_fortify/write_overflow-strscpy.c:5:
+In function ‘strscpy’,
+     inlined from ‘do_fortify_tests’ at ../lib/test_fortify/test_fortify.h:34:2:
+../include/linux/fortify-string.h:154:3: error: call to ‘__write_overflow’ declared with attribute error: detected write beyond size of object (1st parameter)
+    __write_overflow();
+    ^~~~~~~~~~~~~~~~~~
+../lib/test_fortify/write_overflow-strscpy.c: At top level:
+cc1: error: unrecognized command line option ‘-Wno-alloc-size-larger-than’ [-Werror]
+
+Smells like a gcc bug to me.
+
+-- 
+~Randy
 
