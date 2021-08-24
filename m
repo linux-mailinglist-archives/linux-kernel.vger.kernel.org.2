@@ -2,181 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B013F5F8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0460C3F5F8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237683AbhHXNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:52:59 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:21204 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237667AbhHXNwv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:52:51 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17O7c7kr001613;
-        Tue, 24 Aug 2021 06:51:46 -0700
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2177.outbound.protection.outlook.com [104.47.58.177])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3amkrkaym1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Aug 2021 06:51:46 -0700
+        id S237572AbhHXNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:53:44 -0400
+Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:28705
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234881AbhHXNxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:53:43 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GTZ9mW4HHzCzXONiLA/akogyGeGNEP2e8RvITWE2o8ErUxtFNn8okYPKI8Qn4jdRTACV/soCiAZNUk81zjIgRDdLFiA6lF5l23j16HCQP9lOMOOJuCUhkobfTLVpUw+Lgvc0+fshvTQG6W2qdWHMvm/VVZTm2VMIt4vkvgnYjXR31cgmwomPC1umsdOhot007tqLRmhP7FTD3mFVgL4mnF3qIzElIDGtmB6Pwj7nO/uxMNhLTTMTJTcfWrH3cJAdIHHgdUV1bFe2CTxzWORA6JbxEX+kqYaN4xRISo3dVghewriaT0r/cAdamPZmxohenU5iafSZYV5V058simfsWw==
+ b=VfY2FEJ3de8FL3xLFHXMqFZ1UuGMUjbEVMI/dMyrnwYC7ZqshX7P3g3JK8g4fBVofyvBXppGpx2xITNluxygGR17NgiUClVMt2J5dWwgLWveuiNPzuph6qONCKC48hd/TRE96xvSFVmZMMYKxlBZVxnWaCwyqh6yMiG9GZck0llUoY6QM1sEZuWJaGP3QE7AMmMPwUoKX1x+eArfE3vY4QVtGSfesW1hAdTFdsqvSjRoUBVQFNBCyB0tTXrnkNxP0BdlO1YxgfiXhhcqe2QOsNBkTK9b12x3gr0mN3Ms/AzRQcMjnGby9b7YkAHo35st59Gl35KGYo/8ajok07mRqg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d7Q/8UGudqLi8wcwPle43t+wM7F6ZcDGUqZV6Wh/DQM=;
- b=TB5y/reqXD+V6Bcw8hTQTrXsBByjtayUV7wywozhTQeEiqhqrmqeaq2yQ8+Yjs9ukNY4a3DWXI0u1Gx3zDHbqYy0VAL1CALIn7MF78EQ6xy2XYyI6hjJTs2UWQD5893+DbUlCNwfjYg+bPhxrxJXTAjNQK71aKultLE+7vxirBWNZF0ItQ5X2nBVml01el66BWTjjnu6hxPbqCNsFvFHRLOZbgARGnkodyr9WOwOy/80InNXfzAlZj3rYaA/4xrmIFOMA1rpaNKe6+XAXfquS6HpxX7t1vOo8O1+81rV8vjadNtL9iqBtIedUVBB5wWhPGUQP/WiZDf1Zr/QKBJozQ==
+ bh=vMLEWSzaqezWgedb32U0fbnFBa6De+UzbiPS6GVK8YI=;
+ b=S4O2sMUD3dMjUBZ9gin+PIb2+tXPgxBDLFjAGgBTKoq6B6cqdRRFJa2LcC1DMgpWph6oGpTZo5TwRgAdy0dRttNblTjJNBR0A1mYLfvnmuGZRRvuKDCk56+YUNM6kwalufgs/qNfjUs60QPmXCN+yQiyUxrJAOciw0zUhmE5GQ4ca8kT/USI0DLxurG1TLNKnPwT0vOaoLO8ALSVBx9xBYoXY+f5wytesis3jKV8yMQX64oMgdSRnCuyGu6w28aUZKaKA85RoMCMDqKawYJGZfOR51AqNS2R98u9q0bXhs097o6MJK3d2916SivxRcCn9qqPS8llQnWj4bgsu1Tj1w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d7Q/8UGudqLi8wcwPle43t+wM7F6ZcDGUqZV6Wh/DQM=;
- b=CHtBS7WCUilc9iwor4XjRsrnL3RjZXhIsCO5FHsvjHUrgOVGNpfAMwdrJW9+NS+qYZjDU45D+67hP9vm3EyQNu2m2yKs7fuDPB4eOrWnRbPp7EB1DsvX/x07wX1BKivUUwDwy47f4dduEnRToszoem+B/aLB2IzUebCAdjGw/14=
-Received: from DM5PR18MB2229.namprd18.prod.outlook.com (2603:10b6:4:b9::24) by
- DM4PR18MB4173.namprd18.prod.outlook.com (2603:10b6:5:390::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.21; Tue, 24 Aug 2021 13:51:45 +0000
-Received: from DM5PR18MB2229.namprd18.prod.outlook.com
- ([fe80::a9c9:dccf:5e59:fdec]) by DM5PR18MB2229.namprd18.prod.outlook.com
- ([fe80::a9c9:dccf:5e59:fdec%2]) with mapi id 15.20.4436.024; Tue, 24 Aug 2021
- 13:51:44 +0000
-From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
-To:     Kees Cook <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Ariel Elior <aelior@marvell.com>,
-        Sudarsana Reddy Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Shai Malin <smalin@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH v2 17/63] bnx2x: Use struct_group() for memcpy() region
-Thread-Topic: [PATCH v2 17/63] bnx2x: Use struct_group() for memcpy() region
-Thread-Index: AdeY7yGdR9cZvhLdSru1pL8aUI2KKQ==
-Date:   Tue, 24 Aug 2021 13:51:44 +0000
-Message-ID: <DM5PR18MB2229B0413C372CC6E49D59A3B2C59@DM5PR18MB2229.namprd18.prod.outlook.com>
-Accept-Language: en-US
+ bh=vMLEWSzaqezWgedb32U0fbnFBa6De+UzbiPS6GVK8YI=;
+ b=HjoDi/EEEPGrvKFl52XGeSM5UV1ulsYAxZez/DXEAnn8Gur8Wdya6zbpHPN9/am5nnBsxJvZxNlZfWgNP5Fp6o4aME2dv5PvjBPnzihOEW9b7P6/nAVdbCUTa7QHwovkusIjn5Si2jGw9eXlzWA9hrjK7g2nAZYWBFNAJQsI5S4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5349.namprd12.prod.outlook.com (2603:10b6:208:31f::7)
+ by BL1PR12MB5176.namprd12.prod.outlook.com (2603:10b6:208:311::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Tue, 24 Aug
+ 2021 13:52:58 +0000
+Received: from BL1PR12MB5349.namprd12.prod.outlook.com
+ ([fe80::152:9dd3:45a4:eeb6]) by BL1PR12MB5349.namprd12.prod.outlook.com
+ ([fe80::152:9dd3:45a4:eeb6%4]) with mapi id 15.20.4415.024; Tue, 24 Aug 2021
+ 13:52:58 +0000
+Subject: Re: [PATCH] drm/amdgpu: Fix build with missing
+ pm_suspend_target_state module export
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <YSP6Lv53QV0cOAsd@zn.tnic>
+ <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
+ <YSQE6fN9uO0CIWeh@zn.tnic>
+ <CADnq5_PEOr=bcmLF2x67hx24=EWwH7DAgEsPjYqXgf8i-beEhg@mail.gmail.com>
+ <YSQJL0GBzO2ulEpm@zn.tnic>
+ <CADnq5_N0q8Rfm++O3jK6wcbePxg_Oj3=Xx9Utw60npKrEsSp8A@mail.gmail.com>
+ <YSS/F9kcQcRKlNJ5@zn.tnic> <94ff5309-f71a-6107-01e8-8d7d544dd4e1@amd.com>
+ <YST2u5UznQjMKulE@zn.tnic>
+From:   "Lazar, Lijo" <lijo.lazar@amd.com>
+Message-ID: <1bb0baef-7924-98ab-b125-aa3c2ac405d4@amd.com>
+Date:   Tue, 24 Aug 2021 19:22:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <YST2u5UznQjMKulE@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=marvell.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cff11d0b-a9d6-4ef8-79a0-08d967064f71
-x-ms-traffictypediagnostic: DM4PR18MB4173:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM4PR18MB4173859078969B3FB6DD878CB2C59@DM4PR18MB4173.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A48KM2JlMSMYgGArSHWjjJVD6xTijC+sMFJ/pdep2lhNAEFu8S31wBryajCFXqph1dRnIb99zR/ENyy8ItUiE0CFHDOe959R0Rz3AYK2RO0nD9QRVEjed97DVP6Em8VexOUJ4gp4n3srtbnjkZza4sTa1gVn9rtKWI+UzbZcnLIRubvaM7u8Uehs0owExl52VjGqitNFeGD6eHxfvxpGfuz3NESmJUoDntwzWPZ8NJqeSgGOxc09aPp4o80qA1HbHnpo+tgGh+YoCLlj2m/s2qsOwtT5UmCdrm4woUOmmWXU1vArd1mz7o4CGRypHhaGUXeZfB9nT3vvda//LMjg1Cc/cKLV0AaJvTDSUFdopdbazasd+Z1UDk6sK3U7AwHZm2hVb04LwnAFyz/5voGihLiW30RVWFr4n2MHdLZU/I6NQJCMZCW/XrTEQWh8/R1NWWYbrnqV2lYvMnu9G5vNm98DmH3IaBYmLuK4YT4xvB9UoAEGLe9zstngepVwURFphINW425nh2ScKQJqC+pL7PinCB7OZso3V3kq8+wpfyMgYL8iS62bXyuVn41s3n1sX06Vi5UVNm5maXbj+zFocVTY7AZlpHxb0AypIqD6+8WF5Q8dOCo8NBL4yCUJdz7d5M2wF769p7RyEsrXwKoPsD4jdtaGOacajg4oDMEXePRAstuX4LdF4vCEAx0CX7Fo0eYeX6jT8+cmc40mFJHTEQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR18MB2229.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(136003)(376002)(39860400002)(6506007)(83380400001)(26005)(76116006)(66946007)(53546011)(122000001)(9686003)(64756008)(55016002)(86362001)(66446008)(38100700002)(66556008)(66476007)(54906003)(33656002)(4326008)(71200400001)(316002)(186003)(8676002)(8936002)(7416002)(478600001)(38070700005)(5660300002)(7696005)(52536014)(2906002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EMDIb0DJI8NV0xiWg7/D5hHaDWHCeDakcGy/278+cHfPg4FEvj1RULd+LY1V?=
- =?us-ascii?Q?mvT/JOTAOIJvK6HqD/vlPwz+dhLIzBFNiWXADKZlC/INcG+INVr7/vM1Wsiw?=
- =?us-ascii?Q?O23P9w2+qJxzteL3TrWDr95dnVkZBnSkBQLym6qkwt1JY+0lWtnAFq2wTa0N?=
- =?us-ascii?Q?xFfZH0vtOex/q0v/noaqvI4vL0A1jlqYpimb2pM1qqH4anPQDVTZkIXDDpGU?=
- =?us-ascii?Q?56gQF0Pjo8Lq6+DP4lSVaBnAPmVxwVE02YgkINn3bxTa98Vf5tXQHEZdi8H7?=
- =?us-ascii?Q?KWbmHRRRalXBU4cDvvMZyi6gXGO4a+eD+j8ZKMG59FQBW3n0cBdIHfPUlMRh?=
- =?us-ascii?Q?TsTltdQogzI7BvGQzUX0BzWdkb49YwF2QST7+Ol/0Rv4UeveJr4H3NzvzjuP?=
- =?us-ascii?Q?1UxL05n3SrnHK7RnGcDJbJOGGt4awXNsnPbUvIyjh7ni09Zv61zeyYiHq5g+?=
- =?us-ascii?Q?8/x3wOrpleWlXp66e9gy+/2/c9gxNfLbSMOI6XwCpaCKaVnJN+hQmjCQ8AIq?=
- =?us-ascii?Q?8MoRFl4j+jt1n8ca0MkPO3rJMELlxlR4kgm8dWRCkiDT0QArszs6hsaDdZY1?=
- =?us-ascii?Q?z7NX9aFdbS5WnOXtEkZdueyNj2Ovho3QfAzofKT2Zrl5fzAgOXWKiRxYkq6u?=
- =?us-ascii?Q?PDevoZ2dRFa5jgfhLVLmbO+/eJEuVkUJQFtXOm3abUrTr/w4oTIIHySIM04v?=
- =?us-ascii?Q?JCMUDkiEB4M0JTh9XIxMDubek566tSQIcg6SLNHJTZ1XXywNOC8zy9zeI04h?=
- =?us-ascii?Q?bgz6LpJmmNUlxR1SdFT4anRbfI1P2gXbZVUkdTMgbO3kS/m/6eOSr/jdVtHU?=
- =?us-ascii?Q?7eo7cIFVLCy5PwzpaGKPhfv/0qUBvIG9b1aZ9LRDKOzP57pHIKc/WZra0VGM?=
- =?us-ascii?Q?fbaAw6nQcRfnvmepUxBGFVSpMtJLT+vsFkxvPPYM8qTfQvb4MjM3UWcpYVUh?=
- =?us-ascii?Q?oaYJuFhu7QLpeRhMkiZGFdKArTEMbKOSBPe8jQLHnP9NNrwx/6Sq1ZpOH3de?=
- =?us-ascii?Q?kKnuukJ21vXn9ZkhGxDfLXYELdemQEcsuZITqvgAh9GKf1uXwEoqO5NRrjBN?=
- =?us-ascii?Q?QESh8lLi/IbI4rQln+J+S5sPzRJtd2FPe5u5ylMs+UledCu6GIGg6nonOzrs?=
- =?us-ascii?Q?CNZsrucVDyhaH+ST31Gn1cS7U/83K8usv3bBSmEVznXXUkEV6rpwXIi5j+2Q?=
- =?us-ascii?Q?vw/DNoIaqzsSRXNe3TpdweF4AUaSFOmq0YFaUheWZRWTeGQ4XS3+3WOwPfOV?=
- =?us-ascii?Q?PaZC9Jb4CpTONNpbwkASp2EVSAA5PqVwP6RTa7iy9311VQ6zpcw9HPEszm8h?=
- =?us-ascii?Q?wB0aQqxTrFzOGhs1b8PziTyd?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN1PR01CA0073.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c00:1::13) To BL1PR12MB5349.namprd12.prod.outlook.com
+ (2603:10b6:208:31f::7)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.157.114] (165.204.158.249) by PN1PR01CA0073.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c00:1::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 13:52:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8095e70c-9a61-4f16-3de4-08d967067ac9
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5176:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB51762E4BC8EDE4501B25429E97C59@BL1PR12MB5176.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xaUSI8z+33f9s9baDgOBZyoeA/c9He3XeZN+l+5ktPU9XKTDsMYksK1yVk3ZTsBnMIYPkx6xqcRj/LkneewVPlZlQLOyK9LxuAWuS4TEpLReEN+1lgYDGxektMnaX+HwRO1IdZgz6N++aUZpWej7esWg5SFC9x22NMEwxvpHAg77YnUGMCkBaPpdDb7O8T/nNXY/myy697PUGi7L5sT+7/ndVBgJAgPfxGnSiiyy6+oE/fpb7SX8HkgeUu6TY1omKrk+KjqKqTsxhkBzB3K2LpADk8+fpkvdxhl/7pjtSILSZVQ7FHgGqMbU17NTdobBJXYubLO6Rgn13P6V/KrXAE/NeQ80UYK2DpPNNMPHaCOzIc19t2dGDK+pX+IlNNwxM98q7VE7MgGgPk2LTeGT+HOBc/0cIvCv0uq709JEzTzr78gDAZdUFcRNURz7NZlbu3bj/1VzOT6/x2rOqq4nAsNVWMpzll4QZJ2P1hvtHBRTr6N/f2feBfuoNlsBuVkKVDwvbiTzzxTSxPytM2UINXI57Us7helr1/9YWyFWjt3KQd5pBLFuzsRwJRnE0Onz4bQI4UvWnKNal5sRuGYznLslz24Y7EnM9M/+utkbMQRMK/g5cBT88ln63i50JosYjCVXDoDxKweN7GCasJ+XM2AOBc7zsUhwcAvKwl88eetaffaX2vJ08X6bM6MNY49G6oDV487m7Pe4rjo7mNZLTHxfGomD6VQzAjGxmQle3LoXurb8KMxP797zLt6WF3WpM2k4rvozViHgHlF5cJLw98lvI1aVhdIW0RXCpzSy8vjxDg3U42JTQNj0ISvRmt1R
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5349.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(66556008)(66476007)(2906002)(36756003)(53546011)(83380400001)(66946007)(478600001)(966005)(6916009)(26005)(45080400002)(31686004)(16576012)(6486002)(956004)(6666004)(316002)(2616005)(38100700002)(5660300002)(8676002)(54906003)(31696002)(4326008)(86362001)(186003)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TFZWR1Q4OHI5eVhtQzZBcVdNd3RFNUhrY1BNVkZaUzllSUFMVnAwYlVGZnJX?=
+ =?utf-8?B?YmlqbWNDU1VSRENmNUJqVnU1bzRaTHpDbXBrbWFRQkFxbWk3R0JjUGQrNVJC?=
+ =?utf-8?B?SVBhZlhxQXAzMTRiWWZiSnF6eUJiNnFYVXMrNTVNdmRDWDRMbW53clY5T2Vw?=
+ =?utf-8?B?dnNudlRKeEtaRzl6SUtUam5BWHVBNkkxSzUxNTFwaDZ3T2VTVVlGay9FRyti?=
+ =?utf-8?B?TDV0Wkc5amp6ZXFBd2hITFFwOE51cE52a2x5aTZiWlpkZVZ4MHlLQnhPay9G?=
+ =?utf-8?B?eXMxSHJLZi9ZRFFHNCtJYTRrc291Mnh1Nk5aSlo5Wk9TWUtxQzJxemlUWXY4?=
+ =?utf-8?B?ZkEvc0lvcE1WeDFVS1BTVzhDMDgzNFZJMjFwL1FTUUg2bE85Q2ZQL2ZrSm8y?=
+ =?utf-8?B?dGVSNG9Xa09LMFRjcXpEbHRSN0s5Q0NkU3NXQUloamNIYnI1TjFsQzdOdC9S?=
+ =?utf-8?B?NHpId2RkaWtYTmEvOEJNWjJ5TjdEd3F0azA2TVg5QUdXN1RWekp0YjNOMHBs?=
+ =?utf-8?B?MFA3NU5LdmoxTTRNbTI4SjNaa1NRclZ0SjBPbU9EQ21WU0lHTjladUlESFNV?=
+ =?utf-8?B?blZSaUM1cUZaRlBYcmkzNXlvazdIaitCQkpENk1mQVVyWlBkVXJ3THdtbm4v?=
+ =?utf-8?B?ZlV3R1RWT3Q0WGFZV3VmYXF0ZUtRalV3dmFuclp5aTdUMVN4aFhHbTlSN1BG?=
+ =?utf-8?B?SXhQOStXZ0FGZDJtSjgrcHg4Z2N5SXI2N2g3Ky81eEd4ejZTRjZhSnpsQ2tx?=
+ =?utf-8?B?Slc5RVV0UURudm5SR0p5RE1PREl3c3ZhTGVvSTBuVlpQZmZDTHkwanZQTUZo?=
+ =?utf-8?B?RXo5VnZFNEZCL3Y2aWhWVVFpVkI4K2VpL21zRUhDT0Y0RG15aWYwVVRCWENY?=
+ =?utf-8?B?Tm5LNFY2MVQvRk9pTzhZcWdtdlpMcUZ3VEZ2eER3S2VoT1U2MGI3TGNQUnZC?=
+ =?utf-8?B?ZGZjbXlad09ZcWVJaVZSeGpoTU1XNEUzOGFlVmNjT2gwbGJXTmptVXovY1hl?=
+ =?utf-8?B?SkxYb2lGUG9mL3RLMWI2Q2JEc0JUbnlEQjJXcHE5cWZWZ3NUZDU4SHpTYWRk?=
+ =?utf-8?B?L0U3UXkvQXJtelB3R3BRNkJvdHp6Znp0bzlEWEVVTFJPN3V0YWxxL2g3eklJ?=
+ =?utf-8?B?MTZhWndLYVorRGxPcUZwOWh4Z1NGcDZiMVBUVjZBaWh6UlRlY1lNOE15Qkhp?=
+ =?utf-8?B?TVZlcFlFSy9pWm9wbUhwYXRxam5sNEx1emVoZkpIOHFmSWJUcHVBZEdzU25M?=
+ =?utf-8?B?WENkaXhjMEFKdzRsT1lCKyswZWxVRnZHZVFKZXZ6UDZJNSt2NDdMT1NCREFK?=
+ =?utf-8?B?WEJLTnYvY1JpZDZSQU5iTkVESU8xbnUwYmJtVUh6cGRVeUhIWE91dzBUb0N3?=
+ =?utf-8?B?Qk9XQWttcHRnZGNoVWxuRXcrUmxqZnBVUnRvNWZITExBYndJSjdJUDFmcWNJ?=
+ =?utf-8?B?Y3k0ZFAzeXBIaDZZTXNpVWd5aXI2U2xTVkRWT2orRVBlcHNjZjQxTVl6YThW?=
+ =?utf-8?B?Q2prZTVFT2ZvLzV6a0EwZytmaDh0ZWRhYU9mMGJuc0hZeVNCbTdSNzJaTVQ3?=
+ =?utf-8?B?aWlmM2diWWhnTGozanVhWmlzSU8xZkdUcld4MXRZMVMwTkRMWGhWdlduSXRB?=
+ =?utf-8?B?aVRwZ0lUTXFpVFpDOGJmVjJRV0syWm5DVUZES3Vma1Rnc0xXZmhWTXBjNGk0?=
+ =?utf-8?B?YjNGaDRBNklsZDNXMHNOTHlPNUFTUlAvTFdOY240NHNKN2lReWxqdllrWVFH?=
+ =?utf-8?Q?pbtOmSaOXiLSOo3pDCTyHW+qqAcS3i4DZ3XoYSt?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8095e70c-9a61-4f16-3de4-08d967067ac9
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5349.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR18MB2229.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cff11d0b-a9d6-4ef8-79a0-08d967064f71
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Aug 2021 13:51:44.7798
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 13:52:58.0564
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: S07K5TsDOEM1fYOyl4L5sHc6IFKNL8HtJzGfPubKFD6+2Z+PKq+bOkDAl63rre8IrpHApOzgGQ5mrJm/p90OxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR18MB4173
-X-Proofpoint-GUID: lLSeim5oVrTVDfdXvJxQPHeUBF8phhVS
-X-Proofpoint-ORIG-GUID: lLSeim5oVrTVDfdXvJxQPHeUBF8phhVS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-08-24_04,2021-08-24_01,2020-04-07_01
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y8CVCx8gdYOys3fL/D6Qm24VnnI6LKHAARTzvybUz8cdoIUIevyB8ejlourQyhi2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> -----Original Message-----
-> From: Kees Cook <keescook@chromium.org>
-> Sent: Wednesday, August 18, 2021 11:35 AM
-> To: linux-kernel@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>; Ariel Elior <aelior@marvell.com>;
-> Sudarsana Reddy Kalluru <skalluru@marvell.com>; GR-everest-linux-l2 <GR-
-> everest-linux-l2@marvell.com>; David S. Miller <davem@davemloft.net>; Jak=
-ub
-> Kicinski <kuba@kernel.org>; netdev@vger.kernel.org; Gustavo A. R. Silva
-> <gustavoars@kernel.org>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>;
-> Andrew Morton <akpm@linux-foundation.org>; linux-wireless@vger.kernel.org=
-;
-> dri-devel@lists.freedesktop.org; linux-staging@lists.linux.dev; linux-
-> block@vger.kernel.org; linux-kbuild@vger.kernel.org; clang-built-
-> linux@googlegroups.com; Rasmus Villemoes <linux@rasmusvillemoes.dk>;
-> linux-hardening@vger.kernel.org
-> Subject: [PATCH v2 17/63] bnx2x: Use struct_group() for memcpy() region
->=20
-> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> intentionally writing across neighboring fields.
->=20
-> Use struct_group() in struct nig_stats around members egress_mac_pkt0_lo,
-> egress_mac_pkt0_hi, egress_mac_pkt1_lo, and egress_mac_pkt1_hi (and the
-> respective members in struct bnx2x_eth_stats), so they can be referenced
-> together. This will allow memcpy() and sizeof() to more easily reason
-> about sizes, improve readability, and avoid future warnings about writing
-> beyond the end of struct bnx2x_eth_stats's rx_stat_ifhcinbadoctets_hi.
->=20
-> "pahole" shows no size nor member offset changes to either struct.
-> "objdump -d" shows no meaningful object code changes (i.e. only source
-> line number induced differences and optimizations).
->=20
-> Additionally adds BUILD_BUG_ON() to compare the separate struct group
-> sizes.
->=20
-> Cc: Ariel Elior <aelior@marvell.com>
-> Cc: Sudarsana Kalluru <skalluru@marvell.com>
-> Cc: GR-everest-linux-l2@marvell.com
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
 
-Reviewed-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+On 8/24/2021 7:10 PM, Borislav Petkov wrote:
+> On Tue, Aug 24, 2021 at 06:38:41PM +0530, Lazar, Lijo wrote:
+>> Without CONFIG_PM_SLEEP and with CONFIG_SUSPEND
+> 
+> Can you even create such a .config?
+
+The description of  "(drm/amdgpu: fix checking pmops when PM_SLEEP is 
+not enabled)" says -
+
+
+'pm_suspend_target_state' is only available when CONFIG_PM_SLEEP
+is set/enabled. OTOH, when both SUSPEND and HIBERNATION are not set,
+PM_SLEEP is not set, so this variable cannot be used.
+
+../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c: In function 
+‘amdgpu_acpi_is_s0ix_active’:
+../drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c:1046:11: error: 
+‘pm_suspend_target_state’ undeclared (first use in this function); did 
+you mean ‘__KSYM_pm_suspend_target_state’?
+     return pm_suspend_target_state == PM_SUSPEND_TO_IDLE;
+            ^~~~~~~~~~~~~~~~~~~~~~~
+            __KSYM_pm_suspend_target_state
+
+Also use shorter IS_ENABLED(CONFIG_foo) notation for checking the
+2 config symbols.
+
+So it does look like that error can be extracted as well in some config.
+
+> 
+>> I remember giving a reviewed-by for this one, looks like it never got in.
+>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.spinics.net%2Flists%2Famd-gfx%2Fmsg66166.html&amp;data=04%7C01%7Clijo.lazar%40amd.com%7C4d61b17225944c45335b08d967049ee6%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637654091831465201%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=GCdVG8N7g2E9DaiM1ek1voKQ9stZNfnEwyghQ0pWoxU%3D&amp;reserved=0
+> 
+> A better version of that one got in:
+> 
+> 5706cb3c910c ("drm/amdgpu: fix checking pmops when PM_SLEEP is not enabled")
+> 
+
+Well, now it doesn't seem to be a better one. The original one checked both.
+
+Thanks,
+Lijo
