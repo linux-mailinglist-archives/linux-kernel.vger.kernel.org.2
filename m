@@ -2,202 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5873E3F68FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E633F6900
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233413AbhHXSUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:20:07 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55193 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhHXSUF (ORCPT
+        id S233639AbhHXSVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231518AbhHXSVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:20:05 -0400
-Received: by mail-io1-f71.google.com with SMTP id o5-20020a6bf8050000b02905b026202a6fso12785390ioh.21
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:19:21 -0700 (PDT)
+        Tue, 24 Aug 2021 14:21:24 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABBEC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:20:40 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id q21so39142246ljj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VBABjmHqYwSGMvrKOv+LHJL9S1tFaoQC8OEouPmbANI=;
+        b=NGhAAuZZ/gVDx4WlrNQt8cLEsDc+JhpFXPBX3Wob3AVse2hz8oe5+DtC+NUIoqMo1a
+         g8RxCqsMETMsufGr7r06hpQ1nDPwNKzUdhVp4X6EeDZ5I5iq3EeaRcjNb4kRHCt227lD
+         a/vyTBt0djsZSHKsTLSOOiBLOqzpWccgfVXKhorFuRxfGU2SNmWiBdokCBAfU2Zx/4mC
+         ILyAjXDIFzGOxondKuMt86R131+T6AxfRHABjdR5C7NFBuhWgMhqu2hxs8/OJ71jURWQ
+         iruIlLTu5ynm42WAWV2L4EFNJFxALiuJF77fMaO97GLg699vZVKJahgo01Rfub1q6eos
+         m/ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hgW0R3Cqypzh/PaKnkXmkgTVIsdRWlaPqbcdFnM1yf4=;
-        b=UqtnpBoljl5LdlVnz8iIcBACnEjZoM8ppByjYg9ifAG9rbduL8NXmxTQqRi49k39/L
-         Ey2haaMOa5Avaq8JiuBMM/99Nl43e8SOoda31lSPIBbY/QRYQOEhZx7MQWcGi+0Dzt7y
-         KK4CEyuGE2BSspKLcBTcrbZgjBnWeONqiWWb6V19RHa54Q3pV6iaFSHBV47uwbS344rV
-         dE0YHX3MzmB9/p1BXAsaR6JBDSiN0S3GfIPw/kYpFeCPwIqwuV+NN1HhK+1Jleh1l1K5
-         AVp/WeBTp2MSJ8XgriGN4AzQgwK98xUeOXcTyHfFpLmVXGlv1/iPyJFTHDbZukxKUaiW
-         MNHw==
-X-Gm-Message-State: AOAM531SNC+O5kb3cSqY46ipZmZJt+V7iO0PscJemv76lIkBcD9XwO6N
-        /YD0YofWu2PDeR+LSEwBpzOPhArBD9vMJHrl9vXymyIKk55q
-X-Google-Smtp-Source: ABdhPJwEaTZEC/DTrCc5eemqt08KwYR9CjP3i4ycabjWdTeMxIiZUgASqsLlkpoBDLHwmm/1fGD6AXEdFEowjijLkqsY8VSeTM8R
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VBABjmHqYwSGMvrKOv+LHJL9S1tFaoQC8OEouPmbANI=;
+        b=nuNa1uow0RxEmhCehb+8nwb/QiPzqX2/DM30bLE5DvwTwAABtQpWBOxWOXC5yPZNdw
+         y6TIzV4xHq70opN06LsF+/MvMR2aKhsbXP9yUuU1KMOMoEi6bmRGX8SbUXIHDg7wOAZf
+         BTKI2s1lsEHrf5wFTy8wmkfAqTZ4bVZIPdBeI9ayMPnLSfsHGMWrvTbfqDok0LJ3sRh2
+         SFp6gmqrs9c5RPeNTFN60WPB+P9ozXom7FYsZELYZHqWJs1YHPU2GMAd2uLKYFo5Wseg
+         R+hMiq4yVAsufNCE1xTLQ4b1G2Q6AQYq6lPFc49J+EYNW/9Aykx+y9kJSDY21ZDb6ZWz
+         4s/Q==
+X-Gm-Message-State: AOAM531h4TRphK8zJcKEx3dXEbJDNe8xFy8AfRpvP5xegn8PuMZCsKk1
+        jOifyl2UbUVEk5XG350Wpic=
+X-Google-Smtp-Source: ABdhPJxQUZ6wDtkA/pCRg7RLySrQbFXiTPbB78Q6+KHCxEe3xzRHc6jp2wV9DUMZTJUKCOjDcE7EGQ==
+X-Received: by 2002:a05:651c:225:: with SMTP id z5mr22991979ljn.409.1629829237833;
+        Tue, 24 Aug 2021 11:20:37 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id p5sm1823783lfs.99.2021.08.24.11.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 11:20:37 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH] fs/ntfs3: Remove fat ioctl's from ntfs3 driver for now
+Date:   Tue, 24 Aug 2021 21:20:20 +0300
+Message-Id: <20210824182020.1007329-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a813:: with SMTP id c19mr32512644ioa.199.1629829161333;
- Tue, 24 Aug 2021 11:19:21 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 11:19:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000034b9ee05ca522caa@google.com>
-Subject: [syzbot] possible deadlock in md_open
-From:   syzbot <syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        song@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+For some reason we have FAT ioctl calls. Even old ntfs driver did not
+use these. We should not use these because it his hard to get things out
+of kernel when they are upstream. That's why we remove these for now.
 
-syzbot found the following issue on:
+More discussion is needed what ioctl should be implemented and what is
+important.
 
-HEAD commit:    372b2891c15a Add linux-next specific files for 20210824
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=124dca75300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=18ce42745c8b0dd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=fadc0aaf497e6a493b9f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b10d05300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fa60fe300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fadc0aaf497e6a493b9f@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-5.14.0-rc7-next-20210824-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor325/6558 is trying to acquire lock:
-ffff888013f90230 (&mddev->open_mutex){+.+.}-{3:3}, at: md_open+0xfd/0x2e0 drivers/md/md.c:7815
-
-but task is already holding lock:
-ffff888077ce3118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 fs/block_dev.c:1227
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&disk->open_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       bd_register_pending_holders+0x2c/0x470 block/holder.c:160
-       device_add_disk+0x75e/0xfd0 block/genhd.c:505
-       add_disk include/linux/genhd.h:221 [inline]
-       md_alloc+0x91d/0x1150 drivers/md/md.c:5707
-       md_probe+0x69/0x70 drivers/md/md.c:5738
-       blk_request_module+0x111/0x1d0 block/genhd.c:667
-       blkdev_get_no_open+0x178/0x1e0 fs/block_dev.c:1150
-       blkdev_get_by_dev.part.0+0x22/0xb60 fs/block_dev.c:1214
-       blkdev_get_by_dev+0x6b/0x80 fs/block_dev.c:1267
-       swsusp_check+0x4d/0x270 kernel/power/swap.c:1525
-       software_resume.part.0+0x102/0x1f0 kernel/power/hibernate.c:977
-       software_resume kernel/power/hibernate.c:86 [inline]
-       resume_store+0x161/0x190 kernel/power/hibernate.c:1179
-       kobj_attr_store+0x50/0x80 lib/kobject.c:856
-       sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
-       kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
-       call_write_iter include/linux/fs.h:2163 [inline]
-       new_sync_write+0x429/0x660 fs/read_write.c:511
-       vfs_write+0x7cf/0xae0 fs/read_write.c:598
-       ksys_write+0x12d/0x250 fs/read_write.c:651
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&mddev->open_mutex){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3051 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3174 [inline]
-       validate_chain kernel/locking/lockdep.c:3789 [inline]
-       __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
-       lock_acquire kernel/locking/lockdep.c:5625 [inline]
-       lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
-       __mutex_lock_common kernel/locking/mutex.c:596 [inline]
-       __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
-       md_open+0xfd/0x2e0 drivers/md/md.c:7815
-       blkdev_get_whole+0x99/0x2a0 fs/block_dev.c:1079
-       blkdev_get_by_dev.part.0+0x354/0xb60 fs/block_dev.c:1234
-       blkdev_get_by_dev+0x6b/0x80 fs/block_dev.c:1267
-       swsusp_check+0x4d/0x270 kernel/power/swap.c:1525
-       software_resume.part.0+0x102/0x1f0 kernel/power/hibernate.c:977
-       software_resume kernel/power/hibernate.c:86 [inline]
-       resume_store+0x161/0x190 kernel/power/hibernate.c:1179
-       kobj_attr_store+0x50/0x80 lib/kobject.c:856
-       sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
-       kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
-       call_write_iter include/linux/fs.h:2163 [inline]
-       new_sync_write+0x429/0x660 fs/read_write.c:511
-       vfs_write+0x7cf/0xae0 fs/read_write.c:598
-       ksys_write+0x12d/0x250 fs/read_write.c:651
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&disk->open_mutex);
-                               lock(&mddev->open_mutex);
-                               lock(&disk->open_mutex);
-  lock(&mddev->open_mutex);
-
- *** DEADLOCK ***
-
-5 locks held by syz-executor325/6558:
- #0: ffff88807f6bc460 (sb_writers#6){.+.+}-{0:0}, at: ksys_write+0x12d/0x250 fs/read_write.c:651
- #1: ffff88801a6a3488 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x287/0x500 fs/kernfs/file.c:287
- #2: ffff8881441a6830 (kn->active#90){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x2ab/0x500 fs/kernfs/file.c:288
- #3: ffffffff8b84fc68 (system_transition_mutex/1){+.+.}-{3:3}, at: software_resume.part.0+0x19/0x1f0 kernel/power/hibernate.c:932
- #4: ffff888077ce3118 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev.part.0+0x9b/0xb60 fs/block_dev.c:1227
-
-stack backtrace:
-CPU: 1 PID: 6558 Comm: syz-executor325 Not tainted 5.14.0-rc7-next-20210824-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2131
- check_prev_add kernel/locking/lockdep.c:3051 [inline]
- check_prevs_add kernel/locking/lockdep.c:3174 [inline]
- validate_chain kernel/locking/lockdep.c:3789 [inline]
- __lock_acquire+0x2a07/0x54a0 kernel/locking/lockdep.c:5015
- lock_acquire kernel/locking/lockdep.c:5625 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5590
- __mutex_lock_common kernel/locking/mutex.c:596 [inline]
- __mutex_lock+0x131/0x12f0 kernel/locking/mutex.c:729
- md_open+0xfd/0x2e0 drivers/md/md.c:7815
- blkdev_get_whole+0x99/0x2a0 fs/block_dev.c:1079
- blkdev_get_by_dev.part.0+0x354/0xb60 fs/block_dev.c:1234
- blkdev_get_by_dev+0x6b/0x80 fs/block_dev.c:1267
- swsusp_check+0x4d/0x270 kernel/power/swap.c:1525
- software_resume.part.0+0x102/0x1f0 kernel/power/hibernate.c:977
- software_resume kernel/power/hibernate.c:86 [inline]
- resume_store+0x161/0x190 kernel/power/hibernate.c:1179
- kobj_attr_store+0x50/0x80 lib/kobject.c:856
- sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
- kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x429/0x660 fs/read_write.c:511
- vfs_write+0x7cf/0xae0 fs/read_write.c:598
- ksys_write+0x12d/0x250 fs/read_write.c:651
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f0e9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd59408358 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f0e9
-RDX: 000000000000fdef RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 0000000000402e40 R08: 0000000000000012 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ed0
-R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
-
-
+Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Earlier disgussion with Pali can be founded here:
+lore.kernel.org/linux-fsdevel/20210824113304.eabzy7ulbuouzlac@pali/
+---
+ fs/ntfs3/file.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
+index 59344985c2e8..819afc4c902b 100644
+--- a/fs/ntfs3/file.c
++++ b/fs/ntfs3/file.c
+@@ -10,7 +10,6 @@
+ #include <linux/compat.h>
+ #include <linux/falloc.h>
+ #include <linux/fiemap.h>
+-#include <linux/msdos_fs.h> /* FAT_IOCTL_XXX */
+ #include <linux/nls.h>
+ 
+ #include "debug.h"
+@@ -50,15 +49,8 @@ static long ntfs_ioctl(struct file *filp, u32 cmd, unsigned long arg)
+ {
+ 	struct inode *inode = file_inode(filp);
+ 	struct ntfs_sb_info *sbi = inode->i_sb->s_fs_info;
+-	u32 __user *user_attr = (u32 __user *)arg;
+ 
+ 	switch (cmd) {
+-	case FAT_IOCTL_GET_ATTRIBUTES:
+-		return put_user(le32_to_cpu(ntfs_i(inode)->std_fa), user_attr);
+-
+-	case FAT_IOCTL_GET_VOLUME_ID:
+-		return put_user(sbi->volume.ser_num, user_attr);
+-
+ 	case FITRIM:
+ 		return ntfs_ioctl_fitrim(sbi, arg);
+ 	}
+-- 
+2.30.2
+
