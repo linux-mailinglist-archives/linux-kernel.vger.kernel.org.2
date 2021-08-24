@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F21E3F5A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA003F5A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235627AbhHXJBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235455AbhHXJBS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:01:18 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D9DC061757;
-        Tue, 24 Aug 2021 02:00:34 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id g135so2992396wme.5;
-        Tue, 24 Aug 2021 02:00:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XEO1yhzoLku7tvsHJMTQJTyi+WzZbv24MbIb7jQ6Mr0=;
-        b=RUHn/d/SpyC44+/4IIqEbIY40hgcaGppDyxSK+z1+ya63SHAT+lf7Tn7w2uMg2p/6P
-         t2ORZnL4GKxRdE1Hym/gqsgwfO//YPzhwJo6SjQbfPhaKoOni28xBazgaTJm870xQsIW
-         D2UpZtTCX1EM6cLel6LOqnfBgyr5huV+N7Rxj0d/C7vqI/BZgbeo7ZHd6ykH94GPuSGT
-         v6qf6Ma0wzBloY+UlRI5/VMDlfIakDE+KIrhfzDyZT9Pxbg/tZKBdJGAHJxrTGZySNb8
-         MhEi6GYGEcIPQue66P/YPLM0zV2vD1nntPVpcBl0bEHo2L3Qy2F4it7eL8tAFH26ILNm
-         O5fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XEO1yhzoLku7tvsHJMTQJTyi+WzZbv24MbIb7jQ6Mr0=;
-        b=NaVcjTP1/gVvM//P6/Sn/65nxzE8mooDJ18YsiLHWyYMWzkCCFjhtthiJpCugCwO17
-         YyGqbw1wotunYxTYFlqZWJOu00qZRUUgwZbHOYFEWTbfVpTgIPkPguwIctln9N8OySFY
-         AW+R9RdpQvtIhxsKUOsDSnPSsgPNT9mwAR/4In8mZE4DCCPtpLrsxm5F3QfvuL4+pSUs
-         648ayEzE/IMWnlZLCZlSa3OCkM/1GVjhuhpH+CggORijP/9x5Axqyi+2FJyjTmhv0sRY
-         L/weEbnUeMeFxbTa0cQIVhOn3/y9byxZZssRd0/+kRACD1oMQTpZQ5PtXNgvEgtToVow
-         u0Mg==
-X-Gm-Message-State: AOAM531vOPLITRc8tumUU/7vRVpSGLBOFQpOAUyNMZUIdYG8xoiRUXhj
-        lGD5sG66CCWdi3N/B0PX+XU=
-X-Google-Smtp-Source: ABdhPJwB8baGOGuKceNgOWOj063vsmN9XwVRGa3Vc8PFEmzNU7/TFr/bFLE33e0ul0Szs86r1Cp6oA==
-X-Received: by 2002:a1c:4d04:: with SMTP id o4mr3095259wmh.82.1629795632876;
-        Tue, 24 Aug 2021 02:00:32 -0700 (PDT)
-Received: from blondie ([141.226.10.120])
-        by smtp.gmail.com with ESMTPSA id y21sm1741639wmc.11.2021.08.24.02.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 02:00:32 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 12:00:28 +0300
-From:   Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To:     Matt Wang <wwentao@vmware.com>, Vishal Bhakta <vbhakta@vmware.com>,
-        Dmitry Fleytman <dmitry.fleytman@gmail.com>
-Cc:     VMware PV-Drivers <pv-drivers@vmware.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>, qemu-devel@nongnu.org
-Subject: [BUG] scsi: vmw_pvscsi: Boot hangs during scsi under qemu, post
- commit e662502b3a78
-Message-ID: <20210824120028.30d9c071@blondie>
+        id S235637AbhHXJBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:01:39 -0400
+Received: from mout.gmx.net ([212.227.15.19]:45919 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235325AbhHXJBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 05:01:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629795643;
+        bh=CLoOoY7f6RqwpYZ2ofNITRL0yRQnd334OfPngkBM7MM=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Ix37279hVKQFWJZxgf2JjzmNV+4y5NT5IDcfvTIEHEypRQ6tM03dnHwjzA/u/H7lT
+         /VYJUhlUK8N9oQUAamBdfTmQmp+VWuLj2x1OHA52V6I9qV2yOyq5yMhS9Smm1Rcv6L
+         UARg7xVXA45lm1UMwvE1y+2Pb+RClhNDqK6tLNF8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8QS2-1mMq0g3C40-004RRV; Tue, 24
+ Aug 2021 11:00:42 +0200
+Date:   Tue, 24 Aug 2021 11:00:39 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 3/3] staging/rtl8192u: Prefer kcalloc over open coded
+ arithmetic
+Message-ID: <20210824090039.GA7999@titan>
+References: <20210824072545.7321-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824072545.7321-1-len.baker@gmx.com>
+X-Provags-ID: V03:K1:sgtiKXn1+vejHxr5e2MNRPOe6xGIVm8EP9zcbL/dlY1H7UcYnMt
+ 9vGW2Mx616fKLEuOrwJRR2/+Bbct/F0z6+H9nf1cFdjtNmvbLUmWazPpU93x6VgwyuHThSR
+ OJ0Dn3hkhBKzFm1yLgiV/AL+lxD6fCB4n6XoY4yYEYoyeNW5+0G3EoDFKhhcyrX1SuQhZPT
+ gF+9T8E2zEGzRPkyP2GRA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G9HTkscgmxU=:VCVYYSEsMbHpqbZNADh/l0
+ CVIbnLRQj8J3w4Qrfxd4343Am0g5Ns6989uqxsFuNrFT3VPfAiWenjIuU8sszoFUMS/89tJBK
+ ytHS0h0SVXf2KJr44ZqXV6mnZ471anTh77zXSFbGAOHdHiTiHrwLy7EPP+NlTjTEorjPDQu62
+ 2r0OBHfnSLmQZ9Wo1brRsAd3Wsc4E+1eYsa509XuuaCkZ2KS1CfvGsSOyF8O589KpXNzJFl7j
+ MJ26/JfBjdzrkiGT0Wfi26b89ok32eRZQ4stBOOxG77tYfzJnLdSTwqP/OSSdTrOr80/vwINk
+ j/Xvx1QycachOhXHmtjkGsNAu2PxKzKp549Q/ifKs7UvlOGeipaLQgo0ubG9N2RbhRF6uhwQI
+ uRAYaZahd0Ypy0R/yUVTXBJB8yWL3M+vi4vV/UOZ1z6MdvlqMGAvSoefAbC74XsM4LgSdYRDj
+ TO7Aa/KFEwD6fYgSAhUDYbYaMX95RowYn3PK7B/ViobzcxygoiL9mjBTfvNnws9HtRcAvz/zO
+ U6j6i0ownOF5f9L6aoC8QWzSRrPpFouIih4hIt+duLw6AqzTEt6txtfPkntkNSVZRCQ/4zRx5
+ m1/SVBx+j/Zy+YILdC+ppq3cfQ3TdtTpTOKkniuAZjTmlsNZhD5hZhKoF1NT3ScqJt2zau9Ac
+ LWJIGuFeXeanvYNy+J00w5m48wJVpq+G3hZb2hxUtvJ3DrPiXm8SdqbfHKnVaa54C2TOHmlwz
+ oknjvuJ2uSrMAR9gX+5q1lCVCjk8W3XjeAZZMLB7mE9xnoPMktidzeXh5+TPajPmsEPxK929B
+ K4lj5d7njR/eDCq3umihAR6bt5csDquUDndAjLFk7V9cRztp1Y39lQqAt1fQ7KylOiAj9Elng
+ KDNo8imWJmU5cfE/ZktgO9bMd621eUB9sipV2+AzDQ10MPcaM1ZpObKVanrc6GHA7FJd0z9+d
+ N2fLIKOCvJxbUtFsASP/S/oO+3VIZLG7V1GDZMBRSbWvBXDuM2Mpoe0gMXu6OLQSCx9Jv8ZqE
+ fJJobsj8g0lWu+0BR6rBihqcfke+3dvxJjAQ+c7wu4KWBFf0NND57OqtK+hdMaOJu5OYJonEn
+ nKRMGyac871l1x9VTzd7VmtL6n6bgHfJi2xa+2H/aiv1We0pt/pzhX6eQ==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Commit e662502b3a78 ("scsi: vmw_pvscsi: Set correct residual data length"),
-and its backports to stable trees, makes kernel hang during boot, when
-ran as a VM under qemu with following parameters:
+In this case these aren't actually dynamic sizes: both sides of the
+multiplication are constant values. However it is best to refactor these
+anyway, just to keep the open-coded math idiom out of code.
 
-  -drive file=$DISKFILE,if=none,id=sda
-  -device pvscsi
-  -device scsi-hd,bus=scsi.0,drive=sda
+So, use the purpose specific kcalloc() function instead of the argument
+size * count in the kzalloc() function.
 
-Diving deeper, commit e662502b3a78
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-  @@ -585,7 +585,13 @@ static void pvscsi_complete_request(struct pvscsi_adapter *adapter,
-   		case BTSTAT_SUCCESS:
-  +			/*
-  +			 * Commands like INQUIRY may transfer less data than
-  +			 * requested by the initiator via bufflen. Set residual
-  +			 * count to make upper layer aware of the actual amount
-  +			 * of data returned.
-  +			 */
-  +			scsi_set_resid(cmd, scsi_bufflen(cmd) - e->dataLen);
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/rtl8192u/r819xU_phy.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-assumes 'e->dataLen' is properly armed with actual num of bytes
-transferred; alas qemu's hw/scsi/vmw_pvscsi.c never arms the 'dataLen'
-field of the completion descriptor (kept zero).
+diff --git a/drivers/staging/rtl8192u/r819xU_phy.c b/drivers/staging/rtl81=
+92u/r819xU_phy.c
+index ff6fe2ee3349..97f4d89500ae 100644
+=2D-- a/drivers/staging/rtl8192u/r819xU_phy.c
++++ b/drivers/staging/rtl8192u/r819xU_phy.c
+@@ -1195,17 +1195,17 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
+device *dev, u8 channel,
+ 	u8 e_rfpath;
+ 	bool ret;
 
-As a result, the residual count is set as the *entire* 'scsi_bufflen' of a
-good transfer, which makes upper scsi layers repeatedly ignore this
-valid transfer.
+-	pre_cmd =3D kzalloc(sizeof(*pre_cmd) * MAX_PRECMD_CNT, GFP_KERNEL);
++	pre_cmd =3D kcalloc(MAX_PRECMD_CNT, sizeof(*pre_cmd), GFP_KERNEL);
+ 	if (!pre_cmd)
+ 		return false;
 
-Not properly arming 'dataLen' seems as an oversight in qemu, which needs
-to be fixed.
+-	post_cmd =3D kzalloc(sizeof(*post_cmd) * MAX_POSTCMD_CNT, GFP_KERNEL);
++	post_cmd =3D kcalloc(MAX_POSTCMD_CNT, sizeof(*post_cmd), GFP_KERNEL);
+ 	if (!post_cmd) {
+ 		kfree(pre_cmd);
+ 		return false;
+ 	}
 
-However, since kernels with commit e662502b3a78 (and backports) now fail
-to boot under qemu's "-device pvscsi", a suggested workaround is to set
-the residual count *only* if 'e->dataLen' is armed, e.g:
-
-  @@ -588,7 +588,8 @@ static void pvscsi_complete_request(struct pvscsi_adapter *adapter,
-                           * count to make upper layer aware of the actual amount
-                           * of data returned.
-                           */
-  -                       scsi_set_resid(cmd, scsi_bufflen(cmd) - e->dataLen);
-  +                       if (e->dataLen)
-  +                               scsi_set_resid(cmd, scsi_bufflen(cmd) - e->dataLen);
-
-in order to make kernels boot on old qemu binaries.
-
-Best,
-Shmulik
+-	rf_cmd =3D kzalloc(sizeof(*rf_cmd) * MAX_RFDEPENDCMD_CNT, GFP_KERNEL);
++	rf_cmd =3D kcalloc(MAX_RFDEPENDCMD_CNT, sizeof(*rf_cmd), GFP_KERNEL);
+ 	if (!rf_cmd) {
+ 		kfree(pre_cmd);
+ 		kfree(post_cmd);
+=2D-
+2.25.1
