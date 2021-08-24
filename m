@@ -2,137 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9F33F684B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1BC3F6869
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241000AbhHXRm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:42:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242624AbhHXRjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:39:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4779B610C9;
-        Tue, 24 Aug 2021 17:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629825406;
-        bh=kn+XwzsVevnsYgage2fYiKaQAdypJdXXDutxJUgBKaA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WZLrNQJ1iEetXM6GBKMAocgKpBYBaoeqG/BEsyLHHCD4+94xqZ0L+If5trrPppTTL
-         4FzvC3o3BKsV6f9lENaJA2d79QY0v8ezUrOuMBkRwp+9l1JZtBrVoOiTTttZdeOP9b
-         e2AqhhxBOHjtti93T3X2Vzqr1Eq4iUzzQfU1+gg6mmoDrqcv0t2wUcYr+zxxBhOWuU
-         3jPisWpfvK5jiEcdzx4DByclaUj817smieAnDimvH9l3BLLcTpOLd4fw3en/xkGHGl
-         uvWjHepN2wL1HzBSnbVA7CRy87+zQxWa3JXxLDo7I7SAb1DuMYjAth014qMjaqHKaj
-         UzqLO/qCjUEVw==
-Date:   Tue, 24 Aug 2021 18:16:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 8/9] spi: amd: Refactor to overcome 70 bytes per CS
- limitation
-Message-ID: <20210824171619.GK4393@sirena.org.uk>
-References: <20210824104041.708945-1-tanureal@opensource.cirrus.com>
- <20210824104041.708945-9-tanureal@opensource.cirrus.com>
+        id S241649AbhHXRwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241577AbhHXRwi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:52:38 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DB0C05A52D;
+        Tue, 24 Aug 2021 10:16:53 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id u3so45877026ejz.1;
+        Tue, 24 Aug 2021 10:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZrICEbmTTI5X+hclm7WK+PbQzG8reRJWlDrlnWqe5QM=;
+        b=V7GFYricmNupzBQJITddKiJ5ku1Lqevd9U9bxpSrk0jzLvBuYGDIYibumqRNN0x5vp
+         pSb64XnQkxG4tDTrNORxvVC6r/yjy64p4Gcem3ESHcB5ZNYGrW9cl6YZfdTXqGRCiVe7
+         eq1VENoEhmH7DmNn4kapGxS5qi7KlF/N9RlD8Lx/C+kZGtyG1RHWVREmLQsDYZbq6lYK
+         tpn2eyaAgXC2EaIIEnLDW7kcIpM7qUcG94JDw+jLRXbvxpbKffMn3jD8swoBhVDcj8Ww
+         Ac9UtFbl535gK/3LeP2yd3dSnBDXYhh61E8eFOiNrBs561D7YgygGR4UvbDe91vcLyzB
+         8uUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZrICEbmTTI5X+hclm7WK+PbQzG8reRJWlDrlnWqe5QM=;
+        b=UBrtYsbN74rxMoQy7S0jC1MQSQ8CDx38+JEJNkcyNn9xA8DUUKiZ3UAIIy2mpL5xq2
+         Azf6mUp7etVhNNwHS1UsID2GZ1OdH6jTEjXc0qZ+mu+z9PEe88B4FwG3d5GWnfSz3R/Y
+         HO6bJEo7iVUSx6LdGYHCTv8V5mWpuHsiOY1gL6SMIgbrKZurpCHLXHADjgLlgS3fPDIx
+         WvlaGpq5znY/BuRZ0xrG3l3DLe+/pox7/rcRn2Gwa4LDdIjLHjATvL/ZSLG5nmfN+ErJ
+         s7STi19AKcxjEnAfs+ViNvkuD81MHDDloxvITRghrvjGRqmVu4AWn/AffBbLx0Ikw2dx
+         k/Kw==
+X-Gm-Message-State: AOAM532P40Zmch2kUz4Bym2NGyMLg+Ml0MKA3PeGW2r+EpgAzGb9NPHx
+        0ZYzjepNuICGwTV4rUu+YYU=
+X-Google-Smtp-Source: ABdhPJwdGCzqk1Ny2qU9cmtS61qz1uXqMNjNnjfRHaaaWhcZMJ32Yp6OFCb0QywNgpvRbXpje3KbyQ==
+X-Received: by 2002:a17:906:401:: with SMTP id d1mr1200691eja.242.1629825411500;
+        Tue, 24 Aug 2021 10:16:51 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id v1sm9951266ejd.31.2021.08.24.10.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:16:51 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 20:16:49 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: manually set up VLAN ID 0
+Message-ID: <20210824171649.ebcolsbsqczomiee@skbuf>
+References: <20210824165253.1691315-1-dqfext@gmail.com>
+ <20210824165742.xvkb3ke7boryfoj4@skbuf>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vk/v8fjDPiDepTtA"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824104041.708945-9-tanureal@opensource.cirrus.com>
-X-Cookie: Sentient plasmoids are a gas.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210824165742.xvkb3ke7boryfoj4@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 07:57:42PM +0300, Vladimir Oltean wrote:
+> > +static int
+> > +mt7530_setup_vlan0(struct mt7530_priv *priv)
+> > +{
+> > +	u32 val;
+> > +
+> > +	/* Validate the entry with independent learning, keep the original
+> > +	 * ingress tag attribute.
+> > +	 */
+> > +	val = IVL_MAC | EG_CON | PORT_MEM(MT7530_ALL_MEMBERS) | FID(FID_BRIDGED) |
+> 
+> FID_BRIDGED?
 
---vk/v8fjDPiDepTtA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+yes, FID_BRIDGED.
 
-On Tue, Aug 24, 2021 at 11:40:40AM +0100, Lucas Tanure wrote:
-> AMD SPI controller has 70 bytes for its FIFO and it has an
-> automatic way of controlling it`s internal CS, which can
-> only be activated during the time that the FIFO is being
-> transfered.
-
-> SPI_MASTER_HALF_DUPLEX here means that it can only read
-> RX bytes after TX bytes were written, and RX+TX must be
-> less than 70. If you write 4 bytes the first byte of read
-> is in position 5 of the FIFO.
->=20
-> All of that means that for devices that require an address
-> for reads and writes, the 2 transfers must be put in the same
-> FIFO so the CS can be hold for address and data, otherwise
-> the data would lose it`s meaning.
-
-This commit message is confusing, it's hard to tell what the refactoring
-is.  It also doesn't seem at all joined up with the rest of the series
-or the contents of the patch.  The rest of this series adds a new
-interface which says that the controller is only capable of doing a
-single transfer which means that the core should ensure that the
-controller never sees a message with more than one transfer in it but
-this patch appears to be attempting to parse multiple transfers and pack
-them together due to controller limitations in some way.  That is never
-going to do anything useful, if anything is paying attention to the flag
-the controller will never see messages like that.  Indeed code that pays
-attention to the flag and needs this is likely to refuse to work with
-the hardware at all since the device is half duplex so anything that
-needs messages mixing reads and writes just won't work at all.
-
-It also looks like the code is adding support for a new revision of the
-hardware which isn't mentioned anywhere in the commit message at all and
-really should be, it should most likely be a separate commit.
-
-As far as I can tell what you're trying to do here is better expressed
-as saying that the controller has a limit on the maximum message size
-then having the transfer_one_message() pack those down into whatever the
-controller needs so it can send them without bouncing chip select.  The
-new flag is not needed for this device and indeed looks like it will
-actively work against what's needed to make the controller useful in
-these applications.
-
-Please also use normal apostrophies.
-
-> +	amd_spi_set_tx_count(amd_spi, tx1_len + tx2_len);
-> +	ret =3D amd_spi_execute_opcode(amd_spi);
-> +
-> +	return ret ? ret : tx1_len + 1 + tx2_len;
-
-Please write normal conditional statements so people can read the code
-more easily.
-
-> +static const struct amd_spi_devtype_data spi_v1 =3D {
-> +       .exec_op        =3D amd_spi_execute_opcode_v1,
-> +       .set_op         =3D amd_spi_set_opcode_v1,
-> +};
-> +
-> +static const struct amd_spi_devtype_data spi_v2 =3D {
-> +       .version        =3D 1,
-
-v2 sets the version to 1 and v1 doesn't set the version at all and the
-only use of the version field AFAICT is that we should try to call
-amd_spi_clear_chip() after a transfer.  This isn't entirely clear.  If
-it's just a flag for the need to do that clear make it an explicit flag
-for that.
-
---vk/v8fjDPiDepTtA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmElKWIACgkQJNaLcl1U
-h9DwkAf/dcn31D3dwArT6L8leGiiqSooISv+bR8bCSNl/zMJaZMOP1dVQNDQsuKp
-fhGWgt1WjGZK7mitS4gtBlvNLK39puap7QApUSZTyb466GR7sNuQVDEKdCekAXel
-JMsOTlvduZ6X3BdNQ3dFl+67JxWk1Ho0ZReEh/NwzdpSN9wfB8PXiIcvBbwJkSsA
-exAiu9txc0upjAxVQ460QSKmC3ODyNHtCjRYiYnvitF9V2SxqIXQfzXuSKWAFP8E
-B4AD0y4XgXVJ3qK+xiNCXateaigtuADMgqeKSbuO/qysy7wUJQk5kQUQCXiSRPHD
-2rSjs6U6RPeaAAK8RoeUZrEyjaNJ3w==
-=Z3HA
------END PGP SIGNATURE-----
-
---vk/v8fjDPiDepTtA--
+Please confirm that the Fixes: tag is the one you intend. The patch appears fine otherwise.
