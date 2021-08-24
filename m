@@ -2,148 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87B53F617C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286F23F6177
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238163AbhHXPYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:24:02 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:23222 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238005AbhHXPYB (ORCPT
+        id S238264AbhHXPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238155AbhHXPXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:24:01 -0400
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 17OFMfa6016562;
-        Wed, 25 Aug 2021 00:22:42 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 17OFMfa6016562
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629818562;
-        bh=S+OncbYervpFyf36q1qMQ/cK2RuBY42Jax+g4KEinBk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZcH8Mol3zFOfA82L2ktXpSfndCTVIm8sSN5WhvCF0nkR7lfzciGFhUJXETjlXjtPX
-         zJh+MUJ/Ewjk16dZQ1gny5f5e7a9UEa8Y4ew4QsRa2f8+XDPL4zy7TRkyQPCCGuQBR
-         HtPcktDDii+gXrd9c6Y/+n2IDAqMdutuYAV8w4MCt5+cnVSpw8AKUX2Ib7Ibo6FD2q
-         Ohh6UGM+07Qonx5uLAq8xTeCFAPzEUUH7JfX0G/OTHgFnWD/VUkraTi5Z03rF1LVlI
-         S9HUYx9frUuL/nuZq9/KuCBWLzyvJI5ic9YGRufpg399QFVGzpWMzh0y6+RyOdbiCs
-         U/uVLdyiGdKjg==
-X-Nifty-SrcIP: [209.85.215.182]
-Received: by mail-pg1-f182.google.com with SMTP id e7so20084678pgk.2;
-        Tue, 24 Aug 2021 08:22:41 -0700 (PDT)
-X-Gm-Message-State: AOAM532kurLktu58pwqpHuXIw8lHovCfniN5blvX1moEtQVIcV7LHn01
-        PUcoRr6FGo3YJvxRRhzqkBZgYNDXJOe0Ioj8nm8=
-X-Google-Smtp-Source: ABdhPJxOp9dnA/3wndoHqVeBS+wD5iSN8I9DS95FoFt5pEdVV9c/uEMA3l6IFAOsje6soli60G91Ls2TkIcdXGUYgjE=
-X-Received: by 2002:aa7:8e56:0:b029:3cd:c2ec:6c1c with SMTP id
- d22-20020aa78e560000b02903cdc2ec6c1cmr39028324pfr.80.1629818561184; Tue, 24
- Aug 2021 08:22:41 -0700 (PDT)
+        Tue, 24 Aug 2021 11:23:08 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB7CC061764
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:22:23 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id z128so41740938ybc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fwrh7Ma93YqHeODSroVO5xFqEdFE+DoKS8enYFO4wgY=;
+        b=ZRdVwHBOwg6wZSSKlvs22KmEcuWScMAwPAoS5LMwClAjyr4iO3gGTdZLw6l0uIFj03
+         lFX1xo3zeQypiJZFHkrtaKfNMmFfOjhKNYq+l03uUaaFzbbp20woXQslQHD5Ol0C0COj
+         J9hFt4pYV+jvX8AWMHiyvTLcXYX55FyG8+8Aa/ObtDDb1rhPz4eIOfQ0hvB0K9kafkLC
+         eNMqnXUKWeeMlzBNc6lxyJV8bk+Sn6Q2vnksFn5UfK+GAejcZWciOUXsVFytYOhF0zIU
+         5nWdPM4zTSlGnoOcBV/RUP2M6x+bNx8D2rpZj8xjTxVbvWLmYDNEO/QhBvBx9S1h/VQh
+         FF1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fwrh7Ma93YqHeODSroVO5xFqEdFE+DoKS8enYFO4wgY=;
+        b=UANUSz5CTvYkLmWHC0kuuEO+SHMYpHbnD37IlPKW8J0XsuWv5s4XZzuHNPAYNLTIw0
+         oPqkZNMtkKqW6FkcCwxsh9fI80kzh6cKPTZA7R9KCUj1ggq6BG8rzSPAOWLf8i8VUnqo
+         rONCL06H4kX9ZtX2YHLdwVEBQVGCvuHL9o4ZQAdHLORvRiZ1Q/oJi+Ei98EVkGwBgJal
+         AARmG/lEIHEaivxSHLznutWJzcOU/Bf4wkQ8805KT/yfo9gcKQvvX59Ukrw8T6rRMOHE
+         DfH30juQF3j4fSZWL2hCwx6APXJIBZUv5j+6jGayZHxABjSLt2iyXEhSjDdq9bhqz1dQ
+         /j3Q==
+X-Gm-Message-State: AOAM530+sUHVXYQ5760i0EGgdvI5Y4ARU/TaUFJAFA0hb4zOZk3CC/yW
+        QRm8fCIF6uLV9Y5JqB3lVolHypqOmA/3iH2Yyol8kQ==
+X-Google-Smtp-Source: ABdhPJwEbBpvie3B4unGZj+uzJP7Web1EazlNgqQrk0+cD8irKHliF49e5a6ZnaalofzvcmxwMqwm13ud7ZaBo3/Gbk=
+X-Received: by 2002:a25:afcd:: with SMTP id d13mr49822032ybj.504.1629818542211;
+ Tue, 24 Aug 2021 08:22:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org> <20210407053419.449796-19-gregkh@linuxfoundation.org>
-In-Reply-To: <20210407053419.449796-19-gregkh@linuxfoundation.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 25 Aug 2021 00:22:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ07ycpjJQGwbtq1ii3k9rh2CZVN6MVxkfMb=+Vgs9zqw@mail.gmail.com>
-Message-ID: <CAK7LNAQ07ycpjJQGwbtq1ii3k9rh2CZVN6MVxkfMb=+Vgs9zqw@mail.gmail.com>
-Subject: Re: [PATCH 18/20] kbuild: sh: remove unused install script
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
+References: <20210824125140.190253-1-yan2228598786@gmail.com>
+In-Reply-To: <20210824125140.190253-1-yan2228598786@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 24 Aug 2021 08:22:11 -0700
+Message-ID: <CANn89i+-EnK-zZ_kXsVAW_Or+8w3V3F4orbt40GFP2zQrr6gvw@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp_drop adds `reason` parameter for tracing
+To:     Zhongya Yan <yan2228598786@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 2:35 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Aug 24, 2021 at 5:52 AM Zhongya Yan <yan2228598786@gmail.com> wrote:
 >
-> The sh arch has a install.sh script, but no Makefile actually calls it.
-> Remove it to keep anyone from accidentally calling it in the future.
+> When using `tcp_drop(struct sock *sk, struct sk_buff *skb)` we can
+> not tell why we need to delete `skb`. To solve this problem I updated the
+> method `tcp_drop(struct sock *sk, struct sk_buff *skb, enum tcp_drop_reason reason)`
+> to include the source of the deletion when it is done, so you can
+> get an idea of the reason for the deletion based on the source.
 >
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: linux-sh@vger.kernel.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> The current purpose is mainly derived from the suggestions
+> of `Yonghong Song` and `brendangregg`:
+>
+> https://github.com/iovisor/bcc/issues/3533.
+>
+> "It is worthwhile to mention the context/why we want to this
+> tracepoint with bcc issue https://github.com/iovisor/bcc/issues/3533.
+> Mainly two reasons: (1). tcp_drop is a tiny function which
+> may easily get inlined, a tracepoint is more stable, and (2).
+> tcp_drop does not provide enough information on why it is dropped.
+> " by Yonghong Song
+>
+> Signed-off-by: Zhongya Yan <yan2228598786@gmail.com>
 > ---
->  arch/sh/boot/compressed/install.sh | 56 ------------------------------
->  1 file changed, 56 deletions(-)
->  delete mode 100644 arch/sh/boot/compressed/install.sh
+
+That is a good start, but really if people want to use this
+tracepoint, they will hit a wall soon.
+
+
+>         return true;
 >
-> diff --git a/arch/sh/boot/compressed/install.sh b/arch/sh/boot/compressed/install.sh
-> deleted file mode 100644
-> index f9f41818b17e..000000000000
-> --- a/arch/sh/boot/compressed/install.sh
-> +++ /dev/null
-> @@ -1,56 +0,0 @@
-> -#!/bin/sh
-> -#
-> -# arch/sh/boot/install.sh
-> -#
-> -# This file is subject to the terms and conditions of the GNU General Public
-> -# License.  See the file "COPYING" in the main directory of this archive
-> -# for more details.
-> -#
-> -# Copyright (C) 1995 by Linus Torvalds
-> -#
-> -# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
-> -# Adapted from code in arch/i386/boot/install.sh by Russell King
-> -# Adapted from code in arch/arm/boot/install.sh by Stuart Menefy
-> -#
-> -# "make install" script for sh architecture
-> -#
-> -# Arguments:
-> -#   $1 - kernel version
-> -#   $2 - kernel image file
-> -#   $3 - kernel map file
-> -#   $4 - default install path (blank if root directory)
-> -#
-> -
-> -# User may have a custom install script
-> -
-> -if [ -x /sbin/${INSTALLKERNEL} ]; then
-> -  exec /sbin/${INSTALLKERNEL} "$@"
-> -fi
-> -
-> -if [ "$2" = "zImage" ]; then
-> -# Compressed install
-> -  echo "Installing compressed kernel"
-> -  if [ -f $4/vmlinuz-$1 ]; then
-> -    mv $4/vmlinuz-$1 $4/vmlinuz.old
-> -  fi
-> -
-> -  if [ -f $4/System.map-$1 ]; then
-> -    mv $4/System.map-$1 $4/System.old
-> -  fi
-> -
-> -  cat $2 > $4/vmlinuz-$1
-> -  cp $3 $4/System.map-$1
-> -else
-> -# Normal install
-> -  echo "Installing normal kernel"
-> -  if [ -f $4/vmlinux-$1 ]; then
-> -    mv $4/vmlinux-$1 $4/vmlinux.old
-> -  fi
-> -
-> -  if [ -f $4/System.map ]; then
-> -    mv $4/System.map $4/System.old
-> -  fi
-> -
-> -  cat $2 > $4/vmlinux-$1
-> -  cp $3 $4/System.map
-> -fi
+>  discard:
+
+There are many " goto discards;" in this function, so using a common
+value ("TCP_VALIDATE_INCOMING" ) is not helpful.
+
+
+> -       tcp_drop(sk, skb);
+> +       tcp_drop(sk, skb, TCP_VALIDATE_INCOMING);
+>         return false;
+>  }
+>
+> @@ -5905,7 +5915,7 @@ void tcp_rcv_established(struct sock *sk, struct sk_buff *skb)
+>         TCP_INC_STATS(sock_net(sk), TCP_MIB_INERRS);
+>
+>  discard:
+> -       tcp_drop(sk, skb);
+
+Same here.
+
+> +       tcp_drop(sk, skb, TCP_RCV_ESTABLISHED);
+>  }
+>  EXPORT_SYMBOL(tcp_rcv_established);
+>
+> @@ -6196,7 +6206,7 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
+>                                                   TCP_DELACK_MAX, TCP_RTO_MAX);
+>
+>  discard:
+> -                       tcp_drop(sk, skb);
+> +                       tcp_drop(sk, skb, TCP_RCV_SYNSENT_STATE_PROCESS);
+>                         return 0;
+>                 } else {
+>                         tcp_send_ack(sk);
+> @@ -6568,7 +6578,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb)
+>
+>         if (!queued) {
+>  discard:
+
+same here.
+
+> -               tcp_drop(sk, skb);
+> +               tcp_drop(sk, skb, TCP_RCV_STATE_PROCESS);
+>         }
+>         return 0;
+>  }
 > --
-> 2.31.1
+> 2.25.1
 >
-
-
-This one is applicable independently.
-
-Applied to linux-kbuild. Thanks.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
