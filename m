@@ -2,170 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E6C3F6AC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17D53F6AD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhHXVGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        id S235207AbhHXVGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbhHXVGC (ORCPT
+        with ESMTP id S234442AbhHXVGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:06:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF11C061757;
-        Tue, 24 Aug 2021 14:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=47sgnIoZKep1DRbln9+NTL1J6N65R7OgQCZZ3ODQ1JU=; b=XdIxM4Rp2nAdP6b3OPoUPX1wcl
-        CGgh1FBE2vcOUw38/OhpKrOwanD6szssU48tKUas2UKyOJSUH4peFM3/nAVwRHLQEFrtw+72JyBMo
-        LwHu2cNxj/J8Y2LjRlkSPy/fkZbTOX2j+Sw2DUdKNNBtep/PCyTMzLHe6Q4xzM3yZXnOICbBO4n+d
-        /ELvDWYz2KtyKUfRiyd2i9TR2x+ntfhMrtwq/DHGFstxbYYuylORFsM9ZURkHne/bxERKzG5M7kaQ
-        ukmXkSM+InShYPHlPNTKdTLDoTM2UZCqO7dszR/6WLQIm2oxhvo7Aglv2CV/8eDi2iGqS3FmxgmwP
-        GK6ZwvoQ==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIdbf-004hpu-F7; Tue, 24 Aug 2021 21:05:15 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephan Mueller <smueller@chronox.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH] crypto: jitterentopy: drop kernel-doc notation
-Date:   Tue, 24 Aug 2021 14:05:13 -0700
-Message-Id: <20210824210513.25503-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 24 Aug 2021 17:06:21 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885E1C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:05:36 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id q68so3906348pga.9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=50KgIimgoHn2hLRecJ9xsYP+KbZzb8N9bfDIuPfzvjQ=;
+        b=NvAgKb0THlkdDUQ0aRx+9mednYqLHP6M3XIYjenGeve36GswyogqqyEtfltG9odhSS
+         sXNl+nzWb/jgjnohkyON1TK0N4HUhwZj7aRcTxvirbX0hPedZ8o7Xo7c5YpxKjNNzQYr
+         zyJiMtdKa9NltLOObRsERtWbUkAqlgZSPFS2egovwI2a4M3yx8YiJOFhAZDgyiFWM4Tr
+         bAb4DagRmpCRfU/tqemlilYyGEtImDNJKoZmeV/8h3FeicEkU17ZO2s8oFIsfzw7ghCP
+         W7IqcpYk1aL3JziP3HtHww5os2Qnu25hR/eXZFgKZ3PqWWua0S27ru9KI2z3Lojktzjy
+         vK+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50KgIimgoHn2hLRecJ9xsYP+KbZzb8N9bfDIuPfzvjQ=;
+        b=kraaq5m1NyTd6ci5CeilRByfQt0ZVJYfG6tcdb85Qjaa3Ic4mPF8SiKCW/O3D85+6T
+         Yoa2yzheb5mkq4g/pLv6b5XCczOKssBXSyLE+Qxg65cb94YujTU1PsesHGsc87/NLe2v
+         4oWQdSbi1Tm585ZQS086Jyy7W9F29900XIPpbQWm2S9snoyrtLj3IhTswGcI1O/dWhSQ
+         Z9lk4Uwci2aBHb5OM3uA21hZ6lgTJ7HE1VdLgngYMZrKMvF8dtG+g3l1TVmhnam6Ckem
+         BEGVLjQJvUutZhuZJWo1wqkXQDEhOcIhwVuhYlFhNus+gfgbyyq72UXwUEBDL/qr3zSv
+         eg4Q==
+X-Gm-Message-State: AOAM530fd8P7gn4ttUAQqbCkMD6QX55E+DXaGNhlGGPmj/FKdqAxBtcP
+        9FaVKGbZVh4yooPcyWFZOCOGUFoXsmRMOr/BlbfiEA==
+X-Google-Smtp-Source: ABdhPJwkzMtO2gq/o/NUrPl5vjkkiQPqJ23InKpT9YHvAxhia00+dsPd0+b1/fg0fqEO9y3ko1JQOVp9Vu81LPNo08o=
+X-Received: by 2002:a65:6642:: with SMTP id z2mr26349152pgv.240.1629839136081;
+ Tue, 24 Aug 2021 14:05:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210824203115.GA3492097@bjorn-Precision-5520> <bb8c6f96-2597-bb80-bd08-7958405e1bf5@linux.intel.com>
+In-Reply-To: <bb8c6f96-2597-bb80-bd08-7958405e1bf5@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 24 Aug 2021 14:05:25 -0700
+Message-ID: <CAPcyv4jjonArG94PbuMPTZefxqnFr+PEG7Gjem0Taa_iGRmSDA@mail.gmail.com>
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Rajat Jain <rajatja@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 1:50 PM Andi Kleen <ak@linux.intel.com> wrote:
+>
+>
+> On 8/24/2021 1:31 PM, Bjorn Helgaas wrote:
+> > On Tue, Aug 24, 2021 at 01:14:02PM -0700, Andi Kleen wrote:
+> >> On 8/24/2021 11:55 AM, Bjorn Helgaas wrote:
+> >>> [+cc Rajat; I still don't know what "shared memory with a hypervisor
+> >>> in a confidential guest" means,
+> >> A confidential guest is a guest which uses memory encryption to isolate
+> >> itself from the host. It doesn't trust the host. But it still needs to
+> >> communicate with the host for IO, so it has some special memory areas that
+> >> are explicitly marked shared. These are used to do IO with the host. All
+> >> their usage needs to be carefully hardened to avoid any security attacks on
+> >> the guest, that's why we want to limit this interaction only to a small set
+> >> of hardened drivers. For MMIO, the set is currently only virtio and MSI-X.
+> > Good material for the commit log next time around.  Thanks!
+>
+> This is all in the patch intro too, which should make it into the merge
+> commits.
+>
+> I don't think we can reexplain the basic concepts for every individual
+> patch in a large patch kit.
 
-Drop "begin kernel-doc (/**)" entries in jitterentropy.c
-since they are not in kernel-doc format and they cause
-many complaints (warnings) from scripts/kernel-doc.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stephan Mueller <smueller@chronox.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
----
- crypto/jitterentropy.c |   24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
---- linux-next-20210824.orig/crypto/jitterentropy.c
-+++ linux-next-20210824/crypto/jitterentropy.c
-@@ -125,7 +125,7 @@ struct rand_data {
-  * This test complies with SP800-90B section 4.4.2.
-  ***************************************************************************/
- 
--/**
-+/*
-  * Reset the APT counter
-  *
-  * @ec [in] Reference to entropy collector
-@@ -138,7 +138,7 @@ static void jent_apt_reset(struct rand_d
- 	ec->apt_observations = 0;
- }
- 
--/**
-+/*
-  * Insert a new entropy event into APT
-  *
-  * @ec [in] Reference to entropy collector
-@@ -182,7 +182,7 @@ static void jent_apt_insert(struct rand_
-  * the end. The caller of the Jitter RNG is informed with an error code.
-  ***************************************************************************/
- 
--/**
-+/*
-  * Repetition Count Test as defined in SP800-90B section 4.4.1
-  *
-  * @ec [in] Reference to entropy collector
-@@ -223,7 +223,7 @@ static void jent_rct_insert(struct rand_
- 	}
- }
- 
--/**
-+/*
-  * Is there an RCT health test failure?
-  *
-  * @ec [in] Reference to entropy collector
-@@ -246,7 +246,7 @@ static inline __u64 jent_delta(__u64 pre
- 			       (JENT_UINT64_MAX - prev + 1 + next);
- }
- 
--/**
-+/*
-  * Stuck test by checking the:
-  * 	1st derivative of the jitter measurement (time delta)
-  * 	2nd derivative of the jitter measurement (delta of time deltas)
-@@ -288,7 +288,7 @@ static int jent_stuck(struct rand_data *
- 	return 0;
- }
- 
--/**
-+/*
-  * Report any health test failures
-  *
-  * @ec [in] Reference to entropy collector
-@@ -310,7 +310,7 @@ static int jent_health_failure(struct ra
-  * Noise sources
-  ***************************************************************************/
- 
--/**
-+/*
-  * Update of the loop count used for the next round of
-  * an entropy collection.
-  *
-@@ -353,7 +353,7 @@ static __u64 jent_loop_shuffle(struct ra
- 	return (shuffle + (1<<min));
- }
- 
--/**
-+/*
-  * CPU Jitter noise source -- this is the noise source based on the CPU
-  *			      execution time jitter
-  *
-@@ -435,7 +435,7 @@ static void jent_lfsr_time(struct rand_d
- 		ec->data = new;
- }
- 
--/**
-+/*
-  * Memory Access noise source -- this is a noise source based on variations in
-  *				 memory access times
-  *
-@@ -500,7 +500,7 @@ static void jent_memaccess(struct rand_d
- /***************************************************************************
-  * Start of entropy processing logic
-  ***************************************************************************/
--/**
-+/*
-  * This is the heart of the entropy generation: calculate time deltas and
-  * use the CPU jitter in the time deltas. The jitter is injected into the
-  * entropy pool.
-@@ -539,7 +539,7 @@ static int jent_measure_jitter(struct ra
- 	return stuck;
- }
- 
--/**
-+/*
-  * Generator of one 64 bit random number
-  * Function fills rand_data->data
-  *
-@@ -566,7 +566,7 @@ static void jent_gen_entropy(struct rand
- 	}
- }
- 
--/**
-+/*
-  * Entry function: Obtain entropy for the caller.
-  *
-  * This function invokes the entropy gathering logic as often to generate
+Maybe not the whole cover letter, but how about just a line in this
+one that says "Recall that 'shared' in this context refers to memory
+that lacks confidentiality and integrity protection from the VMM so
+that it can communicate with the VM." Although I think
+ioremap_noprotect() might be clearer than shared for the protected
+guest use case?
