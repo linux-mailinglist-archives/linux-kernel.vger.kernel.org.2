@@ -2,131 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FD23F5B34
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CE43F5B3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235743AbhHXJqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235566AbhHXJqu (ORCPT
+        id S235797AbhHXJsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:48:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235758AbhHXJr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:46:50 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954ABC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:46:06 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id mf2so24514160ejb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GrvCsUcjOz7dr6yABmwTuSZ2PSKxdeNbsF0RweGK1nA=;
-        b=SfrMyhqSjfQbmPAWlBf7A8NR1eYktlZG2/doJX1lPcFWXKrUqHC20co4Rqt2090JZf
-         l7dPmSiswukViMZ3kJt24xlHREf2prZjK4R+NndnlrJ4aEaW9C8ontAlSyakwd/k2X+o
-         2rnqqGQ3Yso7ZCgMdU+OC5WfLNEepewf+SA28tx/1M24yYgZJkGri8LXnF/1rAGg2YlI
-         BouxtR/pHMsFVaTyRrpKB7Bp4DZ6WnbrwHfuiD6PbSzuoK2ESbwWFGk8IIpm5iH9vU4B
-         VgvCy4QbR0PTRYSmFXU/UPURFFIBZPQARujNioRHj6W9AB/1H2v+KiCOAtp7T2AwwOmk
-         +jsQ==
+        Tue, 24 Aug 2021 05:47:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629798435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byOliS/hAlH982j95uoj9FjiMsaJUQkzdYQOZKOZeFM=;
+        b=EpSjaKaORit2KBe35XMrcFltkhci8RVMV7pN97m/XqxyihAXn2G+tohwnWuAezzH4bp48M
+        efD8nrjBZJ6yjreif7/fjD3rTeTWH11Tav+ryGfZYH2nwH71eP7mowc9EipQYYwbSrgdrl
+        bEd+dJo0mtOfCZWeq1ubGE6hNpUgYI4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-6jh04HbePSu7z47xBXvETA-1; Tue, 24 Aug 2021 05:47:14 -0400
+X-MC-Unique: 6jh04HbePSu7z47xBXvETA-1
+Received: by mail-ej1-f69.google.com with SMTP id o7-20020a170906288700b005bb05cb6e25so6859144ejd.23
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:47:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GrvCsUcjOz7dr6yABmwTuSZ2PSKxdeNbsF0RweGK1nA=;
-        b=VVMyxpwqHkPcZJuNuH4gje29S33M39gRK4UxbNWBn2pFh1ugfZnAMvrIrNozvZXaZh
-         qgKNAzenvb1jv+SMh2SiV+dLUkV9Ds2BCQE5capJjm5lOkmqDQnnDYLtKiJZkGQlL/jF
-         FU4bL4yedQsXFHHRTpTrmLfNu5/NjTVdq0bolR9937337wpIdOkr2ARAQeNyrabaURcd
-         wRn4sYaUFrqUO02PejQIO3VjLEZmGPm0XYnPSp6Lyolq4ZYcJ3Aqvqsma5MAi9kOWDsg
-         126A0zpg6/Q31f9hnNMIYTFSegaelKTU2M3peMkzWGGtIYr8pNW97VLrb2mEUFhJnkhR
-         dkfA==
-X-Gm-Message-State: AOAM533/D9HeN8/18vBJboq8IiHEjYYr8sO5yKZjerhQeDmMsl+ce93b
-        aKnv1m5ak/Lvm0lHFaGygSo=
-X-Google-Smtp-Source: ABdhPJys7aXWCtp4RAyhTul41UcH3nZpR9j313wpdENzXAAZFuZ7ldTClOl+ysxSqrzr7WO5rwzUWQ==
-X-Received: by 2002:a17:906:38c8:: with SMTP id r8mr40555690ejd.172.1629798365221;
-        Tue, 24 Aug 2021 02:46:05 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id qh2sm8839076ejb.75.2021.08.24.02.46.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=byOliS/hAlH982j95uoj9FjiMsaJUQkzdYQOZKOZeFM=;
+        b=FY7jQr2sO2bg5KKYIFPJ2+KOeORgct8kRb6hmPDG1a3quhlmerKL8uOFn6BbSPO1e8
+         t44A2+CRJZLyf5c45yUh3evdqSjz5Lq21QTbzF8Mu5gZhtPMpRsmSgr+OPbGXYYmwytF
+         RuN6ydyvKKVTQzi6sFT0kRQqdtizRUsXc50APAbUJ/uZ1aOWYjagtLieDQUwFYa2/KD+
+         4T180F2obEtw7KvqXgQkt1VxCxNDN6kgkBFmFKndkC/kakOPiJUKAoYAFUNPV8dKyCEt
+         +hZ/+i+hpyiEquHn/THVWnmKU5KuP9tuHxyd6p0wZk43tgNyOKC2JgA4AteoJ10m4DCW
+         8BUQ==
+X-Gm-Message-State: AOAM533HnTQqLeRHwNGflkAXSMncG4QcuyscPMbVRGof8DdRDbFa8wUl
+        VmsVneehVZmXACm5riRVbLU6hmOJTMoIOCB7KZvmBgreHZRTBGOxEP4/0TRdnvb9PbIToGxtIKd
+        +qnOBKSXgnI9ZDMh9PoMqgo9X
+X-Received: by 2002:a17:906:3542:: with SMTP id s2mr40413092eja.379.1629798433290;
+        Tue, 24 Aug 2021 02:47:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyUO88Sc9irEBtMZmBbVQ8WcILdFFNEosAjyt1865+nkRLAobkOu3Zuf3KEOK5TLE4bRYLW2A==
+X-Received: by 2002:a17:906:3542:: with SMTP id s2mr40413054eja.379.1629798433111;
+        Tue, 24 Aug 2021 02:47:13 -0700 (PDT)
+Received: from redhat.com ([2.55.137.225])
+        by smtp.gmail.com with ESMTPSA id b18sm2800522ejl.90.2021.08.24.02.47.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 02:46:04 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 5/6] staging: r8188eu: add error handling of rtw_read32
-Date:   Tue, 24 Aug 2021 11:46:03 +0200
-Message-ID: <1970955.u25yFflyLQ@localhost.localdomain>
-In-Reply-To: <96e3703e-a5e2-3c6d-ea3c-b5d3892849b2@gmail.com>
-References: <cover.1629642658.git.paskripkin@gmail.com> <77da7c63-a5b1-a09d-39ec-32c5485b8eac@gmail.com> <96e3703e-a5e2-3c6d-ea3c-b5d3892849b2@gmail.com>
+        Tue, 24 Aug 2021 02:47:12 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 05:47:03 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+Message-ID: <20210824053830-mutt-send-email-mst@kernel.org>
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
+ <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 10:53:35 AM CEST Pavel Skripkin wrote:
-> On 8/24/21 11:47 AM, Pavel Skripkin wrote:
-> > On 8/24/21 11:38 AM, Fabio M. De Francesco wrote:
-> > 
-> > Hi, Fabio!
-> > 
-> > previous usb_read16() realization, which is 100% right:
-> > 
-> > 
-> > static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
-> > {
-> > 	u8 requesttype;
-> > 	u16 wvalue;
-> > 	u16 len;
-> > 	__le32 data;
-
-Ah, it was in plain sight! How didn't I notice it? :(
-
-> > 
-> > 	requesttype = 0x01;/* read_in */
-> > 	wvalue = (u16)(addr & 0x0000ffff);
-> > 	len = 2;
-> > 	usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> > 
-> > 	return (u16)(le32_to_cpu(data) & 0xffff);
-> > }
-> > 
-> > 
-> > Bases on this code, I think, it's oblivious, that data comes in
-> > little-endian. That's why I leaved temp variable for casting le32 to
-> > cpu's endianess.
-
-Yes you did well (if we trust the old code :)), anyway I guess it
-was correct because I've just seen that data is __le32 also in other Realtek
-drivers.
-
-> > 
-> > I could just read into u{16,32} * and then make smth like
-> > 
-> > *data = le32_to_cpu(*data)
-> > 
-> > but static analysis tools will complain about wrong data type passed to
-> >    le32_to_cpu()
-
-Obviously the (not broken) tools should catch that and complain.
-
-> > + Phillip tested fixed v2 version and it worked well for him. I guess,
-> > Phillip was able to spot weird driver behavior, if this cast is wrong.
-> > 
-> 		^^^^^&
+On Mon, Aug 23, 2021 at 07:14:18PM -0700, Andi Kleen wrote:
 > 
-> I am wrong with this statement, I guess. Most likely, Phillip is testing 
-> on smth like x64 and this arch is le, so...
+> On 8/23/2021 6:04 PM, Dan Williams wrote:
+> > On Mon, Aug 23, 2021 at 5:31 PM Kuppuswamy, Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> > > 
+> > > 
+> > > On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
+> > > > > Add a new variant of pci_iomap for mapping all PCI resources
+> > > > > of a devices as shared memory with a hypervisor in a confidential
+> > > > > guest.
+> > > > > 
+> > > > > Signed-off-by: Andi Kleen<ak@linux.intel.com>
+> > > > > Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > > I'm a bit puzzled by this part. So why should the guest*not*  map
+> > > > pci memory as shared? And if the answer is never (as it seems to be)
+> > > > then why not just make regular pci_iomap DTRT?
+> > > It is in the context of confidential guest (where VMM is un-trusted). So
+> > > we don't want to make all PCI resource as shared. It should be allowed
+> > > only for hardened drivers/devices.
+> > That's confusing, isn't device authorization what keeps unaudited
+> > drivers from loading against untrusted devices? I'm feeling like
+> > Michael that this should be a detail that drivers need not care about
+> > explicitly, in which case it does not need to be exported because the
+> > detail can be buried in lower levels.
 > 
-> With regards,
-> Pavel Skripkin
+> We originally made it default (similar to AMD), but it during code audit we
+> found a lot of drivers who do ioremap early outside the probe function.
+> Since it would be difficult to change them all we made it opt-in, which
+> ensures that only drivers that have been enabled can talk with the host at
+> all and can't be attacked. That made the problem of hardening all these
+> drivers a lot more practical.
 > 
-Thanks,
+> Currently we only really need virtio and MSI-X shared, so for changing two
+> places in the tree you avoid a lot of headache elsewhere.
+> 
+> Note there is still a command line option to override if you want to allow
+> and load other drivers.
+> 
+> -Andi
 
-Fabio
+I see. Hmm. It's a bit of a random thing to do it at the map time
+though. E.g. DMA is all handled transparently behind the DMA API.
+Hardening is much more than just replacing map with map_shared
+and I suspect what you will end up with is basically
+vendors replacing map with map shared to make things work
+for their users and washing their hands.
 
+I would say an explicit flag in the driver that says "hardened"
+and refusing to init a non hardened one would be better.
+
+-- 
+MST
 
