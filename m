@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539263F5CED
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943173F5CF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbhHXLNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:13:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236462AbhHXLNA (ORCPT
+        id S235983AbhHXLNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:13:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49000 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231980AbhHXLNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:13:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629803536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 24 Aug 2021 07:13:43 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4351E1FD89;
+        Tue, 24 Aug 2021 11:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629803578; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sp6r3OzWSMu57KiEYb4z4Sr1QBf9aXwrMsxdCi+UL3c=;
-        b=LnaeJtdnvz+wt9mV7wf6yrYySFJSe+PR7Kxt0NeeHv1rz71UVGb+kQQszA1jNvyKvgFnUS
-        gNkR2qacvPoA33fDQFBMueHDjoBn4/Z5+5qA0c3yKMHNqi0sICGdhTgaYtVOmOzEi8E9P+
-        02Km4iX82Y25gwrtbMTf3DHTAJWFh6Y=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-0JI5Cvu2NHWTx9-_X4asrw-1; Tue, 24 Aug 2021 07:12:15 -0400
-X-MC-Unique: 0JI5Cvu2NHWTx9-_X4asrw-1
-Received: by mail-ej1-f69.google.com with SMTP id gg1-20020a170906e281b029053d0856c4cdso6884213ejb.15
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 04:12:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sp6r3OzWSMu57KiEYb4z4Sr1QBf9aXwrMsxdCi+UL3c=;
-        b=T7Xx1cDsKRemssFyIz7zMvXdz5ejnstPcEpLYJ7B5UzKZyt1muJbbiXNG7FQasFght
-         zMweKMGMW5aTe01lKKh4OFEgE6TERcdr1e5v6OJaKeHY5MjKINIIJIlgiqWTx7xrcKhE
-         44SDjgF9Qbh3KLhNAOOhv/RZFNN6pSpV/5Bqq7hR9kEYFeibOsgcA6tL1GWoUsSlzJ8M
-         DEFqH2nevPomGMMdE7ijuz6pb++0KIWP7B34jyHpUP8H8WYTVojwZGPrso65MRJzwgrr
-         YWZaM/FGt7df8H7bOBmXgAg3UBXRmhfLzLPfWxVKqg1dXutDRMF4rm3SioIRNWdLeE11
-         ajEw==
-X-Gm-Message-State: AOAM5303aLXVKjWaLwxGcryDQLvbFZnQPvl+g0iDArTL014SeMA+pWAE
-        XafsTci+PfXUSRNwIKfZv8jRXx6Aef7KiWbZz4TysvO00IjFqQ2rzT3HhhZ4u2tf1tkg0CgGI5A
-        M0gEjIfXElXLepuoSEUKk+Y/t
-X-Received: by 2002:a17:906:1701:: with SMTP id c1mr40193376eje.425.1629803534056;
-        Tue, 24 Aug 2021 04:12:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDklZBFBy5QnXrgs3+cqOF2EU5CCgdvdd15GqRk67R8P3Nj6qlQx0g2cCYgrph1uoICqAc7Q==
-X-Received: by 2002:a17:906:1701:: with SMTP id c1mr40193358eje.425.1629803533933;
-        Tue, 24 Aug 2021 04:12:13 -0700 (PDT)
-Received: from steredhat (host-79-45-8-152.retail.telecomitalia.it. [79.45.8.152])
-        by smtp.gmail.com with ESMTPSA id h21sm331619ejb.101.2021.08.24.04.12.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 04:12:13 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 13:12:07 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, stefanha@redhat.com,
-        parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
-        songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 05/12] vhost-vdpa: Handle the failure of vdpa_reset()
-Message-ID: <20210824111207.ppvop52hyq5xyny5@steredhat>
-References: <20210818120642.165-1-xieyongji@bytedance.com>
- <20210818120642.165-6-xieyongji@bytedance.com>
+        bh=T//DTmVMjK9REXkQcu9neG97LcFkMDx+SNqL/Q28EUM=;
+        b=fRmx+NCziQB/kslRCSbWJeLf2UbxXjgMMXjaPDlENPkeXv8VXVi63v1/UwYVH+vLMH1Wcw
+        +lWQf/SqPUjRW6PLG+B+em9HjByLUN4KdlB08dfuz2T0xiwbaJ4rdIKztcqlQVQPMv7Bdk
+        JVozl8DSmo1le6TAUNAuufvzrsZO4YE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629803578;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T//DTmVMjK9REXkQcu9neG97LcFkMDx+SNqL/Q28EUM=;
+        b=WDUBB+J/r3yrIg713s121i6sdEdLXOEdgLa4RC6efUSlkdWpTzKeP0NE7PdO5Mvwgv/Vvi
+        SOzg8qUV+Pag6CBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 064491393C;
+        Tue, 24 Aug 2021 11:12:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id +K4mOznUJGE9GAAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Tue, 24 Aug 2021 11:12:57 +0000
+Message-ID: <325020b2-67b0-7cdd-36e2-bdb90f8820e3@suse.cz>
+Date:   Tue, 24 Aug 2021 13:12:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210818120642.165-6-xieyongji@bytedance.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCHv2 1/2] kernel/workqueue: Make schedule_on_each_cpu as
+ EXPORT_SYMBOL_GPL
+Content-Language: en-US
+To:     Dennis Zhou <dennis@kernel.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Christoph Hellwig <hch@infradead.org>
+References: <5afc2a0c4da65e71ccf24fe65396710d34fc662e.1629751104.git.riteshh@linux.ibm.com>
+ <YSRUNzVEig80IBtq@fedora>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <YSRUNzVEig80IBtq@fedora>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 08:06:35PM +0800, Xie Yongji wrote:
->The vdpa_reset() may fail now. This adds check to its return
->value and fail the vhost_vdpa_open().
->
->Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
->---
-> drivers/vhost/vdpa.c | 9 ++++++---
-> 1 file changed, 6 insertions(+), 3 deletions(-)
+On 8/24/21 04:06, Dennis Zhou wrote:
+> Hello,
+> 
+> On Tue, Aug 24, 2021 at 02:12:29AM +0530, Ritesh Harjani wrote:
+>> Make schedule_on_each_cpu as EXPORT_SYMBOL_GPL
+>> 
+>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>> ---
+>> [v1 -> v2]: Use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
+>> 
+>>  kernel/workqueue.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+>> index f148eacda55a..993f8983186d 100644
+>> --- a/kernel/workqueue.c
+>> +++ b/kernel/workqueue.c
+>> @@ -3309,6 +3309,7 @@ int schedule_on_each_cpu(work_func_t func)
+>>  	free_percpu(works);
+>>  	return 0;
+>>  }
+>> +EXPORT_SYMBOL_GPL(schedule_on_each_cpu);
+>> 
+>>  /**
+>>   * execute_in_process_context - reliably execute the routine with user context
+>> --
+>> 2.31.1
+>> 
+> 
+> I think you missed the point of Christoph's comment. I agree with him
+> and don't think a test justifies exporting of this particular function.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Could symbol namespaces help in these cases? It feels wrong to limit in-tree
+test modules this way.
+https://www.kernel.org/doc/html/latest/core-api/symbol-namespaces.html
+
+> Thanks,
+> Dennis
+> 
 
