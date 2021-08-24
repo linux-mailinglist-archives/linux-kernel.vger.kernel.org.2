@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04D23F68A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3D33F68B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238996AbhHXSD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
+        id S237947AbhHXSEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240359AbhHXSDX (ORCPT
+        with ESMTP id S239230AbhHXSEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:03:23 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163E7C05341F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:55:03 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id w68so19040109pfd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4J5j+k1+Wm4LiIcjdeGw8k45En6ooyJF7Ed5B1HrBS4=;
-        b=KnQa+5opeiORJxUDlWkw/U4OGuIRvQuBVFYGmWedW8w9IZGLHsBgRByw+g4Qhr0wlF
-         KlfHvSqhxi0xgIkGeLoQcDQ+KfXCMDOcRP5b1CIHt8l69y94dYrhrBbYj5um14LlEWSN
-         nDW2xc+kYhzMNroW3eO5OANYh9JBIt2l/HkoVTT+6VaYGa9xTvqFIN5wPbe2W1E4l/8y
-         frG9v/APtM/naDuGR7PjPEQlh7m7jkeahe4Hpohc7pKEKPa0K0Dh5QtQuhNi4KsK/Yjt
-         YPah5W2wxEmU+Bt8o6cyKCgBz0loeguRQpbpGVT7LLr08f3CUf05u7tsyXRZ+ZzkXzyx
-         wU5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4J5j+k1+Wm4LiIcjdeGw8k45En6ooyJF7Ed5B1HrBS4=;
-        b=pjsBhs/VP5tSeO81Lcb+RzlqUg5WOUSJd9zIKMVNpzsdLF1rXGJSVan8vXmoDcrUdG
-         lZ1X8xhND4LO//KrC98SD9YGrp1XvSgy9sE3EONeG0EU/s/OKjEJAMwGyIA7L1xjwrZX
-         4p6OdwWaesKoCHd+mb9porcnfrSEHr0rVNks7EuvawsRYralA44Fapsji5gPHKtSyHUT
-         whr7p5JMBrWTkRvDQSNJvubi8el4BZr9pMQNwfEWX4z1eiZtBxQz59n4VZ2YelbgqGlP
-         CEr2w6a5+8dc31Gv3oW5SDYqtP0WVxITaXXcjgUkonBiBPnhozeewc2Yiix1mjQvCBY8
-         KLvw==
-X-Gm-Message-State: AOAM533h+0QLp6jrfQTMakgFozkK2Ca3snzOpne6MQKI9PNLPPuLg5v5
-        B9DmoNllOUAUPmPXlxj69uuTSQ==
-X-Google-Smtp-Source: ABdhPJyRw81LMBUlPNEoFF4xwZdCR62gyKKRHRAlbz3WaV8wPpEL8Gz0byfS9O/EhGPAKaa8IPdgAw==
-X-Received: by 2002:a65:404d:: with SMTP id h13mr14995782pgp.130.1629827702354;
-        Tue, 24 Aug 2021 10:55:02 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id y3sm23770995pgc.67.2021.08.24.10.55.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 10:55:01 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 17:54:56 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] KVM: VMX: Restore host's MSR_IA32_RTIT_CTL when it's
- not zero
-Message-ID: <YSUycNbERUv6xGmB@google.com>
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-2-xiaoyao.li@intel.com>
+        Tue, 24 Aug 2021 14:04:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F7EC035426;
+        Tue, 24 Aug 2021 10:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pTa7CJ6QaTq6UueYZg9lyVDrVwoJx5n2tyWb82cOfR0=; b=CTZxkTVCpt8lr38ykH3ksUqKTC
+        spllFLWvt5uzaa0YpRVVqpqvIzdPS1hh1NZTcwUCGU2UzW67tQXdB9n13bhxwNMOwhYPAxEB9VnOO
+        Ih/U9EsYoY6ly9jiBGwkEizMbOonx07+f+gh1aPVCyAy97C8x3bU+4j/UgrRkuoHjuO4AuN0fMFGW
+        fi7zB6U1Bw5Gxp1f4lq1WIKvRA6PBCrzXZNPWHZpj34H/Mwkw0zOjMPT9ESIAuNhsW52oto83eSAQ
+        fNMSiSGxY2TcsTQw9v2Gi7DG0otiljMNtHnaCcJqv2dLOAL3QhAWa2veX3G5k5DSA6NmUJuz8EW10
+        XuebDQcw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIafB-00BNao-VY; Tue, 24 Aug 2021 17:56:58 +0000
+Date:   Tue, 24 Aug 2021 18:56:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSUy2WwO9cuokkW0@casper.infradead.org>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824110743.531127-2-xiaoyao.li@intel.com>
+In-Reply-To: <1957060.1629820467@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021, Xiaoyao Li wrote:
-> A minor optimation to WRMSR MSR_IA32_RTIT_CTL when necessary.
+On Tue, Aug 24, 2021 at 04:54:27PM +0100, David Howells wrote:
+> One question does spring to mind, though: do filesystems even need to know
+> about hardware pages at all?  They need to be able to access source data or a
+> destination buffer, but that can be stitched together from disparate chunks
+> that have nothing to do with pages (eg. iov_iter); they need access to the
+> pagecache, and may need somewhere to cache pieces of information, and they
+> need to be able to pass chunks of pagecache, data or bufferage to crypto
+> (scatterlists) and I/O routines (bio, skbuff) - but can we hide "paginess"
+> from filesystems?
 > 
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> The main point where this matters, at the moment, is, I think, mmap - but
+> could more of that be handled transparently by the VM?
+
+It really depends on the filesystem.  I just audited adfs, for example,
+and there is literally nothing in there that cares about struct page.
+It passes its arguments from ->readpage and ->writepage to
+block_*_full_page(); it uses cont_write_begin() for its ->write_begin;
+and it uses __set_page_dirty_buffers for its ->set_page_dirty.
+
+Then there are filesystems like UFS which use struct page extensively in
+its directory handling.  And NFS which uses struct page throughout.
+Partly there's just better infrastructure for block-based filesystems
+(which you're fixing) and partly NFS is trying to perform better than
+a filesystem which exists for compatibility with a long-dead OS.
+
+> > Because, as you say, head pages are the norm. And "folio" may be a
+> > clever term, but it's not very natural. Certainly not at all as
+> > intuitive or common as "page" as a name in the industry.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index fada1055f325..e0a9460e4dab 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1075,7 +1075,8 @@ static void pt_guest_exit(struct vcpu_vmx *vmx)
->  	}
->  
->  	/* Reload host state (IA32_RTIT_CTL will be cleared on VM exit). */
-
-Could you opportunistically update the comment to call out that KVM requires
-VM_EXIT_CLEAR_IA32_RTIT_CTL to expose PT to the guest?  E.g. something like
-
-	/*
-	 * KVM's requires VM_EXIT_CLEAR_IA32_RTIT_CTL to expose PT to the guest,
-	 * i.e. RTIT_CTL is always cleared on VM-Exit.  Restore it if necessary.
-	 */
-
-With that,
-
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
-
-> -	wrmsrl(MSR_IA32_RTIT_CTL, vmx->pt_desc.host.ctl);
-> +	if (vmx->pt_desc.host.ctl)
-> +		wrmsrl(MSR_IA32_RTIT_CTL, vmx->pt_desc.host.ctl);
->  }
->  
->  void vmx_set_host_fs_gs(struct vmcs_host_state *host, u16 fs_sel, u16 gs_sel,
-> -- 
-> 2.27.0
+> That's mostly because no one uses the term... yet, and that it's not commonly
+> used.  I've got used to it in building on top of Willy's patches and have no
+> problem with it - apart from the fact that I would expect something more like
+> a plural or a collective noun ("sheaf" or "ream" maybe?) - but at least the
+> name is similar in length to "page".
 > 
+> And it's handy for grepping ;-)
+
+If the only thing standing between this patch and the merge is
+s/folio/ream/g, I will do that.  All three options are equally greppable
+(except for 'ream' as a substring of dream, stream, preamble, scream,
+whereami, and typos for remain).
+
