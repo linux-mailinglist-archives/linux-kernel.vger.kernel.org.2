@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC933F61C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F463F61C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238330AbhHXPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:36:22 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:39696 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbhHXPgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:36:21 -0400
-Received: by mail-ot1-f54.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so47118976otf.6;
-        Tue, 24 Aug 2021 08:35:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jINYQ1mvHiE2zLCibJDthuXZKNa+sewnEyR+eVgyDUc=;
-        b=gzTjIUzx6SbNm74FsVAs3TDLsgYjLmn9zecn8xWSg8FHXEgXrJ9+IUsoswBn4xBP/m
-         fkd6W4a2GSTLxfSGaQvz8jiKTkrbHd60oGWvOZ5E7NedVAjGT//xKqnjD1Hela7WJn7k
-         qoka7CRFkUiPy0kB/tbXo2zo0jQoQmnhrFUgL6aaBx2mu5jR+TFD6kvwiV21ettcexHB
-         OD8PA4Ys7Qq6zcNj1zqRsdk6P2FaoumKhTmop0FjAJ6MCKAfYUibX6x02PY8u0k/d3TA
-         tIKl6ZDhCObwb+H7SSZ8tQexlAPbgcVnobgJxTBM/ETUXzrLMlAkcz0V6JGmV1d3pmRL
-         TYSA==
-X-Gm-Message-State: AOAM530HW3rFIlMMcdBSUsfuFPuYp9QYMHZtXvtVp1ZM1bgxQBdO2mhx
-        5MlpjeBfDcsZpb9nVoj6Kg==
-X-Google-Smtp-Source: ABdhPJwro+5pXYcQli7tWFYc7LyPVh7C9bSuXsvUSn+YdFxxcHSAJ6CXP/U5QuZPqO6bL9O1ZEre6A==
-X-Received: by 2002:a05:6830:3482:: with SMTP id c2mr11429689otu.16.1629819336616;
-        Tue, 24 Aug 2021 08:35:36 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l16sm4589113ota.55.2021.08.24.08.35.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 08:35:35 -0700 (PDT)
-Received: (nullmailer pid 496698 invoked by uid 1000);
-        Tue, 24 Aug 2021 15:35:34 -0000
-Date:   Tue, 24 Aug 2021 10:35:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        id S238355AbhHXPgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:36:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:23966 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234546AbhHXPgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:36:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="204470941"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="204470941"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:35:56 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="526668309"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.172.211]) ([10.249.172.211])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:35:53 -0700
+Subject: Re: [PATCH 4/5] KVM: VMX: Disallow PT MSRs accessing if PT is not
+ exposed to guest
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] dt-bindings: Add 'slot-power-limit' PCIe port
- property
-Message-ID: <YSURxtc7UAaSEfSy@robh.at.kernel.org>
-References: <20210820160023.3243-1-pali@kernel.org>
- <20210820160023.3243-2-pali@kernel.org>
+References: <20210824110743.531127-1-xiaoyao.li@intel.com>
+ <20210824110743.531127-5-xiaoyao.li@intel.com> <YSUALsBF8rKNPiaS@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <8b53fc19-c3cc-d11f-37e3-70fc0639878d@intel.com>
+Date:   Tue, 24 Aug 2021 23:35:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210820160023.3243-2-pali@kernel.org>
+In-Reply-To: <YSUALsBF8rKNPiaS@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 06:00:21PM +0200, Pali Rohár wrote:
-> This property specifies slot power limit in mW unit. It is form-factor and
-> board specific value and must be initialized by hardware.
+On 8/24/2021 10:20 PM, Sean Christopherson wrote:
+> On Tue, Aug 24, 2021, Xiaoyao Li wrote:
+>> Per SDM, it triggers #GP for all the accessing of PT MSRs, if
+>> X86_FEATURE_INTEL_PT is not available.
+>>
+>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/vmx.c | 20 ++++++++++++++------
+>>   1 file changed, 14 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index 4a70a6d2f442..1bbc4d84c623 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -1010,9 +1010,16 @@ static unsigned long segment_base(u16 selector)
+>>   static inline bool pt_can_write_msr(struct vcpu_vmx *vmx)
+>>   {
+>>   	return vmx_pt_mode_is_host_guest() &&
+>> +	       guest_cpuid_has(&vmx->vcpu, X86_FEATURE_INTEL_PT) &&
+>>   	       !(vmx->pt_desc.guest.ctl & RTIT_CTL_TRACEEN);
+>>   }
+>>   
+>> +static inline bool pt_can_read_msr(struct kvm_vcpu *vcpu)
+>> +{
+>> +	return vmx_pt_mode_is_host_guest() &&
+>> +	       guest_cpuid_has(vcpu, X86_FEATURE_INTEL_PT);
+>> +}
+>> +
+>>   static inline bool pt_output_base_valid(struct kvm_vcpu *vcpu, u64 base)
+>>   {
+>>   	/* The base must be 128-byte aligned and a legal physical address. */
+>> @@ -1849,24 +1856,24 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>   							&msr_info->data);
+>>   		break;
+>>   	case MSR_IA32_RTIT_CTL:
+>> -		if (!vmx_pt_mode_is_host_guest())
+>> +		if (!pt_can_read_msr(vcpu))
 > 
-> Some PCIe controllers delegates this work to software to allow hardware
-> flexibility and therefore this property basically specifies what should
-> host bridge programs into PCIe Slot Capabilities registers.
+> These all need to provide exemptions for accesses from the host.  KVM allows
+> access to MSRs that are not exposed to the guest so long as all the other checks
+> pass. 
+
+Not all the MSRs are allowed to be accessed from host regardless of 
+whether it's exposed to guest. e.g., MSR_IA32_TSC_ADJUST, it checks 
+guest CPUID first.
+
+For me, for those PT MSRs, I cannot think of any reason that 
+host/userspace would access them without PT being exposed to guest.
+
+On the other hand, since this patch indeed breaks the existing userspace 
+VMM who accesses those MSRs without checking guest CPUID.
+
+So I will follow your advice to allow the host_initiated case in next 
+version.
+
+> Same for the next patch.
+
+Sorry, I don't know how it matters next patch.
+
+> Easiest thing is probably to pass in @msr_info to the helpers and do the check
+> there.
 > 
-> Property needs to be specified in mW unit, and not in special format
-> defined by Slot Capabilities (which encodes scaling factor or different
-> unit). Host drivers should convert value from mW unit to their format.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  Documentation/devicetree/bindings/pci/pci.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
+>>   			return 1;
+>>   		msr_info->data = vmx->pt_desc.guest.ctl;
+>>   		break;
 
-This needs to be in dtschema schemas/pci/pci-bus.yaml instead.
-
-(pci.txt is still here because it needs to be relicensed to move all the 
-descriptions to pci-bus.yaml.)
-
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/pci.txt b/Documentation/devicetree/bindings/pci/pci.txt
-> index 6a8f2874a24d..e67d5db21514 100644
-> --- a/Documentation/devicetree/bindings/pci/pci.txt
-> +++ b/Documentation/devicetree/bindings/pci/pci.txt
-> @@ -32,6 +32,12 @@ driver implementation may support the following properties:
->     root port to downstream device and host bridge drivers can do programming
->     which depends on CLKREQ signal existence. For example, programming root port
->     not to advertise ASPM L1 Sub-States support if there is no CLKREQ signal.
-> +- slot-power-limit:
-> +   If present this property specifies slot power limit in mW unit. Host drivers
-
-As mentioned, this should have a unit suffix. I'm not sure it is 
-beneficial to share with SFP in this case though.
-
-> +   can parse this slot power limit and use it for programming Root Port or host
-> +   bridge, or for composing and sending PCIe Set_Slot_Power_Limit message
-> +   through the Root Port or host bridge when transitioning PCIe link from a
-> +   non-DL_Up Status to a DL_Up Status.
-
-I no nothing about how this mechanism works, but I think this belongs in 
-the next section as for PCIe, a slot is always below a PCI-PCI bridge. 
-If we have N slots, then there's N bridges and needs to be N 
-slot-power-limit properties, right?
-
-(The same is probably true for all the properties here except 
-linux,pci-domain.) There's no distinction between host and PCI bridges  
-in pci-bus.yaml though.
-
-Rob
