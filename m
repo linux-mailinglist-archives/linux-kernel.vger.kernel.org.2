@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E49C3F637A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60653F63D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhHXQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:55:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38282 "EHLO mail.kernel.org"
+        id S235597AbhHXQ6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:58:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232594AbhHXQzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:55:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 141F861183;
-        Tue, 24 Aug 2021 16:54:53 +0000 (UTC)
+        id S234194AbhHXQ51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F022613B1;
+        Tue, 24 Aug 2021 16:56:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824109;
-        bh=S3loidLLlu1xrh4xk6ck0Wtc3n7jz085PzeWqCBUG04=;
-        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-        b=SnE/VPqSsIHaRPvZjktlP2kD2wgG+k5z1bfxXHcdHzy2xHM/ZuEsJw546F7NTebsC
-         5E2WN+E4yXDFZpA1LWaevIGcmM/M7liCmBqwqbtmUkFyQvFBxqx1s39QVH7Wjv6fvN
-         OHmd/6mVqjwFuwCJ2jITtTgNvhmVR7oTqORL6eAWYcl6MnKSxdssCU2j9Vc2La84m7
-         v1eeTwgw5Q1nqIEFCTsIMX9OuzH8fhjtj4Hhe0iMr4NMc6sLy3XJRqpfkF+PVJu/Iw
-         f8uzUz86x3DIk/cLHi7tXBL50BNHR5DtUZg9rmSjqFbMa0XZfLciFO/Xzfn4TB+3wP
-         sSiTzVPo34gAA==
-References: <20210823184449.2796184-1-Nehal-Bakulchandra.shah@amd.com>
- <20210823184449.2796184-3-Nehal-Bakulchandra.shah@amd.com>
- <87pmu36ypp.fsf@kernel.org> <1d9ecba4-d180-2193-66a3-3812759e1916@amd.com>
- <87czq27r5w.fsf@kernel.org> <05c17f61-30db-6d10-d980-d3973dedfa5e@amd.com>
-User-agent: mu4e 1.6.4; emacs 27.2
-From:   Felipe Balbi <balbi@kernel.org>
-To:     "Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kun.liu2@amd.com,
-        alexander.deucher@amd.com
-Subject: Re: [PATCH 2/2] usb: dwc3: pci add property to allow user space
- role switch
-Date:   Tue, 24 Aug 2021 19:54:34 +0300
-In-reply-to: <05c17f61-30db-6d10-d980-d3973dedfa5e@amd.com>
-Message-ID: <878s0q7pgp.fsf@kernel.org>
+        s=k20201202; t=1629824202;
+        bh=5GkxJ/uysXH+AciU0UQE3ODT8MTstUCYeJtqNtYgWDE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Gurek7LdcDSDTk0usj50BZzqpepgNlDm02vkekTF0+lExaYKuVsWMK3CXla7jVsC1
+         q/wNLEGYgFo2N92+kSICnmv9I0DkhaB9t7w9igDG1u9+hWChIAjGZDOZ8MEh5sHUsY
+         cjOHiSzvuThl7ZMoC9HJHhVanukQdcHtZOZEnanYtiPc5JOQuhAndNtDlxCa/6VwFF
+         x5xpQB8/AL5O6W6sVhtKqdbL+It57oZAj0oVjDZT0wGZRswo/bw4mCGOHcThkwiJG9
+         HCdr74ozvoo9IoANUlfqt3NnWtY20h5LtzyqnEnX6ai6Z3VnEyaYgMHtRspWL7sM/s
+         RNhEufMcoT5zg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 035/127] mtd: rawnand: Fix probe failure due to of_get_nand_secure_regions()
+Date:   Tue, 24 Aug 2021 12:54:35 -0400
+Message-Id: <20210824165607.709387-36-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210824165607.709387-1-sashal@kernel.org>
+References: <20210824165607.709387-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.13-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.13.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.13.13-rc1
+X-KernelTest-Deadline: 2021-08-26T16:55+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Hi,
+[ Upstream commit b48027083a78b13356695555a05b0e085e378687 ]
 
-"Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com> writes:
-> On 8/24/2021 9:47 PM, Felipe Balbi wrote:
->> "Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com> writes:
->> 
->>> Hi
->>> On 8/24/2021 1:49 PM, Felipe Balbi wrote:
->>>> Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com> writes:
->>>>
->>>>> For AMD platform there is a requirement to enable user space role
->>>>> switch from host to device and device to host by means of running
->>>>> following commands.
->>>>>
->>>>> HOST:   echo host > /sys/class/usb_role/dwc3.0.auto-role-switch/role
->>>>> DEVICE: echo device > /sys/class/usb_role/dwc3.0.auto-role-switch/role
->>>> A more important question that needs to be answered: why?
->>>>
->>> Our customer platform is not completely capable of OTG i.e with type C
->>> controller it does not have PD to support role switching. Hence, they
->>> have script which triggers the role switch based on ACPI/EC interrupt.
->> sounds like some generalized version of this text should be added to
->> commit log.
->> 
-> Sure i will resubmit this patch with this description should be ok?
+Due to 14f97f0b8e2b, the rawnand platforms without "secure-regions"
+property defined in DT fails to probe. The issue is,
+of_get_nand_secure_regions() errors out if
+of_property_count_elems_of_size() returns a negative error code.
 
-yup, sounds good. Thank you
+If the "secure-regions" property is not present in DT, then also we'll
+get -EINVAL from of_property_count_elems_of_size() but it should not
+be treated as an error for platforms not declaring "secure-regions"
+in DT.
 
+So fix this behaviour by checking for the existence of that property in
+DT and return 0 if it is not present.
 
+Fixes: 14f97f0b8e2b ("mtd: rawnand: Add a check in of_get_nand_secure_regions()")
+Reported-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Martin Kaiser <martin@kaiser.cx>
+Tested-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210727062813.32619-1-manivannan.sadhasivam@linaro.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/mtd/nand/raw/nand_base.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index b18c089a7dca..4412fdc240a2 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5056,8 +5056,14 @@ static bool of_get_nand_on_flash_bbt(struct device_node *np)
+ static int of_get_nand_secure_regions(struct nand_chip *chip)
+ {
+ 	struct device_node *dn = nand_get_flash_node(chip);
++	struct property *prop;
+ 	int nr_elem, i, j;
+ 
++	/* Only proceed if the "secure-regions" property is present in DT */
++	prop = of_find_property(dn, "secure-regions", NULL);
++	if (!prop)
++		return 0;
++
+ 	nr_elem = of_property_count_elems_of_size(dn, "secure-regions", sizeof(u64));
+ 	if (nr_elem <= 0)
+ 		return nr_elem;
 -- 
-balbi
+2.30.2
+
