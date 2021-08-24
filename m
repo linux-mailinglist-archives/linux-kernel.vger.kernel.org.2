@@ -2,150 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3B43F61FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335023F620F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238457AbhHXPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:49:57 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:45911 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238287AbhHXPt4 (ORCPT
+        id S238511AbhHXPxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:53:11 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:20915 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238487AbhHXPxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:49:56 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 17OFmRk4007583;
-        Wed, 25 Aug 2021 00:48:28 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 17OFmRk4007583
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1629820108;
-        bh=Ja3N+HjtjaIU5nLg+1JURr3ykjAZgyE44nlGlYY37IQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gSXgU1uTCXcYG5tXWcfbjdJK9IpY2xDyCKYTmb9bG5yR3DMJddaJ8AcLwJdIa4PBK
-         fshqAme+OGa1Sq0NE7F9oPEFaBORwgyuQo5DqbMl8qU6uAiX56rCBM2BwK8BW1eZWY
-         I8NIFYS1nCzTybZA2XrQK9mH0XsATCrVTdvQJ3zIA2RyrkthM6FKomrsQWOBdzf/ZT
-         QrcFFSPzZHYRduiX4V/AZ2ie/hjnAbQrVgTkpOGj6OQfcY0w2fkNBXBsf3G0DzFEVf
-         wanSDLoj8y/JXUep4adWgoujPmwpXL1Ddq1KLGHCROpeLQzuseVZPg7blDAH3wAjYl
-         Xsgwa5/Uj6ubA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] parisc: remove unused arch/parisc/boot/install.sh and its phony target
-Date:   Wed, 25 Aug 2021 00:48:20 +0900
-Message-Id: <20210824154820.293290-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 24 Aug 2021 11:53:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1629820163;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Z/5zWNp0e+XXevjZGGIjoXisq5NlaUH+55xKsFFvgjA=;
+    b=qMfJSybJDcqmJaJ0zJVIfFYndAkBTZ4r9p8IVFbjdd5mdaAVMz4DMDeu53/zqOg6B+
+    D4EZxZxkpZo9dNwmcxqR0UFQCulMfP2WmK4eaHCtXGI+3ytCOt8fUxgj2XAfIXedTDFJ
+    GKjBwJozxuJEsvAppKmpqkkhB71MzXMv8n61CO09kAJsvlMoqWFmTZd+TXY4VcRYSVCV
+    3JQrqIYS1XhqA7dGkelaPt1T7Bu9DzVsLbFFqcmZ8Qa1L/UvzpLNWcjODJP3EyBWTQs8
+    29L+kNjpHTG49GBoEdkLzc+ZGmjF2DsF3wwPJ2KEmxqpsGY1AVowIA7i6/AFTMCS9qTj
+    jgiA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8puK1A=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
+    with ESMTPSA id L01e9cx7OFnMmOL
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 24 Aug 2021 17:49:22 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 17:49:18 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        An?bal Lim?n <anibal.limon@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: db410c: Update firmware-name for wcnss
+ and mpss
+Message-ID: <YSUU/r9OdK5OtNNn@gerhold.net>
+References: <20200108055735.660475-1-bjorn.andersson@linaro.org>
+ <20210217223406.1422005-1-anibal.limon@linaro.org>
+ <CAA8EJpqXyQCFGgTRk+dqxD6TdJycLeGx4EQ0OBov5_3hVogM1g@mail.gmail.com>
+ <YSUGLFx2QST9vgIU@ripper>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSUGLFx2QST9vgIU@ripper>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parisc has two similar installation scripts:
+On Tue, Aug 24, 2021 at 07:46:04AM -0700, Bjorn Andersson wrote:
+> On Tue 24 Aug 05:39 PDT 2021, Dmitry Baryshkov wrote:
+> 
+> > On Thu, 18 Feb 2021 at 01:38, Aníbal Limón <anibal.limon@linaro.org> wrote:
+> > >
+> > > From: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > >
+> > > Enable the mpss remoteproc node and specify the firmware-name for this
+> > > and the wcnss remoteproc on the Dragonboard 410c.
+> > >
+> > > Link: https://lore.kernel.org/r/20200108055735.660475-1-bjorn.andersson@linaro.org
+> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > [rebased and moved to use pronto label]
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > Tested-by: Aníbal Limón <anibal.limon@linaro.org>
+> > 
+> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > 
+> 
+> Thanks Dmitry, not sure why this hasn't been merged yet.
+> 
 
-  arch/parisc/install.sh
-  arch/parisc/boot/install.sh
+This patch keeps getting stuck for some reason.
+It was sent several times already but always forgotten. :)
 
-The latter is never used because 'make ARCH=parisc install' always
-invokes the 'install' target in arch/parisc/Makefile.
+> Taking a further look at this I noticed that we never pushed the
+> firmware to linux-firmware either, which I think was because we where
+> uncertain of the directory structure at the time - a discussion which
+> has been settled since.
+> 
+> > > ---
+> > >  arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > > index 3c7f97539390..8f1ada75d3ed 100644
+> > > --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > > +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > > @@ -301,6 +301,11 @@ &lpass {
+> > >         status = "okay";
+> > >  };
+> > >
+> > > +&mpss {
+> > > +       status = "okay";
+> > > +       firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mdt";
+> 
+> But if we're pushing things to linux-firmware, does anyone object
+> against following the existing style and squashing the mdt+bNN files
+> into .mbn (and thereby making this modem.mbn and below wcnss.mbn)?
+> 
 
-The target in arch/parisc/boot/Makefile is not used either.
+You made this change in some version already :)
+https://lore.kernel.org/linux-arm-msm/20210312003318.3273536-6-bjorn.andersson@linaro.org/
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+I think there was no real objection back then but more confusion about
+how to get the squashed .mbn variant. Having it in linux-firmware would
+certainly make it a lot easier overall if you can make that happen. :)
 
-Changes in v2:
-  - Remove arch/parisc/boot/install.sh
+The latest version of this patch that I am aware of is the following one:
+https://lore.kernel.org/linux-arm-msm/20210531224453.783218-1-bjorn.andersson@linaro.org/
 
- arch/parisc/boot/Makefile   |  4 ---
- arch/parisc/boot/install.sh | 65 -------------------------------------
- 2 files changed, 69 deletions(-)
- delete mode 100644 arch/parisc/boot/install.sh
+As I wrote there it's mainly stuck on getting the related wcn36xx patch [1]
+merged. Can you resend that one maybe?
 
-diff --git a/arch/parisc/boot/Makefile b/arch/parisc/boot/Makefile
-index 61f44142cfe1..b873ee4720ca 100644
---- a/arch/parisc/boot/Makefile
-+++ b/arch/parisc/boot/Makefile
-@@ -15,7 +15,3 @@ $(obj)/bzImage: $(obj)/compressed/vmlinux FORCE
- 
- $(obj)/compressed/vmlinux: FORCE
- 	$(Q)$(MAKE) $(build)=$(obj)/compressed $@
--
--install: $(CONFIGURE) $(obj)/bzImage
--	sh -x  $(srctree)/$(obj)/install.sh $(KERNELRELEASE) $(obj)/bzImage \
--	      System.map "$(INSTALL_PATH)"
-diff --git a/arch/parisc/boot/install.sh b/arch/parisc/boot/install.sh
-deleted file mode 100644
-index 8f7c365fad83..000000000000
---- a/arch/parisc/boot/install.sh
-+++ /dev/null
-@@ -1,65 +0,0 @@
--#!/bin/sh
--#
--# arch/parisc/install.sh, derived from arch/i386/boot/install.sh
--#
--# This file is subject to the terms and conditions of the GNU General Public
--# License.  See the file "COPYING" in the main directory of this archive
--# for more details.
--#
--# Copyright (C) 1995 by Linus Torvalds
--#
--# Adapted from code in arch/i386/boot/Makefile by H. Peter Anvin
--#
--# "make install" script for i386 architecture
--#
--# Arguments:
--#   $1 - kernel version
--#   $2 - kernel image file
--#   $3 - kernel map file
--#   $4 - default install path (blank if root directory)
--#
--
--verify () {
--	if [ ! -f "$1" ]; then
--		echo ""                                                   1>&2
--		echo " *** Missing file: $1"                              1>&2
--		echo ' *** You need to run "make" before "make install".' 1>&2
--		echo ""                                                   1>&2
--		exit 1
--	fi
--}
--
--# Make sure the files actually exist
--
--verify "$2"
--verify "$3"
--
--# User may have a custom install script
--
--if [ -n "${INSTALLKERNEL}" ]; then
--  if [ -x ~/bin/${INSTALLKERNEL} ]; then exec ~/bin/${INSTALLKERNEL} "$@"; fi
--  if [ -x /sbin/${INSTALLKERNEL} ]; then exec /sbin/${INSTALLKERNEL} "$@"; fi
--fi
--
--# Default install
--
--if [ "$(basename $2)" = "zImage" ]; then
--# Compressed install
--  echo "Installing compressed kernel"
--  base=vmlinuz
--else
--# Normal install
--  echo "Installing normal kernel"
--  base=vmlinux
--fi
--
--if [ -f $4/$base-$1 ]; then
--  mv $4/$base-$1 $4/$base-$1.old
--fi
--cat $2 > $4/$base-$1
--
--# Install system map file
--if [ -f $4/System.map-$1 ]; then
--  mv $4/System.map-$1 $4/System.map-$1.old
--fi
--cp $3 $4/System.map-$1
--- 
-2.30.2
+Thanks,
+Stephan
 
+[1]: https://lore.kernel.org/linux-arm-msm/20210312003318.3273536-3-bjorn.andersson@linaro.org/
