@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1263F57E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F033F57E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhHXGGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
+        id S231565AbhHXGH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhHXGF7 (ORCPT
+        with ESMTP id S229623AbhHXGHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:05:59 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E82DC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:05:14 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id 22so21970856qkg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:05:14 -0700 (PDT)
+        Tue, 24 Aug 2021 02:07:53 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7B0C061575;
+        Mon, 23 Aug 2021 23:07:09 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id e3so9699036qth.9;
+        Mon, 23 Aug 2021 23:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Z3TtP4IobkcTY8qNNlP+BE4RBeN/qz02UuKRNYsyInc=;
-        b=Nu7Ceh2iPhAvIxWNTXCLxrA1jMHCTxf2u3JByOpIPKk/qr8qEOWv0m53hPW6FUOIT/
-         r5yBruosz9QGqRlOd/et4/QM/FKJG5iyEYoB+rUAEpggSFVaVI1JIbc41JbHc9BH9HJ3
-         EMAQjWMo2TFFGu1iChsOpulC78P7PVPk4a1AO8MVY0myyXEZp9UmusGOAJRGEd4nKY+h
-         JL0gAP4J10PqQmXMeX2e4j+HDk31v6k7TiHJfLGowdmlerQVHespCXwLDkrBQrCVrGQa
-         yvDj2NU+q1cOZ3WaQiDoRhGzP0tCW0D308uq38qZuVo3s/7axb6odstFGrjZjBIgEUTM
-         7u+g==
+        bh=xlxVIlSIJOfwlvlyoHVU5DcvdPbYDq3D2Wp4glE4NMQ=;
+        b=aVRcjTk2xVRDpklFxv1rTRvnh9OxA13KpPftmpbWOxvC6Jy4PrlYStTMIqPTSXnZBq
+         8ry65Z13+LJTmx+R/4fMICmBccxu6RRCEoexOnwI/hl1iu4YKR5A5qFBayz7yLlsTVqA
+         jRBb6IwtVuI+b5jpZvqGRfF6RC6NybSU4DhMTyubv8ZRORUERo5+jZUKyRfNE//uW9Qw
+         W/oQPqUuFzIfPANJiy/5IQlbfDiQ3KKm9b0dbAmxib1ShBlYM1gMQFuRn8ARAxfYhdto
+         xflEkGQd6BABzT7aNthhAxLQ3y5Ro7inh2kGxXyeCAo71Ros3E/V/ogim94hcQ6Zw2bn
+         IK4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Z3TtP4IobkcTY8qNNlP+BE4RBeN/qz02UuKRNYsyInc=;
-        b=AogCk1sXVRoh7fBpImKt0r0Q3D8WIjhgwQ9n3Qm31Dqgt8WrkLqIoBNGA6D9DeCfVN
-         wqfX43cNkooqTpOwgEu+sekJdcVPJwj00QLWHbyXM5s9m71EnMCTxsnguXiehpN+j1tz
-         izTOZELvfv35LawisM/dPo5PwWGzlPTejFOxr6NeW2kEstcwS3QLFD28wL8v6CeWZlnF
-         bbvVTfCoXRKsA+2OYvcialVh3UCyvKs4fGSUlzHROXJarlxoAG8WcmJHyWfuEZ9vWxfn
-         M+SUp6uqC99SIRUcGeW7Mgoq971PFvquqs9U0ACNLOCmWA9QfKgCNvV7kXRLalsJvvrX
-         rvRA==
-X-Gm-Message-State: AOAM531d2jkT9DN9dlxlJ4S1Mh3gF6qzFlhlE+b6KWbqPnhN0Hzaoqx/
-        5aUGEIygrsweqaovazFzgg4=
-X-Google-Smtp-Source: ABdhPJzOniucjcEB+kpjbU4EHQFgFRxh+0x+ye43yjAQ7NnhEcBml/udirUbZAMJyT6UBkxsxTr19g==
-X-Received: by 2002:a05:620a:129c:: with SMTP id w28mr24503737qki.359.1629785113901;
-        Mon, 23 Aug 2021 23:05:13 -0700 (PDT)
+        bh=xlxVIlSIJOfwlvlyoHVU5DcvdPbYDq3D2Wp4glE4NMQ=;
+        b=DtmJp7q0d21rpdJVNAbIMjoG8CYDCo8Phkt8BhjmOX0J5MT3hwtt9YgJpr0QNCtHfK
+         vwkYz6SCOkgm+BnUYfs/Qs18HnhQRk2sRfrwDoqeSlOBRVojBpUBIDuKOFOiCfOahtke
+         GBpdUKAE2os8Zx2jb14RbCR/11SIneCHbCxbebqFr5288yoGefyXH+CrrHKVYnfoBgLg
+         NJqKSjy/J2VqQrqZv+GESVnHq3KxrjQfIYUR9V/oYXXnRsBT7RTBGYgvpkLdakyUhZ1y
+         +KgI3BjdRKWkuat0J9NQOFu2nVF+SL/x3rWw0WrsQtxN5b/yifwvJ9wRFmSnefMqFM0G
+         E7eQ==
+X-Gm-Message-State: AOAM530D7KBhEsgeQxC41BbW1Ti3MInGHGZTaGJxot1Cq7P30/63UVen
+        FiZix2ZdJvW5/rCUEFh5yd9k8ucYJUE=
+X-Google-Smtp-Source: ABdhPJzvoJGu2eEDi45tIT+9IwlTn7ZQP9gA7GNK3uPiukbk2Eg0W31PujTJScxx/Bo8gzIqbn9Jjg==
+X-Received: by 2002:ac8:7761:: with SMTP id h1mr15123062qtu.272.1629785228905;
+        Mon, 23 Aug 2021 23:07:08 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id h17sm2441933qtu.68.2021.08.23.23.05.10
+        by smtp.gmail.com with ESMTPSA id g13sm1803263qkk.110.2021.08.23.23.07.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:05:13 -0700 (PDT)
+        Mon, 23 Aug 2021 23:07:08 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        KP Singh <kpsingh@google.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org,
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] include:ima: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:05:06 -0700
-Message-Id: <20210824060506.58942-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] include:libata: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 23:07:02 -0700
+Message-Id: <20210824060702.59006-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -74,8 +66,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-./include/linux/ima.h:189:8-9:WARNING:return of 0/1 in function
-'is_ima_appraise_enabled' with return type bool
+./include/linux/libata.h:1462:8-9:WARNING: return of 0/1 in function
+'ata_is_host_link' with return type bool
 
 Return statements in functions returning bool should use true/false
 instead of 1/0.
@@ -85,22 +77,22 @@ Generated by: scripts/coccinelle/misc/boolreturn.cocci
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- include/linux/ima.h | 2 +-
+ include/linux/libata.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/ima.h b/include/linux/ima.h
-index b6ab66a..15b4938 100644
---- a/include/linux/ima.h
-+++ b/include/linux/ima.h
-@@ -186,7 +186,7 @@ extern int ima_inode_setxattr(struct dentry *dentry, const char *xattr_name,
- #else
- static inline bool is_ima_appraise_enabled(void)
- {
--	return 0;
-+	return false;
- }
+diff --git a/include/linux/libata.h b/include/linux/libata.h
+index a2d1bae..860e63f 100644
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -1459,7 +1459,7 @@ static inline bool sata_pmp_attached(struct ata_port *ap)
  
- static inline void ima_inode_post_setattr(struct user_namespace *mnt_userns,
+ static inline bool ata_is_host_link(const struct ata_link *link)
+ {
+-	return 1;
++	return true;
+ }
+ #endif /* CONFIG_SATA_PMP */
+ 
 -- 
 1.8.3.1
 
