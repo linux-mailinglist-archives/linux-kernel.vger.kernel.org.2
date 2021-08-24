@@ -2,172 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACED3F5881
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9323F5883
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233048AbhHXGwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:52:53 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:11280 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhHXGwv (ORCPT
+        id S233481AbhHXGyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231540AbhHXGyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:52:51 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210824065206euoutp01da5839334675d59d5226258c5d4ecc8b~eK3vWbwK02038020380euoutp01a
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 06:52:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210824065206euoutp01da5839334675d59d5226258c5d4ecc8b~eK3vWbwK02038020380euoutp01a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629787926;
-        bh=hOewvhmSLW2lG+mu5+rYxlmwZoHyCa6gXj2IAgjI0cU=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=q8pnaa6QI706lMMFcIw34CzI7K1aiKPEhe8jFyyCZG9gZwJSH71WPNP67T+qBZlVP
-         w5DcIWnezpOxj1bndHbYUNXbgaqxz69FBsj9p59NOGExYEX2oC8Bn2ESfoRljtfSyL
-         UgfLC4pvj9Jx870zzus89Wr1kyuuz5/DtVRzFoSU=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210824065205eucas1p1b87ec04f3ed154fd70073694c8440500~eK3vCFrto0051900519eucas1p1q;
-        Tue, 24 Aug 2021 06:52:05 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id FB.9A.45756.51794216; Tue, 24
-        Aug 2021 07:52:05 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210824065205eucas1p1b4fffa57afb640bf9e33cb86436ec6f9~eK3ufr0sW0037900379eucas1p1k;
-        Tue, 24 Aug 2021 06:52:05 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210824065205eusmtrp15ff9e7aeb101d7a2f43dd80f2a9f4bf2~eK3ueh8GL2568325683eusmtrp1V;
-        Tue, 24 Aug 2021 06:52:05 +0000 (GMT)
-X-AuditID: cbfec7f2-7bdff7000002b2bc-7f-61249715611e
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 09.1E.20981.41794216; Tue, 24
-        Aug 2021 07:52:04 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210824065204eusmtip1358d9eda4d304412d70dc61abd014851~eK3tzf3P40183701837eusmtip1R;
-        Tue, 24 Aug 2021 06:52:04 +0000 (GMT)
-Subject: Re: [PATCH v2] of: property: fw_devlink: Add support for
- "phy-handle" property
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>, netdev@vger.kernel.org,
-        kernel-team@android.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <460fcbed-ef4f-2122-3e1f-1517b8d21876@samsung.com>
-Date:   Tue, 24 Aug 2021 08:52:03 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.13.0
+        Tue, 24 Aug 2021 02:54:12 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA5CC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:53:26 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id w8so18902231pgf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:53:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0jQVnHCLqBk2LRj/gOBDVJ368OV7bEid1vgTCabVIn4=;
+        b=CObson2ozZr4tFYUquzE8I/b2cX2xxA/qYHDKIKqUeYkUozPkgJOn3tWUnbATZsIwT
+         m9kFTKTS+nNahFBiAbviB7ffx524dlvod8STM/admTnWeaXzB+eoxKEtrCR1KggmJTcT
+         Wk8ndfRjY1o9TLR6HO7Q2yC38+c77r71diVIc9puxfe9d+58beY6SeUjvuwb81eRqMF/
+         YmHXo26h1esXoChffKqbCSl2M4vPpEi7J1hiOkbb9JT56tV4AttGUlWgp0l8anXBgHcu
+         OcJsJa04T9X2p7gpi8OwmlXBxsWWuGrWw+ESoWKDS9JAF4HPwBRghT1MfVfVYWNjSPg2
+         0xRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0jQVnHCLqBk2LRj/gOBDVJ368OV7bEid1vgTCabVIn4=;
+        b=Gq2DvtF1N5YBkLt4bpTUelbCjcDk9IRYFVLeTvl+PjFya5pPG6MjgCMmriLLraYp+Z
+         Y/KWs/Quh8LSwi3FUDdEfAQ+I0e+bLxW3Y8aorjZ+I5r5AaY0J+np+Q6SoKKyNQKYo7+
+         SgTuCoK9K17g+TVwXTZYxt5vlPdlXt4PYPJaYjZh5sfkUkpHejAL1mfYLGhzJItIhKWn
+         ftU/1/q1Kmt4ph9Sfi5B1foIs/OVo28WCX34/gD/t7XO37ZcxZ9shLRizeQ9r9OWG7b1
+         w73UJygrowxjlR1s9zEJjB6zDdF8HGB3KiAG5KjjSbkYAgjEU+slIfQT8t3Jqheo2maz
+         r0Uw==
+X-Gm-Message-State: AOAM532Go737K4VJJlQFUb3el7M/24pQy57je9lQlMz+wIMwMTqUXrzp
+        +uRAolYJdOXMgIEzrt5ygDS2iA==
+X-Google-Smtp-Source: ABdhPJyQT1auFFvuxiRbl7EfawGmVwn+TYKdQI0bC+VKpLIPB1Nx34GRHbITbh/CG0k9x3TVMW1frw==
+X-Received: by 2002:aa7:8c41:0:b0:3e3:1279:105 with SMTP id e1-20020aa78c41000000b003e312790105mr28189996pfd.80.1629788006083;
+        Mon, 23 Aug 2021 23:53:26 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id i6sm18053841pfa.44.2021.08.23.23.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 23:53:25 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 14:53:19 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
+        acme@kernel.org, suzuki.poulose@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/9] perf cs-etm: Initialise architecture based on
+ TRCIDR1
+Message-ID: <20210824065319.GA204566@leoy-ThinkPad-X240s>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-3-james.clark@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <YSOfvMIltzWPCKc/@lunn.ch>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGKsWRmVeSWpSXmKPExsWy7djPc7qi01USDS4tVbE4f/cQs8X8I+dY
-        LWa++c9msWO7iMWC2dwWl3fNYbM41BdtcWyBmEXr3iPsFl2H/rI5cHls272N1eP9jVZ2j52z
-        7rJ7LNhU6rFpVSebx+Yl9R47d3xm8vi8SS6AI4rLJiU1J7MstUjfLoEr48lFk4IrghVfTs1h
-        bmDczdfFyMkhIWAi8eDEYcYuRi4OIYEVjBK9k0+wQjhfGCXaTl6Ecj4zSpybMJcdpuXT5w4m
-        iMRyRomzL36xQzgfGSWuP9jLAlIlLBApcXbfXjYQW0RAQWLKyT9go5gFNjNJHP/+lBkkwSZg
-        KNH1tgusiFfATuL/xtNMIDaLgKrEur+fGUFsUYFkiYlPJrFC1AhKnJz5BGwBp4C6RFfTI7Aa
-        ZgF5ie1v5zBD2OISt57MBztPQqCZU+LWmadACziAHBeJq+/qIV4Qlnh1fAvUOzISpyf3sEDV
-        M0o8PLeWHcLpYZS43DSDEaLKWuLOuV9gg5gFNCXW79KHCDtK/G5/zAoxn0/ixltBiBv4JCZt
-        m84MEeaV6GgTgqhWk5h1fB3c2oMXLjFPYFSaheSzWUi+mYXkm1kIexcwsqxiFE8tLc5NTy02
-        zEst1ytOzC0uzUvXS87P3cQITFqn/x3/tINx7quPeocYmTgYDzFKcDArifD+ZVJOFOJNSays
-        Si3Kjy8qzUktPsQozcGiJM67avaaeCGB9MSS1OzU1ILUIpgsEwenVANT9l877wn1xkJbg7bZ
-        L8kr5dK/kyt3+84S86w5OT+upG50bVSe7fN8Vk/O/lyR9L1HTcOin+5jnMXNcc+IOf7It3PT
-        NAqtWY/dLdWP/8t0Um9bDcvOhiqbiYtVNhbtPFn/4tE6/gyjLzd4n4QJsN8+V3WC0aXCZ1b8
-        zo6d+nWlr/6rnmE4bpLzLau8WML2/jT+zaacD3n0orwU/6d+frqB9RVjg+eFsiJRsQ0TRH7M
-        TDwvVHnA+PM6fY2uuxt+KH7UmHy97FzUGaZF/148Om78sOZr9IyXDpsV3395dTDufvU5O631
-        r+IFV5p9cPhb8zTmUVXM7k5pj+TTpr/OC369ejnhDO/HV246E2Y+6ZflVWIpzkg01GIuKk4E
-        AOF/qzfJAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBIsWRmVeSWpSXmKPExsVy+t/xu7oi01USDV52WVmcv3uI2WL+kXOs
-        FjPf/Gez2LFdxGLBbG6Ly7vmsFkc6ou2OLZAzKJ17xF2i65Df9kcuDy27d7G6vH+Riu7x85Z
-        d9k9Fmwq9di0qpPNY/OSeo+dOz4zeXzeJBfAEaVnU5RfWpKqkJFfXGKrFG1oYaRnaGmhZ2Ri
-        qWdobB5rZWSqpG9nk5Kak1mWWqRvl6CX8eSiScEVwYovp+YwNzDu5uti5OSQEDCR+PS5g6mL
-        kYtDSGApo8T9pTOZIBIyEienNbBC2MISf651sUEUvWeUOPz0DTNIQlggUuL7s5OMILaIgILE
-        lJN/WEGKmAU2M0ms2nEGrEhI4D6jxPyl7iA2m4ChRNdbkEmcHLwCdhL/N54G28YioCqx7u9n
-        sEGiAskSH04vZYWoEZQ4OfMJC4jNKaAu0dX0CKyGWcBMYt7mh8wQtrzE9rdzoGxxiVtP5jNN
-        YBSahaR9FpKWWUhaZiFpWcDIsopRJLW0ODc9t9hIrzgxt7g0L10vOT93EyMwSrcd+7llB+PK
-        Vx/1DjEycTAeYpTgYFYS4f3LpJwoxJuSWFmVWpQfX1Sak1p8iNEU6J+JzFKiyfnANJFXEm9o
-        ZmBqaGJmaWBqaWasJM5rcmRNvJBAemJJanZqakFqEUwfEwenVAOTLCfLnymubBmLC+Ycqvra
-        ZxZoyzs3ckGGn9vvhycqtJeK/1oXueyOWqbK1iXCdz6svaTdr+a+eo7phxMvdn62m/dtBqvU
-        9uC1be7la/tum8bY/RaROXz8y8GPWWcTShbPLla29rsUv/uE3UNpnntlv44fMq7802JcvsBl
-        d/GCb/INh35bqfEtNPNjmfW2aoGceJEjm0vMpGNbf9wPf2vlz3rR0q9AaLPS+2O2Z54G10nL
-        zJER2P5PTjzZRNdt56G9ayXtPgYv4TqpPzcnUyBq0sUr1e1888rjzf5lz+BLWd/awnLu0Iri
-        Ca5TTnElBc14vOHasinZe0Wv7E+ftbUtKfJd2KlT9w9vPL3pwLpYByWW4oxEQy3mouJEAACc
-        LldbAwAA
-X-CMS-MailID: 20210824065205eucas1p1b4fffa57afb640bf9e33cb86436ec6f9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210823120849eucas1p11d3919886444358472be3edd1c662755
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210823120849eucas1p11d3919886444358472be3edd1c662755
-References: <20210818021717.3268255-1-saravanak@google.com>
-        <CGME20210823120849eucas1p11d3919886444358472be3edd1c662755@eucas1p1.samsung.com>
-        <0a2c4106-7f48-2bb5-048e-8c001a7c3fda@samsung.com>
-        <YSOfvMIltzWPCKc/@lunn.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210806134109.1182235-3-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Fri, Aug 06, 2021 at 02:41:02PM +0100, James Clark wrote:
+> Currently the architecture is hard coded as ARCH_V8, but from ETMv4.4
+> onwards this should be ARCH_AA64.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> index 187c038caa19..787b19642e78 100644
+> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> @@ -126,6 +126,20 @@ static int cs_etm_decoder__gen_etmv3_config(struct cs_etm_trace_params *params,
+>  	return 0;
+>  }
+>  
+> +#define TRCIDR1_TRCARCHMIN_SHIFT 4
+> +#define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
+> +#define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
+> +static enum _ocsd_arch_version cs_etm_decoder__get_etmv4_arch_ver(u32 reg_idr1)
+> +{
+> +	/*
+> +	 * For ETMv4 if the trace minor version is 4 or more then we can assume
+> +	 * the architecture is ARCH_AA64 rather than just V8.
+> +	 * ARCH_V8 = V8 architecture
+> +	 * ARCH_AA64 = Min v8r3 plus additional AA64 PE features
+> +	 */
+> +	return TRCIDR1_TRCARCHMIN(reg_idr1) >= 4 ? ARCH_AA64 : ARCH_V8;
+> +}
+> +
+>  static void cs_etm_decoder__gen_etmv4_config(struct cs_etm_trace_params *params,
+>  					     ocsd_etmv4_cfg *config)
+>  {
+> @@ -140,7 +154,7 @@ static void cs_etm_decoder__gen_etmv4_config(struct cs_etm_trace_params *params,
+>  	config->reg_idr11 = 0;
+>  	config->reg_idr12 = 0;
+>  	config->reg_idr13 = 0;
+> -	config->arch_ver = ARCH_V8;
+> +	config->arch_ver = cs_etm_decoder__get_etmv4_arch_ver(params->etmv4.reg_idr1);
+>  	config->core_prof = profile_CortexA;
+>  }
 
-On 23.08.2021 15:16, Andrew Lunn wrote:
-> On Mon, Aug 23, 2021 at 02:08:48PM +0200, Marek Szyprowski wrote:
->> On 18.08.2021 04:17, Saravana Kannan wrote:
->>> Allows tracking dependencies between Ethernet PHYs and their consumers.
->>>
->>> Cc: Andrew Lunn <andrew@lunn.ch>
->>> Cc: netdev@vger.kernel.org
->>> Signed-off-by: Saravana Kannan <saravanak@google.com>
->> This patch landed recently in linux-next as commit cf4b94c8530d ("of:
->> property: fw_devlink: Add support for "phy-handle" property"). It breaks
->> ethernet operation on my Amlogic-based ARM64 boards: Odroid C4
->> (arm64/boot/dts/amlogic/meson-sm1-odroid-c4.dts) and N2
->> (meson-g12b-odroid-n2.dts) as well as Khadas VIM3/VIM3l
->> (meson-g12b-a311d-khadas-vim3.dts and meson-sm1-khadas-vim3l.dts).
->>
->> In case of OdroidC4 I see the following entries in the
->> /sys/kernel/debug/devices_deferred:
->>
->> ff64c000.mdio-multiplexer
->> ff3f0000.ethernet
->>
->> Let me know if there is anything I can check to help debugging this issue.
-> Hi Marek
->
-> Please try this. Completetly untested, not even compile teseted:
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-Nope, this doesn't help in this case.
-
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index 0c0dc2e369c0..7c4e257c0a81 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1292,6 +1292,7 @@ DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cells")
->   DEFINE_SIMPLE_PROP(leds, "leds", NULL)
->   DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
->   DEFINE_SIMPLE_PROP(phy_handle, "phy-handle", NULL)
-> +DEFINE_SIMPLE_PROP(mdio_parent_bus, "mdio-parent-bus", NULL);
->   DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
->   DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
->   
-> @@ -1381,6 +1382,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
->          { .parse_prop = parse_leds, },
->          { .parse_prop = parse_backlight, },
->          { .parse_prop = parse_phy_handle, },
-> +       { .parse_prop = parse_mdio_parent_bus, },
->          { .parse_prop = parse_gpio_compat, },
->          { .parse_prop = parse_interrupts, },
->          { .parse_prop = parse_regulators, },
->
-> 	Andrew
->
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+>  
+> -- 
+> 2.28.0
+> 
