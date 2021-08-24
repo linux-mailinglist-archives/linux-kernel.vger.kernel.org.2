@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0FC3F5F6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DC73F5F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237683AbhHXNrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:47:43 -0400
-Received: from ms.lwn.net ([45.79.88.28]:43358 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237682AbhHXNrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:47:40 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 787651C3F;
-        Tue, 24 Aug 2021 13:46:56 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 787651C3F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1629812816; bh=2Hlb19nSuaGuonU77eD1y1qzVeXYu1pmsQQQNUuOQEA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=DuQ7IwRZF6ja24opBUrL4vz7kneiieODc7+CSOQshjEpfVlff7nj94oSfySlRGYLn
-         W1Af5pGXCcJVBG8Hc1kJ7gre+jSJHYGeXrSvL6iHxo0ebbJZAAke9Rg7teGR/DjIQ3
-         ZN3RekO3/6AJW43jjs/i253B6r7pcAsxQ/r/vYQpPheia8JuWv7UUD+/Vz/tHqyrJ9
-         0EjpHEEbTZeKt5eDgokSZt8Jhps14iosu6jtpD6VTPSFIoKrEbpRw+md7/rOQLEeqk
-         utgNYEXS9S5il/ONzoLOesBoBooVtkqHsBHGEs3h/hVrNkl3SBlfiI2stE+BBe8x5B
-         o1Dzn/9nzmd3Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Henrique Barboza <danielhb413@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the powerpc tree
-In-Reply-To: <87v93ve7yg.fsf@linux.ibm.com>
-References: <20210823195540.4d7363ed@canb.auug.org.au>
- <20210823204803.7cb76778@canb.auug.org.au> <87v93ve7yg.fsf@linux.ibm.com>
-Date:   Tue, 24 Aug 2021 07:46:55 -0600
-Message-ID: <877dgbneeo.fsf@meer.lwn.net>
+        id S237698AbhHXNsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237541AbhHXNsd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:48:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F87C061757;
+        Tue, 24 Aug 2021 06:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ILj4XmfWQXIyzl8A5H+kdT/BqqpNT9Em5fDQ/6CntDo=; b=hDmbCCBH672Cm7KZMqVkOl5puv
+        gEwrlzbPC/sOnFf0o4JoRgzedBbMA02vRIp257K+VOzm/UIW6MLs5accdCbuh4rhX9HgMg3qblcdC
+        lOdPE6HOWLwppLnbxFx8RkNJUSA44ysCPy13PzgAJv4CKD9ttn5O3NI7G5/PuZX7dMWnte05il//x
+        U4HzHq3iHf7PPigiwutlyOe21HXuIw4Y1rk3+xWmv/vpLyvPP1bVk9uY/zM2u7f7UBBnnMpQRa7sd
+        vmVzULrmpWdpi9lms53EVJahkzCx7Fwf4UWmDg2//ZtnXypVf7U+uIQh6HnY0NvyLYlLPwnBZn2dz
+        FSTVFSnQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIWlu-00CbXe-Sj; Tue, 24 Aug 2021 13:47:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4DD5300252;
+        Tue, 24 Aug 2021 15:47:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 87CEF2C5B4A97; Tue, 24 Aug 2021 15:47:21 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 15:47:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, paulmck@kernel.org,
+        josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH][RFC] lockdep: improve comments in wait-type checks
+Message-ID: <YST4aWMArEBsKW07@hirez.programming.kicks-ass.net>
+References: <20210810210319.6564-1-zhouzhouyi@gmail.com>
+ <YRM5heBfgNtEGvoC@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YRM5heBfgNtEGvoC@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com> writes:
+On Wed, Aug 11, 2021 at 10:44:21AM +0800, Boqun Feng wrote:
+> Hi,
+> 
+> On Wed, Aug 11, 2021 at 05:03:19AM +0800, Zhouyi Zhou wrote:
+> > Hi Peter,
+> >   I think comments in wait-type checks may benifit from some comments
+> > improvement.
+> 
+> Thanks for looking into this!
+> 
+> Even for an RFC patch, it's better that you write a proper commit log,
+> and note that you can put all this background information right after
+> the "---" line, if you think that will help people review it.
+> 
+> >   I recklessly add Paul to signed-off-by, because I asked his opinion
+> > about comment in rcu_read_lock_bh part.
+> > 
+> 
+> Probably a Suggested-by will suffice, but I leave that to Paul ;-)
 
+This, also since Paul never actually touched the patch.
 
-> Thanks for looking into this. I guess we also need to format the below table?
->
->   | 0    8   40
-> --|------------
->   |
-> 0 | 10   20  80
->   |
-> 8 | 20   10  160
->   |
-> 40| 80   160  10
->
->
-> I don't know how to represent that in the documentation file. A table is
-> probably not the right one?
+> > Thanks a lot
+> > Zhouyi
+> > 
+> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> Please make you the last one in the "Signed-off-by" list, see
+> Documentation/process/submitting-patches.rst:
+> 
+> "Notably, the last Signed-off-by: must always be that of the developer
+> submitting the patch."
 
-The cheap way out is to put it in a literal block, of course.  Sphinx
-makes tables pretty easy, though:
+The first sob should be that of the author, and given that's the same
+person as the submitter in this case, he's got a problem at his hands
+;-)
 
-  https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#tables
-
-jon
