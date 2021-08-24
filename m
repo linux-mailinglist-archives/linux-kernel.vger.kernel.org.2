@@ -2,321 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3333F5C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFFF3F5C04
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhHXK3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:29:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:44536 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236168AbhHXK27 (ORCPT
+        id S236249AbhHXKZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:25:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:18033 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235829AbhHXKZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:28:59 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 969A920051;
-        Tue, 24 Aug 2021 10:28:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629800894; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nfhixkZoKYt7ltZuGvoMSJv4YyU9Ov7I0dmOxqpdsKE=;
-        b=DcR+51AtjNOu/RurWnkc4/qcw2RfDI2dJrDj/kJHKxCouGLQNJhFK50ZaZBZasJVpbTU7Q
-        iqFhF5ojLAljx7+nVh/UOfGJnk12i3tue4uY5AJkjdNeDxN1IDCzpRXe0jh3onS3kfaPuX
-        sIsCN8m06Dkp46Gon3fUJYQTn0DLNLo=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 52545136DD;
-        Tue, 24 Aug 2021 10:28:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id yDeiEr7JJGG8DwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Tue, 24 Aug 2021 10:28:14 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v2 4/4] xen/netfront: don't trust the backend response data blindly
-Date:   Tue, 24 Aug 2021 12:28:09 +0200
-Message-Id: <20210824102809.26370-5-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210824102809.26370-1-jgross@suse.com>
-References: <20210824102809.26370-1-jgross@suse.com>
+        Tue, 24 Aug 2021 06:25:15 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Gv4r85DFZzbhXS;
+        Tue, 24 Aug 2021 18:20:40 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 24 Aug 2021 18:24:29 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 24 Aug
+ 2021 18:24:29 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <vigneshr@ti.com>
+Subject: [PATCH -next] mtd: fix possible deadlock when loading and opening mtd device
+Date:   Tue, 24 Aug 2021 18:30:05 +0800
+Message-ID: <20210824103005.1895457-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today netfront will trust the backend to send only sane response data.
-In order to avoid privilege escalations or crashes in case of malicious
-backends verify the data to be within expected limits. Especially make
-sure that the response always references an outstanding request.
+I got the possible circular locking dependency detected report:
 
-Note that only the tx queue needs special id handling, as for the rx
-queue the id is equal to the index in the ring page.
+[   52.472106][  T483] ======================================================
+[   52.473212][  T483] WARNING: possible circular locking dependency detected
+[   52.474322][  T483] 5.14.0-rc6-next-20210820+ #438 Not tainted
+[   52.475272][  T483] ------------------------------------------------------
+[   52.476385][  T483] systemd-udevd/483 is trying to acquire lock:
+[   52.477356][  T483] ffffffff8c5d45a8 (mtd_table_mutex){+.+.}-{3:3}, at: blktrans_open.cold.18+0x44/0x4b1
+[   52.480510][  T483]
+[   52.480510][  T483] but task is already holding lock:
+[   52.481664][  T483] ffff88810eff8918 (&disk->open_mutex){+.+.}-{3:3}, at: blkdev_get_by_dev+0x428/0x910
+[   52.483164][  T483]
+[   52.483164][  T483] which lock already depends on the new lock.
+[   52.483164][  T483]
+[   52.484578][  T483]
+[   52.484578][  T483] the existing dependency chain (in reverse order) is:
+[   52.485803][  T483]
+[   52.485803][  T483] -> #1 (&disk->open_mutex){+.+.}-{3:3}:
+[   52.486888][  T483]        __mutex_lock+0x140/0x15d0
+[   52.487599][  T483]        bd_register_pending_holders+0xb9/0x302
+[   52.488463][  T483]        device_add_disk+0x375/0xcf0
+[   52.489198][  T483]        add_mtd_blktrans_dev+0x11a4/0x16f0
+[   52.490019][  T483]        mtdblock_add_mtd+0x21a/0x2b0
+[   52.490771][  T483]        blktrans_notify_add+0xae/0xdb
+[   52.491531][  T483]        add_mtd_device.cold.26+0xa98/0xc98
+[   52.492348][  T483]        mtd_device_parse_register+0x516/0x870
+[   52.493201][  T483]        mtdram_init_device+0x294/0x350
+[   52.493966][  T483]        init_mtdram+0xde/0x16e
+[   52.494644][  T483]        do_one_initcall+0x105/0x650
+[   52.495381][  T483]        kernel_init_freeable+0x6aa/0x732
+[   52.496171][  T483]        kernel_init+0x1c/0x1c0
+[   52.496847][  T483]        ret_from_fork+0x1f/0x30
+[   52.497530][  T483]
+[   52.497530][  T483] -> #0 (mtd_table_mutex){+.+.}-{3:3}:
+[   52.498591][  T483]        __lock_acquire+0x2cfa/0x5990
+[   52.499343][  T483]        lock_acquire+0x1a0/0x500
+[   52.500041][  T483]        __mutex_lock+0x140/0x15d0
+[   52.500749][  T483]        blktrans_open.cold.18+0x44/0x4b1
+[   52.501545][  T483]        blkdev_get_whole+0x9f/0x280
+[   52.502282][  T483]        blkdev_get_by_dev+0x593/0x910
+[   52.503041][  T483]        blkdev_open+0x154/0x2a0
+[   52.503726][  T483]        do_dentry_open+0x6a9/0x1260
+[   52.504461][  T483]        path_openat+0xe06/0x2850
+[   52.505160][  T483]        do_filp_open+0x1b0/0x280
+[   52.505857][  T483]        do_sys_openat2+0x60e/0x9a0
+[   52.506576][  T483]        do_sys_open+0xca/0x140
+[   52.507251][  T483]        do_syscall_64+0x38/0xb0
+[   52.507936][  T483]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   52.508822][  T483]
+[   52.508822][  T483] other info that might help us debug this:
+[   52.508822][  T483]
+[   52.510218][  T483]  Possible unsafe locking scenario:
+[   52.510218][  T483]
+[   52.511240][  T483]        CPU0                    CPU1
+[   52.511975][  T483]        ----                    ----
+[   52.512708][  T483]   lock(&disk->open_mutex);
+[   52.513342][  T483]                                lock(mtd_table_mutex);
+[   52.514295][  T483]                                lock(&disk->open_mutex);
+[   52.515276][  T483]   lock(mtd_table_mutex);
+[   52.515884][  T483]
+[   52.515884][  T483]  *** DEADLOCK ***
 
-Introduce a new indicator for the device whether it is broken and let
-the device stop working when it is set. Set this indicator in case the
-backend sets any weird data.
+load module path:              open device path:
+init_mtdram()
+add_mtd_device()
+mutex_lock(&mtd_table_mutex)
+blktrans_notifier()
+add_mtd()
+                                blkdev_get_by_dev()
+                                mutex_lock(&disk->open_mutex)
+                                blktrans_open()
+                                mutex_lock(&mtd_table_mutex);
+bd_register_pending_holders()
+mutex_lock(&disk->open_mutex)
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
+add_mtd() is called under mtd_table_mutex, before it acquires open_mutex,
+open_mutex may be acquired by another cpu when opening the device, and it
+will wait for mtd_table_mutex which is already acquired, then the 'ABBA'
+deadlock scenario is happend, reduce the mtd_table_mutex to avoid this.
+
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
-V2:
-- set the pending flag only just before sending the request (Jan Beulich)
-- reset broken indicator during connect (Jan Beulich)
----
- drivers/net/xen-netfront.c | 89 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 84 insertions(+), 5 deletions(-)
+ drivers/mtd/mtd_blkdevs.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index 956e1266bd1a..e31b98403f31 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -131,10 +131,12 @@ struct netfront_queue {
- 	struct sk_buff *tx_skbs[NET_TX_RING_SIZE];
- 	unsigned short tx_link[NET_TX_RING_SIZE];
- #define TX_LINK_NONE 0xffff
-+#define TX_PENDING   0xfffe
- 	grant_ref_t gref_tx_head;
- 	grant_ref_t grant_tx_ref[NET_TX_RING_SIZE];
- 	struct page *grant_tx_page[NET_TX_RING_SIZE];
- 	unsigned tx_skb_freelist;
-+	unsigned int tx_pend_queue;
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 44bea3f65060..476933ab561d 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -358,6 +358,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	list_add_tail(&new->list, &tr->devs);
+  added:
+ 	mutex_unlock(&blktrans_ref_mutex);
++	mutex_unlock(&mtd_table_mutex);
  
- 	spinlock_t   rx_lock ____cacheline_aligned_in_smp;
- 	struct xen_netif_rx_front_ring rx;
-@@ -167,6 +169,9 @@ struct netfront_info {
- 	bool netback_has_xdp_headroom;
- 	bool netfront_xdp_enabled;
+ 	mutex_init(&new->lock);
+ 	kref_init(&new->ref);
+@@ -434,6 +435,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 					new->disk_attributes);
+ 		WARN_ON(ret);
+ 	}
++	mutex_lock(&mtd_table_mutex);
+ 	return 0;
  
-+	/* Is device behaving sane? */
-+	bool broken;
-+
- 	atomic_t rx_gso_checksum_fixup;
- };
- 
-@@ -349,7 +354,7 @@ static int xennet_open(struct net_device *dev)
- 	unsigned int i = 0;
- 	struct netfront_queue *queue = NULL;
- 
--	if (!np->queues)
-+	if (!np->queues || np->broken)
- 		return -ENODEV;
- 
- 	for (i = 0; i < num_queues; ++i) {
-@@ -377,11 +382,17 @@ static void xennet_tx_buf_gc(struct netfront_queue *queue)
- 	unsigned short id;
- 	struct sk_buff *skb;
- 	bool more_to_do;
-+	const struct device *dev = &queue->info->netdev->dev;
- 
- 	BUG_ON(!netif_carrier_ok(queue->info->netdev));
- 
- 	do {
- 		prod = queue->tx.sring->rsp_prod;
-+		if (RING_RESPONSE_PROD_OVERFLOW(&queue->tx, prod)) {
-+			dev_alert(dev, "Illegal number of responses %u\n",
-+				  prod - queue->tx.rsp_cons);
-+			goto err;
-+		}
- 		rmb(); /* Ensure we see responses up to 'rp'. */
- 
- 		for (cons = queue->tx.rsp_cons; cons != prod; cons++) {
-@@ -391,14 +402,27 @@ static void xennet_tx_buf_gc(struct netfront_queue *queue)
- 			if (txrsp.status == XEN_NETIF_RSP_NULL)
- 				continue;
- 
--			id  = txrsp.id;
-+			id = txrsp.id;
-+			if (id >= RING_SIZE(&queue->tx)) {
-+				dev_alert(dev,
-+					  "Response has incorrect id (%u)\n",
-+					  id);
-+				goto err;
-+			}
-+			if (queue->tx_link[id] != TX_PENDING) {
-+				dev_alert(dev,
-+					  "Response for inactive request\n");
-+				goto err;
-+			}
-+
-+			queue->tx_link[id] = TX_LINK_NONE;
- 			skb = queue->tx_skbs[id];
- 			queue->tx_skbs[id] = NULL;
- 			if (unlikely(gnttab_query_foreign_access(
- 				queue->grant_tx_ref[id]) != 0)) {
--				pr_alert("%s: warning -- grant still in use by backend domain\n",
--					 __func__);
--				BUG();
-+				dev_alert(dev,
-+					  "Grant still in use by backend domain\n");
-+				goto err;
- 			}
- 			gnttab_end_foreign_access_ref(
- 				queue->grant_tx_ref[id], GNTMAP_readonly);
-@@ -416,6 +440,12 @@ static void xennet_tx_buf_gc(struct netfront_queue *queue)
- 	} while (more_to_do);
- 
- 	xennet_maybe_wake_tx(queue);
-+
-+	return;
-+
-+ err:
-+	queue->info->broken = true;
-+	dev_alert(dev, "Disabled for further use\n");
+ out_free_tag_set:
+@@ -441,6 +443,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ out_kfree_tag_set:
+ 	kfree(new->tag_set);
+ out_list_del:
++	mutex_lock(&mtd_table_mutex);
+ 	list_del(&new->list);
+ 	return ret;
  }
- 
- struct xennet_gnttab_make_txreq {
-@@ -459,6 +489,12 @@ static void xennet_tx_setup_grant(unsigned long gfn, unsigned int offset,
- 
- 	*tx = info->tx_local;
- 
-+	/*
-+	 * Put the request in the pending queue, it will be set to be pending
-+	 * when the producer index is about to be raised.
-+	 */
-+	add_id_to_list(&queue->tx_pend_queue, queue->tx_link, id);
-+
- 	info->tx = tx;
- 	info->size += info->tx_local.size;
- }
-@@ -551,6 +587,15 @@ static u16 xennet_select_queue(struct net_device *dev, struct sk_buff *skb,
- 	return queue_idx;
- }
- 
-+static void xennet_mark_tx_pending(struct netfront_queue *queue)
-+{
-+	unsigned int i;
-+
-+	while ((i = get_id_from_list(&queue->tx_pend_queue, queue->tx_link)) !=
-+	       TX_LINK_NONE)
-+		queue->tx_link[i] = TX_PENDING;
-+}
-+
- static int xennet_xdp_xmit_one(struct net_device *dev,
- 			       struct netfront_queue *queue,
- 			       struct xdp_frame *xdpf)
-@@ -568,6 +613,8 @@ static int xennet_xdp_xmit_one(struct net_device *dev,
- 				offset_in_page(xdpf->data),
- 				xdpf->len);
- 
-+	xennet_mark_tx_pending(queue);
-+
- 	RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(&queue->tx, notify);
- 	if (notify)
- 		notify_remote_via_irq(queue->tx_irq);
-@@ -592,6 +639,8 @@ static int xennet_xdp_xmit(struct net_device *dev, int n,
- 	int nxmit = 0;
- 	int i;
- 
-+	if (unlikely(np->broken))
-+		return -ENODEV;
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
-@@ -636,6 +685,8 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- 	/* Drop the packet if no queues are set up */
- 	if (num_queues < 1)
- 		goto drop;
-+	if (unlikely(np->broken))
-+		goto drop;
- 	/* Determine which queue to transmit this SKB on */
- 	queue_index = skb_get_queue_mapping(skb);
- 	queue = &np->queues[queue_index];
-@@ -742,6 +793,8 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- 	/* timestamp packet in software */
- 	skb_tx_timestamp(skb);
- 
-+	xennet_mark_tx_pending(queue);
-+
- 	RING_PUSH_REQUESTS_AND_CHECK_NOTIFY(&queue->tx, notify);
- 	if (notify)
- 		notify_remote_via_irq(queue->tx_irq);
-@@ -1141,6 +1194,13 @@ static int xennet_poll(struct napi_struct *napi, int budget)
- 	skb_queue_head_init(&tmpq);
- 
- 	rp = queue->rx.sring->rsp_prod;
-+	if (RING_RESPONSE_PROD_OVERFLOW(&queue->rx, rp)) {
-+		dev_alert(&dev->dev, "Illegal number of responses %u\n",
-+			  rp - queue->rx.rsp_cons);
-+		queue->info->broken = true;
-+		spin_unlock(&queue->rx_lock);
-+		return 0;
-+	}
- 	rmb(); /* Ensure we see queued responses up to 'rp'. */
- 
- 	i = queue->rx.rsp_cons;
-@@ -1362,6 +1422,9 @@ static irqreturn_t xennet_tx_interrupt(int irq, void *dev_id)
- 	struct netfront_queue *queue = dev_id;
- 	unsigned long flags;
- 
-+	if (queue->info->broken)
-+		return IRQ_HANDLED;
-+
- 	spin_lock_irqsave(&queue->tx_lock, flags);
- 	xennet_tx_buf_gc(queue);
- 	spin_unlock_irqrestore(&queue->tx_lock, flags);
-@@ -1374,6 +1437,9 @@ static irqreturn_t xennet_rx_interrupt(int irq, void *dev_id)
- 	struct netfront_queue *queue = dev_id;
- 	struct net_device *dev = queue->info->netdev;
- 
-+	if (queue->info->broken)
-+		return IRQ_HANDLED;
-+
- 	if (likely(netif_carrier_ok(dev) &&
- 		   RING_HAS_UNCONSUMED_RESPONSES(&queue->rx)))
- 		napi_schedule(&queue->napi);
-@@ -1395,6 +1461,10 @@ static void xennet_poll_controller(struct net_device *dev)
- 	struct netfront_info *info = netdev_priv(dev);
- 	unsigned int num_queues = dev->real_num_tx_queues;
- 	unsigned int i;
-+
-+	if (info->broken)
-+		return;
-+
- 	for (i = 0; i < num_queues; ++i)
- 		xennet_interrupt(0, &info->queues[i]);
- }
-@@ -1466,6 +1536,11 @@ static int xennet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 
- static int xennet_xdp(struct net_device *dev, struct netdev_bpf *xdp)
- {
-+	struct netfront_info *np = netdev_priv(dev);
-+
-+	if (np->broken)
-+		return -ENODEV;
-+
- 	switch (xdp->command) {
- 	case XDP_SETUP_PROG:
- 		return xennet_xdp_set(dev, xdp->prog, xdp->extack);
-@@ -1841,6 +1916,7 @@ static int xennet_init_queue(struct netfront_queue *queue)
- 
- 	/* Initialise tx_skb_freelist as a free chain containing every entry. */
- 	queue->tx_skb_freelist = 0;
-+	queue->tx_pend_queue = TX_LINK_NONE;
- 	for (i = 0; i < NET_TX_RING_SIZE; i++) {
- 		queue->tx_link[i] = i + 1;
- 		queue->grant_tx_ref[i] = GRANT_INVALID_REF;
-@@ -2115,6 +2191,9 @@ static int talk_to_netback(struct xenbus_device *dev,
- 	if (info->queues)
- 		xennet_destroy_queues(info);
- 
-+	/* For the case of a reconnect reset the "broken" indicator. */
-+	info->broken = false;
-+
- 	err = xennet_create_queues(info, &num_queues);
- 	if (err < 0) {
- 		xenbus_dev_fatal(dev, err, "creating queues");
 -- 
-2.26.2
+2.25.1
 
