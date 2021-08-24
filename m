@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD413F5DCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 058FE3F5DDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237158AbhHXMUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:20:39 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:57860 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbhHXMUi (ORCPT
+        id S237221AbhHXMVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237036AbhHXMVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:20:38 -0400
-Received: from [192.168.254.32] (unknown [47.187.212.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B35BD20B85E0;
-        Tue, 24 Aug 2021 05:19:53 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B35BD20B85E0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1629807594;
-        bh=2E2BthqVOdbe3t0YwvDr36tRv3x3At3+Zrr/r40y7RI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=mR9DYLTNg0m86G7ZUVWEjSBEaT74uQ6YJ1vdiQ515TrjZfPVisZI2DnrylKPs15Zh
-         EwYxTrM1e/V8gSsMdp9oyPgX205r5zm9fzlC6y1NBiiHmKsAT9Z3KUVNvYlPs+KePY
-         5AY08rQN8w5gYih+LZNJGU8NAcnDLh925So09CHE=
-Subject: Re: [RFC PATCH v8 3/4] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     "nobuta.keiya@fujitsu.com" <nobuta.keiya@fujitsu.com>
-Cc:     "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "sjitindarsingh@gmail.com" <sjitindarsingh@gmail.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        "jthierry@redhat.com" <jthierry@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
- <20210812190603.25326-1-madvenka@linux.microsoft.com>
- <20210812190603.25326-4-madvenka@linux.microsoft.com>
- <TY2PR01MB5257EA835C6F28ABF457EB0B85C59@TY2PR01MB5257.jpnprd01.prod.outlook.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <62d8969d-8ba1-4554-16b4-1c0bd4f8d9e7@linux.microsoft.com>
-Date:   Tue, 24 Aug 2021 07:19:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 24 Aug 2021 08:21:47 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B35EC061757;
+        Tue, 24 Aug 2021 05:21:03 -0700 (PDT)
+Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 49C16ED;
+        Tue, 24 Aug 2021 14:20:59 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joro@8bytes.org, jroedel@suse.de
+Subject: [PATCH v3 0/4] PCI/ACPI: Simplify PCIe _OSC feature negotiation
+Date:   Tue, 24 Aug 2021 14:20:50 +0200
+Message-Id: <20210824122054.29481-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <TY2PR01MB5257EA835C6F28ABF457EB0B85C59@TY2PR01MB5257.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset=iso-2022-jp
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Joerg Roedel <jroedel@suse.de>
+
+Hi,
+
+here is the third version of my patches to simplify the _OSC
+negotiation of PCIe features between Linux and the firmware.
+
+This version is a complete rewrite, so there is no changelog to the
+previous version. Patches 1-3 are cleanups and small restructurings of
+the code as a preparation for patch 4.
+
+The last patch gets rid of the dedicated _OSC query to check for _OSC
+support and merges that functionality into acpi_pci_osc_control_set().
+
+This allows to simplify and/or remove other functions and consilidate
+error handling in negotiate_os_control().
+
+I have tested the patches with and without 'pcie_ports=compat' and
+found no regressions on my test machine.
+
+Please review.
+
+Thanks,
+
+	Joerg
 
 
-On 8/24/21 12:55 AM, nobuta.keiya@fujitsu.com wrote:
-> Hi Madhavan,
-> 
->> @@ -245,7 +271,36 @@ noinline notrace void arch_stack_walk(stack_trace_consume_fn consume_entry,
->>  		fp = thread_saved_fp(task);
->>  		pc = thread_saved_pc(task);
->>  	}
->> -	unwind(consume_entry, cookie, task, fp, pc);
->> +	unwind(consume_entry, cookie, task, fp, pc, false);
->> +}
->> +
->> +/*
->> + * arch_stack_walk_reliable() may not be used for livepatch until all of
->> + * the reliability checks are in place in unwind_consume(). However,
->> + * debug and test code can choose to use it even if all the checks are not
->> + * in place.
->> + */
-> 
-> I'm glad to see the long-awaited function :)
-> 
-> Does the above comment mean that this comment will be removed by
-> another patch series that about live patch enablement, instead of [PATCH 4/4]?
-> 
-> It seems to take time... But I start thinking about test code.
-> 
 
-Yes. This comment will be removed when livepatch will be enabled eventually.
-So, AFAICT, there are 4 pieces that are needed:
+Joerg Roedel (4):
+  PCI/ACPI: Remove OSC_PCI_SUPPORT_MASKS and OSC_PCI_CONTROL_MASKS
+  PCI/ACPI: Move supported and control calculations to separaten
+    functions
+  PCI/ACPI: Move _OSC query checks to separate function
+  PCI/ACPI: Check for _OSC support in acpi_pci_osc_control_set()
 
-- Reliable stack trace in the kernel. I am trying to address that with my patch
-  series.
+ drivers/acpi/pci_root.c | 161 +++++++++++++++++++++-------------------
+ include/linux/acpi.h    |   2 -
+ 2 files changed, 84 insertions(+), 79 deletions(-)
 
-- Mark Rutland's work for making patching safe on ARM64.
+-- 
+2.32.0
 
-- Objtool (or alternative method) for stack validation.
-
-- Suraj Jitindar Singh's patch for miscellaneous things needed to enable live patch.
-
-Once all of these pieces are in place, livepatch can be enabled.
-
-That said, arch_stack_walk_reliable() can be used for test and debug purposes anytime
-once this patch series gets accepted.
-
-Thanks.
-
-Madhavan
