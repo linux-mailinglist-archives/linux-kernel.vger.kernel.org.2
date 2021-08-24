@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B317D3F696B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03E03F6973
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhHXTB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233999AbhHXTBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:01:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23CF2610FD;
-        Tue, 24 Aug 2021 19:00:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629831641;
-        bh=7IciptIw3jJnUgdT5IN+77jffZ9goiQtAYha2MOaySM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=B2lq+XawTs3Vyn/CMrpYB5VBYKBFkdJv+HPBKwBq6iEgOWmT3SaPChA8V3AVCKL4L
-         /ydGgnBGNS7nS4DPTvwM8x2adB07xw+jlv2YuIFfmNBgKqIrstyO/bocsKfZIzu4I6
-         KTlmN3sMTQgFVcLHLWBRQAx2TIKXB3c/o7KiDlG+GYK1gxvykBErFqdJDSPMLpMClv
-         jyRqV4vfCfWKcek0WiZVK0SESB0qJnV9MmUmJrKm1KppAp+kANyNe208T7Ujx38QlH
-         vPZQOfpm/CO1f4UKASm4Jy7yfP/mV2m6BZccWlcosaEz67KkBPmLKzpnD3hDJ4f3jt
-         QHruQ8bOB4jnA==
-Date:   Tue, 24 Aug 2021 14:00:39 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Nadav Haklai <nadavh@marvell.com>,
-        Kostya Porotchkin <kostap@marvell.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH 2/5] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
-Message-ID: <20210824190039.GA3486187@bjorn-Precision-5520>
+        id S234276AbhHXTD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234110AbhHXTD2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 15:03:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D84C061764;
+        Tue, 24 Aug 2021 12:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/URawqNzD9p24ByjtYjkORGk8sChIZbeqxBr5P92U1E=; b=T0bMyPf0DHvC4HBKpfhArM/Nuq
+        bOJFItaWCupAM2hBMS9krR1VoxfkreTkA+4eisVSsLFoBShTjXrJBL4l2AcwDMoRKJ36GzeqFc8xX
+        PssQciEFhlHo5P4lBv6rcqrU+tDQG9aWo5to42Zh+4PP4uPP5kPaemLZaW7T+h7uUE2Qcr8gS8Vl8
+        vzKjW+l7OtBNmeI/VKUu5byvZGNcU4frdfIPlQ8sSp5osQvUcIIY5M0qzDmplwWjKG6TmXC+s3F/Y
+        B1zpDJFRepPZVve9OlzuAtOGm/0V25qjO3+79u7JCb4/5qdwkYfTTBFc8d8Sy/Bt0wjesbcrupXh2
+        dsxJzm2w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIbfk-00BSyq-Mo; Tue, 24 Aug 2021 19:01:42 +0000
+Date:   Tue, 24 Aug 2021 20:01:20 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSVCAJDYShQke6Sy@casper.infradead.org>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210624222621.4776-3-pali@kernel.org>
+In-Reply-To: <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 12:26:18AM +0200, Pali Rohár wrote:
-> Define a macro PCI_EXP_DEVCTL_PAYLOAD_* for every possible Max Payload
-> Size in linux/pci_regs.h, in the same style as PCI_EXP_DEVCTL_READRQ_*.
+On Tue, Aug 24, 2021 at 11:26:30AM -0700, Linus Torvalds wrote:
+> On Tue, Aug 24, 2021 at 11:17 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > If the only thing standing between this patch and the merge is
+> > s/folio/ream/g,
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
+> I really don't think that helps. All the book-binding analogies are
+> only confusing.
+> 
+> If anything, I'd make things more explicit. Stupid and
+> straightforward. Maybe just "struct head_page" or something like that.
+> Name it by what it *is*, not by analogies.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+I don't mind calling it something entirely different.  I mean, the word
+"slab" has nothing to do with memory or pages or anything.  I just want
+something short and greppable.  Choosing short words at random from
+/usr/share/dict/words:
 
-> ---
->  include/uapi/linux/pci_regs.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index e709ae8235e7..ff6ccbc6efe9 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -504,6 +504,12 @@
->  #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
->  #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
->  #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
-> +#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00a0 /* 4096 Bytes */
->  #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
->  #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
->  #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
-> -- 
-> 2.20.1
-> 
+belt gala claw ogre peck raft 
+bowl moat cask deck rink toga
+
