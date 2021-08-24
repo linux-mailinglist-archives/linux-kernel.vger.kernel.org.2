@@ -2,105 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BEA3F58CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BC53F58C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhHXHRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
+        id S234430AbhHXHPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhHXHRG (ORCPT
+        with ESMTP id S232778AbhHXHP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:17:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5F5C061575;
-        Tue, 24 Aug 2021 00:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u2jjKxNoYoIqkuUBOVaU0g9hA7j5FEUKEzONmfPEFRs=; b=l0RA5+0lIDtpN8Qsm8qgG9uLOs
-        8eClxBaokH3TyZM/fu8ykw6ZD3oCED17rxUrpLs0TtHot/9XJECBVSsY9dqwrfZEMuNDPQh43FRwB
-        gwr+bd3HMFV1W5C6/t8vtIAK0gchzdE/kqUnfspiLdm9pQGzx1360mkBMMfe+XyJFRijFq2K3ePSr
-        Jff3vPErlsbRwyhgZ70I86mOyH8JMJcY3mI4n/qCuMatfUmzB4kKpKhH3faryhLixp+fcY+HXVAOh
-        PoC9+BbF8dkfZF5wppyEi6qopLgHXvjed9HLCvhzBV9c0zMcG0Q8n3Oaf7OpZqZFQwTLhSiLC+K35
-        CAj2ybqg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIQdm-00AhZQ-Cu; Tue, 24 Aug 2021 07:14:45 +0000
-Date:   Tue, 24 Aug 2021 08:14:34 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        iommu@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v2 03/12] x86/sev: Add an x86 version of prot_guest_has()
-Message-ID: <YSScWvpXeVXw/ed5@infradead.org>
-References: <cover.1628873970.git.thomas.lendacky@amd.com>
- <7d55bac0cf2e73f53816bce3a3097877ed9663f3.1628873970.git.thomas.lendacky@amd.com>
- <YR4p9TqKTLdN1A96@infradead.org>
- <4272eaf5-b654-2669-62ac-ba768acd6b91@amd.com>
+        Tue, 24 Aug 2021 03:15:28 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFC7C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:14:45 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso1688477pjq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MrRkC8qGUuY24F6KWlQC1yV+fYoQkLUA+kQ6aXhUuX0=;
+        b=fbjlz1U5Bb6io7pRS7Fk//UaFGJBNZedamjYcAqdSOXc40MqVv8+T6qM8RZXl2VCBI
+         ugg9liz+h0ZmA214fQASGBY6z37mphicwpDvlE/Ovts1iPXxoUyDvAbgeN8n+m05VMwr
+         ZKDGDZK/aJaOEbQasDkgXTjTJAFjFAcc1z3e4FLE4HDzk+vRaU7rU91IGGdhllobJZ6Q
+         2rvACO38tXenblmz9iCH2WzyGfZ3gLGxpBqMZ18d+5mTqYWM0oi6kdCPXMFAfplUtlmE
+         TPJfr682BcJ2bJQaGflRm/TCQLNmSPdsE4FIU97hWPapFJMk88kHpJjHkrt4AONfWDtx
+         7bCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MrRkC8qGUuY24F6KWlQC1yV+fYoQkLUA+kQ6aXhUuX0=;
+        b=lb4OAEWvWynCCNTwtsyjduvp6Xj8HxKmdgkmggyBwIOVDO0CimE5Zj/oDTPa7d0bzY
+         kG/9nGeCNNdyHuGSrVuae7k/Vo4xKHP2UMoPIueYjkAQ+6JmtVpHYmogcbRnZ7O42Qo5
+         AE56osVOAW+F5Knh/264Jmr4k/x740lXy/s9cyqyWIl+dvcjY0XzhiC0+B7XzVAPgznI
+         hDrlsSzelnePtUJ9AOa5ORWZVY/pXS8S1H6f1CBCo3XTzBtLVk6SWBcLOzHoAc43GWAv
+         ULPofC9mvrfTsN075x6uGcynWRFIIvENdhcXAlo/fxw1lGq5ihjaE3dPOrIM9sbm5oul
+         b7vA==
+X-Gm-Message-State: AOAM530+CDWgzoqvoNFvEeRYNcl5j5Ka2La2/SB8uH8e1EPt1QaSpqSA
+        YVil+sxqEr9r5T4k3cLiK+jNag==
+X-Google-Smtp-Source: ABdhPJzmL1mw/OL0SAsHEV+KAjkzS/kBfEax53hkkKv6btPqNqxMgWknCtnlwo7c7tb6DqTm8A7UfQ==
+X-Received: by 2002:a17:90a:1f44:: with SMTP id y4mr2956140pjy.51.1629789284550;
+        Tue, 24 Aug 2021 00:14:44 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id r9sm18362296pfh.135.2021.08.24.00.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 00:14:43 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 15:14:36 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
+        acme@kernel.org, suzuki.poulose@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/9] perf cs-etm: Save TRCDEVARCH register
+Message-ID: <20210824071436.GC204566@leoy-ThinkPad-X240s>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-5-james.clark@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4272eaf5-b654-2669-62ac-ba768acd6b91@amd.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210806134109.1182235-5-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 01:33:09PM -0500, Tom Lendacky wrote:
-> I did it as inline originally because the presence of the function will be
-> decided based on the ARCH_HAS_PROTECTED_GUEST config. For now, that is
-> only selected by the AMD memory encryption support, so if I went out of
-> line I could put in mem_encrypt.c. But with TDX wanting to also use it, it
-> would have to be in an always built file with some #ifdefs or in its own
-> file that is conditionally built based on the ARCH_HAS_PROTECTED_GUEST
-> setting (they've already tried building with ARCH_HAS_PROTECTED_GUEST=y
-> and AMD_MEM_ENCRYPT not set).
+On Fri, Aug 06, 2021 at 02:41:04PM +0100, James Clark wrote:
+> When ETE is present save the TRCDEVARCH register and set a new magic
+> number. It will be used to configure the decoder in a later commit.
 > 
-> To take it out of line, I'm leaning towards the latter, creating a new
-> file that is built based on the ARCH_HAS_PROTECTED_GUEST setting.
-
-Yes.  In general everytime architectures have to provide the prototype
-and not just the implementation of something we end up with a giant mess
-sooner or later.  In a few cases that is still warranted due to
-performance concerns, but i don't think that is the case here.
-
+> Old versions of perf will not be able to open files with this new magic
+> number, but old files will still work with newer versions of perf.
 > 
-> > 
-> >> +/* 0x800 - 0x8ff reserved for AMD */
-> >> +#define PATTR_SME			0x800
-> >> +#define PATTR_SEV			0x801
-> >> +#define PATTR_SEV_ES			0x802
-> > 
-> > Why do we need reservations for a purely in-kernel namespace?
-> > 
-> > And why are you overoading a brand new generic API with weird details
-> > of a specific implementation like this?
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/arch/arm/util/cs-etm.c | 49 +++++++++++++++++++++++++++----
+>  tools/perf/util/cs-etm.c          | 16 ++++++++--
+>  tools/perf/util/cs-etm.h          | 10 +++++++
+>  3 files changed, 68 insertions(+), 7 deletions(-)
 > 
-> There was some talk about this on the mailing list where TDX and SEV may
-> need to be differentiated, so we wanted to reserve a range of values per
-> technology. I guess I can remove them until they are actually needed.
+> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> index ecb6fa55a210..e3500b79d972 100644
+> --- a/tools/perf/arch/arm/util/cs-etm.c
+> +++ b/tools/perf/arch/arm/util/cs-etm.c
+> @@ -47,15 +47,17 @@ static const char *metadata_etmv3_ro[CS_ETM_PRIV_MAX] = {
+>  	[CS_ETM_ETMIDR]		= "mgmt/etmidr",
+>  };
+>  
+> -static const char *metadata_etmv4_ro[CS_ETMV4_PRIV_MAX] = {
+> +static const char * const metadata_etmv4_ro[] = {
+>  	[CS_ETMV4_TRCIDR0]		= "trcidr/trcidr0",
+>  	[CS_ETMV4_TRCIDR1]		= "trcidr/trcidr1",
+>  	[CS_ETMV4_TRCIDR2]		= "trcidr/trcidr2",
+>  	[CS_ETMV4_TRCIDR8]		= "trcidr/trcidr8",
+>  	[CS_ETMV4_TRCAUTHSTATUS]	= "mgmt/trcauthstatus",
+> +	[CS_ETE_TRCDEVARCH]		= "mgmt/trcdevarch"
+>  };
+>  
+>  static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu);
+> +static bool cs_etm_is_ete(struct auxtrace_record *itr, int cpu);
+>  
+>  static int cs_etm_set_context_id(struct auxtrace_record *itr,
+>  				 struct evsel *evsel, int cpu)
+> @@ -533,7 +535,7 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  		      struct evlist *evlist __maybe_unused)
+>  {
+>  	int i;
+> -	int etmv3 = 0, etmv4 = 0;
+> +	int etmv3 = 0, etmv4 = 0, ete = 0;
+>  	struct perf_cpu_map *event_cpus = evlist->core.cpus;
+>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new(NULL);
+>  
+> @@ -544,7 +546,9 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  			    !cpu_map__has(online_cpus, i))
+>  				continue;
+>  
+> -			if (cs_etm_is_etmv4(itr, i))
+> +			if (cs_etm_is_ete(itr, i))
+> +				ete++;
+> +			else if (cs_etm_is_etmv4(itr, i))
+>  				etmv4++;
+>  			else
+>  				etmv3++;
+> @@ -555,7 +559,9 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  			if (!cpu_map__has(online_cpus, i))
+>  				continue;
+>  
+> -			if (cs_etm_is_etmv4(itr, i))
+> +			if (cs_etm_is_ete(itr, i))
+> +				ete++;
+> +			else if (cs_etm_is_etmv4(itr, i))
+>  				etmv4++;
+>  			else
+>  				etmv3++;
+> @@ -565,6 +571,7 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  	perf_cpu_map__put(online_cpus);
+>  
+>  	return (CS_ETM_HEADER_SIZE +
+> +	       (ete   * CS_ETE_PRIV_SIZE) +
+>  	       (etmv4 * CS_ETMV4_PRIV_SIZE) +
+>  	       (etmv3 * CS_ETMV3_PRIV_SIZE));
+>  }
+> @@ -607,6 +614,27 @@ static int cs_etm_get_ro(struct perf_pmu *pmu, int cpu, const char *path)
+>  	return val;
+>  }
+>  
+> +#define TRCDEVARCH_ARCHPART_SHIFT 0
+> +#define TRCDEVARCH_ARCHPART_MASK  GENMASK(11, 0)
+> +#define TRCDEVARCH_ARCHPART(x)    (((x) & TRCDEVARCH_ARCHPART_MASK) >> TRCDEVARCH_ARCHPART_SHIFT)
+> +
+> +#define TRCDEVARCH_ARCHVER_SHIFT 12
+> +#define TRCDEVARCH_ARCHVER_MASK  GENMASK(15, 12)
+> +#define TRCDEVARCH_ARCHVER(x)    (((x) & TRCDEVARCH_ARCHVER_MASK) >> TRCDEVARCH_ARCHVER_SHIFT)
+> +
+> +static bool cs_etm_is_ete(struct auxtrace_record *itr, int cpu)
+> +{
+> +	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
+> +	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
+> +	int trcdevarch = cs_etm_get_ro(cs_etm_pmu, cpu, metadata_etmv4_ro[CS_ETE_TRCDEVARCH]);
+> +
+> +	/*
+> +	 * ETE if ARCHVER is 5 (ARCHVER is 4 for ETM) and ARCHPART is 0xA13.
+> +	 * See ETM_DEVARCH_ETE_ARCH in coresight-etm4x.h
+> +	 */
+> +	return TRCDEVARCH_ARCHVER(trcdevarch) == 5 && TRCDEVARCH_ARCHPART(trcdevarch) == 0xA13;
+> +}
+> +
+>  static void cs_etm_save_etmv4_header(__u64 data[], struct auxtrace_record *itr, int cpu)
+>  {
+>  	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
+> @@ -640,7 +668,18 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+>  	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
+>  
+>  	/* first see what kind of tracer this cpu is affined to */
+> -	if (cs_etm_is_etmv4(itr, cpu)) {
+> +	if (cs_etm_is_ete(itr, cpu)) {
+> +		magic = __perf_cs_ete_magic;
+> +		/* ETE uses the same registers as ETMv4 plus TRCDEVARCH */
+> +		cs_etm_save_etmv4_header(&info->priv[*offset], itr, cpu);
+> +		info->priv[*offset + CS_ETE_TRCDEVARCH] =
+> +			cs_etm_get_ro(cs_etm_pmu, cpu,
+> +				      metadata_etmv4_ro[CS_ETE_TRCDEVARCH]);
+> +
+> +		/* How much space was used */
+> +		increment = CS_ETE_PRIV_MAX;
+> +		nr_trc_params = CS_ETE_PRIV_MAX - CS_ETM_COMMON_BLK_MAX_V1;
+> +	} else if (cs_etm_is_etmv4(itr, cpu)) {
+>  		magic = __perf_cs_etmv4_magic;
+>  		cs_etm_save_etmv4_header(&info->priv[*offset], itr, cpu);
+>  
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index f4b2bff533f3..d540512a3c96 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -2512,6 +2512,7 @@ static const char * const cs_etmv4_priv_fmts[] = {
+>  	[CS_ETMV4_TRCIDR2]	= "	TRCIDR2			       %llx\n",
+>  	[CS_ETMV4_TRCIDR8]	= "	TRCIDR8			       %llx\n",
+>  	[CS_ETMV4_TRCAUTHSTATUS] = "	TRCAUTHSTATUS		       %llx\n",
+> +	[CS_ETE_TRCDEVARCH]	= "	TRCDEVARCH                     %llx\n"
+>  };
+>  
+>  static const char * const param_unk_fmt =
+> @@ -2571,10 +2572,15 @@ static int cs_etm__print_cpu_metadata_v1(__u64 *val, int *offset)
+>  			else
+>  				fprintf(stdout, cs_etm_priv_fmts[j], val[i]);
+>  		}
+> -	} else if (magic == __perf_cs_etmv4_magic) {
+> +	} else if (magic == __perf_cs_etmv4_magic || magic == __perf_cs_ete_magic) {
+> +		/*
+> +		 * ETE and ETMv4 can be printed in the same block because the number of parameters
+> +		 * is saved and they share the list of parameter names. ETE is also only supported
+> +		 * in V1 files.
+> +		 */
+>  		for (j = 0; j < total_params; j++, i++) {
+>  			/* if newer record - could be excess params */
+> -			if (j >= CS_ETMV4_PRIV_MAX)
+> +			if (j >= CS_ETE_PRIV_MAX)
+>  				fprintf(stdout, param_unk_fmt, j, val[i]);
+>  			else
+>  				fprintf(stdout, cs_etmv4_priv_fmts[j], val[i]);
+> @@ -2943,6 +2949,12 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+>  
+>  			/* The traceID is our handle */
+>  			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
+> +		} else if (ptr[i] == __perf_cs_ete_magic) {
+> +			metadata[j] =
+> +				cs_etm__create_meta_blk(ptr, &i, CS_ETE_PRIV_MAX, -1);
 
-In that case add a flag for the differing behavior.  And only add them
-when actually needed.  And either way there is absolutely no need to
-reserve ranges.
+The last parameter is passed with '-1', means the ETE metadata block
+uses version 1, nr_params_v0 is not used thus pass '-1' for it.
 
+It is fine for me.
+
+> +
+> +			/* ETE shares first part of metadata with ETMv4 */
+> +			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
+>  		}
+>  
+>  		if (!metadata[j]) {
+> diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+> index d65c7b19407d..08b84c21f065 100644
+> --- a/tools/perf/util/cs-etm.h
+> +++ b/tools/perf/util/cs-etm.h
+> @@ -76,6 +76,14 @@ enum {
+>  /* define fixed version 0 length - allow new format reader to read old files. */
+>  #define CS_ETMV4_NR_TRC_PARAMS_V0 (CS_ETMV4_TRCAUTHSTATUS - CS_ETMV4_TRCCONFIGR + 1)
+>  
+> +/* ETE metadata is ETMv4 plus TRCDEVARCH register and doesn't support header V0 since it was
+> + * added in header V1
+> + */
+> +enum {
+> +	CS_ETE_TRCDEVARCH = CS_ETMV4_PRIV_MAX,
+> +	CS_ETE_PRIV_MAX
+> +};
+> +
+>  /*
+>   * ETMv3 exception encoding number:
+>   * See Embedded Trace Macrocell specification (ARM IHI 0014Q)
+> @@ -187,8 +195,10 @@ struct cs_etm_packet_queue {
+>  
+>  #define __perf_cs_etmv3_magic 0x3030303030303030ULL
+>  #define __perf_cs_etmv4_magic 0x4040404040404040ULL
+> +#define __perf_cs_ete_magic   0x5050505050505050ULL
+>  #define CS_ETMV3_PRIV_SIZE (CS_ETM_PRIV_MAX * sizeof(u64))
+>  #define CS_ETMV4_PRIV_SIZE (CS_ETMV4_PRIV_MAX * sizeof(u64))
+> +#define CS_ETE_PRIV_SIZE (CS_ETE_PRIV_MAX * sizeof(u64))
+
+I went through the patch twice and looks good to me:
+
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+
+>  
+>  #ifdef HAVE_CSTRACE_SUPPORT
+>  int cs_etm__process_auxtrace_info(union perf_event *event,
+> -- 
+> 2.28.0
+> 
