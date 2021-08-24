@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6175C3F5FB1
+	by mail.lfdr.de (Postfix) with ESMTP id E32263F5FB2
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237792AbhHXOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:01:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:36258 "EHLO foss.arm.com"
+        id S237821AbhHXOBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:01:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:36272 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237681AbhHXOBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:01:10 -0400
+        id S237745AbhHXOBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:01:12 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B8101042;
-        Tue, 24 Aug 2021 07:00:26 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B4E313A1;
+        Tue, 24 Aug 2021 07:00:28 -0700 (PDT)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD91C3F766;
-        Tue, 24 Aug 2021 07:00:24 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBD153F766;
+        Tue, 24 Aug 2021 07:00:26 -0700 (PDT)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
         Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
         etienne.carriere@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v4 08/12] firmware: arm_scmi: Declare virtio transport .atomic_capable
-Date:   Tue, 24 Aug 2021 14:59:37 +0100
-Message-Id: <20210824135941.38656-9-cristian.marussi@arm.com>
+Subject: [PATCH v4 09/12] [RFC] firmware: arm_scmi: Make smc transport use common completions
+Date:   Tue, 24 Aug 2021 14:59:38 +0100
+Message-Id: <20210824135941.38656-10-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210824135941.38656-1-cristian.marussi@arm.com>
 References: <20210824135941.38656-1-cristian.marussi@arm.com>
@@ -33,23 +33,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCMI virtio transport support does not contain any sleeping pattern, so
-declare it as .atomic_capable.
+When a completion irq is available use it and delegate command completion
+handling to the core SCMI completion mechanism.
+
+If no completion irq is available revert to polling, using the core common
+polling machinery.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/virtio.c | 1 +
- 1 file changed, 1 insertion(+)
+v3 --> v4
+- renamed usage of .needs_polling to .no_completion_irq
+---
+ drivers/firmware/arm_scmi/smc.c | 40 ++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/virtio.c b/drivers/firmware/arm_scmi/virtio.c
-index 224577f86928..eabe430595f0 100644
---- a/drivers/firmware/arm_scmi/virtio.c
-+++ b/drivers/firmware/arm_scmi/virtio.c
-@@ -488,4 +488,5 @@ const struct scmi_desc scmi_virtio_desc = {
- 	.max_rx_timeout_ms = 60000, /* for non-realtime virtio devices */
- 	.max_msg = 0, /* overridden by virtio_get_max_msg() */
- 	.max_msg_size = VIRTIO_SCMI_MAX_MSG_SIZE,
-+	.atomic_capable = true,
+diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+index 4effecc3bb46..adaa40df3855 100644
+--- a/drivers/firmware/arm_scmi/smc.c
++++ b/drivers/firmware/arm_scmi/smc.c
+@@ -25,8 +25,6 @@
+  * @shmem: Transmit/Receive shared memory area
+  * @shmem_lock: Lock to protect access to Tx/Rx shared memory area
+  * @func_id: smc/hvc call function id
+- * @irq: Optional; employed when platforms indicates msg completion by intr.
+- * @tx_complete: Optional, employed only when irq is valid.
+  */
+ 
+ struct scmi_smc {
+@@ -34,15 +32,14 @@ struct scmi_smc {
+ 	struct scmi_shared_mem __iomem *shmem;
+ 	struct mutex shmem_lock;
+ 	u32 func_id;
+-	int irq;
+-	struct completion tx_complete;
+ };
+ 
+ static irqreturn_t smc_msg_done_isr(int irq, void *data)
+ {
+ 	struct scmi_smc *scmi_info = data;
+ 
+-	complete(&scmi_info->tx_complete);
++	scmi_rx_callback(scmi_info->cinfo,
++			 shmem_read_header(scmi_info->shmem), NULL);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -111,8 +108,8 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+ 			dev_err(dev, "failed to setup SCMI smc irq\n");
+ 			return ret;
+ 		}
+-		init_completion(&scmi_info->tx_complete);
+-		scmi_info->irq = irq;
++	} else {
++		cinfo->no_completion_irq = true;
+ 	}
+ 
+ 	scmi_info->func_id = func_id;
+@@ -142,26 +139,21 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
+ 	struct scmi_smc *scmi_info = cinfo->transport_info;
+ 	struct arm_smccc_res res;
+ 
++	/*
++	 * Channel lock will be released only once response has been
++	 * surely fully retrieved, so after .mark_txdone()
++	 */
+ 	mutex_lock(&scmi_info->shmem_lock);
+-
+ 	shmem_tx_prepare(scmi_info->shmem, xfer);
+ 
+-	if (scmi_info->irq)
+-		reinit_completion(&scmi_info->tx_complete);
+-
+ 	arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0, &res);
+ 
+-	if (scmi_info->irq)
+-		wait_for_completion(&scmi_info->tx_complete);
+-
+-	scmi_rx_callback(scmi_info->cinfo,
+-			 shmem_read_header(scmi_info->shmem), NULL);
+-
+-	mutex_unlock(&scmi_info->shmem_lock);
+-
+ 	/* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
+-	if (res.a0)
++	if (res.a0) {
++		mutex_unlock(&scmi_info->shmem_lock);
+ 		return -EOPNOTSUPP;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -173,6 +165,13 @@ static void smc_fetch_response(struct scmi_chan_info *cinfo,
+ 	shmem_fetch_response(scmi_info->shmem, xfer);
+ }
+ 
++static void smc_mark_txdone(struct scmi_chan_info *cinfo, int ret)
++{
++	struct scmi_smc *scmi_info = cinfo->transport_info;
++
++	mutex_unlock(&scmi_info->shmem_lock);
++}
++
+ static bool
+ smc_poll_done(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
+ {
+@@ -186,6 +185,7 @@ static const struct scmi_transport_ops scmi_smc_ops = {
+ 	.chan_setup = smc_chan_setup,
+ 	.chan_free = smc_chan_free,
+ 	.send_message = smc_send_message,
++	.mark_txdone = smc_mark_txdone,
+ 	.fetch_response = smc_fetch_response,
+ 	.poll_done = smc_poll_done,
  };
 -- 
 2.17.1
