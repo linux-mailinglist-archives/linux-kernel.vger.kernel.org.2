@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE5C3F5E93
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B733F5E97
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237434AbhHXNDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47278 "EHLO mail.kernel.org"
+        id S237451AbhHXNEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237225AbhHXNDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:03:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56BA06127B;
-        Tue, 24 Aug 2021 13:02:53 +0000 (UTC)
+        id S237225AbhHXNEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:04:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47B9C61374;
+        Tue, 24 Aug 2021 13:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629810184;
-        bh=cznsRp1PYJ7vKk8CM2WCQGPz3rkhE4CdDjsVOSgprUA=;
+        s=k20201202; t=1629810237;
+        bh=I5P48pHDbekoWM3FCfggAy2SVmKCGZrPXmhmt9QLetY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PrjUw3FQZY2HmcafO02kTsL7fR/3UgGFc3v0nzfmIlA5UXiD9MoHugb+nPNQfcr0E
-         gxRTH0QKSOF+SsYcAGKmD81xe3+vmcH8TXWjzSp4wBwXAh2Aswz+ifMEXID9/hSFSU
-         vkzp5ZvNhNtpUKVWO/52J3fqhE+sVDzju2je1NU+FVEH1tYIX+4AvmYNbaw5vmk/la
-         Mzh8ok7jDwr3/LRN4x+1pN/IWO6wnL/zHb2qOzx5GzqC3vythT/a6IBA/BaKO/lAWX
-         AJVdpzf10gOHCmX96auYrDm0/IexpkzlQdFIfRWBeGDLrr9qBVKd36gU9O7PlCDyTy
-         MXLqg8WeS/HbA==
-Date:   Tue, 24 Aug 2021 16:02:45 +0300
+        b=F45Ll4lAYAyL/1NSli9JfI/dQx9BjUedzzm8XeIvqpXhFy2h0HH7zi42cUKRjd5Vd
+         CidhcSEm3xcjNoiYDX+36vvJKmmpWSFnbRMncC/tzU2pHQP0s2Z3YUXjbIUrrE+Ksr
+         UX7KMGpEMkO8gaFT9v1fsN+hnjoIl5LtOu2fk+a1fjYJborvjZVBlYc6dfCqBV95IC
+         N2uEVyMSqT9WPasIMNRFYkrqwce/dAzSXLt8GYIsIL9UyPTGnStuu5Vht3OBi7NWUh
+         r3on1fen+TqV0RP3El6kzEE+gbo/IrtFq1E/ksrCyOA0oGz8IaAZfVUkA+en6R7duj
+         /UGhGnB45wIjA==
+Date:   Tue, 24 Aug 2021 16:03:26 +0300
 From:   Mike Rapoport <rppt@kernel.org>
 To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
 Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
@@ -37,172 +37,133 @@ Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
         "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
         "Lutomirski, Andy" <luto@kernel.org>
-Subject: Re: [RFC PATCH 3/4] mm/page_alloc: introduce __GFP_PTE_MAPPED flag
- to allocate pte-mapped pages
-Message-ID: <YSTt9XEDfbPOpab4@kernel.org>
+Subject: Re: [RFC PATCH 0/4] mm/page_alloc: cache pte-mapped allocations
+Message-ID: <YSTuHr7d//L3Ysjx@kernel.org>
 References: <20210823132513.15836-1-rppt@kernel.org>
- <20210823132513.15836-4-rppt@kernel.org>
- <889bdfef8b4acbe840668f27782c3d39a987c368.camel@intel.com>
+ <1b49324674fd75294625f725c7f074efd8480efc.camel@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <889bdfef8b4acbe840668f27782c3d39a987c368.camel@intel.com>
+In-Reply-To: <1b49324674fd75294625f725c7f074efd8480efc.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:29:49PM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2021-08-23 at 16:25 +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Aug 23, 2021 at 08:02:55PM +0000, Edgecombe, Rick P wrote:
+>  Mon, 2021-08-23 at 16:25 +0300, Mike Rapoport wrote:
 > > 
-> > When __GFP_PTE_MAPPED flag is passed to an allocation request of
-> > order 0,
-> > the allocated page will be mapped at PTE level in the direct map.
+> > There are usecases that need to remove pages from the direct map or
+> > at
+> > least map them with 4K granularity. Whenever this is done e.g. with
+> > set_memory/set_direct_map APIs, the PUD and PMD sized mappings in the
+> > direct map are split into smaller pages.
 > > 
-> > To reduce the direct map fragmentation, maintain a cache of 4K pages
-> > that
-> > are already mapped at PTE level in the direct map. Whenever the cache
-> > should be replenished, try to allocate 2M page and split it to 4K
-> > pages
-> > to localize shutter of the direct map. If the allocation of 2M page
-> > fails,
-> > fallback to a single page allocation at expense of the direct map
-> > fragmentation.
+> > To reduce the performance hit caused by the fragmentation of the
+> > direct map
+> > it make sense to group and/or cache the 4K pages removed from the
+> > direct
+> > map so that the split large pages won't be all over the place. 
 > > 
-> > The cache registers a shrinker that releases free pages from the
-> > cache to
-> > the page allocator.
-> > 
-> > The __GFP_PTE_MAPPED and caching of 4K pages are enabled only if an
-> > architecture selects ARCH_WANTS_PTE_MAPPED_CACHE in its Kconfig.
-> > 
-> > [
-> > cache management are mostly copied from 
-> > 
-> https://lore.kernel.org/lkml/20210505003032.489164-4-rick.p.edgecombe@intel.com/
-> > ]
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  arch/Kconfig                    |   8 +
-> >  arch/x86/Kconfig                |   1 +
-> >  include/linux/gfp.h             |  11 +-
-> >  include/linux/mm.h              |   2 +
-> >  include/linux/pageblock-flags.h |  26 ++++
-> >  init/main.c                     |   1 +
-> >  mm/internal.h                   |   3 +-
-> >  mm/page_alloc.c                 | 261 +++++++++++++++++++++++++++++++-
-> >  8 files changed, 309 insertions(+), 4 deletions(-)
- 
-...
+> If you tied this into debug page alloc, you shouldn't need to group the
+> pages. Are you thinking this PKS-less page table usage would be a
+> security feature or debug time thing?
 
-> > +static void pte_mapped_cache_add_neighbour_pages(struct page *page)
-> > +{
-> > +#if 0
-> > +	/*
-> > +	 * TODO: if pte_mapped_cache_replenish() had to fallback to
-> > order-0
-> > +	 * allocation, the large page in the direct map will be split
-> > +	 * anyway and if there are free pages in the same pageblock
-> > they
-> > +	 * can be added to pte_mapped cache.
-> > +	 */
-> > +	unsigned int order = (1 << HUGETLB_PAGE_ORDER);
-> > +	unsigned int nr_pages = (1 << order);
-> > +	unsigned long pfn = page_to_pfn(page);
-> > +	struct page *page_head = page - (pfn & (order - 1));
-> > +
-> > +	for (i = 0; i < nr_pages; i++) {
-> > +		page = page_head + i;
-> > +		if (is_free_buddy_page(page)) {
-> > +			take_page_off_buddy(page);
-> > +			pte_mapped_cache_add(&pte_mapped_cache, page);
-> > +		}
-> > +	}
-> > +#endif
-> > +}
-> > 
-> This seems a nice benefit of doing this sort of stuff in the page
-> allocator if it can work.
+I consider the PKS-less page table protection as an example user of the
+grouped pages/pte-mapped cache rather than an actual security feature or
+even a debug thing.
 
-I didn't try enable it yet, but I don't see a fundamental reason why this
-won't work.
+With PKS we still have the same trade-off of allocation flexibility vs
+direct map fragmentation and I hoped to focus the discussion of the mm part
+of the series rather than on page table protection. Apparently it didn't
+work :)
  
-> > +static struct page *alloc_page_pte_mapped(gfp_t gfp)
-> >
-> I'm a little disappointed building into the page allocator didn't
-> automatically make higher order allocations easy. It seems this mostly
-> bolts the grouped pages code on to the page allocator and splits out of
-> the allocation/free paths to call into it?
+> > == TODOs ==
+> > 
+> > Whenever pte-mapped cache is being shrunk, it is possible to add some
+> > kind
+> > of compaction to move all the free pages into PMD-sized chunks, free
+> > these
+> > chunks at once and restore large page in the direct map.
 >
-> I was thinking the main benefit of handling direct map permissions in
-> the page allocator would be re-using the buddy part to support high
-> order pages, etc. Did you try to build it in like that? If we can't get
-> that, what is the benefit to doing permission stuff in the pageallocator? 
+> I had made a POC to do this a while back that hooked into the buddy
+> code in the page allocator where this coalescing is already happening
+> for freed pages. The problem was that most pages that get their direct
+> map alias broken, end up using a page from the same 2MB page for the
+> page table in the split. But then the direct map page table never gets
+> freed so it never can restore the large page when checking the the
+> allocation page getting freed. Grouping permissioned pages OR page
+> tables would resolve that and it was my plan to try again after
+> something like this happened. 
 
-The addition of grouped pages to page allocator the way I did is somewhat
-intermediate solution between keeping such cache entirely separate from
-page allocator vs making it really tightly integrated, e.g. using a new
-migratetype or doing more intrusive changes to page allocator. One of the
-reasons I did it this way is to present various trade-offs because, tbh,
-I'm not yet sure what's the best way to move forward. [The other reason
-being my laziness, dropping your grouped pages code into the page allocator
-was the simplest thing to do ;-)].
+This suggests that one global cache won't be good enough, at least for the
+case when page tables are taken from that cache.
 
-The immediate benefit of having this code close to the page allocator is
-the simplification of the free path. Otherwise we'd need a cache-specific
-free method or some information in struct page about how to free a grouped
-page. Besides, it is possible to put pages mapped as 4k into such cache at
-boot time when page allocator is initialized.
-
-Also, keeping a central cache for multiple users will improve memory
-utilization and I believe it would require less splits of the direct map.
-OTOH, keeping such caches per-user allows managing access policy per cache
-which could be better from the security POV.
-
-I'm also going to explore the possibilities of using a new migratetype or
-SL*B as Dave suggested.
+> Was just an experiment, but can share if you are interested.
  
-> > +{
-> > +	struct pte_mapped_cache *cache = &pte_mapped_cache;
-> > +	struct page *page;
-> > +
-> > +	page = pte_mapped_cache_get(cache);
-> > +	if (page) {
-> > +		prep_new_page(page, 0, gfp, 0);
-> > +		goto out;
-> > +	}
-> > +
-> > +	page = pte_mapped_cache_replenish(cache, gfp);
-> > +
-> > +out:
-> > +	return page;
-> > +}
-> > +
-> We probably want to exclude GFP_ATOMIC before calling into CPA unless
-> debug page alloc is on, because it may need to split and sleep for the
-> allocation. There is a page table allocation with GFP_ATOMIC passed actually.
+Yes, please.
 
-Looking at the callers of alloc_low_pages() it seems that GFP_ATOMIC there
-is stale...
- 
-> In my next series of this I added support for GFP_ATOMIC to this code,
-> but that solution should only work for permission changing grouped page
-> allocators in the protected page tables case where the direct map
-> tables are handled differently. As a general solution though (that's
-> the long term intention right?), GFP_ATOMIC might deserve some
-> consideration.
+> > == Alternatives ==
+> > 
+> > Current implementation uses a single global cache.
+> > 
+> > Another option is to have per-user caches, e.g one for the page
+> > tables,
+> > another for vmalloc etc.  This approach provides better control of
+> > the
+> > permissions of the pages allocated from these caches and allows the
+> > user to
+> > decide when (if at all) the pages can be accessed, e.g. for cache
+> > compaction. The down side of this approach is that it complicates the
+> > freeing path. A page allocated from a dedicated cache cannot be freed
+> > with
+> > put_page()/free_page() etc but it has to be freed with a dedicated
+> > API or
+> > there should be some back pointer in struct page so that page
+> > allocator
+> > will know what cache this page came from.
+>
+> This needs to reset the permissions before freeing, so doesn't seem too
+> different than freeing them a special way.
 
-... but for the general solution GFP_ATOMIC indeed deserves some
-consideration.
+Not quite. For instance, when freeing page table pages with mmu_gather, we
+can reset the permission at or near pgtable_pxy_page_dtor() and continue to
+the batched free.
  
-> The other thing is we probably don't want to clean out the atomic
-> reserves and add them to a cache just for one page. I opted to just
-> convert one page in the GFP_ATOMIC case.
- 
-Do you mean to allocate one page in GFP_ATOMIC case and bypass high order
-allocation?
-But the CPA split is still necessary here, isn't it?
+> > Yet another possibility to make pte-mapped cache a migratetype of its
+> > own.
+> > Creating a new migratetype would allow higher order allocations of
+> > pte-mapped pages, but I don't have enough understanding of page
+> > allocator
+> > and reclaim internals to estimate the complexity associated with this
+> > approach. 
+> > 
+> I've been thinking about two categories of direct map permission
+> usages.
+> 
+> One is limiting the use of the direct map alias when it's not in use
+> and the primary alias is getting some other permission. Examples are
+> modules, secretmem, xpfo, KVM guest memory unmapping stuff, etc. In
+> this case re-allocations can share unmapped pages without doing any
+> expensive maintenance and it helps to have one big cache. If you are
+> going to convert pages to 4k and cache them, you might as well convert
+> them to NP at the time, since it's cheap to restore them or set their
+> permission from that state.
+>
+> Two is setting permissions on the direct map as the only alias to be
+> used. This includes this rfc, some PKS usages, but also possibly some
+> set_pages_uc() callers and the like. It seems that this category could
+> still make use of a big unmapped cache of pages. Just ask for unmapped
+> pages and convert them without a flush.
+> 
+> So like something would have a big cache of grouped unmapped pages 
+> that category one usages could share. And then little category two
+> allocators could have their own caches that feed on it too. What do you
+> think? This is regardless if they live in the page allocator or not.
+
+I can say I see how category two cache would use a global unmapped cache.
+I would envision that these caches can share the implementation, but there
+will be different instances - one for the global cache and another one (or
+several) for users that cannot share the global cache for some reason.
 
 -- 
 Sincerely yours,
