@@ -2,242 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35AB3F6B93
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7BE3F6B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhHXWLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:11:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
+        id S237178AbhHXWOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237178AbhHXWLe (ORCPT
+        with ESMTP id S230177AbhHXWOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:11:34 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96776C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:10:49 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id b9so8736541plx.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:10:49 -0700 (PDT)
+        Tue, 24 Aug 2021 18:14:10 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD789C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:13:25 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id oa17so15248593pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:13:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sVZKOjTWUVXVlz8oHjdrZ7UztOrSk5NQfTKfCoLHwJ8=;
-        b=tnuOd5AxmG0CkoxMyHx25WepMt/Ltvye9Ceg8uoRR8ol2rWeG5ebTHj+BFXGSqeT9u
-         9oQkEzcR2QVoffoz9c/MykU9I5cSxEjLD12QVoA69JL80vhGTtkAfOsSZfdXwtgV03I6
-         pYTJUjvgmR4kBlWMa994IbK0vqUYcyJ7GRcAie8Xk94mI6Ohc08Y8Twnz+H6xxLmK0nl
-         5myGW3CcOuGkisp5ga+r5tcAXI84p8bJ3k5YR2yRz/pf/K699vByERgSnrfTSwIdVM8f
-         2uBJBqbBbV56xY9yur4FQmkkGdUikj53qDUNCyjgBjVBgS1PXcNphC0JwY1WnuSz/AW0
-         iwlA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m2xpgVmxaRDEeNxf6Ahsf4OjLrfQgqJMHlbxtbe8c4g=;
+        b=jiwpbiI6KttoYyaVaxg+Hj9lPlxy5GHsH/mnsSR8g1xY4A1zxKY6QZLq1IB+jACffE
+         pbj2KayjMx1PpbdR9eqsxdhx1vybPkKh0FKmm1LNt9cNNyIY+9CxJ5tGeaA/6nBB0E4y
+         C4d3zadBoR14iOC+VrMA4QzP9Q8pid9gP4ogttqA2kiTtNr5aFq6Jl8xU67E6EPIkeD9
+         HWmrDetFskp8cmaKf5ah/zL34RIU2iBxge+laO6nu9et8kiY6lL2CUZECchqXHQwsF0F
+         M3ARYfOQ2hLU66gurbvwfXkYcgfMfdIv4Ma15LaUOP4K6vGna2tsSDFOBmbhYAzGR2El
+         aL8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sVZKOjTWUVXVlz8oHjdrZ7UztOrSk5NQfTKfCoLHwJ8=;
-        b=KCrNzB3SjRl5R59dWjbG4rZIxq3NpS7lX+xsJw28F74Zx84hyHr1ecEwv0u6K8gf/V
-         Z+gOi/1QDnNnaoPjnliCdQ98fI3XCgRqUSUKKsPc6vcgBUCLCxh4SjJibG2dI5Un6Rfe
-         CABkCM4Oxbg0NpNejW8qtt3eLTIejxpXcbMku+jeJeFKnZwHBhblW14X/t49DftjPfB/
-         JX0NtWg65A/dep+4MVqubpXmkze36uZVB5+SgtZY9u/s47sh53HOOPh1qe6PYFS2v7ir
-         bqLzVqj6wnNibhj4zwD/gpLW/Xhphfjoz4Bxe6huWHIBR6XZprLpeo7TnFYKkIMKiNsj
-         kO+A==
-X-Gm-Message-State: AOAM533/l2UDD7j00fziV6vXlhWZT3zTyl1lf3T0ewZOT6RG/W1eGVYP
-        IOyyryGGhPiY7teiAFi1EgrDsx1Rr+yBN5ANJyxpnw==
-X-Google-Smtp-Source: ABdhPJz/bRIqGQF1++9B4wLeWxu/wV+eSPLphyaixwNs5xRT/Ukpb4QG+9fhI613V6Xd9JeRNQDQy4845OovKsKcabg=
-X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr6774975pjq.217.1629843049148;
- Tue, 24 Aug 2021 15:10:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m2xpgVmxaRDEeNxf6Ahsf4OjLrfQgqJMHlbxtbe8c4g=;
+        b=dgxq+ioY04N6VZvQI4w+JxpIlvoczDdam8yLBY7/5CfDF4hZMsf1Kg2DoQqpARDzZZ
+         z12envFHxYJjvIVnSCZs9z2L1oQNRYBtvdp0zrq0+yUSHPaI/cnTwwNlQT5srwgO4C+m
+         aVD9KXbDafishz8fU1eKmkPqzzVZVzvJ4DZHEQrzHsVWUskobhqfLk1R0C1sxihrwjxf
+         2D9VegGAOU2MFuKH5oE10jqPgQZeeEMdE4/0xokxW71hkrsJ/eFR+ab5EghqAzPntatQ
+         gwQbIPXlM+GAnnTE/cIMFQFGSH5dlCBzOdor9HqPMrRvFMwiefLwySYHcGTGcLroFoEZ
+         XD7g==
+X-Gm-Message-State: AOAM532hCe8t8zLrZh2kmgWwUzvYqGRXi1zlVyrxvedMv2aHOxsFI8So
+        Fm5JBaPB6zUhkB41OOgs/Ug=
+X-Google-Smtp-Source: ABdhPJzqHbdKkYKaqeJm3Grcj/GXM7StHWVOFs6cPBn+YyvlFPsx+ECtqhl32qElb2bkEn4E+R6DVg==
+X-Received: by 2002:a17:90a:f285:: with SMTP id fs5mr6596427pjb.148.1629843205424;
+        Tue, 24 Aug 2021 15:13:25 -0700 (PDT)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id z65sm1748123pjj.43.2021.08.24.15.13.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 15:13:24 -0700 (PDT)
+From:   Yang Shi <shy828301@gmail.com>
+To:     naoya.horiguchi@nec.com, osalvador@suse.de, hughd@google.com,
+        kirill.shutemov@linux.intel.com, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: hwpoison: deal with page cache THP
+Date:   Tue, 24 Aug 2021 15:13:22 -0700
+Message-Id: <20210824221322.7663-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <cover.1629642658.git.paskripkin@gmail.com> <2424268.2DCLMNk6Lg@localhost.localdomain>
- <2355365e-d75e-8d1b-aad8-6979b70f33ec@gmail.com> <3419359.n4KOUNuIW1@localhost.localdomain>
- <77da7c63-a5b1-a09d-39ec-32c5485b8eac@gmail.com> <96e3703e-a5e2-3c6d-ea3c-b5d3892849b2@gmail.com>
-In-Reply-To: <96e3703e-a5e2-3c6d-ea3c-b5d3892849b2@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 24 Aug 2021 23:10:38 +0100
-Message-ID: <CAA=Fs0=aRaJRr7A2=9HJ=6SSoNV_AP0Xc3qYBNoO+nZ=Kie+ag@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 5/6] staging: r8188eu: add error handling of rtw_read32
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 at 09:53, Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On 8/24/21 11:47 AM, Pavel Skripkin wrote:
-> > On 8/24/21 11:38 AM, Fabio M. De Francesco wrote:
-> >> On Tuesday, August 24, 2021 8:40:18 AM CEST Pavel Skripkin wrote:
-> >>> On 8/24/21 3:10 AM, Fabio M. De Francesco wrote:
-> >>> > On Tuesday, August 24, 2021 1:33:46 AM CEST Phillip Potter wrote:
-> >>> >> On Sun, 22 Aug 2021 at 15:36, Pavel Skripkin <paskripkin@gmail.com> wrote:
-> >>> >> > -static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
-> >>> >> > +static int usb_read32(struct intf_hdl *pintfhdl, u32 addr, u32 *data)
-> >>> >> >  {
-> >>> >> >         u8 requesttype;
-> >>> >> >         u16 wvalue;
-> >>> >> >         u16 len;
-> >>> >> > -       __le32 data;
-> >>> >> > +       int res;
-> >>> >> > +       __le32 tmp;
-> >>> >> > +
-> >>> >> > +       if (WARN_ON(unlikely(!data)))
-> >>> >> > +               return -EINVAL;
-> >>> >> >
-> >>> >> >         requesttype = 0x01;/* read_in */
-> >>> >> >
-> >>> >> >         wvalue = (u16)(addr & 0x0000ffff);
-> >>> >> >         len = 4;
-> >>> >> >
-> >>> >> > -       usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> >>> >> > +       res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> >>> >> > +       if (res < 0) {
-> >>> >> > +               dev_err(dvobj_to_dev(pintfhdl->pintf_dev), "Failed to read 32 bytes: %d\n", res);
-> >>> >> > +       } else {
-> >>> >> > +               /* Noone cares about positive return value */
-> >>> >> > +               *data = le32_to_cpu(tmp);
-> >>> >> > +               res = 0;
-> >>> >> > +       }
-> >>> >> >
-> >>> >> > -       return le32_to_cpu(data);
-> >>> >> > +       return res;
-> >>> >> >  }
-> >>> >>
-> >>> >> Dear Pavel,
-> >>> >>
-> >>> >> OK, found the issue with decoded stack trace after reviewing this
-> >>> >> usb_read32 function. Your line:
-> >>> >> res = usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> >>> >>
-> >>> >> should read:
-> >>> >> res = usbctrl_vendorreq(pintfhdl, wvalue, &tmp, len, requesttype);
-> >>> >
-> >>> > Dear Philip,
-> >>> >
-> >>> > No, it should read:
-> >>> >
-> >>> > res = usbctrl_vendorreq(pintfhdl, wvalue, data, len, requesttype);
-> >>> >
-> >>> > I suspect that Pavel didn't notice he was reusing a line of the old code
-> >>> > wth no due changes.
-> >>> >
-> >>> >> With this change, the driver runs fine with no crashes/oopses. I will
-> >>> >> explain the issue but you can probably see already, so I hope I'm not
-> >>> >> coming across as patronising, just trying to be helpful :-)
-> >>> >>
-> >>> >> Essentially, you are taking the address of the data function parameter
-> >>> >> on this line with &data, a pointer to u32, which is giving you a
-> >>> >> pointer to a pointer to u32 (u32 **) for this function parameter
-> >>> >> variable. When passed to usbctrl_vendorreq, it is being passed to
-> >>> >> memcpy inside this function as a void *, meaning that memcpy
-> >>> >> subsequently overwrites the value of the memory address inside data to
-> >>> >> point to a different location, which is problem when it is later
-> >>> >> deferenced at:
-> >>> >> *data = le32_to_cpu(tmp);
-> >>> >> causing the OOPS
-> >>> >>
-> >>> >> Also, as written, you can probably see that tmp is uninitialised. This
-> >>> >> looks like a typo, so guessing this wasn't your intention. Anyhow,
-> >>> >> with that small change, usbctrl_vendorreq reads into tmp, which is
-> >>> >> then passed to le32_to_cpu whose return value is stored via the
-> >>> >> deferenced data ptr (which now has its original address within and not
-> >>> >> inadvertently modified). Hope this helps, and I'd be happy to Ack the
-> >>> >> series if you want to resend this patch. Many thanks.
-> >>> >
-> >>> > I think that another typo is having 'tmp', because that variable is unnecessary
-> >>> > and "*data = le32_to_cpu(tmp);" is wrong too.
-> >>> >
-> >>> > Now I also see that also usb_read16() is wrong, while usb_read8() (the one that
-> >>> > I had read yesterday) is the only correct function of the three usb_read*().
-> >>> >
-> >>>
-> >>> Hi, guys!
-> >>>
-> >>>
-> >>> Sorry for breaking your system, Phillip. This code was part of "last
-> >>> minute" changes and yes, it's broken :)
-> >>>
-> >>> I get what Phillip said, because I _should_ read into tmp variable
-> >>> instead of directly to data, but I don't get Fabio's idea, sorry.
-> >>
-> >> Hi Pavel,
-> >>
-> >> I (wrongly?) assumed from the prototype of usb_read32() that u32 *data is in native
-> >> endianness. So, I didn't see the necessity of using _le32 tmp and then convert that tmp
-> >> with le32_to_cpu().
-> >>
-> >> I simply thought that data could be passed to usbctrl_vendorreq as it-is.
-> >>
-> >>> Data from chip comes in little-endian, so we _should_ convert it to
-> >>> cpu's endian. Temp variable is needed to make smatch and all other
-> >>> static anylis tools happy about this code.
-> >>
-> >> Now that you explained that "Data from chip comes in little-endian", obviously
-> >> I must agree with you that the code needs tmp and that tmp must be
-> >> swapped by le32_to_cpu(), ahead of assigning it to *data.
-> >>
-> >> Just a curiosity... Since I was not able to see that *data is returned in little endian,
-> >> can you please point me where in the code you found out that it is? There must
-> >> be some place in the code that I'm unable to find and see that *data is LE.
-> >>
-> >> Thanks in advance,
-> >>
-> >> Fabio
-> >
-> > Hi, Fabio!
-> >
-> > previous usb_read16() realization, which is 100% right:
-> >
-> >
-> > static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
-> > {
-> >       u8 requesttype;
-> >       u16 wvalue;
-> >       u16 len;
-> >       __le32 data;
-> >
-> >       requesttype = 0x01;/* read_in */
-> >       wvalue = (u16)(addr & 0x0000ffff);
-> >       len = 2;
-> >       usbctrl_vendorreq(pintfhdl, wvalue, &data, len, requesttype);
-> >
-> >       return (u16)(le32_to_cpu(data) & 0xffff);
-> > }
-> >
-> >
-> > Bases on this code, I think, it's oblivious, that data comes in
-> > little-endian. That's why I leaved temp variable for casting le32 to
-> > cpu's endianess.
-> >
-> > I could just read into u{16,32} * and then make smth like
-> >
-> > *data = le32_to_cpu(*data)
-> >
-> > but static analysis tools will complain about wrong data type passed to
-> >    le32_to_cpu()
-> >
-> > + Phillip tested fixed v2 version and it worked well for him. I guess,
-> > Phillip was able to spot weird driver behavior, if this cast is wrong.
-> >
->                 ^^^^^&
->
-> I am wrong with this statement, I guess. Most likely, Phillip is testing
-> on smth like x64 and this arch is le, so...
->
->
->
->
-> With regards,
-> Pavel Skripkin
+Currently hwpoison doesn't handle page cache THP, just give up and return
+error.  It is just because the hwpoison THP support was added before
+page cache THP was supported.
 
-Dear Pavel,
+Handling page cache THP is simple, they could be offlined by splitting THP,
+just like anonymous THP.
 
-You're correct in your assumption, my testing environment is an
-little-endian x64 QEMU VM with USB passthrough for the wireless
-adapter. I prefer to test this way so that driver crashes don't bring
-down the whole machine :-)
+The question is how to distinguish them with allocating and freeing THP
+which can't be handled by hwpoison properly.  It seems page->mapping is a
+good indicator, both anonymous page and file page have it populated, but
+it won't be populated until the page is added to rmap or page cache, in
+other word, instantiated.  If page->mapping is populated it is
+definitely not in allocating or freeing.
 
-Regards,
-Phil
+The later get_page_unless_zero() could serialize against page free
+paths.
+
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ mm/memory-failure.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 60df8fcd0444..caa0b0c1f5b8 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1149,13 +1149,16 @@ static int __get_hwpoison_page(struct page *page)
+ 
+ 	if (PageTransHuge(head)) {
+ 		/*
+-		 * Non anonymous thp exists only in allocation/free time. We
+-		 * can't handle such a case correctly, so let's give it up.
+-		 * This should be better than triggering BUG_ON when kernel
+-		 * tries to touch the "partially handled" page.
++		 * We can't handle allocating or freeing THPs, so let's give
++		 * it up. This should be better than triggering BUG_ON when
++		 * kernel tries to touch the "partially handled" page.
++		 *
++		 * page->mapping won't be initialized until the page is added
++		 * to rmap or page cache.  Use this as an indicator for if
++		 * this is an instantiated page.
+ 		 */
+-		if (!PageAnon(head)) {
+-			pr_err("Memory failure: %#lx: non anonymous thp\n",
++		if (!head->mapping) {
++			pr_err("Memory failure: %#lx: non instantiated thp\n",
+ 				page_to_pfn(page));
+ 			return 0;
+ 		}
+@@ -1414,12 +1417,12 @@ static int identify_page_state(unsigned long pfn, struct page *p,
+ static int try_to_split_thp_page(struct page *page, const char *msg)
+ {
+ 	lock_page(page);
+-	if (!PageAnon(page) || unlikely(split_huge_page(page))) {
++	if (!page->mapping || unlikely(split_huge_page(page))) {
+ 		unsigned long pfn = page_to_pfn(page);
+ 
+ 		unlock_page(page);
+-		if (!PageAnon(page))
+-			pr_info("%s: %#lx: non anonymous thp\n", msg, pfn);
++		if (!page->mapping)
++			pr_info("%s: %#lx: not instantiated thp\n", msg, pfn);
+ 		else
+ 			pr_info("%s: %#lx: thp split failed\n", msg, pfn);
+ 		put_page(page);
+-- 
+2.26.2
+
