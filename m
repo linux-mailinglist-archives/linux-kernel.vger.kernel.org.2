@@ -2,182 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECA13F6AA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DAB3F6AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhHXUwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:52:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231411AbhHXUwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:52:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5AB0611C9;
-        Tue, 24 Aug 2021 20:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629838279;
-        bh=T7jeklW73WtmhJ1+zmiWNQDRR5pBH/HBxRpffRugi/M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CB5fwzQA6I8chW6tqlPAkiHwVud7c0gISHsRyWExvDnFVHfnLo0P3FZjaUEQeUhiB
-         JR3Y7ifK+h+YYqb3xK348QaIW2hY921IbYTBCYJSaNpS8Wg5XA/JmWdQ0EHeN/hRWo
-         M6VlJq3tXcuC9KaDhNb92tvBHKb9Hv6Bn95TKFJKK3tubaiRV/CmP2IuhbO/Sv9YIQ
-         shz2iuw8ddR33kEvhn3XfqtLQjGxPsalwjyeFkAq4BPvfcCoTh5Y0IY/hzm4wyaWBA
-         C2xXoXDlREj5sPw8FP6v0vgrFHlSB3SUS1GvplsIl5Z214yoFeTvOt6AcBijQsVLke
-         W8vNUAFvi4ooA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] cxgb4: Properly revert VPD changes
-Date:   Tue, 24 Aug 2021 13:51:04 -0700
-Message-Id: <20210824205104.2778110-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S235035AbhHXUxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:53:39 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:33263 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233289AbhHXUxh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 16:53:37 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d09 with ME
+        id lYsq2500B3riaq203YsqZq; Tue, 24 Aug 2021 22:52:51 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 24 Aug 2021 22:52:51 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     ardeleanalex@gmail.com, jic23@kernel.org, lars@metafoo.de,
+        andy.shevchenko@gmail.com
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] iio: adc128s052: Simplify 'adc128_probe()'
+Date:   Tue, 24 Aug 2021 22:52:49 +0200
+Message-Id: <f20a0eb45957c6931a8f35d035514484a2ac0f3d.1629838169.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+Turn 'adc128_probe()' into a full resource managed function to simplify the
+code.
 
-drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:2785:2: error: variable 'kw_offset' is uninitialized when used here [-Werror,-Wuninitialized]
-        FIND_VPD_KW(i, "RV");
-        ^~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:2776:39: note: expanded from macro 'FIND_VPD_KW'
-        var = pci_vpd_find_info_keyword(vpd, kw_offset, vpdr_len, name); \
-                                             ^~~~~~~~~
-drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:2748:34: note: initialize the variable 'kw_offset' to silence this warning
-        unsigned int vpdr_len, kw_offset, id_len;
-                                        ^
-                                         = 0
-drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:2785:2: error: variable 'vpdr_len' is uninitialized when used here [-Werror,-Wuninitialized]
-        FIND_VPD_KW(i, "RV");
-        ^~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:2776:50: note: expanded from macro 'FIND_VPD_KW'
-        var = pci_vpd_find_info_keyword(vpd, kw_offset, vpdr_len, name); \
-                                                        ^~~~~~~~
-drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:2748:23: note: initialize the variable 'vpdr_len' to silence this warning
-        unsigned int vpdr_len, kw_offset, id_len;
-                             ^
-                              = 0
-2 errors generated.
+This way, the .remove function can be removed.
+Doing so, the only 'spi_get_drvdata()' call is removed and the
+corresponding 'spi_set_drvdata()' can be removed as well.
 
-The series "PCI/VPD: Convert more users to the new VPD API functions"
-was applied to net-next when it should have been applied to the PCI tree
-because of build errors. However, commit 82e34c8a9bdf ("Revert "Revert
-"cxgb4: Search VPD with pci_vpd_find_ro_info_keyword()""") reapplied a
-change, resulting in the warning above.
-
-Properly revert commit 8d63ee602da3 ("cxgb4: Search VPD with
-pci_vpd_find_ro_info_keyword()") to fix the warning and restore proper
-functionality. This also reverts commit 3a93bedea050 ("cxgb4: Remove
-unused vpd_param member ec") to avoid future merge conflicts, as that
-change has been applied to the PCI tree.
-
-Link: https://lore.kernel.org/r/20210823120929.7c6f7a4f@canb.auug.org.au/
-Link: https://lore.kernel.org/r/1ca29408-7bc7-4da5-59c7-87893c9e0442@gmail.com/
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4.h |  2 +
- drivers/net/ethernet/chelsio/cxgb4/t4_hw.c | 44 +++++++++++++++++++---
- 2 files changed, 40 insertions(+), 6 deletions(-)
+Compile tested only.
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-index ecea3cdd30b3..9058f09f921e 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4.h
-@@ -84,6 +84,7 @@ extern struct mutex uld_mutex;
- enum {
- 	MAX_NPORTS	= 4,     /* max # of ports */
- 	SERNUM_LEN	= 24,    /* Serial # length */
-+	EC_LEN		= 16,    /* E/C length */
- 	ID_LEN		= 16,    /* ID length */
- 	PN_LEN		= 16,    /* Part Number length */
- 	MACADDR_LEN	= 12,    /* MAC Address length */
-@@ -390,6 +391,7 @@ struct tp_params {
+When reviewing, pay special attention to the 'spi_set_drvdata()' call
+removal. I recently introduced a regression with a too aggressive cleanup
+like that.
+
+This patch should be applied after
+https://lore.kernel.org/linux-iio/f33069f0-601b-4bbb-3766-026f7a161912@wanadoo.fr/T/#meb792dcd6540f87d9ae041660ca4738a776e924a
+---
+ drivers/iio/adc/ti-adc128s052.c | 34 +++++++++++----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
+
+diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
+index 83c1ae07b3e9..e1afdb775100 100644
+--- a/drivers/iio/adc/ti-adc128s052.c
++++ b/drivers/iio/adc/ti-adc128s052.c
+@@ -132,6 +132,13 @@ static const struct iio_info adc128_info = {
+ 	.read_raw = adc128_read_raw,
+ };
  
- struct vpd_params {
- 	unsigned int cclk;
-+	u8 ec[EC_LEN + 1];
- 	u8 sn[SERNUM_LEN + 1];
- 	u8 id[ID_LEN + 1];
- 	u8 pn[PN_LEN + 1];
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-index 70bb057320e4..6606fb8b3e42 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-@@ -2744,6 +2744,7 @@ int t4_seeprom_wp(struct adapter *adapter, bool enable)
- int t4_get_raw_vpd_params(struct adapter *adapter, struct vpd_params *p)
++static void adc128_disable_regulator(void *data)
++{
++	struct regulator *reg = data;
++
++	regulator_disable(reg);
++}
++
+ static int adc128_probe(struct spi_device *spi)
  {
- 	int i, ret = 0, addr;
-+	int ec, sn, pn, na;
- 	u8 *vpd, csum, base_val = 0;
- 	unsigned int vpdr_len, kw_offset, id_len;
+ 	struct iio_dev *indio_dev;
+@@ -151,8 +158,6 @@ static int adc128_probe(struct spi_device *spi)
+ 	adc = iio_priv(indio_dev);
+ 	adc->spi = spi;
  
-@@ -2771,6 +2772,23 @@ int t4_get_raw_vpd_params(struct adapter *adapter, struct vpd_params *p)
- 	}
- 
- 	id_len = pci_vpd_lrdt_size(vpd);
-+	if (id_len > ID_LEN)
-+		id_len = ID_LEN;
-+
-+	i = pci_vpd_find_tag(vpd, VPD_LEN, PCI_VPD_LRDT_RO_DATA);
-+	if (i < 0) {
-+		dev_err(adapter->pdev_dev, "missing VPD-R section\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	vpdr_len = pci_vpd_lrdt_size(&vpd[i]);
-+	kw_offset = i + PCI_VPD_LRDT_TAG_SIZE;
-+	if (vpdr_len + kw_offset > VPD_LEN) {
-+		dev_err(adapter->pdev_dev, "bad VPD-R length %u\n", vpdr_len);
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- #define FIND_VPD_KW(var, name) do { \
- 	var = pci_vpd_find_info_keyword(vpd, kw_offset, vpdr_len, name); \
-@@ -2793,14 +2811,28 @@ int t4_get_raw_vpd_params(struct adapter *adapter, struct vpd_params *p)
- 		goto out;
- 	}
- 
-+	FIND_VPD_KW(ec, "EC");
-+	FIND_VPD_KW(sn, "SN");
-+	FIND_VPD_KW(pn, "PN");
-+	FIND_VPD_KW(na, "NA");
-+#undef FIND_VPD_KW
-+
-+	memcpy(p->id, vpd + PCI_VPD_LRDT_TAG_SIZE, id_len);
-+	strim(p->id);
-+	memcpy(p->ec, vpd + ec, EC_LEN);
-+	strim(p->ec);
-+	i = pci_vpd_info_field_size(vpd + sn - PCI_VPD_INFO_FLD_HDR_SIZE);
-+	memcpy(p->sn, vpd + sn, min(i, SERNUM_LEN));
-+	strim(p->sn);
-+	i = pci_vpd_info_field_size(vpd + pn - PCI_VPD_INFO_FLD_HDR_SIZE);
-+	memcpy(p->pn, vpd + pn, min(i, PN_LEN));
-+	strim(p->pn);
-+	memcpy(p->na, vpd + na, min(i, MACADDR_LEN));
-+	strim((char *)p->na);
-+
- out:
- 	vfree(vpd);
--	if (ret < 0) {
--		dev_err(adapter->pdev_dev, "error reading VPD\n");
--		return ret;
--	}
+-	spi_set_drvdata(spi, indio_dev);
+-
+ 	indio_dev->name = spi_get_device_id(spi)->name;
+ 	indio_dev->modes = INDIO_DIRECT_MODE;
+ 	indio_dev->info = &adc128_info;
+@@ -167,29 +172,13 @@ static int adc128_probe(struct spi_device *spi)
+ 	ret = regulator_enable(adc->reg);
+ 	if (ret < 0)
+ 		return ret;
+-
+-	mutex_init(&adc->lock);
+-
+-	ret = iio_device_register(indio_dev);
++	ret = devm_add_action_or_reset(&spi->dev, adc128_disable_regulator, adc->reg);
+ 	if (ret)
+-		goto err_disable_regulator;
 -
 -	return 0;
-+	return ret < 0 ? ret : 0;
+-
+-err_disable_regulator:
+-	regulator_disable(adc->reg);
+-	return ret;
+-}
+-
+-static int adc128_remove(struct spi_device *spi)
+-{
+-	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+-	struct adc128 *adc = iio_priv(indio_dev);
++		return ret;
+ 
+-	iio_device_unregister(indio_dev);
+-	regulator_disable(adc->reg);
++	mutex_init(&adc->lock);
+ 
+-	return 0;
++	return devm_iio_device_register(&spi->dev, indio_dev);
  }
  
- /**
-
-base-commit: 3a62c333497b164868fdcd241842a1dd4e331825
+ static const struct of_device_id adc128_of_match[] = {
+@@ -231,7 +220,6 @@ static struct spi_driver adc128_driver = {
+ 		.acpi_match_table = ACPI_PTR(adc128_acpi_match),
+ 	},
+ 	.probe = adc128_probe,
+-	.remove = adc128_remove,
+ 	.id_table = adc128_id,
+ };
+ module_spi_driver(adc128_driver);
 -- 
-2.33.0
+2.30.2
 
