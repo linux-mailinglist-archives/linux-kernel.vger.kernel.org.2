@@ -2,131 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F0C3F6BC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2CB3F6BBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbhHXWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhHXWip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:38:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 986E2613AB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 22:38:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629844680;
-        bh=trvQSX2rJRWjrNLaSeH+EoF98vW2AeDpatiSlRzrcrM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BOQ3wE1NmwwPIhLseOygSis856eUvkrahEq4aiqKLmaO3y9KYD64UwBdzswDFfqCb
-         Kp3yOn6+0ib0Fdes7D0p0skaQ/9i4sskpzE3VaHTjQw2HL6TAg122msA9RhoLPv++t
-         0IJDPVMi7TlacxqI5dozaMeJAiFbTzB26TYaIQsl1KdT9X2siLWEd5HvO3pBYfTPZj
-         YS7mbExQ05LT9xslKXZ78ctoqv+EbULUMqnb+M9Pr4IRqyB3t7te6vwHUVfiadFpOb
-         elf66iqlxjfm9ey9vDLYq526GDegXBwIrfowaFaYZ4y1l/1RqrCh2cIH3HGeKElqDd
-         u/k2xp4vbsavg==
-Received: by mail-ed1-f49.google.com with SMTP id d6so34068206edt.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:38:00 -0700 (PDT)
-X-Gm-Message-State: AOAM531fHiOi2syUrZ0TrHoXpQS8pKv8S+RdgAd82DJ4c48YWLf6/LEw
-        XeLDKlOiU5wru6Jy9DIhb8PcRsqQ126pI7B78Q==
-X-Google-Smtp-Source: ABdhPJzDhWPbuqXoUDyZU6JQ1us9W0MHZQTd6VrofksKXx5toZRzxtxZ1oWDbd1pY5TvIrGhGJk5UVv78myAkVYy5+c=
-X-Received: by 2002:aa7:c487:: with SMTP id m7mr25907783edq.62.1629844679242;
- Tue, 24 Aug 2021 15:37:59 -0700 (PDT)
+        id S230016AbhHXWiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhHXWiW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 18:38:22 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF3FC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:37:38 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so50325621otf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1lJfH4wOJMmxE0ajatpSxG4P5pBAHDcGb2+cRaSL28E=;
+        b=ywFDc+LPrrWaukM9IgOlHwuhqaHHnTjzR+ePdmB+lZAfbkzLwyDnVF3GQSdi4e5Bk9
+         E9oVUkHx+9mKjyWts6mvt30KoTW7g4x/AuP2K8Bakf+N8Adg7h83Uoyr+xX5qDnCvNim
+         5UfehGbbTR34atM9vlo00eBNTRE/Xyvkrvyp+rjXNnMs8p6/2OGxDGYpIeM/4WY2yUNV
+         clVyJXtCzG2eVgprJxzl/XasP7yfKhdSyH75j2PC6DboMs4VydMC6bSYvGydtmP5MFGI
+         rA83yNQD9nHSRfJpVTAS0GW2vEQbCSwsb2J7roq6U83daiWnUwDsfo624ng2mybgdi0Y
+         jZ7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1lJfH4wOJMmxE0ajatpSxG4P5pBAHDcGb2+cRaSL28E=;
+        b=B+KN4dAUtXixzKzYSkyJo8fIT5Bv03E8DmpC6BM4QnWSRUGQbw/GwDo+vyDEbYhjS+
+         LfxeRVF33SW9zehIHuTeBfu3k6B/D7dD4ftjPN9uR+UZ5OKfY4JCvpChN0pQOdL/loUs
+         3P5kqIFOf1qUC7AlLDHPrG3rZcQ9ykpbT2UIsaeEvpIXe0HQxExyNRlnSoSjcLdOjICA
+         WTk2H9yOePbD5hCu1j85kAYYl4UzWB8SGjRHBH3xUNBnbZAQliGV4NjrH5uf6jYrTqcy
+         P1mJYLpfOcsQttLF5xdl1F4TRzcbAPogl5btwMpDkSB9O2FHgmkRfRNfM4uD9H7tuVVN
+         fusA==
+X-Gm-Message-State: AOAM531HzIztjLQxKdlPdQLKN64rM0WI30ZEYu/6qoL0TlaUkbLSz6bd
+        6OlnvB8KTdMEm1jo/ytbCN1PWw==
+X-Google-Smtp-Source: ABdhPJw5Ma9QotdP5zqVWblvun23nSYXRtkobA/qBDoVv82DX73Jz4Ic+V298jXD/ocNulCAHb9mRg==
+X-Received: by 2002:a05:6830:44a4:: with SMTP id r36mr7064745otv.107.1629844657267;
+        Tue, 24 Aug 2021 15:37:37 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w15sm4525430oiw.19.2021.08.24.15.37.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 15:37:36 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 15:38:53 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        angelogioacchino.delregno@somainline.org
+Subject: Re: [PATCH] clk: qcom: gcc-sdm660: Replace usage of parent_names
+Message-ID: <YSV0/bFiPgY3fjPF@ripper>
+References: <20210824150606.678666-1-bjorn.andersson@linaro.org>
+ <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
 MIME-Version: 1.0
-References: <20210824173028.7528-1-alyssa.rosenzweig@collabora.com>
-In-Reply-To: <20210824173028.7528-1-alyssa.rosenzweig@collabora.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 24 Aug 2021 17:37:47 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJdhVMmroQLjaNVGoW3PJLS3qFRNAVRifGzR-jxNu1Stw@mail.gmail.com>
-Message-ID: <CAL_JsqJdhVMmroQLjaNVGoW3PJLS3qFRNAVRifGzR-jxNu1Stw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] drm/panfrost: Bug fixes for lock_region
-To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <386db1a6-a1cd-3c7d-a88e-dc83f8a1be96@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:30 PM Alyssa Rosenzweig
-<alyssa.rosenzweig@collabora.com> wrote:
->
-> Chris Morgan reported UBSAN errors in panfrost and tracked them down to
-> the size computation in lock_region. This calculation is overcomplicated
-> (cargo culted from kbase) and can be simplified with kernel helpers and
-> some mathematical identities. The first patch in the series rewrites the
-> calculation in a form avoiding undefined behaviour; Chris confirms it
-> placates UBSAN.
->
-> While researching this function, I noticed a pair of other potential
-> bugs: Bifrost can lock more than 4GiB at a time, but must lock at least
-> 32KiB at a time. The latter patches in the series handle these cases.
->
-> In review of v1 of this series, Steven pointed out a fourth potential
-> bug: rounding down the iova can truncate the lock region. v2 adds a new
-> patch for this case.
->
-> The size computation was unit-tested in userspace. Relevant code below,
-> just missing some copypaste definitions for fls64/clamp/etc:
->
->         #define MIN_LOCK (1ULL << 12)
->         #define MAX_LOCK (1ULL << 48)
->
->         struct {
->                 uint64_t size;
->                 uint8_t encoded;
->         } tests[] = {
->                 /* Clamping */
->                 { 0, 11 },
->                 { 1, 11 },
->                 { 2, 11 },
->                 { 4095, 11 },
->                 /* Power of two */
->                 { 4096, 11 },
->                 /* Round up */
->                 { 4097, 12 },
->                 { 8192, 12 },
->                 { 16384, 13 },
->                 { 16385, 14 },
->                 /* Maximum */
->                 { ~0ULL, 47 },
->         };
->
->         static uint8_t region_width(uint64_t size)
->         {
->                 size = clamp(size, MIN_LOCK, MAX_LOCK);
->                 return fls64(size - 1) - 1;
->         }
->
->         int main(int argc, char **argv)
->         {
->                 for (unsigned i = 0; i < ARRAY_SIZE(tests); ++i) {
->                         uint64_t test = tests[i].size;
->                         uint8_t expected = tests[i].encoded;
->                         uint8_t actual = region_width(test);
->
->                         assert(expected == actual);
->                 }
->         }
->
-> Changes in v2:
->
-> * New patch for non-aligned lock addresses
-> * Commit message improvements.
-> * Add Steven's tags.
->
-> Alyssa Rosenzweig (4):
->   drm/panfrost: Simplify lock_region calculation
->   drm/panfrost: Use u64 for size in lock_region
->   drm/panfrost: Clamp lock region to Bifrost minimum
->   drm/panfrost: Handle non-aligned lock addresses
->
->  drivers/gpu/drm/panfrost/panfrost_mmu.c  | 32 ++++++++++--------------
->  drivers/gpu/drm/panfrost/panfrost_regs.h |  2 ++
->  2 files changed, 15 insertions(+), 19 deletions(-)
+On Tue 24 Aug 13:46 PDT 2021, Marijn Suijten wrote:
 
-For the series,
+> Hi Bjorn,
+> 
+> Thanks for this cleanup, that's needed and much appreciated!
+> 
+> On 8/24/21 5:06 PM, Bjorn Andersson wrote:
+> > Using parent_data and parent_hws, instead of parent_names, does protect
+> > against some cases of incompletely defined clock trees. While it turns
+> > out that the bug being chased this time was totally unrelated, this
+> > patch converts the SDM660 GCC driver to avoid such issues.
+> > 
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> 
+> Tested-by: Marijn Suijten <marijn.suijten@somainline.org>
+> 
+> On the Sony Xperia XA2 Ultra, bar the necessary change in the 14NM DSI PHY
+> driver commented below.
+> 
+> > [..]
+> > -
+> > -static struct clk_fixed_factor xo = {
+> > -	.mult = 1,
+> > -	.div = 1,
+> > -	.hw.init = &(struct clk_init_data){
+> > -		.name = "xo",
+> > -		.parent_names = (const char *[]){ "xo_board" },
+> > -		.num_parents = 1,
+> > -		.ops = &clk_fixed_factor_ops,
+> > -	},
+> > -};
+> 
+> 
+> Removing the global "xo" clock makes it so that our 14nm DSI PHY does not
+> have a parent clock anymore, as the clock is called "xo_board" nowadays
+> ("xo" in the position of fw_name is, as you know, only local to this driver
+> because it is named that way in the clock-names property). We (SoMainline)
+> suffer the same DSI PHY hardcoding issue on many other boards and are at
+> this point investigating whether to provide &xo_board in DT like any other
+> sane driver.  Do you happen to know if work is already underway to tackle
+> this?
+> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+As far as I can tell most other platforms doesn't define "xo" either.
+E.g. according to debugfs dsi0vco_clk doesn't have a parent on sdm845...
+
+Sounds like we should update the dsi phys to specify a fw_name and
+update binding and dts to provide this...
+
+
+Does this cause a noticeable regression or it's just that we have a
+dangling clock?
+
+> >   static struct clk_alpha_pll gpll0_early = {
+> >   	.offset = 0x0,
+> >   	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_DEFAULT],
+> > @@ -158,7 +35,9 @@ static struct clk_alpha_pll gpll0_early = {
+> >   		.enable_mask = BIT(0),
+> >   		.hw.init = &(struct clk_init_data){
+> >   			.name = "gpll0_early",
+> > -			.parent_names = (const char *[]){ "xo" },
+> > +			.parent_data = &(const struct clk_parent_data){
+> > +				.fw_name = "xo",
+> > +			},
+> 
+> 
+> I wish we could use .parent_names for a list of .fw_name's too
+
+Afaict specifying "name" in struct clk_parent_data is the same as using
+parent_names. But I'm not up to speed on the details of how to migrate
+the dsi phys.
+
+> > [..]
+> > @@ -265,7 +270,7 @@ static struct clk_rcg2 blsp1_qup1_i2c_apps_clk_src = {
+> >   	.freq_tbl = ftbl_blsp1_qup1_i2c_apps_clk_src,
+> >   	.clkr.hw.init = &(struct clk_init_data){
+> >   		.name = "blsp1_qup1_i2c_apps_clk_src",
+> > -		.parent_names = gcc_parent_names_xo_gpll0_gpll0_early_div,
+> > +		.parent_data = gcc_parent_data_xo_gpll0_gpll0_early_div,
+> >   		.num_parents = 3,
+> 
+> 
+> How about using ARRAY_SIZE(gcc_parent_data_xo_gpll0_gpll0_early_div) now?
+> Same for every other occurrence of this pattern.
+> 
+
+I omitted that because it felt unrelated to the change I was doing, but
+it could certainly be done.
+
+Regards,
+Bjorn
