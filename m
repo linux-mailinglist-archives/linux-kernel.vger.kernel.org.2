@@ -2,123 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD0C3F5D1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0234E3F5D13
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhHXLbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        id S236550AbhHXLam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236795AbhHXLay (ORCPT
+        with ESMTP id S235509AbhHXLak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:30:54 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE2DC061796
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 04:30:10 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id l18so29492031lji.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 04:30:09 -0700 (PDT)
+        Tue, 24 Aug 2021 07:30:40 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B38C061757;
+        Tue, 24 Aug 2021 04:29:56 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id e7so19481435pgk.2;
+        Tue, 24 Aug 2021 04:29:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FreLuXtpPO5M0wpQU/au7ZiAqtijlcsGc59gKKgk/cE=;
-        b=CSa5G9X9T10H39Cf/4WsJMIxldeEYSZf5kx/O07w10fZxVPEumBmJD1Kf2LVpJKp+g
-         8iS5NXOGRh+fdG+c2yAcHS6cf2m6CK/Am3BaWXW/hjiMg6RW/DTv4Qb9ykuxIwhE4mSO
-         tYrJumdu2IGkMZwbAFIdJCTZhunSMPu/qf9L5JBmLd3rEAomkKZ2ysTC/ESmnWk+uoLH
-         dhTdigaeNI3a7Ibl2b/f+kWgNubmfACJ6CgL5aC4vWMEvCJQZnMQpI2GgQ5Ggf5PYrLD
-         B/T4J+orYR8TXEg7Gl9rtKcV/bhxs/Qfzg1ja7iPm4UNCSG/8xr5MSxG++9UDXW47kET
-         aUuA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bsdgxIajsLvyVXx8QcFLfpT4UU3Qk94eKj1fu3Cdnaw=;
+        b=J3ekKR18f6EpfnXFMKOiNoVDKE9K1qm0B5w7HFPwkzzrx5ce4ur4+XKjQgQrZdPVMA
+         G5K5pEmPRVvdao/miOhvVJZzh6bCUBCwlfZNxPbyBbqjXFD1bKujeeZMCFREoLGGvmOl
+         Z9MUtkgK51i2bo2Z55z/2IcXruBsWAgdnRv7csJezdK0ptRz6VdjYdSMTMZd1YMOyv6Q
+         295iUMfB12hYVzU25/413G7K0LghwJeaB46gZ5TboN+IC5zue6/5Dwd1SlNCznVFW9ko
+         ix7/6NKCm+uB9vfWN2jPzQcfl8frL4wj9V5em1vDcszreDGNUr9K0eYhJKvIQg4mHMF0
+         3wLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FreLuXtpPO5M0wpQU/au7ZiAqtijlcsGc59gKKgk/cE=;
-        b=RPUZwA6qUemD77wIS7uhZm0OYvRIhjHWErcPly+sNH6BdKhb2wo6ihAVtXBibQHds/
-         w3sYUMU5MVlbF8Etl9gGml30db4OJB2CxCH/H0K1w8Ob5oXzo9/1VoIqZquMR0T3gKgB
-         q8ip8f+nMPflBj9+Ocg93HroaKMsb/2VR5telygtO/eTYlUp/ZSPvDxEvjQM+CEpK/ai
-         tu14V+esgc/mhXkGLaHI7urnQTQY8yDwiTPTUD6+B8hzCj6xqw4dFgaZQiSM0G4svP3K
-         wb9gRAh17+JgDJ9NNkDPxON7igrfrNLmyIwZnExh4Co9RI38ASMlWNnHhljpepYJ2Gum
-         i2Lw==
-X-Gm-Message-State: AOAM531Cyv+Kvu7xBTSZH768qdJbAnj/1MTI/eVq0WURtINGI8qhbi3N
-        aIIRAn895YjDxl4uR1tDkrazyocELY1iIROLKR7Jaw==
-X-Google-Smtp-Source: ABdhPJxQH8k8XULO0z2A31EiJpmeQRdAX6jY9QPJ8haOSv/5nXSkOoXHLu6IrdzQGyKAfdrldcuInPU7bxrN6lLg18c=
-X-Received: by 2002:a05:651c:83:: with SMTP id 3mr31894238ljq.341.1629804608413;
- Tue, 24 Aug 2021 04:30:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bsdgxIajsLvyVXx8QcFLfpT4UU3Qk94eKj1fu3Cdnaw=;
+        b=Qxi1FPORavyNmt+RGT7Ct9py8LSseUVXA4bkOj0I/SC1W+WiNhegMhrRHu/VPW/yGj
+         SjsL+gayjAceZdqzcQY6Dd3vuiZlprh+LzYuZs+WgXBA61neVqXjbDkSYOJenuiNDTNq
+         p+c4PPdjtlu1KZuWGx1M6kjplcwgpcxtDXrYjRqmZfHq+rHfxB/dBw1Yd6DHLOQYkkWs
+         ngkCilZ+XWwdch8Gxl81ZMV650VXZJnS8Qb1LeX0dNeIaXe08x+nOFzZAaxAhCOAVoFl
+         Lx0PfP10sWFEkDD0bemMBO0TwQNhiItO2ET8y8Bevzp13WyxowsCVfzQW9LTUWJfyby3
+         /QFw==
+X-Gm-Message-State: AOAM531w1Hs8L7BPKkqkGW0eS6tfWAgom+dfABBZ7JnTrUoOkI9qfXpt
+        xfVF8hJLcj6zyNHGRikMYwrFnxch9IDpIxfm
+X-Google-Smtp-Source: ABdhPJxZDe0Vn3bPAlX2uXZ17tJveBRj/XZO7Fu54rsB2WSLFgimsBcrrKKeI7tXQt3Fyo9qhZrRCQ==
+X-Received: by 2002:a05:6a00:150d:b0:3e2:13fc:dd2b with SMTP id q13-20020a056a00150d00b003e213fcdd2bmr38430712pfu.71.1629804595943;
+        Tue, 24 Aug 2021 04:29:55 -0700 (PDT)
+Received: from localhost.localdomain ([45.77.24.247])
+        by smtp.gmail.com with ESMTPSA id on15sm2128732pjb.19.2021.08.24.04.29.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 04:29:55 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, mgorman@suse.de,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, achaiken@aurora.tech
+Cc:     lkp@intel.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v3 0/7] sched: support schedstats for RT sched class 
+Date:   Tue, 24 Aug 2021 11:29:39 +0000
+Message-Id: <20210824112946.9324-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210713053458.1441-1-oracleks043021@gmail.com> <DM6PR04MB65754DC90E423A79D80263C1FC149@DM6PR04MB6575.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB65754DC90E423A79D80263C1FC149@DM6PR04MB6575.namprd04.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Aug 2021 13:29:32 +0200
-Message-ID: <CAPDyKFp_HGSfm_ZR6=CSzNAK9jXZ+hNBh4=9Ld67-fSkKPJ_4A@mail.gmail.com>
-Subject: Re: [PATCH v1] mmc-utils: Fix for Firmware Version string printing
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "oracleks043021@gmail.com" <oracleks043021@gmail.com>
-Cc:     "beanhuo@micron.com" <beanhuo@micron.com>,
-        "kenny.gibbons@oracle.com" <kenny.gibbons@oracle.com>,
-        "kimito.sakata@oracle.com" <kimito.sakata@oracle.com>,
-        "rkamdar@micron.com" <rkamdar@micron.com>,
-        "chris@printf.net" <chris@printf.net>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Jul 2021 at 10:00, Avri Altman <Avri.Altman@wdc.com> wrote:
->
-> >
-> > From: Kimito Sakata <kimito.sakata@oracle.com>
-> >
-> > Added a local buffer to create a NULL terminated string to print the
-> > Firmware Version instead of attempting to print directly from
-> > ext_csd buffer. The last byte of the Firmware Version field may not
-> > be NULL and the next field may also not be which may cause it to
-> > print garbage.
-> >
-> > Tested on x86 platform.
-> Fixes: 89cd01ed865a (mmc_utils: add ffu support)
->
-> Signed-off-by: Kimito Sakata <kimito.sakata@oracle.com>
-> Reviewed-by: Avri Altman <avri.altman@wdc.com>
+Hi Ingo, Peter,
 
-Applied for master at git.kernel.org/pub/scm/utils/mmc/mmc-utils.git, thanks!
+This feature is useful to trace the sched details of RT tasks. Hopefully
+you can give some feedback on it.
 
-Kind regards
-Uffe
+We want to measure the latency of RT tasks in our production
+environment with schedstats facility, but currently schedstats is only
+supported for fair sched class. In order to support if for other sched
+classes, we should make it independent of fair sched class. The struct
+sched_statistics is the schedular statistics of a task_struct or a
+task_group, both of which are independent of sched class. So we can move
+struct sched_statistics into struct task_struct and struct task_group to
+achieve the goal.
+
+After the patchset, schestats are orgnized as follows,
+struct task_struct {
+    ...
+    struct sched_statistics statistics;
+    ...
+    struct sched_entity *se;
+    struct sched_rt_entity *rt;
+    ...
+};
+
+struct task_group {                    |---> stats[0] : of CPU0
+    ...                                |
+    struct sched_statistics **stats; --|---> stats[1] : of CPU1
+    ...                                |
+                                       |---> stats[n] : of CPUn
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+    struct sched_entity **se;
+ #endif
+ #ifdef CONFIG_RT_GROUP_SCHED
+    struct sched_rt_entity  **rt_se;
+ #endif
+    ...
+};
+
+The sched_statistics members may be frequently modified when schedstats is
+enabled, in order to avoid impacting on random data which may in the same
+cacheline with them, the struct sched_statistics is defined as cacheline
+aligned.
+
+Then we can use schedstats to trace RT tasks as well, for example,
+                    Interface File
+ task schedstats :  /proc/[pid]/sched
+ group schedstats:  /proc/sched_debug
+ tracepoints     :  sched:sched_stat_{runtime, wait, sleep, iowait, blocked}
+
+As PATCH #2 and #3 changes the core struct in the scheduler, so I did
+'perf bench sched pipe' to measure the sched performance before and after
+the change, suggested by Mel. Below is the data, which are all in
+usecs/op.
+
+                                  Before               After
+      kernel.sched_schedstats=0  ~5.6                 ~5.6
+      kernel.sched_schedstats=1  ~5.7                 ~5.7
+    [These data is a little difference with the prev version, that is
+     because my old test machine is destroyed so I have to use a new
+     different test machine.]
+No obvious difference after the change.
+
+Changes Since v2:
+- Fixes the output format in /proc/[pid]/sched  
+- Rebase it on the latest code
+- Redo the performance test
+
+Changes since v1:
+- Fix the build failure reported by kernel test robot.
+- Add the performance data with 'perf bench sched pipe', suggested by
+  Mel.
+- Make the struct sched_statistics cacheline aligned.
+- Introduce task block time in schedstats
+
+Changes since RFC:
+- improvement of schedstats helpers, per Mel.
+- make struct schedstats independent of fair sched class 
 
 
->
-> > ---
-> >  mmc_cmds.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mmc_cmds.c b/mmc_cmds.c
-> > index afa85b7..205e6e5 100644
-> > --- a/mmc_cmds.c
-> > +++ b/mmc_cmds.c
-> > @@ -1392,6 +1392,7 @@ int do_read_extcsd(int nargs, char **argv)
-> >         __u32 regl;
-> >         int fd, ret;
-> >         char *device;
-> > +       char lbuf[10];
-> >         const char *str;
-> >
-> >         if (nargs != 2) {
-> > @@ -1833,8 +1834,9 @@ int do_read_extcsd(int nargs, char **argv)
-> >         }
-> >
-> >         if (ext_csd_rev >= 7) {
-> > -               printf("eMMC Firmware Version: %s\n",
-> > -                       (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION]);
-> > +                memset(lbuf, 0, sizeof(lbuf));
-> > +               strncpy(lbuf, (char*)&ext_csd[EXT_CSD_FIRMWARE_VERSION], 8);
-> > +               printf("eMMC Firmware Version: %s\n", lbuf);
-> >                 printf("eMMC Life Time Estimation A
-> > [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]: 0x%02x\n",
-> >                         ext_csd[EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_A]);
-> >                 printf("eMMC Life Time Estimation B
-> > [EXT_CSD_DEVICE_LIFE_TIME_EST_TYP_B]: 0x%02x\n",
-> > --
-> > 2.31.1
->
+Yafang Shao (7):
+  sched, fair: use __schedstat_set() in set_next_entity()
+  sched: make struct sched_statistics independent of fair sched class
+  sched: make schedstats helpers independent of fair sched class
+  sched: make the output of schedstats independent of fair sched class
+  sched: introduce task block time in schedstats
+  sched, rt: support sched_stat_runtime tracepoint for RT sched class
+  sched, rt: support schedstats for RT sched class
+
+ include/linux/sched.h    |   7 +-
+ kernel/sched/core.c      |  24 +++--
+ kernel/sched/deadline.c  |   4 +-
+ kernel/sched/debug.c     | 136 +++++++++++++++----------
+ kernel/sched/fair.c      | 210 ++++++++++++++++-----------------------
+ kernel/sched/rt.c        | 147 ++++++++++++++++++++++++++-
+ kernel/sched/sched.h     |   3 +
+ kernel/sched/stats.c     | 104 +++++++++++++++++++
+ kernel/sched/stats.h     |  89 +++++++++++++++++
+ kernel/sched/stop_task.c |   4 +-
+ 10 files changed, 531 insertions(+), 197 deletions(-)
+
+-- 
+2.18.2
+
