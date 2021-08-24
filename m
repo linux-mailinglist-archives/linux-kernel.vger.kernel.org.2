@@ -2,103 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DD63F615D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCF23F615B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238218AbhHXPQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S238162AbhHXPP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238120AbhHXPQ1 (ORCPT
+        with ESMTP id S230341AbhHXPPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:16:27 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CA2C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:15:42 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id dm15so7227102edb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:15:42 -0700 (PDT)
+        Tue, 24 Aug 2021 11:15:54 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A6AC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:15:10 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso35720421ots.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:15:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=S8GovWtMK5eubaGQxzejb5uS/zTWAuF/XISVTn3NrSk=;
-        b=CYJV+1REzF4SLuHOght+yAnmV5zMNpmzW0t/LDQjxsbFruPK5IHQ4xgTsUuvDOOXja
-         R1ocAOWP3V6Z9fQQdJWScsDFdYfCj6Dy7+oqsP8S0xjyJrfkEFDm/xniPizx1ALX03Fv
-         KFBEsaYxhdWYPpa1pFq/kFVxttCVmlbG9t6gHzJAQ/oSjfbOMt3wieXRElkwonRYbq//
-         eBb9OTgSWZFM8sqwzOH0bqWF5Y1Dt3BLbrCcSpsIhMU54sddNQNfA/X2vMAzDYp7kMye
-         WUgp9xKT1FKo7PlBizsD8y1uHF1yStfEsyP9ndmnkNLwTW235OPhuQWfP71RE4KCiOFP
-         hshw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Y0kEI+D7S9zjGZEzmEP8rK0NWN9F8ml/ZbrO8rwdGoc=;
+        b=rpzC8nqxjtvlgOqu4Uo6ccz/R+Z9Mz/PUr0z6mqMTfmcAcPvdbwnY1pM9fWcLoiyU0
+         byO8XEiEF2wd2Q4puMGrpWxD8U0n/OzuaHpj6RxYfjjQAjOEFAvYeGi3Lqdvlc05lj/L
+         aHg2aXuHPKooUP4bfqcCg436MQLO96qifEhk30pU2o/ZMqOHew6lV1LDVFbzGhRVNfRU
+         CJezKjjDGy0UbjzsLbMCfFrutA2zwgoMr1nKsRvRNzhUYDFCSRWJ3fFigXkCbthkAf4O
+         ckmc3KAPsAWoLxUMmyOOrh1YZBvdeFT3uIpjp9P3jxBSDBsw0zNEdWEN+0HMP6pcmeij
+         F6Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S8GovWtMK5eubaGQxzejb5uS/zTWAuF/XISVTn3NrSk=;
-        b=t8JMuAKtBgpscZj9b3IcC2OJMSajysKmIuLu8XH+LPJ5A+FoKv7+zFtEe3KuH3lP+b
-         t6d64DOzFLaDn+ji/r1GmOHmAZujIMPNbjoyG3KKktQn1w7sIvfRxPSwQbGG1pIA8lbP
-         RyUfFkfQJsSiXroZEMLV0uq95O585wB38U8IzgGWYevLnfZij1xF/kaRI4EcT4sY54oP
-         GhOCQxvIMFynxa7U9te60N1qpIMLAa75MiWlCC/A7PfdDlFRoBouKO4kI3LEiitIECSy
-         C0Lp0v/m+Ge8avzMZunY5FDQpSNGgkZ7COSktW4oEo4jlblIslFnX4/eiX/+lqPtuZfi
-         9pPw==
-X-Gm-Message-State: AOAM530amIbQyvpekxJeubJvEhZAXfusbxxsm6yvxI6lDiTaB2jn/Bd0
-        sd+0PkTONprr6o27KP7FPnE=
-X-Google-Smtp-Source: ABdhPJyJRBFsFUhAhJdMn39ets+xdiwQQX7DjNW18pwzQxGPH0AFtC6i9JDFd++hUlNSz4PR13tq7g==
-X-Received: by 2002:a50:f1c6:: with SMTP id y6mr12864741edl.354.1629818140129;
-        Tue, 24 Aug 2021 08:15:40 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id w13sm12448875ede.24.2021.08.24.08.15.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Y0kEI+D7S9zjGZEzmEP8rK0NWN9F8ml/ZbrO8rwdGoc=;
+        b=A58KzJIlVnTGNx2W/j0VjPbQr1+VHAxlqTTGe6xa9uOVUK/sPf3iiJwS6yUKw2ebU/
+         5Ew9uVONQPv7ygBzotLCPABuePXI4LT5NKrsrNv3VYcfPi99/F7gdFrgHHgrQTeePtSM
+         jTA+M585msWCZYZ8DT4vgaUpw5Vz78wOk11Ap9ygi4CfO/KOtCf4xL8fG9fRhxYl95zJ
+         Ve/6No/HD69DQ/nUPGlw4mx/ms5394v/rXfoPwnBfaN5DWNzHleBQwQyoQrh1Y1asi6I
+         bMYGG5hQlDKHY0iSPgGk0WChrE58f+fHexXmy7qknMP8eNXf2OHGxKB1ZjWs1Hwz1IkX
+         edaQ==
+X-Gm-Message-State: AOAM532dqY4+GoSB7DiB5BAV8zEgCrXBFoJKCi5jeM6BaCq2xZnkQDjK
+        UiPDxm9h5DvvuBZjj8lm3IFdIw==
+X-Google-Smtp-Source: ABdhPJy3vWSiA1OB3S6Pa+SAzoYPn7AL7zqAhUal6qCFvatvxLOdzfyVzN/0FcFLwW6PJ5dPWSuZlw==
+X-Received: by 2002:aca:3193:: with SMTP id x141mr3216871oix.110.1629818110048;
+        Tue, 24 Aug 2021 08:15:10 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id b2sm3566712ook.46.2021.08.24.08.15.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 08:15:39 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH 2/2] staging: r8188eu: Make some clean-ups in usbctrl_vendorreq()
-Date:   Tue, 24 Aug 2021 17:15:38 +0200
-Message-ID: <3740714.KPokl01s95@localhost.localdomain>
-In-Reply-To: <27c7e4ef-06a8-2f0c-d388-1a64e7d4a735@gmail.com>
-References: <20210824142823.16845-1-fmdefrancesco@gmail.com> <20210824142823.16845-3-fmdefrancesco@gmail.com> <27c7e4ef-06a8-2f0c-d388-1a64e7d4a735@gmail.com>
+        Tue, 24 Aug 2021 08:15:09 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 08:16:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/39] arm64: dts: qcom: sdm630: Add TSENS node
+Message-ID: <YSUNSmgeGgc+x5xA@ripper>
+References: <20210728222542.54269-1-konrad.dybcio@somainline.org>
+ <20210728222542.54269-15-konrad.dybcio@somainline.org>
+ <860f1120-c5a4-f531-3ea9-aa90c6b063dc@linaro.org>
+ <2318377c-959a-a42b-81b5-44e2629570d5@somainline.org>
+ <afee55a8-d7d3-709a-ea4f-0306698c9976@linaro.org>
+ <b16d8000-85a7-d957-77d2-d921e5b09829@somainline.org>
+ <a7f90fe0-ee24-a47d-089d-e716a5766fcd@linaro.org>
+ <2ffc4e54-a501-bd2d-3f29-a6df34023445@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2ffc4e54-a501-bd2d-3f29-a6df34023445@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 4:39:51 PM CEST Pavel Skripkin wrote:
-> On 8/24/21 5:28 PM, Fabio M. De Francesco wrote:
-> > After replacing usb_control_msg() with the new usb_control_msg_recv() and
-> > usb_control_msg_send() API of USB Core, remove camelcase from the pIo_buf
-> > variable that is passed as argument to the new API and remove the initial
-> > 'p' (that probably stands for "pointer") from the same pIo_buf and from
-> > the pintfhdl and pdata arguments of usbctrl_vendorreq().
+On Thu 29 Jul 06:48 PDT 2021, AngeloGioacchino Del Regno wrote:
+
+> Il 29/07/21 13:14, Thara Gopinath ha scritto:
 > > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> >   drivers/staging/r8188eu/hal/usb_ops_linux.c | 22 ++++++++++-----------
-> >   1 file changed, 11 insertions(+), 11 deletions(-)
+> > 
+> > On 7/29/21 6:55 AM, Konrad Dybcio wrote:
+> > > 
+> > > On 29.07.2021 12:54, Thara Gopinath wrote:
+> > > > 
+> > > > 
+> > > > On 7/29/21 6:52 AM, Konrad Dybcio wrote:
+> > > > > 
+> > > > > On 29.07.2021 12:50, Thara Gopinath wrote:
+> > > > > > Hi Konrad,
+> > > > > > 
+> > > > > > On 7/28/21 6:25 PM, Konrad Dybcio wrote:
+> > > > > > > This will enable temperature reporting for various SoC
+> > > > > > > components.
+> > > > > > > 
+> > > > > > > Signed-off-by: AngeloGioacchino Del Regno
+> > > > > > > <angelogioacchino.delregno@somainline.org>
+> > > > > > > Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> > > > > > > ---
+> > > > > > >     .../devicetree/bindings/thermal/qcom-tsens.yaml       |  1 +
+> > > > > > >     arch/arm64/boot/dts/qcom/sdm630.dtsi                  | 11 +++++++++++
+> > > > > > >     2 files changed, 12 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git
+> > > > > > > a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > > > > > > b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > > > > > > index 4a2eaf28e3fd..d3b9e9b600a2 100644
+> > > > > > > --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > > > > > > +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > > > > > > @@ -48,6 +48,7 @@ properties:
+> > > > > > >                   - qcom,sc7180-tsens
+> > > > > > >                   - qcom,sc7280-tsens
+> > > > > > >                   - qcom,sc8180x-tsens
+> > > > > > > +              - qcom,sdm630-tsens
+> > > > > > >                   - qcom,sdm845-tsens
+> > > > > > >                   - qcom,sm8150-tsens
+> > > > > > >                   - qcom,sm8250-tsens
+> > > > > > > diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> > > > > > > b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> > > > > > > index 1e54828817d5..7e9c80e35fba 100644
+> > > > > > > --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> > > > > > > +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> > > > > > > @@ -627,6 +627,17 @@ mnoc: interconnect@1745000 {
+> > > > > > >                      <&mmcc AHB_CLK_SRC>;
+> > > > > > >             };
+> > > > > > >     +        tsens: thermal-sensor@10ae000 {
+> > > > > > > +            compatible = "qcom,sdm630-tsens", "qcom,tsens-v2";
+> > > > > > > +            reg = <0x010ae000 0x1000>, /* TM */
+> > > > > > > +                  <0x010ad000 0x1000>; /* SROT */
+> > > > > > > +            #qcom,sensors = <12>;
+> > > > > > 
+> > > > > > Are all 12 sensors used ? I see that in a later patch
+> > > > > > "arm64: dts: qcom: sdm630: Add thermal-zones
+> > > > > > configuration" only 9 are used.
+> > > > > 
+> > > > > Hi,
+> > > > > 
+> > > > > if I recall correctly, they all give output but not all of
+> > > > > the mappings were documented in the downstream sources and
+> > > > > we have no documentation whatsoever :(
+> > > > 
+> > > > Right. In that case, why not change #qcom,sensors to 9 and add
+> > > > rest of the sensors if and when needed ?
+> > > > 
+> > > I don't think it makes sense to describe the hardware incorrectly,
+> > > even if some of it is unused.
+> > 
+> > My thinking was more along the lines of don't expose unused h/w bits.
 > > 
 > 
-> I cannot apply this one on top of the first one:
+> You're right about not exposing unused HW bits, but even PC x86 motherboards
+> (I mean the smbus/i2c drivers for the big holy management/sensors chips) do
+> have such a "base" configuration, where some lines are read as 0 because they
+> are effectively not connected by hardware.
 > 
-> error: patch failed: drivers/staging/r8188eu/hal/usb_ops_linux.c:33
-> error: drivers/staging/r8188eu/hal/usb_ops_linux.c: patch does not apply
+> In order to avoid confusion to other developers, in my personal opinion, it would
+> be good go for the current value of 12 (which isn't incorrect, as that's what the
+> SoC supports)... I don't think that anyone would be confused by seeing zero
+> readings on some sensors (if their device don't support such sensor), as I think
+> that everyone is used to that anyway, even if that's in other circumstances...
 > 
-> With regards,
-> Pavel Skripkin
+> In any case, luckily that's also safe, because there's no firmware that restricts
+> the readings to a subset of sensors in this domain (nobody is going to get a
+> hypervisor fault for that).
+> 
+> I would also, in case, propose to see how things go: I would expect other
+> developers to push device trees for many SDM630/636/660 devices, including but
+> not limited to smartphones and SBCs.. so perhaps if we find out that really
+> nobody uses the 12 sensors, or if the very vast majority uses a different amount,
+> perhaps we may just transfer the value to device-specific configurations in one
+> go, as to avoid unnecessary noise... I think :)))
+> 
 
-This is the same problem that yesterday Philip had. I cannot understand why it can
-happen, because I've worked on this soon after 1/2 and in the while Greg didn't 
-apply nothing. I've only worked on one function both in 1/2 and in 2/2 and I would expect
-that either both of them apply or none of them. What am I missing?
+If the SoC has 12 sensors I think it makes sense to define that, similar
+to how a SoC might have 200 GPIOs, even though only a handful is
+actually used.
 
-Thanks,
-
-Fabio
- 
-
-
-
-
+Regards,
+Bjorn
