@@ -2,153 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850B03F5892
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2643F5894
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhHXG7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhHXG7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:59:40 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFBDC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:58:57 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id b9so7284578plx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hxmjjXl6haOlUyFAodOeN6Rid/V7VeRFHdShmZUvvps=;
-        b=gQUOEkb9jVQiUcTryVHj8YyC5b+IVDtVMTww8NE+oRIGz8i4pRkgVU7Sxge0sWL7U+
-         4SBj2XaIq5LEDPAe12U+CF712yba2yYpcj5ThnkNIfNz/VVo3plIJMLda6ILSwsNesPR
-         56DrL1xYLwK/PPMh/OQzeyRTBelTu2huqtE1mZbCYXT0N8zh9MY1HnN4brzmyCSt+TwA
-         HZAUBXrkvDLkJ1TZQE9oSJ4tehixfFz5YRd1FOXC6CV3T287hZaLKU43qX5BNfISMp4L
-         6Q14e37amSgJ6ndGSWUdHv4NtFONfJWdWv9KG6yTyO0iPLka9AC5uf3fVWMXjRAv7b+q
-         SOJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hxmjjXl6haOlUyFAodOeN6Rid/V7VeRFHdShmZUvvps=;
-        b=qdQT1hZEblRX2s+1uQtbgddlzvf3xg0sD4POD/doR0PSJVpin6GZctYgaExv79I7BA
-         1gwjJZGxJP/sD2TYQpxITI7gf3GQs2PGuzjTDjU2la1rQhOsBaoG3VRymTjExsvOKYhX
-         rKowymsJyxsO3Axp6B7sRSGbTYtaiVhAM2Wbn8OHJSDiBatJSlOcwmnNpos57gZ236+c
-         C+lKmO5/a1ni6Ymz7N3G9nRw8BEuXDHPWW2BU9g0QgTOm00jRA9NPUHkM8r3j14Z5Ojt
-         rIluriKGc44g2GZw8ItlxEYELPDas3NVApqSCc2Klbnt/c8kDkDpGtkDi/eVLFoDsPlL
-         wrTg==
-X-Gm-Message-State: AOAM5327yJjlDsJxEf/Jbuzw8LpD0LgyHSFDqN/stMsH5RLG3vJx1f82
-        dyfiJSrdVoxQlhJbCp5xnbmuwQ==
-X-Google-Smtp-Source: ABdhPJxv5fGaGFUoAHH4NEpea5BSJ1aA34eW3Z8d6rlBEEw6xgHxu7zqJkZzQ9QlExxymvkto8O/IA==
-X-Received: by 2002:a17:902:9a04:b029:12b:8d54:7c2 with SMTP id v4-20020a1709029a04b029012b8d5407c2mr32555237plp.62.1629788336725;
-        Mon, 23 Aug 2021 23:58:56 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id 10sm1460505pjc.41.2021.08.23.23.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:58:56 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 14:58:48 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
-        acme@kernel.org, suzuki.poulose@arm.com,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/9] perf cs-etm: Refactor out ETMv4 header saving
-Message-ID: <20210824065848.GB204566@leoy-ThinkPad-X240s>
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-4-james.clark@arm.com>
+        id S233294AbhHXHAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:00:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:29331 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231292AbhHXHAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:00:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="217277454"
+X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
+   d="scan'208";a="217277454"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 23:59:28 -0700
+X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
+   d="scan'208";a="526502052"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.172.62]) ([10.249.172.62])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 23:59:26 -0700
+Subject: Re: [kbuild-all] Re: arch/powerpc/kernel/signal_32.c:297:2: warning:
+ Value stored to 'msr' is never read [clang-analyzer-deadcode.DeadStores]
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kernel test robot <lkp@intel.com>
+Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+References: <202108231827.N9VUIKbD-lkp@intel.com>
+ <3db8de6e-a971-be9f-19eb-e7d95faf2870@csgroup.eu>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <7955eec5-c1d7-e0d7-280a-138d96b2daa9@intel.com>
+Date:   Tue, 24 Aug 2021 14:59:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210806134109.1182235-4-james.clark@arm.com>
+In-Reply-To: <3db8de6e-a971-be9f-19eb-e7d95faf2870@csgroup.eu>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 02:41:03PM +0100, James Clark wrote:
-> Extract a function for saving the ETMv4 header because this will be used
-> for ETE in a later commit.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
 
-> ---
->  tools/perf/arch/arm/util/cs-etm.c | 46 +++++++++++++++----------------
->  1 file changed, 23 insertions(+), 23 deletions(-)
+On 8/23/2021 10:35 PM, Christophe Leroy wrote:
 > 
-> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> index 85168d87b2d7..ecb6fa55a210 100644
-> --- a/tools/perf/arch/arm/util/cs-etm.c
-> +++ b/tools/perf/arch/arm/util/cs-etm.c
-> @@ -607,6 +607,28 @@ static int cs_etm_get_ro(struct perf_pmu *pmu, int cpu, const char *path)
->  	return val;
->  }
->  
-> +static void cs_etm_save_etmv4_header(__u64 data[], struct auxtrace_record *itr, int cpu)
-> +{
-> +	struct cs_etm_recording *ptr = container_of(itr, struct cs_etm_recording, itr);
-> +	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-> +
-> +	/* Get trace configuration register */
-> +	data[CS_ETMV4_TRCCONFIGR] = cs_etmv4_get_config(itr);
-> +	/* Get traceID from the framework */
-> +	data[CS_ETMV4_TRCTRACEIDR] = coresight_get_trace_id(cpu);
-> +	/* Get read-only information from sysFS */
-> +	data[CS_ETMV4_TRCIDR0] = cs_etm_get_ro(cs_etm_pmu, cpu,
-> +					       metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
-> +	data[CS_ETMV4_TRCIDR1] = cs_etm_get_ro(cs_etm_pmu, cpu,
-> +					       metadata_etmv4_ro[CS_ETMV4_TRCIDR1]);
-> +	data[CS_ETMV4_TRCIDR2] = cs_etm_get_ro(cs_etm_pmu, cpu,
-> +					       metadata_etmv4_ro[CS_ETMV4_TRCIDR2]);
-> +	data[CS_ETMV4_TRCIDR8] = cs_etm_get_ro(cs_etm_pmu, cpu,
-> +					       metadata_etmv4_ro[CS_ETMV4_TRCIDR8]);
-> +	data[CS_ETMV4_TRCAUTHSTATUS] = cs_etm_get_ro(cs_etm_pmu, cpu,
-> +						     metadata_etmv4_ro[CS_ETMV4_TRCAUTHSTATUS]);
-> +}
-> +
->  static void cs_etm_get_metadata(int cpu, u32 *offset,
->  				struct auxtrace_record *itr,
->  				struct perf_record_auxtrace_info *info)
-> @@ -620,29 +642,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
->  	/* first see what kind of tracer this cpu is affined to */
->  	if (cs_etm_is_etmv4(itr, cpu)) {
->  		magic = __perf_cs_etmv4_magic;
-> -		/* Get trace configuration register */
-> -		info->priv[*offset + CS_ETMV4_TRCCONFIGR] =
-> -						cs_etmv4_get_config(itr);
-> -		/* Get traceID from the framework */
-> -		info->priv[*offset + CS_ETMV4_TRCTRACEIDR] =
-> -						coresight_get_trace_id(cpu);
-> -		/* Get read-only information from sysFS */
-> -		info->priv[*offset + CS_ETMV4_TRCIDR0] =
-> -			cs_etm_get_ro(cs_etm_pmu, cpu,
-> -				      metadata_etmv4_ro[CS_ETMV4_TRCIDR0]);
-> -		info->priv[*offset + CS_ETMV4_TRCIDR1] =
-> -			cs_etm_get_ro(cs_etm_pmu, cpu,
-> -				      metadata_etmv4_ro[CS_ETMV4_TRCIDR1]);
-> -		info->priv[*offset + CS_ETMV4_TRCIDR2] =
-> -			cs_etm_get_ro(cs_etm_pmu, cpu,
-> -				      metadata_etmv4_ro[CS_ETMV4_TRCIDR2]);
-> -		info->priv[*offset + CS_ETMV4_TRCIDR8] =
-> -			cs_etm_get_ro(cs_etm_pmu, cpu,
-> -				      metadata_etmv4_ro[CS_ETMV4_TRCIDR8]);
-> -		info->priv[*offset + CS_ETMV4_TRCAUTHSTATUS] =
-> -			cs_etm_get_ro(cs_etm_pmu, cpu,
-> -				      metadata_etmv4_ro
-> -				      [CS_ETMV4_TRCAUTHSTATUS]);
-> +		cs_etm_save_etmv4_header(&info->priv[*offset], itr, cpu);
->  
->  		/* How much space was used */
->  		increment = CS_ETMV4_PRIV_MAX;
-> -- 
-> 2.28.0
 > 
+> Le 23/08/2021 à 12:59, kernel test robot a écrit :
+>> tree:   
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
+>> commit: ef75e73182949a94bde169a774de1b62ae21fbbc powerpc/signal32: 
+>> Transform save_user_regs() and save_tm_user_regs() in 'unsafe' version
+>> date:   9 months ago
+>> config: powerpc-randconfig-c003-20210821 (attached as .config)
+>> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 
+>> d9c5613e856cf2addfbf892fc4c1ce9ef9feceaa)
+>> reproduce (this is a W=1 build):
+>>          wget 
+>> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross 
+>> -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # install powerpc cross compiling tool for clang build
+>>          # apt-get install binutils-powerpc-linux-gnu
+>>          # 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ef75e73182949a94bde169a774de1b62ae21fbbc 
+>>
+>>          git remote add linus 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout ef75e73182949a94bde169a774de1b62ae21fbbc
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross 
+>> ARCH=powerpc clang-analyzer
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>>
+>> clang-analyzer warnings: (new ones prefixed by >>)
+>>             ^
+>>>> arch/powerpc/kernel/signal_32.c:297:2: warning: Value stored to 
+>>>> 'msr' is never read [clang-analyzer-deadcode.DeadStores]
+>>             msr &= ~MSR_VSX;
+>>             ^      ~~~~~~~~
+>>     arch/powerpc/kernel/signal_32.c:297:2: note: Value stored to 'msr' 
+>> is never read
+>>             msr &= ~MSR_VSX;
+>>             ^      ~~~~~~~~
+> 
+> 
+> This is wrong.
+> 
+> msr is used at line 326:
+> 
+> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+> 2020-08-18  326 unsafe_put_user(msr, &frame->mc_gregs[PT_MSR], failed);
+
+Hi Christophe,
+
+The usage is under CONFIG_VSX, the test config 
+(powerpc-randconfig-c003-20210821) didn't enable it which triggered this 
+warning.
+
+Best Regards,
+Rong Chen
+
+> 
+> 
+> 
+> 
+> 
+>>     arch/powerpc/kernel/signal_32.c:765:16: warning: Value stored to 
+>> 'msr' during its initialization is never read 
+>> [clang-analyzer-deadcode.DeadStores]
+>>             unsigned long msr = regs->msr;
+>>                           ^~~   ~~~~~~~~~
+>>     arch/powerpc/kernel/signal_32.c:765:16: note: Value stored to 
+>> 'msr' during its initialization is never read
+>>             unsigned long msr = regs->msr;
+>>                           ^~~   ~~~~~~~~~
+>>     arch/powerpc/kernel/signal_32.c:869:16: warning: Value stored to 
+>> 'msr' during its initialization is never read 
+>> [clang-analyzer-deadcode.DeadStores]
+>>             unsigned long msr = regs->msr;
+>>                           ^~~   ~~~~~~~~~
+>>     arch/powerpc/kernel/signal_32.c:869:16: note: Value stored to 
+>> 'msr' during its initialization is never read
+>>             unsigned long msr = regs->msr;
+>>                           ^~~   ~~~~~~~~~
+>>
+>> vim +/msr +297 arch/powerpc/kernel/signal_32.c
+>>
+>> 968c4fccd1bb8b arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  262
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  263  static int save_user_regs_unsafe(struct pt_regs 
+>> *regs, struct mcontext __user *frame,
+>> 8d33001dd650b8 arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  264                   struct mcontext __user *tm_frame, 
+>> int ctx_has_vsx_region)
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  265  {
+>> 9e7511861c4f8d arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  266      unsigned long msr = regs->msr;
+>> 9e7511861c4f8d arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  267
+>> c6e6771b87d4e3 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  268      /* save general registers */
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  269      unsafe_save_general_regs(regs, frame, failed);
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  270
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  271  #ifdef CONFIG_ALTIVEC
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  272      /* save altivec registers */
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  273      if (current->thread.used_vr) {
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  274          unsafe_copy_to_user(&frame->mc_vregs, 
+>> &current->thread.vr_state,
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  275                      ELF_NVRREG * sizeof(vector128), 
+>> failed);
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  276          /* set MSR_VEC in the saved MSR value to 
+>> indicate that
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  277             frame->mc_vregs contains valid data */
+>> 9e7511861c4f8d arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  278          msr |= MSR_VEC;
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  279      }
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  280      /* else assert((regs->msr & MSR_VEC) == 0) */
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  281
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  282      /* We always copy to/from vrsave, it's 0 if we 
+>> don't have or don't
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  283       * use altivec. Since VSCR only contains 32 bits 
+>> saved in the least
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  284       * significant bits of a vector, we "cheat" and 
+>> stuff VRSAVE in the
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  285       * most significant bits of that same vector. --BenH
+>> 408a7e08b2112f arch/powerpc/kernel/signal_32.c Paul Mackerras   
+>> 2013-08-05  286       * Note that the current VRSAVE value is in the 
+>> SPR at this point.
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  287       */
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  288      unsafe_put_user(current->thread.vrsave, (u32 
+>> __user *)&frame->mc_vregs[32],
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  289              failed);
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  290  #endif /* CONFIG_ALTIVEC */
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  291      unsafe_copy_fpr_to_user(&frame->mc_fregs, 
+>> current, failed);
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25  292
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25  293      /*
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25  294       * Clear the MSR VSX bit to indicate there is no 
+>> valid state attached
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25  295       * to this context, except in the specific case 
+>> below where we set it.
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25  296       */
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25 @297      msr &= ~MSR_VSX;
+>> 6a274c08f2f4df arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-07-02  298  #ifdef CONFIG_VSX
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  299      /*
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  300       * Copy VSR 0-31 upper half from thread_struct to 
+>> local
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  301       * buffer, then write that to userspace.  Also 
+>> set MSR_VSX in
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  302       * the saved MSR value to indicate that 
+>> frame->mc_vregs
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  303       * contains valid data
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  304       */
+>> 16c29d180becc5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-10-23  305      if (current->thread.used_vsr && 
+>> ctx_has_vsx_region) {
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  306          unsafe_copy_vsx_to_user(&frame->mc_vsregs, 
+>> current, failed);
+>> ce48b2100785e5 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  307          msr |= MSR_VSX;
+>> ec67ad82814bee arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-11-25  308      }
+>> c6e6771b87d4e3 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  309  #endif /* CONFIG_VSX */
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  310  #ifdef CONFIG_SPE
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  311      /* save spe registers */
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  312      if (current->thread.used_spe) {
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  313          unsafe_copy_to_user(&frame->mc_vregs, 
+>> current->thread.evr,
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  314                      ELF_NEVRREG * sizeof(u32), failed);
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  315          /* set MSR_SPE in the saved MSR value to 
+>> indicate that
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  316             frame->mc_vregs contains valid data */
+>> 9e7511861c4f8d arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2008-06-25  317          msr |= MSR_SPE;
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  318      }
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  319      /* else assert((regs->msr & MSR_SPE) == 0) */
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  320
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  321      /* We always copy to/from spefscr */
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  322      unsafe_put_user(current->thread.spefscr,
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  323              (u32 __user *)&frame->mc_vregs + 
+>> ELF_NEVRREG, failed);
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  324  #endif /* CONFIG_SPE */
+>> 81e7009ea46c95 arch/powerpc/kernel/signal_32.c Stephen Rothwell 
+>> 2005-10-18  325
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  326      unsafe_put_user(msr, &frame->mc_gregs[PT_MSR], 
+>> failed);
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  327
+>> 1d25f11fdbcc53 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-06-09  328      /* We need to write 0 the MSR top 32 bits in the 
+>> tm frame so that we
+>> 1d25f11fdbcc53 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-06-09  329       * can check it on the restore to see if TM is 
+>> active
+>> 1d25f11fdbcc53 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-06-09  330       */
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  331      if (tm_frame)
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  332          unsafe_put_user(0, 
+>> &tm_frame->mc_gregs[PT_MSR], failed);
+>> 1d25f11fdbcc53 arch/powerpc/kernel/signal_32.c Michael Neuling  
+>> 2013-06-09  333
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  334      return 0;
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  335
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  336  failed:
+>> ef75e73182949a arch/powerpc/kernel/signal_32.c Christophe Leroy 
+>> 2020-08-18  337      return 1;
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  338  }
+>> ^1da177e4c3f41 arch/ppc64/kernel/signal32.c    Linus Torvalds   
+>> 2005-04-16  339
+>>
+>> :::::: The code at line 297 was first introduced by commit
+>> :::::: ec67ad82814bee92251fd963bf01c7a173856555 powerpc/signals: 
+>> Improved mark VSX not saved with small contexts fix
+>>
+>> :::::: TO: Michael Neuling <mikey@neuling.org>
+>> :::::: CC: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
