@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAFB3F62B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FBC3F62BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhHXQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbhHXQfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:35:06 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAE3C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:34:21 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id i28so46813966lfl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=hrxRG57iUFkLUKVAMtcNr5HWWrkcKIlx/S6pK1RgzIo=;
-        b=OHcdibhZBBnxCr1t0OYp2tDeFwDaTc27mSa2BYLLdrgMbnfEwebsteLylRujHb+n1/
-         T+uGlAHzstidMEyovoNw+M7AwvgJw07VxTtLrjjGO2yX6X1FSgy5VantkzvGX6cHddKM
-         WLcEub/WU1nXQLcqdU+iCGvZWrgCQc2iitI9Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=hrxRG57iUFkLUKVAMtcNr5HWWrkcKIlx/S6pK1RgzIo=;
-        b=ZI1BJIVAXzwt94+XyQm3SY69DTnSAJHVmvjENgXypzfaXKGvhpy349QopEGChHbSVF
-         miHF4cMn14zhiAfIlKV/NQkqwBjg9PsdUxZuFE+FyaoBAflCsvF4iAAZM3yhfchMGzo0
-         yaIDls6BbmA8rMmKbR15mFT41WH9EQEN8EMccJbYErN+jS4gIHWnNlaiDObcYaDZpZDR
-         vA3Bqm7ztRhshXfraRNPWYa1A/sJAaIJWKKqBUpDWscbcb4YOjrccUIcb7VsiFbJizch
-         XbBLuS+iOS3FTHiI60Tq7hQGkE6Q95iVGlNPPW1nYpdmhGWxDHIzq9KhAZ89YBLL3VHP
-         67+Q==
-X-Gm-Message-State: AOAM5335RVbYcypRL15bp9jCkLlhdptZoQzeIOCGrim7Yo5vqPLpg6YW
-        r8XjaiIxdFKG1csWvilFdxWJjqwkErKII4CB
-X-Google-Smtp-Source: ABdhPJwEXd/EonpeHnqXXC6aJyxz8H2vZuItJrywXEDAB4CYCkR1TfTIFxzdJ6xgXcSWZEV4I5IDwQ==
-X-Received: by 2002:a05:6512:5d0:: with SMTP id o16mr18968029lfo.158.1629822859703;
-        Tue, 24 Aug 2021 09:34:19 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id v1sm1831941ljb.44.2021.08.24.09.34.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 09:34:18 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id i28so38679542ljm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:34:18 -0700 (PDT)
-X-Received: by 2002:a2e:3004:: with SMTP id w4mr30214848ljw.465.1629822858510;
- Tue, 24 Aug 2021 09:34:18 -0700 (PDT)
+        id S232065AbhHXQfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:35:17 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:41451 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230214AbhHXQfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:35:16 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4GvF7V49s9z9sVj;
+        Tue, 24 Aug 2021 18:34:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id NNE9R10_fWol; Tue, 24 Aug 2021 18:34:30 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4GvF7V39gHz9sV8;
+        Tue, 24 Aug 2021 18:34:30 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4F08B8B828;
+        Tue, 24 Aug 2021 18:34:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 1icTG244R3t1; Tue, 24 Aug 2021 18:34:30 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9C25C8B80A;
+        Tue, 24 Aug 2021 18:34:29 +0200 (CEST)
+Subject: Re: [PATCH linux-next] powerpc/tm: remove duplicate include in
+ tm-poison.c
+To:     Shuah Khan <skhan@linuxfoundation.org>, cgel.zte@gmail.com,
+        mpe@ellerman.id.au
+Cc:     yong.yiran@zte.com.cn, Zeal Robot <zealci@zte.com.cn>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        paulus@samba.org, linux-kselftest@vger.kernel.org, shuah@kernel.org
+References: <20210805065255.628170-1-yong.yiran@zte.com.cn>
+ <c5e9900b-1c2d-8e72-ad83-a6024b876fd2@linuxfoundation.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <4bc97c33-7fc0-ff9d-041b-e773f682c5d2@csgroup.eu>
+Date:   Tue, 24 Aug 2021 18:34:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210824031648.GA2725@codemonkey.org.uk> <YSSuVO47ieWDfWMQ@hirez.programming.kicks-ass.net>
- <20210824151943.GA386@codemonkey.org.uk>
-In-Reply-To: <20210824151943.GA386@codemonkey.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Aug 2021 09:34:02 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
-Message-ID: <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
-Subject: Re: 5.14-rc breaks iotop swap io monitoring.
-To:     Dave Jones <davej@codemonkey.org.uk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c5e9900b-1c2d-8e72-ad83-a6024b876fd2@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 8:19 AM Dave Jones <davej@codemonkey.org.uk> wrote:
->
-> On Tue, Aug 24, 2021 at 10:31:16AM +0200, Peter Zijlstra wrote:
->  >
->  > If you need DELAYACCT I'm thinking:
->  >
->  >   e4042ad49235 ("delayacct: Default disabled")
->  >
->  > and
->  >
->  >   0cd7c741f01d ("delayacct: Add sysctl to enable at runtime")
->
-> That does sound more relevant. however, even after echo 1  > /proc/sys/kernel/task_delayacct,
-> it still fails in the same way.
 
-Hmm.
 
-What happens if you boot with the 'delayacct' kernel parameter.
+Le 24/08/2021 à 16:40, Shuah Khan a écrit :
+> On 8/5/21 12:52 AM, cgel.zte@gmail.com wrote:
+>> From: yong yiran <yong.yiran@zte.com.cn>
+>>
+>> 'inttypes.h' included in 'tm-poison.c' is duplicated.
+>> Remove all but the first include of inttypes.h from tm-poison.c.
+>>
+>> Reported-by: Zeal Robot <zealci@zte.com.cn>
+>> Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
+>> ---
+>>   tools/testing/selftests/powerpc/tm/tm-poison.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/powerpc/tm/tm-poison.c 
+>> b/tools/testing/selftests/powerpc/tm/tm-poison.c
+>> index 29e5f26af7b9..27c083a03d1f 100644
+>> --- a/tools/testing/selftests/powerpc/tm/tm-poison.c
+>> +++ b/tools/testing/selftests/powerpc/tm/tm-poison.c
+>> @@ -20,7 +20,6 @@
+>>   #include <sched.h>
+>>   #include <sys/types.h>
+>>   #include <signal.h>
+>> -#include <inttypes.h>
+>>   #include "tm.h"
+>>
+> 
+> We can't accept this patch. The from and Signed-off-by don't match.
+> 
 
-Even if you enable it at run-time, processes that have been started
-before it was enabled won't actually have the 'tsk->delays'
-allocation. So I'm not sure how effective the run-time thing is.
+As far as I can see they match. You have:
 
-            Linus
+From: yong yiran <yong.yiran@zte.com.cn>
+Signed-off-by: yong yiran <yong.yiran@zte.com.cn>
+
