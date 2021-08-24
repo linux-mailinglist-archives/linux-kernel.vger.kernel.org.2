@@ -2,73 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939F23F5C5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204273F5C6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236391AbhHXKtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236365AbhHXKtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:49:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0597C61248;
-        Tue, 24 Aug 2021 10:49:03 +0000 (UTC)
-Date:   Tue, 24 Aug 2021 11:49:01 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, kernel-team@android.com
-Subject: Re: [PATCH 5/5] arm64: Document the requirement for SCR_EL3.HCE
-Message-ID: <20210824104900.GB623@arm.com>
-References: <20210812190213.2601506-1-maz@kernel.org>
- <20210812190213.2601506-6-maz@kernel.org>
+        id S236406AbhHXKxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236150AbhHXKxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:53:45 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3FCC061757;
+        Tue, 24 Aug 2021 03:53:01 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id c17so19395718pgc.0;
+        Tue, 24 Aug 2021 03:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNPUq/my7v0mlOT+sydB1v9A4usTz8ZuFnFZblPYipE=;
+        b=ac6NqL2kYMbSjIW7lO8U2EAfeZ8ZSvdYpRAN5FtVqf26LMPDTR/PlH9M2ZVJqumiQW
+         RJDD+CSR17WXxqAkHvZ0bDjZ08DUhoo9s+30kz8LmAM0Q5g52gTe1ZAN3aG+YV5Wls8z
+         ehmq4UcLfCOGpaui3XKMdm9knQgZO0LvG6jZkyqUnadxQQVmu0vU9X3iDAFyJhQhptTt
+         LMzauYG6fQWOJbmpUlMzdAWEGD9PZD5pCdGe/baFjq5R5Gw9fo8Yk6bqQ6pXfPeri4Mv
+         BIcAnN0KkSLu472Ek1yiBAUbpXNK/vaY9z6jz4/hhrwlCM5R2hD2ugLKZh2+1u8HWvRw
+         zYpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNPUq/my7v0mlOT+sydB1v9A4usTz8ZuFnFZblPYipE=;
+        b=og7vJphA2O2qLFFTXPOXq+DK/AMHthuHJX72vVrHcGeP15yQAhCqNlXDXLnLNzEC5u
+         O5Qi7BfFsgY2tWOTtU1NfORmiE6hGvg/XFP6mhDZMng/39WEO8nlF7gcaJ1C9kYvhKYv
+         jonBpNTnIoXBzgcxRQF7C8k49XCQbxYreb4VvNCFYPoSk8GR/qaUOVtGjsO86iwBdJng
+         ILG2+IaoBYVj4Y0Q7lIbDmYRxqbLLrZEsDOREqLEs0GOYVirkfyMcF/mIjjJ7YxUgbxO
+         HAN4DBRKtL9BmSAVPi6uOeREljmjFXYIYK/tl8AUVy7x3sG1t3/pJKf7GQDFeDibvtWO
+         AhXQ==
+X-Gm-Message-State: AOAM530WLEIJfkweq0bVm1KjNVezXljArMNqexhnjaI45D/4IuEK32UY
+        isOJ1wqakVMhDk5un5vYA24=
+X-Google-Smtp-Source: ABdhPJyDnSmefDKPzZ1Z0XNecxC4jE/Ejbls2ucBKiWsPZI9M7jABvsh6Bf8IyUVEzp6yyrPXBJaLw==
+X-Received: by 2002:a63:170d:: with SMTP id x13mr35222225pgl.216.1629802380966;
+        Tue, 24 Aug 2021 03:53:00 -0700 (PDT)
+Received: from localhost.localdomain ([162.219.34.246])
+        by smtp.gmail.com with ESMTPSA id q12sm2085126pfj.153.2021.08.24.03.52.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Aug 2021 03:53:00 -0700 (PDT)
+From:   kerneljasonxing@gmail.com
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Subject: [PATCH] ixgbe: let the xdpdrv work with more than 64 cpus
+Date:   Tue, 24 Aug 2021 18:49:18 +0800
+Message-Id: <20210824104918.7930-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210812190213.2601506-6-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 08:02:13PM +0100, Marc Zyngier wrote:
-> It is amazing that we never documented this absolutely basic
-> requirement: if you boot the kernel at EL2, you'd better
-> enable the HVC instruction from EL3.
-> 
-> Really, just do it.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  Documentation/arm64/booting.rst | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/arm64/booting.rst b/Documentation/arm64/booting.rst
-> index a9192e7a231b..6c729d0c4bc2 100644
-> --- a/Documentation/arm64/booting.rst
-> +++ b/Documentation/arm64/booting.rst
-> @@ -212,6 +212,11 @@ Before jumping into the kernel, the following conditions must be met:
->    - The value of SCR_EL3.FIQ must be the same as the one present at boot
->      time whenever the kernel is executing.
->  
-> +  For all systems:
-> +  - If EL3 is present and the kernel is entered at EL2:
-> +
-> +    - SCR_EL3.HCE (bit 8) must be initialised to 0b1.
-> +
->    For systems with a GICv3 interrupt controller to be used in v3 mode:
->    - If EL3 is present:
+From: Jason Xing <xingwanli@kuaishou.com>
 
-I'll queue this patch only for now.
+Originally, ixgbe driver doesn't allow the mounting of xdpdrv if the
+server is equipped with more than 64 cpus online. So it turns out that
+the loading of xdpdrv causes the "NOMEM" failure.
 
-A nitpick, I think we should move "For all systems" and "If EL3 is
-present..." above the lines describing the SCR_EL3.FIQ requirement (I
-can make the change locally).
+Actually, we can adjust the algorithm and then make it work, which has
+no harm at all, only if we set the maxmium number of xdp queues.
 
+Fixes: 33fdc82f08 ("ixgbe: add support for XDP_TX action")
+Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+---
+ drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+index 0218f6c..5953996 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
+@@ -299,7 +299,7 @@ static void ixgbe_cache_ring_register(struct ixgbe_adapter *adapter)
+ 
+ static int ixgbe_xdp_queues(struct ixgbe_adapter *adapter)
+ {
+-	return adapter->xdp_prog ? nr_cpu_ids : 0;
++	return adapter->xdp_prog ? min_t(int, MAX_XDP_QUEUES, nr_cpu_ids) : 0;
+ }
+ 
+ #define IXGBE_RSS_64Q_MASK	0x3F
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 14aea40..b36d16b 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10130,9 +10130,6 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
+ 			return -EINVAL;
+ 	}
+ 
+-	if (nr_cpu_ids > MAX_XDP_QUEUES)
+-		return -ENOMEM;
+-
+ 	old_prog = xchg(&adapter->xdp_prog, prog);
+ 	need_reset = (!!prog != !!old_prog);
+ 
 -- 
-Catalin
+1.8.3.1
+
