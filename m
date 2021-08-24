@@ -2,73 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AB03F58E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7809B3F58E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234683AbhHXHXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:23:53 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:61983 "EHLO smtp2.axis.com"
+        id S234715AbhHXHYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:24:34 -0400
+Received: from verein.lst.de ([213.95.11.211]:50524 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231945AbhHXHXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:23:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1629789788;
-  x=1661325788;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IfhqP2RM3ChQYnmM5eJg3nw2hVwagJF4PQHhkcCi/ms=;
-  b=nggq/7K2RjF8ZdnSHzmY8EwJXpPOOUpfAtrwHcxA8ad3Quc404HEdJ5W
-   p0SLFWJMH/tbgPMwhU8xcfYjNLsMycNeJs+4fGDjkvaYcNgTIGsGbY0e5
-   Dsb3Oc+cuIwcR/+zMRYgnD+WNnWrl9IpD/n77j5Vqn3Hm3IEogSqMVYNl
-   6Je9a3Jm7dNv1fboniHb/ID9HmNVQlYwHNNY6k2fRsk/s673piYryYaP/
-   JkcRybSsfft+Ujxv5c+08mfvt+A1yOWlZzsKCgOUvutCSFjyiolNzaejB
-   zpiNtQaHzXAaE/SXP1aZF+0NNxa5+OnNaj4DxVqD1R0lV2GQms5n8CTK2
-   g==;
-Date:   Tue, 24 Aug 2021 09:23:06 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Jason Wang <jasowang@redhat.com>, kernel <kernel@axis.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vhost: add support for mandatory barriers
-Message-ID: <20210824072306.GA29073@axis.com>
-References: <20210823081437.14274-1-vincent.whitchurch@axis.com>
- <20210823171609-mutt-send-email-mst@kernel.org>
+        id S231945AbhHXHY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:24:27 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 820E567373; Tue, 24 Aug 2021 09:23:40 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 09:23:40 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Yi Zhang <yi.zhang@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+aa0801b6b32dca9dda82@syzkaller.appspotmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] general protection fault in wb_timer_fn
+Message-ID: <20210824072340.GA25108@lst.de>
+References: <00000000000072e53a05c983ab22@google.com> <20210816091041.3313-1-hdanton@sina.com> <20210816093336.GA3950@lst.de> <yt9dim01iz69.fsf@linux.ibm.com> <20210819090510.GA12194@lst.de> <yt9dr1eph96a.fsf@linux.ibm.com> <20210819135308.GB3395@lst.de> <CAHj4cs-S7sTEMZ=zSreW5_PgQQVxvf-4netHy-paPR2kfY=-hQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210823171609-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHj4cs-S7sTEMZ=zSreW5_PgQQVxvf-4netHy-paPR2kfY=-hQ@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 11:19:56PM +0200, Michael S. Tsirkin wrote:
-> On Mon, Aug 23, 2021 at 10:14:37AM +0200, Vincent Whitchurch wrote:
-> > vhost always uses SMP-conditional barriers, but these may not be
-> > sufficient when vhost is used to communicate between heterogeneous
-> > processors in an AMP configuration, especially since they're NOPs on
-> > !SMP builds.
-> > 
-> > To solve this, use the virtio_*() barrier functions and ask them for
-> > non-weak barriers if requested by userspace.
-> > 
-> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> 
-> I am inclined to say let's (ab)use VIRTIO_F_ORDER_PLATFORM for this.
-> Jason what do you think?
+On Sat, Aug 21, 2021 at 03:48:01PM +0800, Yi Zhang wrote:
+> I also met similar issue with blktests, I tried to apply the patchset
+> but with no luck to apply them, any suggestions to fix it.
 
-OK, thanks, I'll look into that.
-
-> Also is the use of DMA variants really the intended thing here? Could
-> you point me at some examples please?
-
-I'm using this on an ARM-based SoC.  The main processor is a Cortex-A53
-(arm64) and this processor runs the virtio drivers.  The SoC also has
-another processor which is a Cortex-A5 (arm32) and this processor runs
-the virtio device end using vhost.  There is no coherency between these
-two processors and to each other they look like any other DMA-capable
-hardware.
+Please just retests the latest for-5.15/block or for-next branch in
+Jens' tree.
