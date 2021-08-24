@@ -2,165 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AA03F69A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5D43F69A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhHXTPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
+        id S234618AbhHXTQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbhHXTPV (ORCPT
+        with ESMTP id S234048AbhHXTQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:15:21 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E56C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:14:37 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so46513446ejz.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:14:37 -0700 (PDT)
+        Tue, 24 Aug 2021 15:16:52 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986A7C061757;
+        Tue, 24 Aug 2021 12:16:07 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id r2so20720938pgl.10;
+        Tue, 24 Aug 2021 12:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=hjAqUT+Fq6/TWZa/X42R0R7+2i4oUVHe3Y/7siyGu+8=;
-        b=iDwJf5ecAx07otgWfeMwBbfxTlybCAZG9A/cTmWl6CVeIAkhuvdbqRqaLkEFQxOoff
-         LOD6dAvAjyE6rpLGvou+zH8C7+TFg8U8DF3Ybbd8z4aSuGc2EQGeJM/XRRv8yD+oQXtY
-         Ve6CLaywqobWYicpjerqkQgFLmkVdPi0gTZP27RmRrBt/1Mitiwp5FbmgNE3mkfyLlmA
-         vzX/id0G2Gi1CprPJTiXtMRbW9Fu6n2bxHMlHT1xpjtt3YWFofHJzTW7pcAakbAEREl9
-         k0bzKvBa1cT6F82PKiDcIkafU2vFaOUoxyaiZCq6EM4geAe6dmCyA0kebjU/mMJeoP15
-         5/DA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YHLmpisvPPmsqfFKbNTM3t6hjYciHmUpxzHILT2Qr6M=;
+        b=gU7Q1xMS9bXpASw00SR/sNuxtUq3cxwtagSusbZwZ7w0pnTQbMyw9wez96UdAhSYRF
+         MxQHZUIiRniZIlUcgYG2OYqmi44v7sW7Ae9dUMfHQpIzmQenxnaJaC4zbj9oSHxmfZSw
+         6pwXPAYTeqflPdmH5qCkC89j2Fqbx2Tq7Ot1URjWEnSwO+1SncOypH/VG9RYRbxUkPTy
+         gF3sR6j9BQcc8SdP9E5OprwUE0nV+rzzX67Yc9mOtrJeX0m7hwWB4c6BslJk+sDmdSMp
+         q9xjsGDrPwx43GLj4RNvCHJlMcPg4IR6HQOLZ8xRlWAZ6V9vbs87GTpdbqWA9qTcEjrN
+         awoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=hjAqUT+Fq6/TWZa/X42R0R7+2i4oUVHe3Y/7siyGu+8=;
-        b=aSH4q5B11UC47Be/M6cWEV47TMcYVTXtK03rrZGKd6SqUiQoR7H6FGx/3W0ucM5HZ/
-         XBwNnms0UAtrH99uk+Ucs04Pqp2U3dZOndXxJcM6nwH26Yyq8z5yIpP1Pn/1NJutDf7E
-         /NeSmZdbeSdyOISubopfQDN+TXDVitPuIIREwFKfzG2e+ED7WP9JpRaeFMbRBuwcIK2B
-         qPSU6koKh/HFaREtu+TE5usvzN3d8ZY0UG1Vn9SiKSLHVZLDWpUNxSc97xr2Rps49nHd
-         JrFcIxcPKcDyIq8rTYJSA8lpCLRnH3sLkCxvteaElKt4tIZo1aCPnp3tY5BiLIHBph7c
-         0t6Q==
-X-Gm-Message-State: AOAM532H5rY39jVbV9BIPbd9+pcLyg/fwBrZ/ewxXVrPgyZWfvQhctvK
-        lr+gy4/dhVokx7+VLPha91stLiCJGGx2BwqFH1Q=
-X-Google-Smtp-Source: ABdhPJzsDCTe3wfMdNxcPqfUK85GEpBMkDKxvvVqdmKhOOEfP8rZmA97McCPoPgD8BUG+rWStNL4A4O7vLlC3/EwJ7o=
-X-Received: by 2002:a17:906:a399:: with SMTP id k25mr581529ejz.514.1629832475751;
- Tue, 24 Aug 2021 12:14:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YHLmpisvPPmsqfFKbNTM3t6hjYciHmUpxzHILT2Qr6M=;
+        b=Q6PmRtMqbrMevGyOtTrfFLiiOWyASU041zJw1lffJ0Zx+Q1xCqZ8NB2uHamOdbt5Za
+         J2RbGS3LEjgmUxbggux1i3sLJ59NwWagU/+tO1k4/EDMHJyzeieqeFB6AFX+3jZkUoSV
+         FqV4L1/LKXeciEbW30k70Lda7wgsXksDxpTrkV7eDuf9shDAJV6bh0Aq3/TqXdeIiNMd
+         i+xUXq+aq1THkM1qJSdH7B662O9f4oOflz1mA3HnSyTmoCq53cnysUe11oACU5GwZ8N2
+         YxKjlzCm1ziL3ks63Zm6kk284BlJtii4gAhR2oFnwX+/nLUV+1yzYhnrRPSJ5ef6ohDL
+         N/ug==
+X-Gm-Message-State: AOAM533KCCLPir/hYDJH4+wQt4dfpzCZ7CzqI34ReFWHyEkccbWWWp5/
+        U3Ig9iW2aTSgFNhr7o3CFX0=
+X-Google-Smtp-Source: ABdhPJw0fkPKuavJ0rp3BV4R0Ekn+rotepq9ObkbKQuExSuhqwnmPZxk2096J9EciWyi6XQg8+DEAA==
+X-Received: by 2002:a62:7c4a:0:b029:3dd:a141:c932 with SMTP id x71-20020a627c4a0000b02903dda141c932mr32208662pfc.68.1629832566863;
+        Tue, 24 Aug 2021 12:16:06 -0700 (PDT)
+Received: from uver-laptop ([2405:201:6006:a148:428:a9ec:7b61:f80f])
+        by smtp.gmail.com with ESMTPSA id u7sm3294327pju.13.2021.08.24.12.16.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 12:16:06 -0700 (PDT)
+Date:   Wed, 25 Aug 2021 00:45:37 +0530
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH] USB: serial: iuu_phoenix: Replace symbolic permissions
+ by octal permissions
+Message-ID: <20210824191537.GA6181@uver-laptop>
+References: <20210820190306.18149-1-utkarshverma294@gmail.com>
+ <YST6XZ/XJkTDm6rV@hovoldconsulting.com>
 MIME-Version: 1.0
-References: <00000000000007510305ca5225b0@google.com> <CAHbLzkpgQtnvK6qHL1+cnHKZQgniq0wzSLTdYTDC5Bn-NbCD_g@mail.gmail.com>
-In-Reply-To: <CAHbLzkpgQtnvK6qHL1+cnHKZQgniq0wzSLTdYTDC5Bn-NbCD_g@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 24 Aug 2021 12:14:23 -0700
-Message-ID: <CAHbLzkrmvOeBtFu1xE9Q+ZCiafHsUg4YZLb6Vh+V6=hNdwGZaw@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in collapse_file
-To:     syzbot <syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YST6XZ/XJkTDm6rV@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:13 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Tue, Aug 24, 2021 at 11:17 AM syzbot
-> <syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    d6d09a694205 Merge tag 'for-5.14-rc6-tag' of git://git.ker..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=14924605300000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=f17e5ab118d29367bda9
-> > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com
-> >
-> >  unmap_region+0x2ab/0x300 mm/mmap.c:2680
-> >  __do_munmap+0x18eb/0x2050 mm/mmap.c:2911
-> >  __do_sys_mremap+0x5d9/0x1390 mm/mremap.c:969
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > ------------[ cut here ]------------
-> > kernel BUG at mm/khugepaged.c:1830!
->
-> The BUG means the page is not fully unmapped due to some race, just
-> like what https://lore.kernel.org/linux-mm/00000000000030563005ca006ffd@google.com/
-> reported.
->
-> But I really don't think it is worth VM_BUG since khugepaged can just back off.
+On Tue, Aug 24, 2021 at 03:55:41PM +0200, Johan Hovold wrote:
+> On Sat, Aug 21, 2021 at 12:33:06AM +0530, Utkarsh Verma wrote:
+> > This fixed the below checkpatch issue:
+> > WARNING: Symbolic permissions 'S_IRUGO | S_IWUSR' are not preferred.
+> > Consider using octal permissions '0644'.
+> 
+> Please do not run checkpatch.pl on code that's already in the tree. Use
+> it for your own patches before submitting them and always use your own
+> judgement when considering its suggestions.
+> 
 
-Forgot cc to other stakeholders.
+Okay, I will not run checkpatch on the code that's already in the tree.
 
->
-> > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> > CPU: 0 PID: 1651 Comm: khugepaged Not tainted 5.14.0-rc6-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:collapse_file+0x3537/0x36e0 mm/khugepaged.c:1830
-> > Code: e8 1e 7a b2 ff 48 89 df 48 c7 c6 40 7b 3d 8a e8 ef 02 e8 ff 0f 0b e8 08 7a b2 ff 48 89 df 48 c7 c6 a0 7b 3d 8a e8 d9 02 e8 ff <0f> 0b e8 f2 79 b2 ff 4c 89 e7 48 c7 c6 a0 7e 3d 8a e8 c3 02 e8 ff
-> > RSP: 0018:ffffc900066df820 EFLAGS: 00010046
-> > RAX: 8601299b4ae62f00 RBX: ffffea0000e4e240 RCX: ffff888018fed4c0
-> > RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
-> > RBP: ffffc900066dfa90 R08: ffffffff81d08764 R09: ffffed1017383f2c
-> > R10: ffffed1017383f2c R11: 0000000000000000 R12: ffffc900066df9d8
-> > R13: dffffc0000000000 R14: ffffc900066dfa20 R15: 0000000000000001
-> > FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000100000000 CR3: 000000000c48e000 CR4: 00000000001506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  khugepaged_scan_file mm/khugepaged.c:2051 [inline]
-> >  khugepaged_scan_mm_slot+0x27be/0x2ad0 mm/khugepaged.c:2146
-> >  khugepaged_do_scan+0x2b1/0x640 mm/khugepaged.c:2230
-> >  khugepaged+0x105/0x890 mm/khugepaged.c:2275
-> >  kthread+0x453/0x480 kernel/kthread.c:319
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > Modules linked in:
-> > ---[ end trace 8de2a60ea4ac5483 ]---
-> > RIP: 0010:collapse_file+0x3537/0x36e0 mm/khugepaged.c:1830
-> > Code: e8 1e 7a b2 ff 48 89 df 48 c7 c6 40 7b 3d 8a e8 ef 02 e8 ff 0f 0b e8 08 7a b2 ff 48 89 df 48 c7 c6 a0 7b 3d 8a e8 d9 02 e8 ff <0f> 0b e8 f2 79 b2 ff 4c 89 e7 48 c7 c6 a0 7e 3d 8a e8 c3 02 e8 ff
-> > RSP: 0018:ffffc900066df820 EFLAGS: 00010046
-> > RAX: 8601299b4ae62f00 RBX: ffffea0000e4e240 RCX: ffff888018fed4c0
-> > RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
-> > RBP: ffffc900066dfa90 R08: ffffffff81d08764 R09: ffffed1017383f2c
-> > R10: ffffed1017383f2c R11: 0000000000000000 R12: ffffc900066df9d8
-> > R13: dffffc0000000000 R14: ffffc900066dfa20 R15: 0000000000000001
-> > FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000100000000 CR3: 000000000c48e000 CR4: 00000000001506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > ----------------
-> > Code disassembly (best guess):
-> >    0:   e8 1e 7a b2 ff          callq  0xffb27a23
-> >    5:   48 89 df                mov    %rbx,%rdi
-> >    8:   48 c7 c6 40 7b 3d 8a    mov    $0xffffffff8a3d7b40,%rsi
-> >    f:   e8 ef 02 e8 ff          callq  0xffe80303
-> >   14:   0f 0b                   ud2
-> >   16:   e8 08 7a b2 ff          callq  0xffb27a23
-> >   1b:   48 89 df                mov    %rbx,%rdi
-> >   1e:   48 c7 c6 a0 7b 3d 8a    mov    $0xffffffff8a3d7ba0,%rsi
-> >   25:   e8 d9 02 e8 ff          callq  0xffe80303
-> >   2a:   0f 0b                   ud2     <-- trapping instruction
-> >   2c:   e8 f2 79 b2 ff          callq  0xffb27a23
-> >   31:   4c 89 e7                mov    %r12,%rdi
-> >   34:   48 c7 c6 a0 7e 3d 8a    mov    $0xffffffff8a3d7ea0,%rsi
-> >   3b:   e8 c3 02 e8 ff          callq  0xffe80303
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
+> This code does not need to be changed.
+> 
+
+But using the octal permission bits makes the code more readable. So I
+made the change.
+But if you don't want such changes, I will refrain from doing it in the
+future.
+Anyway thanks for the review.
+
+
+Regards,
+Utkarsh Verma
