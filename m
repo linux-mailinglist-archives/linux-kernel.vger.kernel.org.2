@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7AB3F6BEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6160C3F6BF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhHXWz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:55:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
+        id S232824AbhHXWzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhHXWz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:55:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2BF861139;
-        Tue, 24 Aug 2021 22:54:38 +0000 (UTC)
+        id S232412AbhHXWza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 18:55:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A9836128A;
+        Tue, 24 Aug 2021 22:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629845681;
-        bh=VRPyW1VeO7gfAN1WVH2HUQN9HNXvpNgT4uXN0dtpgSg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=flB5TcWMNT76AKxh3XR22CrIVe8y0lorcQ+fmCHwlvsCWMEVcQfSoaPUhs+8NCd3s
-         w3n5+bOLR393xOnucjv1GYNkNNyLzyt0Tvn3ywytxpMLxGssKqF51mFz+pQwl6khSn
-         J/2ZWz5pS1Ny9jpFU/IS94ve1YYaJ3MW2ggL++ktqzgAl6F2s7Xkk1DFDm3ssrOcZ7
-         GAYAHHwG3Spard0hg/zFb3yOZuIJ3fhxZDHdulADHM7JXE5PsDXhxws+PTgpIFBQwz
-         pokFrA+TYRhrdFRHJWih4350aovGhGvJB65V3RUJIoSUzco2ZsoqslXX93lpvE3VKX
-         igBtg/5u03RCA==
+        s=k20201202; t=1629845685;
+        bh=61EGsvStJTvoj2rByjNfkTgYkBZ9S/mMONay7AcUprY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=G2reUi7c4D2Gdx8CkPBA7QqrYRhpayxDLiITEUA35AdXbbbl8+OnyXMOglk8TnOU9
+         Gi8yDzqV8vrbH6rboARmfvIQEfJ+lCSVeT06ZHaCw2fLAy8IQlMOSM3tcK2uzvIKaZ
+         ANN+X631EFzTy3QKG08vtwTDpgRn8cJRFTwks4ikjyYRmmrBV0Ag5MLCUSmXbEcwWy
+         RNeSud//VpBm4b05r5fjuCC+15a7L9VaLbAAXbxFyihbzzOaI0lYfQcAv/Hwh5GxQj
+         PqVvjb0VOb+nCGcO0eZoeEUFtv/LJGT3o0gbo56xshiPUNgkKuWK3VRSeyxefFHKIr
+         yMkC+4ts0x/Hw==
 From:   Nathan Chancellor <nathan@kernel.org>
 To:     Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
@@ -35,11 +35,14 @@ Cc:     Jason Ekstrand <jason@jlekstrand.net>,
         Nick Desaulniers <ndesaulniers@google.com>,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 0/3] drm/i915: Enable -Wsometimes-uninitialized
-Date:   Tue, 24 Aug 2021 15:54:24 -0700
-Message-Id: <20210824225427.2065517-1-nathan@kernel.org>
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 1/3] drm/i915/selftests: Do not use import_obj uninitialized
+Date:   Tue, 24 Aug 2021 15:54:25 -0700
+Message-Id: <20210824225427.2065517-2-nathan@kernel.org>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210824225427.2065517-1-nathan@kernel.org>
+References: <20210824225427.2065517-1-nathan@kernel.org>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
@@ -47,28 +50,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 46e2068081e9 ("drm/i915: Disable some extra clang warnings")
-disabled -Wsometimes-uninitialized as noisy but there have been a few
-fixes to clang that make the false positive rate fairly low so it should
-be enabled to help catch obvious mistakes. The first two patches fix
-revent instances of this warning then enables it for i915 like the rest
-of the tree.
+Clang warns a couple of times:
 
-Cheers,
-Nathan
+drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:63:6: warning:
+variable 'import_obj' is used uninitialized whenever 'if' condition is
+true [-Wsometimes-uninitialized]
+        if (import != &obj->base) {
+            ^~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:80:22: note:
+uninitialized use occurs here
+        i915_gem_object_put(import_obj);
+                            ^~~~~~~~~~
+drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:63:2: note: remove
+the 'if' if its condition is always false
+        if (import != &obj->base) {
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c:38:46: note:
+initialize the variable 'import_obj' to silence this warning
+        struct drm_i915_gem_object *obj, *import_obj;
+                                                    ^
+                                                     = NULL
 
-Nathan Chancellor (3):
-  drm/i915/selftests: Do not use import_obj uninitialized
-  drm/i915/selftests: Always initialize err in
-    igt_dmabuf_import_same_driver_lmem()
-  drm/i915: Enable -Wsometimes-uninitialized
+Shuffle the import_obj initialization above these if statements so that
+it is not used uninitialized.
 
- drivers/gpu/drm/i915/Makefile                        | 1 -
- drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 7 ++++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Fixes: d7b2cb380b3a ("drm/i915/gem: Correct the locking and pin pattern for dma-buf (v8)")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-
-base-commit: fb43ebc83e069625cfeeb2490efc3ffa0013bfa4
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
+index ffae7df5e4d7..532c7955b300 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_dmabuf.c
+@@ -59,13 +59,13 @@ static int igt_dmabuf_import_self(void *arg)
+ 		err = PTR_ERR(import);
+ 		goto out_dmabuf;
+ 	}
++	import_obj = to_intel_bo(import);
+ 
+ 	if (import != &obj->base) {
+ 		pr_err("i915_gem_prime_import created a new object!\n");
+ 		err = -EINVAL;
+ 		goto out_import;
+ 	}
+-	import_obj = to_intel_bo(import);
+ 
+ 	i915_gem_object_lock(import_obj, NULL);
+ 	err = __i915_gem_object_get_pages(import_obj);
+@@ -176,6 +176,7 @@ static int igt_dmabuf_import_same_driver(struct drm_i915_private *i915,
+ 		err = PTR_ERR(import);
+ 		goto out_dmabuf;
+ 	}
++	import_obj = to_intel_bo(import);
+ 
+ 	if (import == &obj->base) {
+ 		pr_err("i915_gem_prime_import reused gem object!\n");
+@@ -183,8 +184,6 @@ static int igt_dmabuf_import_same_driver(struct drm_i915_private *i915,
+ 		goto out_import;
+ 	}
+ 
+-	import_obj = to_intel_bo(import);
+-
+ 	i915_gem_object_lock(import_obj, NULL);
+ 	err = __i915_gem_object_get_pages(import_obj);
+ 	if (err) {
 -- 
 2.33.0
 
