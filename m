@@ -2,169 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603BF3F6045
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEF63F6053
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhHXO0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:26:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53472 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237606AbhHXO0I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:26:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629815123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jS4DMiYMJEvLKBLFhfVXQbwK/7O32UF1dBTczqvLw1Y=;
-        b=BlaFjdHzjk9Eerzt1bRAubbkSEHUstJp9RWZzfMtvLjEHqLlt/LQbAgnVXgBXaqup+dls+
-        hUffbufSCi7yr4+nzrVF/kO4kRbJdHzLPPGwkcs2Gi5xbZW7DA9AQK+gS/mZpqYk5d+3ct
-        2N3RgowYBcc4TUNlq4OqBqs0WKMs/+A=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-RPCjW1d7NLa5zSXGkeLOww-1; Tue, 24 Aug 2021 10:25:22 -0400
-X-MC-Unique: RPCjW1d7NLa5zSXGkeLOww-1
-Received: by mail-qk1-f199.google.com with SMTP id 70-20020a370b49000000b003d2f5f0dcc6so14415184qkl.9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:25:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=jS4DMiYMJEvLKBLFhfVXQbwK/7O32UF1dBTczqvLw1Y=;
-        b=lmErRJx4H4cTlPfwOOLRYDjYxYIu/BNX2s7tWCuOkfXHzfyD9F5JZywMrOv5n2u3Wg
-         8FfJDD5Ihjt6vW08oAbbHdbTXopDDUMdx5OPaMAZlkZkNkCZ6wgnbpCggXjwjNbEoNna
-         iRXnhdqCJFBcE8Xz+EIXO5MzKsrz8B2YXM5A/keACyEm4juDkjkKFfqNCQdu6hCAICm4
-         xQTyYWEmVA5C5dfPYabhoaewXdacQFgCJTB+Qrg4gQ0OSdDSAlTbf+OXS3Nydtc2BIPm
-         mmQvHUD5MPbKeYxRZK4aag8Kh5imBbdYQ9dWaEjyAGC7973BIGtCQdXMvUkuW3LyDP6p
-         DdTQ==
-X-Gm-Message-State: AOAM530pZq5EtEVfsozM6Yksxnfh/pUA0aTfGsP7i7Slh9o+HGHGuGNv
-        +EnIUE3OmUVo7WKJiskNk8ro5GCAPtVZOdCrnyp5O01IPRTpbrynTLx4O9S8U///UvQghzIUphW
-        YVdjpdSljMBTDvU+aX/TZyhdf
-X-Received: by 2002:a05:620a:4050:: with SMTP id i16mr25621271qko.90.1629815121783;
-        Tue, 24 Aug 2021 07:25:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyw/vN4HfM869zB70GdhFgvXTyrDBhnvRbUsGuCtjTO3eGJIomB0OdYM13LOc5okIw+BG25bQ==
-X-Received: by 2002:a05:620a:4050:: with SMTP id i16mr25621249qko.90.1629815121635;
-        Tue, 24 Aug 2021 07:25:21 -0700 (PDT)
-Received: from [192.168.1.3] (68-20-15-154.lightspeed.rlghnc.sbcglobal.net. [68.20.15.154])
-        by smtp.gmail.com with ESMTPSA id w20sm10217864qkj.116.2021.08.24.07.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 07:25:21 -0700 (PDT)
-Message-ID: <01c442d2b3aff85e0e95bfefb44ac6e77eb3373f.camel@redhat.com>
-Subject: Re: [PATCH 00/12] fscache: Some prep work for fscache rewrite
-From:   Jeff Layton <jlayton@redhat.com>
-To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com
-Cc:     Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 24 Aug 2021 10:25:20 -0400
-In-Reply-To: <162431188431.2908479.14031376932042135080.stgit@warthog.procyon.org.uk>
-References: <162431188431.2908479.14031376932042135080.stgit@warthog.procyon.org.uk>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S237722AbhHXO1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:27:00 -0400
+Received: from mail-dm6nam12on2057.outbound.protection.outlook.com ([40.107.243.57]:46304
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235997AbhHXO06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:26:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H4UZNNTTkE9c45fO/B7qigb8ZDCX7lH2CvJDlp0Ub+SVlu6K9KH4qdD+TvnpQfytFkfYGfqqNAOOe8NIvGZ5v/VK8WWDeEuXwS4K+C448yV51lhCBS80t5nha6qZRj8ff+ZFM8Iik1dvMo5cmWnfXvmGQNuBGmb5FgL6KVHCWqXKJEFC5nAfFI1hi6xt5zFo5FWP77x1kmlPVeSsA6n8ZUNSJUP76ycvo7NU2sSgJpgiODwj614kxBY3NHuhXAngTiaunmYUX0sihjAR6d7tUJGGeKelAvj5n2ToyVs5kIX5FGdAj/4qm/92d0V253Q1H2kmTqkOvY+4FiIfZAVYTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tICK7hyLXmBY5ozbXGN9uqiU69CpaP3UI8kSB7j3tnI=;
+ b=V9HTvXWNCcNec9uGJAJMgWaGaUd7knBm3dbDVounGLxJEZaTDNOZpBrNfCmBxU13tp2rjR7/6lBOertLHrtHT8DpHHKupqsPPegfkGk6EGdU1oBIqWHsnZHjwXbHH8qEtj0pW5pRQ+Wil5Wst4lJMdmieCEJF7pIJsymhbCfcp9bdM4/JMh2o/aRCz64wUbfXKvg3R+LgrXVEn2utNF7c3qhHgIctKkmt7/Vq2bt+KXKUSmuDjv5AsXxtmJ0pgUzEEfY2ii4PTK6eDGFl+Q4EyPYaRk3PhapGDz5dLX0rij7qmY6kkFjorlraWe/g5wrAxndIP3eXneUkl1wt2y89A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tICK7hyLXmBY5ozbXGN9uqiU69CpaP3UI8kSB7j3tnI=;
+ b=phZEFHPema1SUYcFW0LS2yLRwklkqpYT4CGmUQl8wtH0yZqWQXegZjJ9EWSOE56lFWbGHz6msJP/UqtHD+Urnp9Ef/O2PhHYFCTM05qYuCXs9w6QUc04Avp3xESLh78v+GpB0LsRSOWBv4huMl/1W0yAvwOqQsS4DGHvk78gWXNMmyuSZnIX4CtsjtnpzM+eR7DbEz1/UXhKt0x3UJI7jDBY6RK/77Q595C1nomECqbZSWuQM5C93MaaWch+hDybk29ZdK6oKoeNDupZtA93VJwXeQFBRexZHSay6lcW41/oUjh/AAFaa1FUkPdeYfGcyvfxiWA47rwvSBnSnRMqLQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5296.namprd12.prod.outlook.com (2603:10b6:5:39d::21)
+ by DM8PR12MB5400.namprd12.prod.outlook.com (2603:10b6:8:3b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Tue, 24 Aug
+ 2021 14:26:13 +0000
+Received: from DM4PR12MB5296.namprd12.prod.outlook.com
+ ([fe80::c064:2c9a:c2e2:29d5]) by DM4PR12MB5296.namprd12.prod.outlook.com
+ ([fe80::c064:2c9a:c2e2:29d5%9]) with mapi id 15.20.4436.025; Tue, 24 Aug 2021
+ 14:26:13 +0000
+From:   Maor Gottlieb <maorg@nvidia.com>
+To:     dledford@redhat.com, jgg@nvidia.com, hch@infradead.org,
+        leonro@nvidia.com
+Cc:     aelior@marvell.com, daniel@ffwll.ch, airlied@linux.ie,
+        dennis.dalessandro@cornelisnetworks.com,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        mkalderon@marvell.com, mike.marciniszyn@cornelisnetworks.com,
+        mustafa.ismail@intel.com, rodrigo.vivi@intel.com,
+        sroland@vmware.com, shiraz.saleem@intel.com, tzimmermann@suse.de,
+        linux-graphics-maintainer@vmware.com, liweihang@huawei.com,
+        liangwenpeng@huawei.com, yishaih@nvidia.com, zackr@vmware.com,
+        zyjzyj2000@gmail.com
+Subject: [PATCH rdma-next v4 0/3] SG fix together with update to RDMA umem
+Date:   Tue, 24 Aug 2021 17:25:28 +0300
+Message-Id: <20210824142531.3877007-1-maorg@nvidia.com>
+X-Mailer: git-send-email 2.25.4
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR02CA0191.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28e::28) To DM4PR12MB5296.namprd12.prod.outlook.com
+ (2603:10b6:5:39d::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from dev-l-vrt-201.mtl.labs.mlnx (94.188.199.18) by AM0PR02CA0191.eurprd02.prod.outlook.com (2603:10a6:20b:28e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 14:26:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d6fa567d-07fd-41eb-59c6-08d9670b1fea
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5400:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM8PR12MB5400D603B293D92BCE2998A0DEC59@DM8PR12MB5400.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o7/hzfdJCmSM76cQD0858Omy/WXDOe2gRZXGP/S7qUW1UVoFPLAEQ7Ij7dn/T/LpBIDVfOfypVaq34WQIjMOdz2x8WFkJ992Owprq4PvqVC2FKaF0g8IRx3JLrtsVGNNlWC1yRyVVvzcJ6FDuZjwpVgaqvBwsiWU43LMLg/5yn+hUscwAWRKM3pZxrTKw5SghkUKt820QA/AvVm2H0kD/zVbXjlHNnlfocKAaHOiWOoa41WbZTlAoyCzljHaMNbA4Da8VJsDyoH/Su8JaqUwtohUtKh3+4VNUiA6jiIh1JDOwp3eNDn7GDW4tskFwO9BH6O5SWI0O7UF/4EGL6XIQRT20Bs0/XyZ6eHmW1RorWMdiTIGdHuGpImeD08h3XctadelP7jK2vVS7cKw8J/BsirCSx4Ym2C/w4djRnTb7PGb2bMoc5Zg5bdx7Ik+zTFqM5klYDo8z0Gc53O3NZTiUzSuLYIG3kJixmrxXS5qrznwlPQPTmnLHZhVFAeC+90hVk1Ihp0Cjts3mUop/LeCebyUM42jqwKHqq7PXyTcIsi7GkDE0oF1aEYiUCrtN8pdIB6MLptGnero3Spgjww6RdX5CFOdvpm00L1cVEj+2nz21xGrz9p54hFxskMU3f4wcAAkyr2o5DVNS0mNDWicu7iEqw6HQpreFekVGvTUdsVfDzcUIJm7Gq5OzANtXCnjMbX9NU9OAlOr9+LJ3uO2Ju0H5qhqw5TdG1bT6WEJPJNG8t7TJPT47YKj+E5jzCX/aQ+RIw6S2YKAayRD5BIii6p27pKbHpD+1Rz2B6ZdIIoPPlF5B6HZhqZApyrdm4ZwPD8wr3XNtnAlI6CME6wpAQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5296.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(7416002)(1076003)(83380400001)(8936002)(316002)(956004)(2906002)(36756003)(6486002)(6666004)(26005)(2616005)(15650500001)(38100700002)(6636002)(4326008)(966005)(66946007)(6506007)(508600001)(186003)(5660300002)(86362001)(52116002)(6512007)(66476007)(38350700002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wbxYfXdZJgDxUEvZ2rVcVs+KGJnmk3R9cdGFYR9jwGCmxLAorEtRTA6auQOf?=
+ =?us-ascii?Q?2z4vKpnPcWcpo9/pyhtbXlzOrW2Z1hOLiYkgb9J36KcxaLc4jcIuRxrrAI9D?=
+ =?us-ascii?Q?TT2pr/AERqgFJQCOSjJudiGTp1uN7FnQCkR9JYBDYRW2lyvVlCyIGzS0JrmV?=
+ =?us-ascii?Q?gTJut4C2Liyvo+JzrUq82Ub2jZWLUmvDXzNLDCbEPCLDEepCqheySN+o1QXs?=
+ =?us-ascii?Q?aMcp9j2a9IVg37593GdyY/tczVqnDNa9rdeQwLhsvgAkg/Jo6yTPXekyq+NG?=
+ =?us-ascii?Q?lVHyi/eNg9ve0gD6ibcpQhx3YwJEk81RpBd808QyouWuHNjD+1jT5DGsfoCM?=
+ =?us-ascii?Q?w2DEzvcR3N4OxNJTJVTGL/YayRCxeARQXY+VzpdXowoLG7MdYvFIFt7+6qKK?=
+ =?us-ascii?Q?dTnYuTkv6+Yynp8z/UmjKp/1fxQXyxgX6kud+svqsDNMdj+0i3KKR+LfuUeT?=
+ =?us-ascii?Q?nqRfHKrW5+7ez8fnZfdvG7R0M50oCDNdwQnoLegPSZNOXXy1FaDOUQkgBhhb?=
+ =?us-ascii?Q?24FJMH9KbJoW2G54nBPfpj6VavQHRlnBwX7KHYi70r3z90R1QTRAuxkSE9qT?=
+ =?us-ascii?Q?4Lo+ON9ib60vbRzU6Wf2om+8Xd80GLHhbxk/n4L6tsWrvhkIyHbHLgUKhVO2?=
+ =?us-ascii?Q?HpqhgZOMSLvEgeUDyT8E1xXZASwfzAPL1pKb9YrNr/S3euBIW3xFFOlwLaZt?=
+ =?us-ascii?Q?bMh5ndJ01944MxwC1ilv6whilxlfiVP3p/yVTqsAIbTIATu1ClRrle22HrZp?=
+ =?us-ascii?Q?Y8XCgohZadKWwIgE+/myH2liQHV42TPwRCXuddX0pNIbc/TSJy4f47Hc2OQe?=
+ =?us-ascii?Q?ljLat4apvAzIrSIZdnPZMv6rnw/X3J47Pi8cB4teJg4svlNSVJvk+KAp7cko?=
+ =?us-ascii?Q?cSyovzaeY73FHqNUBuwv3r8hv44J5qAdqzyuMZ4Hu22khQOUFZWfRw3mmGbW?=
+ =?us-ascii?Q?FSFsByuUPhKsp4vAV9RYRLWrB3OJPygthFvUKjJgZjikC8idDqkgWCmUFzaT?=
+ =?us-ascii?Q?7KFkW20feJYG0Ho8NZloZ/aJiKoX+PEUiDTYoF8sNVj83jnKDNpqhmf3WdAY?=
+ =?us-ascii?Q?YBz5QNOLqsF4Pn48nAHhEdG1/Ur1DsOnl/dJPG+B40UTX/ugkpS0AgMr/uKc?=
+ =?us-ascii?Q?nBcW8HYxzGIKozE2W3P1jzKDBHPWSUz92tkx3a/i1xTWCahIK30Jxgk0zSRv?=
+ =?us-ascii?Q?1fvc3X5hVaXf8bpLzceCVdR9tBkNW6JCmh88FZoC88lOa07RyhIN091kzK2c?=
+ =?us-ascii?Q?Y3xXDJ0IsEiTyyVtXSlsNfLNPPeH/l14O6LdrJaxYeVXgzC3jJKaXAUwvLWB?=
+ =?us-ascii?Q?0e1FYRR74zREQdKqg66DBDHD?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6fa567d-07fd-41eb-59c6-08d9670b1fea
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5296.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 14:26:13.0186
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hJmcnLDh4g7pAUSX5Onknoy8nFs36OagBltMuB60b3//v5RJFwcV73a4GMOzF9vHqVlv0qq9ct4/A845fknbhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5400
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-21 at 22:44 +0100, David Howells wrote:
-> Here are some patches that perform some preparatory work for the fscache
-> rewrite that's being worked on.  These include:
-> 
->  (1) Always select netfs stats when enabling fscache stats since they're
->      displayed through the same procfile.
-> 
->  (2) Add a cookie debug ID that can be used in tracepoints instead of a
->      pointer and cache it in the netfs_cache_resources struct rather than
->      in the netfs_read_request struct to make it more available.
-> 
->  (3) Use file_inode() in cachefiles rather than dereferencing file->f_inode
->      directly.
-> 
->  (4) Provide a procfile to display fscache cookies.
-> 
->  (5) Remove the fscache and cachefiles histogram procfiles.
-> 
->  (6) Remove the fscache object list procfile.
-> 
->  (7) Avoid using %p in fscache and cachefiles as the value is hashed and
->      not comparable to the register dump in an oops trace.
-> 
->  (8) Fix the cookie hash function to actually achieve useful dispersion.
-> 
->  (9) Fix fscache_cookie_put() so that it doesn't dereference the cookie
->      pointer in the tracepoint after the refcount has been decremented
->      (we're only allowed to do that if we decremented it to zero).
-> 
-> (10) Use refcount_t rather than atomic_t for the fscache_cookie refcount.
-> 
-> The patches can be found on this branch:
-> 
-> 	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-next
-> 
-> David
-> ---
-> David Howells (12):
->       fscache: Select netfs stats if fscache stats are enabled
->       netfs: Move cookie debug ID to struct netfs_cache_resources
->       cachefiles: Use file_inode() rather than accessing ->f_inode
->       fscache: Add a cookie debug ID and use that in traces
->       fscache: Procfile to display cookies
->       fscache, cachefiles: Remove the histogram stuff
->       fscache: Remove the object list procfile
->       fscache: Change %p in format strings to something else
->       cachefiles: Change %p in format strings to something else
->       fscache: Fix cookie key hashing
->       fscache: Fix fscache_cookie_put() to not deref after dec
->       fscache: Use refcount_t for the cookie refcount instead of atomic_t
-> 
-> 
->  fs/cachefiles/Kconfig             |  19 --
->  fs/cachefiles/Makefile            |   2 -
->  fs/cachefiles/bind.c              |   2 -
->  fs/cachefiles/interface.c         |   6 +-
->  fs/cachefiles/internal.h          |  25 --
->  fs/cachefiles/io.c                |   6 +-
->  fs/cachefiles/key.c               |   2 +-
->  fs/cachefiles/main.c              |   7 -
->  fs/cachefiles/namei.c             |  61 ++---
->  fs/cachefiles/proc.c              | 114 --------
->  fs/cachefiles/xattr.c             |   4 +-
->  fs/fscache/Kconfig                |  24 --
->  fs/fscache/Makefile               |   2 -
->  fs/fscache/cache.c                |  11 +-
->  fs/fscache/cookie.c               | 201 +++++++++++----
->  fs/fscache/fsdef.c                |   3 +-
->  fs/fscache/histogram.c            |  87 -------
->  fs/fscache/internal.h             |  57 +---
->  fs/fscache/main.c                 |  39 +++
->  fs/fscache/netfs.c                |   2 +-
->  fs/fscache/object-list.c          | 414 ------------------------------
->  fs/fscache/object.c               |   8 -
->  fs/fscache/operation.c            |   3 -
->  fs/fscache/page.c                 |   6 -
->  fs/fscache/proc.c                 |  20 +-
->  include/linux/fscache-cache.h     |   4 -
->  include/linux/fscache.h           |   4 +-
->  include/linux/netfs.h             |   2 +-
->  include/trace/events/cachefiles.h |  68 ++---
->  include/trace/events/fscache.h    | 160 ++++++------
->  include/trace/events/netfs.h      |   2 +-
->  31 files changed, 367 insertions(+), 998 deletions(-)
->  delete mode 100644 fs/cachefiles/proc.c
->  delete mode 100644 fs/fscache/histogram.c
->  delete mode 100644 fs/fscache/object-list.c
-> 
-> 
+From: Maor Gottlieb <maorg@nvidia.com>
 
-This all looks good (modulo a nitpicky changelog comment). You can add:
+Changelog:
+v4:
+ * Unify sg_free_table_entries with __sg_free_table
+v3: https://lore.kernel.org/lkml/cover.1627551226.git.leonro@nvidia.com/
+ * Rewrote to new API suggestion
+ * Split for more patches
+v2: https://lore.kernel.org/lkml/cover.1626605893.git.leonro@nvidia.com
+ * Changed implementation of first patch, based on our discussion with
+ * Christoph.
+   https://lore.kernel.org/lkml/YNwaVTT0qmQdxaZz@infradead.org/
+v1: https://lore.kernel.org/lkml/cover.1624955710.git.leonro@nvidia.com/
+ * Fixed sg_page with a _dma_ API in the umem.c
+v0: https://lore.kernel.org/lkml/cover.1624361199.git.leonro@nvidia.com
 
-Reviewed-by: Jeff Layton <jlayton@redhat.com>
+Maor Gottlieb (3):
+  lib/scatterlist: Provide a dedicated function to support table append
+  lib/scatterlist: Fix wrong update of orig_nents
+  RDMA: Use the sg_table directly and remove the opencoded version from
+    umem
+
+ drivers/gpu/drm/drm_prime.c                 |  13 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  11 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  |  14 +-
+ drivers/infiniband/core/umem.c              |  56 ++++---
+ drivers/infiniband/core/umem_dmabuf.c       |   5 +-
+ drivers/infiniband/hw/hns/hns_roce_db.c     |   4 +-
+ drivers/infiniband/hw/irdma/verbs.c         |   2 +-
+ drivers/infiniband/hw/mlx4/doorbell.c       |   3 +-
+ drivers/infiniband/hw/mlx4/mr.c             |   4 +-
+ drivers/infiniband/hw/mlx5/doorbell.c       |   3 +-
+ drivers/infiniband/hw/mlx5/mr.c             |   3 +-
+ drivers/infiniband/hw/qedr/verbs.c          |   2 +-
+ drivers/infiniband/sw/rdmavt/mr.c           |   2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c          |   2 +-
+ include/linux/scatterlist.h                 |  56 +++++--
+ include/rdma/ib_umem.h                      |  11 +-
+ include/rdma/ib_verbs.h                     |  28 ++++
+ lib/scatterlist.c                           | 155 ++++++++++++--------
+ lib/sg_pool.c                               |   3 +-
+ tools/testing/scatterlist/main.c            |  38 +++--
+ 20 files changed, 258 insertions(+), 157 deletions(-)
+
+-- 
+2.25.4
 
