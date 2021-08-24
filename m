@@ -2,140 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6153F622B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16D63F622C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhHXQDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:03:48 -0400
-Received: from mail-dm6nam10on2043.outbound.protection.outlook.com ([40.107.93.43]:31480
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238287AbhHXQDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:03:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I4HplR3N7yqdzoDfee0Yxk4z0es0e/qRT2cnVoF6UFJ1ZeGQK/NM1k9wByWFoGCbo5duWjro+wfSy7xHUfqHDRZo5bRuq7HEyDIOjl+PuTp19CQLgOaIt8zEcj2I3W7ulv8LCwm1nEFeY8WcsI4hnrpau0TA/KgzhGxZEBt9OIQQ0ZybhEv/BDSJP3Y6xyQR62jG1sHiqTZe8NcC0YGn2YwB1yHloin80naOYZsyE/jljmjsblCX2TObjpT20ckYtsKQbVt3MzNy53Ly1NBQlY/eJViXNO/kEe+XtkICCGG5YQmMFhpPU8Cn1Md2UtvhFOKs93/a51vEdeyaaSzvag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zytsSL5sGMfx/5OvkRC7hWK/LM/FJ/la8fdbavgjI80=;
- b=dm1iOi0JM7/mvd9iwjLT7J3YI/AnI0f15WPs8OggxOgFtgsvpBrrCJX/QXeIxbQxRnfHr3Kn48dR+KC3fxI7WOPwIeBEL7xIyVz+5K1+b4Y9O6QXCeARMJcC0tADyOzNIemYwXiyBpy6Oy7fe0N91TvPKC0ql3flQUufKcF654Xiq8Z8c1vzC111XxmqU9IcX9iUkqGh5c98beyZkjofBIEja5oUEDyt8FkNM2cx/FXH2E34NMP9/G+fZW9mZuYiiAfRVMl1LYdsX3q1QHSdqkuTeArjeL7MWZESD4gPL6L5tUR0fnb2HjeNxHfPRHfC2osfq81SJikCasQ0QQKn6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zytsSL5sGMfx/5OvkRC7hWK/LM/FJ/la8fdbavgjI80=;
- b=fhdeVi8f+S4AKTAV2UIl7aUlEkHiFF/aFAs68CWpnV275tEhuxFGWfYTsqEJLEPX5cHo9geHfs/uoh4ZGEp+TZCGG7kSjUCxJ7Ju16aXcIB5pfHG0/VLoesWCnCbW3ogeUeIYteH9ygJbZ+JUM8hS8FmMlewiyjsx//A1iidXmk=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN9PR12MB5052.namprd12.prod.outlook.com (2603:10b6:408:135::19)
- by BN9PR12MB5036.namprd12.prod.outlook.com (2603:10b6:408:135::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Tue, 24 Aug
- 2021 16:02:45 +0000
-Received: from BN9PR12MB5052.namprd12.prod.outlook.com
- ([fe80::b0d4:3c4a:e942:338e]) by BN9PR12MB5052.namprd12.prod.outlook.com
- ([fe80::b0d4:3c4a:e942:338e%6]) with mapi id 15.20.4457.017; Tue, 24 Aug 2021
- 16:02:45 +0000
-Subject: Re: [PATCH 2/2] usb: dwc3: pci add property to allow user space role
- switch
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kun.liu2@amd.com,
-        alexander.deucher@amd.com
-References: <20210823184449.2796184-1-Nehal-Bakulchandra.shah@amd.com>
- <20210823184449.2796184-3-Nehal-Bakulchandra.shah@amd.com>
- <87pmu36ypp.fsf@kernel.org>
-From:   "Shah, Nehal-bakulchandra" <nehal-bakulchandra.shah@amd.com>
-Message-ID: <1d9ecba4-d180-2193-66a3-3812759e1916@amd.com>
-Date:   Tue, 24 Aug 2021 21:32:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <87pmu36ypp.fsf@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA1PR01CA0082.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00::22)
- To BN9PR12MB5052.namprd12.prod.outlook.com (2603:10b6:408:135::19)
+        id S231422AbhHXQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238413AbhHXQDd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:03:33 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1682C061757;
+        Tue, 24 Aug 2021 09:02:48 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id x27so46584667lfu.5;
+        Tue, 24 Aug 2021 09:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=poU6UxSe+vqBcMpX3p5PAXt32In/R0qv0Zl1gWkMej0=;
+        b=u48N+5kK/p3O1LusihjD74avPElDU4N3bsljZPgfQZ0p0zH+fHDGLBt1RxRnIeCAaw
+         CjqxonXgj/EL8EtOarJIBQg6Fc8xtLCWY7K6oe4pHvCbQx/Gk+Qdp+s2PUsEEijQhqaI
+         v6EDsIyuAFHeR22fDLix8Q92iduNYMpyzNiKb+DBg8GgwQmfk3BrqPunz7Zl0RKiwSeM
+         SZceBqvuUUWOFoJ+LHKCadWF7dRt2sdpNIiQh/y86BB8L9ADAqGgVzQZJi48nD3ANJK6
+         2ehmjqblhq8AAk4IWUfyCndVZMKWXLObW6tK64FCuoqZKVAik1Ll2Afk0U2Wtdac+CuQ
+         zfPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=poU6UxSe+vqBcMpX3p5PAXt32In/R0qv0Zl1gWkMej0=;
+        b=ksQuAgFlZcUaeK82KkmgK4eI2ppnaXj2RFBPKCp+xY3Dkeijr0W6XdnQXaCYE1mvF/
+         vNKkc2rOWqD24dX3eReErsBDr+o/C3oTLa6mWyZklkrMt6PxUWxW54DzwwQC76z6B7np
+         RMCxTGE6itanVJhLhCONd1a+Q7HNCw2bL7l5dB7N+QZr+meUGPpR9mL6vSH0UONl8HmI
+         VMQBCxRV/KBOdwgQTt8Nl8f9PQUmjBovg34cEDnOKyRUpeQW9H0Fg462APUHaQhKturA
+         cpX19Zi7XXVORDpbq5sOsREeWmpZwfkkQxd01FTKFqyWvWEfnqHrJMUSb4oAgxCzuRzY
+         3uvw==
+X-Gm-Message-State: AOAM531dkS9tR+zHVM8xe2+TEbcmn8++WFE8yXAIdFxnY1v/7ADqGs28
+        4SSs1csuaJ7EqjnMeIzDRLg=
+X-Google-Smtp-Source: ABdhPJwAdruZqs4SZAUqfnw1zEdXAYFJFJPv5dblFrUIB2G03WennhJ9xl9YqYQjF4ZN0VfUNDfZ/Q==
+X-Received: by 2002:ac2:5091:: with SMTP id f17mr28576173lfm.42.1629820966958;
+        Tue, 24 Aug 2021 09:02:46 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id y5sm1238590ljd.38.2021.08.24.09.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 09:02:46 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 19:02:44 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fs/ntfs3: add checks for allocation failure
+Message-ID: <20210824160244.ruutwl3nq6b5feec@kari-VirtualBox>
+References: <20210824115236.GJ31143@kili>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2401:4900:16a4:35a1:f52f:38ab:363f:1bfb] (2401:4900:16a4:35a1:f52f:38ab:363f:1bfb) by MA1PR01CA0082.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 16:02:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3254a9ee-e233-4ab2-7ef8-08d967189c92
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5036:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN9PR12MB5036E11E3EEB23D17EF798AFA0C59@BN9PR12MB5036.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n8pjKhdLD+Rvk7oIsUuo7tR0X4tB4JpvcUaiwwgQjgzXuFiiOOy8MeYhxzSR2d4HDXFzu53IyXyR+nZjEl9eivC/sY3ZdtB7J0ADVszVW5lTMzAjWUNmhtwEMJv7bdwlMV/Am1Tgzq/3Qot2YjOKVdMauuQlmSE68OpHwXdNWV9xjztBtK4PKHoBy/7PGIBf1IxzYVI1yPhHv6YKqZTpiyjCeTxtrPMwezDld+5YvrUk3/HMAO+eSJVHlHYqbxgDPN8gQGrmJsvw7rOr1imcr8iUxOrAwz2axn2/jQziT3G3eiamFB3RqzeTqXAe0MP8FgxoMosvVTf947DXnKKDD7HOCPgos1MuxsV34rZvS0mhtYK5Q6yHzmewFt9uEsOQ52U0RtX1Z9xdAmTYIk63GnaHGXAhR6pVkFmHiPTDkC4KJ/0eq4RDmil/tTWchX8kK7AQ31Z5szbuDzLnJt5gipc0hx4GYjQB56fmLpMk6YdSf+etW36Kjyjs79sWIHLQtzM0UgMvxStHS4oj4VnohL0nFNIMFpE4cj2YQ12SVETATt7wgeBkFgDaLJrt3seWCtI8LziED6ROG3rdrQI4g4/GFoqmj0bDLifm5ciGBruW6OchgvDeG7NqTpwktae+e6O1QlYetA8a9WDeU5XxBlTMkISppB+CAl1sMVvflVGkXgZUVwLdLAYZ8ahRjwDuVd+eKFA+rCoR1g9O7tT6JagrZebqFQxFger0xeCmtqU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5052.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(39860400002)(346002)(376002)(31686004)(66556008)(66946007)(53546011)(8676002)(66476007)(6666004)(38100700002)(6486002)(186003)(8936002)(86362001)(2616005)(4326008)(4744005)(478600001)(31696002)(6916009)(316002)(2906002)(5660300002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SGJBYmZ0aC9lMGlTc2kyR2d0YXJyVFFmN2I4TC9LZHcyUnViaFgrVU5sYXdG?=
- =?utf-8?B?TFFDRDFqVk9NWTIyZ2hSVE1wSWcxdkF1WGNzYVhzTUtGeGZkL2wwaFJKOEhP?=
- =?utf-8?B?enh0VzhzZ2VLQlRzNERSVmtRV3BsZm9NVW1yMi84Q1ZkUHpRMlF6OHhqYzFH?=
- =?utf-8?B?ekVxNnhCd2tKNnJoTk5EaFEwQXZjbGNKSlRDWHRWTjNsajl3L3p0ZHV0NnlD?=
- =?utf-8?B?dkw1U1p0T2wwZ3ZDdnFsdHdSMGhmSHZJYmNJV05kbWxQTjhRM1JoWHI5Mzds?=
- =?utf-8?B?SUhRUkhxTFVPQTVTQllLOTE0bkw0VGl6dnVCVU5jUXdDeWFOVzEwUDV6enY2?=
- =?utf-8?B?eTV5QVpFT1d4cGxEWTF2ZWtROTdmaWQrTkF4anJLQkMwY0dBRXltWG9SeGdo?=
- =?utf-8?B?MlV3Qy8rZ1lEMEhieDFNTHZvZ0drWllIQVp4Tm9JQW83U1p6emxER1BQZzRQ?=
- =?utf-8?B?Zkk5M21yOEhFOGF2YURNbWY3TEdtQlZ5Z09raWpadWFxbmRGdXBQQXNHc3I1?=
- =?utf-8?B?MFFiQ28zclg5STA4MTU0ZEZ5SzBzYlBIeVp5Y0NKK1pjOHlaQUoyZmJSWVll?=
- =?utf-8?B?S2tqc1F3TmFCMzIxSTFHN05YTk5Hck9tYVJnVUExdjhzV01rZklUcGoyZmlR?=
- =?utf-8?B?dThNTW14Y2pFUVAxcnAzM25aY1dDRjIvcmpSbVZjZXlkUWZsa0ZWNG13U01Q?=
- =?utf-8?B?QW9sei91aCtQT3h1MG9sRS9Rdm82RzBudzNRTWVPUUFjNksrOGxQTFh4Mk0y?=
- =?utf-8?B?UUpDVHlEYXVoK3E2dWhXT2orR3FaaEVCekFQSURGejlwN1FSc1I1SXBiOURw?=
- =?utf-8?B?aFhic1pIWTZrY25IK1pGZkR6dlFpSUorMlhpRWFQdEpWNTI3a3pTd3ZRVXh5?=
- =?utf-8?B?dHVZNm9JaGNWb3pSRG1remc5NGFFRnR5SW1qelZWQ3JUN2dtL2pkVldDbmty?=
- =?utf-8?B?c1ErVXo5TENLUjFlazV0ZllDbVhuSitmcWZTdGk5QzFqWHhDYW5RSzNMckhn?=
- =?utf-8?B?azBwYzdnamdURFlyVHVyeTF5TG41ZkNVT3FxeTRyNWRrbURZVytQMFZFMUEr?=
- =?utf-8?B?ZERmNnpvUkppT1BpVDhBTC9rc2FlbUprK3IwWGlYVktFS205UmJ5TVhER2Vo?=
- =?utf-8?B?L2pqZUtqekFTWHBsdmZZa2lXZkJDQ3dsM2VTWXhtNmpLU0o2bUJ2cGdlTzds?=
- =?utf-8?B?VkV6VnhHbG4rWFRmK0pVWHJrSjd4Q3dsZHlubFhqeldXUTFqazZNWXh4K3kv?=
- =?utf-8?B?cnljclJMRG1ETE5IVUNsdzBBZ1dEYkpYN1U0TzBGSzFmenpReXFTbGQxK0Zr?=
- =?utf-8?B?MmlybUgybHVKZ1NtTzBtOEFsNXVPek5sYnZLTHBOdHRZbWhYcDZOZlVERXZt?=
- =?utf-8?B?MFlkbmNlV3lNRkZTUDRYNFFMRmxsN1o0MElNV0U1SXJrZ2VoaGhxdDZ6c0RB?=
- =?utf-8?B?R1ZZZ0E3MkpXdjdMOE80djNRQ3YzTUhyRGhmdm9KOGVjWFJIL2kvZ3NvTExz?=
- =?utf-8?B?dUFRU2JkOUdNT3VsVm5hejVuYUpKa2NUdXY5SnZiTTE1eUViNGFyTmp2QkZa?=
- =?utf-8?B?MWN0OVB4dmVZcEo1KzZ1clErMHdkU1UrUlZ3OEVsenlDaGQ2aXM4M1RCS2o0?=
- =?utf-8?B?SkJxUkNHYnFES0tYdm4raXJLaDlmcU9OeWMwQldBMzVxYUtnK3VzbkcvdllF?=
- =?utf-8?B?ZjRCWHg4R0d3dExqTlY2NWtpUDhNck5Qem00YWhQQXEwenpFeDc3Zm9UNkNj?=
- =?utf-8?B?MjhaOHRwZ1ZRUDJjQUI3THFieUFXV3dIS1hyY1hWZkJScjBBd0dDOWFZbDM0?=
- =?utf-8?B?elhmMUFCdTVhSUt4K3Uvc2xJQmRBdzVoU0lmY2lhak5vT2IydEpqM1cyZit1?=
- =?utf-8?Q?0sy5/5VNMm1+X?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3254a9ee-e233-4ab2-7ef8-08d967189c92
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5052.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 16:02:45.4911
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kmIgFX6JxtgmNB/OpLjSxVCLe5mD6SmlxIDArWcyUquiRgf3JS4lHhsrvjeUZf3p
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5036
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824115236.GJ31143@kili>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-On 8/24/2021 1:49 PM, Felipe Balbi wrote:
+On Tue, Aug 24, 2021 at 02:52:36PM +0300, Dan Carpenter wrote:
+> Add a check for when the kzalloc() in init_rsttbl() fails.  Some of
+> the callers checked for NULL and some did not.  I went down the call
+> tree and added NULL checks where ever they were missing.
 > 
-> Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com> writes:
-> 
->> For AMD platform there is a requirement to enable user space role
->> switch from host to device and device to host by means of running
->> following commands.
->>
->> HOST:   echo host > /sys/class/usb_role/dwc3.0.auto-role-switch/role
->> DEVICE: echo device > /sys/class/usb_role/dwc3.0.auto-role-switch/role
-> 
-> A more important question that needs to be answered: why?
-> 
-Our customer platform is not completely capable of OTG i.e with type C 
-controller it does not have PD to support role switching. Hence, they 
-have script which triggers the role switch based on ACPI/EC interrupt.
+> Fixes: b46acd6a6a62 ("fs/ntfs3: Add NTFS journal")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Regards
-Nehal Shah
+Seems ok. It is not easist file to follow. log_replay is monster and
+it should be refactor in some point. I'm certain that many more bugs
+will be founded there. Also at least community does not have very good
+testing interface for this. 
+
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
+
+> ---
+>  fs/ntfs3/fslog.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
+> index 397ba6a956e7..209fe6ddead0 100644
+> --- a/fs/ntfs3/fslog.c
+> +++ b/fs/ntfs3/fslog.c
+> @@ -807,7 +807,11 @@ static inline struct RESTART_TABLE *init_rsttbl(u16 esize, u16 used)
+>  	u32 off;
+>  	u32 bytes = esize * used + sizeof(struct RESTART_TABLE);
+>  	u32 lf = sizeof(struct RESTART_TABLE) + (used - 1) * esize;
+> -	struct RESTART_TABLE *t = ntfs_zalloc(bytes);
+> +	struct RESTART_TABLE *t;
+> +
+> +	t = ntfs_zalloc(bytes);
+> +	if (!t)
+> +		return NULL;
+>  
+>  	t->size = cpu_to_le16(esize);
+>  	t->used = cpu_to_le16(used);
+> @@ -831,7 +835,11 @@ static inline struct RESTART_TABLE *extend_rsttbl(struct RESTART_TABLE *tbl,
+>  	u16 esize = le16_to_cpu(tbl->size);
+>  	__le32 osize = cpu_to_le32(bytes_per_rt(tbl));
+>  	u32 used = le16_to_cpu(tbl->used);
+> -	struct RESTART_TABLE *rt = init_rsttbl(esize, used + add);
+> +	struct RESTART_TABLE *rt;
+> +
+> +	rt = init_rsttbl(esize, used + add);
+> +	if (!rt)
+> +		return NULL;
+>  
+>  	memcpy(rt + 1, tbl + 1, esize * used);
+>  
+> @@ -864,8 +872,11 @@ static inline void *alloc_rsttbl_idx(struct RESTART_TABLE **tbl)
+>  	__le32 *e;
+>  	struct RESTART_TABLE *t = *tbl;
+>  
+> -	if (!t->first_free)
+> +	if (!t->first_free) {
+>  		*tbl = t = extend_rsttbl(t, 16, ~0u);
+> +		if (!t)
+> +			return NULL;
+> +	}
+>  
+>  	off = le32_to_cpu(t->first_free);
+>  
+> @@ -4482,6 +4493,10 @@ int log_replay(struct ntfs_inode *ni, bool *initialized)
+>  		}
+>  
+>  		dp = alloc_rsttbl_idx(&dptbl);
+> +		if (!dp) {
+> +			err = -ENOMEM;
+> +			goto out;
+> +		}
+>  		dp->target_attr = cpu_to_le32(t16);
+>  		dp->transfer_len = cpu_to_le32(t32 << sbi->cluster_bits);
+>  		dp->lcns_follow = cpu_to_le32(t32);
+> -- 
+> 2.20.1
+> 
+> 
