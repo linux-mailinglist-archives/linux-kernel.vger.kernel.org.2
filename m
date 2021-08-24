@@ -2,113 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECE33F6875
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437F13F6855
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbhHXR5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240792AbhHXR5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:57:24 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E3EC0C175B
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:31:07 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id z128so42492881ybc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qy5AIG6IAw5l/UjdlTFWswRnp3Bis0SbvNsE5T3Il2w=;
-        b=VfHskVSdG1gsmTXp1PfQvFG0VZnTvg9PP8Er/13S5ik/PHR1yoCy26jnVMO3U6kiFZ
-         yFVWxryNXm0lMHWz2KXsgA4J0NavHxyj38pIwSqEx+mcIB7u84B+volIh425RH6qw0XM
-         QyIw+hK0Su8Bji5pUnT3nHCluB66iwXC8JiGMFcSrqinr6TzM+D4EG2gf3E92zONOI5g
-         YVpuHIU405wCBHy1RuJoxdnRgTqSdFYvkWGF6oEB3dT2U3mh6x+PdVgJ6qOjpsp21fFq
-         CFN/e/Au7cRTRt2wtUlJqrwoc4YfRpzSo+ps/Tz05hlVCpdGFlzjDD8cArqwXXDOjmY8
-         rgBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qy5AIG6IAw5l/UjdlTFWswRnp3Bis0SbvNsE5T3Il2w=;
-        b=OYILGSZdhQAMNNSbS+msXGltGDnSDQL/l+FRWJsncPytEhratiIBKTTqekZgptBtjm
-         LeYJiGTqRFSDe2kNV+CAFd2W061IJ+AdJ2B7H8ebx+DKvAr59ZzASjk9BOEwLP08zWq/
-         vT9EzuDoqiGEIpWfOkp6BxiAAsRAGF8NbE4TuNbgIa13d6+FEmH4jjBnSKR1gNH/rFRc
-         11EJrq1fJJXjsSKPMWa0ACANtBEN9VwO+zBRLFpt6SHIpVWc3SX3R1aeZuq3XCMk57NQ
-         phLjiY6ZwdjFGvTkBW9H4IBevZlSVf8DV45qBne8mV+2cW9og/dv62DPofTnnZZ4hM6d
-         oB+A==
-X-Gm-Message-State: AOAM532Xb6QjGwVrOCpd9H94cKMRvKV+lrEQOrdxw4PnoZmK9wnSxbq8
-        d8l+H4CfEzH3yLiWZDq0lgkGnGUdaNyH3qgS23iWmg==
-X-Google-Smtp-Source: ABdhPJwfFTJxj8yvs0YKLSiHeRAa0qFHMwxBi7hBm5u3mt+HdTEb3jbP9WNTaTsUrBXISb/zPHcE/OqQi0FHa0P3QPU=
-X-Received: by 2002:a25:7ac6:: with SMTP id v189mr51220058ybc.485.1629826266324;
- Tue, 24 Aug 2021 10:31:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210823171318.2801096-1-samitolvanen@google.com>
- <1706ee8e-c21c-f867-c0be-24814a92b853@redhat.com> <CABCJKufrpx9arM-hfX_bR-efO+13VBMFNBTe4ff036VEZi1LZQ@mail.gmail.com>
- <9349a92d-f2a7-9ee4-64db-98d30eadc505@redhat.com>
-In-Reply-To: <9349a92d-f2a7-9ee4-64db-98d30eadc505@redhat.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 24 Aug 2021 10:30:55 -0700
-Message-ID: <CABCJKudiTVXOdzxzY1OxF4MMtwNt4XZ_-JJ70dM9H8AEHJmLNw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/14] x86: Add support for Clang CFI
-To:     Tom Stellard <tstellar@redhat.com>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
+        id S234550AbhHXRnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:43:53 -0400
+Received: from mga11.intel.com ([192.55.52.93]:5257 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242659AbhHXRlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:41:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="214240954"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="214240954"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:32:21 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="597658567"
+Received: from ydevadig-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.137.104])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:32:18 -0700
+Subject: Re: [PATCH v5 07/12] x86/traps: Add #VE support for TDX guest
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-8-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YSTHMAUA1LjjOQPe@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <99c5f6e9-a747-1a4a-d0f4-95b8b28e0d02@linux.intel.com>
+Date:   Tue, 24 Aug 2021 10:32:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YSTHMAUA1LjjOQPe@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:26 AM Tom Stellard <tstellar@redhat.com> wrote:
->
-> On 8/23/21 10:20 AM, Sami Tolvanen wrote:
-> > On Mon, Aug 23, 2021 at 10:16 AM Tom Stellard <tstellar@redhat.com> wrote:
-> >>
-> >> On 8/23/21 10:13 AM, 'Sami Tolvanen' via Clang Built Linux wrote:
-> >>> This series adds support for Clang's Control-Flow Integrity (CFI)
-> >>> checking to x86_64. With CFI, the compiler injects a runtime
-> >>> check before each indirect function call to ensure the target is
-> >>> a valid function with the correct static type. This restricts
-> >>> possible call targets and makes it more difficult for an attacker
-> >>> to exploit bugs that allow the modification of stored function
-> >>> pointers. For more details, see:
-> >>>
-> >>>     https://clang.llvm.org/docs/ControlFlowIntegrity.html
-> >>>
-> >>> Version 2 depends on Clang >=14, where we fixed the issue with
-> >>> referencing static functions from inline assembly. Based on the
-> >>> feedback for v1, this version also changes the declaration of
-> >>> functions that are not callable from C to use an opaque type,
-> >>> which stops the compiler from replacing references to them. This
-> >>> avoids the need to sprinkle function_nocfi() macros in the kernel
-> >>> code.
-> >>
-> >> How invasive are the changes in clang 14 necessary to make CFI work?
-> >> Would it be possible to backport them to LLVM 13?
-> >
-> > I'm not sure what the LLVM backport policy is, but this specific fix
-> > was quite simple:
-> >
-> > https://reviews.llvm.org/rG7ce1c4da7726
-> >
->
-> That looks like something we could backport, I filed a bug to track
-> the backport: https://bugs.llvm.org/show_bug.cgi?id=51588.
 
-Great, thanks!
 
-> Do you have any concerns about backporting it or do you think it's pretty
-> safe?
+On 8/24/21 3:17 AM, Borislav Petkov wrote:
+> On Wed, Aug 04, 2021 at 11:13:24AM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> If a guest kernel action which would normally cause a #VE occurs in the
+>> interrupt-disabled region before TDGETVEINFO, a #DF is delivered to the
+>> guest which will result in an oops (and should eventually be a panic, as
+>> we would like to set panic_on_oops to 1 for TDX guests).
+> 
+> Who's "we"?
+> 
+> Please use passive voice in your commit message and comments: no "we"
+> or "I", etc. Personal pronouns are ambiguous in text, especially with
+> so many parties/companies/etc developing the kernel so let's avoid them.
+> 
+> Audit all your patchsets pls.
 
-No concerns, it should be safe to backport.
+Sorry. I will fix this in next version.
 
-Sami
+> 
+>> Add basic infrastructure to handle any #VE which occurs in the kernel or
+>> userspace.  Later patches will add handling for specific #VE scenarios.
+>>
+>> Convert unhandled #VE's (everything, until later in this series) so that
+>> they appear just like a #GP by calling ve_raise_fault() directly.
+>> ve_raise_fault() is similar to #GP handler and is responsible for
+>> sending SIGSEGV to userspace and cpu die and notifying debuggers and
+> 
+> In all your text:
+> 
+> s/cpu/CPU/g
+> 
+> Audit all your patchsets pls.
+
+Yes. I will fix this in next version.
+
+> 
+>> @@ -53,6 +67,11 @@ u64 __tdx_module_call(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+>>   u64 __tdx_hypercall(u64 type, u64 fn, u64 r12, u64 r13, u64 r14,
+>>   		    u64 r15, struct tdx_hypercall_output *out);
+>>   
+>> +unsigned long tdg_get_ve_info(struct ve_info *ve);
+>> +
+>> +int tdg_handle_virtualization_exception(struct pt_regs *regs,
+> 
+> There's that "tdg" prefix again. Please fix all your patchsets.
+
+Mainly chose it avoid future name conflicts with KVM (tdx) calls. But
+if you don't like "tdg", I can change it back to "tdx" and resolve the
+naming issues when it occurs.
+
+
+>>   static struct {
+>>   	unsigned int gpa_width;
+>> @@ -75,6 +76,41 @@ static void tdg_get_info(void)
+>>   	td_info.attributes = out.rdx;
+>>   }
+>>   
+>> +unsigned long tdg_get_ve_info(struct ve_info *ve)
+>> +{
+>> +	u64 ret;
+>> +	struct tdx_module_output out = {0};
+> 
+> The tip-tree preferred ordering of variable declarations at the
+> beginning of a function is reverse fir tree order::
+> 
+> 	struct long_struct_name *descriptive_name;
+> 	unsigned long foo, bar;
+> 	unsigned int tmp;
+> 	int ret;
+> 
+> The above is faster to parse than the reverse ordering::
+> 
+> 	int ret;
+> 	unsigned int tmp;
+> 	unsigned long foo, bar;
+> 	struct long_struct_name *descriptive_name;
+> 
+> And even more so than random ordering::
+> 
+> 	unsigned long foo, bar;
+> 	int ret;
+> 	struct long_struct_name *descriptive_name;
+> 	unsigned int tmp;
+
+Yes. I will fix this in next version.
+
+
+>> +int tdg_handle_virtualization_exception(struct pt_regs *regs,
+>> +					struct ve_info *ve)
+>> +{
+>> +	/*
+>> +	 * TODO: Add handler support for various #VE exit
+>> +	 * reasons. It will be added by other patches in
+>> +	 * the series.
+>> +	 */
+> 
+> That comment needs to go.
+
+Ok. I will remove it.
+
+>> +#ifdef CONFIG_INTEL_TDX_GUEST
+>> +#define VEFSTR "VE fault"
+>> +static void ve_raise_fault(struct pt_regs *regs, long error_code)
+>> +{
+>> +	struct task_struct *tsk = current;
+>> +
+>> +	if (user_mode(regs)) {
+>> +		tsk->thread.error_code = error_code;
+>> +		tsk->thread.trap_nr = X86_TRAP_VE;
+>> +
+>> +		/*
+>> +		 * Not fixing up VDSO exceptions similar to #GP handler
+>> +		 * because we don't expect the VDSO to trigger #VE.
+>> +		 */
+>> +		show_signal(tsk, SIGSEGV, "", VEFSTR, regs, error_code);
+>> +		force_sig(SIGSEGV);
+>> +		return;
+>> +	}
+>> +
+>> +	if (fixup_exception(regs, X86_TRAP_VE, error_code, 0))
+> 
+> There are exception table entries which can trigger a #VE?
+
+It is required to handle #VE exceptions raised by unhandled MSR
+read/writes.
+
+> 
+>> +		return;
+>> +
+>> +	tsk->thread.error_code = error_code;
+>> +	tsk->thread.trap_nr = X86_TRAP_VE;
+>> +
+>> +	/*
+>> +	 * To be potentially processing a kprobe fault and to trust the result
+>> +	 * from kprobe_running(), we have to be non-preemptible.
+>> +	 */
+>> +	if (!preemptible() &&
+>> +	    kprobe_running() &&
+>> +	    kprobe_fault_handler(regs, X86_TRAP_VE))
+>> +		return;
+>> +
+>> +	notify_die(DIE_GPF, VEFSTR, regs, error_code, X86_TRAP_VE, SIGSEGV);
+> 
+> Other handlers check that retval.
+
+Ok. I can check it. But there is only one statement after this call. So it
+may not be very helpful.
+
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
