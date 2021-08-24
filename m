@@ -2,147 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D27E3F59CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3503F599A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235361AbhHXIWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:22:54 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:59120 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235337AbhHXIWx (ORCPT
+        id S235082AbhHXIEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234999AbhHXID4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:22:53 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210824082207epoutp019560242a969ba2a16a7943b70d65e0fe~eMGVfhHuI2681826818epoutp01n
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:22:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210824082207epoutp019560242a969ba2a16a7943b70d65e0fe~eMGVfhHuI2681826818epoutp01n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1629793327;
-        bh=RpetPnNe6ruMqHIiFlH7YX3vW0cQubKSTCExYU7YqvA=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=G2f5EOBLaI6RANnJPHxVKEQDAbhkfXbY8fZylscyzCPgGS0cWrXkgHLEanVH6fjMX
-         3FFu4kvwl0rny1ohP6IBiJZachico4TPbZUpL0GCQQK2NZ3Uoz5dkML48IulXoNCjA
-         WIX7ADe4IXsW5o8+49Oah7ytIifXXjV4hl1h8DnI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20210824082205epcas5p358d34c566f54ac390c48cc6ee4abdba0~eMGUY-AaJ3188331883epcas5p3g;
-        Tue, 24 Aug 2021 08:22:05 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.174]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4Gv2CF1xw8z4x9Q3; Tue, 24 Aug
-        2021 08:22:01 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        91.15.09778.D1CA4216; Tue, 24 Aug 2021 17:21:49 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210824064402epcas5p16799caa414fb72cf7ac9de5e3f6949f1~eKws1YtuS2563125631epcas5p1t;
-        Tue, 24 Aug 2021 06:44:02 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210824064402epsmtrp16471c1fec0b077d31f7ab48eaf94d431~eKws0gOIc2116221162epsmtrp1k;
-        Tue, 24 Aug 2021 06:44:02 +0000 (GMT)
-X-AuditID: b6c32a4b-395ff70000002632-ca-6124ac1ddd97
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D4.20.08750.23594216; Tue, 24 Aug 2021 15:44:02 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210824064401epsmtip1142dd662ed09a016e00584a3dcce5e7c~eKwsDyfxk0596505965epsmtip1Z;
-        Tue, 24 Aug 2021 06:44:01 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Stephen Rothwell'" <sfr@canb.auug.org.au>,
-        "'Martin K. Petersen'" <martin.petersen@oracle.com>
-Cc:     "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
-        "'Linux Next Mailing List'" <linux-next@vger.kernel.org>
-In-Reply-To: <20210824163435.429d389a@canb.auug.org.au>
-Subject: RE: linux-next: Fixes tag needs some work in the scsi-mkp tree
-Date:   Tue, 24 Aug 2021 12:13:59 +0530
-Message-ID: <002f01d798b3$6ca99520$45fcbf60$@samsung.com>
+        Tue, 24 Aug 2021 04:03:56 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6A5C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:03:12 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id b200so25219790iof.13
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 01:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L63odCo4yNap7uJZXQxb32IpEjuy5tIEHRzlg7AD9/Q=;
+        b=JFacL5p5al23wT7l/I0YIM9ewuicMzmhsmVh4xzL+NJEmXtWF9H+spTUu7eW3moo/N
+         cvKKZrur8YB+y083vmI0LZpzgLdVvKY7iTkAeyHeXUS/zxHNx1jsOZbZYV5z5nqw0APi
+         U6eCpQdfATUsKX9oL5yrrxbsL+tf3uauXMNr4aqjlD4AVd0jOE74kzpPTDpmnNme+CsV
+         RHwLFJuWd/biPWAxwgMAdtYBvXxvipegC3Jf/fn1+sdusuJAN4WeQh4Y8/uWe4J4DEwP
+         lwDIDKrjn3nXcI8gyDcXEnBROKWPCrlyXugOx0/xEgA47Trqa1xQuyur54N2VO67wxWj
+         BAgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L63odCo4yNap7uJZXQxb32IpEjuy5tIEHRzlg7AD9/Q=;
+        b=U14bvnKat+HGu5J6R1IhVM4m54oq+Z3FMDq/FPsnDO9PQbv8uODkc/tC47w8VzkjZ3
+         X8Nwkt6uf+KgF+1Hi7In3tdUjIQqC76C4Ji1y+f1vyqIUW0C3ocfh/dNQn5rq8x+o4Rq
+         NfZTE4qxecHPTXfRjdQEf3xVFuB42ZjK8W0cIv8PJzYsMddqd1qMOkb+KZTDw/49vrix
+         +8wkdHyXUf7UPm95G296UWgUeOU56Yv6oEtAKDCD2cqv+oNW34UNAqP4QfRqnPdtcN49
+         0sl5n0Y/kufPJnQLfn+FCqGiPtvcDgg5nxrLlU5I6IUiO6s+bE9Z74cWivJmiVQKGx4x
+         6Iuw==
+X-Gm-Message-State: AOAM532S6NSE6jWGRIxumXtd1G0Lduq/7X7k8FZF33zoLyveTXCNXhAP
+        atniMpoOXBWPK7CAC6ySTz595ZOn37PZjdBS8FTlxg==
+X-Google-Smtp-Source: ABdhPJwK3nWLpscquSTWrXSuAus1oucKx3/G5sEauT7L1N+e9fWuQlSHmQPzBD2SSzjoUPMdl2AivUqmrfqfd/Vu+dA=
+X-Received: by 2002:a05:6638:d0a:: with SMTP id q10mr32900691jaj.88.1629792191590;
+ Tue, 24 Aug 2021 01:03:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQEtVbmSR8zmpI0eFjlAL/XFkBZaCQFMK7rGrMxZf5A=
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdlhTS1d2jUqiwaEb6haXd81hszi4sI3R
-        Yvnxf0wWW/deZXdg8Wi8cYPN4+PTWywenzfJBTBHZdtkpCampBYppOYl56dk5qXbKnkHxzvH
-        m5oZGOoaWlqYKynkJeam2iq5+AToumXmAG1TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
-        pRak5BSYFOgVJ+YWl+al6+WlllgZGhgYmQIVJmRnXP3QyFbQzl4xYeoOtgbGg6xdjBwcEgIm
-        Eu82FHcxcnEICexmlPg5/ycjhPOJUWLmi0MsEM5nRomdr6YydTFygnU03N/CDJHYxShxaf50
-        dpCEkMBLRok/s8NBbDYBXYkdi9vYQGwRgTSJ94/OgzUzC9RI3F+4G6yeU8BcYs+/RawgtrCA
-        u8TnL1/BbBYBVYnWf1NZQGxeAUuJGd+PMUPYghInZz5hgZgjL7H97RxmiIMUJH4+XcYKsctK
-        YtOsVqgacYmjP3vADpUQeMkO9NtpqAYXiUefD7ND2MISr45vgbKlJF72t7FDwiVbomeXMUS4
-        RmLpvGMsELa9xIErc1hASpgFNCXW79KHCMtKTD21DupFPone30+gYcUrsWMejK0q0fzuKtQY
-        aYmJ3d2sExiVZiH5bBaSz2Yh+WAWwrYFjCyrGCVTC4pz01OLTQuM81LL4dGdnJ+7iRGcFLW8
-        dzA+evBB7xAjEwfjIUYJDmYlEd6/TMqJQrwpiZVVqUX58UWlOanFhxhNgcE9kVlKNDkfmJbz
-        SuINTSwNTMzMzEwsjc0MlcR5dV/JJAoJpCeWpGanphakFsH0MXFwSjUwubYUTPR64LX0U/ue
-        IscXtkYS+90bzk5dwNYZYfn7tG3lsq1StkKC0yYmxYiUKNjP/zqlsS3Y976nfGWY6nrBct/0
-        N7qWKazOmfxszGw/Xiz4bTZxag7vAY29Z7t+x9xfMbGlWvKWWLGoQGoIK1/bgTaH/x294vPX
-        TI0Vmx8z7UltTIv4hH1Tv8qkCs1U3vZ8yu7v7+a8eD7n98+FU2eyrrslUenP7LayjIHzws2q
-        xgmSX0V4tKy6Vb5Fr164ik8pk0XlX8fG/7VdbX+yNb7c2WiVIyF9Qqpeoftv0YRGB+Uri5/o
-        XrnT4XLQ8LJ0oMS58+fym5ba3XSRMJcVjJO+N9/tvZVM398iUz55o2VKLMUZiYZazEXFiQBB
-        EIwHEwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBLMWRmVeSWpSXmKPExsWy7bCSnK7RVJVEg3vXuSwu75rDZnFwYRuj
-        xfLj/5gstu69yu7A4tF44wabx8ent1g8Pm+SC2CO4rJJSc3JLEst0rdL4Mq4+qGRraCdvWLC
-        1B1sDYwHWbsYOTkkBEwkGu5vYe5i5OIQEtjBKHH/6202iIS0xPWNE9ghbGGJlf+eg9lCAs8Z
-        Jaa25oDYbAK6EjsWt4HViwikSXQ/+8ACYjML1Ehc3n8AamgHo8SkycvAijgFzCX2/FsEtllY
-        wF3i85evYDaLgKpE67+pYM28ApYSM74fY4awBSVOznwCFOcAGqon0baREWK+vMT2t3OYIW5T
-        kPj5dBkrxA1WEptmtULdIC5x9GcP8wRG4VlIJs1CmDQLyaRZSDoWMLKsYpRMLSjOTc8tNiww
-        ykst1ytOzC0uzUvXS87P3cQIjgwtrR2Me1Z90DvEyMTBeIhRgoNZSYT3L5NyohBvSmJlVWpR
-        fnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2CyTBycUg1MrIHqmW7nvmeKvLd6cHk+
-        V31S/slvvlHNk2OPn0rsnDVx9jNvt95bx97Icd7rtr/ierZYyvjrTsWHUzeIBn7WOJzh0j9/
-        9q0r83TT2aunprD2aT1lyNLv61J3LOM602IY/v9+RuesvDvGgnPcVs7uOaLT2LTf8MqTYNuZ
-        p+UZu/17Q2Q1197sEHW3tZj7Vzcs88VuUW87tzDWXcmtk38WntvVJ+u4Kb+43z8/J2yh7ZXE
-        z/lxr5MbnnQ8yfTqjVnwoE8g01TOVpOt7dWkznXfbbcvDWE/EGUQczV92p2/bxM3XJzR0m6u
-        6510O5Av7IaV4UGf6Ps3t8lL7bBkdw6YJ/6lRr/1oX+eeZqwqBJLcUaioRZzUXEiAIFPLMb7
-        AgAA
-X-CMS-MailID: 20210824064402epcas5p16799caa414fb72cf7ac9de5e3f6949f1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210824063445epcas5p4ed6e40889cf8d78edd7914284b26e852
-References: <CGME20210824063445epcas5p4ed6e40889cf8d78edd7914284b26e852@epcas5p4.samsung.com>
-        <20210824163435.429d389a@canb.auug.org.au>
+References: <20210607123317.3242031-1-robert.marko@sartura.hr>
+ <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
+ <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
+ <20210719225906.GA2769608@robh.at.kernel.org> <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
+ <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com> <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com>
+In-Reply-To: <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 24 Aug 2021 10:03:01 +0200
+Message-ID: <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, Aug 11, 2021 at 2:17 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Aug 3, 2021 at 9:23 PM Robert Marko <robert.marko@sartura.hr> wrote:
+>
+> > The pins that this driver wants to expose are used for SFP-s only,
+> > they are provided by the Lattice CPLD which also does other things.
+> >
+> > Linux has a generic SFP driver which is used to manage these SFP
+> > ports, but it only supports GPIO-s, it has no concept of anything else.
+> > Since the driver is fully generic, I have no idea how could one extend it
+> > to effectively handle these pins internally, especially since I have more
+> > switches that use the CPLD for SFP-s as well, even for 48 ports and 192
+> > pins for them.
+>
+> Which file is this driver in so I can look?
 
-> -----Original Message-----
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Sent: 24 August 2021 12:05
-> To: Martin K. Petersen <martin.petersen@oracle.com>
-> Cc: Alim Akhtar <alim.akhtar@samsung.com>; Linux Kernel Mailing List
-> <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-
-> next@vger.kernel.org>
-> Subject: linux-next: Fixes tag needs some work in the scsi-mkp tree
-> 
-> Hi all,
-> 
-> In commit
-> 
->   2b7661aa3f28 ("scsi: ufs: ufs-exynos: Fix static checker warning")
-> 
-> Fixes tag
-> 
->   Fixes: 55f4b1f73631: "scsi: ufs: ufs-exynos: Add UFS host support for
-Exynos
-> SoCs"
-> 
-Sorry about this.
-Martin,
-You want me to re-send the patch or you will take care?
- 
-> has these problem(s):
-> 
->   - missing space between the SHA1 and the subject
->     Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
-> 
-> --
-> Cheers,
-> Stephen Rothwell
+Hi Linus,
+Sorry for the late reply.
 
+Sure, here is the generic Linux driver that is used for SFP handling:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/phy/sfp.c?h=v5.14-rc7
+
+>
+> Maybe it is not a good idea to look for generic code just because
+> it is convenient? I have had this problem before with GPIO, along
+> the lines "lemme just do this dirty thing this one time because it
+> is so convenient for me" (more or less) and the answer is still
+> "no".
+>
+> Can you either augment the driver to handle a regmap with bit indices
+> instead or write a new similar driver for that or refactor it some other
+> way?
+>
+> It is not a simple solution to your problem, but it might be the right
+> solution even if it means some more work.
+
+I understand your position, believe me, I spend some time looking at
+what would be the logical way for these switches.
+But I see no way how could the SFP driver be extended in a generic way
+that would allow supporting different register layouts when it comes to pins.
+
+>
+> > GPIO regmap works perfectly for this as its generic enough to cover all of
+> > these cases.
+>
+> Yeah but it might be the wrong thing to do even if it is simple
+> to use and works.
+>
+> > CPLD also provides pins to test the port LED-s per color as well,
+> > but I have chosen not to expose them so far.
+>
+> Have you considered
+> Documentation/devicetree/bindings/leds/register-bit-led.txt
+
+Yeah, but unfortunately in this case it wont work as the LED-s
+are for debugging/test purposes only and you first need to switch
+the CPLD out of it interpreting the LED state with a BIT flip.
+
+Regards,
+Robert
+>
+> > > If it is a regmap in Linux then that is fine, just pass the regmap
+> > > around inside the kernel, OK finished. But really that is an OS
+> > > detail.
+> >
+> > Yes, its regmap but I cant really pass it to the SFP driver as I don't have
+> > special driver handling the SFP but rather the generic kernel one.
+> > It only knows how to handle GPIO-s.
+>
+> Of course you have to program it. If I know which driver it
+> is it is easier to provide architecture ideas.
+>
+> Yours,
+> Linus Walleij
+
+
+
+-- 
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
