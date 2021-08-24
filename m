@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BDE3F60A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275713F60A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbhHXOkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        id S237883AbhHXOkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237701AbhHXOki (ORCPT
+        with ESMTP id S237871AbhHXOkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:40:38 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD57C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:39:54 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id c12so38135173ljr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:39:54 -0700 (PDT)
+        Tue, 24 Aug 2021 10:40:42 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C39C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:39:58 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id g8so6077899ilc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=re6lK/BP08XNQ6PSp6D93sz/YFIqzRCqeE2m1nUD7G8=;
-        b=LVNcDkVCUlLh59P7dmrsVLCxUgSd2XP+QT5UM8O45zlyF4SBhVEprBFhI2Sz7vHbjB
-         89n1zWnTbKK2YglQscfg0g2SLjvMT8i0AHgupKhz4TC65lQd52Dw7EKAlnwfZCu/mAak
-         VSeFpZ0jHUr2YsuV5d1whQHOTxeR9Uey1KyH5QJKbeNk58at4SkrCDoGR7xcA9fypHho
-         PsrhGo47eiwaz/oZafjlxtt3P2nUs3QinGoopeMzjt4XAFhy1NB6hlRw4jeLw8rUne3W
-         tmUe90P80fbE9UzQ/h0yMG9pe28HmQAM8fV2iAGMYdlb1wqWK0OxAfHlbCVPPsEpJ31a
-         lQIg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wrmj9NxeK50Yh0KWY83ZwhjXt9JLXGrzQPU3KpybYTE=;
+        b=Crgu+M678i9zBflxzx+Djt10g4XfQusYeZq42NCA09ryj+wzzNIGUtZVvIwhOBDH5j
+         3FFq0e+QBD3pAGr6uldd0cqnv0O9vnkqjb6jEFAd6VME2YpiEsw6bbtEeed5TGwC+0FZ
+         JjboGrYQx7ZJcMe6uqM/OC56i68t93XoSmfLs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=re6lK/BP08XNQ6PSp6D93sz/YFIqzRCqeE2m1nUD7G8=;
-        b=bTEiqkTKtQDrVovYFNZnSOABoGwOa/1CnZXWJfJiss5KqyD6wNeHOIUHIG0Lhs9Qzo
-         OVGdZcpN2WwunIkNdDvOS+Wj5iVo8344QcZjN2Z8i7UIQa8eNZNuNF8reAA+36u9FXHn
-         dEuTHagSseESptWVLaeKKQCL6tU6je+RM5/Uh2HUxg85CZ58xM3kYOuilK1q6zVrt/l0
-         QLlB8JY4WSZfzb+erV0ka+lpHpLeWLWtYbuwZDG/i+KdgInVTNnQKeN6wHBNd+3HWVHa
-         HhX0eqErLR0ldIguSzMibmVFCf6JkK0ad3x7wAxCSzvo41+7kDBToxuhPm/catGz1gpM
-         I8eA==
-X-Gm-Message-State: AOAM5327WYKAMSwtm1q6dku5jaZ9BNRJeh5Bim9D2w67WaAPVoGqwcYC
-        HnO6finHN2+d9HWdVPxeiuM=
-X-Google-Smtp-Source: ABdhPJxhoEVInXFt0CDNX0OaTxp32rAF2ntzq6G/vNmdhnRIftD9BrlVvKF/U9/BI2IpTKiPCT/NyA==
-X-Received: by 2002:a2e:a811:: with SMTP id l17mr30650238ljq.456.1629815992620;
-        Tue, 24 Aug 2021 07:39:52 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.66.127])
-        by smtp.gmail.com with ESMTPSA id v2sm1778139lfg.112.2021.08.24.07.39.51
+        bh=wrmj9NxeK50Yh0KWY83ZwhjXt9JLXGrzQPU3KpybYTE=;
+        b=qZNlinRPrTC9ALDoe3zInEqFulKDF2gVK4vBPhTrvmfiSzq8p8WSpRoGL9L1WhLixC
+         6M/rJI0wT4ReUSDjLb7UStLLzVqJSTmgLUcidEvMAs0zP4obLp7FP9/isMO2s+nVjmBc
+         CFKOmKj8fOx4M8qHRzo/18TnVaGStO13QGbNH/PRZShSwctLnTwLlzUj2diF/Ds2X2Yk
+         7zp8a0Mx+xbMluBdTCpuObyuPxZxvshgMzP4iS54TSS3pB99nzkWAudjpboiBjj97j1k
+         CCCmQ2uaiqw5f1Y4fQWjnrYyfcy2+DEJrExaQsZ12+MCcLnjoEmhhw0Emqk4i2H7raPR
+         PA3g==
+X-Gm-Message-State: AOAM532ybJf0qkKubYkyfndkvufw+796de51MMOp+oLUwoM1QPHsMLH0
+        tdczzM15JUICmmHtDl/xrnbQlg==
+X-Google-Smtp-Source: ABdhPJxpg3d08Q6y9K5HtvozlC1WOSSmlKy7Dbn0wEh5M2V8pYpnHyzPepHLOdDKueehZ9sDrGW4Lg==
+X-Received: by 2002:a92:3f0b:: with SMTP id m11mr27908064ila.265.1629815997687;
+        Tue, 24 Aug 2021 07:39:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id p12sm9916627ilp.87.2021.08.24.07.39.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 07:39:52 -0700 (PDT)
-Subject: Re: [PATCH 2/2] staging: r8188eu: Make some clean-ups in
- usbctrl_vendorreq()
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-References: <20210824142823.16845-1-fmdefrancesco@gmail.com>
- <20210824142823.16845-3-fmdefrancesco@gmail.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-Message-ID: <27c7e4ef-06a8-2f0c-d388-1a64e7d4a735@gmail.com>
-Date:   Tue, 24 Aug 2021 17:39:51 +0300
+        Tue, 24 Aug 2021 07:39:57 -0700 (PDT)
+Subject: Re: [PATCH linux-next] tools: remove unneeded semicolon
+To:     cgel.zte@gmail.com, jasowang@redhat.com
+Cc:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
+        shuah@kernel.org, mst@redhat.com, zhang.yunkai@zte.com.cn,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Zeal Robot <zealci@zte.com.cn>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210802071449.588393-1-zhang.yunkai@zte.com.cn>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e501f3f4-2eb7-a742-57ac-34f4f8e83d82@linuxfoundation.org>
+Date:   Tue, 24 Aug 2021 08:39:56 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210824142823.16845-3-fmdefrancesco@gmail.com>
+In-Reply-To: <20210802071449.588393-1-zhang.yunkai@zte.com.cn>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -73,26 +69,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 5:28 PM, Fabio M. De Francesco wrote:
-> After replacing usb_control_msg() with the new usb_control_msg_recv() and
-> usb_control_msg_send() API of USB Core, remove camelcase from the pIo_buf
-> variable that is passed as argument to the new API and remove the initial
-> 'p' (that probably stands for "pointer") from the same pIo_buf and from
-> the pintfhdl and pdata arguments of usbctrl_vendorreq().
+On 8/2/21 1:14 AM, cgel.zte@gmail.com wrote:
+> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Fix the following coccicheck REVIEW:
+> ./tools/testing/selftests/timers/inconsistency-check.c:75:2-3 REVIEW
+> Unneeded semicolon
+> ./tools/testing/selftests/timers/set-timer-lat.c:83:2-3 REVIEW Unneeded
+> semicolon
+> ./tools/virtio/virtio-trace/trace-agent-ctl.c:78:2-3 REVIEW Unneeded
+> semicolon
+> ./tools/testing/selftests/timers/nanosleep.c:75:2-3 REVIEW Unneeded
+> semicolon
+> ./tools/testing/selftests/timers/nsleep-lat.c:75:2-3 REVIEW Unneeded
+> semicolon
+> ./tools/testing/selftests/timers/alarmtimer-suspend.c:82:2-3 REVIEW
+> Unneeded semicolon
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 > ---
->   drivers/staging/r8188eu/hal/usb_ops_linux.c | 22 ++++++++++-----------
->   1 file changed, 11 insertions(+), 11 deletions(-)
+>   tools/testing/selftests/timers/alarmtimer-suspend.c  | 2 +-
+>   tools/testing/selftests/timers/inconsistency-check.c | 2 +-
+>   tools/testing/selftests/timers/nanosleep.c           | 2 +-
+>   tools/testing/selftests/timers/nsleep-lat.c          | 2 +-
+>   tools/testing/selftests/timers/set-timer-lat.c       | 2 +-
+>   tools/virtio/virtio-trace/trace-agent-ctl.c          | 2 +-
+>   6 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/timers/alarmtimer-suspend.c b/tools/testing/selftests/timers/alarmtimer-suspend.c
+> index 4da09dbf83ba..54da4b088f4c 100644
+> --- a/tools/testing/selftests/timers/alarmtimer-suspend.c
+> +++ b/tools/testing/selftests/timers/alarmtimer-suspend.c
+> @@ -79,7 +79,7 @@ char *clockstring(int clockid)
+>   		return "CLOCK_BOOTTIME_ALARM";
+>   	case CLOCK_TAI:
+>   		return "CLOCK_TAI";
+> -	};
+> +	}
+>   	return "UNKNOWN_CLOCKID";
+>   }
+>   
+> diff --git a/tools/testing/selftests/timers/inconsistency-check.c b/tools/testing/selftests/timers/inconsistency-check.c
+> index 022d3ffe3fbf..e6756d9c60a7 100644
+> --- a/tools/testing/selftests/timers/inconsistency-check.c
+> +++ b/tools/testing/selftests/timers/inconsistency-check.c
+> @@ -72,7 +72,7 @@ char *clockstring(int clockid)
+>   		return "CLOCK_BOOTTIME_ALARM";
+>   	case CLOCK_TAI:
+>   		return "CLOCK_TAI";
+> -	};
+> +	}
+>   	return "UNKNOWN_CLOCKID";
+>   }
+>   
+> diff --git a/tools/testing/selftests/timers/nanosleep.c b/tools/testing/selftests/timers/nanosleep.c
+> index 71b5441c2fd9..433a09676aeb 100644
+> --- a/tools/testing/selftests/timers/nanosleep.c
+> +++ b/tools/testing/selftests/timers/nanosleep.c
+> @@ -72,7 +72,7 @@ char *clockstring(int clockid)
+>   		return "CLOCK_BOOTTIME_ALARM";
+>   	case CLOCK_TAI:
+>   		return "CLOCK_TAI";
+> -	};
+> +	}
+>   	return "UNKNOWN_CLOCKID";
+>   }
+>   
+> diff --git a/tools/testing/selftests/timers/nsleep-lat.c b/tools/testing/selftests/timers/nsleep-lat.c
+> index eb3e79ed7b4a..a7ca9825e106 100644
+> --- a/tools/testing/selftests/timers/nsleep-lat.c
+> +++ b/tools/testing/selftests/timers/nsleep-lat.c
+> @@ -72,7 +72,7 @@ char *clockstring(int clockid)
+>   		return "CLOCK_BOOTTIME_ALARM";
+>   	case CLOCK_TAI:
+>   		return "CLOCK_TAI";
+> -	};
+> +	}
+>   	return "UNKNOWN_CLOCKID";
+>   }
+>   
+> diff --git a/tools/testing/selftests/timers/set-timer-lat.c b/tools/testing/selftests/timers/set-timer-lat.c
+> index 50da45437daa..d60bbcad487f 100644
+> --- a/tools/testing/selftests/timers/set-timer-lat.c
+> +++ b/tools/testing/selftests/timers/set-timer-lat.c
+> @@ -80,7 +80,7 @@ char *clockstring(int clockid)
+>   		return "CLOCK_BOOTTIME_ALARM";
+>   	case CLOCK_TAI:
+>   		return "CLOCK_TAI";
+> -	};
+> +	}
+>   	return "UNKNOWN_CLOCKID";
+>   }
+>   
+> diff --git a/tools/virtio/virtio-trace/trace-agent-ctl.c b/tools/virtio/virtio-trace/trace-agent-ctl.c
+> index 73d253d4b559..39860be6e2d8 100644
+> --- a/tools/virtio/virtio-trace/trace-agent-ctl.c
+> +++ b/tools/virtio/virtio-trace/trace-agent-ctl.c
+> @@ -75,7 +75,7 @@ static int wait_order(int ctl_fd)
+>   
+>   		if (ret)
+>   			break;
+> -	};
+> +	}
+>   
+>   	return ret;
+>   
 > 
 
-I cannot apply this one on top of the first one:
+We can't accept this patch. The from and Signed-off-by don't match.
 
-error: patch failed: drivers/staging/r8188eu/hal/usb_ops_linux.c:33
-error: drivers/staging/r8188eu/hal/usb_ops_linux.c: patch does not apply
-
-
-
-
-With regards,
-Pavel Skripkin
+thanks,
+-- Shuah
