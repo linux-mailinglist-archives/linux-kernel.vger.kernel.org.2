@@ -2,137 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81853F6884
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB1D3F6889
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240822AbhHXR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
+        id S235304AbhHXSAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240657AbhHXR7s (ORCPT
+        with ESMTP id S238088AbhHXR76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:59:48 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A43BC0E064E
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:39:45 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id d16so39015193ljq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:39:45 -0700 (PDT)
+        Tue, 24 Aug 2021 13:59:58 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2893C08ED8A
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:25 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id x140so8276096ybe.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s+/lXLW+84+cEx++etuMHYzjE555zjCwFj9ti+8XnFM=;
-        b=DYuypqUtCTHwP1gqnv1cHe73NDXkrWWzprn+z3WkSF/xMLGndxcx5sQAqfuw85Hq69
-         brpoCeGUw0o2oW/bLZ4Tpnnhv0LqQeJthBqAQtcUtbCGiEv/ToxXF3JDSle3ocjJMAEC
-         gQ7y9C32QFTtR4Tb6IlJuBdWDO4rMoUkKcSXg=
+        bh=UwVp3TaTrsW4yFZIGDaaNefCtZpYijG6P9cNfIiRWFs=;
+        b=JVU8DDJfmYOaTtEs7m7fMk+Zp/gcPMpZrtO3FuN+pWzA1ygtP52hhITN4j+0V/ftQE
+         Omanc4vfr2kxM0K+VFSppJ5SIbDcKyy+a1XSGSkhyQwhNadvTlCz/nd8JhOIX78D32tQ
+         RzfUnfl8+5z+RT/sdtBsQ4/QTtg1PLQZ+IV4DRZNHYvaoLXsoEDDadKPHhs7KUX+ZlDq
+         QJg+3DCdUJrgcXpT0rDbXfZQunT34Q5BdSmy9RnXXQARPauPY4srtIXpTi6p716rq5is
+         SYdGZAfUzzebA7T2xKdiS6w7CdGJ1NjR8W3sanC2T5ASk0Jfi7rHfFX+KQ+Y8/1sSFgO
+         Kiwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s+/lXLW+84+cEx++etuMHYzjE555zjCwFj9ti+8XnFM=;
-        b=ohBn/5Ps601XhvSOrQxS5NWxJ2uy0RNHmY/mhS40FjmLZ2aaPEIOFQBqAtL52h3u9b
-         TiTGOTThbowXIuDugWVVhaTtDURBU0RNkZNZdTqOC9YE2mrcj2jwQBffpxZDOkI8lrfW
-         pAuzyiAX4DK6oJB8eBFc37MLHlx/B6h0QcmF5Mbw+m8u4X+8yLamTLWpVEFRJb+/VUbl
-         jaUdYVIyZEFe3iJRNgH1E4QmgTcEGO6s7vLaVdVKBX/UktDYt+yWjphdD08Y1jov4R9u
-         1gq5sTRcdeNo2HMTxemqok5L5I1HewJZxXmlt738e7Fi0Hi37JIDVRv0LCu9UwfEYuc4
-         YZwg==
-X-Gm-Message-State: AOAM531ikAg6XtCuMg0t3hjHwCd+S3yEinRN+tPioAPxhyMnJ33cs0Ha
-        MiLwmNfzkdOiM5DjU/AAtUpeMInGejQOplcg
-X-Google-Smtp-Source: ABdhPJygk24F9mVrUFzp+RInw6d4Y64BdI9rSGFrkUuIitjeZIhtEUwu3sp3JEs4FbOqR4cxi6loMQ==
-X-Received: by 2002:a2e:7d0e:: with SMTP id y14mr32636097ljc.251.1629826783426;
-        Tue, 24 Aug 2021 10:39:43 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id z7sm1807573lft.302.2021.08.24.10.39.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 10:39:41 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id p15so1172261ljn.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:39:41 -0700 (PDT)
-X-Received: by 2002:a2e:8808:: with SMTP id x8mr33404195ljh.220.1629826781193;
- Tue, 24 Aug 2021 10:39:41 -0700 (PDT)
+        bh=UwVp3TaTrsW4yFZIGDaaNefCtZpYijG6P9cNfIiRWFs=;
+        b=KfJJS9E8jbLsPqgvBrx6Ilb7vPJ6gybp094pDX3avYRVwiL28xwGI3VkyVvmENGMhw
+         DttK4+u13ayfXtZ0WCbS103HJ0NjeS/HJR+T6ZUYDEcuv5SrygAxi6U6MZ0jKvS5O9wW
+         AcqlbvvwVnCYaYLnSfnsm+WSW0qZ9MIHJF7wj6Yy07ZLpvwF3/aHJGLdKB/u4WIoO+El
+         paR3qrkzVxRgG1iK9xlGIVDXjpgRk82RoDSag4SRPalWhQQArvaDWgi6tDRdAbXUhCdg
+         pe4kNWNjL4ZeTuckFkd1zVlWcVxY2l7B3wEdZpfAZToij+K7eEaZ7YyAT5yLriUH5Ilr
+         udyg==
+X-Gm-Message-State: AOAM532t6QZZO51wxpFhqDNggkoGZ8yjpmefWBjfvJpev0b/EP64bDLi
+        PAaYnHUnFuaJkFzs1Vl3fQliqiBTW4oZ3AGYZwPLqw==
+X-Google-Smtp-Source: ABdhPJzF+Mlo7BQh5YVf/svCpx69TquFepkJPwJfpzkEgAtDfvMJl66TlEpJePEwAJEE4ucYOE+byat9Qk9zlYt2N4o=
+X-Received: by 2002:a5b:391:: with SMTP id k17mr53684767ybp.152.1629826824711;
+ Tue, 24 Aug 2021 10:40:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210824151337.GC27667@xsang-OptiPlex-9020> <CAHk-=wjEdeNW8bPNhwRCkMu6zLKjE2vQ=WL_6bQtc9YnaKt0bw@mail.gmail.com>
- <CAHk-=wiKAg5QtrQOtvKNwkRUn0b2xufO54GPhUoTWxBgDzXWNA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiKAg5QtrQOtvKNwkRUn0b2xufO54GPhUoTWxBgDzXWNA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Aug 2021 10:39:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgrSmiwUfSGt1RPy5KJ_TLBTP5DB0-vT=PCxQY4C7uANA@mail.gmail.com>
-Message-ID: <CAHk-=wgrSmiwUfSGt1RPy5KJ_TLBTP5DB0-vT=PCxQY4C7uANA@mail.gmail.com>
-Subject: Re: [pipe] 3b844826b6: stress-ng.sigio.ops_per_sec -99.3% regression
-To:     kernel test robot <oliver.sang@intel.com>,
-        Colin Ian King <colin.king@canonical.com>
-Cc:     Sandeep Patil <sspatil@android.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Content-Type: multipart/mixed; boundary="00000000000056e19405ca519ebf"
+References: <20210818005615.138527-1-joshdon@google.com> <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
+ <CAOBnfPjH=y3Lk7AukLeG4mNcJnf5cgV260=PZCbF9u69-T+Q6Q@mail.gmail.com>
+ <YSS1/rqqsGaBX/yQ@hirez.programming.kicks-ass.net> <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
+In-Reply-To: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Tue, 24 Aug 2021 10:40:13 -0700
+Message-ID: <CABk29Nt7413WKqhYDdA5qwPAiwUr7mWWpE02J5aaYSTbOoEzOQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/core: Simplify core-wide task selection
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Vineeth Pillai <vineethrp@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tao Zhou <tao.zhou@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000056e19405ca519ebf
-Content-Type: text/plain; charset="UTF-8"
-
-On Tue, Aug 24, 2021 at 10:32 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Tue, Aug 24, 2021 at 2:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> We could do the same ugly thing for FASYNC that we do for EPOLLET -
-> make it always fasync on new data, exactly because the previous SIGIO
-> might not have emptied the buffer completely.
+> On Tue, Aug 24, 2021 at 11:03:58AM +0200, Peter Zijlstra wrote:
+> > Let me go do that and also attempt a Changelog to go with it ;-)
+>
+> How's this then?
+>
+> ---
+> Subject: sched/core: Simplify core-wide task selection
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Tue Aug 24 11:05:47 CEST 2021
+>
+> Tao suggested a two-pass task selection to avoid the retry loop.
+>
+> Not only does it avoid the retry loop, it results in *much* simpler
+> code.
+>
+> This also fixes an issue spotted by Josh Don where, for SMT3+, we can
+> forget to update max on the first pass and get to do an extra round.
+>
+> Suggested-by: Tao Zhou <tao.zhou@linux.dev>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-The patch would be something like the attached (UNTESTED!)
+Reviewed-by: Josh Don <joshdon@google.com>
 
-                  Linus
-
---00000000000056e19405ca519ebf
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_ksqcrs750>
-X-Attachment-Id: f_ksqcrs750
-
-IGZzL3BpcGUuYyB8IDIwICsrKysrKysrLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgOCBp
-bnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy9waXBlLmMgYi9m
-cy9waXBlLmMKaW5kZXggNjc4ZGVlMmE4MjI4Li42ZDQzNDJiYWQ5ZjEgMTAwNjQ0Ci0tLSBhL2Zz
-L3BpcGUuYworKysgYi9mcy9waXBlLmMKQEAgLTM2MywxMCArMzYzLDkgQEAgcGlwZV9yZWFkKHN0
-cnVjdCBraW9jYiAqaW9jYiwgc3RydWN0IGlvdl9pdGVyICp0bykKIAkJICogX3ZlcnlfIHVubGlr
-ZWx5IGNhc2UgdGhhdCB0aGUgcGlwZSB3YXMgZnVsbCwgYnV0IHdlIGdvdAogCQkgKiBubyBkYXRh
-LgogCQkgKi8KLQkJaWYgKHVubGlrZWx5KHdhc19mdWxsKSkgeworCQlpZiAodW5saWtlbHkod2Fz
-X2Z1bGwpKQogCQkJd2FrZV91cF9pbnRlcnJ1cHRpYmxlX3N5bmNfcG9sbCgmcGlwZS0+d3Jfd2Fp
-dCwgRVBPTExPVVQgfCBFUE9MTFdSTk9STSk7Ci0JCQlraWxsX2Zhc3luYygmcGlwZS0+ZmFzeW5j
-X3dyaXRlcnMsIFNJR0lPLCBQT0xMX09VVCk7Ci0JCX0KKwkJa2lsbF9mYXN5bmMoJnBpcGUtPmZh
-c3luY193cml0ZXJzLCBTSUdJTywgUE9MTF9PVVQpOwogCiAJCS8qCiAJCSAqIEJ1dCBiZWNhdXNl
-IHdlIGRpZG4ndCByZWFkIGFueXRoaW5nLCBhdCB0aGlzIHBvaW50IHdlIGNhbgpAQCAtMzg1LDEy
-ICszODQsMTEgQEAgcGlwZV9yZWFkKHN0cnVjdCBraW9jYiAqaW9jYiwgc3RydWN0IGlvdl9pdGVy
-ICp0bykKIAkJd2FrZV9uZXh0X3JlYWRlciA9IGZhbHNlOwogCV9fcGlwZV91bmxvY2socGlwZSk7
-CiAKLQlpZiAod2FzX2Z1bGwpIHsKKwlpZiAod2FzX2Z1bGwpCiAJCXdha2VfdXBfaW50ZXJydXB0
-aWJsZV9zeW5jX3BvbGwoJnBpcGUtPndyX3dhaXQsIEVQT0xMT1VUIHwgRVBPTExXUk5PUk0pOwot
-CQlraWxsX2Zhc3luYygmcGlwZS0+ZmFzeW5jX3dyaXRlcnMsIFNJR0lPLCBQT0xMX09VVCk7Ci0J
-fQogCWlmICh3YWtlX25leHRfcmVhZGVyKQogCQl3YWtlX3VwX2ludGVycnVwdGlibGVfc3luY19w
-b2xsKCZwaXBlLT5yZF93YWl0LCBFUE9MTElOIHwgRVBPTExSRE5PUk0pOworCWtpbGxfZmFzeW5j
-KCZwaXBlLT5mYXN5bmNfd3JpdGVycywgU0lHSU8sIFBPTExfT1VUKTsKIAlpZiAocmV0ID4gMCkK
-IAkJZmlsZV9hY2Nlc3NlZChmaWxwKTsKIAlyZXR1cm4gcmV0OwpAQCAtNTY1LDEwICs1NjMsOSBA
-QCBwaXBlX3dyaXRlKHN0cnVjdCBraW9jYiAqaW9jYiwgc3RydWN0IGlvdl9pdGVyICpmcm9tKQog
-CQkgKiBiZWNvbWUgZW1wdHkgd2hpbGUgd2UgZHJvcHBlZCB0aGUgbG9jay4KIAkJICovCiAJCV9f
-cGlwZV91bmxvY2socGlwZSk7Ci0JCWlmICh3YXNfZW1wdHkpIHsKKwkJaWYgKHdhc19lbXB0eSkK
-IAkJCXdha2VfdXBfaW50ZXJydXB0aWJsZV9zeW5jX3BvbGwoJnBpcGUtPnJkX3dhaXQsIEVQT0xM
-SU4gfCBFUE9MTFJETk9STSk7Ci0JCQlraWxsX2Zhc3luYygmcGlwZS0+ZmFzeW5jX3JlYWRlcnMs
-IFNJR0lPLCBQT0xMX0lOKTsKLQkJfQorCQlraWxsX2Zhc3luYygmcGlwZS0+ZmFzeW5jX3JlYWRl
-cnMsIFNJR0lPLCBQT0xMX0lOKTsKIAkJd2FpdF9ldmVudF9pbnRlcnJ1cHRpYmxlX2V4Y2x1c2l2
-ZShwaXBlLT53cl93YWl0LCBwaXBlX3dyaXRhYmxlKHBpcGUpKTsKIAkJX19waXBlX2xvY2socGlw
-ZSk7CiAJCXdhc19lbXB0eSA9IHBpcGVfZW1wdHkocGlwZS0+aGVhZCwgcGlwZS0+dGFpbCk7CkBA
-IC01OTEsMTAgKzU4OCw5IEBAIHBpcGVfd3JpdGUoc3RydWN0IGtpb2NiICppb2NiLCBzdHJ1Y3Qg
-aW92X2l0ZXIgKmZyb20pCiAJICogRXBvbGwgbm9uc2Vuc2ljYWxseSB3YW50cyBhIHdha2V1cCB3
-aGV0aGVyIHRoZSBwaXBlCiAJICogd2FzIGFscmVhZHkgZW1wdHkgb3Igbm90LgogCSAqLwotCWlm
-ICh3YXNfZW1wdHkgfHwgcGlwZS0+cG9sbF91c2FnZSkgeworCWlmICh3YXNfZW1wdHkgfHwgcGlw
-ZS0+cG9sbF91c2FnZSkKIAkJd2FrZV91cF9pbnRlcnJ1cHRpYmxlX3N5bmNfcG9sbCgmcGlwZS0+
-cmRfd2FpdCwgRVBPTExJTiB8IEVQT0xMUkROT1JNKTsKLQkJa2lsbF9mYXN5bmMoJnBpcGUtPmZh
-c3luY19yZWFkZXJzLCBTSUdJTywgUE9MTF9JTik7Ci0JfQorCWtpbGxfZmFzeW5jKCZwaXBlLT5m
-YXN5bmNfcmVhZGVycywgU0lHSU8sIFBPTExfSU4pOwogCWlmICh3YWtlX25leHRfd3JpdGVyKQog
-CQl3YWtlX3VwX2ludGVycnVwdGlibGVfc3luY19wb2xsKCZwaXBlLT53cl93YWl0LCBFUE9MTE9V
-VCB8IEVQT0xMV1JOT1JNKTsKIAlpZiAocmV0ID4gMCAmJiBzYl9zdGFydF93cml0ZV90cnlsb2Nr
-KGZpbGVfaW5vZGUoZmlscCktPmlfc2IpKSB7Cg==
---00000000000056e19405ca519ebf--
+> ---
+>  kernel/sched/core.c | 156 +++++++++++++++-------------------------------------
+>  1 file changed, 45 insertions(+), 111 deletions(-)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index ceae25ea8a0e..8a9a32df5f38 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -5381,8 +5381,7 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>                         return p;
+>         }
+>
+> -       /* The idle class should always have a runnable task: */
+> -       BUG();
+> +       BUG(); /* The idle class should always have a runnable task. */
+>  }
+>
+>  #ifdef CONFIG_SCHED_CORE
+> @@ -5404,54 +5403,18 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
+>         return a->core_cookie == b->core_cookie;
+>  }
+>
+> -// XXX fairness/fwd progress conditions
+> -/*
+> - * Returns
+> - * - NULL if there is no runnable task for this class.
+> - * - the highest priority task for this runqueue if it matches
+> - *   rq->core->core_cookie or its priority is greater than max.
+> - * - Else returns idle_task.
+> - */
+> -static struct task_struct *
+> -pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
+> +static inline struct task_struct *pick_task(struct rq *rq)
+>  {
+> -       struct task_struct *class_pick, *cookie_pick;
+> -       unsigned long cookie = rq->core->core_cookie;
+> -
+> -       class_pick = class->pick_task(rq);
+> -       if (!class_pick)
+> -               return NULL;
+> -
+> -       if (!cookie) {
+> -               /*
+> -                * If class_pick is tagged, return it only if it has
+> -                * higher priority than max.
+> -                */
+> -               if (max && class_pick->core_cookie &&
+> -                   prio_less(class_pick, max, in_fi))
+> -                       return idle_sched_class.pick_task(rq);
+> +       const struct sched_class *class;
+> +       struct task_struct *p;
+>
+> -               return class_pick;
+> +       for_each_class(class) {
+> +               p = class->pick_task(rq);
+> +               if (p)
+> +                       return p;
+>         }
+>
+> -       /*
+> -        * If class_pick is idle or matches cookie, return early.
+> -        */
+> -       if (cookie_equals(class_pick, cookie))
+> -               return class_pick;
+> -
+> -       cookie_pick = sched_core_find(rq, cookie);
+> -
+> -       /*
+> -        * If class > max && class > cookie, it is the highest priority task on
+> -        * the core (so far) and it must be selected, otherwise we must go with
+> -        * the cookie pick in order to satisfy the constraint.
+> -        */
+> -       if (prio_less(cookie_pick, class_pick, in_fi) &&
+> -           (!max || prio_less(max, class_pick, in_fi)))
+> -               return class_pick;
+> -
+> -       return cookie_pick;
+> +       BUG(); /* The idle class should always have a runnable task. */
+>  }
+>
+>  extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+> @@ -5459,11 +5422,12 @@ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_f
+>  static struct task_struct *
+>  pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  {
+> -       struct task_struct *next, *max = NULL;
+> -       const struct sched_class *class;
+> +       struct task_struct *next, *p, *max = NULL;
+>         const struct cpumask *smt_mask;
+>         bool fi_before = false;
+> -       int i, j, cpu, occ = 0;
+> +       unsigned long cookie;
+> +       int i, cpu, occ = 0;
+> +       struct rq *rq_i;
+>         bool need_sync;
+>
+>         if (!sched_core_enabled(rq))
+> @@ -5536,12 +5500,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>          * and there are no cookied tasks running on siblings.
+>          */
+>         if (!need_sync) {
+> -               for_each_class(class) {
+> -                       next = class->pick_task(rq);
+> -                       if (next)
+> -                               break;
+> -               }
+> -
+> +               next = pick_task(rq);
+>                 if (!next->core_cookie) {
+>                         rq->core_pick = NULL;
+>                         /*
+> @@ -5554,76 +5513,51 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>                 }
+>         }
+>
+> -       for_each_cpu(i, smt_mask) {
+> -               struct rq *rq_i = cpu_rq(i);
+> -
+> -               rq_i->core_pick = NULL;
+> +       /*
+> +        * For each thread: do the regular task pick and find the max prio task
+> +        * amongst them.
+> +        *
+> +        * Tie-break prio towards the current CPU
+> +        */
+> +       for_each_cpu_wrap(i, smt_mask, cpu) {
+> +               rq_i = cpu_rq(i);
+>
+>                 if (i != cpu)
+>                         update_rq_clock(rq_i);
+> +
+> +               p = rq_i->core_pick = pick_task(rq_i);
+> +               if (!max || prio_less(max, p, fi_before))
+> +                       max = p;
+>         }
+>
+> +       cookie = rq->core->core_cookie = max->core_cookie;
+> +
+>         /*
+> -        * Try and select tasks for each sibling in descending sched_class
+> -        * order.
+> +        * For each thread: try and find a runnable task that matches @max or
+> +        * force idle.
+>          */
+> -       for_each_class(class) {
+> -again:
+> -               for_each_cpu_wrap(i, smt_mask, cpu) {
+> -                       struct rq *rq_i = cpu_rq(i);
+> -                       struct task_struct *p;
+> -
+> -                       if (rq_i->core_pick)
+> -                               continue;
+> +       for_each_cpu(i, smt_mask) {
+> +               rq_i = cpu_rq(i);
+> +               p = rq_i->core_pick;
+>
+> -                       /*
+> -                        * If this sibling doesn't yet have a suitable task to
+> -                        * run; ask for the most eligible task, given the
+> -                        * highest priority task already selected for this
+> -                        * core.
+> -                        */
+> -                       p = pick_task(rq_i, class, max, fi_before);
+> +               if (!cookie_equals(p, cookie)) {
+> +                       p = NULL;
+> +                       if (cookie)
+> +                               p = sched_core_find(rq_i, cookie);
+>                         if (!p)
+> -                               continue;
+> +                               p = idle_sched_class.pick_task(rq_i);
+> +               }
+>
+> -                       if (!is_task_rq_idle(p))
+> -                               occ++;
+> +               rq_i->core_pick = p;
+>
+> -                       rq_i->core_pick = p;
+> -                       if (rq_i->idle == p && rq_i->nr_running) {
+> +               if (p == rq_i->idle) {
+> +                       if (rq_i->nr_running) {
+>                                 rq->core->core_forceidle = true;
+>                                 if (!fi_before)
+>                                         rq->core->core_forceidle_seq++;
+>                         }
+> -
+> -                       /*
+> -                        * If this new candidate is of higher priority than the
+> -                        * previous; and they're incompatible; we need to wipe
+> -                        * the slate and start over. pick_task makes sure that
+> -                        * p's priority is more than max if it doesn't match
+> -                        * max's cookie.
+> -                        *
+> -                        * NOTE: this is a linear max-filter and is thus bounded
+> -                        * in execution time.
+> -                        */
+> -                       if (!max || !cookie_match(max, p)) {
+> -                               struct task_struct *old_max = max;
+> -
+> -                               rq->core->core_cookie = p->core_cookie;
+> -                               max = p;
+> -
+> -                               if (old_max) {
+> -                                       rq->core->core_forceidle = false;
+> -                                       for_each_cpu(j, smt_mask) {
+> -                                               if (j == i)
+> -                                                       continue;
+> -
+> -                                               cpu_rq(j)->core_pick = NULL;
+> -                                       }
+> -                                       occ = 1;
+> -                                       goto again;
+> -                               }
+> -                       }
+> +               } else {
+> +                       occ++;
+>                 }
+>         }
+>
+> @@ -5643,7 +5577,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>          * non-matching user state.
+>          */
+>         for_each_cpu(i, smt_mask) {
+> -               struct rq *rq_i = cpu_rq(i);
+> +               rq_i = cpu_rq(i);
+>
+>                 /*
+>                  * An online sibling might have gone offline before a task
