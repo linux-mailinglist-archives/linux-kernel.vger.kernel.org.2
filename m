@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B143F57B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68233F57B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234444AbhHXFvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
+        id S234127AbhHXFx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 01:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhHXFvQ (ORCPT
+        with ESMTP id S229925AbhHXFxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:51:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1A3C061575;
-        Mon, 23 Aug 2021 22:50:32 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id w6so11560201plg.9;
-        Mon, 23 Aug 2021 22:50:32 -0700 (PDT)
+        Tue, 24 Aug 2021 01:53:25 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACACC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:52:41 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id u21so12903079qtw.8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:52:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+gSDqXBdeSRky6h/E1OhzdBjGEqrt1+vEPvVVQ4fmdY=;
-        b=fkEVVaTV2+cKJJTlepLZ+0uRX9rphvYYfm69e6vR0mmyT45p0tH4xcrDtLDjUJ0IWj
-         B5Pk6Rf63UvqGjwmtNPuqFriO9Cmk/8zLn6bIr218PYLHhLzm0dtRS+lmndoYqgSVdnO
-         Y6l1pl9z8Y8YeCJ03gCEKEqeB0BPaRUEgwIRJ0QDfJdOQK8vHgcK48T/rLHQlaeLBTIV
-         y2mIs/vttXwW5aXJAqi9EdhYpZwReJp2gUgaSrWpgIRbHG70pL2ejANsWYu1lubgUmf6
-         WwFWwm4Kw9K76q9qx9VU/OHB1OhXiIPTA4NFZIqhaeLLr/jXV5cXLs6Rr7QRbxpfAPoD
-         Scew==
+        bh=aKoGOwtJBCz+YXwcucsOTN0b2bJIHpImilJMkwC9Tbs=;
+        b=gLenX77aB/Q5UkP2JB1FOsPKOnSyJci46eOvlG69RwyJUXdA4oDt2TV10t3e9DgZKo
+         BZfSfunPQI3TdPoDdp/XwTahlPEweI3EhSaYxY/SrPj8FmHF7SaOkx0ZhPZUR4YF6XPS
+         JckTo3V0cFVN+PJYZ5Rudf8rXm2mHv1Yr9ZrNcXP7mNhOr0s19FMkqN2oCn28770nTqL
+         yhd3pE0619o6R/ss2u9F94a0pjwO5SSFJs7icsWDiOamsPAzb/MygWPe9apghN/5s1PR
+         uD0iiBgrADIKvCcrwhDQGBdlM8SRKGP+gJeZWp7DpkDCb1HQqfZtczXUxOB0kFe4Lezn
+         zIfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+gSDqXBdeSRky6h/E1OhzdBjGEqrt1+vEPvVVQ4fmdY=;
-        b=XteW6DRjZz+BJWf1Amoh9SzpC/7/1DroneA5VzsaxxwVEd7JW9Wx31QGAgzt3u9jo2
-         1jKqjriJqGPgQklnrCww+LzS/RBhMQomHKUDovH6xF1GDobjjFkvrazwAL4Irqt0THhr
-         rg/mp3V0im8vXXpe/9EkqH+wO7ZKA0/UjQcpoe9J434PgzN9SSVQw6SdrqjivTMv8OW0
-         NgAL+cHS9UfelTbx7UQxqjtmO06GVKfOwtIg/e5EBDYUzNLug3u775aux+ewuHg8vVPy
-         ucR/JN42Pepl0T+iXPs6UlULe3Bhb0tZI0fTeEeRP1t2vQv9+jtMXA1QT/8Nf6zqL+Na
-         uFMg==
-X-Gm-Message-State: AOAM532zGf7gscBeLPYbAGjDKrZ2THkcfikrGSycXYc0Q+AqqNJeA4pS
-        4ZLpZjszpjtnQ9yPxhPAmD3GapAB/LJk1OJ/
-X-Google-Smtp-Source: ABdhPJxVYFJEp7CkpwK0eGclGAm8CLw2ohd2D9rXLv5HSKLtdOEkciNduvW28N51frgsTWS87ms+rQ==
-X-Received: by 2002:a17:902:aa02:b0:134:b387:facc with SMTP id be2-20020a170902aa0200b00134b387faccmr6828783plb.22.1629784231961;
-        Mon, 23 Aug 2021 22:50:31 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id s32sm18278054pfw.84.2021.08.23.22.50.25
+        bh=aKoGOwtJBCz+YXwcucsOTN0b2bJIHpImilJMkwC9Tbs=;
+        b=DUE0udB6HBUwX5rJ+JgCAZxRytqVr8zfDVjCP/xeMNYKUDDs5u4Nmej+UXIBfF5iBS
+         30UzNW8sdWL1zbPBZluLaRDOvY4NfaOfP+W77tmWxVMWOvUp/DOX50bxW8zDR3l5JFya
+         9SmpnSpuW0bVhrRUyGb/H2BxlwD6s07S5VV176cp+L7nsSHY9Z3st79nX5Z2Yu7IluX6
+         D+FsXSn41fw6ZYO3vL+ysxQmWgJHRf8mwnYCr66tdoPQitiurogbmr31/k2p9Ael3Uip
+         DaL+KOUcOp4I9L17Nq3AacajDfLqSC7TBmRGNrlZMw+/8dmC5E9cFoCHVvUZ0xSaEECi
+         NGow==
+X-Gm-Message-State: AOAM5316ZZEt+Vjn7+H4v1qpa4h+XlWJZzK5TQkd5ityIUZelJalRSiz
+        Les9aHPLh5rH8j6EPs1GnP4=
+X-Google-Smtp-Source: ABdhPJwz05f+97PVxCqzt36XAuiK21Zd/o+zJB6NYu+02s36L/9A3Kr2jilB6keyjKCm4ifHeeEOFQ==
+X-Received: by 2002:ac8:46cd:: with SMTP id h13mr33116824qto.369.1629784360771;
+        Mon, 23 Aug 2021 22:52:40 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id u22sm10141603qkj.123.2021.08.23.22.52.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 22:50:31 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev@vger.kernel.org (open list:MEDIATEK SWITCH DRIVER),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5.10.y] net: dsa: mt7530: disable learning on standalone ports
-Date:   Tue, 24 Aug 2021 13:50:19 +0800
-Message-Id: <20210824055020.1315672-1-dqfext@gmail.com>
+        Mon, 23 Aug 2021 22:52:40 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Huang Rui <ray.huang@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] drm:dcn31: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 22:52:32 -0700
+Message-Id: <20210824055232.58653-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -76,68 +69,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a partial backport of commit 5a30833b9a16f8d1aa15de06636f9317ca51f9df
-("net: dsa: mt7530: support MDB and bridge flag operations") upstream.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Make sure that the standalone ports start up with learning disabled.
+./drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c:112:9-10:WARNING:
+return of 0/1 in function 'dcn31_is_panel_backlight_on'
+with return type bool
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+./drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c:122:9-10:WARNING:
+return of 0/1 in function 'dcn31_is_panel_powered_on'
+with return type bool
+
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/net/dsa/mt7530.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 3fa2f81c8b47..c9c02da3382d 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1083,6 +1083,8 @@ mt7530_port_bridge_join(struct dsa_switch *ds, int port,
- 			   PCR_MATRIX_MASK, PCR_MATRIX(port_bitmap));
- 	priv->ports[port].pm |= PCR_MATRIX(port_bitmap);
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c
+index 7db268d..3b37213 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn31/dcn31_panel_cntl.c
+@@ -109,7 +109,7 @@ bool dcn31_is_panel_backlight_on(struct panel_cntl *panel_cntl)
+ 	union dmub_rb_cmd cmd;
  
-+	mt7530_clear(priv, MT7530_PSC_P(port), SA_DIS);
-+
- 	mutex_unlock(&priv->reg_mutex);
+ 	if (!dcn31_query_backlight_info(panel_cntl, &cmd))
+-		return 0;
++		return false;
  
- 	return 0;
-@@ -1183,6 +1185,8 @@ mt7530_port_bridge_leave(struct dsa_switch *ds, int port,
- 			   PCR_MATRIX(BIT(MT7530_CPU_PORT)));
- 	priv->ports[port].pm = PCR_MATRIX(BIT(MT7530_CPU_PORT));
- 
-+	mt7530_set(priv, MT7530_PSC_P(port), SA_DIS);
-+
- 	mutex_unlock(&priv->reg_mutex);
+ 	return cmd.panel_cntl.data.is_backlight_on;
  }
+@@ -119,7 +119,7 @@ bool dcn31_is_panel_powered_on(struct panel_cntl *panel_cntl)
+ 	union dmub_rb_cmd cmd;
  
-@@ -1636,9 +1640,13 @@ mt7530_setup(struct dsa_switch *ds)
- 			ret = mt753x_cpu_port_enable(ds, i);
- 			if (ret)
- 				return ret;
--		} else
-+		} else {
- 			mt7530_port_disable(ds, i);
+ 	if (!dcn31_query_backlight_info(panel_cntl, &cmd))
+-		return 0;
++		return false;
  
-+			/* Disable learning by default on all user ports */
-+			mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
-+		}
-+
- 		/* Enable consistent egress tag */
- 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
- 			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
-@@ -1792,9 +1800,13 @@ mt7531_setup(struct dsa_switch *ds)
- 			ret = mt753x_cpu_port_enable(ds, i);
- 			if (ret)
- 				return ret;
--		} else
-+		} else {
- 			mt7530_port_disable(ds, i);
- 
-+			/* Disable learning by default on all user ports */
-+			mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
-+		}
-+
- 		/* Enable consistent egress tag */
- 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
- 			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+ 	return cmd.panel_cntl.data.is_powered_on;
+ }
 -- 
-2.25.1
+1.8.3.1
+
 
