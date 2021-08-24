@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C113F559C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFAA3F559D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhHXCCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhHXCCM (ORCPT
+        id S233655AbhHXCFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:05:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35917 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229742AbhHXCFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:02:12 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D10C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:01:29 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id mf2so22451337ejb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 19:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PJcK1jrVY4a0zfanTvm7jn/Cp34lV2SoXKYxTKCdE1M=;
-        b=rb2ZJI6Vsah1Tlfuf1MARmIB4dJS1IqVLR+1L3KhHdxaQTLq9SPSUF+SLz4Prj3U7N
-         7TQyUN29zG8P0/DLV/tG3+q5OpR2chKateMTf9AFvo8KpjVv4fZVi+4zct6lHO9/K2fX
-         8y3qzNtGrUiPK45fV/bHRocVCld7KCKLGwUA5zHyHjHP5SN8jLTLk9pHB6krq/cYiQKe
-         K742c1goJtMLOJeJP+UTiCCsc29N5YnX6l92qHjlROdvb2tVTbArO68G4NkDi+5w1XPC
-         /NMcDWr6FhFDq0mqu1kkZi8DCpxFtc6nVFqYG1VIj7/aknxBHoGbSZFBdrRsoCUPco22
-         mfyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PJcK1jrVY4a0zfanTvm7jn/Cp34lV2SoXKYxTKCdE1M=;
-        b=HGTMHghdJsSjqXXhWLQL4iVzJtm/CnQ7Gx2/iR3Huh3LaBmJS0c54i2/6lPnzyE5P8
-         TYu8VwSJ98YEUGruc8dlZ1TxT90IxkaqfMh6wbNis2YaP2fMIKaGiCBD7MVs3XJCanPc
-         NmzhRAJjnR9j3U/gOuQV9o9PgdEmPZWJWWPh5b0KKF7cbaR8z/0bFKadl20w+ohlrIpy
-         J+M8Neya2Sf3JWatxH5nzSPIxLcqJBTnQ7xnNfbj7LXbR96IQ0FUGdWbIO7OkWUWmAqN
-         UALFdxrmWZQ6R/8UK9d7iWxTVUjb7mg6dR8n63KhuKT7NTHSZa/0ByJkHcFIXcz0mZCX
-         9NtQ==
-X-Gm-Message-State: AOAM532lmk4yOtXSBTzyRse+fU90Lrx3oDODGjIe6kJLGJXT1x1H/wtq
-        Lh3h4Ra6nXT7xdT8/qMv2LQ=
-X-Google-Smtp-Source: ABdhPJxED1RBUXtSJN1dGKfFovRwS9fCSe8+Bso+p5QGFfm+LFU+CwhraCb3XlwdrCPW2FxhcfdG9Q==
-X-Received: by 2002:a17:906:9b53:: with SMTP id ep19mr13897879ejc.86.1629770487919;
-        Mon, 23 Aug 2021 19:01:27 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id p23sm10615239edw.94.2021.08.23.19.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 19:01:27 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
-Date:   Tue, 24 Aug 2021 04:01:26 +0200
-Message-ID: <4118209.ZeClQeRtK1@localhost.localdomain>
-In-Reply-To: <1815496.OexNakQ7IY@localhost.localdomain>
-References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <15825589.4VbMHeJK9p@localhost.localdomain> <1815496.OexNakQ7IY@localhost.localdomain>
+        Mon, 23 Aug 2021 22:05:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629770699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kmJ4Cp9OxOwl2BxLAFuB9E8EAUuqTy9HyIUcCks/28U=;
+        b=QZXTNzyumFWWNyqHWWDhKOEPiCCvVFZElPIATcCnz/6d1BAUOOIPBt30mk7269RO0ysv0g
+        JvGNZw7v0aV6RYgY9FvFWsjNCyGgxwKfk5Sa4e/sRDOs2yUTQg3erqRpWLOIyITKAY433W
+        cYvSdST7+wWPiDUaT90czNKnPcI6f+A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-f-iUdOyCO9GzRnO_nOccLQ-1; Mon, 23 Aug 2021 22:04:57 -0400
+X-MC-Unique: f-iUdOyCO9GzRnO_nOccLQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A960107ACF5;
+        Tue, 24 Aug 2021 02:04:56 +0000 (UTC)
+Received: from madcap2.tricolour.com (unknown [10.3.128.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 251F15D6AD;
+        Tue, 24 Aug 2021 02:04:45 +0000 (UTC)
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Richard Guy Briggs <rgb@redhat.com>, Jan Kara <jack@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Seiji Nishikawa <snishika@redhat.com>
+Subject: [ghak-trim PATCH v1] audit: move put_tree() to avoid trim_trees refcount underflow and UAF
+Date:   Mon, 23 Aug 2021 22:04:09 -0400
+Message-Id: <caba6f2509ce8eedb6c904e9b0e13ca676bd7d61.1629770243.git.rgb@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 3:38:03 AM CEST Fabio M. De Francesco wrote:
-> I think that I've inadvertently switched the order by which usb_control_msg_send()
-> and memcpy() are called. I'm very sorry for not doing my tests, but (as I had said 
-> before) at the moment I don't have my device with me.
+AUDIT_TRIM is expected to be idempotent, but multiple executions resulted in a
+refcount underflow and use-after-free.
 
-No, I did not switch them. There must be something else... 
-Sorry for the noise.
+git bisect fingered commit fb041bb7c0a918b95c6889fc965cdc4a75b4c0ca (2019-11)
+	("locking/refcount: Consolidate implementations of refcount_t")
+but this patch with its more thorough checking that wasn't in the x86 assembly
+code merely exposed a previously existing tree refcount imbalance in the case
+of tree trimming code that was refactored with prune_one() to remove a tree
+introduced in commit 8432c70062978d9a57bde6715496d585ec520c3e (2018-11)
+	("audit: Simplify locking around untag_chunk()")
 
-Fabio
+Move the put_tree() to cover only the prune_one() case.
 
+Passes audit-testsuite and 3 passes of "auditctl -t" with at least one
+directory watch.
 
+Fixes: 8432c7006297 ("audit: Simplify locking around untag_chunk()")
+Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Seiji Nishikawa <snishika@redhat.com>
+---
+ kernel/audit_tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+index b2be4e978ba3..2cd7b5694422 100644
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -593,7 +593,6 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
+ 		spin_lock(&hash_lock);
+ 	}
+ 	spin_unlock(&hash_lock);
+-	put_tree(victim);
+ }
+ 
+ /*
+@@ -602,6 +601,7 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
+ static void prune_one(struct audit_tree *victim)
+ {
+ 	prune_tree_chunks(victim, false);
++	put_tree(victim);
+ }
+ 
+ /* trim the uncommitted chunks from tree */
+-- 
+2.27.0
 
