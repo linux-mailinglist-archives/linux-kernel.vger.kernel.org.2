@@ -2,193 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEEB3F5A2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29CB03F5A2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbhHXIvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:51:46 -0400
-Received: from relay.sw.ru ([185.231.240.75]:51706 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234180AbhHXIvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:51:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=9D4fyRT1vynNlON46SKzRI4rfptMAN4FO2EgEZOwqTo=; b=crv0T4XGrLJjgIFSR
-        ePqVz4uxfjesUbSqMGznifPwgBvYgSftxJCdb7m4EQ/nf1br2lDzbeuipHjtVQEg4Lr4iLxWgkK2O
-        8NS5nTX4ByAzvFvjNgb0g5rfUSouyZKIHeqQ77gqL4r8PI/FogIZPE94Jjc34gc312wSmmxix8gBU
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mIS8w-008fjA-1R; Tue, 24 Aug 2021 11:50:50 +0300
-Subject: Re: [PATCH NET-NEXT] ipv6: skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <6858f130-e6b4-1ba7-ed6f-58c00152be69@virtuozzo.com>
- <ef4458d9-c4d7-f419-00f2-0f1cea5140ce@virtuozzo.com>
- <CALMXkpZkW+ULMMFgeY=cag1F0=891F-v9NEVcdn7Tyd-VUWGYA@mail.gmail.com>
- <1c12b056-79d2-126a-3f78-64629f072345@gmail.com>
- <2d8a102a-d641-c6c1-b417-7a35efa4e5da@gmail.com>
- <bd90616e-8e86-016b-0979-c4f4167b8bc2@gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <4fe6edb4-a364-0e59-f902-9a362dd998d4@virtuozzo.com>
-Date:   Tue, 24 Aug 2021 11:50:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235353AbhHXIw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:52:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57694 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234214AbhHXIwS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 04:52:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D0CE922000;
+        Tue, 24 Aug 2021 08:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629795092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9SUm9DZ7VT6OGAhj+B8v8x/YoYhvTLFIbpXVrBIm1SM=;
+        b=uyEIwPaZpo+FJT5NMF6ke8bf/DEOluwvxBF7e4/9Om/U1H3agGUSgas98SKrQSR+tLXhNu
+        8GscnomaMAcFAyjFzXbT/yQN2L8O9GVzVIgoZm1XXnRuIWtenLk3+IQIpd6EjCFX0b7J5s
+        MAPkRkrAB3uMXnov2eRmx8fae/izDsE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629795092;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9SUm9DZ7VT6OGAhj+B8v8x/YoYhvTLFIbpXVrBIm1SM=;
+        b=8MFFSxEGOm1HQRRt0CxSsCYO5MprgKVTVAB54CGQyP3mXGXGEVCqJBS65k/XeM9PeYAWgs
+        CbCu//LK4tgjK6DQ==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 8612AA3BBA;
+        Tue, 24 Aug 2021 08:51:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5DCCF1E0BD5; Tue, 24 Aug 2021 10:51:32 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 10:51:32 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>, Jan Kara <jack@suse.cz>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Seiji Nishikawa <snishika@redhat.com>
+Subject: Re: [ghak-trim PATCH v1] audit: move put_tree() to avoid trim_trees
+ refcount underflow and UAF
+Message-ID: <20210824085132.GA12376@quack2.suse.cz>
+References: <caba6f2509ce8eedb6c904e9b0e13ca676bd7d61.1629770243.git.rgb@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <bd90616e-8e86-016b-0979-c4f4167b8bc2@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <caba6f2509ce8eedb6c904e9b0e13ca676bd7d61.1629770243.git.rgb@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/21 1:23 AM, Eric Dumazet wrote:
-> On 8/23/21 2:51 PM, Eric Dumazet wrote:
->> On 8/23/21 2:45 PM, Eric Dumazet wrote:
->>> On 8/23/21 10:25 AM, Christoph Paasch wrote:
->>>> Hello,
->>>>
->>>> On Mon, Aug 23, 2021 at 12:56 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->>>>>
->>>>> Christoph Paasch reports [1] about incorrect skb->truesize
->>>>> after skb_expand_head() call in ip6_xmit.
->>>>> This happen because skb_set_owner_w() for newly clone skb is called
->>>>> too early, before pskb_expand_head() where truesize is adjusted for
->>>>> (!skb-sk) case.
->>>>>
->>>>> [1] https://lkml.org/lkml/2021/8/20/1082
->>>>>
->>>>> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
->>>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->>>>> ---
->>>>>  net/core/skbuff.c | 24 +++++++++++++-----------
->>>>>  1 file changed, 13 insertions(+), 11 deletions(-)
->>>>>
->>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>>>> index f931176..508d5c4 100644
->>>>> --- a/net/core/skbuff.c
->>>>> +++ b/net/core/skbuff.c
->>>>> @@ -1803,6 +1803,8 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
->>>>>
->>>>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>>>>  {
->>>>> +       struct sk_buff *oskb = skb;
->>>>> +       struct sk_buff *nskb = NULL;
->>>>>         int delta = headroom - skb_headroom(skb);
->>>>>
->>>>>         if (WARN_ONCE(delta <= 0,
->>>>> @@ -1811,21 +1813,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>>>>
->>>>>         /* pskb_expand_head() might crash, if skb is shared */
->>>>>         if (skb_shared(skb)) {
->>>>> -               struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->>>>> -
->>>>> -               if (likely(nskb)) {
->>>>> -                       if (skb->sk)
->>>>> -                               skb_set_owner_w(nskb, skb->sk);
->>>>> -                       consume_skb(skb);
->>>>> -               } else {
->>>>> -                       kfree_skb(skb);
->>>>> -               }
->>>>> +               nskb = skb_clone(skb, GFP_ATOMIC);
->>>>>                 skb = nskb;
->>>>>         }
->>>>>         if (skb &&
->>>>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
->>>>> -               kfree_skb(skb);
->>>>> +           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC))
->>>>>                 skb = NULL;
->>>>> +
->>>>> +       if (!skb) {
->>>>> +               kfree_skb(oskb);
->>>>> +               if (nskb)
->>>>> +                       kfree_skb(nskb);
->>>>> +       } else if (nskb) {
->>>>> +               if (oskb->sk)
->>>>> +                       skb_set_owner_w(nskb, oskb->sk);
->>>>> +               consume_skb(oskb);
->>>>
->>>> sorry, this does not fix the problem. The syzkaller repro still
->>>> triggers the WARN.
->>>>
->>>> When it happens, the skb in ip6_xmit() is not shared as it comes from
->>>> __tcp_transmit_skb, where it is skb_clone()'d.
->>>>
->>>>
->>>
->>> Old code (in skb_realloc_headroom())
->>> was first calling skb2 = skb_clone(skb, GFP_ATOMIC); 
->>>
->>> At this point, skb2->sk was NULL
->>> So pskb_expand_head(skb2, SKB_DATA_ALIGN(delta), 0, ...) was able to tweak skb2->truesize
->>>
->>> I would try :
->>>
->>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>> index f9311762cc475bd38d87c33e988d7c983b902e56..326749a8938637b044a616cc33b6a19ed191ac41 100644
->>> --- a/net/core/skbuff.c
->>> +++ b/net/core/skbuff.c
->>> @@ -1804,6 +1804,7 @@ EXPORT_SYMBOL(skb_realloc_headroom);
->>>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>>  {
->>>         int delta = headroom - skb_headroom(skb);
->>> +       struct sk_buff *oskb = NULL;
->>>  
->>>         if (WARN_ONCE(delta <= 0,
->>>                       "%s is expecting an increase in the headroom", __func__))
->>> @@ -1813,19 +1814,21 @@ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>>         if (skb_shared(skb)) {
->>>                 struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->>>  
->>> -               if (likely(nskb)) {
->>> -                       if (skb->sk)
->>> -                               skb_set_owner_w(nskb, skb->sk);
->>> -                       consume_skb(skb);
->>> -               } else {
->>> +               if (unlikely(!nskb)) {
->>>                         kfree_skb(skb);
->>> +                       return NULL;
->>>                 }
->>> +               oskb = skb;
->>>                 skb = nskb;
->>>         }
->>> -       if (skb &&
->>> -           pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
->>> +       if (pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
->>>                 kfree_skb(skb);
->>> -               skb = NULL;
->>> +               kfree_skb(oskb);
->>> +               return NULL;
->>> +       }
->>> +       if (oskb) {
->>> +               skb_set_owner_w(skb, oskb->sk);
->>> +               consume_skb(oskb);
->>>         }
->>>         return skb;
->>>  }
->>
->>
->> Oh well, probably not going to work.
->>
->> We have to find a way to properly increase skb->truesize, even if skb_clone() is _not_ called.
+On Mon 23-08-21 22:04:09, Richard Guy Briggs wrote:
+> AUDIT_TRIM is expected to be idempotent, but multiple executions resulted in a
+> refcount underflow and use-after-free.
+> 
+> git bisect fingered commit fb041bb7c0a918b95c6889fc965cdc4a75b4c0ca (2019-11)
+> 	("locking/refcount: Consolidate implementations of refcount_t")
+> but this patch with its more thorough checking that wasn't in the x86 assembly
+> code merely exposed a previously existing tree refcount imbalance in the case
+> of tree trimming code that was refactored with prune_one() to remove a tree
+> introduced in commit 8432c70062978d9a57bde6715496d585ec520c3e (2018-11)
+> 	("audit: Simplify locking around untag_chunk()")
+> 
+> Move the put_tree() to cover only the prune_one() case.
+> 
+> Passes audit-testsuite and 3 passes of "auditctl -t" with at least one
+> directory watch.
+> 
+> Fixes: 8432c7006297 ("audit: Simplify locking around untag_chunk()")
+> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Seiji Nishikawa <snishika@redhat.com>
 
-Can we adjust truesize outside pskb_expand_head()?
-Could you please explain why it can be not safe?
+Ah, that was indeed a stupid mistake. Thanks for debugging this! The patch
+looks good to me. You can add:
 
-> I also note that current use of skb_set_owner_w(), forcing skb->destructor to sock_wfree()
-> is probably breaking TCP Small queues, since original skb->destructor would be tcp_wfree() or __sock_wfree()
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-I agree, however as far as I understand it is separate and more global problem.
+								Honza
 
-Thank you,
-	Vasily Averin
+
+> ---
+>  kernel/audit_tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+> index b2be4e978ba3..2cd7b5694422 100644
+> --- a/kernel/audit_tree.c
+> +++ b/kernel/audit_tree.c
+> @@ -593,7 +593,6 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
+>  		spin_lock(&hash_lock);
+>  	}
+>  	spin_unlock(&hash_lock);
+> -	put_tree(victim);
+>  }
+>  
+>  /*
+> @@ -602,6 +601,7 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
+>  static void prune_one(struct audit_tree *victim)
+>  {
+>  	prune_tree_chunks(victim, false);
+> +	put_tree(victim);
+>  }
+>  
+>  /* trim the uncommitted chunks from tree */
+> -- 
+> 2.27.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
