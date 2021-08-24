@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E933F6622
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0B03F663E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239232AbhHXRUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:20:43 -0400
-Received: from mail-mw2nam12on2083.outbound.protection.outlook.com ([40.107.244.83]:30176
+        id S240025AbhHXRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:21:43 -0400
+Received: from mail-mw2nam12on2057.outbound.protection.outlook.com ([40.107.244.57]:18657
         "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239880AbhHXRSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:18:12 -0400
+        id S233045AbhHXRSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:18:16 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QkeB6050ooqj1u9uZY+WNufiYpduWH2GpXJm01kcbYm9ErkWHYayBy1uqL3oE2Roq5EgB1GTo2612qJrptQXSt6nN/bpgrQw41Dn80TVjOv1mWiWOuFVOk4gjygsj0mVa3il+5jIumddQF2XZF8vWT/oDCBbNYYnVUqJ42hyuFBDyTSxV7VEepgWE3E0CckYHJIkgrPBdUb9MY1ss1o8InAgkLjswbpFKkGREtWpjAF7TgdFjoRrZEvjTbg13OODmHj13EAMzYV4mGuCT33+f5YhvigcaNhbUq5NQP7TFZellq9j83L2JDWTIVKcPN17puAP9mdkocA6ezGlw2kw0A==
+ b=BIf71Bw0LueNY3hYBLGVxix0YF1c+9vHUHk6DPvEvRPz1zyY1jgSj7n1lsExHf6SHpdsvoxh43m/oWMKhl3UqZyHFT94PxD0WpK6KVizrkzOM7KFVN6qTDOU3oAc5zf8jMBCrLzJxSNGiQ16uTReGFRppXGk9adSJDOpYHybyFhtGao70HdO/zIHkrNlyHXfZ+HhFQls0T8MSrpaNP7NCa+9YaGxK6OkG4Zt+m7514nsS81ObObhCltOMAxRNNooylrYrn3A5sfeDIn4DmdCv9DAkYT9oeX0Yo38Jz4yi7lEWGGNNNUs5YZCCoOhH2bMKzloEmGkJUbSfr95IjHoJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rfy02Cl0w6CyGciC8JFZa/SZn8yCtQL2V7ejDpTdZJY=;
- b=EgVldQXgz0+IHI8Ttv7Wj0xD3S8uQeCUwmuV6Lh4UMMY8yNA7dpNlF94gN13yg7HGWt538ML0Iqmc/ngV741pUxYm0ZsMzcsfc/SbFivltrfZje1am28raCIt26Oui2RO9UjpUcdFzLHTgcTZBlEgKTGYhezaDUc2zzaVlu0lpeXqrjqJxPlvAWYx4ZMEvvOOKXgksY0BPmbkbH5BtdtD3KXMDHUv7fG4YTW1K6Eu23GDSI1YjjCN2X0EIaaysBTiXvrTK+ZxDbDZ7hiA9hGdRpo1WpdN5ACo0u3Wj3qNwF5uM5drAIYOYAKkzpA1ndSuTeYRXd3ZALxuB3mrRHhCw==
+ bh=zPe9yQ1qhJzQqArksSp1RSTlaT0uzYtV2w49DQfVp3g=;
+ b=ReNGT4ryqX0qv0NsTv+o44EnuyrQ/6WcjRvGe7pXQ51k8cdFMo5R83YlP4d1e+WRjK7BPGL4pGv7JopFV8dZLoApiiaIun5nMLP8Et2VCuUeiWESIrf0mEMfPluzhuDcHBi/y3sTYwnbp1CmM7KJuiNGAdjOibGslJWRMFsJ0I339PETc8XWroqjEpRslg85A/GVcy5CU4qy4ODmgzZo0+B97NWhvTioPmIKbhkYundPowHBC+7gsZz5bAW+Z1GuQ43wSvPCwmmchzz1UMm6Gs5vZLtQfK6k5+WQ4ysh7nkv7dBLtje6EBIhE7M0DhAScnNZ2WFvW0d4Nq63sCQt2w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
@@ -26,17 +26,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rfy02Cl0w6CyGciC8JFZa/SZn8yCtQL2V7ejDpTdZJY=;
- b=FA1a4nBB8yCB9rVFzQFwJhe7uIMd6Q5BYn+sIZ9QqTYlXMIDRWWCVFmq3jEu1XXtlJwbOW0ALFhT1lbW63CF5rYlY/tTuS1jBE82bgOmYZNpDkWfLyFWgsufgAOTfrtCdl8swtpGFNOoUgTNSgdHTdMSCUNtZpek4yAyV2kK83M=
-Received: from DM5PR10CA0005.namprd10.prod.outlook.com (2603:10b6:4:2::15) by
- DM5PR0201MB3574.namprd02.prod.outlook.com (2603:10b6:4:77::28) with Microsoft
+ bh=zPe9yQ1qhJzQqArksSp1RSTlaT0uzYtV2w49DQfVp3g=;
+ b=FUM4UqcFE+xFUivObWbiFQTBpvSRSR1yGC7ew1XFzS8XTFsgTf6NuRiKWVy2ZTRxZAGkXk8Wi8FrxHBzBRyi0oJDVWE3iQe3k1rFYtD2DQ9xUEm8Nu3tdeZHpOw4yxh0zA6/7lAgIzggjxxnbvRumM0WGGHNs0C1FEelg/aJiHE=
+Received: from DM5PR05CA0020.namprd05.prod.outlook.com (2603:10b6:3:d4::30) by
+ CY4PR02MB3208.namprd02.prod.outlook.com (2603:10b6:910:7d::11) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.22; Tue, 24 Aug 2021 17:17:22 +0000
-Received: from DM3NAM02FT004.eop-nam02.prod.protection.outlook.com
- (2603:10b6:4:2:cafe::55) by DM5PR10CA0005.outlook.office365.com
- (2603:10b6:4:2::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Tue, 24 Aug 2021 17:17:22 +0000
+ 15.20.4415.19; Tue, 24 Aug 2021 17:17:29 +0000
+Received: from DM3NAM02FT045.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:d4:cafe::fc) by DM5PR05CA0020.outlook.office365.com
+ (2603:10b6:3:d4::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.8 via Frontend
+ Transport; Tue, 24 Aug 2021 17:17:29 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
@@ -44,36 +44,36 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
 Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT004.mail.protection.outlook.com (10.13.5.122) with Microsoft SMTP
+ DM3NAM02FT045.mail.protection.outlook.com (10.13.4.189) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 17:17:22 +0000
+ 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 17:17:28 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
  xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Tue, 24 Aug 2021 10:17:06 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
+ 15.1.2176.14; Tue, 24 Aug 2021 10:17:19 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Tue, 24 Aug 2021 10:17:06 -0700
+ 15.1.2176.14 via Frontend Transport; Tue, 24 Aug 2021 10:17:19 -0700
 Envelope-to: git@xilinx.com,
  peter.chen@kernel.org,
  gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org,
  linux-usb@vger.kernel.org
-Received: from [172.23.64.8] (port=48481 helo=xhdvnc108.xilinx.com)
+Received: from [172.23.64.8] (port=48483 helo=xhdvnc108.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <manish.narani@xilinx.com>)
-        id 1mIa2r-000EeV-AW; Tue, 24 Aug 2021 10:17:05 -0700
+        id 1mIa34-00008Y-DA; Tue, 24 Aug 2021 10:17:18 -0700
 Received: by xhdvnc108.xilinx.com (Postfix, from userid 16987)
-        id 86B15604B4; Tue, 24 Aug 2021 22:46:34 +0530 (IST)
+        id B4F916053F; Tue, 24 Aug 2021 22:46:36 +0530 (IST)
 From:   Manish Narani <manish.narani@xilinx.com>
 To:     <peter.chen@kernel.org>, <gregkh@linuxfoundation.org>,
         <michal.simek@xilinx.com>
 CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, Manish Narani <manish.narani@xilinx.com>,
-        "Subbaraya Sundeep Bhatta" <sbhatta@xilinx.com>
-Subject: [PATCH 3/6] usb: chipidea: Check usb_phy exists before using it
-Date:   Tue, 24 Aug 2021 22:46:15 +0530
-Message-ID: <1629825378-8089-4-git-send-email-manish.narani@xilinx.com>
+        <git@xilinx.com>, Piyush Mehta <piyush.mehta@xilinx.com>,
+        Manish Narani <manish.narani@xilinx.com>
+Subject: [PATCH 4/6] usb: chipidea: Fix return value handling
+Date:   Tue, 24 Aug 2021 22:46:16 +0530
+Message-ID: <1629825378-8089-5-git-send-email-manish.narani@xilinx.com>
 X-Mailer: git-send-email 2.1.1
 In-Reply-To: <1629825378-8089-1-git-send-email-manish.narani@xilinx.com>
 References: <1629825378-8089-1-git-send-email-manish.narani@xilinx.com>
@@ -81,64 +81,93 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 34c6cca0-420c-4014-0672-08d9672308f3
-X-MS-TrafficTypeDiagnostic: DM5PR0201MB3574:
-X-Microsoft-Antispam-PRVS: <DM5PR0201MB357425B4DC9A40F070E8A752C1C59@DM5PR0201MB3574.namprd02.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 1a9266e2-e869-4bfd-0ab0-08d967230d06
+X-MS-TrafficTypeDiagnostic: CY4PR02MB3208:
+X-Microsoft-Antispam-PRVS: <CY4PR02MB3208DED55646C54FD354CCA2C1C59@CY4PR02MB3208.namprd02.prod.outlook.com>
 X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Oob-TLC-OOBClassifiers: OLM:632;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F/+6uY76FbmbK59fZJYfS0wAeuPLILf7lL6pOtO/2gdBS7RApuxHcEemCcDCIUbSJauDxfOQOlkp1HonanbCvkbt6XIZQmTL11IslrgphDxkJ+JOwo9TFp9P707I41IVtRQ7+tlDU1/H5w/Rp536552f6Hmk30YTgUMq0OZVUi6gP6Pm4JUIBYonDan6aPgIQDAqgStF378kte0NUU4Rh6xmU7ZkLldWqyPmbETg+Kti473olzYpyspc2EAEPZzaXfaqbSQVu1LxHzBWViMYxyO6tMPgOnnL0RatLTnfKAkWneKMU6WWXisVQlYCa16MB/pH/7m7yqs4M/4H+zwXOT+hk7lPtdUC+ciogYf35L7zrZNsyo3kaAlqSDkuJXMMw+NXhapFOHZoRpNlm2NSD3wrZLrkwDHMRXlZHZX731HwZq/IYeKzB2yHSNeMLXBWfNgADrhKV+H3vCWZycqYgPjEcpHirl2zFVbrYAtUnyccAxIUdC0Glwt6zlqgdezFY7gPxILnUjk23Z9pLDFidZyYkXL0mZLjOnjbNEAZ+SLXqcIDAIcItnmN2xCnChr4fyBMrM2VnYup++XSPvbua5DCf9eq2nVXELHlSrlFIzPtiT+0eASR0JU+HmnB6Lqpt4b9pc6HSj9RoXRrCJ+TBS+lcxBhsIwJvmr7F7aeC2w0AVhehPkMoGFWACf/yIHyk11KdetzJuZCCScUxVldBIcRVIsJgLyGidiJB28yN1s=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39860400002)(346002)(46966006)(36840700001)(70586007)(110136005)(6636002)(70206006)(4326008)(54906003)(316002)(82740400003)(7636003)(478600001)(356005)(5660300002)(47076005)(36906005)(8936002)(26005)(42186006)(36756003)(107886003)(44832011)(36860700001)(83380400001)(2616005)(336012)(426003)(6666004)(82310400003)(6266002)(186003)(2906002)(8676002)(102446001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: iUMbi+EWJEAR644EBYkNOEQdjjrixPMzOgGptm29QDKEwVroZXzbwaY5djPUxIK20qxbU30EhpoXFphVvajJ/Vnw7Nr5qSDg1PljM6lW6v1Y46g6Mu4lAdUWiyAE/4XkdzbuILGF3Ha0fxkYwm1eQUUYcaSa8NM+Bcie/G96mFJTCnB2TTd1MOOnk80O5VUJzgtYCt3iPIHNZlGsGvdu6VN9kTxH7fGxVt1mHlbgaSrKH7h0yUVJ8ZIe6dMvwytBCh/jwke9HF/+YkxfWSrqMafHN6Hvdgrw0I8s5WR/oZYN0BtNH0sQlSbZf/EaUYg7a1/naLNOnXKpawQSSpxh82AT1q+iYwwp4hHtYi9XfnVuLf29KX6lMP5uKecpoUQqQefPqA2TtaBZ8+5TuwlTL7EGtJfn6jtwISCN0UaiKJIF56S2WLb35H5IyIdUE4fz6DP793YVV+sFzlVthRZtJpMIfIMNylBAbE7r6xAHW6nmL3DrZIyLLo9JgRfCMa767U8nNh5KZz8LP/yfuKKWV+4wKKY63WTup29+BacafZ5kuazQyHBzyOTCL2SRdlaGF9iYgqmmmbWj5STPhsvv2maRTe1igLmXpV+agpoXUvvMxb509pdypEt4iHgAKvU7+D0ucmEi3Oc5K8J54oBmCHHDp1Xq5mjvbh53Coq0+EPiDnrkT6cctLnr0sn0y9j968xPa7n0yoIkO6cZ7dQPDzZXV7Zze9/OzRxLshxvBKo=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(36840700001)(46966006)(356005)(4326008)(26005)(36756003)(82310400003)(83380400001)(36906005)(110136005)(70586007)(47076005)(44832011)(107886003)(54906003)(2616005)(6266002)(426003)(8676002)(316002)(82740400003)(6666004)(42186006)(70206006)(7636003)(8936002)(5660300002)(6636002)(478600001)(2906002)(336012)(36860700001)(186003)(102446001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 17:17:22.0387
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 17:17:28.8742
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34c6cca0-420c-4014-0672-08d9672308f3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a9266e2-e869-4bfd-0ab0-08d967230d06
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT004.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT045.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0201MB3574
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB3208
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb_phy and usb_phy->set_vbus may not be present all the times
-based on PHY driver used. So check for it.
+From: Piyush Mehta <piyush.mehta@xilinx.com>
 
-Signed-off-by: Subbaraya Sundeep Bhatta <sbhatta@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+API was neither captured nor checked.Fixed it by capturing the
+return value and then checking for any error.
+
+Addresses-Coverity: "Calling without checking return"
+Addresses-Coverity: "CHECKED_RETURN"
+Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
 Signed-off-by: Manish Narani <manish.narani@xilinx.com>
 ---
- drivers/usb/chipidea/otg_fsm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/chipidea/core.c | 11 +++++++----
+ drivers/usb/chipidea/otg.c  |  6 +++++-
+ 2 files changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/chipidea/otg_fsm.c b/drivers/usb/chipidea/otg_fsm.c
-index 2f7f94d..5f8f5d2 100644
---- a/drivers/usb/chipidea/otg_fsm.c
-+++ b/drivers/usb/chipidea/otg_fsm.c
-@@ -472,7 +472,8 @@ static void ci_otg_drv_vbus(struct otg_fsm *fsm, int on)
- 			}
- 		}
+diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
+index 2b18f50..676346f 100644
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -700,13 +700,16 @@ static int ci_get_platdata(struct device *dev,
+ 	if (usb_get_maximum_speed(dev) == USB_SPEED_FULL)
+ 		platdata->flags |= CI_HDRC_FORCE_FULLSPEED;
  
--		if (ci->platdata->flags & CI_HDRC_PHY_VBUS_CONTROL)
-+		if (ci->platdata->flags & CI_HDRC_PHY_VBUS_CONTROL &&
-+		    ci->usb_phy && ci->usb_phy->set_vbus)
- 			ci->usb_phy->set_vbus(ci->usb_phy, 1);
+-	of_property_read_u32(dev->of_node, "phy-clkgate-delay-us",
+-				     &platdata->phy_clkgate_delay_us);
++	if (of_property_read_u32(dev->of_node, "phy-clkgate-delay-us",
++				 &platdata->phy_clkgate_delay_us))
++		dev_dbg(dev, "Missing phy-clkgate-delay-us property\n");
  
- 		/* Disable data pulse irq */
-@@ -484,7 +485,8 @@ static void ci_otg_drv_vbus(struct otg_fsm *fsm, int on)
- 		if (ci->platdata->reg_vbus)
- 			regulator_disable(ci->platdata->reg_vbus);
+ 	platdata->itc_setting = 1;
  
--		if (ci->platdata->flags & CI_HDRC_PHY_VBUS_CONTROL)
-+		if (ci->platdata->flags & CI_HDRC_PHY_VBUS_CONTROL &&
-+		    ci->usb_phy && ci->usb_phy->set_vbus)
- 			ci->usb_phy->set_vbus(ci->usb_phy, 0);
+-	of_property_read_u32(dev->of_node, "itc-setting",
+-					&platdata->itc_setting);
++	if (of_property_read_u32(dev->of_node, "itc-setting",
++				 &platdata->itc_setting))
++		dev_dbg(dev, "Missing itc-setting property\n");
++
  
- 		fsm->a_bus_drop = 1;
+ 	ret = of_property_read_u32(dev->of_node, "ahb-burst-config",
+ 				&platdata->ahb_burst_config);
+diff --git a/drivers/usb/chipidea/otg.c b/drivers/usb/chipidea/otg.c
+index 8dd5928..d527d9d 100644
+--- a/drivers/usb/chipidea/otg.c
++++ b/drivers/usb/chipidea/otg.c
+@@ -168,6 +168,7 @@ static int hw_wait_vbus_lower_bsv(struct ci_hdrc *ci)
+ static void ci_handle_id_switch(struct ci_hdrc *ci)
+ {
+ 	enum ci_role role = ci_otg_role(ci);
++	int ret;
+ 
+ 	if (role != ci->role) {
+ 		dev_dbg(ci->dev, "switching from %s to %s\n",
+@@ -193,7 +194,10 @@ static void ci_handle_id_switch(struct ci_hdrc *ci)
+ 			 */
+ 			hw_wait_vbus_lower_bsv(ci);
+ 
+-		ci_role_start(ci, role);
++		ret = ci_role_start(ci, role);
++		if (ret < 0)
++			dev_dbg(ci->dev, "switching err %d\n", ret);
++
+ 		/* vbus change may have already occurred */
+ 		if (role == CI_ROLE_GADGET)
+ 			ci_handle_vbus_change(ci);
 -- 
 2.1.1
 
