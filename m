@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821853F6899
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04D23F68A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238859AbhHXSBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:01:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60168 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234763AbhHXSBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:01:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F09E60F58;
-        Tue, 24 Aug 2021 18:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629828026;
-        bh=Eu7nQp5l4IP0bkv+7K+YURGSimElr7Ae7H6BMKHldTY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h/tHLS3aRuDCojrTdn753UHoHlpe046xBUcBza3z7UvsORK8pXixZVC6NXl8iFpDm
-         4cxYNBUz25+dCfd4d3enZKsnnF1Th2rtn2n4BBsGjRsSeTyF98r3Z45qA2Kp7jQmKC
-         IcreHpW5LLr7hmsr4s6ribb4Sa5GPnETBvY72yrcUgdyPR/sSbgF0in+Mar07QLkmm
-         S44q05YH/WwLzAqJBvapl1nmNc+eCDCe/aM7gyjsTOHXuLdXLv+VyG1mDxpqAiJrcS
-         PqaF5fHIAQXEyJBUvQ1/3VnkRdlDYkGMf8YUDETIpV1DBNEer0j+s1RYK/FEG37Uok
-         4c9nR8nX12aRw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF1654007E; Tue, 24 Aug 2021 15:00:22 -0300 (-03)
-Date:   Tue, 24 Aug 2021 15:00:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [GSoC] Multi-threading in perf: Final Report
-Message-ID: <YSUztlMX8u0P527q@kernel.org>
-References: <3c4f8dd64d07373d876990ceb16e469b4029363f.camel@gmail.com>
- <b7a9f309-9765-2a64-026e-efa835989add@linux.intel.com>
- <CAP-5=fV1+WKKWVYVivDt1uE8P9koKre-=Boh0-P1vTD6uiw2=A@mail.gmail.com>
+        id S238996AbhHXSD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240359AbhHXSDX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 14:03:23 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163E7C05341F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:55:03 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id w68so19040109pfd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4J5j+k1+Wm4LiIcjdeGw8k45En6ooyJF7Ed5B1HrBS4=;
+        b=KnQa+5opeiORJxUDlWkw/U4OGuIRvQuBVFYGmWedW8w9IZGLHsBgRByw+g4Qhr0wlF
+         KlfHvSqhxi0xgIkGeLoQcDQ+KfXCMDOcRP5b1CIHt8l69y94dYrhrBbYj5um14LlEWSN
+         nDW2xc+kYhzMNroW3eO5OANYh9JBIt2l/HkoVTT+6VaYGa9xTvqFIN5wPbe2W1E4l/8y
+         frG9v/APtM/naDuGR7PjPEQlh7m7jkeahe4Hpohc7pKEKPa0K0Dh5QtQuhNi4KsK/Yjt
+         YPah5W2wxEmU+Bt8o6cyKCgBz0loeguRQpbpGVT7LLr08f3CUf05u7tsyXRZ+ZzkXzyx
+         wU5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4J5j+k1+Wm4LiIcjdeGw8k45En6ooyJF7Ed5B1HrBS4=;
+        b=pjsBhs/VP5tSeO81Lcb+RzlqUg5WOUSJd9zIKMVNpzsdLF1rXGJSVan8vXmoDcrUdG
+         lZ1X8xhND4LO//KrC98SD9YGrp1XvSgy9sE3EONeG0EU/s/OKjEJAMwGyIA7L1xjwrZX
+         4p6OdwWaesKoCHd+mb9porcnfrSEHr0rVNks7EuvawsRYralA44Fapsji5gPHKtSyHUT
+         whr7p5JMBrWTkRvDQSNJvubi8el4BZr9pMQNwfEWX4z1eiZtBxQz59n4VZ2YelbgqGlP
+         CEr2w6a5+8dc31Gv3oW5SDYqtP0WVxITaXXcjgUkonBiBPnhozeewc2Yiix1mjQvCBY8
+         KLvw==
+X-Gm-Message-State: AOAM533h+0QLp6jrfQTMakgFozkK2Ca3snzOpne6MQKI9PNLPPuLg5v5
+        B9DmoNllOUAUPmPXlxj69uuTSQ==
+X-Google-Smtp-Source: ABdhPJyRw81LMBUlPNEoFF4xwZdCR62gyKKRHRAlbz3WaV8wPpEL8Gz0byfS9O/EhGPAKaa8IPdgAw==
+X-Received: by 2002:a65:404d:: with SMTP id h13mr14995782pgp.130.1629827702354;
+        Tue, 24 Aug 2021 10:55:02 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id y3sm23770995pgc.67.2021.08.24.10.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:55:01 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 17:54:56 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] KVM: VMX: Restore host's MSR_IA32_RTIT_CTL when it's
+ not zero
+Message-ID: <YSUycNbERUv6xGmB@google.com>
+References: <20210824110743.531127-1-xiaoyao.li@intel.com>
+ <20210824110743.531127-2-xiaoyao.li@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fV1+WKKWVYVivDt1uE8P9koKre-=Boh0-P1vTD6uiw2=A@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210824110743.531127-2-xiaoyao.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 23, 2021 at 01:47:51PM -0700, Ian Rogers escreveu:
-> On Mon, Aug 23, 2021 at 4:40 AM Bayduraev, Alexey V
-> <alexey.v.bayduraev@linux.intel.com> wrote:
-> >
-> > On 21.08.2021 12:41, Riccardo Mancini wrote:
-> > > Hi,
-> > >
-> > > this is the final report of my project "Multi-threading in perf",
-> > > developed as part of the Google Summer of Code with the Linux Foundation.
-> > > https://summerofcode.withgoogle.com/projects/#4670070929752064
-> > <SNIP>
-> > >
-> > > Review activity:
-> > > PATCHSET Introduce threaded trace streaming for basic perf record operation
-> > >   Link: https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
-> > >   Contribution: helped in fixing some bugs, performed extensive testing
-> >
-> > Hi Riccardo,
-> >
-> > Thank you very much for the deep review and extensive testing of
-> > this patchset, it was very helpful and allowed us to improve
-> > the quality of the feature used in our product.
-> >
-> > Good luck,
-> > Alexey
+On Tue, Aug 24, 2021, Xiaoyao Li wrote:
+> A minor optimation to WRMSR MSR_IA32_RTIT_CTL when necessary.
 > 
-> Likewise, thank you Riccardo! It is always implied but not said often
-> enough, thank you Arnaldo! I'm hoping the success of Riccardo's work
-> will be an example for next year and we can also get more mentor
-> volunteers.
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index fada1055f325..e0a9460e4dab 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1075,7 +1075,8 @@ static void pt_guest_exit(struct vcpu_vmx *vmx)
+>  	}
+>  
+>  	/* Reload host state (IA32_RTIT_CTL will be cleared on VM exit). */
 
-Yeah, it was a great experience, now we need to actually do the tests
-Riccardo asked us on big machines and get his and Alexey's work
-processed :-)
+Could you opportunistically update the comment to call out that KVM requires
+VM_EXIT_CLEAR_IA32_RTIT_CTL to expose PT to the guest?  E.g. something like
 
-- Arnaldo
+	/*
+	 * KVM's requires VM_EXIT_CLEAR_IA32_RTIT_CTL to expose PT to the guest,
+	 * i.e. RTIT_CTL is always cleared on VM-Exit.  Restore it if necessary.
+	 */
+
+With that,
+
+Reviewed-by: Sean Christopherson <seanjc@google.com> 
+
+> -	wrmsrl(MSR_IA32_RTIT_CTL, vmx->pt_desc.host.ctl);
+> +	if (vmx->pt_desc.host.ctl)
+> +		wrmsrl(MSR_IA32_RTIT_CTL, vmx->pt_desc.host.ctl);
+>  }
+>  
+>  void vmx_set_host_fs_gs(struct vmcs_host_state *host, u16 fs_sel, u16 gs_sel,
+> -- 
+> 2.27.0
+> 
