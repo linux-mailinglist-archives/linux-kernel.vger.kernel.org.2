@@ -2,108 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8583F6A2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387EB3F6A31
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhHXUCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
+        id S234975AbhHXUC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhHXUCe (ORCPT
+        with ESMTP id S229514AbhHXUCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:02:34 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64044C061757;
-        Tue, 24 Aug 2021 13:01:50 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id r6so21678868ilt.13;
-        Tue, 24 Aug 2021 13:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TAm+kCGk2GDukdxIOx+gJZPQO1zRHnOa2C9dkm0C/Sw=;
-        b=XS9CGrf8lwAwRkmeCiekQ4GfiOllpzqVqrpHcQ6sTCirBxTIHWznHDJt2Mt4udWFBQ
-         onukfP4cg7B3bebifop9iCqyxzwPhz74Tjzp93b5WORSgoZBIwD+Wup0cm3XuEviWuXV
-         f9ToQKmh3X7X4UEMH3ix2ABJffYNxHg9z6eFEBVpCS8bFOx05EW/6o4/vvIhnFDn2xvF
-         8r0n4bgrsIhQVSWAtwx/HnrCzPg0KFJkRRz/lMwqYtSY//V0QvRm/A82aqW7+SC8K12Q
-         xWFSq2KsOsCK26aCBmEGWzl2yT6C++K5Jq/rbjmZ6Rd6ygkdCG8XmRH+jy/keia9Mmh3
-         chKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TAm+kCGk2GDukdxIOx+gJZPQO1zRHnOa2C9dkm0C/Sw=;
-        b=UnHehuBjrQlPl1am+wUYhpdtjFQIlyo8NALYqZoKKdFTFV02tK2ETH936UkHFtpwEU
-         zyoqqGjhmAAWRHDdEaBe42eYjou+w9PG92essWwDyV1xKpbOpg2QjXCiWuUJBlWQO/1S
-         DKDQ8rLLRGX14zjP3ax3RFSvyZHTmx369QCakYTG70UZ1fJmsD62psl1L9ikjGUubpRG
-         M0XJb/FWQ5DAPWJrlkYYpujou/EvhSZfbpKL+urUek7QgsoAloYE0NbUZZhNBjvWAolP
-         LBGmsUrVZ8Ddcc3Qx7vxMcCsbV2FPjTliRvk4hA8NNVboK1+c6CUzz4mdSI2nOrt01D5
-         xIcw==
-X-Gm-Message-State: AOAM533ziQveSgjxxvRDYHPTSRaOd+SQhgmkSGo9YwbQvQPjnTcZj86c
-        agK8mHuODOPzS8UuV0Wtnob7Bfli5mfyTH/OEuw=
-X-Google-Smtp-Source: ABdhPJziAangFYiwbr1BIr/qJWI/E6oorUE4/NXB4uJF8zpR9x/etkhIau5oAHk6NxR+v22ExDnfJCkZGOpYUzaNm5M=
-X-Received: by 2002:a05:6e02:1107:: with SMTP id u7mr26249109ilk.39.1629835309840;
- Tue, 24 Aug 2021 13:01:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <4e3e0d40-df4a-94f8-7c2d-85010b0873c4@web.de> <20210819133128.45ef4353@coco.lan>
- <c56ec571-2278-95e9-2028-990e03159c3f@web.de> <20210822194709.4b9d33d4@coco.lan>
- <be6ac929-2443-ff55-3e11-6a86d6472e0e@web.de> <CAHk-=wjSadWPfzQ_hOqbjq6c_xwJs8GLHTyznhXRvDF5Yrs4FA@mail.gmail.com>
- <20210824094754.32ad5eab@coco.lan>
-In-Reply-To: <20210824094754.32ad5eab@coco.lan>
-From:   Honza P <jpetrous@gmail.com>
-Date:   Tue, 24 Aug 2021 22:01:38 +0200
-Message-ID: <CAJbz7-2WOXWF=Xt7UUoN=65z5veZSPSSjOyWiE1-3jBeR1AyCA@mail.gmail.com>
-Subject: Re: [Regression 5.14] media: dvb userspace api
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+        Tue, 24 Aug 2021 16:02:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A6DC061757;
+        Tue, 24 Aug 2021 13:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FYaDQz3WXMafrdPOH+jBu7t6CM5IN56m+9lLa8Z9mro=; b=pZqym/K4FkqCcx0j8hZ4dbgx8r
+        /wYknUVZpHFrpweFZlbVDhG7BcOWmVlTwYfFXBHWo+kfG/iOTwZIv8mgTv9knzSmtBGNlK9IiD4xc
+        u7f0XoYNuNxI7XeaxQOwuLRKdCK1tjrNXXOHgJNwWxnxle6byWvVg/48uoDuDtY3wUnmmbTquEjkg
+        caATO6kd0GLHslkSKw9qxhzyIVRLHua2R2jn+j230P6OK2M1ReC+8QMEZttY6a2C04YNp3eEf7bC/
+        ixDSOzchYz5z72uFxNgd94E2S575z/ipN3hqVD4jfUG93nU7PFaH18JK/MM1BAgTnKouCLzW3pPDQ
+        dpEDnpaA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIcat-00BVIy-UI; Tue, 24 Aug 2021 20:00:48 +0000
+Date:   Tue, 24 Aug 2021 21:00:23 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Theodore Ts'o <tytso@mit.edu>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Soeren Moch <smoch@web.de>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [GIT PULL] Memory folios for v5.15
+Message-ID: <YSVP14doJ0wwb11x@casper.infradead.org>
+References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org>
+ <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+ <YSVCAJDYShQke6Sy@casper.infradead.org>
+ <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
+ <YSVHI9iaamxTGmI7@casper.infradead.org>
+ <YSVMMMrzqxyFjHlw@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSVMMMrzqxyFjHlw@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=C3=BAt 24. 8. 2021 v 9:50 odes=C3=ADlatel Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> napsal:
->
-> Em Mon, 23 Aug 2021 09:58:00 -0700
-> Linus Torvalds <torvalds@linux-foundation.org> escreveu:
->
-> > On Mon, Aug 23, 2021 at 7:59 AM Soeren Moch <smoch@web.de> wrote:
-> > >
-> > > Linus,
-> > >
-> > > Is what I described directly above the new linux maintenance policy? =
- Or
-> > > is linux media a private kingdom where the community should keep away=
-?
-> > > Is this a place where the subsystem maintainer is on a mission to
-> > > destroy everything instead of maintaining and improving it? Please te=
-ll
-> > > me what I understood wrong here.
-> >
-> > So technically, the regression policy for the kernel is purely about
-> > the ABI - the _binary_ interface. That seems to not have broken - old
-> > programs continue to work.
-> >
-> > We very much try to discourage user space applications from using the
-> > kernel header files directly - even projects like glibc etc are
-> > supposed to _copy_ them, not include the kernel headers.
->
-> Unfortunately, media APIs aren't part of projects like glibc. Almost all
-> open source media apps keep their own copies of the uAPI header files.
->
-> As far as I'm aware, the "full-feat" API is implemented only by some
-> modules of VDR. I don't know any other open source application using
-> such headers.
->
+On Tue, Aug 24, 2021 at 03:44:48PM -0400, Theodore Ts'o wrote:
+> On Tue, Aug 24, 2021 at 08:23:15PM +0100, Matthew Wilcox wrote:
+> > > So when you mention "slab" as a name example, that's not the argument
+> > > you think it is. That's a real honest-to-goodness operating system
+> > > convention name that doesn't exactly predate Linux, but is most
+> > > certainly not new.
+> > 
+> > Sure, but at the time Jeff Bonwick chose it, it had no meaning in
+> > computer science or operating system design.
+> 
+> I think the big difference is that "slab" is mostly used as an
+> internal name.  In Linux it doesn't even leak out to the users, since
+> we use kmem_cache_{create,alloc,free,destroy}().  So the "slab"
+> doesn't even show up in the API.
 
-You definitely missed tons of users of linux based set-top-boxes,
-powered by open-source DVB frondend Enigma2 (and also
-still big enough older devices based on Enigma 1 project).
-For ex here: https://github.com/OpenPLi/enigma2
+/proc/slabinfo
+/proc/sys/vm/min_slab_ratio
+/sys/kernel/slab
+include/linux/slab.h
+cpuset.memory_spread_slab
+failslab=
+slab_merge
+slab_max_order=
 
-/Honza (also retired dvb developer, disgusted the way how
-media subsystem was driven)
+$ git grep slab fs/ext4 |wc -l
+30
+(13 of which are slab.h)
+
+> The problem is whether we use struct head_page, or folio, or mempages,
+> we're going to be subsystem users' faces.  And people who are using it
+> every day will eventually get used to anything, whether it's "folio"
+> or "xmoqax", we sould give a thought to newcomers to Linux file system
+> code.  If they see things like "read_folio()", they are going to be
+> far more confused than "read_pages()" or "read_mempages()".
+> 
+> Sure, one impenetrable code word isn't that bad.  But this is a case
+> of a death by a thousand cuts.  At $WORK, one time we had welcomed an
+> intern to our group, I had to stop everyone each time that they used
+> an acronym, or a codeword, and asked them to define the term.
+> 
+> It was really illuminating what an insider takes for granted, but when
+> it's one cutsy codeword after another, with three or more such
+> codewords in a sentence, it's *really* a less-than-great initial
+> experience for a newcomer.
+> 
+> So if someone sees "kmem_cache_alloc()", they can probably make a
+> guess what it means, and it's memorable once they learn it.
+> Similarly, something like "head_page", or "mempages" is going to a bit
+> more obvious to a kernel newbie.  So if we can make a tiny gesture
+> towards comprehensibility, it would be good to do so while it's still
+> easier to change the name.
+
+I completely agree that it's good to use something which is not jargon,
+or is at least widely-understood jargon.  And I loathe acronyms (you'll
+notice I haven't suggested a single one).  Folio/ream/quire/sheaf were
+all attempts to get across "collection of pages".  Another direction
+would be something that is associated with memory (but I don't have
+a good example).  Or a non-English word (roman?  seite?  sidor?)
+
+We're going to end up with hpage, aren't we?
