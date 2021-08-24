@@ -2,197 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4273F6409
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B06C3F637B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhHXRAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:00:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233519AbhHXQ54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:57:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB60B6140B;
-        Tue, 24 Aug 2021 16:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824220;
-        bh=UHZ+5rnbsQz85vmQU3yo/xBasy7UT7+O3ZdaPNbridM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k9UEYimNsIWRE8n+kRjVK4XcKw8ciF/XsPuPesBPYElVNI7rYoeq2Wwo3ZpohAGPM
-         wiCFO+0sG/u3TPlENVGXpRpHXkm4lo/B+G1GZuwXyvwRUvivoKb/2MlK3vNRUa/Ap2
-         kKuIwI3+PqP5EaR4e0JfOmCxUT9Rsqx2Yh+BiVoeF6efBNs2YIsaUoKInKUYE1BJtR
-         hzzgPNzX7l+ZcP0MQk32I/Sh+6ntbAh1DAZzOUNA9oflAe93IT2cAkxrinz/5R2jDM
-         f2gdYZUR0KEBoeAb1H/0wmm6ByfkklL536tGlw91pDj/NxXi3dqS6uQGXbSswWBtmB
-         HXXJByxS7QmQA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 053/127] bnxt: make sure xmit_more + errors does not miss doorbells
-Date:   Tue, 24 Aug 2021 12:54:53 -0400
-Message-Id: <20210824165607.709387-54-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824165607.709387-1-sashal@kernel.org>
-References: <20210824165607.709387-1-sashal@kernel.org>
+        id S233306AbhHXQ4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:56:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37589 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230269AbhHXQ4E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:56:04 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17OGaHEt152808;
+        Tue, 24 Aug 2021 12:55:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=xBRrl6q1tAEzgNHto0KdQA0U4vzN5WkUxIlVbgFBVTY=;
+ b=VL00tAHP5L8m5E3lvj8YFyex+WcogWsNT03uph/YAIjAUXOFQbyIs7oBpxYIQWS1S/PJ
+ pKe/OYBHJmuUPKsd3Qp4MViCPfGbNQCaevaKbWA6R7TiPjmSFXAZ99YwapQkDgSi85z1
+ Jo1wELw7jpmNYhIyhRCNO6c0YnMMyAXQOQStuyLSUwrgTpgjsW7rNj6Lta7r/YrIV1IO
+ kjxKdruTX/KPxY7IBNVdnVd11tZIy4grogrT0Vxe2oyRb/79ahZa1xzaaFTg/B+53HbG
+ 7rpU7wXniz8vl2+ACPgMW6wam1my0UpB5El9mGlbhZBG46vI26JiFW3lfAb6tSD+VJp7 Hw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3an2kbvn43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 12:55:02 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17OGmB9s028203;
+        Tue, 24 Aug 2021 16:55:01 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3ajrrhdk3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 16:55:01 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17OGpEJK56361334
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 16:51:14 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C8EBA4053;
+        Tue, 24 Aug 2021 16:54:58 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E48FEA404D;
+        Tue, 24 Aug 2021 16:54:56 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.49.193])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 24 Aug 2021 16:54:56 +0000 (GMT)
+Date:   Tue, 24 Aug 2021 19:54:54 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "rppt@kernel.org" <rppt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Lutomirski, Andy" <luto@kernel.org>
+Subject: Re: [RFC PATCH 3/4] mm/page_alloc: introduce __GFP_PTE_MAPPED flag
+ to allocate pte-mapped pages
+Message-ID: <YSUkXqC7P+a0NZeE@linux.ibm.com>
+References: <20210823132513.15836-1-rppt@kernel.org>
+ <20210823132513.15836-4-rppt@kernel.org>
+ <889bdfef8b4acbe840668f27782c3d39a987c368.camel@intel.com>
+ <YSTt9XEDfbPOpab4@kernel.org>
+ <f4a428040f822d7181acfc6c1658173373f28e40.camel@intel.com>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.13-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.13.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.13.13-rc1
-X-KernelTest-Deadline: 2021-08-26T16:55+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4a428040f822d7181acfc6c1658173373f28e40.camel@intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fQV51_JZkUQ5l5BfAVs3hpKoDQarwNda
+X-Proofpoint-GUID: fQV51_JZkUQ5l5BfAVs3hpKoDQarwNda
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_05:2021-08-24,2021-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 clxscore=1011 adultscore=0
+ mlxlogscore=954 priorityscore=1501 phishscore=0 suspectscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2107140000 definitions=main-2108240109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+On Tue, Aug 24, 2021 at 04:38:03PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2021-08-24 at 16:02 +0300, Mike Rapoport wrote:
+> > > We probably want to exclude GFP_ATOMIC before calling into CPA
+> > > unless
+> > > debug page alloc is on, because it may need to split and sleep for
+> > > the
+> > > allocation. There is a page table allocation with GFP_ATOMIC passed
+> > > actually.
+> > 
+> > Looking at the callers of alloc_low_pages() it seems that GFP_ATOMIC
+> > there
+> > is stale...
+>
+> Well two actually, there is also spp_getpage(). I tried to determine if
+> that was also stale but wasn't confident. There were a lot of paths in.
+  
+It's also used at init and during memory hotplug, so I really doubt it
+needs GFP_ATOMIC.
 
-[ Upstream commit e8d8c5d80f5e9d4586c68061b62c642752289095 ]
+> > > In my next series of this I added support for GFP_ATOMIC to this
+> > > code,
+> > > but that solution should only work for permission changing grouped
+> > > page
+> > > allocators in the protected page tables case where the direct map
+> > > tables are handled differently. As a general solution though
+> > > (that's
+> > > the long term intention right?), GFP_ATOMIC might deserve some
+> > > consideration.
+> > 
+> > ... but for the general solution GFP_ATOMIC indeed deserves some
+> > consideration.
+> >  
+> > > The other thing is we probably don't want to clean out the atomic
+> > > reserves and add them to a cache just for one page. I opted to just
+> > > convert one page in the GFP_ATOMIC case.
+> >  
+> > Do you mean to allocate one page in GFP_ATOMIC case and bypass high
+> > order
+> > allocation?
+> > But the CPA split is still necessary here, isn't it?
+>
+> Yes, grabs one atomic page and fragments it in the case of no pages in
+> the grouped page cache. The CPA split is necessary still, but it should
+> be ok because of the special way direct map page table allocations are
+> handled for pks tables. Has not been reviewed by anyone yet, and
+> wouldn't work as a general solution anyway.
 
-skbs are freed on error and not put on the ring. We may, however,
-be in a situation where we're freeing the last skb of a batch,
-and there is a doorbell ring pending because of xmit_more() being
-true earlier. Make sure we ring the door bell in such situations.
-
-Since errors are rare don't pay attention to xmit_more() and just
-always flush the pending frames.
-
-The busy case should be safe to be left alone because it can
-only happen if start_xmit races with completions and they
-both enable the queue. In that case the kick can't be pending.
-
-Noticed while reading the code.
-
-Fixes: 4d172f21cefe ("bnxt_en: Implement xmit_more.")
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 39 +++++++++++++++--------
- drivers/net/ethernet/broadcom/bnxt/bnxt.h |  1 +
- 2 files changed, 27 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 17ee5c436069..ea67c8c07a8b 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -69,7 +69,8 @@
- #include "bnxt_debugfs.h"
- 
- #define BNXT_TX_TIMEOUT		(5 * HZ)
--#define BNXT_DEF_MSG_ENABLE	(NETIF_MSG_DRV | NETIF_MSG_HW)
-+#define BNXT_DEF_MSG_ENABLE	(NETIF_MSG_DRV | NETIF_MSG_HW | \
-+				 NETIF_MSG_TX_ERR)
- 
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Broadcom BCM573xx network driver");
-@@ -362,6 +363,13 @@ static u16 bnxt_xmit_get_cfa_action(struct sk_buff *skb)
- 	return md_dst->u.port_info.port_id;
- }
- 
-+static void bnxt_txr_db_kick(struct bnxt *bp, struct bnxt_tx_ring_info *txr,
-+			     u16 prod)
-+{
-+	bnxt_db_write(bp, &txr->tx_db, prod);
-+	txr->kick_pending = 0;
-+}
-+
- static bool bnxt_txr_netif_try_stop_queue(struct bnxt *bp,
- 					  struct bnxt_tx_ring_info *txr,
- 					  struct netdev_queue *txq)
-@@ -410,6 +418,10 @@ static netdev_tx_t bnxt_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 
- 	free_size = bnxt_tx_avail(bp, txr);
- 	if (unlikely(free_size < skb_shinfo(skb)->nr_frags + 2)) {
-+		/* We must have raced with NAPI cleanup */
-+		if (net_ratelimit() && txr->kick_pending)
-+			netif_warn(bp, tx_err, dev,
-+				   "bnxt: ring busy w/ flush pending!\n");
- 		if (bnxt_txr_netif_try_stop_queue(bp, txr, txq))
- 			return NETDEV_TX_BUSY;
- 	}
-@@ -518,21 +530,16 @@ static netdev_tx_t bnxt_start_xmit(struct sk_buff *skb, struct net_device *dev)
- normal_tx:
- 	if (length < BNXT_MIN_PKT_SIZE) {
- 		pad = BNXT_MIN_PKT_SIZE - length;
--		if (skb_pad(skb, pad)) {
-+		if (skb_pad(skb, pad))
- 			/* SKB already freed. */
--			tx_buf->skb = NULL;
--			return NETDEV_TX_OK;
--		}
-+			goto tx_kick_pending;
- 		length = BNXT_MIN_PKT_SIZE;
- 	}
- 
- 	mapping = dma_map_single(&pdev->dev, skb->data, len, DMA_TO_DEVICE);
- 
--	if (unlikely(dma_mapping_error(&pdev->dev, mapping))) {
--		dev_kfree_skb_any(skb);
--		tx_buf->skb = NULL;
--		return NETDEV_TX_OK;
--	}
-+	if (unlikely(dma_mapping_error(&pdev->dev, mapping)))
-+		goto tx_free;
- 
- 	dma_unmap_addr_set(tx_buf, mapping, mapping);
- 	flags = (len << TX_BD_LEN_SHIFT) | TX_BD_TYPE_LONG_TX_BD |
-@@ -617,13 +624,15 @@ normal_tx:
- 	txr->tx_prod = prod;
- 
- 	if (!netdev_xmit_more() || netif_xmit_stopped(txq))
--		bnxt_db_write(bp, &txr->tx_db, prod);
-+		bnxt_txr_db_kick(bp, txr, prod);
-+	else
-+		txr->kick_pending = 1;
- 
- tx_done:
- 
- 	if (unlikely(bnxt_tx_avail(bp, txr) <= MAX_SKB_FRAGS + 1)) {
- 		if (netdev_xmit_more() && !tx_buf->is_push)
--			bnxt_db_write(bp, &txr->tx_db, prod);
-+			bnxt_txr_db_kick(bp, txr, prod);
- 
- 		bnxt_txr_netif_try_stop_queue(bp, txr, txq);
- 	}
-@@ -635,7 +644,6 @@ tx_dma_error:
- 	/* start back at beginning and unmap skb */
- 	prod = txr->tx_prod;
- 	tx_buf = &txr->tx_buf_ring[prod];
--	tx_buf->skb = NULL;
- 	dma_unmap_single(&pdev->dev, dma_unmap_addr(tx_buf, mapping),
- 			 skb_headlen(skb), PCI_DMA_TODEVICE);
- 	prod = NEXT_TX(prod);
-@@ -649,7 +657,12 @@ tx_dma_error:
- 			       PCI_DMA_TODEVICE);
- 	}
- 
-+tx_free:
- 	dev_kfree_skb_any(skb);
-+tx_kick_pending:
-+	if (txr->kick_pending)
-+		bnxt_txr_db_kick(bp, txr, txr->tx_prod);
-+	txr->tx_buf_ring[txr->tx_prod].skb = NULL;
- 	return NETDEV_TX_OK;
- }
- 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.h b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-index 30e47ea343f9..e2f38aaa474b 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.h
-@@ -783,6 +783,7 @@ struct bnxt_tx_ring_info {
- 	u16			tx_prod;
- 	u16			tx_cons;
- 	u16			txq_index;
-+	u8			kick_pending;
- 	struct bnxt_db_info	tx_db;
- 
- 	struct tx_bd		*tx_desc_ring[MAX_TX_PAGES];
 -- 
-2.30.2
-
+Sincerely yours,
+Mike.
