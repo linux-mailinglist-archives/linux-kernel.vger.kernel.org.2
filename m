@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176213F609D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78B43F6097
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237940AbhHXOjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:39:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56669 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237922AbhHXOjv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237917AbhHXOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 24 Aug 2021 10:39:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629815947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bIzJFNtN7r1shXWsohSNVJgyFOeYy/KSnJVcAMNs8DQ=;
-        b=WZd65Hsyj5t7EiBvIuXsWtTQdSZm4XjyAazo+vt6KXKMeDi2TqPMDr6iMCSZl/7LjRK5Os
-        QHiAkP4oYJSlFsOHXPvW/pxUj5N9W6HfuydidWEwB/75c/A4ci61td1LqkRoZQut8HW0fn
-        9ydkYcw+9XGI5dw6x/p2KHq3LJUlz+k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-ukmS65bfOAWoX3lGu4KGeA-1; Tue, 24 Aug 2021 10:39:03 -0400
-X-MC-Unique: ukmS65bfOAWoX3lGu4KGeA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DADBC1082921;
-        Tue, 24 Aug 2021 14:39:01 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 697AD1036D27;
-        Tue, 24 Aug 2021 14:38:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YST/0e92OdSH0zjg@casper.infradead.org>
-References: <YST/0e92OdSH0zjg@casper.infradead.org> <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk> <162981148752.1901565.3663780601682206026.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Jeffrey Altman <jaltman@auristor.com>,
-        linux-afs@lists.infradead.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] afs: Fix afs_launder_page() to set correct start file position
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:45002 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237821AbhHXOjr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:39:47 -0400
+Received: by mail-ot1-f50.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so38128475otg.11;
+        Tue, 24 Aug 2021 07:39:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oJTjVdGamrFwSnS4XYHRrrAclccvRhahcNOf3uZWcog=;
+        b=UuMjMBqVHaKyQTJfSlfdrZQJCI4jWGIvVNBljGApFiHdgL8Daf+/iWtCZoWCBqEfky
+         NJr0/KSVfAOc7OhBRE+nOFgpBqOWFA4hsIG87TpGtZGJ5M/NWidxgwZwjovm9dNBjJKJ
+         2/J9kGMxWWRAZS4Zb8KDnnjTXEblkAsDHLhzPcxB0J15Xko889rStJTkEKiZtv2UzbJg
+         2jwOgxbYueYJf9raBdajwWQiWTlOCTOHfkC76AyVgS9KEq7DQfFJWbsl15O83uu3StEp
+         AEbAC5HjjjJLxi9GwbiLEXTNFUXJnDS3X7llEoR50or/JhtCBqVzz/xqWsZBt/lzZlEL
+         BxtA==
+X-Gm-Message-State: AOAM531c/1fWoKNcE129YY2+IjP3CpiWzfoJ1XK+1LN30hZOXr+H+Bz/
+        60Wo+SaGbnEaFBfAo6FvHg==
+X-Google-Smtp-Source: ABdhPJyWxAQYVSvp5dfYC1MVG4wcDA3+xadxULnBKqwxP7AbYTYs6hbMs3GS17peHFiEsVBo69cv8g==
+X-Received: by 2002:a05:6830:238e:: with SMTP id l14mr31227924ots.354.1629815943350;
+        Tue, 24 Aug 2021 07:39:03 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id i5sm4396860oie.11.2021.08.24.07.39.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:39:02 -0700 (PDT)
+Received: (nullmailer pid 407321 invoked by uid 1000);
+        Tue, 24 Aug 2021 14:39:01 -0000
+Date:   Tue, 24 Aug 2021 09:39:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Rex-BC.Chen@mediatek.com, TingHan.Shen@mediatek.com
+Subject: Re: [PATCH] dt-bindings: PCI: mediatek-gen3: Add support for MT8195
+Message-ID: <YSUEhTbzz9x1UeaB@robh.at.kernel.org>
+References: <20210820023521.30716-1-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1953536.1629815935.1@warthog.procyon.org.uk>
-Date:   Tue, 24 Aug 2021 15:38:55 +0100
-Message-ID: <1953537.1629815935@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820023521.30716-1-jianjun.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-
+On Fri, Aug 20, 2021 at 10:35:21AM +0800, Jianjun Wang wrote:
+> MT8195 is an ARM platform SoC which has the same PCIe IP with MT8192.
 > 
-> This could be page_offset(page), which reads better to me:
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> 		ret = afs_store_data(vnode, &iter, page_offset(page) + f, true);
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> index 742206dbd965..dcebb1036207 100644
+> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> @@ -48,7 +48,9 @@ allOf:
+>  
+>  properties:
+>    compatible:
+> -    const: mediatek,mt8192-pcie
+> +    oneOf:
+> +      - const: mediatek,mt8192-pcie
+> +      - const: mediatek,mt8195-pcie
 
-True.  It gets converted to folio_pos() in patch #5 - will that do?
+Use 'enum' instead of oneOf+const.
 
-David
-
+>  
+>    reg:
+>      maxItems: 1
+> -- 
+> 2.18.0
+> 
+> 
