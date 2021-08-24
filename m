@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB863F6216
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9FB3F6219
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238524AbhHXPzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:55:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238467AbhHXPzS (ORCPT
+        id S238435AbhHXP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236565AbhHXP6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:55:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629820474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ax6zjB8FCNgsQYLqgNFMq9OeoawxxmOPV3+aTibAsX4=;
-        b=HZXsexFZ2QOsFuCHkNVjaTGfSqt96FQJaQs7i2axsnJl1KX2foGniRwwxbmUxWvJlrJN7M
-        VMyaU4jpJkwH8woHuqbL5n0h0lN1tR/fsx4w52ODpR2dx3vlV0RcDLZsv5s8tsNzo3Va2q
-        nYn0wF4EFHHnHUskm+kJt3fPngLO6v4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-sL2lRNboPTWorPFJiNMLBA-1; Tue, 24 Aug 2021 11:54:32 -0400
-X-MC-Unique: sL2lRNboPTWorPFJiNMLBA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92BDA800493;
-        Tue, 24 Aug 2021 15:54:30 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AA77A10016F5;
-        Tue, 24 Aug 2021 15:54:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
-References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com> <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
+        Tue, 24 Aug 2021 11:58:15 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4A4C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:57:31 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso32494032ota.8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=X27sm7XRJloh7TYC16b8bidIz7tS9xlzanMCh+7pg/0=;
+        b=XdbRGi4/xxxpl/ndGsjItcDBt9YYDql6ArJnAKPQWbGna4AOMWlO7a0Z3OOS5k0jRV
+         yQW0gr/9eEah9ZHViP/HKoJa5Cz+/euHaWecXA26T04uzZtjdwVaRPRizCigqg+PD8Fd
+         8RNWTStsEmwdk+0tWagb9H0zBgxdhlpLNmunCxmabLsrRSa2s44H+LoVt/jx7B8/4m4o
+         eMNdKf3U07cwFWNdpvdK9OQCzvpwf7pXWBXO7FutF0tk/CRAfLjmTCznzy1KmxsUEwFj
+         YkJz6wpGrKJh8m0D7xeB0ZboVEJrQWCQra2c8d31fIphrpPbvx6HUt0Zvck6nZHjUWTH
+         S47g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=X27sm7XRJloh7TYC16b8bidIz7tS9xlzanMCh+7pg/0=;
+        b=Fk9TDIK1V2G16Tkz70UiKCgkTwTkAX9DErxO16zReA+LAVFwJLZUefllQ+Ly+E5Nx9
+         sc43pTouRSQt4KRvlBHl1hJUKRcXEB4ZputKo096akcZ9kBN0th66nzs6DRXQvgYKsXS
+         eu0SksMN1DD1K/x+qudhxYIZ7nwail22fRP5fc7YOyNDP0WsweUwHytIZulo9YE+KGF0
+         PzCbxn44rQGTBr54/va3OpmZYwIDwdBEITaqTcGNuP3Hc1+yadDUYJErws5j4KxVBeTC
+         ji1ThTKRVI+DBWEqsOf3zsNncsCYkbiAJ61YhqCtptQEVqstLXWz/ozdJhRXBFPzHH5d
+         i5cA==
+X-Gm-Message-State: AOAM530p5mRVIehnO1ii+cypucfpTAJT2TQJ7qlpSul9NS7O9g3rv82T
+        zqrKk2OH9mXrrsd/VWZvZJSJ80qOgj5CzYSVG+g=
+X-Google-Smtp-Source: ABdhPJyPQRalck3DahrxIbbctemODf7n5JPHNPSc984wGNf7NLLsoBJ4dx6nhPQ9eWWKFduLlQouz30eBNZzqRFm0wY=
+X-Received: by 2002:a05:6830:1c69:: with SMTP id s9mr4883042otg.132.1629820650421;
+ Tue, 24 Aug 2021 08:57:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1957059.1629820467.1@warthog.procyon.org.uk>
-Date:   Tue, 24 Aug 2021 16:54:27 +0100
-Message-ID: <1957060.1629820467@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <YSP6Lv53QV0cOAsd@zn.tnic> <CADnq5_O3cg+VtyCBGUDEVxb768jHK6m814W8u-q-kSX9jkHAAw@mail.gmail.com>
+ <YSQE6fN9uO0CIWeh@zn.tnic> <CADnq5_PEOr=bcmLF2x67hx24=EWwH7DAgEsPjYqXgf8i-beEhg@mail.gmail.com>
+ <YSQJL0GBzO2ulEpm@zn.tnic> <CADnq5_N0q8Rfm++O3jK6wcbePxg_Oj3=Xx9Utw60npKrEsSp8A@mail.gmail.com>
+ <YSS/F9kcQcRKlNJ5@zn.tnic> <2d7e3536-fc3e-629a-4f0d-2ac5ccacccc5@amd.com>
+In-Reply-To: <2d7e3536-fc3e-629a-4f0d-2ac5ccacccc5@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Aug 2021 11:57:19 -0400
+Message-ID: <CADnq5_N0493Bv7i4H7dcMr7SJVqVExFTpSx_6PovHq5beVFJpQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: Fix build with missing pm_suspend_target_state
+ module export
+To:     "Lazar, Lijo" <lijo.lazar@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Pratik Vishwakarma <Pratik.Vishwakarma@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Applied.  Thanks!
 
-> Yeah, honestly, I would have preferred to see this done the exact
-> reverse way: make the rule be that "struct page" is always a head
-> page, and anything that isn't a head page would be called something
-> else.
-> ...
-> That said, I see why Willy did it the way he did - it was easier to do
-> it incrementally the way he did. But I do think it ends up with an end
-> result that is kind of topsy turvy where the common "this is the core
-> allocation" being called that odd "folio" thing, and then the simpler
-> "page" name is for things that almost nobody should even care about.
+Alex
 
-From a filesystem pov, it may be better done Willy's way.  There's a lot of
-assumption that "struct page" corresponds to a PAGE_SIZE patch of RAM and is
-equivalent to a hardware page, so using something other than struct page seems
-a better idea.  It's easier to avoid the assumption if it's called something
-different.
-
-We're dealing with variable-sized clusters of things that, in the future,
-could be, say, a combination of typical 4K pages and higher order pages
-(depending on what the arch supports), so I think using "page" is the wrong
-name to use.
-
-There are some pieces, kmap being a prime example, that might be tricky to
-make handle a transparently variable-sized multipage object, so careful
-auditing will likely be required if we do stick with "struct page".
-
-Further, there's the problem that there are a *lot* of places where
-filesystems access struct page members directly, rather than going through
-helper functions - and all of these need to be fixed.  This is much easier to
-manage if we can get the compiler to do the catching.  Hiding them all within
-struct page would require a humongous single patch.
-
-One question does spring to mind, though: do filesystems even need to know
-about hardware pages at all?  They need to be able to access source data or a
-destination buffer, but that can be stitched together from disparate chunks
-that have nothing to do with pages (eg. iov_iter); they need access to the
-pagecache, and may need somewhere to cache pieces of information, and they
-need to be able to pass chunks of pagecache, data or bufferage to crypto
-(scatterlists) and I/O routines (bio, skbuff) - but can we hide "paginess"
-from filesystems?
-
-The main point where this matters, at the moment, is, I think, mmap - but
-could more of that be handled transparently by the VM?
-
-> Because, as you say, head pages are the norm. And "folio" may be a
-> clever term, but it's not very natural. Certainly not at all as
-> intuitive or common as "page" as a name in the industry.
-
-That's mostly because no one uses the term... yet, and that it's not commonly
-used.  I've got used to it in building on top of Willy's patches and have no
-problem with it - apart from the fact that I would expect something more like
-a plural or a collective noun ("sheaf" or "ream" maybe?) - but at least the
-name is similar in length to "page".
-
-And it's handy for grepping ;-)
-
-> I'd have personally preferred to call the head page just a "page", and
-> other pages "subpage" or something like that. I think that would be
-> much more intuitive than "folio/page".
-
-As previously stated, I think we need to leave "struct page" as meaning
-"hardware page" and build some other concept on top for aggregation/buffering.
-
-David
-
+On Tue, Aug 24, 2021 at 11:16 AM Lazar, Lijo <lijo.lazar@amd.com> wrote:
+>
+>
+>
+> On 8/24/2021 3:12 PM, Borislav Petkov wrote:
+> > From: Borislav Petkov <bp@suse.de>
+> >
+> > Building a randconfig here triggered:
+> >
+> >    ERROR: modpost: "pm_suspend_target_state" [drivers/gpu/drm/amd/amdgp=
+u/amdgpu.ko] undefined!
+> >
+> > because the module export of that symbol happens in
+> > kernel/power/suspend.c which is enabled with CONFIG_SUSPEND.
+> >
+> > The ifdef guards in amdgpu_acpi_is_s0ix_supported(), however, test for
+> > CONFIG_PM_SLEEP which is defined like this:
+> >
+> >    config PM_SLEEP
+> >            def_bool y
+> >            depends on SUSPEND || HIBERNATE_CALLBACKS
+> >
+> Missed this altogether!
+>
+> Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
+>
+> Thanks,
+> Lijo
+>
+> > and that randconfig has:
+> >
+> >    # CONFIG_SUSPEND is not set
+> >    CONFIG_HIBERNATE_CALLBACKS=3Dy
+> >
+> > leading to the module export missing.
+> >
+> > Change the ifdeffery to depend directly on CONFIG_SUSPEND.
+> >
+> > Fixes: 5706cb3c910c ("drm/amdgpu: fix checking pmops when PM_SLEEP is n=
+ot enabled")
+> > Signed-off-by: Borislav Petkov <bp@suse.de>
+> > Link: https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F=
+%2Flkml.kernel.org%2Fr%2FYSP6Lv53QV0cOAsd%40zn.tnic&amp;data=3D04%7C01%7CLi=
+jo.Lazar%40amd.com%7C71b6769cdd574a05b32b08d966e37525%7C3dd8961fe4884e608e1=
+1a82d994e183d%7C0%7C0%7C637653949420453962%7CUnknown%7CTWFpbGZsb3d8eyJWIjoi=
+MC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=
+=3Dai%2B95gtZz0r0pXYaUkG97tiuaiykEy8%2FB%2FtmHP3W4Zs%3D&amp;reserved=3D0
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_acpi.c
+> > index 4137e848f6a2..a9ce3b20d371 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
+> > @@ -1040,7 +1040,7 @@ void amdgpu_acpi_detect(void)
+> >    */
+> >   bool amdgpu_acpi_is_s0ix_supported(struct amdgpu_device *adev)
+> >   {
+> > -#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_PM_SLEEP)
+> > +#if IS_ENABLED(CONFIG_AMD_PMC) && IS_ENABLED(CONFIG_SUSPEND)
+> >       if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
+> >               if (adev->flags & AMD_IS_APU)
+> >                       return pm_suspend_target_state =3D=3D PM_SUSPEND_=
+TO_IDLE;
+> >
