@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9739F3F5D5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1583F5D71
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236908AbhHXLxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:53:49 -0400
-Received: from mga09.intel.com ([134.134.136.24]:14598 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236903AbhHXLxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:53:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="217297640"
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="217297640"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 04:53:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="473465551"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga008.jf.intel.com with ESMTP; 24 Aug 2021 04:53:01 -0700
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chris.chiu@canonical.com
-References: <20210824105302.25382-1-kishon@ti.com>
- <20210824105302.25382-4-kishon@ti.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [RFC PATCH 3/5] usb: core: hcd: Add support for registering
- secondary RH along with primary HCD
-Message-ID: <06693934-28f2-d59e-b004-62cabd3f9e8e@linux.intel.com>
-Date:   Tue, 24 Aug 2021 14:55:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        id S236983AbhHXL4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:56:32 -0400
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:38515 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236939AbhHXL4a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 07:56:30 -0400
+Received: by mail-vk1-f180.google.com with SMTP id k124so5429729vke.5;
+        Tue, 24 Aug 2021 04:55:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XfgeSNPVMKWrfXyFj8jprqwXpb9tNGH+Wb+KqyJb9gQ=;
+        b=qVrNOE423FmYdfxN0qo2eJSQWhpI1/CVIypQCppLZoegkSnd5BPdxw9qStKAWLHkFT
+         z3A0Y+bq6viWu47pUgeDgrl4fMXeIjPue4SwC8JTlemJ4/HTiH+pf2JQMOiKivPL4cso
+         6+NODu3x3pOJJKBR8T322l/FFvaJ+D4zCiMshz6hHU407xUxcIqQ3DbJ6/QkP0c55BBS
+         Vcjff+o8+wNYc+g82IUQyzqCT6w8kEWXWzQsjtvyYW9vjpiPshm1vOhu9nnOn9VIWAzT
+         uUsR5hbGJULSHNMeu9mFNlkGyVEJIk8X9DmDO9cjMXjjfbpXeljnBY0XanRZvRWpmEX8
+         xXlg==
+X-Gm-Message-State: AOAM531DskKYgEU9UJCtUfmp1c0BJrTukI2jcwsF0s4PZdgoNzNxWJnk
+        f3j6SxJ6Wpit11UHTErUwR9AS2Q/hVR5AB31ki4=
+X-Google-Smtp-Source: ABdhPJyF2wRPCJa9TS8UTuYi45dG+oebI6qeiCjlOVZk/DVs/Dyj3ugAf0SqlejD7IoDmVPYRh8sFRN0eHUzW9fAJ6o=
+X-Received: by 2002:a05:6122:809:: with SMTP id 9mr295247vkj.4.1629806145488;
+ Tue, 24 Aug 2021 04:55:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210824105302.25382-4-kishon@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1628670468.git.geert+renesas@glider.be> <YRkxzx/1XM3r64Ee@robh.at.kernel.org>
+ <CAMuHMdXs0+7K4N0mg6qX6X1cr_8dBr_HdTahdfORMk76wCJcEA@mail.gmail.com> <CAL_JsqK63hoEMafLP+5eeQR1qrhOO76J4KEQG_By6QnLfhF=dw@mail.gmail.com>
+In-Reply-To: <CAL_JsqK63hoEMafLP+5eeQR1qrhOO76J4KEQG_By6QnLfhF=dw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 24 Aug 2021 13:55:34 +0200
+Message-ID: <CAMuHMdVNi4bh0Kp43BrVVKD8YY5ac4yi9=W3QZmw=stmwwtuiQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/9] Add generic support for kdump DT properties
+To:     Rob Herring <robh@kernel.org>, Russell King <linux@armlinux.org.uk>
+Cc:     Nicolas Pitre <nico@fluxnic.net>, Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.8.2021 13.53, Kishon Vijay Abraham I wrote:
-> Add support for registering secondary roothub (RH) along with primary HCD.
-> It has been observed with certain PCIe USB cards that as soon as the
-> primary HCD is registered, port status change is handled leading to cold
-> plug devices getting not detected. For such cases, registering both the
-> root hubs along with the second HCD is useful.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> ---
->  drivers/usb/core/hcd.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-> index 4d7a9f0e2caa..9c8df22a7d9a 100644
-> --- a/drivers/usb/core/hcd.c
-> +++ b/drivers/usb/core/hcd.c
-> @@ -2799,6 +2799,7 @@ int __usb_add_hcd(struct usb_hcd *hcd, unsigned int irqnum, unsigned long irqfla
->  {
->  	int retval;
->  	struct usb_device *rhdev;
-> +	struct usb_hcd *shared_hcd = NULL;
->  
->  	if (!hcd->skip_phy_initialization && usb_hcd_is_primary_hcd(hcd)) {
->  		hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
-> @@ -2961,6 +2962,15 @@ int __usb_add_hcd(struct usb_hcd *hcd, unsigned int irqnum, unsigned long irqfla
->  
->  	/* starting here, usbcore will pay attention to this root hub */
->  	if (register_hub) {
-> +		shared_hcd = hcd->shared_hcd;
-> +		if (shared_hcd) {
-> +			retval = register_root_hub(shared_hcd);
+On Mon, Aug 23, 2021 at 4:52 PM Rob Herring <robh@kernel.org> wrote:
+> On Mon, Aug 23, 2021 at 5:13 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Sun, Aug 15, 2021 at 5:25 PM Rob Herring <robh@kernel.org> wrote:
+> > > On Wed, Aug 11, 2021 at 10:50:58AM +0200, Geert Uytterhoeven wrote:
+> > > > This patch series adds generic support for parsing DT properties related
+> > > > to crash dump kernels ("linux,elfcorehdr" and "linux,elfcorehdr" under
+> > > > the "/chosen" node), makes use of it on arm32, and performs a few
+> > > > cleanups.  It is an evolution of the combination of [1] and [2].
+> > >
+> > > The DT bits look fine to me. How do you expect this to be merged? I'm
+> > > happy to take it if arch maintainers can ack it.
+> >
+> > I had hoped you could take the series...
+>
+> My current thought is I'll take 2-5, 7 and 8 given that's what I have
+> acks for and the others can be applied independently.
 
-There is a possibility we try yo register the shared roothub before it is properly set up here.
+Note that Palmer did ack patch 6, so you can include it.
 
-For example the mediatek driver (xhci-mtk.c) creates both hcds before adding them,
-so hcd->shared_hcd exists when usb_add_hcd() is called for the primary hcd,
-causing this code to register the hcd->shared_hcd roothub which is not properly added yet.
+Russell: any thoughts about patch 9?
 
-How about skipping the new __usb_hcd_pci_probe() and __usb_add_hcd() and instead add a new
-flag to hcd->flags, something like HCD_FLAG_DEFER_PRI_RH_REGISTER?
+Thanks!
 
-The host controller driver can set this flag in the hcd->driver->start(hcd) callback called
-before roothub registration here from usb_add_hcd(). If flag is set we skip the roothub registration.
+> > > > The series consists of 6 parts:
+> > > >   1. Patch 1 prepares architecture-specific code (needed for MIPS only)
+> > > >      to avoid duplicating elf core header reservation later.
+> > > >   2. Patch 2 prepares the visibility of variables used to hold
+> > > >      information retrieved from the DT properties.
+> > > >   3. Patches 3-5 add support to the FDT core for handling the
+> > > >      properties.
+> > > >      This can co-exist safely with architecture-specific handling, until
+> > > >      the latter has been removed.
+> > >
+> > > Looks like patch 5 doesn't have any dependencies with the series?
+> >
+> > Indeed. So you can take it independently.
+> >
+> > > >   4. Patch 6 removes the non-standard handling of "linux,elfcorehdr" on
+> > > >      riscv.
+> > >
+> > > I thought this should be applied for 5.14?
+> >
+> > Me too, but unfortunately that hasn't happened yet...
+>
+> Buried in the middle of this series is not going to encourage it to be
+> picked up as a fix.
 
-So something like:
-shared_hcd = hcd->share_hcd;
+Gr{oetje,eeting}s,
 
-if (!usb_hcd_is_primary_hcd(hcd) && shared_hcd && shared_hcd->flags & HCD_FLAG_DEFER_PRI_RH_REGISTER)
-        register_root_hub(shared_hcd)
-if (!(hcd->flags & HCD_FLAG_DEFER_PRI_RH_REGISTER))
-        register_root_hub(hcd)
+                        Geert
 
--Mathias 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
