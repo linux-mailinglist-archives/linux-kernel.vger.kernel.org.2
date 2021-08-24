@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1583F5D71
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BAF3F5D7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhHXL4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:56:32 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:38515 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236939AbhHXL4a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:56:30 -0400
-Received: by mail-vk1-f180.google.com with SMTP id k124so5429729vke.5;
-        Tue, 24 Aug 2021 04:55:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XfgeSNPVMKWrfXyFj8jprqwXpb9tNGH+Wb+KqyJb9gQ=;
-        b=qVrNOE423FmYdfxN0qo2eJSQWhpI1/CVIypQCppLZoegkSnd5BPdxw9qStKAWLHkFT
-         z3A0Y+bq6viWu47pUgeDgrl4fMXeIjPue4SwC8JTlemJ4/HTiH+pf2JQMOiKivPL4cso
-         6+NODu3x3pOJJKBR8T322l/FFvaJ+D4zCiMshz6hHU407xUxcIqQ3DbJ6/QkP0c55BBS
-         Vcjff+o8+wNYc+g82IUQyzqCT6w8kEWXWzQsjtvyYW9vjpiPshm1vOhu9nnOn9VIWAzT
-         uUsR5hbGJULSHNMeu9mFNlkGyVEJIk8X9DmDO9cjMXjjfbpXeljnBY0XanRZvRWpmEX8
-         xXlg==
-X-Gm-Message-State: AOAM531DskKYgEU9UJCtUfmp1c0BJrTukI2jcwsF0s4PZdgoNzNxWJnk
-        f3j6SxJ6Wpit11UHTErUwR9AS2Q/hVR5AB31ki4=
-X-Google-Smtp-Source: ABdhPJyF2wRPCJa9TS8UTuYi45dG+oebI6qeiCjlOVZk/DVs/Dyj3ugAf0SqlejD7IoDmVPYRh8sFRN0eHUzW9fAJ6o=
-X-Received: by 2002:a05:6122:809:: with SMTP id 9mr295247vkj.4.1629806145488;
- Tue, 24 Aug 2021 04:55:45 -0700 (PDT)
+        id S236939AbhHXL5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:57:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236905AbhHXL4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 07:56:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F281760EE0;
+        Tue, 24 Aug 2021 11:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629806170;
+        bh=bjw9uQcpwRNe1o5nHIH2UssRYmiCoh1pAur7K0VNfNI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=shApvSf2o+hC1oSvR/cmwDKu1JfqJLNgjipJk7yXB1TjN8tVy78iKnclm0YKc2y21
+         AbO24BXExSkFjGDXOPIlJJVWUAFn0PoKpHvLBhNMR0pXYY1Vs3NHJtUcvQ6FNreBTS
+         6CAZUrIj86fV0e/F9phXHKL4JUuaw/+hUemqxdjUa2pPn3l9N1Ay/Xk0LQFZYcbbKL
+         tARoEbOYxWXzjGGqrhd+7W0q56YRPmd5NczqCHXdIxlx/HCxRDqJpHR/r1XJl/D2Sc
+         mI0xXDhuI3B8XsA9h/+gEmUE7VEEVzc4uZ2T6B5CzYKpLkw2JM0YF62M+1evgnI2j4
+         1rSqzpHHColdQ==
+Message-ID: <552bb9bedfb1c36ea6aa5f7bdd3ab162b81f73d9.camel@kernel.org>
+Subject: Re: [PATCH] fs: clean up after mandatory file locking support
+ removal
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 24 Aug 2021 07:56:08 -0400
+In-Reply-To: <20210824111259.13077-1-lukas.bulwahn@gmail.com>
+References: <20210824111259.13077-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-References: <cover.1628670468.git.geert+renesas@glider.be> <YRkxzx/1XM3r64Ee@robh.at.kernel.org>
- <CAMuHMdXs0+7K4N0mg6qX6X1cr_8dBr_HdTahdfORMk76wCJcEA@mail.gmail.com> <CAL_JsqK63hoEMafLP+5eeQR1qrhOO76J4KEQG_By6QnLfhF=dw@mail.gmail.com>
-In-Reply-To: <CAL_JsqK63hoEMafLP+5eeQR1qrhOO76J4KEQG_By6QnLfhF=dw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 24 Aug 2021 13:55:34 +0200
-Message-ID: <CAMuHMdVNi4bh0Kp43BrVVKD8YY5ac4yi9=W3QZmw=stmwwtuiQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/9] Add generic support for kdump DT properties
-To:     Rob Herring <robh@kernel.org>, Russell King <linux@armlinux.org.uk>
-Cc:     Nicolas Pitre <nico@fluxnic.net>, Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 4:52 PM Rob Herring <robh@kernel.org> wrote:
-> On Mon, Aug 23, 2021 at 5:13 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Sun, Aug 15, 2021 at 5:25 PM Rob Herring <robh@kernel.org> wrote:
-> > > On Wed, Aug 11, 2021 at 10:50:58AM +0200, Geert Uytterhoeven wrote:
-> > > > This patch series adds generic support for parsing DT properties related
-> > > > to crash dump kernels ("linux,elfcorehdr" and "linux,elfcorehdr" under
-> > > > the "/chosen" node), makes use of it on arm32, and performs a few
-> > > > cleanups.  It is an evolution of the combination of [1] and [2].
-> > >
-> > > The DT bits look fine to me. How do you expect this to be merged? I'm
-> > > happy to take it if arch maintainers can ack it.
-> >
-> > I had hoped you could take the series...
->
-> My current thought is I'll take 2-5, 7 and 8 given that's what I have
-> acks for and the others can be applied independently.
+On Tue, 2021-08-24 at 13:12 +0200, Lukas Bulwahn wrote:
+> Commit 3efee0567b4a ("fs: remove mandatory file locking support") removes
+> some operations in functions rw_verify_area() and remap_verify_area().
+> 
+> As these functions are now simplified, do some syntactic clean-up as
+> follow-up to the removal as well, which was pointed out by compiler
+> warnings and static analysis.
+> 
+> No functional change.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Jeff, please pick this clean-up patch on top of the commit above.
+> 
+>  fs/read_write.c  | 10 +++-------
+>  fs/remap_range.c |  2 --
+>  2 files changed, 3 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/read_write.c b/fs/read_write.c
+> index ffe821b8588e..af057c57bdc6 100644
+> --- a/fs/read_write.c
+> +++ b/fs/read_write.c
+> @@ -365,12 +365,8 @@ SYSCALL_DEFINE5(llseek, unsigned int, fd, unsigned long, offset_high,
+>  
+>  int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t count)
+>  {
+> -	struct inode *inode;
+> -	int retval = -EINVAL;
+> -
+> -	inode = file_inode(file);
+>  	if (unlikely((ssize_t) count < 0))
+> -		return retval;
+> +		return -EINVAL;
+>  
+>  	/*
+>  	 * ranged mandatory locking does not apply to streams - it makes sense
+> @@ -381,12 +377,12 @@ int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t
+>  
+>  		if (unlikely(pos < 0)) {
+>  			if (!unsigned_offsets(file))
+> -				return retval;
+> +				return -EINVAL;
+>  			if (count >= -pos) /* both values are in 0..LLONG_MAX */
+>  				return -EOVERFLOW;
+>  		} else if (unlikely((loff_t) (pos + count) < 0)) {
+>  			if (!unsigned_offsets(file))
+> -				return retval;
+> +				return -EINVAL;
+>  		}
+>  	}
+>  
+> diff --git a/fs/remap_range.c b/fs/remap_range.c
+> index ec6d26c526b3..6d4a9beaa097 100644
+> --- a/fs/remap_range.c
+> +++ b/fs/remap_range.c
+> @@ -99,8 +99,6 @@ static int generic_remap_checks(struct file *file_in, loff_t pos_in,
+>  static int remap_verify_area(struct file *file, loff_t pos, loff_t len,
+>  			     bool write)
+>  {
+> -	struct inode *inode = file_inode(file);
+> -
+>  	if (unlikely(pos < 0 || len < 0))
+>  		return -EINVAL;
+>  
 
-Note that Palmer did ack patch 6, so you can include it.
+Thanks Lukas,
 
-Russell: any thoughts about patch 9?
-
-Thanks!
-
-> > > > The series consists of 6 parts:
-> > > >   1. Patch 1 prepares architecture-specific code (needed for MIPS only)
-> > > >      to avoid duplicating elf core header reservation later.
-> > > >   2. Patch 2 prepares the visibility of variables used to hold
-> > > >      information retrieved from the DT properties.
-> > > >   3. Patches 3-5 add support to the FDT core for handling the
-> > > >      properties.
-> > > >      This can co-exist safely with architecture-specific handling, until
-> > > >      the latter has been removed.
-> > >
-> > > Looks like patch 5 doesn't have any dependencies with the series?
-> >
-> > Indeed. So you can take it independently.
-> >
-> > > >   4. Patch 6 removes the non-standard handling of "linux,elfcorehdr" on
-> > > >      riscv.
-> > >
-> > > I thought this should be applied for 5.14?
-> >
-> > Me too, but unfortunately that hasn't happened yet...
->
-> Buried in the middle of this series is not going to encourage it to be
-> picked up as a fix.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+I had already removed the second hunk, but I merged read_write.c part
+into my queue for v5.15. It should show up in linux-next soon.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Jeff Layton <jlayton@kernel.org>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
