@@ -2,192 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3348C3F607D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCAC3F608B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237826AbhHXOf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237814AbhHXOfU (ORCPT
+        id S237867AbhHXOiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:38:14 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15730 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237852AbhHXOiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:35:20 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6FCC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:34:35 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id f2so38103663ljn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A3zus4L9/1X3IRfkH/arm7eFOx451ofwKweEFTUHk28=;
-        b=NLFfjLxUv2lt5o3iPtPmbMJj2BPSMI6NguDbGQ1cJZ6jjdWqcDt/Qn7nCBGwJuZ1M7
-         KvvfhGyyIUJGaf1EN/ahVfRHbGEr5fOVBm2AmO0ooqPHfz620o4CYlPKXMaqngO3J/EQ
-         ruSS/zmWSKGZQowOfWWY5gVfN5DFJ2O8Ieer0AULJ4r3u8SKDsP7ENe1E2dSPSFL+L1j
-         ou49ivM+LiiZUyDdfDgRZdo57npy+25e9KMt9H5Vs5Yr/0ihsEtBusMvYPs+sC43mRlo
-         r0f8gmqkEyJCN/AnImNZ1cnxCMDJTpdKkLM+mZte7tba/UP9u4XA3R7fKi5jbaLO6wns
-         /zSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A3zus4L9/1X3IRfkH/arm7eFOx451ofwKweEFTUHk28=;
-        b=jJpJNPhOTJxYsH7Q6R1l3Bet1YcHil6y8CGAyJNV+8VCe56O8NYxQVEmTEVYG5Unxj
-         2ZOPxeKShRxBuw0B+ZbdAOM+AQY3e8oEp9MacunTK62njuVOjsn/zSy3/2TeJrIQWYn7
-         9GeaqUhhdc3G9i2leECUxXpweVX6UOyMk/OeFNJv190nb2ZszM7A4NiCbtOx+q9LqOBF
-         CgKOaif2wttW8hFdwmd2KQcjkT7azPo8MNxBAbqknjud/4zkEky3swxUmaTw5YNQp2Hs
-         eQVrKGZOrcyMkgI7zO6ENtC8Qz9eBpNYvYflxdfH2ZmXbEQwWRNAhAd/cnGTZYqx6Ix8
-         ItgA==
-X-Gm-Message-State: AOAM5337X8M/HtTqeh3TB2UC6z+tTGXFksoC8oujmxe0fCcgyiq4OIMA
-        /UYhzMMN8GMTlgPLykrJQFAJm6Eci6fJGnqslA+WpQ==
-X-Google-Smtp-Source: ABdhPJx6jFSFXyIRyp9flVNu2zS1UnWtwBbMkKL1udOoiLVlezBtSgdjUdM2LYVN0fRhALww/4PlSe7dH+C+t3O8hNY=
-X-Received: by 2002:a2e:bd09:: with SMTP id n9mr32556182ljq.76.1629815674010;
- Tue, 24 Aug 2021 07:34:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210817224208.153652-1-huobean@gmail.com> <20210817224208.153652-3-huobean@gmail.com>
-In-Reply-To: <20210817224208.153652-3-huobean@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Aug 2021 16:33:58 +0200
-Message-ID: <CAPDyKFrQLDiamWZGzDDoA0EeRhR+VaeWuUHiu9EAMqDrQT-5CA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] mmc: core: Let BKOPS timeout readable/writable via sysfs
-To:     Bean Huo <huobean@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 24 Aug 2021 10:38:13 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17OEaQIV088398;
+        Tue, 24 Aug 2021 10:36:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=LscKHOmM4JXne0ldvl9TPd0dEiLHWZoKTEFyx0n/fFk=;
+ b=Vt5FXLCTugPQWD9ChXt6LeboeDn2bqF/B+EuObl75hT2ljdFNqWEsUFjOmtuB8AepbA+
+ wEmjaN2um8Z3RUgkRk79Dw5yXtfG+tIi1iybUnxkF7RM6Wn0MndCrVzC2LbYmNROndA+
+ ZPb78OhAPtzrKssNQsfxKAjv0LFjnl/yN/dBNkmMuatOobejo6zAGalji0x+LG64+UfF
+ JrxLeF8lk1Z7qs93J0nerCmF4Aak8+qohTz4jwMakuQ/zTU1eEuncTSctRAmzITG9bIT
+ TFNgWJOKfqEltaEye4oRFsDHx4uY6TSOJX7lEmFHzHjeShMEVDr6r97FKW0LtlCr+6ZD QA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amv09beb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 10:36:43 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 17OEacmN089288;
+        Tue, 24 Aug 2021 10:36:43 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3amv09bdt3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 10:36:43 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 17OEXVaS004979;
+        Tue, 24 Aug 2021 14:34:18 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3ajs48wbvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Aug 2021 14:34:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 17OEYFQc54133198
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 14:34:15 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6709F42041;
+        Tue, 24 Aug 2021 14:34:15 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 622124204C;
+        Tue, 24 Aug 2021 14:34:10 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.88.64])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Aug 2021 14:34:10 +0000 (GMT)
+Message-ID: <9526a4e0be9579a9e52064dd590a78c6496ee025.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 00/12] Enroll kernel keys thru MOK
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        lszubowi@redhat.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        pjones@redhat.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Date:   Tue, 24 Aug 2021 10:34:09 -0400
+In-Reply-To: <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+References: <20210819002109.534600-1-eric.snowberg@oracle.com>
+         <fcb30226f378ef12cd8bd15938f0af0e1a3977a2.camel@kernel.org>
+         <f76fcf41728fbdd65f2b3464df0821f248b2cba0.camel@linux.ibm.com>
+         <91B1FE51-C6FC-4ADF-B05A-B1E59E20132E@oracle.com>
+         <e7e251000432cf7c475e19c56b0f438b92fec16e.camel@linux.ibm.com>
+         <cedc77fefdf22b2cec086f3e0dd9cc698db9bca2.camel@kernel.org>
+         <bffb33a3-d5b5-f376-9d7d-706d38357d1a@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: r_swUgDIao0jShx0mbE5bkkPhHhggCoq
+X-Proofpoint-GUID: SQpjP5z9YPQ9zB2BIjFB6bvDvc41h9gG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_05:2021-08-24,2021-08-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 at 00:42, Bean Huo <huobean@gmail.com> wrote:
->
-> From: Bean Huo <beanhuo@micron.com>
->
-> For special cases, the application in the userspace wants to change
-> BKOPS operation timeout value, also, wants eMMC back to R1_STATE_TRAN
-> after BKOPS timeouts. A fixed BKOPS timeout value(120s) is no longer
-> feasible, therefore, it is better to let the user controls its timeout
-> value.
 
-I am not fond of exporting tweakable timeout values through sysfs.
-Primarily because it's ABI and it becomes difficult to change.
+> >> Jarkko, I think the emphasis should not be on "machine" from Machine
+> >> Owner Key (MOK), but on "owner".  Whereas Nayna is focusing more on the
+> >> "_ca" aspect of the name.   Perhaps consider naming it
+> >> "system_owner_ca" or something along those lines.
 
-Can you perhaps explain in more detail when you want to have a
-different timeout?
+> > What do you gain such overly long identifier? Makes no sense. What
+> > is "ca aspect of the name" anyway?
+> 
+> As I mentioned previously, the main usage of this new keyring is that it 
+> should contain only CA keys which can be later used to vouch for user 
+> keys loaded onto secondary or IMA keyring at runtime. Having ca in the 
+> name like .xxxx_ca, would make the keyring name self-describing. Since 
+> you preferred .system, we can call it .system_ca.
 
-Perhaps we can do something similar as we currently do for
-mmc_santize(), where we allow userspace to pass the cmd-timeout?
+Sounds good to me.  Jarkko?
 
-Kind regards
-Uffe
+thanks,
 
->
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> ---
->  drivers/mmc/core/mmc.c     | 32 ++++++++++++++++++++++++++++++++
->  drivers/mmc/core/mmc_ops.c |  3 +--
->  include/linux/mmc/card.h   |  1 +
->  3 files changed, 34 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 838726b68ff3..617ff18b5b0e 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -29,6 +29,7 @@
->  #define DEFAULT_CMD6_TIMEOUT_MS        500
->  #define MIN_CACHE_EN_TIMEOUT_MS 1600
->  #define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
-> +#define MMC_BKOPS_TIMEOUT_MS   (120 * 1000) /* 120s */
->
->  static const unsigned int tran_exp[] = {
->         10000,          100000,         1000000,        10000000,
-> @@ -836,6 +837,35 @@ static ssize_t mmc_dsr_show(struct device *dev,
->
->  static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
->
-> +static ssize_t bkops_timeout_ms_show(struct device *dev,
-> +                                    struct device_attribute *attr, char *buf)
-> +{
-> +       struct mmc_card *card = mmc_dev_to_card(dev);
-> +       return sysfs_emit(buf, "%d\n", card->bkops_timeout_ms);
-> +}
-> +
-> +static ssize_t bkops_timeout_ms_store(struct device *dev,
-> +                                     struct device_attribute *attr,
-> +                                     const char *buf, size_t len)
-> +{
-> +       struct mmc_card *card = mmc_dev_to_card(dev);
-> +       unsigned int new;
-> +       int ret;
-> +
-> +       ret = kstrtouint(buf, 0, &new);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       if (new == 0)
-> +               return -EINVAL;
-> +
-> +       card->bkops_timeout_ms = new;
-> +
-> +       return len;
-> +}
-> +
-> +static DEVICE_ATTR_RW(bkops_timeout_ms);
-> +
->  static struct attribute *mmc_std_attrs[] = {
->         &dev_attr_cid.attr,
->         &dev_attr_csd.attr,
-> @@ -862,6 +892,7 @@ static struct attribute *mmc_std_attrs[] = {
->         &dev_attr_rca.attr,
->         &dev_attr_dsr.attr,
->         &dev_attr_cmdq_en.attr,
-> +       &dev_attr_bkops_timeout_ms.attr,
->         NULL,
->  };
->  ATTRIBUTE_GROUPS(mmc_std);
-> @@ -1624,6 +1655,7 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->                 card->ocr = ocr;
->                 card->type = MMC_TYPE_MMC;
->                 card->rca = 1;
-> +               card->bkops_timeout_ms = MMC_BKOPS_TIMEOUT_MS;
->                 memcpy(card->raw_cid, cid, sizeof(card->raw_cid));
->         }
->
-> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-> index 0c54858e89c0..9af5e4671de2 100644
-> --- a/drivers/mmc/core/mmc_ops.c
-> +++ b/drivers/mmc/core/mmc_ops.c
-> @@ -19,7 +19,6 @@
->  #include "host.h"
->  #include "mmc_ops.h"
->
-> -#define MMC_BKOPS_TIMEOUT_MS           (120 * 1000) /* 120s */
->  #define MMC_SANITIZE_TIMEOUT_MS                (240 * 1000) /* 240s */
->
->  static const u8 tuning_blk_pattern_4bit[] = {
-> @@ -958,7 +957,7 @@ void mmc_run_bkops(struct mmc_card *card)
->          * urgent levels by using an asynchronous background task, when idle.
->          */
->         err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-> -                        EXT_CSD_BKOPS_START, 1, MMC_BKOPS_TIMEOUT_MS);
-> +                        EXT_CSD_BKOPS_START, 1, card->bkops_timeout_ms);
->         /*
->          * If the BKOPS timed out, the card is probably still busy in the
->          * R1_STATE_PRG. Rather than continue to wait, let's try to abort
-> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-> index 74e6c0624d27..9e038d212067 100644
-> --- a/include/linux/mmc/card.h
-> +++ b/include/linux/mmc/card.h
-> @@ -294,6 +294,7 @@ struct mmc_card {
->
->         bool                    reenable_cmdq;  /* Re-enable Command Queue */
->
-> +       unsigned int            bkops_timeout_ms;
->         unsigned int            erase_size;     /* erase size in sectors */
->         unsigned int            erase_shift;    /* if erase unit is power 2 */
->         unsigned int            pref_erase;     /* in sectors */
-> --
-> 2.25.1
->
+Mimi
+
