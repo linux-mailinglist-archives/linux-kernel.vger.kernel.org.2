@@ -2,117 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1E53F5ECD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BA83F5EDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237488AbhHXNQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237347AbhHXNQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:16:50 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4112AC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 06:16:06 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id q21so37565778ljj.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 06:16:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ydTVZ15OhL0mGtwmOd376yklz9JBnBhbEVNdkVMJ/z0=;
-        b=XPM3yRqCi4Jh+kJYR3AfSNeIhcwiK9U57g5ukbYv7PRiIEIm93U8ACJ6oGo1TVceQm
-         cQQy5M/fQCBoeWm2+pbY66wVkAJEEj0NrV9EkSkkXKOiStCyaMEXmRgdKxTkZhYx+k1W
-         5sU/Ons4G7ErJPycd/6adP7IBvdiKwAzhzQ22oPHRW3Z7w7ShMm9AHexTMKAyxvMQjJk
-         gxucXOGQBzsUbAx24Xz2XqZbYWWNAf2+g4YLb+MORNdGezqoDWXqjuYay+wW3y9ynPy4
-         hNAqDHbCZejWwlU9SZhJtMAx25yZywqbqLrG77zEMjYCK/CgUOFe54PKGukV5l7yuMe7
-         N7DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ydTVZ15OhL0mGtwmOd376yklz9JBnBhbEVNdkVMJ/z0=;
-        b=SzKfS/1S80QounCSlJgCSwEXpQ5tZzTTbpnzN4nGWXW/yuGZZo8XIdyHok38i6mv+n
-         UrqJoPvuhowhPooJWAgVrX6WQ7x6E22pvl9yGPp/njSpW1Gpy0YAH48zJEm02mEKPrM7
-         LKF2Br5NW0TGA8mXqZj8YkIg6gJrHty7ZQJLbcWxp8YBKic0Cgf8jfrtuWoOoH558qOK
-         XC1Cd6Ig2BH4or9qadjI1qbdaxNbWt84AF/2VjizHLbowDzVRML5iHMdAwqba8Pl7u0X
-         Gcc9dE4Ue42bKD1IYlHGG0U5kOS0zeJxU5+mB5FRqCQ/YdWKicWyZcVeuTUsb4dZrr/5
-         XZ2g==
-X-Gm-Message-State: AOAM531VDJAeY4AVX0DJu5iiUIyvQ8n67824AgwU8yfJEocv8CjpKpkK
-        H8bYwxIZhwgRXG7Xg+PC1za05QpLUlZrVQPPA+mzoQ==
-X-Google-Smtp-Source: ABdhPJy753AzVXSSiQfqytntQ08HWRbs8vTdlqrvJAwaJjLm66jH8yB6x80jNU5eEaj/WH62hBiYT5ElWXoHzqleFzk=
-X-Received: by 2002:a2e:a410:: with SMTP id p16mr30044554ljn.364.1629810964603;
- Tue, 24 Aug 2021 06:16:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210816073813.11715-1-Mason.Zhang@mediatek.com>
-In-Reply-To: <20210816073813.11715-1-Mason.Zhang@mediatek.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Aug 2021 15:15:28 +0200
-Message-ID: <CAPDyKFpSOcX6End_L0mLRt61s0aS_zT19snM71j9bxgMi1oUuA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mmc: mediatek: fixed clk contrl flow
-To:     Mason Zhang <Mason.Zhang@mediatek.com>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wsd_upstream@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+        id S237472AbhHXNWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:22:37 -0400
+Received: from gate.crashing.org ([63.228.1.57]:54608 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237455AbhHXNWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:22:35 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17ODG1TV005019;
+        Tue, 24 Aug 2021 08:16:01 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17ODG02l005018;
+        Tue, 24 Aug 2021 08:16:00 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 24 Aug 2021 08:16:00 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/32: Don't use lmw/stmw for saving/restoring non volatile regs
+Message-ID: <20210824131600.GF1583@gate.crashing.org>
+References: <316c543b8906712c108985c8463eec09c8db577b.1629732542.git.christophe.leroy@csgroup.eu> <20210823184648.GY1583@gate.crashing.org> <9bbc9797-cfc7-1484-90ad-2146ff1a5e18@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9bbc9797-cfc7-1484-90ad-2146ff1a5e18@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Aug 2021 at 09:39, Mason Zhang <Mason.Zhang@mediatek.com> wrote:
->
-> this patch fixed clk contrl flow in set clk rate, no need close clk src,
-> gate cg is enough, so no need call clk prepare/unprepare.
+Hi!
 
-No, this isn't the way we should deploy clock support in drivers.
+On Tue, Aug 24, 2021 at 07:54:22AM +0200, Christophe Leroy wrote:
+> Le 23/08/2021 à 20:46, Segher Boessenkool a écrit :
+> >On Mon, Aug 23, 2021 at 03:29:12PM +0000, Christophe Leroy wrote:
+> >>Instructions lmw/stmw are interesting for functions that are rarely
+> >>used and not in the cache, because only one instruction is to be
+> >>copied into the instruction cache instead of 19. However those
+> >>instruction are less performant than 19x raw lwz/stw as they require
+> >>synchronisation plus one additional cycle.
+> >
+> >lmw takes N+2 cycles for loading N words on 603/604/750/7400, and N+3 on
+> >7450.  stmw takes N+1 cycles for storing N words on 603, N+2 on 604/750/
+> >7400, and N+3 on 7450 (load latency is 3 instead of 2 on 7450).
+> >
+> >There is no synchronisation needed, although there is some serialisation,
+> >which of course doesn't mean much since there can be only 6 or 8 or so
+> >insns executing at once anyway.
+> 
+> Yes I meant serialisation, isn't it the same as synchronisation ?
 
-If the driver doesn't need to gate/ungate clocks from atomic context,
-the proper thing is to use the slow path APIs, clk_prepare_enable()
-and clk_disable_unprepare().
+Ha no, synchronisation are insns like sync and eieio :-)  Synchronisation
+is architectural, serialisation is (mostly) not, it is a feature of the
+specific core.
 
-Kind regards
-Uffe
+> >So, these insns are almost never slower, they can easily win cycles back
+> >because of the smaller code, too.
+> >
+> >What 32-bit core do you see where load/store multiple are more than a
+> >fraction of a cycle (per memory access) slower?
+> >
+> >>SAVE_NVGPRS / REST_NVGPRS are used in only a few places which are
+> >>mostly in interrupts entries/exits and in task switch so they are
+> >>likely already in the cache.
+> >
+> >Nothing is likely in the cache on the older cores (except in
+> >microbenchmarks), the caches are not big enough for that!
+> 
+> Even syscall entries/exit pathes and/or most frequent interrupts entries 
+> and interrupt exit ?
 
->
-> Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
-> ---
->  drivers/mmc/host/mtk-sd.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-> index 4dfc246c5f95..d9835b272c1f 100644
-> --- a/drivers/mmc/host/mtk-sd.c
-> +++ b/drivers/mmc/host/mtk-sd.c
-> @@ -895,9 +895,9 @@ static void msdc_set_mclk(struct msdc_host *host, unsigned char timing, u32 hz)
->          * So if want to only gate src_clk, need gate its parent(mux).
->          */
->         if (host->src_clk_cg)
-> -               clk_disable_unprepare(host->src_clk_cg);
-> +               clk_disable(host->src_clk_cg);
->         else
-> -               clk_disable_unprepare(clk_get_parent(host->src_clk));
-> +               clk_disable(clk_get_parent(host->src_clk));
->         if (host->dev_comp->clk_div_bits == 8)
->                 sdr_set_field(host->base + MSDC_CFG,
->                               MSDC_CFG_CKMOD | MSDC_CFG_CKDIV,
-> @@ -907,9 +907,9 @@ static void msdc_set_mclk(struct msdc_host *host, unsigned char timing, u32 hz)
->                               MSDC_CFG_CKMOD_EXTRA | MSDC_CFG_CKDIV_EXTRA,
->                               (mode << 12) | div);
->         if (host->src_clk_cg)
-> -               clk_prepare_enable(host->src_clk_cg);
-> +               clk_enable(host->src_clk_cg);
->         else
-> -               clk_prepare_enable(clk_get_parent(host->src_clk));
-> +               clk_enable(clk_get_parent(host->src_clk));
->
->         while (!(readl(host->base + MSDC_CFG) & MSDC_CFG_CKSTB))
->                 cpu_relax();
-> --
-> 2.18.0
->
+It has to be measured.  You are probably right for programs that use a
+lot of system calls, and (unmeasurably :-) ) wrong for those that don't.
+
+So that is a good argument: it speeds up some scenarios, and does not
+make any real impact on anything else.
+
+This also does not replace all {l,st}mw in the kernel, only those on
+interrupt paths.  So it is not necessarily bad :-)
+
+> >>Using standard lwz improves null_syscall selftest by:
+> >>- 10 cycles on mpc832x.
+> >>- 2 cycles on mpc8xx.
+> >
+> >And in real benchmarks?
+> 
+> Don't know, what benchmark should I use to evaluate syscall entry/exit if 
+> 'null_syscall' selftest is not relevant ?
+
+Some real workload (something that uses memory and computational insns a
+lot, in addition to many syscalls).
+
+> >On mpccore both lmw and stmw are only N+1 btw.  But the serialization
+> >might cost another cycle here?
+> 
+> That coherent on MPC8xx, that's only 2 cycles.
+> But on the mpc832x which has a e300c2 core, it looks like I have 10 cycles 
+> difference. Is anything wrong ?
+
+I don't know that core very well, I'll have a look.
+
+
+Segher
