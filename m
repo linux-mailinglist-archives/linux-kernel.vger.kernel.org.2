@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335023F620F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DAD3F620A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238511AbhHXPxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:53:11 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:20915 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238487AbhHXPxJ (ORCPT
+        id S238473AbhHXPwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238411AbhHXPwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:53:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1629820163;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Z/5zWNp0e+XXevjZGGIjoXisq5NlaUH+55xKsFFvgjA=;
-    b=qMfJSybJDcqmJaJ0zJVIfFYndAkBTZ4r9p8IVFbjdd5mdaAVMz4DMDeu53/zqOg6B+
-    D4EZxZxkpZo9dNwmcxqR0UFQCulMfP2WmK4eaHCtXGI+3ytCOt8fUxgj2XAfIXedTDFJ
-    GKjBwJozxuJEsvAppKmpqkkhB71MzXMv8n61CO09kAJsvlMoqWFmTZd+TXY4VcRYSVCV
-    3JQrqIYS1XhqA7dGkelaPt1T7Bu9DzVsLbFFqcmZ8Qa1L/UvzpLNWcjODJP3EyBWTQs8
-    29L+kNjpHTG49GBoEdkLzc+ZGmjF2DsF3wwPJ2KEmxqpsGY1AVowIA7i6/AFTMCS9qTj
-    jgiA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8puK1A=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id L01e9cx7OFnMmOL
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 24 Aug 2021 17:49:22 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 17:49:18 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        An?bal Lim?n <anibal.limon@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: db410c: Update firmware-name for wcnss
- and mpss
-Message-ID: <YSUU/r9OdK5OtNNn@gerhold.net>
-References: <20200108055735.660475-1-bjorn.andersson@linaro.org>
- <20210217223406.1422005-1-anibal.limon@linaro.org>
- <CAA8EJpqXyQCFGgTRk+dqxD6TdJycLeGx4EQ0OBov5_3hVogM1g@mail.gmail.com>
- <YSUGLFx2QST9vgIU@ripper>
+        Tue, 24 Aug 2021 11:52:47 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE52CC0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:52:02 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id q3so9540150iot.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G9UnSSnlYRLUttWk790OTUp3vVDNhuFNpjJPwPR33gg=;
+        b=eiDog05hn6geYVERCCz83M7DncCeFgjW4iVb4MF6TQEZkST+XbuWGBUN1J6xMd4+Jf
+         oM6/wKi3lPr7xBEq/SDCgNOErb+C8y5w78/D3J30mqecQNi6O/28hBNP1LgaZjVpIfoq
+         tgO3TkEdbvxp+lDdPSMN9Ujo3Q7e2wtUN10sM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G9UnSSnlYRLUttWk790OTUp3vVDNhuFNpjJPwPR33gg=;
+        b=BEjfJ97/w1yR6CihGGMaV2IEx5v5wxD2rxZa2Gh2Es3Ijt4Q486IhKDiNZ+fvNdUpR
+         ZZsY5B5lZQYd83QTEravzrJJNXO7NsMW0MiyFP/4EhL4N5GjHdO9Nd0Iua6BihF0aWOR
+         ztymxTLMi7F7/TvaSuIvsLIMtBXI87JxF5oqMSWbdt/r+9utVqapJn6Y6O8pQSwiIBIl
+         4x0h/TpVB/f7W8inTawY0pPIeV2DvYufb5naM1SRQC5qML5SGSHor27+ZT01Z8UHaCZP
+         TELQmB6NzjR8mLJe8Vm+xfM8MT5qPkdMN0Szyrtg5CdbUhuPTivLz8JobIND1mG4MgUj
+         SyAA==
+X-Gm-Message-State: AOAM5336aNPLq5r5NmEPsFsFSM78oXWloev0ZkOj8cTVjrY44WivKMw4
+        gu/4gVZOGmStJO35lde73uKI0A==
+X-Google-Smtp-Source: ABdhPJw12PHQe4ldQaJd+CQv6s5KafuQsOqHWMdAGHu+kcNMgcpKWej3e22m86/A7SuIEuuLmE4LnQ==
+X-Received: by 2002:a05:6638:1504:: with SMTP id b4mr32944162jat.144.1629820321934;
+        Tue, 24 Aug 2021 08:52:01 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c25sm10609598iom.9.2021.08.24.08.52.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 08:52:01 -0700 (PDT)
+Subject: Re: [PATCH linux-next] tools:test_xdp_noinline: fix boolreturn.cocci
+ warnings
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     CGEL <cgel.zte@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210824065526.60416-1-deng.changcheng@zte.com.cn>
+ <2d701f13-8996-ed7d-3d41-794aa8a6e96c@linuxfoundation.org>
+ <20210824074657.363455a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <2b6bf2fa-cf40-9610-ede5-ceab35004864@linuxfoundation.org>
+Date:   Tue, 24 Aug 2021 09:52:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YSUGLFx2QST9vgIU@ripper>
+In-Reply-To: <20210824074657.363455a6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 07:46:04AM -0700, Bjorn Andersson wrote:
-> On Tue 24 Aug 05:39 PDT 2021, Dmitry Baryshkov wrote:
+On 8/24/21 8:46 AM, Jakub Kicinski wrote:
+> On Tue, 24 Aug 2021 08:42:15 -0600 Shuah Khan wrote:
+>> On 8/24/21 12:55 AM, CGEL wrote:
+>>> From: Jing Yangyang <jing.yangyang@zte.com.cn>
+>>>
+>>> Return statements in functions returning bool should use true/false
+>>> instead of 1/0.
+>>>
+>>> Reported-by: Zeal Robot <zealci@zte.com.cn>
+>>> Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+>>
+>> We can't accept this patch. The from and Signed-off-by don't match.
 > 
-> > On Thu, 18 Feb 2021 at 01:38, Aníbal Limón <anibal.limon@linaro.org> wrote:
-> > >
-> > > From: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > >
-> > > Enable the mpss remoteproc node and specify the firmware-name for this
-> > > and the wcnss remoteproc on the Dragonboard 410c.
-> > >
-> > > Link: https://lore.kernel.org/r/20200108055735.660475-1-bjorn.andersson@linaro.org
-> > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > > [rebased and moved to use pronto label]
-> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > Tested-by: Aníbal Limón <anibal.limon@linaro.org>
-> > 
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > 
-> 
-> Thanks Dmitry, not sure why this hasn't been merged yet.
+> That's what I thought but there is a From in the email body which git
+> will pick up. The submission is correct.
 > 
 
-This patch keeps getting stuck for some reason.
-It was sent several times already but always forgotten. :)
+Missed that. Thanks.
 
-> Taking a further look at this I noticed that we never pushed the
-> firmware to linux-firmware either, which I think was because we where
-> uncertain of the directory structure at the time - a discussion which
-> has been settled since.
-> 
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-> > > index 3c7f97539390..8f1ada75d3ed 100644
-> > > --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-> > > @@ -301,6 +301,11 @@ &lpass {
-> > >         status = "okay";
-> > >  };
-> > >
-> > > +&mpss {
-> > > +       status = "okay";
-> > > +       firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mdt";
-> 
-> But if we're pushing things to linux-firmware, does anyone object
-> against following the existing style and squashing the mdt+bNN files
-> into .mbn (and thereby making this modem.mbn and below wcnss.mbn)?
+> Please trim your responses.
 > 
 
-You made this change in some version already :)
-https://lore.kernel.org/linux-arm-msm/20210312003318.3273536-6-bjorn.andersson@linaro.org/
+Will do.
 
-I think there was no real objection back then but more confusion about
-how to get the squashed .mbn variant. Having it in linux-firmware would
-certainly make it a lot easier overall if you can make that happen. :)
-
-The latest version of this patch that I am aware of is the following one:
-https://lore.kernel.org/linux-arm-msm/20210531224453.783218-1-bjorn.andersson@linaro.org/
-
-As I wrote there it's mainly stuck on getting the related wcn36xx patch [1]
-merged. Can you resend that one maybe?
-
-Thanks,
-Stephan
-
-[1]: https://lore.kernel.org/linux-arm-msm/20210312003318.3273536-3-bjorn.andersson@linaro.org/
+thanks,
+-- Shuah
