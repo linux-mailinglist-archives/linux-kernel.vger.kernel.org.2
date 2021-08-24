@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADDD3F6A70
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191133F6A80
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235232AbhHXUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234675AbhHXUcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:32:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3738C610F7;
-        Tue, 24 Aug 2021 20:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629837076;
-        bh=u89RhbA1T4/YcegxqumOKFDZveULzg7IH3BXxWstXGA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=E7gmG9cu+2X8EpSv9jHNw194dQ/bFH+W8S5CviPC+WEzgK9x1GqwxeKDnQA93Ubc6
-         pIROpW9mCbmFawlLNt183dkzLJG92jUie48vdct5nMY9KMIpav4jCN5vVtcBqt99IN
-         LlMRmUTD9hQbKroaOXlhVlrUixEOK798eHEQ6pmGyuqfJJo5J4wfidKynCvdtb3s37
-         PjcEO5DOcIPu3SLREF0Tt+IUZRL6NjCeGqQy3Vt+WmnxMDtnryxVfbjA5YVJAeYKm9
-         BpOJvSuNngQVXkAMINkK0ZwKmdIz+EDYyzVhKaDWPyJSTPhZYBRtaAf1VAW/wDK4NO
-         xT3mGvV5LJ4bA==
-Date:   Tue, 24 Aug 2021 15:31:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
+        id S235401AbhHXUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:37:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:59200 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235097AbhHXUhH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 16:37:07 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AA00E200B3;
+        Tue, 24 Aug 2021 20:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1629837381; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uxAxdlMT56BpyfilaunuCC9NXWquMaDv1rB5K2KZvZA=;
+        b=IHlEywqMTGXwgOiFLYpWtMML2yfEs2P+ATuI9gNpLDrSaEodkzhNCBnhNEXvsJv6gvzI7I
+        9P/wofhq4jX7lgg2O/pEt8zEucDZq/mIYcfKU+B0FKJU5X8w+p8JZcre+ilCVPYINneovl
+        ZVDrvA7HJ4u/hWvEGh6t9wZw62134sQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1629837381;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uxAxdlMT56BpyfilaunuCC9NXWquMaDv1rB5K2KZvZA=;
+        b=xn7AIVjhwWV20vUrItQwOJOEux6lZtJGA72lQwY6xXdkqZ+1ZXjGwb0GEtCen/mGVNWEKB
+        JZGqJ6zMyEHqYbDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72E7313B56;
+        Tue, 24 Aug 2021 20:36:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5bw1GkVYJWFZagAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 24 Aug 2021 20:36:21 +0000
+Subject: Re: [GIT PULL] Memory folios for v5.15
+To:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Rajat Jain <rajatja@google.com>
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-Message-ID: <20210824203115.GA3492097@bjorn-Precision-5520>
+        Andrew Morton <akpm@linux-foundation.org>
+References: <YSVHI9iaamxTGmI7@casper.infradead.org>
+ <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+ <YSPwmNNuuQhXNToQ@casper.infradead.org> <YSQSkSOWtJCE4g8p@cmpxchg.org>
+ <1957060.1629820467@warthog.procyon.org.uk>
+ <YSUy2WwO9cuokkW0@casper.infradead.org>
+ <CAHk-=wip=366HxkJvTfABuPUxwjGsFK4YYMgXNY9VSkJNp=-XA@mail.gmail.com>
+ <YSVCAJDYShQke6Sy@casper.infradead.org>
+ <CAHk-=wisF580D_g+wFt0B_uijSX+mCgz6tRRT5KADnO7Y97t-g@mail.gmail.com>
+ <1967144.1629833751@warthog.procyon.org.uk>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <0ab69444-2d39-27bf-4be1-2a5401c16eac@suse.cz>
+Date:   Tue, 24 Aug 2021 22:35:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a80fc61a-bc55-b82c-354b-b57863ab03db@linux.intel.com>
+In-Reply-To: <1967144.1629833751@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 01:14:02PM -0700, Andi Kleen wrote:
+On 8/24/21 9:35 PM, David Howells wrote:
+> Matthew Wilcox <willy@infradead.org> wrote:
 > 
-> On 8/24/2021 11:55 AM, Bjorn Helgaas wrote:
-> > [+cc Rajat; I still don't know what "shared memory with a hypervisor
-> > in a confidential guest" means,
+>> Sure, but at the time Jeff Bonwick chose it, it had no meaning in
+>> computer science or operating system design.  Whatever name is chosen,
+>> we'll get used to it.  I don't even care what name it is.
+>>
+>> I want "short" because it ends up used everywhere.  I don't want to
+>> be typing
+>> 	lock_hippopotamus(hippopotamus);
+>>
+>> and I want greppable so it's not confused with something somebody else
+>> has already used as an identifier.
 > 
-> A confidential guest is a guest which uses memory encryption to isolate
-> itself from the host. It doesn't trust the host. But it still needs to
-> communicate with the host for IO, so it has some special memory areas that
-> are explicitly marked shared. These are used to do IO with the host. All
-> their usage needs to be carefully hardened to avoid any security attacks on
-> the guest, that's why we want to limit this interaction only to a small set
-> of hardened drivers. For MMIO, the set is currently only virtio and MSI-X.
+> Can you live with pageset?
 
-Good material for the commit log next time around.  Thanks!
+Pagesets already exist in the page allocator internals. Yeah, could be
+renamed as it's not visible outside.
 
-Bjorn
+> David
+> 
+> 
+
