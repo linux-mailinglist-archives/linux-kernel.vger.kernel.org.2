@@ -2,173 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D0E3F6BA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA073F6BAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236898AbhHXWUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45666 "EHLO
+        id S238735AbhHXWU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhHXWUF (ORCPT
+        with ESMTP id S229605AbhHXWU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:20:05 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40359C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:19:20 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a25so20689794ejv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:19:20 -0700 (PDT)
+        Tue, 24 Aug 2021 18:20:58 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5F2C061757;
+        Tue, 24 Aug 2021 15:20:14 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so2796925pjb.3;
+        Tue, 24 Aug 2021 15:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=q5nttO+EVJ+S8LC490ljDcRd9HEmiraLUmRSH5LRsGU=;
-        b=fqCQuAQFqhzUQ0KuQIDY+P8057+0Y5EMgYDiqy08hw4ify0ZD9irk51i93kshUiH1j
-         i0XJt5MRrj3cDrlgmwk1le/EChqbN9yVTb08b/4auSoI06lEY5b3GIoVpKK1BJNHrup1
-         P46q2wHztrXmxnqD3IJM2YzdDDneuVujl0YGYF7t0PVFgEWkewPfVTyGtDtFkyQvgTKC
-         OQKdeMnrd6g/hKAaA1V+IEUVD0zyMoPAncRMpqkb6T93lEb7v82arMaxzqq7DwhXsFag
-         y/BGuMImc8lKtYzlE8Tq9cZlTNXtusFoFTDzUkpE5EX7ygWUjjFb+UBU1eQ/y39FvWBf
-         h00A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1s9ly3AV9m2sRQyA6TMhsemhhhr5uERchfWnHFSTqgA=;
+        b=Ki9v+Tp4RIF7iikzg3iQbG3QTaAwPJlx3zzBojiVvHlkB5nfPNFlfS46mJQQtnRD3f
+         k0564Qehjv+G9AoGHKgVxPyOsDb8JhyrlokVeAUxZfTJX2Z0/JHEkbnyExH1iwQIzQ7H
+         byFHt/qGU3zB94C/xkXkNGLfBUp3Lu3aY4oBxCsCGH3JLwOELK8ZEFsIC9gx0lvbmXWV
+         0kzLNSpC/xCar5DCMkar1iCfkFDvpzGBvhVX20/BPeD9XJb4bZg1XLI4nI0d5E6ZFBIa
+         8maWcjxpv4OfulRnyZxAK8yfbiD2W7b8kzQpHsxYpXKSIEDHZbkh1la2YqKc9ckZSdF5
+         PLFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=q5nttO+EVJ+S8LC490ljDcRd9HEmiraLUmRSH5LRsGU=;
-        b=dJEThIG8PFH2nz6/tpvOa3anop/l6mWrk3XrR7EObVDH3kYzRRcVhTL2vAbFpAva2U
-         pYM8V2ZfGC4sc2/2NtBGN7w3tWYgO2NFBak7Cwxy5etnwxlOcgPpIDAkQ9G0m1LcC6Ig
-         ga4pSzFDA5CQLJvUxeUxysTAqfB47UQzHwRCzfI1PvHKnMr/ewbsjXzVABpfqyp4RYOW
-         1YhWwTNuU71IbGG67TmMB72TS+U4b5hCecXpFDX/jPEpHB5+t/h1KL/z5LB+MJQiw4T+
-         WF7D1fixh3/f1f9ClNbuUhybaO1VEgnkixmmKSlaoPMQSIJXdR9E5SPycYmSdy2AR/G9
-         8yuQ==
-X-Gm-Message-State: AOAM531yp1R+gLm7KIlzAqPkvIPQTZ3km6tWYILz5xAqp5Law9U6baCc
-        6lPZ+kf0xdrHgJmsxixWf6SKmmhSqa2wzBY+IEU=
-X-Google-Smtp-Source: ABdhPJwMH8lLLdOyAd1yBCJ9w2a/GWpgFynhTDYophuuh3pJdd+TFZVvLWLZfxVFcnVwFp/L38EcoDdK0L6QWR2nnSQ=
-X-Received: by 2002:a17:906:491a:: with SMTP id b26mr43345639ejq.25.1629843558874;
- Tue, 24 Aug 2021 15:19:18 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=1s9ly3AV9m2sRQyA6TMhsemhhhr5uERchfWnHFSTqgA=;
+        b=D7NaZLYHnRmig9X7H/MPEJFIJRFOedros0cRHE4HZvNdlyjZCthQvXJ2kCUWn0f1ds
+         N6lh99xPezizpYQP0odoWXyO2wPRXW/jazWDXdPOgz7mlQKNDSA2KHXV+R9XwIujkFVC
+         FSJcIV1i0uTw8B7mh61YI2GdLe4I6f9303uJWH8B15GuAcHTqcb340Tkyj9PgEmiQIhA
+         b+iS8TtlMn438PPT3hoKc+hfVKFLn+plyFWF5ESmVrDKWO+DzWxB3Rxs1TyCGcNYNsen
+         0jXDdqOolmurnlgVcIsjUuImPfykVTDqa3fmMRaOBaEHGrFi2ttKNYMtj0K7VmeVy2By
+         Sbvg==
+X-Gm-Message-State: AOAM5323oFdSJkDbm5CN8iObECUSr+lPxTxlNoX7c6OqjpFChSGwbkyL
+        Qxw5ICYGr7kdKHFfqz9qRT7D11oWJR5RGlXNkdo=
+X-Google-Smtp-Source: ABdhPJy+kCY+EPQ37dj9B65wo0j6R/RKHeuhQ5zltSOAySKaXM84O05Qi2NEPAQWMgttBIuAMsHrCTr58A3cKFzkEcg=
+X-Received: by 2002:a17:902:8c90:b0:12f:699b:27 with SMTP id
+ t16-20020a1709028c9000b0012f699b0027mr28777516plo.28.1629843613701; Tue, 24
+ Aug 2021 15:20:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000007510305ca5225b0@google.com> <CAHbLzkpgQtnvK6qHL1+cnHKZQgniq0wzSLTdYTDC5Bn-NbCD_g@mail.gmail.com>
- <CAHbLzkrmvOeBtFu1xE9Q+ZCiafHsUg4YZLb6Vh+V6=hNdwGZaw@mail.gmail.com>
-In-Reply-To: <CAHbLzkrmvOeBtFu1xE9Q+ZCiafHsUg4YZLb6Vh+V6=hNdwGZaw@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 24 Aug 2021 15:19:07 -0700
-Message-ID: <CAHbLzkrBY7L0B8_+arEJK9JjwVMw4ugeW_+JG4pDc8E8ZBgzYg@mail.gmail.com>
-Subject: Re: [syzbot] kernel BUG in collapse_file
-To:     syzbot <syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <1629774050-4048-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1629774050-4048-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 24 Aug 2021 15:20:02 -0700
+Message-ID: <CAADnVQJ7P-pH8punF1nw5KHhb15AJND-vQ_gK3s87hAJ1HN59A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: test_bpf: Print total time of test in
+ the summary
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:14 PM Yang Shi <shy828301@gmail.com> wrote:
+On Mon, Aug 23, 2021 at 8:00 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> On Tue, Aug 24, 2021 at 12:13 PM Yang Shi <shy828301@gmail.com> wrote:
-> >
-> > On Tue, Aug 24, 2021 at 11:17 AM syzbot
-> > <syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    d6d09a694205 Merge tag 'for-5.14-rc6-tag' of git://git.ker..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=14924605300000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=f61012d0b1cd846f
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=f17e5ab118d29367bda9
-> > > compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+f17e5ab118d29367bda9@syzkaller.appspotmail.com
-> > >
-> > >  unmap_region+0x2ab/0x300 mm/mmap.c:2680
-> > >  __do_munmap+0x18eb/0x2050 mm/mmap.c:2911
-> > >  __do_sys_mremap+0x5d9/0x1390 mm/mremap.c:969
-> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >  do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > > ------------[ cut here ]------------
-> > > kernel BUG at mm/khugepaged.c:1830!
-> >
-> > The BUG means the page is not fully unmapped due to some race, just
-> > like what https://lore.kernel.org/linux-mm/00000000000030563005ca006ffd@google.com/
-> > reported.
-> >
-> > But I really don't think it is worth VM_BUG since khugepaged can just back off.
+> The total time of test is useful to compare the performance
+> when bpf_jit_enable is 0 or 1, so print it in the summary.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  lib/test_bpf.c | 24 ++++++++++++++++++------
+>  1 file changed, 18 insertions(+), 6 deletions(-)
+>
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index 830a18e..37f49b7 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -8627,9 +8627,10 @@ static int __run_one(const struct bpf_prog *fp, const void *data,
+>         return ret;
+>  }
+>
+> -static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
+> +static int run_one(const struct bpf_prog *fp, struct bpf_test *test, u64 *run_one_time)
+>  {
+>         int err_cnt = 0, i, runs = MAX_TESTRUNS;
+> +       u64 time = 0;
+>
+>         for (i = 0; i < MAX_SUBTESTS; i++) {
+>                 void *data;
+> @@ -8663,8 +8664,12 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
+>                                 test->test[i].result);
+>                         err_cnt++;
+>                 }
+> +
+> +               time += duration;
+>         }
+>
+> +       *run_one_time = time;
+> +
+>         return err_cnt;
+>  }
+>
+> @@ -8944,9 +8949,11 @@ static __init int test_bpf(void)
+>  {
+>         int i, err_cnt = 0, pass_cnt = 0;
+>         int jit_cnt = 0, run_cnt = 0;
+> +       u64 total_time = 0;
+>
+>         for (i = 0; i < ARRAY_SIZE(tests); i++) {
+>                 struct bpf_prog *fp;
+> +               u64 run_one_time;
+>                 int err;
+>
+>                 cond_resched();
+> @@ -8971,7 +8978,7 @@ static __init int test_bpf(void)
+>                 if (fp->jited)
+>                         jit_cnt++;
+>
+> -               err = run_one(fp, &tests[i]);
+> +               err = run_one(fp, &tests[i], &run_one_time);
+>                 release_filter(fp, i);
+>
+>                 if (err) {
+> @@ -8981,10 +8988,12 @@ static __init int test_bpf(void)
+>                         pr_cont("PASS\n");
+>                         pass_cnt++;
+>                 }
+> +
+> +               total_time += run_one_time;
+>         }
+>
+> -       pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
+> -               pass_cnt, err_cnt, jit_cnt, run_cnt);
+> +       pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
+> +               pass_cnt, err_cnt, jit_cnt, run_cnt, total_time);
+>
+>         return err_cnt ? -EINVAL : 0;
+>  }
+> @@ -9192,6 +9201,7 @@ static __init int test_tail_calls(struct bpf_array *progs)
+>  {
+>         int i, err_cnt = 0, pass_cnt = 0;
+>         int jit_cnt = 0, run_cnt = 0;
+> +       u64 total_time = 0;
+>
+>         for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
+>                 struct tail_call_test *test = &tail_call_tests[i];
+> @@ -9220,10 +9230,12 @@ static __init int test_tail_calls(struct bpf_array *progs)
+>                         pr_cont("ret %d != %d FAIL", ret, test->result);
+>                         err_cnt++;
+>                 }
+> +
+> +               total_time += duration;
+>         }
+>
+> -       pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
+> -               __func__, pass_cnt, err_cnt, jit_cnt, run_cnt);
+> +       pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
+> +               __func__, pass_cnt, err_cnt, jit_cnt, run_cnt, total_time);
 
-In addition, I think we should be able to just replace
-unmap_mapping_pages() to try_to_unmap() or unmap_page (of course, make
-it non-static) since some races are closed by Hugh's patches.
-
->
-> Forgot cc to other stakeholders.
->
-> >
-> > > invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> > > CPU: 0 PID: 1651 Comm: khugepaged Not tainted 5.14.0-rc6-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > RIP: 0010:collapse_file+0x3537/0x36e0 mm/khugepaged.c:1830
-> > > Code: e8 1e 7a b2 ff 48 89 df 48 c7 c6 40 7b 3d 8a e8 ef 02 e8 ff 0f 0b e8 08 7a b2 ff 48 89 df 48 c7 c6 a0 7b 3d 8a e8 d9 02 e8 ff <0f> 0b e8 f2 79 b2 ff 4c 89 e7 48 c7 c6 a0 7e 3d 8a e8 c3 02 e8 ff
-> > > RSP: 0018:ffffc900066df820 EFLAGS: 00010046
-> > > RAX: 8601299b4ae62f00 RBX: ffffea0000e4e240 RCX: ffff888018fed4c0
-> > > RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
-> > > RBP: ffffc900066dfa90 R08: ffffffff81d08764 R09: ffffed1017383f2c
-> > > R10: ffffed1017383f2c R11: 0000000000000000 R12: ffffc900066df9d8
-> > > R13: dffffc0000000000 R14: ffffc900066dfa20 R15: 0000000000000001
-> > > FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 0000000100000000 CR3: 000000000c48e000 CR4: 00000000001506f0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > Call Trace:
-> > >  khugepaged_scan_file mm/khugepaged.c:2051 [inline]
-> > >  khugepaged_scan_mm_slot+0x27be/0x2ad0 mm/khugepaged.c:2146
-> > >  khugepaged_do_scan+0x2b1/0x640 mm/khugepaged.c:2230
-> > >  khugepaged+0x105/0x890 mm/khugepaged.c:2275
-> > >  kthread+0x453/0x480 kernel/kthread.c:319
-> > >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> > > Modules linked in:
-> > > ---[ end trace 8de2a60ea4ac5483 ]---
-> > > RIP: 0010:collapse_file+0x3537/0x36e0 mm/khugepaged.c:1830
-> > > Code: e8 1e 7a b2 ff 48 89 df 48 c7 c6 40 7b 3d 8a e8 ef 02 e8 ff 0f 0b e8 08 7a b2 ff 48 89 df 48 c7 c6 a0 7b 3d 8a e8 d9 02 e8 ff <0f> 0b e8 f2 79 b2 ff 4c 89 e7 48 c7 c6 a0 7e 3d 8a e8 c3 02 e8 ff
-> > > RSP: 0018:ffffc900066df820 EFLAGS: 00010046
-> > > RAX: 8601299b4ae62f00 RBX: ffffea0000e4e240 RCX: ffff888018fed4c0
-> > > RDX: 0000000000000000 RSI: 000000000000ffff RDI: 000000000000ffff
-> > > RBP: ffffc900066dfa90 R08: ffffffff81d08764 R09: ffffed1017383f2c
-> > > R10: ffffed1017383f2c R11: 0000000000000000 R12: ffffc900066df9d8
-> > > R13: dffffc0000000000 R14: ffffc900066dfa20 R15: 0000000000000001
-> > > FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > CR2: 0000000100000000 CR3: 000000000c48e000 CR4: 00000000001506f0
-> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > ----------------
-> > > Code disassembly (best guess):
-> > >    0:   e8 1e 7a b2 ff          callq  0xffb27a23
-> > >    5:   48 89 df                mov    %rbx,%rdi
-> > >    8:   48 c7 c6 40 7b 3d 8a    mov    $0xffffffff8a3d7b40,%rsi
-> > >    f:   e8 ef 02 e8 ff          callq  0xffe80303
-> > >   14:   0f 0b                   ud2
-> > >   16:   e8 08 7a b2 ff          callq  0xffb27a23
-> > >   1b:   48 89 df                mov    %rbx,%rdi
-> > >   1e:   48 c7 c6 a0 7b 3d 8a    mov    $0xffffffff8a3d7ba0,%rsi
-> > >   25:   e8 d9 02 e8 ff          callq  0xffe80303
-> > >   2a:   0f 0b                   ud2     <-- trapping instruction
-> > >   2c:   e8 f2 79 b2 ff          callq  0xffb27a23
-> > >   31:   4c 89 e7                mov    %r12,%rdi
-> > >   34:   48 c7 c6 a0 7e 3d 8a    mov    $0xffffffff8a3d7ea0,%rsi
-> > >   3b:   e8 c3 02 e8 ff          callq  0xffe80303
-> > >
-> > >
-> > > ---
-> > > This report is generated by a bot. It may contain errors.
-> > > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> > >
-> > > syzbot will keep track of this issue. See:
-> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > >
+I think it only adds noise. Pls use dedicated runners like selftests/bpf/bench
+for performance measurements. test_bpf.ko also does some.
