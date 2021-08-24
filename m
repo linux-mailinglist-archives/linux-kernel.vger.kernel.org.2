@@ -2,353 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57ECA3F5D48
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AAD3F5D4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 13:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbhHXLrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 07:47:55 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:43228 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234787AbhHXLrx (ORCPT
+        id S236676AbhHXLuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 07:50:02 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:19176 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235566AbhHXLuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 07:47:53 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 29514220DF;
-        Tue, 24 Aug 2021 11:47:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1629805629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7CGzf9FJOzjRTBuWlM6TaHEz3xnmJ9+L7ISqNo4hB0A=;
-        b=YT8AxCBRWrdZTy0Hfsu2JT4y3vK2TeGh2pJKlGIhsGkJTkb7jc74nP4ugMdCH846BPI+LE
-        peUG0ieY1yRIEO4ojF6YHINdWaqtEFKRwRKVPfDDG1D9RexHJ71usfqQPThUI/idZANTRk
-        Oj1eCLjLHAAUcxU2+P2rY6tHepgnu0U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1629805629;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7CGzf9FJOzjRTBuWlM6TaHEz3xnmJ9+L7ISqNo4hB0A=;
-        b=IjZ0KmtgMH9247YoIjO3QaOxZS70AnMfvK/obgnHSA3F0tBrmFhEzWp/hVtp3BaEWJy9oo
-        sOwLS59vxZeWRhBQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 08F2313A50;
-        Tue, 24 Aug 2021 11:47:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id yu/HAD3cJGFFHwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Tue, 24 Aug 2021 11:47:09 +0000
-Message-ID: <5a440ea3-da45-49d9-f3c6-de7be31f69bb@suse.cz>
-Date:   Tue, 24 Aug 2021 13:47:08 +0200
+        Tue, 24 Aug 2021 07:50:00 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 17OAKkTP030422;
+        Tue, 24 Aug 2021 11:49:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=1L0yX1R+KkKLYfIpu0kMbas6O2hnWehqqmORGj9SxlE=;
+ b=jY6nxru8ZoDrNyQyRxuMG5cD+izr2ePTNOqv59nncXi7OKJvfAtuMq4I5vxYUVzx9mIU
+ bO65CvtZY9ivIKYSsLd2ky7lrt17bb7tAcfWNYe9dn/2+XIJ06kmk4g6eGPkBpHvPRCO
+ vbJwtUQuXK3TDJ4Hgf2KFrHxgRDrkqYOYcPQ0RmOofprxuJuIDjdtonhH1vsWTHOVGt2
+ +yT6A708/PEiZe1tXmZIloLtSiocgid+Fs0dXIQB5spypnREG1xpfbEQlNjpdIveGTm7
+ qkyvLKH1F2L2bDyI8xfrXD3ACfok/sUxePH8GP2aUikkYPpWF41ffO0lgRWS8YbIJ1de WA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=1L0yX1R+KkKLYfIpu0kMbas6O2hnWehqqmORGj9SxlE=;
+ b=QSPYO+QB8F9Y96VTG6J5ZPfUL3xLIvxhWuypihB/UKXb4a2DwS4/2GvwEKCFkrbnWyRg
+ eydIBVGHuHdFYT7vV8uOYa/UhK3CQBAJdcdON+EohXzNSiV789/SPWQ6L/i1zTwwk1am
+ Nkas5zOf+/1wSBrSGbhWBntCaAgkVtKwzGWseKpdTX91ZQ4T9dEs28lqXM1BVM7FilDm
+ SL7eiGPhfKAhUZsmn50zKLH2CmS91AOjNAKrzkQxgUvfrOZVYiTTZqjo+b7ASprYOkWG
+ sqNgnTTtfL83zYImXBEWttDuR+O2gYhQzwt64yLule/2U2xyqrXesjj1/WZAY2hFj59F uQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3amv678mf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 11:49:11 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17OBjLod192285;
+        Tue, 24 Aug 2021 11:49:11 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2041.outbound.protection.outlook.com [104.47.74.41])
+        by aserp3030.oracle.com with ESMTP id 3ajqhefnaj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Aug 2021 11:49:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TEnQ/lfynSFkR9992fJRzYnD0k+BF0lEHRo8ENZnuHsaVIiZg3e//Gw2z0AVSw0GTio8a6Qr2IcUlGfDyg2yLgnDa6diiHvy3M+oQRDbjmf8x5hQKoTGD/7b/OopHIp8FysdateMu6Kr7uDUjEe7tiYrthHp36UvDCjYYH9+2TLGNCtvFVGFrbD4PqnqlctkuWjFaVtMcrLDnKA8OvJESXLPfiR46Ag8ln2WocEjMKp+5WodmYbJcNwQuCBbCYTRDvzy5mBeD5d3yHXjSHKRHo3fSs929tWxIgEOkkN5hrmQytM9YER20iOoFpzptyC/hFVMv78t3iBvxBXm4rDung==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1L0yX1R+KkKLYfIpu0kMbas6O2hnWehqqmORGj9SxlE=;
+ b=ekrPDMOOvm3L/9tr69DWe6L0p1E5REOk/FkudzrlgZSPMm2D6FT8ey2RGbkM9lVTaN48vzXFxDZvP5TlrXN/nf/PbAxiAzPSeS5Cmk/aj8BuzLHQkIRTAWrFYHfjTFA7D6hUdwlAmKMiNufFJCUuYnyvlJREbHOcQ1MxTFSe5piK3M31FaVkJ0quUQYotZrOHT1g/HaULYrlBDz6NVpcIlveL1ntsO6m3aqdLmgqleADVYK5PoMes0jxCMwe5VY7PRQKfhp/N02ymI2jgC8WfBYOFtvu6pQY19O+fVfWxDfr8ackxQNN9+guQc9OixrGTeLsB7sG5sJb0Kcro48KOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1L0yX1R+KkKLYfIpu0kMbas6O2hnWehqqmORGj9SxlE=;
+ b=eHGYIt0vUSuMP19zhWrPKnZps0t58FgE3qSehyb7Fgecvmw74lFVLj4DaPj3VEagjS9VW6TjB0Se4vKaZg1f5wL4IeClVXpInXLc1dW2HBxl5GvQuvEXjC+ieRXYpvvyMcsdZQGT0eEDwsaaODfoaiRNaDl96RaDkLZi4m30fiU=
+Authentication-Results: paragon-software.com; dkim=none (message not signed)
+ header.d=none;paragon-software.com; dmarc=none action=none
+ header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4595.namprd10.prod.outlook.com
+ (2603:10b6:303:98::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.23; Tue, 24 Aug
+ 2021 11:49:09 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4436.025; Tue, 24 Aug 2021
+ 11:49:09 +0000
+Date:   Tue, 24 Aug 2021 14:48:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] fs/ntfs3: fix an error code in ntfs_get_acl_ex()
+Message-ID: <20210824114858.GH31143@kili>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: ZR0P278CA0144.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::23) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH 1/4] mm: Kconfig: move swap and slab config options to the
- MM section
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-References: <20210819195533.211756-1-hannes@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20210819195533.211756-1-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kili (62.8.83.99) by ZR0P278CA0144.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:40::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 11:49:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a0a012bf-89dd-4a55-694c-08d966f52f0b
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4595:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB459560756F01653B0366F5378EC59@CO1PR10MB4595.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JAF+v07pyDuefIUywZjAMRfLi2cGFMptF7qx41UU1spNeZNAuG3HCdBmN8l09uZj/2w3r8s1Om2Y1U+LnzBVB01bMduSNqxtUHpmHi4jTSwjpGg0Oc6XyZ8D5z72IoMNU1A/VKOgJytL8WZnDDf0nucw+m/L5UxIzbuXhAWayD9gVmiQjaoUu6Ky4+cR2lVeWDejRPuUT5AluySZ6ax6ZKvA4w45ymJuRWGcL4Kr8+eJ3QOL06ucowWs3MiPezCb9Iftx1kmEkKb+D7T5bKfaZ7t5Uyi5/GCwd1t2F6up25jf3ZxIBRFPq+XOyEd1Eh42cHf39uxloNKsNDC0I1j+GtnQde7zVD+FtQXIc0KzkvZfsGr89JkzdA6Zp5C3WjuuGX/fL5yjeAzJ7gzZO6W0Nksf6Ha8RSGF6bqEZbOKJtTxY8wtxYjFq34GX6qUcriDc6o79nM2IYzPW/gu2XH5KFBMvDhzGkUmIe/6u35QbwDJP4sH0wvllOg7/clQgSQz97kg/YeBVdPkbaXURKTm0y5YLGwM9HMGKoLX0da4EDG4w9witAnXAEMvHLGgbC0SIzOgVlh7k9Zm1rfJclHwQvA7g+6Ui3H5G7I67ovwC/UtoaTHEUITLZayQs25SXJb+sUA/PejbLEy0RuNG8ndBmw3BwmlUK4jDRTR1NLKSyNXofi4YxfdDjhRswhQXFfSFBtLcri7wZ4kuQCZ8IKNQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39860400002)(366004)(376002)(396003)(38100700002)(38350700002)(6666004)(1076003)(86362001)(9686003)(66946007)(4326008)(2906002)(6496006)(66476007)(33656002)(316002)(55016002)(52116002)(26005)(478600001)(186003)(5660300002)(6916009)(8676002)(33716001)(956004)(66556008)(83380400001)(44832011)(9576002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2S84Ub24d/Z8F8TpGCndlbKb9bXtIr2gpdJbpFn2wEZQfJgJJI/sKEaJ1skU?=
+ =?us-ascii?Q?RGn6MrbMPuIHvm+A+j9ADp1EhwgZJBvgqnCdau/GNRJXQR2kr3WYsuYcW8Ag?=
+ =?us-ascii?Q?RQvdYfL3UDclpQTuiwf5GWfh6m7lQYB8oAfIH4/mDFoWiDFo26vgryqyUzbg?=
+ =?us-ascii?Q?AyA1X3VUhYhWjXHcm3Th+sTSUWhw4i+7jDNZrDQi8VfLleNn3+xG80KEcBbV?=
+ =?us-ascii?Q?qixw3eLUqq/2xMdGX1EMZP6dqXPa0iUFs9GRObtXlULPs9jcqZFwU6zEsiKC?=
+ =?us-ascii?Q?130RswK6/dqmqS9QtEJ79upSnRzK3QqRp6nX5UYfPo4zQCjeGPko2EYbT8uT?=
+ =?us-ascii?Q?X0a2ULU127Ir1gg3iuTrpkErcdkEVFs1uMkEOSI+ri6DfBRMSktlVcB4G7gB?=
+ =?us-ascii?Q?fuxh6zxbZlhOkIRD8hppLeEXInJllbjdK7U1PfVQrz+xiYcoxiyhitpyOMBt?=
+ =?us-ascii?Q?3ZpFP8jkhkTDynThLp1oyjUWfuURK3lMkP5YWu9A6wVtRuQu2MPm8BZpwBsh?=
+ =?us-ascii?Q?/bQWnta+UAuYSEpgQo6Jp4Muqcn5cKwsLmIP/chj/qta2C4Yu5Rc4d1SrR0C?=
+ =?us-ascii?Q?KnFPfBlDvzLJmxi8QnaQl/caacPovhhB0x+cIpvkxUy0jt8Jmh5EmzdcBPA5?=
+ =?us-ascii?Q?QDC3Pgmu+ozHGFMuLBknoh62s0x36Kk9yzm7Gq8/L8QlGJac/vp5v85h4NYT?=
+ =?us-ascii?Q?2X/XHPbl/KpOsF3/RsGDyRH5Duz3RuJG+WuBZw02YR2ApbmuwgSovljunRXn?=
+ =?us-ascii?Q?eICfoL4FFZNMwPzXf01jitupBn+xBqtbGLoc4OoZAUoXXlEA1g/biib7uM2b?=
+ =?us-ascii?Q?pNnH3ahs+HhcJ9x42xbg9KaEFNRx1G7XFgd81xh8vm6ntXBsE63D3U6rGhLM?=
+ =?us-ascii?Q?MH02jvbznElJlayzlw6xdqGoS4WSq1a2GRzLxh8OmlU9Q8EiS/xROV1R93NV?=
+ =?us-ascii?Q?W9FyhA2k3S6686UiNT86glpy6x9SL719TFIkCmtFjwqmYo97K8dpP2mDcREh?=
+ =?us-ascii?Q?RitSoyCzUKBrstW1YAEbVauN/muj4akXa1ivnFVYi2ItOZ0si7LAoQYHJHpb?=
+ =?us-ascii?Q?GIhXmad43PhEJs5SdDNFHNAKpwLNZJulKUtRQM5Z8q1CL+Rd+jMWNxGb3QuA?=
+ =?us-ascii?Q?NnPfFpvf1ce5srqPRKFsB9BIx6Fv37szDewDCebcP4wtqfOml8/N4lE+aqnO?=
+ =?us-ascii?Q?+ZLBoH6MDW3b7w7TgcmeRvM/S+/pD4tPLm+8C/JdZdS5zAqwagIeFeD56ffE?=
+ =?us-ascii?Q?hEhoYCBV4p9VOObEc2b1/FxBLlONy09L+j7ht04gKoWTYddgmcTUnvxrXhiZ?=
+ =?us-ascii?Q?6QMOLJaKXezVwrFaQ0XGCBlE?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0a012bf-89dd-4a55-694c-08d966f52f0b
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 11:49:09.3722
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XU7/2lQgVoze+y/o/MmxE9b40hNKxm1GXccXuvHNtrvlf5pQ7I8EXYY4LNWJ+BBq7qcjY97wobehCApdPoL8f4ahwm9Mkh8slGEgDfkztw4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4595
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10085 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108240079
+X-Proofpoint-ORIG-GUID: fESl5YGN12tV0eyGEQ1QPncp4M508hhT
+X-Proofpoint-GUID: fESl5YGN12tV0eyGEQ1QPncp4M508hhT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/21 21:55, Johannes Weiner wrote:
-> These are currently under General Setup. MM seems like a better fit.
+The ntfs_get_ea() function returns negative error codes or on success
+it returns the length.  In the original code a zero length return was
+treated as -ENODATA and results in a NULL return.  But it should be
+treated as an invalid length and result in an PTR_ERR(-EINVAL) return.
 
-Right. I've been also wondering about that occasionally.
+Fixes: be71b5cba2e6 ("fs/ntfs3: Add attrib operations")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+I'm not super familiar with this code.  Please review this one
+extra carefully.  I think it's theoretical because hopefully
+ntfs_get_ea() doesn't ever return invalid lengths.
 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+ fs/ntfs3/xattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  init/Kconfig | 120 ---------------------------------------------------
->  mm/Kconfig   | 120 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 120 insertions(+), 120 deletions(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index a61c92066c2e..a2358cd5498a 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -331,23 +331,6 @@ config DEFAULT_HOSTNAME
->  	  but you may wish to use a different default here to make a minimal
->  	  system more usable with less configuration.
->  
-> -#
-> -# For some reason microblaze and nios2 hard code SWAP=n.  Hopefully we can
-> -# add proper SWAP support to them, in which case this can be remove.
-> -#
-> -config ARCH_NO_SWAP
-> -	bool
-> -
-> -config SWAP
-> -	bool "Support for paging of anonymous memory (swap)"
-> -	depends on MMU && BLOCK && !ARCH_NO_SWAP
-> -	default y
-> -	help
-> -	  This option allows you to choose whether you want to have support
-> -	  for so called swap devices or swap files in your kernel that are
-> -	  used to provide more virtual memory than the actual RAM present
-> -	  in your computer.  If unsure say Y.
-> -
->  config SYSVIPC
->  	bool "System V IPC"
->  	help
-> @@ -1862,109 +1845,6 @@ config COMPAT_BRK
->  
->  	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
->  
-> -choice
-> -	prompt "Choose SLAB allocator"
-> -	default SLUB
-> -	help
-> -	   This option allows to select a slab allocator.
-> -
-> -config SLAB
-> -	bool "SLAB"
-> -	select HAVE_HARDENED_USERCOPY_ALLOCATOR
-> -	help
-> -	  The regular slab allocator that is established and known to work
-> -	  well in all environments. It organizes cache hot objects in
-> -	  per cpu and per node queues.
-> -
-> -config SLUB
-> -	bool "SLUB (Unqueued Allocator)"
-> -	select HAVE_HARDENED_USERCOPY_ALLOCATOR
-> -	help
-> -	   SLUB is a slab allocator that minimizes cache line usage
-> -	   instead of managing queues of cached objects (SLAB approach).
-> -	   Per cpu caching is realized using slabs of objects instead
-> -	   of queues of objects. SLUB can use memory efficiently
-> -	   and has enhanced diagnostics. SLUB is the default choice for
-> -	   a slab allocator.
-> -
-> -config SLOB
-> -	depends on EXPERT
-> -	bool "SLOB (Simple Allocator)"
-> -	help
-> -	   SLOB replaces the stock allocator with a drastically simpler
-> -	   allocator. SLOB is generally more space efficient but
-> -	   does not perform as well on large systems.
-> -
-> -endchoice
-> -
-> -config SLAB_MERGE_DEFAULT
-> -	bool "Allow slab caches to be merged"
-> -	default y
-> -	help
-> -	  For reduced kernel memory fragmentation, slab caches can be
-> -	  merged when they share the same size and other characteristics.
-> -	  This carries a risk of kernel heap overflows being able to
-> -	  overwrite objects from merged caches (and more easily control
-> -	  cache layout), which makes such heap attacks easier to exploit
-> -	  by attackers. By keeping caches unmerged, these kinds of exploits
-> -	  can usually only damage objects in the same cache. To disable
-> -	  merging at runtime, "slab_nomerge" can be passed on the kernel
-> -	  command line.
-> -
-> -config SLAB_FREELIST_RANDOM
-> -	bool "Randomize slab freelist"
-> -	depends on SLAB || SLUB
-> -	help
-> -	  Randomizes the freelist order used on creating new pages. This
-> -	  security feature reduces the predictability of the kernel slab
-> -	  allocator against heap overflows.
-> -
-> -config SLAB_FREELIST_HARDENED
-> -	bool "Harden slab freelist metadata"
-> -	depends on SLAB || SLUB
-> -	help
-> -	  Many kernel heap attacks try to target slab cache metadata and
-> -	  other infrastructure. This options makes minor performance
-> -	  sacrifices to harden the kernel slab allocator against common
-> -	  freelist exploit methods. Some slab implementations have more
-> -	  sanity-checking than others. This option is most effective with
-> -	  CONFIG_SLUB.
-> -
-> -config SHUFFLE_PAGE_ALLOCATOR
-> -	bool "Page allocator randomization"
-> -	default SLAB_FREELIST_RANDOM && ACPI_NUMA
-> -	help
-> -	  Randomization of the page allocator improves the average
-> -	  utilization of a direct-mapped memory-side-cache. See section
-> -	  5.2.27 Heterogeneous Memory Attribute Table (HMAT) in the ACPI
-> -	  6.2a specification for an example of how a platform advertises
-> -	  the presence of a memory-side-cache. There are also incidental
-> -	  security benefits as it reduces the predictability of page
-> -	  allocations to compliment SLAB_FREELIST_RANDOM, but the
-> -	  default granularity of shuffling on the "MAX_ORDER - 1" i.e,
-> -	  10th order of pages is selected based on cache utilization
-> -	  benefits on x86.
-> -
-> -	  While the randomization improves cache utilization it may
-> -	  negatively impact workloads on platforms without a cache. For
-> -	  this reason, by default, the randomization is enabled only
-> -	  after runtime detection of a direct-mapped memory-side-cache.
-> -	  Otherwise, the randomization may be force enabled with the
-> -	  'page_alloc.shuffle' kernel command line parameter.
-> -
-> -	  Say Y if unsure.
-> -
-> -config SLUB_CPU_PARTIAL
-> -	default y
-> -	depends on SLUB && SMP
-> -	bool "SLUB per cpu partial cache"
-> -	help
-> -	  Per cpu partial caches accelerate objects allocation and freeing
-> -	  that is local to a processor at the price of more indeterminism
-> -	  in the latency of the free. On overflow these caches will be cleared
-> -	  which requires the taking of locks that may cause latency spikes.
-> -	  Typically one would choose no for a realtime system.
-> -
->  config MMAP_ALLOW_UNINITIALIZED
->  	bool "Allow mmapped anonymous memory to be uninitialized"
->  	depends on EXPERT && !MMU
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 02d44e3420f5..894858536e7f 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -2,6 +2,126 @@
->  
->  menu "Memory Management options"
->  
-> +#
-> +# For some reason microblaze and nios2 hard code SWAP=n.  Hopefully we can
-> +# add proper SWAP support to them, in which case this can be remove.
-> +#
-> +config ARCH_NO_SWAP
-> +	bool
-> +
-> +config SWAP
-> +	bool "Support for paging of anonymous memory (swap)"
-> +	depends on MMU && BLOCK && !ARCH_NO_SWAP
-> +	default y
-> +	help
-> +	  This option allows you to choose whether you want to have support
-> +	  for so called swap devices or swap files in your kernel that are
-> +	  used to provide more virtual memory than the actual RAM present
-> +	  in your computer.  If unsure say Y.
-> +
-> +choice
-> +	prompt "Choose SLAB allocator"
-> +	default SLUB
-> +	help
-> +	   This option allows to select a slab allocator.
-> +
-> +config SLAB
-> +	bool "SLAB"
-> +	select HAVE_HARDENED_USERCOPY_ALLOCATOR
-> +	help
-> +	  The regular slab allocator that is established and known to work
-> +	  well in all environments. It organizes cache hot objects in
-> +	  per cpu and per node queues.
-> +
-> +config SLUB
-> +	bool "SLUB (Unqueued Allocator)"
-> +	select HAVE_HARDENED_USERCOPY_ALLOCATOR
-> +	help
-> +	   SLUB is a slab allocator that minimizes cache line usage
-> +	   instead of managing queues of cached objects (SLAB approach).
-> +	   Per cpu caching is realized using slabs of objects instead
-> +	   of queues of objects. SLUB can use memory efficiently
-> +	   and has enhanced diagnostics. SLUB is the default choice for
-> +	   a slab allocator.
-> +
-> +config SLOB
-> +	depends on EXPERT
-> +	bool "SLOB (Simple Allocator)"
-> +	help
-> +	   SLOB replaces the stock allocator with a drastically simpler
-> +	   allocator. SLOB is generally more space efficient but
-> +	   does not perform as well on large systems.
-> +
-> +endchoice
-> +
-> +config SLAB_MERGE_DEFAULT
-> +	bool "Allow slab caches to be merged"
-> +	default y
-> +	help
-> +	  For reduced kernel memory fragmentation, slab caches can be
-> +	  merged when they share the same size and other characteristics.
-> +	  This carries a risk of kernel heap overflows being able to
-> +	  overwrite objects from merged caches (and more easily control
-> +	  cache layout), which makes such heap attacks easier to exploit
-> +	  by attackers. By keeping caches unmerged, these kinds of exploits
-> +	  can usually only damage objects in the same cache. To disable
-> +	  merging at runtime, "slab_nomerge" can be passed on the kernel
-> +	  command line.
-> +
-> +config SLAB_FREELIST_RANDOM
-> +	bool "Randomize slab freelist"
-> +	depends on SLAB || SLUB
-> +	help
-> +	  Randomizes the freelist order used on creating new pages. This
-> +	  security feature reduces the predictability of the kernel slab
-> +	  allocator against heap overflows.
-> +
-> +config SLAB_FREELIST_HARDENED
-> +	bool "Harden slab freelist metadata"
-> +	depends on SLAB || SLUB
-> +	help
-> +	  Many kernel heap attacks try to target slab cache metadata and
-> +	  other infrastructure. This options makes minor performance
-> +	  sacrifices to harden the kernel slab allocator against common
-> +	  freelist exploit methods. Some slab implementations have more
-> +	  sanity-checking than others. This option is most effective with
-> +	  CONFIG_SLUB.
-> +
-> +config SHUFFLE_PAGE_ALLOCATOR
-> +	bool "Page allocator randomization"
-> +	default SLAB_FREELIST_RANDOM && ACPI_NUMA
-> +	help
-> +	  Randomization of the page allocator improves the average
-> +	  utilization of a direct-mapped memory-side-cache. See section
-> +	  5.2.27 Heterogeneous Memory Attribute Table (HMAT) in the ACPI
-> +	  6.2a specification for an example of how a platform advertises
-> +	  the presence of a memory-side-cache. There are also incidental
-> +	  security benefits as it reduces the predictability of page
-> +	  allocations to compliment SLAB_FREELIST_RANDOM, but the
-> +	  default granularity of shuffling on the "MAX_ORDER - 1" i.e,
-> +	  10th order of pages is selected based on cache utilization
-> +	  benefits on x86.
-> +
-> +	  While the randomization improves cache utilization it may
-> +	  negatively impact workloads on platforms without a cache. For
-> +	  this reason, by default, the randomization is enabled only
-> +	  after runtime detection of a direct-mapped memory-side-cache.
-> +	  Otherwise, the randomization may be force enabled with the
-> +	  'page_alloc.shuffle' kernel command line parameter.
-> +
-> +	  Say Y if unsure.
-> +
-> +config SLUB_CPU_PARTIAL
-> +	default y
-> +	depends on SLUB && SMP
-> +	bool "SLUB per cpu partial cache"
-> +	help
-> +	  Per cpu partial caches accelerate objects allocation and freeing
-> +	  that is local to a processor at the price of more indeterminism
-> +	  in the latency of the free. On overflow these caches will be cleared
-> +	  which requires the taking of locks that may cause latency spikes.
-> +	  Typically one would choose no for a realtime system.
-> +
->  config SELECT_MEMORY_MODEL
->  	def_bool y
->  	depends on ARCH_SELECT_MEMORY_MODEL
-> 
+diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
+index 9239c388050e..e8ed38d0c4c9 100644
+--- a/fs/ntfs3/xattr.c
++++ b/fs/ntfs3/xattr.c
+@@ -521,7 +521,7 @@ static struct posix_acl *ntfs_get_acl_ex(struct user_namespace *mnt_userns,
+ 		ni_unlock(ni);
+ 
+ 	/* Translate extended attribute to acl */
+-	if (err > 0) {
++	if (err >= 0) {
+ 		acl = posix_acl_from_xattr(mnt_userns, buf, err);
+ 		if (!IS_ERR(acl))
+ 			set_cached_acl(inode, type, acl);
+-- 
+2.20.1
 
