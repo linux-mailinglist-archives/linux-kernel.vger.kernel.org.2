@@ -2,125 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFBC3F57BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F163F57CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbhHXFyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
+        id S234464AbhHXF77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 01:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230123AbhHXFxp (ORCPT
+        with ESMTP id S230296AbhHXF7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:53:45 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73E0C061575;
-        Mon, 23 Aug 2021 22:53:01 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u15so11535028plg.13;
-        Mon, 23 Aug 2021 22:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lrFQm7flTkEFFwdFjWBoVvPjc3n+60qzJ4VZO7fQv8w=;
-        b=QtHbrhx+OiFXKxbRJkfrAnvATXqGIwuBUfDWLS4K1YRlorq3cvz7LGthbDYr/oXXVk
-         s7cdECmXymt8NJ57+vFAUdnp68J1mH0/y2Tw0y4vh+yNWAE/Crd3fUE+VrbvsaKJ16Id
-         HF5JzDzZbgD5534vSeV8IdU2O/rwDIMn12/k2hjXE9sUSIynYswyuDD6kpXxMAmeRkoJ
-         tPCwt7QBEsUa+DWKdGvyvYC5oyhS2AFF+sDIXqiujdm3CMU/inbiVTakOhMonUeETN8h
-         mj7PapFPePifK07+7iaFsg9ZFWTeb1+BcydRX7gr4m7vi8/ROq3D8ETloDq8wg4/KCCu
-         Kt+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lrFQm7flTkEFFwdFjWBoVvPjc3n+60qzJ4VZO7fQv8w=;
-        b=iTbxig1NGA/u0jaJftNNSD3ovLc5W7v+Tdfy7rk1Timf9jYduuTPOpknE0fXQBfHu9
-         uTPOeLpssiy2tc0NEUGbz6NMtFp9S18XJ7FHSsZT65xsIyGIbkY1Y7MIkCAh9xkPpBLo
-         BxI3ISRbYvj5CDl7MyUvoOCoyx4niQBAEFfsjHPulophVZFpjYv8nkXeTQYr+kjngu2y
-         IQjKsdzbv4+17DGObeq/RXojTDQ08LOhwguwdH4z6VujM/xp95FdxBBdTNkzTCQcqP8+
-         MVe7GEMJswyr125fIhYJxLnFuertc76VfJvIcmKx11YcXZkmLSyUSBnesa1TsCS0KMrf
-         si5w==
-X-Gm-Message-State: AOAM5329b+aNMi9XCl/l+E6/iso2RgKC7a8l6seVwWC7tqgEqnHDFzNE
-        XbfwzfZpKWP08hhJV/Pus+n9SrM96Vy2r1S/
-X-Google-Smtp-Source: ABdhPJzz5xrfLOEviDCGsTH9xdIXyACp3PC0jd7A6XrFLpI3PQQm8uMigntzQtlu6oOPAeuketZ3bA==
-X-Received: by 2002:a17:90a:e641:: with SMTP id ep1mr2530027pjb.209.1629784380935;
-        Mon, 23 Aug 2021 22:53:00 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id c23sm20665523pgb.74.2021.08.23.22.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 22:53:00 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev@vger.kernel.org (open list:MEDIATEK SWITCH DRIVER),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5.4.y] net: dsa: mt7530: disable learning on standalone ports
-Date:   Tue, 24 Aug 2021 13:52:50 +0800
-Message-Id: <20210824055250.1315862-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 01:59:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1C2C061575;
+        Mon, 23 Aug 2021 22:59:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nxCjIIPElSqhCdgo8hNsrZTfzyz3uEXAdzaL8siyKA4=; b=SXYaBLqKWP/frBwB8zI2Zucfr5
+        0/+veg5jWJ6Kfk/QszuC5jPagukx8ODt6uyKxEUJwSPMT421Vdmt0/C6tWxwD6wF5fKRHHnKsBrXT
+        lHh4JKs6Mae3P6aKLDd2Rc1w1Ct3e3hiGtrEBVxib59XxlDS8UX1Bb8ei4ULVCQ3oTVTZPrJf2x8K
+        vPv3ihshzkIR1BJYOKoiVb/TuIaIvVHlKDizUFn/dTILcwJoSXpRy2TbYsSyjdjUwum+CbWiWDRlr
+        k8nVlg+ZfypZ5fof5hEQvH3rS5pR7+XguMeBeHds3S0Mk2J0UGWPAzrReERc+4WTJU6IMoQbPwRvY
+        K76Tn2Iw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIPMj-00AcGi-Ei; Tue, 24 Aug 2021 05:54:07 +0000
+Date:   Tue, 24 Aug 2021 06:52:53 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, ming.lei@redhat.com,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
+        nbd@other.debian.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/10] scsi/sd: use blk_cleanup_queue() insted of
+ put_disk()
+Message-ID: <YSSJNTxyLHu/LsNJ@infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-2-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823202930.137278-2-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a partial backport of commit 5a30833b9a16f8d1aa15de06636f9317ca51f9df
-("net: dsa: mt7530: support MDB and bridge flag operations") upstream.
+On Mon, Aug 23, 2021 at 01:29:21PM -0700, Luis Chamberlain wrote:
+> The single put_disk() is useful if you know you're not doing
+> a cleanup after add_disk(), but since we want to add support
+> for that, just use the normal form of blk_cleanup_disk() to
+> cleanup the queue and put the disk.
 
-Make sure that the standalone ports start up with learning disabled.
-
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
----
- drivers/net/dsa/mt7530.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index e1a3c33fdad9..b21444b38377 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -764,6 +764,8 @@ mt7530_port_bridge_join(struct dsa_switch *ds, int port,
- 			   PCR_MATRIX_MASK, PCR_MATRIX(port_bitmap));
- 	priv->ports[port].pm |= PCR_MATRIX(port_bitmap);
- 
-+	mt7530_clear(priv, MT7530_PSC_P(port), SA_DIS);
-+
- 	mutex_unlock(&priv->reg_mutex);
- 
- 	return 0;
-@@ -864,6 +866,8 @@ mt7530_port_bridge_leave(struct dsa_switch *ds, int port,
- 			   PCR_MATRIX(BIT(MT7530_CPU_PORT)));
- 	priv->ports[port].pm = PCR_MATRIX(BIT(MT7530_CPU_PORT));
- 
-+	mt7530_set(priv, MT7530_PSC_P(port), SA_DIS);
-+
- 	mutex_unlock(&priv->reg_mutex);
- }
- 
-@@ -1246,11 +1250,15 @@ mt7530_setup(struct dsa_switch *ds)
- 		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
- 			   PCR_MATRIX_CLR);
- 
--		if (dsa_is_cpu_port(ds, i))
-+		if (dsa_is_cpu_port(ds, i)) {
- 			mt7530_cpu_port_enable(priv, i);
--		else
-+		} else {
- 			mt7530_port_disable(ds, i);
- 
-+			/* Disable learning by default on all user ports */
-+			mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
-+		}
-+
- 		/* Enable consistent egress tag */
- 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
- 			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
--- 
-2.25.1
-
+Hmm, I don't think this is correct.  The request_queue is owned by the
+core SCSI code.
