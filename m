@@ -2,149 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230C43F5A54
+	by mail.lfdr.de (Postfix) with ESMTP id BDB8A3F5A55
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbhHXJBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:01:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21969 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235488AbhHXJAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:00:53 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="197517193"
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="197517193"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 02:00:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="597515663"
-Received: from ubuntu18.png.intel.com ([10.88.229.69])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Aug 2021 02:00:05 -0700
-From:   nandhini.srikandan@intel.com
-To:     fancer.lancer@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        mahesh.r.vaidya@intel.com, nandhini.srikandan@intel.com,
-        rashmi.a@intel.com
-Subject: [PATCH v2 2/2] spi: dw: Add support for Intel Thunder Bay SPI
-Date:   Tue, 24 Aug 2021 16:58:56 +0800
-Message-Id: <20210824085856.12714-3-nandhini.srikandan@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210824085856.12714-1-nandhini.srikandan@intel.com>
-References: <20210824085856.12714-1-nandhini.srikandan@intel.com>
+        id S235576AbhHXJBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235524AbhHXJA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 05:00:57 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE95C061757;
+        Tue, 24 Aug 2021 02:00:13 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id x16so17755742pfh.2;
+        Tue, 24 Aug 2021 02:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=epEB/j6CfBFIWkI0NQJbQR8TgF9ZCPLM1VaX62dtXjE=;
+        b=Tio88SDoVKNebqEv7EELHgUiLge67qA0ftH92DcDDAwxdw/BfAh+TQMqJT9lB0bJRU
+         Uh9pB1kqPVzHiMFhf/JPm/enwI/t8sgKWJSq1CEnJKyLCerfwF7HAO3di5jeTA4f80lW
+         G4Esd9q8C87U1m2W1lVHm301AWB3vnJKmC3C6l1Md5Z02RSFXQr3+tG71IJk+VWbs4LV
+         Pn95j0vmASYf5SgeJ/c516z0ycMVSlFWitKXN0NwwQuzMxx98N5cZVorwdAX5GvlRZn8
+         fiDf4Xt0xsBIvW+Tay5kpHd2KvvFlG6fucrvJgOoMAbTckUFESR4NyAWPVlTnTMQVy4p
+         5/Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=epEB/j6CfBFIWkI0NQJbQR8TgF9ZCPLM1VaX62dtXjE=;
+        b=nW3hEUJ0R+yIXGQEBrTkv/io/dEv/2A9CwpSOjJkjrCZcIs8OeNalKPrWKnDv0PfOM
+         1Fzh3p+Io06jdYRNSR8jGwuP/yK9GFIuKxcWww2r+bw8n/cuH9Fw2DTdpyAAAvSydWCy
+         UBIwV98kT8ZY5d/W3DjDrDz1DLEA4sAt2Jj3rSddmyS92JKTLfdkLSLYG9BUK67jy4JB
+         0PhCQIth4OAS+8JCLeJIV34uvdeq/bI5gNNGnYSPDS7pbfkCGlbETWlG/HojzgjDlq7Q
+         bAIK6j8N3/ZjGqhq8jJX2iTig5I5QvMUjZGKEF+d7B3iTck1MmYK7EO1jYCz9umDqaXp
+         R4YQ==
+X-Gm-Message-State: AOAM532LNGNSoUjmVpkEKDcVaiLIdZBJTTVHJENA27XhXerQ5zVNdR6b
+        +EyaADL8lNGwvaCV+kLoz8s=
+X-Google-Smtp-Source: ABdhPJxaOAv+8OR3Q4jPnbfeBbBg2NxrcO52QInY04JsS/isxPgECbKutzEPFG4d5C4W3Kz1XaRl2A==
+X-Received: by 2002:a05:6a00:189f:b0:3e1:b92d:5ef6 with SMTP id x31-20020a056a00189f00b003e1b92d5ef6mr38299958pfh.81.1629795613163;
+        Tue, 24 Aug 2021 02:00:13 -0700 (PDT)
+Received: from ubuntu.localdomain ([171.224.180.204])
+        by smtp.gmail.com with ESMTPSA id u24sm18943692pfm.85.2021.08.24.02.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 02:00:12 -0700 (PDT)
+From:   Nghia Le <nghialm78@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     Nghia Le <nghialm78@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, lukas.bulwahn@gmail.com
+Subject: [PATCH] perf tools: Add missing newline at the end of file
+Date:   Tue, 24 Aug 2021 15:59:47 +0700
+Message-Id: <20210824085947.224062-1-nghialm78@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nandhini Srikandan <nandhini.srikandan@intel.com>
+Add missing newline at the end of file parse-sublevel-options.h.
+Thus removing relevant warning reported by checkpatch.
 
-Add support for Intel Thunder Bay SPI controller, which uses DesignWare
-DWC_ssi core.
-Bit 31 of CTRLR0 register is set for Thunder Bay, to
-configure the device as a master or as a slave serial peripheral.
-Bit 14(SSTE) of CTRLR0 register should be set(1) for Thunder Bay.
-
-Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+Signed-off-by: Nghia Le <nghialm78@gmail.com>
 ---
- drivers/spi/spi-dw-core.c |  7 +++++--
- drivers/spi/spi-dw-mmio.c | 20 +++++++++++++++++++-
- drivers/spi/spi-dw.h      | 12 +++++++++---
- 3 files changed, 33 insertions(+), 6 deletions(-)
+ tools/perf/util/parse-sublevel-options.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-index a305074c482e..f7d45318db8a 100644
---- a/drivers/spi/spi-dw-core.c
-+++ b/drivers/spi/spi-dw-core.c
-@@ -300,8 +300,11 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
- 		/* CTRLR0[13] Shift Register Loop */
- 		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DWC_SSI_CTRLR0_SRL_OFFSET;
+diff --git a/tools/perf/util/parse-sublevel-options.h b/tools/perf/util/parse-sublevel-options.h
+index 9b9efcc2aaad..578b18ef03bb 100644
+--- a/tools/perf/util/parse-sublevel-options.h
++++ b/tools/perf/util/parse-sublevel-options.h
+@@ -8,4 +8,4 @@ struct sublevel_option {
  
--		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
--			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
-+		if (dws->caps & DW_SPI_CAP_DWC_MST)
-+			cr0 |= DWC_SSI_CTRLR0_MST;
-+
-+		if (dws->caps & DW_SPI_CAP_DWC_SSTE)
-+			cr0 |= DWC_SSI_CTRLR0_SSTE;
- 	}
+ int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts);
  
- 	return cr0;
-diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-index 3379720cfcb8..2bd1dedd90b0 100644
---- a/drivers/spi/spi-dw-mmio.c
-+++ b/drivers/spi/spi-dw-mmio.c
-@@ -217,7 +217,24 @@ static int dw_spi_dwc_ssi_init(struct platform_device *pdev,
- static int dw_spi_keembay_init(struct platform_device *pdev,
- 			       struct dw_spi_mmio *dwsmmio)
- {
--	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST | DW_SPI_CAP_DWC_SSI;
-+	/*
-+	 * Set MST to make keem bay SPI as master.
-+	 */
-+	dwsmmio->dws.caps = DW_SPI_CAP_DWC_MST | DW_SPI_CAP_DWC_SSI;
-+
-+	return 0;
-+}
-+
-+static int dw_spi_thunderbay_init(struct platform_device *pdev,
-+				  struct dw_spi_mmio *dwsmmio)
-+{
-+	/*
-+	 * Set MST to make thunder bay SPI as master.
-+	 * Set SSTE to enable slave select toggle bit which is required
-+	 * for the slave devices connected to the thunder bay SPI controller.
-+	 */
-+	dwsmmio->dws.caps = DW_SPI_CAP_DWC_MST | DW_SPI_CAP_DWC_SSTE |
-+			    DW_SPI_CAP_DWC_SSI;
- 
- 	return 0;
- }
-@@ -349,6 +366,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
- 	{ .compatible = "renesas,rzn1-spi", .data = dw_spi_dw_apb_init},
- 	{ .compatible = "snps,dwc-ssi-1.01a", .data = dw_spi_dwc_ssi_init},
- 	{ .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
-+	{ .compatible = "intel,thunderbay-ssi", .data = dw_spi_thunderbay_init},
- 	{ .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
- 	{ .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
- 	{ /* end of table */}
-diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-index b665e040862c..9fffe0a02f3a 100644
---- a/drivers/spi/spi-dw.h
-+++ b/drivers/spi/spi-dw.h
-@@ -76,11 +76,16 @@
- #define DWC_SSI_CTRLR0_DFS_OFFSET	0
- 
- /*
-- * For Keem Bay, CTRLR0[31] is used to select controller mode.
-+ * CTRLR0[31] is used to select controller mode.
-  * 0: SSI is slave
-  * 1: SSI is master
-  */
--#define DWC_SSI_CTRLR0_KEEMBAY_MST	BIT(31)
-+#define DWC_SSI_CTRLR0_MST		BIT(31)
-+
-+/*
-+ * CTRLR0[14] is used to enable/disable Slave Select Toggle bit
-+ */
-+#define DWC_SSI_CTRLR0_SSTE		BIT(14)
- 
- /* Bit fields in CTRLR1 */
- #define SPI_NDF_MASK			GENMASK(15, 0)
-@@ -122,9 +127,10 @@ enum dw_ssi_type {
- 
- /* DW SPI capabilities */
- #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
--#define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
-+#define DW_SPI_CAP_DWC_MST		BIT(1)
- #define DW_SPI_CAP_DWC_SSI		BIT(2)
- #define DW_SPI_CAP_DFS32		BIT(3)
-+#define DW_SPI_CAP_DWC_SSTE		BIT(4)
- 
- /* Slave spi_transfer/spi_mem_op related */
- struct dw_spi_cfg {
+-#endif
+\ No newline at end of file
++#endif
 -- 
-2.17.1
+2.25.1
 
