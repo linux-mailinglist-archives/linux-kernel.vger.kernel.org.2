@@ -2,101 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6863F58C0
+	by mail.lfdr.de (Postfix) with ESMTP id E3B553F58C1
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhHXHOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233436AbhHXHOZ (ORCPT
+        id S233288AbhHXHOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:14:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26970 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233340AbhHXHO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:14:25 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0072DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:13:41 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id f22so12408163qkm.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=stutnD3L3/0lSSJpNZ4NC8IsOt1sbC35Jx0XobC+dHE=;
-        b=XIswH6Tf2GrJPqAnC7I7FOvI+I3wz1xf1tvrsp730qervFhR8WsgzGiKsh8f29E/FN
-         arkDdKGT9ZcEZ+0ZdFlcRvMqNb5cy8ADYkn8oTFlIEGlOniCj/NevbA8f9/qB48bK+3S
-         8CLF9U0Iq0QSDynmYHe6x+xR4TqKkW/bB/bxUeV2aUaR/AcVmns1PfiHZc1Ik/1i6I2t
-         YnEU0XkxY3VYWA8kY2I387kCSAQqRau+40eWaASVKroey4vUDG9QF/Rduhr35f77snEO
-         6n54ZMnxhOfbXxX4qaGhgVS6W7B+gMJj0/YjZXvOootfyFU5ACu0H0BZHDUQ1WLJsHJG
-         jm8w==
+        Tue, 24 Aug 2021 03:14:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629789220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mHQV1RhDVLp4LgprkNafJyD8Xso+/EcdUT8pyuTCElk=;
+        b=Vp1Xkw3ukm4vfQ+KJfmpoM1c8TvtoKD2n0scP1hexPl3flBeIEDMKFNzqn6yAREX1to1p5
+        D3jL2F8R22zKaZSV50MROWHou+L5geVRe/vP3gryPGUMcmlNmDvWZZMsH6yqyqZMyo4+mD
+        cigMC5jIRB+5PQ9Ta8sTM1+vjj/3Nsw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-49-_Fn7niH1P_2X7gKMd8mqWA-1; Tue, 24 Aug 2021 03:13:39 -0400
+X-MC-Unique: _Fn7niH1P_2X7gKMd8mqWA-1
+Received: by mail-wm1-f69.google.com with SMTP id 201-20020a1c01d2000000b002e72ba822dcso828661wmb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:13:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=stutnD3L3/0lSSJpNZ4NC8IsOt1sbC35Jx0XobC+dHE=;
-        b=RL7aQXEfYx2IC57FH1fvqyVEZt/PF+F+qgk2sNpcrv3vut/CRWQq9Pbb6lQXLsB+t5
-         jiDDQBPYoXE38l1aKdxLE2gm9DgZPwYrg2uTIlMYitZbSYwsM5x8cWMaelflZ3MJizSd
-         3TD1UbQtUxSSerVC5y8tl2PxBha5rfTmRBRP6U6i3uBfyGgud8a9oPRVEfEqc7XscTl/
-         v3sSXnvHs/tLpEfAi5szfmv08o8KhZVD7fEP4J+6xLEXlr/6rDwDa9LKonznWiZteM2m
-         OeJ2qjq7BLx0GPVBGF6FxObpVV5+cb+FHWmeGdyK8fLW+D8UC1ZlUOoGBHKcajiq0zcd
-         AhIA==
-X-Gm-Message-State: AOAM533qrvnkQTsQDprablNJKy4iszZDBzBzGVqPtv0U56ivJsokjtZj
-        fwObHD2iLLM4l5Gctpy04+0=
-X-Google-Smtp-Source: ABdhPJzFLwH6UUORZIwvmyu2g8bFjkeBKdcTbo56afaA57n73gCFj4uE0f3i8YnkkGqbYyutKaAgcA==
-X-Received: by 2002:a37:91c3:: with SMTP id t186mr25507499qkd.307.1629789221232;
-        Tue, 24 Aug 2021 00:13:41 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id l14sm7847399qtj.26.2021.08.24.00.13.38
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=mHQV1RhDVLp4LgprkNafJyD8Xso+/EcdUT8pyuTCElk=;
+        b=Xj5BHil06K6vWrlk0qplHVdVuKubSj1GnpFRBv9W8fPMX6tVLC3yzHKMv+DX19BHSM
+         dnWBPT1ckonjId0x4u1gu5MBjnv0Vfd3TKYxGaD2q2scrrSxDpPLVQOxzo1aHtDao27Z
+         uglH7aIwDlMtS5i+zpJYmkfUw+M8RPfgIWCqvDgNuWpc6NRP77sk7NwkT3WrhHQJdl/W
+         BTOtauLTdSgb2IeF2PamvppuQ8+3HaqFlqyWq/xJpz4pu9yuAPDKVv/OIveB8uEg5LWK
+         4PNPmUnOb2RP7LIP5dCwe8UwPRtqpnYlxJl56UGOndedYmWOLO5JTsOzV4czLkNBfXWt
+         ASuA==
+X-Gm-Message-State: AOAM530EaXFGcSSgp/3NQwXmdcI4m1wdEhQrTYn/NHQqPqEJAi6VdtxN
+        MOC5nEx5HeAoHcxPH4xe0BUQA3DERQpIX9mwsjFSEU4JIUWMcclJwptLq/NiprzH8vI1hKdKlDx
+        XEznVFYF6ldfRGLqk300VGYE5QxjnxOnWTO/i1SGryCp8+slayJr50J6z8XNAq/WSLokJ2Odhvn
+        Io
+X-Received: by 2002:a05:600c:41d4:: with SMTP id t20mr2600507wmh.92.1629789217928;
+        Tue, 24 Aug 2021 00:13:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2mWaXyMXXUDC26Nsu4dEPI1cRg93LOjwHFu68ci+aDY5hV5E4VxH/FtAZhbEk/qFV2v2OWw==
+X-Received: by 2002:a05:600c:41d4:: with SMTP id t20mr2600466wmh.92.1629789217592;
+        Tue, 24 Aug 2021 00:13:37 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c14sm8302080wrr.58.2021.08.24.00.13.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:13:40 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] x86:pgtable: fix boolreturn.cocci warnings
-Date:   Tue, 24 Aug 2021 00:13:32 -0700
-Message-Id: <20210824071332.61367-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 00:13:37 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Eduardo Habkost <ehabkost@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] KVM: x86: Fix stack-out-of-bounds memory access
+ from ioapic_write_indirect()
+In-Reply-To: <20210823185841.ov7ejn2thwebcwqk@habkost.net>
+References: <20210823143028.649818-1-vkuznets@redhat.com>
+ <20210823143028.649818-5-vkuznets@redhat.com>
+ <20210823185841.ov7ejn2thwebcwqk@habkost.net>
+Date:   Tue, 24 Aug 2021 09:13:36 +0200
+Message-ID: <87mtp7jowv.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+Eduardo Habkost <ehabkost@redhat.com> writes:
 
-./arch/x86/include/asm/pgtable.h:1369:9-10:WARNING:return of 0/1 in
-function '__pte_access_permitted' with return type bool
+> On Mon, Aug 23, 2021 at 04:30:28PM +0200, Vitaly Kuznetsov wrote:
+>> KASAN reports the following issue:
+>> 
+>>  BUG: KASAN: stack-out-of-bounds in kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>>  Read of size 8 at addr ffffc9001364f638 by task qemu-kvm/4798
+>> 
+>>  CPU: 0 PID: 4798 Comm: qemu-kvm Tainted: G               X --------- ---
+>>  Hardware name: AMD Corporation DAYTONA_X/DAYTONA_X, BIOS RYM0081C 07/13/2020
+>>  Call Trace:
+>>   dump_stack+0xa5/0xe6
+>>   print_address_description.constprop.0+0x18/0x130
+>>   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>>   __kasan_report.cold+0x7f/0x114
+>>   ? kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>>   kasan_report+0x38/0x50
+>>   kasan_check_range+0xf5/0x1d0
+>>   kvm_make_vcpus_request_mask+0x174/0x440 [kvm]
+>>   kvm_make_scan_ioapic_request_mask+0x84/0xc0 [kvm]
+>>   ? kvm_arch_exit+0x110/0x110 [kvm]
+>>   ? sched_clock+0x5/0x10
+>>   ioapic_write_indirect+0x59f/0x9e0 [kvm]
+>>   ? static_obj+0xc0/0xc0
+>>   ? __lock_acquired+0x1d2/0x8c0
+>>   ? kvm_ioapic_eoi_inject_work+0x120/0x120 [kvm]
+>> 
+>> The problem appears to be that 'vcpu_bitmap' is allocated as a single long
+>> on stack and it should really be KVM_MAX_VCPUS long. We also seem to clear
+>> the lower 16 bits of it with bitmap_zero() for no particular reason (my
+>> guess would be that 'bitmap' and 'vcpu_bitmap' variables in
+>> kvm_bitmap_or_dest_vcpus() caused the confusion: while the later is indeed
+>> 16-bit long, the later should accommodate all possible vCPUs).
+>> 
+>> Fixes: 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
+>> Fixes: 9a2ae9f6b6bb ("KVM: x86: Zero the IOAPIC scan request dest vCPUs bitmap")
+>> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/ioapic.c | 10 +++++-----
+>>  1 file changed, 5 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/ioapic.c b/arch/x86/kvm/ioapic.c
+>> index ff005fe738a4..92cd4b02e9ba 100644
+>> --- a/arch/x86/kvm/ioapic.c
+>> +++ b/arch/x86/kvm/ioapic.c
+>> @@ -319,7 +319,7 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
+>>  	unsigned index;
+>>  	bool mask_before, mask_after;
+>>  	union kvm_ioapic_redirect_entry *e;
+>> -	unsigned long vcpu_bitmap;
+>> +	unsigned long vcpu_bitmap[BITS_TO_LONGS(KVM_MAX_VCPUS)];
+>
+> Is there a way to avoid this KVM_MAX_VCPUS-sized variable on the
+> stack?  This might hit us back when we increase KVM_MAX_VCPUS to
+> a few thousand VCPUs (I was planning to submit a patch for that
+> soon).
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+What's the short- or mid-term target?
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
+Note, we're allocating KVM_MAX_VCPUS bits (not bytes!) here, this means
+that for e.g. 2048 vCPUs we need 256 bytes of the stack only. In case
+the target much higher than that, we will need to either switch to
+dynamic allocation or e.g. use pre-allocated per-CPU variables and make
+this a preempt-disabled region. I, however, would like to understand if
+the problem with allocating this from stack is real or not first.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- arch/x86/include/asm/pgtable.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>
+>>  	int old_remote_irr, old_delivery_status, old_dest_id, old_dest_mode;
+>>  
+>>  	switch (ioapic->ioregsel) {
+>> @@ -384,9 +384,9 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
+>>  			irq.shorthand = APIC_DEST_NOSHORT;
+>>  			irq.dest_id = e->fields.dest_id;
+>>  			irq.msi_redir_hint = false;
+>> -			bitmap_zero(&vcpu_bitmap, 16);
+>> +			bitmap_zero(vcpu_bitmap, KVM_MAX_VCPUS);
+>>  			kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
+>> -						 &vcpu_bitmap);
+>> +						 vcpu_bitmap);
+>>  			if (old_dest_mode != e->fields.dest_mode ||
+>>  			    old_dest_id != e->fields.dest_id) {
+>>  				/*
+>> @@ -399,10 +399,10 @@ static void ioapic_write_indirect(struct kvm_ioapic *ioapic, u32 val)
+>>  				    kvm_lapic_irq_dest_mode(
+>>  					!!e->fields.dest_mode);
+>>  				kvm_bitmap_or_dest_vcpus(ioapic->kvm, &irq,
+>> -							 &vcpu_bitmap);
+>> +							 vcpu_bitmap);
+>>  			}
+>>  			kvm_make_scan_ioapic_request_mask(ioapic->kvm,
+>> -							  &vcpu_bitmap);
+>> +							  vcpu_bitmap);
+>>  		} else {
+>>  			kvm_make_scan_ioapic_request(ioapic->kvm);
+>>  		}
+>> -- 
+>> 2.31.1
+>> 
 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index 448cd01..fc4801d 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -1366,7 +1366,7 @@ static inline bool __pte_access_permitted(unsigned long pteval, bool write)
- 		need_pte_bits |= _PAGE_RW;
- 
- 	if ((pteval & need_pte_bits) != need_pte_bits)
--		return 0;
-+		return false;
- 
- 	return __pkru_allows_pkey(pte_flags_pkey(pteval), write);
- }
 -- 
-1.8.3.1
-
+Vitaly
 
