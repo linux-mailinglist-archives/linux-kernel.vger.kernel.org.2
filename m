@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB453F57F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EF93F580E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhHXGMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        id S230227AbhHXGRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhHXGMf (ORCPT
+        with ESMTP id S231166AbhHXGRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:12:35 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749C2C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:11:51 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id t32so620456qtc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:11:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pW97JysVrDG4RYG2RkdBs7dQScENzapfQkLmeGdGj04=;
-        b=AA04+zqUT8sFIqAV0kleVaUSS+HRtWsTeJrL7NZkPCq4UgyUVnNs3XUlYnwxUgA6c1
-         GL6T2g0m++V1ArMfT9sSqDtmgIJfSi94G2sJ/kTI1zVJWxjj/lU59tHTZir5gRUam30a
-         R0mEwqgFsrzjlwkXu90Jni+7PhdrYBrGszll0Dm4nsmdP9Wn19GjqmMCShsNxU5/+tZl
-         eunHAbi8SCJ4omabkswHBrD2WdRhci5yNe0BVE5qXWmbFCn/Q0qHUV9r4Wgw9Iomuw9m
-         wDmSVnZEwe2qJ7Q05bFVBypJG++BaRRt5WTaISovDmoCr+sOD9oTEHehDLu8ze1mKfEJ
-         ek2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pW97JysVrDG4RYG2RkdBs7dQScENzapfQkLmeGdGj04=;
-        b=iaDQI2DllJzqZwx704BqxZkV76rTu/7HXuWfjhg8U31BG/cK3R1J1NXRLEe1YX+Z4w
-         NSFikJvMxMeIi4mb6XLb0bw1vbAleahB/FHuWtd5qv8D7IXE0BVy4pxVPqar8WW7pHZN
-         2RvbFELiejpz+nVmW3VLRYTvO9qcyImVsfgzl8Zb+yFIenzr+TD2Hi9Nys4i/XUMNaY6
-         dCg4jnLpK+J4aTW3G5KxQh4iJ0DLcAlx0/vR8WYPwgen0qnHn3BBhxqmIzSiiNLRlOt1
-         noC1yqP01CbniEBT+qrMO+HIKW9sQcVemKQ74tlyX4EIWKYskYH87p+a8XZXSmBwuXs/
-         xtQg==
-X-Gm-Message-State: AOAM531afbcciN1d5x3y/xPN5+b4B6uMqK7q3TWe7ZNQ6CVMgh7vZKyO
-        Iw3r+I0YqYWbeqrCJeMoojw=
-X-Google-Smtp-Source: ABdhPJxR1E/Z6F3EyaWSmO4Vn/OyofdVyUiE3w57n4vhx73tXvy9+d0qk4+2IbUMRUxsBsH+B4Z8/A==
-X-Received: by 2002:a05:622a:14c9:: with SMTP id u9mr32789986qtx.110.1629785510724;
-        Mon, 23 Aug 2021 23:11:50 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id l126sm7133065qke.96.2021.08.23.23.11.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:11:50 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] include:page-flags: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:11:43 -0700
-Message-Id: <20210824061143.59191-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Aug 2021 02:17:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ECDC061575;
+        Mon, 23 Aug 2021 23:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dQds9cSHSeE6kGx5MS02raO6iayqk63xe1w2A7iEq1M=; b=NAFLIm8m4aCi9SqoT2xstelsQt
+        vDDY5oULL6Gmc1ZtN/gXrqKm8aT4pyL1HMdd/l2rqnGgXcV9wI4JDOqTNN4B9TBQDOR+FgwwGB+hC
+        fVN/KSCGFY0auXuQHe7JihRBzo4EtOoqe2ZdAM3mAMsZk+1zS6mxXQtz21pklOJ9cM9Gq4EjMh2dC
+        VNji9HAUzIQdgAkjytgO5wKENF8c6yy+BfZYUHRc1wJwRmWaSWdd5JxzsX07oeG29ZP7H46rvTk6j
+        mURnUDtSYtcFQhIZ3HmOwQ46s6R9rtWUkAiy5MKh90yI8kvp0Wmvu5n28MAsamto4HyofHAZc1EFv
+        5HJ8ucjg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIPgP-00Adf8-0Q; Tue, 24 Aug 2021 06:13:28 +0000
+Date:   Tue, 24 Aug 2021 07:13:13 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
+        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
+        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
+        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
+        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
+        bvanassche@acm.org, ming.lei@redhat.com,
+        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
+        nbd@other.debian.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/10] mmc/core/block: add error handling support for
+ add_disk()
+Message-ID: <YSSN+eac2aCFXTAA@infradead.org>
+References: <20210823202930.137278-1-mcgrof@kernel.org>
+ <20210823202930.137278-7-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210823202930.137278-7-mcgrof@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+On Mon, Aug 23, 2021 at 01:29:26PM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> The caller cleanups the disk already so all we need to do
+> is just pass along the return value.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/mmc/core/block.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 4c11f171e56d..4f12c6d1e1b5 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2432,7 +2432,9 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
+>  	/* used in ->open, must be set before add_disk: */
+>  	if (area_type == MMC_BLK_DATA_AREA_MAIN)
+>  		dev_set_drvdata(&card->dev, md);
+> -	device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
+> +	ret = device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
+> +	if (ret)
+> +		goto out;
 
-./include/linux/page-flags.h:377:74-75:WARNING:return of 0/1 in
-function 'folio_test_headhuge' with return type bool
-
-Return statements in functions returning bool should use true/false
-instead of 1/0.
-
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
----
- include/linux/page-flags.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index a68af80..aa743e6 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -374,7 +374,7 @@ static unsigned long *folio_flags(struct folio *folio, unsigned n)
- 	TESTCLEARFLAG(uname, lname, policy)
- 
- #define TESTPAGEFLAG_FALSE(uname, lname)				\
--static inline bool folio_test_##lname(const struct folio *folio) { return 0; } \
-+static inline bool folio_test_##lname(const struct folio *folio) { return false; } \
- static inline int Page##uname(const struct page *page) { return 0; }
- 
- #define SETPAGEFLAG_NOOP(uname, lname)					\
-@@ -391,12 +391,12 @@ static unsigned long *folio_flags(struct folio *folio, unsigned n)
- 
- #define TESTSETFLAG_FALSE(uname, lname)					\
- static inline bool folio_test_set_##lname(struct folio *folio)		\
--{ return 0; }								\
-+{ return false; }								\
- static inline int TestSetPage##uname(struct page *page) { return 0; }
- 
- #define TESTCLEARFLAG_FALSE(uname, lname)				\
- static inline bool folio_test_clear_##lname(struct folio *folio)	\
--{ return 0; }								\
-+{ return false; }								\
- static inline int TestClearPage##uname(struct page *page) { return 0; }
- 
- #define PAGEFLAG_FALSE(uname, lname) TESTPAGEFLAG_FALSE(uname, lname)	\
--- 
-1.8.3.1
-
-
+This needs to do a blk_cleanup_queue and also te kfree of md.
