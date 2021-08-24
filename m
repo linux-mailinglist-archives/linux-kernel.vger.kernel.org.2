@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959DB3F61D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06973F61E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238390AbhHXPmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:42:09 -0400
-Received: from mail-ua1-f48.google.com ([209.85.222.48]:35617 "EHLO
-        mail-ua1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238383AbhHXPmH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:42:07 -0400
-Received: by mail-ua1-f48.google.com with SMTP id r20so5915812uat.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:41:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BpalmFczsKrzSZmLbopzpftY8pBp3iweKYlzoS1maaY=;
-        b=k9VDozFMHGIRAv0M35KzI22SL+apqn3c+OkgFXUOBjl08ROK6IvLNGxrJs/fJ1lBFs
-         j3qSvyDt325LmG3CEPF+ETc2Wek1kJUwwQ4CcCrMtzJA2JLO3wNHdT6ikIhTQ9nF9VSV
-         67WnESFCIPe3+/YcKbloeqW5CdS5VcyBhzkK+6UnTEZAPLkm7O4OajlKR/Lywt6pnXhV
-         17nxEC31mqdvkU4Lnbb+YuwUsc6yaFEBkJqzER/8G+yDVYtcCAgdd0G3CP7PZYGOeJUT
-         3E4aHe9gFjA4Pwo6DamBkBQB0m+mLxTiRG8w7qxZfeEbqHwBfa44xPlF8Jy9aWcVLB/9
-         UOGA==
-X-Gm-Message-State: AOAM531/oeiEUvWvjlkap9TYx23100H0a1LLpSvx93dfu8LB2Qj63coD
-        z/OTtDcmrjsQ/kjjWzkEcyUytRIgoTb5SDMRLUc=
-X-Google-Smtp-Source: ABdhPJw1io8JEw5E317P/UDRY+Xnlg5WgVCTEbkuiJg8bWOm2OF8M2PQDBox+yiYfddi4T96nWlJDH8h/bkB+7j4L5U=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr28549281vsl.9.1629819683118;
- Tue, 24 Aug 2021 08:41:23 -0700 (PDT)
+        id S238596AbhHXPoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:44:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:63076 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238432AbhHXPnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:43:49 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217061467"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="217061467"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:42:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="526670292"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.172.211]) ([10.249.172.211])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 08:42:46 -0700
+Subject: Re: [PATCH 2/5] KVM: VMX: Use cached vmx->pt_desc.addr_range
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210824110743.531127-1-xiaoyao.li@intel.com>
+ <20210824110743.531127-3-xiaoyao.li@intel.com> <YSUPKmtP6Dcl1yio@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <faf53e42-428b-5d54-0a29-2dbe3af6ddd2@intel.com>
+Date:   Tue, 24 Aug 2021 23:42:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210804123015.807929-1-bmeng.cn@gmail.com>
-In-Reply-To: <20210804123015.807929-1-bmeng.cn@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 24 Aug 2021 17:41:11 +0200
-Message-ID: <CAMuHMdV3DJTii41Q4dy9XSL2zD2rd2ND6rrMwBLNiFsJz+jP3Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] riscv: dts: microchip: Use 'local-mac-address' for emac1
-To:     Bin Meng <bmeng.cn@gmail.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <Conor.Dooley@microchip.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YSUPKmtP6Dcl1yio@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bin,
+On 8/24/2021 11:24 PM, Sean Christopherson wrote:
+> On Tue, Aug 24, 2021, Xiaoyao Li wrote:
+>> The number of guest's valid PT ADDR MSRs is cached in
+> 
+> Can you do s/cached/precomputed in the shortlog and changelog?  Explanation below.
 
-On Wed, Aug 4, 2021 at 2:30 PM Bin Meng <bmeng.cn@gmail.com> wrote:
-> From: Bin Meng <bin.meng@windriver.com>
->
-> Per the DT spec, 'local-mac-address' is used to specify MAC address
-> that was assigned to the network device, while 'mac-address' is used
-> to specify the MAC address that was last used by the boot program,
-> and shall be used only if the value differs from 'local-mac-address'
-> property value.
->
-> Signed-off-by: Bin Meng <bin.meng@windriver.com>
-> Reviewed-by: conor dooley <conor.dooley@microchip.com>
+OK.
 
-Thanks for your patch!
+>> vmx->pt_desc.addr_range. Use it instead of calculating it again.
+>>
+>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>> ---
+>>   arch/x86/kvm/vmx/vmx.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index e0a9460e4dab..7ed96c460661 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -2202,8 +2202,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>>   		if (!pt_can_write_msr(vmx))
+>>   			return 1;
+>>   		index = msr_info->index - MSR_IA32_RTIT_ADDR0_A;
+>> -		if (index >= 2 * intel_pt_validate_cap(vmx->pt_desc.caps,
+>> -						       PT_CAP_num_address_ranges))
+>> +		if (index >= 2 * vmx->pt_desc.addr_range)
+> 
+> Ugh, "validate" is a lie, a better name would be intel_pt_get_cap() or so.  There
+> is no validation, the helper is simply extracting the requested cap from the
+> passed in array of capabilities.
+> 
+> That matters in this case because the number of address ranges exposed to the
+> guest is not bounded by the number of address ranges present in hardware, i.e.
+> it's not "validated".  And that matters because KVM uses vmx->pt_desc.addr_range
+> to pass through the ADDRn_{A,B} MSRs when tracing enabled.  In other words,
+> userspace can expose MSRs to the guest that do not exist.
 
-> ---
->
-> (no changes since v1)
->
->  arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> index 0659068b62f7..a9c558366d61 100644
-> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> @@ -317,7 +317,7 @@ emac1: ethernet@20112000 {
->                         reg = <0x0 0x20112000 0x0 0x2000>;
->                         interrupt-parent = <&plic>;
->                         interrupts = <70 71 72 73>;
-> -                       mac-address = [00 00 00 00 00 00];
-> +                       local-mac-address = [00 00 00 00 00 00];
+That's why I provided patch 5.
 
-Is there any point in providing an all-zeros MAC address at all?
-Can't it just be removed?
+> The bug shouldn't be a security issue, so long as Intel CPUs are bug free and
+> aren't doing silly things with MSR indexes.  The number of possible address ranges
+> is encoded in three bits, thus the theoretical max is 8 ranges.  So userspace can't
+> get access to arbitrary MSRs, just ADDR0_A -> ADDR7_B.
+> 
+> And since KVM would be modifying the "validated" value, it's more than just a
+> cache, hence the request to use "precomputed".
+> 
+> Finally, vmx_get_msr() should use the precomputed value as well.
 
->                         clocks = <&clkcfg 5>, <&clkcfg 2>;
->                         status = "disabled";
->                         clock-names = "pclk", "hclk";
+Argh, I missed it.
 
-Gr{oetje,eeting}s,
+> P.S. If you want to introduce a bit of churn, s/addr_range/nr_addr_ranges would
+>       be a welcome change as well.
 
-                        Geert
+In a separate patch?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>>   			return 1;
+>>   		if (is_noncanonical_address(data, vcpu))
+>>   			return 1;
+>> -- 
+>> 2.27.0
+>>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
