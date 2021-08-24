@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C1C3F69F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3E63F69FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234572AbhHXTjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhHXTjb (ORCPT
+        id S235073AbhHXTli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:41:38 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:44742 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhHXTlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:39:31 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BC8C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:38:46 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1144000e600dcb30086556.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:4400:e60:dcb:3008:6556])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EB7821EC04D1;
-        Tue, 24 Aug 2021 21:38:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629833921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ri5TEBgTA2LGbGlEqzw1BWYXpn+hiv7uMMvSWE4yd40=;
-        b=e2Y8kNG1MY8XIKPZ96YXtYnIM0QtlPtW/X5/6/ItyWxYH0bhEu1yqn0ye6o6wKVjwXia2v
-        GkGfI+729kSvN9mgBSSXkvm4wC+I9nJLxenTZam0ohRMdiXMgW2GeB+vfcZ/PknXVN+yBH
-        AnQNPDJVhMPpXnLONOxMZO7S6alcy2U=
-Date:   Tue, 24 Aug 2021 21:39:17 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/12] x86/tdx: Wire up KVM hypercalls
-Message-ID: <YSVK5cSFGfC7dY6z@zn.tnic>
-References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-10-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YSUfpQPvL6wsk6Ou@zn.tnic>
- <8ccbf970-fd4f-b1ea-ac85-98acfe296b00@linux.intel.com>
- <YSU6eixLyNdESBe9@zn.tnic>
- <b4742f7b-b1d8-8431-407f-f15a78a0d3f0@linux.intel.com>
+        Tue, 24 Aug 2021 15:41:37 -0400
+Received: by mail-lf1-f41.google.com with SMTP id o10so47813032lfr.11;
+        Tue, 24 Aug 2021 12:40:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VfEPuan/zCIEg+H/ClhRQP2hu3myJiA0etgVi2UQg2A=;
+        b=QPervYaYegUocV0f39v4PtEqHuqB5WKhzL/K//mEdG56wgOzBuFSwaIMDk6/PjWf7a
+         /rf84Q1GwnaMHp3O234UbQOYKz5vvQwtHkwlPCMKZ/lvInNM0mVhh7us82HlLeKclsB7
+         esvyfZB5NAxlIWn4DL+aKciOU9Xp9WFV0oExYspbUZG5JLsoBzqf3Rf+QOgvxwzp4w9I
+         M33SBfAOIYlmWDWStYORbnkpboNexAkaxBRjAEUm8A2ZHnZmd7HRCVBrLbIp+d71xDVc
+         ZWs3uLufrC29z879BkvXgbBwgjLZOltFSPSDjQdXf2iuWw0W7z3kHtdGGBEuiJLXJNbk
+         VWeQ==
+X-Gm-Message-State: AOAM530aULFkJ9qbURP7WBB7OZ1gDGNXiESy+3uBobsxxZbtRKJY5te3
+        z2LUUEgiAOnrxpeL3NtrwAXBWK9T3/+YCAWuFJw=
+X-Google-Smtp-Source: ABdhPJyY6Kq0QFIxOUEodaPp97AYu4Z0bqd1l4JiIFefiXeXzoPuLNXQ0o1IgWN9NHIAWuL9vRLvCZDw8OsyLSvcytY=
+X-Received: by 2002:a05:6512:158e:: with SMTP id bp14mr22128013lfb.509.1629834051824;
+ Tue, 24 Aug 2021 12:40:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b4742f7b-b1d8-8431-407f-f15a78a0d3f0@linux.intel.com>
+References: <cover.1629454773.git.rickyman7@gmail.com> <f9100c6e428eafe1b9761f947550e45ccc9e8849.1629454773.git.rickyman7@gmail.com>
+In-Reply-To: <f9100c6e428eafe1b9761f947550e45ccc9e8849.1629454773.git.rickyman7@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 24 Aug 2021 12:40:40 -0700
+Message-ID: <CAM9d7ch4RM5rKrYLKrny3yt3ciK87aqzJ8Wt3ze87u9KBHjyXg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 08/15] perf workqueue: add queue_work and
+ flush_workqueue functions
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:11:00PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> If the TDX code is complied for another hypervior, we need some config to
-> disable above the above code.
+On Fri, Aug 20, 2021 at 3:54 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
+>
+> This patch adds functions to queue and wait work_structs, and
+> related tests.
+>
+> When a new work item is added, the workqueue first checks if there
+> are threads to wake up. If so, it wakes it up with the given work item,
+> otherwise it will pick the next round-robin thread and queue the work
+> item to its queue. A thread which completes its queue will go to sleep.
+>
+> The round-robin mechanism is implemented through the next_worker
+> attibute which will point to the next worker to be chosen for queueing.
+> When work is assigned to that worker or when the worker goes to sleep,
+> the pointer is moved to the next worker in the busy_list, if any.
+> When a worker is woken up, it is added in the busy list just before the
+> next_worker, so that it will be chosen as last (it's just been assigned
+> a work item).
 
-Isn't that what CONFIG_KVM_GUEST is for?
+Do we really need this?  I think some of the complexity comes
+because of this.  Can we simply put the works in a list in wq
+and workers take it out with a lock?  Then the kernel will
+distribute the works among the threads for us.
 
-Also, if they don't get used anywhere, the compiler will simply discard
-them. I still don't see the need for the ifdeffery.
+Maybe we can get rid of worker->lock too..
 
-> Following is the error info.
-> 
-> WARNING: modpost: EXPORT symbol "__tdx_hypercall" [vmlinux] version
-> generation failed, symbol will not be versioned.
-> 
-> So to fix the above issue, added tdx.h in arch/x86/include/asm/asm-prototypes.h
-
-You need the C-style declaration of __tdx_hypercall, see
-
-334bb7738764 ("x86/kbuild: enable modversions for symbols exported from asm")
-
-and you can do the include without the ifdeffery.
-
-And also state in the commit message why you're including it.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Namhyung
