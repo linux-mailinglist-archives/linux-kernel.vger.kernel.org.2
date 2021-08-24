@@ -2,72 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903CA3F6AC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E6C3F6AC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhHXVGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
+        id S233774AbhHXVGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234442AbhHXVGH (ORCPT
+        with ESMTP id S231474AbhHXVGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:06:07 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91060C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:05:22 -0700 (PDT)
+        Tue, 24 Aug 2021 17:06:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF11C061757;
+        Tue, 24 Aug 2021 14:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hY99dBj8BXa4nQSsll4zO9lsRBPP5TAkRTfty6KZ8yY=; b=Dt9M/Zu8lbnYVB73K3IdJJ7WSu
-        jWA/b8fAj9kjZMp0Wx15Aj4sLuUsmomOJ6bGquJaFHT8r8WbzYuGqoaRhLUNA99STHI6bKjId3Ijr
-        /DUdzySByoeqoIcOcE4I61q88nD32EWQXV5mcXu9NsDRITF3niPydRJtEGRf6gBR0byvsNI8S/AJv
-        YLKlUQYQwJcQeOV/INUEWS04/Oigy+gsxdnyV1cwKug7X6bLvJ3metfS53R3DIVDvOERa7uD8Lw4N
-        zJC31bWQf3p6dCqb605cpGANGmzjeH7z2FVE4nqrw0Mno33G8TVY9/ZbGaQ/3cAvvFMJiD+acPCCX
-        XWxoH1Tw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIdbY-00ChXp-Cs; Tue, 24 Aug 2021 21:05:08 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 27492981244; Tue, 24 Aug 2021 23:05:07 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 23:05:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: objtool warning in cfg80211_edmg_chandef_valid() with ThinLTO
-Message-ID: <20210824210507.GC17784@worktop.programming.kicks-ass.net>
-References: <5913cdf4-9c8e-38f8-8914-d3b8a3565d73@kernel.org>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=47sgnIoZKep1DRbln9+NTL1J6N65R7OgQCZZ3ODQ1JU=; b=XdIxM4Rp2nAdP6b3OPoUPX1wcl
+        CGgh1FBE2vcOUw38/OhpKrOwanD6szssU48tKUas2UKyOJSUH4peFM3/nAVwRHLQEFrtw+72JyBMo
+        LwHu2cNxj/J8Y2LjRlkSPy/fkZbTOX2j+Sw2DUdKNNBtep/PCyTMzLHe6Q4xzM3yZXnOICbBO4n+d
+        /ELvDWYz2KtyKUfRiyd2i9TR2x+ntfhMrtwq/DHGFstxbYYuylORFsM9ZURkHne/bxERKzG5M7kaQ
+        ukmXkSM+InShYPHlPNTKdTLDoTM2UZCqO7dszR/6WLQIm2oxhvo7Aglv2CV/8eDi2iGqS3FmxgmwP
+        GK6ZwvoQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mIdbf-004hpu-F7; Tue, 24 Aug 2021 21:05:15 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephan Mueller <smueller@chronox.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH] crypto: jitterentopy: drop kernel-doc notation
+Date:   Tue, 24 Aug 2021 14:05:13 -0700
+Message-Id: <20210824210513.25503-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5913cdf4-9c8e-38f8-8914-d3b8a3565d73@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 01:08:58PM -0700, Nathan Chancellor wrote:
 
-> The LLVM developers are under the impression that this is an issue with
-> objtool; specifically quoting Eli Friedman:
-> 
-> "The backend can, in general, create basic blocks that don't contain any
-> instructions, and don't fall through to another block. A jump table entry
-> can refer to such a block. I guess certain tools could be confused by this.
-> 
-> If that's the issue, it should be possible to work around it using '-mllvm
-> -trap-unreachable'."
+Drop "begin kernel-doc (/**)" entries in jitterentropy.c
+since they are not in kernel-doc format and they cause
+many complaints (warnings) from scripts/kernel-doc.
 
-So jump-tables are a weak point; ARM64 was having worse problems than
-x86 there, they can't even locate them.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephan Mueller <smueller@chronox.de>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+---
+ crypto/jitterentropy.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-As to having a jump-table entry to an empty block and not falling
-through; how are we supposed to know? Emitting them is a waste of space,
-so I'd say it's a compiler bug :-))
-
-It's been brought up before; but perhaps we should look at an 'informal'
-ABI for jump-tables ?
+--- linux-next-20210824.orig/crypto/jitterentropy.c
++++ linux-next-20210824/crypto/jitterentropy.c
+@@ -125,7 +125,7 @@ struct rand_data {
+  * This test complies with SP800-90B section 4.4.2.
+  ***************************************************************************/
+ 
+-/**
++/*
+  * Reset the APT counter
+  *
+  * @ec [in] Reference to entropy collector
+@@ -138,7 +138,7 @@ static void jent_apt_reset(struct rand_d
+ 	ec->apt_observations = 0;
+ }
+ 
+-/**
++/*
+  * Insert a new entropy event into APT
+  *
+  * @ec [in] Reference to entropy collector
+@@ -182,7 +182,7 @@ static void jent_apt_insert(struct rand_
+  * the end. The caller of the Jitter RNG is informed with an error code.
+  ***************************************************************************/
+ 
+-/**
++/*
+  * Repetition Count Test as defined in SP800-90B section 4.4.1
+  *
+  * @ec [in] Reference to entropy collector
+@@ -223,7 +223,7 @@ static void jent_rct_insert(struct rand_
+ 	}
+ }
+ 
+-/**
++/*
+  * Is there an RCT health test failure?
+  *
+  * @ec [in] Reference to entropy collector
+@@ -246,7 +246,7 @@ static inline __u64 jent_delta(__u64 pre
+ 			       (JENT_UINT64_MAX - prev + 1 + next);
+ }
+ 
+-/**
++/*
+  * Stuck test by checking the:
+  * 	1st derivative of the jitter measurement (time delta)
+  * 	2nd derivative of the jitter measurement (delta of time deltas)
+@@ -288,7 +288,7 @@ static int jent_stuck(struct rand_data *
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Report any health test failures
+  *
+  * @ec [in] Reference to entropy collector
+@@ -310,7 +310,7 @@ static int jent_health_failure(struct ra
+  * Noise sources
+  ***************************************************************************/
+ 
+-/**
++/*
+  * Update of the loop count used for the next round of
+  * an entropy collection.
+  *
+@@ -353,7 +353,7 @@ static __u64 jent_loop_shuffle(struct ra
+ 	return (shuffle + (1<<min));
+ }
+ 
+-/**
++/*
+  * CPU Jitter noise source -- this is the noise source based on the CPU
+  *			      execution time jitter
+  *
+@@ -435,7 +435,7 @@ static void jent_lfsr_time(struct rand_d
+ 		ec->data = new;
+ }
+ 
+-/**
++/*
+  * Memory Access noise source -- this is a noise source based on variations in
+  *				 memory access times
+  *
+@@ -500,7 +500,7 @@ static void jent_memaccess(struct rand_d
+ /***************************************************************************
+  * Start of entropy processing logic
+  ***************************************************************************/
+-/**
++/*
+  * This is the heart of the entropy generation: calculate time deltas and
+  * use the CPU jitter in the time deltas. The jitter is injected into the
+  * entropy pool.
+@@ -539,7 +539,7 @@ static int jent_measure_jitter(struct ra
+ 	return stuck;
+ }
+ 
+-/**
++/*
+  * Generator of one 64 bit random number
+  * Function fills rand_data->data
+  *
+@@ -566,7 +566,7 @@ static void jent_gen_entropy(struct rand
+ 	}
+ }
+ 
+-/**
++/*
+  * Entry function: Obtain entropy for the caller.
+  *
+  * This function invokes the entropy gathering logic as often to generate
