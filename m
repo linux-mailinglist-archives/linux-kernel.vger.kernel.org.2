@@ -2,160 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8C13F687C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0753F687E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239668AbhHXR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S239743AbhHXR6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239633AbhHXR6C (ORCPT
+        with ESMTP id S239532AbhHXR6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:58:02 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DB7C02B934
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:32:51 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id c12so39021074ljr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:32:51 -0700 (PDT)
+        Tue, 24 Aug 2021 13:58:01 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82530C02B92D;
+        Tue, 24 Aug 2021 10:32:48 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id s11so20432682pgr.11;
+        Tue, 24 Aug 2021 10:32:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jmXJ+V7lZIXD6SyN6KE+2U5NQ7rogw+ZoqgEH0zDtHg=;
-        b=MSmwOXkc+Kc3oeb1McdIefPnaSKK1tUjlY0nkZD7L/kbV2OR3rA5B4zvU62rrCFPTD
-         imur3mL+r5KHuPzVbrBsO+//rzm6CwbgJK53azH5PJl+slbA8nwKICyykpOyQb1+8dCQ
-         EqaMLkFB8MY1USjCUwTQvzsabgoyeTWFYfqg0=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=g9LJhggKHy5VJtMaJ9R8dOKVVlo3xEJqmgw1Slxeh/4=;
+        b=Fvh6g+4bT66GQtkOkpVzPme6rUscGPaqEpRt4v7/FxlsWdaeM6Kfrqed0YuPBjI7F7
+         66Lg9gXRDyDEH4YyqnuZCTZQ97wW/7KACpAR+RwHWpqT5L7kxAdlRAwtUhJ8h8nO/C7Z
+         aRzjxqWBgxT180W6zc+myoV7znLlUfp6LD0qqs1go7wd80mbgyWCTdTTtEn3hgr7Wer1
+         rhwRCmsJUyVbBhU3n9WL+eYf1Qvw8QWYwBSIqAL9yzgck+xGhIKZR7nGNVnT5mIsenHu
+         Y668D7vt+wTs40JDT+OkqwHIb8/N2QqOCym1DWt4KQv7Q+tTenxw4ohK/KMOexP+16T9
+         IgAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jmXJ+V7lZIXD6SyN6KE+2U5NQ7rogw+ZoqgEH0zDtHg=;
-        b=KEJHLXgCEORcjsNDDFEk0bYW5GFLL3DYvIlW732sx3/dRrA56+e3YbNIU6grNwyoad
-         oMIXREQ4TlbC717CjnQWDXUQILbzWnULcHW3QbCIw6lxUjZoR/zLRqBUFEVP1c29m+Qd
-         mMDIVnvImOkf8wDbgHpLCPJGxu0apA6Q8UPTLRAQmoM2T9fQVJ9Y9lhwANgqwxuUAcMn
-         YS/TO8tBmBzIVAL48gvpmIjTnMdNCMvcAWxBpHoHq8iKNNQMOhjgzlfQAePOc70cikCZ
-         ysLlVNGn3WwRE57hNiIjCSSphkzklW6ScqhMqMlMg5MlbzZ8Ag+vqgcC29mrmfSOzj6h
-         yElw==
-X-Gm-Message-State: AOAM532O9Faf2M6XE6/SxSYglj6q3220GH14x97/6mFXjVT54MD0qgd3
-        dAHFtMUMKCpOwo4rMlG+CJs9PjRwLqev3F4U
-X-Google-Smtp-Source: ABdhPJzhq2Un7APdEa6LrTFrMrrWgP8dp+tSe7oo4boyc5+AZf3hCbu4ihaktf1iDSqCS7pB0x3awA==
-X-Received: by 2002:a2e:9455:: with SMTP id o21mr33031569ljh.103.1629826370062;
-        Tue, 24 Aug 2021 10:32:50 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id e19sm1847539ljj.28.2021.08.24.10.32.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 10:32:49 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id g13so47070457lfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:32:48 -0700 (PDT)
-X-Received: by 2002:a05:6512:2091:: with SMTP id t17mr29808872lfr.253.1629826368002;
- Tue, 24 Aug 2021 10:32:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=g9LJhggKHy5VJtMaJ9R8dOKVVlo3xEJqmgw1Slxeh/4=;
+        b=Hr+anlqme/fy6f2qQiuUc6GMM6iPHXoO6uQxe4OL1/Bp7Eyi4NCTssRCH/WRL3Na8E
+         cgXVTfYu181UuegBsjjF95Uy50R2AUpsgiaIAqEljuWv9eabnozPpw8MAxfN60xcstrL
+         +szLNq+td6SHciEAE5cIAj6Q+UanGO9D7iV1dlodPYjii0KPO8w2zwWmkNxPumDi+XNZ
+         r3KCH901BcysAp58CvaszfqijWLNdCO4lErKVaw0XUD23x/mtwFw+S6Xh9OmofWZgl0Z
+         ZK0CtWzdsF6Mj1kg0F8so73mdrZVK0j9s8/tZT0uzD91sDq9WTL0XN2HmqYvosMdpmlx
+         desg==
+X-Gm-Message-State: AOAM531Ge9XV8EwfREwkC81Jp7U6/hs/9N1ng5OnLLSs7Lr2y7tSOJNj
+        eMhyG7LK0yPle0mSK5T3jbE=
+X-Google-Smtp-Source: ABdhPJwrP2Y1h9/6wAw1h0wgYRixs3rnIJtHaZT9iSxCxCh4eYqcTRpzqWDAqRb+OBEtlgFo/maFdw==
+X-Received: by 2002:a63:2047:: with SMTP id r7mr20577260pgm.398.1629826368075;
+        Tue, 24 Aug 2021 10:32:48 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id w76sm17142028pfd.71.2021.08.24.10.32.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:32:47 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: mt7530: manually set up VLAN ID 0
+Date:   Wed, 25 Aug 2021 01:32:37 +0800
+Message-Id: <20210824173237.1691654-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210824165742.xvkb3ke7boryfoj4@skbuf>
+References: <20210824165253.1691315-1-dqfext@gmail.com> <20210824165742.xvkb3ke7boryfoj4@skbuf>
 MIME-Version: 1.0
-References: <20210824151337.GC27667@xsang-OptiPlex-9020> <CAHk-=wjEdeNW8bPNhwRCkMu6zLKjE2vQ=WL_6bQtc9YnaKt0bw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjEdeNW8bPNhwRCkMu6zLKjE2vQ=WL_6bQtc9YnaKt0bw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Aug 2021 10:32:32 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiKAg5QtrQOtvKNwkRUn0b2xufO54GPhUoTWxBgDzXWNA@mail.gmail.com>
-Message-ID: <CAHk-=wiKAg5QtrQOtvKNwkRUn0b2xufO54GPhUoTWxBgDzXWNA@mail.gmail.com>
-Subject: Re: [pipe] 3b844826b6: stress-ng.sigio.ops_per_sec -99.3% regression
-To:     kernel test robot <oliver.sang@intel.com>,
-        Colin Ian King <colin.king@canonical.com>
-Cc:     Sandeep Patil <sspatil@android.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Added Colin King, as this looks to be related to stress-sigio.c ]
+On Tue, Aug 24, 2021 at 07:57:42PM +0300, Vladimir Oltean wrote:
+> I understand that this is how you noticed the issue, but please remember
+> that one can always compile a kernel with CONFIG_VLAN_8021Q=n. So the
+> issue predates my patch by much longer. You might reconsider the Fixes:
+> tag in light of this, maybe the patch needs to be sent to stable.
 
-On Tue, Aug 24, 2021 at 9:22 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Tue, Aug 24, 2021 at 7:56 AM kernel test robot <oliver.sang@intel.com> wrote:
-> >
-> > FYI, we noticed a -99.3% regression of stress-ng.sigio.ops_per_sec due to commit:
->
-> Well, that's bad.
->
-> > commit: 3b844826b6c6 ("pipe: avoid unnecessary EPOLLET wakeups under normal loads")
->
-> You fix one benchmark, you break another..
->
-> What's a bit odd is that this commit basically reverts commit
-> 3a34b13a88ca ("pipe: make pipe writes always wake up readers") which
-> did *not* result in any kernel test robot report.
+Okay. So the Fixes tag should be 6087175b7991, which initially adds the
+software fallback support for mt7530.
 
-Hmm. I have a possible clue.
+> 
+> > +static int
+> > +mt7530_setup_vlan0(struct mt7530_priv *priv)
+> > +{
+> > +	u32 val;
+> > +
+> > +	/* Validate the entry with independent learning, keep the original
+> > +	 * ingress tag attribute.
+> > +	 */
+> > +	val = IVL_MAC | EG_CON | PORT_MEM(MT7530_ALL_MEMBERS) | FID(FID_BRIDGED) |
+> 
+> FID_BRIDGED?
 
-I suspect this may be timing-related, and I wonder if the kernel test
-robot just didn't happen to notice - or report - the other edge of
-this performance regression because it ends up being random enough.
+What's wrong with that?
 
-In particular, I think stress-sigio.c is subtly buggy, and the "send
-SIGIO on every write" may have effectively hidden the bug.
-
-Here's my theory on what's going on, and why it has tghat odd -99.3% regression:
-
- - the child in stress-sigio.c does multiple writes in quick
-succession, while the parent is scheduled away
-
- - the pipe was empty at the beginning, but we send just *one* SIGIO
-for all these writes
-
- - the parent gets the SIGIO, and goes to stress_sigio_handler(), and
-reads the buffer
-
-but the parent doesn't necessarily *empty* the buffer, so it won't get
-any more SIGIO signals from subsequent writes.
-
-The reason this is timing-dependent and about luck is because the
-*read* size is BUFFER_SIZE (4kB), but the write sizes are BUFFER_SIZE
->> 4 (256 bytes), so 99% of the time if the parent is at all timely,
-it will do that big read and empty the buffer.
-
-But if the child ends up able to do more than 16 writes in a row
-before the parent wakes up and reads data, the buffer will have more
-than 4kB of data in it, and when the parent SIGIO handler happens it
-won't empty the data, and so it will never see another SIGIO.
-
-And again - I think this all happened before too (ie before commit
-3a34b13a88ca) and so 3b844826b6c6 ("pipe: avoid unnecessary EPOLLET
-wakeups under normal loads") isn't a _new_ regression, it just exposed
-the bug in the test-case again, and this time the kernel test robot
-caught it.
-
-In other words, I think this is very similar to the EPOLLET problem:
-user space expected (perhaps not _intentionally_) that SIGIO would
-happen over and over again when you add new data, even if the pipe
-already had data.
-
-So then commit 1b6b26ae7053 ("pipe: fix and clarify pipe write wakeup
-logic") came around back in 2019, and only sent SIGIO when the pipe
-buffer status _changed_ (ie went from empty to having data, rather
-than "there's new data") and at that point stress-sigio.c became very
-fragile.
-
-We could do the same ugly thing for FASYNC that we do for EPOLLET -
-make it always fasync on new data, exactly because the previous SIGIO
-might not have emptied the buffer completely.
-
-I'm a _bit_ surprised that the kernel test robot didn't catch this
-back in 2019, and also didn't report this when commit 3a34b13a88ca
-("pipe: make pipe writes always wake up readers") should have sped
-things up again, but I guess the "it's very timing-dependent" might
-explain it.
-
-Colin, comments?
-
-Anyway, the above blathering is not based on any actual real data. I'm
-just looking at stress-sigio.c to see what could be going wrong, and
-what would explain the test robot report. It's the only thing I see,
-but maybe somebody else sees anything else..
-
-                      Linus
+> 
+> > +	      VLAN_VALID;
+> > +	mt7530_write(priv, MT7530_VAWD1, val);
+> > +
+> > +	return mt7530_vlan_cmd(priv, MT7530_VTCR_WR_VID, 0);
+> > +}
+> 
