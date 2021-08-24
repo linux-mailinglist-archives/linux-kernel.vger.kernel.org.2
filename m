@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEAE3F580A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC263F5819
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhHXGRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
+        id S230221AbhHXGVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhHXGRh (ORCPT
+        with ESMTP id S230350AbhHXGVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:17:37 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994C6C061575;
-        Mon, 23 Aug 2021 23:16:53 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id bk29so16243345qkb.8;
-        Mon, 23 Aug 2021 23:16:53 -0700 (PDT)
+        Tue, 24 Aug 2021 02:21:32 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5FFC061575;
+        Mon, 23 Aug 2021 23:20:49 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id jv8so11113630qvb.3;
+        Mon, 23 Aug 2021 23:20:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rhGctr00MDH5AefJ5cazxvCpO3NXQOU2Z+d0KTndb6o=;
-        b=Dpcdrq/lu9oS/ukuh2/Sr7BUiU0CvGAHfBFJU7OVJZkwzMVdbfPIQB6DjfM6Pbl8nw
-         bsZSvNZ4VEocYJBncIUzmAGUM54BlqbRrt0XXffl9B5u/90qTI3OT6iG1p/1uPziaE5w
-         O+tUC/Z0mWi8vaAGAGjgEA3ao235XzOORTGE3Q59w4kf94vy7kPFoWbuWc5FVF2p0tiM
-         defcn6nIZGN6aXbaxYO/ucOSYda/GxcCZCPUElsE+76RCMGbjZqernQmcq5CeVjh/WUG
-         uGzzll3vvDf00z1SaqXyd1x+IIn6+7io+FSamt9dUP+X7I0F8Jr34U3G+zVsCOLR3/ed
-         CVFg==
+        bh=dntYHUzQ96z9Ky92LFdr542JcEb8KpIOuE1biM9oOng=;
+        b=XCRXYTyzatkPP8LEC19ZZxojm7wRfPfgig0TBX/WzVke5FJ94VLVeHBozn0K0xawJZ
+         hliKrJhvaacXh8PutX7ZOBMRfD7PmXd1C5avwhjShdNy05M0ZrK2MaFWDkFJvdcMxgup
+         3/+4OiQeJIPJMfPdnEr31zobPvuqOgmFtAaVF9Dn2kxn4CwLYxN9sIBwNntW7PxM+SAk
+         U+IIZ7W2W7RIFLUVLuXklqh3aeTNWACPFfYYaWWuhpKt8qSPmrbBClP6jkzgf08CP8fO
+         4PxNQkekqeupxF8Ohwn1ptAhB29JhZ06zqUatNmV/lpg+2CKqbKNc0eroYIWxjoXXtUz
+         g1mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=rhGctr00MDH5AefJ5cazxvCpO3NXQOU2Z+d0KTndb6o=;
-        b=f52XevGCa2M0V71vHd/JmE1ptIAmyDNESnSsC8maagLTxi/6PThRfUsi7KujXEhkTz
-         db2Dvrd1BDmlpGANSYLYTHzzfIJ36BeUUMQ5+r/mrheSyQcOTmtQdDhcXs5MrWO5ZYaE
-         hOia45QPmRyUsRszFK37T4mDHkZGz5AxEKdXwhpD0BUTU3BTuhmSCcXOvNyMc9My4wjs
-         23FD7mQ6alqIWXkQR/SjLOd2GBgsbYAfaQQlVE3na3fBB8u4b1+lubSu/2xHlv0X2IrY
-         khmC8Iky+PWgojEysVVdfoMVuYQYVMDslQJQ6/+1cSU6dMEcOEVeXEU9QJkzvXoxT7zI
-         7Iaw==
-X-Gm-Message-State: AOAM532PYcqwlAWpsvIR3Ehz4+6y6zlBedPdkaA8wkIBRdRUYhWB5TH7
-        d/OyseZCwzbwEO63J6p2N9zkMJoa31o=
-X-Google-Smtp-Source: ABdhPJymIsLCVH7QSFYUy4MyOmDMrxDtHCs3R9ndTKy2pTkMto3D00cFUN4mXsH/EdxRPQ2IIY72Kg==
-X-Received: by 2002:a37:e14:: with SMTP id 20mr25135483qko.229.1629785812862;
-        Mon, 23 Aug 2021 23:16:52 -0700 (PDT)
+        bh=dntYHUzQ96z9Ky92LFdr542JcEb8KpIOuE1biM9oOng=;
+        b=XFmhspIBRgDDi2c4CMP4bUWOKkMWgxtTk4BpMLVgAFOm1KcdiEe8OBFMn8PduSsvCx
+         mRzvXwwZdoe5SA1voIAix8ZifYDfJ8HgUUTmAJF0XOztKhhBK6IFgktHxTibSN8mYo6j
+         0OZl37gwD1hF99fRnSQ0OAcQmiqVcSyvtM7WhlPZtyd9rKr291CRCzEDc943mOPtw9Cz
+         jSfz6p63XedYnyoaD36PYPbwDCAU+eJACWULQa5oZ9JL4YhG5HVxDY3vitLlQVyxzv6u
+         NQk++Y+mhpIccxU/kLucvNwTi2RAl8nqH0qsIVJR1wGH0p0ZzFyL7qIg/K4Mtxb0skIi
+         upCQ==
+X-Gm-Message-State: AOAM532g5fUf/NaScRMqmrd+XD3vnrLL2nKgoQ00myJCMFYFRYeX/4Q1
+        E7XDUQR4aKgDrE8LiP/hbZs=
+X-Google-Smtp-Source: ABdhPJw1m88JOSSpAu2p8G5KZFCnC1u84/ZdM/n5H8zPBv7IWbRO4BJEhMcVC8+mWl8PCdPbjahU/Q==
+X-Received: by 2002:a05:6214:1c1:: with SMTP id c1mr37231034qvt.37.1629786048450;
+        Mon, 23 Aug 2021 23:20:48 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id y185sm10234818qkb.36.2021.08.23.23.16.50
+        by smtp.gmail.com with ESMTPSA id d129sm10144598qkf.136.2021.08.23.23.20.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 23:16:52 -0700 (PDT)
+        Mon, 23 Aug 2021 23:20:48 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+To:     Luca Coelho <luciano.coelho@intel.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] irqchip: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 23:16:46 -0700
-Message-Id: <20210824061646.59320-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] iwlwifi:rfi: fix memdup.cocci warnings
+Date:   Mon, 23 Aug 2021 23:20:40 -0700
+Message-Id: <20210824062040.59414-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,38 +71,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-./drivers/irqchip/irq-csky-apb-intc.c:139:9-10:WARNING:return of 0/1 in
-function 'handle_irq_perbit' with return type bool
+./drivers/net/wireless/intel/iwlwifi/mvm/rfi.c:110:8-15:8-15:WARNING:
+opportunity for kmemdup
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+Use kmemdup rather than duplicating its implementation
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
+Generated by: scripts/coccinelle/api/memdup.cocci
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- drivers/irqchip/irq-csky-apb-intc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/rfi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/irqchip/irq-csky-apb-intc.c b/drivers/irqchip/irq-csky-apb-intc.c
-index ab91afa..5d044ad 100644
---- a/drivers/irqchip/irq-csky-apb-intc.c
-+++ b/drivers/irqchip/irq-csky-apb-intc.c
-@@ -136,11 +136,11 @@ static inline bool handle_irq_perbit(struct pt_regs *regs, u32 hwirq,
- 				     u32 irq_base)
- {
- 	if (hwirq == 0)
--		return 0;
-+		return false;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+index 0b81806..2225c4f 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+@@ -107,12 +107,10 @@ struct iwl_rfi_freq_table_resp_cmd *iwl_rfi_get_freq_table(struct iwl_mvm *mvm)
+ 	if (WARN_ON_ONCE(iwl_rx_packet_payload_len(cmd.resp_pkt) != resp_size))
+ 		return ERR_PTR(-EIO);
  
- 	handle_domain_irq(root_domain, irq_base + __fls(hwirq), regs);
+-	resp = kzalloc(resp_size, GFP_KERNEL);
++	resp = kmemdup(cmd.resp_pkt->data, resp_size, GFP_KERNEL);
+ 	if (!resp)
+ 		return ERR_PTR(-ENOMEM);
  
--	return 1;
-+	return true;
+-	memcpy(resp, cmd.resp_pkt->data, resp_size);
+-
+ 	iwl_free_resp(&cmd);
+ 	return resp;
  }
- 
- /* gx6605s 64 irqs interrupt controller */
 -- 
 1.8.3.1
 
