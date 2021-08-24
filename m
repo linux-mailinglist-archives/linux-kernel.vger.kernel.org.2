@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEE03F58EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684F73F58F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhHXHZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:25:16 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:37557 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234734AbhHXHZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:25:04 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3877E580582;
-        Tue, 24 Aug 2021 03:24:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 24 Aug 2021 03:24:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=23+OLJ
-        AyGOsAQ21B6Kc7ZzhH18/xeF38azdp237++QU=; b=r6iyg76fNVgj+2ix/dlYI5
-        dxqn1I0PFMnMWk09SljcaWCRtBrt4l7YNE3+IaDhwKYaZbkpIVMf5yM41W6+DhQO
-        QVRC6Qc/T7EfWzMXZks0J00wUf+ZE9hZx+ytejmWinKE6/1qYMzkSff4IvjiGom/
-        YncRhB/H5zQwhBh0j1iOqeByRdbM6A8GfTEpSGMoN2+HnyOlVt2RdvAYS9cs+GAp
-        pG+37kyZfBt2eDZGi8p8Fgp6SzG3+yQV5/zp8Ye+NdAKvsxhsqD+s9D+YSGj31fZ
-        FbCnywLDGGyl4gwS35gxwmyt986Gm0wqnyqijQ/hZ0sPP9Ru4RGKP7cX0edu6RnQ
-        ==
-X-ME-Sender: <xms:oZ4kYUargjpQUJ7haGOagqb01eAYbCGxzyrqvpNNv412Ne06sgqZqw>
-    <xme:oZ4kYfbsATAX6W5PTqwY_ma7XOMdIfggJQO9Cc7cVRKj44IOFFDnMYni98VGv6Q9e
-    kgTzJ_WYgDRP9U>
-X-ME-Received: <xmr:oZ4kYe9A3-mm1qOFO7VHcWEFnGwAxSRHH0m2qhcxTSmxEDNrvjGJI0RlXmk5YhSs49jH4lG6MqO3G3w5gDAIIYypnFd8hQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddtiedguddukecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefkughoucfutghhihhmmhgvlhcuoehiughoshgthhesihgu
-    ohhstghhrdhorhhgqeenucggtffrrghtthgvrhhnpedtffekkeefudffveegueejffejhf
-    etgfeuuefgvedtieehudeuueekhfduheelteenucevlhhushhtvghrufhiiigvpedtnecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:oZ4kYerLnIvIx1HAoYpsKSocLUA1IH70cNWNL9KEoob9qUn-0r23pQ>
-    <xmx:oZ4kYfrS8nTsBR0KysYpR4GPNOulos9Mn888yDX5foeVYnN47vAAdQ>
-    <xmx:oZ4kYcQMT8BeoPNLJptgpMrlciN6QBPFrrJx-L9NL1bj5zgadQ0txg>
-    <xmx:op4kYY7W1x5m5JwIA8ZsqDnYVG-aOtbc2GeFKu06Xu2lMsiVw85aAA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Aug 2021 03:24:16 -0400 (EDT)
-Date:   Tue, 24 Aug 2021 10:24:11 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        skhan@linuxfoundation.org, petrm@nvidia.co,
-        oleksandr.mazur@plvision.eu, idosch@nvidia.com, jiri@nvidia.com,
-        nikolay@nvidia.com, gnault@redhat.com, simon.horman@netronome.com,
-        baowen.zheng@corigine.com, danieller@nvidia.com
-Subject: Re: [PATCH] selftests/net: Use kselftest skip code for skipped tests
-Message-ID: <YSSemxg1JQRdqxsP@shredder>
-References: <20210823085854.40216-1-po-hsu.lin@canonical.com>
+        id S234616AbhHXH1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:27:13 -0400
+Received: from mout.gmx.net ([212.227.17.22]:49121 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232797AbhHXH1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 03:27:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629789976;
+        bh=lYai3kw8tALYTD7kBUvkPaGxBm/XvOUHLBjz/wNKAzY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=KgJoNt7ehH3OprqU5H6xp0YNI0QB+HFub51c3dASruE9xPI4WhIjSjQz/vphiTTlr
+         +12CyawrDicuDJK94J7QvECHVA5qMkFh8RP5vem0P5/eZ8eeI8MPhOXNWaxv/vv7De
+         vdzVD9LGad1EMBfXmv5oxVRZROpuE5rc7omWD2vs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1M6DWi-1mP0Od2pUO-006jbv; Tue, 24 Aug 2021 09:26:15 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 0/3] staging/rtl8192u: Prefer kcalloc over open coded arithmetic
+Date:   Tue, 24 Aug 2021 09:25:42 +0200
+Message-Id: <20210824072545.7321-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823085854.40216-1-po-hsu.lin@canonical.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZNfDVea6525BMQvl9hUl0qNX9IDyevcXkLRaOq2huhPlEFt3V2G
+ V7tUuiMhRM9YJtO3EqMfqNhO71KgUOsJQOCwGFxN84xVIUB0AxLG0GzE4DInFD7mrOUdAOX
+ xdP6zQubwABluDMsIHpWfVZMOTfOad7alWvq2nvAxZ0unRSAq+ZTWUtMb6p89cznPdu40Q4
+ Z40Qlc3wHqUTHFyYu68TA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5lK8/GbDASk=:dZ3LIlYaESza+lvsjK1hdk
+ SNRPd2JKoVZiFSAmrRDiUTvRUMH7ML5JmrPaRPujRfwcvHwLpu0pwyYCH0KCNlv3KnON4Reg+
+ OIUqtuiKxJBuewvqx10CAk6/XLt1Z7fbtqYshlbUckoX7QxQ7uPJnORGw/WNt07v/z/nLSdQH
+ ZmnU7xR4FNvJIwUzCEMZLqaTnmG5a29MTeXMC3tYRF5KTQuUM7+rY5ye2dFCfcJqiFFuu4Yhi
+ cVI1tulEjY/3QibDMYHTWrdf+9Iq9kZAIhiYIk5RvpKXERb0JSTtre58qcOdON26zj7gqfYiW
+ fxaHQdwWv/5SmhkbkrzYN3EFSQRH7QUN+FUgoVXJesLKp+vjomRFhnW+U1sGm7EUkPTiLhfdA
+ JZRdLXPXi7huRUog+xqyePm2tqx3p0FwCclDonLT9CTpVnwX+PiLGu987iksJD/HqWOxNc7HR
+ 8eSo1Ti+8ojcAueeWixKCAl0jiNsT9Bx+lUFzNJCj7zw3/AgeaxkoIxgvAbiGFbIt8IkAs81B
+ 2arsQ/mvZ69has1EgoLtmODwunt93BZ037oJb+Xy+dYQRvj4nv3vf9Zmg6CWjJhjXUpb0TqUE
+ CuwP7KmSE//xHLsYlhPtJJkDpJwSHm6arMTgJjjtlKBVwkPVG6z4XM6B/xyHqNkuJSOqiDR8X
+ mY82f3LrGdEUNfUnwpVWeilRbEvegMszG0cSkd0+qtJJFj6VhO+NDT+8FoXQWJh1lfmMwmB/d
+ CiNgCvcn5dVlrI77b/QDk8G0uX5pgv9OLo9SrRv4vMITn9OFoDAAqNZrANZELUZWTkswR9KTl
+ 8BLh0G6hsfgbMzL7cXDXGz2lky+8xyAE5FK4LQh2eV5rU8D/pmE9a0BFrlWmX8P4tl/Gu7DXE
+ Fxkpw6a3zTRACCBcILAqc/im6DWmIgrF+klpePeg6yhtla7/15WnLnF8HHP7xgaLd9j1iFLFR
+ GJhmXGteZNKv0TjzDidBKnbe3CffWWp9dutxIPoAHYviqZ9omjuKwclfDYkvLqKHpIZAaaFz7
+ aRUfeIcM/INTCnF2m7se5juKWL328O0u6XOfsmjhW0p3uUNq/6y05+R7tnex5Daod5C8hh6Tl
+ o8ni5paFaGG5G9vT+gV2ZG7Ri2jwc4OGhGi0sMpa+1t2gnXpBRvQFlXIA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 04:58:54PM +0800, Po-Hsu Lin wrote:
-> There are several test cases in the net directory are still using
-> exit 0 or exit 1 when they need to be skipped. Use kselftest
-> framework skip code instead so it can help us to distinguish the
-> return status.
-> 
-> Criterion to filter out what should be fixed in net directory:
->   grep -r "exit [01]" -B1 | grep -i skip
-> 
-> This change might cause some false-positives if people are running
-> these test scripts directly and only checking their return codes,
-> which will change from 0 to 4. However I think the impact should be
-> small as most of our scripts here are already using this skip code.
-> And there will be no such issue if running them with the kselftest
-> framework.
-> 
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+The main reason of this patch serie is to avoid size calculations
+(especially multiplication) in memory allocator function arguments due
+to the risk of them overflowing [1]. This could lead to values wrapping
+around and a smaller allocation being made than the caller was
+expecting. Using those allocations could lead to linear overflows of
+heap memory and other misbehaviors.
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Tested-by: Ido Schimmel <idosch@nvidia.com>
+At the same time, take the opportunity to refactor the function avoiding
+CamelCase in the name of variables and moving some initializations to
+the variables definition block.
+
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
+
+Changelog v1 -> v2
+- Split the CamelCase refactoring and the moving of initializations in
+  two separate commits (Kees Cook).
+- Link to the documentation to clarify the change in the 3/3 patch (Kees
+  Cook).
+- Modify the commit message to clarify in the 3/3 patch that these
+  changes are not dynamic sizes but it is best to do the change to keep
+  the open-coded math idiom out of code (Kees Cook).
+
+Len Baker (3):
+  staging/rtl8192u: Avoid CamelCase in names of variables
+  staging/rtl8192u: Initialize variables in the definition block
+  staging/rtl8192u: Prefer kcalloc over open coded arithmetic
+
+ drivers/staging/rtl8192u/r819xU_phy.c | 92 +++++++++++++--------------
+ 1 file changed, 44 insertions(+), 48 deletions(-)
+
+=2D-
+2.25.1
+
