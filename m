@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF673F6AEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B431E3F6AF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234912AbhHXVT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:19:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229514AbhHXVTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:19:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47AA161247;
-        Tue, 24 Aug 2021 21:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629839949;
-        bh=YfWmgyuD68bN8upiO0KXXatKOqqx5eEEKTXFIn2lrms=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ChXXmcCaJdPDbxO/bgCMAiDWs1dseVoXupLGua0zD9oVMZrXR0BU/f+gHIsqQoa2i
-         5XRa4L1lw6H9KdnvZ+ZrXP/q9OBKIwiuacMvT393RtEbiCTWqfMsWsibPrka9kdC+i
-         GXgSVOnVnBUfkKhfFshhSe11FRlWKT9CpCKM6EWCvk2Nun85U9pvtpHzV17TlQk84H
-         p8kaBMOFNqe0mfDQsPITtmCrg3i+mPg6OatJ2yV9IuwbDvVbILvtOB07sb7nsJ5CxX
-         MB/QLqcdg6t+QTYP27RjJIdpP9BJ2jrXgkRzfTQAVOGVfvHpHpu1odh/ZHcw4dMVSL
-         sSX4qvu/rQP6Q==
-Subject: Re: objtool warning in cfg80211_edmg_chandef_valid() with ThinLTO
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <5913cdf4-9c8e-38f8-8914-d3b8a3565d73@kernel.org>
- <20210824210507.GC17784@worktop.programming.kicks-ass.net>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <dedde693-bf1d-a35b-e858-dab1f8f65246@kernel.org>
-Date:   Tue, 24 Aug 2021 14:19:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234875AbhHXVWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231474AbhHXVWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 17:22:43 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F542C061764
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:21:58 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso38619411ots.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KtIOJH8PBF1/iH8MyRGz0pTPExah6uG34M1IBP8eNO4=;
+        b=IJPW8hx9wZXO1P2lbLZGy2iF7pmxdjBbXoIzRccBZfoFZP+kENipRioMSQe3y0pznI
+         MbCrgpQGrn0cXAyP7Ay6ypTEobRSrdg8/KTj+kwwI8+mhZb0D0o7Xf65Cqlp2gxWAYhr
+         /a/ymkaN8ZZTrbVjI5jNWIRUop9riRgzPQrryVtnzo5geaPgegMrZKm8aO4mNWVgRN6Y
+         8CKrtnKbKbUnLG6kHvxD9yc6xfniM2+6sN/YEMKnNQJEYL7qX4heMAq8r1TKteNIAGjt
+         gFPkcI+yg1U628xpQHnqktPX8D/a5mxY0a64s1r9x8BDqbRd/+D3ua4oV3KPS+dOeIT5
+         eljQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KtIOJH8PBF1/iH8MyRGz0pTPExah6uG34M1IBP8eNO4=;
+        b=ESQXtkj7bLG4YVoO9rvqwaFkQUPo/Izi0vqYY5g5eD20MN7opdf+jG/pnZutQnlXgF
+         nUi39KVYMX56QOBhFtDc5/Mj6VoTSuGy+kGFpc5gxWjqigp4RnST+r+W6g6XBJBY5Jue
+         QtPzafpTd7UvG/gip2r+loFKGaotLOJKoghLMOEI7up7DpXfsnQYsdFSiYUKL0QAiHBH
+         Ves+7Td0mowpgYysYr4gcZn4vQy2LOaoEnh+3Wf4zlpRzAZTs+cmN/Eqdd3rDYYbHDFq
+         YPImkh0oVeBdq7MmNPeFjNhAIJXf1ErIAMhWBf40vW/LemfntiVIKKEBAi5Asb03J4XS
+         M5lA==
+X-Gm-Message-State: AOAM531XXsKLLKVTgVm9+gTP7kIzao29pNhYGZZREyEebqH19zYbnbUh
+        JXP7+adIK3tu2/xcm80S2pHzmg==
+X-Google-Smtp-Source: ABdhPJxuJcLxPQAlEmc0AL12sf8aq7NBOiIdeVjFqiE4i9qnJS5dCWKdp2zESJmeK95e0wFsK1TOyA==
+X-Received: by 2002:a05:6830:4124:: with SMTP id w36mr25092577ott.72.1629840117620;
+        Tue, 24 Aug 2021 14:21:57 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 2sm4692902oto.50.2021.08.24.14.21.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 14:21:56 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 14:23:14 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof Wilczy??ski <kw@linux.com>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering
+ msi
+Message-ID: <YSVjQgDmatkkCxtn@ripper>
+References: <YSVTdedrDSgSYgwm@ripper>
+ <20210824202925.GA3491441@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210824210507.GC17784@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824202925.GA3491441@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/2021 2:05 PM, Peter Zijlstra wrote:
-> On Tue, Aug 24, 2021 at 01:08:58PM -0700, Nathan Chancellor wrote:
+On Tue 24 Aug 13:29 PDT 2021, Bjorn Helgaas wrote:
+
+> On Tue, Aug 24, 2021 at 01:15:49PM -0700, Bjorn Andersson wrote:
+> > On Tue 24 Aug 12:05 PDT 2021, Bjorn Helgaas wrote:
+> > 
+> > > On Mon, Aug 23, 2021 at 08:49:57AM -0700, Bjorn Andersson wrote:
+> > > > On the Qualcomm sc8180x platform the bootloader does something related
+> > > > to PCI that leaves a pending "msi" interrupt, which with the current
+> > > > ordering often fires before init has a chance to enable the clocks that
+> > > > are necessary for the interrupt handler to access the hardware.
+> > > > 
+> > > > Move the host_init() call before the registration of the "msi" interrupt
+> > > > handler to ensure the host driver has a chance to enable the clocks.
+> > > 
+> > > Did you audit other drivers for similar issues?  If they do, we should
+> > > fix them all at once.
+> > 
+> > I only looked at the DesignWware drivers, in an attempt to find any
+> > issues the proposed reordering.
+> > 
+> > The set of bugs causes by drivers registering interrupts before critical
+> > resources tends to be rather visible and I don't know if there's much
+> > value in speculatively "fixing" drivers.
+> > 
+> > E.g. a quick look through the drivers I see a similar pattern in
+> > pci-tegra.c, but it's unlikely that they have the similar problem in
+> > practice and I have no way to validate that a change to the order would
+> > have a positive effect - or any side effects.
+> > 
+> > Or am I misunderstanding your request?
 > 
->> The LLVM developers are under the impression that this is an issue with
->> objtool; specifically quoting Eli Friedman:
->>
->> "The backend can, in general, create basic blocks that don't contain any
->> instructions, and don't fall through to another block. A jump table entry
->> can refer to such a block. I guess certain tools could be confused by this.
->>
->> If that's the issue, it should be possible to work around it using '-mllvm
->> -trap-unreachable'."
+> That is exactly my request.
+
+Okay.
+
+> I'm not sure if the potential issue you
+> noticed in pci-tegra.c is similar to the one I mentioned here:
 > 
-> So jump-tables are a weak point; ARM64 was having worse problems than
-> x86 there, they can't even locate them.
+>   https://lore.kernel.org/linux-pci/20210624224040.GA3567297@bjorn-Precision-5520/
 > 
-> As to having a jump-table entry to an empty block and not falling
-> through; how are we supposed to know?
 
-Fair enough. It does make me wonder why LLVM does that.
+As I still have the tegra driver open, I share your concern about the
+use of potentially uninitialized variables.
 
-> Emitting them is a waste of space, so I'd say it's a compiler bug :-))
+The problem I was concerned about was however the same as in my patch
+and the rockchip one, that if the tegra hardware isn't clocked the
+pm_runtime_get_sync() (which would turn on power and clock) happens
+after setting up the msi chain handler...
 
-Isn't it always? :)
+> but I am actually in favor of speculatively fixing drivers even though
+> they're hard to test.  Code like this tends to get copied to other
+> places, and fixing several drivers sometimes exposes opportunities for
+> refactoring and sharing code.
+> 
 
-Turns out Nick brought up an issue very similar to this (unreachable 
-conditions with switches) on LLVM's issue tracker 
-(https://bugs.llvm.org/show_bug.cgi?id=50080) with the same workaround 
-suggestion ('-mllvm -trap-unreachable') and there was no follow up after 
-that so maybe that is one thing to look into once Nick is back online.
+Looking through the other cases mentioned in your reply above certainly
+gives a feeling that this problem has been inherited from driver to
+driver...
 
-> It's been brought up before; but perhaps we should look at an 'informal'
-> ABI for jump-tables ?
-Not a bad idea, especially if this has come up before.
+I've added a ticket to my backlog to take a deeper look at this.
 
-Cheers,
-Nathan
+Regards,
+Bjorn
