@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0923F66E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C233F64BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239496AbhHXR2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:28:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239515AbhHXR0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:26:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D48FF61B41;
-        Tue, 24 Aug 2021 17:04:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824652;
-        bh=tfKLsJi72j2VyIJ7v5lQewodphllmKv+kx639Fr1qew=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GAg8pMmYov+gnSYGZ+Tol1F+Rnb1zU4ir6Rg81bxzNi7Hwn24Y+0K/vbxc6p0vKy3
-         YQrbKI8oP8hJBnSmTu7E46sGlp8vKGRnjV8QmLkPBSDQ5AD3qIj+Gpo0dIl6WCxnuJ
-         R7MHV8WdswT4PeEm38zKuqsZhQnlSxqiTu8B/EsLZw7p4Qt6fvdnk35nKPxCNh4ULh
-         6DYWkbc06cd55vRLZEuGNHitWFU92vEta8BkNE/BTqBDmdcdvPfdqEiUWtaILIA1Ep
-         yAjQ2jvcuR3gnca4uNQA1lhFE/P7OaQHuy2vThKoD30KUqQDwf+oH49b6/ZfnrK2Bf
-         FVtWHFq/D50lA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 84/84] Linux 4.19.205-rc1
-Date:   Tue, 24 Aug 2021 13:02:50 -0400
-Message-Id: <20210824170250.710392-85-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
-References: <20210824170250.710392-1-sashal@kernel.org>
+        id S239385AbhHXRG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:06:56 -0400
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:22412 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239458AbhHXREO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:04:14 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d47 with ME
+        id lV3Q250033riaq203V3QUd; Tue, 24 Aug 2021 19:03:26 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 24 Aug 2021 19:03:26 +0200
+X-ME-IP: 90.126.253.178
+Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in
+ usbctrl_vendorreq()
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Phillip Potter <phil@philpotter.co.uk>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
+References: <20210823223751.25104-1-fmdefrancesco@gmail.com>
+ <4118209.ZeClQeRtK1@localhost.localdomain>
+ <50d40020-5b0e-4bb9-357b-3640a0f9e8c6@wanadoo.fr>
+ <1751314.Y7PUP2lcel@localhost.localdomain>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <ab9548b5-34f0-68ab-4dba-0adb9b7bb9a1@wanadoo.fr>
+Date:   Tue, 24 Aug 2021 19:03:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.205-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.205-rc1
-X-KernelTest-Deadline: 2021-08-26T17:02+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <1751314.Y7PUP2lcel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Le 24/08/2021 à 12:38, Fabio M. De Francesco a écrit :
+> Not related to my patch... why Linux has u8 and __u8? What are the
+> different use cases they are meant for?
 
-diff --git a/Makefile b/Makefile
-index d4ffcafb8efa..c0fd3cd96338 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,8 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 19
--SUBLEVEL = 204
--EXTRAVERSION =
-+SUBLEVEL = 205
-+EXTRAVERSION = -rc1
- NAME = "People's Front"
+Maybe:
  
- # *DOCUMENTATION*
--- 
-2.30.2
+https://elixir.bootlin.com/linux/v5.14-rc6/source/include/uapi/asm-generic/int-l64.h#L16
+helps ?
+
+> Your 2c are worth much more than how much you think :)
+If you insist, I could send you my Paypal address, but knowing that it 
+may help someone should already be enough for me :).
+
+Let me know if it was the root cause of the issue.
+
+CJ
+
+> 
+> Thanks very much,
+> 
+> Fabio
+> 
+>> just my 2c,
+>> CJ
+>>
+> 
+> 
+> 
+> 
+> 
 
