@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529AB3F6C3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DFB3F6C47
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 01:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbhHXXbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 19:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231552AbhHXXbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 19:31:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAF9F610F8;
-        Tue, 24 Aug 2021 23:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629847824;
-        bh=aBZ/uH2vbAthAfmTJZ4TTBiPAcZ3NPXOPH71fmoGF0s=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=PrCA9PxHtwM75+FX3ElELCMEJrgZcZW+2ql/v8rBabw4KvT/cn0jJ6BUU6W0EA96H
-         c/qIeJQQs5xS/rER4jK0ThdFWHwxQiPfgvwHKDZAZSJDABAdjrkHB+83HRZE3m1DfS
-         its2b9N4AnXxPxKBU6sMneI8oYLhf74Edd2YmszS/vIuNOpIg5uEcUZPk3pDaa1xnl
-         N7p19VsGKh6qO64HoSXQfw8BxBNrx7P85uRbrnlAodpio54t4mZ9yfzb+JTqIbwz/x
-         TtEBNWS6eZVD0SiTtXr1x1NipzYwsFw746RqloXZH6e0+t//Ug1vbI5wiWhbSO0Fmc
-         pfGe9LOFzm+mg==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: don't ignore writing pages on fsync
- during checkpoint=disable
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210823170151.1434772-1-jaegeuk@kernel.org>
- <baa8a361-1a22-76a0-423d-4378178f7073@kernel.org>
- <YSUn1j22s/kc+hWS@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <d0a48947-e4df-9b0f-735e-6b306a64c4fe@kernel.org>
-Date:   Wed, 25 Aug 2021 07:30:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234794AbhHXXfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 19:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhHXXfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 19:35:46 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBDCC061757;
+        Tue, 24 Aug 2021 16:35:02 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id j2so8807829pll.1;
+        Tue, 24 Aug 2021 16:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rNShSQwThr6gncf6KciCpz1nmilWRZIh2pd8pXlgU2w=;
+        b=qRrg8f3X14HU1hkXdQP2hJUuaFNZYL39Ld42quI9OZKOctN7lNB8oYiHtcPq8o85rx
+         t2LFCX4VxkZx2JodOA7t466wfzDaVrsVEehzkHmXn5oUpa/CTb98rTfUTQAgPfWxlke1
+         Zg7A+78CwG+D5Ai4Yi5a7ZAuReNfUQmP5QrskBruh+QnFy3JBpZhRlSACUjFqFcOcgul
+         yg8QDQj2fv66GheIAi44mofDz6n3AknY1FvLR4shJnVc6r/7LbTNmsv23LydETjW8+kX
+         F7OL7chebPpqAtWv2QThWl4+NLoIscun6D1ZckwTlB0iJhzznRXXog3/zvpazvSGPKsc
+         ZHzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rNShSQwThr6gncf6KciCpz1nmilWRZIh2pd8pXlgU2w=;
+        b=QNkbxae/b5Jfu+BkLx90tRmdrfSSXj5hTgs/syXdFvvHtJsp393K5tACXixztcIivD
+         Q/FE2A4qqGLnRxNEjbL0qepJADN4Xdy/oyx0i/deHvNasTfLxupNP1FyEiL8DspUtGt+
+         fPxb77SAgFfIjNh22TQru3zzaS34a77qcx785DzDKhDbU3D2x9q9/VV89wesDuOBLpLD
+         bFUPebhVRMGLfXmW5AL0UM9XI8Aflmjgtg/tBcCtvNPBGRGG0H4+t92ESlJwUVMwMRFs
+         FdBiJFIENf0AgBeCfxJygrgNe6sNW9UsvNzvbRZGTrNnrhUXp879NDIdpzNqwLp/e4I3
+         MLjw==
+X-Gm-Message-State: AOAM532C8Q6GquVY5OatQphDhmM7vw4F8M4EwocMmleWH+CMbjPRvSKu
+        5DV2haP7OxfNE9XBiZeHtwX6J4IgkCs=
+X-Google-Smtp-Source: ABdhPJzzrItpXBMO6oheDOs/i5nL+4Zw+9CEXaOb5PjyZvwYOOWDy6JTXaNBCCsADY68dt2RtNyvWQ==
+X-Received: by 2002:a17:902:8f97:b0:12f:fff9:bad4 with SMTP id z23-20020a1709028f9700b0012ffff9bad4mr25335111plo.65.1629848101603;
+        Tue, 24 Aug 2021 16:35:01 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id ev12sm3308395pjb.57.2021.08.24.16.34.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 16:35:01 -0700 (PDT)
+Subject: Re: [RFCv3 05/15] tcp: authopt: Add crypto initialization
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yuchung Cheng <ycheng@google.com>,
+        Francesco Ruggeri <fruggeri@arista.com>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Christoph Paasch <cpaasch@apple.com>,
+        Ivan Delalande <colona@arista.com>,
+        Priyaranjan Jha <priyarjha@google.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1629840814.git.cdleonard@gmail.com>
+ <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <30f73293-ea03-d18f-d923-0cf499d4b208@gmail.com>
+Date:   Tue, 24 Aug 2021 16:34:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <YSUn1j22s/kc+hWS@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <abb720b34b9eef1cc52ef68017334e27a2af83c6.1629840814.git.cdleonard@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/25 1:09, Jaegeuk Kim wrote:
-> On 08/24, Chao Yu wrote:
->> On 2021/8/24 1:01, Jaegeuk Kim wrote:
->>> We must flush dirty pages when calling fsync() during checkpoint=disable.
->>> Returning zero makes inode being clear, which fails to flush them when
->>> enabling checkpoint back even by sync_inodes_sb().
->>
->> Without this patch, file can be persisted via checkpoint=enable as well, my
->> testcase:
->>
->> - mount -t f2fs -o checkpoint=disable,checkpoint_nomerge /dev/pmem0 /mnt/f2fs/
->> - cp file /mnt/f2fs/
->> - xfs_io /mnt/f2fs/file -c "fdatasync"
->> - mount -o remount,checkpoint=enable /dev/pmem0 /mnt/f2fs/
->> - umount /mnt/f2fs
->> - mount /dev/pmem0 /mnt/f2fs
->> - md5sum file /mnt/f2fs/file
->> chksum values are the same.
->>
->> Am I missing something?
+
+
+On 8/24/21 2:34 PM, Leonard Crestez wrote:
+> The crypto_shash API is used in order to compute packet signatures. The
+> API comes with several unfortunate limitations:
 > 
-> I'm trying to address one subtle issue where a file has only NEW_ADDR by the
-
-Oh, I doubt that we may failed to flush data of all inodes due to failures during
-sync_inodes_sb(), additionally, how about adding retry logic for sync_inodes_sb()
-if there is still any F2FS_DIRTY_DATA reference counts in f2fs_enable_checkpoint()
-to mitigate this issue, e.g.:
-
-f2fs_enable_checkpoint()
-
-	do {
-		sync_inode_sb();
-		congestion_wait();
-		cond_resched();
-	} while (get_pages(sbi, F2FS_DIRTY_DATA) && retry_count--)
-
-	if (get_pages(sbi, F2FS_DIRTY_DATA))
-		f2fs_warm("");
-
-Thanks,
-
-> checkpoint=disable test. I don't think this hurts anything but can see
-> some mitigation of the issue.
+> 1) Allocating a crypto_shash can sleep and must be done in user context.
+> 2) Packet signatures must be computed in softirq context
+> 3) Packet signatures use dynamic "traffic keys" which require exclusive
+> access to crypto_shash for crypto_setkey.
 > 
->>
->> Thanks,
+> The solution is to allocate one crypto_shash for each possible cpu for
+> each algorithm at setsockopt time. The per-cpu tfm is then borrowed from
+> softirq context, signatures are computed and the tfm is returned.
+> 
+
+I could not see the per-cpu stuff that you mention in the changelog.
+
+
