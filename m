@@ -2,439 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380573F65BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0DB3F6866
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbhHXRQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:16:08 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:36569 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234848AbhHXRMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:12:40 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4GvFyf5s7Gz9sVj;
-        Tue, 24 Aug 2021 19:11:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id cZ1oHsI0Uijr; Tue, 24 Aug 2021 19:11:54 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4GvFyf4cPxz9sVN;
-        Tue, 24 Aug 2021 19:11:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6A83C8B828;
-        Tue, 24 Aug 2021 19:11:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1DsxysscYd-o; Tue, 24 Aug 2021 19:11:54 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BE15B8B80A;
-        Tue, 24 Aug 2021 19:11:53 +0200 (CEST)
-Subject: Re: [PATCH v2 RESEND] powerpc/audit: Convert powerpc to
- AUDIT_ARCH_COMPAT_GENERIC
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Eric Paris <eparis@redhat.com>, linux-audit@redhat.com
-References: <a4b3951d1191d4183d92a07a6097566bde60d00a.1629812058.git.christophe.leroy@csgroup.eu>
- <CAHC9VhR3E6=5HmRaWMWbp4WHsua02niwnzaRGM3tLqd4Y4LA6w@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <5a2692b6-5077-21b4-8ebf-73b1c2b83a40@csgroup.eu>
-Date:   Tue, 24 Aug 2021 19:11:51 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S240327AbhHXRuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234995AbhHXRuR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:50:17 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9B9C04C39E
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:12:26 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id z128so42392307ybc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PfOHx/yYiVRDFcplLpIShH9j4DkSNtuEs48LotWh3gY=;
+        b=qR+Cx3gYe5B4T+OEfcLxI2qUcoOx0R40mL2hb9r9JU0eHhjgV+aNoNXfTcvpE2giLM
+         iGr+K/xv5QqnR+ic+DUGfM8sHlAoDHqadQRe4mMN/wC7kZrUMXlmhEbGH34Zp17S+PYG
+         3VEcoSOi63Gzpt3oTOweFtp305sKD6TVxWOA/OrKHJmVG6fD7z3M6Xg7Nzb0HPnV6BUv
+         kUm5JlzJWiShB8eGgwKGOtwS7S7VF9iqX5f3BmJbqxpkB/RG8nYX7/qxgitiE+83fLEZ
+         IyUbiKL/wcu/IJP9D5CDwyz4cw2K0FExma1kGsLuZd+R5KL+Lu2Kfo33qKOVvthRhUK8
+         u+FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PfOHx/yYiVRDFcplLpIShH9j4DkSNtuEs48LotWh3gY=;
+        b=fL4mL2E1dvPSGA2KTOvJk+RqtCZNryRMl5rr1C4UKUfwjQJBKQsYovYcyqp/cWXbsj
+         v7yYiGROAfDUa0hgH13G77oMqkZcYdZgIgTy9+ooYNeYpgvoSpRL4Nm5dslcKuGpfnc7
+         8+ElUCEpmZWoDyJyN9rsiqdlswKhi/seT9vTxLGH3yI5OgKt3hxsJV2M0ETGwgOzncDh
+         0zuWvlwzks+g9UAi097qiqhPetPfd76POIpWarvoAYf88CkUDEJdvKPzoCcZwoL2n7jg
+         M4WnW2kOClUtJpHKSzSwwIOkvddYBRwUYoTul2iewhAJ/yYghyQP7Tp4cEvs5Q3wuJA4
+         F05Q==
+X-Gm-Message-State: AOAM5321kCbhRnotrXSccTO4FbnXnNbf7oXNeGgksES4loiy4Ox0bQ5e
+        eYSxA+WzgBI7xVAkyaRo6kaKnapRq5bzRUa8IjD7eQ==
+X-Google-Smtp-Source: ABdhPJze8Zpd/C2n67fCbfSLN0JpwAjoDpi8a4tVfAxoo8Pwq6gpSAaeHibU58oD+VRCCg75MngUFaV9H29jO2wzmoY=
+X-Received: by 2002:a25:c095:: with SMTP id c143mr11675278ybf.179.1629825145263;
+ Tue, 24 Aug 2021 10:12:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhR3E6=5HmRaWMWbp4WHsua02niwnzaRGM3tLqd4Y4LA6w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210820010403.946838-1-joshdon@google.com> <20210820010403.946838-5-joshdon@google.com>
+ <CAPJCdBnz7AzAWyD5Sqc4TLy3By1k4PAex8kpaWrcJb=YPwVC8w@mail.gmail.com>
+In-Reply-To: <CAPJCdBnz7AzAWyD5Sqc4TLy3By1k4PAex8kpaWrcJb=YPwVC8w@mail.gmail.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Tue, 24 Aug 2021 10:12:14 -0700
+Message-ID: <CABk29NtWw53a8CWz4gDc1d57BwNyN1=uiGnSKbdxkGijs__1tg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] sched: adjust sleeper credit for SCHED_IDLE entities
+To:     Jiang Biao <benbjiang@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paul Turner <pjt@google.com>,
+        Oleg Rombakh <olegrom@google.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steve Sistare <steven.sistare@oracle.com>,
+        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 24, 2021 at 1:16 AM Jiang Biao <benbjiang@gmail.com> wrote:
+>
+> Hi,
+>
+> On Fri, 20 Aug 2021 at 09:06, Josh Don <joshdon@google.com> wrote:
+> >
+> > Give reduced sleeper credit to SCHED_IDLE entities. As a result, woken
+> > SCHED_IDLE entities will take longer to preempt normal entities.
+> >
+> > The benefit of this change is to make it less likely that a newly woken
+> > SCHED_IDLE entity will preempt a short-running normal entity before it
+> > blocks.
+> >
+> > We still give a small sleeper credit to SCHED_IDLE entities, so that
+> > idle<->idle competition retains some fairness.
+> >
+> > Example: With HZ=1000, spawned four threads affined to one cpu, one of
+> > which was set to SCHED_IDLE. Without this patch, wakeup latency for the
+> > SCHED_IDLE thread was ~1-2ms, with the patch the wakeup latency was
+> > ~5ms.
+> >
+> > Signed-off-by: Josh Don <joshdon@google.com>
+> Tried to push a similar patch before, but failed. :)
+> https://lkml.org/lkml/2020/8/20/1773
+> Please pick my Reviewed-by if you don't mind,
+> Reviewed-by: Jiang Biao <benbjiang@tencent.com>
 
-
-Le 24/08/2021 à 16:47, Paul Moore a écrit :
-> On Tue, Aug 24, 2021 at 9:36 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->> Commit e65e1fc2d24b ("[PATCH] syscall class hookup for all normal
->> targets") added generic support for AUDIT but that didn't include
->> support for bi-arch like powerpc.
->>
->> Commit 4b58841149dc ("audit: Add generic compat syscall support")
->> added generic support for bi-arch.
->>
->> Convert powerpc to that bi-arch generic audit support.
->>
->> Cc: Paul Moore <paul@paul-moore.com>
->> Cc: Eric Paris <eparis@redhat.com>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->> Resending v2 with Audit people in Cc
->>
->> v2:
->> - Missing 'git add' for arch/powerpc/include/asm/unistd32.h
->> - Finalised commit description
->> ---
->>   arch/powerpc/Kconfig                |  5 +-
->>   arch/powerpc/include/asm/unistd32.h |  7 +++
->>   arch/powerpc/kernel/Makefile        |  3 --
->>   arch/powerpc/kernel/audit.c         | 84 -----------------------------
->>   arch/powerpc/kernel/compat_audit.c  | 44 ---------------
->>   5 files changed, 8 insertions(+), 135 deletions(-)
->>   create mode 100644 arch/powerpc/include/asm/unistd32.h
->>   delete mode 100644 arch/powerpc/kernel/audit.c
->>   delete mode 100644 arch/powerpc/kernel/compat_audit.c
-> 
-> Can you explain, in detail please, the testing you have done to verify
-> this patch?
-> 
-
-I built ppc64_defconfig and checked that the generated code is functionnaly equivalent.
-
-ppc32_classify_syscall() is exactly the same as audit_classify_compat_syscall() except that the 
-later takes the syscall as second argument (ie in r4) whereas the former takes it as first argument 
-(ie in r3).
-
-audit_classify_arch() and powerpc audit_classify_syscall() are slightly different between the 
-powerpc version and the generic version because the powerpc version checks whether it is 
-AUDIT_ARCH_PPC or not (ie value 20), while the generic one checks whether it has bit 
-__AUDIT_ARCH_64BIT set or not (__AUDIT_ARCH_64BIT is the sign bit of a word), but taking into 
-account that the abi is either AUDIT_ARCH_PPC, AUDIT_ARCH_PPC64 or AUDIT_ARCH_PPC64LE, the result is 
-the same.
-
-If you are asking I guess you saw something wrong ?
-
-
-arch/powerpc/kernel/compat_audit.o:     file format elf64-powerpc
-
-
-Disassembly of section .text:
-
-0000000000000000 <.ppc32_classify_syscall>:
-    0:	28 03 00 66 	cmplwi  r3,102
-    4:	7c 69 1b 78 	mr      r9,r3
-    8:	41 82 00 48 	beq     50 <.ppc32_classify_syscall+0x50>
-    c:	41 81 00 24 	bgt     30 <.ppc32_classify_syscall+0x30>
-   10:	28 03 00 05 	cmplwi  r3,5
-   14:	38 60 00 02 	li      r3,2
-   18:	4d 82 00 20 	beqlr
-   1c:	28 09 00 0b 	cmplwi  r9,11
-   20:	40 82 00 38 	bne     58 <.ppc32_classify_syscall+0x58>
-   24:	38 60 00 05 	li      r3,5
-   28:	4e 80 00 20 	blr
-   2c:	60 00 00 00 	nop
-   30:	28 03 01 1e 	cmplwi  r3,286
-   34:	38 60 00 01 	li      r3,1
-   38:	4c 82 00 20 	bnelr
-   3c:	38 60 00 03 	li      r3,3
-   40:	4e 80 00 20 	blr
-   44:	60 00 00 00 	nop
-   48:	60 00 00 00 	nop
-   4c:	60 00 00 00 	nop
-   50:	38 60 00 04 	li      r3,4
-   54:	4e 80 00 20 	blr
-   58:	38 60 00 01 	li      r3,1
-   5c:	4e 80 00 20 	blr
-
-
-lib/compat_audit.o:     file format elf64-powerpc
-
-
-Disassembly of section .text:
-
-0000000000000000 <.audit_classify_compat_syscall>:
-    0:	28 04 00 66 	cmplwi  r4,102
-    4:	41 82 00 4c 	beq     50 <.audit_classify_compat_syscall+0x50>
-    8:	41 81 00 28 	bgt     30 <.audit_classify_compat_syscall+0x30>
-    c:	28 04 00 05 	cmplwi  r4,5
-   10:	38 60 00 02 	li      r3,2
-   14:	4d 82 00 20 	beqlr
-   18:	28 04 00 0b 	cmplwi  r4,11
-   1c:	40 82 00 3c 	bne     58 <.audit_classify_compat_syscall+0x58>
-   20:	38 60 00 05 	li      r3,5
-   24:	4e 80 00 20 	blr
-   28:	60 00 00 00 	nop
-   2c:	60 00 00 00 	nop
-   30:	28 04 01 1e 	cmplwi  r4,286
-   34:	38 60 00 01 	li      r3,1
-   38:	4c 82 00 20 	bnelr
-   3c:	38 60 00 03 	li      r3,3
-   40:	4e 80 00 20 	blr
-   44:	60 00 00 00 	nop
-   48:	60 00 00 00 	nop
-   4c:	60 00 00 00 	nop
-   50:	38 60 00 04 	li      r3,4
-   54:	4e 80 00 20 	blr
-   58:	38 60 00 01 	li      r3,1
-   5c:	4e 80 00 20 	blr
-
-
-arch/powerpc/kernel/audit.o:     file format elf64-powerpc
-
-
-Disassembly of section .text:
-
-0000000000000000 <.audit_classify_arch>:
-    0:	68 63 00 14 	xori    r3,r3,20
-    4:	7c 63 00 34 	cntlzw  r3,r3
-    8:	54 63 d9 7e 	rlwinm  r3,r3,27,5,31
-    c:	4e 80 00 20 	blr
-
-0000000000000010 <.audit_classify_syscall>:
-   10:	2c 03 00 14 	cmpwi   r3,20
-   14:	41 82 00 5c 	beq     70 <.audit_classify_syscall+0x60>
-   18:	28 04 00 66 	cmplwi  r4,102
-   1c:	41 82 00 44 	beq     60 <.audit_classify_syscall+0x50>
-   20:	41 81 00 20 	bgt     40 <.audit_classify_syscall+0x30>
-   24:	28 04 00 05 	cmplwi  r4,5
-   28:	38 60 00 02 	li      r3,2
-   2c:	4d 82 00 20 	beqlr
-   30:	28 04 00 0b 	cmplwi  r4,11
-   34:	40 82 00 64 	bne     98 <.audit_classify_syscall+0x88>
-   38:	38 60 00 05 	li      r3,5
-   3c:	4e 80 00 20 	blr
-   40:	28 04 01 1e 	cmplwi  r4,286
-   44:	38 60 00 00 	li      r3,0
-   48:	4c 82 00 20 	bnelr
-   4c:	38 60 00 03 	li      r3,3
-   50:	4e 80 00 20 	blr
-   54:	60 00 00 00 	nop
-   58:	60 00 00 00 	nop
-   5c:	60 00 00 00 	nop
-   60:	38 60 00 04 	li      r3,4
-   64:	4e 80 00 20 	blr
-   68:	60 00 00 00 	nop
-   6c:	60 00 00 00 	nop
-   70:	7c 08 02 a6 	mflr    r0
-   74:	7c 83 23 78 	mr      r3,r4
-   78:	f8 01 00 10 	std     r0,16(r1)
-   7c:	f8 21 ff 91 	stdu    r1,-112(r1)
-   80:	48 00 00 01 	bl      80 <.audit_classify_syscall+0x70>
-			80: R_PPC64_REL24	.ppc32_classify_syscall
-   84:	60 00 00 00 	nop
-   88:	38 21 00 70 	addi    r1,r1,112
-   8c:	e8 01 00 10 	ld      r0,16(r1)
-   90:	7c 08 03 a6 	mtlr    r0
-   94:	4e 80 00 20 	blr
-   98:	38 60 00 00 	li      r3,0
-   9c:	4e 80 00 20 	blr
-
-Disassembly of section .init.text:
-
-0000000000000000 <.audit_classes_init>:
-    0:	7c 08 02 a6 	mflr    r0
-    4:	fb e1 ff f8 	std     r31,-8(r1)
-    8:	3d 22 00 00 	addis   r9,r2,0
-			a: R_PPC64_TOC16_HA	.toc
-    c:	38 60 00 07 	li      r3,7
-   10:	e8 89 00 00 	ld      r4,0(r9)
-			12: R_PPC64_TOC16_LO_DS	.toc
-   14:	3f e2 00 00 	addis   r31,r2,0
-			16: R_PPC64_TOC16_HA	.data
-   18:	3b ff 00 00 	addi    r31,r31,0
-			1a: R_PPC64_TOC16_LO	.data
-   1c:	f8 01 00 10 	std     r0,16(r1)
-   20:	f8 21 ff 81 	stdu    r1,-128(r1)
-   24:	48 00 00 01 	bl      24 <.audit_classes_init+0x24>
-			24: R_PPC64_REL24	.audit_register_class
-   28:	60 00 00 00 	nop
-   2c:	3d 22 00 00 	addis   r9,r2,0
-			2e: R_PPC64_TOC16_HA	.toc+0x8
-   30:	38 60 00 05 	li      r3,5
-   34:	e8 89 00 00 	ld      r4,0(r9)
-			36: R_PPC64_TOC16_LO_DS	.toc+0x8
-   38:	48 00 00 01 	bl      38 <.audit_classes_init+0x38>
-			38: R_PPC64_REL24	.audit_register_class
-   3c:	60 00 00 00 	nop
-   40:	3d 22 00 00 	addis   r9,r2,0
-			42: R_PPC64_TOC16_HA	.toc+0x10
-   44:	38 60 00 01 	li      r3,1
-   48:	e8 89 00 00 	ld      r4,0(r9)
-			4a: R_PPC64_TOC16_LO_DS	.toc+0x10
-   4c:	48 00 00 01 	bl      4c <.audit_classes_init+0x4c>
-			4c: R_PPC64_REL24	.audit_register_class
-   50:	60 00 00 00 	nop
-   54:	3d 22 00 00 	addis   r9,r2,0
-			56: R_PPC64_TOC16_HA	.toc+0x18
-   58:	38 60 00 03 	li      r3,3
-   5c:	e8 89 00 00 	ld      r4,0(r9)
-			5e: R_PPC64_TOC16_LO_DS	.toc+0x18
-   60:	48 00 00 01 	bl      60 <.audit_classes_init+0x60>
-			60: R_PPC64_REL24	.audit_register_class
-   64:	60 00 00 00 	nop
-   68:	3d 22 00 00 	addis   r9,r2,0
-			6a: R_PPC64_TOC16_HA	.toc+0x20
-   6c:	38 60 00 09 	li      r3,9
-   70:	e8 89 00 00 	ld      r4,0(r9)
-			72: R_PPC64_TOC16_LO_DS	.toc+0x20
-   74:	48 00 00 01 	bl      74 <.audit_classes_init+0x74>
-			74: R_PPC64_REL24	.audit_register_class
-   78:	60 00 00 00 	nop
-   7c:	7f e4 fb 78 	mr      r4,r31
-   80:	38 60 00 06 	li      r3,6
-   84:	48 00 00 01 	bl      84 <.audit_classes_init+0x84>
-			84: R_PPC64_REL24	.audit_register_class
-   88:	60 00 00 00 	nop
-   8c:	38 9f 00 5c 	addi    r4,r31,92
-   90:	38 60 00 04 	li      r3,4
-   94:	48 00 00 01 	bl      94 <.audit_classes_init+0x94>
-			94: R_PPC64_REL24	.audit_register_class
-   98:	60 00 00 00 	nop
-   9c:	38 9f 00 84 	addi    r4,r31,132
-   a0:	38 60 00 00 	li      r3,0
-   a4:	48 00 00 01 	bl      a4 <.audit_classes_init+0xa4>
-			a4: R_PPC64_REL24	.audit_register_class
-   a8:	60 00 00 00 	nop
-   ac:	38 9f 00 c4 	addi    r4,r31,196
-   b0:	38 60 00 02 	li      r3,2
-   b4:	48 00 00 01 	bl      b4 <.audit_classes_init+0xb4>
-			b4: R_PPC64_REL24	.audit_register_class
-   b8:	60 00 00 00 	nop
-   bc:	38 9f 01 04 	addi    r4,r31,260
-   c0:	38 60 00 08 	li      r3,8
-   c4:	48 00 00 01 	bl      c4 <.audit_classes_init+0xc4>
-			c4: R_PPC64_REL24	.audit_register_class
-   c8:	60 00 00 00 	nop
-   cc:	38 60 00 00 	li      r3,0
-   d0:	38 21 00 80 	addi    r1,r1,128
-   d4:	e8 01 00 10 	ld      r0,16(r1)
-   d8:	eb e1 ff f8 	ld      r31,-8(r1)
-   dc:	7c 08 03 a6 	mtlr    r0
-   e0:	4e 80 00 20 	blr
-
-
-lib/audit.o:     file format elf64-powerpc
-
-
-Disassembly of section .text:
-
-0000000000000000 <.audit_classify_arch>:
-    0:	7c 63 18 f8 	not     r3,r3
-    4:	54 63 0f fe 	rlwinm  r3,r3,1,31,31
-    8:	4e 80 00 20 	blr
-    c:	60 00 00 00 	nop
-
-0000000000000010 <.audit_classify_syscall>:
-   10:	2c 03 00 00 	cmpwi   r3,0
-   14:	40 80 00 4c 	bge     60 <.audit_classify_syscall+0x50>
-   18:	28 04 00 66 	cmplwi  r4,102
-   1c:	41 82 00 74 	beq     90 <.audit_classify_syscall+0x80>
-   20:	41 81 00 20 	bgt     40 <.audit_classify_syscall+0x30>
-   24:	28 04 00 05 	cmplwi  r4,5
-   28:	38 60 00 02 	li      r3,2
-   2c:	4d 82 00 20 	beqlr
-   30:	28 04 00 0b 	cmplwi  r4,11
-   34:	41 82 00 20 	beq     54 <.audit_classify_syscall+0x44>
-   38:	38 60 00 00 	li      r3,0
-   3c:	4e 80 00 20 	blr
-   40:	28 04 01 1e 	cmplwi  r4,286
-   44:	38 60 00 03 	li      r3,3
-   48:	4d 82 00 20 	beqlr
-   4c:	28 04 01 6a 	cmplwi  r4,362
-   50:	40 82 ff e8 	bne     38 <.audit_classify_syscall+0x28>
-   54:	38 60 00 05 	li      r3,5
-   58:	4e 80 00 20 	blr
-   5c:	60 00 00 00 	nop
-   60:	7c 08 02 a6 	mflr    r0
-   64:	f8 01 00 10 	std     r0,16(r1)
-   68:	f8 21 ff 91 	stdu    r1,-112(r1)
-   6c:	48 00 00 01 	bl      6c <.audit_classify_syscall+0x5c>
-			6c: R_PPC64_REL24	.audit_classify_compat_syscall
-   70:	60 00 00 00 	nop
-   74:	38 21 00 70 	addi    r1,r1,112
-   78:	e8 01 00 10 	ld      r0,16(r1)
-   7c:	7c 08 03 a6 	mtlr    r0
-   80:	4e 80 00 20 	blr
-   84:	60 00 00 00 	nop
-   88:	60 00 00 00 	nop
-   8c:	60 00 00 00 	nop
-   90:	38 60 00 04 	li      r3,4
-   94:	4e 80 00 20 	blr
-
-Disassembly of section .init.text:
-
-0000000000000000 <.audit_classes_init>:
-    0:	7c 08 02 a6 	mflr    r0
-    4:	fb e1 ff f8 	std     r31,-8(r1)
-    8:	3d 22 00 00 	addis   r9,r2,0
-			a: R_PPC64_TOC16_HA	.toc
-    c:	38 60 00 07 	li      r3,7
-   10:	e8 89 00 00 	ld      r4,0(r9)
-			12: R_PPC64_TOC16_LO_DS	.toc
-   14:	3f e2 00 00 	addis   r31,r2,0
-			16: R_PPC64_TOC16_HA	.data
-   18:	3b ff 00 00 	addi    r31,r31,0
-			1a: R_PPC64_TOC16_LO	.data
-   1c:	f8 01 00 10 	std     r0,16(r1)
-   20:	f8 21 ff 81 	stdu    r1,-128(r1)
-   24:	48 00 00 01 	bl      24 <.audit_classes_init+0x24>
-			24: R_PPC64_REL24	.audit_register_class
-   28:	60 00 00 00 	nop
-   2c:	3d 22 00 00 	addis   r9,r2,0
-			2e: R_PPC64_TOC16_HA	.toc+0x8
-   30:	38 60 00 05 	li      r3,5
-   34:	e8 89 00 00 	ld      r4,0(r9)
-			36: R_PPC64_TOC16_LO_DS	.toc+0x8
-   38:	48 00 00 01 	bl      38 <.audit_classes_init+0x38>
-			38: R_PPC64_REL24	.audit_register_class
-   3c:	60 00 00 00 	nop
-   40:	3d 22 00 00 	addis   r9,r2,0
-			42: R_PPC64_TOC16_HA	.toc+0x10
-   44:	38 60 00 01 	li      r3,1
-   48:	e8 89 00 00 	ld      r4,0(r9)
-			4a: R_PPC64_TOC16_LO_DS	.toc+0x10
-   4c:	48 00 00 01 	bl      4c <.audit_classes_init+0x4c>
-			4c: R_PPC64_REL24	.audit_register_class
-   50:	60 00 00 00 	nop
-   54:	3d 22 00 00 	addis   r9,r2,0
-			56: R_PPC64_TOC16_HA	.toc+0x18
-   58:	38 60 00 03 	li      r3,3
-   5c:	e8 89 00 00 	ld      r4,0(r9)
-			5e: R_PPC64_TOC16_LO_DS	.toc+0x18
-   60:	48 00 00 01 	bl      60 <.audit_classes_init+0x60>
-			60: R_PPC64_REL24	.audit_register_class
-   64:	60 00 00 00 	nop
-   68:	3d 22 00 00 	addis   r9,r2,0
-			6a: R_PPC64_TOC16_HA	.toc+0x20
-   6c:	38 60 00 09 	li      r3,9
-   70:	e8 89 00 00 	ld      r4,0(r9)
-			72: R_PPC64_TOC16_LO_DS	.toc+0x20
-   74:	48 00 00 01 	bl      74 <.audit_classes_init+0x74>
-			74: R_PPC64_REL24	.audit_register_class
-   78:	60 00 00 00 	nop
-   7c:	7f e4 fb 78 	mr      r4,r31
-   80:	38 60 00 06 	li      r3,6
-   84:	48 00 00 01 	bl      84 <.audit_classes_init+0x84>
-			84: R_PPC64_REL24	.audit_register_class
-   88:	60 00 00 00 	nop
-   8c:	38 9f 00 5c 	addi    r4,r31,92
-   90:	38 60 00 04 	li      r3,4
-   94:	48 00 00 01 	bl      94 <.audit_classes_init+0x94>
-			94: R_PPC64_REL24	.audit_register_class
-   98:	60 00 00 00 	nop
-   9c:	38 9f 00 84 	addi    r4,r31,132
-   a0:	38 60 00 00 	li      r3,0
-   a4:	48 00 00 01 	bl      a4 <.audit_classes_init+0xa4>
-			a4: R_PPC64_REL24	.audit_register_class
-   a8:	60 00 00 00 	nop
-   ac:	38 9f 00 c4 	addi    r4,r31,196
-   b0:	38 60 00 02 	li      r3,2
-   b4:	48 00 00 01 	bl      b4 <.audit_classes_init+0xb4>
-			b4: R_PPC64_REL24	.audit_register_class
-   b8:	60 00 00 00 	nop
-   bc:	38 9f 01 04 	addi    r4,r31,260
-   c0:	38 60 00 08 	li      r3,8
-   c4:	48 00 00 01 	bl      c4 <.audit_classes_init+0xc4>
-			c4: R_PPC64_REL24	.audit_register_class
-   c8:	60 00 00 00 	nop
-   cc:	38 60 00 00 	li      r3,0
-   d0:	38 21 00 80 	addi    r1,r1,128
-   d4:	e8 01 00 10 	ld      r0,16(r1)
-   d8:	eb e1 ff f8 	ld      r31,-8(r1)
-   dc:	7c 08 03 a6 	mtlr    r0
-   e0:	4e 80 00 20 	blr
+Done, thanks :)
