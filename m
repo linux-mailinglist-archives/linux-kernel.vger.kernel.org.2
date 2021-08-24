@@ -2,131 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051A73F697E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB833F6980
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhHXTFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhHXTFS (ORCPT
+        id S234280AbhHXTF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:05:57 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:35160
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234114AbhHXTFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:05:18 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E11C061757;
-        Tue, 24 Aug 2021 12:04:34 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id q3so998131plx.4;
-        Tue, 24 Aug 2021 12:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/UA6BwC0CYO3Y/QhMBFUGVm/MkfIStQXJiA2tvHOy2E=;
-        b=InWzEdcms5aFyJNybcPjVBSg4/YyHC4fs7zj6R3+Yv8npQ+KHDzLn7itVIJu+p0sHT
-         Q6/AUyTgYzD4VmqdR9mT1dT/7tCLVlhkqQ/1fiIhbCTjlCBCkR0yPpVP4Ca8n7w2ruLK
-         XWlTNoMagLkN9eGT4Cw2YtHTD8+Z3VwnEmanlqU5CZ0xTq6kvLeWtXHeIAqIeABYjt0f
-         d3erx68+4v5ESugAEzgpSqPJvh3Y/ygsLs1WR4yWXbCmSqKrnG7ph4qWLPKhvlxAPqQn
-         sKyLbd5GGKgF0NFzQJ/4M8M/eNrdTnpp2PZvqEyxbd5bFuVuIpnAOVFlYGR1lUTG1JJ5
-         CFDQ==
+        Tue, 24 Aug 2021 15:05:53 -0400
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com [209.85.128.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 23CA24079D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 19:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1629831906;
+        bh=imZyE0myVr/4RzrKTOaKGpxnnbHBTwOKB1lVbc5Dymc=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=cnhpg2ZWLmCR8OrIBiLeomleHCwq0FuLx4YSn3qHatIVc6m4dOUfP4p2H6+3N4ZJS
+         i2x/gTxtls6I5xA0fGmcBJ9p+DYinTX9PUm0i16dcj8dJiQrfF1Ts+//SINmSjzfBt
+         KT4jfK95B/y97STDk5igWpsciJQbCVGtAtA9sIotBgz3TS8kwe554Em4+ugRvBmY1z
+         U/fvyBwzyQMfHV6fmPPnHkA1kdp8biNhZHNUqE0b1l/VdC6xHslPxovJQg5kCru1Pe
+         mzQc0B9PAhpKevEFkdwR92jWj+62KaBD45Le8PgqRcq8yr9ZBMpPMpexndmB/ALh87
+         dwDzrFuwczZqw==
+Received: by mail-wm1-f69.google.com with SMTP id m22-20020a7bca56000000b002e7508f3faeso1853039wml.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:05:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/UA6BwC0CYO3Y/QhMBFUGVm/MkfIStQXJiA2tvHOy2E=;
-        b=lS4W5pM2Wl0BBsmO52qQMvrliPU6rbS8gxrMsakpZONEcSGQcPqgserR6rOkgXmprY
-         +/dmMVWjswUy83IcdTSVaG7JKe4H9l6QPJGOlftdakPHVAmPdMqw0kl8TB0tKjXP5oEf
-         uDDj+W+IpnKauHAdbEpIY94nqIrgJXlo6MxGciKlLhCYZUhsRQ9phQZCW7JzqG/5TGDW
-         jGeZS9bANaqUJwAVqwcL2gRIVnrPNlkOa0daunmXMROy0LKJTmajuesUoe05PTSvCdtT
-         nBmocAlmLqo0nP+i1l06W2WBxR4GdgMzGtLj2RHuwPh3/vkd2gQPc2CaYQqWgnk2XZdY
-         lUwQ==
-X-Gm-Message-State: AOAM530vvaKQzfH/jFhSQZY2Yv8Btzl/TS5JfV2etjXK/wKGV3b3pM2V
-        S9o4nawErxQR9SSaG8TAoAo=
-X-Google-Smtp-Source: ABdhPJyhbBipA6XjYTSx4y0PY5Ht0XzmDWNUtPlnqLHfabUjvvNeTCPw9WKJzvTRd4sM/RPuAgOVYw==
-X-Received: by 2002:a17:90a:3fcb:: with SMTP id u11mr6071898pjm.178.1629831873686;
-        Tue, 24 Aug 2021 12:04:33 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id y12sm19425378pfa.25.2021.08.24.12.04.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 12:04:32 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 24 Aug 2021 09:04:31 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v6 5/6] cgroup/cpuset: Update description of
- cpuset.cpus.partition in cgroup-v2.rst
-Message-ID: <YSVCv0WjTzwPUWUN@slm.duckdns.org>
-References: <20210814205743.3039-1-longman@redhat.com>
- <20210814205743.3039-6-longman@redhat.com>
- <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
- <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=imZyE0myVr/4RzrKTOaKGpxnnbHBTwOKB1lVbc5Dymc=;
+        b=CjIyYnjC7uL5iWG/GN5LQrxJeqB5qOYL4ZSlnzCsITUbPzAGFF5xSZsLeser2crzCT
+         Itu2QTwOpidLsw2qvAP6voGCxpGHBYhKe8TtNZa0fSiTrGHyHtpuueOkSsAx1qMAOgk0
+         7kxv6Mno5+Kk2wN+95uHkqQABQwXHYMFM12PxJ/8/cFbcMqnDCGfNkVp8ObEig5amzS2
+         pCN31g38LkyTKxbJ48w+jWtSu1HkjkibgPorrcrAGj/FpJ02sfhBUIhhmuvN1OIjvfhh
+         LXKeMvOKqUtkkepT+Cw2x1bpgLFsyCbPX5jgi+MpBKrakgyWdWWiMcyHFACUB/+JA/HS
+         Yy9Q==
+X-Gm-Message-State: AOAM532qCxh/bTGIeHh4DiuY6A8/lfajf3I5T/rqgKS7CqbX+hdd50a4
+        nHn3gloIb5NPW9rtrQH/tjVAAu/L45aYAlAC71SB7s8Wamh8JDT7vaXdgMRePfxjhwOg5on6qzR
+        lPkw/Dvd3an+7K66dFN2Rg7U2Fz2hx4rSUSYlqhKdaQ==
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr5591081wmc.30.1629831904774;
+        Tue, 24 Aug 2021 12:05:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJza/ERSPVmnyN7SqaIwhIMDqCYelq2Xjc/rr4UPcc2KdmL1ksd3r2LvJdQvXH7L1vDQ5Ur3vw==
+X-Received: by 2002:a1c:7413:: with SMTP id p19mr5591045wmc.30.1629831904577;
+        Tue, 24 Aug 2021 12:05:04 -0700 (PDT)
+Received: from [192.168.0.103] ([79.98.113.188])
+        by smtp.gmail.com with ESMTPSA id n14sm14742395wrr.28.2021.08.24.12.05.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 12:05:04 -0700 (PDT)
+Subject: Re: [PATCH 4/6] riscv: microchip: mpfs: fix board compatible
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Atish Patra <atish.patra@wdc.com>,
+        Yash Shah <yash.shah@sifive.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Piotr Sroka <piotrs@cadence.com>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
+ <20210819154436.117798-4-krzysztof.kozlowski@canonical.com>
+ <CAMuHMdX8dBiYadAN8OQpds_bMbLReJy+u6apGe=RZzfEE=BJbw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <c9c9d21f-e820-de1e-b5a6-cd6054dda3ec@canonical.com>
+Date:   Tue, 24 Aug 2021 21:05:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
+In-Reply-To: <CAMuHMdX8dBiYadAN8OQpds_bMbLReJy+u6apGe=RZzfEE=BJbw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 24/08/2021 17:29, Geert Uytterhoeven wrote:
+> Hi Krzysztof,
+> 
+> On Thu, Aug 19, 2021 at 5:45 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>> According to bindings, the compatible must include microchip,mpfs.  This
+>> fixes dtbs_check warning:
+>>
+>>   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: /: compatible: ['microchip,mpfs-icicle-kit'] is too short
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+>> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+>> @@ -10,7 +10,7 @@
+>>
+>>  / {
+>>         model = "Microchip PolarFire-SoC Icicle Kit";
+>> -       compatible = "microchip,mpfs-icicle-kit";
+>> +       compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
+> 
+> I have the same change in my local tree, but didn't get to submit it
+> yet, so this part is fine ;-)
+> 
+>>
+>>         chosen {
+>>                 stdout-path = &serial0;
+>> diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+>> index b9819570a7d1..cb54da0cc3c4 100644
+>> --- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+>> +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
+>> @@ -7,7 +7,7 @@ / {
+>>         #address-cells = <2>;
+>>         #size-cells = <2>;
+>>         model = "Microchip MPFS Icicle Kit";
+>> -       compatible = "microchip,mpfs-icicle-kit";
+>> +       compatible = "microchip,mpfs-icicle-kit", "microchip,mpfs";
+> 
+> As this file is the SoC .dtsi, not the board DTS for the full
+> Icicle Kit, the compatible value should be just "microchip,mpfs"
+> (to be augmented by the board DTS).
+> And "model" should be "Microchip PolarFire SoC".
 
-On Tue, Aug 24, 2021 at 01:35:33AM -0400, Waiman Long wrote:
-> Sorry for the late reply as I was on vacation last week.
 
-No worries. Hope you enjoyed the vacation. :)
+Sounds good, I'll fix it in v2.
 
-> > All the above ultimately says is that "a new task cannot be moved to a
-> > partition root with no effective cpu", but I don't understand why this would
-> > be a separate rule. Shouldn't the partition just stop being a partition when
-> > it doesn't have any exclusive cpu? What's the benefit of having multiple its
-> > own failure mode?
->
-> A partition with 0 cpu can be considered as a special partition type for
-> spawning child partitions. This can be temporary as the cpus will be given
-> back when a child partition is destroyed.
 
-But it can also happen by cpus going offline while the partition is
-populated, right? Am I correct in thinking that a partition without cpu is
-valid if its subtree contains cpus and invalid otherwise? If that's the
-case, it looks like the rules can be made significantly simpler. The parent
-cgroups never have processes anyway, so a partition is valid if its subtree
-contains cpus, invalid otherwise.
-
-> > So, I think this definitely is a step in the right direction but still seems
-> > to be neither here or there. Before, we pretended that we could police the
-> > input when we couldn't. Now, we're changing the interface so that it
-> > includes configuration failures as an integral part; however, we're still
-> > policing some particular inputs while letting other inputs pass through and
-> > trigger failures and why one is handled one way while the other differently
-> > seems rather arbitrary.
-> > 
-> The cpu_exclusive and load_balance flags are attributes associated directly
-> with the partition type. They are not affected by cpu availability or
-> changing of cpu list. That is why they are kept even when the partition
-> become invalid. If we have to remove them, it will be equivalent to changing
-> partition back to member and we may not need an invalid partition type at
-> all. Also, we will not be able to revert back to partition again when the
-> cpus becomes available.
-
-Oh, yeah, I'm not saying to lose those states. What I'm trying to say is
-that the rules and failure modes seem a lot more complicated than they need
-to be. If the configuration becomes invalid for whatever reason, transition
-the partition into invalid state and report why. If the situation resolves
-for whatever reason, transition it back to valid state. Shouldn't that work?
-
-Thanks.
-
--- 
-tejun
+Best regards,
+Krzysztof
