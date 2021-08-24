@@ -2,168 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA073F6BAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A213F6BAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238735AbhHXWU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        id S236345AbhHXWV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbhHXWU6 (ORCPT
+        with ESMTP id S235429AbhHXWVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:20:58 -0400
+        Tue, 24 Aug 2021 18:21:25 -0400
 Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5F2C061757;
-        Tue, 24 Aug 2021 15:20:14 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id om1-20020a17090b3a8100b0017941c44ce4so2796925pjb.3;
-        Tue, 24 Aug 2021 15:20:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E90C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:20:40 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so3375899pjx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1s9ly3AV9m2sRQyA6TMhsemhhhr5uERchfWnHFSTqgA=;
-        b=Ki9v+Tp4RIF7iikzg3iQbG3QTaAwPJlx3zzBojiVvHlkB5nfPNFlfS46mJQQtnRD3f
-         k0564Qehjv+G9AoGHKgVxPyOsDb8JhyrlokVeAUxZfTJX2Z0/JHEkbnyExH1iwQIzQ7H
-         byFHt/qGU3zB94C/xkXkNGLfBUp3Lu3aY4oBxCsCGH3JLwOELK8ZEFsIC9gx0lvbmXWV
-         0kzLNSpC/xCar5DCMkar1iCfkFDvpzGBvhVX20/BPeD9XJb4bZg1XLI4nI0d5E6ZFBIa
-         8maWcjxpv4OfulRnyZxAK8yfbiD2W7b8kzQpHsxYpXKSIEDHZbkh1la2YqKc9ckZSdF5
-         PLFQ==
+        bh=LwNvxZKMitO0Rw/qXWBsKZM0jbr8PbwBZ6KzlDWrj38=;
+        b=Yxg5jiZeizLqXFq7skpFHurv6UeDBB1ajk6SlOQaybKkAZA1W64Zk3Peev2HbDnNXv
+         0BZGwB93qVVqwhBai71crUZQsqbGJ6wmEx33aBc0QZzFYqma8/wkDYACdtBxFgixQY8N
+         BYZUDILXZUUDh2MNyMc/crWwCBMQ0OGI6/Pr3LDzjO7uGfRJaC9V09bsCZinNO4M5EPe
+         Jo/id83WvEqMFRAj/IzdtRIXbgEKq+VaN/7qbM+QcXFQ9pQm9BrLj4x6/6bxej7uWdaC
+         D8Kfs+fGhHKuQEnTZ/D0uk0v6p/kLImPTTmAJbA5oaxynIkaqmRi8NHDReIn1havok3q
+         JYKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1s9ly3AV9m2sRQyA6TMhsemhhhr5uERchfWnHFSTqgA=;
-        b=D7NaZLYHnRmig9X7H/MPEJFIJRFOedros0cRHE4HZvNdlyjZCthQvXJ2kCUWn0f1ds
-         N6lh99xPezizpYQP0odoWXyO2wPRXW/jazWDXdPOgz7mlQKNDSA2KHXV+R9XwIujkFVC
-         FSJcIV1i0uTw8B7mh61YI2GdLe4I6f9303uJWH8B15GuAcHTqcb340Tkyj9PgEmiQIhA
-         b+iS8TtlMn438PPT3hoKc+hfVKFLn+plyFWF5ESmVrDKWO+DzWxB3Rxs1TyCGcNYNsen
-         0jXDdqOolmurnlgVcIsjUuImPfykVTDqa3fmMRaOBaEHGrFi2ttKNYMtj0K7VmeVy2By
-         Sbvg==
-X-Gm-Message-State: AOAM5323oFdSJkDbm5CN8iObECUSr+lPxTxlNoX7c6OqjpFChSGwbkyL
-        Qxw5ICYGr7kdKHFfqz9qRT7D11oWJR5RGlXNkdo=
-X-Google-Smtp-Source: ABdhPJy+kCY+EPQ37dj9B65wo0j6R/RKHeuhQ5zltSOAySKaXM84O05Qi2NEPAQWMgttBIuAMsHrCTr58A3cKFzkEcg=
-X-Received: by 2002:a17:902:8c90:b0:12f:699b:27 with SMTP id
- t16-20020a1709028c9000b0012f699b0027mr28777516plo.28.1629843613701; Tue, 24
- Aug 2021 15:20:13 -0700 (PDT)
+        bh=LwNvxZKMitO0Rw/qXWBsKZM0jbr8PbwBZ6KzlDWrj38=;
+        b=iN+ojMwTJk/aBBraPN+CuP9LDBVHQBep1cao4BvP+ATxvHC4/jeYojow+52F0iYCr9
+         3Q45E5ILsX7ENIiBjqiE31QJtlJ8VDEE+/BSFd16WJnOXzNxn3Fted/lJnNXKZYmi27g
+         ba4qX+msmxjXQ9KumJm62q9Ri2ftBsQnN7Jhe/xAwGL77tRf+TgzYzqLTXyv+L37TjEf
+         rO37UqLRcWBzKzoBcbqxfqIQ3I+El58Hex6nhgVV+hqQsTdm7rkenCbWy0GDznbAK1gP
+         uHtHZ1HU3AhKiG2eBSNlLrRKOp7lh8mQMHuwM2ZzHHTEPhBdXXQjFTBqX8/yg9OOjn4x
+         z8tA==
+X-Gm-Message-State: AOAM531O4bEX+E4rwZgAwklO7p4QDrk1Zpm8n3679RrOOPGjTVYJutsV
+        ZOzc+mlKVgyieI85+MQLmI0R130AaKWfhm3froVX/g==
+X-Google-Smtp-Source: ABdhPJy4YJefTzMEhYUMj9nSJ2oLGKn6kgACMeJKGYrfKQW0apBQtKGolYCLvnWBk0LGsgWQXjNTjcvC7dRAY3588dA=
+X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr6815678pjq.217.1629843640483;
+ Tue, 24 Aug 2021 15:20:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <1629774050-4048-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1629774050-4048-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 24 Aug 2021 15:20:02 -0700
-Message-ID: <CAADnVQJ7P-pH8punF1nw5KHhb15AJND-vQ_gK3s87hAJ1HN59A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: test_bpf: Print total time of test in
- the summary
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
+References: <20210824142823.16845-1-fmdefrancesco@gmail.com>
+ <2327592.S5L5zkRU50@localhost.localdomain> <a5bfab84-16cc-52ad-5cdb-038765bf0b36@gmail.com>
+ <1730935.6n1DRfr91A@localhost.localdomain> <8984a400-0d1a-07cc-cff4-c0eeef81fc79@gmail.com>
+ <YSUb1BPAGmP9wngU@kroah.com>
+In-Reply-To: <YSUb1BPAGmP9wngU@kroah.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Tue, 24 Aug 2021 23:20:29 +0100
+Message-ID: <CAA=Fs0nQ9tfQ7xyVsJ3NYfDOdz6wBruKHS=eATRAx6gBZ5kmVQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] staging: r8188eu: Make some clean-ups in usbctrl_vendorreq()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 8:00 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+On Tue, 24 Aug 2021 at 17:18, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> The total time of test is useful to compare the performance
-> when bpf_jit_enable is 0 or 1, so print it in the summary.
+> On Tue, Aug 24, 2021 at 07:04:31PM +0300, Pavel Skripkin wrote:
+> > On 8/24/21 6:59 PM, Fabio M. De Francesco wrote:
+> > > On Tuesday, August 24, 2021 5:43:26 PM CEST Pavel Skripkin wrote:
+> > > > On 8/24/21 6:39 PM, Fabio M. De Francesco wrote:
+> > > > > Oh, I know where it comes from... :)
+> > > > > > It's a patch of mine that is in the queue, waiting to be
+> > > > reviewed and applied.
+> > > > > Please see: https://lore.kernel.org/lkml/20210819221241.31987-1-fmdefrancesco@gmail.com/
+> > > > > oh.... there are _a lot_ of pending changes :)
+> > > >
+> > > > I guess, we need smth like public-mirror with already reviewed and
+> > > > working changes
+> > >
+> > > It's becoming a serious problem. A lot of times I see people who is asked to
+> > > rebase and resend, not because they forget to fetch the current tree, instead
+> > > because the tree changes as soon as Greg start to apply the first patches in the
+> > > queue and the other patches at the end of the queue cannot be applied.
+> > >
+> > > Anyway,I understand that Greg cannot apply a patch at a time soon after
+> > > submission but in the while the queue grows larger and larger.
+> > >
+> >
+> >
+> > It can be easily fixed. We need public fork somewhere (github,
+> > git.kernel.org ...) and we should ask Greg to add remote-branch to his tree.
 >
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  lib/test_bpf.c | 24 ++++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
+> No, not going to happen, sorry.  I will catch up with patches when I get
+> the chance and then all will be fine.  This is highly unusual that there
+> are loads of people all working on the same staging driver.  No idea why
+> everyone jumped on this single one...
 >
-> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-> index 830a18e..37f49b7 100644
-> --- a/lib/test_bpf.c
-> +++ b/lib/test_bpf.c
-> @@ -8627,9 +8627,10 @@ static int __run_one(const struct bpf_prog *fp, const void *data,
->         return ret;
->  }
+> relax, there is no rush here...
 >
-> -static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
-> +static int run_one(const struct bpf_prog *fp, struct bpf_test *test, u64 *run_one_time)
->  {
->         int err_cnt = 0, i, runs = MAX_TESTRUNS;
-> +       u64 time = 0;
->
->         for (i = 0; i < MAX_SUBTESTS; i++) {
->                 void *data;
-> @@ -8663,8 +8664,12 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
->                                 test->test[i].result);
->                         err_cnt++;
->                 }
-> +
-> +               time += duration;
->         }
->
-> +       *run_one_time = time;
-> +
->         return err_cnt;
->  }
->
-> @@ -8944,9 +8949,11 @@ static __init int test_bpf(void)
->  {
->         int i, err_cnt = 0, pass_cnt = 0;
->         int jit_cnt = 0, run_cnt = 0;
-> +       u64 total_time = 0;
->
->         for (i = 0; i < ARRAY_SIZE(tests); i++) {
->                 struct bpf_prog *fp;
-> +               u64 run_one_time;
->                 int err;
->
->                 cond_resched();
-> @@ -8971,7 +8978,7 @@ static __init int test_bpf(void)
->                 if (fp->jited)
->                         jit_cnt++;
->
-> -               err = run_one(fp, &tests[i]);
-> +               err = run_one(fp, &tests[i], &run_one_time);
->                 release_filter(fp, i);
->
->                 if (err) {
-> @@ -8981,10 +8988,12 @@ static __init int test_bpf(void)
->                         pr_cont("PASS\n");
->                         pass_cnt++;
->                 }
-> +
-> +               total_time += run_one_time;
->         }
->
-> -       pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
-> -               pass_cnt, err_cnt, jit_cnt, run_cnt);
-> +       pr_info("Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
-> +               pass_cnt, err_cnt, jit_cnt, run_cnt, total_time);
->
->         return err_cnt ? -EINVAL : 0;
->  }
-> @@ -9192,6 +9201,7 @@ static __init int test_tail_calls(struct bpf_array *progs)
->  {
->         int i, err_cnt = 0, pass_cnt = 0;
->         int jit_cnt = 0, run_cnt = 0;
-> +       u64 total_time = 0;
->
->         for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
->                 struct tail_call_test *test = &tail_call_tests[i];
-> @@ -9220,10 +9230,12 @@ static __init int test_tail_calls(struct bpf_array *progs)
->                         pr_cont("ret %d != %d FAIL", ret, test->result);
->                         err_cnt++;
->                 }
-> +
-> +               total_time += duration;
->         }
->
-> -       pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed]\n",
-> -               __func__, pass_cnt, err_cnt, jit_cnt, run_cnt);
-> +       pr_info("%s: Summary: %d PASSED, %d FAILED, [%d/%d JIT'ed] in %llu nsec\n",
-> +               __func__, pass_cnt, err_cnt, jit_cnt, run_cnt, total_time);
+> greg k-h
 
-I think it only adds noise. Pls use dedicated runners like selftests/bpf/bench
-for performance measurements. test_bpf.ko also does some.
+Yeah I'm with Greg on this one - we don't need github forks etc, my
+strategy has thus far been to just wait for staging-testing to
+coalesce into a more up-to-date state and then work on top of that as
+needed. Extra forks just introduce more complexity and more to watch +
+keep track of in my opinion, as the e-mails still keep flowing in
+anyway :-)
+
+Regards,
+Phil
