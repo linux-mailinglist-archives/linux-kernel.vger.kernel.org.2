@@ -2,99 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF0C3F68AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D023F68B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbhHXSEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:04:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238629AbhHXSDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:03:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F0D0610D0;
-        Tue, 24 Aug 2021 18:03:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629828189;
-        bh=6+xeVzOAhY7yu4NJoUhz/MQdr0MvjHaPrV6CCAoQ9HI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uQ0cj3GrhI2zHosqh8PGmQwEj420cq4WijwVnmbEVvwr0xW4YodC4ykABR9dUKH11
-         FVPdSO91BYizeS1lf3m/4PEAAlCMepN7CLvjLEXD+emFjTpObV2+L5Fry0WETbEDoA
-         /kjDlWxIllfxCL6JdR+9sUzLZKLOWfI+NEGiPkwMRHsvZPOWTlQZiNhRTZQmE942UD
-         JaqOHN+/Tt/y1R5xdYAZ+HnW2xvrYm+c4PUFiXozy9rR9EHLuehKcKkfT7drBkjo76
-         cAc1cUyOuk9bo7apLAxSxSIIbhj803zU4t7u0ks9ylHgrf5lKkm2/cqXUyvnQNnr6d
-         b/Ox10nhcLABw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 303FD4007E; Tue, 24 Aug 2021 15:03:07 -0300 (-03)
-Date:   Tue, 24 Aug 2021 15:03:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Nghia Le <nghialm78@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf tools: Add missing newline at the end of file
-Message-ID: <YSU0W9L/TWhyQd6y@kernel.org>
-References: <20210824085947.224062-1-nghialm78@gmail.com>
- <CAKXUXMzbJRHyUpFLGk8SBJHrkmkwq4VtfXmgvZtUBJGiED8qxw@mail.gmail.com>
+        id S239308AbhHXSEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:04:20 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:38471 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235098AbhHXSEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 14:04:04 -0400
+Received: by mail-ot1-f44.google.com with SMTP id i8-20020a056830402800b0051afc3e373aso37139533ots.5;
+        Tue, 24 Aug 2021 11:03:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pzcR6KfvbOWTe3o73soBGsabxlr0DD0//iL4Tmb4lKw=;
+        b=KNuOiNgN5uu9w403gOxaMH3ok6i0TRY0LIQwFYEbdY89Iugv341B5tgysKBxPMWJsO
+         YJ2ZVrssR7IyMsTB5iIWy1juvX1YTb9SjqgrcAsvUPVU7zhYl0Rl6/9fAJ34lQmVel+q
+         eUjSbPUj7fDvkzZR8kbpmnx0iqfvdQEvGpfx6chUYCQCSSeO22+CwHE0cxAPB/4WcdAV
+         HuAUkQ+X3UYF8ln1KWKgWehvcjMvslPSysrOJEPRv9FjXZRY8zVxlbRATRVfK7NsKBJJ
+         PrAVTCWB6t+9Is1GklR5Af3MqFlW6K3+2hKepDgj8Gk93EwAHWgQFwskgGiggy7POe1r
+         8E9Q==
+X-Gm-Message-State: AOAM533S2ieK60PLty+eQAzEiBQDnUuiDBqY1jQu/xHlLOPUhPPJxonh
+        7Tjb0aW3eXnxVSFfuWm5pA==
+X-Google-Smtp-Source: ABdhPJwUCQ0B+E1Lp9msS+XzKTGdquG6FeiXzSimbNOU3cWCcnsa1SXe0WgxlpKbAWQKc3CrIlWVKA==
+X-Received: by 2002:aca:bfc4:: with SMTP id p187mr3742944oif.21.1629828200154;
+        Tue, 24 Aug 2021 11:03:20 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bg9sm4676161oib.26.2021.08.24.11.03.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 11:03:19 -0700 (PDT)
+Received: (nullmailer pid 726225 invoked by uid 1000);
+        Tue, 24 Aug 2021 18:03:18 -0000
+Date:   Tue, 24 Aug 2021 13:03:18 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Rob Herring <robh+dt@kernel.org>, broonie@kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        heiko@sntech.de, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 4/4] ASoC: dt-bindings: rockchip: Add compatible for
+ rk3568 spdif
+Message-ID: <YSU0Zk5LpSX9xZG1@robh.at.kernel.org>
+References: <1629800162-12824-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1629800162-12824-5-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKXUXMzbJRHyUpFLGk8SBJHrkmkwq4VtfXmgvZtUBJGiED8qxw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <1629800162-12824-5-git-send-email-sugar.zhang@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 24, 2021 at 04:37:19PM +0200, Lukas Bulwahn escreveu:
-> On Tue, Aug 24, 2021 at 11:00 AM Nghia Le <nghialm78@gmail.com> wrote:
-> >
-> > Add missing newline at the end of file parse-sublevel-options.h.
-> > Thus removing relevant warning reported by checkpatch.
-> >
-> > Signed-off-by: Nghia Le <nghialm78@gmail.com>
+On Tue, 24 Aug 2021 18:16:02 +0800, Sugar Zhang wrote:
+> This patch adds compatible string for rk3568 spdif.
 > 
-> Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> This addresses the only instance of a "no newline at the end of the
-> file" throughout the kernel tree.
+> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+> ---
 > 
-> This is part of a larger effort to identify all rules that checkpatch
-> warns about and that are never false positives (compared to the many
-> rules in checkpatch that are heuristics or are known to be ignored by
-> the current development community and hence, cause many false
-> positives). We could use such rules to be enforced in the submission
-> process.
+>  Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Lukas
-> Lukas
-> > ---
-> >  tools/perf/util/parse-sublevel-options.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/parse-sublevel-options.h b/tools/perf/util/parse-sublevel-options.h
-> > index 9b9efcc2aaad..578b18ef03bb 100644
-> > --- a/tools/perf/util/parse-sublevel-options.h
-> > +++ b/tools/perf/util/parse-sublevel-options.h
-> > @@ -8,4 +8,4 @@ struct sublevel_option {
-> >
-> >  int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts);
-> >
-> > -#endif
-> > \ No newline at end of file
-> > +#endif
-> > --
-> > 2.25.1
-> >
 
--- 
-
-- Arnaldo
+Acked-by: Rob Herring <robh@kernel.org>
