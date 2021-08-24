@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA453F6647
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F913F65D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240090AbhHXRWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55620 "EHLO mail.kernel.org"
+        id S240273AbhHXRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240491AbhHXRSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:18:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFBA261ABC;
-        Tue, 24 Aug 2021 17:02:59 +0000 (UTC)
+        id S240022AbhHXROE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:14:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B7AF261A7F;
+        Tue, 24 Aug 2021 17:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824580;
-        bh=gFxJW7kQjAVx6+Tz6fYlHS5i8E6SnUgyABt53kNvEMo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uaMQ+b0HmFwuYA4/BkIwTopwJvM2TJYdGZAJAP8Mg35MJSAb0422GGUVFOX/Wtf6N
-         20oD9AbenFgVOex3I8671grbgy4ZcljZq2b4V5ozHuY8LQ2YcCKBsWRZLnr6I++eoQ
-         ovUq2RT6mQeBuuM/FvzxKpFznMi+VIPZRtv774RrJ8/Yopfnioa/xIyMaH5hKfiA5m
-         Q62WdY518C4GoaXdjyKySNT/WNDJ7FlTBFHzu+rnZfikZ5k0eVuEYxRCdD5AD8vd5S
-         66w0e3OMRa8feQhIcEA8xdiGMWSWBDkOHUFtqlSZQQf3kDjlima7dXjDoXZAd8J2YW
-         DUGE9hmSc8WWw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/84] ASoC: cs42l42: Correct definition of ADC Volume control
-Date:   Tue, 24 Aug 2021 13:01:34 -0400
-Message-Id: <20210824170250.710392-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
-References: <20210824170250.710392-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.205-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.205-rc1
-X-KernelTest-Deadline: 2021-08-26T17:02+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1629824495;
+        bh=rGBceb6nEqSjkrJx5lFbFiYdVrmnBh62HwT++73XYzI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=DSlea4jACmtF60tK99yPYFv4sn+kTVnkM2rAYIgKPPivxWTO2rVryKtMA1hsEBQQ8
+         FBZ0QDz+BAKMs1yJXz8r46Yt/FS1jL7J/zqz04qE2lRSlTifV3eJk0va2lv15UduaZ
+         NI7HNMlLAvFLX9qo/mSfXqIAzBqUBgloWxAQePtbiQyxNDOsurVC1cHJE9C3X+k9ZV
+         JDzMLCbcjQYE1a6fJjX1Ek+tzN38YazBGeNHvswfF7gEue4s9t5Z8V8swLbc6g+wVQ
+         CgpKctLA8cVrG4WJFy9PuDs+DOXSwKN/rI7OgC+ZCNSU5/6+7sSxMByR3tsaR0J4A2
+         U9YCVxzUcRWYA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A7FF26096F;
+        Tue, 24 Aug 2021 17:01:35 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210824142310.GA1070942@nvidia.com>
+References: <20210824142310.GA1070942@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210824142310.GA1070942@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: cc4f596cf85e97ca6606e1bd10b3b9851ef52ddf
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6e764bcd1cf72a2846c0e53d3975a09b242c04c9
+Message-Id: <162982449562.32359.8999725810934804142.pr-tracker-bot@kernel.org>
+Date:   Tue, 24 Aug 2021 17:01:35 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+The pull request you sent on Tue, 24 Aug 2021 11:23:10 -0300:
 
-[ Upstream commit ee86f680ff4c9b406d49d4e22ddf10805b8a2137 ]
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-The ADC volume is a signed 8-bit number with range -97 to +12,
-with -97 being mute. Use a SOC_SINGLE_S8_TLV() to define this
-and fix the DECLARE_TLV_DB_SCALE() to have the correct start and
-mute flag.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6e764bcd1cf72a2846c0e53d3975a09b242c04c9
 
-Fixes: 2c394ca79604 ("ASoC: Add support for CS42L42 codec")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210729170929.6589-1-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/cs42l42.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Thank you!
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index fddfd227a9c0..6a58c666776a 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -404,7 +404,7 @@ static const struct regmap_config cs42l42_regmap = {
- 	.cache_type = REGCACHE_RBTREE,
- };
- 
--static DECLARE_TLV_DB_SCALE(adc_tlv, -9600, 100, false);
-+static DECLARE_TLV_DB_SCALE(adc_tlv, -9700, 100, true);
- static DECLARE_TLV_DB_SCALE(mixer_tlv, -6300, 100, true);
- 
- static const char * const cs42l42_hpf_freq_text[] = {
-@@ -443,8 +443,7 @@ static const struct snd_kcontrol_new cs42l42_snd_controls[] = {
- 				CS42L42_ADC_INV_SHIFT, true, false),
- 	SOC_SINGLE("ADC Boost Switch", CS42L42_ADC_CTL,
- 				CS42L42_ADC_DIG_BOOST_SHIFT, true, false),
--	SOC_SINGLE_SX_TLV("ADC Volume", CS42L42_ADC_VOLUME,
--				CS42L42_ADC_VOL_SHIFT, 0xA0, 0x6C, adc_tlv),
-+	SOC_SINGLE_S8_TLV("ADC Volume", CS42L42_ADC_VOLUME, -97, 12, adc_tlv),
- 	SOC_SINGLE("ADC WNF Switch", CS42L42_ADC_WNF_HPF_CTL,
- 				CS42L42_ADC_WNF_EN_SHIFT, true, false),
- 	SOC_SINGLE("ADC HPF Switch", CS42L42_ADC_WNF_HPF_CTL,
 -- 
-2.30.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
