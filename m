@@ -2,185 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F853F59F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C763F59FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 10:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235441AbhHXImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 04:42:23 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:14316 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhHXImV (ORCPT
+        id S235247AbhHXIpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 04:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235016AbhHXIpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:42:21 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Gv2dY3H2rz7w4V;
-        Tue, 24 Aug 2021 16:41:21 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 24 Aug 2021 16:41:35 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 24 Aug
- 2021 16:41:34 +0800
-Subject: Re: [PATCH RFC 0/7] add socket to netdev page frag recycling support
-To:     David Ahern <dsahern@gmail.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <alexander.duyck@gmail.com>, <linux@armlinux.org.uk>,
-        <mw@semihalf.com>, <linuxarm@openeuler.org>,
-        <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <thomas.petazzoni@bootlin.com>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <akpm@linux-foundation.org>, <peterz@infradead.org>,
-        <will@kernel.org>, <willy@infradead.org>, <vbabka@suse.cz>,
-        <fenghua.yu@intel.com>, <guro@fb.com>, <peterx@redhat.com>,
-        <feng.tang@intel.com>, <jgg@ziepe.ca>, <mcroce@microsoft.com>,
-        <hughd@google.com>, <jonathan.lemon@gmail.com>, <alobakin@pm.me>,
-        <willemb@google.com>, <wenxu@ucloud.cn>, <cong.wang@bytedance.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <chenhao288@hisilicon.com>, <edumazet@google.com>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>,
-        <memxor@gmail.com>, <linux@rempel-privat.de>, <atenart@kernel.org>,
-        <weiwan@google.com>, <ap420073@gmail.com>, <arnd@arndb.de>,
-        <mathew.j.martineau@linux.intel.com>, <aahringo@redhat.com>,
-        <ceggers@arri.de>, <yangbo.lu@nxp.com>, <fw@strlen.de>,
-        <xiangxia.m.yue@gmail.com>, <linmiaohe@huawei.com>
-References: <1629257542-36145-1-git-send-email-linyunsheng@huawei.com>
- <83b8bae8-d524-36a1-302e-59198410d9a9@gmail.com>
- <f0d935b9-45fe-4c51-46f0-1f526167877f@huawei.com>
- <619b5ca5-a48b-49e9-2fef-a849811d62bb@gmail.com>
- <744e88b6-7cb4-ea99-0523-4bfa5a23e15c@huawei.com>
- <80701f7a-e7c6-eb86-4018-67033f0823bf@gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <71ee12f2-8b71-923d-f993-ad4a43b9802d@huawei.com>
-Date:   Tue, 24 Aug 2021 16:41:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 24 Aug 2021 04:45:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27388C061757;
+        Tue, 24 Aug 2021 01:45:00 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 08:44:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1629794696;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rrFaOxYVVG7V2TCw0YOncQAAUO9yzBIGwqHSLqakzr8=;
+        b=RcVMOQXHQRDqJD+V8wE8YNs72fgPoB1nIxoHgSeKjdMuOw+iwLEFx1pmGlpIqu3hZMC7sU
+        aconNc9aOHo+IZeNiq7us3DmBvYS85O4U82Q7EaQXLIiVazFhl74l/IWdsTI4b6YmbBBFC
+        4ghk+q7c3Vbmy5hJ5PxFeOj+pojsdMXAa49SsFxFeI8k4pSzhz044dPRoBlLvR7QaJ46gF
+        XJBSBIOR3blp1MO+FaoRDhnXMgwoJ58vGv0984DQxzLRPb4AfmSsUXGF266BBBXrvJGOLO
+        8EMLc5FLCduzU2Cc+qKFiIAxvKlQxRYDyBxZveuS9qk2QrjAJhG1dYqSknz5bw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1629794696;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rrFaOxYVVG7V2TCw0YOncQAAUO9yzBIGwqHSLqakzr8=;
+        b=Zf/olNzxZdbu4K8KRi+ApQ4YTEuk6V07NUqkcYyfmHqgPLUOTKW9Kich2Eb4ueVCM+pfHc
+        4d27qJkL/Tp4AeAg==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Defer processing of early errors
+Cc:     Sumanth Kamatala <skamatala@juniper.net>,
+        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210824003129.GA1642753@agluck-desk2.amr.corp.intel.com>
+References: <20210824003129.GA1642753@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <80701f7a-e7c6-eb86-4018-67033f0823bf@gmail.com>
+Message-ID: <162979469521.25758.12563962635907560846.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/8/24 11:34, David Ahern wrote:
-> On 8/22/21 9:32 PM, Yunsheng Lin wrote:
->>
->> I assumed the "either Rx or Tx is cpu bound" meant either Rx or Tx is the
->> bottleneck?
-> 
-> yes.
-> 
->>
->> It seems iperf3 support the Tx ZC, I retested using the iperf3, Rx settings
->> is not changed when testing, MTU is 1500:
-> 
-> -Z == sendfile API. That works fine to a point and that point is well
-> below 100G.
-> 
-> I mean TCP with MSG_ZEROCOPY and SO_ZEROCOPY.
-> 
->>
->> IOMMU in strict mode:
->> 1. Tx ZC case:
->>    22Gbit with Tx being bottleneck(cpu bound)
->> 2. Tx non-ZC case with pfrag pool enabled:
->>    40Git with Rx being bottleneck(cpu bound)
->> 3. Tx non-ZC case with pfrag pool disabled:
->>    30Git, the bottleneck seems not to be cpu bound, as the Rx and Tx does
->>    not have a single CPU reaching about 100% usage.
->>
->>>
->>> At 1500 MTU lowering CPU usage on the Tx side does not accomplish much
->>> on throughput since the Rx is 100% cpu.
->>
->> As above performance data, enabling ZC does not seems to help when IOMMU
->> is involved, which has about 30% performance degrade when pfrag pool is
->> disabled and 50% performance degrade when pfrag pool is enabled.
-> 
-> In a past response you should numbers for Tx ZC API with a custom
-> program. That program showed the dramatic reduction in CPU cycles for Tx
-> with the ZC API.
+The following commit has been merged into the ras/core branch of tip:
 
-As I deduced the cpu usage from the cycles in "perf stat -e cycles XX", which
-does not seem to include the cycles for NAPI polling, which does the tx clean
-(including dma unmapping) and does not run in the same cpu as msg_zerocopy runs.
+Commit-ID:     3bff147b187d5dfccfca1ee231b0761a89f1eff5
+Gitweb:        https://git.kernel.org/tip/3bff147b187d5dfccfca1ee231b0761a89f1eff5
+Author:        Borislav Petkov <bp@alien8.de>
+AuthorDate:    Mon, 23 Aug 2021 17:31:29 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 24 Aug 2021 10:40:58 +02:00
 
-I retested it using msg_zerocopy:
-       msg_zerocopy cpu usage      NAPI polling cpu usage
-ZC:        23%                               70%
-non-ZC     50%                               40%
+x86/mce: Defer processing of early errors
 
-So it seems to match now, sorry for the confusion.
+When a fatal machine check results in a system reset, Linux does not
+clear the error(s) from machine check bank(s) - hardware preserves the
+machine check banks across a warm reset.
 
-> 
->>
->>>
->>> At 3300 MTU you have ~47% the pps for the same throughput. Lower pps
->>> reduces Rx processing and lower CPU to process the incoming stream. Then
->>> using the Tx ZC API you lower the Tx overehad allowing a single stream
->>> to faster - sending more data which in the end results in much higher
->>> pps and throughput. At the limit you are CPU bound (both ends in my
->>> testing as Rx side approaches the max pps, and Tx side as it continually
->>> tries to send data).
->>>
->>> Lowering CPU usage on Tx the side is a win regardless of whether there
->>> is a big increase on the throughput at 1500 MTU since that configuration
->>> is an Rx CPU bound problem. Hence, my point that we have a good start
->>> point for lowering CPU usage on the Tx side; we should improve it rather
->>> than add per-socket page pools.
->>
->> Acctually it is not a per-socket page pools, the page pool is still per
->> NAPI, this patchset adds multi allocation context to the page pool, so that
->> the tx can reuse the same page pool with rx, which is quite usefully if the
->> ARFS is enabled.
->>
->>>
->>> You can stress the Tx side and emphasize its overhead by modifying the
->>> receiver to drop the data on Rx rather than copy to userspace which is a
->>> huge bottleneck (e.g., MSG_TRUNC on recv). This allows the single flow
->>
->> As the frag page is supported in page pool for Rx, the Rx probably is not
->> a bottleneck any more, at least not for IOMMU in strict mode.
->>
->> It seems iperf3 does not support MSG_TRUNC yet, any testing tool supporting
->> MSG_TRUNC? Or do I have to hack the kernel or iperf3 tool to do that?
-> 
-> https://github.com/dsahern/iperf, mods branch
-> 
-> --zc_api is the Tx ZC API; --rx_drop adds MSG_TRUNC to recv.
+During initialization of the kernel after the reboot, Linux reads, logs,
+and clears all machine check banks.
 
-Thanks for sharing the tool.
-I retested using above iperf, and result is similar to previous result
-too.
+But there is a problem. In:
 
-> 
-> 
->>
->>> stream to go faster and emphasize Tx bottlenecks as the pps at 3300
->>> approaches the top pps at 1500. e.g., doing this with iperf3 shows the
->>> spinlock overhead with tcp_sendmsg, overhead related to 'select' and
->>> then gup_pgd_range.
->>
->> When IOMMU is in strict mode, the overhead with IOMMU seems to be much
->> bigger than spinlock(23% to 10%).
->>
->> Anyway, I still think ZC mostly benefit to packet which is bigger than a
->> specific size and IOMMU disabling case.
->>
->>
->>> .
->>>
-> 
-> .
-> 
+  5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
+
+the call to mce_register_decode_chain() moved later in the boot
+sequence. This means that /dev/mcelog doesn't see those early error
+logs.
+
+This was partially fixed by:
+
+  cd9c57cad3fe ("x86/MCE: Dump MCE to dmesg if no consumers")
+
+which made sure that the logs were not lost completely by printing
+to the console. But parsing console logs is error prone. Users of
+/dev/mcelog should expect to find any early errors logged to standard
+places.
+
+Add a new flag MCP_QUEUE_LOG to machine_check_poll() to be used in early
+machine check initialization to indicate that any errors found should
+just be queued to genpool. When mcheck_late_init() is called it will
+call mce_schedule_work() to actually log and flush any errors queued in
+the genpool.
+
+ [ Based on an original patch, commit message by and completely
+   productized by Tony Luck. ]
+
+Fixes: 5de97c9f6d85 ("x86/mce: Factor out and deprecate the /dev/mcelog driver")
+Reported-by: Sumanth Kamatala <skamatala@juniper.net>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210824003129.GA1642753@agluck-desk2.amr.corp.intel.com
+---
+ arch/x86/include/asm/mce.h     |  1 +
+ arch/x86/kernel/cpu/mce/core.c | 11 ++++++++---
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 0607ec4..da93215 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -265,6 +265,7 @@ enum mcp_flags {
+ 	MCP_TIMESTAMP	= BIT(0),	/* log time stamp */
+ 	MCP_UC		= BIT(1),	/* log uncorrected errors */
+ 	MCP_DONTLOG	= BIT(2),	/* only clear, don't log */
++	MCP_QUEUE_LOG	= BIT(3),	/* only queue to genpool */
+ };
+ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b);
+ 
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 22791aa..8cb7816 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -817,7 +817,10 @@ log_it:
+ 		if (mca_cfg.dont_log_ce && !mce_usable_address(&m))
+ 			goto clear_it;
+ 
+-		mce_log(&m);
++		if (flags & MCP_QUEUE_LOG)
++			mce_gen_pool_add(&m);
++		else
++			mce_log(&m);
+ 
+ clear_it:
+ 		/*
+@@ -1639,10 +1642,12 @@ static void __mcheck_cpu_init_generic(void)
+ 		m_fl = MCP_DONTLOG;
+ 
+ 	/*
+-	 * Log the machine checks left over from the previous reset.
++	 * Log the machine checks left over from the previous reset. Log them
++	 * only, do not start processing them. That will happen in mcheck_late_init()
++	 * when all consumers have been registered on the notifier chain.
+ 	 */
+ 	bitmap_fill(all_banks, MAX_NR_BANKS);
+-	machine_check_poll(MCP_UC | m_fl, &all_banks);
++	machine_check_poll(MCP_UC | MCP_QUEUE_LOG | m_fl, &all_banks);
+ 
+ 	cr4_set_bits(X86_CR4_MCE);
+ 
