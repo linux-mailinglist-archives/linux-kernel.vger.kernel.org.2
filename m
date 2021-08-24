@@ -2,213 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D313F61E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFFC3F618E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238452AbhHXPn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:43:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238272AbhHXPnX (ORCPT
+        id S238351AbhHXPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235683AbhHXPZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:43:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629819759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=VWJCdnFIQVPxSfMY1r5a8OBb89mcAIOaQ892PyprJ58=;
-        b=NDsJlyr6ndVjtqKMrtduVXN8UpHkrQY/xu4UJ9H4t5xmHtFmgcZTDJ2kEVRcd/t98GFH7M
-        cZkMPCtiICz6Onx926yVI61WY6FV/ZF3bVPVT7bxDdwoR1kFdgORAlOeBW4ZbIsOgRG9il
-        m8duSzPo1mRdUy0t1JhtdF9emu+p3xY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-X7HMqWhfPya-ZaZDdJC-fQ-1; Tue, 24 Aug 2021 11:42:37 -0400
-X-MC-Unique: X7HMqWhfPya-ZaZDdJC-fQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1527760C4;
-        Tue, 24 Aug 2021 15:42:36 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3FBC01B400;
-        Tue, 24 Aug 2021 15:42:30 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 100E14175280; Tue, 24 Aug 2021 12:42:15 -0300 (-03)
-Message-ID: <20210824152646.743604666@fuller.cnet>
-User-Agent: quilt/0.66
-Date:   Tue, 24 Aug 2021 12:24:26 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch V3 3/8] task isolation: sync vmstats on return to userspace
-References: <20210824152423.300346181@fuller.cnet>
+        Tue, 24 Aug 2021 11:25:22 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE933C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:24:37 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id m26so18675712pff.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dOpXg+FJdBLWI5rzPlpee9Thq8Rl+rTtOGkPC38d/eM=;
+        b=JeIic1euaNtoLKNq9Q2VWjbFLkdZFTk39npgl9ehainLBb57csCZPGQnFvb8pOYRlY
+         SdtJJN6+MbbojDL4x0iduT7RFArHpVi6EPsEJ2JWQ9IdgmYPP+rCtQma07PZk6OpRoEw
+         3LQSiQJlRijueWh/uB7/CSX/ousA0s9uTsqzOq6mEVlNw11OHU/xzZqTYgeN6bPc2SQv
+         Tyh97N6Z3hy0YNpcckKClrX2zX7jMAEBtyujYVM0bf2Ylz528MqHKSbhdhY5R4K1KuD6
+         mu6txVs2KD7trtXyKliX6MGsbP+TnGqMr+Or6YrnvKIyD6/oDBwJzgyzgSMAY71xe9Fi
+         2LWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dOpXg+FJdBLWI5rzPlpee9Thq8Rl+rTtOGkPC38d/eM=;
+        b=bEy4Ld+epwiFHJp8MxVlhSHSVWHdH005PWNMx+IHHJCGUoCDNFWO6DGjA10A8LG7/t
+         IsBZhW07aOpaU4S/z0VHJy6ClVdJFwBXILc/n9oEE9ZnW0GF01qsnbIWLWdxc1DOimkI
+         y14MvqvkBaLXZrmQldngl+mV1KCWjqlKBqsbfyAfF8Y0OUFFU3ShPqReiMinyTYhfKyp
+         qFlQ/N3yvyOjKkutet6c2b4V+kfzGBV66NVVWQ5Ht4Esqdvt6QR0IOQXaDqCeJJ253gv
+         sTjrRnCO3xZ1bwgwkI8qFZe3QB6OcrbqA2NcQUPVvF0p54aY88JjJVrD2LxB+KELaz4D
+         KNWQ==
+X-Gm-Message-State: AOAM532drw1rlh0HAXDel0ek9yC7V7BlF++w7LBKqDqt2/WWvii4pDME
+        PkD6VzyZkETI4hQtoPdV09sYRQ==
+X-Google-Smtp-Source: ABdhPJzRLPy8KIFVr1u2JWlVmZFkhe9C3VHpJlsLA0fV++hreJjotD//9FSKzU53CDs5iITtPa44MA==
+X-Received: by 2002:a63:480b:: with SMTP id v11mr37586366pga.413.1629818677254;
+        Tue, 24 Aug 2021 08:24:37 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b7sm18844657pfl.195.2021.08.24.08.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 08:24:36 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 15:24:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] KVM: VMX: Use cached vmx->pt_desc.addr_range
+Message-ID: <YSUPKmtP6Dcl1yio@google.com>
+References: <20210824110743.531127-1-xiaoyao.li@intel.com>
+ <20210824110743.531127-3-xiaoyao.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824110743.531127-3-xiaoyao.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic to disable vmstat worker thread, when entering
-nohz full, does not cover all scenarios. For example, it is possible
-for the following to happen:
+On Tue, Aug 24, 2021, Xiaoyao Li wrote:
+> The number of guest's valid PT ADDR MSRs is cached in
 
-1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
-2) app runs mlock, which increases counters for mlock'ed pages.
-3) start -RT loop
+Can you do s/cached/precomputed in the shortlog and changelog?  Explanation below.
 
-Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
-the mlock, vmstat shepherd can restart vmstat worker thread on
-the CPU in question.
+> vmx->pt_desc.addr_range. Use it instead of calculating it again.
+> 
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index e0a9460e4dab..7ed96c460661 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2202,8 +2202,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		if (!pt_can_write_msr(vmx))
+>  			return 1;
+>  		index = msr_info->index - MSR_IA32_RTIT_ADDR0_A;
+> -		if (index >= 2 * intel_pt_validate_cap(vmx->pt_desc.caps,
+> -						       PT_CAP_num_address_ranges))
+> +		if (index >= 2 * vmx->pt_desc.addr_range)
 
-To fix this, use the task isolation prctl interface to quiesce 
-deferred actions when returning to userspace.
+Ugh, "validate" is a lie, a better name would be intel_pt_get_cap() or so.  There
+is no validation, the helper is simply extracting the requested cap from the
+passed in array of capabilities.
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+That matters in this case because the number of address ranges exposed to the
+guest is not bounded by the number of address ranges present in hardware, i.e.
+it's not "validated".  And that matters because KVM uses vmx->pt_desc.addr_range
+to pass through the ADDRn_{A,B} MSRs when tracing enabled.  In other words,
+userspace can expose MSRs to the guest that do not exist.
 
----
- include/linux/task_isolation.h |   12 ++++++++++++
- include/linux/vmstat.h         |    8 ++++++++
- kernel/entry/common.c          |    2 ++
- kernel/task_isolation.c        |   26 ++++++++++++++++++++++++++
- mm/vmstat.c                    |   21 +++++++++++++++++++++
- 5 files changed, 69 insertions(+)
+The bug shouldn't be a security issue, so long as Intel CPUs are bug free and
+aren't doing silly things with MSR indexes.  The number of possible address ranges
+is encoded in three bits, thus the theoretical max is 8 ranges.  So userspace can't
+get access to arbitrary MSRs, just ADDR0_A -> ADDR7_B.
 
-Index: linux-2.6/include/linux/task_isolation.h
-===================================================================
---- linux-2.6.orig/include/linux/task_isolation.h
-+++ linux-2.6/include/linux/task_isolation.h
-@@ -41,8 +41,20 @@ int prctl_task_isolation_ctrl_set(unsign
- 
- int __copy_task_isolation(struct task_struct *tsk);
- 
-+void __isolation_exit_to_user_mode_prepare(void);
-+
-+static inline void isolation_exit_to_user_mode_prepare(void)
-+{
-+	if (current->isol_info)
-+		__isolation_exit_to_user_mode_prepare();
-+}
-+
- #else
- 
-+static void isolation_exit_to_user_mode_prepare(void)
-+{
-+}
-+
- static inline void tsk_isol_free(struct task_struct *tsk)
- {
- }
-Index: linux-2.6/include/linux/vmstat.h
-===================================================================
---- linux-2.6.orig/include/linux/vmstat.h
-+++ linux-2.6/include/linux/vmstat.h
-@@ -21,6 +21,14 @@ int sysctl_vm_numa_stat_handler(struct c
- 		void *buffer, size_t *length, loff_t *ppos);
- #endif
- 
-+#ifdef CONFIG_SMP
-+void sync_vmstat(void);
-+#else
-+static inline void sync_vmstat(void)
-+{
-+}
-+#endif
-+
- struct reclaim_stat {
- 	unsigned nr_dirty;
- 	unsigned nr_unqueued_dirty;
-Index: linux-2.6/kernel/entry/common.c
-===================================================================
---- linux-2.6.orig/kernel/entry/common.c
-+++ linux-2.6/kernel/entry/common.c
-@@ -6,6 +6,7 @@
- #include <linux/livepatch.h>
- #include <linux/audit.h>
- #include <linux/tick.h>
-+#include <linux/task_isolation.h>
- 
- #include "common.h"
- 
-@@ -287,6 +288,7 @@ static void syscall_exit_to_user_mode_pr
- static __always_inline void __syscall_exit_to_user_mode_work(struct pt_regs *regs)
- {
- 	syscall_exit_to_user_mode_prepare(regs);
-+	isolation_exit_to_user_mode_prepare();
- 	local_irq_disable_exit_to_user();
- 	exit_to_user_mode_prepare(regs);
- }
-Index: linux-2.6/kernel/task_isolation.c
-===================================================================
---- linux-2.6.orig/kernel/task_isolation.c
-+++ linux-2.6/kernel/task_isolation.c
-@@ -18,6 +18,8 @@
- #include <linux/sysfs.h>
- #include <linux/init.h>
- #include <linux/sched/task.h>
-+#include <linux/mm.h>
-+#include <linux/vmstat.h>
- 
- void __tsk_isol_free(struct task_struct *tsk)
- {
-@@ -278,3 +280,19 @@ int prctl_task_isolation_ctrl_get(unsign
- 
- 	return ret;
- }
-+
-+void __isolation_exit_to_user_mode_prepare(void)
-+{
-+	struct isol_info *i;
-+
-+ 	i = current->isol_info;
-+	if (!i)
-+		return;
-+
-+	if (i->active_mask != ISOL_F_QUIESCE)
-+		return;
-+
-+	if (i->quiesce_mask & ISOL_F_QUIESCE_VMSTATS)
-+		sync_vmstat();
-+}
-+EXPORT_SYMBOL_GPL(__isolation_exit_to_user_mode_prepare);
-Index: linux-2.6/mm/vmstat.c
-===================================================================
---- linux-2.6.orig/mm/vmstat.c
-+++ linux-2.6/mm/vmstat.c
-@@ -1964,6 +1964,27 @@ static void vmstat_shepherd(struct work_
- 		round_jiffies_relative(sysctl_stat_interval));
- }
- 
-+void sync_vmstat(void)
-+{
-+	int cpu;
-+
-+	cpu = get_cpu();
-+
-+	refresh_cpu_vm_stats(false);
-+	put_cpu();
-+
-+	/*
-+	 * If task is migrated to another CPU between put_cpu
-+	 * and cancel_delayed_work_sync, the code below might
-+	 * cancel vmstat_update work for a different cpu
-+	 * (than the one from which the vmstats were flushed).
-+	 *
-+	 * However, vmstat shepherd will re-enable it later,
-+	 * so its harmless.
-+	 */
-+	cancel_delayed_work_sync(&per_cpu(vmstat_work, cpu));
-+}
-+
- static void __init start_shepherd_timer(void)
- {
- 	int cpu;
+And since KVM would be modifying the "validated" value, it's more than just a
+cache, hence the request to use "precomputed".
 
+Finally, vmx_get_msr() should use the precomputed value as well.
 
+P.S. If you want to introduce a bit of churn, s/addr_range/nr_addr_ranges would
+     be a welcome change as well.
+
+>  			return 1;
+>  		if (is_noncanonical_address(data, vcpu))
+>  			return 1;
+> -- 
+> 2.27.0
+> 
