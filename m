@@ -2,123 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFFC3F618E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67D73F61DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238351AbhHXPZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:25:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbhHXPZW (ORCPT
+        id S238475AbhHXPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:43:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50093 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238413AbhHXPnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:25:22 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE933C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:24:37 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id m26so18675712pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dOpXg+FJdBLWI5rzPlpee9Thq8Rl+rTtOGkPC38d/eM=;
-        b=JeIic1euaNtoLKNq9Q2VWjbFLkdZFTk39npgl9ehainLBb57csCZPGQnFvb8pOYRlY
-         SdtJJN6+MbbojDL4x0iduT7RFArHpVi6EPsEJ2JWQ9IdgmYPP+rCtQma07PZk6OpRoEw
-         3LQSiQJlRijueWh/uB7/CSX/ousA0s9uTsqzOq6mEVlNw11OHU/xzZqTYgeN6bPc2SQv
-         Tyh97N6Z3hy0YNpcckKClrX2zX7jMAEBtyujYVM0bf2Ylz528MqHKSbhdhY5R4K1KuD6
-         mu6txVs2KD7trtXyKliX6MGsbP+TnGqMr+Or6YrnvKIyD6/oDBwJzgyzgSMAY71xe9Fi
-         2LWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dOpXg+FJdBLWI5rzPlpee9Thq8Rl+rTtOGkPC38d/eM=;
-        b=bEy4Ld+epwiFHJp8MxVlhSHSVWHdH005PWNMx+IHHJCGUoCDNFWO6DGjA10A8LG7/t
-         IsBZhW07aOpaU4S/z0VHJy6ClVdJFwBXILc/n9oEE9ZnW0GF01qsnbIWLWdxc1DOimkI
-         y14MvqvkBaLXZrmQldngl+mV1KCWjqlKBqsbfyAfF8Y0OUFFU3ShPqReiMinyTYhfKyp
-         qFlQ/N3yvyOjKkutet6c2b4V+kfzGBV66NVVWQ5Ht4Esqdvt6QR0IOQXaDqCeJJ253gv
-         sTjrRnCO3xZ1bwgwkI8qFZe3QB6OcrbqA2NcQUPVvF0p54aY88JjJVrD2LxB+KELaz4D
-         KNWQ==
-X-Gm-Message-State: AOAM532drw1rlh0HAXDel0ek9yC7V7BlF++w7LBKqDqt2/WWvii4pDME
-        PkD6VzyZkETI4hQtoPdV09sYRQ==
-X-Google-Smtp-Source: ABdhPJzRLPy8KIFVr1u2JWlVmZFkhe9C3VHpJlsLA0fV++hreJjotD//9FSKzU53CDs5iITtPa44MA==
-X-Received: by 2002:a63:480b:: with SMTP id v11mr37586366pga.413.1629818677254;
-        Tue, 24 Aug 2021 08:24:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b7sm18844657pfl.195.2021.08.24.08.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 08:24:36 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 15:24:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] KVM: VMX: Use cached vmx->pt_desc.addr_range
-Message-ID: <YSUPKmtP6Dcl1yio@google.com>
-References: <20210824110743.531127-1-xiaoyao.li@intel.com>
- <20210824110743.531127-3-xiaoyao.li@intel.com>
+        Tue, 24 Aug 2021 11:43:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629819760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=YLhA1xkRUgqJ0V2VfHEJRC5BM/+XW8xGG944siYjMZ4=;
+        b=Zo5mM+3VCSOuCZFB+MG9VhV3MpKHpokcDmXaRhIPhwZ6XIyuAxFD8YTNJWLa7+6uI9N5t/
+        i1MZ56XzVgRNCf+yeiTrhWQBI87R4QZztHQyKnbVpuIcjEyDXuHTHCX8KXWnkCbkn2yXYa
+        H7JBqWBf2JoJwcSKi2keg+aTwM4a0g4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-MqdOR9WKMx6zdoDhhQKLXQ-1; Tue, 24 Aug 2021 11:42:38 -0400
+X-MC-Unique: MqdOR9WKMx6zdoDhhQKLXQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8D524800493;
+        Tue, 24 Aug 2021 15:42:37 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-5.gru2.redhat.com [10.97.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 34F152C00F;
+        Tue, 24 Aug 2021 15:42:30 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 14DBA4175281; Tue, 24 Aug 2021 12:42:15 -0300 (-03)
+Message-ID: <20210824152646.784916432@fuller.cnet>
+User-Agent: quilt/0.66
+Date:   Tue, 24 Aug 2021 12:24:27 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: [patch V3 4/8] procfs: add per-pid task isolation state
+References: <20210824152423.300346181@fuller.cnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824110743.531127-3-xiaoyao.li@intel.com>
+Content-Type: text/plain; charset=UTF-8
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021, Xiaoyao Li wrote:
-> The number of guest's valid PT ADDR MSRs is cached in
+Add /proc/pid/task_isolation file, to query the state of
+task isolation configuration.
 
-Can you do s/cached/precomputed in the shortlog and changelog?  Explanation below.
+---
+ fs/proc/base.c                 |    4 ++
+ include/linux/task_isolation.h |    2 +
+ kernel/task_isolation.c        |   60 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 66 insertions(+)
 
-> vmx->pt_desc.addr_range. Use it instead of calculating it again.
-> 
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index e0a9460e4dab..7ed96c460661 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2202,8 +2202,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		if (!pt_can_write_msr(vmx))
->  			return 1;
->  		index = msr_info->index - MSR_IA32_RTIT_ADDR0_A;
-> -		if (index >= 2 * intel_pt_validate_cap(vmx->pt_desc.caps,
-> -						       PT_CAP_num_address_ranges))
-> +		if (index >= 2 * vmx->pt_desc.addr_range)
+Index: linux-2.6/fs/proc/base.c
+===================================================================
+--- linux-2.6.orig/fs/proc/base.c
++++ linux-2.6/fs/proc/base.c
+@@ -95,6 +95,8 @@
+ #include <linux/posix-timers.h>
+ #include <linux/time_namespace.h>
+ #include <linux/resctrl.h>
++#include <linux/prctl.h>
++#include <linux/task_isolation.h>
+ #include <trace/events/oom.h>
+ #include "internal.h"
+ #include "fd.h"
+@@ -661,6 +663,69 @@ static int proc_pid_syscall(struct seq_f
+ }
+ #endif /* CONFIG_HAVE_ARCH_TRACEHOOK */
+ 
++#ifdef CONFIG_CPU_ISOLATION
++
++struct qoptions {
++	unsigned long mask;
++	char *name;
++};
++
++static struct qoptions iopts[] = {
++	{ISOL_F_QUIESCE, "quiesce"},
++};
++#define ILEN (sizeof(iopts) / sizeof(struct qoptions))
++
++static struct qoptions qopts[] = {
++	{ISOL_F_QUIESCE_VMSTATS, "vmstat_sync"},
++};
++#define QLEN (sizeof(qopts) / sizeof(struct qoptions))
++
++static void show_isolation_state(struct seq_file *m,
++				 struct qoptions *iopt,
++				 int mask,
++				 const char *hdr)
++{
++	int i;
++
++	seq_printf(m, hdr);
++	for (i = 0; i < ILEN; i++) {
++		if (mask & iopt->mask)
++			seq_printf(m, "%s ", iopt->name);
++		iopt++;
++	}
++	if (mask == 0)
++		seq_printf(m, "none ");
++	seq_printf(m, "\n");
++}
++
++int proc_pid_task_isolation(struct seq_file *m, struct pid_namespace *ns,
++			    struct pid *pid, struct task_struct *t)
++{
++	int active_mask, quiesce_mask, conf_mask;
++	struct isol_info *isol_info;
++	struct inode *inode = m->private;
++	struct task_struct *task = get_proc_task(inode);
++
++	isol_info = t->isol_info;
++	if (!isol_info)
++		active_mask = quiesce_mask = conf_mask = 0;
++	else {
++		active_mask = isol_info->active_mask;
++		quiesce_mask = isol_info->quiesce_mask;
++		conf_mask = isol_info->conf_mask;
++	}
++
++	show_isolation_state(m, iopts, conf_mask, "Configured state: ");
++	show_isolation_state(m, iopts, active_mask, "Active state: ");
++	show_isolation_state(m, qopts, quiesce_mask, "Quiescing: ");
++
++	put_task_struct(task);
++
++	return 0;
++}
++
++#endif /* CONFIG_CPU_ISOLATION */
++
+ /************************************************************************/
+ /*                       Here the fs part begins                        */
+ /************************************************************************/
+@@ -3278,6 +3343,9 @@ static const struct pid_entry tgid_base_
+ #ifdef CONFIG_SECCOMP_CACHE_DEBUG
+ 	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
+ #endif
++#ifdef CONFIG_CPU_ISOLATION
++	ONE("task_isolation", S_IRUSR, proc_pid_task_isolation),
++#endif
+ };
+ 
+ static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)
 
-Ugh, "validate" is a lie, a better name would be intel_pt_get_cap() or so.  There
-is no validation, the helper is simply extracting the requested cap from the
-passed in array of capabilities.
 
-That matters in this case because the number of address ranges exposed to the
-guest is not bounded by the number of address ranges present in hardware, i.e.
-it's not "validated".  And that matters because KVM uses vmx->pt_desc.addr_range
-to pass through the ADDRn_{A,B} MSRs when tracing enabled.  In other words,
-userspace can expose MSRs to the guest that do not exist.
-
-The bug shouldn't be a security issue, so long as Intel CPUs are bug free and
-aren't doing silly things with MSR indexes.  The number of possible address ranges
-is encoded in three bits, thus the theoretical max is 8 ranges.  So userspace can't
-get access to arbitrary MSRs, just ADDR0_A -> ADDR7_B.
-
-And since KVM would be modifying the "validated" value, it's more than just a
-cache, hence the request to use "precomputed".
-
-Finally, vmx_get_msr() should use the precomputed value as well.
-
-P.S. If you want to introduce a bit of churn, s/addr_range/nr_addr_ranges would
-     be a welcome change as well.
-
->  			return 1;
->  		if (is_noncanonical_address(data, vcpu))
->  			return 1;
-> -- 
-> 2.27.0
-> 
