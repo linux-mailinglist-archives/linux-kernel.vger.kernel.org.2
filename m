@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AFF3F67FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53E43F6695
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242515AbhHXRjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:39:24 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6871 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241623AbhHXRgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:36:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="217083349"
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="217083349"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:20:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
-   d="scan'208";a="526704367"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.119.65]) ([10.209.119.65])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:20:46 -0700
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210823195409-mutt-send-email-mst@kernel.org>
- <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
- <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
- <d992b5af-8d57-6aa6-bd49-8e2b8d832b19@linux.intel.com>
- <20210824053830-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <d21a2a2d-4670-ba85-ce9a-fc8ea80ef1be@linux.intel.com>
-Date:   Tue, 24 Aug 2021 10:20:44 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239299AbhHXRZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:25:46 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:41614 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240604AbhHXRWN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:22:13 -0400
+Received: by mail-ot1-f50.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso33204650ota.8;
+        Tue, 24 Aug 2021 10:21:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hlWC9+vUVVELeqKVJ2DC9hi41GL/e4i4yVESIWR4T5A=;
+        b=Bpyb3Y48nlHC6qTRaCg01OZGQNZHGOrguhlp1HB4tOFGt3xeJhi/mwm40wUqrSlFlI
+         UG90aHKzOHYN+f0Qk0kiov+pxgcGlKW9qLf9geGqUBJyAHbJNVUhDgebar4cnAtf8NuW
+         41s2CqAwfGtfdgc0WoaT62mLH5wTWPjVd+l8lo6c4l/8ajhP4k7d3WsinOEQIQgH+FDb
+         1VSLIUK3oVPVfueiaNVA6obpqxquZrlNuuGk+njkBdUAXpaAfpD/TSxaWHqRzCK5ImSJ
+         adUZjjN1zbGUWIPMBQQQNsqQ/MIAIdBu7c4Wo6VWwm0YjWvycVuRbw3CiAtqjU03/E99
+         LnrQ==
+X-Gm-Message-State: AOAM533RHXYX9uQ8ELhWx/PWwLollXTTa2dXy1rnscmXnFAU5f0dp3j6
+        KowgLgKGDFIfXO4U6aAFsw==
+X-Google-Smtp-Source: ABdhPJxMsPbj7DqNPHORp0UDP+Z9S7EF7aFEMtnEsKD4R7HA5m8wOSCsNcw49YJJoVL/sV4Edu7h6A==
+X-Received: by 2002:aca:2305:: with SMTP id e5mr3642749oie.36.1629825685671;
+        Tue, 24 Aug 2021 10:21:25 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p4sm4149663ooa.35.2021.08.24.10.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:21:25 -0700 (PDT)
+Received: (nullmailer pid 661564 invoked by uid 1000);
+        Tue, 24 Aug 2021 17:21:24 -0000
+Date:   Tue, 24 Aug 2021 12:21:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     tglx@linutronix.de, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        heiko@sntech.de, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v1] dt-bindings: timer: remove rockchip,rk3066-timer
+ compatible string from rockchip,rk-timer.yaml
+Message-ID: <YSUqlE2S+YGR6680@robh.at.kernel.org>
+References: <20210824095637.2547-1-jbx6244@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210824053830-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824095637.2547-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 24 Aug 2021 11:56:37 +0200, Johan Jonker wrote:
+> The Rockchip rk3066 timers have a different register layout then rk3288
+> with only a 32 vs 64 bits timer channel. The timers in rk3066a.dtsi have
+> "snps,dw-apb-timer" as compatible string, so remove the
+> "rockchip,rk3066-timer" from rockchip,rk-timer.yaml
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/timer/rockchip,rk-timer.yaml | 1 -
+>  1 file changed, 1 deletion(-)
+> 
 
-> I see. Hmm. It's a bit of a random thing to do it at the map time
-> though. E.g. DMA is all handled transparently behind the DMA API.
-> Hardening is much more than just replacing map with map_shared
-> and I suspect what you will end up with is basically
-> vendors replacing map with map shared to make things work
-> for their users and washing their hands.
-
-That concept exists too. There is a separate allow list for the drivers. 
-So just adding shared to a driver is not enough, until it's also added 
-to the allowlist
-
-Users can of course chose to disable the allowlist, but they need to 
-understand the security implications.
-
-
->
-> I would say an explicit flag in the driver that says "hardened"
-> and refusing to init a non hardened one would be better.
-
-
-We have that too (that's the device filtering)
-
-But the problem is that device filtering just stops the probe functions, 
-not the initcalls, and lot of legacy drivers do MMIO interactions before 
-going into probe. In some cases it's unavoidable because of the device 
-doesn't have a separate enumeration mechanism it needs some kind of 
-probing to even check for its existence And since we don't want to 
-change all of them it's far safer to make the ioremap opt-in.
-
-
--Andi
-
+Acked-by: Rob Herring <robh@kernel.org>
