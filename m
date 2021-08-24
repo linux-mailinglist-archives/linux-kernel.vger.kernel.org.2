@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C353F55C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A3A3F55D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhHXCXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbhHXCXg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:23:36 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD384C061575;
-        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id j187so17004144pfg.4;
-        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=Buf9yDmqv76HtLamO3Pbrt8As98ijZEWdR2Z19Om0L8=;
-        b=nmy2uJXJkuAuXMLrPpKLxa2/fZttM4IE5G0/V9m2ZsTA+VL46/Rg1VOR8KrLjUZCV5
-         2Uo8tul4r9XfTLn/guv28Kk9divchUz/Dq68aKyrAj4m9UTYhMpInlqVgQRZlKJyYUX4
-         s7axl6V3szcbLsmLKFKAZsDYSIYFH4a/ylaJeQSfn1BNsV7pY4wiKVwGjF7yQMInXfTE
-         IfgEojx0oxs9nsYjHtsET+svSBZjPPK60wmNQGXH55WZJOC0KWvOEv2mcXcWVfzCc9Vt
-         L+K7VUEjS6IccgrPHkE3tnP4Kmppm8ZhRjECQtovKdpQH/476HSfvCTjWPuDr3hP50Zz
-         A33Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=Buf9yDmqv76HtLamO3Pbrt8As98ijZEWdR2Z19Om0L8=;
-        b=fpxEogCMcnYnzab5e3EcI2nE/P55exL6f0VwBqoXxWYOHyBGKfgG7IyWJTM56sVCWX
-         SwCTFlOPP2xMHXErUWVS2XxdjRDK9+ecQkZe4tZSg5PzcnjJwb/1zmPHpCWtuq6CEini
-         gq9tj+nmQbrDExOeJQTiYf3yiFLxcgM/RisJurD7Cjhd6iwXFPWjtZRxbZ7yusEPKT/7
-         NlfIrGl8UlUmgllM0juqc4LmGNq825G6fpTxsAzcv/0KOvhQxDkp8d1lD0DvTm732G+2
-         wjeDCnpYSiU1gElD5ExtgT+c3sf7W9Oa3UU8zFH2OtxHliTwyyQieg7x2T5rct9Xn00t
-         +xPw==
-X-Gm-Message-State: AOAM533oK4M+JNCBncG+VH+kYd8aUK6+VoeBrefvYH/bFWcR3ozep01f
-        Rc1MzDyBOUSgKAQAjZUJgSUxtSRByCOCNtv1
-X-Google-Smtp-Source: ABdhPJw7LDsp84QQDwzBzXP4t08n45mv6kAZBeGKMn0jlEgxZdr9inngrm2B7/OuPD5BYdXPWQiO2g==
-X-Received: by 2002:a63:65c5:: with SMTP id z188mr35229033pgb.35.1629771772418;
-        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
-Received: from raspberrypi ([210.183.35.240])
-        by smtp.gmail.com with ESMTPSA id l10sm503260pjg.11.2021.08.23.19.22.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 03:22:47 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org
-Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@lge.com, austin.kim@lge.com
-Subject: [PATCH] selinux: remove duplicated initialization of 'i' for clean-up
-Message-ID: <20210824022247.GA22908@raspberrypi>
+        id S233725AbhHXC2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:28:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233170AbhHXC2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 22:28:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8100F61373;
+        Tue, 24 Aug 2021 02:27:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629772044;
+        bh=FhBLzlnoS/C4efg4LBoQL/1xcceeOT2Nci0FeHlY0KY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kkx5au/F1QQInf2xhWZfLqu3vw4zyEnICeKZB/AZM6RhF4MYKRsy/1tsWA25Hs235
+         wDUlQNbjpTcPfBnmEmMtYmOrz5rkfzROaQwL+XNFaPXnOh18dAXLyqX7gszOiDzeNm
+         y5wVVPwlaCiNC9eandJcAAPDudr5w3BqckTatwkEeUtPzP0/k4DZ+sSbSXFURryKZH
+         gB6py4/lbjNLM+VaMvNpUSoOKc8HI4oinSPij+ZalbAsEZPasrZVWBzI5+x8yP1wzr
+         ZU5WlAeYcIzNK6mOiCCjv0NckXk+6XyMe1j7WQYQu6TtJLa0aBdomF8DlUyyJ9bj75
+         b4Z37ZCFccKyg==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/2] Harden clang against unknown flag options
+Date:   Mon, 23 Aug 2021 19:26:38 -0700
+Message-Id: <20210824022640.2170859-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim <austin.kim@lge.com>
+Hi all,
 
-The local variable 'i' is used to be incremented inside while loop
-within sidtab_convert_tree(). Before while loop, 'i' is set to 0 
-inside if/else statement.
+This series cleans up an issue that was noticed by the kernel test robot
+where flags that clang does not implement support for are
+unconditionally added to the command line, which causes all subsequent
+calls to cc-{disable-warning,option} to fail, meaning developers are
+flooded with unnecessary and pointless warnings.
 
-Since there is no 'goto' statement within sidtab_convert_tree(),
-it had better initialize 'i' as 0 once before if/else statement.
+I hope the patches in and of themselves are reasonable and
+non-controversial. This is based on Masahiro's kbuild tree as there was
+a fairly large refactor around where clang's flags were added so I
+figured it would be best to go there with an x86 ack since the first
+patch does not depend on anything in -tip.
 
-Signed-off-by: Austin Kim <austin.kim@lge.com>
----
- security/selinux/ss/sidtab.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Cheers,
+Nathan
 
-diff --git a/security/selinux/ss/sidtab.c b/security/selinux/ss/sidtab.c
-index 656d50b09f76..301620de63d3 100644
---- a/security/selinux/ss/sidtab.c
-+++ b/security/selinux/ss/sidtab.c
-@@ -374,7 +374,7 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
- 			       struct sidtab_convert_params *convert)
- {
- 	int rc;
--	u32 i;
-+	u32 i = 0;
- 
- 	if (level != 0) {
- 		if (!edst->ptr_inner) {
-@@ -383,7 +383,6 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
- 			if (!edst->ptr_inner)
- 				return -ENOMEM;
- 		}
--		i = 0;
- 		while (i < SIDTAB_INNER_ENTRIES && *pos < count) {
- 			rc = sidtab_convert_tree(&edst->ptr_inner->entries[i],
- 						 &esrc->ptr_inner->entries[i],
-@@ -400,7 +399,6 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
- 			if (!edst->ptr_leaf)
- 				return -ENOMEM;
- 		}
--		i = 0;
- 		while (i < SIDTAB_LEAF_ENTRIES && *pos < count) {
- 			rc = convert->func(&esrc->ptr_leaf->entries[i].context,
- 					   &edst->ptr_leaf->entries[i].context,
+Nathan Chancellor (2):
+  x86: Do not add -falign flags unconditionally for clang
+  kbuild: Add -Werror=ignored-optimization-argument to CLANG_FLAGS
+
+ arch/x86/Makefile_32.cpu | 12 +++++++++---
+ scripts/Makefile.clang   |  4 ++++
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+
+base-commit: fb3fdea450305d932d933d7e75eead0477249d8e
 -- 
-2.20.1
+2.33.0
 
