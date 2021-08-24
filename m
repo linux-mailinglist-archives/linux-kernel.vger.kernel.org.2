@@ -2,310 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89693F5B2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326F73F5B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbhHXJkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235566AbhHXJkV (ORCPT
+        id S235703AbhHXJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:39:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34846 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235566AbhHXJjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:40:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD80C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=x0l6D8Amq+Z+YcfDlP2KUYELTI4Jv2mYpCv9nMVBlWg=; b=dGLKm+fUypuoGIorJ+QPzaZaWm
-        4r+LzigBwT/MbxANA703U/RBWwAgp8pi70vFQD4siJPckMIzvYra6v6HprLPvnihwKBP21pta5ZLN
-        VuurJXRa4m7TyAvGjULEXhJzEr2SRvkPj4PRoVyETCYhgDmYudZhTpJc7ixDapgfpqHII+loLvTDm
-        TBtj0JChxPSbJu13CxmPhIWlDaKesrQQvT4SwUNKh5+sECVJ5n/cabqQq74z0KBz5q1Qin91gMkBO
-        O1DVB6cfZwiFCEueN7S+TbhD0k2NQdS0WLF0AYw4u7vxm9nTuSWtl+MwYbks0viuAVFElQ7/BIbSQ
-        le6Y3hGA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mISse-00ArNC-Hd; Tue, 24 Aug 2021 09:38:10 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C3B67300399;
-        Tue, 24 Aug 2021 11:38:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9CE2E20803E99; Tue, 24 Aug 2021 11:38:02 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 11:38:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vineeth Pillai <vineethrp@gmail.com>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, tao.zhou@linux.dev
-Subject: [PATCH] sched/core: Simplify core-wide task selection
-Message-ID: <YSS9+k1teA9oPEKl@hirez.programming.kicks-ass.net>
-References: <20210818005615.138527-1-joshdon@google.com>
- <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
- <CAOBnfPjH=y3Lk7AukLeG4mNcJnf5cgV260=PZCbF9u69-T+Q6Q@mail.gmail.com>
- <YSS1/rqqsGaBX/yQ@hirez.programming.kicks-ass.net>
+        Tue, 24 Aug 2021 05:39:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629797934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qChd5GhgvITv4lmb/RWLeTtz1XsnlAPe0fCBIjbTUHE=;
+        b=jP1vH2ZO8zxaAEOjfvDjDSvJ5wX71zU8HnAamP8x1U7uUM34Vp4AUBEfS6rvf4eyhaqCe9
+        wzYjlUKE3HivFfhI+kixiuMzUrX/cOuydSbQpYri2bKE5y4mXzSV2PiS6tyuyMI35467Tq
+        WYPdTu7R9LZWnWtthmbfVJNGQBFIxgw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-5O1Xr-ntMB2srV4Yvn0Ryg-1; Tue, 24 Aug 2021 05:38:53 -0400
+X-MC-Unique: 5O1Xr-ntMB2srV4Yvn0Ryg-1
+Received: by mail-wm1-f70.google.com with SMTP id u14-20020a7bcb0e0000b0290248831d46e4so894556wmj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 02:38:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qChd5GhgvITv4lmb/RWLeTtz1XsnlAPe0fCBIjbTUHE=;
+        b=SmBomx9OThM7EONBY/Rct3+JxabxPx51Er4KC9FT2q7tsrlWEHOEmJ486fvSFclpXK
+         ZYH87Ao6tkk4dNcIqTMzNTl35znWJuWdyX0kbf57DXHh1dchiKpWuPL9s83eXKEQATcf
+         qIcsX0PUssZzeyepcXFg1A4rP4A3aosXHdP6XX8ERfeHvYtlAcjTTiPpjk+0T1H4ekyJ
+         EjNC02L466QJvGUorKjJ7bnplW6g7dhIAVBnkrSeNkrQ85KZsTF7Oxx7NkFY8UNfwq/9
+         PWjSZdmrjm4LvJZ8tKBqtIYp8aymm1vPIv0t+Vos6h9nfLpq1OLtY/5aYDgde8pq7FEl
+         iI8g==
+X-Gm-Message-State: AOAM531I/fFxhPsfgc/hBVxybPYgyliyZj8+eQpJjV3zMPM4xHhJcheN
+        OMX0fd9z8xuVw81lY6xccyYoy1hF94ldWodNdkiP9B2/nQXPmh1BXPQz6GFBWEESSUcoOFGMAJB
+        C1CY6yq3dCKPZkFA+hAD7yeah
+X-Received: by 2002:adf:f88d:: with SMTP id u13mr17789200wrp.297.1629797932104;
+        Tue, 24 Aug 2021 02:38:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnUKMpixNJHtzrkXU+bCU4EhdsDCnZh4Ca5o5YpR9MUgRDfffa94tfJL6EuQFJRuVzUb3jkg==
+X-Received: by 2002:adf:f88d:: with SMTP id u13mr17789180wrp.297.1629797931915;
+        Tue, 24 Aug 2021 02:38:51 -0700 (PDT)
+Received: from krava ([83.240.63.86])
+        by smtp.gmail.com with ESMTPSA id q11sm1754808wmc.41.2021.08.24.02.38.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 02:38:51 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 11:38:49 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: intel_pt crash on alderlake
+Message-ID: <YSS+KbILtcwomsN4@krava>
+References: <YSPWCienSPEcvIbU@krava>
+ <7e214d48-ff09-6fe0-f624-d82260ada786@intel.com>
+ <YSPlmP4quB7N+qQE@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YSS1/rqqsGaBX/yQ@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YSPlmP4quB7N+qQE@krava>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:03:58AM +0200, Peter Zijlstra wrote:
-> Let me go do that and also attempt a Changelog to go with it ;-)
+On Mon, Aug 23, 2021 at 08:14:48PM +0200, Jiri Olsa wrote:
+> On Mon, Aug 23, 2021 at 08:53:32PM +0300, Adrian Hunter wrote:
+> > On 23/08/21 8:08 pm, Jiri Olsa wrote:
+> > > hi,
+> > > should intel_pt work on alderlake? I'm getting strange crash:
+> > > (cpuinfo and uname below)
+> > >=20
+> > > 	[root@intel-alderlake-m-02 perf]# ./perf record -e 'intel_pt//' --ov=
+erwrite=20
+> >=20
+> > The segfault is related --overwrite not Alderlake.
+>=20
+> ok, now I see that failing also on other server.. was too fast sry
 
-How's this then?
+any idea of quick fix before I dive in? ;-)
+seems like permissions changed on the first mmap page for some reason
 
----
-Subject: sched/core: Simplify core-wide task selection
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Tue Aug 24 11:05:47 CEST 2021
+thanks,
+jirka
 
-Tao suggested a two-pass task selection to avoid the retry loop.
+>=20
+> >=20
+> > Although I am not sure --overwrite make sense for Intel PT since we hav=
+e snapshot mode i.e. --snapshot
+>=20
+> it's for kdump to get the inte_pt data after crash
+>=20
+> thanks,
+> jirka
+>=20
+> >=20
+> > > 	perf: Segmentation fault
+> > > 	Obtained 16 stack frames.
+> > > 	./perf() [0x53b6eb]
+> > > 	./perf() [0x53b7cb]
+> > > 	./perf() [0x429b30]
+> > > 	/lib64/libc.so.6(+0x37400) [0x7f7b144db400]
+> > > 	./perf() [0x5a6fc8]
+> > > 	./perf() [0x505caa]
+> > > 	./perf() [0x4f39ca]
+> > > 	./perf() [0x646879]
+> > > 	./perf() [0x646b57]
+> > > 	./perf() [0x646da0]
+> > > 	./perf() [0x4f3eec]
+> > > 	./perf() [0x42a533]
+> > > 	./perf() [0x42a644]
+> > > 	./perf() [0x42aa72]
+> > > 	./perf() [0x42c915]
+> > > 	./perf() [0x42ecc3]
+> > > 	Segmentation fault (core dumped)
+> > >=20
+> > >=20
+> > > 	[root@intel-alderlake-m-02 perf]# gdb ./perf
+> > > 	GNU gdb (GDB) Red Hat Enterprise Linux 8.2-15.el8
+> > > 	Copyright (C) 2018 Free Software Foundation, Inc.
+> > > 	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/=
+gpl.html>
+> > > 	This is free software: you are free to change and redistribute it.
+> > > 	There is NO WARRANTY, to the extent permitted by law.
+> > > 	Type "show copying" and "show warranty" for details.
+> > > 	This GDB was configured as "x86_64-redhat-linux-gnu".
+> > > 	Type "show configuration" for configuration details.
+> > > 	For bug reporting instructions, please see:
+> > > 	<http://www.gnu.org/software/gdb/bugs/>.
+> > > 	Find the GDB manual and other documentation resources online at:
+> > > 	    <http://www.gnu.org/software/gdb/documentation/>.
+> > >=20
+> > > 	For help, type "help".
+> > > 	Type "apropos word" to search for commands related to "word"...
+> > > 	Reading symbols from ./perf...done.
+> > > 	(gdb) r record -e 'intel_pt//' --overwrite
+> > > 	Starting program: /root/linux/tools/perf/perf record -e 'intel_pt//'=
+ --overwrite
+> > > 	[Thread debugging using libthread_db enabled]
+> > > 	Using host libthread_db library "/lib64/libthread_db.so.1".
+> > >=20
+> > > 	Program received signal SIGSEGV, Segmentation fault.
+> > > 	0x00000000005a6fc8 in auxtrace_mmap__mmap (mm=3D0x7ffff7e9c060, mp=
+=3D0x7fffffff7588, userpg=3D0x7ffff7e0b000, fd=3D5) at util/auxtrace.c:133
+> > > 	133             pc->aux_offset =3D mp->offset;
+> > > 	Missing separate debuginfos, use: yum debuginfo-install brotli-1.0.6=
+-3.el8.x86_64 bzip2-libs-1.0.6-26.el8.x86_64 cyrus-sasl-lib-2.1.27-5.el8.x8=
+6_64 elfutils-debuginfod-client-0.185-1.el8.x86_64 elfutils-libelf-0.185-1.=
+el8.x86_64 elfutils-libs-0.185-1.el8.x86_64 glib2-2.56.4-156.el8.x86_64 gmp=
+-6.1.2-10.el8.x86_64 gnutls-3.6.16-4.el8.x86_64 keyutils-libs-1.5.10-9.el8.=
+x86_64 libbabeltrace-1.5.4-3.el8.x86_64 libbpf-0.3.0-1.el8.x86_64 libcap-2.=
+26-4.el8.x86_64 libcom_err-1.45.6-2.el8.x86_64 libcurl-7.61.1-18.el8.x86_64=
+ libffi-3.1-22.el8.x86_64 libidn2-2.2.0-1.el8.x86_64 libpsl-0.20.2-6.el8.x8=
+6_64 libselinux-2.9-5.el8.x86_64 libssh-0.9.4-3.el8.x86_64 libtasn1-4.13-3.=
+el8.x86_64 libunistring-0.9.9-3.el8.x86_64 libuuid-2.32.1-28.el8.x86_64 lib=
+xcrypt-4.1.1-6.el8.x86_64 libzstd-1.4.4-1.el8.x86_64 numactl-libs-2.0.12-13=
+=2Eel8.x86_64 openldap-2.4.46-17.el8.x86_64 openssl-libs-1.1.1k-4.el8.x86_6=
+4 p11-kit-0.23.22-1.el8.x86_64 pcre-8.42-6.el8.x86_64 pcre2-10.32-2.el8.x86=
+_64 perl-libs-5.26.3-420.el8.x86_64 popt-1.18-1.el8.x86_64 slang-2.3.2-3.el=
+8.x86_64 xz-libs-5.2.4-3.el8.x86_64
+> > > 	(gdb) bt
+> > > 	#0  0x00000000005a6fc8 in auxtrace_mmap__mmap (mm=3D0x7ffff7e9c060, =
+mp=3D0x7fffffff7588, userpg=3D0x7ffff7e0b000, fd=3D5) at util/auxtrace.c:133
+> > > 	#1  0x0000000000505caa in mmap__mmap (map=3D0x7ffff7e8c010, mp=3D0x7=
+fffffff7570, fd=3D5, cpu=3D0) at util/mmap.c:306
+> > > 	#2  0x00000000004f39ca in perf_evlist__mmap_cb_mmap (_map=3D0x7ffff7=
+e8c010, _mp=3D0x7fffffff7570, output=3D5, cpu=3D0) at util/evlist.c:807
+> > > 	#3  0x0000000000646879 in mmap_per_evsel (evlist=3D0xf1c7d0, ops=3D0=
+x7fffffff7550, idx=3D0, mp=3D0x7fffffff7570, cpu_idx=3D0, thread=3D0, _outp=
+ut=3D0x7fffffff7480, _output_overwrite=3D0x7fffffff7484) at evlist.c:477
+> > > 	#4  0x0000000000646b57 in mmap_per_cpu (evlist=3D0xf1c7d0, ops=3D0x7=
+fffffff7550, mp=3D0x7fffffff7570) at evlist.c:550
+> > > 	#5  0x0000000000646da0 in perf_evlist__mmap_ops (evlist=3D0xf1c7d0, =
+ops=3D0x7fffffff7550, mp=3D0x7fffffff7570) at evlist.c:602
+> > > 	#6  0x00000000004f3eec in evlist__mmap_ex (evlist=3D0xf1c7d0, pages=
+=3D4294967295, auxtrace_pages=3D1024, auxtrace_overwrite=3Dfalse, nr_cblock=
+s=3D0, affinity=3D0, flush=3D1, comp_level=3D0) at util/evlist.c:959
+> > > 	#7  0x000000000042a533 in record__mmap_evlist (rec=3D0xc8b580 <recor=
+d>, evlist=3D0xf1c7d0) at builtin-record.c:854
+> > > 	#8  0x000000000042a644 in record__mmap (rec=3D0xc8b580 <record>) at =
+builtin-record.c:881
+> > > 	#9  0x000000000042aa72 in record__open (rec=3D0xc8b580 <record>) at =
+builtin-record.c:963
+> > > 	#10 0x000000000042c915 in __cmd_record (rec=3D0xc8b580 <record>, arg=
+c=3D0, argv=3D0x7fffffffddf0) at builtin-record.c:1717
+> > > 	#11 0x000000000042ecc3 in cmd_record (argc=3D0, argv=3D0x7fffffffddf=
+0) at builtin-record.c:2897
+> > > 	#12 0x00000000004d7143 in run_builtin (p=3D0xca33d8 <commands+216>, =
+argc=3D4, argv=3D0x7fffffffddf0) at perf.c:313
+> > > 	#13 0x00000000004d73b0 in handle_internal_command (argc=3D4, argv=3D=
+0x7fffffffddf0) at perf.c:365
+> > > 	#14 0x00000000004d74f7 in run_argv (argcp=3D0x7fffffffdc4c, argv=3D0=
+x7fffffffdc40) at perf.c:409
+> > > 	#15 0x00000000004d78c3 in main (argc=3D4, argv=3D0x7fffffffddf0) at =
+perf.c:539
+> > > 	(gdb) p *pc
+> > > 	$1 =3D {version =3D 0, compat_version =3D 0, lock =3D 2, index =3D 0=
+, offset =3D 0, time_enabled =3D 0, time_running =3D 0, {capabilities =3D 2=
+6, {cap_bit0 =3D 0, cap_bit0_is_deprecated =3D 1, cap_user_rdpmc =3D 0, cap=
+_user_time =3D 1,=20
+> > > 	      cap_user_time_zero =3D 1, cap_user_time_short =3D 0, cap_____r=
+es =3D 0}}, pmc_width =3D 48, time_shift =3D 31, time_mult =3D 2663050159, =
+time_offset =3D 18446743875728538161, time_zero =3D 18446743981699475147,=
+=20
+> > > 	  size =3D 96, __reserved_1 =3D 0, time_cycles =3D 0, time_mask =3D =
+0, __reserved =3D '\000' <repeats 927 times>, data_head =3D 0, data_tail =
+=3D 0, data_offset =3D 4096, data_size =3D 524288, aux_head =3D 0, aux_tail=
+ =3D 0,=20
+> > > 	  aux_offset =3D 0, aux_size =3D 0}
+> > > 	(gdb) p *mp
+> > > 	$2 =3D {mask =3D 4194303, offset =3D 528384, len =3D 4194304, prot =
+=3D 3, idx =3D 0, tid =3D -1, cpu =3D 0}
+> > > 	(gdb)=20
+> > >=20
+> > >=20
+> > > any idea? thanks,
+> > > jirka
+> > >=20
+> > >=20
+> > > ----
+> > > [jolsa@krava linus-pure]$ cat /proc/cpuinfo=20
+> > > processor       : 0
+> > > vendor_id       : GenuineIntel
+> > > cpu family      : 6
+> > > model           : 142
+> > > model name      : Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
+> > > stepping        : 10
+> > > microcode       : 0xea
+> > > cpu MHz         : 2100.000
+> > > cache size      : 8192 KB
+> > > physical id     : 0
+> > > siblings        : 8
+> > > core id         : 0
+> > > cpu cores       : 4
+> > > apicid          : 0
+> > > initial apicid  : 0
+> > > fpu             : yes
+> > > fpu_exception   : yes
+> > > cpuid level     : 22
+> > > wp              : yes
+> > > flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pg=
+e mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscal=
+l nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl=
+ xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl=
+ vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic mo=
+vbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowpr=
+efetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow v=
+nmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi=
+2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec =
+xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_ep=
+p md_clear flush_l1d
+> > > vmx flags       : vnmi preemption_timer invvpid ept_x_only ept_ad ept=
+_1gb flexpriority tsc_offset vtpr mtf vapic ept vpid unrestricted_guest ple=
+ shadow_vmcs pml ept_mode_based_exec
+> > > bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypas=
+s l1tf mds swapgs taa itlb_multihit srbds
+> > > bogomips        : 4199.88
+> > > clflush size    : 64
+> > > cache_alignment : 64
+> > > address sizes   : 39 bits physical, 48 bits virtual
+> > > power management:
+> > >=20
+> > > [root@intel-alderlake-m-02 linux]# uname -a
+> > > Linux intel-alderlake-m-02.ml3.eng.bos.redhat.com 5.14.0-rc6+ #1 SMP =
+Fri Aug 20 09:27:39 EDT 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > >=20
+> >=20
 
-Not only does it avoid the retry loop, it results in *much* simpler
-code.
-
-This also fixes an issue spotted by Josh Don where, for SMT3+, we can
-forget to update max on the first pass and get to do an extra round.
-
-Suggested-by: Tao Zhou <tao.zhou@linux.dev>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- kernel/sched/core.c | 156 +++++++++++++++-------------------------------------
- 1 file changed, 45 insertions(+), 111 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ceae25ea8a0e..8a9a32df5f38 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5381,8 +5381,7 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 			return p;
- 	}
- 
--	/* The idle class should always have a runnable task: */
--	BUG();
-+	BUG(); /* The idle class should always have a runnable task. */
- }
- 
- #ifdef CONFIG_SCHED_CORE
-@@ -5404,54 +5403,18 @@ static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
- 	return a->core_cookie == b->core_cookie;
- }
- 
--// XXX fairness/fwd progress conditions
--/*
-- * Returns
-- * - NULL if there is no runnable task for this class.
-- * - the highest priority task for this runqueue if it matches
-- *   rq->core->core_cookie or its priority is greater than max.
-- * - Else returns idle_task.
-- */
--static struct task_struct *
--pick_task(struct rq *rq, const struct sched_class *class, struct task_struct *max, bool in_fi)
-+static inline struct task_struct *pick_task(struct rq *rq)
- {
--	struct task_struct *class_pick, *cookie_pick;
--	unsigned long cookie = rq->core->core_cookie;
--
--	class_pick = class->pick_task(rq);
--	if (!class_pick)
--		return NULL;
--
--	if (!cookie) {
--		/*
--		 * If class_pick is tagged, return it only if it has
--		 * higher priority than max.
--		 */
--		if (max && class_pick->core_cookie &&
--		    prio_less(class_pick, max, in_fi))
--			return idle_sched_class.pick_task(rq);
-+	const struct sched_class *class;
-+	struct task_struct *p;
- 
--		return class_pick;
-+	for_each_class(class) {
-+		p = class->pick_task(rq);
-+		if (p)
-+			return p;
- 	}
- 
--	/*
--	 * If class_pick is idle or matches cookie, return early.
--	 */
--	if (cookie_equals(class_pick, cookie))
--		return class_pick;
--
--	cookie_pick = sched_core_find(rq, cookie);
--
--	/*
--	 * If class > max && class > cookie, it is the highest priority task on
--	 * the core (so far) and it must be selected, otherwise we must go with
--	 * the cookie pick in order to satisfy the constraint.
--	 */
--	if (prio_less(cookie_pick, class_pick, in_fi) &&
--	    (!max || prio_less(max, class_pick, in_fi)))
--		return class_pick;
--
--	return cookie_pick;
-+	BUG(); /* The idle class should always have a runnable task. */
- }
- 
- extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
-@@ -5459,11 +5422,12 @@ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_f
- static struct task_struct *
- pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- {
--	struct task_struct *next, *max = NULL;
--	const struct sched_class *class;
-+	struct task_struct *next, *p, *max = NULL;
- 	const struct cpumask *smt_mask;
- 	bool fi_before = false;
--	int i, j, cpu, occ = 0;
-+	unsigned long cookie;
-+	int i, cpu, occ = 0;
-+	struct rq *rq_i;
- 	bool need_sync;
- 
- 	if (!sched_core_enabled(rq))
-@@ -5536,12 +5500,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	 * and there are no cookied tasks running on siblings.
- 	 */
- 	if (!need_sync) {
--		for_each_class(class) {
--			next = class->pick_task(rq);
--			if (next)
--				break;
--		}
--
-+		next = pick_task(rq);
- 		if (!next->core_cookie) {
- 			rq->core_pick = NULL;
- 			/*
-@@ -5554,76 +5513,51 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 		}
- 	}
- 
--	for_each_cpu(i, smt_mask) {
--		struct rq *rq_i = cpu_rq(i);
--
--		rq_i->core_pick = NULL;
-+	/*
-+	 * For each thread: do the regular task pick and find the max prio task
-+	 * amongst them.
-+	 *
-+	 * Tie-break prio towards the current CPU
-+	 */
-+	for_each_cpu_wrap(i, smt_mask, cpu) {
-+		rq_i = cpu_rq(i);
- 
- 		if (i != cpu)
- 			update_rq_clock(rq_i);
-+
-+		p = rq_i->core_pick = pick_task(rq_i);
-+		if (!max || prio_less(max, p, fi_before))
-+			max = p;
- 	}
- 
-+	cookie = rq->core->core_cookie = max->core_cookie;
-+
- 	/*
--	 * Try and select tasks for each sibling in descending sched_class
--	 * order.
-+	 * For each thread: try and find a runnable task that matches @max or
-+	 * force idle.
- 	 */
--	for_each_class(class) {
--again:
--		for_each_cpu_wrap(i, smt_mask, cpu) {
--			struct rq *rq_i = cpu_rq(i);
--			struct task_struct *p;
--
--			if (rq_i->core_pick)
--				continue;
-+	for_each_cpu(i, smt_mask) {
-+		rq_i = cpu_rq(i);
-+		p = rq_i->core_pick;
- 
--			/*
--			 * If this sibling doesn't yet have a suitable task to
--			 * run; ask for the most eligible task, given the
--			 * highest priority task already selected for this
--			 * core.
--			 */
--			p = pick_task(rq_i, class, max, fi_before);
-+		if (!cookie_equals(p, cookie)) {
-+			p = NULL;
-+			if (cookie)
-+				p = sched_core_find(rq_i, cookie);
- 			if (!p)
--				continue;
-+				p = idle_sched_class.pick_task(rq_i);
-+		}
- 
--			if (!is_task_rq_idle(p))
--				occ++;
-+		rq_i->core_pick = p;
- 
--			rq_i->core_pick = p;
--			if (rq_i->idle == p && rq_i->nr_running) {
-+		if (p == rq_i->idle) {
-+			if (rq_i->nr_running) {
- 				rq->core->core_forceidle = true;
- 				if (!fi_before)
- 					rq->core->core_forceidle_seq++;
- 			}
--
--			/*
--			 * If this new candidate is of higher priority than the
--			 * previous; and they're incompatible; we need to wipe
--			 * the slate and start over. pick_task makes sure that
--			 * p's priority is more than max if it doesn't match
--			 * max's cookie.
--			 *
--			 * NOTE: this is a linear max-filter and is thus bounded
--			 * in execution time.
--			 */
--			if (!max || !cookie_match(max, p)) {
--				struct task_struct *old_max = max;
--
--				rq->core->core_cookie = p->core_cookie;
--				max = p;
--
--				if (old_max) {
--					rq->core->core_forceidle = false;
--					for_each_cpu(j, smt_mask) {
--						if (j == i)
--							continue;
--
--						cpu_rq(j)->core_pick = NULL;
--					}
--					occ = 1;
--					goto again;
--				}
--			}
-+		} else {
-+			occ++;
- 		}
- 	}
- 
-@@ -5643,7 +5577,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 	 * non-matching user state.
- 	 */
- 	for_each_cpu(i, smt_mask) {
--		struct rq *rq_i = cpu_rq(i);
-+		rq_i = cpu_rq(i);
- 
- 		/*
- 		 * An online sibling might have gone offline before a task
