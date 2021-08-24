@@ -2,64 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057783F57E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82DF3F57D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 08:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhHXGHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 02:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhHXGH2 (ORCPT
+        id S234375AbhHXGDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 02:03:02 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63848 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234523AbhHXGC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:07:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA21C061575;
-        Mon, 23 Aug 2021 23:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JcT1aJS86g1/QsjFdAkPecRM4XBnficOBnxN044pPFQ=; b=NwDFWcCkHKbD2sOCndJXglXHqd
-        K7MzimfAkHKuRQaTiSO2Zlf+HMWfZC2sihSBMQre3wLwOT09IliIQCvRfac9aYQJCsXP4iSRZk7tT
-        rI3tdEITmFL96vtZQK4+225Nljv8fFVWOfTHHtfXHfLlyqSaEDS3y48+AuuaWeL3k6U1Hizv0H3g4
-        UAkw7eMasY6QdYrfChNh4nw9Kt0WjAsv3848F0XH7f+3SJNNaQndpIblGi0kMDU3hL9skulY1fryC
-        9uidUeYQJqGCuc7fsh81EBPHO6uTACeG/bHuJgqFZcp1W9l2hbpcXjnKMNLtt0lLj5wVbUCbxO5Qw
-        0yMFkz4Q==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIPU3-00Acmq-BR; Tue, 24 Aug 2021 06:01:01 +0000
-Date:   Tue, 24 Aug 2021 07:00:27 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
-        bvanassche@acm.org, ming.lei@redhat.com,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
-        nbd@other.debian.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/10] scsi/sr: use blk_cleanup_disk() instead of
- put_disk()
-Message-ID: <YSSK+0afMcpUAKyK@infradead.org>
-References: <20210823202930.137278-1-mcgrof@kernel.org>
- <20210823202930.137278-4-mcgrof@kernel.org>
+        Tue, 24 Aug 2021 02:02:57 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17O5tuQb003141
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:02:13 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=lPa7PCjv5m0QXRnNv3eW6sd2bXRA8WEwGpz+psv/Mp8=;
+ b=BMyXrx3z1nm8AhXf74cfXejMFaHOvCajb2is9qogqXRnPZKB5Xpq2HzC7S+tt4y4+LLM
+ IXSNxncar4ETOijGe+SHCoA3k5Tcl4R89btHfP8zYLRLGHS5v6yhV48BjEqW0Q1jZh/y
+ h0i7+21XycdcuezjMJNWQVn3IbEzIc62mpw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3amfqt3ugs-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 23:02:13 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 23 Aug 2021 23:02:12 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 3CF02DDDF76D; Mon, 23 Aug 2021 23:02:06 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <acme@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next 0/3] bpf: introduce bpf_get_branch_trace
+Date:   Mon, 23 Aug 2021 23:01:54 -0700
+Message-ID: <20210824060157.3889139-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: hlKnTqKclOhAK8TH16tbHQwhT8rQBVju
+X-Proofpoint-ORIG-GUID: hlKnTqKclOhAK8TH16tbHQwhT8rQBVju
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823202930.137278-4-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-08-24_01:2021-08-23,2021-08-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0
+ mlxlogscore=848 mlxscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ clxscore=1015 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2108240039
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 01:29:23PM -0700, Luis Chamberlain wrote:
-> The single put_disk() is useful if you know you're not doing
-> a cleanup after add_disk(), but since we want to add support
-> for that, just use the normal form of blk_cleanup_disk() to
-> cleanup the queue and put the disk.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Branch stack can be very useful in understanding software events. For
+example, when a long function, e.g. sys_perf_event_open, returns an errno,
+it is not obvious why the function failed. Branch stack could provide very
+helpful information in this type of scenarios.
 
-.. not needed as the cleanup is done by the core scsi code.
+This set adds support to read branch stack with a new BPF helper
+bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
+It is also possible to support the same feaure for PowerPC.
+
+The hardware that records the branch stace is not stopped automatically on
+software events. Therefore, it is necessary to stop it in software soon.
+Otherwise, the hardware buffers/registers will be flushed. One of the key
+design consideration in this set is to minimize the number of branch record
+entries between the event triggers and the hardware recorder is stopped.
+Based on this goal, current design is different from the discussions in
+original RFC [1]:
+ 1) Static call is used when supported, to save function pointer
+    dereference;
+ 2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
+    because the latter uses about 10 entries before stopping LBR.
+
+With current code, on Intel CPU, LBR is stopped after 6 branch entries
+after fexit triggers:
+
+ID: 0 from intel_pmu_lbr_disable_all.part.10+37 to intel_pmu_lbr_disable_al=
+l.part.10+72
+ID: 1 from intel_pmu_lbr_disable_all.part.10+33 to intel_pmu_lbr_disable_al=
+l.part.10+37
+ID: 2 from intel_pmu_snapshot_branch_stack+46 to intel_pmu_lbr_disable_all.=
+part.10+0
+ID: 3 from __bpf_prog_enter+38 to intel_pmu_snapshot_branch_stack+0
+ID: 4 from __bpf_prog_enter+8 to __bpf_prog_enter+38
+ID: 5 from __brk_limit+477020214 to __bpf_prog_enter+0
+ID: 6 from bpf_fexit_loop_test1+22 to __brk_limit+477020195
+ID: 7 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+ID: 8 from bpf_fexit_loop_test1+20 to bpf_fexit_loop_test1+13
+...
+
+[1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.=
+com/
+
+Song Liu (3):
+  perf: enable branch record for software events
+  bpf: introduce helper bpf_get_branch_trace
+  selftests/bpf: add test for bpf_get_branch_trace
+
+ arch/x86/events/intel/core.c                  |   5 +-
+ arch/x86/events/intel/lbr.c                   |  12 ++
+ arch/x86/events/perf_event.h                  |   2 +
+ include/linux/filter.h                        |   3 +-
+ include/linux/perf_event.h                    |  33 ++++++
+ include/uapi/linux/bpf.h                      |  16 +++
+ kernel/bpf/trampoline.c                       |  15 +++
+ kernel/bpf/verifier.c                         |   7 ++
+ kernel/events/core.c                          |  28 +++++
+ kernel/trace/bpf_trace.c                      |  30 +++++
+ net/bpf/test_run.c                            |  15 ++-
+ tools/include/uapi/linux/bpf.h                |  16 +++
+ .../bpf/prog_tests/get_branch_trace.c         | 106 ++++++++++++++++++
+ .../selftests/bpf/progs/get_branch_trace.c    |  41 +++++++
+ tools/testing/selftests/bpf/trace_helpers.c   |  30 +++++
+ tools/testing/selftests/bpf/trace_helpers.h   |   5 +
+ 16 files changed, 361 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_trace=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_branch_trace.c
+
+--
+2.30.2
