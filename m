@@ -2,277 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE35A3F6199
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFD13F61B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238315AbhHXP2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40800 "EHLO mail.kernel.org"
+        id S238359AbhHXPdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:33:25 -0400
+Received: from gate.crashing.org ([63.228.1.57]:35656 "EHLO gate.crashing.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238301AbhHXP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:28:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D66E61165;
-        Tue, 24 Aug 2021 15:27:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629818847;
-        bh=1n1oZ6x6E/HqJk/pfS2Bj3U4hWUQd5sw2NMVpoXktWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k9zqq1We/uEYT55khKyfpPQuL7eCqdt+UbDjgjw5MFm4dIlCOMWI9q+zD1z1RScex
-         zAAfLPhP35hFTu62NvBQKELt1ZVqfW4kedFu9F/n0uGKmUTFDtFwCkHP0mMZA97d5B
-         GRdrhbEEbodz/LuMkkhbpKJGX1zl6oLOlI+ZxOuwFwEG/m1MSmoAyz7693jPRiORNt
-         Yb0Wryr7oXOTMqALWWonwsbAxFwJd7Poecn5MxK4XFJxm/9W1E0j0kMGbtCFdBF3Uh
-         LPb+6p2M8GqbwpVrifcTpptTcgNdv3XbZzbQ9EY0tLWcUF6rLD8Zs1NubopFzLaqAU
-         jAbyX55Pu3gAQ==
-Date:   Tue, 24 Aug 2021 16:27:20 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        honnappa.nagarahalli@arm.com, Zachary.Leaf@arm.com,
-        Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v9 2/3] arm64: perf: Enable PMU counter userspace access
- for perf event
-Message-ID: <20210824152720.GC23146@willie-the-truck>
-References: <20210806225123.1958497-1-robh@kernel.org>
- <20210806225123.1958497-3-robh@kernel.org>
-MIME-Version: 1.0
+        id S238217AbhHXPdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 11:33:24 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 17OFSFBJ017344;
+        Tue, 24 Aug 2021 10:28:15 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 17OFSEsh017341;
+        Tue, 24 Aug 2021 10:28:14 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 24 Aug 2021 10:28:13 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/32: Don't use lmw/stmw for saving/restoring non volatile regs
+Message-ID: <20210824152813.GG1583@gate.crashing.org>
+References: <316c543b8906712c108985c8463eec09c8db577b.1629732542.git.christophe.leroy@csgroup.eu> <20210823184648.GY1583@gate.crashing.org> <9bbc9797-cfc7-1484-90ad-2146ff1a5e18@csgroup.eu> <20210824131600.GF1583@gate.crashing.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210806225123.1958497-3-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210824131600.GF1583@gate.crashing.org>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 06, 2021 at 04:51:22PM -0600, Rob Herring wrote:
-> Arm PMUs can support direct userspace access of counters which allows for
-> low overhead (i.e. no syscall) self-monitoring of tasks. The same feature
-> exists on x86 called 'rdpmc'. Unlike x86, userspace access will only be
-> enabled for thread bound events. This could be extended if needed, but
-> simplifies the implementation and reduces the chances for any
-> information leaks (which the x86 implementation suffers from).
+On Tue, Aug 24, 2021 at 08:16:00AM -0500, Segher Boessenkool wrote:
+> On Tue, Aug 24, 2021 at 07:54:22AM +0200, Christophe Leroy wrote:
+> > >On mpccore both lmw and stmw are only N+1 btw.  But the serialization
+> > >might cost another cycle here?
+> > 
+> > That coherent on MPC8xx, that's only 2 cycles.
+> > But on the mpc832x which has a e300c2 core, it looks like I have 10 cycles 
+> > difference. Is anything wrong ?
 > 
-> When an event is capable of userspace access and has been mmapped, userspace
-> access is enabled when the event is scheduled on a CPU's PMU. There's some
-> additional overhead clearing counters when disabled in order to prevent
-> leaking disabled counter data from other tasks.
-> 
-> Unlike x86, enabling of userspace access must be requested with a new
-> attr bit: config1:1. If the user requests userspace access and 64-bit
-> counters, then chaining will be disabled and the user will get the
-> maximum size counter the underlying h/w can support. The modes for
-> config1 are as follows:
-> 
-> config1 = 0 : user access disabled and always 32-bit
-> config1 = 1 : user access disabled and always 64-bit (using chaining if needed)
-> config1 = 2 : user access enabled and always 32-bit
-> config1 = 3 : user access enabled and counter size matches underlying counter.
-> 
-> Based on work by Raphael Gault <raphael.gault@arm.com>, but has been
-> completely re-written.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-perf-users@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> 
-> ---
-> v9:
->  - Enabling/disabling of user access is now controlled in .start() and
->    mmap hooks which are now called on CPUs that the event is on.
->    Depends on rework of perf core and x86 RDPMC code posted here:
->    https://lore.kernel.org/lkml/20210728230230.1911468-1-robh@kernel.org/
-> 
-> v8:
->  - Rework user access tracking and enabling to be done on task
->    context changes using sched_task() hook. This avoids the need for any
->    IPIs, mm_switch hooks or undef instr handler.
->  - Only support user access when explicitly requested on open and
->    only for a thread bound events. This avoids some of the information
->    leaks x86 has and simplifies the implementation.
-> 
-> v7:
->  - Clear disabled counters when user access is enabled for a task to
->    avoid leaking other tasks counter data.
->  - Rework context switch handling utilizing sched_task callback
->  - Add armv8pmu_event_can_chain() helper
->  - Rework config1 flags handling structure
->  - Use ARMV8_IDX_CYCLE_COUNTER_USER define for remapped user cycle
->    counter index
-> 
-> v6:
->  - Add new attr.config1 rdpmc bit for userspace to hint it wants
->    userspace access when also requesting 64-bit counters.
-> 
-> v5:
->  - Only set cap_user_rdpmc if event is on current cpu
->  - Limit enabling/disabling access to CPUs associated with the PMU
->    (supported_cpus) and with the mm_struct matching current->active_mm.
-> 
-> v2:
->  - Move mapped/unmapped into arm64 code. Fixes arm32.
->  - Rebase on cap_user_time_short changes
-> 
-> Changes from Raphael's v4:
->   - Drop homogeneous check
->   - Disable access for chained counters
->   - Set pmc_width in user page
-> ---
->  arch/arm64/kernel/perf_event.c | 137 +++++++++++++++++++++++++++++++--
->  include/linux/perf/arm_pmu.h   |   6 ++
->  2 files changed, 135 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> index 74f77b68f5f0..66d8bf62e99c 100644
-> --- a/arch/arm64/kernel/perf_event.c
-> +++ b/arch/arm64/kernel/perf_event.c
-> @@ -285,6 +285,7 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
->  
->  PMU_FORMAT_ATTR(event, "config:0-15");
->  PMU_FORMAT_ATTR(long, "config1:0");
-> +PMU_FORMAT_ATTR(rdpmc, "config1:1");
->  
->  static int sysctl_perf_user_access __read_mostly;
->  
-> @@ -306,9 +307,15 @@ static inline bool armv8pmu_event_is_64bit(struct perf_event *event)
->  	return event->attr.config1 & 0x1;
->  }
->  
-> +static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
-> +{
-> +	return event->attr.config1 & 0x2;
-> +}
-> +
->  static struct attribute *armv8_pmuv3_format_attrs[] = {
->  	&format_attr_event.attr,
->  	&format_attr_long.attr,
-> +	&format_attr_rdpmc.attr,
->  	NULL,
->  };
->  
-> @@ -377,7 +384,7 @@ static const struct attribute_group armv8_pmuv3_caps_attr_group = {
->   */
->  #define	ARMV8_IDX_CYCLE_COUNTER	0
->  #define	ARMV8_IDX_COUNTER0	1
-> -
-> +#define	ARMV8_IDX_CYCLE_COUNTER_USER	32
->  
->  /*
->   * We unconditionally enable ARMv8.5-PMU long event counter support
-> @@ -389,6 +396,15 @@ static bool armv8pmu_has_long_event(struct arm_pmu *cpu_pmu)
->  	return (cpu_pmu->pmuver >= ID_AA64DFR0_PMUVER_8_5);
->  }
->  
-> +static inline bool armv8pmu_event_can_chain(struct perf_event *event)
-> +{
-> +	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
-> +
-> +	return !(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT) &&
-> +	       armv8pmu_event_is_64bit(event) &&
-> +	       !armv8pmu_has_long_event(cpu_pmu);
+> I don't know that core very well, I'll have a look.
 
-Could check against ARMV8_IDX_CYCLE_COUNTER here...
+So, I don't see any difference between e300c2 and e300c1 (which is 603
+basically, for this) that is significant here.  The e300c2 has two
+integer units instead of just one, but it still has only one load/store
+unit, and I don't see anything else that could matter either.  Huh.
 
-> +}
-> +
->  /*
->   * We must chain two programmable counters for 64 bit events,
->   * except when we have allocated the 64bit cycle counter (for CPU
-> @@ -398,11 +414,9 @@ static bool armv8pmu_has_long_event(struct arm_pmu *cpu_pmu)
->  static inline bool armv8pmu_event_is_chained(struct perf_event *event)
->  {
->  	int idx = event->hw.idx;
-> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
->  
->  	return !WARN_ON(idx < 0) &&
-> -	       armv8pmu_event_is_64bit(event) &&
-> -	       !armv8pmu_has_long_event(cpu_pmu) &&
-> +	       armv8pmu_event_can_chain(event) &&
->  	       (idx != ARMV8_IDX_CYCLE_COUNTER);
 
-... then we wouldn't need to here.
-
->  }
->  
-> @@ -733,6 +747,35 @@ static inline u32 armv8pmu_getreset_flags(void)
->  	return value;
->  }
->  
-> +static void armv8pmu_disable_user_access(void)
-> +{
-> +	write_sysreg(0, pmuserenr_el0);
-> +}
-> +
-> +static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
-> +{
-> +	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
-> +
-> +	if (!sysctl_perf_user_access)
-> +		return;
-> +
-> +	if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
-> +		int i;
-> +		/* Don't need to clear assigned counters. */
-> +		bitmap_xor(cpuc->dirty_mask, cpuc->dirty_mask, cpuc->used_mask, ARMPMU_MAX_HWEVENTS);
-> +
-> +		for_each_set_bit(i, cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS) {
-> +			if (i == ARMV8_IDX_CYCLE_COUNTER)
-> +				write_sysreg(0, pmccntr_el0);
-> +			else
-> +				armv8pmu_write_evcntr(i, 0);
-> +		}
-
-Given that we can't expose individual counters, why isn't this just:
-
-	for_each_clear_bit(i, cpuc->used_mask, ARMPMU_MAX_HWEVENTS)
-		...
-
-and we could get rid of the dirty_mask altogether? i.e. just zero everything
-that isn't assigned.
-
-> +		bitmap_zero(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS);
-> +	}
-> +
-> +	write_sysreg(ARMV8_PMU_USERENR_ER | ARMV8_PMU_USERENR_CR, pmuserenr_el0);
-> +}
-> +
->  static void armv8pmu_enable_event(struct perf_event *event)
->  {
->  	/*
-> @@ -776,6 +819,16 @@ static void armv8pmu_disable_event(struct perf_event *event)
->  
->  static void armv8pmu_start(struct arm_pmu *cpu_pmu)
->  {
-> +	if (sysctl_perf_user_access) {
-
-armv8pmu_enable_user_access() already checks this.
-
-> +		struct perf_cpu_context *cpuctx = this_cpu_ptr(cpu_pmu->pmu.pmu_cpu_context);
-> +		struct perf_event_context *task_ctx = cpuctx->task_ctx;
-> +		if (atomic_read(&cpuctx->ctx.nr_user) ||
-
-I thought we only enabled this for per-task events, so not sure why we need
-this check. But actually, I don't get why we need any extra logic in this
-function at all; why aren't the ->mapped/->unmapped functions sufficient?
-
-Will
+Segher
