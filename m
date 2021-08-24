@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F79F3F6573
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835D13F644D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239636AbhHXRNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:13:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240182AbhHXRKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B02261407;
-        Tue, 24 Aug 2021 17:00:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824434;
-        bh=s73NqyE/YVtreGzTT8CpCbgnPgnh21nkO3rOL7NR0j4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AzP1ruyJkJ8zr4i3dRwKQKJ3aBQX2U/coQ4iGC94F3gviNLfewnBec1X/mhvjBBad
-         hUPxHfnlCIdMzxdDdm8IPZMYXsH6XcV+NKCx8iLl5c1uKU0T2ulEcVeWO7od6D+9AX
-         8+CTHTSsMj/++mhvUxgtCiZrzHR//zM8Zehjitk/uY5py5gl5pdlIj5VSMIqXi6hlU
-         nAj5Cp4lNZmB8Sr5Gu5LoRpprDkDl7xiDWUt9PVDjoAOfCpEoRB7I5ogTzGPW+eWd6
-         FoYrT4MyEDIiVJQVJEiH/nFbY2jYpsFqPMeSPI2tGybdSsTElkS197mBRTAZPlak0T
-         FuCptelXfBwXA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kristin Paget <kristin@tombom.co.uk>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 85/98] ALSA: hda/realtek: Enable 4-speaker output for Dell XPS 15 9510 laptop
-Date:   Tue, 24 Aug 2021 12:58:55 -0400
-Message-Id: <20210824165908.709932-86-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824165908.709932-1-sashal@kernel.org>
-References: <20210824165908.709932-1-sashal@kernel.org>
+        id S239318AbhHXRCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:02:43 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:35622 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239033AbhHXQ7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:59:42 -0400
+Received: by mail-oo1-f43.google.com with SMTP id o17-20020a4a64110000b0290263e1ba7ff9so6716403ooc.2;
+        Tue, 24 Aug 2021 09:58:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ff9JKUI/YKVZ1f9QB3+ggQG4cbY+edkZDleJXyfV8CI=;
+        b=UfRtpKu7f6MWUALctxzeuzf/0SBCRAbsVDELmNyq9HqQMLp5RL0/mmzYMq982AjAYR
+         jRiMrWG6+61yLBSnLX0mV5N3T7jgfKX5OLnWoftN/hjE2Im5ExIXK4jLrOLYNYgYs0iO
+         uoMChHRsksQ7to3rv/s4d79nql4WmSN062b0wzGqGmmqig3RzmeHTw+wEjLJrPrC4QDN
+         CTdVBZjOu5iiToM+BpnfVARlQEk4C4tcEUlZCJ+UpZQzNIoUIQKPYqYBwi8kDXtI5mM+
+         nzR9pufH2Fm00mEHjeMJ2rrPfwuEwLCdP43l11WkJo5J85oRLjm8xhEcSmmsLnByXlHS
+         WLjA==
+X-Gm-Message-State: AOAM532JNuSthYGSOez2k43Ma6MTIc+7EMM3dge8duAn0hQgNG4pAhh1
+        85oqnlPAmGVnlRbyKn0LzQ==
+X-Google-Smtp-Source: ABdhPJwYumjG9VNceksmJBMvBD1W4nsmUqiq3U/CYXDeBtKUEVseR8qOkTVNr93EahjSAidk1/Uxww==
+X-Received: by 2002:a4a:b481:: with SMTP id b1mr30805640ooo.79.1629824337981;
+        Tue, 24 Aug 2021 09:58:57 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l67sm4667332otl.3.2021.08.24.09.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 09:58:57 -0700 (PDT)
+Received: (nullmailer pid 626496 invoked by uid 1000);
+        Tue, 24 Aug 2021 16:58:56 -0000
+Date:   Tue, 24 Aug 2021 11:58:56 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     nandhini.srikandan@intel.com
+Cc:     furong.zhou@intel.com, devicetree@vger.kernel.org,
+        rashmi.a@intel.com, mgross@linux.intel.com, robh+dt@kernel.org,
+        mahesh.r.vaidya@intel.com, broonie@kernel.org,
+        mallikarjunappa.sangannavar@intel.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        kenchappa.demakkanavar@intel.com, fancer.lancer@gmail.com,
+        kris.pan@intel.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: spi: Add bindings for Intel Thunder
+ Bay SoC
+Message-ID: <YSUlUDQEB/5sNCRQ@robh.at.kernel.org>
+References: <20210824085856.12714-1-nandhini.srikandan@intel.com>
+ <20210824085856.12714-2-nandhini.srikandan@intel.com>
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.61-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.10.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.10.61-rc1
-X-KernelTest-Deadline: 2021-08-26T16:58+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824085856.12714-2-nandhini.srikandan@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kristin Paget <kristin@tombom.co.uk>
+On Tue, 24 Aug 2021 16:58:55 +0800, nandhini.srikandan@intel.com wrote:
+> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> 
+> Add documentation for SPI controller in Intel Thunder Bay SoC.
+> 
+> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> ---
+>  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-[ Upstream commit da94692001ea45ffa1f5e9f17ecdef7aecd90c27 ]
-
-The 2021-model XPS 15 appears to use the same 4-speakers-on-ALC289 audio
-setup as the Precision models, so requires the same quirk to enable woofer
-output. Tested on my own 9510.
-
-Signed-off-by: Kristin Paget <kristin@tombom.co.uk>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/e1fc95c5-c10a-1f98-a5c2-dd6e336157e1@tombom.co.uk
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index beb5fb03e388..de4cd91b9ba8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8258,6 +8258,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0a2e, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0a30, "Dell", ALC236_FIXUP_DELL_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0a58, "Dell", ALC255_FIXUP_DELL_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1028, 0x0a61, "Dell XPS 15 9510", ALC289_FIXUP_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
