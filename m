@@ -2,217 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D103F5DE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FE33F5DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237308AbhHXMV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237219AbhHXMVs (ORCPT
+        id S237157AbhHXMYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 08:24:37 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:36842 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230132AbhHXMYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:21:48 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C15C061757;
-        Tue, 24 Aug 2021 05:21:04 -0700 (PDT)
-Received: from cap.home.8bytes.org (p4ff2b1ea.dip0.t-ipconnect.de [79.242.177.234])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id CDC26922;
-        Tue, 24 Aug 2021 14:21:00 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joro@8bytes.org, jroedel@suse.de
-Subject: [PATCH v3 4/4] PCI/ACPI: Check for _OSC support in acpi_pci_osc_control_set()
-Date:   Tue, 24 Aug 2021 14:20:54 +0200
-Message-Id: <20210824122054.29481-5-joro@8bytes.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210824122054.29481-1-joro@8bytes.org>
-References: <20210824122054.29481-1-joro@8bytes.org>
+        Tue, 24 Aug 2021 08:24:36 -0400
+Received: by mail-ot1-f45.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso24517372otv.3;
+        Tue, 24 Aug 2021 05:23:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zZSW/BLziM3Q7jIwrUK8AKWwZKpBaFAY0kb/eAwqd/U=;
+        b=JZhlxUGPWDzPPAX9C235gD05wJNTtr+V77373BypZgzoKFkFQ54cCaPRQFnHfZofP6
+         AtjRSVYVcS2xHJWJBVoLoO+RrimDCccUKEY63M4blmdxeG9K5iLZnWp3Wx6+yH0MOUDF
+         kAbw+5tN3fS3AlgSgGY6hs+NWQTNJ7nmlwOtqMC0zW53YHrcOFPpP0mti1D02QaqFBeB
+         sqh2ylZLLu4PR2GTT3k9bsH6CWVMvvJUG3Gb+UqynYi8FUFcTY877H52XFZdF/mjspx1
+         sIHo+tMJ4ghkuT2rshw6f7VsnQQFG6PjMbgh2rh6+6fXnWGOYlNcuMaI+BWx5HMM45Y4
+         RPRg==
+X-Gm-Message-State: AOAM530kkL2k4D3EmKUixxzFSYVyoqMplMoJ5+vJYEssPgH1E9BllEMg
+        Kw6F2grMNSEfJmzOGIwpYg==
+X-Google-Smtp-Source: ABdhPJw7949dHrXxcRZpb3Hi5lQslUdliu8+BH2hvHdXh7RS/ViIbotdMway2tu5VInAclD5gYi/pw==
+X-Received: by 2002:a9d:1408:: with SMTP id h8mr30431672oth.151.1629807831822;
+        Tue, 24 Aug 2021 05:23:51 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id p2sm4381433oip.35.2021.08.24.05.23.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 05:23:51 -0700 (PDT)
+Received: (nullmailer pid 51050 invoked by uid 1000);
+        Tue, 24 Aug 2021 12:23:50 -0000
+Date:   Tue, 24 Aug 2021 07:23:50 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     ulf.hansson@linaro.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Subject: Re: [PATCH v3 4/4] ARM: dts: at91: sama5d27_wlsom1: add wifi device
+Message-ID: <YSTk1pUTAUJLBJQl@robh.at.kernel.org>
+References: <20210820092803.78523-1-claudiu.beznea@microchip.com>
+ <20210820092803.78523-5-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210820092803.78523-5-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Fri, Aug 20, 2021 at 12:28:03PM +0300, Claudiu Beznea wrote:
+> From: Eugen Hristev <eugen.hristev@microchip.com>
+> 
+> SAMA5D27 WLSOM1 boards has a WILC3000 device soldered. Add proper
+> device tree nodes for this.
+> 
+> [eugen.hristev: original author of this code]
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> [nicolas.ferre: original author of this code]
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi | 71 +++++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
+> index 025a78310e3a..c7bcfd3ce91d 100644
+> --- a/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
+> +++ b/arch/arm/boot/dts/at91-sama5d27_wlsom1.dtsi
+> @@ -30,6 +30,15 @@ main_xtal {
+>  			clock-frequency = <24000000>;
+>  		};
+>  	};
+> +
+> +	wifi_pwrseq: wifi_pwrseq {
+> +		compatible = "mmc-pwrseq-wilc1000";
+> +		reset-gpios = <&pioA PIN_PA27 GPIO_ACTIVE_HIGH>;
+> +		powerdown-gpios = <&pioA PIN_PA29 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-0 = <&pinctrl_wilc_pwrseq>;
+> +		pinctrl-names = "default";
+> +		status = "okay";
 
-Get rid of acpi_pci_osc_support() and check for _OSC supported features
-directly in acpi_pci_osc_control_set(). There is no point in doing an
-unconditional _OSC query with control=0 even when the kernel later wants
-to take control over more features.
+'okay' is the default, so you can drop this.
 
-This safes one _OSC query and simplifies the code by getting rid of
-the acpi_pci_osc_support() function. As a side effect, the !control
-checks in acpi_pci_query_osc() can also be removed.
+> +	};
+>  };
+>  
+>  &flx1 {
+> @@ -310,5 +319,67 @@ pinctrl_qspi1_default: qspi1_default {
+>  			 <PIN_PB10__QSPI1_IO3>;
+>  		bias-pull-up;
+>  	};
+> +
+> +	pinctrl_sdmmc1_default: sdmmc1_default {
+> +		cmd-data {
+> +			pinmux = <PIN_PA28__SDMMC1_CMD>,
+> +				 <PIN_PA18__SDMMC1_DAT0>,
+> +				 <PIN_PA19__SDMMC1_DAT1>,
+> +				 <PIN_PA20__SDMMC1_DAT2>,
+> +				 <PIN_PA21__SDMMC1_DAT3>;
+> +			bias-disable;
+> +		};
+> +
+> +		conf-ck {
+> +			pinmux = <PIN_PA22__SDMMC1_CK>;
+> +			bias-disable;
+> +		};
+> +	};
+> +
+> +	pinctrl_wilc_default: wilc_default {
+> +		conf-irq {
+> +			pinmux = <PIN_PB25__GPIO>;
+> +			bias-disable;
+> +		};
+> +	};
+> +
+> +	pinctrl_wilc_pwrseq: wilc_pwrseq {
+> +		conf-ce-nrst {
+> +			pinmux = <PIN_PA27__GPIO>,
+> +				 <PIN_PA29__GPIO>;
+> +			bias-disable;
+> +		};
+> +
+> +		conf-rtcclk {
+> +			pinmux = <PIN_PB13__PCK1>;
+> +			bias-disable;
+> +		};
+> +	};
+> +};
+> +
+> +&sdmmc1 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	bus-width = <4>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_sdmmc1_default>;
+> +	mmc-pwrseq = <&wifi_pwrseq>;
+> +	no-1-8-v;
+> +	non-removable;
+> +	status = "okay";
+> +
+> +	wilc: wilc@0 {
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- drivers/acpi/pci_root.c | 81 ++++++++++++++++-------------------------
- 1 file changed, 32 insertions(+), 49 deletions(-)
+wifi@0
 
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index f12e512bcddc..ab2f7dfb0c44 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -203,26 +203,16 @@ static acpi_status acpi_pci_query_osc(struct acpi_pci_root *root,
- 
- 	capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
- 	capbuf[OSC_SUPPORT_DWORD] = support;
--	if (control)
--		capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
--	else
--		/* Run _OSC query only with existing controls. */
--		capbuf[OSC_CONTROL_DWORD] = root->osc_control_set;
-+	capbuf[OSC_CONTROL_DWORD] = *control | root->osc_control_set;
- 
- 	status = acpi_pci_run_osc(root->device->handle, capbuf, &result);
- 	if (ACPI_SUCCESS(status)) {
- 		root->osc_support_set = support;
--		if (control)
--			*control = result;
-+		*control = result;
- 	}
- 	return status;
- }
- 
--static acpi_status acpi_pci_osc_support(struct acpi_pci_root *root, u32 flags)
--{
--	return acpi_pci_query_osc(root, flags, NULL);
--}
--
- struct acpi_pci_root *acpi_pci_find_root(acpi_handle handle)
- {
- 	struct acpi_pci_root *root;
-@@ -345,8 +335,9 @@ EXPORT_SYMBOL_GPL(acpi_get_pci_dev);
-  * _OSC bits the BIOS has granted control of, but its contents are meaningless
-  * on failure.
-  **/
--static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 req)
-+static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 support)
- {
-+	u32 req = OSC_PCI_EXPRESS_CAPABILITY_CONTROL;
- 	struct acpi_pci_root *root;
- 	acpi_status status;
- 	u32 ctrl, capbuf[3];
-@@ -354,22 +345,16 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
- 	if (!mask)
- 		return AE_BAD_PARAMETER;
- 
--	ctrl = *mask;
--	if ((ctrl & req) != req)
--		return AE_TYPE;
--
- 	root = acpi_pci_find_root(handle);
- 	if (!root)
- 		return AE_NOT_EXIST;
- 
--	*mask = ctrl | root->osc_control_set;
--	/* No need to evaluate _OSC if the control was already granted. */
--	if ((root->osc_control_set & ctrl) == ctrl)
--		return AE_OK;
-+	ctrl   = *mask;
-+	*mask |= root->osc_control_set;
- 
- 	/* Need to check the available controls bits before requesting them. */
--	while (*mask) {
--		status = acpi_pci_query_osc(root, root->osc_support_set, mask);
-+	do {
-+		status = acpi_pci_query_osc(root, support, mask);
- 		if (ACPI_FAILURE(status))
- 			return status;
- 		if (ctrl == *mask)
-@@ -377,7 +362,11 @@ static acpi_status acpi_pci_osc_control_set(acpi_handle handle, u32 *mask, u32 r
- 		decode_osc_control(root, "platform does not support",
- 				   ctrl & ~(*mask));
- 		ctrl = *mask;
--	}
-+	} while (*mask);
-+
-+	/* No need to request _OSC if the control was already granted. */
-+	if ((root->osc_control_set & ctrl) == ctrl)
-+		return AE_OK;
- 
- 	if ((ctrl & req) != req) {
- 		decode_osc_control(root, "not requesting control; platform does not support",
-@@ -470,7 +459,7 @@ static bool os_control_query_checks(struct acpi_pci_root *root, u32 support)
- static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
- 				 bool is_pcie)
- {
--	u32 support, control, requested;
-+	u32 support, control = 0, requested = 0;
- 	acpi_status status;
- 	struct acpi_device *device = root->device;
- 	acpi_handle handle = device->handle;
-@@ -490,28 +479,15 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
- 	support = calculate_support();
- 
- 	decode_osc_support(root, "OS supports", support);
--	status = acpi_pci_osc_support(root, support);
--	if (ACPI_FAILURE(status)) {
--		*no_aspm = 1;
--
--		/* _OSC is optional for PCI host bridges */
--		if ((status == AE_NOT_FOUND) && !is_pcie)
--			return;
--
--		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
--			 acpi_format_exception(status));
--		return;
--	}
--
--	if (!os_control_query_checks(root, support))
--		return;
- 
--	requested = control = calculate_control();
-+	if (os_control_query_checks(root, support))
-+		requested = control = calculate_control();
- 
--	status = acpi_pci_osc_control_set(handle, &control,
--					  OSC_PCI_EXPRESS_CAPABILITY_CONTROL);
-+	status = acpi_pci_osc_control_set(handle, &control, support);
- 	if (ACPI_SUCCESS(status)) {
--		decode_osc_control(root, "OS now controls", control);
-+		if (control)
-+			decode_osc_control(root, "OS now controls", control);
-+
- 		if (acpi_gbl_FADT.boot_flags & ACPI_FADT_NO_ASPM) {
- 			/*
- 			 * We have ASPM control, but the FADT indicates that
-@@ -522,11 +498,6 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
- 			*no_aspm = 1;
- 		}
- 	} else {
--		decode_osc_control(root, "OS requested", requested);
--		decode_osc_control(root, "platform willing to grant", control);
--		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
--			acpi_format_exception(status));
--
- 		/*
- 		 * We want to disable ASPM here, but aspm_disabled
- 		 * needs to remain in its state from boot so that we
-@@ -535,6 +506,18 @@ static void negotiate_os_control(struct acpi_pci_root *root, int *no_aspm,
- 		 * root scan.
- 		 */
- 		*no_aspm = 1;
-+
-+		/* _OSC is optional for PCI host bridges */
-+		if ((status == AE_NOT_FOUND) && !is_pcie)
-+			return;
-+
-+		if (control) {
-+			decode_osc_control(root, "OS requested", requested);
-+			decode_osc_control(root, "platform willing to grant", control);
-+		}
-+
-+		dev_info(&device->dev, "_OSC: platform retains control of PCIe features (%s)\n",
-+			 acpi_format_exception(status));
- 	}
- }
- 
--- 
-2.32.0
+> +		reg = <0>;
+> +		bus-width = <4>;
+> +		compatible = "microchip,wilc3000", "microchip,wilc1000";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_wilc_default>;
+> +		irq-gpios = <&pioA PIN_PB25 GPIO_ACTIVE_LOW>;
+> +		clocks = <&pmc PMC_TYPE_SYSTEM 9>;
+> +		clock-names = "rtc";
+> +		assigned-clocks = <&pmc PMC_TYPE_SYSTEM 9>;
+> +		assigned-clock-rates = <32768>;
+> +		status = "okay";
 
+Again, that's the default so drop.
+
+Did you run validation (make dtbs_check) on your changes because I see 
+multiple problems.
+
+Rob
