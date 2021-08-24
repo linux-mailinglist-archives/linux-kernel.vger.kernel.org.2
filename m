@@ -2,117 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AD23F5E77
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 14:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783C83F5E80
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbhHXM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 08:58:35 -0400
-Received: from mail-dm6nam11on2065.outbound.protection.outlook.com ([40.107.223.65]:36160
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237234AbhHXM6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 08:58:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QbxrO/pPhn5zOVakRF32e5RJFH1EE/ia/duydsTbhwPkP9d14DsqYTp49+NNvGXHyDc+dXGUubc1Oq5QnL25n69M/SBAMWNAOBd61mrztMdmaw6vUFeE6+T5QVGs50femcypEwA6/YfWWh+SsqXYoGw5tjjJqscTimVAqs6DzegyvsXsJImiIkejBtOos0v82jANt0r+XBorh7F5AggMRzkku5Nn3i5owajDdd1VT/2bZ5A4HiaXCECmuT0HxUXRnvu4zX2HfKRJG8JSTnAsfVJiBPHJfT+2BJF3AzzSSerEJWbR8SIfaWetjL6j43F+oXMznjvLgissQ3tbXU5Uiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W1wxG1M1/0MJkE6JPDCh1Q1JsgdKdoplqLXN1309bmg=;
- b=Z0ZV4qmBw9V0bvBJE71ZQSdvcVF/NnT4aL1+skZFtWxrbn7SmLO2adBGvYv+8Uq9NYXE27yL7iPsyUatdAA1+QTyiVHgLNL6AaT5Gulxw6AgYMW8ShQG7kmUsEfaN6e42wLtQon1Y6DR2qBKJNkM9ETaEbawn6CDizYX3OfqBRIqwUeAx7bWPhSUFZnbS50TMFNp1tAQXrFSdYifu3u8sy7FIDdvXMggQLq+bdIPTUDKkcKL1Fyn1p7orosU5pJF6wVDuK43XujKmC1/jgNd2aVqzl++Qq6ya+3d4rhSjSAznM0p37tV0z9muJ86TMlmvFRuYLYWRSpHiamlGmJw/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W1wxG1M1/0MJkE6JPDCh1Q1JsgdKdoplqLXN1309bmg=;
- b=LGhFrPCsmjYZVUn6cPXNgx8UM2SQm+f3A+tWCvj528zl2x1arPJlJnWHpQ3kqc3+LHbaSeKQo2Q/0leHDHliJOsD5nFHVnw9N+tqg6izVCDLmf49FUbi2syLsoC06FQGEFA1cmXySxo4wdXuJe/ajJweEsCBRcq2l6hH93KO4wgLBhObwF0/DjBBkHpWN5IvSeCoMuF7MLJrAiA9MiU8RM7tkeSfh5GHLeUXX2oN8B/TeZjsBUTolwPt3QPRmtIBL1Bu61GQBDdV8LyB/VKvCJQYe+1xWR5lIBVpD3TD3IYJJSjV4KhhuFhqYzn1N1zaPn6Yn/6yOBLwlbnzVKhe2w==
-Received: from MW2PR16CA0056.namprd16.prod.outlook.com (2603:10b6:907:1::33)
- by DM6PR12MB3899.namprd12.prod.outlook.com (2603:10b6:5:149::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Tue, 24 Aug
- 2021 12:57:47 +0000
-Received: from CO1NAM11FT066.eop-nam11.prod.protection.outlook.com
- (2603:10b6:907:1:cafe::af) by MW2PR16CA0056.outlook.office365.com
- (2603:10b6:907:1::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Tue, 24 Aug 2021 12:57:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT066.mail.protection.outlook.com (10.13.175.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 12:57:46 +0000
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Aug
- 2021 05:57:46 -0700
-Received: from audio.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 24 Aug 2021 12:57:44 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
-        <jonathanh@nvidia.com>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH 2/2] arm64: tegra: Update HDA card name on TX2 NX
-Date:   Tue, 24 Aug 2021 18:26:10 +0530
-Message-ID: <1629809770-7456-3-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1629809770-7456-1-git-send-email-spujar@nvidia.com>
-References: <1629809770-7456-1-git-send-email-spujar@nvidia.com>
+        id S237228AbhHXNBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233952AbhHXNBQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:01:16 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0E7C061757;
+        Tue, 24 Aug 2021 06:00:32 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id i8so40889714ybt.7;
+        Tue, 24 Aug 2021 06:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MZFUpZltKxy0Oq1xKGH1YlOtguKs0D9HrZQ81WYExmI=;
+        b=gPmUjmIygKAX3voYvS3urmtJQ9uA9KmbKFoVFcM/TkBAZStX/SIIcnqV1CfI/W2Mi1
+         Pf3y/06uV+mGX92uqmvWaelzmU1H5dRb08hl7Ac5pC54frYIFSwKfa5Un1d2Q7DIcW9/
+         LVmhGjGx8pyaVn26TVXp8EzmPGVZjqzvM4RiSV7XiDXow61LV3nc3vPLuYz6yVTdiU8n
+         d2I1gv29eNPl95Pjy6oVkITBO8GLIukT/eagofVY5vvox4ijCkA1mjgDVskbJDJynH4A
+         TIayRsxMcbz3T5NCf1gKl20xriy2hUJqXvgHi88lLjZD2EW7yEtcoJAMz36PeUJGNXdh
+         5Fsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MZFUpZltKxy0Oq1xKGH1YlOtguKs0D9HrZQ81WYExmI=;
+        b=VltRLbYJ8MuLJ44SUtEc2C+J5b7sgW9zucayM2gHqV4UkCifS2Dn57v3gCdTuzDyK8
+         bpNL7TMeTGp6OEdo0voXTO6SqwyNFjqV35cNiijJXEteM8KliA7GhAeXKpc6K0DwwiYH
+         5EBEtuhb8C+2aVkZMH0xDaU2VuQuimmtqUs94tdcW0h07BXWEDdX8rZa/GQLX3K0mc70
+         RDfktCB66viSYcP4yQiTraqJCXW9XbV4zUWFgs+T6MSJoP1a07TggSqkhSFvgEpaW39Z
+         NzcRAyYGCX9o2S38XYTuB0gK8uhhOClFfjzqHGdhIaX29kgl/1fW4GWg6qMTjvRSFUnn
+         13gA==
+X-Gm-Message-State: AOAM532MQcNViioAU/teFBxBfnEULsGnDQL6vrxcp4pgaTqp1f5fBUCx
+        u0QGPqRF+YR1uMCVE2X6/pnOHBH973regfhGgzU=
+X-Google-Smtp-Source: ABdhPJwdZh4d5X9RCx/zi5Sx2S1EBiRaRNnJstu1eHC5zpE4OfXjiHqzz1SXUWbZXX4cPxcy8Np82f2+EZavxIcFogY=
+X-Received: by 2002:a25:3046:: with SMTP id w67mr53120456ybw.134.1629810031660;
+ Tue, 24 Aug 2021 06:00:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aba32b0a-a0c5-48db-088d-08d966fec55d
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3899:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB38992C6CCCC026F6E11752E4A7C59@DM6PR12MB3899.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:68;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H7YfxKdrq63WmWrqNTSboj9GRdHs+KoEl1nZLR7deizr73/OMAOCPtmkliTfJcHsfoIO9tdpglNFGEK09f5HblauyzBBsSum4mFnxTcJ2UEZ5n2cmZ9PoVeyVTJIB/TBIg9laIbGThjoiCjueLwAIDp02wL3h3NZdl7Zrv2mlnXEJb5JGw6Dk7Gru+U/4dFORe9alO75j9+YX3BV7QsO1rqZkUlfrJiftHWeUCBGqDg3Uko3UIwbBldDJsQ5IOGPba2MkQ7hWsp7AAAm3eqnBpY3c4syxNJd4mjHu98eksl6/peLxWah0mKkVpciO5smunDEp3VzEHD+FgdTqve2AE31d/fcPy7TK8Ud78WZrQ7S0N+ILhF+InbjcIvKJ9qywBLQmwLC0jJgZ+XxyI/8IzbC3sk2RFcOg7kkkxe6MzA4mdNN2+C+MsDyHZ553/AI2pbwmYWhKVcKDXMuEYnpI1zmHNyLrfMqCcMW5+swYtv2osjT4NHcOkHUlWV4ui2r4r4lmfJVt5UMnDeerDwS9fxUIW8VOFSa+TQMitE+oFEQoYzu7401fOrKyAJEBQ1wBlwdOOyOzB7dibdJXWd+FnjI8UUbk9aZS27mc/jlaEf7pg9Z4ilgqLLBKj8YJuaDN4seX/YlvWC68w3vr2Uixj0Y+Et2xkLXb5vv0+Ti8mICnw0IrIXuPB9v0DO2NOWJnIvcYdN3KoyOabRoCk7nZQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(376002)(36840700001)(46966006)(15650500001)(26005)(47076005)(36756003)(82740400003)(107886003)(8936002)(110136005)(316002)(54906003)(478600001)(186003)(6666004)(356005)(7696005)(36860700001)(7636003)(86362001)(70586007)(83380400001)(426003)(6636002)(82310400003)(2616005)(336012)(2906002)(4744005)(8676002)(4326008)(5660300002)(70206006);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 12:57:46.7111
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: aba32b0a-a0c5-48db-088d-08d966fec55d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT066.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3899
+References: <20210824111259.13077-1-lukas.bulwahn@gmail.com> <552bb9bedfb1c36ea6aa5f7bdd3ab162b81f73d9.camel@kernel.org>
+In-Reply-To: <552bb9bedfb1c36ea6aa5f7bdd3ab162b81f73d9.camel@kernel.org>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 24 Aug 2021 15:00:32 +0200
+Message-ID: <CAKXUXMz99n0ixBQaM2HJxpHQ9ywYJ-yUAa0+WAmjczGhe4JQRQ@mail.gmail.com>
+Subject: Re: [PATCH] fs: clean up after mandatory file locking support removal
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inspired by commit b8928c2b5dba ("arm64: tegra: Consolidate audio card
-names"). Based on this update HDA card name on Jetson TX2 NX platform.
+On Tue, Aug 24, 2021 at 1:56 PM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> On Tue, 2021-08-24 at 13:12 +0200, Lukas Bulwahn wrote:
+> > Commit 3efee0567b4a ("fs: remove mandatory file locking support") removes
+> > some operations in functions rw_verify_area() and remap_verify_area().
+> >
+> > As these functions are now simplified, do some syntactic clean-up as
+> > follow-up to the removal as well, which was pointed out by compiler
+> > warnings and static analysis.
+> >
+> > No functional change.
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > Jeff, please pick this clean-up patch on top of the commit above.
+> >
+> >  fs/read_write.c  | 10 +++-------
+> >  fs/remap_range.c |  2 --
+> >  2 files changed, 3 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/fs/read_write.c b/fs/read_write.c
+> > index ffe821b8588e..af057c57bdc6 100644
+> > --- a/fs/read_write.c
+> > +++ b/fs/read_write.c
+> > @@ -365,12 +365,8 @@ SYSCALL_DEFINE5(llseek, unsigned int, fd, unsigned long, offset_high,
+> >
+> >  int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t count)
+> >  {
+> > -     struct inode *inode;
+> > -     int retval = -EINVAL;
+> > -
+> > -     inode = file_inode(file);
+> >       if (unlikely((ssize_t) count < 0))
+> > -             return retval;
+> > +             return -EINVAL;
+> >
+> >       /*
+> >        * ranged mandatory locking does not apply to streams - it makes sense
+> > @@ -381,12 +377,12 @@ int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t
+> >
+> >               if (unlikely(pos < 0)) {
+> >                       if (!unsigned_offsets(file))
+> > -                             return retval;
+> > +                             return -EINVAL;
+> >                       if (count >= -pos) /* both values are in 0..LLONG_MAX */
+> >                               return -EOVERFLOW;
+> >               } else if (unlikely((loff_t) (pos + count) < 0)) {
+> >                       if (!unsigned_offsets(file))
+> > -                             return retval;
+> > +                             return -EINVAL;
+> >               }
+> >       }
+> >
+> > diff --git a/fs/remap_range.c b/fs/remap_range.c
+> > index ec6d26c526b3..6d4a9beaa097 100644
+> > --- a/fs/remap_range.c
+> > +++ b/fs/remap_range.c
+> > @@ -99,8 +99,6 @@ static int generic_remap_checks(struct file *file_in, loff_t pos_in,
+> >  static int remap_verify_area(struct file *file, loff_t pos, loff_t len,
+> >                            bool write)
+> >  {
+> > -     struct inode *inode = file_inode(file);
+> > -
+> >       if (unlikely(pos < 0 || len < 0))
+> >               return -EINVAL;
+> >
+>
+> Thanks Lukas,
+>
+> I had already removed the second hunk, but I merged read_write.c part
+> into my queue for v5.15. It should show up in linux-next soon.
 
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra186-p3509-0000+p3636-0001.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, I guess the issue on the second hunk caused a compiler warning
+(so more obvious) and was reported otherwise; the issue around the
+first hunk is only discovered with a bit more involved static
+analysis, done by clang-analyzer, coccinelle scripts and friends.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p3509-0000+p3636-0001.dts b/arch/arm64/boot/dts/nvidia/tegra186-p3509-0000+p3636-0001.dts
-index 17fc179..af33fe9 100644
---- a/arch/arm64/boot/dts/nvidia/tegra186-p3509-0000+p3636-0001.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra186-p3509-0000+p3636-0001.dts
-@@ -124,7 +124,7 @@
- 	};
- 
- 	hda@3510000 {
--		nvidia,model = "jetson-tx2-hda";
-+		nvidia,model = "NVIDIA Jetson TX2 NX HDA";
- 		status = "okay";
- 	};
- 
--- 
-2.7.4
-
+Lukas
