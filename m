@@ -2,165 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108033F686F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0BB3F6873
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238886AbhHXRzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        id S241019AbhHXR4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240234AbhHXRzg (ORCPT
+        with ESMTP id S240615AbhHXR4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:55:36 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A819C02F8E0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:25:27 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id t35-20020a05622a1823b02902647b518455so11020136qtc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=PyPyoQ1Y/vEaAdOthKoeZXWHDoxb0qT1TuN9oYnPBQI=;
-        b=h+z6Loajqhrn8HSErPRwJYnI/+inKFY98+8bBTTxs3X5Z/9UyGGcgfxsnVnZqi9adG
-         +YBh8ix6JOoWG5kdKy7bPE6pLDW9V4A4kroXhwNCSHX/oFzfEUnHdFyCnnDb0yYmXQQ9
-         BQjxyGRlgPd+Tf8YRGvHokYMJmFdl4evWWgL0TuXb4n8mJk6R6o+z+aieC+4URdYpFor
-         0gfdMZmQu4Qu9NCpYp0JjjNhw8mkzSi2uQjWDxMJktVNXc4ijBS2WY2wtnuh/fyDNysN
-         +6PZWw6cpfesqFg4HnE7l0vkMqnC3yeU/dLwtm9LFe4QH1brC0PLbB+37REAX5PjBSa8
-         daYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=PyPyoQ1Y/vEaAdOthKoeZXWHDoxb0qT1TuN9oYnPBQI=;
-        b=d0H/yrLqOndqOolwWk1q/++IVeZVbftDoI6bN95ugQVxoqAPAYEKIFp42EcpViACWi
-         WUBv9wRYWteJE3carChLwDWbHzkWd91BDxcGBPkw1O2/gd5O7gUryErZ67ADhfff8HlX
-         hrMsdLMaOAxRAqEIu7ODMMOo6uVccWIcpgM28y+4ZXa64yAGC2lGgqDsqOKx8nczCsoB
-         51iCuIjve5ACqK9FR8/K4/mj0Nc03+xJn77e8EPyLe0RSyqbQxqLi3reg8Xy9I+TPgyb
-         Ern+XybrX1B+4TGAdYytIapuJLIcC4QkKVGO5GrusZUWX7T/Gpm/1jcN9pFisWRQv00r
-         ipNg==
-X-Gm-Message-State: AOAM531Fj1BrZj+SeC/zdjG8URGewdGoV0HQLHBe4eZuEtpUWCAQmq3z
-        Np2U+Gj2wTpAhaGw/wdVWu0WNK9HfLJJaYo=
-X-Google-Smtp-Source: ABdhPJxM/8EOtFkSe4GDPRUMyhOAPeoIDeN1pVC9NRMDi06tinxv4FzPxBlDGiaQ/CwffoFKykMxDCKk1xVCuDo=
-X-Received: from ramjiyani.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edd])
- (user=ramjiyani job=sendgmr) by 2002:ad4:5b8b:: with SMTP id
- 11mr5938631qvp.51.1629825926578; Tue, 24 Aug 2021 10:25:26 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 17:25:20 +0000
-Message-Id: <20210824172520.2284531-1-ramjiyani@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [RFC PATCH v1] aio: Add support for the POLLFREE
-From:   Ramji Jiyani <ramjiyani@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Ramji Jiyani <ramjiyani@google.com>, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 24 Aug 2021 13:56:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BB6C0ABDA6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:27:10 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2600:8800:8c06:1000::c8f3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: alyssa)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 748DA1F426FC;
+        Tue, 24 Aug 2021 18:27:06 +0100 (BST)
+From:   Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/panfrost: Use upper/lower_32_bits helpers
+Date:   Tue, 24 Aug 2021 13:26:14 -0400
+Message-Id: <20210824172614.7299-1-alyssa.rosenzweig@collabora.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f5cb779ba163 ("ANDROID: binder: remove waitqueue when thread
-exits.") fixed the use-after-free in eventpoll but aio still has the
-same issue because it doesn't honor the POLLFREE flag.
+Use upper_32_bits/lower_32_bits helpers instead of open-coding them.
+This is easier to scan quickly compared to bitwise manipulation, and it
+is pleasingly symmetric. I noticed this when debugging lock_region,
+which had a particularly "creative" way of writing upper_32_bits.
 
-Add support for the POLLFREE flag to force complete iocb inline in
-aio_poll_wake(). A thread may use it to signal it's exit and/or request
-to cleanup while pending poll request. In this case, aio_poll_wake()
-needs to make sure it doesn't keep any reference to the queue entry
-before returning from wake to avoid possible use after free via
-poll_cancel() path.
-
-The POLLFREE flag is no more exclusive to the epoll and is being
-shared with the aio. Remove comment from poll.h to avoid confusion.
-Also enclosed the POLLFREE macro definition in parentheses to fix
-checkpatch error.
-
-Signed-off-by: Ramji Jiyani <ramjiyani@google.com>
+Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
 ---
- fs/aio.c                        | 45 ++++++++++++++++++---------------
- include/uapi/asm-generic/poll.h |  2 +-
- 2 files changed, 26 insertions(+), 21 deletions(-)
+ drivers/gpu/drm/panfrost/panfrost_job.c |  8 ++++----
+ drivers/gpu/drm/panfrost/panfrost_mmu.c | 12 ++++++------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/aio.c b/fs/aio.c
-index 76ce0cc3ee4e..2c432cbb38e5 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -1674,6 +1674,7 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
- {
- 	struct poll_iocb *req = container_of(wait, struct poll_iocb, wait);
- 	struct aio_kiocb *iocb = container_of(req, struct aio_kiocb, poll);
-+	struct kioctx *ctx = iocb->ki_ctx;
- 	__poll_t mask = key_to_poll(key);
- 	unsigned long flags;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+index 71a72fb50e6b..763b7abfc88e 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_job.c
++++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+@@ -137,8 +137,8 @@ static void panfrost_job_write_affinity(struct panfrost_device *pfdev,
+ 	 */
+ 	affinity = pfdev->features.shader_present;
  
-@@ -1683,29 +1684,33 @@ static int aio_poll_wake(struct wait_queue_entry *wait, unsigned mode, int sync,
- 
- 	list_del_init(&req->wait.entry);
- 
--	if (mask && spin_trylock_irqsave(&iocb->ki_ctx->ctx_lock, flags)) {
--		struct kioctx *ctx = iocb->ki_ctx;
-+	/*
-+	 * Use irqsave/irqrestore because not all filesystems (e.g. fuse)
-+	 * call this function with IRQs disabled and because IRQs have to
-+	 * be disabled before ctx_lock is obtained.
-+	 */
-+	if (mask & POLLFREE) {
-+		/* Force complete iocb inline to remove refs to deleted entry */
-+		spin_lock_irqsave(&ctx->ctx_lock, flags);
-+	} else if (!(mask && spin_trylock_irqsave(&ctx->ctx_lock, flags))) {
-+		/* Can't complete iocb inline; schedule for later */
-+		schedule_work(&req->work);
-+		return 1;
-+	}
- 
--		/*
--		 * Try to complete the iocb inline if we can. Use
--		 * irqsave/irqrestore because not all filesystems (e.g. fuse)
--		 * call this function with IRQs disabled and because IRQs
--		 * have to be disabled before ctx_lock is obtained.
--		 */
--		list_del(&iocb->ki_list);
--		iocb->ki_res.res = mangle_poll(mask);
--		req->done = true;
--		if (iocb->ki_eventfd && eventfd_signal_count()) {
--			iocb = NULL;
--			INIT_WORK(&req->work, aio_poll_put_work);
--			schedule_work(&req->work);
--		}
--		spin_unlock_irqrestore(&ctx->ctx_lock, flags);
--		if (iocb)
--			iocb_put(iocb);
--	} else {
-+	/* complete iocb inline */
-+	list_del(&iocb->ki_list);
-+	iocb->ki_res.res = mangle_poll(mask);
-+	req->done = true;
-+	if (iocb->ki_eventfd && eventfd_signal_count()) {
-+		iocb = NULL;
-+		INIT_WORK(&req->work, aio_poll_put_work);
- 		schedule_work(&req->work);
- 	}
-+	spin_unlock_irqrestore(&ctx->ctx_lock, flags);
-+	if (iocb)
-+		iocb_put(iocb);
-+
- 	return 1;
+-	job_write(pfdev, JS_AFFINITY_NEXT_LO(js), affinity & 0xFFFFFFFF);
+-	job_write(pfdev, JS_AFFINITY_NEXT_HI(js), affinity >> 32);
++	job_write(pfdev, JS_AFFINITY_NEXT_LO(js), lower_32_bits(affinity));
++	job_write(pfdev, JS_AFFINITY_NEXT_HI(js), upper_32_bits(affinity));
  }
  
-diff --git a/include/uapi/asm-generic/poll.h b/include/uapi/asm-generic/poll.h
-index 41b509f410bf..35b1b69af729 100644
---- a/include/uapi/asm-generic/poll.h
-+++ b/include/uapi/asm-generic/poll.h
-@@ -29,7 +29,7 @@
- #define POLLRDHUP       0x2000
- #endif
+ static u32
+@@ -203,8 +203,8 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
  
--#define POLLFREE	(__force __poll_t)0x4000	/* currently only for epoll */
-+#define POLLFREE	((__force __poll_t)0x4000)
+ 	cfg = panfrost_mmu_as_get(pfdev, job->file_priv->mmu);
  
- #define POLL_BUSY_LOOP	(__force __poll_t)0x8000
+-	job_write(pfdev, JS_HEAD_NEXT_LO(js), jc_head & 0xFFFFFFFF);
+-	job_write(pfdev, JS_HEAD_NEXT_HI(js), jc_head >> 32);
++	job_write(pfdev, JS_HEAD_NEXT_LO(js), lower_32_bits(jc_head));
++	job_write(pfdev, JS_HEAD_NEXT_HI(js), upper_32_bits(jc_head));
  
+ 	panfrost_job_write_affinity(pfdev, job->requirements, js);
+ 
+diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+index 0da5b3100ab1..c3fbe0ad9090 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+@@ -80,8 +80,8 @@ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+ 	region |= region_width;
+ 
+ 	/* Lock the region that needs to be updated */
+-	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
+-	mmu_write(pfdev, AS_LOCKADDR_HI(as_nr), (region >> 32) & 0xFFFFFFFFUL);
++	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), lower_32_bits(region));
++	mmu_write(pfdev, AS_LOCKADDR_HI(as_nr), upper_32_bits(region));
+ 	write_cmd(pfdev, as_nr, AS_COMMAND_LOCK);
+ }
+ 
+@@ -123,14 +123,14 @@ static void panfrost_mmu_enable(struct panfrost_device *pfdev, struct panfrost_m
+ 
+ 	mmu_hw_do_operation_locked(pfdev, as_nr, 0, ~0UL, AS_COMMAND_FLUSH_MEM);
+ 
+-	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), transtab & 0xffffffffUL);
+-	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), transtab >> 32);
++	mmu_write(pfdev, AS_TRANSTAB_LO(as_nr), lower_32_bits(transtab));
++	mmu_write(pfdev, AS_TRANSTAB_HI(as_nr), upper_32_bits(transtab));
+ 
+ 	/* Need to revisit mem attrs.
+ 	 * NC is the default, Mali driver is inner WT.
+ 	 */
+-	mmu_write(pfdev, AS_MEMATTR_LO(as_nr), memattr & 0xffffffffUL);
+-	mmu_write(pfdev, AS_MEMATTR_HI(as_nr), memattr >> 32);
++	mmu_write(pfdev, AS_MEMATTR_LO(as_nr), lower_32_bits(memattr));
++	mmu_write(pfdev, AS_MEMATTR_HI(as_nr), upper_32_bits(memattr));
+ 
+ 	write_cmd(pfdev, as_nr, AS_COMMAND_UPDATE);
+ }
 -- 
-2.33.0.rc2.250.ged5fa647cd-goog
+2.30.2
 
