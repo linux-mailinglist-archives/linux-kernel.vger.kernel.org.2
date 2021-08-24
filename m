@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B513F53FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B699E3F53FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 02:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhHXAJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 20:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        id S233454AbhHXALL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 20:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhHXAJo (ORCPT
+        with ESMTP id S233330AbhHXALK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:09:44 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E878FC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:09:00 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id n18so18169372pgm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:09:00 -0700 (PDT)
+        Mon, 23 Aug 2021 20:11:10 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7736C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:10:27 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id n5so13053563pjt.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 17:10:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8x3/UqQR8bd8C1qjUbEbZOd8gxC4pFu+vpKcAnvRE5w=;
-        b=VesUANvK36el3h6wmJIezyhO4FnEsqkNYKFTws6PZkkPtk1G8++WNn7OUXDrQyYNLg
-         rJqdwSUv3BgSIK+kzlmK28i7DyrRn7RKvmterBq/eDBkF7VUNsZgCmMAYwt5c9AsdbAj
-         tzpOAWVdaPKOXlfG8cjMzs70rQBOTSmei/2w0lkBKkXFcAH0HGT9Wb5STG2YlLt3AZPE
-         6dTl/PhE0e6AolaK0s65duAqLVEOhIF9y7DdmCRp/ygm4wo8nUjilY8kjCkaS9ae866j
-         kE4UpRrd3h5jVwtm9Uy/BmjTAwhazVNWQpilNisRFa791YtK9exlyJfET5+mGZIxUnBB
-         HMwA==
+        bh=ZfWVzktMxFBUosQGWhnlqAx2+R7s6/uzKrDuyrsA6Zk=;
+        b=nQO0ffTc32SuK+wMgVV8kHaRDBEj4A1+rBEoC9gcIPVTBnGpXuubkX1GTd1fJqTf0l
+         uEByUl8HHv6buPU66HzPp3RgEOAAnANMzbHMZYKoOmznUpxyueGeV1Cn3hkaOHLmYIVs
+         bHmxxFiycZ4Cn4tDhQHgZXg73HCY3vjL/OkV0Ay9/GwO9pv+F+De8Wefu5jQwwWh1GQ2
+         fMD/OUsiLE5XiRVjwith1QQgzErlxq+1+t+QE03q2V0yxz/BYFJZmpKqRCyOKgUTt+5X
+         on4AlB1cZsz1SNvU7U/zTZTcW6iAlARC6JKqzs/ZX8sMIX9IS0EXACfotjIHXnrzpsed
+         VQcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8x3/UqQR8bd8C1qjUbEbZOd8gxC4pFu+vpKcAnvRE5w=;
-        b=uQqFwBdVZbhGaLevJyrGVB+xfrnTYTNnkWAR6rNl4/RYuUEzeIqQA5QmPQURCkYPqp
-         mIWXdDpMSg7D4ge4+EJ/XJhy+rzEfJzLlTNZAkCfxBLbwtyGdcYUPbE+/9jhHDI093V+
-         3bwJHIvo3KL+3nxC1hx4JbTTOTVQjuf6/e0DfN3/H7RvWizA82pPwi7XO4OfHQ5d07Lc
-         fxFgGCfM8/oL+VEw+m28DXDwtoHrfCfpKoY8K8ytvNPixxWxVaRq9NHVxcdYI78wnmYe
-         jEmgKQrBDb3O1PJz7qhHu0N71bCk3uP4osZh0W4r38QBarpIM3iv/t56bFXc1fFsqe67
-         +tvg==
-X-Gm-Message-State: AOAM53139bUc1gXyUmM0AhyvYrCafpbpiK8xwaGnGnH8bUTlbsMzWVS9
-        e2U61Ypt9sMH5NLz/u0hQLJI9p6pnhGK7BmFQXbRQRO5VtU=
-X-Google-Smtp-Source: ABdhPJz4A8FpV6mxFhCg2sNgTcbZImvVPl0UNcUCu4Wv2YZyB6yhgFRUvkH/IRicjeI8egBSQHCY0yUtpyhTmWAfsjE=
-X-Received: by 2002:a63:aa43:: with SMTP id x3mr34608690pgo.208.1629763740430;
- Mon, 23 Aug 2021 17:09:00 -0700 (PDT)
+        bh=ZfWVzktMxFBUosQGWhnlqAx2+R7s6/uzKrDuyrsA6Zk=;
+        b=U+2Vz05EBjTmgIlQ+338i5V9/3z769iiSlsNKd/ApuXHIcvF8+LcCS38j0N0mVvwCx
+         3+NDens6N09jDvONcPTsJsaY0PiteXNHdKTv1ChtwcVErz5xP4cYJvYkLMtWE+V4dkxG
+         GRDEBJmYuhSMvQv2FSEZovqjS4skJhUzyddCDBsQ8E3HGAd89TKDJUQquKTV+OcF0rxO
+         XfX7eGxbBfjFgiLmiHhDfkOI+p0X4YbvCfvrohKBrOhxcmsXSs1+NBdHECjiaoV3NZwH
+         hfg5MRlEr3YV650OwPN+NPnhkUgv2axjRQ+/6kUMDB0iHvzok/xe4O2CohuiF9dYohIi
+         ITEQ==
+X-Gm-Message-State: AOAM532BUOM/wm01UQWgKDwpiEazgQh+G4ROEuDDyEAg5LsKGWehvGWe
+        5w5VWt2Hn/se9hZwecivXuEQktxaTNj0ekvJ89R/XQ==
+X-Google-Smtp-Source: ABdhPJz0osPWjjqPuM9YoEuEcJ79AQYgo995Kfx9wULAdaa/Z92FhkhBAXEY0AAgcp08lhZ7Gwk89H9TcmuyKL7egPg=
+X-Received: by 2002:a17:90a:1f49:: with SMTP id y9mr1185534pjy.225.1629763827280;
+ Mon, 23 Aug 2021 17:10:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <20210823223751.25104-2-fmdefrancesco@gmail.com>
-In-Reply-To: <20210823223751.25104-2-fmdefrancesco@gmail.com>
+References: <20210823223751.25104-1-fmdefrancesco@gmail.com> <20210823223751.25104-3-fmdefrancesco@gmail.com>
+In-Reply-To: <20210823223751.25104-3-fmdefrancesco@gmail.com>
 From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 24 Aug 2021 01:08:49 +0100
-Message-ID: <CAA=Fs0ki91VvBOd2Wd59KqeCN+BmF-eWv+r0sH+e3fUG61Zxsg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
+Date:   Tue, 24 Aug 2021 01:10:16 +0100
+Message-ID: <CAA=Fs0nzTtbvo7FH4FmUNcKy4a20r35QtbPYY_H9LbP-FdURSw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] staging: r8188eu: Make some clean-ups in usbctrl_vendorreq()
 To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -65,80 +65,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, 23 Aug 2021 at 23:38, Fabio M. De Francesco
 <fmdefrancesco@gmail.com> wrote:
 >
-> Replace usb_control_msg() with the new usb_control_msg_recv() and
-> usb_control_msg_send() API of USB Core in usbctrl_vendorreq().
+> After replacing usb_control_msg() with the new usb_control_msg_recv() and
+> usb_control_msg_send() API of USB Core, remove camelcase from the pIo_buf
+> variable that is passed as argument to the new API and remove the initial
+> 'p' (that probably stands for "pointer") from the same pIo_buf and from
+> the pintfhdl and pdata arguments of usbctrl_vendorreq().
 >
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 > ---
->
-> Thanks to Pavel Skripkin <paskripkin@gmail.com> for his review of the
-> RFC patch.
->
-> drivers/staging/r8188eu/hal/usb_ops_linux.c | 25 ++++++++++-----------
-> 1 file changed, 12 insertions(+), 13 deletions(-)
+>  drivers/staging/r8188eu/hal/usb_ops_linux.c | 26 ++++++++++-----------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 >
 > diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> index a93d5cfe4635..6f51660b967a 100644
+> index 6f51660b967a..5ce31ae18ed8 100644
 > --- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
 > +++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-> @@ -15,9 +15,8 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
->         struct adapter  *adapt = pintfhdl->padapter;
+> @@ -10,14 +10,14 @@
+>  #include "../include/recv_osdep.h"
+>  #include "../include/rtl8188e_hal.h"
+>
+> -static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata, u16 len, u8 requesttype)
+> +static int usbctrl_vendorreq(struct intf_hdl *intfhdl, u16 value, void *data, u16 len, u8 requesttype)
+>  {
+> -       struct adapter  *adapt = pintfhdl->padapter;
+> +       struct adapter  *adapt = intfhdl->padapter;
 >         struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
 >         struct usb_device *udev = dvobjpriv->pusbdev;
-> -       unsigned int pipe;
-> +       u8 pipe;
+>         u8 pipe;
 >         int status = 0;
-> -       u8 reqtype;
->         u8 *pIo_buf;
+> -       u8 *pIo_buf;
+> +       u8 *io_buf;
 >         int vendorreq_times = 0;
 >
-> @@ -44,22 +43,22 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
->         }
+>         if ((adapt->bSurpriseRemoved) || (adapt->pwrctrlpriv.pnp_bstop_trx)) {
+> @@ -34,10 +34,10 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>         mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
 >
->         while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
-> -               memset(pIo_buf, 0, len);
-> -
->                 if (requesttype == 0x01) {
-> -                       pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
-> -                       reqtype =  REALTEK_USB_VENQT_READ;
-> +                       status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
-> +                                                     REALTEK_USB_VENQT_READ, value,
-> +                                                     REALTEK_USB_VENQT_CMD_IDX,
-> +                                                     pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
-> +                                                     GFP_KERNEL);
+>         /*  Acquire IO memory for vendorreq */
+> -       pIo_buf = dvobjpriv->usb_vendor_req_buf;
+> +       io_buf = dvobjpriv->usb_vendor_req_buf;
+>
+> -       if (!pIo_buf) {
+> -               DBG_88E("[%s] pIo_buf == NULL\n", __func__);
+> +       if (!io_buf) {
+> +               DBG_88E("[%s] io_buf == NULL\n", __func__);
+>                 status = -ENOMEM;
+>                 goto release_mutex;
+>         }
+> @@ -47,25 +47,25 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>                         status = usb_control_msg_recv(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+>                                                       REALTEK_USB_VENQT_READ, value,
+>                                                       REALTEK_USB_VENQT_CMD_IDX,
+> -                                                     pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +                                                     io_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+>                                                       GFP_KERNEL);
 >                 } else {
-> -                       pipe = usb_sndctrlpipe(udev, 0);/* write_out */
-> -                       reqtype =  REALTEK_USB_VENQT_WRITE;
->                         memcpy(pIo_buf, pdata, len);
-> +                       status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
-> +                                                     REALTEK_USB_VENQT_WRITE, value,
-> +                                                     REALTEK_USB_VENQT_CMD_IDX,
-> +                                                     pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
-> +                                                     GFP_KERNEL);
+> -                       memcpy(pIo_buf, pdata, len);
+> +                       memcpy(io_buf, data, len);
+>                         status = usb_control_msg_send(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
+>                                                       REALTEK_USB_VENQT_WRITE, value,
+>                                                       REALTEK_USB_VENQT_CMD_IDX,
+> -                                                     pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+> +                                                     io_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT,
+>                                                       GFP_KERNEL);
 >                 }
 >
-> -               status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
-> -                                        reqtype, value, REALTEK_USB_VENQT_CMD_IDX,
-> -                                        pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
-> -
-> -               if (status == len) {   /*  Success this control transfer. */
-> +               if (!status) {   /*  Success this control transfer. */
+>                 if (!status) {   /*  Success this control transfer. */
 >                         rtw_reset_continual_urb_error(dvobjpriv);
 >                         if (requesttype == 0x01)
->                                 memcpy(pdata, pIo_buf,  len);
+> -                               memcpy(pdata, pIo_buf,  len);
+> +                               memcpy(data, io_buf,  len);
+>                 } else { /*  error cases */
+>                         DBG_88E("reg 0x%x, usb %s %u fail, status:%d value=0x%x, vendorreq_times:%d\n",
+>                                 value, (requesttype == 0x01) ? "read" : "write",
+> -                               len, status, *(u32 *)pdata, vendorreq_times);
+> +                               len, status, *(u32 *)data, vendorreq_times);
+>
+>                         if (status < 0) {
+>                                 if (status == (-ESHUTDOWN) || status == -ENODEV) {
+> @@ -77,8 +77,8 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+>                         } else { /*  status != len && status >= 0 */
+>                                 if (status > 0) {
+>                                         if (requesttype == 0x01) {
+> -                                               /*  For Control read transfer, we have to copy the read data from pIo_buf to pdata. */
+> -                                               memcpy(pdata, pIo_buf,  len);
+> +                                               /*  For Control read transfer, we have to copy the read data from io_buf to data. */
+> +                                               memcpy(data, io_buf,  len);
+>                                         }
+>                                 }
+>                         }
 > --
 > 2.32.0
 >
 
 Dear Fabio,
 
-Thanks for the patch. Sorry, but for some reason with my N10-Nano I
-can't get a connection at all with this patch applied - it just won't
-associate with my network. Interface shows up and no OOPS in log, but
-just disassociates/no IP address/interface down etc. so perhaps
-semantics differ slightly here somehow? Tried two separate
-rollbacks/builds/runs just to make sure I wasn't losing my mind :-)
+This one doesn't apply at all for me - it may just be because of the
+churn in my local tree though, I don't have all previous patches
+applied as I've been testing select series etc. Many thanks.
 
 Regards,
 Phil
