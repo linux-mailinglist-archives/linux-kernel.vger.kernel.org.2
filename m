@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7FD3F6224
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B69F3F6886
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238568AbhHXQAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42622 "EHLO
+        id S239953AbhHXSAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238550AbhHXP75 (ORCPT
+        with ESMTP id S240908AbhHXR76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:59:57 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EB7C061764
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:59:13 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id lc21so12959360ejc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:59:13 -0700 (PDT)
+        Tue, 24 Aug 2021 13:59:58 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5D2C0E5699
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id j187so19000175pfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:40:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=6QaIFm64i7sSWcUtZ7j/D41OONg/HLxIveGkEJDQifw=;
-        b=IocNyZyWqPtaJCAFm1GZacTlXb6mYB1QZ0+IYZnPzss9hi/oeTUKrQ+BWb2USe8ETV
-         J2VZOBOPA/7sbCVkvnlYRQx6stI4zB5O/IMMdYTz5dP0vt40NVZfRav+UlVH1c36xCJb
-         sHKrzacXzI8P3KwdR9xdibDIhKhl71zG+GJECxh2tsU5cSiz4UW+wXmKkFVoRtJ3bRdy
-         MNMDb3NgQ72zXgktRznoCfdl/wIyAvVrd4nsWb+ccEoJnDKuWOiIVWJg5DdFnzTRLt+v
-         GqYFKAEjcayCW5eUeHbSpRIEQCtfs7T0X0ZW74nQZGJBXbrFUwRiNoZ43Wi1yJonPQOa
-         Pt4A==
+        bh=eVSmC+WT/kr7wwlTX/VtwY34SNioRbV6Z4Iy5VnSa9E=;
+        b=RJJYsM5BZfLxqLLHciKnioNOYAG8SPGSar3zWdzFlWIFK+ARrAosI8OFIWTroBY4J9
+         Il89rUANAyAu0yooZzBwVMUftFHpeS93f6gv0n+0GYjZVsTxeg6zE8YVAPzSP2WPTIu8
+         PMRYaSrScN0zaesYpiyMFE8deDZsSOaIaURXCy/2u0q2VoHkwR19djfTm71ZVgmGIDhy
+         rHBg81qk5nDaSCm6cvtACARammEmywVfIRObiKNRNf+sOtHbk2kigrX3dRKvPBggNmsJ
+         EGBoO82TQ51owZqDzAv+cI4PJqRF2VRBwwqRPBnFXoGpVyvuKZrNhxzZyOdUrBJ6Wte8
+         keCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6QaIFm64i7sSWcUtZ7j/D41OONg/HLxIveGkEJDQifw=;
-        b=Dq1J1/+26Mzinw6xSF6VBhAfmJ0GUEcKkHXhWHuPogYsx+VyhRp0T5/RKsAfreyFOq
-         fXM7kfml2ZlotEUJxIMwYR+3n8n2rRZm67RK7Eas6IcJScbgEtUGSWqZGTJ4N6mrMuD4
-         5QLS5YNE4IHWTS4C3WHcRzPy7eGF5dgwLcpyh0Y2WeHM+4kQKtOtFJQj8VKlLi7HNwsE
-         Xr+Pu0LuQwkwySeP7Zz+GY7R4JhXQNzVD+AR2ghlaS58oqqxUNcdCgGwhOpsh7nnNROf
-         6oPa5vBatYjuokYK87Odoy1FQjw1/73HCxnjYtNzsGxskRGK3ohRc8iQNRJJrFeEpXAb
-         Acng==
-X-Gm-Message-State: AOAM532+vGUVgdIGOwpX7aiR6i/mSyZboAln/DFeRZhjedUEFK7txpD8
-        cOkbS3lWN1JErW5H1mVjFQQ=
-X-Google-Smtp-Source: ABdhPJzyDE1j/hj8YWHAlD8Sbjeh34ShlpgUmykNkOStQ24BmViWcFnkq9u7Ottdmmm/30fGifHFIw==
-X-Received: by 2002:a17:907:7da5:: with SMTP id oz37mr40309523ejc.396.1629820751850;
-        Tue, 24 Aug 2021 08:59:11 -0700 (PDT)
-Received: from localhost.localdomain (host-79-22-100-164.retail.telecomitalia.it. [79.22.100.164])
-        by smtp.gmail.com with ESMTPSA id ay20sm12086420edb.91.2021.08.24.08.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 08:59:11 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: Re: [PATCH 2/2] staging: r8188eu: Make some clean-ups in usbctrl_vendorreq()
-Date:   Tue, 24 Aug 2021 17:59:10 +0200
-Message-ID: <1730935.6n1DRfr91A@localhost.localdomain>
-In-Reply-To: <a5bfab84-16cc-52ad-5cdb-038765bf0b36@gmail.com>
-References: <20210824142823.16845-1-fmdefrancesco@gmail.com> <2327592.S5L5zkRU50@localhost.localdomain> <a5bfab84-16cc-52ad-5cdb-038765bf0b36@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eVSmC+WT/kr7wwlTX/VtwY34SNioRbV6Z4Iy5VnSa9E=;
+        b=Dku74qzAXsK7n8w0dshec9nzvpi7mbtGGstUy78bm2ebfpjqbRfmJpC9i63TP8uv2W
+         sx+apdepHTVGd5K1UnQg/YAUbrUDXqjI2KZ6zCFxM6QHRkf0NQeB4v0vWmqDYSZ5/Z9/
+         aIJOCelRcJh1Mb/1xWoBqIJJ2GZezDZYktN6ytukLx5XYmQ3cLFInrbvlue9QiYbJvl/
+         E+0RLF4Axr3mL45XnfIMTOLiEcdLXeb9zuLShhmrsvplF3jsvGsN4oSJw47mJiHI74g9
+         cyl6vpYJY1KfvgGSdYZpfSNUAoVR666dlvW9g94FsuJbEhGaDI/64mfWlHF15RWx9qWv
+         K0Kw==
+X-Gm-Message-State: AOAM531wBkPR1iKbPhqxLIEw378lLIhb/OpGBaBhBtQVjowfgwodlfQ7
+        84mqomGEswMcdrvJZAD3sDs/ZfKrP7M=
+X-Google-Smtp-Source: ABdhPJzQiBEeFHjSOwdOpvagA/yHW+GSfBp0u0i9bSVuuDnM4JIoF/oJPPrSqCEyDgq4gopRUu2v+g==
+X-Received: by 2002:aa7:864a:0:b0:3ee:a4f6:af02 with SMTP id a10-20020aa7864a000000b003eea4f6af02mr2144961pfo.23.1629826823114;
+        Tue, 24 Aug 2021 10:40:23 -0700 (PDT)
+Received: from localhost ([47.251.4.198])
+        by smtp.gmail.com with ESMTPSA id u20sm22809075pgm.4.2021.08.24.10.40.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Aug 2021 10:40:22 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>
+Subject: [PATCH 0/7] KVM: X86: MMU: misc fixes and cleanups
+Date:   Tue, 24 Aug 2021 15:55:16 +0800
+Message-Id: <20210824075524.3354-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 24, 2021 5:43:26 PM CEST Pavel Skripkin wrote:
-> On 8/24/21 6:39 PM, Fabio M. De Francesco wrote:
-> > Oh, I know where it comes from... :)
-> > 
-> > It's a patch of mine that is in the queue, waiting to be reviewed and applied.
-> > Please see: https://lore.kernel.org/lkml/20210819221241.31987-1-fmdefrancesco@gmail.com/
-> > 
-> oh.... there are _a lot_ of pending changes :)
-> 
-> I guess, we need smth like public-mirror with already reviewed and 
-> working changes
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-It's becoming a serious problem. A lot of times I see people who is asked to
-rebase and resend, not because they forget to fetch the current tree, instead 
-because the tree changes as soon as Greg start to apply the first patches in the
-queue and the other patches at the end of the queue cannot be applied.
+The first two patches fix two old possible defects.
+And the others are just cleanups.
 
-Anyway,I understand that Greg cannot apply a patch at a time soon after 
-submission but in the while the queue grows larger and larger.
+Lai Jiangshan (7):
+  KVM: X86: Fix missed remote tlb flush in rmap_write_protect()
+  KVM: X86: Synchronize the shadow pagetable before link it
+  KVM: X86: Zap the invalid list after remote tlb flushing
+  KVM: X86: Remove FNAME(update_pte)
+  KVM: X86: Don't unsync pagetables when speculative
+  KVM: X86: Don't check unsync if the original spte is writible
+  KVM: X86: Also prefetch the last range in __direct_pte_prefetch().
 
-Regards,
+ arch/x86/kvm/mmu/mmu.c          | 50 +++++++++++++++++++++++++--------
+ arch/x86/kvm/mmu/mmu_internal.h |  3 +-
+ arch/x86/kvm/mmu/paging_tmpl.h  | 38 +++++++++++++++++--------
+ arch/x86/kvm/mmu/spte.c         |  6 ++--
+ 4 files changed, 70 insertions(+), 27 deletions(-)
 
-Fabio
-
-> With regards,
-> Pavel Skripkin
-> 
-
-
-
+-- 
+2.19.1.6.gb485710b
 
