@@ -2,129 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DA23F6B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB313F6B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238705AbhHXV5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238635AbhHXV5r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:57:47 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727A3C061796
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:57:02 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id n18so21128365pgm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JA7HjuVr8UM0YrbUtH7xcK5mGIk2G9+Axy1XWOoFNYg=;
-        b=WsBX54BBkcv11FQPj9OpoaF+eiQb8uX8aKiArIgUDrBIDwtG3b3K65ZX6ebBjitNbN
-         w4lUM9y8oGz/tR3k3Zes2iqrAer9nCavy8Gef4NMWt8VTh8WP99eVbvwz7tkCjz4bHrq
-         vAbZ8Ec6ssdwu8Vug8/ZEHTYcy8EBLuOfy6qwkqNjb6xNwc80u1Guda8rci8qOfunYZ0
-         tpvzRodESKY7xx/aQWat6XsESTC/QWfHfZ+7nW5YmDN2ExMsidGq069RxDz3mdPWGeXC
-         OP3Af9IIu+FHi8O+HMr5M/iBE1ePbCqYmUUW9YDYLHWdc0H+pZXOSjb/GoYe4tnuXRJP
-         7sjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JA7HjuVr8UM0YrbUtH7xcK5mGIk2G9+Axy1XWOoFNYg=;
-        b=Dsgk9Km1j9bMF8hKGCdliqTuDU3HZ7e88POk5dfmxDC8funHXLw6kQL80Y8PzwxYLf
-         SYUoYXQUgJHncEwQQJ+U4bQXVukvOPShZL8BKCmZ2+XsFNpZNBiDZ4EkxXMd9ZZXcAkl
-         WE/IExbuwpmEbBd3FXKA+0Tmzf4MNHksv8aflmWmOQmYOMImiEGnEF/h0Gl8ItsHvxIH
-         1h/6H1rMEg5wee0xXd8BWyLZvakKdPbk8c7Lr23EelFPqsYvrEYMi4R4hccyoEfj7BYw
-         hnmWMFSu+Ab+vnQPvGOWQ0RVPuSgvMNfwm6X6n4Vbdnb2GbpIdzJc9a0+zgLCokdkYnF
-         uemw==
-X-Gm-Message-State: AOAM533PEFnmSObZNfmwumqSdj5R5fAU8SPqVJpEqbs3oOkaLnxkf/Xx
-        V5h6pDcQT+z1rjrdb0bQcFtnnGYbJLzEYWzwe7AtpA==
-X-Google-Smtp-Source: ABdhPJyr0CTHqNS+oxGCjiahAYIwaeoO77gnKnjQxNHphuUI7On2QWYfyaYCmnakkxWh6GLExG3xdOXsxrdjbXSK1NY=
-X-Received: by 2002:a65:414a:: with SMTP id x10mr26273786pgp.403.1629842221742;
- Tue, 24 Aug 2021 14:57:01 -0700 (PDT)
+        id S238604AbhHXV71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237178AbhHXV7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 17:59:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E249F613E8;
+        Tue, 24 Aug 2021 21:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629842320;
+        bh=1zGgGYmZ8ccSLcmu/js9bylshGYA4ts3mCpThSbDom8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qD3nNfmiDe3n91HmjSZ6A//76+yGIkE+KlLFtQwCy3ycXzwXfIDoUgiByPpP4arPl
+         ZYTt4Or83NadBpr6tCxUZFjYcVhmRlbWGBQqZef5MPRe8mDlk/1Ds3bYJCvW5ebvB2
+         VnMAvzkaXHxpchKZw//gwJtekzX5oW0AgyH8rq4SVWpKx57+2pii5qaWa8a58zQf1s
+         znii1My/3Qj7JQ+YvlAZZ4JJv8YvSS1fRT8jhLPHwVsVL24zHHChCTAjSDGna7oJm9
+         8crL2JhXp7nvvC5W+ifenAoAe+YJUZAmp9hPjYZKB/tETyUm6wPY33iR9y+zRJ0xZK
+         6BfClbaZnTqGQ==
+Received: by mail-ed1-f52.google.com with SMTP id g21so33860206edw.4;
+        Tue, 24 Aug 2021 14:58:40 -0700 (PDT)
+X-Gm-Message-State: AOAM5312MZGtSlp3Ugor+NJ6ktWaRU/4xu/kLhQXEK1LvpTTgelOogvC
+        MeoDIyVInSHMxj62h5VyG+YetDvErWKTeDx+pg==
+X-Google-Smtp-Source: ABdhPJyciSezk0bBOsszoGe9ly/QVi4Amhnl45pPcjy5tIWljewn/SUWcg8NAE4FTC5bS2EN5RFKASkUsfDDtNmNVWw=
+X-Received: by 2002:aa7:c487:: with SMTP id m7mr25774343edq.62.1629842319421;
+ Tue, 24 Aug 2021 14:58:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210823195409-mutt-send-email-mst@kernel.org> <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
- <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
-In-Reply-To: <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Tue, 24 Aug 2021 14:56:25 -0700
-Message-ID: <CACK8Z6E+__kZqU8mVUnYhFc0wz_e81qBLO3ffqSDghVtztNeQw@mail.gmail.com>
-Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+References: <20210806225123.1958497-1-robh@kernel.org> <20210806225123.1958497-3-robh@kernel.org>
+ <20210824152720.GC23146@willie-the-truck>
+In-Reply-To: <20210824152720.GC23146@willie-the-truck>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 24 Aug 2021 16:58:27 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+HY8o=DPf0Yhbjhu1=_yBwoV7rBL7gK2MJCpezwi7vwQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+HY8o=DPf0Yhbjhu1=_yBwoV7rBL7gK2MJCpezwi7vwQ@mail.gmail.com>
+Subject: Re: [PATCH v9 2/3] arm64: perf: Enable PMU counter userspace access
+ for perf event
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 6:06 PM Dan Williams <dan.j.williams@intel.com> wrote:
+On Tue, Aug 24, 2021 at 10:27 AM Will Deacon <will@kernel.org> wrote:
 >
-> On Mon, Aug 23, 2021 at 5:31 PM Kuppuswamy, Sathyanarayanan
-> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> On Fri, Aug 06, 2021 at 04:51:22PM -0600, Rob Herring wrote:
+> > Arm PMUs can support direct userspace access of counters which allows for
+> > low overhead (i.e. no syscall) self-monitoring of tasks. The same feature
+> > exists on x86 called 'rdpmc'. Unlike x86, userspace access will only be
+> > enabled for thread bound events. This could be extended if needed, but
+> > simplifies the implementation and reduces the chances for any
+> > information leaks (which the x86 implementation suffers from).
 > >
+> > When an event is capable of userspace access and has been mmapped, userspace
+> > access is enabled when the event is scheduled on a CPU's PMU. There's some
+> > additional overhead clearing counters when disabled in order to prevent
+> > leaking disabled counter data from other tasks.
 > >
+> > Unlike x86, enabling of userspace access must be requested with a new
+> > attr bit: config1:1. If the user requests userspace access and 64-bit
+> > counters, then chaining will be disabled and the user will get the
+> > maximum size counter the underlying h/w can support. The modes for
+> > config1 are as follows:
 > >
-> > On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
-> > >> Add a new variant of pci_iomap for mapping all PCI resources
-> > >> of a devices as shared memory with a hypervisor in a confidential
-> > >> guest.
-> > >>
-> > >> Signed-off-by: Andi Kleen<ak@linux.intel.com>
-> > >> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
-> > > I'm a bit puzzled by this part. So why should the guest*not*  map
-> > > pci memory as shared? And if the answer is never (as it seems to be)
-> > > then why not just make regular pci_iomap DTRT?
+> > config1 = 0 : user access disabled and always 32-bit
+> > config1 = 1 : user access disabled and always 64-bit (using chaining if needed)
+> > config1 = 2 : user access enabled and always 32-bit
+> > config1 = 3 : user access enabled and counter size matches underlying counter.
 > >
-> > It is in the context of confidential guest (where VMM is un-trusted). So
-> > we don't want to make all PCI resource as shared. It should be allowed
-> > only for hardened drivers/devices.
+> > Based on work by Raphael Gault <raphael.gault@arm.com>, but has been
+> > completely re-written.
+> >
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-perf-users@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> >
+> > ---
+> > v9:
+> >  - Enabling/disabling of user access is now controlled in .start() and
+> >    mmap hooks which are now called on CPUs that the event is on.
+> >    Depends on rework of perf core and x86 RDPMC code posted here:
+> >    https://lore.kernel.org/lkml/20210728230230.1911468-1-robh@kernel.org/
+> >
+> > v8:
+> >  - Rework user access tracking and enabling to be done on task
+> >    context changes using sched_task() hook. This avoids the need for any
+> >    IPIs, mm_switch hooks or undef instr handler.
+> >  - Only support user access when explicitly requested on open and
+> >    only for a thread bound events. This avoids some of the information
+> >    leaks x86 has and simplifies the implementation.
+> >
+> > v7:
+> >  - Clear disabled counters when user access is enabled for a task to
+> >    avoid leaking other tasks counter data.
+> >  - Rework context switch handling utilizing sched_task callback
+> >  - Add armv8pmu_event_can_chain() helper
+> >  - Rework config1 flags handling structure
+> >  - Use ARMV8_IDX_CYCLE_COUNTER_USER define for remapped user cycle
+> >    counter index
+> >
+> > v6:
+> >  - Add new attr.config1 rdpmc bit for userspace to hint it wants
+> >    userspace access when also requesting 64-bit counters.
+> >
+> > v5:
+> >  - Only set cap_user_rdpmc if event is on current cpu
+> >  - Limit enabling/disabling access to CPUs associated with the PMU
+> >    (supported_cpus) and with the mm_struct matching current->active_mm.
+> >
+> > v2:
+> >  - Move mapped/unmapped into arm64 code. Fixes arm32.
+> >  - Rebase on cap_user_time_short changes
+> >
+> > Changes from Raphael's v4:
+> >   - Drop homogeneous check
+> >   - Disable access for chained counters
+> >   - Set pmc_width in user page
+> > ---
+> >  arch/arm64/kernel/perf_event.c | 137 +++++++++++++++++++++++++++++++--
+> >  include/linux/perf/arm_pmu.h   |   6 ++
+> >  2 files changed, 135 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+> > index 74f77b68f5f0..66d8bf62e99c 100644
+> > --- a/arch/arm64/kernel/perf_event.c
+> > +++ b/arch/arm64/kernel/perf_event.c
+> > @@ -285,6 +285,7 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
+> >
+> >  PMU_FORMAT_ATTR(event, "config:0-15");
+> >  PMU_FORMAT_ATTR(long, "config1:0");
+> > +PMU_FORMAT_ATTR(rdpmc, "config1:1");
+> >
+> >  static int sysctl_perf_user_access __read_mostly;
+> >
+> > @@ -306,9 +307,15 @@ static inline bool armv8pmu_event_is_64bit(struct perf_event *event)
+> >       return event->attr.config1 & 0x1;
+> >  }
+> >
+> > +static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
+> > +{
+> > +     return event->attr.config1 & 0x2;
+> > +}
+> > +
+> >  static struct attribute *armv8_pmuv3_format_attrs[] = {
+> >       &format_attr_event.attr,
+> >       &format_attr_long.attr,
+> > +     &format_attr_rdpmc.attr,
+> >       NULL,
+> >  };
+> >
+> > @@ -377,7 +384,7 @@ static const struct attribute_group armv8_pmuv3_caps_attr_group = {
+> >   */
+> >  #define      ARMV8_IDX_CYCLE_COUNTER 0
+> >  #define      ARMV8_IDX_COUNTER0      1
+> > -
+> > +#define      ARMV8_IDX_CYCLE_COUNTER_USER    32
+> >
+> >  /*
+> >   * We unconditionally enable ARMv8.5-PMU long event counter support
+> > @@ -389,6 +396,15 @@ static bool armv8pmu_has_long_event(struct arm_pmu *cpu_pmu)
+> >       return (cpu_pmu->pmuver >= ID_AA64DFR0_PMUVER_8_5);
+> >  }
+> >
+> > +static inline bool armv8pmu_event_can_chain(struct perf_event *event)
+> > +{
+> > +     struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> > +
+> > +     return !(event->hw.flags & PERF_EVENT_FLAG_USER_READ_CNT) &&
+> > +            armv8pmu_event_is_64bit(event) &&
+> > +            !armv8pmu_has_long_event(cpu_pmu);
 >
-> That's confusing, isn't device authorization what keeps unaudited
-> drivers from loading against untrusted devices? I'm feeling like
-> Michael that this should be a detail that drivers need not care about
-> explicitly, in which case it does not need to be exported because the
-> detail can be buried in lower levels.
+> Could check against ARMV8_IDX_CYCLE_COUNTER here...
 >
-> Note, I specifically said "unaudited", not "hardened" because as Greg
-> mentioned the kernel must trust drivers, its devices that may not be
-> trusted.
+> > +}
+> > +
+> >  /*
+> >   * We must chain two programmable counters for 64 bit events,
+> >   * except when we have allocated the 64bit cycle counter (for CPU
+> > @@ -398,11 +414,9 @@ static bool armv8pmu_has_long_event(struct arm_pmu *cpu_pmu)
+> >  static inline bool armv8pmu_event_is_chained(struct perf_event *event)
+> >  {
+> >       int idx = event->hw.idx;
+> > -     struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> >
+> >       return !WARN_ON(idx < 0) &&
+> > -            armv8pmu_event_is_64bit(event) &&
+> > -            !armv8pmu_has_long_event(cpu_pmu) &&
+> > +            armv8pmu_event_can_chain(event) &&
+> >              (idx != ARMV8_IDX_CYCLE_COUNTER);
+>
+> ... then we wouldn't need to here.
 
-Can you please point me to the thread where this discussion with Greg
-is ongoing?
+Hum, well armv8pmu_event_can_chain() is supposed to answer is there
+any possibility that the event will ever be chained regardless of
+whether it's assigned or not. Changing it would mostly work for idx<0,
+but it could return the wrong answer if idx ==
+ARMV8_IDX_CYCLE_COUNTER. However, that won't happen in the current
+code (just as the WARN_ON won't). If we're going to smear the meaning,
+then we only need one function here if we get rid of the WARN_ON. We
+can call it armv8pmu_event_is_chained_or_might_be_chained() to make it
+clear... JK (on the name)
 
-Thanks,
+>
+> >  }
+> >
+> > @@ -733,6 +747,35 @@ static inline u32 armv8pmu_getreset_flags(void)
+> >       return value;
+> >  }
+> >
+> > +static void armv8pmu_disable_user_access(void)
+> > +{
+> > +     write_sysreg(0, pmuserenr_el0);
+> > +}
+> > +
+> > +static void armv8pmu_enable_user_access(struct arm_pmu *cpu_pmu)
+> > +{
+> > +     struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+> > +
+> > +     if (!sysctl_perf_user_access)
+> > +             return;
+> > +
+> > +     if (!bitmap_empty(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS)) {
+> > +             int i;
+> > +             /* Don't need to clear assigned counters. */
+> > +             bitmap_xor(cpuc->dirty_mask, cpuc->dirty_mask, cpuc->used_mask, ARMPMU_MAX_HWEVENTS);
+> > +
+> > +             for_each_set_bit(i, cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS) {
+> > +                     if (i == ARMV8_IDX_CYCLE_COUNTER)
+> > +                             write_sysreg(0, pmccntr_el0);
+> > +                     else
+> > +                             armv8pmu_write_evcntr(i, 0);
+> > +             }
+>
+> Given that we can't expose individual counters, why isn't this just:
+>
+>         for_each_clear_bit(i, cpuc->used_mask, ARMPMU_MAX_HWEVENTS)
+>                 ...
+>
+> and we could get rid of the dirty_mask altogether? i.e. just zero everything
+> that isn't assigned.
 
-Rajat
+Sure. It's just an optimization following what x86 did.
+
+Though we'd want to limit it to num_events, not ARMPMU_MAX_HWEVENTS.
+No point in clearing nonexistent counters.
+
+>
+> > +             bitmap_zero(cpuc->dirty_mask, ARMPMU_MAX_HWEVENTS);
+> > +     }
+> > +
+> > +     write_sysreg(ARMV8_PMU_USERENR_ER | ARMV8_PMU_USERENR_CR, pmuserenr_el0);
+> > +}
+> > +
+> >  static void armv8pmu_enable_event(struct perf_event *event)
+> >  {
+> >       /*
+> > @@ -776,6 +819,16 @@ static void armv8pmu_disable_event(struct perf_event *event)
+> >
+> >  static void armv8pmu_start(struct arm_pmu *cpu_pmu)
+> >  {
+> > +     if (sysctl_perf_user_access) {
+>
+> armv8pmu_enable_user_access() already checks this.
+
+Yes, because not all callers (event_mapped) check it. I put it here so
+we check it first and avoid checking all the subsequent conditions
+when the feature is disabled. Though I guess the ordering here is not
+guaranteed.
+
+> > +             struct perf_cpu_context *cpuctx = this_cpu_ptr(cpu_pmu->pmu.pmu_cpu_context);
+> > +             struct perf_event_context *task_ctx = cpuctx->task_ctx;
+> > +             if (atomic_read(&cpuctx->ctx.nr_user) ||
+>
+> I thought we only enabled this for per-task events, so not sure why we need
+> this check. But actually, I don't get why we need any extra logic in this
+> function at all; why aren't the ->mapped/->unmapped functions sufficient?
+
+Yes, checking cpuctx->ctx.nr_user can be dropped. I went back and
+forth on this as this is now the only thing we have to do to allow per
+cpu events. IOW, not supporting per cpu events doesn't simplify things
+with this version. The main reason now is one less thing exposed to
+user space, and user space reading of per cpu events is somewhat
+pointless IMO.
+
+The ->mapped/->unmapped functions are only called when we mmap/munmap
+the event. In addition to enabling/disabling access at that point, we
+need to enable/disable access every time the event's context is
+scheduled on or off the PMU. This is replacing doing it in switch_mm()
+which you didn't like. The sched_task() hook didn't work either as it
+is not called at the right times. That could be fixed in the core as
+that's what I did in v8, but doing it in enable() turns out to be
+simpler.
+
+Rob
