@@ -2,95 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0238C3F6805
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1920B3F6657
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242665AbhHXRjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241707AbhHXRgk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:36:40 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627CFC08ED49
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:01:42 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id e129so18372902yba.5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:01:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=hWwuETrGHU3/I5N/lzMvC8A/kPhfy0zJR1iuApIDpe4=;
-        b=rU6I/5BMWAOKUTVdrQzM10WEm/zA4YQzuwuM1AwSZ9i+uyC4lng2nvgEKNvwL9lYBV
-         BwYKRA2hW7lWbEDkLUz0E3xp2u3KqDLrvgWbPBt8DWOdcJiEfmxGLtwh3IY5h9b3LjKT
-         cv0Q1aNhymqCUmldaJ/6yvXTgPZXKDF8bZ8JwPG24gfre1sPsxk41Qnpm51oXk4hGFPB
-         4poN6SIGQmAnAFzCrvCQi7DUDLVHZM98wbaHhjWXTn9ImISiuNsDjV9mM5h3poYS09ZI
-         aUBn7hpzd+gMeDlSdiTcXPNiPQyP+mj83+r7kSoYaxclBhNyt7h6XRU03nSOhVgPQ8kK
-         Rsog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=hWwuETrGHU3/I5N/lzMvC8A/kPhfy0zJR1iuApIDpe4=;
-        b=ixWfKyNoEWkYLcBbqqnYxK4sDZ8JWKNtfad/Nz642Snex/qKmj4g59Cbl/jeNs6rgh
-         P3NWQ1qyC6od+94GhBM+otjqYsNV8PRuVpybWCwZTeTfcmDwiS7fy08jEhLf9WZ3shMq
-         elC7cp58x/kHUTQzwFGcNjxmmRyGeRugG/S9qdUVDy3m46Jfg42uu1PUrsY35sPKrHTP
-         JOOEZljwOhxyeCPl0DhoVRBFsQb8jgY9iXTbL8cXkxJqkH2J4tm2gj0C7GaUFvLOestx
-         H1gdrDYSYVZlwD5cNuRkYh6oFz180TqNLnJjFpNWAARl3qmg3IKaOjnICLWQXCbSCpWL
-         73aA==
-X-Gm-Message-State: AOAM533u/+TnX4WOt1mXRV9gTvpRj9kaoFMobqSsy0BTdfRS/C2o4KV0
-        Kmyb9GRSlZ3RlAiiUSgUOpObQobMMPollewQwL8=
-X-Google-Smtp-Source: ABdhPJwwbKIw4z6ZvMOoUeLSi0rcBBHY7ntW68sGgAo7aciE4DuRDhJ4FFx6DzO9r17W7KsPitE29+JNLYsg7isYSBg=
-X-Received: by 2002:a25:1346:: with SMTP id 67mr52947704ybt.405.1629824501636;
- Tue, 24 Aug 2021 10:01:41 -0700 (PDT)
+        id S239725AbhHXRWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:22:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240685AbhHXRTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:19:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC13761AED;
+        Tue, 24 Aug 2021 17:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629824587;
+        bh=NFA0UsF6Cg+U8it2yy5esPLYvvs8FHcEU/JTlrLO164=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ot3RV3dzzdbcYEO6PXUO6pwgkYvXHJGtgncf8g914dLTaG5jq406l+Ii6VQe8Yfxk
+         fVD/dDw13Po3vpVerqo49DW527GPIlTueIK/Btx6TzLpNGU+G61qYFr2dr6rCPomIg
+         cdbllxJEeb4MO60BG2S6mZC/Pjha0VhZeRD+l6RfoWHsyAjMCA80QF2zzZyKd2WDGc
+         aPqR03pR3ajhwOBEU4eABwQuxqHH1GN4wNh5AEkg9s9muQkgjaxVCP3FUAqU1b4dUM
+         uTvCMuByU5Mqo7UlV+pW2pcDh3ggSxsa3wN0zcIjLYTRWXD70eLfBQsz8pcugl7tUX
+         GZSjQ3o13t/cw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Takeshi Misawa <jeliantsurux@gmail.com>,
+        syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com,
+        Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 16/84] net: Fix memory leak in ieee802154_raw_deliver
+Date:   Tue, 24 Aug 2021 13:01:42 -0400
+Message-Id: <20210824170250.710392-17-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210824170250.710392-1-sashal@kernel.org>
+References: <20210824170250.710392-1-sashal@kernel.org>
 MIME-Version: 1.0
-Sender: jimov27@gmail.com
-Received: by 2002:a05:7010:26a6:b029:cf:41e:ad5e with HTTP; Tue, 24 Aug 2021
- 10:01:41 -0700 (PDT)
-From:   UN Strategic Coordination <mare900121@gmail.com>
-Date:   Tue, 24 Aug 2021 18:01:41 +0100
-X-Google-Sender-Auth: fJhHglk-i2qMkr-gnlKJQS5ktEA
-Message-ID: <CA+0uf-jDKQX759vd42Hnwr_gGxkq_A0vrpfmuq6ksuhh2BVUrw@mail.gmail.com>
-Subject: Dear Beneficiary,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.205-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.205-rc1
+X-KernelTest-Deadline: 2021-08-26T17:02+00:00
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-United Nations Assistant Secretary-General for Development
-Coordination, In Affiliation with World Bank.
+From: Takeshi Misawa <jeliantsurux@gmail.com>
 
-Dear Beneficiary,
+[ Upstream commit 1090340f7ee53e824fd4eef66a4855d548110c5b ]
 
-We have previously sent you emails in respect of your outstanding
-compensation payment which has since been assigned to you. We were
-going through your payment portfolio and came to a logical conclusion
-that you are yet to receive your 2021 Covid-19 compensation payment.
-We must get you informed that your email was listed among those that
-are yet to receive their compensation payment. The United Nations in
-Affiliation with World Bank have agreed to compensate each with the
-sum of USD1,500, 000.00 (One Million Five Hundred Thousand United
-States Dollars) only.
+If IEEE-802.15.4-RAW is closed before receive skb, skb is leaked.
+Fix this, by freeing sk_receive_queue in sk->sk_destruct().
 
-For this reason, you are to receive your payment through a certified
-ATM CARD PAYMENT. Note, with this ATM Card you can withdraw money and
-also make payment anywhere in the World without any problem and please
-for no reason should you disclose your account information as your
-account information is not and can never be needed before you receive
-your card payment.
+syzbot report:
+BUG: memory leak
+unreferenced object 0xffff88810f644600 (size 232):
+  comm "softirq", pid 0, jiffies 4294967032 (age 81.270s)
+  hex dump (first 32 bytes):
+    10 7d 4b 12 81 88 ff ff 10 7d 4b 12 81 88 ff ff  .}K......}K.....
+    00 00 00 00 00 00 00 00 40 7c 4b 12 81 88 ff ff  ........@|K.....
+  backtrace:
+    [<ffffffff83651d4a>] skb_clone+0xaa/0x2b0 net/core/skbuff.c:1496
+    [<ffffffff83fe1b80>] ieee802154_raw_deliver net/ieee802154/socket.c:369 [inline]
+    [<ffffffff83fe1b80>] ieee802154_rcv+0x100/0x340 net/ieee802154/socket.c:1070
+    [<ffffffff8367cc7a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5384
+    [<ffffffff8367cd07>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5498
+    [<ffffffff8367cdd9>] netif_receive_skb_internal net/core/dev.c:5603 [inline]
+    [<ffffffff8367cdd9>] netif_receive_skb+0x59/0x260 net/core/dev.c:5662
+    [<ffffffff83fe6302>] ieee802154_deliver_skb net/mac802154/rx.c:29 [inline]
+    [<ffffffff83fe6302>] ieee802154_subif_frame net/mac802154/rx.c:102 [inline]
+    [<ffffffff83fe6302>] __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
+    [<ffffffff83fe6302>] ieee802154_rx+0x612/0x620 net/mac802154/rx.c:284
+    [<ffffffff83fe59a6>] ieee802154_tasklet_handler+0x86/0xa0 net/mac802154/main.c:35
+    [<ffffffff81232aab>] tasklet_action_common.constprop.0+0x5b/0x100 kernel/softirq.c:557
+    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:345
+    [<ffffffff81232f4c>] do_softirq kernel/softirq.c:248 [inline]
+    [<ffffffff81232f4c>] do_softirq+0x5c/0x80 kernel/softirq.c:235
+    [<ffffffff81232fc1>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:198
+    [<ffffffff8367a9a4>] local_bh_enable include/linux/bottom_half.h:32 [inline]
+    [<ffffffff8367a9a4>] rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
+    [<ffffffff8367a9a4>] __dev_queue_xmit+0x7f4/0xf60 net/core/dev.c:4221
+    [<ffffffff83fe2db4>] raw_sendmsg+0x1f4/0x2b0 net/ieee802154/socket.c:295
+    [<ffffffff8363af16>] sock_sendmsg_nosec net/socket.c:654 [inline]
+    [<ffffffff8363af16>] sock_sendmsg+0x56/0x80 net/socket.c:674
+    [<ffffffff8363deec>] __sys_sendto+0x15c/0x200 net/socket.c:1977
+    [<ffffffff8363dfb6>] __do_sys_sendto net/socket.c:1989 [inline]
+    [<ffffffff8363dfb6>] __se_sys_sendto net/socket.c:1985 [inline]
+    [<ffffffff8363dfb6>] __x64_sys_sendto+0x26/0x30 net/socket.c:1985
 
-Contact Name: Mrs. Mariam Almeer
-Email: dr.ramzym001@gmail.com
+Fixes: 9ec767160357 ("net: add IEEE 802.15.4 socket family implementation")
+Reported-and-tested-by: syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com
+Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
+Acked-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210805075414.GA15796@DESKTOP
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/ieee802154/socket.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Please ensure that you follow the directives and instructions of Mrs.
-Mariam Almeer so that within 24-72 hours you would have received your
-card payment and your secret pin code issued directly to you for
-security reasons. We apologize on behalf of the United Nations
-Development Coordination for any delay you might have encountered in
-the past.
+diff --git a/net/ieee802154/socket.c b/net/ieee802154/socket.c
+index 89819745e482..14c6fac039f9 100644
+--- a/net/ieee802154/socket.c
++++ b/net/ieee802154/socket.c
+@@ -1002,6 +1002,11 @@ static const struct proto_ops ieee802154_dgram_ops = {
+ #endif
+ };
+ 
++static void ieee802154_sock_destruct(struct sock *sk)
++{
++	skb_queue_purge(&sk->sk_receive_queue);
++}
++
+ /* Create a socket. Initialise the socket, blank the addresses
+  * set the state.
+  */
+@@ -1042,7 +1047,7 @@ static int ieee802154_create(struct net *net, struct socket *sock,
+ 	sock->ops = ops;
+ 
+ 	sock_init_data(sock, sk);
+-	/* FIXME: sk->sk_destruct */
++	sk->sk_destruct = ieee802154_sock_destruct;
+ 	sk->sk_family = PF_IEEE802154;
+ 
+ 	/* Checksums on by default */
+-- 
+2.30.2
 
-Yours Faithfully,
-
-Assistant Secretary General-General- Volker Turk
-United Nations for Strategic Coordination
