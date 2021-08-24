@@ -2,67 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEB63F69D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BEF3F69E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbhHXT3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        id S234649AbhHXTbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhHXT3e (ORCPT
+        with ESMTP id S229913AbhHXTbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:29:34 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F81C061757;
-        Tue, 24 Aug 2021 12:28:50 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 4F5EF304D;
-        Tue, 24 Aug 2021 19:28:50 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4F5EF304D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1629833330; bh=nQmcFwMR5wYzqmeDSxDZd6l3SH8LeGOIwTVQSjV1CeU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MAgDf6LY2IjOlsrTyFYN3R2mVrcq0foWhOMxHsKVApFPHmfUlnm5hXcappRRxJ00F
-         84wBO/fcFRWWarOJzJwHfH/kj+GJJ9ALK/W6aBJV3xg1Vp+mkmQXjARca0xKbZl6H6
-         iJaYHLDnfF+LhF6sEVRQEybuVDELyp8js9hqDPNhl/p45oI3s/PpGJXkIRhccZ305Y
-         sRTZl7KhF+Oho7PtmEwht9PgCLvVP5digu/TxUyVks8WI2GZ7YmggDI+4ntDMwcv71
-         q2JfEd3QjnEwPyfUZyIcYYFnDWdl716mQsKo4errHD9db9ezvd45hStDcB48v/YVla
-         +s6cwgB1ERIbg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: Re: [PATCH v2] Documentation: in_irq() cleanup
-In-Reply-To: <20210814014831.53083-1-changbin.du@gmail.com>
-References: <20210814014831.53083-1-changbin.du@gmail.com>
-Date:   Tue, 24 Aug 2021 13:28:49 -0600
-Message-ID: <875yvumyku.fsf@meer.lwn.net>
+        Tue, 24 Aug 2021 15:31:39 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF95C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:30:54 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id t9so9737819qtp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:30:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nISK/DnSMLsPKL33eQfrjbTBgFhp/AOhrSTXl8tgvVY=;
+        b=BBZ/DdRgt5H9lez5WzLUWLJI8CSm49bjqG/ijHPqdU//5r21+B/V9LDmau1ile99vj
+         ihXEXykNbCWxBdSt1o+/OBIH3V6JByVsYZzFSIvZZA9pAuP1aGsZD1dx/JOQtpO2F070
+         xkmZBbOZYa2jF9TmJTfo46ih/34THHx3HNpZ200z1wfuD2NUWKDUtHpXhSoZiVJ79CK4
+         WIqvRnCwVSMZ5qqvSTkaScBbjOjAUluNvFDFs3ao3V2i0DYaiCk5S344s1rEeQWfzGoH
+         0kL2BPZBmWJzrZdjhRM7ZGEbilknKYgR2dlZRPL8wNh4i3BfXwj7Z6qyQkxhunknYZvn
+         2hdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nISK/DnSMLsPKL33eQfrjbTBgFhp/AOhrSTXl8tgvVY=;
+        b=WnpJq1/pqa0rvROM7OCJ4MIk7DFn5b2/rcS171corI/4TV1v3ogAVTGn+JCEmbGSzz
+         vNfDCDw9PUf8mVwCfsDlEhH1j5gNL1ZfJm1N+wzcDRdVSFV2IMefgeO7fUe4dTUj3R1i
+         GKO9t93kddoRuaZWgLvq7ISPuXSkF5o/c8YzhY4QjWy9tAzhj65SS+ywhSlAe13KNRz9
+         2ueyKMe82fLugqVleutRusfZ7tLkrOsBBt+GOZQx30V1RjWdJ6aAsLMZw1UaGTT9r83x
+         HtDV46zeeqCQAloAkzZncIp7maBtURIWQOCybDgmLJQV1zJc43b0bKceai8dT2YOoOXB
+         yYNA==
+X-Gm-Message-State: AOAM5332CB2kZ2vjfigu6Q7S+UbxN09RjFYjhzikY0Y/lTLx1Dq0fbyL
+        5ulhr3Cy5cyv6GlPkJ5hMFlgIw==
+X-Google-Smtp-Source: ABdhPJxXjfrAKQzkOvCMB0CeoOhrejCp5dMuDkaR5tjrmjOC+w0vSyChN42xlzQjduZni77z8K57jg==
+X-Received: by 2002:ac8:dc9:: with SMTP id t9mr35660938qti.293.1629833453961;
+        Tue, 24 Aug 2021 12:30:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id q22sm6382139qtr.95.2021.08.24.12.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 12:30:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mIc8K-004ZMK-M2; Tue, 24 Aug 2021 16:30:52 -0300
+Date:   Tue, 24 Aug 2021 16:30:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+Message-ID: <20210824193052.GF543798@ziepe.ca>
+References: <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca>
+ <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+ <fa124990-ee0c-7401-019e-08109e338042@amd.com>
+ <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
+ <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
+ <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
+ <20210824173228.GE543798@ziepe.ca>
+ <1d1bd2d0-f467-4808-632b-1cca1174cfd9@nvidia.com>
+ <CAPM=9txd71fisvZ1Es5Fv2mwR2vWfHJarya7oeKOm2aq6tH0HQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPM=9txd71fisvZ1Es5Fv2mwR2vWfHJarya7oeKOm2aq6tH0HQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changbin Du <changbin.du@gmail.com> writes:
+On Wed, Aug 25, 2021 at 05:15:52AM +1000, Dave Airlie wrote:
+> On Wed, 25 Aug 2021 at 03:36, John Hubbard <jhubbard@nvidia.com> wrote:
+> >
+> > On 8/24/21 10:32 AM, Jason Gunthorpe wrote:
+> > ...
+> > >>> And yes at least for the amdgpu driver we migrate the memory to host
+> > >>> memory as soon as it is pinned and I would expect that other GPU drivers
+> > >>> do something similar.
+> > >>
+> > >> Well...for many topologies, migrating to host memory will result in a
+> > >> dramatically slower p2p setup. For that reason, some GPU drivers may
+> > >> want to allow pinning of video memory in some situations.
+> > >>
+> > >> Ideally, you've got modern ODP devices and you don't even need to pin.
+> > >> But if not, and you still hope to do high performance p2p between a GPU
+> > >> and a non-ODP Infiniband device, then you would need to leave the pinned
+> > >> memory in vidmem.
+> > >>
+> > >> So I think we don't want to rule out that behavior, right? Or is the
+> > >> thinking more like, "you're lucky that this old non-ODP setup works at
+> > >> all, and we'll make it work by routing through host/cpu memory, but it
+> > >> will be slow"?
+> > >
+> > > I think it depends on the user, if the user creates memory which is
+> > > permanently located on the GPU then it should be pinnable in this way
+> > > without force migration. But if the memory is inherently migratable
+> > > then it just cannot be pinned in the GPU at all as we can't
+> > > indefinately block migration from happening eg if the CPU touches it
+> > > later or something.
+> > >
+> >
+> > OK. I just want to avoid creating any API-level assumptions that dma_buf_pin()
+> > necessarily implies or requires migrating to host memory.
+> 
+> I'm not sure we should be allowing dma_buf_pin at all on
+> non-migratable memory, what's to stop someone just pinning all the
+> VRAM and making the GPU unuseable?
 
-> Replace the obsolete and ambiguos macro in_irq() with new
-> macro in_hardirq().
->
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
->
-> ---
-> v2: remove unnecessary ':c:func:'.
-> ---
->  Documentation/kernel-hacking/hacking.rst                    | 4 ++--
->  Documentation/kernel-hacking/locking.rst                    | 4 ++--
->  Documentation/translations/it_IT/kernel-hacking/hacking.rst | 2 +-
->  Documentation/translations/it_IT/kernel-hacking/locking.rst | 4 ++--
->  Documentation/translations/zh_CN/kernel-hacking/hacking.rst | 2 +-
->  5 files changed, 8 insertions(+), 8 deletions(-)
+IMHO the same thinking that prevents pining all of system ram and
+making the system unusable? GPU isn't so special here. The main
+restriction is the pinned memory ulimit. For most out-of-the-box cases
+this is set to something like 64k
 
-Applied, thanks.
+For the single-user HPC use cases it is made unlimited.
 
-jon
+> My impression from this is we've designed hardware that didn't
+> consider the problem, and now to let us use that hardware in horrible
+> ways we should just allow it to pin all the things.
+
+It is more complex than that, HW that can support dynamic memory under
+*everything* is complicated (and in some cases slow!). As there is
+only a weak rational to do this, we don't see it in often in the
+market.
+
+Jason
