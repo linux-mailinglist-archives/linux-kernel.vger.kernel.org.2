@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667403F69D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF80A3F69D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhHXT2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:28:12 -0400
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:40677 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhHXT2L (ORCPT
+        id S234929AbhHXT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230197AbhHXT21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:28:11 -0400
-Received: by mail-lf1-f49.google.com with SMTP id v19so22507124lfo.7;
-        Tue, 24 Aug 2021 12:27:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6h+JNdLP52k3zMbkqivoL2joVOk1AQjGMNl+Mz3dyfY=;
-        b=OOhmObWIrfACoMuFk//OPvaQD8SFPaZa5zZURYCGr/htDcQJRoGuEnaNwb8SkiREPv
-         0/z7/oz/poq9cfdV9Nqtz4Mo+EbJ2EKrDEPmMmWznh9nSsjtfK96K0WgZguWqfG4+7o6
-         IQylnorMiXYKbGq2rCEXxjAzs7Lx2DxBpR8Am3xi8vZGuAVnG7KL/OfEM0F5ue7AYC4p
-         7zDAuUXvm0LiV0oYJ94NjuhHt1XRePElD5xpuPQCHjrnYBhWKUd/sNfqkOgbMJGXMrzV
-         GAaMD/jf3XN0eelvnOw3LiNAhAawm2LHRz0iubnWlBb9Ol/eIDC7OYl4AUlRgaiRnXKG
-         Gm3g==
-X-Gm-Message-State: AOAM533DEywlDMKIhq5etT0akJEZUlZw01gcq4i9kOT767UIc1GSl6i9
-        fCr+UE5F3cg8L2l97UIC79dnFSw71KEJEKnY9BQ=
-X-Google-Smtp-Source: ABdhPJwVjtxL1IV+werzcf+48UR6fug7aD9qw2gQnW8m7Gw9uhN3VBeaMl9OYfVvczCZo29jCWYJIAkR8PzrEWJguFM=
-X-Received: by 2002:a05:6512:158e:: with SMTP id bp14mr22092115lfb.509.1629833245611;
- Tue, 24 Aug 2021 12:27:25 -0700 (PDT)
+        Tue, 24 Aug 2021 15:28:27 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4972C061757;
+        Tue, 24 Aug 2021 12:27:42 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 92C9250E9;
+        Tue, 24 Aug 2021 19:27:42 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 92C9250E9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1629833262; bh=A3+VlXR7mc/2eOlBpznq28QXal6oafqCqYoo9KBE/PI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=YHVK1WzMhtZzxnvg59TwCg2BuM9OvZeQgGsbqWQOZzXxlo+MUopaIBCkQIKXBFNio
+         Lft4dme6ifl8vv/wXfISAIADnTpHRe1yK7yfxCrgIdd1ESmh5D3L7BaRTWCXeRBfp9
+         6OFrnfxqvOYorDEDpgzhVencgE95hWRbWRlSbaGZHUu6CfMXx+83ntjXdAvD2PraCo
+         WHTXg818RWVDJPudcJRF0JU4DgL0CQ9ou0GWmdzLeylISsJhTcf0yqAe4OZnMtPLhN
+         TSXj6xyBH/v1LYuyVx4VtrKOpVUR6gTysui8UHNqiAQoBgQLn++eY7iCgidM5ERkG5
+         pG9ozTWh8/mnQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: arm: marvell: Add 88F6825 model into list
+In-Reply-To: <20210814124805.14568-1-pali@kernel.org>
+References: <20210814124805.14568-1-pali@kernel.org>
+Date:   Tue, 24 Aug 2021 13:27:41 -0600
+Message-ID: <87a6l6mymq.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <cover.1629454773.git.rickyman7@gmail.com> <9dee672538967a3cf7e82ef194ebccc709b1af41.1629454773.git.rickyman7@gmail.com>
-In-Reply-To: <9dee672538967a3cf7e82ef194ebccc709b1af41.1629454773.git.rickyman7@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 24 Aug 2021 12:27:13 -0700
-Message-ID: <CAM9d7cjJuLdBtN_2it88v4VAmVZ5sSzcpDX-eU9A+hiyO3izaA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 06/15] perf workqueue: introduce workqueue struct
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Riccardo,
+Pali Roh=C3=A1r <pali@kernel.org> writes:
 
-On Fri, Aug 20, 2021 at 3:54 AM Riccardo Mancini <rickyman7@gmail.com> wrote:
-> +/**
-> + * workqueue_strerror - print message regarding lastest error in @wq
-> + *
-> + * Buffer size should be at least WORKQUEUE_STRERR_BUFSIZE bytes.
-> + */
-> +int workqueue_strerror(struct workqueue_struct *wq, int err, char *buf, size_t size)
-> +{
-> +       int ret;
-> +       char sbuf[THREADPOOL_STRERR_BUFSIZE], *emsg;
-> +       const char *errno_str;
-> +
-> +       errno_str = workqueue_errno_str[-err-WORKQUEUE_ERROR__OFFSET];
+> 88F6825 is just 88F6820 but without encryption acceleration hardware and =
+is
+> used e.g. in DTS file arch/arm/boot/dts/armada-385-clearfog-gtr.dtsi
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+>
+> ---
+> Depends on patch: https://lore.kernel.org/linux-doc/20210625215437.2156-1=
+-pali@kernel.org/
+> ---
+>  Documentation/arm/marvell.rst | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/arm/marvell.rst b/Documentation/arm/marvell.rst
+> index 85169bc3f538..56bb592dbd0c 100644
+> --- a/Documentation/arm/marvell.rst
+> +++ b/Documentation/arm/marvell.rst
+> @@ -140,6 +140,7 @@ EBU Armada family
+>  	- 88F6821 Armada 382
+>  	- 88F6W21 Armada 383
+>  	- 88F6820 Armada 385
+> +	- 88F6825
+>  	- 88F6828 Armada 388
 
-It seems easy to crash with an invalid err argument.
+Applied, thanks.
 
-> +
-> +       switch (err) {
-> +       case -WORKQUEUE_ERROR__POOLNEW:
-> +       case -WORKQUEUE_ERROR__POOLEXE:
-> +       case -WORKQUEUE_ERROR__POOLSTOP:
-> +       case -WORKQUEUE_ERROR__POOLSTARTTHREAD:
-> +               if (IS_ERR_OR_NULL(wq))
-> +                       return scnprintf(buf, size, "%s: unknown.\n",
-> +                               errno_str);
-> +
-> +               ret = threadpool__strerror(wq->pool, wq->pool_errno, sbuf, sizeof(sbuf));
-> +               if (ret < 0)
-> +                       return ret;
-> +               return scnprintf(buf, size, "%s: %s.\n", errno_str, sbuf);
-> +       case -WORKQUEUE_ERROR__WRITEPIPE:
-> +       case -WORKQUEUE_ERROR__READPIPE:
-> +               emsg = str_error_r(errno, sbuf, sizeof(sbuf));
-
-This means the errno should be kept before calling this, right?
-
-> +               return scnprintf(buf, size, "%s: %s.\n", errno_str, emsg);
-> +       case -WORKQUEUE_ERROR__INVALIDMSG:
-> +               return scnprintf(buf, size, "%s.\n", errno_str);
-> +       default:
-> +               emsg = str_error_r(err, sbuf, sizeof(sbuf));
-> +               return scnprintf(buf, size, "Error: %s", emsg);
-
-Newline at the end?
-
-Thanks,
-Namhyung
-
-
-> +       }
-> +}
-> +
+jon
