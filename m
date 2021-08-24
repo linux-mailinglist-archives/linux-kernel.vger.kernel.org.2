@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BA13F6984
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46D63F6986
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbhHXTGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:06:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232710AbhHXTGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:06:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10F9361368;
-        Tue, 24 Aug 2021 19:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629831929;
-        bh=AHzw5+xWkEeEGVoZjVwMsegCxjuI7l0q+qizzHwAlCQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=OVCtytrUB5f9U7Fk/yxzNCEfnI5uB9FthFA5rl3vU5cONNgKalS9Ys4uticNroERw
-         iBKhXZBrUFL3l/PfI27kW+NhpeDSmSEQCyqolnREpHCFjaM5AQ8qgQ1HMmnOWpabmR
-         LW36DyUApChnbDh4zzu6SGC6EQ9iXza378rupuCEDl07M1XQcCG/UPU5A0I7A0RzTZ
-         bOZLzky39N2ELHWMSwlCSZnthun5KyM/WKZEZtyCgi8E+nL4xxFHmwtGYj/LW4kY/Z
-         OSMgZOU7mHT4mX9yUqCcqQSS79/1hnUWFJawmDw+DedUeWtE2zFGuxl46C/leKg4Pi
-         n0Sx2GljxiyHw==
-Date:   Tue, 24 Aug 2021 14:05:27 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering
- msi
-Message-ID: <20210824190527.GA3486548@bjorn-Precision-5520>
+        id S234424AbhHXTGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:06:41 -0400
+Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:46410 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232117AbhHXTGk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 15:06:40 -0400
+Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id BE3FE100E7B5C;
+        Tue, 24 Aug 2021 19:05:54 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 3ADAE20D75C;
+        Tue, 24 Aug 2021 19:05:53 +0000 (UTC)
+Message-ID: <6dd7d45d8dccacb6d37ad5f6f137413b229d8565.camel@perches.com>
+Subject: Re: [PATCH v4] EDAC/mc: Prefer strscpy over strcpy
+From:   Joe Perches <joe@perches.com>
+To:     Borislav Petkov <bp@alien8.de>, Len Baker <len.baker@gmx.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 24 Aug 2021 12:05:52 -0700
+In-Reply-To: <YSU5wp/ZpsXuDgmu@zn.tnic>
+References: <20210814075527.5999-1-len.baker@gmx.com>
+         <YSPbOo90alPsv4vL@zn.tnic> <20210824090338.GB7999@titan>
+         <YSU5wp/ZpsXuDgmu@zn.tnic>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210823154958.305677-1-bjorn.andersson@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.90
+X-Stat-Signature: gbw8hao5yg94bjpfq3cs1hmfuybbbawk
+X-Rspamd-Server: rspamout02
+X-Rspamd-Queue-Id: 3ADAE20D75C
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+qhTBzD3PJ/ihefUS3Wgwe9dpo85K7g1c=
+X-HE-Tag: 1629831953-473425
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 08:49:57AM -0700, Bjorn Andersson wrote:
-> On the Qualcomm sc8180x platform the bootloader does something related
-> to PCI that leaves a pending "msi" interrupt, which with the current
-> ordering often fires before init has a chance to enable the clocks that
-> are necessary for the interrupt handler to access the hardware.
+On Tue, 2021-08-24 at 20:26 +0200, Borislav Petkov wrote:
+> On Tue, Aug 24, 2021 at 12:28:07PM +0200, Len Baker wrote:
+> > This is a task of the KSPP [1] and the main reason is to clean up the
+> > proliferation of str*cpy functions in the kernel.
 > 
-> Move the host_init() call before the registration of the "msi" interrupt
-> handler to ensure the host driver has a chance to enable the clocks.
+> That I understood - you prominently explain where the patches stem from.
+> 
+> What I can't parse is that formulation "previous step". What previous
+> step do you mean?
+> 
+> > Yes, you are right. The same discussion happened in the v3 review [2] and
+> > I agree with the reasons that Robert Richter exposed. Using the strlen()
+> > implementation it is not necessary to check the return code of strcpy and
+> > we can assume a silent truncation.
+> > 
+> > [2] https://lore.kernel.org/linux-hardening/YRN+8u59lJ6MWsOL@rric.localdomain/
+> 
+> Ok, looking at the asm, gcc is actually smart enough not to call
+> strlen() twice on the same buffer.
+> 
+> But then there's this in the strscpy() kernel-doc comment:
+> 
+> "The destination buffer is always NUL terminated, unless it's
+> zero-sized."
+> 
+> so looking at the code, we're merrily decrementing len but nothing's
+> checking whether len can become 0. Because if it does, strscpy() will
+> do:
+> 
+> 	if (count == 0 || WARN_ON_ONCE(count > INT_MAX))
+> 		return -E2BIG;
+> 
+> so if p ends up pointing to something which is *not* '\0', strlen() will
+> go off into the weeds.
+> 
+> So I don't care if it doesn't look just as nice - it better be correct
+> in all cases first.
 
-Did you audit other drivers for similar issues?  If they do, we should
-fix them all at once.
+It's all somehat unnecessary as it seems it's guaranteed not to overflow.
 
-> The assignment of the bridge's ops and child_ops is moved along, because
-> at least the TI Keystone driver overwrites these in its host_init
-> callback.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v1:
-> - New patch, instead of enabling resources in the qcom driver before jumping to
->   dw_pcie_host_init(), per Rob Herring's suggestion.
-> 
->  .../pci/controller/dwc/pcie-designware-host.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index d1d9b8344ec9..f4755f3a03be 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -335,6 +335,16 @@ int dw_pcie_host_init(struct pcie_port *pp)
->  	if (pci->link_gen < 1)
->  		pci->link_gen = of_pci_get_max_link_speed(np);
->  
-> +	/* Set default bus ops */
-> +	bridge->ops = &dw_pcie_ops;
-> +	bridge->child_ops = &dw_child_pcie_ops;
-> +
-> +	if (pp->ops->host_init) {
-> +		ret = pp->ops->host_init(pp);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	if (pci_msi_enabled()) {
->  		pp->has_msi_ctrl = !(pp->ops->msi_host_init ||
->  				     of_property_read_bool(np, "msi-parent") ||
-> @@ -388,15 +398,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
->  		}
->  	}
->  
-> -	/* Set default bus ops */
-> -	bridge->ops = &dw_pcie_ops;
-> -	bridge->child_ops = &dw_child_pcie_ops;
-> -
-> -	if (pp->ops->host_init) {
-> -		ret = pp->ops->host_init(pp);
-> -		if (ret)
-> -			goto err_free_msi;
-> -	}
->  	dw_pcie_iatu_detect(pci);
->  
->  	dw_pcie_setup_rc(pp);
-> -- 
-> 2.29.2
-> 
+$ git grep -n -w OTHER_LABEL next-20210820
+next-20210820:drivers/edac/edac_mc.c:1118:                              strcpy(p, OTHER_LABEL);
+next-20210820:drivers/edac/edac_mc.c:1119:                              p += strlen(OTHER_LABEL);
+next-20210820:include/linux/edac.h:57:#define OTHER_LABEL " or "
+next-20210820:include/linux/edac.h:470: char label[(EDAC_MC_LABEL_LEN + 1 + sizeof(OTHER_LABEL)) * EDAC_MAX_LABELS];
+
+Also the array size of char label is too large.
+
+First by 1 * EDAC_MAX_LABELS as sizeof(OTHER_LABEL) is 5 not 4 and
+second there can only be EDAC_MAX_LABELS - 1 uses of OTHER_LABEL.
+
+And I would remove the define for OTHER_LABEL and use " or " directly.
+
+Lastly, this could be easier to understand using stpcpy and/or scnprintf.
+
+
