@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3A93F5F6A
+	by mail.lfdr.de (Postfix) with ESMTP id 70B463F5F6B
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237690AbhHXNqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56722 "EHLO mail.kernel.org"
+        id S237701AbhHXNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:46:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:35908 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237403AbhHXNqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:46:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA1996103B;
-        Tue, 24 Aug 2021 13:45:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629812758;
-        bh=Jed18KPEaR+Zuz6QaoXkrJ1/iRgkKIy/q8FOpLXPpfo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=If+MJbyHhxgeinHlWa6kCcSoshW7bC+68r1YXAYgextZ8Ec4YFXDRHkqzikXFX333
-         37dU7UIExz2LEEi2fDhUusfQB1oNlPCtsTDn0QOc1r8dVCjcbmR1iioLx7K3OoQ/0s
-         qXbJsjXXOKlgzNj5tfQZpXveEX9L1nnvvwFXAePDvKMwWgg7h4D0VF17KzTwp8lsCq
-         cWJr7EkWQfcSsNlPdf0SsE0GtSfoCFafNV9J2BArfujl2SloLhFbOYArP92Fqri+M4
-         5rYei7At2rahLxe5mfdvbi5keddu9pt+7/rK5xgl6jfLSrxUXTeU8LjOoTwt7PzUku
-         8bAVfjF/sihQA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mIWkU-0007M8-GL; Tue, 24 Aug 2021 15:45:54 +0200
-Date:   Tue, 24 Aug 2021 15:45:54 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Zhengjun Zhang <zhangzhengjun@aicrobo.com>
-Cc:     larsm17@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2] USB: serial: option: add new VID/PID to support
- Fibocom FG150
-Message-ID: <YST4Eq2zS8+7B5TL@hovoldconsulting.com>
-References: <b3285ae0-8b1f-fc9c-3662-634264d704d5@gmail.com>
- <20210809133553.71158-1-zhangzhengjun@aicrobo.com>
+        id S237683AbhHXNqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:46:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 008941042;
+        Tue, 24 Aug 2021 06:46:10 -0700 (PDT)
+Received: from [10.57.15.112] (unknown [10.57.15.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F18B3F5A1;
+        Tue, 24 Aug 2021 06:46:07 -0700 (PDT)
+Subject: Re: [PATCH v4 15/24] iommu/io-pgtable: Remove non-strict quirk
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        John Garry <john.garry@huawei.com>,
+        Doug Anderson <dianders@chromium.org>, rajatja@google.com,
+        chenxiang <chenxiang66@hisilicon.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+References: <cover.1628682048.git.robin.murphy@arm.com>
+ <155b5c621cd8936472e273a8b07a182f62c6c20d.1628682049.git.robin.murphy@arm.com>
+ <CAMuHMdX+VSr0TJabMBNqob0MkD2o0RBNp8E5QYNx0jFucW1Aew@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <1f7de684-c646-cda9-b246-3712f046f2b0@arm.com>
+Date:   Tue, 24 Aug 2021 14:46:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809133553.71158-1-zhangzhengjun@aicrobo.com>
+In-Reply-To: <CAMuHMdX+VSr0TJabMBNqob0MkD2o0RBNp8E5QYNx0jFucW1Aew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 09:35:53PM +0800, Zhengjun Zhang wrote:
-> Fibocom FG150 is a 5G module based on Qualcomm SDX55 platform,
-> support Sub-6G band.
+Hi Geert,
+
+On 2021-08-24 14:25, Geert Uytterhoeven wrote:
+> Hi Robin,
 > 
-> Compared with the first patch, I removed the defines of Fibocom 
-> VID and PID by following Lars' suggestion.
-
-When revising patches please put such comments below the '---' line so
-that it doesn't end up in the commit message.
-
-> Here are the outputs of lsusb -v and usb-devices:
+> On Wed, Aug 11, 2021 at 2:24 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>> IO_PGTABLE_QUIRK_NON_STRICT was never a very comfortable fit, since it's
+>> not a quirk of the pagetable format itself. Now that we have a more
+>> appropriate way to convey non-strict unmaps, though, this last of the
+>> non-quirk quirks can also go, and with the flush queue code also now
+>> enforcing its own ordering we can have a lovely cleanup all round.
+>>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 > 
-> > T:  Bus=02 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
-> > D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
-> > P:  Vendor=2cb7 ProdID=010b Rev=04.14
-> > S:  Manufacturer=Fibocom
-> > S:  Product=Fibocom Modem_SN:XXXXXXXX
-> > S:  SerialNumber=XXXXXXXX
-> > C:  #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-> > I:  If#=0x0 Alt= 0 #EPs= 1 Cls=ef(misc ) Sub=04 Prot=01 Driver=rndis_host
-> > I:  If#=0x1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
-> > I:  If#=0x2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-> > I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
-> > I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
+> Thanks for your patch, which is now commit a8e5f04458c4e496
+> ("iommu/io-pgtable: Remove non-strict quirk") in iommu/next.
 > 
-> > Bus 002 Device 002: ID 2cb7:010b Fibocom Fibocom Modem_SN:XXXXXXXX
-
-> Signed-off-by: Zhengjun Zhang <zhangzhengjun@aicrobo.com>
-> ---
-> V1 -> V2: Remove the defines of Fibocom VID and PID
+>> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+>> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+>> @@ -700,14 +700,7 @@ static size_t __arm_v7s_unmap(struct arm_v7s_io_pgtable *data,
+>>                                                  ARM_V7S_BLOCK_SIZE(lvl + 1));
+>>                                  ptep = iopte_deref(pte[i], lvl, data);
+>>                                  __arm_v7s_free_table(ptep, lvl + 1, data);
+>> -                       } else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
+>> -                               /*
+>> -                                * Order the PTE update against queueing the IOVA, to
+>> -                                * guarantee that a flush callback from a different CPU
+>> -                                * has observed it before the TLBIALL can be issued.
+>> -                                */
+>> -                               smp_wmb();
+>> -                       } else {
+>> +                       } else if (!gather->queued) {
 > 
->  drivers/usb/serial/option.c | 2 ++
->  1 file changed, 2 insertions(+)
+> If CONFIG_IOMMU_API=n:
 > 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 0fbe253dc..4fcf859e9 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -2073,6 +2073,8 @@ static const struct usb_device_id option_ids[] = {
->  	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
->  	  .driver_info = RSVD(6) },
->  	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a0, 0xff) },			/* Fibocom NL668-AM/NL652-EU (laptop MBIM) */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x010b, 0xff, 0xff, 0x30) },	/* Fibocom FG150 Diag */
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(0x2cb7, 0x010b, 0xff, 0, 0) },	/* Fibocom FG150 AT */
+> error: ‘struct iommu_iotlb_gather’ has no member named ‘queued’
+> 
+> This can be reproduced using e.g. shmobile_defconfig with
+>      CONFIG_IOMMU_SUPPORT=y
+>      CONFIG_IOMMU_IO_PGTABLE_ARMV7S=y
+> 
+> 
+>>                                  io_pgtable_tlb_add_page(iop, gather, iova, blk_size);
+>>                          }
+>>                          iova += blk_size;
+> 
+>> --- a/drivers/iommu/io-pgtable-arm.c
+>> +++ b/drivers/iommu/io-pgtable-arm.c
+>> @@ -638,14 +638,7 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
+>>                                  io_pgtable_tlb_flush_walk(iop, iova + i * size, size,
+>>                                                            ARM_LPAE_GRANULE(data));
+>>                                  __arm_lpae_free_pgtable(data, lvl + 1, iopte_deref(pte, data));
+>> -                       } else if (iop->cfg.quirks & IO_PGTABLE_QUIRK_NON_STRICT) {
+>> -                               /*
+>> -                                * Order the PTE update against queueing the IOVA, to
+>> -                                * guarantee that a flush callback from a different CPU
+>> -                                * has observed it before the TLBIALL can be issued.
+>> -                                */
+>> -                               smp_wmb();
+>> -                       } else {
+>> +                       } else if (!gather->queued) {
+> 
+> If CONFIG_IOMMU_API=n:
+> 
+> error: ‘struct iommu_iotlb_gather’ has no member named ‘queued’
+> 
+> This can be reproduced using e.g. shmobile_defconfig with
+>      CONFIG_IOMMU_SUPPORT=y
+>      CONFIG_IOMMU_IO_PGTABLE_LPAE=y
+> 
+>>                                  io_pgtable_tlb_add_page(iop, gather, iova + i * size, size);
+>>                          }
+>>
+> 
+> Perhaps "select IOMMU_API" should be added (moved from individual
+> drivers) to both IOMMU_IO_PGTABLE_ARMV7S and IOMMU_IO_PGTABLE_LPAE?
+> Or iommu_iotlb_gather.queued should not be accessed here, or the
+> access wrapped into a static inline helper function with a dummy for
+> the CONFIG_IOMMU_API=n case?
 
-And try to keep the entries sorted by VID/PID where possible.
+Those (and worse) should be fixed by this patch:
 
->  	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff) },			/* LongSung M5710 */
->  	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
->  	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
+https://lore.kernel.org/linux-iommu/83672ee76f6405c82845a55c148fa836f56fbbc1.1629465282.git.robin.murphy@arm.com/
 
-I fixed up the above before applying. Thanks.
+which apparently hasn't made it to -next yet.
 
-Johan
+Thanks,
+Robin.
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
