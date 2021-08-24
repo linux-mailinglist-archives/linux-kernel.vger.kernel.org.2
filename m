@@ -2,151 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A13B3F6182
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31403F6187
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238252AbhHXPYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        id S238285AbhHXPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbhHXPY2 (ORCPT
+        with ESMTP id S238299AbhHXPYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:24:28 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412FFC061764
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:23:44 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id fs6so1021933pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:23:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AlWf418OhmiZZMN2ujHNQZWc18fzFQ+ab1INkCf29Dg=;
-        b=h9B4MYL0ZHRCwtAFt9WLYquuLvRZY3ZCCd0XIomoYvZ/jkoNVJdc55k62FFnuwd1r7
-         KLVHJ+ivYOKxQrgspcN15/GAG+WeLPPJioIeu8kDX54oEdLsMc/JZNEdqZ/SYYbK8f/V
-         dd4Td0t3+cqb3J819AV3cgKAch6vromBXLeFAxkK8rhiUa64HUXUrBYx8mimYFdFfHEr
-         +EHk2SA9hz8QZIMc5JdR6bknuXL2VZRYGm1aVlobZlv/qwoE4gBtuJQoSDriV11cXUZk
-         hXIFqqZX0mmem3uOXznck4OCoDYL3CDtoesGzW8jRiWOrAbAM4CrGYRtg6npSuOR+iPp
-         ejvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AlWf418OhmiZZMN2ujHNQZWc18fzFQ+ab1INkCf29Dg=;
-        b=bBRTmYE7PiGg+YiA06p29UBkmrcxb3nwyM8KI3F7deXXcUjKYXsN7jqxrL6mc6twiH
-         RfpEU4H3NLPEflvCbFah6Qq1b6LZVQtdgK/dcikiNxhu6gUH7+ti+SkvIC/x5Od3QP4n
-         WSZjF3j90Af27fsXW9Z/2Ost7gWVqmaxtGYvJ9HPlbdfX6kFH7B6o3+AALC3dE8BmPgK
-         zEbNR/sp7MFeZmCphv5pdC+tlEi0Z+So/qYQD+TZlObH/6D1HV+7pUxfHAhZfaK5XZsg
-         tvG2mHY9Z8cmiXiYb5MEMMRDucOn7CO9qklKMwrbEICwM4TAoFae3W5L35R1fnDNx00D
-         Eu0A==
-X-Gm-Message-State: AOAM530VnEJ9KbTc5LooPs4HfkWmLYytYE8/iXLD29JduOb8iXzui78H
-        3tn9hnq5T8t43v4IKjIXul5M1XKXcmAcpuzUlvDb+Q==
-X-Google-Smtp-Source: ABdhPJxwlxA/ggkzhnXhTxNIIF8d5nI4NsBBRTBHNjWOZLC0rAevPRz+KC1lxMKEVQGfdXwnNpQqQIxZMl/dJ3MDtBc=
-X-Received: by 2002:a17:902:bd81:b029:12c:b6fb:feef with SMTP id
- q1-20020a170902bd81b029012cb6fbfeefmr33981892pls.84.1629818623699; Tue, 24
- Aug 2021 08:23:43 -0700 (PDT)
+        Tue, 24 Aug 2021 11:24:38 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FE2C0617AD
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 08:23:52 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:fd1d:ce2:c16e:185a])
+        by xavier.telenet-ops.be with bizsmtp
+        id lTPg2500C4wgRL101TPgjF; Tue, 24 Aug 2021 17:23:51 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mIYH6-005TjI-5r; Tue, 24 Aug 2021 17:23:40 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mIYH5-00D1YB-My; Tue, 24 Aug 2021 17:23:39 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rajendra Nayak <rnayak@codeaurora.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] PM: domains: Fix domain attach for CONFIG_PM_OPP=n
+Date:   Tue, 24 Aug 2021 17:23:38 +0200
+Message-Id: <4fb42fa1b76b38c6628f056cfd804bb5b4e74d99.1629818532.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <cover.9fc9298fd9d63553491871d043a18affc2dbc8a8.1626885907.git-series.a.fatoum@pengutronix.de>
- <CAJ+vNU23cXPmiqKcKH_WAgD-ea+=pEJzGK+q7zOy=v2o0XU7kA@mail.gmail.com>
- <2b48a848-d70b-9c43-5ca0-9ab72622ed12@pengutronix.de> <CAJ+vNU225mgHHg00r67f1L6bEub+_h55hCBAMhCq2rd8kWU-qg@mail.gmail.com>
- <9200d46d-94a2-befd-e9b0-93036e56eb8a@pengutronix.de> <CAJ+vNU19z0syr0oHOrSGxL0cVW+Kjv76kmp6uvGc2akHbtX0Nw@mail.gmail.com>
- <fa530833-2bb9-f8f3-68c6-99423d29e2ca@pengutronix.de> <CAJ+vNU0iRTagc5_qvsG4jvt=B_wruj=1O2ZRixqWek8JTN=aeg@mail.gmail.com>
- <8b559c9c-a4c0-d335-5e54-40b9acc08707@pengutronix.de>
-In-Reply-To: <8b559c9c-a4c0-d335-5e54-40b9acc08707@pengutronix.de>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Tue, 24 Aug 2021 08:23:32 -0700
-Message-ID: <CAJ+vNU2q_KCi8nNv56s0ip7CZaAE=YgObwFUyzuGa_T1Ywp-wQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] KEYS: trusted: Introduce support for NXP CAAM-based
- trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     David Gstir <david@sigma-star.at>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>, keyrings@vger.kernel.org,
-        Steffen Trumtrar <s.trumtrar@pengutronix.de>,
-        linux-security-module@vger.kernel.org,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Richard Weinberger <richard@nod.at>,
-        James Morris <jmorris@namei.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Franck LENORMAND <franck.lenormand@nxp.com>,
-        David Howells <dhowells@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-crypto@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        linux-integrity@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 12:33 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> On 23.08.21 19:50, Tim Harvey wrote:
-> > On Mon, Aug 23, 2021 at 6:29 AM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >> On 20.08.21 23:19, Tim Harvey wrote:
-> >>> On Fri, Aug 20, 2021 at 1:36 PM Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-> >>>> On 20.08.21 22:20, Tim Harvey wrote:
-> >>> It works for a user keyring but not a session keyring... does that
-> >>> explain anything?
-> >>> # keyctl add trusted mykey 'new 32' @u
-> >>> 941210782
-> >>> # keyctl print 941210782
-> >>> 83b7845cb45216496aead9ee2c6a406f587d64aad47bddc539d8947a247e618798d9306b36398b5dc2722a4c3f220a3a763ee175f6bd64758fdd49ca4db597e8ce328121b60edbba9b8d8d55056be896
-> >>> # keyctl add trusted mykey 'new 32' @s
-> >>> 310571960
-> >>> # keyctl print 310571960
-> >>> keyctl_read_alloc: Unknown error 126
-> >>
-> >> Both sequences work for me.
-> >>
-> >> My getty is started by systemd. I think systemd allocates a new session
-> >> keyring for the getty that's inherited by the shell and the commands I run
-> >> it in. If you don't do that, each command will get its own session key.
-> >>
-> >>> Sorry, I'm still trying to wrap my head around the differences in
-> >>> keyrings and trusted vs user keys.
-> >>
-> >> No problem. HTH.
-> >
-> > Ahmad,
-> >
-> > Ok that explains it - my testing is using a very basic buildroot
-> > ramdisk rootfs. If I do a 'keyctl new_session' first I can use the
-> > system keyring fine as well.
->
-> Great. Does this mean I can get your Tested-by: ? :)
->
+If CONFIG_PM_OPP=n, of_get_required_opp_performance_state() always
+returns -EOPNOTSUPP, and all drivers for devices that are part of a PM
+Domain fail to probe with:
 
-Absolutely,
+    failed to set required performance state for power-domain foo: -95
+    probe of bar failed with error -95
 
-For the series:
+Fix this by treating -EOPNOTSUPP the same as -ENODEV.
 
-I tested this series on top of v5.14.rc-7 on a Gateworks
-imx8mm-venice-gw73xx board with kernel param trusted.source=caam and
-keyutils-1.6:
-# keyctl new_session
-22544757
-# keyctl add trusted mykey 'new 32' @s
-160701809
-# keyctl print 160701809
-990e03aa4515aee420eede17e26a58d0c5568c8bd2c9c2ee2f22a0583181d20d4f65cf9cb1f944a3cc92c0e3184a44a29a7e511f0a55a6af11a70ac2b2924514002475e73ae09820042896b9ee00a5ec
+Fixes: c016baf7dc58e77a ("PM: domains: Add support for 'required-opps' to set default perf state")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/base/power/domain.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-By: Tim Harvey <tharvey@gateworks.com>
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index a10d740c4f2a1c28..7b197690e6442911 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -2760,7 +2760,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+ 
+ 	/* Set the default performance state */
+ 	pstate = of_get_required_opp_performance_state(dev->of_node, index);
+-	if (pstate < 0 && pstate != -ENODEV) {
++	if (pstate < 0 && pstate != -ENODEV && pstate != -EOPNOTSUPP) {
+ 		ret = pstate;
+ 		goto err;
+ 	} else if (pstate > 0) {
+-- 
+2.25.1
 
-One more question: I've got a user that wants to blob/deblob generic
-data. They can use the caam_encap_blob/caam_decap_blob functions in
-kernel code but could you give me a suggestion for how they could use
-this in:
-a) userspace code (using the keyctl syscall I assume)
-b) userspace cmdline (via keyutils I assume)
-
-Many thanks,
-
-Tim
