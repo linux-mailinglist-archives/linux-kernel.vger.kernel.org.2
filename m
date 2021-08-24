@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5413F57C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F078D3F57C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 07:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbhHXF4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 01:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        id S233048AbhHXF7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 01:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhHXF4e (ORCPT
+        with ESMTP id S229925AbhHXF7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 01:56:34 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22F74C061575;
-        Mon, 23 Aug 2021 22:55:51 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id l3so15869503qtk.10;
-        Mon, 23 Aug 2021 22:55:51 -0700 (PDT)
+        Tue, 24 Aug 2021 01:59:19 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6BBC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:58:36 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id 14so21949533qkc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 22:58:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FEEhbunvDteSPSEQiaiXD+V/tL/q7V9ooJr+nkkYsL0=;
-        b=dievfyJ3/AgtuwGCikiR1DVKDR3Eb5JzHhx6gs4zw67YQCYeSH4/K0YUECOZvU62Vp
-         Rd+c5DzS1CHhDXyLmLdh4RqgfiYFhtkRdDk92rUV/bNIqT4dY6OqWSvdlymeuOxim2an
-         7A1f0b5ieYKYFAsxWmFhSNWQTnX/RtFOm/w0UdivjYW/vN+RPKfuXyW8eJvQ+eF+ZhRi
-         itCJjxpQTMWfdCi6UGUsVXWllkbubv0iHt/iYhVroGQXxQMhklPoQfi5u5wnarutw9lr
-         cUoV+47KVQPFAz4FHmagJZulFVoIjrIHN4h5/Janhhbqy4OkvBLz6ItSF3iV9PGfk0cA
-         KScQ==
+        bh=AqkXI6oLzHyFwvv2AStlufK4ixhmUEXUgRHQRPPodyQ=;
+        b=kBxWH1GJsPwUZ+B0gNIC5nhJbrvEei+xyWGeo7YiyuOebe/h/h+6R6cMA5l4Zsi09G
+         j2p2mo29bOYmHWwNKnmYMsivxoDqtklqqSGJD4troNCovAb04qF0Yh8tPRQtKdqcy/bl
+         n4v88i44efr/WqVtBnqElOcobG+h6yDTGSpkVhf1NpPruWpoDmtWoF5+PFU1rYaJV93O
+         P6DeqqsugbW+POwpLrWpR88umgLYpDHj1xobbYvjQ5t3luFVT4u2qm/EYS6ZITDdChv0
+         JuxAundi1+VEWxwkthrIrEVS8KRpClm6srodehhZ63KH5fmmZvuwATFhvRY0kOjiHXhG
+         jetw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FEEhbunvDteSPSEQiaiXD+V/tL/q7V9ooJr+nkkYsL0=;
-        b=Och91O3/K/QRF1o7pxiSE+uQ4ot1jg2MZaTAg7iIEH6PEWlC0LQszRZrFInEH5ljlS
-         ujjkV0/dEX69UQ3jozMYgODPdgCtd2uC6ddSVxiVmS08lKSVPP4/gIpy8PipNl6PafJp
-         dNyw6k4AxlWzOoDsJPjSuxwa43K9HWBij+UaFsg7b+8O79G9EyVAmM54UGPQlqucc7qu
-         uObaH1jw1Y8eNwWfqRSGU2MYvkL8NidiZr1JeFAecf1B3lE0+RNaBvPkjr+LbXKXvIpr
-         iin7k3mZBukRijfK8f+HDTSV2ZgrfwI0Zrm4+cQxfHRP8POvjSbINHT4bhFCwCK2agTs
-         F8fQ==
-X-Gm-Message-State: AOAM530B0AtIdtpfUVdmZrfVLIG7Rgr9iX8x22o67vxaOOXowTuYHdpQ
-        DTXdfU0MI1zi4DiXeTJv0PVLyxe7jFM=
-X-Google-Smtp-Source: ABdhPJzfmobXqq9XUpJ/qPGOsxgImkN+WkNhzhfj6GgG52wKG3nrmWVU364LBTaUtdq7SXpnM+8ATw==
-X-Received: by 2002:ac8:ec4:: with SMTP id w4mr33754148qti.30.1629784550320;
-        Mon, 23 Aug 2021 22:55:50 -0700 (PDT)
+        bh=AqkXI6oLzHyFwvv2AStlufK4ixhmUEXUgRHQRPPodyQ=;
+        b=q47M8vINDYOfB6H3B3usXr15Yg+8i+gYBffhLgKZKWeWHbBIiJVCdWq1nozE8IpUd8
+         +32lMMuDcR/s8UN7ccvQplDPMyQs5o7jnEHfXBfjSp3E6g4Bc8tiLVGT+K4GiFyB7V6W
+         EVV8nvV+cYkGXHYHF8XTS3mFoo+RhpdWesl5qFlcGuYIX8K+V/pCzVD9JjWBtJxHpVxy
+         0ShopZZ3YSf5gzjc/Ezc6wI/hmgj526rcq6iQYE/Ci5nfKHqjCeyGm6IbxfF/k8cCvnw
+         Nd+8Voj5iaZ0cIAsmgJDn/uKzzzDGUNYAyOayxXRA1vI3Z7FBbr7c1uG+goSZ9PS8URj
+         0hKQ==
+X-Gm-Message-State: AOAM533yyzYvod0qmhnZrL4O7lGG0ANHcnoPcVsGPZGKhOD7oWmZ+5PG
+        WkwVgdbOUApcm0fUrKD7J5A=
+X-Google-Smtp-Source: ABdhPJwTNEIvzJilez2oVyKHVsioR7UWci90FU8ojPsKFrcTABzL5B5QAvwL3w+i36b5ZoUJVNcZUQ==
+X-Received: by 2002:a37:624f:: with SMTP id w76mr4695839qkb.284.1629784715484;
+        Mon, 23 Aug 2021 22:58:35 -0700 (PDT)
 Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id p123sm10307929qke.94.2021.08.23.22.55.48
+        by smtp.gmail.com with ESMTPSA id x25sm7887304qtj.77.2021.08.23.22.58.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Aug 2021 22:55:49 -0700 (PDT)
+        Mon, 23 Aug 2021 22:58:35 -0700 (PDT)
 From:   CGEL <cgel.zte@gmail.com>
 X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     tytso@mit.edu
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
         Jing Yangyang <jing.yangyang@zte.com.cn>,
         Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] ext4:namei: fix boolreturn.cocci warnings
-Date:   Mon, 23 Aug 2021 22:55:43 -0700
-Message-Id: <20210824055543.58718-1-deng.changcheng@zte.com.cn>
+Subject: [PATCH linux-next] include:buffer_head: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 22:58:28 -0700
+Message-Id: <20210824055828.58783-1-deng.changcheng@zte.com.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,31 +67,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
+./include/linux/buffer_head.h:412:64-65:WARNING:return of 0/1 in
+function 'has_bh_in_lru' with return type bool
+
 Return statements in functions returning bool should use true/false
 instead of 1/0.
 
-./fs/ext4/namei.c:1441:12-13:WARNING:return of 0/1 in function
-'ext4_match' with return type bool
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
 
 Reported-by: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- fs/ext4/namei.c | 2 +-
+ include/linux/buffer_head.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index f3bbcd4..b5cb32d 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1438,7 +1438,7 @@ static bool ext4_match(struct inode *parent,
- 					fname->hinfo.minor_hash !=
- 						EXT4_DIRENT_MINOR_HASH(de)) {
+diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+index e7e99da..6486d3c 100644
+--- a/include/linux/buffer_head.h
++++ b/include/linux/buffer_head.h
+@@ -409,7 +409,7 @@ static inline void invalidate_inode_buffers(struct inode *inode) {}
+ static inline int remove_inode_buffers(struct inode *inode) { return 1; }
+ static inline int sync_mapping_buffers(struct address_space *mapping) { return 0; }
+ static inline void invalidate_bh_lrus_cpu(int cpu) {}
+-static inline bool has_bh_in_lru(int cpu, void *dummy) { return 0; }
++static inline bool has_bh_in_lru(int cpu, void *dummy) { return false; }
+ #define buffer_heads_over_limit 0
  
--					return 0;
-+					return false;
- 				}
- 			}
- 			return !ext4_ci_compare(parent, &cf, de->name,
+ #endif /* CONFIG_BLOCK */
 -- 
 1.8.3.1
 
