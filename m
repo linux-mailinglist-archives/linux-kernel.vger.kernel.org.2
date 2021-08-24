@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0B13F6B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B522B3F6B7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238684AbhHXWAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
+        id S238785AbhHXWAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237178AbhHXWAb (ORCPT
+        with ESMTP id S238742AbhHXWAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:00:31 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B30C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:59:47 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so2798380pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:59:47 -0700 (PDT)
+        Tue, 24 Aug 2021 18:00:37 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FCFC06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:59:52 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id r9so3494344pfh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:59:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dV2HwutanGEMSVTHUYToK72cxw7X/GcO81aNccR4QPw=;
-        b=F6A829Luql9VwPos1+eSZTb1jv9suIGsQ9Es/k7eT5czwSSzFPjXCHwEWL9hVGWdAq
-         33f0ohCHpP1vvs2j64TxoV4jl+0Yy8kb94m3ExVE3r0qKi7eNLA6W9jAVjLNwBDJGH9a
-         hPyZEoKEByq9JI3IKvR/mwExVEmxB+ZmuR+RsGwupQZEshercoENGqNV3anIoWQSqYCj
-         4wOB+Os0rKDK2gE3ZmtBvRgwZUC2o4rl+vVU7ebW5rMDPcOxDKuUvm3lzAayX8FFe+Qq
-         FomCB88pOL9+7Ur0jMnIa4jipU1xPjE8pwfR8H9k9TDQUlG0LMPHuxwmmR49B+ZEf74+
-         CRyg==
+        bh=jcFx0PZcA3f5x3kcuOE3FShtVPGcFTUcoRfnJMf2+WA=;
+        b=kSoxnifXykQ6StIPlHX99aPNWQu+Di5Pk4x5o0CyBgJd9Hi73+uUta5pC3l9MPuDvg
+         fBBpumEasAZeQZ2lG3NadMhBf/b9wuvINIZK2gj66HQh13cdNeZ+ZXIwck5oL9wu4os+
+         US/+tqwCN2mSD+JCYRel2n+VEvcXsl1OGVQLjDfi4InNQ0bwty5/GVhAIxR6hITtGdLg
+         B2dsfbm0W5uvRuyca+8kETN9jz+XRkeYZnbViXu4AvIglxlwUOQjCHGEfA65Iz68RZya
+         QItoB3l4XDQYmoL1ZwgpumDwEUbCDGUDrdkJu1fa/f2rehIPRlYuMHbS58voDQNxtFcC
+         VbJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dV2HwutanGEMSVTHUYToK72cxw7X/GcO81aNccR4QPw=;
-        b=od5LwUa26zOg8BRDbuXFEO2MnYabFfkpEBuAetHTrRNSe0I3QJUwtKdGPeryxMvLhc
-         1BJi3hDVbIfZAiyEPBIEI4qSL//KU9hP7hUZM9hohyaKadsXAieuj/dGyLzTYcqqCC9U
-         zyr12OQjNUXfPRgbl72DoONb838vA9pYoO5pUQLiwkmVHOofe6fa+qmZP4Y6EueB6svo
-         x6QxWigdcHDpbgQ/QbP96Q193FlJWFSOkulCnQi9iNBJY5L7c/+HOlxaXo4IXRUIFdw2
-         n0N0ao8RfqaFIqiWfTbeMPjCo4eXEYqBIhvfYcMi0c8ldFC6Srd4RRuHLLyInUNIpwfl
-         4htQ==
-X-Gm-Message-State: AOAM532EE5q+lJslp+LrlBIkT2DYxKn/GhX+Yo0OX3OqJFaFoO/xMM0s
-        s/gvxjvnEbcKcBJIbqUTgKC2omFu4OX5VbSh7xswf7Xwxuu8uw==
-X-Google-Smtp-Source: ABdhPJy+DLYO6OTaxf0RcnvBKHSGXpxxWYAoSxW3W2cKgQDk6nNLo91Jd1N006ED3qUtEDGro0cCfvrbp1EZ9B4HOLM=
-X-Received: by 2002:a17:90a:1b2e:: with SMTP id q43mr6727425pjq.217.1629842386524;
- Tue, 24 Aug 2021 14:59:46 -0700 (PDT)
+        bh=jcFx0PZcA3f5x3kcuOE3FShtVPGcFTUcoRfnJMf2+WA=;
+        b=IyMueTwP6np1c5KP/d+H976+73Jc6FwKKFaUdHC1Tz7bTcrgNjE3gaSCR6SpDbTCyI
+         Z7ZUW94KwmruWEheER0shqIQiAikjY1CB7rg9At5VQz1rxYdNLPvdZgetG2ZGQCFFsd1
+         VB2X7pMIZ2OM8+m/mp4evAQs/9la5b8grzbBRT2EQk6fFt4bFof3mNTY1JLc6VrSqzkU
+         SIhqIbqXpAIhE6GlUlVPyue0NNbVN5m2gdYqUqsg0xEo2iWCIv6IeQN3C7IxpftqVkvE
+         eJ+q/zZH7TGNq6DhV6V3K7Hh/EyEr9Nxfwa4CqGqisEjbTr3MzLmm2FqDq1Hqi7s6nvh
+         Ysog==
+X-Gm-Message-State: AOAM532uqtEUvOjDHYxwz6pFHD8onE38VMXVT+wXQUd+Vv/uKwNVursn
+        84aFFPWFVj0kaARgT5jaYPI0902krQiygro+pPIh3g==
+X-Google-Smtp-Source: ABdhPJwK8XFV5db9UjT/ngKEY9JdyqfX6Fj3bAtuqrgUOWJJ8sDeTs4RTnwa4sK7JgHj0SxhjNCQ0rptoEHmw8RZG3Y=
+X-Received: by 2002:a65:6642:: with SMTP id z2mr26520993pgv.240.1629842392235;
+ Tue, 24 Aug 2021 14:59:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210823223751.25104-1-fmdefrancesco@gmail.com>
- <CAA=Fs0ki91VvBOd2Wd59KqeCN+BmF-eWv+r0sH+e3fUG61Zxsg@mail.gmail.com>
- <15825589.4VbMHeJK9p@localhost.localdomain> <1815496.OexNakQ7IY@localhost.localdomain>
-In-Reply-To: <1815496.OexNakQ7IY@localhost.localdomain>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 24 Aug 2021 22:59:35 +0100
-Message-ID: <CAA=Fs0k1RWbHqzW73rox+yN+rMiP0sDeMFdiVCjL92XFJ7=gZQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] staging: r8188eu: Use usb_control_msg_recv/send() in usbctrl_vendorreq()
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org> <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <CAPcyv4iJVQKJ3bVwZhD08c8GNEP0jW2gx=H504NXcYK5o2t01A@mail.gmail.com> <CACK8Z6E+__kZqU8mVUnYhFc0wz_e81qBLO3ffqSDghVtztNeQw@mail.gmail.com>
+In-Reply-To: <CACK8Z6E+__kZqU8mVUnYhFc0wz_e81qBLO3ffqSDghVtztNeQw@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 24 Aug 2021 14:59:41 -0700
+Message-ID: <CAPcyv4gmQeRNJJqxef5Vhws=v1g8+NtMjLBnJ1KR6rCWcd5VnA@mail.gmail.com>
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     Rajat Jain <rajatja@google.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Aug 2021 at 02:38, Fabio M. De Francesco
-<fmdefrancesco@gmail.com> wrote:
+On Tue, Aug 24, 2021 at 2:57 PM Rajat Jain <rajatja@google.com> wrote:
 >
-> Dear Philip,
+> On Mon, Aug 23, 2021 at 6:06 PM Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > On Mon, Aug 23, 2021 at 5:31 PM Kuppuswamy, Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> > >
+> > >
+> > >
+> > > On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
+> > > >> Add a new variant of pci_iomap for mapping all PCI resources
+> > > >> of a devices as shared memory with a hypervisor in a confidential
+> > > >> guest.
+> > > >>
+> > > >> Signed-off-by: Andi Kleen<ak@linux.intel.com>
+> > > >> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
+> > > > I'm a bit puzzled by this part. So why should the guest*not*  map
+> > > > pci memory as shared? And if the answer is never (as it seems to be)
+> > > > then why not just make regular pci_iomap DTRT?
+> > >
+> > > It is in the context of confidential guest (where VMM is un-trusted). So
+> > > we don't want to make all PCI resource as shared. It should be allowed
+> > > only for hardened drivers/devices.
+> >
+> > That's confusing, isn't device authorization what keeps unaudited
+> > drivers from loading against untrusted devices? I'm feeling like
+> > Michael that this should be a detail that drivers need not care about
+> > explicitly, in which case it does not need to be exported because the
+> > detail can be buried in lower levels.
+> >
+> > Note, I specifically said "unaudited", not "hardened" because as Greg
+> > mentioned the kernel must trust drivers, its devices that may not be
+> > trusted.
 >
-> I think that I've inadvertently switched the order by which usb_control_msg_send()
-> and memcpy() are called. I'm very sorry for not doing my tests, but (as I had said
-> before) at the moment I don't have my device with me.
->
-> I'm about to send a v2 series.
->
-> Thanks very much for testing on my behalf.
->
-> Regards,
->
-> Fabio
->
->
->
+> Can you please point me to the thread where this discussion with Greg
+> is ongoing?
 
-Dear Fabio,
+It slowed down to implement the "move to the 'authorized' device
+model" recommendation. LWN has a good writeup (as usual) and a link to
+the thread:
 
-Just going through my e-mails now after the work day, so sorry for not
-replying sooner. Don't feel you have to apologise for things like this
-honestly, we are all human and there is a huge amount of churn on this
-driver at the moment. I know there are subsequent e-mails indicating
-this was not the problem anyway, but in any case, I am happy to test
-when I'm able to, and don't worry if it doesn't always work - my code
-is guilty of the same thing constantly :-)
-
-Regards,
-Phil
+https://lwn.net/Articles/865918/
