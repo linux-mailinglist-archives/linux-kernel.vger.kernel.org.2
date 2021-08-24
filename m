@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5004F3F5668
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFA93F55DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbhHXDDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 23:03:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234634AbhHXC7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:59:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36414613DB;
-        Tue, 24 Aug 2021 02:59:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629773944;
-        bh=akNljmYAqpUMZJ8WHvhlsM/Hp3zTlWeCIqfNRJNdbWQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Uf2xE78W2VQZtpYXM6/6OwNUsdhfGGP5+nXqhV4aFqz+FRQ2M12nmK7Xi7mV7kZs9
-         o3YSOVS8irf+i8x2k1peyB/WXxWQ/ZiIC1AAfK945XKI8tvVbFulN+Yg3osogzgTh9
-         X4hHApaAzFu+DRKXL/xgh2ydo1ziawLLBCLVSD9saq1uytx/Xi55tJQmYjEr7w8N0i
-         Ds/r7+Z+hfNIiOwXuFZHAx0fd7aTkPGs1YXaI0ad/ZY96Vw/hpLwfTw7XYNrsLGyt1
-         8KkGCkRmDcBHQXSOGUZlB1FFz+lGg6RyLN0XD7cFb+7ZDD/rKHxkDEGU/zMoDtnT9v
-         /Qo1uBuk7tbkQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     stable@vger.kernel.org, jlayton@kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: FAILED: Patch "fs: warn about impending deprecation of mandatory locks" failed to apply to 4.4-stable tree
-Date:   Mon, 23 Aug 2021 22:59:02 -0400
-Message-Id: <20210824025903.660376-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S233853AbhHXCau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:30:50 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15207 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230141AbhHXCap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 22:30:45 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GttNR3mMhz1CZpt;
+        Tue, 24 Aug 2021 10:29:27 +0800 (CST)
+Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 24 Aug 2021 10:29:58 +0800
+Received: from localhost.huawei.com (10.175.124.27) by
+ dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 24 Aug 2021 10:29:58 +0800
+From:   Li Jinlin <lijinlin3@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <john.garry@huawei.com>, <bvanassche@acm.org>,
+        <qiulaibin@huawei.com>, <linfeilong@huawei.com>,
+        <wubo40@huawei.com>
+Subject: [PATCH v3] scsi: core: Fix hang of freezing queue between blocking and running device
+Date:   Tue, 24 Aug 2021 10:59:21 +0800
+Message-ID: <20210824025921.3277629-1-lijinlin3@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Patchwork-Hint: ignore
-X-stable: review
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema773-chm.china.huawei.com (10.1.198.217)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch below does not apply to the 4.4-stable tree.
-If someone wants it applied there, or to any other stable or longterm
-tree, then please email the backport, including the original git commit
-id to <stable@vger.kernel.org>.
+From: Li Jinlin <lijinlin3@huawei.com>
 
-Thanks,
-Sasha
+We found a hang issue, the test steps are as follows:
+  1. blocking device via scsi_device_set_state()
+  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
+  3. echo none > /sys/block/sda/queue/scheduler
+  4. echo "running" >/sys/block/sda/device/state
 
------------------- original commit in Linus's tree ------------------
+Step 3 and 4 should finish this work after step 4, but they hangs.
 
-From fdd92b64d15bc4aec973caa25899afd782402e68 Mon Sep 17 00:00:00 2001
-From: Jeff Layton <jlayton@kernel.org>
-Date: Fri, 20 Aug 2021 09:29:50 -0400
-Subject: [PATCH] fs: warn about impending deprecation of mandatory locks
+  CPU#0               CPU#1                CPU#2
+  ---------------     ----------------     ----------------
+                                           Step 1: blocking device
 
-We've had CONFIG_MANDATORY_FILE_LOCKING since 2015 and a lot of distros
-have disabled it. Warn the stragglers that still use "-o mand" that
-we'll be dropping support for that mount option.
+                                           Step 2: dd xxxx
+                                                  ^^^^^^ get request
+                                                         q_usage_counter++
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+                      Step 3: switching scheculer
+                      elv_iosched_store
+                        elevator_switch
+                          blk_mq_freeze_queue
+                            blk_freeze_queue
+                              > blk_freeze_queue_start
+                                ^^^^^^ mq_freeze_depth++
+
+                              > blk_mq_run_hw_queues
+                                ^^^^^^ can't run queue when dev blocked
+
+                              > blk_mq_freeze_queue_wait
+                                ^^^^^^ Hang here!!!
+                                       wait q_usage_counter==0
+
+  Step 4: running device
+  store_state_field
+    scsi_rescan_device
+      scsi_attach_vpd
+        scsi_vpd_inquiry
+          __scsi_execute
+            blk_get_request
+              blk_mq_alloc_request
+                blk_queue_enter
+                ^^^^^^ Hang here!!!
+                       wait mq_freeze_depth==0
+
+    blk_mq_run_hw_queues
+    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
+
+                            blk_mq_unfreeze_queue
+                            ^^^^^ mq_freeze_depth--
+
+Step 3 and 4 wait for each other.
+
+To fix this, we need to run queue before rescanning device when the device
+state changes to SDEV_RUNNING.
+
+Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
+Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
+Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
 ---
- fs/namespace.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+changes since v2 send with Message-ID:
+20210809141308.3700854-1-lijinlin3@huawei.com
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index ab4174a3c802..2279473d0d6f 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -1716,8 +1716,12 @@ static inline bool may_mount(void)
- }
+ - Expanded code comment in store_state_field() as suggested by Bart
+
+ drivers/scsi/scsi_sysfs.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index ae9bfc658203..c0d31119d6d7 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -808,12 +808,15 @@ store_state_field(struct device *dev, struct device_attribute *attr,
+ 	ret = scsi_device_set_state(sdev, state);
+ 	/*
+ 	 * If the device state changes to SDEV_RUNNING, we need to
+-	 * rescan the device to revalidate it, and run the queue to
+-	 * avoid I/O hang.
++	 * run the queue to avoid I/O hang, and rescan the device
++	 * to revalidate it. Running the queue first is necessary
++	 * because another thread may be waiting inside
++	 * blk_mq_freeze_queue_wait() and because that call may be
++	 * waiting for pending I/O to finish.
+ 	 */
+ 	if (ret == 0 && state == SDEV_RUNNING) {
+-		scsi_rescan_device(dev);
+ 		blk_mq_run_hw_queues(sdev->request_queue, true);
++		scsi_rescan_device(dev);
+ 	}
+ 	mutex_unlock(&sdev->state_mutex);
  
- #ifdef	CONFIG_MANDATORY_FILE_LOCKING
--static inline bool may_mandlock(void)
-+static bool may_mandlock(void)
- {
-+	pr_warn_once("======================================================\n"
-+		     "WARNING: the mand mount option is being deprecated and\n"
-+		     "         will be removed in v5.15!\n"
-+		     "======================================================\n");
- 	return capable(CAP_SYS_ADMIN);
- }
- #else
 -- 
-2.30.2
-
-
-
+2.27.0
 
