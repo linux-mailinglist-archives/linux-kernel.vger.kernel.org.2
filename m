@@ -2,196 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9783F62A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF44E3F6371
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbhHXQ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:27:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49104 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229896AbhHXQ1c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:27:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1629822407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TYtQtl/3C2Gj/kt8xj0pTccd7H5GHAf8Dw42NMrmVXU=;
-        b=TDpaDZ6Udwpu0ea601OExdaZovM+kITkfMqhecbycp4Mv4FkS6szKHzdY+0IbwUqEmO+mV
-        SjXG6R+VlLCNChg0iAzFmznfPdbBemYkdXfoSA/blewuF9CJWun/xTBbS8lDZ3mBqNCq2g
-        EeBohuuE1YHjwGlX3hDLqiA2+Mv/mKU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423--0wmEQ3DN9yuuFQ7Z6Kt1g-1; Tue, 24 Aug 2021 12:26:46 -0400
-X-MC-Unique: -0wmEQ3DN9yuuFQ7Z6Kt1g-1
-Received: by mail-wm1-f70.google.com with SMTP id x125-20020a1c3183000000b002e73f079eefso148181wmx.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:26:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=TYtQtl/3C2Gj/kt8xj0pTccd7H5GHAf8Dw42NMrmVXU=;
-        b=BSYbM8INa5nvqwHEfVwLn0TY5aYa0yZ434oEp4pyE9dQnrUjJSXnXcpU4UtIQRPvDV
-         j82BSNRQ8lMaujdHX3sqKNm/VHuFDl15LuA3wreQaOG10n906dhKKS+q4UXWEHsefRhP
-         +C+fgG14hRH5geTxxM1lhqWygMu2Z0bSYzTeJSFDPblJUWifgXKg87RAN02twuOqBYK/
-         4r3J8yFba9jmdQ1kc5FEMRb61qu1LjEcfQPNKGM9L7iXNIVOfKH6Pu2vKeqBRkn/nzDn
-         CEELHMWQFHWdLHBMN1yIxO+hxPHR4bVvkQkzURsynRCehtTeV3Ol4BlrMgGMouj3MBdM
-         taHw==
-X-Gm-Message-State: AOAM531uf7Y+kadBz1Fp2KUoYZW12aUwOISNfut+g6rZopYVLE6qB1yA
-        c3XretFVDG84j/3U3zWGS3ELgQO2fDJwHtbwgl6vmaaEUostEyvgR3s6cjJu4Xlog/6jwmF9PD/
-        WrgR/iOkjs4LkFFFqK3rNcYPY
-X-Received: by 2002:adf:f101:: with SMTP id r1mr17135270wro.355.1629822404268;
-        Tue, 24 Aug 2021 09:26:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx97fjaFa36+aZbM+EMQ9R++YVwrZeW3RMKAV9fGubIm+gCe79sLjVmW3/mIgQ7bDDbaucWcg==
-X-Received: by 2002:adf:f101:: with SMTP id r1mr17135258wro.355.1629822404086;
-        Tue, 24 Aug 2021 09:26:44 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23c4d.dip0.t-ipconnect.de. [79.242.60.77])
-        by smtp.gmail.com with ESMTPSA id e2sm19925957wrq.56.2021.08.24.09.26.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 09:26:43 -0700 (PDT)
-Subject: Re: [PATCH v2 1/9] mm: introduce pmd_install() helper
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
-        mika.penttila@nextfour.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, songmuchun@bytedance.com
-References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
- <20210819031858.98043-2-zhengqi.arch@bytedance.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <edd82170-7149-1abf-6204-f1d665a5fca2@redhat.com>
-Date:   Tue, 24 Aug 2021 18:26:42 +0200
+        id S233049AbhHXQy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:54:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31294 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233900AbhHXQyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:54:19 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="204486977"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="204486977"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 09:53:34 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="685433440"
+Received: from jlrivera-mobl1.amr.corp.intel.com (HELO [10.212.8.132]) ([10.212.8.132])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 09:53:33 -0700
+Subject: Re: [PATCH linux-next] ASoC: SOF: intel: remove duplicate include
+To:     CGEL <cgel.zte@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Bard Liao <bard.liao@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+References: <20210824030015.57267-1-deng.changcheng@zte.com.cn>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b352affd-7b20-633f-de81-ca0196e5004d@linux.intel.com>
+Date:   Tue, 24 Aug 2021 11:27:28 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210819031858.98043-2-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210824030015.57267-1-deng.changcheng@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.08.21 05:18, Qi Zheng wrote:
-> Currently we have three times the same few lines repeated in the
-> code. Deduplicate them by newly introduced pmd_install() helper.
+
+
+On 8/23/21 10:00 PM, CGEL wrote:
+> From: Changcheng Deng <deng.changcheng@zte.com.cn>
 > 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Clean up the following includecheck warning:
+> 
+> ./sound/soc/sof/intel/pci-tng.c: shim.h is included more than once.
+> 
+> No functional change.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 > ---
->   include/linux/mm.h |  1 +
->   mm/filemap.c       | 11 ++---------
->   mm/memory.c        | 34 ++++++++++++++++------------------
->   3 files changed, 19 insertions(+), 27 deletions(-)
+>  sound/soc/sof/intel/pci-tng.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index ce8fc0fd6d6e..57e48217bd71 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2471,6 +2471,7 @@ static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
->   	return ptl;
->   }
->   
-> +extern void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
->   extern void __init pagecache_init(void);
->   extern void __init free_area_init_memoryless_node(int nid);
->   extern void free_initmem(void);
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 53913fced7ae..9f773059c6dc 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3210,15 +3210,8 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
->   	    }
->   	}
->   
-> -	if (pmd_none(*vmf->pmd)) {
-> -		vmf->ptl = pmd_lock(mm, vmf->pmd);
-> -		if (likely(pmd_none(*vmf->pmd))) {
-> -			mm_inc_nr_ptes(mm);
-> -			pmd_populate(mm, vmf->pmd, vmf->prealloc_pte);
-> -			vmf->prealloc_pte = NULL;
-> -		}
-> -		spin_unlock(vmf->ptl);
-> -	}
-> +	if (pmd_none(*vmf->pmd))
-> +		pmd_install(mm, vmf->pmd, &vmf->prealloc_pte);
->   
->   	/* See comment in handle_pte_fault() */
->   	if (pmd_devmap_trans_unstable(vmf->pmd)) {
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 39e7a1495c3c..ef7b1762e996 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -433,9 +433,20 @@ void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *vma,
->   	}
->   }
->   
-> +void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
-> +{
-> +	spinlock_t *ptl = pmd_lock(mm, pmd);
-> +
-> +	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
-> +		mm_inc_nr_ptes(mm);
-> +		pmd_populate(mm, pmd, *pte);
-> +		*pte = NULL;
-> +	}
-> +	spin_unlock(ptl);
-> +}
-> +
->   int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
->   {
-> -	spinlock_t *ptl;
->   	pgtable_t new = pte_alloc_one(mm);
->   	if (!new)
->   		return -ENOMEM;
-> @@ -455,13 +466,7 @@ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
->   	 */
->   	smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
->   
-> -	ptl = pmd_lock(mm, pmd);
-> -	if (likely(pmd_none(*pmd))) {	/* Has another populated it ? */
-> -		mm_inc_nr_ptes(mm);
-> -		pmd_populate(mm, pmd, new);
-> -		new = NULL;
-> -	}
-> -	spin_unlock(ptl);
-> +	pmd_install(mm, pmd, &new);
->   	if (new)
->   		pte_free(mm, new);
->   	return 0;
-> @@ -4027,17 +4032,10 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
->   				return ret;
->   		}
->   
-> -		if (vmf->prealloc_pte) {
-> -			vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
-> -			if (likely(pmd_none(*vmf->pmd))) {
-> -				mm_inc_nr_ptes(vma->vm_mm);
-> -				pmd_populate(vma->vm_mm, vmf->pmd, vmf->prealloc_pte);
-> -				vmf->prealloc_pte = NULL;
-> -			}
-> -			spin_unlock(vmf->ptl);
-> -		} else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd))) {
-> +		if (vmf->prealloc_pte)
-> +			pmd_install(vma->vm_mm, vmf->pmd, &vmf->prealloc_pte);
-> +		else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
->   			return VM_FAULT_OOM;
-> -		}
->   	}
->   
->   	/* See comment in handle_pte_fault() */
+> diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+> index 4ee1da3..4bded66 100644
+> --- a/sound/soc/sof/intel/pci-tng.c
+> +++ b/sound/soc/sof/intel/pci-tng.c
+> @@ -15,7 +15,6 @@
+>  #include <sound/sof.h>
+>  #include "../ops.h"
+>  #include "atom.h"
+> -#include "shim.h"
+>  #include "../sof-pci-dev.h"
+>  #include "../sof-audio.h"
+>  
 > 
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-That's mostly unrelated to the remaining part of the series and can be 
-picked up early.
-
--- 
-Thanks,
-
-David / dhildenb
-
