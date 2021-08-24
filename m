@@ -2,85 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B64E3F60DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5843F60DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238013AbhHXOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
+        id S238040AbhHXOpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 10:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237902AbhHXOqE (ORCPT
+        with ESMTP id S238004AbhHXOpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:46:04 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E151C061757;
-        Tue, 24 Aug 2021 07:45:20 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id dm15so7076659edb.10;
-        Tue, 24 Aug 2021 07:45:19 -0700 (PDT)
+        Tue, 24 Aug 2021 10:45:32 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204C6C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:44:48 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so38182145otg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 07:44:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OBWcZREBUGB90xDbuFF9gZCvZy0CAlmgbb34f8DLTCA=;
-        b=OX4xbhOYvpditCNbjIcDT+wiZ7eKJxv1Cfh+ILYt6ici869VEpTrVGCpAqvXi419fu
-         pZv/g04QnU7zeUIUXv4zWwhL/FdYo/ji/mfTsXCjqFPawlG66FcaJqc5Ot/9ckcLIPlP
-         JxE/DcJFAgPFNKeP6l/UnTzw+ESNG9PC0oDq91SZUz6Yw8fzf6mVTkyeZpDJOBr8otPZ
-         i5iNYX+SiE8pe7YgJwRQwUcmPnKeU9nZZQkCM85pXdpBNCJkO4qLnPd/4/ix7dTUIuXE
-         ZUrpJ964+LxsTppwouVy8aFnzmxH0YgXwULMFU0Mg9ZHCIb5Drtt4GlL62EEd/sxqNBU
-         z7ag==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=AeRXMAsFKFtCmgO4aNf9vhF215sQMxa0Gch/8WOqfAM=;
+        b=eyWlUTkwhOd0cFWHm8X30LzO/K/KeLiPSU/BsB3sXTZChAtoqXj8FbzYThh5W19/Qe
+         CiYT8dd6zlJzDEteo+RXCzGZ+CG43gaJ+qZH/dx2EbT7Rko+mRyP+/tPf1Q4MS2eov13
+         vMM+NFJ2eIiOBugMLiAyb8DcfwP0XGdvCixVCF7ppjOngF3550ISqaeCRVkExUCiUYcT
+         1yelGthl31bS/NXyAzjy0xaIWWvhcdwpXKuA9yf8YyEZDz4kXZM2jyjHvIpzw+GqwVGH
+         lbxIk7z9Z0N/yA/s1qEAVJb3uQIfjFtjMlu2TcN2CyvRb5kScqnBxvk55F2owTs8A55B
+         Uxkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OBWcZREBUGB90xDbuFF9gZCvZy0CAlmgbb34f8DLTCA=;
-        b=tuRCs3GeMVm66XSfiu1G5/31ZkXDqsUpH/SIEcS3PVEwuw/cj1XT9uGr5fP2GtJgUe
-         WG4mhrfakFPK6hVtEqt+QSazBWgunjnlpTeakK1ClPy9grBVyeQ6LXzQXsi91dhC9hk2
-         bUv0ln7vlzbMr4e7pjZuIvtdspxdMjnIQ1IopmCUVs/zPC8yIb9tqqfSRyHF20J+z3wR
-         qnYfPYtV9KRi2g8DLpiPfQZaWEWtmRhx9/9dvrVSxHQsvK0OoVg6QLMwHiq00H2Dlg0F
-         piRVD7ir6bhMiOwmKjul0SB5/rxTyA66+ZH7e4LfWUqlzue9qeAU1O92wtBE0beIwAmy
-         Dzcw==
-X-Gm-Message-State: AOAM530fSk1VhdGXe2+P5iWIqygkRf6I7H7PWe60u82G6i5JeBkaeiA2
-        8aEGeD7YAr4QoLUylxPmS3ZNJVfceMIw0S40jc8=
-X-Google-Smtp-Source: ABdhPJxp5jekdTwMBfEg6CBzgyuzrUwBX+xnhgMLf9B/+mzSuXsYs2HpJn5Sb7aUgq/+/NsPewtAYsWrnOsI8IsGMRg=
-X-Received: by 2002:a50:ec10:: with SMTP id g16mr20734850edr.35.1629816318732;
- Tue, 24 Aug 2021 07:45:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=AeRXMAsFKFtCmgO4aNf9vhF215sQMxa0Gch/8WOqfAM=;
+        b=PqH6IGLpLYzu0HE+RHzwPT0DePhriI7/eGUYaWm+0tf7ejWyoRP6FttrV85+g3J8Ia
+         TUaqX1N7hIqb9CcsDo6sZm2qwS5NoQCDOi9VSqub5qEb9ubThho/7ZhSCeTvXk44Z3jQ
+         yCuPtxgo1AOj+cJeQFn43beBMCGQxZyYIRCXPbZ23Jtax3sGOuVnU+swTdAaDwNynzQz
+         XRcVPdRucP9s3gCBiMQZbMSRUsL4EUIQy8e32MIrVIbgyoHnYL3W+d2NEy+TpJknZvqK
+         Uk5Ik8WwUqJlzfZ0YO6/VxNdVqAUPWRYCLb+Oty/qvZIi9jygZrXuniIhvdLoZhuAuNK
+         XezQ==
+X-Gm-Message-State: AOAM531OcfkKvBvDQlW7iVMNxB6JWBDlwVYrfDr2fUp0uZvLysYoXtja
+        ZbBrb/8+yEiSEwMPUo8of/MxpQ==
+X-Google-Smtp-Source: ABdhPJyjK+cseOpauaCEYkJSxmOEm7lMp3SVSrhTVW0tyOit41rfYetFtw7kZrCji3qezu8PJBGa7g==
+X-Received: by 2002:a9d:5f07:: with SMTP id f7mr32002492oti.183.1629816287441;
+        Tue, 24 Aug 2021 07:44:47 -0700 (PDT)
+Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id m206sm4378456oif.23.2021.08.24.07.44.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 07:44:47 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 07:46:04 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        An?bal Lim?n <anibal.limon@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: db410c: Update firmware-name for wcnss
+ and mpss
+Message-ID: <YSUGLFx2QST9vgIU@ripper>
+References: <20200108055735.660475-1-bjorn.andersson@linaro.org>
+ <20210217223406.1422005-1-anibal.limon@linaro.org>
+ <CAA8EJpqXyQCFGgTRk+dqxD6TdJycLeGx4EQ0OBov5_3hVogM1g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210811025920.20751-1-zhouzhouyi@gmail.com> <YST4vtfcbJGKqoYD@hirez.programming.kicks-ass.net>
-In-Reply-To: <YST4vtfcbJGKqoYD@hirez.programming.kicks-ass.net>
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Tue, 24 Aug 2021 22:45:07 +0800
-Message-ID: <CAABZP2zkTtOTknzvr0WkA+FprwzaYOP6QWk_FThMGaYTsoP_SA@mail.gmail.com>
-Subject: Re: [PATCH V2][RFC] lockdep: improve comments in wait-type checks
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rcu <rcu@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA8EJpqXyQCFGgTRk+dqxD6TdJycLeGx4EQ0OBov5_3hVogM1g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 9:50 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Aug 11, 2021 at 10:59:20AM +0800, Zhouyi Zhou wrote:
-> > comments in wait-type checks be improved by mentioning the
-> > PREEPT_RT kernel configure option.
-> >
-> > Many thanks
-> > Zhouyi
-> >
-> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
->
-> Acked goes after sobs, fixed that for you.
->
-> Thanks!
-Sincere thanks for your help and guidance
+On Tue 24 Aug 05:39 PDT 2021, Dmitry Baryshkov wrote:
 
-Zhouyi ;-)
+> On Thu, 18 Feb 2021 at 01:38, Aníbal Limón <anibal.limon@linaro.org> wrote:
+> >
+> > From: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >
+> > Enable the mpss remoteproc node and specify the firmware-name for this
+> > and the wcnss remoteproc on the Dragonboard 410c.
+> >
+> > Link: https://lore.kernel.org/r/20200108055735.660475-1-bjorn.andersson@linaro.org
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > [rebased and moved to use pronto label]
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > Tested-by: Aníbal Limón <anibal.limon@linaro.org>
+> 
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+
+Thanks Dmitry, not sure why this hasn't been merged yet.
+
+Taking a further look at this I noticed that we never pushed the
+firmware to linux-firmware either, which I think was because we where
+uncertain of the directory structure at the time - a discussion which
+has been settled since.
+
+> > ---
+> >  arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > index 3c7f97539390..8f1ada75d3ed 100644
+> > --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> > @@ -301,6 +301,11 @@ &lpass {
+> >         status = "okay";
+> >  };
+> >
+> > +&mpss {
+> > +       status = "okay";
+> > +       firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mdt";
+
+But if we're pushing things to linux-firmware, does anyone object
+against following the existing style and squashing the mdt+bNN files
+into .mbn (and thereby making this modem.mbn and below wcnss.mbn)?
+
+Regards,
+Bjorn
+
+> > +};
+> > +
+> >  &pm8916_resin {
+> >         status = "okay";
+> >         linux,code = <KEY_VOLUMEDOWN>;
+> > @@ -308,6 +313,7 @@ &pm8916_resin {
+> >
+> >  &pronto {
+> >         status = "okay";
+> > +       firmware-name = "qcom/msm8916/wcnss.mdt";
+> >  };
+> >
+> >  &sdhc_1 {
+> > --
+> > 2.30.0
+> >
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
