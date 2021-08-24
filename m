@@ -2,473 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F2E3F6A5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C671E3F6A60
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 22:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbhHXUVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 16:21:03 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:41658 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbhHXUVC (ORCPT
+        id S234912AbhHXU3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 16:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232122AbhHXU3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 16:21:02 -0400
-Received: by mail-ot1-f43.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso34570762ota.8;
-        Tue, 24 Aug 2021 13:20:17 -0700 (PDT)
+        Tue, 24 Aug 2021 16:29:12 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510D6C061757;
+        Tue, 24 Aug 2021 13:28:25 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id b64so10821077qkg.0;
+        Tue, 24 Aug 2021 13:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to;
+        bh=MljK3PLZzRJ/Nu5jyOet8tAx8GtKQDOv8ezr+rdqbS4=;
+        b=TW6Iqf2c37Vx+rJ0G6FNrfQUoUv42SAL7fQorfyTuUzULE1O5CeiyeWFdFuVSC2GSE
+         fgv3einHPmnWVvylVSTXx/JOgTB5Vk1X8j0+8ZoJNZcD0KS0bJ4sqHWvs1t98XFrwk2c
+         C9PSype7Xsh5Cbl7PxY/AyCpgJ48xWj5e7V1/UgNKyMHzMqlltHDNBdwreFzeGTcsAiL
+         8EedEPjj8XxRBuoH7ruf63+g2uHD7j8IZaZxld28MqSsy1Pg4vajiaGmbDmtBaI/wG6M
+         0GWyzxcLAFFUJyROd+/1v/9a7nkOkHNEhly3EMfW0kZwndfVHyH/3KZwQATtCzOseLtc
+         ay1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XGOKN6mGxhbzHX6KGLM07SrG99SjeiH8yw3t71J8Izs=;
-        b=biM8640T7a8wqUrJzY+WI2/BQ9U8XlyImlRA5gHZtpN6K2AYQ/P729WabmoEB1CaK5
-         rwE+BhZ1jcGdBcp7+hipwEzCQx/vpKBT9tllEi7AMjcHRHUgFMk+vppBKsRZT3TegXex
-         XucL7BPg9xbIW3NBdAW5UI+SDimbOPUR7aPRPcZlaE3g/pvbvCDnU+SW8eYbvdLkC0fr
-         ES9CRZ1lusN2e9L1sAzvOemVwhtB+M5BFOoeSh1CLVWFcTrUX6OzG7RCF8p/5FmzbTZk
-         4iTGfz2XBsJ/nTcrhhlyNbEmdvLpKX4R7R0VeLEoFm4nACkhhP2iI5yUtVrqa5YsHoph
-         0GGQ==
-X-Gm-Message-State: AOAM53043bj3WkgtXznEoubri3kQ0rO7qJ0glV5VyHKGkzokkYNxDVLf
-        MCfPnhBSd8oG264QkHEIY7j37n418Q==
-X-Google-Smtp-Source: ABdhPJw3e++rFJpQspnKwHqFcPLi3Yo+Es3bmpPs1nlv0eJUlxfR2mBSgz2g8EfK28QcsnnNwzNS0w==
-X-Received: by 2002:a05:6808:54f:: with SMTP id i15mr4278045oig.121.1629836416392;
-        Tue, 24 Aug 2021 13:20:16 -0700 (PDT)
-Received: from xps15.herring.priv (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.googlemail.com with ESMTPSA id h14sm4810168otm.5.2021.08.24.13.20.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to;
+        bh=MljK3PLZzRJ/Nu5jyOet8tAx8GtKQDOv8ezr+rdqbS4=;
+        b=g/kHztEwyhYbbBDCVAeQ9W9MzebApoYj5lWLSllbP2T/GCFhAJxZK8dbEUwBO+m+6v
+         dh+zXlgsSztoNXzAKECuBjWwJeW30PuRL3/aPV669vOlqv1IAARPxPfLHho1kvUXBwyD
+         Yj3WoPXAzwTHFqYDIbxAsvEQ1GwNcFyL7/71KAQwuup1pSqf+w2wjGvHaFN5uqoWq9FI
+         0Z08WPw6nSIImtiLPAy89vPiLIGERNAHNNxsxPwjFkr2DfZWmByhc2o78a5JK+0uJKqt
+         I91GUiwDGS2wvGFscE3G31KqdaErZT7U8fDCRAywQDvlWEKmnzxxcd6eIj0cfv9L64yu
+         9mBg==
+X-Gm-Message-State: AOAM532Avk9CxIMJ+gq4XUkwNHHlbfOQIVqxPeBhP6u10IKL+QGq7WEu
+        09WJwSlI18u4qdVVLQDyYWFXDPAS3OM=
+X-Google-Smtp-Source: ABdhPJzpM87ltr/K8kgzcIL120p8yqOpY/aQTLGWoXAtQ54etEetW4e+TymXGf1WAu2tK7flOqWd+w==
+X-Received: by 2002:a05:620a:c05:: with SMTP id l5mr28827399qki.17.1629836904336;
+        Tue, 24 Aug 2021 13:28:24 -0700 (PDT)
+Received: from shaak (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id y15sm11417784qko.78.2021.08.24.13.28.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 13:20:15 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Vignesh R <vigneshr@ti.com>, Marc Zyngier <maz@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH] dt-bindings: Use 'enum' instead of 'oneOf' plus 'const' entries
-Date:   Tue, 24 Aug 2021 15:20:14 -0500
-Message-Id: <20210824202014.978922-1-robh@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 24 Aug 2021 13:28:23 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 16:28:21 -0400
+From:   Liam Beguin <liambeguin@gmail.com>
+To:     Peter Rosin <peda@axentia.se>, jic23@kernel.org, lars@metafoo.de
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v8 09/14] iio: afe: rescale: fix accuracy for small
+Message-ID: <YSVWZcjW8QoDaSpN@shaak>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d028a60-d1fe-7fa1-da4a-0d80f8d468ea@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 'enum'
-is more concise and yields better error messages.
+On Mon Aug 23, 2021 at 00:18:55 +0200, Peter Rosin wrote:
+> [I started to write an answer to your plans in the v7 thread, but didn't
+> have time to finish before v8 appeared...]
+> 
+> On 2021-08-20 21:17, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> > 
+> > The approximation caused by integer divisions can be costly on smaller
+> > scale values since the decimal part is significant compared to the
+> > integer part. Switch to an IIO_VAL_INT_PLUS_NANO scale type in such
+> > cases to maintain accuracy.
+> 
 
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Vignesh R <vigneshr@ti.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: dmaengine@vger.kernel.org
-Cc: linux-i2c@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-pci@vger.kernel.org
-Cc: linux-phy@lists.infradead.org
-Cc: linux-serial@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Cc: linux-spi@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/display/msm/dsi-phy-10nm.yaml           |  6 +++---
- .../bindings/display/msm/dsi-phy-14nm.yaml           |  6 +++---
- .../bindings/display/msm/dsi-phy-28nm.yaml           |  8 ++++----
- .../bindings/dma/allwinner,sun6i-a31-dma.yaml        | 12 ++++++------
- .../devicetree/bindings/firmware/arm,scpi.yaml       |  6 +++---
- .../devicetree/bindings/i2c/ti,omap4-i2c.yaml        | 10 +++++-----
- .../interrupt-controller/loongson,liointc.yaml       |  8 ++++----
- .../devicetree/bindings/media/i2c/mipi-ccs.yaml      |  8 ++++----
- .../devicetree/bindings/mfd/ti,lp87565-q1.yaml       |  6 +++---
- .../devicetree/bindings/net/realtek-bluetooth.yaml   |  8 ++++----
- .../bindings/net/ti,k3-am654-cpsw-nuss.yaml          |  8 ++++----
- .../devicetree/bindings/net/ti,k3-am654-cpts.yaml    |  6 +++---
- Documentation/devicetree/bindings/pci/loongson.yaml  |  8 ++++----
- .../devicetree/bindings/phy/intel,lgm-emmc-phy.yaml  |  6 +++---
- .../devicetree/bindings/serial/8250_omap.yaml        |  9 +++++----
- .../devicetree/bindings/sound/qcom,sm8250.yaml       |  6 +++---
- .../devicetree/bindings/sound/tlv320adcx140.yaml     |  8 ++++----
- .../devicetree/bindings/spi/realtek,rtl-spi.yaml     | 12 ++++++------
- .../devicetree/bindings/timer/arm,sp804.yaml         |  6 +++---
- 19 files changed, 74 insertions(+), 73 deletions(-)
+Hi Peter,
 
-diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
-index 4a26bef19360..4399715953e1 100644
---- a/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
-@@ -14,9 +14,9 @@ allOf:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: qcom,dsi-phy-10nm
--      - const: qcom,dsi-phy-10nm-8998
-+    enum:
-+      - qcom,dsi-phy-10nm
-+      - qcom,dsi-phy-10nm-8998
- 
-   reg:
-     items:
-diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
-index 72a00cce0147..064df50e21a5 100644
---- a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
-@@ -14,9 +14,9 @@ allOf:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: qcom,dsi-phy-14nm
--      - const: qcom,dsi-phy-14nm-660
-+    enum:
-+      - qcom,dsi-phy-14nm
-+      - qcom,dsi-phy-14nm-660
- 
-   reg:
-     items:
-diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml
-index b106007116b4..69eecaa64b18 100644
---- a/Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml
-@@ -14,10 +14,10 @@ allOf:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: qcom,dsi-phy-28nm-hpm
--      - const: qcom,dsi-phy-28nm-lp
--      - const: qcom,dsi-phy-28nm-8960
-+    enum:
-+      - qcom,dsi-phy-28nm-hpm
-+      - qcom,dsi-phy-28nm-lp
-+      - qcom,dsi-phy-28nm-8960
- 
-   reg:
-     items:
-diff --git a/Documentation/devicetree/bindings/dma/allwinner,sun6i-a31-dma.yaml b/Documentation/devicetree/bindings/dma/allwinner,sun6i-a31-dma.yaml
-index c1676b96daac..a6df6f8b54db 100644
---- a/Documentation/devicetree/bindings/dma/allwinner,sun6i-a31-dma.yaml
-+++ b/Documentation/devicetree/bindings/dma/allwinner,sun6i-a31-dma.yaml
-@@ -19,12 +19,12 @@ properties:
-     description: The cell is the request line number.
- 
-   compatible:
--    oneOf:
--      - const: allwinner,sun6i-a31-dma
--      - const: allwinner,sun8i-a23-dma
--      - const: allwinner,sun8i-a83t-dma
--      - const: allwinner,sun8i-h3-dma
--      - const: allwinner,sun8i-v3s-dma
-+    enum:
-+      - allwinner,sun6i-a31-dma
-+      - allwinner,sun8i-a23-dma
-+      - allwinner,sun8i-a83t-dma
-+      - allwinner,sun8i-h3-dma
-+      - allwinner,sun8i-v3s-dma
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/firmware/arm,scpi.yaml b/Documentation/devicetree/bindings/firmware/arm,scpi.yaml
-index d7113b06454b..23b346bd1252 100644
---- a/Documentation/devicetree/bindings/firmware/arm,scpi.yaml
-+++ b/Documentation/devicetree/bindings/firmware/arm,scpi.yaml
-@@ -131,9 +131,9 @@ properties:
- 
-         properties:
-           compatible:
--            oneOf:
--              - const: arm,scpi-dvfs-clocks
--              - const: arm,scpi-variable-clocks
-+            enum:
-+              - arm,scpi-dvfs-clocks
-+              - arm,scpi-variable-clocks
- 
-           '#clock-cells':
-             const: 1
-diff --git a/Documentation/devicetree/bindings/i2c/ti,omap4-i2c.yaml b/Documentation/devicetree/bindings/i2c/ti,omap4-i2c.yaml
-index ff165ad1bee8..db0843be91c5 100644
---- a/Documentation/devicetree/bindings/i2c/ti,omap4-i2c.yaml
-+++ b/Documentation/devicetree/bindings/i2c/ti,omap4-i2c.yaml
-@@ -72,11 +72,11 @@ additionalProperties: false
- if:
-   properties:
-     compatible:
--      oneOf:
--        - const: ti,omap2420-i2c
--        - const: ti,omap2430-i2c
--        - const: ti,omap3-i2c
--        - const: ti,omap4-i2c
-+      enum:
-+        - ti,omap2420-i2c
-+        - ti,omap2430-i2c
-+        - ti,omap3-i2c
-+        - ti,omap4-i2c
- 
- then:
-   properties:
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-index edf26452dc72..750cc44628e9 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-@@ -19,10 +19,10 @@ allOf:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: loongson,liointc-1.0
--      - const: loongson,liointc-1.0a
--      - const: loongson,liointc-2.0
-+    enum:
-+      - loongson,liointc-1.0
-+      - loongson,liointc-1.0a
-+      - loongson,liointc-2.0
- 
-   reg:
-     minItems: 1
-diff --git a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-index 701f4e0d138f..39395ea8c318 100644
---- a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-@@ -83,10 +83,10 @@ properties:
-           link-frequencies: true
-           data-lanes: true
-           bus-type:
--            oneOf:
--              - const: 1 # CSI-2 C-PHY
--              - const: 3 # CCP2
--              - const: 4 # CSI-2 D-PHY
-+            enum:
-+              - 1 # CSI-2 C-PHY
-+              - 3 # CCP2
-+              - 4 # CSI-2 D-PHY
- 
-         required:
-           - link-frequencies
-diff --git a/Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml b/Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml
-index 48d4d53c25f9..012d25111054 100644
---- a/Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml
-+++ b/Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml
-@@ -11,9 +11,9 @@ maintainers:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: ti,lp87565
--      - const: ti,lp87565-q1
-+    enum:
-+      - ti,lp87565
-+      - ti,lp87565-q1
- 
-   reg:
-     description: I2C slave address
-diff --git a/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml b/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
-index 4f485df69ac3..0634e69dd9a6 100644
---- a/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
-+++ b/Documentation/devicetree/bindings/net/realtek-bluetooth.yaml
-@@ -17,10 +17,10 @@ description:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: "realtek,rtl8723bs-bt"
--      - const: "realtek,rtl8723cs-bt"
--      - const: "realtek,rtl8822cs-bt"
-+    enum:
-+      - realtek,rtl8723bs-bt
-+      - realtek,rtl8723cs-bt
-+      - realtek,rtl8822cs-bt
- 
-   device-wake-gpios:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/net/ti,k3-am654-cpsw-nuss.yaml b/Documentation/devicetree/bindings/net/ti,k3-am654-cpsw-nuss.yaml
-index 783b9e32cf66..4b97a0f1175b 100644
---- a/Documentation/devicetree/bindings/net/ti,k3-am654-cpsw-nuss.yaml
-+++ b/Documentation/devicetree/bindings/net/ti,k3-am654-cpsw-nuss.yaml
-@@ -53,10 +53,10 @@ properties:
-   "#size-cells": true
- 
-   compatible:
--    oneOf:
--      - const: ti,am654-cpsw-nuss
--      - const: ti,j721e-cpsw-nuss
--      - const: ti,am642-cpsw-nuss
-+    enum:
-+      - ti,am654-cpsw-nuss
-+      - ti,j721e-cpsw-nuss
-+      - ti,am642-cpsw-nuss
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/net/ti,k3-am654-cpts.yaml b/Documentation/devicetree/bindings/net/ti,k3-am654-cpts.yaml
-index 4317eba503ca..1a81bf70c88c 100644
---- a/Documentation/devicetree/bindings/net/ti,k3-am654-cpts.yaml
-+++ b/Documentation/devicetree/bindings/net/ti,k3-am654-cpts.yaml
-@@ -45,9 +45,9 @@ properties:
-     pattern: "^cpts@[0-9a-f]+$"
- 
-   compatible:
--    oneOf:
--      - const: ti,am65-cpts
--      - const: ti,j721e-cpts
-+    enum:
-+      - ti,am65-cpts
-+      - ti,j721e-cpts
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/pci/loongson.yaml b/Documentation/devicetree/bindings/pci/loongson.yaml
-index 82bc6c486ca3..a8324a9bd002 100644
---- a/Documentation/devicetree/bindings/pci/loongson.yaml
-+++ b/Documentation/devicetree/bindings/pci/loongson.yaml
-@@ -17,10 +17,10 @@ allOf:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: loongson,ls2k-pci
--      - const: loongson,ls7a-pci
--      - const: loongson,rs780e-pci
-+    enum:
-+      - loongson,ls2k-pci
-+      - loongson,ls7a-pci
-+      - loongson,rs780e-pci
- 
-   reg:
-     minItems: 1
-diff --git a/Documentation/devicetree/bindings/phy/intel,lgm-emmc-phy.yaml b/Documentation/devicetree/bindings/phy/intel,lgm-emmc-phy.yaml
-index edd9d70a672a..954e67571dfd 100644
---- a/Documentation/devicetree/bindings/phy/intel,lgm-emmc-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/intel,lgm-emmc-phy.yaml
-@@ -23,9 +23,9 @@ description: |+
- 
- properties:
-   compatible:
--    oneOf:
--      - const: intel,lgm-emmc-phy
--      - const: intel,keembay-emmc-phy
-+    enum:
-+      - intel,lgm-emmc-phy
-+      - intel,keembay-emmc-phy
- 
-   "#phy-cells":
-     const: 0
-diff --git a/Documentation/devicetree/bindings/serial/8250_omap.yaml b/Documentation/devicetree/bindings/serial/8250_omap.yaml
-index 1c826fcf5828..c987fb648c3c 100644
---- a/Documentation/devicetree/bindings/serial/8250_omap.yaml
-+++ b/Documentation/devicetree/bindings/serial/8250_omap.yaml
-@@ -90,10 +90,11 @@ additionalProperties: false
- if:
-   properties:
-     compatible:
--      oneOf:
--        - const: ti,omap2-uart
--        - const: ti,omap3-uart
--        - const: ti,omap4-uart
-+      contains:
-+        enum:
-+          - ti,omap2-uart
-+          - ti,omap3-uart
-+          - ti,omap4-uart
- 
- then:
-   properties:
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-index 72ad9ab91832..7d57eb91657a 100644
---- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -15,9 +15,9 @@ description:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: qcom,sm8250-sndcard
--      - const: qcom,qrb5165-rb5-sndcard
-+    enum:
-+      - qcom,sm8250-sndcard
-+      - qcom,qrb5165-rb5-sndcard
- 
-   audio-routing:
-     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-index 54d64785aad2..d77c8283526d 100644
---- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-+++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-@@ -24,10 +24,10 @@ description: |
- 
- properties:
-   compatible:
--    oneOf:
--      - const: ti,tlv320adc3140
--      - const: ti,tlv320adc5140
--      - const: ti,tlv320adc6140
-+    enum:
-+      - ti,tlv320adc3140
-+      - ti,tlv320adc5140
-+      - ti,tlv320adc6140
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/spi/realtek,rtl-spi.yaml b/Documentation/devicetree/bindings/spi/realtek,rtl-spi.yaml
-index 30a62a211984..2f938c293f70 100644
---- a/Documentation/devicetree/bindings/spi/realtek,rtl-spi.yaml
-+++ b/Documentation/devicetree/bindings/spi/realtek,rtl-spi.yaml
-@@ -15,12 +15,12 @@ allOf:
- 
- properties:
-   compatible:
--    oneOf:
--      - const: realtek,rtl8380-spi
--      - const: realtek,rtl8382-spi
--      - const: realtek,rtl8391-spi
--      - const: realtek,rtl8392-spi
--      - const: realtek,rtl8393-spi
-+    enum:
-+      - realtek,rtl8380-spi
-+      - realtek,rtl8382-spi
-+      - realtek,rtl8391-spi
-+      - realtek,rtl8392-spi
-+      - realtek,rtl8393-spi
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/timer/arm,sp804.yaml b/Documentation/devicetree/bindings/timer/arm,sp804.yaml
-index 960e2bd66a97..41be7cdab2ec 100644
---- a/Documentation/devicetree/bindings/timer/arm,sp804.yaml
-+++ b/Documentation/devicetree/bindings/timer/arm,sp804.yaml
-@@ -23,9 +23,9 @@ select:
-   properties:
-     compatible:
-       contains:
--        oneOf:
--          - const: arm,sp804
--          - const: hisilicon,sp804
-+        enum:
-+          - arm,sp804
-+          - hisilicon,sp804
-   required:
-     - compatible
- 
--- 
-2.30.2
+Thanks for taking time to look at this in detail again. I really
+appreciate all the feedback you've provided.
 
+> The conversion to int-plus-nano may also carry a cost of accuracy.
+> 
+> 90/1373754273 scaled by 261/509 is 3.359e-8, the old code returns 3.348e-8,
+> but the new one gets you 3.3e-8 (0.000000033, it simply cannot provide more
+> digits). So, in this case you lose precision with the new code.
+> 
+> Similar problem with 100 / 2^30 scaled by 3782/7000. It is 5.032e-8, the old
+> code returns 5.029e-8, but the new one gets you the inferior 5.0e-8.
+> 
+
+I see what you mean here.
+I added test cases with these values to see exactly what we get.
+
+Expected rel_ppm < 0, but
+    rel_ppm == 1000000
+
+     real=0.000000000
+ expected=0.000000033594
+# iio_rescale_test_scale: not ok 42 - v8 - 90/1373754273 scaled by 261/509
+Expected rel_ppm < 0, but
+    rel_ppm == 1000000
+
+     real=0.000000000
+ expected=0.000000050318
+# iio_rescale_test_scale: not ok 43 - v8 - 100/1073741824 scaled by 3782/7000
+
+
+The main issue is that the first two examples return 0 which night be worst
+that loosing a little precision.
+
+At the same time, I wonder how "real" these values would be. Having such a
+small scale would mean having a large raw value. With 16-bits of resolution,
+that would still give about (1 << 16) * 3.3594e-08 = 0.002201616 mV.
+
+We could try to get more precision out of the first division
+
+	tmp = (s64)*val * 1000000000LL;
+	tmp = div_s64(tmp, rescale->denominator);
+	tmp *= rescale->numerator;
+	tmp = div_s64_rem(tmp, 1000000000LL, &rem);
+
+But then, we'd be more likely to overflow. What would be a good middle
+ground?
+
+> I'm also wondering if it is wise to not always return the same scale type?
+> What happens if we want to extend this driver to scale a buffered channel?
+> Honest question! I don't know, but I fear that this patch may make that
+> step more difficult to take??
+
+That's a fair point, I didn't know it could be a problem to change
+scale.
+
+> 
+> Jonathan, do you have any input on that?
+> 
+> Some more examples of problematic properties of this patch:
+> 
+> 21837/24041 scaled by 427/24727 is 0.01568544672, you get 0.015685446. Ok.
+> But if you reduce the input number, gcd(21837, 24041) -> 29, you have:
+> 753/829 scaled by 427/24727 which still is 0.01568544672 of course, but in
+> this case you get 0.01568154403. Which is less precise. It is unfortunate
+> that input that should be easier to scale may yield worse results.
+
+Expected rel_ppm < 0, but
+    rel_ppm == 0
+
+     real=0.015685445
+ expected=0.015685446719
+# iio_rescale_test_scale: not ok 44 - v8 - 21837/24041 scaled by 427/24727
+Expected rel_ppm < 0, but
+    rel_ppm == 0
+
+     real=0.015685445
+ expected=0.015685446719
+# iio_rescale_test_scale: not ok 45 - v8 - 753/829 scaled by 427/24727
+
+It seems like both cases are rounded and give the same result. I do get
+your point though, values that could be simplified might loose more
+precision because of this change in scale type.
+
+> 
+> 760/1373754273 scaled by 427/2727 is 8.662580e-8, and 8.662393e-8 is
+> returned. Which is perhaps not great accuracy, but such is life. However.
+> 761/1373754273 scaled by 427/2727 is 8.673978e-8, which is of course
+> greater, but 8.6e-8 is returned. Which is less than what was returned for
+> the smaller 760/1373754273 value above.
+
+Expected rel_ppm < 0, but
+    rel_ppm == 1000000
+
+     real=0.000000000
+ expected=0.000000086626
+# iio_rescale_test_scale: not ok 46 - v8 - 760/1373754273 scaled by 427/2727
+Expected rel_ppm < 0, but
+    rel_ppm == 1000000
+
+     real=0.000000000
+ expected=0.000000086740
+# iio_rescale_test_scale: not ok 47 - v8 - 761/1373754273 scaled by 427/2727
+
+We fall into the same case as the first two examples where the real value is
+null.
+
+Considering these null values and the possible issue of not always having the
+same scale type, would it be better to always return an IIO_VAL_INT_PLUS_NANO
+scale?
+
+> 
+> Some of these objections are related to what I talked about in v7, i.e.:
+> 
+>     Also, changing the calculation so that you get more precision whenever that is
+>     possible feels dangerous. I fear linearity breaks and that bigger input cause
+>     smaller output due to rounding if the bigger value has to be rounded down, but
+>     that this isn't done carefully enough. I.e. attempting to return an exact
+>     fraction and only falling back to the old code when that is not possible is
+>     still not safe since the old code isn't careful enough about rounding. I think
+>     it is really important that bigger input cause bigger (or equal) output.
+>     Otherwise you might trigger instability in feedback loops should a rescaler be
+>     involved in a some regulator function.
+
+I think I didn't read this closely enought the first time around. I agree that
+bigger inputs should cause bigger outputs, especially with these rounding
+errors. My original indention was to have all scales withing a tight margin,
+that's why I ended up going with ppm for the test cases.
+
+> 
+> Sadly, I see no elegant solution to your problem.
+> 
+> One way forward may be to somehow provide information on the expected
+> input range, and then determine the scaling method based on that
+> instead of the individual values. But, as indicated, there's no real
+> elegance in that. It can't be automated...
+
+I guess the issue with that is that unless it's a user parameter, we're
+always going go have these little islands you mentioned in v7...
+
+Would it be viable to guaranty a MICRO precision instead of NANO, and
+not have the range parameter?
+
+> 
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  drivers/iio/afe/iio-rescale.c | 27 +++++++++++++++++++++++++--
+> >  1 file changed, 25 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/afe/iio-rescale.c b/drivers/iio/afe/iio-rescale.c
+> > index c408c4057c08..7304306c9806 100644
+> > --- a/drivers/iio/afe/iio-rescale.c
+> > +++ b/drivers/iio/afe/iio-rescale.c
+> > @@ -22,7 +22,7 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+> >  			  int *val, int *val2)
+> >  {
+> >  	s64 tmp;
+> > -	s32 rem;
+> > +	s32 rem, rem2;
+> >  	u32 mult;
+> >  	u32 neg;
+> >  
+> > @@ -38,8 +38,31 @@ int rescale_process_scale(struct rescale *rescale, int scale_type,
+> >  		tmp = (s64)*val * 1000000000LL;
+> >  		tmp = div_s64(tmp, rescale->denominator);
+> >  		tmp *= rescale->numerator;
+> > -		tmp = div_s64(tmp, 1000000000LL);
+> > +
+> > +		tmp = div_s64_rem(tmp, 1000000000LL, &rem);
+> >  		*val = tmp;
+> > +
+> > +		/*
+> > +		 * For small values, the approximation can be costly,
+> > +		 * change scale type to maintain accuracy.
+> > +		 *
+> > +		 * 100 vs. 10000000 NANO caps the error to about 100 ppm.
+> > +		 */
+> > +		if (scale_type == IIO_VAL_FRACTIONAL)
+> > +			tmp = *val2;
+> > +		else
+> > +			tmp = 1 << *val2;
+> > +
+> > +		 if (abs(rem) > 10000000 && abs(*val / tmp) < 100) {
+> > +			 *val = div_s64_rem(*val, tmp, &rem2);
+> > +
+> > +			 *val2 = div_s64(rem, tmp);
+> > +			 if (rem2)
+> > +				 *val2 += div_s64(rem2 * 1000000000LL, tmp);
+> 
+> rem2 is 32-bit. Might 1000000000LL also be 32-bit on a small machine
+> where 64-bit arithmetic is really expensive? In that case, the above
+> is broken. The safe route is to do these things as in the existing
+> code with a cast to s64. But maybe that's just cargo cult crap?
+
+You're right, this should be
+
+	div_s64((s64)rem2 * 1000000000LL, tmp);
+
+I've been trying th get the kunit tests running on a 32-bit kernel image, but
+I'm still having issues with that...
+
+Thanks,
+Liam
+
+> 
+> Cheers,
+> Peter
+> 
+> > +
+> > +			 return IIO_VAL_INT_PLUS_NANO;
+> > +		 }
+> > +
+> >  		return scale_type;
+> >  	case IIO_VAL_INT_PLUS_NANO:
+> >  	case IIO_VAL_INT_PLUS_MICRO:
+> > 
+> 
