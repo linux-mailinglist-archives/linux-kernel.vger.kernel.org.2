@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D3A3F56F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 06:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685003F5713
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 06:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhHXEHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 00:07:11 -0400
-Received: from mga07.intel.com ([134.134.136.100]:30117 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhHXEHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 00:07:10 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="280947451"
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="280947451"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 21:06:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="535624137"
-Received: from lxy-dell.sh.intel.com ([10.239.159.31])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Aug 2021 21:06:23 -0700
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     x86@kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xiaoyao.li@intel.com
-Subject: [PATCH] perf/x86/intel/pt: Fix mask of num_address_ranges
-Date:   Tue, 24 Aug 2021 12:06:22 +0800
-Message-Id: <20210824040622.4081502-1-xiaoyao.li@intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S229871AbhHXEMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 00:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhHXEMk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 00:12:40 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F63C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 21:11:56 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id a10so12860502qka.12
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 21:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J5nqTZLSuxo3DQ5K9VNaj5WnKrocoSQTvklVIFPFGUg=;
+        b=EN9/15pNIOAR8FCdIoeaDO5JNKwJuCDc0wz8L9MklghzCLF1e2g/PZoXOIpfaUaR+E
+         LxIURiKQ1Kx0QMVPKv+29V146xy+tps921hu1EvVQ0u9hg3pKYkVC4LBtYq20+0hdCZf
+         PJRlaxzaVyE4Vgxwg+4IzYqtrfq8RUiZ0Ziai4sDkZchuvVH/1NZBcFp/jU7/42X8ucm
+         9vDGxf5wEaRYg/y/TStgmALV2+EnJ7xgrHzQfdR7Z4qV3fmegp/Bc4VsX6tMs3gfQ9xw
+         VxSRMK5D7homloCHV/Ieu1+c9YN6OgpRL/EMFa2mUjV0M3Re8xzxgmxMZKeuy07ZY8VM
+         ogwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J5nqTZLSuxo3DQ5K9VNaj5WnKrocoSQTvklVIFPFGUg=;
+        b=t0G/plPpg1kQXIxacCqqLDCylgHuIfJDbeiTvp+tpOBtA4dk2DCI5UlORF0aA/waDr
+         p3erisgbt1bGlB+QXnqXAfvb+ssl/cIYkniiv0DyJD7TEt41I+1gDk9HmkhoIMN3hTCb
+         3x7kZe1u0HR4QRXAPpYbDcKXjgCDUQgZOAh3iWhbuHLvShx6q3gcv+koSDdMYZSWlA7d
+         iGzzxjQaJRoL6trdireJDFysqyDSbihEW6Pti7p/4dO69gIr0Je8+0T+OhWcWy7Nn4Op
+         14i1eX/QEXb+m83JdOCLwhpDOj74/O5jXKJYf6qZOLhS0MOWcFpjdrnpnmt671948fuL
+         iXmg==
+X-Gm-Message-State: AOAM5334TzrG08x06F7u7HWkvBls1/QtKzgKBILhyS7mISzdXlMjNBO8
+        7Nltu+dxYUTYwnDfxYqpjR7JMO81X1w=
+X-Google-Smtp-Source: ABdhPJyMBFillIIpmyOFGMTbulwpelMtFio9TBmKr5wmoAU7uXOMktplTfcJMzbVTCrl0b3uZjtI5w==
+X-Received: by 2002:a37:d54:: with SMTP id 81mr24213606qkn.103.1629778315972;
+        Mon, 23 Aug 2021 21:11:55 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id k9sm7555742qtj.12.2021.08.23.21.11.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 21:11:55 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jing Yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] arm:nommu: fix boolreturn.cocci warnings
+Date:   Mon, 23 Aug 2021 21:11:12 -0700
+Message-Id: <20210824041112.57915-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per SDM, bit 2:0 of CPUID(0x14,1).EAX[2:0] reports the number of
-configurable address ranges for filtering, not bit 1:0.
+From: Jing Yangyang <jing.yangyang@zte.com.cn>
 
-Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Acked-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+./arch/arm/mm/nommu.c:59:8-9:WARNING:return of 0/1 in function
+'security_extensions_enabled' with return type bool
+
+Return statements in functions returning bool should use true/false
+instead of 1/0.
+
+Generated by: scripts/coccinelle/misc/boolreturn.cocci
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
 ---
- arch/x86/events/intel/pt.c | 2 +-
+ arch/arm/mm/nommu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
-index 915847655c06..b044577785bb 100644
---- a/arch/x86/events/intel/pt.c
-+++ b/arch/x86/events/intel/pt.c
-@@ -62,7 +62,7 @@ static struct pt_cap_desc {
- 	PT_CAP(single_range_output,	0, CPUID_ECX, BIT(2)),
- 	PT_CAP(output_subsys,		0, CPUID_ECX, BIT(3)),
- 	PT_CAP(payloads_lip,		0, CPUID_ECX, BIT(31)),
--	PT_CAP(num_address_ranges,	1, CPUID_EAX, 0x3),
-+	PT_CAP(num_address_ranges,	1, CPUID_EAX, 0x7),
- 	PT_CAP(mtc_periods,		1, CPUID_EAX, 0xffff0000),
- 	PT_CAP(cycle_thresholds,	1, CPUID_EBX, 0xffff),
- 	PT_CAP(psb_periods,		1, CPUID_EBX, 0xffff0000),
+diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
+index 2658f52..7256ac1 100644
+--- a/arch/arm/mm/nommu.c
++++ b/arch/arm/mm/nommu.c
+@@ -56,7 +56,7 @@ static inline bool security_extensions_enabled(void)
+ 	if ((read_cpuid_id() & 0x000f0000) == 0x000f0000)
+ 		return cpuid_feature_extract(CPUID_EXT_PFR1, 4) ||
+ 			cpuid_feature_extract(CPUID_EXT_PFR1, 20);
+-	return 0;
++	return false;
+ }
+ 
+ unsigned long setup_vectors_base(void)
 -- 
-2.27.0
+1.8.3.1
+
 
