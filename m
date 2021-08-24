@@ -2,179 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3063F5988
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D0F3F598B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbhHXH6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
+        id S234732AbhHXH7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234817AbhHXH6o (ORCPT
+        with ESMTP id S235086AbhHXH70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:58:44 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1FAC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:58:00 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id i28so43618748lfl.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:58:00 -0700 (PDT)
+        Tue, 24 Aug 2021 03:59:26 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FB8C061575;
+        Tue, 24 Aug 2021 00:58:42 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso11969274otv.12;
+        Tue, 24 Aug 2021 00:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SkL8eEEmKiR7pvO2SpdEQ+Oh8oZUTxJ0gPcBukqY2xk=;
-        b=jzMU9nCdzFi8j7hQPhlm+riPG8adjDQxBT3umncaJUchFtytnBJIfy/qCl+yOxbB/C
-         gmU8RaU+TBPvnp0umh/GBhVA3vvII7Yya12NSbVJ0eUA1GYs6ctnJ+gav+vW3vngIjX2
-         EPgpHqGPH3+TmQOwuZjLKA6COwItgxAUN6dbVkHfo3BsYCqsovtGXt2o/fn/srDP0Iil
-         2vt5p+EFJS4k3ZHjQ4A/3lPtga/5ppImLwHsW5ktdCXuIzBMLP885X+EYNvfkT6JEPfu
-         qwOjEWyaEV3F/Gw2Gv3ZSsNSU962ruoRCeIkqY4ltdJzTe2+hWGCbkhaZGgAjKyDnqf0
-         pE5g==
+        bh=qrGUvUS/KIDwQcIGab309fFc7Hn4+1ct5OaaYFM/29w=;
+        b=VK2uY5st1jpFwxGElDlSwRqwvHMQWk3FvqpkK+obuEI5jXsKB+8SdgVwl+6bPv/58v
+         l2yoQXoEmtAu06J372yv6LljhKdLHPQANcOadK505xe6S59BQ/0b+IKQ/oZOqQtHgk+G
+         xue21I2+r/Qok0h88jMeNibWgnya+7g6qCa4JOCkNZEXgYNgCKAhCtzNQHH3OU1IHbTu
+         nphEHtgUo213c8JuO0xxANIiM4zeJ4l7Zz58TLtvbknc9hmW2hkBPjX33/K8nYcLJ8c7
+         X/9t6CXKbYbggTmyHk5f/tNCnje+5QHEdtPHPGxlC2o3pObuUZAIAbOa+X5cp/7bYTAy
+         aofw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SkL8eEEmKiR7pvO2SpdEQ+Oh8oZUTxJ0gPcBukqY2xk=;
-        b=mGLPbsZh9IkTjvkcy1sUaV/PzkoD3Fzr3s4/OjVIYWsbx81JXWwEAfmeLe1VuM94lZ
-         Xj3pv1iqsaEUpHTFFr4Nnc7vDPhl5NtgB/Vna46zC560GK3oGL1aIl6U3Y8g/KXTKLdC
-         VvnumZEicEPBVIu6pwFusNCICzvtjVFlRBhLmgq97dfx2DvbxBZ1PzEdtbR23aAcnfkR
-         yrKyPcIBsPo5DmOxNe3q4o3nj+/lttDQAfF+Um42OeZDE8r58h5ORSB7cBJQyxvXbTVu
-         zfouQWyypfOLkfx1y0wmcdqL4vVk5JgjTmLi9fF57pXgeummN53MZs5ZEMN4nCzEMu2N
-         JXjQ==
-X-Gm-Message-State: AOAM531i8tfTi5tDRw1Cs67hpeXNYQpz1nxs3i/6yzWt+uGXTpr8SjpY
-        1jfX8sz38N+gtGuS/4LCT8pPaUAOfWiJiCx+9GoR4A==
-X-Google-Smtp-Source: ABdhPJyNSOeyrhIqJhKCCZa/ygabib95x7I1htBvbtt7Z+ZR4F3zoVJ4vyrdD99OYpuweJ1Rwday1P9uvrAtYyTdLbg=
-X-Received: by 2002:ac2:54a4:: with SMTP id w4mr19796521lfk.254.1629791878947;
- Tue, 24 Aug 2021 00:57:58 -0700 (PDT)
+        bh=qrGUvUS/KIDwQcIGab309fFc7Hn4+1ct5OaaYFM/29w=;
+        b=GwkGNafIZ5FkuEfOtZvcQRi+tKlSozpgId9IQY8s3AVFhZ57xYQvbKvwUQWIulAhzs
+         g7/y3zFM7lLix/BqxI67BHQCJsU2jorbFMFUFv2SyZJfQbIOhWV2tuk8YzXHulnQrnwl
+         I+nTud35Qv0gTPIJ9lJCuyngK6h4eclAduGPjPH/2DGNoWPT31sl2FDa7hlcQRjD51HI
+         pb1YbUrG4dkyea62N5RPWgjBKUqaSCwMqxX7v4p2ON8LioMWrb7RqfhLPtn4S6sDkg8b
+         PokiEfims0RJKxEOyjBmbtTb+uWS2zGAgCxXMeIdVo6DSlZ1T6U3WQXrEMZXr4HN2Ri7
+         VfxA==
+X-Gm-Message-State: AOAM530qkYSO5KLmY0qST27pFZUzDIbtfU0RDtV9wmZ7w4lyvhbjRs8K
+        4iLHal1j1IYbJ0OPHA7JVxH2XRtucLcGaFb7RYY=
+X-Google-Smtp-Source: ABdhPJz8Zixz9iOHRSHarGwc/mp2eUt5b8i28s21bK4CCcwVBiBuR+M3l80bTbzEGALKyz9y8jy/msoSHLG5FJM0r1w=
+X-Received: by 2002:a9d:36d:: with SMTP id 100mr30558391otv.237.1629791921865;
+ Tue, 24 Aug 2021 00:58:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210820010403.946838-1-joshdon@google.com> <20210820010403.946838-3-joshdon@google.com>
-In-Reply-To: <20210820010403.946838-3-joshdon@google.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Tue, 24 Aug 2021 09:57:47 +0200
-Message-ID: <CAKfTPtAN5tpux3rcvMR4PHdPL53=_bmX2pVtwjn7WmhsuxnZFA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] sched: account number of SCHED_IDLE entities on
- each cfs_rq
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210824071926.68019-1-benbjiang@gmail.com> <fe512c8b-6f5a-0210-3f23-2c1fc75cd6e5@tessares.net>
+In-Reply-To: <fe512c8b-6f5a-0210-3f23-2c1fc75cd6e5@tessares.net>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Tue, 24 Aug 2021 15:58:31 +0800
+Message-ID: <CAPJCdBmTPW5gcO6DO5i=T+R2TNypzbaA666krk=7Duf2mt1yBw@mail.gmail.com>
+Subject: Re: [PATCH] ipv4/mptcp: fix divide error
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jiang Biao <benbjiang@tencent.com>,
+        Jiang Biao <tcs_robot@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Aug 2021 at 03:04, Josh Don <joshdon@google.com> wrote:
->
-> Adds cfs_rq->idle_nr_running, which accounts the number of idle entities
-> directly enqueued on the cfs_rq.
->
-> Signed-off-by: Josh Don <joshdon@google.com>
+Hi,
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Tue, 24 Aug 2021 at 15:36, Matthieu Baerts
+<matthieu.baerts@tessares.net> wrote:
+>
+> Hi Jiang,
+>
+> On 24/08/2021 09:19, Jiang Biao wrote:
+>
+> (...)
+>
+> > There is a fix divide error reported,
+> > divide error: 0000 [#1] PREEMPT SMP KASAN
+> > RIP: 0010:tcp_tso_autosize build/../net/ipv4/tcp_output.c:1975 [inline]
+> > RIP: 0010:tcp_tso_segs+0x14f/0x250 build/../net/ipv4/tcp_output.c:1992
+>
+> Thank you for this patch and validating MPTCP on your side!
+>
+> This issue is actively tracked on our Github project [1] and a patch is
+> already in our tree [2] but still under validation.
+> > It's introduced by non-initialized info->mss_now in __mptcp_push_pending.
+> > Fix it by adding protection in mptcp_push_release.
+>
+> Indeed, you are right, info->mss_now can be set to 0 in some cases but
+> that's not normal.
+>
+> Instead of adding a protection here, we preferred fixing the root cause,
+> see [2]. Do not hesitate to have a look at the other patch and comment
+> there if you don't agree with this version.
+> Except if [2] is difficult to backport, I think we don't need your extra
+> protection. WDYT?
+>
+Agreed, fixing the root cause is much better.
+Thanks for the reply.
 
-> ---
->  kernel/sched/debug.c |  2 ++
->  kernel/sched/fair.c  | 25 ++++++++++++++++++++++++-
->  kernel/sched/sched.h |  1 +
->  3 files changed, 27 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 49716228efb4..33538579db9a 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -608,6 +608,8 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
->                         cfs_rq->nr_spread_over);
->         SEQ_printf(m, "  .%-30s: %d\n", "nr_running", cfs_rq->nr_running);
->         SEQ_printf(m, "  .%-30s: %d\n", "h_nr_running", cfs_rq->h_nr_running);
-> +       SEQ_printf(m, "  .%-30s: %d\n", "idle_nr_running",
-> +                       cfs_rq->idle_nr_running);
->         SEQ_printf(m, "  .%-30s: %d\n", "idle_h_nr_running",
->                         cfs_rq->idle_h_nr_running);
->         SEQ_printf(m, "  .%-30s: %ld\n", "load", cfs_rq->load.weight);
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5aa3cfd15a2e..19a9244c140f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -2995,6 +2995,8 @@ account_entity_enqueue(struct cfs_rq *cfs_rq, struct sched_entity *se)
->         }
->  #endif
->         cfs_rq->nr_running++;
-> +       if (se_is_idle(se))
-> +               cfs_rq->idle_nr_running++;
->  }
->
->  static void
-> @@ -3008,6 +3010,8 @@ account_entity_dequeue(struct cfs_rq *cfs_rq, struct sched_entity *se)
->         }
->  #endif
->         cfs_rq->nr_running--;
-> +       if (se_is_idle(se))
-> +               cfs_rq->idle_nr_running--;
->  }
->
->  /*
-> @@ -5573,6 +5577,17 @@ static int sched_idle_rq(struct rq *rq)
->                         rq->nr_running);
->  }
->
-> +/*
-> + * Returns true if cfs_rq only has SCHED_IDLE entities enqueued. Note the use
-> + * of idle_nr_running, which does not consider idle descendants of normal
-> + * entities.
-> + */
-> +static bool sched_idle_cfs_rq(struct cfs_rq *cfs_rq)
-> +{
-> +       return cfs_rq->nr_running &&
-> +               cfs_rq->nr_running == cfs_rq->idle_nr_running;
-> +}
-> +
->  #ifdef CONFIG_SMP
->  static int sched_idle_cpu(int cpu)
->  {
-> @@ -11556,7 +11571,7 @@ int sched_group_set_idle(struct task_group *tg, long idle)
->         for_each_possible_cpu(i) {
->                 struct rq *rq = cpu_rq(i);
->                 struct sched_entity *se = tg->se[i];
-> -               struct cfs_rq *grp_cfs_rq = tg->cfs_rq[i];
-> +               struct cfs_rq *parent_cfs_rq, *grp_cfs_rq = tg->cfs_rq[i];
->                 bool was_idle = cfs_rq_is_idle(grp_cfs_rq);
->                 long idle_task_delta;
->                 struct rq_flags rf;
-> @@ -11567,6 +11582,14 @@ int sched_group_set_idle(struct task_group *tg, long idle)
->                 if (WARN_ON_ONCE(was_idle == cfs_rq_is_idle(grp_cfs_rq)))
->                         goto next_cpu;
->
-> +               if (se->on_rq) {
-> +                       parent_cfs_rq = cfs_rq_of(se);
-> +                       if (cfs_rq_is_idle(grp_cfs_rq))
-> +                               parent_cfs_rq->idle_nr_running++;
-> +                       else
-> +                               parent_cfs_rq->idle_nr_running--;
-> +               }
-> +
->                 idle_task_delta = grp_cfs_rq->h_nr_running -
->                                   grp_cfs_rq->idle_h_nr_running;
->                 if (!cfs_rq_is_idle(grp_cfs_rq))
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 8dfad8fb756c..6af039e433fb 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -530,6 +530,7 @@ struct cfs_rq {
->         struct load_weight      load;
->         unsigned int            nr_running;
->         unsigned int            h_nr_running;      /* SCHED_{NORMAL,BATCH,IDLE} */
-> +       unsigned int            idle_nr_running;   /* SCHED_IDLE */
->         unsigned int            idle_h_nr_running; /* SCHED_IDLE */
->
->         u64                     exec_clock;
-> --
-> 2.33.0.rc2.250.ged5fa647cd-goog
->
+Regards,
+Jiang
