@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1050E3F691C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F013F691F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbhHXSfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
+        id S232910AbhHXSiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhHXSfa (ORCPT
+        with ESMTP id S229521AbhHXSiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:35:30 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2C6C0613C1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:34:46 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso33770879ota.8
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:34:46 -0700 (PDT)
+        Tue, 24 Aug 2021 14:38:00 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34575C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:37:16 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z2so47519659lft.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:37:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=MpSjVxSMjJK4OJw4oTKLD3JL0PWvQPTVS0fPqXZYl3g=;
-        b=n/JcnajTDuWMOgB1dqCLhqVz/SK9+IAgpIc6Z5Dlx0X3Bz7NVcegvqK2cpm3DNJbPQ
-         10DZqlRko41kmEobXSLmA4zrYTieEAA4vI1y7bwkO66KsdU7sMqstshTU6BpT0hdAZfy
-         i6kXOJtX6evRy9U7I6Sp6+LA4yS0fHqGvNoOA=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+cwbm0dtVbTskGDHM6fDYi7+zCShasPxmbKd2QwmHNI=;
+        b=UBPam4ErsN9K2v4R2gZdSjQ6cNCfpfbMS1Nh+CViIHsg21KeFVKbDR5HaQuBfBxkVJ
+         X5ocneg3CQVaQDYxiSlsxT0t5xNgnpc2DJybMxFHOe4XG4c2JOnPs7zQtl6CTyj/9LP1
+         Tvo+zbzXuGLXYAnGk1jwxccvRikoQnt/g2QrAaTFiIe+y7uhVU1XwjCKmTXRMs5GO5g1
+         wuUwZYRZ9kHp6rY2nG0QDOx6rkD18skJdle/C+d0Xc5ehIKKzrJ+NfJBxql/ZCLNEzLs
+         kWWBnoL6WRaJGe0X+LCwuOCyT6Sl+9s1KgRSZCjgh4/Kl2PMedI9QCY6gNaFYPXFNO0B
+         CFOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=MpSjVxSMjJK4OJw4oTKLD3JL0PWvQPTVS0fPqXZYl3g=;
-        b=PEoL39Ggkzs+1ZXfCcaxeg+N3194be7yomA/DiWBAbDEoKTlYD5Q97qQyJeo5+wblO
-         DCOIgpyVVyCYfZvjlSCrFGCjYtU50zCVGSsTUw85U8uSMV6XUSsYqv9+z+0jh1gELgng
-         wRxER/rcz+j1j1TmzSBNQ34IxG3Ow5dY7m4YNqpvj3o6W7Q5ZtwsnowprYNeE4X6efZZ
-         Ha7MO50FXtVTdyacATLUlA8A0NLD7CXiYukok0ppQSqxATP9wweOxAp/4hucXNcWQdfE
-         HGZWzmxPpR9LoPK6cfA1sjXx4hr+IIgHYndiwaGuSC/bPCgdk46bAK6Ywh4NGhls+uhc
-         hJNQ==
-X-Gm-Message-State: AOAM5303WLGy3VJi4yg6vx7BV6kwZUGBByQRyFLL/FZab3WwmxwicaSK
-        1xK8w0WX8kt9OgvzRO9qWXlzhEjI5yif/PbrsNbYFQ==
-X-Google-Smtp-Source: ABdhPJzRH/Uc7RJJIpCbxFsIdbJBiPfb7rT9/hLjX1Vp9cEqoF/t87EH1mDk73cPqGvQmJ4MtwBCUJQX8YPNs8ZHDkQ=
-X-Received: by 2002:a05:6808:180e:: with SMTP id bh14mr3854642oib.19.1629830085691;
- Tue, 24 Aug 2021 11:34:45 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 24 Aug 2021 11:34:45 -0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+cwbm0dtVbTskGDHM6fDYi7+zCShasPxmbKd2QwmHNI=;
+        b=JPUMdV/2zVJLIl7gUtCZ+ibI++r9EVc/f5ukoEgGFhq+LrOFk54fYwy2JbekuAA4QO
+         nC6geLJqsjLETr4n3Ff6AVyV3ER4Zx1lxxynxOjgSRfQJ88H2+E5nWvZ/G47dTWG+HX2
+         klKSmag31zjf+wBAC6ArC/f/icYz8U0cUbI1642twX94ja9NsI+aFXJxcdIJjwBEGUj+
+         OYMGQ3CHYOwPNPOStNn+BHb2Pm8fSHdClhlh49ZMpKAycJBYFSqmylw8Oknzv+ZBSsOZ
+         wUOJWlTh+EVB6bGp3esFS/CxQH2IHu3nBnyBLszsZ34CrhX5sVpIuc7x3fKkOgu7wG3t
+         OZsw==
+X-Gm-Message-State: AOAM5334fYpP0j8RV+PMObRzWSWfdKjVz2k/GWNqyPhLyO+0+jo2Zq+J
+        WK3SMDomNo/KGXaxt6L4/jM=
+X-Google-Smtp-Source: ABdhPJzJAo3KMmDx+Ar7gi+3SNs2Lu5FPjuJg1/ruzsod3SLQKDSaGxJAgANpEvQ9t9IGbRmk6b+FQ==
+X-Received: by 2002:ac2:5b9e:: with SMTP id o30mr4391440lfn.400.1629830234563;
+        Tue, 24 Aug 2021 11:37:14 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id k13sm1826378lfm.168.2021.08.24.11.37.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 11:37:14 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
+        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
+Subject: [PATCH v4 0/3] fs/ntfs3: Use kernel alloc wrappers and fix warnings
+Date:   Tue, 24 Aug 2021 21:37:05 +0300
+Message-Id: <20210824183708.1008538-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1629113954-14084-2-git-send-email-deesin@codeaurora.org>
-References: <1629113954-14084-1-git-send-email-deesin@codeaurora.org> <1629113954-14084-2-git-send-email-deesin@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 24 Aug 2021 11:34:45 -0700
-Message-ID: <CAE-0n50G_OYqR6R8+K5RkrCBvdQW-E-zDoMZ-yyAoEJW2WyxcA@mail.gmail.com>
-Subject: Re: [PATCH V6 1/2] soc: qcom: aoss: Expose send for generic usecase
-To:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-08-16 04:39:13)
-> Not all upcoming usecases will have an interface to allow the aoss
-> driver to hook onto. Expose the send api and create a get function to
-> enable drivers to send their own messages to aoss.
->
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> ---
+In ntfs3 driver there is allocation made like this ntfs_malloc().
+Patch 2/3 will converter these to kernel ones like kmalloc(). After I
+did this then checkpatch raise warnings about array allocations so I
+fix these in patch 3/3.
 
-With one nit below
+I also notice when I made patch that there is broken utf8 char so I
+wanted first fix that because it raised some warning in my editor and
+did not want to "break" patch 2/3. And because we are editing comment
+then make whole comment block clean. So patch 1/3 address that. I did
+try to apply this and it seem to work without issues.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+v2:
+ - Add patch 1/3 because I found broken utf8 char in source file
+ - Add another patch 3/3 which will fix allocation warnings
+ - Rewrite some of commit message from first patch
+v3:
+ - Patch series didn't have X/X numbers
+ - Cover letter didn't have fs/ntfs3 in it
+ - One kmalloc was converted to kcalloc insted of kmalloc_array
+ 	Thanks Joe Perches
+v4:
+ - Wrap whole comment block in patch 1/1 max 80 char. And restyle.
+ 	Thanks Christoph Hellwig for noting this
+ - Add Reviewed-by: from Christoph Hellwig to patch 2 and 3
 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 934fcc4..a43c22c 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -515,6 +521,48 @@ static void qmp_cooling_devices_remove(struct qmp *qmp)
->                 thermal_cooling_device_unregister(qmp->cooling_devs[i].cdev);
->  }
->
-> +/**
-> + * qmp_get() - get a qmp handle from a device
-> + * @dev: client device pointer
-> + *
-> + * Return: handle to qmp device on success, ERR_PTR() on failure
-> + */
-> +struct qmp *qmp_get(struct device *dev)
-> +{
-> +       struct platform_device *pdev;
-> +       struct device_node *np;
-> +       struct qmp *qmp;
-> +
-> +       if (!dev || !dev->of_node)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       np = of_parse_phandle(dev->of_node, "qcom,qmp", 0);
-> +       if (!np)
-> +               return ERR_PTR(-ENODEV);
-> +
-> +       pdev = of_find_device_by_node(np);
-> +       of_node_put(np);
-> +       if (!pdev)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       qmp = platform_get_drvdata(pdev);
-> +
-> +       return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
-> +}
-> +EXPORT_SYMBOL(qmp_get);
-> +
-> +/**
-> + * qmp_put() - Match get_device() inside of_find_device_by_node()
-> + *            in qmp_get()
+Kari Argillander (3):
+  fs/ntfs3: Restyle comment block in ni_parse_reparse()
+  fs/ntfs3: Do not use driver own alloc wrappers
+  fs/ntfs3: Use kcalloc/kmalloc_array over kzalloc/kmalloc
 
-I meant to put this comment next to the put_device() call. This should
-say something like "release a qmp handle" and then the existing comment
-moved down to the if below.
+ fs/ntfs3/attrib.c   |   6 +-
+ fs/ntfs3/attrlist.c |  10 +--
+ fs/ntfs3/bitmap.c   |   8 +--
+ fs/ntfs3/debug.h    |   7 --
+ fs/ntfs3/file.c     |   4 +-
+ fs/ntfs3/frecord.c  |  42 ++++++-----
+ fs/ntfs3/fslog.c    | 172 ++++++++++++++++++++++----------------------
+ fs/ntfs3/fsntfs.c   |   8 +--
+ fs/ntfs3/index.c    |  54 +++++++-------
+ fs/ntfs3/inode.c    |  10 +--
+ fs/ntfs3/lznt.c     |   4 +-
+ fs/ntfs3/ntfs_fs.h  |  18 ++---
+ fs/ntfs3/record.c   |   8 +--
+ fs/ntfs3/run.c      |   8 +--
+ fs/ntfs3/super.c    |  20 +++---
+ fs/ntfs3/xattr.c    |  18 ++---
+ 16 files changed, 197 insertions(+), 200 deletions(-)
 
-> + * @qmp: qmp handle obtained from qmp_get()
-> + */
-> +void qmp_put(struct qmp *qmp)
-> +{
-> +       if (!IS_ERR_OR_NULL(qmp))
-> +               put_device(qmp->dev);
-> +}
-> +EXPORT_SYMBOL(qmp_put);
-> +
->  static int qmp_probe(struct platform_device *pdev)
->  {
->         struct resource *res;
+-- 
+2.25.1
+
