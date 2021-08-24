@@ -2,75 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9F23F5F05
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352693F5F0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 15:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237576AbhHXN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 09:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237590AbhHXN0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 09:26:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 811D9611AF;
-        Tue, 24 Aug 2021 13:25:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629811521;
-        bh=Xg8K4I0Gs0daaOlalTp5ULJqYhu6wF81wH5q1gzUe3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tuyg+xGDwAtSeSsE7cdJlUneRlDcb/YpW627m2oKkwrvSzUlgdLnrZRUcWZNyNICN
-         bcWxByqGm597JipPnCO7rBSuoXYyb6bAlzTcapH6dzrgjaeci5xgwMVQ2USlB5Hk+A
-         GBo7iR4agE090uW4VsC63g9NMdm4avzMFkMllYTCUVlvQLvuEpcmSfzh7kxdtdvJgO
-         mOw6JWXCnwMtJ8kNXShmtDI46CDQfl6jc1Ie5xm2kvdGscsUoUkqBJnr9mC6I6Xga6
-         TqLfqbNscprG2hkgO27C/QW66fxtyu4dEZFizpxDNcQ0+1/JR/DsaIOJ7bqgeUY0AC
-         bLphbAAqV40cQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mIWQW-0005FL-EE; Tue, 24 Aug 2021 15:25:17 +0200
-Date:   Tue, 24 Aug 2021 15:25:16 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul =?utf-8?B?R3LDtsOfZWw=?= <pb.g@gmx.de>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] Revert "USB: serial: ch341: fix character loss at high
- transfer rates"
-Message-ID: <YSTzPIkwNDOON5j8@hovoldconsulting.com>
-References: <20210824121926.19311-1-johan@kernel.org>
- <20210824123232.GA25435@1wt.eu>
+        id S237634AbhHXN0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 09:26:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237651AbhHXN0S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 09:26:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1629811533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sLQB5n+AnIYMH/u7Qjukm8iw3igEGc4LWVMg63C75vI=;
+        b=eARvzIDZreFlaZMilDySPEz12M37XOUsHb/IU8By9tBNYWoZ+YnMKshBUH1yr+UpOnsuFR
+        SUf6cBJ1rZ9yfUSQcyf8sIM+zbPBjip7vwWV+uobFHEfcUNN5JnMAxK6csUmhQVEy6xJtf
+        e0A082FS6725o+oYzW9lI/Jzgm94B9k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-EI8GHJILOPa4mSfNkEDMcA-1; Tue, 24 Aug 2021 09:25:32 -0400
+X-MC-Unique: EI8GHJILOPa4mSfNkEDMcA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 484348015C7;
+        Tue, 24 Aug 2021 13:25:30 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACDE360854;
+        Tue, 24 Aug 2021 13:25:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 4/6] afs: Sort out symlink reading
+From:   David Howells <dhowells@redhat.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@redhat.com>, dhowells@redhat.com,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Tue, 24 Aug 2021 14:25:22 +0100
+Message-ID: <162981152280.1901565.2264055504466731917.stgit@warthog.procyon.org.uk>
+In-Reply-To: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
+References: <162981147473.1901565.1455657509200944265.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824123232.GA25435@1wt.eu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 02:32:32PM +0200, Willy Tarreau wrote:
-> On Tue, Aug 24, 2021 at 02:19:26PM +0200, Johan Hovold wrote:
-> > This reverts commit 3c18e9baee0ef97510dcda78c82285f52626764b.
-> > 
-> > These devices do not appear to send a zero-length packet when the
-> > transfer size is a multiple of the bulk-endpoint max-packet size. This
-> > means that incoming data may not be processed by the driver until a
-> > short packet is received or the receive buffer is full.
-> > 
-> > Revert back to using endpoint-sized receive buffers to avoid stalled
-> > reads.
-> 
-> Sorry for this, I didn't notice any issue here (aside for the chip
-> working where it used not to). I have no idea what these zero-length
-> packets correspond to, nor why they're affected by the transfer size.
-> Do you have any idea what I should look for ? Because without that
-> patch, the device is unusable for me :-/
+afs_readpage() doesn't get a file pointer when called for a symlink, so
+separate it from regular file pointer handling.
 
-Zero-length packets are used to indicate completion of bulk transfers
-that are multiples of the endpoint max-packet size (as per the USB
-spec). Without those the host controller driver doesn't now that the
-transfer is complete and that it should call the driver completion
-callback (and instead waits for the other completion conditions).
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@redhat.com>
+Link: https://lore.kernel.org/r/162687508008.276387.6418924257569297305.stgit@warthog.procyon.org.uk
+---
 
-It may be possible to configure the device to send ZLPs somehow but
-since there's no public documentation for the protocol that may require
-some reverse engineering.
+ fs/afs/file.c     |   14 +++++++++-----
+ fs/afs/inode.c    |    6 +++---
+ fs/afs/internal.h |    3 ++-
+ 3 files changed, 14 insertions(+), 9 deletions(-)
 
-Johan
+diff --git a/fs/afs/file.c b/fs/afs/file.c
+index db035ae2a134..daa9106b9654 100644
+--- a/fs/afs/file.c
++++ b/fs/afs/file.c
+@@ -19,6 +19,7 @@
+ 
+ static int afs_file_mmap(struct file *file, struct vm_area_struct *vma);
+ static int afs_readpage(struct file *file, struct page *page);
++static int afs_symlink_readpage(struct file *file, struct page *page);
+ static void afs_invalidatepage(struct page *page, unsigned int offset,
+ 			       unsigned int length);
+ static int afs_releasepage(struct page *page, gfp_t gfp_flags);
+@@ -45,7 +46,7 @@ const struct inode_operations afs_file_inode_operations = {
+ 	.permission	= afs_permission,
+ };
+ 
+-const struct address_space_operations afs_fs_aops = {
++const struct address_space_operations afs_file_aops = {
+ 	.readpage	= afs_readpage,
+ 	.readahead	= afs_readahead,
+ 	.set_page_dirty	= afs_set_page_dirty,
+@@ -58,6 +59,12 @@ const struct address_space_operations afs_fs_aops = {
+ 	.writepages	= afs_writepages,
+ };
+ 
++const struct address_space_operations afs_symlink_aops = {
++	.readpage	= afs_symlink_readpage,
++	.releasepage	= afs_releasepage,
++	.invalidatepage	= afs_invalidatepage,
++};
++
+ static const struct vm_operations_struct afs_vm_ops = {
+ 	.fault		= filemap_fault,
+ 	.map_pages	= filemap_map_pages,
+@@ -306,7 +313,7 @@ static void afs_req_issue_op(struct netfs_read_subrequest *subreq)
+ 	afs_fetch_data(fsreq->vnode, fsreq);
+ }
+ 
+-static int afs_symlink_readpage(struct page *page)
++static int afs_symlink_readpage(struct file *file, struct page *page)
+ {
+ 	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
+ 	struct afs_read *fsreq;
+@@ -371,9 +378,6 @@ const struct netfs_read_request_ops afs_req_ops = {
+ 
+ static int afs_readpage(struct file *file, struct page *page)
+ {
+-	if (!file)
+-		return afs_symlink_readpage(page);
+-
+ 	return netfs_readpage(file, page, &afs_req_ops, NULL);
+ }
+ 
+diff --git a/fs/afs/inode.c b/fs/afs/inode.c
+index 80b6c8d967d5..0dc71b24859f 100644
+--- a/fs/afs/inode.c
++++ b/fs/afs/inode.c
+@@ -105,7 +105,7 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+ 		inode->i_mode	= S_IFREG | (status->mode & S_IALLUGO);
+ 		inode->i_op	= &afs_file_inode_operations;
+ 		inode->i_fop	= &afs_file_operations;
+-		inode->i_mapping->a_ops	= &afs_fs_aops;
++		inode->i_mapping->a_ops	= &afs_file_aops;
+ 		break;
+ 	case AFS_FTYPE_DIR:
+ 		inode->i_mode	= S_IFDIR |  (status->mode & S_IALLUGO);
+@@ -123,11 +123,11 @@ static int afs_inode_init_from_status(struct afs_operation *op,
+ 			inode->i_mode	= S_IFDIR | 0555;
+ 			inode->i_op	= &afs_mntpt_inode_operations;
+ 			inode->i_fop	= &afs_mntpt_file_operations;
+-			inode->i_mapping->a_ops	= &afs_fs_aops;
++			inode->i_mapping->a_ops	= &afs_symlink_aops;
+ 		} else {
+ 			inode->i_mode	= S_IFLNK | status->mode;
+ 			inode->i_op	= &afs_symlink_inode_operations;
+-			inode->i_mapping->a_ops	= &afs_fs_aops;
++			inode->i_mapping->a_ops	= &afs_symlink_aops;
+ 		}
+ 		inode_nohighmem(inode);
+ 		break;
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index 5ed416f4ff33..beaef0387e85 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -1044,7 +1044,8 @@ extern void afs_dynroot_depopulate(struct super_block *);
+ /*
+  * file.c
+  */
+-extern const struct address_space_operations afs_fs_aops;
++extern const struct address_space_operations afs_file_aops;
++extern const struct address_space_operations afs_symlink_aops;
+ extern const struct inode_operations afs_file_inode_operations;
+ extern const struct file_operations afs_file_operations;
+ extern const struct netfs_read_request_ops afs_req_ops;
+
+
