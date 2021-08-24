@@ -2,106 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B02453F6974
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051A73F697E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 21:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhHXTDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 15:03:40 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58226
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233201AbhHXTDi (ORCPT
+        id S234152AbhHXTFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 15:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231745AbhHXTFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 15:03:38 -0400
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 362444076A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 19:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1629831772;
-        bh=tXo6FALvM7TQ/HZAw0MdLp6mungZZc7pCeMeJQgnDkk=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=g3i5l2M92xF6rlKhhhjhEw20C2jPprR6TPI92Mavqcu1r6qpmsBWswxwDJVsCybM/
-         67IuDWKL4ZOMHEQFB4fctTnWVwbvpHDoz9oudzfyEobjvhseHx9rVMWhLp5elMb29N
-         naO+cqV92Mol7JLt58FHyEr4fuMXvWjf30GkEP3LFQz1Xo7zTvrM7KGjyK/wSR+8rO
-         Mo7eATR6WHWJA51E7CbH+EivZlJmLdKSVmW7Xo+e+cn+K1xR61Ihz8D66xiREerVMY
-         LPGDgGHPwUvXvqYhl4E3v7fYXSLWeedWjY6bpSgQivjBjNwjFIchXjUNngi/CEkbmd
-         MaWg5SlmB8vAA==
-Received: by mail-wr1-f72.google.com with SMTP id h6-20020a5d4fc6000000b00157503046afso1961058wrw.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 12:02:52 -0700 (PDT)
+        Tue, 24 Aug 2021 15:05:18 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E11C061757;
+        Tue, 24 Aug 2021 12:04:34 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id q3so998131plx.4;
+        Tue, 24 Aug 2021 12:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/UA6BwC0CYO3Y/QhMBFUGVm/MkfIStQXJiA2tvHOy2E=;
+        b=InWzEdcms5aFyJNybcPjVBSg4/YyHC4fs7zj6R3+Yv8npQ+KHDzLn7itVIJu+p0sHT
+         Q6/AUyTgYzD4VmqdR9mT1dT/7tCLVlhkqQ/1fiIhbCTjlCBCkR0yPpVP4Ca8n7w2ruLK
+         XWlTNoMagLkN9eGT4Cw2YtHTD8+Z3VwnEmanlqU5CZ0xTq6kvLeWtXHeIAqIeABYjt0f
+         d3erx68+4v5ESugAEzgpSqPJvh3Y/ygsLs1WR4yWXbCmSqKrnG7ph4qWLPKhvlxAPqQn
+         sKyLbd5GGKgF0NFzQJ/4M8M/eNrdTnpp2PZvqEyxbd5bFuVuIpnAOVFlYGR1lUTG1JJ5
+         CFDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tXo6FALvM7TQ/HZAw0MdLp6mungZZc7pCeMeJQgnDkk=;
-        b=XunRld9Rwp4S8CkgxKgh3heIsi/B9r6Fh++8J6DbhxXdknzYDKrO6dH43nE/1DbeLi
-         HRA/qjVhVo1ds/m7RsFICs7mg1IJR+iVU/5ZNzJidLuPp1QUQJa8QRDNWuiqF2ZzvM1m
-         JwbybTRdoL7NzgoGTXuMCxMmyq7TDCH4zPeHJ9F6toWcgEkGqSTDM0NSfAY3tq0NcBmY
-         yNhHiu4wcIM5IT2T5hgv9eHDpoN4Dob9shAjFS+yyN9dr6gEMz7bvlH65uNWL7NBTaU2
-         qFmi8HgC6ywjoxNvYhTcr8V66eE0vwoiu9+trakv64/Zb9ziWy9MVQLozIIxLlzGqfc1
-         5qaQ==
-X-Gm-Message-State: AOAM533NZs0oyBAMSscjjAV7JZhJHj1TB852tlGXGkqc1M50HI8F7e6T
-        rLlQBLwhwzdn879BvhjgrBu9xzAsMusYhl3xPbLWaOTWXWLozdqOZPxuXn/iLaWkD7R/ZKqk/lV
-        wAjn+e0nMGJd85Y+WzC2cefntWR8dWeQN1OwIc767Hw==
-X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr19755879wrw.415.1629831771809;
-        Tue, 24 Aug 2021 12:02:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/Nq9ck+jffd623Tc7f2vLQxJV7O8vjvKSyxvbiu6imcb5omWNkifvBcdaBd6SM5xESLiGyg==
-X-Received: by 2002:a05:6000:1081:: with SMTP id y1mr19755866wrw.415.1629831771683;
-        Tue, 24 Aug 2021 12:02:51 -0700 (PDT)
-Received: from [192.168.0.103] ([79.98.113.31])
-        by smtp.gmail.com with ESMTPSA id t14sm7449255wrw.59.2021.08.24.12.02.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 12:02:51 -0700 (PDT)
-Subject: Re: [PATCH 2/6] dt-bindings: mmc: cdns: match MPFS MMC/SDHCI
- controller
-To:     Rob Herring <robh@kernel.org>, Atish Patra <atish.patra@wdc.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yash Shah <yash.shah@sifive.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Piotr Sroka <piotrs@cadence.com>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com>
- <20210819154436.117798-2-krzysztof.kozlowski@canonical.com>
- <YSUDTSuNlsOmu/G+@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <9423ddab-4635-ea15-7a9d-dbcf1bc215dc@canonical.com>
-Date:   Tue, 24 Aug 2021 21:02:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/UA6BwC0CYO3Y/QhMBFUGVm/MkfIStQXJiA2tvHOy2E=;
+        b=lS4W5pM2Wl0BBsmO52qQMvrliPU6rbS8gxrMsakpZONEcSGQcPqgserR6rOkgXmprY
+         +/dmMVWjswUy83IcdTSVaG7JKe4H9l6QPJGOlftdakPHVAmPdMqw0kl8TB0tKjXP5oEf
+         uDDj+W+IpnKauHAdbEpIY94nqIrgJXlo6MxGciKlLhCYZUhsRQ9phQZCW7JzqG/5TGDW
+         jGeZS9bANaqUJwAVqwcL2gRIVnrPNlkOa0daunmXMROy0LKJTmajuesUoe05PTSvCdtT
+         nBmocAlmLqo0nP+i1l06W2WBxR4GdgMzGtLj2RHuwPh3/vkd2gQPc2CaYQqWgnk2XZdY
+         lUwQ==
+X-Gm-Message-State: AOAM530vvaKQzfH/jFhSQZY2Yv8Btzl/TS5JfV2etjXK/wKGV3b3pM2V
+        S9o4nawErxQR9SSaG8TAoAo=
+X-Google-Smtp-Source: ABdhPJyhbBipA6XjYTSx4y0PY5Ht0XzmDWNUtPlnqLHfabUjvvNeTCPw9WKJzvTRd4sM/RPuAgOVYw==
+X-Received: by 2002:a17:90a:3fcb:: with SMTP id u11mr6071898pjm.178.1629831873686;
+        Tue, 24 Aug 2021 12:04:33 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id y12sm19425378pfa.25.2021.08.24.12.04.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 12:04:32 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 24 Aug 2021 09:04:31 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH v6 5/6] cgroup/cpuset: Update description of
+ cpuset.cpus.partition in cgroup-v2.rst
+Message-ID: <YSVCv0WjTzwPUWUN@slm.duckdns.org>
+References: <20210814205743.3039-1-longman@redhat.com>
+ <20210814205743.3039-6-longman@redhat.com>
+ <YRqbj5+ZdS+7k0Fn@slm.duckdns.org>
+ <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YSUDTSuNlsOmu/G+@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95b72d36-32a9-8356-05b7-2829e4cc29ad@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2021 16:33, Rob Herring wrote:
-> On Thu, Aug 19, 2021 at 05:44:32PM +0200, Krzysztof Kozlowski wrote:
->> The Microchip MPFS Icicle Kit uses Cadence SD/SDIO/eMMC Host Controller
->> without any additional vendor compatible:
-> 
-> I think the lack of vendor compatible is the error here. Experience has 
-> shown that vendor specific compatibles are needed for licensed IP.
-> 
+Hello,
 
-In such case this could be:
-1. a specific "microchip,mpfs250t-sd4hc", which
-seems to be on MPFS Icicle Kit:
-https://www.digikey.co.uk/en/product-highlight/m/microchip-technology/mpfs-icicle-kit-es--polarfire-soc-fpga-icicle-kit
+On Tue, Aug 24, 2021 at 01:35:33AM -0400, Waiman Long wrote:
+> Sorry for the late reply as I was on vacation last week.
 
-2. or a generic "microchip,mpfs-sd4hc"
+No worries. Hope you enjoyed the vacation. :)
 
-Any hints here?
+> > All the above ultimately says is that "a new task cannot be moved to a
+> > partition root with no effective cpu", but I don't understand why this would
+> > be a separate rule. Shouldn't the partition just stop being a partition when
+> > it doesn't have any exclusive cpu? What's the benefit of having multiple its
+> > own failure mode?
+>
+> A partition with 0 cpu can be considered as a special partition type for
+> spawning child partitions. This can be temporary as the cpus will be given
+> back when a child partition is destroyed.
 
-Best regards,
-Krzysztof
+But it can also happen by cpus going offline while the partition is
+populated, right? Am I correct in thinking that a partition without cpu is
+valid if its subtree contains cpus and invalid otherwise? If that's the
+case, it looks like the rules can be made significantly simpler. The parent
+cgroups never have processes anyway, so a partition is valid if its subtree
+contains cpus, invalid otherwise.
+
+> > So, I think this definitely is a step in the right direction but still seems
+> > to be neither here or there. Before, we pretended that we could police the
+> > input when we couldn't. Now, we're changing the interface so that it
+> > includes configuration failures as an integral part; however, we're still
+> > policing some particular inputs while letting other inputs pass through and
+> > trigger failures and why one is handled one way while the other differently
+> > seems rather arbitrary.
+> > 
+> The cpu_exclusive and load_balance flags are attributes associated directly
+> with the partition type. They are not affected by cpu availability or
+> changing of cpu list. That is why they are kept even when the partition
+> become invalid. If we have to remove them, it will be equivalent to changing
+> partition back to member and we may not need an invalid partition type at
+> all. Also, we will not be able to revert back to partition again when the
+> cpus becomes available.
+
+Oh, yeah, I'm not saying to lose those states. What I'm trying to say is
+that the rules and failure modes seem a lot more complicated than they need
+to be. If the configuration becomes invalid for whatever reason, transition
+the partition into invalid state and report why. If the situation resolves
+for whatever reason, transition it back to valid state. Shouldn't that work?
+
+Thanks.
+
+-- 
+tejun
