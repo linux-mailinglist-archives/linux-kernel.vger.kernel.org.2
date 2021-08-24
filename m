@@ -2,265 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4783F5C1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7153F5C21
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 12:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236429AbhHXK3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 06:29:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37148 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235982AbhHXK26 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 06:28:58 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EF470220AC;
-        Tue, 24 Aug 2021 10:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1629800893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xzRnNXEpYNK6Fr5aUl3tWJGBJDdvhYuHIaqCmKzznYU=;
-        b=Q+8gdbEVImSGds7mmPaM4UehS+aTvl6Jy+7iX7DxXXhxkZgPpS4IOcdZd25ZzMRAmjW9kb
-        n32wpEB0gsPm6SzdwQNp6wxpOyyxsoznmynuAgqxBufivgjhWLcd+aRn5E+MizuAVJZgcV
-        QPa5WwxRjK/QKCMDzUCCm08y/G8KCEU=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AAFBB136DD;
-        Tue, 24 Aug 2021 10:28:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 6BJGKL3JJGG8DwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Tue, 24 Aug 2021 10:28:13 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v2 2/4] xen/netfront: don't read data from request on the ring page
+        id S236475AbhHXK3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 06:29:22 -0400
+Received: from mout.gmx.net ([212.227.15.15]:42571 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236287AbhHXK3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 06:29:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629800901;
+        bh=xHXTAtxJwor1LG2/qAtn0Wqt7cDisvqT4g+MjbeAtXc=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=To51Zp9DrKsF5GsKTkU/NlrMj6ZrboyQVNrODLmq+Dd1djmomwEckuRLoAzsKfGki
+         M9n5CBRFiG3C50xRMvpc304L77iQ0S5l8vPOW6J2x0o8wTK+2OwEnPVhpDlb/yArZI
+         sIasjjAmXHy4+filN0Kag7fmPB3ARWWEy6+CveyE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mo6qv-1mqCrv33Fb-00paBd; Tue, 24
+ Aug 2021 12:28:20 +0200
 Date:   Tue, 24 Aug 2021 12:28:07 +0200
-Message-Id: <20210824102809.26370-3-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210824102809.26370-1-jgross@suse.com>
-References: <20210824102809.26370-1-jgross@suse.com>
+From:   Len Baker <len.baker@gmx.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Joe Perches <joe@perches.com>,
+        David Laight <David.Laight@aculab.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] EDAC/mc: Prefer strscpy over strcpy
+Message-ID: <20210824090338.GB7999@titan>
+References: <20210814075527.5999-1-len.baker@gmx.com>
+ <YSPbOo90alPsv4vL@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YSPbOo90alPsv4vL@zn.tnic>
+X-Provags-ID: V03:K1:Oo33x5FhSFeBtYwnQ7Ylzm+sjaifw/tIrxeZRwFOY/hqIuw+Rj8
+ e1uCJJJ7M9qF06tsIkAQSvm9q9fwTujJClCYoAymNjIwAg5F4naAdpZ5nC/0n/n+Opf7GJe
+ Y7W68GiwTPzzh8CLVa5IDqFztBXznnBS2d0Xfzfo76yLophwjYaXBeYwMsFXIjgDXopN8kn
+ AOnImOuSYESfyevdHaxNw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:89artnYeouA=:zVRuAlB+2MprQnsxXqk/YF
+ dGME5J9+DOqEpNOla9x1ww85trdpHF0HyCFOfc4ebVAV4NXft1pC1Q/4tgypeZiu95bqhk6L5
+ WyXQ6v7qcCd1f5e+M8+yfX0jPuC7DzyKCJLSZ2m6WSH6ZGCu8ACw2W+mY2lqqqRpPca7nCc19
+ Q9xTiS10sUfmOVC8MklqtqL5Qyh6lg3yi+WuPtMtDjkKJYlWQeWMN92dZ/JuITZve4uBB31ys
+ g0ejUQn/I9h5dUue2YpGK38HWzW56x5MgG+y3Fo6kNZtXtMlMvd5IKVCczB46ETKVTY7n4Xug
+ uXqM9rDRhUNNPVDF8+bkj8E6nghcwNuAe2PTIsig8twoa5aREz3hph5+6LW0nZ2o/5Er9SJvp
+ M3t9Yl1i+02MPsBDd+aO7K/+Tmc/RTyI7n+BNSWY0AJDV40q4miPomCNNZj4mWdPJMJiy3Z8C
+ 41BASntzgDfBp+tqLwP7wRUnPZgBvtf/MQFEAkWgs3+YgXk+h+sr9+VyXvPU3+wQ5XZMs556l
+ dzeC9p6dDk1dvl5FV1m+oBgvwW/4B4eaZL4fpFFZHSkACCGa6Qe4lfdkdpGO8W65msL0CA9q6
+ CTf3EL7uaXGTfVVJkp1M2dy3CKAmg0Gv65Zm+kvjlRb0e1hyPOuVHr52MmCnVlnAuzhzHTviV
+ m/Jgc5EGhydiabL5rtr1dqk7SQIl2IlYngTYyLt7qt3RKM9mQdbimTdwGOhThQirdz0+TlyGc
+ QO+V39iXrOakfowE3jEKusNlEDo64t/UMHiuy/AatTfpWULr709iUthKzwfBDf2gLSMWwgeKX
+ kXoLwOOxgTF02xmKQKZ+J/7Bc+2B/y/FVyoBSacN7O+Kgi8+v5SR3T/d2l/pqmCTzPLHD1mr/
+ Vs6e/Wzz9II+KdMe7/XQtKdjfHJyzDf76wuR3HXrUYOyI3E6rwUy+TSxuxYltuvufIcP/Lrio
+ UevO3So6lcvPA7noygrVKeUny9fc3KFRT34IDPjX/6aQw4hR+RMYLuo2j9VvqM+Q40Ips3Q7W
+ KVgpO2L5IghZ9R9UqKuj8molHbFPrvvRIVeYbSPEyuwX20w/Xj7K8vPSnEfIt2RWlrQwhYsdY
+ Jl5acINF0MV59SwD5LYaDrCJU9ljj7QoOT0tpEx+FTa1gdNU8O0WshaIQ==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid a malicious backend being able to influence the local
-processing of a request build the request locally first and then copy
-it to the ring page. Any reading from the request influencing the
-processing in the frontend needs to be done on the local instance.
+Hi Borislav,
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
-V2:
-- drop local tx variable (Jan Beulich)
-- fix oversight of reading value from ring page (Jan Beulich)
----
- drivers/net/xen-netfront.c | 86 +++++++++++++++++++-------------------
- 1 file changed, 42 insertions(+), 44 deletions(-)
+On Mon, Aug 23, 2021 at 07:30:34PM +0200, Borislav Petkov wrote:
+> On Sat, Aug 14, 2021 at 09:55:27AM +0200, Len Baker wrote:
+> > strcpy() performs no bounds checking on the destination buffer. This
+> > could result in linear overflows beyond the end of the buffer, leading
+> > to all kinds of misbehaviors. The safe replacement is strscpy().
+> >
+> > This is a previous step in the path to remove the strcpy() function
+>
+> "previous step"?
 
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index 003cdf2ffc92..714fe9d2c534 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -435,7 +435,8 @@ struct xennet_gnttab_make_txreq {
- 	struct netfront_queue *queue;
- 	struct sk_buff *skb;
- 	struct page *page;
--	struct xen_netif_tx_request *tx; /* Last request */
-+	struct xen_netif_tx_request *tx;      /* Last request on ring page */
-+	struct xen_netif_tx_request tx_local; /* Last request local copy*/
- 	unsigned int size;
- };
- 
-@@ -463,30 +464,27 @@ static void xennet_tx_setup_grant(unsigned long gfn, unsigned int offset,
- 	queue->grant_tx_page[id] = page;
- 	queue->grant_tx_ref[id] = ref;
- 
--	tx->id = id;
--	tx->gref = ref;
--	tx->offset = offset;
--	tx->size = len;
--	tx->flags = 0;
-+	info->tx_local.id = id;
-+	info->tx_local.gref = ref;
-+	info->tx_local.offset = offset;
-+	info->tx_local.size = len;
-+	info->tx_local.flags = 0;
-+
-+	*tx = info->tx_local;
- 
- 	info->tx = tx;
--	info->size += tx->size;
-+	info->size += info->tx_local.size;
- }
- 
- static struct xen_netif_tx_request *xennet_make_first_txreq(
--	struct netfront_queue *queue, struct sk_buff *skb,
--	struct page *page, unsigned int offset, unsigned int len)
-+	struct xennet_gnttab_make_txreq *info,
-+	unsigned int offset, unsigned int len)
- {
--	struct xennet_gnttab_make_txreq info = {
--		.queue = queue,
--		.skb = skb,
--		.page = page,
--		.size = 0,
--	};
-+	info->size = 0;
- 
--	gnttab_for_one_grant(page, offset, len, xennet_tx_setup_grant, &info);
-+	gnttab_for_one_grant(info->page, offset, len, xennet_tx_setup_grant, info);
- 
--	return info.tx;
-+	return info->tx;
- }
- 
- static void xennet_make_one_txreq(unsigned long gfn, unsigned int offset,
-@@ -499,35 +497,27 @@ static void xennet_make_one_txreq(unsigned long gfn, unsigned int offset,
- 	xennet_tx_setup_grant(gfn, offset, len, data);
- }
- 
--static struct xen_netif_tx_request *xennet_make_txreqs(
--	struct netfront_queue *queue, struct xen_netif_tx_request *tx,
--	struct sk_buff *skb, struct page *page,
-+static void xennet_make_txreqs(
-+	struct xennet_gnttab_make_txreq *info,
-+	struct page *page,
- 	unsigned int offset, unsigned int len)
- {
--	struct xennet_gnttab_make_txreq info = {
--		.queue = queue,
--		.skb = skb,
--		.tx = tx,
--	};
--
- 	/* Skip unused frames from start of page */
- 	page += offset >> PAGE_SHIFT;
- 	offset &= ~PAGE_MASK;
- 
- 	while (len) {
--		info.page = page;
--		info.size = 0;
-+		info->page = page;
-+		info->size = 0;
- 
- 		gnttab_foreach_grant_in_range(page, offset, len,
- 					      xennet_make_one_txreq,
--					      &info);
-+					      info);
- 
- 		page++;
- 		offset = 0;
--		len -= info.size;
-+		len -= info->size;
- 	}
--
--	return info.tx;
- }
- 
- /*
-@@ -580,10 +570,14 @@ static int xennet_xdp_xmit_one(struct net_device *dev,
- {
- 	struct netfront_info *np = netdev_priv(dev);
- 	struct netfront_stats *tx_stats = this_cpu_ptr(np->tx_stats);
-+	struct xennet_gnttab_make_txreq info = {
-+		.queue = queue,
-+		.skb = NULL,
-+		.page = virt_to_page(xdpf->data),
-+	};
- 	int notify;
- 
--	xennet_make_first_txreq(queue, NULL,
--				virt_to_page(xdpf->data),
-+	xennet_make_first_txreq(&info,
- 				offset_in_page(xdpf->data),
- 				xdpf->len);
- 
-@@ -638,7 +632,7 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- {
- 	struct netfront_info *np = netdev_priv(dev);
- 	struct netfront_stats *tx_stats = this_cpu_ptr(np->tx_stats);
--	struct xen_netif_tx_request *tx, *first_tx;
-+	struct xen_netif_tx_request *first_tx;
- 	unsigned int i;
- 	int notify;
- 	int slots;
-@@ -647,6 +641,7 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- 	unsigned int len;
- 	unsigned long flags;
- 	struct netfront_queue *queue = NULL;
-+	struct xennet_gnttab_make_txreq info = { };
- 	unsigned int num_queues = dev->real_num_tx_queues;
- 	u16 queue_index;
- 	struct sk_buff *nskb;
-@@ -704,21 +699,24 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- 	}
- 
- 	/* First request for the linear area. */
--	first_tx = tx = xennet_make_first_txreq(queue, skb,
--						page, offset, len);
--	offset += tx->size;
-+	info.queue = queue;
-+	info.skb = skb;
-+	info.page = page;
-+	first_tx = xennet_make_first_txreq(&info, offset, len);
-+	offset += info.tx_local.size;
- 	if (offset == PAGE_SIZE) {
- 		page++;
- 		offset = 0;
- 	}
--	len -= tx->size;
-+	len -= info.tx_local.size;
- 
- 	if (skb->ip_summed == CHECKSUM_PARTIAL)
- 		/* local packet? */
--		tx->flags |= XEN_NETTXF_csum_blank | XEN_NETTXF_data_validated;
-+		first_tx->flags |= XEN_NETTXF_csum_blank |
-+				   XEN_NETTXF_data_validated;
- 	else if (skb->ip_summed == CHECKSUM_UNNECESSARY)
- 		/* remote but checksummed. */
--		tx->flags |= XEN_NETTXF_data_validated;
-+		first_tx->flags |= XEN_NETTXF_data_validated;
- 
- 	/* Optional extra info after the first request. */
- 	if (skb_shinfo(skb)->gso_size) {
-@@ -727,7 +725,7 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- 		gso = (struct xen_netif_extra_info *)
- 			RING_GET_REQUEST(&queue->tx, queue->tx.req_prod_pvt++);
- 
--		tx->flags |= XEN_NETTXF_extra_info;
-+		first_tx->flags |= XEN_NETTXF_extra_info;
- 
- 		gso->u.gso.size = skb_shinfo(skb)->gso_size;
- 		gso->u.gso.type = (skb_shinfo(skb)->gso_type & SKB_GSO_TCPV6) ?
-@@ -741,12 +739,12 @@ static netdev_tx_t xennet_start_xmit(struct sk_buff *skb, struct net_device *dev
- 	}
- 
- 	/* Requests for the rest of the linear area. */
--	tx = xennet_make_txreqs(queue, tx, skb, page, offset, len);
-+	xennet_make_txreqs(&info, page, offset, len);
- 
- 	/* Requests for all the frags. */
- 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
- 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
--		tx = xennet_make_txreqs(queue, tx, skb, skb_frag_page(frag),
-+		xennet_make_txreqs(&info, skb_frag_page(frag),
- 					skb_frag_off(frag),
- 					skb_frag_size(frag));
- 	}
--- 
-2.26.2
+This is a task of the KSPP [1] and the main reason is to clean up the
+proliferation of str*cpy functions in the kernel.
 
+[1] https://github.com/KSPP/linux/issues/88
+
+> > entirely from the kernel.
+> >
+> > Signed-off-by: Len Baker <len.baker@gmx.com>
+>
+> ...
+>
+> > diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
+> > index f6d462d0be2d..7aea6c502316 100644
+> > --- a/drivers/edac/edac_mc.c
+> > +++ b/drivers/edac/edac_mc.c
+> > @@ -1032,6 +1032,7 @@ void edac_mc_handle_error(const enum hw_event_mc=
+_err_type type,
+> >  	int i, n_labels =3D 0;
+> >  	struct edac_raw_error_desc *e =3D &mci->error_desc;
+> >  	bool any_memory =3D true;
+> > +	size_t len;
+> >
+> >  	edac_dbg(3, "MC%d\n", mci->mc_idx);
+> >
+> > @@ -1086,6 +1087,7 @@ void edac_mc_handle_error(const enum hw_event_mc=
+_err_type type,
+> >  	 */
+> >  	p =3D e->label;
+> >  	*p =3D '\0';
+> > +	len =3D sizeof(e->label);
+> >
+> >  	mci_for_each_dimm(mci, dimm) {
+> >  		if (top_layer >=3D 0 && top_layer !=3D dimm->location[0])
+> > @@ -1114,10 +1116,12 @@ void edac_mc_handle_error(const enum hw_event_=
+mc_err_type type,
+> >  			*p =3D '\0';
+> >  		} else {
+> >  			if (p !=3D e->label) {
+> > -				strcpy(p, OTHER_LABEL);
+> > -				p +=3D strlen(OTHER_LABEL);
+> > +				strscpy(p, OTHER_LABEL, len);
+>
+> Hm, maybe I'm missing something but looking at that strscpy()
+> definition, why aren't you doing:
+>
+> 				num =3D strscpy(p, OTHER_LABEL, len);
+> 				if (num < 0)
+> 					/* just in case */
+> 					break;
+>
+> 				len -=3D num;
+> 				p   +=3D num;
+>
+> since that function supposedly returns the number of chars copied.
+
+Yes, you are right. The same discussion happened in the v3 review [2] and
+I agree with the reasons that Robert Richter exposed. Using the strlen()
+implementation it is not necessary to check the return code of strcpy and
+we can assume a silent truncation.
+
+[2] https://lore.kernel.org/linux-hardening/YRN+8u59lJ6MWsOL@rric.localdom=
+ain/
+
+Regards,
+Len
+
+> > +				len -=3D strlen(p);
+> > +				p +=3D strlen(p);
+> >  			}
+> > -			strcpy(p, dimm->label);
+> > +			strscpy(p, dimm->label, len);
+> > +			len -=3D strlen(p);
+> >  			p +=3D strlen(p);
+>
+> Ditto.
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
