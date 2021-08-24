@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB103F61C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC933F61C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238294AbhHXPfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 11:35:46 -0400
-Received: from mail-ua1-f44.google.com ([209.85.222.44]:44751 "EHLO
-        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbhHXPfp (ORCPT
+        id S238330AbhHXPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:36:22 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:39696 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235683AbhHXPgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 11:35:45 -0400
-Received: by mail-ua1-f44.google.com with SMTP id x6so8345881uai.11;
-        Tue, 24 Aug 2021 08:35:01 -0700 (PDT)
+        Tue, 24 Aug 2021 11:36:21 -0400
+Received: by mail-ot1-f54.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so47118976otf.6;
+        Tue, 24 Aug 2021 08:35:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SO1JeZD+prSQ7WyrjqxTZfIfxtg1ME/49fxSx/MfbeU=;
-        b=exn7VTOoy8n5w4F1TmcyswV9UO+ahrqV/8oH3uqxcmm1j8IAqD8MnnQGvEuF6sbkV5
-         v1+35i035p1L//wEgftuJWYjSKnyQZSjiFrUX7wyyWa1TiIlNUOjrDoFyDPsC8OJrT6Q
-         vQtoQTL9vuTV0OrcbBLsK7LrvvyH3AklCRvw51NTj8UDQ2VqZ834l0g0cmkTCTN3wk9K
-         Hhk9IchGdsJncGHSUXLgrFGyiQbYhDbfeawHDBCmuxgUH4w1BAdQ8ImVgAt1RQWGiVNh
-         HojIZfA7Sdm1AK9UNoWU71n8476wH4s6s1mRcOxx/PmppKIOiOs9n037fbalzDUFCAG6
-         ofLQ==
-X-Gm-Message-State: AOAM533ahRuOX+o5t0WHIHahJM7SbflHOFtntIScdB/Wqdloh2yJrvRJ
-        zCDPEjyqLUrQ6vUQI1VQ+F6NAMw4Kb/mhtmCK18=
-X-Google-Smtp-Source: ABdhPJzmHT/n0lISZoeJtMpWln/4dUiLqfkUG3WtJfXA8i8iEMfKEc8sIVswpKnwlWgWdf8L4I/GsedoiP6Yl26y2EQ=
-X-Received: by 2002:a67:ce90:: with SMTP id c16mr6942743vse.7.1629819301044;
- Tue, 24 Aug 2021 08:35:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jINYQ1mvHiE2zLCibJDthuXZKNa+sewnEyR+eVgyDUc=;
+        b=gzTjIUzx6SbNm74FsVAs3TDLsgYjLmn9zecn8xWSg8FHXEgXrJ9+IUsoswBn4xBP/m
+         fkd6W4a2GSTLxfSGaQvz8jiKTkrbHd60oGWvOZ5E7NedVAjGT//xKqnjD1Hela7WJn7k
+         qoka7CRFkUiPy0kB/tbXo2zo0jQoQmnhrFUgL6aaBx2mu5jR+TFD6kvwiV21ettcexHB
+         OD8PA4Ys7Qq6zcNj1zqRsdk6P2FaoumKhTmop0FjAJ6MCKAfYUibX6x02PY8u0k/d3TA
+         tIKl6ZDhCObwb+H7SSZ8tQexlAPbgcVnobgJxTBM/ETUXzrLMlAkcz0V6JGmV1d3pmRL
+         TYSA==
+X-Gm-Message-State: AOAM530HW3rFIlMMcdBSUsfuFPuYp9QYMHZtXvtVp1ZM1bgxQBdO2mhx
+        5MlpjeBfDcsZpb9nVoj6Kg==
+X-Google-Smtp-Source: ABdhPJwro+5pXYcQli7tWFYc7LyPVh7C9bSuXsvUSn+YdFxxcHSAJ6CXP/U5QuZPqO6bL9O1ZEre6A==
+X-Received: by 2002:a05:6830:3482:: with SMTP id c2mr11429689otu.16.1629819336616;
+        Tue, 24 Aug 2021 08:35:36 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l16sm4589113ota.55.2021.08.24.08.35.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 08:35:35 -0700 (PDT)
+Received: (nullmailer pid 496698 invoked by uid 1000);
+        Tue, 24 Aug 2021 15:35:34 -0000
+Date:   Tue, 24 Aug 2021 10:35:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] dt-bindings: Add 'slot-power-limit' PCIe port
+ property
+Message-ID: <YSURxtc7UAaSEfSy@robh.at.kernel.org>
+References: <20210820160023.3243-1-pali@kernel.org>
+ <20210820160023.3243-2-pali@kernel.org>
 MIME-Version: 1.0
-References: <20210819154436.117798-1-krzysztof.kozlowski@canonical.com> <20210819154436.117798-6-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210819154436.117798-6-krzysztof.kozlowski@canonical.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 24 Aug 2021 17:34:49 +0200
-Message-ID: <CAMuHMdUkxRQks9B+QgExeogJQtLgVcMtXfsh50Xtsag-GfcjCA@mail.gmail.com>
-Subject: Re: [PATCH 6/6] riscv: microchip: mpfs: drop unused pinctrl-names
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210820160023.3243-2-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Fri, Aug 20, 2021 at 06:00:21PM +0200, Pali Rohár wrote:
+> This property specifies slot power limit in mW unit. It is form-factor and
+> board specific value and must be initialized by hardware.
+> 
+> Some PCIe controllers delegates this work to software to allow hardware
+> flexibility and therefore this property basically specifies what should
+> host bridge programs into PCIe Slot Capabilities registers.
+> 
+> Property needs to be specified in mW unit, and not in special format
+> defined by Slot Capabilities (which encodes scaling factor or different
+> unit). Host drivers should convert value from mW unit to their format.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/pci/pci.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-On Thu, Aug 19, 2021 at 5:45 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
-> pinctrl-names without pinctrl-0 does not have any sense:
->
->   arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dt.yaml: sdhc@20008000: 'pinctrl-0' is a dependency of 'pinctrl-names'
+This needs to be in dtschema schemas/pci/pci-bus.yaml instead.
 
-Indeed, and pin control properties should be in the board .dts, not in the
-SoC .dtsi.
+(pci.txt is still here because it needs to be relicensed to move all the 
+descriptions to pci-bus.yaml.)
 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/pci.txt b/Documentation/devicetree/bindings/pci/pci.txt
+> index 6a8f2874a24d..e67d5db21514 100644
+> --- a/Documentation/devicetree/bindings/pci/pci.txt
+> +++ b/Documentation/devicetree/bindings/pci/pci.txt
+> @@ -32,6 +32,12 @@ driver implementation may support the following properties:
+>     root port to downstream device and host bridge drivers can do programming
+>     which depends on CLKREQ signal existence. For example, programming root port
+>     not to advertise ASPM L1 Sub-States support if there is no CLKREQ signal.
+> +- slot-power-limit:
+> +   If present this property specifies slot power limit in mW unit. Host drivers
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+As mentioned, this should have a unit suffix. I'm not sure it is 
+beneficial to share with SFP in this case though.
 
-Gr{oetje,eeting}s,
+> +   can parse this slot power limit and use it for programming Root Port or host
+> +   bridge, or for composing and sending PCIe Set_Slot_Power_Limit message
+> +   through the Root Port or host bridge when transitioning PCIe link from a
+> +   non-DL_Up Status to a DL_Up Status.
 
-                        Geert
+I no nothing about how this mechanism works, but I think this belongs in 
+the next section as for PCIe, a slot is always below a PCI-PCI bridge. 
+If we have N slots, then there's N bridges and needs to be N 
+slot-power-limit properties, right?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+(The same is probably true for all the properties here except 
+linux,pci-domain.) There's no distinction between host and PCI bridges  
+in pci-bus.yaml though.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Rob
