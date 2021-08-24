@@ -2,146 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EB63F62AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAFB3F62B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 18:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhHXQan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 12:30:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:38020 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhHXQan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 12:30:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 965D731B;
-        Tue, 24 Aug 2021 09:29:58 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.90.204])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5710F3F766;
-        Tue, 24 Aug 2021 09:29:56 -0700 (PDT)
-Date:   Tue, 24 Aug 2021 17:29:53 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH 04/13] clocksource/arm_arch_timer: Move drop _tval from
- erratum function names
-Message-ID: <20210824162953.GI96738@C02TD0UTHF1T.local>
-References: <20210809152651.2297337-1-maz@kernel.org>
- <20210809152651.2297337-5-maz@kernel.org>
+        id S230087AbhHXQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 12:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230305AbhHXQfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 12:35:06 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAE3C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:34:21 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id i28so46813966lfl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=hrxRG57iUFkLUKVAMtcNr5HWWrkcKIlx/S6pK1RgzIo=;
+        b=OHcdibhZBBnxCr1t0OYp2tDeFwDaTc27mSa2BYLLdrgMbnfEwebsteLylRujHb+n1/
+         T+uGlAHzstidMEyovoNw+M7AwvgJw07VxTtLrjjGO2yX6X1FSgy5VantkzvGX6cHddKM
+         WLcEub/WU1nXQLcqdU+iCGvZWrgCQc2iitI9Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=hrxRG57iUFkLUKVAMtcNr5HWWrkcKIlx/S6pK1RgzIo=;
+        b=ZI1BJIVAXzwt94+XyQm3SY69DTnSAJHVmvjENgXypzfaXKGvhpy349QopEGChHbSVF
+         miHF4cMn14zhiAfIlKV/NQkqwBjg9PsdUxZuFE+FyaoBAflCsvF4iAAZM3yhfchMGzo0
+         yaIDls6BbmA8rMmKbR15mFT41WH9EQEN8EMccJbYErN+jS4gIHWnNlaiDObcYaDZpZDR
+         vA3Bqm7ztRhshXfraRNPWYa1A/sJAaIJWKKqBUpDWscbcb4YOjrccUIcb7VsiFbJizch
+         XbBLuS+iOS3FTHiI60Tq7hQGkE6Q95iVGlNPPW1nYpdmhGWxDHIzq9KhAZ89YBLL3VHP
+         67+Q==
+X-Gm-Message-State: AOAM5335RVbYcypRL15bp9jCkLlhdptZoQzeIOCGrim7Yo5vqPLpg6YW
+        r8XjaiIxdFKG1csWvilFdxWJjqwkErKII4CB
+X-Google-Smtp-Source: ABdhPJwEXd/EonpeHnqXXC6aJyxz8H2vZuItJrywXEDAB4CYCkR1TfTIFxzdJ6xgXcSWZEV4I5IDwQ==
+X-Received: by 2002:a05:6512:5d0:: with SMTP id o16mr18968029lfo.158.1629822859703;
+        Tue, 24 Aug 2021 09:34:19 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id v1sm1831941ljb.44.2021.08.24.09.34.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 09:34:18 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id i28so38679542ljm.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 09:34:18 -0700 (PDT)
+X-Received: by 2002:a2e:3004:: with SMTP id w4mr30214848ljw.465.1629822858510;
+ Tue, 24 Aug 2021 09:34:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210809152651.2297337-5-maz@kernel.org>
+References: <20210824031648.GA2725@codemonkey.org.uk> <YSSuVO47ieWDfWMQ@hirez.programming.kicks-ass.net>
+ <20210824151943.GA386@codemonkey.org.uk>
+In-Reply-To: <20210824151943.GA386@codemonkey.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 24 Aug 2021 09:34:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
+Message-ID: <CAHk-=wiRe=JBK85HG7xtXH1XbOWcO1KYW8csuWfLuFoHKTqF0w@mail.gmail.com>
+Subject: Re: 5.14-rc breaks iotop swap io monitoring.
+To:     Dave Jones <davej@codemonkey.org.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 09, 2021 at 04:26:42PM +0100, Marc Zyngier wrote:
-> The '_tval' name in the erratum handling function names doesn't
-> make much sense anymore (and they were using CVAL the first place).
-> 
-> Drop the _tval tag.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Tue, Aug 24, 2021 at 8:19 AM Dave Jones <davej@codemonkey.org.uk> wrote:
+>
+> On Tue, Aug 24, 2021 at 10:31:16AM +0200, Peter Zijlstra wrote:
+>  >
+>  > If you need DELAYACCT I'm thinking:
+>  >
+>  >   e4042ad49235 ("delayacct: Default disabled")
+>  >
+>  > and
+>  >
+>  >   0cd7c741f01d ("delayacct: Add sysctl to enable at runtime")
+>
+> That does sound more relevant. however, even after echo 1  > /proc/sys/kernel/task_delayacct,
+> it still fails in the same way.
 
-Looks good, builds cleanly, and boots fine on both arm/arm64:
+Hmm.
 
-Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-Tested-by: Mark Rutland <mark.rutland@arm.com>
+What happens if you boot with the 'delayacct' kernel parameter.
 
-Mark.
+Even if you enable it at run-time, processes that have been started
+before it was enabled won't actually have the 'tsk->delays'
+allocation. So I'm not sure how effective the run-time thing is.
 
-> ---
->  drivers/clocksource/arm_arch_timer.c | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-> index 898a07dc01cd..160464f75017 100644
-> --- a/drivers/clocksource/arm_arch_timer.c
-> +++ b/drivers/clocksource/arm_arch_timer.c
-> @@ -371,7 +371,7 @@ EXPORT_SYMBOL_GPL(timer_unstable_counter_workaround);
->  
->  static atomic_t timer_unstable_counter_workaround_in_use = ATOMIC_INIT(0);
->  
-> -static void erratum_set_next_event_tval_generic(const int access, unsigned long evt,
-> +static void erratum_set_next_event_generic(const int access, unsigned long evt,
->  						struct clock_event_device *clk)
->  {
->  	unsigned long ctrl;
-> @@ -392,17 +392,17 @@ static void erratum_set_next_event_tval_generic(const int access, unsigned long
->  	arch_timer_reg_write(access, ARCH_TIMER_REG_CTRL, ctrl, clk);
->  }
->  
-> -static __maybe_unused int erratum_set_next_event_tval_virt(unsigned long evt,
-> +static __maybe_unused int erratum_set_next_event_virt(unsigned long evt,
->  					    struct clock_event_device *clk)
->  {
-> -	erratum_set_next_event_tval_generic(ARCH_TIMER_VIRT_ACCESS, evt, clk);
-> +	erratum_set_next_event_generic(ARCH_TIMER_VIRT_ACCESS, evt, clk);
->  	return 0;
->  }
->  
-> -static __maybe_unused int erratum_set_next_event_tval_phys(unsigned long evt,
-> +static __maybe_unused int erratum_set_next_event_phys(unsigned long evt,
->  					    struct clock_event_device *clk)
->  {
-> -	erratum_set_next_event_tval_generic(ARCH_TIMER_PHYS_ACCESS, evt, clk);
-> +	erratum_set_next_event_generic(ARCH_TIMER_PHYS_ACCESS, evt, clk);
->  	return 0;
->  }
->  
-> @@ -414,8 +414,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
->  		.desc = "Freescale erratum a005858",
->  		.read_cntpct_el0 = fsl_a008585_read_cntpct_el0,
->  		.read_cntvct_el0 = fsl_a008585_read_cntvct_el0,
-> -		.set_next_event_phys = erratum_set_next_event_tval_phys,
-> -		.set_next_event_virt = erratum_set_next_event_tval_virt,
-> +		.set_next_event_phys = erratum_set_next_event_phys,
-> +		.set_next_event_virt = erratum_set_next_event_virt,
->  	},
->  #endif
->  #ifdef CONFIG_HISILICON_ERRATUM_161010101
-> @@ -425,8 +425,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
->  		.desc = "HiSilicon erratum 161010101",
->  		.read_cntpct_el0 = hisi_161010101_read_cntpct_el0,
->  		.read_cntvct_el0 = hisi_161010101_read_cntvct_el0,
-> -		.set_next_event_phys = erratum_set_next_event_tval_phys,
-> -		.set_next_event_virt = erratum_set_next_event_tval_virt,
-> +		.set_next_event_phys = erratum_set_next_event_phys,
-> +		.set_next_event_virt = erratum_set_next_event_virt,
->  	},
->  	{
->  		.match_type = ate_match_acpi_oem_info,
-> @@ -434,8 +434,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
->  		.desc = "HiSilicon erratum 161010101",
->  		.read_cntpct_el0 = hisi_161010101_read_cntpct_el0,
->  		.read_cntvct_el0 = hisi_161010101_read_cntvct_el0,
-> -		.set_next_event_phys = erratum_set_next_event_tval_phys,
-> -		.set_next_event_virt = erratum_set_next_event_tval_virt,
-> +		.set_next_event_phys = erratum_set_next_event_phys,
-> +		.set_next_event_virt = erratum_set_next_event_virt,
->  	},
->  #endif
->  #ifdef CONFIG_ARM64_ERRATUM_858921
-> @@ -454,8 +454,8 @@ static const struct arch_timer_erratum_workaround ool_workarounds[] = {
->  		.desc = "Allwinner erratum UNKNOWN1",
->  		.read_cntpct_el0 = sun50i_a64_read_cntpct_el0,
->  		.read_cntvct_el0 = sun50i_a64_read_cntvct_el0,
-> -		.set_next_event_phys = erratum_set_next_event_tval_phys,
-> -		.set_next_event_virt = erratum_set_next_event_tval_virt,
-> +		.set_next_event_phys = erratum_set_next_event_phys,
-> +		.set_next_event_virt = erratum_set_next_event_virt,
->  	},
->  #endif
->  #ifdef CONFIG_ARM64_ERRATUM_1418040
-> -- 
-> 2.30.2
-> 
+            Linus
