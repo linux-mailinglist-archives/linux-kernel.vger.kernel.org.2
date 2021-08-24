@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED793F55C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C353F55C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhHXCWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
+        id S233774AbhHXCXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbhHXCWO (ORCPT
+        with ESMTP id S232779AbhHXCXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:22:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A007C061575;
-        Mon, 23 Aug 2021 19:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w3YWD1YQ7yzJTuhmTwVKzCh8QAlpDX6ZrTlsUvoyX8U=; b=M8bh9QnVXsa2B22/luwUvosuoq
-        3POH1pQHw64iMgvVdeifyHHUc/kPPgLkE5xvmMAIsrxLx4BTAVWPF0wcoVobVv4PakX4F0yadjCXZ
-        cgSgj9xae/UtiRvs+RtT8tqdByBiyvruXQGWJhnNLdP0VYNhryO6OkJn1BLSKYlStL1nRXtVywueb
-        wzGm1T6E2iIPsyJA9DNm/RkVRhJeLh6mWP7NQ2oTnqUCFfEIEsGY+TWwE+fzRGvazF5WSYyRwBvrn
-        WsN+OOhYW7rIH83g03B0ghqj9HRkdcAnTzpvlGALID3/yg/Kjz6JtR/KK1NnOHCfpCZXZaVjmHBL8
-        0cGKXDNQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIM3V-00AR03-14; Tue, 24 Aug 2021 02:20:58 +0000
-Date:   Tue, 24 Aug 2021 03:20:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSRXgJ/axyNma3oh@casper.infradead.org>
-References: <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+        Mon, 23 Aug 2021 22:23:36 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD384C061575;
+        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id j187so17004144pfg.4;
+        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=Buf9yDmqv76HtLamO3Pbrt8As98ijZEWdR2Z19Om0L8=;
+        b=nmy2uJXJkuAuXMLrPpKLxa2/fZttM4IE5G0/V9m2ZsTA+VL46/Rg1VOR8KrLjUZCV5
+         2Uo8tul4r9XfTLn/guv28Kk9divchUz/Dq68aKyrAj4m9UTYhMpInlqVgQRZlKJyYUX4
+         s7axl6V3szcbLsmLKFKAZsDYSIYFH4a/ylaJeQSfn1BNsV7pY4wiKVwGjF7yQMInXfTE
+         IfgEojx0oxs9nsYjHtsET+svSBZjPPK60wmNQGXH55WZJOC0KWvOEv2mcXcWVfzCc9Vt
+         L+K7VUEjS6IccgrPHkE3tnP4Kmppm8ZhRjECQtovKdpQH/476HSfvCTjWPuDr3hP50Zz
+         A33Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Buf9yDmqv76HtLamO3Pbrt8As98ijZEWdR2Z19Om0L8=;
+        b=fpxEogCMcnYnzab5e3EcI2nE/P55exL6f0VwBqoXxWYOHyBGKfgG7IyWJTM56sVCWX
+         SwCTFlOPP2xMHXErUWVS2XxdjRDK9+ecQkZe4tZSg5PzcnjJwb/1zmPHpCWtuq6CEini
+         gq9tj+nmQbrDExOeJQTiYf3yiFLxcgM/RisJurD7Cjhd6iwXFPWjtZRxbZ7yusEPKT/7
+         NlfIrGl8UlUmgllM0juqc4LmGNq825G6fpTxsAzcv/0KOvhQxDkp8d1lD0DvTm732G+2
+         wjeDCnpYSiU1gElD5ExtgT+c3sf7W9Oa3UU8zFH2OtxHliTwyyQieg7x2T5rct9Xn00t
+         +xPw==
+X-Gm-Message-State: AOAM533oK4M+JNCBncG+VH+kYd8aUK6+VoeBrefvYH/bFWcR3ozep01f
+        Rc1MzDyBOUSgKAQAjZUJgSUxtSRByCOCNtv1
+X-Google-Smtp-Source: ABdhPJw7LDsp84QQDwzBzXP4t08n45mv6kAZBeGKMn0jlEgxZdr9inngrm2B7/OuPD5BYdXPWQiO2g==
+X-Received: by 2002:a63:65c5:: with SMTP id z188mr35229033pgb.35.1629771772418;
+        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
+Received: from raspberrypi ([210.183.35.240])
+        by smtp.gmail.com with ESMTPSA id l10sm503260pjg.11.2021.08.23.19.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 19:22:52 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 03:22:47 +0100
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org
+Cc:     selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@lge.com, austin.kim@lge.com
+Subject: [PATCH] selinux: remove duplicated initialization of 'i' for clean-up
+Message-ID: <20210824022247.GA22908@raspberrypi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 03:06:08PM -0700, Linus Torvalds wrote:
-> On Mon, Aug 23, 2021 at 2:25 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > One one hand, the ambition appears to substitute folio for everything
-> > that could be a base page or a compound page even inside core MM
-> > code. Since there are very few places in the MM code that expressly
-> > deal with tail pages in the first place, this amounts to a conversion
-> > of most MM code - including the LRU management, reclaim, rmap,
-> > migrate, swap, page fault code etc. - away from "the page".
-> 
-> Yeah, honestly, I would have preferred to see this done the exact
-> reverse way: make the rule be that "struct page" is always a head
-> page, and anything that isn't a head page would be called something
-> else.
-> 
-> Because, as you say, head pages are the norm. And "folio" may be a
-> clever term, but it's not very natural. Certainly not at all as
-> intuitive or common as "page" as a name in the industry.
-> 
-> That said, I see why Willy did it the way he did - it was easier to do
-> it incrementally the way he did. But I do think it ends up with an end
-> result that is kind of topsy turvy where the common "this is the core
-> allocation" being called that odd "folio" thing, and then the simpler
-> "page" name is for things that almost nobody should even care about.
-> 
-> I'd have personally preferred to call the head page just a "page", and
-> other pages "subpage" or something like that. I think that would be
-> much more intuitive than "folio/page".
+From: Austin Kim <austin.kim@lge.com>
 
-I'm trying to figure out how we can get there.
+The local variable 'i' is used to be incremented inside while loop
+within sidtab_convert_tree(). Before while loop, 'i' is set to 0 
+inside if/else statement.
 
-To start, define
+Since there is no 'goto' statement within sidtab_convert_tree(),
+it had better initialize 'i' as 0 once before if/else statement.
 
-struct mmu_page {
-	union {
-		struct page;
-		struct {
-			unsigned long flags;
-			unsigned long compound_head;
-			unsigned char compound_dtor;
-			unsigned char compound_order;
-			atomic_t compound_mapcount;
-			unsigned int compound_nr;
-		};
-	};
-};
+Signed-off-by: Austin Kim <austin.kim@lge.com>
+---
+ security/selinux/ss/sidtab.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Now memmap becomes an array of struct mmu_pages instead of struct pages.
+diff --git a/security/selinux/ss/sidtab.c b/security/selinux/ss/sidtab.c
+index 656d50b09f76..301620de63d3 100644
+--- a/security/selinux/ss/sidtab.c
++++ b/security/selinux/ss/sidtab.c
+@@ -374,7 +374,7 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
+ 			       struct sidtab_convert_params *convert)
+ {
+ 	int rc;
+-	u32 i;
++	u32 i = 0;
+ 
+ 	if (level != 0) {
+ 		if (!edst->ptr_inner) {
+@@ -383,7 +383,6 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
+ 			if (!edst->ptr_inner)
+ 				return -ENOMEM;
+ 		}
+-		i = 0;
+ 		while (i < SIDTAB_INNER_ENTRIES && *pos < count) {
+ 			rc = sidtab_convert_tree(&edst->ptr_inner->entries[i],
+ 						 &esrc->ptr_inner->entries[i],
+@@ -400,7 +399,6 @@ static int sidtab_convert_tree(union sidtab_entry_inner *edst,
+ 			if (!edst->ptr_leaf)
+ 				return -ENOMEM;
+ 		}
+-		i = 0;
+ 		while (i < SIDTAB_LEAF_ENTRIES && *pos < count) {
+ 			rc = convert->func(&esrc->ptr_leaf->entries[i].context,
+ 					   &edst->ptr_leaf->entries[i].context,
+-- 
+2.20.1
 
-We also need to sort out the type returned from the page cache APIs.
-Right now, it returns (effectively) the mmu_page.  I think it _should_
-return the (arbitrary order) struct page, but auditing every caller of
-every function is an inhuman job.
-
-I can't see how to get there from here without a ridiculous number
-of bugs.  Maybe you can.
