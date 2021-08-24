@@ -2,183 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967B33F612E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 16:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A946B3F6136
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 17:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238134AbhHXO6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 10:58:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41820 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238011AbhHXO6b (ORCPT
+        id S238005AbhHXPBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 11:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237749AbhHXPB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:58:31 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 34E2F1FD9D;
-        Tue, 24 Aug 2021 14:57:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1629817066; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=lTY2+6RSUY5UGPOVYIqJLIbgI+78nykiaQqgyxaQdR0=;
-        b=nVAQuPIE2aHk8Xqf65LgW+pGJcxIj7xpZIXafRKBKQD2pDaJpeUWaQrx2EFBp9XRYMZXDy
-        3DFw2R3UfiBRvhJRrf4vSnD3fIEoVu25bzhFns1l3l2kBynSLPHXlA0f23QWGHB8mdkCZy
-        /eacySNqSfg4bws9dggjurzFygz1LK8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1629817066;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=lTY2+6RSUY5UGPOVYIqJLIbgI+78nykiaQqgyxaQdR0=;
-        b=dxpqltLT00QV/2Rfz3Uu8Dtx6JvdMtAwd41NxGZQ8CEHLcnumo9z4hrfm+/1Gr0MFGL3Xk
-        kd91EpMXnn1Iw2AQ==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 2EF38A3B90;
-        Tue, 24 Aug 2021 14:57:46 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 1D3F1518D984; Tue, 24 Aug 2021 16:57:46 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v4] nvme-multipath: revalidate paths during rescan
-Date:   Tue, 24 Aug 2021 16:57:42 +0200
-Message-Id: <20210824145742.94212-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        Tue, 24 Aug 2021 11:01:27 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0074C061757;
+        Tue, 24 Aug 2021 08:00:42 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso46794657ott.13;
+        Tue, 24 Aug 2021 08:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y10GS9FWoLqJFpkFeNsSYaLQLC4RZsEaOSelIWqnQdE=;
+        b=TeXBR/v1OJwFA9JRToOZ5G0CcnQBuTZi2INs2HReuzBtB4GzBbGmoRXER7oCdHsuRC
+         4VE7bpAqKiKCTxsN/8a+HJiCHq62QjwQ1bYncwhtcpmNloRNIEsPJDnWaBK1IJMGTrnw
+         8lt+uRPI4PbtMmGOvenqzsH+7Qj3wxy+P2yXme4xHFoHzeo/M4X+3b+JRbCHv/1liwJ8
+         yW9MXo0vVI5gB4/0xeeVxQtwP08ICw5JnXzPiMb0FSepz6olMKHNusrGjRDcn9izFVvb
+         bpVSv+xiZtOdgdQ3OnNoBf87r5gyL9ZqrhJKg97pAWm4YRJYMCULFm3W4Dr7wYpfrpiX
+         YGxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=y10GS9FWoLqJFpkFeNsSYaLQLC4RZsEaOSelIWqnQdE=;
+        b=H7MEVlwPpPMM0AsHXzEtYsgrQ7nibJNh5e7dsGNknSisXSIsOJ+e/kAlZYWJhRwNMv
+         e7wHUOHl8cdlb2XFMYipuZaKOhBHUez71Ua0rm7xUgvr7cOhCgI4DTpaGgtxAuq5xZ7v
+         rxAAQBd/d384j+qI4dV3/0blLKlG/Lfplj4tBgfzpVoiffYT8qGf4kmGxILTjMfqE/Yd
+         iKUAj/52KDdAW4IEPzoHH0VpYY/392qgK9wmI9cY1BziTKIEgr+goT268HZrT3fpqcrx
+         WZOqZoq4ioV7CYIkKiacUVj6Ni3Bz8h5VSDjjgvJCQN1AB0E5Z+cE/BRrg0hqRs7ZAxV
+         iKIg==
+X-Gm-Message-State: AOAM5330evyVeC1sA0F6yz3JzupYlvGjpHcJr3yfU5T2BqaTnmR++J18
+        bhuR93VNWTkoskErK/RNO6Q=
+X-Google-Smtp-Source: ABdhPJzVoIwHxCZaaXnlriUCSVIGvM4ROtAQPQdNLbBTmtzVgtrvqvW4fPeBlbNj/cj5DrFy6438Aw==
+X-Received: by 2002:a9d:6215:: with SMTP id g21mr18354917otj.116.1629817242215;
+        Tue, 24 Aug 2021 08:00:42 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g10sm4103459oof.37.2021.08.24.08.00.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 08:00:41 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 24 Aug 2021 08:00:39 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     linux-doc@vger.kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, geert+renesas@glider.be,
+        Max.Merchel@tq-group.com, linux@rempel-privat.de, daniel@0x0f.com,
+        shawnguo@kernel.org, sam@ravnborg.org, arnd@arndb.de,
+        krzysztof.kozlowski@canonical.com, pavo.banicevic@sartura.hr,
+        corbet@lwn.net, lee.jones@linaro.org, pavel@ucw.cz,
+        robh+dt@kernel.org, jdelvare@suse.com, goran.medic@sartura.hr,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr
+Subject: Re: [PATCH v9 6/7] Documentation/hwmon: Add iei-wt61p803-puzzle
+ hwmon driver documentation
+Message-ID: <20210824150039.GA3394576@roeck-us.net>
+References: <20210824124438.14519-1-luka.kovacic@sartura.hr>
+ <20210824124438.14519-7-luka.kovacic@sartura.hr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824124438.14519-7-luka.kovacic@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+On Tue, Aug 24, 2021 at 02:44:37PM +0200, Luka Kovacic wrote:
+> Add the iei-wt61p803-puzzle driver hwmon driver interface documentation.
+> 
+> Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> Signed-off-by: Pavo Banicevic <pavo.banicevic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Robert Marko <robert.marko@sartura.hr>
 
-When triggering a rescan due to a namespace resize we will be
-receiving AENs on every controller, triggering a rescan of all
-attached namespaces. If multipath is active only the current path and
-the ns_head disk will be updated, the other paths will still refer to
-the old size until AENs for the remaining controllers are received.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-If I/O comes in before that it might be routed to one of the old
-paths, triggering an I/O failure with 'access beyond end of device'.
-With this patch the old paths are skipped from multipath path
-selection until the controller serving these paths has been rescanned.
-
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-[dwagner: - introduce NVME_NS_READY flag instead of NVME_NS_INVALIDATE
-          - use 'revalidate' instead of 'invalidate' which
-	    follows the zoned device code path.
-	  - clear NVME_NS_READY before clearing current_path]
-Tested-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
-v3:
-  - https://lore.kernel.org/linux-nvme/20210811152803.30017-1-dwagner@suse.de/
-  - Renamed nvme_mpath_invalidated_paths to nvme_mpath_revalidate_paths()
-  - Replaced NVME_NS_INVALIDATE with NVME_NS_READY
-v2:
-  - https://lore.kernel.org/linux-nvme/20210730071059.124347-1-dwagner@suse.de/
-  - removed churn from failed rebase.
-v1:
-  - https://lore.kernel.org/linux-nvme/20210729194630.i5mhvvgb73duojqq@beryllium.lan/
-
-
- drivers/nvme/host/core.c      |  3 +++
- drivers/nvme/host/multipath.c | 17 ++++++++++++++++-
- drivers/nvme/host/nvme.h      |  5 +++++
- 3 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index b9a46c54f714..42b69f3c6e20 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1875,6 +1875,7 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
- 			goto out_unfreeze;
- 	}
- 
-+	set_bit(NVME_NS_READY, &ns->flags);
- 	blk_mq_unfreeze_queue(ns->disk->queue);
- 
- 	if (blk_queue_is_zoned(ns->queue)) {
-@@ -1886,6 +1887,7 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
- 	if (nvme_ns_head_multipath(ns->head)) {
- 		blk_mq_freeze_queue(ns->head->disk->queue);
- 		nvme_update_disk_info(ns->head->disk, ns, id);
-+		nvme_mpath_revalidate_paths(ns);
- 		blk_stack_limits(&ns->head->disk->queue->limits,
- 				 &ns->queue->limits, 0);
- 		blk_queue_update_readahead(ns->head->disk->queue);
-@@ -3803,6 +3805,7 @@ static void nvme_ns_remove(struct nvme_ns *ns)
- 	if (test_and_set_bit(NVME_NS_REMOVING, &ns->flags))
- 		return;
- 
-+	clear_bit(NVME_NS_READY, &ns->flags);
- 	set_capacity(ns->disk, 0);
- 	nvme_fault_inject_fini(&ns->fault_inject);
- 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 3f32c5e86bfc..ea2b70fd9ac1 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -147,6 +147,21 @@ void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl)
- 	mutex_unlock(&ctrl->scan_lock);
- }
- 
-+void nvme_mpath_revalidate_paths(struct nvme_ns *ns)
-+{
-+	struct nvme_ns_head *head = ns->head;
-+	sector_t capacity = get_capacity(head->disk);
-+	int node;
-+
-+	list_for_each_entry_rcu(ns, &head->list, siblings) {
-+		if (capacity != get_capacity(ns->disk))
-+			clear_bit(NVME_NS_READY, &ns->flags);
-+	}
-+
-+	for_each_node(node)
-+		rcu_assign_pointer(head->current_path[node], NULL);
-+}
-+
- static bool nvme_path_is_disabled(struct nvme_ns *ns)
- {
- 	/*
-@@ -158,7 +173,7 @@ static bool nvme_path_is_disabled(struct nvme_ns *ns)
- 	    ns->ctrl->state != NVME_CTRL_DELETING)
- 		return true;
- 	if (test_bit(NVME_NS_ANA_PENDING, &ns->flags) ||
--	    test_bit(NVME_NS_REMOVING, &ns->flags))
-+	    !test_bit(NVME_NS_READY, &ns->flags))
- 		return true;
- 	return false;
- }
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index a2e1f298b217..8fd30ef19757 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -456,6 +456,7 @@ struct nvme_ns {
- #define NVME_NS_DEAD     	1
- #define NVME_NS_ANA_PENDING	2
- #define NVME_NS_FORCE_RO	3
-+#define NVME_NS_READY		4
- 
- 	struct cdev		cdev;
- 	struct device		cdev_device;
-@@ -748,6 +749,7 @@ void nvme_mpath_init_ctrl(struct nvme_ctrl *ctrl);
- void nvme_mpath_uninit(struct nvme_ctrl *ctrl);
- void nvme_mpath_stop(struct nvme_ctrl *ctrl);
- bool nvme_mpath_clear_current_path(struct nvme_ns *ns);
-+void nvme_mpath_revalidate_paths(struct nvme_ns *ns);
- void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl);
- void nvme_mpath_shutdown_disk(struct nvme_ns_head *head);
- 
-@@ -795,6 +797,9 @@ static inline bool nvme_mpath_clear_current_path(struct nvme_ns *ns)
- {
- 	return false;
- }
-+static inline void nvme_mpath_revalidate_paths(struct nvme_ns *ns)
-+{
-+}
- static inline void nvme_mpath_clear_ctrl_paths(struct nvme_ctrl *ctrl)
- {
- }
--- 
-2.29.2
-
+> ---
+>  .../hwmon/iei-wt61p803-puzzle-hwmon.rst       | 43 +++++++++++++++++++
+>  Documentation/hwmon/index.rst                 |  1 +
+>  2 files changed, 44 insertions(+)
+>  create mode 100644 Documentation/hwmon/iei-wt61p803-puzzle-hwmon.rst
+> 
+> diff --git a/Documentation/hwmon/iei-wt61p803-puzzle-hwmon.rst b/Documentation/hwmon/iei-wt61p803-puzzle-hwmon.rst
+> new file mode 100644
+> index 000000000000..bbbe97645965
+> --- /dev/null
+> +++ b/Documentation/hwmon/iei-wt61p803-puzzle-hwmon.rst
+> @@ -0,0 +1,43 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +
+> +Kernel driver iei-wt61p803-puzzle-hwmon
+> +=======================================
+> +
+> +Supported chips:
+> + * IEI WT61P803 PUZZLE for IEI Puzzle M801
+> +
+> +   Prefix: 'iei-wt61p803-puzzle-hwmon'
+> +
+> +Author: Luka Kovacic <luka.kovacic@sartura.hr>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver adds fan and temperature sensor reading for some IEI Puzzle
+> +series boards.
+> +
+> +Sysfs attributes
+> +----------------
+> +
+> +The following attributes are supported:
+> +
+> +- IEI WT61P803 PUZZLE for IEI Puzzle M801
+> +
+> +/sys files in hwmon subsystem
+> +-----------------------------
+> +
+> +================= == =====================================================
+> +fan[1-5]_input    RO files for fan speed (in RPM)
+> +pwm[1-2]          RW files for fan[1-2] target duty cycle (0..255)
+> +temp[1-2]_input   RO files for temperature sensors, in millidegree Celsius
+> +================= == =====================================================
+> +
+> +/sys files in thermal subsystem
+> +-------------------------------
+> +
+> +================= == =====================================================
+> +cur_state         RW file for current cooling state of the cooling device
+> +                     (0..max_state)
+> +max_state         RO file for maximum cooling state of the cooling device
+> +================= == =====================================================
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index bc01601ea81a..4a050a5bc1f8 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -73,6 +73,7 @@ Hardware Monitoring Kernel Drivers
+>     ibmaem
+>     ibm-cffps
+>     ibmpowernv
+> +   iei-wt61p803-puzzle-hwmon
+>     ina209
+>     ina2xx
+>     ina3221
+> -- 
+> 2.31.1
+> 
