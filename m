@@ -2,116 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFE63F5673
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAC33F5681
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhHXDIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 23:08:12 -0400
-Received: from out0.migadu.com ([94.23.1.103]:28277 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233971AbhHXDB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 23:01:56 -0400
-Date:   Tue, 24 Aug 2021 11:01:50 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1629774058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TNl6fhGOST2/fJOT5KEyUhanXPoPPIsfVeF9RTPm3f8=;
-        b=M1FedzS7dQXLVds3lnVYJWxcBJ1+V8R/nEnRHhP1Xgg0e9N1DH/ncbGJPPjxOZMt8YedDp
-        uRQvfFI5hMbYogoHY+lKFi8i0TD/SdTqd+22aVQ09qPYvf7OE7D0qCyMS1BlsdwrLEOSHu
-        bd3vyV5/kFdwd83pyRM0titMuhDArt4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Josh Don <joshdon@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, tao.zhou@linux.dev
-Subject: Re: [PATCH] sched/core: fix pick_next_task 'max' tracking
-Message-ID: <YSRhHvxhWBDvpucV@geo.homenetwork>
-References: <20210818005615.138527-1-joshdon@google.com>
- <YSODqN9G7VuV+kNR@hirez.programming.kicks-ass.net>
- <CABk29Ns-aiSjf8WTWL5U0ggKr32NKC3Q6ANJ8MheDP5P-k_JuA@mail.gmail.com>
+        id S234029AbhHXDKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 23:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235086AbhHXDFo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 23:05:44 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC6FC0613A3;
+        Mon, 23 Aug 2021 20:03:48 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id f22so11931054qkm.5;
+        Mon, 23 Aug 2021 20:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DcXimKD9ktUTQ9h2I2cOvz7m+Ks/LKV85VIoEJzO/cY=;
+        b=csPq3rt1tkj8/W1nEfwuuf9UZOKvUzQhVhlta8+9aic6joNZRE4lKsu8ufe20IKmEa
+         4eESj3RxZAfjND8RNI+uSpldpy4/qow91j+6r1rgPZyjc7sTcJqdHv3CJGKMssq3yPrp
+         zwUpeeKz4dPtZMU7RvK3/5jFjwTnw/s4hUiECEx/F2NRSa9O7eN2kdN8Pb2ocpCv+k2f
+         jK6PKwJuFefezal882+JqNzWL9LrpyMoTku8b5jqze+6Q48gWlnpQc6PdjYfkLemVrDx
+         5Hz3dcO+LdHt7nfUKFb1uJUSPsdTCzBud9TImS8oZWWSTv0ogz2E9u7yvGYhm554n8h9
+         QyyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DcXimKD9ktUTQ9h2I2cOvz7m+Ks/LKV85VIoEJzO/cY=;
+        b=FiENhkOW1FFThrinLNkH9i5/h+cPWQQHBpRSKn8Av7McgfMZUFZpo5lSBFVMFD5d/z
+         q6uPiCqpgJ1Lj6ARSRAytEY5DdnzX1XHNgvjwFol41WXCZ4WfkkQHUE21u+5afnwjMdn
+         jrS16HkZK8JBBKhsuke/xz/rdXoMRq9yG0UQcyOqW9I/EvyjFJVLLlqh8DfiVKYY6n24
+         eJpAn7qkzh4ZSDlVOhJ6Fn54Y5J0xKU6mEXjWq8sRJAfypOTvCzwPIp+ecMstzVdCnbJ
+         5t4QoaKQSVd2eA5kG6ke9A22XXQeqXBd6CKpnKOSBFEvnKHEmZ3l97j+z387KH3DXfxR
+         Nmlg==
+X-Gm-Message-State: AOAM532KFDggFGro235XnclDa0+weKKRz+dG2Y+clALvwpqiNIN7sca1
+        Y+gqdHwEWt3vjCvN3yg6uGU=
+X-Google-Smtp-Source: ABdhPJzBSu2ILEuN5IUNETzEf6ebHzCaTXcz5UgSaQEIKJPmMq9w9KaPOTYEJby+ubs+Bd+PGr+4VQ==
+X-Received: by 2002:a37:54f:: with SMTP id 76mr24597132qkf.226.1629774227994;
+        Mon, 23 Aug 2021 20:03:47 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p22sm9667227qkj.16.2021.08.23.20.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 20:03:47 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Chris Hyser <chris.hyser@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] kselftest: remove duplicate include
+Date:   Mon, 23 Aug 2021 20:03:38 -0700
+Message-Id: <20210824030338.57396-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABk29Ns-aiSjf8WTWL5U0ggKr32NKC3Q6ANJ8MheDP5P-k_JuA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-On Mon, Aug 23, 2021 at 04:24:26PM -0700, Josh Don wrote:
-> Hi Peter,
-> 
-> On Mon, Aug 23, 2021 at 4:17 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> [snip]
-> > +       for_each_cpu(i, smt_mask) {
-> > +               rq_i = cpu_rq(i);
-> > +               p = rq_i->core_temp;
-> >
-> > -                       /*
-> > -                        * If this sibling doesn't yet have a suitable task to
-> > -                        * run; ask for the most eligible task, given the
-> > -                        * highest priority task already selected for this
-> > -                        * core.
-> > -                        */
-> > -                       p = pick_task(rq_i, class, max, fi_before);
-> > +               if (!cookie_equals(p, cookie)) {
-> > +                       p = NULL;
-> > +                       if (cookie)
-> > +                               p = sched_core_find(rq_i, cookie);
-> 
-> In the case that 'max' has a zero cookie, shouldn't we search for a
+Clean up the following includecheck warning:
 
-In the original pick_task(), when cookie is zero, we choose class pick
-task or force idle task.
+./tools/testing/selftests/sched/cs_prctl_test.c: sys/types.h and sys/wait.h
+are included more than once.
 
-> match on this cpu if the original class pick ('p') had a non-zero
-> cookie? We don't enqueue tasks with zero cookie in the core_tree, so I
-> forget if there was some other reasoning here.
+No functional change.
 
-So, no need to search the core_tree when cookie is zero.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+---
+ tools/testing/selftests/sched/cs_prctl_test.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-But I'm not sure that force idle pick condition(in pick_task())
-is also covered by this clause in the first filter max loop in
-the rewrite..
-  
-  '
-  if (!max || prio_less(max, p, fi_before))
-		max = p;
-  '
-
-I just thought there are three(one add by Josh) places that can return
-max;
-
-1, !cookie condition and class_pick > max
-2, cookie equal condition and class_pick > max(add by Josh)
-3, cookie not equal condition and class_pick > max.
-
-The rewrite change a little with the class pick, it loops all class to
-find the max first(finally will get one task and not be possible return
-NULL). This is not the same with the original.
-
-It is very possible that I'm getting wrong, then please shout to me.
-
-> >                         if (!p)
-> > -                               continue;
-> > +                               p = idle_sched_class.pick_task(rq_i);
-> > +               }
+diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
+index 63fe652..7db9cf8 100644
+--- a/tools/testing/selftests/sched/cs_prctl_test.c
++++ b/tools/testing/selftests/sched/cs_prctl_test.c
+@@ -25,8 +25,6 @@
+ #include <sys/types.h>
+ #include <sched.h>
+ #include <sys/prctl.h>
+-#include <sys/types.h>
+-#include <sys/wait.h>
+ #include <unistd.h>
+ #include <time.h>
+ #include <stdio.h>
+-- 
+1.8.3.1
 
 
-
-Thanks,
-Tao
