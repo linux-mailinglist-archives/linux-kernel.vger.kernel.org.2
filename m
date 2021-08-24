@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFFD3F6743
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442BC3F6541
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238735AbhHXRcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:32:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
+        id S239637AbhHXRK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:10:57 -0400
+Received: from mga12.intel.com ([192.55.52.136]:34909 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241462AbhHXR3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:29:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2367961B3F;
-        Tue, 24 Aug 2021 17:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629824729;
-        bh=Fa86WDYGdFDpxCxBr/hw6G5xC2hZ94PRXSHfBv8/OH0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TOydiVMbgNgF9W7wfYNyHlv6jQodQ6RF00dKh5X/frcxuaHyyKfZ+aqc6lxIOJjz3
-         wVRQ8h0lTPGvJEC6aPFzW+R24VQW0gCGpwTptuqfncDTjOoso36hbbMnYeoFQMlqQy
-         0NT5D3nB4UrauBwNUleNm/YBhxR/QYw+ZK99fXM0qMBQmgUjdcnxGsgwgw8Ee5qiVh
-         rG8FnT0dBqU/kv4FBEoMUshuMKPq2fW6M5saRdVFu/mO3G+WdyDfWwYPK+zVUhVmNe
-         6S2i4RNPMffbqC+bA8EZygp38rJvHM2AA2h5iD9rPjjFTuxWE63n1dnQqaFCPA/Tf8
-         Dl4eZLkwC26TA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.14 32/64] KVM: nSVM: avoid picking up unsupported bits from L2 in int_ctl (CVE-2021-3653)
-Date:   Tue, 24 Aug 2021 13:04:25 -0400
-Message-Id: <20210824170457.710623-33-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824170457.710623-1-sashal@kernel.org>
-References: <20210824170457.710623-1-sashal@kernel.org>
+        id S238870AbhHXRIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:08:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="196931983"
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="196931983"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:04:29 -0700
+X-IronPort-AV: E=Sophos;i="5.84,347,1620716400"; 
+   d="scan'208";a="526698792"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.119.65]) ([10.209.119.65])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 10:04:27 -0700
+Subject: Re: [PATCH v4 11/15] pci: Add pci_iomap_shared{,_range}
+To:     Christoph Hellwig <hch@infradead.org>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210805005218.2912076-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210823195409-mutt-send-email-mst@kernel.org>
+ <26a3cce5-ddf7-cbe6-a41e-58a2aea48f78@linux.intel.com>
+ <YSSay4zGjLaNMOh1@infradead.org>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <2747d96f-5063-7c63-5a47-16ea299fa195@linux.intel.com>
+Date:   Tue, 24 Aug 2021 10:04:26 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.245-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.245-rc1
-X-KernelTest-Deadline: 2021-08-26T17:04+00:00
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YSSay4zGjLaNMOh1@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
 
-[ upstream commit 0f923e07124df069ba68d8bb12324398f4b6b709 ]
+On 8/24/2021 12:07 AM, Christoph Hellwig wrote:
+> On Mon, Aug 23, 2021 at 05:30:54PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>>
+>> On 8/23/21 4:56 PM, Michael S. Tsirkin wrote:
+>>>> Add a new variant of pci_iomap for mapping all PCI resources
+>>>> of a devices as shared memory with a hypervisor in a confidential
+>>>> guest.
+>>>>
+>>>> Signed-off-by: Andi Kleen<ak@linux.intel.com>
+>>>> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
+>>> I'm a bit puzzled by this part. So why should the guest*not*  map
+>>> pci memory as shared? And if the answer is never (as it seems to be)
+>>> then why not just make regular pci_iomap DTRT?
+>> It is in the context of confidential guest (where VMM is un-trusted). So
+>> we don't want to make all PCI resource as shared. It should be allowed
+>> only for hardened drivers/devices.
+> Well, assuming the host can do any damage when mapped shared that also
+> means not mapping it shared will completely break the drivers.
 
-* Invert the mask of bits that we pick from L2 in
-  nested_vmcb02_prepare_control
+There are several cases:
 
-* Invert and explicitly use VIRQ related bits bitmask in svm_clear_vintr
+- We have driver filtering active to protect you against attacks from 
+the host against unhardened drivers.
 
-This fixes a security issue that allowed a malicious L1 to run L2 with
-AVIC enabled, which allowed the L2 to exploit the uninitialized and enabled
-AVIC to read/write the host physical memory at some offsets.
+In this case the drivers not working is the intended behavior.
 
-Fixes: 3d6368ef580a ("KVM: SVM: Add VMRUN handler")
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/include/asm/svm.h |  2 ++
- arch/x86/kvm/svm.c         | 15 ++++++++-------
- 2 files changed, 10 insertions(+), 7 deletions(-)
+- There is an command allow list override for some new driver, but the 
+driver is hardened and shared
 
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index 78dd9df88157..2a9e81e93aac 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -117,6 +117,8 @@ struct __attribute__ ((__packed__)) vmcb_control_area {
- #define V_IGN_TPR_SHIFT 20
- #define V_IGN_TPR_MASK (1 << V_IGN_TPR_SHIFT)
- 
-+#define V_IRQ_INJECTION_BITS_MASK (V_IRQ_MASK | V_INTR_PRIO_MASK | V_IGN_TPR_MASK)
-+
- #define V_INTR_MASKING_SHIFT 24
- #define V_INTR_MASKING_MASK (1 << V_INTR_MASKING_SHIFT)
- 
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 0e6e158b8f8f..5ff6c145fdbb 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -1211,12 +1211,7 @@ static __init int svm_hardware_setup(void)
- 		}
- 	}
- 
--	if (vgif) {
--		if (!boot_cpu_has(X86_FEATURE_VGIF))
--			vgif = false;
--		else
--			pr_info("Virtual GIF supported\n");
--	}
-+	vgif = false; /* Disabled for CVE-2021-3653 */
- 
- 	return 0;
- 
-@@ -3164,7 +3159,13 @@ static bool nested_svm_vmrun(struct vcpu_svm *svm)
- 	svm->nested.intercept            = nested_vmcb->control.intercept;
- 
- 	svm_flush_tlb(&svm->vcpu, true);
--	svm->vmcb->control.int_ctl = nested_vmcb->control.int_ctl | V_INTR_MASKING_MASK;
-+
-+	svm->vmcb->control.int_ctl &=
-+			V_INTR_MASKING_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK;
-+
-+	svm->vmcb->control.int_ctl |= nested_vmcb->control.int_ctl &
-+			(V_TPR_MASK | V_IRQ_INJECTION_BITS_MASK);
-+
- 	if (nested_vmcb->control.int_ctl & V_INTR_MASKING_MASK)
- 		svm->vcpu.arch.hflags |= HF_VINTR_MASK;
- 	else
--- 
-2.30.2
+The other drivers will still not work, but that's also the intended behavior
+
+- Driver filtering is disabled or the allow list override is used to 
+enable some non hardened/enabled driver
+
+There is a command line option to override the ioremap sharing default, 
+it will allow all drivers to do ioremap. We would really prefer to make 
+it more finegrained, but it's not possible in this case. Other drivers 
+are likely attackable.
+
+- Driver filtering is disabled (allowing attacks on the drivers) and the 
+command line option for forced sharing is set.
+
+All drivers initialize and can talk to the host through MMIO. Lots of 
+unhardened drivers are likely attackable.
+
+-Andi
 
