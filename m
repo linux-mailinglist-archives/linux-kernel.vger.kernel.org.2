@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F2C3F55D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC423F55D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhHXC2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:28:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37032 "EHLO mail.kernel.org"
+        id S233815AbhHXCaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 22:30:16 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57709 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233477AbhHXC2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:28:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBDEF613D5;
-        Tue, 24 Aug 2021 02:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629772053;
-        bh=NOvJGCvW1HVdaDqhCUnwbbyYfhSHjlfgYPzYKkOiPeI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sVo8kH14HV4YMJUOa/sFGqFKMlYvaRHWnjrvEpgstLxyWfoE1UaForX7zQQFkmpBb
-         Geep8/Zqy1BvWYK0RIAGXu6dEpxEz/49ho/U/ehCqyXPkV6wZ0P4DPwe56qFFYhfkQ
-         aYsarl6rdNXIFELz7+lEKIKNA21PmggLbrFWwmJmPVabnpAtAIlY7OSPmDfZCUb8zV
-         chWdq/uS+UWzJ6Etm0OD8q7/0gzafwogKdqUygQ48muscUfP9iCwxaUwjwVvqH5nOf
-         7o2M2apdEIejOD0GG69EhgZOchV9AKwNyIzaze5VLDP4UmF1TlrxWdIDnN4UQgb/y8
-         aR7u/vij+whEg==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 2/2] kbuild: Add -Werror=ignored-optimization-argument to CLANG_FLAGS
-Date:   Mon, 23 Aug 2021 19:26:40 -0700
-Message-Id: <20210824022640.2170859-3-nathan@kernel.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210824022640.2170859-1-nathan@kernel.org>
-References: <20210824022640.2170859-1-nathan@kernel.org>
+        id S232147AbhHXCaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Aug 2021 22:30:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GttNS6P5Zz9sXM;
+        Tue, 24 Aug 2021 12:29:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1629772169;
+        bh=DbEFW/IIRW+UwgP8364jSKU0PNtWC18/znjAXv4/bRw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oRi3KBSDFUn9k58eFnKb61NHHXc/bPEztPQUY9mVgjlG73bgtxBTepOP9BLL05u8Y
+         ppcVC0A3JB1m/wT5zDIKF2JV/l/hRLFTStAHnKYcwlQ6WIOgmgDYau6YCsJYOUbiX3
+         y3RSYfYRtf7b3efua81dFKUnSRo1SrHisF8hZFbgjWSX0dk6pbWkB6SC4Oh4aLQgtM
+         b/6XROyoYktvkwp2uRQv8sRuw6QdkTsgCUPvVNob0JDeAUme0flYjwsuBU4QKFXPfP
+         guSFAnQhJTfH5sbCBGMRbXMR70+MGE9Hf8C10cD+njlCw78TmNNQCIB0gyEuQPxGB+
+         S/PgHbt9tKgog==
+Date:   Tue, 24 Aug 2021 12:29:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20210824122927.69ea49d3@canb.auug.org.au>
+In-Reply-To: <YSRVj0gwlp91UAiF@fedora>
+References: <20210823075432.2069fb0b@canb.auug.org.au>
+        <YSRVj0gwlp91UAiF@fedora>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/+HU+wUBB/zdfdG4I/7aL9tZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit 589834b3a009 ("kbuild: Add
--Werror=unknown-warning-option to CLANG_FLAGS").
+--Sig_/+HU+wUBB/zdfdG4I/7aL9tZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Clang ignores certain GCC flags that it has not implemented, only
-emitting a warning:
+Hi Shreyansh,
 
-$ echo | clang -fsyntax-only -falign-jumps -x c -
-clang-14: warning: optimization flag '-falign-jumps' is not supported
-[-Wignored-optimization-argument]
+On Tue, 24 Aug 2021 07:42:31 +0530 Shreyansh Chouhan <chouhan.shreyansh630@=
+gmail.com> wrote:
+>
+> Apologies for the wrong fixes tag.
+>=20
+> Since the patch is already in the tree, (and since this is the first
+> time I am facing this,) I wanted to ask if I should resend the patch
+> with the correct fixes tag to fix this.
 
-When one of these flags gets added to KBUILD_CFLAGS unconditionally, all
-subsequent cc-{disable-warning,option} calls fail because -Werror was
-added to these invocations to turn the above warning and the equivalent
--W flag warning into errors.
+The only way it can be fixed is to rebase the tree it is in.  However,
+Dave does not rebase his trees, so you should just take this as a
+learning experience and remember for next time.
 
-To catch the presence of these flags earlier, turn
--Wignored-optimization-argument into an error so that the flags can
-either be implemented or ignored via cc-option and there are no more
-weird errors.
+--=20
+Cheers,
+Stephen Rothwell
 
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- scripts/Makefile.clang | 4 ++++
- 1 file changed, 4 insertions(+)
+--Sig_/+HU+wUBB/zdfdG4I/7aL9tZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/scripts/Makefile.clang b/scripts/Makefile.clang
-index 4cce8fd0779c..2fe38a9fdc11 100644
---- a/scripts/Makefile.clang
-+++ b/scripts/Makefile.clang
-@@ -29,7 +29,11 @@ CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- else
- CLANG_FLAGS	+= -fintegrated-as
- endif
-+# By default, clang only warns on unknown warning or optimization flags
-+# Make it behave more like gcc by erroring when these flags are encountered
-+# so they can be implemented or wrapped in cc-option.
- CLANG_FLAGS	+= -Werror=unknown-warning-option
-+CLANG_FLAGS	+= -Werror=ignored-optimization-argument
- KBUILD_CFLAGS	+= $(CLANG_FLAGS)
- KBUILD_AFLAGS	+= $(CLANG_FLAGS)
- export CLANG_FLAGS
--- 
-2.33.0
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEkWYcACgkQAVBC80lX
+0Gx1lAgAk0eyvjWeQeXdGan+Xx+Y2RScHvtKJYLKmAC8xPs97o2+zrp0rgU40qIZ
+J5J5M0sHOJl/f3rLNAXVhhGt543dzccKXE1BDNYASp46UDtC3D2Smka/m2wsdJR8
+Mwkmsc7m3N68q/QzujWDXyYiCCc11Rv92wV5LLxYVKLo1ILxReas9bqkDP6EDm0X
+rBZJLXIZoWw3MCoIF0S/h/+ZeARm3ZSyaYS4GnejWY/a1pjSZejjaCDbr8GLIu5L
+3vEtA0WNnhfb5ABuoNfmluWGwrculJDTT4mNd2kl5fOCqY2Y7kl0cNNt70BENc+b
+UPpw4V+g7xptdmCpC8ezfI76f9JB5Q==
+=omnH
+-----END PGP SIGNATURE-----
+
+--Sig_/+HU+wUBB/zdfdG4I/7aL9tZ--
