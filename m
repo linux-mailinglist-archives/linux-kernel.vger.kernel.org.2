@@ -2,34 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3789F3F685A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1953F689A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241806AbhHXRrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:47:25 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:57118 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239147AbhHXRrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:47:02 -0400
-Received: from zn.tnic (p200300ec2f114400ce3b938495d443bc.dip0.t-ipconnect.de [IPv6:2003:ec:2f11:4400:ce3b:9384:95d4:43bc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 015121EC01FC;
-        Tue, 24 Aug 2021 19:46:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1629827173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oWf4vA3IaJb7vMimxT4L3B6A+JXDrm2LxrX0YuikrKE=;
-        b=EhGXCWwkVzZZQfEuhSMVwcNnGsoDxbWNOsp5wU+Y88ONF9QXpIN82MpPuuqSsK884GsSiF
-        pVjBXs5cmaPewnNFG+HomVNCIOCBvmJMWazWgos6BPvH2ZUdsHEwvHaa9Te/VMSAD3njX+
-        bQIpxvw06jberGnOEV5AQ6V5N5t/W7U=
-Date:   Tue, 24 Aug 2021 19:46:51 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        id S239534AbhHXSCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238946AbhHXSCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 14:02:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F71C061A31
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:47:32 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id oc2-20020a17090b1c0200b00179e56772d6so2278624pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 10:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1gDeRLms/d/PgRchCO82ssAS1m7T0+GYvbCOMiGz08E=;
+        b=OP8ji4GaiAhVi2KsHPmBGabJADwEbDP/kNIruomAqT35ZI0cljbBmQrdxzuJGDJJJZ
+         YXIP1lHefzWnv6cwhN+ZMuk8M1mTA29ZAAsBrC/uAXMIjjUc+cseBSP6O4CwM0vZ//Db
+         wAAq4L7gc14xEJ9zoeJ59sGLM43qBKigNPDca98s0BIuL0AgY0YY+mzn4Iu1+EEhdgmt
+         5GSGHUG4jmHUn19HDZguvXJLGnBuk/0P67iaEktVUX7BfACMLxL3o/aUtcCUv5KlXtdT
+         iWxbRVYk49uRm9Bfp3IQeUk5VQ0T91iYR2a/NJQ6NsAki7b1SA6inm+KRNVMu1V4vTdw
+         /5UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1gDeRLms/d/PgRchCO82ssAS1m7T0+GYvbCOMiGz08E=;
+        b=b9ISB/FbMXrdn/1tZyxRm8p86GmKokDsHrUBCQ5CnA+Mp6hAV3B23AWW8JnZUiqR0S
+         cD2oDi8ZunCXjxnOuoL0lsQ9RSulSGDuSnv1/OF+DvSJG97o5gD2mw6QvazNMfGkgEQP
+         ERMWKnQRn/UYAXF6yfiZ3Hi2Y6pb5xp3xG4Xowjj/RCU3cSs0R5iWOLPLpEv/50A2R79
+         RUt5kzfkXG7Rxc4p+8aEWK/icxMl+edPWX/R/6WZhrs/gxLOr/OHd7bUizFrVB/g9UjY
+         wmUeYO4Mbh3mn484TZwIY5xdz7pPkEraSYyzrNYWxeWdBDfxk2x7cEVixca+cXop+urs
+         ssQQ==
+X-Gm-Message-State: AOAM532OW7hoj9Mfb/s/GEE5uwrsBARzt6EwsKvB+astuIYL0gxB6UQZ
+        Bpy6XAKs0UT5RpMx0xw9mfRTQQ==
+X-Google-Smtp-Source: ABdhPJxAcoqeQZzPyyC+MEpY/M/3c3M/jp6zq+eOiIfGrWDAfHx6B5FucNUgk42zs7OGN/3HAb+D+w==
+X-Received: by 2002:a17:90b:1488:: with SMTP id js8mr4222306pjb.4.1629827252075;
+        Tue, 24 Aug 2021 10:47:32 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j68sm24096465pgc.44.2021.08.24.10.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Aug 2021 10:47:31 -0700 (PDT)
+Date:   Tue, 24 Aug 2021 17:47:25 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
@@ -39,43 +63,55 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Dan Williams <dan.j.williams@intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 07/12] x86/traps: Add #VE support for TDX guest
-Message-ID: <YSUwi2HraMFVanTP@zn.tnic>
+Subject: Re: [PATCH v5 08/12] x86/tdx: Add HLT support for TDX guest
+Message-ID: <YSUwrSidivC87lBC@google.com>
 References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210804181329.2899708-8-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YSTHMAUA1LjjOQPe@zn.tnic>
- <99c5f6e9-a747-1a4a-d0f4-95b8b28e0d02@linux.intel.com>
+ <20210804181329.2899708-9-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YSUaAQPiBUqubBHM@zn.tnic>
+ <YSUnDQUrGYc8aY9j@google.com>
+ <YSUsBVx2DD7MCyn/@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <99c5f6e9-a747-1a4a-d0f4-95b8b28e0d02@linux.intel.com>
+In-Reply-To: <YSUsBVx2DD7MCyn/@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:32:13AM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> Mainly chose it avoid future name conflicts with KVM (tdx) calls. But
+On Tue, Aug 24, 2021, Borislav Petkov wrote:
+> On Tue, Aug 24, 2021 at 05:06:21PM +0000, Sean Christopherson wrote:
+> > It would be helpful to use local variables to document what's up, e.g.
+> > 
+> >  	const bool irqs_enabled = true;
+> > 	const bool do_sti = true;
+> > 
+> > 	ret = _tdx_hypercall(EXIT_REASON_HLT, irqs_enabled0, 0, 0, do_sti, NULL);
+> 
+> Wait, is this do_sti thing supposed to be:
+> 
+> 	 * ... But this
+>          * change is not required for all HLT cases. So use R15
+>          * register value to identify the case which needs sti. So,
+>          * if R11 is EXIT_REASON_HLT and R15 is 1, then call sti
+>          * before TDCALL instruction.
+> 
+> ?
+> 
+> 
+> > > > +	ret = _tdx_hypercall(EXIT_REASON_HLT, 0, 0, 0, 1, NULL);
+> 						      ^^^
+> Yeah, it must be it - the 1 there.
+> 
+> And what's with the irqs_enabled first parameter?
+> 
+> Is that used by the TDX module?
 
-What name conflicts with KVM calls? Please explain.
+It's passed to the (untrusted) VMM.  The TDX Module has direct access to the guest's
+entire FLAGS via the VMCS.
 
-> It is required to handle #VE exceptions raised by unhandled MSR
-> read/writes.
-
-Example? Please elaborate.
-
-> Ok. I can check it. But there is only one statement after this call.
-> So it may not be very helpful.
-
-Looking at die_addr(), that calls the die notifier too. So do you
-even *have* to call it here with VEFSTR? As yo say, there's only one
-statement after that call and box is dead in the water after that so why
-even bother...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+The VMM uses the "IRQs enabled" param to understand whether or not it should
+schedule the halted vCPU if an IRQ becomes pending.  E.g. if IRQs are disabled
+the VMM can keep the vCPU in virtual HLT, even if an IRQ is pending, without
+hanging/breaking the guest.
