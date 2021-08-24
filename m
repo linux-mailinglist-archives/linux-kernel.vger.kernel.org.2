@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3D33F68B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1D53F68B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 20:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237947AbhHXSEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 14:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S239627AbhHXSFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 14:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239230AbhHXSEG (ORCPT
+        with ESMTP id S238609AbhHXSEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 14:04:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F7EC035426;
-        Tue, 24 Aug 2021 10:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pTa7CJ6QaTq6UueYZg9lyVDrVwoJx5n2tyWb82cOfR0=; b=CTZxkTVCpt8lr38ykH3ksUqKTC
-        spllFLWvt5uzaa0YpRVVqpqvIzdPS1hh1NZTcwUCGU2UzW67tQXdB9n13bhxwNMOwhYPAxEB9VnOO
-        Ih/U9EsYoY6ly9jiBGwkEizMbOonx07+f+gh1aPVCyAy97C8x3bU+4j/UgrRkuoHjuO4AuN0fMFGW
-        fi7zB6U1Bw5Gxp1f4lq1WIKvRA6PBCrzXZNPWHZpj34H/Mwkw0zOjMPT9ESIAuNhsW52oto83eSAQ
-        fNMSiSGxY2TcsTQw9v2Gi7DG0otiljMNtHnaCcJqv2dLOAL3QhAWa2veX3G5k5DSA6NmUJuz8EW10
-        XuebDQcw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mIafB-00BNao-VY; Tue, 24 Aug 2021 17:56:58 +0000
-Date:   Tue, 24 Aug 2021 18:56:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [GIT PULL] Memory folios for v5.15
-Message-ID: <YSUy2WwO9cuokkW0@casper.infradead.org>
-References: <CAHk-=wjD8i2zJVQ9SfF2t=_0Fkgy-i5Z=mQjCw36AHvbBTGXyg@mail.gmail.com>
- <YSPwmNNuuQhXNToQ@casper.infradead.org>
- <YSQSkSOWtJCE4g8p@cmpxchg.org>
- <1957060.1629820467@warthog.procyon.org.uk>
+        Tue, 24 Aug 2021 14:04:55 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D83C061A28
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:01:42 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id j12so24684065ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:01:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YCxb+VTz4cjVjB3faY8PYmPDiDFElSaMqsPr/FfkL6c=;
+        b=TTbBK+uOHncqHzTPlHlqLNwRCow/uI7O1xrUhx5q6yORLlE6bHsr+dhSaSuXcvPC8W
+         sSo9+Ef3wIF2fxdpq/IxupzammVvj/ottvH7stUJfbMNmbqddK9z1dT8S9X+kA7WeC7B
+         pddO/dstyV3iOaE17BwK+pzEa2wK9BhJlKORo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YCxb+VTz4cjVjB3faY8PYmPDiDFElSaMqsPr/FfkL6c=;
+        b=ahBBuCfTuPkVXCLtI0jEs1bLZgcZEMQRTEKxiwvGzZjs2/5R/P2QOsM/cIy4WWZHqm
+         B7QcOUlZ6fYxZTOknKGBC6NclUs3yBAYFvHR2ZtSiwvFhML9Hm9mjTgPBgUw2a6r2CKX
+         P9iczz3STGLsAw13MfY4fdEr7btXdcn247cu7cObzkOESjdpK5boBEsyp24u6yu8magi
+         EhYAJFkbUi/k/BR4o8NwmTAmYCZFUlE/rJ5x9p3blMABCV699Tn9kCBLVYD4nFYC8Xdu
+         xuSFtyJ7W5W6LHCPySKaBUQTZe6EVAnmLjHdPhfJqS8KwzY23Ha8aMfZBpTD38eWRDvC
+         2GXQ==
+X-Gm-Message-State: AOAM531kyzxYZUbT+6T+boOf2cqvYBl+ffBfK+ZYHkHryMGtwI/N8zmw
+        cvAE25ewcdWXwaLJr/8zFHQRPK0eck2HweQD
+X-Google-Smtp-Source: ABdhPJykaoC93ajXXF6yJu0DxSgV8cmzVAq44qHo4gWErAH/XrP7m0sVaOUwKKcHa/wIzTMVwtCXeA==
+X-Received: by 2002:a05:651c:1b3:: with SMTP id c19mr32732339ljn.16.1629828099937;
+        Tue, 24 Aug 2021 11:01:39 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id p7sm1810316lfa.258.2021.08.24.11.01.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Aug 2021 11:01:38 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id o10so47266520lfr.11
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 11:01:38 -0700 (PDT)
+X-Received: by 2002:a19:500e:: with SMTP id e14mr28777692lfb.487.1629828098025;
+ Tue, 24 Aug 2021 11:01:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1957060.1629820467@warthog.procyon.org.uk>
+References: <20210824165607.709387-1-sashal@kernel.org> <20210824165607.709387-74-sashal@kernel.org>
+ <CAHk-=wiQhb689WEk__vLy-ET4rL69cjq39pGTmrKam=c_0LYGg@mail.gmail.com> <YSUt8NdA+5EPJIyD@sashalap>
+In-Reply-To: <YSUt8NdA+5EPJIyD@sashalap>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 24 Aug 2021 11:01:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgftHEoWsxidkWD3YodMVJKGuRz1JYG5=75-Rj6wbBwwg@mail.gmail.com>
+Message-ID: <CAHk-=wgftHEoWsxidkWD3YodMVJKGuRz1JYG5=75-Rj6wbBwwg@mail.gmail.com>
+Subject: Re: [PATCH 5.13 073/127] pipe: avoid unnecessary EPOLLET wakeups
+ under normal loads
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        Sandeep Patil <sspatil@android.com>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 04:54:27PM +0100, David Howells wrote:
-> One question does spring to mind, though: do filesystems even need to know
-> about hardware pages at all?  They need to be able to access source data or a
-> destination buffer, but that can be stitched together from disparate chunks
-> that have nothing to do with pages (eg. iov_iter); they need access to the
-> pagecache, and may need somewhere to cache pieces of information, and they
-> need to be able to pass chunks of pagecache, data or bufferage to crypto
-> (scatterlists) and I/O routines (bio, skbuff) - but can we hide "paginess"
-> from filesystems?
-> 
-> The main point where this matters, at the moment, is, I think, mmap - but
-> could more of that be handled transparently by the VM?
+On Tue, Aug 24, 2021 at 10:35 AM Sasha Levin <sashal@kernel.org> wrote:
+>
+> On Tue, Aug 24, 2021 at 10:00:33AM -0700, Linus Torvalds wrote:
+> >
+> >Honestly, I don't understand the performance regression, but that's
+> >likely on me, not on the kernel test robot.
+>
+> I'll drop it for now.
+>
+> Ideally we wouldn't take it at all, but I don't think any of us wants to
+> field "my tests have regressed!" questions for the next 5 years or so.
 
-It really depends on the filesystem.  I just audited adfs, for example,
-and there is literally nothing in there that cares about struct page.
-It passes its arguments from ->readpage and ->writepage to
-block_*_full_page(); it uses cont_write_begin() for its ->write_begin;
-and it uses __set_page_dirty_buffers for its ->set_page_dirty.
+I have a theory about what is going on, and it's not a new problem,
+but it would explain how that test might be so bimodal in performance
+if you happen to hit the exact right timing. And the test robot just
+might not have hit the right timing previously.
 
-Then there are filesystems like UFS which use struct page extensively in
-its directory handling.  And NFS which uses struct page throughout.
-Partly there's just better infrastructure for block-based filesystems
-(which you're fixing) and partly NFS is trying to perform better than
-a filesystem which exists for compatibility with a long-dead OS.
+See
 
-> > Because, as you say, head pages are the norm. And "folio" may be a
-> > clever term, but it's not very natural. Certainly not at all as
-> > intuitive or common as "page" as a name in the industry.
-> 
-> That's mostly because no one uses the term... yet, and that it's not commonly
-> used.  I've got used to it in building on top of Willy's patches and have no
-> problem with it - apart from the fact that I would expect something more like
-> a plural or a collective noun ("sheaf" or "ream" maybe?) - but at least the
-> name is similar in length to "page".
-> 
-> And it's handy for grepping ;-)
+    https://lore.kernel.org/lkml/CAHk-=wiKAg5QtrQOtvKNwkRUn0b2xufO54GPhUoTWxBgDzXWNA@mail.gmail.com/
 
-If the only thing standing between this patch and the merge is
-s/folio/ream/g, I will do that.  All three options are equally greppable
-(except for 'ream' as a substring of dream, stream, preamble, scream,
-whereami, and typos for remain).
+with a test-patch in the next message in that thread.
 
+So it looks like another case of an odd test, but it should be easy
+enough to make that test happy too. Knock wood.
+
+             Linus
