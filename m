@@ -2,181 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4F73F6852
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC503F684D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 19:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241643AbhHXRnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 13:43:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242761AbhHXRju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 13:39:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5482B60F25;
-        Tue, 24 Aug 2021 17:37:44 +0000 (UTC)
-Date:   Tue, 24 Aug 2021 18:37:41 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [BUG 5.14] arm64/mm: dma memory mapping fails (in some cases)
-Message-ID: <20210824173741.GC623@arm.com>
-References: <d3a3c828-b777-faf8-e901-904995688437@gmail.com>
+        id S235573AbhHXRmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 13:42:35 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:38164 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242156AbhHXRjM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 13:39:12 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id EC1F720B85E8;
+        Tue, 24 Aug 2021 10:38:26 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EC1F720B85E8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1629826707;
+        bh=R6YgY1J4gD2s66MsoljAfldZ8VnigpmKriT610HRPkU=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=D8lpOYe/w8+XekYIkMuGN2ml0DXIA/rRNfpe25N549BSWSVkYpTaqKMxVniIa/IdI
+         PeQdYBq1e27VHs5DsxVy62nrlNWX0FRFLQ9EbbwhlraKxJ1EB+1z/xPpSaQMdJ0Xfg
+         9pNJMx7tdilmCXyFIoXwoCE17pO1aBz93QBxtNEc=
+Subject: Re: [RFC PATCH v8 1/4] arm64: Make all stack walking functions use
+ arch_stack_walk()
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
+ <20210812190603.25326-1-madvenka@linux.microsoft.com>
+ <20210812190603.25326-2-madvenka@linux.microsoft.com>
+ <20210824131344.GE96738@C02TD0UTHF1T.local>
+ <da2bb980-09c3-5a39-73cd-ca4de4c38d51@linux.microsoft.com>
+Message-ID: <66d0ff83-bf67-5576-4c74-10f825855091@linux.microsoft.com>
+Date:   Tue, 24 Aug 2021 12:38:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3a3c828-b777-faf8-e901-904995688437@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <da2bb980-09c3-5a39-73cd-ca4de4c38d51@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-Thanks for the report.
 
-On Tue, Aug 24, 2021 at 03:40:47PM +0200, Alex Bee wrote:
-> it seems there is a regression in arm64 memory mapping in 5.14, since it
-> fails on Rockchip RK3328 when the pl330 dmac tries to map with:
+>>> diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
+>>> index a6d18755652f..92a0f4d434e4 100644
+>>> --- a/arch/arm64/kernel/return_address.c
+>>> +++ b/arch/arm64/kernel/return_address.c
+>>> @@ -35,15 +35,11 @@ NOKPROBE_SYMBOL(save_return_addr);
+>>>  void *return_address(unsigned int level)
+>>>  {
+>>>  	struct return_address_data data;
+>>> -	struct stackframe frame;
+>>>  
+>>>  	data.level = level + 2;
+>>>  	data.addr = NULL;
+>>>  
+>>> -	start_backtrace(&frame,
+>>> -			(unsigned long)__builtin_frame_address(0),
+>>> -			(unsigned long)return_address);
+>>> -	walk_stackframe(current, &frame, save_return_addr, &data);
+>>> +	arch_stack_walk(save_return_addr, &data, current, NULL);
+>>>  
+>>>  	if (!data.level)
+>>>  		return data.addr;
+>>
+>> Nor that arch_stack_walk() will start with it's caller, so
+>> return_address() will be included in the trace where it wasn't
+>> previously, which implies we need to skip an additional level.
+>>
 > 
-> [    8.921909] ------------[ cut here ]------------
-> [    8.921940] WARNING: CPU: 2 PID: 373 at kernel/dma/mapping.c:235 dma_map_resource+0x68/0xc0
-> [    8.921973] Modules linked in: spi_rockchip(+) fuse
-> [    8.921996] CPU: 2 PID: 373 Comm: systemd-udevd Not tainted 5.14.0-rc7 #1
-> [    8.922004] Hardware name: Pine64 Rock64 (DT)
-> [    8.922011] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> [    8.922018] pc : dma_map_resource+0x68/0xc0
-> [    8.922026] lr : pl330_prep_slave_fifo+0x78/0xd0
-> [    8.922040] sp : ffff800012102ae0
-> [    8.922043] x29: ffff800012102ae0 x28: ffff000005c94800 x27: 0000000000000000
-> [    8.922056] x26: ffff000000566bd0 x25: 0000000000000001 x24: 0000000000000001
-> [    8.922067] x23: 0000000000000002 x22: ffff000000628c00 x21: 0000000000000001
-> [    8.922078] x20: ffff000000566bd0 x19: 0000000000000001 x18: 0000000000000000
-> [    8.922089] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> [    8.922100] x14: 0000000000000277 x13: 0000000000000001 x12: 0000000000000000
-> [    8.922111] x11: 0000000000000001 x10: 00000000000008e0 x9 : ffff800012102a80
-> [    8.922123] x8 : ffff000000d14b80 x7 : ffff0000fe7b12f0 x6 : ffff0000fe7b1100
-> [    8.922134] x5 : fffffc000000000f x4 : 0000000000000000 x3 : 0000000000000001
-> [    8.922145] x2 : 0000000000000001 x1 : 00000000ff190800 x0 : ffff000000628c00
-> [    8.922158] Call trace:
-> [    8.922163]  dma_map_resource+0x68/0xc0
-> [    8.922173]  pl330_prep_slave_sg+0x58/0x220
-> [    8.922181]  rockchip_spi_prepare_dma+0xd8/0x2c0 [spi_rockchip]
-> [    8.922208]  rockchip_spi_transfer_one+0x294/0x3d8 [spi_rockchip]
-[...]
-> Note: This does not relate to the spi driver - when disabling this device in
-> the device tree it fails for any other (i2s, for instance) which uses dma.
-> Commenting out the failing check at [1], however, helps and the mapping
-> works again.
+> You are correct. I will fix this. Thanks for catching this.
+> 
+>> That said, I'm not entirely sure why we need to skip 2 levels today; it
+>> might be worth checking that's correct.
+>>
+> 
+> AFAICT, return_address() acts like builtin_return_address(). That is, it
+> returns the address of the caller. If func() calls return_address(),
+> func() wants its caller's address. So, return_address() and func() need to
+> be skipped.
+> 
+> I will change it to skip 3 levels instead of 2.
+> 
 
-Do you know which address dma_map_resource() is trying to map (maybe
-add some printk())? It's not supposed to map RAM, hence the warning.
-Random guess, the address is 0xff190800 (based on the x1 above but the
-regs might as well be mangled).
+Actually, I take that back. I remember now. return_address() used to start
+with PC=return_address(). That is, it used to start with itself. arch_stack_walk()
+starts with its caller which, in this case, is return_address(). So, I don't need
+to change anything.
 
-> I tried to follow the recent changes for arm64 mm which could relate to the
-> check failing at [1] and reverting
->   commit 16c9afc77660 ("arm64/mm: drop HAVE_ARCH_PFN_VALID")
-> helps and makes it work again, but I'm 100% uncertain if that commit is
-> really the culprit.
-> 
-> Note, that the firmware (legacy u-boot) injects memory configuration in the
-> device tree as follows:
-> 
-> /memreserve/    0x00000000fcefc000 0x000000000000d000;
-> / {
-> ..
->     compatible = "pine64,rock64\0rockchip,rk3328";
-> ..
->     memory {
->         reg = <0x00 0x200000 0x00 0xfee00000 0x00 0x00 0x00 0x00>;
->         device_type = "memory";
->     };
-> 
-> ..
-> }
+Do you agree?
 
-Either pfn_valid() gets confused in 5.14 or something is wrong with the
-DT. I have a suspicion it's the former since reverting the above commit
-makes it disappear.
-
-> So: there is a "hole" in the mappable memory and reading the commit message
-> of
->   commit a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify
-> pfn_valid()")
-> suggests, there was a change for that case recently.
-
-I think the change from the arm64 pfn_valid() to the generic one is
-avoiding the call to memblock_is_memory(). I wonder whether pfn_valid()
-returns true just because we have a struct page available but the memory
-may have been reserved.
-
-Cc'ing Mike R.
-
-> I also noticed there is a diff in the kernel log regarding memory init up
-> until 5.13.12 it says
-> 
-> [    0.000000] Zone ranges:
-> [    0.000000]   DMA      [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000]   DMA32    empty
-> [    0.000000]   Normal   empty
-> [    0.000000] Movable zone start for each node
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   0: [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000] Initmem setup node 0 [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000] On node 0 totalpages: 1043968
-> [    0.000000]   DMA zone: 16312 pages used for memmap
-> [    0.000000]   DMA zone: 0 pages reserved
-> [    0.000000]   DMA zone: 1043968 pages, LIFO batch:63
-> 
-> In contrary in 5.14-rc7 it says:
-> 
-> [    0.000000] Zone ranges:
-> [    0.000000]   DMA      [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000]   DMA32    empty
-> [    0.000000]   Normal   empty
-> [    0.000000] Movable zone start for each node
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   0: [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000] Initmem setup node 0 [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000] On node 0, zone DMA: 512 pages in unavailable ranges
-> [    0.000000] On node 0, zone DMA: 4096 pages in unavailable ranges
-> 
-> (note the "unavailable ranges")
-> I'm uncertain again here, if that diff is expected behavior because of those
-> recent mm changes for arm64.
-> 
-> After reverting
->   commit 16c9afc77660 ("arm64/mm: drop HAVE_ARCH_PFN_VALID")
-> the log changes to
-> 
-> [    0.000000] Zone ranges:
-> [    0.000000]   DMA      [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000]   DMA32    empty
-> [    0.000000]   Normal   empty
-> [    0.000000] Movable zone start for each node
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   0: [mem 0x0000000000200000-0x00000000feffffff]
-> [    0.000000] Initmem setup node 0 [mem
-> 0x0000000000200000-0x00000000feffffff]
-> 
-> (no DMA zones here)
-> 
-> As you might have noticed I have _zero_ clue about memory mapping and dma
-> subsystem - so let me know if there is any more information needed for that
-> and thanks for your help.
-
-Adding Robin as well, he has a better clue than us on DMA ;).
-
-> Alex
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/dma/mapping.c?id=e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93#n235
-
--- 
-Catalin
+Madhavan
