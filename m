@@ -2,233 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC853F6ADB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46513F6AE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 23:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234775AbhHXVLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 17:11:00 -0400
-Received: from mga04.intel.com ([192.55.52.120]:55980 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231474AbhHXVK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 17:10:59 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="215559652"
-X-IronPort-AV: E=Sophos;i="5.84,348,1620716400"; 
-   d="scan'208";a="215559652"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 14:10:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,348,1620716400"; 
-   d="scan'208";a="515744271"
-Received: from lkp-server02.sh.intel.com (HELO 181e7be6f509) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Aug 2021 14:10:13 -0700
-Received: from kbuild by 181e7be6f509 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mIdgT-0000rp-92; Tue, 24 Aug 2021 21:10:13 +0000
-Date:   Wed, 25 Aug 2021 05:09:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 3bff147b187d5dfccfca1ee231b0761a89f1eff5
-Message-ID: <61256003.NSjF4RZ4WqVxDPcx%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234975AbhHXVNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 17:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234442AbhHXVNO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 17:13:14 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735D5C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:12:30 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso18062402otv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 14:12:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=VvJ41OUQjcIqP2/V4RRgvKQKaUvc+Q8/8VHMdF1do8Q=;
+        b=a0llSe0VINrc71feDG/BpuGjlsKvKo1iN5416uQ31/w+N0ksxUtZ2meejEL/ITGZ/d
+         bJ3OvkrKH+YluSXZMocEAT8uHOzSCUb+SdTwx5+9DPC7LsEsKDFETFXq5jnAc36l2T6Y
+         vfciSWjKmqrl9mr7EVpRx7xmCEzgFsXnO6QcM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=VvJ41OUQjcIqP2/V4RRgvKQKaUvc+Q8/8VHMdF1do8Q=;
+        b=iRSbCicjJw+/uZmgtJi+ZnmbWhC3XnHZR7YcZcPOAKrIEtifsNem3pSHvw/S5BTmdp
+         K7XcuGwZvevWo39puSlYFCYw9ESXMbaunHWI2S0wm1hSbtpaTvVjJQ3yCXZzmxBM4SaK
+         SKySi6P+/qfySbPqK2n/SZSi/GJEPs1d+9o6FDISmZjJm5iGqHx5E1a60LVhkDpevggK
+         YhJ2Z9LHM0q5ZOeVOeLcMAE1NFkxAh08kv0E3l7Q41mTYNUvL9CTdW2iO9hAR5lcxqxg
+         EwUoNTfKeKdDVEp3glEua/Z62a8Bg3m0vzfu0Vu2nC7Q0Ca0nMGx5KdfkjPdLo5sC4aH
+         1yiQ==
+X-Gm-Message-State: AOAM533lyyV+Hd/AJ0N5wCRzOs9YPhEQPuSmJbinFevpANo3Doug3zm3
+        mo+P5ySFv55K7YW7Et8jgd/3VS3RIP472TadO74plK4H99o=
+X-Google-Smtp-Source: ABdhPJx08FQcEL2UXtCAGxTVtKc6L4YcEdQ26f3P0zd41icoXQklXAOtrjA3tbBpHCVb7lXrokHsBMM4SWrlwn2irUI=
+X-Received: by 2002:a05:6808:181a:: with SMTP id bh26mr4480953oib.166.1629839549674;
+ Tue, 24 Aug 2021 14:12:29 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 24 Aug 2021 14:12:29 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YSU8djt765o81YiQ@google.com>
+References: <20210823134726.1.I1dd23ddf77e5b3568625d80d6827653af071ce19@changeid>
+ <CAE-0n52Rp9QGUYeP==YdXEJAwbtHtZX=5b3gaR-smLMFybsf6A@mail.gmail.com> <YSU8djt765o81YiQ@google.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 24 Aug 2021 14:12:29 -0700
+Message-ID: <CAE-0n52SDVCqyp64cWd0uw1F4NRO3N8dT5LNOO+eh-zvWpffoQ@mail.gmail.com>
+Subject: Re: [PATCH] thermal: qcom: spmi-adc-tm5: Don't abort probing if a
+ sensor is not used
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Amit Kucheria <amitk@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
-branch HEAD: 3bff147b187d5dfccfca1ee231b0761a89f1eff5  x86/mce: Defer processing of early errors
+Quoting Matthias Kaehlcke (2021-08-24 11:37:42)
+> On Mon, Aug 23, 2021 at 06:50:04PM -0500, Stephen Boyd wrote:
+> > Quoting Matthias Kaehlcke (2021-08-23 13:47:30)
+> > > adc_tm5_register_tzd() registers the thermal zone sensors for all
+> > > channels of the thermal monitor. If the registration of one channel
+> > > fails the function skips the processing of the remaining channels
+> > > and returns an error, which results in _probe() being aborted.
+> > >
+> > > One of the reasons the registration could fail is that none of the
+> > > thermal zones is using the channel/sensor, which hardly is a critical
+> > > error (if it is an error at all). If this case is detected emit a
+> > > warning and continue with processing the remaining channels.
+> > >
+> > > Fixes: ca66dca5eda6 ("thermal: qcom: add support for adc-tm5 PMIC thermal monitor")
+> > > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > > ---
+> >
+> > Reported-by: Stephen Boyd <swboyd@chromium.org>
+> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>
+> Thanks for the review!
+>
+> > Should we also disable the 'charger-thermistor@0' node in
+> > sc7180-trogdor.dtsi on lazor boards, instead of the thermal zone, or in
+> > addition to the thermal zone? It isn't used so there's not much value in
+> > exposing it.
+>
+> I wouldn't do it instead of disabling the thermal zone, a TZ without a
+> sensor doesn't seem very useful.
+>
+> IIUC the thermistor nodes would need to be deleted, not disabled.
+> Currently the nodes don't have labels, so either the labels would need
+> to be added, or the deletion would have to look something like this:
+>
+> &pm6150_adc {
+>         /delete-node/ charger-thermistor@4f;
+> };
+>
+> &pm6150_adc_tm {
+>         /delete-node/ charger-thermistor@0;
+> };
+>
+> If the change is done for Lazor it should also be done for PomPom and
+> CoachZ.
+>
+> I don't see a strong need to delete the ADC nodes with the clutter it
+> adds, but I'm open to it if you prefer :)
 
-elapsed time: 736m
-
-configs tested: 174
-configs skipped: 77
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210824
-mips                        omega2p_defconfig
-arm                       cns3420vb_defconfig
-m68k                       bvme6000_defconfig
-arm                        magician_defconfig
-mips                   sb1250_swarm_defconfig
-sh                           se7722_defconfig
-powerpc                    mvme5100_defconfig
-powerpc                     ep8248e_defconfig
-sh                          sdk7786_defconfig
-arm                           viper_defconfig
-xtensa                  nommu_kc705_defconfig
-powerpc                    adder875_defconfig
-powerpc                       ebony_defconfig
-arm                            xcep_defconfig
-riscv                          rv32_defconfig
-sh                          rsk7201_defconfig
-openrisc                  or1klitex_defconfig
-powerpc                        fsp2_defconfig
-arm                          iop32x_defconfig
-arm                            dove_defconfig
-h8300                               defconfig
-powerpc                     ksi8560_defconfig
-arm                          simpad_defconfig
-arm                          imote2_defconfig
-arm                              alldefconfig
-riscv                            alldefconfig
-sparc64                             defconfig
-arc                           tb10x_defconfig
-arm                          pxa910_defconfig
-sh                           se7750_defconfig
-ia64                      gensparse_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                     pq2fads_defconfig
-mips                      malta_kvm_defconfig
-powerpc                     pseries_defconfig
-arc                              alldefconfig
-arm                           tegra_defconfig
-powerpc                    amigaone_defconfig
-sh                          rsk7269_defconfig
-powerpc                      mgcoge_defconfig
-powerpc               mpc834x_itxgp_defconfig
-powerpc64                        alldefconfig
-sh                        edosk7760_defconfig
-powerpc                    klondike_defconfig
-arm                          pxa168_defconfig
-mips                      maltasmvp_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc8272_ads_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                        cerfcube_defconfig
-arm                            lart_defconfig
-mips                           mtx1_defconfig
-mips                    maltaup_xpa_defconfig
-riscv                    nommu_k210_defconfig
-s390                             allyesconfig
-arm                        realview_defconfig
-powerpc                      pmac32_defconfig
-arm                          moxart_defconfig
-mips                           ip22_defconfig
-arm                         cm_x300_defconfig
-powerpc                       maple_defconfig
-sh                               j2_defconfig
-sh                        sh7763rdp_defconfig
-i386                                defconfig
-arm                          ixp4xx_defconfig
-arc                     haps_hs_smp_defconfig
-powerpc                 linkstation_defconfig
-powerpc64                           defconfig
-mips                          ath79_defconfig
-arm                          lpd270_defconfig
-powerpc                     mpc5200_defconfig
-nds32                            alldefconfig
-arm                         lpc18xx_defconfig
-powerpc                 mpc8313_rdb_defconfig
-x86_64                              defconfig
-arm                         hackkit_defconfig
-sh                           se7206_defconfig
-arm                      tct_hammer_defconfig
-sh                            titan_defconfig
-xtensa                  audio_kc705_defconfig
-arm                       imx_v4_v5_defconfig
-powerpc                   bluestone_defconfig
-sh                         ap325rxa_defconfig
-powerpc                     sequoia_defconfig
-h8300                    h8300h-sim_defconfig
-mips                        nlm_xlp_defconfig
-m68k                         apollo_defconfig
-sh                           se7721_defconfig
-mips                           ip28_defconfig
-xtensa                    xip_kc705_defconfig
-arm                           h3600_defconfig
-powerpc                 canyonlands_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210824
-x86_64               randconfig-a006-20210824
-x86_64               randconfig-a001-20210824
-x86_64               randconfig-a003-20210824
-x86_64               randconfig-a004-20210824
-x86_64               randconfig-a002-20210824
-i386                 randconfig-a006-20210824
-i386                 randconfig-a001-20210824
-i386                 randconfig-a002-20210824
-i386                 randconfig-a005-20210824
-i386                 randconfig-a003-20210824
-i386                 randconfig-a004-20210824
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-c001-20210824
-s390                 randconfig-c005-20210824
-arm                  randconfig-c002-20210824
-riscv                randconfig-c006-20210824
-x86_64               randconfig-c007-20210824
-mips                 randconfig-c004-20210824
-x86_64               randconfig-a014-20210824
-x86_64               randconfig-a015-20210824
-x86_64               randconfig-a016-20210824
-x86_64               randconfig-a013-20210824
-x86_64               randconfig-a012-20210824
-x86_64               randconfig-a011-20210824
-i386                 randconfig-a011-20210824
-i386                 randconfig-a016-20210824
-i386                 randconfig-a012-20210824
-i386                 randconfig-a014-20210824
-i386                 randconfig-a013-20210824
-i386                 randconfig-a015-20210824
-hexagon              randconfig-r041-20210824
-hexagon              randconfig-r045-20210824
-riscv                randconfig-r042-20210824
-s390                 randconfig-r044-20210824
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The driver will be present in system memory when it is never used. I was
+mostly noticing that adc_tm5_get_dt_data() calls
+of_get_available_child_count() and bails probe if there aren't any child
+nodes. In this case, the only child node is charger-thermistor, so probe
+for this driver would fail if the thermistor was removed. So at that
+point, I wonder if we should disable the thermal zone node (already
+done) and then also the adc node (sadly called adc-tm). This way we
+don't eat up kernel memory to describe a device that isn't used and a
+driver that wastes time probing and then fails to probe anyway.
