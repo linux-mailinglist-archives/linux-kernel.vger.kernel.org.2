@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93B23F58CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E513F58D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 09:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhHXHT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 03:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        id S234616AbhHXHU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 03:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhHXHTj (ORCPT
+        with ESMTP id S231437AbhHXHUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 03:19:39 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B10C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:18:55 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id ay33so10598074qkb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 00:18:55 -0700 (PDT)
+        Tue, 24 Aug 2021 03:20:25 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07DEC061575;
+        Tue, 24 Aug 2021 00:19:41 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id g184so447494pgc.6;
+        Tue, 24 Aug 2021 00:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=L91kS7H4uI2Ju5dHGeUjJWE+8uGv+09xe8DNx1aTd0g=;
-        b=FJ/lLBUd6iQUZakqtOuchqRbm88Pd0fAZ1OM9mkgM3l0mIWYNjjOnPn09UuKT9y1P+
-         2E1uE35YzkO9b5IVxhFgNL+CS/eQno5DKckd4jpKH0I/b9y4OsCGNH5nzc0cO6IJSFGH
-         HkTc8k1wU5d7tUTV/SyB7eG1kVUzOi06xUYK/Z87cJ0d0c3V/mWFJTfaV9oosjlfIrJj
-         LnmzibGp+DDT/jtsT27HN9TFnzM7OoXyywtbRP3J+SCi1UXKIlHnfiT2WME+325TiKz5
-         dbMKoxY8BJypZYOwlYDlKR5WwH7+yxqqHbn35GQM8qIPNL+rXOGJBsUrIOQjmTL+NouU
-         NQtA==
+        bh=bGy+Odlh1NNX+SVQo45RJ9LRSk2xxUJvjKlteUtof4o=;
+        b=qwDkdhUQgNa4eLNy5eQ42gaALhmbE8kxY4T8hAOW5WIXGk2PsV3/STX1wsdqMCvTBh
+         NIjjFt7DTtSTRmT2kSw2xKgxvKiB3IJSU+1p/rCyfu8784a8SdrX0vCS0OBmYsmc/vw7
+         oFaHyqYsglXPedUTL5WNjTTBSlI1YY6pkaz8B06hyX+6dx+0bX4KZiev5jAX0wKIWZpm
+         Zy57pWqnR6JWr8fhQcZwOv/k4oBJLftgQUN+evNSY9f01mMJrnT9bX2jSCfYN8DUBFF8
+         DD6dZcJbkqbW7jyi0piidGkwDQ/nTa+pxDV1Ps8LWIOq3jRxEdFCxcOL2YCA8+3guWNl
+         jP3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=L91kS7H4uI2Ju5dHGeUjJWE+8uGv+09xe8DNx1aTd0g=;
-        b=OpwtU8xe0ec81bx5XcqWdu14yygArgJYFmXGgZAsSgFPSiD9aYWraWpkMjBY63Z7fV
-         efkamy/rP467w5UNuJNRoMgcXNaiNWreRev0uhCDoHjZTDZdz4GThskqe8vIgoEAxPEN
-         dlCLJZI1HfQJjoryMYo01YAO8QfLJH+7WqvnXMZ8+1oolb7g/Y/zCbGNZSUbns3KuII/
-         +x2PIxwzvNqR38ulQLh3ml1eqJbaOvKpjOUZzhKKUpXkEmh+C8u1Vn0D4C5sy6o9AA3u
-         8ixpHRnctYgS8JZAOZvHaZwueGyInXGY/HkZE3WHPmbR3gMKQHG/mJReEeBVTzyecknJ
-         8+ag==
-X-Gm-Message-State: AOAM531/bVP/39WkZAIVBg6wofnSgZm526WGqnmt/WhhQAMWHOEigguJ
-        i3Ni6CXXIwI5Yn1v8OoLeAo=
-X-Google-Smtp-Source: ABdhPJz31dYLJnCSRaExZd7R1hpgaNQ5PmQ6G7rDdxdu1qgO9LlB1PDwLNxP42GTooaj0RB26pGvzA==
-X-Received: by 2002:a37:9b93:: with SMTP id d141mr25385757qke.236.1629789534675;
-        Tue, 24 Aug 2021 00:18:54 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id p12sm7752401qtw.54.2021.08.24.00.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 00:18:54 -0700 (PDT)
-From:   CGEL <cgel.zte@gmail.com>
-X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-        Jing Yangyang <jing.yangyang@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH linux-next] x86:uaccess: fix boolreturn.cocci warnings
-Date:   Tue, 24 Aug 2021 00:18:46 -0700
-Message-Id: <20210824071846.61488-1-deng.changcheng@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        bh=bGy+Odlh1NNX+SVQo45RJ9LRSk2xxUJvjKlteUtof4o=;
+        b=k/RUG6PWcGFvnQBXcEzZdEVLVEdO63xOnE2TIS2aD0LZ6VUEAN5lD1LFtS8IgjQVQk
+         2LChqGncqmI7YMH2RUMof0V40GnH6TnzRbomGcI6/ONKTMXWezk2FbNOFA0WGisdhUwl
+         /dQk1PhGm0KhZApZbMllWmZ82uVJb38bbsstEfwU5W8Ysoi/FEz3yeHFwdLrTM01hIOF
+         CUt0cvld8ZfopEXn3LKIbUsDgmXwDcxyoVvi8FYbXbs+Xy9tCITQD1jCF/5RmH87x0hy
+         ByyXW1TBqUHatQKLfSYYAoeUD/X4iPhezwBYuZjP65me82JPdkDnrWF+XE2/l8M59VBZ
+         AByA==
+X-Gm-Message-State: AOAM530xiqI+1kTcVhwbaHXHaoieIE+k++JPsMHqMvrgMYsuVn5IVtYm
+        ErSRCcovRtpCI5xYzzb7060=
+X-Google-Smtp-Source: ABdhPJwxrBq1c63ij1GbBbxt/Iby9FrVpNK1Mfz4X/UQbaQ2sx4Wk8WSrxRnZUZYCCoSSAKW1jIdtA==
+X-Received: by 2002:a63:df0d:: with SMTP id u13mr35067158pgg.417.1629789581510;
+        Tue, 24 Aug 2021 00:19:41 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.30])
+        by smtp.gmail.com with ESMTPSA id a4sm16868817pfa.203.2021.08.24.00.19.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Aug 2021 00:19:41 -0700 (PDT)
+From:   Jiang Biao <benbjiang@gmail.com>
+To:     mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-kernel@vger.kernel.org, benbjiang@tencent.com,
+        Jiang Biao <tcs_robot@tencent.com>
+Subject: [PATCH] ipv4/mptcp: fix divide error
+Date:   Tue, 24 Aug 2021 15:19:26 +0800
+Message-Id: <20210824071926.68019-1-benbjiang@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Yangyang <jing.yangyang@zte.com.cn>
+From: Jiang Biao <benbjiang@tencent.com>
 
-./arch/x86/include/asm/uaccess.h:477:9-10:WARNING:return of 0/1 in
-function 'user_access_begin' with return type bool
+From: Jiang Biao <tcs_robot@tencent.com>
 
-Return statements in functions returning bool should use true/false
-instead of 1/0.
+There is a fix divide error reported,
+divide error: 0000 [#1] PREEMPT SMP KASAN
+RIP: 0010:tcp_tso_autosize build/../net/ipv4/tcp_output.c:1975 [inline]
+RIP: 0010:tcp_tso_segs+0x14f/0x250 build/../net/ipv4/tcp_output.c:1992
+Code: 38 d0 7c 08 84 d2 0f 85 d6 00 00 00 8b 83 8c 03 00 00 48 8d bb 9e 03 00 00 48 89 f9 2d 41 01 00 00 4c 39 e8 49 0f 47 c5 31 d2 <41> f7 f4 48 ba 00 00 00 00 00 fc ff df 39 e8 0f 42 c5 48 c1 e9 03
+RSP: 0018:ffffc9000205f558 EFLAGS: 00010246
+RAX: 000000000000febf RBX: ffff88801ed48000 RCX: ffff88801ed4839e
+RDX: 0000000000000000 RSI: ffff888102ad2340 RDI: ffff88801ed4839e
+RBP: 0000000000000002 R08: ffffffff8796862a R09: 000000000000003f
+R10: 0000000000000001 R11: 000000000000000a R12: 0000000000000000
+R13: 000000000024705b R14: 000000000000000a R15: ffff88801ed48350
+FS:  00007f923ce99700(0000) GS:ffff888023e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4f25fa3000 CR3: 0000000088b09000 CR4: 0000000000752ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ tcp_write_xmit+0x135/0x5d50 build/../net/ipv4/tcp_output.c:2623
+ __tcp_push_pending_frames+0xab/0x390 build/../net/ipv4/tcp_output.c:2874
+ tcp_push+0x473/0x6f0 build/../net/ipv4/tcp.c:736
+ mptcp_push_release.isra.32+0x17c/0x280 build/../net/mptcp/protocol.c:1437
+ __mptcp_push_pending+0x451/0x530 build/../net/mptcp/protocol.c:1478
+ mptcp_sendmsg+0x1759/0x1c00 build/../net/mptcp/protocol.c:1697
+ inet_sendmsg+0xa1/0xd0 build/../net/ipv4/af_inet.c:821
+ sock_sendmsg_nosec build/../net/socket.c:703 [inline]
+ sock_sendmsg+0xc9/0x120 build/../net/socket.c:723
+ ____sys_sendmsg+0x375/0x820 build/../net/socket.c:2392
+ ___sys_sendmsg+0x10a/0x180 build/../net/socket.c:2446
+ __sys_sendmmsg+0x193/0x470 build/../net/socket.c:2532
+ __do_sys_sendmmsg build/../net/socket.c:2561 [inline]
+ __se_sys_sendmmsg build/../net/socket.c:2558 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 build/../net/socket.c:2558
+ do_syscall_x64 build/../arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 build/../arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
+It's introduced by non-initialized info->mss_now in __mptcp_push_pending.
+Fix it by adding protection in mptcp_push_release.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Jing Yangyang <jing.yangyang@zte.com.cn>
+Signed-off-by: Jiang Biao <tcs_robot@tencent.com>
 ---
- arch/x86/include/asm/uaccess.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/mptcp/protocol.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index c9fa7be..e3b6f4f 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -474,9 +474,9 @@ static inline bool __chk_range_not_ok(unsigned long addr, unsigned long size, un
- static __must_check __always_inline bool user_access_begin(const void __user *ptr, size_t len)
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index a88924947815..bfb3cd85bf19 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -1433,8 +1433,10 @@ static struct sock *mptcp_subflow_get_send(struct mptcp_sock *msk)
+ static void mptcp_push_release(struct sock *sk, struct sock *ssk,
+ 			       struct mptcp_sendmsg_info *info)
  {
- 	if (unlikely(!access_ok(ptr,len)))
--		return 0;
-+		return false;
- 	__uaccess_begin_nospec();
--	return 1;
-+	return true;
++	int mss_now = info->mss_now ? info->mss_now : tcp_current_mss(ssk);
++
+ 	mptcp_set_timeout(sk, ssk);
+-	tcp_push(ssk, 0, info->mss_now, tcp_sk(ssk)->nonagle, info->size_goal);
++	tcp_push(ssk, 0, mss_now, tcp_sk(ssk)->nonagle, info->size_goal);
+ 	release_sock(ssk);
  }
- #define user_access_begin(a,b)	user_access_begin(a,b)
- #define user_access_end()	__uaccess_end()
--- 
-1.8.3.1
 
+--
+2.21.0
 
