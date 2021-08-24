@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB8A3F5A55
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BB43F5A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 11:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbhHXJBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 05:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbhHXJA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 05:00:57 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE95C061757;
-        Tue, 24 Aug 2021 02:00:13 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x16so17755742pfh.2;
-        Tue, 24 Aug 2021 02:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=epEB/j6CfBFIWkI0NQJbQR8TgF9ZCPLM1VaX62dtXjE=;
-        b=Tio88SDoVKNebqEv7EELHgUiLge67qA0ftH92DcDDAwxdw/BfAh+TQMqJT9lB0bJRU
-         Uh9pB1kqPVzHiMFhf/JPm/enwI/t8sgKWJSq1CEnJKyLCerfwF7HAO3di5jeTA4f80lW
-         G4Esd9q8C87U1m2W1lVHm301AWB3vnJKmC3C6l1Md5Z02RSFXQr3+tG71IJk+VWbs4LV
-         Pn95j0vmASYf5SgeJ/c516z0ycMVSlFWitKXN0NwwQuzMxx98N5cZVorwdAX5GvlRZn8
-         fiDf4Xt0xsBIvW+Tay5kpHd2KvvFlG6fucrvJgOoMAbTckUFESR4NyAWPVlTnTMQVy4p
-         5/Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=epEB/j6CfBFIWkI0NQJbQR8TgF9ZCPLM1VaX62dtXjE=;
-        b=nW3hEUJ0R+yIXGQEBrTkv/io/dEv/2A9CwpSOjJkjrCZcIs8OeNalKPrWKnDv0PfOM
-         1Fzh3p+Io06jdYRNSR8jGwuP/yK9GFIuKxcWww2r+bw8n/cuH9Fw2DTdpyAAAvSydWCy
-         UBIwV98kT8ZY5d/W3DjDrDz1DLEA4sAt2Jj3rSddmyS92JKTLfdkLSLYG9BUK67jy4JB
-         0PhCQIth4OAS+8JCLeJIV34uvdeq/bI5gNNGnYSPDS7pbfkCGlbETWlG/HojzgjDlq7Q
-         bAIK6j8N3/ZjGqhq8jJX2iTig5I5QvMUjZGKEF+d7B3iTck1MmYK7EO1jYCz9umDqaXp
-         R4YQ==
-X-Gm-Message-State: AOAM532LNGNSoUjmVpkEKDcVaiLIdZBJTTVHJENA27XhXerQ5zVNdR6b
-        +EyaADL8lNGwvaCV+kLoz8s=
-X-Google-Smtp-Source: ABdhPJxaOAv+8OR3Q4jPnbfeBbBg2NxrcO52QInY04JsS/isxPgECbKutzEPFG4d5C4W3Kz1XaRl2A==
-X-Received: by 2002:a05:6a00:189f:b0:3e1:b92d:5ef6 with SMTP id x31-20020a056a00189f00b003e1b92d5ef6mr38299958pfh.81.1629795613163;
-        Tue, 24 Aug 2021 02:00:13 -0700 (PDT)
-Received: from ubuntu.localdomain ([171.224.180.204])
-        by smtp.gmail.com with ESMTPSA id u24sm18943692pfm.85.2021.08.24.02.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Aug 2021 02:00:12 -0700 (PDT)
-From:   Nghia Le <nghialm78@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org
-Cc:     Nghia Le <nghialm78@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, lukas.bulwahn@gmail.com
-Subject: [PATCH] perf tools: Add missing newline at the end of file
-Date:   Tue, 24 Aug 2021 15:59:47 +0700
-Message-Id: <20210824085947.224062-1-nghialm78@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S235598AbhHXJBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 05:01:06 -0400
+Received: from mout.gmx.net ([212.227.17.22]:45459 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235588AbhHXJBF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 05:01:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1629795611;
+        bh=0VfrnapeUDvPazOxi1Wr6f/sh4SvDBH8hg1Xn2aOf04=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=CGDHBZWvps2rhNGZP7hsrAkGuOmM6S0OynHmkg8kHcRGKrmQLaA/+kIRFPGQJjrOd
+         /vSTJdFJZSkoNKVd2lmx/nf6kve2PUdNB6uM6NzVjqRIlTZ+lwPVckXE32fB6/lOgW
+         5ygM9Uz+c87vXTaI1REIqHuVCWHVqPG4u/jBceHM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNsw4-1mgiKh0zMG-00OFI4; Tue, 24
+ Aug 2021 11:00:11 +0200
+Date:   Tue, 24 Aug 2021 10:59:58 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 2/3] staging/rtl8192u: Initialize variables in the
+ definition block
+Message-ID: <20210824073643.GA7396@titan>
+References: <20210824072545.7321-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824072545.7321-1-len.baker@gmx.com>
+X-Provags-ID: V03:K1:naE81iY4uFamsV4vjEQXBOsvAmqMssX3wtZ37GpsiPuUZCx5sHg
+ P/khCM2CFHlHAW+Jg7kUQifM8yzM9MK/tqIVyZE+wCO7A0qwLfTFewPys65JMSq5eRRoXu/
+ 9NCl0LO4o0jh0P4J5OSmbpBVAo6uDhKn/vrXDmAZvNLicaZtT5srRorbaj22A7bPrmtc/9J
+ 0nBKBAgop+hwF8SQunIcw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jZ6MUe0qtKY=:dbvYPtShHaawBk3L3Lhe9T
+ bMX6PtEAwfR8y7J6IPT1z16+DlWRnRSmIIvMv1mVoVKH4iayUDxMD2y6z62zGGfLqWhbHME7R
+ DiId9oNz0ydeteVhabD7aQknVTvObFCDlA40VW0OeeVBNuZ4WMe0++RgtYZYOyV2+T+ZhkMYC
+ sBbamf4dx8KJitclaWotWsXBxIlde5u205YRZhU95PJMmof3r4/zTPw57n/lJNqb3/7s2HmbB
+ D+oReVgC47oL65vtn1oNQ4GBehHwHuZpwZKskuqvjbq8LjATeW43j4z0GSZYtEKzihj5b1KKX
+ OC6VSz5/ZKbXM+XpT9gxYLtKU0nnckyLuBp3pvpgUYOzp3BV5IHdgwl27qqijJCDY8URdkYc0
+ XrT8K8Z9pqH9lGE+6DRVrUJMdVXUcSh1r2qarNb9x8bzeNwitq1pBIrYj4vleXtIV6Mj/1LQO
+ N61HPh8OC8tFfXKzzEEtJ49l0Fe2XjYsHerPpFWami0NSOZsu01VfSG5IsgeBxiLkS0/Xoxc9
+ Dwlj5NSzpYL0AGF4yrXABY3DMPhG6QxeF3lnYebdYlMbl95l112cn+cYzpBW8kbX4XEz6FJpI
+ NatXMQaq4b5nZDiSpbhzc94eAsndJKzsjRt8ZRO787q8DkVUJnzAY+eTMk3EFf8vC2SqiBltE
+ CyX1Pzjh2rsXNPsjSIRcCWB8jebF+z/I6cnKtrghBHnGzauhzr27u8f8O++cWTe7T7kAmt/NV
+ szxXgvrFDIDmSFYhdrch4sZQT1Zju/GhxOYcMb+JNLQC4XPEWOMop5DI+sSIpOK/Cy3xAOI+I
+ nrdDOXdksn7vqdHBIxU+IK14n7nFXEmI8AoN4yLZFMnq7aXMugV3Sxc2vo3+Ru2WS0d9uUVxX
+ n62SIq0MWQrGoddCsp6TV0gHki4dLT90V6x0ibRrVFLTgfqIVYlxsUeppdtyCkjWS5Ji/JzH6
+ mX20LUrSvDiIIbme2xRtvwIRgaqcDvynv081jLI3Sw+CbGFWVzaKofCe19L73+VUhwsNJV5jn
+ QCmqn3OvkitMAQNxzrnt2N+oTaYmc8UXduotktKitylzX6S/cL/uw3wfCTWbGCnQgYvuuD895
+ Wh1YpbYarf9DNb2GIfd80B9M8o1iVb+pRlB42l0gdq8BGs3LxWdFnFc/A==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing newline at the end of file parse-sublevel-options.h.
-Thus removing relevant warning reported by checkpatch.
+Initialize the pre_cmd_cnt, post_cmd_cnt and rf_cmd_cnt variables in the
+definition block as it is not necessary to do this in the middle of the
+function.
 
-Signed-off-by: Nghia Le <nghialm78@gmail.com>
----
- tools/perf/util/parse-sublevel-options.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/rtl8192u/r819xU_phy.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/parse-sublevel-options.h b/tools/perf/util/parse-sublevel-options.h
-index 9b9efcc2aaad..578b18ef03bb 100644
---- a/tools/perf/util/parse-sublevel-options.h
-+++ b/tools/perf/util/parse-sublevel-options.h
-@@ -8,4 +8,4 @@ struct sublevel_option {
- 
- int perf_parse_sublevel_options(const char *str, struct sublevel_option *opts);
- 
--#endif
-\ No newline at end of file
-+#endif
--- 
+diff --git a/drivers/staging/rtl8192u/r819xU_phy.c b/drivers/staging/rtl81=
+92u/r819xU_phy.c
+index 6a67708cdd89..ff6fe2ee3349 100644
+=2D-- a/drivers/staging/rtl8192u/r819xU_phy.c
++++ b/drivers/staging/rtl8192u/r819xU_phy.c
+@@ -1186,11 +1186,11 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
+device *dev, u8 channel,
+ {
+ 	struct r8192_priv *priv =3D ieee80211_priv(dev);
+ 	struct sw_chnl_cmd *pre_cmd;
+-	u32 pre_cmd_cnt;
++	u32 pre_cmd_cnt =3D 0;
+ 	struct sw_chnl_cmd *post_cmd;
+-	u32 post_cmd_cnt;
++	u32 post_cmd_cnt =3D 0;
+ 	struct sw_chnl_cmd *rf_cmd;
+-	u32 rf_cmd_cnt;
++	u32 rf_cmd_cnt =3D 0;
+ 	struct sw_chnl_cmd *current_cmd =3D NULL;
+ 	u8 e_rfpath;
+ 	bool ret;
+@@ -1225,7 +1225,6 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_de=
+vice *dev, u8 channel,
+ 	/* FIXME: need to check whether channel is legal or not here */
+
+ 	/* <1> Fill up pre common command. */
+-	pre_cmd_cnt =3D 0;
+ 	rtl8192_phy_SetSwChnlCmdArray(pre_cmd, pre_cmd_cnt++,
+ 				      MAX_PRECMD_CNT, CMD_ID_SET_TX_PWR_LEVEL,
+ 				      0, 0, 0);
+@@ -1233,12 +1232,10 @@ static u8 rtl8192_phy_SwChnlStepByStep(struct net_=
+device *dev, u8 channel,
+ 				      MAX_PRECMD_CNT, CMD_ID_END, 0, 0, 0);
+
+ 	/* <2> Fill up post common command. */
+-	post_cmd_cnt =3D 0;
+ 	rtl8192_phy_SetSwChnlCmdArray(post_cmd, post_cmd_cnt++,
+ 				      MAX_POSTCMD_CNT, CMD_ID_END, 0, 0, 0);
+
+ 	/* <3> Fill up RF dependent command. */
+-	rf_cmd_cnt =3D 0;
+ 	switch (priv->rf_chip) {
+ 	case RF_8225:
+ 		if (!(channel >=3D 1 && channel <=3D 14)) {
+=2D-
 2.25.1
-
