@@ -2,105 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DF03F6BBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F0C3F6BC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Aug 2021 00:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhHXWic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Aug 2021 18:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhHXWib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Aug 2021 18:38:31 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D059BC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:37:46 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id q3so10971110iot.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N2KxnHa/5CXRSQusM6YnlNCt9dIjl+2phwzvOUDij4o=;
-        b=Kv/F+w3zogYrf9JdN1LrLuzl5nxItyM8qeG/HMMw9o+i2vG9H2xfFJSQuIZNXsE87a
-         8EiZC7wL/9jLYg0OOl/pglYwTsaCkvjnCVnsPiiHPC7D2Rl9mBCxTCz7k8xeHs8VH4Rd
-         VYifVKaWpWMP0wxasf7327R0Jzs0rqN85faKI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N2KxnHa/5CXRSQusM6YnlNCt9dIjl+2phwzvOUDij4o=;
-        b=TFmzBAIc4yRykxe1nOnrytkaszbdQkHL/IlsUOhUQM8ynhXzldxMPHDUXKjxjeFlEp
-         FKHzxizNaURUMbjHC4rN+5IRXNpt/YIzfrd8UetldNapQobJlokSB1oiuOjaaFFs9rwu
-         Mo1sTNuN14rsblPYig+aCmtfzRa/Tygp2zKLr0hJTybljGkRzNDjSgANPjesu3ksQShI
-         Yr7WXjbECxBN3kvEXw+m9vU2GiPteNJqr0I8LvD9pWj/Mn34Z9pPaFemOtUd07SGG4mA
-         L4YsRTvvPNQpD4KYpk2f2EygMKwiLDD7qfxeRxLyHZKGwmj8d2gXNRh4pt/Gr6EleBfP
-         agnw==
-X-Gm-Message-State: AOAM531XkUSmY4drQxcpJ06PaTXuksYq419p3/0VpH89RnYPU4zMlTa4
-        dIR5KOrgJeXbBAyAojvEhqOe0woIq3XkUA==
-X-Google-Smtp-Source: ABdhPJzbx3hPHxUtWTPODKZTSbR9gRZLygIzz7TDRv+6Hrbt/ecwpbpnQlPd0ziGxY9ZSJX9++rxEg==
-X-Received: by 2002:a6b:6603:: with SMTP id a3mr34089427ioc.68.1629844666093;
-        Tue, 24 Aug 2021 15:37:46 -0700 (PDT)
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com. [209.85.166.53])
-        by smtp.gmail.com with ESMTPSA id m13sm10177608ilh.43.2021.08.24.15.37.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Aug 2021 15:37:45 -0700 (PDT)
-Received: by mail-io1-f53.google.com with SMTP id g9so28395476ioq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:37:44 -0700 (PDT)
-X-Received: by 2002:a5e:a813:: with SMTP id c19mr33362612ioa.199.1629844664506;
- Tue, 24 Aug 2021 15:37:44 -0700 (PDT)
+        id S230293AbhHXWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Aug 2021 18:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhHXWip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 24 Aug 2021 18:38:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 986E2613AB
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 22:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629844680;
+        bh=trvQSX2rJRWjrNLaSeH+EoF98vW2AeDpatiSlRzrcrM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BOQ3wE1NmwwPIhLseOygSis856eUvkrahEq4aiqKLmaO3y9KYD64UwBdzswDFfqCb
+         Kp3yOn6+0ib0Fdes7D0p0skaQ/9i4sskpzE3VaHTjQw2HL6TAg122msA9RhoLPv++t
+         0IJDPVMi7TlacxqI5dozaMeJAiFbTzB26TYaIQsl1KdT9X2siLWEd5HvO3pBYfTPZj
+         YS7mbExQ05LT9xslKXZ78ctoqv+EbULUMqnb+M9Pr4IRqyB3t7te6vwHUVfiadFpOb
+         elf66iqlxjfm9ey9vDLYq526GDegXBwIrfowaFaYZ4y1l/1RqrCh2cIH3HGeKElqDd
+         u/k2xp4vbsavg==
+Received: by mail-ed1-f49.google.com with SMTP id d6so34068206edt.7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Aug 2021 15:38:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531fHiOi2syUrZ0TrHoXpQS8pKv8S+RdgAd82DJ4c48YWLf6/LEw
+        XeLDKlOiU5wru6Jy9DIhb8PcRsqQ126pI7B78Q==
+X-Google-Smtp-Source: ABdhPJzDhWPbuqXoUDyZU6JQ1us9W0MHZQTd6VrofksKXx5toZRzxtxZ1oWDbd1pY5TvIrGhGJk5UVv78myAkVYy5+c=
+X-Received: by 2002:aa7:c487:: with SMTP id m7mr25907783edq.62.1629844679242;
+ Tue, 24 Aug 2021 15:37:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210820162201.1.I8ead7431357409f2526e5739ec5bc3ddfd242243@changeid>
-In-Reply-To: <20210820162201.1.I8ead7431357409f2526e5739ec5bc3ddfd242243@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 24 Aug 2021 15:37:32 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W56FsUOzrRQ7Y5F4g7yBSXr-KJ45t32ghGSsNtFsNUMg@mail.gmail.com>
-Message-ID: <CAD=FV=W56FsUOzrRQ7Y5F4g7yBSXr-KJ45t32ghGSsNtFsNUMg@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: parade-ps8640: Reorg the macros
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Philip Chen <philipchen@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+References: <20210824173028.7528-1-alyssa.rosenzweig@collabora.com>
+In-Reply-To: <20210824173028.7528-1-alyssa.rosenzweig@collabora.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 24 Aug 2021 17:37:47 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJdhVMmroQLjaNVGoW3PJLS3qFRNAVRifGzR-jxNu1Stw@mail.gmail.com>
+Message-ID: <CAL_JsqJdhVMmroQLjaNVGoW3PJLS3qFRNAVRifGzR-jxNu1Stw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] drm/panfrost: Bug fixes for lock_region
+To:     Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
         David Airlie <airlied@linux.ie>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 24, 2021 at 12:30 PM Alyssa Rosenzweig
+<alyssa.rosenzweig@collabora.com> wrote:
+>
+> Chris Morgan reported UBSAN errors in panfrost and tracked them down to
+> the size computation in lock_region. This calculation is overcomplicated
+> (cargo culted from kbase) and can be simplified with kernel helpers and
+> some mathematical identities. The first patch in the series rewrites the
+> calculation in a form avoiding undefined behaviour; Chris confirms it
+> placates UBSAN.
+>
+> While researching this function, I noticed a pair of other potential
+> bugs: Bifrost can lock more than 4GiB at a time, but must lock at least
+> 32KiB at a time. The latter patches in the series handle these cases.
+>
+> In review of v1 of this series, Steven pointed out a fourth potential
+> bug: rounding down the iova can truncate the lock region. v2 adds a new
+> patch for this case.
+>
+> The size computation was unit-tested in userspace. Relevant code below,
+> just missing some copypaste definitions for fls64/clamp/etc:
+>
+>         #define MIN_LOCK (1ULL << 12)
+>         #define MAX_LOCK (1ULL << 48)
+>
+>         struct {
+>                 uint64_t size;
+>                 uint8_t encoded;
+>         } tests[] = {
+>                 /* Clamping */
+>                 { 0, 11 },
+>                 { 1, 11 },
+>                 { 2, 11 },
+>                 { 4095, 11 },
+>                 /* Power of two */
+>                 { 4096, 11 },
+>                 /* Round up */
+>                 { 4097, 12 },
+>                 { 8192, 12 },
+>                 { 16384, 13 },
+>                 { 16385, 14 },
+>                 /* Maximum */
+>                 { ~0ULL, 47 },
+>         };
+>
+>         static uint8_t region_width(uint64_t size)
+>         {
+>                 size = clamp(size, MIN_LOCK, MAX_LOCK);
+>                 return fls64(size - 1) - 1;
+>         }
+>
+>         int main(int argc, char **argv)
+>         {
+>                 for (unsigned i = 0; i < ARRAY_SIZE(tests); ++i) {
+>                         uint64_t test = tests[i].size;
+>                         uint8_t expected = tests[i].encoded;
+>                         uint8_t actual = region_width(test);
+>
+>                         assert(expected == actual);
+>                 }
+>         }
+>
+> Changes in v2:
+>
+> * New patch for non-aligned lock addresses
+> * Commit message improvements.
+> * Add Steven's tags.
+>
+> Alyssa Rosenzweig (4):
+>   drm/panfrost: Simplify lock_region calculation
+>   drm/panfrost: Use u64 for size in lock_region
+>   drm/panfrost: Clamp lock region to Bifrost minimum
+>   drm/panfrost: Handle non-aligned lock addresses
+>
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c  | 32 ++++++++++--------------
+>  drivers/gpu/drm/panfrost/panfrost_regs.h |  2 ++
+>  2 files changed, 15 insertions(+), 19 deletions(-)
 
-On Fri, Aug 20, 2021 at 4:22 PM Philip Chen <philipchen@chromium.org> wrote:
->
-> From: Philip Chen <philipchen@chromium.org>
->
-> Reorg the macros as follows:
-> (1) Group the registers on the same page together.
-> (2) Group the register and its bit operation together while indenting
-> the macros of the bit operation with one space.
->
-> Also fix a misnomer for the number of mipi data lanes.
->
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> Signed-off-by: Philip Chen <philipchen@google.com>
-> ---
->
->  drivers/gpu/drm/bridge/parade-ps8640.c | 18 ++++++++++--------
->  1 file changed, 10 insertions(+), 8 deletions(-)
+For the series,
 
-This seems fine to me other than the slightly mixed up Signed-off-by
-lines. I think that the git config from wherever you ran "git
-send-email" had your @google.com address even if you authored the
-patch with your @chomium.org address. Once that's fixed then I'm happy
-to add my Reviewed-by and (unless someone objects) I'll plan to apply
-this patch to drm-misc-next.
-
--Doug
+Reviewed-by: Rob Herring <robh@kernel.org>
