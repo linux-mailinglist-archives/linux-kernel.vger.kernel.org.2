@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFA93F55DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 04:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFBC3F5670
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Aug 2021 05:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbhHXCau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Aug 2021 22:30:50 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:15207 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhHXCap (ORCPT
+        id S234100AbhHXDHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Aug 2021 23:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235051AbhHXDBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Aug 2021 22:30:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GttNR3mMhz1CZpt;
-        Tue, 24 Aug 2021 10:29:27 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 24 Aug 2021 10:29:58 +0800
-Received: from localhost.huawei.com (10.175.124.27) by
- dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 24 Aug 2021 10:29:58 +0800
-From:   Li Jinlin <lijinlin3@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <john.garry@huawei.com>, <bvanassche@acm.org>,
-        <qiulaibin@huawei.com>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>
-Subject: [PATCH v3] scsi: core: Fix hang of freezing queue between blocking and running device
-Date:   Tue, 24 Aug 2021 10:59:21 +0800
-Message-ID: <20210824025921.3277629-1-lijinlin3@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 23 Aug 2021 23:01:17 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA57C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:00:31 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 22so21627162qkg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Aug 2021 20:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HgCyH+gJ9RXo5Eggw+y253SR+mBguM7vqFNUFDvY1Pw=;
+        b=c5X594Q+Cc494R/qbqWEZ2pGSYL/SCeR0j795SIsoU/2fePpPAy4rzYYLXwLU32hf5
+         l6Cf7ZMCl1WOu/falJjHaewc8k48gGxiMJT9eIpk26pxs4l0lJTob80uNA0FycEvuETr
+         GZbK1/jGWqLJteqlSDjCNz+rw88A41i3ZLwOAWU1TQE1jkuSblnLkS4jXqujowUjBLpA
+         u6zrcZMT8dE2ajJ2YZeHaT/WZRvGHMHUETdbNtATV7Y4J5cEq/b8PeQwGH1L5irGjXH6
+         otAv5AClBVpLqoY1oFYYNw+V3Hh8NLJOPOrNzEboN3Zb/qYJ40eeh3/zZuJuaQznlSV+
+         VAPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HgCyH+gJ9RXo5Eggw+y253SR+mBguM7vqFNUFDvY1Pw=;
+        b=cf9w1xt2pY/y5SJa4d82MCwJM/rHoKUfX8xqqfChCHadWyBQ9drG15welJuhD0rCKe
+         I5NNsdF/KTY8yqosTLrT6wyvwhzDtWzl2jOIf0bJcDJ3bOtbZUUy13U5B8sauHwvYFsH
+         EOZb8Zad3+CFhyGN0IxHy4loZ/qd+45h3SWmgqsSGwuqqVvdVtadfznx6uk/lBo7vufY
+         ZloE4niK8Euf935xA8sQIJYcIHEzk1P9OPa1NXL1YPNn/rCRx/obAvnu95bz0b2CqnlZ
+         0LFHB/SE1zYxudmYVRGNULCqDuDfFzdkJiamg0KqCDAgcsDBsacNGXrqIpmSpczg2qQ4
+         tvbA==
+X-Gm-Message-State: AOAM531CqlewygIgih44TPp5YGA2w8dkQLiJ9vuYaCiGXjwZXdaZ8LyZ
+        VYTrh1HXchh85B6xz2zgKSY=
+X-Google-Smtp-Source: ABdhPJxDkRdqMNWpFkyuC+eJOdt2zLovNXHNNe/fb4Kn7yt8NpMZ+7H++qiW7zqlRauVQ+0edHLexw==
+X-Received: by 2002:a05:620a:648:: with SMTP id a8mr2324414qka.272.1629774030591;
+        Mon, 23 Aug 2021 20:00:30 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id d20sm7459876qtw.53.2021.08.23.20.00.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 20:00:30 -0700 (PDT)
+From:   CGEL <cgel.zte@gmail.com>
+X-Google-Original-From: CGEL <deng.changcheng@zte.com.cn>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Bard Liao <bard.liao@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Changcheng Deng <deng.changcheng@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] ASoC: SOF: intel: remove duplicate include
+Date:   Mon, 23 Aug 2021 20:00:15 -0700
+Message-Id: <20210824030015.57267-1-deng.changcheng@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema773-chm.china.huawei.com (10.1.198.217)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+From: Changcheng Deng <deng.changcheng@zte.com.cn>
 
-We found a hang issue, the test steps are as follows:
-  1. blocking device via scsi_device_set_state()
-  2. dd if=/dev/sda of=/mnt/t.log bs=1M count=10
-  3. echo none > /sys/block/sda/queue/scheduler
-  4. echo "running" >/sys/block/sda/device/state
+Clean up the following includecheck warning:
 
-Step 3 and 4 should finish this work after step 4, but they hangs.
+./sound/soc/sof/intel/pci-tng.c: shim.h is included more than once.
 
-  CPU#0               CPU#1                CPU#2
-  ---------------     ----------------     ----------------
-                                           Step 1: blocking device
+No functional change.
 
-                                           Step 2: dd xxxx
-                                                  ^^^^^^ get request
-                                                         q_usage_counter++
-
-                      Step 3: switching scheculer
-                      elv_iosched_store
-                        elevator_switch
-                          blk_mq_freeze_queue
-                            blk_freeze_queue
-                              > blk_freeze_queue_start
-                                ^^^^^^ mq_freeze_depth++
-
-                              > blk_mq_run_hw_queues
-                                ^^^^^^ can't run queue when dev blocked
-
-                              > blk_mq_freeze_queue_wait
-                                ^^^^^^ Hang here!!!
-                                       wait q_usage_counter==0
-
-  Step 4: running device
-  store_state_field
-    scsi_rescan_device
-      scsi_attach_vpd
-        scsi_vpd_inquiry
-          __scsi_execute
-            blk_get_request
-              blk_mq_alloc_request
-                blk_queue_enter
-                ^^^^^^ Hang here!!!
-                       wait mq_freeze_depth==0
-
-    blk_mq_run_hw_queues
-    ^^^^^^ dispatch IO, q_usage_counter will reduce to zero
-
-                            blk_mq_unfreeze_queue
-                            ^^^^^ mq_freeze_depth--
-
-Step 3 and 4 wait for each other.
-
-To fix this, we need to run queue before rescanning device when the device
-state changes to SDEV_RUNNING.
-
-Fixes: f0f82e2476f6 ("scsi: core: Fix capacity set to zero after offlinining device")
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
-Signed-off-by: Qiu Laibin <qiulaibin@huawei.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Changcheng Deng <deng.changcheng@zte.com.cn>
 ---
-changes since v2 send with Message-ID:
-20210809141308.3700854-1-lijinlin3@huawei.com
+ sound/soc/sof/intel/pci-tng.c | 1 -
+ 1 file changed, 1 deletion(-)
 
- - Expanded code comment in store_state_field() as suggested by Bart
-
- drivers/scsi/scsi_sysfs.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index ae9bfc658203..c0d31119d6d7 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -808,12 +808,15 @@ store_state_field(struct device *dev, struct device_attribute *attr,
- 	ret = scsi_device_set_state(sdev, state);
- 	/*
- 	 * If the device state changes to SDEV_RUNNING, we need to
--	 * rescan the device to revalidate it, and run the queue to
--	 * avoid I/O hang.
-+	 * run the queue to avoid I/O hang, and rescan the device
-+	 * to revalidate it. Running the queue first is necessary
-+	 * because another thread may be waiting inside
-+	 * blk_mq_freeze_queue_wait() and because that call may be
-+	 * waiting for pending I/O to finish.
- 	 */
- 	if (ret == 0 && state == SDEV_RUNNING) {
--		scsi_rescan_device(dev);
- 		blk_mq_run_hw_queues(sdev->request_queue, true);
-+		scsi_rescan_device(dev);
- 	}
- 	mutex_unlock(&sdev->state_mutex);
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+index 4ee1da3..4bded66 100644
+--- a/sound/soc/sof/intel/pci-tng.c
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -15,7 +15,6 @@
+ #include <sound/sof.h>
+ #include "../ops.h"
+ #include "atom.h"
+-#include "shim.h"
+ #include "../sof-pci-dev.h"
+ #include "../sof-audio.h"
  
 -- 
-2.27.0
+1.8.3.1
+
 
